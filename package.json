@@ -8,7 +8,7 @@
         "dev": "vite",
         "check-types": "tsc --noEmit",
         "watch-types": "pnpm check-types -w",
-        "build": "tsc && vite build",
+        "build": "vite build",
         "build-packages": "pnpm run -r --aggregate-output build",
         "build-docs": "typedoc",
         "build-license-report": "ts-node --esm ./support/create-license-report.ts",
@@ -20,7 +20,10 @@
         "test": "vitest",
         "lint-shared-versions": "syncpack list-mismatches",
         "update-shared-versions": "syncpack fix-mismatches",
-        "prepare": "husky install"
+        "prepare": "husky install",
+        "ci:test": "pnpm run clean && pnpm run lint && pnpm run check-types && vitest run",
+        "ci:version": "pnpm changeset version && pnpm install",
+        "ci:publish": "pnpm run clean && pnpm run build-packages && pnpm publish -r --access public && pnpm changeset tag"
     },
     "pnpm": {
         "overrides": {

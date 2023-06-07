@@ -4,7 +4,7 @@ on:
   push:
   pull_request:
 jobs:
-  test-and-build:
+  test:
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -30,11 +30,8 @@ jobs:
       - name: Lint dependencies
         run: pnpm lint-shared-versions
 
-      - name: Lint code
-        run: pnpm lint
-
       - name: Run tests
-        run: pnpm vitest run
+        run: pnpm ci:test
 
       - name: Build samples
         run: pnpm build
@@ -56,7 +53,7 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
-    needs: test-and-build
+    needs: test
     if: github.ref == 'refs/heads/main'
     steps:
       - name: Checkout
