@@ -20,5 +20,5 @@
         "map-sample-scale-component": "workspace:*",
         "map-sample-zoom-component": "workspace:*"
     },
-    "version": null
+    "version": "0.0.0"
 }
