@@ -1,5 +1,13 @@
 # @open-pioneer/experimental-ol-layer-control
 
+## 0.1.1
+
+### Patch Changes
+
+-   df35787: trigger release
+-   Updated dependencies [df35787]
+    -   @open-pioneer/experimental-ol-map@0.1.1
+
 ## 0.1.0
 
 ### Minor Changes

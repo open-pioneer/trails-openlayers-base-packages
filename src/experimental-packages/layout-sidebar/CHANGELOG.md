@@ -1,5 +1,11 @@
 # @open-pioneer/experimental-layout-sidebar
 
+## 0.1.1
+
+### Patch Changes
+
+-   df35787: trigger release
+
 ## 0.1.0
 
 ### Minor Changes
