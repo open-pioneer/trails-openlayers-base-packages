@@ -3,3 +3,4 @@ packages:
     - support/disabled-package
     - "!**/test-data/**"
     - "!**/dist/**"
+    -  "." # workaround for https://github.com/changesets/changesets/issues/1133 (packages don't find build-tools repo root)
