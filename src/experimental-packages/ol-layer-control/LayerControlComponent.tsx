@@ -9,7 +9,7 @@ import {
     SliderTrack,
     Tooltip
 } from "@open-pioneer/chakra-integration";
-import { OlComponentProps, useMap } from "@open-pioneer/ol-map";
+import { OlComponentProps, useMap } from "@open-pioneer/experimental-ol-map";
 import Layer from "ol/layer/Layer";
 import { unByKey } from "ol/Observable";
 import { useIntl } from "open-pioneer:react-hooks";

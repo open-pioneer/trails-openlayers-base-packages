@@ -1,4 +1,4 @@
-# @open-pioneer/layout-sidebar
+# @open-pioneer/experimental-layout-sidebar
 
 This package provides a sidebar component. This sidebar consists of a main section (with menu entries) and a content section, which is show, when some of the menu entries are selected.
 

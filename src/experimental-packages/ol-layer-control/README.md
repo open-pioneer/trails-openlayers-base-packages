@@ -1,4 +1,4 @@
-# @open-pioneer/ol-layer-control
+# @open-pioneer/experimental-ol-layer-control
 
 This package provides a layer-control component based on open layers, which can be integrated besides a map to handle some functionality (toggling, opacity, ...) for the configured layers.
 

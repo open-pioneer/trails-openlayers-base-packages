@@ -178,14 +178,43 @@ importers:
         specifier: ^0.31.2
         version: 0.31.2(jsdom@22.1.0)(sass@1.62.1)
 
-  src/experimental-packages/layer-control:
+  src/experimental-packages/layout-sidebar:
+    dependencies:
+      '@chakra-ui/icons':
+        specifier: ^2.0.19
+        version: 2.0.19(@chakra-ui/system@2.5.7)(react@18.2.0)
+      '@chakra-ui/system':
+        specifier: ^2.5.7
+        version: 2.5.7(@emotion/react@11.11.0)(@emotion/styled@11.11.0)(react@18.2.0)
+      '@emotion/react':
+        specifier: ^11.11.0
+        version: 11.11.0(@types/react@18.2.7)(react@18.2.0)
+      '@emotion/styled':
+        specifier: ^11.11.0
+        version: 11.11.0(@emotion/react@11.11.0)(@types/react@18.2.7)(react@18.2.0)
+      '@open-pioneer/chakra-integration':
+        specifier: ^0.1.3
+        version: 0.1.3(@types/react@18.2.7)
+      '@open-pioneer/runtime':
+        specifier: ^0.1.4
+        version: 0.1.4(@types/react@18.2.7)(typescript@5.0.4)
+      react:
+        specifier: ^18.2.0
+        version: 18.2.0
+    devDependencies:
+      openlayers-base-packages:
+        specifier: workspace:*
+        version: link:../../..
+    publishDirectory: dist
+
+  src/experimental-packages/ol-layer-control:
     dependencies:
       '@open-pioneer/chakra-integration':
         specifier: ^0.1.3
         version: 0.1.3(@types/react@18.2.7)
-      '@open-pioneer/ol-map':
+      '@open-pioneer/experimental-ol-map':
         specifier: workspace:^
-        version: link:../map
+        version: link:../ol-map
       '@open-pioneer/runtime':
         specifier: ^0.1.4
         version: 0.1.4(@types/react@18.2.7)(typescript@5.0.4)
@@ -207,7 +236,7 @@ importers:
         version: link:../../..
     publishDirectory: dist
 
-  src/experimental-packages/map:
+  src/experimental-packages/ol-map:
     dependencies:
       '@open-pioneer/core':
         specifier: ^0.1.3
@@ -233,35 +262,6 @@ importers:
         version: link:../../..
     publishDirectory: dist
 
-  src/experimental-packages/sidebar:
-    dependencies:
-      '@chakra-ui/icons':
-        specifier: ^2.0.19
-        version: 2.0.19(@chakra-ui/system@2.5.7)(react@18.2.0)
-      '@chakra-ui/system':
-        specifier: ^2.5.7
-        version: 2.5.7(@emotion/react@11.11.0)(@emotion/styled@11.11.0)(react@18.2.0)
-      '@emotion/react':
-        specifier: ^11.11.0
-        version: 11.11.0(@types/react@18.2.7)(react@18.2.0)
-      '@emotion/styled':
-        specifier: ^11.11.0
-        version: 11.11.0(@emotion/react@11.11.0)(@types/react@18.2.7)(react@18.2.0)
-      '@open-pioneer/chakra-integration':
-        specifier: ^0.1.3
-        version: 0.1.3(@types/react@18.2.7)
-      '@open-pioneer/runtime':
-        specifier: ^0.1.4
-        version: 0.1.4(@types/react@18.2.7)(typescript@5.0.4)
-      react:
-        specifier: ^18.2.0
-        version: 18.2.0
-    devDependencies:
-      openlayers-base-packages:
-        specifier: workspace:*
-        version: link:../../..
-    publishDirectory: dist
-
   src/samples/map-sample/map-sample-logging:
     devDependencies:
       '@open-pioneer/runtime':
@@ -270,9 +270,9 @@ importers:
 
   src/samples/map-sample/map-sample-scale-component:
     dependencies:
-      '@open-pioneer/ol-map':
+      '@open-pioneer/experimental-ol-map':
         specifier: workspace:^
-        version: link:../../../experimental-packages/map
+        version: link:../../../experimental-packages/ol-map
       ol:
         specifier: ^7.3.0
         version: 7.3.0
@@ -294,9 +294,9 @@ importers:
       '@open-pioneer/chakra-integration':
         specifier: ^0.1.3
         version: 0.1.3(@types/react@18.2.7)
-      '@open-pioneer/ol-map':
+      '@open-pioneer/experimental-ol-map':
         specifier: workspace:^
-        version: link:../../../experimental-packages/map
+        version: link:../../../experimental-packages/ol-map
       ol:
         specifier: ^7.3.0
         version: 7.3.0
@@ -321,15 +321,15 @@ importers:
       '@open-pioneer/chakra-integration':
         specifier: ^0.1.3
         version: 0.1.3(@types/react@18.2.7)
-      '@open-pioneer/layout-sidebar':
+      '@open-pioneer/experimental-layout-sidebar':
         specifier: workspace:^
-        version: link:../../../experimental-packages/sidebar
-      '@open-pioneer/ol-layer-control':
+        version: link:../../../experimental-packages/layout-sidebar
+      '@open-pioneer/experimental-ol-layer-control':
         specifier: workspace:^
-        version: link:../../../experimental-packages/layer-control
-      '@open-pioneer/ol-map':
+        version: link:../../../experimental-packages/ol-layer-control
+      '@open-pioneer/experimental-ol-map':
         specifier: workspace:^
-        version: link:../../../experimental-packages/map
+        version: link:../../../experimental-packages/ol-map
       '@open-pioneer/runtime':
         specifier: ^0.1.4
         version: 0.1.4(@types/react@18.2.7)(typescript@5.0.4)

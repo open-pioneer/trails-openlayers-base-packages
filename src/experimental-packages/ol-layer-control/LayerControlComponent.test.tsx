@@ -3,8 +3,8 @@
 /**
  * @vitest-environment jsdom
  */
-import { OlMapConfigurationProvider } from "@open-pioneer/ol-map";
-import { OlMapRegistry } from "@open-pioneer/ol-map/services";
+import { OlMapConfigurationProvider } from "@open-pioneer/experimental-ol-map";
+import { OlMapRegistry } from "@open-pioneer/experimental-ol-map/services";
 import { Service, ServiceOptions } from "@open-pioneer/runtime";
 import {
     PackageContextProvider,
