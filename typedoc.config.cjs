@@ -2,9 +2,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
 const documentedPackages = [
-    "framework/layout/sidebar",
-    "framework/open-layers/layer-control",
-    "framework/open-layers/map"
+    "experimental-packages/sidebar",
+    "experimental-packages/layer-control",
+    "experimental-packages/map"
 ];
 
 // See https://typedoc.org/options/
@@ -13,7 +13,7 @@ module.exports = {
     "readme": "none",
     "out": "dist/docs",
     "entryPointStrategy": "packages",
-    "entryPoints": documentedPackages.map(p => `src/packages/${p}`),
+    "entryPoints": documentedPackages.map(p => `src/${p}`),
     "skipErrorChecking": true,
     "validation": {
         "notExported": false,

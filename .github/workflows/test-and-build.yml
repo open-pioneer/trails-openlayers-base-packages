@@ -42,9 +42,8 @@ jobs:
       - name: Build API documentation
         run: pnpm build-docs
 
-      # TODO: errors are ignored right now
       - name: Create license report
-        run: pnpm build-license-report || true;
+        run: pnpm build-license-report;
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
@@ -89,4 +88,4 @@ jobs:
           git-config-name: "github-actions[bot]"
           git-config-email: "41898282+github-actions[bot]@users.noreply.github.com"
           folder: site
-          target-folder: starter
+          target-folder: openlayers-base-packages

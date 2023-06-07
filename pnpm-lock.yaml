@@ -178,41 +178,7 @@ importers:
         specifier: ^0.31.2
         version: 0.31.2(jsdom@22.1.0)(sass@1.62.1)
 
-  src/apps/empty:
-    dependencies:
-      '@open-pioneer/chakra-integration':
-        specifier: ^0.1.3
-        version: 0.1.3(@types/react@18.2.7)
-      '@open-pioneer/runtime':
-        specifier: ^0.1.4
-        version: 0.1.4(@types/react@18.2.7)(typescript@5.0.4)
-
-  src/packages/framework/layout/sidebar:
-    dependencies:
-      '@chakra-ui/icons':
-        specifier: ^2.0.19
-        version: 2.0.19(@chakra-ui/system@2.5.7)(react@18.2.0)
-      '@chakra-ui/system':
-        specifier: ^2.5.7
-        version: 2.5.7(@emotion/react@11.11.0)(@emotion/styled@11.11.0)(react@18.2.0)
-      '@emotion/react':
-        specifier: ^11.11.0
-        version: 11.11.0(@types/react@18.2.7)(react@18.2.0)
-      '@emotion/styled':
-        specifier: ^11.11.0
-        version: 11.11.0(@emotion/react@11.11.0)(@types/react@18.2.7)(react@18.2.0)
-      '@open-pioneer/chakra-integration':
-        specifier: ^0.1.3
-        version: 0.1.3(@types/react@18.2.7)
-      '@open-pioneer/runtime':
-        specifier: ^0.1.4
-        version: 0.1.4(@types/react@18.2.7)(typescript@5.0.4)
-      react:
-        specifier: ^18.2.0
-        version: 18.2.0
-    publishDirectory: dist
-
-  src/packages/framework/open-layers/layer-control:
+  src/experimental-packages/layer-control:
     dependencies:
       '@open-pioneer/chakra-integration':
         specifier: ^0.1.3
@@ -236,9 +202,12 @@ importers:
       '@open-pioneer/test-utils':
         specifier: ^0.1.5
         version: 0.1.5(@types/react@18.2.7)(typescript@5.0.4)
+      openlayers-base-packages:
+        specifier: workspace:*
+        version: link:../../..
     publishDirectory: dist
 
-  src/packages/framework/open-layers/map:
+  src/experimental-packages/map:
     dependencies:
       '@open-pioneer/core':
         specifier: ^0.1.3
@@ -250,68 +219,38 @@ importers:
       '@open-pioneer/test-utils':
         specifier: ^0.1.5
         version: 0.1.5(@types/react@18.2.7)(typescript@5.0.4)
-
-  src/samples/api-sample/api-app:
-    dependencies:
-      '@open-pioneer/chakra-integration':
-        specifier: ^0.1.3
-        version: 0.1.3(@types/react@18.2.7)
-      '@open-pioneer/core':
-        specifier: ^0.1.3
-        version: 0.1.3
-      '@open-pioneer/http':
-        specifier: ^0.1.0
-        version: 0.1.0(@types/react@18.2.7)(typescript@5.0.4)
-      '@open-pioneer/integration':
-        specifier: ^0.1.3
-        version: 0.1.3(@types/react@18.2.7)(typescript@5.0.4)
-      '@open-pioneer/runtime':
-        specifier: ^0.1.4
-        version: 0.1.4(@types/react@18.2.7)(typescript@5.0.4)
-
-  src/samples/chakra-sample/chakra-app:
-    dependencies:
-      '@open-pioneer/chakra-integration':
-        specifier: ^0.1.3
-        version: 0.1.3(@types/react@18.2.7)
-      '@open-pioneer/runtime':
-        specifier: ^0.1.4
-        version: 0.1.4(@types/react@18.2.7)(typescript@5.0.4)
-
-  src/samples/extension-sample/extension-app:
-    dependencies:
-      '@open-pioneer/chakra-integration':
-        specifier: ^0.1.3
-        version: 0.1.3(@types/react@18.2.7)
-      '@open-pioneer/runtime':
-        specifier: ^0.1.4
-        version: 0.1.4(@types/react@18.2.7)(typescript@5.0.4)
-
-  src/samples/i18n-howto/app:
-    dependencies:
-      '@open-pioneer/chakra-integration':
-        specifier: ^0.1.3
-        version: 0.1.3(@types/react@18.2.7)
-      '@open-pioneer/runtime':
-        specifier: ^0.1.4
-        version: 0.1.4(@types/react@18.2.7)(typescript@5.0.4)
-
-  src/samples/i18n-sample/i18n-app:
-    dependencies:
-      '@open-pioneer/chakra-integration':
-        specifier: ^0.1.3
-        version: 0.1.3(@types/react@18.2.7)
-      '@open-pioneer/integration':
-        specifier: ^0.1.3
-        version: 0.1.3(@types/react@18.2.7)(typescript@5.0.4)
-      '@open-pioneer/runtime':
-        specifier: ^0.1.4
-        version: 0.1.4(@types/react@18.2.7)(typescript@5.0.4)
-      i18n-sample-package:
+      openlayers-base-packages:
         specifier: workspace:*
-        version: link:../i18n-sample-package
+        version: link:../../..
 
-  src/samples/i18n-sample/i18n-sample-package: {}
+  src/experimental-packages/sidebar:
+    dependencies:
+      '@chakra-ui/icons':
+        specifier: ^2.0.19
+        version: 2.0.19(@chakra-ui/system@2.5.7)(react@18.2.0)
+      '@chakra-ui/system':
+        specifier: ^2.5.7
+        version: 2.5.7(@emotion/react@11.11.0)(@emotion/styled@11.11.0)(react@18.2.0)
+      '@emotion/react':
+        specifier: ^11.11.0
+        version: 11.11.0(@types/react@18.2.7)(react@18.2.0)
+      '@emotion/styled':
+        specifier: ^11.11.0
+        version: 11.11.0(@emotion/react@11.11.0)(@types/react@18.2.7)(react@18.2.0)
+      '@open-pioneer/chakra-integration':
+        specifier: ^0.1.3
+        version: 0.1.3(@types/react@18.2.7)
+      '@open-pioneer/runtime':
+        specifier: ^0.1.4
+        version: 0.1.4(@types/react@18.2.7)(typescript@5.0.4)
+      react:
+        specifier: ^18.2.0
+        version: 18.2.0
+    devDependencies:
+      openlayers-base-packages:
+        specifier: workspace:*
+        version: link:../../..
+    publishDirectory: dist
 
   src/samples/map-sample/map-sample-logging:
     devDependencies:
@@ -323,7 +262,7 @@ importers:
     dependencies:
       '@open-pioneer/ol-map':
         specifier: workspace:^
-        version: link:../../../packages/framework/open-layers/map
+        version: link:../../../experimental-packages/map
       ol:
         specifier: ^7.3.0
         version: 7.3.0
@@ -347,7 +286,7 @@ importers:
         version: 0.1.3(@types/react@18.2.7)
       '@open-pioneer/ol-map':
         specifier: workspace:^
-        version: link:../../../packages/framework/open-layers/map
+        version: link:../../../experimental-packages/map
       ol:
         specifier: ^7.3.0
         version: 7.3.0
@@ -374,13 +313,13 @@ importers:
         version: 0.1.3(@types/react@18.2.7)
       '@open-pioneer/layout-sidebar':
         specifier: workspace:^
-        version: link:../../../packages/framework/layout/sidebar
+        version: link:../../../experimental-packages/sidebar
       '@open-pioneer/ol-layer-control':
         specifier: workspace:^
-        version: link:../../../packages/framework/open-layers/layer-control
+        version: link:../../../experimental-packages/layer-control
       '@open-pioneer/ol-map':
         specifier: workspace:^
-        version: link:../../../packages/framework/open-layers/map
+        version: link:../../../experimental-packages/map
       '@open-pioneer/runtime':
         specifier: ^0.1.4
         version: 0.1.4(@types/react@18.2.7)(typescript@5.0.4)
@@ -408,32 +347,6 @@ importers:
       react-use:
         specifier: ^17.4.0
         version: 17.4.0(react-dom@18.2.0)(react@18.2.0)
-
-  src/samples/properties-sample/properties-app:
-    dependencies:
-      '@open-pioneer/chakra-integration':
-        specifier: ^0.1.3
-        version: 0.1.3(@types/react@18.2.7)
-      '@open-pioneer/core':
-        specifier: ^0.1.3
-        version: 0.1.3
-      '@open-pioneer/runtime':
-        specifier: ^0.1.4
-        version: 0.1.4(@types/react@18.2.7)(typescript@5.0.4)
-      react:
-        specifier: ^18.2.0
-        version: 18.2.0
-
-  src/samples/styling-sample/styling-app:
-    dependencies:
-      '@open-pioneer/runtime':
-        specifier: ^0.1.4
-        version: 0.1.4(@types/react@18.2.7)(typescript@5.0.4)
-      styling-sample-components:
-        specifier: workspace:^
-        version: link:../styling-sample-components
-
-  src/samples/styling-sample/styling-sample-components: {}
 
   support/disabled-package: {}
 
@@ -2288,15 +2201,6 @@ packages:
 
   /@open-pioneer/core@0.1.3:
     resolution: {integrity: sha512-0GM2kcx14tXuNAroxVppDPzaOKGlTFdbmWp/0LyRF5nM7bKaHZ3JLDtmQQs7oLtl3tpzGA9UVXt4q68BbMW6Ig==}
-
-  /@open-pioneer/http@0.1.0(@types/react@18.2.7)(typescript@5.0.4):
-    resolution: {integrity: sha512-/h00wBYWDBkb3xeXYUEWqOcmNutXsoYu5uabpAkTr6qzVjKT8b1sD4H8AEtd/3ptHp08dor2rBA2EQJML/9+WQ==}
-    dependencies:
-      '@open-pioneer/runtime': 0.1.4(@types/react@18.2.7)(typescript@5.0.4)
-    transitivePeerDependencies:
-      - '@types/react'
-      - typescript
-    dev: false
 
   /@open-pioneer/integration@0.1.3(@types/react@18.2.7)(typescript@5.0.4):
     resolution: {integrity: sha512-69MPAKfbqOjLieF8ahCLY9te4ye2F5PYOpziiIScvhFGhydt63WCTGH7qgxiZ4GjbFo9Wg5lJH91UeJ1mhxbFg==}

@@ -1,41 +1,32 @@
-# Open Pioneer Starter
+# OpenLayers Base Packages
 
-![Build status](https://github.com/open-pioneer/starter/actions/workflows/test-and-build.yml/badge.svg) ![Dependency audit](https://github.com/open-pioneer/starter/actions/workflows/audit-dependencies.yml/badge.svg)
+This repository is intended to manage various base packages for building applications based on [OpenLayers](https://openlayers.org/).
 
-[Samples](https://open-pioneer.github.io/demo/starter/) | [API Documentation](https://open-pioneer.github.io/demo/starter/docs/) | [User manual](https://github.com/open-pioneer/starter/tree/main/docs)
+[Samples](https://open-pioneer.github.io/demo/openlayers-base-packages/) | [API Documentation](https://open-pioneer.github.io/demo/openlayers-base-packages/docs/) | [User manual](https://github.com/open-pioneer/starter/tree/main/docs)
 
-## Quick start
+## Getting started
 
-Ensure that you have [Node](https://nodejs.org/en/) (Version 16 or later) and [pnpm](https://pnpm.io/) (Version 7.x) installed.
+Requirements: Node >= 16, pnpm >= 8.
 
-Then execute the following commands to get started:
+To start the development server, run:
 
 ```bash
-$ git clone https://github.com/open-pioneer/starter.git # Clone the repository
-$ cd starter
-$ pnpm install                                          # Install dependencies
-$ pnpm run dev                                          # Launch development server
+$ pnpm install # initially and always after changing package dependencies
+$ pnp dev      # starts dev server
+  VITE v4.3.9  ready in 832 ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: use --host to expose
+  ➜  press h to show help
 ```
 
-Vite will print the project's local address (usually <http://localhost:5173/>).
-Point your browser at it and start programming!
+To run tests:
 
-Additional in-depth information can be found in the [Documentation](./docs/README.md).
-
-## License
-
-```text
-Copyright 2023 con terra GmbH and contributors
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+```bash
+# all tests
+$ pnpm test
+# only run tests for a certain package (or file)
+$ pnpm test <PATH_TO_PACKAGE>
 ```
+
+For more details, consult the starter project's [Repository Guide](https://github.com/open-pioneer/starter/blob/main/docs/RepositoryGuide.md).

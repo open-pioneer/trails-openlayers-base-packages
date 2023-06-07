@@ -8,6 +8,7 @@
         "ol": "^7.3.0"
     },
     "devDependencies": {
-        "@open-pioneer/test-utils": "^0.1.5"
+        "@open-pioneer/test-utils": "^0.1.5",
+        "openlayers-base-packages": "workspace:*"
     }
 }

@@ -12,6 +12,9 @@
         "@open-pioneer/runtime": "^0.1.4",
         "react": "^18.2.0"
     },
+    "devDependencies": {
+        "openlayers-base-packages": "workspace:*"
+    },
     "publishConfig": {
         "directory": "dist",
         "linkDirectory": false
