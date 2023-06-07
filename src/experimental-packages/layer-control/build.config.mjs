@@ -7,5 +7,8 @@ export default defineBuildConfig({
     i18n: ["de", "en"],
     ui: {
         references: []
+    },
+    publishConfig: {
+        strict: true
     }
 });

@@ -34,3 +34,7 @@ const olMapRegistry = useService("ol-map.MapRegistry");
 // get mapState with a given map id
 const mapState = useAsync(async () => await olMapRegistry.getMap(MAP_ID));
 ```
+
+## License
+
+[Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0)

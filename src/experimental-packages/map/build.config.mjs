@@ -3,6 +3,7 @@
 import { defineBuildConfig } from "@open-pioneer/build-support";
 
 export default defineBuildConfig({
+    entryPoints: "index",
     styles: `./styles.css`,
     services: {
         OlMapRegistry: {
@@ -17,5 +18,8 @@ export default defineBuildConfig({
     },
     ui: {
         references: ["ol-map.MapRegistry"]
+    },
+    publishConfig: {
+        strict: true
     }
 });

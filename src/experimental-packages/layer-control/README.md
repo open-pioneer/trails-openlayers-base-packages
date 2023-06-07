@@ -15,3 +15,7 @@ See here a simple integration of a layer control with a map id and visible opaci
 ```
 
 For more configuration of the layer control check `./LayerControlComponent.tsx`.
+
+## License
+
+[Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0)
