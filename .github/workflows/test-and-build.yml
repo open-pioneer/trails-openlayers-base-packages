@@ -36,8 +36,11 @@ jobs:
       - name: Run tests
         run: pnpm vitest run
 
-      - name: Build app
+      - name: Build samples
         run: pnpm build
+        
+      - name: Build packages
+        run: pnpm build-packages
 
       - name: Build API documentation
         run: pnpm build-docs
