@@ -19,5 +19,6 @@
         "react-use": "^17.4.0",
         "map-sample-scale-component": "workspace:*",
         "map-sample-zoom-component": "workspace:*"
-    }
+    },
+    "version": null
 }
