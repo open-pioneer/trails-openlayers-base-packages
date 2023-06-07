@@ -3,8 +3,8 @@
 
 const documentedPackages = [
     "experimental-packages/sidebar",
-    "experimental-packages/layer-control",
-    "experimental-packages/map"
+    "experimental-packages/ol-layer-control",
+    "experimental-packages/ol-map"
 ];
 
 // See https://typedoc.org/options/
