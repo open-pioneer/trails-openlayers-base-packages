@@ -1,10 +1,6 @@
-# @open-pioneer/experimental-ol-layer-control
+# map-sample-scale-component
 
-## 0.1.0
-
-### Minor Changes
-
--   1e5f328: Initial release
+## null
 
 ### Patch Changes
 
