@@ -1,5 +1,13 @@
 # @open-pioneer/experimental-ol-layer-control
 
+## 0.1.4
+
+### Patch Changes
+
+-   e00b4b7: Use peerDependencies for most dependencies
+-   Updated dependencies [e00b4b7]
+    -   @open-pioneer/experimental-ol-map@0.1.4
+
 ## 0.1.3
 
 ### Patch Changes
