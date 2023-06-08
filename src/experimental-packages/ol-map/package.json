@@ -6,9 +6,8 @@
     "scripts": {
         "build": "build-pioneer-package"
     },
-    "dependencies": {
+    "peerDependencies": {
         "@open-pioneer/core": "^0.1.3",
-        "@open-pioneer/--test-package": "workspace:^",
         "ol": "^7.3.0",
         "@open-pioneer/runtime": "^0.1.4",
         "react": "^18.2.0",

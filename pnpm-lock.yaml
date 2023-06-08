@@ -73,8 +73,8 @@ importers:
         specifier: ^0.6.0
         version: 0.6.0
       '@open-pioneer/vite-plugin-pioneer':
-        specifier: ^0.8.5
-        version: 0.8.5(@open-pioneer/runtime@0.1.4)(sass@1.62.1)(vite@4.3.9)
+        specifier: ^0.8.6
+        version: 0.8.6(@open-pioneer/runtime@0.1.4)(sass@1.62.1)(vite@4.3.9)
       '@testing-library/dom':
         specifier: ^9.3.0
         version: 9.3.0
@@ -241,9 +241,6 @@ importers:
 
   src/experimental-packages/ol-map:
     dependencies:
-      '@open-pioneer/--test-package':
-        specifier: workspace:^
-        version: link:../test-package
       '@open-pioneer/core':
         specifier: ^0.1.3
         version: 0.1.3
@@ -263,26 +260,6 @@ importers:
       '@open-pioneer/test-utils':
         specifier: ^0.1.5
         version: 0.1.5(@types/react@18.2.7)(typescript@5.0.4)
-      openlayers-base-packages:
-        specifier: workspace:*
-        version: link:../../..
-    publishDirectory: dist
-
-  src/experimental-packages/test-package:
-    dependencies:
-      '@open-pioneer/core':
-        specifier: ^0.1.3
-        version: 0.1.3
-      '@open-pioneer/http':
-        specifier: ^0.1.0
-        version: 0.1.0(@types/react@18.2.7)(typescript@5.0.4)
-      '@open-pioneer/runtime':
-        specifier: ^0.1.4
-        version: 0.1.4(@types/react@18.2.7)(typescript@5.0.4)
-      ol:
-        specifier: ^7.3.0
-        version: 7.3.0
-    devDependencies:
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -2456,15 +2433,6 @@ packages:
   /@open-pioneer/core@0.1.3:
     resolution: {integrity: sha512-0GM2kcx14tXuNAroxVppDPzaOKGlTFdbmWp/0LyRF5nM7bKaHZ3JLDtmQQs7oLtl3tpzGA9UVXt4q68BbMW6Ig==}
 
-  /@open-pioneer/http@0.1.0(@types/react@18.2.7)(typescript@5.0.4):
-    resolution: {integrity: sha512-/h00wBYWDBkb3xeXYUEWqOcmNutXsoYu5uabpAkTr6qzVjKT8b1sD4H8AEtd/3ptHp08dor2rBA2EQJML/9+WQ==}
-    dependencies:
-      '@open-pioneer/runtime': 0.1.4(@types/react@18.2.7)(typescript@5.0.4)
-    transitivePeerDependencies:
-      - '@types/react'
-      - typescript
-    dev: false
-
   /@open-pioneer/integration@0.1.3(@types/react@18.2.7)(typescript@5.0.4):
     resolution: {integrity: sha512-69MPAKfbqOjLieF8ahCLY9te4ye2F5PYOpziiIScvhFGhydt63WCTGH7qgxiZ4GjbFo9Wg5lJH91UeJ1mhxbFg==}
     dependencies:
@@ -2506,8 +2474,8 @@ packages:
       - '@types/react'
       - typescript
 
-  /@open-pioneer/vite-plugin-pioneer@0.8.5(@open-pioneer/runtime@0.1.4)(sass@1.62.1)(vite@4.3.9):
-    resolution: {integrity: sha512-5sJf8+AmY4o3YbMYdRWfa+pWaBp10HHs+uL5mQp2befzCRtFkJTWBsv3TDGgRZOPRNZPisgaYG1SVTK8+AOKQg==}
+  /@open-pioneer/vite-plugin-pioneer@0.8.6(@open-pioneer/runtime@0.1.4)(sass@1.62.1)(vite@4.3.9):
+    resolution: {integrity: sha512-bVXCkxaY5jB5OOTypMLaMI0B7gjB7br5eg5X6Eso/vaVPWGPn8QQtc98R3zsFs2dK/l9bZuqgOfi1FRoAfXUvQ==}
     engines: {node: '>= 16'}
     peerDependencies:
       '@open-pioneer/runtime': '*'
