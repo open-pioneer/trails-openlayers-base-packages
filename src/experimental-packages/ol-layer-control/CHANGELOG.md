@@ -1,5 +1,12 @@
 # @open-pioneer/experimental-ol-layer-control
 
+## 0.1.2
+
+### Patch Changes
+
+-   Updated dependencies [665027f]
+    -   @open-pioneer/experimental-ol-map@0.1.2
+
 ## 0.1.1
 
 ### Patch Changes

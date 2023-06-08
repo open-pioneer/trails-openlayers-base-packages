@@ -6,5 +6,5 @@
         "@open-pioneer/experimental-ol-map": "workspace:^",
         "ol": "^7.3.0"
     },
-    "version": "0.0.1"
+    "version": "0.0.2"
 }
