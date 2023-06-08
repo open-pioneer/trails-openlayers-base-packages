@@ -1,0 +1,17 @@
+{
+    "name": "@open-pioneer/--test-package",
+    "version": "0.0.1",
+    "license": "Apache-2.0",
+    "main": "index.ts",
+    "scripts": {
+        "build": "build-pioneer-package"
+    },
+    "dependencies": {},
+    "devDependencies": {
+        "openlayers-base-packages": "workspace:*"
+    },
+    "publishConfig": {
+        "directory": "dist",
+        "linkDirectory": false
+    }
+}

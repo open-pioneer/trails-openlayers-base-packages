@@ -1,23 +1,16 @@
 name: Changesets
 
 on:
-  push:
-    branches:
-      - "main"
+  workflow_call:
+    secrets:
+      NPM_TOKEN:
+        required: true
 
 jobs:
   version:
     runs-on: ubuntu-latest
     permissions: write-all
     steps:
-      - name: Wait for tests to succeed
-        uses: lewagon/wait-on-check-action@v1.3.1
-        with:
-          ref: ${{ github.ref }}
-          check-name: "test" # reference test-and-build workflow
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          wait-interval: 10
-
       - name: Checkout
         uses: actions/checkout@v3
         with:

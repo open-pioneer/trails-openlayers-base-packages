@@ -53,7 +53,7 @@
         "@changesets/cli": "^2.26.1",
         "@open-pioneer/build-package-cli": "^0.2.0",
         "@open-pioneer/build-support": "^0.6.0",
-        "@open-pioneer/vite-plugin-pioneer": "^0.8.4",
+        "@open-pioneer/vite-plugin-pioneer": "^0.8.5",
         "@testing-library/dom": "^9.3.0",
         "@testing-library/jest-dom": "^5.16.5",
         "@testing-library/react": "^14.0.0",

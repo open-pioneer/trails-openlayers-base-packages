@@ -241,6 +241,9 @@ importers:
 
   src/experimental-packages/ol-map:
     dependencies:
+      '@open-pioneer/--test-package':
+        specifier: workspace:^
+        version: link:../test-package
       '@open-pioneer/core':
         specifier: ^0.1.3
         version: 0.1.3
@@ -260,6 +263,13 @@ importers:
       '@open-pioneer/test-utils':
         specifier: ^0.1.5
         version: 0.1.5(@types/react@18.2.7)(typescript@5.0.4)
+      openlayers-base-packages:
+        specifier: workspace:*
+        version: link:../../..
+    publishDirectory: dist
+
+  src/experimental-packages/test-package:
+    devDependencies:
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
