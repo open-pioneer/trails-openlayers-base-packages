@@ -1,5 +1,16 @@
 # ol-map
 
+## 0.0.4
+
+### Patch Changes
+
+-   Updated dependencies [e00b4b7]
+    -   @open-pioneer/experimental-ol-layer-control@0.1.4
+    -   @open-pioneer/experimental-layout-sidebar@0.1.2
+    -   @open-pioneer/experimental-ol-map@0.1.4
+    -   map-sample-scale-component@0.0.4
+    -   map-sample-zoom-component@0.0.4
+
 ## 0.0.3
 
 ### Patch Changes

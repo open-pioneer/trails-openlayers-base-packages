@@ -1,5 +1,11 @@
 # @open-pioneer/experimental-ol-map
 
+## 0.1.4
+
+### Patch Changes
+
+-   e00b4b7: Use peerDependencies for most dependencies
+
 ## 0.1.3
 
 ### Patch Changes
