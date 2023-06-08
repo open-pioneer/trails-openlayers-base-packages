@@ -73,8 +73,8 @@ importers:
         specifier: ^0.6.0
         version: 0.6.0
       '@open-pioneer/vite-plugin-pioneer':
-        specifier: ^0.8.4
-        version: 0.8.4(@open-pioneer/runtime@0.1.4)(sass@1.62.1)(vite@4.3.9)
+        specifier: ^0.8.5
+        version: 0.8.5(@open-pioneer/runtime@0.1.4)(sass@1.62.1)(vite@4.3.9)
       '@testing-library/dom':
         specifier: ^9.3.0
         version: 9.3.0
@@ -2484,8 +2484,8 @@ packages:
       - '@types/react'
       - typescript
 
-  /@open-pioneer/vite-plugin-pioneer@0.8.4(@open-pioneer/runtime@0.1.4)(sass@1.62.1)(vite@4.3.9):
-    resolution: {integrity: sha512-tcnmX/T4YquYKHj7Dz9gn3+SfqzOIThmdO26V3/fZ6qvoPCB6Jw8mT774pWepJdxvqCUMg6CQzXZQK9g6GzQ4g==}
+  /@open-pioneer/vite-plugin-pioneer@0.8.5(@open-pioneer/runtime@0.1.4)(sass@1.62.1)(vite@4.3.9):
+    resolution: {integrity: sha512-5sJf8+AmY4o3YbMYdRWfa+pWaBp10HHs+uL5mQp2befzCRtFkJTWBsv3TDGgRZOPRNZPisgaYG1SVTK8+AOKQg==}
     engines: {node: '>= 16'}
     peerDependencies:
       '@open-pioneer/runtime': '*'
