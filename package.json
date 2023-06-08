@@ -82,7 +82,7 @@
         "rimraf": "^5.0.1",
         "rollup-plugin-visualizer": "^5.9.0",
         "sass": "^1.62.1",
-        "syncpack": "^10.1.0",
+        "syncpack": "^10.5.1",
         "ts-node": "^10.9.1",
         "typedoc": "^0.24.7",
         "typescript": "~5.0.4",

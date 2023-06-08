@@ -6,7 +6,12 @@
     "scripts": {
         "build": "build-pioneer-package"
     },
-    "dependencies": {},
+    "dependencies": {
+        "@open-pioneer/core": "^0.1.3",
+        "@open-pioneer/http": "^0.1.0",
+        "@open-pioneer/runtime": "^0.1.4",
+        "ol": "^7.3.0"
+    },
     "devDependencies": {
         "openlayers-base-packages": "workspace:*"
     },
