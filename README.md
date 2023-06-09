@@ -30,3 +30,7 @@ $ pnpm test <PATH_TO_PACKAGE>
 ```
 
 For more details, consult the starter project's [Repository Guide](https://github.com/open-pioneer/starter/blob/main/docs/RepositoryGuide.md).
+
+## License
+
+[Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0)
