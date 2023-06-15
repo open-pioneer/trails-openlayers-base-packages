@@ -1,5 +1,11 @@
 # @open-pioneer/--test-package
 
+## 0.0.4
+
+### Patch Changes
+
+-   956195c: Re-add test package
+
 ## 0.0.3
 
 ### Patch Changes

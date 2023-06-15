@@ -1,5 +1,13 @@
 # @open-pioneer/experimental-ol-map
 
+## 0.1.5
+
+### Patch Changes
+
+-   956195c: Re-add test package
+-   Updated dependencies [956195c]
+    -   @open-pioneer/--test-package@0.0.4
+
 ## 0.1.4
 
 ### Patch Changes
