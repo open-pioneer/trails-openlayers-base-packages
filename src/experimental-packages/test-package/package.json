@@ -1,6 +1,6 @@
 {
-    "name": "@open-pioneer/experimental-ol-map",
-    "version": "0.1.4",
+    "name": "@open-pioneer/--test-package",
+    "version": "0.0.3",
     "license": "Apache-2.0",
     "main": "index.ts",
     "scripts": {
@@ -8,14 +8,11 @@
     },
     "peerDependencies": {
         "@open-pioneer/core": "^0.1.3",
-        "ol": "^7.3.0",
+        "@open-pioneer/http": "^0.1.0",
         "@open-pioneer/runtime": "^0.1.4",
-        "react": "^18.2.0",
-        "react-use": "^17.4.0",
-        "@open-pioneer/--test-package": "workspace:^"
+        "ol": "^7.3.0"
     },
     "devDependencies": {
-        "@open-pioneer/test-utils": "^0.1.5",
         "openlayers-base-packages": "workspace:*"
     },
     "publishConfig": {

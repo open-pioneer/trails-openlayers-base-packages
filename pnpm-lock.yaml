@@ -1,4 +1,4 @@
-lockfileVersion: '6.1'
+lockfileVersion: '6.0'
 
 settings:
   autoInstallPeers: true
@@ -241,6 +241,9 @@ importers:
 
   src/experimental-packages/ol-map:
     dependencies:
+      '@open-pioneer/--test-package':
+        specifier: workspace:^
+        version: link:../test-package
       '@open-pioneer/core':
         specifier: ^0.1.3
         version: 0.1.3
@@ -260,6 +263,26 @@ importers:
       '@open-pioneer/test-utils':
         specifier: ^0.1.5
         version: 0.1.5(@types/react@18.2.7)(typescript@5.0.4)
+      openlayers-base-packages:
+        specifier: workspace:*
+        version: link:../../..
+    publishDirectory: dist
+
+  src/experimental-packages/test-package:
+    dependencies:
+      '@open-pioneer/core':
+        specifier: ^0.1.3
+        version: 0.1.3
+      '@open-pioneer/http':
+        specifier: ^0.1.0
+        version: 0.1.0(@types/react@18.2.7)(typescript@5.0.4)
+      '@open-pioneer/runtime':
+        specifier: ^0.1.4
+        version: 0.1.4(@types/react@18.2.7)(typescript@5.0.4)
+      ol:
+        specifier: ^7.3.0
+        version: 7.3.0
+    devDependencies:
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -2432,6 +2455,15 @@ packages:
 
   /@open-pioneer/core@0.1.3:
     resolution: {integrity: sha512-0GM2kcx14tXuNAroxVppDPzaOKGlTFdbmWp/0LyRF5nM7bKaHZ3JLDtmQQs7oLtl3tpzGA9UVXt4q68BbMW6Ig==}
+
+  /@open-pioneer/http@0.1.0(@types/react@18.2.7)(typescript@5.0.4):
+    resolution: {integrity: sha512-/h00wBYWDBkb3xeXYUEWqOcmNutXsoYu5uabpAkTr6qzVjKT8b1sD4H8AEtd/3ptHp08dor2rBA2EQJML/9+WQ==}
+    dependencies:
+      '@open-pioneer/runtime': 0.1.4(@types/react@18.2.7)(typescript@5.0.4)
+    transitivePeerDependencies:
+      - '@types/react'
+      - typescript
+    dev: false
 
   /@open-pioneer/integration@0.1.3(@types/react@18.2.7)(typescript@5.0.4):
     resolution: {integrity: sha512-69MPAKfbqOjLieF8ahCLY9te4ye2F5PYOpziiIScvhFGhydt63WCTGH7qgxiZ4GjbFo9Wg5lJH91UeJ1mhxbFg==}
