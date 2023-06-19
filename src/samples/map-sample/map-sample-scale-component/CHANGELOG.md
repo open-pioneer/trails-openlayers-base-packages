@@ -1,5 +1,12 @@
 # map-sample-scale-component
 
+## 0.0.6
+
+### Patch Changes
+
+-   Updated dependencies [23564f3]
+    -   @open-pioneer/experimental-ol-map@0.1.6
+
 ## 0.0.5
 
 ### Patch Changes
