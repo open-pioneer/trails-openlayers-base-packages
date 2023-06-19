@@ -1,5 +1,11 @@
 # @open-pioneer/experimental-ol-map
 
+## 0.1.6
+
+### Patch Changes
+
+-   23564f3: Use released versions of core packages and build tools
+
 ## 0.1.5
 
 ### Patch Changes

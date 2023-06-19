@@ -1,5 +1,13 @@
 # @open-pioneer/experimental-ol-layer-control
 
+## 0.1.6
+
+### Patch Changes
+
+-   23564f3: Use released versions of core packages and build tools
+-   Updated dependencies [23564f3]
+    -   @open-pioneer/experimental-ol-map@0.1.6
+
 ## 0.1.5
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @open-pioneer/experimental-layout-sidebar
 
+## 0.1.3
+
+### Patch Changes
+
+-   23564f3: Use released versions of core packages and build tools
+
 ## 0.1.2
 
 ### Patch Changes
