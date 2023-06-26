@@ -3,6 +3,7 @@
 import { useService } from "open-pioneer:react-hooks";
 import { useEffect, useRef } from "react";
 import { useAsync } from "react-use";
+import classNames from "classnames";
 
 export interface OlComponentProps {
     mapId: string;
@@ -27,6 +28,11 @@ export interface MapComponentProps extends OlComponentProps {
      * See: https://openlayers.org/en/latest/apidoc/module-ol_View-View.html#padding)
      */
     viewPadding?: MapPadding | undefined;
+
+    /**
+     * Additional class name(s).
+     */
+    className?: string;
 }
 
 export function MapContainer(props: MapComponentProps) {
@@ -55,5 +61,11 @@ export function MapContainer(props: MapComponentProps) {
     const mapContainer: React.CSSProperties = {
         height: "100%"
     };
-    return <div className="ol-map-container" ref={mapElement} style={mapContainer}></div>;
+    return (
+        <div
+            className={classNames("ol-map-container", props.className)}
+            ref={mapElement}
+            style={mapContainer}
+        ></div>
+    );
 }
