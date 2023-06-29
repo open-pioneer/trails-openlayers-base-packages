@@ -1,47 +1,29 @@
 # @open-pioneer/experimental-ol-map
 
-This package provides a map container component to integrate an [open layers](https://openlayers.org/) map into an open pioneer project.
+This package provides a map container component to integrate an [OpenLayers](https://openlayers.org/) map into an open pioneer project.
 Besides the component, there is a service, which handles the registration and creation of a map.
 
 ## Usage
 
 ### Map container component
 
-To integrate a `MapContainer` in a react template, place it at the point where it should appear.
+To integrate a `MapContainer` in a React template, place it at the point where it should appear.
 The parent component should provide appropriate width and height (e.g. `100%`).
 The `MapContainer` will fill all available space.
 
 The component itself uses the map registry service to create the map on demand using the provided `mapId`.
 
-Simple integration of a map container with a map id.
+Simple integration of a map container with a map id:
 
 ```jsx
+import { Box } from "@open-pioneer/chakra-integration";
+import { MapContainer } from "@open-pioneer/experimental-ol-map";
+
+//...
+
 <Box height="100%" overflow="hidden">
     <MapContainer mapId="..." />
-</Box>
-```
-
-> NOTE: There must be a `ol-map.MapConfigProvider` present that knows how to construct the map with the given id (see below).
-
-### Map registry service
-
-The service is registered with the name `"ol-map.MapRegistry"`.
-While injecting it the common way, you can access a map via the following snippet:
-
-```ts
-// get open layers map registry
-const olMapRegistry = ...; // injected
-const olMap = await olMapRegistry.getMap(MAP_ID);
-```
-
-Or, from react code with the `useMap()` helper hook:
-
-```js
-import { useMap } from "@open-pioneer/experimental-ol-map";
-
-function MyComponent({ mapId }) {
-    const { loading, map, error } = useMap(mapId);
-}
+</Box>;
 ```
 
 > NOTE: There must be a `ol-map.MapConfigProvider` present that knows how to construct the map with the given id (see below).
@@ -101,6 +83,29 @@ export class MainMapProvider implements OlMapConfigurationProvider {
     }
 }
 ```
+
+### Map registry service
+
+The service is registered with the name `"ol-map.MapRegistry"`.
+By injecting it in the common way, you can access a map via the following snippet:
+
+```ts
+// get open layers map registry
+const olMapRegistry = ...; // injected
+const olMap = await olMapRegistry.getMap(MAP_ID);
+```
+
+Or, from React code with the `useMap()` helper hook:
+
+```js
+import { useMap } from "@open-pioneer/experimental-ol-map";
+
+function MyComponent({ mapId }) {
+    const { loading, map, error } = useMap(mapId);
+}
+```
+
+> NOTE: There must be a `ol-map.MapConfigProvider` present that knows how to construct the map with the given id (see below).
 
 ## License
 
