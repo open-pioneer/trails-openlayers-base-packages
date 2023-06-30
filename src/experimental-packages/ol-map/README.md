@@ -20,10 +20,13 @@ import { Box } from "@open-pioneer/chakra-integration";
 import { MapContainer } from "@open-pioneer/experimental-ol-map";
 
 //...
-
-<Box height="100%" overflow="hidden">
-    <MapContainer mapId="..." />
-</Box>;
+function AppUI() {
+    return (
+        <Box height="100%" overflow="hidden">
+            <MapContainer mapId="..." />
+        </Box>
+    );
+}
 ```
 
 > NOTE: There must be a `ol-map.MapConfigProvider` present that knows how to construct the map with the given id (see below).
