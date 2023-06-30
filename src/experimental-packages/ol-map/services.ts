@@ -53,7 +53,9 @@ export class OlMapRegistry implements Service, OlMapRegistryInterface {
     private async createMap(mapId: string) {
         let additionalMapOptions = await this.configProviders.get(mapId)?.getMapOptions();
         if (!additionalMapOptions) {
-            LOG.warn(`config provider for map with id '${mapId}' does not exist`);
+            LOG.warn(
+                `Config provider for map with id '${mapId}' does not exist. Using a default configuration.`
+            );
             additionalMapOptions = {};
         }
 
