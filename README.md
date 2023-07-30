@@ -2,7 +2,7 @@
 
 This repository is intended to manage various base packages for building applications based on [OpenLayers](https://openlayers.org/).
 
-[Samples](https://open-pioneer.github.io/demo/openlayers-base-packages/) | [API Documentation](https://open-pioneer.github.io/demo/openlayers-base-packages/docs/) | [User manual](https://github.com/open-pioneer/trails-starter/tree/main/docs)
+[Samples](https://open-pioneer.github.io/trails-demo/openlayers-base-packages/) | [API Documentation](https://open-pioneer.github.io/trails-demo/openlayers-base-packages/docs/) | [User manual](https://github.com/open-pioneer/trails-starter/tree/main/docs)
 
 ## Getting started
 
