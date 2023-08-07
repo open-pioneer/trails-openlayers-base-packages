@@ -1,6 +1,6 @@
 {
     "License header": {
-        "scope": "javascript,typescript",
+        "scope": "javascript,javascriptreact,typescript,typescriptreact",
         "prefix": "license",
         "body": [
             "// SPDX-FileCopyrightText: con terra GmbH and contributors",
