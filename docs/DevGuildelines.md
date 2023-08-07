@@ -22,8 +22,8 @@
 3. All automated tests pass.
 4. Features can be demonstrated on the demo deployment.
 5. Accessibility guidelines have been checked (see below).
-   ... I18n
-6. Important design decisions or non-obvious things to keep in mind
+6. Packages are translated in english and german.
+7. Important design decisions or non-obvious things to keep in mind
    have been documented in internal dev notes or comments.
 
 ## Accessibility guidelines
