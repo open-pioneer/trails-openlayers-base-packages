@@ -6,6 +6,8 @@ import {
     AlertTitle,
     Button,
     Container,
+    FormControl,
+    FormLabel,
     Heading,
     Input,
     InputGroup,
@@ -47,29 +49,35 @@ export function LoginMask({ doLogin }: LoginMaskProps) {
                         <AlertTitle>{errorMessage}</AlertTitle>
                     </Alert>
                 )}
-                <Input
-                    placeholder="User name"
-                    value={userName}
-                    onChange={(e) => setUserName(e.target.value)}
-                />
-                <InputGroup size="md">
+                <FormControl>
+                    <FormLabel>User name</FormLabel>
                     <Input
-                        pr="4.5rem"
-                        type={showPassword ? "text" : "password"}
-                        placeholder="Enter password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="User name"
+                        value={userName}
+                        onChange={(e) => setUserName(e.target.value)}
                     />
-                    <InputRightElement width="4.5rem">
-                        <Button
-                            h="1.75rem"
-                            size="sm"
-                            onClick={() => setShowPassword(!showPassword)}
-                        >
-                            {showPassword ? "Hide" : "Show"}
-                        </Button>
-                    </InputRightElement>
-                </InputGroup>
+                </FormControl>
+                <FormControl>
+                    <FormLabel>Password</FormLabel>
+                    <InputGroup>
+                        <Input
+                            pr="4.5rem"
+                            type={showPassword ? "text" : "password"}
+                            placeholder="Enter password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                        />
+                        <InputRightElement width="4.5rem">
+                            <Button
+                                h="1.75rem"
+                                size="sm"
+                                onClick={() => setShowPassword(!showPassword)}
+                            >
+                                {showPassword ? "Hide" : "Show"}
+                            </Button>
+                        </InputRightElement>
+                    </InputGroup>
+                </FormControl>
                 <Button type="submit">Login</Button>
             </VStack>
         </Container>

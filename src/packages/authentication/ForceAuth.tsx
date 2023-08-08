@@ -61,6 +61,8 @@ export interface ForceAuthProps {
  * surround the entire application UI with the `ForceAuth` component:
  *
  * ```jsx
+ * import { ForceAuth } from "@open-pioneer/authentication";
+ *
  * export function AppUI() {
  *     return (
  *         <ForceAuth>

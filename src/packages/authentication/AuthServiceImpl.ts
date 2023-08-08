@@ -6,11 +6,14 @@ import {
     Resource,
     createAbortError,
     createManualPromise,
-    destroyResource
+    destroyResource,
+    createLogger
 } from "@open-pioneer/core";
 import { ComponentType } from "react";
 import type { AuthEvents, AuthPlugin, AuthService, AuthState, SessionInfo } from "./api";
 import type { Service, ServiceOptions } from "@open-pioneer/runtime";
+
+const LOG = createLogger("authentication:AuthService");
 
 export class AuthServiceImpl extends EventEmitter<AuthEvents> implements AuthService, Service {
     #plugin: AuthPlugin;
@@ -25,6 +28,10 @@ export class AuthServiceImpl extends EventEmitter<AuthEvents> implements AuthSer
         // Init from plugin state and watch for changes.
         this.#currentState = this.#plugin.getAuthState();
         this.#eventHandle = this.#plugin.on?.("changed", () => this.#onPluginStateChanged());
+        LOG.debug(
+            `Constructed with initial auth state '${this.#currentState.kind}'`,
+            this.#currentState
+        );
     }
 
     destroy(): void {
@@ -59,6 +66,7 @@ export class AuthServiceImpl extends EventEmitter<AuthEvents> implements AuthSer
             this.#whenUserInfo.resolve(getSessionInfo(newState));
             this.#whenUserInfo = undefined;
         }
+        LOG.debug(`Auth state changed to '${this.#currentState.kind}'`, this.#currentState);
         this.emit("changed");
     }
 }
