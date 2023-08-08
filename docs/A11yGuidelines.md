@@ -29,3 +29,9 @@
 
 ## Reading order
 - All elements of a form / component in the html tree are ordered in a logical and understandable way.
+
+## Resources
+- https://developer.mozilla.org/en-US/docs/Web/Accessibility
+- https://www.a11yproject.com/checklist/
+- https://moritzgiessmann.de/accessibility-cheatsheet/
+- https://wcag.com/developers/
