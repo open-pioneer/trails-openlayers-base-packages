@@ -22,7 +22,7 @@ class TestAuthService extends EventEmitter<AuthEvents> implements AuthService {
     getAuthState(): AuthState {
         return this.#currentState;
     }
-    getUserInfo(): Promise<SessionInfo | undefined> {
+    getSessionInfo(): Promise<SessionInfo | undefined> {
         throw new Error("Method not implemented.");
     }
     getAuthFallback(): ComponentType {

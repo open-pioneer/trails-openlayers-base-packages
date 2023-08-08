@@ -24,19 +24,22 @@ export function LoginMask({ doLogin }: LoginMaskProps) {
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [errorMessage, setErrorMessage] = useState<string | undefined>();
-    const onLoginClicked = () => {
+    const onSubmit = (e: Pick<Event, "preventDefault">) => {
+        e.preventDefault();
         const errorMessage = doLogin(userName, password);
         setErrorMessage(errorMessage || "");
     };
 
     return (
         <Container p={5}>
-            <VStack spacing={4}>
+            <VStack as="form" onSubmit={onSubmit} spacing={4}>
                 <Heading as="h1" textAlign="center">
                     Login
                 </Heading>
                 <Text textAlign="center">
                     Please enter your user name and password to authenticate.
+                    <br />
+                    Note: credentials are {'"admin"'} / {'"admin"'}
                 </Text>
                 {errorMessage && (
                     <Alert status="error">
@@ -67,7 +70,7 @@ export function LoginMask({ doLogin }: LoginMaskProps) {
                         </Button>
                     </InputRightElement>
                 </InputGroup>
-                <Button onClick={onLoginClicked}>Login</Button>
+                <Button type="submit">Login</Button>
             </VStack>
         </Container>
     );

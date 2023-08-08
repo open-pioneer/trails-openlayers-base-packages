@@ -37,7 +37,7 @@ export class AuthServiceImpl extends EventEmitter<AuthEvents> implements AuthSer
         return this.#currentState;
     }
 
-    getUserInfo(): Promise<SessionInfo | undefined> {
+    getSessionInfo(): Promise<SessionInfo | undefined> {
         if (this.#currentState.kind !== "pending") {
             return Promise.resolve(getSessionInfo(this.#currentState));
         }

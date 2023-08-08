@@ -18,7 +18,10 @@ export interface SessionInfo {
     /** Technical user id of the authenticated user, for example an email address. */
     userId: string;
 
-    /** Display name of the authenticated user. Defaults to the {@link userId}. */
+    /**
+     * Display name of the authenticated user.
+     * Use the {@link userId} as a default value if this value is not available.
+     */
     userName?: string;
 
     /** Set to a date if the session expires at some point. Optional. */
@@ -85,7 +88,7 @@ export interface AuthService extends EventSource<AuthEvents> {
      *
      * This method must be called again after the {@link AuthService} has emitted the `changed` event.
      */
-    getUserInfo(): Promise<SessionInfo | undefined>;
+    getSessionInfo(): Promise<SessionInfo | undefined>;
 
     /**
      * Returns a UI component suitable for rendering when the user is not logged in.
