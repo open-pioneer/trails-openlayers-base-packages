@@ -2,12 +2,38 @@
 // SPDX-License-Identifier: Apache-2.0
 import { useService } from "open-pioneer:react-hooks";
 import { FC, ReactNode, useCallback, useMemo, useSyncExternalStore } from "react";
-import { AuthService } from "./api";
+import {
+    AuthService,
+    // eslint-disable-next-line unused-imports/no-unused-imports
+    AuthPlugin
+} from "./api";
 
 export interface ForceAuthProps {
     children?: ReactNode;
 }
 
+/**
+ * `ForceAuth` renders its children if the current user is authenticated.
+ * If the user is not authenticated, a `AuthFallback` will be presented to the user.
+ *
+ * The implementation of the `AuthFallback` depends on the authentication plugin used by the application
+ * (see {@link AuthPlugin}).
+ *
+ * For an application that requires the user to always be logged in, simply
+ * surround the entire application UI with the `ForceAuth` component:
+ *
+ * ```jsx
+ * export function AppUI() {
+ *     return (
+ *         <ForceAuth>
+ *              <TheRestOfYourApplication />
+ *         </ForceAuth>
+ *     );
+ * }
+ * ```
+ *
+ * TODO: fallbackProps
+ */
 export const ForceAuth: FC<ForceAuthProps> = (props) => {
     const authService = useService("authentication.AuthService");
     const state = useAuthState(authService);
@@ -17,12 +43,11 @@ export const ForceAuth: FC<ForceAuthProps> = (props) => {
         }
     }, [authService, state.kind]);
 
-    const waiting = "Waiting...";
     switch (state.kind) {
         case "pending":
-            return <>{waiting}</>;
+            return null;
         case "not-authenticated":
-            return AuthFallback ? <AuthFallback /> : <>{waiting}</>;
+            return AuthFallback ? <AuthFallback /> : null;
         case "authenticated":
             return <>{props.children}</>;
     }

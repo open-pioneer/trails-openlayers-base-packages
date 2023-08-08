@@ -8,7 +8,7 @@ import {
     createManualPromise,
     destroyResource
 } from "@open-pioneer/core";
-import { ComponentType, createElement } from "react";
+import { ComponentType } from "react";
 import type { AuthEvents, AuthPlugin, AuthService, AuthState, SessionInfo } from "./api";
 import type { Service, ServiceOptions } from "@open-pioneer/runtime";
 
@@ -39,7 +39,7 @@ export class AuthServiceImpl extends EventEmitter<AuthEvents> implements AuthSer
 
     getUserInfo(): Promise<SessionInfo | undefined> {
         if (this.#currentState.kind !== "pending") {
-            return Promise.resolve(getUserInfo(this.#currentState));
+            return Promise.resolve(getSessionInfo(this.#currentState));
         }
 
         if (!this.#whenUserInfo) {
@@ -49,24 +49,20 @@ export class AuthServiceImpl extends EventEmitter<AuthEvents> implements AuthSer
     }
 
     getAuthFallback(): ComponentType {
-        return Dummy;
+        return this.#plugin.getAuthFallback();
     }
 
     #onPluginStateChanged() {
         const newState = this.#plugin.getAuthState();
         this.#currentState = newState;
         if (newState.kind !== "pending" && this.#whenUserInfo) {
-            this.#whenUserInfo.resolve(getUserInfo(newState));
+            this.#whenUserInfo.resolve(getSessionInfo(newState));
             this.#whenUserInfo = undefined;
         }
         this.emit("changed");
     }
 }
 
-function Dummy() {
-    return createElement("span", undefined, "not logged in");
-}
-
-function getUserInfo(state: AuthState): SessionInfo | undefined {
+function getSessionInfo(state: AuthState): SessionInfo | undefined {
     return state.kind === "authenticated" ? state.sessionInfo : undefined;
 }
