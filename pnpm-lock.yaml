@@ -293,6 +293,21 @@ importers:
         version: link:../../..
     publishDirectory: dist
 
+  src/samples/auth-sample/auth-app:
+    dependencies:
+      '@open-pioneer/authentication':
+        specifier: workspace:^
+        version: link:../../../packages/authentication
+      '@open-pioneer/core':
+        specifier: ^1.0.0
+        version: 1.0.0
+      '@open-pioneer/runtime':
+        specifier: ^1.0.0
+        version: 1.0.0(@formatjs/intl@2.7.2)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/core@1.0.0)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
+      react:
+        specifier: ^18.2.0
+        version: 18.2.0
+
   src/samples/map-sample/map-sample-logging:
     devDependencies:
       '@open-pioneer/runtime':

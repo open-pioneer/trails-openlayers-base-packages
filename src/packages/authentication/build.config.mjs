@@ -7,7 +7,9 @@ export default defineBuildConfig({
     services: {
         AuthServiceImpl: {
             provides: "authentication.AuthService",
-            references: {}
+            references: {
+                plugin: "authentication.AuthPlugin"
+            }
         }
     },
     ui: {

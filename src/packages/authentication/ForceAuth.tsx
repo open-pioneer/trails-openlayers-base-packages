@@ -1,21 +1,18 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
 import { useService } from "open-pioneer:react-hooks";
-import { ReactNode, useCallback, useSyncExternalStore } from "react";
-import { useAsync } from "react-use";
+import { FC, ReactNode, useCallback, useMemo, useSyncExternalStore } from "react";
 import { AuthService } from "./api";
 
 export interface ForceAuthProps {
     children?: ReactNode;
 }
 
-export function ForceAuth(props: ForceAuthProps) {
+export const ForceAuth: FC<ForceAuthProps> = (props) => {
     const authService = useService("authentication.AuthService");
     const state = useAuthState(authService);
-
-    // TODO: Error?
-    const { value: AuthFallback } = useAsync(async () => {
-        if (state.kind === "not-authenticated") {
+    const AuthFallback = useMemo(() => {
+        if (state.kind !== "pending") {
             return authService.getAuthFallback();
         }
     }, [authService, state.kind]);
@@ -23,13 +20,13 @@ export function ForceAuth(props: ForceAuthProps) {
     const waiting = "Waiting...";
     switch (state.kind) {
         case "pending":
-            return waiting;
+            return <>{waiting}</>;
         case "not-authenticated":
-            return AuthFallback ? <AuthFallback /> : waiting;
+            return AuthFallback ? <AuthFallback /> : <>{waiting}</>;
         case "authenticated":
-            return props.children;
+            return <>{props.children}</>;
     }
-}
+};
 
 function useAuthState(authService: AuthService) {
     const subscribe = useCallback(

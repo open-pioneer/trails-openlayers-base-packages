@@ -3,33 +3,41 @@
 import {
     EventEmitter,
     ManualPromise,
+    Resource,
     createAbortError,
-    createManualPromise
+    createManualPromise,
+    destroyResource
 } from "@open-pioneer/core";
 import { ComponentType, createElement } from "react";
-import type { AuthEvents, AuthService, AuthState, UserInfo } from "./api";
-import type { Service } from "@open-pioneer/runtime";
+import type { AuthEvents, AuthPlugin, AuthService, AuthState, SessionInfo } from "./api";
+import type { Service, ServiceOptions } from "@open-pioneer/runtime";
 
 export class AuthServiceImpl extends EventEmitter<AuthEvents> implements AuthService, Service {
-    #currentState: AuthState = {
-        kind: "pending"
-    };
-    #whenUserInfo: ManualPromise<UserInfo | undefined> | undefined;
+    #plugin: AuthPlugin;
+    #currentState: AuthState;
+    #whenUserInfo: ManualPromise<SessionInfo | undefined> | undefined;
+    #eventHandle: Resource | undefined;
 
-    constructor() {
+    constructor(serviceOptions: ServiceOptions<{ plugin: AuthPlugin }>) {
         super();
+        this.#plugin = serviceOptions.references.plugin;
+
+        // Init from plugin state and watch for changes.
+        this.#currentState = this.#plugin.getAuthState();
+        this.#eventHandle = this.#plugin.on?.("changed", () => this.#onPluginStateChanged());
     }
 
     destroy(): void {
         this.#whenUserInfo?.reject(createAbortError());
         this.#whenUserInfo = undefined;
+        this.#eventHandle = destroyResource(this.#eventHandle);
     }
 
     getAuthState(): AuthState {
         return this.#currentState;
     }
 
-    getUserInfo(): Promise<UserInfo | undefined> {
+    getUserInfo(): Promise<SessionInfo | undefined> {
         if (this.#currentState.kind !== "pending") {
             return Promise.resolve(getUserInfo(this.#currentState));
         }
@@ -40,24 +48,25 @@ export class AuthServiceImpl extends EventEmitter<AuthEvents> implements AuthSer
         return this.#whenUserInfo?.promise;
     }
 
-    async getAuthFallback(): Promise<ComponentType> {
+    getAuthFallback(): ComponentType {
         return Dummy;
     }
 
-    // TODO: Watch plugin
-    #onPluginStateChanged(newState: AuthState) {
+    #onPluginStateChanged() {
+        const newState = this.#plugin.getAuthState();
         this.#currentState = newState;
         if (newState.kind !== "pending" && this.#whenUserInfo) {
             this.#whenUserInfo.resolve(getUserInfo(newState));
             this.#whenUserInfo = undefined;
         }
+        this.emit("changed");
     }
 }
 
 function Dummy() {
-    return createElement("span", "not logged in");
+    return createElement("span", undefined, "not logged in");
 }
 
-function getUserInfo(state: AuthState): UserInfo | undefined {
-    return state.kind === "authenticated" ? state.userInfo : undefined;
+function getUserInfo(state: AuthState): SessionInfo | undefined {
+    return state.kind === "authenticated" ? state.sessionInfo : undefined;
 }
