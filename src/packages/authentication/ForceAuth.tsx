@@ -7,8 +7,14 @@ import {
     // eslint-disable-next-line unused-imports/no-unused-imports
     AuthPlugin
 } from "./api";
-
+/**
+ * Properties for the ForceAuth component.
+ */
 export interface ForceAuthProps {
+    /**
+     *  these properties will be provided to the AuthFallback component implemented by the authentication plugin.
+     */
+    fallbackProps?: Record<string, unknown>;
     children?: ReactNode;
 }
 
@@ -32,7 +38,6 @@ export interface ForceAuthProps {
  * }
  * ```
  *
- * TODO: fallbackProps
  */
 export const ForceAuth: FC<ForceAuthProps> = (props) => {
     const authService = useService("authentication.AuthService");
@@ -47,7 +52,7 @@ export const ForceAuth: FC<ForceAuthProps> = (props) => {
         case "pending":
             return null;
         case "not-authenticated":
-            return AuthFallback ? <AuthFallback /> : null;
+            return AuthFallback ? <AuthFallback {...props.fallbackProps} /> : null;
         case "authenticated":
             return <>{props.children}</>;
     }

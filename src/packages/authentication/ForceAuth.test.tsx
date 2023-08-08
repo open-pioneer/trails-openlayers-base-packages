@@ -26,8 +26,8 @@ class TestAuthService extends EventEmitter<AuthEvents> implements AuthService {
         throw new Error("Method not implemented.");
     }
     getAuthFallback(): ComponentType {
-        const fallBack = () => {
-            return <div data-testid="LoginFallBack">LoginFallBack</div>;
+        const fallBack = (props: Record<string, unknown>) => {
+            return <div data-testid="LoginFallBack">{JSON.stringify(props.name)}</div>;
         };
         return fallBack;
     }
@@ -85,7 +85,29 @@ it("renders not children if the state is pending", async () => {
     expect(result.outerHTML).toMatchInlineSnapshot('"<div data-testid=\\"1234\\"></div>"');
 });
 
-it("renders AuthFallBack if the user is not authenticated", async () => {
+it("renders the AuthFallback with custom props", async () => {
+    // Setup test services.
+    const mocks = {
+        services: {
+            "authentication.AuthService": new TestAuthService({
+                kind: "not-authenticated"
+            })
+        }
+    };
+
+    render(
+        <PackageContextProvider {...mocks}>
+            <ForceAuth fallbackProps={{ name: "TestProp" }}>
+                <div data-testid="1234">testDiv</div>
+            </ForceAuth>
+        </PackageContextProvider>
+    );
+
+    const result = await screen.findByTestId("LoginFallBack");
+    expect(result.textContent).toMatchInlineSnapshot('"\\"TestProp\\""');
+});
+
+it("renders AuthFallback if the user is not authenticated", async () => {
     // Setup test services.
     const mocks = {
         services: {
