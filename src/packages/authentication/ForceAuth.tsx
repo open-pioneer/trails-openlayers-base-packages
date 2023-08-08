@@ -38,7 +38,7 @@ export const ForceAuth: FC<ForceAuthProps> = (props) => {
     const authService = useService("authentication.AuthService");
     const state = useAuthState(authService);
     const AuthFallback = useMemo(() => {
-        if (state.kind !== "pending") {
+        if (state.kind === "not-authenticated") {
             return authService.getAuthFallback();
         }
     }, [authService, state.kind]);
