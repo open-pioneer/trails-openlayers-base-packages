@@ -68,7 +68,9 @@ export type AuthState = AuthStatePending | AuthStateNotAuthenticated | AuthState
  *
  * The current state (such as session info) can be retrieved and watched for changes.
  *
- * TODO: More docs?
+ * TODO:
+ *  - Modeling of fallback component / imperative function for login?
+ *  - Logout()
  */
 export interface AuthService extends EventSource<AuthEvents> {
     /**
@@ -96,8 +98,6 @@ export interface AuthService extends EventSource<AuthEvents> {
      * This can be, for example, a login dialog.
      *
      * The actual implementation of this component depends on the application's authentication plugin.
-     *
-     * TODO: Model function instead of only react component?
      */
     getAuthFallback(): ComponentType;
 }

@@ -38,7 +38,6 @@ class TestAuthService extends EventEmitter<AuthEvents> implements AuthService {
 }
 
 it("renders children if the user is authenticated", async () => {
-    // Setup test services.
     const mocks = {
         services: {
             "authentication.AuthService": new TestAuthService({
@@ -62,7 +61,6 @@ it("renders children if the user is authenticated", async () => {
 });
 
 it("renders not children if the state is pending", async () => {
-    // Setup test services.
     const mocks = {
         services: {
             "authentication.AuthService": new TestAuthService({
@@ -86,7 +84,6 @@ it("renders not children if the state is pending", async () => {
 });
 
 it("renders the AuthFallback with custom props", async () => {
-    // Setup test services.
     const mocks = {
         services: {
             "authentication.AuthService": new TestAuthService({
@@ -107,8 +104,46 @@ it("renders the AuthFallback with custom props", async () => {
     expect(result.textContent).toMatchInlineSnapshot('"\\"TestProp\\""');
 });
 
+it("renders the AuthFallback with a custom render function", async () => {
+    const mocks = {
+        services: {
+            "authentication.AuthService": new TestAuthService({
+                kind: "not-authenticated"
+            })
+        }
+    };
+
+    render(
+        <PackageContextProvider {...mocks}>
+            <ForceAuth
+                renderFallback={(AuthFallback) => {
+                    return (
+                        <div data-testid="LoginFallBack-wrapper">
+                            <AuthFallback name="TestProp" />
+                        </div>
+                    );
+                }}
+            >
+                <div data-testid="1234">testDiv</div>
+            </ForceAuth>
+        </PackageContextProvider>
+    );
+
+    const result = await screen.findByTestId("LoginFallBack-wrapper");
+    expect(result).toMatchInlineSnapshot(`
+      <div
+        data-testid="LoginFallBack-wrapper"
+      >
+        <div
+          data-testid="LoginFallBack"
+        >
+          "TestProp"
+        </div>
+      </div>
+    `);
+});
+
 it("renders AuthFallback if the user is not authenticated", async () => {
-    // Setup test services.
     const mocks = {
         services: {
             "authentication.AuthService": new TestAuthService({
@@ -129,7 +164,6 @@ it("renders AuthFallback if the user is not authenticated", async () => {
 });
 
 it("rerenders when switching from pending to authenticated", async () => {
-    // Setup test services.
     const testAuthService = new TestAuthService({
         kind: "pending"
     });
