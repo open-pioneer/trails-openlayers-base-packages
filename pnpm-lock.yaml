@@ -321,6 +321,22 @@ importers:
         version: 18.2.0
 
   src/experimental-packages/scale-viewer:
+    dependencies:
+      '@open-pioneer/chakra-integration':
+        specifier: ^1.0.0
+        version: 1.0.0(@chakra-ui/react@2.6.1)(@emotion/cache@11.11.0)(@emotion/react@11.11.0)(@emotion/styled@11.11.0)(framer-motion@10.12.16)(react-dom@18.2.0)(react@18.2.0)
+      '@open-pioneer/experimental-ol-map':
+        specifier: workspace:^
+        version: link:../ol-map
+      '@open-pioneer/runtime':
+        specifier: ^1.0.0
+        version: 1.0.0(@formatjs/intl@2.7.2)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/core@1.0.0)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
+      ol:
+        specifier: ^7.3.0
+        version: 7.3.0
+      react:
+        specifier: ^18.2.0
+        version: 18.2.0
     devDependencies:
       '@open-pioneer/test-utils':
         specifier: ^1.0.0

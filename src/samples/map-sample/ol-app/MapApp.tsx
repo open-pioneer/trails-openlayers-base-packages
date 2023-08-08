@@ -60,7 +60,7 @@ export function MapApp() {
                 />
             </Flex>
             <Flex gap={3} alignItems="center" justifyContent="center">
-                <ScaleViewerComponent></ScaleViewerComponent>
+                <ScaleViewerComponent mapId={MAP_ID}></ScaleViewerComponent>
                 <ScaleComponent mapId={MAP_ID}></ScaleComponent>
             </Flex>
         </Flex>
