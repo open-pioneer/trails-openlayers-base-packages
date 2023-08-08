@@ -27,38 +27,7 @@
    have been documented in internal dev notes or comments.
 
 ## Accessibility guidelines
-
--   all elements of a form / component in the html tree must be ordered in a logical and understandable way
--   necessary instructions must be shown before they are needed
--   the language of the application can be programmatically determined
-
--   all images must have alt-texts.
--   "icon-only" buttons must have aria-labels
--   sections must be separated by headings, these headings must be marked up
--   the text-based sections must be screen-readable
-
--   the keyboard focus must be visible
--   the keyboard focus order must be logical within a form / component
-
--   the color contrast must be at least 4.5:1 for normal text (AA level)
-    the color contrast should be at least 7:1 for normal text (AAA level)
--   the color contrast must be at least 3:1 for larger text (>= 24px) (AA level)
-    the color contrast should be at least 4.5:1 for larger text (>= 24px) (AAA level)
-
--   all form controls must have labels, these labels must be marked up
--   all form controls must be accessible by keyboard
--   it must be clearly indicated if form fields are required/mandatory; this may not be achieved by color alone
--   form errors must be clearly highlighted and guidance to fix the error shall be given; the errors shall be easily findable
--   the form / component GUI must be usable with a 200% zoom without content overlaps
-
-### Resources
-
--   https://developer.mozilla.org/en-US/docs/Web/Accessibility
--   https://www.a11yproject.com/checklist/
--   https://moritzgiessmann.de/accessibility-cheatsheet/
--   https://wcag.com/developers/
--   Easy check?
--   IT.NRW document?
+See [separate document](A11yGuidelines.md).
 
 ## Documentation
 
