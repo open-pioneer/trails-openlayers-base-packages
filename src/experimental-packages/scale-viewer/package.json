@@ -1,0 +1,14 @@
+{
+    "name": "@open-pioneer/experimental-scale-viewer",
+    "version": "0.0.1",
+    "license": "Apache-2.0",
+    "main": "index.ts",
+    "devDependencies": {
+        "@open-pioneer/test-utils": "^1.0.0",
+        "openlayers-base-packages": "workspace:*"
+    },
+    "publishConfig": {
+        "directory": "dist",
+        "linkDirectory": false
+    }
+}

@@ -320,6 +320,16 @@ importers:
         specifier: ^18.2.0
         version: 18.2.0
 
+  src/experimental-packages/scale-viewer:
+    devDependencies:
+      '@open-pioneer/test-utils':
+        specifier: ^1.0.0
+        version: 1.0.0(@formatjs/intl@2.7.2)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.0)(@testing-library/react@14.0.0)(react-dom@18.2.0)(react@18.2.0)
+      openlayers-base-packages:
+        specifier: workspace:*
+        version: link:../../..
+    publishDirectory: dist
+
   src/samples/map-sample/map-sample-logging:
     devDependencies:
       '@open-pioneer/runtime':
@@ -388,6 +398,9 @@ importers:
       '@open-pioneer/experimental-ol-map':
         specifier: workspace:^
         version: link:../../../experimental-packages/ol-map
+      '@open-pioneer/experimental-scale-viewer':
+        specifier: workspace:^
+        version: link:../../../experimental-packages/scale-viewer
       '@open-pioneer/runtime':
         specifier: ^1.0.0
         version: 1.0.0(@formatjs/intl@2.7.2)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/core@1.0.0)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
