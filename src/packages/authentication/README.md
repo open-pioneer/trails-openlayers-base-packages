@@ -2,6 +2,15 @@
 
 The authentication package implements a central service to handle the current user's session.
 
+## Authentication plugins
+
+The authentication package cannot be used on its own: it requires a service providing `authentication.AuthPlugin` to be present in the application.
+The plugin must implement the actual authentication flow.
+
+See [below](#implementing-an-authentication-plugin) for how to implement an authentication plugin.
+
+TODO(future release): Packages implementing authentication plugins, e.g. `authentication-keycloak`?
+
 ## Use cases
 
 ### Retrieving the current authentication state
