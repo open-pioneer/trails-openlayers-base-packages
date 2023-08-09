@@ -22,13 +22,13 @@ export interface SessionInfo {
      * Display name of the authenticated user.
      * Use the {@link userId} as a default value if this value is not available.
      */
-    userName?: string;
+    userName?: string | undefined;
 
     /** Set to a date if the session expires at some point. Optional. */
-    expiresAt?: Date;
+    expiresAt?: Date | undefined;
 
     /** Arbitrary attributes from the authentication plugin. */
-    attributes?: Record<string, unknown>;
+    attributes?: Record<string, unknown> | undefined;
 }
 
 /**

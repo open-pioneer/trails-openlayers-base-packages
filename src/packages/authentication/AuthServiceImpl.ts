@@ -52,7 +52,7 @@ export class AuthServiceImpl extends EventEmitter<AuthEvents> implements AuthSer
         if (!this.#whenUserInfo) {
             this.#whenUserInfo = createManualPromise();
         }
-        return this.#whenUserInfo?.promise;
+        return this.#whenUserInfo.promise;
     }
 
     getAuthFallback(): ComponentType {
