@@ -59,6 +59,11 @@ export class AuthServiceImpl extends EventEmitter<AuthEvents> implements AuthSer
         return this.#plugin.getAuthFallback();
     }
 
+    async logout() {
+        LOG.debug("Triggering logout");
+        return await this.#plugin.logout();
+    }
+
     #onPluginStateChanged() {
         const newState = this.#plugin.getAuthState();
         this.#currentState = newState;

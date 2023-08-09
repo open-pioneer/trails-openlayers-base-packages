@@ -31,6 +31,9 @@ class TestAuthService extends EventEmitter<AuthEvents> implements AuthService {
         };
         return fallBack;
     }
+    async logout() {
+        throw new Error("Method not implemented.");
+    }
     setAuthState(newState: AuthState) {
         this.#currentState = newState;
         this.emit("changed");

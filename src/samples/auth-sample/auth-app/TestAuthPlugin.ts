@@ -53,4 +53,15 @@ export class TestAuthPlugin extends EventEmitter<{ changed: void }> implements S
             });
         return AuthFallback;
     }
+
+    logout() {
+        if (this.#state.kind === "authenticated" || this.#state.kind === "pending") {
+            this.#state = {
+                kind: "not-authenticated"
+            };
+            clearTimeout(this.#timer);
+            this.#timer = undefined;
+            this.emit("changed");
+        }
+    }
 }

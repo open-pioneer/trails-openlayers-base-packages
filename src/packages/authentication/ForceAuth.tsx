@@ -1,12 +1,13 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
 import { useService } from "open-pioneer:react-hooks";
-import { ComponentType, FC, ReactNode, useCallback, useMemo, useSyncExternalStore } from "react";
+import { ComponentType, FC, ReactNode, useMemo } from "react";
 import {
-    AuthService,
+    // For typedoc link
     // eslint-disable-next-line unused-imports/no-unused-imports
     AuthPlugin
 } from "./api";
+import { useAuthState } from "./useAuthState";
 
 /**
  * Properties for the ForceAuth component.
@@ -97,18 +98,3 @@ export const ForceAuth: FC<ForceAuthProps> = (props) => {
             return <>{props.children}</>;
     }
 };
-
-function useAuthState(authService: AuthService) {
-    const subscribe = useCallback(
-        (callback: () => void) => {
-            const handle = authService.on("changed", callback);
-            return () => handle.destroy();
-        },
-        [authService]
-    );
-    const getSnapshot = useCallback(() => {
-        return authService.getAuthState();
-    }, [authService]);
-    const state = useSyncExternalStore(subscribe, getSnapshot);
-    return state;
-}

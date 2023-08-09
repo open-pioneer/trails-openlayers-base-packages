@@ -7,5 +7,8 @@ export default defineBuildConfig({
         TestAuthPlugin: {
             provides: "authentication.AuthPlugin"
         }
+    },
+    ui: {
+        references: ["authentication.AuthService"]
     }
 });

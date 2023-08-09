@@ -100,6 +100,13 @@ export interface AuthService extends EventSource<AuthEvents> {
      * The actual implementation of this component depends on the application's authentication plugin.
      */
     getAuthFallback(): ComponentType;
+
+    /**
+     * Terminates the current session (if any).
+     *
+     * TODO: Promise / void and log?
+     */
+    logout(): Promise<void>;
 }
 
 /** Events that may be emitted by an authentication plugin. */
@@ -123,8 +130,26 @@ export type AuthPluginEventBase = EventSource<AuthPluginEvents>;
  * To implement the event, you can use `extend EventEmitter<AuthPluginEvents>`.
  */
 export interface AuthPlugin extends Partial<AuthPluginEventBase> {
+    /**
+     * Returns the current authentication state.
+     *
+     * Objects returned by this method should not be mutated.
+     * Emit the `changed` event instead to communicate that there is a new state.
+     */
     getAuthState(): AuthState;
+
+    /**
+     * Returns a component that may be presented to the user when they are not authenticated.
+     */
     getAuthFallback(): ComponentType;
+
+    /**
+     * Explicitly triggers a logout.
+     *
+     * Should result in a new state (including a `changed` event) if the user
+     * was authenticated.
+     */
+    logout(): Promise<void> | void;
 }
 
 import "@open-pioneer/runtime";
