@@ -63,7 +63,7 @@ it("renders children if the user is authenticated", async () => {
     await screen.findByTestId("1234");
 });
 
-it("renders not children if the state is pending", async () => {
+it("renders no children if the state is pending", async () => {
     const mocks = {
         services: {
             "authentication.AuthService": new TestAuthService({
@@ -84,6 +84,26 @@ it("renders not children if the state is pending", async () => {
 
     const result = await screen.findByTestId("1234");
     expect(result.outerHTML).toMatchInlineSnapshot('"<div data-testid=\\"1234\\"></div>"');
+});
+
+it("renders AuthFallback if the user is not authenticated", async () => {
+    const mocks = {
+        services: {
+            "authentication.AuthService": new TestAuthService({
+                kind: "not-authenticated"
+            })
+        }
+    };
+
+    render(
+        <PackageContextProvider {...mocks}>
+            <ForceAuth>
+                <div data-testid="1234">testDiv</div>
+            </ForceAuth>
+        </PackageContextProvider>
+    );
+
+    await screen.findByTestId("LoginFallBack");
 });
 
 it("renders the AuthFallback with custom props", async () => {
@@ -144,26 +164,6 @@ it("renders the AuthFallback with a custom render function", async () => {
         </div>
       </div>
     `);
-});
-
-it("renders AuthFallback if the user is not authenticated", async () => {
-    const mocks = {
-        services: {
-            "authentication.AuthService": new TestAuthService({
-                kind: "not-authenticated"
-            })
-        }
-    };
-
-    render(
-        <PackageContextProvider {...mocks}>
-            <ForceAuth>
-                <div data-testid="1234">testDiv</div>
-            </ForceAuth>
-        </PackageContextProvider>
-    );
-
-    await screen.findByTestId("LoginFallBack");
 });
 
 it("rerenders when switching from pending to authenticated", async () => {
