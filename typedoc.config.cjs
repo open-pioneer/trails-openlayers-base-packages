@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 const documentedPackages = [
-    "experimental-packages/sidebar",
+    "experimental-packages/layout-sidebar",
     "experimental-packages/ol-layer-control",
     "experimental-packages/ol-map"
 ];
