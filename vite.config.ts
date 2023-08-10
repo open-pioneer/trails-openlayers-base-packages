@@ -19,17 +19,14 @@ const targets = ["chrome92", "edge92", "firefox91", "safari14"];
 // See also: https://github.com/btd/rollup-plugin-visualizer
 const visualize = false;
 
-const sampleSites = [
-    "samples/map-sample",
-    "samples/auth-sample"
-];
+const sampleSites = ["samples/map-sample", "samples/auth-sample", "samples/notify-sample"];
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
     const devMode = mode === "development";
 
     // Allowed values are "DEBUG", "INFO", "WARN", "ERROR"
-    const logLevel = devMode ? "INFO": "WARN";
+    const logLevel = devMode ? "INFO" : "WARN";
 
     return {
         root: resolve(__dirname, "src"),

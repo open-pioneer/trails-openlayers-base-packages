@@ -3,6 +3,7 @@
 import {
     Box,
     Button,
+    ButtonGroup,
     Container,
     FormControl,
     FormLabel,
@@ -38,6 +39,10 @@ export function AppUI() {
 
         notifications.notify(options);
     };
+    const clearNotifications = () => {
+        notifications.clearAll();
+    };
+
     return (
         <>
             <Notifier position="top-right" />
@@ -79,9 +84,14 @@ export function AppUI() {
                                     onChange={(e) => setMessage(e.target.value)}
                                 />
                             </FormControl>
-                            <Button colorScheme="blue" onClick={emitNotification}>
-                                Emit Notification
-                            </Button>
+                            <ButtonGroup justifyContent="center">
+                                <Button flex="1" colorScheme="blue" onClick={emitNotification}>
+                                    Emit Notification
+                                </Button>
+                                <Button flex="1" onClick={clearNotifications}>
+                                    Clear notifications
+                                </Button>
+                            </ButtonGroup>
                         </Stack>
                     </Box>
                 </Stack>

@@ -35,6 +35,9 @@ export interface NotificationService {
      * @param options Options for the new notification.
      */
     notify(options: NotificationOptions): void;
+
+    /** Clears all active notifications. */
+    clearAll(): void;
 }
 
 import "@open-pioneer/runtime";
