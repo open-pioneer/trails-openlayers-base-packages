@@ -1,4 +1,4 @@
-# @open-pioneer/experimental-scale-viewer
+# @open-pioneer/scale-viewer
 
 This package provides a scale viewer component, which can be integrated besides a map to show the actual map scale.
 

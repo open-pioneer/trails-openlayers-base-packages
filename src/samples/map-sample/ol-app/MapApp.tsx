@@ -4,7 +4,7 @@ import { Box, Button, Flex } from "@open-pioneer/chakra-integration";
 import { Sidebar, SidebarItem } from "@open-pioneer/experimental-layout-sidebar";
 import { LayerControlComponent } from "@open-pioneer/experimental-ol-layer-control";
 import { MapContainer, MapPadding } from "@open-pioneer/experimental-ol-map";
-import { ScaleViewerComponent } from "@open-pioneer/experimental-scale-viewer";
+import { ScaleViewerComponent } from "@open-pioneer/scale-viewer";
 import { ScaleComponent } from "map-sample-scale-component";
 import { ZoomComponent } from "map-sample-zoom-component";
 import { useService } from "open-pioneer:react-hooks";

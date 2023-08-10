@@ -29,7 +29,7 @@ export function ScaleViewerComponent(props: OlComponentProps & HTMLAttributes<HT
 
     return (
         <div className="scale-viewer-wrapper" {...rest}>
-            {scale && <Text>1:{scale}</Text>}
+            {scale && <Text>1:{Intl.NumberFormat().format(scale)}</Text>}
         </div>
     );
 }
