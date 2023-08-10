@@ -24,8 +24,8 @@ export function ScaleViewerComponent(props: OlComponentProps & HTMLAttributes<HT
     const { mapId, ...rest } = props;
     const { map } = useMap(mapId);
 
-    const resolution = useResolution(map);
-    const scale = useScale(map, resolution);
+    const { resolution } = useResolution(map);
+    const { scale } = useScale(map, resolution);
 
     return (
         <div className="scale-viewer-wrapper" {...rest}>
@@ -37,7 +37,10 @@ export function ScaleViewerComponent(props: OlComponentProps & HTMLAttributes<HT
 /**
  * Detect change of map scale and return scale | undefined
  */
-function useScale(map: Map | undefined, resolution: number | undefined): number | undefined {
+export function useScale(
+    map: Map | undefined,
+    resolution: number | undefined
+): { scale: number | undefined } {
     const [scale, setScale] = useState<number | undefined>();
 
     useEffect(() => {
@@ -67,13 +70,13 @@ function useScale(map: Map | undefined, resolution: number | undefined): number 
         setScale(Math.round(pointResolution * INCHES_PER_METRE * DEFAULT_DPI));
     }, [map, resolution]);
 
-    return scale;
+    return { scale };
 }
 
 /**
  * Detect change of map resolution and return resolution | undefined
  */
-function useResolution(map: Map | undefined): number | undefined {
+export function useResolution(map: Map | undefined): { resolution: number | undefined } {
     const [resolution, setResolution] = useState<number | undefined>();
 
     useEffect(() => {
@@ -91,5 +94,5 @@ function useResolution(map: Map | undefined): number | undefined {
         () => unByKey(eventsKey);
     }, [map, resolution]);
 
-    return resolution;
+    return { resolution };
 }
