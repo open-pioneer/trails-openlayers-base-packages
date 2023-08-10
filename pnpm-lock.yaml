@@ -276,6 +276,43 @@ importers:
         version: link:../../..
     publishDirectory: dist
 
+  src/packages/notifier:
+    dependencies:
+      '@open-pioneer/chakra-integration':
+        specifier: ^1.0.0
+        version: 1.0.0(@chakra-ui/react@2.6.1)(@emotion/cache@11.11.0)(@emotion/react@11.11.0)(@emotion/styled@11.11.0)(framer-motion@10.12.16)(react-dom@18.2.0)(react@18.2.0)
+      '@open-pioneer/core':
+        specifier: ^1.0.0
+        version: 1.0.0
+      '@open-pioneer/react-utils':
+        specifier: workspace:^
+        version: link:../react-utils
+      '@open-pioneer/runtime':
+        specifier: ^1.0.0
+        version: 1.0.0(@formatjs/intl@2.7.2)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/core@1.0.0)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
+      react:
+        specifier: ^18.2.0
+        version: 18.2.0
+    devDependencies:
+      '@open-pioneer/test-utils':
+        specifier: ^1.0.0
+        version: 1.0.0(@formatjs/intl@2.7.2)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.0)(@testing-library/react@14.0.0)(react-dom@18.2.0)(react@18.2.0)
+      openlayers-base-packages:
+        specifier: workspace:*
+        version: link:../../..
+    publishDirectory: dist
+
+  src/packages/react-utils:
+    dependencies:
+      react:
+        specifier: ^18.2.0
+        version: 18.2.0
+    devDependencies:
+      openlayers-base-packages:
+        specifier: workspace:*
+        version: link:../../..
+    publishDirectory: dist
+
   src/packages/authentication:
     dependencies:
       '@open-pioneer/core':
@@ -415,6 +452,21 @@ importers:
       react-use:
         specifier: ^17.4.0
         version: 17.4.0(react-dom@18.2.0)(react@18.2.0)
+
+  src/samples/notify-sample/notify-app:
+    dependencies:
+      '@open-pioneer/chakra-integration':
+        specifier: ^1.0.0
+        version: 1.0.0(@chakra-ui/react@2.6.1)(@emotion/cache@11.11.0)(@emotion/react@11.11.0)(@emotion/styled@11.11.0)(framer-motion@10.12.16)(react-dom@18.2.0)(react@18.2.0)
+      '@open-pioneer/notifier':
+        specifier: workspace:^
+        version: link:../../../packages/notifier
+      '@open-pioneer/runtime':
+        specifier: ^1.0.0
+        version: 1.0.0(@formatjs/intl@2.7.2)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/core@1.0.0)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
+      react:
+        specifier: ^18.2.0
+        version: 18.2.0
 
   support/disabled-package: {}
 

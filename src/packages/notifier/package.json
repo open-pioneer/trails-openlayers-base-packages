@@ -1,0 +1,26 @@
+{
+    "name": "@open-pioneer/notifier",
+    "description": "Provides support for application-wide notifications",
+    "version": "0.0.1",
+    "license": "Apache-2.0",
+    "main": "index.ts",
+    "scripts": {
+        "build": "build-pioneer-package"
+    },
+    "dependencies": {},
+    "peerDependencies": {
+        "@open-pioneer/core": "^1.0.0",
+        "@open-pioneer/chakra-integration": "^1.0.0",
+        "@open-pioneer/runtime": "^1.0.0",
+        "@open-pioneer/react-utils": "workspace:^",
+        "react": "^18.2.0"
+    },
+    "devDependencies": {
+        "@open-pioneer/test-utils": "^1.0.0",
+        "openlayers-base-packages": "workspace:*"
+    },
+    "publishConfig": {
+        "directory": "dist",
+        "linkDirectory": false
+    }
+}

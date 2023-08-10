@@ -5,7 +5,9 @@ const documentedPackages = [
     "experimental-packages/layout-sidebar",
     "experimental-packages/ol-layer-control",
     "experimental-packages/ol-map",
-    "packages/authentication",
+    "packages/notifier",
+    "packages/react-utils",
+    "packages/authentication"
 ];
 
 // See https://typedoc.org/options/
