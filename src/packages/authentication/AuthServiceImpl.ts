@@ -9,8 +9,14 @@ import {
     destroyResource,
     createLogger
 } from "@open-pioneer/core";
-import { ComponentType } from "react";
-import type { AuthEvents, AuthPlugin, AuthService, AuthState, SessionInfo } from "./api";
+import type {
+    AuthEvents,
+    AuthPlugin,
+    AuthService,
+    AuthState,
+    LoginBehavior,
+    SessionInfo
+} from "./api";
 import type { Service, ServiceOptions } from "@open-pioneer/runtime";
 
 const LOG = createLogger("authentication:AuthService");
@@ -55,13 +61,13 @@ export class AuthServiceImpl extends EventEmitter<AuthEvents> implements AuthSer
         return this.#whenUserInfo.promise;
     }
 
-    getAuthFallback(): ComponentType {
-        return this.#plugin.getAuthFallback();
+    getLoginBehavior(): LoginBehavior {
+        return this.#plugin.getLoginBehavior();
     }
 
-    async logout() {
+    logout(): void {
         LOG.debug("Triggering logout");
-        return await this.#plugin.logout();
+        this.#plugin.logout();
     }
 
     #onPluginStateChanged() {

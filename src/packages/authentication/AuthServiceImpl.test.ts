@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0
 import { EventEmitter } from "@open-pioneer/core";
 import { it } from "vitest";
-import { AuthPlugin, AuthPluginEvents, AuthState } from "./api";
-import { ComponentType, createElement } from "react";
+import { AuthPlugin, AuthPluginEvents, AuthState, LoginFallback } from "./api";
+import { createElement } from "react";
 import { createService } from "@open-pioneer/test-utils/services";
 import { AuthServiceImpl } from "./AuthServiceImpl";
 
@@ -86,8 +86,9 @@ it("returns the authentication plugins fallback", async () => {
         }
     });
 
-    const fallback = authService.getAuthFallback();
-    expect(fallback).toBe(DummyFallback);
+    const behavior = authService.getLoginBehavior();
+    expect(behavior.kind).toBe("fallback");
+    expect((behavior as LoginFallback).Fallback).toBe(DummyFallback);
 });
 
 it("calls the plugin's logout method", async () => {
@@ -114,8 +115,11 @@ class TestPlugin extends EventEmitter<AuthPluginEvents> implements AuthPlugin {
         return this.#state;
     }
 
-    getAuthFallback(): ComponentType {
-        return DummyFallback;
+    getLoginBehavior(): LoginFallback {
+        return {
+            kind: "fallback",
+            Fallback: DummyFallback
+        };
     }
 
     logout(): void {

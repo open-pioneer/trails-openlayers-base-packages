@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
 import { useService } from "open-pioneer:react-hooks";
-import { ComponentType, FC, ReactNode, useMemo } from "react";
+import { ComponentType, FC, ReactNode, useEffect, useMemo } from "react";
 import {
     // For typedoc link
     // eslint-disable-next-line unused-imports/no-unused-imports
@@ -76,19 +76,30 @@ export interface ForceAuthProps {
 export const ForceAuth: FC<ForceAuthProps> = (props) => {
     const authService = useService("authentication.AuthService");
     const state = useAuthState(authService);
-    const AuthFallback = useMemo(() => {
+
+    // Extract login behavior from service (only when needed).
+    const behavior = useMemo(() => {
         if (state.kind === "not-authenticated") {
-            return authService.getAuthFallback();
+            return authService.getLoginBehavior();
         }
     }, [authService, state.kind]);
+
+    // Call the login effect (if any) if not authenticated.
+    useEffect(() => {
+        if (state.kind === "not-authenticated" && behavior?.kind === "effect") {
+            behavior.login();
+        }
+    }, [behavior, state.kind]);
 
     switch (state.kind) {
         case "pending":
             return null;
         case "not-authenticated": {
-            if (!AuthFallback) {
+            if (!behavior || behavior.kind !== "fallback") {
                 return null;
             }
+
+            const AuthFallback = behavior.Fallback;
             if (props.renderFallback) {
                 return <>{props.renderFallback(AuthFallback)}</>;
             }

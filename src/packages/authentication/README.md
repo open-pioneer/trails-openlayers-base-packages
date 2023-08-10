@@ -41,7 +41,9 @@ handle.destroy();
 
 Some applications require the user to be always logged in.
 If that is not the case, the user is to be presented with some _Fallback_.
-Depending on the authentication plugin used by the application, a fallback may be implemented as a login prompt, or as a redirect to another website.
+Depending on the authentication plugin used by the application, a fallback may be implemented as a login prompt, or as a simple message.
+
+Some plugins to not provide a visual fallback but an "effect" instead: an action to perform, such as a redirect to the authentication provider.
 
 Authentication can be enforced by wrapping the application with the `<ForceAuth />` component:
 
@@ -66,8 +68,28 @@ Rendering of the login fallback can be customized by passing custom properties (
 
 ### Triggering logout
 
-TODO
+Call the `AuthService`'s `logout()` method to explicitly end the current session:
+
+```js
+const authService = ...; // injected
+authService.logout();
+```
 
 ### Implementing an authentication plugin
 
-TODO
+An authentication plugin (providing `authentication.AuthPlugin`) must be present in the application to support authentication
+The plugin implements the actual authentication flow.
+
+The plugin must implement the `AuthPlugin` TypeScript interface exported by this package:
+
+-   Provide the current authentication state by implementing `getAuthState()`.
+    When authenticated, a user's authentication state contains session information, such as the user's `id`, an optional display name and arbitrary additional `attributes` that can be defined by the plugin.
+
+    If the state changes internally (e.g. successful login, explicit logout, logout due to timeout, etc.),
+    the `changed` event must be emitted to notify the `AuthService`.
+
+-   Return the login behavior value (a react component or a function to call) by implementing `getLoginBehavior()`.
+    This could be a login dialog, a "forbidden" message or a function implementing a redirect.
+-   Implement the `logout()` method: this method will be called when the user attempts to end their session.
+
+A simple example is available in this project's `auth-sample`.

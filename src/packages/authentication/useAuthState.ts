@@ -5,10 +5,11 @@ import { AuthService, AuthState } from "./api";
 
 /**
  * React hook that always returns the `authService`'s current auth state.
- *
- * TODO: Should this use `useService` or a direct argument passing style?
  */
 export function useAuthState(authService: AuthService): AuthState {
+    // subscribe to changes of the auth service.
+    // useCallback (or useMemo) is needed for stable function references:
+    // otherwise `useSyncExternalStore` would re-subscribe on every render.
     const subscribe = useCallback(
         (callback: () => void) => {
             const handle = authService.on("changed", callback);

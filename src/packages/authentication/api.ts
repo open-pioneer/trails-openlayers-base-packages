@@ -32,6 +32,14 @@ export interface SessionInfo {
 }
 
 /**
+ * Models the current authentication state.
+ *
+ * NOTE: Future versions of this package may define additional states.
+ * Your code should contain sensible fallback or error logic.
+ */
+export type AuthState = AuthStatePending | AuthStateNotAuthenticated | AuthStateAuthenticated;
+
+/**
  * This state is active when the authentication service
  * is still checking whether the current user is authenticated or not.
  */
@@ -56,21 +64,33 @@ export interface AuthStateAuthenticated {
 }
 
 /**
- * Models the current authentication state.
- *
- * NOTE: Future versions of this package may define additional states.
- * Your code should contain sensible fallback or error logic.
+ * Defines the behavior of the authentication service when attempting to
+ * authenticate a user.
  */
-export type AuthState = AuthStatePending | AuthStateNotAuthenticated | AuthStateAuthenticated;
+export type LoginBehavior = LoginFallback | LoginEffect;
+
+/**
+ * A fallback react component to present to the user.
+ * For example, this can be a login form or a message.
+ */
+export interface LoginFallback {
+    kind: "fallback";
+    Fallback: ComponentType;
+}
+
+/**
+ * An effect to perform when the user shall be authenticated.
+ * `login()` may, for example, perform a redirect to an authentication provider.
+ */
+export interface LoginEffect {
+    kind: "effect";
+    login(): void;
+}
 
 /**
  * Manages the current user's authentication state.
  *
  * The current state (such as session info) can be retrieved and watched for changes.
- *
- * TODO:
- *  - Modeling of fallback component / imperative function for login?
- *  - Logout()
  */
 export interface AuthService extends EventSource<AuthEvents> {
     /**
@@ -93,20 +113,16 @@ export interface AuthService extends EventSource<AuthEvents> {
     getSessionInfo(): Promise<SessionInfo | undefined>;
 
     /**
-     * Returns a UI component suitable for rendering when the user is not logged in.
-     *
-     * This can be, for example, a login dialog.
+     * Returns the login behavior that should be performed if the user is not authenticated.
      *
      * The actual implementation of this component depends on the application's authentication plugin.
      */
-    getAuthFallback(): ComponentType;
+    getLoginBehavior(): LoginBehavior;
 
     /**
      * Terminates the current session (if any).
-     *
-     * TODO: Promise / void and log?
      */
-    logout(): Promise<void>;
+    logout(): void;
 }
 
 /** Events that may be emitted by an authentication plugin. */
@@ -127,7 +143,7 @@ export type AuthPluginEventBase = EventSource<AuthPluginEvents>;
  *
  * The implementation of `AuthPluginEventBase` is optional: it is only necessary if the state changes
  * during the lifetime of the plugin.
- * To implement the event, you can use `extend EventEmitter<AuthPluginEvents>`.
+ * To implement the event, you can write `class MyPlugin extends EventEmitter<AuthPluginEvents>`.
  */
 export interface AuthPlugin extends Partial<AuthPluginEventBase> {
     /**
@@ -139,9 +155,9 @@ export interface AuthPlugin extends Partial<AuthPluginEventBase> {
     getAuthState(): AuthState;
 
     /**
-     * Returns a component that may be presented to the user when they are not authenticated.
+     * Returns the login behavior that should be performed if the user is not authenticated.
      */
-    getAuthFallback(): ComponentType;
+    getLoginBehavior(): LoginBehavior;
 
     /**
      * Explicitly triggers a logout.

@@ -1,38 +1,49 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-import { AuthPlugin, AuthState } from "@open-pioneer/authentication";
-import { ComponentType, createElement } from "react";
+import {
+    AuthPlugin,
+    AuthPluginEvents,
+    AuthState,
+    LoginBehavior
+} from "@open-pioneer/authentication";
 import { EventEmitter } from "@open-pioneer/core";
 import { Service } from "@open-pioneer/runtime";
+import { createElement } from "react";
 import { LoginMask } from "./LoginMask";
 
-export class TestAuthPlugin extends EventEmitter<{ changed: void }> implements Service, AuthPlugin {
+export class TestAuthPlugin extends EventEmitter<AuthPluginEvents> implements Service, AuthPlugin {
     #state: AuthState = {
         kind: "pending"
     };
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    #timer: any;
+    #timerId: any;
+    #wasLoggedIn = false;
 
     constructor() {
         super();
-        this.#timer = setTimeout(() => {
+
+        // Delay state change to simulate a delay that may be needed to
+        // determine the user's login state (e.g. rest request).
+        this.#timerId = setTimeout(() => {
             this.#state = {
                 kind: "not-authenticated"
             };
             this.emit("changed");
-        }, 1000);
+        }, 500);
     }
 
     destroy() {
-        clearTimeout(this.#timer);
-        this.#timer = undefined;
+        clearTimeout(this.#timerId);
+        this.#timerId = undefined;
     }
 
     getAuthState(): AuthState {
         return this.#state;
     }
 
-    getAuthFallback(): ComponentType {
+    getLoginBehavior(): LoginBehavior {
+        // Trivial username / password check called by the react component.
+        // The plugin's state changes if the credentials are correct.
         const doLogin = (userName: string, password: string): string | undefined => {
             if (userName === "admin" && password === "admin") {
                 this.#state = {
@@ -42,16 +53,24 @@ export class TestAuthPlugin extends EventEmitter<{ changed: void }> implements S
                         userName: "Arnold Administrator"
                     }
                 };
+                this.#wasLoggedIn = true;
                 this.emit("changed");
             } else {
                 return "Invalid user name or password!";
             }
         };
+
+        // This component is rendered when the user is not logged in, for example
+        // by the `<ForceAuth />` component.
         const AuthFallback = () =>
             createElement(LoginMask, {
-                doLogin: doLogin
+                doLogin: doLogin,
+                wasLoggedIn: this.#wasLoggedIn
             });
-        return AuthFallback;
+        return {
+            kind: "fallback",
+            Fallback: AuthFallback
+        };
     }
 
     logout() {
@@ -59,8 +78,8 @@ export class TestAuthPlugin extends EventEmitter<{ changed: void }> implements S
             this.#state = {
                 kind: "not-authenticated"
             };
-            clearTimeout(this.#timer);
-            this.#timer = undefined;
+            clearTimeout(this.#timerId);
+            this.#timerId = undefined;
             this.emit("changed");
         }
     }

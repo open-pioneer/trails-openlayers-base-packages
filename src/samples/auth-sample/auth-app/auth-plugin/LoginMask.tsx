@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import {
     Alert,
+    AlertDescription,
     AlertIcon,
     AlertTitle,
     Button,
@@ -18,18 +19,21 @@ import {
 import { useState } from "react";
 
 interface LoginMaskProps {
+    wasLoggedIn: boolean;
     doLogin: (userName: string, password: string) => string | undefined;
 }
 
-export function LoginMask({ doLogin }: LoginMaskProps) {
+export function LoginMask({ doLogin, wasLoggedIn }: LoginMaskProps) {
     const [userName, setUserName] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [errorMessage, setErrorMessage] = useState<string | undefined>();
+    const [showLoggedOutMessage, setShowLoggedOutMessage] = useState(wasLoggedIn);
     const onSubmit = (e: Pick<Event, "preventDefault">) => {
         e.preventDefault();
         const errorMessage = doLogin(userName, password);
         setErrorMessage(errorMessage || "");
+        setShowLoggedOutMessage(false);
     };
 
     return (
@@ -49,12 +53,23 @@ export function LoginMask({ doLogin }: LoginMaskProps) {
                         <AlertTitle>{errorMessage}</AlertTitle>
                     </Alert>
                 )}
+                {showLoggedOutMessage && (
+                    <Alert status="info" mb={5}>
+                        <AlertIcon />
+                        <AlertDescription>
+                            Logout successful.
+                            <br />
+                            You can use the form below to log in again.
+                        </AlertDescription>
+                    </Alert>
+                )}
                 <FormControl>
                     <FormLabel>User name</FormLabel>
                     <Input
                         placeholder="User name"
                         value={userName}
                         onChange={(e) => setUserName(e.target.value)}
+                        autoComplete="username"
                     />
                 </FormControl>
                 <FormControl>
@@ -66,6 +81,7 @@ export function LoginMask({ doLogin }: LoginMaskProps) {
                             placeholder="Enter password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
+                            autoComplete="current-password"
                         />
                         <InputRightElement width="4.5rem">
                             <Button

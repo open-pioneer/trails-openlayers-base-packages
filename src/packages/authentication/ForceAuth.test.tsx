@@ -1,44 +1,14 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-
 /**
  * @vitest-environment jsdom
  */
-
-import { it, expect } from "vitest";
-import { screen, render, act } from "@testing-library/react";
-import { PackageContextProvider } from "@open-pioneer/test-utils/react";
-import { ForceAuth } from "./ForceAuth";
-import { AuthEvents, AuthService, AuthState, SessionInfo } from "./api";
 import { EventEmitter } from "@open-pioneer/core";
-import { ComponentType } from "react";
-
-class TestAuthService extends EventEmitter<AuthEvents> implements AuthService {
-    #currentState: AuthState;
-    constructor(initState: AuthState) {
-        super();
-        this.#currentState = initState;
-    }
-    getAuthState(): AuthState {
-        return this.#currentState;
-    }
-    getSessionInfo(): Promise<SessionInfo | undefined> {
-        throw new Error("Method not implemented.");
-    }
-    getAuthFallback(): ComponentType {
-        const fallBack = (props: Record<string, unknown>) => {
-            return <div data-testid="LoginFallBack">{JSON.stringify(props.name)}</div>;
-        };
-        return fallBack;
-    }
-    async logout() {
-        throw new Error("Method not implemented.");
-    }
-    setAuthState(newState: AuthState) {
-        this.#currentState = newState;
-        this.emit("changed");
-    }
-}
+import { PackageContextProvider } from "@open-pioneer/test-utils/react";
+import { act, render, screen, waitFor } from "@testing-library/react";
+import { expect, it } from "vitest";
+import { ForceAuth } from "./ForceAuth";
+import { AuthEvents, AuthService, AuthState, LoginBehavior, SessionInfo } from "./api";
 
 it("renders children if the user is authenticated", async () => {
     const mocks = {
@@ -166,7 +136,7 @@ it("renders the AuthFallback with a custom render function", async () => {
     `);
 });
 
-it("rerenders when switching from pending to authenticated", async () => {
+it("rerenders when the service's state changes", async () => {
     const testAuthService = new TestAuthService({
         kind: "pending"
     });
@@ -203,3 +173,66 @@ it("rerenders when switching from pending to authenticated", async () => {
         '"<div data-testid=\\"inner-div\\">testDiv</div>"'
     );
 });
+
+it("calls a login effect if present", async () => {
+    let loginCalled = false;
+    const testAuthService = new TestAuthService(
+        {
+            kind: "not-authenticated"
+        },
+        {
+            kind: "effect",
+            login() {
+                loginCalled = true;
+            }
+        }
+    );
+    const mocks = {
+        services: {
+            "authentication.AuthService": testAuthService
+        }
+    };
+
+    render(
+        <PackageContextProvider {...mocks}>
+            <ForceAuth>Content</ForceAuth>
+        </PackageContextProvider>
+    );
+
+    await waitFor(() => {
+        if (!loginCalled) {
+            throw new Error("login effect was not called");
+        }
+    });
+});
+
+class TestAuthService extends EventEmitter<AuthEvents> implements AuthService {
+    #currentState: AuthState;
+    #behavior: LoginBehavior;
+    constructor(initState: AuthState, loginBehavior?: LoginBehavior) {
+        super();
+        this.#currentState = initState;
+        this.#behavior = loginBehavior ?? {
+            kind: "fallback",
+            Fallback(props: Record<string, unknown>) {
+                return <div data-testid="LoginFallBack">{JSON.stringify(props.name)}</div>;
+            }
+        };
+    }
+    getAuthState(): AuthState {
+        return this.#currentState;
+    }
+    getSessionInfo(): Promise<SessionInfo | undefined> {
+        throw new Error("Method not implemented.");
+    }
+    getLoginBehavior(): LoginBehavior {
+        return this.#behavior;
+    }
+    logout() {
+        throw new Error("Method not implemented.");
+    }
+    setAuthState(newState: AuthState) {
+        this.#currentState = newState;
+        this.emit("changed");
+    }
+}
