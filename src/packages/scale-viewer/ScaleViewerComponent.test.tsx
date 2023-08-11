@@ -3,7 +3,7 @@
 /**
  * @vitest-environment jsdom
  */
-import { OlMapConfigurationProvider } from "@open-pioneer/experimental-ol-map";
+import { MapContainer, OlMapConfigurationProvider } from "@open-pioneer/experimental-ol-map";
 import { OlMapRegistry } from "@open-pioneer/experimental-ol-map/services";
 import { Service, ServiceOptions } from "@open-pioneer/runtime";
 import {
@@ -11,10 +11,11 @@ import {
     PackageContextProviderProps
 } from "@open-pioneer/test-utils/react";
 import { createService } from "@open-pioneer/test-utils/services";
-import { render, renderHook, screen } from "@testing-library/react";
+import { render, renderHook, screen, waitFor } from "@testing-library/react";
 import { MapOptions } from "ol/Map";
 import { expect, it } from "vitest";
 import { ScaleViewerComponent, useResolution } from "./ScaleViewerComponent";
+import View from "ol/View";
 
 // used to avoid a "ResizeObserver is not defined" error
 global.ResizeObserver = require("resize-observer-polyfill");
@@ -85,17 +86,57 @@ it("should successfully create a scale viewer component", async () => {
 
 it("should successfully create a map resolution", async () => {
     const mapId = "test";
-    const mapOptions = {} as MapOptions;
+    const zoom = 10;
+    const mapOptions = {
+        view: new View({
+            projection: "EPSG:3857",
+            center: [847541, 6793584],
+            zoom
+        })
+    } as MapOptions;
     const service = await createOlMapRegistry(mapId, mapOptions);
 
-    const map = await service.getMap(mapId);
-    const zoom = map.getView().getZoom();
+    const { container } = render(
+        <PackageContextProvider {...createPackageContextProviderProps(service)}>
+            <div data-testid="base">
+                <MapContainer mapId={mapId} />
+                <ScaleViewerComponent mapId={mapId}></ScaleViewerComponent>
+            </div>
+        </PackageContextProvider>
+    );
 
-    if (!zoom) {
-        return;
+    // assert map and scale viewer is mounted
+    await waitFor(async () => {
+        const div = await screen.findByTestId("base");
+        const container = div.querySelector(".ol-viewport");
+        if (!container) {
+            throw new Error("map not mounted");
+        }
+        expect(div).toMatchSnapshot();
+    });
+
+    const button = container.querySelector("button.ol-zoom-in");
+    if (!button) {
+        throw new Error("failed to find button element");
     }
-    map.getView().setZoom(zoom + 1);
 
+    const map = await service.getMap(mapId);
+    if (!map) {
+        throw new Error("map not defined");
+    }
+
+    let mapZoom = map.getView().getZoom();
+    if (!mapZoom) {
+        throw new Error("zoom not defined");
+    }
+
+    // set new zoom level
+    expect(mapZoom).toBe(zoom);
+    map.getView().setZoom(mapZoom++);
+    expect(mapZoom).not.toBe(zoom);
+
+
+    // detect change of resolution
     const { result } = renderHook(() => useResolution(map));
     expect(result.current.resolution).toBe(typeof Number || undefined);
 });
