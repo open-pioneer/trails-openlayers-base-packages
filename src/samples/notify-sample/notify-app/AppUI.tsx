@@ -4,6 +4,7 @@ import {
     Box,
     Button,
     ButtonGroup,
+    Checkbox,
     Container,
     FormControl,
     FormLabel,
@@ -23,11 +24,13 @@ export function AppUI() {
     const [title, setTitle] = useState("");
     const [level, setLevel] = useState("info");
     const [message, setMessage] = useState("");
+    const [autoHide, setAutoHide] = useState(false);
     const emitNotification = () => {
         const options: NotificationOptions = {
             title,
             level: level as NotificationLevel, // quick and dirty, we only allow supported strings in select
-            message: message
+            message: message,
+            displayDuration: autoHide ? 5000 : undefined
         };
         if (!options.title) {
             notifications.notify({
@@ -84,6 +87,12 @@ export function AppUI() {
                                     onChange={(e) => setMessage(e.target.value)}
                                 />
                             </FormControl>
+                            <Checkbox
+                                isChecked={autoHide}
+                                onChange={(e) => setAutoHide(e.target.checked)}
+                            >
+                                Hide after 5 seconds
+                            </Checkbox>
                             <ButtonGroup justifyContent="center">
                                 <Button flex="1" colorScheme="blue" onClick={emitNotification}>
                                     Emit Notification

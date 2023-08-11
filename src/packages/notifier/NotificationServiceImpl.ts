@@ -2,12 +2,14 @@
 // SPDX-License-Identifier: Apache-2.0
 import type { NotificationLevel, NotificationOptions, NotificationService } from "./api";
 import { Resource, createLogger } from "@open-pioneer/core";
+import type { ReactNode } from "react";
 const LOG = createLogger("notifier:NotificationService");
 
 export interface Notification {
-    title: string | undefined;
-    message: string | undefined;
+    title: ReactNode;
+    message: ReactNode;
     level: NotificationLevel;
+    displayDuration: number | undefined;
 }
 
 /**
@@ -55,7 +57,8 @@ export class NotificationServiceImpl implements InternalNotificationAPI {
         this.#dispatchHandlerMethod("showNotification", {
             title: options.title ?? undefined,
             message: options.message ?? undefined,
-            level: options.level ?? "info"
+            level: options.level ?? "info",
+            displayDuration: options.displayDuration
         });
     }
 

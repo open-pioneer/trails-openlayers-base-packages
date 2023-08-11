@@ -50,7 +50,7 @@ export function Notifier(props: NotifierProps): ReactElement {
             description: notification.message || null,
             status: notification.level,
             isClosable: true,
-            duration: null // Null: does not auto-close
+            duration: notification.displayDuration ?? null // Null: does not auto-close
         });
     });
     const clearAll = useEvent(() => {

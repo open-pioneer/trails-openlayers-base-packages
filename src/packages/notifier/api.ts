@@ -1,6 +1,8 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
 
+import type { ReactNode } from "react";
+
 /** Represents the severity or kind of a notification. */
 export type NotificationLevel = "success" | "info" | "warning" | "error";
 
@@ -9,16 +11,24 @@ export type NotificationLevel = "success" | "info" | "warning" | "error";
  */
 export interface NotificationOptions {
     /** The title of the notification. */
-    title?: string | undefined;
+    title?: string | ReactNode | undefined;
 
     /** An optional message, shown below the title. */
-    message?: string | undefined;
+    message?: string | ReactNode | undefined;
 
     /**
      * The level of this notification.
      * @default "info"
      */
     level?: NotificationLevel | undefined;
+
+    /**
+     * The duration in ms how long the notification is shown.
+     * By default, notifications are not closed automatically.
+     *
+     * Note that important messages should not be hidden automatically for a11y reasons.
+     */
+    displayDuration?: number | undefined;
 }
 
 /**
