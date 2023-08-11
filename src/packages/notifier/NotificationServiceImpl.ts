@@ -37,11 +37,11 @@ export interface InternalNotificationAPI extends NotificationService {
 export class NotificationServiceImpl implements InternalNotificationAPI {
     #handler: NotificationHandler | undefined;
     #buffered: [keyof NotificationHandler, ...unknown[]][] | undefined;
-    #checkTimeoutId: number | undefined;
+    #checkTimeoutId: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 
     constructor() {
         if (import.meta.env.DEV) {
-            this.#checkTimeoutId = window.setTimeout(() => {
+            this.#checkTimeoutId = setTimeout(() => {
                 this.#checkHandlerRegistration();
                 this.#checkTimeoutId = undefined;
             }, 5000);
@@ -49,7 +49,7 @@ export class NotificationServiceImpl implements InternalNotificationAPI {
     }
 
     destroy() {
-        window.clearTimeout(this.#checkTimeoutId);
+        clearTimeout(this.#checkTimeoutId);
         this.#checkTimeoutId = undefined;
     }
 
