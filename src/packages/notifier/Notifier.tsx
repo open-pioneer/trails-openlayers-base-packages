@@ -6,14 +6,39 @@ import { useService } from "open-pioneer:react-hooks";
 import { ReactElement, useEffect, useState } from "react";
 import { InternalNotificationAPI, Notification } from "./NotificationServiceImpl";
 
+/** Props supported by the {@link Notifier} component. */
 export interface NotifierProps {
+    /**
+     * The position for new notifications.
+     *
+     * @default "top-right"
+     */
     position?: "top" | "top-left" | "top-right" | "bottom" | "bottom-left" | "bottom-right";
 }
 
 const isDev = import.meta.env.DEV;
 
+/**
+ * Shows notifications sent via the `NotificationService`.
+ *
+ * Only one instance of `<Notifier />` should be present in the application.
+ * It currently does not matter where the Notifier is located in the react tree.
+ *
+ * ```ts
+ * import { Notifier } from "@open-pioneer/notifier";
+ *
+ * export function AppUI() {
+ *     return (
+ *         <>
+ *             <Notifier position="top-right" />
+ *             <h1>Your application</h1>
+ *         </>
+ *     );
+ * }
+ * ```
+ */
 export function Notifier(props: NotifierProps): ReactElement {
-    const { position = "top" } = props;
+    const { position = "top-right" } = props;
     const toast = useToast();
     const notifications = useService("notifier.NotificationService") as InternalNotificationAPI;
     const [ready, setReady] = useState(!isDev);
@@ -33,7 +58,7 @@ export function Notifier(props: NotifierProps): ReactElement {
     });
 
     useEffect(() => {
-        /**
+        /*
          * Delay registering the notification handler a bit during development.
          * Chakra's toast implementation clears its store when it gets unmounted.
          * During development, that may also happen during initialization because of react's

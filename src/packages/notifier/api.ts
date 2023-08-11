@@ -1,5 +1,7 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
+
+/** Represents the severity or kind of a notification. */
 export type NotificationLevel = "success" | "info" | "warning" | "error";
 
 /**
@@ -7,16 +9,16 @@ export type NotificationLevel = "success" | "info" | "warning" | "error";
  */
 export interface NotificationOptions {
     /** The title of the notification. */
-    title: string;
+    title?: string | undefined;
 
     /** An optional message, shown below the title. */
-    message?: string;
+    message?: string | undefined;
 
     /**
      * The level of this notification.
      * @default "info"
      */
-    level?: NotificationLevel;
+    level?: NotificationLevel | undefined;
 }
 
 /**
