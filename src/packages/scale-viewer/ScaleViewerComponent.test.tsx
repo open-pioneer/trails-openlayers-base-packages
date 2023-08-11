@@ -114,14 +114,15 @@ it("should successfully create a map resolution", async () => {
     );
 
     // assert map and scale viewer is mounted
-    await waitFor(async () => {
+    const divElem = await waitFor(async () => {
         const div = await screen.findByTestId("base");
         const container = div.querySelector(".ol-viewport");
         if (!container) {
             throw new Error("map not mounted");
         }
-        expect(div).toMatchSnapshot();
+        return div;
     });
+    expect(divElem).toMatchSnapshot();
 
     const map = await service.getMap(mapId);
     if (!map) {
@@ -138,7 +139,9 @@ it("should successfully create a map resolution", async () => {
     map.getView().setZoom(mapZoom++);
     expect(mapZoom).not.toBe(zoom);
 
+    map.dispatchEvent("moveend");
+
     // detect change of resolution
     const { result } = renderHook(() => useResolution(map));
-    expect(result.current.resolution).toBe(typeof Number || undefined);
+    expect(result.current.resolution).not.toBe(undefined);
 });
