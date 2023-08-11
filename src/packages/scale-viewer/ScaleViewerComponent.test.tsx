@@ -16,6 +16,8 @@ import { MapOptions } from "ol/Map";
 import { expect, it } from "vitest";
 import { ScaleViewerComponent, useResolution } from "./ScaleViewerComponent";
 import View from "ol/View";
+import OSM from "ol/source/OSM";
+import TileLayer from "ol/layer/Tile";
 
 // used to avoid a "ResizeObserver is not defined" error
 global.ResizeObserver = require("resize-observer-polyfill");
@@ -92,11 +94,17 @@ it("should successfully create a map resolution", async () => {
             projection: "EPSG:3857",
             center: [847541, 6793584],
             zoom
-        })
+        }),
+        layers: [
+            new TileLayer({
+                source: new OSM(),
+                properties: { title: "OSM" }
+            })
+        ]
     } as MapOptions;
     const service = await createOlMapRegistry(mapId, mapOptions);
 
-    const { container } = render(
+    render(
         <PackageContextProvider {...createPackageContextProviderProps(service)}>
             <div data-testid="base">
                 <MapContainer mapId={mapId} />
@@ -115,11 +123,6 @@ it("should successfully create a map resolution", async () => {
         expect(div).toMatchSnapshot();
     });
 
-    const button = container.querySelector("button.ol-zoom-in");
-    if (!button) {
-        throw new Error("failed to find button element");
-    }
-
     const map = await service.getMap(mapId);
     if (!map) {
         throw new Error("map not defined");
@@ -134,7 +137,6 @@ it("should successfully create a map resolution", async () => {
     expect(mapZoom).toBe(zoom);
     map.getView().setZoom(mapZoom++);
     expect(mapZoom).not.toBe(zoom);
-
 
     // detect change of resolution
     const { result } = renderHook(() => useResolution(map));
