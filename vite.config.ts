@@ -21,6 +21,7 @@ const visualize = false;
 
 const sampleSites = [
     "samples/map-sample",
+    "samples/auth-sample"
 ];
 
 // https://vitejs.dev/config/
