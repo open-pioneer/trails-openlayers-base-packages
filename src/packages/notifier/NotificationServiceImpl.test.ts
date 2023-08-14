@@ -51,3 +51,48 @@ it("dispatches events to the notification handler", async () => {
     service.clearAll();
     expect(events).toHaveLength(0);
 });
+
+it("dispatches events to a later registered notification handler", async () => {
+    const service = await createService(NotificationServiceImpl, {});
+
+    const events: unknown[] = [];
+
+    service.notify({ title: "test" });
+    service.clearAll();
+    service.notify({ title: "test2" });
+
+    service.registerHandler({
+        showNotification(notification: Notification) {
+            events.push({ type: "notification", notification: notification });
+        },
+        clearAll() {
+            events.push({ type: "clearAll" });
+        }
+    });
+
+    expect(events).toMatchInlineSnapshot(`
+      [
+        {
+          "notification": {
+            "displayDuration": undefined,
+            "level": "info",
+            "message": undefined,
+            "title": "test",
+          },
+          "type": "notification",
+        },
+        {
+          "type": "clearAll",
+        },
+        {
+          "notification": {
+            "displayDuration": undefined,
+            "level": "info",
+            "message": undefined,
+            "title": "test2",
+          },
+          "type": "notification",
+        },
+      ]
+    `);
+});
