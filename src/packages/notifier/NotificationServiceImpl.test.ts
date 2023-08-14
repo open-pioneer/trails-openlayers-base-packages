@@ -14,8 +14,8 @@ it("dispatches events to the notification handler", async () => {
         showNotification(notification: Notification) {
             events.push({ type: "notification", notification: notification });
         },
-        clearAll() {
-            events.push({ type: "clearAll" });
+        closeAll() {
+            events.push({ type: "closeAll" });
         }
     });
 
@@ -36,11 +36,11 @@ it("dispatches events to the notification handler", async () => {
 
     events.splice(0, events.length);
 
-    service.clearAll();
+    service.closeAll();
     expect(events).toMatchInlineSnapshot(`
       [
         {
-          "type": "clearAll",
+          "type": "closeAll",
         },
       ]
     `);
@@ -48,7 +48,7 @@ it("dispatches events to the notification handler", async () => {
     events.splice(0, events.length);
 
     handlerResource.destroy();
-    service.clearAll();
+    service.closeAll();
     expect(events).toHaveLength(0);
 });
 
@@ -58,15 +58,15 @@ it("dispatches events to a later registered notification handler", async () => {
     const events: unknown[] = [];
 
     service.notify({ title: "test" });
-    service.clearAll();
+    service.closeAll();
     service.notify({ title: "test2" });
 
     service.registerHandler({
         showNotification(notification: Notification) {
             events.push({ type: "notification", notification: notification });
         },
-        clearAll() {
-            events.push({ type: "clearAll" });
+        closeAll() {
+            events.push({ type: "closeAll" });
         }
     });
 
@@ -82,7 +82,7 @@ it("dispatches events to a later registered notification handler", async () => {
           "type": "notification",
         },
         {
-          "type": "clearAll",
+          "type": "closeAll",
         },
         {
           "notification": {

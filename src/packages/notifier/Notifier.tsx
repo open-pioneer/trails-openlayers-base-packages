@@ -53,7 +53,7 @@ export function Notifier(props: NotifierProps): ReactElement {
             duration: notification.displayDuration ?? null // Null: does not auto-close
         });
     });
-    const clearAll = useEvent(() => {
+    const closeAll = useEvent(() => {
         toast.closeAll();
     });
 
@@ -74,10 +74,10 @@ export function Notifier(props: NotifierProps): ReactElement {
 
         const handle = notifications.registerHandler({
             showNotification,
-            clearAll
+            closeAll
         });
         return () => handle.destroy();
-    }, [ready, notifications, showNotification, clearAll]);
+    }, [ready, notifications, showNotification, closeAll]);
 
     // No actual UI representation right now
     return <></>;

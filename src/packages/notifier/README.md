@@ -3,8 +3,11 @@
 The `notifier` package allows any application component to emit global notifications.
 Notifications are displayed by the `<Notifier />` react component in your application.
 
-To display notifications, configure the `<Notifier />` in your app's UI.
-It should be present exactly once:
+## Usage
+
+### Displaying notifications in an application
+
+The `<Notifier />` must be used in your app's UI , otherwise notifications from application components will not be shown. It should be present exactly once.
 
 ```jsx
 import { Notifier } from "@open-pioneer/notifier";
@@ -19,11 +22,8 @@ export function AppUI() {
 }
 ```
 
-## Usage
+> Note: In most cases the notifier should be located at or near the root of your app's UI.
 
-### Displaying notifications in an application
-
-The `<Notifier />` must be used in your app's UI, otherwise notifications from application components will not be shown.
 The following properties are supported by the Notifier:
 
 ```ts
@@ -37,18 +37,18 @@ export interface NotifierProps {
 }
 ```
 
-The implementation if `<Notifier />` is currently based on [Chakra's Toast](https://chakra-ui.com/docs/components/toast).
+The implementation of `<Notifier />` is currently based on [Chakra's Toast](https://chakra-ui.com/docs/components/toast).
 
 ### Emitting notifications
 
 Reference the interface name `notifier.NotificationService` to inject an instance of `NotificationService`.
-That service can be used to emit events from anywhere in the application:
+That service can be used to emit events from any service or UI component in the application:
 
 ```ts
 const notificationService = ...; // injected
 notificationService.notify({
     level: "info",
-    title: "Job complete"
+    title: "Job complete",
     message: "Optional additional message ..."
 })
 ```
@@ -85,9 +85,9 @@ export interface NotificationOptions {
 
 ### Closing all notifications
 
-All currently displayed notifications can be cleared by calling the `clearAll` method on the `NotificationService`:
+All currently displayed notifications can be closed by calling the `closeAll` method on the `NotificationService`:
 
 ```ts
 const notificationService = ...; // injected
-notificationService.clearAll();
+notificationService.closeAll();
 ```

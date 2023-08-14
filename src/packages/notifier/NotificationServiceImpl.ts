@@ -23,7 +23,7 @@ export interface NotificationHandler {
     showNotification(notification: Notification): void;
 
     /** Removes all active notifications. */
-    clearAll(): void;
+    closeAll(): void;
 }
 
 export interface InternalNotificationAPI extends NotificationService {
@@ -62,8 +62,8 @@ export class NotificationServiceImpl implements InternalNotificationAPI {
         });
     }
 
-    clearAll(): void {
-        this.#dispatchHandlerMethod("clearAll");
+    closeAll(): void {
+        this.#dispatchHandlerMethod("closeAll");
     }
 
     registerHandler(handler: NotificationHandler): Resource {

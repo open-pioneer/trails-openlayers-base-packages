@@ -71,7 +71,7 @@ it("closes all notifications", async () => {
     expect(messageElements).toHaveLength(3);
 
     act(() => {
-        service.clearAll();
+        service.closeAll();
     });
     await waitForElementToBeRemoved(messageElements);
     const messageElementsAfterClear = await screen.queryAllByText("test1");

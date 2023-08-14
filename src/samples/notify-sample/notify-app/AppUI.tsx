@@ -43,7 +43,7 @@ export function AppUI() {
         notifications.notify(options);
     };
     const clearNotifications = () => {
-        notifications.clearAll();
+        notifications.closeAll();
     };
 
     return (
