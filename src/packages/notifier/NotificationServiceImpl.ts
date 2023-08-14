@@ -121,7 +121,16 @@ export class NotificationServiceImpl implements InternalNotificationAPI {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             (this.#handler[method] as any)(...args);
         } else {
-            (this.#buffered ??= []).push([method, ...args]);
+            const buffered = (this.#buffered ??= []);
+            if (buffered.length >= 1024) {
+                LOG.error(
+                    "Internal notification buffer overflow: this event will be dropped to prevent a memory leak.\n" +
+                        "Make sure that the UI is configured to display notifications (use <Notifier />).",
+                    { method, args }
+                );
+                return;
+            }
+            buffered.push([method, ...args]);
         }
     }
 
