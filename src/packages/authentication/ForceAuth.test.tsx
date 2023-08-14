@@ -136,7 +136,7 @@ it("renders the AuthFallback with a custom render function", async () => {
     `);
 });
 
-it("rerenders when the service's state changes", async () => {
+it("re-renders when the service's state changes", async () => {
     const testAuthService = new TestAuthService({
         kind: "pending"
     });
