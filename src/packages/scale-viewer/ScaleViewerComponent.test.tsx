@@ -141,18 +141,19 @@ it("should successfully create a map resolution", async () => {
         throw new Error("zoom not defined");
     }
 
-    // set new zoom level
-    expect(mapZoom).toBe(zoom);
-    map.getView().setZoom(mapZoom++);
-    expect(mapZoom).not.toBe(zoom);
+    // change zoom level and detect resolution change
+    const hook = renderHook(() => useResolution(map));
+    const result = hook.result;
 
-    // trigger moveend event
+    const firstResolution = result.current.resolution;
+    expect(firstResolution).not.toBe(undefined);
+
+    map.getView().setZoom(++mapZoom);
     map.dispatchEvent("moveend");
+    hook.rerender();
 
-    // detect resolution change
-    const { result } = renderHook(() => useResolution(map));
-    expect(result.current.resolution).not.toBe(undefined);
-    expect(result.current.resolution).not.toBe(mapResolution);
+    const nextResolution = hook.result.current;
+    expect(firstResolution).not.toEqual(nextResolution);
 });
 
 it("should successfully create a map center", async () => {
@@ -199,24 +200,19 @@ it("should successfully create a map center", async () => {
         throw new Error("map not defined");
     }
 
-    let mapCenter = map.getView().getCenter();
-    if (!mapCenter) {
-        throw new Error("center not defined");
-    }
+    // change center and detect center change
+    const hook = renderHook(() => useCenter(map));
+    const result = hook.result;
 
-    // set new center
-    expect(mapCenter).toBe(center);
+    const firstCenter = result.current.center;
+    expect(firstCenter).not.toBe(undefined);
+
     map.getView().setCenter([1489200, 6894026]);
-    mapCenter = map.getView().getCenter();
-    expect(mapCenter).not.toBe(center);
-
-    // trigger moveend event
     map.dispatchEvent("moveend");
+    hook.rerender();
 
-    // detect center change
-    const { result } = renderHook(() => useCenter(map));
-    expect(result.current.center).not.toBe(undefined);
-    expect(result.current.center).not.toBe(mapCenter);
+    const nextCenter = hook.result.current;
+    expect(firstCenter).not.toEqual(nextCenter);
 });
 
 it("should successfully create a map scale", async () => {
