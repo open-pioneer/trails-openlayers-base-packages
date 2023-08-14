@@ -6,7 +6,7 @@ const documentedPackages = [
     "experimental-packages/ol-layer-control",
     "experimental-packages/ol-map",
     "packages/authentication",
-    "scale-viewer"
+    "packages/scale-viewer"
 ];
 
 // See https://typedoc.org/options/
