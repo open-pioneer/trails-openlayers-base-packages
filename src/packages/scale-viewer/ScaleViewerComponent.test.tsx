@@ -152,8 +152,8 @@ it("should successfully create a map resolution", async () => {
     map.dispatchEvent("moveend");
     hook.rerender();
 
-    const nextResolution = hook.result.current;
-    expect(firstResolution).not.toEqual(nextResolution);
+    const nextResolution = hook.result.current.resolution;
+    expect(firstResolution).not.toBe(nextResolution);
 });
 
 it("should successfully create a map center", async () => {
@@ -211,12 +211,13 @@ it("should successfully create a map center", async () => {
     map.dispatchEvent("moveend");
     hook.rerender();
 
-    const nextCenter = hook.result.current;
-    expect(firstCenter).not.toEqual(nextCenter);
+    const nextCenter = hook.result.current.center;
+    expect(firstCenter).not.toBe(nextCenter);
 });
 
 it("should successfully create a map scale", async () => {
     const mapId = "test";
+    const scale = 336409;
     const zoom = 10;
     const center = [847541, 6793584];
     const mapOptions = {
@@ -270,6 +271,7 @@ it("should successfully create a map scale", async () => {
     }
 
     // get map scale
-    const { result } = renderHook(() => useScale(map, mapResolution, mapCenter));
-    expect(result.current.scale).not.toBe(undefined);
+    const hook = renderHook(() => useScale(map, mapResolution, mapCenter));
+    const result = hook.result;
+    expect(result.current.scale).toBe(scale);
 });
