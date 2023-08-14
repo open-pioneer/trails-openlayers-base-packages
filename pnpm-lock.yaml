@@ -278,6 +278,9 @@ importers:
 
   src/packages/notifier:
     dependencies:
+      '@chakra-ui/icons':
+        specifier: ^2.0.19
+        version: 2.0.19(@chakra-ui/system@2.5.7)(react@18.2.0)
       '@open-pioneer/chakra-integration':
         specifier: ^1.0.0
         version: 1.0.0(@chakra-ui/react@2.6.1)(@emotion/cache@11.11.0)(@emotion/react@11.11.0)(@emotion/styled@11.11.0)(framer-motion@10.12.16)(react-dom@18.2.0)(react@18.2.0)
