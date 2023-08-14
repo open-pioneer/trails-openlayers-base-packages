@@ -79,7 +79,12 @@ it("should successfully create a scale viewer component", async () => {
 
     // assert map and scale viewer is mounted
     const div = await waitFor(async () => {
-        return await screen.findByTestId("base");
+        const domElement = await screen.findByTestId("base");
+        const scaleText = domElement.querySelector("p"); //find first paragraph (scale text) in scale viewer component
+        if (!scaleText) {
+            throw new Error("scale text not rendered");
+        }
+        return domElement;
     });
     expect(div).toMatchSnapshot();
 
