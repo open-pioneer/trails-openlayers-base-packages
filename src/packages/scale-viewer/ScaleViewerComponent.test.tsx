@@ -11,7 +11,7 @@ import {
     PackageContextProviderProps
 } from "@open-pioneer/test-utils/react";
 import { createService } from "@open-pioneer/test-utils/services";
-import { render, renderHook, screen, waitFor } from "@testing-library/react";
+import { act, render, renderHook, screen, waitFor } from "@testing-library/react";
 import { MapOptions } from "ol/Map";
 import { expect, it } from "vitest";
 import { ScaleViewerComponent, useCenter, useResolution, useScale } from "./ScaleViewerComponent";
@@ -154,7 +154,9 @@ it("should successfully create a map resolution", async () => {
     expect(firstResolution).not.toBe(undefined);
 
     map.getView().setZoom(++mapZoom);
-    map.dispatchEvent("moveend");
+    await act(async () => {
+        map.dispatchEvent("moveend");
+    });
     hook.rerender();
 
     const nextResolution = hook.result.current.resolution;
@@ -213,7 +215,9 @@ it("should successfully create a map center", async () => {
     expect(firstCenter).not.toBe(undefined);
 
     map.getView().setCenter([1489200, 6894026]);
-    map.dispatchEvent("moveend");
+    await act(async () => {
+        map.dispatchEvent("moveend");
+    });
     hook.rerender();
 
     const nextCenter = hook.result.current.center;
