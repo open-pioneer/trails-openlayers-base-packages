@@ -14,7 +14,7 @@ import { createService } from "@open-pioneer/test-utils/services";
 import { render, renderHook, screen, waitFor } from "@testing-library/react";
 import { MapOptions } from "ol/Map";
 import { expect, it } from "vitest";
-import { ScaleViewerComponent, useResolution } from "./ScaleViewerComponent";
+import { ScaleViewerComponent, useCenter, useResolution, useScale } from "./ScaleViewerComponent";
 import View from "ol/View";
 import OSM from "ol/source/OSM";
 import TileLayer from "ol/layer/Tile";
@@ -149,10 +149,131 @@ it("should successfully create a map resolution", async () => {
     // trigger moveend event
     map.dispatchEvent("moveend");
 
-    // detect change of resolution
-    const { result } = renderHook(() => {
-        return useResolution(map);
-    });
+    // detect resolution change
+    const { result } = renderHook(() => useResolution(map));
     expect(result.current.resolution).not.toBe(undefined);
     expect(result.current.resolution).not.toBe(mapResolution);
+});
+
+it("should successfully create a map center", async () => {
+    const mapId = "test";
+    const zoom = 10;
+    const center = [847541, 6793584];
+    const mapOptions = {
+        view: new View({
+            projection: "EPSG:3857",
+            center,
+            zoom
+        }),
+        layers: [
+            new TileLayer({
+                source: new OSM(),
+                properties: { title: "OSM" }
+            })
+        ]
+    } as MapOptions;
+    const service = await createOlMapRegistry(mapId, mapOptions);
+
+    render(
+        <PackageContextProvider {...createPackageContextProviderProps(service)}>
+            <div data-testid="base">
+                <MapContainer mapId={mapId} />
+                <ScaleViewerComponent mapId={mapId}></ScaleViewerComponent>
+            </div>
+        </PackageContextProvider>
+    );
+
+    // assert map and scale viewer is mounted
+    const div = await waitFor(async () => {
+        const domElement = await screen.findByTestId("base");
+        const container = domElement.querySelector(".ol-viewport");
+        if (!container) {
+            throw new Error("map not mounted");
+        }
+        return domElement;
+    });
+    expect(div).toMatchSnapshot();
+
+    const map = await service.getMap(mapId);
+    if (!map) {
+        throw new Error("map not defined");
+    }
+
+    let mapCenter = map.getView().getCenter();
+    if (!mapCenter) {
+        throw new Error("center not defined");
+    }
+
+    // set new center
+    expect(mapCenter).toBe(center);
+    map.getView().setCenter([1489200, 6894026]);
+    mapCenter = map.getView().getCenter();
+    expect(mapCenter).not.toBe(center);
+
+    // trigger moveend event
+    map.dispatchEvent("moveend");
+
+    // detect center change
+    const { result } = renderHook(() => useCenter(map));
+    expect(result.current.center).not.toBe(undefined);
+    expect(result.current.center).not.toBe(mapCenter);
+});
+
+it("should successfully create a map scale", async () => {
+    const mapId = "test";
+    const zoom = 10;
+    const center = [847541, 6793584];
+    const mapOptions = {
+        view: new View({
+            projection: "EPSG:3857",
+            center,
+            zoom
+        }),
+        layers: [
+            new TileLayer({
+                source: new OSM(),
+                properties: { title: "OSM" }
+            })
+        ]
+    } as MapOptions;
+    const service = await createOlMapRegistry(mapId, mapOptions);
+
+    render(
+        <PackageContextProvider {...createPackageContextProviderProps(service)}>
+            <div data-testid="base">
+                <MapContainer mapId={mapId} />
+                <ScaleViewerComponent mapId={mapId}></ScaleViewerComponent>
+            </div>
+        </PackageContextProvider>
+    );
+
+    // assert map and scale viewer is mounted
+    const div = await waitFor(async () => {
+        const domElement = await screen.findByTestId("base");
+        const container = domElement.querySelector(".ol-viewport");
+        if (!container) {
+            throw new Error("map not mounted");
+        }
+        return domElement;
+    });
+    expect(div).toMatchSnapshot();
+
+    const map = await service.getMap(mapId);
+    if (!map) {
+        throw new Error("map not defined");
+    }
+
+    const mapResolution = map.getView().getResolution();
+    if (!mapResolution) {
+        throw new Error("resolution not defined");
+    }
+
+    const mapCenter = map.getView().getCenter();
+    if (!mapCenter) {
+        throw new Error("center not defined");
+    }
+
+    // get map scale
+    const { result } = renderHook(() => useScale(map, mapResolution, mapCenter));
+    expect(result.current.scale).not.toBe(undefined);
 });
