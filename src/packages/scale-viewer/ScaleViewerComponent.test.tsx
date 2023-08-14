@@ -77,8 +77,10 @@ it("should successfully create a scale viewer component", async () => {
         </PackageContextProvider>
     );
 
-    // assert scale viewer component is mounted
-    const div = await screen.findByTestId("base");
+    // assert map and scale viewer is mounted
+    const div = await waitFor(async () => {
+        return await screen.findByTestId("base");
+    });
     expect(div).toMatchSnapshot();
 
     // check scale viewer wrapper is available
@@ -114,19 +116,24 @@ it("should successfully create a map resolution", async () => {
     );
 
     // assert map and scale viewer is mounted
-    const divElem = await waitFor(async () => {
-        const div = await screen.findByTestId("base");
-        const container = div.querySelector(".ol-viewport");
+    const div = await waitFor(async () => {
+        const domElement = await screen.findByTestId("base");
+        const container = domElement.querySelector(".ol-viewport");
         if (!container) {
             throw new Error("map not mounted");
         }
-        return div;
+        return domElement;
     });
-    expect(divElem).toMatchSnapshot();
+    expect(div).toMatchSnapshot();
 
     const map = await service.getMap(mapId);
     if (!map) {
         throw new Error("map not defined");
+    }
+
+    const mapResolution = map.getView().getResolution();
+    if (!mapResolution) {
+        throw new Error("resolution not defined");
     }
 
     let mapZoom = map.getView().getZoom();
@@ -139,9 +146,13 @@ it("should successfully create a map resolution", async () => {
     map.getView().setZoom(mapZoom++);
     expect(mapZoom).not.toBe(zoom);
 
+    // trigger moveend event
     map.dispatchEvent("moveend");
 
     // detect change of resolution
-    const { result } = renderHook(() => useResolution(map));
+    const { result } = renderHook(() => {
+        return useResolution(map);
+    });
     expect(result.current.resolution).not.toBe(undefined);
+    expect(result.current.resolution).not.toBe(mapResolution);
 });
