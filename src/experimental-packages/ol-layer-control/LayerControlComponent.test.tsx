@@ -115,12 +115,16 @@ it("layer control should have checkbox to toggle layer visibility", async () => 
         </PackageContextProvider>
     );
 
-    // pre check visibility of the layer
-    const map = await service.getMap(mapId);
-    const layers = map.getAllLayers();
-    expect(layers.length).toBe(1);
-    const firstLayer = layers[0]!;
-    expect(firstLayer.getVisible()).toBe(false);
+    // Wrap with act because map loading will trigger state changes
+    const firstLayer = await act(async () => {
+        // pre check visibility of the layer
+        const map = await service.getMap(mapId);
+        const layers = map.getAllLayers();
+        expect(layers.length).toBe(1);
+        const firstLayer = layers[0]!;
+        expect(firstLayer.getVisible()).toBe(false);
+        return firstLayer;
+    });
 
     // adjust visibility by control
     const checkbox = await screen.findByRole("checkbox");
@@ -147,12 +151,16 @@ it("layer control should have usable opacity slider", async () => {
         </PackageContextProvider>
     );
 
-    // pre check opacity in layer
-    const map = await service.getMap(mapId);
-    const layers = map.getAllLayers();
-    expect(layers.length).toBe(1);
-    const firstLayer = layers[0]!;
-    expect(firstLayer.getOpacity()).toBe(1);
+    // Wrap with act because map loading will trigger state changes
+    const firstLayer = await act(async () => {
+        // pre check opacity in layer
+        const map = await service.getMap(mapId);
+        const layers = map.getAllLayers();
+        expect(layers.length).toBe(1);
+        const firstLayer = layers[0]!;
+        expect(firstLayer.getOpacity()).toBe(1);
+        return firstLayer;
+    });
 
     // adjust opacity by control
     const slider = await screen.findByRole("slider");
