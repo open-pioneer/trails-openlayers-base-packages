@@ -1,6 +1,5 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-
 import type { ReactNode } from "react";
 
 /** Represents the severity or kind of a notification. */
@@ -23,8 +22,8 @@ export interface NotificationOptions {
     level?: NotificationLevel | undefined;
 
     /**
-     * The duration in ms how long the notification is shown.
-     * By default, notifications are not closed automatically.
+     * The duration (in milliseconds) how long the notification is displayed.
+     * By default, notifications are displayed until they are explicitly closed by the user.
      *
      * Note that important messages should not be hidden automatically for a11y reasons.
      */
