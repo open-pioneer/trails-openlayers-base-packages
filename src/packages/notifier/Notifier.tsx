@@ -5,6 +5,7 @@ import { useEvent } from "@open-pioneer/react-utils";
 import { useService } from "open-pioneer:react-hooks";
 import { ReactElement, useEffect, useState } from "react";
 import { InternalNotificationAPI, Notification } from "./NotificationServiceImpl";
+import { WarningTwoIcon } from "@chakra-ui/icons";
 
 /** Props supported by the {@link Notifier} component. */
 export interface NotifierProps {
@@ -44,13 +45,17 @@ export function Notifier(props: NotifierProps): ReactElement {
     const [ready, setReady] = useState(!isDev);
 
     const showNotification = useEvent((notification: Notification) => {
+        // use different icons for warning and error
+        const icon =
+            notification.level === "error" ? <WarningTwoIcon h="100%" w="100%" /> : undefined;
         toast({
             position,
             title: notification.title,
             description: notification.message || null,
             status: notification.level,
             isClosable: true,
-            duration: notification.displayDuration ?? null // Null: does not auto-close
+            duration: notification.displayDuration ?? null, // Null: does not auto-close
+            icon
         });
     });
     const closeAll = useEvent(() => {
@@ -61,7 +66,7 @@ export function Notifier(props: NotifierProps): ReactElement {
         /*
          * Delay registering the notification handler a bit during development.
          * Chakra's toast implementation clears its store when it gets unmounted.
-         * During development, that may also happen during initialization because of react's
+         * During development, that may also happen during initialization because of React's
          * StrictMode (https://react.dev/reference/react/StrictMode).
          *
          * Unfortunately, that means that toasts that were emitted very early (such as in service constructors)
