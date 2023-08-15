@@ -14,7 +14,7 @@ import { createService } from "@open-pioneer/test-utils/services";
 import { act, render, renderHook, screen, waitFor } from "@testing-library/react";
 import { MapOptions } from "ol/Map";
 import { expect, it } from "vitest";
-import { ScaleViewerComponent, useCenter, useResolution, useScale } from "./ScaleViewerComponent";
+import { ScaleViewer, useCenter, useResolution, useScale } from "./ScaleViewer";
 import View from "ol/View";
 import OSM from "ol/source/OSM";
 import TileLayer from "ol/layer/Tile";
@@ -72,7 +72,7 @@ it("should successfully create a scale viewer component", async () => {
     const { container } = render(
         <PackageContextProvider {...createPackageContextProviderProps(service)}>
             <div data-testid="base">
-                <ScaleViewerComponent mapId={mapId}></ScaleViewerComponent>
+                <ScaleViewer mapId={mapId}></ScaleViewer>
             </div>
         </PackageContextProvider>
     );
@@ -88,9 +88,9 @@ it("should successfully create a scale viewer component", async () => {
     });
     expect(div).toMatchSnapshot();
 
-    // check scale viewer wrapper is available
-    const wrapper = container.querySelector(".scale-viewer-wrapper");
-    expect(wrapper).toBeInstanceOf(HTMLDivElement);
+    // check scale viewer box is available
+    const box = container.querySelector(".scale-viewer");
+    expect(box).toBeInstanceOf(HTMLDivElement);
 });
 
 it("should successfully create a map resolution", async () => {
@@ -115,7 +115,7 @@ it("should successfully create a map resolution", async () => {
         <PackageContextProvider {...createPackageContextProviderProps(service)}>
             <div data-testid="base">
                 <MapContainer mapId={mapId} />
-                <ScaleViewerComponent mapId={mapId}></ScaleViewerComponent>
+                <ScaleViewer mapId={mapId}></ScaleViewer>
             </div>
         </PackageContextProvider>
     );
@@ -186,7 +186,7 @@ it("should successfully create a map center", async () => {
         <PackageContextProvider {...createPackageContextProviderProps(service)}>
             <div data-testid="base">
                 <MapContainer mapId={mapId} />
-                <ScaleViewerComponent mapId={mapId}></ScaleViewerComponent>
+                <ScaleViewer mapId={mapId}></ScaleViewer>
             </div>
         </PackageContextProvider>
     );
@@ -248,7 +248,7 @@ it("should successfully create a map scale", async () => {
         <PackageContextProvider {...createPackageContextProviderProps(service)}>
             <div data-testid="base">
                 <MapContainer mapId={mapId} />
-                <ScaleViewerComponent mapId={mapId}></ScaleViewerComponent>
+                <ScaleViewer mapId={mapId}></ScaleViewer>
             </div>
         </PackageContextProvider>
     );

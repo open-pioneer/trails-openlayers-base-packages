@@ -4,12 +4,12 @@ This package provides a scale viewer component, which can be integrated besides 
 
 ## Usage
 
-For more configuration of the scale viewer component check `./ScaleViewerComponent.tsx`.
+For more configuration of the scale viewer component check `./ScaleViewer.tsx`.
 
 See here a simple integration of a scale viewer with a map id.
 
 ```jsx
-<ScaleViewerComponent mapId="map_id"></ScaleViewerComponent>
+<ScaleViewer mapId="map_id"></ScaleViewer>
 ```
 
 ## License

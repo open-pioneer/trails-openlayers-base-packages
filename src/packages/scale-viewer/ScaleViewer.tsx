@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import { OlComponentProps, useMap } from "@open-pioneer/experimental-ol-map";
 import { HTMLAttributes, useEffect, useState } from "react";
-import { Text } from "@open-pioneer/chakra-integration";
+import { Box, Text } from "@open-pioneer/chakra-integration";
 
 import Map from "ol/Map.js";
 import { unByKey } from "ol/Observable";
@@ -21,7 +21,7 @@ import { useIntl } from "open-pioneer:react-hooks";
 const DEFAULT_DPI = 25.4 / 0.28;
 const INCHES_PER_METRE = 39.37;
 
-export function ScaleViewerComponent(props: OlComponentProps & HTMLAttributes<HTMLDivElement>) {
+export function ScaleViewer(props: OlComponentProps & HTMLAttributes<HTMLDivElement>) {
     const intl = useIntl();
 
     const { mapId, ...rest } = props;
@@ -32,9 +32,9 @@ export function ScaleViewerComponent(props: OlComponentProps & HTMLAttributes<HT
     const { scale } = useScale(map, resolution, center);
 
     return (
-        <div className="scale-viewer-wrapper" {...rest}>
+        <Box className="scale-viewer" {...rest}>
             {scale && <Text>1:{intl.formatNumber(scale)}</Text>}
-        </div>
+        </Box>
     );
 }
 

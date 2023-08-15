@@ -4,7 +4,7 @@ import { Box, Button, Flex } from "@open-pioneer/chakra-integration";
 import { Sidebar, SidebarItem } from "@open-pioneer/experimental-layout-sidebar";
 import { LayerControlComponent } from "@open-pioneer/experimental-ol-layer-control";
 import { MapContainer, MapPadding } from "@open-pioneer/experimental-ol-map";
-import { ScaleViewerComponent } from "@open-pioneer/scale-viewer";
+import { ScaleViewer } from "@open-pioneer/scale-viewer";
 import { ScaleComponent } from "map-sample-scale-component";
 import { ZoomComponent } from "map-sample-zoom-component";
 import { useService } from "open-pioneer:react-hooks";
@@ -60,7 +60,7 @@ export function MapApp() {
                 />
             </Flex>
             <Flex gap={3} alignItems="center" justifyContent="center">
-                <ScaleViewerComponent mapId={MAP_ID}></ScaleViewerComponent>
+                <ScaleViewer mapId={MAP_ID}></ScaleViewer>
                 <ScaleComponent mapId={MAP_ID}></ScaleComponent>
             </Flex>
         </Flex>

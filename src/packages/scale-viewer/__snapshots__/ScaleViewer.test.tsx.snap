@@ -80,7 +80,8 @@ exports[`should successfully create a map center 1`] = `
     </div>
   </div>
   <div
-    class="scale-viewer-wrapper"
+    class="scale-viewer css-0"
+    data-theme="light"
   >
     <p
       class="chakra-text css-0"
@@ -173,7 +174,8 @@ exports[`should successfully create a map resolution 1`] = `
     </div>
   </div>
   <div
-    class="scale-viewer-wrapper"
+    class="scale-viewer css-0"
+    data-theme="light"
   >
     <p
       class="chakra-text css-0"
@@ -266,7 +268,8 @@ exports[`should successfully create a map scale 1`] = `
     </div>
   </div>
   <div
-    class="scale-viewer-wrapper"
+    class="scale-viewer css-0"
+    data-theme="light"
   >
     <p
       class="chakra-text css-0"
@@ -284,7 +287,8 @@ exports[`should successfully create a scale viewer component 1`] = `
   data-testid="base"
 >
   <div
-    class="scale-viewer-wrapper"
+    class="scale-viewer css-0"
+    data-theme="light"
   >
     <p
       class="chakra-text css-0"
