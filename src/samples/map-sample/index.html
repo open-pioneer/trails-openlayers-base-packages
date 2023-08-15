@@ -18,7 +18,27 @@
     </head>
 
     <body class="full-height">
-        <ol-map-app class="full-height" id="test"></ol-map-app>
-        <script type="module" src="./ol-app/app.ts"></script>
+        <script type="module">
+            import "./ol-app/app.ts";
+            const body = document.getElementsByTagName("body")[0];
+
+            initApp();
+
+            function initApp() {
+                const queryString = window.location.search;
+                const urlParams = new URLSearchParams(queryString);
+                const lang = urlParams.get("lang");
+
+                const app = document.createElement("ol-map-app");
+                app.classList.add("full-height");
+                app.setAttribute("id", "test");
+
+                if (lang) {
+                    app.setAttribute("forced-locale", lang);
+                }
+
+                body.appendChild(app);
+            }
+        </script>
     </body>
 </html>
