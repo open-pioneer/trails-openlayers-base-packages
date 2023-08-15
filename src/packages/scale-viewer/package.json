@@ -4,15 +4,16 @@
     "license": "Apache-2.0",
     "main": "index.ts",
     "peerDependencies": {
-        "ol": "^7.3.0",
-        "@open-pioneer/runtime": "^1.0.0",
-        "react": "^18.2.0",
         "@open-pioneer/chakra-integration": "^1.0.0",
-        "@open-pioneer/experimental-ol-map": "workspace:^"
+        "@open-pioneer/experimental-ol-map": "workspace:^",
+        "@open-pioneer/runtime": "^1.0.0",
+        "ol": "^7.3.0",
+        "react": "^18.2.0"
     },
     "devDependencies": {
         "@open-pioneer/test-utils": "^1.0.0",
-        "openlayers-base-packages": "workspace:*"
+        "openlayers-base-packages": "workspace:*",
+        "resize-observer-polyfill": "^1.5.1"
     },
     "publishConfig": {
         "directory": "dist",
