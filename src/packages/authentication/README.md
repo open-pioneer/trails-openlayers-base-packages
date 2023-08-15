@@ -98,3 +98,7 @@ The plugin must implement the `AuthPlugin` TypeScript interface exported by this
 -   Implement the `logout()` method: this method will be called when the user attempts to end their session.
 
 A simple example is available in this project's `auth-sample`.
+
+## License
+
+[Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0)
