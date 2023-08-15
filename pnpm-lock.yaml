@@ -302,25 +302,7 @@ importers:
         version: link:../../..
     publishDirectory: dist
 
-  src/samples/auth-sample/auth-app:
-    dependencies:
-      '@open-pioneer/authentication':
-        specifier: workspace:^
-        version: link:../../../packages/authentication
-      '@open-pioneer/chakra-integration':
-        specifier: ^1.0.0
-        version: 1.0.0(@chakra-ui/react@2.6.1)(@emotion/cache@11.11.0)(@emotion/react@11.11.0)(@emotion/styled@11.11.0)(framer-motion@10.12.16)(react-dom@18.2.0)(react@18.2.0)
-      '@open-pioneer/core':
-        specifier: ^1.0.0
-        version: 1.0.0
-      '@open-pioneer/runtime':
-        specifier: ^1.0.0
-        version: 1.0.0(@formatjs/intl@2.7.2)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/core@1.0.0)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
-      react:
-        specifier: ^18.2.0
-        version: 18.2.0
-
-  src/experimental-packages/scale-viewer:
+  src/packages/scale-viewer:
     dependencies:
       '@open-pioneer/chakra-integration':
         specifier: ^1.0.0
@@ -348,6 +330,24 @@ importers:
         specifier: ^1.5.1
         version: 1.5.1
     publishDirectory: dist
+
+  src/samples/auth-sample/auth-app:
+    dependencies:
+      '@open-pioneer/authentication':
+        specifier: workspace:^
+        version: link:../../../packages/authentication
+      '@open-pioneer/chakra-integration':
+        specifier: ^1.0.0
+        version: 1.0.0(@chakra-ui/react@2.6.1)(@emotion/cache@11.11.0)(@emotion/react@11.11.0)(@emotion/styled@11.11.0)(framer-motion@10.12.16)(react-dom@18.2.0)(react@18.2.0)
+      '@open-pioneer/core':
+        specifier: ^1.0.0
+        version: 1.0.0
+      '@open-pioneer/runtime':
+        specifier: ^1.0.0
+        version: 1.0.0(@formatjs/intl@2.7.2)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/core@1.0.0)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
+      react:
+        specifier: ^18.2.0
+        version: 18.2.0
 
   src/samples/map-sample/map-sample-logging:
     devDependencies:
