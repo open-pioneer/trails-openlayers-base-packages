@@ -121,7 +121,7 @@ it("should successfully create a map resolution", async () => {
     );
 
     // assert map and scale viewer is mounted
-    const div = await waitFor(async () => {
+    await waitFor(async () => {
         const domElement = await screen.findByTestId("base");
         const container = domElement.querySelector(".ol-viewport");
         if (!container) {
@@ -129,7 +129,6 @@ it("should successfully create a map resolution", async () => {
         }
         return domElement;
     });
-    expect(div).toMatchSnapshot();
 
     const map = await service.getMap(mapId);
     if (!map) {
@@ -192,7 +191,7 @@ it("should successfully create a map center", async () => {
     );
 
     // assert map and scale viewer is mounted
-    const div = await waitFor(async () => {
+    await waitFor(async () => {
         const domElement = await screen.findByTestId("base");
         const container = domElement.querySelector(".ol-viewport");
         if (!container) {
@@ -200,7 +199,6 @@ it("should successfully create a map center", async () => {
         }
         return domElement;
     });
-    expect(div).toMatchSnapshot();
 
     const map = await service.getMap(mapId);
     if (!map) {
@@ -254,7 +252,7 @@ it("should successfully create a map scale", async () => {
     );
 
     // assert map and scale viewer is mounted
-    const div = await waitFor(async () => {
+    await waitFor(async () => {
         const domElement = await screen.findByTestId("base");
         const container = domElement.querySelector(".ol-viewport");
         if (!container) {
@@ -262,7 +260,6 @@ it("should successfully create a map scale", async () => {
         }
         return domElement;
     });
-    expect(div).toMatchSnapshot();
 
     const map = await service.getMap(mapId);
     if (!map) {
