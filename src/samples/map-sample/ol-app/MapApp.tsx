@@ -54,16 +54,25 @@ export function MapApp() {
             <Flex flex="1" direction="column" position="relative">
                 <MapContainer mapId={MAP_ID} viewPadding={viewPadding}></MapContainer>
                 <ZoomComponent className="zoom-controls" mapId={MAP_ID}></ZoomComponent>
+                <Flex
+                    className="map-panel"
+                    gap={3}
+                    alignItems="center"
+                    justifyContent="center"
+                    padding={4}
+                    roundedBottomLeft="lg"
+                    boxShadow="lg"
+                    backgroundColor={"whiteAlpha.800"}
+                >
+                    <ScaleViewer mapId={MAP_ID} ref={scaleViewerRef}></ScaleViewer>
+                    <ScaleComponent mapId={MAP_ID}></ScaleComponent>
+                </Flex>
                 <Sidebar
                     defaultExpanded={isExpanded}
                     expandedChanged={(expanded) => setExpanded(expanded)}
                     sidebarWidthChanged={(width) => setViewPadding({ left: width / 2 })}
                     items={items}
                 />
-            </Flex>
-            <Flex gap={3} alignItems="center" justifyContent="center">
-                <ScaleViewer mapId={MAP_ID} ref={scaleViewerRef}></ScaleViewer>
-                <ScaleComponent mapId={MAP_ID}></ScaleComponent>
             </Flex>
         </Flex>
     );

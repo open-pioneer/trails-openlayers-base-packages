@@ -20,6 +20,12 @@
     right: 1rem;
 }
 
+.map-panel {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
 .ol-control.ol-zoom {
     left: unset;
     right: 0.5em;
