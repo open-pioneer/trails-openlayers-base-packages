@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
 import { OlComponentProps, useMap } from "@open-pioneer/experimental-ol-map";
-import { HTMLAttributes, useEffect, useState } from "react";
-import { Box, Text } from "@open-pioneer/chakra-integration";
+import { useEffect, useState, forwardRef, ForwardedRef } from "react";
+import { Box, BoxProps, Text } from "@open-pioneer/chakra-integration";
 
 import Map from "ol/Map.js";
 import { unByKey } from "ol/Observable";
@@ -21,7 +21,10 @@ import { useIntl } from "open-pioneer:react-hooks";
 const DEFAULT_DPI = 25.4 / 0.28;
 const INCHES_PER_METRE = 39.37;
 
-export function ScaleViewer(props: OlComponentProps & HTMLAttributes<HTMLDivElement>) {
+export const ScaleViewer = forwardRef(function ScaleViewer(
+    props: OlComponentProps & BoxProps,
+    ref: ForwardedRef<HTMLDivElement> | undefined
+) {
     const intl = useIntl();
 
     const { mapId, ...rest } = props;
@@ -32,11 +35,11 @@ export function ScaleViewer(props: OlComponentProps & HTMLAttributes<HTMLDivElem
     const { scale } = useScale(map, resolution, center);
 
     return (
-        <Box className="scale-viewer" {...rest}>
+        <Box className="scale-viewer" ref={ref} {...rest}>
             {scale && <Text>1:{intl.formatNumber(scale)}</Text>}
         </Box>
     );
-}
+});
 
 /**
  * Detect change of map scale and return scale | undefined
