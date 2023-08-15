@@ -9,20 +9,17 @@ import { unByKey } from "ol/Observable";
 import { Coordinate } from "ol/coordinate";
 import { EventsKey } from "ol/events";
 import { useIntl } from "open-pioneer:react-hooks";
-import { PackageIntl } from "@open-pioneer/runtime";
 
 const DEFAULT_PRECISION = 4;
 
 export function CoordinateViewer(props: OlComponentProps & { precision?: number } & BoxProps) {
-    const intl = useIntl();
-
     const { mapId, precision, ...rest } = props;
     const { map } = useMap(mapId);
 
     const { coordinates } = useCoordinates(map);
 
     const projection = getProjection(map);
-    const coordinatesString = formatCoordinates(coordinates, precision, intl);
+    const coordinatesString = useFormatting(coordinates, precision);
 
     const displayString = coordinatesString ? coordinatesString + " " + projection : "";
 
@@ -54,11 +51,12 @@ export function useCoordinates(map: Map | undefined): { coordinates: Coordinate 
     return { coordinates: coordinates };
 }
 
-function formatCoordinates(
+export function useFormatting(
     coordinates: Coordinate | undefined,
-    configuredPrecision: number | undefined,
-    intl: PackageIntl
+    configuredPrecision: number | undefined
 ): string {
+    const intl = useIntl();
+
     if (coordinates && coordinates[0] != undefined && coordinates[1] != undefined) {
         // todo transformation
 
