@@ -99,7 +99,7 @@ export function useResolution(map: Map | undefined): { resolution: number | unde
             }
         });
 
-        () => unByKey(eventsKey);
+        return () => unByKey(eventsKey);
     }, [map, resolution]);
 
     return { resolution };
@@ -127,7 +127,7 @@ export function useCenter(map: Map | undefined): { center: Coordinate | undefine
             }
         });
 
-        () => unByKey(eventsKey);
+        return () => unByKey(eventsKey);
     }, [map, center]);
 
     return { center };
