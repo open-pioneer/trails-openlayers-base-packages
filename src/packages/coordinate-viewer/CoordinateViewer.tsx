@@ -12,6 +12,8 @@ import { useIntl } from "open-pioneer:react-hooks";
 
 const DEFAULT_PRECISION = 4;
 
+// Todo inline documentation
+
 export function CoordinateViewer(props: OlComponentProps & { precision?: number } & BoxProps) {
     const { mapId, precision, ...rest } = props;
     const { map } = useMap(mapId);
@@ -26,15 +28,12 @@ export function CoordinateViewer(props: OlComponentProps & { precision?: number 
     const displayString = coordinatesString ? coordinatesString + " " + projection : "";
 
     return (
-        <Box className="scale-viewer" {...rest}>
+        <Box className="coordinate-viewer" {...rest}>
             {<Text>{displayString}</Text>}
         </Box>
     );
 }
 
-/**
- * Detect change of map center and return center | undefined
- */
 export function useCoordinates(map: Map | undefined): { coordinates: Coordinate | undefined } {
     const [coordinates, setCoordinates] = useState<Coordinate | undefined>();
 
@@ -69,7 +68,6 @@ export function useFormatting(
         x = parseFloat(x.toFixed(precision));
         y = parseFloat(y.toFixed(precision));
 
-        // Todo testen
         const xString = intl.formatNumber(x);
         const yString = intl.formatNumber(y);
 
