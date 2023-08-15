@@ -4,10 +4,11 @@ import { Box, Button, Flex } from "@open-pioneer/chakra-integration";
 import { Sidebar, SidebarItem } from "@open-pioneer/experimental-layout-sidebar";
 import { LayerControlComponent } from "@open-pioneer/experimental-ol-layer-control";
 import { MapContainer, MapPadding } from "@open-pioneer/experimental-ol-map";
+import { ScaleViewer } from "@open-pioneer/scale-viewer";
 import { ScaleComponent } from "map-sample-scale-component";
 import { ZoomComponent } from "map-sample-zoom-component";
 import { useService } from "open-pioneer:react-hooks";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { FiCodesandbox, FiLayers } from "react-icons/fi";
 import { useAsync } from "react-use";
 
@@ -43,6 +44,8 @@ export function MapApp() {
         }
     ];
 
+    const scaleViewerRef = useRef<HTMLDivElement>(null);
+
     return (
         <Flex height="100%" direction="column" overflow="hidden">
             <Box textAlign="center" py={1}>
@@ -59,6 +62,7 @@ export function MapApp() {
                 />
             </Flex>
             <Flex gap={3} alignItems="center" justifyContent="center">
+                <ScaleViewer mapId={MAP_ID} ref={scaleViewerRef}></ScaleViewer>
                 <ScaleComponent mapId={MAP_ID}></ScaleComponent>
             </Flex>
         </Flex>
