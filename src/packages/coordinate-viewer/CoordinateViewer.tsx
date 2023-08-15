@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
 import { OlComponentProps, useMap } from "@open-pioneer/experimental-ol-map";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Box, Text, BoxProps } from "@open-pioneer/chakra-integration";
 
 import Map from "ol/Map.js";
@@ -18,7 +18,9 @@ export function CoordinateViewer(props: OlComponentProps & { precision?: number 
 
     const { coordinates } = useCoordinates(map);
 
-    const projection = getProjection(map);
+    const projection = useMemo(() => {
+        return getProjection(map);
+    }, [map]);
     const coordinatesString = useFormatting(coordinates, precision);
 
     const displayString = coordinatesString ? coordinatesString + " " + projection : "";
