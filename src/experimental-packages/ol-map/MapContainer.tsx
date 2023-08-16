@@ -3,6 +3,7 @@
 import { Box } from "@open-pioneer/chakra-integration";
 import classNames from "classnames";
 import type OlMap from "ol/Map";
+import { Extent } from "ol/extent";
 import { useService } from "open-pioneer:react-hooks";
 import { ReactNode, useEffect, useMemo, useRef } from "react";
 import { useAsync } from "react-use";
@@ -31,6 +32,17 @@ export interface MapComponentProps extends OlComponentProps {
      * See: https://openlayers.org/en/latest/apidoc/module-ol_View-View.html#padding)
      */
     viewPadding?: MapPadding | undefined;
+
+    /**
+     * Behavior performed by the map when the view padding changes.
+     *
+     * - `none`: Do nothing.
+     * - `preserve-center`: Ensures that the center point remains the same by animating the view.
+     * - `preserve-extent`: Ensures that the extent remains the same by zooming.
+     *
+     * @default "preserve-center"
+     */
+    viewPaddingChangeBehavior?: "none" | "preserve-center" | "preserve-extent";
 
     /**
      * Additional class name(s).
@@ -64,14 +76,20 @@ export function MapContainer(props: MapComponentProps) {
 }
 
 /**
- * This inner component is rendered if the map has been loaded.
+ * This inner component is rendered when the map has been loaded.
  *
  * It provides the map instance and additional properties down the component tree.
  */
 function MapContainerReady(
     props: { map: OlMap } & Omit<MapComponentProps, "mapId" | "className">
 ): JSX.Element {
-    const { map, viewPadding: viewPaddingProp, children } = props;
+    const {
+        map,
+        viewPadding: viewPaddingProp,
+        viewPaddingChangeBehavior = "preserve-center",
+        children
+    } = props;
+
     const viewPadding = useMemo<Required<MapPadding>>(() => {
         return {
             left: viewPaddingProp?.left ?? 0,
@@ -81,15 +99,35 @@ function MapContainerReady(
         };
     }, [viewPaddingProp]);
 
+    // Apply view padding
     useEffect(() => {
         const mapView = map?.getView();
-        if (map && mapView) {
-            const center = mapView.getCenter();
-            const { top, right, bottom, left } = viewPadding;
-            mapView.padding = [top, right, bottom, left];
-            mapView.animate({ center, duration: 300 });
+        if (!map || !mapView) {
+            return;
         }
-    }, [viewPadding, map]);
+
+        const oldCenter = mapView.getCenter();
+        const oldPadding = fromOlPadding(mapView.padding);
+        const oldExtent = extentIncludingPadding(map, oldPadding);
+
+        mapView.padding = toOlPadding(viewPadding);
+        switch (viewPaddingChangeBehavior) {
+            case "preserve-center":
+                mapView.animate({ center: oldCenter, duration: 300 });
+                break;
+            case "preserve-extent": {
+                if (oldExtent) {
+                    mapView.animate({
+                        center: oldCenter,
+                        resolution: mapView.getResolutionForExtent(oldExtent),
+                        duration: 300
+                    });
+                }
+                break;
+            }
+            case "none":
+        }
+    }, [viewPadding, map, viewPaddingChangeBehavior]);
 
     const mapContext = useMemo((): MapContextType => {
         return {
@@ -97,6 +135,45 @@ function MapContainerReady(
             padding: viewPadding
         };
     }, [map, viewPadding]);
+    return <MapContextProvider value={mapContext}>{children}</MapContextProvider>;
+}
 
-    return <MapContext.Provider value={mapContext}>{children}</MapContext.Provider>;
+/**
+ * Returns the extent visible in the non-padded region of the map.
+ */
+function extentIncludingPadding(map: OlMap, padding: Required<MapPadding>): Extent | undefined {
+    const size = map.getSize();
+    if (!size || size.length < 2) {
+        return undefined;
+    }
+
+    const [width, height] = size as [number, number];
+    const bottomLeft = map.getCoordinateFromPixel([padding.left, padding.bottom]);
+    const topRight = map.getCoordinateFromPixel([
+        Math.max(0, width - padding.right),
+        Math.max(0, height - padding.top)
+    ]);
+    if (!bottomLeft || !topRight) {
+        return undefined;
+    }
+
+    const [xmin, ymin] = bottomLeft;
+    const [xmax, ymax] = topRight;
+    return [xmin, ymin, xmax, ymax] as Extent;
+}
+
+function fromOlPadding(padding: number[] | undefined): Required<MapPadding> {
+    // top, right, bottom, left
+    return {
+        top: padding?.[0] ?? 0,
+        right: padding?.[1] ?? 0,
+        bottom: padding?.[2] ?? 0,
+        left: padding?.[3] ?? 0
+    };
+}
+
+function toOlPadding(padding: Required<MapPadding>): number[] {
+    // top, right, bottom, left
+    const { top, right, bottom, left } = padding;
+    return [top, right, bottom, left];
 }

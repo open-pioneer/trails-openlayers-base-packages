@@ -3,7 +3,7 @@
 import { Box, Button, Flex } from "@open-pioneer/chakra-integration";
 import { Sidebar, SidebarItem } from "@open-pioneer/experimental-layout-sidebar";
 import { LayerControlComponent } from "@open-pioneer/experimental-ol-layer-control";
-import { MapContainer, MapPadding } from "@open-pioneer/experimental-ol-map";
+import { MapContainer, MapPadding, ToolContainer } from "@open-pioneer/experimental-ol-map";
 import { ScaleViewer } from "@open-pioneer/scale-viewer";
 import { ScaleComponent } from "map-sample-scale-component";
 import { ZoomComponent } from "map-sample-zoom-component";
@@ -52,25 +52,33 @@ export function MapApp() {
                 Open Pioneer - Map sample
             </Box>
             <Flex flex="1" direction="column" position="relative">
-                <MapContainer mapId={MAP_ID} viewPadding={viewPadding}></MapContainer>
-                <ZoomComponent className="zoom-controls" mapId={MAP_ID}></ZoomComponent>
-                <Flex
-                    className="map-panel"
-                    gap={3}
-                    alignItems="center"
-                    justifyContent="center"
-                    padding={4}
-                    roundedBottomLeft="lg"
-                    boxShadow="lg"
-                    backgroundColor={"whiteAlpha.800"}
+                <MapContainer
+                    mapId={MAP_ID}
+                    viewPadding={viewPadding}
+                    viewPaddingChangeBehavior="preserve-extent"
                 >
-                    <ScaleViewer mapId={MAP_ID} ref={scaleViewerRef}></ScaleViewer>
-                    <ScaleComponent mapId={MAP_ID}></ScaleComponent>
-                </Flex>
+                    <ToolContainer position="bottom-right">
+                        <ZoomComponent mapId={MAP_ID}></ZoomComponent>
+                    </ToolContainer>
+                    <ToolContainer position="top-right">
+                        <Flex
+                            gap={3}
+                            alignItems="center"
+                            justifyContent="center"
+                            padding={4}
+                            boxShadow="lg"
+                            backgroundColor={"whiteAlpha.800"}
+                        >
+                            <ScaleViewer mapId={MAP_ID} ref={scaleViewerRef}></ScaleViewer>
+                            <ScaleComponent mapId={MAP_ID}></ScaleComponent>
+                        </Flex>
+                    </ToolContainer>
+                </MapContainer>
+
                 <Sidebar
                     defaultExpanded={isExpanded}
                     expandedChanged={(expanded) => setExpanded(expanded)}
-                    sidebarWidthChanged={(width) => setViewPadding({ left: width / 2 })}
+                    sidebarWidthChanged={(width) => setViewPadding({ left: width })}
                     items={items}
                 />
             </Flex>

@@ -13,12 +13,15 @@ export interface MapContextType {
 const MapContext = createContext<MapContextType | undefined>(undefined);
 MapContext.displayName = "MapContext";
 
-export const MapContextProvider: Provider<MapContextType> = MapContext.Provider as Provider<MapContextType>;
+export const MapContextProvider: Provider<MapContextType> =
+    MapContext.Provider as Provider<MapContextType>;
 
 export function useMapContext(): MapContextType {
     const contextValue = useContext(MapContext);
     if (!contextValue) {
-        throw new Error(`Map context is not available. The component must be a child of the <MapContainer /> component.`);
+        throw new Error(
+            `Map context is not available. The component must be a child of the <MapContainer /> component.`
+        );
     }
     return contextValue;
 }
