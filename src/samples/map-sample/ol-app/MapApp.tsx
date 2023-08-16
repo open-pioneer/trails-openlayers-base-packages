@@ -57,6 +57,11 @@ export function MapApp() {
                     viewPadding={viewPadding}
                     viewPaddingChangeBehavior="preserve-extent"
                 >
+                    <ToolContainer position="top-left">
+                        <Box backgroundColor="whiteAlpha.800" padding={4} boxShadow="lg">
+                            I move with the sidebar 🙂
+                        </Box>
+                    </ToolContainer>
                     <ToolContainer position="bottom-right">
                         <ZoomComponent mapId={MAP_ID}></ZoomComponent>
                     </ToolContainer>
@@ -67,7 +72,7 @@ export function MapApp() {
                             justifyContent="center"
                             padding={4}
                             boxShadow="lg"
-                            backgroundColor={"whiteAlpha.800"}
+                            backgroundColor="whiteAlpha.800"
                         >
                             <ScaleViewer mapId={MAP_ID} ref={scaleViewerRef}></ScaleViewer>
                             <ScaleComponent mapId={MAP_ID}></ScaleComponent>
