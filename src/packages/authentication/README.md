@@ -9,8 +9,6 @@ The plugin must implement the actual authentication flow.
 
 See [below](#implementing-an-authentication-plugin) for how to implement an authentication plugin.
 
-TODO(future release): Packages implementing authentication plugins, e.g. `authentication-keycloak`?
-
 ## Use cases
 
 ### Retrieving the current authentication state
