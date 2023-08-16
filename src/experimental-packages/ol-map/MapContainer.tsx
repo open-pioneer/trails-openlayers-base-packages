@@ -1,12 +1,12 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-import { Box } from "@chakra-ui/react";
+import { Box } from "@open-pioneer/chakra-integration";
 import classNames from "classnames";
 import type OlMap from "ol/Map";
 import { useService } from "open-pioneer:react-hooks";
 import { ReactNode, useEffect, useMemo, useRef } from "react";
 import { useAsync } from "react-use";
-import { MapContext, MapContextValue } from "./MapContext";
+import { MapContextProvider, MapContextType } from "./MapContext";
 
 export interface OlComponentProps {
     mapId: string;
@@ -56,15 +56,8 @@ export function MapContainer(props: MapComponentProps) {
         }
     }, [map, mapRegistry, mapId]);
 
-    const containerStyle: React.CSSProperties = {
-        height: "100%"
-    };
     return (
-        <Box
-            className={classNames("ol-map-container", className)}
-            ref={mapElement}
-            style={containerStyle}
-        >
+        <Box className={classNames("map-container", className)} ref={mapElement} h="100%" w="100%">
             {map && <MapContainerReady map={map} {...rest} />}
         </Box>
     );
@@ -98,7 +91,7 @@ function MapContainerReady(
         }
     }, [viewPadding, map]);
 
-    const mapContext = useMemo((): MapContextValue => {
+    const mapContext = useMemo((): MapContextType => {
         return {
             map,
             padding: viewPadding
