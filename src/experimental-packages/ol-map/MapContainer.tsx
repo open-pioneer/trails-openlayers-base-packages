@@ -1,9 +1,12 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-import { useService } from "open-pioneer:react-hooks";
-import { useEffect, useRef } from "react";
-import { useAsync } from "react-use";
+import { Box } from "@chakra-ui/react";
 import classNames from "classnames";
+import type OlMap from "ol/Map";
+import { useService } from "open-pioneer:react-hooks";
+import { ReactNode, useEffect, useMemo, useRef } from "react";
+import { useAsync } from "react-use";
+import { MapContext, MapContextValue } from "./MapContext";
 
 export interface OlComponentProps {
     mapId: string;
@@ -33,39 +36,74 @@ export interface MapComponentProps extends OlComponentProps {
      * Additional class name(s).
      */
     className?: string;
+
+    children?: ReactNode;
 }
 
 export function MapContainer(props: MapComponentProps) {
+    const { mapId, className, ...rest } = props;
+
     const mapElement = useRef<HTMLDivElement>(null);
-    const olMapRegistry = useService("ol-map.MapRegistry");
-    const mapState = useAsync(async () => await olMapRegistry.getMap(props.mapId), [props.mapId]);
+    const mapRegistry = useService("ol-map.MapRegistry");
+    const mapState = useAsync(async () => await mapRegistry.getMap(mapId), [mapId]);
+    const map = mapState.value; // undefined -> not ready yet
 
     useEffect(() => {
-        if (mapState.value && mapElement.current) {
+        if (map && mapElement.current) {
             // Register div as render target
-            const resource = olMapRegistry.setContainer(props.mapId, mapElement.current);
+            const resource = mapRegistry.setContainer(mapId, mapElement.current);
             return () => resource.destroy();
         }
-    }, [mapState.value, olMapRegistry, props.mapId]);
+    }, [map, mapRegistry, mapId]);
 
-    useEffect(() => {
-        const mapView = mapState.value?.getView();
-        if (props.viewPadding && mapView) {
-            const center = mapView.getCenter();
-            const { top = 0, right = 0, bottom = 0, left = 0 } = props.viewPadding;
-            mapView.padding = [top, right, bottom, left];
-            mapView.animate({ center, duration: 300 });
-        }
-    }, [props.viewPadding, mapState.value]);
-
-    const mapContainer: React.CSSProperties = {
+    const containerStyle: React.CSSProperties = {
         height: "100%"
     };
     return (
-        <div
-            className={classNames("ol-map-container", props.className)}
+        <Box
+            className={classNames("ol-map-container", className)}
             ref={mapElement}
-            style={mapContainer}
-        ></div>
+            style={containerStyle}
+        >
+            {map && <MapContainerReady map={map} {...rest} />}
+        </Box>
     );
+}
+
+/**
+ * This inner component is rendered if the map has been loaded.
+ *
+ * It provides the map instance and additional properties down the component tree.
+ */
+function MapContainerReady(
+    props: { map: OlMap } & Omit<MapComponentProps, "mapId" | "className">
+): JSX.Element {
+    const { map, viewPadding: viewPaddingProp, children } = props;
+    const viewPadding = useMemo<Required<MapPadding>>(() => {
+        return {
+            left: viewPaddingProp?.left ?? 0,
+            right: viewPaddingProp?.right ?? 0,
+            top: viewPaddingProp?.top ?? 0,
+            bottom: viewPaddingProp?.bottom ?? 0
+        };
+    }, [viewPaddingProp]);
+
+    useEffect(() => {
+        const mapView = map?.getView();
+        if (map && mapView) {
+            const center = mapView.getCenter();
+            const { top, right, bottom, left } = viewPadding;
+            mapView.padding = [top, right, bottom, left];
+            mapView.animate({ center, duration: 300 });
+        }
+    }, [viewPadding, map]);
+
+    const mapContext = useMemo((): MapContextValue => {
+        return {
+            map,
+            padding: viewPadding
+        };
+    }, [map, viewPadding]);
+
+    return <MapContext.Provider value={mapContext}>{children}</MapContext.Provider>;
 }
