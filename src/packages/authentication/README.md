@@ -1,13 +1,13 @@
 # @open-pioneer/authentication
 
-The authentication package implements a central service to handle the current user's session.
+This package implements a central service to handle the current user's session.
 
 ## Authentication plugins
 
-The authentication package cannot be used on its own: it requires a service providing `authentication.AuthPlugin` to be present in the application.
-The plugin must implement the actual authentication flow.
+The authentication package cannot be used on its own.
+It requires an authentication plugin, that implements the actual authentication flow.
 
-See [below](#implementing-an-authentication-plugin) for how to implement an authentication plugin.
+For more information, see [implementing an authentication plugin](#implementing-an-authentication-plugin).
 
 ## Use cases
 
@@ -37,9 +37,7 @@ handle.destroy();
 
 ### Enforcing authentication
 
-Some applications require the user to be always logged in.
-
-Authentication can be enforced by wrapping the application with the `<ForceAuth />` component:
+To make sure that only users, that are logged in, can use an application, enforce the authentication flow by wrapping the application with the `<ForceAuth />` component:
 
 ```jsx
 // AppUI.jsx
@@ -54,22 +52,23 @@ export function AppUI() {
 }
 ```
 
-`ForceAuth` will render its children (your application) if the user is authenticated.
-Otherwise, it will render the authentication plugin's _fallback_ component (see below).
-It will be updated correctly if the authentication state changes.
+`ForceAuth` renders its children (your application) if the user is authenticated.
+Otherwise, it renders the authentication plugin's _fallback_ component (see below).
+It is updated if the authentication state changes.
 
 #### _Fallback_
 
-If the user is not logged in, some _fallback_ is shown to the user.
-The _fallback_ must be implemented in the authentication plugin. Depending on the implementation of the authentication plugin,
-a fallback may be a login prompt, or as a simple message.
+If the user is not logged in, a _fallback_ is shown to the user.
+The _fallback_ must be implemented in the authentication plugin.
+Depending on the implementation of the authentication plugin,
+a fallback can be a login prompt, or a simple message.
 Some plugins do not provide a visual fallback but an "effect" instead: an action to perform, such as a redirect to the authentication provider.
 
 Rendering of the login fallback can be customized by passing custom properties (`fallbackProps`) or by supplying a custom render function (`renderFallback`), see the API documentation.
 
 ### Triggering logout
 
-Call the `AuthService`'s `logout()` method to explicitly end the current session:
+To explicitly end the current session, call the `AuthService`'s `logout()` method:
 
 ```js
 const authService = ...; // injected
@@ -87,13 +86,13 @@ The plugin must implement the `AuthPlugin` TypeScript interface exported by this
     When authenticated, a user's authentication state contains session information, such as the user's `id`,
     an optional display name and arbitrary additional `attributes` that can be defined by the plugin.
 
-    If the state changes internally (e.g. successful login, explicit logout, logout due to timeout, etc.),
+    If the state changes internally (for example successful login, explicit logout, logout due to timeout, etc.),
     the `changed` event must be emitted to notify the `AuthService`.
 
 -   Return the login behavior value (a React component or a function to call) by implementing `getLoginBehavior()`.
     This could be a login dialog, a "forbidden" message (_"fallback"_) or a function implementing a redirect ("effect").
 
--   Implement the `logout()` method: this method will be called when the user attempts to end their session.
+-   Implement the `logout()` method: this method is called when the user attempts to end their session.
 
 A simple example is available in this project's `auth-sample`.
 
