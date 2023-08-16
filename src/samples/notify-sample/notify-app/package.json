@@ -1,0 +1,11 @@
+{
+    "name": "notify-app",
+    "version": "0.0.1",
+    "private": true,
+    "dependencies": {
+        "@open-pioneer/chakra-integration": "^1.0.0",
+        "@open-pioneer/runtime": "^1.0.0",
+        "@open-pioneer/notifier": "workspace:^",
+        "react": "^18.2.0"
+    }
+}
