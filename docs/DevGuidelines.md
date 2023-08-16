@@ -21,7 +21,9 @@
     - Manual tests (only where absolutely necessary) have been documented.
 3. All automated tests pass.
 4. Features can be demonstrated on the demo deployment.
-5. [Accessibility guidelines](A11yGuidelines.md) have been checked.
+5. Applicable guidelines have been checked:
+    - [UI Guidelines](UIGuidelines.md)
+    - [Accessibility guidelines](A11yGuidelines.md)
 6. Packages are translated in english and german.
 7. Important design decisions or non-obvious things to keep in mind
    have been documented in internal dev notes or comments.
