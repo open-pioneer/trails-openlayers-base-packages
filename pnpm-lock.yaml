@@ -267,6 +267,9 @@ importers:
       react:
         specifier: ^18.2.0
         version: 18.2.0
+      react-dom:
+        specifier: ^18.2.0
+        version: 18.2.0(react@18.2.0)
       react-use:
         specifier: ^17.4.0
         version: 17.4.0(react-dom@18.2.0)(react@18.2.0)
@@ -274,6 +277,32 @@ importers:
       '@open-pioneer/test-utils':
         specifier: ^1.0.0
         version: 1.0.0(@formatjs/intl@2.7.2)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.0)(@testing-library/react@14.0.0)(react-dom@18.2.0)(react@18.2.0)
+      openlayers-base-packages:
+        specifier: workspace:*
+        version: link:../../..
+    publishDirectory: dist
+
+  src/packages/authentication:
+    dependencies:
+      '@open-pioneer/core':
+        specifier: ^1.0.0
+        version: 1.0.0
+      '@open-pioneer/runtime':
+        specifier: ^1.0.0
+        version: 1.0.0(@formatjs/intl@2.7.2)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/core@1.0.0)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
+      react:
+        specifier: ^18.2.0
+        version: 18.2.0
+      react-use:
+        specifier: ^17.4.0
+        version: 17.4.0(react-dom@18.2.0)(react@18.2.0)
+    devDependencies:
+      '@open-pioneer/test-utils':
+        specifier: ^1.0.0
+        version: 1.0.0(@formatjs/intl@2.7.2)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.0)(@testing-library/react@14.0.0)(react-dom@18.2.0)(react@18.2.0)
+      '@testing-library/react':
+        specifier: ^14.0.0
+        version: 14.0.0(react-dom@18.2.0)(react@18.2.0)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -314,32 +343,6 @@ importers:
         specifier: ^18.2.0
         version: 18.2.0
     devDependencies:
-      openlayers-base-packages:
-        specifier: workspace:*
-        version: link:../../..
-    publishDirectory: dist
-
-  src/packages/authentication:
-    dependencies:
-      '@open-pioneer/core':
-        specifier: ^1.0.0
-        version: 1.0.0
-      '@open-pioneer/runtime':
-        specifier: ^1.0.0
-        version: 1.0.0(@formatjs/intl@2.7.2)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/core@1.0.0)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
-      react:
-        specifier: ^18.2.0
-        version: 18.2.0
-      react-use:
-        specifier: ^17.4.0
-        version: 17.4.0(react-dom@18.2.0)(react@18.2.0)
-    devDependencies:
-      '@open-pioneer/test-utils':
-        specifier: ^1.0.0
-        version: 1.0.0(@formatjs/intl@2.7.2)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.0)(@testing-library/react@14.0.0)(react-dom@18.2.0)(react@18.2.0)
-      '@testing-library/react':
-        specifier: ^14.0.0
-        version: 14.0.0(react-dom@18.2.0)(react@18.2.0)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
