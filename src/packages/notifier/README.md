@@ -91,3 +91,7 @@ All currently displayed notifications can be closed by calling the `closeAll` me
 const notificationService = ...; // injected
 notificationService.closeAll();
 ```
+
+## License
+
+[Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0)

@@ -7,7 +7,8 @@ const documentedPackages = [
     "experimental-packages/ol-map",
     "packages/notifier",
     "packages/react-utils",
-    "packages/authentication"
+    "packages/authentication",
+    "packages/scale-viewer"
 ];
 
 // See https://typedoc.org/options/
