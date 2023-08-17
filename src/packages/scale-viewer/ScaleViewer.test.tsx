@@ -135,15 +135,17 @@ it("should successfully create a map resolution", async () => {
         throw new Error("map not defined");
     }
 
-    const mapResolution = map.getView().getResolution();
+    const view = map.getView();
+    if (!view) {
+        throw new Error("view not defined");
+    }
+
+    const mapResolution = view.getResolution();
     if (!mapResolution) {
         throw new Error("resolution not defined");
     }
 
-    let mapZoom = map.getView().getZoom();
-    if (!mapZoom) {
-        throw new Error("zoom not defined");
-    }
+    let mapZoom = view.getZoom();
 
     // change zoom level and detect resolution change
     const hook = renderHook(() => useResolution(map));
@@ -152,9 +154,13 @@ it("should successfully create a map resolution", async () => {
     const firstResolution = result.current.resolution;
     expect(firstResolution).not.toBe(undefined);
 
-    map.getView().setZoom(++mapZoom);
     await act(async () => {
-        map.dispatchEvent("moveend");
+        if (!mapZoom) {
+            throw new Error("zoom not defined");
+        }
+
+        view.setZoom(++mapZoom);
+        view.dispatchEvent("change:resolution");
     });
     hook.rerender();
 
@@ -205,6 +211,11 @@ it("should successfully create a map center", async () => {
         throw new Error("map not defined");
     }
 
+    const view = map.getView();
+    if (!view) {
+        throw new Error("view not defined");
+    }
+
     // change center and detect center change
     const hook = renderHook(() => useCenter(map));
     const result = hook.result;
@@ -212,9 +223,9 @@ it("should successfully create a map center", async () => {
     const firstCenter = result.current.center;
     expect(firstCenter).not.toBe(undefined);
 
-    map.getView().setCenter([1489200, 6894026]);
     await act(async () => {
-        map.dispatchEvent("moveend");
+        view.setCenter([1489200, 6894026]);
+        view.dispatchEvent("change:center");
     });
     hook.rerender();
 
@@ -266,12 +277,17 @@ it("should successfully create a map scale", async () => {
         throw new Error("map not defined");
     }
 
-    const mapResolution = map.getView().getResolution();
+    const view = map.getView();
+    if (!view) {
+        throw new Error("view not defined");
+    }
+
+    const mapResolution = view.getResolution();
     if (!mapResolution) {
         throw new Error("resolution not defined");
     }
 
-    const mapCenter = map.getView().getCenter();
+    const mapCenter = view.getCenter();
     if (!mapCenter) {
         throw new Error("center not defined");
     }
