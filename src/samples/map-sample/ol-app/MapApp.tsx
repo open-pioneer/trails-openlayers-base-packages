@@ -46,6 +46,7 @@ export function MapApp() {
     ];
 
     const scaleViewerRef = useRef<HTMLDivElement>(null);
+    const coordinateViewerRef = useRef<HTMLDivElement>(null);
 
     return (
         <Flex height="100%" direction="column" overflow="hidden">
@@ -76,7 +77,11 @@ export function MapApp() {
                 />
             </Flex>
             <Flex gap={3} alignItems="center" justifyContent="center">
-                <CoordinateViewer mapId={MAP_ID} precision={2}></CoordinateViewer>
+                <CoordinateViewer
+                    mapId={MAP_ID}
+                    ref={coordinateViewerRef}
+                    precision={2}
+                ></CoordinateViewer>
                 <ScaleComponent mapId={MAP_ID}></ScaleComponent>
             </Flex>
         </Flex>

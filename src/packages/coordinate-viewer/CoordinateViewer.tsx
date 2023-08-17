@@ -11,17 +11,20 @@ import { EventsKey } from "ol/events";
 import { useIntl } from "open-pioneer:react-hooks";
 import classNames from "classnames";
 
+import { ForwardedRef, forwardRef } from "react";
+
 const DEFAULT_PRECISION = 4;
 
 // Todo inline documentation
 
-export function CoordinateViewer(
+export const CoordinateViewer = forwardRef(function CoordinateViewer(
     props: OlComponentProps & { precision?: number } & BoxProps & {
             /**
              * Additional class name(s).
              */
             className?: string;
-        }
+        },
+    ref: ForwardedRef<HTMLDivElement> | undefined
 ) {
     const { mapId, precision, className, ...rest } = props;
     const { map } = useMap(mapId);
@@ -36,11 +39,11 @@ export function CoordinateViewer(
     const displayString = coordinatesString ? coordinatesString + " " + projection : "";
 
     return (
-        <Box className={classNames("coordinate-viewer", className)} {...rest}>
+        <Box className={classNames("coordinate-viewer", className)} ref={ref} {...rest}>
             {<Text className="coordinate-viewer-text">{displayString}</Text>}
         </Box>
     );
-}
+});
 
 function useCoordinates(map: Map | undefined): { coordinates: Coordinate | undefined } {
     const [coordinates, setCoordinates] = useState<Coordinate | undefined>();
