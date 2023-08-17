@@ -10,7 +10,6 @@ declare module "@open-pioneer/runtime" {
     interface ServiceRegistry {
         "ol-map.MapRegistry": OlMapRegistry;
         "ol-map.MapConfigProvider": OlMapConfigurationProvider;
-        "ol-map.LayerRegistry": OlLayerRegistry;
     }
 }
 
@@ -20,35 +19,37 @@ declare module "@open-pioneer/runtime" {
  * Use a default uuid, if property `id` is `undefined`
  *
  * Use `false` as default value, if property `isBaseLayer` is `undefined`
- *
- * Use `true` as default value, if property `showInLegend` is `undefined`
- *
- * Use `true` as default value, if property `showInToc` is `undefined`
  */
-type OlMapLayer = {
+interface OlLayerOptions {
     title: string;
     layer: Layer;
     id?: string;
     description?: string;
     isBaseLayer?: boolean;
-    showInLegend?: boolean;
-    showInToc?: boolean;
-    status: OlMapLayerStatus;
-};
+    meta?: Object;
+}
+
+interface OlLayerDescriptor {
+    title: string;
+    layer: Layer;
+    id: string;
+    description: string;
+    isBaseLayer: boolean;
+    meta: Object;
+}
 
 /**
  * Declared layer status config
- *
- * Use `undefined` as default status value and change while request layer/service
  *
  * Set code to a HTTP response status codes, if `status === "error"`
  *
  * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
  */
-type OlMapLayerStatus = {
-    status?: "loading" | "ok" | "error" | "drawing" | "measuring";
+interface OlLayerStatus {
+    msg: string;
+    status: "ready" | "loading" | "not-loaded" | "error" | "drawing" | "measuring";
     code?: number;
-};
+}
 
 /**
  * Provides an ol.Map
@@ -75,6 +76,7 @@ export interface OlMapRegistry {
      * @param target
      * @returns {Resource}
      */
+    // TODO: make internal
     setContainer(mapId: string, target: HTMLDivElement): Resource;
 }
 
@@ -100,9 +102,9 @@ export interface OlLayerRegistry {
     /**
      * Get all configured baseLayer
      *
-     * @returns {OlMapLayer[]}
+     * @returns {OlLayerDescriptor[]}
      */
-    getBaseLayers(): OlMapLayer[];
+    getBaseLayers(): OlLayerDescriptor[];
 
     /**
      * Set baseLayer identified by the @param id to visible and all other baseLayers to invisible
@@ -118,22 +120,22 @@ export interface OlLayerRegistry {
      * @param layer
      * @returns {Object}
      */
-    createLayer(layer: OlMapLayer): Object;
+    createLayer(layer: OlLayerOptions): Object;
 
     /**
      * Get all operationalLayers
      *
-     * @returns {OlMapLayer[]}
+     * @returns {OlLayerDescriptor[]}
      */
-    getOperationalLayers(): OlMapLayer[];
+    getOperationalLayers(): OlLayerDescriptor[];
 
     /**
      * Get a layer identified by the @param id via `ol.Map` `getLayers().getArray()`
      *
      * @param id
-     * @returns {OlMapLayer}
+     * @returns {OlLayerDescriptor}
      */
-    getLayerById(id: string): OlMapLayer;
+    getLayerById(id: string): OlLayerDescriptor;
 
     /**
      * Removes a layer from the registry and the map identified by the @param id via `ol.Map` `removeLayer()`
@@ -160,4 +162,12 @@ export interface OlLayerRegistry {
      * @returns {Promise}
      */
     setLayerProperties(id: string, key: string, value: string): Promise<void>;
+
+    /**
+     * Get status of a layer identified by the @param id
+     *
+     * @param id
+     * @returns {OlLayerStatus}
+     */
+    getLayerStatus(id: string): OlLayerStatus;
 }
