@@ -93,7 +93,7 @@ it("should successfully create a scale viewer component", async () => {
     expect(box).toBeInstanceOf(HTMLDivElement);
 });
 
-it("should successfully create a scale viewer component with additional css classes", async () => {
+it("should successfully create a scale viewer component with additional css classes and box properties", async () => {
     const mapId = "test";
     const mapOptions = {} as MapOptions;
     const service = await createOlMapRegistry(mapId, mapOptions);
@@ -101,7 +101,7 @@ it("should successfully create a scale viewer component with additional css clas
     const { container } = render(
         <PackageContextProvider {...createPackageContextProviderProps(service)}>
             <div data-testid="base">
-                <ScaleViewer mapId={mapId} className="test test1 test2"></ScaleViewer>
+                <ScaleViewer mapId={mapId} className="test test1 test2" pl="1px" />
             </div>
         </PackageContextProvider>
     );
@@ -124,11 +124,13 @@ it("should successfully create a scale viewer component with additional css clas
         throw new Error("scale text not rendered");
     } else {
         expect(box).toBeInstanceOf(HTMLDivElement);
-
         expect(box.classList.contains("test")).toBe(true);
         expect(box.classList.contains("test1")).toBe(true);
         expect(box.classList.contains("test2")).toBe(true);
         expect(box.classList.contains("test3")).not.toBe(true);
+
+        const styles = window.getComputedStyle(box);
+        expect(styles.paddingLeft).toBe("1px");
     }
 });
 

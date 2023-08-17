@@ -33,7 +33,7 @@ export const ScaleViewer = forwardRef(function ScaleViewer(
 ) {
     const intl = useIntl();
 
-    const { mapId } = props;
+    const { mapId, className, ...rest } = props;
     const { map } = useMap(mapId);
 
     const { center } = useCenter(map);
@@ -41,7 +41,7 @@ export const ScaleViewer = forwardRef(function ScaleViewer(
     const { scale } = useScale(map, resolution, center);
 
     return (
-        <Box className={classNames("scale-viewer", props.className)} ref={ref}>
+        <Box className={classNames("scale-viewer", className)} ref={ref} {...rest}>
             {scale && <Text>1:{intl.formatNumber(scale)}</Text>}
         </Box>
     );
