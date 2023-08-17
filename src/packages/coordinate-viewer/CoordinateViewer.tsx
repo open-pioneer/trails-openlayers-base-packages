@@ -70,14 +70,17 @@ export function useFormatting(
         // todo transformation
 
         const precision = configuredPrecision || DEFAULT_PRECISION;
-        let x = coordinates[0];
-        let y = coordinates[1];
+        const x = coordinates[0];
+        const y = coordinates[1];
 
-        x = parseFloat(x.toFixed(precision));
-        y = parseFloat(y.toFixed(precision));
-
-        const xString = intl.formatNumber(x);
-        const yString = intl.formatNumber(y);
+        const xString = intl.formatNumber(x, {
+            maximumFractionDigits: precision,
+            minimumFractionDigits: precision
+        });
+        const yString = intl.formatNumber(y, {
+            maximumFractionDigits: precision,
+            minimumFractionDigits: precision
+        });
 
         const coordinatesString = xString + " " + yString;
         return coordinatesString;
