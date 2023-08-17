@@ -91,11 +91,13 @@ export function useResolution(map: Map | undefined): { resolution: number | unde
             return;
         }
 
-        // set initial map resolution
-        setResolution(map.getView().getResolution());
+        const view = map.getView();
 
-        const eventsKey: EventsKey = map.on("moveend", () => {
-            const newResolution = map.getView().getResolution();
+        // set initial map resolution
+        setResolution(view.getResolution());
+
+        const eventsKey: EventsKey = view.on("change:resolution", () => {
+            const newResolution = view.getResolution();
 
             if (resolution != newResolution) {
                 setResolution(newResolution);
@@ -119,11 +121,13 @@ export function useCenter(map: Map | undefined): { center: Coordinate | undefine
             return;
         }
 
-        // set initial map center
-        setCenter(map.getView().getCenter());
+        const view = map.getView();
 
-        const eventsKey: EventsKey = map.on("moveend", () => {
-            const newCenter = map.getView().getCenter();
+        // set initial map center
+        setCenter(view.getCenter());
+
+        const eventsKey: EventsKey = view.on("change:center", () => {
+            const newCenter = view.getCenter();
 
             if (center != newCenter) {
                 setCenter(newCenter);
