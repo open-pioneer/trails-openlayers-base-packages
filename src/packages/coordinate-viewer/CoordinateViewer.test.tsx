@@ -87,6 +87,50 @@ it("should successfully create a coordinate viewer component", async () => {
     expect(box).toBeInstanceOf(HTMLDivElement);
 });
 
+it("should successfully create a coordinate viewer component with additional css classes and box properties", async () => {
+    const mapId = "test";
+    const mapOptions = {} as MapOptions;
+    const service = await createOlMapRegistry(mapId, mapOptions);
+
+    const { container } = render(
+        <PackageContextProvider {...createPackageContextProviderProps(service)}>
+            <div data-testid="base">
+                <CoordinateViewer
+                    mapId={mapId}
+                    className="test test1 test2"
+                    pl="1px"
+                ></CoordinateViewer>
+            </div>
+        </PackageContextProvider>
+    );
+
+    // assert map and scale viewer is mounted
+    const div = await waitFor(async () => {
+        const domElement = await screen.findByTestId("base");
+        const coordinateViewerText = domElement.querySelector("p"); // find first HTMLParagraphElement (coordinate viewer text) in scale viewer component
+        if (!coordinateViewerText) {
+            throw new Error("coordinate viewer text not rendered");
+        }
+        return domElement;
+    });
+    expect(div).toMatchSnapshot();
+
+    // check scale viewer box is available
+    const box = container.querySelector(".coordinate-viewer");
+    if (!box) {
+        throw new Error("coordinate viewer text not rendered");
+    } else {
+        expect(box).toBeInstanceOf(HTMLDivElement);
+        expect(box.classList.contains("test")).toBe(true);
+        expect(box.classList.contains("test1")).toBe(true);
+        expect(box.classList.contains("test2")).toBe(true);
+        expect(box.classList.contains("test3")).not.toBe(true);
+
+        const styles = window.getComputedStyle(box);
+        expect(styles.paddingLeft).toBe("1px");
+    }
+});
+
 it("should format coordinates to correct coordinate string for the corresponding locale", async () => {
     const coords = [3545.08081, 4543543.009];
 

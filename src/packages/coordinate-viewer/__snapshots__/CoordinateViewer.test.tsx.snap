@@ -15,3 +15,35 @@ exports[`should successfully create a coordinate viewer component 1`] = `
   </div>
 </div>
 `;
+
+exports[`should successfully create a coordinate viewer component with additional css classes and box  1`] = `
+<div
+  data-testid="base"
+>
+  <div
+    class="coordinate-viewer test test1 test2 css-sz63p1"
+    data-theme="light"
+  >
+    <p
+      class="chakra-text coordinate-viewer-text css-0"
+      data-theme="light"
+    />
+  </div>
+</div>
+`;
+
+exports[`should successfully create a coordinate viewer component with additional css classes and box properties 1`] = `
+<div
+  data-testid="base"
+>
+  <div
+    class="coordinate-viewer test test1 test2 css-sz63p1"
+    data-theme="light"
+  >
+    <p
+      class="chakra-text coordinate-viewer-text css-0"
+      data-theme="light"
+    />
+  </div>
+</div>
+`;
