@@ -118,18 +118,17 @@ export interface OlLayerRegistry {
      * @param layer
      * @returns {Object}
      */
-    createLayer(layer: Object): Object;
+    createLayer(layer: OlMapLayer): Object;
 
     /**
      * Get all operationalLayers
      *
-     * @param map
      * @returns {OlMapLayer[]}
      */
-    getOperationalLayers(map: OlMap): OlMapLayer[];
+    getOperationalLayers(): OlMapLayer[];
 
     /**
-     * Get a layer identified by the @param id
+     * Get a layer identified by the @param id via `ol.Map` `getLayers().getArray()`
      *
      * @param id
      * @returns {OlMapLayer}
@@ -137,7 +136,7 @@ export interface OlLayerRegistry {
     getLayerById(id: string): OlMapLayer;
 
     /**
-     * Removes a layer from the registry and the map identified by the @param id
+     * Removes a layer from the registry and the map identified by the @param id via `ol.Map` `removeLayer()`
      *
      * @param id
      * @returns {Promise}
@@ -145,7 +144,7 @@ export interface OlLayerRegistry {
     removeLayerById(id: string): Promise<void>;
 
     /**
-     * Get specific properties for a layer identified by the @param id via `ol.Layer` `getProperties()`
+     * Get properties for a layer identified by the @param id via `ol.Layer` `getProperties()`
      *
      * @param id
      * @returns {Object}
@@ -153,7 +152,7 @@ export interface OlLayerRegistry {
     getLayerProperties(id: string): Object;
 
     /**
-     * Set specific property for a layer identified by the @param id via `ol.Layer` `setProperties()`
+     * Set a specific property for a layer identified by the @param id via `ol.Layer` `setProperties()`
      *
      * @param id
      * @param key
