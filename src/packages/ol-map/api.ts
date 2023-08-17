@@ -1,11 +1,19 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
+import "@open-pioneer/runtime";
 import type { Resource } from "@open-pioneer/core";
 import type OlMap from "ol/Map";
 
+declare module "@open-pioneer/runtime" {
+    interface ServiceRegistry {
+        "ol-map.LayerRegistry": OlLayerRegistry;
+        "ol-map.MapRegistry": OlMapRegistry;
+    }
+}
+
 /**
  * Only provide interface for map and layers
- * Get view from Map.GetView()
+ * Get view with OpenLayers function getView() from map
  */
 
 /**
@@ -31,21 +39,53 @@ export interface OlMapRegistry {
  * Provide layers of ol.Map
  */
 export interface OlLayerRegistry {
-    getBaseLayers();
+    /**
+     * Get all configured baseLayer
+     */
+    getBaseLayers(): Promise<void>;
 
-    setBaseLayers();
+    /**
+     * Set baseLayer identified by the @param id to visible and all other baseLayers to invisible
+     * @param id
+     */
+    setBaseLayer(id: string): Promise<void>;
 
-    getOperationalLayers();
+    /**
+     * Create a layer
+     * @param layer
+     * @retrun Returns layer configuration to add to map via ol.Map addLayer()
+     */
+    createLayer(layer: Object): Object;
 
-    getLayerInfo();
+    /**
+     * Get all operationalLayers
+     * @param map
+     */
+    getOperationalLayers(map: OlMap): [];
 
-    setLayerInfo();
+    /**
+     * Get a layer identified by the @param id
+     * @param id
+     */
+    getLayerById(id: string): Object;
 
-    getLayerProperties()
+    /**
+     * Removes a layer from the registry and the map identified by the @param id
+     * @param id
+     */
+    removeLayerById(id: string): Promise<void>;
 
-    setLayerProperties();
+    /**
+     * Get specific properties for a layer identified by the @param id
+     * @param id
+     */
+    getLayerProperties(id: string): Object;
 
-    createLayer();
-
-    removeLayerById();
+    /**
+     * Set specific property for a layer identified by the @param id
+     * @param id
+     * @param name
+     * @param value
+     */
+    setLayerProperties(id: string, name: string, value: string): Object;
 }
