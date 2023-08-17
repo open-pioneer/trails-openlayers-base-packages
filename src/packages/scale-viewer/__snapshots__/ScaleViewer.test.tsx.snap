@@ -18,3 +18,22 @@ exports[`should successfully create a scale viewer component 1`] = `
   </div>
 </div>
 `;
+
+exports[`should successfully create a scale viewer component with additional css classes 1`] = `
+<div
+  data-testid="base"
+>
+  <div
+    class="scale-viewer test test1 test2 css-0"
+    data-theme="light"
+  >
+    <p
+      class="chakra-text css-0"
+      data-theme="light"
+    >
+      1:
+      279,540,573
+    </p>
+  </div>
+</div>
+`;

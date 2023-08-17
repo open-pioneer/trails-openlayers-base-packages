@@ -93,6 +93,45 @@ it("should successfully create a scale viewer component", async () => {
     expect(box).toBeInstanceOf(HTMLDivElement);
 });
 
+it("should successfully create a scale viewer component with additional css classes", async () => {
+    const mapId = "test";
+    const mapOptions = {} as MapOptions;
+    const service = await createOlMapRegistry(mapId, mapOptions);
+
+    const { container } = render(
+        <PackageContextProvider {...createPackageContextProviderProps(service)}>
+            <div data-testid="base">
+                <ScaleViewer mapId={mapId} className="test test1 test2"></ScaleViewer>
+            </div>
+        </PackageContextProvider>
+    );
+
+    // assert map and scale viewer is mounted
+    const div = await waitFor(async () => {
+        const domElement = await screen.findByTestId("base");
+        const scaleText = domElement.querySelector("p"); // find first HTMLParagraphElement (scale text) in scale viewer component
+        if (!scaleText) {
+            throw new Error("scale text not rendered");
+        }
+        return domElement;
+    });
+    expect(div).toMatchSnapshot();
+
+    // check scale viewer box is available
+    const box = container.querySelector(".scale-viewer");
+
+    if (!box) {
+        throw new Error("scale text not rendered");
+    } else {
+        expect(box).toBeInstanceOf(HTMLDivElement);
+
+        expect(box.classList.contains("test")).toBe(true);
+        expect(box.classList.contains("test1")).toBe(true);
+        expect(box.classList.contains("test2")).toBe(true);
+        expect(box.classList.contains("test3")).not.toBe(true);
+    }
+});
+
 it("should successfully create a map resolution", async () => {
     const mapId = "test";
     const zoom = 10;
