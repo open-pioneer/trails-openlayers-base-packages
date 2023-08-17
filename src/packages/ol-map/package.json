@@ -1,0 +1,13 @@
+{
+    "name": "@open-pioneer/ol-map",
+    "version": "0.0.1",
+    "license": "Apache-2.0",
+    "main": "index.ts",
+    "publishConfig": {
+        "directory": "dist",
+        "linkDirectory": false
+    },
+    "devDependencies": {
+        "openlayers-base-packages": "workspace:*"
+    }
+}
