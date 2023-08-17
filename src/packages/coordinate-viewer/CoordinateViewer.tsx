@@ -9,13 +9,21 @@ import { unByKey } from "ol/Observable";
 import { Coordinate } from "ol/coordinate";
 import { EventsKey } from "ol/events";
 import { useIntl } from "open-pioneer:react-hooks";
+import classNames from "classnames";
 
 const DEFAULT_PRECISION = 4;
 
 // Todo inline documentation
 
-export function CoordinateViewer(props: OlComponentProps & { precision?: number } & BoxProps) {
-    const { mapId, precision, ...rest } = props;
+export function CoordinateViewer(
+    props: OlComponentProps & { precision?: number } & BoxProps & {
+            /**
+             * Additional class name(s).
+             */
+            className?: string;
+        }
+) {
+    const { mapId, precision, className, ...rest } = props;
     const { map } = useMap(mapId);
 
     const { coordinates } = useCoordinates(map);
@@ -28,13 +36,13 @@ export function CoordinateViewer(props: OlComponentProps & { precision?: number 
     const displayString = coordinatesString ? coordinatesString + " " + projection : "";
 
     return (
-        <Box className="coordinate-viewer" {...rest}>
-            {<Text>{displayString}</Text>}
+        <Box className={classNames("coordinate-viewer", className)} {...rest}>
+            {<Text className="coordinate-viewer-text">{displayString}</Text>}
         </Box>
     );
 }
 
-export function useCoordinates(map: Map | undefined): { coordinates: Coordinate | undefined } {
+function useCoordinates(map: Map | undefined): { coordinates: Coordinate | undefined } {
     const [coordinates, setCoordinates] = useState<Coordinate | undefined>();
 
     useEffect(() => {
