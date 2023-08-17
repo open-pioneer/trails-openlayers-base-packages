@@ -3,7 +3,7 @@
 import { OlComponentProps, useMap } from "@open-pioneer/experimental-ol-map";
 import { useEffect, useState, forwardRef, ForwardedRef } from "react";
 import { Box, BoxProps, Text } from "@open-pioneer/chakra-integration";
-
+import classNames from "classnames";
 import Map from "ol/Map.js";
 import { unByKey } from "ol/Observable";
 import { Projection, getPointResolution } from "ol/proj";
@@ -22,12 +22,18 @@ const DEFAULT_DPI = 25.4 / 0.28;
 const INCHES_PER_METRE = 39.37;
 
 export const ScaleViewer = forwardRef(function ScaleViewer(
-    props: OlComponentProps & BoxProps,
+    props: OlComponentProps &
+        BoxProps & {
+            /**
+             * Additional class name(s).
+             */
+            className?: string;
+        },
     ref: ForwardedRef<HTMLDivElement> | undefined
 ) {
     const intl = useIntl();
 
-    const { mapId, ...rest } = props;
+    const { mapId } = props;
     const { map } = useMap(mapId);
 
     const { center } = useCenter(map);
@@ -35,7 +41,7 @@ export const ScaleViewer = forwardRef(function ScaleViewer(
     const { scale } = useScale(map, resolution, center);
 
     return (
-        <Box className="scale-viewer" ref={ref} {...rest}>
+        <Box className={classNames("scale-viewer", props.className)} ref={ref}>
             {scale && <Text>1:{intl.formatNumber(scale)}</Text>}
         </Box>
     );
