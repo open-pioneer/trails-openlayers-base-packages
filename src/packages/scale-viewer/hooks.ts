@@ -68,10 +68,18 @@ export function useProjection(map: Map | undefined): { projection: Projection | 
             return;
         }
 
-        const view = map.getView();
-
         // set initial map projection
-        setProjection(view.getProjection());
+        setProjection(map.getView().getProjection());
+
+        const eventsKey: EventsKey = map.on("change:view", () => {
+            const newProjection = map.getView().getProjection();
+
+            if (projection != newProjection) {
+                setProjection(newProjection);
+            }
+        });
+
+        return () => unByKey(eventsKey);
     }, [map, projection]);
 
     return { projection };

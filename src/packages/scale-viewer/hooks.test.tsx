@@ -16,7 +16,7 @@ import { MapOptions } from "ol/Map";
 import View from "ol/View";
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
-import { useCenter, useResolution, useScale } from "./hooks";
+import { useCenter, useResolution, useScale, useProjection } from "./hooks";
 import { get } from "ol/proj";
 
 // used to avoid a "ResizeObserver is not defined" error
@@ -24,6 +24,45 @@ global.ResizeObserver = require("resize-observer-polyfill");
 
 const LOCALE_DE = { locale: "de" };
 const LOCALE_EN = { locale: "en" };
+
+it("should successfully create a map projection", async () => {
+    const { mapId, registry } = await setupMap();
+
+    render(
+        <PackageContextProvider {...createPackageContextProviderProps(registry)}>
+            <div data-testid="base">
+                <MapContainer mapId={mapId} />
+            </div>
+        </PackageContextProvider>
+    );
+
+    await waitForMapMount();
+
+    const map = await registry.getMap(mapId);
+    if (!map) {
+        throw new Error("map not defined");
+    }
+
+    // change view projection and detect projection change
+    const hook = renderHook(() => useProjection(map));
+    const result = hook.result;
+
+    const firstProjection = result.current.projection;
+    expect(firstProjection).not.toBe(undefined);
+
+    await act(async () => {
+        map.setView(
+            new View({
+                projection: "EPSG:4326"
+            })
+        );
+        map.dispatchEvent("change:view");
+    });
+    hook.rerender();
+
+    const nextProjection = hook.result.current.projection;
+    expect(firstProjection).not.toEqual(nextProjection);
+});
 
 it("should successfully create a map resolution", async () => {
     const { mapId, registry } = await setupMap();
