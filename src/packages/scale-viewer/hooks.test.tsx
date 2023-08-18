@@ -17,6 +17,7 @@ import View from "ol/View";
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
 import { useCenter, useResolution, useScale } from "./hooks";
+import { get } from "ol/proj";
 
 // used to avoid a "ResizeObserver is not defined" error
 global.ResizeObserver = require("resize-observer-polyfill");
@@ -134,21 +135,44 @@ it("should successfully create a map scale", async () => {
         throw new Error("view not defined");
     }
 
-    const mapResolution = view.getResolution();
-    if (!mapResolution) {
-        throw new Error("resolution not defined");
-    }
-
     const mapCenter = view.getCenter();
     if (!mapCenter) {
         throw new Error("center not defined");
     }
 
+    const mapResolution = view.getResolution();
+    if (!mapResolution) {
+        throw new Error("resolution not defined");
+    }
+
+    const mapProjection = view.getProjection();
+    if (!mapProjection) {
+        throw new Error("projection not defined");
+    }
+
     // get map scale
-    const hook = renderHook(() => useScale(map, mapResolution, mapCenter));
+    const hook = renderHook(() => useScale(mapCenter, mapResolution, mapProjection), {
+        wrapper: (props) => <PackageContextProvider {...props} {...{ locale: "en" }} />
+    });
     const result = hook.result;
-    const expectedScale = 336409;
+    const expectedScale = "336,409";
     expect(result.current.scale).toBe(expectedScale);
+});
+
+it("should successfully create a map scale for the corresponding locale", async () => {
+    const center = [847541, 6793584];
+    const resolution = 9.554628535647032;
+    const projection = get("EPSG:3857");
+
+    const hookEN = renderHook(() => useScale(center, resolution, projection), {
+        wrapper: (props) => <PackageContextProvider {...props} {...{ locale: "en" }} />
+    });
+    expect(hookEN.result.current.scale).equals("21,026");
+
+    const hookDE = renderHook(() => useScale(center, resolution, projection), {
+        wrapper: (props) => <PackageContextProvider {...props} {...{ locale: "de" }} />
+    });
+    expect(hookDE.result.current.scale).equals("21.026");
 });
 
 class MapConfigProvider implements OlMapConfigurationProvider {
