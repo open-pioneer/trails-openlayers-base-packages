@@ -15,18 +15,23 @@ import { ForwardedRef, forwardRef } from "react";
 
 const DEFAULT_PRECISION = 4;
 
-// Todo inline documentation
+// Todo inline documentation, outsource hooks into hooks.ts (e.g. https://github.com/open-pioneer/trails-openlayers-base-packages/blob/main/src/packages/scale-viewer/hooks.ts)
 
 export const CoordinateViewer = forwardRef(function CoordinateViewer(
-    props: OlComponentProps & { precision?: number } & BoxProps & {
+    props: OlComponentProps &
+        BoxProps & {
             /**
              * Additional class name(s).
              */
             className?: string;
+            /**
+             * Number of digits after the decimal pointmath.
+             */
+            precision?: number;
         },
     ref: ForwardedRef<HTMLDivElement> | undefined
 ) {
-    const { mapId, precision, className, ...rest } = props;
+    const { mapId, className, precision, ...rest } = props;
     const { map } = useMap(mapId);
 
     const { coordinates } = useCoordinates(map);
@@ -34,13 +39,13 @@ export const CoordinateViewer = forwardRef(function CoordinateViewer(
     const projection = useMemo(() => {
         return getProjection(map);
     }, [map]);
-    const coordinatesString = useFormatting(coordinates, precision);
 
+    const coordinatesString = useFormatting(coordinates, precision);
     const displayString = coordinatesString ? coordinatesString + " " + projection : "";
 
     return (
         <Box className={classNames("coordinate-viewer", className)} ref={ref} {...rest}>
-            {<Text className="coordinate-viewer-text">{displayString}</Text>}
+            <Text className="coordinate-viewer-text">{displayString}</Text>
         </Box>
     );
 });
