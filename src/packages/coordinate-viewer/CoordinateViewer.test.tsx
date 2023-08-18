@@ -118,7 +118,7 @@ it("should successfully create a coordinate viewer component with additional css
     // check scale viewer box is available
     const box = container.querySelector(".coordinate-viewer");
     if (!box) {
-        throw new Error("coordinate viewer text not rendered");
+        throw new Error("coordinate viewer not rendered");
     } else {
         expect(box).toBeInstanceOf(HTMLDivElement);
         expect(box.classList.contains("test")).toBe(true);
