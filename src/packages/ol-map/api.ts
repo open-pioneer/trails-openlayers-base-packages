@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-import type { EventSource, Resource } from "@open-pioneer/core";
+import type { EventSource } from "@open-pioneer/core";
 import type OlMap from "ol/Map";
 import type { Layer as OlLayer } from "ol/layer";
 import type { MapOptions as OlMapOptions } from "ol/Map";
@@ -64,20 +64,6 @@ export interface MapModel extends EventSource<MapModelEvents> {
      * Returns a promise that resolves when the map has mounted in the DOM.
      */
     whenDisplayed(): Promise<void>;
-
-    /**
-     * Registers the container for the given map.
-     *
-     * There can only be (at most) one container per map
-     *
-     * Call `.destroy()` on the returned resource to unregister the `target`
-     *
-     * @param mapId
-     * @param target
-     * @returns {Resource}
-     */
-    // TODO: make internal
-    setContainer(mapId: string, target: HTMLDivElement): Resource;
 }
 
 export interface LayerCollectionEvents {
@@ -99,7 +85,7 @@ export interface LayerCollection extends EventSource<LayerCollectionEvents> {
     /**
      * Returns the currently active base layer.
      */
-    getCurrentBaseLayer(): LayerModel | undefined;
+    getActiveBaseLayer(): LayerModel | undefined;
 
     /**
      * Activates the base layer with the given id.
