@@ -5,8 +5,7 @@ import { OlComponentProps, useMap } from "@open-pioneer/experimental-ol-map";
 import classNames from "classnames";
 import { ForwardedRef, forwardRef } from "react";
 
-import { useIntl } from "open-pioneer:react-hooks";
-import { useCenter, useResolution, useScale } from "./hooks";
+import { useCenter, useProjection, useResolution, useScale } from "./hooks";
 
 export const ScaleViewer = forwardRef(function ScaleViewer(
     props: OlComponentProps &
@@ -18,18 +17,17 @@ export const ScaleViewer = forwardRef(function ScaleViewer(
         },
     ref: ForwardedRef<HTMLDivElement> | undefined
 ) {
-    const intl = useIntl();
-
     const { mapId, className, ...rest } = props;
     const { map } = useMap(mapId);
 
     const { center } = useCenter(map);
     const { resolution } = useResolution(map);
-    const { scale } = useScale(map, resolution, center);
+    const { projection } = useProjection(map);
+    const { scale } = useScale(center, resolution, projection);
 
     return (
         <Box className={classNames("scale-viewer", className)} ref={ref} {...rest}>
-            {scale && <Text>1:{intl.formatNumber(scale)}</Text>}
+            {scale && <Text>1:{scale}</Text>}
         </Box>
     );
 });
