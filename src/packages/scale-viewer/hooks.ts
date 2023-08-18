@@ -58,7 +58,7 @@ export function useScale(
 }
 
 /**
- * Get map projection and return projection | null
+ * Detect change of map and return projection | null
  */
 export function useProjection(map: Map | undefined): { projection: Projection | null } {
     const [projection, setProjection] = useState<Projection | null>(null);

@@ -22,6 +22,9 @@ import { get } from "ol/proj";
 // used to avoid a "ResizeObserver is not defined" error
 global.ResizeObserver = require("resize-observer-polyfill");
 
+const LOCALE_DE = { locale: "de" };
+const LOCALE_EN = { locale: "en" };
+
 it("should successfully create a map resolution", async () => {
     const { mapId, registry } = await setupMap();
 
@@ -152,11 +155,10 @@ it("should successfully create a map scale", async () => {
 
     // get map scale
     const hook = renderHook(() => useScale(mapCenter, mapResolution, mapProjection), {
-        wrapper: (props) => <PackageContextProvider {...props} {...{ locale: "en" }} />
+        wrapper: (props) => <PackageContextProvider {...props} {...LOCALE_EN} />
     });
     const result = hook.result;
-    const expectedScale = "336,409";
-    expect(result.current.scale).toBe(expectedScale);
+    expect(result.current.scale).toBe("336,409");
 });
 
 it("should successfully create a map scale for the corresponding locale", async () => {
@@ -165,12 +167,12 @@ it("should successfully create a map scale for the corresponding locale", async 
     const projection = get("EPSG:3857");
 
     const hookEN = renderHook(() => useScale(center, resolution, projection), {
-        wrapper: (props) => <PackageContextProvider {...props} {...{ locale: "en" }} />
+        wrapper: (props) => <PackageContextProvider {...props} {...LOCALE_EN} />
     });
     expect(hookEN.result.current.scale).equals("21,026");
 
     const hookDE = renderHook(() => useScale(center, resolution, projection), {
-        wrapper: (props) => <PackageContextProvider {...props} {...{ locale: "de" }} />
+        wrapper: (props) => <PackageContextProvider {...props} {...LOCALE_DE} />
     });
     expect(hookDE.result.current.scale).equals("21.026");
 });
