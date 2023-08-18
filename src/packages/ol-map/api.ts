@@ -1,72 +1,72 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-import "@open-pioneer/runtime";
-import type { Resource } from "@open-pioneer/core";
+import type { EventSource, Resource } from "@open-pioneer/core";
 import type OlMap from "ol/Map";
-import type { MapOptions } from "ol/Map";
-import type { Layer } from "ol/layer";
+import type { Layer as OlLayer } from "ol/layer";
+import type { MapOptions as OlMapOptions } from "ol/Map";
 
+import "@open-pioneer/runtime";
 declare module "@open-pioneer/runtime" {
     interface ServiceRegistry {
-        "ol-map.MapRegistry": OlMapRegistry;
-        "ol-map.MapConfigProvider": OlMapConfigurationProvider;
+        "ol-map.MapRegistry": MapRegistry;
+        "ol-map.MapConfigProvider": MapConfigProvider;
     }
 }
 
-/**
- * Declared a single layer config
- *
- * Use a default uuid, if property `id` is `undefined`
- *
- * Use `false` as default value, if property `isBaseLayer` is `undefined`
- */
-interface OlLayerOptions {
-    title: string;
-    layer: Layer;
-    id?: string;
-    description?: string;
-    isBaseLayer?: boolean;
-    meta?: Object;
-}
-
-interface OlLayerDescriptor {
-    title: string;
-    layer: Layer;
-    id: string;
-    description: string;
-    isBaseLayer: boolean;
-    meta: Object;
+export interface MapModelEvents {
+    "changed": void;
+    "changed:container": void;
+    "changed:initialExtent": void;
 }
 
 /**
- * Declared layer status config
- *
- * Set code to a HTTP response status codes, if `status === "error"`
- *
- * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
+ * Represents a map.
  */
-interface OlLayerStatus {
-    msg: string;
-    status: "ready" | "loading" | "not-loaded" | "error" | "drawing" | "measuring";
-    code?: number;
-}
-
-/**
- * Provides an ol.Map
- *
- * Get view with OpenLayers function `getView()` from map
- */
-export interface OlMapRegistry {
+export interface MapModel extends EventSource<MapModelEvents> {
     /**
-     * Return map with map id
-     *
-     * @param mapId
-     * @returns {Promise}
+     * The unique id of the map.
      */
-    getMap(mapId: string): Promise<OlMap>;
+    readonly id: string;
 
     /**
-     * Registers the container for the given map
+     * The container where the map is currently being rendered.
+     *
+     * May be undefined if the map is not being rendered at the moment.
+     * May change at runtime.
+     *
+     * The `changed:container` event is emitted when this value changes.
+     */
+    readonly container: HTMLDivElement | undefined;
+
+    /**
+     * The initial map extent.
+     *
+     * May be undefined before the map is being shown.
+     *
+     * The `changed:initialExtent` event is emitted when this value changes.
+     */
+    readonly initialExtent: ExtentConfig | undefined; // TODO: Maybe other data type
+
+    /**
+     * Contains all known layers of this map.
+     *
+     * Note that not all layers in this collection may be active in the OpenLayers map.
+     * Also note that not all layers in the OpenLayers map may be contained in this collection.
+     */
+    readonly layers: LayerCollection;
+
+    /**
+     * The raw OpenLayers map.
+     */
+    readonly olMap: OlMap;
+
+    /**
+     * Returns a promise that resolves when the map has mounted in the DOM.
+     */
+    whenDisplayed(): Promise<void>;
+
+    /**
+     * Registers the container for the given map.
      *
      * There can only be (at most) one container per map
      *
@@ -80,94 +80,301 @@ export interface OlMapRegistry {
     setContainer(mapId: string, target: HTMLDivElement): Resource;
 }
 
+export interface LayerCollectionEvents {
+    changed: void;
+}
+
 /**
- * Provides an OpenLayers map configuration with a given map id
+ * Contains the layers known to a {@link MapModel}.
  */
-export interface OlMapConfigurationProvider {
+export interface LayerCollection extends EventSource<LayerCollectionEvents> {
+    /** The map this collection belongs to. */
+    readonly map: MapModel;
+
     /**
-     * Identifier of the map.
+     * Returns all configured base layers.
+     */
+    getBaseLayers(): LayerModel[];
+
+    /**
+     * Returns the currently active base layer.
+     */
+    getCurrentBaseLayer(): LayerModel | undefined;
+
+    /**
+     * Activates the base layer with the given id.
+     *
+     * The associated layer is made visible and all other base layers are hidden.
+     */
+    activateBaseLayer(id: string): void;
+
+    // TODO (should probably be internal for now)
+    // /**
+    //  * Create a layer to add to map via `ol.Map` `addLayer()`
+    //  *
+    //  * @param layer
+    //  */
+    // createLayer(layer: LayerConfig): Object;
+
+    /**
+     * Returns all operational Layers.
+     */
+    getOperationalLayers(): LayerModel[];
+
+    /**
+     * Returns the layer identified by the `id` or undefined, if no such layer exists.
+     */
+    getLayerById(id: string): LayerModel | undefined;
+
+    /**
+     * Returns all layers known to this collection.
+     */
+    getAllLayers(): LayerModel[];
+
+    /**
+     * Removes a layer from the registry and the map identified by the `id`.
+     */
+    removeLayerById(id: string): void;
+
+    /**
+     * Given a raw OpenLayers layer instance, returns the associated {@link LayerModel} - or undefined
+     * if the layer is unknown to this collection.
+     */
+    getLayerByRawInstance(layer: OlLayer): LayerModel | undefined;
+}
+
+export interface LayerModelEvents {
+    "changed": void;
+    "changed:title": void;
+    "changed:description": void;
+    "changed:attributes": void;
+    "changed:loadState": void;
+    "changed:loadError": void;
+}
+
+/** Represents a layer in the map. */
+export interface LayerModel extends EventSource<LayerModelEvents> {
+    /** The map this layer belongs to. */
+    readonly map: MapModel;
+
+    /** The unique id of this layer (scoped to the owning map). */
+    readonly id: string;
+
+    /** The human readable title of this layer. */
+    readonly title: string;
+
+    /** The raw OpenLayers layer. */
+    readonly layer: OlLayer;
+
+    /** The human readable description of this layer. May be empty. */
+    readonly description: string;
+
+    /**
+     * True if this layer is a base layer.
+     *
+     * Only one base layer can be visible at a time.
+     */
+    readonly isBaseLayer: boolean;
+
+    /**
+     * Additional attributes associated with this layer.
+     */
+    readonly attributes: Readonly<Record<string | symbol, unknown>>;
+
+    /**
+     * Whether the map has been loaded, or whether an error occurred while trying to load it.
+     */
+    readonly loadState: "not-loaded" | "loading" | "ready" | "error";
+
+    /**
+     * The error (if any) that occurred while loading the map.
+     *
+     * This value is always present if {@link loadState} is `"error"`.
+     */
+    // TODO: Http status etc.?
+    readonly loadError: Error | undefined;
+
+    /**
+     * Updates the title of this layer.
+     */
+    setTitle(newTitle: string): void;
+
+    /**
+     * Updates the description of this layer.
+     */
+    setDescription(newDescription: string): void;
+
+    /**
+     * Updates the attributes of this layer.
+     * Values in `newAttributes` are merged into the existing ones (i.e. via `Object.assign`).
+     */
+    setAttributes(newAttributes: Record<string | symbol, unknown>): void;
+}
+
+/**
+ * Provides access to registered map instances.
+ *
+ * Maps are identified by a unique id.
+ *
+ * Inject an instance of this service by referencing the interface name `"ol-map.MapRegistry"`.
+ */
+export interface MapRegistry {
+    /**
+     * Returns the map model associated with the given id.
+     * Returns undefined if there is no such model.
+     */
+    getMapModel(mapId: string): Promise<MapModel | undefined>;
+
+    /**
+     * Returns the OpenLayers map associated with the given id.
+     * Returns undefined if there is no such map.
+     *
+     * This is equivalent to:
+     *
+     * ```js
+     * const model = await mapRegistry.getMapModel(id);
+     * const olMap = model?.olMap;
+     * ```
+     */
+    getOlMap(mapId: string): Promise<OlMap | undefined>;
+}
+
+export interface ExtentConfig {
+    xMin: number;
+    xMax: number;
+    yMin: number;
+    yMax: number;
+}
+
+export interface CoordinateConfig {
+    x: number;
+    y: number;
+    z?: number;
+}
+
+export interface InitialExtentConfig {
+    kind: "extent";
+    extent: ExtentConfig;
+}
+
+export interface InitialPositionConfig {
+    kind: "position";
+    center: CoordinateConfig;
+    zoom: number;
+}
+
+export type InitialViewConfig = InitialExtentConfig | InitialPositionConfig;
+
+/**
+ * Configures a single layer.
+ */
+export interface LayerConfig {
+    /**
+     * The unique id of this layer.
+     * Defaults to a generated id if `id` is `undefined`.
+     */
+    id?: string;
+
+    /**
+     * The human readable title of this layer.
+     */
+    title: string;
+
+    /**
+     * The raw OpenLayers instance.
+     */
+    layer: OlLayer;
+
+    /**
+     * The human readable description of this layer.
+     * Defaults to an empty string.
+     */
+    description?: string;
+
+    /**
+     * Whether this layer is a base layer or not.
+     * Only one base layer can be active at a time.
+     *
+     * Defaults to `false`.
+     */
+    isBaseLayer?: boolean;
+
+    /**
+     * Additional attributes for this layer.
+     * These can be arbitrary values.
+     */
+    attributes?: Record<string | symbol, unknown>;
+}
+
+/**
+ * Configures a custom projection for a new map.
+ *
+ * Note that projection codes are globally registered.
+ * If there are multiple definitions of the same code in an application,
+ * then those definitions should be consistent.
+ */
+export interface CustomProjectionConfig {
+    /** The code of this projection, e.g. `"EPSG:4326"`. */
+    code: string;
+
+    /** The proj4 definition string for this projection. */
+    definition: string;
+
+    /** An optional extent that describes which coordinates a valid for this projection. */
+    extent?: ExtentConfig;
+}
+
+/**
+ * Options supported during map construction.
+ */
+export interface MapConfig {
+    /**
+     * Configures the initial view.
+     * This can be an extent, or a (center, zoom) value.
+     */
+    initialView?: InitialViewConfig;
+
+    /**
+     * Configures a specific projection.
+     * Supports either a string (an EPSG code such as `"EPSG:4326"`) or a custom projection definition.
+     */
+    projection?: string | CustomProjectionConfig;
+
+    /**
+     * Configures the layers of the map.
+     */
+    layers?: LayerConfig[];
+
+    /**
+     * Advanced OpenLayers configuration.
+     *
+     * Options in this object are passed to the OlMap's constructor.
+     * Other properties defined in this configuration (e.g. {@link initialView})
+     * will be applied on top of these map options.
+     *
+     * > Warning: not all properties here are supported.
+     * > For example, you cannot set the `target` because the target is controlled by the `<MapContainer />`.
+     */
+    advanced?: Partial<Omit<OlMapOptions, "target">>;
+}
+
+/**
+ * Provides an OpenLayers map configuration with a given map id.
+ *
+ * The implementor must also provide the interface name `"ol-map.MapConfigProvider"`.
+ */
+export interface MapConfigProvider {
+    /**
+     * Unique identifier of the map.
      */
     readonly mapId: string;
 
     /**
-     * Returns the map options that will be applied on the corresponding map.
-     */
-    getMapOptions(): Promise<MapOptions>;
-}
-
-/**
- * Provides layers of ol.Map
- */
-export interface OlLayerRegistry {
-    /**
-     * Get all configured baseLayer
+     * Returns the map configuration for this map.
      *
-     * @returns {OlLayerDescriptor[]}
-     */
-    getBaseLayers(): OlLayerDescriptor[];
-
-    /**
-     * Set baseLayer identified by the @param id to visible and all other baseLayers to invisible
+     * Called by the {@link MapRegistry} when the map is requested for the first time.
      *
-     * @param id
-     * @returns {Promise}
+     * See {@link MapConfig} for supported options.
      */
-    setBaseLayer(id: string): Promise<void>;
-
-    /**
-     * Create a layer to add to map via `ol.Map` `addLayer()`
-     *
-     * @param layer
-     * @returns {Object}
-     */
-    createLayer(layer: OlLayerOptions): Object;
-
-    /**
-     * Get all operationalLayers
-     *
-     * @returns {OlLayerDescriptor[]}
-     */
-    getOperationalLayers(): OlLayerDescriptor[];
-
-    /**
-     * Get a layer identified by the @param id via `ol.Map` `getLayers().getArray()`
-     *
-     * @param id
-     * @returns {OlLayerDescriptor}
-     */
-    getLayerById(id: string): OlLayerDescriptor;
-
-    /**
-     * Removes a layer from the registry and the map identified by the @param id via `ol.Map` `removeLayer()`
-     *
-     * @param id
-     * @returns {Promise}
-     */
-    removeLayerById(id: string): Promise<void>;
-
-    /**
-     * Get properties for a layer identified by the @param id via `ol.Layer` `getProperties()`
-     *
-     * @param id
-     * @returns {Object}
-     */
-    getLayerProperties(id: string): Object;
-
-    /**
-     * Set a specific property for a layer identified by the @param id via `ol.Layer` `setProperties()`
-     *
-     * @param id
-     * @param key
-     * @param value
-     * @returns {Promise}
-     */
-    setLayerProperties(id: string, key: string, value: string): Promise<void>;
-
-    /**
-     * Get status of a layer identified by the @param id
-     *
-     * @param id
-     * @returns {OlLayerStatus}
-     */
-    getLayerStatus(id: string): OlLayerStatus;
+    getMapConfig(): Promise<MapConfig>;
 }
