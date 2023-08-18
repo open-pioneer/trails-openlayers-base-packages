@@ -15,20 +15,27 @@ import { ForwardedRef, forwardRef } from "react";
 
 const DEFAULT_PRECISION = 4;
 
-// Todo inline documentation, outsource hooks into hooks.ts (e.g. https://github.com/open-pioneer/trails-openlayers-base-packages/blob/main/src/packages/scale-viewer/hooks.ts)
+// Todo outsource hooks into hooks.ts (e.g. https://github.com/open-pioneer/trails-openlayers-base-packages/blob/main/src/packages/scale-viewer/hooks.ts)
+/**
+ * These are special properties for the CoordinateViewer.
+ */
+interface CoordinateViewerProps {
+    /**
+     * Number of decimal places shown for coordinates.
+     */
+    precision?: number;
 
+    /**
+     * Additional css class name(s) that will be added tot the CoordinateViewer component.
+     */
+    className?: string;
+}
+
+/**
+ * The `CoordinateViewer`component can be used in an app to render the coordinates at the current mouse position.
+ */
 export const CoordinateViewer = forwardRef(function CoordinateViewer(
-    props: OlComponentProps &
-        BoxProps & {
-            /**
-             * Additional class name(s).
-             */
-            className?: string;
-            /**
-             * Number of digits after the decimal pointmath.
-             */
-            precision?: number;
-        },
+    props: OlComponentProps & BoxProps & CoordinateViewerProps,
     ref: ForwardedRef<HTMLDivElement> | undefined
 ) {
     const { mapId, className, precision, ...rest } = props;
@@ -68,6 +75,12 @@ function useCoordinates(map: Map | undefined): { coordinates: Coordinate | undef
     return { coordinates: coordinates };
 }
 
+/**
+ * Formats Ol coordinates for displaying it in the UI
+ * @param {Coordinate} [coordinates]
+ * @param {number | undefined} [configuredPrecision]
+ * @return {string} formatted coordinates string
+ */
 export function useFormatting(
     coordinates: Coordinate | undefined,
     configuredPrecision: number | undefined
