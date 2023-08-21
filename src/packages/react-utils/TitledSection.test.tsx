@@ -4,7 +4,7 @@
  * @vitest-environment jsdom
  */
 import { render } from "@testing-library/react";
-import { it } from "vitest";
+import { expect, it } from "vitest";
 import { SectionHeading, TitledSection } from "./TitledSection";
 
 it("renders a hierarchy of headings", () => {
