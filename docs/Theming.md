@@ -4,6 +4,9 @@
 - app layout (placement of components) is still handled by each app itself
 ## Theming with Charka UI
  - Javascript-based
+ - Chakra UI provides a default theme
+   - it can be partially or completely overwritten
+ - theme includes definitions for colors, typography, sizes (e.g. xl means 36rem), component specific styling...
  - semantic tokens add labels (e.g error or success) for specific colors 
 ## Trails Theming Concept
  - primarily use Chakra UI theming for basic definitions (e.g color scheme, font, fontsize)
