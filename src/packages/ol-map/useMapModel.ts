@@ -1,32 +1,32 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-import type Map from "ol/Map";
 import { useService } from "open-pioneer:react-hooks";
 import { useMemo } from "react";
 import { useAsync } from "react-use";
+import { MapModel } from "./api";
 
 /**
  * Represents the current state of the map lookup made by {@link useMapModel}.
  */
-export type UseMapResult =
-    | { loading: boolean; map?: Map | undefined; error?: Error | undefined }
-    | UseMapLoading
-    | UseMapReady
-    | UseMapError;
+export type UseMapModelResult =
+    | { loading: boolean; map?: MapModel | undefined; error?: Error | undefined }
+    | UseMapModelLoading
+    | UseMapModelReady
+    | UseMapModelError;
 
-export interface UseMapLoading {
+export interface UseMapModelLoading {
     loading: true;
     map?: undefined;
     error?: undefined;
 }
 
-export interface UseMapReady {
+export interface UseMapModelReady {
     loading: false;
-    map: Map;
+    map: MapModel;
     error?: undefined;
 }
 
-export interface UseMapError {
+export interface UseMapModelError {
     loading: false;
     map?: undefined;
     error: Error;
@@ -36,14 +36,14 @@ export interface UseMapError {
  * React hooks that looks up the map with the given id in the `ol-map.MapRegistry` service.
  *
  * Returns an object representing the progress, which will eventually represent either
- * the map value or an initialization error.
+ * the map model value or an initialization error.
  *
- * The map cannot be returned directly because it may not have completed its initialization yet.
+ * The map model cannot be returned directly because it may not have completed its initialization yet.
  */
 
-export function useMapModel(mapId: string) {
+export function useMapModel(mapId: string): UseMapModelResult {
     const mapRegistry = useService("ol-map.MapRegistry");
-    const state = useAsync(() => mapRegistry.getOlMap(mapId), [mapRegistry, mapId]);
+    const state = useAsync(() => mapRegistry.getMapModel(mapId), [mapRegistry, mapId]);
     const result = useMemo(() => {
         if (state.loading) {
             return { loading: true };
