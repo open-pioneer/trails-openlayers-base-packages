@@ -3,6 +3,7 @@
 /**
  * @vitest-environment jsdom
  */
+import { it, expect } from "vitest";
 import { MapContainer, OlMapConfigurationProvider } from "@open-pioneer/experimental-ol-map";
 import { OlMapRegistry } from "@open-pioneer/experimental-ol-map/services";
 import { ServiceOptions } from "@open-pioneer/runtime";
