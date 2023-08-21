@@ -4,17 +4,17 @@ This package provides a coordinate viewer component, which can be integrated bes
 
 ## Usage
 
-See here a simple integration of a coordinate viewer with a map id and precision (the latter is optional).
+To integrate the coordinate viewer in your app, insert the following snippet and reference a map ID:
 
 ```jsx
 <CoordinateViewer mapId="map_id" precision={2}></CoordinateViewer>
 ```
 
+The optional precision attribute allows to define the number of coordinates' decimal places shown.
+
 ### Customizing
 
-The CoordinateViewer component can receive the `className` prop (optional string) that can be used to add additional the css classes of the component.
-
-It is possible to receive a reference to the component using `useRef`.
+It is possible to receive a reference to the underlying DOM node (div) of the CoordinateViewer component using `useRef`.
 
 ## License
 

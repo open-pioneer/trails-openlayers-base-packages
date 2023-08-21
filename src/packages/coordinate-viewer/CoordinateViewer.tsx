@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
 import { OlComponentProps, useMap } from "@open-pioneer/experimental-ol-map";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Box, Text, BoxProps } from "@open-pioneer/chakra-integration";
 
 import Map from "ol/Map.js";
@@ -22,7 +22,7 @@ interface CoordinateViewerProps {
     precision?: number;
 
     /**
-     * Additional css class name(s) that will be added tot the CoordinateViewer component.
+     * Additional css class name(s) that will be added to the CoordinateViewer component.
      */
     className?: string;
 }
@@ -39,9 +39,7 @@ export const CoordinateViewer = forwardRef(function CoordinateViewer(
 
     const { coordinates } = useCoordinates(map);
 
-    const projection = useMemo(() => {
-        return getProjection(map);
-    }, [map]);
+    const projection = useProjection(map);
 
     const coordinatesString = useFormatting(coordinates, precision);
     const displayString = coordinatesString ? coordinatesString + " " + projection : "";
@@ -71,7 +69,7 @@ function useCoordinates(map: Map | undefined): { coordinates: Coordinate | undef
     return { coordinates: coordinates };
 }
 
-function getProjection(map: Map | undefined): string {
+function useProjection(map: Map | undefined): string {
     if (map) {
         const projection = map.getView().getProjection().getCode();
         return projection;
