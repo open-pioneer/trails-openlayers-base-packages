@@ -9,7 +9,7 @@ import { unByKey } from "ol/Observable";
 import { Coordinate } from "ol/coordinate";
 import { EventsKey } from "ol/events";
 import classNames from "classnames";
-import { useFormatting } from "./hooks";
+import { useFormatting, useProjection } from "./hooks";
 import { ForwardedRef, forwardRef } from "react";
 
 /**
@@ -38,11 +38,9 @@ export const CoordinateViewer = forwardRef(function CoordinateViewer(
     const { map } = useMap(mapId);
 
     const { coordinates } = useCoordinates(map);
-
-    const projection = useProjection(map);
-
+    const projectionCode = useProjection(map)?.projection?.getCode() ?? "";
     const coordinatesString = useFormatting(coordinates, precision);
-    const displayString = coordinatesString ? coordinatesString + " " + projection : "";
+    const displayString = coordinatesString ? coordinatesString + " " + projectionCode : "";
 
     return (
         <Box className={classNames("coordinate-viewer", className)} ref={ref} {...rest}>
@@ -67,12 +65,4 @@ function useCoordinates(map: Map | undefined): { coordinates: Coordinate | undef
     }, [map, coordinates]);
 
     return { coordinates: coordinates };
-}
-
-function useProjection(map: Map | undefined): string {
-    if (map) {
-        const projection = map.getView().getProjection().getCode();
-        return projection;
-    }
-    return "";
 }

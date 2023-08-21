@@ -119,7 +119,8 @@
             "files": ["*.test.*"],
             "rules": {
                 // Allow non-null assertions in test files
-                "@typescript-eslint/no-non-null-assertion": "off"
+                "@typescript-eslint/no-non-null-assertion": "off",
+                "@typescript-eslint/no-explicit-any": "off"
             }
         }
     ]

@@ -3,7 +3,8 @@
 /**
  * @vitest-environment jsdom
  */
-import { OlMapConfigurationProvider } from "@open-pioneer/experimental-ol-map";
+import { chakra } from "@open-pioneer/chakra-integration";
+import { MapContainer, OlMapConfigurationProvider } from "@open-pioneer/experimental-ol-map";
 import { OlMapRegistry } from "@open-pioneer/experimental-ol-map/services";
 import { Service, ServiceOptions } from "@open-pioneer/runtime";
 import {
@@ -11,10 +12,13 @@ import {
     PackageContextProviderProps
 } from "@open-pioneer/test-utils/react";
 import { createService } from "@open-pioneer/test-utils/services";
-import { render, screen, waitFor } from "@testing-library/react";
+import { act, render, screen, waitFor } from "@testing-library/react";
 import { MapOptions } from "ol/Map";
+import BaseEvent from "ol/events/Event";
 import { expect, it } from "vitest";
 import { CoordinateViewer } from "./CoordinateViewer";
+import { setupMap, waitForMapMount } from "./test-utils";
+import View from "ol/View";
 
 class MapConfigProvider implements OlMapConfigurationProvider {
     mapId = "default";
@@ -63,7 +67,7 @@ it("should successfully create a coordinate viewer component", async () => {
     const mapOptions = {} as MapOptions;
     const service = await createOlMapRegistry(mapId, mapOptions);
 
-    const { container } = render(
+    render(
         <PackageContextProvider {...createPackageContextProviderProps(service)}>
             <div data-testid="base">
                 <CoordinateViewer mapId={mapId}></CoordinateViewer>
@@ -71,20 +75,12 @@ it("should successfully create a coordinate viewer component", async () => {
         </PackageContextProvider>
     );
 
-    // assert map and scale viewer is mounted
-    const div = await waitFor(async () => {
-        const domElement = await screen.findByTestId("base");
-        const coordinateViewerText = domElement.querySelector("p"); // find first HTMLParagraphElement (coordinate viewer text) in scale viewer component
-        if (!coordinateViewerText) {
-            throw new Error("coordinate viewer text not rendered");
-        }
-        return domElement;
-    });
-    expect(div).toMatchSnapshot();
+    // coordinate viewer is mounted
+    const { viewerDiv } = await waitForCoordinateViewer();
+    expect(viewerDiv).toMatchSnapshot();
 
     // check scale viewer box is available
-    const box = container.querySelector(".coordinate-viewer");
-    expect(box).toBeInstanceOf(HTMLDivElement);
+    expect(viewerDiv).toBeInstanceOf(HTMLDivElement);
 });
 
 it("should successfully create a coordinate viewer component with additional css classes and box properties", async () => {
@@ -92,41 +88,84 @@ it("should successfully create a coordinate viewer component with additional css
     const mapOptions = {} as MapOptions;
     const service = await createOlMapRegistry(mapId, mapOptions);
 
-    const { container } = render(
+    render(
         <PackageContextProvider {...createPackageContextProviderProps(service)}>
             <div data-testid="base">
-                <CoordinateViewer
-                    mapId={mapId}
-                    className="test test1 test2"
-                    pl="1px"
-                ></CoordinateViewer>
+                <CoordinateViewer mapId={mapId} className="test" pl="1px"></CoordinateViewer>
             </div>
         </PackageContextProvider>
     );
 
-    // assert map and scale viewer is mounted
-    const div = await waitFor(async () => {
+    // coordinate viewer is mounted
+    const { viewerDiv } = await waitForCoordinateViewer();
+    expect(viewerDiv).toMatchSnapshot();
+
+    expect(viewerDiv).toBeInstanceOf(HTMLDivElement);
+    expect(viewerDiv.classList.contains("test")).toBe(true);
+    expect(viewerDiv.classList.contains("foo")).toBe(false);
+
+    const styles = window.getComputedStyle(viewerDiv);
+    expect(styles.paddingLeft).toBe("1px");
+});
+
+it("tracks the user's mouse position", async () => {
+    const { mapId, registry } = await setupMap();
+
+    render(
+        <PackageContextProvider {...createPackageContextProviderProps(registry)}>
+            <chakra.div data-testid="map" height="500px" width="500px">
+                <MapContainer mapId={mapId} />
+            </chakra.div>
+            <div data-testid="base">
+                <CoordinateViewer mapId={mapId} precision={1} />
+            </div>
+        </PackageContextProvider>
+    );
+
+    await waitForMapMount("map");
+    const { viewerText } = await waitForCoordinateViewer();
+    expect(viewerText.textContent).toMatchInlineSnapshot('""');
+
+    const map = await registry.getMap(mapId);
+    const simulateMove = (x: number, y: number) => {
+        const fakeMoveEvent = new BaseEvent("pointermove");
+        (fakeMoveEvent as any).coordinate = [x, y];
+        map.dispatchEvent(fakeMoveEvent);
+    };
+
+    // Simple move
+    act(() => {
+        simulateMove(123.4, 567.8);
+    });
+    expect(viewerText.textContent).toMatchInlineSnapshot('"123.4 567.8 EPSG:3857"');
+
+    // Another move + projection change
+    act(() => {
+        map.setView(
+            new View({
+                center: [0, 0],
+                zoom: 0,
+                projection: "EPSG:4326"
+            })
+        );
+        simulateMove(42, 1337);
+    });
+    expect(viewerText.textContent).toMatchInlineSnapshot('"42.0 1,337.0 EPSG:4326"');
+});
+
+async function waitForCoordinateViewer() {
+    const { viewerDiv, viewerText } = await waitFor(async () => {
         const domElement = await screen.findByTestId("base");
-        const coordinateViewerText = domElement.querySelector("p"); // find first HTMLParagraphElement (coordinate viewer text) in scale viewer component
-        if (!coordinateViewerText) {
+        const viewerDiv = domElement.querySelector(".coordinate-viewer");
+        if (!viewerDiv) {
+            throw new Error("coordinate viewer not rendered");
+        }
+
+        const viewerText = viewerDiv.querySelector(".coordinate-viewer-text");
+        if (!viewerText) {
             throw new Error("coordinate viewer text not rendered");
         }
-        return domElement;
+        return { viewerDiv, viewerText };
     });
-    expect(div).toMatchSnapshot();
-
-    // check scale viewer box is available
-    const box = container.querySelector(".coordinate-viewer");
-    if (!box) {
-        throw new Error("coordinate viewer not rendered");
-    } else {
-        expect(box).toBeInstanceOf(HTMLDivElement);
-        expect(box.classList.contains("test")).toBe(true);
-        expect(box.classList.contains("test1")).toBe(true);
-        expect(box.classList.contains("test2")).toBe(true);
-        expect(box.classList.contains("test3")).not.toBe(true);
-
-        const styles = window.getComputedStyle(box);
-        expect(styles.paddingLeft).toBe("1px");
-    }
-});
+    return { viewerDiv, viewerText };
+}

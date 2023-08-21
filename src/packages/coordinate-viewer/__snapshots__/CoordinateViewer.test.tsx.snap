@@ -2,32 +2,24 @@
 
 exports[`should successfully create a coordinate viewer component 1`] = `
 <div
-  data-testid="base"
+  class="coordinate-viewer css-0"
+  data-theme="light"
 >
-  <div
-    class="coordinate-viewer css-0"
+  <p
+    class="chakra-text coordinate-viewer-text css-0"
     data-theme="light"
-  >
-    <p
-      class="chakra-text coordinate-viewer-text css-0"
-      data-theme="light"
-    />
-  </div>
+  />
 </div>
 `;
 
 exports[`should successfully create a coordinate viewer component with additional css classes and box properties 1`] = `
 <div
-  data-testid="base"
+  class="coordinate-viewer test css-sz63p1"
+  data-theme="light"
 >
-  <div
-    class="coordinate-viewer test test1 test2 css-sz63p1"
+  <p
+    class="chakra-text coordinate-viewer-text css-0"
     data-theme="light"
-  >
-    <p
-      class="chakra-text coordinate-viewer-text css-0"
-      data-theme="light"
-    />
-  </div>
+  />
 </div>
 `;
