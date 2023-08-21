@@ -1,11 +1,11 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
+import { createLogger } from "@open-pioneer/core";
+import classNames from "classnames";
 import { useService } from "open-pioneer:react-hooks";
 import { useEffect, useRef } from "react";
 import { useAsync } from "react-use";
-import classNames from "classnames";
-import { MapModelImpl } from "./MapRegistryImpl";
-import { createLogger } from "@open-pioneer/core";
+import { MapModelImpl } from "./ModelImpl";
 const LOG = createLogger("ol-map:MapContainer");
 
 /**

@@ -2,16 +2,9 @@
 // SPDX-License-Identifier: Apache-2.0
 import type { EventSource } from "@open-pioneer/core";
 import type OlMap from "ol/Map";
-import type { Layer as OlLayer } from "ol/layer";
-import type { MapOptions as OlMapOptions } from "ol/Map";
-
-import "@open-pioneer/runtime";
-declare module "@open-pioneer/runtime" {
-    interface ServiceRegistry {
-        "ol-map.MapRegistry": MapRegistry;
-        "ol-map.MapConfigProvider": MapConfigProvider;
-    }
-}
+import type OlBaseLayer from "ol/layer/Base";
+import type { MapOptions as OlMapBaseOptions } from "ol/Map";
+import OlView, { ViewOptions as OlViewOptions } from "ol/View";
 
 export interface MapModelEvents {
     "changed": void;
@@ -126,7 +119,7 @@ export interface LayerCollection extends EventSource<LayerCollectionEvents> {
      * Given a raw OpenLayers layer instance, returns the associated {@link LayerModel} - or undefined
      * if the layer is unknown to this collection.
      */
-    getLayerByRawInstance(layer: OlLayer): LayerModel | undefined;
+    getLayerByRawInstance(layer: OlBaseLayer): LayerModel | undefined;
 }
 
 export interface LayerModelEvents {
@@ -150,7 +143,7 @@ export interface LayerModel extends EventSource<LayerModelEvents> {
     readonly title: string;
 
     /** The raw OpenLayers layer. */
-    readonly layer: OlLayer;
+    readonly olLayer: OlBaseLayer;
 
     /** The human readable description of this layer. May be empty. */
     readonly description: string;
@@ -170,7 +163,7 @@ export interface LayerModel extends EventSource<LayerModelEvents> {
     /**
      * Whether the map has been loaded, or whether an error occurred while trying to load it.
      */
-    readonly loadState: "not-loaded" | "loading" | "ready" | "error";
+    readonly loadState: "not-loaded" | "loading" | "loaded" | "error";
 
     /**
      * The error (if any) that occurred while loading the map.
@@ -194,7 +187,7 @@ export interface LayerModel extends EventSource<LayerModelEvents> {
      * Updates the attributes of this layer.
      * Values in `newAttributes` are merged into the existing ones (i.e. via `Object.assign`).
      */
-    setAttributes(newAttributes: Record<string | symbol, unknown>): void;
+    updateAttributes(newAttributes: Record<string | symbol, unknown>): void;
 }
 
 /**
@@ -269,7 +262,7 @@ export interface LayerConfig {
     /**
      * The raw OpenLayers instance.
      */
-    layer: OlLayer;
+    layer: OlBaseLayer;
 
     /**
      * The human readable description of this layer.
@@ -293,21 +286,18 @@ export interface LayerConfig {
 }
 
 /**
- * Configures a custom projection for a new map.
- *
- * Note that projection codes are globally registered.
- * If there are multiple definitions of the same code in an application,
- * then those definitions should be consistent.
+ * Advanced options during map construction.
  */
-export interface CustomProjectionConfig {
-    /** The code of this projection, e.g. `"EPSG:4326"`. */
-    code: string;
-
-    /** The proj4 definition string for this projection. */
-    definition: string;
-
-    /** An optional extent that describes which coordinates a valid for this projection. */
-    extent?: ExtentConfig;
+export interface OlMapOptions extends Omit<OlMapBaseOptions, "target" | "view"> {
+    /**
+     * Advanced option to control the view.
+     * 
+     * We recommend using the `OlViewOptions` type.
+     * 
+     * > Warning: When a fully constructed `OlView` instance is provided, some options
+     * > (such as `initialView` or `projection`) cannot be applied anymore.
+     */
+    view: OlView | OlViewOptions | Promise<OlViewOptions> | undefined;
 }
 
 /**
@@ -321,10 +311,9 @@ export interface MapConfig {
     initialView?: InitialViewConfig;
 
     /**
-     * Configures a specific projection.
-     * Supports either a string (an EPSG code such as `"EPSG:4326"`) or a custom projection definition.
+     * Configures a specific projection, e.g. `"EPSG:4326"`.
      */
-    projection?: string | CustomProjectionConfig;
+    projection?: string;
 
     /**
      * Configures the layers of the map.
@@ -341,7 +330,7 @@ export interface MapConfig {
      * > Warning: not all properties here are supported.
      * > For example, you cannot set the `target` because the target is controlled by the `<MapContainer />`.
      */
-    advanced?: Partial<Omit<OlMapOptions, "target">>;
+    advanced?: Partial<OlMapOptions>;
 }
 
 /**
@@ -363,4 +352,14 @@ export interface MapConfigProvider {
      * See {@link MapConfig} for supported options.
      */
     getMapConfig(): Promise<MapConfig>;
+}
+
+// TODO: Provide SimpleMapConfigProvider
+
+import "@open-pioneer/runtime";
+declare module "@open-pioneer/runtime" {
+    interface ServiceRegistry {
+        "ol-map.MapRegistry": MapRegistry;
+        "ol-map.MapConfigProvider": MapConfigProvider;
+    }
 }
