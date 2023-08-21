@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-import { renderHook, screen, waitFor } from "@testing-library/react";
-import { useFormatting } from "./hooks";
+import { act, render, renderHook, screen, waitFor } from "@testing-library/react";
+import { useFormatting, useProjection } from "./hooks";
 import {
     PackageContextProvider,
     PackageContextProviderProps
@@ -14,7 +14,7 @@ import OSM from "ol/source/OSM";
 import { createService } from "@open-pioneer/test-utils/services";
 import { OlMapRegistry } from "@open-pioneer/experimental-ol-map/services";
 import { ServiceOptions } from "@open-pioneer/runtime";
-import { OlMapConfigurationProvider } from "@open-pioneer/experimental-ol-map";
+import { MapContainer, OlMapConfigurationProvider } from "@open-pioneer/experimental-ol-map";
 
 /**
  * @vitest-environment jsdom
@@ -51,7 +51,9 @@ it("should format coordinates to correct coordinate string with default precisio
     });
     expect(hookDeWithoutPrecision.result.current).equals("3.545,0808 4.543.543,0090");
 });
-/*
+
+// used to avoid a "ResizeObserver is not defined" error
+global.ResizeObserver = require("resize-observer-polyfill");
 
 it("should successfully create a map projection", async () => {
     const { mapId, registry } = await setupMap();
@@ -91,7 +93,6 @@ it("should successfully create a map projection", async () => {
     const nextProjection = hook.result.current.projection;
     expect(firstProjection).not.toEqual(nextProjection);
 });
-*/
 
 class MapConfigProvider implements OlMapConfigurationProvider {
     mapId = "default";
