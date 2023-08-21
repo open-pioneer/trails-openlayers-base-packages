@@ -302,6 +302,35 @@ importers:
         version: link:../../..
     publishDirectory: dist
 
+  src/packages/coordinate-viewer:
+    dependencies:
+      '@open-pioneer/chakra-integration':
+        specifier: ^1.0.0
+        version: 1.0.0(@chakra-ui/react@2.8.0)(@emotion/cache@11.11.0)(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(framer-motion@10.16.0)(react-dom@18.2.0)(react@18.2.0)
+      '@open-pioneer/experimental-ol-map':
+        specifier: workspace:^
+        version: link:../../experimental-packages/ol-map
+      '@open-pioneer/runtime':
+        specifier: ^1.0.0
+        version: 1.0.0(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/core@1.0.0)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
+      ol:
+        specifier: ^7.5.1
+        version: 7.5.1
+      react:
+        specifier: ^18.2.0
+        version: 18.2.0
+    devDependencies:
+      '@open-pioneer/test-utils':
+        specifier: ^1.0.0
+        version: 1.0.0(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.1)(@testing-library/react@14.0.0)(react-dom@18.2.0)(react@18.2.0)
+      openlayers-base-packages:
+        specifier: workspace:*
+        version: link:../../..
+      resize-observer-polyfill:
+        specifier: ^1.5.1
+        version: 1.5.1
+    publishDirectory: dist
+
   src/packages/notifier:
     dependencies:
       '@chakra-ui/icons':
@@ -448,6 +477,9 @@ importers:
       '@open-pioneer/chakra-integration':
         specifier: ^1.0.0
         version: 1.0.0(@chakra-ui/react@2.8.0)(@emotion/cache@11.11.0)(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(framer-motion@10.16.0)(react-dom@18.2.0)(react@18.2.0)
+      '@open-pioneer/coordinate-viewer':
+        specifier: workspace:^
+        version: link:../../../packages/coordinate-viewer
       '@open-pioneer/experimental-layout-sidebar':
         specifier: workspace:^
         version: link:../../../experimental-packages/layout-sidebar
