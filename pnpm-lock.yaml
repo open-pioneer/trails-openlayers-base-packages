@@ -326,6 +326,9 @@ importers:
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
+      resize-observer-polyfill:
+        specifier: ^1.5.1
+        version: 1.5.1
     publishDirectory: dist
 
   src/packages/notifier:
