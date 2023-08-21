@@ -5,6 +5,15 @@ import { register } from "ol/proj/proj4";
 
 export type ProjectionDefinition = string | Proj4ProjectionDefinition;
 
+/**
+ * Adds new registrations to the global [proj4js](https://github.com/proj4js/proj4js) definition set.
+ *
+ * See the proj4js documentation for more details.
+ * 
+ * @param projections 
+ *      An object containing (key, definition) pairs. The key must be projection name (such as `"EPSG:4326"`).
+ *      The value can be a string defining the projection or an existing proj4 definition object.
+ */
 export function registerProjections(projections: Record<string, ProjectionDefinition>): void {
     for (const [name, definition] of Object.entries(projections)) {
         proj4.defs(name, definition);
@@ -12,6 +21,9 @@ export function registerProjections(projections: Record<string, ProjectionDefini
     register(proj4);
 }
 
-export function getProjection(name: string): Proj4ProjectionDefinition {
+/**
+ * Searches the global [proj4js](https://github.com/proj4js/proj4js) definition set for a definition with the given name.
+ */
+export function getProjectionDefinition(name: string): Proj4ProjectionDefinition {
     return proj4.defs(name);
 }

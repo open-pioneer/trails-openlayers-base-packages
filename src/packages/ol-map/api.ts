@@ -4,7 +4,8 @@ import type { EventSource } from "@open-pioneer/core";
 import type OlMap from "ol/Map";
 import type OlBaseLayer from "ol/layer/Base";
 import type { MapOptions as OlMapBaseOptions } from "ol/Map";
-import OlView, { ViewOptions as OlViewOptions } from "ol/View";
+import type OlView from "ol/View";
+import type { ViewOptions as OlViewOptions } from "ol/View";
 
 export interface MapModelEvents {
     "changed": void;
