@@ -33,6 +33,7 @@
 ## Code style
 
 -   Be strict about TypeScript, especially in public interfaces
+-   Use TODO keyword only for things that are currently in doing, not for things that should be implemented anytime in the future. Exceptional: special usages determined by the team. 
 
 ## Tests
 

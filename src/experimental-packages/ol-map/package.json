@@ -9,7 +9,7 @@
     "peerDependencies": {
         "@open-pioneer/core": "^1.0.0",
         "@open-pioneer/runtime": "^1.0.0",
-        "ol": "^7.3.0",
+        "ol": "^7.5.1",
         "react": "^18.2.0",
         "react-use": "^17.4.0"
     },
