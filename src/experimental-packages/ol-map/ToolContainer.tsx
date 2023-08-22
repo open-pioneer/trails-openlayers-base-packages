@@ -9,10 +9,9 @@ import { MapPadding } from "./MapContainer";
 
 export type ToolContainerPosition = "top-left" | "top-right" | "bottom-left" | "bottom-right";
 
-interface ToolContainerSpacing {
-    horizontal: number;
-    vertical: number;
-}
+// TODO: Branch umbennen, wenn MapAPI fertig und Implementierung übernehmen
+// TODO: Doku anpassen -> Tab order tool container richtige Reihenfolge konfigurieren
+// TODO: Tests
 
 export interface ToolContainerProps {
     /**
@@ -22,11 +21,30 @@ export interface ToolContainerProps {
     position?: ToolContainerPosition;
     className?: string | undefined;
     children?: ReactNode;
-    toolContainerSpacing?: ToolContainerSpacing;
+    /**
+     * Horizontal gap in pixel applied to ToolContainer.
+     *
+     * Applied:
+     * - left, if position `*-left`
+     * - right, if position `*-right`
+     *
+     * @default 0
+     */
+    horizontalGap?: number;
+    /**
+     * Vertical gap in pixel applied to ToolContainer.
+     *
+     * Applied:
+     * - top, if position `*-top`
+     * - bottom, if position `*-bottom`
+     *
+     * @default 0 (If position `*-bottom`, default verticalGap == `30`)
+     */
+    verticalGap?: number;
 }
 
-export function ToolContainer(props: ToolContainerProps ): JSX.Element {
-    const { position = "top-right", className, children, toolContainerSpacing } = props;
+export function ToolContainer(props: ToolContainerProps): JSX.Element {
+    const { position = "top-right", className, children, horizontalGap, verticalGap } = props;
     const { map, padding } = useMapContext();
     const overlayContainer = map.getOverlayContainerStopEvent();
 
@@ -37,7 +55,7 @@ export function ToolContainer(props: ToolContainerProps ): JSX.Element {
             pointerEvents="auto"
             /* Restore user-select: none set by ol-viewport parent */
             userSelect="text"
-            {...computePositionStyles(position, padding, toolContainerSpacing)}
+            {...computePositionStyles(position, padding, horizontalGap, verticalGap)}
         >
             {children}
         </Box>,
@@ -48,7 +66,8 @@ export function ToolContainer(props: ToolContainerProps ): JSX.Element {
 function computePositionStyles(
     position: ToolContainerPosition,
     padding: Required<MapPadding>,
-    toolContainerSpacing: ToolContainerSpacing | undefined
+    horizontalGap?: number | undefined,
+    verticalGap?: number | undefined
 ): StyleProps {
     const props: StyleProps = {
         position: "absolute",
@@ -56,38 +75,36 @@ function computePositionStyles(
         transitionDuration: "200ms",
         transitionTimingFunction: "ease-out"
     };
-    const defaultSpacing = 0;
-    const attributionSpacing = 20;
+
+    const defaultHorizontalGap = 0;
+    const horizontal = horizontalGap ?? defaultHorizontalGap;
+
+    const defaultVerticalGap = 0;
+    const vertical = verticalGap ?? defaultVerticalGap;
+
+    const attributionGap = verticalGap === undefined ? 30 : 0;
 
     const gap = (n: number) => `${n}px`;
 
-    if (!toolContainerSpacing) {
-        toolContainerSpacing = {
-            horizontal: defaultSpacing,
-            vertical: defaultSpacing
-        };
-    } else if (toolContainerSpacing.horizontal == undefined) {
-        toolContainerSpacing.horizontal = defaultSpacing;
-    } else if (toolContainerSpacing.vertical == undefined) {
-        toolContainerSpacing.vertical = defaultSpacing;
-    }
+    // TODO maxH calc(100% - top - vertical - bottom)
+    // TODO maxW left vertical right
 
     switch (position) {
         case "top-left":
-            props.left = gap(padding.left + toolContainerSpacing.horizontal);
-            props.top = gap(padding.top + toolContainerSpacing.vertical);
+            props.left = gap(padding.left + horizontal);
+            props.top = gap(padding.top + vertical);
             break;
         case "top-right":
-            props.right = gap(padding.right + toolContainerSpacing.horizontal);
-            props.top = gap(padding.top + toolContainerSpacing.vertical);
+            props.right = gap(padding.right + horizontal);
+            props.top = gap(padding.top + vertical);
             break;
         case "bottom-left":
-            props.left = gap(padding.left + toolContainerSpacing.horizontal);
-            props.bottom = gap(padding.bottom + toolContainerSpacing.vertical + attributionSpacing);
+            props.left = gap(padding.left + horizontal);
+            props.bottom = gap(padding.bottom + vertical + attributionGap);
             break;
         case "bottom-right":
-            props.right = gap(padding.right + toolContainerSpacing.horizontal);
-            props.bottom = gap(padding.bottom + toolContainerSpacing.vertical+ attributionSpacing);
+            props.right = gap(padding.right + horizontal);
+            props.bottom = gap(padding.bottom + vertical + attributionGap);
             break;
     }
     return props;

@@ -59,12 +59,12 @@ export function MapApp() {
                     viewPadding={viewPadding}
                     viewPaddingChangeBehavior="preserve-extent"
                 >
-                    <ToolContainer position="top-left" toolContainerSpacing={{horizontal: 12, vertical: 12}}>
+                    <ToolContainer position="top-left" horizontalGap={12} verticalGap={12}>
                         <Box backgroundColor="whiteAlpha.800" padding={4} boxShadow="lg">
                             I move with the sidebar 🙂
                         </Box>
                     </ToolContainer>
-                    <ToolContainer position="bottom-right" toolContainerSpacing={{horizontal: 12, vertical: 12}}>
+                    <ToolContainer position="bottom-right" horizontalGap={10}>
                         <ZoomComponent mapId={MAP_ID}></ZoomComponent>
                     </ToolContainer>
                     <ToolContainer position="top-right">
@@ -79,6 +79,112 @@ export function MapApp() {
                             <ScaleViewer mapId={MAP_ID} ref={scaleViewerRef}></ScaleViewer>
                             <ScaleComponent mapId={MAP_ID}></ScaleComponent>
                         </Flex>
+                    </ToolContainer>
+                    <ToolContainer position="bottom-left" horizontalGap={12} verticalGap={12}>
+                        <Box maxH={"500px"} overflowY="auto">
+                            <Box backgroundColor="whiteAlpha.800" padding={4} boxShadow="lg">
+                                I move with the sidebar 🙂
+                            </Box>
+                            <Box
+                                backgroundColor="whiteAlpha.800"
+                                marginTop={2}
+                                padding={4}
+                                boxShadow="lg"
+                            >
+                                Aktueller Maßstab
+                                <ScaleViewer mapId={MAP_ID} ref={scaleViewerRef}></ScaleViewer>
+                            </Box>
+                            <Box
+                                backgroundColor="whiteAlpha.800"
+                                marginTop={2}
+                                padding={4}
+                                boxShadow="lg"
+                            >
+                                Aktueller Maßstab
+                                <ScaleViewer mapId={MAP_ID} ref={scaleViewerRef}></ScaleViewer>
+                            </Box>
+                            <Box
+                                backgroundColor="whiteAlpha.800"
+                                marginTop={2}
+                                padding={4}
+                                boxShadow="lg"
+                            >
+                                Aktueller Maßstab
+                                <ScaleViewer mapId={MAP_ID} ref={scaleViewerRef}></ScaleViewer>
+                            </Box>
+                            <Box
+                                backgroundColor="whiteAlpha.800"
+                                marginTop={2}
+                                padding={4}
+                                boxShadow="lg"
+                            >
+                                Aktueller Maßstab
+                                <ScaleViewer mapId={MAP_ID} ref={scaleViewerRef}></ScaleViewer>
+                            </Box>
+                            <Box
+                                backgroundColor="whiteAlpha.800"
+                                marginTop={2}
+                                padding={4}
+                                boxShadow="lg"
+                            >
+                                Aktueller Maßstab
+                                <ScaleViewer mapId={MAP_ID} ref={scaleViewerRef}></ScaleViewer>
+                            </Box>
+                            <Box
+                                backgroundColor="whiteAlpha.800"
+                                marginTop={2}
+                                padding={4}
+                                boxShadow="lg"
+                            >
+                                Aktueller Maßstab
+                                <ScaleViewer mapId={MAP_ID} ref={scaleViewerRef}></ScaleViewer>
+                            </Box>
+                            <Box
+                                backgroundColor="whiteAlpha.800"
+                                marginTop={2}
+                                padding={4}
+                                boxShadow="lg"
+                            >
+                                Aktueller Maßstab
+                                <ScaleViewer mapId={MAP_ID} ref={scaleViewerRef}></ScaleViewer>
+                            </Box>
+                            <Box
+                                backgroundColor="whiteAlpha.800"
+                                marginTop={2}
+                                padding={4}
+                                boxShadow="lg"
+                            >
+                                Aktueller Maßstab
+                                <ScaleViewer mapId={MAP_ID} ref={scaleViewerRef}></ScaleViewer>
+                            </Box>
+                            <Box
+                                backgroundColor="whiteAlpha.800"
+                                marginTop={2}
+                                padding={4}
+                                boxShadow="lg"
+                            >
+                                Aktueller Maßstab
+                                <ScaleViewer mapId={MAP_ID} ref={scaleViewerRef}></ScaleViewer>
+                            </Box>
+                            <Box
+                                backgroundColor="whiteAlpha.800"
+                                marginTop={2}
+                                padding={4}
+                                boxShadow="lg"
+                            >
+                                Aktueller Maßstab
+                                <ScaleViewer mapId={MAP_ID} ref={scaleViewerRef}></ScaleViewer>
+                            </Box>
+                            <Box
+                                backgroundColor="whiteAlpha.800"
+                                marginTop={2}
+                                padding={4}
+                                boxShadow="lg"
+                            >
+                                Aktueller Maßstab
+                                <ScaleViewer mapId={MAP_ID} ref={scaleViewerRef}></ScaleViewer>
+                            </Box>
+                        </Box>
                     </ToolContainer>
                 </MapContainer>
 
