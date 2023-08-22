@@ -12,6 +12,7 @@ import type { ViewOptions as OlViewOptions } from "ol/View";
     - Initialize layer loadState impl
     - Simple helper class for map setup?
     - Layer order?
+    - Enforce base layer order?
 */
 
 export interface MapModelEvents {
