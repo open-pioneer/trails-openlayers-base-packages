@@ -21,8 +21,10 @@ export class MapSpy {
 
         console.log("map model", mapModel);
         console.log("initial extent (1)", mapModel.initialExtent);
+        console.log("map container (1)", mapModel.container);
 
         await mapModel.whenDisplayed();
         console.log("initial extent (2)", mapModel.initialExtent);
+        console.log("map container (2)", mapModel.container);
     }
 }

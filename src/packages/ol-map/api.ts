@@ -30,7 +30,7 @@ export interface MapModel extends EventSource<MapModelEvents> {
      *
      * The `changed:container` event is emitted when this value changes.
      */
-    readonly container: HTMLDivElement | undefined;
+    readonly container: HTMLElement | undefined;
 
     /**
      * The initial map extent.
@@ -40,7 +40,7 @@ export interface MapModel extends EventSource<MapModelEvents> {
      *
      * The `changed:initialExtent` event is emitted when this value changes.
      */
-    readonly initialExtent: ExtentConfig | undefined; // TODO: Maybe other data type
+    readonly initialExtent: ExtentConfig | undefined;
 
     /**
      * Contains all known layers of this map.

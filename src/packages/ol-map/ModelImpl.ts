@@ -32,8 +32,9 @@ export class MapModelImpl extends EventEmitter<MapModelEvents> implements MapMod
     readonly #id: string;
     readonly #olMap: OlMap;
     readonly #layers = new LayerCollectionImpl(this);
-    #container: HTMLDivElement | undefined;
+    #container: HTMLElement | undefined;
     #initialExtent: ExtentConfig | undefined;
+    #targetWatchKey: EventsKey | undefined;
 
     readonly #abortController = new AbortController();
     #displayStatus: "waiting" | "ready" | "error";
@@ -62,9 +63,16 @@ export class MapModelImpl extends EventEmitter<MapModelEvents> implements MapMod
                 this.#displayWaiter = undefined;
             }
         );
+        this.#targetWatchKey = this.#olMap.on("change:target", () => {
+            this.#onTargetChanged();
+        });
     }
 
     destroy() {
+        if (this.#targetWatchKey) {
+            unByKey(this.#targetWatchKey);
+        }
+        this.#targetWatchKey = undefined;        
         this.#abortController.abort();
         this.#displayWaiter?.reject(createAbortError());
         this.#layers.destroy();
@@ -83,7 +91,7 @@ export class MapModelImpl extends EventEmitter<MapModelEvents> implements MapMod
         return this.#layers;
     }
 
-    get container(): HTMLDivElement | undefined {
+    get container(): HTMLElement | undefined {
         return this.#container;
     }
 
@@ -99,15 +107,6 @@ export class MapModelImpl extends EventEmitter<MapModelEvents> implements MapMod
             return Promise.reject(new Error(`Failed to initialize map.`));
         }
         return (this.#displayWaiter ??= createManualPromise()).promise;
-    }
-
-    // Called by the UI implementation when the map is mounted
-    __setContainer(container: HTMLDivElement | undefined): void {
-        if (container !== this.#container) {
-            this.#container = container;
-            this.emit("changed:container");
-            this.emit("changed");
-        }
     }
 
     /**
@@ -158,6 +157,15 @@ export class MapModelImpl extends EventEmitter<MapModelEvents> implements MapMod
             }
         } catch (e) {
             throw new Error(`Failed to apply the initial extent.`, { cause: e });
+        }
+    }
+
+    #onTargetChanged() {
+        const newContainer: HTMLElement | undefined = this.#olMap.getTargetElement() ?? undefined;
+        if (this.#container !== newContainer) {
+            this.#container = newContainer;
+            this.emit("changed:container");
+            this.emit("changed");
         }
     }
 }

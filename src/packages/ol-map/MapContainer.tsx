@@ -89,7 +89,6 @@ function registerMapTarget(mapModel: MapModelImpl, target: HTMLDivElement) {
 
     LOG.isDebug() && LOG.debug(`Setting target of map '${mapId}':`, target);
     olMap.setTarget(target);
-    mapModel.__setContainer(target);
 
     let unregistered = false;
     return {
@@ -97,7 +96,6 @@ function registerMapTarget(mapModel: MapModelImpl, target: HTMLDivElement) {
             if (!unregistered) {
                 LOG.isDebug() && LOG.debug(`Removing target of map '${mapId}':`, target);
                 olMap.setTarget(undefined);
-                mapModel.__setContainer(target);
                 unregistered = true;
             }
         }
