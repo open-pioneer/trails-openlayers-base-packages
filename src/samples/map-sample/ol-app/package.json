@@ -19,7 +19,8 @@
         "react-icons": "4.8.0",
         "react-use": "^17.4.0",
         "map-sample-scale-component": "workspace:*",
-        "map-sample-zoom-component": "workspace:*"
+        "map-sample-zoom-component": "workspace:*",
+        "@open-pioneer/coordinate-viewer": "workspace:^"
     },
     "version": "0.0.6"
 }
