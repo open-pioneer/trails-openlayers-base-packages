@@ -1,6 +1,13 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-import { EventEmitter, ManualPromise, createAbortError, createLogger, createManualPromise, isAbortError } from "@open-pioneer/core";
+import {
+    EventEmitter,
+    ManualPromise,
+    createAbortError,
+    createLogger,
+    createManualPromise,
+    isAbortError
+} from "@open-pioneer/core";
 import {
     ExtentConfig,
     LayerCollection,
@@ -27,7 +34,7 @@ export class MapModelImpl extends EventEmitter<MapModelEvents> implements MapMod
     readonly #layers = new LayerCollectionImpl(this);
     #container: HTMLDivElement | undefined;
     #initialExtent: ExtentConfig | undefined;
-    
+
     readonly #abortController = new AbortController();
     #displayStatus: "waiting" | "ready" | "error";
     #displayWaiter: ManualPromise<void> | undefined;
@@ -37,15 +44,15 @@ export class MapModelImpl extends EventEmitter<MapModelEvents> implements MapMod
         this.#id = properties.id;
         this.#olMap = properties.olMap;
         this.#initialExtent = properties.initialExtent;
-        
+
         this.#displayStatus = "waiting";
-        this
-            .#waitForView()
-            .then(() => {
+        this.#waitForView().then(
+            () => {
                 this.#displayStatus = "ready";
                 this.#displayWaiter?.resolve();
                 this.#displayWaiter = undefined;
-            }, (error) => {
+            },
+            (error) => {
                 if (!isAbortError(error)) {
                     LOG.error(`Failed to initialize map`, error);
                 }
@@ -53,7 +60,8 @@ export class MapModelImpl extends EventEmitter<MapModelEvents> implements MapMod
                 this.#displayStatus = "error";
                 this.#displayWaiter?.reject(new Error(`Failed to initialize map.`));
                 this.#displayWaiter = undefined;
-            });
+            }
+        );
     }
 
     destroy() {
@@ -104,7 +112,7 @@ export class MapModelImpl extends EventEmitter<MapModelEvents> implements MapMod
 
     /**
      * Waits for the map to be displayed.
-     * 
+     *
      * May simply resolve when done, or throw an error when a problem occurs.
      * AbortError is thrown when cancelled via `this.#abortController`, for example
      * when the map model is destroyed before it has ever been displayed.
@@ -115,7 +123,7 @@ export class MapModelImpl extends EventEmitter<MapModelEvents> implements MapMod
         } catch (e) {
             if (isAbortError(e)) {
                 throw e;
-            }           
+            }
             throw new Error(`Failed to wait for the map to be displayed.`, { cause: e });
         }
 
@@ -126,9 +134,7 @@ export class MapModelImpl extends EventEmitter<MapModelEvents> implements MapMod
             if (this.#initialExtent) {
                 // Initial extent was set from the outside. We simply ensure that it gets displayed by the map.
                 const extent = this.#initialExtent;
-                const olExtent = [
-                    extent.xMin, extent.yMin, extent.xMax, extent.yMax
-                ];
+                const olExtent = [extent.xMin, extent.yMin, extent.xMax, extent.yMax];
 
                 const olCenter = getCenter(olExtent);
                 const resolution = view.getResolutionForExtent(olExtent);
@@ -145,7 +151,7 @@ export class MapModelImpl extends EventEmitter<MapModelEvents> implements MapMod
                 const [xMin = 0, yMin = 0, xMax = 0, yMax = 0] = olExtent;
                 const extent: ExtentConfig = { xMin, yMin, xMax, yMax };
                 LOG.debug(`Detected initial extent`, extent);
-                
+
                 this.#initialExtent = extent;
                 this.emit("changed:initialExtent");
                 this.emit("changed");
@@ -417,7 +423,7 @@ export class LayerModelImpl extends EventEmitter<LayerModelEvents> implements La
 function waitForMapSize(olMap: OlMap, signal: AbortSignal): Promise<void> {
     const promise = new Promise<void>((resolve, reject) => {
         let eventKey: EventsKey | undefined;
-        
+
         function checkSize() {
             const currentSize = olMap.getSize() ?? [];
             const [width = 0, height = 0] = currentSize;
@@ -442,13 +448,12 @@ function waitForMapSize(olMap: OlMap, signal: AbortSignal): Promise<void> {
             } else {
                 resolve(wait(25)); // Give the map some time to render
             }
-        }   
+        }
 
         if (signal.aborted) {
             finish(createAbortError());
             return;
         }
-
 
         signal.addEventListener("abort", onAbort);
         eventKey = olMap.on("change:size", checkSize);

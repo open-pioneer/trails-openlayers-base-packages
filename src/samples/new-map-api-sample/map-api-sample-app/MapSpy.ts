@@ -6,12 +6,11 @@ import { ServiceOptions } from "@open-pioneer/runtime";
 export class MapSpy {
     private mapRegistry: MapRegistry;
 
-    constructor({ references } : ServiceOptions<{ registry: MapRegistry}>) {
+    constructor({ references }: ServiceOptions<{ registry: MapRegistry }>) {
         this.mapRegistry = references.registry;
-        this.test().catch(e => {
+        this.test().catch((e) => {
             console.error(`Failed to inspect map state`, e);
         });
-
     }
 
     async test() {
@@ -19,7 +18,7 @@ export class MapSpy {
         if (!mapModel) {
             throw new Error("map not found");
         }
-        
+
         console.log("map model", mapModel);
         console.log("initial extent (1)", mapModel.initialExtent);
 

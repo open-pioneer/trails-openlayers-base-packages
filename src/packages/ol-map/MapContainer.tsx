@@ -2,10 +2,9 @@
 // SPDX-License-Identifier: Apache-2.0
 import { createLogger } from "@open-pioneer/core";
 import classNames from "classnames";
-import { useService } from "open-pioneer:react-hooks";
 import { useEffect, useRef } from "react";
-import { useAsync } from "react-use";
 import { MapModelImpl } from "./ModelImpl";
+import { useMapModel } from "./useMapModel";
 const LOG = createLogger("ol-map:MapContainer");
 
 /**
@@ -45,9 +44,8 @@ export interface MapContainerProps {
 export function MapContainer(props: MapContainerProps) {
     const { mapId, viewPadding, className } = props;
     const mapElement = useRef<HTMLDivElement>(null);
-    const mapRegistry = useService("ol-map.MapRegistry");
-    const modelState = useAsync(async () => await mapRegistry.getMapModel(mapId), [mapId]);
-    const mapModel = modelState.value;
+    const modelState = useMapModel(mapId);
+    const mapModel = modelState.map;
 
     useEffect(() => {
         if (!modelState.loading && !mapModel) {

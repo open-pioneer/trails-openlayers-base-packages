@@ -35,7 +35,7 @@ class MapModelFactory {
         };
 
         if (!mapOptions.controls) {
-            mapOptions.controls = [new Attribution({collapsible: false})];
+            mapOptions.controls = [new Attribution({ collapsible: false })];
         }
 
         const view = (await viewOption) ?? {};

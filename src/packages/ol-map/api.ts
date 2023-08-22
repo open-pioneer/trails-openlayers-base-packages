@@ -221,6 +221,11 @@ export interface MapRegistry {
     getOlMap(mapId: string): Promise<OlMap | undefined>;
 }
 
+/**
+ * Configures an extent.
+ *
+ * Coordinates must be valid for the map's configured projection.
+ */
 export interface ExtentConfig {
     xMin: number;
     xMax: number;
@@ -228,23 +233,37 @@ export interface ExtentConfig {
     yMax: number;
 }
 
+/**
+ * Configures a coordinate.
+ *
+ * Coordinates must be valid for the map's configured projection.
+ */
 export interface CoordinateConfig {
     x: number;
     y: number;
     z?: number;
 }
 
+/**
+ * Configures the map's initial extent.
+ */
 export interface InitialExtentConfig {
     kind: "extent";
     extent: ExtentConfig;
 }
 
+/**
+ * Configures the map's initial position.
+ */
 export interface InitialPositionConfig {
     kind: "position";
     center: CoordinateConfig;
     zoom: number;
 }
 
+/**
+ * Configures the map's initial view.
+ */
 export type InitialViewConfig = InitialExtentConfig | InitialPositionConfig;
 
 /**
@@ -253,7 +272,7 @@ export type InitialViewConfig = InitialExtentConfig | InitialPositionConfig;
 export interface LayerConfig {
     /**
      * The unique id of this layer.
-     * Defaults to a generated id if `id` is `undefined`.
+     * Defaults to a generated id.
      */
     id?: string;
 
@@ -302,8 +321,6 @@ export interface OlMapOptions extends Omit<OlMapBaseOptions, "target" | "view"> 
      */
     view: OlView | OlViewOptions | Promise<OlViewOptions> | undefined;
 }
-
-export type ExtensibleUnion<Values extends BaseType, BaseType extends number | string> = Values | ({} & BaseType );
 
 /**
  * Options supported during map construction.
