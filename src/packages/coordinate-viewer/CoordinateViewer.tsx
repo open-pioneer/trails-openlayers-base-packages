@@ -66,7 +66,7 @@ function useCoordinates(map: Map | undefined): { coordinates: Coordinate | undef
         });
 
         return () => unByKey(eventsKey);
-    }, [map, coordinates]);
+    }, [map]);
 
     return { coordinates: coordinates };
 }
