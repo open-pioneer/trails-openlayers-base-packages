@@ -9,6 +9,11 @@ import { MapPadding } from "./MapContainer";
 
 export type ToolContainerPosition = "top-left" | "top-right" | "bottom-left" | "bottom-right";
 
+interface ToolContainerSpacing {
+    horizontal: number;
+    vertical: number;
+}
+
 export interface ToolContainerProps {
     /**
      * The position of the container above the map.
@@ -17,10 +22,11 @@ export interface ToolContainerProps {
     position?: ToolContainerPosition;
     className?: string | undefined;
     children?: ReactNode;
+    toolContainerSpacing?: ToolContainerSpacing;
 }
 
-export function ToolContainer(props: ToolContainerProps): JSX.Element {
-    const { position = "top-right", className, children } = props;
+export function ToolContainer(props: ToolContainerProps ): JSX.Element {
+    const { position = "top-right", className, children, toolContainerSpacing } = props;
     const { map, padding } = useMapContext();
     const overlayContainer = map.getOverlayContainerStopEvent();
 
@@ -31,7 +37,7 @@ export function ToolContainer(props: ToolContainerProps): JSX.Element {
             pointerEvents="auto"
             /* Restore user-select: none set by ol-viewport parent */
             userSelect="text"
-            {...computePositionStyles(position, padding)}
+            {...computePositionStyles(position, padding, toolContainerSpacing)}
         >
             {children}
         </Box>,
@@ -41,7 +47,8 @@ export function ToolContainer(props: ToolContainerProps): JSX.Element {
 
 function computePositionStyles(
     position: ToolContainerPosition,
-    padding: Required<MapPadding>
+    padding: Required<MapPadding>,
+    toolContainerSpacing: ToolContainerSpacing | undefined
 ): StyleProps {
     const props: StyleProps = {
         position: "absolute",
@@ -49,27 +56,38 @@ function computePositionStyles(
         transitionDuration: "200ms",
         transitionTimingFunction: "ease-out"
     };
+    const defaultSpacing = 0;
+    const attributionSpacing = 20;
 
-    // TODO: Disable/Override default padding?
-    const defaultPadding = 12; // pixels
-    const gap = (n: number) => `${defaultPadding + n}px`;
+    const gap = (n: number) => `${n}px`;
+
+    if (!toolContainerSpacing) {
+        toolContainerSpacing = {
+            horizontal: defaultSpacing,
+            vertical: defaultSpacing
+        };
+    } else if (toolContainerSpacing.horizontal == undefined) {
+        toolContainerSpacing.horizontal = defaultSpacing;
+    } else if (toolContainerSpacing.vertical == undefined) {
+        toolContainerSpacing.vertical = defaultSpacing;
+    }
 
     switch (position) {
         case "top-left":
-            props.left = gap(padding.left);
-            props.top = gap(padding.top);
+            props.left = gap(padding.left + toolContainerSpacing.horizontal);
+            props.top = gap(padding.top + toolContainerSpacing.vertical);
             break;
         case "top-right":
-            props.right = gap(padding.right);
-            props.top = gap(padding.top);
+            props.right = gap(padding.right + toolContainerSpacing.horizontal);
+            props.top = gap(padding.top + toolContainerSpacing.vertical);
             break;
         case "bottom-left":
-            props.left = gap(padding.left);
-            props.bottom = gap(padding.bottom + 20); // TODO: Account for attribution?!
+            props.left = gap(padding.left + toolContainerSpacing.horizontal);
+            props.bottom = gap(padding.bottom + toolContainerSpacing.vertical + attributionSpacing);
             break;
         case "bottom-right":
-            props.right = gap(padding.right);
-            props.bottom = gap(padding.bottom + 20); // TODO: Account for attribution?!
+            props.right = gap(padding.right + toolContainerSpacing.horizontal);
+            props.bottom = gap(padding.bottom + toolContainerSpacing.vertical+ attributionSpacing);
             break;
     }
     return props;

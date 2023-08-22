@@ -59,12 +59,12 @@ export function MapApp() {
                     viewPadding={viewPadding}
                     viewPaddingChangeBehavior="preserve-extent"
                 >
-                    <ToolContainer position="top-left">
+                    <ToolContainer position="top-left" toolContainerSpacing={{horizontal: 12, vertical: 12}}>
                         <Box backgroundColor="whiteAlpha.800" padding={4} boxShadow="lg">
                             I move with the sidebar 🙂
                         </Box>
                     </ToolContainer>
-                    <ToolContainer position="bottom-right">
+                    <ToolContainer position="bottom-right" toolContainerSpacing={{horizontal: 12, vertical: 12}}>
                         <ZoomComponent mapId={MAP_ID}></ZoomComponent>
                     </ToolContainer>
                     <ToolContainer position="top-right">
