@@ -1,9 +1,12 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
 import { MapConfig, MapConfigProvider, registerProjections } from "@open-pioneer/ol-map";
+import TileLayer from "ol/layer/Tile";
+import Stamen from "ol/source/Stamen";
 
 registerProjections({
-    "EPSG:25832": "+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs +type=crs",
+    "EPSG:25832":
+        "+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs +type=crs"
 });
 
 export class MapProvider implements MapConfigProvider {
@@ -17,9 +20,18 @@ export class MapProvider implements MapConfigProvider {
                     x: 405948.17,
                     y: 5757572.85
                 },
-                zoom: 10,
+                zoom: 10
             },
-            projection: "EPSG:25832"
+            projection: "EPSG:25832",
+            layers: [
+                {
+                    // id: "foo",
+                    title: "Watercolor",
+                    layer: new TileLayer({
+                        source: new Stamen({ layer: "watercolor" })
+                    })
+                }
+            ]
         };
     }
 }

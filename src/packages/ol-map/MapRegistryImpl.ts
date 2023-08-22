@@ -3,11 +3,7 @@
 import { createLogger } from "@open-pioneer/core";
 import { Service, ServiceOptions, ServiceType } from "@open-pioneer/runtime";
 import OlMap from "ol/Map";
-import {
-    MapConfigProvider,
-    MapModel,
-    MapRegistry
-} from "./api";
+import { MapConfigProvider, MapModel, MapRegistry } from "./api";
 import { MapModelImpl } from "./ModelImpl";
 import { createMapModel } from "./createMapModel";
 

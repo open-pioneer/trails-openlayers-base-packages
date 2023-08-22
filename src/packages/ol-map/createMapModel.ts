@@ -10,6 +10,8 @@ import { Projection, get as getProjection } from "ol/proj";
 import OSM from "ol/source/OSM";
 import { MapModelImpl } from "./ModelImpl";
 import { MapConfig } from "./api";
+import { EventsKey } from "ol/events";
+import { unByKey } from "ol/Observable";
 
 const LOG = createLogger("ol-map:createMapModel");
 
@@ -42,8 +44,7 @@ class MapModelFactory {
         this.initializeViewOptions(view);
         mapOptions.view = view instanceof View ? view : new View(view);
 
-        if (!mapOptions.layers) {
-            // TODO
+        if (!mapOptions.layers && !mapConfig.layers) {
             mapOptions.layers = [
                 new TileLayer({
                     source: new OSM()
@@ -57,7 +58,24 @@ class MapModelFactory {
             id: mapId,
             olMap
         });
-        return mapModel;
+
+        try {
+            if (mapConfig.layers) {
+                for (const layerConfig of mapConfig.layers) {
+                    mapModel.layers.createLayer(layerConfig);
+                }
+            }
+
+            waitForMapSize(olMap).then(() => {
+                const initialExtent = olMap.getView().calculateExtent();
+                console.log("initial extent is ", initialExtent);
+            });
+
+            return mapModel;
+        } catch (e) {
+            mapModel.destroy();
+            throw e;
+        }
     }
 
     private initializeViewOptions(view: View | ViewOptions) {
@@ -79,7 +97,7 @@ class MapModelFactory {
             }
             return;
         }
-        
+
         const projection = (view.projection = this.initializeProjection(mapConfig.projection));
         const initialView = mapConfig.initialView;
         if (initialView) {
@@ -116,7 +134,7 @@ class MapModelFactory {
             if (!extent) {
                 LOG.warn(
                     `Cannot set default center coordinate because the current projection has no associated extent.\n` +
-                            `Try to configure 'initialView' explicity.`
+                        `Try to configure 'initialView' explicity.`
                 );
             } else {
                 view.center = getCenter(extent);
@@ -139,4 +157,34 @@ class MapModelFactory {
         }
         return projection;
     }
+}
+
+function waitForMapSize(olMap: OlMap): Promise<void> {
+    const promise = new Promise<void>((resolve) => {
+        function checkSize() {
+            const currentSize = olMap.getSize() ?? [];
+            const [width = 0, height = 0] = currentSize;
+            if (currentSize && width > 0 && height > 0) {
+                resolve(wait(25));
+                return true;
+            }
+            return false;
+        }
+
+        if (checkSize()) {
+            return;
+        }
+
+        let key: EventsKey | undefined = olMap.on("change:size", () => {
+            if (checkSize() && key) {
+                unByKey(key);
+                key = undefined;
+            }
+        });
+    });
+    return promise;
+}
+
+function wait(milliseconds: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, milliseconds));
 }

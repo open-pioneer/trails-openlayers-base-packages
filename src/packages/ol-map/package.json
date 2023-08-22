@@ -13,10 +13,14 @@
         "react-use": "^17.4.0"
     },
     "devDependencies": {
+        "@types/uuid": "^9.0.2",
         "openlayers-base-packages": "workspace:*"
     },
     "publishConfig": {
         "directory": "dist",
         "linkDirectory": false
+    },
+    "dependencies": {
+        "uuid": "^9.0.0"
     }
 }

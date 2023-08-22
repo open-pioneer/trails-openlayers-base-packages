@@ -88,13 +88,12 @@ export interface LayerCollection extends EventSource<LayerCollectionEvents> {
      */
     activateBaseLayer(id: string): void;
 
-    // TODO (should probably be internal for now)
-    // /**
-    //  * Create a layer to add to map via `ol.Map` `addLayer()`
-    //  *
-    //  * @param layer
-    //  */
-    // createLayer(layer: LayerConfig): Object;
+    /**
+     * Create a new layer model and adds it to the map.
+     *
+     * The new layer model is automatically registered with this collection.
+     */
+    createLayer(layer: LayerConfig): LayerModel;
 
     /**
      * Returns all operational Layers.
@@ -132,6 +131,8 @@ export interface LayerModelEvents {
     "changed:loadError": void;
 }
 
+export type LayerLoadState = "not-loaded" | "loading" | "loaded" | "error";
+
 /** Represents a layer in the map. */
 export interface LayerModel extends EventSource<LayerModelEvents> {
     /** The map this layer belongs to. */
@@ -164,7 +165,7 @@ export interface LayerModel extends EventSource<LayerModelEvents> {
     /**
      * Whether the map has been loaded, or whether an error occurred while trying to load it.
      */
-    readonly loadState: "not-loaded" | "loading" | "loaded" | "error";
+    readonly loadState: LayerLoadState;
 
     /**
      * The error (if any) that occurred while loading the map.
@@ -292,9 +293,9 @@ export interface LayerConfig {
 export interface OlMapOptions extends Omit<OlMapBaseOptions, "target" | "view"> {
     /**
      * Advanced option to control the view.
-     * 
+     *
      * We recommend using the `OlViewOptions` type.
-     * 
+     *
      * > Warning: When a fully constructed `OlView` instance is provided, some options
      * > (such as `initialView` or `projection`) cannot be applied anymore.
      */
