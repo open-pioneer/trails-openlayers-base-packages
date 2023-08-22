@@ -4,6 +4,7 @@ import { Box, Button, Flex } from "@open-pioneer/chakra-integration";
 import { Sidebar, SidebarItem } from "@open-pioneer/experimental-layout-sidebar";
 import { LayerControlComponent } from "@open-pioneer/experimental-ol-layer-control";
 import { MapContainer, MapPadding, ToolContainer } from "@open-pioneer/experimental-ol-map";
+import { CoordinateViewer } from "@open-pioneer/coordinate-viewer";
 import { ScaleViewer } from "@open-pioneer/scale-viewer";
 import { ScaleComponent } from "map-sample-scale-component";
 import { ZoomComponent } from "map-sample-zoom-component";
@@ -45,6 +46,7 @@ export function MapApp() {
     ];
 
     const scaleViewerRef = useRef<HTMLDivElement>(null);
+    const coordinateViewerRef = useRef<HTMLDivElement>(null);
 
     return (
         <Flex height="100%" direction="column" overflow="hidden">
@@ -86,6 +88,14 @@ export function MapApp() {
                     sidebarWidthChanged={(width) => setViewPadding({ left: width })}
                     items={items}
                 />
+            </Flex>
+            <Flex gap={3} alignItems="center" justifyContent="center">
+                <CoordinateViewer
+                    mapId={MAP_ID}
+                    ref={coordinateViewerRef}
+                    precision={2}
+                ></CoordinateViewer>
+                <ScaleComponent mapId={MAP_ID}></ScaleComponent>
             </Flex>
         </Flex>
     );

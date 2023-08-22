@@ -8,6 +8,7 @@ const documentedPackages = [
     "packages/notifier",
     "packages/react-utils",
     "packages/authentication",
+    "packages/coordinate-viewer",
     "packages/scale-viewer"
 ];
 

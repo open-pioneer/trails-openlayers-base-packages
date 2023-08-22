@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
 import { EventEmitter } from "@open-pioneer/core";
-import { it } from "vitest";
+import { it, expect } from "vitest";
 import { AuthPlugin, AuthPluginEvents, AuthState, LoginFallback } from "./api";
 import { createElement } from "react";
 import { createService } from "@open-pioneer/test-utils/services";

@@ -6,6 +6,7 @@ import { Projection, getPointResolution } from "ol/proj";
 import { Coordinate } from "ol/coordinate";
 import { EventsKey } from "ol/events";
 import { useEffect, useState } from "react";
+import { useIntl } from "open-pioneer:react-hooks";
 
 /**
  * From Web Map Server Implementation Specification -> 7.2.4.6.9 Scale denominators
@@ -21,25 +22,24 @@ const INCHES_PER_METRE = 39.37;
  * Detect change of map scale and return scale | undefined
  */
 export function useScale(
-    map: Map | undefined,
+    center: Coordinate | undefined,
     resolution: number | undefined,
-    center: Coordinate | undefined
-): { scale: number | undefined } {
+    projection: Projection | null
+): { scale: string | undefined } {
+    const intl = useIntl();
+
     const [scale, setScale] = useState<number | undefined>();
+    const [localeScale, setLocaleScale] = useState<string | undefined>();
 
     useEffect(() => {
-        if (!map) {
-            return;
-        }
-        if (!resolution) {
-            return;
-        }
-
         if (!center) {
             return;
         }
 
-        const projection: Projection = map.getView().getProjection();
+        if (!resolution) {
+            return;
+        }
+
         if (!projection) {
             return;
         }
@@ -51,9 +51,38 @@ export function useScale(
          * https://github.com/openlayers/openlayers/blob/7fa9df03431e9e1bc517e6c414565d9f848a3132/src/ol/control/ScaleLine.js#L454C3-L454C24
          */
         setScale(Math.round(pointResolution * INCHES_PER_METRE * DEFAULT_DPI));
-    }, [map, center, resolution]);
+        setLocaleScale(scale ? intl.formatNumber(scale) : undefined);
+    }, [intl, center, resolution, projection, scale]);
 
-    return { scale };
+    return { scale: localeScale };
+}
+
+/**
+ * Detect change of map and return projection | null
+ */
+export function useProjection(map: Map | undefined): { projection: Projection | null } {
+    const [projection, setProjection] = useState<Projection | null>(null);
+
+    useEffect(() => {
+        if (!map) {
+            return;
+        }
+
+        // set initial map projection
+        setProjection(map.getView().getProjection());
+
+        const eventsKey: EventsKey = map.on("change:view", () => {
+            const newProjection = map.getView().getProjection();
+
+            if (projection != newProjection) {
+                setProjection(newProjection);
+            }
+        });
+
+        return () => unByKey(eventsKey);
+    }, [map, projection]);
+
+    return { projection };
 }
 
 /**

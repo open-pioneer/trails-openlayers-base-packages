@@ -7,9 +7,9 @@
         "build": "build-pioneer-package"
     },
     "peerDependencies": {
-        "@chakra-ui/icons": "^2.0.19",
-        "@chakra-ui/system": "^2.5.7",
-        "@emotion/react": "^11.11.0",
+        "@chakra-ui/icons": "^2.1.0",
+        "@chakra-ui/system": "^2.6.0",
+        "@emotion/react": "^11.11.1",
         "@emotion/styled": "^11.11.0",
         "@open-pioneer/chakra-integration": "^1.0.0",
         "@open-pioneer/runtime": "^1.0.0",
