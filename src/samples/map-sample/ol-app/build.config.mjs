@@ -6,7 +6,7 @@ export default defineBuildConfig({
     styles: "./app.css",
     i18n: ["en", "de"],
     services: {
-        MainMapProvider: {
+        MapConfigProviderImpl: {
             provides: ["ol-map.MapConfigProvider"]
         }
     },

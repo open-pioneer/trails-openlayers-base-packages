@@ -8,7 +8,7 @@
         "@emotion/react": "^11.11.1",
         "@emotion/styled": "^11.11.0",
         "@open-pioneer/chakra-integration": "^1.0.0",
-        "@open-pioneer/experimental-ol-map": "workspace:^",
+        "@open-pioneer/ol-map": "workspace:^",
         "ol": "^7.5.1",
         "react": "^18.2.0"
     },

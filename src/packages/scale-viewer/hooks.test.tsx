@@ -3,25 +3,23 @@
 /**
  * @vitest-environment jsdom
  */
-import { it, expect } from "vitest";
-import { MapContainer, OlMapConfigurationProvider } from "@open-pioneer/experimental-ol-map";
-import { OlMapRegistry } from "@open-pioneer/experimental-ol-map/services";
-import { ServiceOptions } from "@open-pioneer/runtime";
+import { MapConfig, MapConfigProvider, MapContainer, MapRegistry } from "@open-pioneer/ol-map";
+import { MapRegistryImpl } from "@open-pioneer/ol-map/services";
 import {
     PackageContextProvider,
     PackageContextProviderProps
 } from "@open-pioneer/test-utils/react";
 import { createService } from "@open-pioneer/test-utils/services";
 import { act, render, renderHook, screen, waitFor } from "@testing-library/react";
-import { MapOptions } from "ol/Map";
 import View from "ol/View";
 import TileLayer from "ol/layer/Tile";
-import OSM from "ol/source/OSM";
-import { useCenter, useResolution, useScale, useProjection } from "./hooks";
 import { get } from "ol/proj";
-
+import OSM from "ol/source/OSM";
+import ResizeObserver from "resize-observer-polyfill";
+import { expect, it } from "vitest";
+import { useCenter, useProjection, useResolution, useScale } from "./hooks";
 // used to avoid a "ResizeObserver is not defined" error
-global.ResizeObserver = require("resize-observer-polyfill");
+global.ResizeObserver = ResizeObserver;
 
 const LOCALE_DE = { locale: "de" };
 const LOCALE_EN = { locale: "en" };
@@ -39,7 +37,7 @@ it("should successfully create a map projection", async () => {
 
     await waitForMapMount();
 
-    const map = await registry.getMap(mapId);
+    const map = await registry.getOlMap(mapId);
     if (!map) {
         throw new Error("map not defined");
     }
@@ -78,7 +76,7 @@ it("should successfully create a map resolution", async () => {
 
     await waitForMapMount();
 
-    const map = await registry.getMap(mapId);
+    const map = await registry.getOlMap(mapId);
     if (!map) {
         throw new Error("map not defined");
     }
@@ -128,7 +126,7 @@ it("should successfully create a map center", async () => {
 
     await waitForMapMount();
 
-    const map = await registry.getMap(mapId);
+    const map = await registry.getOlMap(mapId);
     if (!map) {
         throw new Error("map not defined");
     }
@@ -168,7 +166,7 @@ it("should successfully create a map scale", async () => {
 
     await waitForMapMount();
 
-    const map = await registry.getMap(mapId);
+    const map = await registry.getOlMap(mapId);
     if (!map) {
         throw new Error("map not defined");
     }
@@ -217,61 +215,54 @@ it("should successfully create a map scale for the corresponding locale", async 
     expect(hookDE.result.current.scale).equals("21.026");
 });
 
-class MapConfigProvider implements OlMapConfigurationProvider {
+class MapConfigProviderImpl implements MapConfigProvider {
     mapId = "default";
-    mapOptions: MapOptions = {};
+    mapConfig: MapConfig;
 
-    constructor(options: ServiceOptions) {
-        if (options.properties.mapOptions) {
-            this.mapOptions = options.properties.mapOptions as MapOptions;
-        }
-        if (options.properties.mapId) {
-            this.mapId = options.properties.mapId as string;
-        }
+    constructor(mapId: string, mapConfig?: MapConfig | undefined) {
+        this.mapId = mapId;
+        this.mapConfig = mapConfig ?? {};
     }
 
-    getMapOptions(): Promise<MapOptions> {
-        return Promise.resolve(this.mapOptions);
+    getMapConfig(): Promise<MapConfig> {
+        return Promise.resolve(this.mapConfig);
     }
 }
 
 export interface SimpleMapOptions {
-    center?: [number, number];
+    center?: { x: number; y: number };
     zoom?: number;
 }
 
 async function setupMap(options?: SimpleMapOptions) {
     const mapId = "test";
-    const mapOptions: MapOptions = {
-        view: new View({
-            projection: "EPSG:3857",
-            center: options?.center ?? [847541, 6793584],
+    const mapConfig: MapConfig = {
+        initialView: {
+            kind: "position",
+            center: options?.center ?? { x: 847541, y: 6793584 },
             zoom: options?.zoom ?? 10
-        }),
+        },
+        projection: "EPSG:3857",
         layers: [
-            new TileLayer({
-                source: new OSM(),
-                properties: { title: "OSM" }
-            })
+            {
+                title: "OSM",
+                layer: new TileLayer({
+                    source: new OSM()
+                })
+            }
         ]
     };
 
-    const mapConfigProvider = await createService(MapConfigProvider, {
-        properties: {
-            mapOptions: mapOptions,
-            mapId
-        }
-    });
-    const registry = await createService(OlMapRegistry, {
+    const registry = await createService(MapRegistryImpl, {
         references: {
-            providers: [mapConfigProvider]
+            providers: [new MapConfigProviderImpl(mapId, mapConfig)]
         }
     });
 
     return { mapId, registry };
 }
 
-function createPackageContextProviderProps(service: OlMapRegistry): PackageContextProviderProps {
+function createPackageContextProviderProps(service: MapRegistry): PackageContextProviderProps {
     return {
         services: {
             "ol-map.MapRegistry": service

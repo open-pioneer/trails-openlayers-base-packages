@@ -72,7 +72,7 @@ export class MapModelImpl extends EventEmitter<MapModelEvents> implements MapMod
         if (this.#targetWatchKey) {
             unByKey(this.#targetWatchKey);
         }
-        this.#targetWatchKey = undefined;        
+        this.#targetWatchKey = undefined;
         this.#abortController.abort();
         this.#displayWaiter?.reject(createAbortError());
         this.#layers.destroy();

@@ -7,6 +7,12 @@ import type { MapOptions as OlMapBaseOptions } from "ol/Map";
 import type OlView from "ol/View";
 import type { ViewOptions as OlViewOptions } from "ol/View";
 
+/*
+    TODO: 
+    - Initialize layer loadState impl
+    - Simple helper class for map setup?
+*/
+
 export interface MapModelEvents {
     "changed": void;
     "changed:container": void;
@@ -173,7 +179,6 @@ export interface LayerModel extends EventSource<LayerModelEvents> {
      *
      * This value is always present if {@link loadState} is `"error"`.
      */
-    // TODO: Http status etc.?
     readonly loadError: Error | undefined;
 
     /**
@@ -377,8 +382,6 @@ export interface MapConfigProvider {
      */
     getMapConfig(): Promise<MapConfig>;
 }
-
-// TODO: Provide SimpleMapConfigProvider
 
 import "@open-pioneer/runtime";
 declare module "@open-pioneer/runtime" {

@@ -3,29 +3,26 @@
 import { Box, Button, Flex } from "@open-pioneer/chakra-integration";
 import { Sidebar, SidebarItem } from "@open-pioneer/experimental-layout-sidebar";
 import { LayerControlComponent } from "@open-pioneer/experimental-ol-layer-control";
-import { MapContainer, MapPadding } from "@open-pioneer/experimental-ol-map";
+import { MapContainer, MapPadding } from "@open-pioneer/ol-map";
+import { useMapModel } from "@open-pioneer/ol-map/useMapModel";
 import { ScaleViewer } from "@open-pioneer/scale-viewer";
 import { ScaleComponent } from "map-sample-scale-component";
 import { ZoomComponent } from "map-sample-zoom-component";
-import { useService } from "open-pioneer:react-hooks";
 import { useRef, useState } from "react";
 import { FiCodesandbox, FiLayers } from "react-icons/fi";
-import { useAsync } from "react-use";
-
-import { MAP_ID } from "./services";
+import { MAP_ID } from "./MapConfigProviderImpl";
 
 const berlin = [1489200, 6894026, 1489200, 6894026];
 
 export function MapApp() {
     const [viewPadding, setViewPadding] = useState<MapPadding>();
     const [isExpanded, setExpanded] = useState<boolean>(true);
-
-    const olMapRegistry = useService("ol-map.MapRegistry");
-    const mapState = useAsync(async () => await olMapRegistry.getMap(MAP_ID));
+    const mapState = useMapModel(MAP_ID);
 
     const centerBerlin = () => {
-        if (mapState.value) {
-            mapState.value.getView().fit(berlin, { maxZoom: 13 });
+        const olMap = mapState.map?.olMap;
+        if (olMap) {
+            olMap?.getView().fit(berlin, { maxZoom: 13 });
         }
     };
 

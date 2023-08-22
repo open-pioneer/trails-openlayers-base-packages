@@ -9,24 +9,29 @@ import {
     SliderTrack,
     Tooltip
 } from "@open-pioneer/chakra-integration";
-import { OlComponentProps, useMap } from "@open-pioneer/experimental-ol-map";
+import { MapModel, useMapModel } from "@open-pioneer/ol-map";
 import Layer from "ol/layer/Layer";
 import { unByKey } from "ol/Observable";
 import { useIntl } from "open-pioneer:react-hooks";
 import { useEffect, useMemo, useState } from "react";
 import { useTimeout } from "react-use";
 
-export interface LayerControlProps extends OlComponentProps {
+export interface LayerControlProps {
+    /**
+     * The id of the map.
+     */
+    mapId: string;
+
     /**
      * Sets visibility of opacity slider
      */
     showOpacitySlider?: boolean;
 }
 
-export function LayerControlComponent(config: LayerControlProps) {
+export function LayerControlComponent(props: LayerControlProps) {
     const intl = useIntl();
-    const { loading, error, map } = useMap(config.mapId);
-    const layers = useMemo(() => map?.getAllLayers().reverse() ?? [], [map]);
+    const { loading, error, map } = useMapModel(props.mapId);
+    const layers = useMemo(() => map?.olMap.getAllLayers().reverse() ?? [], [map]); // TODO: Does not react to layer changes
 
     // Small timeout before "Loading..." to optimize for the common case where the map
     // is available almost immediately. This prevents some flickering in the UI.
@@ -45,9 +50,10 @@ export function LayerControlComponent(config: LayerControlProps) {
                     {layers.map((layer, i) => (
                         <div key={i} className="layer-entry">
                             <LayerVisibilityTogglerComponent
+                                map={map!}
                                 layer={layer}
                             ></LayerVisibilityTogglerComponent>
-                            {config.showOpacitySlider && (
+                            {props.showOpacitySlider && (
                                 <LayerOpacitySliderComponent
                                     layer={layer}
                                 ></LayerOpacitySliderComponent>
@@ -60,11 +66,12 @@ export function LayerControlComponent(config: LayerControlProps) {
     );
 }
 
-function LayerVisibilityTogglerComponent(props: { layer: Layer }) {
+function LayerVisibilityTogglerComponent(props: { map: MapModel; layer: Layer }) {
     const intl = useIntl();
     const [visibility, setVisibility] = useState<boolean>(props.layer.getVisible());
     const title =
-        props.layer.getProperties().title ?? intl.formatMessage({ id: "undefined-layer-title" });
+        props.map.layers.getLayerByRawInstance(props.layer)?.title ??
+        intl.formatMessage({ id: "undefined-layer-title" });
 
     const changeVisibility = () => {
         setVisibility(!visibility);

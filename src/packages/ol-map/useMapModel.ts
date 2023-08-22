@@ -5,9 +5,7 @@ import { useMemo } from "react";
 import { useAsync } from "react-use";
 import { MapModel } from "./api";
 
-/**
- * Represents the current state of the map lookup made by {@link useMapModel}.
- */
+/** Return value of {@link useMapModel}. */
 export type UseMapModelResult =
     | { loading: boolean; map?: MapModel | undefined; error?: Error | undefined }
     | UseMapModelLoading

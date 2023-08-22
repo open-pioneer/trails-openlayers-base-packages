@@ -63,7 +63,8 @@ export class MapRegistryImpl implements Service, MapRegistry {
 
         const modelPromise = this.#createModel(mapId, provider).catch((error) => {
             LOG.error(`Failed to construct map '${mapId}'`, error);
-            return undefined;
+            this.modelCreations.delete(mapId);
+            return undefined; // TODO: Log or throw?
         });
         this.modelCreations.set(mapId, modelPromise);
         return modelPromise;
