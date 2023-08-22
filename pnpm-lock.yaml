@@ -9,6 +9,11 @@ overrides:
   semver@<7.5.2: '>=7.5.2'
   tough-cookie@<4.1.3: '>=4.1.3'
 
+patchedDependencies:
+  '@vitejs/plugin-react-swc@3.3.2':
+    hash: 7h2yahunoyw3rbqry2zxs22gua
+    path: patches/@vitejs__plugin-react-swc@3.3.2.patch
+
 importers:
 
   .:
@@ -112,7 +117,7 @@ importers:
         version: 6.4.0(eslint@8.47.0)(typescript@5.1.6)
       '@vitejs/plugin-react-swc':
         specifier: ^3.3.2
-        version: 3.3.2(vite@4.4.9)
+        version: 3.3.2(patch_hash=7h2yahunoyw3rbqry2zxs22gua)(vite@4.4.9)
       eslint:
         specifier: ^8.47.0
         version: 8.47.0
@@ -3019,7 +3024,7 @@ packages:
       eslint-visitor-keys: 3.4.3
     dev: true
 
-  /@vitejs/plugin-react-swc@3.3.2(vite@4.4.9):
+  /@vitejs/plugin-react-swc@3.3.2(patch_hash=7h2yahunoyw3rbqry2zxs22gua)(vite@4.4.9):
     resolution: {integrity: sha512-VJFWY5sfoZerQRvJrh518h3AcQt6f/yTuWn4/TRB+dqmYU0NX1qz7qM5Wfd+gOQqUzQW4gxKqKN3KpE/P3+zrA==}
     peerDependencies:
       vite: ^4
@@ -3029,6 +3034,7 @@ packages:
     transitivePeerDependencies:
       - '@swc/helpers'
     dev: true
+    patched: true
 
   /@vitest/expect@0.34.1:
     resolution: {integrity: sha512-q2CD8+XIsQ+tHwypnoCk8Mnv5e6afLFvinVGCq3/BOT4kQdVQmY6rRfyKkwcg635lbliLPqbunXZr+L1ssUWiQ==}

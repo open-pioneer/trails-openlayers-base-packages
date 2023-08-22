@@ -10,8 +10,6 @@ import { Projection, get as getProjection } from "ol/proj";
 import OSM from "ol/source/OSM";
 import { MapModelImpl } from "./ModelImpl";
 import { MapConfig } from "./api";
-import { EventsKey } from "ol/events";
-import { unByKey } from "ol/Observable";
 
 const LOG = createLogger("ol-map:createMapModel");
 
@@ -52,11 +50,15 @@ class MapModelFactory {
             ];
         }
 
+        const initialView = mapConfig.initialView;
+        const initialExtent = initialView?.kind === "extent" ? initialView.extent : undefined;
+
         LOG.debug(`Constructing open layers map with options`, mapOptions);
         const olMap = new OlMap(mapOptions);
         const mapModel = new MapModelImpl({
             id: mapId,
-            olMap
+            olMap,
+            initialExtent
         });
 
         try {
@@ -65,12 +67,6 @@ class MapModelFactory {
                     mapModel.layers.createLayer(layerConfig);
                 }
             }
-
-            waitForMapSize(olMap).then(() => {
-                const initialExtent = olMap.getView().calculateExtent();
-                console.log("initial extent is ", initialExtent);
-            });
-
             return mapModel;
         } catch (e) {
             mapModel.destroy();
@@ -157,34 +153,4 @@ class MapModelFactory {
         }
         return projection;
     }
-}
-
-function waitForMapSize(olMap: OlMap): Promise<void> {
-    const promise = new Promise<void>((resolve) => {
-        function checkSize() {
-            const currentSize = olMap.getSize() ?? [];
-            const [width = 0, height = 0] = currentSize;
-            if (currentSize && width > 0 && height > 0) {
-                resolve(wait(25));
-                return true;
-            }
-            return false;
-        }
-
-        if (checkSize()) {
-            return;
-        }
-
-        let key: EventsKey | undefined = olMap.on("change:size", () => {
-            if (checkSize() && key) {
-                unByKey(key);
-                key = undefined;
-            }
-        });
-    });
-    return promise;
-}
-
-function wait(milliseconds: number): Promise<void> {
-    return new Promise((resolve) => setTimeout(resolve, milliseconds));
 }

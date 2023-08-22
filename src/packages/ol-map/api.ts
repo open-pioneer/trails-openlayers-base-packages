@@ -36,6 +36,7 @@ export interface MapModel extends EventSource<MapModelEvents> {
      * The initial map extent.
      *
      * May be undefined before the map is being shown.
+     * This is guaranteed to be initialized if the promise returned by {@link whenDisplayed} has resolved.
      *
      * The `changed:initialExtent` event is emitted when this value changes.
      */
@@ -302,6 +303,8 @@ export interface OlMapOptions extends Omit<OlMapBaseOptions, "target" | "view"> 
     view: OlView | OlViewOptions | Promise<OlViewOptions> | undefined;
 }
 
+export type ExtensibleUnion<Values extends BaseType, BaseType extends number | string> = Values | ({} & BaseType );
+
 /**
  * Options supported during map construction.
  */
@@ -315,7 +318,9 @@ export interface MapConfig {
     /**
      * Configures a specific projection, e.g. `"EPSG:4326"`.
      */
-    projection?: string;
+    // NOTE: This weird syntax supports better autocomplete for the predefined values.
+    // See also https://github.com/microsoft/TypeScript/issues/29729
+    projection?: "EPSG:3857" | "EPSG:4326" | (string & {});
 
     /**
      * Configures the layers of the map.

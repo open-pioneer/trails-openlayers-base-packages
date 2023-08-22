@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-import { EventEmitter, createLogger } from "@open-pioneer/core";
+import { EventEmitter, ManualPromise, createAbortError, createLogger, createManualPromise, isAbortError } from "@open-pioneer/core";
 import {
     ExtentConfig,
     LayerCollection,
@@ -15,6 +15,9 @@ import {
 import OlMap from "ol/Map";
 import OlBaseLayer from "ol/layer/Base";
 import { v4 as uuid4v } from "uuid";
+import { EventsKey } from "ol/events";
+import { unByKey } from "ol/Observable";
+import { getCenter } from "ol/extent";
 
 const LOG = createLogger("ol-map:Model");
 
@@ -23,15 +26,39 @@ export class MapModelImpl extends EventEmitter<MapModelEvents> implements MapMod
     readonly #olMap: OlMap;
     readonly #layers = new LayerCollectionImpl(this);
     #container: HTMLDivElement | undefined;
-    #initialExtent: ExtentConfig | undefined; // TODO different type?
+    #initialExtent: ExtentConfig | undefined;
+    
+    readonly #abortController = new AbortController();
+    #displayStatus: "waiting" | "ready" | "error";
+    #displayWaiter: ManualPromise<void> | undefined;
 
-    constructor(properties: { id: string; olMap: OlMap }) {
+    constructor(properties: { id: string; olMap: OlMap; initialExtent: ExtentConfig | undefined }) {
         super();
         this.#id = properties.id;
         this.#olMap = properties.olMap;
+        this.#initialExtent = properties.initialExtent;
+        
+        this.#displayStatus = "waiting";
+        this
+            .#waitForView()
+            .then(() => {
+                this.#displayStatus = "ready";
+                this.#displayWaiter?.resolve();
+                this.#displayWaiter = undefined;
+            }, (error) => {
+                if (!isAbortError(error)) {
+                    LOG.error(`Failed to initialize map`, error);
+                }
+
+                this.#displayStatus = "error";
+                this.#displayWaiter?.reject(new Error(`Failed to initialize map.`));
+                this.#displayWaiter = undefined;
+            });
     }
 
     destroy() {
+        this.#abortController.abort();
+        this.#displayWaiter?.reject(createAbortError());
         this.#layers.destroy();
         this.#olMap.dispose();
     }
@@ -57,7 +84,13 @@ export class MapModelImpl extends EventEmitter<MapModelEvents> implements MapMod
     }
 
     whenDisplayed(): Promise<void> {
-        throw new Error("Method not implemented.");
+        if (this.#displayStatus === "ready") {
+            return Promise.resolve();
+        }
+        if (this.#displayStatus === "error") {
+            return Promise.reject(new Error(`Failed to initialize map.`));
+        }
+        return (this.#displayWaiter ??= createManualPromise()).promise;
     }
 
     // Called by the UI implementation when the map is mounted
@@ -66,6 +99,59 @@ export class MapModelImpl extends EventEmitter<MapModelEvents> implements MapMod
             this.#container = container;
             this.emit("changed:container");
             this.emit("changed");
+        }
+    }
+
+    /**
+     * Waits for the map to be displayed.
+     * 
+     * May simply resolve when done, or throw an error when a problem occurs.
+     * AbortError is thrown when cancelled via `this.#abortController`, for example
+     * when the map model is destroyed before it has ever been displayed.
+     */
+    async #waitForView(): Promise<void> {
+        try {
+            await waitForMapSize(this.olMap, this.#abortController.signal); // may throw on cancel
+        } catch (e) {
+            if (isAbortError(e)) {
+                throw e;
+            }           
+            throw new Error(`Failed to wait for the map to be displayed.`, { cause: e });
+        }
+
+        try {
+            const olMap = this.#olMap;
+            const view = olMap.getView();
+
+            if (this.#initialExtent) {
+                // Initial extent was set from the outside. We simply ensure that it gets displayed by the map.
+                const extent = this.#initialExtent;
+                const olExtent = [
+                    extent.xMin, extent.yMin, extent.xMax, extent.yMax
+                ];
+
+                const olCenter = getCenter(olExtent);
+                const resolution = view.getResolutionForExtent(olExtent);
+                LOG.debug(`Applying initial extent`, extent);
+                LOG.debug(`  Computed center:`, olCenter);
+                LOG.debug(`  Computed resolution:`, resolution);
+
+                view.setCenter(olCenter);
+                view.setResolution(resolution);
+            } else {
+                // Initial extent was NOT set from the outside.
+                // We detect whatever the view is displaying and consider it to be the initial extent.
+                const olExtent = view.calculateExtent();
+                const [xMin = 0, yMin = 0, xMax = 0, yMax = 0] = olExtent;
+                const extent: ExtentConfig = { xMin, yMin, xMax, yMax };
+                LOG.debug(`Detected initial extent`, extent);
+                
+                this.#initialExtent = extent;
+                this.emit("changed:initialExtent");
+                this.emit("changed");
+            }
+        } catch (e) {
+            throw new Error(`Failed to apply the initial extent.`, { cause: e });
         }
     }
 }
@@ -326,4 +412,50 @@ export class LayerModelImpl extends EventEmitter<LayerModelEvents> implements La
         (this as any).emit(event);
         this.emit("changed");
     }
+}
+
+function waitForMapSize(olMap: OlMap, signal: AbortSignal): Promise<void> {
+    const promise = new Promise<void>((resolve, reject) => {
+        let eventKey: EventsKey | undefined;
+        
+        function checkSize() {
+            const currentSize = olMap.getSize() ?? [];
+            const [width = 0, height = 0] = currentSize;
+            if (currentSize && width > 0 && height > 0) {
+                finish();
+            }
+        }
+
+        function onAbort() {
+            finish(createAbortError());
+        }
+
+        function finish(error?: Error | undefined) {
+            if (eventKey) {
+                unByKey(eventKey);
+                eventKey = undefined;
+            }
+            signal.removeEventListener("abort", onAbort);
+
+            if (error) {
+                reject();
+            } else {
+                resolve(wait(25)); // Give the map some time to render
+            }
+        }   
+
+        if (signal.aborted) {
+            finish(createAbortError());
+            return;
+        }
+
+
+        signal.addEventListener("abort", onAbort);
+        eventKey = olMap.on("change:size", checkSize);
+    });
+    return promise;
+}
+
+function wait(milliseconds: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, milliseconds));
 }

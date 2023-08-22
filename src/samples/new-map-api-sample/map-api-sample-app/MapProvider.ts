@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import { MapConfig, MapConfigProvider, registerProjections } from "@open-pioneer/ol-map";
 import TileLayer from "ol/layer/Tile";
+import OSM from "ol/source/OSM";
 import Stamen from "ol/source/Stamen";
 
 registerProjections({
@@ -15,20 +16,27 @@ export class MapProvider implements MapConfigProvider {
     async getMapConfig(): Promise<MapConfig> {
         return {
             initialView: {
-                kind: "position",
-                center: {
-                    x: 405948.17,
-                    y: 5757572.85
-                },
-                zoom: 10
+                kind: "extent",
+                extent: {
+                    xMin: 665307.894194,
+                    yMin: 6611497.198555,
+                    xMax: 1076233.358255,
+                    yMax: 6880555.538118
+                }
             },
-            projection: "EPSG:25832",
+            projection: "EPSG:3857",
             layers: [
                 {
                     // id: "foo",
                     title: "Watercolor",
                     layer: new TileLayer({
                         source: new Stamen({ layer: "watercolor" })
+                    })
+                },
+                {
+                    title: "OSM",
+                    layer: new TileLayer({
+                        source: new OSM()
                     })
                 }
             ]

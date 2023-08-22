@@ -32,7 +32,10 @@
             "semver: https://github.com/advisories/GHSA-c2qf-rxjj-qqgw",
             "tough-cookie: https://github.com/advisories/GHSA-72xf-g2v4-qvf3",
             "",
-            "ignored cves:"
+            "ignored cves:",
+            "",
+            "plugin-react-swc has been patched to transpile to es2022 instead of es2020, to support native private fields",
+            "see also https://github.com/vitejs/vite-plugin-react-swc/issues/141"
         ],
         "overrides": {
             "ol-mapbox-style": "workspace:disabled-package@*",
@@ -41,6 +44,9 @@
         },
         "auditConfig": {
             "ignoreCves": []
+        },
+        "patchedDependencies": {
+            "@vitejs/plugin-react-swc@3.3.2": "patches/@vitejs__plugin-react-swc@3.3.2.patch"
         }
     },
     "dependencies": {
@@ -66,8 +72,8 @@
         "@changesets/cli": "^2.26.2",
         "@open-pioneer/build-package-cli": "^1.0.4",
         "@open-pioneer/build-support": "^1.0.0",
-        "@open-pioneer/vite-plugin-pioneer": "^1.1.1",
         "@open-pioneer/tag-current-versions": "^1.0.1",
+        "@open-pioneer/vite-plugin-pioneer": "^1.1.1",
         "@testing-library/dom": "^9.3.1",
         "@testing-library/jest-dom": "^6.0.0",
         "@testing-library/react": "^14.0.0",
