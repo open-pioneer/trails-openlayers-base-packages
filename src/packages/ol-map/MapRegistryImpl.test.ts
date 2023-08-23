@@ -3,18 +3,15 @@
 /**
  * @vitest-environment jsdom
  */
-
+import { getErrorChain } from "@open-pioneer/core";
 import { ServiceOptions } from "@open-pioneer/runtime";
-import { registerProjections } from "./projections";
 import { createService } from "@open-pioneer/test-utils/services";
-
-import { afterEach, expect, it, vi } from "vitest";
-
-import { MapConfig, MapConfigProvider } from "./api";
-
-import { MapRegistryImpl } from "./services";
-import { Attribution } from "ol/control";
 import { View } from "ol";
+import { Attribution } from "ol/control";
+import { afterEach, expect, it, vi } from "vitest";
+import { MapConfig, MapConfigProvider } from "./api";
+import { registerProjections } from "./projections";
+import { MapRegistryImpl } from "./services";
 
 // used to avoid a "ResizeObserver is not defined" error
 global.ResizeObserver = require("resize-observer-polyfill");
@@ -45,13 +42,13 @@ it("should successfully create and destroy a mapModel", async () => {
         mapConfig: {} as MapConfig,
         mapId: MAP_ID
     });
-    const mapModel = await mapRegistryService.getMapModel(MAP_ID);
+    const mapModel = await mapRegistryService.expectMapModel(MAP_ID);
     expect(mapModel?.id).toBe(MAP_ID);
 
     mapRegistryService.destroy();
 
     await expect(() =>
-        mapRegistryService.getMapModel(MAP_ID)
+        mapRegistryService.expectMapModel(MAP_ID)
     ).rejects.toThrowErrorMatchingInlineSnapshot('"MapRegistry has already been destroyed."');
 });
 
@@ -60,7 +57,7 @@ it("should successfully set only Attribution when Controls are epmty", async () 
         mapConfig: {} as MapConfig,
         mapId: MAP_ID
     });
-    const map = await mapRegistryService.getOlMap(MAP_ID);
+    const map = (await mapRegistryService.expectMapModel(MAP_ID))?.olMap;
 
     const controls = map?.getControls().getArray();
     const attributes = map?.getControls().getArray().at(0);
@@ -68,7 +65,7 @@ it("should successfully set only Attribution when Controls are epmty", async () 
     expect(attributes).toBeInstanceOf(Attribution);
 });
 
-it("should log warnning message if new View is in advanced configuration and projection is settet", async () => {
+it("should log warnning message if new View is in advanced configuration and projection is set", async () => {
     const logSpy = vi.spyOn(global.console, "warn");
 
     const view = new View({ center: [405948.17, 5757572.85], zoom: 5 });
@@ -83,7 +80,7 @@ it("should log warnning message if new View is in advanced configuration and pro
         mapId: MAP_ID
     });
 
-    await mapRegistryService.getMapModel(MAP_ID);
+    await mapRegistryService.expectMapModel(MAP_ID);
     expect(logSpy).toMatchInlineSnapshot(`
       [MockFunction warn] {
         "calls": [
@@ -102,7 +99,7 @@ it("should log warnning message if new View is in advanced configuration and pro
     `);
 });
 
-it("should log warnning message if new View is in advanced configuration and initialView is settet", async () => {
+it("should log warnning message if new View is in advanced configuration and initialView is set", async () => {
     const logSpy = vi.spyOn(global.console, "warn");
 
     const view = new View({ center: [405948.17, 5757572.85], zoom: 5 });
@@ -124,7 +121,7 @@ it("should log warnning message if new View is in advanced configuration and ini
         mapId: MAP_ID
     });
 
-    await mapRegistryService.getMapModel(MAP_ID);
+    await mapRegistryService.expectMapModel(MAP_ID);
     expect(logSpy).toMatchInlineSnapshot(`
       [MockFunction warn] {
         "calls": [
@@ -158,7 +155,7 @@ it("should successfully create View with 'position' property", async () => {
         mapId: MAP_ID
     });
 
-    const map = await mapRegistryService.getOlMap(MAP_ID);
+    const map = (await mapRegistryService.expectMapModel(MAP_ID))?.olMap;
     const view = map?.getView();
 
     expect(view?.getCenter()).toContain(123);
@@ -185,7 +182,7 @@ it("should successfully create View with 'extent' property", async () => {
     });
 
     const xMin = extent.xMin + (extent.xMax - extent.xMin) / 2;
-    const map = await mapRegistryService.getOlMap(MAP_ID);
+    const map = (await mapRegistryService.expectMapModel(MAP_ID))?.olMap;
     const view = map?.getView();
 
     expect(view?.getCenter()).toContain(xMin);
@@ -198,13 +195,12 @@ it("should successfully create View with 'Default' property", async () => {
         mapId: MAP_ID
     });
 
-    const map = await mapRegistryService.getOlMap(MAP_ID);
+    const map = (await mapRegistryService.expectMapModel(MAP_ID))?.olMap;
     const view = map?.getView();
     expect(view?.getProjection().getCode()).toBe("EPSG:3857");
 });
 
 it("should throw an exception by wrong EPSG code", async () => {
-    const logSpy = vi.spyOn(global.console, "error");
     const mapRegistryService = await createMapRegistryService({
         mapConfig: {
             projection: "EPSG:0000000000"
@@ -212,22 +208,21 @@ it("should throw an exception by wrong EPSG code", async () => {
         mapId: MAP_ID
     });
 
-    await mapRegistryService.getMapModel(MAP_ID);
-    expect(logSpy).toMatchInlineSnapshot(`
-      [MockFunction error] {
-        "calls": [
-          [
-            "[ERROR] ol-map:MapRegistry: Failed to construct map 'test'",
-            [Error: Failed to retrieve projection for code 'EPSG:0000000000'.],
-          ],
-        ],
-        "results": [
-          {
-            "type": "return",
-            "value": undefined,
-          },
-        ],
-      }
+    let error;
+    try {
+        await mapRegistryService.expectMapModel(MAP_ID);
+        throw new Error("unexpected success");
+    } catch (e) {
+        error = e as Error;
+    }
+
+    const chain = getErrorChain(error);
+    const messages = chain.map((error) => error.message);
+    expect(messages).toMatchInlineSnapshot(`
+      [
+        "Failed to construct map 'test'",
+        "Failed to retrieve projection for code 'EPSG:0000000000'.",
+      ]
     `);
 });
 
@@ -253,7 +248,7 @@ it("should successfully create View with 'EPSG:25832'", async () => {
         mapId: MAP_ID
     });
 
-    const map = await mapRegistryService.getOlMap(MAP_ID);
+    const map = (await mapRegistryService.expectMapModel(MAP_ID))?.olMap;
     const view = map?.getView();
     expect(view?.getProjection().getCode()).toBe("EPSG:25832");
 });

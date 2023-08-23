@@ -78,14 +78,16 @@ it("should successfully create a map", async () => {
     });
 
     // Div is registered as map target
-    const map = await mapRegistryService.getOlMap("test");
+    const map = await mapRegistryService.expectMapModel("test");
     const container = renderResult.container.querySelector(".map-container");
     expect(container).toBeInstanceOf(HTMLDivElement);
-    expect(map?.getTarget()).toBe(container);
+    expect(map?.container).toBe(container);
+    expect(map?.olMap.getTarget()).toBe(container);
 
     // Unmounting removes the container from the map
     renderResult.unmount();
-    expect(map?.getTarget()).toBeUndefined();
+    expect(map?.olMap.getTarget()).toBeUndefined();
+    expect(map?.container).toBeUndefined();
 });
 //TODO TEST -> should throw an error if the map container is registered twice
 it("should successfully create a map with given configuration", async () => {
@@ -130,9 +132,9 @@ it("should successfully create a map with given configuration", async () => {
         }
     });
 
-    const map = await mapRegistryService.getOlMap("test");
-    expect(map?.getView().getProjection().getCode()).toBe("EPSG:4326");
-    const layers = map?.getAllLayers();
+    const map = await mapRegistryService.expectMapModel("test");
+    expect(map.olMap.getView().getProjection().getCode()).toBe("EPSG:4326");
+    const layers = map.olMap.getAllLayers();
     const layer1 = layers?.at(0);
     const layer2 = layers?.at(1);
     expect(layers?.length).toBe(2);
