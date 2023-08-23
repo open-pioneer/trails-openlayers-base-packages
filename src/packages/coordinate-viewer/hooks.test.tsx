@@ -57,10 +57,7 @@ it("should successfully create a map projection", async () => {
 
     await waitForMapMount();
 
-    const map = await registry.getOlMap(mapId);
-    if (!map) {
-        throw new Error("map not defined");
-    }
+    const map = (await registry.expectMapModel(mapId)).olMap;
 
     // change view projection and detect projection change
     const hook = renderHook(() => useProjection(map));

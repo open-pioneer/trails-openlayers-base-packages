@@ -3,11 +3,20 @@
 import {
     EventEmitter,
     ManualPromise,
+    Resource,
     createAbortError,
     createLogger,
     createManualPromise,
     isAbortError
 } from "@open-pioneer/core";
+import OlMap from "ol/Map";
+import { unByKey } from "ol/Observable";
+import { EventsKey } from "ol/events";
+import { getCenter } from "ol/extent";
+import OlBaseLayer from "ol/layer/Base";
+import OlLayer from "ol/layer/Layer";
+import Source, { State as OlSourceState } from "ol/source/Source";
+import { v4 as uuid4v } from "uuid";
 import {
     ExtentConfig,
     LayerCollection,
@@ -19,12 +28,6 @@ import {
     MapModel,
     MapModelEvents
 } from "./api";
-import OlMap from "ol/Map";
-import OlBaseLayer from "ol/layer/Base";
-import { v4 as uuid4v } from "uuid";
-import { EventsKey } from "ol/events";
-import { unByKey } from "ol/Observable";
-import { getCenter } from "ol/extent";
 
 const LOG = createLogger("ol-map:Model");
 
@@ -32,6 +35,7 @@ export class MapModelImpl extends EventEmitter<MapModelEvents> implements MapMod
     readonly #id: string;
     readonly #olMap: OlMap;
     readonly #layers = new LayerCollectionImpl(this);
+    #destroyed = false;
     #container: HTMLElement | undefined;
     #initialExtent: ExtentConfig | undefined;
     #targetWatchKey: EventsKey | undefined;
@@ -69,6 +73,17 @@ export class MapModelImpl extends EventEmitter<MapModelEvents> implements MapMod
     }
 
     destroy() {
+        if (this.#destroyed) {
+            return;
+        }
+
+        this.#destroyed = true;
+        try {
+            this.emit("destroy");
+        } catch (e) {
+            LOG.warn(`Unexpected error from event listener during map model destruction:`, e);
+        }
+
         if (this.#targetWatchKey) {
             unByKey(this.#targetWatchKey);
         }
@@ -178,6 +193,7 @@ export class LayerCollectionImpl
     #layerModelsById = new Map<string, LayerModelImpl>();
     #layerModelsByLayer: WeakMap<OlBaseLayer, LayerModelImpl> | undefined = undefined;
     #activeBaseLayer: LayerModelImpl | undefined;
+    #nextIndex = 1; // next z-index for a layer. currently just auto-increments.
 
     constructor(map: MapModelImpl) {
         super();
@@ -201,15 +217,15 @@ export class LayerCollectionImpl
     createLayer(config: LayerConfig): LayerModelImpl {
         LOG.debug(`Creating layer`, config);
 
-        const resolvedConfig: Required<LayerConfig> = {
-            id: this.#getLayerId(config.id),
+        const model = new LayerModelImpl(this.#map, {
+            id: this.#generateLayerId(config.id),
             layer: config.layer,
             attributes: config.attributes ?? {},
             title: config.title ?? "",
             description: config.description ?? "",
+            visible: config.visible ?? true,
             isBaseLayer: config.isBaseLayer ?? false
-        };
-        const model = new LayerModelImpl(this.#map, resolvedConfig);
+        });
         try {
             this.#registerLayer(model);
 
@@ -231,13 +247,25 @@ export class LayerCollectionImpl
             throw new Error(`OlLayer has already been used for a different LayerModel.`);
         }
 
+        if (model.isBaseLayer) {
+            olLayer.setZIndex(0);
+            if (!this.#activeBaseLayer && model.visible) {
+                this.#updateBaseLayer(model);
+            } else {
+                model.__setVisible(false);
+            }
+        } else {
+            olLayer.setZIndex(this.#nextIndex++);
+            model.__setVisible(model.visible);
+        }
+
         this.#map.olMap.addLayer(olLayer);
         this.#layerModelsById.set(id, model);
         (this.#layerModelsByLayer ??= new WeakMap()).set(olLayer, model);
         this.emit("changed");
     }
 
-    #getLayerId(id: string | undefined): string {
+    #generateLayerId(id: string | undefined): string {
         if (id != null) {
             if (this.#layerModelsById.has(id)) {
                 throw new Error(
@@ -312,9 +340,20 @@ export class LayerCollectionImpl
             return;
         }
 
-        this.#activeBaseLayer?.olLayer.setVisible(false);
+        if (LOG.isDebug()) {
+            const getId = (model: LayerModelImpl | undefined) => {
+                return model ? `'${model.id}'` : undefined;
+            };
+
+            LOG.debug(
+                `Switching active base layer from ${getId(this.#activeBaseLayer)} to ${getId(
+                    model
+                )}`
+            );
+        }
+        this.#activeBaseLayer?.__setVisible(false);
         this.#activeBaseLayer = model;
-        this.#activeBaseLayer?.olLayer.setVisible(true);
+        this.#activeBaseLayer?.__setVisible(true);
     }
 }
 
@@ -324,12 +363,14 @@ export class LayerModelImpl extends EventEmitter<LayerModelEvents> implements La
     #olLayer: OlBaseLayer;
     #isBaseLayer: boolean;
     #attributes: Record<string | symbol, unknown>;
+    #visible: boolean;
+    #destroyed = false;
 
     #title: string;
     #description: string;
 
     #loadState: LayerLoadState;
-    #loadError: Error | undefined;
+    #stateWatchResource: Resource | undefined;
 
     constructor(map: MapModelImpl, config: Required<LayerConfig>) {
         super();
@@ -338,14 +379,19 @@ export class LayerModelImpl extends EventEmitter<LayerModelEvents> implements La
         this.#olLayer = config.layer;
         this.#isBaseLayer = config.isBaseLayer;
         this.#attributes = config.attributes;
+        this.#visible = config.visible;
         this.#title = config.title;
         this.#description = config.description;
 
-        // TODO: Initialize state, if possible, from layer and watch for error events
-        // Otherwise, if not possible (e.g. for certain layer types), just assume "loaded"
-        // hint: layer.source.state, or error events?
-        this.#loadState = "not-loaded";
-        this.#loadError = undefined;
+        const { initial: initialState, resource: stateWatchResource } = watchLoadState(
+            this.#olLayer,
+            (state) => {
+                this.#loadState = state;
+                this.#emitChangeEvent("changed:loadState");
+            }
+        );
+        this.#loadState = initialState;
+        this.#stateWatchResource = stateWatchResource;
     }
 
     get id(): string {
@@ -376,15 +422,27 @@ export class LayerModelImpl extends EventEmitter<LayerModelEvents> implements La
         return this.#description;
     }
 
+    get visible(): boolean {
+        return this.#visible;
+    }
+
     get loadState(): LayerLoadState {
         return this.#loadState;
     }
 
-    get loadError(): Error | undefined {
-        return this.#loadError;
-    }
-
     destroy() {
+        if (this.#destroyed) {
+            return;
+        }
+
+        this.#destroyed = true;
+        try {
+            this.emit("destroy");
+        } catch (e) {
+            LOG.warn(`Unexpected error from event listener during layer model destruction:`, e);
+        }
+
+        this.#stateWatchResource?.destroy();
         this.olLayer.dispose();
     }
 
@@ -400,6 +458,31 @@ export class LayerModelImpl extends EventEmitter<LayerModelEvents> implements La
             this.#description = newDescription;
             this.#emitChangeEvent("changed:description");
         }
+    }
+
+    setVisible(newVisibility: boolean): void {
+        if (this.isBaseLayer) {
+            LOG.warn(
+                `Cannot change visibility of base layer '${this.id}': use activateBaseLayer() on the map's LayerCollection instead.`
+            );
+            return;
+        }
+
+        this.__setVisible(newVisibility);
+    }
+
+    __setVisible(newVisibility: boolean): void {
+        let changed = false;
+        if (this.#visible !== newVisibility) {
+            this.#visible = newVisibility;
+            changed = true;
+        }
+
+        // Improvement: actual map sync?
+        if (this.#olLayer.getVisible() != this.#visible) {
+            this.#olLayer.setVisible(newVisibility);
+        }
+        changed && this.#emitChangeEvent("changed:visible");
     }
 
     updateAttributes(newAttributes: Record<string | symbol, unknown>): void {
@@ -452,7 +535,7 @@ function waitForMapSize(olMap: OlMap, signal: AbortSignal): Promise<void> {
             signal.removeEventListener("abort", onAbort);
 
             if (error) {
-                reject();
+                reject(createAbortError());
             } else {
                 resolve(wait(25)); // Give the map some time to render
             }
@@ -467,6 +550,71 @@ function waitForMapSize(olMap: OlMap, signal: AbortSignal): Promise<void> {
         eventKey = olMap.on("change:size", checkSize);
     });
     return promise;
+}
+
+function watchLoadState(
+    olLayer: OlBaseLayer,
+    onChange: (newState: LayerLoadState) => void
+): { initial: LayerLoadState; resource: Resource } {
+    if (!(olLayer instanceof OlLayer)) {
+        // Some layers don't have a source (such as group)
+        return {
+            initial: "loaded",
+            resource: {
+                destroy() {
+                    void 0;
+                }
+            }
+        };
+    }
+
+    let currentSource = olLayer?.getSource() as Source | null;
+    let currentLoadState = mapState(currentSource?.getState());
+    const updateState = () => {
+        const nextLoadState = mapState(currentSource?.getState());
+        if (currentLoadState !== nextLoadState) {
+            currentLoadState = nextLoadState;
+            onChange(currentLoadState);
+        }
+    };
+
+    let stateHandle: EventsKey | undefined;
+    const sourceHandle = olLayer.on("change:source", () => {
+        // unsubscribe from old source
+        stateHandle && unByKey(stateHandle);
+        stateHandle = undefined;
+
+        // subscribe to new source and update state
+        currentSource = olLayer?.getSource() as Source | null;
+        stateHandle = currentSource?.on("change", () => {
+            updateState();
+        });
+        updateState();
+    });
+    return {
+        initial: currentLoadState,
+        resource: {
+            destroy() {
+                stateHandle && unByKey(stateHandle);
+                unByKey(sourceHandle);
+            }
+        }
+    };
+}
+
+function mapState(state: OlSourceState | undefined): LayerLoadState {
+    switch (state) {
+        case undefined:
+            return "loaded";
+        case "undefined":
+            return "not-loaded";
+        case "loading":
+            return "loading";
+        case "ready":
+            return "loaded";
+        case "error":
+            return "error";
+    }
 }
 
 function wait(milliseconds: number): Promise<void> {

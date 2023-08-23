@@ -7,25 +7,29 @@ import { MapModel } from "./api";
 
 /** Return value of {@link useMapModel}. */
 export type UseMapModelResult =
-    | { loading: boolean; map?: MapModel | undefined; error?: Error | undefined }
+    | {
+          kind: "loading" | "resolved" | "rejected";
+          map?: MapModel | undefined;
+          error?: Error | undefined;
+      }
     | UseMapModelLoading
-    | UseMapModelReady
-    | UseMapModelError;
+    | UseMapModelResolved
+    | UseMapModelRejected;
 
 export interface UseMapModelLoading {
-    loading: true;
+    kind: "loading";
     map?: undefined;
     error?: undefined;
 }
 
-export interface UseMapModelReady {
-    loading: false;
+export interface UseMapModelResolved {
+    kind: "resolved";
     map: MapModel;
     error?: undefined;
 }
 
-export interface UseMapModelError {
-    loading: false;
+export interface UseMapModelRejected {
+    kind: "rejected";
     map?: undefined;
     error: Error;
 }
@@ -38,21 +42,17 @@ export interface UseMapModelError {
  *
  * The map model cannot be returned directly because it may not have completed its initialization yet.
  */
-
 export function useMapModel(mapId: string): UseMapModelResult {
     const mapRegistry = useService("ol-map.MapRegistry");
     const state = useAsync(() => mapRegistry.getMapModel(mapId), [mapRegistry, mapId]);
-    const result = useMemo(() => {
+    const result = useMemo((): UseMapModelResult => {
         if (state.loading) {
-            return { loading: true };
-        }
-        if (state.value) {
-            return { loading: false, map: state.value };
+            return { kind: "loading" };
         }
         if (state.error) {
-            return { loading: false, error: state.error };
+            return { kind: "rejected", error: state.error };
         }
-        throw new Error(`Unexpected state (expected either loading, value or error).`);
+        return { kind: "resolved", map: state.value };
     }, [state]);
     return result;
 }

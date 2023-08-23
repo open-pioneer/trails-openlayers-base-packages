@@ -37,10 +37,7 @@ it("should successfully create a map projection", async () => {
 
     await waitForMapMount();
 
-    const map = await registry.getOlMap(mapId);
-    if (!map) {
-        throw new Error("map not defined");
-    }
+    const map = (await registry.expectMapModel(mapId)).olMap;
 
     // change view projection and detect projection change
     const hook = renderHook(() => useProjection(map));
@@ -76,10 +73,7 @@ it("should successfully create a map resolution", async () => {
 
     await waitForMapMount();
 
-    const map = await registry.getOlMap(mapId);
-    if (!map) {
-        throw new Error("map not defined");
-    }
+    const map = (await registry.expectMapModel(mapId)).olMap;
 
     const view = map.getView();
     if (!view) {
@@ -126,10 +120,7 @@ it("should successfully create a map center", async () => {
 
     await waitForMapMount();
 
-    const map = await registry.getOlMap(mapId);
-    if (!map) {
-        throw new Error("map not defined");
-    }
+    const map = (await registry.expectMapModel(mapId)).olMap;
 
     const view = map.getView();
     if (!view) {
@@ -166,10 +157,7 @@ it("should successfully create a map scale", async () => {
 
     await waitForMapMount();
 
-    const map = await registry.getOlMap(mapId);
-    if (!map) {
-        throw new Error("map not defined");
-    }
+    const map = (await registry.expectMapModel(mapId)).olMap;
 
     const view = map.getView();
     if (!view) {

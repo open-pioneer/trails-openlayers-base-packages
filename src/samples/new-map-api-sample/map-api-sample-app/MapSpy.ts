@@ -14,10 +14,7 @@ export class MapSpy {
     }
 
     async test() {
-        const mapModel = await this.mapRegistry.getMapModel("test");
-        if (!mapModel) {
-            throw new Error("map not found");
-        }
+        const mapModel = await this.mapRegistry.expectMapModel("test");
 
         console.log("map model", mapModel);
         console.log("initial extent (1)", mapModel.initialExtent);

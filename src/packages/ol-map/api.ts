@@ -2,23 +2,22 @@
 // SPDX-License-Identifier: Apache-2.0
 import type { EventSource } from "@open-pioneer/core";
 import type OlMap from "ol/Map";
-import type OlBaseLayer from "ol/layer/Base";
 import type { MapOptions as OlMapBaseOptions } from "ol/Map";
 import type OlView from "ol/View";
 import type { ViewOptions as OlViewOptions } from "ol/View";
+import type OlBaseLayer from "ol/layer/Base";
 
 /*
     TODO: 
-    - Initialize layer loadState impl
     - Simple helper class for map setup?
-    - Layer order?
-    - Enforce base layer order?
+    - Document that registered layers should not be manually removed from the map via olMap
 */
 
 export interface MapModelEvents {
     "changed": void;
     "changed:container": void;
     "changed:initialExtent": void;
+    "destroy": void;
 }
 
 /**
@@ -135,9 +134,10 @@ export interface LayerModelEvents {
     "changed": void;
     "changed:title": void;
     "changed:description": void;
+    "changed:visible": void;
     "changed:attributes": void;
     "changed:loadState": void;
-    "changed:loadError": void;
+    "destroy": void;
 }
 
 export type LayerLoadState = "not-loaded" | "loading" | "loaded" | "error";
@@ -150,14 +150,17 @@ export interface LayerModel extends EventSource<LayerModelEvents> {
     /** The unique id of this layer (scoped to the owning map). */
     readonly id: string;
 
-    /** The human readable title of this layer. */
-    readonly title: string;
-
     /** The raw OpenLayers layer. */
     readonly olLayer: OlBaseLayer;
 
+    /** The human readable title of this layer. */
+    readonly title: string;
+
     /** The human readable description of this layer. May be empty. */
     readonly description: string;
+
+    /** Whether the layer is configured to be visible or not. */
+    readonly visible: boolean;
 
     /**
      * True if this layer is a base layer.
@@ -177,13 +180,6 @@ export interface LayerModel extends EventSource<LayerModelEvents> {
     readonly loadState: LayerLoadState;
 
     /**
-     * The error (if any) that occurred while loading the map.
-     *
-     * This value is always present if {@link loadState} is `"error"`.
-     */
-    readonly loadError: Error | undefined;
-
-    /**
      * Updates the title of this layer.
      */
     setTitle(newTitle: string): void;
@@ -192,6 +188,11 @@ export interface LayerModel extends EventSource<LayerModelEvents> {
      * Updates the description of this layer.
      */
     setDescription(newDescription: string): void;
+
+    /**
+     * Updates the visibility of this layer to the new value.
+     */
+    setVisible(newVisibility: boolean): void;
 
     /**
      * Updates the attributes of this layer.
@@ -215,17 +216,17 @@ export interface MapRegistry {
     getMapModel(mapId: string): Promise<MapModel | undefined>;
 
     /**
-     * Returns the OpenLayers map associated with the given id.
-     * Returns undefined if there is no such map.
-     *
-     * This is equivalent to:
-     *
-     * ```js
-     * const model = await mapRegistry.getMapModel(id);
-     * const olMap = model?.olMap;
-     * ```
+     * Like {@link getMapModel}, but throws if no configuration exists for the given `mapId`.
      */
-    getOlMap(mapId: string): Promise<OlMap | undefined>;
+    expectMapModel(mapId: string): Promise<MapModel>;
+
+    /**
+     * Given a raw OpenLayers map instance, returns the associated {@link MapModel} - or undefined
+     * if the map is unknown to this registry.
+     *
+     * All map models created by this registry (e.g. via {@link MapConfigProvider}) have an associated map model.
+     */
+    getMapByRawInstance(olMap: OlMap): MapModel | undefined;
 }
 
 /**
@@ -235,8 +236,8 @@ export interface MapRegistry {
  */
 export interface ExtentConfig {
     xMin: number;
-    xMax: number;
     yMin: number;
+    xMax: number;
     yMax: number;
 }
 
@@ -306,6 +307,13 @@ export interface LayerConfig {
      * Defaults to `false`.
      */
     isBaseLayer?: boolean;
+
+    /**
+     * Whether this layer should initially be visible.
+     *
+     * Defaults to `true`.
+     */
+    visible?: boolean;
 
     /**
      * Additional attributes for this layer.

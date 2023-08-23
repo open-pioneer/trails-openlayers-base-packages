@@ -48,15 +48,26 @@ export function MapContainer(props: MapContainerProps) {
     const mapModel = modelState.map;
 
     useEffect(() => {
-        if (!modelState.loading && !mapModel) {
-            LOG.error(`No configuration available for map with id '${mapId}'.`);
+        if (modelState.kind === "loading") {
+            return;
         }
 
-        if (mapModel && mapElement.current) {
+        if (modelState.kind === "rejected") {
+            LOG.error(`Cannot display the map. Caused by `, modelState.error);
+            return;
+        }
+
+        if (!mapModel) {
+            LOG.error(`No configuration available for map with id '${mapId}'.`);
+            return;
+        }
+
+        // Mount the map into the DOM
+        if (mapElement.current) {
             const resource = registerMapTarget(mapModel as MapModelImpl, mapElement.current);
             return () => resource.destroy();
         }
-    }, [modelState.loading, mapModel, mapId]);
+    }, [modelState, mapModel, mapId]);
 
     useEffect(() => {
         const mapView = mapModel?.olMap.getView();

@@ -73,10 +73,7 @@ it("tracks the user's mouse position", async () => {
     const { viewerText } = await waitForCoordinateViewer();
     expect(viewerText.textContent).toMatchInlineSnapshot('""');
 
-    const map = await registry.getMapModel(mapId);
-    if (!map) {
-        throw new Error("map not found");
-    }
+    const map = await registry.expectMapModel(mapId);
 
     const simulateMove = (x: number, y: number) => {
         const fakeMoveEvent = new BaseEvent("pointermove");

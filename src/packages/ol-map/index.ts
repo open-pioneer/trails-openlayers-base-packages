@@ -9,8 +9,8 @@ export {
 } from "./projections";
 export {
     useMapModel,
-    type UseMapModelResult as UseMapResult,
-    type UseMapModelLoading as UseMapLoading,
-    type UseMapModelReady as UseMapReady,
-    type UseMapModelError as UseMapError
+    type UseMapModelResult,
+    type UseMapModelLoading,
+    type UseMapModelResolved,
+    type UseMapModelRejected
 } from "./useMapModel";

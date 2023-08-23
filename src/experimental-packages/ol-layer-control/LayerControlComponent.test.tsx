@@ -21,20 +21,27 @@ global.ResizeObserver = ResizeObserver;
 
 it("should successfully create a layer control component", async () => {
     const { mapId, registry } = await setupMap();
-    const renderResult = render(
+    await registry.expectMapModel(mapId);
+
+    const { container } = render(
         <PackageContextProvider {...createPackageContextProviderProps(registry)}>
-            <div data-testid="base">
-                <LayerControlComponent mapId={mapId} />
-            </div>
+            <LayerControlComponent mapId={mapId} />
         </PackageContextProvider>
     );
 
-    // Assert layer control is mounted
-    const div = await screen.findByTestId("base");
-    expect(div).toMatchSnapshot();
+    const layerList = await waitFor(() => {
+        const layerList = container.querySelector(".layer-list");
+        if (!layerList) {
+            throw new Error("layer list did not render!");
+        }
+        return layerList;
+    });
+
+    // snapshot test the list instead of the parent because of inline styles caused by transition
+    expect(layerList).toMatchSnapshot();
 
     // Check if two layer controls for the configured layers are created
-    const layerElems = renderResult.container.querySelectorAll(".layer-entry");
+    const layerElems = layerList.querySelectorAll(".layer-entry");
     expect(layerElems.length).toBe(1);
     expect(layerElems[0]).toBeInstanceOf(HTMLDivElement);
 });
@@ -43,13 +50,9 @@ it("layer control should have checkbox to toggle layer visibility", async () => 
     const { mapId, registry } = await setupMap();
     const user = userEvent.setup();
 
-    // pre check visibility of the layer
-    const map = await registry.getOlMap(mapId);
-    if (!map) {
-        throw new Error("map not found");
-    }
+    const map = await registry.expectMapModel(mapId);
 
-    const layers = map.getAllLayers();
+    const layers = map.layers.getAllLayers();
     expect(layers.length).toBe(1);
     const firstLayer = layers[0]!;
     firstLayer.setVisible(false);
@@ -63,17 +66,17 @@ it("layer control should have checkbox to toggle layer visibility", async () => 
     // initially invisible
     const checkbox = (await screen.findByRole("checkbox")) as HTMLInputElement;
     expect(checkbox.checked).toBe(false);
-    expect(firstLayer.getVisible()).toBe(false);
+    expect(firstLayer.visible).toBe(false);
 
     // adjust visibility by control
     await user.click(checkbox);
     await waitFor(() => {
-        if (!firstLayer.getVisible()) {
+        if (!firstLayer.visible) {
             throw new Error("layer did not become visible");
         }
     });
 
-    expect(firstLayer.getVisible()).toBe(true);
+    expect(firstLayer.visible).toBe(true);
 });
 
 it("layer control should have usable opacity slider", async () => {
@@ -88,10 +91,7 @@ it("layer control should have usable opacity slider", async () => {
     // Wrap with act because map loading will trigger state changes
     const firstLayer = await act(async () => {
         // pre check opacity in layer
-        const map = await registry.getOlMap(mapId);
-        if (!map) {
-            throw new Error("map not found");
-        }
+        const map = (await registry.expectMapModel(mapId)).olMap;
         const layers = map.getAllLayers();
         expect(layers.length).toBe(1);
         const firstLayer = layers[0]!;

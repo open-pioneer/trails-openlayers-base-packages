@@ -27,16 +27,16 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                 },
                 {
                     title: "Watercolor",
+                    visible: false,
                     layer: new TileLayer({
-                        source: new Stamen({ layer: "watercolor" }),
-                        visible: false
+                        source: new Stamen({ layer: "watercolor" })
                     })
                 },
                 {
                     title: "Toner",
+                    visible: false,
                     layer: new TileLayer({
-                        source: new Stamen({ layer: "toner" }),
-                        visible: false
+                        source: new Stamen({ layer: "toner" })
                     })
                 }
             ]

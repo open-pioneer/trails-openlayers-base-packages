@@ -2,61 +2,54 @@
 
 exports[`should successfully create a layer control component 1`] = `
 <div
-  data-testid="base"
+  class="layer-list"
 >
   <div
-    class="chakra-offset-slide"
-    style="opacity: 0; transform: scale(0.95) translateZ(0);"
+    class="layer-entry"
   >
-    <div>
-      <div
-        class="layer-entry"
+    <label
+      class="chakra-checkbox layer-select css-1577qb8"
+      data-checked=""
+      data-theme="light"
+    >
+      <input
+        checked=""
+        class="chakra-checkbox__input"
+        style="border: 0px; clip: rect(0px, 0px, 0px, 0px); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
+        type="checkbox"
+        value=""
+      />
+      <span
+        aria-hidden="true"
+        class="chakra-checkbox__control css-edb818"
+        data-checked=""
+        data-theme="light"
       >
-        <label
-          class="chakra-checkbox layer-select css-1577qb8"
-          data-checked=""
+        <div
+          class="css-0"
           data-theme="light"
+          style="display: flex; align-items: center; justify-content: center; height: 100%;"
         >
-          <input
-            checked=""
-            class="chakra-checkbox__input"
-            style="border: 0px; clip: rect(0px, 0px, 0px, 0px); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
-            type="checkbox"
-            value=""
-          />
-          <span
-            aria-hidden="true"
-            class="chakra-checkbox__control css-edb818"
-            data-checked=""
+          <svg
+            class="css-1ckqq05"
             data-theme="light"
+            style="fill: none; stroke-width: 2; stroke: currentColor; stroke-dasharray: 16;"
+            viewBox="0 0 12 10"
           >
-            <div
-              class="css-0"
-              data-theme="light"
-              style="display: flex; align-items: center; justify-content: center; height: 100%;"
-            >
-              <svg
-                class="css-1ckqq05"
-                data-theme="light"
-                style="fill: none; stroke-width: 2; stroke: currentColor; stroke-dasharray: 16;"
-                viewBox="0 0 12 10"
-              >
-                <polyline
-                  points="1.5 6 4.5 9 10.5 1"
-                />
-              </svg>
-            </div>
-          </span>
-          <span
-            class="chakra-checkbox__label css-r90m2q"
-            data-checked=""
-            data-theme="light"
-          >
-            OSM
-          </span>
-        </label>
-      </div>
-    </div>
+            <polyline
+              points="1.5 6 4.5 9 10.5 1"
+            />
+          </svg>
+        </div>
+      </span>
+      <span
+        class="chakra-checkbox__label css-r90m2q"
+        data-checked=""
+        data-theme="light"
+      >
+        OSM
+      </span>
+    </label>
   </div>
 </div>
 `;

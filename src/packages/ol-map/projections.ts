@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-import proj4, { ProjectionDefinition as Proj4ProjectionDefinition } from "proj4";
 import { register } from "ol/proj/proj4";
+import proj4, { ProjectionDefinition as Proj4ProjectionDefinition } from "proj4";
 
 export type ProjectionDefinition = string | Proj4ProjectionDefinition;
 

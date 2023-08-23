@@ -9,11 +9,10 @@ import {
     SliderTrack,
     Tooltip
 } from "@open-pioneer/chakra-integration";
-import { MapModel, useMapModel } from "@open-pioneer/ol-map";
-import Layer from "ol/layer/Layer";
+import { LayerModel, MapModel, useMapModel } from "@open-pioneer/ol-map";
 import { unByKey } from "ol/Observable";
 import { useIntl } from "open-pioneer:react-hooks";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useRef, useState, useSyncExternalStore } from "react";
 import { useTimeout } from "react-use";
 
 export interface LayerControlProps {
@@ -30,59 +29,67 @@ export interface LayerControlProps {
 
 export function LayerControlComponent(props: LayerControlProps) {
     const intl = useIntl();
-    const { loading, error, map } = useMapModel(props.mapId);
-    const layers = useMemo(() => map?.olMap.getAllLayers().reverse() ?? [], [map]); // TODO: Does not react to layer changes
+    const state = useMapModel(props.mapId);
 
     // Small timeout before "Loading..." to optimize for the common case where the map
     // is available almost immediately. This prevents some flickering in the UI.
     const [hasTimeoutElapsed] = useTimeout(100);
-    const fadeIn = !loading || hasTimeoutElapsed() || false;
+    const fadeIn = state.kind !== "loading" || hasTimeoutElapsed() || false;
+
+    let content;
+    switch (state.kind) {
+        case "loading":
+            content = <div>{intl.formatMessage({ id: "loading" })}</div>;
+            break;
+        case "rejected":
+            content = (
+                <div>
+                    {intl.formatMessage({ id: "error" })} {state.error!.message}
+                </div>
+            );
+            break;
+        case "resolved":
+            content = <LayerList map={state.map!} {...props} />;
+            break;
+    }
+
     return (
-        <ScaleFade in={fadeIn}>
-            {loading ? (
-                <div>{intl.formatMessage({ id: "loading" })}</div>
-            ) : error ? (
-                <div>
-                    {intl.formatMessage({ id: "error" })} {error.message}
-                </div>
-            ) : (
-                <div>
-                    {layers.map((layer, i) => (
-                        <div key={i} className="layer-entry">
-                            <LayerVisibilityTogglerComponent
-                                map={map!}
-                                layer={layer}
-                            ></LayerVisibilityTogglerComponent>
-                            {props.showOpacitySlider && (
-                                <LayerOpacitySliderComponent
-                                    layer={layer}
-                                ></LayerOpacitySliderComponent>
-                            )}
-                        </div>
-                    ))}
-                </div>
-            )}
+        <ScaleFade className="layer-control" in={fadeIn}>
+            {content}
         </ScaleFade>
     );
 }
 
-function LayerVisibilityTogglerComponent(props: { map: MapModel; layer: Layer }) {
-    const intl = useIntl();
-    const [visibility, setVisibility] = useState<boolean>(props.layer.getVisible());
-    const title =
-        props.map.layers.getLayerByRawInstance(props.layer)?.title ??
-        intl.formatMessage({ id: "undefined-layer-title" });
+function LayerList(props: { map: MapModel } & LayerControlProps): JSX.Element {
+    const { map, showOpacitySlider } = props;
+    const layers = useLayers(map);
 
+    return (
+        <div className="layer-list">
+            {layers.map((layer, i) => (
+                <div key={i} className="layer-entry">
+                    <LayerVisibilityTogglerComponent layer={layer} />
+                    {showOpacitySlider && <LayerOpacitySliderComponent layer={layer} />}
+                </div>
+            ))}
+        </div>
+    );
+}
+
+function LayerVisibilityTogglerComponent(props: { layer: LayerModel }): JSX.Element {
+    const { layer } = props;
+    const intl = useIntl();
+    const visible = useVisibility(layer);
+    const title = useTitle(layer) || intl.formatMessage({ id: "undefined-layer-title" });
     const changeVisibility = () => {
-        setVisibility(!visibility);
-        props.layer.setVisible(!visibility);
+        layer.setVisible(!visible);
     };
 
     return (
         <Checkbox
             className="layer-select"
             size="lg"
-            isChecked={visibility}
+            isChecked={visible}
             onChange={changeVisibility}
         >
             {title}
@@ -90,29 +97,22 @@ function LayerVisibilityTogglerComponent(props: { map: MapModel; layer: Layer })
     );
 }
 
-function LayerOpacitySliderComponent(props: { layer: Layer }) {
-    const [sliderValue, setSliderValue] = useState(props.layer.getOpacity() * 100);
+function LayerOpacitySliderComponent(props: { layer: LayerModel }) {
+    const { layer } = props;
+    const intl = useIntl();
+    const rawOpacity = useOpacity(layer); // [0, 1]
+    const displayOpacity = rawOpacity * 100;
+    const opacityLabel = intl.formatNumber(displayOpacity, { maximumFractionDigits: 2 }) + "%";
     const [showTooltip, setShowTooltip] = useState(false);
-
-    useEffect(() => {
-        const opacityChangeListener = props.layer.on("change:opacity", () => {
-            const opacity = props.layer.getOpacity() * 100;
-            if (opacity !== sliderValue) {
-                setSliderValue(Math.round(opacity));
-            }
-        });
-        return () => unByKey(opacityChangeListener);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
 
     return (
         <Slider
             id="slider"
-            value={sliderValue}
+            value={displayOpacity}
             min={0}
             max={100}
             colorScheme="teal"
-            onChange={(v) => props.layer.setOpacity(v / 100)}
+            onChange={(v) => layer.olLayer.setOpacity(v / 100)}
             onMouseEnter={() => setShowTooltip(true)}
             onMouseLeave={() => setShowTooltip(false)}
         >
@@ -125,10 +125,74 @@ function LayerOpacitySliderComponent(props: { layer: Layer }) {
                 color="white"
                 placement="top"
                 isOpen={showTooltip}
-                label={`${sliderValue}%`}
+                label={opacityLabel}
             >
                 <SliderThumb bg="teal.500"></SliderThumb>
             </Tooltip>
         </Slider>
     );
+}
+
+function useLayers(mapModel: MapModel): LayerModel[] {
+    // Caches potentially expensive layers arrays.
+    // Not sure if this is a good idea, but getSnapshot() should always be fast.
+    // If this is a no-go, make getAllLayers() fast instead.
+    const cachedArray = useRef<LayerModel[] | undefined>();
+    const subscribe = useCallback(
+        (cb: () => void) => {
+            const resource = mapModel.layers.on("changed", () => {
+                cachedArray.current = undefined;
+                cb();
+            });
+            return () => resource.destroy();
+        },
+        [mapModel]
+    );
+    const getSnapshot = useCallback(() => {
+        // reverse() -> show topmost layers on top
+        return (cachedArray.current ??= mapModel.layers.getAllLayers().reverse());
+    }, [mapModel]);
+    return useSyncExternalStore(subscribe, getSnapshot);
+}
+
+function useVisibility(layer: LayerModel): boolean {
+    const subscribe = useCallback(
+        (cb: () => void) => {
+            const resource = layer.on("changed:visible", cb);
+            return () => resource.destroy();
+        },
+        [layer]
+    );
+    const getSnapshot = useCallback(() => {
+        return layer.visible;
+    }, [layer]);
+    return useSyncExternalStore(subscribe, getSnapshot);
+}
+
+function useOpacity(layer: LayerModel): number {
+    const subscribe = useCallback(
+        (cb: () => void) => {
+            const key = layer.olLayer.on("change:opacity", cb);
+            return () => unByKey(key);
+        },
+        [layer]
+    );
+    const getSnapshot = useCallback(() => {
+        return layer.olLayer.getOpacity();
+    }, [layer]);
+    return useSyncExternalStore(subscribe, getSnapshot);
+}
+
+function useTitle(layer: LayerModel): string {
+    const subscribe = useCallback(
+        (cb: () => void) => {
+            const resource = layer.on("changed:title", cb);
+            return () => resource.destroy();
+        },
+        [layer]
+    );
+    const getSnapshot = useCallback(() => {
+        return layer.title;
+    }, [layer]);
+    return useSyncExternalStore(subscribe, getSnapshot);
 }
