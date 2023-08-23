@@ -52,7 +52,7 @@ it("should successfully create and destroy a mapModel", async () => {
     ).rejects.toThrowErrorMatchingInlineSnapshot('"MapRegistry has already been destroyed."');
 });
 
-it("should successfully set only Attribution when Controls are epmty", async () => {
+it("should successfully set only Attribution when Controls are empty", async () => {
     const mapRegistryService = await createMapRegistryService({
         mapConfig: {} as MapConfig,
         mapId: MAP_ID
@@ -65,8 +65,8 @@ it("should successfully set only Attribution when Controls are epmty", async () 
     expect(attributes).toBeInstanceOf(Attribution);
 });
 
-it("should log warnning message if new View is in advanced configuration and projection is set", async () => {
-    const logSpy = vi.spyOn(global.console, "warn");
+it("should log warning message if new View is in advanced configuration and projection is set", async () => {
+    const logSpy = vi.spyOn(global.console, "warn").mockImplementation(() => undefined);
 
     const view = new View({ center: [405948.17, 5757572.85], zoom: 5 });
 
@@ -99,8 +99,8 @@ it("should log warnning message if new View is in advanced configuration and pro
     `);
 });
 
-it("should log warnning message if new View is in advanced configuration and initialView is set", async () => {
-    const logSpy = vi.spyOn(global.console, "warn");
+it("should log warning message if new View is in advanced configuration and initialView is set", async () => {
+    const logSpy = vi.spyOn(global.console, "warn").mockImplementation(() => undefined);
 
     const view = new View({ center: [405948.17, 5757572.85], zoom: 5 });
 
