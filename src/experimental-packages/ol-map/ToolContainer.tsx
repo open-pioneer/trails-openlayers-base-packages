@@ -86,9 +86,6 @@ function computePositionStyles(
 
     const gap = (n: number) => `${n}px`;
 
-    // TODO maxH calc(100% - top - vertical - bottom)
-    // TODO maxW left vertical right
-
     switch (position) {
         case "top-left":
             props.left = gap(padding.left + horizontal);
@@ -107,5 +104,17 @@ function computePositionStyles(
             props.bottom = gap(padding.bottom + vertical + attributionGap);
             break;
     }
+
+    /**
+     * Apply max-height and max-width to ToolContainer to avoid content overflow
+     */
+    props.maxH = `calc((100%) - ${props.top ?? "0px"} - ${props.bottom ?? "0px"} - ${
+        vertical + "px"
+    } - ${attributionGap + "px"})`;
+    props.maxW = `calc((100%) - ${props.left ?? "0px"} - ${props.right ?? "0px"} - ${
+        horizontal + "px"
+    })`;
+    props.overflow = "hidden";
+
     return props;
 }
