@@ -82,7 +82,11 @@ function computePositionStyles(
     const defaultVerticalGap = 0;
     const vertical = verticalGap ?? defaultVerticalGap;
 
-    const attributionGap = verticalGap === undefined ? 30 : 0;
+    /**
+     * improvement: Get height directly from `Attribution` HTMLDivElement
+     */
+    const attributionHeight = 20;
+    const attributionGap = verticalGap === undefined ? attributionHeight + 10 : 0;
 
     const gap = (n: number) => `${n}px`;
 
@@ -110,7 +114,7 @@ function computePositionStyles(
      */
     props.maxH = `calc((100%) - ${props.top ?? "0px"} - ${props.bottom ?? "0px"} - ${
         vertical + "px"
-    } - ${attributionGap + "px"})`;
+    } - ${attributionGap + "px"} + ${attributionHeight + "px"})`;
     props.maxW = `calc((100%) - ${props.left ?? "0px"} - ${props.right ?? "0px"} - ${
         horizontal + "px"
     })`;
