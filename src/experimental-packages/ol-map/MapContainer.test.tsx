@@ -73,7 +73,7 @@ it("should successfully create a map", async () => {
         const div = await screen.findByTestId("base");
         const container = div.querySelector(".ol-viewport");
         if (!container) {
-            throw new Error("Map not mounted");
+            throw new Error("map not mounted");
         }
     });
 
