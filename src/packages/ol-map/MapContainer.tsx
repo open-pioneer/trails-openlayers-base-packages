@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-import { createLogger } from "@open-pioneer/core";
+import { Resource, createLogger } from "@open-pioneer/core";
 import classNames from "classnames";
 import { useEffect, useRef } from "react";
 import { MapModelImpl } from "./ModelImpl";
@@ -65,7 +65,7 @@ export function MapContainer(props: MapContainerProps) {
         // Mount the map into the DOM
         if (mapElement.current) {
             const resource = registerMapTarget(mapModel as MapModelImpl, mapElement.current);
-            return () => resource.destroy();
+            return () => resource?.destroy();
         }
     }, [modelState, mapModel, mapId]);
 
@@ -91,11 +91,14 @@ export function MapContainer(props: MapContainerProps) {
     );
 }
 
-function registerMapTarget(mapModel: MapModelImpl, target: HTMLDivElement) {
+function registerMapTarget(mapModel: MapModelImpl, target: HTMLDivElement): Resource | undefined {
     const mapId = mapModel.id;
     const olMap = mapModel.olMap;
     if (olMap.getTarget()) {
-        throw new Error(`Map with id '${mapId}' already has a target.`);
+        LOG.error(
+            `Failed to display the map: the map already has a target. There may be more than one <MapContainer />.`
+        );
+        return undefined;
     }
 
     LOG.isDebug() && LOG.debug(`Setting target of map '${mapId}':`, target);

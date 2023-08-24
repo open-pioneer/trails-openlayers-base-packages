@@ -349,6 +349,21 @@ export interface MapConfig {
 
     /**
      * Configures a specific projection, e.g. `"EPSG:4326"`.
+     *
+     * To use custom projections, make sure that they are registered first:
+     *
+     * ```ts
+     * import { registerProjections } from "@open-pioneer/ol-map";
+     *
+     * // Usually done at the top of the module.
+     * // This will register the projection(s) in proj4's global registry.
+     * registerProjections({
+     *   "EPSG:25832": "+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs +type=crs",
+     *   // ... more projections
+     * });
+     *
+     * // later, use projection: "EPSG:25832"
+     * ```
      */
     // NOTE: This weird syntax supports better autocomplete for the predefined values.
     // See also https://github.com/microsoft/TypeScript/issues/29729

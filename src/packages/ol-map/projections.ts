@@ -13,6 +13,8 @@ export type ProjectionDefinition = string | Proj4ProjectionDefinition;
  * Example:
  *
  * ```ts
+ * import { registerProjections } from "@open-pioneer/ol-map";
+ *
  * registerProjections({
  *   "EPSG:25832": "+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs +type=crs",
  *   // ... more projections
