@@ -140,7 +140,7 @@ it("should successfully create View with 'extent' property", async () => {
     expect(view?.getZoom()).toBe(0);
 });
 
-it("should successfully create View with 'Default' property", async () => {
+it("should successfully create View with default projection", async () => {
     const { mapId, registry } = await setupMap();
     const map = (await registry.expectMapModel(mapId))?.olMap;
     const view = map?.getView();
@@ -169,7 +169,7 @@ it("should throw an exception by wrong EPSG code", async () => {
     `);
 });
 
-it("should successfully create View with 'EPSG:25832'", async () => {
+it("should successfully create View with custom projection", async () => {
     registerProjections({
         "EPSG:25832":
             "+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs +type=crs"

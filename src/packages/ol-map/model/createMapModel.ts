@@ -8,8 +8,8 @@ import { getCenter } from "ol/extent";
 import TileLayer from "ol/layer/Tile";
 import { Projection, get as getProjection } from "ol/proj";
 import OSM from "ol/source/OSM";
-import { MapModelImpl } from "./ModelImpl";
-import { MapConfig } from "./api";
+import { MapModelImpl } from "./MapModelImpl";
+import { MapConfig } from "../api";
 
 const LOG = createLogger("ol-map:createMapModel");
 

@@ -3,8 +3,8 @@
 import { Resource, createLogger } from "@open-pioneer/core";
 import classNames from "classnames";
 import { useEffect, useRef } from "react";
-import { MapModelImpl } from "./ModelImpl";
 import { useMapModel } from "./useMapModel";
+import { MapModel } from "./api";
 const LOG = createLogger("ol-map:MapContainer");
 
 /**
@@ -64,7 +64,7 @@ export function MapContainer(props: MapContainerProps) {
 
         // Mount the map into the DOM
         if (mapElement.current) {
-            const resource = registerMapTarget(mapModel as MapModelImpl, mapElement.current);
+            const resource = registerMapTarget(mapModel, mapElement.current);
             return () => resource?.destroy();
         }
     }, [modelState, mapModel, mapId]);
@@ -91,7 +91,7 @@ export function MapContainer(props: MapContainerProps) {
     );
 }
 
-function registerMapTarget(mapModel: MapModelImpl, target: HTMLDivElement): Resource | undefined {
+function registerMapTarget(mapModel: MapModel, target: HTMLDivElement): Resource | undefined {
     const mapId = mapModel.id;
     const olMap = mapModel.olMap;
     if (olMap.getTarget()) {

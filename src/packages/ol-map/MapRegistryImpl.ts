@@ -3,9 +3,9 @@
 import { createLogger } from "@open-pioneer/core";
 import { Service, ServiceOptions, ServiceType } from "@open-pioneer/runtime";
 import OlMap from "ol/Map";
-import { MapModelImpl } from "./ModelImpl";
+import { MapModelImpl } from "./model/MapModelImpl";
 import { MapConfigProvider, MapModel, MapRegistry } from "./api";
-import { createMapModel } from "./createMapModel";
+import { createMapModel } from "./model/createMapModel";
 
 const LOG = createLogger("ol-map:MapRegistry");
 
