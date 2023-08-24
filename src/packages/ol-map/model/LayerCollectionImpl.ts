@@ -110,19 +110,24 @@ export class LayerCollectionImpl
         return this.#activeBaseLayer;
     }
 
-    activateBaseLayer(id: string): boolean {
-        const newBaseLayer = this.#layerModelsById.get(id);
-        if (!newBaseLayer) {
-            LOG.warn(`Cannot activate base layer '${id}': layer is unknown.`);
-            return false;
-        }
-        if (!newBaseLayer.isBaseLayer) {
-            LOG.warn(`Cannot activate base layer '${id}': layer is not a base layer.`);
-            return false;
+    activateBaseLayer(id: string | undefined): boolean {
+        let newBaseLayer = undefined;
+        if (id != null) {
+            newBaseLayer = this.#layerModelsById.get(id);
+            if (!newBaseLayer) {
+                LOG.warn(`Cannot activate base layer '${id}': layer is unknown.`);
+                return false;
+            }
+            if (!newBaseLayer.isBaseLayer) {
+                LOG.warn(`Cannot activate base layer '${id}': layer is not a base layer.`);
+                return false;
+            }
         }
 
-        this.#updateBaseLayer(newBaseLayer);
-        this.emit("changed");
+        if (newBaseLayer !== this.#activeBaseLayer) {
+            this.#updateBaseLayer(newBaseLayer);
+            this.emit("changed");
+        }
         return true;
     }
 

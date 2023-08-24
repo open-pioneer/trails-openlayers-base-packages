@@ -9,6 +9,7 @@ import { Attribution } from "ol/control";
 import { afterEach, expect, it, vi } from "vitest";
 import { registerProjections } from "./projections";
 import { setupMap } from "./test-utils";
+import OlMap from "ol/Map";
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
 import Stamen from "ol/source/Stamen";
@@ -30,6 +31,18 @@ it("should successfully create and destroy a mapModel", async () => {
     await expect(() => registry.expectMapModel(mapId)).rejects.toThrowErrorMatchingInlineSnapshot(
         '"MapRegistry has already been destroyed."'
     );
+});
+
+it("should support reverse lookup from raw open layers map", async () => {
+    const { mapId, registry } = await setupMap();
+    const mapModel = await registry.expectMapModel(mapId);
+    const olMap = mapModel.olMap;
+    expect(olMap).toBeDefined();
+
+    expect(registry.getMapByRawInstance(olMap)).toBe(mapModel);
+
+    const otherMap = new OlMap();
+    expect(registry.getMapByRawInstance(otherMap)).toBe(undefined);
 });
 
 it("should successfully set only Attribution when Controls are empty", async () => {

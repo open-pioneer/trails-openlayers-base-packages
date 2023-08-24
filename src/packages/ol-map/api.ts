@@ -91,10 +91,13 @@ export interface LayerCollection extends EventSource<LayerCollectionEvents> {
 
     /**
      * Activates the base layer with the given id.
+     * `undefined` can be used to hide all base layers.
      *
      * The associated layer is made visible and all other base layers are hidden.
+     *
+     * Returns true if the given layer has been successfully activated.
      */
-    activateBaseLayer(id: string): void;
+    activateBaseLayer(id: string | undefined): boolean;
 
     /**
      * Create a new layer model and adds it to the map.
