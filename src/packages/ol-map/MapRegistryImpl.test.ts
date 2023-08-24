@@ -9,6 +9,9 @@ import { Attribution } from "ol/control";
 import { afterEach, expect, it, vi } from "vitest";
 import { registerProjections } from "./projections";
 import { setupMap } from "./test-utils";
+import TileLayer from "ol/layer/Tile";
+import OSM from "ol/source/OSM";
+import Stamen from "ol/source/Stamen";
 
 // used to avoid a "ResizeObserver is not defined" error
 global.ResizeObserver = require("resize-observer-polyfill");
@@ -182,4 +185,49 @@ it("should successfully create View with custom projection", async () => {
     const map = (await registry.expectMapModel(mapId))?.olMap;
     const view = map?.getView();
     expect(view?.getProjection().getCode()).toBe("EPSG:25832");
+});
+
+it("should construct a map with the configured layers", async () => {
+    const { mapId, registry } = await setupMap({
+        layers: [
+            {
+                id: "id1",
+                title: "foo",
+                layer: new TileLayer({ source: new OSM() })
+            },
+            {
+                id: "id2",
+                title: "bar",
+                visible: false,
+                layer: new TileLayer({ source: new Stamen({ layer: "toner" }) })
+            }
+        ]
+    });
+
+    const map = await registry.expectMapModel(mapId);
+    const allLayers = map.layers.getAllLayers().map((layerModel) => {
+        return {
+            id: layerModel.id,
+            title: layerModel.title,
+            visible: layerModel.visible,
+            loadState: layerModel.loadState
+        };
+    });
+
+    expect(allLayers).toMatchInlineSnapshot(`
+      [
+        {
+          "id": "id1",
+          "loadState": "loaded",
+          "title": "foo",
+          "visible": true,
+        },
+        {
+          "id": "id2",
+          "loadState": "loaded",
+          "title": "bar",
+          "visible": false,
+        },
+      ]
+    `);
 });
