@@ -293,6 +293,47 @@ it("should successfully create a tool container component with ReactNode as chil
     }
 });
 
+it("should successfully create multiple tool container components", async () => {
+    const mapId = "test";
+    const mapOptions = {} as MapOptions;
+    const service = await createOlMapRegistry(mapId, mapOptions);
+
+    const { container } = render(
+        <PackageContextProvider {...createPackageContextProviderProps(service)}>
+            <div data-testid="base">
+                <MapContainer mapId={mapId}>
+                    <ToolContainer className="testabc"></ToolContainer>
+                    <ToolContainer className="testdef"></ToolContainer>
+                </MapContainer>
+            </div>
+        </PackageContextProvider>
+    );
+
+    // assert tool container is mounted
+    await waitFor(async () => {
+        const domElement = await screen.findByTestId("base");
+        const toolContainer = domElement.querySelector(".tool-container");
+        if (!toolContainer) {
+            throw new Error("tool container not rendered");
+        }
+        return domElement;
+    });
+
+    // check multiple tool container box are available
+    const firstToolContainer = container.querySelector(".tool-container.testabc");
+    if (!firstToolContainer) {
+        throw new Error("tool container with css class `testabc` not rendered");
+    } else {
+        expect(firstToolContainer).toBeInstanceOf(HTMLDivElement);
+    }
+
+    const nextToolContainer = container.querySelector(".tool-container.testdef");
+    if (!nextToolContainer) {
+        throw new Error("tool container with css class `testdef` not rendered");
+    } else {
+        expect(nextToolContainer).toBeInstanceOf(HTMLDivElement);
+    }
+});
+
 // TODO
-// zwei gleichzeitig einbinden
 // maxH maxW -> import computePositionStyles
