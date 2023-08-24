@@ -16,6 +16,7 @@ import { render, screen, waitFor } from "@testing-library/react";
 import { MapOptions } from "ol/Map";
 import { expect, it } from "vitest";
 import { ToolContainer } from "./ToolContainer";
+import { Box } from "@open-pioneer/chakra-integration";
 
 // used to avoid a "ResizeObserver is not defined" error
 global.ResizeObserver = require("resize-observer-polyfill");
@@ -239,5 +240,49 @@ it('should successfully create a tool container component with props `position="
         const styles = window.getComputedStyle(toolContainer);
         expect(styles.right).toBe("10px");
         expect(styles.bottom).toBe("10px");
+    }
+});
+
+it("should successfully create a tool container component with ReactNode as children", async () => {
+    const mapId = "test";
+    const mapOptions = {} as MapOptions;
+    const service = await createOlMapRegistry(mapId, mapOptions);
+
+    const { container } = render(
+        <PackageContextProvider {...createPackageContextProviderProps(service)}>
+            <div data-testid="base">
+                <MapContainer mapId={mapId}>
+                    <ToolContainer>
+                        <Box className="chakra-ui-box">Chakra UI Box</Box>
+                    </ToolContainer>
+                </MapContainer>
+            </div>
+        </PackageContextProvider>
+    );
+
+    // assert tool container is mounted
+    await waitFor(async () => {
+        const domElement = await screen.findByTestId("base");
+        const toolContainer = domElement.querySelector(".tool-container");
+        if (!toolContainer) {
+            throw new Error("tool container not rendered");
+        }
+        return domElement;
+    });
+
+    // check tool container box is available with ReactNode as children
+    const toolContainer = container.querySelector(".tool-container");
+    if (!toolContainer) {
+        throw new Error("tool container not rendered");
+    } else {
+        const div = await waitFor(async () => {
+            const domElement = toolContainer.querySelector(".chakra-ui-box");
+            if (!domElement) {
+                throw new Error("child element in tool container not rendered");
+            }
+            return domElement;
+        });
+
+        expect(div.innerHTML).toBe("Chakra UI Box");
     }
 });
