@@ -37,7 +37,7 @@ export class MapModelImpl extends EventEmitter<MapModelEvents> implements MapMod
         this.#initialExtent = properties.initialExtent;
 
         this.#displayStatus = "waiting";
-        this.#waitForView().then(
+        this.#initializeView().then(
             () => {
                 this.#displayStatus = "ready";
                 this.#displayWaiter?.resolve();
@@ -75,7 +75,7 @@ export class MapModelImpl extends EventEmitter<MapModelEvents> implements MapMod
         }
         this.#targetWatchKey = undefined;
         this.#abortController.abort();
-        this.#displayWaiter?.reject(createAbortError());
+        this.#displayWaiter?.reject(new Error("Map model was destroyed."));
         this.#layers.destroy();
         this.#olMap.dispose();
     }
@@ -101,23 +101,26 @@ export class MapModelImpl extends EventEmitter<MapModelEvents> implements MapMod
     }
 
     whenDisplayed(): Promise<void> {
-        if (this.#displayStatus === "ready") {
-            return Promise.resolve();
+        if (this.#destroyed) {
+            return Promise.reject(new Error("Map model was destroyed."));
         }
         if (this.#displayStatus === "error") {
             return Promise.reject(new Error(`Failed to initialize map.`));
+        }
+        if (this.#displayStatus === "ready") {
+            return Promise.resolve();
         }
         return (this.#displayWaiter ??= createManualPromise()).promise;
     }
 
     /**
-     * Waits for the map to be displayed.
+     * Waits for the map to be displayed and then initializes the view (if necessary).
      *
      * May simply resolve when done, or throw an error when a problem occurs.
      * AbortError is thrown when cancelled via `this.#abortController`, for example
      * when the map model is destroyed before it has ever been displayed.
      */
-    async #waitForView(): Promise<void> {
+    async #initializeView(): Promise<void> {
         try {
             await waitForMapSize(this.olMap, this.#abortController.signal); // may throw on cancel
         } catch (e) {

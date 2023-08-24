@@ -14,7 +14,8 @@
     },
     "devDependencies": {
         "@types/uuid": "^9.0.2",
-        "openlayers-base-packages": "workspace:*"
+        "openlayers-base-packages": "workspace:*",
+        "resize-observer-polyfill": "^1.5.1"
     },
     "publishConfig": {
         "directory": "dist",
