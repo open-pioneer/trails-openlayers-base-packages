@@ -68,7 +68,7 @@ it("should successfully create a tool container component", async () => {
     const mapOptions = {} as MapOptions;
     const service = await createOlMapRegistry(mapId, mapOptions);
 
-    render(
+    const { container } = render(
         <PackageContextProvider {...createPackageContextProviderProps(service)}>
             <div data-testid="base">
                 <MapContainer mapId={mapId}>
@@ -79,7 +79,7 @@ it("should successfully create a tool container component", async () => {
     );
 
     // assert tool container is mounted
-    const div = await waitFor(async () => {
+    await waitFor(async () => {
         const domElement = await screen.findByTestId("base");
         const toolContainer = domElement.querySelector(".tool-container");
         if (!toolContainer) {
@@ -89,8 +89,13 @@ it("should successfully create a tool container component", async () => {
     });
 
     // check tool container box is available
-    expect(div).toBeInstanceOf(HTMLDivElement);
-    expect(div).toMatchSnapshot();
+    const toolContainer = container.querySelector(".tool-container");
+    if (!toolContainer) {
+        throw new Error("tool container not rendered");
+    } else {
+        expect(toolContainer).toBeInstanceOf(HTMLDivElement);
+        expect(toolContainer).toMatchSnapshot();
+    }
 });
 
 it("should successfully create a tool container component with additional css classes", async () => {
@@ -199,11 +204,12 @@ it('should successfully create a tool container component with prop `position="b
     } else {
         const styles = window.getComputedStyle(toolContainer);
         expect(styles.right).toBe("0px");
-        expect(styles.bottom).toBe("30px"); // "30px" if no verticalGap is configured
+        // improvement import / export attributionGap
+        expect(styles.bottom).toBe("30px"); // "30px" (attributionGap) if no verticalGap is configured
     }
 });
 
-it('should successfully create a tool container component with props `position="bottom-right"` and `horizontalGap={10} verticalGap={30}`', async () => {
+it('should successfully create a tool container component with props `position="bottom-right"` and `horizontalGap={30} verticalGap={10}`', async () => {
     const mapId = "test";
     const mapOptions = {} as MapOptions;
     const service = await createOlMapRegistry(mapId, mapOptions);
@@ -214,7 +220,7 @@ it('should successfully create a tool container component with props `position="
                 <MapContainer mapId={mapId}>
                     <ToolContainer
                         position="bottom-right"
-                        horizontalGap={10}
+                        horizontalGap={30}
                         verticalGap={10}
                     ></ToolContainer>
                 </MapContainer>
@@ -238,7 +244,7 @@ it('should successfully create a tool container component with props `position="
         throw new Error("tool container not rendered");
     } else {
         const styles = window.getComputedStyle(toolContainer);
-        expect(styles.right).toBe("10px");
+        expect(styles.right).toBe("30px");
         expect(styles.bottom).toBe("10px");
     }
 });
@@ -286,3 +292,7 @@ it("should successfully create a tool container component with ReactNode as chil
         expect(div.innerHTML).toBe("Chakra UI Box");
     }
 });
+
+// TODO
+// zwei gleichzeitig einbinden
+// maxH maxW -> import computePositionStyles

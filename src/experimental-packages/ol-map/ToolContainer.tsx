@@ -86,7 +86,8 @@ function computePositionStyles(
      * improvement: Get height directly from `Attribution` HTMLDivElement
      */
     const attributionHeight = 20;
-    const attributionGap = verticalGap === undefined ? attributionHeight + 10 : 0;
+    const attributionSpace = 10;
+    const attributionGap = verticalGap === undefined ? attributionHeight + attributionSpace : 0;
 
     const gap = (n: number) => `${n}px`;
 
@@ -112,9 +113,9 @@ function computePositionStyles(
     /**
      * Apply max-height and max-width to ToolContainer to avoid content overflow
      */
-    props.maxH = `calc((100%) - ${props.top ?? "0px"} - ${props.bottom ?? "0px"} - ${
-        vertical + "px"
-    } - ${attributionGap + "px"} + ${attributionHeight + "px"})`;
+    props.maxH = `calc((100%) - ${props.top ?? "0px"} - ${
+        props.bottom ?? attributionGap + "px"
+    } - ${vertical + "px"} - ${attributionSpace + "px"})`;
     props.maxW = `calc((100%) - ${props.left ?? "0px"} - ${props.right ?? "0px"} - ${
         horizontal + "px"
     })`;
