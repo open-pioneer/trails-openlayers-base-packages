@@ -63,7 +63,7 @@ export function ToolContainer(props: ToolContainerProps): JSX.Element {
     );
 }
 
-function computePositionStyles(
+export function computePositionStyles(
     position: ToolContainerPosition,
     padding: Required<MapPadding>,
     horizontalGap?: number | undefined,
@@ -116,6 +116,7 @@ function computePositionStyles(
     props.maxH = `calc((100%) - ${props.top ?? "0px"} - ${
         props.bottom ?? attributionGap + "px"
     } - ${vertical + "px"} - ${attributionSpace + "px"})`;
+
     props.maxW = `calc((100%) - ${props.left ?? "0px"} - ${props.right ?? "0px"} - ${
         horizontal + "px"
     })`;

@@ -4,7 +4,7 @@
  * @vitest-environment jsdom
  */
 import { OlMapConfigurationProvider } from "./api";
-import { MapContainer } from "./MapContainer";
+import { MapContainer, MapPadding } from "./MapContainer";
 import { OlMapRegistry } from "./services";
 import { Service, ServiceOptions } from "@open-pioneer/runtime";
 import {
@@ -15,8 +15,8 @@ import { createService } from "@open-pioneer/test-utils/services";
 import { render, screen, waitFor } from "@testing-library/react";
 import { MapOptions } from "ol/Map";
 import { expect, it } from "vitest";
-import { ToolContainer } from "./ToolContainer";
-import { Box } from "@open-pioneer/chakra-integration";
+import { ToolContainer, ToolContainerPosition, computePositionStyles } from "./ToolContainer";
+import { Box, StyleProps } from "@open-pioneer/chakra-integration";
 
 // used to avoid a "ResizeObserver is not defined" error
 global.ResizeObserver = require("resize-observer-polyfill");
@@ -333,6 +333,55 @@ it("should successfully create multiple tool container components", async () => 
     } else {
         expect(nextToolContainer).toBeInstanceOf(HTMLDivElement);
     }
+});
+
+it("should successfully create position styles on `top-left` without gap", async () => {
+    const position: ToolContainerPosition = "top-left";
+    const padding: Required<MapPadding> = {
+        left: 10,
+        right: 10,
+        top: 10,
+        bottom: 10
+    };
+
+    const styleProps: StyleProps = computePositionStyles(position, padding);
+    expect(styleProps.left).toBe("10px");
+    expect(styleProps.top).toBe("10px");
+    expect(styleProps.maxH).toBe("calc((100%) - 10px - 30px - 0px - 10px)");
+    expect(styleProps.maxW).toBe("calc((100%) - 10px - 0px - 0px)");
+});
+
+it("should successfully create position styles on `top-left` with horizontalGap and verticalGap", async () => {
+    const position: ToolContainerPosition = "top-left";
+    const padding: Required<MapPadding> = {
+        left: 10,
+        right: 10,
+        top: 10,
+        bottom: 10
+    };
+
+    const styleProps: StyleProps = computePositionStyles(position, padding, 50, 25);
+    expect(styleProps.left).toBe("60px");
+    expect(styleProps.top).toBe("35px");
+    expect(styleProps.maxH).toBe("calc((100%) - 35px - 0px - 25px - 10px)");
+    expect(styleProps.maxW).toBe("calc((100%) - 60px - 0px - 50px)");
+});
+
+it("should successfully create position styles on `bottom-right` with horizontalGap and verticalGap", async () => {
+    const position: ToolContainerPosition = "bottom-right";
+    const padding: Required<MapPadding> = {
+        left: 10,
+        right: 10,
+        top: 10,
+        bottom: 10
+    };
+
+    const styleProps: StyleProps = computePositionStyles(position, padding, 50, 25);
+    console.log(styleProps);
+    expect(styleProps.right).toBe("60px");
+    expect(styleProps.bottom).toBe("35px");
+    expect(styleProps.maxH).toBe("calc((100%) - 0px - 35px - 25px - 10px)");
+    expect(styleProps.maxW).toBe("calc((100%) - 0px - 60px - 50px)");
 });
 
 // TODO
