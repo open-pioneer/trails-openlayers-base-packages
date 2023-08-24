@@ -95,6 +95,31 @@ it("supports lookup by layer id", async () => {
     expect(l3).toBeUndefined();
 });
 
+it("using the same layer id twice results in an error", async () => {
+    await expect(async () => {
+        model = await createMapModel("foo", {
+            layers: [
+                {
+                    id: "l-1",
+                    title: "OSM",
+                    layer: new TileLayer({
+                        source: new OSM()
+                    })
+                },
+                {
+                    id: "l-1",
+                    title: "Watercolor",
+                    layer: new TileLayer({
+                        source: new Stamen({ layer: "watercolor" })
+                    })
+                }
+            ]
+        });
+    }).rejects.toThrowErrorMatchingInlineSnapshot(
+        "\"Layer id 'l-1' is not unique. Either assign a unique id or skip the id property to generate an automatic id.\""
+    );
+});
+
 it("supports reverse lookup from open layers layer", async () => {
     const rawL1 = new TileLayer({
         source: new OSM()
@@ -118,6 +143,31 @@ it("supports reverse lookup from open layers layer", async () => {
 
     const l2 = model.layers.getLayerByRawInstance(rawL2);
     expect(l2).toBeUndefined();
+});
+
+it("registering the same open layers layer throws an error", async () => {
+    const rawL1 = new TileLayer({
+        source: new OSM()
+    });
+
+    await expect(async () => {
+        model = await createMapModel("foo", {
+            layers: [
+                {
+                    id: "l-1",
+                    title: "OSM",
+                    layer: rawL1
+                },
+                {
+                    id: "l-2",
+                    title: "OSM",
+                    layer: rawL1
+                }
+            ]
+        });
+    }).rejects.toThrowErrorMatchingInlineSnapshot(
+        '"OlLayer has already been used for a different LayerModel."'
+    );
 });
 
 describe("base layers", () => {
