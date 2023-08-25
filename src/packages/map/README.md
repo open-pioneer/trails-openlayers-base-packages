@@ -66,7 +66,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
     async getMapConfig(): Promise<MapConfig> {
         return {
             initialView: {
-                kind: "position",
+                kind: "position", // or "extent" to configure the initial extent
                 center: { x: 847541, y: 6793584 },
                 zoom: 14
             },
