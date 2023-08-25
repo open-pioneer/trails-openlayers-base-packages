@@ -7,20 +7,20 @@
         "@emotion/react": "^11.11.1",
         "@emotion/styled": "^11.11.0",
         "@open-pioneer/chakra-integration": "^1.0.0",
+        "@open-pioneer/coordinate-viewer": "workspace:^",
         "@open-pioneer/experimental-layout-sidebar": "workspace:^",
         "@open-pioneer/experimental-ol-layer-control": "workspace:^",
         "@open-pioneer/ol-map": "workspace:^",
+        "@open-pioneer/runtime": "^1.0.1",
         "@open-pioneer/scale-viewer": "workspace:^",
-        "@open-pioneer/runtime": "^1.0.0",
         "map-sample-logging": "workspace:^",
+        "map-sample-scale-component": "workspace:*",
+        "map-sample-zoom-component": "workspace:*",
         "ol": "^7.5.1",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
         "react-icons": "4.8.0",
-        "react-use": "^17.4.0",
-        "map-sample-scale-component": "workspace:*",
-        "map-sample-zoom-component": "workspace:*",
-        "@open-pioneer/coordinate-viewer": "workspace:^"
+        "react-use": "^17.4.0"
     },
     "version": "0.0.6"
 }
