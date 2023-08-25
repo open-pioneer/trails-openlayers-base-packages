@@ -4,12 +4,12 @@ import { defineBuildConfig } from "@open-pioneer/build-support";
 export default defineBuildConfig({
     services: {
         MapProvider: {
-            provides: "ol-map.MapConfigProvider"
+            provides: "map.MapConfigProvider"
         },
         MapSpy: {
             provides: "runtime.AutoStart",
             references: {
-                registry: "ol-map.MapRegistry"
+                registry: "map.MapRegistry"
             }
         }
     }

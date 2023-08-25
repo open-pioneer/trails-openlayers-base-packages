@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-import { MapRegistry } from "@open-pioneer/ol-map";
+import { MapRegistry } from "@open-pioneer/map";
 import { ServiceOptions } from "@open-pioneer/runtime";
 
 export class MapSpy {

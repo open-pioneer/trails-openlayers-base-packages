@@ -1,5 +1,5 @@
 ---
-"@open-pioneer/ol-map": minor
+"@open-pioneer/map": minor
 ---
 
 Initial release.

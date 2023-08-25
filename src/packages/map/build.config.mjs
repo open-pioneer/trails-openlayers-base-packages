@@ -7,16 +7,16 @@ export default defineBuildConfig({
     styles: "./styles.css",
     services: {
         MapRegistryImpl: {
-            provides: ["ol-map.MapRegistry"],
+            provides: ["map.MapRegistry"],
             references: {
                 providers: {
-                    name: "ol-map.MapConfigProvider",
+                    name: "map.MapConfigProvider",
                     all: true
                 }
             }
         }
     },
     ui: {
-        references: ["ol-map.MapRegistry"]
+        references: ["map.MapRegistry"]
     }
 });

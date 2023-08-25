@@ -209,7 +209,7 @@ export interface LayerModel extends EventSource<LayerModelEvents> {
  *
  * Maps are identified by a unique id.
  *
- * Inject an instance of this service by referencing the interface name `"ol-map.MapRegistry"`.
+ * Inject an instance of this service by referencing the interface name `"map.MapRegistry"`.
  */
 export interface MapRegistry {
     /**
@@ -356,7 +356,7 @@ export interface MapConfig {
      * To use custom projections, make sure that they are registered first:
      *
      * ```ts
-     * import { registerProjections } from "@open-pioneer/ol-map";
+     * import { registerProjections } from "@open-pioneer/map";
      *
      * // Usually done at the top of the module.
      * // This will register the projection(s) in proj4's global registry.
@@ -393,7 +393,7 @@ export interface MapConfig {
 /**
  * Provides an OpenLayers map configuration with a given map id.
  *
- * The implementor must also provide the interface name `"ol-map.MapConfigProvider"`.
+ * The implementor must also provide the interface name `"map.MapConfigProvider"`.
  */
 export interface MapConfigProvider {
     /**
@@ -414,7 +414,7 @@ export interface MapConfigProvider {
 import "@open-pioneer/runtime";
 declare module "@open-pioneer/runtime" {
     interface ServiceRegistry {
-        "ol-map.MapRegistry": MapRegistry;
-        "ol-map.MapConfigProvider": MapConfigProvider;
+        "map.MapRegistry": MapRegistry;
+        "map.MapConfigProvider": MapConfigProvider;
     }
 }

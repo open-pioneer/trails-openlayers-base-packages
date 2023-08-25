@@ -1,4 +1,4 @@
-# @open-pioneer/ol-map
+# @open-pioneer/map
 
 This package provides a map container component to integrate an [OpenLayers](https://openlayers.org/) map into an open pioneer project. Besides the component, there is a service, which handles the registration and creation of a map.
 
@@ -16,7 +16,7 @@ Simple integration of a map container with a map id:
 
 ```jsx
 import { Box } from "@open-pioneer/chakra-integration";
-import { MapContainer } from "@open-pioneer/ol-map";
+import { MapContainer } from "@open-pioneer/map";
 
 // ...
 function AppUI() {
@@ -42,18 +42,18 @@ export default defineBuildConfig({
     services: {
         MapConfigProviderImpl: {
             // Registers the service as a config provider
-            provides: ["ol-map.MapConfigProvider"]
+            provides: ["map.MapConfigProvider"]
         }
     },
     ui: {
-        references: ["ol-map.MapRegistry"]
+        references: ["map.MapRegistry"]
     }
 });
 ```
 
 ```ts
 // YOUR-APP/MapConfigProviderImpl.ts
-import { MapConfig, MapConfigProvider } from "@open-pioneer/ol-map";
+import { MapConfig, MapConfigProvider } from "@open-pioneer/map";
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
 import Stamen from "ol/source/Stamen";
@@ -101,7 +101,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
 ### Use map model
 
 ```js
-import { useMapModel } from "@open-pioneer/ol-map/useMapModel";
+import { useMapModel } from "@open-pioneer/map";
 import { MAP_ID } from "./MapConfigProviderImpl";
 
 const mapState = useMapModel(MAP_ID);
@@ -119,7 +119,7 @@ const centerBerlin = () => {
 Simple example to register a additional projection to the global [proj4js](https://github.com/proj4js/proj4js) definition set by there name (e.g. `"EPSG:4326"`) and projection definition (string defining the projection or an existing proj4 definition object).
 
 ```ts
-import { registerProjections } from "@open-pioneer/ol-map";
+import { registerProjections } from "@open-pioneer/map";
 
 registerProjections({
     "EPSG:25832":
@@ -131,7 +131,7 @@ registerProjections({
 Get the projection definition by access the epsg.io Website or search the global [proj4js](https://github.com/proj4js/proj4js) definition set with a valid name.
 
 ```ts
-import { getProjection } from "@open-pioneer/ol-map";
+import { getProjection } from "@open-pioneer/map";
 
 const proj = getProjection("EPSG:3035");
 ```

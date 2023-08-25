@@ -10,7 +10,7 @@ import { createMapModel } from "./model/createMapModel";
 const LOG = createLogger("ol-map:MapRegistry");
 
 interface References {
-    providers: ServiceType<"ol-map.MapConfigProvider">[];
+    providers: ServiceType<"map.MapConfigProvider">[];
 }
 
 type ModelJobResult = { kind: "model"; model: MapModelImpl } | { kind: "error"; error: Error };

@@ -10,7 +10,7 @@
         "@open-pioneer/coordinate-viewer": "workspace:^",
         "@open-pioneer/experimental-layout-sidebar": "workspace:^",
         "@open-pioneer/experimental-ol-layer-control": "workspace:^",
-        "@open-pioneer/ol-map": "workspace:^",
+        "@open-pioneer/map": "workspace:^",
         "@open-pioneer/runtime": "^1.0.1",
         "@open-pioneer/scale-viewer": "workspace:^",
         "map-sample-logging": "workspace:^",

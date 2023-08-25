@@ -89,7 +89,7 @@ export function createPackageContextProviderProps(
 ): PackageContextProviderProps {
     return {
         services: {
-            "ol-map.MapRegistry": service
+            "map.MapRegistry": service
         }
     };
 }

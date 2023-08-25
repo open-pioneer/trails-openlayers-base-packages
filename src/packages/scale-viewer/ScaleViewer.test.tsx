@@ -3,8 +3,8 @@
 /**
  * @vitest-environment jsdom
  */
-import { MapConfig, MapConfigProvider, MapRegistry } from "@open-pioneer/ol-map";
-import { MapRegistryImpl } from "@open-pioneer/ol-map/services";
+import { MapConfig, MapConfigProvider, MapRegistry } from "@open-pioneer/map";
+import { MapRegistryImpl } from "@open-pioneer/map/services";
 import {
     PackageContextProvider,
     PackageContextProviderProps
@@ -135,7 +135,7 @@ async function setupMap(options?: SimpleMapOptions) {
 function createPackageContextProviderProps(service: MapRegistry): PackageContextProviderProps {
     return {
         services: {
-            "ol-map.MapRegistry": service
+            "map.MapRegistry": service
         }
     };
 }

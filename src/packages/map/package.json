@@ -1,5 +1,5 @@
 {
-    "name": "@open-pioneer/ol-map",
+    "name": "@open-pioneer/map",
     "version": "0.0.1",
     "license": "Apache-2.0",
     "main": "index.ts",

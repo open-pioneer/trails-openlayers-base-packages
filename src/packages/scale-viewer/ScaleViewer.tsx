@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
 import { Box, BoxProps, Text } from "@open-pioneer/chakra-integration";
-import { useMapModel } from "@open-pioneer/ol-map/useMapModel";
+import { useMapModel } from "@open-pioneer/map";
 import classNames from "classnames";
 import { FC, ForwardedRef, RefAttributes, forwardRef } from "react";
 import { useCenter, useProjection, useResolution, useScale } from "./hooks";

@@ -43,7 +43,7 @@ export interface UseMapModelRejected {
  * The map model cannot be returned directly because it may not have completed its initialization yet.
  */
 export function useMapModel(mapId: string): UseMapModelResult {
-    const mapRegistry = useService("ol-map.MapRegistry");
+    const mapRegistry = useService("map.MapRegistry");
     const state = useAsync(() => mapRegistry.getMapModel(mapId), [mapRegistry, mapId]);
     const result = useMemo((): UseMapModelResult => {
         if (state.loading) {

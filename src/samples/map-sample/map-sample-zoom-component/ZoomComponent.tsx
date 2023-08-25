@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import { AddIcon, MinusIcon } from "@chakra-ui/icons";
 import { Flex, IconButton } from "@open-pioneer/chakra-integration";
-import { useMapModel } from "@open-pioneer/ol-map";
+import { useMapModel } from "@open-pioneer/map";
 import { HTMLAttributes } from "react";
 
 export function ZoomComponent(props: { mapId: string } & HTMLAttributes<HTMLDivElement>) {

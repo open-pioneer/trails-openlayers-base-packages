@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-import { MapRegistryImpl } from "@open-pioneer/ol-map/services";
-import { MapConfig, MapConfigProvider, MapRegistry } from "@open-pioneer/ol-map";
+import { MapRegistryImpl } from "@open-pioneer/map/services";
+import { MapConfig, MapConfigProvider, MapRegistry } from "@open-pioneer/map";
 import { PackageContextProviderProps } from "@open-pioneer/test-utils/react";
 import { createService } from "@open-pioneer/test-utils/services";
 import { screen, waitFor } from "@testing-library/react";
@@ -63,7 +63,7 @@ export function createPackageContextProviderProps(
 ): PackageContextProviderProps {
     return {
         services: {
-            "ol-map.MapRegistry": service
+            "map.MapRegistry": service
         }
     };
 }
