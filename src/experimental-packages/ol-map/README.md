@@ -110,6 +110,29 @@ function MyComponent({ mapId }) {
 
 > NOTE: There must be a `ol-map.MapConfigProvider` present that knows how to construct the map with the given id (see below).
 
+### Tool container component
+
+To pass custom React components onto the map, the following container anchor-points are provided:
+
+-   `top-left`
+-   `top-right`
+-   `bottom-left`
+-   `bottom-right`
+
+Simple integration of a tool container into the map container with position `bottom-right` and optional horizontal and vertical gap:
+
+```jsx
+<MapContainer mapId="...">
+    <ToolContainer position="bottom-right" horizontalGap={25} verticalGap={25}>
+        ... {/** add tool container content like other React components */}
+    </ToolContainer>
+</MapContainer>
+```
+
+The component itself calculate the `maxHeight` and `maxWidth` according to the map view padding and optional `horizontalGap`and `verticalGap` to avoid content overflow. In this case, the css property `overflow` is set to `hidden` to the tool container. If no `verticalGap` is configured, a default vertical gap of `30px` will be used.
+
+> NOTE: Please add the container anchor-points before other components to get the correct tab order.
+
 ## License
 
 [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0)
