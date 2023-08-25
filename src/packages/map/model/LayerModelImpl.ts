@@ -192,6 +192,10 @@ function watchLoadState(
     };
 
     let stateHandle: EventsKey | undefined;
+    stateHandle = currentSource?.on("change", () => {
+        updateState();
+    });
+
     const sourceHandle = olLayer.on("change:source", () => {
         // unsubscribe from old source
         stateHandle && unByKey(stateHandle);

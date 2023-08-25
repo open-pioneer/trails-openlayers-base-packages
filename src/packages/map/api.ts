@@ -194,6 +194,9 @@ export interface LayerModel extends EventSource<LayerModelEvents> {
 
     /**
      * Updates the visibility of this layer to the new value.
+     *
+     * NOTE: The visibility of base layers cannot be changed through this method.
+     * Call {@link LayerCollection.activateBaseLayer} instead.
      */
     setVisible(newVisibility: boolean): void;
 
