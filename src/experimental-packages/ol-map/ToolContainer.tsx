@@ -9,7 +9,7 @@ import { MapPadding } from "./MapContainer";
 
 export type ToolContainerPosition = "top-left" | "top-right" | "bottom-left" | "bottom-right";
 
-// TODO: Branch umbennen, wenn MapAPI fertig und Implementierung übernehmen
+// TODO: Update to the new map component
 
 export interface ToolContainerProps {
     /**
