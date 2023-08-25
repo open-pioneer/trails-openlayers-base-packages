@@ -1,14 +1,118 @@
 # @open-pioneer/ol-map
 
-This package provides a map container component to integrate an [OpenLayers](https://openlayers.org/) map into an open pioneer project.
+This package provides a map container component to integrate an [OpenLayers](https://openlayers.org/) map into an open pioneer project. Besides the component, there is a service, which handles the registration and creation of a map.
 
 ## Usage
 
 ### Map container component
 
+To integrate a `MapContainer` in a React template, place it at the point where it should appear.
+The parent component should provide appropriate width and height (e.g. `100%`).
+The `MapContainer` will fill all available space.
+
+The component itself uses the map registry service to create the map on demand using the provided `mapId`.
+
+Simple integration of a map container with a map id:
+
+```jsx
+import { Box } from "@open-pioneer/chakra-integration";
+import { MapContainer } from "@open-pioneer/ol-map";
+
+// ...
+function AppUI() {
+    return (
+        <Box height="100%" overflow="hidden">
+            <MapContainer mapId="..." />
+        </Box>
+    );
+}
+```
+
+> NOTE: There must be a `ol-map.MapConfigProvider` present that knows how to construct the map with the given id (see below).
+
 ### Configuring the map
 
-### Map registry service
+Register a service implementing `ol-map.MapConfigProvider` to configure the contents of your map(s). Such a provider is typically located in an app.
+
+```js
+// YOUR-APP/build.config.mjs
+import { defineBuildConfig } from "@open-pioneer/build-support";
+
+export default defineBuildConfig({
+    services: {
+        MapConfigProviderImpl: {
+            // Registers the service as a config provider
+            provides: ["ol-map.MapConfigProvider"]
+        }
+    },
+    ui: {
+        references: ["ol-map.MapRegistry"]
+    }
+});
+```
+
+```ts
+// YOUR-APP/MapConfigProviderImpl.ts
+import { MapConfig, MapConfigProvider } from "@open-pioneer/ol-map";
+import TileLayer from "ol/layer/Tile";
+import OSM from "ol/source/OSM";
+import Stamen from "ol/source/Stamen";
+
+export const MAP_ID = "main";
+
+export class MapConfigProviderImpl implements MapConfigProvider {
+    mapId = MAP_ID;
+
+    async getMapConfig(): Promise<MapConfig> {
+        return {
+            initialView: {
+                kind: "position",
+                center: { x: 847541, y: 6793584 },
+                zoom: 14
+            },
+            projection: "EPSG:3857",
+            layers: [
+                {
+                    title: "OSM",
+                    layer: new TileLayer({
+                        source: new OSM()
+                    })
+                },
+                {
+                    title: "Watercolor",
+                    visible: false,
+                    layer: new TileLayer({
+                        source: new Stamen({ layer: "watercolor" })
+                    })
+                },
+                {
+                    title: "Toner",
+                    visible: false,
+                    layer: new TileLayer({
+                        source: new Stamen({ layer: "toner" })
+                    })
+                }
+            ]
+        };
+    }
+}
+```
+
+### Use map model
+
+```js
+import { useMapModel } from "@open-pioneer/ol-map/useMapModel";
+import { MAP_ID } from "./MapConfigProviderImpl";
+
+const mapState = useMapModel(MAP_ID);
+
+const centerBerlin = () => {
+    const olMap = mapState.map?.olMap;
+    if (olMap) {
+        olMap?.getView().fit(berlin, { maxZoom: 13 });
+    }
+};
+```
 
 ### Register additional projections
 
@@ -27,7 +131,9 @@ registerProjections({
 Get the projection definition by access the epsg.io Website or search the global [proj4js](https://github.com/proj4js/proj4js) definition set with a valid name.
 
 ```ts
-getProjectionDefinition("EPSG:3035");
+import { getProjection } from "@open-pioneer/ol-map";
+
+const proj = getProjection("EPSG:3035");
 ```
 
 ## Notes
