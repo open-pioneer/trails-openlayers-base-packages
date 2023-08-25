@@ -198,7 +198,7 @@ function waitForMapSize(olMap: OlMap, signal: AbortSignal): Promise<void> {
             signal.removeEventListener("abort", onAbort);
 
             if (error) {
-                reject(createAbortError());
+                reject(error);
             } else {
                 resolve(wait(25)); // Give the map some time to render
             }
