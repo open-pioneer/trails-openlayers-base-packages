@@ -61,6 +61,27 @@ export function MapAnchor(props: MapAnchorProps): JSX.Element {
     );
 }
 
+function computeAttributionGap(verticalGap?: number): {
+    gap: number;
+    space: number;
+} {
+    /**
+     * height of the ol attribution component
+     * improvement: Get height directly from `Attribution` HTMLDivElement
+     */
+    const height = 20;
+
+    /**
+     * additional space between attribution and map anchor container
+     */
+    const space = 10;
+
+    return {
+        gap: verticalGap === undefined ? height + space : 0,
+        space
+    };
+}
+
 export function computePositionStyles(
     position: MapAnchorPosition,
     padding: Required<MapPadding>,
@@ -80,13 +101,7 @@ export function computePositionStyles(
     const defaultVerticalGap = 0;
     const vertical = verticalGap ?? defaultVerticalGap;
 
-    /**
-     * improvement: Get height directly from `Attribution` HTMLDivElement
-     */
-    const attributionHeight = 20;
-    const attributionSpace = 10;
-    const attributionGap = verticalGap === undefined ? attributionHeight + attributionSpace : 0;
-
+    const attribution = computeAttributionGap(verticalGap);
     const gap = (n: number) => `${n}px`;
 
     switch (position) {
@@ -100,11 +115,11 @@ export function computePositionStyles(
             break;
         case "bottom-left":
             props.left = gap(padding.left + horizontal);
-            props.bottom = gap(padding.bottom + vertical + attributionGap);
+            props.bottom = gap(padding.bottom + vertical + attribution.gap);
             break;
         case "bottom-right":
             props.right = gap(padding.right + horizontal);
-            props.bottom = gap(padding.bottom + vertical + attributionGap);
+            props.bottom = gap(padding.bottom + vertical + attribution.gap);
             break;
     }
 
@@ -112,8 +127,8 @@ export function computePositionStyles(
      * Apply max-height and max-width to MapAnchor to avoid content overflow
      */
     props.maxH = `calc((100%) - ${props.top ?? "0px"} - ${
-        props.bottom ?? attributionGap + "px"
-    } - ${vertical + "px"} - ${attributionSpace + "px"})`;
+        props.bottom ?? attribution.gap + "px"
+    } - ${vertical + "px"} - ${attribution.space + "px"})`;
 
     props.maxW = `calc((100%) - ${props.left ?? "0px"} - ${props.right ?? "0px"} - ${
         horizontal + "px"
