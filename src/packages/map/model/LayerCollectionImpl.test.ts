@@ -57,11 +57,54 @@ it("makes the map layers accessible", async () => {
       ]
     `);
 
+    // z-orders are currently assigned incrementally. the specific values
+    // do not really matter (the algorithm may change in the future), but they must
+    // a) be on top of base layers
+    // b) on top of each other (depending on configured order)
+    const zOrders = layers.map((l) => l.olLayer.getZIndex());
+    expect(zOrders).toMatchInlineSnapshot(`
+      [
+        1,
+        2,
+      ]
+    `);
+
     const baseLayers = model.layers.getBaseLayers();
     expect(baseLayers.length).toBe(0);
 
     const allLayers = model.layers.getAllLayers();
     expect(allLayers).toEqual(layers);
+});
+
+it("generates automatic unique ids for layers", async () => {
+    model = await createMapModel("foo", {
+        layers: [
+            {
+                title: "OSM",
+                description: "OSM layer",
+                layer: new TileLayer({
+                    source: new OSM()
+                })
+            },
+            {
+                title: "Watercolor",
+                visible: false,
+                layer: new TileLayer({
+                    source: new Stamen({ layer: "watercolor" })
+                })
+            }
+        ]
+    });
+
+    const ids = model.layers.getAllLayers().map((l) => l.id);
+    const verifyId = (id: unknown, message: string) => {
+        expect(id, message).toBeTypeOf("string");
+        expect((id as string).length, message).toBeGreaterThan(0);
+    };
+
+    verifyId(ids[0], "id 0");
+    verifyId(ids[1], "id 1");
+    expect(ids[0]).not.toEqual(ids[1]);
 });
 
 it("supports lookup by layer id", async () => {
@@ -145,7 +188,7 @@ it("supports reverse lookup from open layers layer", async () => {
     expect(l2).toBeUndefined();
 });
 
-it("registering the same open layers layer throws an error", async () => {
+it("registering the same open layers layer twice throws an error", async () => {
     const rawL1 = new TileLayer({
         source: new OSM()
     });
@@ -168,6 +211,60 @@ it("registering the same open layers layer throws an error", async () => {
     }).rejects.toThrowErrorMatchingInlineSnapshot(
         '"OlLayer has already been used for a different LayerModel."'
     );
+});
+
+it("supports adding a layer to the model", async () => {
+    model = await createMapModel("foo", {
+        layers: []
+    });
+    expect(model.layers.getAllLayers()).toHaveLength(0);
+
+    let changed = 0;
+    model.layers.on("changed", () => {
+        ++changed;
+    });
+
+    const layerModel = model.layers.createLayer({
+        title: "foo",
+        layer: new TileLayer({
+            source: new OSM()
+        }),
+        visible: false
+    });
+    expect(changed).toBe(1);
+    expect(getLayerProps(layerModel)).toMatchInlineSnapshot(`
+      {
+        "description": "",
+        "title": "foo",
+        "visible": false,
+      }
+    `);
+    expect(model.layers.getAllLayers()).toHaveLength(1);
+    expect(model.layers.getAllLayers()[0]).toBe(layerModel);
+});
+
+it("supports removing a layer from the model", async () => {
+    model = await createMapModel("foo", {
+        layers: [
+            {
+                id: "l-1",
+                title: "OSM",
+                layer: new TileLayer({
+                    source: new OSM()
+                })
+            }
+        ]
+    });
+
+    let changed = 0;
+    model.layers.on("changed", () => {
+        ++changed;
+    });
+
+    expect(model.layers.getAllLayers()).toHaveLength(1);
+    model.layers.removeLayerById("l-1");
+    expect(changed).toBe(1);
+    expect(model.layers.getAllLayers()).toHaveLength(0);
 });
 
 describe("base layers", () => {
@@ -199,6 +296,9 @@ describe("base layers", () => {
 
         let events = 0;
         layers.on("changed", () => ++events);
+
+        const zOrders = [b1, b2].map((l) => l.olLayer.getZIndex());
+        expect(zOrders).toEqual([0, 0]); // base layers always have z-index 0
 
         expect(layers.getActiveBaseLayer()).toBe(b1); // first base layer wins initially
         layers.activateBaseLayer(b1.id);

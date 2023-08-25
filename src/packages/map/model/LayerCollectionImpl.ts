@@ -9,6 +9,9 @@ import { MapModelImpl } from "./MapModelImpl";
 
 const LOG = createLogger("ol-map:LayerCollection");
 
+const BASE_LAYER_Z = 0;
+const OPERATION_LAYER_INITIAL_Z = 1;
+
 export class LayerCollectionImpl
     extends EventEmitter<LayerCollectionEvents>
     implements LayerCollection
@@ -17,7 +20,7 @@ export class LayerCollectionImpl
     #layerModelsById = new Map<string, LayerModelImpl>();
     #layerModelsByLayer: WeakMap<OlBaseLayer, LayerModelImpl> | undefined = undefined;
     #activeBaseLayer: LayerModelImpl | undefined;
-    #nextIndex = 1; // next z-index for a layer. currently just auto-increments.
+    #nextIndex = OPERATION_LAYER_INITIAL_Z; // next z-index for a layer. currently just auto-increments.
 
     constructor(map: MapModelImpl) {
         super();
@@ -72,7 +75,7 @@ export class LayerCollectionImpl
         }
 
         if (model.isBaseLayer) {
-            olLayer.setZIndex(0);
+            olLayer.setZIndex(BASE_LAYER_Z);
             if (!this.#activeBaseLayer && model.visible) {
                 this.#updateBaseLayer(model);
             } else {
