@@ -8,7 +8,7 @@ import type { ViewOptions as OlViewOptions } from "ol/View";
 import type OlBaseLayer from "ol/layer/Base";
 
 /*
-    TODO: 
+    TODO:
     - Simple helper class for map setup?
     - Document that registered layers should not be manually removed from the map via olMap
 */
