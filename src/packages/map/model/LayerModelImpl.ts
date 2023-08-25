@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-import { EventEmitter, Resource, createLogger } from "@open-pioneer/core";
+import { EventEmitter, EventNames, Resource, createLogger } from "@open-pioneer/core";
 import { unByKey } from "ol/Observable";
 import { EventsKey } from "ol/events";
 import OlBaseLayer from "ol/layer/Base";
@@ -158,7 +158,7 @@ export class LayerModelImpl extends EventEmitter<LayerModelEvents> implements La
         }
     }
 
-    #emitChangeEvent<Name extends keyof LayerModelEvents>(event: Name) {
+    #emitChangeEvent<Name extends EventNames<LayerModelEvents>>(event: Name) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (this as any).emit(event);
         this.emit("changed");
