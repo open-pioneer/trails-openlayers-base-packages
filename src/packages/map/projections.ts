@@ -35,6 +35,6 @@ export function registerProjections(projections: Record<string, ProjectionDefini
 /**
  * Searches the global [proj4js](https://github.com/proj4js/proj4js) definition set for a definition with the given name.
  */
-export function getProjectionDefinition(name: string): Proj4ProjectionDefinition {
+export function getProjection(name: string): Proj4ProjectionDefinition {
     return proj4.defs(name);
 }

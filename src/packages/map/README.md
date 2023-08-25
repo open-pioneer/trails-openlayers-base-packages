@@ -98,20 +98,24 @@ export class MapConfigProviderImpl implements MapConfigProvider {
 }
 ```
 
-### Use map model
+### Use map model in react component
 
 ```js
 import { useMapModel } from "@open-pioneer/map";
 import { MAP_ID } from "./MapConfigProviderImpl";
 
-const mapState = useMapModel(MAP_ID);
+export function AppUI() {
+    // mapState.map may be undefined initially, if the map is still configuring.
+    // the object may may also be in an "error" state.
+    const mapState = useMapModel(MAP_ID);
 
-const centerBerlin = () => {
-    const olMap = mapState.map?.olMap;
-    if (olMap) {
-        olMap?.getView().fit(berlin, { maxZoom: 13 });
-    }
-};
+    const centerBerlin = () => {
+        const olMap = mapState.map?.olMap;
+        if (olMap) {
+            olMap?.getView().fit(berlin, { maxZoom: 13 });
+        }
+    };
+}
 ```
 
 ### Register additional projections
@@ -133,6 +137,7 @@ Get the projection definition by access the epsg.io Website or search the global
 ```ts
 import { getProjection } from "@open-pioneer/map";
 
+// Returns a raw proj4 projection definition (or undefined)
 const proj = getProjection("EPSG:3035");
 ```
 
