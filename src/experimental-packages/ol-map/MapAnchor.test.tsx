@@ -15,7 +15,7 @@ import { createService } from "@open-pioneer/test-utils/services";
 import { render, screen, waitFor } from "@testing-library/react";
 import { MapOptions } from "ol/Map";
 import { expect, it } from "vitest";
-import { ToolContainer, ToolContainerPosition, computePositionStyles } from "./ToolContainer";
+import { MapAnchor, MapAnchorPosition, computePositionStyles } from "./MapAnchor";
 import { Box, StyleProps } from "@open-pioneer/chakra-integration";
 
 // used to avoid a "ResizeObserver is not defined" error
@@ -63,7 +63,7 @@ function createPackageContextProviderProps(
     };
 }
 
-it("should successfully create a tool container component", async () => {
+it("should successfully create a map anchor component", async () => {
     const mapId = "test";
     const mapOptions = {} as MapOptions;
     const service = await createOlMapRegistry(mapId, mapOptions);
@@ -72,33 +72,33 @@ it("should successfully create a tool container component", async () => {
         <PackageContextProvider {...createPackageContextProviderProps(service)}>
             <div data-testid="base">
                 <MapContainer mapId={mapId}>
-                    <ToolContainer></ToolContainer>
+                    <MapAnchor></MapAnchor>
                 </MapContainer>
             </div>
         </PackageContextProvider>
     );
 
-    // assert tool container is mounted
+    // assert map anchor component is mounted
     await waitFor(async () => {
         const domElement = await screen.findByTestId("base");
-        const toolContainer = domElement.querySelector(".tool-container");
-        if (!toolContainer) {
-            throw new Error("tool container not rendered");
+        const mapAnchor = domElement.querySelector(".map-anchor");
+        if (!mapAnchor) {
+            throw new Error("map anchor component not rendered");
         }
         return domElement;
     });
 
-    // check tool container box is available
-    const toolContainer = container.querySelector(".tool-container");
-    if (!toolContainer) {
-        throw new Error("tool container not rendered");
+    // check map anchor component box is available
+    const mapAnchor = container.querySelector(".map-anchor");
+    if (!mapAnchor) {
+        throw new Error("map anchor component not rendered");
     } else {
-        expect(toolContainer).toBeInstanceOf(HTMLDivElement);
-        expect(toolContainer).toMatchSnapshot();
+        expect(mapAnchor).toBeInstanceOf(HTMLDivElement);
+        expect(mapAnchor).toMatchSnapshot();
     }
 });
 
-it("should successfully create a tool container component with additional css classes", async () => {
+it("should successfully create a map anchor component with additional css classes", async () => {
     const mapId = "test";
     const mapOptions = {} as MapOptions;
     const service = await createOlMapRegistry(mapId, mapOptions);
@@ -107,36 +107,36 @@ it("should successfully create a tool container component with additional css cl
         <PackageContextProvider {...createPackageContextProviderProps(service)}>
             <div data-testid="base">
                 <MapContainer mapId={mapId}>
-                    <ToolContainer className="test test1 test2"></ToolContainer>
+                    <MapAnchor className="test test1 test2"></MapAnchor>
                 </MapContainer>
             </div>
         </PackageContextProvider>
     );
 
-    // assert tool container is mounted
+    // assert map anchor component is mounted
     await waitFor(async () => {
         const domElement = await screen.findByTestId("base");
-        const toolContainer = domElement.querySelector(".tool-container");
-        if (!toolContainer) {
-            throw new Error("tool container not rendered");
+        const mapAnchor = domElement.querySelector(".map-anchor");
+        if (!mapAnchor) {
+            throw new Error("map anchor component not rendered");
         }
         return domElement;
     });
 
-    // check tool container box is available with additional css classes
-    const toolContainer = container.querySelector(".tool-container");
-    if (!toolContainer) {
-        throw new Error("tool container not rendered");
+    // check map anchor component box is available with additional css classes
+    const mapAnchor = container.querySelector(".map-anchor");
+    if (!mapAnchor) {
+        throw new Error("map anchor component not rendered");
     } else {
-        expect(toolContainer).toBeInstanceOf(HTMLDivElement);
-        expect(toolContainer.classList.contains("test")).toBe(true);
-        expect(toolContainer.classList.contains("test1")).toBe(true);
-        expect(toolContainer.classList.contains("test2")).toBe(true);
-        expect(toolContainer.classList.contains("test3")).not.toBe(true);
+        expect(mapAnchor).toBeInstanceOf(HTMLDivElement);
+        expect(mapAnchor.classList.contains("test")).toBe(true);
+        expect(mapAnchor.classList.contains("test1")).toBe(true);
+        expect(mapAnchor.classList.contains("test2")).toBe(true);
+        expect(mapAnchor.classList.contains("test3")).not.toBe(true);
     }
 });
 
-it('should successfully create a tool container component with prop `position="top-left"`', async () => {
+it('should successfully create a map anchor component with prop `position="top-left"`', async () => {
     const mapId = "test";
     const mapOptions = {} as MapOptions;
     const service = await createOlMapRegistry(mapId, mapOptions);
@@ -145,34 +145,34 @@ it('should successfully create a tool container component with prop `position="t
         <PackageContextProvider {...createPackageContextProviderProps(service)}>
             <div data-testid="base">
                 <MapContainer mapId={mapId}>
-                    <ToolContainer position="top-left"></ToolContainer>
+                    <MapAnchor position="top-left"></MapAnchor>
                 </MapContainer>
             </div>
         </PackageContextProvider>
     );
 
-    // assert tool container is mounted
+    // assert map anchor component is mounted
     await waitFor(async () => {
         const domElement = await screen.findByTestId("base");
-        const toolContainer = domElement.querySelector(".tool-container");
-        if (!toolContainer) {
-            throw new Error("tool container not rendered");
+        const mapAnchor = domElement.querySelector(".map-anchor");
+        if (!mapAnchor) {
+            throw new Error("map anchor component not rendered");
         }
         return domElement;
     });
 
-    // check tool container box is available with style for prop `position`
-    const toolContainer = container.querySelector(".tool-container");
-    if (!toolContainer) {
-        throw new Error("tool container not rendered");
+    // check map anchor component box is available with style for prop `position`
+    const mapAnchor = container.querySelector(".map-anchor");
+    if (!mapAnchor) {
+        throw new Error("map anchor component not rendered");
     } else {
-        const styles = window.getComputedStyle(toolContainer);
+        const styles = window.getComputedStyle(mapAnchor);
         expect(styles.top).toBe("0px");
         expect(styles.left).toBe("0px");
     }
 });
 
-it('should successfully create a tool container component with prop `position="bottom-right"`', async () => {
+it('should successfully create a map anchor component with prop `position="bottom-right"`', async () => {
     const mapId = "test";
     const mapOptions = {} as MapOptions;
     const service = await createOlMapRegistry(mapId, mapOptions);
@@ -181,35 +181,35 @@ it('should successfully create a tool container component with prop `position="b
         <PackageContextProvider {...createPackageContextProviderProps(service)}>
             <div data-testid="base">
                 <MapContainer mapId={mapId}>
-                    <ToolContainer position="bottom-right"></ToolContainer>
+                    <MapAnchor position="bottom-right"></MapAnchor>
                 </MapContainer>
             </div>
         </PackageContextProvider>
     );
 
-    // assert tool container is mounted
+    // assert map anchor component is mounted
     await waitFor(async () => {
         const domElement = await screen.findByTestId("base");
-        const toolContainer = domElement.querySelector(".tool-container");
-        if (!toolContainer) {
-            throw new Error("tool container not rendered");
+        const mapAnchor = domElement.querySelector(".map-anchor");
+        if (!mapAnchor) {
+            throw new Error("map anchor component not rendered");
         }
         return domElement;
     });
 
-    // check tool container box is available with style for prop `position`
-    const toolContainer = container.querySelector(".tool-container");
-    if (!toolContainer) {
-        throw new Error("tool container not rendered");
+    // check map anchor component box is available with style for prop `position`
+    const mapAnchor = container.querySelector(".map-anchor");
+    if (!mapAnchor) {
+        throw new Error("map anchor component not rendered");
     } else {
-        const styles = window.getComputedStyle(toolContainer);
+        const styles = window.getComputedStyle(mapAnchor);
         expect(styles.right).toBe("0px");
         // improvement import / export attributionGap
         expect(styles.bottom).toBe("30px"); // "30px" (attributionGap) if no verticalGap is configured
     }
 });
 
-it('should successfully create a tool container component with props `position="bottom-right"` and `horizontalGap={30} verticalGap={10}`', async () => {
+it('should successfully create a map anchor component with props `position="bottom-right"` and `horizontalGap={30} verticalGap={10}`', async () => {
     const mapId = "test";
     const mapOptions = {} as MapOptions;
     const service = await createOlMapRegistry(mapId, mapOptions);
@@ -218,38 +218,38 @@ it('should successfully create a tool container component with props `position="
         <PackageContextProvider {...createPackageContextProviderProps(service)}>
             <div data-testid="base">
                 <MapContainer mapId={mapId}>
-                    <ToolContainer
+                    <MapAnchor
                         position="bottom-right"
                         horizontalGap={30}
                         verticalGap={10}
-                    ></ToolContainer>
+                    ></MapAnchor>
                 </MapContainer>
             </div>
         </PackageContextProvider>
     );
 
-    // assert tool container is mounted
+    // assert map anchor component is mounted
     await waitFor(async () => {
         const domElement = await screen.findByTestId("base");
-        const toolContainer = domElement.querySelector(".tool-container");
-        if (!toolContainer) {
-            throw new Error("tool container not rendered");
+        const mapAnchor = domElement.querySelector(".map-anchor");
+        if (!mapAnchor) {
+            throw new Error("map anchor component not rendered");
         }
         return domElement;
     });
 
-    // check tool container box is available with style for props `position`, `horizontalGap` and `verticalGap`
-    const toolContainer = container.querySelector(".tool-container");
-    if (!toolContainer) {
-        throw new Error("tool container not rendered");
+    // check map anchor component box is available with style for props `position`, `horizontalGap` and `verticalGap`
+    const mapAnchor = container.querySelector(".map-anchor");
+    if (!mapAnchor) {
+        throw new Error("map anchor component not rendered");
     } else {
-        const styles = window.getComputedStyle(toolContainer);
+        const styles = window.getComputedStyle(mapAnchor);
         expect(styles.right).toBe("30px");
         expect(styles.bottom).toBe("10px");
     }
 });
 
-it("should successfully create a tool container component with ReactNode as children", async () => {
+it("should successfully create a map anchor component with ReactNode as children", async () => {
     const mapId = "test";
     const mapOptions = {} as MapOptions;
     const service = await createOlMapRegistry(mapId, mapOptions);
@@ -258,33 +258,33 @@ it("should successfully create a tool container component with ReactNode as chil
         <PackageContextProvider {...createPackageContextProviderProps(service)}>
             <div data-testid="base">
                 <MapContainer mapId={mapId}>
-                    <ToolContainer>
+                    <MapAnchor>
                         <Box className="chakra-ui-box">Chakra UI Box</Box>
-                    </ToolContainer>
+                    </MapAnchor>
                 </MapContainer>
             </div>
         </PackageContextProvider>
     );
 
-    // assert tool container is mounted
+    // assert map anchor component is mounted
     await waitFor(async () => {
         const domElement = await screen.findByTestId("base");
-        const toolContainer = domElement.querySelector(".tool-container");
-        if (!toolContainer) {
-            throw new Error("tool container not rendered");
+        const mapAnchor = domElement.querySelector(".map-anchor");
+        if (!mapAnchor) {
+            throw new Error("map anchor component not rendered");
         }
         return domElement;
     });
 
-    // check tool container box is available with ReactNode as children
-    const toolContainer = container.querySelector(".tool-container");
-    if (!toolContainer) {
-        throw new Error("tool container not rendered");
+    // check map anchor component box is available with ReactNode as children
+    const mapAnchor = container.querySelector(".map-anchor");
+    if (!mapAnchor) {
+        throw new Error("map anchor component not rendered");
     } else {
         const div = await waitFor(async () => {
-            const domElement = toolContainer.querySelector(".chakra-ui-box");
+            const domElement = mapAnchor.querySelector(".chakra-ui-box");
             if (!domElement) {
-                throw new Error("child element in tool container not rendered");
+                throw new Error("child element in map anchor component not rendered");
             }
             return domElement;
         });
@@ -293,7 +293,7 @@ it("should successfully create a tool container component with ReactNode as chil
     }
 });
 
-it("should successfully create multiple tool container components", async () => {
+it("should successfully create multiple map anchor components", async () => {
     const mapId = "test";
     const mapOptions = {} as MapOptions;
     const service = await createOlMapRegistry(mapId, mapOptions);
@@ -302,41 +302,41 @@ it("should successfully create multiple tool container components", async () => 
         <PackageContextProvider {...createPackageContextProviderProps(service)}>
             <div data-testid="base">
                 <MapContainer mapId={mapId}>
-                    <ToolContainer className="testabc"></ToolContainer>
-                    <ToolContainer className="testdef"></ToolContainer>
+                    <MapAnchor className="testabc"></MapAnchor>
+                    <MapAnchor className="testdef"></MapAnchor>
                 </MapContainer>
             </div>
         </PackageContextProvider>
     );
 
-    // assert tool container is mounted
+    // assert map anchor component is mounted
     await waitFor(async () => {
         const domElement = await screen.findByTestId("base");
-        const toolContainer = domElement.querySelector(".tool-container");
-        if (!toolContainer) {
-            throw new Error("tool container not rendered");
+        const mapAnchor = domElement.querySelector(".map-anchor");
+        if (!mapAnchor) {
+            throw new Error("map anchor component not rendered");
         }
         return domElement;
     });
 
-    // check multiple tool container box are available
-    const firstToolContainer = container.querySelector(".tool-container.testabc");
-    if (!firstToolContainer) {
-        throw new Error("tool container with css class `testabc` not rendered");
+    // check multiple map anchor component box are available
+    const firstMapAnchor = container.querySelector(".map-anchor.testabc");
+    if (!firstMapAnchor) {
+        throw new Error("map anchor component with css class `testabc` not rendered");
     } else {
-        expect(firstToolContainer).toBeInstanceOf(HTMLDivElement);
+        expect(firstMapAnchor).toBeInstanceOf(HTMLDivElement);
     }
 
-    const nextToolContainer = container.querySelector(".tool-container.testdef");
-    if (!nextToolContainer) {
-        throw new Error("tool container with css class `testdef` not rendered");
+    const secondMapAnchor = container.querySelector(".map-anchor.testdef");
+    if (!secondMapAnchor) {
+        throw new Error("map anchor component with css class `testdef` not rendered");
     } else {
-        expect(nextToolContainer).toBeInstanceOf(HTMLDivElement);
+        expect(secondMapAnchor).toBeInstanceOf(HTMLDivElement);
     }
 });
 
 it("should successfully create position styles on `top-left` without gap", async () => {
-    const position: ToolContainerPosition = "top-left";
+    const position: MapAnchorPosition = "top-left";
     const padding: Required<MapPadding> = {
         left: 10,
         right: 10,
@@ -352,7 +352,7 @@ it("should successfully create position styles on `top-left` without gap", async
 });
 
 it("should successfully create position styles on `top-left` with horizontalGap and verticalGap", async () => {
-    const position: ToolContainerPosition = "top-left";
+    const position: MapAnchorPosition = "top-left";
     const padding: Required<MapPadding> = {
         left: 10,
         right: 10,
@@ -368,7 +368,7 @@ it("should successfully create position styles on `top-left` with horizontalGap 
 });
 
 it("should successfully create position styles on `bottom-right` with horizontalGap and verticalGap", async () => {
-    const position: ToolContainerPosition = "bottom-right";
+    const position: MapAnchorPosition = "bottom-right";
     const padding: Required<MapPadding> = {
         left: 10,
         right: 10,
@@ -377,12 +377,8 @@ it("should successfully create position styles on `bottom-right` with horizontal
     };
 
     const styleProps: StyleProps = computePositionStyles(position, padding, 50, 25);
-    console.log(styleProps);
     expect(styleProps.right).toBe("60px");
     expect(styleProps.bottom).toBe("35px");
     expect(styleProps.maxH).toBe("calc((100%) - 0px - 35px - 25px - 10px)");
     expect(styleProps.maxW).toBe("calc((100%) - 0px - 60px - 50px)");
 });
-
-// TODO
-// maxH maxW -> import computePositionStyles

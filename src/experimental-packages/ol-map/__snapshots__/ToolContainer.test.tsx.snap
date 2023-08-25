@@ -1,8 +1,0 @@
-// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
-
-exports[`should successfully create a tool container component 1`] = `
-<div
-  class="tool-container css-3czzey"
-  data-theme="light"
-/>
-`;

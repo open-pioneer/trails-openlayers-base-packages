@@ -3,7 +3,7 @@
 import { Box, Button, Flex } from "@open-pioneer/chakra-integration";
 import { Sidebar, SidebarItem } from "@open-pioneer/experimental-layout-sidebar";
 import { LayerControlComponent } from "@open-pioneer/experimental-ol-layer-control";
-import { MapContainer, MapPadding, ToolContainer } from "@open-pioneer/experimental-ol-map";
+import { MapAnchor, MapContainer, MapPadding } from "@open-pioneer/experimental-ol-map";
 import { CoordinateViewer } from "@open-pioneer/coordinate-viewer";
 import { ScaleViewer } from "@open-pioneer/scale-viewer";
 import { ScaleComponent } from "map-sample-scale-component";
@@ -59,15 +59,15 @@ export function MapApp() {
                     viewPadding={viewPadding}
                     viewPaddingChangeBehavior="preserve-extent"
                 >
-                    <ToolContainer position="top-left" horizontalGap={10} verticalGap={10}>
+                    <MapAnchor position="top-left" horizontalGap={10} verticalGap={10}>
                         <Box backgroundColor="whiteAlpha.800" padding={4} boxShadow="lg">
                             I move with the sidebar 🙂
                         </Box>
-                    </ToolContainer>
-                    <ToolContainer position="bottom-right" horizontalGap={10} verticalGap={30}>
+                    </MapAnchor>
+                    <MapAnchor position="bottom-right" horizontalGap={10} verticalGap={30}>
                         <ZoomComponent mapId={MAP_ID}></ZoomComponent>
-                    </ToolContainer>
-                    <ToolContainer position="top-right">
+                    </MapAnchor>
+                    <MapAnchor position="top-right">
                         <Flex
                             gap={3}
                             alignItems="center"
@@ -79,8 +79,8 @@ export function MapApp() {
                             <ScaleViewer mapId={MAP_ID} ref={scaleViewerRef}></ScaleViewer>
                             <ScaleComponent mapId={MAP_ID}></ScaleComponent>
                         </Flex>
-                    </ToolContainer>
-                    {/* <ToolContainer position="bottom-left" horizontalGap={10}>
+                    </MapAnchor>
+                    {/* <MapAnchor position="bottom-left" horizontalGap={10}>
                         <Box backgroundColor="whiteAlpha.800" padding={4} boxShadow="lg">
                             I move with the sidebar 🙂 I move with the sidebar 🙂 I move with the sidebar 🙂 I move with the sidebar 🙂 I move with the sidebar 🙂 I move with the sidebar 🙂 I move with the sidebar 🙂 I move with the sidebar 🙂 
                         </Box>
@@ -189,7 +189,7 @@ export function MapApp() {
                         >
                             Placeholder Chakra Box
                         </Box>
-                    </ToolContainer> */}
+                    </MapAnchor> */}
                 </MapContainer>
 
                 <Sidebar

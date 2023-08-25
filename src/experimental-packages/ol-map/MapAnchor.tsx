@@ -7,20 +7,20 @@ import { createPortal } from "react-dom";
 import { useMapContext } from "./MapContext";
 import { MapPadding } from "./MapContainer";
 
-export type ToolContainerPosition = "top-left" | "top-right" | "bottom-left" | "bottom-right";
+export type MapAnchorPosition = "top-left" | "top-right" | "bottom-left" | "bottom-right";
 
 // TODO: Update to the new map component
 
-export interface ToolContainerProps {
+export interface MapAnchorProps {
     /**
-     * The position of the container above the map.
+     * The position of the anchor container above the map.
      * @default "top-right"
      */
-    position?: ToolContainerPosition;
+    position?: MapAnchorPosition;
     className?: string | undefined;
     children?: ReactNode;
     /**
-     * Horizontal gap in pixel applied to ToolContainer.
+     * Horizontal gap in pixel applied to anchor container.
      *
      * Applied:
      * - left, if position `*-left`
@@ -30,7 +30,7 @@ export interface ToolContainerProps {
      */
     horizontalGap?: number;
     /**
-     * Vertical gap in pixel applied to ToolContainer.
+     * Vertical gap in pixel applied to anchor container.
      *
      * Applied:
      * - top, if position `*-top`
@@ -41,14 +41,14 @@ export interface ToolContainerProps {
     verticalGap?: number;
 }
 
-export function ToolContainer(props: ToolContainerProps): JSX.Element {
+export function MapAnchor(props: MapAnchorProps): JSX.Element {
     const { position = "top-right", className, children, horizontalGap, verticalGap } = props;
     const { map, padding } = useMapContext();
     const overlayContainer = map.getOverlayContainerStopEvent();
 
     return createPortal(
         <Box
-            className={classNames("tool-container", className)}
+            className={classNames("map-anchor", className)}
             /* Overlay container uses pointer-events: none, this restores interactivity */
             pointerEvents="auto"
             /* Restore user-select: none set by ol-viewport parent */
@@ -62,7 +62,7 @@ export function ToolContainer(props: ToolContainerProps): JSX.Element {
 }
 
 export function computePositionStyles(
-    position: ToolContainerPosition,
+    position: MapAnchorPosition,
     padding: Required<MapPadding>,
     horizontalGap?: number | undefined,
     verticalGap?: number | undefined
@@ -109,7 +109,7 @@ export function computePositionStyles(
     }
 
     /**
-     * Apply max-height and max-width to ToolContainer to avoid content overflow
+     * Apply max-height and max-width to MapAnchor to avoid content overflow
      */
     props.maxH = `calc((100%) - ${props.top ?? "0px"} - ${
         props.bottom ?? attributionGap + "px"
