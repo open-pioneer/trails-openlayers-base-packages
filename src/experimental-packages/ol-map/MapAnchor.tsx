@@ -61,7 +61,7 @@ export function MapAnchor(props: MapAnchorProps): JSX.Element {
     );
 }
 
-function computeAttributionGap(verticalGap?: number): {
+export function computeAttributionGap(verticalGap?: number): {
     gap: number;
     space: number;
 } {

@@ -15,7 +15,12 @@ import { createService } from "@open-pioneer/test-utils/services";
 import { render, screen, waitFor } from "@testing-library/react";
 import { MapOptions } from "ol/Map";
 import { expect, it } from "vitest";
-import { MapAnchor, MapAnchorPosition, computePositionStyles } from "./MapAnchor";
+import {
+    MapAnchor,
+    MapAnchorPosition,
+    computeAttributionGap,
+    computePositionStyles
+} from "./MapAnchor";
 import { Box, StyleProps } from "@open-pioneer/chakra-integration";
 
 // used to avoid a "ResizeObserver is not defined" error
@@ -204,8 +209,9 @@ it('should successfully create a map anchor component with prop `position="botto
     } else {
         const styles = window.getComputedStyle(mapAnchor);
         expect(styles.right).toBe("0px");
-        // improvement import / export attributionGap
-        expect(styles.bottom).toBe("30px"); // "30px" (attributionGap) if no verticalGap is configured
+
+        const attribution = computeAttributionGap();
+        expect(styles.bottom).toBe(attribution.gap + "px");
     }
 });
 
