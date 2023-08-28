@@ -6,8 +6,8 @@ This package provides a map container component to integrate an [OpenLayers](htt
 
 To use the map in your app, two things need to be done:
 
--   Add MapContainer component to your app (see [Map container component](#markdown-header-map-container-component))
--   Implement a MapConfigProvider (see [Configuring the map](#markdown-header-configuring-the-map))
+-   Add `MapContainer` component to your app (see [Map container component](#md:map-container-component))
+-   Implement a `MapConfigProvider` (see [Map configuring](#md:map-configuring))
 
 ### Map container component
 
@@ -32,11 +32,11 @@ function AppUI() {
 }
 ```
 
-> NOTE: There must be a `map.MapConfigProvider` present that knows how to construct the map with the given id (see below).
+> NOTE: There must be a `map.MapConfigProvider` present that knows how to construct the map with the given id (see [Map configuring](#md:map-configuring)).
 
 The component itself uses the map registry service to create the map using the provided `mapId`.
 
-### Configuring the map
+### Map configuring
 
 Register a service providing `map.MapConfigProvider` to configure the contents of a map. Such a provider is typically located in an app.
 
@@ -57,56 +57,93 @@ export default defineBuildConfig({
 });
 ```
 
-The service itself needs to implement the `MapConfigProvider` interface.
+The service itself needs to implement the `MapConfigProvider` interface. The following options are supported:
 
-Example implementation of the service:
+-   `initialView`
+-   `projection`
+-   `layers`
+-   `advanced`
+
+Always use the provided MapConfig API to access the map initially. Use `.olMap` (or `.olLayer`) only, when the raw instance is required.
+
+If an advanced configuration (fully constructed `OlView` instance) is used, some options (such as `initialView` or `projection`) cannot be applied anymore.
+
+Example implementation of the service with `initialView.kind = position`.
 
 ```ts
 // YOUR-APP/MapConfigProviderImpl.ts
 import { MapConfig, MapConfigProvider } from "@open-pioneer/map";
-import TileLayer from "ol/layer/Tile";
-import OSM from "ol/source/OSM";
-import Stamen from "ol/source/Stamen";
-
-export const MAP_ID = "main";
 
 export class MapConfigProviderImpl implements MapConfigProvider {
-    mapId = MAP_ID;
-
     async getMapConfig(): Promise<MapConfig> {
         return {
             initialView: {
-                kind: "position", // or "extent" to configure the initial extent
+                kind: "position",
                 center: { x: 847541, y: 6793584 },
                 zoom: 14
             },
             projection: "EPSG:3857",
             layers: [
-                {
-                    title: "OSM",
-                    layer: new TileLayer({
-                        source: new OSM()
-                    })
-                },
-                {
-                    title: "Watercolor",
-                    visible: false,
-                    layer: new TileLayer({
-                        source: new Stamen({ layer: "watercolor" })
-                    })
-                },
-                {
-                    title: "Toner",
-                    visible: false,
-                    layer: new TileLayer({
-                        source: new Stamen({ layer: "toner" })
-                    })
-                }
+                // ...
             ]
         };
     }
 }
 ```
+
+Example implementation of the service with `initialView.kind = extent`.
+
+```ts
+// YOUR-APP/MapConfigProviderImpl.ts
+import { MapConfig, MapConfigProvider } from "@open-pioneer/map";
+
+export class MapConfigProviderImpl implements MapConfigProvider {
+    async getMapConfig(): Promise<MapConfig> {
+        return {
+            initialView: {
+                kind: "extent",
+                extent: {
+                    xMin: 577252,
+                    yMin: 6026906,
+                    xMax: 1790460,
+                    yMax: 7318386
+                }
+            },
+            projection: "EPSG:3857",
+            layers: [
+                // ...
+            ]
+        };
+    }
+}
+```
+
+Example implementation of the service with an advanced configuration.
+
+```ts
+// YOUR-APP/MapConfigProviderImpl.ts
+import { MapConfig, MapConfigProvider } from "@open-pioneer/map";
+
+export class MapConfigProviderImpl implements MapConfigProvider {
+    async getMapConfig(): Promise<MapConfig> {
+        return {
+            advanced: {
+                view: new View({
+                    center: [405948.17, 5757572.85],
+                    zoom: 5
+                })
+            },
+            layers: [
+                // ...
+            ]
+        };
+    }
+}
+```
+
+> Warning: Not all OpenLayers [View](https://openlayers.org/en/latest/apidoc/module-ol_View-View.html) properties here are supported. For example, you cannot set the target because the target is controlled by the `<MapContainer />`.
+
+### Layer configuring
 
 ### Use map model in react component
 
@@ -130,7 +167,7 @@ export function AppUI() {
 
 ### Register additional projections
 
-OpenLayers supports only two projections by default: EPSG:4326 and EPSG:3857. However, it is possible to register additional projections to use them for the map.
+OpenLayers supports only two projections by default: `EPSG:4326` and `EPSG:3857`. However, it is possible to register additional projections to use them for the map.
 
 Fot that, the `registerProjections` function can be used.
 
@@ -161,13 +198,12 @@ const proj = getProjection("EPSG:3035");
 
 ## Notes
 
--   Always use new API to access the map initially
-    -   Use `.olMap` (or `.olLayer`) when the raw instance is required
 -   Use the model classes to manage:
     -   Map composition (access and configuration of layers, base layers)
     -   Layer visibility
     -   Custom layer metadata (`attributes`)
 -   Use the raw ol instances for other features (e.g. opacity)
+-   Document that registered layers should not be manually removed from the map via olMap
 
 ## License
 

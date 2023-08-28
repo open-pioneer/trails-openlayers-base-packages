@@ -10,7 +10,6 @@ import type OlBaseLayer from "ol/layer/Base";
 /*
     TODO:
     - Simple helper class for map setup?
-    - Document that registered layers should not be manually removed from the map via olMap
 */
 
 export interface MapModelEvents {
@@ -387,7 +386,7 @@ export interface MapConfig {
      * Other properties defined in this configuration (e.g. {@link initialView})
      * will be applied on top of these map options.
      *
-     * > Warning: not all properties here are supported.
+     * > Warning: Not all properties here are supported.
      * > For example, you cannot set the `target` because the target is controlled by the `<MapContainer />`.
      */
     advanced?: Partial<OlMapOptions>;
