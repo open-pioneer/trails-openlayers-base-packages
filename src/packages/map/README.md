@@ -7,7 +7,7 @@ This package provides a map container component to integrate an [OpenLayers](htt
 To use the map in your app, two things need to be done:
 
 -   Add `MapContainer` component to your app (see [Map container component](#md:map-container-component))
--   Implement a `MapConfigProvider` (see [Map configuring](#md:map-configuring))
+-   Implement a `MapConfigProvider` (see [Map configuration](#md:map-configuration))
 
 ### Map container component
 
@@ -32,11 +32,11 @@ function AppUI() {
 }
 ```
 
-> NOTE: There must be a `map.MapConfigProvider` present that knows how to construct the map with the given id (see [Map configuring](#md:map-configuring)).
+> NOTE: There must be a `map.MapConfigProvider` present that knows how to construct the map with the given id (see [Map configuration](#md:map-configuration)).
 
 The component itself uses the map registry service to create the map using the provided `mapId`.
 
-### Map configuring
+### Map configuration
 
 Register a service providing `map.MapConfigProvider` to configure the contents of a map. Such a provider is typically located in an app.
 
@@ -57,14 +57,14 @@ export default defineBuildConfig({
 });
 ```
 
-The service itself needs to implement the `MapConfigProvider` interface. The following options are supported:
+The service itself needs to implement the `MapConfigProvider` interface. The following map options are supported:
 
--   `initialView`
--   `projection`
--   `layers`
+-   `initialView`,
+-   `projection`,
+-   `layers` (see [Layer configuration](md:layer-configuration)),
 -   `advanced`
 
-Always use the provided MapConfig API to access the map initially. Use `.olMap` (or `.olLayer`) only, when the raw instance is required.
+Always use the provided Map Model to access the map initially. Use `.olMap` only, when the raw instance is required.
 
 If an advanced configuration (fully constructed `OlView` instance) is used, some options (such as `initialView` or `projection`) cannot be applied anymore.
 
@@ -141,9 +141,69 @@ export class MapConfigProviderImpl implements MapConfigProvider {
 }
 ```
 
-> Warning: Not all OpenLayers [View](https://openlayers.org/en/latest/apidoc/module-ol_View-View.html) properties here are supported. For example, you cannot set the target because the target is controlled by the `<MapContainer />`.
+> Warning: Not all OpenLayers [View](https://openlayers.org/en/latest/apidoc/module-ol_View-View.html) properties are supported. For example, you cannot set the target because the target is controlled by the `<MapContainer />`.
 
-### Layer configuring
+### Layer configuration
+
+Configure your custom layer inside the [map configuration](#md:map-configuration) by using the OpenLayers [`Layer`](https://openlayers.org/en/latest/apidoc/module-ol_layer_Layer-Layer.html) as `layer` property.
+
+Always use the provided Layer Model to access the layer initially. Use `.olLayer` only, when the raw instance is required, e.g. set opacity.
+
+To access specific layers use the Layer Collection methods, e.g. `getAllLayers`, `getBaseLayers`, `getOperationalLayers`. Layers should not be manually removed from the map via `.olMap`. Only use `removeLayerById` to remove a layer.
+
+Example implementation of a layer configuration.
+
+```ts
+// YOUR-APP/MapConfigProviderImpl.ts
+import { MapConfig, MapConfigProvider } from "@open-pioneer/map";
+import TileLayer from "ol/layer/Tile";
+import OSM from "ol/source/OSM";
+import Stamen from "ol/source/Stamen";
+
+export class MapConfigProviderImpl implements MapConfigProvider {
+    async getMapConfig(): Promise<MapConfig> {
+        return {
+            layers: [
+                {
+                    // minimal layer configuration
+                    title: "OSM",
+                    layer: new TileLayer({
+                        source: new OSM()
+                    })
+                },
+                {
+                    // layer configuration with optional properties
+                    id: "abe0e3f8-0ba2-409c-b6b4-9d8429c732e3",
+                    title: "Watercolor",
+                    layer: new TileLayer({
+                        source: new Stamen({ layer: "watercolor" })
+                    }),
+                    attributes: {
+                        foo: "bar"
+                    },
+                    description: "additional description",
+                    isBaseLayer: false,
+                    visible: false
+                }
+            ]
+        };
+    }
+}
+```
+
+Based on the example above, we can set different properties using the Layer Model API (setting visibility, update custom metadata (`attributes`)).
+
+```js
+import { useMapModel } from "@open-pioneer/map";
+
+const { map } = useMapModel(mapId);
+const layer = map.layers.getLayerById("abe0e3f8-0ba2-409c-b6b4-9d8429c732e3");
+
+layer.setDescription("new description");
+layer.setTitle("new title");
+layer.setVisible(true);
+layer.updateAttributes({});
+```
 
 ### Use map model in react component
 
@@ -195,15 +255,6 @@ const proj = getProjection("EPSG:3035");
 
 // proj can be used as "projection" in "getMapConfig" of MapConfigProvider implementation
 ```
-
-## Notes
-
--   Use the model classes to manage:
-    -   Map composition (access and configuration of layers, base layers)
-    -   Layer visibility
-    -   Custom layer metadata (`attributes`)
--   Use the raw ol instances for other features (e.g. opacity)
--   Document that registered layers should not be manually removed from the map via olMap
 
 ## License
 
