@@ -62,7 +62,7 @@ it("reports an error if two map containers are used for the same map", async () 
       [MockFunction error] {
         "calls": [
           [
-            "[ERROR] ol-map:MapContainer: Failed to display the map: the map already has a target. There may be more than one <MapContainer />.",
+            "[ERROR] map:MapContainer: Failed to display the map: the map already has a target. There may be more than one <MapContainer />.",
           ],
         ],
         "results": [

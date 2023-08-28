@@ -7,7 +7,7 @@ import { MapModelImpl } from "./model/MapModelImpl";
 import { MapConfigProvider, MapModel, MapRegistry } from "./api";
 import { createMapModel } from "./model/createMapModel";
 
-const LOG = createLogger("ol-map:MapRegistry");
+const LOG = createLogger("map:MapRegistry");
 
 interface References {
     providers: ServiceType<"map.MapConfigProvider">[];

@@ -15,7 +15,7 @@ import { getCenter } from "ol/extent";
 import { ExtentConfig, MapModel, MapModelEvents } from "../api";
 import { LayerCollectionImpl } from "./LayerCollectionImpl";
 
-const LOG = createLogger("ol-map:MapModel");
+const LOG = createLogger("map:MapModel");
 
 export class MapModelImpl extends EventEmitter<MapModelEvents> implements MapModel {
     readonly #id: string;

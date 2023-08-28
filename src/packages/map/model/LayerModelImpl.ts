@@ -9,7 +9,7 @@ import Source, { State as OlSourceState } from "ol/source/Source";
 import { LayerConfig, LayerLoadState, LayerModel, LayerModelEvents, MapModel } from "../api";
 import { MapModelImpl } from "./MapModelImpl";
 
-const LOG = createLogger("ol-map:LayerModel");
+const LOG = createLogger("map:LayerModel");
 
 export class LayerModelImpl extends EventEmitter<LayerModelEvents> implements LayerModel {
     #id: string;

@@ -7,7 +7,7 @@ import { LayerCollection, LayerCollectionEvents, LayerConfig, LayerModel, MapMod
 import { LayerModelImpl } from "./LayerModelImpl";
 import { MapModelImpl } from "./MapModelImpl";
 
-const LOG = createLogger("ol-map:LayerCollection");
+const LOG = createLogger("map:LayerCollection");
 
 const BASE_LAYER_Z = 0;
 const OPERATION_LAYER_INITIAL_Z = 1;

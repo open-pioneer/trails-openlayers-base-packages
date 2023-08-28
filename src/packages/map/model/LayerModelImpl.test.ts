@@ -173,7 +173,7 @@ it("logs a warning when setVisible() is called on a base layer", async () => {
       [MockFunction warn] {
         "calls": [
           [
-            "[WARN] ol-map:LayerModel: Cannot change visibility of base layer 'a': use activateBaseLayer() on the map's LayerCollection instead.",
+            "[WARN] map:LayerModel: Cannot change visibility of base layer 'a': use activateBaseLayer() on the map's LayerCollection instead.",
           ],
         ],
         "results": [

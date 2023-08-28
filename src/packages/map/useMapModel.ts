@@ -35,7 +35,7 @@ export interface UseMapModelRejected {
 }
 
 /**
- * React hooks that looks up the map with the given id in the `ol-map.MapRegistry` service.
+ * React hooks that looks up the map with the given id in the `map.MapRegistry` service.
  *
  * Returns an object representing the progress, which will eventually represent either
  * the map model value or an initialization error.

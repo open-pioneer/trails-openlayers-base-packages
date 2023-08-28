@@ -28,11 +28,11 @@ function AppUI() {
 }
 ```
 
-> NOTE: There must be a `ol-map.MapConfigProvider` present that knows how to construct the map with the given id (see below).
+> NOTE: There must be a `map.MapConfigProvider` present that knows how to construct the map with the given id (see below).
 
 ### Configuring the map
 
-Register a service implementing `ol-map.MapConfigProvider` to configure the contents of your map(s). Such a provider is typically located in an app.
+Register a service implementing `map.MapConfigProvider` to configure the contents of your map(s). Such a provider is typically located in an app.
 
 ```js
 // YOUR-APP/build.config.mjs

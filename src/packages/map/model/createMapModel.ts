@@ -11,7 +11,7 @@ import OSM from "ol/source/OSM";
 import { MapModelImpl } from "./MapModelImpl";
 import { MapConfig } from "../api";
 
-const LOG = createLogger("ol-map:createMapModel");
+const LOG = createLogger("map:createMapModel");
 
 export async function createMapModel(mapId: string, mapConfig: MapConfig): Promise<MapModelImpl> {
     return await new MapModelFactory(mapId, mapConfig).createMapModel();
@@ -104,7 +104,7 @@ class MapModelFactory {
                     break;
                 case "extent": {
                     /*
-                        OpenLayers does not support configuration of the initial map extent. 
+                        OpenLayers does not support configuration of the initial map extent.
                         The only relevant options here are center, zoom (and resolution).
                         We must set those values because otherwise OL will not initialize layer sources.
 

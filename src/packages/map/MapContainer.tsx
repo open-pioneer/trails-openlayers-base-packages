@@ -5,7 +5,7 @@ import classNames from "classnames";
 import { useEffect, useRef } from "react";
 import { useMapModel } from "./useMapModel";
 import { MapModel } from "./api";
-const LOG = createLogger("ol-map:MapContainer");
+const LOG = createLogger("map:MapContainer");
 
 /**
  * Map padding, all values are pixels.
