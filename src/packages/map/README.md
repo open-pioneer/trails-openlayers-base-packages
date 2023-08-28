@@ -1,18 +1,22 @@
 # @open-pioneer/map
 
-This package provides a map container component to integrate an [OpenLayers](https://openlayers.org/) map into an open pioneer project. Besides the component, there is a service, which handles the registration and creation of a map.
+This package provides a map container component to integrate an [OpenLayers](https://openlayers.org/) map into an open pioneer trails project. Besides the component, the package provides a service, which handles the registration and creation of a map.
 
 ## Usage
 
+To use the map in your app, two things need to be done:
+
+-   Add MapContainer component to your app (see [Map container component](#markdown-header-map-container-component))
+-   Implement a MapConfigProvider (see [Configuring the map](#markdown-header-configuring-the-map))
+
 ### Map container component
 
-To integrate a `MapContainer` in a React template, place it at the point where it should appear.
+To integrate a `MapContainer` in an app, add the component to your React component, where you want to map to appear. On the component specify the `mapId` of the map, you want to add.
+
 The parent component should provide appropriate width and height (e.g. `100%`).
 The `MapContainer` will fill all available space.
 
-The component itself uses the map registry service to create the map on demand using the provided `mapId`.
-
-Simple integration of a map container with a map id:
+Example: Simple integration of a map container with a given map id:
 
 ```jsx
 import { Box } from "@open-pioneer/chakra-integration";
@@ -30,9 +34,11 @@ function AppUI() {
 
 > NOTE: There must be a `map.MapConfigProvider` present that knows how to construct the map with the given id (see below).
 
+The component itself uses the map registry service to create the map using the provided `mapId`.
+
 ### Configuring the map
 
-Register a service implementing `map.MapConfigProvider` to configure the contents of your map(s). Such a provider is typically located in an app.
+Register a service providing `map.MapConfigProvider` to configure the contents of a map. Such a provider is typically located in an app.
 
 ```js
 // YOUR-APP/build.config.mjs
@@ -50,6 +56,10 @@ export default defineBuildConfig({
     }
 });
 ```
+
+The service itself needs to implement the `MapConfigProvider` interface.
+
+Example implementation of the service:
 
 ```ts
 // YOUR-APP/MapConfigProviderImpl.ts
@@ -120,7 +130,11 @@ export function AppUI() {
 
 ### Register additional projections
 
-Simple example to register a additional projection to the global [proj4js](https://github.com/proj4js/proj4js) definition set by there name (e.g. `"EPSG:4326"`) and projection definition (string defining the projection or an existing proj4 definition object).
+OpenLayers supports only two projections by default: EPSG:4326 and EPSG:3857. However, it is possible to register additional projections to use them for the map.
+
+Fot that, the `registerProjections` function can be used.
+
+Simple example to register an additional projection to the global [proj4js](https://github.com/proj4js/proj4js) definition set by name (e.g. `"EPSG:4326"`) and projection definition (string defining the projection or an existing proj4 definition object):
 
 ```ts
 import { registerProjections } from "@open-pioneer/map";
@@ -132,13 +146,17 @@ registerProjections({
 });
 ```
 
-Get the projection definition by access the epsg.io Website or search the global [proj4js](https://github.com/proj4js/proj4js) definition set with a valid name.
+Projection definitions can be accessed by the [epsg.io](https://epsg.io/) website or by searching the global [proj4js](https://github.com/proj4js/proj4js) definition set with a valid name.
+
+The following example shows, how to use the registered projection:
 
 ```ts
 import { getProjection } from "@open-pioneer/map";
 
 // Returns a raw proj4 projection definition (or undefined)
 const proj = getProjection("EPSG:3035");
+
+// proj can be used as "projection" in "getMapConfig" of MapConfigProvider implementation
 ```
 
 ## Notes
