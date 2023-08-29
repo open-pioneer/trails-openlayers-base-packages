@@ -207,6 +207,11 @@ export interface LayerModel extends EventSource<LayerModelEvents> {
      * Values in `newAttributes` are merged into the existing ones (i.e. via `Object.assign`).
      */
     updateAttributes(newAttributes: Record<string | symbol, unknown>): void;
+
+    /**
+     * Deletes the attribute of this layer.
+     */
+    deleteAttribute(deleteAttribute: string | symbol): void;
 }
 
 /**
