@@ -16,7 +16,7 @@ afterEach(() => {
     vi.restoreAllMocks();
 });
 
-it("successfully create a map", async () => {
+it("successfully creates a map", async () => {
     const { mapId, registry } = await setupMap();
     const renderResult = render(
         <PackageContextProvider {...createPackageContextProviderProps(registry)}>

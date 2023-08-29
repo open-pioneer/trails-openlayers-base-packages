@@ -83,7 +83,7 @@ export class MapRegistryImpl implements Service, MapRegistry {
         return model;
     }
 
-    getMapByRawInstance(olMap: OlMap): MapModel | undefined {
+    getMapModelByRawInstance(olMap: OlMap): MapModel | undefined {
         return this.#modelsByOlMap.get(olMap);
     }
 

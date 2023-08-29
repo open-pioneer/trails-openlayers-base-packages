@@ -138,7 +138,7 @@ it("supports lookup by layer id", async () => {
     expect(l3).toBeUndefined();
 });
 
-it("using the same layer id twice results in an error", async () => {
+it("results in an error, if using the same layer id twice", async () => {
     await expect(async () => {
         model = await createMapModel("foo", {
             layers: [
@@ -209,7 +209,7 @@ it("registering the same open layers layer twice throws an error", async () => {
             ]
         });
     }).rejects.toThrowErrorMatchingInlineSnapshot(
-        '"OlLayer has already been used for a different LayerModel."'
+        '"OlLayer has already been used in this or another LayerModel."'
     );
 });
 
@@ -268,7 +268,7 @@ it("supports removing a layer from the model", async () => {
 });
 
 describe("base layers", () => {
-    it("supports configuration and manipulation base layers", async () => {
+    it("supports configuration and manipulation of base layers", async () => {
         model = await createMapModel("foo", {
             layers: [
                 {

@@ -39,13 +39,13 @@ it("should support reverse lookup from raw open layers map", async () => {
     const olMap = mapModel.olMap;
     expect(olMap).toBeDefined();
 
-    expect(registry.getMapByRawInstance(olMap)).toBe(mapModel);
+    expect(registry.getMapModelByRawInstance(olMap)).toBe(mapModel);
 
     const otherMap = new OlMap();
-    expect(registry.getMapByRawInstance(otherMap)).toBe(undefined);
+    expect(registry.getMapModelByRawInstance(otherMap)).toBe(undefined);
 });
 
-it("should successfully set only Attribution when Controls are empty", async () => {
+it("should successfully set only attribution when controls are empty", async () => {
     const { mapId, registry } = await setupMap();
     const map = (await registry.expectMapModel(mapId))?.olMap;
 
@@ -86,7 +86,7 @@ it("should log warning message if new View is in advanced configuration and proj
     `);
 });
 
-it("should log warning message if new View is in advanced configuration and initialView is set", async () => {
+it("should log a warning message if new View is in advanced configuration and initialView is set", async () => {
     const logSpy = vi.spyOn(global.console, "warn").mockImplementation(() => undefined);
 
     const view = new View({ center: [405948.17, 5757572.85], zoom: 5 });
@@ -163,7 +163,7 @@ it("should successfully create View with default projection", async () => {
     expect(view?.getProjection().getCode()).toBe("EPSG:3857");
 });
 
-it("should throw an exception by wrong EPSG code", async () => {
+it("should throw an exception if using wrong EPSG code", async () => {
     const { mapId, registry } = await setupMap({
         projection: "EPSG:0000000000"
     });
@@ -185,7 +185,7 @@ it("should throw an exception by wrong EPSG code", async () => {
     `);
 });
 
-it("should successfully create View with custom projection", async () => {
+it("should successfully create View with a custom projection", async () => {
     registerProjections({
         "EPSG:25832":
             "+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs +type=crs"
