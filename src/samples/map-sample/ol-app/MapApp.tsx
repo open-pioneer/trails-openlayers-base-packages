@@ -49,6 +49,7 @@ export function MapApp() {
 
     const scaleViewerRef = useRef<HTMLDivElement>(null);
     const coordinateViewerRef = useRef<HTMLDivElement>(null);
+    const basemapSwitcherRef = useRef<HTMLDivElement>(null);
 
     return (
         <Flex height="100%" direction="column" overflow="hidden">
@@ -56,13 +57,12 @@ export function MapApp() {
                 <Box textAlign="center" py={1} px={1}>
                     Open Pioneer - Map sample
                 </Box>
-                <Box>
-                    <BasemapSwitcher
-                        baseLayerId="b-2"
-                        noneBasemap={noneBasemap}
-                        mapId={MAP_ID}
-                    ></BasemapSwitcher>
-                </Box>
+                <BasemapSwitcher
+                    ref={basemapSwitcherRef}
+                    baseLayerId="b-2"
+                    noneBasemap={noneBasemap}
+                    mapId={MAP_ID}
+                ></BasemapSwitcher>
             </Flex>
 
             <Flex flex="1" direction="column" position="relative">
