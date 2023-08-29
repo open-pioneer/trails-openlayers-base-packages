@@ -9,6 +9,16 @@ To use the map in your app, two things need to be done:
 -   Add `MapContainer` component to your app (see [Map container component](#md:map-container-component))
 -   Implement a `MapConfigProvider` (see [Map configuration](#md:map-configuration))
 
+> IMPORTANT: The package uses a MapModel and LayerModel to internally handle the states of the map and layers. This is needed to support additional features like base layers. Because of that it is necessary to always use the methods provided by these models to manage at least the following features on map and layers (instead of using the raw OpenLayers instances directly):
+>
+> -   Map composition (access and configuration of layers, base layers, removing layers)
+> -   Layer visibility
+> -   Custom layer metadata (`attributes`)
+>
+> You should use the raw OL instances for other features (e.g. to control the visibility of a layer).
+>
+> For examples see [Using the map model](#md:using-the-map-model).
+
 ### Map container component
 
 To integrate a `MapContainer` in an app, add the component to your React component, where you want to map to appear. On the component specify the `mapId` of the map, you want to add.
@@ -145,7 +155,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
 
 > Warning: Not all OpenLayers [View](https://openlayers.org/en/latest/apidoc/module-ol_View-View.html) properties are supported. For example, you cannot set the target because the target is controlled by the `<MapContainer />`.
 
-### Layer configuration
+#### Layer configuration
 
 Configure your custom layer inside the [Map configuration](#md:map-configuration) by using the OpenLayers [`Layer`](https://openlayers.org/en/latest/apidoc/module-ol_layer_Layer-Layer.html) as `layer` property.
 
@@ -214,31 +224,7 @@ layer.deleteAttribute("foo");
 
 > NOTE: The visibility of base layers cannot be changed through the method `setVisible`. Call `activateBaseLayer` instead.
 
-### Use map model in React component
-
-To access the map model instance, use the React hook `useMapModel`.
-
-Example: Center map to given coordinates using the map model.
-
-```js
-import { useMapModel } from "@open-pioneer/map";
-import { MAP_ID } from "./MapConfigProviderImpl";
-
-export function AppUI() {
-    // mapState.map may be undefined initially, if the map is still configuring.
-    // the object may may also be in an "error" state.
-    const mapState = useMapModel(MAP_ID);
-
-    const centerBerlin = () => {
-        const olMap = mapState.map?.olMap;
-        if (olMap) {
-            olMap?.getView().fit([1489200, 6894026, 1489200, 6894026], { maxZoom: 13 });
-        }
-    };
-}
-```
-
-### Register additional projections
+#### Register additional projections
 
 OpenLayers supports only two projections by default: `EPSG:4326` and `EPSG:3857`. However, it is possible to register additional projections to use them for the map.
 
@@ -267,6 +253,73 @@ import { getProjection } from "@open-pioneer/map";
 const proj = getProjection("EPSG:3035");
 
 // proj can be used as "projection" in "getMapConfig" of MapConfigProvider implementation
+```
+
+### Using the map model
+
+The package uses a MapModel and LayerModel to internally handle the states of the map and layers. This is needed to support additional features like base layers. Because of that it is necessary to always use the methods provided by these models to manage at least the following features on map and layers (instead of using the raw OpenLayers instances directly):
+
+-   Map composition (access and configuration of layers, base layers, removing layers)
+-   Layer visibility
+-   Custom layer metadata (`attributes`)
+
+You should use the raw OL instances for other features (e.g. to control the visibility of a layer).
+
+#### Using the map model and layer model in services
+
+Example: Center map to given coordinates using the map model and set layer visibilty using the layer model.
+
+```ts
+import { ServiceOptions, ServiceType } from "@open-pioneer/runtime";
+import { MAP_ID } from "./MapConfigProviderImpl";
+import type { MapRegistry } from "@open-pioneer/map";
+
+interface References {
+    mapRegistry: ServiceType<"map.MapRegistry">;
+}
+
+export class TestService {
+    private registry: MapRegistry;
+
+    constructor(options: ServiceOptions<References>) {
+        this.registry = options.references.mapRegistry;
+    }
+
+    async centerBerlin() {
+        const model = await this.registry.getMapModel(MAP_ID);
+        model?.olMap?.getView().fit([1489200, 6894026, 1489200, 6894026], { maxZoom: 13 });
+    }
+
+    async setLayerVisible() {
+        const model = await this.registry.getMapModel(MAP_ID);
+        const layer = model?.layers.getLayerById("abe0e3f8-0ba2-409c-b6b4-9d8429c732e3");
+        layer?.setVisible(true);
+    }
+}
+```
+
+#### Using the map model in React components
+
+To access the map model instance, use the React hook `useMapModel`.
+
+Example: Center map to given coordinates using the map model.
+
+```js
+import { useMapModel } from "@open-pioneer/map";
+import { MAP_ID } from "./MapConfigProviderImpl";
+
+export function AppUI() {
+    // mapState.map may be undefined initially, if the map is still configuring.
+    // the object may may also be in an "error" state.
+    const mapState = useMapModel(MAP_ID);
+
+    const centerBerlin = () => {
+        const olMap = mapState.map?.olMap;
+        if (olMap) {
+            olMap?.getView().fit([1489200, 6894026, 1489200, 6894026], { maxZoom: 13 });
+        }
+    };
+}
 ```
 
 ## License
