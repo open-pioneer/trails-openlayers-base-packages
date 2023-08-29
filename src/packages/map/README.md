@@ -40,6 +40,8 @@ The component itself uses the map registry service to create the map using the p
 
 Register a service providing `map.MapConfigProvider` to configure the contents of a map. Such a provider is typically located in an app.
 
+Example: Simple configuration how to register a service providing `map.MapConfigProvider`.
+
 ```js
 // YOUR-APP/build.config.mjs
 import { defineBuildConfig } from "@open-pioneer/build-support";
@@ -61,14 +63,14 @@ The service itself needs to implement the `MapConfigProvider` interface. The fol
 
 -   `initialView`,
 -   `projection`,
--   `layers` (see [Layer configuration](md:layer-configuration)),
+-   `layers` (see [Layer configuration](#md:layer-configuration)),
 -   `advanced`
 
-Always use the provided Map Model to access the map initially. Use `.olMap` only, when the raw instance is required.
+Always use the provided map model to access the map initially. Use `.olMap` only, when the raw instance is required.
 
 If an advanced configuration (fully constructed `OlView` instance) is used, some options (such as `initialView` or `projection`) cannot be applied anymore.
 
-Example implementation of the service with `initialView.kind = position`.
+Example: Simple implementation of the service with `initialView.kind = position`.
 
 ```ts
 // YOUR-APP/MapConfigProviderImpl.ts
@@ -91,7 +93,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
 }
 ```
 
-Example implementation of the service with `initialView.kind = extent`.
+Example: Simple implementation of the service with `initialView.kind = extent`.
 
 ```ts
 // YOUR-APP/MapConfigProviderImpl.ts
@@ -118,7 +120,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
 }
 ```
 
-Example implementation of the service with an advanced configuration.
+Example: Simple implementation of the service with an advanced configuration.
 
 ```ts
 // YOUR-APP/MapConfigProviderImpl.ts
@@ -145,13 +147,13 @@ export class MapConfigProviderImpl implements MapConfigProvider {
 
 ### Layer configuration
 
-Configure your custom layer inside the [map configuration](#md:map-configuration) by using the OpenLayers [`Layer`](https://openlayers.org/en/latest/apidoc/module-ol_layer_Layer-Layer.html) as `layer` property.
+Configure your custom layer inside the [Map configuration](#md:map-configuration) by using the OpenLayers [`Layer`](https://openlayers.org/en/latest/apidoc/module-ol_layer_Layer-Layer.html) as `layer` property.
 
-Always use the provided Layer Model to access the layer initially. Use `.olLayer` only, when the raw instance is required, e.g. set opacity.
+Always use the provided layer model to access the layer initially. Use `.olLayer` only, when the raw instance is required, e.g. set opacity.
 
 To access specific layers use the Layer Collection methods, e.g. `getAllLayers`, `getBaseLayers`, `getOperationalLayers`. Layers should not be manually removed from the map via `.olMap`. Only use `removeLayerById` to remove a layer.
 
-Example implementation of a layer configuration.
+Example: Simple implementation of a layer configuration.
 
 ```ts
 // YOUR-APP/MapConfigProviderImpl.ts
@@ -191,7 +193,9 @@ export class MapConfigProviderImpl implements MapConfigProvider {
 }
 ```
 
-Based on the example above, we can set different properties using the Layer Model API (setting visibility, update custom metadata (`attributes`)).
+Based on the example above, we can set different properties using the layer model API (setting visibility, update custom metadata (`attributes`)).
+
+Example: How to set different properties.
 
 ```js
 import { useMapModel } from "@open-pioneer/map";
@@ -205,7 +209,13 @@ layer.setVisible(true);
 layer.updateAttributes({});
 ```
 
-### Use map model in react component
+> NOTE: The visibility of base layers cannot be changed through the method `setVisible`. Call `activateBaseLayer` instead.
+
+### Use map model in React component
+
+To access the map model instance, use the React hook `useMapModel`.
+
+Example: Center map to given coordinates using the map model.
 
 ```js
 import { useMapModel } from "@open-pioneer/map";
@@ -219,7 +229,7 @@ export function AppUI() {
     const centerBerlin = () => {
         const olMap = mapState.map?.olMap;
         if (olMap) {
-            olMap?.getView().fit(berlin, { maxZoom: 13 });
+            olMap?.getView().fit([1489200, 6894026, 1489200, 6894026], { maxZoom: 13 });
         }
     };
 }
