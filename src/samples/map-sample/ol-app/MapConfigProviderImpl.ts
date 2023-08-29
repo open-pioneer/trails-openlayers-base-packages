@@ -20,7 +20,10 @@ export class MapConfigProviderImpl implements MapConfigProvider {
             projection: "EPSG:3857",
             layers: [
                 {
+                    id: "b-1",
                     title: "OSM",
+                    isBaseLayer: true,
+                    visible: false,
                     layer: new TileLayer({
                         source: new OSM()
                     })
@@ -33,8 +36,10 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     })
                 },
                 {
+                    id: "b-2",
                     title: "Toner",
-                    visible: false,
+                    isBaseLayer: true,
+                    visible: true,
                     layer: new TileLayer({
                         source: new Stamen({ layer: "toner" })
                     })

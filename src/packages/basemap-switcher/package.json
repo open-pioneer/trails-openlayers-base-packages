@@ -1,0 +1,21 @@
+{
+    "name": "@open-pioneer/basemap-switcher",
+    "version": "0.0.1",
+    "license": "Apache-2.0",
+    "main": "index.ts",
+    "peerDependencies": {
+        "@open-pioneer/chakra-integration": "^1.0.0",
+        "@open-pioneer/map": "workspace:^",
+        "@open-pioneer/runtime": "^1.0.1",
+        "ol": "^7.5.1",
+        "react": "^18.2.0"
+    },
+    "devDependencies": {
+        "@open-pioneer/test-utils": "^1.0.0",
+        "openlayers-base-packages": "workspace:*"
+    },
+    "publishConfig": {
+        "directory": "dist",
+        "linkDirectory": false
+    }
+}

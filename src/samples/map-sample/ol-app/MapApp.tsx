@@ -5,6 +5,7 @@ import { Sidebar, SidebarItem } from "@open-pioneer/experimental-layout-sidebar"
 import { LayerControlComponent } from "@open-pioneer/experimental-ol-layer-control";
 import { MapContainer, MapPadding } from "@open-pioneer/map";
 import { CoordinateViewer } from "@open-pioneer/coordinate-viewer";
+import { BasemapSwitcher } from "@open-pioneer/basemap-switcher";
 import { useMapModel } from "@open-pioneer/map";
 import { ScaleViewer } from "@open-pioneer/scale-viewer";
 import { ScaleComponent } from "map-sample-scale-component";
@@ -14,6 +15,10 @@ import { FiCodesandbox, FiLayers } from "react-icons/fi";
 import { MAP_ID } from "./MapConfigProviderImpl";
 
 const berlin = [1489200, 6894026, 1489200, 6894026];
+const noneBasemap = {
+    id: "noBasemap",
+    label: "kein Hintergrund"
+};
 
 export function MapApp() {
     const [viewPadding, setViewPadding] = useState<MapPadding>();
@@ -47,9 +52,19 @@ export function MapApp() {
 
     return (
         <Flex height="100%" direction="column" overflow="hidden">
-            <Box textAlign="center" py={1}>
-                Open Pioneer - Map sample
-            </Box>
+            <Flex gap={3} alignItems="center" justifyContent="space-between">
+                <Box textAlign="center" py={1} px={1}>
+                    Open Pioneer - Map sample
+                </Box>
+                <Box>
+                    <BasemapSwitcher
+                        baseLayerId="b-2"
+                        noneBasemap={noneBasemap}
+                        mapId={MAP_ID}
+                    ></BasemapSwitcher>
+                </Box>
+            </Flex>
+
             <Flex flex="1" direction="column" position="relative">
                 <MapContainer mapId={MAP_ID} viewPadding={viewPadding}></MapContainer>
                 <ZoomComponent className="zoom-controls" mapId={MAP_ID}></ZoomComponent>
