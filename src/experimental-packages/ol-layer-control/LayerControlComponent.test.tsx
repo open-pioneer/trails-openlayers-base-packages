@@ -3,150 +3,87 @@
 /**
  * @vitest-environment jsdom
  */
-import { OlMapConfigurationProvider } from "@open-pioneer/experimental-ol-map";
-import { OlMapRegistry } from "@open-pioneer/experimental-ol-map/services";
-import { Service, ServiceOptions } from "@open-pioneer/runtime";
+import { MapConfig, MapConfigProvider, MapRegistry } from "@open-pioneer/map";
+import { MapRegistryImpl } from "@open-pioneer/map/MapRegistryImpl";
 import {
     PackageContextProvider,
     PackageContextProviderProps
 } from "@open-pioneer/test-utils/react";
 import { createService } from "@open-pioneer/test-utils/services";
-import { act, render, screen } from "@testing-library/react";
+import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { MapOptions } from "ol/Map";
 import TileLayer from "ol/layer/Tile";
-import Stamen from "ol/source/Stamen";
+import OSM from "ol/source/OSM";
+import ResizeObserver from "resize-observer-polyfill";
 import { expect, it } from "vitest";
-
 import { LayerControlComponent } from "./LayerControlComponent";
-
-// used to avoid a "ResizeObserver is not defined" error
-global.ResizeObserver = require("resize-observer-polyfill");
-
-class MapConfigProvider implements OlMapConfigurationProvider {
-    mapId = "default";
-    mapOptions: MapOptions = {};
-
-    constructor(options: ServiceOptions) {
-        if (options.properties.mapOptions) {
-            this.mapOptions = options.properties.mapOptions as MapOptions;
-        }
-        if (options.properties.mapId) {
-            this.mapId = options.properties.mapId as string;
-        }
-    }
-
-    getMapOptions(): Promise<MapOptions> {
-        return Promise.resolve(this.mapOptions);
-    }
-}
-
-async function createOlMapRegistry(mapId: string, mapOptions: MapOptions) {
-    const mapConfigProvider = await createService(MapConfigProvider, {
-        properties: {
-            mapOptions: mapOptions,
-            mapId
-        }
-    });
-    return await createService(OlMapRegistry, {
-        references: {
-            providers: [mapConfigProvider]
-        }
-    });
-}
-
-function createPackageContextProviderProps(
-    service: Service<OlMapRegistry>
-): PackageContextProviderProps {
-    return {
-        services: {
-            "ol-map.MapRegistry": service
-        }
-    };
-}
+global.ResizeObserver = ResizeObserver;
 
 it("should successfully create a layer control component", async () => {
-    const mapId = "test";
-    const mapOptions = {
-        layers: [
-            new TileLayer({
-                source: new Stamen({ layer: "watercolor" }),
-                properties: { title: "Watercolor" },
-                visible: false
-            })
-        ]
-    } as MapOptions;
-    const service = await createOlMapRegistry(mapId, mapOptions);
+    const { mapId, registry } = await setupMap();
+    await registry.expectMapModel(mapId);
 
-    const renderResult = render(
-        <PackageContextProvider {...createPackageContextProviderProps(service)}>
-            <div data-testid="base">
-                <LayerControlComponent mapId="test" />
-            </div>
+    const { container } = render(
+        <PackageContextProvider {...createPackageContextProviderProps(registry)}>
+            <LayerControlComponent mapId={mapId} />
         </PackageContextProvider>
     );
 
-    // Assert layer control is mounted
-    const div = await screen.findByTestId("base");
-    expect(div).toMatchSnapshot();
+    const layerList = await waitFor(() => {
+        const layerList = container.querySelector(".layer-list");
+        if (!layerList) {
+            throw new Error("layer list did not render!");
+        }
+        return layerList;
+    });
+
+    // snapshot test the list instead of the parent because of inline styles caused by transition
+    expect(layerList).toMatchSnapshot();
 
     // Check if two layer controls for the configured layers are created
-    const layerElems = renderResult.container.querySelectorAll(".layer-entry");
+    const layerElems = layerList.querySelectorAll(".layer-entry");
     expect(layerElems.length).toBe(1);
     expect(layerElems[0]).toBeInstanceOf(HTMLDivElement);
 });
 
 it("layer control should have checkbox to toggle layer visibility", async () => {
-    const mapId = "test";
-    const mapOptions = {
-        layers: [
-            new TileLayer({
-                source: new Stamen({ layer: "watercolor" }),
-                properties: { title: "Watercolor" },
-                visible: false
-            })
-        ]
-    } as MapOptions;
-    const service = await createOlMapRegistry(mapId, mapOptions);
+    const { mapId, registry } = await setupMap();
     const user = userEvent.setup();
+
+    const map = await registry.expectMapModel(mapId);
+
+    const layers = map.layers.getAllLayers();
+    expect(layers.length).toBe(1);
+    const firstLayer = layers[0]!;
+    firstLayer.setVisible(false);
+
     render(
-        <PackageContextProvider {...createPackageContextProviderProps(service)}>
+        <PackageContextProvider {...createPackageContextProviderProps(registry)}>
             <LayerControlComponent mapId={mapId} showOpacitySlider={true} />
         </PackageContextProvider>
     );
 
-    // Wrap with act because map loading will trigger state changes
-    const firstLayer = await act(async () => {
-        // pre check visibility of the layer
-        const map = await service.getMap(mapId);
-        const layers = map.getAllLayers();
-        expect(layers.length).toBe(1);
-        const firstLayer = layers[0]!;
-        expect(firstLayer.getVisible()).toBe(false);
-        return firstLayer;
-    });
+    // initially invisible
+    const checkbox = (await screen.findByRole("checkbox")) as HTMLInputElement;
+    expect(checkbox.checked).toBe(false);
+    expect(firstLayer.visible).toBe(false);
 
     // adjust visibility by control
-    const checkbox = await screen.findByRole("checkbox");
     await user.click(checkbox);
-    expect(firstLayer.getVisible()).toBe(true);
+    await waitFor(() => {
+        if (!firstLayer.visible) {
+            throw new Error("layer did not become visible");
+        }
+    });
+
+    expect(firstLayer.visible).toBe(true);
 });
 
 it("layer control should have usable opacity slider", async () => {
-    const mapId = "test";
-    const mapOptions = {
-        layers: [
-            new TileLayer({
-                source: new Stamen({ layer: "watercolor" }),
-                properties: { title: "Watercolor" },
-                visible: false
-            })
-        ]
-    } as MapOptions;
-    const service = await createOlMapRegistry(mapId, mapOptions);
+    const { mapId, registry } = await setupMap();
     const user = userEvent.setup();
     render(
-        <PackageContextProvider {...createPackageContextProviderProps(service)}>
+        <PackageContextProvider {...createPackageContextProviderProps(registry)}>
             <LayerControlComponent mapId={mapId} showOpacitySlider={true} />
         </PackageContextProvider>
     );
@@ -154,7 +91,7 @@ it("layer control should have usable opacity slider", async () => {
     // Wrap with act because map loading will trigger state changes
     const firstLayer = await act(async () => {
         // pre check opacity in layer
-        const map = await service.getMap(mapId);
+        const map = (await registry.expectMapModel(mapId)).olMap;
         const layers = map.getAllLayers();
         expect(layers.length).toBe(1);
         const firstLayer = layers[0]!;
@@ -170,3 +107,47 @@ it("layer control should have usable opacity slider", async () => {
         expect(firstLayer.getOpacity()).toBeCloseTo(0.99);
     });
 });
+
+class MapConfigProviderImpl implements MapConfigProvider {
+    mapId: string;
+    mapConfig: MapConfig;
+
+    constructor(mapId: string, mapConfig?: MapConfig | undefined) {
+        this.mapId = mapId;
+        this.mapConfig = mapConfig ?? {};
+    }
+
+    getMapConfig(): Promise<MapConfig> {
+        return Promise.resolve(this.mapConfig);
+    }
+}
+
+async function setupMap() {
+    const mapId = "test";
+    const mapConfig: MapConfig = {
+        layers: [
+            {
+                title: "OSM",
+                layer: new TileLayer({
+                    source: new OSM()
+                })
+            }
+        ]
+    };
+
+    const registry = await createService(MapRegistryImpl, {
+        references: {
+            providers: [new MapConfigProviderImpl(mapId, mapConfig)]
+        }
+    });
+
+    return { mapId, registry };
+}
+
+function createPackageContextProviderProps(service: MapRegistry): PackageContextProviderProps {
+    return {
+        services: {
+            "map.MapRegistry": service
+        }
+    };
+}

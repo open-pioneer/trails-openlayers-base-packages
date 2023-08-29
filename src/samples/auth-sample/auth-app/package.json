@@ -4,9 +4,9 @@
     "private": true,
     "dependencies": {
         "@open-pioneer/authentication": "workspace:^",
-        "@open-pioneer/core": "^1.0.0",
         "@open-pioneer/chakra-integration": "^1.0.0",
-        "@open-pioneer/runtime": "^1.0.0",
+        "@open-pioneer/core": "^1.0.1",
+        "@open-pioneer/runtime": "^1.0.1",
         "react": "^18.2.0"
     }
 }

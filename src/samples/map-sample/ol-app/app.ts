@@ -6,7 +6,14 @@ import { MapApp } from "./MapApp";
 
 const element = createCustomElement({
     component: MapApp,
-    appMetadata
+    appMetadata,
+    async resolveConfig(ctx) {
+        const locale = ctx.getAttribute("forced-locale");
+        if (!locale) {
+            return undefined;
+        }
+        return { locale };
+    }
 });
 
 customElements.define("ol-map-app", element);
