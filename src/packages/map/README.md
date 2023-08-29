@@ -153,7 +153,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
 }
 ```
 
-> Warning: Not all OpenLayers [View](https://openlayers.org/en/latest/apidoc/module-ol_View-View.html) properties are supported. For example, you cannot set the target because the target is controlled by the `<MapContainer />`.
+> IMPORTANT: Not all OpenLayers [View](https://openlayers.org/en/latest/apidoc/module-ol_View-View.html) properties are supported. For example, you cannot set the target because the target is controlled by the `<MapContainer />`.
 
 #### Layer configuration
 
