@@ -31,6 +31,10 @@ it("should successfully create and destroy a mapModel", async () => {
     await expect(() => registry.expectMapModel(mapId)).rejects.toThrowErrorMatchingInlineSnapshot(
         '"MapRegistry has already been destroyed."'
     );
+
+    await expect(() => mapModel.whenDisplayed()).rejects.toThrowErrorMatchingInlineSnapshot(
+        '"Map model was destroyed."'
+    );
 });
 
 it("should support reverse lookup from raw open layers map", async () => {
