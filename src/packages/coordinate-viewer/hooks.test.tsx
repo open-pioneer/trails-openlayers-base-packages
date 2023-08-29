@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-import { MapContainer } from "@open-pioneer/experimental-ol-map";
+import { MapContainer } from "@open-pioneer/map";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { act, render, renderHook } from "@testing-library/react";
 import View from "ol/View";
@@ -57,10 +57,7 @@ it("should successfully create a map projection", async () => {
 
     await waitForMapMount();
 
-    const map = await registry.getMap(mapId);
-    if (!map) {
-        throw new Error("map not defined");
-    }
+    const map = (await registry.expectMapModel(mapId)).olMap;
 
     // change view projection and detect projection change
     const hook = renderHook(() => useProjection(map));

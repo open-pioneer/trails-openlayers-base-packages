@@ -4,71 +4,20 @@
  * @vitest-environment jsdom
  */
 import { chakra } from "@open-pioneer/chakra-integration";
-import { MapContainer, OlMapConfigurationProvider } from "@open-pioneer/experimental-ol-map";
-import { OlMapRegistry } from "@open-pioneer/experimental-ol-map/services";
-import { Service, ServiceOptions } from "@open-pioneer/runtime";
-import {
-    PackageContextProvider,
-    PackageContextProviderProps
-} from "@open-pioneer/test-utils/react";
-import { createService } from "@open-pioneer/test-utils/services";
+import { MapContainer } from "@open-pioneer/map";
+import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { act, render, screen, waitFor } from "@testing-library/react";
-import { MapOptions } from "ol/Map";
+import View from "ol/View";
 import BaseEvent from "ol/events/Event";
 import { expect, it } from "vitest";
 import { CoordinateViewer } from "./CoordinateViewer";
-import { setupMap, waitForMapMount } from "./test-utils";
-import View from "ol/View";
-
-class MapConfigProvider implements OlMapConfigurationProvider {
-    mapId = "default";
-    mapOptions: MapOptions = {};
-
-    constructor(options: ServiceOptions) {
-        if (options.properties.mapOptions) {
-            this.mapOptions = options.properties.mapOptions as MapOptions;
-        }
-        if (options.properties.mapId) {
-            this.mapId = options.properties.mapId as string;
-        }
-    }
-
-    getMapOptions(): Promise<MapOptions> {
-        return Promise.resolve(this.mapOptions);
-    }
-}
-
-async function createOlMapRegistry(mapId: string, mapOptions: MapOptions) {
-    const mapConfigProvider = await createService(MapConfigProvider, {
-        properties: {
-            mapOptions: mapOptions,
-            mapId
-        }
-    });
-    return await createService(OlMapRegistry, {
-        references: {
-            providers: [mapConfigProvider]
-        }
-    });
-}
-
-function createPackageContextProviderProps(
-    service: Service<OlMapRegistry>
-): PackageContextProviderProps {
-    return {
-        services: {
-            "ol-map.MapRegistry": service
-        }
-    };
-}
+import { createPackageContextProviderProps, setupMap, waitForMapMount } from "./test-utils";
 
 it("should successfully create a coordinate viewer component", async () => {
-    const mapId = "test";
-    const mapOptions = {} as MapOptions;
-    const service = await createOlMapRegistry(mapId, mapOptions);
+    const { mapId, registry } = await setupMap();
 
     render(
-        <PackageContextProvider {...createPackageContextProviderProps(service)}>
+        <PackageContextProvider {...createPackageContextProviderProps(registry)}>
             <div data-testid="base">
                 <CoordinateViewer mapId={mapId}></CoordinateViewer>
             </div>
@@ -84,12 +33,10 @@ it("should successfully create a coordinate viewer component", async () => {
 });
 
 it("should successfully create a coordinate viewer component with additional css classes and box properties", async () => {
-    const mapId = "test";
-    const mapOptions = {} as MapOptions;
-    const service = await createOlMapRegistry(mapId, mapOptions);
+    const { mapId, registry } = await setupMap();
 
     render(
-        <PackageContextProvider {...createPackageContextProviderProps(service)}>
+        <PackageContextProvider {...createPackageContextProviderProps(registry)}>
             <div data-testid="base">
                 <CoordinateViewer mapId={mapId} className="test" pl="1px"></CoordinateViewer>
             </div>
@@ -126,11 +73,12 @@ it("tracks the user's mouse position", async () => {
     const { viewerText } = await waitForCoordinateViewer();
     expect(viewerText.textContent).toMatchInlineSnapshot('""');
 
-    const map = await registry.getMap(mapId);
+    const map = await registry.expectMapModel(mapId);
+
     const simulateMove = (x: number, y: number) => {
         const fakeMoveEvent = new BaseEvent("pointermove");
         (fakeMoveEvent as any).coordinate = [x, y];
-        map.dispatchEvent(fakeMoveEvent);
+        map.olMap.dispatchEvent(fakeMoveEvent);
     };
 
     // Simple move
@@ -141,7 +89,7 @@ it("tracks the user's mouse position", async () => {
 
     // Another move + projection change
     act(() => {
-        map.setView(
+        map.olMap.setView(
             new View({
                 center: [0, 0],
                 zoom: 0,

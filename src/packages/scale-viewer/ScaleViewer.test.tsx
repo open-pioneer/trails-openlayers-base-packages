@@ -3,71 +3,27 @@
 /**
  * @vitest-environment jsdom
  */
-import { OlMapConfigurationProvider } from "@open-pioneer/experimental-ol-map";
-import { OlMapRegistry } from "@open-pioneer/experimental-ol-map/services";
-import { Service, ServiceOptions } from "@open-pioneer/runtime";
+import { MapConfig, MapConfigProvider, MapRegistry } from "@open-pioneer/map";
+import { MapRegistryImpl } from "@open-pioneer/map/services";
 import {
     PackageContextProvider,
     PackageContextProviderProps
 } from "@open-pioneer/test-utils/react";
 import { createService } from "@open-pioneer/test-utils/services";
 import { render, screen, waitFor } from "@testing-library/react";
-import { MapOptions } from "ol/Map";
+import TileLayer from "ol/layer/Tile";
+import OSM from "ol/source/OSM";
+import ResizeObserver from "resize-observer-polyfill";
 import { expect, it } from "vitest";
 import { ScaleViewer } from "./ScaleViewer";
-
 // used to avoid a "ResizeObserver is not defined" error
-global.ResizeObserver = require("resize-observer-polyfill");
-
-class MapConfigProvider implements OlMapConfigurationProvider {
-    mapId = "default";
-    mapOptions: MapOptions = {};
-
-    constructor(options: ServiceOptions) {
-        if (options.properties.mapOptions) {
-            this.mapOptions = options.properties.mapOptions as MapOptions;
-        }
-        if (options.properties.mapId) {
-            this.mapId = options.properties.mapId as string;
-        }
-    }
-
-    getMapOptions(): Promise<MapOptions> {
-        return Promise.resolve(this.mapOptions);
-    }
-}
-
-async function createOlMapRegistry(mapId: string, mapOptions: MapOptions) {
-    const mapConfigProvider = await createService(MapConfigProvider, {
-        properties: {
-            mapOptions: mapOptions,
-            mapId
-        }
-    });
-    return await createService(OlMapRegistry, {
-        references: {
-            providers: [mapConfigProvider]
-        }
-    });
-}
-
-function createPackageContextProviderProps(
-    service: Service<OlMapRegistry>
-): PackageContextProviderProps {
-    return {
-        services: {
-            "ol-map.MapRegistry": service
-        }
-    };
-}
+global.ResizeObserver = ResizeObserver;
 
 it("should successfully create a scale viewer component", async () => {
-    const mapId = "test";
-    const mapOptions = {} as MapOptions;
-    const service = await createOlMapRegistry(mapId, mapOptions);
+    const { mapId, registry } = await setupMap();
 
     const { container } = render(
-        <PackageContextProvider {...createPackageContextProviderProps(service)}>
+        <PackageContextProvider {...createPackageContextProviderProps(registry)}>
             <div data-testid="base">
                 <ScaleViewer mapId={mapId}></ScaleViewer>
             </div>
@@ -91,12 +47,10 @@ it("should successfully create a scale viewer component", async () => {
 });
 
 it("should successfully create a scale viewer component with additional css classes and box properties", async () => {
-    const mapId = "test";
-    const mapOptions = {} as MapOptions;
-    const service = await createOlMapRegistry(mapId, mapOptions);
+    const { mapId, registry } = await setupMap();
 
     const { container } = render(
-        <PackageContextProvider {...createPackageContextProviderProps(service)}>
+        <PackageContextProvider {...createPackageContextProviderProps(registry)}>
             <div data-testid="base">
                 <ScaleViewer mapId={mapId} className="test test1 test2" pl="1px" />
             </div>
@@ -130,3 +84,58 @@ it("should successfully create a scale viewer component with additional css clas
         expect(styles.paddingLeft).toBe("1px");
     }
 });
+
+class MapConfigProviderImpl implements MapConfigProvider {
+    mapId = "default";
+    mapConfig: MapConfig;
+
+    constructor(mapId: string, mapConfig?: MapConfig | undefined) {
+        this.mapId = mapId;
+        this.mapConfig = mapConfig ?? {};
+    }
+
+    getMapConfig(): Promise<MapConfig> {
+        return Promise.resolve(this.mapConfig);
+    }
+}
+
+export interface SimpleMapOptions {
+    center?: { x: number; y: number };
+    zoom?: number;
+}
+
+async function setupMap(options?: SimpleMapOptions) {
+    const mapId = "test";
+    const mapConfig: MapConfig = {
+        initialView: {
+            kind: "position",
+            center: options?.center ?? { x: 847541, y: 6793584 },
+            zoom: options?.zoom ?? 10
+        },
+        projection: "EPSG:3857",
+        layers: [
+            {
+                title: "OSM",
+                layer: new TileLayer({
+                    source: new OSM()
+                })
+            }
+        ]
+    };
+
+    const registry = await createService(MapRegistryImpl, {
+        references: {
+            providers: [new MapConfigProviderImpl(mapId, mapConfig)]
+        }
+    });
+
+    return { mapId, registry };
+}
+
+function createPackageContextProviderProps(service: MapRegistry): PackageContextProviderProps {
+    return {
+        services: {
+            "map.MapRegistry": service
+        }
+    };
+}
