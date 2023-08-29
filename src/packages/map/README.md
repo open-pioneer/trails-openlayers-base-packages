@@ -206,7 +206,10 @@ const layer = map.layers.getLayerById("abe0e3f8-0ba2-409c-b6b4-9d8429c732e3");
 layer.setDescription("new description");
 layer.setTitle("new title");
 layer.setVisible(true);
-layer.updateAttributes({});
+layer.updateAttributes({
+    foo: "baz"
+});
+layer.deleteAttribute("foo");
 ```
 
 > NOTE: The visibility of base layers cannot be changed through the method `setVisible`. Call `activateBaseLayer` instead.
