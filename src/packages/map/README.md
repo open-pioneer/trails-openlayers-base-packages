@@ -9,7 +9,7 @@ To use the map in your app, two things need to be done:
 -   Add `MapContainer` component to your app (see [Map container component](#md:map-container-component))
 -   Implement a `MapConfigProvider` (see [Map configuration](#md:map-configuration))
 
-> IMPORTANT: The package uses a MapModel and LayerModel to internally handle the states of the map and layers. This is needed to support additional features like base layers. Because of that it is necessary to always use the methods provided by these models to manage at least the following features on map and layers (instead of using the raw OpenLayers instances directly):
+> IMPORTANT: The package uses a map model and layer model to internally handle the states of the map and layers. This is needed to support additional features like base layers. Because of that it is necessary to always use the methods provided by these models to manage at least the following features on map and layers (instead of using the raw OpenLayers instances directly):
 >
 > -   Map composition (access and configuration of layers, base layers, removing layers)
 > -   Layer visibility
@@ -257,7 +257,7 @@ const proj = getProjection("EPSG:3035");
 
 ### Using the map model
 
-The package uses a MapModel and LayerModel to internally handle the states of the map and layers. This is needed to support additional features like base layers. Because of that it is necessary to always use the methods provided by these models to manage at least the following features on map and layers (instead of using the raw OpenLayers instances directly):
+The package uses a map model and layer model to internally handle the states of the map and layers. This is needed to support additional features like base layers. Because of that it is necessary to always use the methods provided by these models to manage at least the following features on map and layers (instead of using the raw OpenLayers instances directly):
 
 -   Map composition (access and configuration of layers, base layers, removing layers)
 -   Layer visibility
