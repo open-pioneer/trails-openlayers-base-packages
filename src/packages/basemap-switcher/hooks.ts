@@ -19,6 +19,5 @@ export function useBasemapLayers(
         }
         return () => {};
     }, [baseLayers, layerCollection, layerId]);
-
     return { baseLayers };
 }
