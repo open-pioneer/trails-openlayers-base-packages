@@ -6,11 +6,11 @@ export default defineBuildConfig({
     styles: "./app.css",
     i18n: ["en", "de"],
     services: {
-        MainMapProvider: {
-            provides: ["ol-map.MapConfigProvider"]
+        MapConfigProviderImpl: {
+            provides: ["map.MapConfigProvider"]
         }
     },
     ui: {
-        references: ["map-sample-logging.LogService", "ol-map.MapRegistry"]
+        references: ["map-sample-logging.LogService", "map.MapRegistry"]
     }
 });

@@ -3,17 +3,10 @@
 /**
  * @vitest-environment jsdom
  */
-import { OlMapConfigurationProvider } from "./api";
 import { MapContainer, MapPadding } from "./MapContainer";
-import { OlMapRegistry } from "./services";
-import { Service, ServiceOptions } from "@open-pioneer/runtime";
-import {
-    PackageContextProvider,
-    PackageContextProviderProps
-} from "@open-pioneer/test-utils/react";
-import { createService } from "@open-pioneer/test-utils/services";
-import { render, screen, waitFor } from "@testing-library/react";
-import { MapOptions } from "ol/Map";
+import { createPackageContextProviderProps, setupMap, waitForMapMount } from "./test-utils";
+import { PackageContextProvider } from "@open-pioneer/test-utils/react";
+import { render, waitFor } from "@testing-library/react";
 import { expect, it } from "vitest";
 import {
     MapAnchor,
@@ -26,55 +19,11 @@ import { Box, StyleProps } from "@open-pioneer/chakra-integration";
 // used to avoid a "ResizeObserver is not defined" error
 global.ResizeObserver = require("resize-observer-polyfill");
 
-class MapConfigProvider implements OlMapConfigurationProvider {
-    mapId = "default";
-    mapOptions: MapOptions = {};
-
-    constructor(options: ServiceOptions) {
-        if (options.properties.mapOptions) {
-            this.mapOptions = options.properties.mapOptions as MapOptions;
-        }
-        if (options.properties.mapId) {
-            this.mapId = options.properties.mapId as string;
-        }
-    }
-
-    getMapOptions(): Promise<MapOptions> {
-        return Promise.resolve(this.mapOptions);
-    }
-}
-
-async function createOlMapRegistry(mapId: string, mapOptions: MapOptions) {
-    const mapConfigProvider = await createService(MapConfigProvider, {
-        properties: {
-            mapOptions: mapOptions,
-            mapId
-        }
-    });
-    return await createService(OlMapRegistry, {
-        references: {
-            providers: [mapConfigProvider]
-        }
-    });
-}
-
-function createPackageContextProviderProps(
-    service: Service<OlMapRegistry>
-): PackageContextProviderProps {
-    return {
-        services: {
-            "ol-map.MapRegistry": service
-        }
-    };
-}
-
 it("should successfully create a map anchor component", async () => {
-    const mapId = "test";
-    const mapOptions = {} as MapOptions;
-    const service = await createOlMapRegistry(mapId, mapOptions);
+    const { mapId, registry } = await setupMap();
 
     const { container } = render(
-        <PackageContextProvider {...createPackageContextProviderProps(service)}>
+        <PackageContextProvider {...createPackageContextProviderProps(registry)}>
             <div data-testid="base">
                 <MapContainer mapId={mapId}>
                     <MapAnchor></MapAnchor>
@@ -83,15 +32,8 @@ it("should successfully create a map anchor component", async () => {
         </PackageContextProvider>
     );
 
-    // assert map anchor component is mounted
-    await waitFor(async () => {
-        const domElement = await screen.findByTestId("base");
-        const mapAnchor = domElement.querySelector(".map-anchor");
-        if (!mapAnchor) {
-            throw new Error("map anchor component not rendered");
-        }
-        return domElement;
-    });
+    // Assert map is mounted
+    await waitForMapMount();
 
     // check map anchor component box is available
     const mapAnchor = container.querySelector(".map-anchor");
@@ -104,12 +46,10 @@ it("should successfully create a map anchor component", async () => {
 });
 
 it("should successfully create a map anchor component with additional css classes", async () => {
-    const mapId = "test";
-    const mapOptions = {} as MapOptions;
-    const service = await createOlMapRegistry(mapId, mapOptions);
+    const { mapId, registry } = await setupMap();
 
     const { container } = render(
-        <PackageContextProvider {...createPackageContextProviderProps(service)}>
+        <PackageContextProvider {...createPackageContextProviderProps(registry)}>
             <div data-testid="base">
                 <MapContainer mapId={mapId}>
                     <MapAnchor className="test test1 test2"></MapAnchor>
@@ -118,15 +58,8 @@ it("should successfully create a map anchor component with additional css classe
         </PackageContextProvider>
     );
 
-    // assert map anchor component is mounted
-    await waitFor(async () => {
-        const domElement = await screen.findByTestId("base");
-        const mapAnchor = domElement.querySelector(".map-anchor");
-        if (!mapAnchor) {
-            throw new Error("map anchor component not rendered");
-        }
-        return domElement;
-    });
+    // Assert map is mounted
+    await waitForMapMount();
 
     // check map anchor component box is available with additional css classes
     const mapAnchor = container.querySelector(".map-anchor");
@@ -142,12 +75,10 @@ it("should successfully create a map anchor component with additional css classe
 });
 
 it('should successfully create a map anchor component with prop `position="top-left"`', async () => {
-    const mapId = "test";
-    const mapOptions = {} as MapOptions;
-    const service = await createOlMapRegistry(mapId, mapOptions);
+    const { mapId, registry } = await setupMap();
 
     const { container } = render(
-        <PackageContextProvider {...createPackageContextProviderProps(service)}>
+        <PackageContextProvider {...createPackageContextProviderProps(registry)}>
             <div data-testid="base">
                 <MapContainer mapId={mapId}>
                     <MapAnchor position="top-left"></MapAnchor>
@@ -156,15 +87,8 @@ it('should successfully create a map anchor component with prop `position="top-l
         </PackageContextProvider>
     );
 
-    // assert map anchor component is mounted
-    await waitFor(async () => {
-        const domElement = await screen.findByTestId("base");
-        const mapAnchor = domElement.querySelector(".map-anchor");
-        if (!mapAnchor) {
-            throw new Error("map anchor component not rendered");
-        }
-        return domElement;
-    });
+    // Assert map is mounted
+    await waitForMapMount();
 
     // check map anchor component box is available with style for prop `position`
     const mapAnchor = container.querySelector(".map-anchor");
@@ -178,12 +102,10 @@ it('should successfully create a map anchor component with prop `position="top-l
 });
 
 it('should successfully create a map anchor component with prop `position="bottom-right"`', async () => {
-    const mapId = "test";
-    const mapOptions = {} as MapOptions;
-    const service = await createOlMapRegistry(mapId, mapOptions);
+    const { mapId, registry } = await setupMap();
 
     const { container } = render(
-        <PackageContextProvider {...createPackageContextProviderProps(service)}>
+        <PackageContextProvider {...createPackageContextProviderProps(registry)}>
             <div data-testid="base">
                 <MapContainer mapId={mapId}>
                     <MapAnchor position="bottom-right"></MapAnchor>
@@ -192,15 +114,8 @@ it('should successfully create a map anchor component with prop `position="botto
         </PackageContextProvider>
     );
 
-    // assert map anchor component is mounted
-    await waitFor(async () => {
-        const domElement = await screen.findByTestId("base");
-        const mapAnchor = domElement.querySelector(".map-anchor");
-        if (!mapAnchor) {
-            throw new Error("map anchor component not rendered");
-        }
-        return domElement;
-    });
+    // Assert map is mounted
+    await waitForMapMount();
 
     // check map anchor component box is available with style for prop `position`
     const mapAnchor = container.querySelector(".map-anchor");
@@ -216,12 +131,10 @@ it('should successfully create a map anchor component with prop `position="botto
 });
 
 it('should successfully create a map anchor component with props `position="bottom-right"` and `horizontalGap={30} verticalGap={10}`', async () => {
-    const mapId = "test";
-    const mapOptions = {} as MapOptions;
-    const service = await createOlMapRegistry(mapId, mapOptions);
+    const { mapId, registry } = await setupMap();
 
     const { container } = render(
-        <PackageContextProvider {...createPackageContextProviderProps(service)}>
+        <PackageContextProvider {...createPackageContextProviderProps(registry)}>
             <div data-testid="base">
                 <MapContainer mapId={mapId}>
                     <MapAnchor
@@ -234,15 +147,8 @@ it('should successfully create a map anchor component with props `position="bott
         </PackageContextProvider>
     );
 
-    // assert map anchor component is mounted
-    await waitFor(async () => {
-        const domElement = await screen.findByTestId("base");
-        const mapAnchor = domElement.querySelector(".map-anchor");
-        if (!mapAnchor) {
-            throw new Error("map anchor component not rendered");
-        }
-        return domElement;
-    });
+    // Assert map is mounted
+    await waitForMapMount();
 
     // check map anchor component box is available with style for props `position`, `horizontalGap` and `verticalGap`
     const mapAnchor = container.querySelector(".map-anchor");
@@ -256,12 +162,10 @@ it('should successfully create a map anchor component with props `position="bott
 });
 
 it("should successfully create a map anchor component with ReactNode as children", async () => {
-    const mapId = "test";
-    const mapOptions = {} as MapOptions;
-    const service = await createOlMapRegistry(mapId, mapOptions);
+    const { mapId, registry } = await setupMap();
 
     const { container } = render(
-        <PackageContextProvider {...createPackageContextProviderProps(service)}>
+        <PackageContextProvider {...createPackageContextProviderProps(registry)}>
             <div data-testid="base">
                 <MapContainer mapId={mapId}>
                     <MapAnchor>
@@ -272,15 +176,8 @@ it("should successfully create a map anchor component with ReactNode as children
         </PackageContextProvider>
     );
 
-    // assert map anchor component is mounted
-    await waitFor(async () => {
-        const domElement = await screen.findByTestId("base");
-        const mapAnchor = domElement.querySelector(".map-anchor");
-        if (!mapAnchor) {
-            throw new Error("map anchor component not rendered");
-        }
-        return domElement;
-    });
+    // Assert map is mounted
+    await waitForMapMount();
 
     // check map anchor component box is available with ReactNode as children
     const mapAnchor = container.querySelector(".map-anchor");
@@ -300,12 +197,10 @@ it("should successfully create a map anchor component with ReactNode as children
 });
 
 it("should successfully create multiple map anchor components", async () => {
-    const mapId = "test";
-    const mapOptions = {} as MapOptions;
-    const service = await createOlMapRegistry(mapId, mapOptions);
+    const { mapId, registry } = await setupMap();
 
     const { container } = render(
-        <PackageContextProvider {...createPackageContextProviderProps(service)}>
+        <PackageContextProvider {...createPackageContextProviderProps(registry)}>
             <div data-testid="base">
                 <MapContainer mapId={mapId}>
                     <MapAnchor className="testabc"></MapAnchor>
@@ -315,15 +210,8 @@ it("should successfully create multiple map anchor components", async () => {
         </PackageContextProvider>
     );
 
-    // assert map anchor component is mounted
-    await waitFor(async () => {
-        const domElement = await screen.findByTestId("base");
-        const mapAnchor = domElement.querySelector(".map-anchor");
-        if (!mapAnchor) {
-            throw new Error("map anchor component not rendered");
-        }
-        return domElement;
-    });
+    // Assert map is mounted
+    await waitForMapMount();
 
     // check multiple map anchor component box are available
     const firstMapAnchor = container.querySelector(".map-anchor.testabc");

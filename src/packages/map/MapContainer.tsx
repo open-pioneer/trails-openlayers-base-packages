@@ -1,17 +1,14 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-import { Box } from "@open-pioneer/chakra-integration";
+import { Resource, createLogger } from "@open-pioneer/core";
 import classNames from "classnames";
 import type OlMap from "ol/Map";
 import { Extent } from "ol/extent";
-import { useService } from "open-pioneer:react-hooks";
 import { ReactNode, useEffect, useMemo, useRef } from "react";
-import { useAsync } from "react-use";
+import { useMapModel } from "./useMapModel";
+import { MapModel } from "./api";
 import { MapContextProvider, MapContextType } from "./MapContext";
-
-export interface OlComponentProps {
-    mapId: string;
-}
+const LOG = createLogger("map:MapContainer");
 
 /**
  * Map padding, all values are pixels.
@@ -25,7 +22,10 @@ export interface MapPadding {
     bottom?: number;
 }
 
-export interface MapComponentProps extends OlComponentProps {
+export interface MapContainerProps {
+    /** The id of the map to display. */
+    mapId: string;
+
     /**
      * Sets the map's padding directly.
      *
@@ -52,27 +52,89 @@ export interface MapComponentProps extends OlComponentProps {
     children?: ReactNode;
 }
 
-export function MapContainer(props: MapComponentProps) {
-    const { mapId, className, ...rest } = props;
-
+/**
+ * Displays the map with the given id.
+ *
+ * There can only be at most one MapContainer for every map.
+ */
+export function MapContainer(props: MapContainerProps) {
+    const { mapId, viewPadding, className, ...rest } = props;
     const mapElement = useRef<HTMLDivElement>(null);
-    const mapRegistry = useService("ol-map.MapRegistry");
-    const mapState = useAsync(async () => await mapRegistry.getMap(mapId), [mapId]);
-    const map = mapState.value; // undefined -> not ready yet
+    const modelState = useMapModel(mapId);
+    const mapModel = modelState.map;
 
     useEffect(() => {
-        if (map && mapElement.current) {
-            // Register div as render target
-            const resource = mapRegistry.setContainer(mapId, mapElement.current);
-            return () => resource.destroy();
+        if (modelState.kind === "loading") {
+            return;
         }
-    }, [map, mapRegistry, mapId]);
+
+        if (modelState.kind === "rejected") {
+            LOG.error(`Cannot display the map. Caused by `, modelState.error);
+            return;
+        }
+
+        if (!mapModel) {
+            LOG.error(`No configuration available for map with id '${mapId}'.`);
+            return;
+        }
+
+        // Mount the map into the DOM
+        if (mapElement.current) {
+            const resource = registerMapTarget(mapModel, mapElement.current);
+            return () => resource?.destroy();
+        }
+    }, [modelState, mapModel, mapId]);
+
+    useEffect(() => {
+        const mapView = mapModel?.olMap.getView();
+        if (viewPadding && mapView) {
+            const center = mapView.getCenter();
+            const { top = 0, right = 0, bottom = 0, left = 0 } = viewPadding;
+            mapView.padding = [top, right, bottom, left];
+            mapView.animate({ center, duration: 300 });
+        }
+    }, [viewPadding, mapModel]);
+
+    const mapContainer: React.CSSProperties = {
+        height: "100%"
+    };
 
     return (
-        <Box className={classNames("map-container", className)} ref={mapElement} h="100%" w="100%">
-            {map && <MapContainerReady map={map} {...rest} />}
-        </Box>
+        <div
+            className={classNames("map-container", className)}
+            ref={mapElement}
+            style={mapContainer}
+        >
+            {mapModel && (
+                <MapContainerReady map={mapModel.olMap} viewPadding={viewPadding} {...rest} />
+            )}
+        </div>
     );
+}
+
+function registerMapTarget(mapModel: MapModel, target: HTMLDivElement): Resource | undefined {
+    const mapId = mapModel.id;
+    const olMap = mapModel.olMap;
+    if (olMap.getTarget()) {
+        LOG.error(
+            `Failed to display the map: the map already has a target. There may be more than one <MapContainer />.`
+        );
+        return undefined;
+    }
+
+    LOG.isDebug() && LOG.debug(`Setting target of map '${mapId}':`, target);
+    olMap.setTarget(target);
+
+    let unregistered = false;
+    return {
+        destroy() {
+            if (!unregistered) {
+                LOG.isDebug() && LOG.debug(`Removing target of map '${mapId}':`, target);
+                olMap.setTarget(undefined);
+                unregistered = true;
+            }
+        }
+    };
 }
 
 /**
@@ -81,7 +143,7 @@ export function MapContainer(props: MapComponentProps) {
  * It provides the map instance and additional properties down the component tree.
  */
 function MapContainerReady(
-    props: { map: OlMap } & Omit<MapComponentProps, "mapId" | "className">
+    props: { map: OlMap } & Omit<MapContainerProps, "mapId" | "className">
 ): JSX.Element {
     const {
         map,

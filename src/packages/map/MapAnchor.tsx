@@ -9,8 +9,6 @@ import { MapPadding } from "./MapContainer";
 
 export type MapAnchorPosition = "top-left" | "top-right" | "bottom-left" | "bottom-right";
 
-// TODO: Update to the new map component
-
 export interface MapAnchorProps {
     /**
      * The position of the anchor container above the map.

@@ -13,7 +13,7 @@ exports[`should successfully create a scale viewer component 1`] = `
       data-theme="light"
     >
       1:
-      279,540,573
+      336,409
     </p>
   </div>
 </div>
@@ -32,7 +32,7 @@ exports[`should successfully create a scale viewer component with additional css
       data-theme="light"
     >
       1:
-      279,540,573
+      336,409
     </p>
   </div>
 </div>

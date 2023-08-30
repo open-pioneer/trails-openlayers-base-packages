@@ -5,8 +5,8 @@
     "main": "index.ts",
     "peerDependencies": {
         "@open-pioneer/chakra-integration": "^1.0.0",
-        "@open-pioneer/experimental-ol-map": "workspace:^",
-        "@open-pioneer/runtime": "^1.0.0",
+        "@open-pioneer/map": "workspace:^",
+        "@open-pioneer/runtime": "^1.0.1",
         "ol": "^7.5.1",
         "react": "^18.2.0"
     },
