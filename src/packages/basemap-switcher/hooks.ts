@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import { LayerCollection } from "@open-pioneer/map";
 import { useEffect } from "react";
+
 export function useBasemapLayers(layerId: string, layerCollection: LayerCollection | undefined) {
     const baseLayers = layerCollection?.getBaseLayers();
     useEffect(() => {
@@ -16,6 +17,5 @@ export function useBasemapLayers(layerId: string, layerCollection: LayerCollecti
         }
         return () => {};
     }, [baseLayers, layerCollection, layerId]);
-
     return { baseLayers };
 }
