@@ -27,6 +27,7 @@
 6. Packages are translated in english and german.
 7. Important design decisions or non-obvious things to keep in mind
    have been documented in internal dev notes or comments.
+8. A changeset entry was generated (if appropriate) and a CHANGELOG.md exists in the package.
 
 ## Documentation
 
