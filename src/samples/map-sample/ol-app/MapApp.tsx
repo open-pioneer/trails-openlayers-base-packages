@@ -17,7 +17,8 @@ import { MAP_ID } from "./MapConfigProviderImpl";
 const berlin = [1489200, 6894026, 1489200, 6894026];
 const noneBasemap = {
     id: "noBasemap",
-    label: "kein Hintergrund"
+    label: "kein Hintergrund",
+    selected: true
 };
 
 export function MapApp() {
@@ -57,9 +58,9 @@ export function MapApp() {
                 <Box textAlign="center" py={1} px={1}>
                     Open Pioneer - Map sample
                 </Box>
+
                 <BasemapSwitcher
                     ref={basemapSwitcherRef}
-                    baseLayerId="b-2"
                     noneBasemap={noneBasemap}
                     mapId={MAP_ID}
                 ></BasemapSwitcher>
