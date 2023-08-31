@@ -22,6 +22,13 @@ export interface TitledSectionProps {
      * Children are rendered without any modifications.
      */
     children?: ReactNode | undefined;
+
+    /**
+     * Allows to substitute the heading level that is used up from this section.
+     * This should only be used to configure the initial level
+     * or if it is actually intended to adjust the DOM structure.
+     */
+    substituteHeadingLevel?: HeadingLevel | undefined;
 }
 
 /**
@@ -61,13 +68,16 @@ export interface TitledSectionProps {
  * ```
  */
 export function TitledSection(props: TitledSectionProps): JSX.Element {
-    const { title, children } = props;
-    const currentLevel = useContext(LevelContext);
+    const { title, children, substituteHeadingLevel } = props;
+
+    let currentLevel = useContext(LevelContext);
+    if (substituteHeadingLevel) currentLevel = substituteHeadingLevel;
+
     const heading = typeof title === "string" ? <SectionHeading>{title}</SectionHeading> : title;
 
     return (
         <>
-            {heading}
+            <LevelContext.Provider value={currentLevel}>{heading}</LevelContext.Provider>
             <LevelContext.Provider value={currentLevel + 1}>{children}</LevelContext.Provider>
         </>
     );
@@ -103,7 +113,7 @@ export const SectionHeading = forwardRef(function SectionHeading(
     );
 });
 
-/** The level of an html heading. */
+/** The level of a html heading. */
 export type HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6;
 
 /**

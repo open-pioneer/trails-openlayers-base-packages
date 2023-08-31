@@ -185,3 +185,88 @@ it("limits heading level to 6", () => {
       </div>
     `);
 });
+
+it("allows to substitute heading level", () => {
+    const renderResult = render(
+        <TitledSection
+            title={
+                <div className="useless">
+                    <SectionHeading>Heading</SectionHeading>
+                </div>
+            }
+        >
+            <TitledSection>
+                <TitledSection
+                    substituteHeadingLevel={2}
+                    title={
+                        <div className="useless2">
+                            <SectionHeading>Sub Heading</SectionHeading>
+                        </div>
+                    }
+                >
+                    <TitledSection
+                        substituteHeadingLevel={2}
+                        title={
+                            <div className="useless3">
+                                <SectionHeading>Sub Heading</SectionHeading>
+                            </div>
+                        }
+                    >
+                        <TitledSection
+                            title={
+                                <div className="useless4">
+                                    <SectionHeading>Sub sub Heading</SectionHeading>
+                                </div>
+                            }
+                        ></TitledSection>
+                        Arbitrary content...
+                    </TitledSection>
+                    Arbitrary content...
+                </TitledSection>
+            </TitledSection>
+        </TitledSection>
+    );
+
+    expect(renderResult.container).toMatchInlineSnapshot(`
+      <div>
+        <div
+          class="useless"
+        >
+          <h1
+            class="chakra-heading css-0"
+          >
+            Heading
+          </h1>
+        </div>
+        <div
+          class="useless2"
+        >
+          <h2
+            class="chakra-heading css-0"
+          >
+            Sub Heading
+          </h2>
+        </div>
+        <div
+          class="useless3"
+        >
+          <h2
+            class="chakra-heading css-0"
+          >
+            Sub Heading
+          </h2>
+        </div>
+        <div
+          class="useless4"
+        >
+          <h3
+            class="chakra-heading css-0"
+          >
+            Sub sub Heading
+          </h3>
+        </div>
+        Arbitrary content...
+        Arbitrary content...
+      </div>
+    `);
+});
