@@ -4,7 +4,7 @@ import { Box, BoxProps, Text } from "@open-pioneer/chakra-integration";
 import { useMapModel } from "@open-pioneer/map";
 import classNames from "classnames";
 import { FC, ForwardedRef, RefAttributes, forwardRef } from "react";
-import { useCenter, useProjection, useResolution, useScale } from "./hooks";
+import { useCenter, useProjection, useResolution, useScale } from "@open-pioneer/ol-react-utils";
 
 export interface ScaleViewerProps extends BoxProps, RefAttributes<HTMLDivElement> {
     /**

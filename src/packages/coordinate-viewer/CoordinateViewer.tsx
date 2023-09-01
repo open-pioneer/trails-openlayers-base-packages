@@ -8,7 +8,7 @@ import { unByKey } from "ol/Observable";
 import { Coordinate } from "ol/coordinate";
 import { EventsKey } from "ol/events";
 import { FC, ForwardedRef, RefAttributes, forwardRef, useEffect, useState } from "react";
-import { useFormatting, useProjection } from "./hooks";
+import { useFormatting, useProjection } from "@open-pioneer/ol-react-utils";
 
 /**
  * These are special properties for the CoordinateViewer.

@@ -428,9 +428,6 @@ importers:
       classnames:
         specifier: ^2.3.2
         version: 2.3.2
-      ol:
-        specifier: ^7.5.1
-        version: 7.5.1
       react:
         specifier: ^18.2.0
         version: 18.2.0
