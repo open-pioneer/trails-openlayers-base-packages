@@ -6,9 +6,10 @@
 import { afterEach, expect, it, describe } from "vitest";
 import { MapModelImpl } from "./MapModelImpl";
 import { createMapModel } from "./createMapModel";
-import ResizeObserver from "resize-observer-polyfill";
 import { waitFor } from "@testing-library/dom";
+
 // used to avoid a "ResizeObserver is not defined" error
+import ResizeObserver from "resize-observer-polyfill";
 global.ResizeObserver = ResizeObserver;
 
 let model: MapModelImpl | undefined;

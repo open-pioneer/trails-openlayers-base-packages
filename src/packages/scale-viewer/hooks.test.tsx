@@ -3,22 +3,21 @@
 /**
  * @vitest-environment jsdom
  */
-import { MapConfig, MapConfigProvider, MapContainer, MapRegistry } from "@open-pioneer/map";
-import { MapRegistryImpl } from "@open-pioneer/map/services";
-import {
-    PackageContextProvider,
-    PackageContextProviderProps
-} from "@open-pioneer/test-utils/react";
-import { createService } from "@open-pioneer/test-utils/services";
-import { act, render, renderHook, screen, waitFor } from "@testing-library/react";
+import { MapContainer } from "@open-pioneer/map";
+import { PackageContextProvider } from "@open-pioneer/test-utils/react";
+import { act, render, renderHook } from "@testing-library/react";
 import View from "ol/View";
-import TileLayer from "ol/layer/Tile";
 import { get } from "ol/proj";
-import OSM from "ol/source/OSM";
-import ResizeObserver from "resize-observer-polyfill";
 import { expect, it } from "vitest";
+import {
+    createPackageContextProviderProps,
+    setupMap,
+    waitForMapMount
+} from "@open-pioneer/ol-react-utils";
 import { useCenter, useProjection, useResolution, useScale } from "./hooks";
+
 // used to avoid a "ResizeObserver is not defined" error
+import ResizeObserver from "resize-observer-polyfill";
 global.ResizeObserver = ResizeObserver;
 
 const LOCALE_DE = { locale: "de" };
@@ -202,69 +201,3 @@ it("should successfully create a map scale for the corresponding locale", async 
     });
     expect(hookDE.result.current.scale).equals("21.026");
 });
-
-class MapConfigProviderImpl implements MapConfigProvider {
-    mapId = "default";
-    mapConfig: MapConfig;
-
-    constructor(mapId: string, mapConfig?: MapConfig | undefined) {
-        this.mapId = mapId;
-        this.mapConfig = mapConfig ?? {};
-    }
-
-    getMapConfig(): Promise<MapConfig> {
-        return Promise.resolve(this.mapConfig);
-    }
-}
-
-export interface SimpleMapOptions {
-    center?: { x: number; y: number };
-    zoom?: number;
-}
-
-async function setupMap(options?: SimpleMapOptions) {
-    const mapId = "test";
-    const mapConfig: MapConfig = {
-        initialView: {
-            kind: "position",
-            center: options?.center ?? { x: 847541, y: 6793584 },
-            zoom: options?.zoom ?? 10
-        },
-        projection: "EPSG:3857",
-        layers: [
-            {
-                title: "OSM",
-                layer: new TileLayer({
-                    source: new OSM()
-                })
-            }
-        ]
-    };
-
-    const registry = await createService(MapRegistryImpl, {
-        references: {
-            providers: [new MapConfigProviderImpl(mapId, mapConfig)]
-        }
-    });
-
-    return { mapId, registry };
-}
-
-function createPackageContextProviderProps(service: MapRegistry): PackageContextProviderProps {
-    return {
-        services: {
-            "map.MapRegistry": service
-        }
-    };
-}
-
-async function waitForMapMount() {
-    return await waitFor(async () => {
-        const domElement = await screen.findByTestId("base");
-        const container = domElement.querySelector(".ol-viewport");
-        if (!container) {
-            throw new Error("map not mounted");
-        }
-        return domElement;
-    });
-}

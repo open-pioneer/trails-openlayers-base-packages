@@ -32,7 +32,7 @@ it("should successfully create a coordinate viewer component", async () => {
     const { viewerDiv } = await waitForCoordinateViewer();
     expect(viewerDiv).toMatchSnapshot();
 
-    // check scale viewer box is available
+    // check coordinate viewer box is available
     expect(viewerDiv).toBeInstanceOf(HTMLDivElement);
 });
 
@@ -108,6 +108,7 @@ it("tracks the user's mouse position", async () => {
 async function waitForCoordinateViewer() {
     const { viewerDiv, viewerText } = await waitFor(async () => {
         const domElement = await screen.findByTestId("base");
+
         const viewerDiv = domElement.querySelector(".coordinate-viewer");
         if (!viewerDiv) {
             throw new Error("coordinate viewer not rendered");
@@ -117,7 +118,9 @@ async function waitForCoordinateViewer() {
         if (!viewerText) {
             throw new Error("coordinate viewer text not rendered");
         }
+
         return { viewerDiv, viewerText };
     });
+
     return { viewerDiv, viewerText };
 }

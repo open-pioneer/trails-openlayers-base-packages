@@ -3,26 +3,20 @@
 /**
  * @vitest-environment jsdom
  */
-import { MapConfig, MapConfigProvider, MapRegistry } from "@open-pioneer/map";
-import { MapRegistryImpl } from "@open-pioneer/map/services";
-import {
-    PackageContextProvider,
-    PackageContextProviderProps
-} from "@open-pioneer/test-utils/react";
-import { createService } from "@open-pioneer/test-utils/services";
+import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render, screen, waitFor } from "@testing-library/react";
-import TileLayer from "ol/layer/Tile";
-import OSM from "ol/source/OSM";
-import ResizeObserver from "resize-observer-polyfill";
 import { expect, it } from "vitest";
 import { ScaleViewer } from "./ScaleViewer";
+import { createPackageContextProviderProps, setupMap } from "@open-pioneer/ol-react-utils";
+
 // used to avoid a "ResizeObserver is not defined" error
+import ResizeObserver from "resize-observer-polyfill";
 global.ResizeObserver = ResizeObserver;
 
 it("should successfully create a scale viewer component", async () => {
     const { mapId, registry } = await setupMap();
 
-    const { container } = render(
+    render(
         <PackageContextProvider {...createPackageContextProviderProps(registry)}>
             <div data-testid="base">
                 <ScaleViewer mapId={mapId}></ScaleViewer>
@@ -30,26 +24,18 @@ it("should successfully create a scale viewer component", async () => {
         </PackageContextProvider>
     );
 
-    // assert map and scale viewer is mounted
-    const div = await waitFor(async () => {
-        const domElement = await screen.findByTestId("base");
-        const scaleText = domElement.querySelector("p"); // find first HTMLParagraphElement (scale text) in scale viewer component
-        if (!scaleText) {
-            throw new Error("scale text not rendered");
-        }
-        return domElement;
-    });
-    expect(div).toMatchSnapshot();
+    // scale viewer is mounted
+    const { viewerDiv, viewerText } = await waitForScaleViewer();
+    expect(viewerDiv).toMatchSnapshot();
 
     // check scale viewer box is available
-    const box = container.querySelector(".scale-viewer");
-    expect(box).toBeInstanceOf(HTMLDivElement);
+    expect(viewerText).toBeInstanceOf(HTMLParagraphElement);
 });
 
 it("should successfully create a scale viewer component with additional css classes and box properties", async () => {
     const { mapId, registry } = await setupMap();
 
-    const { container } = render(
+    render(
         <PackageContextProvider {...createPackageContextProviderProps(registry)}>
             <div data-testid="base">
                 <ScaleViewer mapId={mapId} className="test test1 test2" pl="1px" />
@@ -57,85 +43,41 @@ it("should successfully create a scale viewer component with additional css clas
         </PackageContextProvider>
     );
 
-    // assert map and scale viewer is mounted
-    const div = await waitFor(async () => {
-        const domElement = await screen.findByTestId("base");
-        const scaleText = domElement.querySelector("p"); // find first HTMLParagraphElement (scale text) in scale viewer component
-        if (!scaleText) {
-            throw new Error("scale text not rendered");
-        }
-        return domElement;
-    });
-    expect(div).toMatchSnapshot();
+    // scale viewer is mounted
+    const { viewerDiv } = await waitForScaleViewer();
+    expect(viewerDiv).toMatchSnapshot();
 
     // check scale viewer box is available
-    const box = container.querySelector(".scale-viewer");
-
-    if (!box) {
+    if (!viewerDiv) {
         throw new Error("scale text not rendered");
     } else {
-        expect(box).toBeInstanceOf(HTMLDivElement);
-        expect(box.classList.contains("test")).toBe(true);
-        expect(box.classList.contains("test1")).toBe(true);
-        expect(box.classList.contains("test2")).toBe(true);
-        expect(box.classList.contains("test3")).not.toBe(true);
+        expect(viewerDiv).toBeInstanceOf(HTMLDivElement);
+        expect(viewerDiv.classList.contains("test")).toBe(true);
+        expect(viewerDiv.classList.contains("test1")).toBe(true);
+        expect(viewerDiv.classList.contains("test2")).toBe(true);
+        expect(viewerDiv.classList.contains("test3")).not.toBe(true);
 
-        const styles = window.getComputedStyle(box);
+        const styles = window.getComputedStyle(viewerDiv);
         expect(styles.paddingLeft).toBe("1px");
     }
 });
 
-class MapConfigProviderImpl implements MapConfigProvider {
-    mapId = "default";
-    mapConfig: MapConfig;
+async function waitForScaleViewer() {
+    const { viewerDiv, viewerText } = await waitFor(async () => {
+        const domElement = await screen.findByTestId("base");
 
-    constructor(mapId: string, mapConfig?: MapConfig | undefined) {
-        this.mapId = mapId;
-        this.mapConfig = mapConfig ?? {};
-    }
-
-    getMapConfig(): Promise<MapConfig> {
-        return Promise.resolve(this.mapConfig);
-    }
-}
-
-export interface SimpleMapOptions {
-    center?: { x: number; y: number };
-    zoom?: number;
-}
-
-async function setupMap(options?: SimpleMapOptions) {
-    const mapId = "test";
-    const mapConfig: MapConfig = {
-        initialView: {
-            kind: "position",
-            center: options?.center ?? { x: 847541, y: 6793584 },
-            zoom: options?.zoom ?? 10
-        },
-        projection: "EPSG:3857",
-        layers: [
-            {
-                title: "OSM",
-                layer: new TileLayer({
-                    source: new OSM()
-                })
-            }
-        ]
-    };
-
-    const registry = await createService(MapRegistryImpl, {
-        references: {
-            providers: [new MapConfigProviderImpl(mapId, mapConfig)]
+        const viewerDiv = domElement.querySelector(".scale-viewer");
+        if (!viewerDiv) {
+            throw new Error("scale viewer not rendered");
         }
+
+        const viewerText = domElement.querySelector("p"); // find first HTMLParagraphElement (scale text) in scale viewer component
+        if (!viewerText) {
+            throw new Error("scale text not rendered");
+        }
+
+        return { viewerDiv, viewerText };
     });
 
-    return { mapId, registry };
-}
-
-function createPackageContextProviderProps(service: MapRegistry): PackageContextProviderProps {
-    return {
-        services: {
-            "map.MapRegistry": service
-        }
-    };
+    return { viewerDiv, viewerText };
 }

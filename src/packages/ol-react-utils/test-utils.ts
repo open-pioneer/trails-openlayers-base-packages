@@ -46,7 +46,9 @@ export async function waitForMapMount(parentTestId = "base") {
 }
 
 export async function setupMap(options?: SimpleMapOptions) {
-    const mapId = "test";
+    // Always use "test" as mapId for unit tests
+    const mapId = MAP_ID;
+
     const getInitialView = (): InitialViewConfig => {
         if (options?.extent) {
             return {
