@@ -6,7 +6,11 @@ import { act, render, renderHook } from "@testing-library/react";
 import View from "ol/View";
 import { expect, it } from "vitest";
 import { useFormatting, useProjection } from "./hooks";
-import { createPackageContextProviderProps, setupMap, waitForMapMount } from "./test-utils";
+import {
+    createPackageContextProviderProps,
+    setupMap,
+    waitForMapMount
+} from "@open-pioneer/ol-react-utils";
 
 /**
  * @vitest-environment jsdom

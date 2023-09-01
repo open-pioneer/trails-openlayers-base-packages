@@ -1,19 +1,16 @@
 {
-    "name": "@open-pioneer/coordinate-viewer",
+    "name": "@open-pioneer/ol-react-utils",
+    "description": "Contains common test utilities used by the open pioneer trails project",
     "version": "0.0.1",
     "license": "Apache-2.0",
     "main": "index.ts",
     "peerDependencies": {
-        "@open-pioneer/chakra-integration": "^1.0.0",
-        "@open-pioneer/map": "workspace:^",
-        "@open-pioneer/runtime": "^1.0.1",
+        "@open-pioneer/core": "^1.0.1",
         "ol": "^7.5.1",
-        "react": "^18.2.0"
+        "@open-pioneer/map": "workspace:^"
     },
     "devDependencies": {
-        "@open-pioneer/test-utils": "^1.0.0",
         "openlayers-base-packages": "workspace:*",
-        "@open-pioneer/ol-react-utils": "workspace:*",
         "resize-observer-polyfill": "^1.5.1"
     },
     "publishConfig": {

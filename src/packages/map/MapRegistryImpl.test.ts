@@ -8,7 +8,7 @@ import { View } from "ol";
 import { Attribution } from "ol/control";
 import { afterEach, expect, it, vi } from "vitest";
 import { registerProjections } from "./projections";
-import { setupMap } from "./test-utils";
+import { setupMap } from "@open-pioneer/ol-react-utils";
 import OlMap from "ol/Map";
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";

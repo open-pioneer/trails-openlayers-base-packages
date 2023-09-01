@@ -13,8 +13,8 @@ import {
     MapConfigProvider,
     MapRegistry,
     OlMapOptions
-} from "./api";
-import { MapRegistryImpl } from "./services";
+} from "@open-pioneer/map/api";
+import { MapRegistryImpl } from "@open-pioneer/map/services";
 
 // used to avoid a "ResizeObserver is not defined" error
 import ResizeObserver from "resize-observer-polyfill";
