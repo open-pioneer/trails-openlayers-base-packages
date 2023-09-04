@@ -15,6 +15,7 @@ import {
     OlMapOptions
 } from "./api";
 import { MapRegistryImpl } from "./services";
+import { MapModelImpl } from "./model/MapModelImpl";
 
 // used to avoid a "ResizeObserver is not defined" error
 import ResizeObserver from "resize-observer-polyfill";
@@ -40,6 +41,22 @@ export async function waitForMapMount(parentTestId = "base") {
             throw new Error("map not mounted");
         }
         return domElement;
+    });
+}
+
+export async function waitForInitialExtent(model: MapModelImpl) {
+    if (model.initialExtent) {
+        return;
+    }
+
+    await new Promise<void>((resolve, reject) => {
+        model?.once("changed:initialExtent", () => {
+            if (model?.initialExtent) {
+                resolve();
+            } else {
+                reject(new Error("expected a valid extent"));
+            }
+        });
     });
 }
 
