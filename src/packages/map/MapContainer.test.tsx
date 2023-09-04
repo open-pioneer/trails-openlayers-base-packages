@@ -7,11 +7,7 @@ import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render } from "@testing-library/react";
 import { afterEach, expect, it, vi } from "vitest";
 import { MapContainer } from "./MapContainer";
-import {
-    createPackageContextProviderProps,
-    setupMap,
-    waitForMapMount
-} from "@open-pioneer/ol-react-utils";
+import { createPackageContextProviderProps, setupMap, waitForMapMount } from "./test-utils";
 
 // used to avoid a "ResizeObserver is not defined" error
 import ResizeObserver from "resize-observer-polyfill";

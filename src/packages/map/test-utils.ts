@@ -13,8 +13,8 @@ import {
     MapConfigProvider,
     MapRegistry,
     OlMapOptions
-} from "@open-pioneer/map/api";
-import { MapRegistryImpl } from "@open-pioneer/map/services";
+} from "./api";
+import { MapRegistryImpl } from "./services";
 
 // used to avoid a "ResizeObserver is not defined" error
 import ResizeObserver from "resize-observer-polyfill";
@@ -32,8 +32,6 @@ export interface SimpleMapOptions {
     noProjection?: boolean;
 }
 
-export const MAP_ID = "test";
-
 export async function waitForMapMount(parentTestId = "base") {
     return await waitFor(async () => {
         const domElement = await screen.findByTestId(parentTestId);
@@ -47,7 +45,7 @@ export async function waitForMapMount(parentTestId = "base") {
 
 export async function setupMap(options?: SimpleMapOptions) {
     // Always use "test" as mapId for unit tests
-    const mapId = MAP_ID;
+    const mapId = "test";
 
     const getInitialView = (): InitialViewConfig => {
         if (options?.extent) {

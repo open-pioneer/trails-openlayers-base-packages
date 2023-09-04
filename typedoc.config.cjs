@@ -9,7 +9,6 @@ const documentedPackages = [
     "packages/map",
     "packages/notifier",
     "packages/react-utils",
-    "packages/ol-react-utils",
     "packages/authentication",
     "packages/coordinate-viewer",
     "packages/scale-viewer"

@@ -16,8 +16,7 @@
     },
     "devDependencies": {
         "@open-pioneer/test-utils": "^1.0.0",
-        "openlayers-base-packages": "workspace:*",
-        "@open-pioneer/ol-react-utils": "workspace:*"
+        "openlayers-base-packages": "workspace:*"
     },
     "publishConfig": {
         "directory": "dist",

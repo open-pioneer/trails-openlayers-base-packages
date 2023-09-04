@@ -64,7 +64,8 @@ export default defineConfig(({ mode }) => {
         // define global constants
         // See also: https://vitejs.dev/config/shared-options.html#define
         define: {
-            __LOG_LEVEL__: JSON.stringify(logLevel)
+            __LOG_LEVEL__: JSON.stringify(logLevel),
+            global: {} // Removes error message from @open-pioneer/map/test-utils -> Uncaught ReferenceError: global is not defined vitest
         },
 
         // https://vitest.dev/config/

@@ -15,7 +15,6 @@
     "devDependencies": {
         "@types/uuid": "^9.0.2",
         "openlayers-base-packages": "workspace:*",
-        "@open-pioneer/ol-react-utils": "workspace:*",
         "resize-observer-polyfill": "^1.5.1"
     },
     "publishConfig": {

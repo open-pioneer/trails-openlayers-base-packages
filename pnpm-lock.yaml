@@ -244,9 +244,6 @@ importers:
         specifier: ^17.4.0
         version: 17.4.0(react-dom@18.2.0)(react@18.2.0)
     devDependencies:
-      '@open-pioneer/ol-react-utils':
-        specifier: workspace:*
-        version: link:../../packages/ol-react-utils
       '@open-pioneer/test-utils':
         specifier: ^1.0.0
         version: 1.0.0(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.1)(@testing-library/react@14.0.0)(react-dom@18.2.0)(react@18.2.0)
@@ -299,9 +296,6 @@ importers:
         specifier: ^18.2.0
         version: 18.2.0
     devDependencies:
-      '@open-pioneer/ol-react-utils':
-        specifier: workspace:*
-        version: link:../ol-react-utils
       '@open-pioneer/test-utils':
         specifier: ^1.0.0
         version: 1.0.0(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.1)(@testing-library/react@14.0.0)(react-dom@18.2.0)(react@18.2.0)
@@ -340,9 +334,6 @@ importers:
         specifier: ^9.0.0
         version: 9.0.0
     devDependencies:
-      '@open-pioneer/ol-react-utils':
-        specifier: workspace:*
-        version: link:../ol-react-utils
       '@types/uuid':
         specifier: ^9.0.2
         version: 9.0.2
@@ -383,26 +374,6 @@ importers:
         version: link:../../..
     publishDirectory: dist
 
-  src/packages/ol-react-utils:
-    dependencies:
-      '@open-pioneer/core':
-        specifier: ^1.0.1
-        version: 1.0.1
-      '@open-pioneer/map':
-        specifier: workspace:^
-        version: link:../map
-      ol:
-        specifier: ^7.5.1
-        version: 7.5.1
-    devDependencies:
-      openlayers-base-packages:
-        specifier: workspace:*
-        version: link:../../..
-      resize-observer-polyfill:
-        specifier: ^1.5.1
-        version: 1.5.1
-    publishDirectory: dist
-
   src/packages/react-utils:
     dependencies:
       react:
@@ -432,9 +403,6 @@ importers:
         specifier: ^18.2.0
         version: 18.2.0
     devDependencies:
-      '@open-pioneer/ol-react-utils':
-        specifier: workspace:*
-        version: link:../ol-react-utils
       '@open-pioneer/test-utils':
         specifier: ^1.0.0
         version: 1.0.0(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.1)(@testing-library/react@14.0.0)(react-dom@18.2.0)(react@18.2.0)

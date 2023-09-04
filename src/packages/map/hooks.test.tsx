@@ -3,7 +3,7 @@
 /**
  * @vitest-environment jsdom
  */
-import { MapContainer } from "@open-pioneer/map";
+import { MapContainer } from "./MapContainer";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { act, render, renderHook } from "@testing-library/react";
 import View from "ol/View";
