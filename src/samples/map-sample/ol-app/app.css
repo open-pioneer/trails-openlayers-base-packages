@@ -30,3 +30,10 @@
     left: unset;
     right: 0.5em;
 }
+
+.initial-extent{
+  position: absolute;
+  z-index: 1000;
+  bottom: 8rem;
+  right: 1rem;
+}

@@ -11,10 +11,11 @@ const documentedPackages = [
     "packages/react-utils",
     "packages/authentication",
     "packages/coordinate-viewer",
-    "packages/scale-viewer"
+    "packages/scale-viewer",
+    "packages/initial-extent"
 ];
 
-const packagePaths = documentedPackages.map(p => `src/${p}`);
+const packagePaths = documentedPackages.map((p) => `src/${p}`);
 for (const path of packagePaths) {
     if (!existsSync(path)) {
         throw new Error("Package does not exist: " + path);
@@ -23,15 +24,15 @@ for (const path of packagePaths) {
 
 // See https://typedoc.org/options/
 module.exports = {
-    "name": "Open Pioneer Packages",
-    "readme": "none",
-    "out": "dist/docs",
-    "entryPointStrategy": "packages",
-    "entryPoints": packagePaths,
-    "skipErrorChecking": true,
-    "validation": {
-        "notExported": false,
-        "invalidLink": true,
-        "notDocumented": true
+    name: "Open Pioneer Packages",
+    readme: "none",
+    out: "dist/docs",
+    entryPointStrategy: "packages",
+    entryPoints: packagePaths,
+    skipErrorChecking: true,
+    validation: {
+        notExported: false,
+        invalidLink: true,
+        notDocumented: true
     }
 };

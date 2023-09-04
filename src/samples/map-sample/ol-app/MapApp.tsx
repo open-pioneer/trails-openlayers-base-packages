@@ -7,6 +7,7 @@ import { MapContainer, MapPadding } from "@open-pioneer/map";
 import { CoordinateViewer } from "@open-pioneer/coordinate-viewer";
 import { useMapModel } from "@open-pioneer/map";
 import { ScaleViewer } from "@open-pioneer/scale-viewer";
+import { InitialExtent } from "@open-pioneer/initial-extent";
 import { ScaleComponent } from "map-sample-scale-component";
 import { ZoomComponent } from "map-sample-zoom-component";
 import { useRef, useState } from "react";
@@ -50,9 +51,12 @@ export function MapApp() {
             <Box textAlign="center" py={1}>
                 Open Pioneer - Map sample
             </Box>
+
             <Flex flex="1" direction="column" position="relative">
                 <MapContainer mapId={MAP_ID} viewPadding={viewPadding}></MapContainer>
                 <ZoomComponent className="zoom-controls" mapId={MAP_ID}></ZoomComponent>
+                <InitialExtent className="home" mapId={MAP_ID}></InitialExtent>
+
                 <Flex
                     className="map-panel"
                     gap={3}
