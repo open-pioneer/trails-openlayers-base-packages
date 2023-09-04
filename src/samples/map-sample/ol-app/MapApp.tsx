@@ -35,7 +35,7 @@ export function MapApp() {
 
     const items: SidebarItem[] = [
         {
-            id: "mapcontent",
+            id: "map-content",
             icon: <FiLayers />,
             label: "Karteninhalt",
             content: <LayerControlComponent mapId={MAP_ID} showOpacitySlider={true} />

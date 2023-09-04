@@ -157,6 +157,89 @@ it("supports arbitrary additional attributes", async () => {
     expect(changed).toBe(1);
 });
 
+it("supports delete additional attributes", async () => {
+    const hidden = Symbol("hidden");
+    const layer = await buildSimpleLayer({
+        id: "a",
+        title: "A",
+        layer: new TileLayer({
+            source: new OSM()
+        }),
+        attributes: {
+            foo: "bar",
+            bar: "foo",
+            [hidden]: "hidden"
+        }
+    });
+
+    // String and symbol properties are supported
+    expect(layer.attributes).toMatchInlineSnapshot(`
+      {
+        "bar": "foo",
+        "foo": "bar",
+        Symbol(hidden): "hidden",
+      }
+    `);
+
+    let changedAttributes = 0;
+    let changed = 0;
+    layer.on("changed:attributes", () => ++changedAttributes);
+    layer.on("changed", () => ++changed);
+
+    layer.deleteAttribute("foo");
+    layer.deleteAttribute(hidden);
+    layer.deleteAttribute("foo"); // already delete, will not trigger change event
+
+    // Symbols are also applied on update
+    expect(layer.attributes).toMatchInlineSnapshot(`
+      {
+        "bar": "foo",
+      }
+    `);
+    expect(changedAttributes).toBe(2);
+    expect(changed).toBe(2);
+});
+
+it("supports initial empty attribute object and empty attribute object after updating/deleting", async () => {
+    const hidden = Symbol("hidden");
+    const layer = await buildSimpleLayer({
+        id: "a",
+        title: "A",
+        layer: new TileLayer({
+            source: new OSM()
+        })
+    });
+    let changedAttributes = 0;
+    let changed = 0;
+    layer.on("changed:attributes", () => ++changedAttributes);
+    layer.on("changed", () => ++changed);
+
+    // check layer attributes is empty object
+    expect(layer.attributes).toMatchInlineSnapshot(`
+      {}
+    `);
+
+    // update layer attributes
+    layer.updateAttributes({
+        [hidden]: "still-hidden"
+    });
+    expect(layer.attributes).toMatchInlineSnapshot(`
+    {
+      Symbol(hidden): "still-hidden",
+    }
+    `);
+    expect(changedAttributes).toBe(1);
+    expect(changed).toBe(1);
+
+    // delete layer attributes and check, if layer attributes is empty object
+    layer.deleteAttribute(hidden);
+    expect(layer.attributes).toMatchInlineSnapshot(`
+      {}
+    `);
+    expect(changedAttributes).toBe(2);
+    expect(changed).toBe(2);
+});
+
 it("logs a warning when setVisible() is called on a base layer", async () => {
     const logSpy = vi.spyOn(global.console, "warn").mockImplementation(() => undefined);
     const layer = await buildSimpleLayer({

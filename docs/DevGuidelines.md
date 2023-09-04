@@ -27,13 +27,17 @@
 6. Packages are translated in english and german.
 7. Important design decisions or non-obvious things to keep in mind
    have been documented in internal dev notes or comments.
+8. A changeset entry was generated (if appropriate) and a CHANGELOG.md exists in the package.
 
 ## Documentation
+- Stick to the following documentation guideline, if appropriate: [Documenation guideline](https://developers.google.com/style/highlights)
+- (There is no need to document for each component wether additional CSS classes can be passed using the `className`prop. This is documented in the UI concept documentation.)
 
 ## Code style
 
 -   Be strict about TypeScript, especially in public interfaces
--   Use TODO keyword only for things that are currently in doing, not for things that should be implemented anytime in the future. Exceptional: special usages determined by the team. 
+-   Use TODO keyword only for things that are currently in doing, not for things that should be implemented anytime in the future. Exceptional: special usages determined by the team.
+-   If creating a new package that has has a name that consists of multiple words, use a dash to connect the words.
 
 ## Tests
 

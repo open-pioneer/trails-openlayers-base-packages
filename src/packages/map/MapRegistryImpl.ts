@@ -37,7 +37,7 @@ export class MapRegistryImpl implements Service, MapRegistry {
         LOG.info(`Destroy map registry and all maps`);
         this.#destroyed = true;
         this.#entries.forEach((model) => {
-            model instanceof MapModelImpl && model.destroy();
+            model.kind === "model" && model.model.destroy();
         });
         this.#entries.clear();
         this.#modelCreationJobs.clear();
@@ -83,7 +83,7 @@ export class MapRegistryImpl implements Service, MapRegistry {
         return model;
     }
 
-    getMapByRawInstance(olMap: OlMap): MapModel | undefined {
+    getMapModelByRawInstance(olMap: OlMap): MapModel | undefined {
         return this.#modelsByOlMap.get(olMap);
     }
 

@@ -71,7 +71,7 @@ export class LayerCollectionImpl
             throw new Error(`Layer with id '${id}' is already registered.`);
         }
         if (this.#layerModelsByLayer?.has(olLayer)) {
-            throw new Error(`OlLayer has already been used for a different LayerModel.`);
+            throw new Error(`OlLayer has already been used in this or another LayerModel.`);
         }
 
         if (model.isBaseLayer) {

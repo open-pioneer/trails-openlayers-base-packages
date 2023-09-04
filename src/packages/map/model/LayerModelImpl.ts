@@ -158,6 +158,21 @@ export class LayerModelImpl extends EventEmitter<LayerModelEvents> implements La
         }
     }
 
+    deleteAttribute(deleteAttribute: string | symbol): void {
+        const attributes = this.#attributes;
+        const key = deleteAttribute;
+
+        let changed = false;
+        if (attributes[key]) {
+            delete attributes[key];
+            changed = true;
+        }
+
+        if (changed) {
+            this.#emitChangeEvent("changed:attributes");
+        }
+    }
+
     #emitChangeEvent<Name extends EventNames<LayerModelEvents>>(event: Name) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (this as any).emit(event);

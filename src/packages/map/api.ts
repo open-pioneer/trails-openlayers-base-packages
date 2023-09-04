@@ -10,7 +10,6 @@ import type OlBaseLayer from "ol/layer/Base";
 /*
     TODO:
     - Simple helper class for map setup?
-    - Document that registered layers should not be manually removed from the map via olMap
 */
 
 export interface MapModelEvents {
@@ -100,7 +99,7 @@ export interface LayerCollection extends EventSource<LayerCollectionEvents> {
     activateBaseLayer(id: string | undefined): boolean;
 
     /**
-     * Create a new layer model and adds it to the map.
+     * Creates a new layer model and adds it to the map.
      *
      * The new layer model is automatically registered with this collection.
      */
@@ -156,13 +155,16 @@ export interface LayerModel extends EventSource<LayerModelEvents> {
     /** The raw OpenLayers layer. */
     readonly olLayer: OlBaseLayer;
 
-    /** The human readable title of this layer. */
+    /** The human-readable title of this layer. */
     readonly title: string;
 
-    /** The human readable description of this layer. May be empty. */
+    /** The human-readable description of this layer. May be empty. */
     readonly description: string;
 
-    /** Whether the layer is configured to be visible or not. */
+    /**
+     * Whether the layer is visible or not.
+     * NOTE: The LayerModel's visible state of the layer might not fit the actual layer's visibility in the map.
+     */
     readonly visible: boolean;
 
     /**
@@ -205,6 +207,11 @@ export interface LayerModel extends EventSource<LayerModelEvents> {
      * Values in `newAttributes` are merged into the existing ones (i.e. via `Object.assign`).
      */
     updateAttributes(newAttributes: Record<string | symbol, unknown>): void;
+
+    /**
+     * Deletes the attribute of this layer.
+     */
+    deleteAttribute(deleteAttribute: string | symbol): void;
 }
 
 /**
@@ -232,7 +239,7 @@ export interface MapRegistry {
      *
      * All map models created by this registry (e.g. via {@link MapConfigProvider}) have an associated map model.
      */
-    getMapByRawInstance(olMap: OlMap): MapModel | undefined;
+    getMapModelByRawInstance(olMap: OlMap): MapModel | undefined;
 }
 
 /**
@@ -291,7 +298,7 @@ export interface LayerConfig {
     id?: string;
 
     /**
-     * The human readable title of this layer.
+     * The human-readable title of this layer.
      */
     title: string;
 
@@ -301,7 +308,7 @@ export interface LayerConfig {
     layer: OlBaseLayer;
 
     /**
-     * The human readable description of this layer.
+     * The human-readable description of this layer.
      * Defaults to an empty string.
      */
     description?: string;
@@ -333,7 +340,7 @@ export interface LayerConfig {
  */
 export interface OlMapOptions extends Omit<OlMapBaseOptions, "target" | "view"> {
     /**
-     * Advanced option to control the view.
+     * Advanced options to control the view.
      *
      * We recommend using the `OlViewOptions` type.
      *
@@ -387,7 +394,7 @@ export interface MapConfig {
      * Other properties defined in this configuration (e.g. {@link initialView})
      * will be applied on top of these map options.
      *
-     * > Warning: not all properties here are supported.
+     * > Warning: Not all properties here are supported.
      * > For example, you cannot set the `target` because the target is controlled by the `<MapContainer />`.
      */
     advanced?: Partial<OlMapOptions>;
