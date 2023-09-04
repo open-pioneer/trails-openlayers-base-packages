@@ -1,5 +1,5 @@
 ---
-"@open-pioneer/basemap-switcher": patch
+"@open-pioneer/basemap-switcher": minor
 ---
 
-Initial release
+Initial release.
