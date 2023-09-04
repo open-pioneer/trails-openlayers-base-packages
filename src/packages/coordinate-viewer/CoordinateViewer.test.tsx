@@ -11,7 +11,11 @@ import View from "ol/View";
 import BaseEvent from "ol/events/Event";
 import { expect, it } from "vitest";
 import { CoordinateViewer } from "./CoordinateViewer";
-import { createPackageContextProviderProps, setupMap, waitForMapMount } from "@open-pioneer/map";
+import {
+    createPackageContextProviderProps,
+    setupMap,
+    waitForMapMount
+} from "@open-pioneer/map/test-utils";
 
 it("should successfully create a coordinate viewer component", async () => {
     const { mapId, registry } = await setupMap();

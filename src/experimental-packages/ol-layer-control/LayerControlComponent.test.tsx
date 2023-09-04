@@ -8,7 +8,7 @@ import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { expect, it } from "vitest";
 import { LayerControlComponent } from "./LayerControlComponent";
-import { createPackageContextProviderProps, setupMap } from "@open-pioneer/map";
+import { createPackageContextProviderProps, setupMap } from "@open-pioneer/map/test-utils";
 
 // used to avoid a "ResizeObserver is not defined" error
 import ResizeObserver from "resize-observer-polyfill";

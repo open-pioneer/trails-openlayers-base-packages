@@ -7,7 +7,7 @@ import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render, screen, waitFor } from "@testing-library/react";
 import { expect, it } from "vitest";
 import { ScaleViewer } from "./ScaleViewer";
-import { createPackageContextProviderProps, setupMap } from "@open-pioneer/map";
+import { createPackageContextProviderProps, setupMap } from "@open-pioneer/map/test-utils";
 
 // used to avoid a "ResizeObserver is not defined" error
 import ResizeObserver from "resize-observer-polyfill";
