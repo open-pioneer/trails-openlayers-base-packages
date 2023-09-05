@@ -12,7 +12,9 @@ exports[`should successfully create a basemap switcher component 1`] = `
     <b
       class="chakra-text css-0"
       data-theme="light"
-    />
+    >
+      Hintergrundkarte
+    </b>
     <div
       class="chakra-select__wrapper css-42b2qy"
       data-theme="light"
@@ -32,9 +34,9 @@ exports[`should successfully create a basemap switcher component 1`] = `
           Toner
         </option>
         <option
-          value="kein Hintergrund"
+          value="Ohne Hintergrund"
         >
-          kein Hintergrund
+          Ohne Hintergrund
         </option>
       </select>
       <div
@@ -90,11 +92,6 @@ exports[`should successfully create a basemap switcher component with additional
           value="Toner"
         >
           Toner
-        </option>
-        <option
-          value="kein Hintergrund"
-        >
-          kein Hintergrund
         </option>
       </select>
       <div

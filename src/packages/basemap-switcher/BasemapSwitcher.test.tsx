@@ -24,20 +24,23 @@ import { createPackageContextProviderProps, setupMap, waitForMapMount } from "./
 import ResizeObserver from "resize-observer-polyfill";
 global.ResizeObserver = ResizeObserver;
 
-const noneBasemap = {
-    id: "noBasemap",
-    label: "kein Hintergrund",
-    selected: false
-};
-
 it("should successfully create a basemap switcher component", async () => {
     const { mapId, registry } = await setupMap();
+    const noneBasemap = {
+        id: "noBasemap",
+        label: "Ohne Hintergrund",
+        selected: false
+    };
 
     render(
         <PackageContextProvider {...createPackageContextProviderProps(registry)}>
             <div data-testid="base">
                 <MapContainer mapId={mapId} />
-                <BasemapSwitcher mapId={mapId} noneBasemap={noneBasemap}></BasemapSwitcher>
+                <BasemapSwitcher
+                    mapId={mapId}
+                    label="Hintergrundkarte"
+                    noneBasemap={noneBasemap}
+                ></BasemapSwitcher>
             </div>
         </PackageContextProvider>
     );
@@ -60,12 +63,7 @@ it("should successfully create a basemap switcher component with additional css 
         <PackageContextProvider {...createPackageContextProviderProps(registry)}>
             <div data-testid="base">
                 <MapContainer mapId={mapId} />
-                <BasemapSwitcher
-                    mapId={mapId}
-                    className="test"
-                    pl="1px"
-                    noneBasemap={noneBasemap}
-                ></BasemapSwitcher>
+                <BasemapSwitcher mapId={mapId} className="test" pl="1px"></BasemapSwitcher>
             </div>
         </PackageContextProvider>
     );

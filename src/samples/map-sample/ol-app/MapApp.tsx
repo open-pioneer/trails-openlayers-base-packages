@@ -13,13 +13,9 @@ import { ZoomComponent } from "map-sample-zoom-component";
 import { useRef, useState } from "react";
 import { FiCodesandbox, FiLayers } from "react-icons/fi";
 import { MAP_ID } from "./MapConfigProviderImpl";
+import { useIntl } from "open-pioneer:react-hooks";
 
 const berlin = [1489200, 6894026, 1489200, 6894026];
-const noneBasemap = {
-    id: "noBasemap",
-    label: "kein Hintergrund",
-    selected: true
-};
 
 export function MapApp() {
     const [viewPadding, setViewPadding] = useState<MapPadding>();
@@ -32,6 +28,8 @@ export function MapApp() {
             olMap?.getView().fit(berlin, { maxZoom: 13 });
         }
     };
+
+    const intl = useIntl();
 
     const items: SidebarItem[] = [
         {
@@ -61,7 +59,12 @@ export function MapApp() {
 
                 <BasemapSwitcher
                     ref={basemapSwitcherRef}
-                    noneBasemap={noneBasemap}
+                    label={intl.formatMessage({ id: "basemapLabel" })}
+                    noneBasemap={{
+                        id: "noBasemap",
+                        label: intl.formatMessage({ id: "noBasemapLabel" }),
+                        selected: true
+                    }}
                     mapId={MAP_ID}
                 ></BasemapSwitcher>
             </Flex>

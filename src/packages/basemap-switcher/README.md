@@ -19,7 +19,7 @@ Example: Integration of a basemap switcher with optional properties:
 ```js
 const noneBasemap = {
     id: "noBasemap",
-    label: "kein Hintergrund",
+    label: "Ohne Hintergrund",
     selected: false
 };
 ```
