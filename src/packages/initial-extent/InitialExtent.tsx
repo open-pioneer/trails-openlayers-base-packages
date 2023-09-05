@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-import { Box, BoxProps, IconButton } from "@open-pioneer/chakra-integration";
+import { Box, BoxProps, IconButton, Tooltip } from "@open-pioneer/chakra-integration";
 import { useMapModel } from "@open-pioneer/map";
 import { useIntl } from "open-pioneer:react-hooks";
 import classNames from "classnames";
@@ -50,15 +50,21 @@ export const InitialExtent: FC<InitialExtentProps> = forwardRef(function Initial
         //FRAGE: classname-erweiterung an box oder button? wrapper/box überhaupt benötigt?
         //FRAGE: erwarte ich bei einem tool, dass ich den button mit dem classname direkt adressiere?
         <Box className={classNames("initial-extent", className)} ref={ref} {...rest}>
-            <IconButton
-                className="initial-extent-button"
-                size="sm"
-                aria-label={intl.formatMessage({ id: "aria-label" })}
-                colorScheme="teal"
-                variant="solid"
-                icon={<FiHome />}
-                onClick={() => setInitExtent()}
-            />
+            <Tooltip
+                label={intl.formatMessage({ id: "description" })}
+                placement="auto"
+                openDelay={500}
+            >
+                <IconButton
+                    className="initial-extent-button"
+                    size="sm"
+                    aria-label={intl.formatMessage({ id: "description" })}
+                    colorScheme="teal"
+                    variant="solid"
+                    icon={<FiHome />}
+                    onClick={() => setInitExtent()}
+                />
+            </Tooltip>
         </Box>
     );
 });
