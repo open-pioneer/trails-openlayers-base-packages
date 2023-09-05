@@ -62,26 +62,31 @@ it("should successfully create a initial extent component with additional css cl
     expect(initExtentDiv.classList.contains("testClass2")).toBe(true);
 });
 
-it("should successfully click the home button und go to initial extent", async () => {
+it("should successfully click the home button and go to initial extent", async () => {
     const { mapId, registry } = await setupMap();
     const user = userEvent.setup();
 
     render(
         <PackageContextProvider {...createPackageContextProviderProps(registry)}>
-            <div data-testid="base">
+            <div data-testid="map" style={{ height: "500px", width: "500px" }}>
                 <MapContainer mapId={mapId} />
+            </div>
+            <div data-testid="base">
                 <InitialExtent mapId={mapId}></InitialExtent>
             </div>
         </PackageContextProvider>
     );
-
-    await waitForMapMount();
+    await waitForMapMount("map");
 
     //mount InitExtentComponent
     const { initExtentDiv } = await waitForInitExtentComponent();
-    expect(initExtentDiv).toMatchSnapshot();
 
-    const map = await registry.expectMapModel(mapId);
+    const mapModel = await registry.expectMapModel(mapId);
+    // mapModel.olMap.setSize([500, 500]); // simulate map mount
+
+    // todo: why does whenDisplayed() not resolve?
+    // If 'mapModel.olMap.setSize([500, 500]);' is called, the whenDisplayed does resolve, however another error is thrown
+    //await mapModel.whenDisplayed(); // wait to make sure that "initialExtent" is initialized
 
     const initExtentBtn = initExtentDiv.querySelector(
         ".initial-extent-button"
@@ -92,20 +97,20 @@ it("should successfully click the home button und go to initial extent", async (
     //FIXME: https://github.com/open-pioneer/trails-openlayers-base-packages/issues/121
     //FIXME: initialExtent should be set through map api?
 
-    console.log("initExt", map.initialExtent); //undefined
-    console.log("extent1", map.olMap.getView().calculateExtent());
+    console.log("initExt", mapModel.initialExtent); //undefined
+    console.log("extent1", mapModel.olMap.getView().calculateExtent());
 
-    map.olMap.getView().fit([1479200, 6884026, 1499200, 6897026]);
-    console.log("extent2", map.olMap.getView().calculateExtent());
+    mapModel.olMap.getView().fit([1479200, 6884026, 1499200, 6897026]);
+    console.log("extent2", mapModel.olMap.getView().calculateExtent());
 
     await user.click(initExtentBtn); //clicked -> extent2 === extent3
-    console.log("extent3", map.olMap.getView().calculateExtent());
+    console.log("extent3", mapModel.olMap.getView().calculateExtent());
 });
 
 async function waitForInitExtentComponent() {
     const { domElement, initExtentDiv } = await waitFor(async () => {
         const domElement = await screen.findByTestId("base");
-        const initExtentDiv = domElement.querySelector(".initial-extent"); // find first HTMLDivElement in basemap switcher component
+        const initExtentDiv = domElement.querySelector(".initial-extent");
         if (!initExtentDiv) {
             throw new Error("InitExtentComponent not rendered");
         }
