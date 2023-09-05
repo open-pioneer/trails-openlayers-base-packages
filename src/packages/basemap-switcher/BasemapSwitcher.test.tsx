@@ -5,13 +5,23 @@
  */
 import { MapContainer } from "@open-pioneer/map";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, act, fireEvent } from "@testing-library/react";
 import { expect, it } from "vitest";
 import { BasemapSwitcher } from "./BasemapSwitcher";
 import { createPackageContextProviderProps, setupMap, waitForMapMount } from "./test-utils";
-import ResizeObserver from "resize-observer-polyfill";
+
+/**
+ * TODO after merge PR:
+ * import { createPackageContextProviderProps, setupMap, waitForMapMount } from "@open-pioneer/map/test-utils";
+ *
+ * @see https://github.com/open-pioneer/trails-openlayers-base-packages/pull/129
+ * @see https://github.com/open-pioneer/trails-openlayers-base-packages/issues/121
+ *
+ * Delete ./test-utils.ts
+ */
 
 // used to avoid a "ResizeObserver is not defined" error
+import ResizeObserver from "resize-observer-polyfill";
 global.ResizeObserver = ResizeObserver;
 
 const noneBasemap = {
@@ -19,6 +29,7 @@ const noneBasemap = {
     label: "kein Hintergrund",
     selected: false
 };
+
 it("should successfully create a basemap switcher component", async () => {
     const { mapId, registry } = await setupMap();
 
@@ -34,68 +45,17 @@ it("should successfully create a basemap switcher component", async () => {
     await waitForMapMount();
 
     // basemap switcher is mounted
-    const { switcherDiv } = await waitForBasemapSwitcher();
-    expect(switcherDiv).toMatchInlineSnapshot(`
-      <div
-        class="basemap-switcher css-0"
-        data-theme="light"
-      >
-        <div
-          class="css-1bejyq4"
-          data-theme="light"
-        >
-          <b
-            class="chakra-text css-0"
-            data-theme="light"
-          />
-          <div
-            class="chakra-select__wrapper css-42b2qy"
-            data-theme="light"
-          >
-            <select
-              class="chakra-select basemap-switcher-select css-161pkch"
-              data-theme="light"
-            >
-              <option
-                value="OSM"
-              >
-                OSM
-              </option>
-              <option
-                value="kein Hintergrund"
-              >
-                kein Hintergrund
-              </option>
-            </select>
-            <div
-              class="chakra-select__icon-wrapper css-iohxn1"
-              data-theme="light"
-            >
-              <svg
-                aria-hidden="true"
-                class="chakra-select__icon"
-                focusable="false"
-                role="presentation"
-                style="width: 1em; height: 1em; color: currentColor;"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
-                  fill="currentColor"
-                />
-              </svg>
-            </div>
-          </div>
-        </div>
-      </div>
-    `);
+    const { switcherDiv, switcherSelect } = await waitForBasemapSwitcher();
+    expect(switcherDiv).toMatchSnapshot();
 
-    // check basemap switcher box is available
+    // check basemap switcher box and select is available
     expect(switcherDiv).toBeInstanceOf(HTMLDivElement);
+    expect(switcherSelect).toBeInstanceOf(HTMLSelectElement);
 });
 
 it("should successfully create a basemap switcher component with additional css classes and box properties", async () => {
     const { mapId, registry } = await setupMap();
+
     render(
         <PackageContextProvider {...createPackageContextProviderProps(registry)}>
             <div data-testid="base">
@@ -114,60 +74,7 @@ it("should successfully create a basemap switcher component with additional css 
 
     // basemap switcher is mounted
     const { switcherDiv } = await waitForBasemapSwitcher();
-    expect(switcherDiv).toMatchInlineSnapshot(`
-      <div
-        class="basemap-switcher test css-sz63p1"
-        data-theme="light"
-      >
-        <div
-          class="css-1bejyq4"
-          data-theme="light"
-        >
-          <b
-            class="chakra-text css-0"
-            data-theme="light"
-          />
-          <div
-            class="chakra-select__wrapper css-42b2qy"
-            data-theme="light"
-          >
-            <select
-              class="chakra-select basemap-switcher-select css-161pkch"
-              data-theme="light"
-            >
-              <option
-                value="OSM"
-              >
-                OSM
-              </option>
-              <option
-                value="kein Hintergrund"
-              >
-                kein Hintergrund
-              </option>
-            </select>
-            <div
-              class="chakra-select__icon-wrapper css-iohxn1"
-              data-theme="light"
-            >
-              <svg
-                aria-hidden="true"
-                class="chakra-select__icon"
-                focusable="false"
-                role="presentation"
-                style="width: 1em; height: 1em; color: currentColor;"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
-                  fill="currentColor"
-                />
-              </svg>
-            </div>
-          </div>
-        </div>
-      </div>
-    `);
+    expect(switcherDiv).toMatchSnapshot();
 
     expect(switcherDiv).toBeInstanceOf(HTMLDivElement);
     expect(switcherDiv.classList.contains("test")).toBe(true);
@@ -177,19 +84,51 @@ it("should successfully create a basemap switcher component with additional css 
     expect(styles.paddingLeft).toBe("1px");
 });
 
+it("should successfully select a basemap from basemap switcher", async () => {
+    const { mapId, registry } = await setupMap();
+
+    const map = await registry.expectMapModel(mapId);
+
+    render(
+        <PackageContextProvider {...createPackageContextProviderProps(registry)}>
+            <div data-testid="base">
+                <MapContainer mapId={mapId} />
+                <BasemapSwitcher mapId={mapId}></BasemapSwitcher>
+            </div>
+        </PackageContextProvider>
+    );
+
+    await waitForMapMount();
+
+    // basemap switcher is mounted
+    const { switcherSelect } = await waitForBasemapSwitcher();
+
+    act(() => {
+        fireEvent.change(switcherSelect, { target: { value: "OSM" } });
+    });
+    const firstActiveBaseLayer = map.layers.getActiveBaseLayer();
+    expect(firstActiveBaseLayer?.id).toBe("b-1");
+
+    act(() => {
+        fireEvent.change(switcherSelect, { target: { value: "Toner" } });
+    });
+    const nextActiveBaseLayer = map.layers.getActiveBaseLayer();
+    expect(nextActiveBaseLayer?.id).toBe("b-2");
+});
+
 async function waitForBasemapSwitcher() {
-    const { domElement, switcherDiv } = await waitFor(async () => {
+    const { switcherDiv, switcherSelect } = await waitFor(async () => {
         const domElement = await screen.findByTestId("base");
-        const switcherDiv = domElement.querySelector(".basemap-switcher"); // find first HTMLDivElement in basemap switcher component
+        const switcherDiv = domElement.querySelector(".basemap-switcher");
         if (!switcherDiv) {
             throw new Error("basemap switcher not rendered");
         }
 
-        const select = switcherDiv.querySelector("select");
-        if (!select) {
+        const switcherSelect = switcherDiv.querySelector(".basemap-switcher-select");
+        if (!switcherSelect) {
             throw new Error("basemap switcher select not rendered");
         }
-        return { domElement, switcherDiv };
+        return { switcherDiv, switcherSelect };
     });
-    return { domElement, switcherDiv };
+    return { switcherDiv, switcherSelect };
 }

@@ -3,6 +3,7 @@
 import { MapConfig, MapConfigProvider, MapRegistry } from "@open-pioneer/map";
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
+import Stamen from "ol/source/Stamen";
 import { createService } from "@open-pioneer/test-utils/services";
 import { MapRegistryImpl } from "@open-pioneer/map/MapRegistryImpl";
 import { PackageContextProviderProps } from "@open-pioneer/test-utils/react";
@@ -46,6 +47,15 @@ export async function setupMap(options?: SimpleMapOptions) {
                 visible: false,
                 layer: new TileLayer({
                     source: new OSM()
+                })
+            },
+            {
+                id: "b-2",
+                title: "Toner",
+                isBaseLayer: true,
+                visible: true,
+                layer: new TileLayer({
+                    source: new Stamen({ layer: "toner" })
                 })
             }
         ]

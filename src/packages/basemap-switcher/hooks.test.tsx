@@ -10,6 +10,16 @@ import { expect, it } from "vitest";
 import { useBasemapLayers } from "./hooks";
 import { createPackageContextProviderProps, setupMap, waitForMapMount } from "./test-utils";
 
+/**
+ * TODO after merge PR:
+ * import { createPackageContextProviderProps, setupMap, waitForMapMount } from "@open-pioneer/map/test-utils";
+ *
+ * @see https://github.com/open-pioneer/trails-openlayers-base-packages/pull/129
+ * @see https://github.com/open-pioneer/trails-openlayers-base-packages/issues/121
+ *
+ * Delete ./test-utils.ts
+ */
+
 it("should successfully get basemap layers", async () => {
     const { mapId, registry } = await setupMap();
 
@@ -31,5 +41,5 @@ it("should successfully get basemap layers", async () => {
     const result = hook.result;
 
     expect(result.current.baseLayers).not.toBe(undefined);
-    expect(result.current.baseLayers?.length).toBe(1);
+    expect(result.current.baseLayers?.length).toBe(2);
 });
