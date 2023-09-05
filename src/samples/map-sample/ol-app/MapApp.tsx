@@ -5,6 +5,7 @@ import { Sidebar, SidebarItem } from "@open-pioneer/experimental-layout-sidebar"
 import { LayerControlComponent } from "@open-pioneer/experimental-ol-layer-control";
 import { MapAnchor, MapContainer, MapPadding } from "@open-pioneer/map";
 import { CoordinateViewer } from "@open-pioneer/coordinate-viewer";
+import { BasemapSwitcher } from "@open-pioneer/basemap-switcher";
 import { useMapModel } from "@open-pioneer/map";
 import { ScaleViewer } from "@open-pioneer/scale-viewer";
 import { ScaleComponent } from "map-sample-scale-component";
@@ -12,6 +13,7 @@ import { ZoomComponent } from "map-sample-zoom-component";
 import { useRef, useState } from "react";
 import { FiCodesandbox, FiLayers } from "react-icons/fi";
 import { MAP_ID } from "./MapConfigProviderImpl";
+import { useIntl } from "open-pioneer:react-hooks";
 
 const berlin = [1489200, 6894026, 1489200, 6894026];
 
@@ -26,6 +28,8 @@ export function MapApp() {
             olMap?.getView().fit(berlin, { maxZoom: 13 });
         }
     };
+
+    const intl = useIntl();
 
     const items: SidebarItem[] = [
         {
@@ -44,12 +48,27 @@ export function MapApp() {
 
     const scaleViewerRef = useRef<HTMLDivElement>(null);
     const coordinateViewerRef = useRef<HTMLDivElement>(null);
+    const basemapSwitcherRef = useRef<HTMLDivElement>(null);
 
     return (
         <Flex height="100%" direction="column" overflow="hidden">
-            <Box textAlign="center" py={1}>
-                Open Pioneer - Map sample
-            </Box>
+            <Flex gap={3} alignItems="center" justifyContent="space-between">
+                <Box textAlign="center" py={1} px={1}>
+                    Open Pioneer - Map sample
+                </Box>
+
+                <BasemapSwitcher
+                    ref={basemapSwitcherRef}
+                    label={intl.formatMessage({ id: "basemapLabel" })}
+                    noneBasemap={{
+                        id: "noBasemap",
+                        label: intl.formatMessage({ id: "noBasemapLabel" }),
+                        selected: true
+                    }}
+                    mapId={MAP_ID}
+                ></BasemapSwitcher>
+            </Flex>
+
             <Flex flex="1" direction="column" position="relative">
                 <MapContainer
                     mapId={MAP_ID}

@@ -1,0 +1,118 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`should successfully create a basemap switcher component 1`] = `
+<div
+  class="basemap-switcher css-0"
+  data-theme="light"
+>
+  <div
+    class="css-1bejyq4"
+    data-theme="light"
+  >
+    <b
+      class="chakra-text css-0"
+      data-theme="light"
+    >
+      Hintergrundkarte
+    </b>
+    <div
+      class="chakra-select__wrapper css-42b2qy"
+      data-theme="light"
+    >
+      <select
+        class="chakra-select basemap-switcher-select css-161pkch"
+        data-theme="light"
+      >
+        <option
+          value="OSM"
+        >
+          OSM
+        </option>
+        <option
+          value="Toner"
+        >
+          Toner
+        </option>
+        <option
+          value="Ohne Hintergrund"
+        >
+          Ohne Hintergrund
+        </option>
+      </select>
+      <div
+        class="chakra-select__icon-wrapper css-iohxn1"
+        data-theme="light"
+      >
+        <svg
+          aria-hidden="true"
+          class="chakra-select__icon"
+          focusable="false"
+          role="presentation"
+          style="width: 1em; height: 1em; color: currentColor;"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
+            fill="currentColor"
+          />
+        </svg>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`should successfully create a basemap switcher component with additional css classes and box properties 1`] = `
+<div
+  class="basemap-switcher test css-sz63p1"
+  data-theme="light"
+>
+  <div
+    class="css-1bejyq4"
+    data-theme="light"
+  >
+    <b
+      class="chakra-text css-0"
+      data-theme="light"
+    />
+    <div
+      class="chakra-select__wrapper css-42b2qy"
+      data-theme="light"
+    >
+      <select
+        class="chakra-select basemap-switcher-select css-161pkch"
+        data-theme="light"
+      >
+        <option
+          value="OSM"
+        >
+          OSM
+        </option>
+        <option
+          value="Toner"
+        >
+          Toner
+        </option>
+      </select>
+      <div
+        class="chakra-select__icon-wrapper css-iohxn1"
+        data-theme="light"
+      >
+        <svg
+          aria-hidden="true"
+          class="chakra-select__icon"
+          focusable="false"
+          role="presentation"
+          style="width: 1em; height: 1em; color: currentColor;"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
+            fill="currentColor"
+          />
+        </svg>
+      </div>
+    </div>
+  </div>
+</div>
+`;
