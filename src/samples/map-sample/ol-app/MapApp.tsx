@@ -52,22 +52,9 @@ export function MapApp() {
 
     return (
         <Flex height="100%" direction="column" overflow="hidden">
-            <Flex gap={3} alignItems="center" justifyContent="space-between">
-                <Box textAlign="center" py={1} px={1}>
-                    Open Pioneer - Map sample
-                </Box>
-
-                <BasemapSwitcher
-                    ref={basemapSwitcherRef}
-                    label={intl.formatMessage({ id: "basemapLabel" })}
-                    noneBasemap={{
-                        id: "noBasemap",
-                        label: intl.formatMessage({ id: "noBasemapLabel" }),
-                        selected: true
-                    }}
-                    mapId={MAP_ID}
-                ></BasemapSwitcher>
-            </Flex>
+            <Box textAlign="center" py={1} px={1}>
+                Open Pioneer - Map sample
+            </Box>
 
             <Flex flex="1" direction="column" position="relative">
                 <MapContainer
@@ -76,8 +63,23 @@ export function MapApp() {
                     viewPaddingChangeBehavior="preserve-extent"
                 >
                     <MapAnchor position="top-left" horizontalGap={10} verticalGap={10}>
-                        <Box backgroundColor="whiteAlpha.800" padding={4} boxShadow="lg">
-                            I move with the sidebar 🙂
+                        <Box
+                            backgroundColor="whiteAlpha.800"
+                            borderWidth="1px"
+                            borderRadius="lg"
+                            padding={2}
+                            boxShadow="lg"
+                        >
+                            <BasemapSwitcher
+                                ref={basemapSwitcherRef}
+                                label={intl.formatMessage({ id: "basemapLabel" })}
+                                noneBasemap={{
+                                    id: "noBasemap",
+                                    label: intl.formatMessage({ id: "noBasemapLabel" }),
+                                    selected: true
+                                }}
+                                mapId={MAP_ID}
+                            ></BasemapSwitcher>
                         </Box>
                     </MapAnchor>
                     <MapAnchor position="bottom-right" horizontalGap={10} verticalGap={30}>
