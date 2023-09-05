@@ -11,7 +11,8 @@ const documentedPackages = [
     "packages/react-utils",
     "packages/authentication",
     "packages/coordinate-viewer",
-    "packages/scale-viewer"
+    "packages/scale-viewer",
+    "packages/basemap-switcher"
 ];
 
 const packagePaths = documentedPackages.map(p => `src/${p}`);
