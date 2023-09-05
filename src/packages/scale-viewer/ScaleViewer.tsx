@@ -6,6 +6,9 @@ import classNames from "classnames";
 import { FC, ForwardedRef, RefAttributes, forwardRef } from "react";
 import { useCenter, useProjection, useResolution, useScale } from "./hooks";
 
+/**
+ * These are special properties for the ScaleViewer.
+ */
 export interface ScaleViewerProps extends BoxProps, RefAttributes<HTMLDivElement> {
     /**
      * The map id.

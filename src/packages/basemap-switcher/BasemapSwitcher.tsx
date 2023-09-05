@@ -1,6 +1,13 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-import { Box, Text, BoxProps, Flex, Select } from "@open-pioneer/chakra-integration";
+import {
+    Box,
+    FormLabel,
+    BoxProps,
+    Flex,
+    Select,
+    FormControl
+} from "@open-pioneer/chakra-integration";
 import { useMapModel, LayerCollection } from "@open-pioneer/map";
 import { FC, ForwardedRef, forwardRef, RefAttributes, useEffect, useState } from "react";
 import { useBasemapLayers } from "./hooks";
@@ -9,17 +16,35 @@ import classNames from "classnames";
 /**
  * Optional configuration for deactivation from all base layers.
  */
-interface NoneBasemapConfig {
+export interface NoneBasemapConfig {
+    /**
+     * The id of the `noneBasemap` for the select option.
+     */
     id: string;
+    /**
+     * The label of the `noneBasemap` for the select option.
+     */
     label: string;
+    /**
+     * If `true`, the `noneBasemap` is selected initially.
+     */
     selected: boolean;
 }
 /**
  * These are special properties for the `Select`.
  */
-interface SelectOptions {
+export interface SelectOptions {
+    /**
+     * The id of the basemap for the select option.
+     */
     id: string;
+    /**
+     * The label of the basemap for the select option.
+     */
     label: string;
+    /**
+     * If `true`, the basemap is visible and selected initially.
+     */
     selected: boolean;
 }
 /**
@@ -82,18 +107,20 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = forwardRef(function Bas
         <Box className={classNames("basemap-switcher", className)} ref={ref} {...rest}>
             {!isLoading ? (
                 <Flex gap={3} alignItems="center">
-                    <Text as="b">{label}</Text>
-                    <Select
-                        className="basemap-switcher-select"
-                        value={value}
-                        onChange={(e) => setValue(e.target.value)}
-                    >
-                        {options?.map((opt) => (
-                            <option key={opt.id} value={opt.label}>
-                                {opt.label}
-                            </option>
-                        ))}
-                    </Select>
+                    <FormControl>
+                        <FormLabel className="basemap-switcher-label">{label}</FormLabel>
+                        <Select
+                            className="basemap-switcher-select"
+                            value={value}
+                            onChange={(e) => setValue(e.target.value)}
+                        >
+                            {options?.map((opt) => (
+                                <option key={opt.id} value={opt.label}>
+                                    {opt.label}
+                                </option>
+                            ))}
+                        </Select>
+                    </FormControl>
                 </Flex>
             ) : (
                 ""
