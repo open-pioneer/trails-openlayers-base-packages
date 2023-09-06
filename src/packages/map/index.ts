@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 export * from "./api";
 export { useCenter, useFormatting, useProjection, useResolution, useScale } from "./hooks";
+export { MapAnchor, type MapAnchorProps, type MapAnchorPosition } from "./MapAnchor";
 export { MapContainer, type MapContainerProps, type MapPadding } from "./MapContainer";
 export { getProjection, registerProjections, type ProjectionDefinition } from "./projections";
 export {
