@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-import { MapConfig, MapConfigProvider, MapRegistry } from "@open-pioneer/map";
+import { MapConfig, MapConfigProvider, MapRegistry, LayerConfig } from "@open-pioneer/map";
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
 import Stamen from "ol/source/Stamen";
@@ -16,6 +16,7 @@ global.ResizeObserver = ResizeObserver;
 export interface SimpleMapOptions {
     center?: { x: number; y: number };
     zoom?: number;
+    layers?: LayerConfig[];
 }
 
 export const MAP_ID = "test";
@@ -39,7 +40,7 @@ export async function setupMap(options?: SimpleMapOptions) {
             zoom: options?.zoom ?? 10
         },
         projection: "EPSG:3857",
-        layers: [
+        layers: options?.layers ?? [
             {
                 id: "b-1",
                 title: "OSM",
