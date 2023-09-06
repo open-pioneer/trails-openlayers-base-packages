@@ -9,6 +9,8 @@ import { MapPadding } from "./MapContainer";
 
 export type MapAnchorPosition = "top-left" | "top-right" | "bottom-left" | "bottom-right";
 
+const defaultPosition: MapAnchorPosition = "top-right";
+
 export interface MapAnchorProps {
     /**
      * The position of the anchor container above the map.
@@ -31,16 +33,16 @@ export interface MapAnchorProps {
      * Vertical gap in pixel applied to anchor container.
      *
      * Applied:
-     * - top, if position `*-top`
-     * - bottom, if position `*-bottom`
+     * - top, if position `top-*`
+     * - bottom, if position `bottom-*`
      *
-     * @default 0 (If position `*-bottom`, default verticalGap == `30`)
+     * @default 0 (If position `bottom-*`, default verticalGap == `30`)
      */
     verticalGap?: number;
 }
 
 export function MapAnchor(props: MapAnchorProps): JSX.Element {
-    const { position = "top-right", className, children, horizontalGap, verticalGap } = props;
+    const { position = defaultPosition, className, children, horizontalGap, verticalGap } = props;
     const { map, padding } = useMapContext();
     const overlayContainer = map.getOverlayContainerStopEvent();
 
