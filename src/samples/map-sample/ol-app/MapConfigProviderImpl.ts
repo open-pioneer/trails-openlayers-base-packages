@@ -14,10 +14,10 @@ export class MapConfigProviderImpl implements MapConfigProvider {
         return {
             initialView: {
                 kind: "position",
-                center: { x: 847541, y: 6793584 },
+                center: { x: 404747.71338525205, y: 5757920.530353654 },
                 zoom: 14
             },
-            projection: "EPSG:3857",
+            projection: "EPSG:25832",
             layers: [
                 {
                     id: "b-1",
