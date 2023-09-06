@@ -68,8 +68,11 @@ it("layer control should have checkbox to toggle layer visibility", async () => 
     expect(checkbox.checked).toBe(false);
     expect(firstLayer.visible).toBe(false);
 
-    // adjust visibility by control
-    await user.click(checkbox);
+    await act(async () => {
+        // adjust visibility by control
+        await user.click(checkbox);
+    });
+
     await waitFor(() => {
         if (!firstLayer.visible) {
             throw new Error("layer did not become visible");
