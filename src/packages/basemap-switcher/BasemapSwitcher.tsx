@@ -114,18 +114,21 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = forwardRef(function Bas
             {!isLoading ? (
                 <Flex gap={3} alignItems="center">
                     <FormControl>
-                        <FormLabel className="basemap-switcher-label">{label}</FormLabel>
-                        <Select
-                            className="basemap-switcher-select"
-                            value={value}
-                            onChange={(e) => setValue(e.target.value)}
-                        >
-                            {options?.map((opt) => (
-                                <option key={opt.id} value={opt.label}>
-                                    {opt.label}
-                                </option>
-                            ))}
-                        </Select>
+                        <Flex alignItems="center">
+                            <FormLabel className="basemap-switcher-label">{label}</FormLabel>
+                            <Select
+                                className="basemap-switcher-select"
+                                value={value}
+                                onChange={(e) => setValue(e.target.value)}
+                                aria-label={label}
+                            >
+                                {options?.map((opt) => (
+                                    <option key={opt.id} value={opt.label}>
+                                        {opt.label}
+                                    </option>
+                                ))}
+                            </Select>
+                        </Flex>
                     </FormControl>
                 </Flex>
             ) : (
