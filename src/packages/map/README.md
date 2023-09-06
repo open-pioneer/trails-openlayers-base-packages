@@ -46,6 +46,29 @@ function AppUI() {
 
 The component itself uses the map registry service to create the map using the provided `mapId`.
 
+### Map anchor component
+
+To pass custom React components onto the map, the following anchor-points are provided:
+
+-   `top-left`
+-   `top-right`
+-   `bottom-left`
+-   `bottom-right`
+
+Simple integration of a map anchor component into the map container with position `bottom-right` and optional horizontal and vertical gap:
+
+```jsx
+<MapContainer mapId="...">
+    <MapAnchor position="bottom-right" horizontalGap={25} verticalGap={25}>
+        ... {/** add map anchor content like other React components */}
+    </MapAnchor>
+</MapContainer>
+```
+
+The component itself calculate the `maxHeight` and `maxWidth` according to the map view padding and optional `horizontalGap`and `verticalGap` to avoid content overflow. In this case, the css property `overflow` is set to `hidden` to the map anchor component. If no `verticalGap` is configured, a default vertical gap of `30px` will be used.
+
+> NOTE: Please add the container anchor-points before other components to get the correct tab order.
+
 ### Map configuration
 
 Register a service providing `map.MapConfigProvider` to configure the contents of a map. Such a provider is typically located in an app.

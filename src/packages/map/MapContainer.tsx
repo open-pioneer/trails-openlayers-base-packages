@@ -2,9 +2,12 @@
 // SPDX-License-Identifier: Apache-2.0
 import { Resource, createLogger } from "@open-pioneer/core";
 import classNames from "classnames";
-import { useEffect, useRef } from "react";
+import type OlMap from "ol/Map";
+import { Extent } from "ol/extent";
+import { ReactNode, useEffect, useMemo, useRef } from "react";
 import { useMapModel } from "./useMapModel";
 import { MapModel } from "./api";
+import { MapContextProvider, MapContextType } from "./MapContext";
 const LOG = createLogger("map:MapContainer");
 
 /**
@@ -31,9 +34,22 @@ export interface MapContainerProps {
     viewPadding?: MapPadding | undefined;
 
     /**
+     * Behavior performed by the map when the view padding changes.
+     *
+     * - `none`: Do nothing.
+     * - `preserve-center`: Ensures that the center point remains the same by animating the view.
+     * - `preserve-extent`: Ensures that the extent remains the same by zooming.
+     *
+     * @default "preserve-center"
+     */
+    viewPaddingChangeBehavior?: "none" | "preserve-center" | "preserve-extent";
+
+    /**
      * Additional class name(s).
      */
     className?: string;
+
+    children?: ReactNode;
 }
 
 /**
@@ -42,7 +58,7 @@ export interface MapContainerProps {
  * There can only be at most one MapContainer for every map.
  */
 export function MapContainer(props: MapContainerProps) {
-    const { mapId, viewPadding, className } = props;
+    const { mapId, viewPadding, className, ...rest } = props;
     const mapElement = useRef<HTMLDivElement>(null);
     const modelState = useMapModel(mapId);
     const mapModel = modelState.map;
@@ -82,12 +98,17 @@ export function MapContainer(props: MapContainerProps) {
     const mapContainer: React.CSSProperties = {
         height: "100%"
     };
+
     return (
         <div
             className={classNames("map-container", className)}
             ref={mapElement}
             style={mapContainer}
-        />
+        >
+            {mapModel && (
+                <MapContainerReady map={mapModel.olMap} viewPadding={viewPadding} {...rest} />
+            )}
+        </div>
     );
 }
 
@@ -114,4 +135,107 @@ function registerMapTarget(mapModel: MapModel, target: HTMLDivElement): Resource
             }
         }
     };
+}
+
+/**
+ * This inner component is rendered when the map has been loaded.
+ *
+ * It provides the map instance and additional properties down the component tree.
+ */
+function MapContainerReady(
+    props: { map: OlMap } & Omit<MapContainerProps, "mapId" | "className">
+): JSX.Element {
+    const {
+        map,
+        viewPadding: viewPaddingProp,
+        viewPaddingChangeBehavior = "preserve-center",
+        children
+    } = props;
+
+    const viewPadding = useMemo<Required<MapPadding>>(() => {
+        return {
+            left: viewPaddingProp?.left ?? 0,
+            right: viewPaddingProp?.right ?? 0,
+            top: viewPaddingProp?.top ?? 0,
+            bottom: viewPaddingProp?.bottom ?? 0
+        };
+    }, [viewPaddingProp]);
+
+    // Apply view padding
+    useEffect(() => {
+        const mapView = map?.getView();
+        if (!map || !mapView) {
+            return;
+        }
+
+        const oldCenter = mapView.getCenter();
+        const oldPadding = fromOlPadding(mapView.padding);
+        const oldExtent = extentIncludingPadding(map, oldPadding);
+
+        mapView.padding = toOlPadding(viewPadding);
+        switch (viewPaddingChangeBehavior) {
+            case "preserve-center":
+                mapView.animate({ center: oldCenter, duration: 300 });
+                break;
+            case "preserve-extent": {
+                if (oldExtent) {
+                    mapView.animate({
+                        center: oldCenter,
+                        resolution: mapView.getResolutionForExtent(oldExtent),
+                        duration: 300
+                    });
+                }
+                break;
+            }
+            case "none":
+        }
+    }, [viewPadding, map, viewPaddingChangeBehavior]);
+
+    const mapContext = useMemo((): MapContextType => {
+        return {
+            map,
+            padding: viewPadding
+        };
+    }, [map, viewPadding]);
+    return <MapContextProvider value={mapContext}>{children}</MapContextProvider>;
+}
+
+/**
+ * Returns the extent visible in the non-padded region of the map.
+ */
+function extentIncludingPadding(map: OlMap, padding: Required<MapPadding>): Extent | undefined {
+    const size = map.getSize();
+    if (!size || size.length < 2) {
+        return undefined;
+    }
+
+    const [width, height] = size as [number, number];
+    const bottomLeft = map.getCoordinateFromPixel([padding.left, padding.bottom]);
+    const topRight = map.getCoordinateFromPixel([
+        Math.max(0, width - padding.right),
+        Math.max(0, height - padding.top)
+    ]);
+    if (!bottomLeft || !topRight) {
+        return undefined;
+    }
+
+    const [xmin, ymin] = bottomLeft;
+    const [xmax, ymax] = topRight;
+    return [xmin, ymin, xmax, ymax] as Extent;
+}
+
+function fromOlPadding(padding: number[] | undefined): Required<MapPadding> {
+    // top, right, bottom, left
+    return {
+        top: padding?.[0] ?? 0,
+        right: padding?.[1] ?? 0,
+        bottom: padding?.[2] ?? 0,
+        left: padding?.[3] ?? 0
+    };
+}
+
+function toOlPadding(padding: Required<MapPadding>): number[] {
+    // top, right, bottom, left
+    const { top, right, bottom, left } = padding;
+    return [top, right, bottom, left];
 }
