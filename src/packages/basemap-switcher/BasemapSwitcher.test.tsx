@@ -20,6 +20,14 @@ import { createPackageContextProviderProps, setupMap, waitForMapMount } from "./
  * Delete ./test-utils.ts
  */
 
+/**
+ * TODO: Tests schreiben
+ * - `noneBasemap` ist vorausgewählt
+ * - alle `basemaps` auf `visible = false`
+ * - setupMap mit OSM visible = true -> check ob select b-1
+ * - setupMap mit Toner visible = true -> check ob select b-2
+ */
+
 // used to avoid a "ResizeObserver is not defined" error
 import ResizeObserver from "resize-observer-polyfill";
 global.ResizeObserver = ResizeObserver;

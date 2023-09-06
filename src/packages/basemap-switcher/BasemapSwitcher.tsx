@@ -73,6 +73,12 @@ export interface BasemapSwitcherProps extends BoxProps, RefAttributes<HTMLDivEle
 }
 
 /**
+ * TODO:
+ * - Was passiert, wenn keine Basemap auf visible gesetzt ist (Standardmäßig "ohne Hintergrundkarte" auswählen?) --> Implementieren!
+ * - Watcher, wenn neue Basemaps hinzugefügt werden
+ */
+
+/**
  * The `BasemapSwitcher` component can be used in an app to switch between the different basemaps.
  */
 export const BasemapSwitcher: FC<BasemapSwitcherProps> = forwardRef(function BasemapSwitcher(
