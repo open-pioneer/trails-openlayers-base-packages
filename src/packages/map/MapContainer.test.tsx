@@ -17,7 +17,8 @@ import TileLayer from "ol/layer/Tile";
 import Stamen from "ol/source/Stamen";
 
 // used to avoid a "ResizeObserver is not defined" error
-global.ResizeObserver = require("resize-observer-polyfill");
+import ResizeObserver from "resize-observer-polyfill";
+global.ResizeObserver = ResizeObserver;
 
 afterEach(() => {
     vi.restoreAllMocks();

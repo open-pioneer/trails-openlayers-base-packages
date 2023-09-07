@@ -11,7 +11,11 @@ import View from "ol/View";
 import BaseEvent from "ol/events/Event";
 import { expect, it } from "vitest";
 import { CoordinateViewer } from "./CoordinateViewer";
-import { createPackageContextProviderProps, setupMap, waitForMapMount } from "./test-utils";
+import {
+    createPackageContextProviderProps,
+    setupMap,
+    waitForMapMount
+} from "@open-pioneer/map/test-utils";
 
 it("should successfully create a coordinate viewer component", async () => {
     const { mapId, registry } = await setupMap();
@@ -28,7 +32,7 @@ it("should successfully create a coordinate viewer component", async () => {
     const { viewerDiv } = await waitForCoordinateViewer();
     expect(viewerDiv).toMatchSnapshot();
 
-    // check scale viewer box is available
+    // check coordinate viewer box is available
     expect(viewerDiv).toBeInstanceOf(HTMLDivElement);
 });
 
@@ -104,6 +108,7 @@ it("tracks the user's mouse position", async () => {
 async function waitForCoordinateViewer() {
     const { viewerDiv, viewerText } = await waitFor(async () => {
         const domElement = await screen.findByTestId("base");
+
         const viewerDiv = domElement.querySelector(".coordinate-viewer");
         if (!viewerDiv) {
             throw new Error("coordinate viewer not rendered");
@@ -113,7 +118,9 @@ async function waitForCoordinateViewer() {
         if (!viewerText) {
             throw new Error("coordinate viewer text not rendered");
         }
+
         return { viewerDiv, viewerText };
     });
+
     return { viewerDiv, viewerText };
 }
