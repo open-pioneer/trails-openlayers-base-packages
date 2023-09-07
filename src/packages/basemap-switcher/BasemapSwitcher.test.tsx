@@ -8,24 +8,44 @@ import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render, screen, waitFor, act, fireEvent } from "@testing-library/react";
 import { expect, it } from "vitest";
 import { BasemapSwitcher } from "./BasemapSwitcher";
-import { createPackageContextProviderProps, setupMap, waitForMapMount } from "./test-utils";
-
-/**
- * TODO after merge PR:
- * import { createPackageContextProviderProps, setupMap, waitForMapMount } from "@open-pioneer/map/test-utils";
- *
- * @see https://github.com/open-pioneer/trails-openlayers-base-packages/pull/129
- * @see https://github.com/open-pioneer/trails-openlayers-base-packages/issues/121
- *
- * Delete ./test-utils.ts
- */
+import {
+    createPackageContextProviderProps,
+    setupMap,
+    waitForMapMount
+} from "@open-pioneer/map/test-utils";
+import TileLayer from "ol/layer/Tile";
+import OSM from "ol/source/OSM";
+import Stamen from "ol/source/Stamen";
 
 // used to avoid a "ResizeObserver is not defined" error
 import ResizeObserver from "resize-observer-polyfill";
 global.ResizeObserver = ResizeObserver;
 
+const defaultBasemapConfig = [
+    {
+        id: "b-1",
+        title: "OSM",
+        isBaseLayer: true,
+        visible: true,
+        layer: new TileLayer({
+            source: new OSM()
+        })
+    },
+    {
+        id: "b-2",
+        title: "Toner",
+        isBaseLayer: true,
+        visible: false,
+        layer: new TileLayer({
+            source: new Stamen({ layer: "toner" })
+        })
+    }
+];
+
 it("should successfully create a basemap switcher component", async () => {
-    const { mapId, registry } = await setupMap();
+    const { mapId, registry } = await setupMap({
+        layers: defaultBasemapConfig
+    });
     const noneBasemap = {
         id: "noBasemap",
         label: "Ohne Hintergrund",
@@ -57,7 +77,9 @@ it("should successfully create a basemap switcher component", async () => {
 });
 
 it("should successfully create a basemap switcher component with additional css classes and box properties", async () => {
-    const { mapId, registry } = await setupMap();
+    const { mapId, registry } = await setupMap({
+        layers: defaultBasemapConfig
+    });
 
     render(
         <PackageContextProvider {...createPackageContextProviderProps(registry)}>
@@ -83,7 +105,9 @@ it("should successfully create a basemap switcher component with additional css 
 });
 
 it("should successfully select a basemap from basemap switcher", async () => {
-    const { mapId, registry } = await setupMap();
+    const { mapId, registry } = await setupMap({
+        layers: defaultBasemapConfig
+    });
 
     const map = await registry.expectMapModel(mapId);
 

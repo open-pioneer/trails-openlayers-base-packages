@@ -6,12 +6,13 @@
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
 import Stamen from "ol/source/Stamen";
-import ResizeObserver from "resize-observer-polyfill";
 import { afterEach, expect, it, describe, vi } from "vitest";
 import { LayerModel } from "../api";
 import { MapModelImpl } from "./MapModelImpl";
 import { createMapModel } from "./createMapModel";
+
 // used to avoid a "ResizeObserver is not defined" error
+import ResizeObserver from "resize-observer-polyfill";
 global.ResizeObserver = ResizeObserver;
 
 let model: MapModelImpl | undefined;
