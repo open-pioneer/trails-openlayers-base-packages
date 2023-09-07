@@ -6,9 +6,11 @@
 import { afterEach, expect, it, describe } from "vitest";
 import { MapModelImpl } from "./MapModelImpl";
 import { createMapModel } from "./createMapModel";
-import ResizeObserver from "resize-observer-polyfill";
 import { waitFor } from "@testing-library/dom";
+import { waitForInitialExtent } from "./../test-utils";
+
 // used to avoid a "ResizeObserver is not defined" error
+import ResizeObserver from "resize-observer-polyfill";
 global.ResizeObserver = ResizeObserver;
 
 let model: MapModelImpl | undefined;
@@ -185,20 +187,4 @@ describe("whenDisplayed", () => {
 
 function waitTick() {
     return new Promise<void>((resolve) => resolve());
-}
-
-async function waitForInitialExtent(model: MapModelImpl) {
-    if (model.initialExtent) {
-        return;
-    }
-
-    await new Promise<void>((resolve, reject) => {
-        model?.once("changed:initialExtent", () => {
-            if (model?.initialExtent) {
-                resolve();
-            } else {
-                reject(new Error("expected a valid extent"));
-            }
-        });
-    });
 }
