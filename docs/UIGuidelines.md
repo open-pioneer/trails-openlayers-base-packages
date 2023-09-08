@@ -22,7 +22,7 @@ Guidelines for React components developed in this repository.
     -   In general: do not implement scrolling yourself, unless it makes sense to do so
 - "Tool"-Buttons:
   - Always use Chakra Button-Component (https://chakra-ui.com/docs/components/button/usage). You can define an icon and/or a label-text.
-  - If you only want to display an icon on the button, set the iconSpacing-prop to 0. Please don´t use a Chakra IconButton.
+  - If you only want to display an icon on the button, set the iconSpacing-prop to 0 and set the padding-prop to 0. Please don´t use a Chakra IconButton.
   - Define a tooltip for each button (https://chakra-ui.com/docs/components/tooltip/usage)
     - The label must be an i18n-string (might be same like aria-label)
     - "placement" should be "auto"
