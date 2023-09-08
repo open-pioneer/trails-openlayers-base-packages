@@ -15,7 +15,7 @@ import {
 } from "@open-pioneer/map/test-utils";
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
-import Stamen from "ol/source/Stamen";
+import { BkgTopPlusOpen } from "@open-pioneer/map/BkgTopPlusOpen";
 
 // used to avoid a "ResizeObserver is not defined" error
 import ResizeObserver from "resize-observer-polyfill";
@@ -33,11 +33,11 @@ const defaultBasemapConfig = [
     },
     {
         id: "b-2",
-        title: "Toner",
+        title: "TopPlus Open",
         isBaseLayer: true,
         visible: false,
         layer: new TileLayer({
-            source: new Stamen({ layer: "toner" })
+            source: new BkgTopPlusOpen()
         })
     }
 ];
@@ -132,7 +132,7 @@ it("should successfully select a basemap from basemap switcher", async () => {
     expect(firstActiveBaseLayer?.id).toBe("b-1");
 
     act(() => {
-        fireEvent.change(switcherSelect, { target: { value: "Toner" } });
+        fireEvent.change(switcherSelect, { target: { value: "TopPlus Open" } });
     });
     const nextActiveBaseLayer = map.layers.getActiveBaseLayer();
     expect(nextActiveBaseLayer?.id).toBe("b-2");

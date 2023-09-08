@@ -12,3 +12,4 @@ export {
     type UseMapModelResolved,
     type UseMapModelRejected
 } from "./useMapModel";
+export { BkgTopPlusOpen, type BkgTopPlusOpenProps } from "./BkgTopPlusOpen";

@@ -29,9 +29,9 @@ exports[`should successfully create a basemap switcher component 1`] = `
           OSM
         </option>
         <option
-          value="Toner"
+          value="TopPlus Open"
         >
-          Toner
+          TopPlus Open
         </option>
         <option
           value="Ohne Hintergrund"
@@ -89,9 +89,9 @@ exports[`should successfully create a basemap switcher component with additional
           OSM
         </option>
         <option
-          value="Toner"
+          value="TopPlus Open"
         >
-          Toner
+          TopPlus Open
         </option>
       </select>
       <div

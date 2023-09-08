@@ -14,7 +14,7 @@ import {
     SimpleMapOptions
 } from "./test-utils";
 import TileLayer from "ol/layer/Tile";
-import Stamen from "ol/source/Stamen";
+import { BkgTopPlusOpen } from "./BkgTopPlusOpen";
 
 // used to avoid a "ResizeObserver is not defined" error
 import ResizeObserver from "resize-observer-polyfill";
@@ -87,18 +87,18 @@ it("successfully creates a map with given configuration", async () => {
     const options: SimpleMapOptions = {
         layers: [
             {
-                title: "Watercolor",
+                title: "TopPlus Open",
                 layer: new TileLayer({
-                    source: new Stamen({ layer: "watercolor" }),
-                    properties: { title: "Watercolor" },
+                    source: new BkgTopPlusOpen(),
+                    properties: { title: "TopPlusOpen" },
                     visible: false
                 })
             },
             {
-                title: "Toner",
+                title: "TopPlus Open Grau",
                 layer: new TileLayer({
-                    source: new Stamen({ layer: "toner" }),
-                    properties: { title: "Toner" },
+                    source: new BkgTopPlusOpen({ layer: "web_grau" }),
+                    properties: { title: "TopPlus Open Grau" },
                     visible: false
                 })
             }
@@ -119,6 +119,6 @@ it("successfully creates a map with given configuration", async () => {
     // Div is registered as map target
     const map = await registry.expectMapModel(mapId);
     const layers = map.layers.getAllLayers();
-    expect(layers[0]?.title).toBe("Watercolor");
-    expect(layers[1]?.title).toBe("Toner");
+    expect(layers[0]?.title).toBe("TopPlus Open");
+    expect(layers[1]?.title).toBe("TopPlus Open Grau");
 });

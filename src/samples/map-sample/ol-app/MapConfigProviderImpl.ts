@@ -3,7 +3,7 @@
 import { MapConfig, MapConfigProvider } from "@open-pioneer/map";
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
-import Stamen from "ol/source/Stamen";
+import { BkgTopPlusOpen } from "@open-pioneer/map/BkgTopPlusOpen";
 import { registerProjections } from "@open-pioneer/map";
 
 export const MAP_ID = "main";
@@ -30,27 +30,36 @@ export class MapConfigProviderImpl implements MapConfigProvider {
             layers: [
                 {
                     id: "b-1",
-                    title: "OSM",
+                    title: "TopPlus Open",
                     isBaseLayer: true,
                     visible: false,
                     layer: new TileLayer({
-                        source: new OSM()
-                    })
-                },
-                {
-                    title: "Watercolor",
-                    visible: false,
-                    layer: new TileLayer({
-                        source: new Stamen({ layer: "watercolor" })
+                        source: new BkgTopPlusOpen()
                     })
                 },
                 {
                     id: "b-2",
-                    title: "Toner",
+                    title: "TopPlus Open Grau",
                     isBaseLayer: true,
                     visible: true,
                     layer: new TileLayer({
-                        source: new Stamen({ layer: "toner" })
+                        source: new BkgTopPlusOpen({ layer: "web_grau" })
+                    })
+                },
+                {
+                    id: "b-3",
+                    title: "TopPlus Open Light",
+                    isBaseLayer: true,
+                    visible: false,
+                    layer: new TileLayer({
+                        source: new BkgTopPlusOpen({ layer: "web_light" })
+                    })
+                },
+                {
+                    title: "OSM",
+                    visible: false,
+                    layer: new TileLayer({
+                        source: new OSM()
                     })
                 }
             ]

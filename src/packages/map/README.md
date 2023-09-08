@@ -193,7 +193,7 @@ Example: Simple implementation of a layer configuration.
 import { MapConfig, MapConfigProvider } from "@open-pioneer/map";
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
-import Stamen from "ol/source/Stamen";
+import TopPlusOpen from "@open-pioneer/map/BkgTopPlusOpen";
 
 export class MapConfigProviderImpl implements MapConfigProvider {
     async getMapConfig(): Promise<MapConfig> {
@@ -209,9 +209,9 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                 {
                     // layer configuration with optional properties
                     id: "abe0e3f8-0ba2-409c-b6b4-9d8429c732e3",
-                    title: "Watercolor",
+                    title: "TopPlus Open",
                     layer: new TileLayer({
-                        source: new Stamen({ layer: "watercolor" })
+                        source: new TopPlusOpen()
                     }),
                     attributes: {
                         foo: "bar"
