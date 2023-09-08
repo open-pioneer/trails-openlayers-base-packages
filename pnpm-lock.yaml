@@ -58,8 +58,8 @@ importers:
         specifier: ^10.16.0
         version: 10.16.0(react-dom@18.2.0)(react@18.2.0)
       ol:
-        specifier: ^7.5.1
-        version: 7.5.1
+        specifier: ^8.1.0
+        version: 8.1.0
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -235,8 +235,8 @@ importers:
         specifier: ^1.0.1
         version: 1.0.1(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/core@1.0.1)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
       ol:
-        specifier: ^7.5.1
-        version: 7.5.1
+        specifier: ^8.1.0
+        version: 8.1.0
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -290,8 +290,8 @@ importers:
         specifier: ^1.0.1
         version: 1.0.1(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/core@1.0.1)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
       ol:
-        specifier: ^7.5.1
-        version: 7.5.1
+        specifier: ^8.1.0
+        version: 8.1.0
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -316,8 +316,8 @@ importers:
         specifier: ^1.0.1
         version: 1.0.1(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/core@1.0.1)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
       ol:
-        specifier: ^7.5.1
-        version: 7.5.1
+        specifier: ^8.1.0
+        version: 8.1.0
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -348,8 +348,8 @@ importers:
         specifier: ^2.5.2
         version: 2.5.2
       ol:
-        specifier: ^7.5.1
-        version: 7.5.1
+        specifier: ^8.1.0
+        version: 8.1.0
       proj4:
         specifier: ^2.9.0
         version: 2.9.0
@@ -476,8 +476,8 @@ importers:
         specifier: workspace:^
         version: link:../../../packages/map
       ol:
-        specifier: ^7.5.1
-        version: 7.5.1
+        specifier: ^8.1.0
+        version: 8.1.0
 
   src/samples/map-sample/map-sample-zoom-component:
     dependencies:
@@ -500,8 +500,8 @@ importers:
         specifier: workspace:^
         version: link:../../../packages/map
       ol:
-        specifier: ^7.5.1
-        version: 7.5.1
+        specifier: ^8.1.0
+        version: 8.1.0
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -554,8 +554,8 @@ importers:
         specifier: workspace:*
         version: link:../map-sample-zoom-component
       ol:
-        specifier: ^7.5.1
-        version: 7.5.1
+        specifier: ^8.1.0
+        version: 8.1.0
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -5966,12 +5966,11 @@ packages:
       es-abstract: 1.21.1
     dev: true
 
-  /ol@7.5.1:
-    resolution: {integrity: sha512-CFXDhO8YdQt7I+zwrGYSONo/ZM2oLr7vUvxqpLEUyy+USaQjUeE8L6FBOWIPboopGVhnSVYd5hdEirn9ifKBZQ==}
+  /ol@8.1.0:
+    resolution: {integrity: sha512-cx3SH2plpFS9fM8pp1nCypgQXGJD7Mcb1E3mEySmy5XEw1DUEo+kkNzgtAZz5qupekqi7aU9iBJEjCoMfqvO2Q==}
     dependencies:
       earcut: 2.2.4
       geotiff: 2.0.7
-      ol-mapbox-style: link:support/disabled-package
       pbf: 3.2.1
       rbush: 3.0.1
     dev: false
