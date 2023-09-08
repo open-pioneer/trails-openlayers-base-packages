@@ -14,6 +14,7 @@ import { useRef, useState } from "react";
 import { FiCodesandbox, FiLayers } from "react-icons/fi";
 import { MAP_ID } from "./MapConfigProviderImpl";
 import { useIntl } from "open-pioneer:react-hooks";
+import { Toc } from "@open-pioneer/toc";
 
 const berlin = [1489200, 6894026, 1489200, 6894026];
 
@@ -80,6 +81,11 @@ export function MapApp() {
                                 }}
                                 mapId={MAP_ID}
                             ></BasemapSwitcher>
+                        </Box>
+                    </MapAnchor>
+                    <MapAnchor position="top-left" horizontalGap={10} verticalGap={80}>
+                        <Box backgroundColor="whiteAlpha.800">
+                            <Toc></Toc>
                         </Box>
                     </MapAnchor>
                     <MapAnchor position="bottom-right" horizontalGap={10} verticalGap={30}>
