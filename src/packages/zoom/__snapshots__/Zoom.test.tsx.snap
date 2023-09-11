@@ -1,0 +1,220 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`should successfully click the zoom in and zoom out button 1`] = `
+<div
+  class="zoom css-0"
+  data-theme="light"
+>
+  <div
+    class="css-1i2407o"
+    data-theme="light"
+  >
+    <button
+      aria-label="description_in"
+      class="chakra-button zoomin-button css-22xpxh"
+      data-theme="light"
+      type="button"
+    >
+      <svg
+        aria-hidden="true"
+        fill="none"
+        focusable="false"
+        height="1em"
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        viewBox="0 0 24 24"
+        width="1em"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <line
+          x1="12"
+          x2="12"
+          y1="5"
+          y2="19"
+        />
+        <line
+          x1="5"
+          x2="19"
+          y1="12"
+          y2="12"
+        />
+      </svg>
+    </button>
+    <button
+      aria-label="description_out"
+      class="chakra-button zoomout-button css-22xpxh"
+      data-theme="light"
+      type="button"
+    >
+      <svg
+        aria-hidden="true"
+        fill="none"
+        focusable="false"
+        height="1em"
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        viewBox="0 0 24 24"
+        width="1em"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <line
+          x1="5"
+          x2="19"
+          y1="12"
+          y2="12"
+        />
+      </svg>
+    </button>
+  </div>
+</div>
+`;
+
+exports[`should successfully create a zoom component with a zoom in and a zoom out button 1`] = `
+<div
+  class="zoom css-0"
+  data-theme="light"
+>
+  <div
+    class="css-1i2407o"
+    data-theme="light"
+  >
+    <button
+      aria-label="description_in"
+      class="chakra-button zoomin-button css-22xpxh"
+      data-theme="light"
+      type="button"
+    >
+      <svg
+        aria-hidden="true"
+        fill="none"
+        focusable="false"
+        height="1em"
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        viewBox="0 0 24 24"
+        width="1em"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <line
+          x1="12"
+          x2="12"
+          y1="5"
+          y2="19"
+        />
+        <line
+          x1="5"
+          x2="19"
+          y1="12"
+          y2="12"
+        />
+      </svg>
+    </button>
+    <button
+      aria-label="description_out"
+      class="chakra-button zoomout-button css-22xpxh"
+      data-theme="light"
+      type="button"
+    >
+      <svg
+        aria-hidden="true"
+        fill="none"
+        focusable="false"
+        height="1em"
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        viewBox="0 0 24 24"
+        width="1em"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <line
+          x1="5"
+          x2="19"
+          y1="12"
+          y2="12"
+        />
+      </svg>
+    </button>
+  </div>
+</div>
+`;
+
+exports[`should successfully create a zoom component with additional css classes 1`] = `
+<div
+  class="zoom testClass1 testClass2 css-0"
+  data-theme="light"
+>
+  <div
+    class="css-1i2407o"
+    data-theme="light"
+  >
+    <button
+      aria-label="description_in"
+      class="chakra-button zoomin-button css-22xpxh"
+      data-theme="light"
+      type="button"
+    >
+      <svg
+        aria-hidden="true"
+        fill="none"
+        focusable="false"
+        height="1em"
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        viewBox="0 0 24 24"
+        width="1em"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <line
+          x1="12"
+          x2="12"
+          y1="5"
+          y2="19"
+        />
+        <line
+          x1="5"
+          x2="19"
+          y1="12"
+          y2="12"
+        />
+      </svg>
+    </button>
+    <button
+      aria-label="description_out"
+      class="chakra-button zoomout-button css-22xpxh"
+      data-theme="light"
+      type="button"
+    >
+      <svg
+        aria-hidden="true"
+        fill="none"
+        focusable="false"
+        height="1em"
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        viewBox="0 0 24 24"
+        width="1em"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <line
+          x1="5"
+          x2="19"
+          y1="12"
+          y2="12"
+        />
+      </svg>
+    </button>
+  </div>
+</div>
+`;
