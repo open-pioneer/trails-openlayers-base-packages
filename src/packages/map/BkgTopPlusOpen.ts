@@ -14,6 +14,8 @@ export interface BkgTopPlusOpenProps {
 /**
  * Layer source for BKG TopPlus Open.
  *
+ * Used for @open-pioneer unit tests.
+ *
  * @see https://gdz.bkg.bund.de/index.php/default/wmts-topplusopen-wmts-topplus-open.html
  */
 export class BkgTopPlusOpen extends WMTS {
