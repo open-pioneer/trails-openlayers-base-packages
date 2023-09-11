@@ -12,6 +12,7 @@ const documentedPackages = [
     "packages/authentication",
     "packages/coordinate-viewer",
     "packages/scale-viewer",
+    "packages/basemap-switcher",
     "packages/initial-extent"
 ];
 

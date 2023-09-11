@@ -6,7 +6,7 @@ exports[`should successfully create a initial extent component with additional c
   data-theme="light"
 >
   <button
-    aria-label="aria-label"
+    aria-label="description"
     class="chakra-button initial-extent-button css-8269ki"
     data-theme="light"
     type="button"
@@ -41,7 +41,7 @@ exports[`should successfully create a initial extent component with home button 
   data-theme="light"
 >
   <button
-    aria-label="aria-label"
+    aria-label="description"
     class="chakra-button initial-extent-button css-8269ki"
     data-theme="light"
     type="button"

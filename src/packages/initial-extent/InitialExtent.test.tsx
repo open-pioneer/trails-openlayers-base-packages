@@ -7,14 +7,16 @@ import { MapContainer } from "@open-pioneer/map";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render, screen, waitFor } from "@testing-library/react";
 import { expect, it } from "vitest";
-import { createPackageContextProviderProps, setupMap, waitForMapMount } from "./test-utils";
-import ResizeObserver from "resize-observer-polyfill";
+import {
+    createPackageContextProviderProps,
+    setupMap,
+    waitForMapMount
+} from "@open-pioneer/map/test-utils";
 import userEvent from "@testing-library/user-event";
 import { InitialExtent } from "./InitialExtent";
 
-/* import { MapModelImpl } from "@open-pioneer/map/model/MapModelImpl"; */
-
 // used to avoid a "ResizeObserver is not defined" error
+import ResizeObserver from "resize-observer-polyfill";
 global.ResizeObserver = ResizeObserver;
 
 it("should successfully create a initial extent component with home button", async () => {

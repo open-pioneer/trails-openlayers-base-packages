@@ -1,0 +1,8 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`should successfully create a map anchor component 1`] = `
+<div
+  class="map-anchor css-3czzey"
+  data-theme="light"
+/>
+`;

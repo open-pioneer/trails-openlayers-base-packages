@@ -8,6 +8,7 @@
         "@emotion/styled": "^11.11.0",
         "@open-pioneer/chakra-integration": "^1.0.0",
         "@open-pioneer/coordinate-viewer": "workspace:^",
+        "@open-pioneer/basemap-switcher": "workspace:^",
         "@open-pioneer/experimental-layout-sidebar": "workspace:^",
         "@open-pioneer/experimental-ol-layer-control": "workspace:^",
         "@open-pioneer/map": "workspace:^",
