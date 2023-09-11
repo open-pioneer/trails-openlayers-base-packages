@@ -16,7 +16,7 @@ import { FiCodesandbox, FiLayers } from "react-icons/fi";
 import { MAP_ID } from "./MapConfigProviderImpl";
 import { useIntl } from "open-pioneer:react-hooks";
 
-const berlin = [1489200, 6894026, 1489200, 6894026];
+const berlin = [796987, 5827477, 796987, 5827477];
 
 export function MapApp() {
     const [viewPadding, setViewPadding] = useState<MapPadding>();
