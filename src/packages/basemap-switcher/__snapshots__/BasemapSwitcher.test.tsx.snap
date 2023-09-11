@@ -47,9 +47,9 @@ exports[`should successfully create a basemap switcher component 1`] = `
               Toner
             </option>
             <option
-              value="Ohne Hintergrund"
+              value="noneBasemapLabel"
             >
-              Ohne Hintergrund
+              noneBasemapLabel
             </option>
           </select>
           <div

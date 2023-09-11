@@ -8,28 +8,12 @@ import {
     Select,
     FormControl
 } from "@open-pioneer/chakra-integration";
-import { useMapModel, LayerCollection } from "@open-pioneer/map";
+import { useIntl } from "open-pioneer:react-hooks";
+import { useMapModel, LayerCollection, LayerModel } from "@open-pioneer/map";
 import { FC, ForwardedRef, forwardRef, RefAttributes, useEffect, useState } from "react";
 import { useBasemapLayers } from "./hooks";
 import classNames from "classnames";
 
-/**
- * Optional configuration for deactivation from all base layers.
- */
-export interface NoneBasemapConfig {
-    /**
-     * The id of the `noneBasemap` for the select option.
-     */
-    id: string;
-    /**
-     * The label of the `noneBasemap` for the select option.
-     */
-    label: string;
-    /**
-     * If `true`, the `noneBasemap` is selected initially.
-     */
-    selected: boolean;
-}
 /**
  * These are special properties for the `Select`.
  */
@@ -62,9 +46,9 @@ export interface BasemapSwitcherProps extends BoxProps, RefAttributes<HTMLDivEle
     className?: string;
 
     /**
-     * Optional config object, if none basemap option is set.
+     * Optional config, if none basemap option is set.
      */
-    noneBasemap?: NoneBasemapConfig | undefined;
+    noneBasemap?: boolean;
 
     /**
      * Optional label for the `Select`.
@@ -86,40 +70,40 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = forwardRef(function Bas
     ref: ForwardedRef<HTMLDivElement> | undefined
 ) {
     const { mapId, className, noneBasemap, label, ...rest } = props;
-    const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [value, setValue] = useState<string | undefined>();
+    const [layerId, setLayerId] = useState<string | undefined>();
     const [layerCollection, setLayerCollection] = useState<LayerCollection | undefined>(undefined);
     const [options, setOptions] = useState<SelectOptions[] | undefined>(undefined);
-    const mapState = useMapModel(mapId);
+    const { map } = useMapModel(mapId);
 
-    useBasemapLayers(value, layerCollection);
+    const intl = useIntl();
+    const noneBasemapLabel = intl.formatMessage({ id: "noneBasemapLabel" });
+
+    useBasemapLayers(layerId, layerCollection);
 
     useEffect(() => {
-        if (mapState.kind !== "resolved") {
+        if (!map) {
             return;
         }
-
-        setIsLoading(false);
-
-        const map = mapState.map;
         setLayerCollection(map?.layers);
+        const baseLayers = map?.layers.getBaseLayers();
+        const { options } = createOptions(baseLayers, noneBasemap, noneBasemapLabel);
+        const selected = options?.find((opt) => opt.selected);
 
-        const { options, selected } = createOptions(map?.layers, noneBasemap);
         setOptions(options);
-        setValue(selected?.label);
-    }, [mapState, noneBasemap]);
+        setLayerId(selected?.label);
+    }, [map, noneBasemap, noneBasemapLabel]);
 
     return (
         <Box className={classNames("basemap-switcher", className)} ref={ref} {...rest}>
-            {!isLoading ? (
+            {layerCollection ? (
                 <Flex gap={3} alignItems="center">
                     <FormControl>
                         <Flex alignItems="center">
                             <FormLabel className="basemap-switcher-label">{label}</FormLabel>
                             <Select
                                 className="basemap-switcher-select"
-                                value={value}
-                                onChange={(e) => setValue(e.target.value)}
+                                value={layerId}
+                                onChange={(e) => setLayerId(e.target.value)}
                                 aria-label={label}
                             >
                                 {options?.map((opt) => (
@@ -139,21 +123,26 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = forwardRef(function Bas
 });
 
 function createOptions(
-    layerCollection: LayerCollection | undefined,
-    noneBasemap: NoneBasemapConfig | undefined
+    baseLayers: LayerModel[] | undefined,
+    noneBasemap: boolean | undefined,
+    noneBasemapLabel: string
 ) {
-    const baseLayers = layerCollection?.getBaseLayers();
-
     const options = baseLayers?.map((item) => ({
         id: item.id,
         label: item.title,
         selected: item.visible
     }));
-
-    if (noneBasemap) {
-        options?.push(noneBasemap);
+    const isActiveBaseLayer = options?.some((opt) => opt.selected);
+    if (noneBasemap || !isActiveBaseLayer) {
+        options?.push(getNonBaseMapConfig(!isActiveBaseLayer, noneBasemapLabel));
     }
 
-    const selected = options?.find((opt) => opt.selected);
-    return { options, selected };
+    return { options };
+}
+function getNonBaseMapConfig(selected: boolean, label: string) {
+    return {
+        id: "noneBasemap",
+        label,
+        selected
+    };
 }

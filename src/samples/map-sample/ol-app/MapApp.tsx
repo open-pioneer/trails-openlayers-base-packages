@@ -56,15 +56,10 @@ export function MapApp() {
                 <Box textAlign="center" py={1} px={1}>
                     Open Pioneer - Map sample
                 </Box>
-
                 <BasemapSwitcher
                     ref={basemapSwitcherRef}
+                    noneBasemap
                     label={intl.formatMessage({ id: "basemapLabel" })}
-                    noneBasemap={{
-                        id: "noBasemap",
-                        label: intl.formatMessage({ id: "noBasemapLabel" }),
-                        selected: true
-                    }}
                     mapId={MAP_ID}
                 ></BasemapSwitcher>
             </Flex>

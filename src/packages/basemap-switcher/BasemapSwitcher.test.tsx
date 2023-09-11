@@ -34,11 +34,6 @@ global.ResizeObserver = ResizeObserver;
 
 it("should successfully create a basemap switcher component", async () => {
     const { mapId, registry } = await setupMap();
-    const noneBasemap = {
-        id: "noBasemap",
-        label: "Ohne Hintergrund",
-        selected: false
-    };
 
     render(
         <PackageContextProvider {...createPackageContextProviderProps(registry)}>
@@ -47,7 +42,7 @@ it("should successfully create a basemap switcher component", async () => {
                 <BasemapSwitcher
                     mapId={mapId}
                     label="Hintergrundkarte"
-                    noneBasemap={noneBasemap}
+                    noneBasemap
                 ></BasemapSwitcher>
             </div>
         </PackageContextProvider>

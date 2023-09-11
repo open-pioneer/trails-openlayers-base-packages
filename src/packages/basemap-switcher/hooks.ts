@@ -15,7 +15,7 @@ export function useBasemapLayers(
         }
 
         const layer = baseLayers.find((layer) => layer.title === layerId);
-        layerCollection.activateBaseLayer(layer ? layer.id : undefined);
+        layerCollection.activateBaseLayer(layer?.id);
     }, [baseLayers, layerCollection, layerId]);
 
     return { baseLayers };
