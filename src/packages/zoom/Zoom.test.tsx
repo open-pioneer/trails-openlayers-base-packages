@@ -12,8 +12,6 @@ import ResizeObserver from "resize-observer-polyfill";
 import userEvent from "@testing-library/user-event";
 import { Zoom } from "./Zoom";
 
-/* import { MapModelImpl } from "@open-pioneer/map/model/MapModelImpl"; */
-
 // used to avoid a "ResizeObserver is not defined" error
 global.ResizeObserver = ResizeObserver;
 
