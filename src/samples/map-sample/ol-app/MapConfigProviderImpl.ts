@@ -21,12 +21,8 @@ registerProjections({
 export class MapConfigProviderImpl implements MapConfigProvider {
     mapId = MAP_ID;
 
-    topLeftCorner = [-46133.17, 6301219.54];
+    topLeftCorner = [-3803165.98427299, 8805908.08284866];
 
-    /**
-     * The length of matrixIds needs to match the length of the resolutions array
-     * @see https://openlayers.org/en/latest/apidoc/module-ol_tilegrid_WMTS-WMTSTileGrid.html
-     */
     resolutions = [
         4891.96981025128, // AdV-Level 0  (1:17471320.7508974)
         2445.98490512564, // AdV-Level 1  (1:8735660.37544872)
@@ -41,11 +37,13 @@ export class MapConfigProviderImpl implements MapConfigProvider {
         4.77731426782352, // AdV-Level 10 (1:17061,8366707983)
         2.38865713391176, // AdV-Level 11 (1:8530,91833539914)
         1.19432856695588, // AdV-Level 12 (1:4265,45916769957)
-        0.59716428347794, // AdV-Level 13 (1:2132,72958384978)
-        0.29858214173897 // AdV-Level 14  (1:1066,36479192489)
-        // 0.14929107086949, //           (1:533,182395962445)
-        // 0.07464553543475 //            (1:266,5911979812214)
+        0.59716428347794 // AdV-Level 13 (1:2132,72958384978)
     ];
+
+    /**
+     * The length of matrixIds needs to match the length of the resolutions array
+     * @see https://openlayers.org/en/latest/apidoc/module-ol_tilegrid_WMTS-WMTSTileGrid.html
+     */
     matrixIds = new Array(this.resolutions.length);
 
     async getMapConfig(): Promise<MapConfig> {
@@ -65,17 +63,17 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     id: "topplus_open",
                     title: "TopPlus Open",
                     isBaseLayer: true,
-                    visible: true,
+                    visible: false,
                     layer: new TileLayer({
                         source: new WMTS({
-                            url: "https://www.wmts.nrw.de/topplus_open/tiles/topplus_col/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png",
-                            layer: "topplus_col",
-                            matrixSet: "EPSG_25832_14",
+                            url: "https://sgx.geodatenzentrum.de/wmts_topplus_open/tile/1.0.0/web/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png",
+                            layer: "web",
+                            matrixSet: "EU_EPSG_25832_TOPPLUS",
                             format: "image/png",
                             projection: "EPSG:25832",
                             requestEncoding: "REST",
                             tileGrid: new WMTSTileGrid({
-                                origin: [-46133.17, 6301219.54],
+                                origin: this.topLeftCorner,
                                 resolutions: this.resolutions,
                                 matrixIds: this.matrixIds
                             }),
@@ -85,21 +83,21 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                 },
                 {
                     id: "topplus_open_grau",
-                    title: "TopPlus Open (Graustufen-Darstellung)",
+                    title: "TopPlus Open (Grau)",
                     isBaseLayer: true,
                     visible: true,
                     layer: new TileLayer({
                         source: new WMTS({
-                            url: "https://www.wmts.nrw.de/topplus_open/tiles/topplus_grau/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png",
-                            layer: "topplus_grau",
-                            matrixSet: "EPSG_25832_14",
+                            url: "https://sgx.geodatenzentrum.de/wmts_topplus_open/tile/1.0.0/web_grau/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png",
+                            layer: "web_grau",
+                            matrixSet: "EU_EPSG_25832_TOPPLUS",
                             format: "image/png",
                             projection: "EPSG:25832",
                             requestEncoding: "REST",
                             tileGrid: new WMTSTileGrid({
-                                origin: [-46133.17, 6301219.54],
+                                origin: this.topLeftCorner,
                                 resolutions: this.resolutions,
-                                matrixIds: this.matrixIds.map((matrixId) => matrixId.identifier)
+                                matrixIds: this.matrixIds
                             }),
                             style: "default"
                         })
