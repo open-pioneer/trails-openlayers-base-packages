@@ -6,10 +6,12 @@
     "peerDependencies": {
         "@open-pioneer/core": "^1.0.1",
         "@open-pioneer/runtime": "^1.0.1",
+        "@open-pioneer/chakra-integration": "^1.0.0",
         "@types/proj4": "^2.5.2",
         "ol": "^7.5.1",
         "proj4": "^2.9.0",
         "react": "^18.2.0",
+        "react-dom": "^18.2.0",
         "react-use": "^17.4.0"
     },
     "devDependencies": {

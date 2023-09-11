@@ -15,6 +15,7 @@ import {
     OlMapOptions
 } from "./api";
 import { MapRegistryImpl } from "./services";
+import { MapModelImpl } from "./model/MapModelImpl";
 
 // used to avoid a "ResizeObserver is not defined" error
 import ResizeObserver from "resize-observer-polyfill";
@@ -32,8 +33,6 @@ export interface SimpleMapOptions {
     noProjection?: boolean;
 }
 
-export const MAP_ID = "test";
-
 export async function waitForMapMount(parentTestId = "base") {
     return await waitFor(async () => {
         const domElement = await screen.findByTestId(parentTestId);
@@ -45,8 +44,26 @@ export async function waitForMapMount(parentTestId = "base") {
     });
 }
 
+export async function waitForInitialExtent(model: MapModelImpl) {
+    if (model.initialExtent) {
+        return;
+    }
+
+    await new Promise<void>((resolve, reject) => {
+        model?.once("changed:initialExtent", () => {
+            if (model?.initialExtent) {
+                resolve();
+            } else {
+                reject(new Error("expected a valid extent"));
+            }
+        });
+    });
+}
+
 export async function setupMap(options?: SimpleMapOptions) {
+    // Always use "test" as mapId for unit tests
     const mapId = "test";
+
     const getInitialView = (): InitialViewConfig => {
         if (options?.extent) {
             return {

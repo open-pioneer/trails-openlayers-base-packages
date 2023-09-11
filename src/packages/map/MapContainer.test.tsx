@@ -7,10 +7,18 @@ import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render } from "@testing-library/react";
 import { afterEach, expect, it, vi } from "vitest";
 import { MapContainer } from "./MapContainer";
-import { createPackageContextProviderProps, setupMap, waitForMapMount } from "./test-utils";
+import {
+    createPackageContextProviderProps,
+    setupMap,
+    waitForMapMount,
+    SimpleMapOptions
+} from "./test-utils";
+import TileLayer from "ol/layer/Tile";
+import Stamen from "ol/source/Stamen";
 
 // used to avoid a "ResizeObserver is not defined" error
-global.ResizeObserver = require("resize-observer-polyfill");
+import ResizeObserver from "resize-observer-polyfill";
+global.ResizeObserver = ResizeObserver;
 
 afterEach(() => {
     vi.restoreAllMocks();
@@ -73,4 +81,44 @@ it("reports an error if two map containers are used for the same map", async () 
         ],
       }
     `);
+});
+
+it("successfully creates a map with given configuration", async () => {
+    const options: SimpleMapOptions = {
+        layers: [
+            {
+                title: "Watercolor",
+                layer: new TileLayer({
+                    source: new Stamen({ layer: "watercolor" }),
+                    properties: { title: "Watercolor" },
+                    visible: false
+                })
+            },
+            {
+                title: "Toner",
+                layer: new TileLayer({
+                    source: new Stamen({ layer: "toner" }),
+                    properties: { title: "Toner" },
+                    visible: false
+                })
+            }
+        ]
+    };
+    const { mapId, registry } = await setupMap(options);
+    render(
+        <PackageContextProvider {...createPackageContextProviderProps(registry)}>
+            <div data-testid="base">
+                <MapContainer mapId={mapId} />
+            </div>
+        </PackageContextProvider>
+    );
+
+    // Assert map is mounted
+    await waitForMapMount();
+
+    // Div is registered as map target
+    const map = await registry.expectMapModel(mapId);
+    const layers = map.layers.getAllLayers();
+    expect(layers[0]?.title).toBe("Watercolor");
+    expect(layers[1]?.title).toBe("Toner");
 });

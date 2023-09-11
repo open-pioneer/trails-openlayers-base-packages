@@ -3,7 +3,7 @@
 import { Box, Button, Flex } from "@open-pioneer/chakra-integration";
 import { Sidebar, SidebarItem } from "@open-pioneer/experimental-layout-sidebar";
 import { LayerControlComponent } from "@open-pioneer/experimental-ol-layer-control";
-import { MapContainer, MapPadding } from "@open-pioneer/map";
+import { MapAnchor, MapContainer, MapPadding } from "@open-pioneer/map";
 import { CoordinateViewer } from "@open-pioneer/coordinate-viewer";
 import { BasemapSwitcher } from "@open-pioneer/basemap-switcher";
 import { useMapModel } from "@open-pioneer/map";
@@ -15,7 +15,7 @@ import { FiCodesandbox, FiLayers } from "react-icons/fi";
 import { MAP_ID } from "./MapConfigProviderImpl";
 import { useIntl } from "open-pioneer:react-hooks";
 
-const berlin = [1489200, 6894026, 1489200, 6894026];
+const berlin = [796987, 5827477, 796987, 5827477];
 
 export function MapApp() {
     const [viewPadding, setViewPadding] = useState<MapPadding>();
@@ -65,25 +65,42 @@ export function MapApp() {
             </Flex>
 
             <Flex flex="1" direction="column" position="relative">
-                <MapContainer mapId={MAP_ID} viewPadding={viewPadding}></MapContainer>
-                <ZoomComponent className="zoom-controls" mapId={MAP_ID}></ZoomComponent>
-                <Flex
-                    className="map-panel"
-                    gap={3}
-                    alignItems="center"
-                    justifyContent="center"
-                    padding={4}
-                    roundedBottomLeft="lg"
-                    boxShadow="lg"
-                    backgroundColor={"whiteAlpha.800"}
+                <MapContainer
+                    mapId={MAP_ID}
+                    viewPadding={viewPadding}
+                    viewPaddingChangeBehavior="preserve-extent"
                 >
-                    <ScaleViewer mapId={MAP_ID} ref={scaleViewerRef}></ScaleViewer>
-                    <ScaleComponent mapId={MAP_ID}></ScaleComponent>
-                </Flex>
+                    <MapAnchor position="top-left" horizontalGap={10} verticalGap={10}>
+                        <Box
+                            backgroundColor="whiteAlpha.800"
+                            borderWidth="1px"
+                            borderRadius="lg"
+                            padding={2}
+                            boxShadow="lg"
+                        ></Box>
+                    </MapAnchor>
+                    <MapAnchor position="bottom-right" horizontalGap={10} verticalGap={30}>
+                        <ZoomComponent mapId={MAP_ID}></ZoomComponent>
+                    </MapAnchor>
+                    <MapAnchor position="top-right">
+                        <Flex
+                            gap={3}
+                            alignItems="center"
+                            justifyContent="center"
+                            padding={4}
+                            boxShadow="lg"
+                            backgroundColor="whiteAlpha.800"
+                        >
+                            <ScaleViewer mapId={MAP_ID} ref={scaleViewerRef}></ScaleViewer>
+                            <ScaleComponent mapId={MAP_ID}></ScaleComponent>
+                        </Flex>
+                    </MapAnchor>
+                </MapContainer>
+
                 <Sidebar
                     defaultExpanded={isExpanded}
                     expandedChanged={(expanded) => setExpanded(expanded)}
-                    sidebarWidthChanged={(width) => setViewPadding({ left: width / 2 })}
+                    sidebarWidthChanged={(width) => setViewPadding({ left: width })}
                     items={items}
                 />
             </Flex>

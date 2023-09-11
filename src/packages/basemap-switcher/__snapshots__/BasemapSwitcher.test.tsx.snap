@@ -37,16 +37,6 @@ exports[`should successfully create a basemap switcher component 1`] = `
             id="field-:r0:"
           >
             <option
-              value="OSM"
-            >
-              OSM
-            </option>
-            <option
-              value="Toner"
-            >
-              Toner
-            </option>
-            <option
               value="noneBasemapLabel"
             >
               noneBasemapLabel
