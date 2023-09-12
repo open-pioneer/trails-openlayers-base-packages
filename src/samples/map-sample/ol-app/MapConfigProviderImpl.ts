@@ -23,6 +23,11 @@ export class MapConfigProviderImpl implements MapConfigProvider {
 
     topLeftCorner = [-3803165.98427299, 8805908.08284866];
 
+    /**
+     * Array with resolutions and the corresponding scales. Taken from the AdV WMTS spec
+     *
+     * @see https://www.adv-online.de/AdV-Produkte/Standards-und-Produktblaetter/AdV-Profile/binarywriterservlet?imgUid=36060b99-b8c4-0a41-ba3c-cdd1072e13d6&uBasVariant=11111111-1111-1111-1111-111111111111
+     */
     resolutions = [
         4891.96981025128, // AdV-Level 0  (1:17471320.7508974)
         2445.98490512564, // AdV-Level 1  (1:8735660.37544872)
@@ -42,6 +47,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
 
     /**
      * The length of matrixIds needs to match the length of the resolutions array
+     *
      * @see https://openlayers.org/en/latest/apidoc/module-ol_tilegrid_WMTS-WMTSTileGrid.html
      */
     matrixIds = new Array(this.resolutions.length);
