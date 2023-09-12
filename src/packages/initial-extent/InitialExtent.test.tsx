@@ -95,7 +95,6 @@ it("should successfully click the home button and go to initial extent", async (
         ".initial-extent-button"
     ) as HTMLButtonElement;
 
-    //FIXME: https://github.com/open-pioneer/trails-openlayers-base-packages/issues/121
     const currentExtent = () => getCurrentExtent(mapModel.olMap);
 
     // Store initial extent
