@@ -209,9 +209,9 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                 {
                     // layer configuration with optional properties
                     id: "abe0e3f8-0ba2-409c-b6b4-9d8429c732e3",
-                    title: "TopPlus Open",
+                    title: "OSM with UUID",
                     layer: new TileLayer({
-                        source: new BkgTopPlusOpen()
+                        source: new OSM()
                     }),
                     attributes: {
                         foo: "bar"

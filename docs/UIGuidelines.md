@@ -47,7 +47,7 @@ Guidelines for React components developed in this repository.
 
 ## Theming
 
-- The Chakra theming mechanism allows to define a theme for each component. However, the aim is to create a base theme that allows to change the styles of an app easily by changing specific variable values instead of re-styling each component separately. For each Chakra component the base theme has to define the component's styles using well-defined specific variables. The base theme will be created step-by-step for each component that is used in the examples and components of the trails-openlayer-base-packages. For simplicity, the base theme will be developed in the `map-sample` of the trails-openlayer-base-packages.
+- The Chakra theming mechanism allows to define a theme for each component. However, the aim is to create a base theme that allows to change the styles of an app easily by changing specific variable values instead of re-styling each component separately. For each Chakra component the base theme has to define the component's styles using well-defined specific variables. The base theme will be created step-by-step for each component that is used in the examples and components of the trails-s-base-packages. For simplicity, the base theme will be developed in the `map-sample` of the trails-openlayers-base-packages.
   - Make sure that  all Chakra components used in the implementation do have a definition in the map-samples theme (https://chakra-ui.com/docs/styled-system/component-style)
   - Do not use specific colors or font (sizes) in components. If you need different variants of styles for one component us `variants` instead. 
     - e.g. Buttons: Use the pre-defined variants to style buttons.
