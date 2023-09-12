@@ -10,12 +10,6 @@ To integrate the scale viewer in your app, insert the following snippet and refe
 <ScaleViewer mapId="map_id"></ScaleViewer>
 ```
 
-### Customizing
-
-The scale viewer component can receive the `className` prop (optional string) that can be used to add additional the css classes of the component.
-
-It is possible to receive a reference to the component using `useRef`.
-
 ## License
 
 [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0)

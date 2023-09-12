@@ -30,7 +30,7 @@
 8. A changeset entry was generated (if appropriate) and a CHANGELOG.md exists in the package.
 
 ## Documentation
-- Stick to the following documentation guideline, if appropriate: [Documenation guideline](https://developers.google.com/style/highlights)
+- Stick to the following documentation guideline, if appropriate: [Documentation guideline](https://developers.google.com/style/highlights)
 - (There is no need to document for each component wether additional CSS classes can be passed using the `className`prop. This is documented in the UI concept documentation.)
 
 ## Code style

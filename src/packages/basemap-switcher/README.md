@@ -28,12 +28,6 @@ const noneBasemap = {
 <BasemapSwitcher mapId="map_id" label="Grundkarte" noneBasemap={noneBasemap}></BasemapSwitcher>
 ```
 
-### Customizing
-
-The basemap switcher component can receive the `className` prop (optional string) that can be used to add additional the css classes of the component.
-
-It is possible to receive a reference to the underlying DOM node (div) of the basemap switcher component using `useRef`.
-
 ## License
 
 [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0)

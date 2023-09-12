@@ -12,10 +12,6 @@ To integrate the coordinate viewer in your app, insert the following snippet and
 
 The optional precision attribute allows to define the number of coordinates' decimal places shown.
 
-### Customizing
-
-It is possible to receive a reference to the underlying DOM node (div) of the CoordinateViewer component using `useRef`.
-
 ## License
 
 [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0)
