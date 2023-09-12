@@ -6,7 +6,7 @@ import { act, render, renderHook } from "@testing-library/react";
 import View from "ol/View";
 import { get } from "ol/proj";
 import { describe, expect, it } from "vitest";
-import { createPackageContextProviderProps, setupMap, waitForMapMount } from "./test-utils";
+import { createServiceOptions, setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
 import { useCenter, useProjection, useResolution, useScale, useFormatting } from "./hooks";
 
 const LOCALE_DE = { locale: "de" };
@@ -15,8 +15,9 @@ const LOCALE_EN = { locale: "en" };
 it("should successfully create a map projection", async () => {
     const { mapId, registry } = await setupMap();
 
+    const injectedServices = createServiceOptions({ registry });
     render(
-        <PackageContextProvider {...createPackageContextProviderProps(registry)}>
+        <PackageContextProvider services={injectedServices}>
             <div data-testid="base">
                 <MapContainer mapId={mapId} />
             </div>
@@ -52,8 +53,9 @@ describe("hook test for scale viewer ", () => {
     it("should successfully create a map resolution", async () => {
         const { mapId, registry } = await setupMap();
 
+        const injectedServices = createServiceOptions({ registry });
         render(
-            <PackageContextProvider {...createPackageContextProviderProps(registry)}>
+            <PackageContextProvider services={injectedServices}>
                 <div data-testid="base">
                     <MapContainer mapId={mapId} />
                 </div>
@@ -99,8 +101,9 @@ describe("hook test for scale viewer ", () => {
     it("should successfully create a map center", async () => {
         const { mapId, registry } = await setupMap();
 
+        const injectedServices = createServiceOptions({ registry });
         render(
-            <PackageContextProvider {...createPackageContextProviderProps(registry)}>
+            <PackageContextProvider services={injectedServices}>
                 <div data-testid="base">
                     <MapContainer mapId={mapId} />
                 </div>
@@ -136,8 +139,9 @@ describe("hook test for scale viewer ", () => {
     it("should successfully create a map scale", async () => {
         const { registry, mapId } = await setupMap();
 
+        const injectedServices = createServiceOptions({ registry });
         render(
-            <PackageContextProvider {...createPackageContextProviderProps(registry)}>
+            <PackageContextProvider services={injectedServices}>
                 <div data-testid="base">
                     <MapContainer mapId={mapId} />
                 </div>
@@ -229,8 +233,9 @@ describe("hook test for coordinate viewer ", () => {
     it("should successfully create a map projection", async () => {
         const { mapId, registry } = await setupMap();
 
+        const injectedServices = createServiceOptions({ registry });
         render(
-            <PackageContextProvider {...createPackageContextProviderProps(registry)}>
+            <PackageContextProvider services={injectedServices}>
                 <div data-testid="base">
                     <MapContainer mapId={mapId} />
                 </div>

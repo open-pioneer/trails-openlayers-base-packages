@@ -5,11 +5,7 @@ import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render, screen, waitFor, act, fireEvent } from "@testing-library/react";
 import { expect, it } from "vitest";
 import { BasemapSwitcher } from "./BasemapSwitcher";
-import {
-    createPackageContextProviderProps,
-    setupMap,
-    waitForMapMount
-} from "@open-pioneer/map/test-utils";
+import { createServiceOptions, setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
 import Stamen from "ol/source/Stamen";
@@ -45,8 +41,9 @@ it("should successfully create a basemap switcher component", async () => {
         selected: false
     };
 
+    const injectedServices = createServiceOptions({ registry });
     render(
-        <PackageContextProvider {...createPackageContextProviderProps(registry)}>
+        <PackageContextProvider services={injectedServices}>
             <div data-testid="base">
                 <MapContainer mapId={mapId} />
                 <BasemapSwitcher
@@ -74,8 +71,9 @@ it("should successfully create a basemap switcher component with additional css 
         layers: defaultBasemapConfig
     });
 
+    const injectedServices = createServiceOptions({ registry });
     render(
-        <PackageContextProvider {...createPackageContextProviderProps(registry)}>
+        <PackageContextProvider services={injectedServices}>
             <div data-testid="base">
                 <MapContainer mapId={mapId} />
                 <BasemapSwitcher mapId={mapId} className="test" pl="1px"></BasemapSwitcher>
@@ -104,8 +102,9 @@ it("should successfully select a basemap from basemap switcher", async () => {
 
     const map = await registry.expectMapModel(mapId);
 
+    const injectedServices = createServiceOptions({ registry });
     render(
-        <PackageContextProvider {...createPackageContextProviderProps(registry)}>
+        <PackageContextProvider services={injectedServices}>
             <div data-testid="base">
                 <MapContainer mapId={mapId} />
                 <BasemapSwitcher mapId={mapId}></BasemapSwitcher>

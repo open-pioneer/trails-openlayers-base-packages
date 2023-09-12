@@ -8,17 +8,14 @@ import View from "ol/View";
 import BaseEvent from "ol/events/Event";
 import { expect, it } from "vitest";
 import { CoordinateViewer } from "./CoordinateViewer";
-import {
-    createPackageContextProviderProps,
-    setupMap,
-    waitForMapMount
-} from "@open-pioneer/map/test-utils";
+import { createServiceOptions, setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
 
 it("should successfully create a coordinate viewer component", async () => {
     const { mapId, registry } = await setupMap();
 
+    const injectedServices = createServiceOptions({ registry });
     render(
-        <PackageContextProvider {...createPackageContextProviderProps(registry)}>
+        <PackageContextProvider services={injectedServices}>
             <div data-testid="base">
                 <CoordinateViewer mapId={mapId}></CoordinateViewer>
             </div>
@@ -36,8 +33,9 @@ it("should successfully create a coordinate viewer component", async () => {
 it("should successfully create a coordinate viewer component with additional css classes and box properties", async () => {
     const { mapId, registry } = await setupMap();
 
+    const injectedServices = createServiceOptions({ registry });
     render(
-        <PackageContextProvider {...createPackageContextProviderProps(registry)}>
+        <PackageContextProvider services={injectedServices}>
             <div data-testid="base">
                 <CoordinateViewer mapId={mapId} className="test" pl="1px"></CoordinateViewer>
             </div>
@@ -59,8 +57,9 @@ it("should successfully create a coordinate viewer component with additional css
 it("tracks the user's mouse position", async () => {
     const { mapId, registry } = await setupMap();
 
+    const injectedServices = createServiceOptions({ registry });
     render(
-        <PackageContextProvider {...createPackageContextProviderProps(registry)}>
+        <PackageContextProvider services={injectedServices}>
             <chakra.div data-testid="map" height="500px" width="500px">
                 <MapContainer mapId={mapId} />
             </chakra.div>

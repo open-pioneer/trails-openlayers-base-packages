@@ -4,7 +4,7 @@ import { afterEach, expect, it, describe } from "vitest";
 import { MapModelImpl } from "./MapModelImpl";
 import { createMapModel } from "./createMapModel";
 import { waitFor } from "@testing-library/dom";
-import { waitForInitialExtent } from "./../test-utils";
+import { waitForInitialExtent } from "@open-pioneer/map-test-utils";
 
 let model: MapModelImpl | undefined;
 

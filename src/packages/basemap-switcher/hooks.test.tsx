@@ -5,11 +5,7 @@ import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render, renderHook } from "@testing-library/react";
 import { expect, it } from "vitest";
 import { useBasemapLayers } from "./hooks";
-import {
-    createPackageContextProviderProps,
-    setupMap,
-    waitForMapMount
-} from "@open-pioneer/map/test-utils";
+import { createServiceOptions, setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
 import Stamen from "ol/source/Stamen";
@@ -40,8 +36,9 @@ it("should successfully get basemap layers", async () => {
         layers: defaultBasemapConfig
     });
 
+    const injectedServices = createServiceOptions({ registry });
     render(
-        <PackageContextProvider {...createPackageContextProviderProps(registry)}>
+        <PackageContextProvider services={injectedServices}>
             <div data-testid="base">
                 <MapContainer mapId={mapId} />
             </div>

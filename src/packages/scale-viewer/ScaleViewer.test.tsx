@@ -4,13 +4,14 @@ import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render, screen, waitFor } from "@testing-library/react";
 import { expect, it } from "vitest";
 import { ScaleViewer } from "./ScaleViewer";
-import { createPackageContextProviderProps, setupMap } from "@open-pioneer/map/test-utils";
+import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
 
 it("should successfully create a scale viewer component", async () => {
     const { mapId, registry } = await setupMap();
 
+    const injectedServices = createServiceOptions({ registry });
     render(
-        <PackageContextProvider {...createPackageContextProviderProps(registry)}>
+        <PackageContextProvider services={injectedServices}>
             <div data-testid="base">
                 <ScaleViewer mapId={mapId}></ScaleViewer>
             </div>
@@ -28,8 +29,9 @@ it("should successfully create a scale viewer component", async () => {
 it("should successfully create a scale viewer component with additional css classes and box properties", async () => {
     const { mapId, registry } = await setupMap();
 
+    const injectedServices = createServiceOptions({ registry });
     render(
-        <PackageContextProvider {...createPackageContextProviderProps(registry)}>
+        <PackageContextProvider services={injectedServices}>
             <div data-testid="base">
                 <ScaleViewer mapId={mapId} className="test test1 test2" pl="1px" />
             </div>
