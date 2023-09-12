@@ -1,21 +1,23 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
 /**
- * @vitest-environment jsdom
+ * @vitest-environment happy-dom
  */
 import { MapContainer } from "@open-pioneer/map";
-import { PackageContextProvider } from "@open-pioneer/test-utils/react";
-import { render, screen, waitFor } from "@testing-library/react";
-import { expect, it } from "vitest";
 import {
     createPackageContextProviderProps,
     setupMap,
     waitForMapMount
 } from "@open-pioneer/map/test-utils";
+import { PackageContextProvider } from "@open-pioneer/test-utils/react";
+import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import OlMap from "ol/Map";
+import { expect, it } from "vitest";
 import { InitialExtent } from "./InitialExtent";
 
 // used to avoid a "ResizeObserver is not defined" error
+import { Extent, equals } from "ol/extent";
 import ResizeObserver from "resize-observer-polyfill";
 global.ResizeObserver = ResizeObserver;
 
@@ -84,29 +86,35 @@ it("should successfully click the home button and go to initial extent", async (
     const { initExtentDiv } = await waitForInitExtentComponent();
 
     const mapModel = await registry.expectMapModel(mapId);
-    // mapModel.olMap.setSize([500, 500]); // simulate map mount
-
-    // todo: why does whenDisplayed() not resolve?
-    // If 'mapModel.olMap.setSize([500, 500]);' is called, the whenDisplayed does resolve, however another error is thrown
-    //await mapModel.whenDisplayed(); // wait to make sure that "initialExtent" is initialized
+    await mapModel.whenDisplayed();
+    if (!mapModel.initialExtent) {
+        throw new Error("Initial extent not set");
+    }
 
     const initExtentBtn = initExtentDiv.querySelector(
         ".initial-extent-button"
     ) as HTMLButtonElement;
 
-    //const berlin = { xMin: 1489200, yMin: 6894026, xMax: 1489200, yMax: 6894026 };
-
     //FIXME: https://github.com/open-pioneer/trails-openlayers-base-packages/issues/121
-    //FIXME: initialExtent should be set through map api?
+    const currentExtent = () => getCurrentExtent(mapModel.olMap);
 
-    console.log("initExt", mapModel.initialExtent); //undefined
-    console.log("extent1", mapModel.olMap.getView().calculateExtent());
+    // Store initial extent
+    const extent1 = currentExtent();
 
+    // Navigate somewhere else
+    // const berlin = { xMin: 1489200, yMin: 6894026, xMax: 1489200, yMax: 6894026 };
     mapModel.olMap.getView().fit([1479200, 6884026, 1499200, 6897026]);
-    console.log("extent2", mapModel.olMap.getView().calculateExtent());
+    expect(equals(extent1, currentExtent())).toBe(false);
 
-    await user.click(initExtentBtn); //clicked -> extent2 === extent3
-    console.log("extent3", mapModel.olMap.getView().calculateExtent());
+    // Return to initial extent and wait for the animation to complete
+    await act(async () => {
+        await user.click(initExtentBtn);
+        await waitForStableExtent(mapModel.olMap);
+    });
+
+    // Extent should be the same
+    const extent2 = currentExtent();
+    expect(equals(extent1, extent2)).toBe(true);
 });
 
 async function waitForInitExtentComponent() {
@@ -120,4 +128,25 @@ async function waitForInitExtentComponent() {
         return { domElement, initExtentDiv };
     });
     return { domElement, initExtentDiv };
+}
+
+async function waitForStableExtent(olMap: OlMap) {
+    let lastExtent: Extent | undefined = undefined;
+    await waitFor(() => {
+        const currentExtent = getCurrentExtent(olMap);
+        if (lastExtent && equals(currentExtent, lastExtent)) {
+            return;
+        }
+
+        lastExtent = currentExtent;
+        throw new Error("Extent changed");
+    });
+}
+
+function getCurrentExtent(olMap: OlMap) {
+    const extent = olMap.getView().calculateExtent();
+    if (!extent) {
+        throw new Error("invalid extent");
+    }
+    return extent;
 }
