@@ -7,7 +7,11 @@ import { MapContainer } from "@open-pioneer/map";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render, screen, waitFor } from "@testing-library/react";
 import { expect, it } from "vitest";
-import { createPackageContextProviderProps, setupMap, waitForMapMount } from "./test-utils";
+import {
+    createPackageContextProviderProps,
+    setupMap,
+    waitForMapMount
+} from "@open-pioneer/map/test-utils";
 import ResizeObserver from "resize-observer-polyfill";
 import userEvent from "@testing-library/user-event";
 import { Zoom } from "./Zoom";
@@ -116,9 +120,9 @@ it("should successfully click the zoom in and zoom out button", async () => {
 async function waitForZoomComponent() {
     const { domElement, zoomDiv } = await waitFor(async () => {
         const domElement = await screen.findByTestId("base");
-        const zoomDiv = domElement.querySelector(".zoom"); // find first HTMLDivElement in basemap switcher component
+        const zoomDiv = domElement.querySelector(".zoom");
         if (!zoomDiv) {
-            throw new Error("InitExtentComponent not rendered");
+            throw new Error("zoom component not rendered");
         }
 
         return { domElement, zoomDiv };

@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-import { Box, BoxProps, IconButton, Flex, Tooltip } from "@open-pioneer/chakra-integration";
+import { Box, BoxProps, Button, Flex, Tooltip } from "@open-pioneer/chakra-integration";
 import { useMapModel } from "@open-pioneer/map";
 import { useIntl } from "open-pioneer:react-hooks";
 import classNames from "classnames";
@@ -20,7 +20,7 @@ export interface ZoomProps extends BoxProps, RefAttributes<HTMLDivElement> {
 }
 
 /**
- * Provides a simple Button that switches the View to its initial Viewpoint
+ * Provides two buttons by which the user can zoom in and zoom out of the map.
  */
 export const Zoom: FC<ZoomProps> = forwardRef(function Zoom(
     props: ZoomProps,
@@ -46,11 +46,13 @@ export const Zoom: FC<ZoomProps> = forwardRef(function Zoom(
                     placement="auto"
                     openDelay={500}
                 >
-                    <IconButton
+                    <Button
                         className="zoomin-button"
                         aria-label={intl.formatMessage({ id: "description_in" })}
-                        icon={<FiPlus />}
+                        leftIcon={<FiPlus />}
                         onClick={() => zoom(true)}
+                        iconSpacing={0}
+                        padding={0}
                     />
                 </Tooltip>
                 <Tooltip
@@ -58,11 +60,13 @@ export const Zoom: FC<ZoomProps> = forwardRef(function Zoom(
                     placement="auto"
                     openDelay={500}
                 >
-                    <IconButton
+                    <Button
                         className="zoomout-button"
                         aria-label={intl.formatMessage({ id: "description_out" })}
-                        icon={<FiMinus />}
+                        leftIcon={<FiMinus />}
                         onClick={() => zoom(false)}
+                        iconSpacing={0}
+                        padding={0}
                     />
                 </Tooltip>
             </Flex>
