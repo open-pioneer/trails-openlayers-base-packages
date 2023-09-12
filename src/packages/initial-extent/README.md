@@ -1,20 +1,14 @@
 # @open-pioneer/initial-extent
 
-This package provides a simple Button that switches the View to its initial Viewpoint.
+This package provides a simple button that switches the view to its initial viewpoint.
 
 ## Usage
 
-To integrate the component in your app, insert the following snippet and reference a map ID:
+To integrate the component in your app, insert the following snippet and reference a map id:
 
 ```jsx
 <InitialExtent mapId="map_id"></InitialExtent>
 ```
-
-### Customizing
-
-The component can receive the `className` prop (optional string) that can be used to add additional the css classes of the component.
-
-It is possible to receive a reference to the component using `useRef`.
 
 ## License
 
