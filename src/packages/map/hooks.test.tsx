@@ -1,8 +1,5 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-/**
- * @vitest-environment jsdom
- */
 import { MapContainer } from "./MapContainer";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { act, render, renderHook } from "@testing-library/react";
@@ -11,10 +8,6 @@ import { get } from "ol/proj";
 import { describe, expect, it } from "vitest";
 import { createPackageContextProviderProps, setupMap, waitForMapMount } from "./test-utils";
 import { useCenter, useProjection, useResolution, useScale, useFormatting } from "./hooks";
-
-// used to avoid a "ResizeObserver is not defined" error
-import ResizeObserver from "resize-observer-polyfill";
-global.ResizeObserver = ResizeObserver;
 
 const LOCALE_DE = { locale: "de" };
 const LOCALE_EN = { locale: "en" };

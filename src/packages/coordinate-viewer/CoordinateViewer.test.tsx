@@ -1,8 +1,5 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-/**
- * @vitest-environment jsdom
- */
 import { chakra } from "@open-pioneer/chakra-integration";
 import { MapContainer } from "@open-pioneer/map";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";

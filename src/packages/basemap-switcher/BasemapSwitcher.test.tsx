@@ -1,8 +1,5 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-/**
- * @vitest-environment jsdom
- */
 import { MapContainer } from "@open-pioneer/map";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render, screen, waitFor, act, fireEvent } from "@testing-library/react";
@@ -16,10 +13,6 @@ import {
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
 import Stamen from "ol/source/Stamen";
-
-// used to avoid a "ResizeObserver is not defined" error
-import ResizeObserver from "resize-observer-polyfill";
-global.ResizeObserver = ResizeObserver;
 
 const defaultBasemapConfig = [
     {

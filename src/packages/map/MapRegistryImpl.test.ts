@@ -1,8 +1,5 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-/**
- * @vitest-environment jsdom
- */
 import { getErrorChain } from "@open-pioneer/core";
 import { View } from "ol";
 import { Attribution } from "ol/control";
@@ -13,10 +10,6 @@ import OlMap from "ol/Map";
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
 import Stamen from "ol/source/Stamen";
-
-// used to avoid a "ResizeObserver is not defined" error
-import ResizeObserver from "resize-observer-polyfill";
-global.ResizeObserver = ResizeObserver;
 
 afterEach(() => {
     vi.restoreAllMocks();

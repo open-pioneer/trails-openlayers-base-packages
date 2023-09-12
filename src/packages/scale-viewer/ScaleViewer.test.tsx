@@ -1,17 +1,10 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-/**
- * @vitest-environment jsdom
- */
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render, screen, waitFor } from "@testing-library/react";
 import { expect, it } from "vitest";
 import { ScaleViewer } from "./ScaleViewer";
 import { createPackageContextProviderProps, setupMap } from "@open-pioneer/map/test-utils";
-
-// used to avoid a "ResizeObserver is not defined" error
-import ResizeObserver from "resize-observer-polyfill";
-global.ResizeObserver = ResizeObserver;
 
 it("should successfully create a scale viewer component", async () => {
     const { mapId, registry } = await setupMap();

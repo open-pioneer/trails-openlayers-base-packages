@@ -17,10 +17,6 @@ import {
 import { MapRegistryImpl } from "./services";
 import { MapModelImpl } from "./model/MapModelImpl";
 
-// used to avoid a "ResizeObserver is not defined" error
-import ResizeObserver from "resize-observer-polyfill";
-global.ResizeObserver = ResizeObserver;
-
 export interface SimpleMapOptions {
     center?: { x: number; y: number };
     zoom?: number;

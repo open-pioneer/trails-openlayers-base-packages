@@ -10,10 +10,6 @@ import { expect, it } from "vitest";
 import { LayerControlComponent } from "./LayerControlComponent";
 import { createPackageContextProviderProps, setupMap } from "@open-pioneer/map/test-utils";
 
-// used to avoid a "ResizeObserver is not defined" error
-import ResizeObserver from "resize-observer-polyfill";
-global.ResizeObserver = ResizeObserver;
-
 it("should successfully create a layer control component", async () => {
     const { mapId, registry } = await setupMap();
     await registry.expectMapModel(mapId);

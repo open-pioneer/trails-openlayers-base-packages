@@ -4,9 +4,9 @@
     "license": "Apache-2.0",
     "main": "index.ts",
     "peerDependencies": {
+        "@open-pioneer/chakra-integration": "^1.0.0",
         "@open-pioneer/core": "^1.0.1",
         "@open-pioneer/runtime": "^1.0.1",
-        "@open-pioneer/chakra-integration": "^1.0.0",
         "@types/proj4": "^2.5.2",
         "ol": "^7.5.1",
         "proj4": "^2.9.0",
@@ -16,8 +16,7 @@
     },
     "devDependencies": {
         "@types/uuid": "^9.0.2",
-        "openlayers-base-packages": "workspace:*",
-        "resize-observer-polyfill": "^1.5.1"
+        "openlayers-base-packages": "workspace:*"
     },
     "publishConfig": {
         "directory": "dist",

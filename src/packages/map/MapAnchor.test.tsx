@@ -1,8 +1,5 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-/**
- * @vitest-environment jsdom
- */
 import { MapContainer, MapPadding } from "./MapContainer";
 import { createPackageContextProviderProps, setupMap, waitForMapMount } from "./test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
@@ -15,9 +12,6 @@ import {
     computePositionStyles
 } from "./MapAnchor";
 import { Box, StyleProps } from "@open-pioneer/chakra-integration";
-
-// used to avoid a "ResizeObserver is not defined" error
-global.ResizeObserver = require("resize-observer-polyfill");
 
 it("should successfully create a map anchor component", async () => {
     const { mapId, registry } = await setupMap();
