@@ -21,7 +21,7 @@ export interface InitialExtentProps extends BoxProps, RefAttributes<HTMLDivEleme
 }
 
 /**
- * Provides a simple Button that switches the View to its initial Viewpoint
+ * Provides a simple button that switches the view to its initial viewpoint.
  */
 export const InitialExtent: FC<InitialExtentProps> = forwardRef(function InitialExtent(
     props: InitialExtentProps,
