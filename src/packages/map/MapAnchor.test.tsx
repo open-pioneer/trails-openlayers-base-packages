@@ -78,7 +78,7 @@ it('should successfully create a map anchor component with prop `position="top-l
         <PackageContextProvider services={injectedServices}>
             <div data-testid="base">
                 <MapContainer mapId={mapId}>
-                    <MapAnchor position="top-left"></MapAnchor>
+                    <MapAnchor position="top-left" />
                 </MapContainer>
             </div>
         </PackageContextProvider>
@@ -106,7 +106,7 @@ it('should successfully create a map anchor component with prop `position="botto
         <PackageContextProvider services={injectedServices}>
             <div data-testid="base">
                 <MapContainer mapId={mapId}>
-                    <MapAnchor position="bottom-right"></MapAnchor>
+                    <MapAnchor position="bottom-right" />
                 </MapContainer>
             </div>
         </PackageContextProvider>
@@ -136,11 +136,7 @@ it('should successfully create a map anchor component with props `position="bott
         <PackageContextProvider services={injectedServices}>
             <div data-testid="base">
                 <MapContainer mapId={mapId}>
-                    <MapAnchor
-                        position="bottom-right"
-                        horizontalGap={30}
-                        verticalGap={10}
-                    ></MapAnchor>
+                    <MapAnchor position="bottom-right" horizontalGap={30} verticalGap={10} />
                 </MapContainer>
             </div>
         </PackageContextProvider>
@@ -204,8 +200,8 @@ it("should successfully create multiple map anchor components", async () => {
         <PackageContextProvider services={injectedServices}>
             <div data-testid="base">
                 <MapContainer mapId={mapId}>
-                    <MapAnchor className="testabc"></MapAnchor>
-                    <MapAnchor className="testdef"></MapAnchor>
+                    <MapAnchor className="testabc" />
+                    <MapAnchor className="testdef" />
                 </MapContainer>
             </div>
         </PackageContextProvider>
