@@ -6,6 +6,9 @@ import classNames from "classnames";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, ForwardedRef, RefAttributes, forwardRef } from "react";
 
+/**
+ * These are special properties for the ScaleViewer.
+ */
 export interface ScaleViewerProps extends BoxProps, RefAttributes<HTMLDivElement> {
     /**
      * The map id.

@@ -19,7 +19,7 @@ const targets = ["chrome92", "edge92", "firefox91", "safari14"];
 // See also: https://github.com/btd/rollup-plugin-visualizer
 const visualize = false;
 
-const sampleSites = ["samples/map-sample", "samples/auth-sample", "samples/notify-sample"];
+const sampleSites = ["samples/map-sample", "samples/auth-sample", "samples/notify-sample", "samples/test-basemap-switcher"];
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {

@@ -73,12 +73,8 @@ export function MapApp() {
                         >
                             <BasemapSwitcher
                                 ref={basemapSwitcherRef}
+                                noneBasemap
                                 label={intl.formatMessage({ id: "basemapLabel" })}
-                                noneBasemap={{
-                                    id: "noBasemap",
-                                    label: intl.formatMessage({ id: "noBasemapLabel" }),
-                                    selected: true
-                                }}
                                 mapId={MAP_ID}
                             ></BasemapSwitcher>
                         </Box>
