@@ -56,12 +56,6 @@ export function MapApp() {
                 <Box textAlign="center" py={1} px={1}>
                     Open Pioneer - Map sample
                 </Box>
-                <BasemapSwitcher
-                    ref={basemapSwitcherRef}
-                    noneBasemap
-                    label={intl.formatMessage({ id: "basemapLabel" })}
-                    mapId={MAP_ID}
-                ></BasemapSwitcher>
             </Flex>
 
             <Flex flex="1" direction="column" position="relative">
@@ -77,7 +71,14 @@ export function MapApp() {
                             borderRadius="lg"
                             padding={2}
                             boxShadow="lg"
-                        ></Box>
+                        >
+                            <BasemapSwitcher
+                                ref={basemapSwitcherRef}
+                                noneBasemap
+                                label={intl.formatMessage({ id: "basemapLabel" })}
+                                mapId={MAP_ID}
+                            ></BasemapSwitcher>
+                        </Box>
                     </MapAnchor>
                     <MapAnchor position="bottom-right" horizontalGap={10} verticalGap={30}>
                         <ZoomComponent mapId={MAP_ID}></ZoomComponent>
