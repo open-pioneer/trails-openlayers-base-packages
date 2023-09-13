@@ -1,23 +1,26 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-import {
-    Box,
-    FormLabel,
-    BoxProps,
-    Flex,
-    Select,
-    FormControl
-} from "@open-pioneer/chakra-integration";
-import { useIntl } from "open-pioneer:react-hooks";
-import { useMapModel, LayerCollection, LayerModel } from "@open-pioneer/map";
-import { FC, ForwardedRef, forwardRef, RefAttributes, useEffect, useState } from "react";
-import { useBasemapLayers } from "./hooks";
+import { Box, BoxProps, FormControl, FormLabel, Select } from "@open-pioneer/chakra-integration";
+import { LayerModel, MapModel, useMapModel } from "@open-pioneer/map";
 import classNames from "classnames";
+import { useIntl } from "open-pioneer:react-hooks";
+import {
+    FC,
+    ForwardedRef,
+    RefAttributes,
+    forwardRef,
+    useCallback,
+    useMemo,
+    useRef,
+    useSyncExternalStore
+} from "react";
+
+const NO_BASEMAP_ID = "";
 
 /**
  * These are special properties for the `Select`.
  */
-interface SelectOptions {
+interface SelectOption {
     /**
      * The id of the basemap for the select option.
      */
@@ -26,11 +29,8 @@ interface SelectOptions {
      * The label of the basemap for the select option.
      */
     label: string;
-    /**
-     * If `true`, the basemap is visible and selected initially.
-     */
-    selected: boolean;
 }
+
 /**
  * These are special properties for the BasemapSwitcher.
  */
@@ -59,55 +59,45 @@ export interface BasemapSwitcherProps extends BoxProps, RefAttributes<HTMLDivEle
 }
 
 /**
- * TODO:
- * - Was passiert, wenn keine Basemap auf visible gesetzt ist (Standardmäßig "ohne Hintergrundkarte" auswählen?) --> Implementieren!
- * - Watcher, wenn neue Basemaps hinzugefügt werden
- */
-
-/**
  * The `BasemapSwitcher` component can be used in an app to switch between the different basemaps.
  */
 export const BasemapSwitcher: FC<BasemapSwitcherProps> = forwardRef(function BasemapSwitcher(
     props: BasemapSwitcherProps,
     ref: ForwardedRef<HTMLDivElement> | undefined
 ) {
-    const { mapId, className, noneBasemap, label, ...rest } = props;
-    const [layerId, setLayerId] = useState<string | undefined>();
-    const [layerCollection, setLayerCollection] = useState<LayerCollection | undefined>(undefined);
-    const [options, setOptions] = useState<SelectOptions[] | undefined>(undefined);
-    const { map } = useMapModel(mapId);
-
     const intl = useIntl();
+    const {
+        mapId,
+        className,
+        noneBasemap,
+        label = intl.formatMessage({ id: "defaultLabel" }),
+        ...rest
+    } = props;
     const noneBasemapLabel = intl.formatMessage({ id: "noneBasemapLabel" });
 
-    useBasemapLayers(layerId, layerCollection);
-
-    useEffect(() => {
-        if (!map) {
-            return;
-        }
-        setLayerCollection(map?.layers);
-        const baseLayers = map?.layers.getBaseLayers();
-        const { options } = createOptions(baseLayers, noneBasemap, noneBasemapLabel);
-        const selected = options?.find((opt) => opt.selected);
-
-        setOptions(options);
-        setLayerId(selected?.label);
-    }, [map, noneBasemap, noneBasemapLabel]);
+    const { map } = useMapModel(mapId);
+    const baseLayers = useBaseLayers(map);
+    const { selectOptions, selectedId } = useMemo(() => {
+        return createOptions({ baseLayers, noneBasemap, noneBasemapLabel });
+    }, [baseLayers, noneBasemap, noneBasemapLabel]);
+    const activateLayer = (layerId: string) => {
+        // empty string is used for "no basemap"
+        map?.layers.activateBaseLayer(layerId === NO_BASEMAP_ID ? undefined : layerId);
+    };
 
     return (
         <Box className={classNames("basemap-switcher", className)} ref={ref} {...rest}>
-            {layerCollection ? (
+            {map ? (
                 <FormControl display="flex" alignItems="center">
                     <FormLabel className="basemap-switcher-label">{label}</FormLabel>
                     <Select
                         className="basemap-switcher-select"
-                        value={layerId}
-                        onChange={(e) => setLayerId(e.target.value)}
-                        aria-label={label}
+                        value={selectedId}
+                        onChange={(e) => activateLayer(e.target.value)}
+                        aria-label={label} /** TODO: Needed? Form label should be sufficient? */
                     >
-                        {options?.map((opt) => (
-                            <option key={opt.id} value={opt.label}>
+                        {selectOptions.map((opt) => (
+                            <option key={opt.id} value={opt.id}>
                                 {opt.label}
                             </option>
                         ))}
@@ -120,27 +110,61 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = forwardRef(function Bas
     );
 });
 
-function createOptions(
-    baseLayers: LayerModel[] | undefined,
-    noneBasemap: boolean | undefined,
-    noneBasemapLabel: string
-) {
-    const options = baseLayers?.map((item) => ({
-        id: item.id,
-        label: item.title,
-        selected: item.visible
-    }));
-    const isActiveBaseLayer = options?.some((opt) => opt.selected);
-    if (noneBasemap || !isActiveBaseLayer) {
-        options?.push(getNonBaseMapConfig(!isActiveBaseLayer, noneBasemapLabel));
-    }
+function useBaseLayers(mapModel: MapModel | undefined): LayerModel[] {
+    // Caches potentially expensive layers arrays.
+    // Not sure if this is a good idea, but getSnapshot() should always be fast.
+    // If this is a no-go, make getAllLayers() fast instead.
+    const baseLayers = useRef<LayerModel[] | undefined>();
+    const subscribe = useCallback(
+        (cb: () => void) => {
+            // Reset cache when (re-) subscribing
+            baseLayers.current = undefined;
 
-    return { options };
+            if (!mapModel) {
+                return () => undefined;
+            }
+            const resource = mapModel.layers.on("changed", () => {
+                // Reset cache content so getSnapshot() fetches basemaps again.
+                baseLayers.current = undefined;
+                cb();
+            });
+            return () => resource.destroy();
+        },
+        [mapModel]
+    );
+    const getSnapshot = useCallback(() => {
+        if (baseLayers.current) {
+            return baseLayers.current;
+        }
+        return (baseLayers.current = mapModel?.layers.getBaseLayers() ?? []);
+    }, [mapModel]);
+    return useSyncExternalStore(subscribe, getSnapshot);
 }
-function getNonBaseMapConfig(selected: boolean, label: string) {
+
+function createOptions(params: {
+    baseLayers: LayerModel[];
+    noneBasemap: boolean | undefined;
+    noneBasemapLabel: string;
+}): { selectOptions: SelectOption[]; selectedId: string } {
+    const { baseLayers = [], noneBasemap = false, noneBasemapLabel } = params;
+    const selectOptions: SelectOption[] = baseLayers.map((item) => ({
+        id: item.id,
+        label: item.title
+    }));
+
+    let selectedId = baseLayers.find((layer) => layer.visible)?.id;
+    if (noneBasemap || selectedId == null) {
+        selectOptions.push(getNonBaseMapConfig(noneBasemapLabel));
+    }
+    if (selectedId == null) {
+        selectedId = NO_BASEMAP_ID;
+    }
+    return { selectOptions, selectedId };
+}
+
+function getNonBaseMapConfig(label: string) {
     return {
-        id: "noneBasemap",
-        label,
-        selected
+        id: NO_BASEMAP_ID,
+        label
     };
 }

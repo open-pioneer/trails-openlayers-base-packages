@@ -29,7 +29,7 @@ exports[`should successfully create a basemap switcher component 1`] = `
         id="field-:r0:"
       >
         <option
-          value="noneBasemapLabel"
+          value=""
         >
           noneBasemapLabel
         </option>
@@ -72,23 +72,26 @@ exports[`should successfully create a basemap switcher component with additional
       data-theme="light"
       for="field-:r1:"
       id="field-:r1:-label"
-    />
+    >
+      defaultLabel
+    </label>
     <div
       class="chakra-select__wrapper css-42b2qy"
       data-theme="light"
     >
       <select
+        aria-label="defaultLabel"
         class="chakra-select basemap-switcher-select css-161pkch"
         data-theme="light"
         id="field-:r1:"
       >
         <option
-          value="OSM"
+          value="osm"
         >
           OSM
         </option>
         <option
-          value="Toner"
+          value="toner"
         >
           Toner
         </option>

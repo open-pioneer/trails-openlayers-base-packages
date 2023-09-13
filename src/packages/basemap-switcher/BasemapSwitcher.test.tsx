@@ -17,19 +17,13 @@ import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
 import Stamen from "ol/source/Stamen";
 
-/**
- * TODO: Tests schreiben
- * - `noneBasemap` ist vorausgewählt
- * - alle `basemaps` auf `visible = false`
- */
-
 // used to avoid a "ResizeObserver is not defined" error
 import ResizeObserver from "resize-observer-polyfill";
 global.ResizeObserver = ResizeObserver;
 
 const defaultBasemapConfig = [
     {
-        id: "b-1",
+        id: "osm",
         title: "OSM",
         isBaseLayer: true,
         visible: true,
@@ -38,7 +32,7 @@ const defaultBasemapConfig = [
         })
     },
     {
-        id: "b-2",
+        id: "toner",
         title: "Toner",
         isBaseLayer: true,
         visible: false,
@@ -125,16 +119,72 @@ it("should successfully select a basemap from basemap switcher", async () => {
     const { switcherSelect } = await waitForBasemapSwitcher();
 
     act(() => {
-        fireEvent.change(switcherSelect, { target: { value: "OSM" } });
+        fireEvent.change(switcherSelect, { target: { value: "osm" } });
     });
     const firstActiveBaseLayer = map.layers.getActiveBaseLayer();
-    expect(firstActiveBaseLayer?.id).toBe("b-1");
+    expect(firstActiveBaseLayer?.id).toBe("osm");
 
     act(() => {
-        fireEvent.change(switcherSelect, { target: { value: "Toner" } });
+        fireEvent.change(switcherSelect, { target: { value: "toner" } });
     });
     const nextActiveBaseLayer = map.layers.getActiveBaseLayer();
-    expect(nextActiveBaseLayer?.id).toBe("b-2");
+    expect(nextActiveBaseLayer?.id).toBe("toner");
+});
+
+it("should allow selecting 'no basemap' when enabled", async () => {
+    const { mapId, registry } = await setupMap({
+        layers: defaultBasemapConfig
+    });
+
+    const map = await registry.expectMapModel(mapId);
+
+    render(
+        <PackageContextProvider {...createPackageContextProviderProps(registry)}>
+            <div data-testid="base">
+                <MapContainer mapId={mapId} />
+                <BasemapSwitcher mapId={mapId} noneBasemap></BasemapSwitcher>
+            </div>
+        </PackageContextProvider>
+    );
+
+    await waitForMapMount();
+
+    // basemap switcher is mounted
+    const { switcherSelect } = await waitForBasemapSwitcher();
+
+    expect(switcherSelect).toMatchInlineSnapshot(`
+      <select
+        aria-label="defaultLabel"
+        class="chakra-select basemap-switcher-select css-161pkch"
+        data-theme="light"
+        id="field-:r3:"
+      >
+        <option
+          value="osm"
+        >
+          OSM
+        </option>
+        <option
+          value="toner"
+        >
+          Toner
+        </option>
+        <option
+          value=""
+        >
+          noneBasemapLabel
+        </option>
+      </select>
+    `);
+    expect(switcherSelect.value).toBe("osm");
+    expect(map.layers.getActiveBaseLayer()?.id).toBe("osm");
+
+    act(() => {
+        fireEvent.change(switcherSelect, { target: { value: "" } });
+    });
+
+    expect(switcherSelect.value).toBe("");
+    expect(map.layers.getActiveBaseLayer()).toBe(undefined);
 });
 
 it("should successfully select noneBasemap, if all configured basemaps are configured as not visible", async () => {
@@ -167,11 +217,7 @@ it("should successfully select noneBasemap, if all configured basemaps are confi
         <PackageContextProvider {...createPackageContextProviderProps(registry)}>
             <div data-testid="base">
                 <MapContainer mapId={mapId} />
-                <BasemapSwitcher
-                    mapId={mapId}
-                    label="Hintergrundkarte"
-                    noneBasemap
-                ></BasemapSwitcher>
+                <BasemapSwitcher mapId={mapId} label="Hintergrundkarte"></BasemapSwitcher>
             </div>
         </PackageContextProvider>
     );
@@ -180,89 +226,175 @@ it("should successfully select noneBasemap, if all configured basemaps are confi
 
     // basemap switcher is mounted
     const { switcherSelect } = await waitForBasemapSwitcher();
-
     expect(switcherSelect).toMatchInlineSnapshot(`
       <select
         aria-label="Hintergrundkarte"
         class="chakra-select basemap-switcher-select css-161pkch"
         data-theme="light"
-        id="field-:r3:"
+        id="field-:r4:"
       >
         <option
-          value="OSM"
+          value="b-1"
         >
           OSM
         </option>
         <option
-          value="Toner"
+          value="b-2"
         >
           Toner
         </option>
         <option
-          value="noneBasemapLabel"
+          value=""
         >
           noneBasemapLabel
         </option>
       </select>
     `);
-    //expect(switcherSelect.value).toBe("Ohne Hintergrundkarte");
+    expect(switcherSelect.value).toBe("");
 
     const activeBaseLayer = map.layers.getActiveBaseLayer();
     expect(activeBaseLayer).toBeUndefined();
 });
 
-describe("should successfully select the correct basemap from basemap switcher", () => {
-    it("basemap with id `b-1` is visible", async () => {
-        const { mapId, registry } = await setupMap({
-            layers: [
-                {
-                    id: "b-1",
-                    title: "OSM",
-                    isBaseLayer: true,
-                    visible: true,
-                    layer: new TileLayer({
-                        source: new OSM()
-                    })
-                },
-                {
-                    id: "b-2",
-                    title: "Toner",
-                    isBaseLayer: true,
-                    visible: false,
-                    layer: new TileLayer({
-                        source: new Stamen({ layer: "toner" })
-                    })
-                }
-            ]
-        });
-
-        const map = await registry.expectMapModel(mapId);
-
-        render(
-            <PackageContextProvider {...createPackageContextProviderProps(registry)}>
-                <div data-testid="base">
-                    <MapContainer mapId={mapId} />
-                    <BasemapSwitcher mapId={mapId}></BasemapSwitcher>
-                </div>
-            </PackageContextProvider>
-        );
-
-        await waitForMapMount();
-
-        // basemap switcher is mounted
-        const { switcherSelect } = await waitForBasemapSwitcher();
-        expect(switcherSelect.value).toBe("OSM");
-        expect(switcherSelect.value).not.toBe("Toner");
-
-        const activeBaseLayer = map.layers.getActiveBaseLayer();
-        expect(activeBaseLayer?.id).toBe("b-1");
+it("should update when a new basemap is registered", async () => {
+    const { mapId, registry } = await setupMap({
+        layers: defaultBasemapConfig
     });
 
-    it("basemap with id `b-2` is visible", async () => {
+    const map = await registry.expectMapModel(mapId);
+    render(
+        <PackageContextProvider {...createPackageContextProviderProps(registry)}>
+            <div data-testid="base">
+                <MapContainer mapId={mapId} />
+                <BasemapSwitcher mapId={mapId}></BasemapSwitcher>
+            </div>
+        </PackageContextProvider>
+    );
+
+    await waitForMapMount();
+
+    // basemap switcher is mounted
+    const { switcherSelect } = await waitForBasemapSwitcher();
+    expect(switcherSelect.options.length).toBe(2);
+
+    act(() => {
+        map.layers.createLayer({
+            id: "foo",
+            title: "Foo",
+            isBaseLayer: true,
+            layer: new TileLayer({
+                source: new OSM()
+            })
+        });
+    });
+
+    expect(switcherSelect.options.length).toBe(3);
+    expect(switcherSelect).toMatchInlineSnapshot(`
+      <select
+        aria-label="defaultLabel"
+        class="chakra-select basemap-switcher-select css-161pkch"
+        data-theme="light"
+        id="field-:r5:"
+      >
+        <option
+          value="osm"
+        >
+          OSM
+        </option>
+        <option
+          value="toner"
+        >
+          Toner
+        </option>
+        <option
+          value="foo"
+        >
+          Foo
+        </option>
+      </select>
+    `);
+});
+
+it("should update when a different basemap is activated from somewhere else", async () => {
+    const { mapId, registry } = await setupMap({
+        layers: defaultBasemapConfig
+    });
+
+    const map = await registry.expectMapModel(mapId);
+    render(
+        <PackageContextProvider {...createPackageContextProviderProps(registry)}>
+            <div data-testid="base">
+                <MapContainer mapId={mapId} />
+                <BasemapSwitcher mapId={mapId}></BasemapSwitcher>
+            </div>
+        </PackageContextProvider>
+    );
+
+    await waitForMapMount();
+
+    // basemap switcher is mounted
+    const { switcherSelect } = await waitForBasemapSwitcher();
+    expect(switcherSelect.value).toBe("osm");
+    expect(map.layers.getActiveBaseLayer()?.id).toBe("osm");
+
+    act(() => {
+        map.layers.activateBaseLayer("toner");
+    });
+    expect(switcherSelect.value).toBe("toner");
+});
+
+describe("should successfully select the correct basemap from basemap switcher", () => {
+    it("basemap with id `osm` is visible", async () => {
         const { mapId, registry } = await setupMap({
             layers: [
                 {
-                    id: "b-1",
+                    id: "osm",
+                    title: "OSM",
+                    isBaseLayer: true,
+                    visible: true,
+                    layer: new TileLayer({
+                        source: new OSM()
+                    })
+                },
+                {
+                    id: "toner",
+                    title: "Toner",
+                    isBaseLayer: true,
+                    visible: false,
+                    layer: new TileLayer({
+                        source: new Stamen({ layer: "toner" })
+                    })
+                }
+            ]
+        });
+
+        const map = await registry.expectMapModel(mapId);
+
+        render(
+            <PackageContextProvider {...createPackageContextProviderProps(registry)}>
+                <div data-testid="base">
+                    <MapContainer mapId={mapId} />
+                    <BasemapSwitcher mapId={mapId}></BasemapSwitcher>
+                </div>
+            </PackageContextProvider>
+        );
+
+        await waitForMapMount();
+
+        // basemap switcher is mounted
+        const { switcherSelect } = await waitForBasemapSwitcher();
+        expect(switcherSelect.value).toBe("osm");
+        expect(switcherSelect.value).not.toBe("toner");
+
+        const activeBaseLayer = map.layers.getActiveBaseLayer();
+        expect(activeBaseLayer?.id).toBe("osm");
+    });
+
+    it("basemap with id `toner` is visible", async () => {
+        const { mapId, registry } = await setupMap({
+            layers: [
+                {
+                    id: "osm",
                     title: "OSM",
                     isBaseLayer: true,
                     visible: false,
@@ -271,7 +403,7 @@ describe("should successfully select the correct basemap from basemap switcher",
                     })
                 },
                 {
-                    id: "b-2",
+                    id: "toner",
                     title: "Toner",
                     isBaseLayer: true,
                     visible: true,
@@ -297,11 +429,11 @@ describe("should successfully select the correct basemap from basemap switcher",
 
         // basemap switcher is mounted
         const { switcherSelect } = await waitForBasemapSwitcher();
-        expect(switcherSelect.value).toBe("Toner");
-        expect(switcherSelect.value).not.toBe("OSM");
+        expect(switcherSelect.value).toBe("toner");
+        expect(switcherSelect.value).not.toBe("osm");
 
         const activeBaseLayer = map.layers.getActiveBaseLayer();
-        expect(activeBaseLayer?.id).toBe("b-2");
+        expect(activeBaseLayer?.id).toBe("toner");
     });
 });
 
