@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
 /**
- * @vitest-environment jsdom
+ * @vitest-environment happy-dom
  */
 import { EventEmitter } from "@open-pioneer/core";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
