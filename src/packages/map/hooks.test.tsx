@@ -45,7 +45,10 @@ it("should successfully return the map projection", async () => {
     await act(async () => {
         olMap.setView(
             new View({
-                projection: "EPSG:4326"
+                projection: "EPSG:4326",
+                // These seem to be required with OL 8?
+                center: olMap.getView().getCenter(),
+                resolution: olMap.getView().getResolution()
             })
         );
         olMap.dispatchEvent("change:view");

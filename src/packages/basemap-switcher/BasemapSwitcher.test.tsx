@@ -8,7 +8,7 @@ import { BasemapSwitcher, NO_BASEMAP_ID } from "./BasemapSwitcher";
 import { createServiceOptions, setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
-import Stamen from "ol/source/Stamen";
+import { BkgTopPlusOpen } from "@open-pioneer/map";
 
 const defaultBasemapConfig = [
     {
@@ -21,12 +21,12 @@ const defaultBasemapConfig = [
         })
     },
     {
-        id: "toner",
-        title: "Toner",
+        id: "topplus-open",
+        title: "TopPlus Open",
         isBaseLayer: true,
         visible: false,
         layer: new TileLayer({
-            source: new Stamen({ layer: "toner" })
+            source: new BkgTopPlusOpen()
         })
     }
 ];
@@ -117,10 +117,10 @@ it("should successfully select a basemap from basemap switcher", async () => {
     expect(firstActiveBaseLayer?.id).toBe("osm");
 
     act(() => {
-        fireEvent.change(switcherSelect, { target: { value: "toner" } });
+        fireEvent.change(switcherSelect, { target: { value: "topplus-open" } });
     });
     const nextActiveBaseLayer = map.layers.getActiveBaseLayer();
-    expect(nextActiveBaseLayer?.id).toBe("toner");
+    expect(nextActiveBaseLayer?.id).toBe("topplus-open");
 });
 
 it("should allow selecting 'no basemap' when enabled", async () => {
@@ -156,9 +156,9 @@ it("should allow selecting 'no basemap' when enabled", async () => {
           OSM
         </option>
         <option
-          value="toner"
+          value="topplus-open"
         >
-          Toner
+          TopPlus Open
         </option>
         <option
           value="___NO_BASEMAP___"
@@ -192,11 +192,11 @@ it("should successfully select noneBasemap, if all configured basemaps are confi
             },
             {
                 id: "b-2",
-                title: "Toner",
+                title: "topplus-open",
                 isBaseLayer: true,
                 visible: false,
                 layer: new TileLayer({
-                    source: new Stamen({ layer: "toner" })
+                    source: new BkgTopPlusOpen()
                 })
             }
         ]
@@ -233,7 +233,7 @@ it("should successfully select noneBasemap, if all configured basemaps are confi
         <option
           value="b-2"
         >
-          Toner
+          topplus-open
         </option>
         <option
           value="___NO_BASEMAP___"
@@ -295,9 +295,9 @@ it("should update when a new basemap is registered", async () => {
           OSM
         </option>
         <option
-          value="toner"
+          value="topplus-open"
         >
-          Toner
+          TopPlus Open
         </option>
         <option
           value="foo"
@@ -332,9 +332,9 @@ it("should update when a different basemap is activated from somewhere else", as
     expect(map.layers.getActiveBaseLayer()?.id).toBe("osm");
 
     act(() => {
-        map.layers.activateBaseLayer("toner");
+        map.layers.activateBaseLayer("topplus-open");
     });
-    expect(switcherSelect.value).toBe("toner");
+    expect(switcherSelect.value).toBe("topplus-open");
 });
 
 describe("should successfully select the correct basemap from basemap switcher", () => {
@@ -351,12 +351,12 @@ describe("should successfully select the correct basemap from basemap switcher",
                     })
                 },
                 {
-                    id: "toner",
-                    title: "Toner",
+                    id: "topplus-open",
+                    title: "TopPlus Open",
                     isBaseLayer: true,
                     visible: false,
                     layer: new TileLayer({
-                        source: new Stamen({ layer: "toner" })
+                        source: new BkgTopPlusOpen()
                     })
                 }
             ]
@@ -378,7 +378,7 @@ describe("should successfully select the correct basemap from basemap switcher",
         // basemap switcher is mounted
         const { switcherSelect } = await waitForBasemapSwitcher();
         expect(switcherSelect.value).toBe("osm");
-        expect(switcherSelect.value).not.toBe("toner");
+        expect(switcherSelect.value).not.toBe("topplus-open");
 
         const activeBaseLayer = map.layers.getActiveBaseLayer();
         expect(activeBaseLayer?.id).toBe("osm");
@@ -397,12 +397,12 @@ describe("should successfully select the correct basemap from basemap switcher",
                     })
                 },
                 {
-                    id: "toner",
-                    title: "Toner",
+                    id: "topplus-open",
+                    title: "TopPlus Open",
                     isBaseLayer: true,
                     visible: true,
                     layer: new TileLayer({
-                        source: new Stamen({ layer: "toner" })
+                        source: new BkgTopPlusOpen()
                     })
                 }
             ]
@@ -423,11 +423,11 @@ describe("should successfully select the correct basemap from basemap switcher",
 
         // basemap switcher is mounted
         const { switcherSelect } = await waitForBasemapSwitcher();
-        expect(switcherSelect.value).toBe("toner");
+        expect(switcherSelect.value).toBe("topplus-open");
         expect(switcherSelect.value).not.toBe("osm");
 
         const activeBaseLayer = map.layers.getActiveBaseLayer();
-        expect(activeBaseLayer?.id).toBe("toner");
+        expect(activeBaseLayer?.id).toBe("topplus-open");
     });
 });
 

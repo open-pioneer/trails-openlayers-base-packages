@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
-import Stamen from "ol/source/Stamen";
+import { BkgTopPlusOpen } from "../layers/BkgTopPlusOpen";
 import { afterEach, expect, it, describe, vi } from "vitest";
 import { LayerModel } from "../api";
 import { MapModelImpl } from "./MapModelImpl";
@@ -26,10 +26,10 @@ it("makes the map layers accessible", async () => {
                 })
             },
             {
-                title: "Watercolor",
+                title: "TopPlus Open",
                 visible: false,
                 layer: new TileLayer({
-                    source: new Stamen({ layer: "watercolor" })
+                    source: new BkgTopPlusOpen()
                 })
             }
         ]
@@ -45,7 +45,7 @@ it("makes the map layers accessible", async () => {
         },
         {
           "description": "",
-          "title": "Watercolor",
+          "title": "TopPlus Open",
           "visible": false,
         },
       ]
@@ -81,10 +81,10 @@ it("generates automatic unique ids for layers", async () => {
                 })
             },
             {
-                title: "Watercolor",
+                title: "TopPlus Open",
                 visible: false,
                 layer: new TileLayer({
-                    source: new Stamen({ layer: "watercolor" })
+                    source: new BkgTopPlusOpen()
                 })
             }
         ]
@@ -113,9 +113,9 @@ it("supports lookup by layer id", async () => {
             },
             {
                 id: "l-2",
-                title: "Watercolor",
+                title: "TopPlus Open",
                 layer: new TileLayer({
-                    source: new Stamen({ layer: "watercolor" })
+                    source: new BkgTopPlusOpen()
                 })
             }
         ]
@@ -145,9 +145,9 @@ it("results in an error, if using the same layer id twice", async () => {
                 },
                 {
                     id: "l-1",
-                    title: "Watercolor",
+                    title: "TopPlus Open",
                     layer: new TileLayer({
-                        source: new Stamen({ layer: "watercolor" })
+                        source: new BkgTopPlusOpen()
                     })
                 }
             ]
@@ -162,7 +162,7 @@ it("supports reverse lookup from open layers layer", async () => {
         source: new OSM()
     });
     const rawL2 = new TileLayer({
-        source: new Stamen({ layer: "watercolor" })
+        source: new BkgTopPlusOpen()
     });
 
     model = await createMapModel("foo", {

@@ -9,7 +9,7 @@ import { setupMap } from "@open-pioneer/map-test-utils";
 import OlMap from "ol/Map";
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
-import Stamen from "ol/source/Stamen";
+import { BkgTopPlusOpen } from "./layers/BkgTopPlusOpen";
 
 afterEach(() => {
     vi.restoreAllMocks();
@@ -210,7 +210,7 @@ it("should construct a map with the configured layers", async () => {
                 id: "id2",
                 title: "bar",
                 visible: false,
-                layer: new TileLayer({ source: new Stamen({ layer: "toner" }) })
+                layer: new TileLayer({ source: new BkgTopPlusOpen() })
             }
         ]
     });
