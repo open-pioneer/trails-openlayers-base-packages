@@ -32,7 +32,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     id: "b-1",
                     title: "OSM",
                     isBaseLayer: true,
-                    visible: false,
+                    visible: true,
                     layer: new TileLayer({
                         source: new OSM()
                     })
