@@ -1,20 +1,137 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-import { MapContainer } from "./MapContainer";
+import { createServiceOptions, setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { act, render, renderHook } from "@testing-library/react";
 import View from "ol/View";
-import { get } from "ol/proj";
-import { describe, expect, it } from "vitest";
-import { createServiceOptions, setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
-import { useCenter, useProjection, useResolution, useScale, useFormatting } from "./hooks";
+import { expect, it } from "vitest";
+import { MapContainer } from "./MapContainer";
+import { useCenter, useProjection, useResolution, useScale, useView } from "./hooks";
+import { MapRegistry } from "./api";
 
-const LOCALE_DE = { locale: "de" };
-const LOCALE_EN = { locale: "en" };
-
-it("should successfully create a map projection", async () => {
+it("should successfully return the current map view", async () => {
     const { mapId, registry } = await setupMap();
+    const map = await renderMap(mapId, registry);
+    const olMap = map.olMap;
 
+    const initialView = olMap.getView();
+    expect(initialView).toBeDefined();
+
+    // change view projection and detect projection change
+    const hook = renderHook(() => useView(olMap));
+    expect(hook.result.current).toBe(initialView);
+
+    const nextView = new View();
+    act(() => {
+        olMap.setView(nextView);
+    });
+
+    hook.rerender();
+    expect(hook.result.current).toBe(nextView);
+});
+
+it("should successfully return the map projection", async () => {
+    const { mapId, registry } = await setupMap();
+    const map = await renderMap(mapId, registry);
+    const olMap = map.olMap;
+
+    // change view projection and detect projection change
+    const hook = renderHook(() => useProjection(olMap));
+    const result = hook.result;
+
+    const firstProjection = result.current;
+    expect(firstProjection).not.toBe(undefined);
+
+    await act(async () => {
+        olMap.setView(
+            new View({
+                projection: "EPSG:4326"
+            })
+        );
+        olMap.dispatchEvent("change:view");
+    });
+    hook.rerender();
+
+    const nextProjection = hook.result.current;
+    expect(firstProjection).not.toEqual(nextProjection);
+});
+
+it("should successfully return the map resolution", async () => {
+    const { mapId, registry } = await setupMap();
+    const map = await renderMap(mapId, registry);
+    const olMap = map.olMap;
+
+    const view = olMap.getView();
+    if (!view) {
+        throw new Error("view not defined");
+    }
+
+    const initialZoom = view.getZoom();
+    if (!initialZoom) {
+        throw new Error("zoom not defined");
+    }
+
+    // change zoom level and detect resolution change
+    const hook = renderHook(() => useResolution(olMap));
+    const result = hook.result;
+
+    const firstResolution = result.current;
+    expect(firstResolution).not.toBe(undefined);
+
+    await act(async () => {
+        view.setZoom(initialZoom + 1);
+    });
+    hook.rerender();
+
+    const nextResolution = result.current;
+    expect(firstResolution).not.toBe(nextResolution);
+});
+
+it("should successfully return the map center", async () => {
+    const { mapId, registry } = await setupMap();
+    const map = await renderMap(mapId, registry);
+    const olMap = map.olMap;
+
+    const view = olMap.getView();
+    if (!view) {
+        throw new Error("view not defined");
+    }
+
+    // change center and detect center change
+    const hook = renderHook(() => useCenter(olMap));
+    const result = hook.result;
+
+    const firstCenter = result.current;
+    expect(firstCenter).not.toBe(undefined);
+
+    await act(async () => {
+        view.setCenter([1489200, 6894026]);
+        view.dispatchEvent("change:center");
+    });
+    hook.rerender();
+
+    const nextCenter = hook.result.current;
+    expect(firstCenter).not.toBe(nextCenter);
+    expect(nextCenter).toEqual([1489200, 6894026]);
+});
+
+it("should successfully return the map scale", async () => {
+    const { registry, mapId } = await setupMap();
+    const map = await renderMap(mapId, registry);
+    const olMap = map.olMap;
+
+    // get map scale
+    const hook = renderHook(() => useScale(olMap));
+    const result = hook.result;
+    expect(result.current).toBe(336409);
+});
+
+/**
+ * Display the map in the DOM, so hooks can interact with it.
+ *
+ * Returns the loaded map model for convenience.
+ */
+async function renderMap(mapId: string, registry: MapRegistry) {
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
@@ -26,244 +143,7 @@ it("should successfully create a map projection", async () => {
 
     await waitForMapMount();
 
-    const map = (await registry.expectMapModel(mapId)).olMap;
-
-    // change view projection and detect projection change
-    const hook = renderHook(() => useProjection(map));
-    const result = hook.result;
-
-    const firstProjection = result.current.projection;
-    expect(firstProjection).not.toBe(undefined);
-
-    await act(async () => {
-        map.setView(
-            new View({
-                projection: "EPSG:4326"
-            })
-        );
-        map.dispatchEvent("change:view");
-    });
-    hook.rerender();
-
-    const nextProjection = hook.result.current.projection;
-    expect(firstProjection).not.toEqual(nextProjection);
-});
-
-describe("hook test for scale viewer ", () => {
-    it("should successfully create a map resolution", async () => {
-        const { mapId, registry } = await setupMap();
-
-        const injectedServices = createServiceOptions({ registry });
-        render(
-            <PackageContextProvider services={injectedServices}>
-                <div data-testid="base">
-                    <MapContainer mapId={mapId} />
-                </div>
-            </PackageContextProvider>
-        );
-
-        await waitForMapMount();
-
-        const map = (await registry.expectMapModel(mapId)).olMap;
-
-        const view = map.getView();
-        if (!view) {
-            throw new Error("view not defined");
-        }
-
-        const mapResolution = view.getResolution();
-        if (!mapResolution) {
-            throw new Error("resolution not defined");
-        }
-
-        let mapZoom = view.getZoom();
-
-        // change zoom level and detect resolution change
-        const hook = renderHook(() => useResolution(map));
-        const result = hook.result;
-
-        const firstResolution = result.current.resolution;
-        expect(firstResolution).not.toBe(undefined);
-
-        await act(async () => {
-            if (!mapZoom) {
-                throw new Error("zoom not defined");
-            }
-
-            view.setZoom(++mapZoom);
-        });
-        hook.rerender();
-
-        const nextResolution = hook.result.current.resolution;
-        expect(firstResolution).not.toBe(nextResolution);
-    });
-
-    it("should successfully create a map center", async () => {
-        const { mapId, registry } = await setupMap();
-
-        const injectedServices = createServiceOptions({ registry });
-        render(
-            <PackageContextProvider services={injectedServices}>
-                <div data-testid="base">
-                    <MapContainer mapId={mapId} />
-                </div>
-            </PackageContextProvider>
-        );
-
-        await waitForMapMount();
-
-        const map = (await registry.expectMapModel(mapId)).olMap;
-
-        const view = map.getView();
-        if (!view) {
-            throw new Error("view not defined");
-        }
-
-        // change center and detect center change
-        const hook = renderHook(() => useCenter(map));
-        const result = hook.result;
-
-        const firstCenter = result.current.center;
-        expect(firstCenter).not.toBe(undefined);
-
-        await act(async () => {
-            view.setCenter([1489200, 6894026]);
-            view.dispatchEvent("change:center");
-        });
-        hook.rerender();
-
-        const nextCenter = hook.result.current.center;
-        expect(firstCenter).not.toBe(nextCenter);
-    });
-
-    it("should successfully create a map scale", async () => {
-        const { registry, mapId } = await setupMap();
-
-        const injectedServices = createServiceOptions({ registry });
-        render(
-            <PackageContextProvider services={injectedServices}>
-                <div data-testid="base">
-                    <MapContainer mapId={mapId} />
-                </div>
-            </PackageContextProvider>
-        );
-
-        await waitForMapMount();
-
-        const map = (await registry.expectMapModel(mapId)).olMap;
-
-        const view = map.getView();
-        if (!view) {
-            throw new Error("view not defined");
-        }
-
-        const mapCenter = view.getCenter();
-        if (!mapCenter) {
-            throw new Error("center not defined");
-        }
-
-        const mapResolution = view.getResolution();
-        if (!mapResolution) {
-            throw new Error("resolution not defined");
-        }
-
-        const mapProjection = view.getProjection();
-        if (!mapProjection) {
-            throw new Error("projection not defined");
-        }
-
-        // get map scale
-        const hook = renderHook(() => useScale(mapCenter, mapResolution, mapProjection), {
-            wrapper: (props) => <PackageContextProvider {...props} {...LOCALE_EN} />
-        });
-        const result = hook.result;
-        expect(result.current.scale).toBe("336,409");
-    });
-
-    it("should successfully create a map scale for the corresponding locale", async () => {
-        const center = [847541, 6793584];
-        const resolution = 9.554628535647032;
-        const projection = get("EPSG:3857");
-
-        const hookEN = renderHook(() => useScale(center, resolution, projection), {
-            wrapper: (props) => <PackageContextProvider {...props} {...LOCALE_EN} />
-        });
-        expect(hookEN.result.current.scale).equals("21,026");
-
-        const hookDE = renderHook(() => useScale(center, resolution, projection), {
-            wrapper: (props) => <PackageContextProvider {...props} {...LOCALE_DE} />
-        });
-        expect(hookDE.result.current.scale).equals("21.026");
-    });
-});
-
-describe("hook test for coordinate viewer ", () => {
-    it("should format coordinates to correct coordinate string for the corresponding locale and precision", async () => {
-        const coords = [3545.08081, 4543543.009];
-
-        const optionsEN = { locale: "en" };
-        const hook = renderHook(() => useFormatting(coords, 2), {
-            wrapper: (props) => <PackageContextProvider {...props} {...optionsEN} />
-        });
-        const stringCoordinates = hook.result.current;
-        expect(stringCoordinates).equals("3,545.08 4,543,543.01");
-
-        const optionsDE = { locale: "de" };
-        const hookDE = renderHook(() => useFormatting(coords, 3), {
-            wrapper: (props) => <PackageContextProvider {...props} {...optionsDE} />
-        });
-        expect(hookDE.result.current).equals("3.545,081 4.543.543,009");
-
-        const hookDE_precision0 = renderHook(() => useFormatting(coords, 0), {
-            wrapper: (props) => <PackageContextProvider {...props} {...optionsDE} />
-        });
-        expect(hookDE_precision0.result.current).equals("3.545 4.543.543");
-    });
-
-    it("should format coordinates to correct coordinate string with default precision", async () => {
-        const coords = [3545.08081, 4543543.009];
-        const optionsDE = { locale: "de" };
-
-        const hookDeWithoutPrecision = renderHook(() => useFormatting(coords, undefined), {
-            wrapper: (props) => <PackageContextProvider {...props} {...optionsDE} />
-        });
-        expect(hookDeWithoutPrecision.result.current).equals("3.545,0808 4.543.543,0090");
-    });
-
-    it("should successfully create a map projection", async () => {
-        const { mapId, registry } = await setupMap();
-
-        const injectedServices = createServiceOptions({ registry });
-        render(
-            <PackageContextProvider services={injectedServices}>
-                <div data-testid="base">
-                    <MapContainer mapId={mapId} />
-                </div>
-            </PackageContextProvider>
-        );
-
-        await waitForMapMount();
-
-        const map = (await registry.expectMapModel(mapId)).olMap;
-
-        // change view projection and detect projection change
-        const hook = renderHook(() => useProjection(map));
-        const result = hook.result;
-
-        const firstProjection = result.current.projection;
-        expect(firstProjection).not.toBe(undefined);
-
-        await act(async () => {
-            map.setView(
-                new View({
-                    projection: "EPSG:4326"
-                })
-            );
-            map.dispatchEvent("change:view");
-        });
-        hook.rerender();
-
-        const nextProjection = hook.result.current.projection;
-        expect(firstProjection).not.toEqual(nextProjection);
-    });
-});
+    const model = await registry.expectMapModel(mapId);
+    await model.whenDisplayed();
+    return model;
+}
