@@ -53,11 +53,9 @@ export function MapApp() {
 
     return (
         <Flex height="100%" direction="column" overflow="hidden">
-            <Flex gap={3} alignItems="center" justifyContent="space-between">
-                <Box textAlign="center" py={1} px={1}>
-                    Open Pioneer - Map sample
-                </Box>
-            </Flex>
+            <Box textAlign="center" py={1} px={1}>
+                Open Pioneer - Map sample
+            </Box>
 
             <Flex flex="1" direction="column" position="relative">
                 <MapContainer
