@@ -13,11 +13,11 @@ import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import OlMap from "ol/Map";
+import { Extent, equals } from "ol/extent";
 import { expect, it } from "vitest";
 import { InitialExtent } from "./InitialExtent";
 
 // used to avoid a "ResizeObserver is not defined" error
-import { Extent, equals } from "ol/extent";
 import ResizeObserver from "resize-observer-polyfill";
 global.ResizeObserver = ResizeObserver;
 
@@ -64,6 +64,7 @@ it("should successfully create a initial extent component with additional css cl
 
     expect(initExtentDiv.classList.contains("testClass1")).toBe(true);
     expect(initExtentDiv.classList.contains("testClass2")).toBe(true);
+    expect(initExtentDiv.classList.contains("testClass3")).toBe(false);
 });
 
 it("should successfully click the home button and go to initial extent", async () => {
@@ -98,12 +99,11 @@ it("should successfully click the home button and go to initial extent", async (
     const currentExtent = () => getCurrentExtent(mapModel.olMap);
 
     // Store initial extent
-    const extent1 = currentExtent();
+    const firstExtent = currentExtent();
 
-    // Navigate somewhere else
-    // const berlin = { xMin: 1489200, yMin: 6894026, xMax: 1489200, yMax: 6894026 };
+    // Set new map extent
     mapModel.olMap.getView().fit([1479200, 6884026, 1499200, 6897026]);
-    expect(equals(extent1, currentExtent())).toBe(false);
+    expect(equals(firstExtent, currentExtent())).toBe(false);
 
     // Return to initial extent and wait for the animation to complete
     await act(async () => {
@@ -111,9 +111,8 @@ it("should successfully click the home button and go to initial extent", async (
         await waitForStableExtent(mapModel.olMap);
     });
 
-    // Extent should be the same
-    const extent2 = currentExtent();
-    expect(equals(extent1, extent2)).toBe(true);
+    const nextExtent = currentExtent();
+    expect(equals(firstExtent, nextExtent)).toBe(true);
 });
 
 async function waitForInitExtentComponent() {

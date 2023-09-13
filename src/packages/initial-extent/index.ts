@@ -1,3 +1,3 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-export { InitialExtent } from "./InitialExtent";
+export { InitialExtent, type InitialExtentProps } from "./InitialExtent";

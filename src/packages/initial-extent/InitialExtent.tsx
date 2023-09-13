@@ -36,26 +36,23 @@ export const InitialExtent: FC<InitialExtentProps> = forwardRef(function Initial
         const olMap = map?.olMap;
 
         if (initialExtent && olMap) {
-            const olExtent: Extent = [
+            const newExtent: Extent = [
                 initialExtent.xMin,
                 initialExtent.yMin,
                 initialExtent.xMax,
                 initialExtent.yMax
             ];
-            olMap.getView().fit(olExtent, { duration: 200 });
+
+            olMap.getView().fit(newExtent, { duration: 200 });
         }
     }
 
     return (
         <Box className={classNames("initial-extent", className)} ref={ref} {...rest}>
-            <Tooltip
-                label={intl.formatMessage({ id: "description" })}
-                placement="auto"
-                openDelay={500}
-            >
+            <Tooltip label={intl.formatMessage({ id: "title" })} placement="auto" openDelay={500}>
                 <Button
                     className="initial-extent-button"
-                    aria-label={intl.formatMessage({ id: "description" })}
+                    aria-label={intl.formatMessage({ id: "title" })}
                     leftIcon={<FiHome />}
                     onClick={() => setInitExtent()}
                     iconSpacing={0}
