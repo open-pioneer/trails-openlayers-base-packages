@@ -52,7 +52,7 @@ export class BkgTopPlusOpen extends WMTS {
             matrixIds[i] = i;
         }
 
-        const layer = options?.layer !== undefined ? options.layer : "web";
+        const layer = options?.layer ?? "web";
 
         super({
             url: `https://sgx.geodatenzentrum.de/wmts_topplus_open/tile/1.0.0/${layer}/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png`,

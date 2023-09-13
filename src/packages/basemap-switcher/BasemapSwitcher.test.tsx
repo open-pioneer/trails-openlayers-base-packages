@@ -15,7 +15,7 @@ import {
 } from "@open-pioneer/map/test-utils";
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
-import { BkgTopPlusOpen } from "@open-pioneer/map/BkgTopPlusOpen";
+import { BkgTopPlusOpen } from "@open-pioneer/map";
 
 // used to avoid a "ResizeObserver is not defined" error
 import ResizeObserver from "resize-observer-polyfill";

@@ -5,7 +5,7 @@
  */
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
-import { BkgTopPlusOpen } from "../BkgTopPlusOpen";
+import { BkgTopPlusOpen } from "../layers/BkgTopPlusOpen";
 import { afterEach, expect, it, describe, vi } from "vitest";
 import { LayerModel } from "../api";
 import { MapModelImpl } from "./MapModelImpl";

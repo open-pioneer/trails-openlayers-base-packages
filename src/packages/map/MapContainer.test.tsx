@@ -14,7 +14,7 @@ import {
     SimpleMapOptions
 } from "./test-utils";
 import TileLayer from "ol/layer/Tile";
-import { BkgTopPlusOpen } from "./BkgTopPlusOpen";
+import { BkgTopPlusOpen } from "./layers/BkgTopPlusOpen";
 
 // used to avoid a "ResizeObserver is not defined" error
 import ResizeObserver from "resize-observer-polyfill";
