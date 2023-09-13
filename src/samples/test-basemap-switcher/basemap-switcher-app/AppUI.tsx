@@ -2,11 +2,10 @@
 // SPDX-License-Identifier: Apache-2.0
 import { BasemapSwitcher } from "@open-pioneer/basemap-switcher";
 import { Box, Button, Flex, Stack, Text } from "@open-pioneer/chakra-integration";
-import { MapAnchor, MapContainer, useMapModel } from "@open-pioneer/map";
+import { BkgTopPlusOpen, MapAnchor, MapContainer, useMapModel } from "@open-pioneer/map";
 import { useRef } from "react";
 import { MAP_ID } from "./MapConfigProviderImpl";
 import TileLayer from "ol/layer/Tile";
-import Stamen from "ol/source/Stamen";
 
 export function AppUI() {
     const basemapSwitcherRef = useRef<HTMLDivElement>(null);
@@ -61,7 +60,7 @@ function AddNewBaseLayerButton(props: { mapId: string }) {
             title: `New Layer ${number}`,
             isBaseLayer: true,
             layer: new TileLayer({
-                source: new Stamen({ layer: "toner" })
+                source: new BkgTopPlusOpen({ layer: "web_grau" })
             })
         });
         console.log("generated base layer with id", layer.id);
