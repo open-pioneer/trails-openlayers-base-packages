@@ -1,32 +1,35 @@
 # @open-pioneer/map
 
-This package provides a map container component to integrate an [OpenLayers](https://openlayers.org/) map into an open pioneer trails project. Besides the component, the package provides a service, which handles the registration and creation of a map.
+This package provides a map container component to integrate an [OpenLayers](https://openlayers.org/) map into an Open Pioneer Trails project.
+Besides the component, the package provides a service, which handles the registration and creation of a map.
 
 ## Usage
 
-To use the map in your app, two things need to be done:
+To use the map in your app, follow these two steps:
 
--   Add `MapContainer` component to your app (see [Map container component](#md:map-container-component))
--   Implement a `MapConfigProvider` (see [Map configuration](#md:map-configuration))
+-   Add a `MapContainer` component to your app (see [Map container component](#md:map-container-component)).
+-   Implement a `MapConfigProvider` (see [Map configuration](#md:map-configuration)).
 
-> IMPORTANT: The package uses a map model and layer model to internally handle the states of the map and layers. This is needed to support additional features like base layers. Because of that it is necessary to always use the methods provided by these models to manage at least the following features on map and layers (instead of using the raw OpenLayers instances directly):
+> IMPORTANT: The package uses a map model and layer model to internally handle the states of the map and layers. This is needed to support additional features like base layers.
+> For this reason, always use the methods provided by these models to manage the following features on map and layers (instead of using the raw OpenLayers instances directly):
 >
 > -   Map composition (access and configuration of layers, base layers, removing layers)
 > -   Layer visibility
 > -   Custom layer metadata (`attributes`)
 >
-> You should use the raw OL instances for other features (e.g. to control the visibility of a layer).
+> You can use the raw OpenLayers instances for other features (for example to control the transparency of a layer).
 >
-> For examples see [Using the map model](#md:using-the-map-model).
+> For examples, see [Using the map model](#md:using-the-map-model).
 
 ### Map container component
 
-To integrate a `MapContainer` in an app, add the component to your React component, where you want to map to appear. On the component specify the `mapId` of the map, you want to add.
+To integrate a `MapContainer` in an app, add the component to your React component, where you want the map to appear.
+On the component specify the `mapId` of the map that you want to add.
 
-The parent component should provide appropriate width and height (e.g. `100%`).
-The `MapContainer` will fill all available space.
+Make sure that the parent component has an appropriate width and height (for example `100%`).
+The `MapContainer` fills the entire available space.
 
-Example: Simple integration of a map container with a given map id:
+Example: Integration of a map container with a given map ID:
 
 ```jsx
 import { Box } from "@open-pioneer/chakra-integration";
@@ -42,7 +45,7 @@ function AppUI() {
 }
 ```
 
-> NOTE: There must be a `map.MapConfigProvider` present that knows how to construct the map with the given id (see [Map configuration](#md:map-configuration)).
+> NOTE: There must be a `map.MapConfigProvider` that knows how to construct the map with the given ID (see [Map configuration](#md:map-configuration)).
 
 The component itself uses the map registry service to create the map using the provided `mapId`.
 
@@ -55,7 +58,7 @@ To pass custom React components onto the map, the following anchor-points are pr
 -   `bottom-left`
 -   `bottom-right`
 
-Simple integration of a map anchor component into the map container with position `bottom-right` and optional horizontal and vertical gap:
+Example: Integration of a map anchor component into the map container with position `bottom-right` and optional horizontal and vertical gap:
 
 ```jsx
 <MapContainer mapId="...">
@@ -65,15 +68,18 @@ Simple integration of a map anchor component into the map container with positio
 </MapContainer>
 ```
 
-The component itself calculate the `maxHeight` and `maxWidth` according to the map view padding and optional `horizontalGap`and `verticalGap` to avoid content overflow. In this case, the css property `overflow` is set to `hidden` to the map anchor component. If no `verticalGap` is configured, a default vertical gap of `30px` will be used.
+The component itself calculates the `maxHeight` and `maxWidth` according to the map view padding and optional `horizontalGap`and `verticalGap` to avoid content overflow.
+In this case, the CSS property `overflow` is set to `hidden` to the map anchor component.
+If no `verticalGap` is configured, a default vertical gap of `30px` is used.
 
-> NOTE: Please add the container anchor-points before other components to get the correct tab order.
+> NOTE: To get the correct tab order, add the container anchor-points before other components.
 
 ### Map configuration
 
-Register a service providing `map.MapConfigProvider` to configure the contents of a map. Such a provider is typically located in an app.
+Register a service providing `map.MapConfigProvider` to configure the contents of a map.
+Such a provider is typically located in an app.
 
-Example: Simple configuration how to register a service providing `map.MapConfigProvider`.
+Example: Configuration to register a service providing `map.MapConfigProvider`.
 
 ```js
 // YOUR-APP/build.config.mjs
@@ -92,18 +98,20 @@ export default defineBuildConfig({
 });
 ```
 
-The service itself needs to implement the `MapConfigProvider` interface. The following map options are supported:
+The service itself needs to implement the `MapConfigProvider` interface.
+The following map options are supported:
 
 -   `initialView`,
 -   `projection`,
 -   `layers` (see [Layer configuration](#md:layer-configuration)),
 -   `advanced`
 
-Always use the provided map model to access the map initially. Use `.olMap` only, when the raw instance is required.
+Always use the provided map model to access the map initially.
+Use `.olMap` only, when the raw instance is required.
 
 If an advanced configuration (fully constructed `OlView` instance) is used, some options (such as `initialView` or `projection`) cannot be applied anymore.
 
-Example: Simple implementation of the service with `initialView.kind = position`.
+Example: Implementation of the service with `initialView.kind = position`.
 
 ```ts
 // YOUR-APP/MapConfigProviderImpl.ts
@@ -126,7 +134,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
 }
 ```
 
-Example: Simple implementation of the service with `initialView.kind = extent`.
+Example: Implementation of the service with `initialView.kind = extent`.
 
 ```ts
 // YOUR-APP/MapConfigProviderImpl.ts
@@ -153,7 +161,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
 }
 ```
 
-Example: Simple implementation of the service with an advanced configuration.
+Example: Implementation of the service with an advanced configuration.
 
 ```ts
 // YOUR-APP/MapConfigProviderImpl.ts
@@ -176,17 +184,21 @@ export class MapConfigProviderImpl implements MapConfigProvider {
 }
 ```
 
-> IMPORTANT: Not all OpenLayers [View](https://openlayers.org/en/latest/apidoc/module-ol_View-View.html) properties are supported. For example, you cannot set the target because the target is controlled by the `<MapContainer />`.
+> IMPORTANT: Not all OpenLayers [View](https://openlayers.org/en/latest/apidoc/module-ol_View-View.html) properties are supported.
+> For example, you cannot set the target because the target is controlled by the `<MapContainer />`.
 
 #### Layer configuration
 
 Configure your custom layer inside the [Map configuration](#md:map-configuration) by using the OpenLayers [`Layer`](https://openlayers.org/en/latest/apidoc/module-ol_layer_Layer-Layer.html) as `layer` property.
 
-Always use the provided layer model to access the layer initially. Use `.olLayer` only, when the raw instance is required, e.g. set opacity.
+Always use the provided layer model to access the layer initially.
+Use `.olLayer` only, when the raw instance is required, for example to set the opacity.
 
-To access specific layers use the Layer Collection methods, e.g. `getAllLayers`, `getBaseLayers`, `getOperationalLayers`. Layers should not be manually removed from the map via `.olMap`. Only use `removeLayerById` to remove a layer.
+To access specific layers use the Layer Collection methods, such as `getAllLayers`, `getBaseLayers`, `getOperationalLayers`.
+Layers should not be manually removed from the map via `.olMap`.
+Only use `removeLayerById` to remove a layer.
 
-Example: Simple implementation of a layer configuration.
+Example: Implementation of a layer configuration.
 
 ```ts
 // YOUR-APP/MapConfigProviderImpl.ts
@@ -226,7 +238,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
 }
 ```
 
-Based on the example above, we can set different properties using the layer model API (setting visibility, update custom metadata (`attributes`)).
+Based on the example above, you can set different properties using the layer model API (such as setting visibility, update custom metadata (`attributes`)).
 
 Example: How to set different properties.
 
@@ -245,15 +257,15 @@ layer.updateAttributes({
 layer.deleteAttribute("foo");
 ```
 
-> NOTE: The visibility of base layers cannot be changed through the method `setVisible`. Call `activateBaseLayer` instead.
+> NOTE: The visibility of base layers cannot be changed through the method `setVisible`.
+> Call `activateBaseLayer` instead.
 
 #### Register additional projections
 
-OpenLayers supports only two projections by default: `EPSG:4326` and `EPSG:3857`. However, it is possible to register additional projections to use them for the map.
+OpenLayers supports only two projections by default: `EPSG:4326` and `EPSG:3857`.
+To register additional projections to use them for the map, use the `registerProjections` function.
 
-Fot that, the `registerProjections` function can be used.
-
-Simple example to register an additional projection to the global [proj4js](https://github.com/proj4js/proj4js) definition set by name (e.g. `"EPSG:4326"`) and projection definition (string defining the projection or an existing proj4 definition object):
+Example: How to register an additional projection to the global [proj4js](https://github.com/proj4js/proj4js) definition set by name (such as `"EPSG:4326"`) and projection definition (string defining the projection or an existing proj4 definition object):
 
 ```ts
 import { registerProjections } from "@open-pioneer/map";
@@ -267,7 +279,7 @@ registerProjections({
 
 Projection definitions can be accessed by the [epsg.io](https://epsg.io/) website or by searching the global [proj4js](https://github.com/proj4js/proj4js) definition set with a valid name.
 
-The following example shows, how to use the registered projection:
+Example: How to use the registered projection:
 
 ```ts
 import { getProjection } from "@open-pioneer/map";
@@ -280,17 +292,19 @@ const proj = getProjection("EPSG:3035");
 
 ### Using the map model
 
-The package uses a map model and layer model to internally handle the states of the map and layers. This is needed to support additional features like base layers. Because of that it is necessary to always use the methods provided by these models to manage at least the following features on map and layers (instead of using the raw OpenLayers instances directly):
+The package uses a map model and layer model to internally handle the states of the map and layers.
+This is needed to support additional features like base layers.
+For this reason, always use the methods provided by these models to manage the following features on maps and layers (instead of using the raw OpenLayers instances directly):
 
 -   Map composition (access and configuration of layers, base layers, removing layers)
 -   Layer visibility
 -   Custom layer metadata (`attributes`)
 
-You should use the raw OL instances for other features (e.g. to control the visibility of a layer).
+You can use the raw OpenLayers instances for other features (for example to control the transparency of a layer).
 
 #### Using the map model and layer model in services
 
-Example: Center map to given coordinates using the map model and set layer visibilty using the layer model.
+Example: Center map to given coordinates using the map model and set layer visibility using the layer model.
 
 ```ts
 import { ServiceOptions, ServiceType } from "@open-pioneer/runtime";
