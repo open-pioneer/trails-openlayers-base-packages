@@ -42,13 +42,13 @@ export const Zoom: FC<ZoomProps> = forwardRef(function Zoom(
         <Box className={classNames("zoom", className)} ref={ref} {...rest}>
             <Flex direction={"column"} gap="1">
                 <Tooltip
-                    label={intl.formatMessage({ id: "description_in" })}
+                    label={intl.formatMessage({ id: "title_zoomin" })}
                     placement="auto"
                     openDelay={500}
                 >
                     <Button
                         className="zoomin-button"
-                        aria-label={intl.formatMessage({ id: "description_in" })}
+                        aria-label={intl.formatMessage({ id: "title_zoomin" })}
                         leftIcon={<FiPlus />}
                         onClick={() => zoom(true)}
                         iconSpacing={0}
@@ -56,13 +56,13 @@ export const Zoom: FC<ZoomProps> = forwardRef(function Zoom(
                     />
                 </Tooltip>
                 <Tooltip
-                    label={intl.formatMessage({ id: "description_out" })}
+                    label={intl.formatMessage({ id: "title_zoomout" })}
                     placement="auto"
                     openDelay={500}
                 >
                     <Button
                         className="zoomout-button"
-                        aria-label={intl.formatMessage({ id: "description_out" })}
+                        aria-label={intl.formatMessage({ id: "title_zoomout" })}
                         leftIcon={<FiMinus />}
                         onClick={() => zoom(false)}
                         iconSpacing={0}

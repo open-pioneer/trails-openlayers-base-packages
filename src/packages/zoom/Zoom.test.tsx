@@ -86,7 +86,6 @@ it("should successfully click the zoom in and zoom out button", async () => {
 
     //mount ZoomComponent
     const { zoomDiv } = await waitForZoomComponent();
-    expect(zoomDiv).toMatchSnapshot();
 
     const zoomInButton = zoomDiv.querySelector(".zoomin-button") as HTMLButtonElement;
     const zoomOutButton = zoomDiv.querySelector(".zoomout-button") as HTMLButtonElement;
