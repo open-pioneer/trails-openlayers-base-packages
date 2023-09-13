@@ -8,6 +8,7 @@ import { CoordinateViewer } from "@open-pioneer/coordinate-viewer";
 import { BasemapSwitcher } from "@open-pioneer/basemap-switcher";
 import { useMapModel } from "@open-pioneer/map";
 import { ScaleViewer } from "@open-pioneer/scale-viewer";
+import { InitialExtent } from "@open-pioneer/initial-extent";
 import { Zoom } from "@open-pioneer/zoom";
 import { ScaleComponent } from "map-sample-scale-component";
 import { useRef, useState } from "react";
@@ -83,6 +84,7 @@ export function MapApp() {
                         </Box>
                     </MapAnchor>
                     <MapAnchor position="bottom-right" horizontalGap={10} verticalGap={30}>
+                        <InitialExtent mapId={MAP_ID} pb={1}></InitialExtent>
                         <Zoom mapId={MAP_ID}></Zoom>
                     </MapAnchor>
                     <MapAnchor position="top-right">

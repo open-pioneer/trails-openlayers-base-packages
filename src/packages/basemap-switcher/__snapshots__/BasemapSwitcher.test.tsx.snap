@@ -48,7 +48,7 @@ exports[`should successfully create a basemap switcher component 1`] = `
           class="chakra-select__icon"
           focusable="false"
           role="presentation"
-          style="width: 1em; height: 1em; color: currentColor;"
+          style="width: 1em; height: 1em; color: currentcolor;"
           viewBox="0 0 24 24"
         >
           <path
@@ -103,7 +103,7 @@ exports[`should successfully create a basemap switcher component with additional
           class="chakra-select__icon"
           focusable="false"
           role="presentation"
-          style="width: 1em; height: 1em; color: currentColor;"
+          style="width: 1em; height: 1em; color: currentcolor;"
           viewBox="0 0 24 24"
         >
           <path
