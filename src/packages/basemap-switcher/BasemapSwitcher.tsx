@@ -15,7 +15,11 @@ import {
     useSyncExternalStore
 } from "react";
 
-const NO_BASEMAP_ID = "";
+/* 
+    Exported for tests. Feels a bit hacky but should be fine for now.
+    Originally was using the empty string, but that doesn't work well with happy-dom.
+*/
+export const NO_BASEMAP_ID = "___NO_BASEMAP___";
 
 /**
  * These are special properties for the `Select`.

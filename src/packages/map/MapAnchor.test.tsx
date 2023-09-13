@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
 /**
- * @vitest-environment jsdom
+ * @vitest-environment happy-dom
  */
 import { MapContainer, MapPadding } from "./MapContainer";
 import { createPackageContextProviderProps, setupMap, waitForMapMount } from "./test-utils";

@@ -1,13 +1,13 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
 /**
- * @vitest-environment jsdom
+ * @vitest-environment happy-dom
  */
 import { MapContainer } from "@open-pioneer/map";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render, screen, waitFor, act, fireEvent } from "@testing-library/react";
 import { expect, it, describe } from "vitest";
-import { BasemapSwitcher } from "./BasemapSwitcher";
+import { BasemapSwitcher, NO_BASEMAP_ID } from "./BasemapSwitcher";
 import {
     createPackageContextProviderProps,
     setupMap,
@@ -151,7 +151,6 @@ it("should allow selecting 'no basemap' when enabled", async () => {
 
     // basemap switcher is mounted
     const { switcherSelect } = await waitForBasemapSwitcher();
-
     expect(switcherSelect).toMatchInlineSnapshot(`
       <select
         aria-label="defaultLabel"
@@ -170,7 +169,7 @@ it("should allow selecting 'no basemap' when enabled", async () => {
           Toner
         </option>
         <option
-          value=""
+          value="___NO_BASEMAP___"
         >
           noneBasemapLabel
         </option>
@@ -180,10 +179,10 @@ it("should allow selecting 'no basemap' when enabled", async () => {
     expect(map.layers.getActiveBaseLayer()?.id).toBe("osm");
 
     act(() => {
-        fireEvent.change(switcherSelect, { target: { value: "" } });
+        fireEvent.change(switcherSelect, { target: { value: NO_BASEMAP_ID } });
     });
 
-    expect(switcherSelect.value).toBe("");
+    expect(switcherSelect.value).toBe(NO_BASEMAP_ID);
     expect(map.layers.getActiveBaseLayer()).toBe(undefined);
 });
 
@@ -244,13 +243,13 @@ it("should successfully select noneBasemap, if all configured basemaps are confi
           Toner
         </option>
         <option
-          value=""
+          value="___NO_BASEMAP___"
         >
           noneBasemapLabel
         </option>
       </select>
     `);
-    expect(switcherSelect.value).toBe("");
+    expect(switcherSelect.value).toBe(NO_BASEMAP_ID);
 
     const activeBaseLayer = map.layers.getActiveBaseLayer();
     expect(activeBaseLayer).toBeUndefined();
