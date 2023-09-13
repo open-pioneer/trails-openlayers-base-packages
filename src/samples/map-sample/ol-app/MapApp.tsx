@@ -8,6 +8,7 @@ import { CoordinateViewer } from "@open-pioneer/coordinate-viewer";
 import { BasemapSwitcher } from "@open-pioneer/basemap-switcher";
 import { useMapModel } from "@open-pioneer/map";
 import { ScaleViewer } from "@open-pioneer/scale-viewer";
+import { InitialExtent } from "@open-pioneer/initial-extent";
 import { ScaleComponent } from "map-sample-scale-component";
 import { ZoomComponent } from "map-sample-zoom-component";
 import { useRef, useState } from "react";
@@ -72,17 +73,14 @@ export function MapApp() {
                         >
                             <BasemapSwitcher
                                 ref={basemapSwitcherRef}
+                                noneBasemap
                                 label={intl.formatMessage({ id: "basemapLabel" })}
-                                noneBasemap={{
-                                    id: "noBasemap",
-                                    label: intl.formatMessage({ id: "noBasemapLabel" }),
-                                    selected: true
-                                }}
                                 mapId={MAP_ID}
                             ></BasemapSwitcher>
                         </Box>
                     </MapAnchor>
                     <MapAnchor position="bottom-right" horizontalGap={10} verticalGap={30}>
+                        <InitialExtent mapId={MAP_ID} pb={1}></InitialExtent>
                         <ZoomComponent mapId={MAP_ID}></ZoomComponent>
                     </MapAnchor>
                     <MapAnchor position="top-right">

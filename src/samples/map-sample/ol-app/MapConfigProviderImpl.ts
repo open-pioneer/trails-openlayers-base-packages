@@ -33,7 +33,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     id: "topplus_open",
                     title: "TopPlus Open",
                     isBaseLayer: true,
-                    visible: false,
+                    visible: true,
                     layer: new TileLayer({
                         source: new BkgTopPlusOpen({ layer: "web" })
                     })
@@ -42,7 +42,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     id: "topplus_open_grau",
                     title: "TopPlus Open (Grau)",
                     isBaseLayer: true,
-                    visible: true,
+                    visible: false,
                     layer: new TileLayer({
                         source: new BkgTopPlusOpen({ layer: "web_grau" })
                     })

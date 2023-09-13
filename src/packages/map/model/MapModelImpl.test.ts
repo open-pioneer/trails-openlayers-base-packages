@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
 /**
- * @vitest-environment jsdom
+ * @vitest-environment happy-dom
  */
 import { afterEach, expect, it, describe } from "vitest";
 import { MapModelImpl } from "./MapModelImpl";

@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
 /**
- * @vitest-environment jsdom
+ * @vitest-environment happy-dom
  */
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
