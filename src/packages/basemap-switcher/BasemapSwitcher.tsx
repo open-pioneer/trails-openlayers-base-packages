@@ -17,7 +17,7 @@ import classNames from "classnames";
 /**
  * These are special properties for the `Select`.
  */
-export interface SelectOptions {
+interface SelectOptions {
     /**
      * The id of the basemap for the select option.
      */
@@ -47,6 +47,8 @@ export interface BasemapSwitcherProps extends BoxProps, RefAttributes<HTMLDivEle
 
     /**
      * Optional config, if none basemap option is set.
+     *
+     * TODO: Different Name?
      */
     noneBasemap?: boolean;
 
@@ -96,25 +98,21 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = forwardRef(function Bas
     return (
         <Box className={classNames("basemap-switcher", className)} ref={ref} {...rest}>
             {layerCollection ? (
-                <Flex gap={3} alignItems="center">
-                    <FormControl>
-                        <Flex alignItems="center">
-                            <FormLabel className="basemap-switcher-label">{label}</FormLabel>
-                            <Select
-                                className="basemap-switcher-select"
-                                value={layerId}
-                                onChange={(e) => setLayerId(e.target.value)}
-                                aria-label={label}
-                            >
-                                {options?.map((opt) => (
-                                    <option key={opt.id} value={opt.label}>
-                                        {opt.label}
-                                    </option>
-                                ))}
-                            </Select>
-                        </Flex>
-                    </FormControl>
-                </Flex>
+                <FormControl display="flex" alignItems="center">
+                    <FormLabel className="basemap-switcher-label">{label}</FormLabel>
+                    <Select
+                        className="basemap-switcher-select"
+                        value={layerId}
+                        onChange={(e) => setLayerId(e.target.value)}
+                        aria-label={label}
+                    >
+                        {options?.map((opt) => (
+                            <option key={opt.id} value={opt.label}>
+                                {opt.label}
+                            </option>
+                        ))}
+                    </Select>
+                </FormControl>
             ) : (
                 ""
             )}

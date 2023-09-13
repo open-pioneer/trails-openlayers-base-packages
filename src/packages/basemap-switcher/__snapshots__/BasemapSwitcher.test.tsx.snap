@@ -6,61 +6,51 @@ exports[`should successfully create a basemap switcher component 1`] = `
   data-theme="light"
 >
   <div
-    class="css-1bejyq4"
+    class="chakra-form-control css-12sjb1l"
     data-theme="light"
+    role="group"
   >
-    <div
-      class="chakra-form-control css-1kxonj9"
+    <label
+      class="chakra-form__label basemap-switcher-label css-g6pte"
       data-theme="light"
-      role="group"
+      for="field-:r0:"
+      id="field-:r0:-label"
     >
+      Hintergrundkarte
+    </label>
+    <div
+      class="chakra-select__wrapper css-42b2qy"
+      data-theme="light"
+    >
+      <select
+        aria-label="Hintergrundkarte"
+        class="chakra-select basemap-switcher-select css-161pkch"
+        data-theme="light"
+        id="field-:r0:"
+      >
+        <option
+          value="noneBasemapLabel"
+        >
+          noneBasemapLabel
+        </option>
+      </select>
       <div
-        class="css-70qvj9"
+        class="chakra-select__icon-wrapper css-iohxn1"
         data-theme="light"
       >
-        <label
-          class="chakra-form__label basemap-switcher-label css-g6pte"
-          data-theme="light"
-          for="field-:r0:"
-          id="field-:r0:-label"
+        <svg
+          aria-hidden="true"
+          class="chakra-select__icon"
+          focusable="false"
+          role="presentation"
+          style="width: 1em; height: 1em; color: currentColor;"
+          viewBox="0 0 24 24"
         >
-          Hintergrundkarte
-        </label>
-        <div
-          class="chakra-select__wrapper css-42b2qy"
-          data-theme="light"
-        >
-          <select
-            aria-label="Hintergrundkarte"
-            class="chakra-select basemap-switcher-select css-161pkch"
-            data-theme="light"
-            id="field-:r0:"
-          >
-            <option
-              value="noneBasemapLabel"
-            >
-              noneBasemapLabel
-            </option>
-          </select>
-          <div
-            class="chakra-select__icon-wrapper css-iohxn1"
-            data-theme="light"
-          >
-            <svg
-              aria-hidden="true"
-              class="chakra-select__icon"
-              focusable="false"
-              role="presentation"
-              style="width: 1em; height: 1em; color: currentColor;"
-              viewBox="0 0 24 24"
-            >
-              <path
-                d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
-                fill="currentColor"
-              />
-            </svg>
-          </div>
-        </div>
+          <path
+            d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
+            fill="currentColor"
+          />
+        </svg>
       </div>
     </div>
   </div>
@@ -73,63 +63,53 @@ exports[`should successfully create a basemap switcher component with additional
   data-theme="light"
 >
   <div
-    class="css-1bejyq4"
+    class="chakra-form-control css-12sjb1l"
     data-theme="light"
+    role="group"
   >
-    <div
-      class="chakra-form-control css-1kxonj9"
+    <label
+      class="chakra-form__label basemap-switcher-label css-g6pte"
       data-theme="light"
-      role="group"
+      for="field-:r1:"
+      id="field-:r1:-label"
+    />
+    <div
+      class="chakra-select__wrapper css-42b2qy"
+      data-theme="light"
     >
+      <select
+        class="chakra-select basemap-switcher-select css-161pkch"
+        data-theme="light"
+        id="field-:r1:"
+      >
+        <option
+          value="OSM"
+        >
+          OSM
+        </option>
+        <option
+          value="Toner"
+        >
+          Toner
+        </option>
+      </select>
       <div
-        class="css-70qvj9"
+        class="chakra-select__icon-wrapper css-iohxn1"
         data-theme="light"
       >
-        <label
-          class="chakra-form__label basemap-switcher-label css-g6pte"
-          data-theme="light"
-          for="field-:r1:"
-          id="field-:r1:-label"
-        />
-        <div
-          class="chakra-select__wrapper css-42b2qy"
-          data-theme="light"
+        <svg
+          aria-hidden="true"
+          class="chakra-select__icon"
+          focusable="false"
+          role="presentation"
+          style="width: 1em; height: 1em; color: currentColor;"
+          viewBox="0 0 24 24"
         >
-          <select
-            class="chakra-select basemap-switcher-select css-161pkch"
-            data-theme="light"
-            id="field-:r1:"
-          >
-            <option
-              value="OSM"
-            >
-              OSM
-            </option>
-            <option
-              value="Toner"
-            >
-              Toner
-            </option>
-          </select>
-          <div
-            class="chakra-select__icon-wrapper css-iohxn1"
-            data-theme="light"
-          >
-            <svg
-              aria-hidden="true"
-              class="chakra-select__icon"
-              focusable="false"
-              role="presentation"
-              style="width: 1em; height: 1em; color: currentColor;"
-              viewBox="0 0 24 24"
-            >
-              <path
-                d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
-                fill="currentColor"
-              />
-            </svg>
-          </div>
-        </div>
+          <path
+            d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
+            fill="currentColor"
+          />
+        </svg>
       </div>
     </div>
   </div>
