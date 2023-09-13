@@ -53,9 +53,11 @@ export function MapApp() {
 
     return (
         <Flex height="100%" direction="column" overflow="hidden">
-            <Box textAlign="center" py={1} px={1}>
-                Open Pioneer - Map sample
-            </Box>
+            <Flex gap={3} alignItems="center" justifyContent="space-between">
+                <Box textAlign="center" py={1} px={1}>
+                    Open Pioneer - Map sample
+                </Box>
+            </Flex>
 
             <Flex flex="1" direction="column" position="relative">
                 <MapContainer
@@ -73,12 +75,8 @@ export function MapApp() {
                         >
                             <BasemapSwitcher
                                 ref={basemapSwitcherRef}
+                                noneBasemap
                                 label={intl.formatMessage({ id: "basemapLabel" })}
-                                noneBasemap={{
-                                    id: "noBasemap",
-                                    label: intl.formatMessage({ id: "noBasemapLabel" }),
-                                    selected: true
-                                }}
                                 mapId={MAP_ID}
                             ></BasemapSwitcher>
                         </Box>
