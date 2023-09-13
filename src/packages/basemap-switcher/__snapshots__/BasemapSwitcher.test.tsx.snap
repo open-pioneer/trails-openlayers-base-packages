@@ -6,37 +6,32 @@ exports[`should successfully create a basemap switcher component 1`] = `
   data-theme="light"
 >
   <div
-    class="css-1bejyq4"
+    class="chakra-form-control css-12sjb1l"
     data-theme="light"
+    role="group"
   >
-    <b
-      class="chakra-text css-0"
+    <label
+      class="chakra-form__label basemap-switcher-label css-g6pte"
       data-theme="light"
+      for="field-:r0:"
+      id="field-:r0:-label"
     >
       Hintergrundkarte
-    </b>
+    </label>
     <div
       class="chakra-select__wrapper css-42b2qy"
       data-theme="light"
     >
       <select
+        aria-label="Hintergrundkarte"
         class="chakra-select basemap-switcher-select css-161pkch"
         data-theme="light"
+        id="field-:r0:"
       >
         <option
-          value="OSM"
+          value="___NO_BASEMAP___"
         >
-          OSM
-        </option>
-        <option
-          value="Toner"
-        >
-          Toner
-        </option>
-        <option
-          value="Ohne Hintergrund"
-        >
-          Ohne Hintergrund
+          noneBasemapLabel
         </option>
       </select>
       <div
@@ -48,7 +43,7 @@ exports[`should successfully create a basemap switcher component 1`] = `
           class="chakra-select__icon"
           focusable="false"
           role="presentation"
-          style="width: 1em; height: 1em; color: currentColor;"
+          style="width: 1em; height: 1em; color: currentcolor;"
           viewBox="0 0 24 24"
         >
           <path
@@ -68,28 +63,35 @@ exports[`should successfully create a basemap switcher component with additional
   data-theme="light"
 >
   <div
-    class="css-1bejyq4"
+    class="chakra-form-control css-12sjb1l"
     data-theme="light"
+    role="group"
   >
-    <b
-      class="chakra-text css-0"
+    <label
+      class="chakra-form__label basemap-switcher-label css-g6pte"
       data-theme="light"
-    />
+      for="field-:r1:"
+      id="field-:r1:-label"
+    >
+      defaultLabel
+    </label>
     <div
       class="chakra-select__wrapper css-42b2qy"
       data-theme="light"
     >
       <select
+        aria-label="defaultLabel"
         class="chakra-select basemap-switcher-select css-161pkch"
         data-theme="light"
+        id="field-:r1:"
       >
         <option
-          value="OSM"
+          value="osm"
         >
           OSM
         </option>
         <option
-          value="Toner"
+          value="toner"
         >
           Toner
         </option>
@@ -103,7 +105,7 @@ exports[`should successfully create a basemap switcher component with additional
           class="chakra-select__icon"
           focusable="false"
           role="presentation"
-          style="width: 1em; height: 1em; color: currentColor;"
+          style="width: 1em; height: 1em; color: currentcolor;"
           viewBox="0 0 24 24"
         >
           <path

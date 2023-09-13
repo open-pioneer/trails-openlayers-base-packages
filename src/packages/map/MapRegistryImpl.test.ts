@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
 /**
- * @vitest-environment jsdom
+ * @vitest-environment happy-dom
  */
 import { getErrorChain } from "@open-pioneer/core";
 import { View } from "ol";

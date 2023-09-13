@@ -14,18 +14,8 @@ You can also add a label for the basemap switcher with an optional property `lab
 
 Add a `noneBasemap` configuration, if you want to provide an option to deactivate all basemap layers at all with the optional property `noneBasemap`.
 
-Example: Integration of a basemap switcher with optional properties:
-
-```js
-const noneBasemap = {
-    id: "noBasemap",
-    label: "Ohne Hintergrund",
-    selected: false
-};
-```
-
 ```jsx
-<BasemapSwitcher mapId="map_id" label="Grundkarte" noneBasemap={noneBasemap}></BasemapSwitcher>
+<BasemapSwitcher mapId="map_id" label="Grundkarte" noneBasemap></BasemapSwitcher>
 ```
 
 ### Customizing

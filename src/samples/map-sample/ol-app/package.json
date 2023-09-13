@@ -15,6 +15,7 @@
         "@open-pioneer/map": "workspace:^",
         "@open-pioneer/runtime": "^1.0.1",
         "@open-pioneer/scale-viewer": "workspace:^",
+        "@open-pioneer/initial-extent": "workspace:^",
         "map-sample-logging": "workspace:^",
         "map-sample-scale-component": "workspace:*",
         "map-sample-zoom-component": "workspace:*",

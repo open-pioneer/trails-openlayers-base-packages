@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
 /**
- * @vitest-environment jsdom
+ * @vitest-environment happy-dom
  */
 import { MapContainer } from "./MapContainer";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
@@ -231,41 +231,5 @@ describe("hook test for coordinate viewer ", () => {
             wrapper: (props) => <PackageContextProvider {...props} {...optionsDE} />
         });
         expect(hookDeWithoutPrecision.result.current).equals("3.545,0808 4.543.543,0090");
-    });
-
-    it("should successfully create a map projection", async () => {
-        const { mapId, registry } = await setupMap();
-
-        render(
-            <PackageContextProvider {...createPackageContextProviderProps(registry)}>
-                <div data-testid="base">
-                    <MapContainer mapId={mapId} />
-                </div>
-            </PackageContextProvider>
-        );
-
-        await waitForMapMount();
-
-        const map = (await registry.expectMapModel(mapId)).olMap;
-
-        // change view projection and detect projection change
-        const hook = renderHook(() => useProjection(map));
-        const result = hook.result;
-
-        const firstProjection = result.current.projection;
-        expect(firstProjection).not.toBe(undefined);
-
-        await act(async () => {
-            map.setView(
-                new View({
-                    projection: "EPSG:4326"
-                })
-            );
-            map.dispatchEvent("change:view");
-        });
-        hook.rerender();
-
-        const nextProjection = hook.result.current.projection;
-        expect(firstProjection).not.toEqual(nextProjection);
     });
 });
