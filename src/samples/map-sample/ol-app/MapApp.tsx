@@ -76,7 +76,7 @@ export function MapApp() {
                         >
                             <BasemapSwitcher
                                 ref={basemapSwitcherRef}
-                                noneBasemap
+                                allowSelectingEmptyBasemap
                                 label={intl.formatMessage({ id: "basemapLabel" })}
                                 mapId={MAP_ID}
                             ></BasemapSwitcher>

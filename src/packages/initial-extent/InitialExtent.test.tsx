@@ -1,8 +1,5 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-/**
- * @vitest-environment happy-dom
- */
 import { MapContainer } from "@open-pioneer/map";
 import { createServiceOptions, setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
@@ -12,10 +9,6 @@ import OlMap from "ol/Map";
 import { Extent, equals } from "ol/extent";
 import { expect, it } from "vitest";
 import { InitialExtent } from "./InitialExtent";
-
-// used to avoid a "ResizeObserver is not defined" error
-import ResizeObserver from "resize-observer-polyfill";
-global.ResizeObserver = ResizeObserver;
 
 it("should successfully create a initial extent component with home button", async () => {
     const { mapId, registry } = await setupMap();
