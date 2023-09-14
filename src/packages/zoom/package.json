@@ -3,13 +3,17 @@
     "version": "0.0.1",
     "license": "Apache-2.0",
     "main": "index.ts",
+    "scripts": {
+        "build": "build-pioneer-package"
+    },
     "peerDependencies": {
         "@open-pioneer/chakra-integration": "^1.0.0",
         "@open-pioneer/map": "workspace:^",
         "@open-pioneer/runtime": "^1.0.1",
         "ol": "^8.1.0",
         "react": "^18.2.0",
-        "classnames": "^2.3.2"
+        "classnames": "^2.3.2",
+        "react-icons": "4.8.0"
     },
     "devDependencies": {
         "@open-pioneer/test-utils": "^1.0.0",
