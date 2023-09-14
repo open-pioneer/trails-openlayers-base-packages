@@ -62,7 +62,7 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 5
     needs: test
     if: github.ref == 'refs/heads/main'
     steps:
