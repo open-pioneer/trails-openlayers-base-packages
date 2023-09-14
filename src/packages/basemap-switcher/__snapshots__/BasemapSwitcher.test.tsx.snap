@@ -31,7 +31,7 @@ exports[`should successfully create a basemap switcher component 1`] = `
         <option
           value="___NO_BASEMAP___"
         >
-          noneBasemapLabel
+          emptyBasemapLabel
         </option>
       </select>
       <div

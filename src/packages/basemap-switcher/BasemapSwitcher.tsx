@@ -54,7 +54,7 @@ export interface BasemapSwitcherProps extends BoxProps, RefAttributes<HTMLDivEle
      *
      * TODO: Different Name?
      */
-    noneBasemap?: boolean;
+    allowSelectingEmptyBasemap?: boolean;
 
     /**
      * Optional label for the `Select`.
@@ -73,17 +73,17 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = forwardRef(function Bas
     const {
         mapId,
         className,
-        noneBasemap,
+        allowSelectingEmptyBasemap,
         label = intl.formatMessage({ id: "defaultLabel" }),
         ...rest
     } = props;
-    const noneBasemapLabel = intl.formatMessage({ id: "noneBasemapLabel" });
+    const emptyBasemapLabel = intl.formatMessage({ id: "emptyBasemapLabel" });
 
     const { map } = useMapModel(mapId);
     const baseLayers = useBaseLayers(map);
     const { selectOptions, selectedId } = useMemo(() => {
-        return createOptions({ baseLayers, noneBasemap, noneBasemapLabel });
-    }, [baseLayers, noneBasemap, noneBasemapLabel]);
+        return createOptions({ baseLayers, allowSelectingEmptyBasemap, emptyBasemapLabel });
+    }, [baseLayers, allowSelectingEmptyBasemap, emptyBasemapLabel]);
     const activateLayer = (layerId: string) => {
         // empty string is used for "no basemap"
         map?.layers.activateBaseLayer(layerId === NO_BASEMAP_ID ? undefined : layerId);
@@ -147,18 +147,18 @@ function useBaseLayers(mapModel: MapModel | undefined): LayerModel[] {
 
 function createOptions(params: {
     baseLayers: LayerModel[];
-    noneBasemap: boolean | undefined;
-    noneBasemapLabel: string;
+    allowSelectingEmptyBasemap: boolean | undefined;
+    emptyBasemapLabel: string;
 }): { selectOptions: SelectOption[]; selectedId: string } {
-    const { baseLayers = [], noneBasemap = false, noneBasemapLabel } = params;
+    const { baseLayers = [], allowSelectingEmptyBasemap = false, emptyBasemapLabel } = params;
     const selectOptions: SelectOption[] = baseLayers.map((item) => ({
         id: item.id,
         label: item.title
     }));
 
     let selectedId = baseLayers.find((layer) => layer.visible)?.id;
-    if (noneBasemap || selectedId == null) {
-        selectOptions.push(getNonBaseMapConfig(noneBasemapLabel));
+    if (allowSelectingEmptyBasemap || selectedId == null) {
+        selectOptions.push(getNonBaseMapConfig(emptyBasemapLabel));
     }
     if (selectedId == null) {
         selectedId = NO_BASEMAP_ID;
