@@ -6,7 +6,7 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    timeout-minutes: 1
+    timeout-minutes: 15
     permissions:
       contents: write
     steps:
@@ -62,7 +62,7 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
-    timeout-minutes: 1
+    timeout-minutes: 15
     needs: test
     if: github.ref == 'refs/heads/main'
     steps:
