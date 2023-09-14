@@ -4,10 +4,17 @@ This package provides two buttons for the user to zoom in and zoom out of the ma
 
 ## Usage
 
-To integrate the component in your app, insert the following snippet and reference a map id:
+To integrate the components in your app, insert the following snippet and reference a map id:
 
 ```jsx
-<Zoom mapId="map_id"></Zoom>
+<ZoomIn mapId="map_id" />
+<ZoomOut mapId="map_id" />
+```
+
+You can also use the generic `Zoom` component:
+
+```jsx
+<Zoom mapId="map_id" zoomDirection="in" />
 ```
 
 ## License
