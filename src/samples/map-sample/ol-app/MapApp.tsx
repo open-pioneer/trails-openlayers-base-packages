@@ -84,7 +84,12 @@ export function MapApp() {
                     </MapAnchor>
                     <MapAnchor position="top-left" horizontalGap={10} verticalGap={80}>
                         <Box backgroundColor="whiteAlpha.800">
-                            <Toc mapId={MAP_ID}></Toc>
+                            <Toc
+                                mapId={MAP_ID}
+                                basemapSwitcherProps={{
+                                    noneBasemap: true
+                                }}
+                            ></Toc>
                         </Box>
                     </MapAnchor>
                     <MapAnchor position="bottom-right" horizontalGap={10} verticalGap={30}>

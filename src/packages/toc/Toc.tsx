@@ -4,7 +4,7 @@
 import { Box, Text, BoxProps } from "@open-pioneer/chakra-integration";
 import { FC, ForwardedRef, forwardRef, RefAttributes } from "react";
 import classNames from "classnames";
-import { BasemapSwitcher } from "@open-pioneer/basemap-switcher";
+import { BasemapSwitcher, BasemapSwitcherProps } from "@open-pioneer/basemap-switcher";
 export interface TocProps extends BoxProps, RefAttributes<HTMLDivElement> {
     /**
      * The id of the map.
@@ -15,13 +15,15 @@ export interface TocProps extends BoxProps, RefAttributes<HTMLDivElement> {
      * Additional css class name(s) that will be added to the Toc component.
      */
     className?: string;
+
+    basemapSwitcherProps?: Omit<BasemapSwitcherProps, "mapId">;
 }
 
 export const Toc: FC<TocProps> = forwardRef(function Toc(
     props: TocProps,
     ref: ForwardedRef<HTMLDivElement> | undefined
 ) {
-    const { mapId, className, ...rest } = props;
+    const { mapId, className, basemapSwitcherProps, ...rest } = props;
 
     return (
         <Box className={classNames("toc", className)} ref={ref} {...rest}>
@@ -33,7 +35,11 @@ export const Toc: FC<TocProps> = forwardRef(function Toc(
                 <Text as="b">Map content</Text>
             </Box>
             <Box className="toc-content" padding={2}>
-                <BasemapSwitcher mapId={mapId}></BasemapSwitcher>
+                <BasemapSwitcher
+                    mapId={mapId}
+                    noneBasemap
+                    {...basemapSwitcherProps}
+                ></BasemapSwitcher>
             </Box>
         </Box>
     );
