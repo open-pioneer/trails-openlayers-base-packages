@@ -7,6 +7,7 @@ const documentedPackages = [
     "experimental-packages/layout-sidebar",
     "experimental-packages/ol-layer-control",
     "packages/map",
+    "packages/map-test-utils",
     "packages/notifier",
     "packages/react-utils",
     "packages/authentication",

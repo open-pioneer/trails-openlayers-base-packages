@@ -7,7 +7,7 @@ This package provides a coordinate viewer component, which can be integrated bes
 To integrate the coordinate viewer in your app, insert the following snippet and reference a map id:
 
 ```jsx
-<CoordinateViewer mapId="map_id" precision={2}></CoordinateViewer>
+<CoordinateViewer mapId="map_id" precision={2} />
 ```
 
 The optional precision attribute allows to define the number of coordinates' decimal places shown.

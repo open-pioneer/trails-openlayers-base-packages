@@ -13,6 +13,7 @@
     },
     "devDependencies": {
         "@open-pioneer/test-utils": "^1.0.0",
+        "@open-pioneer/map-test-utils": "workspace:^",
         "openlayers-base-packages": "workspace:*",
         "resize-observer-polyfill": "^1.5.1"
     },

@@ -1,22 +1,15 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-/**
- * @vitest-environment happy-dom
- */
 import { getErrorChain } from "@open-pioneer/core";
 import { View } from "ol";
 import { Attribution } from "ol/control";
 import { afterEach, expect, it, vi } from "vitest";
 import { registerProjections } from "./projections";
-import { setupMap } from "./test-utils";
+import { setupMap } from "@open-pioneer/map-test-utils";
 import OlMap from "ol/Map";
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
 import { BkgTopPlusOpen } from "./layers/BkgTopPlusOpen";
-
-// used to avoid a "ResizeObserver is not defined" error
-import ResizeObserver from "resize-observer-polyfill";
-global.ResizeObserver = ResizeObserver;
 
 afterEach(() => {
     vi.restoreAllMocks();

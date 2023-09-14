@@ -1,17 +1,10 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-/**
- * @vitest-environment happy-dom
- */
 import { afterEach, expect, it, describe } from "vitest";
 import { MapModelImpl } from "./MapModelImpl";
 import { createMapModel } from "./createMapModel";
 import { waitFor } from "@testing-library/dom";
-import { waitForInitialExtent } from "./../test-utils";
-
-// used to avoid a "ResizeObserver is not defined" error
-import ResizeObserver from "resize-observer-polyfill";
-global.ResizeObserver = ResizeObserver;
+import { waitForInitialExtent } from "@open-pioneer/map-test-utils";
 
 let model: MapModelImpl | undefined;
 

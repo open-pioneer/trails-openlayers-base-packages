@@ -55,24 +55,7 @@ class MapModelFactory {
 
         LOG.debug(`Constructing open layers map with options`, mapOptions);
         const olMap = new OlMap(mapOptions);
-
-        // Test support: open layers relies on div.offsetHeight (and Width)
-        // plus getComputedStyle(div), which do not work as expected in jsdom.
-        // The following snippet fakes a size so tests can work with the map.
-        if (import.meta.env.VITEST) {
-            olMap.updateSize = () => {
-                const target = olMap.getTargetElement();
-                const height = 500;
-                const width = 500;
-                const size = target ? [width, height] : undefined;
-                const oldSize = olMap.getSize();
-                if (size && (!oldSize || !extentEquals(size, oldSize))) {
-                    olMap.setSize(size);
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    (olMap as any).updateViewportSize_();
-                }
-            };
-        }
+        setupTestSupport(olMap);
 
         const mapModel = new MapModelImpl({
             id: mapId,
@@ -171,5 +154,25 @@ class MapModelFactory {
             throw new Error(`Failed to retrieve projection for code '${projectionOption}'.`);
         }
         return projection;
+    }
+}
+
+function setupTestSupport(olMap: OlMap) {
+    // Test support: open layers relies on div.offsetHeight (and Width)
+    // plus getComputedStyle(div), which do not work as expected in jsdom.
+    // The following snippet fakes a size so tests can work with the map.
+    if (import.meta.env.VITEST) {
+        olMap.updateSize = () => {
+            const target = olMap.getTargetElement();
+            const height = 500;
+            const width = 500;
+            const size = target ? [width, height] : undefined;
+            const oldSize = olMap.getSize();
+            if (size && (!oldSize || !extentEquals(size, oldSize))) {
+                olMap.setSize(size);
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                (olMap as any).updateViewportSize_();
+            }
+        };
     }
 }

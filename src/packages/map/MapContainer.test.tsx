@@ -1,24 +1,17 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-/**
- * @vitest-environment happy-dom
- */
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render } from "@testing-library/react";
 import { afterEach, expect, it, vi } from "vitest";
 import { MapContainer } from "./MapContainer";
 import {
-    createPackageContextProviderProps,
+    createServiceOptions,
     setupMap,
     waitForMapMount,
     SimpleMapOptions
-} from "./test-utils";
+} from "@open-pioneer/map-test-utils";
 import TileLayer from "ol/layer/Tile";
 import { BkgTopPlusOpen } from "./layers/BkgTopPlusOpen";
-
-// used to avoid a "ResizeObserver is not defined" error
-import ResizeObserver from "resize-observer-polyfill";
-global.ResizeObserver = ResizeObserver;
 
 afterEach(() => {
     vi.restoreAllMocks();
@@ -26,8 +19,9 @@ afterEach(() => {
 
 it("successfully creates a map", async () => {
     const { mapId, registry } = await setupMap();
+    const injectedServices = createServiceOptions({ registry });
     const renderResult = render(
-        <PackageContextProvider {...createPackageContextProviderProps(registry)}>
+        <PackageContextProvider services={injectedServices}>
             <div data-testid="base">
                 <MapContainer mapId={mapId} />
             </div>
@@ -55,8 +49,9 @@ it("reports an error if two map containers are used for the same map", async () 
     const { mapId, registry } = await setupMap();
     await registry.expectMapModel(mapId); // fully create map before rendering for simplicity
 
+    const injectedServices = createServiceOptions({ registry });
     render(
-        <PackageContextProvider {...createPackageContextProviderProps(registry)}>
+        <PackageContextProvider services={injectedServices}>
             <div data-testid="base">
                 <MapContainer mapId={mapId} />
                 <MapContainer mapId={mapId} />
@@ -105,8 +100,10 @@ it("successfully creates a map with given configuration", async () => {
         ]
     };
     const { mapId, registry } = await setupMap(options);
+
+    const injectedServices = createServiceOptions({ registry });
     render(
-        <PackageContextProvider {...createPackageContextProviderProps(registry)}>
+        <PackageContextProvider services={injectedServices}>
             <div data-testid="base">
                 <MapContainer mapId={mapId} />
             </div>
