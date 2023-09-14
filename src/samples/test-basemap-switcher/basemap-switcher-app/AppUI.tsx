@@ -28,7 +28,7 @@ export function AppUI() {
                         >
                             <BasemapSwitcher
                                 ref={basemapSwitcherRef}
-                                noneBasemap
+                                allowSelectingEmptyBasemap
                                 mapId={MAP_ID}
                             ></BasemapSwitcher>
 
