@@ -1,23 +1,19 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-/**
- * @vitest-environment happy-dom
- */
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render, screen, waitFor } from "@testing-library/react";
 import { expect, it } from "vitest";
+import { get } from "ol/proj";
 import { ScaleViewer } from "./ScaleViewer";
-import { createPackageContextProviderProps, setupMap } from "@open-pioneer/map/test-utils";
-
-// used to avoid a "ResizeObserver is not defined" error
-import ResizeObserver from "resize-observer-polyfill";
-global.ResizeObserver = ResizeObserver;
+import View from "ol/View";
+import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
 
 it("should successfully create a scale viewer component", async () => {
     const { mapId, registry } = await setupMap();
 
+    const injectedServices = createServiceOptions({ registry });
     render(
-        <PackageContextProvider {...createPackageContextProviderProps(registry)}>
+        <PackageContextProvider services={injectedServices}>
             <div data-testid="base">
                 <ScaleViewer mapId={mapId}></ScaleViewer>
             </div>
@@ -35,8 +31,9 @@ it("should successfully create a scale viewer component", async () => {
 it("should successfully create a scale viewer component with additional css classes and box properties", async () => {
     const { mapId, registry } = await setupMap();
 
+    const injectedServices = createServiceOptions({ registry });
     render(
-        <PackageContextProvider {...createPackageContextProviderProps(registry)}>
+        <PackageContextProvider services={injectedServices}>
             <div data-testid="base">
                 <ScaleViewer mapId={mapId} className="test test1 test2" pl="1px" />
             </div>
@@ -60,6 +57,47 @@ it("should successfully create a scale viewer component with additional css clas
         const styles = window.getComputedStyle(viewerDiv);
         expect(styles.paddingLeft).toBe("1px");
     }
+});
+
+it("should successfully render the scale in the correct locale", async () => {
+    const center = [847541, 6793584];
+    const resolution = 9.554628535647032;
+    const projection = get("EPSG:3857");
+    if (!projection) {
+        throw new Error("projection not found");
+    }
+
+    const { mapId, registry } = await setupMap();
+    const map = await registry.expectMapModel(mapId);
+    const olMap = map.olMap;
+    olMap.setView(
+        new View({
+            center,
+            resolution,
+            projection
+        })
+    );
+
+    const injectedServices = createServiceOptions({ registry });
+    const result = render(
+        <PackageContextProvider services={injectedServices} locale="en">
+            <div data-testid="base">
+                <ScaleViewer mapId={mapId} />
+            </div>
+        </PackageContextProvider>
+    );
+
+    const { viewerText } = await waitForScaleViewer();
+    expect(viewerText.textContent).toBe("1:21,026");
+
+    result.rerender(
+        <PackageContextProvider services={injectedServices} locale="de">
+            <div data-testid="base">
+                <ScaleViewer mapId={mapId} />
+            </div>
+        </PackageContextProvider>
+    );
+    expect(viewerText.textContent).toBe("1:21.026");
 });
 
 async function waitForScaleViewer() {

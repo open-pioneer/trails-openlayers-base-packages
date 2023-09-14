@@ -13,9 +13,8 @@ exports[`should successfully create a layer control component 1`] = `
       data-theme="light"
     >
       <input
-        checked=""
         class="chakra-checkbox__input"
-        style="border: 0px; clip: rect(0px, 0px, 0px, 0px); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
+        style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
         type="checkbox"
         value=""
       />

@@ -7,7 +7,7 @@ This package provides a simple button that switches the view to its initial view
 To integrate the component in your app, insert the following snippet and reference a map id:
 
 ```jsx
-<InitialExtent mapId="map_id"></InitialExtent>
+<InitialExtent mapId="map_id" />
 ```
 
 ## License

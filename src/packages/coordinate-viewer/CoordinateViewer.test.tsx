@@ -1,27 +1,21 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-/**
- * @vitest-environment happy-dom
- */
 import { chakra } from "@open-pioneer/chakra-integration";
 import { MapContainer } from "@open-pioneer/map";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
-import { act, render, screen, waitFor } from "@testing-library/react";
+import { act, render, renderHook, screen, waitFor } from "@testing-library/react";
 import View from "ol/View";
 import BaseEvent from "ol/events/Event";
 import { expect, it } from "vitest";
-import { CoordinateViewer } from "./CoordinateViewer";
-import {
-    createPackageContextProviderProps,
-    setupMap,
-    waitForMapMount
-} from "@open-pioneer/map/test-utils";
+import { CoordinateViewer, useCoordinatesString } from "./CoordinateViewer";
+import { createServiceOptions, setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
 
 it("should successfully create a coordinate viewer component", async () => {
     const { mapId, registry } = await setupMap();
 
+    const injectedServices = createServiceOptions({ registry });
     render(
-        <PackageContextProvider {...createPackageContextProviderProps(registry)}>
+        <PackageContextProvider services={injectedServices}>
             <div data-testid="base">
                 <CoordinateViewer mapId={mapId}></CoordinateViewer>
             </div>
@@ -39,8 +33,9 @@ it("should successfully create a coordinate viewer component", async () => {
 it("should successfully create a coordinate viewer component with additional css classes and box properties", async () => {
     const { mapId, registry } = await setupMap();
 
+    const injectedServices = createServiceOptions({ registry });
     render(
-        <PackageContextProvider {...createPackageContextProviderProps(registry)}>
+        <PackageContextProvider services={injectedServices}>
             <div data-testid="base">
                 <CoordinateViewer mapId={mapId} className="test" pl="1px"></CoordinateViewer>
             </div>
@@ -62,8 +57,9 @@ it("should successfully create a coordinate viewer component with additional css
 it("tracks the user's mouse position", async () => {
     const { mapId, registry } = await setupMap();
 
+    const injectedServices = createServiceOptions({ registry });
     render(
-        <PackageContextProvider {...createPackageContextProviderProps(registry)}>
+        <PackageContextProvider services={injectedServices}>
             <chakra.div data-testid="map" height="500px" width="500px">
                 <MapContainer mapId={mapId} />
             </chakra.div>
@@ -103,6 +99,34 @@ it("tracks the user's mouse position", async () => {
         simulateMove(42, 1337);
     });
     expect(viewerText.textContent).toMatchInlineSnapshot('"42.0 1,337.0 EPSG:4326"');
+});
+
+it("should format coordinates to correct coordinate string for the corresponding locale and precision", async () => {
+    const coords = [3545.08081, 4543543.009];
+
+    const renderCoords = (locale: string, precision = 2) => {
+        return renderHook(() => useCoordinatesString(coords, precision), {
+            wrapper: (props) => <PackageContextProvider {...props} locale={locale} />
+        });
+    };
+
+    const hookEN = renderCoords("en");
+    const stringCoordinates = hookEN.result.current;
+    expect(stringCoordinates).equals("3,545.08 4,543,543.01");
+
+    const hookDE = renderCoords("de", 3);
+    expect(hookDE.result.current).equals("3.545,081 4.543.543,009");
+
+    const hookDE_precision0 = renderCoords("de", 0);
+    expect(hookDE_precision0.result.current).equals("3.545 4.543.543");
+});
+
+it("should format coordinates to correct coordinate string with default precision", async () => {
+    const coords = [3545.08081, 4543543.009];
+    const hookDeWithoutPrecision = renderHook(() => useCoordinatesString(coords, undefined), {
+        wrapper: (props) => <PackageContextProvider {...props} locale="de" />
+    });
+    expect(hookDeWithoutPrecision.result.current).equals("3.545,0808 4.543.543,0090");
 });
 
 async function waitForCoordinateViewer() {

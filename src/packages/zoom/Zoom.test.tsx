@@ -7,11 +7,7 @@ import { MapContainer } from "@open-pioneer/map";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render, screen, waitFor } from "@testing-library/react";
 import { expect, it } from "vitest";
-import {
-    createPackageContextProviderProps,
-    setupMap,
-    waitForMapMount
-} from "@open-pioneer/map/test-utils";
+import { createServiceOptions, setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
 import ResizeObserver from "resize-observer-polyfill";
 import userEvent from "@testing-library/user-event";
 import { Zoom } from "./Zoom";
@@ -22,8 +18,9 @@ global.ResizeObserver = ResizeObserver;
 it("should successfully create a zoom component with a zoom in and a zoom out button", async () => {
     const { mapId, registry } = await setupMap();
 
+    const injectedServices = createServiceOptions({ registry });
     render(
-        <PackageContextProvider {...createPackageContextProviderProps(registry)}>
+        <PackageContextProvider services={injectedServices}>
             <div data-testid="base">
                 <MapContainer mapId={mapId} />
                 <Zoom mapId={mapId}></Zoom>
@@ -49,8 +46,9 @@ it("should successfully create a zoom component with a zoom in and a zoom out bu
 it("should successfully create a zoom component with additional css classes", async () => {
     const { mapId, registry } = await setupMap();
 
+    const injectedServices = createServiceOptions({ registry });
     render(
-        <PackageContextProvider {...createPackageContextProviderProps(registry)}>
+        <PackageContextProvider services={injectedServices}>
             <div data-testid="base">
                 <MapContainer mapId={mapId} />
                 <Zoom mapId={mapId} className="testClass1 testClass2"></Zoom>
@@ -73,8 +71,9 @@ it("should successfully click the zoom in and zoom out button", async () => {
     const map = await registry.expectMapModel(mapId);
     const user = userEvent.setup();
 
+    const injectedServices = createServiceOptions({ registry });
     render(
-        <PackageContextProvider {...createPackageContextProviderProps(registry)}>
+        <PackageContextProvider services={injectedServices}>
             <div data-testid="base">
                 <MapContainer mapId={mapId} />
                 <Zoom mapId={mapId}></Zoom>

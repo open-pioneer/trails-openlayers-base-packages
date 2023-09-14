@@ -7,25 +7,15 @@ This package provides a basemap switcher component, which can be integrated besi
 Example: Simple integration of a basemap switcher with a given map id:
 
 ```jsx
-<BasemapSwitcher mapId="map_id"></BasemapSwitcher>
+<BasemapSwitcher mapId="map_id" />
 ```
 
 You can also add a label for the basemap switcher with an optional property `label`.
 
 Add a `noneBasemap` configuration, if you want to provide an option to deactivate all basemap layers at all with the optional property `noneBasemap`.
 
-Example: Integration of a basemap switcher with optional properties:
-
-```js
-const noneBasemap = {
-    id: "noBasemap",
-    label: "Ohne Hintergrund",
-    selected: false
-};
-```
-
 ```jsx
-<BasemapSwitcher mapId="map_id" label="Grundkarte" noneBasemap={noneBasemap}></BasemapSwitcher>
+<BasemapSwitcher mapId="map_id" label="Grundkarte" noneBasemap />
 ```
 
 ### Customizing

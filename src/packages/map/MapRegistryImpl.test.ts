@@ -1,22 +1,15 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-/**
- * @vitest-environment happy-dom
- */
 import { getErrorChain } from "@open-pioneer/core";
 import { View } from "ol";
 import { Attribution } from "ol/control";
 import { afterEach, expect, it, vi } from "vitest";
 import { registerProjections } from "./projections";
-import { setupMap } from "./test-utils";
+import { setupMap } from "@open-pioneer/map-test-utils";
 import OlMap from "ol/Map";
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
-import Stamen from "ol/source/Stamen";
-
-// used to avoid a "ResizeObserver is not defined" error
-import ResizeObserver from "resize-observer-polyfill";
-global.ResizeObserver = ResizeObserver;
+import { BkgTopPlusOpen } from "./layers/BkgTopPlusOpen";
 
 afterEach(() => {
     vi.restoreAllMocks();
@@ -217,7 +210,7 @@ it("should construct a map with the configured layers", async () => {
                 id: "id2",
                 title: "bar",
                 visible: false,
-                layer: new TileLayer({ source: new Stamen({ layer: "toner" }) })
+                layer: new TileLayer({ source: new BkgTopPlusOpen() })
             }
         ]
     });
