@@ -51,8 +51,6 @@ export interface BasemapSwitcherProps extends BoxProps, RefAttributes<HTMLDivEle
 
     /**
      * Optional config, if none basemap option is set.
-     *
-     * TODO: Different Name?
      */
     allowSelectingEmptyBasemap?: boolean;
 
