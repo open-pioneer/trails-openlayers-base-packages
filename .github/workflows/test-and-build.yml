@@ -3,9 +3,12 @@ on:
   workflow_dispatch:
   push:
   pull_request:
+env:
+  DEFAULT_TIMEOUT: 1
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: env.DEFAULT_TIMEOUT
     permissions:
       contents: write
     steps:
@@ -61,6 +64,7 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: env.DEFAULT_TIMEOUT
     needs: test
     if: github.ref == 'refs/heads/main'
     steps:
