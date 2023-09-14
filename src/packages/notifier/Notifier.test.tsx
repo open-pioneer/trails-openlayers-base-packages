@@ -1,12 +1,9 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-/**
- * @vitest-environment jsdom
- */
 import { expect, it } from "vitest";
 import { createService } from "@open-pioneer/test-utils/services";
 import { NotificationServiceImpl } from "./NotificationServiceImpl";
-import { render, screen, waitForElementToBeRemoved, act } from "@testing-library/react";
+import { render, screen, waitForElementToBeRemoved, act, waitFor } from "@testing-library/react";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { Notifier } from "./Notifier";
 
@@ -67,7 +64,13 @@ it("closes all notifications", async () => {
         service.notify({ title: "test1" });
     });
 
-    const messageElements = await screen.findAllByText("test1");
+    const messageElements = await waitFor(async () => {
+        const messageElements = await screen.findAllByText("test1");
+        if (messageElements.length !== 3) {
+            throw new Error("Did not open three notifications");
+        }
+        return messageElements;
+    });
     expect(messageElements).toHaveLength(3);
 
     act(() => {

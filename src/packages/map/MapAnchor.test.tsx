@@ -1,10 +1,7 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-/**
- * @vitest-environment jsdom
- */
 import { MapContainer, MapPadding } from "./MapContainer";
-import { createPackageContextProviderProps, setupMap, waitForMapMount } from "./test-utils";
+import { createServiceOptions, setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render, waitFor } from "@testing-library/react";
 import { expect, it } from "vitest";
@@ -16,17 +13,15 @@ import {
 } from "./MapAnchor";
 import { Box, StyleProps } from "@open-pioneer/chakra-integration";
 
-// used to avoid a "ResizeObserver is not defined" error
-global.ResizeObserver = require("resize-observer-polyfill");
-
 it("should successfully create a map anchor component", async () => {
     const { mapId, registry } = await setupMap();
 
+    const injectedServices = createServiceOptions({ registry });
     const { container } = render(
-        <PackageContextProvider {...createPackageContextProviderProps(registry)}>
+        <PackageContextProvider services={injectedServices}>
             <div data-testid="base">
                 <MapContainer mapId={mapId}>
-                    <MapAnchor></MapAnchor>
+                    <MapAnchor />
                 </MapContainer>
             </div>
         </PackageContextProvider>
@@ -48,11 +43,12 @@ it("should successfully create a map anchor component", async () => {
 it("should successfully create a map anchor component with additional css classes", async () => {
     const { mapId, registry } = await setupMap();
 
+    const injectedServices = createServiceOptions({ registry });
     const { container } = render(
-        <PackageContextProvider {...createPackageContextProviderProps(registry)}>
+        <PackageContextProvider services={injectedServices}>
             <div data-testid="base">
                 <MapContainer mapId={mapId}>
-                    <MapAnchor className="test test1 test2"></MapAnchor>
+                    <MapAnchor className="test test1 test2" />
                 </MapContainer>
             </div>
         </PackageContextProvider>
@@ -77,11 +73,12 @@ it("should successfully create a map anchor component with additional css classe
 it('should successfully create a map anchor component with prop `position="top-left"`', async () => {
     const { mapId, registry } = await setupMap();
 
+    const injectedServices = createServiceOptions({ registry });
     const { container } = render(
-        <PackageContextProvider {...createPackageContextProviderProps(registry)}>
+        <PackageContextProvider services={injectedServices}>
             <div data-testid="base">
                 <MapContainer mapId={mapId}>
-                    <MapAnchor position="top-left"></MapAnchor>
+                    <MapAnchor position="top-left" />
                 </MapContainer>
             </div>
         </PackageContextProvider>
@@ -104,11 +101,12 @@ it('should successfully create a map anchor component with prop `position="top-l
 it('should successfully create a map anchor component with prop `position="bottom-right"`', async () => {
     const { mapId, registry } = await setupMap();
 
+    const injectedServices = createServiceOptions({ registry });
     const { container } = render(
-        <PackageContextProvider {...createPackageContextProviderProps(registry)}>
+        <PackageContextProvider services={injectedServices}>
             <div data-testid="base">
                 <MapContainer mapId={mapId}>
-                    <MapAnchor position="bottom-right"></MapAnchor>
+                    <MapAnchor position="bottom-right" />
                 </MapContainer>
             </div>
         </PackageContextProvider>
@@ -133,15 +131,12 @@ it('should successfully create a map anchor component with prop `position="botto
 it('should successfully create a map anchor component with props `position="bottom-right"` and `horizontalGap={30} verticalGap={10}`', async () => {
     const { mapId, registry } = await setupMap();
 
+    const injectedServices = createServiceOptions({ registry });
     const { container } = render(
-        <PackageContextProvider {...createPackageContextProviderProps(registry)}>
+        <PackageContextProvider services={injectedServices}>
             <div data-testid="base">
                 <MapContainer mapId={mapId}>
-                    <MapAnchor
-                        position="bottom-right"
-                        horizontalGap={30}
-                        verticalGap={10}
-                    ></MapAnchor>
+                    <MapAnchor position="bottom-right" horizontalGap={30} verticalGap={10} />
                 </MapContainer>
             </div>
         </PackageContextProvider>
@@ -164,8 +159,9 @@ it('should successfully create a map anchor component with props `position="bott
 it("should successfully create a map anchor component with ReactNode as children", async () => {
     const { mapId, registry } = await setupMap();
 
+    const injectedServices = createServiceOptions({ registry });
     const { container } = render(
-        <PackageContextProvider {...createPackageContextProviderProps(registry)}>
+        <PackageContextProvider services={injectedServices}>
             <div data-testid="base">
                 <MapContainer mapId={mapId}>
                     <MapAnchor>
@@ -199,12 +195,13 @@ it("should successfully create a map anchor component with ReactNode as children
 it("should successfully create multiple map anchor components", async () => {
     const { mapId, registry } = await setupMap();
 
+    const injectedServices = createServiceOptions({ registry });
     const { container } = render(
-        <PackageContextProvider {...createPackageContextProviderProps(registry)}>
+        <PackageContextProvider services={injectedServices}>
             <div data-testid="base">
                 <MapContainer mapId={mapId}>
-                    <MapAnchor className="testabc"></MapAnchor>
-                    <MapAnchor className="testdef"></MapAnchor>
+                    <MapAnchor className="testabc" />
+                    <MapAnchor className="testdef" />
                 </MapContainer>
             </div>
         </PackageContextProvider>

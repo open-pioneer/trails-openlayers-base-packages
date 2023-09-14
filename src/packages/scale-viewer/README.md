@@ -4,10 +4,10 @@ This package provides a scale viewer component, which can be integrated besides 
 
 ## Usage
 
-To integrate the scale viewer in your app, insert the following snippet and reference a map ID:
+To integrate the scale viewer in your app, insert the following snippet and reference a map id:
 
 ```jsx
-<ScaleViewer mapId="map_id"></ScaleViewer>
+<ScaleViewer mapId="map_id" />
 ```
 
 ## License

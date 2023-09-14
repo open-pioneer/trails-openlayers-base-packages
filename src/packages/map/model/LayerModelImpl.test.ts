@@ -1,8 +1,5 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-/**
- * @vitest-environment jsdom
- */
 import Layer from "ol/layer/Layer";
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
@@ -12,10 +9,6 @@ import { LayerConfig } from "../api";
 import { LayerModelImpl } from "./LayerModelImpl";
 import { MapModelImpl } from "./MapModelImpl";
 import { createMapModel } from "./createMapModel";
-
-// used to avoid a "ResizeObserver is not defined" error
-import ResizeObserver from "resize-observer-polyfill";
-global.ResizeObserver = ResizeObserver;
 
 let model: MapModelImpl | undefined;
 afterEach(() => {

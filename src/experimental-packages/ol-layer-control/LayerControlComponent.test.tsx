@@ -1,25 +1,19 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-/**
- * @vitest-environment jsdom
- */
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { expect, it } from "vitest";
 import { LayerControlComponent } from "./LayerControlComponent";
-import { createPackageContextProviderProps, setupMap } from "@open-pioneer/map/test-utils";
-
-// used to avoid a "ResizeObserver is not defined" error
-import ResizeObserver from "resize-observer-polyfill";
-global.ResizeObserver = ResizeObserver;
+import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
 
 it("should successfully create a layer control component", async () => {
     const { mapId, registry } = await setupMap();
     await registry.expectMapModel(mapId);
 
+    const injectedServices = createServiceOptions({ registry });
     const { container } = render(
-        <PackageContextProvider {...createPackageContextProviderProps(registry)}>
+        <PackageContextProvider services={injectedServices}>
             <LayerControlComponent mapId={mapId} />
         </PackageContextProvider>
     );
@@ -52,8 +46,9 @@ it("layer control should have checkbox to toggle layer visibility", async () => 
     const firstLayer = layers[0]!;
     firstLayer.setVisible(false);
 
+    const injectedServices = createServiceOptions({ registry });
     render(
-        <PackageContextProvider {...createPackageContextProviderProps(registry)}>
+        <PackageContextProvider services={injectedServices}>
             <LayerControlComponent mapId={mapId} showOpacitySlider={true} />
         </PackageContextProvider>
     );
@@ -80,8 +75,9 @@ it("layer control should have checkbox to toggle layer visibility", async () => 
 it("layer control should have usable opacity slider", async () => {
     const { mapId, registry } = await setupMap();
     const user = userEvent.setup();
+    const injectedServices = createServiceOptions({ registry });
     render(
-        <PackageContextProvider {...createPackageContextProviderProps(registry)}>
+        <PackageContextProvider services={injectedServices}>
             <LayerControlComponent mapId={mapId} showOpacitySlider={true} />
         </PackageContextProvider>
     );
