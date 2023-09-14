@@ -4,11 +4,7 @@
  * @vitest-environment happy-dom
  */
 import { MapContainer } from "@open-pioneer/map";
-import {
-    createPackageContextProviderProps,
-    setupMap,
-    waitForMapMount
-} from "@open-pioneer/map/test-utils";
+import { createServiceOptions, setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -24,8 +20,9 @@ global.ResizeObserver = ResizeObserver;
 it("should successfully create a initial extent component with home button", async () => {
     const { mapId, registry } = await setupMap();
 
+    const injectedServices = createServiceOptions({ registry });
     render(
-        <PackageContextProvider {...createPackageContextProviderProps(registry)}>
+        <PackageContextProvider services={injectedServices}>
             <div data-testid="base">
                 <MapContainer mapId={mapId} />
                 <InitialExtent mapId={mapId}></InitialExtent>
@@ -47,8 +44,9 @@ it("should successfully create a initial extent component with home button", asy
 it("should successfully create a initial extent component with additional css classes", async () => {
     const { mapId, registry } = await setupMap();
 
+    const injectedServices = createServiceOptions({ registry });
     render(
-        <PackageContextProvider {...createPackageContextProviderProps(registry)}>
+        <PackageContextProvider services={injectedServices}>
             <div data-testid="base">
                 <MapContainer mapId={mapId} />
                 <InitialExtent mapId={mapId} className="testClass1 testClass2"></InitialExtent>
@@ -71,8 +69,9 @@ it("should successfully click the home button and go to initial extent", async (
     const { mapId, registry } = await setupMap();
     const user = userEvent.setup();
 
+    const injectedServices = createServiceOptions({ registry });
     render(
-        <PackageContextProvider {...createPackageContextProviderProps(registry)}>
+        <PackageContextProvider services={injectedServices}>
             <div data-testid="map" style={{ height: "500px", width: "500px" }}>
                 <MapContainer mapId={mapId} />
             </div>

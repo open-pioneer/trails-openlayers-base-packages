@@ -7,12 +7,13 @@
         "@open-pioneer/chakra-integration": "^1.0.0",
         "@open-pioneer/map": "workspace:^",
         "@open-pioneer/runtime": "^1.0.1",
-        "ol": "^7.5.1",
+        "ol": "^8.1.0",
         "react": "^18.2.0",
         "classnames": "^2.3.2"
     },
     "devDependencies": {
         "@open-pioneer/test-utils": "^1.0.0",
+        "@open-pioneer/map-test-utils": "workspace:^",
         "openlayers-base-packages": "workspace:*"
     },
     "publishConfig": {

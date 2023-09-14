@@ -1,6 +1,5 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-import { PackageContextProviderProps } from "@open-pioneer/test-utils/react";
 import { createService } from "@open-pioneer/test-utils/services";
 import { screen, waitFor } from "@testing-library/react";
 import TileLayer from "ol/layer/Tile";
@@ -11,15 +10,12 @@ import {
     LayerConfig,
     MapConfig,
     MapConfigProvider,
+    MapModel,
     MapRegistry,
     OlMapOptions
-} from "./api";
-import { MapRegistryImpl } from "./services";
-import { MapModelImpl } from "./model/MapModelImpl";
-
-// used to avoid a "ResizeObserver is not defined" error
-import ResizeObserver from "resize-observer-polyfill";
-global.ResizeObserver = ResizeObserver;
+} from "@open-pioneer/map";
+// Importing internals: needed for test support
+import { MapRegistryImpl } from "@open-pioneer/map/services";
 
 export interface SimpleMapOptions {
     center?: { x: number; y: number };
@@ -33,6 +29,9 @@ export interface SimpleMapOptions {
     noProjection?: boolean;
 }
 
+/**
+ * Waits until the open layers map has been mounted in the parent with the given id.
+ */
 export async function waitForMapMount(parentTestId = "base") {
     return await waitFor(async () => {
         const domElement = await screen.findByTestId(parentTestId);
@@ -44,7 +43,10 @@ export async function waitForMapMount(parentTestId = "base") {
     });
 }
 
-export async function waitForInitialExtent(model: MapModelImpl) {
+/**
+ * Waits until the model has an initial extent.
+ */
+export async function waitForInitialExtent(model: MapModel) {
     if (model.initialExtent) {
         return;
     }
@@ -60,6 +62,13 @@ export async function waitForInitialExtent(model: MapModelImpl) {
     });
 }
 
+/**
+ * Creates a simple map registry service with exactly one map configuration.
+ *
+ * The map is configured by using the `options` parameter.
+ *
+ * Returns the map registry and the id of the configured map.
+ */
 export async function setupMap(options?: SimpleMapOptions) {
     // Always use "test" as mapId for unit tests
     const mapId = "test";
@@ -101,13 +110,15 @@ export async function setupMap(options?: SimpleMapOptions) {
     return { mapId, registry };
 }
 
-export function createPackageContextProviderProps(
-    service: MapRegistry
-): PackageContextProviderProps {
+/**
+ * Creates (service name, service implementation)-pairs suitable for the `services`
+ * option of the `PackageContextProvider`.
+ *
+ * This helper method can be used to avoid hard-coding service names used in the implementation.
+ */
+export function createServiceOptions(services: { registry: MapRegistry }): Record<string, unknown> {
     return {
-        services: {
-            "map.MapRegistry": service
-        }
+        "map.MapRegistry": services.registry
     };
 }
 

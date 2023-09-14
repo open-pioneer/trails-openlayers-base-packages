@@ -9,11 +9,7 @@ import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render, screen, waitFor } from "@testing-library/react";
 import { expect, it } from "vitest";
 import { Toc } from "./Toc";
-import {
-    createPackageContextProviderProps,
-    setupMap,
-    waitForMapMount
-} from "@open-pioneer/map/test-utils";
+import { createServiceOptions, setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
 
 // used to avoid a "ResizeObserver is not defined" error
 import ResizeObserver from "resize-observer-polyfill";
@@ -22,8 +18,10 @@ global.ResizeObserver = ResizeObserver;
 it("should successfully create a toc component", async () => {
     const { mapId, registry } = await setupMap();
 
+    const injectedServices = createServiceOptions({ registry });
+
     render(
-        <PackageContextProvider {...createPackageContextProviderProps(registry)}>
+        <PackageContextProvider services={injectedServices}>
             <div data-testid="base">
                 <Toc mapId={mapId}></Toc>
             </div>
@@ -40,8 +38,10 @@ it("should successfully create a toc component", async () => {
 it("should successfully create a toc component with additional css classes and box properties", async () => {
     const { mapId, registry } = await setupMap();
 
+    const injectedServices = createServiceOptions({ registry });
+
     render(
-        <PackageContextProvider {...createPackageContextProviderProps(registry)}>
+        <PackageContextProvider services={injectedServices}>
             <div data-testid="base">
                 <Toc mapId={mapId} className="test" pl="1px"></Toc>
             </div>
@@ -63,8 +63,10 @@ it("should successfully create a toc component with additional css classes and b
 it("should be possible to override basemapSwitcher properties", async () => {
     const { mapId, registry } = await setupMap();
 
+    const injectedServices = createServiceOptions({ registry });
+
     render(
-        <PackageContextProvider {...createPackageContextProviderProps(registry)}>
+        <PackageContextProvider services={injectedServices}>
             <div data-testid="base">
                 <MapContainer mapId={mapId} />
                 <Toc

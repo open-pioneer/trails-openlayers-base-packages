@@ -91,9 +91,9 @@ exports[`should successfully create a basemap switcher component with additional
           OSM
         </option>
         <option
-          value="toner"
+          value="topplus-open"
         >
-          Toner
+          TopPlus Open
         </option>
       </select>
       <div

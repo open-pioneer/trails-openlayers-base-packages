@@ -7,13 +7,15 @@ const documentedPackages = [
     "experimental-packages/layout-sidebar",
     "experimental-packages/ol-layer-control",
     "packages/map",
+    "packages/map-test-utils",
     "packages/notifier",
     "packages/react-utils",
     "packages/authentication",
     "packages/coordinate-viewer",
     "packages/scale-viewer",
     "packages/basemap-switcher",
-    "packages/initial-extent"
+    "packages/initial-extent",
+    "packages/zoom"
 ];
 
 const packagePaths = documentedPackages.map((p) => `src/${p}`);

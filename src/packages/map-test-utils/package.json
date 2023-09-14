@@ -1,0 +1,19 @@
+{
+    "name": "@open-pioneer/map-test-utils",
+    "version": "0.0.1",
+    "license": "Apache-2.0",
+    "main": "index.ts",
+    "peerDependencies": {
+        "@open-pioneer/map": "workspace:^",
+        "@open-pioneer/test-utils": "^1.0.0",
+        "@testing-library/react": "^14.0.0",
+        "ol": "^8.1.0"
+    },
+    "devDependencies": {
+        "openlayers-base-packages": "workspace:*"
+    },
+    "publishConfig": {
+        "directory": "dist",
+        "linkDirectory": false
+    }
+}

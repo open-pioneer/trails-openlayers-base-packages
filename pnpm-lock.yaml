@@ -58,8 +58,8 @@ importers:
         specifier: ^10.16.0
         version: 10.16.1(react-dom@18.2.0)(react@18.2.0)
       ol:
-        specifier: ^7.5.1
-        version: 7.5.1
+        specifier: ^8.1.0
+        version: 8.1.0
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -166,6 +166,9 @@ importers:
       prettier:
         specifier: ^3.0.2
         version: 3.0.2
+      resize-observer-polyfill:
+        specifier: ^1.5.1
+        version: 1.5.1
       rimraf:
         specifier: ^5.0.1
         version: 5.0.1
@@ -176,7 +179,7 @@ importers:
         specifier: ^1.65.1
         version: 1.65.1
       syncpack:
-        specifier: ^10.5.1
+        specifier: 10.5.1
         version: 10.5.1
       ts-node:
         specifier: ^10.9.1
@@ -238,8 +241,8 @@ importers:
         specifier: ^1.0.1
         version: 1.0.1(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/core@1.0.1)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
       ol:
-        specifier: ^7.5.1
-        version: 7.5.1
+        specifier: ^8.1.0
+        version: 8.1.0
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -247,6 +250,9 @@ importers:
         specifier: ^17.4.0
         version: 17.4.0(react-dom@18.2.0)(react@18.2.0)
     devDependencies:
+      '@open-pioneer/map-test-utils':
+        specifier: workspace:^
+        version: link:../../packages/map-test-utils
       '@open-pioneer/test-utils':
         specifier: ^1.0.0
         version: 1.0.0(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.1)(@testing-library/react@14.0.0)(react-dom@18.2.0)(react@18.2.0)
@@ -296,12 +302,15 @@ importers:
         specifier: ^2.3.2
         version: 2.3.2
       ol:
-        specifier: ^7.5.1
-        version: 7.5.1
+        specifier: ^8.1.0
+        version: 8.1.0
       react:
         specifier: ^18.2.0
         version: 18.2.0
     devDependencies:
+      '@open-pioneer/map-test-utils':
+        specifier: workspace:^
+        version: link:../map-test-utils
       '@open-pioneer/test-utils':
         specifier: ^1.0.0
         version: 1.0.0(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.1)(@testing-library/react@14.0.0)(react-dom@18.2.0)(react@18.2.0)
@@ -322,21 +331,21 @@ importers:
         specifier: ^1.0.1
         version: 1.0.1(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/core@1.0.1)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
       ol:
-        specifier: ^7.5.1
-        version: 7.5.1
+        specifier: ^8.1.0
+        version: 8.1.0
       react:
         specifier: ^18.2.0
         version: 18.2.0
     devDependencies:
+      '@open-pioneer/map-test-utils':
+        specifier: workspace:^
+        version: link:../map-test-utils
       '@open-pioneer/test-utils':
         specifier: ^1.0.0
         version: 1.0.0(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.1)(@testing-library/react@14.0.0)(react-dom@18.2.0)(react@18.2.0)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
-      resize-observer-polyfill:
-        specifier: ^1.5.1
-        version: 1.5.1
     publishDirectory: dist
 
   src/packages/initial-extent:
@@ -354,12 +363,15 @@ importers:
         specifier: ^2.3.2
         version: 2.3.2
       ol:
-        specifier: ^7.5.1
-        version: 7.5.1
+        specifier: ^8.1.0
+        version: 8.1.0
       react:
         specifier: ^18.2.0
         version: 18.2.0
     devDependencies:
+      '@open-pioneer/map-test-utils':
+        specifier: workspace:^
+        version: link:../map-test-utils
       '@open-pioneer/test-utils':
         specifier: ^1.0.0
         version: 1.0.0(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.1)(@testing-library/react@14.0.0)(react-dom@18.2.0)(react@18.2.0)
@@ -386,8 +398,8 @@ importers:
         specifier: ^2.5.2
         version: 2.5.2
       ol:
-        specifier: ^7.5.1
-        version: 7.5.1
+        specifier: ^8.1.0
+        version: 8.1.0
       proj4:
         specifier: ^2.9.0
         version: 2.9.0
@@ -404,15 +416,35 @@ importers:
         specifier: ^9.0.0
         version: 9.0.0
     devDependencies:
+      '@open-pioneer/map-test-utils':
+        specifier: workspace:^
+        version: link:../map-test-utils
       '@types/uuid':
         specifier: ^9.0.2
         version: 9.0.2
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
-      resize-observer-polyfill:
-        specifier: ^1.5.1
-        version: 1.5.1
+    publishDirectory: dist
+
+  src/packages/map-test-utils:
+    dependencies:
+      '@open-pioneer/map':
+        specifier: workspace:^
+        version: link:../map
+      '@open-pioneer/test-utils':
+        specifier: ^1.0.0
+        version: 1.0.0(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.1)(@testing-library/react@14.0.0)(react-dom@18.2.0)(react@18.2.0)
+      '@testing-library/react':
+        specifier: ^14.0.0
+        version: 14.0.0(react-dom@18.2.0)(react@18.2.0)
+      ol:
+        specifier: ^8.1.0
+        version: 8.1.0
+    devDependencies:
+      openlayers-base-packages:
+        specifier: workspace:*
+        version: link:../../..
     publishDirectory: dist
 
   src/packages/notifier:
@@ -473,15 +505,15 @@ importers:
         specifier: ^18.2.0
         version: 18.2.0
     devDependencies:
+      '@open-pioneer/map-test-utils':
+        specifier: workspace:^
+        version: link:../map-test-utils
       '@open-pioneer/test-utils':
         specifier: ^1.0.0
         version: 1.0.0(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.1)(@testing-library/react@14.0.0)(react-dom@18.2.0)(react@18.2.0)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
-      resize-observer-polyfill:
-        specifier: ^1.5.1
-        version: 1.5.1
     publishDirectory: dist
 
   src/packages/toc:
@@ -505,6 +537,9 @@ importers:
         specifier: ^18.2.0
         version: 18.2.0
     devDependencies:
+      '@open-pioneer/map-test-utils':
+        specifier: workspace:^
+        version: link:../map-test-utils
       '@open-pioneer/test-utils':
         specifier: ^1.0.0
         version: 1.0.0(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.1)(@testing-library/react@14.0.0)(react-dom@18.2.0)(react@18.2.0)
@@ -514,6 +549,38 @@ importers:
       resize-observer-polyfill:
         specifier: ^1.5.1
         version: 1.5.1
+    publishDirectory: dist
+
+  src/packages/zoom:
+    dependencies:
+      '@open-pioneer/chakra-integration':
+        specifier: ^1.0.0
+        version: 1.0.0(@chakra-ui/react@2.8.0)(@emotion/cache@11.11.0)(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(framer-motion@10.16.1)(react-dom@18.2.0)(react@18.2.0)
+      '@open-pioneer/map':
+        specifier: workspace:^
+        version: link:../map
+      '@open-pioneer/runtime':
+        specifier: ^1.0.1
+        version: 1.0.1(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/core@1.0.1)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
+      classnames:
+        specifier: ^2.3.2
+        version: 2.3.2
+      ol:
+        specifier: ^8.1.0
+        version: 8.1.0
+      react:
+        specifier: ^18.2.0
+        version: 18.2.0
+    devDependencies:
+      '@open-pioneer/map-test-utils':
+        specifier: workspace:^
+        version: link:../map-test-utils
+      '@open-pioneer/test-utils':
+        specifier: ^1.0.0
+        version: 1.0.0(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.1)(@testing-library/react@14.0.0)(react-dom@18.2.0)(react@18.2.0)
+      openlayers-base-packages:
+        specifier: workspace:*
+        version: link:../../..
     publishDirectory: dist
 
   src/samples/auth-sample/auth-app:
@@ -546,35 +613,8 @@ importers:
         specifier: workspace:^
         version: link:../../../packages/map
       ol:
-        specifier: ^7.5.1
-        version: 7.5.1
-
-  src/samples/map-sample/map-sample-zoom-component:
-    dependencies:
-      '@chakra-ui/icons':
-        specifier: ^2.1.0
-        version: 2.1.0(@chakra-ui/system@2.6.0)(react@18.2.0)
-      '@chakra-ui/system':
-        specifier: ^2.6.0
-        version: 2.6.0(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(react@18.2.0)
-      '@emotion/react':
-        specifier: ^11.11.1
-        version: 11.11.1(@types/react@18.2.20)(react@18.2.0)
-      '@emotion/styled':
-        specifier: ^11.11.0
-        version: 11.11.0(@emotion/react@11.11.1)(@types/react@18.2.20)(react@18.2.0)
-      '@open-pioneer/chakra-integration':
-        specifier: ^1.0.0
-        version: 1.0.0(@chakra-ui/react@2.8.0)(@emotion/cache@11.11.0)(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(framer-motion@10.16.1)(react-dom@18.2.0)(react@18.2.0)
-      '@open-pioneer/map':
-        specifier: workspace:^
-        version: link:../../../packages/map
-      ol:
-        specifier: ^7.5.1
-        version: 7.5.1
-      react:
-        specifier: ^18.2.0
-        version: 18.2.0
+        specifier: ^8.1.0
+        version: 8.1.0
 
   src/samples/map-sample/ol-app:
     dependencies:
@@ -620,18 +660,18 @@ importers:
       '@open-pioneer/toc':
         specifier: workspace:^
         version: link:../../../packages/toc
+      '@open-pioneer/zoom':
+        specifier: workspace:^
+        version: link:../../../packages/zoom
       map-sample-logging:
         specifier: workspace:^
         version: link:../map-sample-logging
       map-sample-scale-component:
         specifier: workspace:*
         version: link:../map-sample-scale-component
-      map-sample-zoom-component:
-        specifier: workspace:*
-        version: link:../map-sample-zoom-component
       ol:
-        specifier: ^7.5.1
-        version: 7.5.1
+        specifier: ^8.1.0
+        version: 8.1.0
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -5672,12 +5712,11 @@ packages:
       es-abstract: 1.22.1
     dev: true
 
-  /ol@7.5.1:
-    resolution: {integrity: sha512-CFXDhO8YdQt7I+zwrGYSONo/ZM2oLr7vUvxqpLEUyy+USaQjUeE8L6FBOWIPboopGVhnSVYd5hdEirn9ifKBZQ==}
+  /ol@8.1.0:
+    resolution: {integrity: sha512-cx3SH2plpFS9fM8pp1nCypgQXGJD7Mcb1E3mEySmy5XEw1DUEo+kkNzgtAZz5qupekqi7aU9iBJEjCoMfqvO2Q==}
     dependencies:
       earcut: 2.2.4
       geotiff: 2.0.7
-      ol-mapbox-style: link:support/disabled-package
       pbf: 3.2.1
       rbush: 3.0.1
     dev: false

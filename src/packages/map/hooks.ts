@@ -1,12 +1,12 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-import Map from "ol/Map.js";
+import OlMap from "ol/Map";
+import OlView from "ol/View";
 import { unByKey } from "ol/Observable";
 import { Projection, getPointResolution } from "ol/proj";
 import { Coordinate } from "ol/coordinate";
 import { EventsKey } from "ol/events";
-import { useEffect, useState } from "react";
-import { useIntl } from "open-pioneer:react-hooks";
+import { useCallback, useMemo, useSyncExternalStore } from "react";
 
 /**
  * From Web Map Server Implementation Specification -> 7.2.4.6.9 Scale denominators
@@ -18,162 +18,111 @@ import { useIntl } from "open-pioneer:react-hooks";
 const DEFAULT_DPI = 25.4 / 0.28;
 const INCHES_PER_METRE = 39.37;
 
-const DEFAULT_PRECISION = 4;
+/**
+ * Returns the current view of the given map.
+ */
+export function useView(map: OlMap | undefined): OlView | undefined {
+    return useOlProperty(map, getView, watchView);
+}
+
+function getView(map: OlMap) {
+    return map.getView();
+}
+
+function watchView(map: OlMap, cb: Callback) {
+    return map.on("change:view", cb);
+}
 
 /**
- * Detect change of map scale and return scale | undefined
+ * Returns the current projection of the map.
  */
-export function useScale(
-    center: Coordinate | undefined,
-    resolution: number | undefined,
-    projection: Projection | null
-): { scale: string | undefined } {
-    const intl = useIntl();
+export function useProjection(map: OlMap | undefined): Projection | undefined {
+    const view = useView(map);
+    return view?.getProjection();
+}
 
-    const [scale, setScale] = useState<number | undefined>();
-    const [localeScale, setLocaleScale] = useState<string | undefined>();
+/**
+ * Returns the current resolution of the map.
+ */
+export function useResolution(map: OlMap | undefined): number | undefined {
+    const view = useView(map);
+    return useOlProperty(view, getResolution, watchResolution);
+}
 
-    useEffect(() => {
-        if (!center) {
-            return;
+function getResolution(view: OlView): number | undefined {
+    return view.getResolution();
+}
+
+function watchResolution(view: OlView, cb: Callback) {
+    return view.on("change:resolution", cb);
+}
+
+/**
+ * Returns the current center coordinates of the map.
+ */
+export function useCenter(map: OlMap | undefined): Coordinate | undefined {
+    const view = useView(map);
+    return useOlProperty(view, getCenter, watchCenter);
+}
+
+function getCenter(view: OlView): Coordinate | undefined {
+    return view.getCenter();
+}
+
+function watchCenter(view: OlView, cb: Callback) {
+    return view.on("change:center", cb);
+}
+
+/**
+ * Returns the current scale of the map.
+ */
+export function useScale(map: OlMap | undefined): number | undefined {
+    const center = useCenter(map);
+    const resolution = useResolution(map);
+    const projection = useProjection(map);
+    const scale = useMemo(() => {
+        if (projection == null || resolution == null || center == null) {
+            return undefined;
         }
-
-        if (!resolution) {
-            return;
-        }
-
-        if (!projection) {
-            return;
-        }
-
-        const pointResolution: number = getPointResolution(projection, resolution, center);
 
         /**
          * Returns the appropriate scale for the given resolution and units, see OpenLayers function getScaleForResolution()
          * https://github.com/openlayers/openlayers/blob/7fa9df03431e9e1bc517e6c414565d9f848a3132/src/ol/control/ScaleLine.js#L454C3-L454C24
          */
-        setScale(Math.round(pointResolution * INCHES_PER_METRE * DEFAULT_DPI));
-        setLocaleScale(scale ? intl.formatNumber(scale) : undefined);
-    }, [intl, center, resolution, projection, scale]);
-
-    return { scale: localeScale };
+        const pointResolution = getPointResolution(projection, resolution, center);
+        const scale = Math.round(pointResolution * INCHES_PER_METRE * DEFAULT_DPI);
+        return scale;
+    }, [projection, resolution, center]);
+    return scale;
 }
 
+type Callback = () => void;
+
 /**
- * Detect change of map and return projection | null
+ * Returns the value of an observable ol property.
+ *
+ * Make sure to keep `accessor` and `watcher` stable to reduce re-subscriptions:
+ * either use global functions or wrap the functions into `useCallback`.
  */
-export function useProjection(map: Map | undefined): { projection: Projection | null } {
-    const [projection, setProjection] = useState<Projection | null>(null);
-
-    useEffect(() => {
-        if (!map) {
-            return;
-        }
-
-        // set initial map projection
-        setProjection(map.getView().getProjection());
-
-        const eventsKey: EventsKey = map.on("change:view", () => {
-            const newProjection = map.getView().getProjection();
-
-            if (projection != newProjection) {
-                setProjection(newProjection);
+function useOlProperty<T, R>(
+    object: T | undefined,
+    accessor: (object: T) => R,
+    watcher: (object: T, cb: Callback) => EventsKey
+): R | undefined {
+    const getSnapshot = useCallback(
+        () => (object ? accessor(object) : undefined),
+        [object, accessor]
+    );
+    const subscribe = useCallback(
+        (cb: Callback) => {
+            if (!object) {
+                return () => undefined;
             }
-        });
 
-        return () => unByKey(eventsKey);
-    }, [map, projection]);
-
-    return { projection };
-}
-
-/**
- * Detect change of map resolution and return resolution | undefined
- */
-export function useResolution(map: Map | undefined): { resolution: number | undefined } {
-    const [resolution, setResolution] = useState<number | undefined>();
-
-    useEffect(() => {
-        if (!map) {
-            return;
-        }
-
-        const view = map.getView();
-
-        // set initial map resolution
-        setResolution(view.getResolution());
-
-        const eventsKey: EventsKey = view.on("change:resolution", () => {
-            const newResolution = view.getResolution();
-
-            if (resolution != newResolution) {
-                setResolution(newResolution);
-            }
-        });
-
-        return () => unByKey(eventsKey);
-    }, [map, resolution]);
-
-    return { resolution };
-}
-
-/**
- * Detect change of map center and return center | undefined
- */
-export function useCenter(map: Map | undefined): { center: Coordinate | undefined } {
-    const [center, setCenter] = useState<Coordinate | undefined>();
-
-    useEffect(() => {
-        if (!map) {
-            return;
-        }
-
-        const view = map.getView();
-
-        // set initial map center
-        setCenter(view.getCenter());
-
-        const eventsKey: EventsKey = view.on("change:center", () => {
-            const newCenter = view.getCenter();
-
-            if (center != newCenter) {
-                setCenter(newCenter);
-            }
-        });
-
-        return () => unByKey(eventsKey);
-    }, [map, center]);
-
-    return { center };
-}
-
-/**
- * Formats Ol coordinates for displaying it in the UI
- */
-export function useFormatting(
-    coordinates: Coordinate | undefined,
-    configuredPrecision: number | undefined
-): string {
-    const intl = useIntl();
-
-    if (coordinates && coordinates[0] != undefined && coordinates[1] != undefined) {
-        // improvement: allow transformation into another coordinate system
-
-        const precision = configuredPrecision ?? DEFAULT_PRECISION;
-        const x = coordinates[0];
-        const y = coordinates[1];
-
-        const xString = intl.formatNumber(x, {
-            maximumFractionDigits: precision,
-            minimumFractionDigits: precision
-        });
-        const yString = intl.formatNumber(y, {
-            maximumFractionDigits: precision,
-            minimumFractionDigits: precision
-        });
-
-        const coordinatesString = xString + " " + yString;
-        return coordinatesString;
-    }
-    return "";
+            const key = watcher(object, cb);
+            return () => unByKey(key);
+        },
+        [object, watcher]
+    );
+    return useSyncExternalStore(subscribe, getSnapshot);
 }
