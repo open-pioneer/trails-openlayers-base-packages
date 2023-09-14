@@ -32,9 +32,16 @@ export const Zoom: FC<ZoomProps> = forwardRef(function Zoom(
 
     function zoom(zoomIn: boolean) {
         const view = map?.olMap.getView();
-        const currZoom = view?.getZoom();
+        let currZoom = view?.getZoom();
+
         if (view && currZoom !== undefined) {
-            view.animate({ zoom: currZoom + (zoomIn ? 1 : -1), duration: 200 });
+            if (zoomIn) {
+                ++currZoom;
+            } else {
+                --currZoom;
+            }
+
+            view.animate({ zoom: currZoom, duration: 200 });
         }
     }
 
@@ -42,13 +49,13 @@ export const Zoom: FC<ZoomProps> = forwardRef(function Zoom(
         <Box className={classNames("zoom", className)} ref={ref} {...rest}>
             <Flex direction={"column"} gap="1">
                 <Tooltip
-                    label={intl.formatMessage({ id: "title_zoomin" })}
+                    label={intl.formatMessage({ id: "zoom-in.title" })}
                     placement="auto"
                     openDelay={500}
                 >
                     <Button
-                        className="zoomin-button"
-                        aria-label={intl.formatMessage({ id: "title_zoomin" })}
+                        className="btn-zoom-in"
+                        aria-label={intl.formatMessage({ id: "zoom-in.title" })}
                         leftIcon={<FiPlus />}
                         onClick={() => zoom(true)}
                         iconSpacing={0}
@@ -56,13 +63,13 @@ export const Zoom: FC<ZoomProps> = forwardRef(function Zoom(
                     />
                 </Tooltip>
                 <Tooltip
-                    label={intl.formatMessage({ id: "title_zoomout" })}
+                    label={intl.formatMessage({ id: "zoom-out.title" })}
                     placement="auto"
                     openDelay={500}
                 >
                     <Button
-                        className="zoomout-button"
-                        aria-label={intl.formatMessage({ id: "title_zoomout" })}
+                        className="btn-zoom-out"
+                        aria-label={intl.formatMessage({ id: "zoom-out.title" })}
                         leftIcon={<FiMinus />}
                         onClick={() => zoom(false)}
                         iconSpacing={0}

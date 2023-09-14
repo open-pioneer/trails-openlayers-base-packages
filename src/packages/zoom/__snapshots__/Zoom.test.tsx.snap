@@ -10,8 +10,8 @@ exports[`should successfully create a zoom component with a zoom in and a zoom o
     data-theme="light"
   >
     <button
-      aria-label="title_zoomin"
-      class="chakra-button zoomin-button css-22xpxh"
+      aria-label="zoom-in.title"
+      class="chakra-button btn-zoom-in css-22xpxh"
       data-theme="light"
       type="button"
     >
@@ -48,8 +48,8 @@ exports[`should successfully create a zoom component with a zoom in and a zoom o
       </span>
     </button>
     <button
-      aria-label="title_zoomout"
-      class="chakra-button zoomout-button css-22xpxh"
+      aria-label="zoom-out.title"
+      class="chakra-button btn-zoom-out css-22xpxh"
       data-theme="light"
       type="button"
     >
@@ -93,8 +93,8 @@ exports[`should successfully create a zoom component with additional css classes
     data-theme="light"
   >
     <button
-      aria-label="title_zoomin"
-      class="chakra-button zoomin-button css-22xpxh"
+      aria-label="zoom-in.title"
+      class="chakra-button btn-zoom-in css-22xpxh"
       data-theme="light"
       type="button"
     >
@@ -131,8 +131,8 @@ exports[`should successfully create a zoom component with additional css classes
       </span>
     </button>
     <button
-      aria-label="title_zoomout"
-      class="chakra-button zoomout-button css-22xpxh"
+      aria-label="zoom-out.title"
+      class="chakra-button btn-zoom-out css-22xpxh"
       data-theme="light"
       type="button"
     >

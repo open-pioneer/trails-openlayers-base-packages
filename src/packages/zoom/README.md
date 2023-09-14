@@ -1,6 +1,6 @@
 # @open-pioneer/zoom
 
-This package provides two buttons by which the user can zoom in and zoom out of the map.
+This package provides two buttons for the user to zoom in and zoom out of the map.
 
 ## Usage
 

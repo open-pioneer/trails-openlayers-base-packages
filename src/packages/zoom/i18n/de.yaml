@@ -1,3 +1,5 @@
 messages:
-  title_zoomin: Vergrößern
-  title_zoomout: Verkleinern
+  zoom-in:
+    title: Vergrößern
+  zoom-out:
+    title: Verkleinern

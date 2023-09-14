@@ -1,3 +1,5 @@
 messages:
-  title_zoomin: zoom in
-  title_zoomout: zoom out
+  zoom-in:
+    title: zoom in
+  zoom-out:
+    title: zoom out
