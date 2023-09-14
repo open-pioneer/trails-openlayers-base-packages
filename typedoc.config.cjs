@@ -14,7 +14,8 @@ const documentedPackages = [
     "packages/coordinate-viewer",
     "packages/scale-viewer",
     "packages/basemap-switcher",
-    "packages/initial-extent"
+    "packages/initial-extent",
+    "packages/zoom"
 ];
 
 const packagePaths = documentedPackages.map((p) => `src/${p}`);
