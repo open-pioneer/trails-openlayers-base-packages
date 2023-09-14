@@ -1,6 +1,6 @@
 # @open-pioneer/initial-extent
 
-This package provides a simple button that switches the view to its initial viewpoint.
+This package contains a button that resets the map to the initial view.
 
 ## Usage
 
