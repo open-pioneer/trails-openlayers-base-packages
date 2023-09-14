@@ -251,7 +251,7 @@ layer.setDescription("new description");
 layer.setTitle("new title");
 layer.setVisible(true);
 layer.updateAttributes({
-    foo: "baz"
+    foo: "bar"
 });
 layer.deleteAttribute("foo");
 ```
@@ -261,12 +261,15 @@ layer.deleteAttribute("foo");
 
 ##### WMTS configuration
 
-To create a layer configuration for WMTS sources, you can use two configuration approaches:
+To create a layer configuration for an OGC Web Map Tile Service (WMTS), you can use two configuration approaches:
 
-1. predefined options
-2. create options from capabilities (see [OpenLayers API](https://openlayers.org/en/latest/apidoc/module-ol_source_WMTS.html#.optionsFromCapabilities))
+1. Predefine options
+2. Request options from the services capabilities (see [OpenLayers API](https://openlayers.org/en/latest/apidoc/module-ol_source_WMTS.html#.optionsFromCapabilities))
 
-Example how to predefine all necessary options for a WMTS source:
+Predefining the options results in faster startup of your application and prevents the startup process from being interrupted when a service is temporarily unavailable.
+Requesting the options from the capabilities has the advantage that you do not have to track and adjust changes in the services' metadata and can integrate a service with less code.
+
+Example: How to predefine all necessary options for a WMTS layer:
 
 ```ts
 // YOUR-APP/MapConfigProviderImpl.ts
@@ -357,8 +360,10 @@ function createWMTSSource(layer: "web" | "web_grau" | "web_light") {
 }
 ```
 
-> Note: The WMTS configuration (e.g. `topLeftCorner`, `matrixSet`) can be different from each service. Please have a look into the WMTS Capabilities.
-> Example how to create the WMTS source from WMTS capabilities:
+> Note: The WMTS configuration (for example `topLeftCorner` or `matrixSet`) can be different for each service.
+> Please have a look into the WMTS capabilities.
+
+Example: How to create the WMTS source from the services capabilities:
 
 ```js
 // YOUR-APP/SomeFile.ts
