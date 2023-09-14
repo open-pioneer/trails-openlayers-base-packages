@@ -37,7 +37,7 @@ export const Toc: FC<TocProps> = forwardRef(function Toc(
             <Box className="toc-content" padding={2}>
                 <BasemapSwitcher
                     mapId={mapId}
-                    noneBasemap
+                    allowSelectingEmptyBasemap
                     {...basemapSwitcherProps}
                 ></BasemapSwitcher>
             </Box>

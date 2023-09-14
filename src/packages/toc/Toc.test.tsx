@@ -72,7 +72,7 @@ it("should be possible to override basemapSwitcher properties", async () => {
                 <Toc
                     mapId={mapId}
                     basemapSwitcherProps={{
-                        noneBasemap: true,
+                        allowSelectingEmptyBasemap: true,
                         className: "test-class",
                         label: "testLabel"
                     }}

@@ -87,7 +87,7 @@ export function MapApp() {
                             <Toc
                                 mapId={MAP_ID}
                                 basemapSwitcherProps={{
-                                    noneBasemap: true
+                                    allowSelectingEmptyBasemap: true
                                 }}
                             ></Toc>
                         </Box>

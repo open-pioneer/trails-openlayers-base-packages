@@ -50,7 +50,7 @@ exports[`should successfully create a toc component 1`] = `
             <option
               value="___NO_BASEMAP___"
             >
-              noneBasemapLabel
+              emptyBasemapLabel
             </option>
           </select>
           <div
@@ -128,7 +128,7 @@ exports[`should successfully create a toc component with additional css classes 
             <option
               value="___NO_BASEMAP___"
             >
-              noneBasemapLabel
+              emptyBasemapLabel
             </option>
           </select>
           <div
