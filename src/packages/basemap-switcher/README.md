@@ -1,26 +1,30 @@
 # @open-pioneer/basemap-switcher
 
-This package provides a basemap switcher component, which can be integrated besides a map to switch between different basemaps.
+This package provides a component that can be integrated in an app together with a map to switch between different basemaps.
 
 ## Usage
 
-Example: Simple integration of a basemap switcher with a given map id:
+Example: Integration of a basemap switcher with a given map id:
 
 ```jsx
 <BasemapSwitcher mapId="map_id" />
 ```
 
-You can also add a label for the basemap switcher with an optional property `label`.
-
-Add a `noneBasemap` configuration, if you want to provide an option to deactivate all basemap layers at all with the optional property `noneBasemap`.
+To add a label to the basemap switcher, use the optional property `label`.
 
 ```jsx
-<BasemapSwitcher mapId="map_id" label="Grundkarte" noneBasemap />
+<BasemapSwitcher mapId="map_id" label="Grundkarte" />
+```
+
+To provide an option to deactivate all basemap layers, add the optional property `noneBasemap`.
+
+```jsx
+<BasemapSwitcher mapId="map_id" noneBasemap />
 ```
 
 ### Customizing
 
-The basemap switcher component can receive the `className` prop (optional string) that can be used to add additional the css classes of the component.
+To add additional CSS classes to the component, add the optional property `className` (string).
 
 It is possible to receive a reference to the underlying DOM node (div) of the basemap switcher component using `useRef`.
 
