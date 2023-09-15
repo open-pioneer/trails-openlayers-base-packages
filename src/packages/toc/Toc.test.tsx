@@ -1,19 +1,11 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-/**
- * @vitest-environment happy-dom
- */
-
 import { MapContainer } from "@open-pioneer/map";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render, screen, waitFor } from "@testing-library/react";
 import { expect, it } from "vitest";
 import { Toc } from "./Toc";
 import { createServiceOptions, setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
-
-// used to avoid a "ResizeObserver is not defined" error
-import ResizeObserver from "resize-observer-polyfill";
-global.ResizeObserver = ResizeObserver;
 
 it("should successfully create a toc component", async () => {
     const { mapId, registry } = await setupMap();
@@ -35,6 +27,7 @@ it("should successfully create a toc component", async () => {
     // check toc box is available
     expect(tocHeader).toBeInstanceOf(HTMLDivElement);
 });
+
 it("should successfully create a toc component with additional css classes and box properties", async () => {
     const { mapId, registry } = await setupMap();
 
@@ -59,8 +52,7 @@ it("should successfully create a toc component with additional css classes and b
     const styles = window.getComputedStyle(tocDiv);
     expect(styles.paddingLeft).toBe("1px");
 });
-
-it("should be possible to override basemapSwitcher properties", async () => {
+it("should be possible to override basemap-switcher properties", async () => {
     const { mapId, registry } = await setupMap();
 
     const injectedServices = createServiceOptions({ registry });
@@ -110,11 +102,11 @@ async function waitForToc() {
         if (!switcherDiv) {
             throw new Error("basemap-switcher not rendered");
         }
-        const switcherLabel = tocDiv.querySelector<HTMLElement>(".basemap-switcher-label");
-        if (!switcherLabel) {
-            throw new Error("basemap-switcher label not rendered");
+        const switcherSelect = tocDiv.querySelector<HTMLElement>(".basemap-switcher-select");
+        if (!switcherSelect) {
+            throw new Error("basemap-switcher select not rendered");
         }
-        const labelText = switcherLabel.innerText;
+        const labelText = switcherSelect.getAttribute("aria-label");
 
         return { tocDiv, tocHeader, labelText, switcherDiv };
     });

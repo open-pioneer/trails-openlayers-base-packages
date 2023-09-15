@@ -21,22 +21,27 @@ exports[`should successfully create a toc component 1`] = `
     data-theme="light"
   >
     <div
-      class="basemap-switcher css-0"
+      class="chakra-form-control css-1kxonj9"
       data-theme="light"
+      role="group"
     >
-      <div
-        class="chakra-form-control css-12sjb1l"
+      <label
+        class="chakra-form__label css-xi6b8o"
         data-theme="light"
-        role="group"
+        for="field-:r0:"
+        id="field-:r0:-label"
       >
-        <label
-          class="chakra-form__label basemap-switcher-label css-g6pte"
+        <b
+          class="chakra-text css-0"
           data-theme="light"
-          for="field-:r0:"
-          id="field-:r0:-label"
         >
-          defaultLabel
-        </label>
+          Basemap:
+        </b>
+      </label>
+      <div
+        class="basemap-switcher css-0"
+        data-theme="light"
+      >
         <div
           class="chakra-select__wrapper css-42b2qy"
           data-theme="light"
@@ -99,22 +104,27 @@ exports[`should successfully create a toc component with additional css classes 
     data-theme="light"
   >
     <div
-      class="basemap-switcher css-0"
+      class="chakra-form-control css-1kxonj9"
       data-theme="light"
+      role="group"
     >
-      <div
-        class="chakra-form-control css-12sjb1l"
+      <label
+        class="chakra-form__label css-xi6b8o"
         data-theme="light"
-        role="group"
+        for="field-:r1:"
+        id="field-:r1:-label"
       >
-        <label
-          class="chakra-form__label basemap-switcher-label css-g6pte"
+        <b
+          class="chakra-text css-0"
           data-theme="light"
-          for="field-:r1:"
-          id="field-:r1:-label"
         >
-          defaultLabel
-        </label>
+          Basemap:
+        </b>
+      </label>
+      <div
+        class="basemap-switcher css-0"
+        data-theme="light"
+      >
         <div
           class="chakra-select__wrapper css-42b2qy"
           data-theme="light"

@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { Box, Text, BoxProps } from "@open-pioneer/chakra-integration";
+import { Box, Text, BoxProps, FormControl, FormLabel } from "@open-pioneer/chakra-integration";
 import { FC, ForwardedRef, forwardRef, RefAttributes } from "react";
 import classNames from "classnames";
 import { BasemapSwitcher, BasemapSwitcherProps } from "@open-pioneer/basemap-switcher";
@@ -35,11 +35,16 @@ export const Toc: FC<TocProps> = forwardRef(function Toc(
                 <Text as="b">Map content</Text>
             </Box>
             <Box className="toc-content" padding={2}>
-                <BasemapSwitcher
-                    mapId={mapId}
-                    allowSelectingEmptyBasemap
-                    {...basemapSwitcherProps}
-                ></BasemapSwitcher>
+                <FormControl>
+                    <FormLabel ps={1}>
+                        <Text as="b">Basemap:</Text>
+                    </FormLabel>
+                    <BasemapSwitcher
+                        allowSelectingEmptyBasemap
+                        {...basemapSwitcherProps}
+                        mapId={mapId}
+                    ></BasemapSwitcher>
+                </FormControl>
             </Box>
         </Box>
     );
