@@ -16,10 +16,10 @@ To add a label to the basemap switcher, use the optional property `label`.
 <BasemapSwitcher mapId="map_id" label="Grundkarte" />
 ```
 
-To provide an option to deactivate all basemap layers, add the optional property `noneBasemap`.
+To provide an option to deactivate all basemap layers, add the optional property `allowSelectingEmptyBasemap`.
 
 ```jsx
-<BasemapSwitcher mapId="map_id" noneBasemap />
+<BasemapSwitcher mapId="map_id" allowSelectingEmptyBasemap />
 ```
 
 ## License

@@ -42,7 +42,7 @@ it("should successfully create a basemap switcher component", async () => {
                 <BasemapSwitcher
                     mapId={mapId}
                     label="Hintergrundkarte"
-                    noneBasemap
+                    allowSelectingEmptyBasemap
                 ></BasemapSwitcher>
             </div>
         </PackageContextProvider>
@@ -134,7 +134,7 @@ it("should allow selecting 'no basemap' when enabled", async () => {
         <PackageContextProvider services={injectedServices}>
             <div data-testid="base">
                 <MapContainer mapId={mapId} />
-                <BasemapSwitcher mapId={mapId} noneBasemap></BasemapSwitcher>
+                <BasemapSwitcher mapId={mapId} allowSelectingEmptyBasemap></BasemapSwitcher>
             </div>
         </PackageContextProvider>
     );
@@ -163,7 +163,7 @@ it("should allow selecting 'no basemap' when enabled", async () => {
         <option
           value="___NO_BASEMAP___"
         >
-          noneBasemapLabel
+          emptyBasemapLabel
         </option>
       </select>
     `);
@@ -178,7 +178,7 @@ it("should allow selecting 'no basemap' when enabled", async () => {
     expect(map.layers.getActiveBaseLayer()).toBe(undefined);
 });
 
-it("should successfully select noneBasemap, if all configured basemaps are configured as not visible", async () => {
+it("should successfully select emptyBasemap, if all configured basemaps are configured as not visible", async () => {
     const { mapId, registry } = await setupMap({
         layers: [
             {
@@ -238,7 +238,7 @@ it("should successfully select noneBasemap, if all configured basemaps are confi
         <option
           value="___NO_BASEMAP___"
         >
-          noneBasemapLabel
+          emptyBasemapLabel
         </option>
       </select>
     `);

@@ -73,15 +73,17 @@ export function MapApp() {
                         >
                             <BasemapSwitcher
                                 ref={basemapSwitcherRef}
-                                noneBasemap
+                                allowSelectingEmptyBasemap
                                 label={intl.formatMessage({ id: "basemapLabel" })}
                                 mapId={MAP_ID}
                             ></BasemapSwitcher>
                         </Box>
                     </MapAnchor>
                     <MapAnchor position="bottom-right" horizontalGap={10} verticalGap={30}>
-                        <InitialExtent mapId={MAP_ID} pb={1}></InitialExtent>
-                        <Zoom mapId={MAP_ID}></Zoom>
+                        <Box padding={1}>
+                            <InitialExtent mapId={MAP_ID} pb={1}></InitialExtent>
+                            <Zoom mapId={MAP_ID}></Zoom>
+                        </Box>
                     </MapAnchor>
                     <MapAnchor position="top-right">
                         <Flex
