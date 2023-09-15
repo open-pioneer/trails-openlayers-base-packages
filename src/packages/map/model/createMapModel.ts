@@ -10,6 +10,18 @@ import { Projection, get as getProjection } from "ol/proj";
 import OSM from "ol/source/OSM";
 import { MapModelImpl } from "./MapModelImpl";
 import { MapConfig } from "../api";
+import { registerProjections } from "../projections";
+
+/**
+ * Register custom projection to the global proj4js definitions. User can select `EPSG:25832`
+ * and `EPSG:25833` from the predefined projections without calling `registerProjections`.
+ */
+registerProjections({
+    "EPSG:25832":
+        "+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs +type=crs",
+    "EPSG:25833":
+        "+proj=utm +zone=33 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs +type=crs"
+});
 
 const LOG = createLogger("map:createMapModel");
 

@@ -380,7 +380,8 @@ export interface MapConfig {
      */
     // NOTE: This weird syntax supports better autocomplete for the predefined values.
     // See also https://github.com/microsoft/TypeScript/issues/29729
-    projection?: "EPSG:3857" | "EPSG:4326" | (string & {});
+    // TODO: Update documentation
+    projection?: "EPSG:3857" | "EPSG:4326" | "EPSG:25832" | "EPSG:25833" | (string & {});
 
     /**
      * Configures the layers of the map.
