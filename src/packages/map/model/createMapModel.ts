@@ -10,6 +10,7 @@ import { Projection, get as getProjection } from "ol/proj";
 import OSM from "ol/source/OSM";
 import { MapModelImpl } from "./MapModelImpl";
 import { MapConfig } from "../api";
+import { defaults as defaultInteraction } from "ol/interaction";
 
 const LOG = createLogger("map:createMapModel");
 
@@ -36,6 +37,18 @@ class MapModelFactory {
 
         if (!mapOptions.controls) {
             mapOptions.controls = [new Attribution({ collapsible: false })];
+        }
+
+        /*
+         * setting altShiftDragRotate to false disables or excludes DragRotate interaction
+         * */
+        if (!mapOptions.interactions) {
+            mapOptions.interactions = defaultInteraction({
+                dragPan: true,
+                altShiftDragRotate: false,
+                pinchRotate: false,
+                mouseWheelZoom: true
+            });
         }
 
         const view = (await viewOption) ?? {};
