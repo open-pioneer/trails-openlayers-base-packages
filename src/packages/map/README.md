@@ -279,8 +279,8 @@ export const MAP_ID = "main";
  * Register custom projection to the global proj4js definitions.
  */
 registerProjections({
-    "EPSG:25832":
-        "+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs +type=crs"
+    "EPSG:31466":
+        "+proj=tmerc +lat_0=0 +lon_0=6 +k=1 +x_0=2500000 +y_0=0 +ellps=bessel +nadgrids=BETA2007.gsb +units=m +no_defs +type=crs"
 });
 
 export class MapConfigProviderImpl implements MapConfigProvider {
@@ -293,7 +293,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                 center: { x: 404747, y: 5757920 },
                 zoom: 14
             },
-            projection: "EPSG:25832",
+            projection: "EPSG:31466",
             layers: [
                 {
                     id: "topplus_open",
@@ -375,8 +375,8 @@ import { optionsFromCapabilities } from "ol/source/WMTS";
 
 // Global setup: register UTM32 (only needed for this specific layer)
 registerProjections({
-    "EPSG:25832":
-        "+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs +type=crs"
+    "EPSG:31466":
+        "+proj=tmerc +lat_0=0 +lon_0=6 +k=1 +x_0=2500000 +y_0=0 +ellps=bessel +nadgrids=BETA2007.gsb +units=m +no_defs +type=crs"
 });
 
 // Later, for example in a service
@@ -409,7 +409,7 @@ if (wmtsOptions) {
 
 #### Register additional projections
 
-OpenLayers supports only two projections by default: `EPSG:4326` and `EPSG:3857`.
+The map supports only the following projections by default: `EPSG:4326`, `EPSG:3857`, `EPSG:25832` and `EPSG:25833`.
 To register additional projections to use them for the map, use the `registerProjections` function.
 
 Example: How to register an additional projection to the global [proj4js](https://github.com/proj4js/proj4js) definition set by name (such as `"EPSG:4326"`) and projection definition (string defining the projection or an existing proj4 definition object):
@@ -418,8 +418,8 @@ Example: How to register an additional projection to the global [proj4js](https:
 import { registerProjections } from "@open-pioneer/map";
 
 registerProjections({
-    "EPSG:25832":
-        "+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs +type=crs"
+    "EPSG:31466":
+        "+proj=tmerc +lat_0=0 +lon_0=6 +k=1 +x_0=2500000 +y_0=0 +ellps=bessel +nadgrids=BETA2007.gsb +units=m +no_defs +type=crs"
     // ... more projections
 });
 ```
