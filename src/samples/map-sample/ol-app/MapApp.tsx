@@ -79,7 +79,7 @@ export function MapApp() {
                         </Box>
                     </MapAnchor>
                     <MapAnchor position="bottom-right" horizontalGap={10} verticalGap={30}>
-                        <Flex direction="column" gap={1}>
+                        <Flex direction="column" gap={1} padding={1}>
                             <InitialExtent mapId={MAP_ID} />
                             <ZoomIn mapId={MAP_ID} />
                             <ZoomOut mapId={MAP_ID} />
