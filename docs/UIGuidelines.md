@@ -29,7 +29,7 @@ Guidelines for React components developed in this repository.
         -   "openDelay" should be 500
         -   Snippet: `<Tooltip label={intl.formatMessage({ id: "description" })} placement="auto" openDelay={500}>..`
 -   Tooltips (yaml / i18n)
-    - Start with a capital letter at the beginning across languages (e.g. "Zoom in", "Vergrößern")
+    -   Start with a capital letter at the beginning across languages (e.g. "Zoom in", "Vergrößern")
 
 ## Mobile / Responsive Design
 
