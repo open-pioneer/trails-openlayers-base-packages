@@ -16,7 +16,7 @@
         "lint": "eslint ./src ./support --cache --ext .js,.ts,.jsx,.tsx,.mjs,.mts,.cjs,.cts",
         "prettier-check": "pnpm prettier:common -c",
         "prettier": "pnpm prettier:common -w",
-        "prettier:common": "prettier ./src ./support --ignore-path .eslintignore --cache",
+        "prettier:common": "prettier ./src ./support ./docs --ignore-path .eslintignore --cache",
         "test": "vitest",
         "lint-shared-versions": "syncpack list-mismatches",
         "update-shared-versions": "syncpack fix-mismatches",
