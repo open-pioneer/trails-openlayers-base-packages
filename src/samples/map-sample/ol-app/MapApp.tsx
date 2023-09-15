@@ -80,8 +80,10 @@ export function MapApp() {
                         </Box>
                     </MapAnchor>
                     <MapAnchor position="bottom-right" horizontalGap={10} verticalGap={30}>
-                        <InitialExtent mapId={MAP_ID} pb={1}></InitialExtent>
-                        <Zoom mapId={MAP_ID}></Zoom>
+                        <Box padding={1}>
+                            <InitialExtent mapId={MAP_ID} pb={1}></InitialExtent>
+                            <Zoom mapId={MAP_ID}></Zoom>
+                        </Box>
                     </MapAnchor>
                     <MapAnchor position="top-right">
                         <Flex

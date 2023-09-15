@@ -371,16 +371,16 @@ export interface MapConfig {
      * // Usually done at the top of the module.
      * // This will register the projection(s) in proj4's global registry.
      * registerProjections({
-     *   "EPSG:25832": "+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs +type=crs",
+     *   "EPSG:31466": "+proj=tmerc +lat_0=0 +lon_0=6 +k=1 +x_0=2500000 +y_0=0 +ellps=bessel +nadgrids=BETA2007.gsb +units=m +no_defs +type=crs",
      *   // ... more projections
      * });
      *
-     * // later, use projection: "EPSG:25832"
+     * // later, use projection: "EPSG:31466"
      * ```
      */
     // NOTE: This weird syntax supports better autocomplete for the predefined values.
     // See also https://github.com/microsoft/TypeScript/issues/29729
-    projection?: "EPSG:3857" | "EPSG:4326" | (string & {});
+    projection?: "EPSG:3857" | "EPSG:4326" | "EPSG:25832" | "EPSG:25833" | (string & {});
 
     /**
      * Configures the layers of the map.

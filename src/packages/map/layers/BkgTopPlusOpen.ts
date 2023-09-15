@@ -3,6 +3,7 @@
 import WMTS from "ol/source/WMTS";
 import WMTSTileGrid from "ol/tilegrid/WMTS";
 
+/** @internal */
 export interface BkgTopPlusOpenProps {
     /**
      * The name of the requesting layer.
@@ -14,9 +15,11 @@ export interface BkgTopPlusOpenProps {
 /**
  * Layer source for BKG TopPlus Open.
  *
- * Used for @open-pioneer unit tests.
+ * Used for @open-pioneer unit tests: not part of the public interface.
  *
  * @see https://gdz.bkg.bund.de/index.php/default/wmts-topplusopen-wmts-topplus-open.html
+ *
+ * @internal
  */
 export class BkgTopPlusOpen extends WMTS {
     constructor(options?: BkgTopPlusOpenProps) {
