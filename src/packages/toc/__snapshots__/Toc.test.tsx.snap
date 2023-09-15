@@ -35,7 +35,8 @@ exports[`should successfully create a toc component 1`] = `
           class="chakra-text css-0"
           data-theme="light"
         >
-          Basemap:
+          basemapsLabel
+          :
         </b>
       </label>
       <div
@@ -118,7 +119,8 @@ exports[`should successfully create a toc component with additional css classes 
           class="chakra-text css-0"
           data-theme="light"
         >
-          Basemap:
+          basemapsLabel
+          :
         </b>
       </label>
       <div

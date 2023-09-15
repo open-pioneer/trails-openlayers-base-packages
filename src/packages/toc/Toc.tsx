@@ -5,6 +5,7 @@ import { Box, Text, BoxProps, FormControl, FormLabel } from "@open-pioneer/chakr
 import { FC, ForwardedRef, forwardRef, RefAttributes } from "react";
 import classNames from "classnames";
 import { BasemapSwitcher, BasemapSwitcherProps } from "@open-pioneer/basemap-switcher";
+import { useIntl } from "open-pioneer:react-hooks";
 export interface TocProps extends BoxProps, RefAttributes<HTMLDivElement> {
     /**
      * The id of the map.
@@ -23,7 +24,10 @@ export const Toc: FC<TocProps> = forwardRef(function Toc(
     props: TocProps,
     ref: ForwardedRef<HTMLDivElement> | undefined
 ) {
+    const intl = useIntl();
+
     const { mapId, className, basemapSwitcherProps, ...rest } = props;
+    const basemapsLabel = intl.formatMessage({ id: "basemapsLabel" });
 
     return (
         <Box className={classNames("toc", className)} ref={ref} {...rest}>
@@ -37,7 +41,7 @@ export const Toc: FC<TocProps> = forwardRef(function Toc(
             <Box className="toc-content" padding={2}>
                 <FormControl>
                     <FormLabel ps={1}>
-                        <Text as="b">Basemap:</Text>
+                        <Text as="b">{basemapsLabel}:</Text>
                     </FormLabel>
                     <BasemapSwitcher
                         allowSelectingEmptyBasemap
