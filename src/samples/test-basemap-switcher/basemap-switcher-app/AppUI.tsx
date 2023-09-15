@@ -1,7 +1,15 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
 import { BasemapSwitcher } from "@open-pioneer/basemap-switcher";
-import { Box, Button, Flex, Stack, Text } from "@open-pioneer/chakra-integration";
+import {
+    Box,
+    Button,
+    Flex,
+    FormControl,
+    FormLabel,
+    Stack,
+    Text
+} from "@open-pioneer/chakra-integration";
 import { BkgTopPlusOpen, MapAnchor, MapContainer, useMapModel } from "@open-pioneer/map";
 import { useRef } from "react";
 import { MAP_ID } from "./MapConfigProviderImpl";
@@ -26,12 +34,16 @@ export function AppUI() {
                             padding={2}
                             boxShadow="lg"
                         >
-                            <BasemapSwitcher
-                                ref={basemapSwitcherRef}
-                                allowSelectingEmptyBasemap
-                                mapId={MAP_ID}
-                            ></BasemapSwitcher>
-
+                            <FormControl>
+                                <FormLabel ps={1}>
+                                    <Text as="b">Select basemap:</Text>
+                                </FormLabel>
+                                <BasemapSwitcher
+                                    ref={basemapSwitcherRef}
+                                    allowSelectingEmptyBasemap
+                                    mapId={MAP_ID}
+                                ></BasemapSwitcher>
+                            </FormControl>
                             <Stack pt={5}>
                                 <Text align="center">Test Controls:</Text>
                                 <AddNewBaseLayerButton mapId={MAP_ID} />

@@ -148,7 +148,6 @@ it("should allow selecting 'no basemap' when enabled", async () => {
         aria-label="defaultLabel"
         class="chakra-select basemap-switcher-select css-161pkch"
         data-theme="light"
-        id="field-:r3:"
       >
         <option
           value="osm"
@@ -223,7 +222,6 @@ it("should successfully select emptyBasemap, if all configured basemaps are conf
         aria-label="Hintergrundkarte"
         class="chakra-select basemap-switcher-select css-161pkch"
         data-theme="light"
-        id="field-:r4:"
       >
         <option
           value="b-1"
@@ -287,7 +285,6 @@ it("should update when a new basemap is registered", async () => {
         aria-label="defaultLabel"
         class="chakra-select basemap-switcher-select css-161pkch"
         data-theme="light"
-        id="field-:r5:"
       >
         <option
           value="osm"

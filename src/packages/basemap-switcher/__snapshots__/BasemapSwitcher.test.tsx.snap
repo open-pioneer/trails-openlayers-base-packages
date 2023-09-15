@@ -6,52 +6,37 @@ exports[`should successfully create a basemap switcher component 1`] = `
   data-theme="light"
 >
   <div
-    class="chakra-form-control css-12sjb1l"
+    class="chakra-select__wrapper css-42b2qy"
     data-theme="light"
-    role="group"
   >
-    <label
-      class="chakra-form__label basemap-switcher-label css-g6pte"
+    <select
+      aria-label="Hintergrundkarte"
+      class="chakra-select basemap-switcher-select css-161pkch"
       data-theme="light"
-      for="field-:r0:"
-      id="field-:r0:-label"
     >
-      Hintergrundkarte
-    </label>
+      <option
+        value="___NO_BASEMAP___"
+      >
+        emptyBasemapLabel
+      </option>
+    </select>
     <div
-      class="chakra-select__wrapper css-42b2qy"
+      class="chakra-select__icon-wrapper css-iohxn1"
       data-theme="light"
     >
-      <select
-        aria-label="Hintergrundkarte"
-        class="chakra-select basemap-switcher-select css-161pkch"
-        data-theme="light"
-        id="field-:r0:"
+      <svg
+        aria-hidden="true"
+        class="chakra-select__icon"
+        focusable="false"
+        role="presentation"
+        style="width: 1em; height: 1em; color: currentcolor;"
+        viewBox="0 0 24 24"
       >
-        <option
-          value="___NO_BASEMAP___"
-        >
-          emptyBasemapLabel
-        </option>
-      </select>
-      <div
-        class="chakra-select__icon-wrapper css-iohxn1"
-        data-theme="light"
-      >
-        <svg
-          aria-hidden="true"
-          class="chakra-select__icon"
-          focusable="false"
-          role="presentation"
-          style="width: 1em; height: 1em; color: currentcolor;"
-          viewBox="0 0 24 24"
-        >
-          <path
-            d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
-            fill="currentColor"
-          />
-        </svg>
-      </div>
+        <path
+          d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
+          fill="currentColor"
+        />
+      </svg>
     </div>
   </div>
 </div>
@@ -63,57 +48,42 @@ exports[`should successfully create a basemap switcher component with additional
   data-theme="light"
 >
   <div
-    class="chakra-form-control css-12sjb1l"
+    class="chakra-select__wrapper css-42b2qy"
     data-theme="light"
-    role="group"
   >
-    <label
-      class="chakra-form__label basemap-switcher-label css-g6pte"
+    <select
+      aria-label="defaultLabel"
+      class="chakra-select basemap-switcher-select css-161pkch"
       data-theme="light"
-      for="field-:r1:"
-      id="field-:r1:-label"
     >
-      defaultLabel
-    </label>
+      <option
+        value="osm"
+      >
+        OSM
+      </option>
+      <option
+        value="topplus-open"
+      >
+        TopPlus Open
+      </option>
+    </select>
     <div
-      class="chakra-select__wrapper css-42b2qy"
+      class="chakra-select__icon-wrapper css-iohxn1"
       data-theme="light"
     >
-      <select
-        aria-label="defaultLabel"
-        class="chakra-select basemap-switcher-select css-161pkch"
-        data-theme="light"
-        id="field-:r1:"
+      <svg
+        aria-hidden="true"
+        class="chakra-select__icon"
+        focusable="false"
+        role="presentation"
+        style="width: 1em; height: 1em; color: currentcolor;"
+        viewBox="0 0 24 24"
       >
-        <option
-          value="osm"
-        >
-          OSM
-        </option>
-        <option
-          value="topplus-open"
-        >
-          TopPlus Open
-        </option>
-      </select>
-      <div
-        class="chakra-select__icon-wrapper css-iohxn1"
-        data-theme="light"
-      >
-        <svg
-          aria-hidden="true"
-          class="chakra-select__icon"
-          focusable="false"
-          role="presentation"
-          style="width: 1em; height: 1em; color: currentcolor;"
-          viewBox="0 0 24 24"
-        >
-          <path
-            d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
-            fill="currentColor"
-          />
-        </svg>
-      </div>
+        <path
+          d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
+          fill="currentColor"
+        />
+      </svg>
     </div>
   </div>
 </div>
