@@ -28,11 +28,6 @@ class MapModelFactory {
         this.mapConfig = mapConfig;
     }
 
-    shiftCtrlKeysOnly(mapBrowserEvent: MapBrowserEvent<KeyboardEvent>) {
-        const originalEvent = mapBrowserEvent.originalEvent;
-        return (originalEvent.metaKey || originalEvent.ctrlKey) && originalEvent.shiftKey;
-    }
-
     async createMapModel() {
         const mapId = this.mapId;
         const mapConfig = this.mapConfig;
@@ -46,8 +41,12 @@ class MapModelFactory {
         }
 
         if (!mapOptions.interactions) {
+            const shiftCtrlKeysOnly = (mapBrowserEvent: MapBrowserEvent<KeyboardEvent>) => {
+                const originalEvent = mapBrowserEvent.originalEvent;
+                return (originalEvent.metaKey || originalEvent.ctrlKey) && originalEvent.shiftKey;
+            };
             mapOptions.interactions = defaultInteractions().extend([
-                new DragZoom({ out: true, condition: this.shiftCtrlKeysOnly })
+                new DragZoom({ out: true, condition: shiftCtrlKeysOnly })
             ]);
         }
 
