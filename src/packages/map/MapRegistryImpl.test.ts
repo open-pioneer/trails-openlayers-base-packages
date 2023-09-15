@@ -136,7 +136,7 @@ it("should deactivate rotate interaction", async () => {
     const map = (await registry.expectMapModel(mapId)).olMap;
 
     const interactions = map?.getInteractions().getArray();
-    const activeDragRotate = interactions?.find((int) => int instanceof dragRotate);
+    const activeDragRotate = interactions?.find((interaction) => interaction instanceof dragRotate);
 
     expect(activeDragRotate).toBeUndefined();
 });
@@ -160,7 +160,7 @@ it("should activate rotate interaction", async () => {
     const map = (await registry.expectMapModel(mapId)).olMap;
 
     const interactions = map?.getInteractions().getArray();
-    const activeDragRotate = interactions?.find((int) => int instanceof dragRotate);
+    const activeDragRotate = interactions?.find((interaction) => interaction instanceof dragRotate);
 
     expect(activeDragRotate).toBeDefined();
     expect(activeDragRotate?.getActive()).toBe(true);
