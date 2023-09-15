@@ -10,6 +10,8 @@ import OlMap from "ol/Map";
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
 import { BkgTopPlusOpen } from "./layers/BkgTopPlusOpen";
+import { defaults as defaultInteraction } from "ol/interaction";
+import dragRotate from "ol/interaction/DragRotate";
 
 afterEach(() => {
     vi.restoreAllMocks();
@@ -116,6 +118,52 @@ it("should log a warning message if new View is in advanced configuration and in
         ],
       }
     `);
+});
+
+it("should deactivate rotate interaction", async () => {
+    const view = new View({ center: [405948.17, 5757572.85], zoom: 5 });
+    const { mapId, registry } = await setupMap({
+        advanced: {
+            view
+        },
+        center: {
+            x: 123,
+            y: 456
+        },
+        zoom: 5,
+        noProjection: true
+    });
+    const map = (await registry.expectMapModel(mapId)).olMap;
+
+    const interactions = map?.getInteractions().getArray();
+    const activeDragRotate = interactions?.find((int) => int instanceof dragRotate);
+
+    expect(activeDragRotate).toBeUndefined();
+});
+
+it("should activate rotate interaction", async () => {
+    const view = new View({ center: [405948.17, 5757572.85], zoom: 5 });
+    const { mapId, registry } = await setupMap({
+        advanced: {
+            view,
+            interactions: defaultInteraction({
+                altShiftDragRotate: true
+            })
+        },
+        center: {
+            x: 123,
+            y: 456
+        },
+        zoom: 5,
+        noProjection: true
+    });
+    const map = (await registry.expectMapModel(mapId)).olMap;
+
+    const interactions = map?.getInteractions().getArray();
+    const activeDragRotate = interactions?.find((int) => int instanceof dragRotate);
+
+    expect(activeDragRotate).toBeDefined();
+    expect(activeDragRotate?.getActive()).toBe(true);
 });
 
 it("should successfully create View with 'position' property", async () => {
