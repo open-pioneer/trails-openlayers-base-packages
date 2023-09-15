@@ -8,6 +8,8 @@ import { equals as extentEquals, getCenter } from "ol/extent";
 import TileLayer from "ol/layer/Tile";
 import { Projection, get as getProjection } from "ol/proj";
 import OSM from "ol/source/OSM";
+import { DragZoom, defaults as defaultInteractions } from "ol/interaction";
+import { MapBrowserEvent } from "ol";
 import { MapModelImpl } from "./MapModelImpl";
 import { MapConfig } from "../api";
 
@@ -26,6 +28,11 @@ class MapModelFactory {
         this.mapConfig = mapConfig;
     }
 
+    shiftCtrlKeysOnly(mapBrowserEvent: MapBrowserEvent<KeyboardEvent>) {
+        const originalEvent = mapBrowserEvent.originalEvent;
+        return (originalEvent.metaKey || originalEvent.ctrlKey) && originalEvent.shiftKey;
+    }
+
     async createMapModel() {
         const mapId = this.mapId;
         const mapConfig = this.mapConfig;
@@ -36,6 +43,12 @@ class MapModelFactory {
 
         if (!mapOptions.controls) {
             mapOptions.controls = [new Attribution({ collapsible: false })];
+        }
+
+        if (!mapOptions.interactions) {
+            mapOptions.interactions = defaultInteractions().extend([
+                new DragZoom({ out: true, condition: this.shiftCtrlKeysOnly })
+            ]);
         }
 
         const view = (await viewOption) ?? {};
