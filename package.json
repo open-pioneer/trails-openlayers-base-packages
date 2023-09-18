@@ -27,15 +27,21 @@
     },
     "pnpm": {
         "//": [
-            "overrides:",
+            "overrides",
+            "=========",
             "ol-mapbox-style: license issues",
             "semver: https://github.com/advisories/GHSA-c2qf-rxjj-qqgw",
             "tough-cookie: https://github.com/advisories/GHSA-72xf-g2v4-qvf3",
             "",
-            "ignored cves:",
-            "",
+            "ignored cves",
+            "============",
             "plugin-react-swc has been patched to transpile to es2022 instead of es2020, to support native private fields",
-            "see also https://github.com/vitejs/vite-plugin-react-swc/issues/141"
+            "see also https://github.com/vitejs/vite-plugin-react-swc/issues/141",
+            "",
+            "patches",
+            "=======",
+            "@vitejs/plugin-react-swc: patch ecma script version to 2022 (see https://github.com/vitejs/vite-plugin-react-swc/issues/141)",
+            "@changesets/assemble-release-plan: don't bump to major for 0.x packages (see https://github.com/changesets/changesets/issues/1228)"
         ],
         "overrides": {
             "ol-mapbox-style": "workspace:disabled-package@*",
@@ -46,7 +52,8 @@
             "ignoreCves": []
         },
         "patchedDependencies": {
-            "@vitejs/plugin-react-swc@3.3.2": "patches/@vitejs__plugin-react-swc@3.3.2.patch"
+            "@vitejs/plugin-react-swc@3.3.2": "patches/@vitejs__plugin-react-swc@3.3.2.patch",
+            "@changesets/assemble-release-plan@5.2.4": "patches/@changesets__assemble-release-plan@5.2.4.patch"
         }
     },
     "dependencies": {

@@ -3,6 +3,7 @@
 import WMTS from "ol/source/WMTS";
 import WMTSTileGrid from "ol/tilegrid/WMTS";
 
+/** @internal */
 export interface BkgTopPlusOpenProps {
     /**
      * The name of the requesting layer.
