@@ -4,6 +4,7 @@
 import { defineBuildConfig } from "@open-pioneer/build-support";
 
 export default defineBuildConfig({
+    entryPoints: ["index"],
     styles: "./styles.css",
     services: {
         MapRegistryImpl: {

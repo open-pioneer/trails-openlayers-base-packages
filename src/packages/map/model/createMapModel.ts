@@ -4,13 +4,26 @@ import { createLogger } from "@open-pioneer/core";
 import OlMap, { MapOptions } from "ol/Map";
 import View, { ViewOptions } from "ol/View";
 import Attribution from "ol/control/Attribution";
-import { getCenter } from "ol/extent";
+import { equals as extentEquals, getCenter } from "ol/extent";
 import TileLayer from "ol/layer/Tile";
 import { Projection, get as getProjection } from "ol/proj";
 import OSM from "ol/source/OSM";
+import { DragZoom, defaults as defaultInteractions } from "ol/interaction";
+import { MapBrowserEvent } from "ol";
 import { MapModelImpl } from "./MapModelImpl";
 import { MapConfig } from "../api";
+import { registerProjections } from "../projections";
 
+/**
+ * Register custom projection to the global proj4js definitions. User can select `EPSG:25832`
+ * and `EPSG:25833` from the predefined projections without calling `registerProjections`.
+ */
+registerProjections({
+    "EPSG:25832":
+        "+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs +type=crs",
+    "EPSG:25833":
+        "+proj=utm +zone=33 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs +type=crs"
+});
 const LOG = createLogger("map:createMapModel");
 
 export async function createMapModel(mapId: string, mapConfig: MapConfig): Promise<MapModelImpl> {
@@ -38,6 +51,22 @@ class MapModelFactory {
             mapOptions.controls = [new Attribution({ collapsible: false })];
         }
 
+        if (!mapOptions.interactions) {
+            const shiftCtrlKeysOnly = (mapBrowserEvent: MapBrowserEvent<KeyboardEvent>) => {
+                const originalEvent = mapBrowserEvent.originalEvent;
+                return (originalEvent.metaKey || originalEvent.ctrlKey) && originalEvent.shiftKey;
+            };
+            /*
+             * setting altShiftDragRotate to false disables or excludes DragRotate interaction
+             * */
+            mapOptions.interactions = defaultInteractions({
+                dragPan: true,
+                altShiftDragRotate: false,
+                pinchRotate: false,
+                mouseWheelZoom: true
+            }).extend([new DragZoom({ out: true, condition: shiftCtrlKeysOnly })]);
+        }
+
         const view = (await viewOption) ?? {};
         this.initializeViewOptions(view);
         mapOptions.view = view instanceof View ? view : new View(view);
@@ -55,6 +84,8 @@ class MapModelFactory {
 
         LOG.debug(`Constructing open layers map with options`, mapOptions);
         const olMap = new OlMap(mapOptions);
+        setupTestSupport(olMap);
+
         const mapModel = new MapModelImpl({
             id: mapId,
             olMap,
@@ -152,5 +183,25 @@ class MapModelFactory {
             throw new Error(`Failed to retrieve projection for code '${projectionOption}'.`);
         }
         return projection;
+    }
+}
+
+function setupTestSupport(olMap: OlMap) {
+    // Test support: open layers relies on div.offsetHeight (and Width)
+    // plus getComputedStyle(div), which do not work as expected in jsdom.
+    // The following snippet fakes a size so tests can work with the map.
+    if (import.meta.env.VITEST) {
+        olMap.updateSize = () => {
+            const target = olMap.getTargetElement();
+            const height = 500;
+            const width = 500;
+            const size = target ? [width, height] : undefined;
+            const oldSize = olMap.getSize();
+            if (size && (!oldSize || !extentEquals(size, oldSize))) {
+                olMap.setSize(size);
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                (olMap as any).updateViewportSize_();
+            }
+        };
     }
 }

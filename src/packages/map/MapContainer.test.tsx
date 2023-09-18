@@ -1,16 +1,17 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-/**
- * @vitest-environment jsdom
- */
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render } from "@testing-library/react";
 import { afterEach, expect, it, vi } from "vitest";
 import { MapContainer } from "./MapContainer";
-import { createPackageContextProviderProps, setupMap, waitForMapMount } from "./test-utils";
-
-// used to avoid a "ResizeObserver is not defined" error
-global.ResizeObserver = require("resize-observer-polyfill");
+import {
+    createServiceOptions,
+    setupMap,
+    waitForMapMount,
+    SimpleMapOptions
+} from "@open-pioneer/map-test-utils";
+import TileLayer from "ol/layer/Tile";
+import { BkgTopPlusOpen } from "./layers/BkgTopPlusOpen";
 
 afterEach(() => {
     vi.restoreAllMocks();
@@ -18,8 +19,9 @@ afterEach(() => {
 
 it("successfully creates a map", async () => {
     const { mapId, registry } = await setupMap();
+    const injectedServices = createServiceOptions({ registry });
     const renderResult = render(
-        <PackageContextProvider {...createPackageContextProviderProps(registry)}>
+        <PackageContextProvider services={injectedServices}>
             <div data-testid="base">
                 <MapContainer mapId={mapId} />
             </div>
@@ -47,8 +49,9 @@ it("reports an error if two map containers are used for the same map", async () 
     const { mapId, registry } = await setupMap();
     await registry.expectMapModel(mapId); // fully create map before rendering for simplicity
 
+    const injectedServices = createServiceOptions({ registry });
     render(
-        <PackageContextProvider {...createPackageContextProviderProps(registry)}>
+        <PackageContextProvider services={injectedServices}>
             <div data-testid="base">
                 <MapContainer mapId={mapId} />
                 <MapContainer mapId={mapId} />
@@ -73,4 +76,46 @@ it("reports an error if two map containers are used for the same map", async () 
         ],
       }
     `);
+});
+
+it("successfully creates a map with given configuration", async () => {
+    const options: SimpleMapOptions = {
+        layers: [
+            {
+                title: "TopPlus Open",
+                layer: new TileLayer({
+                    source: new BkgTopPlusOpen(),
+                    properties: { title: "TopPlusOpen" },
+                    visible: false
+                })
+            },
+            {
+                title: "TopPlus Open Grau",
+                layer: new TileLayer({
+                    source: new BkgTopPlusOpen({ layer: "web_grau" }),
+                    properties: { title: "TopPlus Open Grau" },
+                    visible: false
+                })
+            }
+        ]
+    };
+    const { mapId, registry } = await setupMap(options);
+
+    const injectedServices = createServiceOptions({ registry });
+    render(
+        <PackageContextProvider services={injectedServices}>
+            <div data-testid="base">
+                <MapContainer mapId={mapId} />
+            </div>
+        </PackageContextProvider>
+    );
+
+    // Assert map is mounted
+    await waitForMapMount();
+
+    // Div is registered as map target
+    const map = await registry.expectMapModel(mapId);
+    const layers = map.layers.getAllLayers();
+    expect(layers[0]?.title).toBe("TopPlus Open");
+    expect(layers[1]?.title).toBe("TopPlus Open Grau");
 });

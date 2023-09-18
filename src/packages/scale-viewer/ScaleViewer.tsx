@@ -1,11 +1,14 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
 import { Box, BoxProps, Text } from "@open-pioneer/chakra-integration";
-import { useMapModel } from "@open-pioneer/map";
+import { useMapModel, useScale } from "@open-pioneer/map";
 import classNames from "classnames";
+import { useIntl } from "open-pioneer:react-hooks";
 import { FC, ForwardedRef, RefAttributes, forwardRef } from "react";
-import { useCenter, useProjection, useResolution, useScale } from "./hooks";
 
+/**
+ * These are special properties for the ScaleViewer.
+ */
 export interface ScaleViewerProps extends BoxProps, RefAttributes<HTMLDivElement> {
     /**
      * The map id.
@@ -24,16 +27,13 @@ export const ScaleViewer: FC<ScaleViewerProps> = forwardRef(function ScaleViewer
 ) {
     const { mapId, className, ...rest } = props;
     const { map } = useMapModel(mapId);
-    const olMap = map?.olMap;
-
-    const { center } = useCenter(olMap);
-    const { resolution } = useResolution(olMap);
-    const { projection } = useProjection(olMap);
-    const { scale } = useScale(center, resolution, projection);
+    const intl = useIntl();
+    const scale = useScale(map?.olMap);
+    const displayScale = scale ? intl.formatNumber(scale) : undefined;
 
     return (
         <Box className={classNames("scale-viewer", className)} ref={ref} {...rest}>
-            {scale && <Text>1:{scale}</Text>}
+            {displayScale && <Text>1:{displayScale}</Text>}
         </Box>
     );
 });

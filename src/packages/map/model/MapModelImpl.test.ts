@@ -1,15 +1,10 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-/**
- * @vitest-environment jsdom
- */
 import { afterEach, expect, it, describe } from "vitest";
 import { MapModelImpl } from "./MapModelImpl";
 import { createMapModel } from "./createMapModel";
-import ResizeObserver from "resize-observer-polyfill";
 import { waitFor } from "@testing-library/dom";
-// used to avoid a "ResizeObserver is not defined" error
-global.ResizeObserver = ResizeObserver;
+import { waitForInitialExtent } from "@open-pioneer/map-test-utils";
 
 let model: MapModelImpl | undefined;
 
@@ -185,20 +180,4 @@ describe("whenDisplayed", () => {
 
 function waitTick() {
     return new Promise<void>((resolve) => resolve());
-}
-
-async function waitForInitialExtent(model: MapModelImpl) {
-    if (model.initialExtent) {
-        return;
-    }
-
-    await new Promise<void>((resolve, reject) => {
-        model?.once("changed:initialExtent", () => {
-            if (model?.initialExtent) {
-                resolve();
-            } else {
-                reject(new Error("expected a valid extent"));
-            }
-        });
-    });
 }
