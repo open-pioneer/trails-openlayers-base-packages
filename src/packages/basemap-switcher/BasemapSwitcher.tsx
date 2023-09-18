@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-import { Box, BoxProps, FormControl, FormLabel, Select } from "@open-pioneer/chakra-integration";
+import { Box, BoxProps, Select } from "@open-pioneer/chakra-integration";
 import { LayerModel, MapModel, useMapModel } from "@open-pioneer/map";
 import classNames from "classnames";
 import { useIntl } from "open-pioneer:react-hooks";
@@ -15,7 +15,7 @@ import {
     useSyncExternalStore
 } from "react";
 
-/* 
+/*
     Exported for tests. Feels a bit hacky but should be fine for now.
     Originally was using the empty string, but that doesn't work well with happy-dom.
 */
@@ -53,11 +53,6 @@ export interface BasemapSwitcherProps extends BoxProps, RefAttributes<HTMLDivEle
      * Optional config, if none basemap option is set.
      */
     allowSelectingEmptyBasemap?: boolean;
-
-    /**
-     * Optional label for the `Select`.
-     */
-    label?: string;
 }
 
 /**
@@ -68,13 +63,7 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = forwardRef(function Bas
     ref: ForwardedRef<HTMLDivElement> | undefined
 ) {
     const intl = useIntl();
-    const {
-        mapId,
-        className,
-        allowSelectingEmptyBasemap,
-        label = intl.formatMessage({ id: "defaultLabel" }),
-        ...rest
-    } = props;
+    const { mapId, className, allowSelectingEmptyBasemap, ...rest } = props;
     const emptyBasemapLabel = intl.formatMessage({ id: "emptyBasemapLabel" });
 
     const { map } = useMapModel(mapId);
@@ -90,21 +79,17 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = forwardRef(function Bas
     return (
         <Box className={classNames("basemap-switcher", className)} ref={ref} {...rest}>
             {map ? (
-                <FormControl display="flex" alignItems="center">
-                    <FormLabel className="basemap-switcher-label">{label}</FormLabel>
-                    <Select
-                        className="basemap-switcher-select"
-                        value={selectedId}
-                        onChange={(e) => activateLayer(e.target.value)}
-                        aria-label={label} /** TODO: Needed? Form label should be sufficient? */
-                    >
-                        {selectOptions.map((opt) => (
-                            <option key={opt.id} value={opt.id}>
-                                {opt.label}
-                            </option>
-                        ))}
-                    </Select>
-                </FormControl>
+                <Select
+                    className="basemap-switcher-select"
+                    value={selectedId}
+                    onChange={(e) => activateLayer(e.target.value)}
+                >
+                    {selectOptions.map((opt) => (
+                        <option key={opt.id} value={opt.id}>
+                            {opt.label}
+                        </option>
+                    ))}
+                </Select>
             ) : (
                 ""
             )}

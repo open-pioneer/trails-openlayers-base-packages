@@ -22,11 +22,20 @@ To provide an option to deactivate all basemap layers, add the optional property
 <BasemapSwitcher mapId="map_id" allowSelectingEmptyBasemap />
 ```
 
-### Customizing
+## Accessibility
 
-To add additional CSS classes to the component, add the optional property `className` (string).
+The package provides only a `HTMLSelectElement`. To be compliant with a11y guidelines (screen reader compatibility), wrap the `BasemapSwitcher` into a Chakra UI `FormControl` and set the `FormLabel` to a custom label.
 
-It is possible to receive a reference to the underlying DOM node (div) of the basemap switcher component using `useRef`.
+Example:
+
+```jsx
+<FormControl>
+    <FormLabel ps={1}>
+        <Text as="b">{intl.formatMessage({ id: "basemapLabel" })}</Text>
+    </FormLabel>
+    <BasemapSwitcher mapId="map_id" allowSelectingEmptyBasemap></BasemapSwitcher>
+</FormControl>
+```
 
 ## License
 

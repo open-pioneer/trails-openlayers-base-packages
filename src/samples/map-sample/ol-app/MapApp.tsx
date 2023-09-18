@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
 import { BasemapSwitcher } from "@open-pioneer/basemap-switcher";
-import { Box, Button, Flex } from "@open-pioneer/chakra-integration";
+import { Box, Button, Flex, FormControl, FormLabel, Text } from "@open-pioneer/chakra-integration";
 import { CoordinateViewer } from "@open-pioneer/coordinate-viewer";
 import { Sidebar, SidebarItem } from "@open-pioneer/experimental-layout-sidebar";
 import { LayerControlComponent } from "@open-pioneer/experimental-ol-layer-control";
@@ -70,12 +70,16 @@ export function MapApp() {
                             padding={2}
                             boxShadow="lg"
                         >
-                            <BasemapSwitcher
-                                ref={basemapSwitcherRef}
-                                allowSelectingEmptyBasemap
-                                label={intl.formatMessage({ id: "basemapLabel" })}
-                                mapId={MAP_ID}
-                            />
+                            <FormControl>
+                                <FormLabel ps={1}>
+                                    <Text as="b">{intl.formatMessage({ id: "basemapLabel" })}</Text>
+                                </FormLabel>
+                                <BasemapSwitcher
+                                    ref={basemapSwitcherRef}
+                                    allowSelectingEmptyBasemap
+                                    mapId={MAP_ID}
+                                />
+                            </FormControl>
                         </Box>
                     </MapAnchor>
                     <MapAnchor position="bottom-right" horizontalGap={10} verticalGap={30}>
