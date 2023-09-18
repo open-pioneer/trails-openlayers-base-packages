@@ -126,12 +126,8 @@ it("should deactivate rotate interaction", async () => {
         advanced: {
             view
         },
-        center: {
-            x: 123,
-            y: 456
-        },
-        zoom: 5,
-        noProjection: true
+        noProjection: true,
+        noInitialView: true
     });
     const map = (await registry.expectMapModel(mapId)).olMap;
 
@@ -141,7 +137,7 @@ it("should deactivate rotate interaction", async () => {
     expect(activeDragRotate).toBeUndefined();
 });
 
-it("should activate rotate interaction", async () => {
+it("should not overwrite explicity activated rotation", async () => {
     const view = new View({ center: [405948.17, 5757572.85], zoom: 5 });
     const { mapId, registry } = await setupMap({
         advanced: {
@@ -150,15 +146,11 @@ it("should activate rotate interaction", async () => {
                 altShiftDragRotate: true
             })
         },
-        center: {
-            x: 123,
-            y: 456
-        },
-        zoom: 5,
+        noInitialView: true,
         noProjection: true
     });
-    const map = (await registry.expectMapModel(mapId)).olMap;
 
+    const map = (await registry.expectMapModel(mapId)).olMap;
     const interactions = map?.getInteractions().getArray();
     const activeDragRotate = interactions?.find((interaction) => interaction instanceof dragRotate);
 
