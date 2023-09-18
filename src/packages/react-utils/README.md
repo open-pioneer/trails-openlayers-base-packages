@@ -1,11 +1,11 @@
 # @open-pioneer/react-utils
 
-React utilities for open pioneer trails applications.
+This package provides some React utilities that can help you build your applications.
 
-## Titled Sections
+## Titled sections
 
-Use the `<TitledSection>` and `<SectionHeading>` components instead of raw `hX` html tags.
-This way, the appropriate heading level can be determined automatically.
+Use the `<TitledSection>` and `<SectionHeading>` components instead of raw `hX` HTML tags (such as `<h1>` or `<h2>`).
+This way, the appropriate heading level is determined automatically.
 
 Example:
 
@@ -27,8 +27,10 @@ function SomeComponent(props) {
 }
 ```
 
-The heading level can be overwritten by using the `ConfigureTitledSection` component.
-This could be useful to override the initial heading level or to force a certain level when the React tree differs from the DOM tree. For example:
+To override the automatic heading level, use the `ConfigureTitledSection` component.
+This can be used for example to override the initial heading level or to force a certain level when the React tree differs from the DOM tree.
+
+Example:
 
 ```jsx
 <ConfigureTitledSection level={2}>
@@ -36,7 +38,7 @@ This could be useful to override the initial heading level or to force a certain
 </ConfigureTitledSection>
 ```
 
-The topmost heading(s) in `TheRestOfYourApplication` will start at level 2, and nested headings will use increasing levels as usual.
+In the preceding example the topmost heading(s) in `TheRestOfYourApplication` start at level 2, and nested headings use increasing levels as usual.
 For more details, see the API documentation.
 
 ## Hooks
