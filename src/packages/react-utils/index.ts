@@ -6,6 +6,8 @@ export {
     TitledSection,
     type SectionHeadingProps,
     SectionHeading,
+    type ConfigureTitledSectionProps,
+    ConfigureTitledSection,
     type HeadingLevel,
     useHeadingLevel
 } from "./TitledSection";

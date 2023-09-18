@@ -5,7 +5,7 @@
  */
 import { render } from "@testing-library/react";
 import { expect, it } from "vitest";
-import { SectionHeading, TitledSection } from "./TitledSection";
+import { ConfigureTitledSection, SectionHeading, TitledSection } from "./TitledSection";
 
 it("renders a hierarchy of headings", () => {
     const renderResult = render(
@@ -186,87 +186,46 @@ it("limits heading level to 6", () => {
     `);
 });
 
-it("allows to substitute heading level", () => {
-    const renderResult = render(
-        <TitledSection
-            title={
-                <div className="useless">
-                    <SectionHeading>Heading</SectionHeading>
-                </div>
-            }
-        >
-            <TitledSection>
-                <TitledSection
-                    substituteHeadingLevel={2}
-                    title={
-                        <div className="useless2">
-                            <SectionHeading>Sub Heading</SectionHeading>
-                        </div>
-                    }
-                >
-                    <TitledSection
-                        substituteHeadingLevel={2}
-                        title={
-                            <div className="useless3">
-                                <SectionHeading>Sub Heading</SectionHeading>
-                            </div>
-                        }
-                    >
-                        <TitledSection
-                            title={
-                                <div className="useless4">
-                                    <SectionHeading>Sub sub Heading</SectionHeading>
-                                </div>
-                            }
-                        ></TitledSection>
-                        Arbitrary content...
-                    </TitledSection>
-                    Arbitrary content...
+it("allows to configure the current heading level", () => {
+    const Widget = () => {
+        return (
+            <TitledSection title="Some header in widget">
+                Some content in Widget
+                <TitledSection title="Some nested header in widget">
+                    Nested content in Widget
                 </TitledSection>
             </TitledSection>
+        );
+    };
+
+    const renderResult = render(
+        <TitledSection title="Root Header">
+            <ConfigureTitledSection level={5}>
+                <Widget /> {/* Renders as h5, h6 instead of h2, h3 */}
+            </ConfigureTitledSection>
         </TitledSection>
     );
 
     expect(renderResult.container).toMatchInlineSnapshot(`
       <div>
-        <div
-          class="useless"
+        <h1
+          class="chakra-heading css-0"
         >
-          <h1
-            class="chakra-heading css-0"
-          >
-            Heading
-          </h1>
-        </div>
-        <div
-          class="useless2"
+          Root Header
+        </h1>
+        <h5
+          class="chakra-heading css-0"
         >
-          <h2
-            class="chakra-heading css-0"
-          >
-            Sub Heading
-          </h2>
-        </div>
-        <div
-          class="useless3"
+          Some header in widget
+        </h5>
+        Some content in Widget
+        <h6
+          class="chakra-heading css-0"
         >
-          <h2
-            class="chakra-heading css-0"
-          >
-            Sub Heading
-          </h2>
-        </div>
-        <div
-          class="useless4"
-        >
-          <h3
-            class="chakra-heading css-0"
-          >
-            Sub sub Heading
-          </h3>
-        </div>
-        Arbitrary content...
-        Arbitrary content...
+          Some nested header in widget
+        </h6>
+        Nested content in Widget
+         
       </div>
     `);
 });

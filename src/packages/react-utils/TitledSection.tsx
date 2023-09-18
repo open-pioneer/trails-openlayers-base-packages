@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
 import { Heading, HeadingProps } from "@open-pioneer/chakra-integration";
-import { ForwardedRef, ReactNode, createContext, forwardRef, useContext } from "react";
+import { FC, ForwardedRef, ReactNode, createContext, forwardRef, useContext } from "react";
 
 const DEFAULT_LEVEL = 1;
 
@@ -68,16 +68,13 @@ export interface TitledSectionProps {
  * ```
  */
 export function TitledSection(props: TitledSectionProps): JSX.Element {
-    const { title, children, substituteHeadingLevel } = props;
-
-    let currentLevel = useContext(LevelContext);
-    if (substituteHeadingLevel) currentLevel = substituteHeadingLevel;
-
+    const { title, children } = props;
+    const currentLevel = useContext(LevelContext);
     const heading = typeof title === "string" ? <SectionHeading>{title}</SectionHeading> : title;
 
     return (
         <>
-            <LevelContext.Provider value={currentLevel}>{heading}</LevelContext.Provider>
+            {heading}
             <LevelContext.Provider value={currentLevel + 1}>{children}</LevelContext.Provider>
         </>
     );
@@ -112,6 +109,52 @@ export const SectionHeading = forwardRef(function SectionHeading(
         </Heading>
     );
 });
+
+/**
+ * Properties for the {@link ConfigureTitledSection} component.
+ */
+export interface ConfigureTitledSectionProps {
+    level: HeadingLevel;
+    children?: ReactNode;
+}
+
+/**
+ * Overrides the heading level for all children.
+ *
+ * TitledSection components nested in `children` will start with the configured level.
+ * Nested TitledSections will continue to use the next appropriate heading level.
+ *
+ * Example: Changing the global heading level for your application
+ *
+ * If your application is embedded into another site, it should often not use the `h1` tag
+ * but start with a higher heading level instead. To achieve that, simply wrap your application
+ * with `<ConfigureTitledSectionProps>`. No other code changes are necessary:
+ *
+ * ```jsx
+ * <ConfigureTitledSection level={2}>
+ *     <TheRestOfYourApplication />
+ * </ConfigureTitledSection>
+ * ```
+ *
+ * Example: Embedding a widget
+ *
+ * Given a `<Widget />` (that we cannot easily change) that internally uses `TitledSection`,
+ * this is how we can embed it with a custom heading level.
+ * This can be appropriate in some circumstances, for example when the react component tree does not match the DOM
+ * tree (portals etc.).
+ *
+ * ```jsx
+ * <ConfigureTitledSection level={5}>
+ *     <Widget />
+ * </ConfigureTitledSection>
+ * ```
+ *
+ * The headings used by `Widget` will start with `h5`.
+ *
+ */
+export const ConfigureTitledSection: FC<ConfigureTitledSectionProps> = (props) => {
+    return <LevelContext.Provider value={props.level}>{props.children}</LevelContext.Provider>;
+};
 
 /** The level of a html heading. */
 export type HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6;
