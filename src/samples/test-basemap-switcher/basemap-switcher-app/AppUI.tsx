@@ -14,9 +14,12 @@ import { BkgTopPlusOpen, MapAnchor, MapContainer, useMapModel } from "@open-pion
 import { useRef } from "react";
 import { MAP_ID } from "./MapConfigProviderImpl";
 import TileLayer from "ol/layer/Tile";
+import { useIntl } from "open-pioneer:react-hooks";
 
 export function AppUI() {
     const basemapSwitcherRef = useRef<HTMLDivElement>(null);
+
+    const intl = useIntl();
 
     return (
         <Flex height="100%" direction="column" overflow="hidden">
@@ -36,7 +39,7 @@ export function AppUI() {
                         >
                             <FormControl>
                                 <FormLabel ps={1}>
-                                    <Text as="b">Select basemap:</Text>
+                                    <Text as="b">{intl.formatMessage({ id: "basemapLabel" })}</Text>
                                 </FormLabel>
                                 <BasemapSwitcher
                                     ref={basemapSwitcherRef}
