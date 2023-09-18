@@ -27,6 +27,18 @@ function SomeComponent(props) {
 }
 ```
 
+The heading level can be overwritten by using the `ConfigureTitledSection` component.
+This could be useful to override the initial heading level or to force a certain level when the React tree differs from the DOM tree. For example:
+
+```jsx
+<ConfigureTitledSection level={2}>
+    <TheRestOfYourApplication />
+</ConfigureTitledSection>
+```
+
+The topmost heading(s) in `TheRestOfYourApplication` will start at level 2, and nested headings will use increasing levels as usual.
+For more details, see the API documentation.
+
 ## Hooks
 
 ### useEvent()
