@@ -12,18 +12,19 @@ Example:
 ```jsx
 import { TitledSection, SectionHeading } from "@open-pioneer/react-utils";
 
-// ...
-
-// Renders as h1 if this is the topmost section.
-// Title strings are automatically wrapped into `SectionHeading`.
-<TitledSection title="Root Title">
-    {" "}
-    ... Some content ...
-    {/* Custom react component as title. Renders as the next level (h2). */}
-    <TitledSection title={<SectionHeading size="4xl">Sub Title</SectionHeading>}>
-        ... More content ...
-    </TitledSection>
-</TitledSection>;
+function SomeComponent(props) {
+    return (
+        {/* Renders as h1 if this is the topmost section.
+            Title strings are automatically wrapped into `SectionHeading`. */}
+        <TitledSection title="Root Title">
+            ... Some content ...
+            {/* Custom react component as title. Renders as the next level (h2). */}
+            <TitledSection title={<SectionHeading size="4xl">Sub Title</SectionHeading>}>
+                ... More content ...
+            </TitledSection>
+        </TitledSection>
+    );
+}
 ```
 
 ## Hooks
