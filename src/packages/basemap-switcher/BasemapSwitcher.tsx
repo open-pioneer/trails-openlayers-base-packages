@@ -53,11 +53,6 @@ export interface BasemapSwitcherProps extends BoxProps, RefAttributes<HTMLDivEle
      * Optional config, if none basemap option is set.
      */
     allowSelectingEmptyBasemap?: boolean;
-
-    /**
-     * Optional label for the `Select`.
-     */
-    label?: string;
 }
 
 /**
@@ -68,13 +63,7 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = forwardRef(function Bas
     ref: ForwardedRef<HTMLDivElement> | undefined
 ) {
     const intl = useIntl();
-    const {
-        mapId,
-        className,
-        allowSelectingEmptyBasemap,
-        label = intl.formatMessage({ id: "defaultLabel" }),
-        ...rest
-    } = props;
+    const { mapId, className, allowSelectingEmptyBasemap, ...rest } = props;
     const emptyBasemapLabel = intl.formatMessage({ id: "emptyBasemapLabel" });
 
     const { map } = useMapModel(mapId);
@@ -94,7 +83,6 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = forwardRef(function Bas
                     className="basemap-switcher-select"
                     value={selectedId}
                     onChange={(e) => activateLayer(e.target.value)}
-                    aria-label={label}
                 >
                     {selectOptions.map((opt) => (
                         <option key={opt.id} value={opt.id}>
