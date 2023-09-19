@@ -9,9 +9,41 @@ import OSM from "ol/source/OSM";
 import WMTS from "ol/source/WMTS";
 import WMTSTileGrid from "ol/tilegrid/WMTS";
 import GeoJSON from "ol/format/GeoJSON";
-import { Circle as CircleStyle, Stroke, Style } from "ol/style";
+import { bbox } from "ol/loadingstrategy";
 
 export const MAP_ID = "main";
+const vectorSource = new VectorSource({
+    format: new GeoJSON(),
+    loader: function (extent, resolution, projection, success, failure) {
+        const url =
+            "https://ogc-api.nrw.de/lika/v1/collections/katasterbezirk/items?limit=1000000&bbox=" +
+            extent.join(",") +
+            "&bbox-crs=http://www.opengis.net/def/crs/EPSG/0/25832" +
+            "&crs=http://www.opengis.net/def/crs/EPSG/0/25832";
+        const xhr = new XMLHttpRequest();
+        xhr.open("GET", url);
+        const onError = function () {
+            vectorSource.removeLoadedExtent(extent);
+            failure!(); // Todo: Typescript types!
+        };
+        xhr.onerror = onError;
+        xhr.onload = function () {
+            if (xhr.status == 200) {
+                const getFormat = vectorSource.getFormat();
+                if (getFormat) {
+                    const features = new GeoJSON({
+                        featureProjection: "EPSG:25832"
+                    }).readFeatures(xhr.responseText);
+                    vectorSource.addFeatures(features);
+                }
+            } else {
+                onError();
+            }
+        };
+        xhr.send();
+    },
+    strategy: bbox
+});
 
 export class MapConfigProviderImpl implements MapConfigProvider {
     mapId = MAP_ID;
@@ -44,105 +76,14 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     })
                 },
                 {
-                    id: "test_ogc_flurstuecke_punkt",
-                    title: "OGC API Flurstücke Punkt",
-                    isBaseLayer: true,
-                    visible: true,
-                    layer: new VectorLayer({
-                        //source: OGCFeatureSource(url, collectionId),
-                        /*
-                        source: new VectorSource({
-                            features: new GeoJSON().readFeatures(await fetch("https://ogc-api.nrw.de/lika/v1/collections/flurstueck_punkt/items", {
-                                headers: {
-                                    "Accept": "application/geo+json"
-                                }
-                            }).then(response =>  response.json()), { featureProjection: "EPSG:25832" }),
-                            attributions: "Test FLST Punkt"
-                        }),
-                         */
-                        style: new Style({
-                            image: new CircleStyle({
-                                radius: 5,
-                                fill: undefined,
-                                stroke: new Stroke({ color: "red", width: 1 })
-                            })
-                        })
-                    })
-                },
-                {
-                    id: "test_ogc_gebaeude",
-                    title: "OGC API Gebäude",
-                    isBaseLayer: true,
-                    visible: true,
-                    layer: new VectorLayer({
-                        source: new Source({
-                            features: new GeoJSON().readFeatures(
-                                await fetch(
-                                    "https://ogc-api.nrw.de/lika/v1/collections/gebaeude_bauwerk/items",
-                                    {
-                                        headers: {
-                                            Accept: "application/geo+json"
-                                        }
-                                    }
-                                ).then((response) => response.json()),
-                                { featureProjection: "EPSG:25832" }
-                            ),
-                            attributions: "Test Gebäude"
-
-                            /*
-                            format: new GeoJSON(),
-                            loader: function(extent, resolution, projection, success, failure) {
-                                const proj = projection.getCode();
-                                const url = 'https://ahocevar.com/geoserver/wfs?service=WFS&' +
-                                    'version=1.1.0&request=GetFeature&typename=osm:water_areas&' +
-                                    'outputFormat=application/json&srsname=' + proj + '&' +
-                                    'bbox=' + extent.join(',') + ',' + proj;
-                                const xhr = new XMLHttpRequest();
-                                xhr.open('GET', url);
-                                const onError = function() {
-                                    vectorSource.removeLoadedExtent(extent);
-                                    failure();
-                                }
-                                xhr.onerror = onError;
-                                xhr.onload = function() {
-                                    if (xhr.status == 200) {
-                                        const features = vectorSource.getFormat().readFeatures(xhr.responseText);
-                                        vectorSource.addFeatures(features);
-                                        success(features);
-                                    } else {
-                                        onError();
-                                    }
-                                }
-                                xhr.send();
-                            },
-                            strategy: bbox,
-                            
-                             */
-                        })
-                    })
-                },
-                {
                     id: "test_ogc_katasterbezirk",
                     title: "OGC API Katasterbezirk",
                     isBaseLayer: false,
                     visible: true,
                     layer: new VectorLayer({
-                        source: new VectorSource({
-                            features: new GeoJSON().readFeatures(
-                                await fetch(
-                                    "https://ogc-api.nrw.de/lika/v1/collections/katasterbezirk/items?limit=1000000",
-                                    {
-                                        headers: {
-                                            Accept: "application/geo+json"
-                                        }
-                                    }
-                                ).then((response) => response.json()),
-                                { featureProjection: "EPSG:25832" }
-                            ),
-                            attributions: "Test Katasterbezirk"
-                        })
+                        source: vectorSource
                     })
-                },
+                } /*,
                 {
                     id: "test_ogc_nutzung",
                     title: "OGC API Nutzung",
@@ -253,6 +194,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                         })
                     })
                 },
+                */,
                 {
                     id: "b-1",
                     title: "OSM",
