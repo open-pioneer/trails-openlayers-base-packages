@@ -74,7 +74,7 @@ it("should be possible to override basemap-switcher properties", async () => {
 
     await waitForMapMount();
 
-    const { tocDiv, labelText, switcherDiv } = await waitForToc();
+    const { tocDiv, switcherDiv } = await waitForToc();
 
     // toc is mounted
     expect(tocDiv.classList.contains("toc")).toBe(true);
@@ -83,7 +83,7 @@ it("should be possible to override basemap-switcher properties", async () => {
 });
 
 async function waitForToc() {
-    const { tocDiv, tocHeader, labelText, switcherDiv } = await waitFor(async () => {
+    const { tocDiv, tocHeader, switcherDiv } = await waitFor(async () => {
         const domElement = await screen.findByTestId("base");
 
         const tocDiv = domElement.querySelector(".toc");
@@ -104,10 +104,9 @@ async function waitForToc() {
         if (!switcherSelect) {
             throw new Error("basemap-switcher select not rendered");
         }
-        const labelText = switcherSelect.getAttribute("aria-label");
 
-        return { tocDiv, tocHeader, labelText, switcherDiv };
+        return { tocDiv, tocHeader, switcherDiv };
     });
 
-    return { tocDiv, tocHeader, labelText, switcherDiv };
+    return { tocDiv, tocHeader, switcherDiv };
 }
