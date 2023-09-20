@@ -17,6 +17,10 @@ export interface TocProps extends BoxProps, RefAttributes<HTMLDivElement> {
      */
     className?: string;
 
+    /**
+     * Properties for the embedded basemap switcher.
+     * Property "mapId" is not applied.
+     */
     basemapSwitcherProps?: Omit<BasemapSwitcherProps, "mapId">;
 }
 
@@ -28,15 +32,17 @@ export const Toc: FC<TocProps> = forwardRef(function Toc(
 
     const { mapId, className, basemapSwitcherProps, ...rest } = props;
     const basemapsLabel = intl.formatMessage({ id: "basemapsLabel" });
+    const tocTitel = intl.formatMessage({ id: "tocTitel" });
 
     return (
         <Box className={classNames("toc", className)} ref={ref} {...rest}>
+            {/*TODO: remove header as it should be added by an app developer if needed? */}
             <Box
                 className="toc-header"
                 padding={2}
                 backgroundColor="var(--chakra-colors-blackAlpha-500)"
             >
-                <Text as="b">Map content</Text>
+                <Text as="b">{tocTitel}</Text>
             </Box>
             <Box className="toc-content" padding={2}>
                 <FormControl>

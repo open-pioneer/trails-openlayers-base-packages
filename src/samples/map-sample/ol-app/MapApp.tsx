@@ -82,9 +82,7 @@ export function MapApp() {
                                 />
                             </FormControl>
                         </Box>
-                    </MapAnchor>
-                    <MapAnchor position="top-left" horizontalGap={10} verticalGap={80}>
-                        <Box backgroundColor="whiteAlpha.800">
+                        <Box backgroundColor="whiteAlpha.800" marginTop={10}>
                             <Toc
                                 mapId={MAP_ID}
                                 basemapSwitcherProps={{
