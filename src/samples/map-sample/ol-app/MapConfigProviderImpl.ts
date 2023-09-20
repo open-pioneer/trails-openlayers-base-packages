@@ -1,49 +1,13 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-import { MapConfig, MapConfigProvider } from "@open-pioneer/map";
+import { createVectorSource, MapConfig, MapConfigProvider } from "@open-pioneer/map";
 import TileLayer from "ol/layer/Tile";
 import VectorLayer from "ol/layer/Vector";
-import VectorSource from "ol/source/Vector";
-import Source from "ol/source/Vector";
 import OSM from "ol/source/OSM";
 import WMTS from "ol/source/WMTS";
 import WMTSTileGrid from "ol/tilegrid/WMTS";
-import GeoJSON from "ol/format/GeoJSON";
-import { bbox } from "ol/loadingstrategy";
 
 export const MAP_ID = "main";
-const vectorSource = new VectorSource({
-    format: new GeoJSON(),
-    loader: function (extent, resolution, projection, success, failure) {
-        const url =
-            "https://ogc-api.nrw.de/lika/v1/collections/katasterbezirk/items?limit=1000000&bbox=" +
-            extent.join(",") +
-            "&bbox-crs=http://www.opengis.net/def/crs/EPSG/0/25832" +
-            "&crs=http://www.opengis.net/def/crs/EPSG/0/25832";
-        const xhr = new XMLHttpRequest();
-        xhr.open("GET", url);
-        const onError = function () {
-            vectorSource.removeLoadedExtent(extent);
-            failure!(); // Todo: Typescript types!
-        };
-        xhr.onerror = onError;
-        xhr.onload = function () {
-            if (xhr.status == 200) {
-                const getFormat = vectorSource.getFormat();
-                if (getFormat) {
-                    const features = new GeoJSON({
-                        featureProjection: "EPSG:25832"
-                    }).readFeatures(xhr.responseText);
-                    vectorSource.addFeatures(features);
-                }
-            } else {
-                onError();
-            }
-        };
-        xhr.send();
-    },
-    strategy: bbox
-});
 
 export class MapConfigProviderImpl implements MapConfigProvider {
     mapId = MAP_ID;
@@ -81,29 +45,26 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     isBaseLayer: false,
                     visible: true,
                     layer: new VectorLayer({
-                        source: vectorSource
+                        source: createVectorSource(
+                            "https://ogc-api.nrw.de/lika/v1",
+                            "katasterbezirk",
+                            "http://www.opengis.net/def/crs/EPSG/0/25832",
+                            "Test Katasterbezirk"
+                        )
                     })
-                } /*,
+                },
                 {
                     id: "test_ogc_nutzung",
                     title: "OGC API Nutzung",
                     isBaseLayer: false,
                     visible: true,
                     layer: new VectorLayer({
-                        source: new VectorSource({
-                            features: new GeoJSON().readFeatures(
-                                await fetch(
-                                    "https://ogc-api.nrw.de/lika/v1/collections/nutzung/items",
-                                    {
-                                        headers: {
-                                            Accept: "application/geo+json"
-                                        }
-                                    }
-                                ).then((response) => response.json()),
-                                { featureProjection: "EPSG:25832" }
-                            ),
-                            attributions: "Test Nutzung"
-                        })
+                        source: createVectorSource(
+                            "https://ogc-api.nrw.de/lika/v1",
+                            "nutzung",
+                            "http://www.opengis.net/def/crs/EPSG/0/25832",
+                            "Test Nutzung"
+                        )
                     })
                 },
                 {
@@ -112,20 +73,12 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     isBaseLayer: true,
                     visible: true,
                     layer: new VectorLayer({
-                        source: new VectorSource({
-                            features: new GeoJSON().readFeatures(
-                                await fetch(
-                                    "https://ogc-api.nrw.de/lika/v1/collections/nutzung_flurstueck/items",
-                                    {
-                                        headers: {
-                                            Accept: "application/geo+json"
-                                        }
-                                    }
-                                ).then((response) => response.json()),
-                                { featureProjection: "EPSG:25832" }
-                            ),
-                            attributions: "Test Nutzung Flurstück"
-                        })
+                        source: createVectorSource(
+                            "https://ogc-api.nrw.de/lika/v1",
+                            "nutzung_flurstueck",
+                            "http://www.opengis.net/def/crs/EPSG/0/25832",
+                            "Test Nutzung Flurstück"
+                        )
                     })
                 },
                 {
@@ -134,20 +87,12 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     isBaseLayer: true,
                     visible: false,
                     layer: new VectorLayer({
-                        source: new VectorSource({
-                            features: new GeoJSON().readFeatures(
-                                await fetch(
-                                    "https://ogc-api.nrw.de/lika/v1/collections/verwaltungseinheit/items?limit=10000",
-                                    {
-                                        headers: {
-                                            Accept: "application/geo+json"
-                                        }
-                                    }
-                                ).then((response) => response.json()),
-                                { featureProjection: "EPSG:25832" }
-                            ),
-                            attributions: "Test Verwaltungseinheit"
-                        })
+                        source: createVectorSource(
+                            "https://ogc-api.nrw.de/lika/v1",
+                            "verwaltungseinheit",
+                            "http://www.opengis.net/def/crs/EPSG/0/25832",
+                            "Test Verwaltungseinheit"
+                        )
                     })
                 },
                 {
@@ -156,20 +101,12 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     isBaseLayer: true,
                     visible: true,
                     layer: new VectorLayer({
-                        source: new VectorSource({
-                            features: new GeoJSON().readFeatures(
-                                await fetch(
-                                    "https://demo.ldproxy.net/strassen/collections/abschnitteaeste/items",
-                                    {
-                                        headers: {
-                                            Accept: "application/geo+json"
-                                        }
-                                    }
-                                ).then((response) => response.json()),
-                                { featureProjection: "EPSG:25832" }
-                            ),
-                            attributions: "Test Abschnitte und Äste"
-                        })
+                        source: createVectorSource(
+                            "https://demo.ldproxy.net/strassen",
+                            "abschnitteaeste",
+                            "http://www.opengis.net/def/crs/EPSG/0/25832",
+                            "Test Abschnitte und Äste"
+                        )
                     })
                 },
                 {
@@ -178,23 +115,14 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     isBaseLayer: true,
                     visible: true,
                     layer: new VectorLayer({
-                        source: new VectorSource({
-                            features: new GeoJSON().readFeatures(
-                                await fetch(
-                                    "https://demo.ldproxy.net/zoomstack/collections/etl/items",
-                                    {
-                                        headers: {
-                                            Accept: "application/geo+json"
-                                        }
-                                    }
-                                ).then((response) => response.json()),
-                                { featureProjection: "EPSG:25832" }
-                            ),
-                            attributions: "Test Electricity Emission Lines"
-                        })
+                        source: createVectorSource(
+                            "https://demo.ldproxy.net/zoomstack",
+                            "etl",
+                            "http://www.opengis.net/def/crs/EPSG/0/25832",
+                            "Test Electricity Emission Lines"
+                        )
                     })
                 },
-                */,
                 {
                     id: "b-1",
                     title: "OSM",
