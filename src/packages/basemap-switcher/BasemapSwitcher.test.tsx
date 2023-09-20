@@ -39,11 +39,7 @@ it("should successfully create a basemap switcher component", async () => {
         <PackageContextProvider services={injectedServices}>
             <div data-testid="base">
                 <MapContainer mapId={mapId} />
-                <BasemapSwitcher
-                    mapId={mapId}
-                    label="Hintergrundkarte"
-                    allowSelectingEmptyBasemap
-                ></BasemapSwitcher>
+                <BasemapSwitcher mapId={mapId} allowSelectingEmptyBasemap></BasemapSwitcher>
             </div>
         </PackageContextProvider>
     );
@@ -145,7 +141,6 @@ it("should allow selecting 'no basemap' when enabled", async () => {
     const { switcherSelect } = await waitForBasemapSwitcher();
     expect(switcherSelect).toMatchInlineSnapshot(`
       <select
-        aria-label="defaultLabel"
         class="chakra-select basemap-switcher-select css-161pkch"
         data-theme="light"
       >
@@ -208,7 +203,7 @@ it("should successfully select emptyBasemap, if all configured basemaps are conf
         <PackageContextProvider services={injectedServices}>
             <div data-testid="base">
                 <MapContainer mapId={mapId} />
-                <BasemapSwitcher mapId={mapId} label="Hintergrundkarte"></BasemapSwitcher>
+                <BasemapSwitcher mapId={mapId}></BasemapSwitcher>
             </div>
         </PackageContextProvider>
     );
@@ -219,7 +214,6 @@ it("should successfully select emptyBasemap, if all configured basemaps are conf
     const { switcherSelect } = await waitForBasemapSwitcher();
     expect(switcherSelect).toMatchInlineSnapshot(`
       <select
-        aria-label="Hintergrundkarte"
         class="chakra-select basemap-switcher-select css-161pkch"
         data-theme="light"
       >
@@ -282,7 +276,6 @@ it("should update when a new basemap is registered", async () => {
     expect(switcherSelect.options.length).toBe(3);
     expect(switcherSelect).toMatchInlineSnapshot(`
       <select
-        aria-label="defaultLabel"
         class="chakra-select basemap-switcher-select css-161pkch"
         data-theme="light"
       >

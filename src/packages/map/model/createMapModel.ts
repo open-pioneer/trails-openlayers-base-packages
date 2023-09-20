@@ -24,7 +24,6 @@ registerProjections({
     "EPSG:25833":
         "+proj=utm +zone=33 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs +type=crs"
 });
-
 const LOG = createLogger("map:createMapModel");
 
 export async function createMapModel(mapId: string, mapConfig: MapConfig): Promise<MapModelImpl> {
@@ -57,9 +56,15 @@ class MapModelFactory {
                 const originalEvent = mapBrowserEvent.originalEvent;
                 return (originalEvent.metaKey || originalEvent.ctrlKey) && originalEvent.shiftKey;
             };
-            mapOptions.interactions = defaultInteractions().extend([
-                new DragZoom({ out: true, condition: shiftCtrlKeysOnly })
-            ]);
+            /*
+             * setting altShiftDragRotate to false disables or excludes DragRotate interaction
+             * */
+            mapOptions.interactions = defaultInteractions({
+                dragPan: true,
+                altShiftDragRotate: false,
+                pinchRotate: false,
+                mouseWheelZoom: true
+            }).extend([new DragZoom({ out: true, condition: shiftCtrlKeysOnly })]);
         }
 
         const view = (await viewOption) ?? {};

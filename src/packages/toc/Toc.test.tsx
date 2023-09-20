@@ -65,8 +65,7 @@ it("should be possible to override basemap-switcher properties", async () => {
                     mapId={mapId}
                     basemapSwitcherProps={{
                         allowSelectingEmptyBasemap: true,
-                        className: "test-class",
-                        label: "testLabel"
+                        className: "test-class"
                     }}
                 ></Toc>
             </div>
@@ -81,7 +80,6 @@ it("should be possible to override basemap-switcher properties", async () => {
     expect(tocDiv.classList.contains("toc")).toBe(true);
 
     expect(switcherDiv.classList.contains("test-class")).toBe(true);
-    expect(labelText).toBe("testLabel");
 });
 
 async function waitForToc() {

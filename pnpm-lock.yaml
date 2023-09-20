@@ -10,6 +10,9 @@ overrides:
   tough-cookie@<4.1.3: '>=4.1.3'
 
 patchedDependencies:
+  '@changesets/assemble-release-plan@5.2.4':
+    hash: ixdzxqire6z6wavv7be3kwhyxu
+    path: patches/@changesets__assemble-release-plan@5.2.4.patch
   '@vitejs/plugin-react-swc@3.3.2':
     hash: 7h2yahunoyw3rbqry2zxs22gua
     path: patches/@vitejs__plugin-react-swc@3.3.2.patch
@@ -484,10 +487,19 @@ importers:
 
   src/packages/react-utils:
     dependencies:
+      '@open-pioneer/chakra-integration':
+        specifier: ^1.0.0
+        version: 1.0.0(@chakra-ui/react@2.8.0)(@emotion/cache@11.11.0)(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(framer-motion@10.16.1)(react-dom@18.2.0)(react@18.2.0)
+      '@open-pioneer/core':
+        specifier: ^1.0.1
+        version: 1.0.1
       react:
         specifier: ^18.2.0
         version: 18.2.0
     devDependencies:
+      '@testing-library/react':
+        specifier: ^14.0.0
+        version: 14.0.0(react-dom@18.2.0)(react@18.2.0)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -1838,7 +1850,7 @@ packages:
       semver: 7.5.4
     dev: true
 
-  /@changesets/assemble-release-plan@5.2.4:
+  /@changesets/assemble-release-plan@5.2.4(patch_hash=ixdzxqire6z6wavv7be3kwhyxu):
     resolution: {integrity: sha512-xJkWX+1/CUaOUWTguXEbCDTyWJFECEhmdtbkjhn5GVBGxdP/JwaHBIU9sW3FR6gD07UwZ7ovpiPclQZs+j+mvg==}
     dependencies:
       '@babel/runtime': 7.21.0
@@ -1848,6 +1860,7 @@ packages:
       '@manypkg/get-packages': 1.1.3
       semver: 7.5.4
     dev: true
+    patched: true
 
   /@changesets/changelog-git@0.1.14:
     resolution: {integrity: sha512-+vRfnKtXVWsDDxGctOfzJsPhaCdXRYoe+KyWYoq5X/GqoISREiat0l3L8B0a453B2B4dfHGcZaGyowHbp9BSaA==}
@@ -1861,7 +1874,7 @@ packages:
     dependencies:
       '@babel/runtime': 7.21.0
       '@changesets/apply-release-plan': 6.1.4
-      '@changesets/assemble-release-plan': 5.2.4
+      '@changesets/assemble-release-plan': 5.2.4(patch_hash=ixdzxqire6z6wavv7be3kwhyxu)
       '@changesets/changelog-git': 0.1.14
       '@changesets/config': 2.3.1
       '@changesets/errors': 0.1.4
@@ -1926,7 +1939,7 @@ packages:
     resolution: {integrity: sha512-6IwKTubNEgoOZwDontYc2x2cWXfr6IKxP3IhKeK+WjyD6y3M4Gl/jdQvBw+m/5zWILSOCAaGLu2ZF6Q+WiPniw==}
     dependencies:
       '@babel/runtime': 7.21.0
-      '@changesets/assemble-release-plan': 5.2.4
+      '@changesets/assemble-release-plan': 5.2.4(patch_hash=ixdzxqire6z6wavv7be3kwhyxu)
       '@changesets/config': 2.3.1
       '@changesets/pre': 1.0.14
       '@changesets/read': 0.5.9

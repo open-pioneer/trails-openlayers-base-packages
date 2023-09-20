@@ -10,7 +10,6 @@ exports[`should successfully create a basemap switcher component 1`] = `
     data-theme="light"
   >
     <select
-      aria-label="Hintergrundkarte"
       class="chakra-select basemap-switcher-select css-161pkch"
       data-theme="light"
     >
@@ -52,7 +51,6 @@ exports[`should successfully create a basemap switcher component with additional
     data-theme="light"
   >
     <select
-      aria-label="defaultLabel"
       class="chakra-select basemap-switcher-select css-161pkch"
       data-theme="light"
     >

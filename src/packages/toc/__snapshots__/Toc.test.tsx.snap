@@ -48,7 +48,6 @@ exports[`should successfully create a toc component 1`] = `
           data-theme="light"
         >
           <select
-            aria-label="defaultLabel"
             class="chakra-select basemap-switcher-select css-161pkch"
             data-theme="light"
             id="field-:r0:"
@@ -132,7 +131,6 @@ exports[`should successfully create a toc component with additional css classes 
           data-theme="light"
         >
           <select
-            aria-label="defaultLabel"
             class="chakra-select basemap-switcher-select css-161pkch"
             data-theme="light"
             id="field-:r1:"
