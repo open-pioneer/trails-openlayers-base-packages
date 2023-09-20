@@ -1,5 +1,24 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`should not show the basemap switcher if 'showBasemapSwitcher' configured to false 1`] = `
+<div
+  class="toc css-0"
+  data-theme="light"
+>
+  <div
+    class="toc-header css-1xd6p1z"
+    data-theme="light"
+  >
+    <b
+      class="chakra-text css-0"
+      data-theme="light"
+    >
+      tocTitel
+    </b>
+  </div>
+</div>
+`;
+
 exports[`should successfully create a toc component 1`] = `
 <div
   class="toc css-0"

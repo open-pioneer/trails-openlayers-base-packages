@@ -52,6 +52,25 @@ it("should successfully create a toc component with additional css classes and b
     const styles = window.getComputedStyle(tocDiv);
     expect(styles.paddingLeft).toBe("1px");
 });
+
+it("should not show the basemap switcher if 'showBasemapSwitcher' configured to false", async () => {
+    const { mapId, registry } = await setupMap();
+
+    const injectedServices = createServiceOptions({ registry });
+
+    render(
+        <PackageContextProvider services={injectedServices}>
+            <div data-testid="base">
+                <Toc mapId={mapId} showBasemapSwitcher={false}></Toc>
+            </div>
+        </PackageContextProvider>
+    );
+
+    // toc is mounted
+    const { tocDiv } = await waitForToc();
+    expect(tocDiv).toMatchSnapshot();
+});
+
 it("should be possible to override basemap-switcher properties", async () => {
     const { mapId, registry } = await setupMap();
 
@@ -79,7 +98,7 @@ it("should be possible to override basemap-switcher properties", async () => {
     // toc is mounted
     expect(tocDiv.classList.contains("toc")).toBe(true);
 
-    expect(switcherDiv.classList.contains("test-class")).toBe(true);
+    expect(switcherDiv?.classList.contains("test-class")).toBe(true);
 });
 
 async function waitForToc() {
@@ -97,15 +116,9 @@ async function waitForToc() {
         }
 
         const switcherDiv = tocDiv.querySelector(".basemap-switcher");
-        if (!switcherDiv) {
-            throw new Error("basemap-switcher not rendered");
-        }
         const switcherSelect = tocDiv.querySelector<HTMLElement>(".basemap-switcher-select");
-        if (!switcherSelect) {
-            throw new Error("basemap-switcher select not rendered");
-        }
 
-        return { tocDiv, tocHeader, switcherDiv };
+        return { tocDiv, tocHeader, switcherDiv, switcherSelect };
     });
 
     return { tocDiv, tocHeader, switcherDiv };

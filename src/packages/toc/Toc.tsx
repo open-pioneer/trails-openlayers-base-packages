@@ -18,6 +18,12 @@ export interface TocProps extends BoxProps, RefAttributes<HTMLDivElement> {
     className?: string;
 
     /**
+     * Defines whether the basemap switcher is shown in the toc.
+     * Defaults to true.
+     */
+    showBasemapSwitcher?: boolean;
+
+    /**
      * Properties for the embedded basemap switcher.
      * Property "mapId" is not applied.
      */
@@ -30,7 +36,7 @@ export const Toc: FC<TocProps> = forwardRef(function Toc(
 ) {
     const intl = useIntl();
 
-    const { mapId, className, basemapSwitcherProps, ...rest } = props;
+    const { mapId, className, showBasemapSwitcher = true, basemapSwitcherProps, ...rest } = props;
     const basemapsLabel = intl.formatMessage({ id: "basemapsLabel" });
     const tocTitel = intl.formatMessage({ id: "tocTitel" });
 
@@ -44,18 +50,20 @@ export const Toc: FC<TocProps> = forwardRef(function Toc(
             >
                 <Text as="b">{tocTitel}</Text>
             </Box>
-            <Box className="toc-content" padding={2}>
-                <FormControl>
-                    <FormLabel ps={1}>
-                        <Text as="b">{basemapsLabel}:</Text>
-                    </FormLabel>
-                    <BasemapSwitcher
-                        allowSelectingEmptyBasemap
-                        {...basemapSwitcherProps}
-                        mapId={mapId}
-                    ></BasemapSwitcher>
-                </FormControl>
-            </Box>
+            {showBasemapSwitcher && (
+                <Box className="toc-content" padding={2}>
+                    <FormControl>
+                        <FormLabel ps={1}>
+                            <Text as="b">{basemapsLabel}:</Text>
+                        </FormLabel>
+                        <BasemapSwitcher
+                            allowSelectingEmptyBasemap
+                            {...basemapSwitcherProps}
+                            mapId={mapId}
+                        ></BasemapSwitcher>
+                    </FormControl>
+                </Box>
+            )}
         </Box>
     );
 });
