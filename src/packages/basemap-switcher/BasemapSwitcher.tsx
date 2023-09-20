@@ -50,7 +50,8 @@ export interface BasemapSwitcherProps extends BoxProps, RefAttributes<HTMLDivEle
     className?: string;
 
     /**
-     * Optional config, if none basemap option is set.
+     * Specifies whether an option to deactivate all basemap layers is available in the BasemapSwitcher.
+     * Defaults to false.
      */
     allowSelectingEmptyBasemap?: boolean;
 }

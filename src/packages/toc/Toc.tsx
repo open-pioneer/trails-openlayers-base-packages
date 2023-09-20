@@ -19,9 +19,9 @@ export interface TocProps extends BoxProps, RefAttributes<HTMLDivElement> {
 
     /**
      * Defines whether the basemap switcher is shown in the toc.
-     * Defaults to true.
+     * Defaults to false.
      */
-    showBasemapSwitcher?: boolean;
+    hideBasemapSwitcher?: boolean;
 
     /**
      * Properties for the embedded basemap switcher.
@@ -36,7 +36,7 @@ export const Toc: FC<TocProps> = forwardRef(function Toc(
 ) {
     const intl = useIntl();
 
-    const { mapId, className, showBasemapSwitcher = true, basemapSwitcherProps, ...rest } = props;
+    const { mapId, className, hideBasemapSwitcher = false, basemapSwitcherProps, ...rest } = props;
     const basemapsLabel = intl.formatMessage({ id: "basemapsLabel" });
     const tocTitel = intl.formatMessage({ id: "tocTitel" });
 
@@ -50,17 +50,13 @@ export const Toc: FC<TocProps> = forwardRef(function Toc(
             >
                 <Text as="b">{tocTitel}</Text>
             </Box>
-            {showBasemapSwitcher && (
+            {hideBasemapSwitcher || (
                 <Box className="toc-content" padding={2}>
                     <FormControl>
                         <FormLabel ps={1}>
                             <Text as="b">{basemapsLabel}:</Text>
                         </FormLabel>
-                        <BasemapSwitcher
-                            allowSelectingEmptyBasemap
-                            {...basemapSwitcherProps}
-                            mapId={mapId}
-                        ></BasemapSwitcher>
+                        <BasemapSwitcher {...basemapSwitcherProps} mapId={mapId}></BasemapSwitcher>
                     </FormControl>
                 </Box>
             )}

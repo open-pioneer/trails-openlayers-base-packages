@@ -6,10 +6,12 @@ import { render, screen, waitFor } from "@testing-library/react";
 import { expect, it } from "vitest";
 import { Toc } from "./Toc";
 import { createServiceOptions, setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
+import TileLayer from "ol/layer/Tile";
+import OSM from "ol/source/OSM";
 
 it("should successfully create a toc component", async () => {
     const { mapId, registry } = await setupMap();
-
+    await registry.expectMapModel(mapId);
     const injectedServices = createServiceOptions({ registry });
 
     render(
@@ -30,7 +32,7 @@ it("should successfully create a toc component", async () => {
 
 it("should successfully create a toc component with additional css classes and box properties", async () => {
     const { mapId, registry } = await setupMap();
-
+    await registry.expectMapModel(mapId);
     const injectedServices = createServiceOptions({ registry });
 
     render(
@@ -55,13 +57,13 @@ it("should successfully create a toc component with additional css classes and b
 
 it("should not show the basemap switcher if 'showBasemapSwitcher' configured to false", async () => {
     const { mapId, registry } = await setupMap();
-
+    await registry.expectMapModel(mapId);
     const injectedServices = createServiceOptions({ registry });
 
     render(
         <PackageContextProvider services={injectedServices}>
             <div data-testid="base">
-                <Toc mapId={mapId} showBasemapSwitcher={false}></Toc>
+                <Toc mapId={mapId} hideBasemapSwitcher={true}></Toc>
             </div>
         </PackageContextProvider>
     );
@@ -72,7 +74,17 @@ it("should not show the basemap switcher if 'showBasemapSwitcher' configured to 
 });
 
 it("should be possible to override basemap-switcher properties", async () => {
-    const { mapId, registry } = await setupMap();
+    const { mapId, registry } = await setupMap({
+        layers: [
+            {
+                title: "OSM",
+                layer: new TileLayer({
+                    source: new OSM()
+                }),
+                isBaseLayer: true
+            }
+        ]
+    });
 
     const injectedServices = createServiceOptions({ registry });
 
@@ -90,19 +102,18 @@ it("should be possible to override basemap-switcher properties", async () => {
             </div>
         </PackageContextProvider>
     );
-
     await waitForMapMount();
 
-    const { tocDiv, switcherDiv } = await waitForToc();
+    const { tocDiv, switcherDiv, switcherSelect } = await waitForToc();
 
     // toc is mounted
     expect(tocDiv.classList.contains("toc")).toBe(true);
-
     expect(switcherDiv?.classList.contains("test-class")).toBe(true);
+    expect(switcherSelect?.options.length).toBe(2);
 });
 
 async function waitForToc() {
-    const { tocDiv, tocHeader, switcherDiv } = await waitFor(async () => {
+    const { tocDiv, tocHeader, switcherDiv, switcherSelect } = await waitFor(async () => {
         const domElement = await screen.findByTestId("base");
 
         const tocDiv = domElement.querySelector(".toc");
@@ -116,10 +127,10 @@ async function waitForToc() {
         }
 
         const switcherDiv = tocDiv.querySelector(".basemap-switcher");
-        const switcherSelect = tocDiv.querySelector<HTMLElement>(".basemap-switcher-select");
+        const switcherSelect = tocDiv.querySelector<HTMLSelectElement>(".basemap-switcher-select");
 
         return { tocDiv, tocHeader, switcherDiv, switcherSelect };
     });
 
-    return { tocDiv, tocHeader, switcherDiv };
+    return { tocDiv, tocHeader, switcherDiv, switcherSelect };
 }
