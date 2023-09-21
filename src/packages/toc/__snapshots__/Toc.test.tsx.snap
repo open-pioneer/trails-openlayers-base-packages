@@ -1,0 +1,186 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`should not show the basemap switcher if 'showBasemapSwitcher' configured to false 1`] = `
+<div
+  class="toc css-0"
+  data-theme="light"
+>
+  <div
+    class="toc-header css-1xd6p1z"
+    data-theme="light"
+  >
+    <b
+      class="chakra-text css-0"
+      data-theme="light"
+    >
+      tocTitel
+    </b>
+  </div>
+</div>
+`;
+
+exports[`should successfully create a toc component 1`] = `
+<div
+  class="toc css-0"
+  data-theme="light"
+>
+  <div
+    class="toc-header css-1xd6p1z"
+    data-theme="light"
+  >
+    <b
+      class="chakra-text css-0"
+      data-theme="light"
+    >
+      tocTitel
+    </b>
+  </div>
+  <div
+    class="toc-content css-1syq16t"
+    data-theme="light"
+  >
+    <div
+      class="chakra-form-control css-1kxonj9"
+      data-theme="light"
+      role="group"
+    >
+      <label
+        class="chakra-form__label css-xi6b8o"
+        data-theme="light"
+        for="field-:r0:"
+        id="field-:r0:-label"
+      >
+        <b
+          class="chakra-text css-0"
+          data-theme="light"
+        >
+          basemapsLabel
+          :
+        </b>
+      </label>
+      <div
+        class="basemap-switcher css-0"
+        data-theme="light"
+      >
+        <div
+          class="chakra-select__wrapper css-42b2qy"
+          data-theme="light"
+        >
+          <select
+            class="chakra-select basemap-switcher-select css-161pkch"
+            data-theme="light"
+            id="field-:r0:"
+          >
+            <option
+              value="___NO_BASEMAP___"
+            >
+              emptyBasemapLabel
+            </option>
+          </select>
+          <div
+            class="chakra-select__icon-wrapper css-iohxn1"
+            data-theme="light"
+          >
+            <svg
+              aria-hidden="true"
+              class="chakra-select__icon"
+              focusable="false"
+              role="presentation"
+              style="width: 1em; height: 1em; color: currentcolor;"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
+                fill="currentColor"
+              />
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`should successfully create a toc component with additional css classes and box properties 1`] = `
+<div
+  class="toc test css-sz63p1"
+  data-theme="light"
+>
+  <div
+    class="toc-header css-1xd6p1z"
+    data-theme="light"
+  >
+    <b
+      class="chakra-text css-0"
+      data-theme="light"
+    >
+      tocTitel
+    </b>
+  </div>
+  <div
+    class="toc-content css-1syq16t"
+    data-theme="light"
+  >
+    <div
+      class="chakra-form-control css-1kxonj9"
+      data-theme="light"
+      role="group"
+    >
+      <label
+        class="chakra-form__label css-xi6b8o"
+        data-theme="light"
+        for="field-:r1:"
+        id="field-:r1:-label"
+      >
+        <b
+          class="chakra-text css-0"
+          data-theme="light"
+        >
+          basemapsLabel
+          :
+        </b>
+      </label>
+      <div
+        class="basemap-switcher css-0"
+        data-theme="light"
+      >
+        <div
+          class="chakra-select__wrapper css-42b2qy"
+          data-theme="light"
+        >
+          <select
+            class="chakra-select basemap-switcher-select css-161pkch"
+            data-theme="light"
+            id="field-:r1:"
+          >
+            <option
+              value="___NO_BASEMAP___"
+            >
+              emptyBasemapLabel
+            </option>
+          </select>
+          <div
+            class="chakra-select__icon-wrapper css-iohxn1"
+            data-theme="light"
+          >
+            <svg
+              aria-hidden="true"
+              class="chakra-select__icon"
+              focusable="false"
+              role="presentation"
+              style="width: 1em; height: 1em; color: currentcolor;"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
+                fill="currentColor"
+              />
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
