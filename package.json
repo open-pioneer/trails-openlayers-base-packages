@@ -11,7 +11,7 @@
         "build": "vite build",
         "build-packages": "pnpm run -r --aggregate-output build",
         "build-docs": "typedoc",
-        "build-license-report": "ts-node --esm ./support/create-license-report.ts",
+        "build-license-report": "node --loader ts-node/esm --no-warnings=ExperimentalWarning ./support/create-license-report.ts ",
         "preview": "vite preview",
         "lint": "eslint ./src ./support --cache --ext .js,.ts,.jsx,.tsx,.mjs,.mts,.cjs,.cts",
         "prettier-check": "pnpm prettier:common -c",
