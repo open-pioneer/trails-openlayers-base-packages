@@ -54,6 +54,7 @@ jobs:
         with:
           name: build
           path: dist/
+          retention-days: ${{ github.ref == 'refs/heads/main' && 30 || 14 }}
 
   call_version:
     if: github.ref == 'refs/heads/main'
