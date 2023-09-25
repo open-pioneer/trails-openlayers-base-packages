@@ -75,8 +75,7 @@ const queryFeatures = async (
             featureArr = getFormat.readFeatures(geoJson);
         }
     } catch (err) {
-        // TODO: Remove when API improved to accept more parameter types
-        logger.error(err as Error);
+        logger.error(`Failed to fetch features from service at ${fullURL}`, err);
     }
     return featureArr;
 };

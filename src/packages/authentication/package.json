@@ -10,7 +10,7 @@
     "dependencies": {},
     "peerDependencies": {
         "@open-pioneer/runtime": "^1.0.1",
-        "@open-pioneer/core": "^1.0.1",
+        "@open-pioneer/core": "^1.1.0",
         "react": "^18.2.0",
         "react-use": "^17.4.0"
     },
