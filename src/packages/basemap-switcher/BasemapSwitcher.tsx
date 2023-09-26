@@ -42,18 +42,30 @@ export interface BasemapSwitcherProps extends BoxProps, RefAttributes<HTMLDivEle
     /**
      * The id of the map.
      */
-    mapId: string;
+    "mapId": string;
 
     /**
      * Additional css class name(s) that will be added to the BasemapSwitcher component.
      */
-    className?: string;
+    "className"?: string;
 
     /**
      * Specifies whether an option to deactivate all basemap layers is available in the BasemapSwitcher.
      * Defaults to false.
      */
-    allowSelectingEmptyBasemap?: boolean;
+    "allowSelectingEmptyBasemap"?: boolean;
+
+    /**
+     * Optional aria-labelledby property.
+     * Do not use together with aria-label.
+     */
+    "aria-labelledby"?: string;
+
+    /**
+     * Optional aria-label property.
+     * Do not use together with aria-label.
+     */
+    "aria-label"?: string;
 }
 
 /**
@@ -81,6 +93,8 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = forwardRef(function Bas
         <Box className={classNames("basemap-switcher", className)} ref={ref} {...rest}>
             {map ? (
                 <Select
+                    aria-labelledby={props["aria-labelledby"]}
+                    aria-label={props["aria-label"]}
                     className="basemap-switcher-select"
                     value={selectedId}
                     onChange={(e) => activateLayer(e.target.value)}

@@ -10,12 +10,6 @@ Example: Integration of a basemap switcher with a given map id:
 <BasemapSwitcher mapId="map_id" />
 ```
 
-To add a label to the basemap switcher, use the optional property `label`.
-
-```jsx
-<BasemapSwitcher mapId="map_id" label="Grundkarte" />
-```
-
 To provide an option to deactivate all basemap layers, add the optional property `allowSelectingEmptyBasemap`.
 
 ```jsx
@@ -24,7 +18,11 @@ To provide an option to deactivate all basemap layers, add the optional property
 
 ## Accessibility
 
-The package provides only a `HTMLSelectElement`. To be compliant with a11y guidelines (screen reader compatibility), wrap the `BasemapSwitcher` into a Chakra UI `FormControl` and set the `FormLabel` to a custom label.
+The package provides only a `HTMLSelectElement`. To be compliant with a11y guidelines (screen reader compatibility), a label must be added to the basemap switcher. Therefore, use one of the following attempts:
+
+-   Wrap the `BasemapSwitcher` into a Chakra UI `FormControl` and set the `FormLabel` to a custom label.
+-   Use the `aria-labelledby` property of the `BasemapSwitcher` to specify that an anywhere defined label is used as the basemap switcher's label.
+-   Use the `aria-label` property of the `BasemapSwitcher` to set an label for the screen reader that is not shown in the UI.
 
 Example:
 
