@@ -31,14 +31,14 @@
 
 ## Documentation
 
--   Stick to the following documentation guideline, if appropriate: [Documenation guideline](https://developers.google.com/style/highlights)
+-   Stick to the following documentation guideline, if appropriate: [Documentation guideline](https://developers.google.com/style/highlights)
 -   (There is no need to document for each component wether additional CSS classes can be passed using the `className`prop. This is documented in the UI concept documentation.)
 
 ## Code style
 
 -   Be strict about TypeScript, especially in public interfaces
 -   Use TODO keyword only for things that are currently in doing, not for things that should be implemented anytime in the future. Exceptional: special usages determined by the team.
--   If creating a new package that has has a name that consists of multiple words, use a dash to connect the words.
+-   If creating a new package that has a name that consists of multiple words, use a dash to connect the words.
 
 ## Tests
 
