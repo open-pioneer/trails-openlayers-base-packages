@@ -6,7 +6,7 @@ More information: [Chakra UI](https://chakra-ui.com/)
 
 ## App layout
 
-trails-openlayers-base-packages will not provide any app layout. Only predefined and customizable map 
+trails-openlayers-base-packages will not provide any app layout. Only predefined and customizable map
 anchors are implemented and can be used by the developer to place components directly on the map.
 
 More information: [API documentation](https://open-pioneer.github.io/trails-demo/openlayers-base-packages/docs/modules/_open_pioneer_map.html#md:map-anchor-component)
@@ -18,13 +18,14 @@ All trails-openlayers-base-packages components offer various options to customiz
 ### CSS class names
 
 All components have a css class on the root element (mostly the component name, e.g. `scale-viewer`)
-that can be used to identify the component when writing own css. 
-Additionally, the all components  allow to pass multiple css class names to the component using the 
+that can be used to identify the component when writing own css.
+Additionally, the all components allow to pass multiple css class names to the component using the
 `className` prop that will be appended to the component.
 
 **Example**
 
-Add class name "css" to the component: 
+Add class name "css" to the component:
+
 ```tsx
 <ScaleViewer mapId={MAP_ID} className="css"></ScaleViewer>
 ```

@@ -1,14 +1,28 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
 import { BasemapSwitcher } from "@open-pioneer/basemap-switcher";
-import { Box, Button, Flex, Stack, Text } from "@open-pioneer/chakra-integration";
+import {
+    Box,
+    Button,
+    Flex,
+    FormControl,
+    FormLabel,
+    ListItem,
+    Stack,
+    Text,
+    UnorderedList,
+    VStack
+} from "@open-pioneer/chakra-integration";
 import { BkgTopPlusOpen, MapAnchor, MapContainer, useMapModel } from "@open-pioneer/map";
+import TileLayer from "ol/layer/Tile";
+import { useIntl } from "open-pioneer:react-hooks";
 import { useRef } from "react";
 import { MAP_ID } from "./MapConfigProviderImpl";
-import TileLayer from "ol/layer/Tile";
 
 export function AppUI() {
     const basemapSwitcherRef = useRef<HTMLDivElement>(null);
+
+    const intl = useIntl();
 
     return (
         <Flex height="100%" direction="column" overflow="hidden">
@@ -20,18 +34,22 @@ export function AppUI() {
                 <MapContainer mapId={MAP_ID}>
                     <MapAnchor position="top-left" horizontalGap={10} verticalGap={10}>
                         <Box
-                            backgroundColor="whiteAlpha.800"
+                            backgroundColor="whiteAlpha.900"
                             borderWidth="1px"
                             borderRadius="lg"
                             padding={2}
                             boxShadow="lg"
                         >
-                            <BasemapSwitcher
-                                ref={basemapSwitcherRef}
-                                allowSelectingEmptyBasemap
-                                mapId={MAP_ID}
-                            ></BasemapSwitcher>
-
+                            <FormControl>
+                                <FormLabel ps={1}>
+                                    <Text as="b">{intl.formatMessage({ id: "basemapLabel" })}</Text>
+                                </FormLabel>
+                                <BasemapSwitcher
+                                    ref={basemapSwitcherRef}
+                                    allowSelectingEmptyBasemap
+                                    mapId={MAP_ID}
+                                ></BasemapSwitcher>
+                            </FormControl>
                             <Stack pt={5}>
                                 <Text align="center">Test Controls:</Text>
                                 <AddNewBaseLayerButton mapId={MAP_ID} />
@@ -39,6 +57,38 @@ export function AppUI() {
                                 <ClearBaseLayerButton mapId={MAP_ID} />
                             </Stack>
                         </Box>
+                        <MapAnchor position="top-right" horizontalGap={10} verticalGap={10}>
+                            <VStack
+                                backgroundColor="whiteAlpha.900"
+                                borderWidth="1px"
+                                borderRadius="lg"
+                                padding={2}
+                                boxShadow="lg"
+                                maxWidth="400px"
+                            >
+                                <Text as="b">Description</Text>
+                                <Text>
+                                    This application can be used to test the basemap switcher. The
+                                    basemap switcher synchronizes with the state of the shared map
+                                    model. If the map model is changed (for example, by changing the
+                                    current basemap), the basemap switcher must update itself
+                                    accordingly.
+                                </Text>
+                                <UnorderedList>
+                                    <ListItem>
+                                        Adding a new basemap updates the dropdown menu (new option)
+                                    </ListItem>
+                                    <ListItem>
+                                        Changing the current basemap to another basemap updates the
+                                        selected option
+                                    </ListItem>
+                                    <ListItem>
+                                        Setting the current basemap to {"'undefined'"} also updates
+                                        the selection
+                                    </ListItem>
+                                </UnorderedList>
+                            </VStack>
+                        </MapAnchor>
                     </MapAnchor>
                 </MapContainer>
             </Flex>

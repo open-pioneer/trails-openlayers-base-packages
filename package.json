@@ -11,12 +11,12 @@
         "build": "vite build",
         "build-packages": "pnpm run -r --aggregate-output build",
         "build-docs": "typedoc",
-        "build-license-report": "ts-node --esm ./support/create-license-report.ts",
+        "build-license-report": "node --loader ts-node/esm --no-warnings=ExperimentalWarning ./support/create-license-report.ts ",
         "preview": "vite preview",
         "lint": "eslint ./src ./support --cache --ext .js,.ts,.jsx,.tsx,.mjs,.mts,.cjs,.cts",
         "prettier-check": "pnpm prettier:common -c",
         "prettier": "pnpm prettier:common -w",
-        "prettier:common": "prettier ./src ./support --ignore-path .eslintignore --cache",
+        "prettier:common": "prettier ./src ./support ./docs --ignore-path .eslintignore --cache",
         "test": "vitest",
         "lint-shared-versions": "syncpack list-mismatches",
         "update-shared-versions": "syncpack fix-mismatches",
@@ -27,15 +27,21 @@
     },
     "pnpm": {
         "//": [
-            "overrides:",
+            "overrides",
+            "=========",
             "ol-mapbox-style: license issues",
             "semver: https://github.com/advisories/GHSA-c2qf-rxjj-qqgw",
             "tough-cookie: https://github.com/advisories/GHSA-72xf-g2v4-qvf3",
             "",
-            "ignored cves:",
-            "",
+            "ignored cves",
+            "============",
             "plugin-react-swc has been patched to transpile to es2022 instead of es2020, to support native private fields",
-            "see also https://github.com/vitejs/vite-plugin-react-swc/issues/141"
+            "see also https://github.com/vitejs/vite-plugin-react-swc/issues/141",
+            "",
+            "patches",
+            "=======",
+            "@vitejs/plugin-react-swc: patch ecma script version to 2022 (see https://github.com/vitejs/vite-plugin-react-swc/issues/141)",
+            "@changesets/assemble-release-plan: don't bump to major for 0.x packages (see https://github.com/changesets/changesets/issues/1228)"
         ],
         "overrides": {
             "ol-mapbox-style": "workspace:disabled-package@*",
@@ -46,7 +52,8 @@
             "ignoreCves": []
         },
         "patchedDependencies": {
-            "@vitejs/plugin-react-swc@3.3.2": "patches/@vitejs__plugin-react-swc@3.3.2.patch"
+            "@vitejs/plugin-react-swc@3.3.2": "patches/@vitejs__plugin-react-swc@3.3.2.patch",
+            "@changesets/assemble-release-plan@5.2.4": "patches/@changesets__assemble-release-plan@5.2.4.patch"
         }
     },
     "dependencies": {
@@ -57,11 +64,11 @@
         "@emotion/react": "^11.11.1",
         "@emotion/styled": "^11.11.0",
         "@formatjs/intl": "^2.9.0",
-        "@open-pioneer/chakra-integration": "^1.0.0",
-        "@open-pioneer/core": "^1.0.1",
-        "@open-pioneer/integration": "^1.0.1",
-        "@open-pioneer/runtime": "^1.0.1",
-        "@open-pioneer/test-utils": "^1.0.0",
+        "@open-pioneer/chakra-integration": "^1.1.0",
+        "@open-pioneer/core": "^1.1.0",
+        "@open-pioneer/integration": "^1.0.3",
+        "@open-pioneer/runtime": "^1.1.0",
+        "@open-pioneer/test-utils": "^1.0.1",
         "framer-motion": "^10.16.0",
         "ol": "^8.1.0",
         "react": "^18.2.0",

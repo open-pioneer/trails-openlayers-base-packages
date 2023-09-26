@@ -5,6 +5,9 @@ on:
   pull_request:
 jobs:
   test:
+    # Don't run for pull requests from this repository to avoid duplicate builds (push also triggers build).
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
+    name: "Test and Build"
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
@@ -48,9 +51,11 @@ jobs:
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
+        if: false
         with:
           name: build
           path: dist/
+          retention-days: ${{ github.ref == 'refs/heads/main' && 7 || 1 }}
 
   call_version:
     if: github.ref == 'refs/heads/main'
@@ -61,10 +66,10 @@ jobs:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
   deploy:
+    if: false && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     needs: test
-    if: github.ref == 'refs/heads/main'
     steps:
       - name: Checkout
         uses: actions/checkout@v3

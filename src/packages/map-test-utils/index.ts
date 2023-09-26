@@ -2,8 +2,6 @@
 // SPDX-License-Identifier: Apache-2.0
 import { createService } from "@open-pioneer/test-utils/services";
 import { screen, waitFor } from "@testing-library/react";
-import TileLayer from "ol/layer/Tile";
-import OSM from "ol/source/OSM";
 import {
     ExtentConfig,
     InitialViewConfig,
@@ -16,6 +14,7 @@ import {
 } from "@open-pioneer/map";
 // Importing internals: needed for test support
 import { MapRegistryImpl } from "@open-pioneer/map/services";
+import VectorLayer from "ol/layer/Vector";
 
 export interface SimpleMapOptions {
     center?: { x: number; y: number };
@@ -93,9 +92,7 @@ export async function setupMap(options?: SimpleMapOptions) {
         layers: options?.layers ?? [
             {
                 title: "OSM",
-                layer: new TileLayer({
-                    source: new OSM()
-                })
+                layer: new VectorLayer()
             }
         ],
         advanced: options?.advanced

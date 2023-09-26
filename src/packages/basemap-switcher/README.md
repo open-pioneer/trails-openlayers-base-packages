@@ -22,6 +22,21 @@ To provide an option to deactivate all basemap layers, add the optional property
 <BasemapSwitcher mapId="map_id" allowSelectingEmptyBasemap />
 ```
 
+## Accessibility
+
+The package provides only a `HTMLSelectElement`. To be compliant with a11y guidelines (screen reader compatibility), wrap the `BasemapSwitcher` into a Chakra UI `FormControl` and set the `FormLabel` to a custom label.
+
+Example:
+
+```jsx
+<FormControl>
+    <FormLabel ps={1}>
+        <Text as="b">{intl.formatMessage({ id: "basemapLabel" })}</Text>
+    </FormLabel>
+    <BasemapSwitcher mapId="map_id" allowSelectingEmptyBasemap></BasemapSwitcher>
+</FormControl>
+```
+
 ## License
 
 [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0)

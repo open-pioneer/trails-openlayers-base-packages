@@ -1,14 +1,13 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-import { MapContainer } from "@open-pioneer/map";
+import { BkgTopPlusOpen } from "@open-pioneer/map";
+import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
-import { render, screen, waitFor, act, fireEvent } from "@testing-library/react";
-import { expect, it, describe } from "vitest";
-import { BasemapSwitcher, NO_BASEMAP_ID } from "./BasemapSwitcher";
-import { createServiceOptions, setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
-import { BkgTopPlusOpen } from "@open-pioneer/map";
+import { describe, expect, it } from "vitest";
+import { BasemapSwitcher, NO_BASEMAP_ID } from "./BasemapSwitcher";
 
 const defaultBasemapConfig = [
     {
@@ -33,22 +32,14 @@ const defaultBasemapConfig = [
 
 it("should successfully create a basemap switcher component", async () => {
     const { mapId, registry } = await setupMap();
+    await registry.expectMapModel(mapId); // wait for model load
 
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
-            <div data-testid="base">
-                <MapContainer mapId={mapId} />
-                <BasemapSwitcher
-                    mapId={mapId}
-                    label="Hintergrundkarte"
-                    allowSelectingEmptyBasemap
-                ></BasemapSwitcher>
-            </div>
+            <BasemapSwitcher mapId={mapId} allowSelectingEmptyBasemap data-testid="switcher" />
         </PackageContextProvider>
     );
-
-    await waitForMapMount();
 
     // basemap switcher is mounted
     const { switcherDiv, switcherSelect } = await waitForBasemapSwitcher();
@@ -63,18 +54,14 @@ it("should successfully create a basemap switcher component with additional css 
     const { mapId, registry } = await setupMap({
         layers: defaultBasemapConfig
     });
+    await registry.expectMapModel(mapId); // wait for model load
 
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
-            <div data-testid="base">
-                <MapContainer mapId={mapId} />
-                <BasemapSwitcher mapId={mapId} className="test" pl="1px"></BasemapSwitcher>
-            </div>
+            <BasemapSwitcher mapId={mapId} className="test" pl="1px" data-testid="switcher" />
         </PackageContextProvider>
     );
-
-    await waitForMapMount();
 
     // basemap switcher is mounted
     const { switcherDiv } = await waitForBasemapSwitcher();
@@ -92,20 +79,14 @@ it("should successfully select a basemap from basemap switcher", async () => {
     const { mapId, registry } = await setupMap({
         layers: defaultBasemapConfig
     });
-
     const map = await registry.expectMapModel(mapId);
 
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
-            <div data-testid="base">
-                <MapContainer mapId={mapId} />
-                <BasemapSwitcher mapId={mapId}></BasemapSwitcher>
-            </div>
+            <BasemapSwitcher mapId={mapId} data-testid="switcher" />
         </PackageContextProvider>
     );
-
-    await waitForMapMount();
 
     // basemap switcher is mounted
     const { switcherSelect } = await waitForBasemapSwitcher();
@@ -132,23 +113,16 @@ it("should allow selecting 'no basemap' when enabled", async () => {
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
-            <div data-testid="base">
-                <MapContainer mapId={mapId} />
-                <BasemapSwitcher mapId={mapId} allowSelectingEmptyBasemap></BasemapSwitcher>
-            </div>
+            <BasemapSwitcher mapId={mapId} allowSelectingEmptyBasemap data-testid="switcher" />
         </PackageContextProvider>
     );
-
-    await waitForMapMount();
 
     // basemap switcher is mounted
     const { switcherSelect } = await waitForBasemapSwitcher();
     expect(switcherSelect).toMatchInlineSnapshot(`
       <select
-        aria-label="defaultLabel"
         class="chakra-select basemap-switcher-select css-161pkch"
         data-theme="light"
-        id="field-:r3:"
       >
         <option
           value="osm"
@@ -201,29 +175,21 @@ it("should successfully select emptyBasemap, if all configured basemaps are conf
             }
         ]
     });
-
     const map = await registry.expectMapModel(mapId);
 
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
-            <div data-testid="base">
-                <MapContainer mapId={mapId} />
-                <BasemapSwitcher mapId={mapId} label="Hintergrundkarte"></BasemapSwitcher>
-            </div>
+            <BasemapSwitcher mapId={mapId} data-testid="switcher" />
         </PackageContextProvider>
     );
-
-    await waitForMapMount();
 
     // basemap switcher is mounted
     const { switcherSelect } = await waitForBasemapSwitcher();
     expect(switcherSelect).toMatchInlineSnapshot(`
       <select
-        aria-label="Hintergrundkarte"
         class="chakra-select basemap-switcher-select css-161pkch"
         data-theme="light"
-        id="field-:r4:"
       >
         <option
           value="b-1"
@@ -257,14 +223,9 @@ it("should update when a new basemap is registered", async () => {
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
-            <div data-testid="base">
-                <MapContainer mapId={mapId} />
-                <BasemapSwitcher mapId={mapId}></BasemapSwitcher>
-            </div>
+            <BasemapSwitcher mapId={mapId} data-testid="switcher" />
         </PackageContextProvider>
     );
-
-    await waitForMapMount();
 
     // basemap switcher is mounted
     const { switcherSelect } = await waitForBasemapSwitcher();
@@ -284,10 +245,8 @@ it("should update when a new basemap is registered", async () => {
     expect(switcherSelect.options.length).toBe(3);
     expect(switcherSelect).toMatchInlineSnapshot(`
       <select
-        aria-label="defaultLabel"
         class="chakra-select basemap-switcher-select css-161pkch"
         data-theme="light"
-        id="field-:r5:"
       >
         <option
           value="osm"
@@ -317,14 +276,9 @@ it("should update when a different basemap is activated from somewhere else", as
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
-            <div data-testid="base">
-                <MapContainer mapId={mapId} />
-                <BasemapSwitcher mapId={mapId}></BasemapSwitcher>
-            </div>
+            <BasemapSwitcher mapId={mapId} data-testid="switcher" />
         </PackageContextProvider>
     );
-
-    await waitForMapMount();
 
     // basemap switcher is mounted
     const { switcherSelect } = await waitForBasemapSwitcher();
@@ -366,14 +320,9 @@ describe("should successfully select the correct basemap from basemap switcher",
         const injectedServices = createServiceOptions({ registry });
         render(
             <PackageContextProvider services={injectedServices}>
-                <div data-testid="base">
-                    <MapContainer mapId={mapId} />
-                    <BasemapSwitcher mapId={mapId}></BasemapSwitcher>
-                </div>
+                <BasemapSwitcher mapId={mapId} data-testid="switcher" />
             </PackageContextProvider>
         );
-
-        await waitForMapMount();
 
         // basemap switcher is mounted
         const { switcherSelect } = await waitForBasemapSwitcher();
@@ -412,14 +361,9 @@ describe("should successfully select the correct basemap from basemap switcher",
         const injectedServices = createServiceOptions({ registry });
         render(
             <PackageContextProvider services={injectedServices}>
-                <div data-testid="base">
-                    <MapContainer mapId={mapId} />
-                    <BasemapSwitcher mapId={mapId}></BasemapSwitcher>
-                </div>
+                <BasemapSwitcher mapId={mapId} data-testid="switcher" />
             </PackageContextProvider>
         );
-
-        await waitForMapMount();
 
         // basemap switcher is mounted
         const { switcherSelect } = await waitForBasemapSwitcher();
@@ -433,8 +377,8 @@ describe("should successfully select the correct basemap from basemap switcher",
 
 async function waitForBasemapSwitcher() {
     const { switcherDiv, switcherSelect } = await waitFor(async () => {
-        const domElement = await screen.findByTestId("base");
-        const switcherDiv: HTMLDivElement | null = domElement.querySelector(".basemap-switcher");
+        const switcherDiv: HTMLDivElement | null =
+            await screen.findByTestId<HTMLDivElement>("switcher");
         if (!switcherDiv) {
             throw new Error("basemap switcher not rendered");
         }

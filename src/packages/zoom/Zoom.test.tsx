@@ -6,9 +6,9 @@ import { render, screen, waitFor } from "@testing-library/react";
 import { expect, it } from "vitest";
 import { createServiceOptions, setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
 import userEvent from "@testing-library/user-event";
-import { Zoom } from "./Zoom";
+import { Zoom, ZoomIn, ZoomOut } from "./Zoom";
 
-it("should successfully create a zoom component with a zoom in and a zoom out button", async () => {
+it("should successfully create a zoom-in and zoom-out buttons", async () => {
     const { mapId, registry } = await setupMap();
 
     const injectedServices = createServiceOptions({ registry });
@@ -16,25 +16,26 @@ it("should successfully create a zoom component with a zoom in and a zoom out bu
         <PackageContextProvider services={injectedServices}>
             <div data-testid="base">
                 <MapContainer mapId={mapId} />
-                <Zoom mapId={mapId}></Zoom>
+                <ZoomIn mapId={mapId} data-testid="zoom-in" />
+                <ZoomOut mapId={mapId} data-testid="zoom-out" />
             </div>
         </PackageContextProvider>
     );
 
     await waitForMapMount();
 
-    // zoom is mounted
-    const { zoomDiv } = await waitForZoom();
-    expect(zoomDiv).toMatchSnapshot();
-
     // check zoom buttons are available
-    const zoomInButton = zoomDiv.querySelectorAll(".btn-zoom-in");
+    const zoomIn = await screen.findByTestId("zoom-in");
+    const zoomInButton = zoomIn.querySelectorAll(".zoom-button.zoom-in");
     expect(zoomInButton.length).toBe(1);
     expect(zoomInButton[0]).toBeInstanceOf(HTMLButtonElement);
+    expect(zoomIn).toMatchSnapshot();
 
-    const zoomOutButton = zoomDiv.querySelectorAll(".btn-zoom-out");
+    const zoomOut = await screen.findByTestId("zoom-out");
+    const zoomOutButton = zoomOut.querySelectorAll(".zoom-button.zoom-out");
     expect(zoomOutButton.length).toBe(1);
     expect(zoomOutButton[0]).toBeInstanceOf(HTMLButtonElement);
+    expect(zoomOut).toMatchSnapshot();
 });
 
 it("should successfully create a zoom component with additional css classes", async () => {
@@ -45,7 +46,12 @@ it("should successfully create a zoom component with additional css classes", as
         <PackageContextProvider services={injectedServices}>
             <div data-testid="base">
                 <MapContainer mapId={mapId} />
-                <Zoom mapId={mapId} className="testClass1 testClass2"></Zoom>
+                <Zoom
+                    data-testid="zoom"
+                    mapId={mapId}
+                    className="testClass1 testClass2"
+                    zoomDirection="in"
+                />
             </div>
         </PackageContextProvider>
     );
@@ -53,15 +59,14 @@ it("should successfully create a zoom component with additional css classes", as
     await waitForMapMount();
 
     // zoom is mounted
-    const { zoomDiv } = await waitForZoom();
+    const zoomDiv = await screen.findByTestId("zoom");
     expect(zoomDiv).toMatchSnapshot();
-
     expect(zoomDiv.classList.contains("testClass1")).toBe(true);
     expect(zoomDiv.classList.contains("testClass2")).toBe(true);
     expect(zoomDiv.classList.contains("testClass3")).toBe(false);
 });
 
-it("should successfully click the zoom in and zoom out button", async () => {
+it("should zoom in and zoom out when clicked", async () => {
     const { mapId, registry } = await setupMap();
     const map = await registry.expectMapModel(mapId);
     const user = userEvent.setup();
@@ -71,18 +76,19 @@ it("should successfully click the zoom in and zoom out button", async () => {
         <PackageContextProvider services={injectedServices}>
             <div data-testid="base">
                 <MapContainer mapId={mapId} />
-                <Zoom mapId={mapId}></Zoom>
+                <ZoomIn data-testid="zoom-in" mapId={mapId} />
+                <ZoomOut data-testid="zoom-out" mapId={mapId} />
             </div>
         </PackageContextProvider>
     );
 
     await waitForMapMount();
 
-    // zoom is mounted
-    const { zoomDiv } = await waitForZoom();
+    const zoomIn = await screen.findByTestId("zoom-in");
+    const zoomOut = await screen.findByTestId("zoom-out");
 
-    const zoomInButton = zoomDiv.querySelector(".btn-zoom-in") as HTMLButtonElement;
-    const zoomOutButton = zoomDiv.querySelector(".btn-zoom-out") as HTMLButtonElement;
+    const zoomInButton = zoomIn.querySelector(".zoom-button") as HTMLButtonElement;
+    const zoomOutButton = zoomOut.querySelector(".zoom-button") as HTMLButtonElement;
 
     let oldZoom: number | undefined = map.olMap.getView().getZoom();
     let newZoom: number | undefined;
@@ -109,16 +115,3 @@ it("should successfully click the zoom in and zoom out button", async () => {
         }
     });
 });
-
-async function waitForZoom() {
-    const { zoomDiv } = await waitFor(async () => {
-        const domElement = await screen.findByTestId("base");
-        const zoomDiv = domElement.querySelector(".zoom");
-        if (!zoomDiv) {
-            throw new Error("zoom component not rendered");
-        }
-
-        return { zoomDiv };
-    });
-    return { zoomDiv };
-}

@@ -10,6 +10,8 @@ import OlMap from "ol/Map";
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
 import { BkgTopPlusOpen } from "./layers/BkgTopPlusOpen";
+import { defaults as defaultInteraction } from "ol/interaction";
+import dragRotate from "ol/interaction/DragRotate";
 
 afterEach(() => {
     vi.restoreAllMocks();
@@ -61,7 +63,7 @@ it("should log warning message if new View is in advanced configuration and proj
         advanced: {
             view
         },
-        projection: "EPSG:25832",
+        projection: "EPSG:31466",
         noInitialView: true
     });
     await registry.expectMapModel(mapId);
@@ -116,6 +118,44 @@ it("should log a warning message if new View is in advanced configuration and in
         ],
       }
     `);
+});
+
+it("should deactivate rotate interaction", async () => {
+    const view = new View({ center: [405948.17, 5757572.85], zoom: 5 });
+    const { mapId, registry } = await setupMap({
+        advanced: {
+            view
+        },
+        noProjection: true,
+        noInitialView: true
+    });
+    const map = (await registry.expectMapModel(mapId)).olMap;
+
+    const interactions = map?.getInteractions().getArray();
+    const activeDragRotate = interactions?.find((interaction) => interaction instanceof dragRotate);
+
+    expect(activeDragRotate).toBeUndefined();
+});
+
+it("should not overwrite explicity activated rotation", async () => {
+    const view = new View({ center: [405948.17, 5757572.85], zoom: 5 });
+    const { mapId, registry } = await setupMap({
+        advanced: {
+            view,
+            interactions: defaultInteraction({
+                altShiftDragRotate: true
+            })
+        },
+        noInitialView: true,
+        noProjection: true
+    });
+
+    const map = (await registry.expectMapModel(mapId)).olMap;
+    const interactions = map?.getInteractions().getArray();
+    const activeDragRotate = interactions?.find((interaction) => interaction instanceof dragRotate);
+
+    expect(activeDragRotate).toBeDefined();
+    expect(activeDragRotate?.getActive()).toBe(true);
 });
 
 it("should successfully create View with 'position' property", async () => {
@@ -185,17 +225,17 @@ it("should throw an exception if using wrong EPSG code", async () => {
 
 it("should successfully create View with a custom projection", async () => {
     registerProjections({
-        "EPSG:25832":
-            "+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs +type=crs"
+        "EPSG:31466":
+            "+proj=tmerc +lat_0=0 +lon_0=6 +k=1 +x_0=2500000 +y_0=0 +ellps=bessel +nadgrids=BETA2007.gsb +units=m +no_defs +type=crs"
     });
 
     const { mapId, registry } = await setupMap({
-        projection: "EPSG:25832"
+        projection: "EPSG:31466"
     });
 
     const map = (await registry.expectMapModel(mapId))?.olMap;
     const view = map?.getView();
-    expect(view?.getProjection().getCode()).toBe("EPSG:25832");
+    expect(view?.getProjection().getCode()).toBe("EPSG:31466");
 });
 
 it("should construct a map with the configured layers", async () => {
