@@ -23,17 +23,13 @@ it("should successfully create a zoom-in and zoom-out buttons", async () => {
     await waitForMapMount("map");
 
     // check zoom buttons are available
-    const zoomIn = await screen.findByTestId("zoom-in");
-    const zoomInButton = zoomIn.querySelectorAll(".zoom-button.zoom-in");
-    expect(zoomInButton.length).toBe(1);
-    expect(zoomInButton[0]).toBeInstanceOf(HTMLButtonElement);
-    expect(zoomIn).toMatchSnapshot();
+    const zoomInButton = await screen.findByTestId("zoom-in");
+    expect(zoomInButton).toBeInstanceOf(HTMLButtonElement);
+    expect(zoomInButton).toMatchSnapshot();
 
-    const zoomOut = await screen.findByTestId("zoom-out");
-    const zoomOutButton = zoomOut.querySelectorAll(".zoom-button.zoom-out");
-    expect(zoomOutButton.length).toBe(1);
-    expect(zoomOutButton[0]).toBeInstanceOf(HTMLButtonElement);
-    expect(zoomOut).toMatchSnapshot();
+    const zoomOutButton = await screen.findByTestId("zoom-out");
+    expect(zoomOutButton).toBeInstanceOf(HTMLButtonElement);
+    expect(zoomOutButton).toMatchSnapshot();
 });
 
 it("should successfully create a zoom component with additional css classes", async () => {
@@ -55,11 +51,11 @@ it("should successfully create a zoom component with additional css classes", as
     await waitForMapMount("map");
 
     // zoom is mounted
-    const zoomDiv = await screen.findByTestId("zoom");
-    expect(zoomDiv).toMatchSnapshot();
-    expect(zoomDiv.classList.contains("testClass1")).toBe(true);
-    expect(zoomDiv.classList.contains("testClass2")).toBe(true);
-    expect(zoomDiv.classList.contains("testClass3")).toBe(false);
+    const zoomButton = await screen.findByTestId("zoom");
+    expect(zoomButton).toMatchSnapshot();
+    expect(zoomButton.classList.contains("testClass1")).toBe(true);
+    expect(zoomButton.classList.contains("testClass2")).toBe(true);
+    expect(zoomButton.classList.contains("testClass3")).toBe(false);
 });
 
 it("should zoom in and zoom out when clicked", async () => {
@@ -78,11 +74,8 @@ it("should zoom in and zoom out when clicked", async () => {
 
     await waitForMapMount("map");
 
-    const zoomIn = await screen.findByTestId("zoom-in");
-    const zoomOut = await screen.findByTestId("zoom-out");
-
-    const zoomInButton = zoomIn.querySelector(".zoom-button") as HTMLButtonElement;
-    const zoomOutButton = zoomOut.querySelector(".zoom-button") as HTMLButtonElement;
+    const zoomInButton = await screen.findByTestId<HTMLButtonElement>("zoom-in");
+    const zoomOutButton = await screen.findByTestId<HTMLButtonElement>("zoom-out");
 
     let oldZoom: number | undefined = map.olMap.getView().getZoom();
     let newZoom: number | undefined;

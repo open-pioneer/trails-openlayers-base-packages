@@ -1,14 +1,14 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-import { Box, Button, Tooltip } from "@open-pioneer/chakra-integration";
-import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
+import { Button, Tooltip } from "@open-pioneer/chakra-integration";
 import { useMapModel } from "@open-pioneer/map";
+import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { Extent } from "ol/extent";
 import { useIntl } from "open-pioneer:react-hooks";
-import { FC, ForwardedRef, forwardRef } from "react";
+import { FC, ForwardedRef, RefAttributes, forwardRef } from "react";
 import { FiHome } from "react-icons/fi";
 
-export interface InitialExtentProps extends CommonComponentProps {
+export interface InitialExtentProps extends CommonComponentProps, RefAttributes<HTMLButtonElement> {
     /**
      * The map id.
      */
@@ -20,7 +20,7 @@ export interface InitialExtentProps extends CommonComponentProps {
  */
 export const InitialExtent: FC<InitialExtentProps> = forwardRef(function InitialExtent(
     props: InitialExtentProps,
-    ref: ForwardedRef<HTMLDivElement>
+    ref: ForwardedRef<HTMLButtonElement>
 ) {
     const { mapId } = props;
     const { containerProps } = useCommonComponentProps("initial-extent", props);
@@ -44,17 +44,17 @@ export const InitialExtent: FC<InitialExtentProps> = forwardRef(function Initial
     }
 
     return (
-        <Box ref={ref} {...containerProps}>
-            <Tooltip label={intl.formatMessage({ id: "title" })} placement="auto" openDelay={500}>
-                <Button
-                    className="initial-extent-button"
-                    aria-label={intl.formatMessage({ id: "title" })}
-                    leftIcon={<FiHome />}
-                    onClick={setInitExtent}
-                    iconSpacing={0}
-                    padding={0}
-                />
-            </Tooltip>
-        </Box>
+        <Tooltip label={intl.formatMessage({ id: "title" })} placement="auto" openDelay={500}>
+            <Button
+                className="initial-extent-button"
+                ref={ref}
+                aria-label={intl.formatMessage({ id: "title" })}
+                leftIcon={<FiHome />}
+                onClick={setInitExtent}
+                iconSpacing={0}
+                padding={0}
+                {...containerProps}
+            />
+        </Tooltip>
     );
 });

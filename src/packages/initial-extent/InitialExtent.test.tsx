@@ -24,12 +24,9 @@ it("should successfully create a initial extent component with home button", asy
     await waitForMapMount("map");
 
     //mount InitExtentComponent
-    const { initExtentDiv } = await waitForInitExtentComponent();
-    expect(initExtentDiv).toMatchSnapshot();
-
-    const initExtentBtn = initExtentDiv.querySelectorAll(".initial-extent-button");
-    expect(initExtentBtn.length).toBe(1);
-    expect(initExtentBtn[0]).toBeInstanceOf(HTMLButtonElement);
+    const initExtentBtn = await screen.findByTestId("initial-extent");
+    expect(initExtentBtn).toBeInstanceOf(HTMLButtonElement);
+    expect(initExtentBtn).toMatchSnapshot();
 });
 
 it("should successfully create a initial extent component with additional css classes", async () => {
@@ -50,12 +47,12 @@ it("should successfully create a initial extent component with additional css cl
     await waitForMapMount("map");
 
     //mount InitExtentComponent
-    const { initExtentDiv } = await waitForInitExtentComponent();
-    expect(initExtentDiv).toMatchSnapshot();
+    const initialExtentButton = await screen.findByTestId("initial-extent");
+    expect(initialExtentButton).toMatchSnapshot();
 
-    expect(initExtentDiv.classList.contains("testClass1")).toBe(true);
-    expect(initExtentDiv.classList.contains("testClass2")).toBe(true);
-    expect(initExtentDiv.classList.contains("testClass3")).toBe(false);
+    expect(initialExtentButton.classList.contains("testClass1")).toBe(true);
+    expect(initialExtentButton.classList.contains("testClass2")).toBe(true);
+    expect(initialExtentButton.classList.contains("testClass3")).toBe(false);
 });
 
 it("should successfully click the home button and go to initial extent", async () => {
@@ -72,17 +69,13 @@ it("should successfully click the home button and go to initial extent", async (
     await waitForMapMount("map");
 
     //mount InitExtentComponent
-    const { initExtentDiv } = await waitForInitExtentComponent();
+    const initialExtentButton = await screen.findByTestId("initial-extent");
 
     const mapModel = await registry.expectMapModel(mapId);
     await mapModel.whenDisplayed();
     if (!mapModel.initialExtent) {
         throw new Error("Initial extent not set");
     }
-
-    const initExtentBtn = initExtentDiv.querySelector(
-        ".initial-extent-button"
-    ) as HTMLButtonElement;
 
     const currentExtent = () => getCurrentExtent(mapModel.olMap);
 
@@ -95,25 +88,13 @@ it("should successfully click the home button and go to initial extent", async (
 
     // Return to initial extent and wait for the animation to complete
     await act(async () => {
-        await user.click(initExtentBtn);
+        await user.click(initialExtentButton);
         await waitForStableExtent(mapModel.olMap);
     });
 
     const nextExtent = currentExtent();
     expect(equals(firstExtent, nextExtent)).toBe(true);
 });
-
-async function waitForInitExtentComponent() {
-    const { initExtentDiv } = await waitFor(async () => {
-        const initExtentDiv = await screen.findByTestId("initial-extent");
-        if (!initExtentDiv) {
-            throw new Error("InitExtentComponent not rendered");
-        }
-
-        return { initExtentDiv };
-    });
-    return { initExtentDiv };
-}
 
 async function waitForStableExtent(olMap: OlMap) {
     let lastExtent: Extent | undefined = undefined;

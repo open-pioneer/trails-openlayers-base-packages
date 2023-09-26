@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-import { Box, Button, Tooltip } from "@open-pioneer/chakra-integration";
+import { Button, Tooltip } from "@open-pioneer/chakra-integration";
 import { useMapModel } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { PackageIntl } from "@open-pioneer/runtime";
@@ -55,10 +55,7 @@ export const Zoom: FC<ZoomProps> = forwardRef(function Zoom(
     const { mapId, zoomDirection } = props;
     const { map } = useMapModel(mapId);
     const intl = useIntl();
-    const { defaultClassName, buttonClassName, buttonLabel, buttonIcon } = getDirectionProps(
-        intl,
-        zoomDirection
-    );
+    const { defaultClassName, buttonLabel, buttonIcon } = getDirectionProps(intl, zoomDirection);
 
     const { containerProps } = useCommonComponentProps(classNames("zoom", defaultClassName), props);
 
@@ -78,19 +75,17 @@ export const Zoom: FC<ZoomProps> = forwardRef(function Zoom(
     }
 
     return (
-        <Box {...containerProps}>
-            <Tooltip label={buttonLabel} placement="auto" openDelay={500}>
-                <Button
-                    ref={ref}
-                    className={buttonClassName}
-                    aria-label={buttonLabel}
-                    leftIcon={buttonIcon}
-                    onClick={zoom}
-                    iconSpacing={0}
-                    padding={0}
-                />
-            </Tooltip>
-        </Box>
+        <Tooltip label={buttonLabel} placement="auto" openDelay={500}>
+            <Button
+                ref={ref}
+                aria-label={buttonLabel}
+                leftIcon={buttonIcon}
+                onClick={zoom}
+                iconSpacing={0}
+                padding={0}
+                {...containerProps}
+            />
+        </Tooltip>
     );
 });
 
@@ -99,14 +94,12 @@ function getDirectionProps(intl: PackageIntl, zoomDirection: "in" | "out") {
         case "in":
             return {
                 defaultClassName: "zoom-in",
-                buttonClassName: "zoom-button zoom-in",
                 buttonLabel: intl.formatMessage({ id: "zoom-in.title" }),
                 buttonIcon: <FiPlus />
             };
         case "out":
             return {
                 defaultClassName: "zoom-out",
-                buttonClassName: "zoom-button zoom-out",
                 buttonLabel: intl.formatMessage({ id: "zoom-out.title" }),
                 buttonIcon: <FiMinus />
             };
