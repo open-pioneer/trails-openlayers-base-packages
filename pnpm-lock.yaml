@@ -43,20 +43,20 @@ importers:
         specifier: ^2.9.0
         version: 2.9.0(typescript@5.1.6)
       '@open-pioneer/chakra-integration':
-        specifier: ^1.0.0
-        version: 1.0.0(@chakra-ui/react@2.8.0)(@emotion/cache@11.11.0)(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(framer-motion@10.16.1)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.1.0
+        version: 1.1.0(@chakra-ui/react@2.8.0)(@emotion/cache@11.11.0)(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(framer-motion@10.16.1)(react-dom@18.2.0)(react@18.2.0)
       '@open-pioneer/core':
-        specifier: ^1.0.1
-        version: 1.0.1
+        specifier: ^1.1.0
+        version: 1.1.0
       '@open-pioneer/integration':
-        specifier: ^1.0.1
-        version: 1.0.1(@open-pioneer/runtime@1.0.1)
+        specifier: ^1.0.3
+        version: 1.0.3(@open-pioneer/runtime@1.1.0)
       '@open-pioneer/runtime':
-        specifier: ^1.0.1
-        version: 1.0.1(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/core@1.0.1)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.1.0
+        version: 1.1.0(@formatjs/intl@2.9.0)(@open-pioneer/base-theme@0.1.0)(@open-pioneer/chakra-integration@1.1.0)(@open-pioneer/core@1.1.0)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
       '@open-pioneer/test-utils':
-        specifier: ^1.0.0
-        version: 1.0.0(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.1)(@testing-library/react@14.0.0)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.0.1
+        version: 1.0.1(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.1.0)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.1)(@testing-library/react@14.0.0)(react-dom@18.2.0)(react@18.2.0)
       framer-motion:
         specifier: ^10.16.0
         version: 10.16.1(react-dom@18.2.0)(react@18.2.0)
@@ -87,7 +87,7 @@ importers:
         version: 1.0.1
       '@open-pioneer/vite-plugin-pioneer':
         specifier: ^1.1.2
-        version: 1.1.2(@open-pioneer/runtime@1.0.1)(sass@1.65.1)(vite@4.4.9)
+        version: 1.1.2(@open-pioneer/runtime@1.1.0)(sass@1.65.1)(vite@4.4.9)
       '@testing-library/dom':
         specifier: ^9.3.1
         version: 9.3.1
@@ -218,11 +218,11 @@ importers:
         specifier: ^11.11.0
         version: 11.11.0(@emotion/react@11.11.1)(@types/react@18.2.20)(react@18.2.0)
       '@open-pioneer/chakra-integration':
-        specifier: ^1.0.0
-        version: 1.0.0(@chakra-ui/react@2.8.0)(@emotion/cache@11.11.0)(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(framer-motion@10.16.1)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.1.0
+        version: 1.1.0(@chakra-ui/react@2.8.0)(@emotion/cache@11.11.0)(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(framer-motion@10.16.1)(react-dom@18.2.0)(react@18.2.0)
       '@open-pioneer/runtime':
-        specifier: ^1.0.1
-        version: 1.0.1(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/core@1.0.1)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.1.0
+        version: 1.1.0(@formatjs/intl@2.9.0)(@open-pioneer/base-theme@0.1.0)(@open-pioneer/chakra-integration@1.1.0)(@open-pioneer/core@1.1.0)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -235,14 +235,14 @@ importers:
   src/experimental-packages/ol-layer-control:
     dependencies:
       '@open-pioneer/chakra-integration':
-        specifier: ^1.0.0
-        version: 1.0.0(@chakra-ui/react@2.8.0)(@emotion/cache@11.11.0)(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(framer-motion@10.16.1)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.1.0
+        version: 1.1.0(@chakra-ui/react@2.8.0)(@emotion/cache@11.11.0)(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(framer-motion@10.16.1)(react-dom@18.2.0)(react@18.2.0)
       '@open-pioneer/map':
         specifier: workspace:^
         version: link:../../packages/map
       '@open-pioneer/runtime':
-        specifier: ^1.0.1
-        version: 1.0.1(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/core@1.0.1)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.1.0
+        version: 1.1.0(@formatjs/intl@2.9.0)(@open-pioneer/base-theme@0.1.0)(@open-pioneer/chakra-integration@1.1.0)(@open-pioneer/core@1.1.0)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
       ol:
         specifier: ^8.1.0
         version: 8.1.0
@@ -257,8 +257,8 @@ importers:
         specifier: workspace:^
         version: link:../../packages/map-test-utils
       '@open-pioneer/test-utils':
-        specifier: ^1.0.0
-        version: 1.0.0(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.1)(@testing-library/react@14.0.0)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.0.1
+        version: 1.0.1(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.1.0)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.1)(@testing-library/react@14.0.0)(react-dom@18.2.0)(react@18.2.0)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -267,11 +267,11 @@ importers:
   src/packages/authentication:
     dependencies:
       '@open-pioneer/core':
-        specifier: ^1.0.1
-        version: 1.0.1
+        specifier: ^1.1.0
+        version: 1.1.0
       '@open-pioneer/runtime':
-        specifier: ^1.0.1
-        version: 1.0.1(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/core@1.0.1)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.1.0
+        version: 1.1.0(@formatjs/intl@2.9.0)(@open-pioneer/base-theme@0.1.0)(@open-pioneer/chakra-integration@1.1.0)(@open-pioneer/core@1.1.0)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -280,8 +280,8 @@ importers:
         version: 17.4.0(react-dom@18.2.0)(react@18.2.0)
     devDependencies:
       '@open-pioneer/test-utils':
-        specifier: ^1.0.0
-        version: 1.0.0(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.1)(@testing-library/react@14.0.0)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.0.1
+        version: 1.0.1(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.1.0)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.1)(@testing-library/react@14.0.0)(react-dom@18.2.0)(react@18.2.0)
       '@testing-library/react':
         specifier: ^14.0.0
         version: 14.0.0(react-dom@18.2.0)(react@18.2.0)
@@ -293,14 +293,14 @@ importers:
   src/packages/basemap-switcher:
     dependencies:
       '@open-pioneer/chakra-integration':
-        specifier: ^1.0.0
-        version: 1.0.0(@chakra-ui/react@2.8.0)(@emotion/cache@11.11.0)(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(framer-motion@10.16.1)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.1.0
+        version: 1.1.0(@chakra-ui/react@2.8.0)(@emotion/cache@11.11.0)(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(framer-motion@10.16.1)(react-dom@18.2.0)(react@18.2.0)
       '@open-pioneer/map':
         specifier: workspace:^
         version: link:../map
       '@open-pioneer/runtime':
-        specifier: ^1.0.1
-        version: 1.0.1(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/core@1.0.1)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.1.0
+        version: 1.1.0(@formatjs/intl@2.9.0)(@open-pioneer/base-theme@0.1.0)(@open-pioneer/chakra-integration@1.1.0)(@open-pioneer/core@1.1.0)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
       classnames:
         specifier: ^2.3.2
         version: 2.3.2
@@ -315,8 +315,8 @@ importers:
         specifier: workspace:^
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
-        specifier: ^1.0.0
-        version: 1.0.0(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.1)(@testing-library/react@14.0.0)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.0.1
+        version: 1.0.1(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.1.0)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.1)(@testing-library/react@14.0.0)(react-dom@18.2.0)(react@18.2.0)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -325,14 +325,14 @@ importers:
   src/packages/coordinate-viewer:
     dependencies:
       '@open-pioneer/chakra-integration':
-        specifier: ^1.0.0
-        version: 1.0.0(@chakra-ui/react@2.8.0)(@emotion/cache@11.11.0)(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(framer-motion@10.16.1)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.1.0
+        version: 1.1.0(@chakra-ui/react@2.8.0)(@emotion/cache@11.11.0)(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(framer-motion@10.16.1)(react-dom@18.2.0)(react@18.2.0)
       '@open-pioneer/map':
         specifier: workspace:^
         version: link:../map
       '@open-pioneer/runtime':
-        specifier: ^1.0.1
-        version: 1.0.1(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/core@1.0.1)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.1.0
+        version: 1.1.0(@formatjs/intl@2.9.0)(@open-pioneer/base-theme@0.1.0)(@open-pioneer/chakra-integration@1.1.0)(@open-pioneer/core@1.1.0)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
       classnames:
         specifier: ^2.3.2
         version: 2.3.2
@@ -347,8 +347,8 @@ importers:
         specifier: workspace:^
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
-        specifier: ^1.0.0
-        version: 1.0.0(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.1)(@testing-library/react@14.0.0)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.0.1
+        version: 1.0.1(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.1.0)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.1)(@testing-library/react@14.0.0)(react-dom@18.2.0)(react@18.2.0)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -357,14 +357,14 @@ importers:
   src/packages/initial-extent:
     dependencies:
       '@open-pioneer/chakra-integration':
-        specifier: ^1.0.0
-        version: 1.0.0(@chakra-ui/react@2.8.0)(@emotion/cache@11.11.0)(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(framer-motion@10.16.1)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.1.0
+        version: 1.1.0(@chakra-ui/react@2.8.0)(@emotion/cache@11.11.0)(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(framer-motion@10.16.1)(react-dom@18.2.0)(react@18.2.0)
       '@open-pioneer/map':
         specifier: workspace:^
         version: link:../map
       '@open-pioneer/runtime':
-        specifier: ^1.0.1
-        version: 1.0.1(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/core@1.0.1)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.1.0
+        version: 1.1.0(@formatjs/intl@2.9.0)(@open-pioneer/base-theme@0.1.0)(@open-pioneer/chakra-integration@1.1.0)(@open-pioneer/core@1.1.0)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
       classnames:
         specifier: ^2.3.2
         version: 2.3.2
@@ -382,8 +382,8 @@ importers:
         specifier: workspace:^
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
-        specifier: ^1.0.0
-        version: 1.0.0(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.1)(@testing-library/react@14.0.0)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.0.1
+        version: 1.0.1(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.1.0)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.1)(@testing-library/react@14.0.0)(react-dom@18.2.0)(react@18.2.0)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -392,14 +392,14 @@ importers:
   src/packages/map:
     dependencies:
       '@open-pioneer/chakra-integration':
-        specifier: ^1.0.0
-        version: 1.0.0(@chakra-ui/react@2.8.0)(@emotion/cache@11.11.0)(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(framer-motion@10.16.1)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.1.0
+        version: 1.1.0(@chakra-ui/react@2.8.0)(@emotion/cache@11.11.0)(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(framer-motion@10.16.1)(react-dom@18.2.0)(react@18.2.0)
       '@open-pioneer/core':
-        specifier: ^1.0.1
-        version: 1.0.1
+        specifier: ^1.1.0
+        version: 1.1.0
       '@open-pioneer/runtime':
-        specifier: ^1.0.1
-        version: 1.0.1(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/core@1.0.1)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.1.0
+        version: 1.1.0(@formatjs/intl@2.9.0)(@open-pioneer/base-theme@0.1.0)(@open-pioneer/chakra-integration@1.1.0)(@open-pioneer/core@1.1.0)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
       '@types/proj4':
         specifier: ^2.5.2
         version: 2.5.2
@@ -442,8 +442,8 @@ importers:
         specifier: workspace:^
         version: link:../map
       '@open-pioneer/test-utils':
-        specifier: ^1.0.0
-        version: 1.0.0(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.1)(@testing-library/react@14.0.0)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.0.1
+        version: 1.0.1(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.1.0)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.1)(@testing-library/react@14.0.0)(react-dom@18.2.0)(react@18.2.0)
       '@testing-library/react':
         specifier: ^14.0.0
         version: 14.0.0(react-dom@18.2.0)(react@18.2.0)
@@ -462,24 +462,24 @@ importers:
         specifier: ^2.1.0
         version: 2.1.0(@chakra-ui/system@2.6.0)(react@18.2.0)
       '@open-pioneer/chakra-integration':
-        specifier: ^1.0.0
-        version: 1.0.0(@chakra-ui/react@2.8.0)(@emotion/cache@11.11.0)(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(framer-motion@10.16.1)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.1.0
+        version: 1.1.0(@chakra-ui/react@2.8.0)(@emotion/cache@11.11.0)(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(framer-motion@10.16.1)(react-dom@18.2.0)(react@18.2.0)
       '@open-pioneer/core':
-        specifier: ^1.0.1
-        version: 1.0.1
+        specifier: ^1.1.0
+        version: 1.1.0
       '@open-pioneer/react-utils':
         specifier: workspace:^
         version: link:../react-utils
       '@open-pioneer/runtime':
-        specifier: ^1.0.1
-        version: 1.0.1(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/core@1.0.1)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.1.0
+        version: 1.1.0(@formatjs/intl@2.9.0)(@open-pioneer/base-theme@0.1.0)(@open-pioneer/chakra-integration@1.1.0)(@open-pioneer/core@1.1.0)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
       react:
         specifier: ^18.2.0
         version: 18.2.0
     devDependencies:
       '@open-pioneer/test-utils':
-        specifier: ^1.0.0
-        version: 1.0.0(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.1)(@testing-library/react@14.0.0)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.0.1
+        version: 1.0.1(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.1.0)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.1)(@testing-library/react@14.0.0)(react-dom@18.2.0)(react@18.2.0)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -488,11 +488,11 @@ importers:
   src/packages/react-utils:
     dependencies:
       '@open-pioneer/chakra-integration':
-        specifier: ^1.0.0
-        version: 1.0.0(@chakra-ui/react@2.8.0)(@emotion/cache@11.11.0)(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(framer-motion@10.16.1)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.1.0
+        version: 1.1.0(@chakra-ui/react@2.8.0)(@emotion/cache@11.11.0)(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(framer-motion@10.16.1)(react-dom@18.2.0)(react@18.2.0)
       '@open-pioneer/core':
-        specifier: ^1.0.1
-        version: 1.0.1
+        specifier: ^1.1.0
+        version: 1.1.0
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -508,14 +508,14 @@ importers:
   src/packages/scale-viewer:
     dependencies:
       '@open-pioneer/chakra-integration':
-        specifier: ^1.0.0
-        version: 1.0.0(@chakra-ui/react@2.8.0)(@emotion/cache@11.11.0)(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(framer-motion@10.16.1)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.1.0
+        version: 1.1.0(@chakra-ui/react@2.8.0)(@emotion/cache@11.11.0)(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(framer-motion@10.16.1)(react-dom@18.2.0)(react@18.2.0)
       '@open-pioneer/map':
         specifier: workspace:^
         version: link:../map
       '@open-pioneer/runtime':
-        specifier: ^1.0.1
-        version: 1.0.1(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/core@1.0.1)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.1.0
+        version: 1.1.0(@formatjs/intl@2.9.0)(@open-pioneer/base-theme@0.1.0)(@open-pioneer/chakra-integration@1.1.0)(@open-pioneer/core@1.1.0)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
       classnames:
         specifier: ^2.3.2
         version: 2.3.2
@@ -527,8 +527,8 @@ importers:
         specifier: workspace:^
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
-        specifier: ^1.0.0
-        version: 1.0.0(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.1)(@testing-library/react@14.0.0)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.0.1
+        version: 1.0.1(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.1.0)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.1)(@testing-library/react@14.0.0)(react-dom@18.2.0)(react@18.2.0)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -540,14 +540,14 @@ importers:
         specifier: workspace:^
         version: link:../basemap-switcher
       '@open-pioneer/chakra-integration':
-        specifier: ^1.0.0
-        version: 1.0.0(@chakra-ui/react@2.8.0)(@emotion/cache@11.11.0)(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(framer-motion@10.16.1)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.1.0
+        version: 1.1.0(@chakra-ui/react@2.8.0)(@emotion/cache@11.11.0)(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(framer-motion@10.16.1)(react-dom@18.2.0)(react@18.2.0)
       '@open-pioneer/map':
         specifier: workspace:^
         version: link:../map
       '@open-pioneer/runtime':
-        specifier: ^1.0.1
-        version: 1.0.1(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/core@1.0.1)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.1.0
+        version: 1.1.0(@formatjs/intl@2.9.0)(@open-pioneer/base-theme@0.1.0)(@open-pioneer/chakra-integration@1.1.0)(@open-pioneer/core@1.1.0)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
       classnames:
         specifier: ^2.3.2
         version: 2.3.2
@@ -559,8 +559,8 @@ importers:
         specifier: workspace:^
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
-        specifier: ^1.0.0
-        version: 1.0.0(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.1)(@testing-library/react@14.0.0)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.0.1
+        version: 1.0.1(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.1.0)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.1)(@testing-library/react@14.0.0)(react-dom@18.2.0)(react@18.2.0)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -572,14 +572,14 @@ importers:
   src/packages/zoom:
     dependencies:
       '@open-pioneer/chakra-integration':
-        specifier: ^1.0.0
-        version: 1.0.0(@chakra-ui/react@2.8.0)(@emotion/cache@11.11.0)(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(framer-motion@10.16.1)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.1.0
+        version: 1.1.0(@chakra-ui/react@2.8.0)(@emotion/cache@11.11.0)(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(framer-motion@10.16.1)(react-dom@18.2.0)(react@18.2.0)
       '@open-pioneer/map':
         specifier: workspace:^
         version: link:../map
       '@open-pioneer/runtime':
-        specifier: ^1.0.1
-        version: 1.0.1(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/core@1.0.1)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.1.0
+        version: 1.1.0(@formatjs/intl@2.9.0)(@open-pioneer/base-theme@0.1.0)(@open-pioneer/chakra-integration@1.1.0)(@open-pioneer/core@1.1.0)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
       classnames:
         specifier: ^2.3.2
         version: 2.3.2
@@ -597,8 +597,8 @@ importers:
         specifier: workspace:^
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
-        specifier: ^1.0.0
-        version: 1.0.0(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.1)(@testing-library/react@14.0.0)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.0.1
+        version: 1.0.1(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.1.0)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.1)(@testing-library/react@14.0.0)(react-dom@18.2.0)(react@18.2.0)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -610,14 +610,14 @@ importers:
         specifier: workspace:^
         version: link:../../../packages/authentication
       '@open-pioneer/chakra-integration':
-        specifier: ^1.0.0
-        version: 1.0.0(@chakra-ui/react@2.8.0)(@emotion/cache@11.11.0)(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(framer-motion@10.16.1)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.1.0
+        version: 1.1.0(@chakra-ui/react@2.8.0)(@emotion/cache@11.11.0)(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(framer-motion@10.16.1)(react-dom@18.2.0)(react@18.2.0)
       '@open-pioneer/core':
-        specifier: ^1.0.1
-        version: 1.0.1
+        specifier: ^1.1.0
+        version: 1.1.0
       '@open-pioneer/runtime':
-        specifier: ^1.0.1
-        version: 1.0.1(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/core@1.0.1)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.1.0
+        version: 1.1.0(@formatjs/intl@2.9.0)(@open-pioneer/base-theme@0.1.0)(@open-pioneer/chakra-integration@1.1.0)(@open-pioneer/core@1.1.0)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -625,8 +625,8 @@ importers:
   src/samples/map-sample/map-sample-logging:
     devDependencies:
       '@open-pioneer/runtime':
-        specifier: ^1.0.1
-        version: 1.0.1(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/core@1.0.1)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.1.0
+        version: 1.1.0(@formatjs/intl@2.9.0)(@open-pioneer/base-theme@0.1.0)(@open-pioneer/chakra-integration@1.1.0)(@open-pioneer/core@1.1.0)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
 
   src/samples/map-sample/map-sample-scale-component:
     dependencies:
@@ -655,8 +655,8 @@ importers:
         specifier: workspace:^
         version: link:../../../packages/basemap-switcher
       '@open-pioneer/chakra-integration':
-        specifier: ^1.0.0
-        version: 1.0.0(@chakra-ui/react@2.8.0)(@emotion/cache@11.11.0)(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(framer-motion@10.16.1)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.1.0
+        version: 1.1.0(@chakra-ui/react@2.8.0)(@emotion/cache@11.11.0)(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(framer-motion@10.16.1)(react-dom@18.2.0)(react@18.2.0)
       '@open-pioneer/coordinate-viewer':
         specifier: workspace:^
         version: link:../../../packages/coordinate-viewer
@@ -673,8 +673,8 @@ importers:
         specifier: workspace:^
         version: link:../../../packages/map
       '@open-pioneer/runtime':
-        specifier: ^1.0.1
-        version: 1.0.1(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/core@1.0.1)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.1.0
+        version: 1.1.0(@formatjs/intl@2.9.0)(@open-pioneer/base-theme@0.1.0)(@open-pioneer/chakra-integration@1.1.0)(@open-pioneer/core@1.1.0)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
       '@open-pioneer/scale-viewer':
         specifier: workspace:^
         version: link:../../../packages/scale-viewer
@@ -709,14 +709,14 @@ importers:
   src/samples/notify-sample/notify-app:
     dependencies:
       '@open-pioneer/chakra-integration':
-        specifier: ^1.0.0
-        version: 1.0.0(@chakra-ui/react@2.8.0)(@emotion/cache@11.11.0)(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(framer-motion@10.16.1)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.1.0
+        version: 1.1.0(@chakra-ui/react@2.8.0)(@emotion/cache@11.11.0)(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(framer-motion@10.16.1)(react-dom@18.2.0)(react@18.2.0)
       '@open-pioneer/notifier':
         specifier: workspace:^
         version: link:../../../packages/notifier
       '@open-pioneer/runtime':
-        specifier: ^1.0.1
-        version: 1.0.1(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/core@1.0.1)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.1.0
+        version: 1.1.0(@formatjs/intl@2.9.0)(@open-pioneer/base-theme@0.1.0)(@open-pioneer/chakra-integration@1.1.0)(@open-pioneer/core@1.1.0)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -727,14 +727,14 @@ importers:
         specifier: workspace:^
         version: link:../../../packages/basemap-switcher
       '@open-pioneer/chakra-integration':
-        specifier: ^1.0.0
-        version: 1.0.0(@chakra-ui/react@2.8.0)(@emotion/cache@11.11.0)(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(framer-motion@10.16.1)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.1.0
+        version: 1.1.0(@chakra-ui/react@2.8.0)(@emotion/cache@11.11.0)(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(framer-motion@10.16.1)(react-dom@18.2.0)(react@18.2.0)
       '@open-pioneer/map':
         specifier: workspace:^
         version: link:../../../packages/map
       '@open-pioneer/runtime':
-        specifier: ^1.0.1
-        version: 1.0.1(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/core@1.0.1)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.1.0
+        version: 1.1.0(@formatjs/intl@2.9.0)(@open-pioneer/base-theme@0.1.0)(@open-pioneer/chakra-integration@1.1.0)(@open-pioneer/core@1.1.0)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -2571,6 +2571,13 @@ packages:
       fastq: 1.15.0
     dev: true
 
+  /@open-pioneer/base-theme@0.1.0(@open-pioneer/chakra-integration@1.1.0):
+    resolution: {integrity: sha512-pNHKjUNHIBzQB3OcHi6RlvnKt6RlQCKtl61p/mX9xA/wLYgtteXcQe0YEJo5SELf/3BEY7nMOgcGwPdP+20aKg==}
+    peerDependencies:
+      '@open-pioneer/chakra-integration': ^1.1.0
+    dependencies:
+      '@open-pioneer/chakra-integration': 1.1.0(@chakra-ui/react@2.8.0)(@emotion/cache@11.11.0)(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(framer-motion@10.16.1)(react-dom@18.2.0)(react@18.2.0)
+
   /@open-pioneer/build-common@1.0.2:
     resolution: {integrity: sha512-lsFoDUyS7liE6oAb7mtOmjE6+gQAPQrO5zSL5XEWo0FjhyteNOYgW8X3zpll/8k365U9B1uWpyLK/Kg0Cbw3Ow==}
     engines: {node: '>= 16'}
@@ -2628,8 +2635,8 @@ packages:
     engines: {node: '>= 16'}
     dev: true
 
-  /@open-pioneer/chakra-integration@1.0.0(@chakra-ui/react@2.8.0)(@emotion/cache@11.11.0)(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(framer-motion@10.16.1)(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-aqpiHi+JfEGQvh+CVXw+FHqID8Q/UwkftzffhpbVNW5lxpKO1qzksMZbiXb2BGCvmvDyXwzAYU5tNyaB53bZ9g==}
+  /@open-pioneer/chakra-integration@1.1.0(@chakra-ui/react@2.8.0)(@emotion/cache@11.11.0)(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(framer-motion@10.16.1)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-d9MsBlldASoiuBZXQ5a6pir8QqIL84/LW0kAFdwwI15x4aGdjBwOvzgCEpbG76h8lu/anozhA5Dj3dRYcuXgww==}
     peerDependencies:
       '@chakra-ui/react': ^2.6.1
       '@emotion/cache': ^11.11.0
@@ -2647,15 +2654,15 @@ packages:
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
 
-  /@open-pioneer/core@1.0.1:
-    resolution: {integrity: sha512-BAJhXBaiklhIQNCmd+esVxb7a37G1rRGT6a4GjxKZCP5lh/8eMhs3HsLt0Qaujlg9oJUv7pMWOTXLRXvXbguSw==}
+  /@open-pioneer/core@1.1.0:
+    resolution: {integrity: sha512-z856f9oojH0nb3vSBp4jsay6YjL9K5g9yKgKfWywkWlfs4Lsw1dw7mEhdooRwbWVXFqQKyFneANqSflEvnVMyw==}
 
-  /@open-pioneer/integration@1.0.1(@open-pioneer/runtime@1.0.1):
-    resolution: {integrity: sha512-07RxS/6Tb08wOuB9GJkt7vSsyLwh45dxEGQF0QUMkPxumiws+VFmcbxHwo2W5NYZToZWP+V7RHnkprk/RCT/Aw==}
+  /@open-pioneer/integration@1.0.3(@open-pioneer/runtime@1.1.0):
+    resolution: {integrity: sha512-f+WSwmLkfCt43nrbiibo581bOC/UZsDmIpXNxBX0rz0WdiQ9J/pqAaTrLVPsrxl5bNV8mrwOeq/crcYe70tW0Q==}
     peerDependencies:
-      '@open-pioneer/runtime': ^1.0.1
+      '@open-pioneer/runtime': ^1.1.0
     dependencies:
-      '@open-pioneer/runtime': 1.0.1(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/core@1.0.1)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
+      '@open-pioneer/runtime': 1.1.0(@formatjs/intl@2.9.0)(@open-pioneer/base-theme@0.1.0)(@open-pioneer/chakra-integration@1.1.0)(@open-pioneer/core@1.1.0)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
     dev: false
 
   /@open-pioneer/runtime-react-support@1.0.0(react@18.2.0):
@@ -2665,19 +2672,21 @@ packages:
     dependencies:
       react: 18.2.0
 
-  /@open-pioneer/runtime@1.0.1(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/core@1.0.1)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-DbogaX9oqXRoCNTU26X7bGN6N5P3AJSGToMuPAz3Wo5szrgMv38rNjavDVjgVkkH8+xchn7PGcL8awWVvqfaAw==}
+  /@open-pioneer/runtime@1.1.0(@formatjs/intl@2.9.0)(@open-pioneer/base-theme@0.1.0)(@open-pioneer/chakra-integration@1.1.0)(@open-pioneer/core@1.1.0)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-yzKZNYBLt8yG5eo1wKWf4/z6etiBJ+29HawT8GMwS2dpO26wnio5X4rymCCoeG2g2s/f3pxIBqD285Bu7kyRXQ==}
     peerDependencies:
       '@formatjs/intl': ^2.7.2
-      '@open-pioneer/chakra-integration': ^1.0.0
-      '@open-pioneer/core': ^1.0.1
+      '@open-pioneer/base-theme': ^0.1.0
+      '@open-pioneer/chakra-integration': ^1.1.0
+      '@open-pioneer/core': ^1.1.0
       '@open-pioneer/runtime-react-support': ^1.0.0
       react: ^18.2.0
       react-dom: ^18.2.0
     dependencies:
       '@formatjs/intl': 2.9.0(typescript@5.1.6)
-      '@open-pioneer/chakra-integration': 1.0.0(@chakra-ui/react@2.8.0)(@emotion/cache@11.11.0)(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(framer-motion@10.16.1)(react-dom@18.2.0)(react@18.2.0)
-      '@open-pioneer/core': 1.0.1
+      '@open-pioneer/base-theme': 0.1.0(@open-pioneer/chakra-integration@1.1.0)
+      '@open-pioneer/chakra-integration': 1.1.0(@chakra-ui/react@2.8.0)(@emotion/cache@11.11.0)(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(framer-motion@10.16.1)(react-dom@18.2.0)(react@18.2.0)
+      '@open-pioneer/core': 1.1.0
       '@open-pioneer/runtime-react-support': 1.0.0(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
@@ -2692,11 +2701,11 @@ packages:
       '@manypkg/get-packages': 2.2.0
     dev: true
 
-  /@open-pioneer/test-utils@1.0.0(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.1)(@testing-library/react@14.0.0)(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-NLKd8WP+CkmtDTaGyUi7AEUOcsz/zCw43BlY6mbUREdRyCKjlkEb2tijm4XPSI7/R36M6yWrllar6EpaXU06Qg==}
+  /@open-pioneer/test-utils@1.0.1(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.1.0)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.1)(@testing-library/react@14.0.0)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-5NikMdH3271DQ0rlLu0uLMb/vo8L6LKD6iJKKmLmhwt9c8U4GAXeA5nOcQPlXWaQEPbpNe1uS6l8oCcupSubcQ==}
     peerDependencies:
       '@formatjs/intl': ^2.7.2
-      '@open-pioneer/chakra-integration': ^1.0.0
+      '@open-pioneer/chakra-integration': ^1.1.0
       '@open-pioneer/runtime-react-support': ^1.0.0
       '@testing-library/dom': ^9.3.0
       '@testing-library/react': ^14.0.0
@@ -2704,14 +2713,14 @@ packages:
       react-dom: ^18.2.0
     dependencies:
       '@formatjs/intl': 2.9.0(typescript@5.1.6)
-      '@open-pioneer/chakra-integration': 1.0.0(@chakra-ui/react@2.8.0)(@emotion/cache@11.11.0)(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(framer-motion@10.16.1)(react-dom@18.2.0)(react@18.2.0)
+      '@open-pioneer/chakra-integration': 1.1.0(@chakra-ui/react@2.8.0)(@emotion/cache@11.11.0)(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(framer-motion@10.16.1)(react-dom@18.2.0)(react@18.2.0)
       '@open-pioneer/runtime-react-support': 1.0.0(react@18.2.0)
       '@testing-library/dom': 9.3.1
       '@testing-library/react': 14.0.0(react-dom@18.2.0)(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
 
-  /@open-pioneer/vite-plugin-pioneer@1.1.2(@open-pioneer/runtime@1.0.1)(sass@1.65.1)(vite@4.4.9):
+  /@open-pioneer/vite-plugin-pioneer@1.1.2(@open-pioneer/runtime@1.1.0)(sass@1.65.1)(vite@4.4.9):
     resolution: {integrity: sha512-5PoXVocOHLbyAtG5oN8da+7LEVReYqXGUU82YvQ2l1I18tyCGlcaYoj67Zk+JPoInmeG2P71LxF0hYRhwMVbfg==}
     engines: {node: '>= 16'}
     peerDependencies:
@@ -2723,7 +2732,7 @@ packages:
       '@babel/template': 7.22.5
       '@babel/types': 7.22.5
       '@open-pioneer/build-common': 1.0.2
-      '@open-pioneer/runtime': 1.0.1(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/core@1.0.1)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
+      '@open-pioneer/runtime': 1.1.0(@formatjs/intl@2.9.0)(@open-pioneer/base-theme@0.1.0)(@open-pioneer/chakra-integration@1.1.0)(@open-pioneer/core@1.1.0)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
       debug: 4.3.4
       js-yaml: 4.1.0
       sass: 1.65.1

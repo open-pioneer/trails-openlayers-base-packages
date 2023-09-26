@@ -71,7 +71,7 @@ export default defineConfig(({ mode }) => {
         test: {
             globals: true,
             environment: "happy-dom",
-            setupFiles: ["testing/global-setup.ts"]
+            setupFiles: ["testing/global-setup.ts"],
         }
 
         // disable hot reloading
