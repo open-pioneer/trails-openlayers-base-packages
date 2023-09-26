@@ -8,7 +8,9 @@ Guidelines for React components developed in this repository.
     -   Complex components with many children must also assign classes to those children (e.g. list items, buttons, sections)
 -   Every component receives an extra `className` prop (optional string) that can be customized by the user
     -   The css classes in `className` are simply added to the predefined classes
--   Wrapper components around simple HTML elements use [`forwardRef`](https://react.dev/reference/react/forwardRef) to expose the wrapped DOM element
+-   For components that simply wrap another HTML/Chakra-Element (such as a button):
+    -   Use [`forwardRef`](https://react.dev/reference/react/forwardRef) to make the inner component accessible to the outside. This can be important for being able to call `.focus()`, for example.
+    -   Consider accepting all properties of the wrapped components
 -   Prefer chakra components where available in favor of "plain" HTML elements
     -   otherwise Chakra theming might not be applied
     -   it is good practice to wrap a new React component with a Chakra component (like Box)
