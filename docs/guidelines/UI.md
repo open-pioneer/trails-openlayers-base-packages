@@ -12,9 +12,9 @@ Guidelines for React components developed in this repository.
 -   Prefer chakra components where available in favor of "plain" HTML elements
     -   otherwise Chakra theming might not be applied
     -   it is good practice to wrap a new React component with a Chakra component (like Box)
--   do not use specific colors or font (sizes) in components
+-   Do not use specific colors or font (sizes) in components
     -   see **Theming** below
--   if a new React component requires a value that is not part of the predefined semantic tokens, it must be stated in the documentation of the component
+-   If a new React component requires a value that is not part of the predefined semantic tokens, it must be stated in the documentation of the component
     -   provide a default value in this case; the component must still work if the additional semantic token is missing
 -   Components should be embeddable "anywhere" (with reasonable restrictions)
     -   Individual components do not control their own visibility (e.g. no close button _in general_)
