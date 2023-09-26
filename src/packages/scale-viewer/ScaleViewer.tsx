@@ -4,12 +4,12 @@ import { Box, BoxProps, Text } from "@open-pioneer/chakra-integration";
 import { useMapModel, useScale } from "@open-pioneer/map";
 import classNames from "classnames";
 import { useIntl } from "open-pioneer:react-hooks";
-import { FC, ForwardedRef, RefAttributes, forwardRef } from "react";
+import { FC } from "react";
 
 /**
  * These are special properties for the ScaleViewer.
  */
-export interface ScaleViewerProps extends BoxProps, RefAttributes<HTMLDivElement> {
+export interface ScaleViewerProps extends BoxProps {
     /**
      * The map id.
      */
@@ -21,10 +21,7 @@ export interface ScaleViewerProps extends BoxProps, RefAttributes<HTMLDivElement
     className?: string;
 }
 
-export const ScaleViewer: FC<ScaleViewerProps> = forwardRef(function ScaleViewer(
-    props: ScaleViewerProps,
-    ref: ForwardedRef<HTMLDivElement> | undefined
-) {
+export const ScaleViewer: FC<ScaleViewerProps> = (props) => {
     const { mapId, className, ...rest } = props;
     const { map } = useMapModel(mapId);
     const intl = useIntl();
@@ -32,8 +29,8 @@ export const ScaleViewer: FC<ScaleViewerProps> = forwardRef(function ScaleViewer
     const displayScale = scale ? intl.formatNumber(scale) : undefined;
 
     return (
-        <Box className={classNames("scale-viewer", className)} ref={ref} {...rest}>
+        <Box className={classNames("scale-viewer", className)} {...rest}>
             {displayScale && <Text>1:{displayScale}</Text>}
         </Box>
     );
-});
+};

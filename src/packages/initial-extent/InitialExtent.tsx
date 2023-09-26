@@ -25,7 +25,7 @@ export interface InitialExtentProps extends BoxProps, RefAttributes<HTMLDivEleme
  */
 export const InitialExtent: FC<InitialExtentProps> = forwardRef(function InitialExtent(
     props: InitialExtentProps,
-    ref: ForwardedRef<HTMLDivElement> | undefined
+    ref: ForwardedRef<HTMLDivElement>
 ) {
     const { mapId, className, ...rest } = props;
     const { map } = useMapModel(mapId);

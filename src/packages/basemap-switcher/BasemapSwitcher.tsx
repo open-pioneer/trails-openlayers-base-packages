@@ -4,16 +4,7 @@ import { Box, BoxProps, Select } from "@open-pioneer/chakra-integration";
 import { LayerModel, MapModel, useMapModel } from "@open-pioneer/map";
 import classNames from "classnames";
 import { useIntl } from "open-pioneer:react-hooks";
-import {
-    FC,
-    ForwardedRef,
-    RefAttributes,
-    forwardRef,
-    useCallback,
-    useMemo,
-    useRef,
-    useSyncExternalStore
-} from "react";
+import { FC, RefAttributes, useCallback, useMemo, useRef, useSyncExternalStore } from "react";
 
 /*
     Exported for tests. Feels a bit hacky but should be fine for now.
@@ -59,10 +50,7 @@ export interface BasemapSwitcherProps extends BoxProps, RefAttributes<HTMLDivEle
 /**
  * The `BasemapSwitcher` component can be used in an app to switch between the different basemaps.
  */
-export const BasemapSwitcher: FC<BasemapSwitcherProps> = forwardRef(function BasemapSwitcher(
-    props: BasemapSwitcherProps,
-    ref: ForwardedRef<HTMLDivElement> | undefined
-) {
+export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
     const intl = useIntl();
     const { mapId, className, allowSelectingEmptyBasemap, ...rest } = props;
     const emptyBasemapLabel = intl.formatMessage({ id: "emptyBasemapLabel" });
@@ -78,7 +66,7 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = forwardRef(function Bas
     };
 
     return (
-        <Box className={classNames("basemap-switcher", className)} ref={ref} {...rest}>
+        <Box className={classNames("basemap-switcher", className)} {...rest}>
             {map ? (
                 <Select
                     className="basemap-switcher-select"
@@ -96,7 +84,7 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = forwardRef(function Bas
             )}
         </Box>
     );
-});
+};
 
 function useBaseLayers(mapModel: MapModel | undefined): LayerModel[] {
     // Caches potentially expensive layers arrays.

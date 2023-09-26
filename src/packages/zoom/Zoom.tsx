@@ -15,9 +15,9 @@ export type ZoomInProps = Omit<ZoomProps, "zoomDirection">;
  *
  * This component composes {@link Zoom}.
  */
-export const ZoomIn: FC<ZoomInProps> = (props) => {
-    return <Zoom zoomDirection="in" {...props} />;
-};
+export const ZoomIn: FC<ZoomInProps> = forwardRef(function ZoomIn(props, ref) {
+    return <Zoom zoomDirection="in" ref={ref} {...props} />;
+});
 
 export type ZoomOutProps = ZoomInProps;
 
@@ -26,11 +26,11 @@ export type ZoomOutProps = ZoomInProps;
  *
  * This component composes {@link Zoom}.
  */
-export const ZoomOut: FC<ZoomOutProps> = (props) => {
-    return <Zoom zoomDirection="out" {...props} />;
-};
+export const ZoomOut: FC<ZoomOutProps> = forwardRef(function ZoomOut(props, ref) {
+    return <Zoom zoomDirection="out" ref={ref} {...props} />;
+});
 
-export interface ZoomProps extends BoxProps, RefAttributes<HTMLDivElement> {
+export interface ZoomProps extends BoxProps, RefAttributes<HTMLButtonElement> {
     /**
      * The map id.
      */
@@ -54,7 +54,7 @@ export interface ZoomProps extends BoxProps, RefAttributes<HTMLDivElement> {
  */
 export const Zoom: FC<ZoomProps> = forwardRef(function Zoom(
     props: ZoomProps,
-    ref: ForwardedRef<HTMLDivElement> | undefined
+    ref: ForwardedRef<HTMLButtonElement>
 ) {
     const { mapId, className, zoomDirection, ...rest } = props;
     const { map } = useMapModel(mapId);
@@ -80,9 +80,10 @@ export const Zoom: FC<ZoomProps> = forwardRef(function Zoom(
     }
 
     return (
-        <Box className={classNames("zoom", defaultClassName, className)} ref={ref} {...rest}>
+        <Box className={classNames("zoom", defaultClassName, className)} {...rest}>
             <Tooltip label={buttonLabel} placement="auto" openDelay={500}>
                 <Button
+                    ref={ref}
                     className={buttonClassName}
                     aria-label={buttonLabel}
                     leftIcon={buttonIcon}

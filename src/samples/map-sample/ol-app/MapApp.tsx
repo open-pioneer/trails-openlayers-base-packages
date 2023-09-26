@@ -8,13 +8,13 @@ import { LayerControlComponent } from "@open-pioneer/experimental-ol-layer-contr
 import { InitialExtent } from "@open-pioneer/initial-extent";
 import { MapAnchor, MapContainer, MapPadding, useMapModel } from "@open-pioneer/map";
 import { ScaleViewer } from "@open-pioneer/scale-viewer";
+import { Toc } from "@open-pioneer/toc";
+import { ZoomIn, ZoomOut } from "@open-pioneer/zoom";
 import { ScaleComponent } from "map-sample-scale-component";
 import { useIntl } from "open-pioneer:react-hooks";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { FiCodesandbox, FiLayers } from "react-icons/fi";
 import { MAP_ID } from "./MapConfigProviderImpl";
-import { ZoomIn, ZoomOut } from "@open-pioneer/zoom";
-import { Toc } from "@open-pioneer/toc";
 
 const berlin = [796987, 5827477, 796987, 5827477];
 
@@ -47,10 +47,6 @@ export function MapApp() {
         }
     ];
 
-    const scaleViewerRef = useRef<HTMLDivElement>(null);
-    const coordinateViewerRef = useRef<HTMLDivElement>(null);
-    const basemapSwitcherRef = useRef<HTMLDivElement>(null);
-
     return (
         <Flex height="100%" direction="column" overflow="hidden">
             <Box textAlign="center" py={1} px={1}>
@@ -75,11 +71,7 @@ export function MapApp() {
                                 <FormLabel ps={1}>
                                     <Text as="b">{intl.formatMessage({ id: "basemapLabel" })}</Text>
                                 </FormLabel>
-                                <BasemapSwitcher
-                                    ref={basemapSwitcherRef}
-                                    allowSelectingEmptyBasemap
-                                    mapId={MAP_ID}
-                                />
+                                <BasemapSwitcher allowSelectingEmptyBasemap mapId={MAP_ID} />
                             </FormControl>
                         </Box>
                         <Box backgroundColor="whiteAlpha.800" marginTop={10}>
@@ -107,7 +99,7 @@ export function MapApp() {
                             boxShadow="lg"
                             backgroundColor="whiteAlpha.800"
                         >
-                            <ScaleViewer mapId={MAP_ID} ref={scaleViewerRef} />
+                            <ScaleViewer mapId={MAP_ID} className="my-class" />
                             <ScaleComponent mapId={MAP_ID} />
                         </Flex>
                     </MapAnchor>
@@ -121,7 +113,7 @@ export function MapApp() {
                 />
             </Flex>
             <Flex gap={3} alignItems="center" justifyContent="center">
-                <CoordinateViewer mapId={MAP_ID} ref={coordinateViewerRef} precision={2} />
+                <CoordinateViewer mapId={MAP_ID} precision={2} />
                 <ScaleComponent mapId={MAP_ID} />
             </Flex>
         </Flex>

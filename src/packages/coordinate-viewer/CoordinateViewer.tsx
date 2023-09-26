@@ -1,23 +1,22 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
 import { Box, BoxProps, Text } from "@open-pioneer/chakra-integration";
-import { useMapModel } from "@open-pioneer/map";
+import { useMapModel, useProjection } from "@open-pioneer/map";
+import { PackageIntl } from "@open-pioneer/runtime";
 import classNames from "classnames";
 import OlMap from "ol/Map";
 import { unByKey } from "ol/Observable";
 import { Coordinate } from "ol/coordinate";
 import { EventsKey } from "ol/events";
-import { FC, ForwardedRef, RefAttributes, forwardRef, useEffect, useState } from "react";
-import { useProjection } from "@open-pioneer/map";
-import { PackageIntl } from "@open-pioneer/runtime";
 import { useIntl } from "open-pioneer:react-hooks";
+import { FC, ForwardedRef, useEffect, useState } from "react";
 
 const DEFAULT_PRECISION = 4;
 
 /**
  * These are special properties for the CoordinateViewer.
  */
-export interface CoordinateViewerProps extends BoxProps, RefAttributes<HTMLDivElement> {
+export interface CoordinateViewerProps extends BoxProps {
     /**
      * The id of the map.
      */
@@ -37,10 +36,7 @@ export interface CoordinateViewerProps extends BoxProps, RefAttributes<HTMLDivEl
 /**
  * The `CoordinateViewer`component can be used in an app to render the coordinates at the current mouse position.
  */
-export const CoordinateViewer: FC<CoordinateViewerProps> = forwardRef(function CoordinateViewer(
-    props: CoordinateViewerProps,
-    ref: ForwardedRef<HTMLDivElement> | undefined
-) {
+export const CoordinateViewer: FC<CoordinateViewerProps> = (props) => {
     const { mapId, className, precision, ...rest } = props;
     const { map } = useMapModel(mapId);
     const olMap = map?.olMap;
@@ -50,11 +46,11 @@ export const CoordinateViewer: FC<CoordinateViewerProps> = forwardRef(function C
     const projectionCode = useProjection(olMap)?.getCode() ?? "";
     const displayString = coordinatesString ? coordinatesString + " " + projectionCode : "";
     return (
-        <Box className={classNames("coordinate-viewer", className)} ref={ref} {...rest}>
+        <Box className={classNames("coordinate-viewer", className)} {...rest}>
             <Text className="coordinate-viewer-text">{displayString}</Text>
         </Box>
     );
-});
+};
 
 /* Separate function for easier testing */
 export function useCoordinatesString(
