@@ -7,9 +7,9 @@
         "build": "build-pioneer-package"
     },
     "peerDependencies": {
-        "@open-pioneer/chakra-integration": "^1.0.0",
-        "@open-pioneer/core": "^1.0.1",
-        "@open-pioneer/runtime": "^1.0.1",
+        "@open-pioneer/chakra-integration": "^1.1.0",
+        "@open-pioneer/core": "^1.1.0",
+        "@open-pioneer/runtime": "^1.1.0",
         "@types/proj4": "^2.5.2",
         "ol": "^8.1.0",
         "proj4": "^2.9.0",
