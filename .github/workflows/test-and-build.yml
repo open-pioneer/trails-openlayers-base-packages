@@ -51,6 +51,7 @@ jobs:
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
+        if: false
         with:
           name: build
           path: dist/
@@ -65,7 +66,7 @@ jobs:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
   deploy:
-    if: github.ref == 'refs/heads/main'
+    if: false && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     needs: test
