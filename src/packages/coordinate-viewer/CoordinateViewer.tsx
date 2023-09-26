@@ -9,7 +9,7 @@ import { unByKey } from "ol/Observable";
 import { Coordinate } from "ol/coordinate";
 import { EventsKey } from "ol/events";
 import { useIntl } from "open-pioneer:react-hooks";
-import { FC, ForwardedRef, useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 
 const DEFAULT_PRECISION = 4;
 
