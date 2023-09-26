@@ -44,7 +44,7 @@ exports[`should successfully create a basemap switcher component 1`] = `
 
 exports[`should successfully create a basemap switcher component with additional css classes and box properties 1`] = `
 <div
-  class="basemap-switcher test css-sz63p1"
+  class="basemap-switcher test css-0"
   data-testid="switcher"
   data-theme="light"
 >

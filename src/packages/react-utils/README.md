@@ -43,6 +43,39 @@ For more details, see the API documentation.
 
 ## Hooks
 
+### useCommonComponentProps()
+
+A helper hook that automatically computes `containerProps`: common properties to set on the topmost container element of a public component.
+
+For the time being, these properties are `className` (combined component class and optional additional class names) and `data-testid` (for tests).
+
+Example:
+
+```tsx
+// SPDX-FileCopyrightText: con terra GmbH and contributors
+// SPDX-License-Identifier: Apache-2.0
+import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
+// ...
+
+// Inherit from CommonComponentProps
+export interface InitialExtentProps extends CommonComponentProps {
+    mapId: string;
+}
+
+export const InitialExtent: FC<InitialExtentProps> = forwardRef(function InitialExtent(
+    props: InitialExtentProps,
+    ref: ForwardedRef<HTMLDivElement>
+) {
+    const { mapId } = props;
+
+    // Use the hook to compute container props (classNames, data-testid, maybe more in the future)
+    const { containerProps } = useCommonComponentProps("initial-extent", props);
+
+    // Pass containerProps directly to the container
+    return <Box {...containerProps}>{/* ... */}</Box>;
+});
+```
+
 ### useEvent()
 
 The `useEvent` can be used to obtain a stable event handler function with changing implementation.

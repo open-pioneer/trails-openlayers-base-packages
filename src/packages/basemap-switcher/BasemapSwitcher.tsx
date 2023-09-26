@@ -1,10 +1,10 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-import { Box, BoxProps, Select } from "@open-pioneer/chakra-integration";
+import { Box, Select } from "@open-pioneer/chakra-integration";
 import { LayerModel, MapModel, useMapModel } from "@open-pioneer/map";
-import classNames from "classnames";
 import { useIntl } from "open-pioneer:react-hooks";
-import { FC, RefAttributes, useCallback, useMemo, useRef, useSyncExternalStore } from "react";
+import { FC, useCallback, useMemo, useRef, useSyncExternalStore } from "react";
+import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 
 /*
     Exported for tests. Feels a bit hacky but should be fine for now.
@@ -29,7 +29,7 @@ interface SelectOption {
 /**
  * These are special properties for the BasemapSwitcher.
  */
-export interface BasemapSwitcherProps extends BoxProps, RefAttributes<HTMLDivElement> {
+export interface BasemapSwitcherProps extends CommonComponentProps {
     /**
      * The id of the map.
      */
@@ -52,7 +52,8 @@ export interface BasemapSwitcherProps extends BoxProps, RefAttributes<HTMLDivEle
  */
 export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
     const intl = useIntl();
-    const { mapId, className, allowSelectingEmptyBasemap, ...rest } = props;
+    const { mapId, allowSelectingEmptyBasemap } = props;
+    const { containerProps } = useCommonComponentProps("basemap-switcher", props);
     const emptyBasemapLabel = intl.formatMessage({ id: "emptyBasemapLabel" });
 
     const { map } = useMapModel(mapId);
@@ -66,7 +67,7 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
     };
 
     return (
-        <Box className={classNames("basemap-switcher", className)} {...rest}>
+        <Box {...containerProps}>
             {map ? (
                 <Select
                     className="basemap-switcher-select"

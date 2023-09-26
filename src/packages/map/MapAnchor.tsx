@@ -1,24 +1,22 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
 import { Box, StyleProps } from "@open-pioneer/chakra-integration";
-import classNames from "classnames";
+import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { ReactNode } from "react";
 import { createPortal } from "react-dom";
-import { useMapContext } from "./MapContext";
 import { MapPadding } from "./MapContainer";
+import { useMapContext } from "./MapContext";
 
 export type MapAnchorPosition = "top-left" | "top-right" | "bottom-left" | "bottom-right";
 
 const defaultPosition: MapAnchorPosition = "top-right";
 
-export interface MapAnchorProps {
+export interface MapAnchorProps extends CommonComponentProps {
     /**
      * The position of the anchor container above the map.
      * @default "top-right"
      */
     position?: MapAnchorPosition;
-    className?: string | undefined;
-    children?: ReactNode;
     /**
      * Horizontal gap in pixel applied to anchor container.
      *
@@ -39,16 +37,19 @@ export interface MapAnchorProps {
      * @default 0 (If position `bottom-*`, default verticalGap == `30`)
      */
     verticalGap?: number;
+
+    children?: ReactNode;
 }
 
 export function MapAnchor(props: MapAnchorProps): JSX.Element {
-    const { position = defaultPosition, className, children, horizontalGap, verticalGap } = props;
+    const { position = defaultPosition, children, horizontalGap, verticalGap } = props;
+    const { containerProps } = useCommonComponentProps("map-anchor", props);
     const { map, padding } = useMapContext();
     const overlayContainer = map.getOverlayContainerStopEvent();
 
     return createPortal(
         <Box
-            className={classNames("map-anchor", className)}
+            {...containerProps}
             /* Overlay container uses pointer-events: none, this restores interactivity */
             pointerEvents="auto"
             /* Restore user-select: none set by ol-viewport parent */

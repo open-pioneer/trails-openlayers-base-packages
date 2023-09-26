@@ -16,14 +16,12 @@ it("should successfully create a initial extent component with home button", asy
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
-            <div data-testid="base">
-                <MapContainer mapId={mapId} />
-                <InitialExtent mapId={mapId}></InitialExtent>
-            </div>
+            <MapContainer mapId={mapId} data-testid="map" />
+            <InitialExtent mapId={mapId} data-testid="initial-extent" />
         </PackageContextProvider>
     );
 
-    await waitForMapMount();
+    await waitForMapMount("map");
 
     //mount InitExtentComponent
     const { initExtentDiv } = await waitForInitExtentComponent();
@@ -40,14 +38,16 @@ it("should successfully create a initial extent component with additional css cl
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
-            <div data-testid="base">
-                <MapContainer mapId={mapId} />
-                <InitialExtent mapId={mapId} className="testClass1 testClass2"></InitialExtent>
-            </div>
+            <MapContainer mapId={mapId} data-testid="map" />
+            <InitialExtent
+                mapId={mapId}
+                className="testClass1 testClass2"
+                data-testid="initial-extent"
+            />
         </PackageContextProvider>
     );
 
-    await waitForMapMount();
+    await waitForMapMount("map");
 
     //mount InitExtentComponent
     const { initExtentDiv } = await waitForInitExtentComponent();
@@ -65,12 +65,8 @@ it("should successfully click the home button and go to initial extent", async (
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
-            <div data-testid="map" style={{ height: "500px", width: "500px" }}>
-                <MapContainer mapId={mapId} />
-            </div>
-            <div data-testid="base">
-                <InitialExtent mapId={mapId}></InitialExtent>
-            </div>
+            <MapContainer mapId={mapId} data-testid="map" />
+            <InitialExtent mapId={mapId} data-testid="initial-extent"></InitialExtent>
         </PackageContextProvider>
     );
     await waitForMapMount("map");
@@ -108,16 +104,15 @@ it("should successfully click the home button and go to initial extent", async (
 });
 
 async function waitForInitExtentComponent() {
-    const { domElement, initExtentDiv } = await waitFor(async () => {
-        const domElement = await screen.findByTestId("base");
-        const initExtentDiv = domElement.querySelector(".initial-extent");
+    const { initExtentDiv } = await waitFor(async () => {
+        const initExtentDiv = await screen.findByTestId("initial-extent");
         if (!initExtentDiv) {
             throw new Error("InitExtentComponent not rendered");
         }
 
-        return { domElement, initExtentDiv };
+        return { initExtentDiv };
     });
-    return { domElement, initExtentDiv };
+    return { initExtentDiv };
 }
 
 async function waitForStableExtent(olMap: OlMap) {

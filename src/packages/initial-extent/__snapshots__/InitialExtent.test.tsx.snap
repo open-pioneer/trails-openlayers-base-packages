@@ -3,6 +3,7 @@
 exports[`should successfully create a initial extent component with additional css classes 1`] = `
 <div
   class="initial-extent testClass1 testClass2 css-0"
+  data-testid="initial-extent"
   data-theme="light"
 >
   <button
@@ -43,6 +44,7 @@ exports[`should successfully create a initial extent component with additional c
 exports[`should successfully create a initial extent component with home button 1`] = `
 <div
   class="initial-extent css-0"
+  data-testid="initial-extent"
   data-theme="light"
 >
   <button

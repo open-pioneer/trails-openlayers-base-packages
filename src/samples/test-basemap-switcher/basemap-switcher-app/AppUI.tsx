@@ -20,8 +20,6 @@ import { useRef } from "react";
 import { MAP_ID } from "./MapConfigProviderImpl";
 
 export function AppUI() {
-    const basemapSwitcherRef = useRef<HTMLDivElement>(null);
-
     const intl = useIntl();
 
     return (
@@ -45,7 +43,6 @@ export function AppUI() {
                                     <Text as="b">{intl.formatMessage({ id: "basemapLabel" })}</Text>
                                 </FormLabel>
                                 <BasemapSwitcher
-                                    ref={basemapSwitcherRef}
                                     allowSelectingEmptyBasemap
                                     mapId={MAP_ID}
                                 ></BasemapSwitcher>

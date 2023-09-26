@@ -1,7 +1,8 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-import { Box, BoxProps, Button, Tooltip } from "@open-pioneer/chakra-integration";
+import { Box, Button, Tooltip } from "@open-pioneer/chakra-integration";
 import { useMapModel } from "@open-pioneer/map";
+import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { PackageIntl } from "@open-pioneer/runtime";
 import classNames from "classnames";
 import { useIntl } from "open-pioneer:react-hooks";
@@ -30,16 +31,11 @@ export const ZoomOut: FC<ZoomOutProps> = forwardRef(function ZoomOut(props, ref)
     return <Zoom zoomDirection="out" ref={ref} {...props} />;
 });
 
-export interface ZoomProps extends BoxProps, RefAttributes<HTMLButtonElement> {
+export interface ZoomProps extends CommonComponentProps, RefAttributes<HTMLButtonElement> {
     /**
      * The map id.
      */
     mapId: string;
-
-    /**
-     * Additional class name(s).
-     */
-    className?: string;
 
     /**
      * The zoom direction.
@@ -56,13 +52,15 @@ export const Zoom: FC<ZoomProps> = forwardRef(function Zoom(
     props: ZoomProps,
     ref: ForwardedRef<HTMLButtonElement>
 ) {
-    const { mapId, className, zoomDirection, ...rest } = props;
+    const { mapId, zoomDirection } = props;
     const { map } = useMapModel(mapId);
     const intl = useIntl();
     const { defaultClassName, buttonClassName, buttonLabel, buttonIcon } = getDirectionProps(
         intl,
         zoomDirection
     );
+
+    const { containerProps } = useCommonComponentProps(classNames("zoom", defaultClassName), props);
 
     function zoom() {
         const view = map?.olMap.getView();
@@ -80,7 +78,7 @@ export const Zoom: FC<ZoomProps> = forwardRef(function Zoom(
     }
 
     return (
-        <Box className={classNames("zoom", defaultClassName, className)} {...rest}>
+        <Box {...containerProps}>
             <Tooltip label={buttonLabel} placement="auto" openDelay={500}>
                 <Button
                     ref={ref}

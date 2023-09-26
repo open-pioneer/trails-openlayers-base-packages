@@ -1,14 +1,13 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-import { chakra } from "@open-pioneer/chakra-integration";
 import { MapContainer } from "@open-pioneer/map";
+import { createServiceOptions, setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { act, render, renderHook, screen, waitFor } from "@testing-library/react";
 import View from "ol/View";
 import BaseEvent from "ol/events/Event";
 import { expect, it } from "vitest";
 import { CoordinateViewer, useCoordinatesString } from "./CoordinateViewer";
-import { createServiceOptions, setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
 
 it("should successfully create a coordinate viewer component", async () => {
     const { mapId, registry } = await setupMap();
@@ -16,9 +15,7 @@ it("should successfully create a coordinate viewer component", async () => {
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
-            <div data-testid="base">
-                <CoordinateViewer mapId={mapId}></CoordinateViewer>
-            </div>
+            <CoordinateViewer mapId={mapId} data-testid="coordinate-viewer" />
         </PackageContextProvider>
     );
 
@@ -30,15 +27,13 @@ it("should successfully create a coordinate viewer component", async () => {
     expect(viewerDiv).toBeInstanceOf(HTMLDivElement);
 });
 
-it("should successfully create a coordinate viewer component with additional css classes and box properties", async () => {
+it("should successfully create a coordinate viewer component with additional css classes", async () => {
     const { mapId, registry } = await setupMap();
 
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
-            <div data-testid="base">
-                <CoordinateViewer mapId={mapId} className="test" pl="1px"></CoordinateViewer>
-            </div>
+            <CoordinateViewer mapId={mapId} className="test" data-testid="coordinate-viewer" />
         </PackageContextProvider>
     );
 
@@ -49,9 +44,6 @@ it("should successfully create a coordinate viewer component with additional css
     expect(viewerDiv).toBeInstanceOf(HTMLDivElement);
     expect(viewerDiv.classList.contains("test")).toBe(true);
     expect(viewerDiv.classList.contains("foo")).toBe(false);
-
-    const styles = window.getComputedStyle(viewerDiv);
-    expect(styles.paddingLeft).toBe("1px");
 });
 
 it("tracks the user's mouse position", async () => {
@@ -60,12 +52,8 @@ it("tracks the user's mouse position", async () => {
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
-            <chakra.div data-testid="map" height="500px" width="500px">
-                <MapContainer mapId={mapId} />
-            </chakra.div>
-            <div data-testid="base">
-                <CoordinateViewer mapId={mapId} precision={1} />
-            </div>
+            <MapContainer mapId={mapId} data-testid="map" />
+            <CoordinateViewer mapId={mapId} precision={1} data-testid="coordinate-viewer" />
         </PackageContextProvider>
     );
 
@@ -131,12 +119,7 @@ it("should format coordinates to correct coordinate string with default precisio
 
 async function waitForCoordinateViewer() {
     const { viewerDiv, viewerText } = await waitFor(async () => {
-        const domElement = await screen.findByTestId("base");
-
-        const viewerDiv = domElement.querySelector(".coordinate-viewer");
-        if (!viewerDiv) {
-            throw new Error("coordinate viewer not rendered");
-        }
+        const viewerDiv = await screen.findByTestId("coordinate-viewer");
 
         const viewerText = viewerDiv.querySelector(".coordinate-viewer-text");
         if (!viewerText) {

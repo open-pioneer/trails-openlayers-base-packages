@@ -1,21 +1,16 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-import { Box, Text, BoxProps, FormControl, FormLabel } from "@open-pioneer/chakra-integration";
+import { Box, Text, FormControl, FormLabel } from "@open-pioneer/chakra-integration";
 import { FC } from "react";
-import classNames from "classnames";
+import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { BasemapSwitcher, BasemapSwitcherProps } from "@open-pioneer/basemap-switcher";
 import { useIntl } from "open-pioneer:react-hooks";
 
-export interface TocProps extends BoxProps {
+export interface TocProps extends CommonComponentProps {
     /**
      * The id of the map.
      */
     mapId: string;
-
-    /**
-     * Additional css class name(s) that will be added to the Toc component.
-     */
-    className?: string;
 
     /**
      * Defines whether the basemap switcher is shown in the toc.
@@ -33,12 +28,13 @@ export interface TocProps extends BoxProps {
 export const Toc: FC<TocProps> = (props) => {
     const intl = useIntl();
 
-    const { mapId, className, hideBasemapSwitcher = false, basemapSwitcherProps, ...rest } = props;
+    const { mapId, hideBasemapSwitcher = false, basemapSwitcherProps } = props;
+    const { containerProps } = useCommonComponentProps("toc", props);
     const basemapsLabel = intl.formatMessage({ id: "basemapsLabel" });
     const tocTitel = intl.formatMessage({ id: "tocTitel" });
 
     return (
-        <Box className={classNames("toc", className)} {...rest}>
+        <Box {...containerProps}>
             {/*TODO: remove header as it should be added by an app developer if needed? */}
             <Box
                 className="toc-header"

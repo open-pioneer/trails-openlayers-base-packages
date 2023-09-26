@@ -1,9 +1,9 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-import { Box, BoxProps, Text } from "@open-pioneer/chakra-integration";
+import { Box, Text } from "@open-pioneer/chakra-integration";
 import { useMapModel, useProjection } from "@open-pioneer/map";
+import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { PackageIntl } from "@open-pioneer/runtime";
-import classNames from "classnames";
 import OlMap from "ol/Map";
 import { unByKey } from "ol/Observable";
 import { Coordinate } from "ol/coordinate";
@@ -16,7 +16,7 @@ const DEFAULT_PRECISION = 4;
 /**
  * These are special properties for the CoordinateViewer.
  */
-export interface CoordinateViewerProps extends BoxProps {
+export interface CoordinateViewerProps extends CommonComponentProps {
     /**
      * The id of the map.
      */
@@ -26,18 +26,14 @@ export interface CoordinateViewerProps extends BoxProps {
      * Number of decimal places shown for coordinates.
      */
     precision?: number;
-
-    /**
-     * Additional css class name(s) that will be added to the CoordinateViewer component.
-     */
-    className?: string;
 }
 
 /**
  * The `CoordinateViewer`component can be used in an app to render the coordinates at the current mouse position.
  */
 export const CoordinateViewer: FC<CoordinateViewerProps> = (props) => {
-    const { mapId, className, precision, ...rest } = props;
+    const { mapId, precision } = props;
+    const { containerProps } = useCommonComponentProps("coordinate-viewer", props);
     const { map } = useMapModel(mapId);
     const olMap = map?.olMap;
 
@@ -46,7 +42,7 @@ export const CoordinateViewer: FC<CoordinateViewerProps> = (props) => {
     const projectionCode = useProjection(olMap)?.getCode() ?? "";
     const displayString = coordinatesString ? coordinatesString + " " + projectionCode : "";
     return (
-        <Box className={classNames("coordinate-viewer", className)} {...rest}>
+        <Box {...containerProps}>
             <Text className="coordinate-viewer-text">{displayString}</Text>
         </Box>
     );

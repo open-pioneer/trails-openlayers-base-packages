@@ -14,15 +14,13 @@ it("should successfully create a zoom-in and zoom-out buttons", async () => {
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
-            <div data-testid="base">
-                <MapContainer mapId={mapId} />
-                <ZoomIn mapId={mapId} data-testid="zoom-in" />
-                <ZoomOut mapId={mapId} data-testid="zoom-out" />
-            </div>
+            <MapContainer mapId={mapId} data-testid="map" />
+            <ZoomIn mapId={mapId} data-testid="zoom-in" />
+            <ZoomOut mapId={mapId} data-testid="zoom-out" />
         </PackageContextProvider>
     );
 
-    await waitForMapMount();
+    await waitForMapMount("map");
 
     // check zoom buttons are available
     const zoomIn = await screen.findByTestId("zoom-in");
@@ -44,19 +42,17 @@ it("should successfully create a zoom component with additional css classes", as
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
-            <div data-testid="base">
-                <MapContainer mapId={mapId} />
-                <Zoom
-                    data-testid="zoom"
-                    mapId={mapId}
-                    className="testClass1 testClass2"
-                    zoomDirection="in"
-                />
-            </div>
+            <MapContainer mapId={mapId} data-testid="map" />
+            <Zoom
+                data-testid="zoom"
+                mapId={mapId}
+                className="testClass1 testClass2"
+                zoomDirection="in"
+            />
         </PackageContextProvider>
     );
 
-    await waitForMapMount();
+    await waitForMapMount("map");
 
     // zoom is mounted
     const zoomDiv = await screen.findByTestId("zoom");
@@ -74,15 +70,13 @@ it("should zoom in and zoom out when clicked", async () => {
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
-            <div data-testid="base">
-                <MapContainer mapId={mapId} />
-                <ZoomIn data-testid="zoom-in" mapId={mapId} />
-                <ZoomOut data-testid="zoom-out" mapId={mapId} />
-            </div>
+            <MapContainer mapId={mapId} data-testid="map" />
+            <ZoomIn data-testid="zoom-in" mapId={mapId} />
+            <ZoomOut data-testid="zoom-out" mapId={mapId} />
         </PackageContextProvider>
     );
 
-    await waitForMapMount();
+    await waitForMapMount("map");
 
     const zoomIn = await screen.findByTestId("zoom-in");
     const zoomOut = await screen.findByTestId("zoom-out");

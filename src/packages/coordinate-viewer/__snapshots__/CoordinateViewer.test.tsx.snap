@@ -3,6 +3,7 @@
 exports[`should successfully create a coordinate viewer component 1`] = `
 <div
   class="coordinate-viewer css-0"
+  data-testid="coordinate-viewer"
   data-theme="light"
 >
   <p
@@ -12,9 +13,10 @@ exports[`should successfully create a coordinate viewer component 1`] = `
 </div>
 `;
 
-exports[`should successfully create a coordinate viewer component with additional css classes and box properties 1`] = `
+exports[`should successfully create a coordinate viewer component with additional css classes 1`] = `
 <div
-  class="coordinate-viewer test css-sz63p1"
+  class="coordinate-viewer test css-0"
+  data-testid="coordinate-viewer"
   data-theme="light"
 >
   <p

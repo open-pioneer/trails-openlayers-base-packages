@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
 import { Resource, createLogger } from "@open-pioneer/core";
-import classNames from "classnames";
+import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import type OlMap from "ol/Map";
 import { Extent } from "ol/extent";
 import { ReactNode, useEffect, useMemo, useRef } from "react";
@@ -22,7 +22,7 @@ export interface MapPadding {
     bottom?: number;
 }
 
-export interface MapContainerProps {
+export interface MapContainerProps extends CommonComponentProps {
     /** The id of the map to display. */
     mapId: string;
 
@@ -44,11 +44,6 @@ export interface MapContainerProps {
      */
     viewPaddingChangeBehavior?: "none" | "preserve-center" | "preserve-extent";
 
-    /**
-     * Additional class name(s).
-     */
-    className?: string;
-
     children?: ReactNode;
 }
 
@@ -58,7 +53,8 @@ export interface MapContainerProps {
  * There can only be at most one MapContainer for every map.
  */
 export function MapContainer(props: MapContainerProps) {
-    const { mapId, viewPadding, className, ...rest } = props;
+    const { mapId, viewPadding, viewPaddingChangeBehavior, children } = props;
+    const { containerProps } = useCommonComponentProps("map-container", props);
     const mapElement = useRef<HTMLDivElement>(null);
     const modelState = useMapModel(mapId);
     const mapModel = modelState.map;
@@ -95,18 +91,19 @@ export function MapContainer(props: MapContainerProps) {
         }
     }, [viewPadding, mapModel]);
 
-    const mapContainer: React.CSSProperties = {
+    const mapContainerStyle: React.CSSProperties = {
         height: "100%"
     };
-
     return (
-        <div
-            className={classNames("map-container", className)}
-            ref={mapElement}
-            style={mapContainer}
-        >
+        <div {...containerProps} ref={mapElement} style={mapContainerStyle}>
             {mapModel && (
-                <MapContainerReady map={mapModel.olMap} viewPadding={viewPadding} {...rest} />
+                <MapContainerReady
+                    map={mapModel.olMap}
+                    viewPadding={viewPadding}
+                    viewPaddingChangeBehavior={viewPaddingChangeBehavior}
+                >
+                    {children}
+                </MapContainerReady>
             )}
         </div>
     );
