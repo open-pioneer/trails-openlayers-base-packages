@@ -58,6 +58,12 @@ export function MapApp() {
             </Box>
 
             <Flex flex="1" direction="column" position="relative">
+                <Sidebar
+                    defaultExpanded={isExpanded}
+                    expandedChanged={(expanded) => setExpanded(expanded)}
+                    sidebarWidthChanged={(width) => setViewPadding({ left: width })}
+                    items={items}
+                />
                 <MapContainer
                     mapId={MAP_ID}
                     viewPadding={viewPadding}
@@ -112,13 +118,6 @@ export function MapApp() {
                         </Flex>
                     </MapAnchor>
                 </MapContainer>
-
-                <Sidebar
-                    defaultExpanded={isExpanded}
-                    expandedChanged={(expanded) => setExpanded(expanded)}
-                    sidebarWidthChanged={(width) => setViewPadding({ left: width })}
-                    items={items}
-                />
             </Flex>
             <Flex gap={3} alignItems="center" justifyContent="center">
                 <CoordinateViewer mapId={MAP_ID} ref={coordinateViewerRef} precision={2} />
