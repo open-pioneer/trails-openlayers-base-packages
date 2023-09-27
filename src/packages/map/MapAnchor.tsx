@@ -43,9 +43,7 @@ export interface MapAnchorProps {
 
 export function MapAnchor(props: MapAnchorProps): JSX.Element {
     const { position = defaultPosition, className, children, horizontalGap, verticalGap } = props;
-    const { map, padding } = useMapContext();
-    const overlayContainer = map.getOverlayContainerStopEvent();
-
+    const { padding, mapAnchorsHost } = useMapContext();
     return createPortal(
         <Box
             className={classNames("map-anchor", className)}
@@ -57,7 +55,7 @@ export function MapAnchor(props: MapAnchorProps): JSX.Element {
         >
             {children}
         </Box>,
-        overlayContainer
+        mapAnchorsHost
     );
 }
 
