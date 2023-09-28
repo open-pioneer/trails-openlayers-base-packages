@@ -104,6 +104,8 @@ export function MapContainer(props: MapContainerProps) {
             className={classNames("map-container", className)}
             ref={mapElement}
             style={mapContainer}
+            //eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
+            tabIndex={0}
         >
             {mapModel && (
                 <MapContainerReady map={mapModel.olMap} viewPadding={viewPadding} {...rest} />
