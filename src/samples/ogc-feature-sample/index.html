@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Open Layers App Demo</title>
+        <title>OGC-Feature-API-Layer Demo</title>
         <link rel="icon" type="image/x-icon" href="./../../favicon.ico" />
         <style>
             html,
@@ -20,7 +20,7 @@
 
     <body class="full-height">
         <script type="module">
-            import "./ol-app/app.ts";
+            import "./ogc-app/app.ts";
             const body = document.getElementsByTagName("body")[0];
 
             initApp();
@@ -30,7 +30,7 @@
                 const urlParams = new URLSearchParams(queryString);
                 const lang = urlParams.get("lang");
 
-                const app = document.createElement("ol-map-app");
+                const app = document.createElement("ogc-feature-app");
                 app.classList.add("full-height");
                 app.setAttribute("id", "test");
 
