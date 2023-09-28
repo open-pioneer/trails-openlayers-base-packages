@@ -13,4 +13,3 @@ export {
     type UseMapModelRejected
 } from "./useMapModel";
 export { BkgTopPlusOpen, type BkgTopPlusOpenProps } from "./layers/BkgTopPlusOpen";
-export { createVectorSource } from "./layers/OgcFeatureSourceFactory";
