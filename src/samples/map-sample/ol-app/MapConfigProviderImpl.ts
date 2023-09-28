@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-import { createVectorSource, MapConfig, MapConfigProvider } from "@open-pioneer/map";
+import { MapConfig, MapConfigProvider } from "@open-pioneer/map";
+import { createVectorSource } from "@open-pioneer/ogc-feature-api-layer";
 import TileLayer from "ol/layer/Tile";
 import VectorLayer from "ol/layer/Vector";
 import OSM from "ol/source/OSM";
@@ -16,8 +17,8 @@ export class MapConfigProviderImpl implements MapConfigProvider {
         return {
             initialView: {
                 kind: "position",
-                center: { x: 404747, y: 5757920 },
-                zoom: 14
+                center: { x: 404747, y: 5757920 }, //{ x: 366365.2041882158, y: 5705876.216445949}
+                zoom: 14 // 10
             },
             projection: "EPSG:25832",
             layers: [
@@ -29,7 +30,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     layer: new TileLayer({
                         source: createWMTSSource("web")
                     })
-                },
+                } /*
                 {
                     id: "topplus_open_grau",
                     title: "TopPlus Open (Grau)",
@@ -38,7 +39,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     layer: new TileLayer({
                         source: createWMTSSource("web_grau")
                     })
-                },
+                },*/,
                 {
                     id: "test_ogc_katasterbezirk",
                     title: "OGC API Katasterbezirk",
@@ -52,12 +53,12 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                             "Test Katasterbezirk"
                         )
                     })
-                },
+                } /*,
                 {
                     id: "test_ogc_nutzung",
                     title: "OGC API Nutzung",
                     isBaseLayer: false,
-                    visible: true,
+                    visible: false,
                     layer: new VectorLayer({
                         source: createVectorSource(
                             "https://ogc-api.nrw.de/lika/v1",
@@ -71,7 +72,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     id: "test_ogc_nutzung_flurstueck",
                     title: "OGC API Nutzung Flurstück",
                     isBaseLayer: true,
-                    visible: true,
+                    visible: false,
                     layer: new VectorLayer({
                         source: createVectorSource(
                             "https://ogc-api.nrw.de/lika/v1",
@@ -99,7 +100,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     id: "test_ogc_abschnitteaeste",
                     title: "OGC API Abschnitte und Äste",
                     isBaseLayer: true,
-                    visible: true,
+                    visible: false,
                     layer: new VectorLayer({
                         source: createVectorSource(
                             "https://demo.ldproxy.net/strassen",
@@ -113,7 +114,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     id: "test_ogc_ETL",
                     title: "OGC API Electricity Emission Lines",
                     isBaseLayer: true,
-                    visible: true,
+                    visible: false,
                     layer: new VectorLayer({
                         source: createVectorSource(
                             "https://demo.ldproxy.net/zoomstack",
@@ -122,7 +123,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                             "Test Electricity Emission Lines"
                         )
                     })
-                },
+                }*/,
                 {
                     id: "b-1",
                     title: "OSM",

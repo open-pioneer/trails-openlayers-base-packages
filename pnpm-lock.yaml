@@ -485,6 +485,26 @@ importers:
         version: link:../../..
     publishDirectory: dist
 
+  src/packages/ogc-feature-api-layer:
+    dependencies:
+      '@open-pioneer/core':
+        specifier: ^1.1.0
+        version: 1.1.0
+      bluebird:
+        specifier: ^3.7.2
+        version: 3.7.2
+      ol:
+        specifier: ^8.1.0
+        version: 8.1.0
+    devDependencies:
+      '@open-pioneer/map-test-utils':
+        specifier: workspace:^
+        version: link:../map-test-utils
+      '@open-pioneer/test-utils':
+        specifier: ^1.0.0
+        version: 1.0.0(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.1)(@testing-library/react@14.0.0)(react-dom@18.2.0)(react@18.2.0)
+    publishDirectory: dist
+
   src/packages/react-utils:
     dependencies:
       '@open-pioneer/chakra-integration':
@@ -547,7 +567,7 @@ importers:
         version: link:../map
       '@open-pioneer/runtime':
         specifier: ^1.0.1
-        version: 1.0.1(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/core@1.0.1)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
+        version: 1.0.1(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/core@1.1.0)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
       classnames:
         specifier: ^2.3.2
         version: 2.3.2
@@ -672,6 +692,9 @@ importers:
       '@open-pioneer/map':
         specifier: workspace:^
         version: link:../../../packages/map
+      '@open-pioneer/ogc-feature-api-layer':
+        specifier: workspace:^
+        version: link:../../../packages/ogc-feature-api-layer
       '@open-pioneer/runtime':
         specifier: ^1.0.1
         version: 1.0.1(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.0.0)(@open-pioneer/core@1.1.0)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
@@ -3519,6 +3542,10 @@ packages:
     resolution: {integrity: sha512-jDctJ/IVQbZoJykoeHbhXpOlNBqGNcwXJKJog42E5HDPUwQTSdjCHdihjj0DlnheQ7blbT6dHOafNAiS8ooQKA==}
     engines: {node: '>=8'}
     dev: true
+
+  /bluebird@3.7.2:
+    resolution: {integrity: sha512-XpNj6GDQzdfW+r2Wnn7xiSAd7TM3jzkxGXBGTtWKuSXv1xUV+azxAm8jdWZN06QTQk+2N2XB9jRDkvbmQmcRtg==}
+    dev: false
 
   /brace-expansion@1.1.11:
     resolution: {integrity: sha512-iCuPHDFgrHX7H2vEI/5xpz07zSHB00TpugqhmYtVmMO6518mCuRMoOYFldEBl0g187ufozdaHgWKcYFb61qGiA==}
