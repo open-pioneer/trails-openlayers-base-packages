@@ -95,7 +95,13 @@ export function MapContainer(props: MapContainerProps) {
         height: "100%"
     };
     return (
-        <div {...containerProps} ref={mapElement} style={mapContainerStyle}>
+        <div
+            {...containerProps}
+            ref={mapElement}
+            style={mapContainerStyle}
+            //eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
+            tabIndex={0}
+        >
             {mapModel && (
                 <MapContainerReady
                     map={mapModel.olMap}
@@ -149,6 +155,8 @@ function MapContainerReady(
         children
     } = props;
 
+    const mapAnchorsHost = useMapAnchorsHost(map);
+
     const viewPadding = useMemo<Required<MapPadding>>(() => {
         return {
             left: viewPaddingProp?.left ?? 0,
@@ -191,10 +199,35 @@ function MapContainerReady(
     const mapContext = useMemo((): MapContextType => {
         return {
             map,
+            mapAnchorsHost,
             padding: viewPadding
         };
-    }, [map, viewPadding]);
+    }, [map, viewPadding, mapAnchorsHost]);
     return <MapContextProvider value={mapContext}>{children}</MapContextProvider>;
+}
+
+/**
+ * Creates a div to host the map anchors and mounts it as the first child
+ * of the map's overlay container.
+ *
+ * The purpose of this wrapper div is only to ensure the correct tab order:
+ * the map anchors should be focussed before the builtin attribution widget.
+ */
+function useMapAnchorsHost(olMap: OlMap): HTMLDivElement {
+    const div = useRef<HTMLDivElement>();
+    if (!div.current) {
+        div.current = document.createElement("div");
+        div.current.classList.add("map-anchors");
+    }
+
+    useEffect(() => {
+        const child = div.current!;
+        const overlayContainer = olMap.getOverlayContainerStopEvent();
+        overlayContainer.insertBefore(child, overlayContainer.firstChild);
+        return () => child.remove();
+    }, [olMap]);
+
+    return div.current;
 }
 
 /**

@@ -44,9 +44,7 @@ export interface MapAnchorProps extends CommonComponentProps {
 export function MapAnchor(props: MapAnchorProps): JSX.Element {
     const { position = defaultPosition, children, horizontalGap, verticalGap } = props;
     const { containerProps } = useCommonComponentProps("map-anchor", props);
-    const { map, padding } = useMapContext();
-    const overlayContainer = map.getOverlayContainerStopEvent();
-
+    const { padding, mapAnchorsHost } = useMapContext();
     return createPortal(
         <Box
             {...containerProps}
@@ -58,7 +56,7 @@ export function MapAnchor(props: MapAnchorProps): JSX.Element {
         >
             {children}
         </Box>,
-        overlayContainer
+        mapAnchorsHost
     );
 }
 
