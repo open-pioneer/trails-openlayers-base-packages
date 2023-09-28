@@ -55,7 +55,11 @@ export default defineConfig(({ mode }) => {
                 // Apps to distribute as .js files for embedded use cases
                 apps: []
             }),
-            react(),
+            react({
+                // react swc plugin transpiles during development. 
+                // using a recent target allows for better debugging of recent features like private properties (`this.#abc`)
+                devTarget: "es2022"
+            }),
             eslint(),
             visualize &&
                 (visualizer({ gzipSize: true, brotliSize: true, emitFile: true }) as PluginOption)

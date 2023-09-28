@@ -52,7 +52,6 @@
             "ignoreCves": []
         },
         "patchedDependencies": {
-            "@vitejs/plugin-react-swc@3.3.2": "patches/@vitejs__plugin-react-swc@3.3.2.patch",
             "@changesets/assemble-release-plan@5.2.4": "patches/@changesets__assemble-release-plan@5.2.4.patch"
         }
     },
@@ -91,7 +90,7 @@
         "@types/react-dom": "^18.2.7",
         "@typescript-eslint/eslint-plugin": "^6.4.0",
         "@typescript-eslint/parser": "^6.4.0",
-        "@vitejs/plugin-react-swc": "^3.3.2",
+        "@vitejs/plugin-react-swc": "^3.4.0",
         "eslint": "^8.47.0",
         "eslint-config-prettier": "^9.0.0",
         "eslint-import-resolver-typescript": "^3.6.0",
