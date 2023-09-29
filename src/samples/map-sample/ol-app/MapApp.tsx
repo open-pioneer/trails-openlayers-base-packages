@@ -15,6 +15,7 @@ import { FiCodesandbox, FiLayers } from "react-icons/fi";
 import { MAP_ID } from "./MapConfigProviderImpl";
 import { ZoomIn, ZoomOut } from "@open-pioneer/zoom";
 import { Toc } from "@open-pioneer/toc";
+import { SectionHeading, TitledSection } from "@open-pioneer/react-utils/TitledSection";
 
 const berlin = [796987, 5827477, 796987, 5827477];
 
@@ -53,77 +54,99 @@ export function MapApp() {
 
     return (
         <Flex height="100%" direction="column" overflow="hidden">
-            <Box textAlign="center" py={1} px={1}>
-                Open Pioneer - Map sample
-            </Box>
+            <TitledSection
+                title={
+                    <Box textAlign="center" py={1} px={1}>
+                        <SectionHeading size={"md"}>Open Pioneer - Map sample</SectionHeading>
+                    </Box>
+                }
+            >
+                <Flex flex="1" direction="column" position="relative">
+                    <MapContainer
+                        mapId={MAP_ID}
+                        viewPadding={viewPadding}
+                        viewPaddingChangeBehavior="preserve-extent"
+                    >
+                        <MapAnchor position="top-left" horizontalGap={10} verticalGap={10}>
+                            <Box
+                                backgroundColor="whiteAlpha.800"
+                                borderWidth="1px"
+                                borderRadius="lg"
+                                padding={2}
+                                boxShadow="lg"
+                            >
+                                <FormControl>
+                                    <FormLabel ps={1}>
+                                        <Text as="b">
+                                            {intl.formatMessage({ id: "basemapLabel" })}
+                                        </Text>
+                                    </FormLabel>
+                                    <BasemapSwitcher
+                                        ref={basemapSwitcherRef}
+                                        allowSelectingEmptyBasemap
+                                        mapId={MAP_ID}
+                                    />
+                                </FormControl>
+                            </Box>
+                            <TitledSection
+                                title={
+                                    /*todo set appropriate colors*/
+                                    <Box
+                                        marginTop={10}
+                                        className="toc-header"
+                                        padding={2}
+                                        backgroundColor="var(--chakra-colors-blackAlpha-500)"
+                                    >
+                                        <SectionHeading size="md">
+                                            {intl.formatMessage({ id: "tocTitle" })}
+                                        </SectionHeading>
+                                    </Box>
+                                }
+                            >
+                                <Box backgroundColor="whiteAlpha.800">
+                                    <Toc
+                                        mapId={MAP_ID}
+                                        basemapSwitcherProps={{
+                                            allowSelectingEmptyBasemap: true
+                                        }}
+                                    ></Toc>
+                                </Box>
+                            </TitledSection>
+                        </MapAnchor>
+                        <MapAnchor position="bottom-right" horizontalGap={10} verticalGap={30}>
+                            <Flex direction="column" gap={1} padding={1}>
+                                <InitialExtent mapId={MAP_ID} />
+                                <ZoomIn mapId={MAP_ID} />
+                                <ZoomOut mapId={MAP_ID} />
+                            </Flex>
+                        </MapAnchor>
+                        <MapAnchor position="top-right">
+                            <Flex
+                                gap={3}
+                                alignItems="center"
+                                justifyContent="center"
+                                padding={4}
+                                boxShadow="lg"
+                                backgroundColor="whiteAlpha.800"
+                            >
+                                <ScaleViewer mapId={MAP_ID} ref={scaleViewerRef} />
+                                <ScaleComponent mapId={MAP_ID} />
+                            </Flex>
+                        </MapAnchor>
+                    </MapContainer>
 
-            <Flex flex="1" direction="column" position="relative">
-                <MapContainer
-                    mapId={MAP_ID}
-                    viewPadding={viewPadding}
-                    viewPaddingChangeBehavior="preserve-extent"
-                >
-                    <MapAnchor position="top-left" horizontalGap={10} verticalGap={10}>
-                        <Box
-                            backgroundColor="whiteAlpha.800"
-                            borderWidth="1px"
-                            borderRadius="lg"
-                            padding={2}
-                            boxShadow="lg"
-                        >
-                            <FormControl>
-                                <FormLabel ps={1}>
-                                    <Text as="b">{intl.formatMessage({ id: "basemapLabel" })}</Text>
-                                </FormLabel>
-                                <BasemapSwitcher
-                                    ref={basemapSwitcherRef}
-                                    allowSelectingEmptyBasemap
-                                    mapId={MAP_ID}
-                                />
-                            </FormControl>
-                        </Box>
-                        <Box backgroundColor="whiteAlpha.800" marginTop={10}>
-                            <Toc
-                                mapId={MAP_ID}
-                                basemapSwitcherProps={{
-                                    allowSelectingEmptyBasemap: true
-                                }}
-                            ></Toc>
-                        </Box>
-                    </MapAnchor>
-                    <MapAnchor position="bottom-right" horizontalGap={10} verticalGap={30}>
-                        <Flex direction="column" gap={1} padding={1}>
-                            <InitialExtent mapId={MAP_ID} />
-                            <ZoomIn mapId={MAP_ID} />
-                            <ZoomOut mapId={MAP_ID} />
-                        </Flex>
-                    </MapAnchor>
-                    <MapAnchor position="top-right">
-                        <Flex
-                            gap={3}
-                            alignItems="center"
-                            justifyContent="center"
-                            padding={4}
-                            boxShadow="lg"
-                            backgroundColor="whiteAlpha.800"
-                        >
-                            <ScaleViewer mapId={MAP_ID} ref={scaleViewerRef} />
-                            <ScaleComponent mapId={MAP_ID} />
-                        </Flex>
-                    </MapAnchor>
-                </MapContainer>
-
-                <Sidebar
-                    defaultExpanded={isExpanded}
-                    expandedChanged={(expanded) => setExpanded(expanded)}
-                    sidebarWidthChanged={(width) => setViewPadding({ left: width })}
-                    items={items}
-                />
-            </Flex>
-            <Flex gap={3} alignItems="center" justifyContent="center">
-                <CoordinateViewer mapId={MAP_ID} ref={coordinateViewerRef} precision={2} />
-                <ScaleComponent mapId={MAP_ID} />
-            </Flex>
+                    <Sidebar
+                        defaultExpanded={isExpanded}
+                        expandedChanged={(expanded) => setExpanded(expanded)}
+                        sidebarWidthChanged={(width) => setViewPadding({ left: width })}
+                        items={items}
+                    />
+                </Flex>
+                <Flex gap={3} alignItems="center" justifyContent="center">
+                    <CoordinateViewer mapId={MAP_ID} ref={coordinateViewerRef} precision={2} />
+                    <ScaleComponent mapId={MAP_ID} />
+                </Flex>
+            </TitledSection>
         </Flex>
     );
 }

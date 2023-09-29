@@ -5,6 +5,9 @@ import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
 import WMTS from "ol/source/WMTS";
 import WMTSTileGrid from "ol/tilegrid/WMTS";
+import VectorSource from "ol/source/Vector";
+import { GeoJSON } from "ol/format";
+import VectorLayer from "ol/layer/Vector";
 
 export const MAP_ID = "main";
 
@@ -20,6 +23,20 @@ export class MapConfigProviderImpl implements MapConfigProvider {
             },
             projection: "EPSG:25832",
             layers: [
+                {
+                    title: "GeoJSON 1",
+                    visible: true,
+                    layer: new VectorLayer({
+                        source: createGeoJSONSource()
+                    })
+                },
+                {
+                    title: "GeoJSON 2",
+                    visible: true,
+                    layer: new VectorLayer({
+                        source: createGeoJSONSource()
+                    })
+                },
                 {
                     id: "topplus_open",
                     title: "TopPlus Open",
@@ -114,4 +131,14 @@ function createWMTSSource(layer: "web" | "web_grau" | "web_light") {
         style: "default",
         attributions: `Kartendarstellung und Präsentationsgraphiken: © Bundesamt für Kartographie und Geodäsie ${new Date().getFullYear()}, <a href="https://sg.geodatenzentrum.de/web_public/gdz/datenquellen/Datenquellen_TopPlusOpen.html" target="_blank">Datenquellen</a>`
     });
+}
+
+function createGeoJSONSource() {
+    const geojsonSource = new VectorSource({
+        url: "https://geo.sv.rostock.de/download/opendata/haltestellen/haltestellen.json",
+        format: new GeoJSON(), //assign GeoJson parser
+        attributions: "Haltestellen Stadt Rostock, Creative Commons CC Zero License (cc-zero)"
+    });
+
+    return geojsonSource;
 }

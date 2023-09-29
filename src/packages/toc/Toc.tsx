@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { Box, Text, BoxProps, Heading } from "@open-pioneer/chakra-integration";
+import { Box, BoxProps, Heading } from "@open-pioneer/chakra-integration";
 import {
     FC,
     ForwardedRef,
@@ -15,6 +15,7 @@ import classNames from "classnames";
 import { BasemapSwitcher, BasemapSwitcherProps } from "@open-pioneer/basemap-switcher";
 import { useIntl } from "open-pioneer:react-hooks";
 import { LayerModel, MapModel, useMapModel } from "@open-pioneer/map";
+import { SectionHeading, TitledSection } from "@open-pioneer/react-utils/TitledSection";
 
 export interface TocProps extends BoxProps, RefAttributes<HTMLDivElement> {
     /**
@@ -48,7 +49,6 @@ export const Toc: FC<TocProps> = forwardRef(function Toc(
 
     const { mapId, className, hideBasemapSwitcher = false, basemapSwitcherProps, ...rest } = props;
     const basemapsLabel = intl.formatMessage({ id: "basemapsLabel" });
-    const tocTitel = intl.formatMessage({ id: "tocTitel" });
 
     const state = useMapModel(mapId);
 
@@ -66,38 +66,26 @@ export const Toc: FC<TocProps> = forwardRef(function Toc(
     }
 
     return (
+        /**
+         * todo fix tests when done
+         */
         <Box className={classNames("toc", className)} ref={ref} {...rest}>
-            {/*TODO: remove header as it should be added by an app developer if needed? */}
-            <Box
-                className="toc-header"
-                padding={2}
-                backgroundColor="var(--chakra-colors-blackAlpha-500)"
-            >
-                <Text as="b">{tocTitel}</Text>
-            </Box>
             {hideBasemapSwitcher || (
-                /**
-                 *  todo use useId to generate ID
-                 *  todo test is basemapSwitcherProps are applied correctly (even with aria-labelledby)
-                 * todo use TitledSection instead of Heading:
-                 * <TitledSection
-                 *     title={
-                 *         <SectionHeading size="4xl">Heading</SectionHeading>
-                 *     }
-                 * >
-                 *     Content
-                 * </TitledSection>
-                 * todo fix tests when done
-                 */
                 <Box className="toc-basemap-switcher" padding={2}>
-                    <Heading as={"h2"} id={"sljdkf"}>
-                        lsjdfl
-                    </Heading>
-                    <BasemapSwitcher
-                        aria-labelledby={"sljdkf"}
-                        {...basemapSwitcherProps}
-                        mapId={mapId}
-                    ></BasemapSwitcher>
+                    {/*  todo use useId to generate unique ID*/}
+                    <TitledSection
+                        title={
+                            <SectionHeading size={"sm"} id={"sljdkf"} mb={2}>
+                                {basemapsLabel}
+                            </SectionHeading>
+                        }
+                    >
+                        <BasemapSwitcher
+                            aria-labelledby={"sljdkf"}
+                            {...basemapSwitcherProps}
+                            mapId={mapId}
+                        ></BasemapSwitcher>
+                    </TitledSection>
                 </Box>
             )}
             {/*todo use TitledSection instead of Heading: */}
@@ -112,8 +100,9 @@ export const Toc: FC<TocProps> = forwardRef(function Toc(
         const { map } = props;
         const layers = useLayers(map);
 
-        // todo use chakra ListItem with check-box inside (use checkbox label for layer titel)
+        // todo use chakra ListItem with checkbox inside (use checkbox label for layer titel)
         // todo ensure to sync with map model
+        // todo move LayerList oder LayerListItem into separate component
 
         return (
             <div className="layer-list">
