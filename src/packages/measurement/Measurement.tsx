@@ -10,7 +10,7 @@ import {
     Switch,
     Text
 } from "@open-pioneer/chakra-integration";
-import { FC } from "react";
+import { ChangeEvent, FC, useState } from "react";
 import { useIntl } from "open-pioneer:react-hooks";
 import classNames from "classnames";
 import { HStack } from "@chakra-ui/react";
@@ -25,7 +25,19 @@ export const Measurement: FC<MeasurementProps> = (props) => {
     const intl = useIntl();
     const { className, ...rest } = props;
 
+    const [checkedSwitches, setCheckedSwitches] = useState([false, false]);
+
     const label = (id: string) => intl.formatMessage({ id: id });
+
+    function uncheckSwitches() {
+        setCheckedSwitches([false, false]);
+    }
+    function measureDistanceChanged(evt: ChangeEvent<HTMLInputElement>) {
+        setCheckedSwitches([evt.target.checked, false]);
+    }
+    function measureAreaChanged(evt: ChangeEvent<HTMLInputElement>) {
+        setCheckedSwitches([false, evt.target.checked]);
+    }
 
     return (
         <Box className={classNames("measurement", className)} {...rest}>
@@ -42,13 +54,23 @@ export const Measurement: FC<MeasurementProps> = (props) => {
                         <FormLabel htmlFor="measure-distance" mb={1}>
                             {label("measureDistanceLabel")}{" "}
                         </FormLabel>
-                        <Switch id="measure-distance" size="md" />
+                        <Switch
+                            id="measure-distance"
+                            size="md"
+                            isChecked={checkedSwitches[0]}
+                            onChange={measureDistanceChanged}
+                        />
                     </HStack>
                     <HStack>
                         <FormLabel htmlFor="measure-area" mb={1}>
                             {label("measureAreaLabel")}
                         </FormLabel>
-                        <Switch id="measure-area" size="md" />
+                        <Switch
+                            id="measure-area"
+                            size="md"
+                            isChecked={checkedSwitches[1]}
+                            onChange={measureAreaChanged}
+                        />
                     </HStack>
                 </FormControl>
                 <Box>
@@ -56,6 +78,7 @@ export const Measurement: FC<MeasurementProps> = (props) => {
                         padding={2}
                         className="delete-measurement"
                         aria-label={label("deleteMeasurementLabel")}
+                        onClick={uncheckSwitches}
                     >
                         {label("deleteMeasurementLabel")}
                     </Button>
