@@ -5,14 +5,15 @@ import {
     Box,
     BoxProps,
     Button,
+    FormControl,
     FormLabel,
-    Stack,
     Switch,
     Text
 } from "@open-pioneer/chakra-integration";
 import { FC } from "react";
 import { useIntl } from "open-pioneer:react-hooks";
 import classNames from "classnames";
+import { HStack } from "@chakra-ui/react";
 export interface MeasurementProps extends BoxProps {
     /**
      * Additional css class name(s) that will be added to the Measurement component.
@@ -36,29 +37,29 @@ export const Measurement: FC<MeasurementProps> = (props) => {
                 <Text as="b">{label("measurementTitle")}</Text>
             </Box>
             <Box className="measeurement-content" padding={2}>
-                <Stack direction="column">
-                    <Box display="flex" alignItems="center" className="measure-distance">
+                <FormControl mb={4} alignItems="center">
+                    <HStack mb={2}>
                         <FormLabel htmlFor="measure-distance" mb={1}>
                             {label("measureDistanceLabel")}{" "}
                         </FormLabel>
                         <Switch id="measure-distance" size="md" />
-                    </Box>
-                    <Box display="flex" alignItems="center" className="measure-area" mb={3}>
+                    </HStack>
+                    <HStack>
                         <FormLabel htmlFor="measure-area" mb={1}>
                             {label("measureAreaLabel")}
                         </FormLabel>
                         <Switch id="measure-area" size="md" />
-                    </Box>
-                    <Box>
-                        <Button
-                            padding={2}
-                            className="delete-measurement"
-                            aria-label={label("deleteMeasurementLabel")}
-                        >
-                            {label("deleteMeasurementLabel")}
-                        </Button>
-                    </Box>
-                </Stack>
+                    </HStack>
+                </FormControl>
+                <Box>
+                    <Button
+                        padding={2}
+                        className="delete-measurement"
+                        aria-label={label("deleteMeasurementLabel")}
+                    >
+                        {label("deleteMeasurementLabel")}
+                    </Button>
+                </Box>
             </Box>
         </Box>
     );
