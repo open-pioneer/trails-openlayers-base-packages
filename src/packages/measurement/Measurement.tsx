@@ -49,7 +49,7 @@ export const Measurement: FC<MeasurementProps> = (props) => {
             >
                 <Text as="b">{label("measurementTitle")}</Text>
             </Box>
-            <Box className="measeurement-content" padding={2}>
+            <Box className="measurement-content" padding={2}>
                 <FormControl mb={4} alignItems="center">
                     <HStack mb={2}>
                         <FormLabel htmlFor="measure-distance" mb={1}>
@@ -57,6 +57,7 @@ export const Measurement: FC<MeasurementProps> = (props) => {
                         </FormLabel>
                         <Switch
                             id="measure-distance"
+                            className="switch-measurement"
                             size="md"
                             isChecked={checkedSwitches[0]}
                             onChange={measureDistanceChanged}
@@ -68,6 +69,7 @@ export const Measurement: FC<MeasurementProps> = (props) => {
                         </FormLabel>
                         <Switch
                             id="measure-area"
+                            className="switch-measurement"
                             size="md"
                             isChecked={checkedSwitches[1]}
                             onChange={measureAreaChanged}
