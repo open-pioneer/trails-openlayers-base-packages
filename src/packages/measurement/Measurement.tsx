@@ -8,12 +8,13 @@ import {
     FormControl,
     FormLabel,
     Switch,
-    Text
+    Text,
+    HStack
 } from "@open-pioneer/chakra-integration";
 import { ChangeEvent, FC, useState } from "react";
 import { useIntl } from "open-pioneer:react-hooks";
 import classNames from "classnames";
-import { HStack } from "@chakra-ui/react";
+
 export interface MeasurementProps extends BoxProps {
     /**
      * Additional css class name(s) that will be added to the Measurement component.
