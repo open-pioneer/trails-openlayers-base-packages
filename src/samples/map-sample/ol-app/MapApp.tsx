@@ -15,6 +15,7 @@ import { FiCodesandbox, FiLayers } from "react-icons/fi";
 import { MAP_ID } from "./MapConfigProviderImpl";
 import { ZoomIn, ZoomOut } from "@open-pioneer/zoom";
 import { Toc } from "@open-pioneer/toc";
+import { Measurement } from "@open-pioneer/measurement";
 
 const berlin = [796987, 5827477, 796987, 5827477];
 
@@ -95,6 +96,9 @@ export function MapApp() {
                                     allowSelectingEmptyBasemap: true
                                 }}
                             ></Toc>
+                        </Box>
+                        <Box backgroundColor="whiteAlpha.800" marginTop={10}>
+                            <Measurement></Measurement>
                         </Box>
                     </MapAnchor>
                     <MapAnchor position="bottom-right" horizontalGap={10} verticalGap={30}>
