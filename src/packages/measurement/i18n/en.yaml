@@ -1,2 +1,5 @@
 messages:
   measurementTitle: "Measurement tools"
+  measureDistanceLabel: "Measure distance"
+  measureAreaLabel: "Measure area"
+  deleteMeasurementLabel: "Delete measurement"
