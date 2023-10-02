@@ -36,3 +36,9 @@ It is also possible to configure the embedded basemap switcher using the `basema
 ## License
 
 [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0)
+
+---
+
+TODO:
+
+-   document item classes

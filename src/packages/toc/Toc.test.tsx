@@ -14,16 +14,18 @@ it("should successfully create a toc component", async () => {
         layers: [
             {
                 title: "Base layer",
-                id: "1234",
+                id: "base-layer",
                 layer: new TileLayer({}),
                 isBaseLayer: true
             },
             {
                 title: "Layer 1",
+                id: "layer-1",
                 layer: new TileLayer({})
             },
             {
                 title: "Layer 2",
+                id: "layer-2",
                 layer: new TileLayer({})
             }
         ]
@@ -42,7 +44,7 @@ it("should successfully create a toc component", async () => {
     expect(tocDiv).toMatchSnapshot();
 });
 
-it("should successfully create a toc component with additional css classes and box properties", async () => {
+it("should successfully create a toc component with additional css classes", async () => {
     const { mapId, registry } = await setupMap();
     await registry.expectMapModel(mapId);
     const injectedServices = createServiceOptions({ registry });

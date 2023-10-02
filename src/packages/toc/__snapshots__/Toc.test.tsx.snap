@@ -31,7 +31,7 @@ exports[`should successfully create a toc component 1`] = `
           data-theme="light"
         >
           <option
-            value="1234"
+            value="base-layer"
           >
             Base layer
           </option>
@@ -73,7 +73,7 @@ exports[`should successfully create a toc component 1`] = `
       role="list"
     >
       <li
-        class="layer-list-entry css-0"
+        class="layer-list-entry layer-layer-2 css-0"
         data-theme="light"
       >
         <label
@@ -120,7 +120,7 @@ exports[`should successfully create a toc component 1`] = `
         </label>
       </li>
       <li
-        class="layer-list-entry css-0"
+        class="layer-list-entry layer-layer-1 css-0"
         data-theme="light"
       >
         <label

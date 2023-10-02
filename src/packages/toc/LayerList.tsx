@@ -1,9 +1,11 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-import { Checkbox, List, ListItem } from "@open-pioneer/chakra-integration";
+import { Checkbox, List, ListItem, Text } from "@open-pioneer/chakra-integration";
 import { LayerModel, MapModel } from "@open-pioneer/map";
 import LayerGroup from "ol/layer/Group";
 import { useCallback, useRef, useSyncExternalStore } from "react";
+import classNames from "classnames";
+import { useIntl } from "open-pioneer:react-hooks";
 
 /**
  * Lists the (top level) operational layers in the map.
@@ -12,8 +14,17 @@ import { useCallback, useRef, useSyncExternalStore } from "react";
  */
 export function LayerList(props: { map: MapModel }): JSX.Element {
     const { map } = props;
+    const intl = useIntl();
     const layers = useLayers(map);
     const layerItems = layers.map((layer) => <LayerItem key={layer.id} layer={layer} />);
+
+    if (!layerItems.length) {
+        return (
+            <Text className="toc-missing-layers">
+                {intl.formatMessage({ id: "missingLayers" })}
+            </Text>
+        );
+    }
 
     return (
         <List
@@ -27,13 +38,14 @@ export function LayerList(props: { map: MapModel }): JSX.Element {
     );
 }
 
+/** Renders a single layer as a list item. */
 function LayerItem(props: { layer: LayerModel }): JSX.Element {
     const { layer } = props;
     const title = useTitle(layer);
     const { isVisible, setVisible } = useVisibility(layer);
 
     return (
-        <ListItem className="layer-list-entry">
+        <ListItem className={classNames("layer-list-entry", `layer-${slug(layer.id)}`)}>
             <Checkbox isChecked={isVisible} onChange={(event) => setVisible(event.target.checked)}>
                 {title}
             </Checkbox>
@@ -117,4 +129,11 @@ function useLayers(map: MapModel): LayerModel[] {
 
 function canShowOperationalLayer(layerModel: LayerModel) {
     return !(layerModel.olLayer instanceof LayerGroup);
+}
+
+function slug(id: string) {
+    return id
+        .replace(/[^a-z0-9 -]/g, "")
+        .replace(/\s+/g, "-")
+        .replace(/-+/g, "-");
 }
