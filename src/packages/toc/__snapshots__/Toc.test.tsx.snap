@@ -1,25 +1,5 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`should not show the basemap switcher if 'showBasemapSwitcher' configured to false 1`] = `
-<div
-  class="toc css-0"
-  data-testid="toc"
-  data-theme="light"
->
-  <div
-    class="toc-header css-1xd6p1z"
-    data-theme="light"
-  >
-    <b
-      class="chakra-text css-0"
-      data-theme="light"
-    >
-      tocTitel
-    </b>
-  </div>
-</div>
-`;
-
 exports[`should successfully create a toc component 1`] = `
 <div
   class="toc css-0"
@@ -27,163 +7,166 @@ exports[`should successfully create a toc component 1`] = `
   data-theme="light"
 >
   <div
-    class="toc-header css-1xd6p1z"
+    class="toc-basemap-switcher css-1syq16t"
     data-theme="light"
   >
-    <b
-      class="chakra-text css-0"
+    <h1
+      class="chakra-heading css-1mnao0q"
       data-theme="light"
+      id=":r0:"
     >
-      tocTitel
-    </b>
-  </div>
-  <div
-    class="toc-content css-1syq16t"
-    data-theme="light"
-  >
+      basemapsLabel
+    </h1>
     <div
-      class="chakra-form-control css-1kxonj9"
+      class="basemap-switcher css-0"
       data-theme="light"
-      role="group"
     >
-      <label
-        class="chakra-form__label css-xi6b8o"
-        data-theme="light"
-        for="field-:r0:"
-        id="field-:r0:-label"
-      >
-        <b
-          class="chakra-text css-0"
-          data-theme="light"
-        >
-          basemapsLabel
-          :
-        </b>
-      </label>
       <div
-        class="basemap-switcher css-0"
+        class="chakra-select__wrapper css-42b2qy"
         data-theme="light"
       >
-        <div
-          class="chakra-select__wrapper css-42b2qy"
+        <select
+          aria-labelledby=":r0:"
+          class="chakra-select basemap-switcher-select css-161pkch"
           data-theme="light"
         >
-          <select
-            class="chakra-select basemap-switcher-select css-161pkch"
-            data-theme="light"
-            id="field-:r0:"
+          <option
+            value="1234"
           >
-            <option
-              value="___NO_BASEMAP___"
-            >
-              emptyBasemapLabel
-            </option>
-          </select>
-          <div
-            class="chakra-select__icon-wrapper css-iohxn1"
-            data-theme="light"
+            Base layer
+          </option>
+        </select>
+        <div
+          class="chakra-select__icon-wrapper css-iohxn1"
+          data-theme="light"
+        >
+          <svg
+            aria-hidden="true"
+            class="chakra-select__icon"
+            focusable="false"
+            role="presentation"
+            style="width: 1em; height: 1em; color: currentcolor;"
+            viewBox="0 0 24 24"
           >
-            <svg
-              aria-hidden="true"
-              class="chakra-select__icon"
-              focusable="false"
-              role="presentation"
-              style="width: 1em; height: 1em; color: currentcolor;"
-              viewBox="0 0 24 24"
-            >
-              <path
-                d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
-                fill="currentColor"
-              />
-            </svg>
-          </div>
+            <path
+              d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
+              fill="currentColor"
+            />
+          </svg>
         </div>
       </div>
     </div>
   </div>
-</div>
-`;
-
-exports[`should successfully create a toc component with additional css classes and box properties 1`] = `
-<div
-  class="toc test css-0"
-  data-testid="toc"
-  data-theme="light"
->
   <div
-    class="toc-header css-1xd6p1z"
+    class="toc-operational-layers css-1syq16t"
     data-theme="light"
   >
-    <b
-      class="chakra-text css-0"
+    <h1
+      class="chakra-heading css-1mnao0q"
       data-theme="light"
     >
-      tocTitel
-    </b>
-  </div>
-  <div
-    class="toc-content css-1syq16t"
-    data-theme="light"
-  >
-    <div
-      class="chakra-form-control css-1kxonj9"
+      operationalLayerLabel
+    </h1>
+    <ol
+      class="layer-list css-155za0w"
       data-theme="light"
-      role="group"
+      role="list"
     >
-      <label
-        class="chakra-form__label css-xi6b8o"
-        data-theme="light"
-        for="field-:r1:"
-        id="field-:r1:-label"
-      >
-        <b
-          class="chakra-text css-0"
-          data-theme="light"
-        >
-          basemapsLabel
-          :
-        </b>
-      </label>
-      <div
-        class="basemap-switcher css-0"
+      <li
+        class="layer-list-entry css-0"
         data-theme="light"
       >
-        <div
-          class="chakra-select__wrapper css-42b2qy"
+        <label
+          class="chakra-checkbox css-1577qb8"
+          data-checked=""
           data-theme="light"
         >
-          <select
-            class="chakra-select basemap-switcher-select css-161pkch"
-            data-theme="light"
-            id="field-:r1:"
-          >
-            <option
-              value="___NO_BASEMAP___"
-            >
-              emptyBasemapLabel
-            </option>
-          </select>
-          <div
-            class="chakra-select__icon-wrapper css-iohxn1"
+          <input
+            class="chakra-checkbox__input"
+            style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
+            type="checkbox"
+            value=""
+          />
+          <span
+            aria-hidden="true"
+            class="chakra-checkbox__control css-1ydjfm6"
+            data-checked=""
             data-theme="light"
           >
-            <svg
-              aria-hidden="true"
-              class="chakra-select__icon"
-              focusable="false"
-              role="presentation"
-              style="width: 1em; height: 1em; color: currentcolor;"
-              viewBox="0 0 24 24"
+            <div
+              class="css-0"
+              data-theme="light"
+              style="display: flex; align-items: center; justify-content: center; height: 100%;"
             >
-              <path
-                d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
-                fill="currentColor"
-              />
-            </svg>
-          </div>
-        </div>
-      </div>
-    </div>
+              <svg
+                class="css-1ckqq05"
+                data-theme="light"
+                style="fill: none; stroke-width: 2; stroke: currentColor; stroke-dasharray: 16;"
+                viewBox="0 0 12 10"
+              >
+                <polyline
+                  points="1.5 6 4.5 9 10.5 1"
+                />
+              </svg>
+            </div>
+          </span>
+          <span
+            class="chakra-checkbox__label css-6x44c9"
+            data-checked=""
+            data-theme="light"
+          >
+            Layer 2
+          </span>
+        </label>
+      </li>
+      <li
+        class="layer-list-entry css-0"
+        data-theme="light"
+      >
+        <label
+          class="chakra-checkbox css-1577qb8"
+          data-checked=""
+          data-theme="light"
+        >
+          <input
+            class="chakra-checkbox__input"
+            style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
+            type="checkbox"
+            value=""
+          />
+          <span
+            aria-hidden="true"
+            class="chakra-checkbox__control css-1ydjfm6"
+            data-checked=""
+            data-theme="light"
+          >
+            <div
+              class="css-0"
+              data-theme="light"
+              style="display: flex; align-items: center; justify-content: center; height: 100%;"
+            >
+              <svg
+                class="css-1ckqq05"
+                data-theme="light"
+                style="fill: none; stroke-width: 2; stroke: currentColor; stroke-dasharray: 16;"
+                viewBox="0 0 12 10"
+              >
+                <polyline
+                  points="1.5 6 4.5 9 10.5 1"
+                />
+              </svg>
+            </div>
+          </span>
+          <span
+            class="chakra-checkbox__label css-6x44c9"
+            data-checked=""
+            data-theme="light"
+          >
+            Layer 1
+          </span>
+        </label>
+      </li>
+    </ol>
   </div>
 </div>
 `;

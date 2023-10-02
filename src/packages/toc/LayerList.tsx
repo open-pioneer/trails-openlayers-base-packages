@@ -32,7 +32,6 @@ function LayerItem(props: { layer: LayerModel }): JSX.Element {
     const title = useTitle(layer);
     const { isVisible, setVisible } = useVisibility(layer);
 
-    // todo use chakra ListItem with checkbox inside (use checkbox label for layer titel)
     return (
         <ListItem className="layer-list-entry">
             <Checkbox isChecked={isVisible} onChange={(event) => setVisible(event.target.checked)}>

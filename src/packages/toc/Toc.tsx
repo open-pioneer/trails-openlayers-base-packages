@@ -6,10 +6,12 @@ import { useMapModel } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils/TitledSection";
 import { useIntl } from "open-pioneer:react-hooks";
-
 import { FC, useId } from "react";
 import { LayerList } from "./LayerList";
 
+/**
+ * Props supported by the {@link Toc} component.
+ */
 export interface TocProps extends CommonComponentProps {
     /**
      * The id of the map.
@@ -45,7 +47,7 @@ export const Toc: FC<TocProps> = (props: TocProps) => {
 
     const state = useMapModel(mapId);
 
-    let content;
+    let content: JSX.Element | null;
     switch (state.kind) {
         case "loading":
             content = null;
