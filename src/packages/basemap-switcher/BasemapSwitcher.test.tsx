@@ -59,7 +59,7 @@ it("should successfully create a basemap switcher component with additional css 
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
-            <BasemapSwitcher mapId={mapId} className="test" pl="1px" data-testid="switcher" />
+            <BasemapSwitcher mapId={mapId} className="test" data-testid="switcher" />
         </PackageContextProvider>
     );
 
@@ -70,9 +70,6 @@ it("should successfully create a basemap switcher component with additional css 
     expect(switcherDiv).toBeInstanceOf(HTMLDivElement);
     expect(switcherDiv.classList.contains("test")).toBe(true);
     expect(switcherDiv.classList.contains("foo")).toBe(false);
-
-    const styles = window.getComputedStyle(switcherDiv);
-    expect(styles.paddingLeft).toBe("1px");
 });
 
 it("should successfully select a basemap from basemap switcher", async () => {

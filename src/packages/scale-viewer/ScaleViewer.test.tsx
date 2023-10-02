@@ -14,9 +14,7 @@ it("should successfully create a scale viewer component", async () => {
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
-            <div data-testid="base">
-                <ScaleViewer mapId={mapId}></ScaleViewer>
-            </div>
+            <ScaleViewer mapId={mapId} data-testid="scale-viewer" />
         </PackageContextProvider>
     );
 
@@ -34,9 +32,7 @@ it("should successfully create a scale viewer component with additional css clas
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
-            <div data-testid="base">
-                <ScaleViewer mapId={mapId} className="test test1 test2" pl="1px" />
-            </div>
+            <ScaleViewer mapId={mapId} className="test test1 test2" data-testid="scale-viewer" />
         </PackageContextProvider>
     );
 
@@ -53,9 +49,6 @@ it("should successfully create a scale viewer component with additional css clas
         expect(viewerDiv.classList.contains("test1")).toBe(true);
         expect(viewerDiv.classList.contains("test2")).toBe(true);
         expect(viewerDiv.classList.contains("test3")).not.toBe(true);
-
-        const styles = window.getComputedStyle(viewerDiv);
-        expect(styles.paddingLeft).toBe("1px");
     }
 });
 
@@ -81,9 +74,7 @@ it("should successfully render the scale in the correct locale", async () => {
     const injectedServices = createServiceOptions({ registry });
     const result = render(
         <PackageContextProvider services={injectedServices} locale="en">
-            <div data-testid="base">
-                <ScaleViewer mapId={mapId} />
-            </div>
+            <ScaleViewer mapId={mapId} data-testid="scale-viewer" />
         </PackageContextProvider>
     );
 
@@ -92,9 +83,7 @@ it("should successfully render the scale in the correct locale", async () => {
 
     result.rerender(
         <PackageContextProvider services={injectedServices} locale="de">
-            <div data-testid="base">
-                <ScaleViewer mapId={mapId} />
-            </div>
+            <ScaleViewer mapId={mapId} data-testid="scale-viewer" />
         </PackageContextProvider>
     );
     expect(viewerText.textContent).toBe("1:21.026");
@@ -102,14 +91,8 @@ it("should successfully render the scale in the correct locale", async () => {
 
 async function waitForScaleViewer() {
     const { viewerDiv, viewerText } = await waitFor(async () => {
-        const domElement = await screen.findByTestId("base");
-
-        const viewerDiv = domElement.querySelector(".scale-viewer");
-        if (!viewerDiv) {
-            throw new Error("scale viewer not rendered");
-        }
-
-        const viewerText = domElement.querySelector("p"); // find first HTMLParagraphElement (scale text) in scale viewer component
+        const viewerDiv = await screen.findByTestId("scale-viewer");
+        const viewerText = viewerDiv.querySelector("p"); // find first HTMLParagraphElement (scale text) in scale viewer component
         if (!viewerText) {
             throw new Error("scale text not rendered");
         }

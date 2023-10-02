@@ -22,9 +22,7 @@ it("successfully creates a map", async () => {
     const injectedServices = createServiceOptions({ registry });
     const renderResult = render(
         <PackageContextProvider services={injectedServices}>
-            <div data-testid="base">
-                <MapContainer mapId={mapId} />
-            </div>
+            <MapContainer mapId={mapId} data-testid="base" />
         </PackageContextProvider>
     );
 
