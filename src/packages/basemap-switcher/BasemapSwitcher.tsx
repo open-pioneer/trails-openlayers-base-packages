@@ -42,18 +42,18 @@ export interface BasemapSwitcherProps extends BoxProps, RefAttributes<HTMLDivEle
     /**
      * The id of the map.
      */
-    "mapId": string;
+    mapId: string;
 
     /**
      * Additional css class name(s) that will be added to the BasemapSwitcher component.
      */
-    "className"?: string;
+    className?: string;
 
     /**
      * Specifies whether an option to deactivate all basemap layers is available in the BasemapSwitcher.
      * Defaults to false.
      */
-    "allowSelectingEmptyBasemap"?: boolean;
+    allowSelectingEmptyBasemap?: boolean;
 
     /**
      * Optional aria-labelledby property.
