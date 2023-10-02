@@ -295,12 +295,12 @@ importers:
       '@open-pioneer/map':
         specifier: workspace:^
         version: link:../map
+      '@open-pioneer/react-utils':
+        specifier: workspace:^
+        version: link:../react-utils
       '@open-pioneer/runtime':
         specifier: ^1.1.0
         version: 1.1.0(@formatjs/intl@2.9.0)(@open-pioneer/base-theme@0.1.0)(@open-pioneer/chakra-integration@1.1.0)(@open-pioneer/core@1.1.0)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
-      classnames:
-        specifier: ^2.3.2
-        version: 2.3.2
       ol:
         specifier: ^8.1.0
         version: 8.1.0
@@ -327,12 +327,12 @@ importers:
       '@open-pioneer/map':
         specifier: workspace:^
         version: link:../map
+      '@open-pioneer/react-utils':
+        specifier: workspace:^
+        version: link:../react-utils
       '@open-pioneer/runtime':
         specifier: ^1.1.0
         version: 1.1.0(@formatjs/intl@2.9.0)(@open-pioneer/base-theme@0.1.0)(@open-pioneer/chakra-integration@1.1.0)(@open-pioneer/core@1.1.0)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
-      classnames:
-        specifier: ^2.3.2
-        version: 2.3.2
       ol:
         specifier: ^8.1.0
         version: 8.1.0
@@ -359,12 +359,12 @@ importers:
       '@open-pioneer/map':
         specifier: workspace:^
         version: link:../map
+      '@open-pioneer/react-utils':
+        specifier: workspace:^
+        version: link:../react-utils
       '@open-pioneer/runtime':
         specifier: ^1.1.0
         version: 1.1.0(@formatjs/intl@2.9.0)(@open-pioneer/base-theme@0.1.0)(@open-pioneer/chakra-integration@1.1.0)(@open-pioneer/core@1.1.0)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
-      classnames:
-        specifier: ^2.3.2
-        version: 2.3.2
       ol:
         specifier: ^8.1.0
         version: 8.1.0
@@ -394,15 +394,15 @@ importers:
       '@open-pioneer/core':
         specifier: ^1.1.0
         version: 1.1.0
+      '@open-pioneer/react-utils':
+        specifier: workspace:^
+        version: link:../react-utils
       '@open-pioneer/runtime':
         specifier: ^1.1.0
         version: 1.1.0(@formatjs/intl@2.9.0)(@open-pioneer/base-theme@0.1.0)(@open-pioneer/chakra-integration@1.1.0)(@open-pioneer/core@1.1.0)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
       '@types/proj4':
         specifier: ^2.5.2
         version: 2.5.2
-      classnames:
-        specifier: ^2.3.2
-        version: 2.3.2
       ol:
         specifier: ^8.1.0
         version: 8.1.0
@@ -490,6 +490,9 @@ importers:
       '@open-pioneer/core':
         specifier: ^1.1.0
         version: 1.1.0
+      classnames:
+        specifier: ^2.3.2
+        version: 2.3.2
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -510,12 +513,12 @@ importers:
       '@open-pioneer/map':
         specifier: workspace:^
         version: link:../map
+      '@open-pioneer/react-utils':
+        specifier: workspace:^
+        version: link:../react-utils
       '@open-pioneer/runtime':
         specifier: ^1.1.0
         version: 1.1.0(@formatjs/intl@2.9.0)(@open-pioneer/base-theme@0.1.0)(@open-pioneer/chakra-integration@1.1.0)(@open-pioneer/core@1.1.0)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
-      classnames:
-        specifier: ^2.3.2
-        version: 2.3.2
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -542,12 +545,12 @@ importers:
       '@open-pioneer/map':
         specifier: workspace:^
         version: link:../map
+      '@open-pioneer/react-utils':
+        specifier: workspace:^
+        version: link:../react-utils
       '@open-pioneer/runtime':
         specifier: ^1.1.0
         version: 1.1.0(@formatjs/intl@2.9.0)(@open-pioneer/base-theme@0.1.0)(@open-pioneer/chakra-integration@1.1.0)(@open-pioneer/core@1.1.0)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
-      classnames:
-        specifier: ^2.3.2
-        version: 2.3.2
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -574,6 +577,9 @@ importers:
       '@open-pioneer/map':
         specifier: workspace:^
         version: link:../map
+      '@open-pioneer/react-utils':
+        specifier: workspace:^
+        version: link:../react-utils
       '@open-pioneer/runtime':
         specifier: ^1.1.0
         version: 1.1.0(@formatjs/intl@2.9.0)(@open-pioneer/base-theme@0.1.0)(@open-pioneer/chakra-integration@1.1.0)(@open-pioneer/core@1.1.0)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
