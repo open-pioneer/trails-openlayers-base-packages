@@ -15,7 +15,7 @@ import { useIntl } from "open-pioneer:react-hooks";
 import { useState } from "react";
 import { FiCodesandbox, FiLayers } from "react-icons/fi";
 import { MAP_ID } from "./MapConfigProviderImpl";
-import { SectionHeading, TitledSection } from "@open-pioneer/react-utils/TitledSection";
+import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 
 const berlin = [796987, 5827477, 796987, 5827477];
 

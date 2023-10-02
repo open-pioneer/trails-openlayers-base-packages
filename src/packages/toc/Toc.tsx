@@ -4,7 +4,7 @@ import { BasemapSwitcher, BasemapSwitcherProps } from "@open-pioneer/basemap-swi
 import { Box, Text } from "@open-pioneer/chakra-integration";
 import { useMapModel } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
-import { SectionHeading, TitledSection } from "@open-pioneer/react-utils/TitledSection";
+import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, useId } from "react";
 import { LayerList } from "./LayerList";
