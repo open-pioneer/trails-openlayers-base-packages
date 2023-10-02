@@ -12,15 +12,15 @@ import { useIntl } from "open-pioneer:react-hooks";
  *
  * Layer Groups are skipped in the current implementation.
  */
-export function LayerList(props: { map: MapModel }): JSX.Element {
-    const { map } = props;
+export function LayerList(props: { map: MapModel; "aria-labelledby"?: string }): JSX.Element {
+    const { map, "aria-labelledby": ariaLabelledBy } = props;
     const intl = useIntl();
     const layers = useLayers(map);
     const layerItems = layers.map((layer) => <LayerItem key={layer.id} layer={layer} />);
 
     if (!layerItems.length) {
         return (
-            <Text className="toc-missing-layers">
+            <Text className="toc-missing-layers" aria-labelledby={ariaLabelledBy}>
                 {intl.formatMessage({ id: "missingLayers" })}
             </Text>
         );
@@ -32,6 +32,7 @@ export function LayerList(props: { map: MapModel }): JSX.Element {
             as="ol"
             className="layer-list"
             listStyleType="none"
+            aria-labelledby={ariaLabelledBy}
         >
             {layerItems}
         </List>

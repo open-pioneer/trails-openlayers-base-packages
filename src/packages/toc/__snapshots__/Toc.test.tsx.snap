@@ -64,10 +64,12 @@ exports[`should successfully create a toc component 1`] = `
     <h1
       class="chakra-heading css-1mnao0q"
       data-theme="light"
+      id=":r1:"
     >
       operationalLayerLabel
     </h1>
     <ol
+      aria-labelledby=":r1:"
       class="layer-list css-155za0w"
       data-theme="light"
       role="list"

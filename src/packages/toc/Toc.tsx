@@ -42,6 +42,7 @@ export const Toc: FC<TocProps> = (props: TocProps) => {
     const { mapId, showBasemapSwitcher = true, basemapSwitcherProps } = props;
     const { containerProps } = useCommonComponentProps("toc", props);
     const basemapsHeadingId = useId();
+    const operationLayersId = useId();
     const state = useMapModel(mapId);
 
     let content: JSX.Element | null;
@@ -74,12 +75,12 @@ export const Toc: FC<TocProps> = (props: TocProps) => {
                 <Box className="toc-operational-layers" padding={PADDING}>
                     <TitledSection
                         title={
-                            <SectionHeading size={"sm"} mb={PADDING}>
+                            <SectionHeading size={"sm"} id={operationLayersId} mb={PADDING}>
                                 {intl.formatMessage({ id: "operationalLayerLabel" })}
                             </SectionHeading>
                         }
                     >
-                        <LayerList map={state.map!} />
+                        <LayerList map={state.map!} aria-labelledby={operationLayersId} />
                     </TitledSection>
                 </Box>
             );
