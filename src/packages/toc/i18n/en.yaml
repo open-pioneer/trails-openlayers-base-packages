@@ -3,4 +3,4 @@ messages:
   operationalLayerLabel: "Operational layer"
   loading: "Loading..."
   error: "Error while creating map content."
-  undefined-layer-title: "undefined layer title"
+  undefined-layer-title: "Undefined layer title"

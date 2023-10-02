@@ -2,5 +2,5 @@ messages:
   basemapsLabel: "Hintergrundkarten"
   operationalLayerLabel: "Layer"
   loading: "Wird geladen..."
-  error: "Beim erstellen des Karteninhalts ist ein Fehler aufgetreten."
-  undefined-layer-title: "Layer Titel nicht definiert"
+  error: "Beim Erstellen des Karteninhalts ist ein Fehler aufgetreten."
+  undefined-layer-title: "Layertitel nicht definiert"
