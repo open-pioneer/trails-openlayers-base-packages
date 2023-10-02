@@ -63,7 +63,7 @@ it("should not show the basemap switcher if 'showBasemapSwitcher' configured to 
     render(
         <PackageContextProvider services={injectedServices}>
             <div data-testid="base">
-                <Toc mapId={mapId} hideBasemapSwitcher={true}></Toc>
+                <Toc mapId={mapId} showBasemapSwitcher={true}></Toc>
             </div>
         </PackageContextProvider>
     );

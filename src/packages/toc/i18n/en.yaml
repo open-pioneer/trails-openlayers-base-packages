@@ -1,6 +1,6 @@
 messages:
   basemapsLabel: "Basemaps"
-  operationalLayerLabel: "Operational layer"
+  operationalLayerLabel: "Operational layers"
   loading: "Loading..."
   error: "Error while creating map content."
   undefined-layer-title: "Undefined layer title"

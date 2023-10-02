@@ -76,7 +76,14 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = forwardRef(function Bas
     ref: ForwardedRef<HTMLDivElement> | undefined
 ) {
     const intl = useIntl();
-    const { mapId, className, allowSelectingEmptyBasemap, ...rest } = props;
+    const {
+        mapId,
+        className,
+        allowSelectingEmptyBasemap,
+        "aria-label": ariaLabel,
+        "aria-labelledby": ariaLabelledBy,
+        ...rest
+    } = props;
     const emptyBasemapLabel = intl.formatMessage({ id: "emptyBasemapLabel" });
 
     const { map } = useMapModel(mapId);
@@ -85,7 +92,6 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = forwardRef(function Bas
         return createOptions({ baseLayers, allowSelectingEmptyBasemap, emptyBasemapLabel });
     }, [baseLayers, allowSelectingEmptyBasemap, emptyBasemapLabel]);
     const activateLayer = (layerId: string) => {
-        // empty string is used for "no basemap"
         map?.layers.activateBaseLayer(layerId === NO_BASEMAP_ID ? undefined : layerId);
     };
 
@@ -93,8 +99,8 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = forwardRef(function Bas
         <Box className={classNames("basemap-switcher", className)} ref={ref} {...rest}>
             {map ? (
                 <Select
-                    aria-labelledby={props["aria-labelledby"]}
-                    aria-label={props["aria-label"]}
+                    aria-label={ariaLabel}
+                    aria-labelledby={ariaLabelledBy}
                     className="basemap-switcher-select"
                     value={selectedId}
                     onChange={(e) => activateLayer(e.target.value)}
