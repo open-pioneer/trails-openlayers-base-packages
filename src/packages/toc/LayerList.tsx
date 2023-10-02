@@ -30,7 +30,7 @@ export function LayerList(props: { map: MapModel; "aria-labelledby"?: string }):
         <List
             // Note: not using OrderedList because it adds default margins
             as="ol"
-            className="layer-list"
+            className="toc-layer-list"
             listStyleType="none"
             aria-labelledby={ariaLabelledBy}
         >
@@ -46,7 +46,7 @@ function LayerItem(props: { layer: LayerModel }): JSX.Element {
     const { isVisible, setVisible } = useVisibility(layer);
 
     return (
-        <ListItem className={classNames("layer-list-entry", `layer-${slug(layer.id)}`)}>
+        <ListItem className={classNames("toc-layer-list-entry", `layer-${slug(layer.id)}`)}>
             <Checkbox isChecked={isVisible} onChange={(event) => setVisible(event.target.checked)}>
                 {title}
             </Checkbox>

@@ -42,7 +42,7 @@ List items for individual operational layers receive the layer's `id` as an addi
 For example, given a layer with the id `test-geojson`, the toc's list item for that layer will be rendered as:
 
 ```html
-<li class="layer-list-entry layer-test-geojson ...">
+<li class="toc-layer-list-entry layer-test-geojson ...">
     <!-- -->
 </li>
 ```
