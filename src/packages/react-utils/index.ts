@@ -11,3 +11,4 @@ export {
     type HeadingLevel,
     useHeadingLevel
 } from "./TitledSection";
+export { type CommonComponentProps, useCommonComponentProps } from "./useCommonComponentProps";

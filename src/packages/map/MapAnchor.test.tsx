@@ -19,11 +19,9 @@ it("should successfully create a map anchor component", async () => {
     const injectedServices = createServiceOptions({ registry });
     const { container } = render(
         <PackageContextProvider services={injectedServices}>
-            <div data-testid="base">
-                <MapContainer mapId={mapId}>
-                    <MapAnchor />
-                </MapContainer>
-            </div>
+            <MapContainer mapId={mapId} data-testid="base">
+                <MapAnchor />
+            </MapContainer>
         </PackageContextProvider>
     );
 
@@ -34,10 +32,10 @@ it("should successfully create a map anchor component", async () => {
     const mapAnchor = container.querySelector(".map-anchor");
     if (!mapAnchor) {
         throw new Error("map anchor component not rendered");
-    } else {
-        expect(mapAnchor).toBeInstanceOf(HTMLDivElement);
-        expect(mapAnchor).toMatchSnapshot();
     }
+
+    expect(mapAnchor).toBeInstanceOf(HTMLDivElement);
+    expect(mapAnchor).toMatchSnapshot();
 });
 
 it("should successfully create a map anchor component with additional css classes", async () => {
@@ -46,11 +44,9 @@ it("should successfully create a map anchor component with additional css classe
     const injectedServices = createServiceOptions({ registry });
     const { container } = render(
         <PackageContextProvider services={injectedServices}>
-            <div data-testid="base">
-                <MapContainer mapId={mapId}>
-                    <MapAnchor className="test test1 test2" />
-                </MapContainer>
-            </div>
+            <MapContainer mapId={mapId} data-testid="base">
+                <MapAnchor className="test test1 test2" />
+            </MapContainer>
         </PackageContextProvider>
     );
 
@@ -61,13 +57,13 @@ it("should successfully create a map anchor component with additional css classe
     const mapAnchor = container.querySelector(".map-anchor");
     if (!mapAnchor) {
         throw new Error("map anchor component not rendered");
-    } else {
-        expect(mapAnchor).toBeInstanceOf(HTMLDivElement);
-        expect(mapAnchor.classList.contains("test")).toBe(true);
-        expect(mapAnchor.classList.contains("test1")).toBe(true);
-        expect(mapAnchor.classList.contains("test2")).toBe(true);
-        expect(mapAnchor.classList.contains("test3")).not.toBe(true);
     }
+
+    expect(mapAnchor).toBeInstanceOf(HTMLDivElement);
+    expect(mapAnchor.classList.contains("test")).toBe(true);
+    expect(mapAnchor.classList.contains("test1")).toBe(true);
+    expect(mapAnchor.classList.contains("test2")).toBe(true);
+    expect(mapAnchor.classList.contains("test3")).not.toBe(true);
 });
 
 it('should successfully create a map anchor component with prop `position="top-left"`', async () => {
@@ -76,11 +72,9 @@ it('should successfully create a map anchor component with prop `position="top-l
     const injectedServices = createServiceOptions({ registry });
     const { container } = render(
         <PackageContextProvider services={injectedServices}>
-            <div data-testid="base">
-                <MapContainer mapId={mapId}>
-                    <MapAnchor position="top-left" />
-                </MapContainer>
-            </div>
+            <MapContainer mapId={mapId} data-testid="base">
+                <MapAnchor position="top-left" />
+            </MapContainer>
         </PackageContextProvider>
     );
 
@@ -91,11 +85,11 @@ it('should successfully create a map anchor component with prop `position="top-l
     const mapAnchor = container.querySelector(".map-anchor");
     if (!mapAnchor) {
         throw new Error("map anchor component not rendered");
-    } else {
-        const styles = window.getComputedStyle(mapAnchor);
-        expect(styles.top).toBe("0px");
-        expect(styles.left).toBe("0px");
     }
+
+    const styles = window.getComputedStyle(mapAnchor);
+    expect(styles.top).toBe("0px");
+    expect(styles.left).toBe("0px");
 });
 
 it('should successfully create a map anchor component with prop `position="bottom-right"`', async () => {
@@ -104,11 +98,9 @@ it('should successfully create a map anchor component with prop `position="botto
     const injectedServices = createServiceOptions({ registry });
     const { container } = render(
         <PackageContextProvider services={injectedServices}>
-            <div data-testid="base">
-                <MapContainer mapId={mapId}>
-                    <MapAnchor position="bottom-right" />
-                </MapContainer>
-            </div>
+            <MapContainer mapId={mapId} data-testid="base">
+                <MapAnchor position="bottom-right" />
+            </MapContainer>
         </PackageContextProvider>
     );
 
@@ -119,13 +111,13 @@ it('should successfully create a map anchor component with prop `position="botto
     const mapAnchor = container.querySelector(".map-anchor");
     if (!mapAnchor) {
         throw new Error("map anchor component not rendered");
-    } else {
-        const styles = window.getComputedStyle(mapAnchor);
-        expect(styles.right).toBe("0px");
-
-        const attribution = computeAttributionGap();
-        expect(styles.bottom).toBe(attribution.gap + "px");
     }
+
+    const styles = window.getComputedStyle(mapAnchor);
+    expect(styles.right).toBe("0px");
+
+    const attribution = computeAttributionGap();
+    expect(styles.bottom).toBe(attribution.gap + "px");
 });
 
 it('should successfully create a map anchor component with props `position="bottom-right"` and `horizontalGap={30} verticalGap={10}`', async () => {
@@ -134,11 +126,9 @@ it('should successfully create a map anchor component with props `position="bott
     const injectedServices = createServiceOptions({ registry });
     const { container } = render(
         <PackageContextProvider services={injectedServices}>
-            <div data-testid="base">
-                <MapContainer mapId={mapId}>
-                    <MapAnchor position="bottom-right" horizontalGap={30} verticalGap={10} />
-                </MapContainer>
-            </div>
+            <MapContainer mapId={mapId} data-testid="base">
+                <MapAnchor position="bottom-right" horizontalGap={30} verticalGap={10} />
+            </MapContainer>
         </PackageContextProvider>
     );
 
@@ -149,11 +139,11 @@ it('should successfully create a map anchor component with props `position="bott
     const mapAnchor = container.querySelector(".map-anchor");
     if (!mapAnchor) {
         throw new Error("map anchor component not rendered");
-    } else {
-        const styles = window.getComputedStyle(mapAnchor);
-        expect(styles.right).toBe("30px");
-        expect(styles.bottom).toBe("10px");
     }
+
+    const styles = window.getComputedStyle(mapAnchor);
+    expect(styles.right).toBe("30px");
+    expect(styles.bottom).toBe("10px");
 });
 
 it("should successfully create a map anchor component with ReactNode as children", async () => {
@@ -162,13 +152,11 @@ it("should successfully create a map anchor component with ReactNode as children
     const injectedServices = createServiceOptions({ registry });
     const { container } = render(
         <PackageContextProvider services={injectedServices}>
-            <div data-testid="base">
-                <MapContainer mapId={mapId}>
-                    <MapAnchor>
-                        <Box className="chakra-ui-box">Chakra UI Box</Box>
-                    </MapAnchor>
-                </MapContainer>
-            </div>
+            <MapContainer mapId={mapId} data-testid="base">
+                <MapAnchor>
+                    <Box className="chakra-ui-box">Chakra UI Box</Box>
+                </MapAnchor>
+            </MapContainer>
         </PackageContextProvider>
     );
 
@@ -179,17 +167,17 @@ it("should successfully create a map anchor component with ReactNode as children
     const mapAnchor = container.querySelector(".map-anchor");
     if (!mapAnchor) {
         throw new Error("map anchor component not rendered");
-    } else {
-        const div = await waitFor(async () => {
-            const domElement = mapAnchor.querySelector(".chakra-ui-box");
-            if (!domElement) {
-                throw new Error("child element in map anchor component not rendered");
-            }
-            return domElement;
-        });
-
-        expect(div.innerHTML).toBe("Chakra UI Box");
     }
+
+    const div = await waitFor(async () => {
+        const domElement = mapAnchor.querySelector(".chakra-ui-box");
+        if (!domElement) {
+            throw new Error("child element in map anchor component not rendered");
+        }
+        return domElement;
+    });
+
+    expect(div.innerHTML).toBe("Chakra UI Box");
 });
 
 it("should successfully create multiple map anchor components", async () => {
@@ -198,12 +186,10 @@ it("should successfully create multiple map anchor components", async () => {
     const injectedServices = createServiceOptions({ registry });
     const { container } = render(
         <PackageContextProvider services={injectedServices}>
-            <div data-testid="base">
-                <MapContainer mapId={mapId}>
-                    <MapAnchor className="testabc" />
-                    <MapAnchor className="testdef" />
-                </MapContainer>
-            </div>
+            <MapContainer mapId={mapId} data-testid="base">
+                <MapAnchor className="testabc" />
+                <MapAnchor className="testdef" />
+            </MapContainer>
         </PackageContextProvider>
     );
 
@@ -214,16 +200,14 @@ it("should successfully create multiple map anchor components", async () => {
     const firstMapAnchor = container.querySelector(".map-anchor.testabc");
     if (!firstMapAnchor) {
         throw new Error("map anchor component with css class `testabc` not rendered");
-    } else {
-        expect(firstMapAnchor).toBeInstanceOf(HTMLDivElement);
     }
+    expect(firstMapAnchor).toBeInstanceOf(HTMLDivElement);
 
     const secondMapAnchor = container.querySelector(".map-anchor.testdef");
     if (!secondMapAnchor) {
         throw new Error("map anchor component with css class `testdef` not rendered");
-    } else {
-        expect(secondMapAnchor).toBeInstanceOf(HTMLDivElement);
     }
+    expect(secondMapAnchor).toBeInstanceOf(HTMLDivElement);
 });
 
 it("should successfully create position styles on `top-left` without gap", async () => {

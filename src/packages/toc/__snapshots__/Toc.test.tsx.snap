@@ -3,6 +3,7 @@
 exports[`should not show the basemap switcher if 'showBasemapSwitcher' configured to false 1`] = `
 <div
   class="toc css-0"
+  data-testid="toc"
   data-theme="light"
 >
   <div
@@ -22,6 +23,7 @@ exports[`should not show the basemap switcher if 'showBasemapSwitcher' configure
 exports[`should successfully create a toc component 1`] = `
 <div
   class="toc css-0"
+  data-testid="toc"
   data-theme="light"
 >
   <div
@@ -104,7 +106,8 @@ exports[`should successfully create a toc component 1`] = `
 
 exports[`should successfully create a toc component with additional css classes and box properties 1`] = `
 <div
-  class="toc test css-sz63p1"
+  class="toc test css-0"
+  data-testid="toc"
   data-theme="light"
 >
   <div

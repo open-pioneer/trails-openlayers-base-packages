@@ -3,6 +3,7 @@
 exports[`should successfully create a scale viewer component 1`] = `
 <div
   class="scale-viewer css-0"
+  data-testid="scale-viewer"
   data-theme="light"
 >
   <p
@@ -17,7 +18,8 @@ exports[`should successfully create a scale viewer component 1`] = `
 
 exports[`should successfully create a scale viewer component with additional css classes and box properties 1`] = `
 <div
-  class="scale-viewer test test1 test2 css-sz63p1"
+  class="scale-viewer test test1 test2 css-0"
+  data-testid="scale-viewer"
   data-theme="light"
 >
   <p

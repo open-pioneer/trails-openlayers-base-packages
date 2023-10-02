@@ -16,9 +16,7 @@ it("should successfully create a toc component", async () => {
 
     render(
         <PackageContextProvider services={injectedServices}>
-            <div data-testid="base">
-                <Toc mapId={mapId}></Toc>
-            </div>
+            <Toc mapId={mapId} data-testid="toc"></Toc>
         </PackageContextProvider>
     );
 
@@ -37,9 +35,7 @@ it("should successfully create a toc component with additional css classes and b
 
     render(
         <PackageContextProvider services={injectedServices}>
-            <div data-testid="base">
-                <Toc mapId={mapId} className="test" pl="1px"></Toc>
-            </div>
+            <Toc mapId={mapId} className="test" data-testid="toc" />
         </PackageContextProvider>
     );
 
@@ -50,9 +46,6 @@ it("should successfully create a toc component with additional css classes and b
     expect(tocDiv).toBeInstanceOf(HTMLDivElement);
     expect(tocDiv.classList.contains("test")).toBe(true);
     expect(tocDiv.classList.contains("foo")).toBe(false);
-
-    const styles = window.getComputedStyle(tocDiv);
-    expect(styles.paddingLeft).toBe("1px");
 });
 
 it("should not show the basemap switcher if 'showBasemapSwitcher' configured to false", async () => {
@@ -62,9 +55,7 @@ it("should not show the basemap switcher if 'showBasemapSwitcher' configured to 
 
     render(
         <PackageContextProvider services={injectedServices}>
-            <div data-testid="base">
-                <Toc mapId={mapId} showBasemapSwitcher={true}></Toc>
-            </div>
+            <Toc mapId={mapId} showBasemapSwitcher={false} data-testid="toc"></Toc>
         </PackageContextProvider>
     );
 
@@ -90,19 +81,18 @@ it("should be possible to override basemap-switcher properties", async () => {
 
     render(
         <PackageContextProvider services={injectedServices}>
-            <div data-testid="base">
-                <MapContainer mapId={mapId} />
-                <Toc
-                    mapId={mapId}
-                    basemapSwitcherProps={{
-                        allowSelectingEmptyBasemap: true,
-                        className: "test-class"
-                    }}
-                ></Toc>
-            </div>
+            <MapContainer mapId={mapId} data-testid="map" />
+            <Toc
+                mapId={mapId}
+                basemapSwitcherProps={{
+                    allowSelectingEmptyBasemap: true,
+                    className: "test-class"
+                }}
+                data-testid="toc"
+            />
         </PackageContextProvider>
     );
-    await waitForMapMount();
+    await waitForMapMount("map");
 
     const { tocDiv, switcherDiv, switcherSelect } = await waitForToc();
 
@@ -114,12 +104,7 @@ it("should be possible to override basemap-switcher properties", async () => {
 
 async function waitForToc() {
     const { tocDiv, tocHeader, switcherDiv, switcherSelect } = await waitFor(async () => {
-        const domElement = await screen.findByTestId("base");
-
-        const tocDiv = domElement.querySelector(".toc");
-        if (!tocDiv) {
-            throw new Error("Toc not rendered");
-        }
+        const tocDiv = await screen.findByTestId("toc");
 
         const tocHeader = tocDiv.querySelector(".toc-header");
         if (!tocHeader) {
