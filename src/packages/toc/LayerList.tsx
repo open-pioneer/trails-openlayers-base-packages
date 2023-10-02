@@ -109,9 +109,9 @@ function useLayers(map: MapModel): LayerModel[] {
         }
 
         // Compute values and cache the result.
-        let operationalLayers = map?.layers.getOperationalLayers() ?? [];
-        operationalLayers = operationalLayers.filter(canShowOperationalLayer);
-        return (flatOperationalLayers.current = operationalLayers);
+        let layers = map?.layers.getOperationalLayers({ sortByDisplayOrder: true }) ?? [];
+        layers = layers.reverse().filter(canShowOperationalLayer);
+        return (flatOperationalLayers.current = layers);
     }, [map]);
     return useSyncExternalStore(subscribe, getSnapshot);
 }
