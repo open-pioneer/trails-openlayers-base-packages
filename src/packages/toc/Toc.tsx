@@ -40,11 +40,8 @@ export const Toc: FC<TocProps> = (props: TocProps) => {
     const intl = useIntl();
 
     const { mapId, showBasemapSwitcher = true, basemapSwitcherProps } = props;
-    const basemapsHeadingId = useId();
     const { containerProps } = useCommonComponentProps("toc", props);
-    const basemapsLabel = intl.formatMessage({ id: "basemapsLabel" });
-    const layersLabel = intl.formatMessage({ id: "operationalLayerLabel" });
-
+    const basemapsHeadingId = useId();
     const state = useMapModel(mapId);
 
     let content: JSX.Element | null;
@@ -61,7 +58,7 @@ export const Toc: FC<TocProps> = (props: TocProps) => {
                     <TitledSection
                         title={
                             <SectionHeading size={"sm"} id={basemapsHeadingId} mb={PADDING}>
-                                {basemapsLabel}
+                                {intl.formatMessage({ id: "basemapsLabel" })}
                             </SectionHeading>
                         }
                     >
@@ -78,7 +75,7 @@ export const Toc: FC<TocProps> = (props: TocProps) => {
                     <TitledSection
                         title={
                             <SectionHeading size={"sm"} mb={PADDING}>
-                                {layersLabel}
+                                {intl.formatMessage({ id: "operationalLayerLabel" })}
                             </SectionHeading>
                         }
                     >
