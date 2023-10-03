@@ -19,10 +19,23 @@ layer: new VectorLayer({
         "https://ogc-api.nrw.de/lika/v1", // ogcFeatureApiBaseUrl
         "katasterbezirk", // collectionId
         "http://www.opengis.net/def/crs/EPSG/0/25832", // crs
-        "Katasterbezirk" // attributions
+        "Katasterbezirk", // attributions
+        {
+            numberOfConcurrentReq: 6, // (Optional) OffsetRequestProps
+            offsetDelta: 2500,
+            startOffset: 0
+        },
+        {} // (Optional) additional "official" Options that should be set on VectorSource
     )
 });
 ```
+
+The optional `OffsetRequestProps` configure the concurrent execution of requests by using the
+`offset`-URL-Property. With the default-values 6 concurrent requests are executed to get
+features with the `offset`(and `limit`) parameters: 0, 2500, 5000, 7500, 10000, and 12500.
+
+Additional options of the `VectorSource` (see ol-documentation) can be given by the property
+`additionalOptions`.
 
 ## License
 
