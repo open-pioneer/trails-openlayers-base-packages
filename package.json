@@ -102,7 +102,7 @@
         "eslint-plugin-unused-imports": "^3.0.0",
         "fast-glob": "^3.3.1",
         "handlebars": "^4.7.8",
-        "happy-dom": "^11.0.2",
+        "happy-dom": "^12.8.0",
         "husky": "^8.0.3",
         "js-yaml": "^4.1.0",
         "jsdom": "^22.1.0",
@@ -117,7 +117,7 @@
         "typescript": "~5.1.6",
         "vite": "^4.4.9",
         "vite-plugin-eslint": "^1.8.1",
-        "vitest": "^0.34.1"
+        "vitest": "^0.34.6"
     },
     "engines": {
         "node": ">= 16",
