@@ -1,5 +1,6 @@
 messages:
-  measurementTitle: "Messwerkzeuge"
-  measureDistanceLabel: "Strecke messen"
-  measureAreaLabel: "Fläche messen"
-  deleteMeasurementLabel: "Messung löschen"
+  measurementTitle: "Strecke / Fläche messen"
+  measurementLabel: "Geometrie"
+  distance: "Strecke"
+  area: "Fläche"
+  deleteMeasurementLabel: "Messungen löschen"

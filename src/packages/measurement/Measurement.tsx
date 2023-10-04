@@ -7,11 +7,11 @@ import {
     Button,
     FormControl,
     FormLabel,
-    Switch,
     Text,
-    HStack
+    HStack,
+    Select
 } from "@open-pioneer/chakra-integration";
-import { ChangeEvent, FC, useState } from "react";
+import { FC, useState } from "react";
 import { useIntl } from "open-pioneer:react-hooks";
 import classNames from "classnames";
 
@@ -26,18 +26,12 @@ export const Measurement: FC<MeasurementProps> = (props) => {
     const intl = useIntl();
     const { className, ...rest } = props;
 
-    const [checkedSwitches, setCheckedSwitches] = useState([false, false]);
-
+    const [selectedMeasurement, setMeasurement] = useState("distance");
     const label = (id: string) => intl.formatMessage({ id: id });
 
-    function uncheckSwitches() {
-        setCheckedSwitches([false, false]);
-    }
-    function measureDistanceChanged(evt: ChangeEvent<HTMLInputElement>) {
-        setCheckedSwitches([evt.target.checked, false]);
-    }
-    function measureAreaChanged(evt: ChangeEvent<HTMLInputElement>) {
-        setCheckedSwitches([false, evt.target.checked]);
+    function deleteMeasurements() {}
+    function changeMeasurement(measurement: string) {
+        setMeasurement(measurement);
     }
 
     return (
@@ -52,40 +46,29 @@ export const Measurement: FC<MeasurementProps> = (props) => {
             <Box className="measurement-content" padding={2}>
                 <FormControl mb={4} alignItems="center">
                     <HStack mb={2}>
-                        <FormLabel htmlFor="measure-distance" mb={1}>
-                            {label("measureDistanceLabel")}{" "}
+                        <FormLabel htmlFor="measurement" mb={1}>
+                            {label("measurementLabel")}{" "}
                         </FormLabel>
-                        <Switch
-                            id="measure-distance"
-                            className="switch-measurement"
-                            size="md"
-                            isChecked={checkedSwitches[0]}
-                            onChange={measureDistanceChanged}
-                        />
-                    </HStack>
-                    <HStack>
-                        <FormLabel htmlFor="measure-area" mb={1}>
-                            {label("measureAreaLabel")}
-                        </FormLabel>
-                        <Switch
-                            id="measure-area"
-                            className="switch-measurement"
-                            size="md"
-                            isChecked={checkedSwitches[1]}
-                            onChange={measureAreaChanged}
-                        />
+                        <Select
+                            value={selectedMeasurement}
+                            onChange={(e) => changeMeasurement(e.target.value)}
+                            className="measurement-select"
+                            id="measurement"
+                        >
+                            <option value={"distance"}>{label("distance")}</option>
+                            <option value={"area"}>{label("area")}</option>
+                        </Select>
                     </HStack>
                 </FormControl>
-                <Box>
-                    <Button
-                        padding={2}
-                        className="delete-measurement"
-                        aria-label={label("deleteMeasurementLabel")}
-                        onClick={uncheckSwitches}
-                    >
-                        {label("deleteMeasurementLabel")}
-                    </Button>
-                </Box>
+                <Button
+                    padding={2}
+                    className="delete-measurements"
+                    aria-label={label("deleteMeasurementLabel")}
+                    onClick={deleteMeasurements}
+                    width="100%"
+                >
+                    {label("deleteMeasurementLabel")}
+                </Button>
             </Box>
         </Box>
     );

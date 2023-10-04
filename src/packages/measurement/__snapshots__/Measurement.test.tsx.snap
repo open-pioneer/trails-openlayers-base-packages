@@ -1,123 +1,5 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`should successfully create a Measurement component 1`] = `
-<div
-  class="measurement css-0"
-  data-theme="light"
->
-  <div
-    class="measurement-header css-1xd6p1z"
-    data-theme="light"
-  >
-    <b
-      class="chakra-text css-0"
-      data-theme="light"
-    >
-      measurementTitle
-    </b>
-  </div>
-  <div
-    class="measurement-content css-1syq16t"
-    data-theme="light"
-  >
-    <div
-      class="chakra-form-control css-1m7igkt"
-      data-theme="light"
-      role="group"
-    >
-      <div
-        class="chakra-stack css-1sgivba"
-        data-theme="light"
-      >
-        <label
-          class="chakra-form__label css-oe420r"
-          data-theme="light"
-          for="measure-distance"
-          id="field-:r0:-label"
-        >
-          measureDistanceLabel
-           
-        </label>
-        <label
-          class="chakra-switch switch-measurement css-ghot30"
-          data-theme="light"
-        >
-          <input
-            aria-disabled="false"
-            aria-invalid="false"
-            class="chakra-switch__input"
-            id="measure-distance"
-            style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
-            type="checkbox"
-            value=""
-          />
-          <span
-            aria-hidden="true"
-            class="chakra-switch__track css-p27qcy"
-            data-theme="light"
-          >
-            <span
-              class="chakra-switch__thumb css-7roig"
-              data-theme="light"
-            />
-          </span>
-        </label>
-      </div>
-      <div
-        class="chakra-stack css-1igwmid"
-        data-theme="light"
-      >
-        <label
-          class="chakra-form__label css-oe420r"
-          data-theme="light"
-          for="measure-area"
-          id="field-:r0:-label"
-        >
-          measureAreaLabel
-        </label>
-        <label
-          class="chakra-switch switch-measurement css-ghot30"
-          data-theme="light"
-        >
-          <input
-            aria-disabled="false"
-            aria-invalid="false"
-            class="chakra-switch__input"
-            id="measure-area"
-            style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
-            type="checkbox"
-            value=""
-          />
-          <span
-            aria-hidden="true"
-            class="chakra-switch__track css-p27qcy"
-            data-theme="light"
-          >
-            <span
-              class="chakra-switch__thumb css-7roig"
-              data-theme="light"
-            />
-          </span>
-        </label>
-      </div>
-    </div>
-    <div
-      class="css-0"
-      data-theme="light"
-    >
-      <button
-        aria-label="deleteMeasurementLabel"
-        class="chakra-button delete-measurement css-lt0n4j"
-        data-theme="light"
-        type="button"
-      >
-        deleteMeasurementLabel
-      </button>
-    </div>
-  </div>
-</div>
-`;
-
 exports[`should successfully create a measurement component 1`] = `
 <div
   class="measurement css-0"
@@ -150,88 +32,61 @@ exports[`should successfully create a measurement component 1`] = `
         <label
           class="chakra-form__label css-oe420r"
           data-theme="light"
-          for="measure-distance"
+          for="measurement"
           id="field-:r0:-label"
         >
-          measureDistanceLabel
+          measurementLabel
            
         </label>
-        <label
-          class="chakra-switch switch-measurement css-ghot30"
+        <div
+          class="chakra-select__wrapper css-42b2qy"
           data-theme="light"
         >
-          <input
-            aria-disabled="false"
-            aria-invalid="false"
-            class="chakra-switch__input"
-            id="measure-distance"
-            style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
-            type="checkbox"
-            value=""
-          />
-          <span
-            aria-hidden="true"
-            class="chakra-switch__track css-p27qcy"
+          <select
+            class="chakra-select measurement-select css-161pkch"
+            data-theme="light"
+            id="measurement"
+          >
+            <option
+              value="distance"
+            >
+              distance
+            </option>
+            <option
+              value="area"
+            >
+              area
+            </option>
+          </select>
+          <div
+            class="chakra-select__icon-wrapper css-iohxn1"
             data-theme="light"
           >
-            <span
-              class="chakra-switch__thumb css-7roig"
-              data-theme="light"
-            />
-          </span>
-        </label>
-      </div>
-      <div
-        class="chakra-stack css-1igwmid"
-        data-theme="light"
-      >
-        <label
-          class="chakra-form__label css-oe420r"
-          data-theme="light"
-          for="measure-area"
-          id="field-:r0:-label"
-        >
-          measureAreaLabel
-        </label>
-        <label
-          class="chakra-switch switch-measurement css-ghot30"
-          data-theme="light"
-        >
-          <input
-            aria-disabled="false"
-            aria-invalid="false"
-            class="chakra-switch__input"
-            id="measure-area"
-            style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
-            type="checkbox"
-            value=""
-          />
-          <span
-            aria-hidden="true"
-            class="chakra-switch__track css-p27qcy"
-            data-theme="light"
-          >
-            <span
-              class="chakra-switch__thumb css-7roig"
-              data-theme="light"
-            />
-          </span>
-        </label>
+            <svg
+              aria-hidden="true"
+              class="chakra-select__icon"
+              focusable="false"
+              role="presentation"
+              style="width: 1em; height: 1em; color: currentcolor;"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
+                fill="currentColor"
+              />
+            </svg>
+          </div>
+        </div>
       </div>
     </div>
-    <div
-      class="css-0"
+    <button
+      aria-label="deleteMeasurementLabel"
+      class="chakra-button delete-measurements css-14p1tvq"
       data-theme="light"
+      type="button"
     >
-      <button
-        aria-label="deleteMeasurementLabel"
-        class="chakra-button delete-measurement css-lt0n4j"
-        data-theme="light"
-        type="button"
-      >
-        deleteMeasurementLabel
-      </button>
-    </div>
+      deleteMeasurementLabel
+    </button>
   </div>
 </div>
 `;
@@ -268,88 +123,61 @@ exports[`should successfully create a measurement component with additional css 
         <label
           class="chakra-form__label css-oe420r"
           data-theme="light"
-          for="measure-distance"
+          for="measurement"
           id="field-:r1:-label"
         >
-          measureDistanceLabel
+          measurementLabel
            
         </label>
-        <label
-          class="chakra-switch switch-measurement css-ghot30"
+        <div
+          class="chakra-select__wrapper css-42b2qy"
           data-theme="light"
         >
-          <input
-            aria-disabled="false"
-            aria-invalid="false"
-            class="chakra-switch__input"
-            id="measure-distance"
-            style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
-            type="checkbox"
-            value=""
-          />
-          <span
-            aria-hidden="true"
-            class="chakra-switch__track css-p27qcy"
+          <select
+            class="chakra-select measurement-select css-161pkch"
+            data-theme="light"
+            id="measurement"
+          >
+            <option
+              value="distance"
+            >
+              distance
+            </option>
+            <option
+              value="area"
+            >
+              area
+            </option>
+          </select>
+          <div
+            class="chakra-select__icon-wrapper css-iohxn1"
             data-theme="light"
           >
-            <span
-              class="chakra-switch__thumb css-7roig"
-              data-theme="light"
-            />
-          </span>
-        </label>
-      </div>
-      <div
-        class="chakra-stack css-1igwmid"
-        data-theme="light"
-      >
-        <label
-          class="chakra-form__label css-oe420r"
-          data-theme="light"
-          for="measure-area"
-          id="field-:r1:-label"
-        >
-          measureAreaLabel
-        </label>
-        <label
-          class="chakra-switch switch-measurement css-ghot30"
-          data-theme="light"
-        >
-          <input
-            aria-disabled="false"
-            aria-invalid="false"
-            class="chakra-switch__input"
-            id="measure-area"
-            style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
-            type="checkbox"
-            value=""
-          />
-          <span
-            aria-hidden="true"
-            class="chakra-switch__track css-p27qcy"
-            data-theme="light"
-          >
-            <span
-              class="chakra-switch__thumb css-7roig"
-              data-theme="light"
-            />
-          </span>
-        </label>
+            <svg
+              aria-hidden="true"
+              class="chakra-select__icon"
+              focusable="false"
+              role="presentation"
+              style="width: 1em; height: 1em; color: currentcolor;"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
+                fill="currentColor"
+              />
+            </svg>
+          </div>
+        </div>
       </div>
     </div>
-    <div
-      class="css-0"
+    <button
+      aria-label="deleteMeasurementLabel"
+      class="chakra-button delete-measurements css-14p1tvq"
       data-theme="light"
+      type="button"
     >
-      <button
-        aria-label="deleteMeasurementLabel"
-        class="chakra-button delete-measurement css-lt0n4j"
-        data-theme="light"
-        type="button"
-      >
-        deleteMeasurementLabel
-      </button>
-    </div>
+      deleteMeasurementLabel
+    </button>
   </div>
 </div>
 `;
