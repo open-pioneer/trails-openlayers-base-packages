@@ -1,5 +1,5 @@
 {
-    "name": "ol-map",
+    "name": "sidebar-app",
     "private": true,
     "dependencies": {
         "@chakra-ui/icons": "^2.1.0",
@@ -7,19 +7,17 @@
         "@emotion/react": "^11.11.1",
         "@emotion/styled": "^11.11.0",
         "@open-pioneer/chakra-integration": "^1.1.0",
-        "@open-pioneer/coordinate-viewer": "workspace:^",
-        "@open-pioneer/toc": "workspace:^",
+        "@open-pioneer/basemap-switcher": "workspace:^",
+        "@open-pioneer/experimental-layout-sidebar": "workspace:^",
+        "@open-pioneer/experimental-ol-layer-control": "workspace:^",
         "@open-pioneer/map": "workspace:^",
         "@open-pioneer/runtime": "^1.1.0",
-        "@open-pioneer/scale-viewer": "workspace:^",
-        "@open-pioneer/initial-extent": "workspace:^",
-        "@open-pioneer/zoom": "workspace:^",
         "@open-pioneer/react-utils": "workspace:^",
-        "map-sample-logging": "workspace:^",
-        "map-sample-scale-component": "workspace:*",
         "ol": "^8.1.0",
         "react": "^18.2.0",
-        "react-dom": "^18.2.0"
+        "react-dom": "^18.2.0",
+        "react-icons": "4.8.0",
+        "react-use": "^17.4.0"
     },
-    "version": "0.0.6"
+    "version": "0.0.1"
 }
