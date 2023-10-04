@@ -6,14 +6,7 @@ import { AppUI } from "./AppUI";
 
 const element = createCustomElement({
     component: AppUI,
-    appMetadata,
-    async resolveConfig(ctx) {
-        const locale = ctx.getAttribute("forced-locale");
-        if (!locale) {
-            return undefined;
-        }
-        return { locale };
-    }
+    appMetadata
 });
 
-customElements.define("ol-map-app", element);
+customElements.define("sidebar-app", element);

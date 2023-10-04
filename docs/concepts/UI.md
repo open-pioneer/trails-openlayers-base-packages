@@ -47,7 +47,7 @@ You can use the `ref` property on the component to access the DOM element.
 **Example**
 
 ```tsx
-// YOUR-APP/MapApp.tsx
+// YOUR-APP/AppUI.tsx
 const zoomButton = useRef<HTMLButtonElement>(null);
 
 /* later, for example in an event handler */
