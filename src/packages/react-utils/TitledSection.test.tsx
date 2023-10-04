@@ -1,8 +1,5 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-/**
- * @vitest-environment jsdom
- */
 import { render } from "@testing-library/react";
 import { expect, it } from "vitest";
 import { ConfigureTitledSection, SectionHeading, TitledSection } from "./TitledSection";
