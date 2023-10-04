@@ -711,21 +711,12 @@ importers:
       '@emotion/styled':
         specifier: ^11.11.0
         version: 11.11.0(@emotion/react@11.11.1)(@types/react@18.2.20)(react@18.2.0)
-      '@open-pioneer/basemap-switcher':
-        specifier: workspace:^
-        version: link:../../../packages/basemap-switcher
       '@open-pioneer/chakra-integration':
         specifier: ^1.1.0
         version: 1.1.0(@chakra-ui/react@2.8.0)(@emotion/cache@11.11.0)(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(framer-motion@10.16.1)(react-dom@18.2.0)(react@18.2.0)
       '@open-pioneer/coordinate-viewer':
         specifier: workspace:^
         version: link:../../../packages/coordinate-viewer
-      '@open-pioneer/experimental-layout-sidebar':
-        specifier: workspace:^
-        version: link:../../../experimental-packages/layout-sidebar
-      '@open-pioneer/experimental-ol-layer-control':
-        specifier: workspace:^
-        version: link:../../../experimental-packages/ol-layer-control
       '@open-pioneer/initial-extent':
         specifier: workspace:^
         version: link:../../../packages/initial-extent

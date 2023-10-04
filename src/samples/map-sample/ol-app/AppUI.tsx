@@ -20,12 +20,14 @@ export function AppUI() {
             <TitledSection
                 title={
                     <Box textAlign="center" py={1}>
-                        <SectionHeading size={"md"}>OpenLayers Base Packages - Default Sample</SectionHeading>
+                        <SectionHeading size={"md"}>
+                            OpenLayers Base Packages - Default Sample
+                        </SectionHeading>
                     </Box>
                 }
             >
                 <Flex flex="1" direction="column" position="relative">
-                    <MapContainer mapId={MAP_ID} >
+                    <MapContainer mapId={MAP_ID}>
                         <MapAnchor position="top-left" horizontalGap={20} verticalGap={20}>
                             <Box
                                 backgroundColor="white"
