@@ -98,7 +98,7 @@ export function MapApp() {
                             ></Toc>
                         </Box>
                         <Box backgroundColor="whiteAlpha.800" marginTop={10}>
-                            <Measurement></Measurement>
+                            <Measurement active={true}></Measurement>
                         </Box>
                     </MapAnchor>
                     <MapAnchor position="bottom-right" horizontalGap={10} verticalGap={30}>

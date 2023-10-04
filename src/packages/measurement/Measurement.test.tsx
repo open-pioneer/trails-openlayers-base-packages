@@ -10,7 +10,7 @@ it("should successfully create a measurement component", async () => {
     render(
         <PackageContextProvider>
             <div data-testid="base">
-                <Measurement></Measurement>
+                <Measurement active={true}></Measurement>
             </div>
         </PackageContextProvider>
     );
@@ -28,7 +28,7 @@ it("should successfully create a measurement component with additional css class
     render(
         <PackageContextProvider>
             <div data-testid="base">
-                <Measurement className="test" pl="1px"></Measurement>
+                <Measurement active={true} className="test" pl="1px"></Measurement>
             </div>
         </PackageContextProvider>
     );
@@ -48,7 +48,7 @@ it("should successfully select a measurement from the select dropdown", async ()
     render(
         <PackageContextProvider>
             <div data-testid="base">
-                <Measurement className="test" pl="1px"></Measurement>
+                <Measurement active={true} className="test" pl="1px"></Measurement>
             </div>
         </PackageContextProvider>
     );
