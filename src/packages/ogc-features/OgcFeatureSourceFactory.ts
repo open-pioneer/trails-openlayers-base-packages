@@ -25,7 +25,7 @@ export type OffsetRequestProps = {
     startOffset: number; //0
 };
 
-// Chrome does only allow 6 concurrent requests
+// Chrome does only allow 6 concurrent requests (HTTP/1.x)
 export const defaultOffsetRequestProps: OffsetRequestProps = {
     numberOfConcurrentReq: 6,
     offsetDelta: 2500,

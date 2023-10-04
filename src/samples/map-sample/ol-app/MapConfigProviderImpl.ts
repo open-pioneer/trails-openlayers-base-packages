@@ -1,9 +1,7 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
 import { MapConfig, MapConfigProvider } from "@open-pioneer/map";
-import { createVectorSource } from "@open-pioneer/ogc-features";
 import TileLayer from "ol/layer/Tile";
-import VectorLayer from "ol/layer/Vector";
 import OSM from "ol/source/OSM";
 import WMTS from "ol/source/WMTS";
 import WMTSTileGrid from "ol/tilegrid/WMTS";
@@ -17,8 +15,8 @@ export class MapConfigProviderImpl implements MapConfigProvider {
         return {
             initialView: {
                 kind: "position",
-                center: { x: 404747, y: 5757920 }, //{ x: 366365.2041882158, y: 5705876.216445949}
-                zoom: 14 // 10
+                center: { x: 404747, y: 5757920 },
+                zoom: 14
             },
             projection: "EPSG:25832",
             layers: [
@@ -30,7 +28,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     layer: new TileLayer({
                         source: createWMTSSource("web")
                     })
-                } /*
+                },
                 {
                     id: "topplus_open_grau",
                     title: "TopPlus Open (Grau)",
@@ -39,93 +37,10 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     layer: new TileLayer({
                         source: createWMTSSource("web_grau")
                     })
-                },*/,
-                {
-                    id: "test_ogc_katasterbezirk",
-                    title: "OGC API Katasterbezirk",
-                    visible: true,
-                    layer: new VectorLayer({
-                        source: createVectorSource({
-                            baseUrl: "https://ogc-api.nrw.de/lika/v1",
-                            collectionId: "katasterbezirk",
-                            crs: "http://www.opengis.net/def/crs/EPSG/0/25832",
-                            attributions: "Test Katasterbezirk"
-                        })
-                    })
-                } /*,
-                {
-                    id: "test_ogc_nutzung",
-                    title: "OGC API Nutzung",
-                    isBaseLayer: false,
-                    visible: false,
-                    layer: new VectorLayer({
-                        source: createVectorSource(
-                            "https://ogc-api.nrw.de/lika/v1",
-                            "nutzung",
-                            "http://www.opengis.net/def/crs/EPSG/0/25832",
-                            "Test Nutzung"
-                        )
-                    })
                 },
                 {
-                    id: "test_ogc_nutzung_flurstueck",
-                    title: "OGC API Nutzung Flurstück",
-                    isBaseLayer: true,
-                    visible: false,
-                    layer: new VectorLayer({
-                        source: createVectorSource(
-                            "https://ogc-api.nrw.de/lika/v1",
-                            "nutzung_flurstueck",
-                            "http://www.opengis.net/def/crs/EPSG/0/25832",
-                            "Test Nutzung Flurstück"
-                        )
-                    })
-                },
-                {
-                    id: "test_ogc_verwaltungseinheit",
-                    title: "OGC API Verwaltungseinheit",
-                    isBaseLayer: true,
-                    visible: false,
-                    layer: new VectorLayer({
-                        source: createVectorSource(
-                            "https://ogc-api.nrw.de/lika/v1",
-                            "verwaltungseinheit",
-                            "http://www.opengis.net/def/crs/EPSG/0/25832",
-                            "Test Verwaltungseinheit"
-                        )
-                    })
-                },
-                {
-                    id: "test_ogc_abschnitteaeste",
-                    title: "OGC API Abschnitte und Äste",
-                    isBaseLayer: true,
-                    visible: false,
-                    layer: new VectorLayer({
-                        source: createVectorSource(
-                            "https://demo.ldproxy.net/strassen",
-                            "abschnitteaeste",
-                            "http://www.opengis.net/def/crs/EPSG/0/25832",
-                            "Test Abschnitte und Äste"
-                        )
-                    })
-                },
-                {
-                    id: "test_ogc_ETL",
-                    title: "OGC API Electricity Emission Lines",
-                    isBaseLayer: true,
-                    visible: false,
-                    layer: new VectorLayer({
-                        source: createVectorSource(
-                            "https://demo.ldproxy.net/zoomstack",
-                            "etl",
-                            "http://www.opengis.net/def/crs/EPSG/0/25832",
-                            "Test Electricity Emission Lines"
-                        )
-                    })
-                }*/,
-                {
-                    id: "b-1",
-                    title: "OSM",
+                    id: "topplus_open_light",
+                    title: "TopPlus Open (Light)",
                     isBaseLayer: true,
                     visible: false,
                     layer: new TileLayer({
