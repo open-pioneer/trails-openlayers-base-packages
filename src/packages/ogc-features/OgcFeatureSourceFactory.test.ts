@@ -4,11 +4,10 @@ import { assert, it } from "vitest"; // (1)
 import {
     _createOffsetURLs,
     _createVectorSource,
-    _FeatureResponse,
+    FeatureResponse,
     _getNextURL,
     _queryAllFeatureRequests,
-    _queryFeatures,
-    defaultOffsetRequestProps
+    _queryFeatures
 } from "./OgcFeatureSourceFactory";
 import { Geometry, Point } from "ol/geom";
 import { Feature } from "ol";
@@ -57,17 +56,17 @@ it("expect default offsetUrls are correct", () => {
     assert.includeMembers<string>(urls, expectedResult);
 });
 
-const mockedFeatureResponse: _FeatureResponse = {
+const mockedFeatureResponse: FeatureResponse = {
     features: [new Feature({ geometry: new Point([395388.236878133, 5752928.80853902]) })],
     nextURL: undefined
 };
 
-const mockedFeatureResponseWithNext: _FeatureResponse = {
+const mockedFeatureResponseWithNext: FeatureResponse = {
     features: [new Feature({ geometry: new Point([5752928.80853902, 395388.236878133]) })],
     nextURL: "https://url-to-service"
 };
 
-const mockedEmptyFeatureResponse: _FeatureResponse = {
+const mockedEmptyFeatureResponse: FeatureResponse = {
     features: [],
     nextURL: undefined
 };
@@ -78,8 +77,9 @@ it("expect feature responses are correct", async () => {
     await _queryAllFeatureRequests(
         fullUrl,
         new GeoJSON(),
-        new AbortController(),
         async (_) => mockedFeatureResponse,
+        new AbortController().signal,
+        () => {},
         (features) => features.forEach((feature) => addedFeatures.push(feature))
     );
     assert.includeMembers<FeatureLike>(addedFeatures, mockedFeatureResponse.features);
@@ -91,8 +91,9 @@ it("expect feature responses are empty", async () => {
     await _queryAllFeatureRequests(
         fullUrl,
         new GeoJSON(),
-        new AbortController(),
         async (_) => mockedEmptyFeatureResponse,
+        new AbortController().signal,
+        () => {},
         (features) => features.forEach((feature) => addedFeatures.push(feature))
     );
     assert.includeMembers<FeatureLike>(addedFeatures, mockedEmptyFeatureResponse.features);
@@ -104,14 +105,10 @@ it("expect additionalOptions are set on vector-source", () => {
         wrapX: false,
         format: undefined
     };
+
     const vectorSource = _createVectorSource(
-        "",
-        "",
-        "",
-        "",
-        additionalOptions,
+        { baseUrl: "", collectionId: "", crs: "", additionalOptions: additionalOptions },
         _queryFeatures,
-        defaultOffsetRequestProps,
         undefined
     );
     assert.isTrue(
@@ -130,19 +127,14 @@ it("expect url is created correctly on vector-source", async () => {
         expectedUrl = `${fullURL}/collections/${collectionId}/items?bbox=1,2,3,4&bbox-crs=${crs}&crs=${crs}&f=json`;
     let urlIsAlwaysCorrect = true;
 
-    const queryFeatures = async (fullUrl: string): Promise<_FeatureResponse> => {
+    const queryFeatures = async (fullUrl: string): Promise<FeatureResponse> => {
         urlIsAlwaysCorrect = urlIsAlwaysCorrect && fullUrl.includes(expectedUrl);
         return mockedFeatureResponse;
     };
 
     const vectorSource = _createVectorSource(
-        fullURL,
-        collectionId,
-        crs,
-        attributions,
-        {},
+        { baseUrl: fullURL, collectionId: collectionId, crs: crs, attributions: attributions },
         queryFeatures,
-        defaultOffsetRequestProps,
         (_: Array<Feature<Geometry>>) => {}
     );
     await vectorSource.loadFeatures(bbox, 1, new Projection({ code: "" }));
@@ -191,8 +183,9 @@ it("expect all feature from 2 query-runs are added", async () => {
     await _queryAllFeatureRequests(
         fullUrl,
         new GeoJSON(),
-        new AbortController(),
         queryFeatures,
+        new AbortController().signal,
+        () => {},
         (features) => features.forEach((feature) => addedFeatures.push(feature)),
         offsetProps
     );

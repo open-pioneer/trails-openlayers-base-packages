@@ -1,4 +1,4 @@
-# @open-pioneer/ogc-feature-api-layer
+# @open-pioneer/ogc-features
 
 This package provides a function to create an ol-VectorSource to be used with OGC-Feature-Layer.
 This VectorSource should be used inside an ol-VectorLayer.
@@ -8,25 +8,27 @@ This VectorSource should be used inside an ol-VectorLayer.
 Just import the function with:
 
 ```js
-import { createVectorSource } from "@open-pioneer/ogc-feature-api-layer";
+import { createVectorSource } from "@open-pioneer/ogc-features";
 ```
 
 and use it inside a VectorLayer:
 
 ```js
 layer: new VectorLayer({
-    source: createVectorSource(
-        "https://ogc-api.nrw.de/lika/v1", // ogcFeatureApiBaseUrl
-        "katasterbezirk", // collectionId
-        "http://www.opengis.net/def/crs/EPSG/0/25832", // crs
-        "Katasterbezirk", // attributions
-        {
-            numberOfConcurrentReq: 6, // (Optional) OffsetRequestProps
+    source: createVectorSource({
+        baseUrl: "https://ogc-api.nrw.de/inspire-us-kindergarten/v1",
+        collectionId: "governmentalservice",
+        crs: "http://www.opengis.net/def/crs/EPSG/0/25832",
+        attributions:
+            "Datenlizenz Deutschland - Namensnennung - Version 2.0 <a href='https://www.govdata.de/dl-de/by-2-0'>https://www.govdata.de/dl-de/by-2-0</a>", // attributions
+        offsetRequestProps: {
+            // (Optional)
+            numberOfConcurrentReq: 6,
             offsetDelta: 2500,
             startOffset: 0
         },
-        {} // (Optional) additional "official" Options that should be set on VectorSource
-    )
+        additionalOptions: {} // (Optional)
+    })
 });
 ```
 

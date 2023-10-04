@@ -1,5 +1,5 @@
 {
-    "name": "@open-pioneer/ogc-feature-api-layer",
+    "name": "@open-pioneer/ogc-features",
     "version": "0.0.1",
     "license": "Apache-2.0",
     "main": "index.ts",

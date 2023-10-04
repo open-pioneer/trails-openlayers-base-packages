@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
 import { MapConfig, MapConfigProvider } from "@open-pioneer/map";
-import { createVectorSource } from "@open-pioneer/ogc-feature-api-layer";
+import { createVectorSource } from "@open-pioneer/ogc-features";
 import TileLayer from "ol/layer/Tile";
 import VectorLayer from "ol/layer/Vector";
 import OSM from "ol/source/OSM";
@@ -43,15 +43,14 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                 {
                     id: "test_ogc_katasterbezirk",
                     title: "OGC API Katasterbezirk",
-                    isBaseLayer: false,
                     visible: true,
                     layer: new VectorLayer({
-                        source: createVectorSource(
-                            "https://ogc-api.nrw.de/lika/v1",
-                            "katasterbezirk",
-                            "http://www.opengis.net/def/crs/EPSG/0/25832",
-                            "Test Katasterbezirk"
-                        )
+                        source: createVectorSource({
+                            baseUrl: "https://ogc-api.nrw.de/lika/v1",
+                            collectionId: "katasterbezirk",
+                            crs: "http://www.opengis.net/def/crs/EPSG/0/25832",
+                            attributions: "Test Katasterbezirk"
+                        })
                     })
                 } /*,
                 {
