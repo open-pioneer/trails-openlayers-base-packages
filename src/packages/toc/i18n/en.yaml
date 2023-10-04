@@ -1,3 +1,5 @@
 messages:
   basemapsLabel: "Basemaps"
-  tocTitel: "Map content"
+  operationalLayerLabel: "Operational layers"
+  missingLayers: "There are no layers to display."
+  error: "Error while creating map content."
