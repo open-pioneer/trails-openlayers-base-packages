@@ -101,9 +101,9 @@ it("should support overriding basemap-switcher properties", async () => {
             }
         ]
     });
+    await registry.expectMapModel(mapId);
 
     const injectedServices = createServiceOptions({ registry });
-
     render(
         <PackageContextProvider services={injectedServices}>
             <Toc
