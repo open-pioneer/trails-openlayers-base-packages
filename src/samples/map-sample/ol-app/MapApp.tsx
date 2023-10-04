@@ -88,12 +88,11 @@ export function MapApp() {
                             </Box>
                             <TitledSection
                                 title={
-                                    /*todo set appropriate colors*/
                                     <Box
                                         marginTop={10}
                                         className="toc-header"
                                         padding={2}
-                                        backgroundColor="var(--chakra-colors-blackAlpha-500)"
+                                        backgroundColor="blackAlpha.500"
                                     >
                                         <SectionHeading size="md">
                                             {intl.formatMessage({ id: "tocTitle" })}
