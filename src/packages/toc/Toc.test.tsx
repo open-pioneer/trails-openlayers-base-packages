@@ -122,8 +122,11 @@ it("should support overriding basemap-switcher properties", async () => {
 
     expect(basemapSwitcher?.classList.contains("test-class")).toBe(true);
 
-    const options = Array.from(basemapSelect!.options).map((option) => option.text);
-    expect(options).toMatchInlineSnapshot(`
+    // Get options manually (instead of basemapSelect.options); these seems
+    // to be a timing problem with that property (?)
+    const options = basemapSelect.querySelectorAll("option");
+    const optionLabels = Array.from(options).map((opt) => opt.textContent);
+    expect(optionLabels).toMatchInlineSnapshot(`
       [
         "OSM",
         "emptyBasemapLabel",
