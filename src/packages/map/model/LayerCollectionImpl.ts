@@ -3,7 +3,14 @@
 import { EventEmitter, createLogger } from "@open-pioneer/core";
 import OlBaseLayer from "ol/layer/Base";
 import { v4 as uuid4v } from "uuid";
-import { LayerCollection, LayerCollectionEvents, LayerConfig, LayerModel, MapModel } from "../api";
+import {
+    LayerCollection,
+    LayerCollectionEvents,
+    LayerConfig,
+    LayerModel,
+    LayerRetrievalOptions,
+    MapModel
+} from "../api";
 import { LayerModelImpl } from "./LayerModelImpl";
 import { MapModelImpl } from "./MapModelImpl";
 
@@ -20,7 +27,7 @@ export class LayerCollectionImpl
     #layerModelsById = new Map<string, LayerModelImpl>();
     #layerModelsByLayer: WeakMap<OlBaseLayer, LayerModelImpl> | undefined = undefined;
     #activeBaseLayer: LayerModelImpl | undefined;
-    #nextIndex = OPERATION_LAYER_INITIAL_Z; // next z-index for a layer. currently just auto-increments.
+    #nextIndex = OPERATION_LAYER_INITIAL_Z; // next z-index for operational layer. currently just auto-increments.
 
     constructor(map: MapModelImpl) {
         super();
@@ -134,16 +141,20 @@ export class LayerCollectionImpl
         return true;
     }
 
-    getOperationalLayers(): LayerModelImpl[] {
-        return this.getAllLayers().filter((layerModel) => !layerModel.isBaseLayer);
+    getOperationalLayers(options?: LayerRetrievalOptions): LayerModelImpl[] {
+        return this.getAllLayers(options).filter((layerModel) => !layerModel.isBaseLayer);
     }
 
     getLayerById(id: string): LayerModelImpl | undefined {
         return this.#layerModelsById.get(id);
     }
 
-    getAllLayers(): LayerModelImpl[] {
-        return Array.from(this.#layerModelsById.values());
+    getAllLayers(options?: LayerRetrievalOptions): LayerModelImpl[] {
+        const layers = Array.from(this.#layerModelsById.values());
+        if (options?.sortByDisplayOrder) {
+            sortLayersByDisplayOrder(layers);
+        }
+        return layers;
     }
 
     removeLayerById(id: string): void {
@@ -187,4 +198,18 @@ export class LayerCollectionImpl
         this.#activeBaseLayer = model;
         this.#activeBaseLayer?.__setVisible(true);
     }
+}
+
+function sortLayersByDisplayOrder(layers: LayerModel[]) {
+    layers.sort((left, right) => {
+        // currently layers are added with increasing z-index (base layers: 0), so
+        // ordering by z-index is automatically the correct display order.
+        // we use the id as the tie breaker for equal z-indices.
+        const leftZ = left.olLayer.getZIndex() ?? 1;
+        const rightZ = right.olLayer.getZIndex() ?? 1;
+        if (leftZ !== rightZ) {
+            return leftZ - rightZ;
+        }
+        return left.id.localeCompare(right.id, "en");
+    });
 }

@@ -45,6 +45,18 @@ export interface BasemapSwitcherProps extends CommonComponentProps {
      * Defaults to false.
      */
     allowSelectingEmptyBasemap?: boolean;
+
+    /**
+     * Optional aria-labelledby property.
+     * Do not use together with aria-label.
+     */
+    "aria-labelledby"?: string;
+
+    /**
+     * Optional aria-label property.
+     * Do not use together with aria-label.
+     */
+    "aria-label"?: string;
 }
 
 /**
@@ -52,7 +64,12 @@ export interface BasemapSwitcherProps extends CommonComponentProps {
  */
 export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
     const intl = useIntl();
-    const { mapId, allowSelectingEmptyBasemap } = props;
+    const {
+        mapId,
+        allowSelectingEmptyBasemap,
+        "aria-label": ariaLabel,
+        "aria-labelledby": ariaLabelledBy
+    } = props;
     const { containerProps } = useCommonComponentProps("basemap-switcher", props);
     const emptyBasemapLabel = intl.formatMessage({ id: "emptyBasemapLabel" });
 
@@ -62,7 +79,6 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
         return createOptions({ baseLayers, allowSelectingEmptyBasemap, emptyBasemapLabel });
     }, [baseLayers, allowSelectingEmptyBasemap, emptyBasemapLabel]);
     const activateLayer = (layerId: string) => {
-        // empty string is used for "no basemap"
         map?.layers.activateBaseLayer(layerId === NO_BASEMAP_ID ? undefined : layerId);
     };
 
@@ -70,6 +86,8 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
         <Box {...containerProps}>
             {map ? (
                 <Select
+                    aria-label={ariaLabel}
+                    aria-labelledby={ariaLabelledBy}
                     className="basemap-switcher-select"
                     value={selectedId}
                     onChange={(e) => activateLayer(e.target.value)}

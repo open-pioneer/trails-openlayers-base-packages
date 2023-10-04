@@ -70,6 +70,49 @@ it("makes the map layers accessible", async () => {
     expect(allLayers).toEqual(layers);
 });
 
+it("supports ordered retrieval of layers", async () => {
+    model = await createMapModel("foo", {
+        layers: [
+            {
+                title: "OSM",
+                layer: new TileLayer({
+                    source: new OSM()
+                })
+            },
+            {
+                title: "TopPlus Open",
+                layer: new TileLayer({
+                    source: new BkgTopPlusOpen()
+                })
+            },
+            {
+                title: "Base",
+                isBaseLayer: true,
+                layer: new TileLayer({})
+            }
+        ]
+    });
+
+    const layers = model.layers.getAllLayers({ sortByDisplayOrder: true });
+    const titles = layers.map((l) => l.title);
+    expect(titles).toMatchInlineSnapshot(`
+      [
+        "Base",
+        "OSM",
+        "TopPlus Open",
+      ]
+    `);
+
+    const operationalLayers = model.layers.getOperationalLayers({ sortByDisplayOrder: true });
+    const operationalLayerTitles = operationalLayers.map((l) => l.title);
+    expect(operationalLayerTitles).toMatchInlineSnapshot(`
+      [
+        "OSM",
+        "TopPlus Open",
+      ]
+    `);
+});
+
 it("generates automatic unique ids for layers", async () => {
     model = await createMapModel("foo", {
         layers: [

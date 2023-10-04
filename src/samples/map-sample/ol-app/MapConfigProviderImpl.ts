@@ -5,6 +5,9 @@ import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
 import WMTS from "ol/source/WMTS";
 import WMTSTileGrid from "ol/tilegrid/WMTS";
+import VectorSource from "ol/source/Vector";
+import { GeoJSON } from "ol/format";
+import VectorLayer from "ol/layer/Vector";
 
 export const MAP_ID = "main";
 
@@ -21,31 +24,35 @@ export class MapConfigProviderImpl implements MapConfigProvider {
             projection: "EPSG:25832",
             layers: [
                 {
+                    title: "Haltestellen Stadt Rostock",
+                    visible: true,
+                    layer: createHaltestellenLayer()
+                },
+                {
+                    title: "Kindertagesstätten",
+                    visible: true,
+                    layer: createKitasLayer()
+                },
+                {
                     id: "topplus_open",
                     title: "TopPlus Open",
                     isBaseLayer: true,
                     visible: true,
-                    layer: new TileLayer({
-                        source: createWMTSSource("web")
-                    })
+                    layer: createTopsPlusLayer("web")
                 },
                 {
                     id: "topplus_open_grau",
                     title: "TopPlus Open (Grau)",
                     isBaseLayer: true,
                     visible: false,
-                    layer: new TileLayer({
-                        source: createWMTSSource("web_grau")
-                    })
+                    layer: createTopsPlusLayer("web_grau")
                 },
                 {
                     id: "topplus_open_light",
                     title: "TopPlus Open (Light)",
                     isBaseLayer: true,
                     visible: false,
-                    layer: new TileLayer({
-                        source: createWMTSSource("web_light")
-                    })
+                    layer: createTopsPlusLayer("web_light")
                 },
                 {
                     title: "OSM",
@@ -66,7 +73,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
  *
  * For more details, see the documentation of the map package.
  */
-function createWMTSSource(layer: "web" | "web_grau" | "web_light") {
+function createTopsPlusLayer(layer: "web" | "web_grau" | "web_light") {
     const topLeftCorner = [-3803165.98427299, 8805908.08284866];
 
     /**
@@ -99,7 +106,7 @@ function createWMTSSource(layer: "web" | "web_grau" | "web_light") {
         matrixIds[i] = i;
     }
 
-    return new WMTS({
+    const wmts = new WMTS({
         url: `https://sgx.geodatenzentrum.de/wmts_topplus_open/tile/1.0.0/${layer}/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png`,
         layer: "web_grau",
         matrixSet: "EU_EPSG_25832_TOPPLUS",
@@ -113,5 +120,33 @@ function createWMTSSource(layer: "web" | "web_grau" | "web_light") {
         }),
         style: "default",
         attributions: `Kartendarstellung und Präsentationsgraphiken: © Bundesamt für Kartographie und Geodäsie ${new Date().getFullYear()}, <a href="https://sg.geodatenzentrum.de/web_public/gdz/datenquellen/Datenquellen_TopPlusOpen.html" target="_blank">Datenquellen</a>`
+    });
+    return new TileLayer({
+        source: wmts
+    });
+}
+
+function createHaltestellenLayer() {
+    const geojsonSource = new VectorSource({
+        url: "https://geo.sv.rostock.de/download/opendata/haltestellen/haltestellen.json",
+        format: new GeoJSON(), //assign GeoJson parser
+        attributions: "Haltestellen Stadt Rostock, Creative Commons CC Zero License (cc-zero)"
+    });
+
+    return new VectorLayer({
+        source: geojsonSource
+    });
+}
+
+function createKitasLayer() {
+    const geojsonSource = new VectorSource({
+        url: "https://ogc-api.nrw.de/inspire-us-kindergarten/v1/collections/governmentalservice/items?f=json&limit=10000",
+        format: new GeoJSON(), //assign GeoJson parser
+        attributions:
+            '&copy; <a href="http://www.bkg.bund.de" target="_blank">Bundesamt f&uuml;r Kartographie und Geod&auml;sie</a> 2017, <a href="http://sg.geodatenzentrum.de/web_public/Datenquellen_TopPlus_Open.pdf" target="_blank">Datenquellen</a>'
+    });
+
+    return new VectorLayer({
+        source: geojsonSource
     });
 }

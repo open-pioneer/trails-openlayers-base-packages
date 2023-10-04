@@ -91,6 +91,7 @@ export interface SectionHeadingProps extends HeadingProps {
 
 /**
  * Renders an appropriate heading tag for the current heading level (`h1` through `h6`).
+ * This component should only be used as part of the `title` prop of the {@link TitledSection}.
  *
  * Headings are rendered as [Chakra Headings](https://chakra-ui.com/docs/components/heading).
  *

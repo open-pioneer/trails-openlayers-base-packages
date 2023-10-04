@@ -103,7 +103,7 @@ The following map options are supported:
 
 -   `initialView`,
 -   `projection`,
--   `layers` (see [Layer configuration](#md:layer-configuration)),
+-   `layers` (see [Layer configuration](#layer-configuration)),
 -   `advanced`
 
 Always use the provided map model to access the map initially.
@@ -191,12 +191,12 @@ export class MapConfigProviderImpl implements MapConfigProvider {
 
 Configure your custom layer inside the [Map configuration](#md:map-configuration) by using the OpenLayers [`Layer`](https://openlayers.org/en/latest/apidoc/module-ol_layer_Layer-Layer.html) as `layer` property.
 
-Always use the provided layer model to access the layer initially.
-Use `.olLayer` only, when the raw instance is required, for example to set the opacity.
-
-To access specific layers use the Layer Collection methods, such as `getAllLayers`, `getBaseLayers`, `getOperationalLayers`.
-Layers should not be manually removed from the map via `.olMap`.
-Only use `removeLayerById` to remove a layer.
+> **Layer Order**
+>
+> By default, layers are displayed in the order in which they are defined in the `layers` array.
+> The later a layer is listed in the array, the higher up it is displayed in the map.
+>
+> Base layers are excluded from this rule: they are always displayed below all operational layers.
 
 Example: Implementation of a layer configuration.
 
@@ -448,6 +448,12 @@ For this reason, always use the methods provided by these models to manage the f
 -   Custom layer metadata (`attributes`)
 
 You can use the raw OpenLayers instances for other features (for example to control the transparency of a layer).
+
+Always use the provided map model to retrieve an instance of the layer.
+
+To access specific layers use the LayerCollection methods, such as `getAllLayers`, `getBaseLayers`, `getOperationalLayers`.
+Layers should not be manually removed from the map via `.olMap`.
+Only use `removeLayerById` to remove a layer.
 
 #### Using the map model and layer model in services
 

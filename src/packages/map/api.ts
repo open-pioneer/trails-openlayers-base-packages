@@ -7,11 +7,6 @@ import type OlView from "ol/View";
 import type { ViewOptions as OlViewOptions } from "ol/View";
 import type OlBaseLayer from "ol/layer/Base";
 
-/*
-    TODO:
-    - Simple helper class for map setup?
-*/
-
 export interface MapModelEvents {
     "changed": void;
     "changed:container": void;
@@ -71,6 +66,16 @@ export interface LayerCollectionEvents {
     changed: void;
 }
 
+export interface LayerRetrievalOptions {
+    /**
+     * If set to `true`, layers will be ordered by their display order:
+     * Layers listed first in the returned array are shown _below_ layers listed at a later index.
+     *
+     * By default, layers are returned in arbitrary order.
+     */
+    sortByDisplayOrder?: boolean;
+}
+
 /**
  * Contains the layers known to a {@link MapModel}.
  */
@@ -102,13 +107,15 @@ export interface LayerCollection extends EventSource<LayerCollectionEvents> {
      * Creates a new layer model and adds it to the map.
      *
      * The new layer model is automatically registered with this collection.
+     *
+     * NOTE: by default, the new layer will be shown on _top_ of all existing layers.
      */
     createLayer(layer: LayerConfig): LayerModel;
 
     /**
-     * Returns all operational Layers.
+     * Returns all operational layers.
      */
-    getOperationalLayers(): LayerModel[];
+    getOperationalLayers(options?: LayerRetrievalOptions): LayerModel[];
 
     /**
      * Returns the layer identified by the `id` or undefined, if no such layer exists.
@@ -118,7 +125,7 @@ export interface LayerCollection extends EventSource<LayerCollectionEvents> {
     /**
      * Returns all layers known to this collection.
      */
-    getAllLayers(): LayerModel[];
+    getAllLayers(options?: LayerRetrievalOptions): LayerModel[];
 
     /**
      * Removes a layer from the registry and the map identified by the `id`.
@@ -384,6 +391,14 @@ export interface MapConfig {
 
     /**
      * Configures the layers of the map.
+     *
+     * **Layer order**
+     *
+     * Layers defined in this array are (by default) displayed in their listed order:
+     * layers defined first are shown at the bottom, and layers defined at a later position
+     * are shown above their predecessors.
+     *
+     * Note: base layers are always shown below all operational layers.
      */
     layers?: LayerConfig[];
 
