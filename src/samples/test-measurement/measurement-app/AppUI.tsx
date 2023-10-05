@@ -6,7 +6,10 @@ import { MapAnchor, MapContainer } from "@open-pioneer/map";
 import { MAP_ID } from "./MapConfigProviderImpl";
 import { EditIcon } from "@chakra-ui/icons";
 import { useState } from "react";
+import { useIntl } from "open-pioneer:react-hooks";
+import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 export function AppUI() {
+    const intl = useIntl();
     const [measurementIsActive, setMeasurementIsActive] = useState<boolean>(false);
 
     function activateMeasurement() {
@@ -22,14 +25,23 @@ export function AppUI() {
             <Flex flex="1" direction="column" position="relative">
                 <MapContainer mapId={MAP_ID}>
                     {measurementIsActive ? (
-                        <MapAnchor position="top-left" horizontalGap={10} verticalGap={10}>
+                        <MapAnchor position="top-left" horizontalGap={20} verticalGap={20}>
                             <Box
                                 backgroundColor="whiteAlpha.900"
                                 borderWidth="1px"
                                 borderRadius="lg"
+                                padding={2}
                                 boxShadow="lg"
                             >
-                                <Measurement></Measurement>
+                                <TitledSection
+                                    title={
+                                        <SectionHeading size="md" mb={3}>
+                                            {intl.formatMessage({ id: "measurementTitle" })}
+                                        </SectionHeading>
+                                    }
+                                >
+                                    <Measurement></Measurement>
+                                </TitledSection>
                             </Box>
                         </MapAnchor>
                     ) : (

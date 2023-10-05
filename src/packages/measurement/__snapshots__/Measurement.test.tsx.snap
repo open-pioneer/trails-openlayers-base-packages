@@ -6,17 +6,6 @@ exports[`should successfully create a measurement component 1`] = `
   data-theme="light"
 >
   <div
-    class="measurement-header css-1xd6p1z"
-    data-theme="light"
-  >
-    <b
-      class="chakra-text css-0"
-      data-theme="light"
-    >
-      measurementTitle
-    </b>
-  </div>
-  <div
     class="measurement-content css-1syq16t"
     data-theme="light"
   >
@@ -36,7 +25,6 @@ exports[`should successfully create a measurement component 1`] = `
           id="field-:r0:-label"
         >
           measurementLabel
-           
         </label>
         <div
           class="chakra-select__wrapper css-42b2qy"
@@ -97,17 +85,6 @@ exports[`should successfully create a measurement component with additional css 
   data-theme="light"
 >
   <div
-    class="measurement-header css-1xd6p1z"
-    data-theme="light"
-  >
-    <b
-      class="chakra-text css-0"
-      data-theme="light"
-    >
-      measurementTitle
-    </b>
-  </div>
-  <div
     class="measurement-content css-1syq16t"
     data-theme="light"
   >
@@ -127,7 +104,6 @@ exports[`should successfully create a measurement component with additional css 
           id="field-:r1:-label"
         >
           measurementLabel
-           
         </label>
         <div
           class="chakra-select__wrapper css-42b2qy"

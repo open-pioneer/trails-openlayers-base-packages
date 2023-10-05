@@ -7,7 +7,6 @@ import {
     Button,
     FormControl,
     FormLabel,
-    Text,
     HStack,
     Select
 } from "@open-pioneer/chakra-integration";
@@ -33,7 +32,8 @@ export const Measurement: FC<MeasurementProps> = (props) => {
         //start selected measurement
         return () => {
             console.log("unmount");
-            //clear drawn measurements and stop the measurement interaction
+            clearMeasurements();
+            //stop the measurement interaction
         };
     }, []);
 
@@ -50,18 +50,11 @@ export const Measurement: FC<MeasurementProps> = (props) => {
 
     return (
         <Box className={classNames("measurement", className)} {...rest}>
-            <Box
-                className="measurement-header"
-                padding={2}
-                backgroundColor="var(--chakra-colors-blackAlpha-500)"
-            >
-                <Text as="b">{label("measurementTitle")}</Text>
-            </Box>
             <Box className="measurement-content" padding={2}>
                 <FormControl mb={4} alignItems="center">
                     <HStack mb={2}>
                         <FormLabel htmlFor="measurement" mb={1}>
-                            {label("measurementLabel")}{" "}
+                            {label("measurementLabel")}
                         </FormLabel>
                         <Select
                             value={selectedMeasurement}
