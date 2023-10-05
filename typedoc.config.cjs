@@ -15,7 +15,8 @@ const documentedPackages = [
     "packages/scale-viewer",
     "packages/basemap-switcher",
     "packages/initial-extent",
-    "packages/zoom"
+    "packages/zoom",
+    "packages/ogc-features"
 ];
 
 const packagePaths = documentedPackages.map((p) => `src/${p}`);

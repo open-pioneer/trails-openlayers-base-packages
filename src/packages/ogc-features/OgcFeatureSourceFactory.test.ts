@@ -71,17 +71,17 @@ const mockedEmptyFeatureResponse: FeatureResponse = {
     nextURL: undefined
 };
 
-it("expect feature responses are correct", async () => {
+it("expect feature responses are parsed from the feature response", async () => {
     const addedFeatures: Array<FeatureLike> = [];
     const fullUrl = "https://url-to-service/items?f=json";
     await _queryAllFeaturesWithOffset(
         fullUrl,
         new GeoJSON(),
         async (_) => mockedFeatureResponse,
-        new AbortController().signal,
+        undefined,
         (features) => features.forEach((feature) => addedFeatures.push(feature))
     );
-    assert.includeMembers<FeatureLike>(addedFeatures, mockedFeatureResponse.features);
+    assert.includeMembers(addedFeatures, mockedFeatureResponse.features);
 });
 
 it("expect feature responses are empty", async () => {
@@ -91,10 +91,10 @@ it("expect feature responses are empty", async () => {
         fullUrl,
         new GeoJSON(),
         async (_) => mockedEmptyFeatureResponse,
-        new AbortController().signal,
+        undefined,
         (features) => features.forEach((feature) => addedFeatures.push(feature))
     );
-    assert.includeMembers<FeatureLike>(addedFeatures, mockedEmptyFeatureResponse.features);
+    assert.includeMembers(addedFeatures, mockedEmptyFeatureResponse.features);
 });
 
 it("expect additionalOptions are set on vector-source", () => {
