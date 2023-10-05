@@ -6,94 +6,88 @@ exports[`should successfully create a measurement component 1`] = `
   data-theme="light"
 >
   <div
-    class="css-0"
+    class="measurement-header css-1xd6p1z"
+    data-theme="light"
+  >
+    <b
+      class="chakra-text css-0"
+      data-theme="light"
+    >
+      measurementTitle
+    </b>
+  </div>
+  <div
+    class="measurement-content css-1syq16t"
     data-theme="light"
   >
     <div
-      class="measurement-header css-1xd6p1z"
+      class="chakra-form-control css-1m7igkt"
       data-theme="light"
-    >
-      <b
-        class="chakra-text css-0"
-        data-theme="light"
-      >
-        measurementTitle
-      </b>
-    </div>
-    <div
-      class="measurement-content css-1syq16t"
-      data-theme="light"
+      role="group"
     >
       <div
-        class="chakra-form-control css-1m7igkt"
+        class="chakra-stack css-1sgivba"
         data-theme="light"
-        role="group"
       >
+        <label
+          class="chakra-form__label css-oe420r"
+          data-theme="light"
+          for="measurement"
+          id="field-:r0:-label"
+        >
+          measurementLabel
+           
+        </label>
         <div
-          class="chakra-stack css-1sgivba"
+          class="chakra-select__wrapper css-42b2qy"
           data-theme="light"
         >
-          <label
-            class="chakra-form__label css-oe420r"
+          <select
+            class="chakra-select measurement-select css-161pkch"
             data-theme="light"
-            for="measurement"
-            id="field-:r0:-label"
+            id="measurement"
           >
-            measurementLabel
-             
-          </label>
+            <option
+              value="distance"
+            >
+              distance
+            </option>
+            <option
+              value="area"
+            >
+              area
+            </option>
+          </select>
           <div
-            class="chakra-select__wrapper css-42b2qy"
+            class="chakra-select__icon-wrapper css-iohxn1"
             data-theme="light"
           >
-            <select
-              class="chakra-select measurement-select css-161pkch"
-              data-theme="light"
-              id="measurement"
+            <svg
+              aria-hidden="true"
+              class="chakra-select__icon"
+              focusable="false"
+              role="presentation"
+              style="width: 1em; height: 1em; color: currentcolor;"
+              viewBox="0 0 24 24"
             >
-              <option
-                value="distance"
-              >
-                distance
-              </option>
-              <option
-                value="area"
-              >
-                area
-              </option>
-            </select>
-            <div
-              class="chakra-select__icon-wrapper css-iohxn1"
-              data-theme="light"
-            >
-              <svg
-                aria-hidden="true"
-                class="chakra-select__icon"
-                focusable="false"
-                role="presentation"
-                style="width: 1em; height: 1em; color: currentcolor;"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
-                  fill="currentColor"
-                />
-              </svg>
-            </div>
+              <path
+                d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
+                fill="currentColor"
+              />
+            </svg>
           </div>
         </div>
       </div>
-      <button
-        aria-label="deleteMeasurementLabel"
-        class="chakra-button delete-measurements css-14p1tvq"
-        data-theme="light"
-        type="button"
-      >
-        deleteMeasurementLabel
-      </button>
     </div>
+    <button
+      aria-label="deleteMeasurementLabel"
+      class="chakra-button delete-measurements css-14p1tvq"
+      data-theme="light"
+      type="button"
+    >
+      deleteMeasurementLabel
+    </button>
   </div>
-  ;
 </div>
 `;
 
@@ -103,93 +97,87 @@ exports[`should successfully create a measurement component with additional css 
   data-theme="light"
 >
   <div
-    class="css-0"
+    class="measurement-header css-1xd6p1z"
+    data-theme="light"
+  >
+    <b
+      class="chakra-text css-0"
+      data-theme="light"
+    >
+      measurementTitle
+    </b>
+  </div>
+  <div
+    class="measurement-content css-1syq16t"
     data-theme="light"
   >
     <div
-      class="measurement-header css-1xd6p1z"
+      class="chakra-form-control css-1m7igkt"
       data-theme="light"
-    >
-      <b
-        class="chakra-text css-0"
-        data-theme="light"
-      >
-        measurementTitle
-      </b>
-    </div>
-    <div
-      class="measurement-content css-1syq16t"
-      data-theme="light"
+      role="group"
     >
       <div
-        class="chakra-form-control css-1m7igkt"
+        class="chakra-stack css-1sgivba"
         data-theme="light"
-        role="group"
       >
+        <label
+          class="chakra-form__label css-oe420r"
+          data-theme="light"
+          for="measurement"
+          id="field-:r1:-label"
+        >
+          measurementLabel
+           
+        </label>
         <div
-          class="chakra-stack css-1sgivba"
+          class="chakra-select__wrapper css-42b2qy"
           data-theme="light"
         >
-          <label
-            class="chakra-form__label css-oe420r"
+          <select
+            class="chakra-select measurement-select css-161pkch"
             data-theme="light"
-            for="measurement"
-            id="field-:r1:-label"
+            id="measurement"
           >
-            measurementLabel
-             
-          </label>
+            <option
+              value="distance"
+            >
+              distance
+            </option>
+            <option
+              value="area"
+            >
+              area
+            </option>
+          </select>
           <div
-            class="chakra-select__wrapper css-42b2qy"
+            class="chakra-select__icon-wrapper css-iohxn1"
             data-theme="light"
           >
-            <select
-              class="chakra-select measurement-select css-161pkch"
-              data-theme="light"
-              id="measurement"
+            <svg
+              aria-hidden="true"
+              class="chakra-select__icon"
+              focusable="false"
+              role="presentation"
+              style="width: 1em; height: 1em; color: currentcolor;"
+              viewBox="0 0 24 24"
             >
-              <option
-                value="distance"
-              >
-                distance
-              </option>
-              <option
-                value="area"
-              >
-                area
-              </option>
-            </select>
-            <div
-              class="chakra-select__icon-wrapper css-iohxn1"
-              data-theme="light"
-            >
-              <svg
-                aria-hidden="true"
-                class="chakra-select__icon"
-                focusable="false"
-                role="presentation"
-                style="width: 1em; height: 1em; color: currentcolor;"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
-                  fill="currentColor"
-                />
-              </svg>
-            </div>
+              <path
+                d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
+                fill="currentColor"
+              />
+            </svg>
           </div>
         </div>
       </div>
-      <button
-        aria-label="deleteMeasurementLabel"
-        class="chakra-button delete-measurements css-14p1tvq"
-        data-theme="light"
-        type="button"
-      >
-        deleteMeasurementLabel
-      </button>
     </div>
+    <button
+      aria-label="deleteMeasurementLabel"
+      class="chakra-button delete-measurements css-14p1tvq"
+      data-theme="light"
+      type="button"
+    >
+      deleteMeasurementLabel
+    </button>
   </div>
-  ;
 </div>
 `;

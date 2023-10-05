@@ -7,7 +7,7 @@ import { MAP_ID } from "./MapConfigProviderImpl";
 import { EditIcon } from "@chakra-ui/icons";
 import { useState } from "react";
 export function AppUI() {
-    const [measurementIsActive, setMeasurementIsActive] = useState<boolean>(true);
+    const [measurementIsActive, setMeasurementIsActive] = useState<boolean>(false);
 
     function activateMeasurement() {
         setMeasurementIsActive(!measurementIsActive);
@@ -21,22 +21,26 @@ export function AppUI() {
 
             <Flex flex="1" direction="column" position="relative">
                 <MapContainer mapId={MAP_ID}>
-                    <MapAnchor position="top-left" horizontalGap={10} verticalGap={10}>
-                        <Box
-                            backgroundColor="whiteAlpha.900"
-                            borderWidth="1px"
-                            borderRadius="lg"
-                            boxShadow="lg"
-                        >
-                            <Measurement active={measurementIsActive}></Measurement>
-                        </Box>
-                        <MapAnchor position="bottom-right" horizontalGap={10} verticalGap={30}>
-                            <IconButton
-                                onClick={() => activateMeasurement}
-                                aria-label="Search database"
-                                icon={<EditIcon />}
-                            />
+                    {measurementIsActive ? (
+                        <MapAnchor position="top-left" horizontalGap={10} verticalGap={10}>
+                            <Box
+                                backgroundColor="whiteAlpha.900"
+                                borderWidth="1px"
+                                borderRadius="lg"
+                                boxShadow="lg"
+                            >
+                                <Measurement></Measurement>
+                            </Box>
                         </MapAnchor>
+                    ) : (
+                        ""
+                    )}
+                    <MapAnchor position="bottom-right" horizontalGap={10} verticalGap={30}>
+                        <IconButton
+                            onClick={activateMeasurement}
+                            aria-label="Search database"
+                            icon={<EditIcon />}
+                        />
                     </MapAnchor>
                 </MapContainer>
             </Flex>
