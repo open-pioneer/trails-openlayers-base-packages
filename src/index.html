@@ -3,48 +3,63 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Open Pioneer Test Site</title>
+        <title>OpenLayers Base Packages for Open Pioneer Trails</title>
         <link rel="icon" type="image/x-icon" href="favicon.ico" />
         <style>
             body {
-                max-width: 600px;
-                margin: auto;
+                max-width: 800px;
+                margin: 0 auto;
+                padding: 10px;
+                font-family: Arial, Helvetica, sans-serif;
+            }
+            p {
+                line-height: 1.6;
+            }
+            li {
+                margin-bottom: 10px;
             }
         </style>
     </head>
     <body>
-        <h1>Open Pioneer Test Site</h1>
+        <h1>Samples overview</h1>
 
-        <p>Welcome to the open pioneer client framework!</p>
-
-        <h2>Samples</h2>
         <p>
-            Follow one of the links below to see some samples. The source code for the samples can
-            be found in the <code>src/samples/</code> directory.
+            Welcome to the samples overview for
+            <a
+                href="https://github.com/open-pioneer/trails-openlayers-base-packages"
+                target="_blank"
+                >OpenLayers Base Packages</a
+            >. These packages are intended to be used with the
+            <a href="https://github.com/open-pioneer#open-pioneer-trails" target="_blank"
+                >Open Pioneer Trails</a
+            >
+            framework. The source code for the samples can be found in the
+            <code>src/samples/</code> directory.
         </p>
+        <h2>Samples</h2>
         <ul>
             <li>
-                <a href="./samples/map-sample/">Open Layers Sample</a>
+                <a href="./samples/map-sample/">Default</a>
                 <br />
-                Integrates an Open Layers map.
+                This app shows a sample setup of the main features.
             </li>
             <li>
-                <a href="./samples/auth-sample/">Authentication Sample</a>
+                <a href="./samples/auth-sample/">Authentication</a>
                 <br />
                 Sample app for the authentication package.
             </li>
             <li>
-                <a href="./samples/notify-sample/">Notifier Sample</a>
+                <a href="./samples/notify-sample/">Notifier</a>
                 <br />
                 Demonstrates how to use notifications.
             </li>
         </ul>
 
-        <h2>Test Applications</h2>
+        <h2>Test applications</h2>
         <p>These apps are primarily used for testing.</p>
         <ul>
             <li>
-                <a href="./samples/test-basemap-switcher/">Basemap Switcher</a>
+                <a href="./samples/test-basemap-switcher/">Basemap switcher</a>
                 <br />
                 Test app for the basemap switcher
             </li>
@@ -52,6 +67,16 @@
                 <a href="./samples/test-measurement/">Measurement</a>
                 <br />
                 Test app for the Measurement
+            </li>
+        </ul>
+
+        <h2>Experimental features</h2>
+        <p>These apps show features that are in an experimental state.</p>
+        <ul>
+            <li>
+                <a href="./samples/experimental-sidebar/">Sidebar</a>
+                <br />
+                Test app for a sidebar.
             </li>
         </ul>
     </body>

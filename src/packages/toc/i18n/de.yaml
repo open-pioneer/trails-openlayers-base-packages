@@ -1,3 +1,5 @@
 messages:
   basemapsLabel: "Hintergrundkarten"
-  tocTitel: "Karteninhalt"
+  operationalLayerLabel: "Layer"
+  missingLayers: "Es sind keine Layer vorhanden."
+  error: "Beim Erstellen des Karteninhalts ist ein Fehler aufgetreten."

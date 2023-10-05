@@ -1,27 +1,28 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-
-import { Box, Text, BoxProps, FormControl, FormLabel } from "@open-pioneer/chakra-integration";
-import { FC, ForwardedRef, forwardRef, RefAttributes } from "react";
-import classNames from "classnames";
 import { BasemapSwitcher, BasemapSwitcherProps } from "@open-pioneer/basemap-switcher";
+import { Box, Text } from "@open-pioneer/chakra-integration";
+import { useMapModel } from "@open-pioneer/map";
+import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
+import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
-export interface TocProps extends BoxProps, RefAttributes<HTMLDivElement> {
+import { FC, useId } from "react";
+import { LayerList } from "./LayerList";
+
+/**
+ * Props supported by the {@link Toc} component.
+ */
+export interface TocProps extends CommonComponentProps {
     /**
      * The id of the map.
      */
     mapId: string;
 
     /**
-     * Additional css class name(s) that will be added to the Toc component.
-     */
-    className?: string;
-
-    /**
      * Defines whether the basemap switcher is shown in the toc.
-     * Defaults to false.
+     * Defaults to true.
      */
-    hideBasemapSwitcher?: boolean;
+    showBasemapSwitcher?: boolean;
 
     /**
      * Properties for the embedded basemap switcher.
@@ -30,36 +31,73 @@ export interface TocProps extends BoxProps, RefAttributes<HTMLDivElement> {
     basemapSwitcherProps?: Omit<BasemapSwitcherProps, "mapId">;
 }
 
-export const Toc: FC<TocProps> = forwardRef(function Toc(
-    props: TocProps,
-    ref: ForwardedRef<HTMLDivElement> | undefined
-) {
+const PADDING = 2;
+
+/**
+ * Displays the layers of the configured map.
+ */
+export const Toc: FC<TocProps> = (props: TocProps) => {
     const intl = useIntl();
 
-    const { mapId, className, hideBasemapSwitcher = false, basemapSwitcherProps, ...rest } = props;
-    const basemapsLabel = intl.formatMessage({ id: "basemapsLabel" });
-    const tocTitel = intl.formatMessage({ id: "tocTitel" });
+    const { mapId, showBasemapSwitcher = true, basemapSwitcherProps } = props;
+    const { containerProps } = useCommonComponentProps("toc", props);
+    const basemapsHeadingId = useId();
+    const operationalLayersHeadingId = useId();
+    const state = useMapModel(mapId);
 
-    return (
-        <Box className={classNames("toc", className)} ref={ref} {...rest}>
-            {/*TODO: remove header as it should be added by an app developer if needed? */}
-            <Box
-                className="toc-header"
-                padding={2}
-                backgroundColor="var(--chakra-colors-blackAlpha-500)"
-            >
-                <Text as="b">{tocTitel}</Text>
-            </Box>
-            {hideBasemapSwitcher || (
-                <Box className="toc-content" padding={2}>
-                    <FormControl>
-                        <FormLabel ps={1}>
-                            <Text as="b">{basemapsLabel}:</Text>
-                        </FormLabel>
-                        <BasemapSwitcher {...basemapSwitcherProps} mapId={mapId}></BasemapSwitcher>
-                    </FormControl>
+    let content: JSX.Element | null;
+    switch (state.kind) {
+        case "loading":
+            content = null;
+            break;
+        case "rejected":
+            content = <Text className="toc-error">{intl.formatMessage({ id: "error" })}</Text>;
+            break;
+        case "resolved": {
+            const basemapSwitcher = showBasemapSwitcher && (
+                <Box className="toc-basemap-switcher" padding={PADDING}>
+                    <TitledSection
+                        title={
+                            <SectionHeading id={basemapsHeadingId} size={"sm"} mb={PADDING}>
+                                {intl.formatMessage({ id: "basemapsLabel" })}
+                            </SectionHeading>
+                        }
+                    >
+                        <BasemapSwitcher
+                            mapId={mapId}
+                            aria-labelledby={basemapsHeadingId}
+                            {...basemapSwitcherProps}
+                        />
+                    </TitledSection>
                 </Box>
-            )}
-        </Box>
-    );
-});
+            );
+            const layerList = (
+                <Box className="toc-operational-layers" padding={PADDING}>
+                    <TitledSection
+                        title={
+                            <SectionHeading
+                                id={operationalLayersHeadingId}
+                                size={"sm"}
+                                mb={PADDING}
+                            >
+                                {intl.formatMessage({ id: "operationalLayerLabel" })}
+                            </SectionHeading>
+                        }
+                    >
+                        <LayerList map={state.map!} aria-labelledby={operationalLayersHeadingId} />
+                    </TitledSection>
+                </Box>
+            );
+
+            content = (
+                <>
+                    {basemapSwitcher}
+                    {layerList}
+                </>
+            );
+            break;
+        }
+    }
+
+    return <Box {...containerProps}>{content}</Box>;
+};

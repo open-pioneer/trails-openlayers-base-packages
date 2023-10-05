@@ -2,10 +2,10 @@
 // SPDX-License-Identifier: Apache-2.0
 import { createCustomElement } from "@open-pioneer/runtime";
 import * as appMetadata from "open-pioneer:app";
-import { MapApp } from "./MapApp";
+import { AppUI } from "./AppUI";
 
 const element = createCustomElement({
-    component: MapApp,
+    component: AppUI,
     appMetadata,
     async resolveConfig(ctx) {
         const locale = ctx.getAttribute("forced-locale");

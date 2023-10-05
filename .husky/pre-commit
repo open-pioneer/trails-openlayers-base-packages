@@ -9,11 +9,11 @@ fi
 echo '--- checking for consistent dependencies across packages'
 pnpm lint-shared-versions
 
-echo '--- run linting --- '
-pnpm lint
-
 echo '--- run prettier ---'
 pnpm prettier-check
+
+echo '--- run linting --- '
+pnpm lint
 
 echo '--- run typescript check ---'
 pnpm check-types

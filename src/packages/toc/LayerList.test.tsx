@@ -1,0 +1,291 @@
+// SPDX-FileCopyrightText: con terra GmbH and contributors
+// SPDX-License-Identifier: Apache-2.0
+import { setupMap } from "@open-pioneer/map-test-utils";
+import { PackageContextProvider } from "@open-pioneer/test-utils/react";
+import { act, queryAllByRole, queryByRole, render } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import LayerGroup from "ol/layer/Group";
+import TileLayer from "ol/layer/Tile";
+import { expect, it } from "vitest";
+import { LayerList } from "./LayerList";
+
+it("should show layers in the correct order", async () => {
+    const { mapId, registry } = await setupMap({
+        layers: [
+            {
+                title: "Layer 1",
+                layer: new TileLayer({})
+            },
+            {
+                title: "Layer 2",
+                layer: new TileLayer({})
+            },
+            {
+                title: "Layer 3",
+                layer: new TileLayer({})
+            }
+        ]
+    });
+    const map = await registry.expectMapModel(mapId);
+
+    const { container } = render(
+        <PackageContextProvider>
+            <LayerList map={map} />
+        </PackageContextProvider>
+    );
+
+    /*
+       Labels are configured from bottom to top, but the TOC lists
+       them from top to bottom!
+     */
+    const labels = getCurrentLabels(container);
+    expect(labels).toMatchInlineSnapshot(`
+      [
+        "Layer 3",
+        "Layer 2",
+        "Layer 1",
+      ]
+    `);
+});
+
+it("does not display base layers", async function () {
+    const { mapId, registry } = await setupMap({
+        layers: [
+            {
+                title: "Layer 1",
+                layer: new TileLayer({})
+            },
+            {
+                title: "Layer 2",
+                isBaseLayer: true,
+                layer: new TileLayer({})
+            }
+        ]
+    });
+    const map = await registry.expectMapModel(mapId);
+
+    const { container } = render(
+        <PackageContextProvider>
+            <LayerList map={map} />
+        </PackageContextProvider>
+    );
+
+    const labels = getCurrentLabels(container);
+    expect(labels).toEqual(["Layer 1"]);
+});
+
+it("does not display group layers", async function () {
+    const { mapId, registry } = await setupMap({
+        layers: [
+            {
+                title: "Layer 1",
+                layer: new TileLayer({})
+            },
+            {
+                title: "Layer 2",
+                layer: new LayerGroup({})
+            }
+        ]
+    });
+    const map = await registry.expectMapModel(mapId);
+
+    const { container } = render(
+        <PackageContextProvider>
+            <LayerList map={map} />
+        </PackageContextProvider>
+    );
+
+    const labels = getCurrentLabels(container);
+    expect(labels).toEqual(["Layer 1"]);
+});
+
+it("shows a fallback message if there are no layers", async function () {
+    const { mapId, registry } = await setupMap({
+        layers: []
+    });
+    const map = await registry.expectMapModel(mapId);
+
+    const { container } = render(
+        <PackageContextProvider>
+            <LayerList map={map} />
+        </PackageContextProvider>
+    );
+
+    expect(container.textContent).toBe("missingLayers");
+});
+
+it("reacts to changes in the layer composition", async function () {
+    const { mapId, registry } = await setupMap({
+        layers: [
+            {
+                title: "Layer 1",
+                layer: new TileLayer({})
+            }
+        ]
+    });
+    const map = await registry.expectMapModel(mapId);
+
+    const { container } = render(
+        <PackageContextProvider>
+            <LayerList map={map} />
+        </PackageContextProvider>
+    );
+
+    const initialItems = getCurrentItems(container);
+    expect(initialItems).toHaveLength(1);
+
+    act(() => {
+        map.layers.createLayer({
+            title: "Layer 2",
+            layer: new TileLayer({})
+        });
+    });
+
+    const itemsAfterChange = getCurrentItems(container);
+    expect(itemsAfterChange).toHaveLength(2);
+
+    const labels = getCurrentLabels(container);
+    expect(labels).toEqual(["Layer 2", "Layer 1"]);
+});
+
+it("displays the layer's current title", async () => {
+    const { mapId, registry } = await setupMap({
+        layers: [
+            {
+                id: "layer",
+                title: "Layer 1",
+                layer: new TileLayer({})
+            }
+        ]
+    });
+
+    const map = await registry.expectMapModel(mapId);
+    const layer = map.layers.getLayerById("layer");
+    if (!layer) {
+        throw new Error("test layer not found!");
+    }
+
+    const { container } = render(
+        <PackageContextProvider>
+            <LayerList map={map} />
+        </PackageContextProvider>
+    );
+
+    expect(getCurrentLabels(container)).toEqual(["Layer 1"]);
+    act(() => {
+        layer.setTitle("New title");
+    });
+    expect(getCurrentLabels(container)).toEqual(["New title"]);
+});
+
+it("displays the layer's current visibility", async () => {
+    const { mapId, registry } = await setupMap({
+        layers: [
+            {
+                id: "layer",
+                title: "Layer 1",
+                layer: new TileLayer({})
+            }
+        ]
+    });
+
+    const map = await registry.expectMapModel(mapId);
+    const layer = map.layers.getLayerById("layer");
+    if (!layer) {
+        throw new Error("test layer not found!");
+    }
+    expect(layer.visible).toBe(true);
+
+    const { container } = render(
+        <PackageContextProvider>
+            <LayerList map={map} />
+        </PackageContextProvider>
+    );
+
+    const checkbox = queryByRole<HTMLInputElement>(container, "checkbox");
+    expect(checkbox).toBeTruthy();
+    expect(checkbox!.checked).toBe(true);
+
+    act(() => {
+        layer.setVisible(false);
+    });
+    expect(checkbox!.checked).toBe(false);
+});
+
+it("changes the layer's visibility when toggling the checkbox", async () => {
+    const user = userEvent.setup();
+    const { mapId, registry } = await setupMap({
+        layers: [
+            {
+                id: "layer",
+                title: "Layer 1",
+                layer: new TileLayer({})
+            }
+        ]
+    });
+
+    const map = await registry.expectMapModel(mapId);
+    const layer = map.layers.getLayerById("layer");
+    if (!layer) {
+        throw new Error("test layer not found!");
+    }
+
+    const { container } = render(
+        <PackageContextProvider>
+            <LayerList map={map} />
+        </PackageContextProvider>
+    );
+
+    // Initial state reflects layer state (visible)
+    const checkbox = queryByRole<HTMLInputElement>(container, "checkbox")!;
+    expect(checkbox).toBeTruthy();
+    expect(checkbox.checked).toBe(true);
+    expect(layer.visible).toBe(true);
+
+    // Click sets both to false
+    await act(async () => {
+        await user.click(checkbox);
+    });
+    expect(checkbox!.checked).toBe(false);
+    expect(layer.visible).toBe(false);
+
+    // Clicking again sets it to true again
+    await act(async () => {
+        await user.click(checkbox);
+    });
+    expect(checkbox!.checked).toBe(true);
+    expect(layer.visible).toBe(true);
+});
+
+it("includes the layer id in the item's class list", async () => {
+    const { mapId, registry } = await setupMap({
+        layers: [
+            {
+                id: "some layer id",
+                title: "Layer 1",
+                layer: new TileLayer({})
+            }
+        ]
+    });
+    const map = await registry.expectMapModel(mapId);
+
+    const { container } = render(
+        <PackageContextProvider>
+            <LayerList map={map} />
+        </PackageContextProvider>
+    );
+
+    const item = container.querySelector(".layer-some-layer-id");
+    expect(item).toBeTruthy();
+    expect(item!.textContent).toBe("Layer 1");
+});
+
+/** Returns the layer list's current list items. */
+function getCurrentItems(container: HTMLElement) {
+    return queryAllByRole(container, "listitem");
+}
+
+/** Returns only the labels of the layer list's current items. */
+function getCurrentLabels(container: HTMLElement) {
+    return getCurrentItems(container).map((item) => item.textContent);
+}

@@ -1,19 +1,10 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-import { Box, BoxProps, Select } from "@open-pioneer/chakra-integration";
+import { Box, Select } from "@open-pioneer/chakra-integration";
 import { LayerModel, MapModel, useMapModel } from "@open-pioneer/map";
-import classNames from "classnames";
 import { useIntl } from "open-pioneer:react-hooks";
-import {
-    FC,
-    ForwardedRef,
-    RefAttributes,
-    forwardRef,
-    useCallback,
-    useMemo,
-    useRef,
-    useSyncExternalStore
-} from "react";
+import { FC, useCallback, useMemo, useRef, useSyncExternalStore } from "react";
+import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 
 /*
     Exported for tests. Feels a bit hacky but should be fine for now.
@@ -38,7 +29,7 @@ interface SelectOption {
 /**
  * These are special properties for the BasemapSwitcher.
  */
-export interface BasemapSwitcherProps extends BoxProps, RefAttributes<HTMLDivElement> {
+export interface BasemapSwitcherProps extends CommonComponentProps {
     /**
      * The id of the map.
      */
@@ -54,17 +45,32 @@ export interface BasemapSwitcherProps extends BoxProps, RefAttributes<HTMLDivEle
      * Defaults to false.
      */
     allowSelectingEmptyBasemap?: boolean;
+
+    /**
+     * Optional aria-labelledby property.
+     * Do not use together with aria-label.
+     */
+    "aria-labelledby"?: string;
+
+    /**
+     * Optional aria-label property.
+     * Do not use together with aria-label.
+     */
+    "aria-label"?: string;
 }
 
 /**
  * The `BasemapSwitcher` component can be used in an app to switch between the different basemaps.
  */
-export const BasemapSwitcher: FC<BasemapSwitcherProps> = forwardRef(function BasemapSwitcher(
-    props: BasemapSwitcherProps,
-    ref: ForwardedRef<HTMLDivElement> | undefined
-) {
+export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
     const intl = useIntl();
-    const { mapId, className, allowSelectingEmptyBasemap, ...rest } = props;
+    const {
+        mapId,
+        allowSelectingEmptyBasemap,
+        "aria-label": ariaLabel,
+        "aria-labelledby": ariaLabelledBy
+    } = props;
+    const { containerProps } = useCommonComponentProps("basemap-switcher", props);
     const emptyBasemapLabel = intl.formatMessage({ id: "emptyBasemapLabel" });
 
     const { map } = useMapModel(mapId);
@@ -73,14 +79,15 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = forwardRef(function Bas
         return createOptions({ baseLayers, allowSelectingEmptyBasemap, emptyBasemapLabel });
     }, [baseLayers, allowSelectingEmptyBasemap, emptyBasemapLabel]);
     const activateLayer = (layerId: string) => {
-        // empty string is used for "no basemap"
         map?.layers.activateBaseLayer(layerId === NO_BASEMAP_ID ? undefined : layerId);
     };
 
     return (
-        <Box className={classNames("basemap-switcher", className)} ref={ref} {...rest}>
+        <Box {...containerProps}>
             {map ? (
                 <Select
+                    aria-label={ariaLabel}
+                    aria-labelledby={ariaLabelledBy}
                     className="basemap-switcher-select"
                     value={selectedId}
                     onChange={(e) => activateLayer(e.target.value)}
@@ -96,7 +103,7 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = forwardRef(function Bas
             )}
         </Box>
     );
-});
+};
 
 function useBaseLayers(mapModel: MapModel | undefined): LayerModel[] {
     // Caches potentially expensive layers arrays.

@@ -11,7 +11,6 @@ import {
     SimpleMapOptions
 } from "@open-pioneer/map-test-utils";
 import TileLayer from "ol/layer/Tile";
-import { BkgTopPlusOpen } from "./layers/BkgTopPlusOpen";
 
 afterEach(() => {
     vi.restoreAllMocks();
@@ -22,9 +21,7 @@ it("successfully creates a map", async () => {
     const injectedServices = createServiceOptions({ registry });
     const renderResult = render(
         <PackageContextProvider services={injectedServices}>
-            <div data-testid="base">
-                <MapContainer mapId={mapId} />
-            </div>
+            <MapContainer mapId={mapId} data-testid="base" />
         </PackageContextProvider>
     );
 
@@ -84,16 +81,12 @@ it("successfully creates a map with given configuration", async () => {
             {
                 title: "TopPlus Open",
                 layer: new TileLayer({
-                    source: new BkgTopPlusOpen(),
-                    properties: { title: "TopPlusOpen" },
                     visible: false
                 })
             },
             {
                 title: "TopPlus Open Grau",
                 layer: new TileLayer({
-                    source: new BkgTopPlusOpen({ layer: "web_grau" }),
-                    properties: { title: "TopPlus Open Grau" },
                     visible: false
                 })
             }

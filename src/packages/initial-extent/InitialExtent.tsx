@@ -1,23 +1,18 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-import { Box, BoxProps, Button, Tooltip } from "@open-pioneer/chakra-integration";
+import { Button, Tooltip } from "@open-pioneer/chakra-integration";
 import { useMapModel } from "@open-pioneer/map";
-import { useIntl } from "open-pioneer:react-hooks";
-import classNames from "classnames";
-import { FiHome } from "react-icons/fi";
-import { FC, ForwardedRef, RefAttributes, forwardRef } from "react";
+import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { Extent } from "ol/extent";
+import { useIntl } from "open-pioneer:react-hooks";
+import { FC, ForwardedRef, RefAttributes, forwardRef } from "react";
+import { FiHome } from "react-icons/fi";
 
-export interface InitialExtentProps extends BoxProps, RefAttributes<HTMLDivElement> {
+export interface InitialExtentProps extends CommonComponentProps, RefAttributes<HTMLButtonElement> {
     /**
      * The map id.
      */
     mapId: string;
-
-    /**
-     * Additional class name(s).
-     */
-    className?: string;
 }
 
 /**
@@ -25,9 +20,10 @@ export interface InitialExtentProps extends BoxProps, RefAttributes<HTMLDivEleme
  */
 export const InitialExtent: FC<InitialExtentProps> = forwardRef(function InitialExtent(
     props: InitialExtentProps,
-    ref: ForwardedRef<HTMLDivElement> | undefined
+    ref: ForwardedRef<HTMLButtonElement>
 ) {
-    const { mapId, className, ...rest } = props;
+    const { mapId } = props;
+    const { containerProps } = useCommonComponentProps("initial-extent", props);
     const { map } = useMapModel(mapId);
     const intl = useIntl();
 
@@ -48,17 +44,17 @@ export const InitialExtent: FC<InitialExtentProps> = forwardRef(function Initial
     }
 
     return (
-        <Box className={classNames("initial-extent", className)} ref={ref} {...rest}>
-            <Tooltip label={intl.formatMessage({ id: "title" })} placement="auto" openDelay={500}>
-                <Button
-                    className="initial-extent-button"
-                    aria-label={intl.formatMessage({ id: "title" })}
-                    leftIcon={<FiHome />}
-                    onClick={() => setInitExtent()}
-                    iconSpacing={0}
-                    padding={0}
-                />
-            </Tooltip>
-        </Box>
+        <Tooltip label={intl.formatMessage({ id: "title" })} placement="auto" openDelay={500}>
+            <Button
+                className="initial-extent-button"
+                ref={ref}
+                aria-label={intl.formatMessage({ id: "title" })}
+                leftIcon={<FiHome />}
+                onClick={setInitExtent}
+                iconSpacing={0}
+                padding={0}
+                {...containerProps}
+            />
+        </Tooltip>
     );
 });
