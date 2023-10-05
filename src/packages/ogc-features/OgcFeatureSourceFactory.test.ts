@@ -6,7 +6,7 @@ import {
     _createVectorSource,
     FeatureResponse,
     _getNextURL,
-    _queryAllFeatureRequests,
+    _queryAllFeaturesWithOffset,
     _queryFeatures
 } from "./OgcFeatureSourceFactory";
 import { Geometry, Point } from "ol/geom";
@@ -74,12 +74,11 @@ const mockedEmptyFeatureResponse: FeatureResponse = {
 it("expect feature responses are correct", async () => {
     const addedFeatures: Array<FeatureLike> = [];
     const fullUrl = "https://url-to-service/items?f=json";
-    await _queryAllFeatureRequests(
+    await _queryAllFeaturesWithOffset(
         fullUrl,
         new GeoJSON(),
         async (_) => mockedFeatureResponse,
         new AbortController().signal,
-        () => {},
         (features) => features.forEach((feature) => addedFeatures.push(feature))
     );
     assert.includeMembers<FeatureLike>(addedFeatures, mockedFeatureResponse.features);
@@ -88,12 +87,11 @@ it("expect feature responses are correct", async () => {
 it("expect feature responses are empty", async () => {
     const addedFeatures: Array<FeatureLike> = [];
     const fullUrl = "https://url-to-service/items?f=json";
-    await _queryAllFeatureRequests(
+    await _queryAllFeaturesWithOffset(
         fullUrl,
         new GeoJSON(),
         async (_) => mockedEmptyFeatureResponse,
         new AbortController().signal,
-        () => {},
         (features) => features.forEach((feature) => addedFeatures.push(feature))
     );
     assert.includeMembers<FeatureLike>(addedFeatures, mockedEmptyFeatureResponse.features);
@@ -180,12 +178,11 @@ it("expect all feature from 2 query-runs are added", async () => {
         }
         return mockedFeatureResponse;
     };
-    await _queryAllFeatureRequests(
+    await _queryAllFeaturesWithOffset(
         fullUrl,
         new GeoJSON(),
         queryFeatures,
         new AbortController().signal,
-        () => {},
         (features) => features.forEach((feature) => addedFeatures.push(feature)),
         offsetProps
     );

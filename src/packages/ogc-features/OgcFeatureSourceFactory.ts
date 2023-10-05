@@ -10,8 +10,14 @@ import { Geometry } from "ol/geom";
 import { Feature } from "ol";
 import FeatureFormat from "ol/format/Feature";
 import { AttributionLike } from "ol/source/Source";
+import {
+    OffsetRequestProps,
+    isOffsetStrategySupported,
+    _queryAllFeaturesWithOffset
+} from "./OffsetStrategy";
 
 const NEXT_LINK_PROP = "next";
+const NO_LIMIT = 1000000;
 const logger = createLogger("ogc-feature-api-layer:OgcFeatureSourceFactory");
 
 export interface FeatureResponse {
@@ -19,23 +25,28 @@ export interface FeatureResponse {
     nextURL: string | undefined;
 }
 
-export type OffsetRequestProps = {
-    numberOfConcurrentReq: number; // 6
-    offsetDelta: number; // 2500
-    startOffset: number; //0
-};
-
-// Chrome does only allow 6 concurrent requests (HTTP/1.x)
-export const defaultOffsetRequestProps: OffsetRequestProps = {
-    numberOfConcurrentReq: 6,
-    offsetDelta: 2500,
-    startOffset: 0
-};
-
 export interface ObjWithRelAndHref {
     href: string;
     rel: string;
 }
+
+export type NextRequestProps = {
+    limit: number; // 6
+};
+
+export const defaultNextRequestProps: NextRequestProps = {
+    limit: NO_LIMIT
+};
+
+export type OgcFeatureSourceOptions = {
+    baseUrl: string;
+    collectionId: string;
+    crs: string;
+    attributions?: AttributionLike | undefined;
+    offsetRequestProps?: OffsetRequestProps;
+    additionalOptions?: Options<Geometry>;
+    nextRequestProps?: NextRequestProps;
+};
 
 export function _getNextURL(links: Array<ObjWithRelAndHref>): string | undefined {
     const nextLinks = links.filter((link) => link.rel === NEXT_LINK_PROP);
@@ -44,21 +55,6 @@ export function _getNextURL(links: Array<ObjWithRelAndHref>): string | undefined
     if (nextLink) {
         return nextLink.href;
     }
-}
-
-export function _createOffsetURLs(
-    fullURL: string,
-    numberOfRequests: number = 10,
-    startOffset: number = 0,
-    offsetDelta: number = 5000
-): Array<string> {
-    const allRequests = [];
-    let currentOffset = startOffset;
-    for (let i = 0; i < numberOfRequests; i++) {
-        allRequests.push(`${fullURL}&offset=${currentOffset}&limit=${offsetDelta}`);
-        currentOffset += offsetDelta;
-    }
-    return allRequests;
 }
 
 export const _queryFeatures = async (
@@ -89,42 +85,60 @@ export const _queryFeatures = async (
     };
 };
 
-export const _queryAllFeatureRequests = async (
-    fullURL: string,
-    featureFormat: FeatureFormat | undefined,
-    queryFeatures = _queryFeatures,
+export const _queryAllFeatures = async (
+    allUrls: Array<string>,
+    featureFormat: FeatureFormat,
     signal: AbortSignal,
-    failure: () => void,
     addFeatures: (features: Array<Feature<Geometry>>) => void,
-    offsetProps: OffsetRequestProps = defaultOffsetRequestProps
-): Promise<Array<Feature>> => {
-    let noMoreNextURLs = false;
-    let allFeatures: Array<Feature> = [];
-    // eslint-disable-next-line prefer-const
-    let { numberOfConcurrentReq, startOffset, offsetDelta } = offsetProps;
-    do {
-        const allRequests = _createOffsetURLs(
-            fullURL,
-            numberOfConcurrentReq,
-            startOffset,
-            offsetDelta
+    queryFeatures = _queryFeatures
+): Promise<FeatureResponse> => {
+    const allFeatureResponse: FeatureResponse = {
+        nextURL: undefined,
+        features: []
+    };
+    const allRequestPromises = allUrls.map(async (singleUrl, index): Promise<FeatureResponse> => {
+        const isLast = index === allUrls.length - 1;
+        const singleFeatureResp = await queryFeatures(singleUrl, featureFormat, signal);
+        logger.debug(
+            `NextURL for index = ${index} (isLast = ${isLast}): ${
+                singleFeatureResp.nextURL || "No Next URL"
+            }`
         );
-        const allRequestPromises = allRequests.map(async (singleRequest, index) => {
-            const isLast = index === allRequests.length - 1;
-            const featureResp = await queryFeatures(singleRequest, featureFormat, signal);
-            logger.debug(
-                `NextURL for index = ${index} (isLast = ${isLast}): ${
-                    featureResp.nextURL || "No Next URL"
-                }`
-            );
-            const features = featureResp.features as Array<Feature>;
-            addFeatures(features);
-            allFeatures = allFeatures.concat(features);
-            if (isLast) noMoreNextURLs = featureResp.nextURL == undefined;
-        });
-        await Promise.all(allRequestPromises);
-        startOffset += numberOfConcurrentReq * offsetDelta;
-    } while (!noMoreNextURLs);
+        const features = singleFeatureResp.features as Array<Feature>;
+        addFeatures(features);
+        allFeatureResponse.features = allFeatureResponse.features.concat(features);
+        if (isLast) allFeatureResponse.nextURL = singleFeatureResp.nextURL;
+    });
+    await Promise.all(allRequestPromises);
+    return allFeatureResponse;
+};
+
+export const _queryAllFeaturesNextStrategy = async (
+    fullURL: string,
+    limit: number,
+    featureFormat: FeatureFormat,
+    queryFeatures: (
+        fullURL: string,
+        featureFormat: FeatureFormat | undefined,
+        signal: AbortSignal
+    ) => Promise<FeatureResponse>,
+    signal: AbortSignal,
+    addFeatures: (features: Array<Feature<Geometry>>) => void
+): Promise<Array<Feature>> => {
+    let urls: Array<string> = [`${fullURL}&limit=${limit}`];
+    let allFeatures: Array<Feature> = [];
+    let featureResp: FeatureResponse;
+    do {
+        featureResp = await _queryAllFeatures(
+            urls,
+            featureFormat,
+            signal,
+            addFeatures,
+            queryFeatures
+        );
+        allFeatures = allFeatures.concat(featureResp.features);
+        urls = [featureResp.nextURL || ""];
+    } while (featureResp.nextURL !== undefined);
     return allFeatures;
 };
 
@@ -140,8 +154,7 @@ export function _createVectorSource(
         attributions: options.attributions,
         ...options.additionalOptions
     });
-    const offsetProps = options.offsetRequestProps || defaultOffsetRequestProps;
-
+    const isOffsetSupported = isOffsetStrategySupported(collectionItemsURL);
     let abortController: AbortController;
 
     const loaderFunction = async (
@@ -162,10 +175,6 @@ export function _createVectorSource(
             abortController.abort("Extent changed");
         }
         abortController = new AbortController();
-        const onError = function () {
-            vectorSrc.removeLoadedExtent(extent);
-            failure && failure();
-        };
 
         const addFeaturesFunc =
             addFeatures ||
@@ -174,40 +183,48 @@ export function _createVectorSource(
                 vectorSrc.addFeatures(features);
             };
 
-        _queryAllFeatureRequests(
-            fullURL,
-            vectorSrc.getFormat(),
-            queryFeatures,
-            abortController.signal,
-            onError,
-            addFeaturesFunc,
-            offsetProps
-        )
-            .then((features) => {
-                success && success(features);
-                logger.debug("Finished loading features for extent:", extent);
-            })
-            .catch((e) => {
-                if (e.name !== "AbortError") {
-                    logger.error(e);
-                } else {
-                    logger.debug("Query-Feature-Request aborted", e);
-                    onError();
-                }
-            });
+        const catchFunc = (e): void => {
+            if (e.name !== "AbortError") {
+                logger.error(e);
+            } else {
+                logger.debug("Query-Feature-Request aborted", e);
+                vectorSrc.removeLoadedExtent(extent);
+                failure && failure();
+            }
+        };
+
+        const successFunc = (features: Array<Feature>): void => {
+            success && success(features);
+            logger.debug("Finished loading features for extent:", extent);
+        };
+
+        if (!isOffsetSupported) {
+            _queryAllFeaturesWithOffset(
+                fullURL,
+                vectorSrc.getFormat(),
+                queryFeatures,
+                abortController.signal,
+                addFeaturesFunc,
+                options.offsetRequestProps
+            )
+                .then(successFunc)
+                .catch(catchFunc);
+        } else {
+            _queryAllFeaturesNextStrategy(
+                fullURL,
+                options.nextRequestProps?.limit || defaultNextRequestProps.limit,
+                vectorSrc.getFormat(),
+                queryFeatures,
+                abortController.signal,
+                addFeaturesFunc
+            )
+                .then(successFunc)
+                .catch(catchFunc);
+        }
     };
     vectorSrc.setLoader(loaderFunction);
     return vectorSrc;
 }
-
-export type OgcFeatureSourceOptions = {
-    baseUrl: string;
-    collectionId: string;
-    crs: string;
-    attributions?: AttributionLike | undefined;
-    offsetRequestProps?: OffsetRequestProps;
-    additionalOptions?: Options<Geometry>;
-};
 
 /**
  * This function creates an ol-VectorSource for OGC-API-Feature-Services to be used inside
