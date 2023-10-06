@@ -1,28 +1,26 @@
 # @open-pioneer/toc
 
-This package provides a table of content for an open layers map.
+This package provides a UI component that displays the map content to the user and allows them to control it.
 
 ## Usage
 
-To integrate the toc in your app, insert the following snippet and reference a map id:
+To integrate the TOC (table of contents) in your app, insert the following snippet and reference a map ID:
 
 ```tsx
 <Toc mapId="map_id" />
 ```
 
-## Configuration
-
-### Embedded basemap switcher
+### Basemaps
 
 By default, the TOC shows the basemap switcher as an embedded element.
 
-The basemap switcher can be hidden by setting the `showBasemapSwitcher` property to `false`. Example:
+To hide the basemap switcher, set the `showBasemapSwitcher` property to `false`:
 
 ```tsx
 <Toc mapId="map_id" showBasemapSwitcher={false} />
 ```
 
-It is also possible to configure the embedded basemap switcher using the `basemapSwitcherProps` property. Example:
+To configure the embedded basemap switcher, use the `basemapSwitcherProps` property:
 
 ```tsx
 <Toc
@@ -33,13 +31,11 @@ It is also possible to configure the embedded basemap switcher using the `basema
 />
 ```
 
-## Extensibility
-
-### Layer ids as CSS classes on list items
+### Layer IDs as CSS classes on list items
 
 List items for individual operational layers receive the layer's `id` as an additional CSS class (`layer-${id}`).
 
-For example, given a layer with the id `test-geojson`, the toc's list item for that layer will be rendered as:
+For example, given a layer with the ID `test-geojson`, the TOC's list item for that layer is rendered as:
 
 ```html
 <li class="toc-layer-list-entry layer-test-geojson ...">
@@ -47,7 +43,7 @@ For example, given a layer with the id `test-geojson`, the toc's list item for t
 </li>
 ```
 
-> NOTE: Non-alphanumeric characters present in the layer's id are removed from the class name. Whitespace is replaced with a single `-`.
+> NOTE: Non-alphanumeric characters present in the layer's ID are removed from the class name. Whitespace is replaced with a single `-`.
 
 > NOTE: List items are not guaranteed to be rendered as `li`. Only the CSS class name is guaranteed.
 

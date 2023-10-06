@@ -36,7 +36,7 @@ To `[...]`, add the optional property `[...]`:
 <Component additionalProperty />
 ```
 
-> Give samples for available properties to show how to use them.
+> Describe how to configure the component using properties and provide examples to show how to use the properties.
 > Always start with the value that this setting provides.
 > ("To achieve this, do that." Not the other way around.)
 
@@ -44,9 +44,9 @@ To `[...]`, add the optional property `[...]`:
 
 > If a package offers a lot of functionalities and the listing becomes long, divide the description into individual sub-chapters.
 
-## Other topic
+## Accessibility (optional)
 
-Another topic might be "Accessibility" for example, if you want to make any special hints on that topic.
+> Use this chapter if you want to make any special statements on how to achieve a good accessibility.
 
 ## License
 

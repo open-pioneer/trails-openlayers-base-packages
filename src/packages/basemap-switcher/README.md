@@ -1,10 +1,10 @@
 # @open-pioneer/basemap-switcher
 
-This package provides a component that can be integrated in an app together with a map to switch between different basemaps.
+This package provides a UI component that allows a user to switch between different base maps.
 
 ## Usage
 
-Example: Integration of a basemap switcher with a given map id:
+To add the component to your app, insert the following snippet with a reference to a map ID:
 
 ```jsx
 <BasemapSwitcher mapId="map_id" />
@@ -18,7 +18,9 @@ To provide an option to deactivate all basemap layers, add the optional property
 
 ## Accessibility
 
-The package provides only a `HTMLSelectElement`. To be compliant with a11y guidelines (screen reader compatibility), a label must be added to the basemap switcher. Therefore, use one of the following attempts:
+The package provides only a `HTMLSelectElement`.
+To be compliant with a11y guidelines (screen reader compatibility), a label must be added to the basemap switcher.
+Therefore, use one of the following attempts:
 
 -   Wrap the `BasemapSwitcher` into a Chakra UI `FormControl` and set the `FormLabel` to a custom label.
 -   Use the `aria-labelledby` property of the `BasemapSwitcher` to specify that an anywhere defined label is used as the basemap switcher's label.

@@ -1,7 +1,6 @@
 # @open-pioneer/notifier
 
-The `notifier` package allows any application component to emit global notifications.
-Notifications are displayed by the `<Notifier />` react component in your application.
+This package allows a developer to emit global notifications from any application component and provides a component to display the notifications.
 
 ## Usage
 
