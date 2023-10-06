@@ -7,7 +7,7 @@ This package provides a component with a dropdown to switch between distance and
 To integrate the measurement in your app, insert the following snippet:
 
 ```tsx
-<measurement></measurement>
+<Measurement></Measurement>
 ```
 
 ## License

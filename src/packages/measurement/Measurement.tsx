@@ -3,7 +3,6 @@
 
 import {
     Box,
-    BoxProps,
     Button,
     FormControl,
     FormLabel,
@@ -14,13 +13,14 @@ import { FC, useEffect, useState } from "react";
 import { useIntl } from "open-pioneer:react-hooks";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 
-export interface MeasurementProps extends CommonComponentProps {
-    /**
-     * Additional css class name(s) that will be added to the Measurement component.
-     */
-    className?: string;
-}
+/**
+ * This is for special properties of the Measurement.
+ */
+export interface MeasurementProps extends CommonComponentProps {}
 
+/**
+ * The `Measurement` component can be used in an app to switch between distance and area measurements and to delete all current measurements.
+ */
 export const Measurement: FC<MeasurementProps> = (props) => {
     const intl = useIntl();
 
@@ -53,14 +53,11 @@ export const Measurement: FC<MeasurementProps> = (props) => {
             <Box className="measurement-content" padding={2}>
                 <FormControl mb={4} alignItems="center">
                     <HStack mb={2}>
-                        <FormLabel htmlFor="measurement" mb={1}>
-                            {label("measurementLabel")}
-                        </FormLabel>
+                        <FormLabel mb={1}>{label("measurementLabel")}</FormLabel>
                         <Select
                             value={selectedMeasurement}
                             onChange={(e) => changeMeasurement(e.target.value)}
                             className="measurement-select"
-                            id="measurement"
                         >
                             <option value={"distance"}>{label("distance")}</option>
                             <option value={"area"}>{label("area")}</option>
@@ -70,7 +67,6 @@ export const Measurement: FC<MeasurementProps> = (props) => {
                 <Button
                     padding={2}
                     className="delete-measurements"
-                    aria-label={label("deleteMeasurementLabel")}
                     onClick={clearMeasurements}
                     width="100%"
                 >

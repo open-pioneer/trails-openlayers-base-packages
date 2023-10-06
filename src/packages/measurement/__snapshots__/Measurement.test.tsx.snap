@@ -22,7 +22,7 @@ exports[`should successfully create a measurement component 1`] = `
         <label
           class="chakra-form__label css-oe420r"
           data-theme="light"
-          for="measurement"
+          for="field-:r0:"
           id="field-:r0:-label"
         >
           measurementLabel
@@ -34,7 +34,7 @@ exports[`should successfully create a measurement component 1`] = `
           <select
             class="chakra-select measurement-select css-161pkch"
             data-theme="light"
-            id="measurement"
+            id="field-:r0:"
           >
             <option
               value="distance"
@@ -69,7 +69,6 @@ exports[`should successfully create a measurement component 1`] = `
       </div>
     </div>
     <button
-      aria-label="deleteMeasurementLabel"
       class="chakra-button delete-measurements css-14p1tvq"
       data-theme="light"
       type="button"
@@ -102,7 +101,7 @@ exports[`should successfully create a measurement component with additional css 
         <label
           class="chakra-form__label css-oe420r"
           data-theme="light"
-          for="measurement"
+          for="field-:r1:"
           id="field-:r1:-label"
         >
           measurementLabel
@@ -114,7 +113,7 @@ exports[`should successfully create a measurement component with additional css 
           <select
             class="chakra-select measurement-select css-161pkch"
             data-theme="light"
-            id="measurement"
+            id="field-:r1:"
           >
             <option
               value="distance"
@@ -149,7 +148,6 @@ exports[`should successfully create a measurement component with additional css 
       </div>
     </div>
     <button
-      aria-label="deleteMeasurementLabel"
       class="chakra-button delete-measurements css-14p1tvq"
       data-theme="light"
       type="button"
