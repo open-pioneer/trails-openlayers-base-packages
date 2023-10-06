@@ -1,4 +1,5 @@
 # @open-pioneer/map-test-utils
 
-Internal support package for testing map-related UI-Components.
+This package is an internal support package for testing map-related UI components.
+
 The API is not stable!

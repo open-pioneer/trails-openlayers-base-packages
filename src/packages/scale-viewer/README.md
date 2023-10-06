@@ -1,10 +1,10 @@
 # @open-pioneer/scale-viewer
 
-This package provides a scale viewer component, which can be integrated besides a map to show the actual map scale.
+This package provides a UI component to show the actual map scale to the user.
 
 ## Usage
 
-To integrate the scale viewer in your app, insert the following snippet and reference a map id:
+To integrate the scale viewer in your app, insert the following snippet and reference a map ID:
 
 ```jsx
 <ScaleViewer mapId="map_id" />

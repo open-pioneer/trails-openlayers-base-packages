@@ -1,15 +1,9 @@
 # @open-pioneer/authentication
 
-This package implements a central service to handle the current user's session.
+This package provides a central service to handle the current user's session.
+It cannot be used on its own, but requires an [authentication plugin](#implementing-an-authentication-plugin), that implements the actual authentication flow.
 
-## Authentication plugins
-
-The authentication package cannot be used on its own.
-It requires an authentication plugin, that implements the actual authentication flow.
-
-For more information, see [implementing an authentication plugin](#implementing-an-authentication-plugin).
-
-## Use cases
+## Usage
 
 ### Retrieving the current authentication state
 
