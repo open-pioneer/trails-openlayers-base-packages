@@ -28,11 +28,13 @@
 7. Important design decisions or non-obvious things to keep in mind
    have been documented in internal dev notes or comments.
 8. A changeset entry was generated (if appropriate) and a CHANGELOG.md exists in the package.
+9. Each package contains a `README.md` file that follows the hints in [documentation](#documentation).
 
 ## Documentation
 
+-   Use [this template](../templates/package-README.md) to start documenting a new package.
 -   Stick to the following documentation guideline, if appropriate: [Documentation guideline](https://developers.google.com/style/highlights)
--   (There is no need to document for each component wether additional CSS classes can be passed using the `className`prop. This is documented in the UI concept documentation.)
+-   (There is no need to document for each component wether additional CSS classes can be passed using the `className` prop. This is documented in the UI concept documentation.)
 
 ## Code style
 
