@@ -31,7 +31,7 @@ To configure the embedded basemap switcher, use the `basemapSwitcherProps` prope
 />
 ```
 
-### Styling of individual list items
+### Layer IDs as CSS classes on list items
 
 List items for individual operational layers receive the layer's `id` as an additional CSS class (`layer-${id}`).
 
