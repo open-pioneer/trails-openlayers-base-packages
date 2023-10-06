@@ -1,6 +1,6 @@
 # @open-pioneer/coordinate-viewer
 
-This package provides a UI component, to show the actual coordinates at the users current mouse position.
+This package provides a UI component to show the current coordinates at the users current mouse position.
 
 ## Usage
 
@@ -10,7 +10,7 @@ To integrate the coordinate viewer in your app, insert the following snippet and
 <CoordinateViewer mapId="map_id" />
 ```
 
-To define the number of shown decimal places, set the optional `precision` property:
+To define the number of decimal places shown, set the optional `precision` property:
 
 ```jsx
 <CoordinateViewer mapId="map_id" precision={2} />

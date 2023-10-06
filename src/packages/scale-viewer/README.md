@@ -1,6 +1,6 @@
 # @open-pioneer/scale-viewer
 
-This package provides a UI component, to show the actual map scale to the user.
+This package provides a UI component to show the actual map scale to the user.
 
 ## Usage
 

@@ -4,7 +4,7 @@ This package provides a UI component that displays the map content to the user a
 
 ## Usage
 
-To integrate the TOC in your app, insert the following snippet and reference a map ID:
+To integrate the TOC (table of contents) in your app, insert the following snippet and reference a map ID:
 
 ```tsx
 <Toc mapId="map_id" />
