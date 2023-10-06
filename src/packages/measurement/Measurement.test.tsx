@@ -9,9 +9,7 @@ import { expect, it } from "vitest";
 it("should successfully create a measurement component", async () => {
     render(
         <PackageContextProvider>
-            <div data-testid="base">
-                <Measurement></Measurement>
-            </div>
+            <Measurement data-testid="measurement"></Measurement>
         </PackageContextProvider>
     );
 
@@ -27,9 +25,7 @@ it("should successfully create a measurement component", async () => {
 it("should successfully create a measurement component with additional css classes and box properties", async () => {
     render(
         <PackageContextProvider>
-            <div data-testid="base">
-                <Measurement className="test" pl="1px"></Measurement>
-            </div>
+            <Measurement className="test" data-testid="measurement"></Measurement>
         </PackageContextProvider>
     );
 
@@ -39,17 +35,12 @@ it("should successfully create a measurement component with additional css class
 
     expect(measurementDiv.classList.contains("test")).toBe(true);
     expect(measurementDiv.classList.contains("foo")).toBe(false);
-
-    const styles = window.getComputedStyle(measurementDiv);
-    expect(styles.paddingLeft).toBe("1px");
 });
 
 it("should successfully select a measurement from the select dropdown", async () => {
     render(
         <PackageContextProvider>
-            <div data-testid="base">
-                <Measurement className="test" pl="1px"></Measurement>
-            </div>
+            <Measurement className="test" data-testid="measurement"></Measurement>
         </PackageContextProvider>
     );
 
@@ -69,9 +60,8 @@ it("should successfully select a measurement from the select dropdown", async ()
 
 async function waitForMeasurement() {
     const { measurementDiv, measurementSelectDiv, measurementSelect } = await waitFor(async () => {
-        const domElement = await screen.findByTestId("base");
-
-        const measurementDiv = domElement.querySelector(".measurement");
+        const measurementDiv: HTMLDivElement | null =
+            await screen.findByTestId<HTMLDivElement>("measurement");
         if (!measurementDiv) {
             throw new Error("Measurement not rendered");
         }

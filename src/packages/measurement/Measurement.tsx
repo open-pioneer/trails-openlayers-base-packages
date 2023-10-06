@@ -12,9 +12,9 @@ import {
 } from "@open-pioneer/chakra-integration";
 import { FC, useEffect, useState } from "react";
 import { useIntl } from "open-pioneer:react-hooks";
-import classNames from "classnames";
+import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 
-export interface MeasurementProps extends BoxProps {
+export interface MeasurementProps extends CommonComponentProps {
     /**
      * Additional css class name(s) that will be added to the Measurement component.
      */
@@ -24,7 +24,7 @@ export interface MeasurementProps extends BoxProps {
 export const Measurement: FC<MeasurementProps> = (props) => {
     const intl = useIntl();
 
-    const { className, ...rest } = props;
+    const { containerProps } = useCommonComponentProps("basemap-switcher", props);
     const [selectedMeasurement, setMeasurement] = useState("distance");
 
     useEffect(() => {
@@ -49,7 +49,7 @@ export const Measurement: FC<MeasurementProps> = (props) => {
     }
 
     return (
-        <Box className={classNames("measurement", className)} {...rest}>
+        <Box {...containerProps}>
             <Box className="measurement-content" padding={2}>
                 <FormControl mb={4} alignItems="center">
                     <HStack mb={2}>
