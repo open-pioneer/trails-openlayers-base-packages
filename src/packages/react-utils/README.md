@@ -1,6 +1,6 @@
 # @open-pioneer/react-utils
 
-This package provides some React utilities that can help you build your applications.
+This package provides React utilities that help a developer create applications.
 
 ## Titled sections
 
