@@ -1,10 +1,10 @@
 # @open-pioneer/initial-extent
 
-This package contains a button that resets the map to the initial view.
+This package provides a button that allows the user to reset the map to the initial view.
 
 ## Usage
 
-To integrate the component in your app, insert the following snippet and reference a map id:
+To integrate the component in your app, insert the following snippet and reference a map ID:
 
 ```jsx
 <InitialExtent mapId="map_id" />

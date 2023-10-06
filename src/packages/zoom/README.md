@@ -1,10 +1,10 @@
 # @open-pioneer/zoom
 
-This package provides two buttons for the user to zoom in and zoom out of the map.
+This package provides two buttons that allow the user to zoom in and zoom out of the map.
 
 ## Usage
 
-To integrate the components in your app, insert the following snippet and reference a map id:
+To integrate the components in your app, insert the following snippet and reference a map ID:
 
 ```jsx
 <ZoomIn mapId="map_id" />
