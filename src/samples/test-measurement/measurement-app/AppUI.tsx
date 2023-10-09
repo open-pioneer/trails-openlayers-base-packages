@@ -54,6 +54,7 @@ export function AppUI() {
                         )}
                         <MapAnchor position="bottom-right" horizontalGap={10} verticalGap={30}>
                             <IconButton
+                                margin={1} // need some space for the keyboard focus highlight
                                 onClick={activateMeasurement}
                                 aria-label="Search database"
                                 icon={<EditIcon />}
