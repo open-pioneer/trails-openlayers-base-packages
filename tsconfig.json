@@ -1,6 +1,8 @@
 {
     "compilerOptions": {
         "target": "ESNext",
+        "incremental": true,
+        "tsBuildInfoFile": "./node_modules/.cache/tsconfig.tsbuildinfo",
         "lib": ["DOM", "DOM.Iterable", "ES2022"],
         "module": "ES2022",
         "moduleResolution": "node",
