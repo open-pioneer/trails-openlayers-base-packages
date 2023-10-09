@@ -3,7 +3,7 @@
 import { useService } from "open-pioneer:react-hooks";
 import { useMemo } from "react";
 import { useAsync } from "react-use";
-import { MapModel } from "./api";
+import { MapModel } from "../api";
 
 /** Return value of {@link useMapModel}. */
 export type UseMapModelResult =
