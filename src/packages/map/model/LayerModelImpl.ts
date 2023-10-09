@@ -6,12 +6,19 @@ import { EventsKey } from "ol/events";
 import OlBaseLayer from "ol/layer/Base";
 import OlLayer from "ol/layer/Layer";
 import Source, { State as OlSourceState } from "ol/source/Source";
-import { LayerConfig, LayerLoadState, LayerModel, LayerModelEvents, MapModel } from "../api";
+import {
+    LayerConfig,
+    LayerLoadState,
+    LayerModel,
+    LayerModelBaseEvents,
+    MapModel,
+    SublayersCollection
+} from "../api";
 import { MapModelImpl } from "./MapModelImpl";
 
 const LOG = createLogger("map:LayerModel");
 
-export class LayerModelImpl extends EventEmitter<LayerModelEvents> implements LayerModel {
+export class LayerModelImpl extends EventEmitter<LayerModelBaseEvents> implements LayerModel {
     #id: string;
     #map: MapModelImpl;
     #olLayer: OlBaseLayer;
@@ -48,24 +55,12 @@ export class LayerModelImpl extends EventEmitter<LayerModelEvents> implements La
         this.#stateWatchResource = stateWatchResource;
     }
 
-    get id(): string {
-        return this.#id;
-    }
-
     get map(): MapModel {
         return this.#map;
     }
 
-    get olLayer(): OlBaseLayer {
-        return this.#olLayer;
-    }
-
-    get isBaseLayer(): boolean {
-        return this.#isBaseLayer;
-    }
-
-    get attributes(): Record<string | symbol, unknown> {
-        return this.#attributes;
+    get id(): string {
+        return this.#id;
     }
 
     get title(): string {
@@ -76,12 +71,29 @@ export class LayerModelImpl extends EventEmitter<LayerModelEvents> implements La
         return this.#description;
     }
 
+    get loadState(): LayerLoadState {
+        return this.#loadState;
+    }
+
+    get attributes(): Record<string | symbol, unknown> {
+        return this.#attributes;
+    }
+
     get visible(): boolean {
         return this.#visible;
     }
 
-    get loadState(): LayerLoadState {
-        return this.#loadState;
+    get sublayers(): SublayersCollection | undefined {
+        // TODO: Not implemented yet
+        return undefined;
+    }
+
+    get olLayer(): OlBaseLayer {
+        return this.#olLayer;
+    }
+
+    get isBaseLayer(): boolean {
+        return this.#isBaseLayer;
     }
 
     destroy() {
@@ -173,7 +185,7 @@ export class LayerModelImpl extends EventEmitter<LayerModelEvents> implements La
         }
     }
 
-    #emitChangeEvent<Name extends EventNames<LayerModelEvents>>(event: Name) {
+    #emitChangeEvent<Name extends EventNames<LayerModelBaseEvents>>(event: Name) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (this as any).emit(event);
         this.emit("changed");

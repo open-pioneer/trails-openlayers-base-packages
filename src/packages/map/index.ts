@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-export * from "./api";
+export type * from "./api";
 export { getProjection, registerProjections, type ProjectionDefinition } from "./projections";
 export { BkgTopPlusOpen, type BkgTopPlusOpenProps } from "./layers/BkgTopPlusOpen";
 

@@ -119,11 +119,10 @@ it("should support overriding basemap-switcher properties", async () => {
 
     const tocDiv = await findToc();
     const { basemapSwitcher, basemapSelect } = await waitForBasemapSwitcher(tocDiv!);
-
     expect(basemapSwitcher?.classList.contains("test-class")).toBe(true);
 
-    // Get options manually (instead of basemapSelect.options); these seems
-    // to be a timing problem with that property (?)
+    // Weird timing problem w.r.t. select options in basemap switcher
+    await new Promise((resolve) => setTimeout(resolve, 100));
     const options = basemapSelect.querySelectorAll("option");
     const optionLabels = Array.from(options).map((opt) => opt.textContent);
     expect(optionLabels).toMatchInlineSnapshot(`

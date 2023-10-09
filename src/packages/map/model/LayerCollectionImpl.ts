@@ -8,8 +8,7 @@ import {
     LayerCollectionEvents,
     LayerConfig,
     LayerModel,
-    LayerRetrievalOptions,
-    MapModel
+    LayerRetrievalOptions
 } from "../api";
 import { LayerModelImpl } from "./LayerModelImpl";
 import { MapModelImpl } from "./MapModelImpl";
@@ -32,10 +31,6 @@ export class LayerCollectionImpl
     constructor(map: MapModelImpl) {
         super();
         this.#map = map;
-    }
-
-    get map(): MapModel {
-        return this.#map;
     }
 
     destroy() {
@@ -205,6 +200,7 @@ function sortLayersByDisplayOrder(layers: LayerModel[]) {
         // currently layers are added with increasing z-index (base layers: 0), so
         // ordering by z-index is automatically the correct display order.
         // we use the id as the tie breaker for equal z-indices.
+        // TODO: improve handling of layers without an `olLayer` (do not yet exist currently)
         const leftZ = left.olLayer.getZIndex() ?? 1;
         const rightZ = right.olLayer.getZIndex() ?? 1;
         if (leftZ !== rightZ) {
