@@ -170,7 +170,9 @@ export interface LayerModel extends EventSource<LayerModelEvents> {
 
     /**
      * Whether the layer is visible or not.
-     * NOTE: The LayerModel's visible state of the layer might not fit the actual layer's visibility in the map.
+     *
+     * NOTE: The LayerModel's visible state may do more than influence the raw OpenLayers's visibility property.
+     * Future versions may completely remove invisible layers from the OpenLayer's map under some circumstances.
      */
     readonly visible: boolean;
 
