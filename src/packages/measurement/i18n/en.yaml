@@ -1,0 +1,5 @@
+messages:
+  measurementLabel: "Geometry"
+  distance: "Distance"
+  area: "Area"
+  deleteMeasurementLabel: "Delete measurements"

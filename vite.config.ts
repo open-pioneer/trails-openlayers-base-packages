@@ -19,7 +19,14 @@ const targets = ["chrome92", "edge92", "firefox91", "safari14"];
 // See also: https://github.com/btd/rollup-plugin-visualizer
 const visualize = false;
 
-const sampleSites = ["samples/map-sample", "samples/auth-sample", "samples/notify-sample", "samples/test-basemap-switcher", "samples/experimental-sidebar"];
+const sampleSites = [
+    "samples/map-sample",
+    "samples/auth-sample",
+    "samples/notify-sample",
+    "samples/test-basemap-switcher",
+    "samples/test-measurement",
+    "samples/experimental-sidebar"
+];
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
@@ -56,7 +63,7 @@ export default defineConfig(({ mode }) => {
                 apps: []
             }),
             react({
-                // react swc plugin transpiles during development. 
+                // react swc plugin transpiles during development.
                 // using a recent target allows for better debugging of recent features like private properties (`this.#abc`)
                 devTarget: "es2022"
             }),
@@ -75,7 +82,7 @@ export default defineConfig(({ mode }) => {
         test: {
             globals: true,
             environment: "happy-dom",
-            setupFiles: ["testing/global-setup.ts"],
+            setupFiles: ["testing/global-setup.ts"]
         }
 
         // disable hot reloading

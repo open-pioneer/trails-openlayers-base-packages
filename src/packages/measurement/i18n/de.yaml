@@ -1,0 +1,5 @@
+messages:
+  measurementLabel: "Geometrie"
+  distance: "Strecke"
+  area: "Fläche"
+  deleteMeasurementLabel: "Messungen löschen"
