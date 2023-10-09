@@ -33,7 +33,7 @@ export interface LayerModelBase extends EventSource<LayerModelBaseEvents> {
     readonly description: string;
 
     /**
-     * Whether the map has been loaded, or whether an error occurred while trying to load it.
+     * Whether the layer has been loaded, or whether an error occurred while trying to load it.
      */
     readonly loadState: LayerLoadState;
 
@@ -114,6 +114,11 @@ export interface SublayerModel extends LayerModelBase {
      * The parent layer that owns this sublayer.
      */
     parentLayer: LayerModel;
+}
+
+/** Events emitted by the {@link SublayersCollection}. */
+export interface SublayersCollectionEvents {
+    changed: void;
 }
 
 /**
