@@ -6,8 +6,10 @@ import OSM from "ol/source/OSM";
 import WMTS from "ol/source/WMTS";
 import WMTSTileGrid from "ol/tilegrid/WMTS";
 import VectorSource from "ol/source/Vector";
+import ImageWMS from "ol/source/ImageWMS";
 import { GeoJSON } from "ol/format";
 import VectorLayer from "ol/layer/Vector";
+import ImageLayer from "ol/layer/Image";
 
 export const MAP_ID = "main";
 
@@ -32,6 +34,11 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     title: "Kindertagesstätten",
                     visible: true,
                     layer: createKitasLayer()
+                },
+                {
+                    title: "Schulstandorte",
+                    visible: true,
+                    layer: createSchulenLayer()
                 },
                 {
                     id: "topplus_open",
@@ -148,5 +155,15 @@ function createKitasLayer() {
 
     return new VectorLayer({
         source: geojsonSource
+    });
+}
+
+function createSchulenLayer() {
+    return new ImageLayer({
+        source: new ImageWMS({
+            url: "https://www.wms.nrw.de/wms/wms_nw_inspire-schulen",
+            params: { "LAYERS": ["US.education"] },
+            ratio: 1 //Ratio. 1 means image requests are the size of the map viewport
+        })
     });
 }
