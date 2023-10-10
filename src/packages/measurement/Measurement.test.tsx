@@ -5,11 +5,15 @@ import { act, fireEvent, render, screen, waitFor } from "@testing-library/react"
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { Measurement } from "./Measurement";
 import { expect, it } from "vitest";
+import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
 
 it("should successfully create a measurement component", async () => {
+    const { mapId, registry } = await setupMap();
+    await registry.expectMapModel(mapId);
+    const injectedServices = createServiceOptions({ registry });
     render(
-        <PackageContextProvider>
-            <Measurement data-testid="measurement"></Measurement>
+        <PackageContextProvider services={injectedServices}>
+            <Measurement mapId={mapId} data-testid="measurement"></Measurement>
         </PackageContextProvider>
     );
 
@@ -23,9 +27,12 @@ it("should successfully create a measurement component", async () => {
 });
 
 it("should successfully create a measurement component with additional css classes and box properties", async () => {
+    const { mapId, registry } = await setupMap();
+    await registry.expectMapModel(mapId);
+    const injectedServices = createServiceOptions({ registry });
     render(
-        <PackageContextProvider>
-            <Measurement className="test" data-testid="measurement"></Measurement>
+        <PackageContextProvider services={injectedServices}>
+            <Measurement mapId={mapId} className="test" data-testid="measurement"></Measurement>
         </PackageContextProvider>
     );
 
@@ -38,9 +45,12 @@ it("should successfully create a measurement component with additional css class
 });
 
 it("should successfully select a measurement from the select dropdown", async () => {
+    const { mapId, registry } = await setupMap();
+    await registry.expectMapModel(mapId);
+    const injectedServices = createServiceOptions({ registry });
     render(
-        <PackageContextProvider>
-            <Measurement className="test" data-testid="measurement"></Measurement>
+        <PackageContextProvider services={injectedServices}>
+            <Measurement mapId={mapId} className="test" data-testid="measurement"></Measurement>
         </PackageContextProvider>
     );
 

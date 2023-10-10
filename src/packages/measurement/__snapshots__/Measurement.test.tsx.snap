@@ -2,7 +2,7 @@
 
 exports[`should successfully create a measurement component 1`] = `
 <div
-  class="basemap-switcher css-0"
+  class="measurement css-0"
   data-testid="measurement"
   data-theme="light"
 >
@@ -81,7 +81,7 @@ exports[`should successfully create a measurement component 1`] = `
 
 exports[`should successfully create a measurement component with additional css classes and box properties 1`] = `
 <div
-  class="basemap-switcher test css-0"
+  class="measurement test css-0"
   data-testid="measurement"
   data-theme="light"
 >
