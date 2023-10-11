@@ -14,6 +14,7 @@
         "build-license-report": "node --loader ts-node/esm --no-warnings=ExperimentalWarning ./support/create-license-report.ts ",
         "preview": "vite preview",
         "lint": "eslint ./src ./support --ext .js,.ts,.jsx,.tsx,.mjs,.mts,.cjs,.cts --cache --cache-location ./node_modules/.cache/.eslintcache",
+        "eslint": "pnpm run lint",
         "prettier-check": "pnpm prettier:common -c",
         "prettier": "pnpm prettier:common -w",
         "prettier:common": "prettier ./src ./support ./docs --ignore-path .eslintignore --cache",
