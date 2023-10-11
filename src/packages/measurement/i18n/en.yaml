@@ -3,3 +3,6 @@ messages:
   distance: "Distance"
   area: "Area"
   deleteMeasurementLabel: "Delete measurements"
+  tooltips:
+    help: "Click to start drawing"
+    continue: "Click to continue drawing"
