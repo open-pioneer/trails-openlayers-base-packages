@@ -24,6 +24,7 @@ import { unByKey } from "ol/Observable";
 import { EventsKey } from "ol/events";
 import { Coordinate } from "ol/coordinate";
 import { Vector as VectorLayer } from "ol/layer";
+import { MapBrowserEvent } from "ol";
 
 /**
  * This is for special properties of the Measurement.
@@ -36,6 +37,49 @@ export interface MeasurementProps extends CommonComponentProps {
 }
 
 /**
+ * Stores instance of `Draw` interaction. it is global so we can remove it later
+ */
+let draw: Draw | null = null;
+
+let layer: VectorLayer<VectorSource> | null = null;
+let source: VectorSource | undefined = undefined;
+
+/**
+ * Currently drawn feature.
+ */
+let sketch: Feature | null = null;
+
+/**
+ * The help tooltip element.
+ */
+let helpTooltipElement: HTMLElement;
+
+/**
+ * Overlay to show the help messages.
+ */
+let helpTooltip: Overlay;
+
+/**
+ * The measure tooltip element.
+ */
+let measureTooltipElement: HTMLElement | null = null;
+
+/**
+ * Overlay to show the measurement.
+ */
+let measureTooltip: Overlay;
+
+/**
+ * Message to show when the user is drawing a polygon.
+ */
+const continuePolygonMsg: string = "Click to continue drawing the polygon";
+
+/**
+ * Message to show when the user is drawing a line.
+ */
+const continueLineMsg: string = "Click to continue drawing the line";
+
+/**
  * The `Measurement` component can be used in an app to switch between distance and area measurements and to delete all current measurements.
  */
 export const Measurement: FC<MeasurementProps> = (props) => {
@@ -44,51 +88,28 @@ export const Measurement: FC<MeasurementProps> = (props) => {
     const { mapId } = props;
     const { containerProps } = useCommonComponentProps("measurement", props);
     const [selectedMeasurement, setMeasurement] = useState("distance");
-    console.log(mapId);
+    const label = (id: string) => intl.formatMessage({ id: id });
+
     const state = useMapModel(mapId);
     const map = state.map;
 
-    const { layer, source } = createLayer();
+    useEffect(() => {
+        setUp(map);
+        return () => {
+            cleanUp(map);
+        };
+    }, [map]);
 
-    /*
-     *  Stores instance of `Draw` interaction
-     * */
-    let draw: Draw | null = null;
-
-    /*
-     * Stores currently drawn feature.
-     * */
-    const sketch: Feature | null = null;
-
-    if (state.kind === "resolved") {
-        map?.olMap.addLayer(layer);
-        draw = addInteraction(selectedMeasurement, draw, sketch, map, source);
-    }
-
-    useEffect(
-        () => {
-            console.log("mounted");
-            state.kind === "resolved" &&
-                addInteraction(selectedMeasurement, draw, sketch, map, source);
-            return () => {
-                console.log("unmounted");
-                map?.olMap.removeLayer(layer);
-                removeInteraction(map, draw);
-            };
-        },
-        // eslint-disable-next-line
-        []
-    );
-
-    const label = (id: string) => intl.formatMessage({ id: id });
+    useEffect(() => {
+        if (!map) return;
+        addInteraction(selectedMeasurement, map);
+        return () => {
+            draw && map?.olMap.removeInteraction(draw);
+        };
+    }, [map, selectedMeasurement]);
 
     function changeMeasurement(measurement: string) {
         setMeasurement(measurement);
-        //remove previous and add new draw interaction based on selected measurement
-        //map?.olMap.removeLayer(layer);
-        draw && state?.map?.olMap.removeInteraction(draw);
-        //map?.olMap.addLayer(layer);
-        draw = addInteraction(measurement, draw, sketch, map, source);
     }
 
     return (
@@ -110,7 +131,7 @@ export const Measurement: FC<MeasurementProps> = (props) => {
                 <Button
                     padding={2}
                     className="delete-measurements"
-                    onClick={() => removeInteraction(map, draw)}
+                    onClick={() => removeMeasurements(map, selectedMeasurement)}
                     width="100%"
                 >
                     {label("deleteMeasurementLabel")}
@@ -120,27 +141,36 @@ export const Measurement: FC<MeasurementProps> = (props) => {
     );
 };
 
-function removeInteraction(map: MapModel | undefined, draw: Draw | null) {
-    console.log("Clear drawn measurements");
+function removeMeasurements(map: MapModel | undefined, measurement: string) {
     draw && map?.olMap.removeInteraction(draw);
+    map?.olMap.getOverlays().clear();
+    layer?.getSource()?.clear();
+    addInteraction(measurement, map);
 }
 
-function addInteraction(
-    geometryType: string,
-    draw: Draw | null,
-    sketch: Feature | null,
-    map: MapModel | undefined,
-    source: VectorSource
-) {
+function setUp(map: MapModel | undefined) {
+    source = new VectorSource();
+    source && createLayer();
+    layer && map?.olMap.addLayer(layer);
+    map?.olMap.on("pointermove", pointerMoveHandler);
+    map?.olMap.getViewport().addEventListener("mouseout", function () {
+        helpTooltipElement.classList.add("hidden");
+    });
+}
+
+function cleanUp(map: MapModel | undefined) {
+    layer && map?.olMap.removeLayer(layer);
+    map?.olMap.getOverlays().clear();
+}
+
+function addInteraction(geometryType: string, map: MapModel | undefined) {
     const type = geometryType == "area" ? "Polygon" : "LineString";
 
-    let listener: EventsKey | undefined = undefined;
-    let measureTooltipElement: HTMLElement | null = null;
-    let measureTooltip: Overlay | null = null;
+    let changeListener: EventsKey | undefined = undefined;
     const style = getStyle();
 
     draw = new Draw({
-        source: source,
+        source: source || undefined,
         type: type,
         style: function (feature) {
             const geometryType = feature?.getGeometry()?.getType();
@@ -149,18 +179,18 @@ function addInteraction(
             }
         }
     });
-
     map?.olMap.addInteraction(draw);
-    const { mte, mt } = createMeasureTooltip(measureTooltipElement, measureTooltip, map);
-    measureTooltipElement = mte;
-    measureTooltip = mt;
+
+    createMeasureTooltip(map);
+    createHelpTooltip(map);
+
     draw.on("drawstart", function (evt) {
         // set sketch
         sketch = evt.feature;
 
         let tooltipCoord: Coordinate | null = null;
 
-        listener = sketch?.getGeometry()?.on("change", function (evt) {
+        changeListener = sketch?.getGeometry()?.on("change", function (evt) {
             const geom = evt.target;
             let output;
             if (geom instanceof Polygon) {
@@ -186,19 +216,53 @@ function addInteraction(
         sketch = null;
         // unset tooltip so that a new one can be created
         measureTooltipElement = null;
-        const { mte, mt } = createMeasureTooltip(measureTooltipElement, measureTooltip, map);
-        measureTooltipElement = mte;
-        measureTooltip = mt;
-        listener && unByKey(listener);
+        createMeasureTooltip(map);
+        changeListener && unByKey(changeListener);
     });
-
-    return draw;
 }
-function createMeasureTooltip(
-    measureTooltipElement: HTMLElement | null,
-    measureTooltip: Overlay | null,
-    map: MapModel | undefined
-) {
+
+const pointerMoveHandler = function (evt: MapBrowserEvent<UIEvent>) {
+    if (evt.dragging) {
+        return;
+    }
+    let helpMsg: string = "Click to start drawing";
+
+    if (sketch) {
+        const geom = sketch.getGeometry();
+        if (geom instanceof Polygon) {
+            helpMsg = continuePolygonMsg;
+        } else if (geom instanceof LineString) {
+            helpMsg = continueLineMsg;
+        }
+    }
+
+    helpTooltipElement.innerHTML = helpMsg;
+    helpTooltip.setPosition(evt.coordinate);
+
+    helpTooltipElement.classList.remove("hidden");
+};
+
+/**
+ * Creates a new help tooltip
+ */
+function createHelpTooltip(map: MapModel | undefined) {
+    if (helpTooltipElement) {
+        helpTooltipElement.parentNode?.removeChild(helpTooltipElement);
+    }
+    helpTooltipElement = document.createElement("div");
+    helpTooltipElement.className = "ol-tooltip hidden";
+    helpTooltip = new Overlay({
+        element: helpTooltipElement,
+        offset: [15, 0],
+        positioning: "center-left"
+    });
+    map?.olMap.addOverlay(helpTooltip);
+}
+
+/**
+ * Creates a new measure tooltip
+ */
+function createMeasureTooltip(map: MapModel | undefined) {
     if (measureTooltipElement) {
         measureTooltipElement?.parentNode?.removeChild(measureTooltipElement);
     }
@@ -212,7 +276,6 @@ function createMeasureTooltip(
         insertFirst: false
     });
     map?.olMap.addOverlay(measureTooltip);
-    return { mte: measureTooltipElement, mt: measureTooltip };
 }
 function getStyle() {
     return new Style({
@@ -239,7 +302,7 @@ function getStyle() {
 function formatArea(polygon: Polygon) {
     const area = getArea(polygon);
     let output;
-    if (area > 10000) {
+    if (area >= 1000000) {
         output = Math.round((area / 1000000) * 100) / 100 + " " + "km<sup>2</sup>";
     } else {
         output = Math.round(area * 100) / 100 + " " + "m<sup>2</sup>";
@@ -249,7 +312,7 @@ function formatArea(polygon: Polygon) {
 function formatLength(line: LineString) {
     const length = getLength(line);
     let output;
-    if (length > 100) {
+    if (length >= 1000) {
         output = Math.round((length / 1000) * 100) / 100 + " " + "km";
     } else {
         output = Math.round(length * 100) / 100 + " " + "m";
@@ -258,8 +321,7 @@ function formatLength(line: LineString) {
 }
 
 function createLayer() {
-    const source = new VectorSource();
-    const vector = new VectorLayer({
+    layer = new VectorLayer({
         source: source,
         style: {
             "fill-color": "rgba(255, 255, 255, 0.2)",
@@ -269,5 +331,4 @@ function createLayer() {
             "circle-fill-color": "#ffcc33"
         }
     });
-    return { layer: vector, source: source };
 }
