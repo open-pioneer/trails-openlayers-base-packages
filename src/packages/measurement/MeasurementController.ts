@@ -188,8 +188,8 @@ export class MeasurementController {
                 // Make the tooltip (which was previously following the mouse)
                 // static instead, next to the feature (last known overlay coordinate).
                 const classes = measureTooltip.element.classList;
-                classes.remove("ol-tooltip-measure");
-                classes.add("ol-tooltip-static");
+                classes.remove("active-tooltip");
+                classes.add("finished-tooltip");
                 measureTooltip.overlay.setOffset([0, -7]);
 
                 this.overlayTooltips.push(measureTooltip);
@@ -219,7 +219,7 @@ export class MeasurementController {
 
     private createMeasureTooltip(): Tooltip {
         const element = document.createElement("div");
-        element.className = "ol-tooltip ol-tooltip-measure";
+        element.className = "measurement-tooltip active-tooltip";
 
         const overlay = new Overlay({
             element: element,
@@ -242,7 +242,7 @@ export class MeasurementController {
 
     private createHelpTooltip(): Tooltip {
         const element = document.createElement("div");
-        element.className = "ol-tooltip hidden";
+        element.className = "measurement-tooltip hidden";
 
         const overlay = new Overlay({
             element: element,
