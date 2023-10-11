@@ -1,65 +1,92 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
 import { createLogger } from "@open-pioneer/core";
-import { _getNextURL, _queryPages, type QueryFeatureOptions } from "./OgcFeatureSourceFactory";
+import { getNextURL, queryPages, type QueryFeatureOptions } from "./OgcFeatureSourceFactory";
 import { FeatureLike } from "ol/Feature";
 
 const LOG = createLogger("ogc-features:OffsetStrategy");
 
 export interface OffsetRequestProps {
     /** The maximum number of concurrent requests. Defaults to `6`. */
-    numberOfConcurrentReq: number;
+    maxNumberOfConcurrentReq: number;
 
     /** The (maximum) number of items to fetch at once. Defaults to `2500`. */
     pageSize: number;
-};
+}
 
 // Chrome does only allow 6 concurrent requests (HTTP/1.x)
+/** @internal */
 export const defaultOffsetRequestProps: OffsetRequestProps = {
-    numberOfConcurrentReq: 6,
+    maxNumberOfConcurrentReq: 6,
     pageSize: 2500
 };
 
-export const isOffsetStrategySupported = async (collectionsItemsUrl: string) => {
-    const response = await fetch(collectionsItemsUrl + "&limit=1", {
+/** @internal */
+export interface CollectionInfos {
+    numberMatched: number;
+    offsetStrategySupported: boolean;
+    requiredPages: number;
+}
+
+/** @internal */
+export async function getCollectionInfos(
+    collectionsItemsUrl: string,
+    offsetProps: OffsetRequestProps = defaultOffsetRequestProps
+): Promise<CollectionInfos | undefined> {
+    const url = new URL(collectionsItemsUrl);
+    url.searchParams.set("limit", "1");
+    url.searchParams.set("f", "json");
+    const response = await fetch(url.toString(), {
         headers: {
             Accept: "application/geo+json"
         }
     });
     if (response.status !== 200) {
         LOG.error(`Offset-Request failed with status ${response.status}:`, response);
-        return false;
+        return;
     }
     const jsonResp = await response.json();
-    const nextUrl = _getNextURL(jsonResp.links);
+    const nextUrl = getNextURL(jsonResp.links);
 
-    /* TODO:
-    const parsedURL = new URL(nextUrl!);
+    if (!nextUrl) return;
+
+    const parsedURL = new URL(nextUrl);
     const hasOffset = parsedURL.searchParams.has("offset");
-    */
+    let requiredPages: number;
+    if (jsonResp.numberMatched && offsetProps.pageSize) {
+        requiredPages = Math.min(
+            offsetProps.maxNumberOfConcurrentReq,
+            Math.ceil(jsonResp.numberMatched / offsetProps.pageSize)
+        );
+    } else {
+        requiredPages = offsetProps.maxNumberOfConcurrentReq;
+    }
 
-    // TODO: Transport numberMatched and compute number of required pages
-    return !!(jsonResp.numberMatched && nextUrl !== undefined && nextUrl.includes("offset"));
-};
+    return {
+        numberMatched: jsonResp.numberMatched,
+        offsetStrategySupported: hasOffset,
+        requiredPages: requiredPages
+    };
+}
 
-export const _queryAllFeaturesWithOffset = async (
+/** @internal */
+export async function queryAllFeaturesWithOffset(
     options: Omit<QueryFeatureOptions, "nextRequestProps">
-): Promise<FeatureLike[]> => {
+): Promise<FeatureLike[]> {
     const { fullURL, featureFormat, signal, addFeatures, queryFeatures } = options;
 
     let nextUrl = undefined;
     let allFeatures: FeatureLike[] = [];
 
-    const { numberOfConcurrentReq, pageSize } = options.offsetRequestProps ?? defaultOffsetRequestProps;
+    const offsetRequestProps = options.offsetRequestProps ?? defaultOffsetRequestProps;
+    const requiredPages =
+        options.collectionInfos?.requiredPages ?? offsetRequestProps.maxNumberOfConcurrentReq;
+    const { pageSize } = offsetRequestProps!;
+
     let startOffset = 0;
     do {
-        const allRequests = _createOffsetURLs(
-            fullURL,
-            numberOfConcurrentReq,
-            startOffset,
-            pageSize
-        );
-        const allFeatureResp = await _queryPages(
+        const allRequests = createOffsetURLs(fullURL, requiredPages, startOffset, pageSize);
+        const allFeatureResp = await queryPages(
             allRequests,
             featureFormat,
             signal,
@@ -68,12 +95,13 @@ export const _queryAllFeaturesWithOffset = async (
         );
         allFeatures = allFeatures.concat(allFeatureResp.features);
         nextUrl = allFeatureResp.nextURL;
-        startOffset += numberOfConcurrentReq * pageSize;
+        startOffset += requiredPages * pageSize;
     } while (nextUrl !== undefined);
     return allFeatures;
-};
+}
 
-export function _createOffsetURLs(
+/** @internal */
+export function createOffsetURLs(
     fullURL: string,
     numberOfRequests: number = 10,
     startOffset: number = 0,
@@ -81,8 +109,13 @@ export function _createOffsetURLs(
 ): Array<string> {
     const allRequests = [];
     let currentOffset = startOffset;
+    const url = new URL(fullURL);
+    const searchParams = url.searchParams;
     for (let i = 0; i < numberOfRequests; i++) {
-        allRequests.push(`${fullURL}&offset=${currentOffset}&limit=${offsetDelta}`);
+        searchParams.set("offset", currentOffset.toString());
+        searchParams.set("limit", offsetDelta.toString());
+        //const urlWithParams = fullURL.concat(`&${searchParams.toString()}`);
+        allRequests.push(url.toString());
         currentOffset += offsetDelta;
     }
     return allRequests;

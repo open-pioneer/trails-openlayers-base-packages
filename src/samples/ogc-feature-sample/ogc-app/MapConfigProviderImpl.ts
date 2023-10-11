@@ -48,6 +48,20 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                                 "Datenlizenz Deutschland - Namensnennung - Version 2.0 <a href='https://www.govdata.de/dl-de/by-2-0'>https://www.govdata.de/dl-de/by-2-0</a>"
                         })
                     })
+                },
+                {
+                    id: "test_ogc_katasterbezirk",
+                    title: "OGC API Katasterbezirk",
+                    visible: false,
+                    layer: new VectorLayer({
+                        source: createVectorSource({
+                            baseUrl: "https://ogc-api.nrw.de/lika/v1",
+                            collectionId: "katasterbezirk",
+                            crs: "http://www.opengis.net/def/crs/EPSG/0/25832",
+                            attributions:
+                                "Datenlizenz Deutschland - Namensnennung - Version 2.0 <a href='https://www.govdata.de/dl-de/by-2-0'>https://www.govdata.de/dl-de/by-2-0</a>"
+                        })
+                    })
                 }
             ]
         };

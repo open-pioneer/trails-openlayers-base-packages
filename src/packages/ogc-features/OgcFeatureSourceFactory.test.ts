@@ -2,18 +2,20 @@
 // SPDX-License-Identifier: Apache-2.0
 import { assert, it } from "vitest"; // (1)
 import {
-    _createOffsetURLs,
     _createVectorSource,
     FeatureResponse,
-    _getNextURL,
-    _queryAllFeaturesWithOffset,
-    _queryFeatures
+    getNextURL,
+    QueryFeatureOptions,
+    OffsetRequestProps,
+    queryAllFeaturesNextStrategy
 } from "./OgcFeatureSourceFactory";
-import { Geometry, Point } from "ol/geom";
+import { createOffsetURLs, queryAllFeaturesWithOffset } from "./OffsetStrategy";
+import { Point } from "ol/geom";
 import { Feature } from "ol";
 import GeoJSON from "ol/format/GeoJSON";
 import { FeatureLike } from "ol/Feature";
 import { Projection } from "ol/proj";
+import FeatureFormat from "ol/format/Feature";
 
 it("expect next link to be returned", () => {
     const expectedResult = "testLink";
@@ -23,7 +25,7 @@ it("expect next link to be returned", () => {
             href: expectedResult
         }
     ];
-    const nextUrl = _getNextURL(links);
+    const nextUrl = getNextURL(links);
     assert.strictEqual(nextUrl, expectedResult);
 });
 
@@ -34,36 +36,34 @@ it("expect next link is undefined", () => {
             href: "selfLink"
         }
     ];
-    const nextUrl = _getNextURL(links);
+    const nextUrl = getNextURL(links);
     assert.strictEqual(nextUrl, undefined);
 });
 
+// queryPages
+// queryFeatures
+
 it("expect default offsetUrls are correct", () => {
-    const fullUrl = "https://url-to-service/items?f=json";
-    const expectedResult = [
-        `${fullUrl}&offset=0&limit=5000`,
-        `${fullUrl}&offset=5000&limit=5000`,
-        `${fullUrl}&offset=10000&limit=5000`,
-        `${fullUrl}&offset=15000&limit=5000`,
-        `${fullUrl}&offset=20000&limit=5000`,
-        `${fullUrl}&offset=25000&limit=5000`,
-        `${fullUrl}&offset=30000&limit=5000`,
-        `${fullUrl}&offset=35000&limit=5000`,
-        `${fullUrl}&offset=40000&limit=5000`,
-        `${fullUrl}&offset=45000&limit=5000`
-    ];
-    const urls = _createOffsetURLs(fullUrl);
+    const fullUrl = "https://url-to-service.de/items?f=json";
+    const urlObj = new URL(fullUrl);
+    const expectedResult: string[] = [];
+    for (let i = 0; i < 10; i++) {
+        urlObj.searchParams.set("offset", "" + i * 5000);
+        urlObj.searchParams.set("limit", "5000");
+        expectedResult.push(urlObj.toString());
+    }
+    const urls = createOffsetURLs(fullUrl);
     assert.includeMembers<string>(urls, expectedResult);
 });
 
 const mockedFeatureResponse: FeatureResponse = {
-    features: [new Feature({ geometry: new Point([395388.236878133, 5752928.80853902]) })],
+    features: [new Feature({ geometry: new Point([395388, 5752928]) })],
     nextURL: undefined
 };
 
 const mockedFeatureResponseWithNext: FeatureResponse = {
-    features: [new Feature({ geometry: new Point([5752928.80853902, 395388.236878133]) })],
-    nextURL: "https://url-to-service"
+    features: [new Feature({ geometry: new Point([5752928, 395388]) })],
+    nextURL: "https://url-to-service.de"
 };
 
 const mockedEmptyFeatureResponse: FeatureResponse = {
@@ -71,29 +71,95 @@ const mockedEmptyFeatureResponse: FeatureResponse = {
     nextURL: undefined
 };
 
-it("expect feature responses are parsed from the feature response", async () => {
+const mockedGetCollectionInfos = async (_: string, __?: OffsetRequestProps) => {
+    return {
+        numberMatched: 4000,
+        offsetStrategySupported: true,
+        requiredPages: 2
+    };
+};
+
+it("expect feature responses are parsed from the feature response (offset-strategy)", async () => {
     const addedFeatures: Array<FeatureLike> = [];
-    const fullUrl = "https://url-to-service/items?f=json";
-    await _queryAllFeaturesWithOffset(
-        fullUrl,
-        new GeoJSON(),
-        async (_) => mockedFeatureResponse,
-        undefined,
-        (features) => features.forEach((feature) => addedFeatures.push(feature))
-    );
+    const fullUrl = "https://url-to-service.de/items?f=json";
+    const options: Omit<QueryFeatureOptions, "nextRequestProps"> = {
+        fullURL: fullUrl,
+        featureFormat: new GeoJSON(),
+        addFeatures: (features: FeatureLike[]) => {
+            features.forEach((feature) => addedFeatures.push(feature));
+        },
+        queryFeatures: (
+            _: string,
+            __: FeatureFormat | undefined,
+            ___: AbortSignal | undefined
+        ): Promise<FeatureResponse> => {
+            return Promise.resolve(mockedFeatureResponse);
+        }
+    };
+    await queryAllFeaturesWithOffset(options);
     assert.includeMembers(addedFeatures, mockedFeatureResponse.features);
 });
 
-it("expect feature responses are empty", async () => {
+it("expect feature responses are parsed from the feature response (next-strategy)", async () => {
     const addedFeatures: Array<FeatureLike> = [];
-    const fullUrl = "https://url-to-service/items?f=json";
-    await _queryAllFeaturesWithOffset(
-        fullUrl,
-        new GeoJSON(),
-        async (_) => mockedEmptyFeatureResponse,
-        undefined,
-        (features) => features.forEach((feature) => addedFeatures.push(feature))
-    );
+    const fullUrl = "https://url-to-service.de/items?f=json";
+    const options: Omit<QueryFeatureOptions, "nextRequestProps"> = {
+        fullURL: fullUrl,
+        featureFormat: new GeoJSON(),
+        addFeatures: (features: FeatureLike[]) => {
+            features.forEach((feature) => addedFeatures.push(feature));
+        },
+        queryFeatures: (
+            _: string,
+            __: FeatureFormat | undefined,
+            ___: AbortSignal | undefined
+        ): Promise<FeatureResponse> => {
+            return Promise.resolve(mockedFeatureResponse);
+        }
+    };
+    await queryAllFeaturesNextStrategy(options);
+    assert.includeMembers(addedFeatures, mockedFeatureResponse.features);
+});
+
+it("expect feature responses are empty (offset-strategy)", async () => {
+    const addedFeatures: Array<FeatureLike> = [];
+    const fullUrl = "https://url-to-service.de/items?f=json";
+    const options: Omit<QueryFeatureOptions, "nextRequestProps"> = {
+        fullURL: fullUrl,
+        featureFormat: new GeoJSON(),
+        addFeatures: (features: FeatureLike[]) => {
+            features.forEach((feature) => addedFeatures.push(feature));
+        },
+        queryFeatures: (
+            _: string,
+            __: FeatureFormat | undefined,
+            ___: AbortSignal | undefined
+        ): Promise<FeatureResponse> => {
+            return Promise.resolve(mockedEmptyFeatureResponse);
+        }
+    };
+    await queryAllFeaturesWithOffset(options);
+    assert.includeMembers(addedFeatures, mockedEmptyFeatureResponse.features);
+});
+
+it("expect feature responses are empty (next-strategy)", async () => {
+    const addedFeatures: Array<FeatureLike> = [];
+    const fullUrl = "https://url-to-service.de/items?f=json";
+    const options: Omit<QueryFeatureOptions, "nextRequestProps"> = {
+        fullURL: fullUrl,
+        featureFormat: new GeoJSON(),
+        addFeatures: (features: FeatureLike[]) => {
+            features.forEach((feature) => addedFeatures.push(feature));
+        },
+        queryFeatures: (
+            _: string,
+            __: FeatureFormat | undefined,
+            ___: AbortSignal | undefined
+        ): Promise<FeatureResponse> => {
+            return Promise.resolve(mockedEmptyFeatureResponse);
+        }
+    };
+    await queryAllFeaturesNextStrategy(options);
     assert.includeMembers(addedFeatures, mockedEmptyFeatureResponse.features);
 });
 
@@ -106,8 +172,9 @@ it("expect additionalOptions are set on vector-source", () => {
 
     const vectorSource = _createVectorSource(
         { baseUrl: "", collectionId: "", crs: "", additionalOptions: additionalOptions },
-        _queryFeatures,
-        undefined
+        undefined,
+        undefined,
+        mockedGetCollectionInfos
     );
     assert.isTrue(
         !vectorSource.getOverlaps() &&
@@ -117,23 +184,32 @@ it("expect additionalOptions are set on vector-source", () => {
 });
 
 it("expect url is created correctly on vector-source", async () => {
-    const fullURL = "https://url-to-service/items?f=json",
+    const fullURL = "https://url-to-service.de",
         collectionId = "1",
         crs = "http://www.opengis.net/def/crs/EPSG/0/25832",
         attributions = "attributions string",
-        bbox = [1, 2, 3, 4],
-        expectedUrl = `${fullURL}/collections/${collectionId}/items?bbox=1,2,3,4&bbox-crs=${crs}&crs=${crs}&f=json`;
+        bbox = [1, 2, 3, 4];
+
     let urlIsAlwaysCorrect = true;
 
     const queryFeatures = async (fullUrl: string): Promise<FeatureResponse> => {
-        urlIsAlwaysCorrect = urlIsAlwaysCorrect && fullUrl.includes(expectedUrl);
+        const urlObj = new URL(fullUrl);
+        const params = urlObj.searchParams;
+        const pathIsCorrect = urlObj.pathname.includes("/collections/1/items");
+        const paramAreIncluded =
+            params.get("crs") === crs &&
+            params.get("bbox-crs") === crs &&
+            params.get("bbox") === bbox.join(",") &&
+            params.get("f") === "json";
+        urlIsAlwaysCorrect = paramAreIncluded && pathIsCorrect;
         return mockedFeatureResponse;
     };
 
     const vectorSource = _createVectorSource(
         { baseUrl: fullURL, collectionId: collectionId, crs: crs, attributions: attributions },
         queryFeatures,
-        (_: Array<Feature<Geometry>>) => {}
+        (_: Array<FeatureLike>) => {},
+        mockedGetCollectionInfos
     );
     await vectorSource.loadFeatures(bbox, 1, new Projection({ code: "" }));
     assert.isTrue(urlIsAlwaysCorrect);
@@ -141,12 +217,11 @@ it("expect url is created correctly on vector-source", async () => {
 
 it("expect all feature from 2 query-runs are added", async () => {
     const addedFeatures: Array<FeatureLike> = [];
-    const fullUrl = "https://url-to-service/items?f=json";
+    const fullUrl = "https://url-to-service.de/items?f=json";
 
-    const offsetProps = {
-        numberOfConcurrentReq: 6,
-        offsetDelta: 2500,
-        startOffset: 0
+    const offsetProps: OffsetRequestProps = {
+        maxNumberOfConcurrentReq: 6,
+        pageSize: 2500
     };
 
     const expectedFeatures = [
@@ -167,24 +242,28 @@ it("expect all feature from 2 query-runs are added", async () => {
     let firstSixRuns = true;
 
     const queryFeatures = async (fullUrl: string) => {
-        if (
-            fullUrl.includes(
-                `&offset=${(offsetProps.numberOfConcurrentReq - 1) * offsetProps.offsetDelta}`
-            ) &&
-            firstSixRuns
-        ) {
+        const urlObj = new URL(fullUrl);
+        const params = urlObj.searchParams;
+        const offsetOfLastUrl = (
+            (offsetProps.maxNumberOfConcurrentReq - 1) *
+            offsetProps.pageSize
+        ).toString();
+        const paramsOfLastUrl = params.get("offset") === offsetOfLastUrl;
+        if (paramsOfLastUrl && firstSixRuns) {
             firstSixRuns = false;
             return mockedFeatureResponseWithNext;
         }
         return mockedFeatureResponse;
     };
-    await _queryAllFeaturesWithOffset(
-        fullUrl,
-        new GeoJSON(),
-        queryFeatures,
-        new AbortController().signal,
-        (features) => features.forEach((feature) => addedFeatures.push(feature)),
-        offsetProps
-    );
+
+    const options: Omit<QueryFeatureOptions, "nextRequestProps"> = {
+        fullURL: fullUrl,
+        featureFormat: new GeoJSON(),
+        addFeatures: (features) => features.forEach((feature) => addedFeatures.push(feature)),
+        queryFeatures: queryFeatures,
+        offsetRequestProps: offsetProps
+    };
+
+    await queryAllFeaturesWithOffset(options);
     assert.sameOrderedMembers<FeatureLike>(addedFeatures, expectedFeatures);
 });

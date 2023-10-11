@@ -10,13 +10,16 @@ import FeatureFormat from "ol/format/Feature";
 import { AttributionLike } from "ol/source/Source";
 import {
     OffsetRequestProps,
-    isOffsetStrategySupported,
-    _queryAllFeaturesWithOffset
+    getCollectionInfos,
+    queryAllFeaturesWithOffset,
+    defaultOffsetRequestProps,
+    CollectionInfos
 } from "./OffsetStrategy";
 import { FeatureLoader } from "ol/featureloader";
+import { Extent } from "ol/extent";
 
 const NEXT_LINK_PROP = "next";
-const NO_LIMIT = 1000000;
+const DEFAULT_LIMIT = 5000;
 const LOG = createLogger("ogc-features:OgcFeatureSourceFactory");
 
 export interface NextRequestProps {
@@ -39,13 +42,11 @@ export interface OgcFeatureSourceOptions {
     /**
      * The maximum number of features to fetch within a single request.
      * Corresponds to the `limit` parameter in the URL.
-     * 
+     *
      * When the `offset` strategy is used for feature fetching, the limit
      * is used for the page size.
-     * 
-     * TODO: default value?
-     * 
-     * TODO
+     *
+     * Default limit is 5000
      */
     limit?: number;
 
@@ -69,7 +70,7 @@ export interface OgcFeatureSourceOptions {
  * @param options Options for the vector source.
  */
 export function createVectorSource(options: OgcFeatureSourceOptions): VectorSource {
-    return _createVectorSource(options, undefined, undefined);
+    return _createVectorSource(options, undefined, undefined, undefined);
 }
 
 export interface FeatureResponse {
@@ -78,18 +79,20 @@ export interface FeatureResponse {
 }
 
 export const defaultNextRequestProps: NextRequestProps = {
-    limit: NO_LIMIT
+    limit: DEFAULT_LIMIT
 };
 
 /**
+ * @internal
  * Creates the actual vector source.
  * Exported for testing.
- * Exposes `queryFeatures` and `addFeatures` for easier testing.
+ * Exposes `queryFeatures`, `addFeatures` and `getCollectionInfos` for easier testing.
  */
 export function _createVectorSource(
     options: OgcFeatureSourceOptions,
-    queryFeatures: QueryFeaturesFunc | undefined,
-    addFeatures: AddFeaturesFunc | undefined
+    queryFeaturesParam: QueryFeaturesFunc | undefined,
+    addFeaturesParam: AddFeaturesFunc | undefined,
+    getCollectionInfosParam: GetCollectionInfosFunc | undefined
 ): VectorSource {
     const collectionItemsURL = `${options.baseUrl}/collections/${options.collectionId}/items?`;
     const vectorSrc = new VectorSource({
@@ -99,9 +102,11 @@ export function _createVectorSource(
         ...options.additionalOptions
     });
 
-    const queryFeaturesFunc = queryFeatures ?? _queryFeatures;
+    const offsetRequestProps = options.offsetRequestProps ?? defaultOffsetRequestProps;
+    const queryFeaturesFunc = queryFeaturesParam ?? queryFeatures;
+    const getCollectionInfosFunc = getCollectionInfosParam ?? getCollectionInfos;
     const addFeaturesFunc =
-        addFeatures ||
+        addFeaturesParam ||
         function (features: FeatureLike[]) {
             LOG.debug(`Adding ${features.length} features`);
 
@@ -114,7 +119,8 @@ export function _createVectorSource(
     // Abort controller for the currently pending request.
     // Used to cancel outdated requests.
     let abortController: AbortController;
-    let isOffsetSupported: boolean | undefined;
+    let collectionInfos: CollectionInfos | undefined;
+
     const loaderFunction: FeatureLoader = async (
         extent,
         _,
@@ -122,13 +128,9 @@ export function _createVectorSource(
         success,
         failure
     ): Promise<void> => {
-        if (isOffsetSupported == null) {
-            isOffsetSupported = await isOffsetStrategySupported(collectionItemsURL);
+        if (!collectionInfos) {
+            collectionInfos = await getCollectionInfosFunc(collectionItemsURL, offsetRequestProps);
         }
-
-        const fullURL = `${collectionItemsURL}bbox=${extent.join(",")}&bbox-crs=${
-            options.crs
-        }&crs=${options.crs}&f=json`;
 
         if (abortController) {
             // An extent-change should cancel open requests for older extents, because otherwise,
@@ -137,17 +139,20 @@ export function _createVectorSource(
             abortController.abort("Extent changed");
         }
 
+        const fullURL = initCollectionRequestUrl(collectionItemsURL, extent, options);
+
         abortController = new AbortController();
-        const strategy = isOffsetSupported ? "offset" : "next";
+        const strategy = collectionInfos?.offsetStrategySupported ? "offset" : "next";
         try {
             const features = await queryAllFeatures(strategy, {
-                fullURL,
+                fullURL: fullURL.toString(),
                 featureFormat: vectorSrc.getFormat()!, // TODO
                 queryFeatures: queryFeaturesFunc,
                 addFeatures: addFeaturesFunc,
                 signal: abortController.signal,
-                offsetRequestProps: options.offsetRequestProps,
-                nextRequestProps: options.nextRequestProps
+                nextRequestProps: options.nextRequestProps ?? defaultNextRequestProps,
+                offsetRequestProps: offsetRequestProps,
+                collectionInfos: collectionInfos
             });
             // Type mismatch FeatureLike <--> Feature<Geometry>
             // MIGHT be incorrect! We will see.
@@ -168,10 +173,14 @@ export function _createVectorSource(
     return vectorSrc;
 }
 
-type QueryFeaturesFunc = typeof _queryFeatures;
-
+/** @internal **/
+type QueryFeaturesFunc = typeof queryFeatures;
+/** @internal **/
+type GetCollectionInfosFunc = typeof getCollectionInfos;
+/** @internal **/
 type AddFeaturesFunc = (features: FeatureLike[]) => void;
 
+/** @internal **/
 export interface QueryFeatureOptions {
     fullURL: string;
     featureFormat: FeatureFormat;
@@ -180,34 +189,42 @@ export interface QueryFeatureOptions {
     signal?: AbortSignal;
     nextRequestProps?: NextRequestProps;
     offsetRequestProps?: OffsetRequestProps;
+    collectionInfos?: CollectionInfos;
 }
 
 /**
+ * @internal
  * Fetches _all_ features according to the given strategy.
  */
-function queryAllFeatures(strategy: "next" | "offset", options: QueryFeatureOptions) {
+function queryAllFeatures(
+    strategy: "next" | "offset",
+    options: QueryFeatureOptions
+): Promise<FeatureLike[]> {
     switch (strategy) {
         case "next":
-            return _queryAllFeaturesNextStrategy(options);
+            return queryAllFeaturesNextStrategy(options);
 
         case "offset":
-            return _queryAllFeaturesWithOffset(options);
+            return queryAllFeaturesWithOffset(options);
     }
 }
 
 /**
+ * @internal
  * Fetches features by following the `next` links in the server's response.
  */
-export const _queryAllFeaturesNextStrategy = async (
-    options: Omit<QueryFeatureOptions, "offsetRequestProps">
-): Promise<FeatureLike[]> => {
-    const limit = options.nextRequestProps?.limit ?? NO_LIMIT;
+export async function queryAllFeaturesNextStrategy(
+    options: Omit<QueryFeatureOptions, "offsetRequestProps" | "collectionInfos">
+): Promise<FeatureLike[]> {
+    const limit = options.nextRequestProps?.limit ?? DEFAULT_LIMIT;
 
-    let urls = [`${options.fullURL}&limit=${limit}`];
+    const url = new URL(options.fullURL);
+    url.searchParams.set("limit", limit.toString());
+    let urls = [url.toString()];
     let allFeatures: FeatureLike[] = [];
     let featureResp: FeatureResponse;
     do {
-        featureResp = await _queryPages(
+        featureResp = await queryPages(
             urls,
             options.featureFormat,
             options.signal,
@@ -218,23 +235,25 @@ export const _queryAllFeaturesNextStrategy = async (
         urls = [featureResp.nextURL || ""];
     } while (featureResp.nextURL !== undefined);
     return allFeatures;
-};
+}
 
 /**
+ * @internal
  * Performs a single request against the service
  */
-export const _queryFeatures = async (
+export async function queryFeatures(
     fullURL: string,
     featureFormat: FeatureFormat | undefined,
     signal: AbortSignal | undefined
-): Promise<FeatureResponse> => {
+): Promise<FeatureResponse> {
     let featureArr = new Array<FeatureLike>();
-    const response = await fetch(fullURL, {
+    const requestInit: RequestInit = {
         headers: {
             Accept: "application/geo+json"
-        },
-        signal: signal
-    });
+        }
+    };
+    if (signal !== undefined) requestInit.signal = signal;
+    const response = await fetch(fullURL, requestInit);
     if (response.status !== 200) {
         LOG.error(`Request failed with status ${response.status}:`, response);
         return {
@@ -244,44 +263,61 @@ export const _queryFeatures = async (
     }
     const geoJson = await response.json();
     if (featureFormat) featureArr = featureFormat.readFeatures(geoJson);
-    const nextURL = _getNextURL(geoJson.links);
+    const nextURL = getNextURL(geoJson.links);
     return {
         features: featureArr,
         nextURL: nextURL
     };
-};
+}
 
-// TODO: Refactor into single "load" function
-export const _queryPages = async (
+export async function loadFeatures(
+    requestUrl: string,
+    featureFormat: FeatureFormat,
+    signal: AbortSignal | undefined,
+    addFeaturesFunc: AddFeaturesFunc,
+    queryFeaturesFunc: QueryFeaturesFunc = queryFeatures
+): Promise<FeatureResponse> {
+    const featureResponse = await queryFeaturesFunc(requestUrl, featureFormat, signal);
+    const features = featureResponse.features as FeatureLike[];
+    addFeaturesFunc(features);
+    return featureResponse;
+}
+
+/** @internal */
+export async function queryPages(
     allUrls: Array<string>,
     featureFormat: FeatureFormat,
     signal: AbortSignal | undefined,
-    addFeatures: AddFeaturesFunc,
-    queryFeatures: QueryFeaturesFunc = _queryFeatures
-): Promise<FeatureResponse> => {
+    addFeaturesFunc: AddFeaturesFunc,
+    queryFeaturesFunc: QueryFeaturesFunc = queryFeatures
+): Promise<FeatureResponse> {
     const allFeatureResponse: FeatureResponse = {
         nextURL: undefined,
         features: []
     };
     const allRequestPromises = allUrls.map(async (singleUrl, index): Promise<void> => {
         const isLast = index === allUrls.length - 1;
-        const singleFeatureResp = await queryFeatures(singleUrl, featureFormat, signal);
+        const featureResponse = await loadFeatures(
+            singleUrl,
+            featureFormat,
+            signal,
+            addFeaturesFunc,
+            queryFeaturesFunc
+        );
         LOG.debug(
             `NextURL for index = ${index} (isLast = ${isLast}): ${
-                singleFeatureResp.nextURL || "No Next URL"
+                featureResponse.nextURL || "No Next URL"
             }`
         );
-        const features = singleFeatureResp.features as FeatureLike[];
-        addFeatures(features);
-        allFeatureResponse.features = allFeatureResponse.features.concat(features);
-        if (isLast) allFeatureResponse.nextURL = singleFeatureResp.nextURL;
+        allFeatureResponse.features = allFeatureResponse.features.concat(featureResponse.features);
+        if (isLast) allFeatureResponse.nextURL = featureResponse.nextURL;
     });
     await Promise.all(allRequestPromises);
     return allFeatureResponse;
-};
+}
 
-
-export function _getNextURL(rawLinks: unknown): string | undefined {
+/** @internal */
+export function getNextURL(rawLinks: unknown): string | undefined {
     if (!Array.isArray(rawLinks)) {
         return undefined;
     }
@@ -296,5 +332,20 @@ export function _getNextURL(rawLinks: unknown): string | undefined {
 
     const nextLinks = links.filter((link) => link.rel === NEXT_LINK_PROP);
     if (nextLinks.length !== 1) return;
-    return nextLinks.at(0)?.href;
+    return nextLinks[0]?.href;
+}
+
+/** @internal */
+export function initCollectionRequestUrl(
+    collectionItemsURL: string,
+    extent: Extent,
+    options: OgcFeatureSourceOptions
+): URL {
+    const urlObj = new URL(collectionItemsURL);
+    const searchParams = urlObj.searchParams;
+    searchParams.set("bbox", extent.join(","));
+    searchParams.set("bbox-crs", options.crs);
+    searchParams.set("crs", options.crs);
+    searchParams.set("f", "json");
+    return urlObj;
 }

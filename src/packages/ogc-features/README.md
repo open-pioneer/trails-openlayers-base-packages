@@ -23,7 +23,7 @@ layer: new VectorLayer({
             "Datenlizenz Deutschland - Namensnennung - Version 2.0 <a href='https://www.govdata.de/dl-de/by-2-0'>https://www.govdata.de/dl-de/by-2-0</a>", // attributions
         offsetRequestProps: {
             // (Optional)
-            numberOfConcurrentReq: 6,
+            maxNumberOfConcurrentReq: 6,
             offsetDelta: 2500,
             startOffset: 0
         },
