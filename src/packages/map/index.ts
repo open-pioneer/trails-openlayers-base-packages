@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
 export type * from "./api";
+export { SimpleLayerModel, WMSLayerModel } from "./layerTypes";
 export { getProjection, registerProjections, type ProjectionDefinition } from "./projections";
 export { BkgTopPlusOpen, type BkgTopPlusOpenProps } from "./layers/BkgTopPlusOpen";
 

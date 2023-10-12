@@ -18,8 +18,9 @@ export interface LayerModelBaseEvents {
 
 export type LayerLoadState = "not-loaded" | "loading" | "loaded" | "error";
 
-/** Shared properties used by all layer types. */
-export interface LayerModelBase extends EventSource<LayerModelBaseEvents> {
+/** Shared properties used by all layer types ('normal' layers and sublayers). */
+export interface LayerModelBase<AdditionalEvents = {}>
+    extends EventSource<LayerModelBaseEvents & AdditionalEvents> {
     /** The map this layer belongs to. */
     readonly map: MapModel;
 
@@ -31,11 +32,6 @@ export interface LayerModelBase extends EventSource<LayerModelBaseEvents> {
 
     /** The human-readable description of this layer. May be empty. */
     readonly description: string;
-
-    /**
-     * Whether the layer has been loaded, or whether an error occurred while trying to load it.
-     */
-    readonly loadState: LayerLoadState;
 
     /**
      * Whether the layer is visible or not.
@@ -88,7 +84,12 @@ export interface LayerModelBase extends EventSource<LayerModelBaseEvents> {
 }
 
 /** Represents a layer in the map. */
-export interface LayerModel extends LayerModelBase {
+export interface LayerModel<AdditionalEvents = {}> extends LayerModelBase<AdditionalEvents> {
+    /**
+     * Whether the layer has been loaded, or whether an error occurred while trying to load it.
+     */
+    readonly loadState: LayerLoadState;
+
     /**
      * The raw OpenLayers layer.
      */
@@ -102,18 +103,28 @@ export interface LayerModel extends LayerModelBase {
     readonly isBaseLayer: boolean;
 }
 
+/**
+ * A simple layer model wrapping an OpenLayers layer.
+ */
+export type SimpleLayerModel = LayerModel;
+
+/** Represents a WMS layer. */
+export interface WMSLayerModel extends LayerModel {
+    readonly sublayers: SublayersCollection;
+}
+
 /** Represents a sublayer of another layer. */
 export interface SublayerModel extends LayerModelBase {
     /**
      * The direct parent of this layer model.
      * This can either be the parent layer or another sublayer.
      */
-    parent: LayerModel | SublayerModel;
+    readonly parent: LayerModel | SublayerModel;
 
     /**
      * The parent layer that owns this sublayer.
      */
-    parentLayer: LayerModel;
+    readonly parentLayer: LayerModel;
 }
 
 /** Events emitted by the {@link SublayersCollection}. */

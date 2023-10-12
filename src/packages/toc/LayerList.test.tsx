@@ -135,7 +135,7 @@ it("reacts to changes in the layer composition", async function () {
     expect(initialItems).toHaveLength(1);
 
     act(() => {
-        map.layers.createLayer({
+        map.layers.addLayer({
             title: "Layer 2",
             layer: new TileLayer({})
         });

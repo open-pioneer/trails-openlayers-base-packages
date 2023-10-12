@@ -5,7 +5,7 @@ import { screen, waitFor } from "@testing-library/react";
 import {
     ExtentConfig,
     InitialViewConfig,
-    LayerConfig,
+    SimpleLayerConfig,
     MapConfig,
     MapConfigProvider,
     MapModel,
@@ -21,7 +21,7 @@ export interface SimpleMapOptions {
     zoom?: number;
     extent?: ExtentConfig;
     projection?: string;
-    layers?: LayerConfig[];
+    layers?: SimpleLayerConfig[];
     advanced?: OlMapOptions;
 
     noInitialView?: boolean;

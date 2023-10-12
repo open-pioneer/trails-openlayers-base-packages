@@ -2,15 +2,16 @@
 // SPDX-License-Identifier: Apache-2.0
 import { EventEmitter, createLogger } from "@open-pioneer/core";
 import OlBaseLayer from "ol/layer/Base";
-import { v4 as uuid4v } from "uuid";
 import {
     LayerCollection,
     LayerCollectionEvents,
-    LayerConfig,
+    SimpleLayerConfig,
     LayerModel,
     LayerRetrievalOptions
 } from "../api";
-import { LayerModelImpl } from "./LayerModelImpl";
+import { AbstractLayerModel } from "./AbstractLayerModel";
+import { AbstractLayerModelBase } from "./AbstractLayerModelBase";
+import { SimpleLayerImpl } from "./layers/SimpleLayerImpl";
 import { MapModelImpl } from "./MapModelImpl";
 
 const LOG = createLogger("map:LayerCollection");
@@ -23,10 +24,21 @@ export class LayerCollectionImpl
     implements LayerCollection
 {
     #map: MapModelImpl;
-    #layerModelsById = new Map<string, LayerModelImpl>();
-    #layerModelsByLayer: WeakMap<OlBaseLayer, LayerModelImpl> | undefined = undefined;
-    #activeBaseLayer: LayerModelImpl | undefined;
-    #nextIndex = OPERATION_LAYER_INITIAL_Z; // next z-index for operational layer. currently just auto-increments.
+
+    /** Top level layers (base layers, operational layers). No sublayers. */
+    #topLevelLayers = new Set<AbstractLayerModel>();
+
+    /** Index of _all_ layer instances, including sublayers. */
+    #layerModelsById = new Map<string, AbstractLayerModelBase>();
+
+    /** Reverse index of _all_ layers that have an associated OpenLayers layer. */
+    #layerModelsByLayer: WeakMap<OlBaseLayer, AbstractLayerModel> = new WeakMap();
+
+    /** Currently active base layer. */
+    #activeBaseLayer: AbstractLayerModel | undefined;
+
+    /** next z-index for operational layer. currently just auto-increments. */
+    #nextIndex = OPERATION_LAYER_INITIAL_Z;
 
     constructor(map: MapModelImpl) {
         super();
@@ -38,80 +50,40 @@ export class LayerCollectionImpl
         for (const layerModel of this.#layerModelsById.values()) {
             layerModel.destroy();
         }
+        this.#topLevelLayers.clear();
         this.#layerModelsById.clear();
-        this.#layerModelsByLayer = undefined;
         this.#activeBaseLayer = undefined;
     }
 
-    createLayer(config: LayerConfig): LayerModelImpl {
-        LOG.debug(`Creating layer`, config);
+    addLayer(layerConfig: SimpleLayerConfig | LayerModel): AbstractLayerModel {
+        const map = this.#map;
+        let layer: AbstractLayerModel;
+        let layerCreated = false;
+        if (isLayerModelInstance(layerConfig)) {
+            layer = layerConfig;
+        } else {
+            LOG.debug(`Creating layer`, layerConfig);
+            layer = new SimpleLayerImpl(layerConfig as SimpleLayerConfig);
+            layerCreated = true;
+        }
 
-        const model = new LayerModelImpl(this.#map, {
-            id: this.#generateLayerId(config.id),
-            layer: config.layer,
-            attributes: config.attributes ?? {},
-            title: config.title ?? "",
-            description: config.description ?? "",
-            visible: config.visible ?? true,
-            isBaseLayer: config.isBaseLayer ?? false
-        });
         try {
-            this.#registerLayer(model);
-
-            LOG.debug("Created layer model", model);
-            return model;
+            layer.__attach(map);
+            this.#addLayer(layer);
         } catch (e) {
-            model.destroy();
+            if (layerCreated) {
+                layer.destroy();
+            }
             throw e;
         }
+        return layer;
     }
 
-    #registerLayer(model: LayerModelImpl) {
-        const id = model.id;
-        const olLayer = model.olLayer;
-        if (this.#layerModelsById.has(id)) {
-            throw new Error(`Layer with id '${id}' is already registered.`);
-        }
-        if (this.#layerModelsByLayer?.has(olLayer)) {
-            throw new Error(`OlLayer has already been used in this or another LayerModel.`);
-        }
-
-        if (model.isBaseLayer) {
-            olLayer.setZIndex(BASE_LAYER_Z);
-            if (!this.#activeBaseLayer && model.visible) {
-                this.#updateBaseLayer(model);
-            } else {
-                model.__setVisible(false);
-            }
-        } else {
-            olLayer.setZIndex(this.#nextIndex++);
-            model.__setVisible(model.visible);
-        }
-
-        this.#map.olMap.addLayer(olLayer);
-        this.#layerModelsById.set(id, model);
-        (this.#layerModelsByLayer ??= new WeakMap()).set(olLayer, model);
-        this.emit("changed");
-    }
-
-    #generateLayerId(id: string | undefined): string {
-        if (id != null) {
-            if (this.#layerModelsById.has(id)) {
-                throw new Error(
-                    `Layer id '${id}' is not unique. Either assign a unique id or skip the id property to generate an automatic id.`
-                );
-            }
-            return id;
-        }
-
-        return uuid4v();
-    }
-
-    getBaseLayers(): LayerModelImpl[] {
+    getBaseLayers(): AbstractLayerModel[] {
         return this.getAllLayers().filter((layerModel) => layerModel.isBaseLayer);
     }
 
-    getActiveBaseLayer(): LayerModelImpl | undefined {
+    getActiveBaseLayer(): AbstractLayerModel | undefined {
         return this.#activeBaseLayer;
     }
 
@@ -119,6 +91,10 @@ export class LayerCollectionImpl
         let newBaseLayer = undefined;
         if (id != null) {
             newBaseLayer = this.#layerModelsById.get(id);
+            if (!(newBaseLayer instanceof AbstractLayerModel)) {
+                LOG.warn(`Cannot activate base layer '${id}: layer has an invalid type.'`);
+                return false;
+            }
             if (!newBaseLayer) {
                 LOG.warn(`Cannot activate base layer '${id}': layer is unknown.`);
                 return false;
@@ -136,20 +112,20 @@ export class LayerCollectionImpl
         return true;
     }
 
-    getOperationalLayers(options?: LayerRetrievalOptions): LayerModelImpl[] {
+    getOperationalLayers(options?: LayerRetrievalOptions): AbstractLayerModel[] {
         return this.getAllLayers(options).filter((layerModel) => !layerModel.isBaseLayer);
     }
 
-    getLayerById(id: string): LayerModelImpl | undefined {
-        return this.#layerModelsById.get(id);
-    }
-
-    getAllLayers(options?: LayerRetrievalOptions): LayerModelImpl[] {
-        const layers = Array.from(this.#layerModelsById.values());
+    getAllLayers(options?: LayerRetrievalOptions): AbstractLayerModel[] {
+        const layers = Array.from(this.#topLevelLayers.values());
         if (options?.sortByDisplayOrder) {
             sortLayersByDisplayOrder(layers);
         }
         return layers;
+    }
+
+    getLayerById(id: string): AbstractLayerModelBase | undefined {
+        return this.#layerModelsById.get(id);
     }
 
     removeLayerById(id: string): void {
@@ -159,9 +135,59 @@ export class LayerCollectionImpl
             return;
         }
 
+        this.#removeLayer(model);
+    }
+
+    getLayerByRawInstance(layer: OlBaseLayer): LayerModel | undefined {
+        return this.#layerModelsByLayer?.get(layer);
+    }
+
+    /**
+     * Adds the given layer to the map and all relevant indices.
+     */
+    #addLayer(model: AbstractLayerModel) {
+        this.#indexLayer(model);
+
+        const olLayer = model.olLayer;
+        if (model.isBaseLayer) {
+            olLayer.setZIndex(BASE_LAYER_Z);
+            if (!this.#activeBaseLayer && model.visible) {
+                this.#updateBaseLayer(model);
+            } else {
+                model.__setVisible(false);
+            }
+        } else {
+            olLayer.setZIndex(this.#nextIndex++);
+            model.__setVisible(model.visible);
+        }
+
+        this.#topLevelLayers.add(model);
+        this.#map.olMap.addLayer(olLayer);
+        this.emit("changed");
+    }
+
+    /**
+     * Removes the given layer from the map and all relevant indices.
+     * The layer will be destroyed.
+     */
+    #removeLayer(model: AbstractLayerModel | AbstractLayerModelBase) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        if (!this.#topLevelLayers.has(model as any)) {
+            LOG.warn(
+                `Cannot remove layer '${model.id}': only top level layers can be removed at this time.`
+            );
+            return;
+        }
+
+        if (!(model instanceof AbstractLayerModel)) {
+            throw new Error(
+                `Internal error: expected top level layer to be an instance of AbstractLayerModel.`
+            );
+        }
+
         this.#map.olMap.removeLayer(model.olLayer);
-        this.#layerModelsById.delete(id);
-        this.#layerModelsByLayer?.delete(model.olLayer);
+        this.#topLevelLayers.delete(model);
+        this.#unIndexLayer(model);
         if (this.#activeBaseLayer === model) {
             this.#updateBaseLayer(this.getBaseLayers()[0]);
         }
@@ -169,17 +195,13 @@ export class LayerCollectionImpl
         this.emit("changed");
     }
 
-    getLayerByRawInstance(layer: OlBaseLayer): LayerModel | undefined {
-        return this.#layerModelsByLayer?.get(layer);
-    }
-
-    #updateBaseLayer(model: LayerModelImpl | undefined) {
+    #updateBaseLayer(model: AbstractLayerModel | undefined) {
         if (this.#activeBaseLayer === model) {
             return;
         }
 
         if (LOG.isDebug()) {
-            const getId = (model: LayerModelImpl | undefined) => {
+            const getId = (model: AbstractLayerModel | undefined) => {
                 return model ? `'${model.id}'` : undefined;
             };
 
@@ -192,6 +214,67 @@ export class LayerCollectionImpl
         this.#activeBaseLayer?.__setVisible(false);
         this.#activeBaseLayer = model;
         this.#activeBaseLayer?.__setVisible(true);
+    }
+
+    /**
+     * Index the layer model and all its children.
+     */
+    #indexLayer(model: AbstractLayerModel) {
+        // layer id -> layer (or sublayer)
+        const registrations: [string, OlBaseLayer | undefined][] = [];
+        const visit = (model: AbstractLayerModel | AbstractLayerModelBase) => {
+            const id = model.id;
+            const olLayer = "olLayer" in model ? model.olLayer : undefined;
+            if (this.#layerModelsById.has(id)) {
+                throw new Error(
+                    `Layer id '${id}' is not unique. Either assign a unique id yourself ` +
+                        `or skip configuring 'id' for an automatically generated id.`
+                );
+            }
+            if (olLayer && this.#layerModelsByLayer.has(olLayer)) {
+                throw new Error(`OlLayer has already been used in this or another LayerModel.`);
+            }
+
+            // Register this layer with the maps.
+            this.#layerModelsById.set(id, model);
+            if (olLayer) {
+                this.#layerModelsByLayer.set(olLayer, model as AbstractLayerModel);
+            }
+            registrations.push([id, olLayer]);
+
+            // Recurse into nested sublayers.
+            for (const sublayer of model.sublayers?.__getRawSublayers() ?? []) {
+                visit(sublayer);
+            }
+        };
+
+        try {
+            visit(model);
+        } catch (e) {
+            for (const [id, olLayer] of registrations) {
+                this.#layerModelsById.delete(id);
+                if (olLayer) {
+                    this.#layerModelsByLayer.delete(olLayer);
+                }
+            }
+            throw e;
+        }
+    }
+
+    /**
+     * Removes index entries for the given layer and all its sublayers.
+     */
+    #unIndexLayer(model: AbstractLayerModel) {
+        const visit = (model: AbstractLayerModel | AbstractLayerModelBase) => {
+            if ("olLayer" in model) {
+                this.#layerModelsByLayer.delete(model.olLayer);
+            }
+            this.#layerModelsById.delete(model.id);
+            for (const sublayer of model.sublayers?.__getRawSublayers() ?? []) {
+                visit(sublayer);
+            }
+        };
+        visit(model);
     }
 }
 
@@ -208,4 +291,8 @@ function sortLayersByDisplayOrder(layers: LayerModel[]) {
         }
         return left.id.localeCompare(right.id, "en");
     });
+}
+
+function isLayerModelInstance(object: unknown): object is AbstractLayerModel {
+    return object instanceof AbstractLayerModel;
 }

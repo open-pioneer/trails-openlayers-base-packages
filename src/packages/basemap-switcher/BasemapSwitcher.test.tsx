@@ -229,7 +229,7 @@ it("should update when a new basemap is registered", async () => {
     expect(switcherSelect.options.length).toBe(2);
 
     act(() => {
-        map.layers.createLayer({
+        map.layers.addLayer({
             id: "foo",
             title: "Foo",
             isBaseLayer: true,

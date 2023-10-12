@@ -113,7 +113,7 @@ function AddNewBaseLayerButton(props: { mapId: string }) {
         }
 
         const number = counter.current++;
-        const layer = map.layers.createLayer({
+        const layer = map.layers.addLayer({
             title: `New Layer ${number}`,
             isBaseLayer: true,
             layer: new TileLayer({

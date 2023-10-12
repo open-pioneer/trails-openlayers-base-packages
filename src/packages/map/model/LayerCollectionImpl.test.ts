@@ -2,11 +2,14 @@
 // SPDX-License-Identifier: Apache-2.0
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
-import { BkgTopPlusOpen } from "../layers/BkgTopPlusOpen";
-import { afterEach, expect, it, describe, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { LayerModel } from "../api";
+import { SimpleLayerModel, WMSLayerModel } from "../layerTypes";
+import { BkgTopPlusOpen } from "../layers/BkgTopPlusOpen";
 import { MapModelImpl } from "./MapModelImpl";
 import { createMapModel } from "./createMapModel";
+import { SimpleLayerImpl } from "./layers/SimpleLayerImpl";
+import { WMSLayerImpl } from "./layers/WMSLayerImpl";
 
 let model: MapModelImpl | undefined;
 afterEach(() => {
@@ -68,6 +71,7 @@ it("makes the map layers accessible", async () => {
 
     const allLayers = model.layers.getAllLayers();
     expect(allLayers).toEqual(layers);
+    expect(model.olMap.getAllLayers().length).toBe(2);
 });
 
 it("supports ordered retrieval of layers", async () => {
@@ -144,6 +148,37 @@ it("generates automatic unique ids for layers", async () => {
     expect(ids[0]).not.toEqual(ids[1]);
 });
 
+it("supports adding custom layer instances", async () => {
+    model = await createMapModel("foo", {
+        layers: [
+            {
+                id: "l1",
+                title: "L1",
+                layer: new TileLayer()
+            },
+            new SimpleLayerModel({
+                id: "l2",
+                title: "L2",
+                layer: new TileLayer()
+            }),
+            new WMSLayerModel({
+                id: "l3",
+                title: "L3",
+                url: "https://example.com"
+            })
+        ]
+    });
+
+    const l1 = model.layers.getLayerById("l1");
+    expect(l1).toBeInstanceOf(SimpleLayerImpl);
+
+    const l2 = model.layers.getLayerById("l2");
+    expect(l2).toBeInstanceOf(SimpleLayerImpl);
+
+    const l3 = model.layers.getLayerById("l3");
+    expect(l3).toBeInstanceOf(WMSLayerImpl);
+});
+
 it("supports lookup by layer id", async () => {
     model = await createMapModel("foo", {
         layers: [
@@ -196,7 +231,7 @@ it("results in an error, if using the same layer id twice", async () => {
             ]
         });
     }).rejects.toThrowErrorMatchingInlineSnapshot(
-        "\"Layer id 'l-1' is not unique. Either assign a unique id or skip the id property to generate an automatic id.\""
+        "\"Layer id 'l-1' is not unique. Either assign a unique id yourself or skip configuring 'id' for an automatically generated id.\""
     );
 });
 
@@ -261,7 +296,7 @@ it("supports adding a layer to the model", async () => {
         ++changed;
     });
 
-    const layerModel = model.layers.createLayer({
+    const layerModel = model.layers.addLayer({
         title: "foo",
         layer: new TileLayer({
             source: new OSM()
@@ -328,8 +363,8 @@ describe("base layers", () => {
         });
 
         const layers = model.layers;
-        const b1 = layers.getLayerById("b-1")!;
-        const b2 = layers.getLayerById("b-2")!;
+        const b1 = layers.getLayerById("b-1")! as SimpleLayerImpl;
+        const b2 = layers.getLayerById("b-2")! as SimpleLayerImpl;
 
         let events = 0;
         layers.on("changed", () => ++events);

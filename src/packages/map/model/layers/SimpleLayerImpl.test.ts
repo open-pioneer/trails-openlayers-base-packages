@@ -2,28 +2,20 @@
 // SPDX-License-Identifier: Apache-2.0
 import Layer from "ol/layer/Layer";
 import TileLayer from "ol/layer/Tile";
-import OSM from "ol/source/OSM";
 import Source from "ol/source/Source";
 import { afterEach, expect, it, vi } from "vitest";
-import { LayerConfig } from "../api";
-import { LayerModelImpl } from "./LayerModelImpl";
-import { MapModelImpl } from "./MapModelImpl";
-import { createMapModel } from "./createMapModel";
+import { SimpleLayerConfig } from "../../api";
+import { SimpleLayerImpl } from "./SimpleLayerImpl";
 
-let model: MapModelImpl | undefined;
 afterEach(() => {
-    model?.destroy();
-    model = undefined;
     vi.restoreAllMocks();
 });
 
 it("emits a destroy event when destroyed", async () => {
-    const layer = await buildSimpleLayer({
+    const layer = buildSimpleLayer({
         id: "a",
         title: "A",
-        layer: new TileLayer({
-            source: new OSM()
-        })
+        layer: new TileLayer({})
     });
 
     let destroyed = 0;
@@ -35,13 +27,33 @@ it("emits a destroy event when destroyed", async () => {
     expect(destroyed).toBe(1);
 });
 
+it("throws when 'map' is accessed before the layer has been attached", async () => {
+    const layer = buildSimpleLayer({
+        id: "a",
+        title: "Foo",
+        layer: new TileLayer({})
+    });
+    expect(() => layer.map).toThrowErrorMatchingInlineSnapshot(
+        "\"Layer 'a' has not been attached to a map yet.\""
+    );
+});
+
+it("supports access to the map", async () => {
+    const layer = buildSimpleLayer({
+        id: "a",
+        title: "Foo",
+        layer: new TileLayer({})
+    });
+    const map = {} as any;
+    layer.__attach(map);
+    expect(layer.map).toBe(map);
+});
+
 it("supports the title attribute", async () => {
-    const layer = await buildSimpleLayer({
+    const layer = buildSimpleLayer({
         id: "a",
         title: "A",
-        layer: new TileLayer({
-            source: new OSM()
-        })
+        layer: new TileLayer({})
     });
     expect(layer.title).toBe("A");
 
@@ -57,12 +69,10 @@ it("supports the title attribute", async () => {
 });
 
 it("supports the description attribute", async () => {
-    const layer = await buildSimpleLayer({
+    const layer = buildSimpleLayer({
         id: "a",
         title: "A",
-        layer: new TileLayer({
-            source: new OSM()
-        })
+        layer: new TileLayer({})
     });
     expect(layer.description).toBe("");
 
@@ -78,12 +88,10 @@ it("supports the description attribute", async () => {
 });
 
 it("supports the visibility attribute", async () => {
-    const layer = await buildSimpleLayer({
+    const layer = buildSimpleLayer({
         id: "a",
         title: "A",
-        layer: new TileLayer({
-            source: new OSM()
-        })
+        layer: new TileLayer({})
     });
     expect(layer.visible).toBe(true);
     expect(layer.olLayer.getVisible()).toBe(true);
@@ -108,12 +116,10 @@ it("supports the visibility attribute", async () => {
 
 it("supports arbitrary additional attributes", async () => {
     const hidden = Symbol("hidden");
-    const layer = await buildSimpleLayer({
+    const layer = buildSimpleLayer({
         id: "a",
         title: "A",
-        layer: new TileLayer({
-            source: new OSM()
-        }),
+        layer: new TileLayer({}),
         attributes: {
             foo: "bar",
             [hidden]: "hidden"
@@ -153,12 +159,10 @@ it("supports arbitrary additional attributes", async () => {
 
 it("supports delete additional attributes", async () => {
     const hidden = Symbol("hidden");
-    const layer = await buildSimpleLayer({
+    const layer = buildSimpleLayer({
         id: "a",
         title: "A",
-        layer: new TileLayer({
-            source: new OSM()
-        }),
+        layer: new TileLayer({}),
         attributes: {
             foo: "bar",
             bar: "foo",
@@ -196,12 +200,10 @@ it("supports delete additional attributes", async () => {
 
 it("supports initial empty attribute object and empty attribute object after updating/deleting", async () => {
     const hidden = Symbol("hidden");
-    const layer = await buildSimpleLayer({
+    const layer = buildSimpleLayer({
         id: "a",
         title: "A",
-        layer: new TileLayer({
-            source: new OSM()
-        })
+        layer: new TileLayer({})
     });
     let changedAttributes = 0;
     let changed = 0;
@@ -236,13 +238,11 @@ it("supports initial empty attribute object and empty attribute object after upd
 
 it("logs a warning when setVisible() is called on a base layer", async () => {
     const logSpy = vi.spyOn(global.console, "warn").mockImplementation(() => undefined);
-    const layer = await buildSimpleLayer({
+    const layer = buildSimpleLayer({
         id: "a",
         title: "Base Layer 1",
         isBaseLayer: true,
-        layer: new TileLayer({
-            source: new OSM()
-        })
+        layer: new TileLayer({})
     });
     layer.setVisible(false);
     expect(layer.visible).toBe(true);
@@ -250,7 +250,7 @@ it("logs a warning when setVisible() is called on a base layer", async () => {
       [MockFunction warn] {
         "calls": [
           [
-            "[WARN] map:LayerModel: Cannot change visibility of base layer 'a': use activateBaseLayer() on the map's LayerCollection instead.",
+            "[WARN] map:AbstractLayerModel: Cannot change visibility of base layer 'a': use activateBaseLayer() on the map's LayerCollection instead.",
           ],
         ],
         "results": [
@@ -270,7 +270,7 @@ it("tracks the layer source's state", async () => {
     const olLayer = new Layer({
         source
     });
-    const layer = await buildSimpleLayer({
+    const layer = buildSimpleLayer({
         id: "a",
         title: "A",
         layer: olLayer
@@ -309,13 +309,6 @@ it("tracks the layer source's state", async () => {
 });
 
 // NOTE: currently can only be called once per test (because of shared model)
-async function buildSimpleLayer(layerConfig: LayerConfig): Promise<LayerModelImpl> {
-    if (model) {
-        throw new Error("called twice in a test");
-    }
-
-    model = await createMapModel("foo", {
-        layers: [layerConfig]
-    });
-    return model.layers.getAllLayers()[0]!;
+function buildSimpleLayer(layerConfig: SimpleLayerConfig): SimpleLayerImpl {
+    return new SimpleLayerImpl(layerConfig);
 }

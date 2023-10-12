@@ -3,8 +3,8 @@
 import type { EventSource } from "@open-pioneer/core";
 import type OlMap from "ol/Map";
 import type OlBaseLayer from "ol/layer/Base";
-import type { ExtentConfig, LayerConfig } from "./config";
-import type { LayerModel } from "./layers";
+import type { ExtentConfig, SimpleLayerConfig } from "./config";
+import type { LayerModel, LayerModelBase } from "./layers";
 import type { LayerRetrievalOptions } from "./shared";
 
 /** Events emitted by the {@link MapModel}. */
@@ -99,7 +99,7 @@ export interface LayerCollection extends EventSource<LayerCollectionEvents> {
      *
      * NOTE: by default, the new layer will be shown on _top_ of all existing layers.
      */
-    createLayer(layer: LayerConfig): LayerModel;
+    addLayer(layer: SimpleLayerConfig | LayerModel): LayerModel;
 
     /**
      * Returns all operational layers.
@@ -109,7 +109,7 @@ export interface LayerCollection extends EventSource<LayerCollectionEvents> {
     /**
      * Returns the layer identified by the `id` or undefined, if no such layer exists.
      */
-    getLayerById(id: string): LayerModel | undefined;
+    getLayerById(id: string): LayerModelBase | undefined;
 
     /**
      * Returns all layers known to this collection.
@@ -118,6 +118,8 @@ export interface LayerCollection extends EventSource<LayerCollectionEvents> {
 
     /**
      * Removes a layer from the registry and the map identified by the `id`.
+     *
+     * NOTE: The current implementation only supports removal of _top level_ layers.
      */
     removeLayerById(id: string): void;
 
