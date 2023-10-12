@@ -1,13 +1,14 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-import { assert, it } from "vitest"; // (1)
+import { assert, expect, it, vi, afterEach } from "vitest"; // (1)
 import {
     _createVectorSource,
     FeatureResponse,
     getNextURL,
     QueryFeatureOptions,
     OffsetRequestProps,
-    queryAllFeaturesNextStrategy
+    queryAllFeaturesNextStrategy,
+    queryFeatures
 } from "./OgcFeatureSourceFactory";
 import { createOffsetURLs, queryAllFeaturesWithOffset } from "./OffsetStrategy";
 import { Point } from "ol/geom";
@@ -16,6 +17,83 @@ import GeoJSON from "ol/format/GeoJSON";
 import { FeatureLike } from "ol/Feature";
 import { Projection } from "ol/proj";
 import FeatureFormat from "ol/format/Feature";
+
+global.fetch = vi.fn();
+
+afterEach(() => {
+    vi.restoreAllMocks();
+});
+
+function createFetchResponse(data: object, statusCode: number) {
+    return { status: statusCode, json: () => new Promise((resolve) => resolve(data)) };
+}
+
+async function mockedGetCollectionInfos(_: string, __?: OffsetRequestProps) {
+    return {
+        numberMatched: 4000,
+        offsetStrategySupported: true,
+        requiredPages: 2
+    };
+}
+
+const mockedGeoJSON = {
+    "type": "FeatureCollection",
+    "crs": {
+        "type": "name",
+        "properties": {
+            "name": "EPSG:25832"
+        }
+    },
+    "features": [
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [5752928, 395388]
+            }
+        }
+    ]
+};
+
+const mockedFeatureResponse: FeatureResponse = {
+    features: [new Feature({ geometry: new Point([395388, 5752928]) })],
+    nextURL: undefined
+};
+
+const mockedFeatureResponseWithNext: FeatureResponse = {
+    features: [new Feature({ geometry: new Point([5752928, 395388]) })],
+    nextURL: "https://url-to-service.de"
+};
+
+const mockedEmptyFeatureResponse: FeatureResponse = {
+    features: [],
+    nextURL: undefined
+};
+
+it("expect feature geometry and nextURL are correct", async () => {
+    const requestInit: RequestInit = {
+        headers: {
+            Accept: "application/geo+json"
+        }
+    };
+    const testUrl = "https://url-to-service.de/items?f=json";
+    const featureFormater = new GeoJSON();
+    const expectedFeatures = featureFormater.readFeatures(mockedGeoJSON);
+
+    const expectedResponse: FeatureResponse = {
+        features: expectedFeatures,
+        nextURL: undefined
+    };
+    
+    // TODO: Handle Typescript Problems...
+    fetch.mockResolvedValue(createFetchResponse(mockedGeoJSON, 200));
+    const featureResponse = await queryFeatures(testUrl, featureFormater, undefined);
+    expect(fetch).toHaveBeenCalledWith!("https://url-to-service.de/items?f=json", requestInit);
+    const respondedCoordinates = featureResponse.features[0].getGeometry().flatCoordinates;
+    const expectedCoordinates = featureResponse.features[0].getGeometry().flatCoordinates;
+    expect(respondedCoordinates).toStrictEqual(expectedCoordinates);
+    expect(featureResponse.nextURL).toStrictEqual(expectedResponse.nextURL);
+});
 
 it("expect next link to be returned", () => {
     const expectedResult = "testLink";
@@ -40,7 +118,7 @@ it("expect next link is undefined", () => {
     assert.strictEqual(nextUrl, undefined);
 });
 
-it("expect default offsetUrls are correct", () => {
+it("expect default offsetUrls are created correctly", () => {
     const fullUrl = "https://url-to-service.de/items?f=json";
     const urlObj = new URL(fullUrl);
     const expectedResult: string[] = [];
@@ -52,29 +130,6 @@ it("expect default offsetUrls are correct", () => {
     const urls = createOffsetURLs(fullUrl);
     assert.includeMembers<string>(urls, expectedResult);
 });
-
-const mockedFeatureResponse: FeatureResponse = {
-    features: [new Feature({ geometry: new Point([395388, 5752928]) })],
-    nextURL: undefined
-};
-
-const mockedFeatureResponseWithNext: FeatureResponse = {
-    features: [new Feature({ geometry: new Point([5752928, 395388]) })],
-    nextURL: "https://url-to-service.de"
-};
-
-const mockedEmptyFeatureResponse: FeatureResponse = {
-    features: [],
-    nextURL: undefined
-};
-
-const mockedGetCollectionInfos = async (_: string, __?: OffsetRequestProps) => {
-    return {
-        numberMatched: 4000,
-        offsetStrategySupported: true,
-        requiredPages: 2
-    };
-};
 
 it("expect feature responses are parsed from the feature response (offset-strategy)", async () => {
     const addedFeatures: Array<FeatureLike> = [];
