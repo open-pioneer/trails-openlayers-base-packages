@@ -123,7 +123,6 @@ export class MeasurementController {
     }
 
     clearMeasurements() {
-        // this.stopMeasurement();
         this.source.clear();
         for (const tooltip of this.overlayTooltips) {
             tooltip.destroy();
