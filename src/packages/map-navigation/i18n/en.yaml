@@ -1,0 +1,7 @@
+messages:
+  initial-extent:
+    title: Zoom to initial extent
+  zoom-in:
+    title: Zoom in
+  zoom-out:
+    title: Zoom out

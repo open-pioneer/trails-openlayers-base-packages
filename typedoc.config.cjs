@@ -14,8 +14,7 @@ const documentedPackages = [
     "packages/coordinate-viewer",
     "packages/scale-viewer",
     "packages/basemap-switcher",
-    "packages/initial-extent",
-    "packages/zoom",
+    "packages/map-navigation",
     "packages/measurement"
 ];
 
