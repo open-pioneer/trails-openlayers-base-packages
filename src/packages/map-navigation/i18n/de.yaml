@@ -1,4 +1,6 @@
 messages:
+  initial-extent:
+    title: Zoom auf initiale Ausdehnung
   zoom-in:
     title: Vergrößern
   zoom-out:

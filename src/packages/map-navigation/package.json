@@ -1,5 +1,5 @@
 {
-    "name": "@open-pioneer/zoom",
+    "name": "@open-pioneer/map-navigation",
     "version": "0.0.1",
     "license": "Apache-2.0",
     "main": "index.ts",

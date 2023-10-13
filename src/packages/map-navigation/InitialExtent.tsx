@@ -44,11 +44,15 @@ export const InitialExtent: FC<InitialExtentProps> = forwardRef(function Initial
     }
 
     return (
-        <Tooltip label={intl.formatMessage({ id: "title" })} placement="auto" openDelay={500}>
+        <Tooltip
+            label={intl.formatMessage({ id: "initial-extent.title" })}
+            placement="auto"
+            openDelay={500}
+        >
             <Button
                 className="initial-extent-button"
                 ref={ref}
-                aria-label={intl.formatMessage({ id: "title" })}
+                aria-label={intl.formatMessage({ id: "initial-extent.title" })}
                 leftIcon={<FiHome />}
                 onClick={setInitExtent}
                 iconSpacing={0}
