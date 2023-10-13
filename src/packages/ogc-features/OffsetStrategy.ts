@@ -81,11 +81,15 @@ export async function queryAllFeaturesWithOffset(
     const offsetRequestProps = options.offsetRequestProps ?? defaultOffsetRequestProps;
     const requiredPages =
         options.collectionInfos?.requiredPages ?? offsetRequestProps.maxNumberOfConcurrentReq;
-    const { pageSize } = offsetRequestProps!;
+
+    const pageSizeToUse = Math.min(
+        options.limit ?? offsetRequestProps.pageSize,
+        offsetRequestProps.pageSize
+    );
 
     let startOffset = 0;
     do {
-        const allRequests = createOffsetURLs(fullURL, requiredPages, startOffset, pageSize);
+        const allRequests = createOffsetURLs(fullURL, requiredPages, startOffset, pageSizeToUse);
         const allFeatureResp = await queryPages(
             allRequests,
             featureFormat,
@@ -95,7 +99,7 @@ export async function queryAllFeaturesWithOffset(
         );
         allFeatures = allFeatures.concat(allFeatureResp.features);
         nextUrl = allFeatureResp.nextURL;
-        startOffset += requiredPages * pageSize;
+        startOffset += requiredPages * pageSizeToUse;
     } while (nextUrl !== undefined);
     return allFeatures;
 }

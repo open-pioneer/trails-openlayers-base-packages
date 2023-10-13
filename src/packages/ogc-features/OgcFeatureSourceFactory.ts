@@ -22,11 +22,6 @@ const NEXT_LINK_PROP = "next";
 const DEFAULT_LIMIT = 5000;
 const LOG = createLogger("ogc-features:OgcFeatureSourceFactory");
 
-export interface NextRequestProps {
-    /** The limit for individual item queries. */
-    limit: number;
-}
-
 export { type OffsetRequestProps } from "./OffsetStrategy";
 
 export interface OgcFeatureSourceOptions {
@@ -44,8 +39,9 @@ export interface OgcFeatureSourceOptions {
      * Corresponds to the `limit` parameter in the URL.
      *
      * When the `offset` strategy is used for feature fetching, the limit
-     * is used for the page size.
+     * is used for the page size
      *
+     * TODO: Think about limit and pageSize again
      * Default limit is 5000
      */
     limit?: number;
@@ -55,9 +51,6 @@ export interface OgcFeatureSourceOptions {
 
     /** Configuration options for the 'offset' strategy. TODO: configuration? */
     offsetRequestProps?: OffsetRequestProps;
-
-    /** Configuration options for the 'next' strategy. TODO: configuration */
-    nextRequestProps?: NextRequestProps;
 
     /** Optional additional options for the VectorSource. */
     additionalOptions?: Options<Geometry>;
@@ -77,10 +70,6 @@ export interface FeatureResponse {
     features: Array<FeatureLike>;
     nextURL: string | undefined;
 }
-
-export const defaultNextRequestProps: NextRequestProps = {
-    limit: DEFAULT_LIMIT
-};
 
 /**
  * @internal
@@ -149,8 +138,8 @@ export function _createVectorSource(
                 featureFormat: vectorSrc.getFormat()!, // TODO
                 queryFeatures: queryFeaturesFunc,
                 addFeatures: addFeaturesFunc,
+                limit: options.limit,
                 signal: abortController.signal,
-                nextRequestProps: options.nextRequestProps ?? defaultNextRequestProps,
                 offsetRequestProps: offsetRequestProps,
                 collectionInfos: collectionInfos
             });
@@ -186,8 +175,8 @@ export interface QueryFeatureOptions {
     featureFormat: FeatureFormat;
     queryFeatures: QueryFeaturesFunc;
     addFeatures: AddFeaturesFunc;
+    limit?: number;
     signal?: AbortSignal;
-    nextRequestProps?: NextRequestProps;
     offsetRequestProps?: OffsetRequestProps;
     collectionInfos?: CollectionInfos;
 }
@@ -216,7 +205,7 @@ function queryAllFeatures(
 export async function queryAllFeaturesNextStrategy(
     options: Omit<QueryFeatureOptions, "offsetRequestProps" | "collectionInfos">
 ): Promise<FeatureLike[]> {
-    const limit = options.nextRequestProps?.limit ?? DEFAULT_LIMIT;
+    const limit = options.limit ?? DEFAULT_LIMIT;
 
     const url = new URL(options.fullURL);
     url.searchParams.set("limit", limit.toString());

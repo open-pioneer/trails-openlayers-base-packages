@@ -10,14 +10,14 @@
     "dependencies": {},
     "peerDependencies": {
         "@open-pioneer/core": "^1.1.0",
-        "@open-pioneer/chakra-integration": "^1.0.0",
+        "@open-pioneer/chakra-integration": "^1.1.0",
         "@chakra-ui/icons": "^2.1.0",
-        "@open-pioneer/runtime": "^1.0.1",
+        "@open-pioneer/runtime": "^1.1.0",
         "@open-pioneer/react-utils": "workspace:^",
         "react": "^18.2.0"
     },
     "devDependencies": {
-        "@open-pioneer/test-utils": "^1.0.0",
+        "@open-pioneer/test-utils": "^1.0.1",
         "openlayers-base-packages": "workspace:*"
     },
     "publishConfig": {

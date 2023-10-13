@@ -3,6 +3,5 @@
 export {
     createVectorSource,
     type OgcFeatureSourceOptions,
-    type OffsetRequestProps,
-    type NextRequestProps
+    type OffsetRequestProps
 } from "./OgcFeatureSourceFactory";

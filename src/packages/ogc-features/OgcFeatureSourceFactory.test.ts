@@ -40,9 +40,6 @@ it("expect next link is undefined", () => {
     assert.strictEqual(nextUrl, undefined);
 });
 
-// queryPages
-// queryFeatures
-
 it("expect default offsetUrls are correct", () => {
     const fullUrl = "https://url-to-service.de/items?f=json";
     const urlObj = new URL(fullUrl);
