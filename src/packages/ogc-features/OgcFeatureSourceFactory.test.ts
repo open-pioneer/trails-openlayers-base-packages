@@ -84,12 +84,18 @@ it("expect feature geometry and nextURL are correct", async () => {
         features: expectedFeatures,
         nextURL: undefined
     };
-    
+
     // TODO: Handle Typescript Problems...
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     fetch.mockResolvedValue(createFetchResponse(mockedGeoJSON, 200));
     const featureResponse = await queryFeatures(testUrl, featureFormater, undefined);
     expect(fetch).toHaveBeenCalledWith!("https://url-to-service.de/items?f=json", requestInit);
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     const respondedCoordinates = featureResponse.features[0].getGeometry().flatCoordinates;
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     const expectedCoordinates = featureResponse.features[0].getGeometry().flatCoordinates;
     expect(respondedCoordinates).toStrictEqual(expectedCoordinates);
     expect(featureResponse.nextURL).toStrictEqual(expectedResponse.nextURL);
