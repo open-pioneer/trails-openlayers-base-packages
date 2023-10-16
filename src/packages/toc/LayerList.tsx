@@ -1,11 +1,11 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-import { Checkbox, List, ListItem, Text } from "@open-pioneer/chakra-integration";
-import { LayerModel, MapModel } from "@open-pioneer/map";
-import LayerGroup from "ol/layer/Group";
-import { useCallback, useRef, useSyncExternalStore } from "react";
+import { Checkbox, List, ListItem, ListProps, Text } from "@open-pioneer/chakra-integration";
+import { LayerModel, LayerModelBase, MapModel, SublayerModel } from "@open-pioneer/map";
 import classNames from "classnames";
+import LayerGroup from "ol/layer/Group";
 import { useIntl } from "open-pioneer:react-hooks";
+import { useCallback, useRef, useSyncExternalStore } from "react";
 
 /**
  * Lists the (top level) operational layers in the map.
@@ -16,9 +16,7 @@ export function LayerList(props: { map: MapModel; "aria-labelledby"?: string }):
     const { map, "aria-labelledby": ariaLabelledBy } = props;
     const intl = useIntl();
     const layers = useLayers(map);
-    const layerItems = layers.map((layer) => <LayerItem key={layer.id} layer={layer} />);
-
-    if (!layerItems.length) {
+    if (!layers.length) {
         return (
             <Text className="toc-missing-layers" aria-labelledby={ariaLabelledBy}>
                 {intl.formatMessage({ id: "missingLayers" })}
@@ -26,36 +24,50 @@ export function LayerList(props: { map: MapModel; "aria-labelledby"?: string }):
         );
     }
 
+    return createList(layers, {
+        "aria-labelledby": ariaLabelledBy
+    });
+}
+
+function createList(layers: LayerModelBase[], listProps: ListProps) {
+    const items = layers.map((layer) => <LayerItem key={layer.id} layer={layer} />);
     return (
         <List
             // Note: not using OrderedList because it adds default margins
             as="ol"
             className="toc-layer-list"
             listStyleType="none"
-            aria-labelledby={ariaLabelledBy}
+            {...listProps}
         >
-            {layerItems}
+            {items}
         </List>
     );
 }
 
 /** Renders a single layer as a list item. */
-function LayerItem(props: { layer: LayerModel }): JSX.Element {
+function LayerItem(props: { layer: LayerModelBase }): JSX.Element {
     const { layer } = props;
     const title = useTitle(layer);
     const { isVisible, setVisible } = useVisibility(layer);
+    const sublayers = useSublayers(layer);
+
+    let nestedChildren;
+    if (sublayers?.length) {
+        nestedChildren = createList(sublayers, { ml: 2 });
+    }
 
     return (
         <ListItem className={classNames("toc-layer-list-entry", `layer-${slug(layer.id)}`)}>
             <Checkbox isChecked={isVisible} onChange={(event) => setVisible(event.target.checked)}>
                 {title}
             </Checkbox>
+            {nestedChildren}
         </ListItem>
     );
 }
 
 /** Returns the layers current title. */
-function useTitle(layer: LayerModel): string {
+function useTitle(layer: LayerModelBase): string {
     const getSnapshot = useCallback(() => layer.title, [layer]);
     const subscribe = useCallback(
         (cb: () => void) => {
@@ -69,7 +81,7 @@ function useTitle(layer: LayerModel): string {
 }
 
 /** Returns the layer's current visibility and a function to change it. */
-function useVisibility(layer: LayerModel): {
+function useVisibility(layer: LayerModelBase): {
     isVisible: boolean;
     setVisible(visible: boolean): void;
 } {
@@ -96,36 +108,84 @@ function useVisibility(layer: LayerModel): {
 }
 
 /** Returns the top level operation layers (without LayerGroups). */
-function useLayers(map: MapModel): LayerModel[] {
-    // Caches potentially expensive layers arrays.
-    // Not sure if this is a good idea, but getSnapshot() should always be fast.
-    // If this is a no-go, make getAllLayers() fast instead.
-    const flatOperationalLayers = useRef<LayerModel[] | undefined>();
+function useLayers(map: MapModel): LayerModelBase[] {
     const subscribe = useCallback(
         (cb: () => void) => {
-            // Reset cache when (re-) subscribing
-            flatOperationalLayers.current = undefined;
-            const resource = map.layers.on("changed", () => {
-                // Reset cache content so getSnapshot() fetches layers again.
-                flatOperationalLayers.current = undefined;
-                cb();
-            });
+            const resource = map.layers.on("changed", cb);
             return () => resource.destroy();
         },
         [map]
     );
-    const getSnapshot = useCallback(() => {
+    const getValue = useCallback(() => {
+        let layers = map.layers.getOperationalLayers({ sortByDisplayOrder: true }) ?? [];
+        layers = layers.reverse().filter(canShowOperationalLayer);
+        return layers;
+    }, [map]);
+    return useCachedExternalStore(subscribe, getValue);
+}
+
+/** Returns the sublayers of the given layer (or undefined, if the sublayer cannot have any). */
+function useSublayers(layer: LayerModelBase): SublayerModel[] | undefined {
+    const subscribe = useCallback(
+        (cb: () => void) => {
+            const resource = layer.sublayers?.on("changed", cb);
+            return () => resource?.destroy();
+        },
+        [layer]
+    );
+    const getValue = useCallback((): SublayerModel[] | undefined => {
+        const sublayers = layer.sublayers;
+        if (!sublayers) {
+            return undefined;
+        }
+
+        let layers = layer.sublayers?.getSublayers({ sortByDisplayOrder: true });
+        layers = layers.reverse();
+        return layers;
+    }, [layer]);
+    return useCachedExternalStore(subscribe, getValue);
+}
+
+/**
+ * This hooks wraps an external store that does not cache its own values, i.e.
+ * it may return a different value each time from `getValue()`.
+ *
+ * The results returned from `getValue()` are cached locally; the cache
+ * is only invalidated on re-subscription or if a change event has been observed.
+ */
+function useCachedExternalStore<T>(
+    subscribe: (onStoreChanged: () => void) => () => void,
+    getValue: () => T
+): T {
+    const cachedValue = useRef<{ value: T } | undefined>();
+
+    const cachedSubscribe = useCallback(
+        (cb: () => void) => {
+            const cleanup = subscribe(() => {
+                // Reset cache on change
+                cachedValue.current = undefined;
+                cb();
+            });
+            return () => {
+                // Reset cache when (re-) subscribing
+                cachedValue.current = undefined;
+                cleanup();
+            };
+        },
+        [subscribe]
+    );
+    const cachedGetSnapshot = useCallback(() => {
         // Return cached values if still up to date (see resets above).
-        if (flatOperationalLayers.current) {
-            return flatOperationalLayers.current;
+        if (cachedValue.current) {
+            return cachedValue.current.value;
         }
 
         // Compute values and cache the result.
-        let layers = map?.layers.getOperationalLayers({ sortByDisplayOrder: true }) ?? [];
-        layers = layers.reverse().filter(canShowOperationalLayer);
-        return (flatOperationalLayers.current = layers);
-    }, [map]);
-    return useSyncExternalStore(subscribe, getSnapshot);
+        const value = getValue();
+        cachedValue.current = { value };
+        return value;
+    }, [getValue]);
+    return useSyncExternalStore(cachedSubscribe, cachedGetSnapshot);
 }
 
 function canShowOperationalLayer(layerModel: LayerModel) {

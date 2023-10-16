@@ -1,11 +1,9 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-import { MapConfig, MapConfigProvider } from "@open-pioneer/map";
+import { MapConfig, MapConfigProvider, WMSLayerModel } from "@open-pioneer/map";
 import GeoJSON from "ol/format/GeoJSON";
-import ImageLayer from "ol/layer/Image";
 import TileLayer from "ol/layer/Tile";
 import VectorLayer from "ol/layer/Vector";
-import ImageWMS from "ol/source/ImageWMS";
 import OSM from "ol/source/OSM";
 import VectorSource from "ol/source/Vector";
 import WMTS from "ol/source/WMTS";
@@ -64,11 +62,8 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     visible: true,
                     layer: createKitasLayer()
                 },
-                {
-                    title: "Schulstandorte",
-                    visible: true,
-                    layer: createSchulenLayer()
-                }
+                createSchulenLayer(),
+                createStrassenLayer()
             ]
         };
     }
@@ -159,11 +154,39 @@ function createKitasLayer() {
 }
 
 function createSchulenLayer() {
-    return new ImageLayer({
-        source: new ImageWMS({
-            url: "https://www.wms.nrw.de/wms/wms_nw_inspire-schulen",
-            params: { "LAYERS": ["US.education"] },
-            ratio: 1 //Ratio. 1 means image requests are the size of the map viewport
-        })
+    return new WMSLayerModel({
+        title: "Schulstandorte",
+        visible: true,
+        url: "https://www.wms.nrw.de/wms/wms_nw_inspire-schulen",
+        sublayers: [
+            {
+                name: "US.education",
+                title: "INSPIRE - WMS Schulstandorte NRW"
+            }
+        ],
+        sourceOptions: {
+            ratio: 1
+        }
+    });
+}
+
+function createStrassenLayer() {
+    return new WMSLayerModel({
+        title: "Straßennetz Landesbetrieb Straßenbau NRW",
+        url: "https://www.wms.nrw.de/wms/strassen_nrw_wms",
+        sublayers: [
+            {
+                name: "1",
+                title: "Verwaltungen"
+            },
+            {
+                name: "4",
+                title: "Abschnitte und Äste"
+            },
+            {
+                name: "6",
+                title: "Unfälle"
+            }
+        ]
     });
 }

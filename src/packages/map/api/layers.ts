@@ -4,6 +4,7 @@ import type { EventSource } from "@open-pioneer/core";
 import type OlBaseLayer from "ol/layer/Base";
 import type { MapModel } from "./map";
 import type { LayerRetrievalOptions } from "./shared";
+import { SimpleLayerConfig, WMSLayerConfig } from "./config";
 
 /** Events emitted by the {@link LayerModel} and other layer types. */
 export interface LayerModelBaseEvents {
@@ -108,9 +109,27 @@ export interface LayerModel<AdditionalEvents = {}> extends LayerModelBase<Additi
  */
 export type SimpleLayerModel = LayerModel;
 
+/** Constructor for {@link SimpleLayerModel}. */
+export interface SimpleLayerModelConstructor {
+    prototype: SimpleLayerModel;
+
+    /** Creates a new {@link SimpleLayerModel}. */
+    new (config: SimpleLayerConfig): SimpleLayerModel;
+}
+
 /** Represents a WMS layer. */
 export interface WMSLayerModel extends LayerModel {
     readonly sublayers: SublayersCollection;
+}
+
+/**
+ * Constructor for {@link WMSLayerModel}.
+ */
+export interface WMSLayerModelConstructor {
+    prototype: WMSLayerModel;
+
+    /** Creates a new {@link WMSLayerModel}. */
+    new (config: WMSLayerConfig): WMSLayerModel;
 }
 
 /** Represents a sublayer of another layer. */
@@ -135,7 +154,7 @@ export interface SublayersCollectionEvents {
 /**
  * Contains the sublayers that belong to a {@link LayerModel} or {@link SublayerModel}.
  */
-export interface SublayersCollection {
+export interface SublayersCollection extends EventSource<SublayersCollectionEvents> {
     /**
      * Returns the child sublayers in this collection.
      */

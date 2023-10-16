@@ -1,6 +1,8 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
 import { createLogger } from "@open-pioneer/core";
+import ImageLayer from "ol/layer/Image";
+import type ImageSource from "ol/source/Image";
 import ImageWMS from "ol/source/ImageWMS";
 import { SublayerModel, WMSLayerConfig, WMSLayerModel, WMSSublayerConfig } from "../../api";
 import { DeferredExecution, defer } from "../../util/defer";
@@ -8,17 +10,21 @@ import { AbstractLayerModel } from "../AbstractLayerModel";
 import { AbstractLayerModelBase } from "../AbstractLayerModelBase";
 import { MapModelImpl } from "../MapModelImpl";
 import { SublayersCollectionImpl } from "../SublayersCollectionImpl";
-import ImageLayer from "ol/layer/Image";
 
 const LOG = createLogger("map:WMSLayer");
 
 export class WMSLayerImpl extends AbstractLayerModel implements WMSLayerModel {
     #sublayers: SublayersCollectionImpl<WMSSublayerImpl>;
     #deferredSublayerUpdate: DeferredExecution | undefined;
+    #layer: ImageLayer<ImageSource>;
     #source: ImageWMS;
 
-    // TODO: config signature
     constructor(config: WMSLayerConfig) {
+        const layer = new ImageLayer();
+        super({
+            ...config,
+            layer
+        });
         const source = new ImageWMS({
             ...config.sourceOptions,
             url: config.url,
@@ -26,11 +32,8 @@ export class WMSLayerImpl extends AbstractLayerModel implements WMSLayerModel {
                 ...config.sourceOptions?.params
             }
         });
-        super({
-            ...config,
-            layer: new ImageLayer({ source })
-        });
         this.#source = source;
+        this.#layer = layer;
         this.#sublayers = new SublayersCollectionImpl(constructSublayers(config.sublayers));
         this.#updateLayersParam();
     }
@@ -70,6 +73,13 @@ export class WMSLayerImpl extends AbstractLayerModel implements WMSLayerModel {
         this.#source.updateParams({
             "LAYERS": layers
         });
+
+        // only set source if there are visible sublayers, otherwise
+        // we send an invalid http request
+        const source = layers.length === 0 ? null : this.#source;
+        if (this.#layer.getSource() != source) {
+            this.#layer.setSource(source);
+        }
     }
 
     #getVisibleLayerNames() {
@@ -79,9 +89,13 @@ export class WMSLayerImpl extends AbstractLayerModel implements WMSLayerModel {
                 return;
             }
 
-            layers.push(sublayer.name);
-            for (const nestedSublayer of sublayer.sublayers.__getRawSublayers()) {
-                visitSublayer(nestedSublayer);
+            const nestedSublayers = sublayer.sublayers.__getRawSublayers();
+            if (nestedSublayers.length) {
+                for (const nestedSublayer of nestedSublayers) {
+                    visitSublayer(nestedSublayer);
+                }
+            } else {
+                layers.push(sublayer.name);
             }
         };
 
