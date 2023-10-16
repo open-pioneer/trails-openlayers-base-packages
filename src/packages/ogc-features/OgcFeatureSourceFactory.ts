@@ -31,7 +31,7 @@ export interface OgcFeatureSourceOptions {
     /** The collection-ID */
     collectionId: string;
 
-    /** the URL to the EPSG-Code, e.g. "http://www.opengis.net/def/crs/EPSG/0/25832 */
+    /** the URL to the EPSG-Code, e.g. http://www.opengis.net/def/crs/EPSG/0/25832 */
     crs: string;
 
     /**

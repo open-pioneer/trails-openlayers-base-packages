@@ -1,15 +1,15 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
 import { MapConfig, MapConfigProvider } from "@open-pioneer/map";
+import GeoJSON from "ol/format/GeoJSON";
+import ImageLayer from "ol/layer/Image";
 import TileLayer from "ol/layer/Tile";
+import VectorLayer from "ol/layer/Vector";
+import ImageWMS from "ol/source/ImageWMS";
 import OSM from "ol/source/OSM";
+import VectorSource from "ol/source/Vector";
 import WMTS from "ol/source/WMTS";
 import WMTSTileGrid from "ol/tilegrid/WMTS";
-import VectorSource from "ol/source/Vector";
-import ImageWMS from "ol/source/ImageWMS";
-import { GeoJSON } from "ol/format";
-import VectorLayer from "ol/layer/Vector";
-import ImageLayer from "ol/layer/Image";
 
 export const MAP_ID = "main";
 
@@ -25,21 +25,6 @@ export class MapConfigProviderImpl implements MapConfigProvider {
             },
             projection: "EPSG:25832",
             layers: [
-                {
-                    title: "Haltestellen Stadt Rostock",
-                    visible: true,
-                    layer: createHaltestellenLayer()
-                },
-                {
-                    title: "Kindertagesstätten",
-                    visible: true,
-                    layer: createKitasLayer()
-                },
-                {
-                    title: "Schulstandorte",
-                    visible: true,
-                    layer: createSchulenLayer()
-                },
                 {
                     id: "topplus_open",
                     title: "TopPlus Open",
@@ -68,6 +53,21 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     layer: new TileLayer({
                         source: new OSM()
                     })
+                },
+                {
+                    title: "Haltestellen Stadt Rostock",
+                    visible: true,
+                    layer: createHaltestellenLayer()
+                },
+                {
+                    title: "Kindertagesstätten",
+                    visible: true,
+                    layer: createKitasLayer()
+                },
+                {
+                    title: "Schulstandorte",
+                    visible: true,
+                    layer: createSchulenLayer()
                 }
             ]
         };

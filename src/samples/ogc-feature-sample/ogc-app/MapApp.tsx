@@ -3,11 +3,11 @@
 import { Box, Flex } from "@open-pioneer/chakra-integration";
 import { InitialExtent } from "@open-pioneer/initial-extent";
 import { MapAnchor, MapContainer } from "@open-pioneer/map";
+import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { Toc } from "@open-pioneer/toc";
+import { ZoomIn, ZoomOut } from "@open-pioneer/zoom";
 import { useIntl } from "open-pioneer:react-hooks";
 import { MAP_ID } from "./MapConfigProviderImpl";
-import { ZoomIn, ZoomOut } from "@open-pioneer/zoom";
-import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 
 export function MapApp() {
     const intl = useIntl();

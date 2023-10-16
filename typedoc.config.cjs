@@ -16,6 +16,7 @@ const documentedPackages = [
     "packages/basemap-switcher",
     "packages/initial-extent",
     "packages/zoom",
+    "packages/measurement",
     "packages/ogc-features"
 ];
 
