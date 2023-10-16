@@ -1,25 +1,23 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
 import { createLogger } from "@open-pioneer/core";
-import { getNextURL, queryPages, type QueryFeatureOptions } from "./OgcFeatureSourceFactory";
+import {
+    getNextURL,
+    queryPages,
+    type QueryFeatureOptions,
+    DEFAULT_LIMIT
+} from "./OgcFeatureSourceFactory";
 import { FeatureLike } from "ol/Feature";
 
 const LOG = createLogger("ogc-features:OffsetStrategy");
 
 export interface OffsetRequestProps {
     /** The maximum number of concurrent requests. Defaults to `6`. */
-    maxNumberOfConcurrentReq: number;
+    maxConcurrentRequests: number;
 
-    /** The (maximum) number of items to fetch at once. Defaults to `2500`. */
+    /** The (maximum) number of items to fetch at once. */
     pageSize: number;
 }
-
-// Chrome does only allow 6 concurrent requests (HTTP/1.x)
-/** @internal */
-export const defaultOffsetRequestProps: OffsetRequestProps = {
-    maxNumberOfConcurrentReq: 6,
-    pageSize: 2500
-};
 
 /** @internal */
 export interface CollectionInfos {
@@ -29,9 +27,21 @@ export interface CollectionInfos {
 }
 
 /** @internal */
+// Chrome does only allow 6 concurrent requests (HTTP/1.x)
+export function createOffsetRequestProps(
+    maxConcurrentRequests: number = 6,
+    limit: number = DEFAULT_LIMIT
+): OffsetRequestProps {
+    return {
+        maxConcurrentRequests: maxConcurrentRequests,
+        pageSize: limit
+    };
+}
+
+/** @internal */
 export async function getCollectionInfos(
     collectionsItemsUrl: string,
-    offsetProps: OffsetRequestProps = defaultOffsetRequestProps
+    offsetProps: OffsetRequestProps
 ): Promise<CollectionInfos | undefined> {
     const url = new URL(collectionsItemsUrl);
     url.searchParams.set("limit", "1");
@@ -53,13 +63,13 @@ export async function getCollectionInfos(
     const parsedURL = new URL(nextUrl);
     const hasOffset = parsedURL.searchParams.has("offset");
     let requiredPages: number;
-    if (jsonResp.numberMatched && offsetProps.pageSize) {
+    if (jsonResp.numberMatched) {
         requiredPages = Math.min(
-            offsetProps.maxNumberOfConcurrentReq,
+            offsetProps.maxConcurrentRequests,
             Math.ceil(jsonResp.numberMatched / offsetProps.pageSize)
         );
     } else {
-        requiredPages = offsetProps.maxNumberOfConcurrentReq;
+        requiredPages = offsetProps.maxConcurrentRequests;
     }
 
     return {
@@ -71,16 +81,16 @@ export async function getCollectionInfos(
 
 /** @internal */
 export async function queryAllFeaturesWithOffset(
-    options: Omit<QueryFeatureOptions, "nextRequestProps">
+    options: QueryFeatureOptions
 ): Promise<FeatureLike[]> {
     const { fullURL, featureFormat, signal, addFeatures, queryFeatures } = options;
 
     let nextUrl = undefined;
     let allFeatures: FeatureLike[] = [];
 
-    const offsetRequestProps = options.offsetRequestProps ?? defaultOffsetRequestProps;
+    const offsetRequestProps = options.offsetRequestProps ?? createOffsetRequestProps();
     const requiredPages =
-        options.collectionInfos?.requiredPages ?? offsetRequestProps.maxNumberOfConcurrentReq;
+        options.collectionInfos?.requiredPages ?? offsetRequestProps.maxConcurrentRequests;
 
     const pageSizeToUse = Math.min(
         options.limit ?? offsetRequestProps.pageSize,

@@ -10,17 +10,17 @@ import FeatureFormat from "ol/format/Feature";
 import { AttributionLike } from "ol/source/Source";
 import {
     OffsetRequestProps,
+    createOffsetRequestProps,
     getCollectionInfos,
     queryAllFeaturesWithOffset,
-    defaultOffsetRequestProps,
     CollectionInfos
 } from "./OffsetStrategy";
 import { FeatureLoader } from "ol/featureloader";
 import { Extent } from "ol/extent";
 
 const NEXT_LINK_PROP = "next";
-const DEFAULT_LIMIT = 5000;
 const LOG = createLogger("ogc-features:OgcFeatureSourceFactory");
+export const DEFAULT_LIMIT = 5000;
 
 export { type OffsetRequestProps } from "./OffsetStrategy";
 
@@ -41,16 +41,15 @@ export interface OgcFeatureSourceOptions {
      * When the `offset` strategy is used for feature fetching, the limit
      * is used for the page size
      *
-     * TODO: Think about limit and pageSize again
-     * Default limit is 5000
+     * Default limit is 5000 for Next-Strategy and 2500 for Offset-Strategy
      */
     limit?: number;
 
+    /** The maximum number of concurrent requests. Defaults to `6`. */
+    maxConcurrentRequests?: number;
+
     /** Optional attribution for the layer (e.g. copyright hints). */
     attributions?: AttributionLike | undefined;
-
-    /** Configuration options for the 'offset' strategy. TODO: configuration? */
-    offsetRequestProps?: OffsetRequestProps;
 
     /** Optional additional options for the VectorSource. */
     additionalOptions?: Options<Geometry>;
@@ -91,7 +90,10 @@ export function _createVectorSource(
         ...options.additionalOptions
     });
 
-    const offsetRequestProps = options.offsetRequestProps ?? defaultOffsetRequestProps;
+    const offsetRequestProps = createOffsetRequestProps(
+        options.maxConcurrentRequests,
+        options.limit
+    );
     const queryFeaturesFunc = queryFeaturesParam ?? queryFeatures;
     const getCollectionInfosFunc = getCollectionInfosParam ?? getCollectionInfos;
     const addFeaturesFunc =

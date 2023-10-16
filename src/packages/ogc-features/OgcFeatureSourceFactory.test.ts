@@ -18,14 +18,17 @@ import { FeatureLike } from "ol/Feature";
 import { Projection } from "ol/proj";
 import FeatureFormat from "ol/format/Feature";
 
-global.fetch = vi.fn();
+// Stored and used in mockedFetch to help Typescript compiler
+const mockedFetch = (global.fetch = vi.fn());
 
 afterEach(() => {
     vi.restoreAllMocks();
 });
 
 function createFetchResponse(data: object, statusCode: number) {
-    return { status: statusCode, json: () => new Promise((resolve) => resolve(data)) };
+    return new Response(JSON.stringify(data), {
+        status: statusCode
+    });
 }
 
 async function mockedGetCollectionInfos(_: string, __?: OffsetRequestProps) {
@@ -77,28 +80,14 @@ it("expect feature geometry and nextURL are correct", async () => {
         }
     };
     const testUrl = "https://url-to-service.de/items?f=json";
-    const featureFormater = new GeoJSON();
-    const expectedFeatures = featureFormater.readFeatures(mockedGeoJSON);
 
-    const expectedResponse: FeatureResponse = {
-        features: expectedFeatures,
-        nextURL: undefined
-    };
-
-    // TODO: Handle Typescript Problems...
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    fetch.mockResolvedValue(createFetchResponse(mockedGeoJSON, 200));
-    const featureResponse = await queryFeatures(testUrl, featureFormater, undefined);
-    expect(fetch).toHaveBeenCalledWith!("https://url-to-service.de/items?f=json", requestInit);
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    const respondedCoordinates = featureResponse.features[0].getGeometry().flatCoordinates;
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    const expectedCoordinates = featureResponse.features[0].getGeometry().flatCoordinates;
-    expect(respondedCoordinates).toStrictEqual(expectedCoordinates);
-    expect(featureResponse.nextURL).toStrictEqual(expectedResponse.nextURL);
+    mockedFetch.mockResolvedValue(createFetchResponse(mockedGeoJSON, 200));
+    const featureResponse = await queryFeatures(testUrl, new GeoJSON(), undefined);
+    expect(mockedFetch).toHaveBeenCalledWith!(testUrl, requestInit);
+    const respondedCoordinates = (featureResponse.features[0]?.getGeometry() as any)
+        .flatCoordinates;
+    expect(respondedCoordinates).toStrictEqual([5752928, 395388]);
+    expect(featureResponse.nextURL).toStrictEqual(undefined);
 });
 
 it("expect next link to be returned", () => {
@@ -140,7 +129,7 @@ it("expect default offsetUrls are created correctly", () => {
 it("expect feature responses are parsed from the feature response (offset-strategy)", async () => {
     const addedFeatures: Array<FeatureLike> = [];
     const fullUrl = "https://url-to-service.de/items?f=json";
-    const options: Omit<QueryFeatureOptions, "nextRequestProps"> = {
+    const options: QueryFeatureOptions = {
         fullURL: fullUrl,
         featureFormat: new GeoJSON(),
         addFeatures: (features: FeatureLike[]) => {
@@ -161,7 +150,7 @@ it("expect feature responses are parsed from the feature response (offset-strate
 it("expect feature responses are parsed from the feature response (next-strategy)", async () => {
     const addedFeatures: Array<FeatureLike> = [];
     const fullUrl = "https://url-to-service.de/items?f=json";
-    const options: Omit<QueryFeatureOptions, "nextRequestProps"> = {
+    const options: Omit<QueryFeatureOptions, "offsetRequestProps"> = {
         fullURL: fullUrl,
         featureFormat: new GeoJSON(),
         addFeatures: (features: FeatureLike[]) => {
@@ -182,7 +171,7 @@ it("expect feature responses are parsed from the feature response (next-strategy
 it("expect feature responses are empty (offset-strategy)", async () => {
     const addedFeatures: Array<FeatureLike> = [];
     const fullUrl = "https://url-to-service.de/items?f=json";
-    const options: Omit<QueryFeatureOptions, "nextRequestProps"> = {
+    const options: QueryFeatureOptions = {
         fullURL: fullUrl,
         featureFormat: new GeoJSON(),
         addFeatures: (features: FeatureLike[]) => {
@@ -203,7 +192,7 @@ it("expect feature responses are empty (offset-strategy)", async () => {
 it("expect feature responses are empty (next-strategy)", async () => {
     const addedFeatures: Array<FeatureLike> = [];
     const fullUrl = "https://url-to-service.de/items?f=json";
-    const options: Omit<QueryFeatureOptions, "nextRequestProps"> = {
+    const options: Omit<QueryFeatureOptions, "offsetRequestProps"> = {
         fullURL: fullUrl,
         featureFormat: new GeoJSON(),
         addFeatures: (features: FeatureLike[]) => {
@@ -278,7 +267,7 @@ it("expect all feature from 2 query-runs are added", async () => {
     const fullUrl = "https://url-to-service.de/items?f=json";
 
     const offsetProps: OffsetRequestProps = {
-        maxNumberOfConcurrentReq: 6,
+        maxConcurrentRequests: 6,
         pageSize: 2500
     };
 
@@ -303,7 +292,7 @@ it("expect all feature from 2 query-runs are added", async () => {
         const urlObj = new URL(fullUrl);
         const params = urlObj.searchParams;
         const offsetOfLastUrl = (
-            (offsetProps.maxNumberOfConcurrentReq - 1) *
+            (offsetProps.maxConcurrentRequests - 1) *
             offsetProps.pageSize
         ).toString();
         const paramsOfLastUrl = params.get("offset") === offsetOfLastUrl;
@@ -314,7 +303,7 @@ it("expect all feature from 2 query-runs are added", async () => {
         return mockedFeatureResponse;
     };
 
-    const options: Omit<QueryFeatureOptions, "nextRequestProps"> = {
+    const options: QueryFeatureOptions = {
         fullURL: fullUrl,
         featureFormat: new GeoJSON(),
         addFeatures: (features) => features.forEach((feature) => addedFeatures.push(feature)),
