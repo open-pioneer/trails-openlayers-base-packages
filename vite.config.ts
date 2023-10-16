@@ -23,6 +23,7 @@ const sampleSites = [
     "samples/map-sample",
     "samples/auth-sample",
     "samples/notify-sample",
+    "samples/ogc-feature-sample",
     "samples/test-basemap-switcher",
     "samples/test-measurement",
     "samples/experimental-sidebar"
