@@ -2,11 +2,10 @@
 // SPDX-License-Identifier: Apache-2.0
 import { Box, Flex } from "@open-pioneer/chakra-integration";
 import { CoordinateViewer } from "@open-pioneer/coordinate-viewer";
-import { InitialExtent } from "@open-pioneer/initial-extent";
+import { InitialExtent, ZoomIn, ZoomOut } from "@open-pioneer/map-navigation";
 import { MapAnchor, MapContainer } from "@open-pioneer/map";
 import { ScaleViewer } from "@open-pioneer/scale-viewer";
 import { Toc } from "@open-pioneer/toc";
-import { ZoomIn, ZoomOut } from "@open-pioneer/zoom";
 import { ScaleComponent } from "map-sample-scale-component";
 import { useIntl } from "open-pioneer:react-hooks";
 import { MAP_ID } from "./MapConfigProviderImpl";

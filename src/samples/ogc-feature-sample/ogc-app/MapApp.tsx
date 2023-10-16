@@ -1,11 +1,10 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
 import { Box, Flex } from "@open-pioneer/chakra-integration";
-import { InitialExtent } from "@open-pioneer/initial-extent";
 import { MapAnchor, MapContainer } from "@open-pioneer/map";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { Toc } from "@open-pioneer/toc";
-import { ZoomIn, ZoomOut } from "@open-pioneer/zoom";
+import { ZoomIn, ZoomOut, InitialExtent } from "@open-pioneer/map-navigation";
 import { useIntl } from "open-pioneer:react-hooks";
 import { MAP_ID } from "./MapConfigProviderImpl";
 

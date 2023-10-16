@@ -1,1 +1,0 @@
-# @open-pioneer/initial-extent
