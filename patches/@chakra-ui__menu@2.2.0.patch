@@ -1,0 +1,13 @@
+diff --git a/dist/chunk-2D5GRB32.mjs b/dist/chunk-2D5GRB32.mjs
+index 672f66a1cbd6774e7e778194d8775d467ac83758..108e876d407f611e415fe07c6358589b9dc8dc78 100644
+--- a/dist/chunk-2D5GRB32.mjs
++++ b/dist/chunk-2D5GRB32.mjs
+@@ -124,7 +124,7 @@ function useMenu(props = {}) {
+     ref: menuRef,
+     handler: (event) => {
+       var _a;
+-      if (!((_a = buttonRef.current) == null ? void 0 : _a.contains(event.target))) {
++      if (!((_a = buttonRef.current) == null ? void 0 : event.composedPath().includes(_a))) {
+         onClose();
+       }
+     }
