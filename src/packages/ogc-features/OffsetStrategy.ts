@@ -1,19 +1,8 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-import { loadPages, type LoadFeatureOptions } from "./OgcFeatureSourceFactory";
 import { FeatureLike } from "ol/Feature";
+import { LoadFeatureOptions, loadPages } from "./OgcFeatureSourceFactory";
 import { createOffsetURL, getNextURL } from "./requestUtils";
-
-export interface OffsetRequestProps {
-    /** The maximum number of concurrent requests. Defaults to `6`. */
-    maxNumberOfConcurrentReq: number;
-}
-
-// Chrome does only allow 6 concurrent requests (HTTP/1.x)
-/** @internal */
-export const defaultOffsetRequestProps: OffsetRequestProps = {
-    maxNumberOfConcurrentReq: 6
-};
 
 /** @internal */
 export interface CollectionInfos {
@@ -21,11 +10,6 @@ export interface CollectionInfos {
     supportsOffsetStrategy: boolean;
 }
 
-/**
- * Probes the service to determine support for our offset strategy.
- *
- * @internal
- */
 export async function getCollectionInfos(collectionsItemsUrl: string): Promise<CollectionInfos> {
     const infos: CollectionInfos = {
         supportsOffsetStrategy: false
@@ -57,14 +41,12 @@ export async function getCollectionInfos(collectionsItemsUrl: string): Promise<C
 }
 
 /** @internal */
-export async function queryAllFeaturesWithOffset(
+export async function loadAllFeaturesWithOffset(
     options: LoadFeatureOptions
 ): Promise<FeatureLike[]> {
     const { fullURL, featureFormat, signal, addFeatures, queryFeatures } = options;
     const pageSize = options.limit;
-    const maxConcurrency =
-        options.offsetRequestProps?.maxNumberOfConcurrentReq ??
-        defaultOffsetRequestProps?.maxNumberOfConcurrentReq;
+    const maxConcurrency = options.maxConcurrentRequests;
 
     let startOffset = 0;
     let currentUrl: string | undefined = fullURL;

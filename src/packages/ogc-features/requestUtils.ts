@@ -1,6 +1,8 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
 import { Extent } from "ol/extent";
+import FeatureFormat from "ol/format/Feature";
+import { FeatureLike } from "ol/Feature";
 
 const NEXT_LINK_PROP = "next";
 
@@ -51,4 +53,42 @@ export function getNextURL(rawLinks: unknown): string | undefined {
     const nextLinks = links.filter((link) => link.rel === NEXT_LINK_PROP);
     if (nextLinks.length !== 1) return;
     return nextLinks[0]?.href;
+}
+
+export interface FeatureResponse {
+    features: FeatureLike[];
+    nextURL: string | undefined;
+    numberMatched: number | undefined;
+}
+
+/**
+ * @internal
+ * Performs a single request against the service
+ */
+export async function queryFeatures(
+    fullURL: string,
+    featureFormat: FeatureFormat | undefined,
+    signal: AbortSignal | undefined
+): Promise<FeatureResponse> {
+    let features: FeatureLike[] = [];
+    const requestInit: RequestInit = {
+        headers: {
+            Accept: "application/geo+json"
+        },
+        signal
+    };
+    const response = await fetch(fullURL, requestInit);
+    if (response.status !== 200) {
+        throw new Error(`Failed to query features from service (status code ${response.status})`);
+    }
+    const geoJson = await response.json();
+    if (featureFormat) {
+        features = featureFormat.readFeatures(geoJson);
+    }
+    const nextURL = getNextURL(geoJson.links);
+    return {
+        features: features,
+        numberMatched: geoJson.numberMatched,
+        nextURL: nextURL
+    };
 }

@@ -1,7 +1,13 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-import { assert, describe, expect, it } from "vitest";
-import { createCollectionRequestUrl, createOffsetURL, getNextURL } from "./requestUtils";
+import { SpyInstance, afterEach, assert, beforeEach, describe, expect, it, vi } from "vitest";
+import {
+    createCollectionRequestUrl,
+    createOffsetURL,
+    getNextURL,
+    queryFeatures
+} from "./requestUtils";
+import GeoJSON from "ol/format/GeoJSON";
 
 describe("collection items url", () => {
     it("expect items url contains extent and crs", () => {
@@ -56,3 +62,57 @@ describe("next links", () => {
         assert.strictEqual(nextUrl, undefined);
     });
 });
+
+describe("query features", () => {
+    let mockedFetch!: SpyInstance;
+
+    beforeEach(() => {
+        mockedFetch = vi.spyOn(global, "fetch");
+    });
+
+    afterEach(() => {
+        vi.restoreAllMocks();
+    });
+
+    const mockedGeoJSON = {
+        "type": "FeatureCollection",
+        "crs": {
+            "type": "name",
+            "properties": {
+                "name": "EPSG:25832"
+            }
+        },
+        "features": [
+            {
+                "type": "Feature",
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [5752928, 395388]
+                }
+            }
+        ]
+    };
+
+    it("expect feature geometry and nextURL are correct", async () => {
+        const requestInit: RequestInit = {
+            headers: {
+                Accept: "application/geo+json"
+            }
+        };
+        const testUrl = "https://url-to-service.de/items?f=json";
+
+        mockedFetch.mockResolvedValue(createFetchResponse(mockedGeoJSON, 200));
+        const featureResponse = await queryFeatures(testUrl, new GeoJSON(), undefined);
+        expect(mockedFetch).toHaveBeenCalledWith!(testUrl, requestInit);
+        const respondedCoordinates = (featureResponse.features[0]?.getGeometry() as any)
+            .flatCoordinates;
+        expect(respondedCoordinates).toStrictEqual([5752928, 395388]);
+        expect(featureResponse.nextURL).toStrictEqual(undefined);
+    });
+});
+
+function createFetchResponse(data: object, statusCode: number) {
+    return new Response(JSON.stringify(data), {
+        status: statusCode
+    });
+}

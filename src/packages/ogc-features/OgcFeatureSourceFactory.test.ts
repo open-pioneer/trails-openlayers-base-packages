@@ -5,52 +5,20 @@ import { FeatureLike } from "ol/Feature";
 import GeoJSON from "ol/format/GeoJSON";
 import { Point } from "ol/geom";
 import { Projection } from "ol/proj";
-import { afterEach, assert, expect, it, vi } from "vitest"; // (1)
-import { CollectionInfos, queryAllFeaturesWithOffset } from "./OffsetStrategy";
+import { assert, expect, it } from "vitest"; // (1)
+import { CollectionInfos, loadAllFeaturesWithOffset } from "./OffsetStrategy";
 import {
-    FeatureResponse,
     LoadFeatureOptions,
-    OffsetRequestProps,
     _createVectorSource,
-    loadAllFeaturesNextStrategy,
-    queryFeatures
+    loadAllFeaturesNextStrategy
 } from "./OgcFeatureSourceFactory";
-
-// TODO: Reset
-global.fetch = vi.fn();
-
-afterEach(() => {
-    vi.restoreAllMocks();
-});
-
-function createFetchResponse(data: object, statusCode: number) {
-    return { status: statusCode, json: () => new Promise((resolve) => resolve(data)) };
-}
+import { FeatureResponse } from "./requestUtils";
 
 async function mockedGetCollectionInfos(_collectionsItemsUrl: string): Promise<CollectionInfos> {
     return {
         supportsOffsetStrategy: true
     };
 }
-
-const mockedGeoJSON = {
-    "type": "FeatureCollection",
-    "crs": {
-        "type": "name",
-        "properties": {
-            "name": "EPSG:25832"
-        }
-    },
-    "features": [
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [5752928, 395388]
-            }
-        }
-    ]
-};
 
 const mockedFeatureResponse: FeatureResponse = {
     features: [new Feature({ geometry: new Point([395388, 5752928]) })],
@@ -64,38 +32,6 @@ const mockedEmptyFeatureResponse: FeatureResponse = {
     numberMatched: undefined
 };
 
-it("expect feature geometry and nextURL are correct", async () => {
-    const requestInit: RequestInit = {
-        headers: {
-            Accept: "application/geo+json"
-        }
-    };
-    const testUrl = "https://url-to-service.de/items?f=json";
-    const featureFormatter = new GeoJSON();
-    const expectedFeatures = featureFormatter.readFeatures(mockedGeoJSON);
-
-    const expectedResponse: FeatureResponse = {
-        features: expectedFeatures,
-        nextURL: undefined,
-        numberMatched: undefined
-    };
-
-    // TODO: Handle Typescript Problems...
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    fetch.mockResolvedValue(createFetchResponse(mockedGeoJSON, 200));
-    const featureResponse = await queryFeatures(testUrl, featureFormatter, undefined);
-    expect(fetch).toHaveBeenCalledWith!("https://url-to-service.de/items?f=json", requestInit);
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    const respondedCoordinates = featureResponse.features[0].getGeometry().flatCoordinates;
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    const expectedCoordinates = featureResponse.features[0].getGeometry().flatCoordinates;
-    expect(respondedCoordinates).toStrictEqual(expectedCoordinates);
-    expect(featureResponse.nextURL).toStrictEqual(expectedResponse.nextURL);
-});
-
 it("expect features are parsed from the feature response (offset-strategy)", async () => {
     const addedFeatures: Array<FeatureLike> = [];
     const fullUrl = "https://url-to-service.de/items?f=json";
@@ -103,6 +39,7 @@ it("expect features are parsed from the feature response (offset-strategy)", asy
         fullURL: fullUrl,
         featureFormat: new GeoJSON(),
         limit: 1234,
+        maxConcurrentRequests: 6,
         addFeatures: (features: FeatureLike[]) => {
             features.forEach((feature) => addedFeatures.push(feature));
         },
@@ -110,7 +47,7 @@ it("expect features are parsed from the feature response (offset-strategy)", asy
             return Promise.resolve(mockedFeatureResponse);
         }
     };
-    await queryAllFeaturesWithOffset(options);
+    await loadAllFeaturesWithOffset(options);
     assert.includeMembers(addedFeatures, mockedFeatureResponse.features);
 });
 
@@ -121,6 +58,7 @@ it("expect features are parsed from the feature response (next-strategy)", async
         fullURL: fullUrl,
         featureFormat: new GeoJSON(),
         limit: 1234,
+        maxConcurrentRequests: 6,
         addFeatures: (features: FeatureLike[]) => {
             features.forEach((feature) => addedFeatures.push(feature));
         },
@@ -139,6 +77,7 @@ it("expect feature responses are empty (offset-strategy)", async () => {
         fullURL: fullUrl,
         featureFormat: new GeoJSON(),
         limit: 1234,
+        maxConcurrentRequests: 6,
         addFeatures: (features: FeatureLike[]) => {
             features.forEach((feature) => addedFeatures.push(feature));
         },
@@ -146,7 +85,7 @@ it("expect feature responses are empty (offset-strategy)", async () => {
             return Promise.resolve(mockedEmptyFeatureResponse);
         }
     };
-    await queryAllFeaturesWithOffset(options);
+    await loadAllFeaturesWithOffset(options);
     expect(addedFeatures.length).toBe(0);
 });
 
@@ -157,6 +96,7 @@ it("expect feature responses are empty (next-strategy)", async () => {
         fullURL: fullUrl,
         featureFormat: new GeoJSON(),
         limit: 1234,
+        maxConcurrentRequests: 6,
         addFeatures: (features: FeatureLike[]) => {
             features.forEach((feature) => addedFeatures.push(feature));
         },
@@ -224,10 +164,6 @@ it("expect all feature from 2 query-runs are added", async () => {
     const addedFeatures: Array<FeatureLike> = [];
     const fullUrl = "https://url-to-service.de/items?f=json";
 
-    const offsetProps: OffsetRequestProps = {
-        maxNumberOfConcurrentReq: 2
-    };
-
     const pageSize = 3;
     const totalFeatures = 28;
     const createFeature = (id: number) => {
@@ -271,12 +207,12 @@ it("expect all feature from 2 query-runs are added", async () => {
         fullURL: fullUrl,
         featureFormat: new GeoJSON(),
         limit: pageSize,
+        maxConcurrentRequests: 2,
         addFeatures: (features) => features.forEach((feature) => addedFeatures.push(feature)),
-        queryFeatures: queryFeatures,
-        offsetRequestProps: offsetProps
+        queryFeatures: queryFeatures
     };
 
-    await queryAllFeaturesWithOffset(options);
+    await loadAllFeaturesWithOffset(options);
 
     const actualIds = addedFeatures.map((feature) => feature.get("testId"));
     const expectedIds = expectedFeatures.map((feature) => feature.get("testId"));

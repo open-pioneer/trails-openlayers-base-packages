@@ -9,19 +9,12 @@ import { Geometry } from "ol/geom";
 import { bbox } from "ol/loadingstrategy";
 import { AttributionLike } from "ol/source/Source";
 import VectorSource, { Options } from "ol/source/Vector";
-import {
-    CollectionInfos,
-    OffsetRequestProps,
-    defaultOffsetRequestProps,
-    getCollectionInfos,
-    queryAllFeaturesWithOffset
-} from "./OffsetStrategy";
-import { getNextURL, createCollectionRequestUrl } from "./requestUtils";
+import { CollectionInfos, getCollectionInfos, loadAllFeaturesWithOffset } from "./OffsetStrategy";
+import { FeatureResponse, createCollectionRequestUrl, queryFeatures } from "./requestUtils";
 
-const DEFAULT_LIMIT = 5000;
 const LOG = createLogger("ogc-features:OgcFeatureSourceFactory");
-
-export { type OffsetRequestProps } from "./OffsetStrategy";
+const DEFAULT_LIMIT = 5000;
+const DEFAULT_CONCURRENTY = 6;
 
 export interface OgcFeatureSourceOptions {
     /** The base-URL right to the "/collections"-part */
@@ -40,16 +33,15 @@ export interface OgcFeatureSourceOptions {
      * When the `offset` strategy is used for feature fetching, the limit
      * is used for the page size
      *
-     * TODO: Think about limit and pageSize again
-     * Default limit is 5000
+     * Default limit is 5000 for Next-Strategy and 2500 for Offset-Strategy
      */
     limit?: number;
 
+    /** The maximum number of concurrent requests. Defaults to `6`. */
+    maxConcurrentRequests?: number;
+
     /** Optional attribution for the layer (e.g. copyright hints). */
     attributions?: AttributionLike | undefined;
-
-    /** Configuration options for the 'offset' strategy. TODO: configuration? */
-    offsetRequestProps?: OffsetRequestProps;
 
     /** Optional additional options for the VectorSource. */
     additionalOptions?: Options<Geometry>;
@@ -63,12 +55,6 @@ export interface OgcFeatureSourceOptions {
  */
 export function createVectorSource(options: OgcFeatureSourceOptions): VectorSource {
     return _createVectorSource(options, undefined, undefined, undefined);
-}
-
-export interface FeatureResponse {
-    features: Array<FeatureLike>;
-    nextURL: string | undefined;
-    numberMatched: number | undefined;
 }
 
 /**
@@ -91,7 +77,6 @@ export function _createVectorSource(
         ...options.additionalOptions
     });
 
-    const offsetRequestProps = options.offsetRequestProps ?? defaultOffsetRequestProps;
     const queryFeaturesFunc = queryFeaturesParam ?? queryFeatures;
     const getCollectionInfosFunc = getCollectionInfosParam ?? getCollectionInfos;
     const addFeaturesFunc =
@@ -143,8 +128,8 @@ export function _createVectorSource(
                 queryFeatures: queryFeaturesFunc,
                 addFeatures: addFeaturesFunc,
                 limit: options.limit ?? DEFAULT_LIMIT,
+                maxConcurrentRequests: options.maxConcurrentRequests ?? DEFAULT_CONCURRENTY,
                 signal: abortController.signal,
-                offsetRequestProps: offsetRequestProps,
                 collectionInfos: collectionInfos
             });
             // Type mismatch FeatureLike <--> Feature<Geometry>
@@ -180,8 +165,8 @@ export interface LoadFeatureOptions {
     queryFeatures: QueryFeaturesFunc;
     addFeatures: AddFeaturesFunc;
     limit: number;
+    maxConcurrentRequests: number;
     signal?: AbortSignal;
-    offsetRequestProps?: OffsetRequestProps;
     collectionInfos?: CollectionInfos;
 }
 
@@ -197,7 +182,7 @@ function loadAllFeatures(
         case "next":
             return loadAllFeaturesNextStrategy(options);
         case "offset":
-            return queryAllFeaturesWithOffset(options);
+            return loadAllFeaturesWithOffset(options);
     }
 }
 
@@ -284,36 +269,4 @@ export async function loadPages(
     });
     await Promise.all(allRequestPromises);
     return allFeatureResponse;
-}
-
-/**
- * @internal
- * Performs a single request against the service
- */
-export async function queryFeatures(
-    fullURL: string,
-    featureFormat: FeatureFormat | undefined,
-    signal: AbortSignal | undefined
-): Promise<FeatureResponse> {
-    let features = new Array<FeatureLike>();
-    const requestInit: RequestInit = {
-        headers: {
-            Accept: "application/geo+json"
-        },
-        signal
-    };
-    const response = await fetch(fullURL, requestInit);
-    if (response.status !== 200) {
-        throw new Error(`Failed to query features from service (status code ${response.status})`);
-    }
-    const geoJson = await response.json();
-    if (featureFormat) {
-        features = featureFormat.readFeatures(geoJson);
-    }
-    const nextURL = getNextURL(geoJson.links);
-    return {
-        features: features,
-        numberMatched: geoJson.numberMatched,
-        nextURL: nextURL
-    };
 }
