@@ -1,7 +1,7 @@
 # @open-pioneer/ogc-features
 
-This package provides a function to create an ol-VectorSource to be used with OGC-Feature-Layer.
-This VectorSource should be used inside an ol-VectorLayer.
+This package provides a function to create an OpenLayers VectorSource to be used with OGC API Features service.
+This VectorSource should be used inside together with a VectorLayer.
 
 ## Usage
 
@@ -30,26 +30,25 @@ layer: new VectorLayer({
          */
         limit: 5000,
         attributions:
-            "<a href='https://www.govdata.de/dl-de/by-2-0'>Datenlizenz Deutschland - Namensnennung - Version 2.0</a>", // attributions
+            "<a href='https://www.govdata.de/dl-de/by-2-0'>Datenlizenz Deutschland - Namensnennung - Version 2.0</a>",
         offsetRequestProps: {
             // (Optional)
             /** The maximum number of concurrent requests. Defaults to `6`. */
-            maxNumberOfConcurrentReq: number,
+            maxNumberOfConcurrentReq: 6,
 
             /** The (maximum) number of items to fetch at once. Defaults to `2500`. */
-            pageSize: number
+            pageSize: 2500
         },
         additionalOptions: {} // (Optional)
     })
 });
 ```
 
-The optional `offsetRequestProps` configure the concurrent execution of requests by using the
-`offset`-URL-Property for pagination. If the service returns a `numberMatched`-Property, it is used
-alongside the configured pageSize to calculate the optimal number of concurrent requests and
-tries to use this. But it is never higher then the`maxNumberOfConcurrentReq` here.
+The optional `offsetRequestProps` configures the concurrent execution of requests by using the `offset` URL property for pagination.
+If the service returns a `numberMatched` property together with its results, it is used alongside the configured pageSize to calculate the optimal number of concurrent requests.
+The number of concurrent requests is never higher than `maxNumberOfConcurrentReq`.
 
-Additional options of the `VectorSource` (see ol-documentation) can be given by the property
+Additional options of the `VectorSource` (see [OpenLayers documentation](https://openlayers.org/en/latest/apidoc/module-ol_source_Vector-VectorSource.html)) can be given by the property
 `additionalOptions`.
 
 ## License
