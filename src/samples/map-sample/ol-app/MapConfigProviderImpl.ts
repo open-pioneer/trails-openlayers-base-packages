@@ -1,13 +1,15 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
 import { MapConfig, MapConfigProvider } from "@open-pioneer/map";
+import GeoJSON from "ol/format/GeoJSON";
+import ImageLayer from "ol/layer/Image";
 import TileLayer from "ol/layer/Tile";
+import VectorLayer from "ol/layer/Vector";
+import ImageWMS from "ol/source/ImageWMS";
 import OSM from "ol/source/OSM";
+import VectorSource from "ol/source/Vector";
 import WMTS from "ol/source/WMTS";
 import WMTSTileGrid from "ol/tilegrid/WMTS";
-import VectorSource from "ol/source/Vector";
-import { GeoJSON } from "ol/format";
-import VectorLayer from "ol/layer/Vector";
 
 export const MAP_ID = "main";
 
@@ -23,16 +25,6 @@ export class MapConfigProviderImpl implements MapConfigProvider {
             },
             projection: "EPSG:25832",
             layers: [
-                {
-                    title: "Haltestellen Stadt Rostock",
-                    visible: true,
-                    layer: createHaltestellenLayer()
-                },
-                {
-                    title: "Kindertagesstätten",
-                    visible: true,
-                    layer: createKitasLayer()
-                },
                 {
                     id: "topplus_open",
                     title: "TopPlus Open",
@@ -61,6 +53,21 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     layer: new TileLayer({
                         source: new OSM()
                     })
+                },
+                {
+                    title: "Haltestellen Stadt Rostock",
+                    visible: true,
+                    layer: createHaltestellenLayer()
+                },
+                {
+                    title: "Kindertagesstätten",
+                    visible: true,
+                    layer: createKitasLayer()
+                },
+                {
+                    title: "Schulstandorte",
+                    visible: true,
+                    layer: createSchulenLayer()
                 }
             ]
         };
@@ -148,5 +155,15 @@ function createKitasLayer() {
 
     return new VectorLayer({
         source: geojsonSource
+    });
+}
+
+function createSchulenLayer() {
+    return new ImageLayer({
+        source: new ImageWMS({
+            url: "https://www.wms.nrw.de/wms/wms_nw_inspire-schulen",
+            params: { "LAYERS": ["US.education"] },
+            ratio: 1 //Ratio. 1 means image requests are the size of the map viewport
+        })
     });
 }

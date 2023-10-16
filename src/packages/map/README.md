@@ -407,6 +407,48 @@ if (wmtsOptions) {
 
 > Note: To avoid adding layers twice (or error messages), check against the layer id with `getLayerById()`.
 
+##### WMS configuration
+
+To create a layer configuration for an OGC Web Map Service (WMS), you can use the following configuration approache:
+
+Example: Create WMS layer configuration.
+
+```ts
+// YOUR-APP/MapConfigProviderImpl.ts
+import ImageWMS from "ol/source/ImageWMS";
+import ImageLayer from "ol/layer/Image";
+
+export const MAP_ID = "main";
+
+export class MapConfigProviderImpl implements MapConfigProvider {
+    mapId = MAP_ID;
+
+    async getMapConfig(): Promise<MapConfig> {
+        return {
+            initialView: {
+                kind: "position",
+                center: { x: 404747, y: 5757920 },
+                zoom: 14
+            },
+            projection: "EPSG:25832",
+            layers: [
+                {
+                    title: "Schulstandorte",
+                    visible: true,
+                    layer: new ImageLayer({
+                        source: new ImageWMS({
+                            url: "https://www.wms.nrw.de/wms/wms_nw_inspire-schulen",
+                            params: { "LAYERS": ["US.education"] },
+                            ratio: 1 //Ratio. 1 means image requests are the size of the map viewport
+                        })
+                    })
+                }
+            ]
+        };
+    }
+}
+```
+
 #### Register additional projections
 
 The map supports only the following projections by default: `EPSG:4326`, `EPSG:3857`, `EPSG:25832` and `EPSG:25833`.
