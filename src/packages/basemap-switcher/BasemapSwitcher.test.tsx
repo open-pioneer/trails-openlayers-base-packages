@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-import { BkgTopPlusOpen, SimpleLayerModel } from "@open-pioneer/map";
+import { BkgTopPlusOpen, SimpleLayer } from "@open-pioneer/map";
 import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
@@ -225,7 +225,7 @@ it("should update when a new basemap is registered", async () => {
     expect(switcherSelect.options.length).toBe(2);
 
     act(() => {
-        const layer = new SimpleLayerModel({
+        const layer = new SimpleLayer({
             id: "foo",
             title: "Foo",
             isBaseLayer: true,

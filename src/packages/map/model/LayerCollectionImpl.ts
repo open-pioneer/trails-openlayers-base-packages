@@ -2,9 +2,9 @@
 // SPDX-License-Identifier: Apache-2.0
 import { EventEmitter, createLogger } from "@open-pioneer/core";
 import OlBaseLayer from "ol/layer/Base";
-import { LayerCollection, LayerCollectionEvents, LayerModel, LayerRetrievalOptions } from "../api";
-import { AbstractLayerModel } from "./AbstractLayerModel";
-import { AbstractLayerModelBase } from "./AbstractLayerModelBase";
+import { LayerCollection, LayerCollectionEvents, Layer, LayerRetrievalOptions } from "../api";
+import { AbstractLayer } from "./AbstractLayer";
+import { AbstractLayerBase } from "./AbstractLayerBase";
 import { MapModelImpl } from "./MapModelImpl";
 
 const LOG = createLogger("map:LayerCollection");
@@ -19,16 +19,16 @@ export class LayerCollectionImpl
     #map: MapModelImpl;
 
     /** Top level layers (base layers, operational layers). No sublayers. */
-    #topLevelLayers = new Set<AbstractLayerModel>();
+    #topLevelLayers = new Set<AbstractLayer>();
 
     /** Index of _all_ layer instances, including sublayers. */
-    #layerModelsById = new Map<string, AbstractLayerModelBase>();
+    #layersById = new Map<string, AbstractLayerBase>();
 
     /** Reverse index of _all_ layers that have an associated OpenLayers layer. */
-    #layerModelsByLayer: WeakMap<OlBaseLayer, AbstractLayerModel> = new WeakMap();
+    #layersByOlLayer: WeakMap<OlBaseLayer, AbstractLayer> = new WeakMap();
 
     /** Currently active base layer. */
-    #activeBaseLayer: AbstractLayerModel | undefined;
+    #activeBaseLayer: AbstractLayer | undefined;
 
     /** next z-index for operational layer. currently just auto-increments. */
     #nextIndex = OPERATION_LAYER_INITIAL_Z;
@@ -40,16 +40,16 @@ export class LayerCollectionImpl
 
     destroy() {
         // Collection is destroyed together with the map, there is no need to clean up the olMap
-        for (const layerModel of this.#layerModelsById.values()) {
-            layerModel.destroy();
+        for (const layer of this.#layersById.values()) {
+            layer.destroy();
         }
         this.#topLevelLayers.clear();
-        this.#layerModelsById.clear();
+        this.#layersById.clear();
         this.#activeBaseLayer = undefined;
     }
 
-    addLayer(layer: LayerModel): void {
-        if (!isLayerModelInstance(layer)) {
+    addLayer(layer: Layer): void {
+        if (!isLayerInstance(layer)) {
             throw new Error(
                 `Layer is not a valid layer instance. Use one of the classes provided by the map package instead.`
             );
@@ -59,19 +59,19 @@ export class LayerCollectionImpl
         this.#addLayer(layer);
     }
 
-    getBaseLayers(): AbstractLayerModel[] {
-        return this.getAllLayers().filter((layerModel) => layerModel.isBaseLayer);
+    getBaseLayers(): AbstractLayer[] {
+        return this.getAllLayers().filter((layer) => layer.isBaseLayer);
     }
 
-    getActiveBaseLayer(): AbstractLayerModel | undefined {
+    getActiveBaseLayer(): AbstractLayer | undefined {
         return this.#activeBaseLayer;
     }
 
     activateBaseLayer(id: string | undefined): boolean {
         let newBaseLayer = undefined;
         if (id != null) {
-            newBaseLayer = this.#layerModelsById.get(id);
-            if (!(newBaseLayer instanceof AbstractLayerModel)) {
+            newBaseLayer = this.#layersById.get(id);
+            if (!(newBaseLayer instanceof AbstractLayer)) {
                 LOG.warn(`Cannot activate base layer '${id}: layer has an invalid type.'`);
                 return false;
             }
@@ -92,11 +92,11 @@ export class LayerCollectionImpl
         return true;
     }
 
-    getOperationalLayers(options?: LayerRetrievalOptions): AbstractLayerModel[] {
-        return this.getAllLayers(options).filter((layerModel) => !layerModel.isBaseLayer);
+    getOperationalLayers(options?: LayerRetrievalOptions): AbstractLayer[] {
+        return this.getAllLayers(options).filter((layer) => !layer.isBaseLayer);
     }
 
-    getAllLayers(options?: LayerRetrievalOptions): AbstractLayerModel[] {
+    getAllLayers(options?: LayerRetrievalOptions): AbstractLayer[] {
         const layers = Array.from(this.#topLevelLayers.values());
         if (options?.sortByDisplayOrder) {
             sortLayersByDisplayOrder(layers);
@@ -104,12 +104,12 @@ export class LayerCollectionImpl
         return layers;
     }
 
-    getLayerById(id: string): AbstractLayerModelBase | undefined {
-        return this.#layerModelsById.get(id);
+    getLayerById(id: string): AbstractLayerBase | undefined {
+        return this.#layersById.get(id);
     }
 
     removeLayerById(id: string): void {
-        const model = this.#layerModelsById.get(id);
+        const model = this.#layersById.get(id);
         if (!model) {
             LOG.isDebug() && LOG.debug(`Cannot remove layer '${id}': layer is unknown.`);
             return;
@@ -118,14 +118,14 @@ export class LayerCollectionImpl
         this.#removeLayer(model);
     }
 
-    getLayerByRawInstance(layer: OlBaseLayer): LayerModel | undefined {
-        return this.#layerModelsByLayer?.get(layer);
+    getLayerByRawInstance(layer: OlBaseLayer): Layer | undefined {
+        return this.#layersByOlLayer?.get(layer);
     }
 
     /**
      * Adds the given layer to the map and all relevant indices.
      */
-    #addLayer(model: AbstractLayerModel) {
+    #addLayer(model: AbstractLayer) {
         this.#indexLayer(model);
 
         const olLayer = model.olLayer;
@@ -150,7 +150,7 @@ export class LayerCollectionImpl
      * Removes the given layer from the map and all relevant indices.
      * The layer will be destroyed.
      */
-    #removeLayer(model: AbstractLayerModel | AbstractLayerModelBase) {
+    #removeLayer(model: AbstractLayer | AbstractLayerBase) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         if (!this.#topLevelLayers.has(model as any)) {
             LOG.warn(
@@ -159,9 +159,9 @@ export class LayerCollectionImpl
             return;
         }
 
-        if (!(model instanceof AbstractLayerModel)) {
+        if (!(model instanceof AbstractLayer)) {
             throw new Error(
-                `Internal error: expected top level layer to be an instance of AbstractLayerModel.`
+                `Internal error: expected top level layer to be an instance of AbstractLayer.`
             );
         }
 
@@ -175,13 +175,13 @@ export class LayerCollectionImpl
         this.emit("changed");
     }
 
-    #updateBaseLayer(model: AbstractLayerModel | undefined) {
+    #updateBaseLayer(model: AbstractLayer | undefined) {
         if (this.#activeBaseLayer === model) {
             return;
         }
 
         if (LOG.isDebug()) {
-            const getId = (model: AbstractLayerModel | undefined) => {
+            const getId = (model: AbstractLayer | undefined) => {
                 return model ? `'${model.id}'` : undefined;
             };
 
@@ -197,28 +197,28 @@ export class LayerCollectionImpl
     }
 
     /**
-     * Index the layer model and all its children.
+     * Index the layer and all its children.
      */
-    #indexLayer(model: AbstractLayerModel) {
+    #indexLayer(model: AbstractLayer) {
         // layer id -> layer (or sublayer)
         const registrations: [string, OlBaseLayer | undefined][] = [];
-        const visit = (model: AbstractLayerModel | AbstractLayerModelBase) => {
+        const visit = (model: AbstractLayer | AbstractLayerBase) => {
             const id = model.id;
             const olLayer = "olLayer" in model ? model.olLayer : undefined;
-            if (this.#layerModelsById.has(id)) {
+            if (this.#layersById.has(id)) {
                 throw new Error(
                     `Layer id '${id}' is not unique. Either assign a unique id yourself ` +
                         `or skip configuring 'id' for an automatically generated id.`
                 );
             }
-            if (olLayer && this.#layerModelsByLayer.has(olLayer)) {
-                throw new Error(`OlLayer has already been used in this or another LayerModel.`);
+            if (olLayer && this.#layersByOlLayer.has(olLayer)) {
+                throw new Error(`OlLayer has already been used in this or another layer.`);
             }
 
             // Register this layer with the maps.
-            this.#layerModelsById.set(id, model);
+            this.#layersById.set(id, model);
             if (olLayer) {
-                this.#layerModelsByLayer.set(olLayer, model as AbstractLayerModel);
+                this.#layersByOlLayer.set(olLayer, model as AbstractLayer);
             }
             registrations.push([id, olLayer]);
 
@@ -232,9 +232,9 @@ export class LayerCollectionImpl
             visit(model);
         } catch (e) {
             for (const [id, olLayer] of registrations) {
-                this.#layerModelsById.delete(id);
+                this.#layersById.delete(id);
                 if (olLayer) {
-                    this.#layerModelsByLayer.delete(olLayer);
+                    this.#layersByOlLayer.delete(olLayer);
                 }
             }
             throw e;
@@ -244,12 +244,12 @@ export class LayerCollectionImpl
     /**
      * Removes index entries for the given layer and all its sublayers.
      */
-    #unIndexLayer(model: AbstractLayerModel) {
-        const visit = (model: AbstractLayerModel | AbstractLayerModelBase) => {
+    #unIndexLayer(model: AbstractLayer) {
+        const visit = (model: AbstractLayer | AbstractLayerBase) => {
             if ("olLayer" in model) {
-                this.#layerModelsByLayer.delete(model.olLayer);
+                this.#layersByOlLayer.delete(model.olLayer);
             }
-            this.#layerModelsById.delete(model.id);
+            this.#layersById.delete(model.id);
             for (const sublayer of model.sublayers?.__getRawSublayers() ?? []) {
                 visit(sublayer);
             }
@@ -258,7 +258,7 @@ export class LayerCollectionImpl
     }
 }
 
-function sortLayersByDisplayOrder(layers: LayerModel[]) {
+function sortLayersByDisplayOrder(layers: Layer[]) {
     layers.sort((left, right) => {
         // currently layers are added with increasing z-index (base layers: 0), so
         // ordering by z-index is automatically the correct display order.
@@ -272,6 +272,6 @@ function sortLayersByDisplayOrder(layers: LayerModel[]) {
     });
 }
 
-function isLayerModelInstance(object: unknown): object is AbstractLayerModel {
-    return object instanceof AbstractLayerModel;
+function isLayerInstance(object: unknown): object is AbstractLayer {
+    return object instanceof AbstractLayer;
 }

@@ -5,8 +5,8 @@ import type OlBaseLayer from "ol/layer/Base";
 import type { MapModel } from "../MapModel";
 import type { LayerRetrievalOptions } from "../shared";
 
-/** Events emitted by the {@link LayerModel} and other layer types. */
-export interface LayerModelBaseEvents {
+/** Events emitted by the {@link Layer} and other layer types. */
+export interface LayerBaseEvents {
     "changed": void;
     "changed:title": void;
     "changed:description": void;
@@ -22,7 +22,7 @@ export type LayerLoadState = "not-loaded" | "loading" | "loaded" | "error";
 /**
  * Options supported by all layer types (operational layers and sublayers).
  */
-export interface LayerConfigBase {
+export interface LayerBaseConfig {
     /**
      * The unique id of this layer.
      * Defaults to a generated id.
@@ -55,26 +55,13 @@ export interface LayerConfigBase {
 }
 
 /**
- * Options supported by all operational layer types.
- */
-export interface LayerConfig extends LayerConfigBase {
-    /**
-     * Whether this layer is a base layer or not.
-     * Only one base layer can be active at a time.
-     *
-     * Defaults to `false`.
-     */
-    isBaseLayer?: boolean;
-}
-
-/**
  * Interface shared by all layer types (operational layers and sublayers).
  *
  * Instances of this interface cannot be constructed directly; use a real layer
- * class such as {@link SimpleLayerModel} instead.
+ * class such as {@link SimpleLayer} instead.
  */
-export interface LayerModelBase<AdditionalEvents = {}>
-    extends EventSource<LayerModelBaseEvents & AdditionalEvents> {
+export interface LayerBase<AdditionalEvents = {}>
+    extends EventSource<LayerBaseEvents & AdditionalEvents> {
     /** The map this layer belongs to. */
     readonly map: MapModel;
 
@@ -138,12 +125,25 @@ export interface LayerModelBase<AdditionalEvents = {}>
 }
 
 /**
+ * Options supported by all operational layer types.
+ */
+export interface LayerConfig extends LayerBaseConfig {
+    /**
+     * Whether this layer is a base layer or not.
+     * Only one base layer can be active at a time.
+     *
+     * Defaults to `false`.
+     */
+    isBaseLayer?: boolean;
+}
+
+/**
  * Represents an operational layer in the map.
  *
  * Instances of this interface cannot be constructed directly; use a real layer
- * class such as {@link SimpleLayerModel} instead.
+ * class such as {@link SimpleLayer} instead.
  */
-export interface LayerModel<AdditionalEvents = {}> extends LayerModelBase<AdditionalEvents> {
+export interface Layer<AdditionalEvents = {}> extends LayerBase<AdditionalEvents> {
     /**
      * Whether the layer has been loaded, or whether an error occurred while trying to load it.
      */
@@ -165,17 +165,17 @@ export interface LayerModel<AdditionalEvents = {}> extends LayerModelBase<Additi
 /**
  * Represents a sublayer of another layer.
  */
-export interface SublayerModel extends LayerModelBase {
+export interface Sublayer extends LayerBase {
     /**
-     * The direct parent of this layer model.
+     * The direct parent of this layer instance.
      * This can either be the parent layer or another sublayer.
      */
-    readonly parent: LayerModel | SublayerModel;
+    readonly parent: Layer | Sublayer;
 
     /**
      * The parent layer that owns this sublayer.
      */
-    readonly parentLayer: LayerModel;
+    readonly parentLayer: Layer;
 }
 
 /**
@@ -186,11 +186,11 @@ export interface SublayersCollectionEvents {
 }
 
 /**
- * Contains the sublayers that belong to a {@link LayerModel} or {@link SublayerModel}.
+ * Contains the sublayers that belong to a {@link Layer} or {@link Sublayer}.
  */
 export interface SublayersCollection extends EventSource<SublayersCollectionEvents> {
     /**
      * Returns the child sublayers in this collection.
      */
-    getSublayers(options?: LayerRetrievalOptions): SublayerModel[];
+    getSublayers(options?: LayerRetrievalOptions): Sublayer[];
 }

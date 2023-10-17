@@ -6,20 +6,20 @@ import { EventsKey } from "ol/events";
 import OlBaseLayer from "ol/layer/Base";
 import OlLayer from "ol/layer/Layer";
 import Source, { State as OlSourceState } from "ol/source/Source";
-import { SimpleLayerConfig, LayerLoadState, LayerModel } from "../api";
-import { AbstractLayerModelBase } from "./AbstractLayerModelBase";
+import { Layer, LayerLoadState, SimpleLayerConfig } from "../api";
+import { AbstractLayerBase } from "./AbstractLayerBase";
 import { MapModelImpl } from "./MapModelImpl";
 
-const LOG = createLogger("map:AbstractLayerModel");
+const LOG = createLogger("map:AbstractLayer");
 
 /**
  * Base class for normal layer types.
  *
  * These layers always have an associated OpenLayers layer.
  */
-export abstract class AbstractLayerModel<AdditionalEvents = {}>
-    extends AbstractLayerModelBase<AdditionalEvents>
-    implements LayerModel
+export abstract class AbstractLayer<AdditionalEvents = {}>
+    extends AbstractLayerBase<AdditionalEvents>
+    implements Layer
 {
     #olLayer: OlBaseLayer;
     #isBaseLayer: boolean;

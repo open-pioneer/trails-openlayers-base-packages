@@ -11,7 +11,7 @@ import {
     MapModel,
     MapRegistry,
     OlMapOptions,
-    SimpleLayerModel
+    SimpleLayer
 } from "@open-pioneer/map";
 // Importing internals: needed for test support
 import { MapRegistryImpl } from "@open-pioneer/map/services";
@@ -90,8 +90,8 @@ export async function setupMap(options?: SimpleMapOptions) {
     const mapConfig: MapConfig = {
         initialView: options?.noInitialView ? undefined : getInitialView(),
         projection: options?.noProjection ? undefined : options?.projection ?? "EPSG:3857",
-        layers: options?.layers?.map((config) => new SimpleLayerModel(config)) ?? [
-            new SimpleLayerModel({
+        layers: options?.layers?.map((config) => new SimpleLayer(config)) ?? [
+            new SimpleLayer({
                 title: "OSM",
                 olLayer: new VectorLayer()
             })

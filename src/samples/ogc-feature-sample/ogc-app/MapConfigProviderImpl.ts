@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-import { MapConfig, MapConfigProvider, SimpleLayerModel } from "@open-pioneer/map";
+import { MapConfig, MapConfigProvider, SimpleLayer } from "@open-pioneer/map";
 import { createVectorSource } from "@open-pioneer/ogc-features";
 import TileLayer from "ol/layer/Tile";
 import VectorLayer from "ol/layer/Vector";
@@ -21,7 +21,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
             },
             projection: "EPSG:25832",
             layers: [
-                new SimpleLayerModel({
+                new SimpleLayer({
                     title: "OSM",
                     visible: true,
                     isBaseLayer: true,
@@ -29,7 +29,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                         source: new OSM()
                     })
                 }),
-                new SimpleLayerModel({
+                new SimpleLayer({
                     id: "inspire-us-kindergarten",
                     title: "Kindertageseinrichtungen in NRW",
                     visible: true,
@@ -49,7 +49,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                         })
                     })
                 }),
-                new SimpleLayerModel({
+                new SimpleLayer({
                     id: "ogc_katasterbezirk",
                     title: "Liegenschaftskatasterbezirke in NRW (viele Daten)",
                     visible: false,

@@ -18,7 +18,7 @@ import {
     BkgTopPlusOpen,
     MapAnchor,
     MapContainer,
-    SimpleLayerModel,
+    SimpleLayer,
     useMapModel
 } from "@open-pioneer/map";
 import TileLayer from "ol/layer/Tile";
@@ -119,7 +119,7 @@ function AddNewBaseLayerButton(props: { mapId: string }) {
         }
 
         const number = counter.current++;
-        const layer = new SimpleLayerModel({
+        const layer = new SimpleLayer({
             title: `New Layer ${number}`,
             isBaseLayer: true,
             olLayer: new TileLayer({

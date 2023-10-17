@@ -2,13 +2,13 @@
 // SPDX-License-Identifier: Apache-2.0
 import { EventEmitter, EventNames, createLogger } from "@open-pioneer/core";
 import { v4 as uuid4v } from "uuid";
-import { LayerModelBase, LayerModelBaseEvents, MapModel, SublayerModel } from "../api";
+import { LayerBase, LayerBaseEvents, MapModel, Sublayer } from "../api";
 import { MapModelImpl } from "./MapModelImpl";
 import { SublayersCollectionImpl } from "./SublayersCollectionImpl";
 
 const LOG = createLogger("map:AbstractLayerModel");
 
-export interface AbstractLayerModelBaseOptions {
+export interface AbstractLayerBaseOptions {
     id?: string;
     title: string;
     description?: string;
@@ -19,9 +19,9 @@ export interface AbstractLayerModelBaseOptions {
  * Base class for "normal" layers and sublayers alike to implement common properties
  * such as id, title and attributes.
  */
-export abstract class AbstractLayerModelBase<AdditionalEvents = {}>
-    extends EventEmitter<LayerModelBaseEvents & AdditionalEvents>
-    implements LayerModelBase
+export abstract class AbstractLayerBase<AdditionalEvents = {}>
+    extends EventEmitter<LayerBaseEvents & AdditionalEvents>
+    implements LayerBase
 {
     #map: MapModelImpl | undefined;
 
@@ -31,7 +31,7 @@ export abstract class AbstractLayerModelBase<AdditionalEvents = {}>
     #attributes: Record<string | symbol, unknown>;
     #destroyed = false;
 
-    constructor(config: AbstractLayerModelBaseOptions) {
+    constructor(config: AbstractLayerBaseOptions) {
         super();
         this.#id = config.id ?? uuid4v();
         this.#attributes = config.attributes ?? {};
@@ -69,9 +69,7 @@ export abstract class AbstractLayerModelBase<AdditionalEvents = {}>
 
     abstract get visible(): boolean;
 
-    abstract get sublayers():
-        | SublayersCollectionImpl<SublayerModel & AbstractLayerModelBase>
-        | undefined;
+    abstract get sublayers(): SublayersCollectionImpl<Sublayer & AbstractLayerBase> | undefined;
 
     destroy() {
         if (this.#destroyed) {
@@ -83,7 +81,7 @@ export abstract class AbstractLayerModelBase<AdditionalEvents = {}>
         try {
             this.emit("destroy");
         } catch (e) {
-            LOG.warn(`Unexpected error from event listener during layer model destruction:`, e);
+            LOG.warn(`Unexpected error from event listener during layer destruction:`, e);
         }
     }
 
@@ -142,7 +140,7 @@ export abstract class AbstractLayerModelBase<AdditionalEvents = {}>
 
     abstract setVisible(newVisibility: boolean): void;
 
-    protected __emitChangeEvent<Name extends EventNames<LayerModelBaseEvents & AdditionalEvents>>(
+    protected __emitChangeEvent<Name extends EventNames<LayerBaseEvents & AdditionalEvents>>(
         event: Name
     ) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any

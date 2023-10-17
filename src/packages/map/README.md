@@ -3,7 +3,6 @@
 ## TODO
 
 -   Readme for API concepts
--   \_\_\_Model Suffix?
 -   Tiling/Single Image WMS
 
 This package provides a map container component to integrate an [OpenLayers](https://openlayers.org/) map.
@@ -16,7 +15,7 @@ To use the map in your app, follow these two steps:
 -   Add a `MapContainer` component to your app (see [Map container component](#md:map-container-component)).
 -   Implement a `MapConfigProvider` (see [Map configuration](#md:map-configuration)).
 
-> IMPORTANT: The package uses a map model and layer model to internally handle the states of the map and layers. This is needed to support additional features like base layers.
+> IMPORTANT: The package uses a map model and layer instances to internally handle the states of the map and layers. This is needed to support additional features like base layers.
 > For this reason, always use the methods provided by these models to manage the following features on map and layers (instead of using the raw OpenLayers instances directly):
 >
 > -   Map composition (access and configuration of layers, base layers, adding or removing layers, sublayers, etc.)
@@ -208,7 +207,7 @@ Example: Implementation of a layer configuration.
 
 ```ts
 // YOUR-APP/MapConfigProviderImpl.ts
-import { MapConfig, MapConfigProvider, SimpleLayerModel } from "@open-pioneer/map";
+import { MapConfig, MapConfigProvider, SimpleLayer } from "@open-pioneer/map";
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
 
@@ -216,14 +215,14 @@ export class MapConfigProviderImpl implements MapConfigProvider {
     async getMapConfig(): Promise<MapConfig> {
         return {
             layers: [
-                new SimpleLayerModel({
+                new SimpleLayer({
                     // minimal layer configuration
                     title: "OSM",
                     olLayer: new TileLayer({
                         source: new OSM()
                     })
                 }),
-                new SimpleLayerModel({
+                new SimpleLayer({
                     // layer configuration with optional properties
                     id: "abe0e3f8-0ba2-409c-b6b4-9d8429c732e3",
                     title: "OSM with UUID",
@@ -243,7 +242,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
 }
 ```
 
-Based on the example above, you can set different properties using the layer model API (such as setting visibility, update custom metadata (`attributes`)).
+Based on the example above, you can set different properties using the layer API (such as setting visibility, update custom metadata (`attributes`)).
 
 Example: How to set different properties.
 
@@ -301,7 +300,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
             },
             projection: "EPSG:31466",
             layers: [
-                new SimpleLayerModel({
+                new SimpleLayer({
                     id: "topplus_open",
                     title: "TopPlus Open",
                     isBaseLayer: true,
@@ -400,7 +399,7 @@ const wmtsOptions = optionsFromCapabilities(wmtsResult, {
 });
 
 if (wmtsOptions) {
-    mapModel.layers.addLayer(new SimpleLayerModel({
+    mapModel.layers.addLayer(new SimpleLayer({
         id: "topplus_open_optionsFromCapabilities",
         title: "TopPlus Open - created with optionsFromCapabilities()",
         visible: false,
@@ -438,7 +437,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
             },
             projection: "EPSG:25832",
             layers: [
-                new SimpleLayerModel({
+                new SimpleLayer({
                     title: "Schulstandorte",
                     visible: true,
                     layer: new ImageLayer({
@@ -487,7 +486,7 @@ const proj = getProjection("EPSG:3035");
 
 ### Using the map model
 
-The package uses a map model and layer model to internally handle the states of the map and layers.
+The package uses a map model and layer instances to internally handle the states of the map and layers.
 This is needed to support additional features like base layers.
 For this reason, always use the methods provided by these models to manage the following features on maps and layers (instead of using the raw OpenLayers instances directly):
 
@@ -503,9 +502,9 @@ To access specific layers use the LayerCollection methods, such as `getAllLayers
 Layers should not be manually removed from the map via `.olMap`.
 Only use `removeLayerById` to remove a layer.
 
-#### Using the map model and layer model in services
+#### Using the map model and layers in services
 
-Example: Center map to given coordinates using the map model and set layer visibility using the layer model.
+Example: Center map to given coordinates using the map model and set layer visibility using the layer instance.
 
 ```ts
 import { ServiceOptions, ServiceType } from "@open-pioneer/runtime";

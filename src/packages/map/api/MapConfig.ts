@@ -3,7 +3,7 @@
 import type { MapOptions as OlMapBaseOptions } from "ol/Map";
 import type OlView from "ol/View";
 import type { ViewOptions as OlViewOptions } from "ol/View";
-import { LayerModel } from "./layers";
+import { Layer } from "./layers";
 
 /**
  * Configures an extent.
@@ -108,7 +108,7 @@ export interface MapConfig {
      *
      * Note: base layers are always shown below all operational layers.
      */
-    layers?: LayerModel[];
+    layers?: Layer[];
 
     /**
      * Advanced OpenLayers configuration.

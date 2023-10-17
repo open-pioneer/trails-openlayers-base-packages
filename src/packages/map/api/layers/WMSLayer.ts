@@ -2,12 +2,12 @@
 // SPDX-License-Identifier: Apache-2.0
 import type { Options as WMSSourceOptions } from "ol/source/ImageWMS";
 import { WMSLayerImpl } from "../../model/layers/WMSLayerImpl";
-import type { LayerConfigBase, LayerModel, SublayersCollection } from "./base";
+import type { LayerBaseConfig, Layer, SublayersCollection } from "./base";
 
 /**
  * Options to construct a WMS layer.
  */
-export interface WMSLayerConfig extends LayerConfigBase {
+export interface WMSLayerConfig extends LayerBaseConfig {
     /** URL of the WMS service. */
     url: string;
 
@@ -26,7 +26,7 @@ export interface WMSLayerConfig extends LayerConfigBase {
 /**
  * Options to construct the sublayers of a WMS layer.
  */
-export interface WMSSublayerConfig extends LayerConfigBase {
+export interface WMSSublayerConfig extends LayerBaseConfig {
     /** The name of the WMS sublayer in the service's capabilities. */
     name: string;
 
@@ -35,18 +35,18 @@ export interface WMSSublayerConfig extends LayerConfigBase {
 }
 
 /** Represents a WMS layer. */
-export interface WMSLayerModel extends LayerModel {
+export interface WMSLayer extends Layer {
     readonly sublayers: SublayersCollection;
 }
 
 /**
- * Constructor for {@link WMSLayerModel}.
+ * Constructor for {@link WMSLayer}.
  */
-export interface WMSLayerModelConstructor {
-    prototype: WMSLayerModel;
+export interface WMSLayerConstructor {
+    prototype: WMSLayer;
 
-    /** Creates a new {@link WMSLayerModel}. */
-    new (config: WMSLayerConfig): WMSLayerModel;
+    /** Creates a new {@link WMSLayer}. */
+    new (config: WMSLayerConfig): WMSLayer;
 }
 
-export const WMSLayerModel: WMSLayerModelConstructor = WMSLayerImpl;
+export const WMSLayer: WMSLayerConstructor = WMSLayerImpl;

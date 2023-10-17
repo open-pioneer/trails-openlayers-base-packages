@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-import { MapConfig, MapConfigProvider, SimpleLayerModel, WMSLayerModel } from "@open-pioneer/map";
+import { MapConfig, MapConfigProvider, SimpleLayer, WMSLayer } from "@open-pioneer/map";
 import GeoJSON from "ol/format/GeoJSON";
 import TileLayer from "ol/layer/Tile";
 import VectorLayer from "ol/layer/Vector";
@@ -23,28 +23,28 @@ export class MapConfigProviderImpl implements MapConfigProvider {
             },
             projection: "EPSG:25832",
             layers: [
-                new SimpleLayerModel({
+                new SimpleLayer({
                     id: "topplus_open",
                     title: "TopPlus Open",
                     isBaseLayer: true,
                     visible: true,
                     olLayer: createTopsPlusLayer("web")
                 }),
-                new SimpleLayerModel({
+                new SimpleLayer({
                     id: "topplus_open_grau",
                     title: "TopPlus Open (Grau)",
                     isBaseLayer: true,
                     visible: false,
                     olLayer: createTopsPlusLayer("web_grau")
                 }),
-                new SimpleLayerModel({
+                new SimpleLayer({
                     id: "topplus_open_light",
                     title: "TopPlus Open (Light)",
                     isBaseLayer: true,
                     visible: false,
                     olLayer: createTopsPlusLayer("web_light")
                 }),
-                new SimpleLayerModel({
+                new SimpleLayer({
                     title: "OSM",
                     visible: false,
                     isBaseLayer: true,
@@ -52,12 +52,12 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                         source: new OSM()
                     })
                 }),
-                new SimpleLayerModel({
+                new SimpleLayer({
                     title: "Haltestellen Stadt Rostock",
                     visible: true,
                     olLayer: createHaltestellenLayer()
                 }),
-                new SimpleLayerModel({
+                new SimpleLayer({
                     title: "Kindertagesstätten",
                     visible: true,
                     olLayer: createKitasLayer()
@@ -154,7 +154,7 @@ function createKitasLayer() {
 }
 
 function createSchulenLayer() {
-    return new WMSLayerModel({
+    return new WMSLayer({
         title: "Schulstandorte",
         visible: true,
         url: "https://www.wms.nrw.de/wms/wms_nw_inspire-schulen",
@@ -171,7 +171,7 @@ function createSchulenLayer() {
 }
 
 function createStrassenLayer() {
-    return new WMSLayerModel({
+    return new WMSLayer({
         title: "Straßennetz Landesbetrieb Straßenbau NRW",
         url: "https://www.wms.nrw.de/wms/strassen_nrw_wms",
         sublayers: [

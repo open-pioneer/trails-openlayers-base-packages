@@ -4,7 +4,7 @@ import type { EventSource } from "@open-pioneer/core";
 import type OlMap from "ol/Map";
 import type OlBaseLayer from "ol/layer/Base";
 import type { ExtentConfig } from "./MapConfig";
-import type { LayerModel, LayerModelBase } from "./layers";
+import type { Layer, LayerBase } from "./layers";
 import type { LayerRetrievalOptions } from "./shared";
 
 /** Events emitted by the {@link MapModel}. */
@@ -75,12 +75,12 @@ export interface LayerCollection extends EventSource<LayerCollectionEvents> {
     /**
      * Returns all configured base layers.
      */
-    getBaseLayers(): LayerModel[];
+    getBaseLayers(): Layer[];
 
     /**
      * Returns the currently active base layer.
      */
-    getActiveBaseLayer(): LayerModel | undefined;
+    getActiveBaseLayer(): Layer | undefined;
 
     /**
      * Activates the base layer with the given id.
@@ -93,28 +93,28 @@ export interface LayerCollection extends EventSource<LayerCollectionEvents> {
     activateBaseLayer(id: string | undefined): boolean;
 
     /**
-     * Adds a new layer model to the map.
+     * Adds a new layer to the map.
      *
-     * The new layer model is automatically registered with this collection.
+     * The new layer is automatically registered with this collection.
      *
      * NOTE: by default, the new layer will be shown on _top_ of all existing layers.
      */
-    addLayer(layer: LayerModel): void;
+    addLayer(layer: Layer): void;
 
     /**
      * Returns all operational layers.
      */
-    getOperationalLayers(options?: LayerRetrievalOptions): LayerModel[];
+    getOperationalLayers(options?: LayerRetrievalOptions): Layer[];
 
     /**
      * Returns the layer identified by the `id` or undefined, if no such layer exists.
      */
-    getLayerById(id: string): LayerModelBase | undefined;
+    getLayerById(id: string): LayerBase | undefined;
 
     /**
      * Returns all layers known to this collection.
      */
-    getAllLayers(options?: LayerRetrievalOptions): LayerModel[];
+    getAllLayers(options?: LayerRetrievalOptions): Layer[];
 
     /**
      * Removes a layer from the registry and the map identified by the `id`.
@@ -124,8 +124,8 @@ export interface LayerCollection extends EventSource<LayerCollectionEvents> {
     removeLayerById(id: string): void;
 
     /**
-     * Given a raw OpenLayers layer instance, returns the associated {@link LayerModel} - or undefined
+     * Given a raw OpenLayers layer instance, returns the associated {@link Layer} - or undefined
      * if the layer is unknown to this collection.
      */
-    getLayerByRawInstance(olLayer: OlBaseLayer): LayerModel | undefined;
+    getLayerByRawInstance(olLayer: OlBaseLayer): Layer | undefined;
 }

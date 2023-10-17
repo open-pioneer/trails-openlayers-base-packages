@@ -9,7 +9,7 @@ import {
     SliderTrack,
     Tooltip
 } from "@open-pioneer/chakra-integration";
-import { LayerModel, MapModel, useMapModel } from "@open-pioneer/map";
+import { Layer, MapModel, useMapModel } from "@open-pioneer/map";
 import { unByKey } from "ol/Observable";
 import { useIntl } from "open-pioneer:react-hooks";
 import { useCallback, useRef, useState, useSyncExternalStore } from "react";
@@ -76,7 +76,7 @@ function LayerList(props: { map: MapModel } & LayerControlProps): JSX.Element {
     );
 }
 
-function LayerVisibilityTogglerComponent(props: { layer: LayerModel }): JSX.Element {
+function LayerVisibilityTogglerComponent(props: { layer: Layer }): JSX.Element {
     const { layer } = props;
     const intl = useIntl();
     const visible = useVisibility(layer);
@@ -97,7 +97,7 @@ function LayerVisibilityTogglerComponent(props: { layer: LayerModel }): JSX.Elem
     );
 }
 
-function LayerOpacitySliderComponent(props: { layer: LayerModel }) {
+function LayerOpacitySliderComponent(props: { layer: Layer }) {
     const { layer } = props;
     const intl = useIntl();
     const rawOpacity = useOpacity(layer); // [0, 1]
@@ -133,11 +133,11 @@ function LayerOpacitySliderComponent(props: { layer: LayerModel }) {
     );
 }
 
-function useLayers(mapModel: MapModel): LayerModel[] {
+function useLayers(mapModel: MapModel): Layer[] {
     // Caches potentially expensive layers arrays.
     // Not sure if this is a good idea, but getSnapshot() should always be fast.
     // If this is a no-go, make getAllLayers() fast instead.
-    const cachedArray = useRef<LayerModel[] | undefined>();
+    const cachedArray = useRef<Layer[] | undefined>();
     const subscribe = useCallback(
         (cb: () => void) => {
             const resource = mapModel.layers.on("changed", () => {
@@ -155,7 +155,7 @@ function useLayers(mapModel: MapModel): LayerModel[] {
     return useSyncExternalStore(subscribe, getSnapshot);
 }
 
-function useVisibility(layer: LayerModel): boolean {
+function useVisibility(layer: Layer): boolean {
     const subscribe = useCallback(
         (cb: () => void) => {
             const resource = layer.on("changed:visible", cb);
@@ -169,7 +169,7 @@ function useVisibility(layer: LayerModel): boolean {
     return useSyncExternalStore(subscribe, getSnapshot);
 }
 
-function useOpacity(layer: LayerModel): number {
+function useOpacity(layer: Layer): number {
     const subscribe = useCallback(
         (cb: () => void) => {
             const key = layer.olLayer.on("change:opacity", cb);
@@ -183,7 +183,7 @@ function useOpacity(layer: LayerModel): number {
     return useSyncExternalStore(subscribe, getSnapshot);
 }
 
-function useTitle(layer: LayerModel): string {
+function useTitle(layer: Layer): string {
     const subscribe = useCallback(
         (cb: () => void) => {
             const resource = layer.on("changed:title", cb);

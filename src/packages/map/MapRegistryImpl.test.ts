@@ -256,12 +256,12 @@ it("should construct a map with the configured layers", async () => {
     });
 
     const map = await registry.expectMapModel(mapId);
-    const allLayers = map.layers.getAllLayers().map((layerModel) => {
+    const allLayers = map.layers.getAllLayers().map((layer) => {
         return {
-            id: layerModel.id,
-            title: layerModel.title,
-            visible: layerModel.visible,
-            loadState: layerModel.loadState
+            id: layer.id,
+            title: layer.title,
+            visible: layer.visible,
+            loadState: layer.loadState
         };
     });
 

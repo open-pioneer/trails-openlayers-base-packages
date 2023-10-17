@@ -3,14 +3,14 @@
 import { EventEmitter } from "@open-pioneer/core";
 import {
     LayerRetrievalOptions,
-    SublayerModel,
+    Sublayer as SublayerInterface,
     SublayersCollection,
     SublayersCollectionEvents
 } from "../api";
-import { AbstractLayerModelBase } from "./AbstractLayerModelBase";
+import { AbstractLayerBase } from "./AbstractLayerBase";
 
 // NOTE: adding / removing sublayers currently not supported
-export class SublayersCollectionImpl<Sublayer extends SublayerModel & AbstractLayerModelBase>
+export class SublayersCollectionImpl<Sublayer extends SublayerInterface & AbstractLayerBase>
     extends EventEmitter<SublayersCollectionEvents>
     implements SublayersCollection
 {

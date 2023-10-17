@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
 import { Checkbox, List, ListItem, ListProps, Text } from "@open-pioneer/chakra-integration";
-import { LayerModel, LayerModelBase, MapModel, SublayerModel } from "@open-pioneer/map";
+import { Layer, LayerBase, MapModel, Sublayer } from "@open-pioneer/map";
 import classNames from "classnames";
 import LayerGroup from "ol/layer/Group";
 import { useIntl } from "open-pioneer:react-hooks";
@@ -29,7 +29,7 @@ export function LayerList(props: { map: MapModel; "aria-labelledby"?: string }):
     });
 }
 
-function createList(layers: LayerModelBase[], listProps: ListProps) {
+function createList(layers: LayerBase[], listProps: ListProps) {
     const items = layers.map((layer) => <LayerItem key={layer.id} layer={layer} />);
     return (
         <List
@@ -45,7 +45,7 @@ function createList(layers: LayerModelBase[], listProps: ListProps) {
 }
 
 /** Renders a single layer as a list item. */
-function LayerItem(props: { layer: LayerModelBase }): JSX.Element {
+function LayerItem(props: { layer: LayerBase }): JSX.Element {
     const { layer } = props;
     const title = useTitle(layer);
     const { isVisible, setVisible } = useVisibility(layer);
@@ -67,7 +67,7 @@ function LayerItem(props: { layer: LayerModelBase }): JSX.Element {
 }
 
 /** Returns the layers current title. */
-function useTitle(layer: LayerModelBase): string {
+function useTitle(layer: LayerBase): string {
     const getSnapshot = useCallback(() => layer.title, [layer]);
     const subscribe = useCallback(
         (cb: () => void) => {
@@ -81,7 +81,7 @@ function useTitle(layer: LayerModelBase): string {
 }
 
 /** Returns the layer's current visibility and a function to change it. */
-function useVisibility(layer: LayerModelBase): {
+function useVisibility(layer: LayerBase): {
     isVisible: boolean;
     setVisible(visible: boolean): void;
 } {
@@ -108,7 +108,7 @@ function useVisibility(layer: LayerModelBase): {
 }
 
 /** Returns the top level operation layers (without LayerGroups). */
-function useLayers(map: MapModel): LayerModelBase[] {
+function useLayers(map: MapModel): LayerBase[] {
     const subscribe = useCallback(
         (cb: () => void) => {
             const resource = map.layers.on("changed", cb);
@@ -125,7 +125,7 @@ function useLayers(map: MapModel): LayerModelBase[] {
 }
 
 /** Returns the sublayers of the given layer (or undefined, if the sublayer cannot have any). */
-function useSublayers(layer: LayerModelBase): SublayerModel[] | undefined {
+function useSublayers(layer: LayerBase): Sublayer[] | undefined {
     const subscribe = useCallback(
         (cb: () => void) => {
             const resource = layer.sublayers?.on("changed", cb);
@@ -133,7 +133,7 @@ function useSublayers(layer: LayerModelBase): SublayerModel[] | undefined {
         },
         [layer]
     );
-    const getValue = useCallback((): SublayerModel[] | undefined => {
+    const getValue = useCallback((): Sublayer[] | undefined => {
         const sublayers = layer.sublayers;
         if (!sublayers) {
             return undefined;
@@ -188,8 +188,8 @@ function useCachedExternalStore<T>(
     return useSyncExternalStore(cachedSubscribe, cachedGetSnapshot);
 }
 
-function canShowOperationalLayer(layerModel: LayerModel) {
-    return !(layerModel.olLayer instanceof LayerGroup);
+function canShowOperationalLayer(layer: Layer) {
+    return !(layer.olLayer instanceof LayerGroup);
 }
 
 function slug(id: string) {

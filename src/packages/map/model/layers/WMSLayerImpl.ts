@@ -4,16 +4,16 @@ import { createLogger } from "@open-pioneer/core";
 import ImageLayer from "ol/layer/Image";
 import type ImageSource from "ol/source/Image";
 import ImageWMS from "ol/source/ImageWMS";
-import { SublayerModel, WMSLayerConfig, WMSLayerModel, WMSSublayerConfig } from "../../api";
+import { Sublayer, WMSLayerConfig, WMSLayer, WMSSublayerConfig } from "../../api";
 import { DeferredExecution, defer } from "../../util/defer";
-import { AbstractLayerModel } from "../AbstractLayerModel";
-import { AbstractLayerModelBase } from "../AbstractLayerModelBase";
+import { AbstractLayer } from "../AbstractLayer";
+import { AbstractLayerBase } from "../AbstractLayerBase";
 import { MapModelImpl } from "../MapModelImpl";
 import { SublayersCollectionImpl } from "../SublayersCollectionImpl";
 
 const LOG = createLogger("map:WMSLayer");
 
-export class WMSLayerImpl extends AbstractLayerModel implements WMSLayerModel {
+export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
     #sublayers: SublayersCollectionImpl<WMSSublayerImpl>;
     #deferredSublayerUpdate: DeferredExecution | undefined;
     #layer: ImageLayer<ImageSource>;
@@ -106,7 +106,7 @@ export class WMSLayerImpl extends AbstractLayerModel implements WMSLayerModel {
     }
 }
 
-class WMSSublayerImpl extends AbstractLayerModelBase implements SublayerModel {
+class WMSSublayerImpl extends AbstractLayerBase implements Sublayer {
     #parent: WMSSublayerImpl | WMSLayerImpl | undefined;
     #parentLayer: WMSLayerImpl | undefined;
     #name: string;

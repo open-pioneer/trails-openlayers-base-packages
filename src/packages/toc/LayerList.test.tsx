@@ -8,7 +8,7 @@ import LayerGroup from "ol/layer/Group";
 import TileLayer from "ol/layer/Tile";
 import { expect, it } from "vitest";
 import { LayerList } from "./LayerList";
-import { SimpleLayerModel } from "@open-pioneer/map";
+import { SimpleLayer } from "@open-pioneer/map";
 
 it("should show layers in the correct order", async () => {
     const { mapId, registry } = await setupMap({
@@ -137,7 +137,7 @@ it("reacts to changes in the layer composition", async function () {
 
     act(() => {
         map.layers.addLayer(
-            new SimpleLayerModel({
+            new SimpleLayer({
                 title: "Layer 2",
                 olLayer: new TileLayer({})
             })

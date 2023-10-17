@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
 import type OlBaseLayer from "ol/layer/Base";
-import { LayerConfig, LayerModel } from "./base";
+import { LayerConfig, Layer } from "./base";
 import { SimpleLayerImpl } from "../../model/layers/SimpleLayerImpl";
 
 /**
@@ -16,16 +16,16 @@ export interface SimpleLayerConfig extends LayerConfig {
     olLayer: OlBaseLayer;
 }
 
-/** Constructor for {@link SimpleLayerModel}. */
-export interface SimpleLayerModelConstructor {
-    prototype: SimpleLayerModel;
+/** Constructor for {@link SimpleLayer}. */
+export interface SimpleLayerConstructor {
+    prototype: SimpleLayer;
 
-    /** Creates a new {@link SimpleLayerModel}. */
-    new (config: SimpleLayerConfig): SimpleLayerModel;
+    /** Creates a new {@link SimpleLayer}. */
+    new (config: SimpleLayerConfig): SimpleLayer;
 }
 
 /**
- * A simple layer model wrapping an OpenLayers layer.
+ * A simple layer type wrapping an OpenLayers layer.
  */
-export type SimpleLayerModel = LayerModel;
-export const SimpleLayerModel: SimpleLayerModelConstructor = SimpleLayerImpl;
+export type SimpleLayer = Layer;
+export const SimpleLayer: SimpleLayerConstructor = SimpleLayerImpl;
