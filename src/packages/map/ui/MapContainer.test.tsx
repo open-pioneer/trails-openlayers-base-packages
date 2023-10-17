@@ -80,13 +80,13 @@ it("successfully creates a map with given configuration", async () => {
         layers: [
             {
                 title: "TopPlus Open",
-                layer: new TileLayer({
+                olLayer: new TileLayer({
                     visible: false
                 })
             },
             {
                 title: "TopPlus Open Grau",
-                layer: new TileLayer({
+                olLayer: new TileLayer({
                     visible: false
                 })
             }

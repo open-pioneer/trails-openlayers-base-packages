@@ -24,14 +24,14 @@ it("makes the map layers accessible", async () => {
             {
                 title: "OSM",
                 description: "OSM layer",
-                layer: new TileLayer({
+                olLayer: new TileLayer({
                     source: new OSM()
                 })
             },
             {
                 title: "TopPlus Open",
                 visible: false,
-                layer: new TileLayer({
+                olLayer: new TileLayer({
                     source: new BkgTopPlusOpen()
                 })
             }
@@ -79,20 +79,20 @@ it("supports ordered retrieval of layers", async () => {
         layers: [
             {
                 title: "OSM",
-                layer: new TileLayer({
+                olLayer: new TileLayer({
                     source: new OSM()
                 })
             },
             {
                 title: "TopPlus Open",
-                layer: new TileLayer({
+                olLayer: new TileLayer({
                     source: new BkgTopPlusOpen()
                 })
             },
             {
                 title: "Base",
                 isBaseLayer: true,
-                layer: new TileLayer({})
+                olLayer: new TileLayer({})
             }
         ]
     });
@@ -123,14 +123,14 @@ it("generates automatic unique ids for layers", async () => {
             {
                 title: "OSM",
                 description: "OSM layer",
-                layer: new TileLayer({
+                olLayer: new TileLayer({
                     source: new OSM()
                 })
             },
             {
                 title: "TopPlus Open",
                 visible: false,
-                layer: new TileLayer({
+                olLayer: new TileLayer({
                     source: new BkgTopPlusOpen()
                 })
             }
@@ -154,12 +154,12 @@ it("supports adding custom layer instances", async () => {
             {
                 id: "l1",
                 title: "L1",
-                layer: new TileLayer()
+                olLayer: new TileLayer()
             },
             new SimpleLayerModel({
                 id: "l2",
                 title: "L2",
-                layer: new TileLayer()
+                olLayer: new TileLayer()
             }),
             new WMSLayerModel({
                 id: "l3",
@@ -185,14 +185,14 @@ it("supports lookup by layer id", async () => {
             {
                 id: "l-1",
                 title: "OSM",
-                layer: new TileLayer({
+                olLayer: new TileLayer({
                     source: new OSM()
                 })
             },
             {
                 id: "l-2",
                 title: "TopPlus Open",
-                layer: new TileLayer({
+                olLayer: new TileLayer({
                     source: new BkgTopPlusOpen()
                 })
             }
@@ -217,14 +217,14 @@ it("results in an error, if using the same layer id twice", async () => {
                 {
                     id: "l-1",
                     title: "OSM",
-                    layer: new TileLayer({
+                    olLayer: new TileLayer({
                         source: new OSM()
                     })
                 },
                 {
                     id: "l-1",
                     title: "TopPlus Open",
-                    layer: new TileLayer({
+                    olLayer: new TileLayer({
                         source: new BkgTopPlusOpen()
                     })
                 }
@@ -248,7 +248,7 @@ it("supports reverse lookup from open layers layer", async () => {
             {
                 id: "l-1",
                 title: "OSM",
-                layer: rawL1
+                olLayer: rawL1
             }
         ]
     });
@@ -271,12 +271,12 @@ it("registering the same open layers layer twice throws an error", async () => {
                 {
                     id: "l-1",
                     title: "OSM",
-                    layer: rawL1
+                    olLayer: rawL1
                 },
                 {
                     id: "l-2",
                     title: "OSM",
-                    layer: rawL1
+                    olLayer: rawL1
                 }
             ]
         });
@@ -298,7 +298,7 @@ it("supports adding a layer to the model", async () => {
 
     const layerModel = model.layers.addLayer({
         title: "foo",
-        layer: new TileLayer({
+        olLayer: new TileLayer({
             source: new OSM()
         }),
         visible: false
@@ -321,7 +321,7 @@ it("supports removing a layer from the model", async () => {
             {
                 id: "l-1",
                 title: "OSM",
-                layer: new TileLayer({
+                olLayer: new TileLayer({
                     source: new OSM()
                 })
             }
@@ -347,7 +347,7 @@ describe("base layers", () => {
                     id: "b-1",
                     title: "Base Layer 1",
                     isBaseLayer: true,
-                    layer: new TileLayer({
+                    olLayer: new TileLayer({
                         source: new OSM()
                     })
                 },
@@ -355,7 +355,7 @@ describe("base layers", () => {
                     id: "b-2",
                     title: "Base Layer 2",
                     isBaseLayer: true,
-                    layer: new TileLayer({
+                    olLayer: new TileLayer({
                         source: new OSM()
                     })
                 }
@@ -405,7 +405,7 @@ describe("base layers", () => {
                     id: "b-1",
                     title: "Base Layer 1",
                     isBaseLayer: true,
-                    layer: new TileLayer({
+                    olLayer: new TileLayer({
                         source: new OSM()
                     })
                 },
@@ -413,7 +413,7 @@ describe("base layers", () => {
                     id: "b-2",
                     title: "Base Layer 2",
                     isBaseLayer: true,
-                    layer: new TileLayer({
+                    olLayer: new TileLayer({
                         source: new OSM()
                     })
                 }

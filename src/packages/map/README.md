@@ -1,5 +1,12 @@
 # @open-pioneer/map
 
+## TODO
+
+-   Readme for API concepts
+-   \_\_\_Model Suffix?
+-   layer -> olLayer / rawOlLayer
+-   Tiling/Single Image WMS
+
 This package provides a map container component to integrate an [OpenLayers](https://openlayers.org/) map.
 Besides the component, the package provides a service, which handles the registration and creation of a map.
 

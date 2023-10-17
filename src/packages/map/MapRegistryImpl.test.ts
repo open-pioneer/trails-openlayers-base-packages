@@ -244,13 +244,13 @@ it("should construct a map with the configured layers", async () => {
             {
                 id: "id1",
                 title: "foo",
-                layer: new TileLayer({ source: new OSM() })
+                olLayer: new TileLayer({ source: new OSM() })
             },
             {
                 id: "id2",
                 title: "bar",
                 visible: false,
-                layer: new TileLayer({ source: new BkgTopPlusOpen() })
+                olLayer: new TileLayer({ source: new BkgTopPlusOpen() })
             }
         ]
     });

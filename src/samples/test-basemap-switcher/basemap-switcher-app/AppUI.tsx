@@ -116,7 +116,7 @@ function AddNewBaseLayerButton(props: { mapId: string }) {
         const layer = map.layers.addLayer({
             title: `New Layer ${number}`,
             isBaseLayer: true,
-            layer: new TileLayer({
+            olLayer: new TileLayer({
                 source: new BkgTopPlusOpen({ layer: "web_grau" })
             })
         });

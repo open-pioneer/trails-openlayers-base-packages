@@ -30,7 +30,7 @@ export abstract class AbstractLayerModel<AdditionalEvents = {}>
 
     constructor(config: SimpleLayerConfig) {
         super(config);
-        this.#olLayer = config.layer;
+        this.#olLayer = config.olLayer;
         this.#isBaseLayer = config.isBaseLayer ?? false;
         this.#visible = config.visible ?? true;
 

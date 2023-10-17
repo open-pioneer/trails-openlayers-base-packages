@@ -109,7 +109,7 @@ export interface SimpleLayerConfig extends LayerConfig {
     /**
      * The raw OpenLayers instance.
      */
-    layer: OlBaseLayer;
+    olLayer: OlBaseLayer;
 }
 
 /**

@@ -15,7 +15,7 @@ it("emits a destroy event when destroyed", async () => {
     const layer = buildSimpleLayer({
         id: "a",
         title: "A",
-        layer: new TileLayer({})
+        olLayer: new TileLayer({})
     });
 
     let destroyed = 0;
@@ -31,7 +31,7 @@ it("throws when 'map' is accessed before the layer has been attached", async () 
     const layer = buildSimpleLayer({
         id: "a",
         title: "Foo",
-        layer: new TileLayer({})
+        olLayer: new TileLayer({})
     });
     expect(() => layer.map).toThrowErrorMatchingInlineSnapshot(
         "\"Layer 'a' has not been attached to a map yet.\""
@@ -42,7 +42,7 @@ it("supports access to the map", async () => {
     const layer = buildSimpleLayer({
         id: "a",
         title: "Foo",
-        layer: new TileLayer({})
+        olLayer: new TileLayer({})
     });
     const map = {} as any;
     layer.__attach(map);
@@ -53,7 +53,7 @@ it("supports the title attribute", async () => {
     const layer = buildSimpleLayer({
         id: "a",
         title: "A",
-        layer: new TileLayer({})
+        olLayer: new TileLayer({})
     });
     expect(layer.title).toBe("A");
 
@@ -72,7 +72,7 @@ it("supports the description attribute", async () => {
     const layer = buildSimpleLayer({
         id: "a",
         title: "A",
-        layer: new TileLayer({})
+        olLayer: new TileLayer({})
     });
     expect(layer.description).toBe("");
 
@@ -91,7 +91,7 @@ it("supports the visibility attribute", async () => {
     const layer = buildSimpleLayer({
         id: "a",
         title: "A",
-        layer: new TileLayer({})
+        olLayer: new TileLayer({})
     });
     expect(layer.visible).toBe(true);
     expect(layer.olLayer.getVisible()).toBe(true);
@@ -119,7 +119,7 @@ it("supports arbitrary additional attributes", async () => {
     const layer = buildSimpleLayer({
         id: "a",
         title: "A",
-        layer: new TileLayer({}),
+        olLayer: new TileLayer({}),
         attributes: {
             foo: "bar",
             [hidden]: "hidden"
@@ -162,7 +162,7 @@ it("supports delete additional attributes", async () => {
     const layer = buildSimpleLayer({
         id: "a",
         title: "A",
-        layer: new TileLayer({}),
+        olLayer: new TileLayer({}),
         attributes: {
             foo: "bar",
             bar: "foo",
@@ -203,7 +203,7 @@ it("supports initial empty attribute object and empty attribute object after upd
     const layer = buildSimpleLayer({
         id: "a",
         title: "A",
-        layer: new TileLayer({})
+        olLayer: new TileLayer({})
     });
     let changedAttributes = 0;
     let changed = 0;
@@ -242,7 +242,7 @@ it("logs a warning when setVisible() is called on a base layer", async () => {
         id: "a",
         title: "Base Layer 1",
         isBaseLayer: true,
-        layer: new TileLayer({})
+        olLayer: new TileLayer({})
     });
     layer.setVisible(false);
     expect(layer.visible).toBe(true);
@@ -273,7 +273,7 @@ it("tracks the layer source's state", async () => {
     const layer = buildSimpleLayer({
         id: "a",
         title: "A",
-        layer: olLayer
+        olLayer: olLayer
     });
 
     // Changes on initial source

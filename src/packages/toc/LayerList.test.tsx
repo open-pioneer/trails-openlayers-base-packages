@@ -14,15 +14,15 @@ it("should show layers in the correct order", async () => {
         layers: [
             {
                 title: "Layer 1",
-                layer: new TileLayer({})
+                olLayer: new TileLayer({})
             },
             {
                 title: "Layer 2",
-                layer: new TileLayer({})
+                olLayer: new TileLayer({})
             },
             {
                 title: "Layer 3",
-                layer: new TileLayer({})
+                olLayer: new TileLayer({})
             }
         ]
     });
@@ -53,12 +53,12 @@ it("does not display base layers", async function () {
         layers: [
             {
                 title: "Layer 1",
-                layer: new TileLayer({})
+                olLayer: new TileLayer({})
             },
             {
                 title: "Layer 2",
                 isBaseLayer: true,
-                layer: new TileLayer({})
+                olLayer: new TileLayer({})
             }
         ]
     });
@@ -79,11 +79,11 @@ it("does not display group layers", async function () {
         layers: [
             {
                 title: "Layer 1",
-                layer: new TileLayer({})
+                olLayer: new TileLayer({})
             },
             {
                 title: "Layer 2",
-                layer: new LayerGroup({})
+                olLayer: new LayerGroup({})
             }
         ]
     });
@@ -119,7 +119,7 @@ it("reacts to changes in the layer composition", async function () {
         layers: [
             {
                 title: "Layer 1",
-                layer: new TileLayer({})
+                olLayer: new TileLayer({})
             }
         ]
     });
@@ -137,7 +137,7 @@ it("reacts to changes in the layer composition", async function () {
     act(() => {
         map.layers.addLayer({
             title: "Layer 2",
-            layer: new TileLayer({})
+            olLayer: new TileLayer({})
         });
     });
 
@@ -154,7 +154,7 @@ it("displays the layer's current title", async () => {
             {
                 id: "layer",
                 title: "Layer 1",
-                layer: new TileLayer({})
+                olLayer: new TileLayer({})
             }
         ]
     });
@@ -184,7 +184,7 @@ it("displays the layer's current visibility", async () => {
             {
                 id: "layer",
                 title: "Layer 1",
-                layer: new TileLayer({})
+                olLayer: new TileLayer({})
             }
         ]
     });
@@ -219,7 +219,7 @@ it("changes the layer's visibility when toggling the checkbox", async () => {
             {
                 id: "layer",
                 title: "Layer 1",
-                layer: new TileLayer({})
+                olLayer: new TileLayer({})
             }
         ]
     });
@@ -263,7 +263,7 @@ it("includes the layer id in the item's class list", async () => {
             {
                 id: "some layer id",
                 title: "Layer 1",
-                layer: new TileLayer({})
+                olLayer: new TileLayer({})
             }
         ]
     });

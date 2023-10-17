@@ -28,39 +28,39 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     title: "TopPlus Open",
                     isBaseLayer: true,
                     visible: true,
-                    layer: createTopsPlusLayer("web")
+                    olLayer: createTopsPlusLayer("web")
                 },
                 {
                     id: "topplus_open_grau",
                     title: "TopPlus Open (Grau)",
                     isBaseLayer: true,
                     visible: false,
-                    layer: createTopsPlusLayer("web_grau")
+                    olLayer: createTopsPlusLayer("web_grau")
                 },
                 {
                     id: "topplus_open_light",
                     title: "TopPlus Open (Light)",
                     isBaseLayer: true,
                     visible: false,
-                    layer: createTopsPlusLayer("web_light")
+                    olLayer: createTopsPlusLayer("web_light")
                 },
                 {
                     title: "OSM",
                     visible: false,
                     isBaseLayer: true,
-                    layer: new TileLayer({
+                    olLayer: new TileLayer({
                         source: new OSM()
                     })
                 },
                 {
                     title: "Haltestellen Stadt Rostock",
                     visible: true,
-                    layer: createHaltestellenLayer()
+                    olLayer: createHaltestellenLayer()
                 },
                 {
                     title: "Kindertagesstätten",
                     visible: true,
-                    layer: createKitasLayer()
+                    olLayer: createKitasLayer()
                 },
                 createSchulenLayer(),
                 createStrassenLayer()

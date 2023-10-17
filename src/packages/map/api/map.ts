@@ -93,7 +93,7 @@ export interface LayerCollection extends EventSource<LayerCollectionEvents> {
     activateBaseLayer(id: string | undefined): boolean;
 
     /**
-     * Creates a new layer model and adds it to the map.
+     * Adds a new layer model to the map and returns it.
      *
      * The new layer model is automatically registered with this collection.
      *

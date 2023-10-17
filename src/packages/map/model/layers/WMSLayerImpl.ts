@@ -23,7 +23,7 @@ export class WMSLayerImpl extends AbstractLayerModel implements WMSLayerModel {
         const layer = new ImageLayer();
         super({
             ...config,
-            layer
+            olLayer: layer
         });
         const source = new ImageWMS({
             ...config.sourceOptions,

@@ -15,18 +15,18 @@ it("should successfully create a toc component", async () => {
             {
                 title: "Base layer",
                 id: "base-layer",
-                layer: new TileLayer({}),
+                olLayer: new TileLayer({}),
                 isBaseLayer: true
             },
             {
                 title: "Layer 1",
                 id: "layer-1",
-                layer: new TileLayer({})
+                olLayer: new TileLayer({})
             },
             {
                 title: "Layer 2",
                 id: "layer-2",
-                layer: new TileLayer({})
+                olLayer: new TileLayer({})
             }
         ]
     });
@@ -96,7 +96,7 @@ it("should support overriding basemap-switcher properties", async () => {
         layers: [
             {
                 title: "OSM",
-                layer: new TileLayer({}),
+                olLayer: new TileLayer({}),
                 isBaseLayer: true
             }
         ]

@@ -25,7 +25,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     title: "OSM",
                     visible: true,
                     isBaseLayer: true,
-                    layer: new TileLayer({
+                    olLayer: new TileLayer({
                         source: new OSM()
                     })
                 },
@@ -33,7 +33,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     id: "inspire-us-kindergarten",
                     title: "Kindertageseinrichtungen in NRW",
                     visible: true,
-                    layer: new VectorLayer({
+                    olLayer: new VectorLayer({
                         style: new Style({
                             image: new Circle({
                                 fill: new Fill({ color: "blue" }),
@@ -53,7 +53,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     id: "ogc_katasterbezirk",
                     title: "Liegenschaftskatasterbezirke in NRW (viele Daten)",
                     visible: false,
-                    layer: new VectorLayer({
+                    olLayer: new VectorLayer({
                         source: createVectorSource({
                             baseUrl: "https://ogc-api.nrw.de/lika/v1",
                             collectionId: "katasterbezirk",

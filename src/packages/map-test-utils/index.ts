@@ -92,7 +92,7 @@ export async function setupMap(options?: SimpleMapOptions) {
         layers: options?.layers ?? [
             {
                 title: "OSM",
-                layer: new VectorLayer()
+                olLayer: new VectorLayer()
             }
         ],
         advanced: options?.advanced
