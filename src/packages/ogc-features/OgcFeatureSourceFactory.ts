@@ -261,7 +261,7 @@ export async function loadPages(
                 featureResponse.nextURL || "No Next URL"
             }`
         );
-        allFeatureResponse.features = allFeatureResponse.features.concat(featureResponse.features);
+        allFeatureResponse.features.push(...featureResponse.features);
         if (isLast) {
             allFeatureResponse.numberMatched = featureResponse.numberMatched;
             allFeatureResponse.nextURL = featureResponse.nextURL;
