@@ -2,16 +2,9 @@
 // SPDX-License-Identifier: Apache-2.0
 import { EventEmitter, createLogger } from "@open-pioneer/core";
 import OlBaseLayer from "ol/layer/Base";
-import {
-    LayerCollection,
-    LayerCollectionEvents,
-    SimpleLayerConfig,
-    LayerModel,
-    LayerRetrievalOptions
-} from "../api";
+import { LayerCollection, LayerCollectionEvents, LayerModel, LayerRetrievalOptions } from "../api";
 import { AbstractLayerModel } from "./AbstractLayerModel";
 import { AbstractLayerModelBase } from "./AbstractLayerModelBase";
-import { SimpleLayerImpl } from "./layers/SimpleLayerImpl";
 import { MapModelImpl } from "./MapModelImpl";
 
 const LOG = createLogger("map:LayerCollection");
@@ -55,28 +48,15 @@ export class LayerCollectionImpl
         this.#activeBaseLayer = undefined;
     }
 
-    addLayer(layerConfig: SimpleLayerConfig | LayerModel): AbstractLayerModel {
-        const map = this.#map;
-        let layer: AbstractLayerModel;
-        let layerCreated = false;
-        if (isLayerModelInstance(layerConfig)) {
-            layer = layerConfig;
-        } else {
-            LOG.debug(`Creating layer`, layerConfig);
-            layer = new SimpleLayerImpl(layerConfig as SimpleLayerConfig);
-            layerCreated = true;
+    addLayer(layer: LayerModel): void {
+        if (!isLayerModelInstance(layer)) {
+            throw new Error(
+                `Layer is not a valid layer instance. Use one of the classes provided by the map package instead.`
+            );
         }
 
-        try {
-            layer.__attach(map);
-            this.#addLayer(layer);
-        } catch (e) {
-            if (layerCreated) {
-                layer.destroy();
-            }
-            throw e;
-        }
-        return layer;
+        layer.__attach(this.#map);
+        this.#addLayer(layer);
     }
 
     getBaseLayers(): AbstractLayerModel[] {

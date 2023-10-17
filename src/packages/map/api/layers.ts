@@ -2,9 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0
 import type { EventSource } from "@open-pioneer/core";
 import type OlBaseLayer from "ol/layer/Base";
-import type { MapModel } from "./map";
+import type { MapModel } from "./MapModel";
 import type { LayerRetrievalOptions } from "./shared";
-import { SimpleLayerConfig, WMSLayerConfig } from "./config";
 
 /** Events emitted by the {@link LayerModel} and other layer types. */
 export interface LayerModelBaseEvents {
@@ -17,9 +16,63 @@ export interface LayerModelBaseEvents {
     "destroy": void;
 }
 
+/** The load state of a layer. */
 export type LayerLoadState = "not-loaded" | "loading" | "loaded" | "error";
 
-/** Shared properties used by all layer types ('normal' layers and sublayers). */
+/**
+ * Options supported by all layer types (operational layers and sublayers).
+ */
+export interface LayerConfigBase {
+    /**
+     * The unique id of this layer.
+     * Defaults to a generated id.
+     */
+    id?: string;
+
+    /**
+     * The human-readable title of this layer.
+     */
+    title: string;
+
+    /**
+     * The human-readable description of this layer.
+     * Defaults to an empty string.
+     */
+    description?: string;
+
+    /**
+     * Whether this layer should initially be visible.
+     *
+     * Defaults to `true`.
+     */
+    visible?: boolean;
+
+    /**
+     * Additional attributes for this layer.
+     * These can be arbitrary values.
+     */
+    attributes?: Record<string | symbol, unknown>;
+}
+
+/**
+ * Options supported by all operational layer types.
+ */
+export interface LayerConfig extends LayerConfigBase {
+    /**
+     * Whether this layer is a base layer or not.
+     * Only one base layer can be active at a time.
+     *
+     * Defaults to `false`.
+     */
+    isBaseLayer?: boolean;
+}
+
+/**
+ * Interface shared by all layer types (operational layers and sublayers).
+ *
+ * Instances of this interface cannot be constructed directly; use a real layer
+ * class such as {@link SimpleLayerModel} instead.
+ */
 export interface LayerModelBase<AdditionalEvents = {}>
     extends EventSource<LayerModelBaseEvents & AdditionalEvents> {
     /** The map this layer belongs to. */
@@ -84,7 +137,12 @@ export interface LayerModelBase<AdditionalEvents = {}>
     deleteAttribute(deleteAttribute: string | symbol): void;
 }
 
-/** Represents a layer in the map. */
+/**
+ * Represents an operational layer in the map.
+ *
+ * Instances of this interface cannot be constructed directly; use a real layer
+ * class such as {@link SimpleLayerModel} instead.
+ */
 export interface LayerModel<AdditionalEvents = {}> extends LayerModelBase<AdditionalEvents> {
     /**
      * Whether the layer has been loaded, or whether an error occurred while trying to load it.
@@ -105,34 +163,8 @@ export interface LayerModel<AdditionalEvents = {}> extends LayerModelBase<Additi
 }
 
 /**
- * A simple layer model wrapping an OpenLayers layer.
+ * Represents a sublayer of another layer.
  */
-export type SimpleLayerModel = LayerModel;
-
-/** Constructor for {@link SimpleLayerModel}. */
-export interface SimpleLayerModelConstructor {
-    prototype: SimpleLayerModel;
-
-    /** Creates a new {@link SimpleLayerModel}. */
-    new (config: SimpleLayerConfig): SimpleLayerModel;
-}
-
-/** Represents a WMS layer. */
-export interface WMSLayerModel extends LayerModel {
-    readonly sublayers: SublayersCollection;
-}
-
-/**
- * Constructor for {@link WMSLayerModel}.
- */
-export interface WMSLayerModelConstructor {
-    prototype: WMSLayerModel;
-
-    /** Creates a new {@link WMSLayerModel}. */
-    new (config: WMSLayerConfig): WMSLayerModel;
-}
-
-/** Represents a sublayer of another layer. */
 export interface SublayerModel extends LayerModelBase {
     /**
      * The direct parent of this layer model.
@@ -146,7 +178,9 @@ export interface SublayerModel extends LayerModelBase {
     readonly parentLayer: LayerModel;
 }
 
-/** Events emitted by the {@link SublayersCollection}. */
+/**
+ * Events emitted by the {@link SublayersCollection}.
+ */
 export interface SublayersCollectionEvents {
     changed: void;
 }
@@ -160,3 +194,6 @@ export interface SublayersCollection extends EventSource<SublayersCollectionEven
      */
     getSublayers(options?: LayerRetrievalOptions): SublayerModel[];
 }
+
+export * from "./layers/SimpleLayer";
+export * from "./layers/WMSLayer";

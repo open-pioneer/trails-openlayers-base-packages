@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-import { MapConfig, MapConfigProvider } from "@open-pioneer/map";
+import { MapConfig, MapConfigProvider, SimpleLayerModel } from "@open-pioneer/map";
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
 
@@ -17,13 +17,13 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                 zoom: 14
             },
             layers: [
-                {
+                new SimpleLayerModel({
                     title: "OSM",
                     isBaseLayer: true,
                     olLayer: new TileLayer({
                         source: new OSM()
                     })
-                }
+                })
             ]
         };
     }

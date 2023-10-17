@@ -3,8 +3,6 @@
 import type { MapOptions as OlMapBaseOptions } from "ol/Map";
 import type OlView from "ol/View";
 import type { ViewOptions as OlViewOptions } from "ol/View";
-import type OlBaseLayer from "ol/layer/Base";
-import type { Options as WMSSourceOptions } from "ol/source/ImageWMS";
 import { LayerModel } from "./layers";
 
 /**
@@ -51,96 +49,6 @@ export interface InitialPositionConfig {
  * Configures the map's initial view.
  */
 export type InitialViewConfig = InitialExtentConfig | InitialPositionConfig;
-
-/**
- * Options supported by all layer types (operational layers and sublayers).
- */
-export interface LayerConfigBase {
-    /**
-     * The unique id of this layer.
-     * Defaults to a generated id.
-     */
-    id?: string;
-
-    /**
-     * The human-readable title of this layer.
-     */
-    title: string;
-
-    /**
-     * The human-readable description of this layer.
-     * Defaults to an empty string.
-     */
-    description?: string;
-
-    /**
-     * Whether this layer should initially be visible.
-     *
-     * Defaults to `true`.
-     */
-    visible?: boolean;
-
-    /**
-     * Additional attributes for this layer.
-     * These can be arbitrary values.
-     */
-    attributes?: Record<string | symbol, unknown>;
-}
-
-/**
- * Options supported by all operational layer types.
- */
-export interface LayerConfig extends LayerConfigBase {
-    /**
-     * Whether this layer is a base layer or not.
-     * Only one base layer can be active at a time.
-     *
-     * Defaults to `false`.
-     */
-    isBaseLayer?: boolean;
-}
-
-/**
- * Options to construct a simple layer.
- *
- * Simple layers are wrappers around a custom OpenLayers layer.
- */
-export interface SimpleLayerConfig extends LayerConfig {
-    /**
-     * The raw OpenLayers instance.
-     */
-    olLayer: OlBaseLayer;
-}
-
-/**
- * Options to construct a WMS layer.
- */
-export interface WMSLayerConfig extends LayerConfigBase {
-    /** URL of the WMS service. */
-    url: string;
-
-    /** Configures the layer's sublayers. */
-    sublayers?: WMSSublayerConfig[];
-
-    /**
-     * Additional source options for the layer's WMS source.
-     *
-     * NOTE: These options are intended for advanced configuration:
-     * the WMS Layer manages some of the open layers source options itself.
-     */
-    sourceOptions?: Partial<WMSSourceOptions>;
-}
-
-/**
- * Options to construct the sublayers of a WMS layer.
- */
-export interface WMSSublayerConfig extends LayerConfigBase {
-    /** The name of the WMS sublayer in the service's capabilities. */
-    name: string;
-
-    /** Configuration for nested sublayers. */
-    sublayers?: WMSSublayerConfig[];
-}
 
 /**
  * Advanced options during map construction.
@@ -200,7 +108,7 @@ export interface MapConfig {
      *
      * Note: base layers are always shown below all operational layers.
      */
-    layers?: (SimpleLayerConfig | LayerModel)[];
+    layers?: LayerModel[];
 
     /**
      * Advanced OpenLayers configuration.

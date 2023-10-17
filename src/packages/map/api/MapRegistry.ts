@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
 import type OlMap from "ol/Map";
-import type { MapConfig } from "./config";
-import type { MapModel } from "./map";
+import type { MapConfig } from "./MapConfig";
+import type { MapModel } from "./MapModel";
 
 /**
  * Provides access to registered map instances.

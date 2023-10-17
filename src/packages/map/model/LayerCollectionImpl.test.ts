@@ -3,8 +3,7 @@
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { LayerModel } from "../api";
-import { SimpleLayerModel, WMSLayerModel } from "../layerTypes";
+import { LayerModel, SimpleLayerModel, WMSLayerModel } from "../api";
 import { BkgTopPlusOpen } from "../layers/BkgTopPlusOpen";
 import { MapModelImpl } from "./MapModelImpl";
 import { createMapModel } from "./createMapModel";
@@ -21,20 +20,20 @@ afterEach(() => {
 it("makes the map layers accessible", async () => {
     model = await createMapModel("foo", {
         layers: [
-            {
+            new SimpleLayerModel({
                 title: "OSM",
                 description: "OSM layer",
                 olLayer: new TileLayer({
                     source: new OSM()
                 })
-            },
-            {
+            }),
+            new SimpleLayerModel({
                 title: "TopPlus Open",
                 visible: false,
                 olLayer: new TileLayer({
                     source: new BkgTopPlusOpen()
                 })
-            }
+            })
         ]
     });
 
@@ -77,23 +76,23 @@ it("makes the map layers accessible", async () => {
 it("supports ordered retrieval of layers", async () => {
     model = await createMapModel("foo", {
         layers: [
-            {
+            new SimpleLayerModel({
                 title: "OSM",
                 olLayer: new TileLayer({
                     source: new OSM()
                 })
-            },
-            {
+            }),
+            new SimpleLayerModel({
                 title: "TopPlus Open",
                 olLayer: new TileLayer({
                     source: new BkgTopPlusOpen()
                 })
-            },
-            {
+            }),
+            new SimpleLayerModel({
                 title: "Base",
                 isBaseLayer: true,
                 olLayer: new TileLayer({})
-            }
+            })
         ]
     });
 
@@ -120,20 +119,20 @@ it("supports ordered retrieval of layers", async () => {
 it("generates automatic unique ids for layers", async () => {
     model = await createMapModel("foo", {
         layers: [
-            {
+            new SimpleLayerModel({
                 title: "OSM",
                 description: "OSM layer",
                 olLayer: new TileLayer({
                     source: new OSM()
                 })
-            },
-            {
+            }),
+            new SimpleLayerModel({
                 title: "TopPlus Open",
                 visible: false,
                 olLayer: new TileLayer({
                     source: new BkgTopPlusOpen()
                 })
-            }
+            })
         ]
     });
 
@@ -151,11 +150,11 @@ it("generates automatic unique ids for layers", async () => {
 it("supports adding custom layer instances", async () => {
     model = await createMapModel("foo", {
         layers: [
-            {
+            new SimpleLayerModel({
                 id: "l1",
                 title: "L1",
                 olLayer: new TileLayer()
-            },
+            }),
             new SimpleLayerModel({
                 id: "l2",
                 title: "L2",
@@ -182,20 +181,20 @@ it("supports adding custom layer instances", async () => {
 it("supports lookup by layer id", async () => {
     model = await createMapModel("foo", {
         layers: [
-            {
+            new SimpleLayerModel({
                 id: "l-1",
                 title: "OSM",
                 olLayer: new TileLayer({
                     source: new OSM()
                 })
-            },
-            {
+            }),
+            new SimpleLayerModel({
                 id: "l-2",
                 title: "TopPlus Open",
                 olLayer: new TileLayer({
                     source: new BkgTopPlusOpen()
                 })
-            }
+            })
         ]
     });
 
@@ -214,20 +213,20 @@ it("results in an error, if using the same layer id twice", async () => {
     await expect(async () => {
         model = await createMapModel("foo", {
             layers: [
-                {
+                new SimpleLayerModel({
                     id: "l-1",
                     title: "OSM",
                     olLayer: new TileLayer({
                         source: new OSM()
                     })
-                },
-                {
+                }),
+                new SimpleLayerModel({
                     id: "l-1",
                     title: "TopPlus Open",
                     olLayer: new TileLayer({
                         source: new BkgTopPlusOpen()
                     })
-                }
+                })
             ]
         });
     }).rejects.toThrowErrorMatchingInlineSnapshot(
@@ -245,11 +244,11 @@ it("supports reverse lookup from open layers layer", async () => {
 
     model = await createMapModel("foo", {
         layers: [
-            {
+            new SimpleLayerModel({
                 id: "l-1",
                 title: "OSM",
                 olLayer: rawL1
-            }
+            })
         ]
     });
 
@@ -268,16 +267,16 @@ it("registering the same open layers layer twice throws an error", async () => {
     await expect(async () => {
         model = await createMapModel("foo", {
             layers: [
-                {
+                new SimpleLayerModel({
                     id: "l-1",
                     title: "OSM",
                     olLayer: rawL1
-                },
-                {
+                }),
+                new SimpleLayerModel({
                     id: "l-2",
                     title: "OSM",
                     olLayer: rawL1
-                }
+                })
             ]
         });
     }).rejects.toThrowErrorMatchingInlineSnapshot(
@@ -296,15 +295,16 @@ it("supports adding a layer to the model", async () => {
         ++changed;
     });
 
-    const layerModel = model.layers.addLayer({
+    const layer = new SimpleLayerModel({
         title: "foo",
         olLayer: new TileLayer({
             source: new OSM()
         }),
         visible: false
     });
+    model.layers.addLayer(layer);
     expect(changed).toBe(1);
-    expect(getLayerProps(layerModel)).toMatchInlineSnapshot(`
+    expect(getLayerProps(layer)).toMatchInlineSnapshot(`
       {
         "description": "",
         "title": "foo",
@@ -312,19 +312,19 @@ it("supports adding a layer to the model", async () => {
       }
     `);
     expect(model.layers.getAllLayers()).toHaveLength(1);
-    expect(model.layers.getAllLayers()[0]).toBe(layerModel);
+    expect(model.layers.getAllLayers()[0]).toBe(layer);
 });
 
 it("supports removing a layer from the model", async () => {
     model = await createMapModel("foo", {
         layers: [
-            {
+            new SimpleLayerModel({
                 id: "l-1",
                 title: "OSM",
                 olLayer: new TileLayer({
                     source: new OSM()
                 })
-            }
+            })
         ]
     });
 
@@ -343,22 +343,22 @@ describe("base layers", () => {
     it("supports configuration and manipulation of base layers", async () => {
         model = await createMapModel("foo", {
             layers: [
-                {
+                new SimpleLayerModel({
                     id: "b-1",
                     title: "Base Layer 1",
                     isBaseLayer: true,
                     olLayer: new TileLayer({
                         source: new OSM()
                     })
-                },
-                {
+                }),
+                new SimpleLayerModel({
                     id: "b-2",
                     title: "Base Layer 2",
                     isBaseLayer: true,
                     olLayer: new TileLayer({
                         source: new OSM()
                     })
-                }
+                })
             ]
         });
 
@@ -401,22 +401,22 @@ describe("base layers", () => {
     it("supports removal of base layers", async () => {
         model = await createMapModel("foo", {
             layers: [
-                {
+                new SimpleLayerModel({
                     id: "b-1",
                     title: "Base Layer 1",
                     isBaseLayer: true,
                     olLayer: new TileLayer({
                         source: new OSM()
                     })
-                },
-                {
+                }),
+                new SimpleLayerModel({
                     id: "b-2",
                     title: "Base Layer 2",
                     isBaseLayer: true,
                     olLayer: new TileLayer({
                         source: new OSM()
                     })
-                }
+                })
             ]
         });
 

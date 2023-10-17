@@ -3,7 +3,7 @@
 import type { EventSource } from "@open-pioneer/core";
 import type OlMap from "ol/Map";
 import type OlBaseLayer from "ol/layer/Base";
-import type { ExtentConfig, SimpleLayerConfig } from "./config";
+import type { ExtentConfig } from "./MapConfig";
 import type { LayerModel, LayerModelBase } from "./layers";
 import type { LayerRetrievalOptions } from "./shared";
 
@@ -93,13 +93,13 @@ export interface LayerCollection extends EventSource<LayerCollectionEvents> {
     activateBaseLayer(id: string | undefined): boolean;
 
     /**
-     * Adds a new layer model to the map and returns it.
+     * Adds a new layer model to the map.
      *
      * The new layer model is automatically registered with this collection.
      *
      * NOTE: by default, the new layer will be shown on _top_ of all existing layers.
      */
-    addLayer(layer: SimpleLayerConfig | LayerModel): LayerModel;
+    addLayer(layer: LayerModel): void;
 
     /**
      * Returns all operational layers.
@@ -127,5 +127,5 @@ export interface LayerCollection extends EventSource<LayerCollectionEvents> {
      * Given a raw OpenLayers layer instance, returns the associated {@link LayerModel} - or undefined
      * if the layer is unknown to this collection.
      */
-    getLayerByRawInstance(layer: OlBaseLayer): LayerModel | undefined;
+    getLayerByRawInstance(olLayer: OlBaseLayer): LayerModel | undefined;
 }

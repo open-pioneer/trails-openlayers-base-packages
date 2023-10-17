@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-import { MapConfig, MapConfigProvider } from "@open-pioneer/map";
+import { MapConfig, MapConfigProvider, SimpleLayerModel } from "@open-pioneer/map";
 import { createVectorSource } from "@open-pioneer/ogc-features";
 import TileLayer from "ol/layer/Tile";
 import VectorLayer from "ol/layer/Vector";
@@ -21,15 +21,15 @@ export class MapConfigProviderImpl implements MapConfigProvider {
             },
             projection: "EPSG:25832",
             layers: [
-                {
+                new SimpleLayerModel({
                     title: "OSM",
                     visible: true,
                     isBaseLayer: true,
                     olLayer: new TileLayer({
                         source: new OSM()
                     })
-                },
-                {
+                }),
+                new SimpleLayerModel({
                     id: "inspire-us-kindergarten",
                     title: "Kindertageseinrichtungen in NRW",
                     visible: true,
@@ -48,8 +48,8 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                                 "<a href='https://www.govdata.de/dl-de/by-2-0'>Datenlizenz Deutschland - Namensnennung - Version 2.0</a>"
                         })
                     })
-                },
-                {
+                }),
+                new SimpleLayerModel({
                     id: "ogc_katasterbezirk",
                     title: "Liegenschaftskatasterbezirke in NRW (viele Daten)",
                     visible: false,
@@ -62,7 +62,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                                 "<a href='https://www.govdata.de/dl-de/by-2-0'>Datenlizenz Deutschland - Namensnennung - Version 2.0</a>"
                         })
                     })
-                }
+                })
             ]
         };
     }

@@ -4,7 +4,6 @@
 
 -   Readme for API concepts
 -   \_\_\_Model Suffix?
--   layer -> olLayer / rawOlLayer
 -   Tiling/Single Image WMS
 
 This package provides a map container component to integrate an [OpenLayers](https://openlayers.org/) map.
@@ -196,7 +195,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
 
 #### Layer configuration
 
-Configure your custom layer inside the [Map configuration](#md:map-configuration) by using the OpenLayers [`Layer`](https://openlayers.org/en/latest/apidoc/module-ol_layer_Layer-Layer.html) as `layer` property.
+Configure your custom layer inside the [Map configuration](#md:map-configuration) by using the OpenLayers [`Layer`](https://openlayers.org/en/latest/apidoc/module-ol_layer_Layer-Layer.html) as `olLayer` property.
 
 > **Layer Order**
 >
@@ -209,7 +208,7 @@ Example: Implementation of a layer configuration.
 
 ```ts
 // YOUR-APP/MapConfigProviderImpl.ts
-import { MapConfig, MapConfigProvider } from "@open-pioneer/map";
+import { MapConfig, MapConfigProvider, SimpleLayerModel } from "@open-pioneer/map";
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
 
@@ -217,18 +216,18 @@ export class MapConfigProviderImpl implements MapConfigProvider {
     async getMapConfig(): Promise<MapConfig> {
         return {
             layers: [
-                {
+                new SimpleLayerModel({
                     // minimal layer configuration
                     title: "OSM",
-                    layer: new TileLayer({
+                    olLayer: new TileLayer({
                         source: new OSM()
                     })
-                },
-                {
+                }),
+                new SimpleLayerModel({
                     // layer configuration with optional properties
                     id: "abe0e3f8-0ba2-409c-b6b4-9d8429c732e3",
                     title: "OSM with UUID",
-                    layer: new TileLayer({
+                    olLayer: new TileLayer({
                         source: new OSM()
                     }),
                     attributes: {
@@ -237,7 +236,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     description: "additional description",
                     isBaseLayer: false,
                     visible: false
-                }
+                })
             ]
         };
     }
@@ -302,7 +301,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
             },
             projection: "EPSG:31466",
             layers: [
-                {
+                new SimpleLayerModel({
                     id: "topplus_open",
                     title: "TopPlus Open",
                     isBaseLayer: true,
@@ -310,7 +309,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     layer: new TileLayer({
                         source: createWMTSSource("web")
                     })
-                }
+                })
             ]
         };
     }
@@ -401,14 +400,14 @@ const wmtsOptions = optionsFromCapabilities(wmtsResult, {
 });
 
 if (wmtsOptions) {
-    mapModel.layers.createLayer({
+    mapModel.layers.addLayer(new SimpleLayerModel({
         id: "topplus_open_optionsFromCapabilities",
         title: "TopPlus Open - created with optionsFromCapabilities()",
         visible: false,
         layer: new TileLayer({
             source: new WMTS(wmtsOptions)
         })
-    });
+    }));
 }
 ```
 
@@ -439,7 +438,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
             },
             projection: "EPSG:25832",
             layers: [
-                {
+                new SimpleLayerModel({
                     title: "Schulstandorte",
                     visible: true,
                     layer: new ImageLayer({
@@ -449,7 +448,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                             ratio: 1 //Ratio. 1 means image requests are the size of the map viewport
                         })
                     })
-                }
+                })
             ]
         };
     }

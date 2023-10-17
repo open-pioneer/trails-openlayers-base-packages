@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-import { MapConfig, MapConfigProvider, WMSLayerModel } from "@open-pioneer/map";
+import { MapConfig, MapConfigProvider, SimpleLayerModel, WMSLayerModel } from "@open-pioneer/map";
 import GeoJSON from "ol/format/GeoJSON";
 import TileLayer from "ol/layer/Tile";
 import VectorLayer from "ol/layer/Vector";
@@ -23,45 +23,45 @@ export class MapConfigProviderImpl implements MapConfigProvider {
             },
             projection: "EPSG:25832",
             layers: [
-                {
+                new SimpleLayerModel({
                     id: "topplus_open",
                     title: "TopPlus Open",
                     isBaseLayer: true,
                     visible: true,
                     olLayer: createTopsPlusLayer("web")
-                },
-                {
+                }),
+                new SimpleLayerModel({
                     id: "topplus_open_grau",
                     title: "TopPlus Open (Grau)",
                     isBaseLayer: true,
                     visible: false,
                     olLayer: createTopsPlusLayer("web_grau")
-                },
-                {
+                }),
+                new SimpleLayerModel({
                     id: "topplus_open_light",
                     title: "TopPlus Open (Light)",
                     isBaseLayer: true,
                     visible: false,
                     olLayer: createTopsPlusLayer("web_light")
-                },
-                {
+                }),
+                new SimpleLayerModel({
                     title: "OSM",
                     visible: false,
                     isBaseLayer: true,
                     olLayer: new TileLayer({
                         source: new OSM()
                     })
-                },
-                {
+                }),
+                new SimpleLayerModel({
                     title: "Haltestellen Stadt Rostock",
                     visible: true,
                     olLayer: createHaltestellenLayer()
-                },
-                {
+                }),
+                new SimpleLayerModel({
                     title: "Kindertagesstätten",
                     visible: true,
                     olLayer: createKitasLayer()
-                },
+                }),
                 createSchulenLayer(),
                 createStrassenLayer()
             ]
