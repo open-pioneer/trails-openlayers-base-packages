@@ -1,13 +1,14 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
 import { Measurement } from "@open-pioneer/measurement";
-import { Box, Flex, IconButton } from "@open-pioneer/chakra-integration";
+import { Box, Flex, Button, Tooltip } from "@open-pioneer/chakra-integration";
 import { MapAnchor, MapContainer } from "@open-pioneer/map";
 import { MAP_ID } from "./MapConfigProviderImpl";
-import { EditIcon } from "@chakra-ui/icons";
 import { useState } from "react";
 import { useIntl } from "open-pioneer:react-hooks";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
+import { FiEdit, FiEdit2 } from "react-icons/fi";
+
 export function AppUI() {
     const intl = useIntl();
     const [measurementIsActive, setMeasurementIsActive] = useState<boolean>(false);
@@ -53,12 +54,21 @@ export function AppUI() {
                             ""
                         )}
                         <MapAnchor position="bottom-right" horizontalGap={10} verticalGap={30}>
-                            <IconButton
-                                margin={1} // need some space for the keyboard focus highlight
-                                onClick={activateMeasurement}
-                                aria-label="Search database"
-                                icon={<EditIcon />}
-                            />
+                            <Flex direction={"column"} gap={1} padding={1}>
+                                <Tooltip
+                                    label={intl.formatMessage({ id: "title" })}
+                                    placement="auto"
+                                    openDelay={500}
+                                >
+                                    <Button
+                                        aria-label={intl.formatMessage({ id: "title" })}
+                                        leftIcon={measurementIsActive ? <FiEdit2 /> : <FiEdit />}
+                                        onClick={activateMeasurement}
+                                        iconSpacing={0}
+                                        padding={0}
+                                    />
+                                </Tooltip>
+                            </Flex>
                         </MapAnchor>
                     </MapContainer>
                 </Flex>

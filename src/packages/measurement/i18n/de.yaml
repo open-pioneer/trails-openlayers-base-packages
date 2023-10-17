@@ -3,8 +3,6 @@ messages:
   distance: "Strecke"
   area: "Fläche"
   deleteMeasurementLabel: "Messungen löschen"
-
-  # TODO wording
   tooltips:
     help: "Klicken, um mit dem Zeichnen anzufangen"
     continue: "Klicken, um mit dem Zeichnen fortzufahren"
