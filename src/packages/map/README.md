@@ -259,7 +259,7 @@ layer.deleteAttribute("foo");
 > NOTE: The visibility of base layers cannot be changed through the method `setVisible`.
 > Call `activateBaseLayer` instead.
 
-##### WMTS configuration
+##### WMTS
 
 To create a layer configuration for an OGC Web Map Tile Service (WMTS), you can use two configuration approaches:
 
@@ -407,11 +407,11 @@ if (wmtsOptions) {
 
 > Note: To avoid adding layers twice (or error messages), check against the layer id with `getLayerById()`.
 
-##### WMS configuration
+##### WMS
 
-To create a layer configuration for an OGC Web Map Service (WMS), you can use the following configuration approache:
+To create a layer configuration for an OGC Web Map Service (WMS), you can use the following configuration approach:
 
-Example: Create WMS layer configuration.
+Example: Create WMS layer configuration
 
 ```ts
 // YOUR-APP/MapConfigProviderImpl.ts
