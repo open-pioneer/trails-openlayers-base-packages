@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0
 import type { EventSource } from "@open-pioneer/core";
 import type OlBaseLayer from "ol/layer/Base";
-import type { MapModel } from "./MapModel";
-import type { LayerRetrievalOptions } from "./shared";
+import type { MapModel } from "../MapModel";
+import type { LayerRetrievalOptions } from "../shared";
 
 /** Events emitted by the {@link LayerModel} and other layer types. */
 export interface LayerModelBaseEvents {
@@ -194,6 +194,3 @@ export interface SublayersCollection extends EventSource<SublayersCollectionEven
      */
     getSublayers(options?: LayerRetrievalOptions): SublayerModel[];
 }
-
-export * from "./layers/SimpleLayer";
-export * from "./layers/WMSLayer";

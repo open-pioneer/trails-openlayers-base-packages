@@ -19,7 +19,7 @@ To use the map in your app, follow these two steps:
 > IMPORTANT: The package uses a map model and layer model to internally handle the states of the map and layers. This is needed to support additional features like base layers.
 > For this reason, always use the methods provided by these models to manage the following features on map and layers (instead of using the raw OpenLayers instances directly):
 >
-> -   Map composition (access and configuration of layers, base layers, removing layers)
+> -   Map composition (access and configuration of layers, base layers, adding or removing layers, sublayers, etc.)
 > -   Layer visibility
 > -   Custom layer metadata (`attributes`)
 >

@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-import { SimpleLayerImpl } from "../../model/layers/SimpleLayerImpl";
-import { LayerConfig, LayerModel } from "../layers";
 import type OlBaseLayer from "ol/layer/Base";
+import { LayerConfig, LayerModel } from "./base";
+import { SimpleLayerImpl } from "../../model/layers/SimpleLayerImpl";
 
 /**
  * Options to construct a simple layer.
