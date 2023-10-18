@@ -259,9 +259,14 @@ layer.deleteAttribute("foo");
 > NOTE: The visibility of base layers cannot be changed through the method `setVisible`.
 > Call `activateBaseLayer` instead.
 
-##### WMTS
+##### OGC API Features
 
-To create a layer configuration for an OGC Web Map Tile Service (WMTS), you can use two configuration approaches:
+To create an OGC API Features layer, use the `ogc-features` package.
+Details about the necessary steps are described in the package's [README](../ogc-features/README.md) file.
+
+##### OGC Web Map Tile Service (WMTS)
+
+To create a layer configuration for a WMTS, use one of the following configuration approaches:
 
 1. Predefine options
 2. Request options from the services capabilities (see [OpenLayers API](https://openlayers.org/en/latest/apidoc/module-ol_source_WMTS.html#.optionsFromCapabilities))
@@ -407,9 +412,9 @@ if (wmtsOptions) {
 
 > Note: To avoid adding layers twice (or error messages), check against the layer id with `getLayerById()`.
 
-##### WMS
+##### OGC Web Map Service (WMS)
 
-To create a layer configuration for an OGC Web Map Service (WMS), you can use the following configuration approach:
+To create a layer configuration for a WMS, use the following configuration approach:
 
 Example: Create WMS layer configuration
 
