@@ -7,11 +7,101 @@ import { MeasurementController } from "./MeasurementController";
 import OlMap from "ol/Map";
 import { Interaction } from "ol/interaction";
 import Draw from "ol/interaction/Draw";
+import Feature from "ol/Feature";
+import LineString from "ol/geom/LineString";
+import VectorLayer from "ol/layer/Vector";
+import VectorSource from "ol/source/Vector";
 
 it("should successfully start measurement, and activate or deactivate draw interaction", async () => {
     const selectedMeasurement = "distance";
 
     const olMap = new OlMap();
+    const intl = getIntl();
+
+    const controller = new MeasurementController(olMap, intl);
+
+    controller.startMeasurement(selectedMeasurement);
+    let drawActivated = drawInteractionActivated(olMap);
+    expect(drawActivated).toBe(true);
+
+    controller.stopMeasurement();
+    drawActivated = drawInteractionActivated(olMap);
+    expect(drawActivated).toBe(false);
+});
+it("should add geometry on dispatching drawstart and drawend events", async () => {
+    const selectedMeasurement = "distance";
+
+    const olMap = new OlMap();
+    const intl = getIntl();
+
+    const controller = new MeasurementController(olMap, intl);
+    controller.startMeasurement(selectedMeasurement);
+
+    const interactions = olMap.getInteractions().getArray();
+    const draw = interactions?.find((interaction: Interaction) => interaction instanceof Draw) as
+        | Draw
+        | undefined;
+    const layers = olMap.getLayers()?.getArray();
+    if (layers?.length != 1) {
+        throw new Error("number of added layers is not right. length: " + layers?.length);
+    }
+
+    const layer = layers[0] as VectorLayer<VectorSource>;
+    const feature = new Feature(new LineString([[851873.959638, 6788406.37108]]));
+
+    /* this initiates draw mode. It will dispatch a drawstart event. */
+    draw?.extend(feature);
+
+    /* Stop drawing and add the sketch feature to the target layer. 
+        drawend event is dispatched before inserting the feature.
+    */
+    draw?.finishDrawing();
+
+    const drawnGeometry = layer?.getSource()?.getFeatures()[0]?.getGeometry();
+
+    expect(drawnGeometry).toBeDefined();
+    expect(drawnGeometry).toBeInstanceOf(LineString);
+
+    controller.stopMeasurement();
+});
+
+it("should show active tooltip on draw start and finished tooltip on draw end", async () => {
+    const selectedMeasurement = "distance";
+
+    const olMap = new OlMap();
+    const intl = getIntl();
+
+    const controller = new MeasurementController(olMap, intl);
+    controller.startMeasurement(selectedMeasurement);
+
+    const interactions = olMap.getInteractions().getArray();
+    const draw = interactions?.find((interaction: Interaction) => interaction instanceof Draw) as
+        | Draw
+        | undefined;
+
+    const feature = new Feature(new LineString([[851873.959638, 6788406.37108]]));
+    draw?.extend(feature);
+    const activeTooltip = getTooltipElement(olMap, "active-tooltip");
+
+    expect(activeTooltip).toBeDefined();
+    expect(activeTooltip).toBeInstanceOf(HTMLElement);
+
+    draw?.finishDrawing();
+    const finishedTooltip = getTooltipElement(olMap, "finished-tooltip");
+
+    expect(finishedTooltip).toBeDefined();
+    expect(finishedTooltip).toBeInstanceOf(HTMLElement);
+
+    controller.stopMeasurement();
+});
+
+function drawInteractionActivated(olMap: OlMap) {
+    const interactions = olMap.getInteractions().getArray();
+    const draw = interactions?.find((interaction: Interaction) => interaction instanceof Draw);
+    return draw?.getActive() || false;
+}
+
+function getIntl() {
     const locale = "en";
     const defaultMessageLocale = "en";
     const cache = createIntlCache();
@@ -19,7 +109,7 @@ it("should successfully start measurement, and activate or deactivate draw inter
         "tooltips.continue": "Click to continue drawing",
         "tooltips.help": "Click to start drawing"
     };
-    const intl = createIntl(
+    return createIntl(
         {
             locale,
             defaultLocale: defaultMessageLocale,
@@ -33,20 +123,17 @@ it("should successfully start measurement, and activate or deactivate draw inter
         },
         cache
     );
+}
 
-    const controller = new MeasurementController(olMap, intl);
-
-    controller.startMeasurement(selectedMeasurement);
-    let drawActivated = drawInteractionActivated(olMap);
-    expect(drawActivated).toBe(true);
-
-    controller.stopMeasurement();
-    drawActivated = drawInteractionActivated(olMap);
-    expect(drawActivated).toBe(false);
-});
-
-function drawInteractionActivated(olMap: OlMap) {
-    const interactions = olMap.getInteractions().getArray();
-    const draw = interactions?.find((interaction: Interaction) => interaction instanceof Draw);
-    return draw?.getActive() || false;
+function getTooltipElement(olMap: OlMap, className: string) {
+    let element;
+    olMap
+        .getOverlays()
+        .getArray()
+        .forEach((ol) => {
+            if (ol.getElement()?.classList.contains(className)) {
+                element = ol.getElement() as HTMLElement;
+            }
+        });
+    return element;
 }
