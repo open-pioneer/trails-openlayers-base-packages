@@ -1,5 +1,5 @@
 {
-    "name": "@open-pioneer/initial-extent",
+    "name": "@open-pioneer/map-navigation",
     "version": "0.0.1",
     "license": "Apache-2.0",
     "main": "index.ts",
@@ -11,6 +11,7 @@
         "@open-pioneer/map": "workspace:^",
         "@open-pioneer/react-utils": "workspace:^",
         "@open-pioneer/runtime": "^1.1.0",
+        "classnames": "^2.3.2",
         "ol": "^8.1.0",
         "react": "^18.2.0",
         "react-icons": "4.8.0"

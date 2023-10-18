@@ -1,17 +1,14 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
 import { Box, Flex } from "@open-pioneer/chakra-integration";
-import { CoordinateViewer } from "@open-pioneer/coordinate-viewer";
-import { InitialExtent, ZoomIn, ZoomOut } from "@open-pioneer/map-navigation";
 import { MapAnchor, MapContainer } from "@open-pioneer/map";
-import { ScaleViewer } from "@open-pioneer/scale-viewer";
+import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { Toc } from "@open-pioneer/toc";
-import { ScaleComponent } from "map-sample-scale-component";
+import { ZoomIn, ZoomOut, InitialExtent } from "@open-pioneer/map-navigation";
 import { useIntl } from "open-pioneer:react-hooks";
 import { MAP_ID } from "./MapConfigProviderImpl";
-import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 
-export function AppUI() {
+export function MapApp() {
     const intl = useIntl();
 
     return (
@@ -20,7 +17,7 @@ export function AppUI() {
                 title={
                     <Box textAlign="center" py={1}>
                         <SectionHeading size={"md"}>
-                            OpenLayers Base Packages - Default Sample
+                            Open Pioneer - OGC-Feature-Sample
                         </SectionHeading>
                     </Box>
                 }
@@ -59,11 +56,6 @@ export function AppUI() {
                             </Flex>
                         </MapAnchor>
                     </MapContainer>
-                </Flex>
-                <Flex gap={3} alignItems="center" justifyContent="center">
-                    <CoordinateViewer mapId={MAP_ID} precision={2} />
-                    <ScaleComponent mapId={MAP_ID} />
-                    <ScaleViewer mapId={MAP_ID} />
                 </Flex>
             </TitledSection>
         </Flex>
