@@ -1,11 +1,27 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-import { Checkbox, List, ListItem, Text } from "@open-pioneer/chakra-integration";
+import {
+    Checkbox,
+    List,
+    ListItem,
+    Text,
+    Flex,
+    Popover,
+    PopoverTrigger,
+    PopoverContent,
+    PopoverHeader,
+    PopoverBody,
+    Portal,
+    Button,
+    PopoverArrow,
+    PopoverCloseButton
+} from "@open-pioneer/chakra-integration";
 import { LayerModel, MapModel } from "@open-pioneer/map";
 import LayerGroup from "ol/layer/Group";
 import { useCallback, useRef, useSyncExternalStore } from "react";
 import classNames from "classnames";
 import { useIntl } from "open-pioneer:react-hooks";
+import { FiMoreVertical } from "react-icons/fi";
 
 /**
  * Lists the (top level) operational layers in the map.
@@ -44,14 +60,60 @@ function LayerItem(props: { layer: LayerModel }): JSX.Element {
     const { layer } = props;
     const title = useTitle(layer);
     const { isVisible, setVisible } = useVisibility(layer);
+    return (
+        <Flex pt={1} flexDirection="row" align={"center"} justifyContent="space-between">
+            <ListItem
+                width={"100%"}
+                className={classNames("toc-layer-list-entry", `layer-${slug(layer.id)}`)}
+            >
+                <Checkbox
+                    isChecked={isVisible}
+                    onChange={(event) => setVisible(event.target.checked)}
+                >
+                    {title}
+                </Checkbox>
+            </ListItem>
+            {layer.description && <LayerItemDescriptor layer={layer} title={title} />}
+        </Flex>
+    );
+}
+function LayerItemDescriptor(props: { layer: LayerModel; title: string }): JSX.Element {
+    const { layer, title } = props;
+    const description = useLayerDescription(layer);
 
     return (
-        <ListItem className={classNames("toc-layer-list-entry", `layer-${slug(layer.id)}`)}>
-            <Checkbox isChecked={isVisible} onChange={(event) => setVisible(event.target.checked)}>
-                {title}
-            </Checkbox>
-        </ListItem>
+        <Popover>
+            <PopoverTrigger>
+                <Button
+                    _hover={{ borderRadius: "full" }}
+                    iconSpacing={0}
+                    padding={0}
+                    variant="ghost"
+                    leftIcon={<FiMoreVertical />}
+                />
+            </PopoverTrigger>
+            <Portal>
+                <PopoverContent>
+                    <PopoverArrow />
+                    <PopoverCloseButton />
+                    <PopoverHeader>{title}</PopoverHeader>
+                    <PopoverBody>{description}</PopoverBody>
+                </PopoverContent>
+            </Portal>
+        </Popover>
     );
+}
+
+function useLayerDescription(layer: LayerModel): string {
+    const getSnapshot = useCallback(() => layer.description, [layer]);
+    const subscribe = useCallback(
+        (cb: () => void) => {
+            const resource = layer.on("changed:description", cb);
+            return () => resource.destroy();
+        },
+        [layer]
+    );
+    return useSyncExternalStore(subscribe, getSnapshot);
 }
 
 /** Returns the layers current title. */

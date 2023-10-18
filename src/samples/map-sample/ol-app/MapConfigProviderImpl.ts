@@ -57,6 +57,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                 {
                     title: "Haltestellen Stadt Rostock",
                     visible: true,
+                    description: "test description for layer xy",
                     layer: createHaltestellenLayer()
                 },
                 {
@@ -67,6 +68,8 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                 {
                     title: "Schulstandorte",
                     visible: true,
+                    description: `Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nulla hic dolorem vel quo quisquam! Mollitia non doloribus minima soluta, accusantium dicta? Incidunt ea eum pariatur reprehenderit accusamus obcaecati architecto debitis!
+                    `,
                     layer: createSchulenLayer()
                 }
             ]
