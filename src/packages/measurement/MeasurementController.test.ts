@@ -81,13 +81,13 @@ it("should show active tooltip on draw start and finished tooltip on draw end", 
 
     const feature = new Feature(new LineString([[851873.959638, 6788406.37108]]));
     draw?.extend(feature);
-    const activeTooltip = getTooltipElement(olMap, "active-tooltip");
+    const activeTooltip = getTooltipElement(olMap, "measurement-active-tooltip");
 
     expect(activeTooltip).toBeDefined();
     expect(activeTooltip).toBeInstanceOf(HTMLElement);
 
     draw?.finishDrawing();
-    const finishedTooltip = getTooltipElement(olMap, "finished-tooltip");
+    const finishedTooltip = getTooltipElement(olMap, "measurement-finished-tooltip");
 
     expect(finishedTooltip).toBeDefined();
     expect(finishedTooltip).toBeInstanceOf(HTMLElement);

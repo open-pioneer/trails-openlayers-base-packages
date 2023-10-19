@@ -11,16 +11,16 @@
     user-select: none;
     font-weight: bold;
 }
-.active-tooltip {
+.measurement-active-tooltip {
     opacity: 1;
 }
-.finished-tooltip {
+.measurement-finished-tooltip {
     background-color: #ffcc33;
     color: black;
     border: 1px solid white;
 }
-.active-tooltip:before,
-.finished-tooltip:before {
+.measurement-active-tooltip:before,
+.measurement-finished-tooltip:before {
     border-top: 6px solid rgba(0, 0, 0, 0.5);
     border-right: 6px solid transparent;
     border-left: 6px solid transparent;
@@ -30,6 +30,6 @@
     margin-left: -7px;
     left: 50%;
 }
-.finished-tooltip:before {
+.measurement-finished-tooltip:before {
     border-top-color: #ffcc33;
 }
