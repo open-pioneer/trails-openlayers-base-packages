@@ -12,7 +12,9 @@
         "@open-pioneer/runtime": "^1.1.0",
         "@open-pioneer/react-utils": "workspace:^",
         "@open-pioneer/core": "^1.1.0",
+        "ol": "^8.1.0",
         "react": "^18.2.0",
+        "react-icons": "4.8.0",
         "classnames": "^2.3.2"
     },
     "devDependencies": {
