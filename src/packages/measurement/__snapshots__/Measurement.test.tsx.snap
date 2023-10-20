@@ -69,7 +69,7 @@ exports[`should successfully create a measurement component 1`] = `
       </div>
     </div>
     <button
-      class="chakra-button delete-measurements css-14p1tvq"
+      class="chakra-button measurment-delete-button css-14p1tvq"
       data-theme="light"
       type="button"
     >
@@ -148,7 +148,7 @@ exports[`should successfully create a measurement component with additional css 
       </div>
     </div>
     <button
-      class="chakra-button delete-measurements css-14p1tvq"
+      class="chakra-button measurment-delete-button css-14p1tvq"
       data-theme="light"
       type="button"
     >
