@@ -21,6 +21,7 @@ import LayerGroup from "ol/layer/Group";
 import { useCallback, useRef, useSyncExternalStore } from "react";
 import classNames from "classnames";
 import { useIntl } from "open-pioneer:react-hooks";
+import { PackageIntl } from "@open-pioneer/runtime";
 import { FiMoreVertical } from "react-icons/fi";
 
 /**
@@ -32,7 +33,9 @@ export function LayerList(props: { map: MapModel; "aria-labelledby"?: string }):
     const { map, "aria-labelledby": ariaLabelledBy } = props;
     const intl = useIntl();
     const layers = useLayers(map);
-    const layerItems = layers.map((layer) => <LayerItem key={layer.id} layer={layer} />);
+    const layerItems = layers.map((layer) => (
+        <LayerItem key={layer.id} layer={layer} intl={intl} />
+    ));
 
     if (!layerItems.length) {
         return (
@@ -56,12 +59,12 @@ export function LayerList(props: { map: MapModel; "aria-labelledby"?: string }):
 }
 
 /** Renders a single layer as a list item. */
-function LayerItem(props: { layer: LayerModel }): JSX.Element {
-    const { layer } = props;
+function LayerItem(props: { layer: LayerModel; intl: PackageIntl }): JSX.Element {
+    const { layer, intl } = props;
     const title = useTitle(layer);
     const { isVisible, setVisible } = useVisibility(layer);
     return (
-        <Flex pt={1} flexDirection="row" align={"center"} justifyContent="space-between">
+        <Flex flexDirection="row" align={"center"} justifyContent="space-between">
             <ListItem
                 width={"100%"}
                 className={classNames("toc-layer-list-entry", `layer-${slug(layer.id)}`)}
@@ -73,18 +76,24 @@ function LayerItem(props: { layer: LayerModel }): JSX.Element {
                     {title}
                 </Checkbox>
             </ListItem>
-            {layer.description && <LayerItemDescriptor layer={layer} title={title} />}
+            {layer.description && <LayerItemDescriptor layer={layer} title={title} intl={intl} />}
         </Flex>
     );
 }
-function LayerItemDescriptor(props: { layer: LayerModel; title: string }): JSX.Element {
-    const { layer, title } = props;
+function LayerItemDescriptor(props: {
+    layer: LayerModel;
+    title: string;
+    intl: PackageIntl;
+}): JSX.Element {
+    const { layer, title, intl } = props;
+    const buttonLabel = intl.formatMessage({ id: "descriptionLabel" });
     const description = useLayerDescription(layer);
 
     return (
         <Popover>
             <PopoverTrigger>
                 <Button
+                    aria-label={buttonLabel}
                     _hover={{ borderRadius: "full" }}
                     iconSpacing={0}
                     padding={0}
