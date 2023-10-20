@@ -22,8 +22,8 @@
 3. All automated tests pass.
 4. Features can be demonstrated on the demo deployment.
 5. Applicable guidelines have been checked:
-    - [UI Guidelines](UIGuidelines.md)
-    - [Accessibility guidelines](A11yGuidelines.md)
+    - [UI Guidelines](UI.md)
+    - [Accessibility guidelines](A11y.md)
 6. Packages are translated in english and german.
 7. Important design decisions or non-obvious things to keep in mind
    have been documented in internal dev notes or comments.
