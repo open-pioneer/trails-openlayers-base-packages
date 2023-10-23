@@ -10,6 +10,12 @@ exports[`should successfully create a measurement component 1`] = `
     class="measurement-content css-1syq16t"
     data-theme="light"
   >
+    <p
+      class="chakra-text css-bxak8j"
+      data-theme="light"
+    >
+      measurementInfoText
+    </p>
     <div
       class="chakra-form-control css-1m7igkt"
       data-theme="light"
@@ -89,6 +95,12 @@ exports[`should successfully create a measurement component with additional css 
     class="measurement-content css-1syq16t"
     data-theme="light"
   >
+    <p
+      class="chakra-text css-bxak8j"
+      data-theme="light"
+    >
+      measurementInfoText
+    </p>
     <div
       class="chakra-form-control css-1m7igkt"
       data-theme="light"

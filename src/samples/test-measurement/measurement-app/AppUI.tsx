@@ -24,9 +24,7 @@ export function AppUI() {
             <TitledSection
                 title={
                     <Box textAlign="center" py={1}>
-                        <SectionHeading size={"md"}>
-                            OpenLayers Base Packages - Measurement
-                        </SectionHeading>
+                        <SectionHeading size={"md"}>Messen</SectionHeading>
                     </Box>
                 }
             >

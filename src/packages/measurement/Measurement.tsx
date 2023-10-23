@@ -7,7 +7,8 @@ import {
     FormControl,
     FormLabel,
     HStack,
-    Select
+    Select,
+    Text
 } from "@open-pioneer/chakra-integration";
 import { useMapModel } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
@@ -97,6 +98,7 @@ export const Measurement: FC<MeasurementProps> = (props) => {
     return (
         <Box {...containerProps}>
             <Box className="measurement-content" padding={2}>
+                <Text mb={2}>{intl.formatMessage({ id: "measurementInfoText" })}</Text>
                 <FormControl mb={4} alignItems="center">
                     <HStack mb={2}>
                         <FormLabel mb={1}>{label("measurementLabel")}</FormLabel>

@@ -1,8 +1,9 @@
 messages:
-  measurementLabel: "Geometry"
+  measurementLabel: "Mode"
   distance: "Distance"
   area: "Area"
   deleteMeasurementLabel: "Delete measurements"
+  measurementInfoText: "Measuring is active. You can select the mode or start a measurement by clicking on the map."
   tooltips:
-    help: "Click to start drawing"
-    continue: "Click to continue drawing"
+    help: "Click to start measuring."
+    continue: "Click to continue measuring."
