@@ -14,6 +14,9 @@ import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/rea
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, useEffect, useState } from "react";
 import { MeasurementController, MeasurementType } from "./MeasurementController";
+import { Style } from "ol/style";
+import { StyleLike } from "ol/style/Style";
+import { FlatStyleLike } from "ol/style/flat";
 
 /**
  * This is for special properties of the Measurement.
@@ -23,6 +26,16 @@ export interface MeasurementProps extends CommonComponentProps {
      * The id of the map.
      */
     mapId: string;
+
+    /**
+     * style for the active drawing feature's geometry
+     */
+    activeFeatureStyle: Style;
+
+    /**
+     * style for the finished feature's geometry
+     */
+    finishedFeatureStyle: StyleLike | FlatStyleLike;
 }
 
 /**
@@ -31,7 +44,7 @@ export interface MeasurementProps extends CommonComponentProps {
 export const Measurement: FC<MeasurementProps> = (props) => {
     const intl = useIntl();
 
-    const { mapId } = props;
+    const { mapId, activeFeatureStyle, finishedFeatureStyle } = props;
     const { containerProps } = useCommonComponentProps("measurement", props);
     const [selectedMeasurement, setMeasurement] = useState<MeasurementType>("distance");
     const label = (id: string) => intl.formatMessage({ id: id });
@@ -44,12 +57,18 @@ export const Measurement: FC<MeasurementProps> = (props) => {
             return;
         }
 
-        const controller = new MeasurementController(map.olMap, intl);
+        const controller = new MeasurementController(
+            map.olMap,
+            intl,
+            activeFeatureStyle,
+            finishedFeatureStyle
+        );
         setController(controller);
         return () => {
             controller.destroy();
             setController(undefined);
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [map, intl]);
 
     useEffect(() => {

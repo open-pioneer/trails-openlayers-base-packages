@@ -9,6 +9,7 @@ import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
 import Draw from "ol/interaction/Draw";
 import { Interaction } from "ol/interaction";
 import OlMap from "ol/Map";
+import { Circle as CircleStyle, Fill, Stroke, Style } from "ol/style";
 
 it("should successfully create a measurement component", async () => {
     const { mapId, registry } = await setupMap();
@@ -16,7 +17,12 @@ it("should successfully create a measurement component", async () => {
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
-            <Measurement mapId={mapId} data-testid="measurement"></Measurement>
+            <Measurement
+                mapId={mapId}
+                activeFeatureStyle={getActiveFeatureStyle()}
+                finishedFeatureStyle={getFinishedFeatureStyle()}
+                data-testid="measurement"
+            ></Measurement>
         </PackageContextProvider>
     );
 
@@ -35,7 +41,13 @@ it("should successfully create a measurement component with additional css class
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
-            <Measurement mapId={mapId} className="test" data-testid="measurement"></Measurement>
+            <Measurement
+                mapId={mapId}
+                activeFeatureStyle={getActiveFeatureStyle()}
+                finishedFeatureStyle={getFinishedFeatureStyle()}
+                className="test"
+                data-testid="measurement"
+            ></Measurement>
         </PackageContextProvider>
     );
 
@@ -53,7 +65,13 @@ it("should successfully select a measurement from the select dropdown", async ()
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
-            <Measurement mapId={mapId} className="test" data-testid="measurement"></Measurement>
+            <Measurement
+                mapId={mapId}
+                activeFeatureStyle={getActiveFeatureStyle()}
+                finishedFeatureStyle={getFinishedFeatureStyle()}
+                className="test"
+                data-testid="measurement"
+            ></Measurement>
         </PackageContextProvider>
     );
 
@@ -78,7 +96,13 @@ it("should successfully add tooltip overlays to the map", async () => {
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
-            <Measurement mapId={mapId} className="test" data-testid="measurement"></Measurement>
+            <Measurement
+                mapId={mapId}
+                activeFeatureStyle={getActiveFeatureStyle()}
+                finishedFeatureStyle={getFinishedFeatureStyle()}
+                className="test"
+                data-testid="measurement"
+            ></Measurement>
         </PackageContextProvider>
     );
 
@@ -107,7 +131,13 @@ it("should successfully activate draw interaction for the right geometry type", 
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
-            <Measurement mapId={mapId} className="test" data-testid="measurement"></Measurement>
+            <Measurement
+                mapId={mapId}
+                activeFeatureStyle={getActiveFeatureStyle()}
+                finishedFeatureStyle={getFinishedFeatureStyle()}
+                className="test"
+                data-testid="measurement"
+            ></Measurement>
         </PackageContextProvider>
     );
 
@@ -160,4 +190,36 @@ function getGeometryType(olMap: OlMap) {
         | undefined;
     const geometryType: string | undefined = (draw as any)?.type_;
     return geometryType;
+}
+
+function getActiveFeatureStyle() {
+    return new Style({
+        fill: new Fill({
+            color: "rgba(255, 255, 255, 0.2)"
+        }),
+        stroke: new Stroke({
+            color: "rgba(0, 0, 0, 0.5)",
+            lineDash: [10, 10],
+            width: 2
+        }),
+        image: new CircleStyle({
+            radius: 5,
+            stroke: new Stroke({
+                color: "rgba(0, 0, 0, 0.7)"
+            }),
+            fill: new Fill({
+                color: "rgba(255, 255, 255, 0.2)"
+            })
+        })
+    });
+}
+
+function getFinishedFeatureStyle() {
+    return {
+        "fill-color": "rgba(255, 255, 255, 0.2)",
+        "stroke-color": "#ffcc33",
+        "stroke-width": 2,
+        "circle-radius": 7,
+        "circle-fill-color": "#ffcc33"
+    };
 }

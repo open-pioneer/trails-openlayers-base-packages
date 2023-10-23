@@ -8,11 +8,13 @@ import { useState } from "react";
 import { useIntl } from "open-pioneer:react-hooks";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { FiEdit, FiEdit2 } from "react-icons/fi";
+import { Circle as CircleStyle, Fill, Stroke, Style } from "ol/style";
 
 export function AppUI() {
     const intl = useIntl();
     const [measurementIsActive, setMeasurementIsActive] = useState<boolean>(false);
-
+    const activeFeatureStyle = getActiveFeatureStyle();
+    const finishedFeatureStyle = getFinishedFeatureStyle();
     function activateMeasurement() {
         setMeasurementIsActive(!measurementIsActive);
     }
@@ -46,7 +48,11 @@ export function AppUI() {
                                             </SectionHeading>
                                         }
                                     >
-                                        <Measurement mapId={MAP_ID}></Measurement>
+                                        <Measurement
+                                            mapId={MAP_ID}
+                                            activeFeatureStyle={activeFeatureStyle}
+                                            finishedFeatureStyle={finishedFeatureStyle}
+                                        ></Measurement>
                                     </TitledSection>
                                 </Box>
                             </MapAnchor>
@@ -75,4 +81,36 @@ export function AppUI() {
             </TitledSection>
         </Flex>
     );
+}
+
+function getActiveFeatureStyle() {
+    return new Style({
+        fill: new Fill({
+            color: "rgba(255, 255, 255, 0.2)"
+        }),
+        stroke: new Stroke({
+            color: "rgba(0, 0, 0, 0.5)",
+            lineDash: [10, 10],
+            width: 2
+        }),
+        image: new CircleStyle({
+            radius: 5,
+            stroke: new Stroke({
+                color: "rgba(0, 0, 0, 0.7)"
+            }),
+            fill: new Fill({
+                color: "rgba(255, 255, 255, 0.2)"
+            })
+        })
+    });
+}
+
+function getFinishedFeatureStyle() {
+    return {
+        "fill-color": "rgba(255, 255, 255, 0.2)",
+        "stroke-color": "#ffcc33",
+        "stroke-width": 2,
+        "circle-radius": 7,
+        "circle-fill-color": "#ffcc33"
+    };
 }

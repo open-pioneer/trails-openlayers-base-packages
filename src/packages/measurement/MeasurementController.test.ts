@@ -11,6 +11,7 @@ import Feature from "ol/Feature";
 import LineString from "ol/geom/LineString";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
+import { Circle as CircleStyle, Fill, Stroke, Style } from "ol/style";
 
 it("should successfully start measurement, and activate or deactivate draw interaction", async () => {
     const selectedMeasurement = "distance";
@@ -18,7 +19,12 @@ it("should successfully start measurement, and activate or deactivate draw inter
     const olMap = new OlMap();
     const intl = getIntl();
 
-    const controller = new MeasurementController(olMap, intl);
+    const controller = new MeasurementController(
+        olMap,
+        intl,
+        getActiveFeatureStyle(),
+        getFinishedFeatureStyle()
+    );
 
     controller.startMeasurement(selectedMeasurement);
     let drawActivated = drawInteractionActivated(olMap);
@@ -34,7 +40,12 @@ it("should add geometry on dispatching drawstart and drawend events", async () =
     const olMap = new OlMap();
     const intl = getIntl();
 
-    const controller = new MeasurementController(olMap, intl);
+    const controller = new MeasurementController(
+        olMap,
+        intl,
+        getActiveFeatureStyle(),
+        getFinishedFeatureStyle()
+    );
     controller.startMeasurement(selectedMeasurement);
 
     const interactions = olMap.getInteractions().getArray();
@@ -71,7 +82,12 @@ it("should show active tooltip on draw start and finished tooltip on draw end", 
     const olMap = new OlMap();
     const intl = getIntl();
 
-    const controller = new MeasurementController(olMap, intl);
+    const controller = new MeasurementController(
+        olMap,
+        intl,
+        getActiveFeatureStyle(),
+        getFinishedFeatureStyle()
+    );
     controller.startMeasurement(selectedMeasurement);
 
     const interactions = olMap.getInteractions().getArray();
@@ -136,4 +152,36 @@ function getTooltipElement(olMap: OlMap, className: string) {
             }
         });
     return element;
+}
+
+function getActiveFeatureStyle() {
+    return new Style({
+        fill: new Fill({
+            color: "rgba(255, 255, 255, 0.2)"
+        }),
+        stroke: new Stroke({
+            color: "rgba(0, 0, 0, 0.5)",
+            lineDash: [10, 10],
+            width: 2
+        }),
+        image: new CircleStyle({
+            radius: 5,
+            stroke: new Stroke({
+                color: "rgba(0, 0, 0, 0.7)"
+            }),
+            fill: new Fill({
+                color: "rgba(255, 255, 255, 0.2)"
+            })
+        })
+    });
+}
+
+function getFinishedFeatureStyle() {
+    return {
+        "fill-color": "rgba(255, 255, 255, 0.2)",
+        "stroke-color": "#ffcc33",
+        "stroke-width": 2,
+        "circle-radius": 7,
+        "circle-fill-color": "#ffcc33"
+    };
 }

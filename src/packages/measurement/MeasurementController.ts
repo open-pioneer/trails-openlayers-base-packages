@@ -14,13 +14,17 @@ import Draw from "ol/interaction/Draw";
 import { Vector as VectorLayer } from "ol/layer";
 import { Vector as VectorSource } from "ol/source";
 import { getArea, getLength } from "ol/sphere";
-import { Circle as CircleStyle, Fill, Stroke, Style } from "ol/style";
+import { Style } from "ol/style";
+import { StyleLike } from "ol/style/Style";
+import { FlatStyleLike } from "ol/style/flat";
 
 export type MeasurementType = "area" | "distance";
 
 export class MeasurementController {
     private intl: PackageIntl;
     private olMap: OlMap;
+    private activeFeatureStyle: Style;
+    private finishedFeatureStyle: StyleLike | FlatStyleLike;
 
     /**
      * The layer rendering the measurement "features".
@@ -62,20 +66,21 @@ export class MeasurementController {
      */
     private resources: Resource[] = [];
 
-    constructor(olMap: OlMap, intl: PackageIntl) {
+    constructor(
+        olMap: OlMap,
+        intl: PackageIntl,
+        activeFeatureStyle: Style,
+        finishedFeatureStyle: StyleLike | FlatStyleLike
+    ) {
         this.olMap = olMap;
         this.intl = intl;
+        this.activeFeatureStyle = activeFeatureStyle;
+        this.finishedFeatureStyle = finishedFeatureStyle;
 
         const source = (this.source = new VectorSource());
         this.layer = new VectorLayer({
             source,
-            style: {
-                "fill-color": "rgba(255, 255, 255, 0.2)",
-                "stroke-color": "#ffcc33",
-                "stroke-width": 2,
-                "circle-radius": 7,
-                "circle-fill-color": "#ffcc33"
-            }
+            style: this.finishedFeatureStyle
         });
         olMap.addLayer(this.layer);
 
@@ -136,7 +141,7 @@ export class MeasurementController {
         }
 
         const geometryType = type === "area" ? "Polygon" : "LineString";
-        const style = getStyle();
+        const style = this.activeFeatureStyle;
         const draw = (this.draw = new Draw({
             source: this.source,
             type: geometryType,
@@ -313,26 +318,4 @@ function formatLength(line: LineString) {
         output = Math.round(length * 100) / 100 + " " + "m";
     }
     return output;
-}
-
-function getStyle() {
-    return new Style({
-        fill: new Fill({
-            color: "rgba(255, 255, 255, 0.2)"
-        }),
-        stroke: new Stroke({
-            color: "rgba(0, 0, 0, 0.5)",
-            lineDash: [10, 10],
-            width: 2
-        }),
-        image: new CircleStyle({
-            radius: 5,
-            stroke: new Stroke({
-                color: "rgba(0, 0, 0, 0.7)"
-            }),
-            fill: new Fill({
-                color: "rgba(255, 255, 255, 0.2)"
-            })
-        })
-    });
 }
