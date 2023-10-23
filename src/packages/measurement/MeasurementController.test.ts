@@ -95,18 +95,18 @@ it("should show active tooltip on draw start and finished tooltip on draw end", 
         | Draw
         | undefined;
 
-    const feature = new Feature(new LineString([[851873.959638, 6788406.37108]]));
+    const lineString = new LineString([[851873.959638, 6788406.37108]]);
+    const feature = new Feature(lineString);
     draw?.extend(feature);
     const activeTooltip = getTooltipElement(olMap, "measurement-active-tooltip");
-
     expect(activeTooltip).toBeDefined();
-    expect(activeTooltip).toBeInstanceOf(HTMLElement);
+
+    lineString.appendCoordinate([851873.959638, 6788406.97408]);
+    expect(activeTooltip?.innerHTML).toMatchInlineSnapshot('"0.37 m"');
 
     draw?.finishDrawing();
     const finishedTooltip = getTooltipElement(olMap, "measurement-finished-tooltip");
-
     expect(finishedTooltip).toBeDefined();
-    expect(finishedTooltip).toBeInstanceOf(HTMLElement);
 
     controller.stopMeasurement();
 });
@@ -141,7 +141,7 @@ function getIntl() {
     );
 }
 
-function getTooltipElement(olMap: OlMap, className: string) {
+function getTooltipElement(olMap: OlMap, className: string): HTMLElement | undefined {
     let element;
     olMap
         .getOverlays()
