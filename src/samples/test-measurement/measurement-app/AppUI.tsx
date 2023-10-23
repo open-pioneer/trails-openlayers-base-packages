@@ -106,11 +106,18 @@ function getActiveFeatureStyle() {
 }
 
 function getFinishedFeatureStyle() {
-    return {
-        "fill-color": "rgba(255, 255, 255, 0.2)",
-        "stroke-color": "#ffcc33",
-        "stroke-width": 2,
-        "circle-radius": 7,
-        "circle-fill-color": "#ffcc33"
-    };
+    return [
+        new Style({
+            stroke: new Stroke({
+                color: "#fff",
+                width: 5
+            })
+        }),
+        new Style({
+            stroke: new Stroke({
+                color: "#0e97fa",
+                width: 3
+            })
+        })
+    ];
 }
