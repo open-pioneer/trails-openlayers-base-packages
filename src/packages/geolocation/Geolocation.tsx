@@ -12,6 +12,9 @@ import { GeolocationController } from "./GeolocationController";
 import { useService } from "open-pioneer:react-hooks";
 import { StyleLike } from "ol/style/Style";
 
+// TODO: Workaround for https://github.com/open-pioneer/trails-build-tools/issues/47
+import {} from "@open-pioneer/notifier";
+
 /**
  * These are special properties for the Geolocation.
  */
