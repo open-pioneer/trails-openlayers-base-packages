@@ -41,6 +41,7 @@
 -   Be strict about TypeScript, especially in public interfaces
 -   Use TODO keyword only for things that are currently in doing, not for things that should be implemented anytime in the future. Exceptional: special usages determined by the team.
 -   If creating a new package that has a name that consists of multiple words, use a dash to connect the words.
+-   If adding own CSS classes, always use the package or component name as a prefix in the class name (seperated using a dash). Example: "<b>measurement-</b>tooltip"
 
 ## Tests
 
