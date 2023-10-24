@@ -10,6 +10,7 @@ import { FC, ForwardedRef, forwardRef, RefAttributes, useEffect, useState } from
 import { MdLocationOn, MdLocationOff } from "react-icons/md";
 import { GeolocationController } from "./GeolocationController";
 import { useService } from "open-pioneer:react-hooks";
+import { StyleLike } from "ol/style/Style";
 
 /**
  * These are special properties for the Geolocation.
@@ -19,6 +20,16 @@ export interface GeolocationProps extends CommonComponentProps, RefAttributes<HT
      * The id of the map.
      */
     mapId: string;
+    /**
+     * Style to be applied for the positioning highlight feature.
+     * Changing style during runtime is not supported.
+     */
+    positionFeatureStyle?: StyleLike;
+    /**
+     * Style to be applied for the accuracy highlight of the positioning feature.
+     * Changing style during runtime is not supported.
+     */
+    accuracyFeatureStyle?: StyleLike;
 }
 
 export const Geolocation: FC<GeolocationProps> = forwardRef(function Geolocation(
@@ -27,7 +38,7 @@ export const Geolocation: FC<GeolocationProps> = forwardRef(function Geolocation
 ) {
     const logger = createLogger("ol-geolocation:" + Geolocation.name);
 
-    const { mapId, ...rest } = props;
+    const { mapId, positionFeatureStyle, accuracyFeatureStyle } = props;
     const { containerProps } = useCommonComponentProps("geolocation", props);
 
     const [isActive, setActive] = useState<boolean>(false);
@@ -42,13 +53,18 @@ export const Geolocation: FC<GeolocationProps> = forwardRef(function Geolocation
         if (!map) {
             return;
         }
-        const geolocationController = new GeolocationController(map.olMap);
+        const geolocationController = new GeolocationController(
+            map.olMap,
+            positionFeatureStyle,
+            accuracyFeatureStyle
+        );
         setController(geolocationController);
 
         return () => {
             geolocationController.destroy();
             setController(undefined);
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [map]);
 
     useEffect(() => {

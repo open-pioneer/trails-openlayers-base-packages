@@ -10,6 +10,7 @@ import olGeolocation from "ol/Geolocation";
 import Point from "ol/geom/Point";
 import type { EventsKey } from "ol/events";
 import { unByKey } from "ol/Observable";
+import { StyleLike } from "ol/style/Style";
 
 export class GeolocationController {
     private olMap: olMap;
@@ -20,11 +21,15 @@ export class GeolocationController {
     private changeHandlers: EventsKey[] = [];
     private isCurrentlyActive: boolean = false;
 
-    constructor(olMap: olMap) {
+    constructor(olMap: olMap, positionFeatureStyle?: StyleLike, accuracyFeatureStyle?: StyleLike) {
         this.olMap = olMap;
 
         this.accuracyFeature = new Feature();
-        this.positionFeature = createFeatureWithStyle();
+        accuracyFeatureStyle && this.accuracyFeature.setStyle(accuracyFeatureStyle);
+
+        this.positionFeature = new Feature();
+        positionFeatureStyle = positionFeatureStyle || getDefaultPositionStyle();
+        this.positionFeature.setStyle(positionFeatureStyle);
 
         this.positionHighlightLayer = new VectorLayer({
             source: new VectorSource({
@@ -36,8 +41,8 @@ export class GeolocationController {
             tracking: false,
             trackingOptions: {
                 enableHighAccuracy: true,
-                timeout: 30000, // todo: konfigurierbar?
-                maximumAge: 2000 // todo: konfigurierbar?
+                timeout: 30000, // todo Dennis: konfigurierbar?
+                maximumAge: 2000 // todo Dennis: konfigurierbar?
             },
             projection: olMap.getView()?.getProjection()
         });
@@ -57,7 +62,6 @@ export class GeolocationController {
 
     startGeolocation(olMap: olMap) {
         if (!this.isCurrentlyActive) {
-            // TODO: needed?
             this.isCurrentlyActive = true;
             this.geolocation?.setProjection(olMap.getView()?.getProjection());
             this.geolocation?.setTracking(true);
@@ -70,7 +74,7 @@ export class GeolocationController {
             const positionChangeHandler = this.geolocation.on("change:position", () => {
                 const coordinates = this.geolocation.getPosition();
                 this.positionFeature?.setGeometry(coordinates ? new Point(coordinates) : undefined);
-                olMap.getView().setCenter(coordinates);
+                olMap.getView().setCenter(coordinates); // TODO: Dennis fragen ob konfigurierbares centern
             });
 
             this.changeHandlers.push(accuracyChangeHandler, positionChangeHandler);
@@ -97,22 +101,17 @@ export class GeolocationController {
     }
 }
 
-const createFeatureWithStyle = () => {
-    // todo: Konfigurierbar?
-    const feature = new Feature();
-    feature.setStyle(
-        new Style({
-            image: new CircleStyle({
-                radius: 6,
-                fill: new Fill({
-                    color: "#3399CC"
-                }),
-                stroke: new Stroke({
-                    color: "#fff",
-                    width: 2
-                })
+const getDefaultPositionStyle = () => {
+    return new Style({
+        image: new CircleStyle({
+            radius: 6,
+            fill: new Fill({
+                color: "#3399CC"
+            }),
+            stroke: new Stroke({
+                color: "#fff",
+                width: 2
             })
         })
-    );
-    return feature;
+    });
 };
