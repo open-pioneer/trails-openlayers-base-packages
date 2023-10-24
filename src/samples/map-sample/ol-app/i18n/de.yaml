@@ -1,3 +1,4 @@
 messages:
   basemapLabel: "Hintergrundkarte auswählen: "
   tocTitle: "Karteninhalt"
+  geolocationTitle: "Geolokalisierung"

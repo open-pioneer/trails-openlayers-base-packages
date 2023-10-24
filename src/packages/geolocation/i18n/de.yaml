@@ -1,8 +1,10 @@
 messages:
-  LOCATE_NOT_SUPPORTED: Die Geolokalisierung wird nicht unterstützt
-  LOCATE_ME: Lokalisieren
-  ERROR: Fehler
-  PERMISSION_DENIED: Die Geolokalisierung wurde abgebrochen
-  POSITION_UNAVAILABLE: Die Position kann nicht ermittelt werden
-  TIMEOUT: Die Geolokalisierung dauert zu lange und wurde daher abgebrochen
-  UNKNOWN_ERROR: Bei der Geolokalisierung ist es zu einem unerwarteten Fehler gekommen
+  buttonTooltip: Geolokalisierung
+  locateNotSupported: Die Geolokalisierung wird nicht unterstützt
+  locateMeStart: Lokalisieren starten
+  locateMeEnd: Lokalisieren stoppen
+  error: Fehler
+  permissionDenied: Die Geolokalisierung wurde abgebrochen
+  positionUnavailable: Die Position kann nicht ermittelt werden
+  timeout: Die Geolokalisierung dauert zu lange und wurde daher abgebrochen
+  unknownError: Bei der Geolokalisierung ist es zu einem unerwarteten Fehler gekommen

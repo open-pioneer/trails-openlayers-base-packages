@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-import { Box, Flex } from "@open-pioneer/chakra-integration";
+import { Box, Flex, FormControl, FormLabel, Text } from "@open-pioneer/chakra-integration";
 import { CoordinateViewer } from "@open-pioneer/coordinate-viewer";
 import { InitialExtent, ZoomIn, ZoomOut } from "@open-pioneer/map-navigation";
 import { MapAnchor, MapContainer } from "@open-pioneer/map";
@@ -10,12 +10,15 @@ import { ScaleComponent } from "map-sample-scale-component";
 import { useIntl } from "open-pioneer:react-hooks";
 import { MAP_ID } from "./MapConfigProviderImpl";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
+import { Geolocation } from "@open-pioneer/geolocation";
+import { Notifier } from "@open-pioneer/notifier";
 
 export function AppUI() {
     const intl = useIntl();
 
     return (
         <Flex height="100%" direction="column" overflow="hidden">
+            <Notifier position="top-right" />
             <TitledSection
                 title={
                     <Box textAlign="center" py={1}>
@@ -50,6 +53,14 @@ export function AppUI() {
                                     />
                                 </TitledSection>
                             </Box>
+                            <FormControl>
+                                <FormLabel ps={1}>
+                                    <Text as="b">
+                                        {intl.formatMessage({ id: "geolocationTitle" })}
+                                    </Text>
+                                </FormLabel>
+                                <Geolocation mapId={MAP_ID}></Geolocation>
+                            </FormControl>
                         </MapAnchor>
                         <MapAnchor position="bottom-right" horizontalGap={10} verticalGap={30}>
                             <Flex direction="column" gap={1} padding={1}>

@@ -1,8 +1,10 @@
 messages:
-  LOCATE_NOT_SUPPORTED: Geolocation is not supported
-  LOCATE_ME: Locate me
-  ERROR: Error
-  PERMISSION_DENIED: Geolocation was canceled
-  POSITION_UNAVAILABLE: Geolocation position cannot be determined
-  TIMEOUT: Geolocation was canceled (TIMEOUT)
-  UNKNOWN_ERROR: An unexpected error occurred during geolocation
+  buttonTooltip: Geolocation
+  locateNotSupported: Geolocation is not supported
+  locateMeStart: Start locating
+  locateMeEnd: Stop locating
+  error: Error
+  permissionDenied: Geolocation was canceled
+  positionUnavailable: Geolocation position cannot be determined
+  timeout: Geolocation was canceled (TIMEOUT)
+  unknownError: An unexpected error occurred during geolocation
