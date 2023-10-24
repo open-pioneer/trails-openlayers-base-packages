@@ -63,12 +63,13 @@ export class GeolocationController {
             this.geolocation?.setTracking(true);
 
             const accuracyChangeHandler = this.geolocation.on("change:accuracyGeometry", () => {
-                this.accuracyFeature?.setGeometry(this.geolocation.getAccuracyGeometry());
+                const accuracyGeometry = this.geolocation.getAccuracyGeometry() || undefined;
+                this.accuracyFeature?.setGeometry(accuracyGeometry);
             });
 
             const positionChangeHandler = this.geolocation.on("change:position", () => {
                 const coordinates = this.geolocation.getPosition();
-                this.positionFeature?.setGeometry(coordinates ? new Point(coordinates) : null);
+                this.positionFeature?.setGeometry(coordinates ? new Point(coordinates) : undefined);
                 olMap.getView().setCenter(coordinates);
             });
 

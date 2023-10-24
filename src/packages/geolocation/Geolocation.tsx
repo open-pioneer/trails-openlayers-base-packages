@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
 import { createLogger } from "@open-pioneer/core";
-import { Button, Flex, VisuallyHidden, Tooltip } from "@open-pioneer/chakra-integration";
+import { Button, Tooltip } from "@open-pioneer/chakra-integration";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { useMapModel } from "@open-pioneer/map";
 import { unByKey } from "ol/Observable";
@@ -108,39 +108,28 @@ export const Geolocation: FC<GeolocationProps> = forwardRef(function Geolocation
         setActive(!isActive);
     };
 
-    // show button only, if geolocation is supported by web browser / device
-    if (navigator.geolocation) {
-        // todo: Was soll gerendert werden, wenn die Karte noch nicht da ist?
-        return (
-            <Flex direction={"column"} gap="1" {...rest}>
-                <Tooltip
-                    label={intl.formatMessage({ id: "buttonTooltip" })}
-                    placement="auto"
-                    openDelay={500}
-                >
-                    <Button
-                        className="geolocation-toggle-button"
-                        aria-label={
-                            isActive
-                                ? intl.formatMessage({ id: "locateMeStart" })
-                                : intl.formatMessage({ id: "locateMeEnd" })
-                        }
-                        leftIcon={isActive ? <MdLocationOff /> : <MdLocationOn />}
-                        onClick={() => toggleActiveState()}
-                        iconSpacing={0}
-                        padding={0}
-                        ref={ref}
-                        {...containerProps}
-                    />
-                </Tooltip>
-            </Flex>
-        );
-    } else {
-        // todo: so oder z.B. Log oder Button disabled
-        return (
-            <div {...rest}>
-                <VisuallyHidden>{intl.formatMessage({ id: "locateNotSupported" })}</VisuallyHidden>
-            </div>
-        );
-    }
+    return (
+        <Tooltip
+            label={intl.formatMessage({ id: "buttonTooltip" })}
+            placement="auto"
+            openDelay={500}
+        >
+            {/*todo is the disabling working with screen reader?*/}
+            <Button
+                className="geolocation-toggle-button"
+                aria-label={
+                    isActive
+                        ? intl.formatMessage({ id: "locateMeStart" })
+                        : intl.formatMessage({ id: "locateMeEnd" })
+                }
+                leftIcon={isActive ? <MdLocationOff /> : <MdLocationOn />}
+                onClick={() => toggleActiveState()}
+                iconSpacing={0}
+                padding={0}
+                ref={ref}
+                isDisabled={!navigator.geolocation} // show button only, if geolocation is supported by web browser / device
+                {...containerProps}
+            />
+        </Tooltip>
+    );
 });
