@@ -9,8 +9,7 @@ import {
     screen,
     queryAllByRole,
     queryByRole,
-    render,
-    getByText
+    render
 } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import LayerGroup from "ol/layer/Group";
