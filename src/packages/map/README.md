@@ -2,8 +2,6 @@
 
 ## TODO
 
--   Readme for API concepts
-
 This package provides a map container component to integrate an [OpenLayers](https://openlayers.org/) map.
 Besides the component, the package provides a service, which handles the registration and creation of a map.
 
@@ -193,7 +191,8 @@ export class MapConfigProviderImpl implements MapConfigProvider {
 
 #### Layer configuration
 
-Configure your custom layer inside the [Map configuration](#md:map-configuration) by using the OpenLayers [`Layer`](https://openlayers.org/en/latest/apidoc/module-ol_layer_Layer-Layer.html) as `olLayer` property.
+Configure your custom layer inside the [Map configuration](#md:map-configuration) by using one of the layer classes provided by this package.
+For example, `SimpleLayer` can be used to configure an arbitrary [`OpenLayers Layer`](https://openlayers.org/en/latest/apidoc/module-ol_layer_Layer-Layer.html) as `olLayer` property.
 
 > **Layer Order**
 >
@@ -424,8 +423,7 @@ Example: Create WMS layer configuration
 
 ```ts
 // YOUR-APP/MapConfigProviderImpl.ts
-import ImageWMS from "ol/source/ImageWMS";
-import ImageLayer from "ol/layer/Image";
+import { MapConfig, MapConfigProvider, WMSLayer } from "@open-pioneer/map";
 
 export const MAP_ID = "main";
 
@@ -441,16 +439,23 @@ export class MapConfigProviderImpl implements MapConfigProvider {
             },
             projection: "EPSG:25832",
             layers: [
-                new SimpleLayer({
+                new WMSLayer({
                     title: "Schulstandorte",
-                    visible: true,
-                    layer: new ImageLayer({
-                        source: new ImageWMS({
-                            url: "https://www.wms.nrw.de/wms/wms_nw_inspire-schulen",
-                            params: { "LAYERS": ["US.education"] },
-                            ratio: 1 //Ratio. 1 means image requests are the size of the map viewport
-                        })
-                    })
+                    url: "https://www.wms.nrw.de/wms/wms_nw_inspire-schulen",
+
+                    // Configure service (sub-) layers
+                    sublayers: [
+                        {
+                            name: "US.education",
+                            title: "Schulen"
+                        }
+                    ],
+
+                    // Optional, additional options for the underlying ImageWMS source
+                    sourceOptions: {
+                        // Ratio 1 means image requests are the size of the map viewport
+                        ratio: 1
+                    }
                 })
             ]
         };
@@ -490,21 +495,57 @@ const proj = getProjection("EPSG:3035");
 
 ### Using the map model
 
-The package uses a map model and layer instances to internally handle the states of the map and layers.
-This is needed to support additional features like base layers.
-For this reason, always use the methods provided by these models to manage the following features on maps and layers (instead of using the raw OpenLayers instances directly):
+This package allows interfacing with maps and their layers through multiple interfaces and classes.
+
+The most important API items are as follows:
+
+-   The `MapRegistry` service (inject via `"map.MapRegistry"`).
+    This service is used to obtain a reference to the `MapModel` via `registry.getMapModel(mapId)`.
+
+    > NOTE: From inside a React component you can also use the hook `useMapModel(mapId)`.
+
+-   The `MapModel` represents a map in an application.
+    Through the `MapModel` one can obtain the map's base layers, operational layers and so on.
+    The `MapModel` also provides access to the raw OpenLayers `olMap` for advanced use cases.
+
+    > NOTE: The `olMap` is manipulated by the `MapModel` to implement its functionality (for example, to add or remove layer instances). When using it directly, treat it carefully and as a shared resource.
+
+-   The `Layer` interface and its various implementations.
+    This interface is used to make common properties and methods available (such as `.title`, or `.setVisible`).
+    Layers may also have `.sublayers`, which support the same basic properties as other layer types.
+
+    As is the case in `MapModel`, one can retrieve the raw OpenLayers `olLayer` from a layer instance (the same restrictions apply, see above).
+
+As a general rule of thumb, one should always prefer to use properties or methods provided by this package (if available) instead of manipulating the raw OpenLayers instances.
+Manipulating raw instances directly may lead to unexpected results.
+For example, other application components may not react to raw property changes correctly because they expect an "official" property to be changed instead.
+
+This point is especially important for the map model's central features:
 
 -   Map composition (access and configuration of layers, base layers, removing layers)
 -   Layer visibility
 -   Custom layer metadata (`attributes`)
 
-You can use the raw OpenLayers instances for other features (for example to control the transparency of a layer).
+In those cases, the properties or methods provided by this package should always be used:
 
-Always use the provided map model to retrieve an instance of the layer.
+-   `map.layers.addLayer(layer)` and `map.layers.removeLayerById(layerId)` to add or remove layers
+-   `map.layers.getAllLayers()`, `map.layers.getBaseLayers()`, `map.layers.getOperationalLayers()` etc. to access (top-level) layers
+-   `layer.setVisible(visible)` and `map.layers.activateBaseLayer(layerId)` to control visibility
+-   `layer.updateAttributes()` and `layer.deleteAttributes()` to change a layer's custom attributes
 
-To access specific layers use the LayerCollection methods, such as `getAllLayers`, `getBaseLayers`, `getOperationalLayers`.
-Layers should not be manually removed from the map via `.olMap`.
-Only use `removeLayerById` to remove a layer.
+#### Layer classes
+
+This package currently only provides two layer implementations:
+
+-   `SimpleLayer`.
+    Instances of this class can be used to integrate arbitrary OpenLayers `Layer` instances into the map by configuring the `olLayer` constructor option.
+    Note that one can only achieve basic integration through this method: more advanced features such such automatic legends or sublayers will not be available.
+
+-   `WMSLayer`.
+    Represents a WMS service embedded into the map.
+    Must be configured with the service's `url` and a set of sublayers.
+
+We expect to implement more classes in the future.
 
 #### Using the map model and layers in services
 
