@@ -35,8 +35,7 @@ export async function getCollectionInfos(collectionsItemsUrl: string): Promise<C
 
     const parsedURL = new URL(nextUrl);
     const hasOffset = parsedURL.searchParams.has("offset");
-    const hasNumberMatched = typeof jsonResp?.numberMatched === "number";
-    infos.supportsOffsetStrategy = hasOffset && hasNumberMatched;
+    infos.supportsOffsetStrategy = hasOffset;
     return infos;
 }
 
@@ -50,13 +49,13 @@ export async function loadAllFeaturesWithOffset(
 
     let startOffset = 0;
     let currentUrl: string | undefined = fullURL;
-    let allFeatures: FeatureLike[] = [];
+    const allFeatures: FeatureLike[] = [];
     let totalFeatures: number | undefined;
     while (currentUrl) {
         let pagesInIteration: number;
         if (totalFeatures == undefined) {
-            // Initial assume 4 pages (or less) because we don't know the actual size of the result set yet.
-            pagesInIteration = 4;
+            // We don't know the actual size of the result set yet.
+            pagesInIteration = maxConcurrency;
         } else {
             pagesInIteration = Math.ceil((totalFeatures - startOffset) / pageSize);
         }
@@ -76,7 +75,7 @@ export async function loadAllFeaturesWithOffset(
             queryFeatures
         );
 
-        allFeatures = allFeatures.concat(allFeatureResp.features);
+        allFeatures.push(...allFeatureResp.features);
         currentUrl = allFeatureResp.nextURL;
         if (allFeatureResp.numberMatched != null) {
             totalFeatures = allFeatureResp.numberMatched;

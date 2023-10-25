@@ -1,11 +1,13 @@
 # @open-pioneer/map-navigation
 
-This package provides a collection of map-navigation controls:
+This package provides a collection of the following map navigation controls:
 
--   Initial extent (a button that allows the user to reset the map to the initial view)
--   Zoom (two buttons that allow the user to zoom in and zoom out of the map)
+-   [Initial extent](#initial-extent): A button that allows the user to reset the map to the initial view.
+-   [Zoom](#zoom): Two buttons that allow the user to zoom in and zoom out of the map.
 
-## Usage initial extent
+## Usage
+
+### Initial extent
 
 To integrate the component in your app, insert the following snippet and reference a map ID:
 
@@ -13,7 +15,7 @@ To integrate the component in your app, insert the following snippet and referen
 <InitialExtent mapId="map_id" />
 ```
 
-## Usage zoom
+### Zoom
 
 To integrate the component in your app, insert the following snippet and reference a map ID:
 
