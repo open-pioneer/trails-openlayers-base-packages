@@ -14,6 +14,7 @@ import { SublayersCollectionImpl } from "../SublayersCollectionImpl";
 const LOG = createLogger("map:WMSLayer");
 
 export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
+    #url: string;
     #sublayers: SublayersCollectionImpl<WMSSublayerImpl>;
     #deferredSublayerUpdate: DeferredExecution | undefined;
     #layer: ImageLayer<ImageSource>;
@@ -32,10 +33,15 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
                 ...config.sourceOptions?.params
             }
         });
+        this.#url = config.url;
         this.#source = source;
         this.#layer = layer;
         this.#sublayers = new SublayersCollectionImpl(constructSublayers(config.sublayers));
         this.#updateLayersParam();
+    }
+
+    get url(): string {
+        return this.#url;
     }
 
     get sublayers(): SublayersCollectionImpl<WMSSublayerImpl> {
@@ -77,7 +83,7 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
         // only set source if there are visible sublayers, otherwise
         // we send an invalid http request
         const source = layers.length === 0 ? null : this.#source;
-        if (this.#layer.getSource() != source) {
+        if (this.#layer.getSource() !== source) {
             this.#layer.setSource(source);
         }
     }

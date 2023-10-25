@@ -1,5 +1,8 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
+/**
+ * @vitest-environment node
+ */
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { defer } from "./defer";
 
