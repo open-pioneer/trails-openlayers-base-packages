@@ -1,7 +1,6 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
 import { Resource } from "@open-pioneer/core";
-import { PackageIntl } from "@open-pioneer/runtime";
 import Feature from "ol/Feature";
 import OlMap from "ol/Map";
 import MapBrowserEvent from "ol/MapBrowserEvent";
@@ -14,17 +13,19 @@ import Draw from "ol/interaction/Draw";
 import { Vector as VectorLayer } from "ol/layer";
 import { Vector as VectorSource } from "ol/source";
 import { getArea, getLength } from "ol/sphere";
-import { Style } from "ol/style";
-import { StyleLike } from "ol/style/Style";
-import { FlatStyleLike } from "ol/style/flat";
+import { StyleFunction, StyleLike, toFunction as toStyleFunction } from "ol/style/Style";
 
 export type MeasurementType = "area" | "distance";
 
+export interface Messages {
+    getContinueMessage(): string;
+    getHelpMessage(): string;
+}
+
 export class MeasurementController {
-    private intl: PackageIntl;
     private olMap: OlMap;
-    private activeFeatureStyle: Style;
-    private finishedFeatureStyle: StyleLike | FlatStyleLike;
+    private messages: Messages;
+    private activeFeatureStyle: StyleFunction | undefined;
 
     /**
      * The layer rendering the measurement "features".
@@ -66,21 +67,12 @@ export class MeasurementController {
      */
     private resources: Resource[] = [];
 
-    constructor(
-        olMap: OlMap,
-        intl: PackageIntl,
-        activeFeatureStyle: Style,
-        finishedFeatureStyle: StyleLike | FlatStyleLike
-    ) {
+    constructor(olMap: OlMap, messages: Messages) {
         this.olMap = olMap;
-        this.intl = intl;
-        this.activeFeatureStyle = activeFeatureStyle;
-        this.finishedFeatureStyle = finishedFeatureStyle;
-
+        this.messages = messages;
         const source = (this.source = new VectorSource());
         this.layer = new VectorLayer({
-            source,
-            style: this.finishedFeatureStyle
+            source
         });
         olMap.addLayer(this.layer);
 
@@ -127,6 +119,30 @@ export class MeasurementController {
         this.source.dispose();
     }
 
+    /** Returns the vector layer used for finished features. */
+    getVectorLayer() {
+        return this.layer;
+    }
+
+    /** Updates the style used for finished features. */
+    setFinishedFeatureStyle(style: StyleLike) {
+        this.layer.setStyle(style);
+    }
+
+    /** Updates the style used for active measurements. */
+    setActiveFeatureStyle(style: StyleLike) {
+        const styleFunction = toStyleFunction(style);
+        this.activeFeatureStyle = (feature, ...args) => {
+            const ft = feature?.getGeometry()?.getType();
+            if (ft === "Polygon" || ft === "LineString" || ft === "Point") {
+                return styleFunction(feature, ...args);
+            }
+        };
+        // Update style on current draw instance (if any)
+        this.draw?.getOverlay().setStyle(this.activeFeatureStyle);
+    }
+
+    /** Removes all finished measurements. */
     clearMeasurements() {
         this.source.clear();
         for (const tooltip of this.overlayTooltips) {
@@ -135,27 +151,21 @@ export class MeasurementController {
         this.overlayTooltips = [];
     }
 
+    /** Starts measuring using the provided type. */
     startMeasurement(type: MeasurementType) {
         if (this.draw) {
             throw new Error("Internal error: another measurement interaction is still active.");
         }
 
         const geometryType = type === "area" ? "Polygon" : "LineString";
-        const style = this.activeFeatureStyle;
         const draw = (this.draw = new Draw({
             source: this.source,
             type: geometryType,
-            style: function (feature) {
-                const featureGeometryType = feature?.getGeometry()?.getType();
-                if (featureGeometryType === geometryType || featureGeometryType === "Point") {
-                    return style;
-                }
-            }
+            style: this.activeFeatureStyle
         }));
         this.olMap.addInteraction(draw);
 
         let measureTooltip: Tooltip | undefined;
-
         let changeListenerKey: EventsKey | undefined = undefined;
         draw.on("drawstart", (evt) => {
             measureTooltip = this.measureTooltip = this.createMeasureTooltip();
@@ -208,6 +218,7 @@ export class MeasurementController {
         });
     }
 
+    /** Stops the current measuring started by `startMeasurement`. */
     stopMeasurement() {
         if (this.draw) {
             this.olMap.removeInteraction(this.draw);
@@ -271,7 +282,7 @@ export class MeasurementController {
         }
 
         const tooltip = this.helpTooltip;
-        const helpMessage = getHelpMessage(this.intl, this.sketch);
+        const helpMessage = getHelpMessage(this.messages, this.sketch);
         tooltip.element.textContent = helpMessage;
         tooltip.overlay.setPosition(evt.coordinate);
         tooltip.element.classList.remove("hidden");
@@ -284,18 +295,14 @@ interface Tooltip extends Resource {
     element: HTMLDivElement;
 }
 
-function getHelpMessage(intl: PackageIntl, sketch: Feature | undefined) {
+function getHelpMessage(messages: Messages, sketch: Feature | undefined) {
     if (sketch) {
         const geom = sketch.getGeometry();
         if (geom instanceof Polygon || geom instanceof LineString) {
-            return intl.formatMessage({
-                id: "tooltips.continue"
-            });
+            return messages.getContinueMessage();
         }
     }
-    return intl.formatMessage({
-        id: "tooltips.help"
-    });
+    return messages.getHelpMessage();
 }
 
 function formatArea(polygon: Polygon) {

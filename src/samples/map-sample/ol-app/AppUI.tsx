@@ -2,25 +2,27 @@
 // SPDX-License-Identifier: Apache-2.0
 import { Box, Button, Flex, Tooltip } from "@open-pioneer/chakra-integration";
 import { CoordinateViewer } from "@open-pioneer/coordinate-viewer";
-import { InitialExtent, ZoomIn, ZoomOut } from "@open-pioneer/map-navigation";
 import { MapAnchor, MapContainer } from "@open-pioneer/map";
+import { InitialExtent, ZoomIn, ZoomOut } from "@open-pioneer/map-navigation";
+import { Measurement } from "@open-pioneer/measurement";
+import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { ScaleViewer } from "@open-pioneer/scale-viewer";
 import { Toc } from "@open-pioneer/toc";
 import { ScaleComponent } from "map-sample-scale-component";
-import { useIntl } from "open-pioneer:react-hooks";
-import { MAP_ID } from "./MapConfigProviderImpl";
-import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
-import { FiEdit, FiEdit2 } from "react-icons/fi";
-import { useState } from "react";
 import { Circle as CircleStyle, Fill, Stroke, Style } from "ol/style";
-import { Measurement } from "@open-pioneer/measurement";
+import { useIntl } from "open-pioneer:react-hooks";
+import { useState } from "react";
+import { FiEdit, FiEdit2 } from "react-icons/fi";
+import { MAP_ID } from "./MapConfigProviderImpl";
+
+const activeFeatureStyle = getActiveFeatureStyle();
+const finishedFeatureStyle = getFinishedFeatureStyle();
 
 export function AppUI() {
     const intl = useIntl();
     const [measurementIsActive, setMeasurementIsActive] = useState<boolean>(false);
-    const activeFeatureStyle = getActiveFeatureStyle();
-    const finishedFeatureStyle = getFinishedFeatureStyle();
-    function activateMeasurement() {
+
+    function toggleMeasurement() {
         setMeasurementIsActive(!measurementIsActive);
     }
 
@@ -47,7 +49,7 @@ export function AppUI() {
                             >
                                 <TitledSection
                                     title={
-                                        <SectionHeading size="md">
+                                        <SectionHeading size="md" mb={2}>
                                             {intl.formatMessage({ id: "tocTitle" })}
                                         </SectionHeading>
                                     }
@@ -60,28 +62,30 @@ export function AppUI() {
                                     />
                                 </TitledSection>
                             </Box>
-                            <Box
-                                backgroundColor="whiteAlpha.900"
-                                borderWidth="1px"
-                                borderRadius="lg"
-                                padding={2}
-                                boxShadow="lg"
-                                mt={5}
-                            >
-                                <TitledSection
-                                    title={
-                                        <SectionHeading size="md" mb={3}>
-                                            {intl.formatMessage({ id: "measurementTitle" })}
-                                        </SectionHeading>
-                                    }
+                            {measurementIsActive && (
+                                <Box
+                                    backgroundColor="white"
+                                    borderWidth="1px"
+                                    borderRadius="lg"
+                                    padding={2}
+                                    boxShadow="lg"
+                                    mt={5}
                                 >
-                                    <Measurement
-                                        mapId={MAP_ID}
-                                        activeFeatureStyle={activeFeatureStyle}
-                                        finishedFeatureStyle={finishedFeatureStyle}
-                                    ></Measurement>
-                                </TitledSection>
-                            </Box>
+                                    <TitledSection
+                                        title={
+                                            <SectionHeading size="md" mb={2}>
+                                                {intl.formatMessage({ id: "measurementTitle" })}
+                                            </SectionHeading>
+                                        }
+                                    >
+                                        <Measurement
+                                            mapId={MAP_ID}
+                                            activeFeatureStyle={activeFeatureStyle}
+                                            finishedFeatureStyle={finishedFeatureStyle}
+                                        />
+                                    </TitledSection>
+                                </Box>
+                            )}
                         </MapAnchor>
                         <MapAnchor position="bottom-right" horizontalGap={10} verticalGap={30}>
                             <Flex direction="column" gap={1} padding={1}>
@@ -93,7 +97,7 @@ export function AppUI() {
                                     <Button
                                         aria-label={intl.formatMessage({ id: "title" })}
                                         leftIcon={measurementIsActive ? <FiEdit2 /> : <FiEdit />}
-                                        onClick={activateMeasurement}
+                                        onClick={toggleMeasurement}
                                         iconSpacing={0}
                                         padding={0}
                                     />
