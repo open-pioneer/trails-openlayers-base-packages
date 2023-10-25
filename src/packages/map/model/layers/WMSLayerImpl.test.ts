@@ -47,6 +47,48 @@ it("creates and configure a wms source", () => {
     expect(olSource).toBeInstanceOf(ImageWMS);
 });
 
+it("supports additional source options", () => {
+    const layer = new WMSLayerImpl({
+        title: "Layer",
+        url: SERVICE_URL,
+        sublayers: [
+            {
+                name: "sublayer-name",
+                title: "Sublayer"
+            }
+        ],
+        sourceOptions: {
+            attributions: "Test-Attributions",
+            ratio: 0.5,
+            params: {
+                "FOO": "foo"
+            }
+        }
+    });
+
+    const olSource = (layer.olLayer as ImageLayer<any>).getSource() as ImageWMS;
+    const attributions = olSource.getAttributions()!(undefined as any);
+    expect(attributions).toMatchInlineSnapshot(`
+      [
+        "Test-Attributions",
+      ]
+    `);
+
+    const ratio = (olSource as any).ratio_ as number; // No getter
+    expect(ratio).toBe(0.5);
+
+    // LAYERS is managed by the class but other params are not overwritten
+    const params = olSource.getParams();
+    expect(params).toMatchInlineSnapshot(`
+      {
+        "FOO": "foo",
+        "LAYERS": [
+          "sublayer-name",
+        ],
+      }
+    `);
+});
+
 it("configures the source's LAYERS parameter for sublayers", () => {
     const layer = new WMSLayerImpl({
         title: "Layer",
