@@ -2,7 +2,15 @@
 // SPDX-License-Identifier: Apache-2.0
 import { setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
-import { act, queryAllByRole, queryByRole, render } from "@testing-library/react";
+import {
+    act,
+    waitFor,
+    fireEvent,
+    screen,
+    queryAllByRole,
+    queryByRole,
+    render
+} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import LayerGroup from "ol/layer/Group";
 import TileLayer from "ol/layer/Tile";
@@ -278,6 +286,117 @@ it("includes the layer id in the item's class list", async () => {
     const item = container.querySelector(".layer-some-layer-id");
     expect(item).toBeTruthy();
     expect(item!.textContent).toBe("Layer 1");
+});
+
+it("renders buttons for all layer's with description property", async () => {
+    const { mapId, registry } = await setupMap({
+        layers: [
+            {
+                title: "Layer 1",
+                layer: new TileLayer({}),
+                description: "Description 1"
+            },
+            {
+                title: "Layer 2",
+                layer: new TileLayer({})
+            }
+        ]
+    });
+    const map = await registry.expectMapModel(mapId);
+
+    const { container } = render(
+        <PackageContextProvider>
+            <LayerList map={map} />
+        </PackageContextProvider>
+    );
+    const initialItems = queryAllByRole(container, "button");
+    expect(initialItems).toHaveLength(1);
+});
+
+it("changes the description popover's visibility when toggling the button", async () => {
+    const { mapId, registry } = await setupMap({
+        layers: [
+            {
+                id: "layer",
+                title: "Layer 1",
+                layer: new TileLayer({}),
+                description: "Description 1"
+            },
+            {
+                title: "Layer 2",
+                layer: new TileLayer({})
+            }
+        ]
+    });
+    const map = await registry.expectMapModel(mapId);
+    const layer = map.layers.getLayerById("layer");
+    if (!layer) {
+        throw new Error("test layer not found!");
+    }
+
+    const { container } = render(
+        <PackageContextProvider>
+            <LayerList map={map} />
+        </PackageContextProvider>
+    );
+
+    const button = queryByRole(container, "button");
+    if (!button) {
+        throw new Error("description button not found!");
+    }
+
+    const description = screen.getByText(layer.description);
+
+    // initially hidden
+    expect(description).not.toBeVisible();
+
+    // open the popover
+    fireEvent.click(button);
+    await waitFor(async () => {
+        expect(description).toBeVisible();
+    });
+
+    // close the popover again
+    fireEvent.click(button);
+    await waitFor(async () => {
+        expect(description).not.toBeVisible();
+    });
+});
+
+it("reacts to changes in the layer description", async () => {
+    const { mapId, registry } = await setupMap({
+        layers: [
+            {
+                id: "layer1",
+                title: "Layer 1",
+                layer: new TileLayer({}),
+                description: "Description"
+            },
+            {
+                id: "layer2",
+                title: "Layer 2",
+                layer: new TileLayer({})
+            }
+        ]
+    });
+    const map = await registry.expectMapModel(mapId);
+    const layer = map.layers.getLayerById("layer1");
+    if (!layer) {
+        throw new Error("test layer not found!");
+    }
+
+    const { container } = render(
+        <PackageContextProvider>
+            <LayerList map={map} />
+        </PackageContextProvider>
+    );
+    const initialItems = queryAllByRole(container, "button");
+    expect(initialItems).toHaveLength(1);
+    screen.getByText("Description");
+    act(() => {
+        layer.setDescription("New description");
+    });
+    screen.getByText("New description");
 });
 
 /** Returns the layer list's current list items. */

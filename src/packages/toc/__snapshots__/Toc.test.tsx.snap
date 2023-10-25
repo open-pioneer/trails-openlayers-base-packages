@@ -68,14 +68,14 @@ exports[`should successfully create a toc component 1`] = `
     >
       operationalLayerLabel
     </h1>
-    <ol
+    <ul
       aria-labelledby=":r1:"
       class="toc-layer-list css-155za0w"
       data-theme="light"
       role="list"
     >
       <li
-        class="toc-layer-list-entry layer-layer-2 css-0"
+        class="toc-layer-item layer-layer-2 css-80x0v"
         data-theme="light"
       >
         <label
@@ -122,7 +122,7 @@ exports[`should successfully create a toc component 1`] = `
         </label>
       </li>
       <li
-        class="toc-layer-list-entry layer-layer-1 css-0"
+        class="toc-layer-item layer-layer-1 css-80x0v"
         data-theme="light"
       >
         <label
@@ -168,7 +168,7 @@ exports[`should successfully create a toc component 1`] = `
           </span>
         </label>
       </li>
-    </ol>
+    </ul>
   </div>
 </div>
 `;
