@@ -3,7 +3,6 @@
 import {
     Checkbox,
     List,
-    ListItem,
     Text,
     Flex,
     Popover,
@@ -48,7 +47,7 @@ export function LayerList(props: { map: MapModel; "aria-labelledby"?: string }):
     return (
         <List
             // Note: not using OrderedList because it adds default margins
-            as="ol"
+            as="ul"
             className="toc-layer-list"
             listStyleType="none"
             aria-labelledby={ariaLabelledBy}
@@ -64,22 +63,24 @@ function LayerItem(props: { layer: LayerModel; intl: PackageIntl }): JSX.Element
     const title = useTitle(layer);
     const { isVisible, setVisible } = useVisibility(layer);
     return (
-        <Flex flexDirection="row" align={"center"} justifyContent="space-between">
-            <ListItem
-                width={"100%"}
-                className={classNames("toc-layer-list-entry", `layer-${slug(layer.id)}`)}
-            >
-                <Checkbox
-                    isChecked={isVisible}
-                    onChange={(event) => setVisible(event.target.checked)}
-                >
-                    {title}
-                </Checkbox>
-            </ListItem>
+        /** Gap to prevent bleeding of the buttons hover style into the layer title */
+        <Flex
+            as="li"
+            width="100%"
+            className={classNames("toc-layer-item", `layer-${slug(layer.id)}`)}
+            flexDirection="row"
+            align="center"
+            gap={2}
+            justifyContent="space-between"
+        >
+            <Checkbox isChecked={isVisible} onChange={(event) => setVisible(event.target.checked)}>
+                {title}
+            </Checkbox>
             {layer.description && <LayerItemDescriptor layer={layer} title={title} intl={intl} />}
         </Flex>
     );
 }
+
 function LayerItemDescriptor(props: {
     layer: LayerModel;
     title: string;
@@ -93,8 +94,9 @@ function LayerItemDescriptor(props: {
         <Popover>
             <PopoverTrigger>
                 <Button
+                    className="toc-layer-item-details-button"
                     aria-label={buttonLabel}
-                    _hover={{ borderRadius: "full" }}
+                    borderRadius="full"
                     iconSpacing={0}
                     padding={0}
                     variant="ghost"
@@ -102,7 +104,7 @@ function LayerItemDescriptor(props: {
                 />
             </PopoverTrigger>
             <Portal>
-                <PopoverContent>
+                <PopoverContent className="toc-layer-item-details">
                     <PopoverArrow />
                     <PopoverCloseButton />
                     <PopoverHeader>{title}</PopoverHeader>

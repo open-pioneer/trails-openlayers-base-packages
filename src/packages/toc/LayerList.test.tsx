@@ -339,20 +339,27 @@ it("changes the description popover's visibility when toggling the button", asyn
             <LayerList map={map} />
         </PackageContextProvider>
     );
-    const button = queryByRole(container, "button");
 
+    const button = queryByRole(container, "button");
     if (!button) {
         throw new Error("description button not found!");
     }
-    expect(button).toBeTruthy();
+
+    const description = screen.getByText(layer.description);
+
+    // initially hidden
+    expect(description).not.toBeVisible();
+
     // open the popover
     fireEvent.click(button);
-    // close the popover
-    fireEvent.click(button);
-
     await waitFor(async () => {
-        const popover = screen.getByText(layer.description);
-        expect(popover).not.toBeVisible();
+        expect(description).toBeVisible();
+    });
+
+    // close the popover again
+    fireEvent.click(button);
+    await waitFor(async () => {
+        expect(description).not.toBeVisible();
     });
 });
 

@@ -57,7 +57,8 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                 {
                     title: "Haltestellen Stadt Rostock",
                     visible: true,
-                    description: "test description for layer xy",
+                    description:
+                        "Haltestellen des öffentlichen Personenverkehrs in der Hanse- und Universitätsstadt Rostock.",
                     layer: createHaltestellenLayer()
                 },
                 {
@@ -68,8 +69,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                 {
                     title: "Schulstandorte",
                     visible: true,
-                    description: `Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nulla hic dolorem vel quo quisquam! Mollitia non doloribus minima soluta, accusantium dicta? Incidunt ea eum pariatur reprehenderit accusamus obcaecati architecto debitis!
-                    `,
+                    description: `Der vorliegende Datenbestand / Dienst zu den Schulstandorten in NRW stammt aus der Schuldatenbank. Die Informationen werden von den Schulträgern bzw. Schulen selbst eingetragen und aktuell gehalten. Die Daten werden tagesaktuell bereitgestellt und enthalten alle grundlegenden Informationen zu Schulen wie Schulnummer, Schulbezeichnung und Adresse.`,
                     layer: createSchulenLayer()
                 }
             ]
