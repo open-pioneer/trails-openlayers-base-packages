@@ -71,7 +71,7 @@ exports[`should successfully create a measurement component 1`] = `
     </div>
   </div>
   <button
-    class="chakra-button measurment-delete-button css-14p1tvq"
+    class="chakra-button measurement-delete-button css-14p1tvq"
     data-theme="light"
     type="button"
   >

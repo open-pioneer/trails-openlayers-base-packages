@@ -106,7 +106,7 @@ export const Measurement: FC<MeasurementProps> = (props) => {
             </FormControl>
             <Button
                 padding={2}
-                className="measurment-delete-button"
+                className="measurement-delete-button"
                 onClick={removeMeasurements}
                 width="100%"
             >
