@@ -28,7 +28,7 @@ it("should successfully create a measurement component", async () => {
     expect(measurementSelect.tagName).toBe("SELECT");
 });
 
-it("should successfully create a measurement component with additional css classe", async () => {
+it("should successfully create a measurement component with additional css class", async () => {
     const { mapId, registry } = await setupMap();
     await registry.expectMapModel(mapId);
     const injectedServices = createServiceOptions({ registry });

@@ -90,12 +90,12 @@ export function AppUI() {
                         <MapAnchor position="bottom-right" horizontalGap={10} verticalGap={30}>
                             <Flex direction="column" gap={1} padding={1}>
                                 <Tooltip
-                                    label={intl.formatMessage({ id: "title" })}
+                                    label={intl.formatMessage({ id: "measurementTitle" })}
                                     placement="auto"
                                     openDelay={500}
                                 >
                                     <Button
-                                        aria-label={intl.formatMessage({ id: "title" })}
+                                        aria-label={intl.formatMessage({ id: "measurementTitle" })}
                                         leftIcon={measurementIsActive ? <FiEdit2 /> : <FiEdit />}
                                         onClick={toggleMeasurement}
                                         iconSpacing={0}

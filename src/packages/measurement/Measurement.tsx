@@ -33,7 +33,7 @@ export interface MeasurementProps extends CommonComponentProps {
     activeFeatureStyle?: StyleLike;
 
     /**
-     * Style for the finished feature's geometry
+     * The style for the finished drawn feature's geometry.
      */
     finishedFeatureStyle?: StyleLike;
 }

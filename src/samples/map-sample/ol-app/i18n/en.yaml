@@ -1,5 +1,4 @@
 messages:
   basemapLabel: "Select basemap:"
   tocTitle: "Table of contents"
-  title: "Measure"
-  measurementTitle: "Distance / Area measurement"
+  measurementTitle: "Measurement"
