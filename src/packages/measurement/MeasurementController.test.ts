@@ -207,6 +207,9 @@ function setup() {
         },
         getHelpMessage() {
             return "Click to start drawing";
+        },
+        formatNumber(value) {
+            return String(Math.round(value * 100) / 100);
         }
     });
 

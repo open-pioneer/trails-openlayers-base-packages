@@ -130,6 +130,11 @@ function useController(map: MapModel | undefined, intl: PackageIntl) {
             },
             getHelpMessage() {
                 return intl.formatMessage({ id: "tooltips.help" });
+            },
+            formatNumber(value) {
+                return intl.formatNumber(value, {
+                    maximumFractionDigits: 2
+                });
             }
         });
         setController(controller);

@@ -20,6 +20,7 @@ export type MeasurementType = "area" | "distance";
 export interface Messages {
     getContinueMessage(): string;
     getHelpMessage(): string;
+    formatNumber(value: number): string;
 }
 
 export class MeasurementController {
@@ -181,10 +182,10 @@ export class MeasurementController {
                 const geom = evt.target;
                 let output = "";
                 if (geom instanceof Polygon) {
-                    output = formatArea(geom);
+                    output = formatArea(geom, this.messages);
                     tooltipCoord = geom.getInteriorPoint().getCoordinates() || null;
                 } else if (geom instanceof LineString) {
-                    output = formatLength(geom);
+                    output = formatLength(geom, this.messages);
                     tooltipCoord = geom.getLastCoordinate() || null;
                 }
 
@@ -211,6 +212,18 @@ export class MeasurementController {
             }
 
             // unset sketch
+            this.sketch = undefined;
+            if (changeListenerKey) {
+                unByKey(changeListenerKey);
+            }
+        });
+
+        draw.on("drawabort", () => {
+            if (measureTooltip) {
+                measureTooltip.destroy();
+                this.measureTooltip = measureTooltip = undefined;
+            }
+
             this.sketch = undefined;
             if (changeListenerKey) {
                 unByKey(changeListenerKey);
@@ -305,24 +318,24 @@ function getHelpMessage(messages: Messages, sketch: Feature | undefined) {
     return messages.getHelpMessage();
 }
 
-function formatArea(polygon: Polygon) {
+function formatArea(polygon: Polygon, messages: Messages) {
     const area = getArea(polygon);
     let output;
     if (area >= 1000000) {
-        output = Math.round((area / 1000000) * 100) / 100 + " " + "km<sup>2</sup>";
+        output = `${messages.formatNumber(area / 1000000)} km<sup>2</sup>`;
     } else {
-        output = Math.round(area * 100) / 100 + " " + "m<sup>2</sup>";
+        output = `${messages.formatNumber(area)} m<sup>2</sup>`;
     }
     return output;
 }
 
-function formatLength(line: LineString) {
+function formatLength(line: LineString, messages: Messages) {
     const length = getLength(line);
     let output;
     if (length >= 1000) {
-        output = Math.round((length / 1000) * 100) / 100 + " " + "km";
+        output = `${messages.formatNumber(length / 1000)} km`;
     } else {
-        output = Math.round(length * 100) / 100 + " " + "m";
+        output = `${messages.formatNumber(length)} m`;
     }
     return output;
 }
