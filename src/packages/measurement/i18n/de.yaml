@@ -6,4 +6,4 @@ messages:
   measurementInfoText: "Klicken Sie in die Karte, um eine Messung zu beginnen."
   tooltips:
     help: "Klicken, um mit der Messung zu beginnen."
-    continue: "Ein Doppelklick beendet die Messung."
+    continue: "Doppelt klicken, um die Messung zu beenden."

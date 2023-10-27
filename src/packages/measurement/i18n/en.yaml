@@ -6,4 +6,4 @@ messages:
   measurementInfoText: "Click in the map to start a measurement."
   tooltips:
     help: "Click to start measuring."
-    continue: "A double click finishes the measurement."
+    continue: "Double click to end the measurement."
