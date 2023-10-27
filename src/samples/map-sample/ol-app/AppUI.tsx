@@ -11,7 +11,7 @@ import { Toc } from "@open-pioneer/toc";
 import { ScaleComponent } from "map-sample-scale-component";
 import { useIntl } from "open-pioneer:react-hooks";
 import { useState } from "react";
-import { FiEdit, FiEdit2 } from "react-icons/fi";
+import { PiRulerFill, PiRulerLight } from "react-icons/pi";
 import { MAP_ID } from "./MapConfigProviderImpl";
 
 export function AppUI() {
@@ -88,7 +88,9 @@ export function AppUI() {
                                 >
                                     <Button
                                         aria-label={intl.formatMessage({ id: "measurementTitle" })}
-                                        leftIcon={measurementIsActive ? <FiEdit2 /> : <FiEdit />}
+                                        leftIcon={
+                                            measurementIsActive ? <PiRulerFill /> : <PiRulerLight />
+                                        }
                                         onClick={toggleMeasurement}
                                         iconSpacing={0}
                                         padding={0}
