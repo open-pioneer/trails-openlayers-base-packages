@@ -72,3 +72,24 @@ overrideLicenses:
     version: "2.2.1"
     licenseFiles:
       - custom: "./licenses/react_style_singleton_mit"
+
+  # Readme contains original MIT license which got lost during fork / development at some point
+  # Retrieved on 2023-09-27 from https://github.com/mapbox/jsonlint
+  # See also commit: https://github.com/mapbox/jsonlint/commit/21c821af6c176bc0b8d240d715d416223d1deb7b
+  - name: "@mapbox/jsonlint-lines-primitives"
+    version: "2.0.2"
+    license: "MIT"
+    licenseFiles:
+      - custom: "./licenses/mapbox_jsonlint_readme_mit.md"
+
+  # License link in README
+  - name: "bytewise"
+    version: "1.1.0"
+    licenseFiles:
+      - "./README.md"
+
+  # License link in README
+  - name: "typewise"
+    version: "1.0.3"
+    licenseFiles:
+      - "./README.md"
