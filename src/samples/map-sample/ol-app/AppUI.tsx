@@ -13,6 +13,27 @@ import { useIntl } from "open-pioneer:react-hooks";
 import { useState } from "react";
 import { FiEdit, FiEdit2 } from "react-icons/fi";
 import { MAP_ID } from "./MapConfigProviderImpl";
+import { Fill, Stroke, Style } from "ol/style";
+
+const BLACK_STYLE = new Style({
+    stroke: new Stroke({
+        color: "black",
+        width: 5
+    }),
+    fill: new Fill({
+        color: "rgba(0, 0, 0, 0.25)"
+    })
+});
+
+const RED_STYLE = new Style({
+    stroke: new Stroke({
+        color: "red",
+        width: 5
+    }),
+    fill: new Fill({
+        color: "rgba(255, 0, 0, 0.25)"
+    })
+});
 
 export function AppUI() {
     const intl = useIntl();
@@ -74,7 +95,11 @@ export function AppUI() {
                                             </SectionHeading>
                                         }
                                     >
-                                        <Measurement mapId={MAP_ID} />
+                                        <Measurement
+                                            mapId={MAP_ID}
+                                            activeFeatureStyle={RED_STYLE}
+                                            finishedFeatureStyle={BLACK_STYLE}
+                                        />
                                     </TitledSection>
                                 </Box>
                             )}
