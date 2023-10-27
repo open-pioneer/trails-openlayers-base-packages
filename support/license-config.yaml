@@ -82,14 +82,16 @@ overrideLicenses:
     licenseFiles:
       - custom: "./licenses/mapbox_jsonlint_readme_mit.md"
 
-  # License link in README
+  # Readme only contains link to http://deanlandolt.mit-license.org/
+  # The full text was retrieved on 2023-10-27
   - name: "bytewise"
     version: "1.1.0"
     licenseFiles:
-      - "./README.md"
+      - custom: "./licenses/bytewise_mit"
 
-  # License link in README
+  # Readme only contains link to http://deanlandolt.mit-license.org/
+  # The full text was retrieved on 2023-10-27
   - name: "typewise"
     version: "1.0.3"
     licenseFiles:
-      - "./README.md"
+      - custom: "./licenses/typewise_mit"
