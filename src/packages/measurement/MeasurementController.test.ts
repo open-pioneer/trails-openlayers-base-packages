@@ -12,7 +12,7 @@ import VectorSource from "ol/source/Vector";
 import { Fill, Style } from "ol/style";
 import { toFunction as toStyleFunction } from "ol/style/Style";
 import { Geometry, Polygon } from "ol/geom";
-import { Feature } from "ol";
+import { Feature, View } from "ol";
 
 it("should successfully start measurement, and activate or deactivate draw interaction", async () => {
     const { olMap, controller } = setup();
@@ -67,6 +67,52 @@ it("should measure a polygon / area", async () => {
             [851873, 6788406]
         ]
     ]);
+
+    controller.stopMeasurement();
+});
+
+it("should respect the map's current projection (EPSG:3857)", async () => {
+    const { olMap, controller } = setup();
+    olMap.setView(
+        new View({
+            projection: "EPSG:3857"
+        })
+    );
+
+    const layer = controller.getVectorLayer();
+    controller.startMeasurement("distance");
+
+    // This is roughly 100 meters according to scale bar and measurement widget in browser
+    // Tests seem to return a slightly different result but this doesn't appear worth investigating right now.
+    doDraw(olMap, layer, [
+        [405406.30970983295, 5757830.632703076],
+        [405504.7015101256, 5757830.632703076]
+    ]);
+
+    const finishedTooltip = getTooltipElement(olMap, "measurement-finished-tooltip");
+    expect(finishedTooltip.innerHTML).toMatchInlineSnapshot('"68.45 m"');
+
+    controller.stopMeasurement();
+});
+
+it("should respect the map's current projection (EPSG:4326)", async () => {
+    const { olMap, controller } = setup();
+    olMap.setView(
+        new View({
+            projection: "EPSG:4326"
+        })
+    );
+
+    const layer = controller.getVectorLayer();
+    controller.startMeasurement("distance");
+
+    doDraw(olMap, layer, [
+        [7.6259541581576, 51.958121972868796],
+        [7.627415371234616, 51.958121972868796]
+    ]);
+
+    const finishedTooltip = getTooltipElement(olMap, "measurement-finished-tooltip");
+    expect(finishedTooltip.innerHTML).toMatchInlineSnapshot('"100.13 m"');
 
     controller.stopMeasurement();
 });

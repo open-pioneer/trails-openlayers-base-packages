@@ -13,6 +13,7 @@ import Draw from "ol/interaction/Draw";
 import { Vector as VectorLayer } from "ol/layer";
 import { Vector as VectorSource } from "ol/source";
 import { getArea, getLength } from "ol/sphere";
+import { Projection } from "ol/proj";
 import { StyleFunction, StyleLike, toFunction as toStyleFunction } from "ol/style/Style";
 
 export type MeasurementType = "area" | "distance";
@@ -180,12 +181,14 @@ export class MeasurementController {
             let tooltipCoord: Coordinate | undefined;
             changeListenerKey = sketch.getGeometry()?.on("change", (evt) => {
                 const geom = evt.target;
+                const projection = this.olMap.getView().getProjection();
+
                 let output = "";
                 if (geom instanceof Polygon) {
-                    output = formatArea(geom, this.messages);
+                    output = formatArea(geom, projection, this.messages);
                     tooltipCoord = geom.getInteriorPoint().getCoordinates() || null;
                 } else if (geom instanceof LineString) {
-                    output = formatLength(geom, this.messages);
+                    output = formatLength(geom, projection, this.messages);
                     tooltipCoord = geom.getLastCoordinate() || null;
                 }
 
@@ -318,8 +321,8 @@ function getHelpMessage(messages: Messages, sketch: Feature | undefined) {
     return messages.getHelpMessage();
 }
 
-function formatArea(polygon: Polygon, messages: Messages) {
-    const area = getArea(polygon);
+function formatArea(polygon: Polygon, projection: Projection, messages: Messages) {
+    const area = getArea(polygon, { projection });
     let output;
     if (area >= 1000000) {
         output = `${messages.formatNumber(area / 1000000)} km<sup>2</sup>`;
@@ -329,8 +332,8 @@ function formatArea(polygon: Polygon, messages: Messages) {
     return output;
 }
 
-function formatLength(line: LineString, messages: Messages) {
-    const length = getLength(line);
+function formatLength(line: LineString, projection: Projection, messages: Messages) {
+    const length = getLength(line, { projection });
     let output;
     if (length >= 1000) {
         output = `${messages.formatNumber(length / 1000)} km`;
