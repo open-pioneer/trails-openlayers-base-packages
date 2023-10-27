@@ -1,10 +1,10 @@
 .measurement-tooltip {
     position: relative;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(255, 255, 255, 0.8);
     border-radius: 4px;
-    color: white;
+    color: black;
     padding: 4px 8px;
-    opacity: 0.8;
+    opacity: 1;
     white-space: nowrap;
     font-size: 12px;
     cursor: default;
@@ -12,16 +12,20 @@
     font-weight: bold;
 }
 .measurement-active-tooltip {
-    opacity: 1;
+    background: rgba(0, 0, 0, 0.9);
+    border-radius: 4px;
+    border-color: rgba(0, 0, 0, 0.9);
+    opacity: 0.9;
+    color: white;
 }
 .measurement-finished-tooltip {
-    background-color: #ffcc33;
+    background-color: rgba(76, 179, 255, 0.9);
     color: black;
     border: 1px solid white;
 }
 .measurement-active-tooltip:before,
 .measurement-finished-tooltip:before {
-    border-top: 6px solid rgba(0, 0, 0, 0.5);
+    border-top: 6px solid rgba(0, 0, 0, 0.9);
     border-right: 6px solid transparent;
     border-left: 6px solid transparent;
     content: "";
@@ -31,5 +35,5 @@
     left: 50%;
 }
 .measurement-finished-tooltip:before {
-    border-top-color: #ffcc33;
+    border-top-color: #4cb3ff;
 }

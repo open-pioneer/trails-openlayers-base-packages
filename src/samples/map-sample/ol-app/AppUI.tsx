@@ -9,14 +9,10 @@ import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { ScaleViewer } from "@open-pioneer/scale-viewer";
 import { Toc } from "@open-pioneer/toc";
 import { ScaleComponent } from "map-sample-scale-component";
-import { Circle as CircleStyle, Fill, Stroke, Style } from "ol/style";
 import { useIntl } from "open-pioneer:react-hooks";
 import { useState } from "react";
 import { FiEdit, FiEdit2 } from "react-icons/fi";
 import { MAP_ID } from "./MapConfigProviderImpl";
-
-const activeFeatureStyle = getActiveFeatureStyle();
-const finishedFeatureStyle = getFinishedFeatureStyle();
 
 export function AppUI() {
     const intl = useIntl();
@@ -78,11 +74,7 @@ export function AppUI() {
                                             </SectionHeading>
                                         }
                                     >
-                                        <Measurement
-                                            mapId={MAP_ID}
-                                            activeFeatureStyle={activeFeatureStyle}
-                                            finishedFeatureStyle={finishedFeatureStyle}
-                                        />
+                                        <Measurement mapId={MAP_ID} />
                                     </TitledSection>
                                 </Box>
                             )}
@@ -117,43 +109,4 @@ export function AppUI() {
             </TitledSection>
         </Flex>
     );
-}
-
-function getActiveFeatureStyle() {
-    return new Style({
-        fill: new Fill({
-            color: "rgba(255, 255, 255, 0.2)"
-        }),
-        stroke: new Stroke({
-            color: "rgba(0, 0, 0, 0.5)",
-            lineDash: [10, 10],
-            width: 2
-        }),
-        image: new CircleStyle({
-            radius: 5,
-            stroke: new Stroke({
-                color: "rgba(0, 0, 0, 0.7)"
-            }),
-            fill: new Fill({
-                color: "rgba(255, 255, 255, 0.2)"
-            })
-        })
-    });
-}
-
-function getFinishedFeatureStyle() {
-    return [
-        new Style({
-            stroke: new Stroke({
-                color: "#fff",
-                width: 5
-            })
-        }),
-        new Style({
-            stroke: new Stroke({
-                color: "#0e97fa",
-                width: 3
-            })
-        })
-    ];
 }

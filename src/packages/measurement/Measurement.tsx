@@ -142,25 +142,35 @@ function useController(map: MapModel | undefined, intl: PackageIntl) {
 }
 
 function getDefaultActiveFeatureStyle() {
-    return new Style({
-        fill: new Fill({
-            color: "rgba(255, 255, 255, 0.2)"
-        }),
-        stroke: new Stroke({
-            color: "rgba(0, 0, 0, 0.5)",
-            lineDash: [10, 10],
-            width: 2
-        }),
-        image: new CircleStyle({
-            radius: 5,
+    return [
+        new Style({
             stroke: new Stroke({
-                color: "rgba(0, 0, 0, 0.7)"
-            }),
+                color: "#fff",
+                lineDash: [10, 10],
+                width: 5
+            })
+        }),
+        new Style({
             fill: new Fill({
-                color: "rgba(255, 255, 255, 0.2)"
+                color: "rgba(0,0,0,0.15)"
+            }),
+            stroke: new Stroke({
+                color: "rgba(0, 0, 0, 0.7)",
+                lineDash: [10, 10],
+                width: 3
+            }),
+            image: new CircleStyle({
+                radius: 5,
+                stroke: new Stroke({
+                    color: "rgba(0, 0, 0, 0.7)",
+                    width: 2
+                }),
+                fill: new Fill({
+                    color: "rgba(255, 255, 255, 0.2)"
+                })
             })
         })
-    });
+    ];
 }
 
 function getDefaultFinishedFeatureStyle() {
@@ -173,8 +183,11 @@ function getDefaultFinishedFeatureStyle() {
         }),
         new Style({
             stroke: new Stroke({
-                color: "#0e97fa",
+                color: "#0b96fc",
                 width: 3
+            }),
+            fill: new Fill({
+                color: "rgba(11,150,252,0.15)"
             })
         })
     ];
