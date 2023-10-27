@@ -10,9 +10,18 @@ import { ScaleComponent } from "map-sample-scale-component";
 import { useIntl } from "open-pioneer:react-hooks";
 import { MAP_ID } from "./MapConfigProviderImpl";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
+import { OverviewMap } from "@open-pioneer/overview-map";
+
+import OSM from "ol/source/OSM.js";
+import TileLayer from "ol/layer/Tile.js";
 
 export function AppUI() {
     const intl = useIntl();
+
+    const overviewMapLayer = new TileLayer({
+        source: new OSM()
+    });
+    const overviewMapZoom = { minZoom: 0, maxZoom: 14 };
 
     return (
         <Flex height="100%" direction="column" overflow="hidden">
@@ -52,6 +61,11 @@ export function AppUI() {
                             </Box>
                         </MapAnchor>
                         <MapAnchor position="bottom-right" horizontalGap={10} verticalGap={30}>
+                            <OverviewMap
+                                mapId={MAP_ID}
+                                layer={overviewMapLayer}
+                                zoomLevel={overviewMapZoom}
+                            ></OverviewMap>
                             <Flex direction="column" gap={1} padding={1}>
                                 <InitialExtent mapId={MAP_ID} />
                                 <ZoomIn mapId={MAP_ID} />

@@ -1,0 +1,27 @@
+.custom-overviewmap,
+.custom-overviewmap.ol-uncollapsible {
+    bottom: auto;
+    left: auto;
+    right: 0;
+    top: 0;
+}
+
+.custom-overviewmap:not(.ol-collapsed) {
+    border: 1px solid black;
+}
+
+.custom-overviewmap .ol-overviewmap-map {
+    border: none;
+    width: 300px;
+}
+
+.custom-overviewmap .ol-overviewmap-box {
+    border: 2px solid red;
+}
+
+.custom-overviewmap:not(.ol-collapsed) button {
+    bottom: auto;
+    left: auto;
+    right: 1px;
+    top: 1px;
+}
