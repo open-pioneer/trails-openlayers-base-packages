@@ -372,6 +372,8 @@ export interface MapConfig {
     /**
      * Configures a specific projection, e.g. `"EPSG:4326"`.
      *
+     * Defaults to `EPSG:3857`.
+     *
      * To use custom projections, make sure that they are registered first:
      *
      * ```ts
