@@ -3,7 +3,7 @@ messages:
   distance: "Strecke"
   area: "Fläche"
   deleteMeasurementLabel: "Messungen löschen"
-  measurementInfoText: "Das Messen ist aktiv. Sie können den Modus auswählen oder per Klick in die Karte eine Messung beginnen."
+  measurementInfoText: "Klicken Sie in die Karte, um eine Messung zu beginnen."
   tooltips:
     help: "Klicken, um mit der Messung zu beginnen."
-    continue: "Klicken, um mit dem Messung fortzufahren."
+    continue: "Ein Doppelklick beendet die Messung."
