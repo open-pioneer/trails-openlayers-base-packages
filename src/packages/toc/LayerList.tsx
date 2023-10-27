@@ -104,7 +104,7 @@ function LayerItemDescriptor(props: {
                 />
             </PopoverTrigger>
             <Portal>
-                <PopoverContent className="toc-layer-item-details">
+                <PopoverContent className="toc-layer-item-details" overflowY="auto" maxHeight="400">
                     <PopoverArrow />
                     <PopoverCloseButton />
                     <PopoverHeader>{title}</PopoverHeader>
