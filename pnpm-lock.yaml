@@ -14,7 +14,7 @@ patchedDependencies:
     hash: ixdzxqire6z6wavv7be3kwhyxu
     path: patches/@changesets__assemble-release-plan@5.2.4.patch
   ol-mapbox-style@12.0.0:
-    hash: xbdneescntwe5hqreptmre4mey
+    hash: f6syo2kdcenmfamxdcxezyuuyy
     path: patches/ol-mapbox-style@12.0.0.patch
 
 importers:
@@ -832,7 +832,7 @@ importers:
         version: 8.1.0
       ol-mapbox-style:
         specifier: ^12.0.0
-        version: 12.0.0(patch_hash=xbdneescntwe5hqreptmre4mey)(ol@8.1.0)
+        version: 12.0.0(patch_hash=f6syo2kdcenmfamxdcxezyuuyy)(ol@8.1.0)
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -6002,7 +6002,7 @@ packages:
       es-abstract: 1.22.1
     dev: true
 
-  /ol-mapbox-style@12.0.0(patch_hash=xbdneescntwe5hqreptmre4mey)(ol@8.1.0):
+  /ol-mapbox-style@12.0.0(patch_hash=f6syo2kdcenmfamxdcxezyuuyy)(ol@8.1.0):
     resolution: {integrity: sha512-rrIFh1BuXdMfl9XwKobpz7sKLAVchseowQlGdgN3WRbCnovSdTeC5RSw1lgnC334kY74y9CQ7cY2WOR5nbnpHg==}
     peerDependencies:
       ol: 8.x || 7.x
