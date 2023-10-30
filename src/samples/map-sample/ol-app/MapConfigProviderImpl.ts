@@ -188,8 +188,7 @@ function createStrassenLayer() {
             },
             {
                 name: "6",
-                title: "Unfälle",
-                description: "Sublayer with a description"
+                title: "Unfälle"
             }
         ]
     });
