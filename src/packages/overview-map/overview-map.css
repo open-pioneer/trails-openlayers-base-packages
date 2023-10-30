@@ -19,9 +19,13 @@
     border: 2px solid red;
 }
 
-.custom-overviewmap:not(.ol-collapsed) button {
+.custom-overviewmap:not(.ol-collapsed) button,
+.custom-overviewmap.ol-collapsed button {
     bottom: auto;
     left: auto;
     right: 1px;
     top: 1px;
+    font-size: 1.3rem;
+    font-weight: 600;
+    background-color: #edf2f7;
 }
