@@ -1,0 +1,9 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`should successfully create a overview map component 1`] = `
+<div
+  class="overview-map css-0"
+  data-testid="overview-map"
+  data-theme="light"
+/>
+`;

@@ -9,6 +9,7 @@
     "peerDependencies": {
         "@open-pioneer/chakra-integration": "^1.1.0",
         "@open-pioneer/map": "workspace:^",
+        "@open-pioneer/ogc-features": "workspace:^",
         "@open-pioneer/runtime": "^1.1.0",
         "@open-pioneer/react-utils": "workspace:^",
         "ol": "^8.1.0",

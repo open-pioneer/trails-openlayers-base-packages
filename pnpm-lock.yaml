@@ -554,6 +554,9 @@ importers:
       '@open-pioneer/map':
         specifier: workspace:^
         version: link:../map
+      '@open-pioneer/ogc-features':
+        specifier: workspace:^
+        version: link:../ogc-features
       '@open-pioneer/react-utils':
         specifier: workspace:^
         version: link:../react-utils

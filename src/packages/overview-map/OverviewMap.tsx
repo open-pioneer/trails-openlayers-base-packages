@@ -71,6 +71,7 @@ export const OverviewMap: FC<OverviewMapProps> = (props) => {
                 olMap.removeControl(overviewMapControl);
             };
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [map, layer]);
 
     return <Box ref={overviewMapControlElem} {...containerProps}></Box>;
