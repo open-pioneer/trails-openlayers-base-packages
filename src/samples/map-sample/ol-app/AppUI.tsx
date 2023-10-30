@@ -13,19 +13,29 @@ import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 
 export function AppUI() {
     const intl = useIntl();
-
     return (
         <Flex height="100%" direction="column" overflow="hidden">
             <TitledSection
                 title={
-                    <Box textAlign="center" py={1}>
+                    <Box
+                        role="region"
+                        aria-label={intl.formatMessage({ id: "ariaLabel.header" })}
+                        textAlign="center"
+                        py={1}
+                    >
                         <SectionHeading size={"md"}>
                             OpenLayers Base Packages - Default Sample
                         </SectionHeading>
                     </Box>
                 }
             >
-                <Flex flex="1" direction="column" position="relative">
+                <Flex
+                    role="main"
+                    aria-label={intl.formatMessage({ id: "ariaLabel.main" })}
+                    flex="1"
+                    direction="column"
+                    position="relative"
+                >
                     <MapContainer mapId={MAP_ID}>
                         <MapAnchor position="top-left" horizontalGap={20} verticalGap={20}>
                             <Box
@@ -52,7 +62,13 @@ export function AppUI() {
                             </Box>
                         </MapAnchor>
                         <MapAnchor position="bottom-right" horizontalGap={10} verticalGap={30}>
-                            <Flex direction="column" gap={1} padding={1}>
+                            <Flex
+                                role="toolbar"
+                                aria-label={intl.formatMessage({ id: "ariaLabel.toolbar" })}
+                                direction="column"
+                                gap={1}
+                                padding={1}
+                            >
                                 <InitialExtent mapId={MAP_ID} />
                                 <ZoomIn mapId={MAP_ID} />
                                 <ZoomOut mapId={MAP_ID} />
@@ -60,7 +76,13 @@ export function AppUI() {
                         </MapAnchor>
                     </MapContainer>
                 </Flex>
-                <Flex gap={3} alignItems="center" justifyContent="center">
+                <Flex
+                    role="region"
+                    aria-label={intl.formatMessage({ id: "ariaLabel.footer" })}
+                    gap={3}
+                    alignItems="center"
+                    justifyContent="center"
+                >
                     <CoordinateViewer mapId={MAP_ID} precision={2} />
                     <ScaleComponent mapId={MAP_ID} />
                     <ScaleViewer mapId={MAP_ID} />

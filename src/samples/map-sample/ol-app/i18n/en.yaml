@@ -1,3 +1,8 @@
 messages:
   basemapLabel: "Select basemap:"
   tocTitle: "Table of contents"
+  ariaLabel:
+    header: "Titel"
+    footer: "Base bar with scale information, spatial reference system and coordinate display"
+    main: "Map. Use the arrow keys to move the map. Zoom in with the plus button and zoom out with the minus button."
+    toolbar: "Maptools"
