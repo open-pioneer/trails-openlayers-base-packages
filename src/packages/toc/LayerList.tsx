@@ -1,11 +1,27 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-import { Checkbox, List, ListItem, Text } from "@open-pioneer/chakra-integration";
+import {
+    Checkbox,
+    List,
+    Text,
+    Flex,
+    Popover,
+    PopoverTrigger,
+    PopoverContent,
+    PopoverHeader,
+    PopoverBody,
+    Portal,
+    Button,
+    PopoverArrow,
+    PopoverCloseButton
+} from "@open-pioneer/chakra-integration";
 import { LayerModel, MapModel } from "@open-pioneer/map";
 import LayerGroup from "ol/layer/Group";
 import { useCallback, useRef, useSyncExternalStore } from "react";
 import classNames from "classnames";
 import { useIntl } from "open-pioneer:react-hooks";
+import { PackageIntl } from "@open-pioneer/runtime";
+import { FiMoreVertical } from "react-icons/fi";
 
 /**
  * Lists the (top level) operational layers in the map.
@@ -16,7 +32,9 @@ export function LayerList(props: { map: MapModel; "aria-labelledby"?: string }):
     const { map, "aria-labelledby": ariaLabelledBy } = props;
     const intl = useIntl();
     const layers = useLayers(map);
-    const layerItems = layers.map((layer) => <LayerItem key={layer.id} layer={layer} />);
+    const layerItems = layers.map((layer) => (
+        <LayerItem key={layer.id} layer={layer} intl={intl} />
+    ));
 
     if (!layerItems.length) {
         return (
@@ -29,7 +47,7 @@ export function LayerList(props: { map: MapModel; "aria-labelledby"?: string }):
     return (
         <List
             // Note: not using OrderedList because it adds default margins
-            as="ol"
+            as="ul"
             className="toc-layer-list"
             listStyleType="none"
             aria-labelledby={ariaLabelledBy}
@@ -40,18 +58,73 @@ export function LayerList(props: { map: MapModel; "aria-labelledby"?: string }):
 }
 
 /** Renders a single layer as a list item. */
-function LayerItem(props: { layer: LayerModel }): JSX.Element {
-    const { layer } = props;
+function LayerItem(props: { layer: LayerModel; intl: PackageIntl }): JSX.Element {
+    const { layer, intl } = props;
     const title = useTitle(layer);
     const { isVisible, setVisible } = useVisibility(layer);
-
     return (
-        <ListItem className={classNames("toc-layer-list-entry", `layer-${slug(layer.id)}`)}>
+        /** Gap to prevent bleeding of the buttons hover style into the layer title */
+        <Flex
+            as="li"
+            width="100%"
+            className={classNames("toc-layer-item", `layer-${slug(layer.id)}`)}
+            flexDirection="row"
+            align="center"
+            gap={2}
+            justifyContent="space-between"
+        >
             <Checkbox isChecked={isVisible} onChange={(event) => setVisible(event.target.checked)}>
                 {title}
             </Checkbox>
-        </ListItem>
+            {layer.description && <LayerItemDescriptor layer={layer} title={title} intl={intl} />}
+        </Flex>
     );
+}
+
+function LayerItemDescriptor(props: {
+    layer: LayerModel;
+    title: string;
+    intl: PackageIntl;
+}): JSX.Element {
+    const { layer, title, intl } = props;
+    const buttonLabel = intl.formatMessage({ id: "descriptionLabel" });
+    const description = useLayerDescription(layer);
+
+    return (
+        <Popover>
+            <PopoverTrigger>
+                <Button
+                    className="toc-layer-item-details-button"
+                    aria-label={buttonLabel}
+                    borderRadius="full"
+                    iconSpacing={0}
+                    padding={0}
+                    variant="ghost"
+                    leftIcon={<FiMoreVertical />}
+                />
+            </PopoverTrigger>
+            <Portal>
+                <PopoverContent className="toc-layer-item-details" overflowY="auto" maxHeight="400">
+                    <PopoverArrow />
+                    <PopoverCloseButton />
+                    <PopoverHeader>{title}</PopoverHeader>
+                    <PopoverBody>{description}</PopoverBody>
+                </PopoverContent>
+            </Portal>
+        </Popover>
+    );
+}
+
+function useLayerDescription(layer: LayerModel): string {
+    const getSnapshot = useCallback(() => layer.description, [layer]);
+    const subscribe = useCallback(
+        (cb: () => void) => {
+            const resource = layer.on("changed:description", cb);
+            return () => resource.destroy();
+        },
+        [layer]
+    );
+    return useSyncExternalStore(subscribe, getSnapshot);
 }
 
 /** Returns the layers current title. */

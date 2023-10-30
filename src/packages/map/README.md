@@ -264,6 +264,55 @@ layer.deleteAttribute("foo");
 To create an OGC API Features layer, use the `ogc-features` package.
 Details about the necessary steps are described in the package's [README](../ogc-features/README.md) file.
 
+##### Use of Layer with MapBox-Styles
+
+It is possible to use a mapbox style document as a layer. You have to use the class `MapboxVectorLayer`
+from the package `ol-mapbox-style` for this with the following minimal options as a layer object:
+
+```ts
+// YOUR-APP/MapConfigProviderImpl.ts
+import { MapboxVectorLayer } from "ol-mapbox-style";
+
+export const MAP_ID = "main";
+
+export class MapConfigProviderImpl implements MapConfigProvider {
+    mapId = MAP_ID;
+
+    async getMapConfig(): Promise<MapConfig> {
+        return {
+            projection: "EPSG:3857",
+            initialView: {
+                kind: "position",
+                center: {
+                    x: 848890,
+                    y: 6793350
+                },
+                zoom: 13
+            },
+            layers: [
+                {
+                    title: "Abschnitte/Äste mit Unfällen (Mapbox Style)",
+                    layer: new MapboxVectorLayer({
+                        styleUrl: "https://demo.ldproxy.net/strassen/styles/default?f=mbs",
+                        accessToken: null
+                    })
+                }
+            ]
+        };
+    }
+}
+```
+
+As with the current version 12.0.0 of `ol-mapbox-style`, it is not possible to use the MapboxVectorLayer
+with styleUrls in format `mbs` (parameter `f=mbs`) due to a bug. A patch has been provided for this and is active
+with the current version of the trails base package.
+The patch enables the user to explicitly set the `accessToken` to `null`, if it is not needed/supported.
+
+Because of the changed licence of mapbox as of version 2.0, the implementation has been overridden
+with the code of map libre (Version 19.3.2) behind the scenes.
+
+An example of a map box layer can be found in the OGC sample app.
+
 ##### OGC Web Map Tile Service (WMTS)
 
 To create a layer configuration for a WMTS, use one of the following configuration approaches:
