@@ -60,7 +60,7 @@ export interface OlMapOptions extends Omit<OlMapBaseOptions, "target" | "view"> 
      * We recommend using the `OlViewOptions` type.
      *
      * > Warning: When a fully constructed `OlView` instance is provided, some options
-     * > (such as `initialView` or `projection`) cannot be applied anymore.
+     * > of {@link MapConfig} (such as `initialView` or `projection`) cannot be applied anymore.
      */
     view: OlView | OlViewOptions | Promise<OlViewOptions> | undefined;
 }
@@ -104,7 +104,7 @@ export interface MapConfig {
      *
      * Layers defined in this array are (by default) displayed in their listed order:
      * layers defined first are shown at the bottom, and layers defined at a later position
-     * are shown above their predecessors.
+     * are shown _above_ their predecessors.
      *
      * Note: base layers are always shown below all operational layers.
      */

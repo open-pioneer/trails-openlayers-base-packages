@@ -25,7 +25,7 @@ export interface MapModel extends EventSource<MapModelEvents> {
     readonly id: string;
 
     /**
-     * The container where the map is currently being rendered.
+     * The container in which the map is currently being rendered.
      *
      * May be undefined if the map is not being rendered at the moment.
      * May change at runtime.
@@ -37,7 +37,7 @@ export interface MapModel extends EventSource<MapModelEvents> {
     /**
      * The initial map extent.
      *
-     * May be undefined before the map is being shown.
+     * May be undefined before the map is shown.
      * This is guaranteed to be initialized if the promise returned by {@link whenDisplayed} has resolved.
      *
      * The `changed:initialExtent` event is emitted when this value changes.
@@ -117,7 +117,7 @@ export interface LayerCollection extends EventSource<LayerCollectionEvents> {
     getAllLayers(options?: LayerRetrievalOptions): Layer[];
 
     /**
-     * Removes a layer from the registry and the map identified by the `id`.
+     * Removes a layer identified by the `id` from the map.
      *
      * NOTE: The current implementation only supports removal of _top level_ layers.
      */

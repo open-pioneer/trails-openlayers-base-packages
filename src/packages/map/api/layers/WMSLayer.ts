@@ -5,7 +5,7 @@ import { WMSLayerImpl } from "../../model/layers/WMSLayerImpl";
 import type { LayerBaseConfig, Layer, SublayersCollection } from "./base";
 
 /**
- * Options to construct a WMS layer.
+ * Configuration options to construct a WMS layer.
  */
 export interface WMSLayerConfig extends LayerBaseConfig {
     /** URL of the WMS service. */
@@ -24,7 +24,7 @@ export interface WMSLayerConfig extends LayerBaseConfig {
 }
 
 /**
- * Options to construct the sublayers of a WMS layer.
+ * Configuration options to construct the sublayers of a WMS layer.
  */
 export interface WMSSublayerConfig extends LayerBaseConfig {
     /** The name of the WMS sublayer in the service's capabilities. */
@@ -38,7 +38,7 @@ export interface WMSSublayerConfig extends LayerBaseConfig {
 export interface WMSLayer extends Layer {
     readonly sublayers: SublayersCollection;
 
-    /** The URL to the WMS service that was used during layer construction. */
+    /** The URL of the WMS service that was used during layer construction. */
     readonly url: string;
 }
 

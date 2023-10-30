@@ -1,9 +1,7 @@
 # @open-pioneer/map
 
-## TODO
-
-This package provides a map container component to integrate an [OpenLayers](https://openlayers.org/) map.
-Besides the component, the package provides a service, which handles the registration and creation of a map.
+This package integrates [OpenLayers](https://openlayers.org/) maps into a Trails application.
+APIs provided by this package can be used to configure, embed and access the map and its contents.
 
 ## Usage
 
@@ -12,16 +10,7 @@ To use the map in your app, follow these two steps:
 -   Add a `MapContainer` component to your app (see [Map container component](#md:map-container-component)).
 -   Implement a `MapConfigProvider` (see [Map configuration](#md:map-configuration)).
 
-> IMPORTANT: The package uses a map model and layer instances to internally handle the states of the map and layers. This is needed to support additional features like base layers.
-> For this reason, always use the methods provided by these models to manage the following features on map and layers (instead of using the raw OpenLayers instances directly):
->
-> -   Map composition (access and configuration of layers, base layers, adding or removing layers, sublayers, etc.)
-> -   Layer visibility
-> -   Custom layer metadata (`attributes`)
->
-> You can use the raw OpenLayers instances for other features (for example to control the transparency of a layer).
->
-> For examples, see [Using the map model](#md:using-the-map-model).
+To access or manipulate the content of the map programmatically, see [Using the map model](#using-the-map-model).
 
 ### Map container component
 
@@ -495,7 +484,7 @@ const proj = getProjection("EPSG:3035");
 
 ### Using the map model
 
-This package allows interfacing with maps and their layers through multiple interfaces and classes.
+This package allows interacting with maps and their layers through multiple interfaces and classes.
 
 The most important API items are as follows:
 
@@ -508,7 +497,7 @@ The most important API items are as follows:
     Through the `MapModel` one can obtain the map's base layers, operational layers and so on.
     The `MapModel` also provides access to the raw OpenLayers `olMap` for advanced use cases.
 
-    > NOTE: The `olMap` is manipulated by the `MapModel` to implement its functionality (for example, to add or remove layer instances). When using it directly, treat it carefully and as a shared resource.
+    > NOTE: The `olMap` is manipulated by the `MapModel` to implement its functionality (for example, to add or remove layer instances). When using the `olMap` directly, treat it carefully and as a shared resource.
 
 -   The `Layer` interface and its various implementations.
     This interface is used to make common properties and methods available (such as `.title`, or `.setVisible`).
@@ -539,7 +528,7 @@ This package currently only provides two layer implementations:
 
 -   `SimpleLayer`.
     Instances of this class can be used to integrate arbitrary OpenLayers `Layer` instances into the map by configuring the `olLayer` constructor option.
-    Note that one can only achieve basic integration through this method: more advanced features such such automatic legends or sublayers will not be available.
+    Note that one can only achieve basic integration through this method: more advanced features such as automatic legends or sublayers will not be available.
 
 -   `WMSLayer`.
     Represents a WMS service embedded into the map.

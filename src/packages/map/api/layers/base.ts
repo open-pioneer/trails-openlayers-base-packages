@@ -20,7 +20,7 @@ export interface LayerBaseEvents {
 export type LayerLoadState = "not-loaded" | "loading" | "loaded" | "error";
 
 /**
- * Options supported by all layer types (operational layers and sublayers).
+ * Configuration options supported by all layer types (layers and sublayers).
  */
 export interface LayerBaseConfig {
     /**
@@ -42,7 +42,6 @@ export interface LayerBaseConfig {
 
     /**
      * Whether this layer should initially be visible.
-     *
      * Defaults to `true`.
      */
     visible?: boolean;
@@ -65,7 +64,12 @@ export interface LayerBase<AdditionalEvents = {}>
     /** The map this layer belongs to. */
     readonly map: MapModel;
 
-    /** The unique id of this layer (scoped to the owning map). */
+    /**
+     * The unique id of this layer within its map model.
+     *
+     * NOTE: layer ids may not be globally unique: layers that belong
+     * to different map models may have the same id.
+     */
     readonly id: string;
 
     /** The human-readable title of this layer. */
@@ -125,7 +129,7 @@ export interface LayerBase<AdditionalEvents = {}>
 }
 
 /**
- * Options supported by all operational layer types.
+ * Configuration options supported by all operational layer types.
  */
 export interface LayerConfig extends LayerBaseConfig {
     /**
@@ -145,7 +149,7 @@ export interface LayerConfig extends LayerBaseConfig {
  */
 export interface Layer<AdditionalEvents = {}> extends LayerBase<AdditionalEvents> {
     /**
-     * Whether the layer has been loaded, or whether an error occurred while trying to load it.
+     * The load state of a layer.
      */
     readonly loadState: LayerLoadState;
 

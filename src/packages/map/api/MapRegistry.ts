@@ -19,7 +19,7 @@ export interface MapRegistry {
     getMapModel(mapId: string): Promise<MapModel | undefined>;
 
     /**
-     * Like {@link getMapModel}, but throws if no configuration exists for the given `mapId`.
+     * Like {@link getMapModel}, but throws if no model exists for the given `mapId`.
      */
     expectMapModel(mapId: string): Promise<MapModel>;
 
@@ -27,7 +27,7 @@ export interface MapRegistry {
      * Given a raw OpenLayers map instance, returns the associated {@link MapModel} - or undefined
      * if the map is unknown to this registry.
      *
-     * All map models created by this registry (e.g. via {@link MapConfigProvider}) have an associated map model.
+     * All OpenLayers maps created by this registry (e.g. via {@link MapConfigProvider}) have an associated map model.
      */
     getMapModelByRawInstance(olMap: OlMap): MapModel | undefined;
 }
