@@ -4,6 +4,7 @@
  * This file is automatically executed by vitest before the actual test suite is run.
  * See `vite.config.ts` and https://vitest.dev/config/#setupfiles
  */
+import "@testing-library/jest-dom/vitest";
 
 if (typeof window !== "undefined") {
     // Running with mocked dom (happy-dom or jsdom)

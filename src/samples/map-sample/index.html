@@ -14,6 +14,11 @@
             .full-height {
                 height: 100%;
                 max-height: 100%;
+                overflow: hidden;
+            }
+
+            .app {
+                overflow: hidden;
             }
         </style>
     </head>
@@ -32,6 +37,7 @@
 
                 const app = document.createElement("ol-map-app");
                 app.classList.add("full-height");
+                app.classList.add("app");
                 app.setAttribute("id", "test");
 
                 if (lang) {

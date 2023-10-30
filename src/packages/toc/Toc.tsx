@@ -1,10 +1,14 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
 import { BasemapSwitcher, BasemapSwitcherProps } from "@open-pioneer/basemap-switcher";
-import { Box, Text } from "@open-pioneer/chakra-integration";
+import { Box, Flex, Text } from "@open-pioneer/chakra-integration";
 import { useMapModel } from "@open-pioneer/map";
-import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
-import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
+import {
+    CommonComponentProps,
+    SectionHeading,
+    TitledSection,
+    useCommonComponentProps
+} from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, useId } from "react";
 import { LayerList } from "./LayerList";
@@ -55,7 +59,7 @@ export const Toc: FC<TocProps> = (props: TocProps) => {
             break;
         case "resolved": {
             const basemapSwitcher = showBasemapSwitcher && (
-                <Box className="toc-basemap-switcher" padding={PADDING}>
+                <Box className="toc-basemap-switcher">
                     <TitledSection
                         title={
                             <SectionHeading id={basemapsHeadingId} size={"sm"} mb={PADDING}>
@@ -72,7 +76,7 @@ export const Toc: FC<TocProps> = (props: TocProps) => {
                 </Box>
             );
             const layerList = (
-                <Box className="toc-operational-layers" padding={PADDING}>
+                <Box className="toc-operational-layers">
                     <TitledSection
                         title={
                             <SectionHeading
@@ -99,5 +103,9 @@ export const Toc: FC<TocProps> = (props: TocProps) => {
         }
     }
 
-    return <Box {...containerProps}>{content}</Box>;
+    return (
+        <Flex {...containerProps} direction="column" gap={PADDING}>
+            {content}
+        </Flex>
+    );
 };

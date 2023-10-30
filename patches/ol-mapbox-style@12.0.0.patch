@@ -1,0 +1,84 @@
+diff --git a/dist/MapboxVectorLayer.d.ts b/dist/MapboxVectorLayer.d.ts
+index 2bc0065760797914e7b94812ac8f100c4b6e83da..f12088b2203360c5847afc5bdbdbe0f25ed41c80 100644
+--- a/dist/MapboxVectorLayer.d.ts
++++ b/dist/MapboxVectorLayer.d.ts
+@@ -118,7 +118,7 @@ export default class MapboxVectorLayer extends VectorTileLayer {
+      * must be provided.
+      */
+     constructor(options: Options);
+-    accessToken: string | undefined;
++    accessToken: string | undefined | null;
+ }
+ export type Map = import("ol/Map.js").default;
+ export type Options = {
+@@ -131,9 +131,10 @@ export type Options = {
+     /**
+      * The access token for your Mapbox style. This has to be provided
+      * for `mapbox://` style urls. For `https://` and other urls, any access key must be the last query
+-     * parameter of the style url.
++     * parameter of the style url. If the service does not need or support an accessToken, null must be
++     * explicitly set.
+      */
+-    accessToken?: string | undefined;
++    accessToken?: string | undefined | null;
+     /**
+      * If your style uses more than one source, you need to use either the
+      * `source` property or the `layers` property to limit rendering to a single vector source.  The
+diff --git a/dist/apply.d.ts b/dist/apply.d.ts
+index c54e9d6672914528ae04b9796182a37ee5f51e54..cba2c2eb49e429c4243871fb98ad89d74e5e9ddd 100644
+--- a/dist/apply.d.ts
++++ b/dist/apply.d.ts
+@@ -231,7 +231,7 @@ export type Options = {
+     /**
+      * Access token for 'mapbox://' urls.
+      */
+-    accessToken?: string | undefined;
++    accessToken?: string | undefined | null;
+     /**
+      * Function for controlling how `ol-mapbox-style` fetches resources. Can be used for modifying
+      * the url, adding headers or setting credentials options. Called with the url and the resource
+diff --git a/dist/index.js b/dist/index.js
+index 9624b203cc925231d1d74b039e2e49ed81da0033..3831c9c3e96059769396b0adeeef157b1940217c 100644
+--- a/dist/index.js
++++ b/dist/index.js
+@@ -7482,7 +7482,7 @@ function getTileResolutions(projection, tileSize = 512) {
+  * @return {Options} Completed options with accessToken and accessTokenParam.
+  */
+ function completeOptions(styleUrl, options) {
+-    if (!options.accessToken) {
++    if (!options.accessToken && options.accessToken !== null) {
+         options = Object.assign({}, options);
+         const searchParams = new URL(styleUrl).searchParams;
+         // The last search parameter is the access token
+@@ -8694,7 +8694,7 @@ class MapboxVectorLayer extends VectorTileLayer {
+             useInterimTilesOnError: options.useInterimTilesOnError,
+             properties: options.properties
+         });
+-        if (options.accessToken) {
++        if (options.accessToken || options.accessToken === null) {
+             this.accessToken = options.accessToken;
+         }
+         const url = options.styleUrl;
+diff --git a/src/MapboxVectorLayer.js b/src/MapboxVectorLayer.js
+index 1920508d3d2e13ec5cf96f0c3530ed81aef440c2..1a176474ad274cdf40b8d4cf5ad051cce6c4651d 100644
+--- a/src/MapboxVectorLayer.js
++++ b/src/MapboxVectorLayer.js
+@@ -32,7 +32,8 @@ class ErrorEvent extends BaseEvent {
+  * 'mapbox://styles/you/your-style'.
+  * @property {string} [accessToken] The access token for your Mapbox style. This has to be provided
+  * for `mapbox://` style urls. For `https://` and other urls, any access key must be the last query
+- * parameter of the style url.
++ * parameter of the style url. If the service does not need or support an accessToken, null must be
++ * explicitly set.
+  * @property {string} [source] If your style uses more than one source, you need to use either the
+  * `source` property or the `layers` property to limit rendering to a single vector source.  The
+  * `source` property corresponds to the id of a vector source in your Mapbox style.
+@@ -175,7 +176,7 @@ export default class MapboxVectorLayer extends VectorTileLayer {
+       properties: options.properties,
+     });
+ 
+-    if (options.accessToken) {
++    if (options.accessToken || options.accessToken === null) {
+       this.accessToken = options.accessToken;
+     }
+     const url = options.styleUrl;

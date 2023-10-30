@@ -55,6 +55,8 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                 new SimpleLayer({
                     title: "Haltestellen Stadt Rostock",
                     visible: true,
+                    description:
+                        "Haltestellen des öffentlichen Personenverkehrs in der Hanse- und Universitätsstadt Rostock.",
                     olLayer: createHaltestellenLayer()
                 }),
                 new SimpleLayer({
@@ -156,6 +158,7 @@ function createKitasLayer() {
 function createSchulenLayer() {
     return new WMSLayer({
         title: "Schulstandorte",
+        description: `Der vorliegende Datenbestand / Dienst zu den Schulstandorten in NRW stammt aus der Schuldatenbank. Die Informationen werden von den Schulträgern bzw. Schulen selbst eingetragen und aktuell gehalten. Die Daten werden tagesaktuell bereitgestellt und enthalten alle grundlegenden Informationen zu Schulen wie Schulnummer, Schulbezeichnung und Adresse.Der vorliegende Datenbestand / Dienst zu den Schulstandorten in NRW stammt aus der Schuldatenbank. Die Informationen werden von den Schulträgern bzw. Schulen selbst eingetragen und aktuell gehalten. Die Daten werden tagesaktuell bereitgestellt und enthalten alle grundlegenden Informationen zu Schulen wie Schulnummer, Schulbezeichnung und Adresse.Der vorliegende Datenbestand / Dienst zu den Schulstandorten in NRW stammt aus der Schuldatenbank. Die Informationen werden von den Schulträgern bzw. Schulen selbst eingetragen und aktuell gehalten. Die Daten werden tagesaktuell bereitgestellt und enthalten alle grundlegenden Informationen zu Schulen wie Schulnummer, Schulbezeichnung und Adresse.Der vorliegende Datenbestand / Dienst zu den Schulstandorten in NRW stammt aus der Schuldatenbank. Die Informationen werden von den Schulträgern bzw. Schulen selbst eingetragen und aktuell gehalten. Die Daten werden tagesaktuell bereitgestellt und enthalten alle grundlegenden Informationen zu Schulen wie Schulnummer, Schulbezeichnung und Adresse.`,
         visible: true,
         url: "https://www.wms.nrw.de/wms/wms_nw_inspire-schulen",
         sublayers: [
@@ -185,7 +188,8 @@ function createStrassenLayer() {
             },
             {
                 name: "6",
-                title: "Unfälle"
+                title: "Unfälle",
+                description: "Sublayer with a description"
             }
         ]
     });
