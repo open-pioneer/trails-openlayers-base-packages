@@ -35,7 +35,12 @@ it("should successfully create a map anchor component", async () => {
     }
 
     expect(mapAnchor).toBeInstanceOf(HTMLDivElement);
-    expect(mapAnchor).toMatchSnapshot();
+    expect(mapAnchor).toMatchInlineSnapshot(`
+      <div
+        class="map-anchor css-3czzey"
+        data-theme="light"
+      />
+    `);
 });
 
 it("should successfully create a map anchor component with additional css classes", async () => {

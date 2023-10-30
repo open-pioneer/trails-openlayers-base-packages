@@ -7,7 +7,7 @@ import View from "ol/View";
 import { expect, it } from "vitest";
 import { MapContainer } from "./MapContainer";
 import { useCenter, useProjection, useResolution, useScale, useView } from "./hooks";
-import { MapRegistry } from "./api";
+import { MapRegistry } from "../api";
 
 it("should successfully return the current map view", async () => {
     const { mapId, registry } = await setupMap();

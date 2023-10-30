@@ -6,7 +6,7 @@ import type OlMap from "ol/Map";
 import { Extent } from "ol/extent";
 import { ReactNode, useEffect, useMemo, useRef } from "react";
 import { useMapModel } from "./useMapModel";
-import { MapModel } from "./api";
+import { MapModel } from "../api";
 import { MapContextProvider, MapContextType } from "./MapContext";
 const LOG = createLogger("map:MapContainer");
 

@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
-import { render, screen, waitFor } from "@testing-library/react";
+import { act, render, screen, waitFor } from "@testing-library/react";
 import TileLayer from "ol/layer/Tile";
 import { expect, it } from "vitest";
 import { Toc } from "./Toc";
@@ -15,18 +15,18 @@ it("should successfully create a toc component", async () => {
             {
                 title: "Base layer",
                 id: "base-layer",
-                layer: new TileLayer({}),
+                olLayer: new TileLayer({}),
                 isBaseLayer: true
             },
             {
                 title: "Layer 1",
                 id: "layer-1",
-                layer: new TileLayer({})
+                olLayer: new TileLayer({})
             },
             {
                 title: "Layer 2",
                 id: "layer-2",
-                layer: new TileLayer({})
+                olLayer: new TileLayer({})
             }
         ]
     });
@@ -96,7 +96,7 @@ it("should support overriding basemap-switcher properties", async () => {
         layers: [
             {
                 title: "OSM",
-                layer: new TileLayer({}),
+                olLayer: new TileLayer({}),
                 isBaseLayer: true
             }
         ]
@@ -119,11 +119,12 @@ it("should support overriding basemap-switcher properties", async () => {
 
     const tocDiv = await findToc();
     const { basemapSwitcher, basemapSelect } = await waitForBasemapSwitcher(tocDiv!);
-
     expect(basemapSwitcher?.classList.contains("test-class")).toBe(true);
 
-    // Get options manually (instead of basemapSelect.options); these seems
-    // to be a timing problem with that property (?)
+    // Weird timing problem w.r.t. select options in basemap switcher
+    await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 100));
+    });
     const options = basemapSelect.querySelectorAll("option");
     const optionLabels = Array.from(options).map((opt) => opt.textContent);
     expect(optionLabels).toMatchInlineSnapshot(`

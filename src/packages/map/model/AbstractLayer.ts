@@ -1,59 +1,52 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-import { EventEmitter, EventNames, Resource, createLogger } from "@open-pioneer/core";
+import { Resource, createLogger } from "@open-pioneer/core";
 import { unByKey } from "ol/Observable";
 import { EventsKey } from "ol/events";
 import OlBaseLayer from "ol/layer/Base";
 import OlLayer from "ol/layer/Layer";
 import Source, { State as OlSourceState } from "ol/source/Source";
-import { LayerConfig, LayerLoadState, LayerModel, LayerModelEvents, MapModel } from "../api";
+import { Layer, LayerLoadState, SimpleLayerConfig } from "../api";
+import { AbstractLayerBase } from "./AbstractLayerBase";
 import { MapModelImpl } from "./MapModelImpl";
 
-const LOG = createLogger("map:LayerModel");
+const LOG = createLogger("map:AbstractLayer");
 
-export class LayerModelImpl extends EventEmitter<LayerModelEvents> implements LayerModel {
-    #id: string;
-    #map: MapModelImpl;
+/**
+ * Base class for normal layer types.
+ *
+ * These layers always have an associated OpenLayers layer.
+ */
+export abstract class AbstractLayer<AdditionalEvents = {}>
+    extends AbstractLayerBase<AdditionalEvents>
+    implements Layer
+{
     #olLayer: OlBaseLayer;
     #isBaseLayer: boolean;
-    #attributes: Record<string | symbol, unknown>;
     #visible: boolean;
-    #destroyed = false;
-
-    #title: string;
-    #description: string;
 
     #loadState: LayerLoadState;
     #stateWatchResource: Resource | undefined;
 
-    constructor(map: MapModelImpl, config: Required<LayerConfig>) {
-        super();
-        this.#id = config.id;
-        this.#map = map;
-        this.#olLayer = config.layer;
-        this.#isBaseLayer = config.isBaseLayer;
-        this.#attributes = config.attributes;
-        this.#visible = config.visible;
-        this.#title = config.title;
-        this.#description = config.description;
+    constructor(config: SimpleLayerConfig) {
+        super(config);
+        this.#olLayer = config.olLayer;
+        this.#isBaseLayer = config.isBaseLayer ?? false;
+        this.#visible = config.visible ?? true;
 
         const { initial: initialState, resource: stateWatchResource } = watchLoadState(
             this.#olLayer,
             (state) => {
                 this.#loadState = state;
-                this.#emitChangeEvent("changed:loadState");
+                this.__emitChangeEvent("changed:loadState");
             }
         );
         this.#loadState = initialState;
         this.#stateWatchResource = stateWatchResource;
     }
 
-    get id(): string {
-        return this.#id;
-    }
-
-    get map(): MapModel {
-        return this.#map;
+    get visible(): boolean {
+        return this.#visible;
     }
 
     get olLayer(): OlBaseLayer {
@@ -64,54 +57,25 @@ export class LayerModelImpl extends EventEmitter<LayerModelEvents> implements La
         return this.#isBaseLayer;
     }
 
-    get attributes(): Record<string | symbol, unknown> {
-        return this.#attributes;
-    }
-
-    get title(): string {
-        return this.#title;
-    }
-
-    get description(): string {
-        return this.#description;
-    }
-
-    get visible(): boolean {
-        return this.#visible;
-    }
-
     get loadState(): LayerLoadState {
         return this.#loadState;
     }
 
     destroy() {
-        if (this.#destroyed) {
+        if (this.__destroyed) {
             return;
-        }
-
-        this.#destroyed = true;
-        try {
-            this.emit("destroy");
-        } catch (e) {
-            LOG.warn(`Unexpected error from event listener during layer model destruction:`, e);
         }
 
         this.#stateWatchResource?.destroy();
         this.olLayer.dispose();
+        super.destroy();
     }
 
-    setTitle(newTitle: string): void {
-        if (newTitle !== this.#title) {
-            this.#title = newTitle;
-            this.#emitChangeEvent("changed:title");
-        }
-    }
-
-    setDescription(newDescription: string): void {
-        if (newDescription !== this.#description) {
-            this.#description = newDescription;
-            this.#emitChangeEvent("changed:description");
-        }
+    /**
+     * Called by the map model when the layer is added to the map.
+     */
+    __attach(map: MapModelImpl): void {
+        super.__attachToMap(map);
     }
 
     setVisible(newVisibility: boolean): void {
@@ -136,47 +100,7 @@ export class LayerModelImpl extends EventEmitter<LayerModelEvents> implements La
         if (this.#olLayer.getVisible() != this.#visible) {
             this.#olLayer.setVisible(newVisibility);
         }
-        changed && this.#emitChangeEvent("changed:visible");
-    }
-
-    updateAttributes(newAttributes: Record<string | symbol, unknown>): void {
-        const attributes = this.#attributes;
-        const keys = Reflect.ownKeys(newAttributes);
-
-        let changed = false;
-        for (const key of keys) {
-            const existing = attributes[key];
-            const value = newAttributes[key];
-            if (existing !== value) {
-                attributes[key] = value;
-                changed = true;
-            }
-        }
-
-        if (changed) {
-            this.#emitChangeEvent("changed:attributes");
-        }
-    }
-
-    deleteAttribute(deleteAttribute: string | symbol): void {
-        const attributes = this.#attributes;
-        const key = deleteAttribute;
-
-        let changed = false;
-        if (attributes[key]) {
-            delete attributes[key];
-            changed = true;
-        }
-
-        if (changed) {
-            this.#emitChangeEvent("changed:attributes");
-        }
-    }
-
-    #emitChangeEvent<Name extends EventNames<LayerModelEvents>>(event: Name) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (this as any).emit(event);
-        this.emit("changed");
+        changed && this.__emitChangeEvent("changed:visible");
     }
 }
 

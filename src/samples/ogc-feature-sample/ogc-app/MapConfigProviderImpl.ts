@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-import { MapConfig, MapConfigProvider } from "@open-pioneer/map";
+import { MapConfig, MapConfigProvider, SimpleLayer } from "@open-pioneer/map";
 import { createVectorSource } from "@open-pioneer/ogc-features";
 import TileLayer from "ol/layer/Tile";
 import VectorLayer from "ol/layer/Vector";
@@ -25,19 +25,19 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                 zoom: 13
             },
             layers: [
-                {
+                new SimpleLayer({
                     title: "OSM",
                     visible: true,
                     isBaseLayer: true,
-                    layer: new TileLayer({
+                    olLayer: new TileLayer({
                         source: new OSM()
                     })
-                },
-                {
+                }),
+                new SimpleLayer({
                     id: "inspire-us-kindergarten",
                     title: "Kindertageseinrichtungen in NRW",
                     visible: true,
-                    layer: new VectorLayer({
+                    olLayer: new VectorLayer({
                         style: new Style({
                             image: new Circle({
                                 fill: new Fill({ color: "blue" }),
@@ -52,12 +52,12 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                                 "<a href='https://www.govdata.de/dl-de/by-2-0'>Datenlizenz Deutschland - Namensnennung - Version 2.0</a>"
                         })
                     })
-                },
-                {
+                }),
+                new SimpleLayer({
                     id: "ogc_katasterbezirk",
                     title: "Liegenschaftskatasterbezirke in NRW (viele Daten)",
                     visible: false,
-                    layer: new VectorLayer({
+                    olLayer: new VectorLayer({
                         source: createVectorSource({
                             baseUrl: "https://ogc-api.nrw.de/lika/v1",
                             collectionId: "katasterbezirk",
@@ -67,15 +67,15 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                                 "<a href='https://www.govdata.de/dl-de/by-2-0'>Datenlizenz Deutschland - Namensnennung - Version 2.0</a>"
                         })
                     })
-                },
-                {
+                }),
+                new SimpleLayer({
                     title: "Abschnitte/Äste mit Unfällen (Mapbox Style)",
                     visible: false,
-                    layer: new MapboxVectorLayer({
+                    olLayer: new MapboxVectorLayer({
                         styleUrl: "https://demo.ldproxy.net/strassen/styles/default?f=mbs",
                         accessToken: null
                     })
-                }
+                })
             ]
         };
     }
