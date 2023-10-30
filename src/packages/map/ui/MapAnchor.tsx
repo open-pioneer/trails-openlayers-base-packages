@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import { Box, StyleProps } from "@open-pioneer/chakra-integration";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
-import { ReactNode } from "react";
+import { BaseSyntheticEvent, ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { MapPadding } from "./MapContainer";
 import { useMapContext } from "./MapContext";
@@ -52,6 +52,9 @@ export function MapAnchor(props: MapAnchorProps): JSX.Element {
             pointerEvents="auto"
             /* Restore user-select: none set by ol-viewport parent */
             userSelect="text"
+            /** Hide pointer up/down events from the map parent.  */
+            onPointerDown={stopPropagation}
+            onPointerUp={stopPropagation}
             {...computePositionStyles(position, padding, horizontalGap, verticalGap)}
         >
             {children}
@@ -135,4 +138,8 @@ export function computePositionStyles(
     props.overflow = "hidden";
 
     return props;
+}
+
+function stopPropagation(e: BaseSyntheticEvent) {
+    e.stopPropagation();
 }
