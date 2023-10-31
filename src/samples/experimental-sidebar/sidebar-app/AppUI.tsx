@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: Apache-2.0
 import { Box, Button, Flex } from "@open-pioneer/chakra-integration";
 import { Sidebar, SidebarItem } from "@open-pioneer/experimental-layout-sidebar";
-import { LayerControlComponent } from "@open-pioneer/experimental-ol-layer-control";
 import { MapAnchor, MapContainer, MapPadding, useMapModel } from "@open-pioneer/map";
 import { useState } from "react";
 import { FiCodesandbox, FiLayers } from "react-icons/fi";
@@ -24,12 +23,6 @@ export function AppUI() {
     };
 
     const items: SidebarItem[] = [
-        {
-            id: "map-content",
-            icon: <FiLayers />,
-            label: "Karteninhalt",
-            content: <LayerControlComponent mapId={MAP_ID} showOpacitySlider={true} />
-        },
         {
             id: "sandbox",
             icon: <FiCodesandbox />,
