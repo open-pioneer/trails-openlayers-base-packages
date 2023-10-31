@@ -256,10 +256,9 @@ layer.deleteAttribute("foo");
 To create an OGC API Features layer, use the `ogc-features` package.
 Details about the necessary steps are described in the package's [README](../ogc-features/README.md) file.
 
-##### Use of Layer with MapBox-Styles
+##### Mapbox / MapLibre styles
 
-It is possible to use a mapbox style document as a layer. You have to use the class `MapboxVectorLayer`
-from the package `ol-mapbox-style` for this with the following minimal options as a layer object:
+To use layers of a Mapbox / MapLibre style document, use the class `MapboxVectorLayer` from the package `ol-mapbox-style` as in the following sample:
 
 ```ts
 // YOUR-APP/MapConfigProviderImpl.ts
@@ -300,10 +299,7 @@ with styleUrls in format `mbs` (parameter `f=mbs`) due to a bug. A patch has bee
 with the current version of the trails base package.
 The patch enables the user to explicitly set the `accessToken` to `null`, if it is not needed/supported.
 
-Because of the changed licence of mapbox as of version 2.0, the implementation has been overridden
-with the code of map libre (Version 19.3.2) behind the scenes.
-
-An example of a map box layer can be found in the OGC sample app.
+Because of the changed licence of Mapbox as of version 2.0, we recommend to override the implementation with the code of MapLibre (see the main package.json of this repository for a sample).
 
 ##### OGC Web Map Tile Service (WMTS)
 
