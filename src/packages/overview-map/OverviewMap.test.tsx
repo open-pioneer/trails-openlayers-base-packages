@@ -16,6 +16,7 @@ import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import ImageLayer from "ol/layer/Image";
 import ImageWMS from "ol/source/ImageWMS";
+import { MapboxVectorLayer } from "ol-mapbox-style";
 
 it("should successfully create a overview map component", async () => {
     const { mapId, registry } = await setupMap();
@@ -144,6 +145,36 @@ it("should support basemap type of OGC API Feature layer as a layer shown in the
     expect(source).toBeInstanceOf(VectorSource);
 });
 
+it("should support basemap type of OGC API Feature layer with MapBox-Styles as a layer shown in the overview map", async () => {
+    const { mapId, registry } = await setupMap();
+    const map = await registry.expectMapModel(mapId);
+    const injectedServices = createServiceOptions({ registry });
+    const layer = getOGCAPIFeatureLayerWithMapboxStyle();
+
+    render(
+        <PackageContextProvider services={injectedServices}>
+            <OverviewMap
+                mapId={mapId}
+                layer={layer}
+                className="test"
+                data-testid="overview-map"
+            ></OverviewMap>
+        </PackageContextProvider>
+    );
+
+    await waitForOverviewMap();
+    const controls = map.olMap.getControls().getArray();
+    const overViewMapControl = controls.find((control) => control instanceof OlOverviewMap) as
+        | OlOverviewMap
+        | undefined;
+    const mapboxVectorLayer: MapboxVectorLayer = overViewMapControl
+        ?.getOverviewMap()
+        ?.getLayers()
+        .getArray()[0] as MapboxVectorLayer;
+
+    expect(mapboxVectorLayer).toBeInstanceOf(MapboxVectorLayer);
+});
+
 it("should support basemap type of OGC WMS layer as a layer shown in the overview map", async () => {
     const { mapId, registry } = await setupMap();
     const map = await registry.expectMapModel(mapId);
@@ -210,6 +241,13 @@ function getOGCAPIFeatureLayer() {
             attributions:
                 "<a href='https://www.govdata.de/dl-de/by-2-0'>Datenlizenz Deutschland - Namensnennung - Version 2.0</a>"
         })
+    });
+}
+
+function getOGCAPIFeatureLayerWithMapboxStyle() {
+    return new MapboxVectorLayer({
+        styleUrl: "https://demo.ldproxy.net/strassen/styles/default?f=mbs",
+        accessToken: null
     });
 }
 
