@@ -5,21 +5,32 @@ import { CoordinateViewer } from "@open-pioneer/coordinate-viewer";
 import { MapAnchor, MapContainer } from "@open-pioneer/map";
 import { InitialExtent, ZoomIn, ZoomOut } from "@open-pioneer/map-navigation";
 import { Measurement } from "@open-pioneer/measurement";
+import { Search } from "@open-pioneer/search-ui";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { ScaleViewer } from "@open-pioneer/scale-viewer";
 import { Toc } from "@open-pioneer/toc";
 import { ScaleComponent } from "map-sample-scale-component";
 import { useIntl } from "open-pioneer:react-hooks";
 import { useState } from "react";
-import { PiRulerFill, PiRulerLight } from "react-icons/pi";
+import {
+    PiRulerFill,
+    PiRulerLight,
+    PiMagnifyingGlassFill,
+    PiFileMagnifyingGlassLight
+} from "react-icons/pi";
 import { MAP_ID } from "./MapConfigProviderImpl";
 
 export function AppUI() {
     const intl = useIntl();
     const [measurementIsActive, setMeasurementIsActive] = useState<boolean>(false);
+    const [searchIsActive, setSearchIsActive] = useState<boolean>(false);
 
     function toggleMeasurement() {
         setMeasurementIsActive(!measurementIsActive);
+    }
+
+    function toggleSearch() {
+        setSearchIsActive(!searchIsActive);
     }
 
     return (
@@ -36,6 +47,18 @@ export function AppUI() {
                 <Flex flex="1" direction="column" position="relative">
                     <MapContainer mapId={MAP_ID}>
                         <MapAnchor position="top-left" horizontalGap={20} verticalGap={20}>
+                            {searchIsActive && (
+                                <Box
+                                    backgroundColor="white"
+                                    borderWidth="1px"
+                                    borderRadius="lg"
+                                    padding={2}
+                                    boxShadow="lg"
+                                    mt={5}
+                                >
+                                    <Search mapId={MAP_ID} />
+                                </Box>
+                            )}
                             <Box
                                 backgroundColor="white"
                                 borderWidth="1px"
@@ -81,6 +104,25 @@ export function AppUI() {
                         </MapAnchor>
                         <MapAnchor position="bottom-right" horizontalGap={10} verticalGap={30}>
                             <Flex direction="column" gap={1} padding={1}>
+                                <Tooltip
+                                    label={intl.formatMessage({ id: "searchTitle" })}
+                                    placement="auto"
+                                    openDelay={500}
+                                >
+                                    <Button
+                                        aria-label={intl.formatMessage({ id: "searchTitle" })}
+                                        leftIcon={
+                                            searchIsActive ? (
+                                                <PiMagnifyingGlassFill />
+                                            ) : (
+                                                <PiFileMagnifyingGlassLight />
+                                            )
+                                        }
+                                        onClick={toggleSearch}
+                                        iconSpacing={0}
+                                        padding={0}
+                                    />
+                                </Tooltip>
                                 <Tooltip
                                     label={intl.formatMessage({ id: "measurementTitle" })}
                                     placement="auto"
