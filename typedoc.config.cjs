@@ -16,7 +16,8 @@ const documentedPackages = [
     "packages/map-navigation",
     "packages/measurement",
     "packages/ogc-features",
-    "packages/overview-map"
+    "packages/overview-map",
+    "packages/scale-bar"
 ];
 
 const packagePaths = documentedPackages.map((p) => `src/${p}`);
