@@ -74,6 +74,7 @@ export const Search: FC<SearchProps> = (props) => {
         <Box {...containerProps}>
             <FormControl alignItems="center">
                 <AsyncSelect
+                    isClearable={true}
                     name="colors"
                     placeholder={placeholder}
                     closeMenuOnSelect={closeMenuOnSelect}
