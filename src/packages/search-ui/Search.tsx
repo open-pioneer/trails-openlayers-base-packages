@@ -42,19 +42,34 @@ const dummyData: SearchGroupOption[] = [
                 label: "Vogelgasse"
             }
         ]
+    },
+    {
+        label: "Location",
+        options: [
+            {
+                value: "hamburg",
+                label: "Hamburg"
+            },
+            {
+                value: "münster",
+                label: "Münster"
+            }
+        ]
     }
 ];
 
 let filteredData: SearchGroupOption[] = [];
 
 const filterData = (inputValue: string): SearchGroupOption[] => {
-    // TODO: make filteredData restore
-    filteredData = dummyData.map((searchGroupOption) => {
-        searchGroupOption.options = searchGroupOption.options.filter((singleOption) =>
-            singleOption.label.toLowerCase().includes(inputValue.toLowerCase())
-        );
-        return searchGroupOption;
-    });
+    // copy dummyData (not deep copy!)
+    filteredData = dummyData
+        .map((searchTheme) => Object.assign({}, searchTheme))
+        .filter((searchGroupOption) => {
+            searchGroupOption.options = searchGroupOption.options.filter((singleOption) =>
+                singleOption.label.toLowerCase().includes(inputValue.toLowerCase())
+            );
+            return searchGroupOption;
+        });
     return filteredData;
 };
 
