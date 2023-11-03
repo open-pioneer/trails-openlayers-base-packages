@@ -10,7 +10,6 @@ import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { ScaleBar } from "@open-pioneer/scale-bar";
 import { ScaleViewer } from "@open-pioneer/scale-viewer";
 import { Toc } from "@open-pioneer/toc";
-import { ScaleComponent } from "map-sample-scale-component";
 import TileLayer from "ol/layer/Tile.js";
 import OSM from "ol/source/OSM.js";
 import { useIntl } from "open-pioneer:react-hooks";
@@ -168,7 +167,6 @@ export function AppUI() {
                     justifyContent="center"
                 >
                     <CoordinateViewer mapId={MAP_ID} precision={2} />
-                    <ScaleComponent mapId={MAP_ID} />
                     <ScaleBar mapId={MAP_ID} />
                     <ScaleViewer mapId={MAP_ID} />
                 </Flex>
