@@ -56,7 +56,10 @@ export function AppUI() {
                                     boxShadow="lg"
                                     mt={5}
                                 >
-                                    <Search mapId={MAP_ID} />
+                                    <Search
+                                        mapId={MAP_ID}
+                                        sortOption={{ usePriority: true, sortingOrder: "ASC" }}
+                                    />
                                 </Box>
                             )}
                             <Box
