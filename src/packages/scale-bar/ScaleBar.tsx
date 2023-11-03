@@ -21,7 +21,7 @@ export interface ScaleBarProps extends CommonComponentProps {
 }
 
 export const ScaleBar: FC<ScaleBarProps> = (props) => {
-    const { mapId, bar } = props;
+    const { mapId, bar = false } = props;
     const { containerProps } = useCommonComponentProps("scale-bar", props);
     const { map } = useMapModel(mapId);
     const scaleBarElem = useRef(null);
