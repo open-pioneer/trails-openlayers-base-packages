@@ -2,8 +2,9 @@
 // SPDX-License-Identifier: Apache-2.0
 import { Box, FormControl } from "@open-pioneer/chakra-integration";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
-import { FC } from "react";
+import { FC, useCallback } from "react";
 import { AsyncSelect } from "chakra-react-select";
+import { HighlightOption } from "./HighlightOption";
 
 export interface SearchOption {
     value: string;
@@ -37,7 +38,46 @@ export interface SearchProps extends CommonComponentProps {
     placeholder?: string;
     closeMenuOnSelect?: boolean;
     sortOption?: SortOption;
+    searchTypingDelay?: number;
 }
+
+export const Search: FC<SearchProps> = (props) => {
+    const { placeholder, closeMenuOnSelect, sortOption, searchTypingDelay } = props;
+    const { containerProps } = useCommonComponentProps("search", props);
+
+    const loadOptions = function (inputValue: string, callback: (options: unknown) => void): void {
+        setTimeout(async () => {
+            // TODO: Move Data- and Sort-Logic to Controller
+            //first get the Searchresults
+            const filterResult = await filterData(inputValue);
+            //Second order the results
+            const sortResult = await sortData(filterResult, sortOption);
+            callback(sortResult);
+        }, 250);
+    };
+
+    const debouncedLoadOptions = useCallback(
+        debounce((inputValue: string, callback: (options: unknown) => void) => {
+            loadOptions(inputValue, callback);
+        }, searchTypingDelay),
+        []
+    );
+
+    return (
+        <Box {...containerProps}>
+            <FormControl alignItems="center">
+                <AsyncSelect
+                    isClearable={true}
+                    name="colors"
+                    placeholder={placeholder}
+                    closeMenuOnSelect={closeMenuOnSelect}
+                    loadOptions={debouncedLoadOptions}
+                    components={{ Option: HighlightOption }}
+                />
+            </FormControl>
+        </Box>
+    );
+};
 
 const dummyData: SearchGroupOption[] = [
     {
@@ -76,7 +116,7 @@ const dummyData: SearchGroupOption[] = [
 
 let filteredData: SearchGroupOption[] = [];
 
-const filterData = async (inputValue: string): Promise<SearchGroupOption[]> => {
+async function filterData(inputValue: string): Promise<SearchGroupOption[]> {
     // copy dummyData (not deep copy!)
     filteredData = dummyData
         .map((searchTheme) => Object.assign({}, searchTheme))
@@ -87,7 +127,7 @@ const filterData = async (inputValue: string): Promise<SearchGroupOption[]> => {
             return searchGroupOption;
         });
     return filteredData;
-};
+}
 
 /**
  * Methode for sorting SearchGroupOption after priority
@@ -95,7 +135,7 @@ const filterData = async (inputValue: string): Promise<SearchGroupOption[]> => {
  * @param b
  * @returns
  */
-const sortPriority = (a: SearchGroupOption, b: SearchGroupOption) => {
+function sortPriority(a: SearchGroupOption, b: SearchGroupOption) {
     if (!a.priority && !b.priority) return 0;
     if (!a.priority) {
         return -1;
@@ -104,7 +144,7 @@ const sortPriority = (a: SearchGroupOption, b: SearchGroupOption) => {
     } else {
         return a.priority - b.priority;
     }
-};
+}
 
 /**
  *
@@ -113,13 +153,13 @@ const sortPriority = (a: SearchGroupOption, b: SearchGroupOption) => {
  * @returns
  */
 // eslint-disable-next-line
-const sortValues = (a: SearchOption, b: SearchOption) => {
+function sortValues(a: SearchOption, b: SearchOption) {
     const valueA = a.value.toUpperCase(); // ignore upper and lowercase
     const valueB = b.value.toUpperCase(); // ignore upper and lowercase
     if (valueA < valueB) return -1;
     if (valueA > valueB) return 1;
     return 0;
-};
+}
 
 // TODO: Replace Any with correct type
 /**
@@ -129,9 +169,9 @@ const sortValues = (a: SearchOption, b: SearchOption) => {
  * @returns
  */
 // eslint-disable-next-line
-const sortArrayAsynchron = async (array: any[], sortFunction: (a: any, b: any) => number) => {
+async function sortArrayAsynchron(array: any[], sortFunction: (a: any, b: any) => number) {
     return array.sort(sortFunction);
-};
+}
 
 /**
  * Methode for sorting the order of SearchGroupOption and the order of SearchGroupOption.options
@@ -139,39 +179,22 @@ const sortArrayAsynchron = async (array: any[], sortFunction: (a: any, b: any) =
  * @param sortOption
  * @returns
  */
-const sortData = async (data: SearchGroupOption[], sortOption?: SortOption) => {
+async function sortData(data: SearchGroupOption[], sortOption?: SortOption) {
     if (sortOption?.usePriority) data = await sortArrayAsynchron(data, sortPriority);
     //Todo: Asnyc sort foreach SearchOption
     return data;
-};
+}
 
-export const Search: FC<SearchProps> = (props) => {
-    const { placeholder, closeMenuOnSelect, sortOption } = props;
-    const { containerProps } = useCommonComponentProps("search", props);
+// TODO: This should accept all functions as an utility function, but this is banned by eslint.
+// TODO: It would be better when the delay would not trigger the loading animation
+// eslint-disable-next-line @typescript-eslint/ban-types
+function debounce<T extends Function>(delayedFunction: T, delay = 250) {
+    let timeout: NodeJS.Timeout | string | number | undefined;
 
-    const loadOptions = function (inputValue: string): Promise<SearchGroupOption[]> {
-        return new Promise<SearchGroupOption[]>((resolve) => {
-            setTimeout(async () => {
-                //first get the Searchresults
-                const filterResult = await filterData(inputValue);
-                //Second order the results
-                const sortResult = await sortData(filterResult, sortOption);
-                resolve(sortResult);
-            }, 1000);
-        });
+    return (...args: unknown[]) => {
+        timeout && clearTimeout(timeout);
+        timeout = setTimeout(() => {
+            delayedFunction(...args);
+        }, delay);
     };
-
-    return (
-        <Box {...containerProps}>
-            <FormControl alignItems="center">
-                <AsyncSelect
-                    isClearable={true}
-                    name="colors"
-                    placeholder={placeholder}
-                    closeMenuOnSelect={closeMenuOnSelect}
-                    loadOptions={loadOptions}
-                />
-            </FormControl>
-        </Box>
-    );
-};
+}

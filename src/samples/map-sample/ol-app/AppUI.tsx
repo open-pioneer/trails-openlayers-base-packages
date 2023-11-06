@@ -58,6 +58,7 @@ export function AppUI() {
                                 >
                                     <Search
                                         mapId={MAP_ID}
+                                        searchTypingDelay={500}
                                         sortOption={{ usePriority: true, sortingOrder: "ASC" }}
                                     />
                                 </Box>
