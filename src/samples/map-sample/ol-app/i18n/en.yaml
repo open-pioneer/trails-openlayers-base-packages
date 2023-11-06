@@ -1,6 +1,7 @@
 messages:
   basemapLabel: "Select basemap:"
   tocTitle: "Table of contents"
+  measurementTitle: "Measurement"
   ariaLabel:
     header: "Header bar"
     footer: "Base bar with scale information, spatial reference system and coordinate display"

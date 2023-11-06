@@ -1,6 +1,7 @@
 messages:
   basemapLabel: "Hintergrundkarte auswählen: "
   tocTitle: "Karteninhalt"
+  measurementTitle: "Messen"
   ariaLabel:
     header: "Kopfleiste"
     footer: "Fussleiste mit Maßstabsangabe, Raumbezugssystem und Koordinatenanzeige"

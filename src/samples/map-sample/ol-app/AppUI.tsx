@@ -1,19 +1,27 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-import { Box, Flex } from "@open-pioneer/chakra-integration";
+import { Box, Button, Flex, Tooltip } from "@open-pioneer/chakra-integration";
 import { CoordinateViewer } from "@open-pioneer/coordinate-viewer";
-import { InitialExtent, ZoomIn, ZoomOut } from "@open-pioneer/map-navigation";
 import { MapAnchor, MapContainer } from "@open-pioneer/map";
+import { InitialExtent, ZoomIn, ZoomOut } from "@open-pioneer/map-navigation";
+import { Measurement } from "@open-pioneer/measurement";
+import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { ScaleViewer } from "@open-pioneer/scale-viewer";
 import { Toc } from "@open-pioneer/toc";
 import { ScaleComponent } from "map-sample-scale-component";
 import { useIntl } from "open-pioneer:react-hooks";
+import { useState } from "react";
+import { PiRulerFill, PiRulerLight } from "react-icons/pi";
 import { MAP_ID } from "./MapConfigProviderImpl";
-import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { useId } from "react";
 
 export function AppUI() {
     const intl = useIntl();
+    const [measurementIsActive, setMeasurementIsActive] = useState<boolean>(false);
+
+    function toggleMeasurement() {
+        setMeasurementIsActive(!measurementIsActive);
+    }
     const tocTitleId = useId();
     return (
         <Flex height="100%" direction="column" overflow="hidden">
@@ -49,7 +57,7 @@ export function AppUI() {
                             >
                                 <TitledSection
                                     title={
-                                        <SectionHeading id={tocTitleId} size="md">
+                                        <SectionHeading id={tocTitleId} size="md" mb={2}>
                                             {intl.formatMessage({ id: "tocTitle" })}
                                         </SectionHeading>
                                     }
@@ -62,6 +70,26 @@ export function AppUI() {
                                     />
                                 </TitledSection>
                             </Box>
+                            {measurementIsActive && (
+                                <Box
+                                    backgroundColor="white"
+                                    borderWidth="1px"
+                                    borderRadius="lg"
+                                    padding={2}
+                                    boxShadow="lg"
+                                    mt={5}
+                                >
+                                    <TitledSection
+                                        title={
+                                            <SectionHeading size="md" mb={2}>
+                                                {intl.formatMessage({ id: "measurementTitle" })}
+                                            </SectionHeading>
+                                        }
+                                    >
+                                        <Measurement mapId={MAP_ID} />
+                                    </TitledSection>
+                                </Box>
+                            )}
                         </MapAnchor>
                         <MapAnchor position="bottom-right" horizontalGap={10} verticalGap={30}>
                             <Flex
@@ -71,6 +99,21 @@ export function AppUI() {
                                 gap={1}
                                 padding={1}
                             >
+                                <Tooltip
+                                    label={intl.formatMessage({ id: "measurementTitle" })}
+                                    placement="auto"
+                                    openDelay={500}
+                                >
+                                    <Button
+                                        aria-label={intl.formatMessage({ id: "measurementTitle" })}
+                                        leftIcon={
+                                            measurementIsActive ? <PiRulerFill /> : <PiRulerLight />
+                                        }
+                                        onClick={toggleMeasurement}
+                                        iconSpacing={0}
+                                        padding={0}
+                                    />
+                                </Tooltip>
                                 <InitialExtent mapId={MAP_ID} />
                                 <ZoomIn mapId={MAP_ID} />
                                 <ZoomOut mapId={MAP_ID} />

@@ -14,6 +14,7 @@
         "build-license-report": "node --loader ts-node/esm --no-warnings=ExperimentalWarning ./support/create-license-report.ts ",
         "preview": "vite preview",
         "lint": "eslint ./src ./support --ext .js,.ts,.jsx,.tsx,.mjs,.mts,.cjs,.cts --cache --cache-location ./node_modules/.cache/.eslintcache",
+        "eslint": "pnpm run lint",
         "prettier-check": "pnpm prettier:common -c",
         "prettier": "pnpm prettier:common -w",
         "prettier:common": "prettier ./src ./support ./docs --ignore-path .eslintignore --cache",
@@ -32,6 +33,7 @@
             "ol-mapbox-style: license issues",
             "semver: https://github.com/advisories/GHSA-c2qf-rxjj-qqgw",
             "tough-cookie: https://github.com/advisories/GHSA-72xf-g2v4-qvf3",
+            "@mapbox/mapbox-gl-style-spec: license issues, see https://github.com/openlayers/ol-mapbox-style/pull/940",
             "",
             "ignored cves",
             "============",
@@ -44,15 +46,16 @@
             "@changesets/assemble-release-plan: don't bump to major for 0.x packages (see https://github.com/changesets/changesets/issues/1228)"
         ],
         "overrides": {
-            "ol-mapbox-style": "workspace:disabled-package@*",
             "semver@<7.5.2": ">=7.5.2",
-            "tough-cookie@<4.1.3": ">=4.1.3"
+            "tough-cookie@<4.1.3": ">=4.1.3",
+            "@mapbox/mapbox-gl-style-spec": "npm:@maplibre/maplibre-gl-style-spec@^19.3.2"
         },
         "auditConfig": {
             "ignoreCves": []
         },
         "patchedDependencies": {
-            "@changesets/assemble-release-plan@5.2.4": "patches/@changesets__assemble-release-plan@5.2.4.patch"
+            "@changesets/assemble-release-plan@5.2.4": "patches/@changesets__assemble-release-plan@5.2.4.patch",
+            "ol-mapbox-style@12.0.0": "patches/ol-mapbox-style@12.0.0.patch"
         }
     },
     "dependencies": {
@@ -63,6 +66,7 @@
         "@emotion/react": "^11.11.1",
         "@emotion/styled": "^11.11.0",
         "@formatjs/intl": "^2.9.0",
+        "@maplibre/maplibre-gl-style-spec": "^19.3.2",
         "@open-pioneer/chakra-integration": "^1.1.0",
         "@open-pioneer/core": "^1.1.0",
         "@open-pioneer/integration": "^1.0.3",

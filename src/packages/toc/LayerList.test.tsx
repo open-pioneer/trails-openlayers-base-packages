@@ -16,21 +16,22 @@ import LayerGroup from "ol/layer/Group";
 import TileLayer from "ol/layer/Tile";
 import { expect, it } from "vitest";
 import { LayerList } from "./LayerList";
+import { SimpleLayer } from "@open-pioneer/map";
 
 it("should show layers in the correct order", async () => {
     const { mapId, registry } = await setupMap({
         layers: [
             {
                 title: "Layer 1",
-                layer: new TileLayer({})
+                olLayer: new TileLayer({})
             },
             {
                 title: "Layer 2",
-                layer: new TileLayer({})
+                olLayer: new TileLayer({})
             },
             {
                 title: "Layer 3",
-                layer: new TileLayer({})
+                olLayer: new TileLayer({})
             }
         ]
     });
@@ -61,12 +62,12 @@ it("does not display base layers", async function () {
         layers: [
             {
                 title: "Layer 1",
-                layer: new TileLayer({})
+                olLayer: new TileLayer({})
             },
             {
                 title: "Layer 2",
                 isBaseLayer: true,
-                layer: new TileLayer({})
+                olLayer: new TileLayer({})
             }
         ]
     });
@@ -87,11 +88,11 @@ it("does not display group layers", async function () {
         layers: [
             {
                 title: "Layer 1",
-                layer: new TileLayer({})
+                olLayer: new TileLayer({})
             },
             {
                 title: "Layer 2",
-                layer: new LayerGroup({})
+                olLayer: new LayerGroup({})
             }
         ]
     });
@@ -127,7 +128,7 @@ it("reacts to changes in the layer composition", async function () {
         layers: [
             {
                 title: "Layer 1",
-                layer: new TileLayer({})
+                olLayer: new TileLayer({})
             }
         ]
     });
@@ -143,10 +144,12 @@ it("reacts to changes in the layer composition", async function () {
     expect(initialItems).toHaveLength(1);
 
     act(() => {
-        map.layers.createLayer({
-            title: "Layer 2",
-            layer: new TileLayer({})
-        });
+        map.layers.addLayer(
+            new SimpleLayer({
+                title: "Layer 2",
+                olLayer: new TileLayer({})
+            })
+        );
     });
 
     const itemsAfterChange = getCurrentItems(container);
@@ -162,7 +165,7 @@ it("displays the layer's current title", async () => {
             {
                 id: "layer",
                 title: "Layer 1",
-                layer: new TileLayer({})
+                olLayer: new TileLayer({})
             }
         ]
     });
@@ -192,7 +195,7 @@ it("displays the layer's current visibility", async () => {
             {
                 id: "layer",
                 title: "Layer 1",
-                layer: new TileLayer({})
+                olLayer: new TileLayer({})
             }
         ]
     });
@@ -227,7 +230,7 @@ it("changes the layer's visibility when toggling the checkbox", async () => {
             {
                 id: "layer",
                 title: "Layer 1",
-                layer: new TileLayer({})
+                olLayer: new TileLayer({})
             }
         ]
     });
@@ -271,7 +274,7 @@ it("includes the layer id in the item's class list", async () => {
             {
                 id: "some layer id",
                 title: "Layer 1",
-                layer: new TileLayer({})
+                olLayer: new TileLayer({})
             }
         ]
     });
@@ -293,12 +296,12 @@ it("renders buttons for all layer's with description property", async () => {
         layers: [
             {
                 title: "Layer 1",
-                layer: new TileLayer({}),
+                olLayer: new TileLayer({}),
                 description: "Description 1"
             },
             {
                 title: "Layer 2",
-                layer: new TileLayer({})
+                olLayer: new TileLayer({})
             }
         ]
     });
@@ -319,12 +322,12 @@ it("changes the description popover's visibility when toggling the button", asyn
             {
                 id: "layer",
                 title: "Layer 1",
-                layer: new TileLayer({}),
+                olLayer: new TileLayer({}),
                 description: "Description 1"
             },
             {
                 title: "Layer 2",
-                layer: new TileLayer({})
+                olLayer: new TileLayer({})
             }
         ]
     });
@@ -369,13 +372,13 @@ it("reacts to changes in the layer description", async () => {
             {
                 id: "layer1",
                 title: "Layer 1",
-                layer: new TileLayer({}),
+                olLayer: new TileLayer({}),
                 description: "Description"
             },
             {
                 id: "layer2",
                 title: "Layer 2",
-                layer: new TileLayer({})
+                olLayer: new TileLayer({})
             }
         ]
     });

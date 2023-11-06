@@ -1,5 +1,9 @@
 messages:
-  measurementLabel: "Geometrie"
+  measurementLabel: "Modus"
   distance: "Strecke"
   area: "Fläche"
   deleteMeasurementLabel: "Messungen löschen"
+  measurementInfoText: "Klicken Sie in die Karte, um eine Messung zu beginnen."
+  tooltips:
+    help: "Klicken, um mit der Messung zu beginnen."
+    continue: "Doppelt klicken, um die Messung zu beenden."

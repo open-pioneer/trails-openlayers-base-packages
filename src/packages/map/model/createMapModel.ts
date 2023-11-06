@@ -95,7 +95,7 @@ class MapModelFactory {
         try {
             if (mapConfig.layers) {
                 for (const layerConfig of mapConfig.layers) {
-                    mapModel.layers.createLayer(layerConfig);
+                    mapModel.layers.addLayer(layerConfig);
                 }
             }
             return mapModel;
