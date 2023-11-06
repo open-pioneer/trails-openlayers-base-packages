@@ -43,41 +43,36 @@ export function AppUI() {
                                 padding={2}
                                 boxShadow="lg"
                             >
-                                <TitledSection
-                                    title={
-                                        <SectionHeading size="md" mb={2}>
-                                            {intl.formatMessage({ id: "tocTitle" })}
-                                        </SectionHeading>
-                                    }
-                                >
-                                    <Toc
-                                        mapId={MAP_ID}
-                                        basemapSwitcherProps={{
-                                            allowSelectingEmptyBasemap: true
-                                        }}
-                                    />
-                                </TitledSection>
-                            </Box>
-                            {measurementIsActive && (
-                                <Box
-                                    backgroundColor="white"
-                                    borderWidth="1px"
-                                    borderRadius="lg"
-                                    padding={2}
-                                    boxShadow="lg"
-                                    mt={5}
-                                >
+                                <Box>
                                     <TitledSection
                                         title={
                                             <SectionHeading size="md" mb={2}>
-                                                {intl.formatMessage({ id: "measurementTitle" })}
+                                                {intl.formatMessage({ id: "tocTitle" })}
                                             </SectionHeading>
                                         }
                                     >
-                                        <Measurement mapId={MAP_ID} />
+                                        <Toc
+                                            mapId={MAP_ID}
+                                            basemapSwitcherProps={{
+                                                allowSelectingEmptyBasemap: true
+                                            }}
+                                        />
                                     </TitledSection>
                                 </Box>
-                            )}
+                                {measurementIsActive && (
+                                    <Box mt={5}>
+                                        <TitledSection
+                                            title={
+                                                <SectionHeading size="md" mb={2}>
+                                                    {intl.formatMessage({ id: "measurementTitle" })}
+                                                </SectionHeading>
+                                            }
+                                        >
+                                            <Measurement mapId={MAP_ID} />
+                                        </TitledSection>
+                                    </Box>
+                                )}
+                            </Box>
                         </MapAnchor>
                         <MapAnchor position="bottom-right" horizontalGap={10} verticalGap={30}>
                             <Flex direction="column" gap={1} padding={1}>
