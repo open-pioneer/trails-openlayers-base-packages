@@ -14,6 +14,7 @@ import { OverviewMap as OlOverviewMap } from "ol/control";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import OSM from "ol/source/OSM";
 import { useIntl } from "open-pioneer:react-hooks";
+import { MapboxVectorLayer } from "ol-mapbox-style";
 
 /**
  * These are special properties for the OverviewMap.
@@ -27,15 +28,17 @@ export interface OverviewMapProps extends CommonComponentProps {
     /**
      * The layer shown in the overview map
      */
-    layer: TileLayer<WMTS> | TileLayer<OSM> | VectorLayer<VectorSource> | ImageLayer<ImageWMS>;
+    layer:
+        | TileLayer<WMTS>
+        | TileLayer<OSM>
+        | VectorLayer<VectorSource>
+        | MapboxVectorLayer
+        | ImageLayer<ImageWMS>;
 
     /**
-     * The minimum and maximum zoom level of the overview map layer
+     * The zoom level of the overview map layer
      */
-    zoomLevel?: {
-        minZoom: number;
-        maxZoom: number;
-    };
+    zoomLevel?: number;
 }
 
 /**
@@ -54,10 +57,6 @@ export const OverviewMap: FC<OverviewMapProps> = (props) => {
     useEffect(() => {
         if (overviewMapControlElem.current && map && layer) {
             const olMap = map.olMap;
-            if (zoomLevel) {
-                layer.setMinZoom(zoomLevel.minZoom);
-                layer.setMaxZoom(zoomLevel.maxZoom);
-            }
             const overviewMapControl: OlOverviewMap = new OlOverviewMap({
                 className: "ol-overviewmap custom-overviewmap",
                 layers: [layer],
@@ -66,6 +65,9 @@ export const OverviewMap: FC<OverviewMapProps> = (props) => {
                 collapsed: true,
                 tipLabel: tooltipText
             });
+            if (zoomLevel) {
+                overviewMapControl?.getOverviewMap().getView().setZoom(7);
+            }
             olMap.addControl(overviewMapControl);
             return () => {
                 olMap.removeControl(overviewMapControl);

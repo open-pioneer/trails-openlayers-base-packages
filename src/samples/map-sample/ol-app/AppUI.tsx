@@ -29,7 +29,7 @@ export function AppUI() {
     const overviewMapLayer = new TileLayer({
         source: new OSM()
     });
-    const overviewMapZoom = { minZoom: 0, maxZoom: 14 };
+    const overviewMapZoom = 7;
 
     return (
         <Flex height="100%" direction="column" overflow="hidden">
