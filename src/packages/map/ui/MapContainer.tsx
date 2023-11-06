@@ -45,6 +45,29 @@ export interface MapContainerProps extends CommonComponentProps {
     viewPaddingChangeBehavior?: "none" | "preserve-center" | "preserve-extent";
 
     children?: ReactNode;
+
+    /**
+     * Optional role property.
+     *
+     * This property is directly applied to the map's container div element.
+     */
+    role?: string;
+
+    /**
+     * Optional aria-labelledby property.
+     * Do not use together with aria-label.
+     *
+     * This property is directly applied to the map's container div element.
+     */
+    "aria-labelledby"?: string;
+
+    /**
+     * Optional aria-label property.
+     * Do not use together with aria-label.
+     *
+     * This property is directly applied to the map's container div element.
+     */
+    "aria-label"?: string;
 }
 
 /**
@@ -53,7 +76,15 @@ export interface MapContainerProps extends CommonComponentProps {
  * There can only be at most one MapContainer for every map.
  */
 export function MapContainer(props: MapContainerProps) {
-    const { mapId, viewPadding, viewPaddingChangeBehavior, children } = props;
+    const {
+        mapId,
+        viewPadding,
+        viewPaddingChangeBehavior,
+        children,
+        role,
+        "aria-label": ariaLabel,
+        "aria-labelledby": ariaLabelledBy
+    } = props;
     const { containerProps } = useCommonComponentProps("map-container", props);
     const mapElement = useRef<HTMLDivElement>(null);
     const modelState = useMapModel(mapId);
@@ -97,6 +128,9 @@ export function MapContainer(props: MapContainerProps) {
     return (
         <div
             {...containerProps}
+            role={role}
+            aria-label={ariaLabel}
+            aria-labelledby={ariaLabelledBy}
             ref={mapElement}
             style={mapContainerStyle}
             //eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex

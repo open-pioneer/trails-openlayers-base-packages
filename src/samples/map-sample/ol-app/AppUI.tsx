@@ -13,20 +13,27 @@ import { useIntl } from "open-pioneer:react-hooks";
 import { useState } from "react";
 import { PiRulerFill, PiRulerLight } from "react-icons/pi";
 import { MAP_ID } from "./MapConfigProviderImpl";
+import { useId } from "react";
 
 export function AppUI() {
     const intl = useIntl();
+    const tocTitleId = useId();
+    const measurementTitleId = useId();
     const [measurementIsActive, setMeasurementIsActive] = useState<boolean>(false);
 
     function toggleMeasurement() {
         setMeasurementIsActive(!measurementIsActive);
     }
-
     return (
         <Flex height="100%" direction="column" overflow="hidden">
             <TitledSection
                 title={
-                    <Box textAlign="center" py={1}>
+                    <Box
+                        role="region"
+                        aria-label={intl.formatMessage({ id: "ariaLabel.header" })}
+                        textAlign="center"
+                        py={1}
+                    >
                         <SectionHeading size={"md"}>
                             OpenLayers Base Packages - Default Sample
                         </SectionHeading>
@@ -34,7 +41,11 @@ export function AppUI() {
                 }
             >
                 <Flex flex="1" direction="column" position="relative">
-                    <MapContainer mapId={MAP_ID}>
+                    <MapContainer
+                        mapId={MAP_ID}
+                        role="application"
+                        aria-label={intl.formatMessage({ id: "ariaLabel.map" })}
+                    >
                         <MapAnchor position="top-left" horizontalGap={20} verticalGap={20}>
                             <Box
                                 backgroundColor="white"
@@ -43,10 +54,10 @@ export function AppUI() {
                                 padding={2}
                                 boxShadow="lg"
                             >
-                                <Box>
+                                <Box role="dialog" aria-labelledby={tocTitleId}>
                                     <TitledSection
                                         title={
-                                            <SectionHeading size="md" mb={2}>
+                                            <SectionHeading id={tocTitleId} size="md" mb={2}>
                                                 {intl.formatMessage({ id: "tocTitle" })}
                                             </SectionHeading>
                                         }
@@ -60,10 +71,14 @@ export function AppUI() {
                                     </TitledSection>
                                 </Box>
                                 {measurementIsActive && (
-                                    <Box mt={5}>
+                                    <Box role="dialog" aria-labelledby={measurementTitleId} mt={5}>
                                         <TitledSection
                                             title={
-                                                <SectionHeading size="md" mb={2}>
+                                                <SectionHeading
+                                                    id={measurementTitleId}
+                                                    size="md"
+                                                    mb={2}
+                                                >
                                                     {intl.formatMessage({ id: "measurementTitle" })}
                                                 </SectionHeading>
                                             }
@@ -75,7 +90,13 @@ export function AppUI() {
                             </Box>
                         </MapAnchor>
                         <MapAnchor position="bottom-right" horizontalGap={10} verticalGap={30}>
-                            <Flex direction="column" gap={1} padding={1}>
+                            <Flex
+                                role="toolbar"
+                                aria-label={intl.formatMessage({ id: "ariaLabel.toolbar" })}
+                                direction="column"
+                                gap={1}
+                                padding={1}
+                            >
                                 <Tooltip
                                     label={intl.formatMessage({ id: "measurementTitle" })}
                                     placement="auto"
@@ -98,7 +119,13 @@ export function AppUI() {
                         </MapAnchor>
                     </MapContainer>
                 </Flex>
-                <Flex gap={3} alignItems="center" justifyContent="center">
+                <Flex
+                    role="region"
+                    aria-label={intl.formatMessage({ id: "ariaLabel.footer" })}
+                    gap={3}
+                    alignItems="center"
+                    justifyContent="center"
+                >
                     <CoordinateViewer mapId={MAP_ID} precision={2} />
                     <ScaleComponent mapId={MAP_ID} />
                     <ScaleViewer mapId={MAP_ID} />
