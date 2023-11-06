@@ -17,12 +17,13 @@ import { useId } from "react";
 
 export function AppUI() {
     const intl = useIntl();
+    const tocTitleId = useId();
+    const measurementTitleId = useId();
     const [measurementIsActive, setMeasurementIsActive] = useState<boolean>(false);
 
     function toggleMeasurement() {
         setMeasurementIsActive(!measurementIsActive);
     }
-    const tocTitleId = useId();
     return (
         <Flex height="100%" direction="column" overflow="hidden">
             <TitledSection
@@ -72,6 +73,8 @@ export function AppUI() {
                             </Box>
                             {measurementIsActive && (
                                 <Box
+                                    role="dialog"
+                                    aria-labelledby={measurementTitleId}
                                     backgroundColor="white"
                                     borderWidth="1px"
                                     borderRadius="lg"
@@ -81,7 +84,11 @@ export function AppUI() {
                                 >
                                     <TitledSection
                                         title={
-                                            <SectionHeading size="md" mb={2}>
+                                            <SectionHeading
+                                                id={measurementTitleId}
+                                                size="md"
+                                                mb={2}
+                                            >
                                                 {intl.formatMessage({ id: "measurementTitle" })}
                                             </SectionHeading>
                                         }
