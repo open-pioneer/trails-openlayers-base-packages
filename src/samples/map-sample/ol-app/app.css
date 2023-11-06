@@ -2,3 +2,12 @@
     /* show above the map */
     z-index: 99;
 }
+
+.toggleToolActive {
+    color: green;
+}
+
+.toggleToolInactive {
+    color: black;
+}
+

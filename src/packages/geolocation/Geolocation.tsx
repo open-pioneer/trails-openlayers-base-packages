@@ -7,7 +7,7 @@ import { useMapModel } from "@open-pioneer/map";
 import { unByKey } from "ol/Observable";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, ForwardedRef, forwardRef, RefAttributes, useEffect, useState } from "react";
-import { MdLocationOn, MdLocationOff } from "react-icons/md";
+import { MdLocationOn } from "react-icons/md";
 import { GeolocationController } from "./GeolocationController";
 import { useService } from "open-pioneer:react-hooks";
 import { StyleLike } from "ol/style/Style";
@@ -33,7 +33,14 @@ export interface GeolocationProps extends CommonComponentProps, RefAttributes<HT
      * Changing style during runtime is not supported.
      */
     accuracyFeatureStyle?: StyleLike;
+    /**
+     * Position options for the Geolocation-Object.
+     * See [PositionOptions](https://www.w3.org/TR/geolocation/#position_options_interface) for more details.
+     */
+    trackingOptions?: PositionOptions;
 }
+
+//todo testen auf mobilen Geräten
 
 export const Geolocation: FC<GeolocationProps> = forwardRef(function Geolocation(
     props: GeolocationProps,
@@ -41,10 +48,11 @@ export const Geolocation: FC<GeolocationProps> = forwardRef(function Geolocation
 ) {
     const logger = createLogger("ol-geolocation:" + Geolocation.name);
 
-    const { mapId, positionFeatureStyle, accuracyFeatureStyle } = props;
+    const { mapId, positionFeatureStyle, accuracyFeatureStyle, trackingOptions } = props;
     const { containerProps } = useCommonComponentProps("geolocation", props);
 
     const [isActive, setActive] = useState<boolean>(false);
+    const [isLoading, setLoading] = useState<boolean>(false);
     const { map } = useMapModel(mapId);
     const intl = useIntl();
 
@@ -59,7 +67,8 @@ export const Geolocation: FC<GeolocationProps> = forwardRef(function Geolocation
         const geolocationController = new GeolocationController(
             map.olMap,
             positionFeatureStyle,
-            accuracyFeatureStyle
+            accuracyFeatureStyle,
+            trackingOptions
         );
         setController(geolocationController);
 
@@ -95,6 +104,7 @@ export const Geolocation: FC<GeolocationProps> = forwardRef(function Geolocation
                     break;
             }
 
+            setLoading(false);
             setActive(false);
 
             logger.error("Error from geolocation API:", evt.message);
@@ -112,11 +122,18 @@ export const Geolocation: FC<GeolocationProps> = forwardRef(function Geolocation
 
     useEffect(() => {
         if (!map) {
+            setLoading(false);
             return;
         }
-        if (isActive) controller?.startGeolocation(map.olMap);
+        if (isActive) {
+            setLoading(true);
+            // make startGeolocation async
+            controller?.startGeolocation(map.olMap);
+            setLoading(false);
+        }
         return () => {
             controller?.stopGeolocation(map.olMap);
+            setLoading(false);
         };
     }, [controller, map, isActive]);
 
@@ -129,7 +146,11 @@ export const Geolocation: FC<GeolocationProps> = forwardRef(function Geolocation
 
     return (
         <Tooltip
-            label={intl.formatMessage({ id: "buttonTooltip" })}
+            label={
+                isActive
+                    ? intl.formatMessage({ id: "buttonTooltipEnd" })
+                    : intl.formatMessage({ id: "buttonTooltipStart" })
+            } // todo: wenn tool deaktiviert wird sieht man noch kurz stop-Text
             placement="auto"
             openDelay={500}
         >
@@ -138,14 +159,21 @@ export const Geolocation: FC<GeolocationProps> = forwardRef(function Geolocation
                 className="geolocation-toggle-button"
                 aria-label={
                     isActive
-                        ? intl.formatMessage({ id: "locateMeStart" })
-                        : intl.formatMessage({ id: "locateMeEnd" })
+                        ? intl.formatMessage({ id: "locateMeEnd" })
+                        : intl.formatMessage({ id: "locateMeStart" })
                 }
-                leftIcon={isActive ? <MdLocationOff /> : <MdLocationOn />}
+                leftIcon={
+                    isActive ? (
+                        <MdLocationOn className="toggleToolActive" />
+                    ) : (
+                        <MdLocationOn className="toggleToolInactive" />
+                    )
+                }
                 onClick={() => toggleActiveState()}
                 iconSpacing={0}
                 padding={0}
                 ref={ref}
+                isLoading={isLoading} // todo: Implement isLoading state
                 isDisabled={!navigator.geolocation} // show button only, if geolocation is supported by web browser / device
                 {...containerProps}
             />

@@ -20,12 +20,19 @@ export class GeolocationController {
     private geolocation: olGeolocation;
     private changeHandlers: EventsKey[] = [];
     private isCurrentlyActive: boolean = false;
+    private centerMapToPosition: boolean = true;
 
-    constructor(olMap: olMap, positionFeatureStyle?: StyleLike, accuracyFeatureStyle?: StyleLike) {
+    constructor(
+        olMap: olMap,
+        positionFeatureStyle?: StyleLike,
+        accuracyFeatureStyle?: StyleLike,
+        trackingOptions?: PositionOptions
+    ) {
         this.olMap = olMap;
 
         this.accuracyFeature = new Feature();
-        accuracyFeatureStyle && this.accuracyFeature.setStyle(accuracyFeatureStyle);
+        accuracyFeatureStyle = accuracyFeatureStyle || getDefaultAccuracyStyle();
+        this.accuracyFeature.setStyle(accuracyFeatureStyle);
 
         this.positionFeature = new Feature();
         positionFeatureStyle = positionFeatureStyle || getDefaultPositionStyle();
@@ -37,13 +44,13 @@ export class GeolocationController {
             })
         });
 
+        // PositionOptions or trackingoptions?
+        const geolocationTrackingOptions: PositionOptions =
+            trackingOptions || getDefaultTrackingOptions();
+
         this.geolocation = new olGeolocation({
             tracking: false,
-            trackingOptions: {
-                enableHighAccuracy: true,
-                timeout: 30000, // todo Dennis: konfigurierbar?
-                maximumAge: 2000 // todo Dennis: konfigurierbar?
-            },
+            trackingOptions: geolocationTrackingOptions,
             projection: olMap.getView()?.getProjection()
         });
     }
@@ -58,9 +65,11 @@ export class GeolocationController {
         this.positionFeature = undefined;
         this.positionHighlightLayer.dispose();
         this.isCurrentlyActive = false;
+        this.centerMapToPosition = true;
     }
 
     startGeolocation(olMap: olMap) {
+        // TODO: return new Promise {} for loadingStatus
         if (!this.isCurrentlyActive) {
             this.isCurrentlyActive = true;
             this.geolocation?.setProjection(olMap.getView()?.getProjection());
@@ -72,12 +81,36 @@ export class GeolocationController {
             });
 
             const positionChangeHandler = this.geolocation.on("change:position", () => {
+                console.log("pos changed");
                 const coordinates = this.geolocation.getPosition();
                 this.positionFeature?.setGeometry(coordinates ? new Point(coordinates) : undefined);
-                olMap.getView().setCenter(coordinates); // TODO: Dennis fragen ob konfigurierbares centern
+                if (this.centerMapToPosition) {
+                    olMap.getView().setCenter(coordinates);
+                }
             });
 
-            this.changeHandlers.push(accuracyChangeHandler, positionChangeHandler);
+            // zoom changes
+            const resolutionChangeHandler = olMap.getView().on("change:resolution", () => {
+                this.centerMapToPosition = false;
+            });
+
+            const rotationChangeHandler = olMap.getView().on("change:rotation", () => {
+                this.centerMapToPosition = false;
+            });
+
+            const draggingHandler = olMap.on("pointermove", (evt) => {
+                if (evt.dragging) {
+                    this.centerMapToPosition = false;
+                }
+            });
+
+            this.changeHandlers.push(
+                accuracyChangeHandler,
+                positionChangeHandler,
+                resolutionChangeHandler,
+                rotationChangeHandler,
+                draggingHandler
+            );
 
             // TODO: is it ok that layer is added event if error occurs currently after tracking activation?
             olMap.addLayer(this.positionHighlightLayer);
@@ -87,6 +120,7 @@ export class GeolocationController {
     stopGeolocation(olMap: olMap) {
         this.geolocation?.setTracking(false);
         this.isCurrentlyActive = false;
+        this.centerMapToPosition = true;
 
         this.changeHandlers.forEach((handler) => {
             unByKey(handler);
@@ -94,6 +128,13 @@ export class GeolocationController {
         this.accuracyFeature?.setGeometry(undefined);
         this.positionFeature?.setGeometry(undefined);
         olMap.removeLayer(this.positionHighlightLayer);
+    }
+
+    getPositionFeature() {
+        return this.positionFeature;
+    }
+    getAccuracyFeature() {
+        return this.accuracyFeature;
     }
 
     getGeolocation() {
@@ -114,4 +155,24 @@ const getDefaultPositionStyle = () => {
             })
         })
     });
+};
+
+const getDefaultAccuracyStyle = () => {
+    return new Style({
+        stroke: new Stroke({
+            color: "#3399CC",
+            width: 3
+        }),
+        fill: new Fill({
+            color: "rgba(0, 0, 255, 0.05)"
+        })
+    });
+};
+
+const getDefaultTrackingOptions = (): PositionOptions => {
+    return {
+        "enableHighAccuracy": true,
+        "timeout": 60000,
+        "maximumAge": 600000
+    };
 };
