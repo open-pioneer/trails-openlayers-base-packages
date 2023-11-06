@@ -129,10 +129,8 @@ it("supports configuring role and aria labels", async () => {
         </PackageContextProvider>
     );
 
-    // Assert map is mounted
     await waitForMapMount();
 
-    // Div is registered as map target
     const container = renderResult.container.querySelector(".map-container")!;
     expect(container.role).toBe("application");
     expect(container.getAttribute("aria-label")).toBe("foo");
