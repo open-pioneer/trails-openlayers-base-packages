@@ -106,4 +106,4 @@ For more details, see the API docs of `useEvent` or <https://github.com/reactjs/
 
 ## License
 
-[Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0)
+Apache-2.0 (see `LICENSE` file)
