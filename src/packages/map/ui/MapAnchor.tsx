@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-import { Box, StyleProps } from "@open-pioneer/chakra-integration";
+import { Box, BoxProps, StyleProps } from "@open-pioneer/chakra-integration";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
-import { BaseSyntheticEvent, ReactNode } from "react";
+import { BaseSyntheticEvent, ReactNode, useMemo } from "react";
 import { createPortal } from "react-dom";
 import { MapPadding } from "./MapContainer";
 import { useMapContext } from "./MapContext";
@@ -17,6 +17,7 @@ export interface MapAnchorProps extends CommonComponentProps {
      * @default "top-right"
      */
     position?: MapAnchorPosition;
+
     /**
      * Horizontal gap in pixel applied to anchor container.
      *
@@ -27,6 +28,7 @@ export interface MapAnchorProps extends CommonComponentProps {
      * @default 0
      */
     horizontalGap?: number;
+
     /**
      * Vertical gap in pixel applied to anchor container.
      *
@@ -38,13 +40,40 @@ export interface MapAnchorProps extends CommonComponentProps {
      */
     verticalGap?: number;
 
+    /**
+     * Prevent some events from the map anchor's children from bubbling towards the map, effectively hiding them from map interactions.
+     * Defaults to `true`.
+     *
+     * If this value is enabled, events such as `pointer-down` are hidden from the map when they occur
+     * within the map anchor.
+     * This is essential when the user wants to select text, or open the browser context menu within the anchor.
+     * If that is not required, set `stopEvents` to `false` instead.
+     */
+    stopEvents?: boolean;
+
     children?: ReactNode;
 }
 
 export function MapAnchor(props: MapAnchorProps): JSX.Element {
-    const { position = defaultPosition, children, horizontalGap, verticalGap } = props;
+    const {
+        position = defaultPosition,
+        stopEvents = true,
+        children,
+        horizontalGap,
+        verticalGap
+    } = props;
     const { containerProps } = useCommonComponentProps("map-anchor", props);
     const { padding, mapAnchorsHost } = useMapContext();
+
+    const eventHandlers: Partial<BoxProps> = useMemo(() => {
+        const stopHandler = stopEvents ? stopPropagation : undefined;
+        return {
+            onPointerDown: stopHandler,
+            onPointerUp: stopHandler,
+            onContextMenu: stopHandler
+        };
+    }, [stopEvents]);
+
     return createPortal(
         <Box
             {...containerProps}
@@ -52,9 +81,8 @@ export function MapAnchor(props: MapAnchorProps): JSX.Element {
             pointerEvents="auto"
             /* Restore user-select: none set by ol-viewport parent */
             userSelect="text"
-            /** Hide pointer up/down events from the map parent.  */
-            onPointerDown={stopPropagation}
-            onPointerUp={stopPropagation}
+            /** Hide pointer up/down and context menu events from the map parent.  */
+            {...eventHandlers}
             {...computePositionStyles(position, padding, horizontalGap, verticalGap)}
         >
             {children}
