@@ -4,7 +4,7 @@ import { Box, Button, Flex } from "@open-pioneer/chakra-integration";
 import { Sidebar, SidebarItem } from "@open-pioneer/experimental-layout-sidebar";
 import { MapAnchor, MapContainer, MapPadding, useMapModel } from "@open-pioneer/map";
 import { useState } from "react";
-import { FiCodesandbox, FiLayers } from "react-icons/fi";
+import { FiCodesandbox } from "react-icons/fi";
 import { MAP_ID } from "./MapConfigProviderImpl";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 
