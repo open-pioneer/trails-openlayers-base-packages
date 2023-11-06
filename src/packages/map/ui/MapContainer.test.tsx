@@ -31,7 +31,7 @@ it("successfully creates a map", async () => {
     // Div is registered as map target
     const map = await registry.expectMapModel(mapId);
     const container = renderResult.container.querySelector(".map-container");
-    expect(container).toBeInstanceOf(HTMLDivElement);
+    expect(container?.tagName).toBe("DIV");
     expect(map?.container).toBe(container);
     expect(map?.olMap.getTarget()).toBe(container);
 

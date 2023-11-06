@@ -23,7 +23,7 @@ it("should successfully create a scale viewer component", async () => {
     expect(viewerDiv).toMatchSnapshot();
 
     // check scale viewer box is available
-    expect(viewerText).toBeInstanceOf(HTMLParagraphElement);
+    expect(viewerText.tagName).toBe("P");
 });
 
 it("should successfully create a scale viewer component with additional css classes and box properties", async () => {
@@ -43,13 +43,13 @@ it("should successfully create a scale viewer component with additional css clas
     // check scale viewer box is available
     if (!viewerDiv) {
         throw new Error("scale text not rendered");
-    } else {
-        expect(viewerDiv).toBeInstanceOf(HTMLDivElement);
-        expect(viewerDiv.classList.contains("test")).toBe(true);
-        expect(viewerDiv.classList.contains("test1")).toBe(true);
-        expect(viewerDiv.classList.contains("test2")).toBe(true);
-        expect(viewerDiv.classList.contains("test3")).not.toBe(true);
     }
+
+    expect(viewerDiv.tagName).toBe("DIV");
+    expect(viewerDiv.classList.contains("test")).toBe(true);
+    expect(viewerDiv.classList.contains("test1")).toBe(true);
+    expect(viewerDiv.classList.contains("test2")).toBe(true);
+    expect(viewerDiv.classList.contains("test3")).not.toBe(true);
 });
 
 it("should successfully render the scale in the correct locale", async () => {

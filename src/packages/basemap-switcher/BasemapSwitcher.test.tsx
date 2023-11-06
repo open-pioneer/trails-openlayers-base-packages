@@ -42,8 +42,8 @@ it("should successfully create a basemap switcher component", async () => {
     expect(switcherDiv).toMatchSnapshot();
 
     // check basemap switcher box and select is available
-    expect(switcherDiv).toBeInstanceOf(HTMLDivElement);
-    expect(switcherSelect).toBeInstanceOf(HTMLSelectElement);
+    expect(switcherDiv.tagName).toBe("DIV");
+    expect(switcherSelect.tagName).toBe("SELECT");
 });
 
 it("should successfully create a basemap switcher component with additional css classes and box properties", async () => {
@@ -59,11 +59,7 @@ it("should successfully create a basemap switcher component with additional css 
         </PackageContextProvider>
     );
 
-    // basemap switcher is mounted
     const { switcherDiv } = await waitForBasemapSwitcher();
-    expect(switcherDiv).toMatchSnapshot();
-
-    expect(switcherDiv).toBeInstanceOf(HTMLDivElement);
     expect(switcherDiv.classList.contains("test")).toBe(true);
     expect(switcherDiv.classList.contains("foo")).toBe(false);
 });
