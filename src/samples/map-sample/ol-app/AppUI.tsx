@@ -10,9 +10,11 @@ import { ScaleComponent } from "map-sample-scale-component";
 import { useIntl } from "open-pioneer:react-hooks";
 import { MAP_ID } from "./MapConfigProviderImpl";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
+import { useId } from "react";
 
 export function AppUI() {
     const intl = useIntl();
+    const tocTitleId = useId();
     return (
         <Flex height="100%" direction="column" overflow="hidden">
             <TitledSection
@@ -39,6 +41,8 @@ export function AppUI() {
                     <MapContainer mapId={MAP_ID}>
                         <MapAnchor position="top-left" horizontalGap={20} verticalGap={20}>
                             <Box
+                                role="dialog"
+                                aria-labelledby={tocTitleId}
                                 backgroundColor="white"
                                 borderWidth="1px"
                                 borderRadius="lg"
@@ -47,7 +51,7 @@ export function AppUI() {
                             >
                                 <TitledSection
                                     title={
-                                        <SectionHeading size="md">
+                                        <SectionHeading id={tocTitleId} size="md">
                                             {intl.formatMessage({ id: "tocTitle" })}
                                         </SectionHeading>
                                     }
