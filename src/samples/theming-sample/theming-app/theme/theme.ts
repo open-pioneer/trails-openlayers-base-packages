@@ -45,10 +45,6 @@ const semanticTokens = {
         "font_inverse": "white",
         "font_link": "trails.600",
         "border": "gray.300",
-        //"error": "red.500",
-        //"error_hover": "red.600",
-        //"success": "green.500",
-        //"highlight": "yellow.300",
 
         //override internal chakra theming variables
         //https://github.com/chakra-ui/chakra-ui/blob/main/packages/components/theme/src/semantic-tokens.ts
@@ -86,7 +82,6 @@ theme = extendTheme(
     withDefaultColorScheme({ colorScheme: "trails" }),
     {
         shadows: {
-            //TODO ?? https://caniuse.com/?search=rrggbbaa -> default: rgba(66, 153, 225, 0.6)
             //opacity-to-hex: 0.6 => 99
             outline: `0 0 0 3px ${getColor("background_primary")}99`
         },
@@ -135,17 +130,6 @@ theme = extendTheme(
                 defaultProps: {
                     //colorScheme: "blue"
                     //size: "md" //"lg" | "md" | "sm"
-                }
-            },
-            Container: {
-                //TODO ?? Box <-> Container
-                //TODO: https://chakra-ui.com/docs/components/container/usage#centering-the-children
-                baseStyle: {
-                    bg: "white",
-                    borderWidth: "1px",
-                    borderRadius: "lg",
-                    boxShadow: "lg",
-                    padding: 2
                 }
             },
             Divider: {
