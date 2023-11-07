@@ -20,14 +20,6 @@ export interface SearchGroupOption {
 }
 
 /**
- * Option-Object for Configuration
- */
-export interface SortOption {
-    usePriority: boolean;
-    sortingOrder: string;
-}
-
-/**
  * This is for special properties of the Search component
  */
 export interface SearchProps extends CommonComponentProps {
@@ -39,7 +31,6 @@ export interface SearchProps extends CommonComponentProps {
     name?: string;
     placeholder?: string;
     closeMenuOnSelect?: boolean;
-    sortOption?: SortOption;
     sources: DataSource[];
 }
 
@@ -91,62 +82,6 @@ const filterData = async (inputValue: string): Promise<SearchGroupOption[]> => {
             return searchGroupOption;
         });
     return filteredData;
-};
-
-/**
- * Methode for sorting SearchGroupOption after priority
- * @param a
- * @param b
- * @returns
- */
-const sortPriority = (a: SearchGroupOption, b: SearchGroupOption) => {
-    if (!a.priority && !b.priority) return 0;
-    if (!a.priority) {
-        return -1;
-    } else if (!b.priority) {
-        return 1;
-    } else {
-        return a.priority - b.priority;
-    }
-};
-
-/**
- *
- * @param a Methode for sorting SearchOption values
- * @param b
- * @returns
- */
-// eslint-disable-next-line
-const sortValues = (a: SearchOption, b: SearchOption) => {
-    const valueA = a.value.toUpperCase(); // ignore upper and lowercase
-    const valueB = b.value.toUpperCase(); // ignore upper and lowercase
-    if (valueA < valueB) return -1;
-    if (valueA > valueB) return 1;
-    return 0;
-};
-
-// TODO: Replace Any with correct type
-/**
- * Async-Wrapper for array.sort()-function
- * @param array
- * @param sortFunction
- * @returns
- */
-// eslint-disable-next-line
-const sortArrayAsynchron = async (array: any[], sortFunction: (a: any, b: any) => number) => {
-    return array.sort(sortFunction);
-};
-
-/**
- * Methode for sorting the order of SearchGroupOption and the order of SearchGroupOption.options
- * @param data
- * @param sortOption
- * @returns
- */
-const sortData = async (data: SearchGroupOption[], sortOption?: SortOption) => {
-    if (sortOption?.usePriority) data = await sortArrayAsynchron(data, sortPriority);
-    //Todo: Asnyc sort foreach SearchOption
-    return data;
 };
 
 export const Search: FC<SearchProps> = (props) => {
