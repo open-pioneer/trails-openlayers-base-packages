@@ -3,10 +3,11 @@
     z-index: 99;
 }
 
-.toggleToolActive {
+/* TODO: set color to primary/secondary? */
+.toggle-tool-active {
     color: green;
 }
 
-.toggleToolInactive {
+.toggle-tool-inactive {
     color: black;
 }

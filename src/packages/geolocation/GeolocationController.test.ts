@@ -23,12 +23,31 @@ it("uses the configured style for the accuracy feature", async () => {
     expect(accuracyFeature?.getStyle()).toStrictEqual(getCustomAccuracyStyle());
 });
 
+it("uses the configured tracking options", async () => {
+    const controller: GeolocationController = setup();
+    const trackingOptions: PositionOptions = controller.getTrackingOptions();
+    expect(trackingOptions?.enableHighAccuracy).toBe(true);
+    expect(trackingOptions?.timeout).toBe(20);
+    expect(trackingOptions?.maximumAge).toBe(50);
+});
+
 // todo: Style-Functions und andere styleLike optionen testen?
 function setup() {
     const olMap: olMap = new OlMap();
     const positionFeatureStyle: Style = getCustomPositionStyle();
     const accuracyFeatureStyle: Style = getCustomAccuracyStyle();
-    return new GeolocationController(olMap, positionFeatureStyle, accuracyFeatureStyle);
+    const trackingOptions: PositionOptions = {
+        "enableHighAccuracy": true,
+        "timeout": 20,
+        "maximumAge": 50
+    };
+
+    return new GeolocationController(
+        olMap,
+        positionFeatureStyle,
+        accuracyFeatureStyle,
+        trackingOptions
+    );
 }
 
 function getCustomPositionStyle() {

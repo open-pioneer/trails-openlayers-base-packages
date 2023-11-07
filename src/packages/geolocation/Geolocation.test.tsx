@@ -15,7 +15,6 @@ it("should successfully create a geolocation component with a button", async () 
     // Todo: Besser: Notifier mocken
     const notifier = await createService(NotificationServiceImpl);
 
-    // TODO: klaeren, ob es sinnvoll ist, die Methode erweiterbar zu machen -> ist ok so
     const injectedServices = createServiceOptions({
         registry
     });

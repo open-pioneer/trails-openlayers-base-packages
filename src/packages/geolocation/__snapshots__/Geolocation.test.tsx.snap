@@ -15,7 +15,7 @@ exports[`should successfully create a geolocation component with a button 1`] = 
   >
     <svg
       aria-hidden="true"
-      class="toggleToolInactive"
+      class="toggle-tool-inactive"
       fill="currentColor"
       focusable="false"
       height="1em"

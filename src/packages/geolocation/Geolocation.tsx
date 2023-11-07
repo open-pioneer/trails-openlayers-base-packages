@@ -127,9 +127,14 @@ export const Geolocation: FC<GeolocationProps> = forwardRef(function Geolocation
         }
         if (isActive) {
             setLoading(true);
-            // make startGeolocation async
-            controller?.startGeolocation(map.olMap);
-            setLoading(false);
+            const geolocationPromise: Promise<boolean> | undefined = controller?.startGeolocation(
+                map.olMap
+            );
+            if (geolocationPromise) {
+                geolocationPromise.then(() => {
+                    setLoading(false);
+                });
+            }
         }
         return () => {
             controller?.stopGeolocation(map.olMap);
@@ -164,16 +169,16 @@ export const Geolocation: FC<GeolocationProps> = forwardRef(function Geolocation
                 }
                 leftIcon={
                     isActive ? (
-                        <MdLocationOn className="toggleToolActive" />
+                        <MdLocationOn className="toggle-tool-active" />
                     ) : (
-                        <MdLocationOn className="toggleToolInactive" />
+                        <MdLocationOn className="toggle-tool-inactive" />
                     )
                 }
                 onClick={() => toggleActiveState()}
                 iconSpacing={0}
                 padding={0}
                 ref={ref}
-                isLoading={isLoading} // todo: Implement isLoading state
+                isLoading={isLoading}
                 isDisabled={!navigator.geolocation} // show button only, if geolocation is supported by web browser / device
                 {...containerProps}
             />
