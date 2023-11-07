@@ -32,7 +32,6 @@ export function AppUI() {
                 padding={2}
                 boxShadow="lg"
                 margin={3}
-                __width={"50vw"}
             >
                 <Heading size={"md"}>Buttons</Heading>
                 <Heading size={"xs"}>default with tooltip</Heading>
