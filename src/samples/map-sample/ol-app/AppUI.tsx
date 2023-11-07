@@ -43,7 +43,7 @@ export function AppUI() {
                 <Flex flex="1" direction="column" position="relative">
                     <MapContainer
                         mapId={MAP_ID}
-                        role="application"
+                        role="main"
                         aria-label={intl.formatMessage({ id: "ariaLabel.map" })}
                     >
                         <MapAnchor position="top-left" horizontalGap={20} verticalGap={20}>
