@@ -5,7 +5,13 @@ import { CoordinateViewer } from "@open-pioneer/coordinate-viewer";
 import { MapAnchor, MapContainer } from "@open-pioneer/map";
 import { InitialExtent, ZoomIn, ZoomOut } from "@open-pioneer/map-navigation";
 import { Measurement } from "@open-pioneer/measurement";
-import { Search } from "@open-pioneer/search-ui";
+import {
+    Search,
+    FakeCitySource,
+    FakeStreetSource,
+    FakeRiverSource,
+    GeoSearchSource
+} from "@open-pioneer/search-ui";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { ScaleViewer } from "@open-pioneer/scale-viewer";
 import { Toc } from "@open-pioneer/toc";
@@ -20,6 +26,12 @@ import {
 } from "react-icons/pi";
 import { MAP_ID } from "./MapConfigProviderImpl";
 
+const sources = [
+    new FakeCitySource(),
+    new FakeRiverSource(),
+    new FakeStreetSource(),
+    new GeoSearchSource()
+];
 export function AppUI() {
     const intl = useIntl();
     const [measurementIsActive, setMeasurementIsActive] = useState<boolean>(false);
@@ -56,7 +68,11 @@ export function AppUI() {
                                     boxShadow="lg"
                                     mt={5}
                                 >
-                                    <Search mapId={MAP_ID} searchTypingDelay={500} />
+                                    <Search
+                                        mapId={MAP_ID}
+                                        sources={sources}
+                                        searchTypingDelay={500}
+                                    />
                                 </Box>
                             )}
                             <Box
