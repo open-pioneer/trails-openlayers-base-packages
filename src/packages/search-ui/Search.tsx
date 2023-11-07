@@ -4,6 +4,7 @@ import { Box, FormControl } from "@open-pioneer/chakra-integration";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { FC } from "react";
 import { AsyncSelect } from "chakra-react-select";
+import { DataSource } from "./api";
 
 export interface SearchOption {
     value: string;
@@ -37,6 +38,7 @@ export interface SearchProps extends CommonComponentProps {
     placeholder?: string;
     closeMenuOnSelect?: boolean;
     sortOption?: SortOption;
+    sources: DataSource[];
 }
 
 const dummyData: SearchGroupOption[] = [
@@ -146,19 +148,19 @@ const sortData = async (data: SearchGroupOption[], sortOption?: SortOption) => {
 };
 
 export const Search: FC<SearchProps> = (props) => {
-    const { placeholder, closeMenuOnSelect, sortOption } = props;
+    const { placeholder, closeMenuOnSelect, sortOption, sources } = props;
     const { containerProps } = useCommonComponentProps("search", props);
 
-    const loadOptions = function (inputValue: string): Promise<SearchGroupOption[]> {
-        return new Promise<SearchGroupOption[]>((resolve) => {
-            setTimeout(async () => {
-                //first get the Searchresults
-                const filterResult = await filterData(inputValue);
-                //Second order the results
-                const sortResult = await sortData(filterResult, sortOption);
-                resolve(sortResult);
-            }, 1000);
-        });
+    const loadOptions = async (inputValue: string): Promise<SearchGroupOption[]> => {
+        const runningQueries = await Promise.all(
+            sources.map((source) => source.search(inputValue))
+        );
+        const options = sources.map((source, index) => ({
+            label: source.label,
+            options:
+                runningQueries[index]?.map((item) => ({ value: item.text, label: item.text })) || []
+        }));
+        return options;
     };
 
     return (
@@ -166,7 +168,6 @@ export const Search: FC<SearchProps> = (props) => {
             <FormControl alignItems="center">
                 <AsyncSelect
                     isClearable={true}
-                    name="colors"
                     placeholder={placeholder}
                     closeMenuOnSelect={closeMenuOnSelect}
                     loadOptions={loadOptions}
