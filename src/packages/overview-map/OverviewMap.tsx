@@ -55,9 +55,9 @@ export const OverviewMap: FC<OverviewMapProps> = (props) => {
             const overviewMapControl: OlOverviewMap = new OlOverviewMap({
                 className: "ol-overviewmap custom-overviewmap",
                 layers: [layer],
-                collapseLabel: "\u00BB",
-                label: "\u00AB",
-                collapsed: true,
+                collapsible: false,
+                collapsed: false,
+                target: overviewMapControlElem.current,
                 tipLabel: tooltipText
             });
             olMap.addControl(overviewMapControl);

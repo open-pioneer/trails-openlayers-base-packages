@@ -1,5 +1,6 @@
 .custom-overviewmap,
 .custom-overviewmap.ol-uncollapsible {
+    position: relative;
     bottom: auto;
     left: auto;
     right: 0;

@@ -87,8 +87,10 @@ export function AppUI() {
                                 </Box>
                             )}
                         </MapAnchor>
-                        <MapAnchor position="bottom-right" horizontalGap={10} verticalGap={30}>
+                        <MapAnchor position="top-right" horizontalGap={10} verticalGap={10}>
                             <OverviewMap mapId={MAP_ID} layer={overviewMapLayer}></OverviewMap>
+                        </MapAnchor>
+                        <MapAnchor position="bottom-right" horizontalGap={10} verticalGap={30}>
                             <Flex direction="column" gap={1} padding={1}>
                                 <Tooltip
                                     label={intl.formatMessage({ id: "measurementTitle" })}
