@@ -6380,7 +6380,7 @@ packages:
       use-sidecar: 1.1.2(@types/react@18.2.20)(react@18.2.0)
 
   /react-icons@4.11.0(react@18.2.0):
-    resolution: {integrity: sha512-N6+kOLcihDiAnj5Czu637waJqSnwlMNROzVZMhfX68V/9bu9qHaMIJC4UdozWoOk57gahFCNHwVvWzm0MTzRjg==}
+    resolution: {integrity: sha512-V+4khzYcE5EBk/BvcuYRq6V/osf11ODUM2J8hg2FDSswRrGvqiYUYPRy4OdrWaQOBj4NcpJfmHZLNaD+VH0TyA==}
     peerDependencies:
       react: '*'
     dependencies:
