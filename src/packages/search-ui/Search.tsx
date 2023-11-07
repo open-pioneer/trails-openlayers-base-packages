@@ -152,7 +152,6 @@ function sortPriority(a: SearchGroupOption, b: SearchGroupOption) {
  * @param b
  * @returns
  */
-// eslint-disable-next-line
 function sortValues(a: SearchOption, b: SearchOption) {
     const valueA = a.value.toUpperCase(); // ignore upper and lowercase
     const valueB = b.value.toUpperCase(); // ignore upper and lowercase
@@ -161,15 +160,13 @@ function sortValues(a: SearchOption, b: SearchOption) {
     return 0;
 }
 
-// TODO: Replace Any with correct type
 /**
  * Async-Wrapper for array.sort()-function
  * @param array
  * @param sortFunction
  * @returns
  */
-// eslint-disable-next-line
-async function sortArrayAsynchron(array: any[], sortFunction: (a: any, b: any) => number) {
+async function sortArrayAsynchron<T>(array: T[], sortFunction: (a: T, b: T) => number) {
     return array.sort(sortFunction);
 }
 
@@ -181,7 +178,9 @@ async function sortArrayAsynchron(array: any[], sortFunction: (a: any, b: any) =
  */
 async function sortData(data: SearchGroupOption[], sortOption?: SortOption) {
     if (sortOption?.usePriority) data = await sortArrayAsynchron(data, sortPriority);
-    //Todo: Asnyc sort foreach SearchOption
+    data.forEach(async (item) => {
+        item.options = await sortArrayAsynchron(item.options, sortValues);
+    });
     return data;
 }
 
