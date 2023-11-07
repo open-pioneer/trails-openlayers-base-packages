@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: con terra GmbH and contributors
+// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { getErrorChain } from "@open-pioneer/core";
 import { View } from "ol";
@@ -244,24 +244,24 @@ it("should construct a map with the configured layers", async () => {
             {
                 id: "id1",
                 title: "foo",
-                layer: new TileLayer({ source: new OSM() })
+                olLayer: new TileLayer({ source: new OSM() })
             },
             {
                 id: "id2",
                 title: "bar",
                 visible: false,
-                layer: new TileLayer({ source: new BkgTopPlusOpen() })
+                olLayer: new TileLayer({ source: new BkgTopPlusOpen() })
             }
         ]
     });
 
     const map = await registry.expectMapModel(mapId);
-    const allLayers = map.layers.getAllLayers().map((layerModel) => {
+    const allLayers = map.layers.getAllLayers().map((layer) => {
         return {
-            id: layerModel.id,
-            title: layerModel.title,
-            visible: layerModel.visible,
-            loadState: layerModel.loadState
+            id: layer.id,
+            title: layer.title,
+            visible: layer.visible,
+            loadState: layer.loadState
         };
     });
 

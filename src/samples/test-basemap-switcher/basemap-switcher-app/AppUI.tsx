@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: con terra GmbH and contributors
+// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { BasemapSwitcher } from "@open-pioneer/basemap-switcher";
 import {
@@ -14,7 +14,13 @@ import {
     VStack
 } from "@open-pioneer/chakra-integration";
 import { TitledSection, SectionHeading } from "@open-pioneer/react-utils";
-import { BkgTopPlusOpen, MapAnchor, MapContainer, useMapModel } from "@open-pioneer/map";
+import {
+    BkgTopPlusOpen,
+    MapAnchor,
+    MapContainer,
+    SimpleLayer,
+    useMapModel
+} from "@open-pioneer/map";
 import TileLayer from "ol/layer/Tile";
 import { useIntl } from "open-pioneer:react-hooks";
 import { useRef } from "react";
@@ -113,13 +119,14 @@ function AddNewBaseLayerButton(props: { mapId: string }) {
         }
 
         const number = counter.current++;
-        const layer = map.layers.createLayer({
+        const layer = new SimpleLayer({
             title: `New Layer ${number}`,
             isBaseLayer: true,
-            layer: new TileLayer({
+            olLayer: new TileLayer({
                 source: new BkgTopPlusOpen({ layer: "web_grau" })
             })
         });
+        map.layers.addLayer(layer);
         console.log("generated base layer with id", layer.id);
     };
 

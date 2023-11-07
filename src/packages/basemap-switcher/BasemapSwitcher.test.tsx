@@ -1,6 +1,6 @@
-// SPDX-FileCopyrightText: con terra GmbH and contributors
+// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { BkgTopPlusOpen } from "@open-pioneer/map";
+import { BkgTopPlusOpen, SimpleLayer } from "@open-pioneer/map";
 import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
@@ -15,18 +15,14 @@ const defaultBasemapConfig = [
         title: "OSM",
         isBaseLayer: true,
         visible: true,
-        layer: new TileLayer({
-            source: new OSM()
-        })
+        olLayer: new TileLayer({})
     },
     {
         id: "topplus-open",
         title: "TopPlus Open",
         isBaseLayer: true,
         visible: false,
-        layer: new TileLayer({
-            source: new BkgTopPlusOpen()
-        })
+        olLayer: new TileLayer({})
     }
 ];
 
@@ -157,7 +153,7 @@ it("should successfully select emptyBasemap, if all configured basemaps are conf
                 title: "OSM",
                 isBaseLayer: true,
                 visible: false,
-                layer: new TileLayer({
+                olLayer: new TileLayer({
                     source: new OSM()
                 })
             },
@@ -166,7 +162,7 @@ it("should successfully select emptyBasemap, if all configured basemaps are conf
                 title: "topplus-open",
                 isBaseLayer: true,
                 visible: false,
-                layer: new TileLayer({
+                olLayer: new TileLayer({
                     source: new BkgTopPlusOpen()
                 })
             }
@@ -229,14 +225,13 @@ it("should update when a new basemap is registered", async () => {
     expect(switcherSelect.options.length).toBe(2);
 
     act(() => {
-        map.layers.createLayer({
+        const layer = new SimpleLayer({
             id: "foo",
             title: "Foo",
             isBaseLayer: true,
-            layer: new TileLayer({
-                source: new OSM()
-            })
+            olLayer: new TileLayer({})
         });
+        map.layers.addLayer(layer);
     });
 
     expect(switcherSelect.options.length).toBe(3);
@@ -297,7 +292,7 @@ describe("should successfully select the correct basemap from basemap switcher",
                     title: "OSM",
                     isBaseLayer: true,
                     visible: true,
-                    layer: new TileLayer({
+                    olLayer: new TileLayer({
                         source: new OSM()
                     })
                 },
@@ -306,7 +301,7 @@ describe("should successfully select the correct basemap from basemap switcher",
                     title: "TopPlus Open",
                     isBaseLayer: true,
                     visible: false,
-                    layer: new TileLayer({
+                    olLayer: new TileLayer({
                         source: new BkgTopPlusOpen()
                     })
                 }
@@ -338,7 +333,7 @@ describe("should successfully select the correct basemap from basemap switcher",
                     title: "OSM",
                     isBaseLayer: true,
                     visible: false,
-                    layer: new TileLayer({
+                    olLayer: new TileLayer({
                         source: new OSM()
                     })
                 },
@@ -347,7 +342,7 @@ describe("should successfully select the correct basemap from basemap switcher",
                     title: "TopPlus Open",
                     isBaseLayer: true,
                     visible: true,
-                    layer: new TileLayer({
+                    olLayer: new TileLayer({
                         source: new BkgTopPlusOpen()
                     })
                 }

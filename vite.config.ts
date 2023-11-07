@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: con terra GmbH and contributors
+// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
 /// <reference types="vitest" />
@@ -25,7 +25,6 @@ const sampleSites = [
     "samples/notify-sample",
     "samples/ogc-feature-sample",
     "samples/test-basemap-switcher",
-    "samples/test-measurement",
     "samples/experimental-sidebar"
 ];
 

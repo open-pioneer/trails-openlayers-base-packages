@@ -1,27 +1,50 @@
-// SPDX-FileCopyrightText: con terra GmbH and contributors
+// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box, Flex, FormControl, FormLabel, Text } from "@open-pioneer/chakra-integration";
+import {
+    Box,
+    Button,
+    Flex,
+    FormControl,
+    FormLabel,
+    Text,
+    Tooltip
+} from "@open-pioneer/chakra-integration";
 import { CoordinateViewer } from "@open-pioneer/coordinate-viewer";
-import { InitialExtent, ZoomIn, ZoomOut } from "@open-pioneer/map-navigation";
 import { MapAnchor, MapContainer } from "@open-pioneer/map";
+import { InitialExtent, ZoomIn, ZoomOut } from "@open-pioneer/map-navigation";
+import { Measurement } from "@open-pioneer/measurement";
+import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { ScaleViewer } from "@open-pioneer/scale-viewer";
 import { Toc } from "@open-pioneer/toc";
 import { ScaleComponent } from "map-sample-scale-component";
 import { useIntl } from "open-pioneer:react-hooks";
+import { useState } from "react";
+import { PiRulerFill, PiRulerLight } from "react-icons/pi";
 import { MAP_ID } from "./MapConfigProviderImpl";
-import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
+import { useId } from "react";
 import { Geolocation } from "@open-pioneer/geolocation";
 import { Notifier } from "@open-pioneer/notifier";
 
 export function AppUI() {
     const intl = useIntl();
+    const tocTitleId = useId();
+    const measurementTitleId = useId();
+    const [measurementIsActive, setMeasurementIsActive] = useState<boolean>(false);
 
+    function toggleMeasurement() {
+        setMeasurementIsActive(!measurementIsActive);
+    }
     return (
         <Flex height="100%" direction="column" overflow="hidden">
             <Notifier position="top-right" />
             <TitledSection
                 title={
-                    <Box textAlign="center" py={1}>
+                    <Box
+                        role="region"
+                        aria-label={intl.formatMessage({ id: "ariaLabel.header" })}
+                        textAlign="center"
+                        py={1}
+                    >
                         <SectionHeading size={"md"}>
                             OpenLayers Base Packages - Default Sample
                         </SectionHeading>
@@ -29,7 +52,11 @@ export function AppUI() {
                 }
             >
                 <Flex flex="1" direction="column" position="relative">
-                    <MapContainer mapId={MAP_ID}>
+                    <MapContainer
+                        mapId={MAP_ID}
+                        role="main"
+                        aria-label={intl.formatMessage({ id: "ariaLabel.map" })}
+                    >
                         <MapAnchor position="top-left" horizontalGap={20} verticalGap={20}>
                             <Box
                                 backgroundColor="white"
@@ -38,20 +65,39 @@ export function AppUI() {
                                 padding={2}
                                 boxShadow="lg"
                             >
-                                <TitledSection
-                                    title={
-                                        <SectionHeading size="md">
-                                            {intl.formatMessage({ id: "tocTitle" })}
-                                        </SectionHeading>
-                                    }
-                                >
-                                    <Toc
-                                        mapId={MAP_ID}
-                                        basemapSwitcherProps={{
-                                            allowSelectingEmptyBasemap: true
-                                        }}
-                                    />
-                                </TitledSection>
+                                <Box role="dialog" aria-labelledby={tocTitleId}>
+                                    <TitledSection
+                                        title={
+                                            <SectionHeading id={tocTitleId} size="md" mb={2}>
+                                                {intl.formatMessage({ id: "tocTitle" })}
+                                            </SectionHeading>
+                                        }
+                                    >
+                                        <Toc
+                                            mapId={MAP_ID}
+                                            basemapSwitcherProps={{
+                                                allowSelectingEmptyBasemap: true
+                                            }}
+                                        />
+                                    </TitledSection>
+                                </Box>
+                                {measurementIsActive && (
+                                    <Box role="dialog" aria-labelledby={measurementTitleId} mt={5}>
+                                        <TitledSection
+                                            title={
+                                                <SectionHeading
+                                                    id={measurementTitleId}
+                                                    size="md"
+                                                    mb={2}
+                                                >
+                                                    {intl.formatMessage({ id: "measurementTitle" })}
+                                                </SectionHeading>
+                                            }
+                                        >
+                                            <Measurement mapId={MAP_ID} />
+                                        </TitledSection>
+                                    </Box>
+                                )}
                             </Box>
                             <FormControl>
                                 <FormLabel ps={1}>
@@ -63,7 +109,28 @@ export function AppUI() {
                             </FormControl>
                         </MapAnchor>
                         <MapAnchor position="bottom-right" horizontalGap={10} verticalGap={30}>
-                            <Flex direction="column" gap={1} padding={1}>
+                            <Flex
+                                role="toolbar"
+                                aria-label={intl.formatMessage({ id: "ariaLabel.toolbar" })}
+                                direction="column"
+                                gap={1}
+                                padding={1}
+                            >
+                                <Tooltip
+                                    label={intl.formatMessage({ id: "measurementTitle" })}
+                                    placement="auto"
+                                    openDelay={500}
+                                >
+                                    <Button
+                                        aria-label={intl.formatMessage({ id: "measurementTitle" })}
+                                        leftIcon={
+                                            measurementIsActive ? <PiRulerFill /> : <PiRulerLight />
+                                        }
+                                        onClick={toggleMeasurement}
+                                        iconSpacing={0}
+                                        padding={0}
+                                    />
+                                </Tooltip>
                                 <InitialExtent mapId={MAP_ID} />
                                 <ZoomIn mapId={MAP_ID} />
                                 <ZoomOut mapId={MAP_ID} />
@@ -71,7 +138,13 @@ export function AppUI() {
                         </MapAnchor>
                     </MapContainer>
                 </Flex>
-                <Flex gap={3} alignItems="center" justifyContent="center">
+                <Flex
+                    role="region"
+                    aria-label={intl.formatMessage({ id: "ariaLabel.footer" })}
+                    gap={3}
+                    alignItems="center"
+                    justifyContent="center"
+                >
                     <CoordinateViewer mapId={MAP_ID} precision={2} />
                     <ScaleComponent mapId={MAP_ID} />
                     <ScaleViewer mapId={MAP_ID} />

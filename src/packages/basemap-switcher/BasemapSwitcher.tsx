@@ -1,7 +1,7 @@
-// SPDX-FileCopyrightText: con terra GmbH and contributors
+// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Box, Select } from "@open-pioneer/chakra-integration";
-import { LayerModel, MapModel, useMapModel } from "@open-pioneer/map";
+import { Layer, MapModel, useMapModel } from "@open-pioneer/map";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, useCallback, useMemo, useRef, useSyncExternalStore } from "react";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
@@ -105,11 +105,11 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
     );
 };
 
-function useBaseLayers(mapModel: MapModel | undefined): LayerModel[] {
+function useBaseLayers(mapModel: MapModel | undefined): Layer[] {
     // Caches potentially expensive layers arrays.
     // Not sure if this is a good idea, but getSnapshot() should always be fast.
     // If this is a no-go, make getAllLayers() fast instead.
-    const baseLayers = useRef<LayerModel[] | undefined>();
+    const baseLayers = useRef<Layer[] | undefined>();
     const subscribe = useCallback(
         (cb: () => void) => {
             // Reset cache when (re-) subscribing
@@ -137,7 +137,7 @@ function useBaseLayers(mapModel: MapModel | undefined): LayerModel[] {
 }
 
 function createOptions(params: {
-    baseLayers: LayerModel[];
+    baseLayers: Layer[];
     allowSelectingEmptyBasemap: boolean | undefined;
     emptyBasemapLabel: string;
 }): { selectOptions: SelectOption[]; selectedId: string } {

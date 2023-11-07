@@ -1,7 +1,7 @@
 # @open-pioneer/map
 
-This package provides a map container component to integrate an [OpenLayers](https://openlayers.org/) map.
-Besides the component, the package provides a service, which handles the registration and creation of a map.
+This package integrates [OpenLayers](https://openlayers.org/) maps into a Trails application.
+APIs provided by this package can be used to configure, embed and access the map and its contents.
 
 ## Usage
 
@@ -10,16 +10,7 @@ To use the map in your app, follow these two steps:
 -   Add a `MapContainer` component to your app (see [Map container component](#md:map-container-component)).
 -   Implement a `MapConfigProvider` (see [Map configuration](#md:map-configuration)).
 
-> IMPORTANT: The package uses a map model and layer model to internally handle the states of the map and layers. This is needed to support additional features like base layers.
-> For this reason, always use the methods provided by these models to manage the following features on map and layers (instead of using the raw OpenLayers instances directly):
->
-> -   Map composition (access and configuration of layers, base layers, removing layers)
-> -   Layer visibility
-> -   Custom layer metadata (`attributes`)
->
-> You can use the raw OpenLayers instances for other features (for example to control the transparency of a layer).
->
-> For examples, see [Using the map model](#md:using-the-map-model).
+To access or manipulate the content of the map programmatically, see [Using the map model](#using-the-map-model).
 
 ### Map container component
 
@@ -73,6 +64,16 @@ In this case, the CSS property `overflow` is set to `hidden` to the map anchor c
 If no `verticalGap` is configured, a default vertical gap of `30px` is used.
 
 > NOTE: To get the correct tab order, add the container anchor-points before other components.
+
+By default, certain pointer events from map anchor children (such as `pointer-down`) are stopped from bubbling up towards the map.
+This is done to "hide" those events from map interactions (such as drawing): this makes it possible to click into text or controls within a map anchor without interacting with the map.
+This behavior can be disabled by setting the `stopEvents` property to `false`:
+
+```jsx
+<MapAnchor position="top-right" stopEvents={false}>
+    {/* Click events etc. will be seen by the map. This could be appropriate for non-interactive text-only overlays, for example. */}
+</MapAnchor>
+```
 
 ### Map configuration
 
@@ -189,7 +190,8 @@ export class MapConfigProviderImpl implements MapConfigProvider {
 
 #### Layer configuration
 
-Configure your custom layer inside the [Map configuration](#md:map-configuration) by using the OpenLayers [`Layer`](https://openlayers.org/en/latest/apidoc/module-ol_layer_Layer-Layer.html) as `layer` property.
+Configure your custom layer inside the [Map configuration](#md:map-configuration) by using one of the layer classes provided by this package.
+For example, `SimpleLayer` can be used to configure an arbitrary [`OpenLayers Layer`](https://openlayers.org/en/latest/apidoc/module-ol_layer_Layer-Layer.html) as `olLayer` property.
 
 > **Layer Order**
 >
@@ -202,7 +204,7 @@ Example: Implementation of a layer configuration.
 
 ```ts
 // YOUR-APP/MapConfigProviderImpl.ts
-import { MapConfig, MapConfigProvider } from "@open-pioneer/map";
+import { MapConfig, MapConfigProvider, SimpleLayer } from "@open-pioneer/map";
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
 
@@ -210,18 +212,18 @@ export class MapConfigProviderImpl implements MapConfigProvider {
     async getMapConfig(): Promise<MapConfig> {
         return {
             layers: [
-                {
+                new SimpleLayer({
                     // minimal layer configuration
                     title: "OSM",
-                    layer: new TileLayer({
+                    olLayer: new TileLayer({
                         source: new OSM()
                     })
-                },
-                {
+                }),
+                new SimpleLayer({
                     // layer configuration with optional properties
                     id: "abe0e3f8-0ba2-409c-b6b4-9d8429c732e3",
                     title: "OSM with UUID",
-                    layer: new TileLayer({
+                    olLayer: new TileLayer({
                         source: new OSM()
                     }),
                     attributes: {
@@ -230,14 +232,14 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     description: "additional description",
                     isBaseLayer: false,
                     visible: false
-                }
+                })
             ]
         };
     }
 }
 ```
 
-Based on the example above, you can set different properties using the layer model API (such as setting visibility, update custom metadata (`attributes`)).
+Based on the example above, you can set different properties using the layer API (such as setting visibility, update custom metadata (`attributes`)).
 
 Example: How to set different properties.
 
@@ -263,6 +265,51 @@ layer.deleteAttribute("foo");
 
 To create an OGC API Features layer, use the `ogc-features` package.
 Details about the necessary steps are described in the package's [README](../ogc-features/README.md) file.
+
+##### Mapbox / MapLibre styles
+
+To use layers of a Mapbox / MapLibre style document, use the class `MapboxVectorLayer` from the package `ol-mapbox-style` as in the following sample:
+
+```ts
+// YOUR-APP/MapConfigProviderImpl.ts
+import { MapboxVectorLayer } from "ol-mapbox-style";
+
+export const MAP_ID = "main";
+
+export class MapConfigProviderImpl implements MapConfigProvider {
+    mapId = MAP_ID;
+
+    async getMapConfig(): Promise<MapConfig> {
+        return {
+            projection: "EPSG:3857",
+            initialView: {
+                kind: "position",
+                center: {
+                    x: 848890,
+                    y: 6793350
+                },
+                zoom: 13
+            },
+            layers: [
+                {
+                    title: "Abschnitte/Äste mit Unfällen (Mapbox Style)",
+                    layer: new MapboxVectorLayer({
+                        styleUrl: "https://demo.ldproxy.net/strassen/styles/default?f=mbs",
+                        accessToken: null
+                    })
+                }
+            ]
+        };
+    }
+}
+```
+
+As with the current version 12.0.0 of `ol-mapbox-style`, it is not possible to use the MapboxVectorLayer
+with styleUrls in format `mbs` (parameter `f=mbs`) due to a bug. A patch has been provided for this and is active
+with the current version of the trails base package.
+The patch enables the user to explicitly set the `accessToken` to `null`, if it is not needed/supported.
+
+Because of the changed licence of Mapbox as of version 2.0, we recommend to override the implementation with the code of MapLibre (see the main package.json of this repository for a sample).
 
 ##### OGC Web Map Tile Service (WMTS)
 
@@ -300,7 +347,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
             },
             projection: "EPSG:31466",
             layers: [
-                {
+                new SimpleLayer({
                     id: "topplus_open",
                     title: "TopPlus Open",
                     isBaseLayer: true,
@@ -308,7 +355,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     layer: new TileLayer({
                         source: createWMTSSource("web")
                     })
-                }
+                })
             ]
         };
     }
@@ -399,14 +446,14 @@ const wmtsOptions = optionsFromCapabilities(wmtsResult, {
 });
 
 if (wmtsOptions) {
-    mapModel.layers.createLayer({
+    mapModel.layers.addLayer(new SimpleLayer({
         id: "topplus_open_optionsFromCapabilities",
         title: "TopPlus Open - created with optionsFromCapabilities()",
         visible: false,
         layer: new TileLayer({
             source: new WMTS(wmtsOptions)
         })
-    });
+    }));
 }
 ```
 
@@ -420,8 +467,7 @@ Example: Create WMS layer configuration
 
 ```ts
 // YOUR-APP/MapConfigProviderImpl.ts
-import ImageWMS from "ol/source/ImageWMS";
-import ImageLayer from "ol/layer/Image";
+import { MapConfig, MapConfigProvider, WMSLayer } from "@open-pioneer/map";
 
 export const MAP_ID = "main";
 
@@ -437,17 +483,24 @@ export class MapConfigProviderImpl implements MapConfigProvider {
             },
             projection: "EPSG:25832",
             layers: [
-                {
+                new WMSLayer({
                     title: "Schulstandorte",
-                    visible: true,
-                    layer: new ImageLayer({
-                        source: new ImageWMS({
-                            url: "https://www.wms.nrw.de/wms/wms_nw_inspire-schulen",
-                            params: { "LAYERS": ["US.education"] },
-                            ratio: 1 //Ratio. 1 means image requests are the size of the map viewport
-                        })
-                    })
-                }
+                    url: "https://www.wms.nrw.de/wms/wms_nw_inspire-schulen",
+
+                    // Configure service (sub-) layers
+                    sublayers: [
+                        {
+                            name: "US.education",
+                            title: "Schulen"
+                        }
+                    ],
+
+                    // Optional, additional options for the underlying ImageWMS source
+                    sourceOptions: {
+                        // Ratio 1 means image requests are the size of the map viewport
+                        ratio: 1
+                    }
+                })
             ]
         };
     }
@@ -486,25 +539,61 @@ const proj = getProjection("EPSG:3035");
 
 ### Using the map model
 
-The package uses a map model and layer model to internally handle the states of the map and layers.
-This is needed to support additional features like base layers.
-For this reason, always use the methods provided by these models to manage the following features on maps and layers (instead of using the raw OpenLayers instances directly):
+This package allows interacting with maps and their layers through multiple interfaces and classes.
+
+The most important API items are as follows:
+
+-   The `MapRegistry` service (inject via `"map.MapRegistry"`).
+    This service is used to obtain a reference to the `MapModel` via `registry.getMapModel(mapId)`.
+
+    > NOTE: From inside a React component you can also use the hook `useMapModel(mapId)`.
+
+-   The `MapModel` represents a map in an application.
+    Through the `MapModel` one can obtain the map's base layers, operational layers and so on.
+    The `MapModel` also provides access to the raw OpenLayers `olMap` for advanced use cases.
+
+    > NOTE: The `olMap` is manipulated by the `MapModel` to implement its functionality (for example, to add or remove layer instances). When using the `olMap` directly, treat it carefully and as a shared resource.
+
+-   The `Layer` interface and its various implementations.
+    This interface is used to make common properties and methods available (such as `.title`, or `.setVisible`).
+    Layers may also have `.sublayers`, which support the same basic properties as other layer types.
+
+    As is the case in `MapModel`, one can retrieve the raw OpenLayers `olLayer` from a layer instance (the same restrictions apply, see above).
+
+As a general rule of thumb, one should always prefer to use properties or methods provided by this package (if available) instead of manipulating the raw OpenLayers instances.
+Manipulating raw instances directly may lead to unexpected results.
+For example, other application components may not react to raw property changes correctly because they expect an "official" property to be changed instead.
+
+This point is especially important for the map model's central features:
 
 -   Map composition (access and configuration of layers, base layers, removing layers)
 -   Layer visibility
 -   Custom layer metadata (`attributes`)
 
-You can use the raw OpenLayers instances for other features (for example to control the transparency of a layer).
+In those cases, the properties or methods provided by this package should always be used:
 
-Always use the provided map model to retrieve an instance of the layer.
+-   `map.layers.addLayer(layer)` and `map.layers.removeLayerById(layerId)` to add or remove layers
+-   `map.layers.getAllLayers()`, `map.layers.getBaseLayers()`, `map.layers.getOperationalLayers()` etc. to access (top-level) layers
+-   `layer.setVisible(visible)` and `map.layers.activateBaseLayer(layerId)` to control visibility
+-   `layer.updateAttributes()` and `layer.deleteAttributes()` to change a layer's custom attributes
 
-To access specific layers use the LayerCollection methods, such as `getAllLayers`, `getBaseLayers`, `getOperationalLayers`.
-Layers should not be manually removed from the map via `.olMap`.
-Only use `removeLayerById` to remove a layer.
+#### Layer classes
 
-#### Using the map model and layer model in services
+This package currently only provides two layer implementations:
 
-Example: Center map to given coordinates using the map model and set layer visibility using the layer model.
+-   `SimpleLayer`.
+    Instances of this class can be used to integrate arbitrary OpenLayers `Layer` instances into the map by configuring the `olLayer` constructor option.
+    Note that one can only achieve basic integration through this method: more advanced features such as automatic legends or sublayers will not be available.
+
+-   `WMSLayer`.
+    Represents a WMS service embedded into the map.
+    Must be configured with the service's `url` and a set of sublayers.
+
+We expect to implement more classes in the future.
+
+#### Using the map model and layers in services
+
+Example: Center map to given coordinates using the map model and set layer visibility using the layer instance.
 
 ```ts
 import { ServiceOptions, ServiceType } from "@open-pioneer/runtime";
@@ -561,4 +650,4 @@ export function AppUI() {
 
 ## License
 
-[Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0)
+Apache-2.0 (see `LICENSE` file)
