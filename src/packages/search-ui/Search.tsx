@@ -1,10 +1,12 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
 import { Box, FormControl } from "@open-pioneer/chakra-integration";
+import { MapModel, useMapModel } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import { AsyncSelect } from "chakra-react-select";
-import { DataSource } from "./api";
+import { DataSource, Suggestion } from "./api";
+import { SearchController } from "./SearchController";
 
 export interface SearchOption {
     value: string;
@@ -148,19 +150,13 @@ const sortData = async (data: SearchGroupOption[], sortOption?: SortOption) => {
 };
 
 export const Search: FC<SearchProps> = (props) => {
-    const { placeholder, closeMenuOnSelect, sortOption, sources } = props;
+    const { placeholder, closeMenuOnSelect, mapId, sources } = props;
     const { containerProps } = useCommonComponentProps("search", props);
-
+    const { map } = useMapModel(mapId);
+    const controller = useController(sources, map);
     const loadOptions = async (inputValue: string): Promise<SearchGroupOption[]> => {
-        const runningQueries = await Promise.all(
-            sources.map((source) => source.search(inputValue))
-        );
-        const options = sources.map((source, index) => ({
-            label: source.label,
-            options:
-                runningQueries[index]?.map((item) => ({ value: item.text, label: item.text })) || []
-        }));
-        return options;
+        const suggestions = await controller!.search(inputValue);
+        return mapSuggestions(suggestions, sources);
     };
 
     return (
@@ -176,3 +172,25 @@ export const Search: FC<SearchProps> = (props) => {
         </Box>
     );
 };
+function mapSuggestions(suggestions: Suggestion[][], sources: DataSource[]) {
+    const options = sources.map((source, index) => ({
+        label: source.label,
+        options: suggestions[index]?.map((item) => ({ value: item.text, label: item.text })) || []
+    }));
+    return options;
+}
+function useController(sources: DataSource[], map: MapModel | undefined) {
+    const [controller, setController] = useState<SearchController | undefined>(undefined);
+    useEffect(() => {
+        if (!map) {
+            return;
+        }
+        const controller = new SearchController({ sources });
+        setController(controller);
+        return () => {
+            setController(undefined);
+        };
+    }, [map, sources]);
+
+    return controller;
+}
