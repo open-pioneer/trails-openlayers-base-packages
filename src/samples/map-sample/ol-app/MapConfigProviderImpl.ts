@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: con terra GmbH and contributors
+// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { MapConfig, MapConfigProvider, SimpleLayer, WMSLayer } from "@open-pioneer/map";
 import GeoJSON from "ol/format/GeoJSON";

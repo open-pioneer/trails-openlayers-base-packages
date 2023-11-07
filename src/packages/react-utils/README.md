@@ -52,7 +52,7 @@ For the time being, these properties are `className` (combined component class a
 Example:
 
 ```tsx
-// SPDX-FileCopyrightText: con terra GmbH and contributors
+// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 // ...
@@ -106,4 +106,4 @@ For more details, see the API docs of `useEvent` or <https://github.com/reactjs/
 
 ## License
 
-[Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0)
+Apache-2.0 (see `LICENSE` file)

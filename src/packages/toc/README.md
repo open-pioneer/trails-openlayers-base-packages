@@ -49,4 +49,4 @@ For example, given a layer with the ID `test-geojson`, the TOC's list item for t
 
 ## License
 
-[Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0)
+Apache-2.0 (see `LICENSE` file)

@@ -2,4 +2,8 @@ messages:
   basemapLabel: "Hintergrundkarte auswählen: "
   tocTitle: "Karteninhalt"
   measurementTitle: "Messen"
-  searchTitle: "Suche"
+  ariaLabel:
+    header: "Kopfleiste"
+    footer: "Fussleiste mit Maßstabsangabe, Raumbezugssystem und Koordinatenanzeige"
+    map: "Karte. Mit den Pfeiltasten kannst du die Karte bewegen. Mit der Plus Taste hineinzoomen und mit der Minus Taste herauszoomen."
+    toolbar: "Kartenwerkzeuge"

@@ -18,4 +18,4 @@ To define the number of decimal places shown, set the optional `precision` prope
 
 ## License
 
-[Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0)
+Apache-2.0 (see `LICENSE` file)
