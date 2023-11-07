@@ -3,10 +3,11 @@
 import { Box, FormControl } from "@open-pioneer/chakra-integration";
 import { MapModel, useMapModel } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
-import { FC, useEffect, useState } from "react";
+import { FC, useCallback, useEffect, useState } from "react";
 import { AsyncSelect } from "chakra-react-select";
 import { DataSource, Suggestion } from "./api";
 import { SearchController } from "./SearchController";
+import { HighlightOption } from "./HighlightOption";
 
 export interface SearchOption {
     value: string;
@@ -32,60 +33,11 @@ export interface SearchProps extends CommonComponentProps {
     placeholder?: string;
     closeMenuOnSelect?: boolean;
     sources: DataSource[];
+    searchTypingDelay?: number;
 }
 
-const dummyData: SearchGroupOption[] = [
-    {
-        label: "Straßen",
-        options: [
-            {
-                value: "brückenweg",
-                label: "Brückenweg"
-            },
-            {
-                value: "vogelgasse",
-                label: "Vogelgasse"
-            }
-        ],
-        priority: 2
-    },
-    {
-        label: "Location",
-        options: [
-            {
-                value: "hamburg",
-                label: "Hamburg"
-            },
-            {
-                value: "münster",
-                label: "Münster"
-            },
-            {
-                value: "bamberg",
-                label: "Bamberg"
-            }
-        ],
-        priority: 1
-    }
-];
-
-let filteredData: SearchGroupOption[] = [];
-
-const filterData = async (inputValue: string): Promise<SearchGroupOption[]> => {
-    // copy dummyData (not deep copy!)
-    filteredData = dummyData
-        .map((searchTheme) => Object.assign({}, searchTheme))
-        .filter((searchGroupOption) => {
-            searchGroupOption.options = searchGroupOption.options.filter((singleOption) =>
-                singleOption.label.toLowerCase().includes(inputValue.toLowerCase())
-            );
-            return searchGroupOption;
-        });
-    return filteredData;
-};
-
 export const Search: FC<SearchProps> = (props) => {
-    const { placeholder, closeMenuOnSelect, mapId, sources } = props;
+    const { placeholder, closeMenuOnSelect, mapId, sources, searchTypingDelay } = props;
     const { containerProps } = useCommonComponentProps("search", props);
     const { map } = useMapModel(mapId);
     const controller = useController(sources, map);
@@ -94,6 +46,13 @@ export const Search: FC<SearchProps> = (props) => {
         return mapSuggestions(suggestions, sources);
     };
 
+    const debouncedLoadOptions = useCallback(
+        debounce(async (inputValue: string, callback: (options: unknown) => void) => {
+            const results = await loadOptions(inputValue);
+            callback(results);
+        }, searchTypingDelay),
+        [controller]
+    );
     return (
         <Box {...containerProps}>
             <FormControl alignItems="center">
@@ -101,7 +60,8 @@ export const Search: FC<SearchProps> = (props) => {
                     isClearable={true}
                     placeholder={placeholder}
                     closeMenuOnSelect={closeMenuOnSelect}
-                    loadOptions={loadOptions}
+                    loadOptions={debouncedLoadOptions}
+                    components={{ Option: HighlightOption }}
                 />
             </FormControl>
         </Box>
@@ -128,4 +88,18 @@ function useController(sources: DataSource[], map: MapModel | undefined) {
     }, [map, sources]);
 
     return controller;
+}
+
+// TODO: This should accept all functions as an utility function, but this is banned by eslint.
+// TODO: It would be better when the delay would not trigger the loading animation
+// eslint-disable-next-line @typescript-eslint/ban-types
+function debounce<T extends Function>(delayedFunction: T, delay = 250) {
+    let timeout: NodeJS.Timeout | string | number | undefined;
+
+    return (...args: unknown[]) => {
+        timeout && clearTimeout(timeout);
+        timeout = setTimeout(() => {
+            delayedFunction(...args);
+        }, delay);
+    };
 }

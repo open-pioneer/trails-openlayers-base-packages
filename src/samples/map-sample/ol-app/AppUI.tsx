@@ -38,6 +38,10 @@ export function AppUI() {
     function toggleMeasurement() {
         setMeasurementIsActive(!measurementIsActive);
     }
+
+    function toggleSearch() {
+        setSearchIsActive(!searchIsActive);
+    }
     return (
         <Flex height="100%" direction="column" overflow="hidden">
             <TitledSection
@@ -70,7 +74,11 @@ export function AppUI() {
                                     boxShadow="lg"
                                     mt={5}
                                 >
-                                    <Search mapId={MAP_ID} sources={sources} />
+                                    <Search
+                                        mapId={MAP_ID}
+                                        sources={sources}
+                                        searchTypingDelay={500}
+                                    />
                                 </Box>
                             )}
                             <Box
@@ -137,6 +145,7 @@ export function AppUI() {
                                                 <PiFileMagnifyingGlassLight />
                                             )
                                         }
+                                        onClick={toggleSearch}
                                         iconSpacing={0}
                                         padding={0}
                                     />
