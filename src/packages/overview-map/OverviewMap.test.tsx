@@ -3,7 +3,7 @@
 
 import { expect, it } from "vitest";
 import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
-import { render, waitFor, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { OverviewMap } from "./OverviewMap";
 import { OverviewMap as OlOverviewMap } from "ol/control";

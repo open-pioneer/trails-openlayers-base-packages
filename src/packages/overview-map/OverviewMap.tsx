@@ -34,11 +34,6 @@ export interface OverviewMapProps extends CommonComponentProps {
         | VectorLayer<VectorSource>
         | MapboxVectorLayer
         | ImageLayer<ImageWMS>;
-
-    /**
-     * The zoom level of the overview map layer
-     */
-    zoomLevel?: number;
 }
 
 /**
@@ -47,7 +42,7 @@ export interface OverviewMapProps extends CommonComponentProps {
 export const OverviewMap: FC<OverviewMapProps> = (props) => {
     const intl = useIntl();
 
-    const { mapId, layer, zoomLevel } = props;
+    const { mapId, layer } = props;
     const { containerProps } = useCommonComponentProps("overview-map", props);
     const overviewMapControlElem = useRef(null);
     const { map } = useMapModel(mapId);
@@ -65,9 +60,6 @@ export const OverviewMap: FC<OverviewMapProps> = (props) => {
                 collapsed: true,
                 tipLabel: tooltipText
             });
-            if (zoomLevel) {
-                overviewMapControl?.getOverviewMap().getView().setZoom(7);
-            }
             olMap.addControl(overviewMapControl);
             return () => {
                 olMap.removeControl(overviewMapControl);

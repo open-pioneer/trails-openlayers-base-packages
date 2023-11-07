@@ -29,7 +29,6 @@ export function AppUI() {
     const overviewMapLayer = new TileLayer({
         source: new OSM()
     });
-    const overviewMapZoom = 7;
 
     return (
         <Flex height="100%" direction="column" overflow="hidden">
@@ -89,11 +88,7 @@ export function AppUI() {
                             )}
                         </MapAnchor>
                         <MapAnchor position="bottom-right" horizontalGap={10} verticalGap={30}>
-                            <OverviewMap
-                                mapId={MAP_ID}
-                                layer={overviewMapLayer}
-                                zoomLevel={overviewMapZoom}
-                            ></OverviewMap>
+                            <OverviewMap mapId={MAP_ID} layer={overviewMapLayer}></OverviewMap>
                             <Flex direction="column" gap={1} padding={1}>
                                 <Tooltip
                                     label={intl.formatMessage({ id: "measurementTitle" })}
