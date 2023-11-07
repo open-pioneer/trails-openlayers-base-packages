@@ -16,7 +16,8 @@ const documentedPackages = [
     "packages/basemap-switcher",
     "packages/map-navigation",
     "packages/measurement",
-    "packages/ogc-features"
+    "packages/ogc-features",
+    "packages/geolocation"
 ];
 
 const packagePaths = documentedPackages.map((p) => `src/${p}`);
