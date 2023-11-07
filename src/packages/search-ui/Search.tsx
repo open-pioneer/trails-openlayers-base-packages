@@ -3,23 +3,21 @@
 import { Box, FormControl } from "@open-pioneer/chakra-integration";
 import { MapModel, useMapModel } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
-import { FC, useEffect, useState, useCallback } from "react";
+import { FC, useCallback, useEffect, useState } from "react";
 import { AsyncSelect } from "chakra-react-select";
-import { HighlightOption } from "./HighlightOption";
 import { DataSource, Suggestion } from "./api";
 import { SearchController } from "./SearchController";
+import { HighlightOption } from "./HighlightOption";
 
 export interface SearchOption {
     value: string;
     label: string;
 }
-
 export interface SearchGroupOption {
     label: string;
     options: SearchOption[];
     priority?: number;
 }
-
 /**
  * This is for special properties of the Search component
  */
@@ -28,32 +26,29 @@ export interface SearchProps extends CommonComponentProps {
      * The id of the map.
      */
     mapId: string;
-
     name?: string;
     placeholder?: string;
     closeMenuOnSelect?: boolean;
-    searchTypingDelay?: number;
     sources: DataSource[];
+    searchTypingDelay?: number;
 }
 
 export const Search: FC<SearchProps> = (props) => {
-    const { placeholder, closeMenuOnSelect, searchTypingDelay } = props;
+    const { placeholder, closeMenuOnSelect, mapId, sources, searchTypingDelay } = props;
     const { containerProps } = useCommonComponentProps("search", props);
-
-    const loadOptions = function (inputValue: string, callback: (options: unknown) => void): void {
-        setTimeout(async () => {
-            // TODO: Move Data- and Sort-Logic to Controller
-            //first get the Searchresults
-            const filterResult = await filterData(inputValue);
-            callback(filterResult);
-        }, 250);
+    const { map } = useMapModel(mapId);
+    const controller = useController(sources, map);
+    const loadOptions = async (inputValue: string): Promise<SearchGroupOption[]> => {
+        const suggestions = await controller!.search(inputValue);
+        return mapSuggestions(suggestions, sources);
     };
 
     const debouncedLoadOptions = useCallback(
-        debounce((inputValue: string, callback: (options: unknown) => void) => {
-            loadOptions(inputValue, callback);
+        debounce(async (inputValue: string, callback: (options: unknown) => void) => {
+            const results = await loadOptions(inputValue);
+            callback(results);
         }, searchTypingDelay),
-        []
+        [controller]
     );
 
     return (
@@ -72,55 +67,6 @@ export const Search: FC<SearchProps> = (props) => {
     );
 };
 
-const dummyData: SearchGroupOption[] = [
-    {
-        label: "Straßen",
-        options: [
-            {
-                value: "brückenweg",
-                label: "Brückenweg"
-            },
-            {
-                value: "vogelgasse",
-                label: "Vogelgasse"
-            }
-        ],
-        priority: 2
-    },
-    {
-        label: "Location",
-        options: [
-            {
-                value: "hamburg",
-                label: "Hamburg"
-            },
-            {
-                value: "münster",
-                label: "Münster"
-            },
-            {
-                value: "bamberg",
-                label: "Bamberg"
-            }
-        ],
-        priority: 1
-    }
-];
-
-let filteredData: SearchGroupOption[] = [];
-
-async function filterData(inputValue: string): Promise<SearchGroupOption[]> {
-    // copy dummyData (not deep copy!)
-    filteredData = dummyData
-        .map((searchTheme) => Object.assign({}, searchTheme))
-        .filter((searchGroupOption) => {
-            searchGroupOption.options = searchGroupOption.options.filter((singleOption) =>
-                singleOption.label.toLowerCase().includes(inputValue.toLowerCase())
-            );
-            return searchGroupOption;
-        });
-    return filteredData;
-}
 // TODO: This should accept all functions as an utility function, but this is banned by eslint.
 // TODO: It would be better when the delay would not trigger the loading animation
 // eslint-disable-next-line @typescript-eslint/ban-types
