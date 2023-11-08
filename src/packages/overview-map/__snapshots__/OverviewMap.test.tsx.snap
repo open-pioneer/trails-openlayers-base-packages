@@ -41,7 +41,7 @@ exports[`should successfully create a overview map component 1`] = `
       </div>
     </div>
     <button
-      title="controlButtonTooltip"
+      title="Overview map"
       type="button"
     >
       <span>

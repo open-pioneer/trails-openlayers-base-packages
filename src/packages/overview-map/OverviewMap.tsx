@@ -13,7 +13,6 @@ import { Box } from "@open-pioneer/chakra-integration";
 import { OverviewMap as OlOverviewMap } from "ol/control";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import OSM from "ol/source/OSM";
-import { useIntl } from "open-pioneer:react-hooks";
 import { MapboxVectorLayer } from "ol-mapbox-style";
 
 /**
@@ -40,14 +39,10 @@ export interface OverviewMapProps extends CommonComponentProps {
  * The `OverviewMap` component can be used in an app to have a better overview of the current location in the map.
  */
 export const OverviewMap: FC<OverviewMapProps> = (props) => {
-    const intl = useIntl();
-
     const { mapId, layer } = props;
     const { containerProps } = useCommonComponentProps("overview-map", props);
     const overviewMapControlElem = useRef(null);
     const { map } = useMapModel(mapId);
-
-    const tooltipText = intl.formatMessage({ id: "controlButtonTooltip" }) || "Overview map";
 
     useEffect(() => {
         if (overviewMapControlElem.current && map && layer) {
@@ -57,15 +52,13 @@ export const OverviewMap: FC<OverviewMapProps> = (props) => {
                 layers: [layer],
                 collapsible: false,
                 collapsed: false,
-                target: overviewMapControlElem.current,
-                tipLabel: tooltipText
+                target: overviewMapControlElem.current
             });
             olMap.addControl(overviewMapControl);
             return () => {
                 olMap.removeControl(overviewMapControl);
             };
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [map, layer]);
 
     return <Box ref={overviewMapControlElem} {...containerProps}></Box>;

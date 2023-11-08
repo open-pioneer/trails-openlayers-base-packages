@@ -12,6 +12,7 @@ import { ScaleComponent } from "map-sample-scale-component";
 import { useIntl } from "open-pioneer:react-hooks";
 import { useState } from "react";
 import { PiRulerFill, PiRulerLight } from "react-icons/pi";
+import { PiCaretDoubleLeft, PiCaretDoubleRight } from "react-icons/pi";
 import { MAP_ID } from "./MapConfigProviderImpl";
 import { OverviewMap } from "@open-pioneer/overview-map";
 
@@ -21,9 +22,14 @@ import TileLayer from "ol/layer/Tile.js";
 export function AppUI() {
     const intl = useIntl();
     const [measurementIsActive, setMeasurementIsActive] = useState<boolean>(false);
+    const [showOverviewMap, setShowOverviewMap] = useState<boolean>(true);
 
     function toggleMeasurement() {
         setMeasurementIsActive(!measurementIsActive);
+    }
+
+    function toggleOverviewMap() {
+        setShowOverviewMap(!showOverviewMap);
     }
 
     const overviewMapLayer = new TileLayer({
@@ -88,10 +94,31 @@ export function AppUI() {
                             )}
                         </MapAnchor>
                         <MapAnchor position="top-right" horizontalGap={10} verticalGap={10}>
-                            <OverviewMap mapId={MAP_ID} layer={overviewMapLayer}></OverviewMap>
+                            {showOverviewMap && (
+                                <OverviewMap mapId={MAP_ID} layer={overviewMapLayer}></OverviewMap>
+                            )}
                         </MapAnchor>
                         <MapAnchor position="bottom-right" horizontalGap={10} verticalGap={30}>
                             <Flex direction="column" gap={1} padding={1}>
+                                <Tooltip
+                                    label={intl.formatMessage({ id: "overviewMapTitle" })}
+                                    placement="auto"
+                                    openDelay={500}
+                                >
+                                    <Button
+                                        aria-label={intl.formatMessage({ id: "overviewMapTitle" })}
+                                        leftIcon={
+                                            showOverviewMap ? (
+                                                <PiCaretDoubleRight />
+                                            ) : (
+                                                <PiCaretDoubleLeft />
+                                            )
+                                        }
+                                        onClick={toggleOverviewMap}
+                                        iconSpacing={0}
+                                        padding={0}
+                                    />
+                                </Tooltip>
                                 <Tooltip
                                     label={intl.formatMessage({ id: "measurementTitle" })}
                                     placement="auto"
