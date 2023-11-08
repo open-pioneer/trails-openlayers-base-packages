@@ -141,6 +141,7 @@ export const MenuComp = (props: MenuProps<SearchGroupOption>) => {
 
 export const NoOptionsMessage = (props: NoticeProps<SearchGroupOption>) => {
     const intl = useIntl();
+    // TODO: Make it configurable?
     const noMessageText = intl.formatMessage({ id: "noOptionsText" });
 
     return (
@@ -152,6 +153,7 @@ export const NoOptionsMessage = (props: NoticeProps<SearchGroupOption>) => {
 
 export const LoadingMessage = (props: NoticeProps<SearchGroupOption>) => {
     const intl = useIntl();
+    // TODO: Make it configurable?
     const loadingText = intl.formatMessage({ id: "loadingText" });
 
     return (

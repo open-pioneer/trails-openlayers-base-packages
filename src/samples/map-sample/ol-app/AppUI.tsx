@@ -124,12 +124,12 @@ export function AppUI() {
                         <MapAnchor position="bottom-right" horizontalGap={10} verticalGap={30}>
                             <Flex direction="column" gap={1} padding={1}>
                                 <Tooltip
-                                    label={intl.formatMessage({ id: "searchTitle" })}
+                                    label={intl.formatMessage({ id: "searchTooltip" })}
                                     placement="auto"
                                     openDelay={500}
                                 >
                                     <Button
-                                        aria-label={intl.formatMessage({ id: "searchTitle" })}
+                                        aria-label={intl.formatMessage({ id: "searchTooltip" })}
                                         leftIcon={
                                             searchIsActive ? (
                                                 <PiMagnifyingGlassFill />
