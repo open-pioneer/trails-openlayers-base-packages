@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
-import { expect, it, describe } from "vitest";
+import { expect, it, describe, beforeEach, vi } from "vitest";
 import {
     GeolocationController,
     getDefaultPositionStyle,
@@ -20,6 +20,56 @@ import { Geometry } from "ol/geom";
  * Fehlerfall testen
  * Karte verschieben bzw. Zoomstufe ändern und Testen, ob sich der Kartenmittelpunkt nicht aktualisiert (this.centerMapToPosition = false)
  */
+
+const OL_MAP: olMap = new OlMap();
+
+beforeEach(() => {
+    vi.restoreAllMocks();
+});
+
+// function success(arg0: { coords: { latitude: number; longitude: number; }; }): any {
+//     throw new Error("Function not implemented.");
+// }
+
+it.only("return a position", async () => {
+    const spy = vi.spyOn(navigator, "geolocation"as any, "get");
+
+    spy.mockReturnValue({
+        clearWatch() {
+            throw new Error ("not impl");
+        },
+        getCurrentPosition() {
+            Promise.resolve({
+                coords: {
+                    latitude: 51.1,
+                    longitude: 45.3,
+                    accuracy: 2500
+                }
+            });
+            // throw new Error ("not impl");
+        },
+        watchPosition() {
+            return {
+                coords: {
+                    latitude: 51.1,
+                    longitude: 45.3,
+                    accuracy: 2500
+                }
+            };
+            // throw new Error ("not impl");
+        }
+    });
+
+    const controller: GeolocationController = setup();
+    const location = await controller.startGeolocation(OL_MAP);
+
+    const positionFeature: Feature<Geometry> | undefined = controller.getPositionFeature();
+    // const accuracyFeature: Feature<Geometry> | undefined = controller.getAccuracyFeature();
+
+    console.log(positionFeature?.getGeometry());
+    expect(positionFeature?.getGeometry()).not.toBeUndefined();
+    // expect(accuracyFeature?.getGeometry()).not.toBeUndefined();
+});
 
 describe("Default Properties", () => {
     it("uses the default style for the position feature", async () => {
@@ -68,18 +118,16 @@ describe("Custom Properties", () => {
 });
 
 function setup() {
-    const olMap: olMap = new OlMap();
-    return new GeolocationController(olMap);
+    return new GeolocationController(OL_MAP);
 }
 
 function setupWithCustomProperties() {
-    const olMap: olMap = new OlMap();
     const positionFeatureStyle: Style = getCustomPositionStyle();
     const accuracyFeatureStyle: Style = getCustomAccuracyStyle();
     const trackingOptions: PositionOptions = getCustomTrackingOptions();
 
     return new GeolocationController(
-        olMap,
+        OL_MAP,
         positionFeatureStyle,
         accuracyFeatureStyle,
         trackingOptions

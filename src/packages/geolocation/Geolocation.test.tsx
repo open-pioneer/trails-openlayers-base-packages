@@ -6,14 +6,16 @@ import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render, screen } from "@testing-library/react";
 import { expect, it } from "vitest";
 import { Geolocation } from "./Geolocation";
-import { createService } from "@open-pioneer/test-utils/services";
-import { NotificationServiceImpl } from "@open-pioneer/notifier/NotificationServiceImpl";
+import { NotificationService } from "@open-pioneer/notifier";
 
 it("should successfully create a geolocation component with a button", async () => {
     const { mapId, registry } = await setupMap();
 
-    // Todo: Besser: Notifier mocken
-    const notifier = await createService(NotificationServiceImpl);
+    const notifier: Partial<NotificationService> = {
+        notify() {
+            throw new Error("not implemented");
+        }
+    };
 
     const injectedServices = createServiceOptions({
         registry
@@ -31,6 +33,6 @@ it("should successfully create a geolocation component with a button", async () 
 
     //mount GeolocationComponent
     const geolocationBtn = await screen.findByTestId("geolocation");
-    expect(geolocationBtn).toBeInstanceOf(HTMLButtonElement);
+    expect(geolocationBtn).toBeInstanceOf(HTMLButtonElement); // todo tagname -> https://github.com/open-pioneer/trails-oenlayers-base-packages/pull/194/files
     expect(geolocationBtn).toMatchSnapshot();
 });
