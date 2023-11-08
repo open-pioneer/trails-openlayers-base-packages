@@ -83,6 +83,9 @@ export class GeolocationController {
                         const accuracyGeometry: Polygon | undefined =
                             this.geolocation.getAccuracyGeometry() || undefined;
                         this.accuracyFeature?.setGeometry(accuracyGeometry);
+                        if (this.accuracyFeature?.getGeometry() !== undefined) {
+                            resolve(true);
+                        }
                     }
                 );
 
@@ -109,12 +112,6 @@ export class GeolocationController {
                         this.centerMapToPosition = false;
                     });
 
-                const rotationChangeHandler: EventsKey = olMap
-                    .getView()
-                    .on("change:rotation", () => {
-                        this.centerMapToPosition = false;
-                    });
-
                 const draggingHandler: EventsKey = olMap.on("pointermove", (evt) => {
                     if (evt.dragging) {
                         this.centerMapToPosition = false;
@@ -125,11 +122,9 @@ export class GeolocationController {
                     accuracyChangeHandler,
                     positionChangeHandler,
                     resolutionChangeHandler,
-                    rotationChangeHandler,
                     draggingHandler
                 );
 
-                // TODO: is it ok that layer is added event if error occurs currently after tracking activation?
                 olMap.addLayer(this.positionHighlightLayer);
             }
         });
@@ -169,7 +164,7 @@ export class GeolocationController {
     }
 }
 
-const getDefaultPositionStyle = () => {
+export const getDefaultPositionStyle = () => {
     return new Style({
         image: new CircleStyle({
             radius: 6,
@@ -184,7 +179,7 @@ const getDefaultPositionStyle = () => {
     });
 };
 
-const getDefaultAccuracyStyle = () => {
+export const getDefaultAccuracyStyle = () => {
     return new Style({
         stroke: new Stroke({
             color: "#3399CC",
@@ -196,7 +191,7 @@ const getDefaultAccuracyStyle = () => {
     });
 };
 
-const getDefaultTrackingOptions = (): PositionOptions => {
+export const getDefaultTrackingOptions = (): PositionOptions => {
     return {
         "enableHighAccuracy": true,
         "timeout": 60000,

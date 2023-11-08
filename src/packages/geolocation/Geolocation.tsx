@@ -16,6 +16,13 @@ import { StyleLike } from "ol/style/Style";
 import {} from "@open-pioneer/notifier";
 
 /**
+ * Todo: Testen auf mobilen Geräten
+ * Todo: Wenn Tool aktiviert/deaktiviert wird, sieht man noch kurz den alten Tooltip-Text -> Workaround mit setTimeout(setActive)
+ */
+
+const TIMEOUT = 500;
+
+/**
  * These are special properties for the Geolocation.
  */
 export interface GeolocationProps extends CommonComponentProps, RefAttributes<HTMLButtonElement> {
@@ -39,8 +46,6 @@ export interface GeolocationProps extends CommonComponentProps, RefAttributes<HT
      */
     trackingOptions?: PositionOptions;
 }
-
-//todo testen auf mobilen Geräten
 
 export const Geolocation: FC<GeolocationProps> = forwardRef(function Geolocation(
     props: GeolocationProps,
@@ -146,7 +151,9 @@ export const Geolocation: FC<GeolocationProps> = forwardRef(function Geolocation
         if (!map) {
             return;
         }
-        setActive(!isActive);
+        setTimeout(() => {
+            setActive(!isActive);
+        }, TIMEOUT);
     };
 
     return (
@@ -155,9 +162,9 @@ export const Geolocation: FC<GeolocationProps> = forwardRef(function Geolocation
                 isActive
                     ? intl.formatMessage({ id: "buttonTooltipEnd" })
                     : intl.formatMessage({ id: "buttonTooltipStart" })
-            } // todo: wenn tool deaktiviert wird sieht man noch kurz stop-Text
+            }
             placement="auto"
-            openDelay={500}
+            openDelay={TIMEOUT}
         >
             {/*todo is the disabling working with screen reader?*/}
             <Button

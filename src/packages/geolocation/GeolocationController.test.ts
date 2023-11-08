@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
-import { expect, it } from "vitest";
+import { expect, it, describe } from "vitest";
 import { GeolocationController } from "./GeolocationController";
 import OlMap from "ol/Map";
 import olMap from "ol/Map";
@@ -9,29 +9,39 @@ import { Circle, Fill, Stroke, Style } from "ol/style";
 import { Feature } from "ol";
 import { Geometry } from "ol/geom";
 
-it("uses the configured style for the position feature", async () => {
-    const controller: GeolocationController = setup();
-    const positionFeature: Feature<Geometry> | undefined = controller.getPositionFeature();
-    // TODO: is toStrictEqual used correctly?
-    expect(positionFeature?.getStyle()).toStrictEqual(getCustomPositionStyle());
+/**
+ * Todo Test:
+ * Generelles testen, ob eine Position zurückkommt
+ * Fehlerfall testen
+ * Karte verschieben bzw. Zoomstufe ändern und Testen, ob sich der Kartenmittelpunkt nicht aktualisiert (this.centerMapToPosition = false)
+ * Testen ob Defaults (getDefaultAccuracyStyle, getDefaultPositionStyle, getDefaultTrackingOptions) übernommen werden
+ * Style-Functions und andere styleLike optionen testen?
+ */
+
+// describe("Default Properties", () => {});
+
+describe("Custom Properties", () => {
+    it("uses the configured style for the position feature", async () => {
+        const controller: GeolocationController = setup();
+        const positionFeature: Feature<Geometry> | undefined = controller.getPositionFeature();
+        expect(positionFeature?.getStyle()).toMatchObject(getCustomPositionStyle());
+    });
+
+    it("uses the configured style for the accuracy feature", async () => {
+        const controller: GeolocationController = setup();
+        const accuracyFeature: Feature<Geometry> | undefined = controller.getAccuracyFeature();
+        expect(accuracyFeature?.getStyle()).toMatchObject(getCustomAccuracyStyle());
+    });
+
+    it("uses the configured tracking options", async () => {
+        const controller: GeolocationController = setup();
+        const trackingOptions: PositionOptions = controller.getTrackingOptions();
+        expect(trackingOptions?.enableHighAccuracy).toBe(true);
+        expect(trackingOptions?.timeout).toBe(20);
+        expect(trackingOptions?.maximumAge).toBe(50);
+    });
 });
 
-it("uses the configured style for the accuracy feature", async () => {
-    const controller: GeolocationController = setup();
-    const accuracyFeature: Feature<Geometry> | undefined = controller.getAccuracyFeature();
-    // TODO: is toStrictEqual used correctly?
-    expect(accuracyFeature?.getStyle()).toStrictEqual(getCustomAccuracyStyle());
-});
-
-it("uses the configured tracking options", async () => {
-    const controller: GeolocationController = setup();
-    const trackingOptions: PositionOptions = controller.getTrackingOptions();
-    expect(trackingOptions?.enableHighAccuracy).toBe(true);
-    expect(trackingOptions?.timeout).toBe(20);
-    expect(trackingOptions?.maximumAge).toBe(50);
-});
-
-// todo: Style-Functions und andere styleLike optionen testen?
 function setup() {
     const olMap: olMap = new OlMap();
     const positionFeatureStyle: Style = getCustomPositionStyle();
