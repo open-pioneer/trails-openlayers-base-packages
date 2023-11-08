@@ -13,8 +13,6 @@ import {
 } from "@open-pioneer/map";
 import { createService } from "@open-pioneer/test-utils/services";
 import { screen, waitFor } from "@testing-library/react";
-import { equals as extentEquals } from "ol/extent";
-import OlMap from "ol/Map";
 import VectorLayer from "ol/layer/Vector";
 
 // Importing internals: needed for test support
@@ -135,37 +133,4 @@ class MapConfigProviderImpl implements MapConfigProvider {
     getMapConfig(): Promise<MapConfig> {
         return Promise.resolve(this.mapConfig);
     }
-}
-
-let setupDone = false;
-
-/**
- * Sets up open layers test support.
- *
- * This method should be called from test suites (e.g. in `beforeAll()`) that
- * work with raw OpenLayers maps directly.
- *
- * Note that the map model will automatically call this function during tests.
- */
-export function setupOpenLayersTestSupport() {
-    if (setupDone) {
-        return;
-    }
-
-    // Test support: open layers relies on div.offsetHeight (and Width)
-    // plus getComputedStyle(div), which do not work as expected in happy dom.
-    // The following snippet fakes a size so tests can work with the map.
-    OlMap.prototype.updateSize = function () {
-        const target = this.getTargetElement();
-        const height = 500;
-        const width = 500;
-        const size = target ? [width, height] : undefined;
-        const oldSize = this.getSize();
-        if (size && (!oldSize || !extentEquals(size, oldSize))) {
-            this.setSize(size);
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (this as any).updateViewportSize_();
-        }
-    };
-    setupDone = true;
 }

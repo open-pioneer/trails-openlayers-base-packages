@@ -13,6 +13,7 @@ import { MapBrowserEvent } from "ol";
 import { MapModelImpl } from "./MapModelImpl";
 import { MapConfig } from "../api";
 import { registerProjections } from "../projections";
+import { patchOpenLayersClassesForTesting } from "../util/ol-test-support";
 
 /**
  * Register custom projection to the global proj4js definitions. User can select `EPSG:25832`
@@ -85,8 +86,7 @@ class MapModelFactory {
         LOG.debug(`Constructing open layers map with options`, mapOptions);
 
         if (import.meta.env.VITEST) {
-            const { setupOpenLayersTestSupport } = await import("@open-pioneer/map-test-utils");
-            setupOpenLayersTestSupport();
+            patchOpenLayersClassesForTesting();
         }
 
         const olMap = new OlMap(mapOptions);
