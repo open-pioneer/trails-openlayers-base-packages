@@ -48,7 +48,7 @@ export const OverviewMap: FC<OverviewMapProps> = (props) => {
         if (overviewMapControlElem.current && map && layer) {
             const olMap = map.olMap;
             const overviewMapControl: OlOverviewMap = new OlOverviewMap({
-                className: "ol-overviewmap custom-overviewmap",
+                className: "ol-overviewmap",
                 layers: [layer],
                 collapsible: false,
                 collapsed: false,

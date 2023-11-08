@@ -1,0 +1,23 @@
+.overview-map {
+    .ol-overviewmap,
+    .ol-overviewmap.ol-uncollapsible {
+        position: relative;
+        bottom: auto;
+        left: auto;
+        right: 0;
+        top: 0;
+    }
+
+    .ol-overviewmap:not(.ol-collapsed) {
+        border: 1px solid black;
+    }
+
+    .ol-overviewmap .ol-overviewmap-map {
+        border: none;
+        width: 300px;
+    }
+
+    .ol-overviewmap .ol-overviewmap-box {
+        border: 2px solid red;
+    }
+}

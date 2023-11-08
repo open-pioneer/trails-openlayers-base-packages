@@ -4,6 +4,6 @@
 import { defineBuildConfig } from "@open-pioneer/build-support";
 
 export default defineBuildConfig({
-    styles: "./overview-map.css",
+    styles: "./overview-map.scss",
     entryPoints: ["index"]
 });
