@@ -1,19 +1,12 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
-import WMTS from "ol/source/WMTS";
-import TileLayer from "ol/layer/Tile";
-import ImageLayer from "ol/layer/Image";
-import ImageWMS from "ol/source/ImageWMS";
-import VectorLayer from "ol/layer/Vector";
-import VectorSource from "ol/source/Vector";
 import { FC, useEffect, useRef } from "react";
 import { useMapModel } from "@open-pioneer/map";
 import { Box } from "@open-pioneer/chakra-integration";
 import { OverviewMap as OlOverviewMap } from "ol/control";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
-import OSM from "ol/source/OSM";
-import { MapboxVectorLayer } from "ol-mapbox-style";
+import OlBaseLayer from "ol/layer/Base";
 
 /**
  * These are special properties for the OverviewMap.
@@ -27,12 +20,7 @@ export interface OverviewMapProps extends CommonComponentProps {
     /**
      * The layer shown in the overview map
      */
-    layer:
-        | TileLayer<WMTS>
-        | TileLayer<OSM>
-        | VectorLayer<VectorSource>
-        | MapboxVectorLayer
-        | ImageLayer<ImageWMS>;
+    layer: OlBaseLayer;
 }
 
 /**
