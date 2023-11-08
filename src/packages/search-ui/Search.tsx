@@ -8,6 +8,7 @@ import { AsyncSelect } from "chakra-react-select";
 import { DataSource, Suggestion } from "./api";
 import { SearchController } from "./SearchController";
 import { HighlightOption } from "./HighlightOption";
+import { NoOptionsMessage } from "./NoOption";
 
 export interface SearchOption {
     value: string;
@@ -56,11 +57,10 @@ export const Search: FC<SearchProps> = (props) => {
             <FormControl alignItems="center">
                 <AsyncSelect
                     isClearable={true}
-                    name="colors"
                     placeholder={placeholder}
                     closeMenuOnSelect={closeMenuOnSelect}
                     loadOptions={debouncedLoadOptions}
-                    components={{ Option: HighlightOption }}
+                    components={{ Option: HighlightOption, NoOptionsMessage: NoOptionsMessage }}
                 />
             </FormControl>
         </Box>

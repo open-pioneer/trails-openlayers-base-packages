@@ -5,5 +5,6 @@ import { defineBuildConfig } from "@open-pioneer/build-support";
 
 export default defineBuildConfig({
     styles: "./search.css",
-    entryPoints: ["index"]
+    entryPoints: ["index"],
+    i18n: ["en", "de"]
 });

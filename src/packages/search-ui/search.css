@@ -1,4 +1,16 @@
-.search-highlightedMatch {
-    color: black;
+.search-highlighted-match {
     font-weight: bold;
 }
+
+.search-no-match {
+}
+
+/*.search-searchAsyncSelect,input:before {
+    content: "";
+!*    display: block;*!
+    background: url("SearchIcon.png") no-repeat;
+    width: 20px;
+    height: 20px;
+!*    float: left;
+    margin: 0 6px 0 0;*!
+}*/

@@ -3,18 +3,19 @@
 
 import { components, OptionProps } from "chakra-react-select";
 import { SearchGroupOption } from "./Search";
+import { chakra } from "@open-pioneer/chakra-integration";
 
 function getHighlightedLabel(label: string, userInput: string) {
     const matchIndex = label.toLowerCase().indexOf(userInput.toLowerCase());
     if (matchIndex >= 0) {
         return (
-            <span>
+            <chakra.span>
                 {label.substring(0, matchIndex)}
-                <span key="highlighted" className="search-highlightedMatch">
+                <chakra.span key="highlighted" className="search-highlighted-match">
                     {label.substring(matchIndex, matchIndex + userInput.length)}
-                </span>
+                </chakra.span>
                 {label.substring(matchIndex + userInput.length)}
-            </span>
+            </chakra.span>
         );
     }
     return label;
@@ -25,7 +26,9 @@ export const HighlightOption = (props: OptionProps<SearchGroupOption>) => {
     const label = props.data.label;
     return (
         <components.Option {...props}>
-            <div>{userInput.trim().length ? getHighlightedLabel(label, userInput) : label}</div>
+            <chakra.div>
+                {userInput.trim().length > 0 ? getHighlightedLabel(label, userInput) : label}
+            </chakra.div>
         </components.Option>
     );
 };
