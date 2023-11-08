@@ -3,3 +3,4 @@ messages:
   tocTitle: "Karteninhalt"
   measurementTitle: "Messen"
   searchTitle: "Suche"
+  searchPlaceholder: "Suche..."

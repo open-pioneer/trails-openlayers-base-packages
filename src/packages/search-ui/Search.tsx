@@ -32,10 +32,18 @@ export interface SearchProps extends CommonComponentProps {
     placeholder?: string;
     closeMenuOnSelect?: boolean;
     searchTypingDelay?: number;
+    showDropdownIndicator?: boolean;
 }
 
 export const Search: FC<SearchProps> = (props) => {
-    const { placeholder, closeMenuOnSelect, mapId, sources, searchTypingDelay } = props;
+    const {
+        placeholder,
+        closeMenuOnSelect,
+        mapId,
+        sources,
+        searchTypingDelay,
+        showDropdownIndicator
+    } = props;
     const { containerProps } = useCommonComponentProps("search", props);
     const { map } = useMapModel(mapId);
     const controller = useController(sources, map);
@@ -52,6 +60,14 @@ export const Search: FC<SearchProps> = (props) => {
         [controller]
     );
 
+    const displayCss = showDropdownIndicator ? "inherit" : "none";
+    const chakraStyles = {
+        dropdownIndicator: (provided: object) => ({
+            ...provided,
+            display: displayCss
+        })
+    };
+
     return (
         <Box {...containerProps}>
             <FormControl alignItems="center">
@@ -66,6 +82,7 @@ export const Search: FC<SearchProps> = (props) => {
                         Menu: MenuComp,
                         LoadingMessage: LoadingMessage
                     }}
+                    chakraStyles={chakraStyles}
                 />
             </FormControl>
         </Box>

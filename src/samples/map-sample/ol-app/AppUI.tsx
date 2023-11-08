@@ -66,9 +66,15 @@ export function AppUI() {
                                 padding={2}
                                 boxShadow="lg"
                                 mt={5}
-                                className="search-top-center-placement"
+                                className="search-placement"
                             >
-                                <Search mapId={MAP_ID} sources={sources} searchTypingDelay={500} />
+                                <Search
+                                    mapId={MAP_ID}
+                                    sources={sources}
+                                    searchTypingDelay={500}
+                                    showDropdownIndicator={false}
+                                    placeholder={intl.formatMessage({ id: "searchPlaceholder" })}
+                                />
                             </Box>
                         )}
                         <MapAnchor position="top-left" horizontalGap={20} verticalGap={20}>

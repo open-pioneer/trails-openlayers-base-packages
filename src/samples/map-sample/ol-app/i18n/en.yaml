@@ -3,3 +3,4 @@ messages:
   tocTitle: "Table of contents"
   measurementTitle: "Measurement"
   searchTitle: "Search"
+  searchPlaceholder: "Search..."
