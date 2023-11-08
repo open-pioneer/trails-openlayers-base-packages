@@ -5,6 +5,21 @@
 .search-no-match {
 }
 
+.search-loading-text {
+}
+
+.search-invisible {
+    display: none;
+}
+
+.search-top-center-placement {
+    position: absolute;
+    left: 50%;
+    top: 0px;
+    transform: translate(-50%, 0px);
+    width: 500px;
+}
+
 /*.search-searchAsyncSelect,input:before {
     content: "";
 !*    display: block;*!

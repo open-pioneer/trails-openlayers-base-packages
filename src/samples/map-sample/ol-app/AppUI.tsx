@@ -58,23 +58,20 @@ export function AppUI() {
             >
                 <Flex flex="1" direction="column" position="relative">
                     <MapContainer mapId={MAP_ID}>
+                        {searchIsActive && (
+                            <Box
+                                backgroundColor="white"
+                                borderWidth="1px"
+                                borderRadius="lg"
+                                padding={2}
+                                boxShadow="lg"
+                                mt={5}
+                                className="search-top-center-placement"
+                            >
+                                <Search mapId={MAP_ID} sources={sources} searchTypingDelay={500} />
+                            </Box>
+                        )}
                         <MapAnchor position="top-left" horizontalGap={20} verticalGap={20}>
-                            {searchIsActive && (
-                                <Box
-                                    backgroundColor="white"
-                                    borderWidth="1px"
-                                    borderRadius="lg"
-                                    padding={2}
-                                    boxShadow="lg"
-                                    mt={5}
-                                >
-                                    <Search
-                                        mapId={MAP_ID}
-                                        sources={sources}
-                                        searchTypingDelay={500}
-                                    />
-                                </Box>
-                            )}
                             <Box
                                 backgroundColor="white"
                                 borderWidth="1px"
