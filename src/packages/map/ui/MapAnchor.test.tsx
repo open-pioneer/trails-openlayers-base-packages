@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: con terra GmbH and contributors
+// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { MapContainer, MapPadding } from "./MapContainer";
 import { createServiceOptions, setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
@@ -35,7 +35,12 @@ it("should successfully create a map anchor component", async () => {
     }
 
     expect(mapAnchor).toBeInstanceOf(HTMLDivElement);
-    expect(mapAnchor).toMatchSnapshot();
+    expect(mapAnchor).toMatchInlineSnapshot(`
+      <div
+        class="map-anchor css-3czzey"
+        data-theme="light"
+      />
+    `);
 });
 
 it("should successfully create a map anchor component with additional css classes", async () => {

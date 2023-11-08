@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: con terra GmbH and contributors
+// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Box, Button, Flex, Tooltip } from "@open-pioneer/chakra-integration";
 import { CoordinateViewer } from "@open-pioneer/coordinate-viewer";
@@ -14,6 +14,7 @@ import { useState } from "react";
 import { PiRulerFill, PiRulerLight } from "react-icons/pi";
 import { PiCaretDoubleLeft, PiCaretDoubleRight } from "react-icons/pi";
 import { MAP_ID } from "./MapConfigProviderImpl";
+import { useId } from "react";
 import { OverviewMap } from "@open-pioneer/overview-map";
 
 import OSM from "ol/source/OSM.js";
@@ -21,6 +22,8 @@ import TileLayer from "ol/layer/Tile.js";
 
 export function AppUI() {
     const intl = useIntl();
+    const tocTitleId = useId();
+    const measurementTitleId = useId();
     const [measurementIsActive, setMeasurementIsActive] = useState<boolean>(false);
     const [showOverviewMap, setShowOverviewMap] = useState<boolean>(true);
 
@@ -40,7 +43,12 @@ export function AppUI() {
         <Flex height="100%" direction="column" overflow="hidden">
             <TitledSection
                 title={
-                    <Box textAlign="center" py={1}>
+                    <Box
+                        role="region"
+                        aria-label={intl.formatMessage({ id: "ariaLabel.header" })}
+                        textAlign="center"
+                        py={1}
+                    >
                         <SectionHeading size={"md"}>
                             OpenLayers Base Packages - Default Sample
                         </SectionHeading>
@@ -48,7 +56,11 @@ export function AppUI() {
                 }
             >
                 <Flex flex="1" direction="column" position="relative">
-                    <MapContainer mapId={MAP_ID}>
+                    <MapContainer
+                        mapId={MAP_ID}
+                        role="main"
+                        aria-label={intl.formatMessage({ id: "ariaLabel.map" })}
+                    >
                         <MapAnchor position="top-left" horizontalGap={20} verticalGap={20}>
                             <Box
                                 backgroundColor="white"
@@ -57,41 +69,40 @@ export function AppUI() {
                                 padding={2}
                                 boxShadow="lg"
                             >
-                                <TitledSection
-                                    title={
-                                        <SectionHeading size="md" mb={2}>
-                                            {intl.formatMessage({ id: "tocTitle" })}
-                                        </SectionHeading>
-                                    }
-                                >
-                                    <Toc
-                                        mapId={MAP_ID}
-                                        basemapSwitcherProps={{
-                                            allowSelectingEmptyBasemap: true
-                                        }}
-                                    />
-                                </TitledSection>
-                            </Box>
-                            {measurementIsActive && (
-                                <Box
-                                    backgroundColor="white"
-                                    borderWidth="1px"
-                                    borderRadius="lg"
-                                    padding={2}
-                                    boxShadow="lg"
-                                    mt={5}
-                                >
+                                <Box role="dialog" aria-labelledby={tocTitleId}>
                                     <TitledSection
                                         title={
-                                            <SectionHeading size="md" mb={2}>
-                                                {intl.formatMessage({ id: "measurementTitle" })}
+                                            <SectionHeading id={tocTitleId} size="md" mb={2}>
+                                                {intl.formatMessage({ id: "tocTitle" })}
                                             </SectionHeading>
                                         }
                                     >
-                                        <Measurement mapId={MAP_ID} />
+                                        <Toc
+                                            mapId={MAP_ID}
+                                            basemapSwitcherProps={{
+                                                allowSelectingEmptyBasemap: true
+                                            }}
+                                        />
                                     </TitledSection>
                                 </Box>
-                            )}
+                                {measurementIsActive && (
+                                    <Box role="dialog" aria-labelledby={measurementTitleId} mt={5}>
+                                        <TitledSection
+                                            title={
+                                                <SectionHeading
+                                                    id={measurementTitleId}
+                                                    size="md"
+                                                    mb={2}
+                                                >
+                                                    {intl.formatMessage({ id: "measurementTitle" })}
+                                                </SectionHeading>
+                                            }
+                                        >
+                                            <Measurement mapId={MAP_ID} />
+                                        </TitledSection>
+                                    </Box>
+                                )}
+                            </Box>
                         </MapAnchor>
                         <MapAnchor position="top-right" horizontalGap={10} verticalGap={10}>
                             {showOverviewMap && (
@@ -99,7 +110,13 @@ export function AppUI() {
                             )}
                         </MapAnchor>
                         <MapAnchor position="bottom-right" horizontalGap={10} verticalGap={30}>
-                            <Flex direction="column" gap={1} padding={1}>
+                            <Flex
+                                role="toolbar"
+                                aria-label={intl.formatMessage({ id: "ariaLabel.toolbar" })}
+                                direction="column"
+                                gap={1}
+                                padding={1}
+                            >
                                 <Tooltip
                                     label={intl.formatMessage({ id: "overviewMapTitle" })}
                                     placement="auto"
@@ -141,7 +158,13 @@ export function AppUI() {
                         </MapAnchor>
                     </MapContainer>
                 </Flex>
-                <Flex gap={3} alignItems="center" justifyContent="center">
+                <Flex
+                    role="region"
+                    aria-label={intl.formatMessage({ id: "ariaLabel.footer" })}
+                    gap={3}
+                    alignItems="center"
+                    justifyContent="center"
+                >
                     <CoordinateViewer mapId={MAP_ID} precision={2} />
                     <ScaleComponent mapId={MAP_ID} />
                     <ScaleViewer mapId={MAP_ID} />

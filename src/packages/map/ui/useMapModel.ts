@@ -1,9 +1,9 @@
-// SPDX-FileCopyrightText: con terra GmbH and contributors
+// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { useService } from "open-pioneer:react-hooks";
 import { useMemo } from "react";
 import { useAsync } from "react-use";
-import { MapModel } from "./api";
+import { MapModel } from "../api";
 
 /** Return value of {@link useMapModel}. */
 export type UseMapModelResult =

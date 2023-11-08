@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: con terra GmbH and contributors
+// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { createLogger } from "@open-pioneer/core";
 import OlMap, { MapOptions } from "ol/Map";
@@ -95,7 +95,7 @@ class MapModelFactory {
         try {
             if (mapConfig.layers) {
                 for (const layerConfig of mapConfig.layers) {
-                    mapModel.layers.createLayer(layerConfig);
+                    mapModel.layers.addLayer(layerConfig);
                 }
             }
             return mapModel;

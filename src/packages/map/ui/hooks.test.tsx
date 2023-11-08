@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: con terra GmbH and contributors
+// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { createServiceOptions, setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
@@ -7,7 +7,7 @@ import View from "ol/View";
 import { expect, it } from "vitest";
 import { MapContainer } from "./MapContainer";
 import { useCenter, useProjection, useResolution, useScale, useView } from "./hooks";
-import { MapRegistry } from "./api";
+import { MapRegistry } from "../api";
 
 it("should successfully return the current map view", async () => {
     const { mapId, registry } = await setupMap();

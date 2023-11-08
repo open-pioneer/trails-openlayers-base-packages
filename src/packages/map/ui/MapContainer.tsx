@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: con terra GmbH and contributors
+// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Resource, createLogger } from "@open-pioneer/core";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
@@ -6,7 +6,7 @@ import type OlMap from "ol/Map";
 import { Extent } from "ol/extent";
 import { ReactNode, useEffect, useMemo, useRef } from "react";
 import { useMapModel } from "./useMapModel";
-import { MapModel } from "./api";
+import { MapModel } from "../api";
 import { MapContextProvider, MapContextType } from "./MapContext";
 const LOG = createLogger("map:MapContainer");
 
@@ -45,6 +45,29 @@ export interface MapContainerProps extends CommonComponentProps {
     viewPaddingChangeBehavior?: "none" | "preserve-center" | "preserve-extent";
 
     children?: ReactNode;
+
+    /**
+     * Optional role property.
+     *
+     * This property is directly applied to the map's container div element.
+     */
+    role?: string;
+
+    /**
+     * Optional aria-labelledby property.
+     * Do not use together with aria-label.
+     *
+     * This property is directly applied to the map's container div element.
+     */
+    "aria-labelledby"?: string;
+
+    /**
+     * Optional aria-label property.
+     * Do not use together with aria-label.
+     *
+     * This property is directly applied to the map's container div element.
+     */
+    "aria-label"?: string;
 }
 
 /**
@@ -53,7 +76,15 @@ export interface MapContainerProps extends CommonComponentProps {
  * There can only be at most one MapContainer for every map.
  */
 export function MapContainer(props: MapContainerProps) {
-    const { mapId, viewPadding, viewPaddingChangeBehavior, children } = props;
+    const {
+        mapId,
+        viewPadding,
+        viewPaddingChangeBehavior,
+        children,
+        role,
+        "aria-label": ariaLabel,
+        "aria-labelledby": ariaLabelledBy
+    } = props;
     const { containerProps } = useCommonComponentProps("map-container", props);
     const mapElement = useRef<HTMLDivElement>(null);
     const modelState = useMapModel(mapId);
@@ -97,6 +128,9 @@ export function MapContainer(props: MapContainerProps) {
     return (
         <div
             {...containerProps}
+            role={role}
+            aria-label={ariaLabel}
+            aria-labelledby={ariaLabelledBy}
             ref={mapElement}
             style={mapContainerStyle}
             //eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex

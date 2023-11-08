@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: con terra GmbH and contributors
+// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
 import { expect, it } from "vitest";
@@ -12,7 +12,20 @@ import OSM from "ol/source/OSM";
 import { BkgTopPlusOpen } from "@open-pioneer/map";
 import WMTS from "ol/source/WMTS";
 import OlMap from "ol/Map";
+import {equals as extentEquals} from "ol/extent";
 
+OlMap.prototype.updateSize = function ()  {
+    const target = this.getTargetElement();
+    const height = 500;
+    const width = 500;
+    const size = target ? [width, height] : undefined;
+    const oldSize = this.getSize();
+    if (size && (!oldSize || !extentEquals(size, oldSize))) {
+        this.setSize(size);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (this as any).updateViewportSize_();
+    }
+};
 it("should successfully create a overview map component", async () => {
     const { mapId, registry } = await setupMap();
     await registry.expectMapModel(mapId);

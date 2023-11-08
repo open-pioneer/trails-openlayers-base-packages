@@ -14,6 +14,7 @@
         "build-license-report": "node --loader ts-node/esm --no-warnings=ExperimentalWarning ./support/create-license-report.ts ",
         "preview": "vite preview",
         "lint": "eslint ./src ./support --ext .js,.ts,.jsx,.tsx,.mjs,.mts,.cjs,.cts --cache --cache-location ./node_modules/.cache/.eslintcache",
+        "eslint": "pnpm run lint",
         "prettier-check": "pnpm prettier:common -c",
         "prettier": "pnpm prettier:common -w",
         "prettier:common": "prettier ./src ./support ./docs --ignore-path .eslintignore --cache",
@@ -29,19 +30,15 @@
         "//": [
             "overrides",
             "=========",
-            "ol-mapbox-style: license issues",
             "semver: https://github.com/advisories/GHSA-c2qf-rxjj-qqgw",
             "tough-cookie: https://github.com/advisories/GHSA-72xf-g2v4-qvf3",
             "@mapbox/mapbox-gl-style-spec: license issues, see https://github.com/openlayers/ol-mapbox-style/pull/940",
             "",
             "ignored cves",
             "============",
-            "plugin-react-swc has been patched to transpile to es2022 instead of es2020, to support native private fields",
-            "see also https://github.com/vitejs/vite-plugin-react-swc/issues/141",
             "",
             "patches",
             "=======",
-            "@vitejs/plugin-react-swc: patch ecma script version to 2022 (see https://github.com/vitejs/vite-plugin-react-swc/issues/141)",
             "@changesets/assemble-release-plan: don't bump to major for 0.x packages (see https://github.com/changesets/changesets/issues/1228)"
         ],
         "overrides": {
