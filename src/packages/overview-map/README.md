@@ -12,7 +12,7 @@ const OVERVIEW_MAP_LAYER = new TileLayer({
     source: new OSM()
 });
 
-<OverviewMap mapId="map_id" layer={OVERVIEW_MAP_LAYER} />;
+<OverviewMap mapId="map_id" olLayer={OVERVIEW_MAP_LAYER} />;
 ```
 
 ## License

@@ -21,7 +21,7 @@ it("should successfully create a overview map component", async () => {
 
     render(
         <PackageContextProvider services={injectedServices}>
-            <OverviewMap mapId={mapId} layer={layer} data-testid="overview-map"></OverviewMap>
+            <OverviewMap mapId={mapId} olLayer={layer} data-testid="overview-map"></OverviewMap>
         </PackageContextProvider>
     );
 
@@ -45,7 +45,7 @@ it("should successfully create a overview map component with additional css clas
         <PackageContextProvider services={injectedServices}>
             <OverviewMap
                 mapId={mapId}
-                layer={layer}
+                olLayer={layer}
                 className="test"
                 data-testid="overview-map"
             ></OverviewMap>
@@ -68,7 +68,7 @@ it("should successfully add OverviewMap control to the map controls", async () =
         <PackageContextProvider services={injectedServices}>
             <OverviewMap
                 mapId={mapId}
-                layer={layer}
+                olLayer={layer}
                 className="test"
                 data-testid="overview-map"
             ></OverviewMap>
@@ -90,7 +90,7 @@ it("should support basemap type of OGC WMTS layer as a layer shown in the overvi
         <PackageContextProvider services={injectedServices}>
             <OverviewMap
                 mapId={mapId}
-                layer={layer}
+                olLayer={layer}
                 className="test"
                 data-testid="overview-map"
             ></OverviewMap>

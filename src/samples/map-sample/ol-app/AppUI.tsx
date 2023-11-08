@@ -106,7 +106,10 @@ export function AppUI() {
                         </MapAnchor>
                         <MapAnchor position="top-right" horizontalGap={10} verticalGap={10}>
                             {showOverviewMap && (
-                                <OverviewMap mapId={MAP_ID} layer={overviewMapLayer}></OverviewMap>
+                                <OverviewMap
+                                    mapId={MAP_ID}
+                                    olLayer={overviewMapLayer}
+                                ></OverviewMap>
                             )}
                         </MapAnchor>
                         <MapAnchor position="bottom-right" horizontalGap={10} verticalGap={30}>

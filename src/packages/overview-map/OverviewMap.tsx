@@ -20,24 +20,24 @@ export interface OverviewMapProps extends CommonComponentProps {
     /**
      * The layer shown in the overview map
      */
-    layer: OlBaseLayer;
+    olLayer: OlBaseLayer;
 }
 
 /**
  * The `OverviewMap` component can be used in an app to have a better overview of the current location in the map.
  */
 export const OverviewMap: FC<OverviewMapProps> = (props) => {
-    const { mapId, layer } = props;
+    const { mapId, olLayer } = props;
     const { containerProps } = useCommonComponentProps("overview-map", props);
     const overviewMapControlElem = useRef(null);
     const { map } = useMapModel(mapId);
 
     useEffect(() => {
-        if (overviewMapControlElem.current && map && layer) {
+        if (overviewMapControlElem.current && map && olLayer) {
             const olMap = map.olMap;
             const overviewMapControl: OlOverviewMap = new OlOverviewMap({
                 className: "ol-overviewmap",
-                layers: [layer],
+                layers: [olLayer],
                 collapsible: false,
                 collapsed: false,
                 target: overviewMapControlElem.current
@@ -47,7 +47,7 @@ export const OverviewMap: FC<OverviewMapProps> = (props) => {
                 olMap.removeControl(overviewMapControl);
             };
         }
-    }, [map, layer]);
+    }, [map, olLayer]);
 
     return <Box ref={overviewMapControlElem} {...containerProps}></Box>;
 };
