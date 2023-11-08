@@ -1,31 +1,18 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
-import { expect, it } from "vitest";
+import { BkgTopPlusOpen } from "@open-pioneer/map";
 import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
-import { render, screen, waitFor } from "@testing-library/react";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
-import { OverviewMap } from "./OverviewMap";
+import { render, screen, waitFor } from "@testing-library/react";
+import OlMap from "ol/Map";
 import { OverviewMap as OlOverviewMap } from "ol/control";
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
-import { BkgTopPlusOpen } from "@open-pioneer/map";
 import WMTS from "ol/source/WMTS";
-import OlMap from "ol/Map";
-import {equals as extentEquals} from "ol/extent";
+import { expect, it } from "vitest";
+import { OverviewMap } from "./OverviewMap";
 
-OlMap.prototype.updateSize = function ()  {
-    const target = this.getTargetElement();
-    const height = 500;
-    const width = 500;
-    const size = target ? [width, height] : undefined;
-    const oldSize = this.getSize();
-    if (size && (!oldSize || !extentEquals(size, oldSize))) {
-        this.setSize(size);
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (this as any).updateViewportSize_();
-    }
-};
 it("should successfully create a overview map component", async () => {
     const { mapId, registry } = await setupMap();
     await registry.expectMapModel(mapId);
@@ -38,9 +25,14 @@ it("should successfully create a overview map component", async () => {
         </PackageContextProvider>
     );
 
-    // overview map div is mounted
-    const { overviewMapDiv } = await waitForOverviewMap();
-    expect(overviewMapDiv).toMatchSnapshot();
+    const { overviewMapDiv, olOverviewDiv } = await waitForOverviewMap();
+
+    // Parent element
+    expect(overviewMapDiv.tagName).toBe("DIV");
+    expect(overviewMapDiv.classList.contains("overview-map")).toBe(true);
+
+    // The inner OpenLayers overview map
+    expect(olOverviewDiv?.tagName).toBe("DIV");
 });
 
 it("should successfully create a overview map component with additional css class", async () => {
@@ -118,17 +110,15 @@ it("should support basemap type of OGC WMTS layer as a layer shown in the overvi
 });
 
 async function waitForOverviewMap() {
-    const { overviewMapDiv } = await waitFor(async () => {
-        const overviewMapDiv: HTMLDivElement | null =
-            await screen.findByTestId<HTMLDivElement>("overview-map");
-        if (!overviewMapDiv) {
-            throw new Error("Overview map not rendered");
+    const overviewMapDiv = await screen.findByTestId("overview-map");
+    const olOverviewDiv = await waitFor(() => {
+        const child = overviewMapDiv.querySelector("> .ol-overviewmap");
+        if (!child) {
+            throw new Error("OpenLayers overview map control did not mount");
         }
-
-        return { overviewMapDiv };
+        return child;
     });
-
-    return { overviewMapDiv };
+    return { overviewMapDiv, olOverviewDiv };
 }
 
 function getControl(olMap: OlMap) {
@@ -138,13 +128,25 @@ function getControl(olMap: OlMap) {
         | undefined;
 }
 function getTileLayer() {
-    return new TileLayer({
+    const layer = new TileLayer({
         source: new OSM()
     });
+    mockRender(layer);
+    return layer;
 }
 
 function getTileLayerOfWMTS() {
-    return new TileLayer({
+    const layer = new TileLayer({
         source: new BkgTopPlusOpen()
     });
+    mockRender(layer);
+    return layer;
+}
+
+function mockRender(layer: TileLayer<any>) {
+    // Overwrite render so it doesn't actually do anything during tests.
+    // Would otherwise error because <canvas /> is not fully implemented in happy dom.
+    const element = document.createElement("div");
+    layer.render = () => element;
+    return layer;
 }
