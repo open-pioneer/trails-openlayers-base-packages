@@ -5,12 +5,12 @@ import { extendTheme, withDefaultColorScheme } from "@open-pioneer/chakra-integr
 import { theme as baseTheme } from "@open-pioneer/base-theme";
 
 const fonts = {
-    heading: "Tahoma",
-    body: "Courier New"
+    /* heading: "Tahoma",
+    body: "Courier New" */
 };
 
 const colors = {
-    //primary = default color scheme
+    //trails = default color scheme
     //10 colors as hex values from 50 to 900 (light to dark)
     trails: {
         50: "#f5edfd",
@@ -24,8 +24,8 @@ const colors = {
         800: "#4f3373",
         900: "#391e61"
     },
-    //TODO ?? secondary/alternative = button variant secondary
-    trails_alt: {
+    //trails2 = button variant secondary //TODO: 50-900
+    trails2: {
         500: "#e7a276",
         600: "#e09463",
         700: "#d98651",
@@ -63,8 +63,8 @@ let theme = extendTheme({ fonts, colors, semanticTokens }, baseTheme);
 
 /**
  * Get the color defined by a semantic token.
- * If it points to a color value (e.g. red.500), get the hex color value.
- * Needed for: "boxShadow" and "outline"
+ * If it points to a color (e.g. red.500), get the hex color value out of the color scheme.
+ * Overrides: "boxShadow" and "outline"
  */
 const getColor = (semanticToken: string) => {
     const color = theme.semanticTokens.colors[semanticToken];
@@ -88,16 +88,15 @@ theme = extendTheme(
         components: {
             Button: {
                 defaultProps: {
-                    //TODO ?? defaults nur zeigen
                     //colorScheme: "gray"
                     //size: "md", //"lg" | "md" | "sm" | "xs"
                     //variant: "solid" //"primary" | "secondary" | "cancel" | "solid" | "outline" | "ghost" | "link"
                 },
                 variants: {
-                    //definiert, da im Zweifel nicht ohne Style
+                    //primary === default
                     primary: {
                         color: "font_inverse",
-                        bg: "trails.500", //TODO ?? semToken ??
+                        bg: "trails.500",
                         _hover: {
                             bg: "trails.600"
                         },
@@ -107,21 +106,22 @@ theme = extendTheme(
                     },
                     secondary: {
                         color: "font_inverse",
-                        bg: "trails_alt.700", //"gray.500",
+                        bg: "trails2.700",
                         _hover: {
-                            bg: "trails_alt.800" //"gray.600"
+                            bg: "trails2.800"
                         },
                         _active: {
-                            bg: "trails_alt.900" //"gray.700"
+                            bg: "trails2.900"
                         }
                     },
                     cancel: {
-                        bg: "gray.300",
+                        color: "font_inverse",
+                        bg: "gray.500",
                         _hover: {
-                            bg: "gray.400"
+                            bg: "gray.600"
                         },
                         _active: {
-                            bg: "gray.500"
+                            bg: "gray.700"
                         }
                     }
                 }
@@ -280,5 +280,4 @@ theme = extendTheme(
     theme
 );
 
-console.log("log theme", theme); //TODO ..
 export { theme };
