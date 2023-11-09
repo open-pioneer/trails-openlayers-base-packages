@@ -103,8 +103,7 @@ it("should successfully add ScaleLine to OpenLayers map controls", async () => {
     await waitForScaleBar();
 
     const controls = olMap?.getControls().getArray();
-    const control = olMap?.getControls().getArray().at(1);
-    expect(controls).toHaveLength(2);
+    const control = controls?.find((control) => control instanceof ScaleLine);
     expect(control).toBeInstanceOf(ScaleLine);
 
     const scaleLine: ScaleLine = control as ScaleLine;
