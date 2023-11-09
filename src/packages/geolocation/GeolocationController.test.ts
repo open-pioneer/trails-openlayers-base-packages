@@ -13,10 +13,10 @@ import olMap from "ol/Map";
 import { Circle, Fill, Stroke, Style } from "ol/style";
 import { Feature } from "ol";
 import { Geometry } from "ol/geom";
+import { mockGeolocation } from "./utils";
 
 /**
  * Todo Test:
- * Generelles testen, ob eine Position zurückkommt
  * Fehlerfall testen -> ähnlich Punkt 1, Rückgabe error (https://developer.mozilla.org/en-US/docs/Web/API/GeolocationPositionError)
  * Karte verschieben bzw. Zoomstufe ändern und Testen, ob sich der Kartenmittelpunkt nicht aktualisiert (this.centerMapToPosition = false)
  */
@@ -27,36 +27,16 @@ afterEach(() => {
     vi.restoreAllMocks();
 });
 
-it.skip("return a position", async () => {
-    vi.spyOn(global.navigator.geolocation, "watchPosition").mockImplementation(() =>
-        Promise.resolve(3124324)
-    );
-
-    vi.spyOn(global.navigator.geolocation, "getCurrentPosition").mockImplementation((success) =>
-        Promise.resolve(
-            success({
-                coords: {
-                    latitude: 51.1,
-                    longitude: 45.3,
-                    accuracy: 2500,
-                    altitude: null,
-                    altitudeAccuracy: null,
-                    heading: null,
-                    speed: null
-                }
-            } as GeolocationPosition)
-        )
-    );
+it("should successfully return a geolocation position", async () => {
+    mockGeolocation();
 
     const controller: GeolocationController = setup();
-    const location = await controller.startGeolocation(OL_MAP);
+    await controller.startGeolocation(OL_MAP);
 
     const positionFeature: Feature<Geometry> | undefined = controller.getPositionFeature();
-    // const accuracyFeature: Feature<Geometry> | undefined = controller.getAccuracyFeature();
-
-    console.log(positionFeature?.getGeometry());
-    expect(positionFeature?.getGeometry()).not.toBeUndefined();
-    // expect(accuracyFeature?.getGeometry()).not.toBeUndefined();
+    expect(positionFeature?.getGeometry()?.getExtent()).toStrictEqual([
+        5042772.932935293, 6639001.66376131, 5042772.932935293, 6639001.66376131
+    ]);
 });
 
 describe("Default Properties", () => {
