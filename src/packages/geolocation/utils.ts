@@ -40,6 +40,7 @@ export function mockErrorGeolocation() {
         watchPosition(success, error) {
             setTimeout(() => {
                 success({} as GeolocationPosition);
+                // Todo: fix error msg "Cannot invoke an object which is possibly 'null' or 'undefined'.ts(2723)"
                 error({
                     code: 2,
                     message: "POSITION_UNAVAILABLE",

@@ -12,11 +12,6 @@ import { GeolocationController } from "./GeolocationController";
 import { Feature } from "ol";
 import { Geometry } from "ol/geom";
 
-/**
- * Testen, ob die Karte zur Position vom Nutzer zommt
- * Karte verschieben bzw. Zoomstufe ändern und Testen, ob sich der Kartenmittelpunkt nicht aktualisiert (this.centerMapToPosition = false)
- */
-
 it("should successfully create a geolocation component with a button", async () => {
     const { mapId, registry } = await setupMap();
 
@@ -44,6 +39,46 @@ it("should successfully create a geolocation component with a button", async () 
     const geolocationBtn = await screen.findByTestId("geolocation");
     expect(geolocationBtn.tagName).toBe("BUTTON");
     expect(geolocationBtn).toMatchSnapshot();
+});
+
+it("should center to user's position", async () => {
+    const { mapId, registry } = await setupMap({
+        center: { x: 0, y: 0 },
+        projection: "EPSG:4326"
+    });
+
+    const map = (await registry.expectMapModel(mapId))?.olMap;
+
+    const notifier: Partial<NotificationService> = {
+        notify() {
+            throw new Error("not implemented");
+        }
+    };
+
+    const injectedServices = createServiceOptions({
+        registry
+    });
+    injectedServices["notifier.NotificationService"] = notifier;
+
+    render(
+        <PackageContextProvider services={injectedServices}>
+            <MapContainer mapId={mapId} data-testid="map" />
+            <Geolocation mapId={mapId} data-testid="geolocation" />
+        </PackageContextProvider>
+    );
+
+    await waitForMapMount("map");
+
+    const firstCenter = map.getView().getCenter();
+
+    mockSuccessGeolocation([51.1, 45.3]);
+
+    const controller: GeolocationController = setup();
+    await controller.startGeolocation(map);
+
+    const nextCenter = map.getView().getCenter();
+
+    expect(nextCenter).not.toEqual(firstCenter);
 });
 
 it.skip("should do not change map extent while changing user's position", async () => {
@@ -102,7 +137,8 @@ it.skip("should do not change map extent while changing user's position", async 
 
 it.skip("should do not change user position while change zoom level", async () => {});
 
-it.skip("should successfully create a notifier message", async () => {
+// siehe utils.ts "error todo"
+it.skip("should successfully create a error with notifier message", async () => {
     const { mapId, registry } = await setupMap();
 
     const notifyArr = [];

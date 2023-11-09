@@ -19,11 +19,6 @@ import {
     mockSuccessGeolocation
 } from "./utils";
 
-/**
- * Todo Test:
- * Fehlerfall testen -> ähnlich Punkt 1, Rückgabe error (https://developer.mozilla.org/en-US/docs/Web/API/GeolocationPositionError)
- */
-
 afterEach(() => {
     vi.restoreAllMocks();
 });
