@@ -16,6 +16,8 @@ const documentedPackages = [
     "packages/map-navigation",
     "packages/measurement",
     "packages/ogc-features",
+    "packages/overview-map",
+    "packages/scale-bar",
     "packages/geolocation"
 ];
 
