@@ -16,6 +16,7 @@
         "@open-pioneer/scale-viewer": "workspace:^",
         "@open-pioneer/map-navigation": "workspace:^",
         "@open-pioneer/react-utils": "workspace:^",
+        "@open-pioneer/theme": "workspace:^",
         "map-sample-logging": "workspace:^",
         "map-sample-scale-component": "workspace:*",
         "ol": "^8.1.0",

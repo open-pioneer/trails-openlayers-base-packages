@@ -12,6 +12,7 @@
         "@open-pioneer/map": "workspace:^",
         "@open-pioneer/runtime": "^1.1.0",
         "@open-pioneer/react-utils": "workspace:^",
+        "@open-pioneer/theme": "workspace:^",
         "ol": "^8.1.0",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
