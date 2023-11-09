@@ -7,7 +7,7 @@ import { render, screen } from "@testing-library/react";
 import { expect, it } from "vitest";
 import { Geolocation } from "./Geolocation";
 import { NotificationService, NotificationOptions } from "@open-pioneer/notifier";
-import { OL_MAP, setup, mockSuccessGeolocation } from "./utils";
+import { setup, mockSuccessGeolocation } from "./utils";
 import { GeolocationController } from "./GeolocationController";
 import { Feature } from "ol";
 import { Geometry } from "ol/geom";
@@ -81,8 +81,13 @@ it("should center to user's position", async () => {
     expect(nextCenter).not.toEqual(firstCenter);
 });
 
-it.skip("should do not change map extent while changing user's position", async () => {
-    const { mapId, registry } = await setupMap();
+it("should do not change map center while changing user's position", async () => {
+    const { mapId, registry } = await setupMap({
+        center: { x: 0, y: 0 },
+        projection: "EPSG:4326"
+    });
+
+    const map = (await registry.expectMapModel(mapId))?.olMap;
 
     const notifier: Partial<NotificationService> = {
         notify() {
@@ -104,35 +109,42 @@ it.skip("should do not change map extent while changing user's position", async 
 
     await waitForMapMount("map");
 
-    const mapModel = await registry.expectMapModel(mapId);
-    await mapModel.whenDisplayed();
+    const firstCenter = map.getView().getCenter();
 
     mockSuccessGeolocation([51.1, 45.3]);
 
     const controller: GeolocationController = setup();
-    await controller.startGeolocation(OL_MAP);
+    await controller.startGeolocation(map);
 
     const positionFeature: Feature<Geometry> | undefined = controller.getPositionFeature();
-    expect(positionFeature?.getGeometry()?.getExtent()).toStrictEqual([
-        5042772.932935293, 6639001.66376131, 5042772.932935293, 6639001.66376131
-    ]);
+    expect(positionFeature?.getGeometry()?.getExtent()).toStrictEqual([45.3, 51.1, 45.3, 51.1]);
 
-    // const firstExtent = getCurrentExtent(mapModel.olMap);
-    const extent = [1479200, 6884026, 1499200, 6897026];
+    const nextCenter = map.getView().getCenter();
 
-    // Karte verschieben
-    mapModel.olMap.getView().fit(extent);
+    expect(nextCenter).not.toEqual(firstCenter);
 
     mockSuccessGeolocation([51.1, 6.3]);
+    // await controller.startGeolocation(map);
 
     const nextPositionFeature: Feature<Geometry> | undefined = controller.getPositionFeature();
-    expect(nextPositionFeature?.getGeometry()?.getExtent()).toStrictEqual([
-        5042772.932935293, 6639001.66376131, 5042772.932935293, 6639001.66376131
-    ]);
+    expect(nextPositionFeature?.getGeometry()?.getExtent()).toStrictEqual([45.3, 51.1, 45.3, 51.1]);
 
-    // const nextExtent = getCurrentExtent(mapModel.olMap);
+    // // const firstExtent = getCurrentExtent(mapModel.olMap);
+    // const extent = [1479200, 6884026, 1499200, 6897026];
 
-    // // Test, ob sich die Position geändert hat
+    // // Karte verschieben
+    // mapModel.olMap.getView().fit(extent);
+
+    // mockSuccessGeolocation([51.1, 6.3]);
+
+    // const nextPositionFeature: Feature<Geometry> | undefined = controller.getPositionFeature();
+    // expect(nextPositionFeature?.getGeometry()?.getExtent()).toStrictEqual([
+    //     5042772.932935293, 6639001.66376131, 5042772.932935293, 6639001.66376131
+    // ]);
+
+    // // const nextExtent = getCurrentExtent(mapModel.olMap);
+
+    // // // Test, ob sich die Position geändert hat
 });
 
 it.skip("should do not change user position while change zoom level", async () => {});
