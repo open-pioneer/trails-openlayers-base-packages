@@ -43,10 +43,12 @@ For more details, see the API documentation.
 
 ## Tool Buttons
 
-The `ToolButton` component can be used to create a simple icon button.
+The `ToolButton` component can be used to create a simple icon button with a tooltip and an `aria-label`.
 This is usually done to add an icon on the map:
 
-TODO example
+```jsx
+<ToolButton label={someLabel} icon={<SomeIcon />} onClick={someEventHandler} />
+```
 
 ## Hooks
 
