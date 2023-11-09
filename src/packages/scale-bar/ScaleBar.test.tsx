@@ -22,7 +22,7 @@ it("should successfully create a scale bar component", async () => {
     expect(scaleBarBox).toMatchSnapshot();
 
     // check scale bar box is available
-    expect(scaleBarBox).toBeInstanceOf(HTMLDivElement);
+    expect(scaleBarBox.tagName).toBe("DIV");
 });
 
 it("should successfully create a scale bar component with additional css classes and box properties", async () => {
@@ -40,7 +40,7 @@ it("should successfully create a scale bar component with additional css classes
     expect(scaleBarBox).toMatchSnapshot();
 
     // check scale bar box is available
-    expect(scaleBarBox).toBeInstanceOf(HTMLDivElement);
+    expect(scaleBarBox.tagName).toBe("DIV");
     expect(scaleBarBox.classList.contains("test")).toBe(true);
     expect(scaleBarBox.classList.contains("test1")).toBe(true);
     expect(scaleBarBox.classList.contains("test2")).toBe(true);
@@ -62,7 +62,7 @@ it("should by default render a scale line, if property displayMode is missing", 
     expect(scaleBarBox).toMatchSnapshot();
 
     // check scale bar box is available
-    expect(scaleBarBox).toBeInstanceOf(HTMLDivElement);
+    expect(scaleBarBox.tagName).toBe("DIV");
     expect(scaleBarDiv.classList.contains("ol-scale-line")).toBe(true);
     expect(scaleBarDiv.classList.contains("ol-scale-bar")).not.toBe(true);
 });
@@ -82,7 +82,7 @@ it("should render a scale bar, if property displayMode is set to 'bar'", async (
     expect(scaleBarBox).toMatchSnapshot();
 
     // check scale bar box is available
-    expect(scaleBarBox).toBeInstanceOf(HTMLDivElement);
+    expect(scaleBarBox.tagName).toBe("DIV");
     expect(scaleBarDiv.classList.contains("ol-scale-line")).not.toBe(true);
     expect(scaleBarDiv.classList.contains("ol-scale-bar")).toBe(true);
 });
