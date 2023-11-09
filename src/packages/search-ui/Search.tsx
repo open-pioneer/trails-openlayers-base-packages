@@ -1,14 +1,14 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-import { Box, FormControl } from "@open-pioneer/chakra-integration";
+import { Box, chakra, FormControl } from "@open-pioneer/chakra-integration";
 import { MapModel, useMapModel } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { FC, useCallback, useEffect, useState } from "react";
-import { AsyncSelect } from "chakra-react-select";
+import { AsyncSelect, components, MenuProps, NoticeProps } from "chakra-react-select";
 import { DataSource, Suggestion } from "./api";
 import { SearchController } from "./SearchController";
 import { HighlightOption } from "./HighlightOption";
-import { NoOptionsMessage } from "./NoOption";
+import { useIntl } from "open-pioneer:react-hooks";
 
 export interface SearchOption {
     value: string;
@@ -27,15 +27,23 @@ export interface SearchProps extends CommonComponentProps {
      * The id of the map.
      */
     mapId: string;
+    sources: DataSource[];
     name?: string;
     placeholder?: string;
     closeMenuOnSelect?: boolean;
-    sources: DataSource[];
     searchTypingDelay?: number;
+    showDropdownIndicator?: boolean;
 }
 
 export const Search: FC<SearchProps> = (props) => {
-    const { placeholder, closeMenuOnSelect, mapId, sources, searchTypingDelay } = props;
+    const {
+        placeholder,
+        closeMenuOnSelect,
+        mapId,
+        sources,
+        searchTypingDelay,
+        showDropdownIndicator
+    } = props;
     const { containerProps } = useCommonComponentProps("search", props);
     const { map } = useMapModel(mapId);
     const controller = useController(sources, map);
@@ -64,6 +72,14 @@ export const Search: FC<SearchProps> = (props) => {
         [controller]
     );
 
+    const displayCss = showDropdownIndicator ? "inherit" : "none";
+    const chakraStyles = {
+        dropdownIndicator: (provided: object) => ({
+            ...provided,
+            display: displayCss
+        })
+    };
+
     return (
         <Box {...containerProps}>
             <FormControl alignItems="center">
@@ -72,7 +88,13 @@ export const Search: FC<SearchProps> = (props) => {
                     placeholder={placeholder}
                     closeMenuOnSelect={closeMenuOnSelect}
                     loadOptions={debouncedLoadOptions}
-                    components={{ Option: HighlightOption, NoOptionsMessage: NoOptionsMessage }}
+                    components={{
+                        Option: HighlightOption,
+                        NoOptionsMessage: NoOptionsMessage,
+                        Menu: MenuComp,
+                        LoadingMessage: LoadingMessage
+                    }}
+                    chakraStyles={chakraStyles}
                 />
             </FormControl>
         </Box>
@@ -115,3 +137,40 @@ function useController(sources: DataSource[], map: MapModel | undefined) {
 
     return controller;
 }
+
+export const MenuComp = (props: MenuProps<SearchGroupOption>) => {
+    const hasInput = props.selectProps.inputValue.length > 0;
+    let clazz = "";
+    if (!hasInput) {
+        clazz = "search-invisible";
+    }
+    return (
+        <components.Menu {...props} className={clazz}>
+            {props.children}
+        </components.Menu>
+    );
+};
+
+export const NoOptionsMessage = (props: NoticeProps<SearchGroupOption>) => {
+    const intl = useIntl();
+    // TODO: Make it configurable?
+    const noMessageText = intl.formatMessage({ id: "noOptionsText" });
+
+    return (
+        <components.NoOptionsMessage {...props}>
+            <chakra.span className="search-no-match">{noMessageText}</chakra.span>
+        </components.NoOptionsMessage>
+    );
+};
+
+export const LoadingMessage = (props: NoticeProps<SearchGroupOption>) => {
+    const intl = useIntl();
+    // TODO: Make it configurable?
+    const loadingText = intl.formatMessage({ id: "loadingText" });
+
+    return (
+        <components.LoadingMessage {...props}>
+            <chakra.span className="search-loading-text">{loadingText}</chakra.span>
+        </components.LoadingMessage>
+    );
+};

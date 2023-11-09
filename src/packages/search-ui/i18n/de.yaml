@@ -1,2 +1,3 @@
 messages:
   noOptionsText: "Keine Suchtreffer gefunden"
+  loadingText: "Frage Daten ab..."

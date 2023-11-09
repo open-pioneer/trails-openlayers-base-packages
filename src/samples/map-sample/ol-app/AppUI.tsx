@@ -53,23 +53,26 @@ export function AppUI() {
             >
                 <Flex flex="1" direction="column" position="relative">
                     <MapContainer mapId={MAP_ID}>
+                        {searchIsActive && (
+                            <Box
+                                backgroundColor="white"
+                                borderWidth="1px"
+                                borderRadius="lg"
+                                padding={2}
+                                boxShadow="lg"
+                                mt={5}
+                                className="search-placement"
+                            >
+                                <Search
+                                    mapId={MAP_ID}
+                                    sources={sources}
+                                    searchTypingDelay={500}
+                                    showDropdownIndicator={false}
+                                    placeholder={intl.formatMessage({ id: "searchPlaceholder" })}
+                                />
+                            </Box>
+                        )}
                         <MapAnchor position="top-left" horizontalGap={20} verticalGap={20}>
-                            {searchIsActive && (
-                                <Box
-                                    backgroundColor="white"
-                                    borderWidth="1px"
-                                    borderRadius="lg"
-                                    padding={2}
-                                    boxShadow="lg"
-                                    mt={5}
-                                >
-                                    <Search
-                                        mapId={MAP_ID}
-                                        sources={sources}
-                                        searchTypingDelay={500}
-                                    />
-                                </Box>
-                            )}
                             <Box
                                 backgroundColor="white"
                                 borderWidth="1px"
@@ -116,12 +119,12 @@ export function AppUI() {
                         <MapAnchor position="bottom-right" horizontalGap={10} verticalGap={30}>
                             <Flex direction="column" gap={1} padding={1}>
                                 <Tooltip
-                                    label={intl.formatMessage({ id: "searchTitle" })}
+                                    label={intl.formatMessage({ id: "searchTooltip" })}
                                     placement="auto"
                                     openDelay={500}
                                 >
                                     <Button
-                                        aria-label={intl.formatMessage({ id: "searchTitle" })}
+                                        aria-label={intl.formatMessage({ id: "searchTooltip" })}
                                         leftIcon={
                                             searchIsActive ? (
                                                 <PiMagnifyingGlassFill />
