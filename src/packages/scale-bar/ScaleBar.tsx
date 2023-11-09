@@ -17,7 +17,7 @@ export interface ScaleBarProps extends CommonComponentProps {
     /**
      * Display the scale either as a line or a bar
      */
-    displayMode?: string;
+    displayMode?: "bar" | "line";
 }
 
 export const ScaleBar: FC<ScaleBarProps> = (props) => {
