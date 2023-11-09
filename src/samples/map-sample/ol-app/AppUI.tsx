@@ -25,6 +25,7 @@ import {
     PiFileMagnifyingGlassLight
 } from "react-icons/pi";
 import { MAP_ID } from "./MapConfigProviderImpl";
+import { SearchEvent } from "@open-pioneer/search-ui/Search";
 
 const sources = [new FakeCitySource(), new FakeRiverSource(), new FakeStreetSource()];
 export function AppUI() {
@@ -69,6 +70,14 @@ export function AppUI() {
                                     searchTypingDelay={500}
                                     showDropdownIndicator={false}
                                     placeholder={intl.formatMessage({ id: "searchPlaceholder" })}
+                                    onSelect={function (event: SearchEvent): void {
+                                        console.debug(
+                                            "User selectet " + event.value?.value + " from Search"
+                                        );
+                                    }}
+                                    onClear={function (event: SearchEvent): void {
+                                        console.debug("User clear Search");
+                                    }}
                                 />
                             </Box>
                         )}

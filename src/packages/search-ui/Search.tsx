@@ -4,7 +4,7 @@ import { Box, chakra, FormControl } from "@open-pioneer/chakra-integration";
 import { MapModel, useMapModel } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { FC, useCallback, useEffect, useState } from "react";
-import { AsyncSelect, components, MenuProps, NoticeProps } from "chakra-react-select";
+import { ActionMeta, AsyncSelect, components, MenuProps, NoticeProps } from "chakra-react-select";
 import { DataSource, Suggestion } from "./api";
 import { SearchController } from "./SearchController";
 import { HighlightOption } from "./HighlightOption";
@@ -19,6 +19,12 @@ export interface SearchGroupOption {
     options: SearchOption[];
     priority?: number;
 }
+
+export interface SearchEvent {
+    action: string;
+    value?: SearchOption;
+}
+
 /**
  * This is for special properties of the Search component
  */
@@ -33,6 +39,8 @@ export interface SearchProps extends CommonComponentProps {
     closeMenuOnSelect?: boolean;
     searchTypingDelay?: number;
     showDropdownIndicator?: boolean;
+    onSelect(event: SearchEvent): void;
+    onClear(event: SearchEvent): void;
 }
 
 export const Search: FC<SearchProps> = (props) => {
@@ -42,7 +50,9 @@ export const Search: FC<SearchProps> = (props) => {
         mapId,
         sources,
         searchTypingDelay,
-        showDropdownIndicator
+        showDropdownIndicator,
+        onSelect,
+        onClear
     } = props;
     const { containerProps } = useCommonComponentProps("search", props);
     const { map } = useMapModel(mapId);
@@ -80,6 +90,20 @@ export const Search: FC<SearchProps> = (props) => {
         })
     };
 
+    //Typescript doesn't recognize Type SearchOption but rather SingleValue<SearchGroupOption>
+    const onInputChange = (value: unknown, actionMeta: ActionMeta<unknown>) => {
+        if (value && actionMeta.action === "select-option") {
+            onSelect({ action: "select", value: value as SearchOption });
+        } else if (actionMeta.action === "clear") {
+            onClear({
+                action: "select",
+                value: actionMeta.removedValues as unknown as SearchOption
+            });
+        } else {
+            console.debug("unknown Actiontype");
+        }
+    };
+
     return (
         <Box {...containerProps}>
             <FormControl alignItems="center">
@@ -95,6 +119,7 @@ export const Search: FC<SearchProps> = (props) => {
                         LoadingMessage: LoadingMessage
                     }}
                     chakraStyles={chakraStyles}
+                    onChange={onInputChange}
                 />
             </FormControl>
         </Box>
