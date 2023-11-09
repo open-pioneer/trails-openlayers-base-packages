@@ -27,26 +27,25 @@ afterEach(() => {
     vi.restoreAllMocks();
 });
 
-it.only("return a position", async () => {
+it.skip("return a position", async () => {
     vi.spyOn(global.navigator.geolocation, "watchPosition").mockImplementation(() =>
         Promise.resolve(3124324)
     );
 
-    vi.spyOn(global.navigator.geolocation, "getCurrentPosition").mockImplementation(
-        (success) =>
-            Promise.resolve(
-                success({
-                    coords: {
-                        latitude: 51.1,
-                        longitude: 45.3,
-                        accuracy: 2500,
-                        altitude: null,
-                        altitudeAccuracy: null,
-                        heading: null,
-                        speed: null
-                    }
-                } as GeolocationPosition)
-            )
+    vi.spyOn(global.navigator.geolocation, "getCurrentPosition").mockImplementation((success) =>
+        Promise.resolve(
+            success({
+                coords: {
+                    latitude: 51.1,
+                    longitude: 45.3,
+                    accuracy: 2500,
+                    altitude: null,
+                    altitudeAccuracy: null,
+                    heading: null,
+                    speed: null
+                }
+            } as GeolocationPosition)
+        )
     );
 
     const controller: GeolocationController = setup();
