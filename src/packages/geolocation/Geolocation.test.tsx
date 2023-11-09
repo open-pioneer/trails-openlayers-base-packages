@@ -33,6 +33,6 @@ it("should successfully create a geolocation component with a button", async () 
 
     //mount GeolocationComponent
     const geolocationBtn = await screen.findByTestId("geolocation");
-    expect(geolocationBtn).toBeInstanceOf(HTMLButtonElement); // todo tagname -> https://github.com/open-pioneer/trails-oenlayers-base-packages/pull/194/files
+    expect(geolocationBtn.tagName).toBe("BUTTON");
     expect(geolocationBtn).toMatchSnapshot();
 });
