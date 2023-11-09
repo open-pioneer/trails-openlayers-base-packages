@@ -1,6 +1,5 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-
 import { FC, useEffect, useRef } from "react";
 import { useMapModel } from "@open-pioneer/map";
 import { Box } from "@open-pioneer/chakra-integration";
@@ -9,7 +8,7 @@ import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/rea
 import OlBaseLayer from "ol/layer/Base";
 
 /**
- * These are special properties for the OverviewMap.
+ * These are properties supported by the {@link OverviewMap}.
  */
 export interface OverviewMapProps extends CommonComponentProps {
     /**
@@ -18,7 +17,7 @@ export interface OverviewMapProps extends CommonComponentProps {
     mapId: string;
 
     /**
-     * The layer shown in the overview map
+     * The layer shown in the overview map.
      */
     olLayer: OlBaseLayer;
 }

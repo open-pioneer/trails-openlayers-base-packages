@@ -5,20 +5,17 @@ import { CoordinateViewer } from "@open-pioneer/coordinate-viewer";
 import { MapAnchor, MapContainer } from "@open-pioneer/map";
 import { InitialExtent, ZoomIn, ZoomOut } from "@open-pioneer/map-navigation";
 import { Measurement } from "@open-pioneer/measurement";
+import { OverviewMap } from "@open-pioneer/overview-map";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { ScaleViewer } from "@open-pioneer/scale-viewer";
 import { Toc } from "@open-pioneer/toc";
 import { ScaleComponent } from "map-sample-scale-component";
-import { useIntl } from "open-pioneer:react-hooks";
-import { useState } from "react";
-import { PiRulerFill, PiRulerLight } from "react-icons/pi";
-import { PiCaretDoubleLeft, PiCaretDoubleRight } from "react-icons/pi";
-import { MAP_ID } from "./MapConfigProviderImpl";
-import { useId } from "react";
-import { OverviewMap } from "@open-pioneer/overview-map";
-
-import OSM from "ol/source/OSM.js";
 import TileLayer from "ol/layer/Tile.js";
+import OSM from "ol/source/OSM.js";
+import { useIntl } from "open-pioneer:react-hooks";
+import { useId, useMemo, useState } from "react";
+import { PiCaretDoubleLeft, PiCaretDoubleRight, PiRulerFill, PiRulerLight } from "react-icons/pi";
+import { MAP_ID } from "./MapConfigProviderImpl";
 
 export function AppUI() {
     const intl = useIntl();
@@ -35,9 +32,13 @@ export function AppUI() {
         setShowOverviewMap(!showOverviewMap);
     }
 
-    const overviewMapLayer = new TileLayer({
-        source: new OSM()
-    });
+    const overviewMapLayer = useMemo(
+        () =>
+            new TileLayer({
+                source: new OSM()
+            }),
+        []
+    );
 
     return (
         <Flex height="100%" direction="column" overflow="hidden">
@@ -106,10 +107,7 @@ export function AppUI() {
                         </MapAnchor>
                         <MapAnchor position="top-right" horizontalGap={10} verticalGap={10}>
                             {showOverviewMap && (
-                                <OverviewMap
-                                    mapId={MAP_ID}
-                                    olLayer={overviewMapLayer}
-                                ></OverviewMap>
+                                <OverviewMap mapId={MAP_ID} olLayer={overviewMapLayer} />
                             )}
                         </MapAnchor>
                         <MapAnchor position="bottom-right" horizontalGap={10} verticalGap={30}>

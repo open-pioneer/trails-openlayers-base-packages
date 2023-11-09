@@ -1,23 +1,24 @@
 .overview-map {
-    .ol-overviewmap,
-    .ol-overviewmap.ol-uncollapsible {
+    height: 200px;
+    width: 300px;
+
+    .ol-overviewmap {
         position: relative;
-        bottom: auto;
-        left: auto;
-        right: 0;
-        top: 0;
-    }
+        height: 100%;
+        width: 100%;
 
-    .ol-overviewmap:not(.ol-collapsed) {
-        border: 1px solid black;
-    }
+        &:not(.ol-collapsed) {
+            border: 1px solid black;
+        }
 
-    .ol-overviewmap .ol-overviewmap-map {
-        border: none;
-        width: 300px;
-    }
+        .ol-overviewmap-map {
+            border: none;
+            width: 100%;
+            height: 100%;
+        }
 
-    .ol-overviewmap .ol-overviewmap-box {
-        border: 2px solid red;
+        .ol-overviewmap-box {
+            border: 2px solid red;
+        }
     }
 }

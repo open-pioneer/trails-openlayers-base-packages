@@ -14,9 +14,7 @@ import { expect, it } from "vitest";
 import { OverviewMap } from "./OverviewMap";
 
 it("should successfully create a overview map component", async () => {
-    const { mapId, registry } = await setupMap();
-    await registry.expectMapModel(mapId);
-    const injectedServices = createServiceOptions({ registry });
+    const { mapId, injectedServices } = await setup();
     const layer = getTileLayer();
 
     render(
@@ -36,9 +34,7 @@ it("should successfully create a overview map component", async () => {
 });
 
 it("should successfully create a overview map component with additional css class", async () => {
-    const { mapId, registry } = await setupMap();
-    await registry.expectMapModel(mapId);
-    const injectedServices = createServiceOptions({ registry });
+    const { mapId, injectedServices } = await setup();
     const layer = getTileLayer();
 
     render(
@@ -59,9 +55,7 @@ it("should successfully create a overview map component with additional css clas
 });
 
 it("should successfully add OverviewMap control to the map controls", async () => {
-    const { mapId, registry } = await setupMap();
-    const map = await registry.expectMapModel(mapId);
-    const injectedServices = createServiceOptions({ registry });
+    const { mapId, map, injectedServices } = await setup();
     const layer = getTileLayer();
 
     render(
@@ -81,9 +75,7 @@ it("should successfully add OverviewMap control to the map controls", async () =
 });
 
 it("should support basemap type of OGC WMTS layer as a layer shown in the overview map", async () => {
-    const { mapId, registry } = await setupMap();
-    const map = await registry.expectMapModel(mapId);
-    const injectedServices = createServiceOptions({ registry });
+    const { mapId, map, injectedServices } = await setup();
     const layer = getTileLayerOfWMTS();
 
     render(
@@ -109,6 +101,13 @@ it("should support basemap type of OGC WMTS layer as a layer shown in the overvi
     expect(source).toBeInstanceOf(WMTS);
 });
 
+async function setup() {
+    const { mapId, registry } = await setupMap();
+    const injectedServices = createServiceOptions({ registry });
+    const map = await registry.expectMapModel(mapId);
+    return { mapId, registry, map, injectedServices };
+}
+
 async function waitForOverviewMap() {
     const overviewMapDiv = await screen.findByTestId("overview-map");
     const olOverviewDiv = await waitFor(() => {
@@ -127,6 +126,7 @@ function getControl(olMap: OlMap) {
         | OlOverviewMap
         | undefined;
 }
+
 function getTileLayer() {
     const layer = new TileLayer({
         source: new OSM()
