@@ -10,7 +10,7 @@ To integrate the scale as a line in your app, insert the following snippet and r
 <ScaleBar mapId="map_id" />
 ```
 
-Setting property `displayMode` to `bar`, the scale will be integrate as a bar. By default, or by setting the property to `line`, the scale will be displayed as a line.
+Setting property `displayMode` to `bar`, the scale will be integrated as a bar. By default, or by setting the property to `line`, the scale will be displayed as a line.
 
 ```jsx
 <ScaleBar mapId="map_id" displayMode="bar" />
