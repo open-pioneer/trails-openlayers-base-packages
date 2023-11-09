@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`should by default render a scale line, if property bar is missing 1`] = `
+exports[`should by default render a scale line, if property displayMode is missing 1`] = `
 <div
   class="scale-bar css-0"
   data-testid="scale-bar"
@@ -17,7 +17,7 @@ exports[`should by default render a scale line, if property bar is missing 1`] =
 </div>
 `;
 
-exports[`should render a scale bar, if property bar is set 1`] = `
+exports[`should render a scale bar, if property displayMode is set to 'bar' 1`] = `
 <div
   class="scale-bar css-0"
   data-testid="scale-bar"

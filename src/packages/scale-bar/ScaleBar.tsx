@@ -15,13 +15,13 @@ export interface ScaleBarProps extends CommonComponentProps {
      */
     mapId: string;
     /**
-     * The map id.
+     * Display the scale either as a line or a bar
      */
-    bar?: boolean;
+    displayMode?: string;
 }
 
 export const ScaleBar: FC<ScaleBarProps> = (props) => {
-    const { mapId, bar = false } = props;
+    const { mapId, displayMode = "line" } = props;
     const { containerProps } = useCommonComponentProps("scale-bar", props);
     const { map } = useMapModel(mapId);
     const scaleBarElem = useRef(null);
@@ -32,14 +32,14 @@ export const ScaleBar: FC<ScaleBarProps> = (props) => {
             const scaleLine = new ScaleLine({
                 units: "metric",
                 target: scaleBarElem.current,
-                bar: bar
+                bar: displayMode === "bar"
             });
             olMap.addControl(scaleLine);
             return () => {
                 olMap.removeControl(scaleLine);
             };
         }
-    }, [bar, map]);
+    }, [displayMode, map]);
 
     return <Box {...containerProps} ref={scaleBarElem}></Box>;
 };

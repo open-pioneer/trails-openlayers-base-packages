@@ -47,7 +47,7 @@ it("should successfully create a scale bar component with additional css classes
     expect(scaleBarBox.classList.contains("test3")).not.toBe(true);
 });
 
-it("should by default render a scale line, if property bar is missing", async () => {
+it("should by default render a scale line, if property displayMode is missing", async () => {
     const { mapId, registry } = await setupMap();
 
     const injectedServices = createServiceOptions({ registry });
@@ -67,13 +67,13 @@ it("should by default render a scale line, if property bar is missing", async ()
     expect(scaleBarDiv.classList.contains("ol-scale-bar")).not.toBe(true);
 });
 
-it("should render a scale bar, if property bar is set", async () => {
+it("should render a scale bar, if property displayMode is set to 'bar'", async () => {
     const { mapId, registry } = await setupMap();
 
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
-            <ScaleBar mapId={mapId} bar={true} data-testid="scale-bar" />
+            <ScaleBar mapId={mapId} displayMode="bar" data-testid="scale-bar" />
         </PackageContextProvider>
     );
 
