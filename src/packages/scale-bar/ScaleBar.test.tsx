@@ -25,7 +25,7 @@ it("should successfully create a scale bar component", async () => {
     expect(scaleBarBox.tagName).toBe("DIV");
 });
 
-it("should successfully create a scale bar component with additional css classes and box properties", async () => {
+it("should successfully create a scale bar component with additional css classes", async () => {
     const { mapId, registry } = await setupMap();
 
     const injectedServices = createServiceOptions({ registry });

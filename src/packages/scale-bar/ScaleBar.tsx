@@ -15,7 +15,7 @@ export interface ScaleBarProps extends CommonComponentProps {
      */
     mapId: string;
     /**
-     * Display the scale either as a line or a bar
+     * Display the scale either as a line or a bar. Defaults to `"line"`.
      */
     displayMode?: "bar" | "line";
 }
