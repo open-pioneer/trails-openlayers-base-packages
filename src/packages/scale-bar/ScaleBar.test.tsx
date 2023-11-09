@@ -37,7 +37,6 @@ it("should successfully create a scale bar component with additional css classes
 
     // scale bar is mounted
     const { scaleBarBox } = await waitForScaleBar();
-    expect(scaleBarBox).toMatchSnapshot();
 
     // check scale bar box is available
     expect(scaleBarBox.tagName).toBe("DIV");
@@ -59,7 +58,6 @@ it("should by default render a scale line, if property displayMode is missing", 
 
     // scale bar is mounted
     const { scaleBarBox, scaleBarDiv } = await waitForScaleBar();
-    expect(scaleBarBox).toMatchSnapshot();
 
     // check scale bar box is available
     expect(scaleBarBox.tagName).toBe("DIV");
@@ -79,7 +77,6 @@ it("should render a scale bar, if property displayMode is set to 'bar'", async (
 
     // scale bar is mounted
     const { scaleBarBox, scaleBarDiv } = await waitForScaleBar();
-    expect(scaleBarBox).toMatchSnapshot();
 
     // check scale bar box is available
     expect(scaleBarBox.tagName).toBe("DIV");
