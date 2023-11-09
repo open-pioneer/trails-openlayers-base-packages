@@ -3,7 +3,7 @@
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { afterEach, expect, it, vi } from "vitest";
+import { expect, it } from "vitest";
 import { ToolButton } from "./ToolButton";
 import { createRef } from "react";
 
