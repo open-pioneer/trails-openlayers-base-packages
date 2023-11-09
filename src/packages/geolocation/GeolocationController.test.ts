@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
-import { expect, it, describe, beforeEach, vi } from "vitest";
+import { expect, it, describe, afterEach, vi } from "vitest";
 import {
     GeolocationController,
     getDefaultPositionStyle,
@@ -17,48 +17,37 @@ import { Geometry } from "ol/geom";
 /**
  * Todo Test:
  * Generelles testen, ob eine Position zurückkommt
- * Fehlerfall testen
+ * Fehlerfall testen -> ähnlich Punkt 1, Rückgabe error (https://developer.mozilla.org/en-US/docs/Web/API/GeolocationPositionError)
  * Karte verschieben bzw. Zoomstufe ändern und Testen, ob sich der Kartenmittelpunkt nicht aktualisiert (this.centerMapToPosition = false)
  */
 
 const OL_MAP: olMap = new OlMap();
 
-beforeEach(() => {
+afterEach(() => {
     vi.restoreAllMocks();
 });
 
-// function success(arg0: { coords: { latitude: number; longitude: number; }; }): any {
-//     throw new Error("Function not implemented.");
-// }
-
 it.only("return a position", async () => {
-    const spy = vi.spyOn(navigator, "geolocation"as any, "get");
+    vi.spyOn(global.navigator.geolocation, "watchPosition").mockImplementation(() =>
+        Promise.resolve(3124324)
+    );
 
-    spy.mockReturnValue({
-        clearWatch() {
-            throw new Error ("not impl");
-        },
-        getCurrentPosition() {
-            Promise.resolve({
-                coords: {
-                    latitude: 51.1,
-                    longitude: 45.3,
-                    accuracy: 2500
-                }
-            });
-            // throw new Error ("not impl");
-        },
-        watchPosition() {
-            return {
-                coords: {
-                    latitude: 51.1,
-                    longitude: 45.3,
-                    accuracy: 2500
-                }
-            };
-            // throw new Error ("not impl");
-        }
-    });
+    vi.spyOn(global.navigator.geolocation, "getCurrentPosition").mockImplementation(
+        (success) =>
+            Promise.resolve(
+                success({
+                    coords: {
+                        latitude: 51.1,
+                        longitude: 45.3,
+                        accuracy: 2500,
+                        altitude: null,
+                        altitudeAccuracy: null,
+                        heading: null,
+                        speed: null
+                    }
+                } as GeolocationPosition)
+            )
+    );
 
     const controller: GeolocationController = setup();
     const location = await controller.startGeolocation(OL_MAP);
