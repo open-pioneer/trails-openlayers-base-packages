@@ -1,6 +1,5 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-
 import { extendTheme, withDefaultColorScheme } from "@open-pioneer/chakra-integration";
 import { theme as baseTheme } from "@open-pioneer/base-theme";
 
@@ -24,8 +23,9 @@ const colors = {
         800: "#4f3373",
         900: "#391e61"
     },
-    //trails2 = button variant secondary //TODO: 50-900
-    trails2: {
+    //trails_alt = currently only used for: <Button variant="secondary">secondary</Button>
+    //TODO: add 50-900
+    trails_alt: {
         500: "#e7a276",
         600: "#e09463",
         700: "#d98651",
@@ -58,27 +58,25 @@ const semanticTokens = {
     }
 };
 
-//extend baseTheme
-let theme = extendTheme({ fonts, colors, semanticTokens }, baseTheme);
+//Create an intermediate theme to have access to all colors and semantic tokens (function: getColor)
+const intermediateTheme = extendTheme({ fonts, colors, semanticTokens }, baseTheme);
 
-/**
- * Get the color defined by a semantic token.
- * If it points to a color (e.g. red.500), get the hex color value out of the color scheme.
- * Overrides: "boxShadow" and "outline"
- */
+//Get the color defined by a semantic token.
+//If it points to a color (e.g. red.500), get the hex color value out of the color scheme.
+//Overrides: "boxShadow" and "outline"
 const getColor = (semanticToken: string) => {
-    const color = theme.semanticTokens.colors[semanticToken];
+    const color = intermediateTheme.semanticTokens.colors[semanticToken];
     if (color && color.includes(".")) {
         const kvp = color.split(".");
         const key = kvp[0],
             value = kvp[1];
-        return theme.colors[key][value];
+        return intermediateTheme.colors[key][value];
     }
     return color;
 };
 
-//extend theme
-theme = extendTheme(
+//Create the final theme and override component styles
+export const theme = extendTheme(
     withDefaultColorScheme({ colorScheme: "trails" }),
     {
         shadows: {
@@ -106,12 +104,12 @@ theme = extendTheme(
                     },
                     secondary: {
                         color: "font_inverse",
-                        bg: "trails2.700",
+                        bg: "trails_alt.700",
                         _hover: {
-                            bg: "trails2.800"
+                            bg: "trails_alt.800"
                         },
                         _active: {
-                            bg: "trails2.900"
+                            bg: "trails_alt.900"
                         }
                     },
                     cancel: {
@@ -277,7 +275,5 @@ theme = extendTheme(
             }
         }
     },
-    theme
+    intermediateTheme
 );
-
-export { theme };
