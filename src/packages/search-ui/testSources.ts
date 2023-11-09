@@ -62,10 +62,14 @@ const fakeRiverData = [
 const getFakeData = async (
     inputValue: string,
     responseData: { text: string }[],
-    duration = 1000
+    signal?: AbortSignal | undefined,
+    duration = 3000
 ) => {
-    return new Promise<typeof responseData>((resolve) => {
+    return new Promise<typeof responseData>((resolve, reject) => {
         setTimeout(() => {
+            if (signal?.aborted) {
+                reject(new DOMException("Aborted", "AbortError"));
+            }
             const cp = responseData.filter((item) =>
                 item.text.toLowerCase().includes(inputValue.toLocaleLowerCase())
             );
@@ -83,7 +87,11 @@ const request = async (url: string, signal?: AbortSignal | undefined): Promise<F
         const result = await response.json();
         return result.features;
     } catch (error) {
-        console.error(error);
+        if (error == "AbortError") {
+            console.debug("Previous searchquery has been canceled by the user.");
+        } else {
+            console.error(error);
+        }
         return [];
     }
 };
@@ -114,8 +122,11 @@ export class GeoSearchSource implements DataSource {
 
 export class FakeStreetSource implements DataSource {
     label: string = "Streets";
-    async search(inputValue: string): Promise<Suggestion[]> {
-        const result = await getFakeData(inputValue, fakeStreetData);
+    async search(
+        inputValue: string,
+        options?: { signal?: AbortSignal | undefined } | undefined
+    ): Promise<Suggestion[]> {
+        const result = await getFakeData(inputValue, fakeStreetData, options?.signal);
         const suggestions = result.map((item, idx) => ({
             id: idx,
             text: item.text
@@ -125,8 +136,11 @@ export class FakeStreetSource implements DataSource {
 }
 export class FakeCitySource implements DataSource {
     label: string = "Cities";
-    async search(inputValue: string): Promise<Suggestion[]> {
-        const result = await getFakeData(inputValue, fakeCityData);
+    async search(
+        inputValue: string,
+        options?: { signal?: AbortSignal | undefined } | undefined
+    ): Promise<Suggestion[]> {
+        const result = await getFakeData(inputValue, fakeCityData, options?.signal);
         const suggestions = result.map((item, idx) => ({
             id: idx,
             text: item.text
@@ -137,8 +151,11 @@ export class FakeCitySource implements DataSource {
 
 export class FakeRiverSource implements DataSource {
     label: string = "Rivers";
-    async search(inputValue: string): Promise<Suggestion[]> {
-        const result = await getFakeData(inputValue, fakeRiverData);
+    async search(
+        inputValue: string,
+        options?: { signal?: AbortSignal | undefined } | undefined
+    ): Promise<Suggestion[]> {
+        const result = await getFakeData(inputValue, fakeRiverData, options?.signal);
         const suggestions = result.map((item, idx) => ({
             id: idx,
             text: item.text

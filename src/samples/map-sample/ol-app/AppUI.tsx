@@ -26,12 +26,7 @@ import {
 } from "react-icons/pi";
 import { MAP_ID } from "./MapConfigProviderImpl";
 
-const sources = [
-    new FakeCitySource(),
-    new FakeRiverSource(),
-    new FakeStreetSource(),
-    new GeoSearchSource()
-];
+const sources = [new FakeCitySource(), new FakeRiverSource(), new FakeStreetSource()];
 export function AppUI() {
     const intl = useIntl();
     const [measurementIsActive, setMeasurementIsActive] = useState<boolean>(false);

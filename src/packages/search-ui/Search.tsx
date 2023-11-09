@@ -46,8 +46,20 @@ export const Search: FC<SearchProps> = (props) => {
 
     const debouncedLoadOptions = useCallback(
         debounce(async (inputValue: string, callback: (options: unknown) => void) => {
-            const results = await loadOptions(inputValue);
-            callback(results);
+            try {
+                const results = await loadOptions(inputValue);
+                callback(results); // <-- Notice we added here the "await" keyword.
+            } catch (e) {
+                if (e instanceof Error) {
+                    if (e.name == "AbortError") {
+                        console.debug("Previous searchquery has been canceled by the user.");
+                    } else {
+                        console.error(e.message);
+                    }
+                } else {
+                    console.error(e);
+                }
+            }
         }, searchTypingDelay),
         [controller]
     );
