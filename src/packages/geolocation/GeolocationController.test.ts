@@ -8,27 +8,28 @@ import {
     getDefaultAccuracyStyle,
     getDefaultTrackingOptions
 } from "./GeolocationController";
-import OlMap from "ol/Map";
-import olMap from "ol/Map";
-import { Circle, Fill, Stroke, Style } from "ol/style";
 import { Feature } from "ol";
 import { Geometry } from "ol/geom";
-import { mockGeolocation } from "./utils";
+import {
+    OL_MAP,
+    setup,
+    setupWithCustomProperties,
+    getCustomPositionStyle,
+    getCustomAccuracyStyle,
+    mockSuccessGeolocation
+} from "./utils";
 
 /**
  * Todo Test:
  * Fehlerfall testen -> ähnlich Punkt 1, Rückgabe error (https://developer.mozilla.org/en-US/docs/Web/API/GeolocationPositionError)
- * Karte verschieben bzw. Zoomstufe ändern und Testen, ob sich der Kartenmittelpunkt nicht aktualisiert (this.centerMapToPosition = false)
  */
-
-const OL_MAP: olMap = new OlMap();
 
 afterEach(() => {
     vi.restoreAllMocks();
 });
 
 it("should successfully return a geolocation position", async () => {
-    mockGeolocation();
+    mockSuccessGeolocation([51.1, 45.3]);
 
     const controller: GeolocationController = setup();
     await controller.startGeolocation(OL_MAP);
@@ -84,72 +85,3 @@ describe("Custom Properties", () => {
         expect(trackingOptions?.maximumAge).toBe(50);
     });
 });
-
-function setup() {
-    return new GeolocationController(OL_MAP);
-}
-
-function setupWithCustomProperties() {
-    const positionFeatureStyle: Style = getCustomPositionStyle();
-    const accuracyFeatureStyle: Style = getCustomAccuracyStyle();
-    const trackingOptions: PositionOptions = getCustomTrackingOptions();
-
-    return new GeolocationController(
-        OL_MAP,
-        positionFeatureStyle,
-        accuracyFeatureStyle,
-        trackingOptions
-    );
-}
-
-function getCustomPositionStyle() {
-    return new Style({
-        image: new Circle({
-            fill: new Fill({
-                color: "rgba(255,255,255,0.4)"
-            }),
-            stroke: new Stroke({
-                color: "#3399CC",
-                width: 1.25
-            }),
-            radius: 5
-        }),
-        fill: new Fill({
-            color: "rgba(255,255,255,0.4)"
-        }),
-        stroke: new Stroke({
-            color: "#3399CC",
-            width: 1.25
-        })
-    });
-}
-
-function getCustomAccuracyStyle() {
-    return new Style({
-        image: new Circle({
-            fill: new Fill({
-                color: "rgba(255,255,255,0.4)"
-            }),
-            stroke: new Stroke({
-                color: "#3399CC",
-                width: 1.25
-            }),
-            radius: 5
-        }),
-        fill: new Fill({
-            color: "rgba(255,255,255,0.4)"
-        }),
-        stroke: new Stroke({
-            color: "#3399CC",
-            width: 1.25
-        })
-    });
-}
-
-function getCustomTrackingOptions() {
-    return {
-        "enableHighAccuracy": true,
-        "timeout": 20,
-        "maximumAge": 50
-    };
-}
