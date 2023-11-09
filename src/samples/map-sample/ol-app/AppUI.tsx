@@ -5,25 +5,41 @@ import { CoordinateViewer } from "@open-pioneer/coordinate-viewer";
 import { MapAnchor, MapContainer } from "@open-pioneer/map";
 import { InitialExtent, ZoomIn, ZoomOut } from "@open-pioneer/map-navigation";
 import { Measurement } from "@open-pioneer/measurement";
+import { OverviewMap } from "@open-pioneer/overview-map";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { ScaleViewer } from "@open-pioneer/scale-viewer";
 import { Toc } from "@open-pioneer/toc";
 import { ScaleComponent } from "map-sample-scale-component";
+import TileLayer from "ol/layer/Tile.js";
+import OSM from "ol/source/OSM.js";
 import { useIntl } from "open-pioneer:react-hooks";
-import { useState } from "react";
-import { PiRulerFill, PiRulerLight } from "react-icons/pi";
+import { useId, useMemo, useState } from "react";
+import { PiCaretDoubleLeft, PiCaretDoubleRight, PiRulerFill, PiRulerLight } from "react-icons/pi";
 import { MAP_ID } from "./MapConfigProviderImpl";
-import { useId } from "react";
 
 export function AppUI() {
     const intl = useIntl();
     const tocTitleId = useId();
     const measurementTitleId = useId();
     const [measurementIsActive, setMeasurementIsActive] = useState<boolean>(false);
+    const [showOverviewMap, setShowOverviewMap] = useState<boolean>(true);
 
     function toggleMeasurement() {
         setMeasurementIsActive(!measurementIsActive);
     }
+
+    function toggleOverviewMap() {
+        setShowOverviewMap(!showOverviewMap);
+    }
+
+    const overviewMapLayer = useMemo(
+        () =>
+            new TileLayer({
+                source: new OSM()
+            }),
+        []
+    );
+
     return (
         <Flex height="100%" direction="column" overflow="hidden">
             <TitledSection
@@ -89,6 +105,11 @@ export function AppUI() {
                                 )}
                             </Box>
                         </MapAnchor>
+                        <MapAnchor position="top-right" horizontalGap={10} verticalGap={10}>
+                            {showOverviewMap && (
+                                <OverviewMap mapId={MAP_ID} olLayer={overviewMapLayer} />
+                            )}
+                        </MapAnchor>
                         <MapAnchor position="bottom-right" horizontalGap={10} verticalGap={30}>
                             <Flex
                                 role="toolbar"
@@ -97,6 +118,25 @@ export function AppUI() {
                                 gap={1}
                                 padding={1}
                             >
+                                <Tooltip
+                                    label={intl.formatMessage({ id: "overviewMapTitle" })}
+                                    placement="auto"
+                                    openDelay={500}
+                                >
+                                    <Button
+                                        aria-label={intl.formatMessage({ id: "overviewMapTitle" })}
+                                        leftIcon={
+                                            showOverviewMap ? (
+                                                <PiCaretDoubleRight />
+                                            ) : (
+                                                <PiCaretDoubleLeft />
+                                            )
+                                        }
+                                        onClick={toggleOverviewMap}
+                                        iconSpacing={0}
+                                        padding={0}
+                                    />
+                                </Tooltip>
                                 <Tooltip
                                     label={intl.formatMessage({ id: "measurementTitle" })}
                                     placement="auto"

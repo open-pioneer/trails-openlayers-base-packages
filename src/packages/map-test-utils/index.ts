@@ -1,21 +1,22 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { createService } from "@open-pioneer/test-utils/services";
-import { screen, waitFor } from "@testing-library/react";
 import {
     ExtentConfig,
     InitialViewConfig,
-    SimpleLayerConfig,
     MapConfig,
     MapConfigProvider,
     MapModel,
     MapRegistry,
     OlMapOptions,
-    SimpleLayer
+    SimpleLayer,
+    SimpleLayerConfig
 } from "@open-pioneer/map";
+import { createService } from "@open-pioneer/test-utils/services";
+import { screen, waitFor } from "@testing-library/react";
+import VectorLayer from "ol/layer/Vector";
+
 // Importing internals: needed for test support
 import { MapRegistryImpl } from "@open-pioneer/map/services";
-import VectorLayer from "ol/layer/Vector";
 
 export interface SimpleMapOptions {
     center?: { x: number; y: number };
