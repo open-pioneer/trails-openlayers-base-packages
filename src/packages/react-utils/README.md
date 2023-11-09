@@ -41,6 +41,13 @@ Example:
 In the preceding example the topmost heading(s) in `TheRestOfYourApplication` start at level 2, and nested headings use increasing levels as usual.
 For more details, see the API documentation.
 
+## Tool Buttons
+
+The `ToolButton` component can be used to create a simple icon button.
+This is usually done to add an icon on the map:
+
+TODO example
+
 ## Hooks
 
 ### useCommonComponentProps()
