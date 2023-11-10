@@ -12,25 +12,25 @@ const colors = {
     //trails = default color scheme
     //10 colors as hex values from 50 to 900 (light to dark)
     trails: {
-        50: "#f5edfd",
-        100: "#eedcff",
-        200: "#d6c2ea",
-        300: "#bfa8d5",
-        400: "#a890c1",
-        500: "#9177ad",
-        600: "#7b609a",
-        700: "#654986",
-        800: "#4f3373",
-        900: "#391e61"
+        50: "#eaf2f5",
+        100: "#d5e5ec",
+        200: "#abcbd9",
+        300: "#81b1c5",
+        400: "#5797b2",
+        500: "#2d7d9f",
+        600: "#24647f",
+        700: "#1b4b5f",
+        800: "#123240",
+        900: "#091920"
     },
     //trails_alt = currently only used for: <Button variant="secondary">secondary</Button>
     //TODO: add 50-900
     trails_alt: {
-        500: "#e7a276",
-        600: "#e09463",
-        700: "#d98651",
-        800: "#d1783f",
-        900: "#c96a2c"
+        500: "#2c851e",
+        600: "#236a18",
+        700: "#1a5012",
+        800: "#12350c",
+        900: "#091b06"
     }
 };
 
@@ -106,12 +106,12 @@ export const theme = extendTheme(
                     },
                     secondary: {
                         color: "font_inverse",
-                        bg: "trails_alt.700",
+                        bg: "trails_alt.500",
                         _hover: {
-                            bg: "trails_alt.800"
+                            bg: "trails_alt.600"
                         },
                         _active: {
-                            bg: "trails_alt.900"
+                            bg: "trails_alt.700"
                         }
                     },
                     cancel: {
