@@ -1,59 +1,8 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`should by default render a scale line, if property displayMode is missing 1`] = `
-<div
-  class="scale-bar css-0"
-  data-testid="scale-bar"
-  data-theme="light"
->
-  <div
-    class="ol-scale-line ol-unselectable"
-    style="pointer-events: none;"
-  >
-    <div
-      class="ol-scale-line-inner"
-    />
-  </div>
-</div>
-`;
-
-exports[`should render a scale bar, if property displayMode is set to 'bar' 1`] = `
-<div
-  class="scale-bar css-0"
-  data-testid="scale-bar"
-  data-theme="light"
->
-  <div
-    class="ol-scale-bar ol-unselectable"
-    style="pointer-events: none;"
-  >
-    <div
-      class="ol-scale-bar-inner"
-    />
-  </div>
-</div>
-`;
-
 exports[`should successfully create a scale bar component 1`] = `
 <div
   class="scale-bar css-0"
-  data-testid="scale-bar"
-  data-theme="light"
->
-  <div
-    class="ol-scale-line ol-unselectable"
-    style="pointer-events: none;"
-  >
-    <div
-      class="ol-scale-line-inner"
-    />
-  </div>
-</div>
-`;
-
-exports[`should successfully create a scale bar component with additional css classes and box properties 1`] = `
-<div
-  class="scale-bar test test1 test2 css-0"
   data-testid="scale-bar"
   data-theme="light"
 >
