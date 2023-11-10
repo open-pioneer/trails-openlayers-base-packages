@@ -3,7 +3,7 @@
 exports[`should successfully create a initial extent component with additional css classes 1`] = `
 <button
   aria-label="initial-extent.title"
-  class="chakra-button initial-extent testClass1 testClass2 css-22xpxh"
+  class="chakra-button tool-button initial-extent testClass1 testClass2 css-22xpxh"
   data-testid="initial-extent"
   data-theme="light"
   type="button"
@@ -39,7 +39,7 @@ exports[`should successfully create a initial extent component with additional c
 exports[`should successfully create a initial extent component with home button 1`] = `
 <button
   aria-label="initial-extent.title"
-  class="chakra-button initial-extent css-22xpxh"
+  class="chakra-button tool-button initial-extent css-22xpxh"
   data-testid="initial-extent"
   data-theme="light"
   type="button"
