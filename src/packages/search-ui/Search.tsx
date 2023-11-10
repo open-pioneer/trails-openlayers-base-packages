@@ -22,7 +22,7 @@ export interface SearchGroupOption {
 
 export interface SearchEvent {
     action: string;
-    value?: SearchOption;
+    suggestion?: SearchOption;
 }
 
 /**
@@ -93,11 +93,11 @@ export const Search: FC<SearchProps> = (props) => {
     //Typescript doesn't recognize Type SearchOption but rather SingleValue<SearchGroupOption>
     const onInputChange = (value: unknown, actionMeta: ActionMeta<unknown>) => {
         if (value && actionMeta.action === "select-option") {
-            onSelect({ action: "select", value: value as SearchOption });
+            onSelect({ action: "select", suggestion: value as SearchOption });
         } else if (actionMeta.action === "clear") {
             onClear({
-                action: "select",
-                value: actionMeta.removedValues as unknown as SearchOption
+                action: "clear",
+                suggestion: actionMeta.removedValues?.[0] as unknown as SearchOption
             });
         } else {
             console.debug("unknown Actiontype");

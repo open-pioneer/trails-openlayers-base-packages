@@ -72,7 +72,9 @@ export function AppUI() {
                                     placeholder={intl.formatMessage({ id: "searchPlaceholder" })}
                                     onSelect={function (event: SearchEvent): void {
                                         console.debug(
-                                            "User selectet " + event.value?.value + " from Search"
+                                            "User selectet " +
+                                                event.suggestion?.value +
+                                                " from Search"
                                         );
                                     }}
                                     onClear={function (event: SearchEvent): void {
