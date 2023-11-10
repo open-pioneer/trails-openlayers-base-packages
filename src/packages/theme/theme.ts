@@ -75,7 +75,9 @@ const getColor = (semanticToken: string) => {
     return color;
 };
 
-//Create the final theme and override component styles
+/**
+ * Provides a theme that uses the "trails" color scheme.
+ */
 export const theme = extendTheme(
     withDefaultColorScheme({ colorScheme: "trails" }),
     {
