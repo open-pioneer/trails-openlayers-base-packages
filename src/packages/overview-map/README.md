@@ -38,9 +38,13 @@ const overviewMapLayer = useMemo(
 
 ### Configuring the size
 
-The `OverviewMap` component defines a default size via its `.overview-map` CSS class.
-To override the default size, you can, for example, add a custom css class to the `OverviewMap` component and then define your own height or width there.
-The children of the map (the actual map view etc.) will resize themselves accordingly.
+The `OverviewMap` component uses a default height of `200px` and width of `300px`.
+To override the default size, you can use the `height` and `width` props.
+Both props support the usual values supported by chakra:
+
+```jsx
+<OverviewMap mapId="map_id" olLayer={overviewMapLayer} height="300px" width="400px" />
+```
 
 ## License
 

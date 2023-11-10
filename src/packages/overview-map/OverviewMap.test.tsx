@@ -54,6 +54,29 @@ it("should successfully create a overview map component with additional css clas
     expect(overviewMapDiv.classList.contains("foo")).toBe(false);
 });
 
+it("should allow configuration of width and height", async () => {
+    const { mapId, injectedServices } = await setup();
+    const layer = getTileLayer();
+
+    render(
+        <PackageContextProvider services={injectedServices}>
+            <OverviewMap
+                mapId={mapId}
+                olLayer={layer}
+                data-testid="overview-map"
+                width="123px"
+                height="456px"
+            ></OverviewMap>
+        </PackageContextProvider>
+    );
+
+    const { overviewMapDiv } = await waitForOverviewMap();
+    expect(overviewMapDiv).toHaveStyle({
+        width: "123px",
+        height: "456px"
+    });
+});
+
 it("should successfully add OverviewMap control to the map controls", async () => {
     const { mapId, map, injectedServices } = await setup();
     const layer = getTileLayer();
