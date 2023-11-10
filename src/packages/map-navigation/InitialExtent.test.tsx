@@ -25,7 +25,7 @@ it("should successfully create a initial extent component with home button", asy
 
     //mount InitExtentComponent
     const initExtentBtn = await screen.findByTestId("initial-extent");
-    expect(initExtentBtn).toBeInstanceOf(HTMLButtonElement);
+    expect(initExtentBtn.tagName).toBe("BUTTON");
     expect(initExtentBtn).toMatchSnapshot();
 });
 
