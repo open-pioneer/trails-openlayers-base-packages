@@ -13,7 +13,7 @@ import WMTS from "ol/source/WMTS";
 import { expect, it } from "vitest";
 import { OverviewMap } from "./OverviewMap";
 
-it("should successfully create a overview map component", async () => {
+it("should successfully create an overview map component", async () => {
     const { mapId, injectedServices } = await setup();
     const layer = getTileLayer();
 
@@ -33,7 +33,7 @@ it("should successfully create a overview map component", async () => {
     expect(olOverviewDiv?.tagName).toBe("DIV");
 });
 
-it("should successfully create a overview map component with additional css class", async () => {
+it("should successfully create an overview map component with additional css class", async () => {
     const { mapId, injectedServices } = await setup();
     const layer = getTileLayer();
 
