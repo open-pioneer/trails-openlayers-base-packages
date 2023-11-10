@@ -1,33 +1,22 @@
-# @open-pioneer/map-navigation
+# @open-pioneer/theme
 
-This package provides a collection of the following map navigation controls:
-
--   [Initial extent](#initial-extent): A button that allows the user to reset the map to the initial view.
--   [Zoom](#zoom): Two buttons that allow the user to zoom in and zoom out of the map.
+This package provides a theme that uses the "trails" color scheme.
 
 ## Usage
 
-### Initial extent
-
-To integrate the component in your app, insert the following snippet and reference a map ID:
+To use the theme in your app, first import:
 
 ```jsx
-<InitialExtent mapId="map_id" />
+import { theme } from "@open-pioneer/theme";
 ```
 
-### Zoom
-
-To integrate the component in your app, insert the following snippet and reference a map ID:
+Then pass in the theme in `createCustomElement`:
 
 ```jsx
-<ZoomIn mapId="map_id" />
-<ZoomOut mapId="map_id" />
-```
-
-You can also use the generic `Zoom` component:
-
-```jsx
-<Zoom mapId="map_id" zoomDirection="in" />
+createCustomElement({
+    ...,
+    theme
+});
 ```
 
 ## License
