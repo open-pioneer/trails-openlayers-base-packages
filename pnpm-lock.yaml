@@ -578,12 +578,6 @@ importers:
         specifier: ^1.1.0
         version: 1.1.0(@formatjs/intl@2.9.0)(@open-pioneer/base-theme@0.1.0)(@open-pioneer/chakra-integration@1.1.0)(@open-pioneer/core@1.1.0)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
     devDependencies:
-      '@open-pioneer/map-test-utils':
-        specifier: workspace:^
-        version: link:../map-test-utils
-      '@open-pioneer/test-utils':
-        specifier: ^1.0.1
-        version: 1.0.1(@formatjs/intl@2.9.0)(@open-pioneer/chakra-integration@1.1.0)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.1)(@testing-library/react@14.0.0)(react-dom@18.2.0)(react@18.2.0)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
