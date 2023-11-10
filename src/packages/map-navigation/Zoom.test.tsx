@@ -24,11 +24,11 @@ it("should successfully create a zoom-in and zoom-out buttons", async () => {
 
     // check zoom buttons are available
     const zoomInButton = await screen.findByTestId("zoom-in");
-    expect(zoomInButton).toBeInstanceOf(HTMLButtonElement);
+    expect(zoomInButton.tagName).toBe("BUTTON");
     expect(zoomInButton).toMatchSnapshot();
 
     const zoomOutButton = await screen.findByTestId("zoom-out");
-    expect(zoomOutButton).toBeInstanceOf(HTMLButtonElement);
+    expect(zoomOutButton.tagName).toBe("BUTTON");
     expect(zoomOutButton).toMatchSnapshot();
 });
 

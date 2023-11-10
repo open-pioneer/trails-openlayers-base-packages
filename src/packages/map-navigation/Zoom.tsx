@@ -1,8 +1,11 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Button, Tooltip } from "@open-pioneer/chakra-integration";
 import { useMapModel } from "@open-pioneer/map";
-import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
+import {
+    CommonComponentProps,
+    ToolButton,
+    useCommonComponentProps
+} from "@open-pioneer/react-utils";
 import { PackageIntl } from "@open-pioneer/runtime";
 import classNames from "classnames";
 import { useIntl } from "open-pioneer:react-hooks";
@@ -75,17 +78,13 @@ export const Zoom: FC<ZoomProps> = forwardRef(function Zoom(
     }
 
     return (
-        <Tooltip label={buttonLabel} placement="auto" openDelay={500}>
-            <Button
-                ref={ref}
-                aria-label={buttonLabel}
-                leftIcon={buttonIcon}
-                onClick={zoom}
-                iconSpacing={0}
-                padding={0}
-                {...containerProps}
-            />
-        </Tooltip>
+        <ToolButton
+            ref={ref}
+            label={buttonLabel}
+            icon={buttonIcon}
+            onClick={zoom}
+            {...containerProps}
+        />
     );
 });
 

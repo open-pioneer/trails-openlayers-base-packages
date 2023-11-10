@@ -11,4 +11,5 @@ export {
     type HeadingLevel,
     useHeadingLevel
 } from "./TitledSection";
+export { type ToolButtonProps, ToolButton } from "./ToolButton";
 export { type CommonComponentProps, useCommonComponentProps } from "./useCommonComponentProps";

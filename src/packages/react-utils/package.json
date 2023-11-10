@@ -15,7 +15,8 @@
     },
     "devDependencies": {
         "openlayers-base-packages": "workspace:*",
-        "@testing-library/react": "^14.0.0"
+        "@testing-library/react": "^14.0.0",
+        "@open-pioneer/test-utils": "^1.0.1"
     },
     "publishConfig": {
         "directory": "dist",

@@ -34,7 +34,6 @@ it("should successfully create a map anchor component", async () => {
         throw new Error("map anchor component not rendered");
     }
 
-    expect(mapAnchor).toBeInstanceOf(HTMLDivElement);
     expect(mapAnchor).toMatchInlineSnapshot(`
       <div
         class="map-anchor css-3czzey"
@@ -64,7 +63,6 @@ it("should successfully create a map anchor component with additional css classe
         throw new Error("map anchor component not rendered");
     }
 
-    expect(mapAnchor).toBeInstanceOf(HTMLDivElement);
     expect(mapAnchor.classList.contains("test")).toBe(true);
     expect(mapAnchor.classList.contains("test1")).toBe(true);
     expect(mapAnchor.classList.contains("test2")).toBe(true);
@@ -206,13 +204,13 @@ it("should successfully create multiple map anchor components", async () => {
     if (!firstMapAnchor) {
         throw new Error("map anchor component with css class `testabc` not rendered");
     }
-    expect(firstMapAnchor).toBeInstanceOf(HTMLDivElement);
+    expect(firstMapAnchor.tagName).toBe("DIV");
 
     const secondMapAnchor = container.querySelector(".map-anchor.testdef");
     if (!secondMapAnchor) {
         throw new Error("map anchor component with css class `testdef` not rendered");
     }
-    expect(secondMapAnchor).toBeInstanceOf(HTMLDivElement);
+    expect(secondMapAnchor.tagName).toBe("DIV");
 });
 
 it("should successfully create position styles on `top-left` without gap", async () => {
