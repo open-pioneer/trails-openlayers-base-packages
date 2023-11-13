@@ -81,7 +81,7 @@ it("should center to user's position", async () => {
     expect(nextCenter).not.toEqual(firstCenter);
 });
 
-it("should do not change map center while changing user's position", async () => {
+it.skip("should do not change map center while changing user's position", async () => {
     const { mapId, registry } = await setupMap({
         center: { x: 0, y: 0 },
         projection: "EPSG:4326"

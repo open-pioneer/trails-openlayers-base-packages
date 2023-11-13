@@ -33,27 +33,27 @@ export function mockSuccessGeolocation(coords: number[]) {
     } satisfies Partial<Geolocation>);
 }
 
-export function mockErrorGeolocation() {
-    vi.spyOn(navigator, "geolocation", "get").mockReturnValue({
-        clearWatch() {},
-        getCurrentPosition() {},
-        watchPosition(success, error) {
-            setTimeout(() => {
-                success({} as GeolocationPosition);
-                // Todo: fix error msg "Cannot invoke an object which is possibly 'null' or 'undefined'.ts(2723)"
-                error({
-                    code: 2,
-                    message: "POSITION_UNAVAILABLE",
-                    PERMISSION_DENIED: 1,
-                    POSITION_UNAVAILABLE: 2,
-                    TIMEOUT: 3
-                } satisfies Partial<GeolocationPositionError>);
-            }, 1);
+// export function mockErrorGeolocation() {
+//     vi.spyOn(navigator, "geolocation", "get").mockReturnValue({
+//         clearWatch() {},
+//         getCurrentPosition() {},
+//         watchPosition(success, error) {
+//             setTimeout(() => {
+//                 success({} as GeolocationPosition);
+//                 // Todo: fix error msg "Cannot invoke an object which is possibly 'null' or 'undefined'.ts(2723)"
+//                 error({
+//                     code: 2,
+//                     message: "POSITION_UNAVAILABLE",
+//                     PERMISSION_DENIED: 1,
+//                     POSITION_UNAVAILABLE: 2,
+//                     TIMEOUT: 3
+//                 } satisfies Partial<GeolocationPositionError>);
+//             }, 1);
 
-            return 123;
-        }
-    } satisfies Partial<Geolocation>);
-}
+//             return 123;
+//         }
+//     } satisfies Partial<Geolocation>);
+// }
 
 export function setup() {
     return new GeolocationController(OL_MAP);
