@@ -33,27 +33,51 @@ export function mockSuccessGeolocation(coords: number[]) {
     } satisfies Partial<Geolocation>);
 }
 
-// export function mockErrorGeolocation() {
-//     vi.spyOn(navigator, "geolocation", "get").mockReturnValue({
-//         clearWatch() {},
-//         getCurrentPosition() {},
-//         watchPosition(success, error) {
-//             setTimeout(() => {
-//                 success({} as GeolocationPosition);
-//                 // Todo: fix error msg "Cannot invoke an object which is possibly 'null' or 'undefined'.ts(2723)"
-//                 error({
-//                     code: 2,
-//                     message: "POSITION_UNAVAILABLE",
-//                     PERMISSION_DENIED: 1,
-//                     POSITION_UNAVAILABLE: 2,
-//                     TIMEOUT: 3
-//                 } satisfies Partial<GeolocationPositionError>);
-//             }, 1);
+export function mockErrorGeolocation() {
+    vi.spyOn(navigator, "geolocation", "get").mockReturnValue({
+        clearWatch() {},
+        getCurrentPosition() {},
+        watchPosition(success, error) {
+            setTimeout(() => {
+                success({
+                    coords: {}
+                } as GeolocationPosition);
 
-//             return 123;
-//         }
-//     } satisfies Partial<Geolocation>);
-// }
+                // OL_MAP.dispatchEvent(
+                //     new GeolocationError({
+                //         code: 2,
+                //         message: "POSITION_UNAVAILABLE",
+                //         PERMISSION_DENIED: 1,
+                //         POSITION_UNAVAILABLE: 2,
+                //         TIMEOUT: 3
+                //     })
+                // );
+
+                error = () => {
+                    return {
+                        code: 2,
+                        message: "POSITION_UNAVAILABLE",
+                        PERMISSION_DENIED: 1,
+                        POSITION_UNAVAILABLE: 2,
+                        TIMEOUT: 3
+                    };
+                };
+
+                // error = function test(): GeolocationPositionError {
+                //     return {
+                //         code: 2,
+                //         message: "POSITION_UNAVAILABLE",
+                //         PERMISSION_DENIED: 1,
+                //         POSITION_UNAVAILABLE: 2,
+                //         TIMEOUT: 3
+                //     };
+                // };
+            }, 1);
+
+            return 123;
+        }
+    } satisfies Partial<Geolocation>);
+}
 
 export function setup() {
     return new GeolocationController(OL_MAP);
