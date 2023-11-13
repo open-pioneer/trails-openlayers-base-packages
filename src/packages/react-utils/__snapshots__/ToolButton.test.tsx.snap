@@ -1,0 +1,22 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`renders as a button 1`] = `
+<button
+  aria-label="Button Label"
+  class="chakra-button tool-button css-22xpxh"
+  data-theme="light"
+  type="button"
+>
+  <span
+    class="chakra-button__icon css-1dwr89y"
+    data-theme="light"
+  >
+    <span
+      aria-hidden="true"
+      focusable="false"
+    >
+      X
+    </span>
+  </span>
+</button>
+`;
