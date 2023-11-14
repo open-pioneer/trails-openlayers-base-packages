@@ -63,7 +63,7 @@ const getFakeData = async (
     inputValue: string,
     responseData: { text: string }[],
     signal?: AbortSignal | undefined,
-    duration = 3000
+    duration = 500
 ) => {
     return new Promise<typeof responseData>((resolve, reject) => {
         setTimeout(() => {

@@ -1,0 +1,101 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`should successfully create a measurement component 1`] = `
+<div
+  class="search css-0"
+  data-testid="search"
+  data-theme="light"
+>
+  <div
+    class="chakra-form-control css-hnw0d4"
+    data-theme="light"
+    role="group"
+  >
+    <div
+      class=" css-79elbk"
+      data-theme="light"
+    >
+      <span
+        class="css-1f43avz-a11yText-A11yText"
+        id="react-select-2-live-region"
+      />
+      <span
+        aria-atomic="false"
+        aria-live="polite"
+        aria-relevant="additions text"
+        class="css-1f43avz-a11yText-A11yText"
+      />
+      <div
+        class=" css-i2418r"
+        data-theme="light"
+      >
+        <div
+          class=" css-j93siq"
+          data-theme="light"
+        >
+          <div
+            class=" css-hji3d9"
+            data-theme="light"
+            id="react-select-2-placeholder"
+          >
+            Select...
+          </div>
+          <div
+            class=" css-18euh9p"
+            data-theme="light"
+            data-value=""
+          >
+            <input
+              aria-autocomplete="list"
+              aria-describedby="react-select-2-placeholder"
+              aria-expanded="false"
+              aria-haspopup="true"
+              aria-required="false"
+              autocapitalize="none"
+              autocomplete="off"
+              autocorrect="off"
+              class=" css-10wwmqn"
+              data-theme="light"
+              id="field-:r0:"
+              role="combobox"
+              spellcheck="false"
+              tabindex="0"
+              type="text"
+              value=""
+            />
+          </div>
+        </div>
+        <div
+          class=" css-hfbj6y"
+          data-theme="light"
+        >
+          <hr
+            aria-orientation="vertical"
+            class="chakra-divider css-1i6c5ox"
+            data-theme="light"
+          />
+          <div
+            aria-hidden="true"
+            class=" css-80pt9o"
+            data-theme="light"
+          >
+            <svg
+              aria-hidden="true"
+              class="chakra-icon css-onkibi"
+              data-theme="light"
+              focusable="false"
+              role="presentation"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
+                fill="currentColor"
+              />
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

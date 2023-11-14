@@ -1,9 +1,9 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { components, OptionProps } from "chakra-react-select";
-import { SearchGroupOption } from "./Search";
 import { chakra } from "@open-pioneer/chakra-integration";
+import { components, OptionProps } from "chakra-react-select";
+import { SearchOption } from "./Search";
 
 function getHighlightedLabel(label: string, userInput: string) {
     const matchIndex = label.toLowerCase().indexOf(userInput.toLowerCase());
@@ -21,7 +21,7 @@ function getHighlightedLabel(label: string, userInput: string) {
     return label;
 }
 
-export const HighlightOption = (props: OptionProps<SearchGroupOption>) => {
+export const HighlightOption = (props: OptionProps<SearchOption>) => {
     const userInput = props.selectProps.inputValue;
     const label = props.data.label;
     return (

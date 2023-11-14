@@ -1,7 +1,6 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-
-import { expect, it } from "vitest";
+import { expect, it, vi } from "vitest";
 import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render, screen, waitFor } from "@testing-library/react";
@@ -42,8 +41,7 @@ it.skip("should successfully show a search suggestion", async () => {
     }, 1000);
 });
 
-//TODO: remove fails
-it.fails("should successfully show a suggestion select", async () => {
+it("should successfully show a suggestion select", async () => {
     const user = userEvent.setup();
 
     const selectHandler = vi.fn();
@@ -52,11 +50,17 @@ it.fails("should successfully show a suggestion select", async () => {
     // search is mounted
     const { searchInput } = await waitForInput();
     await user.type(searchInput, "Dortmund");
-    
+
     const { suggestion } = await waitForSuggestion();
     await userEvent.click(suggestion);
-    //Todo Test not Work
-    expect(selectHandler).toBeCalledTimes(1);
+
+    expect(selectHandler).toHaveBeenCalledWith({
+        "action": "select",
+        "suggestion": {
+            "label": "Dortmund",
+            "value": "Dortmund"
+        }
+    });
 });
 
 //TODO: remove fails
@@ -70,7 +74,7 @@ it.fails("should successfully clear a suggestion select", async () => {
     // search is mounted
     const { searchInput } = await waitForInput();
     await user.type(searchInput, "Dortmund");
-    
+
     const { suggestion } = await waitForSuggestion();
     await userEvent.click(suggestion);
     const { clearButton } = await waitForClearButton();
@@ -87,8 +91,8 @@ async function createSearch(
     await registry.expectMapModel(mapId);
     const injectedServices = createServiceOptions({ registry });
     const sources = [new FakeCitySource(), new FakeRiverSource(), new FakeStreetSource()];
-    const selectHandlerFunction = selectHandler? selectHandler:(_event: SearchEvent) => {};
-    const clearHandlerFunction = clearHandler? clearHandler: (_event: SearchEvent) => {};
+    const selectHandlerFunction = selectHandler ? selectHandler : (_event: SearchEvent) => {};
+    const clearHandlerFunction = clearHandler ? clearHandler : (_event: SearchEvent) => {};
     render(
         <PackageContextProvider services={injectedServices}>
             <Search
@@ -103,8 +107,7 @@ async function createSearch(
 }
 
 async function waitForSearch() {
-    const searchDiv =
-        await screen.findByTestId<HTMLDivElement>("search");
+    const searchDiv = await screen.findByTestId<HTMLDivElement>("search");
 
     return { searchDiv };
 }
@@ -128,7 +131,7 @@ async function waitForSuggestion() {
         }
         return { suggestion };
     });
-    return { suggestion }; 
+    return { suggestion };
 }
 
 async function waitForClearButton() {

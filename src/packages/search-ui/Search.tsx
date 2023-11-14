@@ -3,19 +3,20 @@
 import { Box, chakra, FormControl } from "@open-pioneer/chakra-integration";
 import { MapModel, useMapModel } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
-import { FC, useCallback, useEffect, useRef, useState } from "react";
 import {
     ActionMeta,
     AsyncSelect,
     components,
     MenuProps,
     NoticeProps,
-    Select, SelectInstance
+    OptionsOrGroups,
+    SingleValue
 } from "chakra-react-select";
-import { DataSource, Suggestion } from "./api";
-import { SearchController } from "./SearchController";
-import { HighlightOption } from "./HighlightOption";
 import { useIntl } from "open-pioneer:react-hooks";
+import { FC, useEffect, useMemo, useState } from "react";
+import { DataSource, Suggestion } from "./api";
+import { HighlightOption } from "./HighlightOption";
+import { SearchController } from "./SearchController";
 
 export interface SearchOption {
     value: string;
@@ -64,30 +65,36 @@ export const Search: FC<SearchProps> = (props) => {
     const { containerProps } = useCommonComponentProps("search", props);
     const { map } = useMapModel(mapId);
     const controller = useController(sources, map);
-    const loadOptions = async (inputValue: string): Promise<SearchGroupOption[]> => {
-        const suggestions = await controller!.search(inputValue);
-        return mapSuggestions(suggestions, sources);
-    };
 
-    const debouncedLoadOptions = useCallback(
-        debounce(async (inputValue: string, callback: (options: unknown) => void) => {
-            try {
-                const results = await loadOptions(inputValue);
-                callback(results); // <-- Notice we added here the "await" keyword.
-            } catch (e) {
-                if (e instanceof Error) {
-                    if (e.name == "AbortError") {
-                        console.debug("Previous searchquery has been canceled by the user.");
+    const debouncedLoadOptions = useMemo(() => {
+        const loadOptions = async (inputValue: string): Promise<SearchGroupOption[]> => {
+            const suggestions = await controller!.search(inputValue);
+            return mapSuggestions(suggestions, sources);
+        };
+
+        return debounce(
+            async (
+                inputValue: string,
+                callback: (options: OptionsOrGroups<SearchOption, SearchGroupOption>) => void
+            ) => {
+                try {
+                    const results = await loadOptions(inputValue);
+                    callback(results); // <-- Notice we added here the "await" keyword.
+                } catch (e) {
+                    if (e instanceof Error) {
+                        if (e.name == "AbortError") {
+                            console.debug("Previous searchquery has been canceled by the user.");
+                        } else {
+                            console.error(e.message);
+                        }
                     } else {
-                        console.error(e.message);
+                        console.error(e);
                     }
-                } else {
-                    console.error(e);
                 }
-            }
-        }, searchTypingDelay),
-        [controller]
-    );
+            },
+            searchTypingDelay
+        );
+    }, [controller, sources, searchTypingDelay]);
 
     const displayCss = showDropdownIndicator ? "inherit" : "none";
     const chakraStyles = {
@@ -98,26 +105,26 @@ export const Search: FC<SearchProps> = (props) => {
     };
 
     //Typescript doesn't recognize Type SearchOption but rather SingleValue<SearchGroupOption>
-    const onInputChange = (value: unknown, actionMeta: ActionMeta<unknown>) => {
+    const onInputChange = (
+        value: SingleValue<SearchOption>,
+        actionMeta: ActionMeta<SearchOption>
+    ) => {
         if (value && actionMeta.action === "select-option") {
-            onSelect({ action: "select", suggestion: value as SearchOption });
+            onSelect({ action: "select", suggestion: value });
         } else if (actionMeta.action === "clear") {
             onClear({
                 action: "clear",
-                suggestion: actionMeta.removedValues?.[0] as unknown as SearchOption
+                suggestion: actionMeta.removedValues?.[0]
             });
         } else {
             console.debug("unknown Actiontype");
         }
     };
 
-    const selectRef = useRef<SelectInstance<any, any, any>>();
-    
     return (
         <Box {...containerProps}>
             <FormControl alignItems="center">
-                <AsyncSelect
-                    ref={selectRef}
+                <AsyncSelect<SearchOption, false, SearchGroupOption>
                     isClearable={true}
                     placeholder={placeholder}
                     closeMenuOnSelect={closeMenuOnSelect}
@@ -138,11 +145,10 @@ export const Search: FC<SearchProps> = (props) => {
 
 // TODO: This should accept all functions as an utility function, but this is banned by eslint.
 // TODO: It would be better when the delay would not trigger the loading animation
-// eslint-disable-next-line @typescript-eslint/ban-types
-function debounce<T extends Function>(delayedFunction: T, delay = 250) {
+function debounce<Args extends unknown[]>(delayedFunction: (...args: Args) => void, delay = 250) {
     let timeout: NodeJS.Timeout | string | number | undefined;
 
-    return (...args: unknown[]) => {
+    return (...args: Args) => {
         timeout && clearTimeout(timeout);
         timeout = setTimeout(() => {
             delayedFunction(...args);
@@ -173,7 +179,7 @@ function useController(sources: DataSource[], map: MapModel | undefined) {
     return controller;
 }
 
-export const MenuComp = (props: MenuProps<SearchGroupOption>) => {
+export const MenuComp = (props: MenuProps<SearchOption>) => {
     const hasInput = props.selectProps.inputValue.length > 0;
     let clazz = "";
     if (!hasInput) {
@@ -186,7 +192,7 @@ export const MenuComp = (props: MenuProps<SearchGroupOption>) => {
     );
 };
 
-export const NoOptionsMessage = (props: NoticeProps<SearchGroupOption>) => {
+export const NoOptionsMessage = (props: NoticeProps<SearchOption>) => {
     const intl = useIntl();
     // TODO: Make it configurable?
     const noMessageText = intl.formatMessage({ id: "noOptionsText" });
@@ -198,7 +204,7 @@ export const NoOptionsMessage = (props: NoticeProps<SearchGroupOption>) => {
     );
 };
 
-export const LoadingMessage = (props: NoticeProps<SearchGroupOption>) => {
+export const LoadingMessage = (props: NoticeProps<SearchOption>) => {
     const intl = useIntl();
     // TODO: Make it configurable?
     const loadingText = intl.formatMessage({ id: "loadingText" });
