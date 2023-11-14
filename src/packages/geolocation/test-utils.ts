@@ -38,7 +38,6 @@ export function mockErrorGeolocation() {
         clearWatch() {},
         getCurrentPosition() {},
         watchPosition(success, error) {
-            console.log(success, error);
             setTimeout(() => {
                 error?.({
                     code: 2,

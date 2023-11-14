@@ -4,7 +4,7 @@ import { MapContainer } from "@open-pioneer/map";
 import { createServiceOptions, setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render, screen, waitFor } from "@testing-library/react";
-import { beforeAll, expect, it } from "vitest";
+import { beforeAll, beforeEach, expect, it, vi } from "vitest";
 import { Geolocation } from "./Geolocation";
 import { NotificationService, NotificationOptions } from "@open-pioneer/notifier";
 import { setup, mockSuccessGeolocation, mockErrorGeolocation } from "./test-utils";
@@ -16,6 +16,10 @@ import userEvent from "@testing-library/user-event";
 
 beforeAll(() => {
     mockVectorLayer();
+});
+
+beforeEach(() => {
+    vi.restoreAllMocks();
 });
 
 it("should successfully create a geolocation component with a button", async () => {
@@ -156,6 +160,9 @@ it.skip("should not change user position while changing zoom level", async () =>
 
 it("should successfully create an error with notifier message", async () => {
     mockErrorGeolocation();
+
+    // Silence consol.error
+    vi.spyOn(console, "error").mockImplementation(() => undefined);
 
     const user = userEvent.setup();
 
