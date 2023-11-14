@@ -3,7 +3,7 @@
 import { MapContainer } from "@open-pioneer/map";
 import { createServiceOptions, setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
-import { render, screen, waitFor } from "@testing-library/react";
+import { act, render, screen, waitFor } from "@testing-library/react";
 import { beforeAll, beforeEach, expect, it, vi } from "vitest";
 import { Geolocation } from "./Geolocation";
 import { NotificationService, NotificationOptions } from "@open-pioneer/notifier";
@@ -161,7 +161,7 @@ it.skip("should not change user position while changing zoom level", async () =>
 it("should successfully create an error with notifier message", async () => {
     mockErrorGeolocation();
 
-    // Silence consol.error
+    // Silence console.error
     vi.spyOn(console, "error").mockImplementation(() => undefined);
 
     const user = userEvent.setup();
