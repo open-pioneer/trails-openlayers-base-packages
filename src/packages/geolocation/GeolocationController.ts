@@ -13,7 +13,6 @@ import { unByKey } from "ol/Observable";
 import { StyleLike } from "ol/style/Style";
 import { Polygon } from "ol/geom";
 import { Coordinate } from "ol/coordinate";
-import { rejects } from "assert";
 
 export class GeolocationController {
     private readonly positionHighlightLayer: VectorLayer<VectorSource>;

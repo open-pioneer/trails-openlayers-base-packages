@@ -17,7 +17,7 @@ import {
     getCustomPositionStyle,
     getCustomAccuracyStyle,
     mockSuccessGeolocation
-} from "./utils";
+} from "./test-utils";
 
 afterEach(() => {
     vi.restoreAllMocks();

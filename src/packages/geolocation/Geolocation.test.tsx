@@ -4,21 +4,20 @@ import { MapContainer } from "@open-pioneer/map";
 import { createServiceOptions, setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render, screen, waitFor } from "@testing-library/react";
-import { expect, it } from "vitest";
+import { beforeAll, expect, it } from "vitest";
 import { Geolocation } from "./Geolocation";
 import { NotificationService, NotificationOptions } from "@open-pioneer/notifier";
-import { setup, mockSuccessGeolocation, mockErrorGeolocation } from "./utils";
+import { setup, mockSuccessGeolocation, mockErrorGeolocation } from "./test-utils";
 import { GeolocationController } from "./GeolocationController";
 import { Feature } from "ol";
 import { Geometry } from "ol/geom";
 import VectorLayer from "ol/layer/Vector";
+import userEvent from "@testing-library/user-event";
 // import { GeolocationError } from "ol/Geolocation";
 
-// TODO: clean up
-const div = document.createElement("div");
-VectorLayer.prototype.render = () => {
-    return div;
-};
+beforeAll(() => {
+    mockVectorLayer();
+});
 
 it("should successfully create a geolocation component with a button", async () => {
     const { mapId, registry } = await setupMap();
@@ -159,12 +158,13 @@ it.skip("should not change user position while changing zoom level", async () =>
 
 it.only("should successfully create an error with notifier message", async () => {
     mockErrorGeolocation();
+
+    const user = userEvent.setup();
+
     const { mapId, registry } = await setupMap({
         center: { x: 0, y: 0 },
         projection: "EPSG:4326"
     });
-
-    const map = (await registry.expectMapModel(mapId))?.olMap;
 
     const notifyArr: NotificationOptions[] = [];
 
@@ -188,11 +188,37 @@ it.only("should successfully create an error with notifier message", async () =>
 
     await waitForMapMount("map");
 
+    const button = await getGeolocationButton();
+    expect(button.tagName).toBe("BUTTON");
+    await user.click(button);
+
+    // Mocked geolocation returns an error; the UI should emit a notification
     await waitFor(() => {
         if (notifyArr.length === 0) {
             throw new Error("Expected a notification");
         }
     });
 
-    expect(notifyArr.length).toBe(1);
+    expect(notifyArr).toMatchInlineSnapshot(`
+      [
+        {
+          "level": "error",
+          "message": "positionUnavailable",
+          "title": "error",
+        },
+      ]
+    `);
 });
+
+async function getGeolocationButton() {
+    return await screen.findByTestId("geolocation");
+}
+
+function mockVectorLayer() {
+    // Overwrite render so it doesn't actually do anything during tests.
+    // Would otherwise error because <canvas /> is not fully implemented in happy dom.
+    const div = document.createElement("div");
+    VectorLayer.prototype.render = () => {
+        return div;
+    };
+}
