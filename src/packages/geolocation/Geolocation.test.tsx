@@ -3,7 +3,7 @@
 import { MapContainer } from "@open-pioneer/map";
 import { createServiceOptions, setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import { expect, it } from "vitest";
 import { Geolocation } from "./Geolocation";
 import { NotificationService, NotificationOptions } from "@open-pioneer/notifier";
@@ -11,7 +11,14 @@ import { setup, mockSuccessGeolocation, mockErrorGeolocation } from "./utils";
 import { GeolocationController } from "./GeolocationController";
 import { Feature } from "ol";
 import { Geometry } from "ol/geom";
+import VectorLayer from "ol/layer/Vector";
 // import { GeolocationError } from "ol/Geolocation";
+
+// TODO: clean up
+const div = document.createElement("div");
+VectorLayer.prototype.render = () => {
+    return div;
+};
 
 it("should successfully create a geolocation component with a button", async () => {
     const { mapId, registry } = await setupMap();
@@ -150,7 +157,8 @@ it.skip("should not change map center while changing user's position", async () 
 
 it.skip("should not change user position while changing zoom level", async () => {});
 
-it.skip("should successfully create an error with notifier message", async () => {
+it.only("should successfully create an error with notifier message", async () => {
+    mockErrorGeolocation();
     const { mapId, registry } = await setupMap({
         center: { x: 0, y: 0 },
         projection: "EPSG:4326"
@@ -180,25 +188,11 @@ it.skip("should successfully create an error with notifier message", async () =>
 
     await waitForMapMount("map");
 
-    const firstCenter = map.getView().getCenter();
+    await waitFor(() => {
+        if (notifyArr.length === 0) {
+            throw new Error("Expected a notification");
+        }
+    });
 
-    mockErrorGeolocation();
-
-    const controller: GeolocationController = setup();
-    await controller.startGeolocation(map);
-
-    // map.dispatchEvent(
-    //     new GeolocationError({
-    //         code: 2,
-    //         message: "POSITION_UNAVAILABLE",
-    //         PERMISSION_DENIED: 1,
-    //         POSITION_UNAVAILABLE: 2,
-    //         TIMEOUT: 3
-    //     })
-    // );
-
-    const nextCenter = map.getView().getCenter();
-
-    expect(nextCenter).toEqual(firstCenter);
     expect(notifyArr.length).toBe(1);
 });

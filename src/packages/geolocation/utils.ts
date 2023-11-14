@@ -38,40 +38,15 @@ export function mockErrorGeolocation() {
         clearWatch() {},
         getCurrentPosition() {},
         watchPosition(success, error) {
+            console.log(success, error);
             setTimeout(() => {
-                success({
-                    coords: {}
-                } as GeolocationPosition);
-
-                // OL_MAP.dispatchEvent(
-                //     new GeolocationError({
-                //         code: 2,
-                //         message: "POSITION_UNAVAILABLE",
-                //         PERMISSION_DENIED: 1,
-                //         POSITION_UNAVAILABLE: 2,
-                //         TIMEOUT: 3
-                //     })
-                // );
-
-                error = () => {
-                    return {
-                        code: 2,
-                        message: "POSITION_UNAVAILABLE",
-                        PERMISSION_DENIED: 1,
-                        POSITION_UNAVAILABLE: 2,
-                        TIMEOUT: 3
-                    };
-                };
-
-                // error = function test(): GeolocationPositionError {
-                //     return {
-                //         code: 2,
-                //         message: "POSITION_UNAVAILABLE",
-                //         PERMISSION_DENIED: 1,
-                //         POSITION_UNAVAILABLE: 2,
-                //         TIMEOUT: 3
-                //     };
-                // };
+                error?.({
+                    code: 2,
+                    message: "POSITION_UNAVAILABLE",
+                    PERMISSION_DENIED: 1,
+                    POSITION_UNAVAILABLE: 2,
+                    TIMEOUT: 3
+                });
             }, 1);
 
             return 123;
