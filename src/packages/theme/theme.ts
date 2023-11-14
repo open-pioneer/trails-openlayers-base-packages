@@ -90,7 +90,7 @@ export const theme = extendTheme(
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             global({ theme }: any) {
                 return {
-                    "body": {
+                    ".chakra-host": {
                         //TODO: Hack! Additional Hex digits only work because colors are hex, too
                         //opacity-to-hex: 0.6 => 99
                         "--trails-theme-shadow-color": `${getColor("background_primary", theme)}99`
