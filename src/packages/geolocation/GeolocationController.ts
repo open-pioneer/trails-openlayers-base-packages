@@ -13,7 +13,6 @@ import { unByKey } from "ol/Observable";
 import { StyleLike } from "ol/style/Style";
 import { Polygon } from "ol/geom";
 import { Coordinate } from "ol/coordinate";
-import { rejects } from "assert";
 
 export class GeolocationController {
     private readonly positionHighlightLayer: VectorLayer<VectorSource>;
@@ -94,14 +93,14 @@ export class GeolocationController {
                     "change:position",
                     () => {
                         const coordinates: Coordinate | undefined = this.geolocation.getPosition();
-                        if (coordinates && (coordinates[0] || coordinates[1]) !== undefined) {
-                            this.positionFeature?.setGeometry(new Point(coordinates));
-                            if (this.centerMapToPosition) {
-                                olMap.getView().setCenter(coordinates);
-                            }
-                            if (this.positionFeature?.getGeometry() !== undefined) {
-                                resolve(true);
-                            }
+                        this.positionFeature?.setGeometry(
+                            coordinates ? new Point(coordinates) : undefined
+                        );
+                        if (this.centerMapToPosition) {
+                            olMap.getView().setCenter(coordinates);
+                        }
+                        if (this.positionFeature?.getGeometry() !== undefined) {
+                            resolve(true);
                         }
                     }
                 );

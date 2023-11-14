@@ -7,11 +7,10 @@ import { render, screen } from "@testing-library/react";
 import { expect, it } from "vitest";
 import { Geolocation } from "./Geolocation";
 import { NotificationService, NotificationOptions } from "@open-pioneer/notifier";
-import { setup, mockSuccessGeolocation, mockErrorGeolocation } from "./utils";
+import { setup, mockSuccessGeolocation } from "./utils";
 import { GeolocationController } from "./GeolocationController";
 import { Feature } from "ol";
 import { Geometry } from "ol/geom";
-// import { GeolocationError } from "ol/Geolocation";
 
 it("should successfully create a geolocation component with a button", async () => {
     const { mapId, registry } = await setupMap();
@@ -82,7 +81,7 @@ it("should center to user's position", async () => {
     expect(nextCenter).not.toEqual(firstCenter);
 });
 
-it.skip("should not change map center while changing user's position", async () => {
+it.skip("should do not change map center while changing user's position", async () => {
     const { mapId, registry } = await setupMap({
         center: { x: 0, y: 0 },
         projection: "EPSG:4326"
@@ -148,23 +147,25 @@ it.skip("should not change map center while changing user's position", async () 
     // // // Test, ob sich die Position geändert hat
 });
 
-it.skip("should not change user position while changing zoom level", async () => {});
+it.skip("should do not change user position while change zoom level", async () => {});
 
-it.skip("should successfully create an error with notifier message", async () => {
-    const { mapId, registry } = await setupMap({
-        center: { x: 0, y: 0 },
-        projection: "EPSG:4326"
-    });
+// siehe utils.ts "error todo"
+it.skip("should successfully create a error with notifier message", async () => {
+    const { mapId, registry } = await setupMap();
 
-    const map = (await registry.expectMapModel(mapId))?.olMap;
-
-    const notifyArr: NotificationOptions[] = [];
+    const notifyArr = [];
 
     const notifier: Partial<NotificationService> = {
         notify(options: NotificationOptions) {
             notifyArr.push(options);
         }
     };
+
+    /**
+     * Todo: Geolocation mocken und Fehler erzeugen
+     * -> Notify erzeugen
+     * -> Überprüfen, ob Notifier einen Eintrag enthält
+     */
 
     const injectedServices = createServiceOptions({
         registry
@@ -180,25 +181,8 @@ it.skip("should successfully create an error with notifier message", async () =>
 
     await waitForMapMount("map");
 
-    const firstCenter = map.getView().getCenter();
-
-    mockErrorGeolocation();
-
-    const controller: GeolocationController = setup();
-    await controller.startGeolocation(map);
-
-    // map.dispatchEvent(
-    //     new GeolocationError({
-    //         code: 2,
-    //         message: "POSITION_UNAVAILABLE",
-    //         PERMISSION_DENIED: 1,
-    //         POSITION_UNAVAILABLE: 2,
-    //         TIMEOUT: 3
-    //     })
-    // );
-
-    const nextCenter = map.getView().getCenter();
-
-    expect(nextCenter).toEqual(firstCenter);
-    expect(notifyArr.length).toBe(1);
+    //mount GeolocationComponent
+    const geolocationBtn = await screen.findByTestId("geolocation");
+    expect(geolocationBtn.tagName).toBe("BUTTON");
+    expect(geolocationBtn).toMatchSnapshot();
 });
