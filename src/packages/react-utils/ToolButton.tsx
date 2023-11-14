@@ -1,8 +1,16 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { FC, MouseEventHandler, ReactElement, RefAttributes, forwardRef } from "react";
-import { CommonComponentProps, useCommonComponentProps } from "./useCommonComponentProps";
 import { Button, ButtonProps, Tooltip, TooltipProps } from "@open-pioneer/chakra-integration";
+import {
+    FC,
+    MouseEvent,
+    MouseEventHandler,
+    ReactElement,
+    RefAttributes,
+    forwardRef,
+    useState
+} from "react";
+import { CommonComponentProps, useCommonComponentProps } from "./useCommonComponentProps";
 
 /**
  * Properties supported by {@link ToolButton}.
@@ -20,6 +28,18 @@ export interface ToolButtonProps extends CommonComponentProps, RefAttributes<HTM
      * The icon displayed by the button.
      */
     icon: ReactElement;
+
+    /**
+     * If `true`, the button will show a spinner.
+     * Defaults to `false`.
+     */
+    isLoading?: boolean;
+
+    /**
+     * If `true`, the button will be disabled.
+     * Defaults to `false`.
+     */
+    isDisabled?: boolean;
 
     /**
      * The callback that will be called when the user clicks the button.
@@ -48,20 +68,48 @@ export const ToolButton: FC<ToolButtonProps> = forwardRef(function ToolButton(
     props: ToolButtonProps,
     ref
 ) {
-    const { label, icon, onClick, tooltipProps, buttonProps } = props;
+    const {
+        label,
+        icon,
+        onClick: onClickProp,
+        isLoading,
+        isDisabled,
+        tooltipProps,
+        buttonProps
+    } = props;
     const { containerProps } = useCommonComponentProps("tool-button", props);
 
+    const [tooltipOpen, setTooltipOpen] = useState(false);
+    const onClick = (e: MouseEvent<HTMLButtonElement>) => {
+        // Immediately hide the tooltip. When the label switches in reaction to the click,
+        // the tooltip would flicker briefly with the new label.
+        setTooltipOpen(false);
+        onClickProp?.(e);
+    };
+
     return (
-        <Tooltip label={label} placement="auto" openDelay={500} {...tooltipProps}>
+        <Tooltip
+            label={label}
+            placement="auto"
+            openDelay={500}
+            {...tooltipProps}
+            /* don't allow overwrite because component would break */
+            isOpen={tooltipOpen}
+            onOpen={() => setTooltipOpen(true)}
+            onClose={() => setTooltipOpen(false)}
+        >
             <ButtonIgnoringAriaProps
                 ref={ref}
                 aria-label={label}
                 leftIcon={icon}
-                onClick={onClick}
                 iconSpacing={0}
                 padding={0}
+                isDisabled={isDisabled}
+                isLoading={isLoading}
                 {...containerProps}
                 {...buttonProps}
+                /* don't allow overwrite because component would break */
+                onClick={onClick}
             />
         </Tooltip>
     );

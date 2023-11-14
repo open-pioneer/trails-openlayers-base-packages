@@ -1,8 +1,11 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { createLogger } from "@open-pioneer/core";
-import { Button, Tooltip } from "@open-pioneer/chakra-integration";
-import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
+import {
+    CommonComponentProps,
+    ToolButton,
+    useCommonComponentProps
+} from "@open-pioneer/react-utils";
 import { useMapModel } from "@open-pioneer/map";
 import { unByKey } from "ol/Observable";
 import { useIntl } from "open-pioneer:react-hooks";
@@ -17,10 +20,7 @@ import {} from "@open-pioneer/notifier";
 
 /**
  * Todo: Testen auf mobilen Geräten
- * Todo: Wenn Tool aktiviert/deaktiviert wird, sieht man noch kurz den alten Tooltip-Text -> Workaround mit setTimeout(setActive)
  */
-
-const TIMEOUT = 500;
 
 /**
  * These are special properties for the Geolocation.
@@ -56,6 +56,7 @@ export const Geolocation: FC<GeolocationProps> = forwardRef(function Geolocation
     const { mapId, positionFeatureStyle, accuracyFeatureStyle, trackingOptions } = props;
     const { containerProps } = useCommonComponentProps("geolocation", props);
 
+    const supportsGeolocation = !!navigator.geolocation;
     const [isActive, setActive] = useState<boolean>(false);
     const [isLoading, setLoading] = useState<boolean>(false);
     const { map } = useMapModel(mapId);
@@ -154,44 +155,26 @@ export const Geolocation: FC<GeolocationProps> = forwardRef(function Geolocation
         if (!map) {
             return;
         }
-        setTimeout(() => {
-            setActive(!isActive);
-        }, TIMEOUT);
+        setActive(!isActive);
     };
 
     return (
-        <Tooltip
+        <ToolButton
+            ref={ref}
             label={
                 isActive
-                    ? intl.formatMessage({ id: "buttonTooltipEnd" })
-                    : intl.formatMessage({ id: "buttonTooltipStart" })
+                    ? intl.formatMessage({ id: "locateMeEnd" })
+                    : intl.formatMessage({ id: "locateMeStart" })
             }
-            placement="auto"
-            openDelay={TIMEOUT}
-        >
-            {/*todo is the disabling working with screen reader?*/}
-            <Button
-                className="geolocation-toggle-button"
-                aria-label={
-                    isActive
-                        ? intl.formatMessage({ id: "locateMeEnd" })
-                        : intl.formatMessage({ id: "locateMeStart" })
-                }
-                leftIcon={
-                    isActive ? (
-                        <MdLocationOn className="toggle-tool-active" />
-                    ) : (
-                        <MdLocationOn className="toggle-tool-inactive" />
-                    )
-                }
-                onClick={() => toggleActiveState()}
-                iconSpacing={0}
-                padding={0}
-                ref={ref}
-                isLoading={isLoading}
-                isDisabled={!navigator.geolocation} // show button only, if geolocation is supported by web browser / device
-                {...containerProps}
-            />
-        </Tooltip>
+            icon={
+                <MdLocationOn
+                    className={isActive ? "toggle-tool-active" : "toggle-tool-inactive"}
+                />
+            }
+            onClick={() => toggleActiveState()}
+            isLoading={isLoading}
+            isDisabled={!supportsGeolocation}
+            {...containerProps}
+        />
     );
 });

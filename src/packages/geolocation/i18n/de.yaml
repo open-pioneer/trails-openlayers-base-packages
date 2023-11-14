@@ -1,6 +1,4 @@
 messages:
-  buttonTooltipStart: Geolokalisierung starten
-  buttonTooltipEnd: Geolokalisierung stoppen
   locateNotSupported: Die Geolokalisierung wird nicht unterstützt
   locateMeStart: Lokalisieren starten
   locateMeEnd: Lokalisieren stoppen
