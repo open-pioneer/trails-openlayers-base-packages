@@ -22,10 +22,10 @@ it("should successfully type into search", async () => {
     // search is mounted
     const { searchInput } = await waitForInput();
     await user.type(searchInput, "Dortmund");
-    expect(searchInput); //.toHaveValue("Dortmund");
+    expect(searchInput).toHaveValue("Dortmund");
 });
 
-it("should successfully show a search suggestion", async () => {
+it.skip("should successfully show a search suggestion", async () => {
     const user = userEvent.setup();
 
     await createSearch();
@@ -34,55 +34,49 @@ it("should successfully show a search suggestion", async () => {
     const { searchInput } = await waitForInput();
     await user.type(searchInput, "Dortmund");
 
+    // FIX ME: Do not use timeout here!! Too long and buggy
+    // Always ensure that test code happens in the async unit test function!
     setTimeout(async () => {
         const { suggestion } = await waitForSuggestion();
         expect(suggestion); //.toHaveValue("Dortmund");
     }, 1000);
 });
 
-it("should successfully show a suggestion select", async () => {
+//TODO: remove fails
+it.fails("should successfully show a suggestion select", async () => {
     const user = userEvent.setup();
 
-    const selectHandler = (event: SearchEvent) => {
-        console.debug("User selectet " + event.suggestion?.value + " from Search");
-    };
+    const selectHandler = vi.fn();
 
     await createSearch(selectHandler);
     // search is mounted
     const { searchInput } = await waitForInput();
     await user.type(searchInput, "Dortmund");
-
-    setTimeout(async () => {
-        const { suggestion } = await waitForSuggestion();
-        userEvent.click(suggestion);
-        //Todo Test not Work
-        expect(selectHandler).toBeCalledTimes(1);
-    }, 1000);
+    
+    const { suggestion } = await waitForSuggestion();
+    await userEvent.click(suggestion);
+    //Todo Test not Work
+    expect(selectHandler).toBeCalledTimes(1);
 });
 
-it("should successfully clear a suggestion select", async () => {
+//TODO: remove fails
+it.fails("should successfully clear a suggestion select", async () => {
     const user = userEvent.setup();
 
-    const selectHandler = (event: SearchEvent) => {
-        console.debug("User selectet " + event.suggestion?.value + " from Search");
-    };
-    const clearHandler = (event: SearchEvent) => {
-        console.debug("User clear " + event.suggestion?.value + " from Search");
-    };
+    const selectHandler = vi.fn();
+    const clearHandler = vi.fn();
 
     await createSearch(selectHandler, clearHandler);
     // search is mounted
     const { searchInput } = await waitForInput();
     await user.type(searchInput, "Dortmund");
-
-    setTimeout(async () => {
-        const { suggestion } = await waitForSuggestion();
-        userEvent.click(suggestion);
-        const { clearButton } = await waitForClearButton();
-        userEvent.click(clearButton);
-        //Todo Test not Work
-        expect(clearHandler).toBeCalledTimes(1);
-    }, 1000);
+    
+    const { suggestion } = await waitForSuggestion();
+    await userEvent.click(suggestion);
+    const { clearButton } = await waitForClearButton();
+    await userEvent.click(clearButton);
+    //Todo Test not Work
+    expect(clearHandler).toBeCalledTimes(1);
 });
 
 async function createSearch(
@@ -93,8 +87,8 @@ async function createSearch(
     await registry.expectMapModel(mapId);
     const injectedServices = createServiceOptions({ registry });
     const sources = [new FakeCitySource(), new FakeRiverSource(), new FakeStreetSource()];
-    const selectHandlerFunction = selectHandler? selectHandler:(event: SearchEvent) => {console.debug(event);};
-    const clearHandlerFunction = clearHandler? clearHandler: (event: SearchEvent) => {console.debug(event);};
+    const selectHandlerFunction = selectHandler? selectHandler:(_event: SearchEvent) => {};
+    const clearHandlerFunction = clearHandler? clearHandler: (_event: SearchEvent) => {};
     render(
         <PackageContextProvider services={injectedServices}>
             <Search
@@ -109,46 +103,32 @@ async function createSearch(
 }
 
 async function waitForSearch() {
-    const { searchDiv } = await waitFor(async () => {
-        const searchDiv: HTMLDivElement | null =
-            await screen.findByTestId<HTMLDivElement>("search");
-        if (!searchDiv) {
-            throw new Error("Search not rendered");
-        }
-
-        return { searchDiv };
-    });
+    const searchDiv =
+        await screen.findByTestId<HTMLDivElement>("search");
 
     return { searchDiv };
 }
 
 async function waitForInput() {
-    const { searchInput } = await waitFor(async () => {
-        const searchInput: HTMLInputElement | undefined = (
-            await screen.findByTestId<HTMLDivElement>("search")
-        ).getElementsByTagName("input")[0];
-        if (!searchInput) {
-            throw new Error("input not rendered");
-        }
-
-        return { searchInput };
-    });
-
+    const { searchDiv } = await waitForSearch();
+    const searchInput = searchDiv.getElementsByTagName("input")[0];
+    if (!searchInput) {
+        throw new Error("input not rendered");
+    }
     return { searchInput };
 }
 
 async function waitForSuggestion() {
     const { suggestion } = await waitFor(async () => {
-        const suggestion: Element | undefined = (
-            await screen.findByTestId<HTMLDivElement>("search")
-        ).getElementsByClassName("search-highlighted-match")[0];
+        const { searchDiv } = await waitForSearch();
+        const suggestion = searchDiv.getElementsByClassName("search-highlighted-match")[0];
 
         if (!suggestion) {
             throw new Error("Suggestion not found");
         }
         return { suggestion };
     });
-    return { suggestion };
+    return { suggestion }; 
 }
 
 async function waitForClearButton() {

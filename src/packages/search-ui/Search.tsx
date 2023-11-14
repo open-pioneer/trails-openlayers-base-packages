@@ -3,8 +3,15 @@
 import { Box, chakra, FormControl } from "@open-pioneer/chakra-integration";
 import { MapModel, useMapModel } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
-import { FC, useCallback, useEffect, useState } from "react";
-import { ActionMeta, AsyncSelect, components, MenuProps, NoticeProps } from "chakra-react-select";
+import { FC, useCallback, useEffect, useRef, useState } from "react";
+import {
+    ActionMeta,
+    AsyncSelect,
+    components,
+    MenuProps,
+    NoticeProps,
+    Select, SelectInstance
+} from "chakra-react-select";
 import { DataSource, Suggestion } from "./api";
 import { SearchController } from "./SearchController";
 import { HighlightOption } from "./HighlightOption";
@@ -104,10 +111,13 @@ export const Search: FC<SearchProps> = (props) => {
         }
     };
 
+    const selectRef = useRef<SelectInstance<any, any, any>>();
+    
     return (
         <Box {...containerProps}>
             <FormControl alignItems="center">
                 <AsyncSelect
+                    ref={selectRef}
                     isClearable={true}
                     placeholder={placeholder}
                     closeMenuOnSelect={closeMenuOnSelect}
