@@ -10,7 +10,8 @@ import {
     FakeCitySource,
     FakeStreetSource,
     FakeRiverSource,
-    GeoSearchSource
+    GeoSearchSource,
+    SelectSearchEvent
 } from "@open-pioneer/search-ui";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { ScaleViewer } from "@open-pioneer/scale-viewer";
@@ -25,7 +26,6 @@ import {
     PiFileMagnifyingGlassLight
 } from "react-icons/pi";
 import { MAP_ID } from "./MapConfigProviderImpl";
-import { SearchEvent } from "@open-pioneer/search-ui/Search";
 
 const sources = [new FakeCitySource(), new FakeRiverSource(), new FakeStreetSource()];
 export function AppUI() {
@@ -69,16 +69,15 @@ export function AppUI() {
                                     sources={sources}
                                     searchTypingDelay={500}
                                     showDropdownIndicator={false}
-                                    placeholder={intl.formatMessage({ id: "searchPlaceholder" })}
-                                    onSelect={function (event: SearchEvent): void {
+                                    onSelect={function (event: SelectSearchEvent): void {
                                         console.debug(
                                             "User selectet " +
-                                                event.suggestion?.value +
+                                                event.suggestion.value +
                                                 " from Search"
                                         );
                                     }}
-                                    onClear={function (event: SearchEvent): void {
-                                        console.debug("User clear Search");
+                                    onClear={function (): void {
+                                        console.debug("User cleared search");
                                     }}
                                 />
                             </Box>

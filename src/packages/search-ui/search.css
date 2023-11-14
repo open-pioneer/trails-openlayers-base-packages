@@ -20,12 +20,6 @@
 .search-loading-text {
 }
 
-/*.search-searchAsyncSelect,input:before {
-    content: "";
-!*    display: block;*!
-    background: url("SearchIcon.png") no-repeat;
-    width: 20px;
-    height: 20px;
-!*    float: left;
-    margin: 0 6px 0 0;*!
-}*/
+.search-value-container {
+    padding-left: 30px !important;
+}

@@ -1,1 +1,1 @@
-# @open-pioneer/ogc-features
+# @open-pioneer/search-ui

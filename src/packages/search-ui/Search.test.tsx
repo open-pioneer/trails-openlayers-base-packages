@@ -4,7 +4,7 @@ import { expect, it, vi } from "vitest";
 import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render, screen, waitFor } from "@testing-library/react";
-import { Search, SearchEvent } from "./Search";
+import { Search, SelectSearchEvent } from "./Search";
 import { FakeCitySource, FakeRiverSource, FakeStreetSource } from "./testSources";
 import userEvent from "@testing-library/user-event";
 
@@ -24,7 +24,7 @@ it("should successfully type into search", async () => {
     expect(searchInput).toHaveValue("Dortmund");
 });
 
-it.skip("should successfully show a search suggestion", async () => {
+it("should successfully show a search suggestion", async () => {
     const user = userEvent.setup();
 
     await createSearch();
@@ -32,16 +32,18 @@ it.skip("should successfully show a search suggestion", async () => {
     // search is mounted
     const { searchInput } = await waitForInput();
     await user.type(searchInput, "Dortmund");
+    const { suggestion } = await waitForSuggestion();
+    expect(suggestion).toHaveValue("Dortmund");
 
-    // FIX ME: Do not use timeout here!! Too long and buggy
+    /*// FIX ME: Do not use timeout here!! Too long and buggy
     // Always ensure that test code happens in the async unit test function!
     setTimeout(async () => {
         const { suggestion } = await waitForSuggestion();
         expect(suggestion); //.toHaveValue("Dortmund");
-    }, 1000);
+    }, 1000);*/
 });
 
-it("should successfully show a suggestion select", async () => {
+it("should successfully call select handler after clicking a suggestion", async () => {
     const user = userEvent.setup();
 
     const selectHandler = vi.fn();
@@ -84,15 +86,15 @@ it.fails("should successfully clear a suggestion select", async () => {
 });
 
 async function createSearch(
-    selectHandler?: (event: SearchEvent) => void,
-    clearHandler?: (event: SearchEvent) => void
+    selectHandler?: (event: SelectSearchEvent) => void,
+    clearHandler?: () => void
 ) {
     const { mapId, registry } = await setupMap();
     await registry.expectMapModel(mapId);
     const injectedServices = createServiceOptions({ registry });
     const sources = [new FakeCitySource(), new FakeRiverSource(), new FakeStreetSource()];
-    const selectHandlerFunction = selectHandler ? selectHandler : (_event: SearchEvent) => {};
-    const clearHandlerFunction = clearHandler ? clearHandler : (_event: SearchEvent) => {};
+    const selectHandlerFunction = selectHandler ? selectHandler : (_event: SelectSearchEvent) => {};
+    const clearHandlerFunction = clearHandler ? clearHandler : () => {};
     render(
         <PackageContextProvider services={injectedServices}>
             <Search
@@ -108,7 +110,6 @@ async function createSearch(
 
 async function waitForSearch() {
     const searchDiv = await screen.findByTestId<HTMLDivElement>("search");
-
     return { searchDiv };
 }
 
