@@ -1,6 +1,10 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { extendTheme, withDefaultColorScheme } from "@open-pioneer/chakra-integration";
+import {
+    StyleFunctionProps,
+    extendTheme,
+    withDefaultColorScheme
+} from "@open-pioneer/chakra-integration";
 import { theme as baseTheme } from "@open-pioneer/base-theme";
 
 const fonts = {
@@ -64,13 +68,14 @@ const intermediateTheme = extendTheme({ fonts, colors, semanticTokens }, baseThe
 //Get the color defined by a semantic token.
 //If it points to a color (e.g. red.500), get the hex color value out of the color scheme.
 //Overrides: "boxShadow" and "outline"
-const getColor = (semanticToken: string) => {
-    const color = intermediateTheme.semanticTokens.colors[semanticToken];
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const getColor = (semanticToken: string, theme: any) => {
+    const color = theme.semanticTokens.colors[semanticToken];
     if (color && color.includes(".")) {
         const kvp = color.split(".");
         const key = kvp[0],
             value = kvp[1];
-        return intermediateTheme.colors[key][value];
+        return theme.colors[key][value];
     }
     return color;
 };
@@ -81,9 +86,20 @@ const getColor = (semanticToken: string) => {
 export const theme = extendTheme(
     withDefaultColorScheme({ colorScheme: "trails" }),
     {
+        styles: {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            global({ theme }: any) {
+                return {
+                    "body": {
+                        //TODO: Hack! Additional Hex digits only work because colors are hex, too
+                        //opacity-to-hex: 0.6 => 99
+                        "--trails-theme-shadow-color": `${getColor("background_primary", theme)}99`
+                    }
+                };
+            }
+        },
         shadows: {
-            //opacity-to-hex: 0.6 => 99
-            outline: `0 0 0 3px ${getColor("background_primary")}99`
+            outline: `0 0 0 3px var(--trails-theme-shadow-color)`
         },
         components: {
             Button: {
@@ -143,18 +159,20 @@ export const theme = extendTheme(
                     //variant: "outline" //"outline" | "filled" | "flushed" | "unstyled"
                 },
                 variants: {
-                    outline: {
-                        field: {
-                            borderColor: "border",
-                            _focusVisible: {
-                                borderColor: "background_primary",
-                                boxShadow: `0 0 0 1px ${getColor("background_primary")}`
+                    outline({ theme }: StyleFunctionProps) {
+                        return {
+                            field: {
+                                borderColor: "border",
+                                _focusVisible: {
+                                    borderColor: "background_primary",
+                                    boxShadow: `0 0 0 1px ${getColor("background_primary", theme)}`
+                                }
+                            },
+                            addon: {
+                                borderColor: "border",
+                                bg: "background_primary"
                             }
-                        },
-                        addon: {
-                            borderColor: "border",
-                            bg: "background_primary"
-                        }
+                        };
                     },
                     filled: {
                         field: {
@@ -166,13 +184,18 @@ export const theme = extendTheme(
                             bg: "background_primary"
                         }
                     },
-                    flushed: {
-                        field: {
-                            _focusVisible: {
-                                borderColor: "background_primary",
-                                boxShadow: `0px 1px 0px 0px ${getColor("background_primary")}`
+                    flushed({ theme }: StyleFunctionProps) {
+                        return {
+                            field: {
+                                _focusVisible: {
+                                    borderColor: "background_primary",
+                                    boxShadow: `0px 1px 0px 0px ${getColor(
+                                        "background_primary",
+                                        theme
+                                    )}`
+                                }
                             }
-                        }
+                        };
                     }
                 }
             },
@@ -193,14 +216,16 @@ export const theme = extendTheme(
                     //variant: "outline" //"outline" | "filled" | "flushed" | "unstyled"
                 },
                 variants: {
-                    outline: {
-                        field: {
-                            borderColor: "border",
-                            _focusVisible: {
-                                borderColor: "background_primary",
-                                boxShadow: `0 0 0 1px ${getColor("background_primary")}`
+                    outline({ theme }: StyleFunctionProps) {
+                        return {
+                            field: {
+                                borderColor: "border",
+                                _focusVisible: {
+                                    borderColor: "background_primary",
+                                    boxShadow: `0 0 0 1px ${getColor("background_primary", theme)}`
+                                }
                             }
-                        }
+                        };
                     },
                     filled: {
                         field: {
@@ -212,13 +237,18 @@ export const theme = extendTheme(
                             bg: "background_primary"
                         }
                     },
-                    flushed: {
-                        field: {
-                            _focusVisible: {
-                                borderColor: "background_primary",
-                                boxShadow: `0px 1px 0px 0px ${getColor("background_primary")}`
+                    flushed({ theme }: StyleFunctionProps) {
+                        return {
+                            field: {
+                                _focusVisible: {
+                                    borderColor: "background_primary",
+                                    boxShadow: `0px 1px 0px 0px ${getColor(
+                                        "background_primary",
+                                        theme
+                                    )}`
+                                }
                             }
-                        }
+                        };
                     }
                 }
             },
@@ -248,23 +278,30 @@ export const theme = extendTheme(
                     //variant: "outline" //"outline" | "filled" | "flushed" | "unstyled"
                 },
                 variants: {
-                    outline: {
-                        borderColor: "border",
-                        _focusVisible: {
-                            borderColor: "background_primary",
-                            boxShadow: `0 0 0 1px ${getColor("background_primary")}`
-                        }
+                    outline({ theme }: StyleFunctionProps) {
+                        return {
+                            borderColor: "border",
+                            _focusVisible: {
+                                borderColor: "background_primary",
+                                boxShadow: `0 0 0 1px ${getColor("background_primary", theme)}`
+                            }
+                        };
                     },
                     filled: {
                         _focusVisible: {
                             borderColor: "background_primary"
                         }
                     },
-                    flushed: {
-                        _focusVisible: {
-                            borderColor: "background_primary",
-                            boxShadow: `0px 1px 0px 0px ${getColor("background_primary")}`
-                        }
+                    flushed({ theme }: StyleFunctionProps) {
+                        return {
+                            _focusVisible: {
+                                borderColor: "background_primary",
+                                boxShadow: `0px 1px 0px 0px ${getColor(
+                                    "background_primary",
+                                    theme
+                                )}`
+                            }
+                        };
                     }
                 }
             },
