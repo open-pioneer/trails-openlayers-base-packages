@@ -102,5 +102,6 @@ overrideLicenses:
     license: "MIT"
 
     # TODO Missing license document
+    # See https://github.com/colorjs/color-rgba/pull/6
     licenseFiles:
       - "./readme.md"
