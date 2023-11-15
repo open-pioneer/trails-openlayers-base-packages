@@ -7,7 +7,7 @@ settings:
 overrides:
   semver@<7.5.2: '>=7.5.2'
   tough-cookie@<4.1.3: '>=4.1.3'
-  '@mapbox/mapbox-gl-style-spec': npm:@maplibre/maplibre-gl-style-spec@^19.3.2
+  '@mapbox/mapbox-gl-style-spec': npm:@maplibre/maplibre-gl-style-spec@^19.3.3
 
 patchedDependencies:
   '@changesets/assemble-release-plan@5.2.4':
@@ -43,8 +43,8 @@ importers:
         specifier: ^2.9.0
         version: 2.9.0(typescript@5.1.6)
       '@maplibre/maplibre-gl-style-spec':
-        specifier: ^19.3.2
-        version: 19.3.2
+        specifier: ^19.3.3
+        version: 19.3.3
       '@open-pioneer/chakra-integration':
         specifier: ^1.1.0
         version: 1.1.0(@chakra-ui/react@2.8.0)(@emotion/cache@11.11.0)(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(framer-motion@10.16.1)(react-dom@18.2.0)(react@18.2.0)
@@ -64,8 +64,8 @@ importers:
         specifier: ^10.16.0
         version: 10.16.1(react-dom@18.2.0)(react@18.2.0)
       ol:
-        specifier: ^8.1.0
-        version: 8.1.0
+        specifier: ^8.2.0
+        version: 8.2.0
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -276,8 +276,8 @@ importers:
         specifier: ^1.1.0
         version: 1.1.0(@formatjs/intl@2.9.0)(@open-pioneer/base-theme@0.1.0)(@open-pioneer/chakra-integration@1.1.0)(@open-pioneer/core@1.1.0)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
       ol:
-        specifier: ^8.1.0
-        version: 8.1.0
+        specifier: ^8.2.0
+        version: 8.2.0
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -308,8 +308,8 @@ importers:
         specifier: ^1.1.0
         version: 1.1.0(@formatjs/intl@2.9.0)(@open-pioneer/base-theme@0.1.0)(@open-pioneer/chakra-integration@1.1.0)(@open-pioneer/core@1.1.0)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
       ol:
-        specifier: ^8.1.0
-        version: 8.1.0
+        specifier: ^8.2.0
+        version: 8.2.0
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -343,8 +343,8 @@ importers:
         specifier: ^2.5.2
         version: 2.5.2
       ol:
-        specifier: ^8.1.0
-        version: 8.1.0
+        specifier: ^8.2.0
+        version: 8.2.0
       proj4:
         specifier: ^2.9.0
         version: 2.9.0
@@ -390,8 +390,8 @@ importers:
         specifier: ^2.3.2
         version: 2.3.2
       ol:
-        specifier: ^8.1.0
-        version: 8.1.0
+        specifier: ^8.2.0
+        version: 8.2.0
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -422,8 +422,8 @@ importers:
         specifier: ^14.0.0
         version: 14.0.0(react-dom@18.2.0)(react@18.2.0)
       ol:
-        specifier: ^8.1.0
-        version: 8.1.0
+        specifier: ^8.2.0
+        version: 8.2.0
     devDependencies:
       openlayers-base-packages:
         specifier: workspace:*
@@ -448,8 +448,8 @@ importers:
         specifier: ^2.3.2
         version: 2.3.2
       ol:
-        specifier: ^8.1.0
-        version: 8.1.0
+        specifier: ^8.2.0
+        version: 8.2.0
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -500,8 +500,8 @@ importers:
         specifier: ^1.1.0
         version: 1.1.0
       ol:
-        specifier: ^8.1.0
-        version: 8.1.0
+        specifier: ^8.2.0
+        version: 8.2.0
     devDependencies:
       '@open-pioneer/map-test-utils':
         specifier: workspace:^
@@ -532,8 +532,8 @@ importers:
         specifier: ^1.1.0
         version: 1.1.0(@formatjs/intl@2.9.0)(@open-pioneer/base-theme@0.1.0)(@open-pioneer/chakra-integration@1.1.0)(@open-pioneer/core@1.1.0)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
       ol:
-        specifier: ^8.1.0
-        version: 8.1.0
+        specifier: ^8.2.0
+        version: 8.2.0
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -590,8 +590,8 @@ importers:
         specifier: ^1.1.0
         version: 1.1.0(@formatjs/intl@2.9.0)(@open-pioneer/base-theme@0.1.0)(@open-pioneer/chakra-integration@1.1.0)(@open-pioneer/core@1.1.0)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
       ol:
-        specifier: ^8.1.0
-        version: 8.1.0
+        specifier: ^8.2.0
+        version: 8.2.0
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -657,8 +657,8 @@ importers:
         specifier: ^2.3.2
         version: 2.3.2
       ol:
-        specifier: ^8.1.0
-        version: 8.1.0
+        specifier: ^8.2.0
+        version: 8.2.0
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -731,8 +731,8 @@ importers:
         specifier: ^1.1.0
         version: 1.1.0(@formatjs/intl@2.9.0)(@open-pioneer/base-theme@0.1.0)(@open-pioneer/chakra-integration@1.1.0)(@open-pioneer/core@1.1.0)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
       ol:
-        specifier: ^8.1.0
-        version: 8.1.0
+        specifier: ^8.2.0
+        version: 8.2.0
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -806,8 +806,8 @@ importers:
         specifier: workspace:^
         version: link:../map-sample-logging
       ol:
-        specifier: ^8.1.0
-        version: 8.1.0
+        specifier: ^8.2.0
+        version: 8.2.0
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -860,11 +860,11 @@ importers:
         specifier: workspace:^
         version: link:../../../packages/toc
       ol:
-        specifier: ^8.1.0
-        version: 8.1.0
+        specifier: ^8.2.0
+        version: 8.2.0
       ol-mapbox-style:
         specifier: ^12.0.0
-        version: 12.0.0(patch_hash=f6syo2kdcenmfamxdcxezyuuyy)(ol@8.1.0)
+        version: 12.0.0(patch_hash=f6syo2kdcenmfamxdcxezyuuyy)(ol@8.2.0)
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -2710,18 +2710,6 @@ packages:
     resolution: {integrity: sha512-nMkuDXFv60aBr9soUG5q+GvZYL+2KZHVvsqFCzqnkGEf46U2fvmytHaEVc1/YZbiLn8X+eR3QzX1+dwDO1lxlw==}
     dev: false
 
-  /@maplibre/maplibre-gl-style-spec@19.3.2:
-    resolution: {integrity: sha512-C2JAk64XUz9v78+bpyTk1zvgjjnDsB8CCjNumyAYdWK2dvdDtILzh1AGBMdS/llX3KaHjGYxAE5wOwfdwq4Pog==}
-    hasBin: true
-    dependencies:
-      '@mapbox/jsonlint-lines-primitives': 2.0.2
-      '@mapbox/unitbezier': 0.0.1
-      json-stringify-pretty-compact: 3.0.0
-      minimist: 1.2.8
-      rw: 1.3.3
-      sort-object: 3.0.3
-    dev: false
-
   /@maplibre/maplibre-gl-style-spec@19.3.3:
     resolution: {integrity: sha512-cOZZOVhDSulgK0meTsTkmNXb1ahVvmTmWmfx9gRBwc6hq98wS9JP35ESIoNq3xqEan+UN+gn8187Z6E4NKhLsw==}
     hasBin: true
@@ -3922,6 +3910,23 @@ packages:
 
   /color-name@1.1.4:
     resolution: {integrity: sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==}
+
+  /color-parse@2.0.0:
+    resolution: {integrity: sha512-g2Z+QnWsdHLppAbrpcFWo629kLOnOPtpxYV69GCqm92gqSgyXbzlfyN3MXs0412fPBkFmiuS+rXposgBgBa6Kg==}
+    dependencies:
+      color-name: 1.1.4
+    dev: false
+
+  /color-rgba@3.0.0:
+    resolution: {integrity: sha512-PPwZYkEY3M2THEHHV6Y95sGUie77S7X8v+h1r6LSAPF3/LL2xJ8duUXSrkic31Nzc4odPwHgUbiX/XuTYzQHQg==}
+    dependencies:
+      color-parse: 2.0.0
+      color-space: 2.0.1
+    dev: false
+
+  /color-space@2.0.1:
+    resolution: {integrity: sha512-nKqUYlo0vZATVOFHY810BSYjmCARrG7e5R3UE3CQlyjJTvv5kSSmPG1kzm/oDyyqjehM+lW1RnEt9It9GNa5JA==}
+    dev: false
 
   /color2k@2.0.2:
     resolution: {integrity: sha512-kJhwH5nAwb34tmyuqq/lgjEKzlFXn1U99NlnB6Ws4qVaERcRUYeYP1cBw6BJ4vxaWStAUEef4WMr7WjOCnBt8w==}
@@ -6013,20 +6018,22 @@ packages:
       es-abstract: 1.22.1
     dev: true
 
-  /ol-mapbox-style@12.0.0(patch_hash=f6syo2kdcenmfamxdcxezyuuyy)(ol@8.1.0):
+  /ol-mapbox-style@12.0.0(patch_hash=f6syo2kdcenmfamxdcxezyuuyy)(ol@8.2.0):
     resolution: {integrity: sha512-rrIFh1BuXdMfl9XwKobpz7sKLAVchseowQlGdgN3WRbCnovSdTeC5RSw1lgnC334kY74y9CQ7cY2WOR5nbnpHg==}
     peerDependencies:
       ol: 8.x || 7.x
     dependencies:
       '@mapbox/mapbox-gl-style-spec': /@maplibre/maplibre-gl-style-spec@19.3.3
       mapbox-to-css-font: 2.4.2
-      ol: 8.1.0
+      ol: 8.2.0
     dev: false
     patched: true
 
-  /ol@8.1.0:
-    resolution: {integrity: sha512-cx3SH2plpFS9fM8pp1nCypgQXGJD7Mcb1E3mEySmy5XEw1DUEo+kkNzgtAZz5qupekqi7aU9iBJEjCoMfqvO2Q==}
+  /ol@8.2.0:
+    resolution: {integrity: sha512-/m1ddd7Jsp4Kbg+l7+ozR5aKHAZNQOBAoNZ5pM9Jvh4Etkf0WGkXr9qXd7PnhmwiC1Hnc2Toz9XjCzBBvexfXw==}
     dependencies:
+      color-rgba: 3.0.0
+      color-space: 2.0.1
       earcut: 2.2.4
       geotiff: 2.0.7
       pbf: 3.2.1
