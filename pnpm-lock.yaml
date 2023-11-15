@@ -346,7 +346,7 @@ importers:
         specifier: ^1.1.0
         version: 1.1.0(@formatjs/intl@2.9.0)(@open-pioneer/base-theme@0.1.0)(@open-pioneer/chakra-integration@1.1.0)(@open-pioneer/core@1.1.0)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
       ol:
-        specifier: ^8.1.0
+        specifier: ^8.2.0
         version: 8.2.0
       react:
         specifier: ^18.2.0
