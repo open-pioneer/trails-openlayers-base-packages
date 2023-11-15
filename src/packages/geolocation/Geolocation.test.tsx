@@ -1,16 +1,14 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { MapContainer } from "@open-pioneer/map";
 import { createServiceOptions, setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
-import { act, render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import { beforeAll, beforeEach, expect, it, vi } from "vitest";
 import { Geolocation } from "./Geolocation";
 import { NotificationService, NotificationOptions } from "@open-pioneer/notifier";
-import { setup, mockSuccessGeolocation, mockErrorGeolocation } from "./test-utils";
-import { GeolocationController } from "./GeolocationController";
-import { Feature } from "ol";
-import { Geometry } from "ol/geom";
+import { mockSuccessGeolocation, mockErrorGeolocation } from "./test-utils";
 import VectorLayer from "ol/layer/Vector";
 import userEvent from "@testing-library/user-event";
 
@@ -96,62 +94,6 @@ it("should center to user's position", async () => {
         expect(nextCenter).not.toEqual(firstCenter);
     });
 });
-
-it.skip("should not change map center while changing user's position", async () => {
-    const { mapId, registry } = await setupMap({
-        center: { x: 0, y: 0 },
-        projection: "EPSG:4326"
-    });
-
-    const map = (await registry.expectMapModel(mapId))?.olMap;
-
-    const notifier: Partial<NotificationService> = {
-        notify() {
-            throw new Error("not implemented");
-        }
-    };
-
-    const injectedServices = createServiceOptions({
-        registry
-    });
-    injectedServices["notifier.NotificationService"] = notifier;
-
-    render(
-        <PackageContextProvider services={injectedServices}>
-            <MapContainer mapId={mapId} data-testid="map" />
-            <Geolocation mapId={mapId} data-testid="geolocation" />
-        </PackageContextProvider>
-    );
-
-    await waitForMapMount("map");
-
-    const firstCenter = map.getView().getCenter();
-
-    // Simulate first geolocation
-    mockSuccessGeolocation([51.1, 45.3]);
-    const controller: GeolocationController = setup();
-    await controller.startGeolocation(map);
-
-    const nextCenter = map.getView().getCenter();
-
-    // Check, if map is centered to user position
-    expect(nextCenter).not.toEqual(firstCenter);
-    const nextPositionFeature: Feature<Geometry> | undefined = controller.getPositionFeature();
-    expect(nextPositionFeature?.getGeometry()?.getExtent()).toStrictEqual([45.3, 51.1, 45.3, 51.1]);
-
-    // Simulate second geolocation
-    // mockSuccessGeolocation([51.1, 6.3]);
-    /** Trigger position change event on Geolocation */
-
-    const lastCenter = map.getView().getCenter();
-
-    // Check, if map isn't centered to user position
-    expect(lastCenter).toStrictEqual(nextCenter);
-    const lastPositionFeature: Feature<Geometry> | undefined = controller.getPositionFeature();
-    expect(lastPositionFeature?.getGeometry()?.getExtent()).toStrictEqual([6.3, 51.1, 6.3, 51.1]);
-});
-
-it.skip("should not change user position while changing zoom level", async () => {});
 
 it("should successfully create an error with notifier message", async () => {
     mockErrorGeolocation();

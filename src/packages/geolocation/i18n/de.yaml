@@ -1,7 +1,7 @@
 messages:
   locateNotSupported: Die Geolokalisierung wird nicht unterstützt
-  locateMeStart: Lokalisieren starten
-  locateMeEnd: Lokalisieren stoppen
+  locateMeStart: Geolokalisierung starten
+  locateMeEnd: Geolokalisierung stoppen
   error: Fehler
   permissionDenied: Die Geolokalisierung wurde abgebrochen
   positionUnavailable: Die Position kann nicht ermittelt werden

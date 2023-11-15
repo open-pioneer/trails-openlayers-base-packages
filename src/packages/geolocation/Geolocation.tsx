@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { createLogger } from "@open-pioneer/core";
 import {
     CommonComponentProps,
@@ -9,7 +10,7 @@ import {
 import { useMapModel } from "@open-pioneer/map";
 import { unByKey } from "ol/Observable";
 import { useIntl } from "open-pioneer:react-hooks";
-import { FC, ForwardedRef, forwardRef, RefAttributes, useEffect, useState } from "react";
+import { FC, ForwardedRef, forwardRef, RefAttributes, useEffect, useState, useMemo } from "react";
 import { MdLocationOn } from "react-icons/md";
 import { GeolocationController } from "./GeolocationController";
 import { useService } from "open-pioneer:react-hooks";
@@ -17,10 +18,6 @@ import { StyleLike } from "ol/style/Style";
 
 // TODO: Workaround for https://github.com/open-pioneer/trails-build-tools/issues/47
 import {} from "@open-pioneer/notifier";
-
-/**
- * Todo: Testen auf mobilen Geräten
- */
 
 /**
  * These are special properties for the Geolocation.
@@ -51,7 +48,7 @@ export const Geolocation: FC<GeolocationProps> = forwardRef(function Geolocation
     props: GeolocationProps,
     ref: ForwardedRef<HTMLButtonElement>
 ) {
-    const logger = createLogger("ol-geolocation:" + Geolocation.name);
+    const logger = useMemo(() => createLogger("geolocation:" + Geolocation.name), []);
 
     const { mapId, positionFeatureStyle, accuracyFeatureStyle, trackingOptions } = props;
     const { containerProps } = useCommonComponentProps("geolocation", props);
@@ -85,9 +82,6 @@ export const Geolocation: FC<GeolocationProps> = forwardRef(function Geolocation
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [map]);
 
-    /**
-     * Move GeolocationController.tsx
-     */
     useEffect(() => {
         if (controller === undefined) {
             return;

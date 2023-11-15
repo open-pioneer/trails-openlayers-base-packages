@@ -1,7 +1,7 @@
 messages:
   locateNotSupported: Geolocation is not supported
-  locateMeStart: Start locating
-  locateMeEnd: Stop locating
+  locateMeStart: Start geolocation
+  locateMeEnd: Stop geolocation
   error: Error
   permissionDenied: Geolocation was canceled
   positionUnavailable: Geolocation position cannot be determined

@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box, Flex, FormControl, FormLabel, Text } from "@open-pioneer/chakra-integration";
+import { Box, Flex } from "@open-pioneer/chakra-integration";
 import { CoordinateViewer } from "@open-pioneer/coordinate-viewer";
 import { MapAnchor, MapContainer } from "@open-pioneer/map";
 import { InitialExtent, ZoomIn, ZoomOut } from "@open-pioneer/map-navigation";
@@ -107,14 +107,6 @@ export function AppUI() {
                                     </Box>
                                 )}
                             </Box>
-                            <FormControl>
-                                <FormLabel ps={1}>
-                                    <Text as="b">
-                                        {intl.formatMessage({ id: "geolocationTitle" })}
-                                    </Text>
-                                </FormLabel>
-                                <Geolocation mapId={MAP_ID}></Geolocation>
-                            </FormControl>
                         </MapAnchor>
                         <MapAnchor position="top-right" horizontalGap={10} verticalGap={10}>
                             {showOverviewMap && (
@@ -129,6 +121,7 @@ export function AppUI() {
                                 gap={1}
                                 padding={1}
                             >
+                                <Geolocation mapId={MAP_ID}></Geolocation>
                                 <ToolButton
                                     label={intl.formatMessage({ id: "overviewMapTitle" })}
                                     icon={
