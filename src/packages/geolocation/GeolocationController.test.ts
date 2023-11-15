@@ -3,7 +3,6 @@
 
 import { expect, it, describe, afterEach, vi } from "vitest";
 import {
-    GeolocationController,
     getDefaultPositionStyle,
     getDefaultAccuracyStyle,
     getDefaultTrackingOptions
@@ -11,7 +10,6 @@ import {
 import { Feature } from "ol";
 import { Geometry } from "ol/geom";
 import {
-    OL_MAP,
     setup,
     setupWithCustomProperties,
     getCustomPositionStyle,
@@ -26,8 +24,8 @@ afterEach(() => {
 it("should successfully return a geolocation position", async () => {
     mockSuccessGeolocation([51.1, 45.3]);
 
-    const controller: GeolocationController = setup();
-    await controller.startGeolocation(OL_MAP);
+    const { controller, olMap } = setup();
+    await controller.startGeolocation(olMap);
 
     const positionFeature: Feature<Geometry> | undefined = controller.getPositionFeature();
     expect(positionFeature?.getGeometry()?.getExtent()).toStrictEqual([
@@ -37,17 +35,17 @@ it("should successfully return a geolocation position", async () => {
 
 describe("Default Properties", () => {
     it("uses the default style for the position feature", async () => {
-        const controller: GeolocationController = setup();
+        const { controller } = setup();
         const positionFeature: Feature<Geometry> | undefined = controller.getPositionFeature();
         expect(positionFeature?.getStyle()).toMatchObject(getDefaultPositionStyle());
     });
     it("uses the default style for the accuracy feature", async () => {
-        const controller: GeolocationController = setup();
+        const { controller } = setup();
         const accuracyFeature: Feature<Geometry> | undefined = controller.getAccuracyFeature();
         expect(accuracyFeature?.getStyle()).toMatchObject(getDefaultAccuracyStyle());
     });
     it("uses the default tracking options", async () => {
-        const controller: GeolocationController = setup();
+        const { controller } = setup();
         const trackingOptions: PositionOptions = controller.getTrackingOptions();
         expect(trackingOptions?.enableHighAccuracy).toBe(
             getDefaultTrackingOptions()?.enableHighAccuracy?.valueOf()
@@ -61,19 +59,19 @@ describe("Default Properties", () => {
 
 describe("Custom Properties", () => {
     it("uses the configured style for the position feature", async () => {
-        const controller: GeolocationController = setupWithCustomProperties();
+        const { controller } = setupWithCustomProperties();
         const positionFeature: Feature<Geometry> | undefined = controller.getPositionFeature();
         expect(positionFeature?.getStyle()).toMatchObject(getCustomPositionStyle());
     });
 
     it("uses the configured style for the accuracy feature", async () => {
-        const controller: GeolocationController = setupWithCustomProperties();
+        const { controller } = setupWithCustomProperties();
         const accuracyFeature: Feature<Geometry> | undefined = controller.getAccuracyFeature();
         expect(accuracyFeature?.getStyle()).toMatchObject(getCustomAccuracyStyle());
     });
 
     it("uses the configured tracking options", async () => {
-        const controller: GeolocationController = setupWithCustomProperties();
+        const { controller } = setupWithCustomProperties();
         const trackingOptions: PositionOptions = controller.getTrackingOptions();
         expect(trackingOptions?.enableHighAccuracy).toBe(true);
         expect(trackingOptions?.timeout).toBe(20);

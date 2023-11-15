@@ -1,13 +1,9 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-
+import OlMap from "ol/Map";
+import { Circle, Fill, Stroke, Style } from "ol/style";
 import { vi } from "vitest";
 import { GeolocationController } from "./GeolocationController";
-import OlMap from "ol/Map";
-import olMap from "ol/Map";
-import { Circle, Fill, Stroke, Style } from "ol/style";
-
-export const OL_MAP: olMap = new OlMap();
 
 export function mockSuccessGeolocation(coords: number[]) {
     vi.spyOn(navigator, "geolocation", "get").mockReturnValue({
@@ -54,20 +50,25 @@ export function mockErrorGeolocation() {
 }
 
 export function setup() {
-    return new GeolocationController(OL_MAP);
+    const olMap = new OlMap();
+    return { olMap, controller: new GeolocationController(olMap) };
 }
 
 export function setupWithCustomProperties() {
+    const olMap = new OlMap();
     const positionFeatureStyle: Style = getCustomPositionStyle();
     const accuracyFeatureStyle: Style = getCustomAccuracyStyle();
     const trackingOptions: PositionOptions = getCustomTrackingOptions();
 
-    return new GeolocationController(
-        OL_MAP,
-        positionFeatureStyle,
-        accuracyFeatureStyle,
-        trackingOptions
-    );
+    return {
+        olMap,
+        controller: new GeolocationController(
+            olMap,
+            positionFeatureStyle,
+            accuracyFeatureStyle,
+            trackingOptions
+        )
+    };
 }
 
 export function getCustomPositionStyle() {
