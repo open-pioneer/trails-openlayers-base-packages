@@ -21,6 +21,7 @@ import {
     ValueContainer
 } from "./CustomComponents";
 import { createLogger, isAbortError } from "@open-pioneer/core";
+import { useIntl } from "open-pioneer:react-hooks";
 
 const LOG = createLogger("search-ui:Search");
 const DEFAULT_GROUP_HEADING_BACKGROUND_COLOR = "rgba(211,211,211,0.20)";
@@ -105,6 +106,7 @@ export const Search: FC<SearchProps> = (props) => {
     } = props;
     const { map } = useMapModel(mapId);
     const controller = useController(sources, map);
+    const intl = useIntl();
 
     const debouncedLoadOptions = useMemo(() => {
         const loadOptions = async (inputValue: string): Promise<SearchGroupOption[]> => {
@@ -174,6 +176,7 @@ export const Search: FC<SearchProps> = (props) => {
         <AsyncSelect<SearchOption, false, SearchGroupOption>
             ref={selectRef}
             isClearable={true}
+            placeholder={intl.formatMessage({ id: "searchPlaceholder" })}
             closeMenuOnSelect={closeMenuOnSelect}
             loadOptions={debouncedLoadOptions}
             components={{
@@ -185,7 +188,6 @@ export const Search: FC<SearchProps> = (props) => {
             }}
             chakraStyles={chakraStyles}
             onChange={onInputChange}
-            className="search-async-select"
         />
     );
 };

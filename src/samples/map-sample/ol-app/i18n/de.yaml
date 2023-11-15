@@ -2,5 +2,4 @@ messages:
   basemapLabel: "Hintergrundkarte auswählen: "
   tocTitle: "Karteninhalt"
   measurementTitle: "Messen"
-  searchTooltip: "Suche"
   searchPlaceholder: "Suche..."

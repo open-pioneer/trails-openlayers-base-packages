@@ -10,7 +10,6 @@ import {
     FakeCitySource,
     FakeStreetSource,
     FakeRiverSource,
-    GeoSearchSource,
     SelectSearchEvent
 } from "@open-pioneer/search-ui";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
@@ -19,26 +18,16 @@ import { Toc } from "@open-pioneer/toc";
 import { ScaleComponent } from "map-sample-scale-component";
 import { useIntl } from "open-pioneer:react-hooks";
 import { useState } from "react";
-import {
-    PiRulerFill,
-    PiRulerLight,
-    PiMagnifyingGlassFill,
-    PiFileMagnifyingGlassLight
-} from "react-icons/pi";
+import { PiRulerFill, PiRulerLight } from "react-icons/pi";
 import { MAP_ID } from "./MapConfigProviderImpl";
 
 const sources = [new FakeCitySource(), new FakeRiverSource(), new FakeStreetSource()];
 export function AppUI() {
     const intl = useIntl();
     const [measurementIsActive, setMeasurementIsActive] = useState<boolean>(false);
-    const [searchIsActive, setSearchIsActive] = useState<boolean>(false);
 
     function toggleMeasurement() {
         setMeasurementIsActive(!measurementIsActive);
-    }
-
-    function toggleSearch() {
-        setSearchIsActive(!searchIsActive);
     }
 
     return (
@@ -54,34 +43,30 @@ export function AppUI() {
             >
                 <Flex flex="1" direction="column" position="relative">
                     <MapContainer mapId={MAP_ID}>
-                        {searchIsActive && (
-                            <Box
-                                backgroundColor="white"
-                                borderWidth="1px"
-                                borderRadius="lg"
-                                padding={2}
-                                boxShadow="lg"
-                                mt={5}
-                                className="search-placement"
-                            >
-                                <Search
-                                    mapId={MAP_ID}
-                                    sources={sources}
-                                    searchTypingDelay={500}
-                                    showDropdownIndicator={false}
-                                    onSelect={function (event: SelectSearchEvent): void {
-                                        console.debug(
-                                            "User selectet " +
-                                                event.suggestion.value +
-                                                " from Search"
-                                        );
-                                    }}
-                                    onClear={function (): void {
-                                        console.debug("User cleared search");
-                                    }}
-                                />
-                            </Box>
-                        )}
+                        <Box
+                            backgroundColor="white"
+                            borderWidth="1px"
+                            borderRadius="lg"
+                            padding={2}
+                            boxShadow="lg"
+                            mt={5}
+                            className="search-placement"
+                        >
+                            <Search
+                                mapId={MAP_ID}
+                                sources={sources}
+                                searchTypingDelay={500}
+                                showDropdownIndicator={false}
+                                onSelect={function (event: SelectSearchEvent): void {
+                                    console.debug(
+                                        "User selectet " + event.suggestion.value + " from Search"
+                                    );
+                                }}
+                                onClear={function (): void {
+                                    console.debug("User cleared search");
+                                }}
+                            />
+                        </Box>
                         <MapAnchor position="top-left" horizontalGap={20} verticalGap={20}>
                             <Box
                                 backgroundColor="white"
@@ -128,25 +113,6 @@ export function AppUI() {
                         </MapAnchor>
                         <MapAnchor position="bottom-right" horizontalGap={10} verticalGap={30}>
                             <Flex direction="column" gap={1} padding={1}>
-                                <Tooltip
-                                    label={intl.formatMessage({ id: "searchTooltip" })}
-                                    placement="auto"
-                                    openDelay={500}
-                                >
-                                    <Button
-                                        aria-label={intl.formatMessage({ id: "searchTooltip" })}
-                                        leftIcon={
-                                            searchIsActive ? (
-                                                <PiMagnifyingGlassFill />
-                                            ) : (
-                                                <PiFileMagnifyingGlassLight />
-                                            )
-                                        }
-                                        onClick={toggleSearch}
-                                        iconSpacing={0}
-                                        padding={0}
-                                    />
-                                </Tooltip>
                                 <Tooltip
                                     label={intl.formatMessage({ id: "measurementTitle" })}
                                     placement="auto"

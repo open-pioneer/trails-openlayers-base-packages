@@ -2,5 +2,4 @@ messages:
   basemapLabel: "Select basemap:"
   tocTitle: "Table of contents"
   measurementTitle: "Measurement"
-  searchTooltip: "Search"
   searchPlaceholder: "Search..."
