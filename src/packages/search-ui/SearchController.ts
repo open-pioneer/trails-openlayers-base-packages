@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { createLogger, throwAbortError } from "@open-pioneer/core";
-import { DataSource, Suggestion, SuggestionGroup } from "./api";
+import { createLogger, isAbortError, throwAbortError } from "@open-pioneer/core";
+import { DataSource, SuggestionGroup } from "./api";
 
 const LOG = createLogger("search-ui.SearchController");
 
@@ -29,43 +29,32 @@ export class SearchController {
                 LOG.debug(`search canceled with ${searchTerm}`);
                 throwAbortError();
             }
-            // const runningQueries = await Promise.allSettled(
-            //     this.#sources.map((source) => source.search(searchTerm, { signal: abort.signal }))
-            // );
-            const results = [];
-            for (const source of this.sources) {
-                try {
-                    const result = await source.search(searchTerm, { signal: abort.signal });
-                    results.push({ label: source.label, suggestions: result });
-                } catch (error) {
-                    LOG.error(`search for source ${source.label} fail with ${error}`);
-                }
-            }
-            // const results = runningQuerie
-            //     .map((query, index) => {
-            //         return { ...query, label: this.sources[index]?.label };
-            //     })
-            //     .filter(
-            //         (
-            //             result
-            //         ): result is { label: string; status: "fulfilled"; value: Suggestion[] } => {
-            //             result.status === "rejected" &&
-            //                 LOG.error(
-            //                     `search for source ${result.label} fail with ${result.reason}`
-            //                 );
-            //             return result?.status === "fulfilled";
-            //         }
-            //     )
-            //     .map((result) => ({
-            //         label: result.label,
-            //         suggestions: result.value
-            //     }));
-            console.log(results);
-            return results;
+
+            const settledSearches = await Promise.all(
+                this.#sources.map((source) => this.#searchSource(source, searchTerm, abort.signal))
+            );
+            return settledSearches.filter((s): s is SuggestionGroup => s != null);
         } finally {
             if (this.abortController === abort) {
                 this.abortController = undefined;
             }
+        }
+    }
+
+    async #searchSource(
+        source: DataSource,
+        searchTerm: string,
+        signal: AbortSignal
+    ): Promise<SuggestionGroup | undefined> {
+        const label = source.label;
+        try {
+            const result = await source.search(searchTerm, { signal });
+            return { label: label, suggestions: result };
+        } catch (e) {
+            if (!isAbortError(e)) {
+                LOG.error(`search for source ${label} failed`, e);
+            }
+            return undefined;
         }
     }
 

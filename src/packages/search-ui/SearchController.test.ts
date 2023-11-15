@@ -1,10 +1,11 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
-import { afterEach, beforeEach, expect, vi, it } from "vitest";
+import { afterEach, expect, vi, it } from "vitest";
 import { SearchController } from "./SearchController";
 import { DataSource } from "./api";
 import { FakeCitySource, FakeRejectionSource, FakeRiverSource } from "./testSources";
+import { isAbortError } from "@open-pioneer/core";
 
 afterEach(() => {
     vi.restoreAllMocks();
@@ -66,7 +67,8 @@ it("expect contoller to filter rejected queires and return only successfully reo
       [MockFunction error] {
         "calls": [
           [
-            "[ERROR] search-ui.SearchController: search for source Rejected fail with Error: search with aa rejected",
+            "[ERROR] search-ui.SearchController: search for source Rejected failed",
+            [Error: search with aa rejected],
           ],
         ],
         "results": [
@@ -78,7 +80,8 @@ it("expect contoller to filter rejected queires and return only successfully reo
       }
     `);
 });
-it.only("expect contoller to call AbortController when typing to fast", async () => {
+
+it("expect contoller to call AbortController when typing to fast", async () => {
     const logSpy = vi.spyOn(global.console, "log").mockImplementation(() => undefined);
     const expected = [
         {
@@ -88,16 +91,13 @@ it.only("expect contoller to call AbortController when typing to fast", async ()
     ];
     const controller = setup([new FakeCitySource()]);
 
-    const firstSearch = controller.search("a");
+    let cancelled = false;
+    const firstSearch = controller.search("a").catch((e) => (cancelled = !!isAbortError(e)));
     const searchResponse = await controller.search("aa");
-    //await expect(firstSearch).rejects.toThrowErrorMatchingInlineSnapshot('"Aborted"');
-    try {
-        await firstSearch;
-    } catch (e) {
-        void e;
-    }
-
     expect(expected).toStrictEqual(searchResponse);
+
+    await firstSearch;
+    expect(cancelled).toBe(true);
 });
 
 //it.only("")
