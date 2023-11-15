@@ -2,7 +2,6 @@
 allowedLicenses:
   - "Apache-2.0"
   - "MIT"
-  - "MIT and Zlib"
   - "ISC"
   - "BSD-3-Clause"
   - "BSD-2-Clause"
