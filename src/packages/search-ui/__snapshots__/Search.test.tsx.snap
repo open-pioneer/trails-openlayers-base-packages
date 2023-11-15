@@ -7,92 +7,96 @@ exports[`should successfully create a measurement component 1`] = `
   data-theme="light"
 >
   <div
-    class="chakra-form-control css-hnw0d4"
+    class=" css-79elbk"
     data-theme="light"
-    role="group"
   >
+    <span
+      class="css-1f43avz-a11yText-A11yText"
+      id="react-select-2-live-region"
+    />
+    <span
+      aria-atomic="false"
+      aria-live="polite"
+      aria-relevant="additions text"
+      class="css-1f43avz-a11yText-A11yText"
+    />
     <div
-      class=" css-79elbk"
+      class=" css-i2418r"
       data-theme="light"
     >
-      <span
-        class="css-1f43avz-a11yText-A11yText"
-        id="react-select-2-live-region"
-      />
-      <span
-        aria-atomic="false"
-        aria-live="polite"
-        aria-relevant="additions text"
-        class="css-1f43avz-a11yText-A11yText"
-      />
       <div
-        class=" css-i2418r"
-        data-theme="light"
+        class="search-value-container css-1fdsijx-ValueContainer"
       >
-        <div
-          class=" css-j93siq"
+        <svg
+          class="chakra-icon css-onkibi"
           data-theme="light"
+          focusable="false"
+          style="position: absolute; left: 8px;"
+          viewBox="0 0 24 24"
         >
-          <div
-            class=" css-hji3d9"
-            data-theme="light"
-            id="react-select-2-placeholder"
-          >
-            Select...
-          </div>
-          <div
-            class=" css-18euh9p"
-            data-theme="light"
-            data-value=""
-          >
-            <input
-              aria-autocomplete="list"
-              aria-describedby="react-select-2-placeholder"
-              aria-expanded="false"
-              aria-haspopup="true"
-              aria-required="false"
-              autocapitalize="none"
-              autocomplete="off"
-              autocorrect="off"
-              class=" css-10wwmqn"
-              data-theme="light"
-              id="field-:r0:"
-              role="combobox"
-              spellcheck="false"
-              tabindex="0"
-              type="text"
-              value=""
-            />
-          </div>
+          <path
+            d="M23.384,21.619,16.855,15.09a9.284,9.284,0,1,0-1.768,1.768l6.529,6.529a1.266,1.266,0,0,0,1.768,0A1.251,1.251,0,0,0,23.384,21.619ZM2.75,9.5a6.75,6.75,0,1,1,6.75,6.75A6.758,6.758,0,0,1,2.75,9.5Z"
+            fill="currentColor"
+          />
+        </svg>
+        <div
+          class=" css-hji3d9"
+          data-theme="light"
+          id="react-select-2-placeholder"
+        >
+          searchPlaceholder
         </div>
         <div
-          class=" css-hfbj6y"
+          class=" css-18euh9p"
+          data-theme="light"
+          data-value=""
+        >
+          <input
+            aria-autocomplete="list"
+            aria-describedby="react-select-2-placeholder"
+            aria-expanded="false"
+            aria-haspopup="true"
+            autocapitalize="none"
+            autocomplete="off"
+            autocorrect="off"
+            class=" css-10wwmqn"
+            data-theme="light"
+            id="react-select-2-input"
+            role="combobox"
+            spellcheck="false"
+            tabindex="0"
+            type="text"
+            value=""
+          />
+        </div>
+      </div>
+      <div
+        class=" css-hfbj6y"
+        data-theme="light"
+      >
+        <hr
+          aria-orientation="vertical"
+          class="chakra-divider css-1i6c5ox"
+          data-theme="light"
+        />
+        <div
+          aria-hidden="true"
+          class=" css-80pt9o"
           data-theme="light"
         >
-          <hr
-            aria-orientation="vertical"
-            class="chakra-divider css-1i6c5ox"
-            data-theme="light"
-          />
-          <div
+          <svg
             aria-hidden="true"
-            class=" css-80pt9o"
+            class="chakra-icon css-onkibi"
             data-theme="light"
+            focusable="false"
+            role="presentation"
+            viewBox="0 0 24 24"
           >
-            <svg
-              aria-hidden="true"
-              class="chakra-icon css-onkibi"
-              data-theme="light"
-              focusable="false"
-              role="presentation"
-              viewBox="0 0 24 24"
-            >
-              <path
-                d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
-                fill="currentColor"
-              />
-            </svg>
-          </div>
+            <path
+              d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
+              fill="currentColor"
+            />
+          </svg>
         </div>
       </div>
     </div>

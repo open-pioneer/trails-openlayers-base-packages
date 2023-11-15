@@ -1,12 +1,30 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
-import { expect, it, vi } from "vitest";
+import { beforeEach, afterEach, expect, it, vi } from "vitest";
 import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render, screen, waitFor } from "@testing-library/react";
 import { Search, SelectSearchEvent } from "./Search";
 import { FakeCitySource, FakeRiverSource, FakeStreetSource } from "./testSources";
 import userEvent from "@testing-library/user-event";
+
+beforeEach(() => {
+    const errorfn = console.error;
+    // HACK to hide act warnings (react select component behaves weird)
+    vi.spyOn(console, "error").mockImplementation((...args: unknown[]) => {
+        if (
+            typeof args[0] === "string" &&
+            args[0].startsWith("Warning: An update to %s inside a test was not wrapped in act")
+        ) {
+            return;
+        }
+        errorfn.call(console, ...args);
+    });
+});
+
+afterEach(() => {
+    vi.restoreAllMocks();
+});
 
 it("should successfully create a measurement component", async () => {
     await createSearch();
@@ -18,7 +36,6 @@ it("should successfully create a measurement component", async () => {
 it("should successfully type into search", async () => {
     const user = userEvent.setup();
     await createSearch();
-    // search is mounted
     const { searchInput } = await waitForInput();
     await user.type(searchInput, "Dortmund");
     expect(searchInput).toHaveValue("Dortmund");
@@ -27,20 +44,15 @@ it("should successfully type into search", async () => {
 it("should successfully show a search suggestion", async () => {
     const user = userEvent.setup();
 
-    await createSearch();
+    const selectHandler = vi.fn();
+
+    await createSearch(selectHandler);
 
     // search is mounted
     const { searchInput } = await waitForInput();
     await user.type(searchInput, "Dortmund");
     const { suggestion } = await waitForSuggestion();
-    expect(suggestion).toHaveValue("Dortmund");
-
-    /*// FIX ME: Do not use timeout here!! Too long and buggy
-    // Always ensure that test code happens in the async unit test function!
-    setTimeout(async () => {
-        const { suggestion } = await waitForSuggestion();
-        expect(suggestion); //.toHaveValue("Dortmund");
-    }, 1000);*/
+    expect(suggestion).toHaveTextContent("Dortmund");
 });
 
 it("should successfully call select handler after clicking a suggestion", async () => {
@@ -57,7 +69,7 @@ it("should successfully call select handler after clicking a suggestion", async 
     await userEvent.click(suggestion);
 
     expect(selectHandler).toHaveBeenCalledWith({
-        "action": "select",
+        "action": "select-option",
         "suggestion": {
             "label": "Dortmund",
             "value": "Dortmund"
@@ -65,8 +77,7 @@ it("should successfully call select handler after clicking a suggestion", async 
     });
 });
 
-//TODO: remove fails
-it.fails("should successfully clear a suggestion select", async () => {
+it("should successfully clear a suggestion select", async () => {
     const user = userEvent.setup();
 
     const selectHandler = vi.fn();

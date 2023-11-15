@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
 import { MapModel, useMapModel } from "@open-pioneer/map";
-import { CommonComponentProps } from "@open-pioneer/react-utils";
+import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { FC, useEffect, useMemo, useRef, useState } from "react";
 import {
     ActionMeta,
@@ -22,6 +22,7 @@ import {
 } from "./CustomComponents";
 import { createLogger, isAbortError } from "@open-pioneer/core";
 import { useIntl } from "open-pioneer:react-hooks";
+import { Box } from "@open-pioneer/chakra-integration";
 
 const LOG = createLogger("search-ui:Search");
 const DEFAULT_GROUP_HEADING_BACKGROUND_COLOR = "rgba(211,211,211,0.20)";
@@ -78,7 +79,7 @@ export interface SearchProps extends CommonComponentProps {
     showDropdownIndicator?: boolean;
 
     /**
-     * Background-Color Style to be used for group headings
+     * Background-Color Style to be used for group headings (css-style string)
      */
     groupHeadingBackgroundColor?: string;
 
@@ -104,13 +105,14 @@ export const Search: FC<SearchProps> = (props) => {
         onSelect,
         onClear
     } = props;
+    const { containerProps } = useCommonComponentProps("search", props);
     const { map } = useMapModel(mapId);
     const controller = useController(sources, map);
     const intl = useIntl();
 
     const debouncedLoadOptions = useMemo(() => {
         const loadOptions = async (inputValue: string): Promise<SearchGroupOption[]> => {
-            const suggestions = await controller!.search(inputValue);
+            const suggestions = (await controller?.search(inputValue)) ?? [];
             return mapSuggestions(suggestions, sources);
         };
 
@@ -173,22 +175,24 @@ export const Search: FC<SearchProps> = (props) => {
     const selectRef = useRef<SelectInstance<any, any, any> | null>(null);
 
     return (
-        <AsyncSelect<SearchOption, false, SearchGroupOption>
-            ref={selectRef}
-            isClearable={true}
-            placeholder={intl.formatMessage({ id: "searchPlaceholder" })}
-            closeMenuOnSelect={closeMenuOnSelect}
-            loadOptions={debouncedLoadOptions}
-            components={{
-                Option: HighlightOption,
-                NoOptionsMessage: NoOptionsMessage,
-                Menu: MenuComp,
-                LoadingMessage: LoadingMessage,
-                ValueContainer: ValueContainer
-            }}
-            chakraStyles={chakraStyles}
-            onChange={onInputChange}
-        />
+        <Box {...containerProps}>
+            <AsyncSelect<SearchOption, false, SearchGroupOption>
+                ref={selectRef}
+                isClearable={true}
+                placeholder={intl.formatMessage({ id: "searchPlaceholder" })}
+                closeMenuOnSelect={closeMenuOnSelect}
+                loadOptions={debouncedLoadOptions}
+                components={{
+                    Option: HighlightOption,
+                    NoOptionsMessage: NoOptionsMessage,
+                    Menu: MenuComp,
+                    LoadingMessage: LoadingMessage,
+                    ValueContainer: ValueContainer
+                }}
+                chakraStyles={chakraStyles}
+                onChange={onInputChange}
+            />
+        </Box>
     );
 };
 
