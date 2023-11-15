@@ -52,7 +52,7 @@ it("should successfully create a geolocation component with a button", async () 
     expect(button).toMatchSnapshot();
 });
 
-it.only("should center to user's position", async () => {
+it("should center to user's position", async () => {
     mockSuccessGeolocation([51.1, 45.3]);
 
     const user = userEvent.setup();
@@ -91,15 +91,10 @@ it.only("should center to user's position", async () => {
     expect(button.tagName).toBe("BUTTON");
     await user.click(button);
 
-    const nextCenter = map.getView().getCenter();
-
     await waitFor(() => {
-        if (firstCenter?.[0] === nextCenter?.[0] && firstCenter?.[1] === nextCenter?.[1]) {
-            throw new Error("Map center not changed");
-        }
+        const nextCenter = map.getView().getCenter();
+        expect(nextCenter).not.toEqual(firstCenter);
     });
-
-    expect(nextCenter).not.toEqual(firstCenter);
 });
 
 it.skip("should not change map center while changing user's position", async () => {
