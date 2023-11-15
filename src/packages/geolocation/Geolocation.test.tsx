@@ -13,7 +13,6 @@ import { Feature } from "ol";
 import { Geometry } from "ol/geom";
 import VectorLayer from "ol/layer/Vector";
 import userEvent from "@testing-library/user-event";
-// import { GeolocationError } from "ol/Geolocation";
 
 beforeAll(() => {
     mockVectorLayer();
@@ -42,13 +41,18 @@ it("should successfully create a geolocation component with a button", async () 
 
     await waitForMapMount("map");
 
-    //mount GeolocationComponent
-    const geolocationBtn = await screen.findByTestId("geolocation");
-    expect(geolocationBtn.tagName).toBe("BUTTON");
-    expect(geolocationBtn).toMatchSnapshot();
+    // Mount geolocation component
+    const button = await getGeolocationButton();
+    expect(button.tagName).toBe("BUTTON");
+
+    expect(button).toMatchSnapshot();
 });
 
-it("should center to user's position", async () => {
+it.only("should center to user's position", async () => {
+    mockSuccessGeolocation([51.1, 45.3]);
+
+    const user = userEvent.setup();
+
     const { mapId, registry } = await setupMap({
         center: { x: 0, y: 0 },
         projection: "EPSG:4326"
@@ -78,12 +82,18 @@ it("should center to user's position", async () => {
 
     const firstCenter = map.getView().getCenter();
 
-    mockSuccessGeolocation([51.1, 45.3]);
-
-    const controller: GeolocationController = setup();
-    await controller.startGeolocation(map);
+    // Mount geolocation component
+    const button = await getGeolocationButton();
+    expect(button.tagName).toBe("BUTTON");
+    await user.click(button);
 
     const nextCenter = map.getView().getCenter();
+
+    await waitFor(() => {
+        if (firstCenter?.[0] === nextCenter?.[0] && firstCenter?.[1] === nextCenter?.[1]) {
+            throw new Error("Map center not changed");
+        }
+    });
 
     expect(nextCenter).not.toEqual(firstCenter);
 });
@@ -118,45 +128,33 @@ it.skip("should not change map center while changing user's position", async () 
 
     const firstCenter = map.getView().getCenter();
 
+    // Simulate first geolocation
     mockSuccessGeolocation([51.1, 45.3]);
-
     const controller: GeolocationController = setup();
     await controller.startGeolocation(map);
 
-    const positionFeature: Feature<Geometry> | undefined = controller.getPositionFeature();
-    expect(positionFeature?.getGeometry()?.getExtent()).toStrictEqual([45.3, 51.1, 45.3, 51.1]);
-
     const nextCenter = map.getView().getCenter();
 
+    // Check, if map is centered to user position
     expect(nextCenter).not.toEqual(firstCenter);
-
-    mockSuccessGeolocation([51.1, 6.3]);
-    // await controller.startGeolocation(map);
-
     const nextPositionFeature: Feature<Geometry> | undefined = controller.getPositionFeature();
     expect(nextPositionFeature?.getGeometry()?.getExtent()).toStrictEqual([45.3, 51.1, 45.3, 51.1]);
 
-    // // const firstExtent = getCurrentExtent(mapModel.olMap);
-    // const extent = [1479200, 6884026, 1499200, 6897026];
-
-    // // Karte verschieben
-    // mapModel.olMap.getView().fit(extent);
-
+    // Simulate second geolocation
     // mockSuccessGeolocation([51.1, 6.3]);
+    /** Trigger position change event on Geolocation */
 
-    // const nextPositionFeature: Feature<Geometry> | undefined = controller.getPositionFeature();
-    // expect(nextPositionFeature?.getGeometry()?.getExtent()).toStrictEqual([
-    //     5042772.932935293, 6639001.66376131, 5042772.932935293, 6639001.66376131
-    // ]);
+    const lastCenter = map.getView().getCenter();
 
-    // // const nextExtent = getCurrentExtent(mapModel.olMap);
-
-    // // // Test, ob sich die Position geändert hat
+    // Check, if map isn't centered to user position
+    expect(lastCenter).toStrictEqual(nextCenter);
+    const lastPositionFeature: Feature<Geometry> | undefined = controller.getPositionFeature();
+    expect(lastPositionFeature?.getGeometry()?.getExtent()).toStrictEqual([6.3, 51.1, 6.3, 51.1]);
 });
 
 it.skip("should not change user position while changing zoom level", async () => {});
 
-it.only("should successfully create an error with notifier message", async () => {
+it("should successfully create an error with notifier message", async () => {
     mockErrorGeolocation();
 
     const user = userEvent.setup();
@@ -188,6 +186,7 @@ it.only("should successfully create an error with notifier message", async () =>
 
     await waitForMapMount("map");
 
+    // Mount geolocation component
     const button = await getGeolocationButton();
     expect(button.tagName).toBe("BUTTON");
     await user.click(button);

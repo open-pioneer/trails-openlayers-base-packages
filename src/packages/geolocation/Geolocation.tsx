@@ -84,6 +84,9 @@ export const Geolocation: FC<GeolocationProps> = forwardRef(function Geolocation
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [map]);
 
+    /**
+     * Move GeolocationController.tsx
+     */
     useEffect(() => {
         if (controller === undefined) {
             return;
