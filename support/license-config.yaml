@@ -96,3 +96,11 @@ overrideLicenses:
     version: "1.0.3"
     licenseFiles:
       - custom: "./licenses/typewise_mit"
+
+  - name: "color-rgba"
+    version: "3.0.0"
+    license: "MIT"
+
+    # TODO Missing license document
+    licenseFiles:
+      - "./readme.md"
