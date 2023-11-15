@@ -62,7 +62,7 @@ const fakeRiverData = [
 const getFakeData = async (
     inputValue: string,
     responseData: { text: string }[],
-    duration = 1000
+    duration = 2000
 ) => {
     return new Promise<typeof responseData>((resolve) => {
         setTimeout(() => {
@@ -81,10 +81,12 @@ const request = async (url: string, signal?: AbortSignal | undefined): Promise<F
             throw new Error("Request failed: " + response.status);
         }
         const result = await response.json();
+
         return result.features;
     } catch (error) {
         console.error(error);
-        return [];
+        // return [];
+        throw new Error("Request failed: " + error);
     }
 };
 export class GeoSearchSource implements DataSource {
@@ -95,15 +97,16 @@ export class GeoSearchSource implements DataSource {
     ): Promise<Suggestion[]> {
         const signal = options?.signal;
         const url = this.#getUrl(inputValue);
+
         try {
             const features = await request(url, signal);
             return features.map((feature, idx) => ({
                 id: idx,
-                text: feature.properties?.text,
-                properties: feature.properties
+                text: feature.properties?.text
             })) as Suggestion[];
         } catch (error) {
             console.error(error);
+
             return [];
         }
     }
@@ -127,10 +130,12 @@ export class FakeCitySource implements DataSource {
     label: string = "Cities";
     async search(inputValue: string): Promise<Suggestion[]> {
         const result = await getFakeData(inputValue, fakeCityData);
+
         const suggestions = result.map((item, idx) => ({
             id: idx,
             text: item.text
         }));
+
         return suggestions;
     }
 }
@@ -144,5 +149,14 @@ export class FakeRiverSource implements DataSource {
             text: item.text
         }));
         return suggestions;
+    }
+}
+export class FakeRejectionSource implements DataSource {
+    label: string = "Rejected";
+    async search(
+        inputValue: string,
+        options?: { signal?: AbortSignal | undefined } | undefined
+    ): Promise<Suggestion[]> {
+        return Promise.reject(new Error(`search with ${inputValue} rejected`));
     }
 }

@@ -1,14 +1,17 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import { isAbortError, createLogger } from "@open-pioneer/core";
+
 import { Box, FormControl } from "@open-pioneer/chakra-integration";
 import { MapModel, useMapModel } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
-import { FC, useCallback, useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { AsyncSelect } from "chakra-react-select";
-import { DataSource, Suggestion } from "./api";
+import { DataSource, SuggestionGroup } from "./api";
 import { SearchController } from "./SearchController";
 import { HighlightOption } from "./HighlightOption";
 
+const LOG = createLogger("search-ui.Search");
 export interface SearchOption {
     value: string;
     label: string;
@@ -37,22 +40,24 @@ export interface SearchProps extends CommonComponentProps {
 }
 
 export const Search: FC<SearchProps> = (props) => {
-    const { placeholder, closeMenuOnSelect, mapId, sources, searchTypingDelay } = props;
+    const { placeholder, closeMenuOnSelect, mapId, sources, searchTypingDelay = 250 } = props;
     const { containerProps } = useCommonComponentProps("search", props);
     const { map } = useMapModel(mapId);
-    const controller = useController(sources, map);
-    const loadOptions = async (inputValue: string): Promise<SearchGroupOption[]> => {
-        const suggestions = await controller!.search(inputValue);
-        return mapSuggestions(suggestions, sources);
+    const controller = useController(sources, searchTypingDelay, map);
+
+    const loadOptions = async (inputValue: string) => {
+        let suggestions: SuggestionGroup[];
+        try {
+            suggestions = await controller!.search(inputValue);
+        } catch (error) {
+            if (!isAbortError(error)) {
+                LOG.error(`search fail`, error);
+            }
+            suggestions = [];
+        }
+        return mapSuggestions(suggestions);
     };
 
-    const debouncedLoadOptions = useCallback(
-        debounce(async (inputValue: string, callback: (options: unknown) => void) => {
-            const results = await loadOptions(inputValue);
-            callback(results);
-        }, searchTypingDelay),
-        [controller]
-    );
     return (
         <Box {...containerProps}>
             <FormControl alignItems="center">
@@ -60,46 +65,39 @@ export const Search: FC<SearchProps> = (props) => {
                     isClearable={true}
                     placeholder={placeholder}
                     closeMenuOnSelect={closeMenuOnSelect}
-                    loadOptions={debouncedLoadOptions}
+                    loadOptions={loadOptions}
                     components={{ Option: HighlightOption }}
                 />
             </FormControl>
         </Box>
     );
 };
-function mapSuggestions(suggestions: Suggestion[][], sources: DataSource[]) {
-    const options = sources.map((source, index) => ({
-        label: source.label,
-        options: suggestions[index]?.map((item) => ({ value: item.text, label: item.text })) || []
+function mapSuggestions(suggestions: SuggestionGroup[]) {
+    const options = suggestions.map((group) => ({
+        label: group.label,
+        options: group.suggestions.map((suggestion) => ({
+            value: suggestion.id.toString(),
+            label: suggestion.text
+        }))
     }));
     return options;
 }
-function useController(sources: DataSource[], map: MapModel | undefined) {
+function useController(
+    sources: DataSource[],
+    searchTypingDelay: number,
+    map: MapModel | undefined
+) {
     const [controller, setController] = useState<SearchController | undefined>(undefined);
     useEffect(() => {
         if (!map) {
             return;
         }
-        const controller = new SearchController({ sources });
+        const controller = new SearchController({ sources, searchTypingDelay });
         setController(controller);
         return () => {
             setController(undefined);
         };
-    }, [map, sources]);
+    }, [map, sources, searchTypingDelay]);
 
     return controller;
-}
-
-// TODO: This should accept all functions as an utility function, but this is banned by eslint.
-// TODO: It would be better when the delay would not trigger the loading animation
-// eslint-disable-next-line @typescript-eslint/ban-types
-function debounce<T extends Function>(delayedFunction: T, delay = 250) {
-    let timeout: NodeJS.Timeout | string | number | undefined;
-
-    return (...args: unknown[]) => {
-        timeout && clearTimeout(timeout);
-        timeout = setTimeout(() => {
-            delayedFunction(...args);
-        }, delay);
-    };
 }

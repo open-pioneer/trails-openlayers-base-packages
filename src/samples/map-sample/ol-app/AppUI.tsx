@@ -8,8 +8,7 @@ import { Measurement } from "@open-pioneer/measurement";
 import {
     Search,
     FakeCitySource,
-    FakeStreetSource,
-    FakeRiverSource,
+    FakeRejectionSource,
     GeoSearchSource
 } from "@open-pioneer/search-ui";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
@@ -27,7 +26,7 @@ import {
 import { MAP_ID } from "./MapConfigProviderImpl";
 import { useId } from "react";
 
-const sources = [new FakeCitySource(), new FakeRiverSource(), new FakeStreetSource()];
+const sources = [new GeoSearchSource(), new FakeCitySource(), new FakeRejectionSource()];
 export function AppUI() {
     const intl = useIntl();
     const tocTitleId = useId();

@@ -13,3 +13,8 @@ export interface Suggestion {
     geometry?: Geometry;
     properties?: Readonly<Record<string, unknown>>;
 }
+
+export interface SuggestionGroup {
+    label: string;
+    suggestions: Suggestion[];
+}
