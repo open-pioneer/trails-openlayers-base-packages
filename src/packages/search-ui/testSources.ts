@@ -101,7 +101,7 @@ export class GeoSearchSource implements DataSource {
             const features = await request(url, signal);
             return features.map((feature, idx) => ({
                 id: idx,
-                text: feature.properties?.text
+                label: feature.properties?.text
             })) as Suggestion[];
         } catch (error) {
             return [];
@@ -122,7 +122,8 @@ export class FakeStreetSource implements DataSource {
         const result = await getFakeData(inputValue, fakeStreetData, this.timeout);
         const suggestions = result.map((item, idx) => ({
             id: idx,
-            text: item.text
+            value: idx.toString(),
+            label: item.text
         }));
         return suggestions;
     }
@@ -138,7 +139,8 @@ export class FakeCitySource implements DataSource {
 
         const suggestions = result.map((item, idx) => ({
             id: idx,
-            text: item.text
+            value: idx.toString(),
+            label: item.text
         }));
 
         return suggestions;
@@ -155,7 +157,8 @@ export class FakeRiverSource implements DataSource {
         const result = await getFakeData(inputValue, fakeRiverData, this.timeout);
         const suggestions = result.map((item, idx) => ({
             id: idx,
-            text: item.text
+            value: idx.toString(),
+            label: item.text
         }));
         return suggestions;
     }

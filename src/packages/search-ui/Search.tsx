@@ -75,10 +75,7 @@ export const Search: FC<SearchProps> = (props) => {
 function mapSuggestions(suggestions: SuggestionGroup[]) {
     const options = suggestions.map((group) => ({
         label: group.label,
-        options: group.suggestions.map((suggestion) => ({
-            value: suggestion.id.toString(),
-            label: suggestion.text
-        }))
+        options: group.suggestions
     }));
     return options;
 }

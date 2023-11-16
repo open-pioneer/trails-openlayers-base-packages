@@ -26,9 +26,14 @@ export interface Suggestion {
     id: number | string;
 
     /**
+     * TODO
+     */
+    value: string;
+
+    /**
      * Display text for the suggestion list.
      */
-    text: string;
+    label: string;
 
     /**
      * Optional geometry (including srs).
