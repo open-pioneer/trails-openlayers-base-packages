@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: con terra GmbH and contributors
+// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { components, MenuProps, NoticeProps, OptionProps } from "chakra-react-select";
 import { useIntl } from "open-pioneer:react-hooks";

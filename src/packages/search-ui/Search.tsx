@@ -1,18 +1,11 @@
-// SPDX-FileCopyrightText: con terra GmbH and contributors
+// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { MapModel, useMapModel } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
-import { FC, useEffect, useMemo, useRef, useState } from "react";
-import {
-    ActionMeta,
-    AsyncSelect,
-    OptionsOrGroups,
-    SelectInstance,
-    SingleValue
-} from "chakra-react-select";
-import { DataSource } from "./api";
+import { DataSource, SuggestionGroup } from "./api";
+import { FC, useEffect, useRef, useState } from "react";
+import { ActionMeta, AsyncSelect, SelectInstance, SingleValue } from "chakra-react-select";
 import { SearchController } from "./SearchController";
-import { debounce, mapSuggestions } from "./utils";
 import {
     LoadingMessage,
     MenuComp,
@@ -26,6 +19,7 @@ import { Box } from "@open-pioneer/chakra-integration";
 
 const LOG = createLogger("search-ui:Search");
 const DEFAULT_GROUP_HEADING_BACKGROUND_COLOR = "rgba(211,211,211,0.20)";
+const DEFAULT_TYPING_DELAY = 150;
 
 // TODO: replace with Suggestions!
 export interface SearchOption {
@@ -107,34 +101,22 @@ export const Search: FC<SearchProps> = (props) => {
     } = props;
     const { containerProps } = useCommonComponentProps("search", props);
     const { map } = useMapModel(mapId);
-    const controller = useController(sources, map);
     const intl = useIntl();
 
-    const debouncedLoadOptions = useMemo(() => {
-        const loadOptions = async (inputValue: string): Promise<SearchGroupOption[]> => {
-            const suggestions = (await controller?.search(inputValue)) ?? [];
-            return mapSuggestions(suggestions, sources);
-        };
+    const controller = useController(sources, searchTypingDelay || DEFAULT_TYPING_DELAY, map);
 
-        return debounce(
-            async (
-                inputValue: string,
-                callback: (options: OptionsOrGroups<SearchOption, SearchGroupOption>) => void
-            ) => {
-                try {
-                    const results = await loadOptions(inputValue);
-                    callback(results); // <-- Notice we added here the "await" keyword.
-                } catch (e) {
-                    if (isAbortError(e)) {
-                        LOG.debug("Previous searchquery has been canceled by the user.");
-                    } else {
-                        LOG.error(e);
-                    }
-                }
-            },
-            searchTypingDelay
-        );
-    }, [controller, sources, searchTypingDelay]);
+    const loadOptions = async (inputValue: string) => {
+        let suggestions: SuggestionGroup[];
+        try {
+            suggestions = await controller!.search(inputValue);
+        } catch (error) {
+            if (!isAbortError(error)) {
+                LOG.error(`search fail`, error);
+            }
+            suggestions = [];
+        }
+        return mapSuggestions(suggestions);
+    };
 
     const displayCss = showDropdownIndicator ? "inherit" : "none";
     const chakraStyles = {
@@ -181,7 +163,7 @@ export const Search: FC<SearchProps> = (props) => {
                 isClearable={true}
                 placeholder={intl.formatMessage({ id: "searchPlaceholder" })}
                 closeMenuOnSelect={closeMenuOnSelect}
-                loadOptions={debouncedLoadOptions}
+                loadOptions={loadOptions}
                 components={{
                     Option: HighlightOption,
                     NoOptionsMessage: NoOptionsMessage,
@@ -195,19 +177,29 @@ export const Search: FC<SearchProps> = (props) => {
         </Box>
     );
 };
-
-function useController(sources: DataSource[], map: MapModel | undefined) {
+function mapSuggestions(suggestions: SuggestionGroup[]) {
+    const options = suggestions.map((group) => ({
+        label: group.label,
+        options: group.suggestions
+    }));
+    return options;
+}
+function useController(
+    sources: DataSource[],
+    searchTypingDelay: number,
+    map: MapModel | undefined
+) {
     const [controller, setController] = useState<SearchController | undefined>(undefined);
     useEffect(() => {
         if (!map) {
             return;
         }
-        const controller = new SearchController({ sources });
+        const controller = new SearchController({ sources, searchTypingDelay });
         setController(controller);
         return () => {
             setController(undefined);
         };
-    }, [map, sources]);
+    }, [map, sources, searchTypingDelay]);
 
     return controller;
 }

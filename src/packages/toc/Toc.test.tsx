@@ -1,8 +1,8 @@
-// SPDX-FileCopyrightText: con terra GmbH and contributors
+// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
-import { act, render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import TileLayer from "ol/layer/Tile";
 import { expect, it } from "vitest";
 import { Toc } from "./Toc";
@@ -121,18 +121,17 @@ it("should support overriding basemap-switcher properties", async () => {
     const { basemapSwitcher, basemapSelect } = await waitForBasemapSwitcher(tocDiv!);
     expect(basemapSwitcher?.classList.contains("test-class")).toBe(true);
 
-    // Weird timing problem w.r.t. select options in basemap switcher
-    await act(async () => {
-        await new Promise((resolve) => setTimeout(resolve, 100));
+    await waitFor(() => {
+        const options = basemapSelect.querySelectorAll("option");
+        const optionLabels = Array.from(options).map((opt) => opt.textContent);
+        expect(optionLabels, "basemap options are not equal to their expected values")
+            .toMatchInlineSnapshot(`
+        [
+          "OSM",
+          "emptyBasemapLabel",
+        ]
+      `);
     });
-    const options = basemapSelect.querySelectorAll("option");
-    const optionLabels = Array.from(options).map((opt) => opt.textContent);
-    expect(optionLabels).toMatchInlineSnapshot(`
-      [
-        "OSM",
-        "emptyBasemapLabel",
-      ]
-    `);
 });
 
 async function findToc() {

@@ -1,5 +1,6 @@
-// SPDX-FileCopyrightText: con terra GmbH and contributors
+// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { beforeEach, afterEach, expect, it, vi } from "vitest";
 import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
@@ -68,8 +69,9 @@ it("should successfully call select handler after clicking a suggestion", async 
     expect(selectHandler).toHaveBeenCalledWith({
         "action": "select-option",
         "suggestion": {
+            "id": 0,
             "label": "Dortmund",
-            "value": "Dortmund"
+            "value": "0"
         }
     });
 });
