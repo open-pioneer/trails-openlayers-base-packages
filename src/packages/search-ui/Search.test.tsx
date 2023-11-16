@@ -43,10 +43,7 @@ it("should successfully type into search", async () => {
 
 it("should successfully show a search suggestion", async () => {
     const user = userEvent.setup();
-
-    const selectHandler = vi.fn();
-
-    await createSearch(selectHandler);
+    await createSearch();
 
     // search is mounted
     const { searchInput } = await waitForInput();
