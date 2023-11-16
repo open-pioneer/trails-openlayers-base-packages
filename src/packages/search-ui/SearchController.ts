@@ -11,9 +11,20 @@ interface ControllerConfig {
 }
 
 export class SearchController {
+    /**
+     * Search sources defined by the developer.
+     */
     #sources: DataSource[] = [];
-    #searchTypingDelay: number = 250;
-    abortController: AbortController | undefined;
+
+    /**
+     * The timeout in millis.
+     */
+    #searchTypingDelay: number = 150;
+
+    /**
+     * Cancel or abort a previous request.
+     */
+    #abortController: AbortController | undefined;
 
     constructor(options: ControllerConfig) {
         this.#sources = options.sources;
@@ -21,22 +32,21 @@ export class SearchController {
     }
 
     async search(searchTerm: string): Promise<SuggestionGroup[]> {
-        this.abortController?.abort("canceled");
-        const abort = (this.abortController = new AbortController());
+        this.#abortController?.abort("canceled");
+        const abort = (this.#abortController = new AbortController());
         try {
             await waitForTimeOut(abort.signal, this.searchTypingDelay);
             if (abort.signal.aborted) {
                 LOG.debug(`search canceled with ${searchTerm}`);
                 throwAbortError();
             }
-
             const settledSearches = await Promise.all(
                 this.#sources.map((source) => this.#searchSource(source, searchTerm, abort.signal))
             );
             return settledSearches.filter((s): s is SuggestionGroup => s != null);
         } finally {
-            if (this.abortController === abort) {
-                this.abortController = undefined;
+            if (this.#abortController === abort) {
+                this.#abortController = undefined;
             }
         }
     }

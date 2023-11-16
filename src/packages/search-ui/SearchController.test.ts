@@ -6,7 +6,7 @@ import { SearchController } from "./SearchController";
 import { DataSource } from "./api";
 import { FakeCitySource, FakeRejectionSource, FakeRiverSource } from "./testSources";
 import { isAbortError } from "@open-pioneer/core";
-
+const FAKE_REQUEST_TIMER = 0;
 afterEach(() => {
     vi.restoreAllMocks();
 });
@@ -22,7 +22,10 @@ it("except controller to return result with suggestions from one source", async 
             suggestions: []
         }
     ];
-    const controller = setup([new FakeCitySource(), new FakeRiverSource()]);
+    const controller = setup([
+        new FakeCitySource(FAKE_REQUEST_TIMER),
+        new FakeRiverSource(FAKE_REQUEST_TIMER)
+    ]);
     const searchResponse = await controller.search("Aachen");
 
     expect(expected).toStrictEqual(searchResponse);
@@ -44,7 +47,10 @@ it("except controller to return result with suggestions from multiple sources", 
             ]
         }
     ];
-    const controller = setup([new FakeCitySource(), new FakeRiverSource()]);
+    const controller = setup([
+        new FakeCitySource(FAKE_REQUEST_TIMER),
+        new FakeRiverSource(FAKE_REQUEST_TIMER)
+    ]);
 
     const searchResponse = await controller.search("aa");
 
@@ -59,7 +65,7 @@ it("expect contoller to filter rejected queires and return only successfully reo
             suggestions: [{ "id": 0, "text": "Aachen" }]
         }
     ];
-    const controller = setup([new FakeCitySource(), new FakeRejectionSource()]);
+    const controller = setup([new FakeCitySource(FAKE_REQUEST_TIMER), new FakeRejectionSource()]);
 
     const searchResponse = await controller.search("aa");
     expect(expected).toStrictEqual(searchResponse);
@@ -82,14 +88,13 @@ it("expect contoller to filter rejected queires and return only successfully reo
 });
 
 it("expect contoller to call AbortController when typing to fast", async () => {
-    const logSpy = vi.spyOn(global.console, "log").mockImplementation(() => undefined);
     const expected = [
         {
             label: "Cities",
             suggestions: [{ "id": 0, "text": "Aachen" }]
         }
     ];
-    const controller = setup([new FakeCitySource()]);
+    const controller = setup([new FakeCitySource(FAKE_REQUEST_TIMER)]);
 
     let cancelled = false;
     const firstSearch = controller.search("a").catch((e) => (cancelled = !!isAbortError(e)));
@@ -100,17 +105,10 @@ it("expect contoller to call AbortController when typing to fast", async () => {
     expect(cancelled).toBe(true);
 });
 
-//it.only("")
-
 function setup(sources: DataSource[]) {
     const controller = new SearchController({
         sources,
         searchTypingDelay: 250
     });
     return controller;
-}
-function sleep(ms: number) {
-    return new Promise<void>((resolve) => {
-        setTimeout(resolve, ms);
-    });
 }

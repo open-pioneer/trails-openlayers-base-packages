@@ -62,7 +62,7 @@ const fakeRiverData = [
 const getFakeData = async (
     inputValue: string,
     responseData: { text: string }[],
-    duration = 2000
+    timeout: number
 ) => {
     return new Promise<typeof responseData>((resolve) => {
         setTimeout(() => {
@@ -70,7 +70,7 @@ const getFakeData = async (
                 item.text.toLowerCase().includes(inputValue.toLocaleLowerCase())
             );
             resolve(cp);
-        }, duration);
+        }, timeout);
     });
 };
 
@@ -84,7 +84,6 @@ const request = async (url: string, signal?: AbortSignal | undefined): Promise<F
 
         return result.features;
     } catch (error) {
-        console.error(error);
         // return [];
         throw new Error("Request failed: " + error);
     }
@@ -105,20 +104,22 @@ export class GeoSearchSource implements DataSource {
                 text: feature.properties?.text
             })) as Suggestion[];
         } catch (error) {
-            console.error(error);
-
             return [];
         }
     }
     #getUrl(inputValue: string): string {
-        return `URL`;
+        return `URL ${inputValue}`;
     }
 }
 
 export class FakeStreetSource implements DataSource {
     label: string = "Streets";
+    timeout: number;
+    constructor(timeout: number = 250) {
+        this.timeout = timeout;
+    }
     async search(inputValue: string): Promise<Suggestion[]> {
-        const result = await getFakeData(inputValue, fakeStreetData);
+        const result = await getFakeData(inputValue, fakeStreetData, this.timeout);
         const suggestions = result.map((item, idx) => ({
             id: idx,
             text: item.text
@@ -128,8 +129,12 @@ export class FakeStreetSource implements DataSource {
 }
 export class FakeCitySource implements DataSource {
     label: string = "Cities";
+    timeout: number;
+    constructor(timeout: number = 250) {
+        this.timeout = timeout;
+    }
     async search(inputValue: string): Promise<Suggestion[]> {
-        const result = await getFakeData(inputValue, fakeCityData);
+        const result = await getFakeData(inputValue, fakeCityData, this.timeout);
 
         const suggestions = result.map((item, idx) => ({
             id: idx,
@@ -142,8 +147,12 @@ export class FakeCitySource implements DataSource {
 
 export class FakeRiverSource implements DataSource {
     label: string = "Rivers";
+    timeout: number;
+    constructor(timeout: number = 250) {
+        this.timeout = timeout;
+    }
     async search(inputValue: string): Promise<Suggestion[]> {
-        const result = await getFakeData(inputValue, fakeRiverData);
+        const result = await getFakeData(inputValue, fakeRiverData, this.timeout);
         const suggestions = result.map((item, idx) => ({
             id: idx,
             text: item.text
@@ -153,10 +162,7 @@ export class FakeRiverSource implements DataSource {
 }
 export class FakeRejectionSource implements DataSource {
     label: string = "Rejected";
-    async search(
-        inputValue: string,
-        options?: { signal?: AbortSignal | undefined } | undefined
-    ): Promise<Suggestion[]> {
+    async search(inputValue: string): Promise<Suggestion[]> {
         return Promise.reject(new Error(`search with ${inputValue} rejected`));
     }
 }
