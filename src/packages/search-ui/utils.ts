@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: con terra GmbH and contributors
 // SPDX-License-Identifier: Apache-2.0
 import { DataSource, Suggestion } from "./api";
+import { SearchGroupOption } from "./Search";
 
 export function debounce<Args extends unknown[]>(
     delayedFunction: (...args: Args) => void,
@@ -16,7 +17,10 @@ export function debounce<Args extends unknown[]>(
     };
 }
 
-export function mapSuggestions(suggestions: Suggestion[][], sources: DataSource[]) {
+export function mapSuggestions(
+    suggestions: Suggestion[][],
+    sources: DataSource[]
+): SearchGroupOption[] {
     const options = sources.map((source, index) => ({
         label: source.label,
         options: suggestions[index]?.map((item) => ({ value: item.text, label: item.text })) || []

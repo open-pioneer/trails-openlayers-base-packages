@@ -27,6 +27,7 @@ import { Box } from "@open-pioneer/chakra-integration";
 const LOG = createLogger("search-ui:Search");
 const DEFAULT_GROUP_HEADING_BACKGROUND_COLOR = "rgba(211,211,211,0.20)";
 
+// TODO: replace with Suggestions!
 export interface SearchOption {
     value: string;
     label: string;
@@ -34,7 +35,6 @@ export interface SearchOption {
 export interface SearchGroupOption {
     label: string;
     options: SearchOption[];
-    priority?: number;
 }
 
 // TODO: The real suggestion should be evented here, not the SearchOption.
