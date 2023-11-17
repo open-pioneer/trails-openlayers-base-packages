@@ -62,6 +62,7 @@ export function ValueContainer({
     );
 }
 
+//TODO Add Eventlisener for event.key === "Enter"
 export function ClearIndicator({
     children,
     ...props
