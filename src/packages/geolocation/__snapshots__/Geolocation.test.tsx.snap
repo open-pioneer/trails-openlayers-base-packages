@@ -3,7 +3,7 @@
 exports[`should successfully create a geolocation component with a button 1`] = `
 <button
   aria-label="locateMeStart"
-  class="chakra-button tool-button geolocation css-22xpxh"
+  class="chakra-button tool-button geolocation tool-button--disabled css-22xpxh"
   data-testid="geolocation"
   data-theme="light"
   disabled=""
@@ -15,7 +15,6 @@ exports[`should successfully create a geolocation component with a button 1`] = 
   >
     <svg
       aria-hidden="true"
-      class="toggle-tool-inactive"
       fill="currentColor"
       focusable="false"
       height="1em"

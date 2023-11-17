@@ -63,9 +63,14 @@ export function AppUI() {
                         <Button variant="cancel">cancel</Button>
                     </Stack>
 
-                    <Heading size={"xs"}>isDisabled</Heading>
+                    <Heading size={"xs"}>Button states</Heading>
                     <Stack direction="row" my={2}>
                         <Button isDisabled>isDisabled</Button>
+                        <Button isActive>isActive</Button>
+                        <Button isLoading>isLoading</Button>
+                        <Button isLoading loadingText="loading...">
+                            isLoading with text
+                        </Button>
                     </Stack>
 
                     <Heading size={"xs"}>colorScheme</Heading>
