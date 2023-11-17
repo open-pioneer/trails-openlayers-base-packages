@@ -5,12 +5,13 @@ import {
     MenuProps,
     NoticeProps,
     OptionProps,
-    ClearIndicatorProps
+    ClearIndicatorProps,
+    ValueContainerProps
 } from "chakra-react-select";
 import { useIntl } from "open-pioneer:react-hooks";
 import { chakra } from "@open-pioneer/chakra-integration";
+import { KeyboardEvent } from "react";
 import { SearchGroupOption, SearchOption } from "./Search";
-import { ValueContainerProps } from "react-select/dist/declarations/src/components/containers";
 import { SearchIcon, CloseIcon } from "@chakra-ui/icons";
 
 export function MenuComp(props: MenuProps<SearchOption, false, SearchGroupOption>) {
@@ -62,16 +63,23 @@ export function ValueContainer({
     );
 }
 
-//TODO Add Eventlisener for event.key === "Enter"
 export function ClearIndicator({
-    children,
+    children: _ignored,
     ...props
 }: ClearIndicatorProps<SearchOption, false, SearchGroupOption>) {
+    const keyHandler = (e: KeyboardEvent) => {
+        if (e.key !== "Enter") {
+            return;
+        }
+
+        e.preventDefault();
+        props.clearValue();
+    };
+
     return (
         components.ClearIndicator && (
             <components.ClearIndicator {...props} className="search-clear-container">
-                <CloseIcon tabIndex={0}></CloseIcon>
-                {children}
+                <CloseIcon role="button" tabIndex={0} onKeyDown={keyHandler}></CloseIcon>
             </components.ClearIndicator>
         )
     );

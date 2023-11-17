@@ -65,7 +65,7 @@ export function AppUI() {
                                 showDropdownIndicator={false}
                                 onSelect={function (event: SelectSearchEvent): void {
                                     console.debug(
-                                        "User selectet " + event.suggestion.value + " from Search"
+                                        "User selected " + event.suggestion + " from Search"
                                     );
                                 }}
                                 onClear={function (): void {

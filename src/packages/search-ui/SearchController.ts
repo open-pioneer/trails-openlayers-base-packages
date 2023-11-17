@@ -1,13 +1,21 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { createLogger, isAbortError, throwAbortError } from "@open-pioneer/core";
-import { DataSource, SuggestionGroup } from "./api";
+import { DataSource, Suggestion } from "./api";
 
 const LOG = createLogger("search-ui.SearchController");
 
 interface ControllerConfig {
     searchTypingDelay: number;
     sources: DataSource[];
+}
+
+/**
+ * Group of suggestions returned from one source.
+ */
+export interface SuggestionGroup {
+    label: string;
+    suggestions: Suggestion[];
 }
 
 export class SearchController {
@@ -29,6 +37,11 @@ export class SearchController {
     constructor(options: ControllerConfig) {
         this.#sources = options.sources;
         this.#searchTypingDelay = options.searchTypingDelay;
+    }
+
+    destroy() {
+        this.#abortController?.abort("canceled");
+        this.#abortController = undefined;
     }
 
     async search(searchTerm: string): Promise<SuggestionGroup[]> {
@@ -80,6 +93,10 @@ export class SearchController {
  * wait for timeouts millis or until signal is aborted, whatever happens first
  */
 async function waitForTimeOut(signal: AbortSignal, timeoutMillis: number) {
+    if (signal.aborted) {
+        return;
+    }
+
     await new Promise<void>((resolve) => {
         const done = () => {
             signal.removeEventListener("abort", done);

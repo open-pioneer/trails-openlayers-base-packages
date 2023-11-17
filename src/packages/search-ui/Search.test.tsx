@@ -67,11 +67,9 @@ it("should successfully call select handler after clicking a suggestion", async 
     await userEvent.click(suggestion);
 
     expect(selectHandler).toHaveBeenCalledWith({
-        "action": "select-option",
         "suggestion": {
             "id": 0,
-            "label": "Dortmund",
-            "value": "0"
+            "label": "Dortmund"
         }
     });
 });

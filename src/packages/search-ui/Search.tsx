@@ -2,10 +2,10 @@
 // SPDX-License-Identifier: Apache-2.0
 import { MapModel, useMapModel } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
-import { DataSource, SuggestionGroup } from "./api";
+import { DataSource, Suggestion } from "./api";
 import { FC, useEffect, useRef, useState } from "react";
 import { ActionMeta, AsyncSelect, SelectInstance, SingleValue } from "chakra-react-select";
-import { SearchController } from "./SearchController";
+import { SearchController, SuggestionGroup } from "./SearchController";
 import {
     LoadingMessage,
     MenuComp,
@@ -22,25 +22,33 @@ const LOG = createLogger("search-ui:Search");
 const DEFAULT_GROUP_HEADING_BACKGROUND_COLOR = "rgba(211,211,211,0.20)";
 const DEFAULT_TYPING_DELAY = 150;
 
-// TODO: replace with Suggestions!
 export interface SearchOption {
+    /** Unique value for this option. */
     value: string;
+
+    /** Display text shown in menu. */
     label: string;
+
+    /** The raw result from the search source. */
+    suggestion: Suggestion;
 }
+
 export interface SearchGroupOption {
+    /** Display text shown in menu. */
     label: string;
+
+    /** Set of options that belong to this group. */
     options: SearchOption[];
 }
 
-// TODO: The real suggestion should be evented here, not the SearchOption.
-//  Maybe the controller should do the work?
 export interface SelectSearchEvent {
-    action: "select-option";
-    suggestion: SearchOption;
+    suggestion: Suggestion;
 }
 
 /**
- * This is for special properties of the Search component
+ * Properties supported by the {@link Search} component.
+ *
+ * TODO: Document default values for optional properties.
  */
 export interface SearchProps extends CommonComponentProps {
     /**
@@ -49,27 +57,17 @@ export interface SearchProps extends CommonComponentProps {
     mapId: string;
 
     /**
-     * Datasources to be searched on
+     * Data sources to be searched on
      */
     sources: DataSource[];
 
     /**
-     * Component name
-     */
-    name?: string;
-
-    /**
-     * Default property of the react select component
-     */
-    closeMenuOnSelect?: boolean;
-
-    /**
-     * Typing delay before the async search query starts after the user types in the search term
+     * Typing delay (in milliseconds) before the async search query starts after the user types in the search term.
      */
     searchTypingDelay?: number;
 
     /**
-     * Should the dropdown indicator be displayed (combo box arrow)
+     * Whether the the dropdown indicator should be displayed (combo box arrow).
      */
     showDropdownIndicator?: boolean;
 
@@ -91,7 +89,6 @@ export interface SearchProps extends CommonComponentProps {
 
 export const Search: FC<SearchProps> = (props) => {
     const {
-        closeMenuOnSelect,
         mapId,
         sources,
         searchTypingDelay,
@@ -106,7 +103,7 @@ export const Search: FC<SearchProps> = (props) => {
 
     const controller = useController(sources, searchTypingDelay || DEFAULT_TYPING_DELAY, map);
 
-    const loadOptions = async (inputValue: string) => {
+    const loadOptions = async (inputValue: string): Promise<SearchGroupOption[]> => {
         let suggestions: SuggestionGroup[];
         try {
             suggestions = await controller!.search(inputValue);
@@ -136,34 +133,36 @@ export const Search: FC<SearchProps> = (props) => {
         value: SingleValue<SearchOption>,
         actionMeta: ActionMeta<SearchOption>
     ) => {
-        if (onSelect && value && actionMeta.action === "select-option") {
-            onSelect({
-                action: "select-option",
-                suggestion: value
-            });
-        } else if (onClear && actionMeta.action === "clear") {
-            onClear();
-            // the next two lines are a workaround for the open bug in react-select regarding the
-            // cursor not being shown after clearing although the component is focused:
-            // https://github.com/JedWatson/react-select/issues/3871
-            selectRef.current?.blur();
-            selectRef.current?.focus();
-        } else {
-            LOG.debug("No event handler defined or unknown actiontype");
+        switch (actionMeta.action) {
+            case "select-option":
+                if (value) {
+                    onSelect?.({
+                        suggestion: value.suggestion
+                    });
+                }
+                break;
+            case "clear":
+                // the next two lines are a workaround for the open bug in react-select regarding the
+                // cursor not being shown after clearing although the component is focused:
+                // https://github.com/JedWatson/react-select/issues/3871
+                selectRef.current?.blur();
+                selectRef.current?.focus();
+                onClear?.();
+                break;
+            default:
+                LOG.debug("No event handler defined or unknown actiontype");
+                break;
         }
     };
 
-    // TODO: Fix typings?
-    /* eslint-disable  @typescript-eslint/no-explicit-any */
-    const selectRef = useRef<SelectInstance<any, any, any> | null>(null);
-
+    const selectRef = useRef<SelectInstance<SearchOption, false, SearchGroupOption>>(null);
     return (
         <Box {...containerProps}>
             <AsyncSelect<SearchOption, false, SearchGroupOption>
                 ref={selectRef}
                 isClearable={true}
                 placeholder={intl.formatMessage({ id: "searchPlaceholder" })}
-                closeMenuOnSelect={closeMenuOnSelect}
+                closeMenuOnSelect={true}
                 loadOptions={loadOptions}
                 components={{
                     Option: HighlightOption,
@@ -179,13 +178,7 @@ export const Search: FC<SearchProps> = (props) => {
         </Box>
     );
 };
-function mapSuggestions(suggestions: SuggestionGroup[]) {
-    const options = suggestions.map((group) => ({
-        label: group.label,
-        options: group.suggestions
-    }));
-    return options;
-}
+
 function useController(
     sources: DataSource[],
     searchTypingDelay: number,
@@ -199,9 +192,26 @@ function useController(
         const controller = new SearchController({ sources, searchTypingDelay });
         setController(controller);
         return () => {
+            controller.destroy();
             setController(undefined);
         };
     }, [map, sources, searchTypingDelay]);
 
     return controller;
+}
+
+function mapSuggestions(suggestions: SuggestionGroup[]): SearchGroupOption[] {
+    const options = suggestions.map(
+        (group, groupIndex): SearchGroupOption => ({
+            label: group.label,
+            options: group.suggestions.map((suggestion): SearchOption => {
+                return {
+                    value: `${groupIndex}-${suggestion.id}`,
+                    label: suggestion.label,
+                    suggestion
+                };
+            })
+        })
+    );
+    return options;
 }

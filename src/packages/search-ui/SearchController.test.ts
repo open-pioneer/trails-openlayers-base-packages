@@ -6,7 +6,9 @@ import { SearchController } from "./SearchController";
 import { DataSource } from "./api";
 import { FakeCitySource, FakeRejectionSource, FakeRiverSource } from "./testSources";
 import { isAbortError } from "@open-pioneer/core";
+
 const FAKE_REQUEST_TIMER = 0;
+
 afterEach(() => {
     vi.restoreAllMocks();
 });
@@ -15,7 +17,7 @@ it("except controller to return result with suggestions from one source", async 
     const expected = [
         {
             label: "Cities",
-            suggestions: [{ "id": 0, label: "Aachen", "value": "0" }]
+            suggestions: [{ "id": 0, label: "Aachen" }]
         },
         {
             label: "Rivers",
@@ -35,15 +37,14 @@ it("except controller to return result with suggestions from multiple sources", 
     const expected = [
         {
             label: "Cities",
-            suggestions: [{ "id": 0, "label": "Aachen", "value": "0" }]
+            suggestions: [{ "id": 0, "label": "Aachen" }]
         },
         {
             label: "Rivers",
             suggestions: [
                 {
                     "id": 0,
-                    "label": "Maas",
-                    "value": "0"
+                    "label": "Maas"
                 }
             ]
         }
@@ -55,15 +56,15 @@ it("except controller to return result with suggestions from multiple sources", 
 
     const searchResponse = await controller.search("aa");
 
-    expect(expected).toStrictEqual(searchResponse);
+    expect(searchResponse).toStrictEqual(expected);
 });
 
-it("expect contoller to filter rejected queires and return only successfully reolved", async () => {
+it("expect controller to filter rejected queries and return only successfully resolved ones", async () => {
     const logSpy = vi.spyOn(global.console, "error").mockImplementation(() => undefined);
     const expected = [
         {
             label: "Cities",
-            suggestions: [{ "id": 0, "label": "Aachen", "value": "0" }]
+            suggestions: [{ "id": 0, "label": "Aachen" }]
         }
     ];
     const controller = setup([new FakeCitySource(FAKE_REQUEST_TIMER), new FakeRejectionSource()]);
@@ -88,11 +89,11 @@ it("expect contoller to filter rejected queires and return only successfully reo
     `);
 });
 
-it("expect contoller to call AbortController when typing to fast", async () => {
+it("expect controller to call AbortController when typing quickly", async () => {
     const expected = [
         {
             label: "Cities",
-            suggestions: [{ "id": 0, "label": "Aachen", "value": "0" }]
+            suggestions: [{ "id": 0, "label": "Aachen" }]
         }
     ];
     const controller = setup([new FakeCitySource(FAKE_REQUEST_TIMER)]);
@@ -109,7 +110,7 @@ it("expect contoller to call AbortController when typing to fast", async () => {
 function setup(sources: DataSource[]) {
     const controller = new SearchController({
         sources,
-        searchTypingDelay: 250
+        searchTypingDelay: 10
     });
     return controller;
 }
