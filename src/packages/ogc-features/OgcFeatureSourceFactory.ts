@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { createLogger, isAbortError } from "@open-pioneer/core";
-import { FeatureLike } from "ol/Feature";
+import Feature, { FeatureLike } from "ol/Feature";
 import { FeatureLoader } from "ol/featureloader";
 import FeatureFormat from "ol/format/Feature";
 import GeoJSON from "ol/format/GeoJSON";
@@ -44,7 +44,7 @@ export interface OgcFeatureSourceOptions {
     attributions?: AttributionLike | undefined;
 
     /** Optional additional options for the VectorSource. */
-    additionalOptions?: Options<Geometry>;
+    additionalOptions?: Options<Feature<Geometry>>;
 }
 
 /**

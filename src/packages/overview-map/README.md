@@ -1,20 +1,20 @@
 # @open-pioneer/overview-map
 
-This package provides a UI component to integrate an overview map which helps to have a better overview of the current location in the map.
+This package offers a UI component with which an overview map can be integrated.
+This helps the user to better understand the current map view in a larger scale context.
 
 ## Usage
 
-To integrate the overview map in your app, add the component with a map ID and configure a layer which will be shown in the overview map:
+To integrate the overview map in your app, add the component with a map ID and configure a layer to be shown in the overview map:
 
 ```jsx
-
 const overviewMapLayer = ... // an OpenLayers layer, see below
 <OverviewMap mapId="map_id" olLayer={overviewMapLayer} />;
 ```
 
 ### Configuring the layer
 
-The `OverviewMap` requires an OpenLayers `Layer` object in the `olLayer` prop, for example:
+The `OverviewMap` requires an OpenLayers `Layer` object in the `olLayer` property, for example:
 
 ```jsx
 // Layer construction is wrapped in useMemo to avoid needless reconstructions on render.
@@ -34,14 +34,18 @@ const overviewMapLayer = useMemo(
 
 > NOTE: Keep in mind that an OpenLayers `Layer` object should only be used from (at most) a single map.
 > This means that the `olLayer` used here should be a new layer instance that is not used anywhere else.
-> Most importantly, you cannot (at this time) use an `.olLayer` from the `MapModel` directly.
+> **Most importantly, you cannot use an `.olLayer` from the `MapModel` directly**.
 
 ### Configuring the size
 
-The `OverviewMap` component defines a default size via its `.overview-map` CSS class.
-To override the default size, you can, for example, add a custom css class to the `OverviewMap` component and then define your own height or width there.
-The children of the map (the actual map view etc.) will resize themselves accordingly.
+The `OverviewMap` component uses a default height of `200px` and width of `300px`.
+To override the default size, use the `height` and `width` properties.
+Both properties support the usual values supported by Chakra UI:
+
+```jsx
+<OverviewMap mapId="map_id" olLayer={overviewMapLayer} height="300px" width="400px" />
+```
 
 ## License
 
-[Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0)
+Apache-2.0 (see `LICENSE` file)

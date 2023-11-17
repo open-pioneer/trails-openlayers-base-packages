@@ -8,7 +8,7 @@ exports[`shows notifications as toasts 1`] = `
   role="status"
 >
   <div
-    class="chakra-alert css-48wy07"
+    class="chakra-alert css-1nbakwd"
     data-status="info"
     data-theme="light"
     id="toast-1"

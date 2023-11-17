@@ -16,6 +16,8 @@ import { useIntl } from "open-pioneer:react-hooks";
 import { useId, useMemo, useState } from "react";
 import { PiCaretDoubleLeft, PiCaretDoubleRight, PiRulerFill, PiRulerLight } from "react-icons/pi";
 import { MAP_ID } from "./MapConfigProviderImpl";
+import { Geolocation } from "@open-pioneer/geolocation";
+import { Notifier } from "@open-pioneer/notifier";
 
 export function AppUI() {
     const intl = useIntl();
@@ -42,6 +44,7 @@ export function AppUI() {
 
     return (
         <Flex height="100%" direction="column" overflow="hidden">
+            <Notifier position="top-right" />
             <TitledSection
                 title={
                     <Box
@@ -118,6 +121,7 @@ export function AppUI() {
                                 gap={1}
                                 padding={1}
                             >
+                                <Geolocation mapId={MAP_ID}></Geolocation>
                                 <ToolButton
                                     label={intl.formatMessage({ id: "overviewMapTitle" })}
                                     icon={
