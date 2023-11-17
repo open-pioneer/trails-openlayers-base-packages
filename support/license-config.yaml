@@ -95,3 +95,12 @@ overrideLicenses:
     version: "1.0.3"
     licenseFiles:
       - custom: "./licenses/typewise_mit"
+
+  # NPM artifact does not ship with a license; github repository tagged with the released version
+  # does contain it however:
+  # https://github.com/JedWatson/react-select/blob/react-select%405.7.7/LICENSE
+  # The full license text was retrieved on 2023-11-17
+  - name: "react-select"
+    version: "5.7.7"
+    licenseFiles:
+      - custom: "./licenses/react_select_mit"
