@@ -5,7 +5,7 @@ import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { MapAnchor, MapContainer, useMapModel } from "@open-pioneer/map";
 import { MAP_ID } from "./MapConfigProviderImpl";
 import { resultHandler } from "@open-pioneer/search-result-handler";
-import { LineString, Point } from "ol/geom";
+import { LineString, Point, Polygon } from "ol/geom";
 import OlMap from "ol/Map";
 
 export function AppUI() {
@@ -84,8 +84,11 @@ export function AppUI() {
     );
 }
 
-function zoomAndHighlight(olMap: OlMap | undefined, geometries: Point[] | LineString[]) {
+function zoomAndHighlight(
+    olMap: OlMap | undefined,
+    resultGeometries: Point[] | LineString[] | Polygon[]
+) {
     if (olMap) {
-        resultHandler({ olMap: olMap, geometries: geometries });
+        resultHandler({ olMap: olMap, geometries: resultGeometries });
     }
 }
