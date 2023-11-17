@@ -15,6 +15,7 @@ import { Vector as VectorSource } from "ol/source";
 import { getArea, getLength } from "ol/sphere";
 import { Projection } from "ol/proj";
 import { StyleFunction, StyleLike, toFunction as toStyleFunction } from "ol/style/Style";
+import { TOPMOST_LAYER_Z } from "@open-pioneer/map";
 
 export type MeasurementType = "area" | "distance";
 
@@ -76,6 +77,7 @@ export class MeasurementController {
         this.layer = new VectorLayer({
             source
         });
+        this.layer.setZIndex(TOPMOST_LAYER_Z);
         olMap.addLayer(this.layer);
 
         const pointerMoveKey = olMap.on("pointermove", this.handlePointerMove.bind(this));
