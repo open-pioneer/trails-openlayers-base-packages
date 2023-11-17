@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
-import { GeometryCollection } from "ol/geom";
+import { LineString, Point, Polygon } from "ol/geom";
 import OlMap from "ol/Map";
 
 export interface ResultHandlerOptions {
@@ -13,7 +13,7 @@ export interface ResultHandlerOptions {
     /**
      * The layer shown in the overview map.
      */
-    geometries: GeometryCollection;
+    geometries: Point[] | LineString[] | Polygon[];
 
     /**
      * The zoomto-scale for point results
