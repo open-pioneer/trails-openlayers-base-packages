@@ -24,8 +24,8 @@ afterEach(() => {
 it("should successfully return a geolocation position", async () => {
     mockSuccessGeolocation([51.1, 45.3]);
 
-    const { controller, olMap } = setup();
-    await controller.startGeolocation(olMap);
+    const { controller } = setup();
+    await controller.startGeolocation();
 
     const positionFeature: Feature<Geometry> | undefined = controller.getPositionFeature();
     expect(positionFeature?.getGeometry()?.getExtent()).toStrictEqual([

@@ -83,6 +83,7 @@ it("should center to user's position", async () => {
     await waitForMapMount("map");
 
     const firstCenter = map.getView().getCenter();
+    expect(firstCenter).toBeDefined();
 
     // Mount geolocation component
     const button = await getGeolocationButton();
@@ -92,6 +93,7 @@ it("should center to user's position", async () => {
     await waitFor(() => {
         const nextCenter = map.getView().getCenter();
         expect(nextCenter).not.toEqual(firstCenter);
+        expect(nextCenter).toBeDefined();
     });
 });
 

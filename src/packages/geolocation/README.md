@@ -60,12 +60,13 @@ function AppUI() {
 To used custom position options from the [Geolocation API](https://www.w3.org/TR/geolocation/#position_options_interface), add the optional property `trackingOptions`.
 
 ```jsx
-<Geolocation mapId="map_id"
-    trackingOptions={
+<Geolocation
+    mapId="map_id"
+    trackingOptions={{
         enableHighAccuracy: true,
         timeout: 60000,
         maximumAge: 600000
-    }
+    }}
 />
 ```
 

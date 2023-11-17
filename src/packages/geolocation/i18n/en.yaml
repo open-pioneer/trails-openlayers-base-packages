@@ -5,5 +5,5 @@ messages:
   error: Error
   permissionDenied: Geolocation was canceled
   positionUnavailable: Geolocation position cannot be determined
-  timeout: Geolocation was canceled (TIMEOUT)
+  timeout: Geolocation was canceled due to timeout
   unknownError: An unexpected error occurred during geolocation

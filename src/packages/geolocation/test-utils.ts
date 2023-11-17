@@ -60,14 +60,12 @@ export function setupWithCustomProperties() {
     const accuracyFeatureStyle: Style = getCustomAccuracyStyle();
     const trackingOptions: PositionOptions = getCustomTrackingOptions();
 
+    const controller = new GeolocationController(olMap, trackingOptions);
+    controller.setPositionFeatureStyle(positionFeatureStyle);
+    controller.setAccuracyFeatureStyle(accuracyFeatureStyle);
     return {
         olMap,
-        controller: new GeolocationController(
-            olMap,
-            positionFeatureStyle,
-            accuracyFeatureStyle,
-            trackingOptions
-        )
+        controller
     };
 }
 

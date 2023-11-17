@@ -1,26 +1,22 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-
-import { createLogger } from "@open-pioneer/core";
+import { MapModel, useMapModel } from "@open-pioneer/map";
 import {
     CommonComponentProps,
     ToolButton,
     useCommonComponentProps
 } from "@open-pioneer/react-utils";
-import { useMapModel } from "@open-pioneer/map";
-import { unByKey } from "ol/Observable";
-import { useIntl } from "open-pioneer:react-hooks";
-import { FC, ForwardedRef, forwardRef, RefAttributes, useEffect, useState, useMemo } from "react";
+import { StyleLike } from "ol/style/Style";
+import { useIntl, useService } from "open-pioneer:react-hooks";
+import { FC, ForwardedRef, RefAttributes, forwardRef, useEffect, useState } from "react";
 import { MdLocationOn } from "react-icons/md";
 import { GeolocationController } from "./GeolocationController";
-import { useService } from "open-pioneer:react-hooks";
-import { StyleLike } from "ol/style/Style";
 
 // TODO: Workaround for https://github.com/open-pioneer/trails-build-tools/issues/47
 import {} from "@open-pioneer/notifier";
 
 /**
- * These are special properties for the Geolocation.
+ * These are properties supported by the {@link Geolocation} component.
  */
 export interface GeolocationProps extends CommonComponentProps, RefAttributes<HTMLButtonElement> {
     /**
@@ -29,17 +25,17 @@ export interface GeolocationProps extends CommonComponentProps, RefAttributes<HT
     mapId: string;
     /**
      * Style to be applied for the positioning highlight feature.
-     * Changing style during runtime is not supported.
      */
     positionFeatureStyle?: StyleLike;
     /**
      * Style to be applied for the accuracy highlight of the positioning feature.
-     * Changing style during runtime is not supported.
      */
     accuracyFeatureStyle?: StyleLike;
     /**
      * Position options for the Geolocation-Object.
      * See [PositionOptions](https://www.w3.org/TR/geolocation/#position_options_interface) for more details.
+     *
+     * NOTE: Changing the tracking options at runtime will reset the component's state.
      */
     trackingOptions?: PositionOptions;
 }
@@ -48,8 +44,6 @@ export const Geolocation: FC<GeolocationProps> = forwardRef(function Geolocation
     props: GeolocationProps,
     ref: ForwardedRef<HTMLButtonElement>
 ) {
-    const logger = useMemo(() => createLogger("geolocation:" + Geolocation.name), []);
-
     const { mapId, positionFeatureStyle, accuracyFeatureStyle, trackingOptions } = props;
     const { containerProps } = useCommonComponentProps("geolocation", props);
 
@@ -61,56 +55,35 @@ export const Geolocation: FC<GeolocationProps> = forwardRef(function Geolocation
 
     const notificationService = useService("notifier.NotificationService");
 
-    const [controller, setController] = useState<GeolocationController>();
-
-    useEffect(() => {
-        if (!map) {
-            return;
-        }
-        const geolocationController = new GeolocationController(
-            map.olMap,
-            positionFeatureStyle,
-            accuracyFeatureStyle,
-            trackingOptions
-        );
-        setController(geolocationController);
-
-        return () => {
-            geolocationController.destroy();
-            setController(undefined);
-        };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [map]);
+    const controller = useController(
+        map,
+        trackingOptions,
+        positionFeatureStyle,
+        accuracyFeatureStyle
+    );
 
     useEffect(() => {
         if (controller === undefined) {
             return;
         }
 
-        const geolocation = controller.getGeolocation();
-        const eventsKey = geolocation.on("error", function (evt) {
+        const eventsKey = controller.on("error", function (error) {
             const title = intl.formatMessage({ id: "error" });
-            let description = "";
-
-            switch (evt.code) {
-                case 1:
-                    description = intl.formatMessage({ id: "permissionDenied" });
-                    break;
-                case 2:
-                    description = intl.formatMessage({ id: "positionUnavailable" });
-                    break;
-                case 3:
-                    description = intl.formatMessage({ id: "timeout" });
-                    break;
-                default:
-                    description = intl.formatMessage({ id: "unknownError" });
-                    break;
-            }
+            const description = (() => {
+                switch (error) {
+                    case "permission-denied":
+                        return intl.formatMessage({ id: "permissionDenied" });
+                    case "position-unavailable":
+                        return intl.formatMessage({ id: "positionUnavailable" });
+                    case "timeout":
+                        return intl.formatMessage({ id: "timeout" });
+                    case "unknown":
+                        return intl.formatMessage({ id: "unknownError" });
+                }
+            })();
 
             setLoading(false);
             setActive(false);
-
-            logger.error("Error from geolocation API:", evt.message);
 
             notificationService.notify({
                 level: "error",
@@ -119,31 +92,26 @@ export const Geolocation: FC<GeolocationProps> = forwardRef(function Geolocation
             });
         });
         return () => {
-            if (eventsKey) unByKey(eventsKey);
+            eventsKey.destroy();
         };
-    }, [logger, controller, intl, notificationService]);
+    }, [controller, intl, notificationService]);
 
     useEffect(() => {
-        if (!map) {
+        if (!controller) {
             setLoading(false);
             return;
         }
         if (isActive) {
             setLoading(true);
-            const geolocationPromise: Promise<boolean> | undefined = controller?.startGeolocation(
-                map.olMap
-            );
-            if (geolocationPromise) {
-                geolocationPromise.then(() => {
-                    setLoading(false);
-                });
-            }
+            controller.startGeolocation().then(() => {
+                setLoading(false);
+            });
         }
         return () => {
-            controller?.stopGeolocation(map.olMap);
+            controller?.stopGeolocation();
             setLoading(false);
         };
-    }, [controller, map, isActive]);
+    }, [controller, isActive]);
 
     const toggleActiveState = () => {
         if (!map) {
@@ -162,6 +130,7 @@ export const Geolocation: FC<GeolocationProps> = forwardRef(function Geolocation
             }
             icon={
                 <MdLocationOn
+                    // TODO: ToolButton isActive
                     className={isActive ? "toggle-tool-active" : "toggle-tool-inactive"}
                 />
             }
@@ -172,3 +141,31 @@ export const Geolocation: FC<GeolocationProps> = forwardRef(function Geolocation
         />
     );
 });
+
+function useController(
+    map: MapModel | undefined,
+    trackingOptions: PositionOptions | undefined,
+    positionFeatureStyle: StyleLike | undefined,
+    accuracyFeatureStyle: StyleLike | undefined
+): GeolocationController | undefined {
+    const [controller, setController] = useState<GeolocationController>();
+    useEffect(() => {
+        if (!map) {
+            return;
+        }
+        const geolocationController = new GeolocationController(map.olMap, trackingOptions);
+        setController(geolocationController);
+
+        return () => {
+            geolocationController.destroy();
+            setController(undefined);
+        };
+    }, [map, trackingOptions]);
+    useEffect(() => {
+        controller?.setPositionFeatureStyle(positionFeatureStyle);
+    }, [controller, positionFeatureStyle]);
+    useEffect(() => {
+        controller?.setAccuracyFeatureStyle(accuracyFeatureStyle);
+    }, [controller, accuracyFeatureStyle]);
+    return controller;
+}
