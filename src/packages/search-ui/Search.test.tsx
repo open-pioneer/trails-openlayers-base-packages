@@ -148,7 +148,7 @@ async function waitForClearButton() {
     const { clearButton } = await waitFor(async () => {
         const clearButton: Element | null = (
             await screen.findByTestId<HTMLDivElement>("search")
-        ).querySelector('[role = "button"]');
+        ).querySelector(".search-clear-container");
 
         if (!clearButton) {
             throw new Error("Clearbutton not found");

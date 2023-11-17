@@ -11,7 +11,8 @@ import {
     MenuComp,
     NoOptionsMessage,
     HighlightOption,
-    ValueContainer
+    ValueContainer,
+    ClearIndicator
 } from "./CustomComponents";
 import { createLogger, isAbortError } from "@open-pioneer/core";
 import { useIntl } from "open-pioneer:react-hooks";
@@ -169,7 +170,8 @@ export const Search: FC<SearchProps> = (props) => {
                     NoOptionsMessage: NoOptionsMessage,
                     Menu: MenuComp,
                     LoadingMessage: LoadingMessage,
-                    ValueContainer: ValueContainer
+                    ValueContainer: ValueContainer,
+                    ClearIndicator: ClearIndicator
                 }}
                 chakraStyles={chakraStyles}
                 onChange={onInputChange}

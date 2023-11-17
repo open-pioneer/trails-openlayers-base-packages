@@ -1,11 +1,17 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { components, MenuProps, NoticeProps, OptionProps } from "chakra-react-select";
+import {
+    components,
+    MenuProps,
+    NoticeProps,
+    OptionProps,
+    ClearIndicatorProps
+} from "chakra-react-select";
 import { useIntl } from "open-pioneer:react-hooks";
 import { chakra } from "@open-pioneer/chakra-integration";
 import { SearchGroupOption, SearchOption } from "./Search";
 import { ValueContainerProps } from "react-select/dist/declarations/src/components/containers";
-import { SearchIcon } from "@chakra-ui/icons";
+import { SearchIcon, CloseIcon } from "@chakra-ui/icons";
 
 export function MenuComp(props: MenuProps<SearchOption, false, SearchGroupOption>) {
     const hasInput = props.selectProps.inputValue.length > 0;
@@ -52,6 +58,20 @@ export function ValueContainer({
                 {!!children && <SearchIcon style={{ position: "absolute", left: 8 }}></SearchIcon>}
                 {children}
             </components.ValueContainer>
+        )
+    );
+}
+
+export function ClearIndicator({
+    children,
+    ...props
+}: ClearIndicatorProps<SearchOption, false, SearchGroupOption>) {
+    return (
+        components.ClearIndicator && (
+            <components.ClearIndicator {...props} className="search-clear-container">
+                <CloseIcon tabIndex={0}></CloseIcon>
+                {children}
+            </components.ClearIndicator>
         )
     );
 }
