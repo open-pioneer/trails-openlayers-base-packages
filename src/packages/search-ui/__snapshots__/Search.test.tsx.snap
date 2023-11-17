@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`should successfully create a measurement component 1`] = `
+exports[`should successfully create a search component 1`] = `
 <div
   class="search css-0"
   data-testid="search"

@@ -27,7 +27,7 @@ afterEach(() => {
     vi.restoreAllMocks();
 });
 
-it("should successfully create a measurement component", async () => {
+it("should successfully create a search component", async () => {
     await createSearch();
     // search is mounted
     const { searchDiv } = await waitForSearch();
@@ -91,7 +91,6 @@ it("should successfully clear a suggestion select", async () => {
     await userEvent.click(suggestion);
     const { clearButton } = await waitForClearButton();
     await userEvent.click(clearButton);
-    //Todo Test not Work
     expect(clearHandler).toBeCalledTimes(1);
 });
 
