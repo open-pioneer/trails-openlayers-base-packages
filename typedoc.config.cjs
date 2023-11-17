@@ -17,7 +17,8 @@ const documentedPackages = [
     "packages/measurement",
     "packages/ogc-features",
     "packages/overview-map",
-    "packages/scale-bar"
+    "packages/scale-bar",
+    "packages/geolocation"
 ];
 
 const packagePaths = documentedPackages.map((p) => `src/${p}`);

@@ -10,7 +10,7 @@
         "@open-pioneer/map": "workspace:^",
         "@open-pioneer/test-utils": "^1.0.1",
         "@testing-library/react": "^14.0.0",
-        "ol": "^8.1.0"
+        "ol": "^8.2.0"
     },
     "devDependencies": {
         "openlayers-base-packages": "workspace:*"

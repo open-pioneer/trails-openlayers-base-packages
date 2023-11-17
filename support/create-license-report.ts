@@ -84,16 +84,18 @@ function analyzeLicenses(
         const licenseFiles = overrideEntry?.licenseFiles ?? findLicenseFiles(project.path);
         const noticeFiles = overrideEntry?.noticeFiles ?? findNoticeFiles(project.path);
 
-        if (!licenses || licenses === "Unknown") {
-            unknownLicenses = true;
-            console.warn(
-                `Failed to detect licenses of dependency ${dependencyInfo} at ${project.path}`
-            );
-        } else if (!config.allowedLicenses.includes(licenses)) {
-            disallowedLicenses = true;
-            console.warn(
-                `License '${licenses}' of dependency ${dependencyInfo} is not allowed by configuration.`
-            );
+        if (!overrideEntry?.license) {
+            if (!licenses || licenses === "Unknown") {
+                unknownLicenses = true;
+                console.warn(
+                    `Failed to detect licenses of dependency ${dependencyInfo} at ${project.path}`
+                );
+            } else if (!config.allowedLicenses.includes(licenses)) {
+                disallowedLicenses = true;
+                console.warn(
+                    `License '${licenses}' of dependency ${dependencyInfo} is not allowed by configuration.`
+                );
+            }
         }
 
         const readProjectFile = (file: FileSpec) => {

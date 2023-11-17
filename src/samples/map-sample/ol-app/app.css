@@ -1,1 +1,10 @@
 /* suppress "empty" warning */
+
+/* TODO: set color to primary/secondary? */
+.toggle-tool-active {
+    color: green;
+}
+
+.toggle-tool-inactive {
+    color: black;
+}
