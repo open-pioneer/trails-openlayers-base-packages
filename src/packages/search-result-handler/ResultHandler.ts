@@ -9,6 +9,7 @@ import { Coordinate } from "ol/coordinate";
 import { Circle, Fill, Icon, Stroke, Style } from "ol/style";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
+import olMarkerUrl from "./images/olMarker.png?url";
 
 export interface ResultHandlerOptions {
     /**
@@ -117,13 +118,9 @@ function removeMarkerOrHighlight(olMap: OlMap) {
 //todo: how to add directory for image
 const styles = {
     "Point": new Style({
-        /*image:new Icon({
+        image: new Icon({
             anchor: [0.5, 1],
-            src: "src/packages/search-result-handler/images/olMarker.png"
-        })*/
-        image: new Circle({
-            fill: new Fill({ color: "blue" }),
-            radius: 5
+            src: olMarkerUrl
         })
     }),
     "Linestring": new Style({
