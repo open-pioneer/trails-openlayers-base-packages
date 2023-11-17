@@ -128,13 +128,9 @@ export const Geolocation: FC<GeolocationProps> = forwardRef(function Geolocation
                     ? intl.formatMessage({ id: "locateMeEnd" })
                     : intl.formatMessage({ id: "locateMeStart" })
             }
-            icon={
-                <MdLocationOn
-                    // TODO: ToolButton isActive
-                    className={isActive ? "toggle-tool-active" : "toggle-tool-inactive"}
-                />
-            }
+            icon={<MdLocationOn />}
             onClick={() => toggleActiveState()}
+            isActive={isActive}
             isLoading={isLoading}
             isDisabled={!supportsGeolocation}
             {...containerProps}

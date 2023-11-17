@@ -5,18 +5,10 @@ import { theme } from "@open-pioneer/theme";
 import * as appMetadata from "open-pioneer:app";
 import { AppUI } from "./AppUI";
 
-const element = createCustomElement({
+const Element = createCustomElement({
     component: AppUI,
     theme,
-    appMetadata,
-    openShadowRoot: true,
-    async resolveConfig(ctx) {
-        const locale = ctx.getAttribute("forced-locale");
-        if (!locale) {
-            return undefined;
-        }
-        return { locale };
-    }
+    appMetadata
 });
 
-customElements.define("ol-map-app", element);
+customElements.define("theming-app", Element);

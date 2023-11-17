@@ -18,7 +18,8 @@ const documentedPackages = [
     "packages/ogc-features",
     "packages/overview-map",
     "packages/scale-bar",
-    "packages/geolocation"
+    "packages/geolocation",
+    "packages/theme"
 ];
 
 const packagePaths = documentedPackages.map((p) => `src/${p}`);

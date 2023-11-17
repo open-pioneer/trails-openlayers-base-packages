@@ -131,11 +131,13 @@ export function AppUI() {
                                             <PiCaretDoubleLeft />
                                         )
                                     }
+                                    isActive={showOverviewMap}
                                     onClick={toggleOverviewMap}
                                 />
                                 <ToolButton
                                     label={intl.formatMessage({ id: "measurementTitle" })}
                                     icon={measurementIsActive ? <PiRulerFill /> : <PiRulerLight />}
+                                    isActive={measurementIsActive}
                                     onClick={toggleMeasurement}
                                 />
                                 <InitialExtent mapId={MAP_ID} />

@@ -20,6 +20,7 @@
         "@open-pioneer/react-utils": "workspace:^",
         "@open-pioneer/geolocation": "workspace:^",
         "@open-pioneer/notifier": "workspace:^",
+        "@open-pioneer/theme": "workspace:^",
         "map-sample-logging": "workspace:^",
         "ol": "^8.2.0",
         "react": "^18.2.0",
