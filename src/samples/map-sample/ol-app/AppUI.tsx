@@ -14,17 +14,29 @@ import TileLayer from "ol/layer/Tile.js";
 import OSM from "ol/source/OSM.js";
 import { useIntl } from "open-pioneer:react-hooks";
 import { useId, useMemo, useState } from "react";
-import { PiCaretDoubleLeft, PiCaretDoubleRight, PiRulerFill, PiRulerLight } from "react-icons/pi";
+import {
+    PiCaretDoubleLeft,
+    PiCaretDoubleRight,
+    PiRulerFill,
+    PiRulerLight,
+    PiBookmarksSimpleBold
+} from "react-icons/pi";
 import { MAP_ID } from "./MapConfigProviderImpl";
 import { Geolocation } from "@open-pioneer/geolocation";
 import { Notifier } from "@open-pioneer/notifier";
+import { SpatialBookmark } from "@open-pioneer/spatial-bookmark";
 
 export function AppUI() {
     const intl = useIntl();
     const tocTitleId = useId();
     const measurementTitleId = useId();
+    const spatialBookmarkTitle = useId();
     const [measurementIsActive, setMeasurementIsActive] = useState<boolean>(false);
     const [showOverviewMap, setShowOverviewMap] = useState<boolean>(true);
+    const [bookmarkIsActive, setBookmarkActive] = useState<boolean>(false);
+    function toggleBookmark() {
+        setBookmarkActive(!bookmarkIsActive);
+    }
 
     function toggleMeasurement() {
         setMeasurementIsActive(!measurementIsActive);
@@ -45,6 +57,7 @@ export function AppUI() {
     return (
         <Flex height="100%" direction="column" overflow="hidden">
             <Notifier position="top-right" />
+
             <TitledSection
                 title={
                     <Box
@@ -65,6 +78,36 @@ export function AppUI() {
                         role="main"
                         aria-label={intl.formatMessage({ id: "ariaLabel.map" })}
                     >
+                        <MapAnchor horizontalGap={10} position="bottom-left">
+                            <Box
+                                backgroundColor="white"
+                                borderWidth="1px"
+                                borderRadius="lg"
+                                padding={2}
+                                boxShadow="lg"
+                                role="dialog"
+                            >
+                                {bookmarkIsActive && (
+                                    <Box role="dialog" aria-labelledby={spatialBookmarkTitle}>
+                                        <TitledSection
+                                            title={
+                                                <SectionHeading
+                                                    id={spatialBookmarkTitle}
+                                                    size="md"
+                                                    mb={2}
+                                                >
+                                                    {intl.formatMessage({
+                                                        id: "spatialBookmarkTitle"
+                                                    })}
+                                                </SectionHeading>
+                                            }
+                                        >
+                                            <SpatialBookmark mapId={MAP_ID} />
+                                        </TitledSection>
+                                    </Box>
+                                )}
+                            </Box>
+                        </MapAnchor>
                         <MapAnchor position="top-left" horizontalGap={20} verticalGap={20}>
                             <Box
                                 backgroundColor="white"
@@ -121,6 +164,12 @@ export function AppUI() {
                                 gap={1}
                                 padding={1}
                             >
+                                <ToolButton
+                                    label={intl.formatMessage({ id: "spatialBookmarkTitle" })}
+                                    icon={<PiBookmarksSimpleBold />}
+                                    isActive={bookmarkIsActive}
+                                    onClick={toggleBookmark}
+                                />
                                 <Geolocation mapId={MAP_ID}></Geolocation>
                                 <ToolButton
                                     label={intl.formatMessage({ id: "overviewMapTitle" })}
