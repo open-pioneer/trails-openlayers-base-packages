@@ -1,3 +1,10 @@
 messages:
   createBookmarkLabel: "Neues Lesezeichen hinzufügen"
   deleteBookmarkLabel: "Lesezeichen löschen"
+  createBookmarkInfo: "Nach der Eingabe eines Namens können Sie das neue Bookmark speichern. Dabei wird der aktuelle Kartenausschnitt als Grundlage für die Position verwendet."
+  deleteBookmarkInfo: "Möchten Sie wirklich alle räumlichen Lesezeichen löschen?"
+  editBookmarkInfo: "Hier können Sie den Namen Ihres räumlichen Lesezeichens anpassen."
+  bookmarkRemoverHandlerYes: "Ja"
+  bookmarkRemoverHandlerNo: "Nein"
+  bookmarkCreatorHandlerSave: "Save"
+  bookmarkCreatorHandlerCancel: "Cancel"
