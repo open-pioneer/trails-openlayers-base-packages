@@ -6,5 +6,8 @@ import { defineBuildConfig } from "@open-pioneer/build-support";
 export default defineBuildConfig({
     styles: "./measurement.css",
     entryPoints: ["index"],
-    i18n: ["en", "de"]
+    i18n: ["en", "de"],
+    publishConfig: {
+        strict: true
+    }
 });
