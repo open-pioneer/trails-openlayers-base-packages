@@ -11,6 +11,7 @@
         "@open-pioneer/runtime": "^1.1.0"
     },
     "devDependencies": {
+        "@open-pioneer/test-utils": "^1.0.1",
         "openlayers-base-packages": "workspace:*"
     },
     "publishConfig": {

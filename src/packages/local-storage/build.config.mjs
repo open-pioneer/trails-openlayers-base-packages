@@ -3,5 +3,13 @@
 import { defineBuildConfig } from "@open-pioneer/build-support";
 
 export default defineBuildConfig({
-    entryPoints: ["index"]
+    entryPoints: ["index"],
+    services: {
+        StorageServiceImpl: {
+            provides: ["local-storage.LocalStorageService"]
+        }
+    },
+    properties: {
+        "storageId": null
+    }
 });
