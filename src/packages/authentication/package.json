@@ -2,7 +2,7 @@
     "name": "@open-pioneer/authentication",
     "description": "Authentication API for open pioneer trails applications.",
     "license": "Apache-2.0",
-    "version": "0.0.1",
+    "version": "0.1.0",
     "main": "index.ts",
     "scripts": {
         "build": "build-pioneer-package"

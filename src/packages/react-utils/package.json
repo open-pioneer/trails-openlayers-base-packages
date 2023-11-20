@@ -1,7 +1,7 @@
 {
     "name": "@open-pioneer/react-utils",
     "description": "Contains common react utilities used by the open pioneer trails project",
-    "version": "0.0.1",
+    "version": "0.1.0",
     "license": "Apache-2.0",
     "main": "index.ts",
     "scripts": {
