@@ -20,7 +20,7 @@ import { Box } from "@open-pioneer/chakra-integration";
 
 const LOG = createLogger("search-ui:Search");
 const DEFAULT_GROUP_HEADING_BACKGROUND_COLOR = "rgba(211,211,211,0.20)";
-const DEFAULT_TYPING_DELAY = 150;
+const DEFAULT_TYPING_DELAY = 500;
 
 export interface SearchOption {
     /** Unique value for this option. */
@@ -61,7 +61,7 @@ export interface SearchProps extends CommonComponentProps {
 
     /**
      * Typing delay (in milliseconds) before the async search query starts after the user types in the search term.
-     * default value: 150
+     * default value: 500
      */
     searchTypingDelay?: number;
 
