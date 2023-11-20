@@ -45,6 +45,14 @@ export interface LocalStorageNamespace {
      * Namespaces can be used to group multiple entries together.
      * They are implemented as objects and appear as such when retrieved from their parent.
      * Getting or setting a property on a namespace will modify these objects.
+     *
+     * Example:
+     *
+     * ```js
+     * const storageService = ...; // injected
+     * const packageNamespace = storageService.getNamespace("my-package-name");
+     * packageNamespace.set("foo", "bar"); // actually sets `"my-package-name" -> "foo"`
+     * ```
      */
     getNamespace(prefix: string): LocalStorageNamespace;
 }

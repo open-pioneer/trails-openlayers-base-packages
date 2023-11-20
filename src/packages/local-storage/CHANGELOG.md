@@ -1,1 +1,1 @@
-# @open-pioneer/map
+# @open-pioneer/local-storage
