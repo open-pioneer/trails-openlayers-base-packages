@@ -15,6 +15,7 @@ import {
     PopoverHeader,
     PopoverTrigger,
     Portal,
+    Spacer,
     Text
 } from "@open-pioneer/chakra-integration";
 import { LayerBase, MapModel, Sublayer } from "@open-pioneer/map";
@@ -22,7 +23,7 @@ import { PackageIntl } from "@open-pioneer/runtime";
 import classNames from "classnames";
 import { useIntl } from "open-pioneer:react-hooks";
 import { useCallback, useRef, useSyncExternalStore } from "react";
-import { FiMoreVertical } from "react-icons/fi";
+import { FiAlertTriangle, FiMoreVertical } from "react-icons/fi";
 
 /**
  * Lists the (top level) operational layers in the map.
@@ -71,6 +72,7 @@ function LayerItem(props: { layer: LayerBase; intl: PackageIntl }): JSX.Element 
     const title = useTitle(layer);
     const { isVisible, setVisible } = useVisibility(layer);
     const sublayers = useSublayers(layer);
+    const isAvailable = useLoadState(layer) !== "error";
 
     let nestedChildren;
     if (sublayers?.length) {
@@ -92,10 +94,17 @@ function LayerItem(props: { layer: LayerBase; intl: PackageIntl }): JSX.Element 
             >
                 <Checkbox
                     isChecked={isVisible}
+                    isDisabled={!isAvailable}
                     onChange={(event) => setVisible(event.target.checked)}
                 >
                     {title}
                 </Checkbox>
+                {!isAvailable && (
+                    // TODO Tooltip?
+                    // TODO Aria Label
+                    <FiAlertTriangle color={"red"} aria-label={"Layer nicht verfügbar"} />
+                )}
+                <Spacer></Spacer>
                 {layer.description && (
                     <LayerItemDescriptor layer={layer} title={title} intl={intl} />
                 )}
@@ -113,11 +122,13 @@ function LayerItemDescriptor(props: {
     const { layer, title, intl } = props;
     const buttonLabel = intl.formatMessage({ id: "descriptionLabel" });
     const description = useLayerDescription(layer);
+    const isAvailable = useLoadState(layer) !== "error";
 
     return (
         <Popover>
             <PopoverTrigger>
                 <Button
+                    isDisabled={!isAvailable}
                     className="toc-layer-item-details-button"
                     aria-label={buttonLabel}
                     borderRadius="full"
@@ -229,6 +240,36 @@ function useSublayers(layer: LayerBase): Sublayer[] | undefined {
         return layers;
     }, [layer]);
     return useCachedExternalStore(subscribe, getValue);
+}
+
+/** Returns the layers current state. */
+function useLoadState(layer: LayerBase): string {
+    // TODO also necessary to update sublayers
+    const subscribe = useCallback(
+        (cb: () => void) => {
+            const resource = layer.on("changed:loadState", cb);
+            return () => resource.destroy();
+        },
+        [layer]
+    );
+
+    const getSnapshot = useCallback(
+        () => {
+            // for sublayers, use the state of the parent
+            let operationalLayer: Layer;
+            if ("loadState" in layer) {
+                operationalLayer = layer as Layer;
+            } else {
+                const sl = layer as Sublayer;
+                operationalLayer = sl.parentLayer;
+            }
+            
+            return operationalLayer.loadState;
+        },
+        [layer]
+    );
+
+    return useSyncExternalStore(subscribe, getSnapshot);
 }
 
 /**

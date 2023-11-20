@@ -23,6 +23,7 @@ export abstract class AbstractLayer<AdditionalEvents = {}>
 {
     #olLayer: OlBaseLayer;
     #isBaseLayer: boolean;
+    #healthCheckURL?: string;
     #visible: boolean;
 
     #loadState: LayerLoadState;
@@ -32,10 +33,11 @@ export abstract class AbstractLayer<AdditionalEvents = {}>
         super(config);
         this.#olLayer = config.olLayer;
         this.#isBaseLayer = config.isBaseLayer ?? false;
+        this.#healthCheckURL = config.healthCheckURL;
         this.#visible = config.visible ?? true;
 
         const { initial: initialState, resource: stateWatchResource } = watchLoadState(
-            this.#olLayer,
+            config,
             (state) => {
                 this.#loadState = state;
                 this.__emitChangeEvent("changed:loadState");
@@ -104,10 +106,24 @@ export abstract class AbstractLayer<AdditionalEvents = {}>
     }
 }
 
+// TODO move to a service?
+function healthCheck(config: SimpleLayerConfig): LayerLoadState {
+    return (Math.random() < 0.5) ? "loaded" : "error"; // TODO random error for tests
+
+    if (config.healthCheckURL) {
+        // TODO test request to URL in healthCheckURL
+        return "error";
+    } else {
+        return "loaded";
+    }
+}
+
 function watchLoadState(
-    olLayer: OlBaseLayer,
+    config: SimpleLayerConfig,
     onChange: (newState: LayerLoadState) => void
 ): { initial: LayerLoadState; resource: Resource } {
+    const olLayer = config.olLayer;
+
     if (!(olLayer instanceof OlLayer)) {
         // Some layers don't have a source (such as group)
         return {
@@ -121,9 +137,17 @@ function watchLoadState(
     }
 
     let currentSource = olLayer?.getSource() as Source | null;
-    let currentLoadState = mapState(currentSource?.getState());
+    const currentOlLayerState = mapState(currentSource?.getState());
+    const currentHealthState = healthCheck(config);
+    let currentLoadState: LayerLoadState = (currentOlLayerState === "error" || currentHealthState === "error")
+        ? "error" : currentOlLayerState;
+
     const updateState = () => {
-        const nextLoadState = mapState(currentSource?.getState());
+        const olLayerState = mapState(currentSource?.getState());
+        const healthState = healthCheck(config);
+        const nextLoadState: LayerLoadState = (olLayerState === "error" || healthState === "error")
+            ? "error" : olLayerState;
+
         if (currentLoadState !== nextLoadState) {
             currentLoadState = nextLoadState;
             onChange(currentLoadState);

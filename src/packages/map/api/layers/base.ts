@@ -139,6 +139,11 @@ export interface LayerConfig extends LayerBaseConfig {
      * Defaults to `false`.
      */
     isBaseLayer?: boolean;
+
+    /**
+     * An optional URL to check the availability of the layer.
+     */
+    readonly healthCheckURL?: string;
 }
 
 /**
