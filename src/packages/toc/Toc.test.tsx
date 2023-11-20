@@ -43,7 +43,7 @@ it("should successfully create a toc component", async () => {
     const { basemapSelect } = await waitForBasemapSwitcher(tocDiv!);
     await waitFor(() => {
         const option = basemapSelect.options[0];
-        if (option && option.innerText !== "Base layer") {
+        if (!option || option.innerText !== "Base layer") {
             throw new Error("expected basemap switcher to contain the Base layer option");
         }
     });
