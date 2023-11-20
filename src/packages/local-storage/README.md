@@ -3,7 +3,9 @@
 This package provides access to the browser's [local storage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage).
 
 A single local storage key (configurable, see [Configuration](#configuration)) is used to keep track of the application's persisted state.
-Packages using the `LocalStorageService` can still work with arbitrary values (including nested data structures) through a convenient API.
+Packages using the `LocalStorageService` can work with arbitrary values (including nested data structures) through a convenient API.
+
+<!-- TODO: Warn that concurrent changes to local storage will not be reflected by the service. -->
 
 ## Usage
 

@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 /**
- * Provides access to the browser's local storage to trails packages.
+ * Provides access to the browser's local storage for trails packages.
  * Use the interface name `"local-storage.LocalStorageService"` to inject an instance of this interface.
  */
 export interface LocalStorageService extends LocalStorageNamespace {
@@ -26,6 +26,8 @@ export interface LocalStorageNamespace {
 
     /**
      * Associates the given `value` with `key`.
+     * TODO: which values are possible?
+     * TODO: clone value
      */
     set(key: string, value: unknown): void;
 
@@ -37,7 +39,7 @@ export interface LocalStorageNamespace {
     /**
      * Removes all entries associated with this storage namespace (including nested namespaces).
      */
-    clear(): void;
+    removeAll(): void;
 
     /**
      * Returns a nested storage namespace with the given prefix.

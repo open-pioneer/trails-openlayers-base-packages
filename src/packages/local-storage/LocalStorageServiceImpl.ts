@@ -16,7 +16,7 @@ const ERROR_IDS = {
     INTERNAL: "local-storage:internal-error"
 } as const;
 
-export class StorageServiceImpl implements LocalStorageService {
+export class LocalStorageServiceImpl implements LocalStorageService {
     #rootKey: string;
     #rootValue: Record<string, unknown> = {};
     #localStorage: Storage | undefined;
@@ -57,14 +57,15 @@ export class StorageServiceImpl implements LocalStorageService {
         return this.#getRootNamespace().remove(key);
     }
 
-    clear(): void {
-        return this.#getRootNamespace().clear();
+    removeAll(): void {
+        return this.#getRootNamespace().removeAll();
     }
 
     getNamespace(prefix: string): LocalStorageNamespace {
         return this.#getRootNamespace().getNamespace(prefix);
     }
 
+    // TODO: comment why timeout is used
     #saveTimeout: ReturnType<(typeof globalThis)["setTimeout"]> | undefined;
     #triggerSave(): void {
         if (this.#saveTimeout) {
@@ -192,7 +193,7 @@ class StorageNamespaceImpl implements LocalStorageNamespace {
         this.access.setByPath([...this.path, key], undefined);
     }
 
-    clear(): void {
+    removeAll(): void {
         this.access.setByPath(this.path, {});
     }
 

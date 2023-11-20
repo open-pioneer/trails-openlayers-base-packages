@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import { createService } from "@open-pioneer/test-utils/services";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { StorageServiceImpl } from "./StorageServiceImpl";
+import { LocalStorageServiceImpl } from "./LocalStorageServiceImpl";
 
 const MOCKED_STORAGE = new Map<string, string>();
 
@@ -171,7 +171,7 @@ it("Supports removing all keys", async () => {
     const storageService = await setup();
     storageService.set("foo", "bar");
     storageService.set("answer", 42);
-    storageService.clear();
+    storageService.removeAll();
 
     expect(getStorageData()).toMatchInlineSnapshot("{}");
 });
@@ -250,7 +250,7 @@ describe("nested namespaces", () => {
 
         const namespace = storageService.getNamespace("nested");
         namespace.set("inner", 2);
-        namespace.clear();
+        namespace.removeAll();
 
         expect(getStorageData()).toMatchInlineSnapshot(`
           {
@@ -280,7 +280,7 @@ describe("nested namespaces", () => {
 
 async function setup(options?: { storageId?: string }) {
     const storageId = options && "storageId" in options ? options.storageId : DEFAULT_STORAGE_ID;
-    const storageService = await createService(StorageServiceImpl, {
+    const storageService = await createService(LocalStorageServiceImpl, {
         properties: {
             storageId
         }
