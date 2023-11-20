@@ -23,34 +23,34 @@ export interface ResultHandlerOptions {
     geometries: Point[] | LineString[] | Polygon[];
 
     /**
-     * The zoomto-scale for point results
+     * The zoom-scale for point results
      */
-    zoom?: number;
+    zoomScaleForPoints?: number;
 
     /**
-     * The zoomto-max-scale for polygon and line results.
+     * The zoom-scale for line or polygon results.
      */
-    maxZoom?: number;
+    zoomScaleForLinesOrPolygons?: number;
 }
 
 /**
  * This function shows the position of a text search result zoomed to and marked or highlighted in the map.
  */
 export function resultHandler(options: ResultHandlerOptions) {
-    const { olMap, geometries, zoom, maxZoom } = options;
+    const { olMap, geometries, zoomScaleForPoints, zoomScaleForLinesOrPolygons } = options;
 
     if (!geometries || !geometries.length) {
         return;
     }
 
     if (geometries[0]?.getType() === "Point") {
-        centerAndAddMarkers(olMap, geometries);
+        zoomAndAddMarkers(olMap, geometries);
     } else {
         zoomAndHighlight(olMap, geometries);
     }
 }
 
-function centerAndAddMarkers(olMap: OlMap, points: Point[] | LineString[] | Polygon[]) {
+function zoomAndAddMarkers(olMap: OlMap, points: Point[] | LineString[] | Polygon[]) {
     //todo: transform points to map-view proj. maybe this should be done in the parent or the source proj should be sent with
     let centerCoords;
     let extent;
