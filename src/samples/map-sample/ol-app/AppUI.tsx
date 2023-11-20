@@ -5,7 +5,12 @@ import { CoordinateViewer } from "@open-pioneer/coordinate-viewer";
 import { MapAnchor, MapContainer } from "@open-pioneer/map";
 import { InitialExtent, ZoomIn, ZoomOut } from "@open-pioneer/map-navigation";
 import { Measurement } from "@open-pioneer/measurement";
-import { Search, FakeCitySource, SelectSearchEvent } from "@open-pioneer/search-ui";
+import {
+    FakeCitySource,
+    FakeRiverSource,
+    FakeStreetSource
+} from "./search-source-examples/testSources";
+import { Search, SelectSearchEvent } from "@open-pioneer/search-ui";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { ScaleViewer } from "@open-pioneer/scale-viewer";
 import { Toc } from "@open-pioneer/toc";
@@ -16,7 +21,7 @@ import { PiRulerFill, PiRulerLight } from "react-icons/pi";
 import { MAP_ID } from "./MapConfigProviderImpl";
 import { useId } from "react";
 //TODO useCallback for the sources
-const sources = [new FakeCitySource()]; //GeoSearchSource()];
+const sources = [new FakeCitySource(), new FakeStreetSource(), new FakeRiverSource()];
 export function AppUI() {
     const intl = useIntl();
     const tocTitleId = useId();
@@ -69,7 +74,7 @@ export function AppUI() {
                                     );
                                 }}
                                 onClear={function (): void {
-                                    console.debug("User cleared search");
+                                    console.debug("User cleared Search");
                                 }}
                             />
                         </Box>

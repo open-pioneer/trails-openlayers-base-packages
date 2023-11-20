@@ -47,8 +47,6 @@ export interface SelectSearchEvent {
 
 /**
  * Properties supported by the {@link Search} component.
- *
- * TODO: Document default values for optional properties.
  */
 export interface SearchProps extends CommonComponentProps {
     /**
@@ -63,16 +61,19 @@ export interface SearchProps extends CommonComponentProps {
 
     /**
      * Typing delay (in milliseconds) before the async search query starts after the user types in the search term.
+     * default value: 150
      */
     searchTypingDelay?: number;
 
     /**
-     * Whether the the dropdown indicator should be displayed (combo box arrow).
+     * Whether the dropdown indicator should be displayed (combo box arrow).
+     * default value: false
      */
     showDropdownIndicator?: boolean;
 
     /**
      * Background-Color Style to be used for group headings (css-style string)
+     * default value: "rgba(211,211,211,0.20)" (light gray)
      */
     groupHeadingBackgroundColor?: string;
 
