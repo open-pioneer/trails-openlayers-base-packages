@@ -26,6 +26,25 @@ export function AppUI() {
             [849081.619449, 6793197.569417]
         ])
     ];
+    const polygonGeometries = [
+        new Polygon([
+            [
+                [851728.251553, 6788384.425292],
+                [851518.049725, 6788651.954891],
+                [852182.096409, 6788881.265976],
+                [851728.251553, 6788384.425292]
+            ]
+        ]),
+        new Polygon([
+            [
+                [845183.331006, 6794496.998898],
+                [850132.628588, 6794764.528497],
+                [850629.469272, 6791707.047365],
+                [844399.851466, 6791229.315939],
+                [845183.331006, 6794496.998898]
+            ]
+        ])
+    ];
     return (
         <Flex height="100%" direction="column" overflow="hidden">
             <TitledSection
@@ -57,7 +76,11 @@ export function AppUI() {
                                     <Button onClick={() => zoomAndHighlight(olMap, lineGeometries)}>
                                         Linestring
                                     </Button>
-                                    <Button>Polygons</Button>
+                                    <Button
+                                        onClick={() => zoomAndHighlight(olMap, polygonGeometries)}
+                                    >
+                                        Polygons
+                                    </Button>
                                 </Stack>
                             </Box>
                             <MapAnchor position="top-right" horizontalGap={10} verticalGap={10}>
