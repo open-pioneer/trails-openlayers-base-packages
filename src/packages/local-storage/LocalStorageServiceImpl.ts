@@ -17,9 +17,16 @@ const ERROR_IDS = {
 } as const;
 
 export class LocalStorageServiceImpl implements LocalStorageService {
+    // key in local storage
     #rootKey: string;
+
+    // root value. a (possibly nested) JSON structure that is persisted into local storage.
     #rootValue: Record<string, unknown> = {};
+
+    // Reference to the local storage (if supported).
     #localStorage: Storage | undefined;
+
+    // The root namespace works on `rootValue` directly.
     #rootNamespace: StorageNamespaceImpl | undefined;
 
     constructor(options: ServiceOptions) {
@@ -61,11 +68,13 @@ export class LocalStorageServiceImpl implements LocalStorageService {
         return this.#getRootNamespace().removeAll();
     }
 
-    getNamespace(prefix: string): LocalStorageNamespace {
-        return this.#getRootNamespace().getNamespace(prefix);
+    getNamespace(key: string): LocalStorageNamespace {
+        return this.#getRootNamespace().getNamespace(key);
     }
 
-    // TODO: comment why timeout is used
+    // Debounce save() calls to avoid saving after every 'set'.
+    // This gives us some improved performance when there are multiple sets
+    // in quick succession.
     #saveTimeout: ReturnType<(typeof globalThis)["setTimeout"]> | undefined;
     #triggerSave(): void {
         if (this.#saveTimeout) {
@@ -77,6 +86,12 @@ export class LocalStorageServiceImpl implements LocalStorageService {
         }, SAVE_TIMEOUT);
     }
 
+    /**
+     * Loads persisted data from local storage.
+     * If the data is invalid (e.g. bad json), this will revert to the default (an empty object).
+     *
+     * This method is called during service startup to load the initial state.
+     */
     #load() {
         try {
             const storage = this.#localStorage;
@@ -100,7 +115,7 @@ export class LocalStorageServiceImpl implements LocalStorageService {
                 }
                 this.#rootValue = data;
             } catch (jsonError) {
-                LOG.warn("Invalid persisted data, reverting to default", jsonError);
+                LOG.warn("Invalid persisted data, reverting to default.", jsonError);
                 this.#rootValue = {};
                 this.#save();
             }
@@ -109,6 +124,10 @@ export class LocalStorageServiceImpl implements LocalStorageService {
         }
     }
 
+    /**
+     * Persists the current state of `rootValue` to local storage.
+     * This method is called whenever the state was modified.
+     */
     #save() {
         try {
             const storage = this.#localStorage;
@@ -138,7 +157,8 @@ export class LocalStorageServiceImpl implements LocalStorageService {
     #createRootNamespace(): StorageNamespaceImpl {
         const storageAccess: StorageAccess = {
             getByPath: (path) => {
-                return getPath(this.#rootValue, path);
+                // Clone to protect against side effects on internal value
+                return cloneJSON(getPath(this.#rootValue, path));
             },
             setByPath: (path, value) => {
                 if (!isSupportedValue(value)) {
@@ -148,6 +168,10 @@ export class LocalStorageServiceImpl implements LocalStorageService {
                     );
                 }
 
+                // Clone to protect against side effects on original value
+                value = cloneJSON(value);
+
+                // Rewrite root object if path is empty.
                 if (path.length === 0) {
                     if (!isObject(value)) {
                         throw new Error(
@@ -305,4 +329,11 @@ function getLocalStorage(): Storage | undefined {
         LOG.warn("Local storage is not supported by this browser.", e);
         return undefined;
     }
+}
+
+function cloneJSON(value: unknown): unknown {
+    if (value != null) {
+        value = JSON.parse(JSON.stringify(value));
+    }
+    return value;
 }

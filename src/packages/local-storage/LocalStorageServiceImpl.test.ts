@@ -133,7 +133,7 @@ it("Overwrites invalid data on load", async () => {
       [MockFunction warn] {
         "calls": [
           [
-            "[WARN] local-storage: Invalid persisted data, reverting to default",
+            "[WARN] local-storage: Invalid persisted data, reverting to default.",
             [SyntaxError: Unexpected token g in JSON at position 0],
           ],
         ],
@@ -151,6 +151,20 @@ it("Returns previously set values in get()", async () => {
     const storageService = await setup();
     storageService.set("foo", "bar");
     expect(storageService.get("foo")).toBe("bar");
+});
+
+it("Clones values to avoid accidental side effects", async () => {
+    const foo = {
+        bar: 2
+    };
+
+    const storageService = await setup();
+    storageService.set("foo", foo);
+    foo.bar += 1;
+
+    const foo2 = storageService.get("foo") as typeof foo;
+    expect(foo2).not.toBe(foo);
+    expect(foo2.bar).toBe(2);
 });
 
 it("Returns undefined for missing values", async () => {
@@ -276,6 +290,43 @@ describe("nested namespaces", () => {
           }
         `);
     });
+
+    it("returns the same values from namespace objects referencing the same key", async () => {
+        const storageService = await setup();
+        const ns1 = storageService.getNamespace("ns");
+        const ns2 = storageService.getNamespace("ns");
+
+        ns1.set("foo", "bar");
+        expect(ns1).not.toBe(ns2); // different instances ...
+        expect(ns2.get("foo")).toBe("bar"); // observe the same values
+    });
+
+    it("throws if a parent is not an object (set)", async () => {
+        const storageService = await setup();
+        const namespace = storageService.getNamespace("a");
+        storageService.set("a", 123);
+        expect(() => namespace.set("foo", 456)).toThrowErrorMatchingInlineSnapshot(
+            "\"local-storage:invalid-path: Cannot set property on 'a' because it is no object.\""
+        );
+    });
+
+    it("throws if a parent is not an object (get)", async () => {
+        const storageService = await setup();
+        const namespace = storageService.getNamespace("a");
+        storageService.set("a", 123);
+        expect(() => namespace.get("foo")).toThrowErrorMatchingInlineSnapshot(
+            "\"local-storage:invalid-path: Cannot get nested property 'foo' because the parent is no object.\""
+        );
+    });
+
+    it("returns the namespace's object value on get", async () => {
+        const storageService = await setup();
+        const packageNamespace = storageService.getNamespace("my-package-name");
+        packageNamespace.set("foo", "bar");
+
+        const backingObject = storageService.get("my-package-name");
+        expect(backingObject).toEqual({ foo: "bar" });
+    });
 });
 
 async function setup(options?: { storageId?: string }) {
@@ -298,6 +349,7 @@ function getStorageData() {
     }
     return JSON.parse(entry);
 }
+
 function mockLocalStorage() {
     const storage = window.localStorage;
     vi.spyOn(storage, "setItem").mockImplementation((key, value) => MOCKED_STORAGE.set(key, value));

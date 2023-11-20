@@ -5,7 +5,10 @@ This package provides access to the browser's [local storage](https://developer.
 A single local storage key (configurable, see [Configuration](#configuration)) is used to keep track of the application's persisted state.
 Packages using the `LocalStorageService` can work with arbitrary values (including nested data structures) through a convenient API.
 
-<!-- TODO: Warn that concurrent changes to local storage will not be reflected by the service. -->
+> NOTE: The `LocalStorageService` will read the persistent state from the browser's local storage on application startup.
+> Changes to that state made via the `LocalStorageService` will be reflected in the browser's local storage immediately.
+> Concurrent changes made to the browser's local storage **will not** be reflected by the `LocalStorageService`.
+> In other words, there is no two-way synchronization between the two systems while the application is running.
 
 ## Usage
 
@@ -28,17 +31,28 @@ If local storage is not supported, other methods (such as `get()` and `set()`) w
 In its most basic form, you can use the `LocalStorageService` similar to a map.
 In the background, changes to the service will always be persisted into local storage.
 
+All keys and values used in the `LocalStorageService` will be serialized to JSON via `JSON.stringify()`.
+Thus, only values supported by JSON can be used.
+
 Example:
 
 ```js
 const storageService = ...; // injected
 storageService.set("foo", "bar");
-storageService.get("foo"); // "bar"
+storageService.set("foo", ["array"]);
+storageService.set("foo", {
+    nested: {
+        object: "hello world"
+    }
+});
+storageService.get("foo"); // returns (copy of) previous value
 storageService.remove("foo");
 storageService.clear();
 ```
 
 ### Namespaces
+
+TODO: More details
 
 Because the browser's local storage is a shared resource, you should take some precautions to avoid collisions with keys used by other packages.
 
@@ -53,16 +67,15 @@ const namespace = storageService.getNamespace("my-package-name");
 namespace.set("foo", "bar"); // actually sets `"my-package-name" -> "foo"`
 ```
 
-### Supported values
-
-All keys and values used in the `LocalStorageService` will be serialized as a single JSON object via `JSON.stringify()`.
-Thus, only values supported by JSON can be used.
-
 ### Configuration
 
 | Name        | Type   | Description                                                                                                                                                                                                                     |
 | ----------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `storageId` | String | The key under which the serialized state will be saved. This value should be configured to reasonably unique value to avoid clashes with other applications under the same origin. Defaults to `trails-state` (with a warning). |
+
+### Implementation notes
+
+TODO: Single large object
 
 ## License
 

@@ -5,7 +5,7 @@
  * Provides access to the browser's local storage for trails packages.
  * Use the interface name `"local-storage.LocalStorageService"` to inject an instance of this interface.
  */
-export interface LocalStorageService extends LocalStorageNamespace {
+export interface LocalStorageService extends LocalStorageAPI {
     /**
      * Whether local storage is supported by the current environment.
      *
@@ -15,9 +15,18 @@ export interface LocalStorageService extends LocalStorageNamespace {
 }
 
 /**
- * Provides basic operations to interact with the browser's local storage.
+ * A namespace provides access to the properties of an object in local storage.
+ * This can be used to manage groups of related values under a common name.
  */
-export interface LocalStorageNamespace {
+export type LocalStorageNamespace = LocalStorageAPI;
+
+/**
+ * Provides basic operations to interact with the browser's local storage.
+ *
+ * The operations provided by this interface always act on an object in local storage:
+ * either the root value or a nested object.
+ */
+export interface LocalStorageAPI {
     /**
      * Returns the value associated with the given `key`, or `undefined` if
      * no such value exists.
@@ -26,8 +35,13 @@ export interface LocalStorageNamespace {
 
     /**
      * Associates the given `value` with `key`.
-     * TODO: which values are possible?
-     * TODO: clone value
+     *
+     * This method supports arbitrary [JSON](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify) compatible values,
+     * including objects and arrays.
+     * If you store an object, you can later access (or modify) its individual properties using {@link getNamespace}.
+     *
+     * > NOTE: This function creates a clone of the original value to protect against accidental side effects.
+     * > Updating the original value after `set()` will have no effect on the stored value.
      */
     set(key: string, value: unknown): void;
 
@@ -37,26 +51,44 @@ export interface LocalStorageNamespace {
     remove(key: string): void;
 
     /**
-     * Removes all entries associated with this storage namespace (including nested namespaces).
+     * Removes all entries associated managed by this instance.
+     *
+     * If `this` represents the root object, _all_ entries will be removed.
+     * If `this` represents a (possibly nested) namespace, only the contents of that
+     * namespace will be removed.
      */
     removeAll(): void;
 
     /**
-     * Returns a nested storage namespace with the given prefix.
+     * Returns a storage namespace operating on the given `key` that can be used to group
+     * multiple related properties.
      *
-     * Namespaces can be used to group multiple entries together.
-     * They are implemented as objects and appear as such when retrieved from their parent.
-     * Getting or setting a property on a namespace will modify these objects.
+     * Namespaces allow you to treat an object in local storage as a group of properties.
+     * Getting (or setting) a key using a {@link LocalStorageNamespace | Namespace} object
+     * will simply read (or update) properties on the managed object instead.
+     * If the object called `key` does not exist yet in this context, it will be created during
+     * the first {@link set} call on the returned namespace.
+     *
+     * If `key` has already been set to something that is _not_ an object, you will receive an error
+     * if you attempt to {@link get} or {@link set} properties on it.
      *
      * Example:
      *
      * ```js
      * const storageService = ...; // injected
+     *
+     * // Namespace operates on the "my-package-name" object (which may not exist yet)
      * const packageNamespace = storageService.getNamespace("my-package-name");
+     *
+     * // Setting the first value will ensure that the object exists
      * packageNamespace.set("foo", "bar"); // actually sets `"my-package-name" -> "foo"`
+     *
+     * // Retrieving the same object ("my-package-name") via get():
+     * const backingObject = storageService.get("my-package-name"); // {"foo": "bar"}
+     * console.log(backingObject);
      * ```
      */
-    getNamespace(prefix: string): LocalStorageNamespace;
+    getNamespace(key: string): LocalStorageNamespace;
 }
 
 /** Package properties of the `"local-storage"` package. */
