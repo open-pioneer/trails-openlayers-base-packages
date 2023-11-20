@@ -112,6 +112,11 @@ function zoomAndHighlight(
     resultGeometries: Point[] | LineString[] | Polygon[]
 ) {
     if (olMap) {
-        resultHandler({ olMap: olMap, geometries: resultGeometries });
+        resultHandler({
+            olMap: olMap,
+            geometries: resultGeometries,
+            zoomScaleForPoints: 8,
+            zoomScaleForLinesOrPolygons: 11
+        });
     }
 }
