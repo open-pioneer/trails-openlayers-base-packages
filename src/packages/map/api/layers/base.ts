@@ -143,7 +143,7 @@ export interface LayerConfig extends LayerBaseConfig {
     /**
      * An optional URL to check the availability of the layer.
      */
-    readonly healthCheckURL?: string;
+    healthCheckURL?: string;
 }
 
 /**
