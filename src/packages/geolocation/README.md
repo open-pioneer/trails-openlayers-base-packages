@@ -70,6 +70,10 @@ To use custom position options from the [Geolocation API](https://www.w3.org/TR/
 />
 ```
 
+### Notification
+
+Add the `@open-pioneer/notifier` to your app to receive user notification. Otherwise notifications will not be shown.
+
 ## License
 
 Apache-2.0 (see `LICENSE` file)
