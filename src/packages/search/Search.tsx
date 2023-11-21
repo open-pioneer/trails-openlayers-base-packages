@@ -126,8 +126,14 @@ export const Search: FC<SearchProps> = (props) => {
         }),
         groupHeading: (provided: object) => ({
             ...provided,
-            backgroundColor: groupHeadingBackgroundColor || DEFAULT_GROUP_HEADING_BACKGROUND_COLOR
+            backgroundColor: groupHeadingBackgroundColor || DEFAULT_GROUP_HEADING_BACKGROUND_COLOR,
+            padding: "8px 12px",
+            // make Header look like normal options:
+            fontSize: "inherit",
+            fontWeight: "inherit"
         })
+        /* it seems, padding cannot be set on chakraStyles when custom components are being used, 
+        too, so CSS is used to customize the options */
     };
 
     //Typescript doesn't recognize Type SearchOption but rather SingleValue<SearchGroupOption>
