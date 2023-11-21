@@ -6,7 +6,7 @@ import { EventsKey } from "ol/events";
 import OlBaseLayer from "ol/layer/Base";
 import OlLayer from "ol/layer/Layer";
 import Source, { State as OlSourceState } from "ol/source/Source";
-import { Layer, LayerLoadState, SimpleLayerConfig } from "../api";
+import { HealthCheckFunction, Layer, LayerLoadState, SimpleLayerConfig } from "../api";
 import { AbstractLayerBase } from "./AbstractLayerBase";
 import { MapModelImpl } from "./MapModelImpl";
 
@@ -23,7 +23,7 @@ export abstract class AbstractLayer<AdditionalEvents = {}>
 {
     #olLayer: OlBaseLayer;
     #isBaseLayer: boolean;
-    #healthCheckURL?: string;
+    #healthCheck?: string | HealthCheckFunction;
     #visible: boolean;
 
     #loadState: LayerLoadState;
@@ -33,7 +33,7 @@ export abstract class AbstractLayer<AdditionalEvents = {}>
         super(config);
         this.#olLayer = config.olLayer;
         this.#isBaseLayer = config.isBaseLayer ?? false;
-        this.#healthCheckURL = config.healthCheckURL;
+        this.#healthCheck = config.healthCheck;
         this.#visible = config.visible ?? true;
 
         const { initial: initialState, resource: stateWatchResource } = watchLoadState(
@@ -110,12 +110,19 @@ export abstract class AbstractLayer<AdditionalEvents = {}>
 function healthCheck(config: SimpleLayerConfig): LayerLoadState {
     return Math.random() < 0.5 ? "loaded" : "error"; // TODO random error for tests
 
-    if (config.healthCheckURL) {
-        // TODO test request to URL in healthCheckURL
-        return "error";
-    } else {
+    if (!("healthCheck" in config)) {
         return "loaded";
     }
+
+    if (typeof config.healthCheck === "function") {
+        return config.healthCheck(config);
+    }
+    if (typeof config.healthCheck === "string") {
+        // TODO test request to URL in healthCheckURL
+        return "loaded";
+    }
+
+    return "error";
 }
 
 function watchLoadState(
