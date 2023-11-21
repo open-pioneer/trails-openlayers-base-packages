@@ -33,8 +33,10 @@ export interface ResultHandlerOptions {
     zoomScaleForLinesOrPolygons?: number;
 }
 
-const DEFAULT_SCALE = "1:5000";
+const DEFAULT_SCALE = 5000;
 const DEFAULT_BUFFER_FACTOR = 1.2;
+const DEFAULT_DPI = 25.4 / 0.28;
+const INCHES_PER_METER = 39.37;
 
 /**
  * This function shows the position of a text search result zoomed to and marked or highlighted in the map.
@@ -100,10 +102,25 @@ function zoomTo(olMap: OlMap, extent: Extent | undefined, zoomLevel: number | un
     if (extent) {
         const bufferedExtent = buffer(extent, DEFAULT_BUFFER_FACTOR);
         olMap.getView().fit(bufferedExtent, { maxZoom: zoomLevel });
+        //todo: remove the following two lines of code
+        const resolution = getDefaultResolution(olMap);
+        console.log(resolution);
     } else {
-        zoomLevel && olMap.getView().setZoom(zoomLevel);
+        const resolution = getDefaultResolution(olMap);
+        resolution && olMap.getView().setResolution(resolution);
     }
 }
+
+function getDefaultResolution(olMap: OlMap) {
+    const projection = olMap.getView().getProjection();
+    let resolution;
+    const metersPerUnit = projection.getMetersPerUnit();
+    if (metersPerUnit) {
+        resolution = DEFAULT_SCALE / (metersPerUnit * INCHES_PER_METER * DEFAULT_DPI);
+    }
+    return resolution;
+}
+
 function createAndAddLayer(
     olMap: OlMap,
     geomType: string,
