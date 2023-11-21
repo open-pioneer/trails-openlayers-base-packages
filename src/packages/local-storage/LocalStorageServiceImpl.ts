@@ -17,10 +17,12 @@ const ERROR_IDS = {
 } as const;
 
 export class LocalStorageServiceImpl implements LocalStorageService {
-    // key in local storage
+    // Key in local storage.
     #rootKey: string;
 
-    // root value. a (possibly nested) JSON structure that is persisted into local storage.
+    // Root value. A (possibly nested) JSON structure that is persisted into local storage.
+    // This value (or its children) are modified via the various `get` / `set` / `clear` / etc. methods
+    // on the service itself and on the namespace objects obtained through the service.
     #rootValue: Record<string, unknown> = {};
 
     // Reference to the local storage (if supported).

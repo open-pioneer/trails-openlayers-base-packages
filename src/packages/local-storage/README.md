@@ -57,10 +57,11 @@ storageService.clear();
 
 You can use the `LocalStorageService` to manage hierarchical data, including objects and arrays (see above).
 _Namespaces_ can help you treat an object as a group of (nested) properties.
-Getting or setting entries on the namespace will update an object behind the scenes.
+Getting or setting entries in the namespace will update an object behind the scenes.
 
 To use a namespace, call `getNamespace(key)` on either the `LocalStorageService` or another `LocalStorageNamespace` object.
 The `key` used in `getNamespace(key)` should either already be associated with an object or it should not be set to a value at all.
+If `key` is not yet associated with an existing object, a new empty object will be created.
 
 Example:
 

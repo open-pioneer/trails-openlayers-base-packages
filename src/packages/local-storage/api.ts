@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 /**
- * Provides access to the browser's local storage for trails packages.
+ * Provides access to the browser's local storage for trails packages through a convenient API.
  * Use the interface name `"local-storage.LocalStorageService"` to inject an instance of this interface.
  */
 export interface LocalStorageService extends LocalStorageAPI {
