@@ -62,15 +62,15 @@ export interface LocalStorageAPI {
     /**
      * Returns a storage namespace operating on the given `key` that can be used to group
      * multiple related properties.
+     * `key` should either be associated with an object or it's value should be undefined.
+     * If `key` is not associated with a value, a new empty object will be created.
      *
      * Namespaces allow you to treat an object in local storage as a group of properties.
      * Getting (or setting) a key using a {@link LocalStorageNamespace | Namespace} object
      * will simply read (or update) properties on the managed object instead.
-     * If the object called `key` does not exist yet in this context, it will be created during
-     * the first {@link set} call on the returned namespace.
      *
      * If `key` has already been set to something that is _not_ an object, you will receive an error
-     * if you attempt to {@link get} or {@link set} properties on it.
+     * if you attempt to call this method.
      *
      * Example:
      *

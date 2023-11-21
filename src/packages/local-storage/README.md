@@ -2,13 +2,16 @@
 
 This package provides access to the browser's [local storage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage).
 
-A single local storage key (configurable, see [Configuration](#configuration)) is used to keep track of the application's persisted state.
+A single local storage key (configurable, see [Configuration](#configuration)) is used to keep track of the application's persistent data.
 Packages using the `LocalStorageService` can work with arbitrary values (including nested data structures) through a convenient API.
 
-> NOTE: The `LocalStorageService` will read the persistent state from the browser's local storage on application startup.
-> Changes to that state made via the `LocalStorageService` will be reflected in the browser's local storage immediately.
+> NOTE: The `LocalStorageService` will read the persistent data from the browser's local storage on application startup.
+> Changes to that data made via the `LocalStorageService` will be reflected in the browser's local storage immediately.
 > Concurrent changes made to the browser's local storage **will not** be reflected by the `LocalStorageService`.
 > In other words, there is no two-way synchronization between the two systems while the application is running.
+>
+> You should not attempt to modify the local storage value managed by the `LocalStorageService` (see `storageId` in [Configuration](#configuration)) through the "raw" Browser APIs while the application is running.
+> Other keys are safe to use.
 
 ## Usage
 
@@ -52,30 +55,47 @@ storageService.clear();
 
 ### Namespaces
 
-TODO: More details
+You can use the `LocalStorageService` to manage hierarchical data, including objects and arrays (see above).
+_Namespaces_ can help you treat an object as a group of (nested) properties.
+Getting or setting entries on the namespace will update an object behind the scenes.
 
-Because the browser's local storage is a shared resource, you should take some precautions to avoid collisions with keys used by other packages.
-
-You can use a namespace to manage a group of related values with a common prefix (for example, the package name).
-Behind the scenes, the `LocalStorageService` will create an object for that namespace.
+To use a namespace, call `getNamespace(key)` on either the `LocalStorageService` or another `LocalStorageNamespace` object.
+The `key` used in `getNamespace(key)` should either already be associated with an object or it should not be set to a value at all.
 
 Example:
 
-```jsx
+```js
+const storageService = ...; // injected
+const namespace = storageService.getNamespace("my-key");
+namespace.set("foo", "bar"); // actually sets `"my-key" -> "foo"`
+```
+
+`getNamespace("my-key")` returns a `LocalStorageNamespace` instance that manipulates the object at `"my-key"`.
+
+Namespaces provide a convenient way to scope your component's persistent values, avoiding conflicts with other packages.
+For example, you can use your package name as the namespace key:
+
+```js
 const storageService = ...; // injected
 const namespace = storageService.getNamespace("my-package-name");
-namespace.set("foo", "bar"); // actually sets `"my-package-name" -> "foo"`
+namespace.set("my-state", "some-value-to-save");
 ```
+
+> NOTE: Multiple namespace instances using the same `key` will manipulate the same object and see each other's effects.
 
 ### Configuration
 
-| Name        | Type   | Description                                                                                                                                                                                                                     |
-| ----------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `storageId` | String | The key under which the serialized state will be saved. This value should be configured to reasonably unique value to avoid clashes with other applications under the same origin. Defaults to `trails-state` (with a warning). |
+| Name        | Type   | Description                                                                                                                                                                                                                   |
+| ----------- | ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `storageId` | String | The key under which the persistent data will be saved. This value should be configured to a reasonably unique value to avoid clashes with other applications at the same origin. Defaults to `trails-state` (with a warning). |
 
 ### Implementation notes
 
-TODO: Single large object
+The `LocalStorageService` manages the persistent data as a single, hierarchical JSON object.
+This JSON object is loaded from and saved to the browser's local storage using the `storageId` key.
+
+The top level value is always an object; its properties are manipulated when calling `get`, `set` etc. on the `LocalStorageService`.
+Nested values can be arbitrary (JSON-compatible) values.
 
 ## License
 

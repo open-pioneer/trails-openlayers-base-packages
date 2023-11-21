@@ -301,6 +301,14 @@ describe("nested namespaces", () => {
         expect(ns2.get("foo")).toBe("bar"); // observe the same values
     });
 
+    it("throws if getNamespace() is called for a non-object value", async () => {
+        const storageService = await setup();
+        storageService.set("a", "invalid");
+        expect(() => storageService.getNamespace("a")).toThrowErrorMatchingInlineSnapshot(
+            "\"local-storage:invalid-path: Cannot use 'a' as a namespace because it is not associated with an object.\""
+        );
+    });
+
     it("throws if a parent is not an object (set)", async () => {
         const storageService = await setup();
         const namespace = storageService.getNamespace("a");

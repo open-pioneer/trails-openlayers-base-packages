@@ -222,6 +222,16 @@ class StorageNamespaceImpl implements LocalStorageNamespace {
     }
 
     getNamespace(key: string): StorageNamespaceImpl {
+        const existingValue = this.get(key);
+        if (existingValue === undefined) {
+            this.set(key, {});
+        } else if (!isObject(existingValue)) {
+            throw new Error(
+                ERROR_IDS.INVALID_PATH,
+                `Cannot use '${key}' as a namespace because it is not associated with an object.`
+            );
+        }
+
         return new StorageNamespaceImpl(this.path.concat([key]), this.access);
     }
 }
@@ -259,11 +269,7 @@ function setPath(object: Record<string, unknown>, path: string[], value: unknown
     for (let i = 0, n = path.length - 1; i < n; ++i) {
         const p = path[i]!;
 
-        let next = current[p];
-        if (next === undefined) {
-            next = current[p] = {};
-        }
-
+        const next = current[p];
         if (!isObject(next)) {
             throw new Error(
                 ERROR_IDS.INVALID_PATH,
