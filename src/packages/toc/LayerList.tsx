@@ -253,21 +253,18 @@ function useLoadState(layer: LayerBase): string {
         [layer]
     );
 
-    const getSnapshot = useCallback(
-        () => {
-            // for sublayers, use the state of the parent
-            let operationalLayer: Layer;
-            if ("loadState" in layer) {
-                operationalLayer = layer as Layer;
-            } else {
-                const sl = layer as Sublayer;
-                operationalLayer = sl.parentLayer;
-            }
-            
-            return operationalLayer.loadState;
-        },
-        [layer]
-    );
+    const getSnapshot = useCallback(() => {
+        // for sublayers, use the state of the parent
+        let operationalLayer: Layer;
+        if ("loadState" in layer) {
+            operationalLayer = layer as Layer;
+        } else {
+            const sl = layer as Sublayer;
+            operationalLayer = sl.parentLayer;
+        }
+
+        return operationalLayer.loadState;
+    }, [layer]);
 
     return useSyncExternalStore(subscribe, getSnapshot);
 }

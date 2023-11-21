@@ -108,7 +108,7 @@ export abstract class AbstractLayer<AdditionalEvents = {}>
 
 // TODO move to a service?
 function healthCheck(config: SimpleLayerConfig): LayerLoadState {
-    return (Math.random() < 0.5) ? "loaded" : "error"; // TODO random error for tests
+    return Math.random() < 0.5 ? "loaded" : "error"; // TODO random error for tests
 
     if (config.healthCheckURL) {
         // TODO test request to URL in healthCheckURL
@@ -139,14 +139,16 @@ function watchLoadState(
     let currentSource = olLayer?.getSource() as Source | null;
     const currentOlLayerState = mapState(currentSource?.getState());
     const currentHealthState = healthCheck(config);
-    let currentLoadState: LayerLoadState = (currentOlLayerState === "error" || currentHealthState === "error")
-        ? "error" : currentOlLayerState;
+    let currentLoadState: LayerLoadState =
+        currentOlLayerState === "error" || currentHealthState === "error"
+            ? "error"
+            : currentOlLayerState;
 
     const updateState = () => {
         const olLayerState = mapState(currentSource?.getState());
         const healthState = healthCheck(config);
-        const nextLoadState: LayerLoadState = (olLayerState === "error" || healthState === "error")
-            ? "error" : olLayerState;
+        const nextLoadState: LayerLoadState =
+            olLayerState === "error" || healthState === "error" ? "error" : olLayerState;
 
         if (currentLoadState !== nextLoadState) {
             currentLoadState = nextLoadState;
