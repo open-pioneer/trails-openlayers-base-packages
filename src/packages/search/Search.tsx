@@ -19,7 +19,8 @@ import { useIntl } from "open-pioneer:react-hooks";
 import { Box } from "@open-pioneer/chakra-integration";
 
 const LOG = createLogger("search-ui:Search");
-const DEFAULT_GROUP_HEADING_BACKGROUND_COLOR = "rgba(211,211,211,0.20)";
+// TODO: Use a theme color as default
+const DEFAULT_GROUP_HEADING_BACKGROUND_COLOR = "rgb(211,211,211)";
 const DEFAULT_TYPING_DELAY = 500;
 
 export interface SearchOption {
@@ -160,6 +161,7 @@ export const Search: FC<SearchProps> = (props) => {
     return (
         <Box {...containerProps}>
             <AsyncSelect<SearchOption, false, SearchGroupOption>
+                className="search-component"
                 ref={selectRef}
                 isClearable={true}
                 placeholder={intl.formatMessage({ id: "searchPlaceholder" })}

@@ -61,7 +61,7 @@ export function AppUI() {
                             padding={2}
                             boxShadow="lg"
                             mt={5}
-                            className="search-placement"
+                            className="search-top-center-placement"
                         >
                             <Search
                                 mapId={MAP_ID}

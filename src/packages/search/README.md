@@ -4,24 +4,9 @@ This package provides a UI component to perform a search on given datasources.
 
 ## Usage
 
-To use the search component you have to import `Search` from `@open-pioneer/search`. The component is not
-placed anywhere by default, so you have to take care of this by yourself.
-For example, you could wrap the component inside a `Box` element which is placed at a
-specific `MapAnchor` or placing the component by CSS inside the `MapContainer` using a class like the
-following on the `Box` container element:
-
-```css
-.search-placement {
-    position: absolute;
-    left: 50%;
-    top: 0px;
-    transform: translate(-50%, 0px);
-    width: 500px;
-    z-index: 1;
-}
-```
-
+To use the search component you have to import `Search` from `@open-pioneer/search`.
 The mandatory properties of the `Search` component are `mapId` and `sources` (datasources to be searched on).
+You have to implement the function `search` for each datasource.
 
 ```tsx
 import { Search, Datasource, Suggestion } from "@open-pioneer/search-ui";
@@ -50,11 +35,32 @@ const datasources: DataSource[] = [
 
 return (
     //...
-    <Box className="search-placement">
+    <Box className="search-top-center-placement">
         <Search mapId={MAP_ID} sources={datasources} />
     </Box>
     //...
 );
+```
+
+The results/suggestions are presented as a grouped list, one group for each datasource.
+This list is sorted by the given order of datasources and the order of the items inside are
+defined the implementation of the datasource.
+
+The component is not placed anywhere by default, so you have to take care of this by yourself.
+For example, you could wrap the component inside a `Box` element which is placed at a
+specific `MapAnchor` or place the component by CSS inside the `MapContainer` using a class like the
+following on the `Box` container element (it is predefined inside the package):
+
+```css
+/* top center placement */
+.search-top-center-placement {
+    position: absolute;
+    left: 50%;
+    top: 0px;
+    transform: translate(-50%, 0px);
+    width: 500px;
+    z-index: 1;
+}
 ```
 
 If you want to listen to the events `onSelect` and `onClear`, you can provide optional callback functions to the component.
@@ -74,35 +80,28 @@ In case of the `onSelect` event, you can access the selected suggestion by the `
 ```
 
 If you want to change the background color of the datasource headings, add the optional property `groupHeadingBackgroundColor`
-as a CSS-background-color string:
+as a CSS-background-color string. The default is "rgba(211,211,211,0.20)" (light gray).
 
 ```tsx
 <Search mapId={MAP_ID} sources={datasources} groupHeadingBackgroundColor="rgba(211,211,211,0.20)" />
 ```
 
-If you want to change the typing delay, add the optional property `searchTypingDelay` (in ms)
+If you want to change the typing delay, add the optional property `searchTypingDelay` (in ms).
+The default value is 500ms.
 
 ```tsx
-<Search mapId={MAP_ID} sources={datasources} searchTypingDelay={5000} />
+<Search mapId={MAP_ID} sources={datasources} searchTypingDelay={1000} />
 ```
 
 If you want to see the default dropdown indicator of the component (combo box arrow), set the optional property
+`showDropdownIndicator` to true. The default is false.
 
 ```tsx
 <Search mapId={MAP_ID} sources={datasources} showDropdownIndicator={true} />
 ```
 
-#### Implementation notes
-
-The results/suggestions are presented as a grouped list, one group for each datasource. This list is sorted by the given
-order of datasources and the order of the items inside are defined the implementation of the datasource.
-
-Features are:
-
--   Substring matches of the search term are shown bold in the suggestion list.
--   Provides callback functions to handle events for selecting a suggestion or clearing the suggestion list (can be used
-    for highlighting/zoom to results for example)
--   Supports a configurable typing delay before actually executing the search
+If you want to customize the CSS of the `NoOptionsMessage`, or `LoadingMessage`, you can use their
+class names: `search-no-match` or `search-loading-text`.
 
 ## License
 
