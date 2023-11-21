@@ -12,9 +12,9 @@ const fonts = {
     body: "Courier New" */
 };
 
+//10 colors as hex values from 50 to 900 (light to dark)
 const colors = {
     //trails = default color scheme
-    //10 colors as hex values from 50 to 900 (light to dark)
     trails: {
         50: "#eaf2f5",
         100: "#d5e5ec",
@@ -28,8 +28,12 @@ const colors = {
         900: "#091920"
     },
     //trails_alt = currently only used for: <Button variant="secondary">secondary</Button>
-    //TODO: add 50-900
     trails_alt: {
+        50: "#eaf3e9",
+        100: "#d5e7d2",
+        200: "#abcea5",
+        300: "#80b678",
+        400: "#569d4b",
         500: "#2c851e",
         600: "#236a18",
         700: "#1a5012",
