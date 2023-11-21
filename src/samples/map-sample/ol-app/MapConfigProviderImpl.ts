@@ -28,21 +28,21 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     title: "TopPlus Open",
                     isBaseLayer: true,
                     visible: true,
-                    olLayer: createTopsPlusLayer("web")
+                    olLayer: createTopPlusOpenLayer("web")
                 }),
                 new SimpleLayer({
                     id: "topplus_open_grau",
                     title: "TopPlus Open (Grau)",
                     isBaseLayer: true,
                     visible: false,
-                    olLayer: createTopsPlusLayer("web_grau")
+                    olLayer: createTopPlusOpenLayer("web_grau")
                 }),
                 new SimpleLayer({
                     id: "topplus_open_light",
                     title: "TopPlus Open (Light)",
                     isBaseLayer: true,
                     visible: false,
-                    olLayer: createTopsPlusLayer("web_light")
+                    olLayer: createTopPlusOpenLayer("web_light")
                 }),
                 new SimpleLayer({
                     title: "OSM",
@@ -77,7 +77,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
  *
  * For more details, see the documentation of the map package.
  */
-function createTopsPlusLayer(layer: "web" | "web_grau" | "web_light") {
+function createTopPlusOpenLayer(layer: "web" | "web_grau" | "web_light") {
     const topLeftCorner = [-3803165.98427299, 8805908.08284866];
 
     /**
