@@ -125,11 +125,11 @@ function createAndAddLayer(
             return styles[type];
         }
     });
-    removeMarkerOrHighlight(olMap);
+    removerHighlight(olMap);
     olMap.addLayer(layer);
 }
 
-function removeMarkerOrHighlight(olMap: OlMap) {
+export function removerHighlight(olMap: OlMap) {
     const layer = olMap
         .getLayers()
         .getArray()

@@ -4,7 +4,7 @@ import { Box, Button, Flex, Stack, Text, VStack } from "@open-pioneer/chakra-int
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { MapAnchor, MapContainer, useMapModel } from "@open-pioneer/map";
 import { MAP_ID } from "./MapConfigProviderImpl";
-import { resultHandler } from "@open-pioneer/search-result-handler";
+import { resultHandler, removerHighlight } from "@open-pioneer/search-result-handler";
 import { LineString, Point, Polygon } from "ol/geom";
 import OlMap from "ol/Map";
 
@@ -81,6 +81,7 @@ export function AppUI() {
                                     >
                                         Polygons
                                     </Button>
+                                    <Button onClick={() => reset(olMap)}>Reset</Button>
                                 </Stack>
                             </Box>
                             <MapAnchor position="top-right" horizontalGap={10} verticalGap={10}>
@@ -118,5 +119,10 @@ function zoomAndHighlight(
             zoomScaleForPoints: 8,
             zoomScaleForLinesOrPolygons: 11
         });
+    }
+}
+function reset(olMap: OlMap | undefined) {
+    if (olMap) {
+        removerHighlight(olMap);
     }
 }
