@@ -140,15 +140,12 @@ function watchLoadState(
     const currentOlLayerState = mapState(currentSource?.getState());
     const currentHealthState = healthCheck(config);
     let currentLoadState: LayerLoadState =
-        currentOlLayerState === "error" || currentHealthState === "error"
-            ? "error"
-            : currentOlLayerState;
+        currentHealthState === "error" ? "error" : currentOlLayerState;
 
     const updateState = () => {
         const olLayerState = mapState(currentSource?.getState());
         const healthState = healthCheck(config);
-        const nextLoadState: LayerLoadState =
-            olLayerState === "error" || healthState === "error" ? "error" : olLayerState;
+        const nextLoadState: LayerLoadState = healthState === "error" ? "error" : olLayerState;
 
         if (currentLoadState !== nextLoadState) {
             currentLoadState = nextLoadState;
