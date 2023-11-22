@@ -107,22 +107,24 @@ export abstract class AbstractLayer<AdditionalEvents = {}>
 }
 
 // TODO move to a service?
-function healthCheck(config: SimpleLayerConfig): LayerLoadState {
-    return Math.random() < 0.5 ? "loaded" : "error"; // TODO random error for tests
+function healthCheck(config: SimpleLayerConfig): Promise<LayerLoadState> {
+    return new Promise((resolve, reject) => {
+        if (!("healthCheck" in config)) {
+            //resolve(Math.random() < 0.5 ? "loaded" : "error"); // TODO random error for tests
+            resolve("loaded");
+        }
 
-    if (!("healthCheck" in config)) {
-        return "loaded";
-    }
+        if (typeof config.healthCheck === "function") {
+            resolve(config.healthCheck(config));
+        }
+        if (typeof config.healthCheck === "string") {
+            // TODO test request to URL in healthCheckURL
 
-    if (typeof config.healthCheck === "function") {
-        return config.healthCheck(config);
-    }
-    if (typeof config.healthCheck === "string") {
-        // TODO test request to URL in healthCheckURL
-        return "loaded";
-    }
+            resolve("loaded");
+        }
 
-    return "error";
+        reject();
+    });
 }
 
 function watchLoadState(
@@ -145,14 +147,22 @@ function watchLoadState(
 
     let currentSource = olLayer?.getSource() as Source | null;
     const currentOlLayerState = mapState(currentSource?.getState());
-    // custom health check not needed when OL already returning an error state
-    const currentHealthState = currentOlLayerState !== "error" ? healthCheck(config) : "error";
+
+    let currentHealthState = "loading"; // initial state loading until health check finished
     let currentLoadState: LayerLoadState =
         currentHealthState === "error" ? "error" : currentOlLayerState;
 
+    // custom health check not needed when OL already returning an error state
+    if (currentOlLayerState !== "error") {
+        // health check only once during initialization
+        healthCheck(config).then((state: LayerLoadState) => {
+            currentHealthState = state;
+            updateState();
+        });
+    }
+
     const updateState = () => {
         const olLayerState = mapState(currentSource?.getState());
-        // health check only once during initialization
         const nextLoadState: LayerLoadState =
             currentHealthState === "error" ? "error" : olLayerState;
 

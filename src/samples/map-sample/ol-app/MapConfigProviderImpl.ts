@@ -37,7 +37,6 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     title: "TopPlus Open (Grau)",
                     isBaseLayer: true,
                     visible: false,
-                    healthCheck: () => "error",
                     olLayer: createTopPlusOpenLayer("web_grau")
                 }),
                 new SimpleLayer({
@@ -58,6 +57,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                 new SimpleLayer({
                     title: "Haltestellen Stadt Rostock",
                     visible: true,
+                    healthCheck: () => "error",
                     description:
                         "Haltestellen des öffentlichen Personenverkehrs in der Hanse- und Universitätsstadt Rostock.",
                     olLayer: createHaltestellenLayer()
