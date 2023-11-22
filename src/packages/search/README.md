@@ -9,7 +9,7 @@ The mandatory properties of the `Search` component are `mapId` and `sources` (da
 You have to implement the function `search` for each datasource.
 
 ```tsx
-import { Search, Datasource, Suggestion } from "@open-pioneer/search-ui";
+import { Search, Datasource, Suggestion } from "@open-pioneer/search";
 import { MAP_ID } from "./MapConfigProviderImpl";
 
 const datasources: DataSource[] = [

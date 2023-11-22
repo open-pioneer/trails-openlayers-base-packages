@@ -20,7 +20,7 @@ import { useIntl } from "open-pioneer:react-hooks";
 import { Box } from "@open-pioneer/chakra-integration";
 import { useTheme } from "@open-pioneer/chakra-integration";
 
-const LOG = createLogger("search-ui:Search");
+const LOG = createLogger("search:Search");
 const DEFAULT_TYPING_DELAY = 500;
 
 export interface SearchOption {
@@ -225,7 +225,7 @@ export const Search: FC<SearchProps> = (props) => {
     };
 
     /**
-     * Method to create Aria-String for result lenght
+     * Method to create Aria-String for result length
      */
     const onFilter = () => {
         return "";

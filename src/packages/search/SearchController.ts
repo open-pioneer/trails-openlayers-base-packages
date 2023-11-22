@@ -3,7 +3,7 @@
 import { createLogger, isAbortError, throwAbortError } from "@open-pioneer/core";
 import { DataSource, Suggestion } from "./api";
 
-const LOG = createLogger("search-ui.SearchController");
+const LOG = createLogger("search:SearchController");
 
 interface ControllerConfig {
     searchTypingDelay: number;
