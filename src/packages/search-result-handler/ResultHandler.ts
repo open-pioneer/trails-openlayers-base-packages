@@ -26,16 +26,6 @@ interface HighlightStyle {
 }
 export interface ResultHandlerOptions {
     /**
-     * The olMap.
-     */
-    olMap: OlMap;
-
-    /**
-     * The layer shown in the overview map.
-     */
-    geometries: Point[] | LineString[] | Polygon[];
-
-    /**
      * The style for highlight and marker
      * */
     highlightStyle?: HighlightStyle;
@@ -59,9 +49,13 @@ const INCHES_PER_METER = 39.37;
 /**
  * This function shows the position of a text search result zoomed to and marked or highlighted in the map.
  */
-export function resultHandler(options: ResultHandlerOptions) {
-    const { olMap, geometries, highlightStyle, zoomScaleForPoints, zoomScaleForLinesOrPolygons } =
-        options;
+export function resultHandler(
+    olMap: OlMap,
+    geometries: Point[] | LineString[] | Polygon[],
+    options: ResultHandlerOptions
+) {
+    const { highlightStyle, zoomScaleForPoints, zoomScaleForLinesOrPolygons } = options;
+
     if (!geometries || !geometries.length) {
         return;
     }

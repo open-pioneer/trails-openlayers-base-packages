@@ -113,10 +113,7 @@ function zoomAndHighlight(
     resultGeometries: Point[] | LineString[] | Polygon[]
 ) {
     if (olMap) {
-        resultHandler({
-            olMap: olMap,
-            geometries: resultGeometries
-        });
+        resultHandler(olMap, resultGeometries, {});
     }
 }
 function reset(olMap: OlMap | undefined) {

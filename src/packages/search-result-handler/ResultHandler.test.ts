@@ -12,7 +12,7 @@ it("should successfully zoom and add marker for point geometries", async () => {
     const point = new Point([852011.307424, 6788511.322702]);
     const zoomLevel = map.getView().getZoom();
 
-    resultHandler({ olMap: map, geometries: [point] });
+    resultHandler(map, [point], {});
 
     const newZoomLevel = map.getView().getZoom();
 
@@ -33,7 +33,7 @@ it("should successfully zoom and highlight for line or polygon geometries", asyn
     ]);
     const zoomLevel = map.getView().getZoom();
 
-    resultHandler({ olMap: map, geometries: [line] });
+    resultHandler(map, [line], {});
 
     const newZoomLevel = map.getView().getZoom();
 
@@ -58,8 +58,8 @@ it("should successfully remove previously added markers or highlights", async ()
         ]
     ]);
 
-    resultHandler({ olMap: map, geometries: [point] });
-    resultHandler({ olMap: map, geometries: [polygon] });
+    resultHandler(map, [point], {});
+    resultHandler(map, [polygon], {});
 
     const layers = map.getLayers().getArray();
     const searchResultLayers = layers.filter((l) =>
@@ -79,7 +79,7 @@ it("should successfully remove all markers or highlights", async () => {
         new Point([851518.049725, 6788651.954891])
     ];
 
-    resultHandler({ olMap: map, geometries: points });
+    resultHandler(map, points, {});
 
     const addedLayer = map
         .getLayers()
