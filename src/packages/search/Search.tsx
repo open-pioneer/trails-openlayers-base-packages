@@ -5,7 +5,7 @@ import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/rea
 import { DataSource, Suggestion } from "./api";
 import { FC, useEffect, useRef, useState } from "react";
 import { ActionMeta, AsyncSelect, SelectInstance, SingleValue } from "chakra-react-select";
-import { AriaOnFocus, AriaOnChange } from "react-select";
+import { AriaOnFocus, AriaOnChange, OptionProps } from "react-select";
 import { SearchController, SuggestionGroup } from "./SearchController";
 import {
     LoadingMessage,
@@ -18,10 +18,9 @@ import {
 import { createLogger, isAbortError } from "@open-pioneer/core";
 import { useIntl } from "open-pioneer:react-hooks";
 import { Box } from "@open-pioneer/chakra-integration";
+import { useTheme } from "@open-pioneer/chakra-integration";
 
 const LOG = createLogger("search-ui:Search");
-// TODO: Use a theme color as default
-const DEFAULT_GROUP_HEADING_BACKGROUND_COLOR = "rgba(211,211,211,0.20)";
 const DEFAULT_TYPING_DELAY = 500;
 
 export interface SearchOption {
@@ -75,9 +74,15 @@ export interface SearchProps extends CommonComponentProps {
 
     /**
      * Background-Color Style to be used for group headings (css-style string)
-     * default value: "rgba(211,211,211,0.20)" (light gray)
+     * default value: is pulled from the trails theme (trails.100)
      */
     groupHeadingBackgroundColor?: string;
+
+    /**
+     * Background-Color Style to be used for the currently focussed search item (css-style string)
+     * default value: is pulled from the trails theme (trails.50)
+     */
+    focussedItemBackgroundColor?: string;
 
     /**
      * Callback function for the select event
@@ -96,6 +101,7 @@ export const Search: FC<SearchProps> = (props) => {
         sources,
         searchTypingDelay,
         showDropdownIndicator,
+        focussedItemBackgroundColor,
         groupHeadingBackgroundColor,
         onSelect,
         onClear
@@ -119,22 +125,44 @@ export const Search: FC<SearchProps> = (props) => {
         return mapSuggestions(suggestions);
     };
 
+    // TODO: Hardcoded name for the theme is no good, needs to be more flexible
+    const theme = useTheme();
+    const defaultGroupHeadingBackgroundColor = theme.colors.trails
+        ? theme.colors.trails[100]
+        : "#d5e5ec";
+    // Sadly, the property 'selectedOptionColorScheme' does not seem to work with custom 'option'
+    // component. Therefor we have to set the color from theme manually (no automatic
+    // dark mode support anymore)
+    const defaultFocussedItemBackgroundColor = theme.colors.trails
+        ? theme.colors.trails[50]
+        : "#eaf2f5";
+
     const displayCss = showDropdownIndicator ? "inherit" : "none";
     const chakraStyles = {
-        dropdownIndicator: (provided: object) => ({
-            ...provided,
-            display: displayCss
-        }),
         groupHeading: (provided: object) => ({
             ...provided,
-            backgroundColor: groupHeadingBackgroundColor || DEFAULT_GROUP_HEADING_BACKGROUND_COLOR,
+            backgroundColor: groupHeadingBackgroundColor || defaultGroupHeadingBackgroundColor,
             padding: "8px 12px",
             // make Header look like normal options:
             fontSize: "inherit",
             fontWeight: "inherit"
+        }),
+        dropdownIndicator: (provided: object) => ({
+            ...provided,
+            display: displayCss
         })
-        /* it seems, padding cannot be set on chakraStyles when custom components are being used, 
-        too, so CSS is used to customize the options */
+    };
+
+    // Workaround: It seems like, some css properties like padding or backgroundColor cannot be set
+    // on chakraStyles when custom components are being used. It is passed as the "styles" object
+    const styles = {
+        option: (provided: object, state: OptionProps<SearchOption, false, SearchGroupOption>) => ({
+            ...provided,
+            padding: "8px 24px",
+            backgroundColor: state.isFocused
+                ? focussedItemBackgroundColor || defaultFocussedItemBackgroundColor
+                : "inherit"
+        })
     };
 
     //Typescript doesn't recognize Type SearchOption but rather SingleValue<SearchGroupOption>
@@ -216,6 +244,10 @@ export const Search: FC<SearchProps> = (props) => {
                     guidance,
                     onFilter
                 }}
+                /* selectedOptionColorScheme="trails" 
+                    --> unfortunately does not work when a custom component is used as "option" */
+                styles={styles}
+                chakraStyles={chakraStyles}
                 isClearable={true}
                 placeholder={intl.formatMessage({ id: "searchPlaceholder" })}
                 closeMenuOnSelect={true}
@@ -228,7 +260,6 @@ export const Search: FC<SearchProps> = (props) => {
                     ValueContainer: ValueContainer,
                     ClearIndicator: ClearIndicator
                 }}
-                chakraStyles={chakraStyles}
                 onChange={onInputChange}
             />
         </Box>

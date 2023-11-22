@@ -79,11 +79,20 @@ In case of the `onSelect` event, you can access the selected suggestion by the `
 />
 ```
 
-If you want to change the background color of the datasource headings, add the optional property `groupHeadingBackgroundColor`
-as a CSS-background-color string. The default is "rgba(211,211,211,0.20)" (light gray).
+If you want to change the background color of the datasource headings, add the optional property
+`groupHeadingBackgroundColor` as a CSS-background-color string.
+The default is pulled from the theme "trails" (trails.100)
 
 ```tsx
-<Search mapId={MAP_ID} sources={datasources} groupHeadingBackgroundColor="rgba(211,211,211,0.20)" />
+<Search mapId={MAP_ID} sources={datasources} groupHeadingBackgroundColor="#d5e5ec" />
+```
+
+If you want to change the background color of a focussed search suggestion, add the optional property
+`focussedItemBackgroundColor` as a CSS-background-color string.
+The default is pulled from the theme "trails" (trails.50)
+
+```tsx
+<Search mapId={MAP_ID} sources={datasources} focussedItemBackgroundColor="#eaf2f5" />
 ```
 
 If you want to change the typing delay, add the optional property `searchTypingDelay` (in ms).
@@ -100,8 +109,8 @@ If you want to see the default dropdown indicator of the component (combo box ar
 <Search mapId={MAP_ID} sources={datasources} showDropdownIndicator={true} />
 ```
 
-If you want to customize the CSS of the `NoOptionsMessage`, or `LoadingMessage`, you can use their
-class names: `search-no-match` or `search-loading-text`.
+If you want to customize the CSS of the `Option`, `NoOptionsMessage`, or `LoadingMessage`, you can use their
+class names: `search-option`, `search-no-match` or `search-loading-text`.
 
 ## License
 

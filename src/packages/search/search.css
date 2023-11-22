@@ -1,15 +1,3 @@
-.search-highlighted-match {
-    font-weight: bold;
-}
-
-.search-option {
-    padding: 8px 24px !important;
-}
-
-.search-invisible {
-    display: none;
-}
-
 .search-top-center-placement {
     position: absolute;
     left: 50%;
@@ -19,12 +7,27 @@
     z-index: 1;
 }
 
-.search-no-match {
+.search-component .chakra-divider {
+    display: none;
 }
 
-.search-loading-text {
+.search-highlighted-match {
+    font-weight: bold;
 }
 
 .search-value-container {
     padding-left: 30px !important;
+}
+
+.search-invisible {
+    display: none;
+}
+
+.search-option {
+}
+
+.search-no-match {
+}
+
+.search-loading-text {
 }
