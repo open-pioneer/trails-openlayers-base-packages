@@ -67,6 +67,10 @@ export function ClearIndicator({
     children: _ignored,
     ...props
 }: ClearIndicatorProps<SearchOption, false, SearchGroupOption>) {
+    const intl = useIntl();
+    const clearButtonLabel = intl.formatMessage({
+        id: "ariaLabel.clearButton"
+    });
     const keyHandler = (e: KeyboardEvent) => {
         if (e.key !== "Enter") {
             return;
@@ -78,8 +82,17 @@ export function ClearIndicator({
 
     return (
         components.ClearIndicator && (
-            <components.ClearIndicator {...props} className="search-clear-container">
-                <CloseIcon role="button" tabIndex={0} onKeyDown={keyHandler}></CloseIcon>
+            <components.ClearIndicator
+                {...props}
+                className="search-clear-container"
+                innerProps={Object.assign(props.innerProps, { "aria-hidden": false })}
+            >
+                <CloseIcon
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={keyHandler}
+                    aria-label={clearButtonLabel}
+                ></CloseIcon>
             </components.ClearIndicator>
         )
     );

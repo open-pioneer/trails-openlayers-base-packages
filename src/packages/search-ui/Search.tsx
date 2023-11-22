@@ -5,6 +5,7 @@ import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/rea
 import { DataSource, Suggestion } from "./api";
 import { FC, useEffect, useRef, useState } from "react";
 import { ActionMeta, AsyncSelect, SelectInstance, SingleValue } from "chakra-react-select";
+import { AriaOnFocus, AriaOnChange } from "react-select";
 import { SearchController, SuggestionGroup } from "./SearchController";
 import {
     LoadingMessage,
@@ -156,11 +157,57 @@ export const Search: FC<SearchProps> = (props) => {
         }
     };
 
+    /**
+     * Method to create Aria-String for focus-Event
+     */
+    const onFocus: AriaOnFocus<SearchOption> = ({ focused }) => {
+        return `${focused.label} ${intl.formatMessage({ id: "ariaLabel.searchFocus" })}.`;
+    };
+
+    /**
+     * Method to create Aria-String for value-change-Event
+     */
+    const onChange: AriaOnChange<SearchOption, boolean> = ({ action, label }) => {
+        let message = "";
+        switch (action) {
+            case "select-option":
+                message = `${label}  ${intl.formatMessage({ id: "ariaLabel.searchSelect" })}.`;
+                break;
+            case "clear":
+                message = `${label}  ${intl.formatMessage({ id: "ariaLabel.searchClear" })}.`;
+                break;
+            default:
+                break;
+        }
+        return message;
+    };
+
+    /**
+     * Method to create Aria-String for instruction
+     */
+    const guidance = () => {
+        return `${intl.formatMessage({ id: "ariaLabel.instructions" })}`;
+    };
+
+    /**
+     * Method to create Aria-String for result lenght
+     */
+    const onFilter = () => {
+        return "";
+    };
+
     const selectRef = useRef<SelectInstance<SearchOption, false, SearchGroupOption>>(null);
     return (
         <Box {...containerProps}>
             <AsyncSelect<SearchOption, false, SearchGroupOption>
                 ref={selectRef}
+                aria-label={intl.formatMessage({ id: "ariaLabel.search" })}
+                ariaLiveMessages={{
+                    onFocus,
+                    onChange,
+                    guidance,
+                    onFilter
+                }}
                 isClearable={true}
                 placeholder={intl.formatMessage({ id: "searchPlaceholder" })}
                 closeMenuOnSelect={true}
