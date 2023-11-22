@@ -10,7 +10,7 @@ import {
     FakeRiverSource,
     FakeStreetSource
 } from "./search-source-examples/testSources";
-import { Search, SelectSearchEvent } from "@open-pioneer/search-ui";
+import { Search, SelectSearchEvent } from "@open-pioneer/search";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { ScaleViewer } from "@open-pioneer/scale-viewer";
 import { Toc } from "@open-pioneer/toc";
@@ -61,13 +61,11 @@ export function AppUI() {
                             padding={2}
                             boxShadow="lg"
                             mt={5}
-                            className="search-placement"
+                            className="search-top-center-placement"
                         >
                             <Search
                                 mapId={MAP_ID}
                                 sources={sources}
-                                searchTypingDelay={500}
-                                showDropdownIndicator={false}
                                 onSelect={function (event: SelectSearchEvent): void {
                                     console.debug(
                                         "User selected " + event.suggestion + " from Search"

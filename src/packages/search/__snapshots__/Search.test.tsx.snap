@@ -7,7 +7,7 @@ exports[`should successfully create a search component 1`] = `
   data-theme="light"
 >
   <div
-    class=" css-79elbk"
+    class="search-component css-79elbk"
     data-theme="light"
   >
     <span

@@ -566,7 +566,7 @@ importers:
         version: link:../../..
     publishDirectory: dist
 
-  src/packages/search-ui:
+  src/packages/search:
     dependencies:
       '@chakra-ui/icons':
         specifier: ^2.1.0
@@ -776,9 +776,9 @@ importers:
       '@open-pioneer/scale-viewer':
         specifier: workspace:^
         version: link:../../../packages/scale-viewer
-      '@open-pioneer/search-ui':
+      '@open-pioneer/search':
         specifier: workspace:^
-        version: link:../../../packages/search-ui
+        version: link:../../../packages/search
       '@open-pioneer/toc':
         specifier: workspace:^
         version: link:../../../packages/toc

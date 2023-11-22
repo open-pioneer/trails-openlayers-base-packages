@@ -1,1 +1,0 @@
-# @open-pioneer/search-ui

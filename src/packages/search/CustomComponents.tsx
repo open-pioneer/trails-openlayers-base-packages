@@ -102,7 +102,7 @@ export function HighlightOption(props: OptionProps<SearchOption, false, SearchGr
     const userInput = props.selectProps.inputValue;
     const label = props.data.label;
     return (
-        <components.Option {...props}>
+        <components.Option {...props} className="search-option">
             <chakra.div>
                 {userInput.trim().length > 0 ? getHighlightedLabel(label, userInput) : label}
             </chakra.div>

@@ -20,8 +20,9 @@ import { useIntl } from "open-pioneer:react-hooks";
 import { Box } from "@open-pioneer/chakra-integration";
 
 const LOG = createLogger("search-ui:Search");
+// TODO: Use a theme color as default
 const DEFAULT_GROUP_HEADING_BACKGROUND_COLOR = "rgba(211,211,211,0.20)";
-const DEFAULT_TYPING_DELAY = 150;
+const DEFAULT_TYPING_DELAY = 500;
 
 export interface SearchOption {
     /** Unique value for this option. */
@@ -62,7 +63,7 @@ export interface SearchProps extends CommonComponentProps {
 
     /**
      * Typing delay (in milliseconds) before the async search query starts after the user types in the search term.
-     * default value: 150
+     * default value: 500
      */
     searchTypingDelay?: number;
 
@@ -126,8 +127,14 @@ export const Search: FC<SearchProps> = (props) => {
         }),
         groupHeading: (provided: object) => ({
             ...provided,
-            backgroundColor: groupHeadingBackgroundColor || DEFAULT_GROUP_HEADING_BACKGROUND_COLOR
+            backgroundColor: groupHeadingBackgroundColor || DEFAULT_GROUP_HEADING_BACKGROUND_COLOR,
+            padding: "8px 12px",
+            // make Header look like normal options:
+            fontSize: "inherit",
+            fontWeight: "inherit"
         })
+        /* it seems, padding cannot be set on chakraStyles when custom components are being used, 
+        too, so CSS is used to customize the options */
     };
 
     //Typescript doesn't recognize Type SearchOption but rather SingleValue<SearchGroupOption>
@@ -200,6 +207,7 @@ export const Search: FC<SearchProps> = (props) => {
     return (
         <Box {...containerProps}>
             <AsyncSelect<SearchOption, false, SearchGroupOption>
+                className="search-component"
                 ref={selectRef}
                 aria-label={intl.formatMessage({ id: "ariaLabel.search" })}
                 ariaLiveMessages={{

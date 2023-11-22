@@ -2,11 +2,15 @@
     font-weight: bold;
 }
 
+.search-option {
+    padding: 8px 24px !important;
+}
+
 .search-invisible {
     display: none;
 }
 
-.search-placement {
+.search-top-center-placement {
     position: absolute;
     left: 50%;
     top: 0px;
