@@ -5,5 +5,8 @@ import { defineBuildConfig } from "@open-pioneer/build-support";
 
 export default defineBuildConfig({
     i18n: ["en", "de"],
-    entryPoints: ["index"]
+    entryPoints: ["index"],
+    ui: {
+        references: ["local-storage.LocalStorageService"]
+    }
 });

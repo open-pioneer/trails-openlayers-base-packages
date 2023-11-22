@@ -1,35 +1,34 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import { AddIcon } from "@chakra-ui/icons";
 import {
+    Alert,
+    AlertIcon,
     Box,
+    Button,
     Editable,
     EditableInput,
     EditablePreview,
     Flex,
-    Spacer,
-    List,
-    Alert,
-    AlertIcon,
-    Text,
-    Button,
-    VStack,
     Input,
-    ListProps
+    List,
+    ListProps,
+    Spacer,
+    Text,
+    VStack
 } from "@open-pioneer/chakra-integration";
-import { PackageIntl } from "@open-pioneer/runtime";
-import { useMapModel } from "@open-pioneer/map";
-import { useIntl } from "open-pioneer:react-hooks";
-import { AddIcon } from "@chakra-ui/icons";
+import { LocalStorageService } from "@open-pioneer/local-storage";
+import { MapModel, useMapModel } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
-import { PiMapTrifold, PiTrashSimpleLight, PiCheck, PiXLight, PiFloppyDisk } from "react-icons/pi";
+import { PackageIntl } from "@open-pioneer/runtime";
+import { Provider as JotaiProvider, useAtomValue } from "jotai";
+import { useIntl, useService } from "open-pioneer:react-hooks";
 import { FC, useEffect, useState } from "react";
-import { Extent } from "ol/extent";
-const INIT_BOOKMARKS = [
-    { title: "Düsseldorf", view: {} },
-    { title: "Langenfeld", view: {} },
-    { title: "Köln", view: {} }
-];
+import { PiCheck, PiFloppyDisk, PiMapTrifold, PiTrashSimpleLight, PiXLight } from "react-icons/pi";
+import { Bookmark, SpatialBookmarkViewModel } from "./SpatialBookmarkViewModel";
+
 type UIMode = "list" | "create" | "delete";
+
 interface SpatialBookmarkProps extends CommonComponentProps {
     /**
      * The id of the map.
@@ -38,26 +37,41 @@ interface SpatialBookmarkProps extends CommonComponentProps {
 
     "aria-labelledby"?: string;
 }
+
 export const SpatialBookmark: FC<SpatialBookmarkProps> = (props) => {
-    const { mapId, "aria-labelledby": ariaLabelledBy } = props;
+    const { map } = useMapModel(props.mapId);
+
+    return map && <SetupViewModel {...props} map={map} />;
+};
+
+function SetupViewModel(props: SpatialBookmarkProps & { map: MapModel }) {
+    const localStorageService = useService("local-storage.LocalStorageService");
+    const viewModel = useViewModel(props.map, localStorageService);
+    return (
+        viewModel && (
+            // Makes the store accessible to useAtom() etc. in the UI
+            <JotaiProvider store={viewModel.store}>
+                <SpatialBookmarkUI {...props} viewModel={viewModel} />
+            </JotaiProvider>
+        )
+    );
+}
+
+function SpatialBookmarkUI(props: SpatialBookmarkProps & { viewModel: SpatialBookmarkViewModel }) {
+    const { viewModel, "aria-labelledby": ariaLabelledBy } = props;
     const intl = useIntl();
-    const { map } = useMapModel(mapId);
-    const [bookmarks, setBookmarks] = useState(INIT_BOOKMARKS);
+
+    const bookmarks = useAtomValue(viewModel.bookmarks);
     const [bookmarkName, setBookmarkName] = useState<string>("");
-    const [currentExtent, setCurrentExtent] = useState<Extent | undefined>(undefined);
     const { containerProps } = useCommonComponentProps("spatial-bookmark", props);
     const [uiMode, setUiMode] = useState<UIMode>("list");
 
     const clearBookmarks = () => {
-        setBookmarks([]);
+        viewModel.deleteAllBookmarks();
         setUiMode("list");
     };
-    const deleteBookmark = (index: number) => {
-        setBookmarks(bookmarks.filter((_, idx) => idx !== index));
-    };
     const addBookmark = () => {
-        setBookmarks([...bookmarks, { title: bookmarkName, view: {} }]);
-        setCurrentExtent(map?.olMap.getView().calculateExtent());
+        viewModel.createBookmark(bookmarkName);
         setUiMode("list");
         setBookmarkName("");
     };
@@ -106,7 +120,7 @@ export const SpatialBookmark: FC<SpatialBookmarkProps> = (props) => {
             />
         </VStack>
     );
-    const bookmarkList = createList(bookmarks, deleteBookmark, {
+    const bookmarkList = createList(bookmarks, viewModel, {
         "aria-labelledby": ariaLabelledBy
     });
     const listContent = (
@@ -147,14 +161,20 @@ export const SpatialBookmark: FC<SpatialBookmarkProps> = (props) => {
             {content}
         </Box>
     );
-};
+}
+
 function createList(
-    bookmarks: { title: string; view: {} }[],
-    deleteBookmark: (imdex: number) => void,
+    bookmarks: Bookmark[],
+    viewModel: SpatialBookmarkViewModel,
     listProps: ListProps
 ) {
     const bookmarkItems = bookmarks.map((bookmark, idx) => (
-        <BookmarkItem key={idx} title={bookmark.title} index={idx} onDelete={deleteBookmark} />
+        <BookmarkItem
+            key={idx}
+            bookmark={bookmark}
+            onActivate={() => viewModel.activateBookmark(bookmark)}
+            onDelete={() => viewModel.deleteBookmark(bookmark.id)}
+        />
     ));
 
     return (
@@ -169,23 +189,23 @@ function createList(
         </List>
     );
 }
-function BookmarkItem(props: {
-    title: string;
-    index: number;
-    onDelete: (index: number) => void;
-}): JSX.Element {
-    const { title, onDelete, index } = props;
-    const zoomToBookmark = (title: string) => {
-        console.log(`Zoom to ${title}`);
-    };
 
+function BookmarkItem(props: {
+    bookmark: Bookmark;
+    onActivate: () => void;
+    onDelete: () => void;
+}): JSX.Element {
+    const { bookmark, onDelete, onActivate } = props;
+    const title = bookmark.title;
     return (
         <Box
             as="li"
             padding={1}
             cursor={"pointer"}
             _hover={{ background: "lightgray" }}
-            onClick={() => zoomToBookmark(title)}
+            onClick={() => {
+                onActivate();
+            }}
         >
             <Flex width="100%" flexDirection="row" align="center" gap={1}>
                 <PiMapTrifold />
@@ -201,7 +221,7 @@ function BookmarkItem(props: {
                     variant="ghost"
                     leftIcon={<PiTrashSimpleLight />}
                     onClick={(event) => {
-                        onDelete(index);
+                        onDelete();
                         event.stopPropagation();
                     }}
                 />
@@ -211,7 +231,7 @@ function BookmarkItem(props: {
 }
 function BookmarkHandler(props: {
     intl: PackageIntl;
-    bookmarks: { title: string; view: {} }[];
+    bookmarks: Bookmark[];
     showCreate: () => void;
     showDelete: () => void;
 }): JSX.Element {
@@ -302,4 +322,15 @@ function BookmarkCreatorHandler(props: {
             </Button>
         </Flex>
     );
+}
+
+function useViewModel(map: MapModel, localStorageService: LocalStorageService) {
+    const [viewModel, setViewModel] = useState<SpatialBookmarkViewModel>();
+    useEffect(() => {
+        const viewModel = new SpatialBookmarkViewModel(map, localStorageService);
+        setViewModel(viewModel);
+        return () => viewModel.destroy();
+    }, [map, localStorageService]);
+
+    return viewModel;
 }

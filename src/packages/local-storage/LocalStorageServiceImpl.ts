@@ -104,7 +104,10 @@ export class LocalStorageServiceImpl implements LocalStorageService {
 
             const json = storage.getItem(this.#rootKey);
             if (json == null) {
-                return; // No previous value
+                // No previous value
+                this.#rootValue = {};
+                this.#save();
+                return;
             }
 
             try {

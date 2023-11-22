@@ -702,6 +702,9 @@ importers:
       '@open-pioneer/chakra-integration':
         specifier: ^1.1.0
         version: 1.1.0(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(framer-motion@10.16.5)(react-dom@18.2.0)(react@18.2.0)
+      '@open-pioneer/local-storage':
+        specifier: workspace:^
+        version: link:../local-storage
       '@open-pioneer/map':
         specifier: workspace:^
         version: link:../map
@@ -711,6 +714,9 @@ importers:
       '@open-pioneer/runtime':
         specifier: ^1.1.0
         version: 1.1.0(@formatjs/intl@2.9.9)(@open-pioneer/base-theme@0.1.0)(@open-pioneer/chakra-integration@1.1.0)(@open-pioneer/core@1.1.0)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
+      jotai:
+        specifier: ^2.5.1
+        version: 2.5.1(@types/react@18.2.37)(react@18.2.0)
       ol:
         specifier: ^8.2.0
         version: 8.2.0
@@ -720,6 +726,9 @@ importers:
       react-icons:
         specifier: ^4.11.0
         version: 4.11.0(react@18.2.0)
+      uuid:
+        specifier: ^9.0.0
+        version: 9.0.0
     devDependencies:
       '@open-pioneer/map-test-utils':
         specifier: workspace:^
@@ -727,6 +736,9 @@ importers:
       '@open-pioneer/test-utils':
         specifier: ^1.0.1
         version: 1.0.1(@formatjs/intl@2.9.9)(@open-pioneer/chakra-integration@1.1.0)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.3)(@testing-library/react@14.1.0)(react-dom@18.2.0)(react@18.2.0)
+      '@types/uuid':
+        specifier: ^9.0.2
+        version: 9.0.2
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -5678,6 +5690,22 @@ packages:
   /jju@1.4.0:
     resolution: {integrity: sha512-8wb9Yw966OSxApiCt0K3yNJL8pnNeIv+OEq2YMidz4FKP6nonSRoOXc80iXY4JaN2FC11B9qsNmDsm+ZOfMROA==}
     dev: true
+
+  /jotai@2.5.1(@types/react@18.2.37)(react@18.2.0):
+    resolution: {integrity: sha512-vanPCCSuHczUXNbVh/iUunuMfrWRL4FdBtAbTRmrfqezJcKb8ybBTg8iivyYuUHapjcDETyJe1E4inlo26bVHA==}
+    engines: {node: '>=12.20.0'}
+    peerDependencies:
+      '@types/react': '>=17.0.0'
+      react: '>=17.0.0'
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      react:
+        optional: true
+    dependencies:
+      '@types/react': 18.2.37
+      react: 18.2.0
+    dev: false
 
   /joycon@3.1.1:
     resolution: {integrity: sha512-34wB/Y7MW7bzjKRjUKTa46I2Z7eV62Rkhva+KkopW7Qvv/OSWBqvkSY7vusOPrNuZcUG3tApvdVgNB8POj3SPw==}
