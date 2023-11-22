@@ -1,4 +1,5 @@
 messages:
+  listLabel: "Spatial bookmarks"
   createBookmarkLabel: "Add new Bookmark"
   deleteBookmarkLabel: "Delete Bookmark"
   createBookmarkInfo: "After entering a name you can save the new bookmark. The current map section is used as the basis for the position."

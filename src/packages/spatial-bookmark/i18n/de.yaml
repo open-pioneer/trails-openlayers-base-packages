@@ -1,4 +1,5 @@
 messages:
+  listLabel: "Räumliche Lesezeichen"
   createBookmarkLabel: "Neues Lesezeichen hinzufügen"
   deleteBookmarkLabel: "Lesezeichen löschen"
   createBookmarkInfo: "Nach der Eingabe eines Namens können Sie das neue Bookmark speichern. Dabei wird der aktuelle Kartenausschnitt als Grundlage für die Position verwendet."

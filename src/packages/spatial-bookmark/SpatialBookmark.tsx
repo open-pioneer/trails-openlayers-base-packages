@@ -6,13 +6,13 @@ import {
     AlertIcon,
     Box,
     Button,
+    ButtonProps,
     Editable,
     EditableInput,
     EditablePreview,
     Flex,
     Input,
     List,
-    ListProps,
     Spacer,
     Text,
     VStack
@@ -23,9 +23,16 @@ import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/rea
 import { PackageIntl } from "@open-pioneer/runtime";
 import { Provider as JotaiProvider, useAtomValue } from "jotai";
 import { useIntl, useService } from "open-pioneer:react-hooks";
-import { FC, useEffect, useState } from "react";
+import { FC, ReactNode, useEffect, useState } from "react";
 import { PiCheck, PiFloppyDisk, PiMapTrifold, PiTrashSimpleLight, PiXLight } from "react-icons/pi";
 import { Bookmark, SpatialBookmarkViewModel } from "./SpatialBookmarkViewModel";
+
+/*
+    TODO: 
+    - listbox interaction (uparrow / downarrow / focus)
+    - overflow list
+    - enter -> create bookmark
+*/
 
 type UIMode = "list" | "create" | "delete";
 
@@ -34,19 +41,12 @@ interface SpatialBookmarkProps extends CommonComponentProps {
      * The id of the map.
      */
     mapId: string;
-
-    "aria-labelledby"?: string;
 }
 
 export const SpatialBookmark: FC<SpatialBookmarkProps> = (props) => {
     const { map } = useMapModel(props.mapId);
-
-    return map && <SetupViewModel {...props} map={map} />;
-};
-
-function SetupViewModel(props: SpatialBookmarkProps & { map: MapModel }) {
     const localStorageService = useService("local-storage.LocalStorageService");
-    const viewModel = useViewModel(props.map, localStorageService);
+    const viewModel = useViewModel(map, localStorageService);
     return (
         viewModel && (
             // Makes the store accessible to useAtom() etc. in the UI
@@ -55,10 +55,10 @@ function SetupViewModel(props: SpatialBookmarkProps & { map: MapModel }) {
             </JotaiProvider>
         )
     );
-}
+};
 
 function SpatialBookmarkUI(props: SpatialBookmarkProps & { viewModel: SpatialBookmarkViewModel }) {
-    const { viewModel, "aria-labelledby": ariaLabelledBy } = props;
+    const { viewModel } = props;
     const intl = useIntl();
 
     const bookmarks = useAtomValue(viewModel.bookmarks);
@@ -70,25 +70,28 @@ function SpatialBookmarkUI(props: SpatialBookmarkProps & { viewModel: SpatialBoo
         viewModel.deleteAllBookmarks();
         setUiMode("list");
     };
+
     const addBookmark = () => {
         viewModel.createBookmark(bookmarkName);
         setUiMode("list");
         setBookmarkName("");
     };
-    const deleteContent = (
+
+    const deleteContent = () => (
         <VStack>
             <Alert status="warning">
                 <AlertIcon />
                 {intl.formatMessage({ id: "deleteBookmarkInfo" })}
             </Alert>
-            <BookmarkRemoverHandler
+            <RemoveControls
                 intl={intl}
                 onClear={clearBookmarks}
                 onCancel={() => setUiMode("list")}
             />
         </VStack>
     );
-    const createContent = (
+
+    const createContent = () => (
         <VStack>
             <Alert status="info">
                 <AlertIcon />
@@ -109,7 +112,7 @@ function SpatialBookmarkUI(props: SpatialBookmarkProps & { viewModel: SpatialBoo
                     }}
                 />
             </Editable>
-            <BookmarkCreatorHandler
+            <CreateControls
                 intl={intl}
                 bookmarkName={bookmarkName}
                 onCancel={() => {
@@ -120,20 +123,24 @@ function SpatialBookmarkUI(props: SpatialBookmarkProps & { viewModel: SpatialBoo
             />
         </VStack>
     );
-    const bookmarkList = createList(bookmarks, viewModel, {
-        "aria-labelledby": ariaLabelledBy
-    });
-    const listContent = (
+
+    const listContent = () => (
         <>
             {bookmarks.length ? (
-                bookmarkList
+                createList(
+                    bookmarks,
+                    viewModel,
+                    intl.formatMessage({
+                        id: "listLabel"
+                    })
+                )
             ) : (
                 <Alert status="info">
                     <AlertIcon />
                     {intl.formatMessage({ id: "noSavedBookmarkInfo" })}
                 </Alert>
             )}
-            <BookmarkHandler
+            <ListControls
                 intl={intl}
                 bookmarks={bookmarks}
                 showCreate={() => setUiMode("create")}
@@ -141,33 +148,23 @@ function SpatialBookmarkUI(props: SpatialBookmarkProps & { viewModel: SpatialBoo
             />
         </>
     );
+
     const content = (
         <>
-            {uiMode === "list" && listContent}
-            {uiMode === "create" && createContent}
-            {uiMode === "delete" && deleteContent}
+            {uiMode === "list" && listContent()}
+            {uiMode === "create" && createContent()}
+            {uiMode === "delete" && deleteContent()}
         </>
     );
 
     return (
-        <Box
-            {...containerProps}
-            backgroundColor="white"
-            padding={2}
-            width={"350px"}
-            overflowY="auto"
-            maxHeight="300"
-        >
+        <Box {...containerProps} padding={2} width={"350px"} overflowY="auto" maxHeight="300">
             {content}
         </Box>
     );
 }
 
-function createList(
-    bookmarks: Bookmark[],
-    viewModel: SpatialBookmarkViewModel,
-    listProps: ListProps
-) {
+function createList(bookmarks: Bookmark[], viewModel: SpatialBookmarkViewModel, listLabel: string) {
     const bookmarkItems = bookmarks.map((bookmark, idx) => (
         <BookmarkItem
             key={idx}
@@ -182,8 +179,9 @@ function createList(
             as="ul"
             className="spatial-bookmark-list"
             listStyleType="none"
+            role="listbox"
             spacing={1}
-            {...listProps}
+            aria-label={listLabel}
         >
             {bookmarkItems}
         </List>
@@ -200,6 +198,7 @@ function BookmarkItem(props: {
     return (
         <Box
             as="li"
+            role="option"
             padding={1}
             cursor={"pointer"}
             _hover={{ background: "lightgray" }}
@@ -214,7 +213,7 @@ function BookmarkItem(props: {
                 <Button
                     size="sm"
                     className="toc-layer-item-details-button"
-                    aria-label={"buttonLabel"}
+                    aria-label={"buttonLabel"} // TODO
                     borderRadius="full"
                     iconSpacing={0}
                     padding={0}
@@ -229,7 +228,8 @@ function BookmarkItem(props: {
         </Box>
     );
 }
-function BookmarkHandler(props: {
+
+function ListControls(props: {
     intl: PackageIntl;
     bookmarks: Bookmark[];
     showCreate: () => void;
@@ -238,60 +238,38 @@ function BookmarkHandler(props: {
     const { intl, bookmarks, showCreate, showDelete } = props;
 
     return (
-        <Flex width="100%" flexDirection="row" gap={1} my={2}>
-            <Button
+        <ButtonContainer>
+            <DialogButton
                 isDisabled={bookmarks.length === 0}
                 colorScheme="red"
-                size="sm"
-                variant="outline"
+                width={undefined}
                 iconSpacing={0}
                 leftIcon={<PiTrashSimpleLight />}
                 onClick={showDelete}
-            ></Button>
-            <Button
-                width="100%"
-                size="sm"
-                variant="outline"
-                leftIcon={<AddIcon />}
-                onClick={showCreate}
-            >
+                aria-label="TODO" // TODO
+            />
+            <DialogButton leftIcon={<AddIcon />} onClick={showCreate}>
                 {intl.formatMessage({ id: "createBookmarkLabel" })}
-            </Button>
-        </Flex>
+            </DialogButton>
+        </ButtonContainer>
     );
 }
 
-function BookmarkRemoverHandler(props: {
-    intl: PackageIntl;
-    onClear: () => void;
-    onCancel: () => void;
-}) {
+function RemoveControls(props: { intl: PackageIntl; onClear: () => void; onCancel: () => void }) {
     const { intl, onCancel, onClear } = props;
     return (
-        <Flex width="100%" flexDirection="row" gap={1} my={1}>
-            <Button
-                width="100%"
-                size="sm"
-                variant="outline"
-                iconSpacing={0}
-                leftIcon={<PiXLight />}
-                onClick={onCancel}
-            >
+        <ButtonContainer>
+            <DialogButton leftIcon={<PiXLight />} onClick={onCancel}>
                 {intl.formatMessage({ id: "bookmarkRemoverHandlerNo" })}
-            </Button>
-            <Button
-                width="100%"
-                size="sm"
-                variant="outline"
-                leftIcon={<PiCheck />}
-                onClick={onClear}
-            >
+            </DialogButton>
+            <DialogButton leftIcon={<PiCheck />} onClick={onClear}>
                 {intl.formatMessage({ id: "bookmarkRemoverHandlerYes" })}
-            </Button>
-        </Flex>
+            </DialogButton>
+        </ButtonContainer>
     );
 }
-function BookmarkCreatorHandler(props: {
+
+function CreateControls(props: {
     intl: PackageIntl;
     bookmarkName: string;
     onCancel: () => void;
@@ -299,37 +277,45 @@ function BookmarkCreatorHandler(props: {
 }) {
     const { intl, onCancel, onSave, bookmarkName } = props;
     return (
-        <Flex width="100%" flexDirection="row" gap={1} my={1}>
-            <Button
-                width="100%"
-                size="sm"
-                variant="outline"
-                iconSpacing={0}
-                leftIcon={<PiXLight />}
-                onClick={() => onCancel()}
-            >
+        <ButtonContainer>
+            <DialogButton leftIcon={<PiXLight />} onClick={() => onCancel()}>
                 {intl.formatMessage({ id: "bookmarkCreatorHandlerCancel" })}
-            </Button>
-            <Button
+            </DialogButton>
+            <DialogButton
                 isDisabled={bookmarkName.length === 0}
-                width="100%"
-                size="sm"
-                variant="outline"
                 leftIcon={<PiFloppyDisk />}
                 onClick={() => onSave()}
             >
                 {intl.formatMessage({ id: "bookmarkCreatorHandlerSave" })}
-            </Button>
+            </DialogButton>
+        </ButtonContainer>
+    );
+}
+
+function ButtonContainer(props: { children: ReactNode }) {
+    return (
+        <Flex width="100%" flexDirection="row" gap={1} my={2}>
+            {props.children}
         </Flex>
     );
 }
 
-function useViewModel(map: MapModel, localStorageService: LocalStorageService) {
+function DialogButton(props?: ButtonProps): JSX.Element {
+    return <Button width="100%" size="sm" variant="outline" {...props} />;
+}
+
+function useViewModel(map: MapModel | undefined, localStorageService: LocalStorageService) {
     const [viewModel, setViewModel] = useState<SpatialBookmarkViewModel>();
     useEffect(() => {
-        const viewModel = new SpatialBookmarkViewModel(map, localStorageService);
+        let viewModel: SpatialBookmarkViewModel | undefined;
+        if (!map) {
+            viewModel = undefined;
+        } else {
+            viewModel = new SpatialBookmarkViewModel(map, localStorageService);
+        }
+
         setViewModel(viewModel);
-        return () => viewModel.destroy();
+        return () => viewModel?.destroy();
     }, [map, localStorageService]);
 
     return viewModel;
