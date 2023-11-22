@@ -24,7 +24,7 @@ it("should successfully create a coordinate viewer component", async () => {
     expect(viewerDiv).toMatchSnapshot();
 
     // check coordinate viewer box is available
-    expect(viewerDiv).toBeInstanceOf(HTMLDivElement);
+    expect(viewerDiv.tagName).toBe("DIV");
 });
 
 it("should successfully create a coordinate viewer component with additional css classes", async () => {
@@ -37,11 +37,7 @@ it("should successfully create a coordinate viewer component with additional css
         </PackageContextProvider>
     );
 
-    // coordinate viewer is mounted
     const { viewerDiv } = await waitForCoordinateViewer();
-    expect(viewerDiv).toMatchSnapshot();
-
-    expect(viewerDiv).toBeInstanceOf(HTMLDivElement);
     expect(viewerDiv.classList.contains("test")).toBe(true);
     expect(viewerDiv.classList.contains("foo")).toBe(false);
 });

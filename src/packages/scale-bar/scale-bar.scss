@@ -1,0 +1,21 @@
+/* override absolute position and background set by OpenLayers */
+.scale-bar {
+    .ol-scale-bar {
+        margin-bottom: 8px;
+        margin-right: 8px;
+    }
+
+    .ol-scale-bar,
+    .ol-scale-line {
+        position: relative;
+        bottom: 0;
+        left: 0;
+        background: none;
+
+        .ol-scale-bar-inner,
+        .ol-scale-line-inner {
+            color: var(--chakra-white);
+            border-color: var(--chakra-white);
+        }
+    }
+}

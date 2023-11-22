@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box, Button, Flex, Tooltip } from "@open-pioneer/chakra-integration";
+import { Box, Flex } from "@open-pioneer/chakra-integration";
 import { CoordinateViewer } from "@open-pioneer/coordinate-viewer";
 import { MapAnchor, MapContainer } from "@open-pioneer/map";
 import { InitialExtent, ZoomIn, ZoomOut } from "@open-pioneer/map-navigation";
@@ -11,15 +11,20 @@ import {
     FakeStreetSource
 } from "./search-source-examples/testSources";
 import { Search, SelectSearchEvent } from "@open-pioneer/search";
-import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
+import { OverviewMap } from "@open-pioneer/overview-map";
+import { SectionHeading, TitledSection, ToolButton } from "@open-pioneer/react-utils";
 import { ScaleViewer } from "@open-pioneer/scale-viewer";
 import { Toc } from "@open-pioneer/toc";
-import { ScaleComponent } from "map-sample-scale-component";
+import { ScaleBar } from "@open-pioneer/scale-bar";
+import TileLayer from "ol/layer/Tile.js";
+import OSM from "ol/source/OSM.js";
 import { useIntl } from "open-pioneer:react-hooks";
-import { useState } from "react";
-import { PiRulerFill, PiRulerLight } from "react-icons/pi";
+import { useId, useMemo, useState } from "react";
+import { PiMapTrifold, PiRulerLight } from "react-icons/pi";
 import { MAP_ID } from "./MapConfigProviderImpl";
-import { useId } from "react";
+import { Geolocation } from "@open-pioneer/geolocation";
+import { Notifier } from "@open-pioneer/notifier";
+
 //TODO useCallback for the sources
 const sources = [new FakeCitySource(), new FakeStreetSource(), new FakeRiverSource()];
 export function AppUI() {
@@ -27,13 +32,27 @@ export function AppUI() {
     const tocTitleId = useId();
     const measurementTitleId = useId();
     const [measurementIsActive, setMeasurementIsActive] = useState<boolean>(false);
+    const [showOverviewMap, setShowOverviewMap] = useState<boolean>(true);
 
     function toggleMeasurement() {
         setMeasurementIsActive(!measurementIsActive);
     }
 
+    function toggleOverviewMap() {
+        setShowOverviewMap(!showOverviewMap);
+    }
+
+    const overviewMapLayer = useMemo(
+        () =>
+            new TileLayer({
+                source: new OSM()
+            }),
+        []
+    );
+
     return (
         <Flex height="100%" direction="column" overflow="hidden">
+            <Notifier position="top-right" />
             <TitledSection
                 title={
                     <Box
@@ -119,6 +138,11 @@ export function AppUI() {
                                 )}
                             </Box>
                         </MapAnchor>
+                        <MapAnchor position="top-right" horizontalGap={10} verticalGap={10}>
+                            {showOverviewMap && (
+                                <OverviewMap mapId={MAP_ID} olLayer={overviewMapLayer} />
+                            )}
+                        </MapAnchor>
                         <MapAnchor position="bottom-right" horizontalGap={10} verticalGap={30}>
                             <Flex
                                 role="toolbar"
@@ -127,21 +151,19 @@ export function AppUI() {
                                 gap={1}
                                 padding={1}
                             >
-                                <Tooltip
+                                <Geolocation mapId={MAP_ID}></Geolocation>
+                                <ToolButton
+                                    label={intl.formatMessage({ id: "overviewMapTitle" })}
+                                    icon={<PiMapTrifold />}
+                                    isActive={showOverviewMap}
+                                    onClick={toggleOverviewMap}
+                                />
+                                <ToolButton
                                     label={intl.formatMessage({ id: "measurementTitle" })}
-                                    placement="auto"
-                                    openDelay={500}
-                                >
-                                    <Button
-                                        aria-label={intl.formatMessage({ id: "measurementTitle" })}
-                                        leftIcon={
-                                            measurementIsActive ? <PiRulerFill /> : <PiRulerLight />
-                                        }
-                                        onClick={toggleMeasurement}
-                                        iconSpacing={0}
-                                        padding={0}
-                                    />
-                                </Tooltip>
+                                    icon={<PiRulerLight />}
+                                    isActive={measurementIsActive}
+                                    onClick={toggleMeasurement}
+                                />
                                 <InitialExtent mapId={MAP_ID} />
                                 <ZoomIn mapId={MAP_ID} />
                                 <ZoomOut mapId={MAP_ID} />
@@ -157,7 +179,7 @@ export function AppUI() {
                     justifyContent="center"
                 >
                     <CoordinateViewer mapId={MAP_ID} precision={2} />
-                    <ScaleComponent mapId={MAP_ID} />
+                    <ScaleBar mapId={MAP_ID} />
                     <ScaleViewer mapId={MAP_ID} />
                 </Flex>
             </TitledSection>

@@ -1,0 +1,9 @@
+messages:
+  locateNotSupported: Die Geolokalisierung wird nicht unterstützt
+  locateMeStart: Geolokalisierung starten
+  locateMeEnd: Geolokalisierung stoppen
+  error: Fehler
+  permissionDenied: Die Geolokalisierung wurde abgebrochen
+  positionUnavailable: Die Position kann nicht ermittelt werden
+  timeout: Die Geolokalisierung dauert zu lange und wurde daher abgebrochen
+  unknownError: Bei der Geolokalisierung ist es zu einem unerwarteten Fehler gekommen

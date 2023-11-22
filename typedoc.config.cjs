@@ -15,7 +15,11 @@ const documentedPackages = [
     "packages/basemap-switcher",
     "packages/map-navigation",
     "packages/measurement",
-    "packages/ogc-features"
+    "packages/ogc-features",
+    "packages/overview-map",
+    "packages/scale-bar",
+    "packages/geolocation",
+    "packages/theme"
 ];
 
 const packagePaths = documentedPackages.map((p) => `src/${p}`);

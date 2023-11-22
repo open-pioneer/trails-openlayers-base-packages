@@ -20,3 +20,5 @@ export {
     type UseMapModelResolved,
     type UseMapModelRejected
 } from "../ui/useMapModel";
+
+export { TOPMOST_LAYER_Z } from "../model/LayerCollectionImpl";

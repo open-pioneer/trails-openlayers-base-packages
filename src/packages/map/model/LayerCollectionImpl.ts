@@ -12,6 +12,14 @@ const LOG = createLogger("map:LayerCollection");
 const BASE_LAYER_Z = 0;
 const OPERATION_LAYER_INITIAL_Z = 1;
 
+/**
+ * Z index for layers that should always be rendered on top of all other layers.
+ * Note that this is an internal, unstable property!
+ *
+ * @internal
+ */
+export const TOPMOST_LAYER_Z = 9999999;
+
 export class LayerCollectionImpl
     extends EventEmitter<LayerCollectionEvents>
     implements LayerCollection

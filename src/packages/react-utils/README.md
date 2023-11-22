@@ -41,6 +41,16 @@ Example:
 In the preceding example the topmost heading(s) in `TheRestOfYourApplication` start at level 2, and nested headings use increasing levels as usual.
 For more details, see the API documentation.
 
+## Tool buttons
+
+To create a simple icon button with a tooltip and an `aria-label`, use the `ToolButton` component as in the following sample:
+
+```jsx
+<ToolButton label={someLabel} icon={<SomeIcon />} onClick={someEventHandler} />
+```
+
+This is used, for example, to add an icon button to the map.
+
 ## Hooks
 
 ### useCommonComponentProps()

@@ -1,6 +1,6 @@
 {
     "name": "@open-pioneer/basemap-switcher",
-    "version": "0.0.1",
+    "version": "0.1.0",
     "license": "Apache-2.0",
     "main": "index.ts",
     "scripts": {
@@ -11,7 +11,7 @@
         "@open-pioneer/map": "workspace:^",
         "@open-pioneer/runtime": "^1.1.0",
         "@open-pioneer/react-utils": "workspace:^",
-        "ol": "^8.1.0",
+        "ol": "^8.2.0",
         "react": "^18.2.0"
     },
     "devDependencies": {
