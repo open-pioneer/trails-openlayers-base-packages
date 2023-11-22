@@ -115,9 +115,7 @@ function zoomAndHighlight(
     if (olMap) {
         resultHandler({
             olMap: olMap,
-            geometries: resultGeometries,
-            zoomScaleForPoints: 8,
-            zoomScaleForLinesOrPolygons: 11
+            geometries: resultGeometries
         });
     }
 }

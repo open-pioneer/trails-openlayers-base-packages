@@ -19,6 +19,11 @@ import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import olMarkerUrl from "./images/olMarker.png?url";
 
+interface HighlightStyle {
+    Point: Style;
+    Linestring: Style;
+    Polygon: Style;
+}
 export interface ResultHandlerOptions {
     /**
      * The olMap.
@@ -29,6 +34,11 @@ export interface ResultHandlerOptions {
      * The layer shown in the overview map.
      */
     geometries: Point[] | LineString[] | Polygon[];
+
+    /**
+     * The style for highlight and marker
+     * */
+    highlightStyle?: HighlightStyle;
 
     /**
      * The zoom-scale for point results
@@ -50,21 +60,23 @@ const INCHES_PER_METER = 39.37;
  * This function shows the position of a text search result zoomed to and marked or highlighted in the map.
  */
 export function resultHandler(options: ResultHandlerOptions) {
-    const { olMap, geometries, zoomScaleForPoints, zoomScaleForLinesOrPolygons } = options;
+    const { olMap, geometries, highlightStyle, zoomScaleForPoints, zoomScaleForLinesOrPolygons } =
+        options;
     if (!geometries || !geometries.length) {
         return;
     }
 
     if (geometries[0]?.getType() === "Point") {
-        zoomAndAddMarkers(olMap, geometries, zoomScaleForPoints);
+        zoomAndAddMarkers(olMap, geometries, highlightStyle, zoomScaleForPoints);
     } else {
-        zoomAndHighlight(olMap, geometries, zoomScaleForLinesOrPolygons);
+        zoomAndHighlight(olMap, geometries, highlightStyle, zoomScaleForLinesOrPolygons);
     }
 }
 
 function zoomAndAddMarkers(
     olMap: OlMap,
     points: Point[] | LineString[] | Polygon[],
+    highlightStyle: HighlightStyle | undefined,
     zoomScale: number | undefined
 ) {
     let centerCoords;
@@ -81,12 +93,13 @@ function zoomAndAddMarkers(
 
     zoomTo(olMap, extent, zoomScale);
 
-    createAndAddLayer(olMap, "Point", points);
+    createAndAddLayer(olMap, "Point", points, highlightStyle);
 }
 
 function zoomAndHighlight(
     olMap: OlMap,
     geometries: Point[] | LineString[] | Polygon[],
+    highlightStyle: HighlightStyle | undefined,
     zoomScale: number | undefined
 ) {
     const type = geometries[0]?.getType() === "Polygon" ? "Polygon" : "Linestring";
@@ -99,7 +112,7 @@ function zoomAndHighlight(
 
     zoomTo(olMap, extent, zoomScale);
 
-    createAndAddLayer(olMap, type, geometries);
+    createAndAddLayer(olMap, type, geometries, highlightStyle);
 }
 
 function setCenter(olMap: OlMap, coordinates: Coordinate | undefined) {
@@ -139,7 +152,8 @@ function getDefaultResolution(olMap: OlMap) {
 function createAndAddLayer(
     olMap: OlMap,
     geomType: string,
-    geometries: Point[] | LineString[] | Polygon[]
+    geometries: Point[] | LineString[] | Polygon[],
+    highlightStyle: HighlightStyle | undefined
 ) {
     const features = geometries.map((geometry) => {
         return new Feature({
@@ -147,6 +161,7 @@ function createAndAddLayer(
             geometry: geometry
         });
     });
+    const styles = highlightStyle || defaultHighlightStyle;
     const layer = new VectorLayer({
         className: "search_result_layer",
         source: new VectorSource({
@@ -169,7 +184,7 @@ export function removerHighlight(olMap: OlMap) {
     layer && olMap.removeLayer(layer);
 }
 
-const styles = {
+const defaultHighlightStyle = {
     "Point": new Style({
         image: new Icon({
             anchor: [0.5, 1],
