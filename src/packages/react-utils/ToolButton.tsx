@@ -11,6 +11,7 @@ import {
     useState
 } from "react";
 import { CommonComponentProps, useCommonComponentProps } from "./useCommonComponentProps";
+import classNames from "classnames";
 
 /**
  * Properties supported by {@link ToolButton}.
@@ -34,6 +35,12 @@ export interface ToolButtonProps extends CommonComponentProps, RefAttributes<HTM
      * Defaults to `false`.
      */
     isLoading?: boolean;
+
+    /**
+     * If `true`, indicates that the button is currently active with a different style.
+     * Defaults to `false`.
+     */
+    isActive?: boolean;
 
     /**
      * If `true`, the button will be disabled.
@@ -74,10 +81,20 @@ export const ToolButton: FC<ToolButtonProps> = forwardRef(function ToolButton(
         onClick: onClickProp,
         isLoading,
         isDisabled,
+        isActive,
         tooltipProps,
         buttonProps
     } = props;
-    const { containerProps } = useCommonComponentProps("tool-button", props);
+
+    const {
+        containerProps: { className: baseClassName, ...containerProps }
+    } = useCommonComponentProps("tool-button", props);
+
+    const className = classNames(baseClassName, {
+        "tool-button--active": isActive,
+        "tool-button--loading": isLoading,
+        "tool-button--disabled": isDisabled
+    });
 
     const [tooltipOpen, setTooltipOpen] = useState(false);
     const onClick = (e: MouseEvent<HTMLButtonElement>) => {
@@ -99,6 +116,7 @@ export const ToolButton: FC<ToolButtonProps> = forwardRef(function ToolButton(
             onClose={() => setTooltipOpen(false)}
         >
             <ButtonIgnoringAriaProps
+                className={className}
                 ref={ref}
                 aria-label={label}
                 leftIcon={icon}
@@ -106,6 +124,7 @@ export const ToolButton: FC<ToolButtonProps> = forwardRef(function ToolButton(
                 padding={0}
                 isDisabled={isDisabled}
                 isLoading={isLoading}
+                isActive={isActive}
                 {...containerProps}
                 {...buttonProps}
                 /* don't allow overwrite because component would break */

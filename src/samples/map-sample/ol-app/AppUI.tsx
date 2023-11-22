@@ -14,7 +14,7 @@ import TileLayer from "ol/layer/Tile.js";
 import OSM from "ol/source/OSM.js";
 import { useIntl } from "open-pioneer:react-hooks";
 import { useId, useMemo, useState } from "react";
-import { PiCaretDoubleLeft, PiCaretDoubleRight, PiRulerFill, PiRulerLight } from "react-icons/pi";
+import { PiMapTrifold, PiRulerLight } from "react-icons/pi";
 import { MAP_ID } from "./MapConfigProviderImpl";
 import { Geolocation } from "@open-pioneer/geolocation";
 import { Notifier } from "@open-pioneer/notifier";
@@ -124,18 +124,14 @@ export function AppUI() {
                                 <Geolocation mapId={MAP_ID}></Geolocation>
                                 <ToolButton
                                     label={intl.formatMessage({ id: "overviewMapTitle" })}
-                                    icon={
-                                        showOverviewMap ? (
-                                            <PiCaretDoubleRight />
-                                        ) : (
-                                            <PiCaretDoubleLeft />
-                                        )
-                                    }
+                                    icon={<PiMapTrifold />}
+                                    isActive={showOverviewMap}
                                     onClick={toggleOverviewMap}
                                 />
                                 <ToolButton
                                     label={intl.formatMessage({ id: "measurementTitle" })}
-                                    icon={measurementIsActive ? <PiRulerFill /> : <PiRulerLight />}
+                                    icon={<PiRulerLight />}
+                                    isActive={measurementIsActive}
                                     onClick={toggleMeasurement}
                                 />
                                 <InitialExtent mapId={MAP_ID} />

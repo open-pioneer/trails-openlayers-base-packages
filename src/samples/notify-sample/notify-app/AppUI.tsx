@@ -94,10 +94,10 @@ export function AppUI() {
                                 Hide after 5 seconds
                             </Checkbox>
                             <ButtonGroup justifyContent="center">
-                                <Button flex="1" colorScheme="blue" onClick={emitNotification}>
+                                <Button flex="1" onClick={emitNotification}>
                                     Emit Notification
                                 </Button>
-                                <Button flex="1" onClick={clearNotifications}>
+                                <Button flex="1" variant="cancel" onClick={clearNotifications}>
                                     Clear notifications
                                 </Button>
                             </ButtonGroup>

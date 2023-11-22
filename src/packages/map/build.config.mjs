@@ -19,5 +19,8 @@ export default defineBuildConfig({
     },
     ui: {
         references: ["map.MapRegistry"]
+    },
+    publishConfig: {
+        strict: true
     }
 });

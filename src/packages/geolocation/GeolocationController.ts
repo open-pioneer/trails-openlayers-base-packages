@@ -13,6 +13,7 @@ import { StyleLike } from "ol/style/Style";
 import { Polygon } from "ol/geom";
 import { Coordinate } from "ol/coordinate";
 import { EventEmitter, createLogger } from "@open-pioneer/core";
+import { TOPMOST_LAYER_Z } from "@open-pioneer/map";
 
 const LOG = createLogger("geolocation:GeolocationController");
 
@@ -48,6 +49,7 @@ export class GeolocationController extends EventEmitter<Events> {
                 features: [this.accuracyFeature, this.positionFeature]
             })
         });
+        this.positionHighlightLayer.setZIndex(TOPMOST_LAYER_Z);
 
         const geolocationTrackingOptions: PositionOptions =
             trackingOptions || getDefaultTrackingOptions();

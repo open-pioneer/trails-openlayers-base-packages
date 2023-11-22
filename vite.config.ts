@@ -26,6 +26,7 @@ const sampleSites = [
     "samples/ogc-feature-sample",
     "samples/test-basemap-switcher",
     "samples/experimental-sidebar",
+    "samples/theming-sample",
     "samples/test-search-result-handler"
 ];
 

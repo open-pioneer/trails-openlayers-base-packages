@@ -57,7 +57,7 @@ function AppUI() {
 }
 ```
 
-To used custom position options from the [Geolocation API](https://www.w3.org/TR/geolocation/#position_options_interface), add the optional property `trackingOptions`.
+To use custom position options from the [Geolocation API](https://www.w3.org/TR/geolocation/#position_options_interface), add the optional property `trackingOptions`.
 
 ```jsx
 <Geolocation
