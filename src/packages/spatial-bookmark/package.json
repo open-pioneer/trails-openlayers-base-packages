@@ -8,6 +8,7 @@
     },
     "peerDependencies": {
         "@chakra-ui/icons": "^2.1.0",
+        "@open-pioneer/core": "^1.1.0",
         "@open-pioneer/chakra-integration": "^1.1.0",
         "@open-pioneer/local-storage": "workspace:^",
         "@open-pioneer/map": "workspace:^",
