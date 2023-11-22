@@ -4,7 +4,15 @@
 import { LineString, Point, Polygon } from "ol/geom";
 import OlMap from "ol/Map";
 import { Feature } from "ol";
-import { boundingExtent, buffer, createEmpty, extend, Extent, getCenter } from "ol/extent";
+import {
+    boundingExtent,
+    createEmpty,
+    extend,
+    Extent,
+    getCenter,
+    getHeight,
+    getWidth
+} from "ol/extent";
 import { Coordinate } from "ol/coordinate";
 import { Icon, Stroke, Style } from "ol/style";
 import VectorLayer from "ol/layer/Vector";
@@ -99,12 +107,19 @@ function setCenter(olMap: OlMap, coordinates: Coordinate | undefined) {
 }
 
 function zoomTo(olMap: OlMap, extent: Extent | undefined, zoomLevel: number | undefined) {
-    if (extent) {
-        const bufferedExtent = buffer(extent, DEFAULT_BUFFER_FACTOR);
+    if (extent && extent[0] && extent[1] && extent[2] && extent[3]) {
+        const width = getHeight(extent);
+        const height = getWidth(extent);
+        const bufferWidth = width * DEFAULT_BUFFER_FACTOR;
+        const bufferHeight = height * DEFAULT_BUFFER_FACTOR;
+
+        const bufferedExtent = [
+            extent[0] - (bufferWidth - width) / 2,
+            extent[1] - (bufferHeight - height) / 2,
+            extent[2] + (bufferWidth - width) / 2,
+            extent[3] + (bufferHeight - height) / 2
+        ];
         olMap.getView().fit(bufferedExtent, { maxZoom: zoomLevel });
-        //todo: remove the following two lines of code
-        const resolution = getDefaultResolution(olMap);
-        console.log(resolution);
     } else {
         const resolution = getDefaultResolution(olMap);
         resolution && olMap.getView().setResolution(resolution);
