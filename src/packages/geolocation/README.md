@@ -12,6 +12,12 @@ To add the component to your app, insert the following snippet with a reference 
 
 The map is zoomed and centered to the user's position, if the geolocation was successful. After panning, zoom in or zoom out the map, the map isn't zoomed and centered after a changed user position.
 
+To use a custom maximal zoom level add the optional property `maxZoomLevel`. It will be zoomed to the extent of the accuracy feature but at most to the defined `maxZoomLevel`.
+
+```jsx
+<Geolocation mapId="map_id" maxZoomLevel={20} />
+```
+
 To configure the style of the user's position and accuracy, add the optional properties `positionFeatureStyle` or `accuracyFeatureStyle`:
 
 ```tsx
@@ -74,7 +80,7 @@ To use custom position options from the [Geolocation API](https://www.w3.org/TR/
 
 ### Notification
 
-Add the `@open-pioneer/notifier` to your app to receive user notification. Otherwise notifications will not be shown.
+Add the `@open-pioneer/notifier` to your app to receive user notification. Otherwise, notifications will not be shown.
 
 ## License
 
