@@ -115,3 +115,67 @@ export class FakeRiverSource implements DataSource {
         return suggestions;
     }
 }
+
+type ValidSearchParams = "city" | "street";
+
+// https://github.com/osm-search/Nominatim and https://nominatim.openstreetmap.org/
+export class NominatimGeocoder implements DataSource {
+    label: string;
+    searchParameterName: ValidSearchParams;
+
+    constructor(searchParameterName: ValidSearchParams, label: string) {
+        this.searchParameterName = searchParameterName;
+        this.label = label;
+    }
+
+    async search(inputValue: string, options: { signal: AbortSignal }): Promise<Suggestion[]> {
+        const signal = options?.signal;
+        const url = this.#getUrl(inputValue);
+
+        try {
+            const responses = await request(url, signal);
+            return responses.map((response, idx) => ({
+                ...response,
+                id: idx,
+                label: response.display_name
+            })) satisfies Suggestion[];
+        } catch (error) {
+            return [];
+        }
+    }
+
+    #getUrl(inputValue: string): string {
+        return encodeURI(
+            `https://nominatim.openstreetmap.org/search?${this.searchParameterName}=${inputValue}&country=Germany&polygon_geojson=1&format=jsonv2`
+        );
+    }
+}
+
+interface NominatimResponse {
+    display_name: string;
+    geojson: {
+        type: string;
+        coordinates: [[number, number]];
+    };
+    boundingbox: string[];
+    lat: number;
+    lon: number;
+    importance: number;
+}
+const request = async (
+    url: string,
+    signal?: AbortSignal | undefined
+): Promise<NominatimResponse[] | []> => {
+    try {
+        const response = await fetch(url, { signal });
+        if (!response.ok) {
+            throw new Error("Request failed: " + response.status);
+        }
+        const result = await response.json();
+
+        return result;
+    } catch (error) {
+        // return [];
+        throw new Error("Request failed: " + error);
+    }
+};

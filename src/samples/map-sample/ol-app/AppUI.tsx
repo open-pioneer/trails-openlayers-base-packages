@@ -5,11 +5,7 @@ import { CoordinateViewer } from "@open-pioneer/coordinate-viewer";
 import { MapAnchor, MapContainer } from "@open-pioneer/map";
 import { InitialExtent, ZoomIn, ZoomOut } from "@open-pioneer/map-navigation";
 import { Measurement } from "@open-pioneer/measurement";
-import {
-    FakeCitySource,
-    FakeRiverSource,
-    FakeStreetSource
-} from "./search-source-examples/testSources";
+import { NominatimGeocoder } from "./search-source-examples/testSources";
 import { Search, SelectSearchEvent } from "@open-pioneer/search";
 import { OverviewMap } from "@open-pioneer/overview-map";
 import { SectionHeading, TitledSection, ToolButton } from "@open-pioneer/react-utils";
@@ -26,7 +22,10 @@ import { Geolocation } from "@open-pioneer/geolocation";
 import { Notifier } from "@open-pioneer/notifier";
 
 //TODO useCallback for the sources
-const sources = [new FakeCitySource(), new FakeStreetSource(), new FakeRiverSource()];
+const sources = [
+    new NominatimGeocoder("city", "Städte"),
+    new NominatimGeocoder("street", "Straßen")
+];
 export function AppUI() {
     const intl = useIntl();
     const tocTitleId = useId();
@@ -87,11 +86,12 @@ export function AppUI() {
                                 sources={sources}
                                 onSelect={function (event: SelectSearchEvent): void {
                                     console.debug(
-                                        "User selected " + event.suggestion + " from Search"
+                                        "The user selected the following item: ",
+                                        event.suggestion
                                     );
                                 }}
                                 onClear={function (): void {
-                                    console.debug("User cleared Search");
+                                    console.debug("The user cleared the selected search item");
                                 }}
                             />
                         </Box>
