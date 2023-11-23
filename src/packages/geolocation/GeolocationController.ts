@@ -14,8 +14,11 @@ import { Polygon } from "ol/geom";
 import { Coordinate } from "ol/coordinate";
 import { EventEmitter, createLogger } from "@open-pioneer/core";
 import { TOPMOST_LAYER_Z } from "@open-pioneer/map";
+import { Extent, getHeight, getWidth } from "ol/extent";
 
 const LOG = createLogger("geolocation:GeolocationController");
+const DEFAULT_BUFFER_FACTOR = 1.2;
+const DEFAULT_MAX_ZOOM_LEVEL = 17;
 
 type ErrorEvent = "permission-denied" | "position-unavailable" | "timeout" | "unknown";
 
@@ -25,18 +28,24 @@ interface Events {
 
 export class GeolocationController extends EventEmitter<Events> {
     private readonly olMap: OlMap;
+    private maxZoomLevel: number | undefined;
     private readonly positionHighlightLayer: VectorLayer<VectorSource>;
     private readonly geolocation: olGeolocation;
     private accuracyFeature: Feature | undefined;
     private positionFeature: Feature | undefined;
     private changeHandlers: EventsKey[] = [];
     private isCurrentlyActive: boolean = false;
-    private centerMapToPosition: boolean = true;
+    private setMapToPosition: boolean = true;
     private trackingOptions: PositionOptions = {};
 
-    constructor(olMap: OlMap, trackingOptions?: PositionOptions) {
+    constructor(
+        olMap: OlMap,
+        maxZoomLevel?: number | undefined,
+        trackingOptions?: PositionOptions
+    ) {
         super();
         this.olMap = olMap;
+        this.maxZoomLevel = maxZoomLevel;
 
         this.accuracyFeature = new Feature();
         this.accuracyFeature.setStyle(getDefaultAccuracyStyle());
@@ -93,6 +102,21 @@ export class GeolocationController extends EventEmitter<Events> {
                     if (this.accuracyFeature?.getGeometry() !== undefined) {
                         resolve();
                     }
+                    if (this.setMapToPosition) {
+                        const accuracyGeometryExtent: Extent | undefined = this?.accuracyFeature
+                            ?.getGeometry()
+                            ?.getExtent();
+                        if (accuracyGeometryExtent) {
+                            const bufferedExtent: number[] | undefined =
+                                this.calculateBufferedExtent(accuracyGeometryExtent);
+                            if (!bufferedExtent) {
+                                return;
+                            }
+                            olMap.getView().fit(bufferedExtent, {
+                                maxZoom: this.maxZoomLevel
+                            });
+                        }
+                    }
                 }
             );
 
@@ -100,7 +124,7 @@ export class GeolocationController extends EventEmitter<Events> {
                 const coordinates: Coordinate | undefined = this.geolocation.getPosition();
                 if (coordinates && (coordinates[0] || coordinates[1]) !== undefined) {
                     this.positionFeature?.setGeometry(new Point(coordinates));
-                    if (this.centerMapToPosition) {
+                    if (this.setMapToPosition) {
                         olMap.getView().setCenter(coordinates);
                     }
                     if (this.positionFeature?.getGeometry() !== undefined) {
@@ -113,12 +137,12 @@ export class GeolocationController extends EventEmitter<Events> {
             const resolutionChangeHandler: EventsKey = olMap
                 .getView()
                 .on("change:resolution", () => {
-                    this.centerMapToPosition = false;
+                    this.setMapToPosition = false;
                 });
 
             const draggingHandler: EventsKey = olMap.on("pointermove", (evt) => {
                 if (evt.dragging) {
-                    this.centerMapToPosition = false;
+                    this.setMapToPosition = false;
                 }
             });
 
@@ -141,7 +165,7 @@ export class GeolocationController extends EventEmitter<Events> {
         this.geolocation?.setTracking(false);
         this.isCurrentlyActive = false;
         this.trackingOptions = {};
-        this.centerMapToPosition = true;
+        this.setMapToPosition = true;
 
         this.changeHandlers.forEach((handler) => {
             unByKey(handler);
@@ -159,7 +183,31 @@ export class GeolocationController extends EventEmitter<Events> {
     setAccuracyFeatureStyle(styleLike: StyleLike | undefined) {
         this.accuracyFeature?.setStyle(styleLike ?? getDefaultAccuracyStyle());
     }
+    setMaxZoomLevel(maxZomLevel: number | undefined) {
+        this.maxZoomLevel = maxZomLevel ?? DEFAULT_MAX_ZOOM_LEVEL;
+    }
 
+    calculateBufferedExtent(extent: Extent) {
+        let bufferedExtent: number[] | undefined;
+        if (extent && extent[0] && extent[1] && extent[2] && extent[3]) {
+            const width = getHeight(extent);
+            const height = getWidth(extent);
+            const bufferWidth = width * DEFAULT_BUFFER_FACTOR;
+            const bufferHeight = height * DEFAULT_BUFFER_FACTOR;
+
+            bufferedExtent = [
+                extent[0] - (bufferWidth - width) / 2,
+                extent[1] - (bufferHeight - height) / 2,
+                extent[2] + (bufferWidth - width) / 2,
+                extent[3] + (bufferHeight - height) / 2
+            ];
+        }
+        return bufferedExtent;
+    }
+
+    getMaxZoomLevel() {
+        return this.maxZoomLevel;
+    }
     getPositionFeature() {
         return this.positionFeature;
     }

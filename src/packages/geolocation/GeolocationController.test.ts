@@ -12,6 +12,7 @@ import { Geometry } from "ol/geom";
 import {
     setup,
     setupWithCustomProperties,
+    getCustomMaxZoomLevel,
     getCustomPositionStyle,
     getCustomAccuracyStyle,
     mockSuccessGeolocation
@@ -31,6 +32,21 @@ it("should successfully return a geolocation position", async () => {
     expect(positionFeature?.getGeometry()?.getExtent()).toStrictEqual([
         5042772.932935293, 6639001.66376131, 5042772.932935293, 6639001.66376131
     ]);
+});
+
+it("should calculate a buffer for a given extent", async () => {
+    mockSuccessGeolocation([51.1, 45.3]);
+
+    const extent = [5038787.353057691, 6635017.052266559, 5046758.512812894, 6642988.2134831];
+    const { controller } = setup();
+
+    const bufferedExtent: number[] | undefined = controller.calculateBufferedExtent(extent);
+
+    if (bufferedExtent) {
+        expect(bufferedExtent).toStrictEqual([
+            5037990.2369360365, 6634219.936291038, 5047555.628934548, 6643785.32945862
+        ]);
+    }
 });
 
 describe("Default Properties", () => {
@@ -76,5 +92,10 @@ describe("Custom Properties", () => {
         expect(trackingOptions?.enableHighAccuracy).toBe(true);
         expect(trackingOptions?.timeout).toBe(20);
         expect(trackingOptions?.maximumAge).toBe(50);
+    });
+    it("uses the configured max zoom level", async () => {
+        const { controller } = setupWithCustomProperties();
+        const maxZoomLevel: number | undefined = controller.getMaxZoomLevel();
+        expect(maxZoomLevel).toBe(getCustomMaxZoomLevel());
     });
 });

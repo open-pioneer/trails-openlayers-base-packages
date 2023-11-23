@@ -97,6 +97,53 @@ it("should center to user's position", async () => {
     });
 });
 
+it("should zoom to user's position accuracy", async () => {
+    mockSuccessGeolocation([51.1, 45.3]);
+
+    const user = userEvent.setup();
+
+    const { mapId, registry } = await setupMap({
+        center: { x: 0, y: 0 },
+        projection: "EPSG:4326"
+    });
+
+    const map = (await registry.expectMapModel(mapId))?.olMap;
+
+    const notifier: Partial<NotificationService> = {
+        notify() {
+            throw new Error("not implemented");
+        }
+    };
+
+    const injectedServices = createServiceOptions({
+        registry
+    });
+    injectedServices["notifier.NotificationService"] = notifier;
+
+    render(
+        <PackageContextProvider services={injectedServices}>
+            <MapContainer mapId={mapId} data-testid="map" />
+            <Geolocation mapId={mapId} data-testid="geolocation" />
+        </PackageContextProvider>
+    );
+
+    await waitForMapMount("map");
+
+    const firstZoomLevel = map.getView().getZoom();
+    expect(firstZoomLevel).toBeDefined();
+
+    // Mount geolocation component
+    const button = await getGeolocationButton();
+    expect(button.tagName).toBe("BUTTON");
+    await user.click(button);
+
+    await waitFor(() => {
+        const nextZoomLevel = map.getView().getZoom();
+        expect(nextZoomLevel).not.toEqual(firstZoomLevel);
+        expect(nextZoomLevel).toBeDefined();
+    });
+});
+
 it("should successfully create an error with notifier message", async () => {
     mockErrorGeolocation();
 
