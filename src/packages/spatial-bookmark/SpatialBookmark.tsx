@@ -199,8 +199,8 @@ function BookmarkItem(props: {
         <Box
             as="li"
             className={classNames(
-                "spital-bookmark-item",
-                `spital-bookmark-item-${slug(bookmark.id)}`
+                "spatial-bookmark-item",
+                `spatial-bookmark-item-${slug(bookmark.id)}`
             )}
             role="option"
             padding={1}
@@ -216,7 +216,7 @@ function BookmarkItem(props: {
                 <Spacer />
                 <Button
                     size="sm"
-                    className="spital-bookmark-item-details"
+                    className="spatial-bookmark-item-details"
                     aria-label={deleteBtnLabel}
                     borderRadius="full"
                     iconSpacing={0}
