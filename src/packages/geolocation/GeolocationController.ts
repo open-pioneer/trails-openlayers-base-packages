@@ -206,7 +206,7 @@ export class GeolocationController extends EventEmitter<Events> {
     }
 
     getMaxZoomLevel() {
-        return this.maxZoomLevel;
+        return this.maxZoomLevel ? this.maxZoomLevel : DEFAULT_MAX_ZOOM_LEVEL;
     }
     getPositionFeature() {
         return this.positionFeature;

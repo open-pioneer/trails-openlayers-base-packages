@@ -71,6 +71,11 @@ describe("Default Properties", () => {
             getDefaultTrackingOptions()?.maximumAge?.valueOf()
         );
     });
+    it("uses the default max zoom level", async () => {
+        const { controller } = setup();
+        const maxZoomLevel: number | undefined = controller.getMaxZoomLevel();
+        expect(maxZoomLevel).toBe(17);
+    });
 });
 
 describe("Custom Properties", () => {
