@@ -1,12 +1,16 @@
 messages:
-  listLabel: "Räumliche Lesezeichen"
-  createBookmarkLabel: "Neues Lesezeichen hinzufügen"
-  deleteBookmarkLabel: "Lesezeichen löschen"
-  createBookmarkInfo: "Nach der Eingabe eines Namens können Sie das neue Bookmark speichern. Dabei wird der aktuelle Kartenausschnitt als Grundlage für die Position verwendet."
-  deleteBookmarkInfo: "Möchten Sie wirklich alle räumlichen Lesezeichen löschen?"
-  noSavedBookmarkInfo: "Sie haben keine gespeicherte Bookmarks."
-  bookmarkRemoverHandlerYes: "Ja"
-  bookmarkRemoverHandlerNo: "Nein"
-  bookmarkCreatorHandlerSave: "Save"
-  bookmarkCreatorHandlerCancel: "Cancel"
-  bookmarkNamePlaceholder: "Name des Lesezeichens"
+  bookmark:
+    button:
+      create: "Neues Lesezeichen hinzufügen"
+      deleteAll: "Alle Lesezeichen löschen"
+      deleteOne: "Lesezeichen löschen"
+      save: "Speichern"
+      cancel: "Abbrechen"
+    input:
+      placeholder: "Name des Lesezeichens"
+    alert:
+      create: "Nach der Eingabe eines Namens können Sie das neue Bookmark speichern. Dabei wird der aktuelle Kartenausschnitt als Grundlage für die Position verwendet."
+      delete: "Möchten Sie wirklich alle räumlichen Lesezeichen löschen?"
+      noSaved: "Sie haben keine gespeicherte Bookmarks."
+    list:
+      label: "Räumliche Lesezeichen"

@@ -1,12 +1,16 @@
 messages:
-  listLabel: "Spatial bookmarks"
-  createBookmarkLabel: "Add new Bookmark"
-  deleteBookmarkLabel: "Delete Bookmark"
-  createBookmarkInfo: "After entering a name you can save the new bookmark. The current map section is used as the basis for the position."
-  deleteBookmarkInfo: "Do you really want to delete all spatial bookmarks?"
-  noSavedBookmarkInfo: "No bookmarks saved."
-  bookmarkRemoverHandlerYes: "Yes"
-  bookmarkRemoverHandlerNo: "No"
-  bookmarkCreatorHandlerSave: "Save"
-  bookmarkCreatorHandlerCancel: "Cancel"
-  bookmarkNamePlaceholder: "Enter bookmark name"
+  bookmark:
+    button:
+      create: "Add new Bookmark"
+      deleteAll: "Delete all Bookmark"
+      deleteOne: "Delete Bookmark"
+      save: "Save"
+      cancel: "Cancel"
+    input:
+      placeholder: "Enter bookmark name"
+    alert:
+      create: "After entering a name you can save the new bookmark. The current map section is used as the basis for the position."
+      delete: "Do you really want to delete all spatial bookmarks?"
+      noSaved: "No bookmarks saved."
+    list:
+      label: "Spatial bookmarks"
