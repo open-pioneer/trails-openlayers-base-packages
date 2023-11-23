@@ -311,6 +311,36 @@ The patch enables the user to explicitly set the `accessToken` to `null`, if it 
 
 Because of the changed licence of Mapbox as of version 2.0, we recommend to override the implementation with the code of MapLibre (see the main package.json of this repository for a sample).
 
+##### OGC API - TILES (Vector tiles)
+
+OGC Tiles are available in Open Layers by default.
+see [OGC Tiles API](https://ogcapi.ogc.org/tiles/overview.html)
+see [OpenLayers OGC API](https://openlayers.org/en/latest/apidoc/module-ol_source_OGCVectorTile-OGCVectorTile.html)
+
+Please note Vector tile layer can only be displayed in a map that has the same projection like the layer!
+
+Example: How to configurate a Vector tiles layer:
+
+```ts
+new VectorTileLayer({
+    source: new VectorTileSource({
+        url: "https://pendleratlas.statistikportal.de/_vector_tiles/2022/vg250/{z}/{x}/{y}.pbf",
+        format: new MVT(),
+        projection: "EPSG:3857",
+        attributions: `&copy; Statistische Ämter der Länder ${new Date().getFullYear()} | GeoBasis-DE/BKG ${new Date().getFullYear()}`
+    }),
+    style: new Style({
+        fill: new Fill({
+            color: "rgba(173, 209, 158, 0.6)"
+        }),
+        stroke: new Stroke({
+            color: "#2d7d9f",
+            width: 3
+        })
+    })
+});
+```
+
 ##### OGC Web Map Tile Service (WMTS)
 
 To create a layer configuration for a WMTS, use one of the following configuration approaches:
