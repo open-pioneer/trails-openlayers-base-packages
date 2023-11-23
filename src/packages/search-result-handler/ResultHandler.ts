@@ -14,15 +14,15 @@ import {
     getWidth
 } from "ol/extent";
 import { Coordinate } from "ol/coordinate";
-import { Icon, Stroke, Style } from "ol/style";
+import { Fill, Icon, Stroke, Style } from "ol/style";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
-import olMarkerUrl from "./images/olMarker.png?url";
+import mapMarkerUrl from "./images/mapMarker.png?url";
 
 interface HighlightStyle {
     Point: Style;
-    Linestring: Style;
-    Polygon: Style;
+    Linestring: Style | Style[];
+    Polygon: Style | Style[];
 }
 export interface ResultHandlerOptions {
     /**
@@ -182,19 +182,38 @@ const defaultHighlightStyle = {
     "Point": new Style({
         image: new Icon({
             anchor: [0.5, 1],
-            src: olMarkerUrl
+            src: mapMarkerUrl
         })
     }),
-    "Linestring": new Style({
-        stroke: new Stroke({
-            width: 6,
-            color: "blue"
+    "Linestring": [
+        new Style({
+            stroke: new Stroke({
+                color: "#fff",
+                width: 5
+            })
+        }),
+        new Style({
+            stroke: new Stroke({
+                color: "#00ffff",
+                width: 3
+            })
         })
-    }),
-    "Polygon": new Style({
-        stroke: new Stroke({
-            width: 6,
-            color: "blue"
+    ],
+    "Polygon": [
+        new Style({
+            stroke: new Stroke({
+                color: "#fff",
+                width: 5
+            })
+        }),
+        new Style({
+            stroke: new Stroke({
+                color: "#00ffff",
+                width: 3
+            }),
+            fill: new Fill({
+                color: "rgba(224,255,255,0.35)"
+            })
         })
-    })
+    ]
 };
