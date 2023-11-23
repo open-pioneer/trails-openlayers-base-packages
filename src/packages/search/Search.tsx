@@ -180,7 +180,7 @@ export const Search: FC<SearchProps> = (props) => {
                 break;
             case "clear":
                 // the next two lines are a workaround for the open bug in react-select regarding the
-                // cursor not being shown after clearing although the component is focused:
+                // cursor not being shown after clearing, although the component is focussed:
                 // https://github.com/JedWatson/react-select/issues/3871
                 selectRef.current?.blur();
                 selectRef.current?.focus();

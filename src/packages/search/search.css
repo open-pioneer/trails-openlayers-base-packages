@@ -7,6 +7,10 @@
     z-index: 1;
 }
 
+.search-component {
+    cursor: text;
+}
+
 .search-component .chakra-divider {
     display: none;
 }
