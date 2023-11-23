@@ -36,7 +36,7 @@ import { Bookmark, SpatialBookmarkViewModel } from "./SpatialBookmarkViewModel";
 
 type UIMode = "list" | "create" | "delete";
 
-interface SpatialBookmarkProps extends CommonComponentProps {
+export interface SpatialBookmarkProps extends CommonComponentProps {
     /**
      * The id of the map.
      */
