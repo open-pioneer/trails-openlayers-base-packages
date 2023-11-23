@@ -7,10 +7,6 @@
     z-index: 1;
 }
 
-.search-component {
-    cursor: text;
-}
-
 .search-component .chakra-divider {
     display: none;
 }
@@ -20,6 +16,7 @@
 }
 
 .search-value-container {
+    cursor: text;
     padding-left: 30px !important;
 }
 
