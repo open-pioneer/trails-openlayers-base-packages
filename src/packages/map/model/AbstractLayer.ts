@@ -110,20 +110,21 @@ export abstract class AbstractLayer<AdditionalEvents = {}>
 function healthCheck(config: SimpleLayerConfig): Promise<LayerLoadState> {
     return new Promise((resolve, reject) => {
         if (!("healthCheck" in config)) {
-            //resolve(Math.random() < 0.5 ? "loaded" : "error"); // TODO random error for tests
             resolve("loaded");
         }
 
         if (typeof config.healthCheck === "function") {
             resolve(config.healthCheck(config));
+        } else if (typeof config.healthCheck === "string") {
+            // TODO replace by fetch from HttpService
+            fetch(config.healthCheck)
+                .then((response) => {
+                    response.ok ? resolve("loaded") : resolve("error");
+                })
+                .catch(() => resolve("error"));
+        } else {
+            reject();
         }
-        if (typeof config.healthCheck === "string") {
-            // TODO test request to URL in healthCheckURL
-
-            resolve("loaded");
-        }
-
-        reject();
     });
 }
 
