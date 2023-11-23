@@ -9,7 +9,7 @@ import {
 import { StyleLike } from "ol/style/Style";
 import { useIntl, useService } from "open-pioneer:react-hooks";
 import { FC, ForwardedRef, RefAttributes, forwardRef, useEffect, useState } from "react";
-import { MdLocationOn } from "react-icons/md";
+import { MdMyLocation } from "react-icons/md";
 import { GeolocationController } from "./GeolocationController";
 
 // TODO: Workaround for https://github.com/open-pioneer/trails-build-tools/issues/47
@@ -128,7 +128,7 @@ export const Geolocation: FC<GeolocationProps> = forwardRef(function Geolocation
                     ? intl.formatMessage({ id: "locateMeEnd" })
                     : intl.formatMessage({ id: "locateMeStart" })
             }
-            icon={<MdLocationOn />}
+            icon={<MdMyLocation />}
             onClick={() => toggleActiveState()}
             isActive={isActive}
             isLoading={isLoading}

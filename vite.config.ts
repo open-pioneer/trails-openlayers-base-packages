@@ -25,7 +25,8 @@ const sampleSites = [
     "samples/notify-sample",
     "samples/ogc-feature-sample",
     "samples/test-basemap-switcher",
-    "samples/experimental-sidebar"
+    "samples/experimental-sidebar",
+    "samples/theming-sample"
 ];
 
 // https://vitejs.dev/config/
