@@ -29,6 +29,7 @@ it("should successfully return a geolocation position", async () => {
     await controller.startGeolocation();
 
     const positionFeature: Feature<Geometry> | undefined = controller.getPositionFeature();
+
     expect(positionFeature?.getGeometry()?.getExtent()).toStrictEqual([
         5042772.932935293, 6639001.66376131, 5042772.932935293, 6639001.66376131
     ]);
@@ -53,16 +54,21 @@ describe("Default Properties", () => {
     it("uses the default style for the position feature", async () => {
         const { controller } = setup();
         const positionFeature: Feature<Geometry> | undefined = controller.getPositionFeature();
+
         expect(positionFeature?.getStyle()).toMatchObject(getDefaultPositionStyle());
     });
+
     it("uses the default style for the accuracy feature", async () => {
         const { controller } = setup();
         const accuracyFeature: Feature<Geometry> | undefined = controller.getAccuracyFeature();
+
         expect(accuracyFeature?.getStyle()).toMatchObject(getDefaultAccuracyStyle());
     });
+
     it("uses the default tracking options", async () => {
         const { controller } = setup();
         const trackingOptions: PositionOptions = controller.getTrackingOptions();
+
         expect(trackingOptions?.enableHighAccuracy).toBe(
             getDefaultTrackingOptions()?.enableHighAccuracy?.valueOf()
         );
@@ -71,36 +77,43 @@ describe("Default Properties", () => {
             getDefaultTrackingOptions()?.maximumAge?.valueOf()
         );
     });
+
     it("uses the default max zoom level", async () => {
         const { controller } = setup();
         const maxZoomLevel: number | undefined = controller.getMaxZoomLevel();
+
         expect(maxZoomLevel).toBe(17);
     });
 });
 
-describe("Custom Properties", () => {
+describe("Tests with custom Properties", () => {
     it("uses the configured style for the position feature", async () => {
         const { controller } = setupWithCustomProperties();
         const positionFeature: Feature<Geometry> | undefined = controller.getPositionFeature();
+
         expect(positionFeature?.getStyle()).toMatchObject(getCustomPositionStyle());
     });
 
     it("uses the configured style for the accuracy feature", async () => {
         const { controller } = setupWithCustomProperties();
         const accuracyFeature: Feature<Geometry> | undefined = controller.getAccuracyFeature();
+
         expect(accuracyFeature?.getStyle()).toMatchObject(getCustomAccuracyStyle());
     });
 
     it("uses the configured tracking options", async () => {
         const { controller } = setupWithCustomProperties();
         const trackingOptions: PositionOptions = controller.getTrackingOptions();
+
         expect(trackingOptions?.enableHighAccuracy).toBe(true);
         expect(trackingOptions?.timeout).toBe(20);
         expect(trackingOptions?.maximumAge).toBe(50);
     });
+
     it("uses the configured max zoom level", async () => {
         const { controller } = setupWithCustomProperties();
         const maxZoomLevel: number | undefined = controller.getMaxZoomLevel();
+
         expect(maxZoomLevel).toBe(getCustomMaxZoomLevel());
     });
 });
