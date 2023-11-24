@@ -37,11 +37,13 @@ export class GeolocationController extends EventEmitter<Events> {
     private isCurrentlyActive: boolean = false;
     private setMapToPosition: boolean = true;
     private trackingOptions: PositionOptions = {};
+    private isInitialZoom: boolean = true;
 
     constructor(olMap: OlMap, maxZoom?: number | undefined, trackingOptions?: PositionOptions) {
         super();
         this.olMap = olMap;
         this.maxZoom = maxZoom;
+        this.isInitialZoom = true;
 
         this.accuracyFeature = new Feature();
         this.accuracyFeature.setStyle(getDefaultAccuracyStyle());
@@ -98,7 +100,7 @@ export class GeolocationController extends EventEmitter<Events> {
                     if (this.accuracyFeature?.getGeometry() !== undefined) {
                         resolve();
                     }
-                    if (this.setMapToPosition) {
+                    if (this.isInitialZoom) {
                         const accuracyGeometryExtent: Extent | undefined = this?.accuracyFeature
                             ?.getGeometry()
                             ?.getExtent();
@@ -111,6 +113,7 @@ export class GeolocationController extends EventEmitter<Events> {
                             olMap.getView().fit(bufferedExtent, {
                                 maxZoom: this.maxZoom
                             });
+                            this.isInitialZoom = false;
                         }
                     }
                 }
@@ -133,11 +136,20 @@ export class GeolocationController extends EventEmitter<Events> {
             const resolutionChangeHandler: EventsKey = olMap
                 .getView()
                 .on("change:resolution", () => {
-                    this.setMapToPosition = false;
+                    console.log("res changed");
+                    if (this.isInitialZoom) {
+                        this.setMapToPosition = true;
+                    } else {
+                        this.setMapToPosition = false;
+                    }
                 });
 
+            // pointermove is triggered when a pointer is moved.
+            // Note that on touch devices this is triggered when the map is panned,
+            // so is not the same as mousemove.
             const draggingHandler: EventsKey = olMap.on("pointermove", (evt) => {
                 if (evt.dragging) {
+                    console.log("drag changed");
                     this.setMapToPosition = false;
                 }
             });
@@ -162,6 +174,7 @@ export class GeolocationController extends EventEmitter<Events> {
         this.isCurrentlyActive = false;
         this.trackingOptions = {};
         this.setMapToPosition = true;
+        this.isInitialZoom = true;
 
         this.changeHandlers.forEach((handler) => {
             unByKey(handler);
