@@ -31,20 +31,19 @@ export interface ResultHandlerOptions {
     highlightStyle?: HighlightStyle;
 
     /**
-     * The zoom-scale for point results
+     * The zoom-level for point results
      */
-    zoomScaleForPoints?: number;
+    zoom?: number;
 
     /**
-     * The zoom-scale for line or polygon results.
+     * The maximum zoom-level for line or polygon results.
      */
-    zoomScaleForLinesOrPolygons?: number;
+    maxZoom?: number;
 }
 
-const DEFAULT_SCALE = 5000;
+const DEFAULT_OL_ZOOM_LEVEL = 17;
+const DEFAULT_MAX_ZOOM_LEVEL = 20;
 const DEFAULT_BUFFER_FACTOR = 1.2;
-const DEFAULT_DPI = 25.4 / 0.28;
-const INCHES_PER_METER = 39.37;
 
 /**
  * This function shows the position of a text search result zoomed to and marked or highlighted in the map.
@@ -54,16 +53,20 @@ export function resultHandler(
     geometries: Point[] | LineString[] | Polygon[],
     options: ResultHandlerOptions
 ) {
-    const { highlightStyle, zoomScaleForPoints, zoomScaleForLinesOrPolygons } = options;
+    const {
+        highlightStyle,
+        zoom = DEFAULT_OL_ZOOM_LEVEL,
+        maxZoom = DEFAULT_MAX_ZOOM_LEVEL
+    } = options;
 
     if (!geometries || !geometries.length) {
         return;
     }
 
     if (geometries[0]?.getType() === "Point") {
-        zoomAndAddMarkers(olMap, geometries, highlightStyle, zoomScaleForPoints);
+        zoomAndAddMarkers(olMap, geometries, highlightStyle, zoom);
     } else {
-        zoomAndHighlight(olMap, geometries, highlightStyle, zoomScaleForLinesOrPolygons);
+        zoomAndHighlight(olMap, geometries, highlightStyle, maxZoom);
     }
 }
 
@@ -74,7 +77,7 @@ function zoomAndAddMarkers(
     zoomScale: number | undefined
 ) {
     let centerCoords;
-    let extent;
+    let extent: Extent | undefined;
     if (points.length === 1) {
         const point = points[0];
         centerCoords = point?.getCoordinates() as Coordinate;
@@ -114,33 +117,30 @@ function setCenter(olMap: OlMap, coordinates: Coordinate | undefined) {
 }
 
 function zoomTo(olMap: OlMap, extent: Extent | undefined, zoomLevel: number | undefined) {
-    if (extent && extent[0] && extent[1] && extent[2] && extent[3]) {
+    if (extent) {
+        const bufferedExtent: Extent | undefined = calculateBufferedExtent(extent);
+        bufferedExtent && olMap.getView().fit(bufferedExtent, { maxZoom: zoomLevel });
+    } else {
+        zoomLevel && olMap.getView().setZoom(zoomLevel);
+    }
+}
+
+export function calculateBufferedExtent(extent: Extent) {
+    let bufferedExtent;
+    if (extent[0] && extent[1] && extent[2] && extent[3]) {
         const width = getHeight(extent);
         const height = getWidth(extent);
         const bufferWidth = width * DEFAULT_BUFFER_FACTOR;
         const bufferHeight = height * DEFAULT_BUFFER_FACTOR;
 
-        const bufferedExtent = [
+        bufferedExtent = [
             extent[0] - (bufferWidth - width) / 2,
             extent[1] - (bufferHeight - height) / 2,
             extent[2] + (bufferWidth - width) / 2,
             extent[3] + (bufferHeight - height) / 2
         ];
-        olMap.getView().fit(bufferedExtent, { maxZoom: zoomLevel });
-    } else {
-        const resolution = getDefaultResolution(olMap);
-        resolution && olMap.getView().setResolution(resolution);
     }
-}
-
-function getDefaultResolution(olMap: OlMap) {
-    const projection = olMap.getView().getProjection();
-    let resolution;
-    const metersPerUnit = projection.getMetersPerUnit();
-    if (metersPerUnit) {
-        resolution = DEFAULT_SCALE / (metersPerUnit * INCHES_PER_METER * DEFAULT_DPI);
-    }
-    return resolution;
+    return bufferedExtent;
 }
 
 function createAndAddLayer(
