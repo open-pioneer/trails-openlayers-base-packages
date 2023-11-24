@@ -1,6 +1,15 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box, Button, Flex, Stack, Text, VStack } from "@open-pioneer/chakra-integration";
+import {
+    Box,
+    Button,
+    Flex,
+    ListItem,
+    Stack,
+    Text,
+    UnorderedList,
+    VStack
+} from "@open-pioneer/chakra-integration";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { MapAnchor, MapContainer, MapModel, useMapModel } from "@open-pioneer/map";
 import { MAP_ID } from "./MapConfigProviderImpl";
@@ -89,9 +98,29 @@ export function AppUI() {
                                 >
                                     <Text as="b">Description</Text>
                                     <Text>
-                                        This application can be used to test the search result
-                                        handler.
+                                        This application can be used to test adding highlight or
+                                        marker, zoom to their extent, and removing highlight and
+                                        marker. The highlight and zoom for point, linestring and
+                                        polygon geometries can be test.
                                     </Text>
+                                    <UnorderedList>
+                                        <ListItem>
+                                            Clicking on {"'Points'"} adds markers for point
+                                            geometries.
+                                        </ListItem>
+                                        <ListItem>
+                                            Clicking on {"'Linestring'"} adds highlight for
+                                            linestring geometries.
+                                        </ListItem>
+                                        <ListItem>
+                                            Clicking on {"'Polygon'"} adds highlight for polygon
+                                            geometries.
+                                        </ListItem>
+                                        <ListItem>
+                                            Clicking on {"'Reset'"} removes the highlights or
+                                            markers from the map.
+                                        </ListItem>
+                                    </UnorderedList>
                                 </VStack>
                             </MapAnchor>
                         </MapAnchor>
