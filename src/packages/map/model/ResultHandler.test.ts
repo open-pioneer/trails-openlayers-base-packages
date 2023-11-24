@@ -3,7 +3,11 @@
 
 import { expect, it } from "vitest";
 import OlMap from "ol/Map";
-import { removerHighlight, resultHandler, calculateBufferedExtent } from "./ResultHandler";
+import {
+    removeHighlightOrMarker,
+    addHighlightOrMarkerAndZoom,
+    calculateBufferedExtent
+} from "./ResultHandler";
 import { LineString, Point, Polygon } from "ol/geom";
 import { containsExtent } from "ol/extent";
 
@@ -13,7 +17,7 @@ it("should successfully zoom and add marker for point geometries", async () => {
     const point = new Point([852011.307424, 6788511.322702]);
     const zoomLevel = map.getView().getZoom();
 
-    resultHandler(map, [point], {});
+    addHighlightOrMarkerAndZoom(map, [point], {});
 
     const newZoomLevel = map.getView().getZoom();
 
@@ -34,7 +38,7 @@ it("should successfully zoom and highlight for line or polygon geometries", asyn
     ]);
     const zoomLevel = map.getView().getZoom();
 
-    resultHandler(map, [line], {});
+    addHighlightOrMarkerAndZoom(map, [line], {});
 
     const newZoomLevel = map.getView().getZoom();
 
@@ -59,8 +63,8 @@ it("should successfully remove previously added markers or highlights", async ()
         ]
     ]);
 
-    resultHandler(map, [point], {});
-    resultHandler(map, [polygon], {});
+    addHighlightOrMarkerAndZoom(map, [point], {});
+    addHighlightOrMarkerAndZoom(map, [polygon], {});
 
     const layers = map.getLayers().getArray();
     const searchResultLayers = layers.filter((l) =>
@@ -80,7 +84,7 @@ it("should successfully remove all markers or highlights", async () => {
         new Point([851518.049725, 6788651.954891])
     ];
 
-    resultHandler(map, points, {});
+    addHighlightOrMarkerAndZoom(map, points, {});
 
     const addedLayer = map
         .getLayers()
@@ -89,7 +93,7 @@ it("should successfully remove all markers or highlights", async () => {
 
     expect(addedLayer).toBeDefined();
 
-    removerHighlight(map);
+    removeHighlightOrMarker(map);
 
     const layerAfterRemove = map
         .getLayers()
@@ -115,13 +119,13 @@ it("should zoom the map to the extent of the geometries but not further than the
         [849081.619449, 6793197.569417]
     ]);
 
-    resultHandler(map, [line], {});
+    addHighlightOrMarkerAndZoom(map, [line], {});
     const mapZoom = map.getView().getZoom();
 
     //default maxZoom is 20
     expect(mapZoom).toBeLessThanOrEqual(20);
 
-    resultHandler(map, [line], { maxZoom: 13 });
+    addHighlightOrMarkerAndZoom(map, [line], { maxZoom: 13 });
     const mapZoom2 = map.getView().getZoom();
 
     expect(mapZoom2).toBeLessThanOrEqual(13);
@@ -132,12 +136,12 @@ it("should zoom the map to the default or configured zoom level if there is no e
 
     const point = new Point([852011.307424, 6788511.322702]);
 
-    resultHandler(map, [point], {});
+    addHighlightOrMarkerAndZoom(map, [point], {});
     const defaultZoom = map.getView().getZoom();
 
     expect(defaultZoom).toStrictEqual(17);
 
-    resultHandler(map, [point], { zoom: 12 });
+    addHighlightOrMarkerAndZoom(map, [point], { zoom: 12 });
     const configuredZoom = map.getView().getZoom();
 
     expect(configuredZoom).toStrictEqual(12);

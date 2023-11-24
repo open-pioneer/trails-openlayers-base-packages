@@ -14,6 +14,12 @@ import { EventsKey } from "ol/events";
 import { getCenter } from "ol/extent";
 import { ExtentConfig, MapModel, MapModelEvents } from "../api";
 import { LayerCollectionImpl } from "./LayerCollectionImpl";
+import { LineString, Point, Polygon } from "ol/geom";
+import {
+    addHighlightOrMarkerAndZoom,
+    HighlightOptions,
+    removeHighlightOrMarker
+} from "./ResultHandler";
 
 const LOG = createLogger("map:MapModel");
 
@@ -56,6 +62,20 @@ export class MapModelImpl extends EventEmitter<MapModelEvents> implements MapMod
         this.#targetWatchKey = this.#olMap.on("change:target", () => {
             this.#onTargetChanged();
         });
+    }
+
+    /**
+     * This method calls the `addHighlightOrMarkerAndZoom()` to add highlight or marker for a given geometries.
+     */
+    highlightAndZoom(geometries: Point[] | LineString[] | Polygon[], options: HighlightOptions) {
+        addHighlightOrMarkerAndZoom(this.olMap, geometries, options);
+    }
+
+    /**
+     * This method calls the `removeHighlightOrMarker()` to remove previously added highlight or marker.
+     */
+    removeHighlight() {
+        removeHighlightOrMarker(this.olMap);
     }
 
     destroy() {

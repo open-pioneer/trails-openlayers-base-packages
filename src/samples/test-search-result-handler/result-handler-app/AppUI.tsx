@@ -2,15 +2,13 @@
 // SPDX-License-Identifier: Apache-2.0
 import { Box, Button, Flex, Stack, Text, VStack } from "@open-pioneer/chakra-integration";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
-import { MapAnchor, MapContainer, useMapModel } from "@open-pioneer/map";
+import { MapAnchor, MapContainer, MapModel, useMapModel } from "@open-pioneer/map";
 import { MAP_ID } from "./MapConfigProviderImpl";
-import { resultHandler, removerHighlight } from "@open-pioneer/search-result-handler";
 import { LineString, Point, Polygon } from "ol/geom";
-import OlMap from "ol/Map";
 
 export function AppUI() {
     const { map } = useMapModel(MAP_ID);
-    const olMap = map?.olMap;
+
     const pointGeometries = [
         new Point([852011.307424, 6788511.322702]),
         new Point([829800.379064, 6809086.916672])
@@ -68,20 +66,16 @@ export function AppUI() {
                             >
                                 <Stack pt={5}>
                                     <Text align="center">Test Controls:</Text>
-                                    <Button
-                                        onClick={() => zoomAndHighlight(olMap, pointGeometries)}
-                                    >
+                                    <Button onClick={() => handleClick(map, pointGeometries)}>
                                         Points
                                     </Button>
-                                    <Button onClick={() => zoomAndHighlight(olMap, lineGeometries)}>
+                                    <Button onClick={() => handleClick(map, lineGeometries)}>
                                         Linestring
                                     </Button>
-                                    <Button
-                                        onClick={() => zoomAndHighlight(olMap, polygonGeometries)}
-                                    >
+                                    <Button onClick={() => handleClick(map, polygonGeometries)}>
                                         Polygons
                                     </Button>
-                                    <Button onClick={() => reset(olMap)}>Reset</Button>
+                                    <Button onClick={() => reset(map)}>Reset</Button>
                                 </Stack>
                             </Box>
                             <MapAnchor position="top-right" horizontalGap={10} verticalGap={10}>
@@ -108,16 +102,16 @@ export function AppUI() {
     );
 }
 
-function zoomAndHighlight(
-    olMap: OlMap | undefined,
+function handleClick(
+    map: MapModel | undefined,
     resultGeometries: Point[] | LineString[] | Polygon[]
 ) {
-    if (olMap) {
-        resultHandler(olMap, resultGeometries, {});
+    if (map) {
+        map.highlightAndZoom(resultGeometries, {});
     }
 }
-function reset(olMap: OlMap | undefined) {
-    if (olMap) {
-        removerHighlight(olMap);
+function reset(map: MapModel | undefined) {
+    if (map) {
+        map.removeHighlight();
     }
 }

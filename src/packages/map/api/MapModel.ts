@@ -6,6 +6,8 @@ import type OlBaseLayer from "ol/layer/Base";
 import type { ExtentConfig } from "./MapConfig";
 import type { Layer, LayerBase } from "./layers";
 import type { LayerRetrievalOptions } from "./shared";
+import { LineString, Point, Polygon } from "ol/geom";
+import { HighlightOptions } from "../model/ResultHandler";
 
 /** Events emitted by the {@link MapModel}. */
 export interface MapModelEvents {
@@ -61,6 +63,19 @@ export interface MapModel extends EventSource<MapModelEvents> {
      * Returns a promise that resolves when the map has mounted in the DOM.
      */
     whenDisplayed(): Promise<void>;
+
+    /**
+     * add highlight for a given geometries.
+     */
+    highlightAndZoom(
+        geometries: Point[] | LineString[] | Polygon[],
+        options: HighlightOptions
+    ): void;
+
+    /**
+     * removes highlight.
+     */
+    removeHighlight(): void;
 }
 
 /** Events emitted by the {@link LayerCollection}. */

@@ -24,7 +24,7 @@ interface HighlightStyle {
     Linestring: Style | Style[];
     Polygon: Style | Style[];
 }
-export interface ResultHandlerOptions {
+export interface HighlightOptions {
     /**
      * The style for highlight and marker
      * */
@@ -46,12 +46,12 @@ const DEFAULT_MAX_ZOOM_LEVEL = 20;
 const DEFAULT_BUFFER_FACTOR = 1.2;
 
 /**
- * This function shows the position of a text search result zoomed to and marked or highlighted in the map.
+ * This method shows the position of a text search result zoomed to and marked or highlighted in the map.
  */
-export function resultHandler(
+export function addHighlightOrMarkerAndZoom(
     olMap: OlMap,
     geometries: Point[] | LineString[] | Polygon[],
-    options: ResultHandlerOptions
+    options: HighlightOptions
 ) {
     const {
         highlightStyle,
@@ -166,11 +166,11 @@ function createAndAddLayer(
             return styles[type];
         }
     });
-    removerHighlight(olMap);
+    removeHighlightOrMarker(olMap);
     olMap.addLayer(layer);
 }
 
-export function removerHighlight(olMap: OlMap) {
+export function removeHighlightOrMarker(olMap: OlMap) {
     const layer = olMap
         .getLayers()
         .getArray()
