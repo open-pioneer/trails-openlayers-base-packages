@@ -136,12 +136,7 @@ export class GeolocationController extends EventEmitter<Events> {
             const resolutionChangeHandler: EventsKey = olMap
                 .getView()
                 .on("change:resolution", () => {
-                    console.log("res changed");
-                    if (this.isInitialZoom) {
-                        this.setMapToPosition = true;
-                    } else {
-                        this.setMapToPosition = false;
-                    }
+                    this.setMapToPosition = this.isInitialZoom;
                 });
 
             // pointermove is triggered when a pointer is moved.
@@ -149,7 +144,6 @@ export class GeolocationController extends EventEmitter<Events> {
             // so is not the same as mousemove.
             const draggingHandler: EventsKey = olMap.on("pointermove", (evt) => {
                 if (evt.dragging) {
-                    console.log("drag changed");
                     this.setMapToPosition = false;
                 }
             });
