@@ -57,6 +57,12 @@ export const Geolocation: FC<GeolocationProps> = forwardRef(function Geolocation
     const { map } = useMapModel(mapId);
     const intl = useIntl();
 
+    const [label, setLabel] = useState<string>(
+        !supportsGeolocation
+            ? intl.formatMessage({ id: "locateNotSupported" })
+            : intl.formatMessage({ id: "locateMeStart" })
+    );
+
     const notificationService = useService("notifier.NotificationService");
 
     const controller = useController(
@@ -118,6 +124,18 @@ export const Geolocation: FC<GeolocationProps> = forwardRef(function Geolocation
         };
     }, [controller, isActive]);
 
+    useEffect(() => {
+        if (!supportsGeolocation) {
+            setLabel(intl.formatMessage({ id: "locateNotSupported" }));
+        } else {
+            if (isActive) {
+                setLabel(intl.formatMessage({ id: "locateMeEnd" }));
+            } else {
+                setLabel(intl.formatMessage({ id: "locateMeStart" }));
+            }
+        }
+    }, [intl, isActive, supportsGeolocation]);
+
     const toggleActiveState = () => {
         if (!map) {
             return;
@@ -128,11 +146,7 @@ export const Geolocation: FC<GeolocationProps> = forwardRef(function Geolocation
     return (
         <ToolButton
             ref={ref}
-            label={
-                isActive
-                    ? intl.formatMessage({ id: "locateMeEnd" })
-                    : intl.formatMessage({ id: "locateMeStart" })
-            }
+            label={label}
             icon={<MdMyLocation />}
             onClick={() => toggleActiveState()}
             isActive={isActive}
