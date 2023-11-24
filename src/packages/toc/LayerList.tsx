@@ -244,7 +244,6 @@ function useSublayers(layer: LayerBase): Sublayer[] | undefined {
 
 /** Returns the layers current state. */
 function useLoadState(layer: LayerBase): string {
-    // TODO also necessary to update sublayers
     const subscribe = useCallback(
         (cb: () => void) => {
             const resource = layer.on("changed:loadState", cb);
