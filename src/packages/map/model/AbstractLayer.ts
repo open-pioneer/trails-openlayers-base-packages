@@ -114,7 +114,7 @@ function healthCheck(config: SimpleLayerConfig): Promise<LayerLoadState> {
         }
 
         if (typeof config.healthCheck === "function") {
-            resolve(config.healthCheck(config));
+            config.healthCheck(config).then((result) => resolve(result));
         } else if (typeof config.healthCheck === "string") {
             // TODO replace by fetch from HttpService
             fetch(config.healthCheck)

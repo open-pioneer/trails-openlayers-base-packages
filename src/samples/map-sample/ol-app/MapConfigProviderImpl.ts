@@ -57,7 +57,6 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                 new SimpleLayer({
                     title: "Haltestellen Stadt Rostock",
                     visible: true,
-                    healthCheck: () => "error",
                     description:
                         "Haltestellen des öffentlichen Personenverkehrs in der Hanse- und Universitätsstadt Rostock.",
                     olLayer: createHaltestellenLayer()
@@ -165,6 +164,15 @@ function createSchulenLayer() {
         title: "Schulstandorte",
         description: `Der vorliegende Datenbestand / Dienst zu den Schulstandorten in NRW stammt aus der Schuldatenbank. Die Informationen werden von den Schulträgern bzw. Schulen selbst eingetragen und aktuell gehalten. Die Daten werden tagesaktuell bereitgestellt und enthalten alle grundlegenden Informationen zu Schulen wie Schulnummer, Schulbezeichnung und Adresse.Der vorliegende Datenbestand / Dienst zu den Schulstandorten in NRW stammt aus der Schuldatenbank. Die Informationen werden von den Schulträgern bzw. Schulen selbst eingetragen und aktuell gehalten. Die Daten werden tagesaktuell bereitgestellt und enthalten alle grundlegenden Informationen zu Schulen wie Schulnummer, Schulbezeichnung und Adresse.Der vorliegende Datenbestand / Dienst zu den Schulstandorten in NRW stammt aus der Schuldatenbank. Die Informationen werden von den Schulträgern bzw. Schulen selbst eingetragen und aktuell gehalten. Die Daten werden tagesaktuell bereitgestellt und enthalten alle grundlegenden Informationen zu Schulen wie Schulnummer, Schulbezeichnung und Adresse.Der vorliegende Datenbestand / Dienst zu den Schulstandorten in NRW stammt aus der Schuldatenbank. Die Informationen werden von den Schulträgern bzw. Schulen selbst eingetragen und aktuell gehalten. Die Daten werden tagesaktuell bereitgestellt und enthalten alle grundlegenden Informationen zu Schulen wie Schulnummer, Schulbezeichnung und Adresse.`,
         visible: true,
+        // example for a custom health check running async
+        healthCheck: async () => {
+            function wait(milliseconds: number): Promise<void> {
+                return new Promise((resolve) => setTimeout(resolve, milliseconds));
+            }
+
+            await wait(3000);
+            return "error";
+        },
         url: "https://www.wms.nrw.de/wms/wms_nw_inspire-schulen",
         sublayers: [
             {
