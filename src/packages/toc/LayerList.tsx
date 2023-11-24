@@ -25,6 +25,8 @@ import { useIntl } from "open-pioneer:react-hooks";
 import { useCallback, useRef, useSyncExternalStore } from "react";
 import { FiAlertTriangle, FiMoreVertical } from "react-icons/fi";
 
+type TocLayer = Layer | Sublayer;
+
 /**
  * Lists the (top level) operational layers in the map.
  *
@@ -47,7 +49,7 @@ export function LayerList(props: { map: MapModel; "aria-labelledby"?: string }):
     });
 }
 
-function createList(layers: LayerBase[], intl: PackageIntl, listProps: ListProps) {
+function createList(layers: TocLayer[], intl: PackageIntl, listProps: ListProps) {
     const items = layers.map((layer) => <LayerItem key={layer.id} layer={layer} intl={intl} />);
     return (
         <List
@@ -67,7 +69,7 @@ function createList(layers: LayerBase[], intl: PackageIntl, listProps: ListProps
  *
  * The item may have further nested list items if there are sublayers present.
  */
-function LayerItem(props: { layer: LayerBase; intl: PackageIntl }): JSX.Element {
+function LayerItem(props: { layer: TocLayer; intl: PackageIntl }): JSX.Element {
     const { layer, intl } = props;
     const title = useTitle(layer);
     const { isVisible, setVisible } = useVisibility(layer);
@@ -115,7 +117,7 @@ function LayerItem(props: { layer: LayerBase; intl: PackageIntl }): JSX.Element 
 }
 
 function LayerItemDescriptor(props: {
-    layer: LayerBase;
+    layer: TocLayer;
     title: string;
     intl: PackageIntl;
 }): JSX.Element {
@@ -204,7 +206,7 @@ function useVisibility(layer: LayerBase): {
 }
 
 /** Returns the top level operation layers (without LayerGroups). */
-function useLayers(map: MapModel): LayerBase[] {
+function useLayers(map: MapModel): Layer[] {
     const subscribe = useCallback(
         (cb: () => void) => {
             const resource = map.layers.on("changed", cb);
@@ -243,7 +245,7 @@ function useSublayers(layer: LayerBase): Sublayer[] | undefined {
 }
 
 /** Returns the layers current state. */
-function useLoadState(layer: LayerBase): string {
+function useLoadState(layer: TocLayer): string {
     const subscribe = useCallback(
         (cb: () => void) => {
             const resource = layer.on("changed:loadState", cb);
@@ -253,16 +255,14 @@ function useLoadState(layer: LayerBase): string {
     );
 
     const getSnapshot = useCallback(() => {
-        // for sublayers, use the state of the parent
-        let operationalLayer: Layer;
         if ("loadState" in layer) {
-            operationalLayer = layer as Layer;
+            return layer.loadState;
+        } else if ("parentLayer" in layer) {
+            // for sublayers, use the state of the parent
+            return layer.parentLayer.loadState;
         } else {
-            const sl = layer as Sublayer;
-            operationalLayer = sl.parentLayer;
+            return "loaded";
         }
-
-        return operationalLayer.loadState;
     }, [layer]);
 
     return useSyncExternalStore(subscribe, getSnapshot);
