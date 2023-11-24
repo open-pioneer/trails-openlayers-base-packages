@@ -12,10 +12,10 @@ To add the component to your app, insert the following snippet with a reference 
 
 The map is zoomed and centered to the user's position, if the geolocation was successful. After panning, zoom in or zoom out the map, the map isn't zoomed and centered after a changed user position.
 
-To use a custom maximal zoom level add the optional property `maxZoomLevel`. It will be zoomed to the extent of the accuracy feature but at most to the defined `maxZoomLevel`.
+To use a custom maximal zoom level add the optional property `maxZoom`. It will be zoomed to the extent of the accuracy feature but at most to the defined `maxZoom`.
 
 ```jsx
-<Geolocation mapId="map_id" maxZoomLevel={20} />
+<Geolocation mapId="map_id" maxZoom={20} />
 ```
 
 To configure the style of the user's position and accuracy, add the optional properties `positionFeatureStyle` or `accuracyFeatureStyle`:

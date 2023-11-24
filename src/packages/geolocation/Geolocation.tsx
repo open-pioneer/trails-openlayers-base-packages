@@ -26,7 +26,7 @@ export interface GeolocationProps extends CommonComponentProps, RefAttributes<HT
     /**
      * The default maximal zoom level
      */
-    maxZoomLevel?: number;
+    maxZoom?: number;
     /**
      * Style to be applied for the positioning highlight feature.
      */
@@ -48,8 +48,7 @@ export const Geolocation: FC<GeolocationProps> = forwardRef(function Geolocation
     props: GeolocationProps,
     ref: ForwardedRef<HTMLButtonElement>
 ) {
-    const { mapId, maxZoomLevel, positionFeatureStyle, accuracyFeatureStyle, trackingOptions } =
-        props;
+    const { mapId, maxZoom, positionFeatureStyle, accuracyFeatureStyle, trackingOptions } = props;
     const { containerProps } = useCommonComponentProps("geolocation", props);
 
     const supportsGeolocation = !!navigator.geolocation;
@@ -62,7 +61,7 @@ export const Geolocation: FC<GeolocationProps> = forwardRef(function Geolocation
 
     const controller = useController(
         map,
-        maxZoomLevel,
+        maxZoom,
         trackingOptions,
         positionFeatureStyle,
         accuracyFeatureStyle
@@ -146,7 +145,7 @@ export const Geolocation: FC<GeolocationProps> = forwardRef(function Geolocation
 
 function useController(
     map: MapModel | undefined,
-    maxZoomLevel: number | undefined,
+    maxZoom: number | undefined,
     trackingOptions: PositionOptions | undefined,
     positionFeatureStyle: StyleLike | undefined,
     accuracyFeatureStyle: StyleLike | undefined
@@ -158,7 +157,7 @@ function useController(
         }
         const geolocationController = new GeolocationController(
             map.olMap,
-            maxZoomLevel,
+            maxZoom,
             trackingOptions
         );
         setController(geolocationController);
@@ -167,7 +166,7 @@ function useController(
             geolocationController.destroy();
             setController(undefined);
         };
-    }, [map, maxZoomLevel, trackingOptions]);
+    }, [map, maxZoom, trackingOptions]);
     useEffect(() => {
         controller?.setPositionFeatureStyle(positionFeatureStyle);
     }, [controller, positionFeatureStyle]);
@@ -175,7 +174,7 @@ function useController(
         controller?.setAccuracyFeatureStyle(accuracyFeatureStyle);
     }, [controller, accuracyFeatureStyle]);
     useEffect(() => {
-        controller?.setMaxZoomLevel(maxZoomLevel);
-    }, [controller, maxZoomLevel]);
+        controller?.setMaxZoom(maxZoom);
+    }, [controller, maxZoom]);
     return controller;
 }

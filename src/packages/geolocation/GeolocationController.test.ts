@@ -12,7 +12,7 @@ import { Geometry } from "ol/geom";
 import {
     setup,
     setupWithCustomProperties,
-    getCustomMaxZoomLevel,
+    getCustomMaxZoom,
     getCustomPositionStyle,
     getCustomAccuracyStyle,
     mockSuccessGeolocation
@@ -80,9 +80,9 @@ describe("Default Properties", () => {
 
     it("uses the default max zoom level", async () => {
         const { controller } = setup();
-        const maxZoomLevel: number | undefined = controller.getMaxZoomLevel();
+        const maxZoom: number | undefined = controller.getMaxZoom();
 
-        expect(maxZoomLevel).toBe(17);
+        expect(maxZoom).toBe(17);
     });
 });
 
@@ -112,8 +112,8 @@ describe("Tests with custom Properties", () => {
 
     it("uses the configured max zoom level", async () => {
         const { controller } = setupWithCustomProperties();
-        const maxZoomLevel: number | undefined = controller.getMaxZoomLevel();
+        const maxZoom: number | undefined = controller.getMaxZoom();
 
-        expect(maxZoomLevel).toBe(getCustomMaxZoomLevel());
+        expect(maxZoom).toBe(getCustomMaxZoom());
     });
 });

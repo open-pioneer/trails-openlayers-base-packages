@@ -18,7 +18,7 @@ import { Extent, getHeight, getWidth } from "ol/extent";
 
 const LOG = createLogger("geolocation:GeolocationController");
 const DEFAULT_BUFFER_FACTOR = 1.2;
-const DEFAULT_MAX_ZOOM_LEVEL = 17;
+const DEFAULT_MAX_ZOOM = 17;
 
 type ErrorEvent = "permission-denied" | "position-unavailable" | "timeout" | "unknown";
 
@@ -28,7 +28,7 @@ interface Events {
 
 export class GeolocationController extends EventEmitter<Events> {
     private readonly olMap: OlMap;
-    private maxZoomLevel: number | undefined;
+    private maxZoom: number | undefined;
     private readonly positionHighlightLayer: VectorLayer<VectorSource>;
     private readonly geolocation: olGeolocation;
     private accuracyFeature: Feature | undefined;
@@ -38,14 +38,10 @@ export class GeolocationController extends EventEmitter<Events> {
     private setMapToPosition: boolean = true;
     private trackingOptions: PositionOptions = {};
 
-    constructor(
-        olMap: OlMap,
-        maxZoomLevel?: number | undefined,
-        trackingOptions?: PositionOptions
-    ) {
+    constructor(olMap: OlMap, maxZoom?: number | undefined, trackingOptions?: PositionOptions) {
         super();
         this.olMap = olMap;
-        this.maxZoomLevel = maxZoomLevel;
+        this.maxZoom = maxZoom;
 
         this.accuracyFeature = new Feature();
         this.accuracyFeature.setStyle(getDefaultAccuracyStyle());
@@ -113,7 +109,7 @@ export class GeolocationController extends EventEmitter<Events> {
                                 return;
                             }
                             olMap.getView().fit(bufferedExtent, {
-                                maxZoom: this.maxZoomLevel
+                                maxZoom: this.maxZoom
                             });
                         }
                     }
@@ -183,8 +179,8 @@ export class GeolocationController extends EventEmitter<Events> {
     setAccuracyFeatureStyle(styleLike: StyleLike | undefined) {
         this.accuracyFeature?.setStyle(styleLike ?? getDefaultAccuracyStyle());
     }
-    setMaxZoomLevel(maxZomLevel: number | undefined) {
-        this.maxZoomLevel = maxZomLevel ?? DEFAULT_MAX_ZOOM_LEVEL;
+    setMaxZoom(maxZoom: number | undefined) {
+        this.maxZoom = maxZoom ?? DEFAULT_MAX_ZOOM;
     }
 
     calculateBufferedExtent(extent: Extent) {
@@ -205,8 +201,8 @@ export class GeolocationController extends EventEmitter<Events> {
         return bufferedExtent;
     }
 
-    getMaxZoomLevel() {
-        return this.maxZoomLevel ? this.maxZoomLevel : DEFAULT_MAX_ZOOM_LEVEL;
+    getMaxZoom() {
+        return this.maxZoom ? this.maxZoom : DEFAULT_MAX_ZOOM;
     }
     getPositionFeature() {
         return this.positionFeature;

@@ -56,12 +56,12 @@ export function setup() {
 
 export function setupWithCustomProperties() {
     const olMap = new OlMap();
-    const maxZoomLevel: number = getCustomMaxZoomLevel();
+    const maxZoom: number = getCustomMaxZoom();
     const positionFeatureStyle: Style = getCustomPositionStyle();
     const accuracyFeatureStyle: Style = getCustomAccuracyStyle();
     const trackingOptions: PositionOptions = getCustomTrackingOptions();
 
-    const controller = new GeolocationController(olMap, maxZoomLevel, trackingOptions);
+    const controller = new GeolocationController(olMap, maxZoom, trackingOptions);
     controller.setPositionFeatureStyle(positionFeatureStyle);
     controller.setAccuracyFeatureStyle(accuracyFeatureStyle);
     return {
@@ -70,7 +70,7 @@ export function setupWithCustomProperties() {
     };
 }
 
-export function getCustomMaxZoomLevel() {
+export function getCustomMaxZoom() {
     return 20;
 }
 export function getCustomPositionStyle() {
