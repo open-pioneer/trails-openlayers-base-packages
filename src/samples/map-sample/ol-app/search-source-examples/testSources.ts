@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { DataSource, Suggestion } from "@open-pioneer/search";
+import { SearchSource, SearchResult } from "@open-pioneer/search";
 
 const fakeStreetData = [
     {
@@ -67,59 +67,59 @@ const getFakeData = async (
     });
 };
 
-export class FakeStreetSource implements DataSource {
+export class FakeStreetSource implements SearchSource {
     label: string = "Streets";
     timeout: number;
     constructor(timeout: number = 250) {
         this.timeout = timeout;
     }
-    async search(inputValue: string): Promise<Suggestion[]> {
+    async search(inputValue: string): Promise<SearchResult[]> {
         const result = await getFakeData(inputValue, fakeStreetData, this.timeout);
-        const suggestions = result.map((item, idx) => ({
+        const results = result.map((item, idx) => ({
             id: idx,
             label: item.text
         }));
-        return suggestions;
+        return results;
     }
 }
-export class FakeCitySource implements DataSource {
+export class FakeCitySource implements SearchSource {
     label: string = "Cities";
     timeout: number;
     constructor(timeout: number = 250) {
         this.timeout = timeout;
     }
-    async search(inputValue: string): Promise<Suggestion[]> {
+    async search(inputValue: string): Promise<SearchResult[]> {
         const result = await getFakeData(inputValue, fakeCityData, this.timeout);
 
-        const suggestions = result.map((item, idx) => ({
+        const results = result.map((item, idx) => ({
             id: idx,
             label: item.text
         }));
 
-        return suggestions;
+        return results;
     }
 }
 
-export class FakeRiverSource implements DataSource {
+export class FakeRiverSource implements SearchSource {
     label: string = "Rivers";
     timeout: number;
     constructor(timeout: number = 250) {
         this.timeout = timeout;
     }
-    async search(inputValue: string): Promise<Suggestion[]> {
+    async search(inputValue: string): Promise<SearchResult[]> {
         const result = await getFakeData(inputValue, fakeRiverData, this.timeout);
-        const suggestions = result.map((item, idx) => ({
+        const results = result.map((item, idx) => ({
             id: idx,
             label: item.text
         }));
-        return suggestions;
+        return results;
     }
 }
 
 type ValidSearchParams = "city" | "street";
 
 // https://github.com/osm-search/Nominatim and https://nominatim.openstreetmap.org/
-export class NominatimGeocoder implements DataSource {
+export class NominatimGeocoder implements SearchSource {
     label: string;
     searchParameterName: ValidSearchParams;
 
@@ -128,20 +128,20 @@ export class NominatimGeocoder implements DataSource {
         this.label = label;
     }
 
-    async search(inputValue: string, options: { signal: AbortSignal }): Promise<Suggestion[]> {
+    async search(inputValue: string, options: { signal: AbortSignal }): Promise<SearchResult[]> {
         const signal = options?.signal;
         const url = this.#getUrl(inputValue);
 
-        try {
-            const responses = await request(url, signal);
-            return responses.map((response, idx) => ({
-                ...response,
+        const responses = await request(url, signal);
+        return responses.map(
+            (response, idx): SearchResult => ({
                 id: idx,
-                label: response.display_name
-            })) satisfies Suggestion[];
-        } catch (error) {
-            return [];
-        }
+                label: response.display_name,
+                properties: {
+                    ...response
+                }
+            })
+        );
     }
 
     #getUrl(inputValue: string): string {
@@ -162,20 +162,15 @@ interface NominatimResponse {
     lon: number;
     importance: number;
 }
+
 const request = async (
     url: string,
     signal?: AbortSignal | undefined
 ): Promise<NominatimResponse[] | []> => {
-    try {
-        const response = await fetch(url, { signal });
-        if (!response.ok) {
-            throw new Error("Request failed: " + response.status);
-        }
-        const result = await response.json();
-
-        return result;
-    } catch (error) {
-        // return [];
-        throw new Error("Request failed: " + error);
+    const response = await fetch(url, { signal });
+    if (!response.ok) {
+        throw new Error("Request failed: " + response.status);
     }
+    const result = await response.json();
+    return result;
 };

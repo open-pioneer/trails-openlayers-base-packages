@@ -3,39 +3,41 @@
 import { Geometry } from "ol/geom";
 
 /**
- * Common interface for integration of different search sources.
+ * An object that allows searching some set of data.
+ *
  * Developers can create classes that implement this interface for different search sources.
  */
-export interface DataSource {
+export interface SearchSource {
     /**
-     * The label of the data source.
+     * The label of this source.
      *
-     * This will be displayed by the user interface when results from this data source are shown.
+     * This will be displayed by the user interface when results from this search source are shown.
      */
     readonly label: string;
 
     /**
-     * Performs a search and return a list of suggestions.
+     * Performs a search and return a list of search results.
      *
-     * Implementations should return the suggestions ordered by priority (best match first), if possible.
+     * Implementations should return the results ordered by priority (best match first), if possible.
      *
      * The provided `AbortSignal` in `options.signal` is used to cancel outdated requests.
      */
-    search(inputValue: string, options: { signal: AbortSignal }): Promise<Suggestion[]>;
+    search(inputValue: string, options: { signal: AbortSignal }): Promise<SearchResult[]>;
 }
 
 /**
- * Represent a suggestion.
+ * Represent the result of a search.
  */
-export interface Suggestion {
+export interface SearchResult {
     /**
-     * Identifier for the suggested result object.
-     * Values used here should be unique within the context of the data source that returns them.
+     * Identifier for the result object.
+     * Values used here should be unique within the context of the search source that returns them.
      */
     id: number | string;
 
     /**
-     * Display text for the suggestion list.
+     * Display text representing this result.
+     * Will be shown in the search widget's suggestion list.
      */
     label: string;
 

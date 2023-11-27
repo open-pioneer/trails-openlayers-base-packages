@@ -1,27 +1,26 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box, Flex, Divider } from "@open-pioneer/chakra-integration";
+import { Box, Divider, Flex } from "@open-pioneer/chakra-integration";
 import { CoordinateViewer } from "@open-pioneer/coordinate-viewer";
+import { Geolocation } from "@open-pioneer/geolocation";
 import { MapAnchor, MapContainer } from "@open-pioneer/map";
 import { InitialExtent, ZoomIn, ZoomOut } from "@open-pioneer/map-navigation";
 import { Measurement } from "@open-pioneer/measurement";
+import { Notifier } from "@open-pioneer/notifier";
 import { NominatimGeocoder } from "./search-source-examples/testSources";
-import { OgcFeaturesSource, Search, SelectSearchEvent } from "@open-pioneer/search";
+import { OgcFeaturesSource, Search } from "@open-pioneer/search";
 import { OverviewMap } from "@open-pioneer/overview-map";
 import { SectionHeading, TitledSection, ToolButton } from "@open-pioneer/react-utils";
+import { ScaleBar } from "@open-pioneer/scale-bar";
 import { ScaleViewer } from "@open-pioneer/scale-viewer";
 import { Toc } from "@open-pioneer/toc";
-import { ScaleBar } from "@open-pioneer/scale-bar";
 import TileLayer from "ol/layer/Tile.js";
 import OSM from "ol/source/OSM.js";
 import { useIntl } from "open-pioneer:react-hooks";
 import { useId, useMemo, useState } from "react";
-import { PiMapTrifold, PiRulerLight, PiListLight } from "react-icons/pi";
+import { PiListLight, PiMapTrifold, PiRulerLight } from "react-icons/pi";
 import { MAP_ID } from "./MapConfigProviderImpl";
-import { Geolocation } from "@open-pioneer/geolocation";
-import { Notifier } from "@open-pioneer/notifier";
 
-//TODO useCallback for the sources
 const sources = [
     new OgcFeaturesSource("Bergbauberechtigungen", {
         baseUrl: "https://ogc-api.nrw.de/inspire-am-bergbauberechtigungen/v1",
@@ -47,6 +46,7 @@ const sources = [
     new NominatimGeocoder("city", "Städte"),
     new NominatimGeocoder("street", "Straßen")
 ];
+
 export function AppUI() {
     const intl = useIntl();
     const tocTitleId = useId();
@@ -110,13 +110,13 @@ export function AppUI() {
                             <Search
                                 mapId={MAP_ID}
                                 sources={sources}
-                                onSelect={function (event: SelectSearchEvent): void {
+                                onSelect={(event) => {
                                     console.debug(
                                         "The user selected the following item: ",
-                                        event.suggestion
+                                        event.result
                                     );
                                 }}
-                                onClear={function (): void {
+                                onClear={() => {
                                     console.debug("The user cleared the selected search item");
                                 }}
                             />

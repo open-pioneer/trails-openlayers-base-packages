@@ -3,7 +3,7 @@ messages:
   loadingText: "Loading..."
   searchPlaceholder: "Search..."
   ariaLabel:
-    search: "Search bar to search services"
+    search: "Search bar"
     instructions: "Use Up and Down to choose options, press Enter to select the currently focused option, press Escape to exit the menu, press Tab to select the option and exit the menu."
     searchFocus: "focused"
     searchSelect: "selected"

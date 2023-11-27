@@ -66,7 +66,7 @@ it("should successfully call select handler after clicking a suggestion", async 
 
     expect(selectHandler).toHaveBeenCalledWith({
         "source": citySource,
-        "suggestion": {
+        "result": {
             "id": 0,
             "label": "Dortmund"
         }
@@ -87,6 +87,24 @@ it("should successfully clear a suggestion select", async () => {
     await userEvent.click(suggestion);
     const { clearButton } = await waitForClearButton();
     await userEvent.click(clearButton);
+    expect(searchInput).toHaveValue("");
+    expect(clearHandler).toBeCalledTimes(1);
+});
+
+it("should allow clearing the suggestion text even if no option has been selected", async () => {
+    const user = userEvent.setup();
+
+    const selectHandler = vi.fn();
+    const clearHandler = vi.fn();
+
+    await createSearch(selectHandler, clearHandler);
+    const { searchInput } = await waitForInput();
+    await user.type(searchInput, "Dortmund");
+    expect(searchInput).toHaveValue("Dortmund");
+
+    const { clearButton } = await waitForClearButton();
+    await userEvent.click(clearButton);
+    expect(searchInput).toHaveValue("");
     expect(clearHandler).toBeCalledTimes(1);
 });
 
@@ -106,6 +124,7 @@ async function createSearch(
                 data-testid="search"
                 mapId={mapId}
                 sources={sources}
+                searchTypingDelay={10}
                 onSelect={selectHandlerFunction}
                 onClear={clearHandlerFunction}
             ></Search>
@@ -143,15 +162,11 @@ async function waitForSuggestion() {
 }
 
 async function waitForClearButton() {
-    const { clearButton } = await waitFor(async () => {
-        const clearButton: Element | null = (
-            await screen.findByTestId<HTMLDivElement>("search")
-        ).querySelector(".search-clear-container");
-
-        if (!clearButton) {
-            throw new Error("Clearbutton not found");
-        }
-        return { clearButton };
-    });
+    const searchDiv = await screen.findByTestId<HTMLDivElement>("search");
+    const clearButton = await screen.findByLabelText(
+        "ariaLabel.clearButton",
+        {},
+        { container: searchDiv }
+    );
     return { clearButton };
 }

@@ -3,7 +3,7 @@
 
 import { afterEach, expect, vi, it } from "vitest";
 import { SearchController } from "./SearchController";
-import { DataSource } from "./api";
+import { SearchSource } from "./api";
 import { FakeCitySource, FakeRejectionSource, FakeRiverSource } from "./testSources";
 import { isAbortError } from "@open-pioneer/core";
 
@@ -106,7 +106,7 @@ it("expect controller to call AbortController when typing quickly", async () => 
     expect(cancelled).toBe(true);
 });
 
-function setup(sources: DataSource[]) {
+function setup(sources: SearchSource[]) {
     const controller = new SearchController({
         sources,
         searchTypingDelay: 10

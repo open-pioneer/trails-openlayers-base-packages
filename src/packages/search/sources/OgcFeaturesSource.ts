@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
-import { DataSource, Suggestion } from "./../api";
+import { SearchSource, SearchResult } from "./../api";
 
 export interface OgcFeatureSourceOptions {
     /** The base-URL right to the "/collections"-part */
@@ -17,7 +17,7 @@ export interface OgcFeatureSourceOptions {
     resultsParameter?: string;
 }
 
-export class OgcFeaturesSource implements DataSource {
+export class OgcFeaturesSource implements SearchSource {
     label: string;
     options: OgcFeatureSourceOptions;
 
@@ -26,7 +26,7 @@ export class OgcFeaturesSource implements DataSource {
         this.options = options;
     }
 
-    async search(inputValue: string, options: { signal: AbortSignal }): Promise<Suggestion[]> {
+    async search(inputValue: string, options: { signal: AbortSignal }): Promise<SearchResult[]> {
         const signal = options?.signal;
         const url = this.#getUrl(inputValue);
 
@@ -40,7 +40,7 @@ export class OgcFeaturesSource implements DataSource {
                         ? (this.options.resultsParameter as keyof typeof response.properties)
                         : (this.options.searchParameter as keyof typeof response.properties)
                 ]
-            })) satisfies Suggestion[];
+            })) satisfies SearchResult[];
         } catch (error) {
             return [];
         }
