@@ -6,7 +6,7 @@ import { MapAnchor, MapContainer } from "@open-pioneer/map";
 import { InitialExtent, ZoomIn, ZoomOut } from "@open-pioneer/map-navigation";
 import { Measurement } from "@open-pioneer/measurement";
 import { NominatimGeocoder } from "./search-source-examples/testSources";
-import { Search, SelectSearchEvent } from "@open-pioneer/search";
+import { OgcFeaturesSource, Search, SelectSearchEvent } from "@open-pioneer/search";
 import { OverviewMap } from "@open-pioneer/overview-map";
 import { SectionHeading, TitledSection, ToolButton } from "@open-pioneer/react-utils";
 import { ScaleViewer } from "@open-pioneer/scale-viewer";
@@ -24,7 +24,11 @@ import { Notifier } from "@open-pioneer/notifier";
 //TODO useCallback for the sources
 const sources = [
     new NominatimGeocoder("city", "Städte"),
-    new NominatimGeocoder("street", "Straßen")
+    new NominatimGeocoder("street", "Straßen"),
+    new OgcFeaturesSource("flik", "Feldblöcke", {
+        baseUrl: "https://ogc-api.nrw.de/inspire-lc-fb/v1",
+        collectionId: "landcoverunit"
+    })
 ];
 export function AppUI() {
     const intl = useIntl();

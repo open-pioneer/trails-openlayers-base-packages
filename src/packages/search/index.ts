@@ -2,4 +2,5 @@
 // SPDX-License-Identifier: Apache-2.0
 export { Search } from "./Search";
 export type { SearchProps, SelectSearchEvent } from "./Search";
+export { OgcFeaturesSource } from "./sources/OgcFeaturesSource";
 export type { DataSource, Suggestion } from "./api";
