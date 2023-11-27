@@ -2,4 +2,4 @@
 "@open-pioneer/geolocation": patch
 ---
 
-Add zoom to user's accuracy
+Add `maxZoom` property to restrict the zoom level after successful geolocation.

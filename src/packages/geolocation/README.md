@@ -10,7 +10,10 @@ To add the component to your app, insert the following snippet with a reference 
 <Geolocation mapId="map_id" />
 ```
 
-If the geolocation was successful, the map is zoomed and centered to the user's position. Restriction: the map will only zoom once to the position directly after the geolocation was successful. After panning, zoom in or zoom out the map, the map isn't zoomed and centered after a changed user position.
+If the geolocation was successful, the map is zoomed and centered to the user's position.
+
+> Restriction: the map will only zoom once to the position directly after the geolocation was successful.
+> After panning, or zoom in or zoom out of the map, the map isn't zoomed and centered after a changed user position.
 
 To use a custom maximal zoom level add the optional property `maxZoom`. It will be zoomed to the extent of the accuracy feature but at most to the defined `maxZoom`.
 

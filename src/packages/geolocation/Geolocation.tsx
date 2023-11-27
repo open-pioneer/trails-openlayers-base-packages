@@ -162,18 +162,14 @@ function useController(
         if (!map) {
             return;
         }
-        const geolocationController = new GeolocationController(
-            map.olMap,
-            maxZoom,
-            trackingOptions
-        );
+        const geolocationController = new GeolocationController(map.olMap, trackingOptions);
         setController(geolocationController);
 
         return () => {
             geolocationController.destroy();
             setController(undefined);
         };
-    }, [map, maxZoom, trackingOptions]);
+    }, [map, trackingOptions]);
     useEffect(() => {
         controller?.setPositionFeatureStyle(positionFeatureStyle);
     }, [controller, positionFeatureStyle]);

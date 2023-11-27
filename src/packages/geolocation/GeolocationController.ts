@@ -28,9 +28,9 @@ interface Events {
 
 export class GeolocationController extends EventEmitter<Events> {
     private readonly olMap: OlMap;
-    private maxZoom: number | undefined;
     private readonly positionHighlightLayer: VectorLayer<VectorSource>;
     private readonly geolocation: olGeolocation;
+    private maxZoom: number = DEFAULT_MAX_ZOOM;
     private accuracyFeature: Feature | undefined;
     private positionFeature: Feature | undefined;
     private changeHandlers: EventsKey[] = [];
@@ -39,10 +39,9 @@ export class GeolocationController extends EventEmitter<Events> {
     private trackingOptions: PositionOptions = {};
     private isInitialZoom: boolean = true;
 
-    constructor(olMap: OlMap, maxZoom?: number | undefined, trackingOptions?: PositionOptions) {
+    constructor(olMap: OlMap, trackingOptions?: PositionOptions) {
         super();
         this.olMap = olMap;
-        this.maxZoom = maxZoom;
         this.isInitialZoom = true;
 
         this.accuracyFeature = new Feature();
@@ -105,7 +104,7 @@ export class GeolocationController extends EventEmitter<Events> {
                             ?.getGeometry()
                             ?.getExtent();
                         if (accuracyGeometryExtent) {
-                            const bufferedExtent: number[] | undefined =
+                            const bufferedExtent =
                                 this.calculateBufferedExtent(accuracyGeometryExtent);
                             if (!bufferedExtent) {
                                 return;
@@ -186,13 +185,20 @@ export class GeolocationController extends EventEmitter<Events> {
     setAccuracyFeatureStyle(styleLike: StyleLike | undefined) {
         this.accuracyFeature?.setStyle(styleLike ?? getDefaultAccuracyStyle());
     }
+
     setMaxZoom(maxZoom: number | undefined) {
         this.maxZoom = maxZoom ?? DEFAULT_MAX_ZOOM;
     }
 
     calculateBufferedExtent(extent: Extent) {
         let bufferedExtent: number[] | undefined;
-        if (extent && extent[0] && extent[1] && extent[2] && extent[3]) {
+        if (
+            extent &&
+            extent[0] != null &&
+            extent[1] != null &&
+            extent[2] != null &&
+            extent[3] != null
+        ) {
             const width = getHeight(extent);
             const height = getWidth(extent);
             const bufferWidth = width * DEFAULT_BUFFER_FACTOR;
@@ -209,14 +215,17 @@ export class GeolocationController extends EventEmitter<Events> {
     }
 
     getMaxZoom() {
-        return this.maxZoom ? this.maxZoom : DEFAULT_MAX_ZOOM;
+        return this.maxZoom;
     }
+
     getPositionFeature() {
         return this.positionFeature;
     }
+
     getAccuracyFeature() {
         return this.accuracyFeature;
     }
+
     getTrackingOptions() {
         return this.trackingOptions;
     }

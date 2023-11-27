@@ -42,12 +42,13 @@ it("should calculate a buffer for a given extent", async () => {
     const { controller } = setup();
 
     const bufferedExtent: number[] | undefined = controller.calculateBufferedExtent(extent);
-
-    if (bufferedExtent) {
-        expect(bufferedExtent).toStrictEqual([
-            5037990.2369360365, 6634219.936291038, 5047555.628934548, 6643785.32945862
-        ]);
+    if (!bufferedExtent) {
+        throw new Error("Expected a valid extent");
     }
+
+    expect(bufferedExtent).toStrictEqual([
+        5037990.2369360365, 6634219.936291038, 5047555.628934548, 6643785.32945862
+    ]);
 });
 
 describe("Default Properties", () => {
