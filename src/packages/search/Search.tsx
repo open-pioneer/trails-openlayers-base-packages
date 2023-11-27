@@ -30,6 +30,9 @@ export interface SearchOption {
     /** Display text shown in menu. */
     label: string;
 
+    /** Data source that returned the suggestion. */
+    source: DataSource;
+
     /** The raw result from the search source. */
     suggestion: Suggestion;
 }
@@ -42,7 +45,14 @@ export interface SearchGroupOption {
     options: SearchOption[];
 }
 
-export interface SelectSearchEvent {
+/**
+ * Event type emitted when the user selects an item.
+ */
+export interface SearchSelectEvent {
+    /** The source that returned the {@link suggestion}. */
+    source: DataSource;
+
+    /** The search result selected by the user. */
     suggestion: Suggestion;
 }
 
@@ -56,7 +66,7 @@ export interface SearchProps extends CommonComponentProps {
     mapId: string;
 
     /**
-     * Data sources to be searched on
+     * Data sources to be searched on.
      */
     sources: DataSource[];
 
@@ -85,12 +95,12 @@ export interface SearchProps extends CommonComponentProps {
     focussedItemBackgroundColor?: string;
 
     /**
-     * Callback function for the select event
+     * This event handler will be called when the user selects a search result.
      */
-    onSelect?: (event: SelectSearchEvent) => void;
+    onSelect?: (event: SearchSelectEvent) => void;
 
     /**
-     * Callback function for the clear event
+     * This event handler will be called when the user clears the search input.
      */
     onClear?: () => void;
 }
@@ -174,6 +184,7 @@ export const Search: FC<SearchProps> = (props) => {
             case "select-option":
                 if (value) {
                     onSelect?.({
+                        source: value.source,
                         suggestion: value.suggestion
                     });
                 }
@@ -206,10 +217,10 @@ export const Search: FC<SearchProps> = (props) => {
         let message = "";
         switch (action) {
             case "select-option":
-                message = `${label}  ${intl.formatMessage({ id: "ariaLabel.searchSelect" })}.`;
+                message = `${label} ${intl.formatMessage({ id: "ariaLabel.searchSelect" })}.`;
                 break;
             case "clear":
-                message = `${label}  ${intl.formatMessage({ id: "ariaLabel.searchClear" })}.`;
+                message = `${label} ${intl.formatMessage({ id: "ariaLabel.searchClear" })}.`;
                 break;
             default:
                 break;
@@ -295,6 +306,7 @@ function mapSuggestions(suggestions: SuggestionGroup[]): SearchGroupOption[] {
                 return {
                     value: `${groupIndex}-${suggestion.id}`,
                     label: suggestion.label,
+                    source: group.source,
                     suggestion
                 };
             })

@@ -15,6 +15,7 @@ interface ControllerConfig {
  */
 export interface SuggestionGroup {
     label: string;
+    source: DataSource;
     suggestions: Suggestion[];
 }
 
@@ -71,8 +72,8 @@ export class SearchController {
     ): Promise<SuggestionGroup | undefined> {
         const label = source.label;
         try {
-            const result = await source.search(searchTerm, { signal });
-            return { label: label, suggestions: result };
+            const results = await source.search(searchTerm, { signal });
+            return { label: label, source, suggestions: results };
         } catch (e) {
             if (!isAbortError(e)) {
                 LOG.error(`search for source ${label} failed`, e);
