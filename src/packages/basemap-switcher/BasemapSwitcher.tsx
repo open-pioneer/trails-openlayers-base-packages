@@ -5,6 +5,7 @@ import { Layer, MapModel, useMapModel } from "@open-pioneer/map";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, useCallback, useMemo, useRef, useSyncExternalStore } from "react";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
+import { PackageIntl } from "@open-pioneer/runtime";
 
 /*
     Exported for tests. Feels a bit hacky but should be fine for now.
@@ -24,6 +25,14 @@ interface SelectOption {
      * The label of the basemap for the select option.
      */
     label: string;
+    /**
+     * Is the layer available and can be selected?
+     */
+    isAvailable: boolean;
+    /**
+     * Tooltip to show when hovering the option. Mainly used for indicating not available layers.
+     */
+    tooltip: string;
 }
 
 /**
@@ -76,7 +85,7 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
     const { map } = useMapModel(mapId);
     const baseLayers = useBaseLayers(map);
     const { selectOptions, selectedId } = useMemo(() => {
-        return createOptions({ baseLayers, allowSelectingEmptyBasemap, emptyBasemapLabel });
+        return createOptions({ baseLayers, allowSelectingEmptyBasemap, emptyBasemapLabel, intl });
     }, [baseLayers, allowSelectingEmptyBasemap, emptyBasemapLabel]);
     const activateLayer = (layerId: string) => {
         map?.layers.activateBaseLayer(layerId === NO_BASEMAP_ID ? undefined : layerId);
@@ -93,7 +102,12 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
                     onChange={(e) => activateLayer(e.target.value)}
                 >
                     {selectOptions.map((opt) => (
-                        <option key={opt.id} value={opt.id}>
+                        <option
+                            key={opt.id}
+                            value={opt.id}
+                            disabled={!opt.isAvailable}
+                            title={opt.tooltip}
+                        >
                             {opt.label}
                         </option>
                     ))}
@@ -140,11 +154,15 @@ function createOptions(params: {
     baseLayers: Layer[];
     allowSelectingEmptyBasemap: boolean | undefined;
     emptyBasemapLabel: string;
+    intl: PackageIntl;
 }): { selectOptions: SelectOption[]; selectedId: string } {
     const { baseLayers = [], allowSelectingEmptyBasemap = false, emptyBasemapLabel } = params;
     const selectOptions: SelectOption[] = baseLayers.map((item) => ({
         id: item.id,
-        label: item.title
+        label: item.title,
+        isAvailable: item.loadState !== "error",
+        tooltip:
+            item.loadState === "error" ? params.intl.formatMessage({ id: "layerNotAvailable" }) : ""
     }));
 
     let selectedId = baseLayers.find((layer) => layer.visible)?.id;
@@ -160,6 +178,8 @@ function createOptions(params: {
 function getNonBaseMapConfig(label: string) {
     return {
         id: NO_BASEMAP_ID,
-        label
+        label,
+        isAvailable: true,
+        tooltip: ""
     };
 }
