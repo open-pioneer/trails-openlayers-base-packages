@@ -56,13 +56,6 @@ export const Geolocation: FC<GeolocationProps> = forwardRef(function Geolocation
     const [isLoading, setLoading] = useState<boolean>(false);
     const { map } = useMapModel(mapId);
     const intl = useIntl();
-
-    const [label, setLabel] = useState<string>(
-        !supportsGeolocation
-            ? intl.formatMessage({ id: "locateNotSupported" })
-            : intl.formatMessage({ id: "locateMeStart" })
-    );
-
     const notificationService = useService("notifier.NotificationService");
 
     const controller = useController(
@@ -72,6 +65,18 @@ export const Geolocation: FC<GeolocationProps> = forwardRef(function Geolocation
         positionFeatureStyle,
         accuracyFeatureStyle
     );
+
+    const label = (() => {
+        if (!supportsGeolocation) {
+            return intl.formatMessage({ id: "locateNotSupported" });
+        }
+
+        if (isActive) {
+            return intl.formatMessage({ id: "locateMeEnd" });
+        } else {
+            return intl.formatMessage({ id: "locateMeStart" });
+        }
+    })();
 
     useEffect(() => {
         if (controller === undefined) {
@@ -123,18 +128,6 @@ export const Geolocation: FC<GeolocationProps> = forwardRef(function Geolocation
             setLoading(false);
         };
     }, [controller, isActive]);
-
-    useEffect(() => {
-        if (!supportsGeolocation) {
-            setLabel(intl.formatMessage({ id: "locateNotSupported" }));
-        } else {
-            if (isActive) {
-                setLabel(intl.formatMessage({ id: "locateMeEnd" }));
-            } else {
-                setLabel(intl.formatMessage({ id: "locateMeStart" }));
-            }
-        }
-    }, [intl, isActive, supportsGeolocation]);
 
     const toggleActiveState = () => {
         if (!map) {
