@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { DataSource, Suggestion } from "./api";
+import { SearchSource, SearchResult } from "./api";
 
 interface Feature {
     bbox: number[];
@@ -88,12 +88,12 @@ const request = async (url: string, signal?: AbortSignal | undefined): Promise<F
         throw new Error("Request failed: " + error);
     }
 };
-export class GeoSearchSource implements DataSource {
+export class GeoSearchSource implements SearchSource {
     label: string = "Bkg-Service";
     async search(
         inputValue: string,
         options?: { signal?: AbortSignal | undefined } | undefined
-    ): Promise<Suggestion[]> {
+    ): Promise<SearchResult[]> {
         const signal = options?.signal;
         const url = this.#getUrl(inputValue);
 
@@ -102,7 +102,7 @@ export class GeoSearchSource implements DataSource {
             return features.map((feature, idx) => ({
                 id: idx,
                 label: feature.properties?.text as string
-            })) satisfies Suggestion[];
+            })) satisfies SearchResult[];
         } catch (error) {
             return [];
         }
@@ -112,13 +112,13 @@ export class GeoSearchSource implements DataSource {
     }
 }
 
-export class FakeStreetSource implements DataSource {
+export class FakeStreetSource implements SearchSource {
     label: string = "Streets";
     timeout: number;
     constructor(timeout: number = 250) {
         this.timeout = timeout;
     }
-    async search(inputValue: string): Promise<Suggestion[]> {
+    async search(inputValue: string): Promise<SearchResult[]> {
         const result = await getFakeData(inputValue, fakeStreetData, this.timeout);
         const suggestions = result.map((item, idx) => ({
             id: idx,
@@ -127,13 +127,13 @@ export class FakeStreetSource implements DataSource {
         return suggestions;
     }
 }
-export class FakeCitySource implements DataSource {
+export class FakeCitySource implements SearchSource {
     label: string = "Cities";
     timeout: number;
     constructor(timeout: number = 250) {
         this.timeout = timeout;
     }
-    async search(inputValue: string): Promise<Suggestion[]> {
+    async search(inputValue: string): Promise<SearchResult[]> {
         const result = await getFakeData(inputValue, fakeCityData, this.timeout);
 
         const suggestions = result.map((item, idx) => ({
@@ -145,13 +145,13 @@ export class FakeCitySource implements DataSource {
     }
 }
 
-export class FakeRiverSource implements DataSource {
+export class FakeRiverSource implements SearchSource {
     label: string = "Rivers";
     timeout: number;
     constructor(timeout: number = 250) {
         this.timeout = timeout;
     }
-    async search(inputValue: string): Promise<Suggestion[]> {
+    async search(inputValue: string): Promise<SearchResult[]> {
         const result = await getFakeData(inputValue, fakeRiverData, this.timeout);
         const suggestions = result.map((item, idx) => ({
             id: idx,
@@ -160,9 +160,9 @@ export class FakeRiverSource implements DataSource {
         return suggestions;
     }
 }
-export class FakeRejectionSource implements DataSource {
+export class FakeRejectionSource implements SearchSource {
     label: string = "Rejected";
-    async search(inputValue: string): Promise<Suggestion[]> {
+    async search(inputValue: string): Promise<SearchResult[]> {
         return Promise.reject(new Error(`search with ${inputValue} rejected`));
     }
 }

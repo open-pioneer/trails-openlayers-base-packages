@@ -29,7 +29,7 @@ import {
     ValueContainer
 } from "./CustomComponents";
 import { SearchController, SuggestionGroup } from "./SearchController";
-import { DataSource, Suggestion } from "./api";
+import { SearchSource, SearchResult } from "./api";
 import { PackageIntl } from "@open-pioneer/runtime";
 
 const LOG = createLogger("search:Search");
@@ -42,11 +42,11 @@ export interface SearchOption {
     /** Display text shown in menu. */
     label: string;
 
-    /** Data source that returned the suggestion. */
-    source: DataSource;
+    /** Search source that returned the suggestion. */
+    source: SearchSource;
 
     /** The raw result from the search source. */
-    suggestion: Suggestion;
+    result: SearchResult;
 }
 
 export interface SearchGroupOption {
@@ -61,11 +61,11 @@ export interface SearchGroupOption {
  * Event type emitted when the user selects an item.
  */
 export interface SearchSelectEvent {
-    /** The source that returned the {@link suggestion}. */
-    source: DataSource;
+    /** The source that returned the {@link result}. */
+    source: SearchSource;
 
     /** The search result selected by the user. */
-    suggestion: Suggestion;
+    result: SearchResult;
 }
 
 /**
@@ -80,7 +80,7 @@ export interface SearchProps extends CommonComponentProps {
     /**
      * Data sources to be searched on.
      */
-    sources: DataSource[];
+    sources: SearchSource[];
 
     /**
      * Typing delay (in milliseconds) before the async search query starts after the user types in the search term.
@@ -104,6 +104,9 @@ export interface SearchProps extends CommonComponentProps {
     onClear?: () => void;
 }
 
+/**
+ * A component that allows the user to search a given set of {@link SearchSource | SearchSources}.
+ */
 export const Search: FC<SearchProps> = (props) => {
     const { mapId, sources, searchTypingDelay = DEFAULT_TYPING_DELAY, onSelect, onClear } = props;
     const { containerProps } = useCommonComponentProps("search", props);
@@ -135,7 +138,7 @@ export const Search: FC<SearchProps> = (props) => {
                     onResultConfirmed(value);
                     onSelect?.({
                         source: value.source,
-                        suggestion: value.suggestion
+                        result: value.result
                     });
                 }
                 break;
@@ -296,7 +299,7 @@ function useChakraStyles() {
  * Creates a controller to search on the given sources.
  */
 function useController(
-    sources: DataSource[],
+    sources: SearchSource[],
     searchTypingDelay: number,
     map: MapModel | undefined
 ) {
@@ -409,7 +412,7 @@ function mapSuggestions(suggestions: SuggestionGroup[]): SearchGroupOption[] {
                     value: `${groupIndex}-${suggestion.id}`,
                     label: suggestion.label,
                     source: group.source,
-                    suggestion
+                    result: suggestion
                 };
             })
         })

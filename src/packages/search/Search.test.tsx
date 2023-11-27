@@ -66,7 +66,7 @@ it("should successfully call select handler after clicking a suggestion", async 
 
     expect(selectHandler).toHaveBeenCalledWith({
         "source": citySource,
-        "suggestion": {
+        "result": {
             "id": 0,
             "label": "Dortmund"
         }
@@ -106,6 +106,7 @@ async function createSearch(
                 data-testid="search"
                 mapId={mapId}
                 sources={sources}
+                searchTypingDelay={10}
                 onSelect={selectHandlerFunction}
                 onClear={clearHandlerFunction}
             ></Search>
