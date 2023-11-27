@@ -3,4 +3,5 @@
 export { Search } from "./Search";
 export type { SearchProps, SelectSearchEvent } from "./Search";
 export { OgcFeaturesSource } from "./sources/OgcFeaturesSource";
+export type { OgcFeatureSourceOptions } from "./sources/OgcFeaturesSource";
 export type { DataSource, Suggestion } from "./api";

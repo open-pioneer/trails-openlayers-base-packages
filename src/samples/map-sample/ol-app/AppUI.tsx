@@ -23,12 +23,18 @@ import { Notifier } from "@open-pioneer/notifier";
 
 //TODO useCallback for the sources
 const sources = [
-    new NominatimGeocoder("city", "Städte"),
-    new NominatimGeocoder("street", "Straßen"),
-    new OgcFeaturesSource("flik", "Feldblöcke", {
+    new OgcFeaturesSource("Feldblöcke", {
         baseUrl: "https://ogc-api.nrw.de/inspire-lc-fb/v1",
-        collectionId: "landcoverunit"
-    })
+        collectionId: "landcoverunit",
+        searchParameterName: "flik"
+    }),
+    new OgcFeaturesSource("Weinberge", {
+        baseUrl: "https://demo.ldproxy.net/vineyards",
+        collectionId: "vineyards",
+        searchParameterName: "name"
+    }),
+    new NominatimGeocoder("city", "Städte"),
+    new NominatimGeocoder("street", "Straßen")
 ];
 export function AppUI() {
     const intl = useIntl();
