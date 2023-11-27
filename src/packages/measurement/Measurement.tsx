@@ -88,9 +88,7 @@ export const Measurement: FC<MeasurementProps> = (props) => {
 
     return (
         <Box {...containerProps}>
-            <Text width="340px" mb={3}>
-                {intl.formatMessage({ id: "measurementInfoText" })}
-            </Text>
+            <Text mb={3}>{intl.formatMessage({ id: "measurementInfoText" })}</Text>
             <FormControl mb={4} alignItems="center">
                 <HStack mb={2}>
                     <FormLabel mb={1}>{label("measurementLabel")}</FormLabel>
