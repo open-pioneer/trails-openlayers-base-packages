@@ -4,3 +4,4 @@ messages:
   operationalLayerLabel: "Operational layers"
   missingLayers: "There are no layers to display."
   error: "Error while creating map content."
+  layerNotAvailable: "Layer not available"

@@ -16,7 +16,8 @@ import {
     PopoverTrigger,
     Portal,
     Spacer,
-    Text
+    Text,
+    Tooltip
 } from "@open-pioneer/chakra-integration";
 import { LayerBase, MapModel, Sublayer } from "@open-pioneer/map";
 import { PackageIntl } from "@open-pioneer/runtime";
@@ -75,6 +76,7 @@ function LayerItem(props: { layer: TocLayer; intl: PackageIntl }): JSX.Element {
     const { isVisible, setVisible } = useVisibility(layer);
     const sublayers = useSublayers(layer);
     const isAvailable = useLoadState(layer) !== "error";
+    const notAvailableLabel = intl.formatMessage({ id: "layerNotAvailable" });
 
     let nestedChildren;
     if (sublayers?.length) {
@@ -102,9 +104,11 @@ function LayerItem(props: { layer: TocLayer; intl: PackageIntl }): JSX.Element {
                     {title}
                 </Checkbox>
                 {!isAvailable && (
-                    // TODO Tooltip?
-                    // TODO Aria Label
-                    <FiAlertTriangle color={"red"} aria-label={"Layer nicht verfügbar"} />
+                    <Tooltip label={notAvailableLabel} placement="right" openDelay={500}>
+                        <span>
+                            <FiAlertTriangle color={"red"} aria-label={notAvailableLabel} />
+                        </span>
+                    </Tooltip>
                 )}
                 <Spacer></Spacer>
                 {layer.description && (
