@@ -6,7 +6,9 @@ import {
     NoticeProps,
     OptionProps,
     ClearIndicatorProps,
-    ValueContainerProps
+    ValueContainerProps,
+    InputProps,
+    SingleValueProps
 } from "chakra-react-select";
 import { useIntl } from "open-pioneer:react-hooks";
 import { chakra } from "@open-pioneer/chakra-integration";
@@ -63,6 +65,19 @@ export function ValueContainer({
             {children}
         </chakraComponents.ValueContainer>
     );
+}
+
+export function Input(props: InputProps<SearchOption, false, SearchGroupOption>) {
+    const inputProps: typeof props = {
+        ...props,
+        isHidden: false
+    };
+    return <chakraComponents.Input {...inputProps} />;
+}
+
+export function SingleValue(_props: SingleValueProps<SearchOption, false, SearchGroupOption>) {
+    // Never render anything (we use the text input to show the selected result)
+    return null;
 }
 
 export function ClearIndicator({
