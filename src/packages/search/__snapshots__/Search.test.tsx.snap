@@ -21,11 +21,12 @@ exports[`should successfully create a search component 1`] = `
       class="css-1f43avz-a11yText-A11yText"
     />
     <div
-      class=" css-i2418r"
+      class="react-select__control css-i2418r"
       data-theme="light"
     >
       <div
-        class="search-value-container css-1fdsijx-ValueContainer"
+        class="search-value-container react-select__value-container css-j93siq"
+        data-theme="light"
       >
         <svg
           class="chakra-icon css-onkibi"
@@ -40,14 +41,14 @@ exports[`should successfully create a search component 1`] = `
           />
         </svg>
         <div
-          class=" css-hji3d9"
+          class="react-select__placeholder css-hji3d9"
           data-theme="light"
           id="react-select-2-placeholder"
         >
           searchPlaceholder
         </div>
         <div
-          class=" css-18euh9p"
+          class="react-select__input-container css-18euh9p"
           data-theme="light"
           data-value=""
         >
@@ -60,7 +61,7 @@ exports[`should successfully create a search component 1`] = `
             autocapitalize="none"
             autocomplete="off"
             autocorrect="off"
-            class=" css-10wwmqn"
+            class="react-select__input css-10wwmqn"
             data-theme="light"
             id="react-select-2-input"
             role="combobox"
@@ -72,17 +73,17 @@ exports[`should successfully create a search component 1`] = `
         </div>
       </div>
       <div
-        class=" css-hfbj6y"
+        class="react-select__indicators css-hfbj6y"
         data-theme="light"
       >
         <hr
           aria-orientation="vertical"
-          class="chakra-divider css-1i6c5ox"
+          class="chakra-divider react-select__indicator-separator css-1i6c5ox"
           data-theme="light"
         />
         <div
           aria-hidden="true"
-          class=" css-80pt9o"
+          class="react-select__indicator react-select__dropdown-indicator css-80pt9o"
           data-theme="light"
         >
           <svg

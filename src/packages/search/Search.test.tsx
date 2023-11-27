@@ -5,7 +5,7 @@ import { beforeEach, afterEach, expect, it, vi } from "vitest";
 import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render, screen, waitFor } from "@testing-library/react";
-import { Search, SelectSearchEvent } from "./Search";
+import { Search, SearchSelectEvent } from "./Search";
 import { FakeCitySource, FakeRiverSource, FakeStreetSource } from "./testSources";
 import userEvent from "@testing-library/user-event";
 
@@ -29,7 +29,6 @@ afterEach(() => {
 
 it("should successfully create a search component", async () => {
     await createSearch();
-    // search is mounted
     const { searchDiv } = await waitForSearch();
     expect(searchDiv).toMatchSnapshot();
 });
@@ -46,7 +45,6 @@ it("should successfully show a search suggestion", async () => {
     const user = userEvent.setup();
     await createSearch();
 
-    // search is mounted
     const { searchInput } = await waitForInput();
     await user.type(searchInput, "Dortmund");
     const { suggestion } = await waitForSuggestion();
@@ -57,9 +55,9 @@ it("should successfully call select handler after clicking a suggestion", async 
     const user = userEvent.setup();
 
     const selectHandler = vi.fn();
+    const { sources } = await createSearch(selectHandler);
+    const citySource = sources[0]!;
 
-    await createSearch(selectHandler);
-    // search is mounted
     const { searchInput } = await waitForInput();
     await user.type(searchInput, "Dortmund");
 
@@ -67,6 +65,7 @@ it("should successfully call select handler after clicking a suggestion", async 
     await userEvent.click(suggestion);
 
     expect(selectHandler).toHaveBeenCalledWith({
+        "source": citySource,
         "suggestion": {
             "id": 0,
             "label": "Dortmund"
@@ -81,7 +80,6 @@ it("should successfully clear a suggestion select", async () => {
     const clearHandler = vi.fn();
 
     await createSearch(selectHandler, clearHandler);
-    // search is mounted
     const { searchInput } = await waitForInput();
     await user.type(searchInput, "Dortmund");
 
@@ -93,14 +91,14 @@ it("should successfully clear a suggestion select", async () => {
 });
 
 async function createSearch(
-    selectHandler?: (event: SelectSearchEvent) => void,
+    selectHandler?: (event: SearchSelectEvent) => void,
     clearHandler?: () => void
 ) {
     const { mapId, registry } = await setupMap();
     await registry.expectMapModel(mapId);
     const injectedServices = createServiceOptions({ registry });
-    const sources = [new FakeCitySource(), new FakeRiverSource(), new FakeStreetSource()];
-    const selectHandlerFunction = selectHandler ? selectHandler : (_event: SelectSearchEvent) => {};
+    const sources = [new FakeCitySource(1), new FakeRiverSource(1), new FakeStreetSource(1)];
+    const selectHandlerFunction = selectHandler ? selectHandler : (_event: SearchSelectEvent) => {};
     const clearHandlerFunction = clearHandler ? clearHandler : () => {};
     render(
         <PackageContextProvider services={injectedServices}>
@@ -113,6 +111,8 @@ async function createSearch(
             ></Search>
         </PackageContextProvider>
     );
+
+    return { sources };
 }
 
 async function waitForSearch() {

@@ -46,23 +46,6 @@ The results/suggestions are presented as a grouped list, one group for each data
 This list is sorted by the given order of datasources and the order of the items inside are
 defined the implementation of the datasource.
 
-The component is not placed anywhere by default, so you have to take care of this by yourself.
-For example, you could wrap the component inside a `Box` element which is placed at a
-specific `MapAnchor` or place the component by CSS inside the `MapContainer` using a class like the
-following on the `Box` container element (it is predefined inside the package):
-
-```css
-/* top center placement */
-.search-top-center-placement {
-    position: absolute;
-    left: 50%;
-    top: 0px;
-    transform: translate(-50%, 0px);
-    width: 500px;
-    z-index: 1;
-}
-```
-
 If you want to listen to the events `onSelect` and `onClear`, you can provide optional callback functions to the component.
 In case of the `onSelect` event, you can access the selected suggestion by the `SelectSearchEvent` event given as parameter.
 
@@ -111,6 +94,45 @@ If you want to see the default dropdown indicator of the component (combo box ar
 
 If you want to customize the CSS of the `Option`, `NoOptionsMessage`, or `LoadingMessage`, you can use their
 class names: `search-option`, `search-no-match` or `search-loading-text`.
+
+### Configuring search sources
+
+TODO
+
+### Positioning the search bar
+
+The search bar is not placed at a certain location by default; it will simply fill its parent.
+
+To achieve a certain position in a parent node, the following snippet might be helpful:
+
+```css
+/* top center placement */
+.search-top-center-placement {
+    position: absolute;
+    left: 50%;
+    top: 0px;
+    transform: translate(-50%, 0px);
+    width: 500px;
+    z-index: 1;
+}
+```
+
+```jsx
+<Box
+    // ...
+    className="search-top-center-placement"
+>
+    <Search /* ... */ />
+</Box>
+```
+
+### Configuring colors
+
+TODO
+
+### Implementing a search source
+
+TODO
 
 ## License
 

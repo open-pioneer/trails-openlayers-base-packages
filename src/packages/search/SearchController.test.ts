@@ -8,6 +8,8 @@ import { FakeCitySource, FakeRejectionSource, FakeRiverSource } from "./testSour
 import { isAbortError } from "@open-pioneer/core";
 
 const FAKE_REQUEST_TIMER = 0;
+const CITY_SOURCE = new FakeCitySource(FAKE_REQUEST_TIMER);
+const RIVER_SOURCE = new FakeRiverSource(FAKE_REQUEST_TIMER);
 
 afterEach(() => {
     vi.restoreAllMocks();
@@ -17,30 +19,30 @@ it("except controller to return result with suggestions from one source", async 
     const expected = [
         {
             label: "Cities",
+            source: CITY_SOURCE,
             suggestions: [{ "id": 0, label: "Aachen" }]
         },
         {
             label: "Rivers",
+            source: RIVER_SOURCE,
             suggestions: []
         }
     ];
-    const controller = setup([
-        new FakeCitySource(FAKE_REQUEST_TIMER),
-        new FakeRiverSource(FAKE_REQUEST_TIMER)
-    ]);
+    const controller = setup([CITY_SOURCE, RIVER_SOURCE]);
     const searchResponse = await controller.search("Aachen");
-
-    expect(expected).toStrictEqual(searchResponse);
+    expect(searchResponse).toStrictEqual(expected);
 });
 
 it("except controller to return result with suggestions from multiple sources", async () => {
     const expected = [
         {
             label: "Cities",
+            source: CITY_SOURCE,
             suggestions: [{ "id": 0, "label": "Aachen" }]
         },
         {
             label: "Rivers",
+            source: RIVER_SOURCE,
             suggestions: [
                 {
                     "id": 0,
@@ -49,13 +51,8 @@ it("except controller to return result with suggestions from multiple sources", 
             ]
         }
     ];
-    const controller = setup([
-        new FakeCitySource(FAKE_REQUEST_TIMER),
-        new FakeRiverSource(FAKE_REQUEST_TIMER)
-    ]);
-
+    const controller = setup([CITY_SOURCE, RIVER_SOURCE]);
     const searchResponse = await controller.search("aa");
-
     expect(searchResponse).toStrictEqual(expected);
 });
 
@@ -64,13 +61,14 @@ it("expect controller to filter rejected queries and return only successfully re
     const expected = [
         {
             label: "Cities",
+            source: CITY_SOURCE,
             suggestions: [{ "id": 0, "label": "Aachen" }]
         }
     ];
-    const controller = setup([new FakeCitySource(FAKE_REQUEST_TIMER), new FakeRejectionSource()]);
+    const controller = setup([CITY_SOURCE, new FakeRejectionSource()]);
 
     const searchResponse = await controller.search("aa");
-    expect(expected).toStrictEqual(searchResponse);
+    expect(searchResponse).toStrictEqual(expected);
     expect(logSpy).toMatchInlineSnapshot(`
       [MockFunction error] {
         "calls": [
@@ -93,10 +91,11 @@ it("expect controller to call AbortController when typing quickly", async () => 
     const expected = [
         {
             label: "Cities",
+            source: CITY_SOURCE,
             suggestions: [{ "id": 0, "label": "Aachen" }]
         }
     ];
-    const controller = setup([new FakeCitySource(FAKE_REQUEST_TIMER)]);
+    const controller = setup([CITY_SOURCE]);
 
     let cancelled = false;
     const firstSearch = controller.search("a").catch((e) => (cancelled = !!isAbortError(e)));
