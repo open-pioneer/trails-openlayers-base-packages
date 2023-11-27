@@ -10,8 +10,11 @@ export interface OgcFeatureSourceOptions {
     /** The collection-ID */
     collectionId: string;
 
-    /** Parameter name used for filtering on OGC API Features */
-    searchParameterName: string;
+    /** Parameter used for filtering on OGC API Features */
+    searchParameter: string;
+
+    /** Parameter used for labelling, if searchParameter isn't exists on feature properties */
+    resultsParameter?: string;
 }
 
 export class OgcFeaturesSource implements DataSource {
@@ -32,7 +35,11 @@ export class OgcFeaturesSource implements DataSource {
             return responses.features.map((response, idx) => ({
                 ...response,
                 id: idx,
-                label: response.properties[this.options.searchParameterName]
+                label: response.properties[
+                    this.options.resultsParameter
+                        ? (this.options.resultsParameter as keyof typeof response.properties)
+                        : (this.options.searchParameter as keyof typeof response.properties)
+                ]
             })) satisfies Suggestion[];
         } catch (error) {
             return [];
@@ -41,7 +48,7 @@ export class OgcFeaturesSource implements DataSource {
 
     #getUrl(inputValue: string): string {
         return encodeURI(
-            `${this.options.baseUrl}/collections/${this.options.collectionId}/items?${this.options.searchParameterName}=*${inputValue}*&f=json`
+            `${this.options.baseUrl}/collections/${this.options.collectionId}/items?${this.options.searchParameter}=*${inputValue}*&f=json`
         );
     }
 }
@@ -49,8 +56,7 @@ export class OgcFeaturesSource implements DataSource {
 interface OgcFeaturesResponse {
     features: [
         {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            properties: { [key: string]: any };
+            properties: {};
         }
     ];
     links?: object[];
