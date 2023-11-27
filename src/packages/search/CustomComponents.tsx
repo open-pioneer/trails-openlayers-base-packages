@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import {
-    components,
+    chakraComponents,
     MenuProps,
     NoticeProps,
     OptionProps,
@@ -11,20 +11,20 @@ import {
 import { useIntl } from "open-pioneer:react-hooks";
 import { chakra } from "@open-pioneer/chakra-integration";
 import { KeyboardEvent } from "react";
+import classNames from "classnames";
 import { SearchGroupOption, SearchOption } from "./Search";
 import { SearchIcon, CloseIcon } from "@chakra-ui/icons";
 
 export function MenuComp(props: MenuProps<SearchOption, false, SearchGroupOption>) {
     const hasInput = props.selectProps.inputValue.length > 0;
-    let clazz = "";
-    if (!hasInput) {
-        clazz = "search-invisible";
-    }
-    return (
-        <components.Menu {...props} className={clazz}>
-            {props.children}
-        </components.Menu>
-    );
+    const menuProps: typeof props = {
+        ...props,
+        className: classNames(props.className, {
+            "search-invisible": !hasInput
+        })
+    };
+
+    return <chakraComponents.Menu {...menuProps}>{props.children}</chakraComponents.Menu>;
 }
 
 export function NoOptionsMessage(props: NoticeProps<SearchOption, false, SearchGroupOption>) {
@@ -32,9 +32,9 @@ export function NoOptionsMessage(props: NoticeProps<SearchOption, false, SearchG
     const noMessageText = intl.formatMessage({ id: "noOptionsText" });
 
     return (
-        <components.NoOptionsMessage {...props}>
+        <chakraComponents.NoOptionsMessage {...props}>
             <chakra.span className="search-no-match">{noMessageText}</chakra.span>
-        </components.NoOptionsMessage>
+        </chakraComponents.NoOptionsMessage>
     );
 }
 
@@ -43,9 +43,9 @@ export function LoadingMessage(props: NoticeProps<SearchOption, false, SearchGro
     const loadingText = intl.formatMessage({ id: "loadingText" });
 
     return (
-        <components.LoadingMessage {...props}>
+        <chakraComponents.LoadingMessage {...props}>
             <chakra.span className="search-loading-text">{loadingText}</chakra.span>
-        </components.LoadingMessage>
+        </chakraComponents.LoadingMessage>
     );
 }
 
@@ -53,13 +53,15 @@ export function ValueContainer({
     children,
     ...props
 }: ValueContainerProps<SearchOption, false, SearchGroupOption>) {
+    const containerProps: typeof props = {
+        ...props,
+        className: classNames(props.className, "search-value-container")
+    };
     return (
-        components.ValueContainer && (
-            <components.ValueContainer {...props} className="search-value-container">
-                {!!children && <SearchIcon style={{ position: "absolute", left: 8 }}></SearchIcon>}
-                {children}
-            </components.ValueContainer>
-        )
+        <chakraComponents.ValueContainer {...containerProps}>
+            {!!children && <SearchIcon style={{ position: "absolute", left: 8 }}></SearchIcon>}
+            {children}
+        </chakraComponents.ValueContainer>
     );
 }
 
@@ -79,34 +81,40 @@ export function ClearIndicator({
         e.preventDefault();
         props.clearValue();
     };
+    const indicatorProps: typeof props = {
+        ...props,
+        className: classNames(props.className, "search-clear-container"),
+        innerProps: {
+            ...props.innerProps,
+            "aria-hidden": false
+        }
+    };
 
     return (
-        components.ClearIndicator && (
-            <components.ClearIndicator
-                {...props}
-                className="search-clear-container"
-                innerProps={Object.assign(props.innerProps, { "aria-hidden": false })}
-            >
-                <CloseIcon
-                    role="button"
-                    tabIndex={0}
-                    onKeyDown={keyHandler}
-                    aria-label={clearButtonLabel}
-                ></CloseIcon>
-            </components.ClearIndicator>
-        )
+        <chakraComponents.ClearIndicator {...indicatorProps}>
+            <CloseIcon
+                role="button"
+                tabIndex={0}
+                onKeyDown={keyHandler}
+                aria-label={clearButtonLabel}
+            />
+        </chakraComponents.ClearIndicator>
     );
 }
 
 export function HighlightOption(props: OptionProps<SearchOption, false, SearchGroupOption>) {
     const userInput = props.selectProps.inputValue;
     const label = props.data.label;
+    const optionProps: typeof props = {
+        ...props,
+        className: classNames(props.className, "search-option")
+    };
     return (
-        <components.Option {...props} className="search-option">
-            <chakra.div>
+        <chakraComponents.Option {...optionProps}>
+            <chakra.div className="search-option-label">
                 {userInput.trim().length > 0 ? getHighlightedLabel(label, userInput) : label}
             </chakra.div>
-        </components.Option>
+        </chakraComponents.Option>
     );
 }
 
@@ -114,13 +122,13 @@ function getHighlightedLabel(label: string, userInput: string) {
     const matchIndex = label.toLowerCase().indexOf(userInput.toLowerCase());
     if (matchIndex >= 0) {
         return (
-            <chakra.span>
+            <>
                 {label.substring(0, matchIndex)}
                 <chakra.span key="highlighted" className="search-highlighted-match">
                     {label.substring(matchIndex, matchIndex + userInput.length)}
                 </chakra.span>
                 {label.substring(matchIndex + userInput.length)}
-            </chakra.span>
+            </>
         );
     }
     return label;
