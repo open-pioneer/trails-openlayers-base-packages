@@ -1,28 +1,21 @@
-.search-top-center-placement {
-    position: absolute;
-    left: 50%;
-    top: 0px;
-    transform: translate(-50%, 0px);
-    width: 500px;
-    z-index: 1;
-}
-
 .search-component .chakra-divider {
     display: none;
 }
 
-.search-highlighted-match {
+.search-component .search-highlighted-match {
     font-weight: bold;
 }
 
-.search-value-container {
+.search-component .search-value-container {
     cursor: text;
     padding-left: 30px !important;
 }
 
-.search-invisible {
+.search-component .search-invisible {
     display: none;
 }
+
+/* Exposition only
 
 .search-option {
 }
@@ -31,4 +24,4 @@
 }
 
 .search-loading-text {
-}
+} */
