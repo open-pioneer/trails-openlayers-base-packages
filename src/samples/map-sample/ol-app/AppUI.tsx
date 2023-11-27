@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box, Flex } from "@open-pioneer/chakra-integration";
+import { Box, Flex, Divider } from "@open-pioneer/chakra-integration";
 import { CoordinateViewer } from "@open-pioneer/coordinate-viewer";
 import { MapAnchor, MapContainer } from "@open-pioneer/map";
 import { InitialExtent, ZoomIn, ZoomOut } from "@open-pioneer/map-navigation";
@@ -16,7 +16,7 @@ import TileLayer from "ol/layer/Tile.js";
 import OSM from "ol/source/OSM.js";
 import { useIntl } from "open-pioneer:react-hooks";
 import { useId, useMemo, useState } from "react";
-import { PiMapTrifold, PiRulerLight } from "react-icons/pi";
+import { PiMapTrifold, PiRulerLight, PiListLight } from "react-icons/pi";
 import { MAP_ID } from "./MapConfigProviderImpl";
 import { Geolocation } from "@open-pioneer/geolocation";
 import { Notifier } from "@open-pioneer/notifier";
@@ -32,6 +32,7 @@ export function AppUI() {
     const measurementTitleId = useId();
     const [measurementIsActive, setMeasurementIsActive] = useState<boolean>(false);
     const [showOverviewMap, setShowOverviewMap] = useState<boolean>(true);
+    const [showToc, setShowToc] = useState<boolean>(true);
 
     function toggleMeasurement() {
         setMeasurementIsActive(!measurementIsActive);
@@ -39,6 +40,10 @@ export function AppUI() {
 
     function toggleOverviewMap() {
         setShowOverviewMap(!showOverviewMap);
+    }
+
+    function toggleToc() {
+        setShowToc(!showToc);
     }
 
     const overviewMapLayer = useMemo(
@@ -95,55 +100,74 @@ export function AppUI() {
                                 }}
                             />
                         </Box>
-                        <MapAnchor position="top-left" horizontalGap={20} verticalGap={20}>
-                            <Box
-                                backgroundColor="white"
-                                borderWidth="1px"
-                                borderRadius="lg"
-                                padding={2}
-                                boxShadow="lg"
-                            >
-                                <Box role="dialog" aria-labelledby={tocTitleId}>
-                                    <TitledSection
-                                        title={
-                                            <SectionHeading id={tocTitleId} size="md" mb={2}>
-                                                {intl.formatMessage({ id: "tocTitle" })}
-                                            </SectionHeading>
-                                        }
-                                    >
-                                        <Toc
-                                            mapId={MAP_ID}
-                                            basemapSwitcherProps={{
-                                                allowSelectingEmptyBasemap: true
-                                            }}
-                                        />
-                                    </TitledSection>
+                        <MapAnchor position="top-left" horizontalGap={10} verticalGap={10}>
+                            {(showToc || measurementIsActive) && (
+                                <Box
+                                    backgroundColor="white"
+                                    borderWidth="1px"
+                                    borderRadius="lg"
+                                    padding={2}
+                                    boxShadow="lg"
+                                >
+                                    {showToc && (
+                                        <Box role="dialog" aria-labelledby={tocTitleId}>
+                                            <TitledSection
+                                                title={
+                                                    <SectionHeading
+                                                        id={tocTitleId}
+                                                        size="md"
+                                                        mb={2}
+                                                    >
+                                                        {intl.formatMessage({ id: "tocTitle" })}
+                                                    </SectionHeading>
+                                                }
+                                            >
+                                                <Toc
+                                                    mapId={MAP_ID}
+                                                    basemapSwitcherProps={{
+                                                        allowSelectingEmptyBasemap: true
+                                                    }}
+                                                />
+                                            </TitledSection>
+                                        </Box>
+                                    )}
+                                    {showToc && measurementIsActive && <Divider mt={4} mb={4} />}
+                                    {measurementIsActive && (
+                                        <Box role="dialog" aria-labelledby={measurementTitleId}>
+                                            <TitledSection
+                                                title={
+                                                    <SectionHeading
+                                                        id={measurementTitleId}
+                                                        size="md"
+                                                        mb={2}
+                                                    >
+                                                        {intl.formatMessage({
+                                                            id: "measurementTitle"
+                                                        })}
+                                                    </SectionHeading>
+                                                }
+                                            >
+                                                <Measurement mapId={MAP_ID} />
+                                            </TitledSection>
+                                        </Box>
+                                    )}
                                 </Box>
-                                {measurementIsActive && (
-                                    <Box role="dialog" aria-labelledby={measurementTitleId} mt={5}>
-                                        <TitledSection
-                                            title={
-                                                <SectionHeading
-                                                    id={measurementTitleId}
-                                                    size="md"
-                                                    mb={2}
-                                                >
-                                                    {intl.formatMessage({ id: "measurementTitle" })}
-                                                </SectionHeading>
-                                            }
-                                        >
-                                            <Measurement mapId={MAP_ID} />
-                                        </TitledSection>
-                                    </Box>
-                                )}
-                            </Box>
+                            )}
                         </MapAnchor>
                         <MapAnchor position="top-right" horizontalGap={10} verticalGap={10}>
                             {showOverviewMap && (
-                                <OverviewMap mapId={MAP_ID} olLayer={overviewMapLayer} />
+                                <Box
+                                    backgroundColor="white"
+                                    borderWidth="1px"
+                                    borderRadius="lg"
+                                    padding={2}
+                                    boxShadow="lg"
+                                >
+                                    <OverviewMap mapId={MAP_ID} olLayer={overviewMapLayer} />
+                                </Box>
                             )}
                         </MapAnchor>
-                        <MapAnchor position="bottom-right" horizontalGap={10} verticalGap={30}>
+                        <MapAnchor position="bottom-right" horizontalGap={10} verticalGap={45}>
                             <Flex
                                 role="toolbar"
                                 aria-label={intl.formatMessage({ id: "ariaLabel.toolbar" })}
@@ -153,16 +177,22 @@ export function AppUI() {
                             >
                                 <Geolocation mapId={MAP_ID}></Geolocation>
                                 <ToolButton
-                                    label={intl.formatMessage({ id: "overviewMapTitle" })}
-                                    icon={<PiMapTrifold />}
-                                    isActive={showOverviewMap}
-                                    onClick={toggleOverviewMap}
+                                    label={intl.formatMessage({ id: "tocTitle" })}
+                                    icon={<PiListLight />}
+                                    isActive={showToc}
+                                    onClick={toggleToc}
                                 />
                                 <ToolButton
                                     label={intl.formatMessage({ id: "measurementTitle" })}
                                     icon={<PiRulerLight />}
                                     isActive={measurementIsActive}
                                     onClick={toggleMeasurement}
+                                />
+                                <ToolButton
+                                    label={intl.formatMessage({ id: "overviewMapTitle" })}
+                                    icon={<PiMapTrifold />}
+                                    isActive={showOverviewMap}
+                                    onClick={toggleOverviewMap}
                                 />
                                 <InitialExtent mapId={MAP_ID} />
                                 <ZoomIn mapId={MAP_ID} />
