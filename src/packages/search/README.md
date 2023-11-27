@@ -62,6 +62,10 @@ In case of the `onSelect` event, you can access the selected suggestion by the `
 />
 ```
 
+<!--
+
+TODO: Do we really need these properties?
+
 If you want to change the background color of the datasource headings, add the optional property
 `groupHeadingBackgroundColor` as a CSS-background-color string.
 The default is pulled from the theme "trails" (trails.100)
@@ -76,7 +80,7 @@ The default is pulled from the theme "trails" (trails.50)
 
 ```tsx
 <Search mapId={MAP_ID} sources={datasources} focussedItemBackgroundColor="#eaf2f5" />
-```
+``` -->
 
 If you want to change the typing delay, add the optional property `searchTypingDelay` (in ms).
 The default value is 500ms.
@@ -98,6 +102,10 @@ class names: `search-option`, `search-no-match` or `search-loading-text`.
 ### Configuring search sources
 
 TODO
+
+### Listening to events
+
+TODO: select / clear
 
 ### Positioning the search bar
 
