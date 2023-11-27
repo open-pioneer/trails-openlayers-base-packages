@@ -21,6 +21,7 @@ import { FC, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
     ClearIndicator,
     HighlightOption,
+    IndicatorsContainer,
     Input,
     LoadingMessage,
     MenuComp,
@@ -180,6 +181,7 @@ export const Search: FC<SearchProps> = (props) => {
                 isLoading={results.kind === "loading"}
                 options={results.kind === "ready" ? results.results : undefined}
                 filterOption={() => true} // always show all options (don't filter based on input text)
+                tabSelectsValue={false}
                 components={components}
                 onChange={handleSelectChange}
             />
@@ -255,6 +257,7 @@ function useCustomComponents(): SelectProps<SearchOption, false, SearchGroupOpti
             NoOptionsMessage: NoOptionsMessage,
             LoadingMessage: LoadingMessage,
             ValueContainer: ValueContainer,
+            IndicatorsContainer: IndicatorsContainer,
             ClearIndicator: ClearIndicator
         };
     }, []);

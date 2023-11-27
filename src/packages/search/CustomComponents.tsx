@@ -1,21 +1,23 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import { SearchIcon } from "@chakra-ui/icons";
+import { CloseButton, chakra } from "@open-pioneer/chakra-integration";
 import {
-    chakraComponents,
+    ClearIndicatorProps,
+    IndicatorsContainerProps,
+    InputProps,
     MenuProps,
     NoticeProps,
     OptionProps,
-    ClearIndicatorProps,
+    Props as SelectProps,
+    SingleValueProps,
     ValueContainerProps,
-    InputProps,
-    SingleValueProps
+    chakraComponents
 } from "chakra-react-select";
-import { useIntl } from "open-pioneer:react-hooks";
-import { chakra } from "@open-pioneer/chakra-integration";
-import { KeyboardEvent } from "react";
 import classNames from "classnames";
+import { useIntl } from "open-pioneer:react-hooks";
+import { MouseEvent } from "react";
 import { SearchGroupOption, SearchOption } from "./Search";
-import { SearchIcon, CloseIcon } from "@chakra-ui/icons";
 
 export function MenuComp(props: MenuProps<SearchOption, false, SearchGroupOption>) {
     const hasInput = props.selectProps.inputValue.length > 0;
@@ -80,41 +82,52 @@ export function SingleValue(_props: SingleValueProps<SearchOption, false, Search
     return null;
 }
 
-export function ClearIndicator({
-    children: _ignored,
-    ...props
-}: ClearIndicatorProps<SearchOption, false, SearchGroupOption>) {
+export function IndicatorsContainer(
+    props: IndicatorsContainerProps<SearchOption, false, SearchGroupOption>
+) {
+    return (
+        <chakraComponents.IndicatorsContainer {...props}>
+            {props.children}
+            {!props.selectProps.isLoading && props.selectProps.inputValue && (
+                <CustomClearIndicator
+                    selectProps={props.selectProps}
+                    clearValue={props.clearValue}
+                />
+            )}
+        </chakraComponents.IndicatorsContainer>
+    );
+}
+
+function CustomClearIndicator(props: {
+    clearValue(): void;
+    selectProps: SelectProps<SearchOption, false, SearchGroupOption>;
+}) {
     const intl = useIntl();
     const clearButtonLabel = intl.formatMessage({
         id: "ariaLabel.clearButton"
     });
-    const keyHandler = (e: KeyboardEvent) => {
-        if (e.key !== "Enter") {
-            return;
-        }
-
+    const clickHandler = (e: MouseEvent) => {
         e.preventDefault();
+        e.stopPropagation();
         props.clearValue();
-    };
-    const indicatorProps: typeof props = {
-        ...props,
-        className: classNames(props.className, "search-clear-container"),
-        innerProps: {
-            ...props.innerProps,
-            "aria-hidden": false
-        }
     };
 
     return (
-        <chakraComponents.ClearIndicator {...indicatorProps}>
-            <CloseIcon
-                role="button"
-                tabIndex={0}
-                onKeyDown={keyHandler}
-                aria-label={clearButtonLabel}
-            />
-        </chakraComponents.ClearIndicator>
+        <CloseButton
+            role="button"
+            size="md"
+            mr={1}
+            aria-label={clearButtonLabel}
+            onClick={clickHandler}
+        />
     );
+}
+
+export function ClearIndicator(
+    _props: ClearIndicatorProps<SearchOption, false, SearchGroupOption>
+) {
+    // Never render anything; we use our own clear indicator
+    return null;
 }
 
 export function HighlightOption(props: OptionProps<SearchOption, false, SearchGroupOption>) {
