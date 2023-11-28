@@ -6,6 +6,8 @@ messages:
       deleteOne: "Delete Bookmark"
       save: "Save"
       cancel: "Cancel"
+      cancelDelete: "No"
+      confirmDelete: "Yes"
     input:
       placeholder: "Enter bookmark name"
     alert:

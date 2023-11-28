@@ -205,7 +205,7 @@ function BookmarkItem(props: {
             role="option"
             padding={1}
             cursor={"pointer"}
-            _hover={{ background: "lightgray" }}
+            _hover={{ background: "trails.50" }}
             onClick={() => {
                 onActivate();
             }}
@@ -264,10 +264,10 @@ function RemoveControls(props: { intl: PackageIntl; onClear: () => void; onCance
     return (
         <ButtonContainer>
             <DialogButton leftIcon={<PiXLight />} onClick={onCancel}>
-                {intl.formatMessage({ id: "bookmark.button.cancel" })}
+                {intl.formatMessage({ id: "bookmark.button.cancelDelete" })}
             </DialogButton>
             <DialogButton leftIcon={<PiCheck />} onClick={onClear}>
-                {intl.formatMessage({ id: "bookmark.button.save" })}
+                {intl.formatMessage({ id: "bookmark.button.confirmDelete" })}
             </DialogButton>
         </ButtonContainer>
     );

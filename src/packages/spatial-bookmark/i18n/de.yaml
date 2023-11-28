@@ -6,6 +6,8 @@ messages:
       deleteOne: "Lesezeichen löschen"
       save: "Speichern"
       cancel: "Abbrechen"
+      cancelDelete: "Nein"
+      confirmDelete: "Ja"
     input:
       placeholder: "Name des Lesezeichens"
     alert:
