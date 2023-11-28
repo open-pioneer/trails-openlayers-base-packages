@@ -5,7 +5,6 @@ import { Layer, MapModel, useMapModel } from "@open-pioneer/map";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, useCallback, useMemo, useRef, useSyncExternalStore } from "react";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
-import { PackageIntl } from "@open-pioneer/runtime";
 
 /*
     Exported for tests. Feels a bit hacky but should be fine for now.
@@ -81,11 +80,17 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
     } = props;
     const { containerProps } = useCommonComponentProps("basemap-switcher", props);
     const emptyBasemapLabel = intl.formatMessage({ id: "emptyBasemapLabel" });
+    const layerNotAvailableLabel = intl.formatMessage({ id: "layerNotAvailable" });
 
     const { map } = useMapModel(mapId);
     const baseLayers = useBaseLayers(map);
     const { selectOptions, selectedId } = useMemo(() => {
-        return createOptions({ baseLayers, allowSelectingEmptyBasemap, emptyBasemapLabel, intl });
+        return createOptions({
+            baseLayers,
+            allowSelectingEmptyBasemap,
+            emptyBasemapLabel,
+            layerNotAvailableLabel
+        });
     }, [baseLayers, allowSelectingEmptyBasemap, emptyBasemapLabel]);
     const activateLayer = (layerId: string) => {
         map?.layers.activateBaseLayer(layerId === NO_BASEMAP_ID ? undefined : layerId);
@@ -154,15 +159,19 @@ function createOptions(params: {
     baseLayers: Layer[];
     allowSelectingEmptyBasemap: boolean | undefined;
     emptyBasemapLabel: string;
-    intl: PackageIntl;
+    layerNotAvailableLabel: string;
 }): { selectOptions: SelectOption[]; selectedId: string } {
-    const { baseLayers = [], allowSelectingEmptyBasemap = false, emptyBasemapLabel } = params;
+    const {
+        baseLayers = [],
+        allowSelectingEmptyBasemap = false,
+        emptyBasemapLabel,
+        layerNotAvailableLabel
+    } = params;
     const selectOptions: SelectOption[] = baseLayers.map((item) => ({
         id: item.id,
         label: item.title,
         isAvailable: item.loadState !== "error",
-        tooltip:
-            item.loadState === "error" ? params.intl.formatMessage({ id: "layerNotAvailable" }) : ""
+        tooltip: item.loadState === "error" ? layerNotAvailableLabel : ""
     }));
 
     let selectedId = baseLayers.find((layer) => layer.visible)?.id;
