@@ -16,10 +16,10 @@ The mandatory properties of the `Search` component are `mapId` and `sources` (se
 ```
 
 If you want to change the typing delay, add the optional property `searchTypingDelay` (in ms).
-The default value is 100ms.
+The default value is 200ms.
 
 ```tsx
-<Search mapId={MAP_ID} sources={searchsources} searchTypingDelay={200} />
+<Search mapId={MAP_ID} sources={searchsources} searchTypingDelay={500} />
 ```
 
 If you want to limit the maximum number of search results that should be displayed per search source (group), you can
@@ -29,74 +29,6 @@ The default value is 5.
 ```tsx
 <Search mapId={MAP_ID} sources={searchsources} maxResultsPerGroup={10} />
 ```
-
-### Implementing a search source
-
-You have to provide the search sources that are used by the search component by implementing
-the function `search` for each datasource:
-
-````tsx
-import { Search, SearchSource, SearchResult } from "@open-pioneer/search";
-import { MAP_ID } from "./MapConfigProviderImpl";
-
-const searchsources: SearchSource[] = [
-    {
-        /**
-         * The label of this source.
-         *
-         * This will be displayed by the user interface when results from this search source are shown.
-         */
-        label: "My sample REST-Service",
-        /**
-         * Performs a search and return a list of search results.
-         *
-         * Implementations should return the results ordered by priority (best match first), if possible.
-         *
-         * The provided `AbortSignal` in `options.signal` is used to cancel outdated requests.
-         *
-         * NOTE: If your search source implements custom error handling (i.e. `try`/`catch`), it is good practice to forward
-         * abort errors without modification. This will enable the Search widget to hide "errors" due to
-         * cancellation.
-         *
-         * For example:
-         *
-         * ```js
-         * import { isAbortError } from "@open-pioneer/core";
-         *
-         * class CustomSearchSource {
-         *     async search(input, { signal }) {
-         *         try {
-         *             // If the search is cancelled by the UI, doRequest
-         *             // will throw an AbortError. It might throw other errors
-         *             // due to application errors, network problems etc.
-         *             const result = await doCustomSearch(input, signal);
-         *             // ... do something with result
-         *         } catch (e) {
-         *             if (isAbortError(e)) {
-         *                 throw e; // rethrow original error
-         *             }
-         *             // Possibly use custom error codes or error classes for better error messages
-         *             throw new Error("Custom search failed", { cause: e });
-         *         }
-         *     }
-         * }
-         * ```
-         */
-        search: (inputValue: string, options: SearchOptions): Promise<SearchResult[]> => {
-            // implement
-        }
-    }
-];
-
-return (
-    //...
-    <Search mapId={MAP_ID} sources={searchsources} />
-    //...
-);
-````
-
-The configured maximum number of `maxResultsPerGroup` is passed as `maxResults` inside the option parameter
-of the search function, so you are able to fetch no more results than necessary.
 
 ### Listening to events
 
@@ -110,10 +42,10 @@ import { Search, SearchSelectEvent } from "@open-pioneer/search";
 <Search
     mapId={MAP_ID}
     sources={datasources}
-    onSelect={function (event: SearchSelectEvent): void {
+    onSelect={(event: SearchSelectEvent) => {
         // do something
     }}
-    onClear={function (): void {
+    onClear={() => {
         // do something
     }}
 />;
@@ -145,6 +77,35 @@ To achieve a certain position in a parent node, the following snippet might be h
     <Search /* ... */ />
 </Box>
 ```
+
+### Implementing a search source
+
+You have to provide the search sources that are used by the search component by implementing
+the function `search` for each datasource:
+
+```tsx
+import { Search, SearchSource, SearchResult } from "@open-pioneer/search";
+import { MAP_ID } from "./MapConfigProviderImpl";
+
+class MySearchSource implements SearchSource {
+    // The label of this source, used as a title for this source's results.
+    label = "My sample REST-Service";
+
+    // Attempts to retrieve results for the given input string. For more details,
+    // see the API documentation of `SearchSource`.
+    async search(inputValue: string, options: SearchOptions): Promise<SearchResult[]> {
+        // implement
+    }
+}
+
+const searchsources: SearchSource[] = [new MySearchSource()];
+
+// In your JSX template:
+<Search mapId={MAP_ID} sources={searchsources} />;
+```
+
+The configured maximum number of `maxResultsPerGroup` is passed as `maxResults` inside the option parameter
+of the search function, so you are able to fetch no more results than necessary.
 
 ## License
 
