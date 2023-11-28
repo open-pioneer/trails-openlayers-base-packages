@@ -15,17 +15,17 @@ afterEach(() => {
     vi.restoreAllMocks();
 });
 
-it("except controller to return result with suggestions from one source", async () => {
+it("expect controller to return result with suggestions from one source", async () => {
     const expected = [
         {
             label: "Cities",
             source: CITY_SOURCE,
-            suggestions: [{ "id": 0, label: "Aachen" }]
+            results: [{ "id": 0, label: "Aachen" }]
         },
         {
             label: "Rivers",
             source: RIVER_SOURCE,
-            suggestions: []
+            results: []
         }
     ];
     const controller = setup([CITY_SOURCE, RIVER_SOURCE]);
@@ -33,17 +33,37 @@ it("except controller to return result with suggestions from one source", async 
     expect(searchResponse).toStrictEqual(expected);
 });
 
-it("except controller to return result with suggestions from multiple sources", async () => {
+it("expect controller to return no more than 'max' results", async () => {
+    const expectedResults = [
+        {
+            "id": 0,
+            "label": "Aachen"
+        },
+        {
+            "id": 1,
+            "label": "Langenfeld"
+        }
+    ];
+    const controller = setup([CITY_SOURCE]);
+    const searchResponse1 = await controller.search("a");
+    expect(searchResponse1[0]!.results).toEqual(expectedResults);
+
+    controller.maxResultsPerSource = 1;
+    const searchResponse2 = await controller.search("a");
+    expect(searchResponse2[0]!.results).toEqual([expectedResults[0]]);
+});
+
+it("expect controller to return result with suggestions from multiple sources", async () => {
     const expected = [
         {
             label: "Cities",
             source: CITY_SOURCE,
-            suggestions: [{ "id": 0, "label": "Aachen" }]
+            results: [{ "id": 0, "label": "Aachen" }]
         },
         {
             label: "Rivers",
             source: RIVER_SOURCE,
-            suggestions: [
+            results: [
                 {
                     "id": 0,
                     "label": "Maas"
@@ -62,7 +82,7 @@ it("expect controller to filter rejected queries and return only successfully re
         {
             label: "Cities",
             source: CITY_SOURCE,
-            suggestions: [{ "id": 0, "label": "Aachen" }]
+            results: [{ "id": 0, "label": "Aachen" }]
         }
     ];
     const controller = setup([CITY_SOURCE, new FakeRejectionSource()]);
@@ -92,7 +112,7 @@ it("expect controller to call AbortController when typing quickly", async () => 
         {
             label: "Cities",
             source: CITY_SOURCE,
-            suggestions: [{ "id": 0, "label": "Aachen" }]
+            results: [{ "id": 0, "label": "Aachen" }]
         }
     ];
     const controller = setup([CITY_SOURCE]);
@@ -107,9 +127,7 @@ it("expect controller to call AbortController when typing quickly", async () => 
 });
 
 function setup(sources: SearchSource[]) {
-    const controller = new SearchController({
-        sources,
-        searchTypingDelay: 10
-    });
+    const controller = new SearchController(sources);
+    controller.searchTypingDelay = 10;
     return controller;
 }

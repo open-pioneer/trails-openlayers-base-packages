@@ -50,7 +50,28 @@ export interface SearchSource {
      * }
      * ```
      */
-    search(inputValue: string, options: { signal: AbortSignal }): Promise<SearchResult[]>;
+    search(inputValue: string, options: SearchOptions): Promise<SearchResult[]>;
+}
+
+/** Options passed to a {@link SearchSource} when triggering a search. */
+export interface SearchOptions {
+    /**
+     * The maximum number of search results requested by the search widget.
+     * The widget will not display additional results, should the source provide them.
+     *
+     * This property allows the source to fetch no more results than necessary.
+     */
+    maxResults: number;
+
+    /**
+     * The signal can be used to detect cancellation.
+     * The search widget will automatically cancel obsolete requests
+     * when new search operations are started.
+     *
+     * You can pass this signal to builtin functions like `fetch` that automatically
+     * support cancellation.
+     */
+    signal: AbortSignal;
 }
 
 /**

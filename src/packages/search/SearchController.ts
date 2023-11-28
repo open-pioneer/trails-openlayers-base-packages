@@ -5,19 +5,17 @@ import { SearchSource, SearchResult } from "./api";
 
 const LOG = createLogger("search:SearchController");
 
-interface ControllerConfig {
-    searchTypingDelay: number;
-    sources: SearchSource[];
-}
-
 /**
  * Group of suggestions returned from one source.
  */
 export interface SuggestionGroup {
     label: string;
     source: SearchSource;
-    suggestions: SearchResult[];
+    results: SearchResult[];
 }
+
+const DEFAULT_SEARCH_TYPING_DELAY = 200;
+const DEFAULT_MAX_RESULTS_PER_SOURCE = 5;
 
 export class SearchController {
     /**
@@ -26,18 +24,22 @@ export class SearchController {
     #sources: SearchSource[] = [];
 
     /**
+     * Limits the number of results per source.
+     */
+    #maxResultsPerSource: number = DEFAULT_MAX_RESULTS_PER_SOURCE;
+
+    /**
      * The timeout in millis.
      */
-    #searchTypingDelay: number;
+    #searchTypingDelay: number = DEFAULT_SEARCH_TYPING_DELAY;
 
     /**
      * Cancel or abort a previous request.
      */
     #abortController: AbortController | undefined;
 
-    constructor(options: ControllerConfig) {
-        this.#sources = options.sources;
-        this.#searchTypingDelay = options.searchTypingDelay;
+    constructor(sources: SearchSource[]) {
+        this.#sources = sources;
     }
 
     destroy() {
@@ -54,7 +56,7 @@ export class SearchController {
 
         const abort = (this.#abortController = new AbortController());
         try {
-            await waitForTimeOut(abort.signal, this.searchTypingDelay);
+            await waitForTimeOut(abort.signal, this.#searchTypingDelay);
             if (abort.signal.aborted) {
                 LOG.debug(`search canceled with ${searchTerm}`);
                 throwAbortError();
@@ -77,8 +79,12 @@ export class SearchController {
     ): Promise<SuggestionGroup | undefined> {
         const label = source.label;
         try {
-            const results = await source.search(searchTerm, { signal });
-            return { label: label, source, suggestions: results };
+            const maxResults = this.#maxResultsPerSource;
+            let results = await source.search(searchTerm, { maxResults, signal });
+            if (results.length > maxResults) {
+                results = results.slice(0, maxResults);
+            }
+            return { label, source, results };
         } catch (e) {
             if (!isAbortError(e)) {
                 LOG.error(`search for source ${label} failed`, e);
@@ -87,9 +93,22 @@ export class SearchController {
         }
     }
 
-    get searchTypingDelay() {
+    get searchTypingDelay(): number {
         return this.#searchTypingDelay;
     }
+
+    set searchTypingDelay(value: number | undefined) {
+        this.#searchTypingDelay = value ?? DEFAULT_SEARCH_TYPING_DELAY;
+    }
+
+    get maxResultsPerSource(): number {
+        return this.#maxResultsPerSource;
+    }
+
+    set maxResultsPerSource(value: number | undefined) {
+        this.#maxResultsPerSource = value ?? DEFAULT_MAX_RESULTS_PER_SOURCE;
+    }
+
     get sources() {
         return this.#sources;
     }

@@ -34,7 +34,6 @@ import { SearchSource, SearchResult } from "./api";
 import { PackageIntl } from "@open-pioneer/runtime";
 
 const LOG = createLogger("search:Search");
-const DEFAULT_TYPING_DELAY = 100;
 
 export interface SearchOption {
     /** Unique value for this option. */
@@ -90,9 +89,10 @@ export interface SearchProps extends CommonComponentProps {
     searchTypingDelay?: number;
 
     /**
-     * TODO
+     * The maximum number of results shown per group.
+     * Default value: 5.
      */
-    maxResultsPerSource?: number;
+    maxResultsPerGroup?: number;
 
     /**
      * This event handler will be called when the user selects a search result.
@@ -109,11 +109,11 @@ export interface SearchProps extends CommonComponentProps {
  * A component that allows the user to search a given set of {@link SearchSource | SearchSources}.
  */
 export const Search: FC<SearchProps> = (props) => {
-    const { mapId, sources, searchTypingDelay = DEFAULT_TYPING_DELAY, onSelect, onClear } = props;
+    const { mapId, sources, searchTypingDelay, maxResultsPerGroup, onSelect, onClear } = props;
     const { containerProps } = useCommonComponentProps("search", props);
     const { map } = useMapModel(mapId);
     const intl = useIntl();
-    const controller = useController(sources, searchTypingDelay, map);
+    const controller = useController(sources, searchTypingDelay, maxResultsPerGroup, map);
     const { input, search, selectedOption, onInputChanged, onResultConfirmed } =
         useSearchState(controller);
 
@@ -304,7 +304,8 @@ function useChakraStyles() {
  */
 function useController(
     sources: SearchSource[],
-    searchTypingDelay: number,
+    searchTypingDelay: number | undefined,
+    maxResultsPerGroup: number | undefined,
     map: MapModel | undefined
 ) {
     const [controller, setController] = useState<SearchController | undefined>(undefined);
@@ -312,14 +313,20 @@ function useController(
         if (!map) {
             return;
         }
-        const controller = new SearchController({ sources, searchTypingDelay });
+        const controller = new SearchController(sources);
         setController(controller);
         return () => {
             controller.destroy();
             setController(undefined);
         };
-    }, [map, sources, searchTypingDelay]);
+    }, [map, sources]);
 
+    useEffect(() => {
+        controller && (controller.searchTypingDelay = searchTypingDelay);
+    }, [controller, searchTypingDelay]);
+    useEffect(() => {
+        controller && (controller.maxResultsPerSource = maxResultsPerGroup);
+    });
     return controller;
 }
 
@@ -458,7 +465,7 @@ function mapSuggestions(suggestions: SuggestionGroup[]): SearchGroupOption[] {
     const options = suggestions.map(
         (group, groupIndex): SearchGroupOption => ({
             label: group.label,
-            options: group.suggestions.map((suggestion): SearchOption => {
+            options: group.results.map((suggestion): SearchOption => {
                 return {
                     value: `${groupIndex}-${suggestion.id}`,
                     label: suggestion.label,
