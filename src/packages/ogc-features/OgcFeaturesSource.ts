@@ -1,11 +1,9 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { createLogger, isAbortError } from "@open-pioneer/core";
-import { SearchSource, SearchResult } from "./../api";
+import { isAbortError } from "@open-pioneer/core";
+import { SearchSource, SearchResult } from "@open-pioneer/search";
 
-const LOG = createLogger("search:SearchSource OGC API Features");
-
-export interface OgcFeatureSourceOptions {
+export interface OgcFeatureSearchSourceOptions {
     /**
      * The base-URL right to the "/collections"-part
      */
@@ -38,11 +36,11 @@ export interface OgcFeatureSourceOptions {
     processUrlFunction?: unknown;
 }
 
-export class OgcFeaturesSource implements SearchSource {
+export class OgcFeaturesSearchSource implements SearchSource {
     label: string;
-    options: OgcFeatureSourceOptions;
+    options: OgcFeatureSearchSourceOptions;
 
-    constructor(label: string, options: OgcFeatureSourceOptions) {
+    constructor(label: string, options: OgcFeatureSearchSourceOptions) {
         this.label = label;
         this.options = options;
     }
@@ -63,10 +61,11 @@ export class OgcFeaturesSource implements SearchSource {
                 ]
             })) satisfies SearchResult[];
         } catch (error) {
-            if (!isAbortError(error)) {
-                LOG.error(`Search failed`, error);
+            if (isAbortError(error)) {
+                throw error;
             }
-            return [];
+
+            throw new Error("Custom search failed", { cause: error });
         }
     }
 
@@ -77,7 +76,7 @@ export class OgcFeaturesSource implements SearchSource {
     }
 }
 
-interface OgcFeaturesResponse {
+interface OgcFeaturesSearchResponse {
     features: [
         {
             properties: {};
@@ -93,7 +92,7 @@ interface OgcFeaturesResponse {
 const request = async (
     url: string,
     signal?: AbortSignal | undefined
-): Promise<OgcFeaturesResponse> => {
+): Promise<OgcFeaturesSearchResponse> => {
     try {
         const response = await fetch(url, { signal });
         if (!response.ok) {

@@ -17,6 +17,7 @@
         "@open-pioneer/scale-bar": "workspace:^",
         "@open-pioneer/scale-viewer": "workspace:^",
         "@open-pioneer/map-navigation": "workspace:^",
+        "@open-pioneer/ogc-features": "workspace:^",
         "@open-pioneer/overview-map": "workspace:^",
         "@open-pioneer/react-utils": "workspace:^",
         "@open-pioneer/geolocation": "workspace:^",

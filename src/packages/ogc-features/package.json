@@ -13,6 +13,7 @@
     "devDependencies": {
         "@open-pioneer/test-utils": "^1.0.1",
         "@open-pioneer/map-test-utils": "workspace:^",
+        "@open-pioneer/search": "workspace:^",
         "openlayers-base-packages": "workspace:*"
     },
     "publishConfig": {

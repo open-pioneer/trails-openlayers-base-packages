@@ -8,7 +8,7 @@ import { InitialExtent, ZoomIn, ZoomOut } from "@open-pioneer/map-navigation";
 import { Measurement } from "@open-pioneer/measurement";
 import { Notifier } from "@open-pioneer/notifier";
 import { NominatimGeocoder } from "./search-source-examples/testSources";
-import { OgcFeaturesSource, Search } from "@open-pioneer/search";
+import { Search } from "@open-pioneer/search";
 import { OverviewMap } from "@open-pioneer/overview-map";
 import { SectionHeading, TitledSection, ToolButton } from "@open-pioneer/react-utils";
 import { ScaleBar } from "@open-pioneer/scale-bar";
@@ -20,25 +20,26 @@ import { useIntl } from "open-pioneer:react-hooks";
 import { useId, useMemo, useState } from "react";
 import { PiListLight, PiMapTrifold, PiRulerLight } from "react-icons/pi";
 import { MAP_ID } from "./MapConfigProviderImpl";
+import { OgcFeaturesSearchSource } from "@open-pioneer/ogc-features";
 
 const sources = [
-    new OgcFeaturesSource("Bergbauberechtigungen", {
+    new OgcFeaturesSearchSource("Bergbauberechtigungen", {
         baseUrl: "https://ogc-api.nrw.de/inspire-am-bergbauberechtigungen/v1",
         collectionId: "managementrestrictionorregulationzone",
         searchProperty: "thematicId",
         labelProperty: "name"
     }),
-    new OgcFeaturesSource("Verwaltungseinheit", {
+    new OgcFeaturesSearchSource("Verwaltungseinheit", {
         baseUrl: "https://ogc-api.nrw.de/lika/v1",
         collectionId: "verwaltungseinheit",
         searchProperty: "name"
     }),
-    new OgcFeaturesSource("Feldblöcke", {
+    new OgcFeaturesSearchSource("Feldblöcke", {
         baseUrl: "https://ogc-api.nrw.de/inspire-lc-fb/v1",
         collectionId: "landcoverunit",
         searchProperty: "flik"
     }),
-    new OgcFeaturesSource("Weinberge", {
+    new OgcFeaturesSearchSource("Weinberge", {
         baseUrl: "https://demo.ldproxy.net/vineyards",
         collectionId: "vineyards",
         searchProperty: "name"
