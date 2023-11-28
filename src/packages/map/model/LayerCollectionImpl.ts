@@ -158,6 +158,7 @@ export class LayerCollectionImpl
                     } else {
                         this.#updateBaseLayer(undefined); // empty background as fallback
                     }
+                    this.emit("changed");
                 }
             });
         } else {
