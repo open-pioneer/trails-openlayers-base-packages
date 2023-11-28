@@ -3,36 +3,15 @@
 import { Box, Select } from "@open-pioneer/chakra-integration";
 import { Layer, MapModel, useMapModel } from "@open-pioneer/map";
 import { useIntl } from "open-pioneer:react-hooks";
-import { FC, useCallback, useMemo, useRef, useSyncExternalStore } from "react";
+import { FC, useCallback, useRef, useSyncExternalStore } from "react";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
+import { PackageIntl } from "@open-pioneer/runtime";
 
 /*
     Exported for tests. Feels a bit hacky but should be fine for now.
     Originally was using the empty string, but that doesn't work well with happy-dom.
 */
 export const NO_BASEMAP_ID = "___NO_BASEMAP___";
-
-/**
- * These are special properties for the `Select`.
- */
-interface SelectOption {
-    /**
-     * The id of the basemap for the select option.
-     */
-    id: string;
-    /**
-     * The label of the basemap for the select option.
-     */
-    label: string;
-    /**
-     * Is the layer available and can be selected?
-     */
-    isAvailable: boolean;
-    /**
-     * Tooltip to show when hovering the option. Mainly used for indicating not available layers.
-     */
-    tooltip: string;
-}
 
 /**
  * These are special properties for the BasemapSwitcher.
@@ -52,7 +31,7 @@ export interface BasemapSwitcherProps extends CommonComponentProps {
      * Specifies whether an option to deactivate all basemap layers is available in the BasemapSwitcher.
      * Defaults to `false`.
      */
-    allowSelectingEmptyBasemap?: boolean;
+    allowSelectingEmptyBasemap?: boolean | undefined;
 
     /**
      * Optional aria-labelledby property.
@@ -74,27 +53,30 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
     const intl = useIntl();
     const {
         mapId,
-        allowSelectingEmptyBasemap,
+        allowSelectingEmptyBasemap = false,
         "aria-label": ariaLabel,
         "aria-labelledby": ariaLabelledBy
     } = props;
     const { containerProps } = useCommonComponentProps("basemap-switcher", props);
     const emptyBasemapLabel = intl.formatMessage({ id: "emptyBasemapLabel" });
-    const layerNotAvailableLabel = intl.formatMessage({ id: "layerNotAvailable" });
 
     const { map } = useMapModel(mapId);
     const baseLayers = useBaseLayers(map);
-    const { selectOptions, selectedId } = useMemo(() => {
-        return createOptions({
-            baseLayers,
-            allowSelectingEmptyBasemap,
-            emptyBasemapLabel,
-            layerNotAvailableLabel
-        });
-    }, [baseLayers, allowSelectingEmptyBasemap, emptyBasemapLabel]);
     const activateLayer = (layerId: string) => {
         map?.layers.activateBaseLayer(layerId === NO_BASEMAP_ID ? undefined : layerId);
     };
+
+    const options = baseLayers.map((layer) => (
+        <BasemapSelectOption key={layer.id} layer={layer} intl={intl} />
+    ));
+
+    let selectedId = baseLayers.find((layer) => layer.visible && layer.loadState !== "error")?.id;
+    if (allowSelectingEmptyBasemap || selectedId == null) {
+        options.push(<EmptyBasemapSelectOption key={NO_BASEMAP_ID} label={emptyBasemapLabel} />);
+    }
+    if (selectedId == null) {
+        selectedId = NO_BASEMAP_ID;
+    }
 
     return (
         <Box {...containerProps}>
@@ -106,16 +88,7 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
                     value={selectedId}
                     onChange={(e) => activateLayer(e.target.value)}
                 >
-                    {selectOptions.map((opt) => (
-                        <option
-                            key={opt.id}
-                            value={opt.id}
-                            disabled={!opt.isAvailable}
-                            title={opt.tooltip}
-                        >
-                            {opt.label}
-                        </option>
-                    ))}
+                    {options}
                 </Select>
             ) : (
                 ""
@@ -155,40 +128,52 @@ function useBaseLayers(mapModel: MapModel | undefined): Layer[] {
     return useSyncExternalStore(subscribe, getSnapshot);
 }
 
-function createOptions(params: {
-    baseLayers: Layer[];
-    allowSelectingEmptyBasemap: boolean | undefined;
-    emptyBasemapLabel: string;
-    layerNotAvailableLabel: string;
-}): { selectOptions: SelectOption[]; selectedId: string } {
-    const {
-        baseLayers = [],
-        allowSelectingEmptyBasemap = false,
-        emptyBasemapLabel,
-        layerNotAvailableLabel
-    } = params;
-    const selectOptions: SelectOption[] = baseLayers.map((item) => ({
-        id: item.id,
-        label: item.title,
-        isAvailable: item.loadState !== "error",
-        tooltip: item.loadState === "error" ? layerNotAvailableLabel : ""
-    }));
+function BasemapSelectOption(props: { layer: Layer; intl: PackageIntl }): JSX.Element {
+    const { layer, intl } = props;
+    const layerId = layer.id;
+    const label = useTitle(layer);
+    const isAvailable = useLoadState(layer) !== "error";
+    const tooltip = !isAvailable ? intl.formatMessage({ id: "layerNotAvailable" }) : "";
 
-    let selectedId = baseLayers.find((layer) => layer.visible)?.id;
-    if (allowSelectingEmptyBasemap || selectedId == null) {
-        selectOptions.push(getNonBaseMapConfig(emptyBasemapLabel));
-    }
-    if (selectedId == null) {
-        selectedId = NO_BASEMAP_ID;
-    }
-    return { selectOptions, selectedId };
+    return (
+        <option value={layerId} disabled={!isAvailable} title={tooltip}>
+            {label}
+        </option>
+    );
 }
 
-function getNonBaseMapConfig(label: string) {
-    return {
-        id: NO_BASEMAP_ID,
-        label,
-        isAvailable: true,
-        tooltip: ""
-    };
+function EmptyBasemapSelectOption(props: { label: string }): JSX.Element {
+    const { label } = props;
+
+    return (
+        <option value={NO_BASEMAP_ID} disabled={false} title={""}>
+            {label}
+        </option>
+    );
+}
+
+function useTitle(layer: Layer): string {
+    const getSnapshot = useCallback(() => layer.title, [layer]);
+    const subscribe = useCallback(
+        (cb: () => void) => {
+            const resource = layer.on("changed:title", cb);
+            return () => resource.destroy();
+        },
+        [layer]
+    );
+
+    return useSyncExternalStore(subscribe, getSnapshot);
+}
+
+function useLoadState(layer: Layer): string {
+    const getSnapshot = useCallback(() => layer.loadState, [layer]);
+    const subscribe = useCallback(
+        (cb: () => void) => {
+            const resource = layer.on("changed:loadState", cb);
+            return () => resource.destroy();
+        },
+        [layer]
+    );
+
+    return useSyncExternalStore(subscribe, getSnapshot);
 }
