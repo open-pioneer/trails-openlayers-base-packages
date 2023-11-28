@@ -144,6 +144,22 @@ export class LayerCollectionImpl
             } else {
                 model.__setVisible(false);
             }
+
+            model?.on("changed:loadState", () => {
+                // if active baselayer is not available, switch to alternative basemap
+                if (this.#activeBaseLayer === model && model.loadState === "error") {
+                    const baseLayers = this.getBaseLayers();
+                    const fallbackBaseLayers = baseLayers.filter(
+                        (layer) => layer.loadState !== "error"
+                    );
+
+                    if (fallbackBaseLayers.length > 0) {
+                        this.#updateBaseLayer(fallbackBaseLayers.at(0));
+                    } else {
+                        this.#updateBaseLayer(undefined); // empty background as fallback
+                    }
+                }
+            });
         } else {
             olLayer.setZIndex(this.#nextIndex++);
             model.__setVisible(model.visible);
