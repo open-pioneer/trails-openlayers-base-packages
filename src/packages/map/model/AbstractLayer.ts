@@ -41,7 +41,7 @@ export abstract class AbstractLayer<AdditionalEvents = {}>
             (state) => {
                 this.#loadState = state;
                 // hide layer when it becomes unavailable
-                // avoid that the layer is displayed again, but shown as unavailable when the map 
+                // avoid that the layer is displayed again, but shown as unavailable when the map
                 // service is available again after initial health check
                 if (state === "error") {
                     this.setVisible(false);
