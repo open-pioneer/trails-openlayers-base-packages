@@ -21,6 +21,34 @@ export interface SearchSource {
      * Implementations should return the results ordered by priority (best match first), if possible.
      *
      * The provided `AbortSignal` in `options.signal` is used to cancel outdated requests.
+     *
+     * NOTE: If your search source implements custom error handling (i.e. `try`/`catch`), it is good practice to forward
+     * abort errors without modification. This will enable the Search widget to hide "errors" due to
+     * cancellation.
+     *
+     * For example:
+     *
+     * ```js
+     * import { isAbortError } from "@open-pioneer/core";
+     *
+     * class CustomSearchSource {
+     *     async search(input, { signal }) {
+     *         try {
+     *             // If the search is cancelled by the UI, doRequest
+     *             // will throw an AbortError. It might throw other errors
+     *             // due to application errors, network problems etc.
+     *             const result = await doCustomSearch(input, signal);
+     *             // ... do something with result
+     *         } catch (e) {
+     *             if (isAbortError(e)) {
+     *                 throw e; // rethrow original error
+     *             }
+     *             // Possibly use custom error codes or error classes for better error messages
+     *             throw new Error("Custom search failed", { cause: e });
+     *         }
+     *     }
+     * }
+     * ```
      */
     search(inputValue: string, options: { signal: AbortSignal }): Promise<SearchResult[]>;
 }
