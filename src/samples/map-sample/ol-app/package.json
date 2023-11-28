@@ -10,6 +10,7 @@
         "@open-pioneer/coordinate-viewer": "workspace:^",
         "@open-pioneer/toc": "workspace:^",
         "@open-pioneer/measurement": "workspace:^",
+        "@open-pioneer/search": "workspace:^",
         "@open-pioneer/experimental-layout-sidebar": "workspace:^",
         "@open-pioneer/map": "workspace:^",
         "@open-pioneer/runtime": "^1.1.0",
