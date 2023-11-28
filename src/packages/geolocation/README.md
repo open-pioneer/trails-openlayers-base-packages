@@ -10,12 +10,12 @@ To add the component to your app, insert the following snippet with a reference 
 <Geolocation mapId="map_id" />
 ```
 
-If the geolocation was successful, the map is zoomed and centered to the user's position.
+If the localization was successful, the map is centered on the user's position and zoomed to the accuracy of the localization.
+If the position is updated, the map is centered again.
 
-> Restriction: the map will only zoom once to the position directly after the geolocation was successful.
-> After panning, or zoom in or zoom out of the map, the map isn't zoomed and centered after a changed user position.
+Once a user zooms or moves the map, the map is no longer centered on new positions.
 
-To use a custom maximal zoom level add the optional property `maxZoom`. It will be zoomed to the extent of the accuracy feature but at most to the defined `maxZoom`.
+To adjust the maximum zoom level, add the optional property `maxZoom`.
 
 ```jsx
 <Geolocation mapId="map_id" maxZoom={20} />
@@ -83,7 +83,7 @@ To use custom position options from the [Geolocation API](https://www.w3.org/TR/
 
 ### Notification
 
-Add the `@open-pioneer/notifier` to your app to receive user notification. Otherwise, notifications will not be shown.
+To show user notifications, add the `@open-pioneer/notifier` to your app.
 
 ## License
 
