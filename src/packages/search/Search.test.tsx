@@ -59,11 +59,12 @@ it("should successfully call select handler after clicking a suggestion", async 
     const citySource = sources[0]!;
 
     const { searchInput } = await waitForInput();
-    await user.type(searchInput, "Dortmund");
+    await user.type(searchInput, "Dort");
 
     const { suggestion } = await waitForSuggestion();
     await userEvent.click(suggestion);
 
+    expect(searchInput).toHaveValue("Dortmund");
     expect(selectHandler).toHaveBeenCalledWith({
         "source": citySource,
         "result": {
