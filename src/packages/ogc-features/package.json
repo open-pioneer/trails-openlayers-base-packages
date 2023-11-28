@@ -8,7 +8,8 @@
     },
     "peerDependencies": {
         "@open-pioneer/core": "^1.1.0",
-        "ol": "^8.2.0"
+        "ol": "^8.2.0",
+        "uuid": "^9.0.0"
     },
     "devDependencies": {
         "@open-pioneer/test-utils": "^1.0.1",

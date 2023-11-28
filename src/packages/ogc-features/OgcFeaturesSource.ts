@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import { isAbortError } from "@open-pioneer/core";
 import { SearchSource, SearchResult } from "@open-pioneer/search";
+import { v4 as uuid4v } from "uuid";
 
 export interface OgcFeatureSearchSourceOptions {
     /**
@@ -51,9 +52,9 @@ export class OgcFeaturesSearchSource implements SearchSource {
 
         try {
             const responses = await request(url, signal);
-            return responses.features.map((response, idx) => ({
+            return responses.features.map((response) => ({
                 ...response,
-                id: idx,
+                id: uuid4v(),
                 label: response.properties[
                     this.options.labelProperty
                         ? (this.options.labelProperty as keyof typeof response.properties)

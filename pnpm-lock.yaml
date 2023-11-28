@@ -543,12 +543,15 @@ importers:
       ol:
         specifier: ^8.2.0
         version: 8.2.0
+      uuid:
+        specifier: ^9.0.0
+        version: 9.0.0
     devDependencies:
       '@open-pioneer/map-test-utils':
         specifier: workspace:^
         version: link:../map-test-utils
       '@open-pioneer/search':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../search
       '@open-pioneer/test-utils':
         specifier: ^1.0.1
