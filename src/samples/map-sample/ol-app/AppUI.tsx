@@ -27,7 +27,10 @@ const sources = [
         baseUrl: "https://ogc-api.nrw.de/inspire-am-bergbauberechtigungen/v1",
         collectionId: "managementrestrictionorregulationzone",
         searchProperty: "thematicId",
-        labelProperty: "name"
+        labelProperty: "name",
+        renderLabelFunction(response) {
+            return response?.properties?.name + " (" + response?.id + ")";
+        }
     }),
     new OgcFeaturesSearchSource("Verwaltungseinheit", {
         baseUrl: "https://ogc-api.nrw.de/lika/v1",

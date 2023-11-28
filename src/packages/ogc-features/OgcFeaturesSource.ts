@@ -29,12 +29,13 @@ export interface OgcFeatureSearchSourceOptions {
      * Render function to create custom a label. If `renderLabelFunction` is configured,
      * `searchProperty` and `labelProperty` will be used as a fallback
      */
-    renderLabelFunction?: unknown;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    renderLabelFunction?: (props: any) => void;
 
     /**
      * Process function to modify the original URL
      */
-    processUrlFunction?: unknown;
+    processUrlFunction?: () => void;
 }
 
 export class OgcFeaturesSearchSource implements SearchSource {
@@ -55,11 +56,13 @@ export class OgcFeaturesSearchSource implements SearchSource {
             return responses.features.map((response) => ({
                 ...response,
                 id: uuid4v(),
-                label: response.properties[
-                    this.options.labelProperty
-                        ? (this.options.labelProperty as keyof typeof response.properties)
-                        : (this.options.searchProperty as keyof typeof response.properties)
-                ]
+                label:
+                    this.options.renderLabelFunction?.(response) ||
+                    response.properties[
+                        this.options.labelProperty
+                            ? (this.options.labelProperty as keyof typeof response.properties)
+                            : (this.options.searchProperty as keyof typeof response.properties)
+                    ]
             })) satisfies SearchResult[];
         } catch (error) {
             if (isAbortError(error)) {
@@ -86,7 +89,7 @@ interface OgcFeaturesSearchResponse {
     links?: object[];
     numberMatched?: number;
     numberReturned?: number;
-    timestamp?: string;
+    timeStamp?: string;
     type?: string;
 }
 
