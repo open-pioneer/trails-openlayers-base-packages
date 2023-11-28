@@ -17,7 +17,7 @@ import {
     Props as SelectProps
 } from "chakra-react-select";
 import { useIntl } from "open-pioneer:react-hooks";
-import { FC, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { FC, useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
 import {
     ClearIndicator,
     HighlightOption,
@@ -85,7 +85,7 @@ export interface SearchProps extends CommonComponentProps {
 
     /**
      * Typing delay (in milliseconds) before the async search query starts after the user types in the search term.
-     * Default value: 100
+     * Default value: 200.
      */
     searchTypingDelay?: number;
 
@@ -114,7 +114,12 @@ export const Search: FC<SearchProps> = (props) => {
     const { map } = useMapModel(mapId);
     const intl = useIntl();
     const controller = useController(sources, searchTypingDelay, map);
-    const { input, results, onInputChanged, onResultConfirmed } = useSearchState(controller);
+    const { input, search, selectedOption, onInputChanged, onResultConfirmed } =
+        useSearchState(controller);
+
+    const chakraStyles = useChakraStyles();
+    const ariaMessages = useAriaMessages(intl);
+    const components = useCustomComponents();
 
     const handleInputChange = useEvent((newValue: string, actionMeta: InputActionMeta) => {
         // Only update the input if the user actually typed something.
@@ -124,41 +129,36 @@ export const Search: FC<SearchProps> = (props) => {
         }
     });
 
-    const chakraStyles = useChakraStyles();
-    const ariaMessages = useAriaMessages(intl);
-    const components = useCustomComponents();
+    const handleSelectChange = useEvent(
+        (value: SingleValue<SearchOption>, actionMeta: ActionMeta<SearchOption>) => {
+            switch (actionMeta.action) {
+                case "select-option":
+                    if (value) {
+                        // Updates the input field with the option label
+                        onResultConfirmed(value);
+                        onSelect?.({
+                            source: value.source,
+                            result: value.result
+                        });
+                    }
+                    break;
+                case "clear":
+                    // Updates the input field
+                    onInputChanged("");
 
-    const handleSelectChange = (
-        value: SingleValue<SearchOption>,
-        actionMeta: ActionMeta<SearchOption>
-    ) => {
-        switch (actionMeta.action) {
-            case "select-option":
-                if (value) {
-                    // Updates the input field with the option label
-                    onResultConfirmed(value);
-                    onSelect?.({
-                        source: value.source,
-                        result: value.result
-                    });
-                }
-                break;
-            case "clear":
-                // Updates the input field
-                onInputChanged("");
-
-                // the next two lines are a workaround for the open bug in react-select regarding the
-                // cursor not being shown after clearing, although the component is focussed:
-                // https://github.com/JedWatson/react-select/issues/3871
-                selectRef.current?.blur();
-                selectRef.current?.focus();
-                onClear?.();
-                break;
-            default:
-                LOG.debug(`Unhandled action type '${actionMeta.action}'.`);
-                break;
+                    // the next two lines are a workaround for the open bug in react-select regarding the
+                    // cursor not being shown after clearing, although the component is focussed:
+                    // https://github.com/JedWatson/react-select/issues/3871
+                    selectRef.current?.blur();
+                    selectRef.current?.focus();
+                    onClear?.();
+                    break;
+                default:
+                    LOG.debug(`Unhandled action type '${actionMeta.action}'.`);
+                    break;
+            }
         }
-    };
+    );
 
     const selectRef = useRef<SelectInstance<SearchOption, false, SearchGroupOption>>(null);
     return (
@@ -178,12 +178,13 @@ export const Search: FC<SearchProps> = (props) => {
                 isClearable={true}
                 placeholder={intl.formatMessage({ id: "searchPlaceholder" })}
                 closeMenuOnSelect={true}
-                isLoading={results.kind === "loading"}
-                options={results.kind === "ready" ? results.results : undefined}
+                isLoading={search.kind === "loading"}
+                options={search.kind === "ready" ? search.results : undefined}
                 filterOption={() => true} // always show all options (don't filter based on input text)
                 tabSelectsValue={false}
                 components={components}
                 onChange={handleSelectChange}
+                value={selectedOption}
             />
         </Box>
     );
@@ -333,10 +334,6 @@ type SearchResultsLoading = {
 
 type SearchResultsState = SearchResultsReady | SearchResultsLoading;
 
-interface InputState {
-    query: string;
-}
-
 /**
  * Keeps track of the current input text, active searches and their results.
  *
@@ -344,27 +341,77 @@ interface InputState {
  * in a future revision.
  */
 function useSearchState(controller: SearchController | undefined) {
-    const [resultsState, setResultsState] = useState<SearchResultsState>(() => {
-        return { kind: "ready", results: [] };
-    });
-    const [inputState, setInputState] = useState<InputState>(() => {
-        return { query: "" };
-    });
+    interface FullSearchState {
+        query: string;
+        selectedOption: SearchOption | null;
+        search: SearchResultsState;
+    }
 
+    type Action =
+        | { kind: "input"; query: string }
+        | { kind: "select-option"; option: SearchOption }
+        | { kind: "load-results" }
+        | { kind: "accept-results"; results: SearchGroupOption[] };
+
+    const [state, dispatch] = useReducer(
+        (current: FullSearchState, action: Action): FullSearchState => {
+            switch (action.kind) {
+                case "input":
+                    return {
+                        ...current,
+                        query: action.query,
+                        selectedOption: null
+                    };
+                case "select-option":
+                    return {
+                        ...current,
+                        selectedOption: action.option,
+                        query: action.option.label
+                    };
+                case "load-results":
+                    return {
+                        ...current,
+                        search: {
+                            kind: "loading"
+                        }
+                    };
+                case "accept-results":
+                    return {
+                        ...current,
+                        search: {
+                            kind: "ready",
+                            results: action.results
+                        }
+                    };
+            }
+        },
+        undefined,
+        (): FullSearchState => ({
+            query: "",
+            selectedOption: null,
+            search: {
+                kind: "ready",
+                results: []
+            }
+        })
+    );
+
+    // Stores the promise for the current search.
+    // Any results from outdated searches are ignored.
     const currentSearch = useRef<Promise<unknown>>();
     const startSearch = useEvent((query: string) => {
-        if (!controller || !query) {
+        if (!controller) {
             currentSearch.current = undefined;
-            setResultsState({ kind: "ready", results: [] });
+            dispatch({ kind: "accept-results", results: [] });
             return;
         }
 
         LOG.isDebug() && LOG.debug(`Starting new search for query ${JSON.stringify(query)}.`);
-        setResultsState({ kind: "loading" });
+        dispatch({ kind: "load-results" });
         const promise = (currentSearch.current = search(controller, query).then((results) => {
             // Check if this job is still current
             if (currentSearch.current === promise) {
-                setResultsState({ kind: "ready", results });
+                dispatch({ kind: "accept-results", results });
             }
         }));
     });
@@ -372,22 +419,23 @@ function useSearchState(controller: SearchController | undefined) {
     // Called when the user confirms a search result
     const onResultConfirmed = useCallback((option: SearchOption) => {
         // Do not start a new search when the user confirms a result
-        setInputState({ query: option.label });
+        dispatch({ kind: "select-option", option });
     }, []);
 
     // Called when a user types into the input field
     const onInputChanged = useCallback(
         (newValue: string) => {
             // Trigger a new search if the user changes the query by typing
-            setInputState({ query: newValue });
+            dispatch({ kind: "input", query: newValue });
             startSearch(newValue);
         },
         [startSearch]
     );
 
     return {
-        input: inputState.query,
-        results: resultsState,
+        input: state.query,
+        search: state.search,
+        selectedOption: state.selectedOption,
         onResultConfirmed,
         onInputChanged
     };

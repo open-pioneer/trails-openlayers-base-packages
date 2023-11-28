@@ -41,12 +41,17 @@ export class SearchController {
     }
 
     destroy() {
-        this.#abortController?.abort("canceled");
+        this.#abortController?.abort();
         this.#abortController = undefined;
     }
 
     async search(searchTerm: string): Promise<SuggestionGroup[]> {
-        this.#abortController?.abort("canceled");
+        this.#abortController?.abort();
+        this.#abortController = undefined;
+        if (!searchTerm) {
+            return [];
+        }
+
         const abort = (this.#abortController = new AbortController());
         try {
             await waitForTimeOut(abort.signal, this.searchTypingDelay);

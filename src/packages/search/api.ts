@@ -32,6 +32,9 @@ export interface SearchResult {
     /**
      * Identifier for the result object.
      * Values used here should be unique within the context of the search source that returns them.
+     *
+     * If your source cannot provide a useful id on its own, another strategy to generate unique ids is to
+     * generate a [UUID](https://www.npmjs.com/package/uuid#uuidv4options-buffer-offset) instead.
      */
     id: number | string;
 
