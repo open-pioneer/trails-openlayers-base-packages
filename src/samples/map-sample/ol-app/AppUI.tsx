@@ -25,23 +25,23 @@ const sources = [
     new OgcFeaturesSource("Bergbauberechtigungen", {
         baseUrl: "https://ogc-api.nrw.de/inspire-am-bergbauberechtigungen/v1",
         collectionId: "managementrestrictionorregulationzone",
-        searchParameter: "thematicId",
-        resultsParameter: "name"
+        searchProperty: "thematicId",
+        labelProperty: "name"
     }),
     new OgcFeaturesSource("Verwaltungseinheit", {
         baseUrl: "https://ogc-api.nrw.de/lika/v1",
         collectionId: "verwaltungseinheit",
-        searchParameter: "name"
+        searchProperty: "name"
     }),
     new OgcFeaturesSource("Feldblöcke", {
         baseUrl: "https://ogc-api.nrw.de/inspire-lc-fb/v1",
         collectionId: "landcoverunit",
-        searchParameter: "flik"
+        searchProperty: "flik"
     }),
     new OgcFeaturesSource("Weinberge", {
         baseUrl: "https://demo.ldproxy.net/vineyards",
         collectionId: "vineyards",
-        searchParameter: "name"
+        searchProperty: "name"
     }),
     new NominatimGeocoder("city", "Städte"),
     new NominatimGeocoder("street", "Straßen")

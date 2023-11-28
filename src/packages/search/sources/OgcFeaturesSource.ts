@@ -1,20 +1,41 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-
+import { createLogger, isAbortError } from "@open-pioneer/core";
 import { SearchSource, SearchResult } from "./../api";
 
+const LOG = createLogger("search:SearchSource OGC API Features");
+
 export interface OgcFeatureSourceOptions {
-    /** The base-URL right to the "/collections"-part */
+    /**
+     * The base-URL right to the "/collections"-part
+     */
     baseUrl: string;
 
-    /** The collection-ID */
+    /**
+     * The collection-ID
+     */
     collectionId: string;
 
-    /** Parameter used for filtering on OGC API Features */
-    searchParameter: string;
+    /**
+     * Property used for filtering on OGC API Features
+     */
+    searchProperty: string;
 
-    /** Parameter used for labelling, if searchParameter isn't exists on feature properties */
-    resultsParameter?: string;
+    /**
+     * Property used for labelling, if searchProperty isn't exists on feature properties
+     */
+    labelProperty?: string;
+
+    /**
+     * Render function to create custom a label. If `renderLabelFunction` is configured,
+     * `searchProperty` and `labelProperty` will be used as a fallback
+     */
+    renderLabelFunction?: unknown;
+
+    /**
+     * Process function to modify the original URL
+     */
+    processUrlFunction?: unknown;
 }
 
 export class OgcFeaturesSource implements SearchSource {
@@ -36,19 +57,22 @@ export class OgcFeaturesSource implements SearchSource {
                 ...response,
                 id: idx,
                 label: response.properties[
-                    this.options.resultsParameter
-                        ? (this.options.resultsParameter as keyof typeof response.properties)
-                        : (this.options.searchParameter as keyof typeof response.properties)
+                    this.options.labelProperty
+                        ? (this.options.labelProperty as keyof typeof response.properties)
+                        : (this.options.searchProperty as keyof typeof response.properties)
                 ]
             })) satisfies SearchResult[];
         } catch (error) {
+            if (!isAbortError(error)) {
+                LOG.error(`Search failed`, error);
+            }
             return [];
         }
     }
 
     #getUrl(inputValue: string): string {
         return encodeURI(
-            `${this.options.baseUrl}/collections/${this.options.collectionId}/items?${this.options.searchParameter}=*${inputValue}*&f=json`
+            `${this.options.baseUrl}/collections/${this.options.collectionId}/items?${this.options.searchProperty}=*${inputValue}*&f=json`
         );
     }
 }
