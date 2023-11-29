@@ -19,7 +19,7 @@ import { useIntl } from "open-pioneer:react-hooks";
 import { useId, useMemo, useState } from "react";
 import { PiListLight, PiMapTrifold, PiRulerLight } from "react-icons/pi";
 import { MAP_ID } from "./MapConfigProviderImpl";
-import { NominatimGeocoder } from "./search-source-examples/testSources";
+import { PhotonGeocoder } from "./search-source-examples/testSources";
 import { OgcFeatureSearchSource } from "@open-pioneer/ogc-features";
 
 const sources = [
@@ -39,7 +39,6 @@ const sources = [
         rewriteUrlFunction(url) {
             url.searchParams.set("limit", "1");
             url.searchParams.set("properties", "name"); // return `name` inside of `features[].properties` only
-            console.log(url.toString());
             return url;
         }
     }),
@@ -53,8 +52,7 @@ const sources = [
         collectionId: "vineyards",
         searchProperty: "name"
     }),
-    new NominatimGeocoder("city", "Städte"),
-    new NominatimGeocoder("street", "Straßen")
+    new PhotonGeocoder("Photon Geocoder", ["city", "street"])
 ];
 
 export function AppUI() {
@@ -120,6 +118,7 @@ export function AppUI() {
                             <Search
                                 mapId={MAP_ID}
                                 sources={sources}
+                                maxResultsPerGroup={10}
                                 onSelect={(event) => {
                                     console.debug(
                                         "The user selected the following item: ",
