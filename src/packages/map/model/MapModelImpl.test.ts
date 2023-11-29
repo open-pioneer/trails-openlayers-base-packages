@@ -106,7 +106,7 @@ describe("initial extent", () => {
     });
 });
 
-it("tracks the open layers target", async () => {
+it("tracks the OpenLayers target", async () => {
     model = await createMapModel("foo", {});
     expect(model.container).toBeUndefined();
 

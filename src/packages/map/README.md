@@ -266,7 +266,7 @@ layer.deleteAttribute("foo");
 To create an OGC API Features layer, use the `ogc-features` package.
 Details about the necessary steps are described in the package's [README](../ogc-features/README.md) file.
 
-##### Mapbox / MapLibre styles
+###### Mapbox / MapLibre styles
 
 To use layers of a Mapbox / MapLibre style document, use the class `MapboxVectorLayer` from the package `ol-mapbox-style` as in the following sample:
 
@@ -303,7 +303,56 @@ export class MapConfigProviderImpl implements MapConfigProvider {
 }
 ```
 
-Because of the changed licence of Mapbox as of version 2.0, we recommend to override the implementation with the code of MapLibre (see the main package.json of this repository for a sample).
+Because of the changed license of Mapbox as of version 2.0, we recommend to override the implementation with the code of MapLibre (see the main package.json of this repository for a sample).
+
+##### OGC API Tiles
+
+OpenLayers supports OGC API Tiles (vector tiles) by default (see [OpenLayers API](https://openlayers.org/en/latest/apidoc/module-ol_source_OGCVectorTile-OGCVectorTile.html)).
+
+> IMPORTANT: The configured vector tile layer must have the same projection like the map. Otherwise OGC API Tiles cannot displayed correctly in a map.
+
+Example: How to configure a vector tile layer:
+
+```ts
+// YOUR-APP/MapConfigProviderImpl.ts
+export class MapConfigProviderImpl implements MapConfigProvider {
+    async getMapConfig(): Promise<MapConfig> {
+        return {
+            projection: "EPSG:3857",
+            initialView: {
+                kind: "position",
+                center: {
+                    x: 848890,
+                    y: 6793350
+                },
+                zoom: 13
+            },
+            layers: [
+                new SimpleLayer({
+                    title: "Pendleratlas",
+                    visible: true,
+                    olLayer: new VectorTileLayer({
+                        source: new VectorTileSource({
+                            url: "https://pendleratlas.statistikportal.de/_vector_tiles/2022/vg250/{z}/{x}/{y}.pbf",
+                            format: new MVT(),
+                            projection: "EPSG:3857"
+                        }),
+                        style: new Style({
+                            fill: new Fill({
+                                color: "rgba(173, 209, 158, 0.6)"
+                            }),
+                            stroke: new Stroke({
+                                color: "#2d7d9f",
+                                width: 3
+                            })
+                        })
+                    })
+                })
+            ]
+        };
+    }
+}
+```
 
 ##### OGC Web Map Tile Service (WMTS)
 

@@ -7,7 +7,7 @@ import TileLayer from "ol/layer/Tile";
 import { expect, it } from "vitest";
 import { SimpleLayerImpl } from "./SimpleLayerImpl";
 
-it("supports wrap an open layers layer", () => {
+it("supports wrap an OpenLayers layer", () => {
     const olLayer = new TileLayer({});
     const layer = new SimpleLayerImpl({
         id: "a",

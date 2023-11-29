@@ -5,8 +5,11 @@ import { createVectorSource } from "@open-pioneer/ogc-features";
 import TileLayer from "ol/layer/Tile";
 import VectorLayer from "ol/layer/Vector";
 import OSM from "ol/source/OSM";
-import { Circle, Fill, Style } from "ol/style";
+import { Circle, Fill, Stroke, Style } from "ol/style";
 import { MapboxVectorLayer } from "ol-mapbox-style";
+import { MVT } from "ol/format";
+import VectorTileLayer from "ol/layer/VectorTile";
+import VectorTileSource from "ol/source/VectorTile";
 
 export const MAP_ID = "main";
 
@@ -69,10 +72,32 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     })
                 }),
                 new SimpleLayer({
-                    title: "Abschnitte/Äste mit Unfällen (Mapbox Style)",
+                    title: "Abschnitte / Äste mit Unfällen (Mapbox Style)",
                     visible: false,
                     olLayer: new MapboxVectorLayer({
                         styleUrl: "https://demo.ldproxy.net/strassen/styles/default?f=mbs"
+                    })
+                }),
+                new SimpleLayer({
+                    title: "Pendleratlas",
+                    visible: true,
+                    olLayer: new VectorTileLayer({
+                        source: new VectorTileSource({
+                            url: "https://pendleratlas.statistikportal.de/_vector_tiles/2022/vg250/{z}/{x}/{y}.pbf",
+                            format: new MVT(),
+                            projection: "EPSG:3857",
+                            attributions: `&copy; Statistische Ämter der Länder ${new Date().getFullYear()} | GeoBasis-DE/BKG ${new Date().getFullYear()}`
+                        }),
+                        // demonstration of simple styling; using a Mapbox Style is shown in the layer above
+                        style: new Style({
+                            fill: new Fill({
+                                color: "rgba(173, 209, 158, 0.6)"
+                            }),
+                            stroke: new Stroke({
+                                color: "#2d7d9f",
+                                width: 3
+                            })
+                        })
                     })
                 })
             ]
