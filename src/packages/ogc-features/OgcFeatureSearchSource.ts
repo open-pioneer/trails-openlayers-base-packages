@@ -38,7 +38,7 @@ export interface OgcFeatureSearchSourceOptions {
     processUrlFunction?: () => void;
 }
 
-export class OgcFeaturesSearchSource implements SearchSource {
+export class OgcFeatureSearchSource implements SearchSource {
     label: string;
     options: OgcFeatureSearchSourceOptions;
 
@@ -80,7 +80,7 @@ export class OgcFeaturesSearchSource implements SearchSource {
     }
 }
 
-interface OgcFeaturesSearchResponse {
+interface OgcFeatureSearchResponse {
     features: [
         {
             properties: {};
@@ -96,7 +96,7 @@ interface OgcFeaturesSearchResponse {
 const request = async (
     url: string,
     signal?: AbortSignal | undefined
-): Promise<OgcFeaturesSearchResponse> => {
+): Promise<OgcFeatureSearchResponse> => {
     try {
         const response = await fetch(url, { signal });
         if (!response.ok) {

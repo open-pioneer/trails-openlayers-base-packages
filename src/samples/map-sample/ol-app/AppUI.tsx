@@ -20,10 +20,10 @@ import { useId, useMemo, useState } from "react";
 import { PiListLight, PiMapTrifold, PiRulerLight } from "react-icons/pi";
 import { MAP_ID } from "./MapConfigProviderImpl";
 import { NominatimGeocoder } from "./search-source-examples/testSources";
-import { OgcFeaturesSearchSource } from "@open-pioneer/ogc-features";
+import { OgcFeatureSearchSource } from "@open-pioneer/ogc-features";
 
 const sources = [
-    new OgcFeaturesSearchSource("Bergbauberechtigungen", {
+    new OgcFeatureSearchSource("Bergbauberechtigungen", {
         baseUrl: "https://ogc-api.nrw.de/inspire-am-bergbauberechtigungen/v1",
         collectionId: "managementrestrictionorregulationzone",
         searchProperty: "thematicId",
@@ -32,17 +32,17 @@ const sources = [
             return response?.properties?.name + " (" + response?.id + ")";
         }
     }),
-    new OgcFeaturesSearchSource("Verwaltungseinheit", {
+    new OgcFeatureSearchSource("Verwaltungseinheit", {
         baseUrl: "https://ogc-api.nrw.de/lika/v1",
         collectionId: "verwaltungseinheit",
         searchProperty: "name"
     }),
-    new OgcFeaturesSearchSource("Feldblöcke", {
+    new OgcFeatureSearchSource("Feldblöcke", {
         baseUrl: "https://ogc-api.nrw.de/inspire-lc-fb/v1",
         collectionId: "landcoverunit",
         searchProperty: "flik"
     }),
-    new OgcFeaturesSearchSource("Weinberge", {
+    new OgcFeatureSearchSource("Weinberge", {
         baseUrl: "https://demo.ldproxy.net/vineyards",
         collectionId: "vineyards",
         searchProperty: "name"
