@@ -46,7 +46,7 @@ Guidelines for React components developed in this repository.
 ## Documentation and Examples
 
 -   Create a Demo / Samples for components
--   Use the open layers sample app as a showcase with many components
+-   Use the OpenLayers sample app as a showcase with many components
 -   Create a separate sample app for complex components
 
 -   Maintain a high level document explaining the UI-Concept

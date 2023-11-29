@@ -953,7 +953,7 @@ importers:
         specifier: ^18.2.0
         version: 18.2.0
 
-  src/samples/ogc-feature-sample/ogc-app:
+  src/samples/ogc-api-sample/ogc-app:
     dependencies:
       '@open-pioneer/basemap-switcher':
         specifier: workspace:^
