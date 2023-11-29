@@ -314,23 +314,44 @@ OpenLayers supports OGC API Tiles (vector tiles) by default (see [OpenLayers API
 Example: How to configure a vector tile layer:
 
 ```ts
-new VectorTileLayer({
-    source: new VectorTileSource({
-        url: "https://pendleratlas.statistikportal.de/_vector_tiles/2022/vg250/{z}/{x}/{y}.pbf",
-        format: new MVT(),
-        projection: "EPSG:3857",
-        attributions: `&copy; Statistische Ämter der Länder ${new Date().getFullYear()} | GeoBasis-DE/BKG ${new Date().getFullYear()}`
-    }),
-    style: new Style({
-        fill: new Fill({
-            color: "rgba(173, 209, 158, 0.6)"
-        }),
-        stroke: new Stroke({
-            color: "#2d7d9f",
-            width: 3
-        })
-    })
-});
+// YOUR-APP/MapConfigProviderImpl.ts
+export class MapConfigProviderImpl implements MapConfigProvider {
+    async getMapConfig(): Promise<MapConfig> {
+        return {
+            projection: "EPSG:3857",
+            initialView: {
+                kind: "position",
+                center: {
+                    x: 848890,
+                    y: 6793350
+                },
+                zoom: 13
+            },
+            layers: [
+                new SimpleLayer({
+                    title: "Pendleratlas",
+                    visible: true,
+                    olLayer: new VectorTileLayer({
+                        source: new VectorTileSource({
+                            url: "https://pendleratlas.statistikportal.de/_vector_tiles/2022/vg250/{z}/{x}/{y}.pbf",
+                            format: new MVT(),
+                            projection: "EPSG:3857"
+                        }),
+                        style: new Style({
+                            fill: new Fill({
+                                color: "rgba(173, 209, 158, 0.6)"
+                            }),
+                            stroke: new Stroke({
+                                color: "#2d7d9f",
+                                width: 3
+                            })
+                        })
+                    })
+                })
+            ]
+        };
+    }
+}
 ```
 
 ##### OGC Web Map Tile Service (WMTS)
