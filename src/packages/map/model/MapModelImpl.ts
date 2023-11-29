@@ -12,8 +12,10 @@ import OlMap from "ol/Map";
 import { unByKey } from "ol/Observable";
 import { EventsKey } from "ol/events";
 import { getCenter } from "ol/extent";
-import { ExtentConfig, MapModel, MapModelEvents } from "../api";
+import { ExtentConfig, HighlightOptions, MapModel, MapModelEvents } from "../api";
 import { LayerCollectionImpl } from "./LayerCollectionImpl";
+import { LineString, Point, Polygon } from "ol/geom";
+import { Highlights } from "./Highlights";
 
 const LOG = createLogger("map:MapModel");
 
@@ -21,6 +23,7 @@ export class MapModelImpl extends EventEmitter<MapModelEvents> implements MapMod
     readonly #id: string;
     readonly #olMap: OlMap;
     readonly #layers = new LayerCollectionImpl(this);
+    readonly #highlights: Highlights;
     #destroyed = false;
     #container: HTMLElement | undefined;
     #initialExtent: ExtentConfig | undefined;
@@ -35,6 +38,7 @@ export class MapModelImpl extends EventEmitter<MapModelEvents> implements MapMod
         this.#id = properties.id;
         this.#olMap = properties.olMap;
         this.#initialExtent = properties.initialExtent;
+        this.#highlights = new Highlights(this.#olMap);
 
         this.#displayStatus = "waiting";
         this.#initializeView().then(
@@ -77,6 +81,7 @@ export class MapModelImpl extends EventEmitter<MapModelEvents> implements MapMod
         this.#abortController.abort();
         this.#displayWaiter?.reject(new Error("Map model was destroyed."));
         this.#layers.destroy();
+        this.#highlights.destroy();
         this.#olMap.dispose();
     }
 
@@ -98,6 +103,14 @@ export class MapModelImpl extends EventEmitter<MapModelEvents> implements MapMod
 
     get initialExtent(): ExtentConfig | undefined {
         return this.#initialExtent;
+    }
+
+    highlightAndZoom(geometries: Point[] | LineString[] | Polygon[], options?: HighlightOptions) {
+        this.#highlights.addHighlightOrMarkerAndZoom(geometries, options ?? {});
+    }
+
+    removeHighlight() {
+        this.#highlights.clearHighlight();
     }
 
     whenDisplayed(): Promise<void> {

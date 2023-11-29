@@ -124,7 +124,7 @@ export function _createVectorSource(
         try {
             const features = await loadAllFeatures(strategy, {
                 fullURL: fullURL.toString(),
-                featureFormat: vectorSrc.getFormat()!, // TODO
+                featureFormat: vectorSrc.getFormat()!,
                 queryFeatures: queryFeaturesFunc,
                 addFeatures: addFeaturesFunc,
                 limit: options.limit ?? DEFAULT_LIMIT,

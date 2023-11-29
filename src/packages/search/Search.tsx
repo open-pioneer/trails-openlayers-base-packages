@@ -313,7 +313,7 @@ function useController(
         if (!map) {
             return;
         }
-        const controller = new SearchController(sources);
+        const controller = new SearchController(map, sources);
         setController(controller);
         return () => {
             controller.destroy();
