@@ -24,10 +24,12 @@ const sampleSites = [
     "samples/auth-sample",
     "samples/notify-sample",
     "samples/ogc-api-sample",
-    "samples/test-basemap-switcher",
-    "samples/experimental-sidebar",
+    
     "samples/theming-sample",
-    "samples/test-search-result-handler"
+    "samples/test-basemap-switcher",
+    "samples/test-highlight-and-zoom",
+
+    "samples/experimental-sidebar",
 ];
 
 // https://vitejs.dev/config/

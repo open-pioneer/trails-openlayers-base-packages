@@ -9,4 +9,4 @@ const element = createCustomElement({
     appMetadata
 });
 
-customElements.define("result-handler-app", element);
+customElements.define("highlight-and-zoom-app", element);

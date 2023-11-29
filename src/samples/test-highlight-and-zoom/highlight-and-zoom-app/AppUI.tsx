@@ -70,7 +70,7 @@ export function AppUI() {
                 title={
                     <Box textAlign="center" py={1}>
                         <SectionHeading size={"md"}>
-                            OpenLayers Base Packages - Result Handler
+                            OpenLayers Base Packages - Highlight and Zoom
                         </SectionHeading>
                     </Box>
                 }
@@ -116,8 +116,8 @@ export function AppUI() {
                                 <Text>
                                     This application can be used to test adding highlight or marker,
                                     zoom to their extent, and removing highlight and marker. The
-                                    highlight and zoom for point, linestring and polygon geometries
-                                    can be test.
+                                    highlight and zoom for point, line string and polygon geometries
+                                    can be tested.
                                 </Text>
                                 <UnorderedList>
                                     <ListItem>

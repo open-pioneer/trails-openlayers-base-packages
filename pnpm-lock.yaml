@@ -1016,7 +1016,7 @@ importers:
         specifier: ^18.2.0
         version: 18.2.0
 
-  src/samples/test-search-result-handler/result-handler-app:
+  src/samples/test-highlight-and-zoom/highlight-and-zoom-app:
     dependencies:
       '@open-pioneer/chakra-integration':
         specifier: ^1.1.0
