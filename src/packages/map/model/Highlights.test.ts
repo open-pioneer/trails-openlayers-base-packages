@@ -6,6 +6,7 @@ import OlMap from "ol/Map";
 import { Highlights } from "./Highlights";
 import { LineString, Point, Polygon } from "ol/geom";
 import View from "ol/View";
+import { approximatelyEquals } from "ol/extent";
 
 let _highlights: Highlights | undefined;
 afterEach(() => {
@@ -138,7 +139,6 @@ it("should zoom the map to the default or configured zoom level if there is no e
 });
 
 it("should zoom the map to the right extent", async () => {
-    // TODO: Test extents after zoom (~ coordinates)
     const { map, highlights } = setup();
 
     const line = new LineString([
@@ -150,9 +150,7 @@ it("should zoom the map to the right extent", async () => {
     ];
     highlights.addHighlightOrMarkerAndZoom([line], {});
     const currentExtent = map.getView().calculateExtent();
-
-    expect(currentExtent[0]).toBeCloseTo(expectedExtent[0]!);
-    expect(currentExtent[1]).toBeCloseTo(expectedExtent[1]!);
+    expect(approximatelyEquals(expectedExtent, currentExtent, 1)).toBe(true);
 });
 
 function setup() {
