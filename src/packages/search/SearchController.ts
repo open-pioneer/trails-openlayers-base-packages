@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import { createLogger, isAbortError, throwAbortError } from "@open-pioneer/core";
 import { SearchSource, SearchResult } from "./api";
+import { MapModel } from "@open-pioneer/map";
 
 const LOG = createLogger("search:SearchController");
 
@@ -18,6 +19,8 @@ const DEFAULT_SEARCH_TYPING_DELAY = 200;
 const DEFAULT_MAX_RESULTS_PER_SOURCE = 5;
 
 export class SearchController {
+    #mapModel: MapModel;
+
     /**
      * Search sources defined by the developer.
      */
@@ -38,7 +41,8 @@ export class SearchController {
      */
     #abortController: AbortController | undefined;
 
-    constructor(sources: SearchSource[]) {
+    constructor(mapModel: MapModel, sources: SearchSource[]) {
+        this.#mapModel = mapModel;
         this.#sources = sources;
     }
 
@@ -78,9 +82,14 @@ export class SearchController {
         signal: AbortSignal
     ): Promise<SuggestionGroup | undefined> {
         const label = source.label;
+        const projection = this.#mapModel.olMap.getView().getProjection();
         try {
             const maxResults = this.#maxResultsPerSource;
-            let results = await source.search(searchTerm, { maxResults, signal });
+            let results = await source.search(searchTerm, {
+                maxResults,
+                signal,
+                mapProjection: projection
+            });
             if (results.length > maxResults) {
                 results = results.slice(0, maxResults);
             }

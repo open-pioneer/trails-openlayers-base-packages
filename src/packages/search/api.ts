@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Geometry } from "ol/geom";
+import { Projection } from "ol/proj";
 
 /**
  * An object that allows searching some set of data.
@@ -72,6 +73,12 @@ export interface SearchOptions {
      * support cancellation.
      */
     signal: AbortSignal;
+
+    /**
+     * The current projection of the map.
+     * Useful to return the search result's geometry in the suitable projection.
+     */
+    mapProjection: Projection;
 }
 
 /**

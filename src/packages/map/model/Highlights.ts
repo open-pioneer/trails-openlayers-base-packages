@@ -4,16 +4,8 @@
 import { Feature } from "ol";
 import OlMap from "ol/Map";
 import { Coordinate } from "ol/coordinate";
-import {
-    Extent,
-    boundingExtent,
-    createEmpty,
-    extend,
-    getCenter,
-    getHeight,
-    getWidth
-} from "ol/extent";
-import { LineString, Point, Polygon } from "ol/geom";
+import { Extent, createEmpty, extend, getArea, getCenter } from "ol/extent";
+import { Geometry, LineString, Point, Polygon } from "ol/geom";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import { Fill, Icon, Stroke, Style } from "ol/style";
@@ -23,10 +15,10 @@ import mapMarkerUrl from "../assets/images/mapMarker.png?url";
 import { FeatureLike } from "ol/Feature";
 import { TOPMOST_LAYER_Z } from "./LayerCollectionImpl";
 import { Layer as OlLayer } from "ol/layer";
+import { calculateBufferedExtent } from "../util/geometry-utils";
 
-const DEFAULT_OL_ZOOM_LEVEL = 17;
-const DEFAULT_MAX_ZOOM_LEVEL = 20;
-const DEFAULT_BUFFER_FACTOR = 1.2;
+const DEFAULT_OL_POINT_ZOOM_LEVEL = 17;
+const DEFAULT_OL_MAX_ZOOM_LEVEL = 20;
 
 export class Highlights {
     private olMap: OlMap;
@@ -47,24 +39,13 @@ export class Highlights {
         geometries: Point[] | LineString[] | Polygon[],
         options: HighlightOptions
     ) {
-        const {
-            highlightStyle,
-            zoom = DEFAULT_OL_ZOOM_LEVEL,
-            maxZoom = DEFAULT_MAX_ZOOM_LEVEL
-        } = options;
-
         // Cleanup existing highlight
         this.clearHighlight();
 
         if (!geometries || !geometries.length) {
             return;
         }
-
-        if (geometries[0]?.getType() === "Point") {
-            this.zoomAndAddMarkers(geometries, highlightStyle, zoom);
-        } else {
-            this.zoomAndHighlight(geometries, highlightStyle, maxZoom);
-        }
+        this.zoomAndAddMarkers(geometries, options);
     }
 
     clearHighlight() {
@@ -74,50 +55,26 @@ export class Highlights {
         }
     }
 
-    private zoomAndAddMarkers(
-        points: Point[] | LineString[] | Polygon[],
-        highlightStyle: HighlightStyle | undefined,
-        zoomScale: number | undefined
-    ) {
-        let centerCoords;
-        let extent: Extent | undefined;
-        if (points.length === 1) {
-            const point = points[0];
-            centerCoords = point?.getCoordinates() as Coordinate;
-        } else {
-            const allCoords = points.map((point) => point.getCoordinates() as Coordinate);
-            extent = boundingExtent(allCoords);
-            centerCoords = getCenter(extent);
+    private zoomAndAddMarkers(geometries: Geometry[], options: HighlightOptions | undefined) {
+        let extent = createEmpty();
+        for (const geom of geometries) {
+            extent = extend(extent, geom.getExtent());
         }
-        setCenter(this.olMap, centerCoords);
+
+        const center = getCenter(extent);
+        const isPoint = getArea(extent) === 0;
+        const zoomScale = isPoint
+            ? options?.pointZoom ?? DEFAULT_OL_POINT_ZOOM_LEVEL
+            : options?.maxZoom ?? DEFAULT_OL_MAX_ZOOM_LEVEL;
+        setCenter(this.olMap, center);
         zoomTo(this.olMap, extent, zoomScale);
-        this.createAndAddLayer("Point", points, highlightStyle);
+        this.createAndAddLayer(geometries, options?.highlightStyle);
     }
 
-    private zoomAndHighlight(
-        geometries: Point[] | LineString[] | Polygon[],
-        highlightStyle: HighlightStyle | undefined,
-        zoomScale: number | undefined
-    ) {
-        const type = geometries[0]?.getType() === "Polygon" ? "Polygon" : "LineString";
-        const extent = createEmpty();
-        geometries.forEach((geometry) => {
-            extend(extent, geometry.getExtent());
-        });
-        const centerCoords = extent && getCenter(extent);
-        setCenter(this.olMap, centerCoords);
-        zoomTo(this.olMap, extent, zoomScale);
-        this.createAndAddLayer(type, geometries, highlightStyle);
-    }
-
-    private createAndAddLayer(
-        geomType: string,
-        geometries: Point[] | LineString[] | Polygon[],
-        highlightStyle: HighlightStyle | undefined
-    ) {
+    private createAndAddLayer(geometries: Geometry[], highlightStyle: HighlightStyle | undefined) {
         const features = geometries.map((geometry) => {
             return new Feature({
-                type: geomType,
+                type: geometry.getType(),
                 geometry: geometry
             });
         });
@@ -148,24 +105,6 @@ function zoomTo(olMap: OlMap, extent: Extent | undefined, zoomLevel: number | un
     } else {
         zoomLevel && olMap.getView().setZoom(zoomLevel);
     }
-}
-
-export function calculateBufferedExtent(extent: Extent) {
-    let bufferedExtent;
-    if (extent[0] && extent[1] && extent[2] && extent[3]) {
-        const width = getHeight(extent);
-        const height = getWidth(extent);
-        const bufferWidth = width * DEFAULT_BUFFER_FACTOR;
-        const bufferHeight = height * DEFAULT_BUFFER_FACTOR;
-
-        bufferedExtent = [
-            extent[0] - (bufferWidth - width) / 2,
-            extent[1] - (bufferHeight - height) / 2,
-            extent[2] + (bufferWidth - width) / 2,
-            extent[3] + (bufferHeight - height) / 2
-        ];
-    }
-    return bufferedExtent;
 }
 
 /** Returns the appropriate style from the user's highlightStyle or falls back to the default style. */

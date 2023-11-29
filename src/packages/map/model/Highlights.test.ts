@@ -3,9 +3,8 @@
 
 import { afterEach, expect, it } from "vitest";
 import OlMap from "ol/Map";
-import { Highlights, calculateBufferedExtent } from "./Highlights";
+import { Highlights } from "./Highlights";
 import { LineString, Point, Polygon } from "ol/geom";
-import { containsExtent } from "ol/extent";
 import View from "ol/View";
 
 let _highlights: Highlights | undefined;
@@ -13,6 +12,8 @@ afterEach(() => {
     _highlights?.destroy();
     _highlights = undefined;
 });
+
+// TODO: Test extents after zoom (~ coordinates)
 
 it("should successfully zoom and add marker for point geometries", async () => {
     const { map, highlights } = setup();
@@ -102,13 +103,6 @@ it("should successfully remove all markers or highlights", async () => {
     expect(layerAfterRemove).toBeUndefined();
 });
 
-it("should calculate a buffered extent of a given extent", async () => {
-    const extent = [844399.851466, 6788384.425292, 852182.096409, 6794764.528497];
-    const bufferedExtent = calculateBufferedExtent(extent)!;
-    expect(bufferedExtent).toBeDefined();
-    expect(containsExtent(bufferedExtent, extent)).toBe(true);
-});
-
 it("should zoom the map to the extent of the geometries but not further than the defined maxZoom", async () => {
     const { map, highlights } = setup();
 
@@ -139,7 +133,7 @@ it("should zoom the map to the default or configured zoom level if there is no e
 
     expect(defaultZoom).toStrictEqual(17);
 
-    highlights.addHighlightOrMarkerAndZoom([point], { zoom: 12 });
+    highlights.addHighlightOrMarkerAndZoom([point], { pointZoom: 12 });
     const configuredZoom = map.getView().getZoom();
 
     expect(configuredZoom).toStrictEqual(12);

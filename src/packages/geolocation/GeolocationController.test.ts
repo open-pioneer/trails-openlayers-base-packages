@@ -35,22 +35,6 @@ it("should successfully return a geolocation position", async () => {
     ]);
 });
 
-it("should calculate a buffer for a given extent", async () => {
-    mockSuccessGeolocation([51.1, 45.3]);
-
-    const extent = [5038787.353057691, 6635017.052266559, 5046758.512812894, 6642988.2134831];
-    const { controller } = setup();
-
-    const bufferedExtent: number[] | undefined = controller.calculateBufferedExtent(extent);
-    if (!bufferedExtent) {
-        throw new Error("Expected a valid extent");
-    }
-
-    expect(bufferedExtent).toStrictEqual([
-        5037990.2369360365, 6634219.936291038, 5047555.628934548, 6643785.32945862
-    ]);
-});
-
 describe("Default Properties", () => {
     it("uses the default style for the position feature", async () => {
         const { controller } = setup();

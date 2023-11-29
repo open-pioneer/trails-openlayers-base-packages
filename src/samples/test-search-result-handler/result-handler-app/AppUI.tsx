@@ -12,7 +12,7 @@ import {
 } from "@open-pioneer/chakra-integration";
 import { MapAnchor, MapContainer, MapModel, useMapModel } from "@open-pioneer/map";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
-import { LineString, Point, Polygon } from "ol/geom";
+import { Geometry, LineString, Point, Polygon } from "ol/geom";
 import { MAP_ID } from "./MapConfigProviderImpl";
 
 export function AppUI() {
@@ -42,6 +42,18 @@ export function AppUI() {
                 [851728.251553, 6788384.425292]
             ]
         ]),
+        new Polygon([
+            [
+                [845183.331006, 6794496.998898],
+                [850132.628588, 6794764.528497],
+                [850629.469272, 6791707.047365],
+                [844399.851466, 6791229.315939],
+                [845183.331006, 6794496.998898]
+            ]
+        ])
+    ];
+    const mixedGeometries = [
+        new Point([852011.307424, 6788511.322702]),
         new Polygon([
             [
                 [845183.331006, 6794496.998898],
@@ -84,6 +96,9 @@ export function AppUI() {
                                     <Button onClick={() => handleClick(map, polygonGeometries)}>
                                         Polygons
                                     </Button>
+                                    <Button onClick={() => handleClick(map, mixedGeometries)}>
+                                        Mixed
+                                    </Button>
                                     <Button onClick={() => reset(map)}>Reset</Button>
                                 </Stack>
                             </Box>
@@ -117,6 +132,10 @@ export function AppUI() {
                                         geometries.
                                     </ListItem>
                                     <ListItem>
+                                        Clicking on {"'Mixed'"} adds highlight for geometries of
+                                        different types.
+                                    </ListItem>
+                                    <ListItem>
                                         Clicking on {"'Reset'"} removes the highlights or markers
                                         from the map.
                                     </ListItem>
@@ -130,10 +149,7 @@ export function AppUI() {
     );
 }
 
-function handleClick(
-    map: MapModel | undefined,
-    resultGeometries: Point[] | LineString[] | Polygon[]
-) {
+function handleClick(map: MapModel | undefined, resultGeometries: Geometry[]) {
     if (map) {
         map.highlightAndZoom(resultGeometries, {});
     }

@@ -6,7 +6,7 @@ import type OlBaseLayer from "ol/layer/Base";
 import type { ExtentConfig } from "./MapConfig";
 import type { Layer, LayerBase } from "./layers";
 import type { LayerRetrievalOptions } from "./shared";
-import type { LineString, Point, Polygon } from "ol/geom";
+import type { Geometry } from "ol/geom";
 import type { StyleLike } from "ol/style/Style";
 
 /** Events emitted by the {@link MapModel}. */
@@ -25,9 +25,9 @@ export interface HighlightOptions {
     highlightStyle?: HighlightStyle;
 
     /**
-     * The zoom-level for point results.
+     * The zoom-level used if there is no valid extend (such as for single points).
      */
-    zoom?: number;
+    pointZoom?: number;
 
     /**
      * The maximum zoom-level for line or polygon results.
@@ -89,14 +89,12 @@ export interface MapModel extends EventSource<MapModelEvents> {
     whenDisplayed(): Promise<void>;
 
     /**
-     * Add a highlight to the map for the given geometries.
+     * Highlights the given geometries on the map.
+     * Centers and zooms the view on the geometries.
      *
      * Removes any previous highlights.
      */
-    highlightAndZoom(
-        geometries: Point[] | LineString[] | Polygon[],
-        options: HighlightOptions
-    ): void;
+    highlightAndZoom(geometries: Geometry[], options?: HighlightOptions): void;
 
     /**
      * Removes any existing highlights from the map.

@@ -1,15 +1,17 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-
 import { afterEach, expect, vi, it } from "vitest";
 import { SearchController } from "./SearchController";
 import { SearchSource } from "./api";
 import { FakeCitySource, FakeRejectionSource, FakeRiverSource } from "./testSources";
 import { isAbortError } from "@open-pioneer/core";
+import { get as getProjection } from "ol/proj";
 
 const FAKE_REQUEST_TIMER = 0;
 const CITY_SOURCE = new FakeCitySource(FAKE_REQUEST_TIMER);
 const RIVER_SOURCE = new FakeRiverSource(FAKE_REQUEST_TIMER);
+
+// TODO: Test that search source gets current map projection in 'options'
 
 afterEach(() => {
     vi.restoreAllMocks();
@@ -127,7 +129,20 @@ it("expect controller to call AbortController when typing quickly", async () => 
 });
 
 function setup(sources: SearchSource[]) {
-    const controller = new SearchController(sources);
+    // Map Model mock (just as needed for the controller)
+    const mapProjection = getProjection("EPSG:4326");
+    const mapModel: any = {
+        olMap: {
+            getView() {
+                return {
+                    getProjection() {
+                        return mapProjection;
+                    }
+                };
+            }
+        }
+    };
+    const controller = new SearchController(mapModel, sources);
     controller.searchTypingDelay = 10;
     return controller;
 }

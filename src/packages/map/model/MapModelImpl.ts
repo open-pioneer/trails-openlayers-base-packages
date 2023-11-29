@@ -105,16 +105,10 @@ export class MapModelImpl extends EventEmitter<MapModelEvents> implements MapMod
         return this.#initialExtent;
     }
 
-    /**
-     * This method calls the `addHighlightOrMarkerAndZoom()` to add highlight or marker for a given geometries.
-     */
-    highlightAndZoom(geometries: Point[] | LineString[] | Polygon[], options: HighlightOptions) {
-        this.#highlights.addHighlightOrMarkerAndZoom(geometries, options);
+    highlightAndZoom(geometries: Point[] | LineString[] | Polygon[], options?: HighlightOptions) {
+        this.#highlights.addHighlightOrMarkerAndZoom(geometries, options ?? {});
     }
 
-    /**
-     * This method calls the `removeHighlightOrMarker()` to remove previously added highlight or marker.
-     */
     removeHighlight() {
         this.#highlights.clearHighlight();
     }
