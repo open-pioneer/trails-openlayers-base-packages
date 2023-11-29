@@ -10,4 +10,8 @@ it("should calculate a buffered extent of a given extent", async () => {
     expect(containsExtent(bufferedExtent, extent)).toBe(true);
 });
 
-// TODO: Test custom factor
+it("should calculate a buffered extent of a given extent with custom factor", async () => {
+    const extent = [844399.851466, 6788384.425292, 852182.096409, 6794764.528497];
+    const bufferedExtent = calculateBufferedExtent(extent, 2)!;
+    expect(containsExtent(bufferedExtent, extent)).toBe(true);
+});

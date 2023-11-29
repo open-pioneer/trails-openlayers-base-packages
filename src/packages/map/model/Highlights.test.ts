@@ -13,8 +13,6 @@ afterEach(() => {
     _highlights = undefined;
 });
 
-// TODO: Test extents after zoom (~ coordinates)
-
 it("should successfully zoom and add marker for point geometries", async () => {
     const { map, highlights } = setup();
 
@@ -137,6 +135,24 @@ it("should zoom the map to the default or configured zoom level if there is no e
     const configuredZoom = map.getView().getZoom();
 
     expect(configuredZoom).toStrictEqual(12);
+});
+
+it("should zoom the map to the right extent", async () => {
+    // TODO: Test extents after zoom (~ coordinates)
+    const { map, highlights } = setup();
+
+    const line = new LineString([
+        [848107.047338, 6790579.601198],
+        [849081.619449, 6793197.569417]
+    ]);
+    const expectedExtent = [
+        847187.8920729004, 6790482.143986899, 850000.7747140995, 6793295.026628099
+    ];
+    highlights.addHighlightOrMarkerAndZoom([line], {});
+    const currentExtent = map.getView().calculateExtent();
+
+    expect(currentExtent[0]).toBeCloseTo(expectedExtent[0]!);
+    expect(currentExtent[1]).toBeCloseTo(expectedExtent[1]!);
 });
 
 function setup() {

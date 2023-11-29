@@ -11,8 +11,6 @@ const FAKE_REQUEST_TIMER = 0;
 const CITY_SOURCE = new FakeCitySource(FAKE_REQUEST_TIMER);
 const RIVER_SOURCE = new FakeRiverSource(FAKE_REQUEST_TIMER);
 
-// TODO: Test that search source gets current map projection in 'options'
-
 afterEach(() => {
     vi.restoreAllMocks();
 });
@@ -126,6 +124,11 @@ it("expect controller to call AbortController when typing quickly", async () => 
 
     await firstSearch;
     expect(cancelled).toBe(true);
+});
+
+it("expect search source to get current map projection in 'options'", async () => {
+    // TODO: Test that search source gets current map projection in 'options'
+    const mapProjectionCode = "EPSG:4326";
 });
 
 function setup(sources: SearchSource[]) {
