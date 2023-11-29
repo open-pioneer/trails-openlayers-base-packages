@@ -10,10 +10,10 @@ import {
     UnorderedList,
     VStack
 } from "@open-pioneer/chakra-integration";
-import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { MapAnchor, MapContainer, MapModel, useMapModel } from "@open-pioneer/map";
-import { MAP_ID } from "./MapConfigProviderImpl";
+import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { LineString, Point, Polygon } from "ol/geom";
+import { MAP_ID } from "./MapConfigProviderImpl";
 
 export function AppUI() {
     const { map } = useMapModel(MAP_ID);
@@ -79,7 +79,7 @@ export function AppUI() {
                                         Points
                                     </Button>
                                     <Button onClick={() => handleClick(map, lineGeometries)}>
-                                        Linestring
+                                        LineString
                                     </Button>
                                     <Button onClick={() => handleClick(map, polygonGeometries)}>
                                         Polygons
@@ -87,42 +87,41 @@ export function AppUI() {
                                     <Button onClick={() => reset(map)}>Reset</Button>
                                 </Stack>
                             </Box>
-                            <MapAnchor position="top-right" horizontalGap={10} verticalGap={10}>
-                                <VStack
-                                    backgroundColor="whiteAlpha.900"
-                                    borderWidth="1px"
-                                    borderRadius="lg"
-                                    padding={2}
-                                    boxShadow="lg"
-                                    maxWidth="400px"
-                                >
-                                    <Text as="b">Description</Text>
-                                    <Text>
-                                        This application can be used to test adding highlight or
-                                        marker, zoom to their extent, and removing highlight and
-                                        marker. The highlight and zoom for point, linestring and
-                                        polygon geometries can be test.
-                                    </Text>
-                                    <UnorderedList>
-                                        <ListItem>
-                                            Clicking on {"'Points'"} adds markers for point
-                                            geometries.
-                                        </ListItem>
-                                        <ListItem>
-                                            Clicking on {"'Linestring'"} adds highlight for
-                                            linestring geometries.
-                                        </ListItem>
-                                        <ListItem>
-                                            Clicking on {"'Polygon'"} adds highlight for polygon
-                                            geometries.
-                                        </ListItem>
-                                        <ListItem>
-                                            Clicking on {"'Reset'"} removes the highlights or
-                                            markers from the map.
-                                        </ListItem>
-                                    </UnorderedList>
-                                </VStack>
-                            </MapAnchor>
+                        </MapAnchor>
+                        <MapAnchor position="top-right" horizontalGap={10} verticalGap={10}>
+                            <VStack
+                                backgroundColor="whiteAlpha.900"
+                                borderWidth="1px"
+                                borderRadius="lg"
+                                padding={2}
+                                boxShadow="lg"
+                                maxWidth="400px"
+                            >
+                                <Text as="b">Description</Text>
+                                <Text>
+                                    This application can be used to test adding highlight or marker,
+                                    zoom to their extent, and removing highlight and marker. The
+                                    highlight and zoom for point, linestring and polygon geometries
+                                    can be test.
+                                </Text>
+                                <UnorderedList>
+                                    <ListItem>
+                                        Clicking on {"'Points'"} adds markers for point geometries.
+                                    </ListItem>
+                                    <ListItem>
+                                        Clicking on {"'LineString'"} adds highlight for linestring
+                                        geometries.
+                                    </ListItem>
+                                    <ListItem>
+                                        Clicking on {"'Polygon'"} adds highlight for polygon
+                                        geometries.
+                                    </ListItem>
+                                    <ListItem>
+                                        Clicking on {"'Reset'"} removes the highlights or markers
+                                        from the map.
+                                    </ListItem>
+                                </UnorderedList>
+                            </VStack>
                         </MapAnchor>
                     </MapContainer>
                 </Flex>

@@ -12,14 +12,10 @@ import OlMap from "ol/Map";
 import { unByKey } from "ol/Observable";
 import { EventsKey } from "ol/events";
 import { getCenter } from "ol/extent";
-import { ExtentConfig, MapModel, MapModelEvents } from "../api";
+import { ExtentConfig, HighlightOptions, MapModel, MapModelEvents } from "../api";
 import { LayerCollectionImpl } from "./LayerCollectionImpl";
 import { LineString, Point, Polygon } from "ol/geom";
-import {
-    addHighlightOrMarkerAndZoom,
-    HighlightOptions,
-    removeHighlightOrMarker
-} from "./ResultHandler";
+import { Highlights } from "./Highlights";
 
 const LOG = createLogger("map:MapModel");
 
@@ -27,6 +23,7 @@ export class MapModelImpl extends EventEmitter<MapModelEvents> implements MapMod
     readonly #id: string;
     readonly #olMap: OlMap;
     readonly #layers = new LayerCollectionImpl(this);
+    readonly #highlights: Highlights;
     #destroyed = false;
     #container: HTMLElement | undefined;
     #initialExtent: ExtentConfig | undefined;
@@ -41,6 +38,7 @@ export class MapModelImpl extends EventEmitter<MapModelEvents> implements MapMod
         this.#id = properties.id;
         this.#olMap = properties.olMap;
         this.#initialExtent = properties.initialExtent;
+        this.#highlights = new Highlights(this.#olMap);
 
         this.#displayStatus = "waiting";
         this.#initializeView().then(
@@ -64,20 +62,6 @@ export class MapModelImpl extends EventEmitter<MapModelEvents> implements MapMod
         });
     }
 
-    /**
-     * This method calls the `addHighlightOrMarkerAndZoom()` to add highlight or marker for a given geometries.
-     */
-    highlightAndZoom(geometries: Point[] | LineString[] | Polygon[], options: HighlightOptions) {
-        addHighlightOrMarkerAndZoom(this.olMap, geometries, options);
-    }
-
-    /**
-     * This method calls the `removeHighlightOrMarker()` to remove previously added highlight or marker.
-     */
-    removeHighlight() {
-        removeHighlightOrMarker(this.olMap);
-    }
-
     destroy() {
         if (this.#destroyed) {
             return;
@@ -97,6 +81,7 @@ export class MapModelImpl extends EventEmitter<MapModelEvents> implements MapMod
         this.#abortController.abort();
         this.#displayWaiter?.reject(new Error("Map model was destroyed."));
         this.#layers.destroy();
+        this.#highlights.destroy();
         this.#olMap.dispose();
     }
 
@@ -118,6 +103,20 @@ export class MapModelImpl extends EventEmitter<MapModelEvents> implements MapMod
 
     get initialExtent(): ExtentConfig | undefined {
         return this.#initialExtent;
+    }
+
+    /**
+     * This method calls the `addHighlightOrMarkerAndZoom()` to add highlight or marker for a given geometries.
+     */
+    highlightAndZoom(geometries: Point[] | LineString[] | Polygon[], options: HighlightOptions) {
+        this.#highlights.addHighlightOrMarkerAndZoom(geometries, options);
+    }
+
+    /**
+     * This method calls the `removeHighlightOrMarker()` to remove previously added highlight or marker.
+     */
+    removeHighlight() {
+        this.#highlights.clearHighlight();
     }
 
     whenDisplayed(): Promise<void> {

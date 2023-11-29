@@ -1,36 +1,39 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
-import { expect, it } from "vitest";
+import { afterEach, expect, it } from "vitest";
 import OlMap from "ol/Map";
-import {
-    removeHighlightOrMarker,
-    addHighlightOrMarkerAndZoom,
-    calculateBufferedExtent
-} from "./ResultHandler";
+import { Highlights, calculateBufferedExtent } from "./Highlights";
 import { LineString, Point, Polygon } from "ol/geom";
 import { containsExtent } from "ol/extent";
+import View from "ol/View";
+
+let _highlights: Highlights | undefined;
+afterEach(() => {
+    _highlights?.destroy();
+    _highlights = undefined;
+});
 
 it("should successfully zoom and add marker for point geometries", async () => {
-    const map = new OlMap();
+    const { map, highlights } = setup();
 
     const point = new Point([852011.307424, 6788511.322702]);
     const zoomLevel = map.getView().getZoom();
+    expect(zoomLevel).toBeTruthy();
 
-    addHighlightOrMarkerAndZoom(map, [point], {});
+    highlights.addHighlightOrMarkerAndZoom([point], {});
 
     const newZoomLevel = map.getView().getZoom();
-
+    expect(zoomLevel).toBeTruthy();
     expect(zoomLevel).not.toEqual(newZoomLevel);
 
     const layers = map.getLayers().getArray();
-    const pointLayer = layers.find((l) => l.getClassName().includes("search_result_layer"));
-
+    const pointLayer = layers.find((l) => l.getClassName().includes("highlight-layer"));
     expect(pointLayer).toBeDefined();
 });
 
 it("should successfully zoom and highlight for line or polygon geometries", async () => {
-    const map = new OlMap();
+    const { map, highlights } = setup();
 
     const line = new LineString([
         [851890.680238, 6788133.616293],
@@ -38,20 +41,19 @@ it("should successfully zoom and highlight for line or polygon geometries", asyn
     ]);
     const zoomLevel = map.getView().getZoom();
 
-    addHighlightOrMarkerAndZoom(map, [line], {});
+    highlights.addHighlightOrMarkerAndZoom([line], {});
 
     const newZoomLevel = map.getView().getZoom();
-
+    expect(newZoomLevel).toBeTruthy();
     expect(zoomLevel).not.toEqual(newZoomLevel);
 
     const layers = map.getLayers().getArray();
-    const lineLayer = layers.find((l) => l.getClassName().includes("search_result_layer"));
-
+    const lineLayer = layers.find((l) => l.getClassName().includes("highlight-layer"));
     expect(lineLayer).toBeDefined();
 });
 
 it("should successfully remove previously added markers or highlights", async () => {
-    const map = new OlMap();
+    const { map, highlights } = setup();
 
     const point = new Point([852011.307424, 6788511.322702]);
     const polygon = new Polygon([
@@ -63,20 +65,18 @@ it("should successfully remove previously added markers or highlights", async ()
         ]
     ]);
 
-    addHighlightOrMarkerAndZoom(map, [point], {});
-    addHighlightOrMarkerAndZoom(map, [polygon], {});
+    highlights.addHighlightOrMarkerAndZoom([point], {});
+    highlights.addHighlightOrMarkerAndZoom([polygon], {});
 
     const layers = map.getLayers().getArray();
-    const searchResultLayers = layers.filter((l) =>
-        l.getClassName().includes("search_result_layer")
-    );
+    const searchResultLayers = layers.filter((l) => l.getClassName().includes("highlight-layer"));
 
     expect(searchResultLayers).toBeDefined();
     expect(searchResultLayers.length).toBe(1);
 });
 
 it("should successfully remove all markers or highlights", async () => {
-    const map = new OlMap();
+    const { map, highlights } = setup();
 
     const points = [
         new Point([852011.307424, 6788511.322702]),
@@ -84,65 +84,77 @@ it("should successfully remove all markers or highlights", async () => {
         new Point([851518.049725, 6788651.954891])
     ];
 
-    addHighlightOrMarkerAndZoom(map, points, {});
+    highlights.addHighlightOrMarkerAndZoom(points, {});
 
     const addedLayer = map
         .getLayers()
         .getArray()
-        .find((l) => l.getClassName().includes("search_result_layer"));
+        .find((l) => l.getClassName().includes("highlight-layer"));
 
     expect(addedLayer).toBeDefined();
 
-    removeHighlightOrMarker(map);
+    highlights.clearHighlight();
 
     const layerAfterRemove = map
         .getLayers()
         .getArray()
-        .find((l) => l.getClassName().includes("search_result_layer"));
+        .find((l) => l.getClassName().includes("highlight-layer"));
     expect(layerAfterRemove).toBeUndefined();
 });
 
 it("should calculate a buffered extent of a given extent", async () => {
     const extent = [844399.851466, 6788384.425292, 852182.096409, 6794764.528497];
-    const bufferedExtent = calculateBufferedExtent(extent);
-
+    const bufferedExtent = calculateBufferedExtent(extent)!;
     expect(bufferedExtent).toBeDefined();
-
-    bufferedExtent && expect(containsExtent(bufferedExtent, extent)).toBe(true);
+    expect(containsExtent(bufferedExtent, extent)).toBe(true);
 });
 
 it("should zoom the map to the extent of the geometries but not further than the defined maxZoom", async () => {
-    const map = new OlMap();
+    const { map, highlights } = setup();
 
     const line = new LineString([
         [848107.047338, 6790579.601198],
         [849081.619449, 6793197.569417]
     ]);
 
-    addHighlightOrMarkerAndZoom(map, [line], {});
+    highlights.addHighlightOrMarkerAndZoom([line], {});
     const mapZoom = map.getView().getZoom();
 
     //default maxZoom is 20
     expect(mapZoom).toBeLessThanOrEqual(20);
 
-    addHighlightOrMarkerAndZoom(map, [line], { maxZoom: 13 });
+    highlights.addHighlightOrMarkerAndZoom([line], { maxZoom: 13 });
     const mapZoom2 = map.getView().getZoom();
 
     expect(mapZoom2).toBeLessThanOrEqual(13);
 });
 
 it("should zoom the map to the default or configured zoom level if there is no extent", async () => {
-    const map = new OlMap();
+    const { map, highlights } = setup();
 
     const point = new Point([852011.307424, 6788511.322702]);
 
-    addHighlightOrMarkerAndZoom(map, [point], {});
+    highlights.addHighlightOrMarkerAndZoom([point], {});
     const defaultZoom = map.getView().getZoom();
 
     expect(defaultZoom).toStrictEqual(17);
 
-    addHighlightOrMarkerAndZoom(map, [point], { zoom: 12 });
+    highlights.addHighlightOrMarkerAndZoom([point], { zoom: 12 });
     const configuredZoom = map.getView().getZoom();
 
     expect(configuredZoom).toStrictEqual(12);
 });
+
+function setup() {
+    const view = new View({
+        center: [1, 2],
+        zoom: 5
+    });
+    const map = new OlMap({
+        view: view
+    });
+    map.setSize([500, 500]);
+
+    const highlights = (_highlights = new Highlights(map));
+    return { map, highlights };
+}
