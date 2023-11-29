@@ -1,6 +1,8 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { SearchSource, SearchResult } from "@open-pioneer/search";
+import { Geometry } from "ol/geom";
+import { SearchOptions } from "@open-pioneer/search/api";
 
 const fakeStreetData = [
     {
@@ -116,6 +118,18 @@ export class FakeRiverSource implements SearchSource {
     }
 }
 
+interface NominatimResponse {
+    display_name: string;
+    geojson: {
+        type: string;
+        coordinates: [[number, number]];
+    };
+    boundingbox: string[];
+    lat: number;
+    lon: number;
+    importance: number;
+}
+
 type ValidSearchParams = "city" | "street";
 
 // https://github.com/osm-search/Nominatim and https://nominatim.openstreetmap.org/
@@ -132,9 +146,10 @@ export class NominatimGeocoder implements SearchSource {
         const signal = options?.signal;
         const url = this.#getUrl(inputValue);
 
-        const responses = await request(url, signal);
+        const responses = (await request(url, signal)) as NominatimResponse[];
         return responses.map(
             (response, idx): SearchResult => ({
+                // TODO, generate good IDs from server. alternative uuid v4
                 id: idx,
                 label: response.display_name,
                 properties: {
@@ -145,32 +160,88 @@ export class NominatimGeocoder implements SearchSource {
     }
 
     #getUrl(inputValue: string): string {
+        // TODO: URL Klasse benutzen mit searchParameters, alternativ mit encodeURIComponent
         return encodeURI(
             `https://nominatim.openstreetmap.org/search?${this.searchParameterName}=${inputValue}&country=Germany&polygon_geojson=1&format=jsonv2`
         );
     }
 }
 
-interface NominatimResponse {
-    display_name: string;
-    geojson: {
+interface PhotonResponseFeature {
+    geometry: Geometry;
+    properties: {
+        osm_id: number;
+        osm_value: string;
+        name: string;
+        city: string;
+        postcode: string;
+        country: string;
         type: string;
-        coordinates: [[number, number]];
     };
-    boundingbox: string[];
-    lat: number;
-    lon: number;
-    importance: number;
 }
 
-const request = async (
-    url: string,
-    signal?: AbortSignal | undefined
-): Promise<NominatimResponse[] | []> => {
+interface PhotonResponse {
+    features: PhotonResponseFeature[];
+}
+
+export class PhotonGeocoder implements SearchSource {
+    label: string;
+    filteredTypes: string[];
+
+    constructor(label: string, filteredTypes: string[]) {
+        this.label = label;
+        this.filteredTypes = filteredTypes;
+    }
+
+    async request(
+        inputValue: string,
+        limit: number,
+        signal?: AbortSignal | undefined
+    ): Promise<PhotonResponse> {
+        const url = new URL("https://photon.komoot.io/api?");
+        url.searchParams.set("q", inputValue);
+        url.searchParams.set("lang", "de");
+        url.searchParams.set("lat", "51.961563");
+        url.searchParams.set("lon", "7.628202");
+        url.searchParams.set("limit", limit.toString());
+        const response = await fetch(url, { signal });
+        if (!response.ok) {
+            throw new Error("Request failed: " + response.status);
+        }
+        const result = (await response.json()) as PhotonResponse;
+        return result;
+    }
+
+    createLabel(feature: PhotonResponseFeature) {
+        return `${feature.properties.name} (${
+            feature.properties.osm_value ? feature.properties.osm_value + ", " : ""
+        }${feature.properties.postcode ? feature.properties.postcode + ", " : ""}${
+            feature.properties.city ? feature.properties.city + ", " : ""
+        }${feature.properties.country ? feature.properties.country + ")" : ")"}`;
+    }
+
+    async search(inputValue: string, options: SearchOptions): Promise<SearchResult[]> {
+        const response = await this.request(inputValue, 100, options.signal);
+        return response.features
+            .filter((feature: PhotonResponseFeature) =>
+                this.filteredTypes.includes(feature.properties.type)
+            )
+            .map(
+                (feature: PhotonResponseFeature, idx: number): SearchResult => ({
+                    id: feature.properties.osm_id || idx,
+                    label: this.createLabel(feature),
+                    geometry: feature.geometry,
+                    properties: feature.properties
+                })
+            );
+    }
+}
+
+async function request(url: string, signal?: AbortSignal | undefined): Promise<unknown[] | []> {
     const response = await fetch(url, { signal });
     if (!response.ok) {
         throw new Error("Request failed: " + response.status);
     }
     const result = await response.json();
     return result;
-};
+}
