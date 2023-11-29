@@ -234,7 +234,7 @@ it("results in an error, if using the same layer id twice", async () => {
     );
 });
 
-it("supports reverse lookup from open layers layer", async () => {
+it("supports reverse lookup from OpenLayers layer", async () => {
     const rawL1 = new TileLayer({
         source: new OSM()
     });
@@ -259,7 +259,7 @@ it("supports reverse lookup from open layers layer", async () => {
     expect(l2).toBeUndefined();
 });
 
-it("registering the same open layers layer twice throws an error", async () => {
+it("registering the same OpenLayers layer twice throws an error", async () => {
     const rawL1 = new TileLayer({
         source: new OSM()
     });
