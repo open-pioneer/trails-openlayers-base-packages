@@ -147,7 +147,7 @@ it("should zoom the map to the default or configured zoom level if there is no e
 
 function setup() {
     const view = new View({
-        center: [1, 2],
+        center: [0, 0],
         zoom: 5
     });
     const map = new OlMap({
