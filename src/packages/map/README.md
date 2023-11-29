@@ -266,7 +266,7 @@ layer.deleteAttribute("foo");
 To create an OGC API Features layer, use the `ogc-features` package.
 Details about the necessary steps are described in the package's [README](../ogc-features/README.md) file.
 
-##### Mapbox / MapLibre styles
+###### Mapbox / MapLibre styles
 
 To use layers of a Mapbox / MapLibre style document, use the class `MapboxVectorLayer` from the package `ol-mapbox-style` as in the following sample:
 
@@ -303,17 +303,15 @@ export class MapConfigProviderImpl implements MapConfigProvider {
 }
 ```
 
-Because of the changed licence of Mapbox as of version 2.0, we recommend to override the implementation with the code of MapLibre (see the main package.json of this repository for a sample).
+Because of the changed license of Mapbox as of version 2.0, we recommend to override the implementation with the code of MapLibre (see the main package.json of this repository for a sample).
 
-##### OGC API - TILES (Vector tiles)
+##### OGC API Tiles
 
-OGC Tiles are available in Open Layers by default.
-see [OGC Tiles API](https://ogcapi.ogc.org/tiles/overview.html)
-see [OpenLayers OGC API](https://openlayers.org/en/latest/apidoc/module-ol_source_OGCVectorTile-OGCVectorTile.html)
+OGC API Tiles are available in [OpenLayers](https://openlayers.org/en/latest/apidoc/module-ol_source_OGCVectorTile-OGCVectorTile.html) by default.
 
-Please note Vector tile layer can only be displayed in a map that has the same projection like the layer!
+> IMPORTANT: The configured vector tile layer must have the same projection like the map. Otherwise OGC API Tiles cannot displayed correctly in a map.
 
-Example: How to configurate a Vector tiles layer:
+Example: How to configure a vector tile layer:
 
 ```ts
 new VectorTileLayer({

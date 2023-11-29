@@ -2,4 +2,4 @@
 "@open-pioneer/map": patch
 ---
 
-Added support for OGC Vector tiles.
+Add OGC API Tiles support

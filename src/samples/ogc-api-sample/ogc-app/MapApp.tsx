@@ -17,7 +17,7 @@ export function MapApp() {
                 title={
                     <Box textAlign="center" py={1}>
                         <SectionHeading size={"md"}>
-                            Open Pioneer - OGC-Feature-Sample
+                            Open Pioneer - OGC API Features and OGC API Tiles Sample
                         </SectionHeading>
                     </Box>
                 }
@@ -59,11 +59,14 @@ export function MapApp() {
                             >
                                 <Text as="b">Description</Text>
                                 <Text>
-                                    This application can be used to test vector tiles. Vector Tiles
-                                    cannot be reprojected and require the map to use the same
-                                    projection. Currently all known MVT vector tile sets are using
-                                    WebMercator, making them unusable in the Default Sample App
-                                    which uses ETRS89/UTM zone 32N. This Sample App uses
+                                    This application can be used to test OGC API Features and OGC
+                                    API Tiles.
+                                </Text>
+                                <Text>
+                                    Vector Tiles cannot be reprojected and require the map to use
+                                    the same projection. Currently all known MVT vector tile sets
+                                    are using WebMercator, making them unusable in the Default
+                                    Sample App which uses ETRS89/UTM zone 32N. This Sample App uses
                                     WebMercator.
                                 </Text>
                             </VStack>

@@ -1,5 +1,5 @@
 {
-    "name": "ogc-feature-app",
+    "name": "ogc-api-app",
     "private": true,
     "dependencies": {
         "@open-pioneer/basemap-switcher": "workspace:^",

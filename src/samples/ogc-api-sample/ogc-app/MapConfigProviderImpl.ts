@@ -72,7 +72,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     })
                 }),
                 new SimpleLayer({
-                    title: "Abschnitte/Äste mit Unfällen (Mapbox Style)",
+                    title: "Abschnitte / Äste mit Unfällen (Mapbox Style)",
                     visible: false,
                     olLayer: new MapboxVectorLayer({
                         styleUrl: "https://demo.ldproxy.net/strassen/styles/default?f=mbs"
