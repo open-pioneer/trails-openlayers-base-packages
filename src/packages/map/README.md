@@ -307,7 +307,7 @@ Because of the changed license of Mapbox as of version 2.0, we recommend to over
 
 ##### OGC API Tiles
 
-OGC API Tiles are available in [OpenLayers](https://openlayers.org/en/latest/apidoc/module-ol_source_OGCVectorTile-OGCVectorTile.html) by default.
+OpenLayers supports OGC API Tiles by default (see [OpenLayers API](https://openlayers.org/en/latest/apidoc/module-ol_source_OGCVectorTile-OGCVectorTile.html)).
 
 > IMPORTANT: The configured vector tile layer must have the same projection like the map. Otherwise OGC API Tiles cannot displayed correctly in a map.
 
