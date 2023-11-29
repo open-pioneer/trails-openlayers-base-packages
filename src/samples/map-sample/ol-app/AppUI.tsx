@@ -19,7 +19,7 @@ import { useIntl } from "open-pioneer:react-hooks";
 import { useId, useMemo, useState } from "react";
 import { PiListLight, PiMapTrifold, PiRulerLight } from "react-icons/pi";
 import { MAP_ID } from "./MapConfigProviderImpl";
-import { NominatimGeocoder, PhotonGeocoder } from "./search-source-examples/testSources";
+import { PhotonGeocoder } from "./search-source-examples/testSources";
 
 const sources = [new PhotonGeocoder("Photon Geocoder", ["city", "street"])];
 
