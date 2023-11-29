@@ -29,8 +29,7 @@ export interface OgcFeatureSearchSourceOptions {
      * Render function to create custom a label. If `renderLabelFunction` is configured,
      * `searchProperty` and `labelProperty` will be used as a fallback
      */
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    renderLabelFunction?: (props: any) => void;
+    renderLabelFunction?: (feature: FeatureResponse) => void;
 
     /**
      * Process function to modify the original URL
@@ -53,15 +52,15 @@ export class OgcFeatureSearchSource implements SearchSource {
 
         try {
             const responses = await request(url, signal);
-            return responses.features.map((response) => ({
-                ...response,
+            return responses.features.map((feature) => ({
+                ...feature,
                 id: uuid4v(),
                 label:
-                    this.options.renderLabelFunction?.(response) ||
-                    response.properties[
+                    this.options.renderLabelFunction?.(feature) ||
+                    feature.properties[
                         this.options.labelProperty
-                            ? (this.options.labelProperty as keyof typeof response.properties)
-                            : (this.options.searchProperty as keyof typeof response.properties)
+                            ? (this.options.labelProperty as keyof typeof feature.properties)
+                            : (this.options.searchProperty as keyof typeof feature.properties)
                     ]
             })) satisfies SearchResult[];
         } catch (error) {
@@ -80,23 +79,22 @@ export class OgcFeatureSearchSource implements SearchSource {
     }
 }
 
-interface OgcFeatureSearchResponse {
-    features: [
-        {
-            properties: {};
-        }
-    ];
-    links?: object[];
+interface FeatureResponse {
+    id: Record<string, string | number>;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    properties: any;
+}
+
+interface SearchResponse {
+    features: FeatureResponse[];
+    links?: Record<string, unknown>[];
     numberMatched?: number;
     numberReturned?: number;
     timeStamp?: string;
     type?: string;
 }
 
-const request = async (
-    url: string,
-    signal?: AbortSignal | undefined
-): Promise<OgcFeatureSearchResponse> => {
+const request = async (url: string, signal?: AbortSignal | undefined): Promise<SearchResponse> => {
     try {
         const response = await fetch(url, { signal });
         if (!response.ok) {

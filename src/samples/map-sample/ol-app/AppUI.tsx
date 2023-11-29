@@ -28,8 +28,8 @@ const sources = [
         collectionId: "managementrestrictionorregulationzone",
         searchProperty: "thematicId",
         labelProperty: "name",
-        renderLabelFunction(response) {
-            return response?.properties?.name + " (" + response?.id + ")";
+        renderLabelFunction(feature) {
+            return feature?.properties?.name + " (" + feature?.id + ")";
         }
     }),
     new OgcFeatureSearchSource("Verwaltungseinheit", {
