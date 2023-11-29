@@ -24,6 +24,10 @@ export interface GeolocationProps extends CommonComponentProps, RefAttributes<HT
      */
     mapId: string;
     /**
+     * The default maximal zoom level
+     */
+    maxZoom?: number;
+    /**
      * Style to be applied for the positioning highlight feature.
      */
     positionFeatureStyle?: StyleLike;
@@ -44,7 +48,7 @@ export const Geolocation: FC<GeolocationProps> = forwardRef(function Geolocation
     props: GeolocationProps,
     ref: ForwardedRef<HTMLButtonElement>
 ) {
-    const { mapId, positionFeatureStyle, accuracyFeatureStyle, trackingOptions } = props;
+    const { mapId, maxZoom, positionFeatureStyle, accuracyFeatureStyle, trackingOptions } = props;
     const { containerProps } = useCommonComponentProps("geolocation", props);
 
     const supportsGeolocation = !!navigator.geolocation;
@@ -52,15 +56,27 @@ export const Geolocation: FC<GeolocationProps> = forwardRef(function Geolocation
     const [isLoading, setLoading] = useState<boolean>(false);
     const { map } = useMapModel(mapId);
     const intl = useIntl();
-
     const notificationService = useService("notifier.NotificationService");
 
     const controller = useController(
         map,
+        maxZoom,
         trackingOptions,
         positionFeatureStyle,
         accuracyFeatureStyle
     );
+
+    const label = (() => {
+        if (!supportsGeolocation) {
+            return intl.formatMessage({ id: "locateNotSupported" });
+        }
+
+        if (isActive) {
+            return intl.formatMessage({ id: "locateMeEnd" });
+        } else {
+            return intl.formatMessage({ id: "locateMeStart" });
+        }
+    })();
 
     useEffect(() => {
         if (controller === undefined) {
@@ -123,11 +139,7 @@ export const Geolocation: FC<GeolocationProps> = forwardRef(function Geolocation
     return (
         <ToolButton
             ref={ref}
-            label={
-                isActive
-                    ? intl.formatMessage({ id: "locateMeEnd" })
-                    : intl.formatMessage({ id: "locateMeStart" })
-            }
+            label={label}
             icon={<MdMyLocation />}
             onClick={() => toggleActiveState()}
             isActive={isActive}
@@ -140,6 +152,7 @@ export const Geolocation: FC<GeolocationProps> = forwardRef(function Geolocation
 
 function useController(
     map: MapModel | undefined,
+    maxZoom: number | undefined,
     trackingOptions: PositionOptions | undefined,
     positionFeatureStyle: StyleLike | undefined,
     accuracyFeatureStyle: StyleLike | undefined
@@ -163,5 +176,8 @@ function useController(
     useEffect(() => {
         controller?.setAccuracyFeatureStyle(accuracyFeatureStyle);
     }, [controller, accuracyFeatureStyle]);
+    useEffect(() => {
+        controller?.setMaxZoom(maxZoom);
+    }, [controller, maxZoom]);
     return controller;
 }

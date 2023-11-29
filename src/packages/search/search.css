@@ -1,0 +1,27 @@
+.search-component .chakra-divider {
+    display: none;
+}
+
+.search-component .search-highlighted-match {
+    font-weight: bold;
+}
+
+.search-component .search-value-container {
+    cursor: text;
+    padding-left: 30px !important;
+}
+
+.search-component .search-invisible {
+    display: none;
+}
+
+/* Exposition only
+
+.search-option {
+}
+
+.search-no-match {
+}
+
+.search-loading-text {
+} */

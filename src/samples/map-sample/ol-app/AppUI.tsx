@@ -1,23 +1,27 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box, Flex, Divider } from "@open-pioneer/chakra-integration";
+import { Box, Divider, Flex } from "@open-pioneer/chakra-integration";
 import { CoordinateViewer } from "@open-pioneer/coordinate-viewer";
+import { Geolocation } from "@open-pioneer/geolocation";
 import { MapAnchor, MapContainer } from "@open-pioneer/map";
 import { InitialExtent, ZoomIn, ZoomOut } from "@open-pioneer/map-navigation";
 import { Measurement } from "@open-pioneer/measurement";
+import { Notifier } from "@open-pioneer/notifier";
 import { OverviewMap } from "@open-pioneer/overview-map";
 import { SectionHeading, TitledSection, ToolButton } from "@open-pioneer/react-utils";
-import { ScaleViewer } from "@open-pioneer/scale-viewer";
-import { Toc } from "@open-pioneer/toc";
 import { ScaleBar } from "@open-pioneer/scale-bar";
+import { ScaleViewer } from "@open-pioneer/scale-viewer";
+import { Search } from "@open-pioneer/search";
+import { Toc } from "@open-pioneer/toc";
 import TileLayer from "ol/layer/Tile.js";
 import OSM from "ol/source/OSM.js";
 import { useIntl } from "open-pioneer:react-hooks";
 import { useId, useMemo, useState } from "react";
-import { PiMapTrifold, PiRulerLight, PiListLight } from "react-icons/pi";
+import { PiListLight, PiMapTrifold, PiRulerLight } from "react-icons/pi";
 import { MAP_ID } from "./MapConfigProviderImpl";
-import { Geolocation } from "@open-pioneer/geolocation";
-import { Notifier } from "@open-pioneer/notifier";
+import { PhotonGeocoder } from "./search-source-examples/testSources";
+
+const sources = [new PhotonGeocoder("Photon Geocoder", ["city", "street"])];
 
 export function AppUI() {
     const intl = useIntl();
@@ -70,6 +74,30 @@ export function AppUI() {
                         role="main"
                         aria-label={intl.formatMessage({ id: "ariaLabel.map" })}
                     >
+                        <Box
+                            backgroundColor="white"
+                            borderWidth="1px"
+                            borderRadius="lg"
+                            padding={2}
+                            boxShadow="lg"
+                            mt={5}
+                            className="search-top-center-placement"
+                        >
+                            <Search
+                                mapId={MAP_ID}
+                                sources={sources}
+                                maxResultsPerGroup={10}
+                                onSelect={(event) => {
+                                    console.debug(
+                                        "The user selected the following item: ",
+                                        event.result
+                                    );
+                                }}
+                                onClear={() => {
+                                    console.debug("The user cleared the selected search item");
+                                }}
+                            />
+                        </Box>
                         <MapAnchor position="top-left" horizontalGap={10} verticalGap={10}>
                             {(showToc || measurementIsActive) && (
                                 <Box
@@ -78,6 +106,7 @@ export function AppUI() {
                                     borderRadius="lg"
                                     padding={2}
                                     boxShadow="lg"
+                                    maxWidth={350}
                                 >
                                     {showToc && (
                                         <Box role="dialog" aria-labelledby={tocTitleId}>

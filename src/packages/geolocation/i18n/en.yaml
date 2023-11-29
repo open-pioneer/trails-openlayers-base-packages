@@ -1,9 +1,9 @@
 messages:
-  locateNotSupported: Geolocation is not supported
+  locateNotSupported: Geolocation is not supported.
   locateMeStart: Start geolocation
   locateMeEnd: Stop geolocation
   error: Error
-  permissionDenied: Geolocation was canceled
-  positionUnavailable: Geolocation position cannot be determined
-  timeout: Geolocation was canceled due to timeout
-  unknownError: An unexpected error occurred during geolocation
+  permissionDenied: Geolocation was canceled.
+  positionUnavailable: Geolocation position cannot be determined.
+  timeout: Geolocation was canceled due to timeout.
+  unknownError: An unexpected error occurred during geolocation.
