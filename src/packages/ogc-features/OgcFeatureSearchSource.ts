@@ -32,9 +32,9 @@ export interface OgcFeatureSearchSourceOptions {
     renderLabelFunction?: (feature: FeatureResponse) => void;
 
     /**
-     * Process function to modify the original URL
+     * Rewrite function to modify the original URL
      */
-    processUrlFunction?: () => void;
+    rewriteUrlFunction?: (url: URL) => void;
 }
 
 export class OgcFeatureSearchSource implements SearchSource {
@@ -51,7 +51,8 @@ export class OgcFeatureSearchSource implements SearchSource {
         const url = this.#getUrl(inputValue);
 
         try {
-            const responses = await request(url, signal);
+            const responses = await request(this.options.rewriteUrlFunction?.(url) || url, signal);
+
             return responses.features.map((feature) => ({
                 ...feature,
                 id: uuid4v(),
@@ -72,10 +73,15 @@ export class OgcFeatureSearchSource implements SearchSource {
         }
     }
 
-    #getUrl(inputValue: string): string {
-        return encodeURI(
-            `${this.options.baseUrl}/collections/${this.options.collectionId}/items?${this.options.searchProperty}=*${inputValue}*&f=json`
+    #getUrl(inputValue: string): URL {
+        const url = new URL(
+            `${this.options.baseUrl}/collections/${this.options.collectionId}/items?`
         );
+
+        url.searchParams.set(this.options.searchProperty, `*${inputValue}*`);
+        url.searchParams.set("f", "json");
+
+        return url;
     }
 }
 
@@ -94,7 +100,7 @@ interface SearchResponse {
     type?: string;
 }
 
-const request = async (url: string, signal?: AbortSignal | undefined): Promise<SearchResponse> => {
+const request = async (url: URL, signal?: AbortSignal | undefined): Promise<SearchResponse> => {
     try {
         const response = await fetch(url, { signal });
         if (!response.ok) {
