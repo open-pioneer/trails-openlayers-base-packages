@@ -7,12 +7,11 @@ import { MapAnchor, MapContainer } from "@open-pioneer/map";
 import { InitialExtent, ZoomIn, ZoomOut } from "@open-pioneer/map-navigation";
 import { Measurement } from "@open-pioneer/measurement";
 import { Notifier } from "@open-pioneer/notifier";
-import { NominatimGeocoder } from "./search-source-examples/testSources";
-import { Search } from "@open-pioneer/search";
 import { OverviewMap } from "@open-pioneer/overview-map";
 import { SectionHeading, TitledSection, ToolButton } from "@open-pioneer/react-utils";
 import { ScaleBar } from "@open-pioneer/scale-bar";
 import { ScaleViewer } from "@open-pioneer/scale-viewer";
+import { Search } from "@open-pioneer/search";
 import { Toc } from "@open-pioneer/toc";
 import TileLayer from "ol/layer/Tile.js";
 import OSM from "ol/source/OSM.js";
@@ -20,6 +19,7 @@ import { useIntl } from "open-pioneer:react-hooks";
 import { useId, useMemo, useState } from "react";
 import { PiListLight, PiMapTrifold, PiRulerLight } from "react-icons/pi";
 import { MAP_ID } from "./MapConfigProviderImpl";
+import { NominatimGeocoder } from "./search-source-examples/testSources";
 import { OgcFeaturesSearchSource } from "@open-pioneer/ogc-features";
 
 const sources = [
@@ -133,6 +133,7 @@ export function AppUI() {
                                     borderRadius="lg"
                                     padding={2}
                                     boxShadow="lg"
+                                    maxWidth={350}
                                 >
                                     {showToc && (
                                         <Box role="dialog" aria-labelledby={tocTitleId}>

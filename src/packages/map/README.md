@@ -294,8 +294,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                 {
                     title: "Abschnitte/Äste mit Unfällen (Mapbox Style)",
                     layer: new MapboxVectorLayer({
-                        styleUrl: "https://demo.ldproxy.net/strassen/styles/default?f=mbs",
-                        accessToken: null
+                        styleUrl: "https://demo.ldproxy.net/strassen/styles/default?f=mbs"
                     })
                 }
             ]
@@ -303,11 +302,6 @@ export class MapConfigProviderImpl implements MapConfigProvider {
     }
 }
 ```
-
-As with the current version 12.0.0 of `ol-mapbox-style`, it is not possible to use the MapboxVectorLayer
-with styleUrls in format `mbs` (parameter `f=mbs`) due to a bug. A patch has been provided for this and is active
-with the current version of the trails base package.
-The patch enables the user to explicitly set the `accessToken` to `null`, if it is not needed/supported.
 
 Because of the changed licence of Mapbox as of version 2.0, we recommend to override the implementation with the code of MapLibre (see the main package.json of this repository for a sample).
 

@@ -7,7 +7,7 @@ exports[`should successfully create a measurement component 1`] = `
   data-theme="light"
 >
   <p
-    class="chakra-text css-93tr2s"
+    class="chakra-text css-sfajb0"
     data-theme="light"
   >
     measurementInfoText

@@ -1,111 +1,55 @@
 # @open-pioneer/search
 
-This package provides a UI component to perform a search on given datasources.
+This package provides a UI component to perform a search on given search sources.
+
+The search results are presented as a grouped list, one group for each search source.
+This list is sorted by the given order of search sources and the order of the search results inside is
+defined by your implementation of the search source.
 
 ## Usage
 
 To use the search component you have to import `Search` from `@open-pioneer/search`.
-The mandatory properties of the `Search` component are `mapId` and `sources` (datasources to be searched on).
-You have to implement the function `search` for each datasource.
+The mandatory properties of the `Search` component are `mapId` and `sources` (search source to be searched on):
 
 ```tsx
-import { Search, Datasource, Suggestion } from "@open-pioneer/search";
-import { MAP_ID } from "./MapConfigProviderImpl";
-
-const datasources: DataSource[] = [
-    {
-        /**
-         * The label of the data source.
-         *
-         * This will be displayed by the user interface when results from this data source are shown.
-         */
-        label: "My example REST-Service",
-        /**
-         * Performs a search and returns a list of suggestions.
-         *
-         * Implementations should return the suggestions ordered by priority (best match first), if possible.
-         *
-         * The provided `AbortSignal` in `options.signal` is used to cancel outdated requests.
-         */
-        search: (inputValue: string, options: { signal: AbortSignal }): Promise<Suggestion[]> => {
-            // to be implemented!
-        }
-    }
-];
-
-return (
-    //...
-    <Box className="search-top-center-placement">
-        <Search mapId={MAP_ID} sources={datasources} />
-    </Box>
-    //...
-);
+<Search mapId={MAP_ID} sources={searchsources} />
 ```
-
-The results/suggestions are presented as a grouped list, one group for each datasource.
-This list is sorted by the given order of datasources and the order of the items inside are
-defined the implementation of the datasource.
-
-If you want to listen to the events `onSelect` and `onClear`, you can provide optional callback functions to the component.
-In case of the `onSelect` event, you can access the selected suggestion by the `SelectSearchEvent` event given as parameter.
-
-```tsx
-<Search
-    mapId={MAP_ID}
-    sources={datasources}
-    onSelect={function (event: SelectSearchEvent): void {
-        // do something
-    }}
-    onClear={function (): void {
-        // do something
-    }}
-/>
-```
-
-<!--
-
-TODO: Do we really need these properties?
-
-If you want to change the background color of the datasource headings, add the optional property
-`groupHeadingBackgroundColor` as a CSS-background-color string.
-The default is pulled from the theme "trails" (trails.100)
-
-```tsx
-<Search mapId={MAP_ID} sources={datasources} groupHeadingBackgroundColor="#d5e5ec" />
-```
-
-If you want to change the background color of a focussed search suggestion, add the optional property
-`focussedItemBackgroundColor` as a CSS-background-color string.
-The default is pulled from the theme "trails" (trails.50)
-
-```tsx
-<Search mapId={MAP_ID} sources={datasources} focussedItemBackgroundColor="#eaf2f5" />
-``` -->
 
 If you want to change the typing delay, add the optional property `searchTypingDelay` (in ms).
-The default value is 500ms.
+The default value is 200ms.
 
 ```tsx
-<Search mapId={MAP_ID} sources={datasources} searchTypingDelay={1000} />
+<Search mapId={MAP_ID} sources={searchsources} searchTypingDelay={500} />
 ```
 
-If you want to see the default dropdown indicator of the component (combo box arrow), set the optional property
-`showDropdownIndicator` to true. The default is false.
+If you want to limit the maximum number of search results that should be displayed per search source (group), you can
+configure the optional property `maxResultsPerGroup`.
+The default value is 5.
 
 ```tsx
-<Search mapId={MAP_ID} sources={datasources} showDropdownIndicator={true} />
+<Search mapId={MAP_ID} sources={searchsources} maxResultsPerGroup={10} />
 ```
-
-If you want to customize the CSS of the `Option`, `NoOptionsMessage`, or `LoadingMessage`, you can use their
-class names: `search-option`, `search-no-match` or `search-loading-text`.
-
-### Configuring search sources
-
-TODO
 
 ### Listening to events
 
-TODO: select / clear
+If you want to listen to the events `onSelect` and `onClear`, you can provide optional callback functions to the component.
+In case of the `onSelect` event, you can access the selected search result (and its search source)
+from the parameter `SelectSearchEvent`.
+
+```tsx
+import { Search, SearchSelectEvent } from "@open-pioneer/search";
+// ...
+<Search
+    mapId={MAP_ID}
+    sources={datasources}
+    onSelect={(event: SearchSelectEvent) => {
+        // do something
+    }}
+    onClear={() => {
+        // do something
+    }}
+/>;
+```
 
 ### Positioning the search bar
 
@@ -134,13 +78,34 @@ To achieve a certain position in a parent node, the following snippet might be h
 </Box>
 ```
 
-### Configuring colors
-
-TODO
-
 ### Implementing a search source
 
-TODO
+You have to provide the search sources that are used by the search component by implementing
+the function `search` for each datasource:
+
+```tsx
+import { Search, SearchSource, SearchResult } from "@open-pioneer/search";
+import { MAP_ID } from "./MapConfigProviderImpl";
+
+class MySearchSource implements SearchSource {
+    // The label of this source, used as a title for this source's results.
+    label = "My sample REST-Service";
+
+    // Attempts to retrieve results for the given input string. For more details,
+    // see the API documentation of `SearchSource`.
+    async search(inputValue: string, options: SearchOptions): Promise<SearchResult[]> {
+        // implement
+    }
+}
+
+const searchsources: SearchSource[] = [new MySearchSource()];
+
+// In your JSX template:
+<Search mapId={MAP_ID} sources={searchsources} />;
+```
+
+The configured maximum number of `maxResultsPerGroup` is passed as `maxResults` inside the option parameter
+of the search function, so you are able to fetch no more results than necessary.
 
 ## License
 
