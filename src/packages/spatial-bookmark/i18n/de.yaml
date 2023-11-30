@@ -11,8 +11,8 @@ messages:
     input:
       placeholder: "Name des Lesezeichens"
     alert:
-      create: "Nach der Eingabe eines Namens können Sie das neue Bookmark speichern. Dabei wird der aktuelle Kartenausschnitt als Grundlage für die Position verwendet."
+      create: "Nach der Eingabe eines Namens können Sie das neue Lesezeichen speichern. Dabei wird der aktuelle Kartenausschnitt als Grundlage für die Position verwendet."
       delete: "Möchten Sie wirklich alle räumlichen Lesezeichen löschen?"
-      noSaved: "Sie haben keine gespeicherte Bookmarks."
+      noSaved: "Sie haben keine gespeicherten Lesezeichen."
     list:
       label: "Räumliche Lesezeichen"

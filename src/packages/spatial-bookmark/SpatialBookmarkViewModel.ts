@@ -141,7 +141,7 @@ export class SpatialBookmarkViewModel {
         this.packageNamespace.set("bookmarks", this.store.get(this.bookmarks));
     }
 
-    /** Computes an OL-Extent for the given bookmark. */
+    /** Computes an OpenLayers extent for the given bookmark. */
     private getBookmarkExtent(bookmark: Bookmark) {
         const olMap = this.map.olMap;
         const olView = olMap.getView();

@@ -26,7 +26,7 @@ import { PiCheck, PiFloppyDisk, PiMapTrifold, PiTrashSimpleLight, PiXLight } fro
 import { Bookmark, SpatialBookmarkViewModel } from "./SpatialBookmarkViewModel";
 
 /*
-    TODO: 
+    TODO:
     - listbox interaction (uparrow / downarrow / focus)
 */
 

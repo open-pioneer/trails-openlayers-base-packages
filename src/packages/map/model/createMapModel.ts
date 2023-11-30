@@ -142,7 +142,7 @@ class MapModelFactory {
                     /*
                         OpenLayers does not support configuration of the initial map extent.
                         The only relevant options here are center, zoom (and resolution).
-                        We must set those values because otherwise OL will not initialize layer sources.
+                        We must set those values because otherwise OpenLayers will not initialize layer sources.
 
                         The actual initial extent is applied once tha map has loaded and its size is known.
                     */
