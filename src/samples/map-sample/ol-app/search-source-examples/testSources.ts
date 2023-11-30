@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { SearchSource, SearchResult } from "@open-pioneer/search";
-import { Geometry } from "ol/geom";
 import { SearchOptions } from "@open-pioneer/search/api";
+import GeoJSON from "ol/format/GeoJSON";
 
 const fakeStreetData = [
     {
@@ -168,7 +168,7 @@ export class NominatimGeocoder implements SearchSource {
 }
 
 interface PhotonResponseFeature {
-    geometry: Geometry;
+    geometry: unknown; // geojson
     properties: {
         osm_id: number;
         osm_value: string;
@@ -220,20 +220,29 @@ export class PhotonGeocoder implements SearchSource {
         }${feature.properties.country ? feature.properties.country + ")" : ")"}`;
     }
 
-    async search(inputValue: string, options: SearchOptions): Promise<SearchResult[]> {
-        const response = await this.request(inputValue, 100, options.signal);
+    async search(
+        inputValue: string,
+        { mapProjection, signal }: SearchOptions
+    ): Promise<SearchResult[]> {
+        const response = await this.request(inputValue, 100, signal);
+        const geojson = new GeoJSON({
+            dataProjection: "EPSG:4326",
+            featureProjection: mapProjection
+        });
+
         return response.features
             .filter((feature: PhotonResponseFeature) =>
                 this.filteredTypes.includes(feature.properties.type)
             )
-            .map(
-                (feature: PhotonResponseFeature, idx: number): SearchResult => ({
+            .map((feature: PhotonResponseFeature, idx: number): SearchResult => {
+                const geometry = geojson.readGeometry(feature.geometry);
+                return {
                     id: feature.properties.osm_id || idx,
                     label: this.createLabel(feature),
-                    geometry: feature.geometry,
+                    geometry: geometry,
                     properties: feature.properties
-                })
-            );
+                };
+            });
     }
 }
 

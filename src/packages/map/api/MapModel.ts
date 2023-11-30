@@ -6,6 +6,8 @@ import type OlBaseLayer from "ol/layer/Base";
 import type { ExtentConfig } from "./MapConfig";
 import type { Layer, LayerBase } from "./layers";
 import type { LayerRetrievalOptions } from "./shared";
+import type { Geometry } from "ol/geom";
+import type { StyleLike } from "ol/style/Style";
 
 /** Events emitted by the {@link MapModel}. */
 export interface MapModelEvents {
@@ -13,6 +15,30 @@ export interface MapModelEvents {
     "changed:container": void;
     "changed:initialExtent": void;
     "destroy": void;
+}
+
+/** Options supported by the map model's {@link MapModel.highlightAndZoom | highlightAndZoom} method. */
+export interface HighlightOptions {
+    /**
+     * Optional styles to override the default styles.
+     */
+    highlightStyle?: HighlightStyle;
+
+    /**
+     * The zoom-level used if there is no valid extend (such as for single points).
+     */
+    pointZoom?: number;
+
+    /**
+     * The maximum zoom-level for line or polygon results.
+     */
+    maxZoom?: number;
+}
+
+export interface HighlightStyle {
+    Point?: StyleLike;
+    LineString?: StyleLike;
+    Polygon?: StyleLike;
 }
 
 /**
@@ -61,6 +87,19 @@ export interface MapModel extends EventSource<MapModelEvents> {
      * Returns a promise that resolves when the map has mounted in the DOM.
      */
     whenDisplayed(): Promise<void>;
+
+    /**
+     * Highlights the given geometries on the map.
+     * Centers and zooms the view on the geometries.
+     *
+     * Removes any previous highlights.
+     */
+    highlightAndZoom(geometries: Geometry[], options?: HighlightOptions): void;
+
+    /**
+     * Removes any existing highlights from the map.
+     */
+    removeHighlight(): void;
 }
 
 /** Events emitted by the {@link LayerCollection}. */

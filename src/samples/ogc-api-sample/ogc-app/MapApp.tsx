@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box, Flex } from "@open-pioneer/chakra-integration";
+import { Box, Flex, Text, VStack } from "@open-pioneer/chakra-integration";
 import { MapAnchor, MapContainer } from "@open-pioneer/map";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { Toc } from "@open-pioneer/toc";
@@ -17,7 +17,7 @@ export function MapApp() {
                 title={
                     <Box textAlign="center" py={1}>
                         <SectionHeading size={"md"}>
-                            Open Pioneer - OGC-Feature-Sample
+                            Open Pioneer - OGC API Features and OGC API Tiles Sample
                         </SectionHeading>
                     </Box>
                 }
@@ -47,6 +47,29 @@ export function MapApp() {
                                     />
                                 </TitledSection>
                             </Box>
+                        </MapAnchor>
+                        <MapAnchor position="top-right" horizontalGap={10} verticalGap={10}>
+                            <VStack
+                                backgroundColor="whiteAlpha.900"
+                                borderWidth="1px"
+                                borderRadius="lg"
+                                padding={2}
+                                boxShadow="lg"
+                                maxWidth="400px"
+                            >
+                                <Text as="b">Description</Text>
+                                <Text>
+                                    This application can be used to test OGC API Features and OGC
+                                    API Tiles.
+                                </Text>
+                                <Text>
+                                    Vector Tiles cannot be reprojected and require the map to use
+                                    the same projection. Currently all known MVT vector tile sets
+                                    are using WebMercator, making them unusable in the Default
+                                    Sample App which uses ETRS89/UTM zone 32N. This Sample App uses
+                                    WebMercator.
+                                </Text>
+                            </VStack>
                         </MapAnchor>
                         <MapAnchor position="bottom-right" horizontalGap={10} verticalGap={30}>
                             <Flex direction="column" gap={1} padding={1}>

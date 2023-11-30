@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>OGC-Feature-API-Layer Demo</title>
+        <title>[Demo] OGC API Features and OGC API Tiles</title>
         <link rel="icon" type="image/x-icon" href="./../../favicon.ico" />
         <style>
             html,
@@ -30,7 +30,7 @@
                 const urlParams = new URLSearchParams(queryString);
                 const lang = urlParams.get("lang");
 
-                const app = document.createElement("ogc-feature-app");
+                const app = document.createElement("ogc-api-app");
                 app.classList.add("full-height");
                 app.setAttribute("id", "test");
 

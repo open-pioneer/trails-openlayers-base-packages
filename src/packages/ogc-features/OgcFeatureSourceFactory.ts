@@ -48,7 +48,7 @@ export interface OgcFeatureSourceOptions {
 }
 
 /**
- * This function creates an OpenLayers VectorSource for OGC Features API services to be used inside
+ * This function creates an OpenLayers VectorSource for OGC API Features services to be used inside
  * an OpenLayers VectorLayer.
  *
  * @param options Options for the vector source.
@@ -124,7 +124,7 @@ export function _createVectorSource(
         try {
             const features = await loadAllFeatures(strategy, {
                 fullURL: fullURL.toString(),
-                featureFormat: vectorSrc.getFormat()!, // TODO
+                featureFormat: vectorSrc.getFormat()!,
                 queryFeatures: queryFeaturesFunc,
                 addFeatures: addFeaturesFunc,
                 limit: options.limit ?? DEFAULT_LIMIT,

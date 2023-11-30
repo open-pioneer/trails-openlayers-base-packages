@@ -119,6 +119,9 @@ function CustomClearIndicator(props: {
             mr={1}
             aria-label={clearButtonLabel}
             onClick={clickHandler}
+            // Stop select component from opening the menu.
+            // It will otherwise flash briefly because of a mouse down listener in the select.
+            onMouseDown={(e) => e.preventDefault()}
         />
     );
 }

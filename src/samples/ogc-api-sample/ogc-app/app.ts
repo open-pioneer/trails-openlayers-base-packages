@@ -18,4 +18,4 @@ const element = createCustomElement({
     }
 });
 
-customElements.define("ogc-feature-app", element);
+customElements.define("ogc-api-app", element);
