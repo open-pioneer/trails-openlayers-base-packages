@@ -13,9 +13,6 @@ patchedDependencies:
   "@changesets/assemble-release-plan@5.2.4":
     hash: ixdzxqire6z6wavv7be3kwhyxu
     path: patches/@changesets__assemble-release-plan@5.2.4.patch
-  ol-mapbox-style@12.0.0:
-    hash: f6syo2kdcenmfamxdcxezyuuyy
-    path: patches/ol-mapbox-style@12.0.0.patch
   react-select@5.7.7:
     hash: tgqf5no3gabmupyybxy4dyxowi
     path: patches/react-select@5.7.7.patch
