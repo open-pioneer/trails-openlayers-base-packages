@@ -13,6 +13,9 @@ patchedDependencies:
   '@changesets/assemble-release-plan@5.2.4':
     hash: ixdzxqire6z6wavv7be3kwhyxu
     path: patches/@changesets__assemble-release-plan@5.2.4.patch
+  react-select@5.7.7:
+    hash: brt5d3ei3vnbm5t5smyyz4ytd4
+    path: patches/react-select@5.7.7.patch
 
 importers:
 
@@ -3998,7 +4001,7 @@ packages:
       '@emotion/react': 11.11.1(@types/react@18.2.37)(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
-      react-select: 5.7.7(@types/react@18.2.37)(react-dom@18.2.0)(react@18.2.0)
+      react-select: 5.7.7(patch_hash=brt5d3ei3vnbm5t5smyyz4ytd4)(@types/react@18.2.37)(react-dom@18.2.0)(react@18.2.0)
     transitivePeerDependencies:
       - '@types/react'
     dev: false
@@ -6665,7 +6668,7 @@ packages:
       use-callback-ref: 1.3.0(@types/react@18.2.37)(react@18.2.0)
       use-sidecar: 1.1.2(@types/react@18.2.37)(react@18.2.0)
 
-  /react-select@5.7.7(@types/react@18.2.37)(react-dom@18.2.0)(react@18.2.0):
+  /react-select@5.7.7(patch_hash=brt5d3ei3vnbm5t5smyyz4ytd4)(@types/react@18.2.37)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-HhashZZJDRlfF/AKj0a0Lnfs3sRdw/46VJIRd8IbB9/Ovr74+ZIwkAdSBjSPXsFMG+u72c5xShqwLSKIJllzqw==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
@@ -6685,6 +6688,7 @@ packages:
     transitivePeerDependencies:
       - '@types/react'
     dev: false
+    patched: true
 
   /react-style-singleton@2.2.1(@types/react@18.2.37)(react@18.2.0):
     resolution: {integrity: sha512-ZWj0fHEMyWkHzKYUr2Bs/4zU6XLmq9HsgBURm7g5pAVfyn49DgUiNgY2d4lXRlYSiCif9YBGpQleewkcqddc7g==}
