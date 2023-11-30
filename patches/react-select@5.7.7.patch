@@ -7,7 +7,7 @@ index 64edb1f7f8992e1e0215a6a71370fc78c554f7c1..dfdd362097258286bd268ec95943bfbc
        // we're checking on event.target here instead of event.currentTarget, because we want to assert information
        // on events on child elements, not the document (which we've attached this handler to).
 -      if (_this.controlRef && !_this.controlRef.contains(event.target) && _this.menuListRef && !_this.menuListRef.contains(event.target)) {
-+      if (_this.controlRef && !event.composedPath().includes(_this.controlRef) && _this.menuListRef && !_this.menuListRef.contains(event.target)) {
++      if (_this.controlRef && !event.composedPath().includes(_this.controlRef) && _this.menuListRef && !event.composedPath().includes(_this.menuListRef)) {
          _this.blurInput();
        }
  

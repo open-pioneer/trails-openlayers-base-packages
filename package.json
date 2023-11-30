@@ -39,7 +39,8 @@
             "",
             "patches",
             "=======",
-            "@changesets/assemble-release-plan: don't bump to major for 0.x packages (see https://github.com/changesets/changesets/issues/1228)"
+            "@changesets/assemble-release-plan: don't bump to major for 0.x packages (see https://github.com/changesets/changesets/issues/1228)",
+            "@react-select: patched to use composedPath() in event conditions; needed for web component integration (see $TODO)"
         ],
         "overrides": {
             "semver@<7.5.2": ">=7.5.2",
