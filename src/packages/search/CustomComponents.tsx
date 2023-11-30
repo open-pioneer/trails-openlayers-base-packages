@@ -16,7 +16,7 @@ import {
 } from "chakra-react-select";
 import classNames from "classnames";
 import { useIntl } from "open-pioneer:react-hooks";
-import { MouseEvent } from "react";
+import { UIEvent } from "react";
 import { SearchGroupOption, SearchOption } from "./Search";
 
 export function MenuComp(props: MenuProps<SearchOption, false, SearchGroupOption>) {
@@ -106,7 +106,7 @@ function CustomClearIndicator(props: {
     const clearButtonLabel = intl.formatMessage({
         id: "ariaLabel.clearButton"
     });
-    const clickHandler = (e: MouseEvent) => {
+    const clickHandler = (e: UIEvent) => {
         e.preventDefault();
         e.stopPropagation();
         props.clearValue();
@@ -122,6 +122,7 @@ function CustomClearIndicator(props: {
             // Stop select component from opening the menu.
             // It will otherwise flash briefly because of a mouse down listener in the select.
             onMouseDown={(e) => e.preventDefault()}
+            onTouchEnd={clickHandler}
         />
     );
 }
