@@ -106,6 +106,7 @@ export function AppUI() {
                                     borderRadius="lg"
                                     padding={2}
                                     boxShadow="lg"
+                                    maxWidth={350}
                                 >
                                     {showToc && (
                                         <Box role="dialog" aria-labelledby={tocTitleId}>

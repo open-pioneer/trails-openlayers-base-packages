@@ -16,6 +16,10 @@ Guidelines for React components developed in this repository.
     -   it is good practice to wrap a new React component with a Chakra component (like Box)
 -   Do not use specific colors or font (sizes) in components
     -   see **Theming** below
+-   Components should be usable in different widths and heights
+    -   Do not use specific width and height in components
+    -   Components should use 100% of the parents width
+    -   Exceptions: width and height of icons, etc.
 -   If a new React component requires a value that is not part of the predefined semantic tokens, it must be stated in the documentation of the component
     -   provide a default value in this case; the component must still work if the additional semantic token is missing
 -   Components should be embeddable "anywhere" (with reasonable restrictions)

@@ -992,8 +992,8 @@ importers:
         specifier: ^8.2.0
         version: 8.2.0
       ol-mapbox-style:
-        specifier: ^12.0.0
-        version: 12.0.0(patch_hash=f6syo2kdcenmfamxdcxezyuuyy)(ol@8.2.0)
+        specifier: ^12.1.1
+        version: 12.1.1(ol@8.2.0)
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -3987,6 +3987,7 @@ packages:
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
       react-select: 5.7.7(patch_hash=tgqf5no3gabmupyybxy4dyxowi)(@types/react@18.2.37)(react-dom@18.2.0)(react@18.2.0)
+      react-select: 5.7.7(@types/react@18.2.37)(react-dom@18.2.0)(react@18.2.0)
     transitivePeerDependencies:
       - '@types/react'
     dev: false
@@ -6218,8 +6219,8 @@ packages:
       es-abstract: 1.22.1
     dev: true
 
-  /ol-mapbox-style@12.0.0(patch_hash=f6syo2kdcenmfamxdcxezyuuyy)(ol@8.2.0):
-    resolution: {integrity: sha512-rrIFh1BuXdMfl9XwKobpz7sKLAVchseowQlGdgN3WRbCnovSdTeC5RSw1lgnC334kY74y9CQ7cY2WOR5nbnpHg==}
+  /ol-mapbox-style@12.1.1(ol@8.2.0):
+    resolution: {integrity: sha512-jjIQO2BiO/GTjJO/2Idw0WQQAGorPXewZ5wEuusXM8BRXZHIa3mmDZDWoBWtb0H4VHB9RpLsTbRMj5Dquo9Etg==}
     peerDependencies:
       ol: 8.x || 7.x
     dependencies:
@@ -6227,7 +6228,6 @@ packages:
       mapbox-to-css-font: 2.4.2
       ol: 8.2.0
     dev: false
-    patched: true
 
   /ol@8.2.0:
     resolution: {integrity: sha512-/m1ddd7Jsp4Kbg+l7+ozR5aKHAZNQOBAoNZ5pM9Jvh4Etkf0WGkXr9qXd7PnhmwiC1Hnc2Toz9XjCzBBvexfXw==}
@@ -6655,6 +6655,7 @@ packages:
       use-sidecar: 1.1.2(@types/react@18.2.37)(react@18.2.0)
 
   /react-select@5.7.7(patch_hash=tgqf5no3gabmupyybxy4dyxowi)(@types/react@18.2.37)(react-dom@18.2.0)(react@18.2.0):
+  /react-select@5.7.7(@types/react@18.2.37)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-HhashZZJDRlfF/AKj0a0Lnfs3sRdw/46VJIRd8IbB9/Ovr74+ZIwkAdSBjSPXsFMG+u72c5xShqwLSKIJllzqw==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0

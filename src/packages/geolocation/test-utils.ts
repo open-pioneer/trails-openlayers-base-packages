@@ -56,11 +56,13 @@ export function setup() {
 
 export function setupWithCustomProperties() {
     const olMap = new OlMap();
+    const maxZoom: number = getCustomMaxZoom();
     const positionFeatureStyle: Style = getCustomPositionStyle();
     const accuracyFeatureStyle: Style = getCustomAccuracyStyle();
     const trackingOptions: PositionOptions = getCustomTrackingOptions();
 
     const controller = new GeolocationController(olMap, trackingOptions);
+    controller.setMaxZoom(maxZoom);
     controller.setPositionFeatureStyle(positionFeatureStyle);
     controller.setAccuracyFeatureStyle(accuracyFeatureStyle);
     return {
@@ -69,6 +71,9 @@ export function setupWithCustomProperties() {
     };
 }
 
+export function getCustomMaxZoom() {
+    return 20;
+}
 export function getCustomPositionStyle() {
     return new Style({
         image: new Circle({
