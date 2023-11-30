@@ -119,10 +119,11 @@ function CustomClearIndicator(props: {
             mr={1}
             aria-label={clearButtonLabel}
             onClick={clickHandler}
+            // needed for correct touch handling; select control would otherwise preventDefault()
+            onTouchEnd={clickHandler}
             // Stop select component from opening the menu.
             // It will otherwise flash briefly because of a mouse down listener in the select.
             onMouseDown={(e) => e.preventDefault()}
-            onTouchEnd={clickHandler}
         />
     );
 }
