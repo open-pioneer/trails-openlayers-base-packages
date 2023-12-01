@@ -11,6 +11,7 @@
         "@open-pioneer/coordinate-viewer": "workspace:^",
         "@open-pioneer/toc": "workspace:^",
         "@open-pioneer/measurement": "workspace:^",
+        "@open-pioneer/search": "workspace:^",
         "@open-pioneer/experimental-layout-sidebar": "workspace:^",
         "@open-pioneer/map": "workspace:^",
         "@open-pioneer/runtime": "^1.1.0",
@@ -28,5 +29,5 @@
         "react-dom": "^18.2.0",
         "react-icons": "^4.11.0"
     },
-    "version": "0.0.6"
+    "version": "0.0.7"
 }

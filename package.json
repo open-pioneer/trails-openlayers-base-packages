@@ -39,7 +39,8 @@
             "",
             "patches",
             "=======",
-            "@changesets/assemble-release-plan: don't bump to major for 0.x packages (see https://github.com/changesets/changesets/issues/1228)"
+            "@changesets/assemble-release-plan: don't bump to major for 0.x packages (see https://github.com/changesets/changesets/issues/1228)",
+            "react-select: patched to use composedPath() in event conditions; needed for web component integration (see $TODO)"
         ],
         "overrides": {
             "semver@<7.5.2": ">=7.5.2",
@@ -51,7 +52,7 @@
         },
         "patchedDependencies": {
             "@changesets/assemble-release-plan@5.2.4": "patches/@changesets__assemble-release-plan@5.2.4.patch",
-            "ol-mapbox-style@12.0.0": "patches/ol-mapbox-style@12.0.0.patch"
+            "react-select@5.7.7": "patches/react-select@5.7.7.patch"
         }
     },
     "dependencies": {

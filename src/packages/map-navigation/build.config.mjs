@@ -5,5 +5,8 @@ import { defineBuildConfig } from "@open-pioneer/build-support";
 
 export default defineBuildConfig({
     entryPoints: ["index"],
-    i18n: ["de", "en"]
+    i18n: ["de", "en"],
+    publishConfig: {
+        strict: true
+    }
 });

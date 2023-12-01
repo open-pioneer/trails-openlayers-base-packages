@@ -5,5 +5,8 @@ import { defineBuildConfig } from "@open-pioneer/build-support";
 
 export default defineBuildConfig({
     styles: "./scale-bar.scss",
-    entryPoints: ["index"]
+    entryPoints: ["index"],
+    publishConfig: {
+        strict: true
+    }
 });

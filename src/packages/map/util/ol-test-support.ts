@@ -11,7 +11,7 @@ export function patchOpenLayersClassesForTesting() {
         return;
     }
 
-    // Test support: open layers relies on div.offsetHeight (and Width)
+    // Test support: OpenLayers relies on div.offsetHeight (and Width)
     // plus getComputedStyle(div), which do not work as expected in happy dom.
     // The following snippet fakes a size so tests can work with the map.
     OlMap.prototype.updateSize = function () {

@@ -9,10 +9,10 @@ export default defineBuildConfig({
             provides: "notifier.NotificationService"
         }
     },
-    publishConfig: {
-        strict: true
-    },
     ui: {
         references: ["notifier.NotificationService"]
+    },
+    publishConfig: {
+        strict: true
     }
 });

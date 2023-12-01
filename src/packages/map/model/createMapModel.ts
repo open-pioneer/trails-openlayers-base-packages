@@ -83,7 +83,7 @@ class MapModelFactory {
         const initialView = mapConfig.initialView;
         const initialExtent = initialView?.kind === "extent" ? initialView.extent : undefined;
 
-        LOG.debug(`Constructing open layers map with options`, mapOptions);
+        LOG.debug(`Constructing OpenLayers map with options`, mapOptions);
 
         if (import.meta.env.VITEST) {
             patchOpenLayersClassesForTesting();
