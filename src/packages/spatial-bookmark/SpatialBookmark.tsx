@@ -96,14 +96,15 @@ function SpatialBookmarkUI(props: SpatialBookmarkProps & { viewModel: SpatialBoo
                 placeholder={intl.formatMessage({ id: "bookmark.input.placeholder" })}
                 value={bookmarkName}
                 isRequired
-                isInvalid={bookmarkName.length === 0}
+                isInvalid={bookmarkName.trim.length === 0} // use trim to avoid bookmarks with space character only
                 onChange={(event) => {
                     setBookmarkName(event.target.value);
                 }}
                 //eslint-disable-next-line
                 autoFocus
                 onKeyDown={(e) => {
-                    if (e.key === "Enter") {
+                    // add bookmark only, if valid bookmark name exists
+                    if (e.key === "Enter" && bookmarkName.trim.length !== 0) {
                         addBookmark();
                     }
                 }}
