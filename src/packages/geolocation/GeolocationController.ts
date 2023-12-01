@@ -1,23 +1,22 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import { EventEmitter, createLogger } from "@open-pioneer/core";
+import { TOPMOST_LAYER_Z, calculateBufferedExtent } from "@open-pioneer/map";
+import Feature from "ol/Feature";
+import olGeolocation, { GeolocationError } from "ol/Geolocation";
 import OlMap from "ol/Map";
+import { unByKey } from "ol/Observable";
+import { Coordinate } from "ol/coordinate";
+import type { EventsKey } from "ol/events";
+import { Extent } from "ol/extent";
+import { Polygon } from "ol/geom";
+import Point from "ol/geom/Point";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
-import Feature from "ol/Feature";
 import { Circle as CircleStyle, Fill, Stroke, Style } from "ol/style";
-import olGeolocation, { GeolocationError } from "ol/Geolocation";
-import Point from "ol/geom/Point";
-import type { EventsKey } from "ol/events";
-import { unByKey } from "ol/Observable";
 import { StyleLike } from "ol/style/Style";
-import { Polygon } from "ol/geom";
-import { Coordinate } from "ol/coordinate";
-import { EventEmitter, createLogger } from "@open-pioneer/core";
-import { TOPMOST_LAYER_Z } from "@open-pioneer/map";
-import { Extent, getHeight, getWidth } from "ol/extent";
 
 const LOG = createLogger("geolocation:GeolocationController");
-const DEFAULT_BUFFER_FACTOR = 1.2;
 const DEFAULT_MAX_ZOOM = 17;
 
 type ErrorEvent = "permission-denied" | "position-unavailable" | "timeout" | "unknown";
@@ -104,8 +103,7 @@ export class GeolocationController extends EventEmitter<Events> {
                             ?.getGeometry()
                             ?.getExtent();
                         if (accuracyGeometryExtent) {
-                            const bufferedExtent =
-                                this.calculateBufferedExtent(accuracyGeometryExtent);
+                            const bufferedExtent = calculateBufferedExtent(accuracyGeometryExtent);
                             if (!bufferedExtent) {
                                 return;
                             }
@@ -188,30 +186,6 @@ export class GeolocationController extends EventEmitter<Events> {
 
     setMaxZoom(maxZoom: number | undefined) {
         this.maxZoom = maxZoom ?? DEFAULT_MAX_ZOOM;
-    }
-
-    calculateBufferedExtent(extent: Extent) {
-        let bufferedExtent: number[] | undefined;
-        if (
-            extent &&
-            extent[0] != null &&
-            extent[1] != null &&
-            extent[2] != null &&
-            extent[3] != null
-        ) {
-            const width = getHeight(extent);
-            const height = getWidth(extent);
-            const bufferWidth = width * DEFAULT_BUFFER_FACTOR;
-            const bufferHeight = height * DEFAULT_BUFFER_FACTOR;
-
-            bufferedExtent = [
-                extent[0] - (bufferWidth - width) / 2,
-                extent[1] - (bufferHeight - height) / 2,
-                extent[2] + (bufferWidth - width) / 2,
-                extent[3] + (bufferHeight - height) / 2
-            ];
-        }
-        return bufferedExtent;
     }
 
     getMaxZoom() {

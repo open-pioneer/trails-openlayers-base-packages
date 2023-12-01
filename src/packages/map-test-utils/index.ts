@@ -31,7 +31,7 @@ export interface SimpleMapOptions {
 }
 
 /**
- * Waits until the open layers map has been mounted in the parent with the given id.
+ * Waits until the OpenLayers map has been mounted in the parent with the given id.
  */
 export async function waitForMapMount(parentTestId = "base") {
     return await waitFor(async () => {

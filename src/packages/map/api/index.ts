@@ -21,4 +21,6 @@ export {
     type UseMapModelRejected
 } from "../ui/useMapModel";
 
+export { calculateBufferedExtent } from "../util/geometry-utils";
+
 export { TOPMOST_LAYER_Z } from "../model/LayerCollectionImpl";

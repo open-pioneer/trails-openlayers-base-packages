@@ -3,7 +3,7 @@
 import { Box, Divider, Flex } from "@open-pioneer/chakra-integration";
 import { CoordinateViewer } from "@open-pioneer/coordinate-viewer";
 import { Geolocation } from "@open-pioneer/geolocation";
-import { MapAnchor, MapContainer } from "@open-pioneer/map";
+import { MapAnchor, MapContainer, useMapModel } from "@open-pioneer/map";
 import { InitialExtent, ZoomIn, ZoomOut } from "@open-pioneer/map-navigation";
 import { Measurement } from "@open-pioneer/measurement";
 import { Notifier } from "@open-pioneer/notifier";
@@ -11,7 +11,7 @@ import { OverviewMap } from "@open-pioneer/overview-map";
 import { SectionHeading, TitledSection, ToolButton } from "@open-pioneer/react-utils";
 import { ScaleBar } from "@open-pioneer/scale-bar";
 import { ScaleViewer } from "@open-pioneer/scale-viewer";
-import { Search } from "@open-pioneer/search";
+import { Search, SearchSelectEvent } from "@open-pioneer/search";
 import { Toc } from "@open-pioneer/toc";
 import TileLayer from "ol/layer/Tile.js";
 import OSM from "ol/source/OSM.js";
@@ -59,6 +59,7 @@ export function AppUI() {
     const intl = useIntl();
     const tocTitleId = useId();
     const measurementTitleId = useId();
+    const { map } = useMapModel(MAP_ID);
     const [measurementIsActive, setMeasurementIsActive] = useState<boolean>(false);
     const [showOverviewMap, setShowOverviewMap] = useState<boolean>(true);
     const [showToc, setShowToc] = useState<boolean>(true);
@@ -73,6 +74,27 @@ export function AppUI() {
 
     function toggleToc() {
         setShowToc(!showToc);
+    }
+
+    function onSearchResultSelected(event: SearchSelectEvent) {
+        console.debug("The user selected the following item: ", event.result);
+        if (!map) {
+            console.debug("Map not ready");
+            return;
+        }
+
+        const geometry = event.result.geometry;
+        if (!geometry) {
+            console.debug("Result has no geometry");
+            return;
+        }
+
+        map.highlightAndZoom([geometry]);
+    }
+
+    function onSearchCleared() {
+        console.debug("The user cleared the search");
+        map?.removeHighlight();
     }
 
     const overviewMapLayer = useMemo(
@@ -119,15 +141,8 @@ export function AppUI() {
                                 mapId={MAP_ID}
                                 sources={sources}
                                 maxResultsPerGroup={10}
-                                onSelect={(event) => {
-                                    console.debug(
-                                        "The user selected the following item: ",
-                                        event.result
-                                    );
-                                }}
-                                onClear={() => {
-                                    console.debug("The user cleared the selected search item");
-                                }}
+                                onSelect={onSearchResultSelected}
+                                onClear={onSearchCleared}
                             />
                         </Box>
                         <MapAnchor position="top-left" horizontalGap={10} verticalGap={10}>

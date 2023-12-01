@@ -33,7 +33,7 @@ it("should successfully create and destroy a mapModel", async () => {
     );
 });
 
-it("should support reverse lookup from raw open layers map", async () => {
+it("should support reverse lookup from raw OpenLayers map", async () => {
     const { mapId, registry } = await setupMap();
     const mapModel = await registry.expectMapModel(mapId);
     const olMap = mapModel.olMap;

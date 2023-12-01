@@ -18,7 +18,7 @@ export interface WMSLayerConfig extends LayerBaseConfig {
      * Additional source options for the layer's WMS source.
      *
      * NOTE: These options are intended for advanced configuration:
-     * the WMS Layer manages some of the open layers source options itself.
+     * the WMS Layer manages some of the OpenLayers source options itself.
      */
     sourceOptions?: Partial<WMSSourceOptions>;
 }
