@@ -96,7 +96,7 @@ function SpatialBookmarkUI(props: SpatialBookmarkProps & { viewModel: SpatialBoo
                 placeholder={intl.formatMessage({ id: "bookmark.input.placeholder" })}
                 value={bookmarkName}
                 isRequired
-                isInvalid={bookmarkName.trim.length === 0} // use trim to avoid bookmarks with space character only
+                isInvalid={bookmarkName.trim().length === 0} // use trim to avoid bookmarks with space character only
                 onChange={(event) => {
                     setBookmarkName(event.target.value);
                 }}
@@ -104,7 +104,7 @@ function SpatialBookmarkUI(props: SpatialBookmarkProps & { viewModel: SpatialBoo
                 autoFocus
                 onKeyDown={(e) => {
                     // add bookmark only, if valid bookmark name exists
-                    if (e.key === "Enter" && bookmarkName.trim.length !== 0) {
+                    if (e.key === "Enter" && bookmarkName.trim().length !== 0) {
                         addBookmark();
                     }
                 }}
