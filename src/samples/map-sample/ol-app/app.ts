@@ -9,7 +9,6 @@ const element = createCustomElement({
     component: AppUI,
     theme,
     appMetadata,
-    openShadowRoot: true,
     async resolveConfig(ctx) {
         const locale = ctx.getAttribute("forced-locale");
         if (!locale) {
