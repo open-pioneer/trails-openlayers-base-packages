@@ -93,7 +93,9 @@ export interface LoginEffect {
  *
  * The current state (such as session info) can be retrieved and watched for changes.
  */
-export interface AuthService extends EventSource<AuthEvents>, DeclaredService<"authentication.AuthService"> {
+export interface AuthService
+    extends EventSource<AuthEvents>,
+        DeclaredService<"authentication.AuthService"> {
     /**
      * Returns the current authentication state.
      *
@@ -146,7 +148,9 @@ export type AuthPluginEventBase = EventSource<AuthPluginEvents>;
  * during the lifetime of the plugin.
  * To implement the event, you can write `class MyPlugin extends EventEmitter<AuthPluginEvents>`.
  */
-export interface AuthPlugin extends Partial<AuthPluginEventBase>, DeclaredService<"authentication.AuthPlugin"> {
+export interface AuthPlugin
+    extends Partial<AuthPluginEventBase>,
+        DeclaredService<"authentication.AuthPlugin"> {
     /**
      * Returns the current authentication state.
      *
@@ -168,4 +172,3 @@ export interface AuthPlugin extends Partial<AuthPluginEventBase>, DeclaredServic
      */
     logout(): Promise<void> | void;
 }
-

@@ -11,7 +11,7 @@
         "ol": "^8.2.0"
     },
     "devDependencies": {
-        "@open-pioneer/test-utils": "^1.0.1",
+        "@open-pioneer/test-utils": "^1.0.2",
         "@open-pioneer/map-test-utils": "workspace:^",
         "openlayers-base-packages": "workspace:*"
     },
