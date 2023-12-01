@@ -2,6 +2,7 @@ messages:
   basemapLabel: "Select basemap:"
   tocTitle: "Table of contents"
   measurementTitle: "Measurement"
+  selectionTitle: Selection
   overviewMapTitle: "Overview map"
   ariaLabel:
     header: "Header bar"

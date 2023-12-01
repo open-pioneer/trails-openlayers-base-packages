@@ -12,12 +12,13 @@ import { SectionHeading, TitledSection, ToolButton } from "@open-pioneer/react-u
 import { ScaleBar } from "@open-pioneer/scale-bar";
 import { ScaleViewer } from "@open-pioneer/scale-viewer";
 import { Search, SearchSelectEvent } from "@open-pioneer/search";
+import { Selection } from "@open-pioneer/Selection";
 import { Toc } from "@open-pioneer/toc";
 import TileLayer from "ol/layer/Tile.js";
 import OSM from "ol/source/OSM.js";
 import { useIntl } from "open-pioneer:react-hooks";
 import { useId, useMemo, useState } from "react";
-import { PiListLight, PiMapTrifold, PiRulerLight } from "react-icons/pi";
+import { PiListLight, PiMapTrifold, PiRulerLight, PiSelectionPlusBold } from "react-icons/pi";
 import { MAP_ID } from "./MapConfigProviderImpl";
 import { PhotonGeocoder } from "./search-source-examples/testSources";
 
@@ -27,13 +28,19 @@ export function AppUI() {
     const intl = useIntl();
     const tocTitleId = useId();
     const measurementTitleId = useId();
+    const selectionTitleId = useId();
     const { map } = useMapModel(MAP_ID);
     const [measurementIsActive, setMeasurementIsActive] = useState<boolean>(false);
     const [showOverviewMap, setShowOverviewMap] = useState<boolean>(true);
     const [showToc, setShowToc] = useState<boolean>(true);
+    const [selectionIsActive, setSelectionIsActive] = useState<boolean>(false);
 
     function toggleMeasurement() {
         setMeasurementIsActive(!measurementIsActive);
+    }
+
+    function toggleSelection() {
+        setSelectionIsActive(!selectionIsActive);
     }
 
     function toggleOverviewMap() {
@@ -180,6 +187,21 @@ export function AppUI() {
                                     <OverviewMap mapId={MAP_ID} olLayer={overviewMapLayer} />
                                 </Box>
                             )}
+                            {selectionIsActive && (
+                                <Box role="dialog" aria-labelledby={selectionTitleId}>
+                                    <TitledSection
+                                        title={
+                                            <SectionHeading id={selectionTitleId} size="md" mb={2}>
+                                                {intl.formatMessage({
+                                                    id: "selectionTitle"
+                                                })}
+                                            </SectionHeading>
+                                        }
+                                    >
+                                        <Selection mapId={MAP_ID} />
+                                    </TitledSection>
+                                </Box>
+                            )}
                         </MapAnchor>
                         <MapAnchor position="bottom-right" horizontalGap={10} verticalGap={45}>
                             <Flex
@@ -201,6 +223,12 @@ export function AppUI() {
                                     icon={<PiRulerLight />}
                                     isActive={measurementIsActive}
                                     onClick={toggleMeasurement}
+                                />
+                                <ToolButton
+                                    label={intl.formatMessage({ id: "selectionTitle" })}
+                                    icon={<PiSelectionPlusBold />}
+                                    isActive={selectionIsActive}
+                                    onClick={toggleSelection}
                                 />
                                 <ToolButton
                                     label={intl.formatMessage({ id: "overviewMapTitle" })}

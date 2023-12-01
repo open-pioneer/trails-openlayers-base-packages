@@ -2,6 +2,7 @@ messages:
   basemapLabel: "Hintergrundkarte auswählen: "
   tocTitle: "Karteninhalt"
   measurementTitle: "Messen"
+  selectionTitle: Selektieren
   overviewMapTitle: "Übersichtskarte"
   ariaLabel:
     header: "Kopfleiste"
