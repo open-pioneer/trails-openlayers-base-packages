@@ -5,7 +5,8 @@ import { ComponentType, FC, ReactNode, useEffect, useMemo } from "react";
 import {
     // For typedoc link
     // eslint-disable-next-line unused-imports/no-unused-imports
-    AuthPlugin
+    AuthPlugin,
+    AuthService
 } from "./api";
 import { useAuthState } from "./useAuthState";
 
@@ -74,7 +75,7 @@ export interface ForceAuthProps {
  * ```
  */
 export const ForceAuth: FC<ForceAuthProps> = (props) => {
-    const authService = useService("authentication.AuthService");
+    const authService = useService<AuthService>("authentication.AuthService");
     const state = useAuthState(authService);
 
     // Extract login behavior from service (only when needed).
