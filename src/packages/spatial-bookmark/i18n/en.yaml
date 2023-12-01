@@ -13,6 +13,6 @@ messages:
     alert:
       create: "After entering a name you can save the new bookmark. The current map extent is used as the basis for the position."
       delete: "Do you really want to delete all spatial bookmarks?"
-      noSaved: "No bookmarks saved."
+      noSaved: "No bookmarks saved"
     list:
       label: "Spatial bookmarks"

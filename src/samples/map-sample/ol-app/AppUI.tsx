@@ -78,16 +78,17 @@ export function AppUI() {
                         role="main"
                         aria-label={intl.formatMessage({ id: "ariaLabel.map" })}
                     >
-                        <MapAnchor horizontalGap={10} position="bottom-left">
-                            <Box
-                                backgroundColor="white"
-                                borderWidth="1px"
-                                borderRadius="lg"
-                                padding={2}
-                                boxShadow="lg"
-                                role="dialog"
-                            >
-                                {bookmarkIsActive && (
+                        <MapAnchor horizontalGap={20} position="bottom-left">
+                            {bookmarkIsActive && (
+                                <Box
+                                    backgroundColor="white"
+                                    borderWidth="1px"
+                                    borderRadius="lg"
+                                    padding={2}
+                                    boxShadow="lg"
+                                    role="dialog"
+                                    width={350}
+                                >
                                     <Box role="dialog" aria-labelledby={spatialBookmarkTitle}>
                                         <TitledSection
                                             title={
@@ -108,8 +109,8 @@ export function AppUI() {
                                             />
                                         </TitledSection>
                                     </Box>
-                                )}
-                            </Box>
+                                </Box>
+                            )}
                         </MapAnchor>
                         <MapAnchor position="top-left" horizontalGap={20} verticalGap={20}>
                             <Box
@@ -118,6 +119,7 @@ export function AppUI() {
                                 borderRadius="lg"
                                 padding={2}
                                 boxShadow="lg"
+                                width={350}
                             >
                                 <Box role="dialog" aria-labelledby={tocTitleId}>
                                     <TitledSection

@@ -2,7 +2,7 @@
 
 exports[`except if currently no bookmarks are saved to display info message 1`] = `
 <div
-  class="chakra-alert css-b9ls1z"
+  class="chakra-alert css-1sqgcxg"
   data-status="info"
   data-theme="light"
   role="alert"
@@ -36,7 +36,7 @@ exports[`should load the stored bookmark from local storage and present it visib
   role="listbox"
 >
   <li
-    class="spatial-bookmark-item spatial-bookmark-item-test css-ol9amj"
+    class="spatial-bookmark-item spatial-bookmark-item-test css-sivrud"
     data-theme="light"
     role="option"
   >
@@ -58,7 +58,7 @@ exports[`should load the stored bookmark from local storage and present it visib
         />
       </svg>
       <p
-        class="chakra-text css-zvlevn"
+        class="chakra-text css-1uvjhra"
         data-theme="light"
       >
         Test
@@ -69,7 +69,7 @@ exports[`should load the stored bookmark from local storage and present it visib
       />
       <button
         aria-label="bookmark.button.deleteOne"
-        class="chakra-button spatial-bookmark-item-details css-hzhyv0"
+        class="chakra-button spatial-bookmark-item-details css-1m4cx56"
         data-theme="light"
         type="button"
       >
@@ -101,7 +101,7 @@ exports[`should load the stored bookmark from local storage and present it visib
 
 exports[`should only delete all bookmarks after the user confirms the action. 1`] = `
 <div
-  class="chakra-alert css-ercdzk"
+  class="chakra-alert css-134lewa"
   data-status="warning"
   data-theme="light"
   role="alert"
@@ -129,7 +129,7 @@ exports[`should only delete all bookmarks after the user confirms the action. 1`
 
 exports[`should only delete all bookmarks after the user confirms the action. 2`] = `
 <div
-  class="chakra-alert css-b9ls1z"
+  class="chakra-alert css-1sqgcxg"
   data-status="info"
   data-theme="light"
   role="alert"
@@ -157,7 +157,7 @@ exports[`should only delete all bookmarks after the user confirms the action. 2`
 
 exports[`should remove bookmark from the list by clicking the remove button 1`] = `
 <div
-  class="chakra-alert css-b9ls1z"
+  class="chakra-alert css-1sqgcxg"
   data-status="info"
   data-theme="light"
   role="alert"
