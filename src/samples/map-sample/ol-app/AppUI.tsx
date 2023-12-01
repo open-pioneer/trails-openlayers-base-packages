@@ -30,27 +30,11 @@ const sources = [
         labelProperty: "name",
         renderLabelFunction(feature) {
             return feature?.properties?.name + " (" + feature?.id + ")";
-        }
-    }),
-    new OgcFeatureSearchSource("Verwaltungseinheit", {
-        baseUrl: "https://ogc-api.nrw.de/lika/v1",
-        collectionId: "verwaltungseinheit",
-        searchProperty: "name",
+        },
         rewriteUrlFunction(url) {
-            url.searchParams.set("limit", "1");
             url.searchParams.set("properties", "name"); // return `name` inside of `features[].properties` only
             return url;
         }
-    }),
-    new OgcFeatureSearchSource("Feldblöcke", {
-        baseUrl: "https://ogc-api.nrw.de/inspire-lc-fb/v1",
-        collectionId: "landcoverunit",
-        searchProperty: "flik"
-    }),
-    new OgcFeatureSearchSource("Weinberge", {
-        baseUrl: "https://demo.ldproxy.net/vineyards",
-        collectionId: "vineyards",
-        searchProperty: "name"
     }),
     new PhotonGeocoder("Photon Geocoder", ["city", "street"])
 ];

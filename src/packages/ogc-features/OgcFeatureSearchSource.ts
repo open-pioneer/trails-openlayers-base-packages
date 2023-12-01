@@ -2,7 +2,9 @@
 // SPDX-License-Identifier: Apache-2.0
 import { isAbortError } from "@open-pioneer/core";
 import { SearchSource, SearchResult } from "@open-pioneer/search";
+import { SearchOptions } from "@open-pioneer/search/api";
 import { v4 as uuid4v } from "uuid";
+import GeoJSON from "ol/format/GeoJSON";
 
 export interface OgcFeatureSearchSourceOptions {
     /**
@@ -46,12 +48,18 @@ export class OgcFeatureSearchSource implements SearchSource {
         this.options = options;
     }
 
-    async search(inputValue: string, options: { signal: AbortSignal }): Promise<SearchResult[]> {
-        const signal = options?.signal;
+    async search(
+        inputValue: string,
+        { mapProjection, signal }: SearchOptions
+    ): Promise<SearchResult[]> {
         const url = this.#getUrl(inputValue);
 
         try {
             const responses = await request(this.options.rewriteUrlFunction?.(url) || url, signal);
+            const geojson = new GeoJSON({
+                dataProjection: "EPSG:4326",
+                featureProjection: mapProjection
+            });
 
             return responses.features.map((feature) => ({
                 ...feature,
@@ -62,7 +70,9 @@ export class OgcFeatureSearchSource implements SearchSource {
                         this.options.labelProperty
                             ? (this.options.labelProperty as keyof typeof feature.properties)
                             : (this.options.searchProperty as keyof typeof feature.properties)
-                    ]
+                    ],
+                geometry: geojson.readGeometry(feature.geometry),
+                properties: feature.properties
             })) satisfies SearchResult[];
         } catch (error) {
             if (isAbortError(error)) {
@@ -87,6 +97,7 @@ export class OgcFeatureSearchSource implements SearchSource {
 
 interface FeatureResponse {
     id: Record<string, string | number>;
+    geometry: unknown;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     properties: any;
 }
