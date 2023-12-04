@@ -1,9 +1,9 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Box, Button, FormControl, FormLabel, Select } from "@open-pioneer/chakra-integration";
-import { FC, useCallback, useState } from "react";
+import { FC, useCallback, useEffect, useState } from "react";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
-import { useMapModel } from "@open-pioneer/map";
+import { MapModel, useMapModel } from "@open-pioneer/map";
 import { DragBox, Extent, Select as SelectInteraction } from "ol/interaction.js";
 import { Fill, Stroke, Style } from "ol/style.js";
 import { mouseActionButton } from "ol/events/condition";
@@ -12,6 +12,8 @@ import { PiUserRectangle } from "react-icons/pi";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FakePointSelectionSource } from "./testSources";
 import { SelectionSource } from "./api";
+import DragZoom from "ol/interaction/DragZoom";
+import DragRotateAndZoom from "ol/interaction/DragRotateAndZoom";
 
 /**
  * Properties supported by the {@link Search} component.
@@ -31,7 +33,7 @@ export const Selection: FC<SelectionProps> = (props) => {
     const intl = useIntl();
     const { mapId, sourceLabel } = props;
     const { containerProps } = useCommonComponentProps("selection", props);
-    const mapState = useMapModel(mapId);
+    const { map } = useMapModel(mapId);
     const [testResult, setTestResult] = useState("Test");
     const { onInputChanged } = useSelectionState();
     let sources: SelectionSource[] = [];
@@ -63,17 +65,28 @@ export const Selection: FC<SelectionProps> = (props) => {
         }
     });
 
-    mapState.map?.olMap.addInteraction(select);
+    map?.olMap.addInteraction(select);
     const dragBox = new DragBox({
         condition: mouseActionButton
     });
 
-    mapState.map?.olMap.addInteraction(dragBox);
+    removePreviousDragBox(map);
+    //map?.olMap.removeInteraction(dragBox);
+    map?.olMap.addInteraction(dragBox);
     dragBox.on("boxend", function () {
         const boxExtent = dragBox.getGeometry().getExtent();
         onInputChanged(dragBox.getGeometry());
         setTestResult((boxExtent as unknown as Extent)?.toString());
     });
+
+    useEffect(() => {
+        if (!map) {
+            return;
+        }
+        return () => {
+            removePreviousDragBox(map);
+        };
+    }, [map]);
 
     return (
         <Box {...containerProps}>
@@ -104,4 +117,16 @@ function useSelectionState() {
     return {
         onInputChanged
     };
+}
+
+function removePreviousDragBox(map: MapModel | undefined) {
+    const interactions = map?.olMap.getInteractions().getArray();
+    const dragBox = interactions?.find((interaction) => {
+        const isDragZoom =
+            interaction instanceof DragZoom || interaction instanceof DragRotateAndZoom;
+        return !isDragZoom && interaction instanceof DragBox;
+    });
+    if (dragBox) {
+        map?.olMap.removeInteraction(dragBox);
+    }
 }
