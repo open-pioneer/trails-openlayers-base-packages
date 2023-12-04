@@ -176,30 +176,45 @@ export function AppUI() {
                             )}
                         </MapAnchor>
                         <MapAnchor position="top-right" horizontalGap={10} verticalGap={10}>
-                            {showOverviewMap && (
+                            {(showOverviewMap || selectionIsActive) && (
                                 <Box
                                     backgroundColor="white"
                                     borderWidth="1px"
                                     borderRadius="lg"
                                     padding={2}
                                     boxShadow="lg"
+                                    maxWidth={325}
                                 >
-                                    <OverviewMap mapId={MAP_ID} olLayer={overviewMapLayer} />
-                                </Box>
-                            )}
-                            {selectionIsActive && (
-                                <Box role="dialog" aria-labelledby={selectionTitleId}>
-                                    <TitledSection
-                                        title={
-                                            <SectionHeading id={selectionTitleId} size="md" mb={2}>
-                                                {intl.formatMessage({
-                                                    id: "selectionTitle"
-                                                })}
-                                            </SectionHeading>
-                                        }
-                                    >
-                                        <Selection mapId={MAP_ID} />
-                                    </TitledSection>
+                                    {showOverviewMap && (
+                                        <Box role="dialog">
+                                            <OverviewMap
+                                                mapId={MAP_ID}
+                                                olLayer={overviewMapLayer}
+                                            />
+                                        </Box>
+                                    )}
+                                    {showOverviewMap && selectionIsActive && (
+                                        <Divider mt={4} mb={4} />
+                                    )}
+                                    {selectionIsActive && (
+                                        <Box role="dialog" aria-labelledby={selectionTitleId}>
+                                            <TitledSection
+                                                title={
+                                                    <SectionHeading
+                                                        id={selectionTitleId}
+                                                        size="md"
+                                                        mb={2}
+                                                    >
+                                                        {intl.formatMessage({
+                                                            id: "selectionTitle"
+                                                        })}
+                                                    </SectionHeading>
+                                                }
+                                            >
+                                                <Selection mapId={MAP_ID} />
+                                            </TitledSection>
+                                        </Box>
+                                    )}
                                 </Box>
                             )}
                         </MapAnchor>
