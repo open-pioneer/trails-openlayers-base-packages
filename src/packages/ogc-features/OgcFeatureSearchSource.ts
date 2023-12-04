@@ -37,6 +37,11 @@ export interface OgcFeatureSearchSourceOptions {
      * Rewrite function to modify the original URL
      */
     rewriteUrlFunction?: (url: URL) => void;
+
+    /**
+     * Overrides internal request function
+     */
+    request?: () => Promise<SearchResponse>;
 }
 
 export class OgcFeatureSearchSource implements SearchSource {
@@ -55,7 +60,9 @@ export class OgcFeatureSearchSource implements SearchSource {
         const url = this.#getUrl(inputValue);
 
         try {
-            const responses = await request(this.options.rewriteUrlFunction?.(url) || url, signal);
+            const responses =
+                (await this.options.request?.()) ||
+                (await request(this.options.rewriteUrlFunction?.(url) || url, signal));
             const geojson = new GeoJSON({
                 dataProjection: "EPSG:4326",
                 featureProjection: mapProjection
@@ -70,7 +77,8 @@ export class OgcFeatureSearchSource implements SearchSource {
                         this.options.labelProperty
                             ? (this.options.labelProperty as keyof typeof feature.properties)
                             : (this.options.searchProperty as keyof typeof feature.properties)
-                    ],
+                    ] ||
+                    "",
                 geometry: geojson.readGeometry(feature.geometry),
                 properties: feature.properties
             })) satisfies SearchResult[];
@@ -96,13 +104,14 @@ export class OgcFeatureSearchSource implements SearchSource {
 }
 
 interface FeatureResponse {
-    id: Record<string, string | number>;
+    type: string;
+    id: string | number;
     geometry: unknown;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     properties: any;
 }
 
-interface SearchResponse {
+export interface SearchResponse {
     features: FeatureResponse[];
     links?: Record<string, unknown>[];
     numberMatched?: number;
