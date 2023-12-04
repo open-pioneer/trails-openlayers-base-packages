@@ -31,12 +31,12 @@ export interface OgcFeatureSearchSourceOptions {
      * Render function to create custom a label. If `renderLabelFunction` is configured,
      * `searchProperty` and `labelProperty` will be used as a fallback
      */
-    renderLabelFunction?: (feature: FeatureResponse) => void;
+    renderLabelFunction?: (feature: FeatureResponse) => string;
 
     /**
      * Rewrite function to modify the original URL
      */
-    rewriteUrlFunction?: (url: URL) => void;
+    rewriteUrlFunction?: (url: URL) => URL;
 
     /**
      * Overrides internal request function

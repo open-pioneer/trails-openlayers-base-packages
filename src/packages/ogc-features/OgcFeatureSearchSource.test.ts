@@ -68,6 +68,16 @@ const response = {
     ]
 } as SearchResponse;
 
+const rewriteUrlFunctionSource = new OgcFeatureSearchSource("Bergbauberechtigungen", {
+    baseUrl: "https://ogc-api.nrw.de/inspire-am-bergbauberechtigungen/v1",
+    collectionId: "managementrestrictionorregulationzone",
+    searchProperty: "thematicId",
+    rewriteUrlFunction(url) {
+        url.searchParams.set("foo", "bar");
+        return url;
+    }
+});
+
 const renderLabelFunctionSource = new OgcFeatureSearchSource("Bergbauberechtigungen", {
     baseUrl: "https://ogc-api.nrw.de/inspire-am-bergbauberechtigungen/v1",
     collectionId: "managementrestrictionorregulationzone",
@@ -75,10 +85,6 @@ const renderLabelFunctionSource = new OgcFeatureSearchSource("Bergbauberechtigun
     labelProperty: "name",
     renderLabelFunction(feature) {
         return feature?.properties?.name + " (" + feature?.id + ")";
-    },
-    rewriteUrlFunction(url) {
-        url.searchParams.set("properties", "name");
-        return url;
     },
     request() {
         return Promise.resolve(response);
@@ -90,10 +96,6 @@ const labelPropertySource = new OgcFeatureSearchSource("Bergbauberechtigungen", 
     collectionId: "managementrestrictionorregulationzone",
     searchProperty: "thematicId",
     labelProperty: "name",
-    rewriteUrlFunction(url) {
-        url.searchParams.set("properties", "name");
-        return url;
-    },
     request() {
         return Promise.resolve(response);
     }
@@ -103,13 +105,19 @@ const searchPropertySource = new OgcFeatureSearchSource("Bergbauberechtigungen",
     baseUrl: "https://ogc-api.nrw.de/inspire-am-bergbauberechtigungen/v1",
     collectionId: "managementrestrictionorregulationzone",
     searchProperty: "thematicId",
-    rewriteUrlFunction(url) {
-        url.searchParams.set("properties", "name");
-        return url;
-    },
     request() {
         return Promise.resolve(response);
     }
+});
+
+it("expect search source to use the rewriteUrlFunction", async () => {
+    const expected = "https://www.google.com/?foo=bar";
+
+    const urlObject = rewriteUrlFunctionSource?.options?.rewriteUrlFunction?.(
+        new URL("https://www.google.com")
+    );
+
+    expect(urlObject?.href).toBe(expected);
 });
 
 it("expect search source to use the renderLabelFunction", async () => {
