@@ -8,6 +8,8 @@ import OSM from "ol/source/OSM";
 import VectorSource from "ol/source/Vector";
 import WMTS from "ol/source/WMTS";
 import WMTSTileGrid from "ol/tilegrid/WMTS";
+import { createElement } from "react";
+import { LegendItemAttributes, LegendItemComponentProps } from "@open-pioneer/legend";
 
 export const MAP_ID = "main";
 
@@ -15,6 +17,19 @@ export class MapConfigProviderImpl implements MapConfigProvider {
     mapId = MAP_ID;
 
     async getMapConfig(): Promise<MapConfig> {
+        const computedValue = "foo";
+
+        const layerLegendProps: LegendItemAttributes = {
+            Component: function CustomLegend({ layer }: LegendItemComponentProps) {
+                /*
+                    <span>
+                        {layer.title}
+                    </span>
+                */
+                return createElement("span", undefined, layer.title);
+            }
+        };
+
         return {
             initialView: {
                 kind: "position",
@@ -35,7 +50,10 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     title: "TopPlus Open (Grau)",
                     isBaseLayer: true,
                     visible: false,
-                    olLayer: createTopPlusOpenLayer("web_grau")
+                    olLayer: createTopPlusOpenLayer("web_grau"),
+                    attributes: {
+                        "legend": layerLegendProps
+                    }
                 }),
                 new SimpleLayer({
                     id: "topplus_open_light",
