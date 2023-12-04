@@ -211,7 +211,10 @@ export function AppUI() {
                                                     </SectionHeading>
                                                 }
                                             >
-                                                <Selection mapId={MAP_ID} />
+                                                <Selection
+                                                    mapId={MAP_ID}
+                                                    sourceLabel={["Fake Selection Source"]}
+                                                />
                                             </TitledSection>
                                         </Box>
                                     )}

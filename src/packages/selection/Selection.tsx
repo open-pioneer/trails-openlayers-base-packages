@@ -10,6 +10,8 @@ import { mouseActionButton } from "ol/events/condition";
 import { Geometry } from "ol/geom";
 import { PiUserRectangle } from "react-icons/pi";
 import { useIntl } from "open-pioneer:react-hooks";
+import { FakePointSelectionSource } from "./testSources";
+import { SelectionSource } from "./api";
 
 /**
  * Properties supported by the {@link Search} component.
@@ -19,19 +21,28 @@ export interface SelectionProps extends CommonComponentProps {
      * The id of the map.
      */
     mapId: string;
+    /**
+     * Array of source labels
+     */
+    sourceLabel: string[];
 }
 
 export const Selection: FC<SelectionProps> = (props) => {
     const intl = useIntl();
-    const { mapId } = props;
+    const { mapId, sourceLabel } = props;
     const { containerProps } = useCommonComponentProps("selection", props);
     const mapState = useMapModel(mapId);
     const [testResult, setTestResult] = useState("Test");
     const { onInputChanged } = useSelectionState();
+    let sources: SelectionSource[] = [];
+    const [source, setSource] = useState("");
 
-    const sources = [];
-    const source = "";
-    const sourceStatus = false;
+    if (sourceLabel) {
+        const fakeSource = new FakePointSelectionSource(5000);
+        if (sourceLabel.includes(fakeSource.label)) {
+            sources = [fakeSource];
+        }
+    }
 
     const selectedStyle = new Style({
         fill: new Fill({
@@ -72,19 +83,14 @@ export const Selection: FC<SelectionProps> = (props) => {
 
             <FormControl>
                 <FormLabel>{intl.formatMessage({ id: "selectSource" })}</FormLabel>
-                <Select value={source}>
-                    {!sourceStatus ? (
-                        <option disabled={true} value="'source 1'">
-                            {" "}
-                            source 2
+                <Select value={source} onChange={(e) => setSource(e.target.value)}>
+                    {sources.map((opt, idx) => (
+                        <option disabled={!!opt.status} key={idx} value={opt.label}>
+                            {opt.label}
                         </option>
-                    ) : (
-                        <option value="'source 1'">source 1</option>
-                    )}
+                    ))}
                 </Select>
             </FormControl>
-
-            {/*<span>{testResult}</span>*/}
         </Box>
     );
 };
