@@ -36,9 +36,10 @@ exports[`should load the stored bookmark from local storage and present it visib
   role="listbox"
 >
   <li
-    class="spatial-bookmark-item spatial-bookmark-item-test css-sivrud"
+    class="spatial-bookmark-item spatial-bookmark-item-test css-r6swov"
     data-theme="light"
     role="option"
+    tabindex="0"
   >
     <div
       class="css-1h36yqy"

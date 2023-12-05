@@ -20,7 +20,7 @@ import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/rea
 import { PackageIntl } from "@open-pioneer/runtime";
 import { Provider as JotaiProvider, useAtomValue } from "jotai";
 import { useIntl, useService } from "open-pioneer:react-hooks";
-import { FC, ReactNode, useEffect, useState } from "react";
+import { FC, ReactNode, useEffect, useState, useRef } from "react";
 import { PiMapTrifold, PiTrashSimpleLight } from "react-icons/pi";
 import { Bookmark, SpatialBookmarkViewModel } from "./SpatialBookmarkViewModel";
 
@@ -55,6 +55,7 @@ export const SpatialBookmark: FC<SpatialBookmarkProps> = (props) => {
 function SpatialBookmarkUI(props: SpatialBookmarkProps & { viewModel: SpatialBookmarkViewModel }) {
     const { viewModel } = props;
     const intl = useIntl();
+    const listRef = useRef([]);
 
     const bookmarks = useAtomValue(viewModel.bookmarks);
     const [bookmarkName, setBookmarkName] = useState<string>("");
@@ -124,7 +125,7 @@ function SpatialBookmarkUI(props: SpatialBookmarkProps & { viewModel: SpatialBoo
     const listContent = () => (
         <>
             {bookmarks.length ? (
-                createList(bookmarks, viewModel, intl)
+                createList(bookmarks, viewModel, intl, listRef)
             ) : (
                 <Alert rounded="md" status="info">
                     <AlertIcon />
@@ -155,12 +156,20 @@ function SpatialBookmarkUI(props: SpatialBookmarkProps & { viewModel: SpatialBoo
     );
 }
 
-function createList(bookmarks: Bookmark[], viewModel: SpatialBookmarkViewModel, intl: PackageIntl) {
+function createList(
+    bookmarks: Bookmark[],
+    viewModel: SpatialBookmarkViewModel,
+    intl: PackageIntl,
+    listRef: React.MutableRefObject<never[]>
+) {
     const deleteBtnLabel = intl.formatMessage({
         id: "bookmark.button.deleteOne"
     });
+
     const bookmarkItems = bookmarks.map((bookmark, idx) => (
         <BookmarkItem
+            index={idx}
+            listRef={listRef}
             key={idx}
             bookmark={bookmark}
             onActivate={() => viewModel.activateBookmark(bookmark)}
@@ -188,15 +197,47 @@ function createList(bookmarks: Bookmark[], viewModel: SpatialBookmarkViewModel, 
 }
 
 function BookmarkItem(props: {
+    index: number;
+    listRef: React.MutableRefObject<HTMLDivElement[]>;
     bookmark: Bookmark;
     onActivate: () => void;
     onDelete: () => void;
     deleteBtnLabel: string;
 }): JSX.Element {
-    const { bookmark, onDelete, onActivate, deleteBtnLabel } = props;
+    const { index, listRef, bookmark, onDelete, onActivate, deleteBtnLabel } = props;
     const title = bookmark.title;
+    const onKeyPress = (key: string) => {
+        if (!listRef.current.length) {
+            return;
+        }
+        const len = listRef.current?.length;
+        interface arrowIndex {
+            ArrowDown: number;
+            ArrowUp: number;
+        }
+        const arrowIndexMap: arrowIndex = {
+            ArrowDown: 1,
+            ArrowUp: -1
+        };
+        //let nextIndex = index;
+        if (arrowIndexMap[key as keyof arrowIndex]) {
+            const nextIndex = index + arrowIndexMap[key as keyof arrowIndex];
+            listRef.current[nextIndex % len]?.focus();
+        }
+        if (key === "Enter") {
+            onActivate();
+        }
+    };
     return (
         <Box
+            tabIndex={0}
+            ref={(el) => {
+                if (!el) {
+                    listRef.current.splice(index, 1);
+                    return;
+                }
+                listRef.current[index] = el;
+            }}
             as="li"
             className={classNames(
                 "spatial-bookmark-item",
@@ -207,6 +248,14 @@ function BookmarkItem(props: {
             padding={1}
             cursor={"pointer"}
             _hover={{ background: "trails.50" }}
+            _focusVisible={{
+                //borderColor: "0 0 0 3px #9B2C2C"
+                outline: "0 0 0 3px #9B2C2C"
+                // outline: "-webkit-focus-ring-color auto 2px;"
+            }}
+            onKeyDown={(evt) => {
+                onKeyPress(evt.key);
+            }}
             onClick={() => {
                 onActivate();
             }}
@@ -225,6 +274,9 @@ function BookmarkItem(props: {
                     padding={0}
                     variant="ghost"
                     leftIcon={<PiTrashSimpleLight />}
+                    onKeyDown={(evt) => {
+                        evt.stopPropagation();
+                    }}
                     onClick={(event) => {
                         onDelete();
                         event.stopPropagation();
