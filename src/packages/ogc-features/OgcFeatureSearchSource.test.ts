@@ -22,7 +22,14 @@ const renderLabelFunctionSource = new OgcFeatureSearchSource("Bergbauberechtigun
     searchProperty: "thematicId",
     labelProperty: "name",
     renderLabelFunction(feature) {
-        return feature?.properties?.name + " (" + feature?.id + ")";
+        const name = feature?.properties?.name;
+        const id = feature?.id;
+
+        if (typeof name === "string") {
+            return name + " (" + id + ")";
+        } else {
+            return String(id);
+        }
     }
 });
 
