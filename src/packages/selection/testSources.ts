@@ -1,21 +1,42 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { SelectionSource, SelectionResult, SelectionOptions } from "./api";
+import {
+    SelectionSource,
+    SelectionResult,
+    SelectionOptions,
+    SelectionSourceStatus,
+    SelectionSourceEvents
+} from "./api";
 import { Point } from "ol/geom";
 import { Extent } from "ol/extent";
+import { EventEmitter } from "@open-pioneer/core";
 
 export const fakeSelectedPointFeatures = [
     new Point([852011.307424, 6788511.322702]),
     new Point([829800.379064, 6809086.916672])
 ];
 
-// TODO: Integrate into tests
-export class FakePointSelectionSource implements SelectionSource {
+export class FakePointSelectionSource
+    extends EventEmitter<SelectionSourceEvents>
+    implements SelectionSource
+{
     readonly label = "Fake Selection Source";
     #timeout: number;
+    #status: SelectionSourceStatus;
 
-    constructor(timeout: number) {
-        this.#timeout = timeout;
+    constructor(timeout?: number, status?: SelectionSourceStatus) {
+        super();
+        this.#timeout = timeout || 0;
+        this.#status = status || "unavailable";
+    }
+
+    get status(): SelectionSourceStatus {
+        return this.#status;
+    }
+
+    set status(value: SelectionSourceStatus) {
+        this.#status = value;
+        this.emit("changed:status");
     }
 
     async select(selectionKind: Extent, options: SelectionOptions): Promise<SelectionResult[]> {

@@ -3,6 +3,7 @@
 import { Geometry } from "ol/geom";
 import { Projection } from "ol/proj";
 import { Extent } from "ol/extent";
+import { EventSource } from "@open-pioneer/core";
 
 export type SelectionSourceStatus = "available" | "unavailable" | (string & {});
 
@@ -47,12 +48,25 @@ export interface SelectionOptions {
     mapProjection: Projection;
 }
 
+/** Events emitted by the {@link SelectionSource}. */
+export interface SelectionSourceEvents {
+    "changed:status": void;
+}
+
+/** Optional base type for selection source: the event emitter interface is not required. */
+export type SelectionSourceEventBase = EventSource<SelectionSourceEvents>;
+
 /**
  * An object that allows spatial selection.
  *
  * Developers can create classes that implement this interface for different selection sources.
+ *
+ * The implementation of `SelectionSourceEventBase` is optional: it is only necessary if the status changes
+ * during the lifetime of the selection source.
+ * To implement the event, you can write `class MySelectionSource extends EventEmitter<SelectionSourceEvents>`.
+ *
  */
-export interface SelectionSource {
+export interface SelectionSource extends Partial<SelectionSourceEventBase> {
     /**
      * The label of this source.
      *
