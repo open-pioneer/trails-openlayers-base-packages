@@ -1,74 +1,68 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { afterEach, expect, it } from "vitest";
-
+import { LocalStorageNamespace, LocalStorageService } from "@open-pioneer/local-storage";
+import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
+import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import {
-    render,
-    screen,
-    findByRole,
+    act,
+    findByLabelText,
     findByPlaceholderText,
+    findByRole,
     findByText,
-    findByLabelText
+    render,
+    screen
 } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-
-import { PackageContextProvider } from "@open-pioneer/test-utils/react";
-import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
-import { LocalStorageService, LocalStorageNamespace } from "@open-pioneer/local-storage";
+import { afterEach, expect, it } from "vitest";
 import { SpatialBookmark } from "./SpatialBookmark";
 import { Bookmark } from "./SpatialBookmarkViewModel";
 
-const MOCK_NAMESPACE = new Map<string, unknown>();
+const MOCK_NAMESPACE_CONTENT = new Map<string, unknown>();
 
-afterEach(() => {
-    MOCK_NAMESPACE.clear();
-});
+const MOCK_NAMESPACE = {
+    get(key) {
+        return MOCK_NAMESPACE_CONTENT.get(key);
+    },
+    set(key, value) {
+        MOCK_NAMESPACE_CONTENT.set(key, value);
+    }
+} satisfies Partial<LocalStorageNamespace>;
 
-const localStorageService: Partial<LocalStorageService> = {
+const MOCK_STORAGE_SERVICE: Partial<LocalStorageService> = {
     getNamespace(key): LocalStorageNamespace {
         if (key !== "spatial-bookmarks") {
             throw new Error("unexpected key");
         }
 
-        return {
-            get(key) {
-                return MOCK_NAMESPACE.get(key);
-            },
-            set(key, value) {
-                MOCK_NAMESPACE.set(key, value);
-            }
-        } as LocalStorageNamespace;
+        return MOCK_NAMESPACE as LocalStorageNamespace;
     }
 };
 
-const packageNamespace = localStorageService.getNamespace!("spatial-bookmarks");
+afterEach(() => {
+    MOCK_NAMESPACE_CONTENT.clear();
+});
 
-it("except if currently no bookmarks are saved to display info message", async () => {
-    packageNamespace.set("bookmarks", []);
+it("should shown an alert message if no bookmarks are saved", async () => {
+    MOCK_NAMESPACE.set("bookmarks", []);
 
-    createBookmarkComponent();
-
-    const div = await waitForSpatialBookmark();
+    const { div } = await createBookmarkComponent();
     const alertDiv = await findByRole(div, "alert");
     expect(alertDiv).toMatchSnapshot();
 });
 
 it("should load the stored bookmark from local storage and present it visibly within the list", async () => {
-    createBookmark();
-    createBookmarkComponent();
-
-    const div = await waitForSpatialBookmark();
+    createBookmarks();
+    const { div } = await createBookmarkComponent();
     const bookmarkList = await findByRole(div, "listbox");
     expect(bookmarkList).toMatchSnapshot();
 });
 
 it("should save a bookmark and update the list", async () => {
     const user = userEvent.setup();
-    packageNamespace.set("bookmarks", []);
+    MOCK_NAMESPACE.set("bookmarks", []);
 
-    createBookmarkComponent();
+    const { div } = await createBookmarkComponent();
 
-    const div = await waitForSpatialBookmark();
     const createBtn = await findByText(div, "bookmark.button.create");
 
     await user.click(createBtn);
@@ -77,19 +71,16 @@ it("should save a bookmark and update the list", async () => {
 
     await user.type(input, "Dortmund");
     await user.click(saveBtn);
-    const bookmark = packageNamespace.get("bookmarks") as Bookmark[];
+    const bookmarks = MOCK_NAMESPACE.get("bookmarks") as Bookmark[];
 
-    // TODO: snapshot differs due to the slug method in listItem css class
-    expect(bookmark[0]?.title).toEqual("Dortmund");
+    expect(bookmarks[0]?.title).toEqual("Dortmund");
 });
 
 it("should only delete all bookmarks after the user confirms the action.", async () => {
     const user = userEvent.setup();
 
-    createBookmark();
-    createBookmarkComponent();
-
-    const div = await waitForSpatialBookmark();
+    createBookmarks();
+    const { div } = await createBookmarkComponent();
 
     const deleteAllBtn = await findByLabelText(div, "bookmark.button.deleteAll");
     await user.click(deleteAllBtn);
@@ -100,36 +91,36 @@ it("should only delete all bookmarks after the user confirms the action.", async
     await user.click(confirmBtn);
     const noSavedBookmarksAlert = await findByText(div, "bookmark.alert.noSaved");
     expect(noSavedBookmarksAlert).toMatchSnapshot();
+
+    const bookmarks = MOCK_NAMESPACE.get("bookmarks") as Bookmark[];
+    expect(bookmarks).toHaveLength(0);
 });
 
 it("should remove bookmark from the list by clicking the remove button", async () => {
     const user = userEvent.setup();
 
-    createBookmark();
-    createBookmarkComponent();
-
-    const div = await waitForSpatialBookmark();
+    createBookmarks();
+    const { div } = await createBookmarkComponent();
 
     const deleteBookmarkBtn = await findByLabelText(div, "bookmark.button.deleteOne");
     await user.click(deleteBookmarkBtn);
     const noSavedBookmarksAlert = await findByText(div, "bookmark.alert.noSaved");
     expect(noSavedBookmarksAlert).toMatchSnapshot();
+
+    const bookmarks = MOCK_NAMESPACE.get("bookmarks") as Bookmark[];
+    expect(bookmarks).toHaveLength(0);
 });
 
 it("should center the map on the selected bookmark", async () => {
     const user = userEvent.setup();
-    const bookmark = createBookmark();
-    const { mapId, injectedServices, mapModel } = await setupComponent();
+    const bookmarks = createBookmarks();
+    const { mapModel, div } = await createBookmarkComponent();
 
-    renderComponent({ services: injectedServices }, { mapId: mapId, "data-testid": "bookmarks" });
-
-    const extent = bookmark.extent;
+    const extent = bookmarks[0]!.extent;
     const bookmarkExtent = [extent.minX, extent.minY, extent.maxX, extent.maxY];
 
     const initExtent = mapModel.olMap.getView().calculateExtent();
     expect(initExtent).not.toStrictEqual(bookmarkExtent);
-
-    const div = await waitForSpatialBookmark();
 
     const bookmarkItem = await findByText(div, "Test");
     await user.click(bookmarkItem);
@@ -137,17 +128,54 @@ it("should center the map on the selected bookmark", async () => {
     expect(newExtent).toStrictEqual(bookmarkExtent);
 });
 
-interface ctxProviderConfig {
+it("should move the focus up and down inside the bookmarks list", async () => {
+    const user = userEvent.setup();
+    createBookmarks(2);
+    const { div } = await createBookmarkComponent();
+
+    const listItems = div.querySelectorAll("li");
+    expect(listItems).toHaveLength(2);
+
+    const firstItem = listItems[0]!;
+    const secondItem = listItems[1]!;
+
+    // Init focus to first item
+    act(() => firstItem.focus());
+    expect(document.activeElement).toBe(firstItem);
+
+    // Downarrow focuses second item
+    await user.keyboard("{ArrowDown}");
+    expect(document.activeElement).toBe(secondItem);
+
+    // Wraps to first item
+    await user.keyboard("{ArrowDown}");
+    expect(document.activeElement).toBe(firstItem);
+
+    // Up wraps back to second item
+    await user.keyboard("{ArrowUp}");
+    expect(document.activeElement).toBe(secondItem);
+
+    // ... and up to first
+    await user.keyboard("{ArrowUp}");
+    expect(document.activeElement).toBe(firstItem);
+});
+
+interface CtxProviderConfig {
     "local-storage.LocalStorageService": Partial<LocalStorageService>;
 }
-interface componentPropsConfig {
+
+interface ComponentPropsConfig {
     mapId: string;
     "data-testid": string;
 }
+
 async function createBookmarkComponent() {
-    const { mapId, injectedServices } = await setupComponent();
+    const { mapId, mapModel, injectedServices } = await setupComponent();
     renderComponent({ services: injectedServices }, { mapId: mapId, "data-testid": "bookmarks" });
+    const div = await waitForSpatialBookmark();
+    return { mapId, mapModel, div };
 }
+
 async function setupComponent() {
     const { mapId, registry } = await setupMap({
         projection: "EPSG:25832"
@@ -155,7 +183,7 @@ async function setupComponent() {
     const mapModel = await registry.expectMapModel(mapId);
     const injectedServices = {
         ...createServiceOptions({ registry }),
-        "local-storage.LocalStorageService": localStorageService
+        "local-storage.LocalStorageService": MOCK_STORAGE_SERVICE
     };
     return {
         mapModel,
@@ -164,8 +192,8 @@ async function setupComponent() {
     };
 }
 function renderComponent(
-    contextProviderProps: { services: ctxProviderConfig },
-    componentProps: componentPropsConfig
+    contextProviderProps: { services: CtxProviderConfig },
+    componentProps: ComponentPropsConfig
 ) {
     return render(
         <PackageContextProvider {...contextProviderProps}>
@@ -177,19 +205,23 @@ async function waitForSpatialBookmark() {
     return await screen.findByTestId<HTMLDivElement>("bookmarks");
 }
 
-function createBookmark() {
-    const bookmark: Bookmark = {
-        id: "test",
-        title: "Test",
-        extent: {
-            minX: 404609.0492711461,
-            minY: 5759938.978042119,
-            maxX: 405066.2854485374,
-            maxY: 5760396.21421951
-        },
-        projection: "EPSG:25832"
-    };
-    packageNamespace.set("bookmarks", [bookmark]);
+function createBookmarks(count = 1) {
+    const bookmarks: Bookmark[] = [];
+    for (let i = 0; i < count; ++i) {
+        const bookmark: Bookmark = {
+            id: `test-${i}`,
+            title: "Test",
+            extent: {
+                minX: 404609.0492711461,
+                minY: 5759938.978042119,
+                maxX: 405066.2854485374,
+                maxY: 5760396.21421951
+            },
+            projection: "EPSG:25832"
+        };
+        bookmarks.push(bookmark);
+    }
 
-    return bookmark;
+    MOCK_NAMESPACE.set("bookmarks", bookmarks);
+    return bookmarks;
 }

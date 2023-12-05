@@ -13,14 +13,14 @@ import {
     Text,
     VStack
 } from "@open-pioneer/chakra-integration";
-import classNames from "classnames";
 import { LocalStorageService } from "@open-pioneer/local-storage";
 import { MapModel, useMapModel } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { PackageIntl } from "@open-pioneer/runtime";
+import classNames from "classnames";
 import { Provider as JotaiProvider, useAtomValue } from "jotai";
 import { useIntl, useService } from "open-pioneer:react-hooks";
-import { FC, ReactNode, useEffect, useState, useRef } from "react";
+import { FC, KeyboardEvent, ReactNode, useEffect, useRef, useState } from "react";
 import { PiMapTrifold, PiTrashSimpleLight } from "react-icons/pi";
 import { Bookmark, SpatialBookmarkViewModel } from "./SpatialBookmarkViewModel";
 
@@ -50,10 +50,11 @@ export const SpatialBookmark: FC<SpatialBookmarkProps> = (props) => {
 function SpatialBookmarkUI(props: SpatialBookmarkProps & { viewModel: SpatialBookmarkViewModel }) {
     const { viewModel } = props;
     const intl = useIntl();
-    const listRef = useRef([]);
+    const listItemNodes = useRef([]);
 
     const bookmarks = useAtomValue(viewModel.bookmarks);
     const [bookmarkName, setBookmarkName] = useState<string>("");
+    const isValidBookmarkName = bookmarkName.trim().length > 0; // use trim to avoid bookmarks with space character only
     const { containerProps } = useCommonComponentProps("spatial-bookmark", props);
     const [uiMode, setUiMode] = useState<UIMode>("list");
 
@@ -63,9 +64,11 @@ function SpatialBookmarkUI(props: SpatialBookmarkProps & { viewModel: SpatialBoo
     };
 
     const addBookmark = () => {
-        viewModel.createBookmark(bookmarkName);
-        setUiMode("list");
-        setBookmarkName("");
+        if (isValidBookmarkName) {
+            viewModel.createBookmark(bookmarkName);
+            setUiMode("list");
+            setBookmarkName("");
+        }
     };
 
     const deleteContent = () => (
@@ -89,25 +92,25 @@ function SpatialBookmarkUI(props: SpatialBookmarkProps & { viewModel: SpatialBoo
                 {intl.formatMessage({ id: "bookmark.alert.create" })}
             </Alert>
             <Input
+                aria-label={intl.formatMessage({ id: "bookmark.input.label" })}
                 placeholder={intl.formatMessage({ id: "bookmark.input.placeholder" })}
                 value={bookmarkName}
-                isRequired
-                isInvalid={bookmarkName.trim().length === 0} // use trim to avoid bookmarks with space character only
                 onChange={(event) => {
                     setBookmarkName(event.target.value);
                 }}
-                //eslint-disable-next-line
-                autoFocus
                 onKeyDown={(e) => {
                     // add bookmark only, if valid bookmark name exists
-                    if (e.key === "Enter" && bookmarkName.trim().length !== 0) {
+                    if (e.key === "Enter") {
                         addBookmark();
                     }
                 }}
+                isRequired
+                isInvalid={!isValidBookmarkName}
+                autoFocus // eslint-disable-line jsx-a11y/no-autofocus
             />
             <CreateControls
                 intl={intl}
-                bookmarkName={bookmarkName}
+                isInvalid={!isValidBookmarkName}
                 onCancel={() => {
                     setBookmarkName("");
                     setUiMode("list");
@@ -120,7 +123,7 @@ function SpatialBookmarkUI(props: SpatialBookmarkProps & { viewModel: SpatialBoo
     const listContent = () => (
         <>
             {bookmarks.length ? (
-                createList(bookmarks, viewModel, intl, listRef)
+                createList(bookmarks, viewModel, intl, listItemNodes)
             ) : (
                 <Alert rounded="md" status="info">
                     <AlertIcon />
@@ -144,11 +147,7 @@ function SpatialBookmarkUI(props: SpatialBookmarkProps & { viewModel: SpatialBoo
         </>
     );
 
-    return (
-        <Box {...containerProps} padding={2} width={"100%"}>
-            {content}
-        </Box>
-    );
+    return <Box {...containerProps}>{content}</Box>;
 }
 
 function createList(
@@ -163,9 +162,9 @@ function createList(
 
     const bookmarkItems = bookmarks.map((bookmark, idx) => (
         <BookmarkItem
+            key={bookmark.id}
             index={idx}
-            listRef={listRef}
-            key={idx}
+            listItemNodes={listRef}
             bookmark={bookmark}
             onActivate={() => viewModel.activateBookmark(bookmark)}
             onDelete={() => viewModel.deleteBookmark(bookmark.id)}
@@ -176,6 +175,7 @@ function createList(
     return (
         <List
             as="ul"
+            p={1} // Some padding for children's box shadow
             className="spatial-bookmark-list"
             listStyleType="none"
             role="listbox"
@@ -191,63 +191,66 @@ function createList(
     );
 }
 
+// key name -> index
+const ARROW_INDEX_MAP: Record<string, number> = {
+    ArrowDown: 1,
+    ArrowUp: -1
+};
+
 function BookmarkItem(props: {
     index: number;
-    listRef: React.MutableRefObject<HTMLDivElement[]>;
+    listItemNodes: React.MutableRefObject<HTMLDivElement[]>;
     bookmark: Bookmark;
     onActivate: () => void;
     onDelete: () => void;
     deleteBtnLabel: string;
 }): JSX.Element {
-    const { index, listRef, bookmark, onDelete, onActivate, deleteBtnLabel } = props;
+    const { index, listItemNodes, bookmark, onDelete, onActivate, deleteBtnLabel } = props;
     const title = bookmark.title;
-    const onKeyPress = (key: string) => {
-        if (!listRef.current.length) {
+    const onKeyDown = (evt: KeyboardEvent) => {
+        const key = evt.key;
+        if (key === "Enter") {
+            // Ignore enter from child components (buttons)
+            if (evt.target === evt.currentTarget) {
+                onActivate();
+            }
             return;
         }
-        const len = listRef.current?.length;
-        interface arrowIndex {
-            ArrowDown: number;
-            ArrowUp: number;
-        }
-        const arrowIndexMap: arrowIndex = {
-            ArrowDown: 1,
-            ArrowUp: -1
-        };
-        if (arrowIndexMap[key as keyof arrowIndex]) {
-            const nextIndex = index + arrowIndexMap[key as keyof arrowIndex];
-            listRef.current[nextIndex % len]?.focus();
-        }
-        if (key === "Enter") {
-            onActivate();
+
+        if (ARROW_INDEX_MAP[key] != null) {
+            const len = listItemNodes.current?.length;
+            if (!len) {
+                return;
+            }
+
+            let nextIndex = (index + ARROW_INDEX_MAP[key]!) % len;
+            if (nextIndex < 0) {
+                nextIndex = len - 1;
+            }
+            listItemNodes.current[nextIndex]?.focus();
         }
     };
     return (
         <Box
-            tabIndex={0}
-            ref={(el) => {
+            as="li"
+            p={1}
+            ref={(el: HTMLDivElement | null) => {
                 if (!el) {
-                    listRef.current.splice(index, 1);
+                    listItemNodes.current.splice(index, 1);
                     return;
                 }
-                listRef.current[index] = el;
+                listItemNodes.current[index] = el;
             }}
-            as="li"
-            className={classNames(
-                "spatial-bookmark-item",
-                `spatial-bookmark-item-${slug(bookmark.id)}`
-            )}
+            className={classNames("spatial-bookmark-item")}
+            tabIndex={0}
             rounded="md"
             role="option"
-            padding={1}
-            cursor={"pointer"}
+            cursor="pointer"
+            outline={0}
             _hover={{ background: "trails.50" }}
-            onKeyDown={(evt) => {
-                onKeyPress(evt.key);
-            }}
-            onClick={() => {
-                onActivate();
-            }}
+            _focusVisible={{ boxShadow: "outline" }}
+            onKeyDown={onKeyDown}
+            onClick={onActivate}
         >
             <Flex width="100%" flexDirection="row" align="center" gap={1}>
                 <PiMapTrifold />
@@ -256,7 +259,7 @@ function BookmarkItem(props: {
                 </Text>
                 <Spacer />
                 <Button
-                    className="spatial-bookmark-item-details"
+                    className="spatial-bookmark-item-delete"
                     aria-label={deleteBtnLabel}
                     borderRadius="full"
                     iconSpacing={0}
@@ -264,9 +267,6 @@ function BookmarkItem(props: {
                     colorScheme="red"
                     variant="ghost"
                     leftIcon={<PiTrashSimpleLight />}
-                    onKeyDown={(evt) => {
-                        evt.stopPropagation();
-                    }}
                     onClick={(event) => {
                         onDelete();
                         event.stopPropagation();
@@ -320,17 +320,17 @@ function RemoveControls(props: { intl: PackageIntl; onClear: () => void; onCance
 
 function CreateControls(props: {
     intl: PackageIntl;
-    bookmarkName: string;
+    isInvalid: boolean;
     onCancel: () => void;
     onSave: () => void;
 }) {
-    const { intl, onCancel, onSave, bookmarkName } = props;
+    const { intl, onCancel, onSave, isInvalid } = props;
     return (
         <ButtonContainer>
             <DialogButton variant="outline" onClick={() => onCancel()}>
                 {intl.formatMessage({ id: "bookmark.button.cancel" })}
             </DialogButton>
-            <DialogButton isDisabled={bookmarkName.trim().length === 0} onClick={() => onSave()}>
+            <DialogButton isDisabled={isInvalid} onClick={() => onSave()}>
                 {intl.formatMessage({ id: "bookmark.button.save" })}
             </DialogButton>
         </ButtonContainer>
@@ -339,7 +339,7 @@ function CreateControls(props: {
 
 function ButtonContainer(props: { children: ReactNode }) {
     return (
-        <Flex width="100%" flexDirection="row" gap={1} my={2}>
+        <Flex width="100%" flexDirection="row" mt={2} gap={1}>
             {props.children}
         </Flex>
     );
@@ -364,10 +364,4 @@ function useViewModel(map: MapModel | undefined, localStorageService: LocalStora
     }, [map, localStorageService]);
 
     return viewModel;
-}
-function slug(id: string) {
-    return id
-        .replace(/[^a-z0-9 -]/g, "")
-        .replace(/\s+/g, "-")
-        .replace(/-+/g, "-");
 }

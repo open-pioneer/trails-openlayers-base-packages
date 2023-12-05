@@ -129,6 +129,7 @@ export class SpatialBookmarkViewModel {
             this.store.set(this.writableBookmarks, rawBookmarks);
         } catch (e) {
             LOG.error("Bookmarks data in local storage is invalid, resetting to default value.", e);
+            this.store.set(this.writableBookmarks, []);
             this.saveState();
         }
     }

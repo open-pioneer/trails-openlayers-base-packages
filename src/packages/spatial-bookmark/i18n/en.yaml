@@ -9,6 +9,7 @@ messages:
       cancelDelete: "No"
       confirmDelete: "Yes"
     input:
+      label: "Name"
       placeholder: "Enter bookmark name"
     alert:
       create: "After entering a name you can save the new bookmark. The current map extent is used as the basis for the position."

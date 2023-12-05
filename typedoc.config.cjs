@@ -22,7 +22,7 @@ const documentedPackages = [
     "packages/theme",
     "packages/local-storage",
     "packages/toc",
-    "packages/spatial-bookmarks"
+    "packages/spatial-bookmark"
 ];
 
 const packagePaths = documentedPackages.map((p) => `src/${p}`);

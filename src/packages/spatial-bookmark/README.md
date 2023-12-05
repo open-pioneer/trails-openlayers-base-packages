@@ -7,7 +7,7 @@ Users can also delete individual bookmarks directly from the list.
 
 ## Usage
 
-To integrate the spatial bookmark in your app, insert the following snippet and reference a map ID:
+To integrate the spatial bookmark component in your app, insert the following snippet and reference a map ID:
 
 ```tsx
 <SpatialBookmark mapId={MAP_ID} />

@@ -9,6 +9,7 @@ messages:
       cancelDelete: "Nein"
       confirmDelete: "Ja"
     input:
+      label: "Name"
       placeholder: "Name des Lesezeichens"
     alert:
       create: "Nach der Eingabe eines Namens können Sie das neue Lesezeichen speichern. Dabei wird der aktuelle Kartenausschnitt als Grundlage für die Position verwendet."
