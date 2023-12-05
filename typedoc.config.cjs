@@ -20,7 +20,8 @@ const documentedPackages = [
     "packages/scale-bar",
     "packages/geolocation",
     "packages/theme",
-    "package/legend"
+    "packages/legend",
+    "packages/toc"
 ];
 
 const packagePaths = documentedPackages.map((p) => `src/${p}`);
