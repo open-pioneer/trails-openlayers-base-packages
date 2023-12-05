@@ -39,6 +39,8 @@ export interface LegendProps extends CommonComponentProps {
     className?: string;
 }
 
+// TODO: Tests
+
 /**
  * The `Legend` component can be used to display the legend of layers that are visible in the map.
  */
@@ -59,17 +61,8 @@ export const Legend: FC<LegendProps> = (props) => {
 function LegendItems(props: { map: MapModel }): ReactNode[] {
     const { map } = props;
 
+    // todo baselayer is shown at the bottom of the legend: ok?
     const layers = useLayers(map);
-    // Todo sind hier auch baselayer dabei?
-    // todo wie wms sublayer beruecksichtigen?
-    /* if (!layers.length) {
-        return (
-            <Text className="toc-missing-layers" aria-labelledby={ariaLabelledBy}>
-                {intl.formatMessage({ id: "missingLayers" })}
-            </Text>
-        );
-    }*/
-
     // todo documentation: add hint that legend of sublayers is also shown but plain (without hierarchical structure)
     const components: ReactNode[] = layers.map((layer) => {
         const id = uuid4v();
@@ -83,24 +76,22 @@ function LegendItems(props: { map: MapModel }): ReactNode[] {
 
 function LegendItem(props: { layer: LayerBase }): ReactNode {
     const { layer } = props;
-
     const { isVisible } = useVisibility(layer);
     if (!isVisible) {
         return undefined;
     }
 
     const legendAttributes = layer.attributes["legend"] as LegendItemAttributes | undefined;
-
     let renderedComponent: ReactNode | undefined;
     if (legendAttributes?.Component) {
         renderedComponent = <legendAttributes.Component layer={layer} />;
     } else if (legendAttributes?.imageUrl) {
+        // TODO: also show layer title?
         renderedComponent = <img src={legendAttributes?.imageUrl} alt="sljkdf" />; /*todo alt text*/
     } else {
         // TODO: implement logic for #204 in own if else
         renderedComponent = undefined;
     }
-
     return renderedComponent;
 }
 

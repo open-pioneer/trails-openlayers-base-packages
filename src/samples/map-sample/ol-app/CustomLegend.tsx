@@ -3,6 +3,21 @@
 
 import { LegendItemComponentProps } from "@open-pioneer/legend";
 
+const dotStyle = {
+    height: "25px",
+    width: "25px",
+    borderColor: "#4cb3ff",
+    borderWidth: "3px",
+    borderRadius: "50%",
+    display: "inline-block "
+};
+
 export function CustomLegend(props: LegendItemComponentProps) {
-    return <span>{props.layer.title}</span>;
+    return (
+        <div>
+            <span>{props.layer.title}:</span>
+            <br></br>
+            <span style={dotStyle}></span>
+        </div>
+    );
 }

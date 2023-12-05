@@ -9,6 +9,7 @@ import VectorSource from "ol/source/Vector";
 import WMTS from "ol/source/WMTS";
 import WMTSTileGrid from "ol/tilegrid/WMTS";
 import { LegendItemAttributes } from "@open-pioneer/legend";
+import { CustomLegend } from "./CustomLegend";
 
 export const MAP_ID = "main";
 
@@ -18,16 +19,8 @@ export class MapConfigProviderImpl implements MapConfigProvider {
     async getMapConfig(): Promise<MapConfig> {
         //const computedValue = "foo"; TODO add good examples for layerLegendProps
 
-        const layerLegendProps: LegendItemAttributes = {
-            /*   Component: function CustomLegend({ layer }: LegendItemComponentProps) {
-                /!*
-                    <span>
-                        {layer.title}
-                    </span>
-                *!/
-                return createElement("span", undefined, layer.title);
-            }*/
-            imageUrl: "https://www.geothermie.nrw.de/images/legenden/erdwaermesonden.jpg"
+        const pointLayerLegendProps: LegendItemAttributes = {
+            Component: CustomLegend
         };
 
         return {
@@ -45,7 +38,10 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     visible: true,
                     olLayer: createTopPlusOpenLayer("web"),
                     attributes: {
-                        "legend": layerLegendProps
+                        "legend": {
+                            imageUrl:
+                                "https://www.geothermie.nrw.de/images/legenden/erdwaermesonden.jpg"
+                        }
                     }
                 }),
                 new SimpleLayer({
@@ -77,13 +73,16 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                         "Haltestellen des öffentlichen Personenverkehrs in der Hanse- und Universitätsstadt Rostock.",
                     olLayer: createHaltestellenLayer(),
                     attributes: {
-                        "legend": layerLegendProps
+                        "legend": pointLayerLegendProps
                     }
                 }),
                 new SimpleLayer({
                     title: "Kindertagesstätten",
                     visible: true,
-                    olLayer: createKitasLayer()
+                    olLayer: createKitasLayer(),
+                    attributes: {
+                        "legend": pointLayerLegendProps
+                    }
                 }),
                 createSchulenLayer(),
                 createStrassenLayer()
