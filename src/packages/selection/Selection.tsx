@@ -12,8 +12,7 @@ import { PiUserRectangle } from "react-icons/pi";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FakePointSelectionSource } from "./testSources";
 import { SelectionSource } from "./api";
-import DragZoom from "ol/interaction/DragZoom";
-import DragRotateAndZoom from "ol/interaction/DragRotateAndZoom";
+import { InteractionsController } from "./InteractionsController";
 
 /**
  * Properties supported by the {@link Search} component.
@@ -80,18 +79,6 @@ function useSelectionState() {
     };
 }
 
-export function removeDragBoxInteraction(map: MapModel | undefined) {
-    const interactions = map?.olMap.getInteractions().getArray();
-    const dragBox = interactions?.find((interaction) => {
-        const isDragZoom =
-            interaction instanceof DragZoom || interaction instanceof DragRotateAndZoom;
-        return !isDragZoom && interaction instanceof DragBox;
-    });
-    if (dragBox) {
-        map?.olMap.removeInteraction(dragBox);
-    }
-}
-
 function useInteractions(map: MapModel | undefined) {
     const [testResult, setTestResult] = useState("Test");
     const { onInputChanged } = useSelectionState();
@@ -101,6 +88,7 @@ function useInteractions(map: MapModel | undefined) {
             return;
         }
 
+        const controller = new InteractionsController(map.olMap);
         // a normal select interaction to handle click
         const select = new SelectInteraction({
             style: function (feature) {
@@ -117,10 +105,11 @@ function useInteractions(map: MapModel | undefined) {
         });
 
         map?.olMap.addInteraction(dragBox);
+        controller.setCurrentDragBox(dragBox);
 
         dragBox.on("boxend", function () {
-            const boxExtent = dragBox.getGeometry().getExtent();
-            onInputChanged(dragBox.getGeometry());
+            const boxExtent = dragBox?.getGeometry().getExtent();
+            dragBox && onInputChanged(dragBox.getGeometry());
             setTestResult((boxExtent as unknown as Extent)?.toString());
         });
 
@@ -135,7 +124,7 @@ function useInteractions(map: MapModel | undefined) {
         });
 
         return () => {
-            removeDragBoxInteraction(map);
+            controller.removeDragBoxInteraction();
         };
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
