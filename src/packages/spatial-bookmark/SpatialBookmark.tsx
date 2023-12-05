@@ -24,11 +24,6 @@ import { FC, ReactNode, useEffect, useState, useRef } from "react";
 import { PiMapTrifold, PiTrashSimpleLight } from "react-icons/pi";
 import { Bookmark, SpatialBookmarkViewModel } from "./SpatialBookmarkViewModel";
 
-/*
-    TODO:
-    - listbox interaction (uparrow / downarrow / focus)
-*/
-
 type UIMode = "list" | "create" | "delete";
 
 export interface SpatialBookmarkProps extends CommonComponentProps {
@@ -219,7 +214,6 @@ function BookmarkItem(props: {
             ArrowDown: 1,
             ArrowUp: -1
         };
-        //let nextIndex = index;
         if (arrowIndexMap[key as keyof arrowIndex]) {
             const nextIndex = index + arrowIndexMap[key as keyof arrowIndex];
             listRef.current[nextIndex % len]?.focus();
@@ -248,11 +242,6 @@ function BookmarkItem(props: {
             padding={1}
             cursor={"pointer"}
             _hover={{ background: "trails.50" }}
-            _focusVisible={{
-                //borderColor: "0 0 0 3px #9B2C2C"
-                outline: "0 0 0 3px #9B2C2C"
-                // outline: "-webkit-focus-ring-color auto 2px;"
-            }}
             onKeyDown={(evt) => {
                 onKeyPress(evt.key);
             }}
@@ -272,6 +261,7 @@ function BookmarkItem(props: {
                     borderRadius="full"
                     iconSpacing={0}
                     padding={0}
+                    colorScheme="red"
                     variant="ghost"
                     leftIcon={<PiTrashSimpleLight />}
                     onKeyDown={(evt) => {

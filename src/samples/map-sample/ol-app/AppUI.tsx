@@ -128,10 +128,7 @@ export function AppUI() {
                                                 </SectionHeading>
                                             }
                                         >
-                                            <SpatialBookmark
-                                                aria-labelledby={spatialBookmarkTitle}
-                                                mapId={MAP_ID}
-                                            />
+                                            <SpatialBookmark mapId={MAP_ID} />
                                         </TitledSection>
                                     </Box>
                                 </Box>
