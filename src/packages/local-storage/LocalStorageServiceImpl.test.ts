@@ -129,22 +129,13 @@ it("Overwrites invalid data on load", async () => {
 
     const _storageService = await setup();
     expect(getStorageData()).toMatchInlineSnapshot("{}");
-    expect(warnSpy).toMatchInlineSnapshot(`
-      [MockFunction warn] {
-        "calls": [
-          [
-            "[WARN] local-storage: Invalid persisted data, reverting to default.",
-            [SyntaxError: Unexpected token 'g', "garbage" is not valid JSON],
-          ],
-        ],
-        "results": [
-          {
-            "type": "return",
-            "value": undefined,
-          },
-        ],
-      }
-    `);
+
+    expect(warnSpy).toHaveBeenCalledOnce();
+    const args = warnSpy.mock.calls[0]! as unknown[];
+    expect(args[0]).toMatchInlineSnapshot(
+        '"[WARN] local-storage: Invalid persisted data, reverting to default."'
+    );
+    expect(args[1]).toMatch(/unexpected token/i);
 });
 
 it("Returns previously set values in get()", async () => {
