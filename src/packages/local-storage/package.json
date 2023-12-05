@@ -1,0 +1,21 @@
+{
+    "name": "@open-pioneer/local-storage",
+    "version": "0.0.1",
+    "license": "Apache-2.0",
+    "main": "index.ts",
+    "scripts": {
+        "build": "build-pioneer-package"
+    },
+    "peerDependencies": {
+        "@open-pioneer/core": "^1.1.0",
+        "@open-pioneer/runtime": "^1.1.0"
+    },
+    "devDependencies": {
+        "@open-pioneer/test-utils": "^1.0.1",
+        "openlayers-base-packages": "workspace:*"
+    },
+    "publishConfig": {
+        "directory": "dist",
+        "linkDirectory": false
+    }
+}

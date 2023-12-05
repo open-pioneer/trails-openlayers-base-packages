@@ -1,0 +1,19 @@
+messages:
+  bookmark:
+    button:
+      create: "Neues Lesezeichen hinzufügen"
+      deleteAll: "Alle Lesezeichen löschen"
+      deleteOne: "Lesezeichen löschen"
+      save: "Speichern"
+      cancel: "Abbrechen"
+      cancelDelete: "Nein"
+      confirmDelete: "Ja"
+    input:
+      label: "Name"
+      placeholder: "Name des Lesezeichens"
+    alert:
+      create: "Nach der Eingabe eines Namens können Sie das neue Lesezeichen speichern. Dabei wird der aktuelle Kartenausschnitt als Grundlage für die Position verwendet."
+      delete: "Möchten Sie wirklich alle räumlichen Lesezeichen löschen?"
+      noSaved: "Sie haben keine gespeicherten Lesezeichen"
+    list:
+      label: "Räumliche Lesezeichen"
