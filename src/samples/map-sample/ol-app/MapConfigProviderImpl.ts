@@ -16,7 +16,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
     mapId = MAP_ID;
 
     async getMapConfig(): Promise<MapConfig> {
-        const computedValue = "foo";
+        //const computedValue = "foo"; TODO add good examples for layerLegendProps
 
         const layerLegendProps: LegendItemAttributes = {
             /*   Component: function CustomLegend({ layer }: LegendItemComponentProps) {

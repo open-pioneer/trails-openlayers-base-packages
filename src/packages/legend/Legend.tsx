@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: Apache-2.0
 import { Box } from "@open-pioneer/chakra-integration";
 import { Layer, MapModel, useMapModel, LayerBase } from "@open-pioneer/map";
-import { useIntl } from "open-pioneer:react-hooks";
 import { ComponentType, FC, ReactNode, useCallback, useRef, useSyncExternalStore } from "react";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import LayerGroup from "ol/layer/Group";
@@ -32,7 +31,7 @@ export interface LegendItemAttributes {
 }
 
 /**
- * These are special properties for the BasemapSwitcher.
+ * These are special properties for the Legend.
  */
 export interface LegendProps extends CommonComponentProps {
     /**
@@ -41,16 +40,15 @@ export interface LegendProps extends CommonComponentProps {
     mapId: string;
 
     /**
-     * Additional css class name(s) that will be added to the BasemapSwitcher component.
+     * Additional css class name(s) that will be added to the Legend component.
      */
     className?: string;
 }
 
 /**
- * The `BasemapSwitcher` component can be used in an app to switch between the different basemaps.
+ * The `Legend` component can be used to display the legend of layers that are visible in the map.
  */
 export const Legend: FC<LegendProps> = (props) => {
-    const intl = useIntl();
     const { mapId } = props;
     const { containerProps } = useCommonComponentProps("legend", props);
 
@@ -78,37 +76,35 @@ function LegendItems(props: { map: MapModel }): ReactNode[] {
         );
     }*/
 
-    // const Component = (attributes as any).component;
-
-    // todo: filter only visible layer
-
     const components: ReactNode[] = layers.map((layer) => {
-        const legendAttributes = layer.attributes["legend"] as LegendItemAttributes | undefined;
-
         const id = uuid4v();
-
-        let renderedComponent: ReactNode | undefined;
-        if (legendAttributes?.Component) {
-            renderedComponent = (
-                <Box key={id}>
-                    <legendAttributes.Component layer={layer} />
-                </Box>
-            );
-        } else if (legendAttributes?.imageUrl) {
-            renderedComponent = (
-                <Box key={id}>
-                    <img src={legendAttributes?.imageUrl} alt="sljkdf" />
-                </Box>
-            ); /*todo alt text*/
-        } else {
-            // TODO: implement logic for #204 in own if else
-            return undefined;
-        }
-
-        return renderedComponent;
+        return <LegendItem key={id} layer={layer}></LegendItem>;
     });
 
     return components;
+}
+
+function LegendItem(props: { layer: LayerBase }): ReactNode {
+    const { layer } = props;
+
+    const { isVisible } = useVisibility(layer);
+    if (!isVisible) {
+        return undefined;
+    }
+
+    const legendAttributes = layer.attributes["legend"] as LegendItemAttributes | undefined;
+
+    let renderedComponent: ReactNode | undefined;
+    if (legendAttributes?.Component) {
+        renderedComponent = <legendAttributes.Component layer={layer} />;
+    } else if (legendAttributes?.imageUrl) {
+        renderedComponent = <img src={legendAttributes?.imageUrl} alt="sljkdf" />; /*todo alt text*/
+    } else {
+        // TODO: implement logic for #204 in own if else
+        return undefined;
+    }
+
+    return renderedComponent;
 }
 
 function useBaseLayers(mapModel: MapModel | undefined): Layer[] {
@@ -204,4 +200,23 @@ function useCachedExternalStore<T>(
 
 function canShowLegendForLayer(layer: Layer) {
     return !(layer.olLayer instanceof LayerGroup);
+}
+
+/** Returns the layer's current visibility. */
+function useVisibility(layer: LayerBase): {
+    isVisible: boolean;
+} {
+    const getSnapshot = useCallback(() => layer.visible, [layer]);
+    const subscribe = useCallback(
+        (cb: () => void) => {
+            const resource = layer.on("changed:visible", cb);
+            return () => resource.destroy();
+        },
+        [layer]
+    );
+    const isVisible = useSyncExternalStore(subscribe, getSnapshot);
+
+    return {
+        isVisible
+    };
 }
