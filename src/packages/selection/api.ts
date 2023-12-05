@@ -66,7 +66,7 @@ export interface SelectionSource {
      *
      * This will be displayed by the user interface.
      */
-    readonly status?: SelectionSourceStatus;
+    status?: SelectionSourceStatus;
 
     /**
      * Performs a selection and returns a list of selection results.
