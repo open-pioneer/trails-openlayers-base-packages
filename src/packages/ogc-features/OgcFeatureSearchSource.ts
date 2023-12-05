@@ -37,11 +37,6 @@ export interface OgcFeatureSearchSourceOptions {
      * Rewrite function to modify the original URL
      */
     rewriteUrlFunction?: (url: URL) => URL;
-
-    /**
-     * Overrides internal request function
-     */
-    request?: () => Promise<SearchResponse>;
 }
 
 export class OgcFeatureSearchSource implements SearchSource {
@@ -60,28 +55,43 @@ export class OgcFeatureSearchSource implements SearchSource {
         const url = this.#getUrl(inputValue);
 
         try {
-            const responses =
-                (await this.options.request?.()) ||
-                (await request(this.options.rewriteUrlFunction?.(url) || url, signal));
+            const responses = await request(this.options.rewriteUrlFunction?.(url) || url, signal);
             const geojson = new GeoJSON({
                 dataProjection: "EPSG:4326",
                 featureProjection: mapProjection
             });
 
-            return responses.features.map((feature) => ({
-                ...feature,
-                id: uuid4v(),
-                label:
-                    this.options.renderLabelFunction?.(feature) ||
+            return responses.features.map((feature) => {
+                const customLabel = this.options.renderLabelFunction?.(feature);
+
+                const singleLabelProperty =
                     feature.properties[
-                        this.options.labelProperty
-                            ? (this.options.labelProperty as keyof typeof feature.properties)
-                            : (this.options.searchProperty as keyof typeof feature.properties)
-                    ] ||
-                    "",
-                geometry: geojson.readGeometry(feature.geometry),
-                properties: feature.properties
-            })) satisfies SearchResult[];
+                        this.options.labelProperty as keyof typeof feature.properties
+                    ];
+
+                const singleSearchProperty =
+                    feature.properties[
+                        this.options.searchProperty as keyof typeof feature.properties
+                    ];
+
+                const label = (() => {
+                    if (singleLabelProperty !== undefined) {
+                        return String(singleLabelProperty);
+                    } else if (singleSearchProperty !== undefined) {
+                        return String(singleSearchProperty);
+                    } else {
+                        return "";
+                    }
+                })();
+
+                return {
+                    ...feature,
+                    id: uuid4v(),
+                    label: customLabel || label,
+                    geometry: geojson.readGeometry(feature.geometry),
+                    properties: feature.properties
+                };
+            }) satisfies SearchResult[];
         } catch (error) {
             if (isAbortError(error)) {
                 throw error;
@@ -107,8 +117,7 @@ interface FeatureResponse {
     type: string;
     id: string | number;
     geometry: unknown;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    properties: any;
+    properties: Readonly<Record<string, unknown>>;
 }
 
 export interface SearchResponse {
