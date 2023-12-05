@@ -34,11 +34,11 @@ export const Selection: FC<SelectionProps> = (props) => {
     const { mapId, sourceLabel } = props;
     const { containerProps } = useCommonComponentProps("selection", props);
     const { map } = useMapModel(mapId);
-    const [testResult, setTestResult] = useState("Test");
-    const { onInputChanged } = useSelectionState();
+
     let sources: SelectionSource[] = [];
     const [source, setSource] = useState("");
 
+    //todo: check how the sources should be accessed. do we need to create hook for sources?
     if (sourceLabel) {
         const fakeSource = new FakePointSelectionSource(5000);
         if (sourceLabel.includes(fakeSource.label)) {
@@ -46,47 +46,8 @@ export const Selection: FC<SelectionProps> = (props) => {
         }
     }
 
-    const selectedStyle = new Style({
-        fill: new Fill({
-            color: "rgba(255, 255, 255, 0.6)"
-        }),
-        stroke: new Stroke({
-            color: "rgba(255, 255, 255, 0.7)",
-            width: 2
-        })
-    });
-
-    // a normal select interaction to handle click
-    const select = new SelectInteraction({
-        style: function (feature) {
-            const color = feature.get("COLOR_BIO") || "#eeeeee";
-            selectedStyle?.getFill()?.setColor(color);
-            return selectedStyle;
-        }
-    });
-
-    map?.olMap.addInteraction(select);
-    const dragBox = new DragBox({
-        condition: mouseActionButton
-    });
-
-    removePreviousDragBox(map);
-    //map?.olMap.removeInteraction(dragBox);
-    map?.olMap.addInteraction(dragBox);
-    dragBox.on("boxend", function () {
-        const boxExtent = dragBox.getGeometry().getExtent();
-        onInputChanged(dragBox.getGeometry());
-        setTestResult((boxExtent as unknown as Extent)?.toString());
-    });
-
-    useEffect(() => {
-        if (!map) {
-            return;
-        }
-        return () => {
-            removePreviousDragBox(map);
-        };
-    }, [map]);
+    const result = useInteractions(map);
+    console.log(result);
 
     return (
         <Box {...containerProps}>
@@ -119,7 +80,7 @@ function useSelectionState() {
     };
 }
 
-function removePreviousDragBox(map: MapModel | undefined) {
+export function removeDragBoxInteraction(map: MapModel | undefined) {
     const interactions = map?.olMap.getInteractions().getArray();
     const dragBox = interactions?.find((interaction) => {
         const isDragZoom =
@@ -129,4 +90,56 @@ function removePreviousDragBox(map: MapModel | undefined) {
     if (dragBox) {
         map?.olMap.removeInteraction(dragBox);
     }
+}
+
+function useInteractions(map: MapModel | undefined) {
+    const [testResult, setTestResult] = useState("Test");
+    const { onInputChanged } = useSelectionState();
+
+    useEffect(() => {
+        if (!map) {
+            return;
+        }
+
+        // a normal select interaction to handle click
+        const select = new SelectInteraction({
+            style: function (feature) {
+                const color = feature.get("COLOR_BIO") || "#eeeeee";
+                selectedStyle?.getFill()?.setColor(color);
+                return selectedStyle;
+            }
+        });
+
+        map?.olMap.addInteraction(select);
+
+        const dragBox = new DragBox({
+            condition: mouseActionButton
+        });
+
+        map?.olMap.addInteraction(dragBox);
+
+        dragBox.on("boxend", function () {
+            const boxExtent = dragBox.getGeometry().getExtent();
+            onInputChanged(dragBox.getGeometry());
+            setTestResult((boxExtent as unknown as Extent)?.toString());
+        });
+
+        const selectedStyle = new Style({
+            fill: new Fill({
+                color: "rgba(255, 255, 255, 0.6)"
+            }),
+            stroke: new Stroke({
+                color: "rgba(255, 255, 255, 0.7)",
+                width: 2
+            })
+        });
+
+        return () => {
+            removeDragBoxInteraction(map);
+        };
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [map]);
+
+    return testResult;
 }
