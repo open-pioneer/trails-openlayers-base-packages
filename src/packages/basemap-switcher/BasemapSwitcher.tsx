@@ -15,6 +15,21 @@ import { FiAlertTriangle } from "react-icons/fi";
 export const NO_BASEMAP_ID = "___NO_BASEMAP___";
 
 /**
+ * Properties for single select options.
+ */
+export interface SelectOption {
+    /**
+     * The id of the basemap for the select option.
+     */
+    value: string;
+
+    /**
+     * The layer object for the select option.
+     */
+    layer: Layer | undefined;
+}
+
+/**
  * These are special properties for the BasemapSwitcher.
  */
 export interface BasemapSwitcherProps extends CommonComponentProps {
@@ -47,14 +62,6 @@ export interface BasemapSwitcherProps extends CommonComponentProps {
     "aria-label"?: string;
 }
 
-export interface SearchOption {
-    /** Layer ID. */
-    value: string;
-
-    /** Layer object. */
-    layer: Layer | undefined;
-}
-
 /**
  * The `BasemapSwitcher` component can be used in an app to switch between the different basemaps.
  */
@@ -67,6 +74,7 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
         "aria-labelledby": ariaLabelledBy
     } = props;
     const { containerProps } = useCommonComponentProps("basemap-switcher", props);
+    const emptyBasemapLabel = intl.formatMessage({ id: "emptyBasemapLabel" });
 
     const { map } = useMapModel(mapId);
     const baseLayers = useBaseLayers(map);
@@ -75,37 +83,37 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
         map?.layers.activateBaseLayer(layerId === NO_BASEMAP_ID ? undefined : layerId);
     };
 
-    const emptyOption: SearchOption = { value: NO_BASEMAP_ID, layer: undefined };
-    const options: SearchOption[] = baseLayers.map<SearchOption>((layer) => {
+    const emptyOption: SelectOption = { value: NO_BASEMAP_ID, layer: undefined };
+    const options: SelectOption[] = baseLayers.map<SelectOption>((layer) => {
         return { value: layer.id, layer: layer };
     });
 
-    const selectedLayer = options.find(
+    const defaultLayer = options.find(
         (option) =>
             option.layer !== undefined && option.layer.visible && option.layer.loadState !== "error"
     );
-    if (allowSelectingEmptyBasemap || selectedLayer == undefined) {
+    if (allowSelectingEmptyBasemap || defaultLayer == undefined) {
         options.push(emptyOption);
     }
-    const defaultLayer: SearchOption = selectedLayer === undefined ? emptyOption : selectedLayer;
+    const selectedLayer: SelectOption = defaultLayer === undefined ? emptyOption : defaultLayer;
 
     return (
         <Box {...containerProps}>
             {map ? (
-                <Select<SearchOption>
+                <Select<SelectOption>
                     aria-label={ariaLabel}
                     aria-labelledby={ariaLabelledBy}
                     className="basemap-switcher-select"
+                    value={selectedLayer}
+                    onChange={(option) => option && activateLayer(option.value)}
                     isClearable={false}
                     isSearchable={false}
-                    value={defaultLayer}
                     getOptionLabel={(option) =>
                         option.layer !== undefined
                             ? option.layer.title
-                            : intl.formatMessage({ id: "emptyBasemapLabel" })
+                            : emptyBasemapLabel
                     }
                     isOptionDisabled={(option) => option?.layer?.loadState === "error"}
-                    onChange={(option) => option && activateLayer(option.value)}
                     components={{ Option: BasemapSelectOption }}
                     options={options}
                 />
@@ -147,7 +155,7 @@ function useBaseLayers(mapModel: MapModel | undefined): Layer[] {
     return useSyncExternalStore(subscribe, getSnapshot);
 }
 
-function BasemapSelectOption(props: OptionProps<SearchOption>): JSX.Element {
+function BasemapSelectOption(props: OptionProps<SelectOption>): JSX.Element {
     const { layer } = props.data;
     const intl = useIntl();
     const notAvailableLabel = intl.formatMessage({ id: "layerNotAvailable" });
