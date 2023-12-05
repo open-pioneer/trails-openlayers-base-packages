@@ -7,12 +7,6 @@ import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/rea
 import LayerGroup from "ol/layer/Group";
 import { v4 as uuid4v } from "uuid";
 
-/*
-    Exported for tests. Feels a bit hacky but should be fine for now.
-    Originally was using the empty string, but that doesn't work well with happy-dom.
-*/
-export const NO_BASEMAP_ID = "___NO_BASEMAP___";
-
 /**
  * Properties of a legend item React component.
  */
@@ -53,13 +47,13 @@ export const Legend: FC<LegendProps> = (props) => {
     const { containerProps } = useCommonComponentProps("legend", props);
 
     const { map } = useMapModel(mapId);
-    const baseLayers = useBaseLayers(map);
 
-    const activateBaseLayer = (layerId: string) => {
-        map?.layers.activateBaseLayer(layerId === NO_BASEMAP_ID ? undefined : layerId);
-    };
-
-    return <Box {...containerProps}>{map ? <LegendItems map={map} /> : ""}</Box>;
+    return (
+        /* TODO: make maxHeight configurable? */
+        <Box overflowY="auto" maxHeight="400" {...containerProps}>
+            {map ? <LegendItems map={map} /> : ""}
+        </Box>
+    );
 };
 
 function LegendItems(props: { map: MapModel }): ReactNode[] {
@@ -67,7 +61,7 @@ function LegendItems(props: { map: MapModel }): ReactNode[] {
 
     const layers = useLayers(map);
     // Todo sind hier auch baselayer dabei?
-    // todo wie wms sublayer beruecksichtigen
+    // todo wie wms sublayer beruecksichtigen?
     /* if (!layers.length) {
         return (
             <Text className="toc-missing-layers" aria-labelledby={ariaLabelledBy}>
@@ -76,9 +70,12 @@ function LegendItems(props: { map: MapModel }): ReactNode[] {
         );
     }*/
 
+    // todo documentation: add hint that legend of sublayers is also shown but plain (without hierarchical structure)
     const components: ReactNode[] = layers.map((layer) => {
         const id = uuid4v();
-        return <LegendItem key={id} layer={layer}></LegendItem>;
+        // todo is it ok to always return a LegendItem even if it is undefined?
+        const test = <LegendItem key={id} layer={layer}></LegendItem>;
+        return test;
     });
 
     return components;
@@ -101,44 +98,13 @@ function LegendItem(props: { layer: LayerBase }): ReactNode {
         renderedComponent = <img src={legendAttributes?.imageUrl} alt="sljkdf" />; /*todo alt text*/
     } else {
         // TODO: implement logic for #204 in own if else
-        return undefined;
+        renderedComponent = undefined;
     }
 
     return renderedComponent;
 }
 
-function useBaseLayers(mapModel: MapModel | undefined): Layer[] {
-    // Caches potentially expensive layers arrays.
-    // Not sure if this is a good idea, but getSnapshot() should always be fast.
-    // If this is a no-go, make getAllLayers() fast instead.
-    const baseLayers = useRef<Layer[] | undefined>();
-    const subscribe = useCallback(
-        (cb: () => void) => {
-            // Reset cache when (re-) subscribing
-            baseLayers.current = undefined;
-
-            if (!mapModel) {
-                return () => undefined;
-            }
-            const resource = mapModel.layers.on("changed", () => {
-                // Reset cache content so getSnapshot() fetches basemaps again.
-                baseLayers.current = undefined;
-                cb();
-            });
-            return () => resource.destroy();
-        },
-        [mapModel]
-    );
-    const getSnapshot = useCallback(() => {
-        if (baseLayers.current) {
-            return baseLayers.current;
-        }
-        return (baseLayers.current = mapModel?.layers.getBaseLayers() ?? []);
-    }, [mapModel]);
-    return useSyncExternalStore(subscribe, getSnapshot);
-}
-
-// todo: refactor to map package
+// todo: refactor to map package? (!this works with getAllLayers instead of getOperationalLayers)
 /** Returns the top level operation layers (without LayerGroups). */
 function useLayers(map: MapModel): LayerBase[] {
     const subscribe = useCallback(
@@ -149,7 +115,7 @@ function useLayers(map: MapModel): LayerBase[] {
         [map]
     );
     const getValue = useCallback(() => {
-        let layers = map.layers.getOperationalLayers({ sortByDisplayOrder: true }) ?? [];
+        let layers = map.layers.getAllLayers({ sortByDisplayOrder: true }) ?? [];
         layers = layers.reverse().filter(canShowLegendForLayer);
         return layers;
     }, [map]);

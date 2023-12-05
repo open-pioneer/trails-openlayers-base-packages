@@ -43,7 +43,10 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     title: "TopPlus Open",
                     isBaseLayer: true,
                     visible: true,
-                    olLayer: createTopPlusOpenLayer("web")
+                    olLayer: createTopPlusOpenLayer("web"),
+                    attributes: {
+                        "legend": layerLegendProps
+                    }
                 }),
                 new SimpleLayer({
                     id: "topplus_open_grau",
