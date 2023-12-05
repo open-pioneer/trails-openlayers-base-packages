@@ -20,7 +20,9 @@ const documentedPackages = [
     "packages/scale-bar",
     "packages/geolocation",
     "packages/theme",
-    "packages/local-storage"
+    "packages/local-storage",
+    "packages/toc",
+    "packages/spatial-bookmarks"
 ];
 
 const packagePaths = documentedPackages.map((p) => `src/${p}`);

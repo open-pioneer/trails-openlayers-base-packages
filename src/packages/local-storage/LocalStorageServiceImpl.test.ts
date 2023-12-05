@@ -134,7 +134,7 @@ it("Overwrites invalid data on load", async () => {
         "calls": [
           [
             "[WARN] local-storage: Invalid persisted data, reverting to default.",
-            [SyntaxError: Unexpected token g in JSON at position 0],
+            [SyntaxError: Unexpected token 'g', "garbage" is not valid JSON],
           ],
         ],
         "results": [
