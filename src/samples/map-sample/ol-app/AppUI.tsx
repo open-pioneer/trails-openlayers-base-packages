@@ -103,37 +103,6 @@ export function AppUI() {
                         role="main"
                         aria-label={intl.formatMessage({ id: "ariaLabel.map" })}
                     >
-                        <MapAnchor horizontalGap={20} position="bottom-left">
-                            {bookmarkIsActive && (
-                                <Box
-                                    backgroundColor="white"
-                                    borderWidth="1px"
-                                    borderRadius="lg"
-                                    padding={2}
-                                    boxShadow="lg"
-                                    role="dialog"
-                                    width={350}
-                                >
-                                    <Box role="dialog" aria-labelledby={spatialBookmarkTitle}>
-                                        <TitledSection
-                                            title={
-                                                <SectionHeading
-                                                    id={spatialBookmarkTitle}
-                                                    size="md"
-                                                    mb={2}
-                                                >
-                                                    {intl.formatMessage({
-                                                        id: "spatialBookmarkTitle"
-                                                    })}
-                                                </SectionHeading>
-                                            }
-                                        >
-                                            <SpatialBookmark mapId={MAP_ID} />
-                                        </TitledSection>
-                                    </Box>
-                                </Box>
-                            )}
-                        </MapAnchor>
                         <Box
                             backgroundColor="white"
                             borderWidth="1px"
@@ -217,6 +186,37 @@ export function AppUI() {
                                     boxShadow="lg"
                                 >
                                     <OverviewMap mapId={MAP_ID} olLayer={overviewMapLayer} />
+                                </Box>
+                            )}
+                        </MapAnchor>
+                        <MapAnchor horizontalGap={20} position="bottom-left">
+                            {bookmarkIsActive && (
+                                <Box
+                                    backgroundColor="white"
+                                    borderWidth="1px"
+                                    borderRadius="lg"
+                                    padding={2}
+                                    boxShadow="lg"
+                                    role="dialog"
+                                    width={350}
+                                >
+                                    <Box role="dialog" aria-labelledby={spatialBookmarkTitle}>
+                                        <TitledSection
+                                            title={
+                                                <SectionHeading
+                                                    id={spatialBookmarkTitle}
+                                                    size="md"
+                                                    mb={2}
+                                                >
+                                                    {intl.formatMessage({
+                                                        id: "spatialBookmarkTitle"
+                                                    })}
+                                                </SectionHeading>
+                                            }
+                                        >
+                                            <SpatialBookmark mapId={MAP_ID} />
+                                        </TitledSection>
+                                    </Box>
                                 </Box>
                             )}
                         </MapAnchor>
