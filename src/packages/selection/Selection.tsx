@@ -14,6 +14,8 @@ import { FakePointSelectionSource } from "./testSources";
 import { SelectionSource } from "./api";
 import DragZoom from "ol/interaction/DragZoom";
 import DragRotateAndZoom from "ol/interaction/DragRotateAndZoom";
+import { PackageIntl } from "@open-pioneer/runtime/i18n";
+import { DragController } from "./DragController";
 
 /**
  * Properties supported by the {@link Search} component.
@@ -27,17 +29,26 @@ export interface SelectionProps extends CommonComponentProps {
      * Array of source labels
      */
     sourceLabel: string[];
+
+    /**
+     * Is Tool activ
+     */
+    activeState: boolean;
 }
 
 export const Selection: FC<SelectionProps> = (props) => {
     const intl = useIntl();
-    const { mapId, sourceLabel } = props;
+    const { mapId, sourceLabel, activeState } = props;
     const { containerProps } = useCommonComponentProps("selection", props);
-    const { map } = useMapModel(mapId);
-    const [testResult, setTestResult] = useState("Test");
-    const { onInputChanged } = useSelectionState();
     let sources: SelectionSource[] = [];
     const [source, setSource] = useState("");
+    const mapState = useMapModel(mapId);
+    const { onInputChanged } = useSelectionState();
+    const controller = useDragController(mapState.map, intl, onInputChanged);
+
+    useEffect(() => {
+        if (!activeState) controller?.destroy();
+    }, [activeState, controller]);
 
     if (sourceLabel) {
         const fakeSource = new FakePointSelectionSource(5000);
@@ -45,48 +56,6 @@ export const Selection: FC<SelectionProps> = (props) => {
             sources = [fakeSource];
         }
     }
-
-    const selectedStyle = new Style({
-        fill: new Fill({
-            color: "rgba(255, 255, 255, 0.6)"
-        }),
-        stroke: new Stroke({
-            color: "rgba(255, 255, 255, 0.7)",
-            width: 2
-        })
-    });
-
-    // a normal select interaction to handle click
-    const select = new SelectInteraction({
-        style: function (feature) {
-            const color = feature.get("COLOR_BIO") || "#eeeeee";
-            selectedStyle?.getFill()?.setColor(color);
-            return selectedStyle;
-        }
-    });
-
-    map?.olMap.addInteraction(select);
-    const dragBox = new DragBox({
-        condition: mouseActionButton
-    });
-
-    removePreviousDragBox(map);
-    //map?.olMap.removeInteraction(dragBox);
-    map?.olMap.addInteraction(dragBox);
-    dragBox.on("boxend", function () {
-        const boxExtent = dragBox.getGeometry().getExtent();
-        onInputChanged(dragBox.getGeometry());
-        setTestResult((boxExtent as unknown as Extent)?.toString());
-    });
-
-    useEffect(() => {
-        if (!map) {
-            return;
-        }
-        return () => {
-            removePreviousDragBox(map);
-        };
-    }, [map]);
 
     return (
         <Box {...containerProps}>
@@ -109,7 +78,7 @@ export const Selection: FC<SelectionProps> = (props) => {
 };
 
 function useSelectionState() {
-    const startSelection = (geometry: Geometry) => {};
+    const startSelection = (geometry: Geometry): void => {};
 
     const onInputChanged = useCallback((geometry: Geometry) => {
         startSelection(geometry);
@@ -119,14 +88,27 @@ function useSelectionState() {
     };
 }
 
-function removePreviousDragBox(map: MapModel | undefined) {
-    const interactions = map?.olMap.getInteractions().getArray();
-    const dragBox = interactions?.find((interaction) => {
-        const isDragZoom =
-            interaction instanceof DragZoom || interaction instanceof DragRotateAndZoom;
-        return !isDragZoom && interaction instanceof DragBox;
-    });
-    if (dragBox) {
-        map?.olMap.removeInteraction(dragBox);
-    }
+function useDragController(
+    map: MapModel | undefined,
+    intl: PackageIntl,
+    extendHandler: (geometry: Geometry) => void
+) {
+    const [controller, setController] = useState<DragController | undefined>(undefined);
+    useEffect(() => {
+        if (!map) {
+            return;
+        }
+
+        const controller = new DragController(
+            map.olMap,
+            intl.formatMessage({ id: "tooltip" }),
+            extendHandler
+        );
+        setController(controller);
+        return () => {
+            controller.destroy();
+            setController(undefined);
+        };
+    }, [map, intl, extendHandler]);
+    return controller;
 }
