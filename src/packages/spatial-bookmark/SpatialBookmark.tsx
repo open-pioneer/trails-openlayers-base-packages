@@ -33,6 +33,9 @@ export interface SpatialBookmarkProps extends CommonComponentProps {
     mapId: string;
 }
 
+/**
+ * A component that allows the user to manage a set of spatial bookmarks.
+ */
 export const SpatialBookmark: FC<SpatialBookmarkProps> = (props) => {
     const { map } = useMapModel(props.mapId);
     const localStorageService = useService("local-storage.LocalStorageService");
