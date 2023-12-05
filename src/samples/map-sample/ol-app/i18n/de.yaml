@@ -1,6 +1,7 @@
 messages:
   basemapLabel: "Hintergrundkarte auswählen: "
   tocTitle: "Karteninhalt"
+  legendTitle: "Legende"
   measurementTitle: "Messen"
   overviewMapTitle: "Übersichtskarte"
   ariaLabel:

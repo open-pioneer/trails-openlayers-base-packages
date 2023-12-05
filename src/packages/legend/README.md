@@ -1,4 +1,4 @@
-# @open-pioneer/basemap-switcher
+# @open-pioneer/legend
 
 This package provides a legend UI component that allows a user to see legend information for layers in the map.
 

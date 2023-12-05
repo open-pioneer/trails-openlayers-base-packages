@@ -17,9 +17,10 @@ import TileLayer from "ol/layer/Tile.js";
 import OSM from "ol/source/OSM.js";
 import { useIntl } from "open-pioneer:react-hooks";
 import { useId, useMemo, useState } from "react";
-import { PiListLight, PiMapTrifold, PiRulerLight } from "react-icons/pi";
+import { PiImagesLight, PiListLight, PiMapTrifold, PiRulerLight } from "react-icons/pi";
 import { MAP_ID } from "./MapConfigProviderImpl";
 import { PhotonGeocoder } from "./search-source-examples/testSources";
+import { Legend } from "@open-pioneer/legend";
 
 const sources = [new PhotonGeocoder("Photon Geocoder", ["city", "street"])];
 
@@ -27,10 +28,16 @@ export function AppUI() {
     const intl = useIntl();
     const tocTitleId = useId();
     const measurementTitleId = useId();
+    const legendTitleId = useId();
     const { map } = useMapModel(MAP_ID);
     const [measurementIsActive, setMeasurementIsActive] = useState<boolean>(false);
+    const [legendIsActive, setLegendIsActive] = useState<boolean>(false);
     const [showOverviewMap, setShowOverviewMap] = useState<boolean>(true);
     const [showToc, setShowToc] = useState<boolean>(true);
+
+    function toggleLegend() {
+        setLegendIsActive(!legendIsActive);
+    }
 
     function toggleMeasurement() {
         setMeasurementIsActive(!measurementIsActive);
@@ -145,6 +152,26 @@ export function AppUI() {
                                             </TitledSection>
                                         </Box>
                                     )}
+                                    {showToc && legendIsActive && <Divider mt={4} mb={4} />}
+                                    {legendIsActive && (
+                                        <Box role="dialog" aria-labelledby={legendTitleId}>
+                                            <TitledSection
+                                                title={
+                                                    <SectionHeading
+                                                        id={legendTitleId}
+                                                        size="md"
+                                                        mb={2}
+                                                    >
+                                                        {intl.formatMessage({
+                                                            id: "legendTitle"
+                                                        })}
+                                                    </SectionHeading>
+                                                }
+                                            >
+                                                <Legend mapId={MAP_ID} />
+                                            </TitledSection>
+                                        </Box>
+                                    )}
                                     {showToc && measurementIsActive && <Divider mt={4} mb={4} />}
                                     {measurementIsActive && (
                                         <Box role="dialog" aria-labelledby={measurementTitleId}>
@@ -195,6 +222,12 @@ export function AppUI() {
                                     icon={<PiListLight />}
                                     isActive={showToc}
                                     onClick={toggleToc}
+                                />
+                                <ToolButton
+                                    label={intl.formatMessage({ id: "legendTitle" })}
+                                    icon={<PiImagesLight />}
+                                    isActive={legendIsActive}
+                                    onClick={toggleLegend}
                                 />
                                 <ToolButton
                                     label={intl.formatMessage({ id: "measurementTitle" })}

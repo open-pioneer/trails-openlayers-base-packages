@@ -1,6 +1,7 @@
 messages:
   basemapLabel: "Select basemap:"
   tocTitle: "Table of contents"
+  legendTitle: "Legend"
   measurementTitle: "Measurement"
   overviewMapTitle: "Overview map"
   ariaLabel:

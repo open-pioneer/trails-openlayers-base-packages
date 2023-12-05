@@ -6,6 +6,7 @@ import { useIntl } from "open-pioneer:react-hooks";
 import { ComponentType, FC, ReactNode, useCallback, useRef, useSyncExternalStore } from "react";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import LayerGroup from "ol/layer/Group";
+import { v4 as uuid4v } from "uuid";
 
 /*
     Exported for tests. Feels a bit hacky but should be fine for now.
@@ -51,7 +52,7 @@ export interface LegendProps extends CommonComponentProps {
 export const Legend: FC<LegendProps> = (props) => {
     const intl = useIntl();
     const { mapId } = props;
-    const { containerProps } = useCommonComponentProps("basemap-switcher", props);
+    const { containerProps } = useCommonComponentProps("legend", props);
 
     const { map } = useMapModel(mapId);
     const baseLayers = useBaseLayers(map);
@@ -59,6 +60,12 @@ export const Legend: FC<LegendProps> = (props) => {
     const activateBaseLayer = (layerId: string) => {
         map?.layers.activateBaseLayer(layerId === NO_BASEMAP_ID ? undefined : layerId);
     };
+
+    return <Box {...containerProps}>{map ? <LegendItems map={map} /> : ""}</Box>;
+};
+
+function LegendItems(props: { map: MapModel }): ReactNode[] {
+    const { map } = props;
 
     const layers = useLayers(map);
     // Todo sind hier auch baselayer dabei?
@@ -78,12 +85,20 @@ export const Legend: FC<LegendProps> = (props) => {
     const components: ReactNode[] = layers.map((layer) => {
         const legendAttributes = layer.attributes["legend"] as LegendItemAttributes | undefined;
 
+        const id = uuid4v();
+
         let renderedComponent: ReactNode | undefined;
         if (legendAttributes?.Component) {
-            renderedComponent = <legendAttributes.Component layer={layer} />;
+            renderedComponent = (
+                <Box key={id}>
+                    <legendAttributes.Component layer={layer} />
+                </Box>
+            );
         } else if (legendAttributes?.imageUrl) {
             renderedComponent = (
-                <img src={legendAttributes?.imageUrl} alt="sljkdf" />
+                <Box key={id}>
+                    <img src={legendAttributes?.imageUrl} alt="sljkdf" />
+                </Box>
             ); /*todo alt text*/
         } else {
             // TODO: implement logic for #204 in own if else
@@ -93,8 +108,8 @@ export const Legend: FC<LegendProps> = (props) => {
         return renderedComponent;
     });
 
-    return <Box {...containerProps}>{map ? components : ""}</Box>;
-};
+    return components;
+}
 
 function useBaseLayers(mapModel: MapModel | undefined): Layer[] {
     // Caches potentially expensive layers arrays.
