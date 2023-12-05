@@ -36,10 +36,12 @@ export function AppUI() {
     const [selectionIsActive, setSelectionIsActive] = useState<boolean>(false);
 
     function toggleMeasurement() {
+        setSelectionIsActive(false);
         setMeasurementIsActive(!measurementIsActive);
     }
 
     function toggleSelection() {
+        setMeasurementIsActive(false);
         setSelectionIsActive(!selectionIsActive);
     }
 
