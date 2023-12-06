@@ -12,8 +12,8 @@ import { Extent } from "ol/extent";
 import { EventEmitter } from "@open-pioneer/core";
 
 export const fakeSelectedPointFeatures = [
-    new Point([852011.307424, 6788511.322702]),
-    new Point([829800.379064, 6809086.916672])
+    new Point([852011, 6788511]),
+    new Point([829800, 6809086])
 ];
 
 export class FakePointSelectionSource
@@ -23,11 +23,17 @@ export class FakePointSelectionSource
     readonly label = "Fake Selection Source";
     #timeout: number;
     #status: SelectionSourceStatus;
+    #pointFeatures: Point[];
 
-    constructor(timeout?: number, status?: SelectionSourceStatus) {
+    constructor(
+        timeout?: number,
+        status?: SelectionSourceStatus,
+        pointFeatures: Point[] = fakeSelectedPointFeatures
+    ) {
         super();
         this.#timeout = timeout || 0;
         this.#status = status || "unavailable";
+        this.#pointFeatures = pointFeatures;
     }
 
     get status(): SelectionSourceStatus {
@@ -39,10 +45,11 @@ export class FakePointSelectionSource
         this.emit("changed:status");
     }
 
+    // TODO: integrate status
     async select(selectionKind: Extent, options: SelectionOptions): Promise<SelectionResult[]> {
         return new Promise((resolve) => {
             setTimeout(() => {
-                const allPoints = fakeSelectedPointFeatures.map((point, index) => {
+                const allPoints = this.#pointFeatures.map((point, index) => {
                     const result: SelectionResult = {
                         id: index,
                         geometry: point

@@ -60,7 +60,7 @@ export class SelectionController {
             if (results.length > maxResults) {
                 results = results.slice(0, maxResults);
             }
-            return { source, results };
+            return { source: source, results: results };
         } catch (e) {
             LOG.error(`selection from source ${source.label} failed`, e);
             return undefined;
