@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
+import { Box, Text } from "@open-pioneer/chakra-integration";
 import { LegendItemComponentProps } from "@open-pioneer/legend";
 
 const dotStyle = {
@@ -14,10 +15,9 @@ const dotStyle = {
 
 export function CustomLegend(props: LegendItemComponentProps) {
     return (
-        <div>
-            <span>{props.layer.title}:</span>
-            <br></br>
-            <span style={dotStyle}></span>
-        </div>
+        <Box>
+            <Text>{props.layer.title}</Text>
+            <Box style={dotStyle}></Box>
+        </Box>
     );
 }

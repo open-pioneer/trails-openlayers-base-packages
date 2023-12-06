@@ -39,7 +39,7 @@ export function AppUI() {
     const spatialBookmarkTitle = useId();
     const { map } = useMapModel(MAP_ID);
     const [measurementIsActive, setMeasurementIsActive] = useState<boolean>(false);
-    const [legendIsActive, setLegendIsActive] = useState<boolean>(false);
+    const [legendIsActive, setLegendIsActive] = useState<boolean>(true);
     const [showOverviewMap, setShowOverviewMap] = useState<boolean>(true);
     const [bookmarkIsActive, setBookmarkActive] = useState<boolean>(false);
     function toggleBookmark() {
