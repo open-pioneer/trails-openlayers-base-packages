@@ -194,7 +194,7 @@ export function AppUI() {
                                                 }
                                             >
                                                 <Box overflowY="auto" maxHeight={300}>
-                                                    <Legend mapId={MAP_ID} />
+                                                    <Legend mapId={MAP_ID} showBaseLayers={true} />
                                                 </Box>
                                             </TitledSection>
                                         </Box>

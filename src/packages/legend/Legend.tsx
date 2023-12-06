@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box, Image, Text } from "@open-pioneer/chakra-integration";
-import { Layer, MapModel, useMapModel, LayerBase } from "@open-pioneer/map";
+import { Box, Image, List, Text } from "@open-pioneer/chakra-integration";
+import { Layer, MapModel, useMapModel, LayerBase, Sublayer } from "@open-pioneer/map";
 import { ComponentType, FC, ReactNode, useCallback, useRef, useSyncExternalStore } from "react";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import LayerGroup from "ol/layer/Group";
@@ -9,6 +9,9 @@ import { v4 as uuid4v } from "uuid";
 import { useIntl } from "open-pioneer:react-hooks";
 import { WarningTwoIcon } from "@chakra-ui/icons";
 import classNames from "classnames";
+import { PackageIntl } from "@open-pioneer/runtime";
+
+type LegendLayer = Layer | Sublayer;
 
 /**
  * Properties of a legend item React component.
@@ -40,6 +43,12 @@ export interface LegendProps extends CommonComponentProps {
      * Additional css class name(s) that will be added to the Legend component.
      */
     className?: string;
+
+    /**
+     * Specifies whether legend for active base layer is shown in the legend UI.
+     * Defaults to `false`.
+     */
+    showBaseLayers?: boolean;
 }
 
 // TODO: Tests
@@ -48,50 +57,93 @@ export interface LegendProps extends CommonComponentProps {
  * The `Legend` component can be used to display the legend of layers that are visible in the map.
  */
 export const Legend: FC<LegendProps> = (props) => {
-    const { mapId } = props;
+    const { mapId, showBaseLayers = false } = props;
     const { containerProps } = useCommonComponentProps("legend", props);
-
     const { map } = useMapModel(mapId);
 
-    return <Box {...containerProps}>{map ? <LegendItems map={map} /> : ""}</Box>;
+    return (
+        <Box {...containerProps}>
+            {map ? <LegendList map={map} showBaseLayers={showBaseLayers} /> : ""}
+        </Box>
+    );
 };
 
-function LegendItems(props: { map: MapModel }): ReactNode[] {
-    const { map } = props;
+function LegendList(props: { map: MapModel; showBaseLayers: boolean }): JSX.Element {
+    const { map, showBaseLayers } = props;
 
     // todo baselayer is shown at the bottom of the legend: ok?
     const layers = useLayers(map);
     // todo documentation: add hint that legend of sublayers is also shown but plain (without hierarchical structure)
-    const components: ReactNode[] = layers.map((layer) => {
+    const legendListItems: ReactNode[] = layers.map((layer) => {
         const id = uuid4v();
         // todo is it ok to always return a LegendItem even if it is undefined?
-        const test = <LegendItem key={id} layer={layer}></LegendItem>;
-        return test;
+        return <LegendItem key={id} layer={layer} showBaseLayers={showBaseLayers}></LegendItem>;
     });
 
-    return components;
+    return (
+        /*TODO: listProps: aria-labelledby ? */
+        <List
+            // Note: not using UnorderedList because it adds default margins
+            as="ul"
+            className="toc-layer-list"
+            listStyleType="none"
+        >
+            {legendListItems}
+        </List>
+    );
 }
 
-function LegendItem(props: { layer: LayerBase }): ReactNode {
+function LegendItem(props: {
+    layer: LegendLayer;
+    showBaseLayers: boolean;
+}): ReactNode | ReactNode[] {
     const intl = useIntl();
 
-    const { layer } = props;
+    const { layer, showBaseLayers } = props;
     const { isVisible } = useVisibility(layer);
+    const sublayers = useSublayers(layer);
+
     if (!isVisible) {
         return undefined;
     }
 
+    // '!("parentLayer" in layer)' checks if the layer is no sublayer
+    if (!showBaseLayers && !("parentLayer" in layer) && layer.isBaseLayer) {
+        return undefined;
+    }
+
+    const legendItems: ReactNode[] = [];
+
+    // legend item for this layer
+    legendItems.push(createLegendItem(layer, intl));
+
+    // legend items for all sublayers
+    if (sublayers?.length) {
+        sublayers.forEach((sublayer) => {
+            const id = uuid4v();
+            legendItems.push(
+                <LegendItem key={id} layer={sublayer} showBaseLayers={showBaseLayers} />
+            );
+        });
+    }
+
+    return legendItems;
+}
+
+function createLegendItem(layer: LayerBase, intl: PackageIntl) {
     const legendAttributes = layer.attributes["legend"] as LegendItemAttributes | undefined;
     let renderedComponent: ReactNode | undefined;
+    const id = uuid4v();
+
     if (legendAttributes?.Component) {
         renderedComponent = (
-            <Box className={classNames("legend-item", `layer-${slug(layer.id)}`)}>
+            <Box key={id} className={classNames("legend-item", `layer-${slug(layer.id)}`)}>
                 <legendAttributes.Component layer={layer} />
             </Box>
         );
     } else if (legendAttributes?.imageUrl) {
         renderedComponent = (
-            <Box className={classNames("legend-item", `layer-${slug(layer.id)}`)}>
+            <Box key={id} className={classNames("legend-item", `layer-${slug(layer.id)}`)}>
                 <Text>{layer.title}</Text>
                 <Image
                     src={legendAttributes?.imageUrl}
@@ -118,7 +170,7 @@ function LegendItem(props: { layer: LayerBase }): ReactNode {
 
 // todo: refactor to map package? (!this works with getAllLayers instead of getOperationalLayers)
 /** Returns the top level operation layers (without LayerGroups). */
-function useLayers(map: MapModel): LayerBase[] {
+function useLayers(map: MapModel): Layer[] {
     const subscribe = useCallback(
         (cb: () => void) => {
             const resource = map.layers.on("changed", cb);
@@ -131,6 +183,28 @@ function useLayers(map: MapModel): LayerBase[] {
         layers = layers.reverse().filter(canShowLegendForLayer);
         return layers;
     }, [map]);
+    return useCachedExternalStore(subscribe, getValue);
+}
+
+/** Returns the sublayers of the given layer (or undefined, if the sublayer cannot have any). */
+function useSublayers(layer: LayerBase): Sublayer[] | undefined {
+    const subscribe = useCallback(
+        (cb: () => void) => {
+            const resource = layer.sublayers?.on("changed", cb);
+            return () => resource?.destroy();
+        },
+        [layer]
+    );
+    const getValue = useCallback((): Sublayer[] | undefined => {
+        const sublayers = layer.sublayers;
+        if (!sublayers) {
+            return undefined;
+        }
+
+        let layers = layer.sublayers?.getSublayers({ sortByDisplayOrder: true });
+        layers = layers.reverse();
+        return layers;
+    }, [layer]);
     return useCachedExternalStore(subscribe, getValue);
 }
 

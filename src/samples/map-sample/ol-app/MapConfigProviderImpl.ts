@@ -184,7 +184,12 @@ function createSchulenLayer() {
         sublayers: [
             {
                 name: "US.education",
-                title: "INSPIRE - WMS Schulstandorte NRW"
+                title: "INSPIRE - WMS Schulstandorte NRW",
+                attributes: {
+                    "legend": {
+                        imageUrl: "https://avatars.githubusercontent.com/u/121286957?s=200&v=4"
+                    }
+                }
             }
         ],
         sourceOptions: {
