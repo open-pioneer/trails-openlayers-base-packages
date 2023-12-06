@@ -1,11 +1,12 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box } from "@open-pioneer/chakra-integration";
+import { Box, Image, Text } from "@open-pioneer/chakra-integration";
 import { Layer, MapModel, useMapModel, LayerBase } from "@open-pioneer/map";
 import { ComponentType, FC, ReactNode, useCallback, useRef, useSyncExternalStore } from "react";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import LayerGroup from "ol/layer/Group";
 import { v4 as uuid4v } from "uuid";
+import { useIntl } from "open-pioneer:react-hooks";
 
 /**
  * Properties of a legend item React component.
@@ -75,6 +76,8 @@ function LegendItems(props: { map: MapModel }): ReactNode[] {
 }
 
 function LegendItem(props: { layer: LayerBase }): ReactNode {
+    const intl = useIntl();
+
     const { layer } = props;
     const { isVisible } = useVisibility(layer);
     if (!isVisible) {
@@ -86,8 +89,16 @@ function LegendItem(props: { layer: LayerBase }): ReactNode {
     if (legendAttributes?.Component) {
         renderedComponent = <legendAttributes.Component layer={layer} />;
     } else if (legendAttributes?.imageUrl) {
-        // TODO: also show layer title?
-        renderedComponent = <img src={legendAttributes?.imageUrl} alt="sljkdf" />; /*todo alt text*/
+        renderedComponent = (
+            <Box>
+                <Text>{layer.title}</Text>
+                <Image
+                    src={legendAttributes?.imageUrl}
+                    alt={intl.formatMessage({ id: "altLabel" }) + layer.title}
+                    // todo: add fallbackSrc
+                />
+            </Box>
+        );
     } else {
         // TODO: implement logic for #204 in own if else
         renderedComponent = undefined;
