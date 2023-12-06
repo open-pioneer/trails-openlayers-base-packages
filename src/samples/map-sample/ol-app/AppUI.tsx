@@ -186,7 +186,9 @@ export function AppUI() {
                                             </TitledSection>
                                         </Box>
                                     )}
-                                    {showToc && measurementIsActive && <Divider mt={4} mb={4} />}
+                                    {(showToc || legendIsActive) && measurementIsActive && (
+                                        <Divider mt={4} mb={4} />
+                                    )}
                                     {measurementIsActive && (
                                         <Box role="dialog" aria-labelledby={measurementTitleId}>
                                             <TitledSection
