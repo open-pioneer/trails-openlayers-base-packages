@@ -16,7 +16,7 @@ import { Toc } from "@open-pioneer/toc";
 import TileLayer from "ol/layer/Tile.js";
 import OSM from "ol/source/OSM.js";
 import { useIntl } from "open-pioneer:react-hooks";
-import { useId, useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useState } from "react";
 import {
     PiImagesLight,
     PiListLight,
@@ -46,6 +46,15 @@ export function AppUI() {
         setBookmarkActive(!bookmarkIsActive);
     }
     const [showToc, setShowToc] = useState<boolean>(true);
+    const [maxHeightToc, setMaxHeightToc] = useState<number | undefined>(undefined);
+
+    useEffect(() => {
+        if (legendIsActive || measurementIsActive) {
+            setMaxHeightToc(300);
+        } else {
+            setMaxHeightToc(undefined);
+        }
+    }, [showToc, legendIsActive, measurementIsActive]);
 
     function toggleLegend() {
         setLegendIsActive(!legendIsActive);
@@ -157,12 +166,14 @@ export function AppUI() {
                                                     </SectionHeading>
                                                 }
                                             >
-                                                <Toc
-                                                    mapId={MAP_ID}
-                                                    basemapSwitcherProps={{
-                                                        allowSelectingEmptyBasemap: true
-                                                    }}
-                                                />
+                                                <Box overflowY="auto" maxHeight={maxHeightToc}>
+                                                    <Toc
+                                                        mapId={MAP_ID}
+                                                        basemapSwitcherProps={{
+                                                            allowSelectingEmptyBasemap: true
+                                                        }}
+                                                    />
+                                                </Box>
                                             </TitledSection>
                                         </Box>
                                     )}
@@ -182,7 +193,9 @@ export function AppUI() {
                                                     </SectionHeading>
                                                 }
                                             >
-                                                <Legend mapId={MAP_ID} />
+                                                <Box overflowY="auto" maxHeight={300}>
+                                                    <Legend mapId={MAP_ID} />
+                                                </Box>
                                             </TitledSection>
                                         </Box>
                                     )}

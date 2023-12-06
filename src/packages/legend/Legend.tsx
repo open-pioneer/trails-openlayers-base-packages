@@ -51,12 +51,7 @@ export const Legend: FC<LegendProps> = (props) => {
 
     const { map } = useMapModel(mapId);
 
-    return (
-        /* TODO: make maxHeight configurable? */
-        <Box overflowY="auto" maxHeight="400" {...containerProps}>
-            {map ? <LegendItems map={map} /> : ""}
-        </Box>
-    );
+    return <Box {...containerProps}>{map ? <LegendItems map={map} /> : ""}</Box>;
 };
 
 function LegendItems(props: { map: MapModel }): ReactNode[] {
