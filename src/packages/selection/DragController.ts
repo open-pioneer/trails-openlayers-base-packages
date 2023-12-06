@@ -39,6 +39,9 @@ export class DragController {
         dragBox.on("boxend", function () {
             extendHandler(dragBox.getGeometry());
         });
+
+        const element = document.querySelectorAll<HTMLElement>(".app");
+        if (element[0]) element[0].style.cursor = "crosshair";
         return {
             dragBox: dragBox,
             destroy() {
@@ -76,5 +79,7 @@ export class DragController {
     destroy() {
         this.tooltip.destroy();
         this.dragBox.destroy();
+        const element = document.querySelectorAll<HTMLElement>(".app");
+        if (element[0]) element[0].style.cursor = "";
     }
 }

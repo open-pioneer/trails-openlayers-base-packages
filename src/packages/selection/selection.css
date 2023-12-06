@@ -4,6 +4,15 @@
 }
 
 .select-tooltip {
-    background-color: white;
-    width: 270px;
+    position: relative;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 4px;
+    color: black;
+    padding: 4px 8px;
+    opacity: 1;
+    white-space: nowrap;
+    font-size: 12px;
+    cursor: default;
+    user-select: none;
+    font-weight: bold;
 }
