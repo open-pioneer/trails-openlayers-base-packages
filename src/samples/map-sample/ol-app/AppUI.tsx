@@ -134,7 +134,7 @@ export function AppUI() {
                             />
                         </Box>
                         <MapAnchor position="top-left" horizontalGap={20} verticalGap={20}>
-                            {(showToc || measurementIsActive) && (
+                            {(showToc || legendIsActive || measurementIsActive) && (
                                 <Box
                                     backgroundColor="white"
                                     borderWidth="1px"
