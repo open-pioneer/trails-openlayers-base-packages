@@ -6,7 +6,6 @@ import Overlay from "ol/Overlay";
 import { mouseActionButton } from "ol/events/condition";
 import Geometry from "ol/geom/Geometry";
 import { DragBox } from "ol/interaction";
-import { useCallback } from "react";
 
 interface Selectionbox extends Resource {
     dragBox: DragBox;
