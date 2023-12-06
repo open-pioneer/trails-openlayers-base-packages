@@ -1,9 +1,9 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box, Divider, Flex } from "@open-pioneer/chakra-integration";
+import { Box, Button, Divider, Flex } from "@open-pioneer/chakra-integration";
 import { CoordinateViewer } from "@open-pioneer/coordinate-viewer";
 import { Geolocation } from "@open-pioneer/geolocation";
-import { MapAnchor, MapContainer, useMapModel } from "@open-pioneer/map";
+import { MapAnchor, MapContainer, SublayersCollection, useMapModel } from "@open-pioneer/map";
 import { InitialExtent, ZoomIn, ZoomOut } from "@open-pioneer/map-navigation";
 import { Measurement } from "@open-pioneer/measurement";
 import { Notifier } from "@open-pioneer/notifier";
@@ -79,6 +79,22 @@ export function AppUI() {
         []
     );
 
+    const hideAllLayers = () => {
+        const hideSublayer = (sublayers: SublayersCollection | undefined) => {
+            sublayers?.getSublayers().map((layer) => {
+                layer.setVisible(false);
+
+                hideSublayer(layer?.sublayers);
+            });
+        };
+
+        map?.layers.getOperationalLayers().map((layer) => {
+            layer.setVisible(false);
+
+            hideSublayer(layer?.sublayers);
+        });
+    };
+
     return (
         <Flex height="100%" direction="column" overflow="hidden">
             <Notifier position="top-right" />
@@ -150,6 +166,25 @@ export function AppUI() {
                                                         allowSelectingEmptyBasemap: true
                                                     }}
                                                 />
+                                                {/* <Divider mt={4} mb={4} /> */}
+                                                <Flex
+                                                    width="100%"
+                                                    flexDirection="row"
+                                                    my={2}
+                                                    gap={1}
+                                                >
+                                                    <Button
+                                                        aria-label={intl.formatMessage({
+                                                            id: "hideAllLayers"
+                                                        })}
+                                                        width="100%"
+                                                        onClick={() => hideAllLayers()}
+                                                    >
+                                                        {intl.formatMessage({
+                                                            id: "hideAllLayers"
+                                                        })}
+                                                    </Button>
+                                                </Flex>
                                             </TitledSection>
                                         </Box>
                                     )}
