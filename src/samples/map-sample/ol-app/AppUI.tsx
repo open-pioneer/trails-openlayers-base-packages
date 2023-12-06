@@ -17,10 +17,11 @@ import TileLayer from "ol/layer/Tile.js";
 import OSM from "ol/source/OSM.js";
 import { useIntl } from "open-pioneer:react-hooks";
 import { useId, useMemo, useState } from "react";
-import { PiListLight, PiMapTrifold, PiRulerLight } from "react-icons/pi";
+import { PiListLight, PiMapTrifold, PiRulerLight, PiBookmarksSimpleBold } from "react-icons/pi";
 import { MAP_ID } from "./MapConfigProviderImpl";
 import { PhotonGeocoder } from "./search-source-examples/testSources";
 import { OgcFeatureSearchSource } from "@open-pioneer/ogc-features";
+import { SpatialBookmark } from "@open-pioneer/spatial-bookmark";
 
 const sources = [
     // new OgcFeatureSearchSource("Feldblöcke", {
@@ -60,9 +61,14 @@ export function AppUI() {
     const intl = useIntl();
     const tocTitleId = useId();
     const measurementTitleId = useId();
+    const spatialBookmarkTitle = useId();
     const { map } = useMapModel(MAP_ID);
     const [measurementIsActive, setMeasurementIsActive] = useState<boolean>(false);
     const [showOverviewMap, setShowOverviewMap] = useState<boolean>(true);
+    const [bookmarkIsActive, setBookmarkActive] = useState<boolean>(false);
+    function toggleBookmark() {
+        setBookmarkActive(!bookmarkIsActive);
+    }
     const [showToc, setShowToc] = useState<boolean>(true);
 
     function toggleMeasurement() {
@@ -109,6 +115,7 @@ export function AppUI() {
     return (
         <Flex height="100%" direction="column" overflow="hidden">
             <Notifier position="top-right" />
+
             <TitledSection
                 title={
                     <Box
@@ -146,7 +153,7 @@ export function AppUI() {
                                 onClear={onSearchCleared}
                             />
                         </Box>
-                        <MapAnchor position="top-left" horizontalGap={10} verticalGap={10}>
+                        <MapAnchor position="top-left" horizontalGap={20} verticalGap={20}>
                             {(showToc || measurementIsActive) && (
                                 <Box
                                     backgroundColor="white"
@@ -154,6 +161,7 @@ export function AppUI() {
                                     borderRadius="lg"
                                     padding={2}
                                     boxShadow="lg"
+                                    width={350}
                                     maxWidth={350}
                                 >
                                     {showToc && (
@@ -201,7 +209,7 @@ export function AppUI() {
                                 </Box>
                             )}
                         </MapAnchor>
-                        <MapAnchor position="top-right" horizontalGap={10} verticalGap={10}>
+                        <MapAnchor position="top-right" horizontalGap={20} verticalGap={20}>
                             {showOverviewMap && (
                                 <Box
                                     backgroundColor="white"
@@ -214,6 +222,37 @@ export function AppUI() {
                                 </Box>
                             )}
                         </MapAnchor>
+                        <MapAnchor horizontalGap={20} position="bottom-left">
+                            {bookmarkIsActive && (
+                                <Box
+                                    backgroundColor="white"
+                                    borderWidth="1px"
+                                    borderRadius="lg"
+                                    padding={2}
+                                    boxShadow="lg"
+                                    role="dialog"
+                                    width={350}
+                                >
+                                    <Box role="dialog" aria-labelledby={spatialBookmarkTitle}>
+                                        <TitledSection
+                                            title={
+                                                <SectionHeading
+                                                    id={spatialBookmarkTitle}
+                                                    size="md"
+                                                    mb={2}
+                                                >
+                                                    {intl.formatMessage({
+                                                        id: "spatialBookmarkTitle"
+                                                    })}
+                                                </SectionHeading>
+                                            }
+                                        >
+                                            <SpatialBookmark mapId={MAP_ID} />
+                                        </TitledSection>
+                                    </Box>
+                                </Box>
+                            )}
+                        </MapAnchor>
                         <MapAnchor position="bottom-right" horizontalGap={10} verticalGap={45}>
                             <Flex
                                 role="toolbar"
@@ -222,6 +261,12 @@ export function AppUI() {
                                 gap={1}
                                 padding={1}
                             >
+                                <ToolButton
+                                    label={intl.formatMessage({ id: "spatialBookmarkTitle" })}
+                                    icon={<PiBookmarksSimpleBold />}
+                                    isActive={bookmarkIsActive}
+                                    onClick={toggleBookmark}
+                                />
                                 <Geolocation mapId={MAP_ID}></Geolocation>
                                 <ToolButton
                                     label={intl.formatMessage({ id: "tocTitle" })}
