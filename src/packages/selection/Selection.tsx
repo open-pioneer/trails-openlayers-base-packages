@@ -1,6 +1,13 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box, Button, FormControl, FormLabel, Select } from "@open-pioneer/chakra-integration";
+import {
+    Box,
+    Button,
+    FormControl,
+    FormLabel,
+    Tooltip,
+    Container
+} from "@open-pioneer/chakra-integration";
 import { FC, useCallback, useEffect, useState } from "react";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { MapModel, useMapModel } from "@open-pioneer/map";
@@ -11,6 +18,8 @@ import { FakePointSelectionSource } from "./testSources";
 import { SelectionSource } from "./api";
 import { PackageIntl } from "@open-pioneer/runtime/i18n";
 import { DragController } from "./DragController";
+import { Select, OptionProps, chakraComponents } from "chakra-react-select";
+import { FiAlertTriangle } from "react-icons/fi";
 
 /**
  * Properties supported by the {@link Search} component.
@@ -29,6 +38,21 @@ export interface SelectionProps extends CommonComponentProps {
      * Is Tool activ
      */
     activeState: boolean;
+}
+
+/**
+ * Properties for single select options.
+ */
+export interface SelectOption {
+    /**
+     * The label of the select option.
+     */
+    label: string;
+
+    /**
+     * The value (SelectionSource) of the select option.
+     */
+    value: SelectionSource | undefined;
 }
 
 export const Selection: FC<SelectionProps> = (props) => {
@@ -52,26 +76,49 @@ export const Selection: FC<SelectionProps> = (props) => {
             sources = [fakeSource];
         }
     }
+    const options: SelectOption[] = sources.map<SelectOption>((source) => {
+        return { label: source.label, value: source };
+    });
 
     return (
-        <Box {...containerProps}>
+        <Container>
             <Button isActive={true} leftIcon={<PiUserRectangle />}>
                 {intl.formatMessage({ id: "rectangle" })}
             </Button>
-
             <FormControl>
                 <FormLabel>{intl.formatMessage({ id: "selectSource" })}</FormLabel>
-                <Select value={source} onChange={(e) => setSource(e.target.value)}>
-                    {sources.map((opt, idx) => (
-                        <option disabled={!!opt.status} key={idx} value={opt.label}>
-                            {opt.label}
-                        </option>
-                    ))}
-                </Select>
+                <Select
+                    name="select-source"
+                    options={options}
+                    components={{ Option: SourceSelectOption }}
+                />
             </FormControl>
-        </Box>
+        </Container>
     );
 };
+// TODO: Make unavailable option not selectable
+function SourceSelectOption(props: OptionProps<SelectOption>): JSX.Element {
+    const { value } = props.data;
+    const intl = useIntl();
+    // TODO: Label not working
+    const notAvailableLabel: string | undefined = intl.formatMessage({ id: "sourceNotAvailable" });
+    const label: string | undefined = value?.label;
+    const isAvailable: boolean | undefined = value?.status === "available";
+
+    return (
+        <chakraComponents.Option {...props} isDisabled={!isAvailable}>
+            {label}
+            &nbsp;
+            {!isAvailable && (
+                <Tooltip label={notAvailableLabel} placement="right" openDelay={500}>
+                    <span>
+                        <FiAlertTriangle color={"red"} aria-label={notAvailableLabel} />
+                    </span>
+                </Tooltip>
+            )}
+        </chakraComponents.Option>
+    );
+}
 
 function useSelectionState() {
     const startSelection = (geometry: Geometry): void => {};
