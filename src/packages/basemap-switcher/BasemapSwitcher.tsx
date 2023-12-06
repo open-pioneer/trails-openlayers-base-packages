@@ -109,9 +109,7 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
                     isClearable={false}
                     isSearchable={false}
                     getOptionLabel={(option) =>
-                        option.layer !== undefined
-                            ? option.layer.title
-                            : emptyBasemapLabel
+                        option.layer !== undefined ? option.layer.title : emptyBasemapLabel
                     }
                     isOptionDisabled={(option) => option?.layer?.loadState === "error"}
                     components={{ Option: BasemapSelectOption }}
@@ -163,7 +161,11 @@ function BasemapSelectOption(props: OptionProps<SelectOption>): JSX.Element {
     const isAvailable = useLoadState(layer) !== "error";
 
     return (
-        <chakraComponents.Option {...props} isDisabled={!isAvailable}>
+        <chakraComponents.Option
+            {...props}
+            isDisabled={!isAvailable}
+            className="basemap-switcher-option"
+        >
             {label}
             &nbsp;
             {!isAvailable && (
