@@ -4,26 +4,24 @@ This package provides a UI component to perform a search on given search sources
 
 The search results are presented as a grouped list, one group for each search source.
 This list is sorted by the given order of search sources and the order of the search results inside is
-defined by your implementation of the search source.
+defined by the implementation of the search source.
 
 ## Usage
 
-To use the search component you have to import `Search` from `@open-pioneer/search`.
-The mandatory properties of the `Search` component are `mapId` and `sources` (search source to be searched on):
+To use the search in your app, insert the following snippet and reference a map ID and `sources` (sources to be searched on):
 
 ```tsx
 <Search mapId={MAP_ID} sources={searchsources} />
 ```
 
-If you want to change the typing delay, add the optional property `searchTypingDelay` (in ms).
+To change the typing delay, add the optional property `searchTypingDelay` (in ms).
 The default value is 200ms.
 
 ```tsx
 <Search mapId={MAP_ID} sources={searchsources} searchTypingDelay={500} />
 ```
 
-If you want to limit the maximum number of search results that should be displayed per search source (group), you can
-configure the optional property `maxResultsPerGroup`.
+To limit the maximum number of search results to be displayed per search source (group), configure the optional property `maxResultsPerGroup`.
 The default value is 5.
 
 ```tsx
@@ -32,7 +30,7 @@ The default value is 5.
 
 ### Listening to events
 
-If you want to listen to the events `onSelect` and `onClear`, you can provide optional callback functions to the component.
+To listen to the events `onSelect` and `onClear`, provide optional callback functions to the component.
 In case of the `onSelect` event, you can access the selected search result (and its search source)
 from the parameter `SelectSearchEvent`.
 
@@ -80,8 +78,7 @@ To achieve a certain position in a parent node, the following snippet might be h
 
 ### Implementing a search source
 
-You have to provide the search sources that are used by the search component by implementing
-the function `search` for each datasource:
+To provide search sources that are used by the search component, implement the function `search` for each datasource:
 
 ```tsx
 import { Search, SearchSource, SearchResult } from "@open-pioneer/search";
@@ -109,4 +106,4 @@ of the search function, so you are able to fetch no more results than necessary.
 
 ## License
 
-[Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0)
+Apache-2.0 (see `LICENSE` file)

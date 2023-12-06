@@ -46,7 +46,7 @@ it("should successfully return the map projection", async () => {
         olMap.setView(
             new View({
                 projection: "EPSG:4326",
-                // These seem to be required with OL 8?
+                // These seem to be required with OpenLayers 8?
                 center: olMap.getView().getCenter(),
                 resolution: olMap.getView().getResolution()
             })

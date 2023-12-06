@@ -21,7 +21,9 @@ const documentedPackages = [
     "packages/geolocation",
     "packages/theme",
     "packages/legend",
-    "packages/toc"
+    "packages/local-storage",
+    "packages/toc",
+    "packages/spatial-bookmark"
 ];
 
 const packagePaths = documentedPackages.map((p) => `src/${p}`);

@@ -10,6 +10,13 @@ const element = createCustomElement({
     theme,
     appMetadata,
     openShadowRoot: true,
+    config: {
+        properties: {
+            "@open-pioneer/local-storage": {
+                "storageId": "ol-app-state"
+            }
+        }
+    },
     async resolveConfig(ctx) {
         const locale = ctx.getAttribute("forced-locale");
         if (!locale) {
