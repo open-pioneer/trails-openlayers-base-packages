@@ -4,16 +4,11 @@ import { Box, Button, FormControl, FormLabel, Select } from "@open-pioneer/chakr
 import { FC, useCallback, useEffect, useState } from "react";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { MapModel, useMapModel } from "@open-pioneer/map";
-import { DragBox, Extent, Select as SelectInteraction } from "ol/interaction.js";
-import { Fill, Stroke, Style } from "ol/style.js";
-import { mouseActionButton } from "ol/events/condition";
 import { Geometry } from "ol/geom";
 import { PiUserRectangle } from "react-icons/pi";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FakePointSelectionSource } from "./testSources";
 import { SelectionSource } from "./api";
-import DragZoom from "ol/interaction/DragZoom";
-import DragRotateAndZoom from "ol/interaction/DragRotateAndZoom";
 import { PackageIntl } from "@open-pioneer/runtime/i18n";
 import { DragController } from "./DragController";
 
@@ -40,6 +35,7 @@ export const Selection: FC<SelectionProps> = (props) => {
     const intl = useIntl();
     const { mapId, sourceLabel, activeState } = props;
     const { containerProps } = useCommonComponentProps("selection", props);
+
     let sources: SelectionSource[] = [];
     const [source, setSource] = useState("");
     const mapState = useMapModel(mapId);
