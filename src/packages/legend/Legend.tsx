@@ -7,6 +7,8 @@ import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/rea
 import LayerGroup from "ol/layer/Group";
 import { v4 as uuid4v } from "uuid";
 import { useIntl } from "open-pioneer:react-hooks";
+import { WarningTwoIcon } from "@chakra-ui/icons";
+import classNames from "classnames";
 
 /**
  * Properties of a legend item React component.
@@ -82,15 +84,28 @@ function LegendItem(props: { layer: LayerBase }): ReactNode {
     const legendAttributes = layer.attributes["legend"] as LegendItemAttributes | undefined;
     let renderedComponent: ReactNode | undefined;
     if (legendAttributes?.Component) {
-        renderedComponent = <legendAttributes.Component layer={layer} />;
+        renderedComponent = (
+            <Box className={classNames("legend-item", `layer-${slug(layer.id)}`)}>
+                <legendAttributes.Component layer={layer} />
+            </Box>
+        );
     } else if (legendAttributes?.imageUrl) {
         renderedComponent = (
-            <Box>
+            <Box className={classNames("legend-item", `layer-${slug(layer.id)}`)}>
                 <Text>{layer.title}</Text>
                 <Image
                     src={legendAttributes?.imageUrl}
                     alt={intl.formatMessage({ id: "altLabel" }) + layer.title}
-                    // todo: add fallbackSrc
+                    // TODO: test fallback with NVDA
+                    fallbackStrategy={"onError"}
+                    fallback={
+                        <Box>
+                            <Text>
+                                <WarningTwoIcon me={2} />
+                                {intl.formatMessage({ id: "fallbackLabel" })}
+                            </Text>
+                        </Box>
+                    }
                 />
             </Box>
         );
@@ -182,4 +197,11 @@ function useVisibility(layer: LayerBase): {
     return {
         isVisible
     };
+}
+
+function slug(id: string) {
+    return id
+        .replace(/[^a-z0-9 -]/g, "")
+        .replace(/\s+/g, "-")
+        .replace(/-+/g, "-");
 }
