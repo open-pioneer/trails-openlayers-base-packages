@@ -81,7 +81,7 @@ export const Selection: FC<SelectionProps> = (props) => {
     });
 
     return (
-        <Container>
+        <Container mb={16}>
             <Button isActive={true} leftIcon={<PiUserRectangle />}>
                 {intl.formatMessage({ id: "rectangle" })}
             </Button>
