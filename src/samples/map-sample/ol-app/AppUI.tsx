@@ -215,6 +215,7 @@ export function AppUI() {
                                             >
                                                 <Selection
                                                     mapId={MAP_ID}
+                                                    activeState={selectionIsActive}
                                                     sourceLabel={["Fake Selection Source"]}
                                                 />
                                             </TitledSection>

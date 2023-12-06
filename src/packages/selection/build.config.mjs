@@ -3,6 +3,7 @@
 import { defineBuildConfig } from "@open-pioneer/build-support";
 
 export default defineBuildConfig({
+    styles: "./selection.css",
     entryPoints: ["index"],
     i18n: ["en", "de"]
 });

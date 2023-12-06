@@ -1,0 +1,9 @@
+.selectionDragBox {
+    background-color: rgba(255, 255, 255, 0.3) !important;
+    border: 3px solid var(--chakra-colors-background_primary) !important;
+}
+
+.select-tooltip {
+    background-color: white;
+    width: 270px;
+}

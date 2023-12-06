@@ -13,6 +13,8 @@ import { useIntl } from "open-pioneer:react-hooks";
 import { FakePointSelectionSource } from "./testSources";
 import { SelectionSource } from "./api";
 import { InteractionsController } from "./InteractionsController";
+import { PackageIntl } from "@open-pioneer/runtime/i18n";
+import { DragController } from "./DragController";
 
 /**
  * Properties supported by the {@link Search} component.
@@ -26,16 +28,28 @@ export interface SelectionProps extends CommonComponentProps {
      * Array of source labels
      */
     sourceLabel: string[];
+
+    /**
+     * Is Tool activ
+     */
+    activeState: boolean;
 }
 
 export const Selection: FC<SelectionProps> = (props) => {
     const intl = useIntl();
-    const { mapId, sourceLabel } = props;
+    const { mapId, sourceLabel, activeState } = props;
     const { containerProps } = useCommonComponentProps("selection", props);
     const { map } = useMapModel(mapId);
 
     let sources: SelectionSource[] = [];
     const [source, setSource] = useState("");
+    const mapState = useMapModel(mapId);
+    const { onInputChanged } = useSelectionState();
+    const controller = useDragController(mapState.map, intl, onInputChanged);
+
+    useEffect(() => {
+        if (!activeState) controller?.destroy();
+    }, [activeState, controller]);
 
     //todo: check how the sources should be accessed. do we need to create hook for sources?
     if (sourceLabel) {
@@ -69,7 +83,7 @@ export const Selection: FC<SelectionProps> = (props) => {
 };
 
 function useSelectionState() {
-    const startSelection = (geometry: Geometry) => {};
+    const startSelection = (geometry: Geometry): void => {};
 
     const onInputChanged = useCallback((geometry: Geometry) => {
         startSelection(geometry);
@@ -131,4 +145,28 @@ function useInteractions(map: MapModel | undefined) {
     }, [map]);
 
     return testResult;
+}
+function useDragController(
+    map: MapModel | undefined,
+    intl: PackageIntl,
+    extendHandler: (geometry: Geometry) => void
+) {
+    const [controller, setController] = useState<DragController | undefined>(undefined);
+    useEffect(() => {
+        if (!map) {
+            return;
+        }
+
+        const controller = new DragController(
+            map.olMap,
+            intl.formatMessage({ id: "tooltip" }),
+            extendHandler
+        );
+        setController(controller);
+        return () => {
+            controller.destroy();
+            setController(undefined);
+        };
+    }, [map, intl, extendHandler]);
+    return controller;
 }
