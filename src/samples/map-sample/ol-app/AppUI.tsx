@@ -3,7 +3,13 @@
 import { Box, Button, Divider, Flex } from "@open-pioneer/chakra-integration";
 import { CoordinateViewer } from "@open-pioneer/coordinate-viewer";
 import { Geolocation } from "@open-pioneer/geolocation";
-import { MapAnchor, MapContainer, SublayersCollection, useMapModel } from "@open-pioneer/map";
+import {
+    MapAnchor,
+    MapContainer,
+    MapModel,
+    SublayersCollection,
+    useMapModel
+} from "@open-pioneer/map";
 import { InitialExtent, ZoomIn, ZoomOut } from "@open-pioneer/map-navigation";
 import { Measurement } from "@open-pioneer/measurement";
 import { Notifier } from "@open-pioneer/notifier";
@@ -78,22 +84,6 @@ export function AppUI() {
             }),
         []
     );
-
-    const hideAllLayers = () => {
-        const hideSublayer = (sublayers: SublayersCollection | undefined) => {
-            sublayers?.getSublayers().map((layer) => {
-                layer.setVisible(false);
-
-                hideSublayer(layer?.sublayers);
-            });
-        };
-
-        map?.layers.getOperationalLayers().map((layer) => {
-            layer.setVisible(false);
-
-            hideSublayer(layer?.sublayers);
-        });
-    };
 
     return (
         <Flex height="100%" direction="column" overflow="hidden">
@@ -178,7 +168,7 @@ export function AppUI() {
                                                             id: "hideAllLayers"
                                                         })}
                                                         width="100%"
-                                                        onClick={() => hideAllLayers()}
+                                                        onClick={() => hideAllLayers(map)}
                                                     >
                                                         {intl.formatMessage({
                                                             id: "hideAllLayers"
@@ -309,4 +299,20 @@ export function AppUI() {
             </TitledSection>
         </Flex>
     );
+}
+
+function hideAllLayers(map: MapModel | undefined) {
+    const hideSublayer = (sublayers: SublayersCollection | undefined) => {
+        sublayers?.getSublayers().forEach((layer) => {
+            layer.setVisible(false);
+
+            hideSublayer(layer?.sublayers);
+        });
+    };
+
+    map?.layers.getOperationalLayers().forEach((layer) => {
+        layer.setVisible(false);
+
+        hideSublayer(layer?.sublayers);
+    });
 }
