@@ -167,13 +167,14 @@ function BasemapSelectOption(props: OptionProps<SelectOption>): JSX.Element {
             className="basemap-switcher-option"
         >
             {label}
-            &nbsp;
             {!isAvailable && (
-                <Tooltip label={notAvailableLabel} placement="right" openDelay={500}>
-                    <span>
-                        <FiAlertTriangle color={"red"} aria-label={notAvailableLabel} />
-                    </span>
-                </Tooltip>
+                <Box ml={2}>
+                    <Tooltip label={notAvailableLabel} placement="right" openDelay={500}>
+                        <span>
+                            <FiAlertTriangle color={"red"} aria-label={notAvailableLabel} />
+                        </span>
+                    </Tooltip>
+                </Box>
             )}
         </chakraComponents.Option>
     );
