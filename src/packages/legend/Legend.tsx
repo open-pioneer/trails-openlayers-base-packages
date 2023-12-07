@@ -17,6 +17,9 @@ type LegendLayer = Layer | Sublayer;
  * Properties of a legend item React component.
  */
 export interface LegendItemComponentProps {
+    /**
+     * Related layer of the legend.
+     */
     layer: LayerBase;
 }
 
@@ -26,7 +29,14 @@ export interface LegendItemComponentProps {
  * Example: TODO
  */
 export interface LegendItemAttributes {
+    /**
+     * URL which represent the legend.
+     */
     imageUrl?: string;
+
+    /**
+     * React component to show customize legend.
+     */
     Component?: ComponentType<LegendItemComponentProps>;
 }
 
