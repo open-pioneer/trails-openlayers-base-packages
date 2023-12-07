@@ -40,7 +40,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     attributes: {
                         "legend": {
                             imageUrl:
-                                "https://www.geothermie.nrw.de/images/legenden/erdwaermesonden.jpg"
+                                "https://sg.geodatenzentrum.de/wms_topplus_open?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetLegendGraphic&FORMAT=image/png&LAYER=web"
                         }
                     }
                 }),
@@ -49,14 +49,26 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     title: "TopPlus Open (Grau)",
                     isBaseLayer: true,
                     visible: false,
-                    olLayer: createTopPlusOpenLayer("web_grau")
+                    olLayer: createTopPlusOpenLayer("web_grau"),
+                    attributes: {
+                        "legend": {
+                            imageUrl:
+                                "https://sg.geodatenzentrum.de/wms_topplus_open?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetLegendGraphic&FORMAT=image/png&LAYER=web_grau"
+                        }
+                    }
                 }),
                 new SimpleLayer({
                     id: "topplus_open_light",
                     title: "TopPlus Open (Light)",
                     isBaseLayer: true,
                     visible: false,
-                    olLayer: createTopPlusOpenLayer("web_light")
+                    olLayer: createTopPlusOpenLayer("web_light"),
+                    attributes: {
+                        "legend": {
+                            imageUrl:
+                                "https://sg.geodatenzentrum.de/wms_topplus_open?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetLegendGraphic&FORMAT=image/png&LAYER=web_light"
+                        }
+                    }
                 }),
                 new SimpleLayer({
                     title: "OSM",
