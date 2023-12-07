@@ -1,5 +1,5 @@
 ---
-"@open-pioneer/spatial-bookmark": minor
+"@open-pioneer/spatial-bookmarks": minor
 ---
 
 Initial release

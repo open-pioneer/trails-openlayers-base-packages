@@ -14,8 +14,8 @@ import {
 } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, expect, it } from "vitest";
-import { SpatialBookmark } from "./SpatialBookmark";
-import { Bookmark } from "./SpatialBookmarkViewModel";
+import { SpatialBookmarks } from "./SpatialBookmarks";
+import { Bookmark } from "./SpatialBookmarksViewModel";
 
 const MOCK_NAMESPACE_CONTENT = new Map<string, unknown>();
 
@@ -172,7 +172,7 @@ interface ComponentPropsConfig {
 async function createBookmarkComponent() {
     const { mapId, mapModel, injectedServices } = await setupComponent();
     renderComponent({ services: injectedServices }, { mapId: mapId, "data-testid": "bookmarks" });
-    const div = await waitForSpatialBookmark();
+    const div = await waitForSpatialBookmarks();
     return { mapId, mapModel, div };
 }
 
@@ -197,11 +197,11 @@ function renderComponent(
 ) {
     return render(
         <PackageContextProvider {...contextProviderProps}>
-            <SpatialBookmark {...componentProps} />
+            <SpatialBookmarks {...componentProps} />
         </PackageContextProvider>
     );
 }
-async function waitForSpatialBookmark() {
+async function waitForSpatialBookmarks() {
     return await screen.findByTestId<HTMLDivElement>("bookmarks");
 }
 
