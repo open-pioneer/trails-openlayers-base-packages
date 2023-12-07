@@ -18,17 +18,17 @@ import { SectionHeading, TitledSection, ToolButton } from "@open-pioneer/react-u
 import { ScaleBar } from "@open-pioneer/scale-bar";
 import { ScaleViewer } from "@open-pioneer/scale-viewer";
 import { Search, SearchSelectEvent } from "@open-pioneer/search";
+import { SpatialBookmarks } from "@open-pioneer/spatial-bookmarks";
 import { Toc } from "@open-pioneer/toc";
 import TileLayer from "ol/layer/Tile.js";
 import OSM from "ol/source/OSM.js";
 import { useIntl } from "open-pioneer:react-hooks";
 import { useId, useMemo, useState } from "react";
-import { PiListLight, PiMapTrifold, PiRulerLight, PiBookmarksSimpleBold } from "react-icons/pi";
+import { PiBookmarksSimpleBold, PiListLight, PiMapTrifold, PiRulerLight } from "react-icons/pi";
 import { MAP_ID } from "./MapConfigProviderImpl";
 import { PhotonGeocoder } from "./search-source-examples/testSources";
 
 const sources = [new PhotonGeocoder("Photon Geocoder", ["city", "street"])];
-import { SpatialBookmark } from "@open-pioneer/spatial-bookmark";
 
 export function AppUI() {
     const intl = useIntl();
@@ -239,7 +239,7 @@ export function AppUI() {
                                                 </SectionHeading>
                                             }
                                         >
-                                            <SpatialBookmark mapId={MAP_ID} />
+                                            <SpatialBookmarks mapId={MAP_ID} />
                                         </TitledSection>
                                     </Box>
                                 </Box>

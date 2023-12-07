@@ -51,8 +51,7 @@
             "ignoreCves": []
         },
         "patchedDependencies": {
-            "@changesets/assemble-release-plan@5.2.4": "patches/@changesets__assemble-release-plan@5.2.4.patch",
-            "react-select@5.7.7": "patches/react-select@5.7.7.patch"
+            "@changesets/assemble-release-plan@5.2.4": "patches/@changesets__assemble-release-plan@5.2.4.patch"
         }
     },
     "dependencies": {
