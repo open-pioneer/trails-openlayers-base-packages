@@ -26,16 +26,19 @@ export interface LegendItemComponentProps {
 /**
  * Attributes of the legend attribute that can be specified on a layer.
  *
+ * To show a legend for the layer, provide an imageUrl to an image to show
+ * or provide a React component that will be rendered as a legend.
+ *
  * Example: TODO
  */
 export interface LegendItemAttributes {
     /**
-     * URL which represent the legend.
+     * (Optional) URL to an image that will be shown as a legend for the layer.
      */
     imageUrl?: string;
 
     /**
-     * React component to show customize legend.
+     * (Optional) React component that will be shown as customized legend for the layer.
      */
     Component?: ComponentType<LegendItemComponentProps>;
 }
@@ -81,7 +84,6 @@ export const Legend: FC<LegendProps> = (props) => {
 function LegendList(props: { map: MapModel; showBaseLayers: boolean }): JSX.Element {
     const { map, showBaseLayers } = props;
 
-    // todo baselayer is shown at the bottom of the legend: ok?
     const layers = useLayers(map);
     // todo documentation: add hint that legend of sublayers is also shown but plain (without hierarchical structure)
     const legendListItems: ReactNode[] = layers.map((layer) => {
