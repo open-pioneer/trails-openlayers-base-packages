@@ -22,46 +22,11 @@ import { SpatialBookmarks } from "@open-pioneer/spatial-bookmarks";
 import { Toc } from "@open-pioneer/toc";
 import TileLayer from "ol/layer/Tile.js";
 import OSM from "ol/source/OSM.js";
-import { useIntl } from "open-pioneer:react-hooks";
+import { useIntl, useService } from "open-pioneer:react-hooks";
 import { useId, useMemo, useState } from "react";
 import { PiBookmarksSimpleBold, PiListLight, PiMapTrifold, PiRulerLight } from "react-icons/pi";
 import { MAP_ID } from "./MapConfigProviderImpl";
-import { PhotonGeocoder } from "./search-source-examples/testSources";
-import { OgcFeatureSearchSource } from "@open-pioneer/ogc-features";
-
-const sources = [
-    // new OgcFeatureSearchSource("Feldblöcke", {
-    //     baseUrl: "https://ogc-api.nrw.de/inspire-lc-fb/v1",
-    //     collectionId: "landcoverunit",
-    //     searchProperty: "flik"
-    // }),
-    // new OgcFeatureSearchSource("Weinberge", {
-    //     baseUrl: "https://demo.ldproxy.net/vineyards",
-    //     collectionId: "vineyards",
-    //     searchProperty: "name"
-    // }),
-    new OgcFeatureSearchSource("Bergbauberechtigungen", {
-        baseUrl: "https://ogc-api.nrw.de/inspire-am-bergbauberechtigungen/v1",
-        collectionId: "managementrestrictionorregulationzone",
-        searchProperty: "thematicId",
-        labelProperty: "name",
-        renderLabelFunction(feature) {
-            const name = feature?.properties?.name;
-            const id = feature?.id;
-
-            if (typeof name === "string") {
-                return name + " (" + id + ")";
-            } else {
-                return String(id);
-            }
-        },
-        rewriteUrlFunction(url) {
-            url.searchParams.set("properties", "name"); // return `name` inside of `features[].properties` only
-            return url;
-        }
-    }),
-    new PhotonGeocoder("Photon Geocoder", ["city", "street"])
-];
+import { AppConfig } from "./AppConfig";
 
 export function AppUI() {
     const intl = useIntl();
@@ -87,27 +52,6 @@ export function AppUI() {
 
     function toggleToc() {
         setShowToc(!showToc);
-    }
-
-    function onSearchResultSelected(event: SearchSelectEvent) {
-        console.debug("The user selected the following item: ", event.result);
-        if (!map) {
-            console.debug("Map not ready");
-            return;
-        }
-
-        const geometry = event.result.geometry;
-        if (!geometry) {
-            console.debug("Result has no geometry");
-            return;
-        }
-
-        map.highlightAndZoom([geometry]);
-    }
-
-    function onSearchCleared() {
-        console.debug("The user cleared the search");
-        map?.removeHighlight();
     }
 
     const overviewMapLayer = useMemo(
@@ -151,13 +95,7 @@ export function AppUI() {
                             mt={5}
                             className="search-top-center-placement"
                         >
-                            <Search
-                                mapId={MAP_ID}
-                                sources={sources}
-                                maxResultsPerGroup={10}
-                                onSelect={onSearchResultSelected}
-                                onClear={onSearchCleared}
-                            />
+                            <SearchComponent />
                         </Box>
                         <MapAnchor position="top-left" horizontalGap={20} verticalGap={20}>
                             {(showToc || measurementIsActive) && (
@@ -331,6 +269,41 @@ export function AppUI() {
                 </Flex>
             </TitledSection>
         </Flex>
+    );
+}
+
+function SearchComponent() {
+    const { map } = useMapModel(MAP_ID);
+    const appConfig = useService("ol-app.AppConfig") as AppConfig;
+    const sources = useMemo(() => appConfig.getSearchSources(), [appConfig]);
+
+    function onSearchResultSelected(event: SearchSelectEvent) {
+        console.debug("The user selected the following item: ", event.result);
+        if (!map) {
+            return;
+        }
+
+        const geometry = event.result.geometry;
+        if (!geometry) {
+            return;
+        }
+
+        map.highlightAndZoom([geometry]);
+    }
+
+    function onSearchCleared() {
+        console.debug("The user cleared the search");
+        map?.removeHighlight();
+    }
+
+    return (
+        <Search
+            mapId={MAP_ID}
+            sources={sources}
+            maxResultsPerGroup={10}
+            onSelect={onSearchResultSelected}
+            onClear={onSearchCleared}
+        />
     );
 }
 
