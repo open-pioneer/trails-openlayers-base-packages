@@ -1,5 +1,5 @@
 {
-    "name": "@open-pioneer/spatial-bookmark",
+    "name": "@open-pioneer/spatial-bookmarks",
     "version": "0.0.1",
     "license": "Apache-2.0",
     "main": "index.ts",

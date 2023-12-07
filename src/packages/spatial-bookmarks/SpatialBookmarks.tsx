@@ -22,11 +22,11 @@ import { Provider as JotaiProvider, useAtomValue } from "jotai";
 import { useIntl, useService } from "open-pioneer:react-hooks";
 import { FC, KeyboardEvent, ReactNode, useEffect, useRef, useState } from "react";
 import { PiMapTrifold, PiTrashSimpleLight } from "react-icons/pi";
-import { Bookmark, SpatialBookmarkViewModel } from "./SpatialBookmarkViewModel";
+import { Bookmark, SpatialBookmarkViewModel } from "./SpatialBookmarksViewModel";
 
 type UIMode = "list" | "create" | "delete";
 
-export interface SpatialBookmarkProps extends CommonComponentProps {
+export interface SpatialBookmarksProps extends CommonComponentProps {
     /**
      * The id of the map.
      */
@@ -36,7 +36,7 @@ export interface SpatialBookmarkProps extends CommonComponentProps {
 /**
  * A component that allows the user to manage a set of spatial bookmarks.
  */
-export const SpatialBookmark: FC<SpatialBookmarkProps> = (props) => {
+export const SpatialBookmarks: FC<SpatialBookmarksProps> = (props) => {
     const { map } = useMapModel(props.mapId);
     const localStorageService = useService("local-storage.LocalStorageService");
     const viewModel = useViewModel(map, localStorageService);
@@ -50,15 +50,16 @@ export const SpatialBookmark: FC<SpatialBookmarkProps> = (props) => {
     );
 };
 
-function SpatialBookmarkUI(props: SpatialBookmarkProps & { viewModel: SpatialBookmarkViewModel }) {
+function SpatialBookmarkUI(props: SpatialBookmarksProps & { viewModel: SpatialBookmarkViewModel }) {
     const { viewModel } = props;
     const intl = useIntl();
-    const listItemNodes = useRef([]);
+    const listItemNodes = useRef<HTMLElement[]>([]);
+    const [scrollToLastItem, setScrollToLastItem] = useState(false);
 
     const bookmarks = useAtomValue(viewModel.bookmarks);
     const [bookmarkName, setBookmarkName] = useState<string>("");
     const isValidBookmarkName = bookmarkName.trim().length > 0; // use trim to avoid bookmarks with space character only
-    const { containerProps } = useCommonComponentProps("spatial-bookmark", props);
+    const { containerProps } = useCommonComponentProps("spatial-bookmarks", props);
     const [uiMode, setUiMode] = useState<UIMode>("list");
 
     const clearBookmarks = () => {
@@ -71,8 +72,21 @@ function SpatialBookmarkUI(props: SpatialBookmarkProps & { viewModel: SpatialBoo
             viewModel.createBookmark(bookmarkName);
             setUiMode("list");
             setBookmarkName("");
+            setScrollToLastItem(true);
         }
     };
+
+    // Scroll to newly created bookmark after render
+    useEffect(() => {
+        if (scrollToLastItem) {
+            const listItems = listItemNodes.current;
+            if (listItems) {
+                const lastItem = listItems[bookmarks.length - 1];
+                lastItem?.scrollIntoView?.();
+            }
+            setScrollToLastItem(false);
+        }
+    }, [bookmarks, scrollToLastItem]);
 
     const deleteContent = () => (
         <VStack>
@@ -157,7 +171,7 @@ function createList(
     bookmarks: Bookmark[],
     viewModel: SpatialBookmarkViewModel,
     intl: PackageIntl,
-    listRef: React.MutableRefObject<never[]>
+    listRef: React.MutableRefObject<HTMLElement[]>
 ) {
     const deleteBtnLabel = intl.formatMessage({
         id: "bookmark.button.deleteOne"
@@ -179,7 +193,7 @@ function createList(
         <List
             as="ul"
             p={1} // Some padding for children's box shadow
-            className="spatial-bookmark-list"
+            className="spatial-bookmark-lists"
             listStyleType="none"
             role="listbox"
             spacing={1}
@@ -202,7 +216,7 @@ const ARROW_INDEX_MAP: Record<string, number> = {
 
 function BookmarkItem(props: {
     index: number;
-    listItemNodes: React.MutableRefObject<HTMLDivElement[]>;
+    listItemNodes: React.MutableRefObject<HTMLElement[]>;
     bookmark: Bookmark;
     onActivate: () => void;
     onDelete: () => void;
@@ -244,7 +258,7 @@ function BookmarkItem(props: {
                 }
                 listItemNodes.current[index] = el;
             }}
-            className={classNames("spatial-bookmark-item")}
+            className={classNames("spatial-bookmarks-item")}
             tabIndex={0}
             rounded="md"
             role="option"
@@ -262,7 +276,7 @@ function BookmarkItem(props: {
                 </Text>
                 <Spacer />
                 <Button
-                    className="spatial-bookmark-item-delete"
+                    className="spatial-bookmarks-item-delete"
                     aria-label={deleteBtnLabel}
                     borderRadius="full"
                     iconSpacing={0}

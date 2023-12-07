@@ -27,7 +27,7 @@ layer: new VectorLayer({
          * When the `offset` strategy is used for feature fetching, the limit
          * is used for the page size.
          *
-         * Default limit is 5000
+         * Defaults to `5000`.
          */
         limit: 5000,
 

@@ -24,7 +24,7 @@ export interface TocProps extends CommonComponentProps {
 
     /**
      * Defines whether the basemap switcher is shown in the toc.
-     * Defaults to true.
+     * Defaults to `true`.
      */
     showBasemapSwitcher?: boolean;
 

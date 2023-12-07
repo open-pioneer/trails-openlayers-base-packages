@@ -42,7 +42,7 @@ export interface BasemapSwitcherProps extends CommonComponentProps {
 
     /**
      * Specifies whether an option to deactivate all basemap layers is available in the BasemapSwitcher.
-     * Defaults to false.
+     * Defaults to `false`.
      */
     allowSelectingEmptyBasemap?: boolean;
 

@@ -33,7 +33,8 @@ export interface OgcFeatureSourceOptions {
      * When the `offset` strategy is used for feature fetching, the limit
      * is used for the page size
      *
-     * Default limit is 5000 for Next-Strategy and 2500 for Offset-Strategy
+     * Defaults to `5000` for Next-Strategy.
+     * Defaults to `2500` for Offset-Strategy.
      */
     limit?: number;
 
