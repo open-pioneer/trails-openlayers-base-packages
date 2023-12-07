@@ -9,7 +9,7 @@ import VectorSource from "ol/source/Vector";
 import WMTS from "ol/source/WMTS";
 import WMTSTileGrid from "ol/tilegrid/WMTS";
 import { LegendItemAttributes } from "@open-pioneer/legend";
-import { CustomLegend } from "./CustomLegend";
+import { CustomLegend, LoremIpsumLegend } from "./CustomLegend";
 
 export const MAP_ID = "main";
 
@@ -210,6 +210,10 @@ function createSchulenLayer() {
     });
 }
 
+const loremIpsum: LegendItemAttributes = {
+    Component: LoremIpsumLegend
+};
+
 function createStrassenLayer() {
     return new WMSLayer({
         title: "Straßennetz Landesbetrieb Straßenbau NRW",
@@ -217,7 +221,12 @@ function createStrassenLayer() {
         sublayers: [
             {
                 name: "1",
-                title: "Verwaltungen"
+                title: "Verwaltungen",
+                attributes: {
+                    "legend": {
+                        imageUrl: "https://www.wms.nrw.de/legends/wms/strassen_nrw_wms/1.png"
+                    }
+                }
             },
             {
                 name: "4",
@@ -227,6 +236,9 @@ function createStrassenLayer() {
                 name: "6",
                 title: "Unfälle"
             }
-        ]
+        ],
+        attributes: {
+            "legend": loremIpsum
+        }
     });
 }
