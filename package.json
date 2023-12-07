@@ -51,8 +51,7 @@
             "ignoreCves": []
         },
         "patchedDependencies": {
-            "@changesets/assemble-release-plan@5.2.4": "patches/@changesets__assemble-release-plan@5.2.4.patch",
-            "react-select@5.7.7": "patches/react-select@5.7.7.patch"
+            "@changesets/assemble-release-plan@5.2.4": "patches/@changesets__assemble-release-plan@5.2.4.patch"
         }
     },
     "dependencies": {
@@ -116,7 +115,7 @@
         "ts-node": "^10.9.1",
         "typedoc": "^0.24.8",
         "typescript": "~5.1.6",
-        "vite": "^4.4.9",
+        "vite": "^4.4.12",
         "vite-plugin-eslint": "^1.8.1",
         "vitest": "^0.34.6"
     },

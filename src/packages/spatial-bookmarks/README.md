@@ -1,4 +1,4 @@
-# @open-pioneer/spatial-bookmark
+# @open-pioneer/spatial-bookmarks
 
 This package provides a UI component that allows the user to store, manage, and easily navigate between different map extents by creating bookmarks. The bookmarks are stored locally in the browser's local storage.
 
@@ -7,10 +7,10 @@ Users can also delete individual bookmarks directly from the list.
 
 ## Usage
 
-To integrate the spatial bookmark component in your app, insert the following snippet and reference a map ID:
+To integrate the spatial bookmarks component in your app, insert the following snippet and reference a map ID:
 
 ```tsx
-<SpatialBookmark mapId={MAP_ID} />
+<SpatialBookmarks mapId={MAP_ID} />
 ```
 
 ## License

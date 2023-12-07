@@ -1,9 +1,15 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box, Divider, Flex } from "@open-pioneer/chakra-integration";
+import { Box, Button, Divider, Flex } from "@open-pioneer/chakra-integration";
 import { CoordinateViewer } from "@open-pioneer/coordinate-viewer";
 import { Geolocation } from "@open-pioneer/geolocation";
-import { MapAnchor, MapContainer, useMapModel } from "@open-pioneer/map";
+import {
+    MapAnchor,
+    MapContainer,
+    MapModel,
+    SublayersCollection,
+    useMapModel
+} from "@open-pioneer/map";
 import { InitialExtent, ZoomIn, ZoomOut } from "@open-pioneer/map-navigation";
 import { Measurement } from "@open-pioneer/measurement";
 import { Notifier } from "@open-pioneer/notifier";
@@ -12,16 +18,16 @@ import { SectionHeading, TitledSection, ToolButton } from "@open-pioneer/react-u
 import { ScaleBar } from "@open-pioneer/scale-bar";
 import { ScaleViewer } from "@open-pioneer/scale-viewer";
 import { Search, SearchSelectEvent } from "@open-pioneer/search";
+import { SpatialBookmarks } from "@open-pioneer/spatial-bookmarks";
 import { Toc } from "@open-pioneer/toc";
 import TileLayer from "ol/layer/Tile.js";
 import OSM from "ol/source/OSM.js";
 import { useIntl } from "open-pioneer:react-hooks";
 import { useId, useMemo, useState } from "react";
-import { PiListLight, PiMapTrifold, PiRulerLight, PiBookmarksSimpleBold } from "react-icons/pi";
+import { PiBookmarksSimpleBold, PiListLight, PiMapTrifold, PiRulerLight } from "react-icons/pi";
 import { MAP_ID } from "./MapConfigProviderImpl";
 import { PhotonGeocoder } from "./search-source-examples/testSources";
 import { OgcFeatureSearchSource } from "@open-pioneer/ogc-features";
-import { SpatialBookmark } from "@open-pioneer/spatial-bookmark";
 
 const sources = [
     // new OgcFeatureSearchSource("Feldblöcke", {
@@ -183,6 +189,25 @@ export function AppUI() {
                                                         allowSelectingEmptyBasemap: true
                                                     }}
                                                 />
+                                                {/* <Divider mt={4} mb={4} /> */}
+                                                <Flex
+                                                    width="100%"
+                                                    flexDirection="row"
+                                                    my={2}
+                                                    gap={1}
+                                                >
+                                                    <Button
+                                                        aria-label={intl.formatMessage({
+                                                            id: "hideAllLayers"
+                                                        })}
+                                                        width="100%"
+                                                        onClick={() => hideAllLayers(map)}
+                                                    >
+                                                        {intl.formatMessage({
+                                                            id: "hideAllLayers"
+                                                        })}
+                                                    </Button>
+                                                </Flex>
                                             </TitledSection>
                                         </Box>
                                     )}
@@ -247,7 +272,7 @@ export function AppUI() {
                                                 </SectionHeading>
                                             }
                                         >
-                                            <SpatialBookmark mapId={MAP_ID} />
+                                            <SpatialBookmarks mapId={MAP_ID} />
                                         </TitledSection>
                                     </Box>
                                 </Box>
@@ -307,4 +332,20 @@ export function AppUI() {
             </TitledSection>
         </Flex>
     );
+}
+
+function hideAllLayers(map: MapModel | undefined) {
+    const hideSublayer = (sublayers: SublayersCollection | undefined) => {
+        sublayers?.getSublayers().forEach((layer) => {
+            layer.setVisible(false);
+
+            hideSublayer(layer?.sublayers);
+        });
+    };
+
+    map?.layers.getOperationalLayers().forEach((layer) => {
+        layer.setVisible(false);
+
+        hideSublayer(layer?.sublayers);
+    });
 }
