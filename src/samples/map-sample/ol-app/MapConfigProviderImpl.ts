@@ -97,7 +97,8 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     }
                 }),
                 createSchulenLayer(),
-                createStrassenLayer()
+                createStrassenLayer(),
+                createIsBk5Layer()
             ]
         };
     }
@@ -187,11 +188,111 @@ function createKitasLayer() {
     });
 }
 
+function createIsBk5Layer() {
+    return new WMSLayer({
+        title: "Bodenkarte zur Landwirtschaftlichen Standorterkundung",
+        visible: true,
+        url: "https://www.wms.nrw.de/gd/bk05l",
+        sublayers: [
+            {
+                name: "Versickerung_und_Stofftransport",
+                title: "Versickerung und Stofftransport",
+                sublayers: [
+                    {
+                        name: "Sickerwasserrate",
+                        title: "Sickerwasserrate",
+                        sublayers: [
+                            {
+                                name: "Szenario_Wald",
+                                title: "Szenario Wald",
+                                sublayers: [
+                                    {
+                                        name: "Sickerwasserrate_Wald",
+                                        title: "Sickerwasserrate Wald",
+                                        attributes: {
+                                            "legend": {
+                                                imageUrl:
+                                                    "https://www.wms.nrw.de/gd/bk05l?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=Sickerwasserrate_Wald"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        name: "Direktabfluss_Wald",
+                                        title: "Direktabfluss Wald",
+                                        attributes: {
+                                            "legend": {
+                                                imageUrl:
+                                                    "https://www.wms.nrw.de/gd/bk05l?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=Direktabfluss_Wald"
+                                            }
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                name: "Szenario_Gruenland",
+                                title: "Szenario Grünland",
+                                sublayers: [
+                                    {
+                                        name: "Sickerwasserrate_Gruenland",
+                                        title: "Sickerwasserrate Grünland",
+                                        attributes: {
+                                            "legend": {
+                                                imageUrl:
+                                                    "https://www.wms.nrw.de/gd/bk05l?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=Sickerwasserrate_Gruenland"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        name: "Direktabfluss_Gruenland",
+                                        title: "Direktabfluss Grünland",
+                                        attributes: {
+                                            "legend": {
+                                                imageUrl:
+                                                    "https://www.wms.nrw.de/gd/bk05l?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=Direktabfluss_Gruenland"
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                name: "Wasserhaushalt",
+                title: "Wasserhaushalt",
+                sublayers: [
+                    {
+                        name: "Kapillaraufstieg_von_Grundwasser",
+                        title: "Kapillaraufstieg von Grundwasser",
+                        attributes: {
+                            "legend": {
+                                imageUrl:
+                                    "https://www.wms.nrw.de/gd/bk05l?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=Kapillaraufstieg_von_Grundwasser"
+                            }
+                        }
+                    },
+                    {
+                        name: "Luftkapazitaet_We",
+                        title: "Luftkapazitaet (We)",
+                        attributes: {
+                            "legend": {
+                                imageUrl:
+                                    "https://www.wms.nrw.de/gd/bk05l?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=Luftkapazitaet_We"
+                            }
+                        }
+                    }
+                ]
+            }
+        ]
+    });
+}
+
 function createSchulenLayer() {
     return new WMSLayer({
         title: "Schulstandorte",
         description: `Der vorliegende Datenbestand / Dienst zu den Schulstandorten in NRW stammt aus der Schuldatenbank. Die Informationen werden von den Schulträgern bzw. Schulen selbst eingetragen und aktuell gehalten. Die Daten werden tagesaktuell bereitgestellt und enthalten alle grundlegenden Informationen zu Schulen wie Schulnummer, Schulbezeichnung und Adresse.Der vorliegende Datenbestand / Dienst zu den Schulstandorten in NRW stammt aus der Schuldatenbank. Die Informationen werden von den Schulträgern bzw. Schulen selbst eingetragen und aktuell gehalten. Die Daten werden tagesaktuell bereitgestellt und enthalten alle grundlegenden Informationen zu Schulen wie Schulnummer, Schulbezeichnung und Adresse.Der vorliegende Datenbestand / Dienst zu den Schulstandorten in NRW stammt aus der Schuldatenbank. Die Informationen werden von den Schulträgern bzw. Schulen selbst eingetragen und aktuell gehalten. Die Daten werden tagesaktuell bereitgestellt und enthalten alle grundlegenden Informationen zu Schulen wie Schulnummer, Schulbezeichnung und Adresse.Der vorliegende Datenbestand / Dienst zu den Schulstandorten in NRW stammt aus der Schuldatenbank. Die Informationen werden von den Schulträgern bzw. Schulen selbst eingetragen und aktuell gehalten. Die Daten werden tagesaktuell bereitgestellt und enthalten alle grundlegenden Informationen zu Schulen wie Schulnummer, Schulbezeichnung und Adresse.`,
-        visible: true,
+        visible: false,
         url: "https://www.wms.nrw.de/wms/wms_nw_inspire-schulen",
         sublayers: [
             {
@@ -218,6 +319,7 @@ function createStrassenLayer() {
     return new WMSLayer({
         title: "Straßennetz Landesbetrieb Straßenbau NRW",
         url: "https://www.wms.nrw.de/wms/strassen_nrw_wms",
+        visible: false,
         sublayers: [
             {
                 name: "1",
