@@ -21,7 +21,7 @@ import { Select, OptionProps, chakraComponents } from "chakra-react-select";
 import { FiAlertTriangle } from "react-icons/fi";
 
 /**
- * Properties supported by the {@link Search} component.
+ * Properties supported by the {@link Selection} component.
  */
 export interface SelectionProps extends CommonComponentProps {
     /**
@@ -34,7 +34,7 @@ export interface SelectionProps extends CommonComponentProps {
     sourceLabel: string[];
 
     /**
-     * Is Tool activ
+     * Is Tool active
      */
     activeState: boolean;
 }
@@ -90,12 +90,13 @@ export const Selection: FC<SelectionProps> = (props) => {
                     name="select-source"
                     options={options}
                     components={{ Option: SourceSelectOption }}
+                    isOptionDisabled={(option) => option?.value?.status === "unavailable"}
                 />
             </FormControl>
         </Container>
     );
 };
-// TODO: Make unavailable option not selectable
+
 function SourceSelectOption(props: OptionProps<SelectOption>): JSX.Element {
     const { value } = props.data;
     const intl = useIntl();

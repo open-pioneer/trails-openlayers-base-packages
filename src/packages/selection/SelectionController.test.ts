@@ -55,13 +55,13 @@ describe("point selection source", () => {
             });
         const expected1 = getExpectedResult(ALL_POINTS_FOUND_RESPONSE, 1);
         controller.maxResultsPerSource = 1;
-        const searchResponse1 = await controller.select(FULL_EXTENT);
-        expect(searchResponse1).toEqual(expected1);
+        const selectResponse1 = await controller.select(FULL_EXTENT);
+        expect(selectResponse1).toEqual(expected1);
 
         const expected2 = getExpectedResult(ALL_POINTS_FOUND_RESPONSE, 0);
         controller.maxResultsPerSource = 0;
-        const searchResponse2 = await controller.select(FULL_EXTENT);
-        expect(searchResponse2).toEqual(expected2);
+        const selectResponse2 = await controller.select(FULL_EXTENT);
+        expect(selectResponse2).toEqual(expected2);
     });
 
     it.skip("expect controller to filter rejected queries and return only successfully resolved ones", async () => {
@@ -75,10 +75,10 @@ describe("point selection source", () => {
 
         const { controller } = setup([POINT_SOURCE, dummyRejectionSource]);
 
-        const searchResponse = await controller.select(FULL_EXTENT);
-        expect(searchResponse).toStrictEqual(ALL_POINTS_FOUND_RESPONSE);
+        const selectResponse = await controller.select(FULL_EXTENT);
+        expect(selectResponse).toStrictEqual(ALL_POINTS_FOUND_RESPONSE);
         /*expect(logSpy).toMatchInlineSnapshot('[MockFunction error]');*/
-        /*expect(searchResponse).toStrictEqual(ALL_POINTS_FOUND_RESPONSE);*/
+        /*expect(selectResponse).toStrictEqual(ALL_POINTS_FOUND_RESPONSE);*/
     });
 
     it("expect select source to get current map projection in 'options'", async () => {
