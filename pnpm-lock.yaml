@@ -554,6 +554,9 @@ importers:
       '@open-pioneer/core':
         specifier: ^1.1.0
         version: 1.1.0
+      '@open-pioneer/search':
+        specifier: workspace:^
+        version: link:../search
       ol:
         specifier: ^8.2.0
         version: 8.2.0
@@ -564,9 +567,6 @@ importers:
       '@open-pioneer/map-test-utils':
         specifier: workspace:^
         version: link:../map-test-utils
-      '@open-pioneer/search':
-        specifier: workspace:^
-        version: link:../search
       '@open-pioneer/test-utils':
         specifier: ^1.0.1
         version: 1.0.1(@formatjs/intl@2.9.9)(@open-pioneer/chakra-integration@1.1.0)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.3)(@testing-library/react@14.1.0)(react-dom@18.2.0)(react@18.2.0)

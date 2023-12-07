@@ -9,12 +9,17 @@
     "peerDependencies": {
         "@open-pioneer/core": "^1.1.0",
         "ol": "^8.2.0",
-        "uuid": "^9.0.0"
+        "uuid": "^9.0.0",
+        "@open-pioneer/search": "workspace:^"
+    },
+    "peerDependenciesMeta": {
+        "@open-pioneer/search": {
+            "optional": true
+        }
     },
     "devDependencies": {
         "@open-pioneer/test-utils": "^1.0.1",
         "@open-pioneer/map-test-utils": "workspace:^",
-        "@open-pioneer/search": "workspace:^",
         "openlayers-base-packages": "workspace:*"
     },
     "publishConfig": {
