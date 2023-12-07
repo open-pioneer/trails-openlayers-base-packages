@@ -140,7 +140,7 @@ function LegendItem(props: {
     return legendItems;
 }
 
-function createLegendItem(layer: LayerBase, intl: PackageIntl) {
+function createLegendItem(layer: LegendLayer, intl: PackageIntl) {
     const legendAttributes = layer.attributes["legend"] as LegendItemAttributes | undefined;
     let renderedComponent: ReactNode | undefined;
     const id = uuid4v();
@@ -152,8 +152,13 @@ function createLegendItem(layer: LayerBase, intl: PackageIntl) {
             </Box>
         );
     } else if (legendAttributes?.imageUrl) {
+        const isBaseLayer = !("parentLayer" in layer) && layer.isBaseLayer;
+
         renderedComponent = (
             <Box key={id} className={classNames("legend-item", `layer-${slug(layer.id)}`)}>
+                {/* Render additional text, if layer is a configured basemap */}
+                {isBaseLayer && <Text as="b">{intl.formatMessage({ id: "basemapLabel" })}</Text>}
+
                 <Text>{layer.title}</Text>
                 <Image
                     src={legendAttributes?.imageUrl}
