@@ -97,7 +97,7 @@ function LegendList(props: { map: MapModel; showBaseLayers: boolean }): JSX.Elem
         <List
             // Note: not using UnorderedList because it adds default margins
             as="ul"
-            className="toc-layer-list"
+            className="legend-layer-list"
             listStyleType="none"
         >
             {legendListItems}
