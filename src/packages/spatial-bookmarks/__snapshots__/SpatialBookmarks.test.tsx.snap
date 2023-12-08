@@ -3,7 +3,7 @@
 exports[`should load the stored bookmark from local storage and present it visibly within the list 1`] = `
 <ul
   aria-label="bookmark.list.label"
-  class="spatial-bookmark-lists css-2y973l"
+  class="spatial-bookmark-list css-gekrs3"
   data-theme="light"
   role="listbox"
 >
