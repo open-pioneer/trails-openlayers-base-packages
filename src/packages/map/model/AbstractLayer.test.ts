@@ -6,8 +6,8 @@
 import Layer from "ol/layer/Layer";
 import TileLayer from "ol/layer/Tile";
 import Source from "ol/source/Source";
-import { afterEach, expect, it, vi } from "vitest";
-import { SimpleLayerConfig } from "../api";
+import { SpyInstance, afterEach, describe, expect, it, vi } from "vitest";
+import { HealthCheckFunction, SimpleLayerConfig } from "../api";
 import { AbstractLayer } from "./AbstractLayer";
 
 afterEach(() => {
@@ -123,6 +123,228 @@ it("tracks the layer source's state", async () => {
     }
 });
 
+it("hides a layer when state changes to error", async () => {
+    const source = new Source({
+        state: "ready"
+    });
+    const olLayer = new Layer({
+        source
+    });
+    const layer = createLayer({
+        id: "a",
+        title: "A",
+        visible: true,
+        olLayer: olLayer
+    });
+
+    {
+        expect(layer.loadState).toBe("loaded");
+        expect(layer.visible).toBe(true);
+
+        source.setState("loading");
+        expect(layer.loadState).toBe("loading");
+        expect(layer.visible).toBe(true);
+
+        source.setState("error");
+        expect(layer.loadState).toBe("error");
+        expect(layer.visible).toBe(false);
+
+        // don't activate visibility again
+        source.setState("ready");
+        expect(layer.loadState).toBe("loaded");
+        expect(layer.visible).toBe(false);
+    }
+});
+
+describe("performs a health check", () => {
+    it("when specified as URL, success", async () => {
+        const mockedFetch: SpyInstance = vi.spyOn(global, "fetch");
+        mockedFetch.mockResolvedValue(
+            new Response("", {
+                status: 200
+            })
+        );
+        const testUrl = "http://example.org/health";
+
+        const source = new Source({
+            state: "ready"
+        });
+        const olLayer = new Layer({
+            source
+        });
+
+        const layer = createLayer({
+            id: "a",
+            title: "A",
+            visible: true,
+            olLayer: olLayer,
+            healthCheck: testUrl
+        });
+
+        let eventEmitted = 0;
+        layer.on("changed:loadState", () => eventEmitted++);
+
+        expect(layer.olLayer.getSourceState()).toBe("ready");
+        expect(mockedFetch).toHaveBeenCalledWith(testUrl);
+        expect(eventEmitted).toBe(0);
+        expect(layer.loadState).toBe("loaded");
+
+        await sleep(25);
+        expect(eventEmitted).toBe(0); // no change of state
+        expect(layer.loadState).toBe("loaded");
+        expect(layer.visible).toBe(true); // still visible
+        // ol layer state remains ready and is overwritten by internal health check
+        expect(layer.olLayer.getSourceState()).toBe("ready");
+    });
+
+    it("when specified as URL, fail", async () => {
+        const mockedFetch: SpyInstance = vi.spyOn(global, "fetch");
+        mockedFetch.mockResolvedValue(
+            new Response("", {
+                status: 404
+            })
+        );
+        const testUrl = "http://example.org/health";
+
+        const source = new Source({
+            state: "ready"
+        });
+        const olLayer = new Layer({
+            source
+        });
+
+        const layer = createLayer({
+            id: "a",
+            title: "A",
+            visible: true,
+            olLayer: olLayer,
+            healthCheck: testUrl
+        });
+
+        let eventEmitted = 0;
+        layer.on("changed:loadState", () => eventEmitted++);
+
+        expect(layer.olLayer.getSourceState()).toBe("ready");
+        expect(mockedFetch).toHaveBeenCalledWith(testUrl);
+        expect(layer.loadState).toBe("loaded");
+        expect(layer.visible).toBe(true);
+        expect(eventEmitted).toBe(0);
+
+        await sleep(25);
+        // ol layer state remains ready and is overwritten by internal health check
+        expect(layer.olLayer.getSourceState()).toBe("ready");
+        expect(layer.loadState).toBe("error");
+        expect(layer.visible).toBe(false);
+        expect(eventEmitted).toBe(1);
+    });
+
+    it("when specified as function", async () => {
+        let didResolve = false;
+        const mockedFetch: SpyInstance = vi.spyOn(global, "fetch");
+        const customHealthCheck: HealthCheckFunction = async () => {
+            function wait(milliseconds: number): Promise<void> {
+                return new Promise((resolve) => setTimeout(resolve, milliseconds));
+            }
+
+            await wait(5);
+
+            didResolve = true;
+            return "error";
+        };
+        const mockedCustomHealthCheck = vi.fn(customHealthCheck);
+
+        const source = new Source({
+            state: "ready"
+        });
+        const olLayer = new Layer({
+            source
+        });
+        const layerConfig: SimpleLayerConfig = {
+            id: "a",
+            title: "A",
+            visible: true,
+            olLayer: olLayer,
+            healthCheck: mockedCustomHealthCheck
+        };
+        const layer = createLayer(layerConfig);
+
+        let eventEmitted = 0;
+        layer.on("changed:loadState", () => eventEmitted++);
+
+        expect(mockedFetch).toHaveBeenCalledTimes(0);
+        expect(mockedCustomHealthCheck).toHaveBeenCalledOnce();
+        expect(mockedCustomHealthCheck).toHaveBeenCalledWith(layerConfig);
+        expect(layer.olLayer.getSourceState()).toBe("ready");
+        expect(eventEmitted).toBe(0);
+        expect(layer.loadState).toBe("loaded");
+        expect(layer.visible).toBe(true);
+        expect(didResolve).toBe(false);
+
+        await sleep(25);
+        expect(didResolve).toBe(true);
+        // ol layer state remains ready and is overwritten by internal health check
+        expect(layer.olLayer.getSourceState()).toBe("ready");
+        expect(eventEmitted).toBe(1);
+        expect(layer.loadState).toBe("error");
+        expect(layer.visible).toBe(false);
+    });
+
+    it("not when no health check specified in layer config", async () => {
+        const mockedFetch: SpyInstance = vi.spyOn(global, "fetch");
+
+        const source = new Source({
+            state: "ready"
+        });
+        const olLayer = new Layer({
+            source
+        });
+
+        const layer = createLayer({
+            id: "a",
+            title: "A",
+            visible: true,
+            olLayer: olLayer
+        });
+
+        let eventEmitted = 0;
+        layer.on("changed:loadState", () => eventEmitted++);
+
+        expect(mockedFetch).toHaveBeenCalledTimes(0);
+        expect(eventEmitted).toBe(0); // no change of state
+        expect(layer.loadState).toBe("loaded");
+        expect(layer.visible).toBe(true);
+        expect(layer.olLayer.getSourceState()).toBe("ready");
+    });
+
+    it("not when ol layer state already is error", async () => {
+        const mockedFetch: SpyInstance = vi.spyOn(global, "fetch");
+
+        const source = new Source({
+            state: "error"
+        });
+        const olLayer = new Layer({
+            source
+        });
+
+        const layer = createLayer({
+            id: "a",
+            title: "A",
+            visible: true,
+            olLayer: olLayer,
+            healthCheck: "http://example.org/health"
+        });
+
+        let eventEmitted = 0;
+        layer.on("changed:loadState", () => eventEmitted++);
+
+        expect(layer.loadState).toBe("error");
+        expect(layer.visible).toBe(false);
+        expect(layer.olLayer.getSourceState()).toBe("error");
+        expect(mockedFetch).toHaveBeenCalledTimes(0);
+        expect(eventEmitted).toBe(0); // no event emitted because state was initially error
+    });
+});
+
 // Basic impl for tests
 class LayerImpl extends AbstractLayer {
     get sublayers(): undefined {
@@ -133,4 +355,10 @@ class LayerImpl extends AbstractLayer {
 // NOTE: currently can only be called once per test (because of shared model)
 function createLayer(layerConfig: SimpleLayerConfig): AbstractLayer {
     return new LayerImpl(layerConfig);
+}
+
+function sleep(ms: number) {
+    return new Promise<void>((resolve) => {
+        setTimeout(resolve, ms);
+    });
 }
