@@ -4,7 +4,6 @@
 const { existsSync } = require("fs");
 
 const documentedPackages = [
-    "experimental-packages/layout-sidebar",
     "packages/map",
     "packages/map-test-utils",
     "packages/notifier",
@@ -26,7 +25,7 @@ const documentedPackages = [
     "packages/spatial-bookmarks"
 ];
 
-const packagePaths = documentedPackages.map((p) => `src/${p}`);
+const packagePaths = documentedPackages.sort().map((p) => `src/${p}`);
 for (const path of packagePaths) {
     if (!existsSync(path)) {
         throw new Error("Package does not exist: " + path);
