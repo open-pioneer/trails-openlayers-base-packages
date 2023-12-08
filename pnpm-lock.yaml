@@ -595,9 +595,15 @@ importers:
       '@open-pioneer/core':
         specifier: ^1.1.0
         version: 1.1.0
+      '@open-pioneer/search':
+        specifier: workspace:^
+        version: link:../search
       ol:
         specifier: ^8.2.0
         version: 8.2.0
+      uuid:
+        specifier: ^9.0.0
+        version: 9.0.0
     devDependencies:
       '@open-pioneer/map-test-utils':
         specifier: workspace:^
@@ -1012,6 +1018,9 @@ importers:
       '@open-pioneer/notifier':
         specifier: workspace:^
         version: link:../../../packages/notifier
+      '@open-pioneer/ogc-features':
+        specifier: workspace:^
+        version: link:../../../packages/ogc-features
       '@open-pioneer/overview-map':
         specifier: workspace:^
         version: link:../../../packages/overview-map

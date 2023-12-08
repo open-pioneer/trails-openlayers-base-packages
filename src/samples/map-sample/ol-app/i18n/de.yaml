@@ -12,3 +12,6 @@ messages:
   geolocationTitle: "Geolokalisierung"
   spatialBookmarkTitle: "Räumliche Lesezeichen"
   hideAllLayers: "Alle Karteninhalte ausblenden"
+
+  searchSources:
+    miningPermissions: Bergbauberechtigungen
