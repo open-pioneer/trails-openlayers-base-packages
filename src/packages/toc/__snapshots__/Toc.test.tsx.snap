@@ -22,37 +22,101 @@ exports[`should successfully create a toc component 1`] = `
       data-theme="light"
     >
       <div
-        class="chakra-select__wrapper css-42b2qy"
+        class="basemap-switcher-select css-79elbk"
         data-theme="light"
       >
-        <select
-          aria-labelledby=":r0:"
-          class="chakra-select basemap-switcher-select css-161pkch"
-          data-theme="light"
-        >
-          <option
-            value="base-layer"
-          >
-            Base layer
-          </option>
-        </select>
+        <span
+          class="css-1f43avz-a11yText-A11yText"
+          id="react-select-2-live-region"
+        />
+        <span
+          aria-atomic="false"
+          aria-live="polite"
+          aria-relevant="additions text"
+          class="css-1f43avz-a11yText-A11yText"
+        />
         <div
-          class="chakra-select__icon-wrapper css-iohxn1"
+          class=" css-i2418r"
           data-theme="light"
         >
-          <svg
-            aria-hidden="true"
-            class="chakra-select__icon"
-            focusable="false"
-            role="presentation"
-            style="width: 1em; height: 1em; color: currentcolor;"
-            viewBox="0 0 24 24"
+          <div
+            class=" css-j93siq"
+            data-theme="light"
           >
-            <path
-              d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
-              fill="currentColor"
+            <div
+              class=" css-1xa1gs2"
+              data-theme="light"
+            >
+              Base layer
+            </div>
+            <input
+              aria-autocomplete="list"
+              aria-controls="react-select-2-listbox"
+              aria-expanded="true"
+              aria-haspopup="true"
+              aria-labelledby=":r0:"
+              aria-owns="react-select-2-listbox"
+              aria-readonly="true"
+              class="css-mohuvp-dummyInput-DummyInput"
+              id="react-select-2-input"
+              inputmode="none"
+              role="combobox"
+              tabindex="0"
+              value=""
             />
-          </svg>
+          </div>
+          <div
+            class=" css-hfbj6y"
+            data-theme="light"
+          >
+            <hr
+              aria-orientation="vertical"
+              class="chakra-divider css-1i6c5ox"
+              data-theme="light"
+            />
+            <div
+              aria-hidden="true"
+              class=" css-xq12md"
+              data-theme="light"
+            >
+              <svg
+                aria-hidden="true"
+                class="chakra-icon css-onkibi"
+                data-theme="light"
+                focusable="false"
+                role="presentation"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
+                  fill="currentColor"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div
+          class=" css-ky7590"
+          data-theme="light"
+          id="react-select-2-listbox"
+        >
+          <div
+            class=" css-1h5avke"
+            data-theme="light"
+            role="listbox"
+          >
+            <div
+              aria-selected="true"
+              class="basemap-switcher-option css-e8c6zu"
+              data-focus="true"
+              data-theme="light"
+              id="react-select-2-option-0"
+              role="option"
+              tabindex="-1"
+            >
+              Base layer
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -88,6 +152,7 @@ exports[`should successfully create a toc component 1`] = `
             data-theme="light"
           >
             <input
+              aria-disabled="false"
               class="chakra-checkbox__input"
               style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
               type="checkbox"
@@ -124,6 +189,10 @@ exports[`should successfully create a toc component 1`] = `
               Layer 2
             </span>
           </label>
+          <div
+            class="css-17xejub"
+            data-theme="light"
+          />
         </div>
       </li>
       <li
@@ -140,6 +209,7 @@ exports[`should successfully create a toc component 1`] = `
             data-theme="light"
           >
             <input
+              aria-disabled="false"
               class="chakra-checkbox__input"
               style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
               type="checkbox"
@@ -176,6 +246,10 @@ exports[`should successfully create a toc component 1`] = `
               Layer 1
             </span>
           </label>
+          <div
+            class="css-17xejub"
+            data-theme="light"
+          />
         </div>
       </li>
     </ul>
