@@ -4,3 +4,5 @@ messages:
   operationalLayerLabel: "Layer"
   missingLayers: "Es sind keine Layer vorhanden."
   error: "Beim Erstellen des Karteninhalts ist ein Fehler aufgetreten."
+  toolsLabel: "Kartenwerkzeuge"
+  hideAllLayers: "Alle Karteninhalte ausblenden"

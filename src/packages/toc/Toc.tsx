@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { BasemapSwitcher, BasemapSwitcherProps } from "@open-pioneer/basemap-switcher";
-import { Box, Flex, Text } from "@open-pioneer/chakra-integration";
+import { Box, Flex, Spacer, Text } from "@open-pioneer/chakra-integration";
 import { useMapModel } from "@open-pioneer/map";
 import {
     CommonComponentProps,
@@ -12,6 +12,7 @@ import {
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, useId } from "react";
 import { LayerList } from "./LayerList";
+import { TocTools } from "./TocTools";
 
 /**
  * Props supported by the {@link Toc} component.
@@ -21,6 +22,12 @@ export interface TocProps extends CommonComponentProps {
      * The id of the map.
      */
     mapId: string;
+
+    /**
+     * Defines whether the toc tools component is shown in the toc.
+     * Defaults to `false`.
+     */
+    showTocTools?: boolean;
 
     /**
      * Defines whether the basemap switcher is shown in the toc.
@@ -43,7 +50,7 @@ const PADDING = 2;
 export const Toc: FC<TocProps> = (props: TocProps) => {
     const intl = useIntl();
 
-    const { mapId, showBasemapSwitcher = true, basemapSwitcherProps } = props;
+    const { mapId, showTocTools = false, showBasemapSwitcher = true, basemapSwitcherProps } = props;
     const { containerProps } = useCommonComponentProps("toc", props);
     const basemapsHeadingId = useId();
     const operationalLayersHeadingId = useId();
@@ -79,12 +86,16 @@ export const Toc: FC<TocProps> = (props: TocProps) => {
                 <Box className="toc-operational-layers">
                     <TitledSection
                         title={
-                            <SectionHeading
-                                id={operationalLayersHeadingId}
-                                size={"sm"}
-                                mb={PADDING}
-                            >
-                                {intl.formatMessage({ id: "operationalLayerLabel" })}
+                            <SectionHeading id={operationalLayersHeadingId} size={"sm"} mb={2}>
+                                <Flex>
+                                    <Text my={3}>
+                                        {intl.formatMessage({
+                                            id: "operationalLayerLabel"
+                                        })}
+                                    </Text>
+                                    <Spacer />
+                                    {showTocTools && <TocTools map={state.map!} />}
+                                </Flex>
                             </SectionHeading>
                         }
                     >

@@ -1,23 +1,9 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import {
-    Box,
-    Button,
-    Divider,
-    Flex,
-    MenuItem,
-    Spacer,
-    Text
-} from "@open-pioneer/chakra-integration";
+import { Box, Divider, Flex, Text } from "@open-pioneer/chakra-integration";
 import { CoordinateViewer } from "@open-pioneer/coordinate-viewer";
 import { Geolocation } from "@open-pioneer/geolocation";
-import {
-    MapAnchor,
-    MapContainer,
-    MapModel,
-    SublayersCollection,
-    useMapModel
-} from "@open-pioneer/map";
+import { MapAnchor, MapContainer, useMapModel } from "@open-pioneer/map";
 import { InitialExtent, ZoomIn, ZoomOut } from "@open-pioneer/map-navigation";
 import { Measurement } from "@open-pioneer/measurement";
 import { Notifier } from "@open-pioneer/notifier";
@@ -27,7 +13,7 @@ import { ScaleBar } from "@open-pioneer/scale-bar";
 import { ScaleViewer } from "@open-pioneer/scale-viewer";
 import { Search, SearchSelectEvent } from "@open-pioneer/search";
 import { SpatialBookmarks } from "@open-pioneer/spatial-bookmarks";
-import { Toc, TocMenu } from "@open-pioneer/toc";
+import { Toc } from "@open-pioneer/toc";
 import TileLayer from "ol/layer/Tile.js";
 import OSM from "ol/source/OSM.js";
 import { useIntl, useService } from "open-pioneer:react-hooks";
@@ -41,7 +27,6 @@ export function AppUI() {
     const tocTitleId = useId();
     const measurementTitleId = useId();
     const spatialBookmarkTitle = useId();
-    const { map } = useMapModel(MAP_ID);
     const [measurementIsActive, setMeasurementIsActive] = useState<boolean>(false);
     const [showOverviewMap, setShowOverviewMap] = useState<boolean>(true);
     const [bookmarkIsActive, setBookmarkActive] = useState<boolean>(false);
@@ -125,60 +110,21 @@ export function AppUI() {
                                                         size="md"
                                                         mb={2}
                                                     >
-                                                        <Flex>
-                                                            <Text mt={1.5}>
-                                                                {intl.formatMessage({
-                                                                    id: "tocTitle"
-                                                                })}
-                                                            </Text>
-                                                            <Spacer />
-                                                            <TocMenu>
-                                                                <MenuItem
-                                                                    onClick={() =>
-                                                                        hideAllLayers(map)
-                                                                    }
-                                                                >
-                                                                    <Text fontSize={"md"}>
-                                                                        {intl.formatMessage({
-                                                                            id: "hideAllLayers"
-                                                                        })}
-                                                                    </Text>
-                                                                </MenuItem>
-                                                                <MenuItem>
-                                                                    <Text fontSize={"md"}>
-                                                                        Gruppen einklappen
-                                                                    </Text>
-                                                                </MenuItem>
-                                                            </TocMenu>
-                                                        </Flex>
+                                                        <Text>
+                                                            {intl.formatMessage({
+                                                                id: "tocTitle"
+                                                            })}
+                                                        </Text>
                                                     </SectionHeading>
                                                 }
                                             >
                                                 <Toc
                                                     mapId={MAP_ID}
+                                                    showTocTools={true}
                                                     basemapSwitcherProps={{
                                                         allowSelectingEmptyBasemap: true
                                                     }}
                                                 />
-                                                {/* <Divider mt={4} mb={4} /> */}
-                                                <Flex
-                                                    width="100%"
-                                                    flexDirection="row"
-                                                    my={2}
-                                                    gap={1}
-                                                >
-                                                    <Button
-                                                        aria-label={intl.formatMessage({
-                                                            id: "hideAllLayers"
-                                                        })}
-                                                        width="100%"
-                                                        onClick={() => hideAllLayers(map)}
-                                                    >
-                                                        {intl.formatMessage({
-                                                            id: "hideAllLayers"
-                                                        })}
-                                                    </Button>
-                                                </Flex>
                                             </TitledSection>
                                         </Box>
                                     )}
@@ -338,20 +284,4 @@ function SearchComponent() {
             onClear={onSearchCleared}
         />
     );
-}
-
-function hideAllLayers(map: MapModel | undefined) {
-    const hideSublayer = (sublayers: SublayersCollection | undefined) => {
-        sublayers?.getSublayers().forEach((layer) => {
-            layer.setVisible(false);
-
-            hideSublayer(layer?.sublayers);
-        });
-    };
-
-    map?.layers.getOperationalLayers().forEach((layer) => {
-        layer.setVisible(false);
-
-        hideSublayer(layer?.sublayers);
-    });
 }
