@@ -17,10 +17,9 @@ import {
     Portal,
     Text
 } from "@open-pioneer/chakra-integration";
-import { Layer, LayerBase, MapModel, Sublayer } from "@open-pioneer/map";
+import { LayerBase, MapModel, Sublayer } from "@open-pioneer/map";
 import { PackageIntl } from "@open-pioneer/runtime";
 import classNames from "classnames";
-import LayerGroup from "ol/layer/Group";
 import { useIntl } from "open-pioneer:react-hooks";
 import { useCallback, useRef, useSyncExternalStore } from "react";
 import { FiMoreVertical } from "react-icons/fi";
@@ -204,7 +203,7 @@ function useLayers(map: MapModel): LayerBase[] {
     );
     const getValue = useCallback(() => {
         let layers = map.layers.getOperationalLayers({ sortByDisplayOrder: true }) ?? [];
-        layers = layers.reverse().filter(canShowOperationalLayer);
+        layers = layers.reverse();
         return layers;
     }, [map]);
     return useCachedExternalStore(subscribe, getValue);
@@ -272,10 +271,6 @@ function useCachedExternalStore<T>(
         return value;
     }, [getValue]);
     return useSyncExternalStore(cachedSubscribe, cachedGetSnapshot);
-}
-
-function canShowOperationalLayer(layer: Layer) {
-    return !(layer.olLayer instanceof LayerGroup);
 }
 
 function slug(id: string) {
