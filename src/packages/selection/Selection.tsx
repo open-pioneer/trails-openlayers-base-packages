@@ -19,6 +19,7 @@ import { PackageIntl } from "@open-pioneer/runtime/i18n";
 import { DragController } from "./DragController";
 import { Select, OptionProps, chakraComponents } from "chakra-react-select";
 import { FiAlertTriangle } from "react-icons/fi";
+import { SelectionController } from "./SelectionController";
 
 /**
  * Properties supported by the {@link Selection} component.
@@ -59,22 +60,22 @@ export const Selection: FC<SelectionProps> = (props) => {
     const { mapId, sourceLabel, activeState } = props;
     const { containerProps } = useCommonComponentProps("selection", props);
 
-    let sources: SelectionSource[] = [];
+    const sources: SelectionSource[] = [new FakePointSelectionSource(2000)];
     const [source, setSource] = useState("");
     const mapState = useMapModel(mapId);
-    const { onInputChanged } = useSelectionState();
+    const { onInputChanged } = useSelectionController(mapState.map, sources);
     const controller = useDragController(mapState.map, intl, onInputChanged);
 
     useEffect(() => {
         if (!activeState) controller?.destroy();
     }, [activeState, controller]);
 
-    if (sourceLabel) {
-        const fakeSource = new FakePointSelectionSource(5000);
+    /* if (sourceLabel) {
+        const fakeSource = [new FakePointSelectionSource(5000)];
         if (sourceLabel.includes(fakeSource.label)) {
             sources = [fakeSource];
         }
-    }
+    } */
     const options: SelectOption[] = sources.map<SelectOption>((source) => {
         return { label: source.label, value: source };
     });
@@ -120,17 +121,6 @@ function SourceSelectOption(props: OptionProps<SelectOption>): JSX.Element {
     );
 }
 
-function useSelectionState() {
-    const startSelection = (geometry: Geometry): void => {};
-
-    const onInputChanged = useCallback((geometry: Geometry) => {
-        startSelection(geometry);
-    }, []);
-    return {
-        onInputChanged
-    };
-}
-
 function useDragController(
     map: MapModel | undefined,
     intl: PackageIntl,
@@ -154,4 +144,35 @@ function useDragController(
         };
     }, [map, intl, extendHandler]);
     return controller;
+}
+
+function useSelectionController(mapModel: MapModel | undefined, sources: SelectionSource[]) {
+    const [controller, setController] = useState<SelectionController | undefined>(undefined);
+    useEffect(() => {
+        if (!mapModel) {
+            return;
+        }
+        const controller = new SelectionController(mapModel, sources);
+
+        setController(controller);
+        //TODO dependency sources leads to infinite-Render-Loop
+    }, [mapModel]);
+
+    const onInputChanged = useCallback(
+        async (geometry: Geometry) => {
+            const selectionResult = await controller?.select(geometry.getExtent());
+            if (selectionResult) {
+                alert(
+                    selectionResult?.[0]?.source?.label +
+                        ": " +
+                        selectionResult?.[0]?.results.length
+                );
+            }
+        },
+        [controller]
+    );
+    return {
+        controller,
+        onInputChanged
+    };
 }
