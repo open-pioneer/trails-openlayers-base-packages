@@ -113,7 +113,6 @@ export abstract class AbstractLayer<AdditionalEvents = {}>
     }
 }
 
-// TODO move to a service?
 function healthCheck(config: SimpleLayerConfig): Promise<LayerLoadState> {
     return new Promise((resolve, reject) => {
         if (!("healthCheck" in config)) {
