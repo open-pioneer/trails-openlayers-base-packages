@@ -155,9 +155,8 @@ function watchLoadState(
     let currentSource = olLayer?.getSource() as Source | null;
     const currentOlLayerState = mapState(currentSource?.getState());
 
+    let currentLoadState: LayerLoadState = currentOlLayerState;
     let currentHealthState = "loading"; // initial state loading until health check finished
-    let currentLoadState: LayerLoadState =
-        currentHealthState === "error" ? "error" : currentOlLayerState;
 
     // custom health check not needed when OL already returning an error state
     if (currentOlLayerState !== "error") {
