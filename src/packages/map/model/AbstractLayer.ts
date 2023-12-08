@@ -34,7 +34,6 @@ export abstract class AbstractLayer<AdditionalEvents = {}>
         this.#olLayer = config.olLayer;
         this.#isBaseLayer = config.isBaseLayer ?? false;
         this.#healthCheck = config.healthCheck;
-        this.#visible = config.visible ?? true;
 
         const { initial: initialState, resource: stateWatchResource } = watchLoadState(
             config,
@@ -49,6 +48,8 @@ export abstract class AbstractLayer<AdditionalEvents = {}>
                 this.__emitChangeEvent("changed:loadState");
             }
         );
+        // hide layer when initial state is error
+        this.#visible = (initialState !== "error" ? config.visible : false) ?? true;
         this.#loadState = initialState;
         this.#stateWatchResource = stateWatchResource;
     }
