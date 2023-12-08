@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { isAbortError } from "@open-pioneer/core";
-import { SearchSource, SearchResult } from "@open-pioneer/search";
-import { SearchOptions } from "@open-pioneer/search/api";
+import { SearchSource, SearchResult, SearchOptions } from "@open-pioneer/search";
+import { v4 as uuid4v } from "uuid";
 import GeoJSON from "ol/format/GeoJSON";
 
 /** Options for {@link OgcFeatureSearchSource}. */
@@ -121,7 +121,7 @@ export class OgcFeatureSearchSource implements SearchSource {
         })();
 
         return {
-            id: feature.id,
+            id: feature.id ?? uuid4v(),
             label: label,
             geometry: geojson.readGeometry(feature.geometry),
             properties: feature.properties
