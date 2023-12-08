@@ -22,6 +22,7 @@ const documentedPackages = [
     "packages/theme",
     "packages/local-storage",
     "packages/toc",
+    "packages/search",
     "packages/spatial-bookmarks"
 ];
 

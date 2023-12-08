@@ -164,7 +164,11 @@ function SpatialBookmarkUI(props: SpatialBookmarksProps & { viewModel: SpatialBo
         </>
     );
 
-    return <Box {...containerProps}>{content}</Box>;
+    return (
+        <Flex flexDirection="column" {...containerProps}>
+            {content}
+        </Flex>
+    );
 }
 
 function createList(
@@ -192,16 +196,17 @@ function createList(
     return (
         <List
             as="ul"
-            p={1} // Some padding for children's box shadow
-            className="spatial-bookmark-lists"
-            listStyleType="none"
+            className="spatial-bookmark-list"
             role="listbox"
-            spacing={1}
             aria-label={intl.formatMessage({
                 id: "bookmark.list.label"
             })}
+            flexShrink={1}
+            flexGrow={1}
+            p={1} // Some padding for children's box shadow
+            spacing={1}
             overflowY="auto"
-            maxHeight="200"
+            listStyleType="none"
         >
             {bookmarkItems}
         </List>
@@ -356,7 +361,7 @@ function CreateControls(props: {
 
 function ButtonContainer(props: { children: ReactNode }) {
     return (
-        <Flex width="100%" flexDirection="row" mt={2} gap={1}>
+        <Flex width="100%" flexDirection="row" mt={2} gap={1} flexGrow={0} flexShrink={0}>
             {props.children}
         </Flex>
     );
