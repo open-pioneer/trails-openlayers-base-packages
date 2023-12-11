@@ -1,28 +1,37 @@
-// SPDX-FileCopyrightText: con terra GmbH and contributors
+// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
-import { act, queryAllByRole, queryByRole, render } from "@testing-library/react";
+import {
+    act,
+    waitFor,
+    fireEvent,
+    screen,
+    queryAllByRole,
+    queryByRole,
+    render
+} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import LayerGroup from "ol/layer/Group";
 import TileLayer from "ol/layer/Tile";
 import { expect, it } from "vitest";
 import { LayerList } from "./LayerList";
+import { SimpleLayer } from "@open-pioneer/map";
 
 it("should show layers in the correct order", async () => {
     const { mapId, registry } = await setupMap({
         layers: [
             {
                 title: "Layer 1",
-                layer: new TileLayer({})
+                olLayer: new TileLayer({})
             },
             {
                 title: "Layer 2",
-                layer: new TileLayer({})
+                olLayer: new TileLayer({})
             },
             {
                 title: "Layer 3",
-                layer: new TileLayer({})
+                olLayer: new TileLayer({})
             }
         ]
     });
@@ -53,12 +62,12 @@ it("does not display base layers", async function () {
         layers: [
             {
                 title: "Layer 1",
-                layer: new TileLayer({})
+                olLayer: new TileLayer({})
             },
             {
                 title: "Layer 2",
                 isBaseLayer: true,
-                layer: new TileLayer({})
+                olLayer: new TileLayer({})
             }
         ]
     });
@@ -74,16 +83,16 @@ it("does not display base layers", async function () {
     expect(labels).toEqual(["Layer 1"]);
 });
 
-it("does not display group layers", async function () {
+it("shows a single entry for layer groups inside a SimpleLayer", async function () {
     const { mapId, registry } = await setupMap({
         layers: [
             {
                 title: "Layer 1",
-                layer: new TileLayer({})
+                olLayer: new TileLayer({})
             },
             {
                 title: "Layer 2",
-                layer: new LayerGroup({})
+                olLayer: new LayerGroup({})
             }
         ]
     });
@@ -96,7 +105,7 @@ it("does not display group layers", async function () {
     );
 
     const labels = getCurrentLabels(container);
-    expect(labels).toEqual(["Layer 1"]);
+    expect(labels).toEqual(["Layer 2", "Layer 1"]);
 });
 
 it("shows a fallback message if there are no layers", async function () {
@@ -119,7 +128,7 @@ it("reacts to changes in the layer composition", async function () {
         layers: [
             {
                 title: "Layer 1",
-                layer: new TileLayer({})
+                olLayer: new TileLayer({})
             }
         ]
     });
@@ -135,10 +144,12 @@ it("reacts to changes in the layer composition", async function () {
     expect(initialItems).toHaveLength(1);
 
     act(() => {
-        map.layers.createLayer({
-            title: "Layer 2",
-            layer: new TileLayer({})
-        });
+        map.layers.addLayer(
+            new SimpleLayer({
+                title: "Layer 2",
+                olLayer: new TileLayer({})
+            })
+        );
     });
 
     const itemsAfterChange = getCurrentItems(container);
@@ -154,7 +165,7 @@ it("displays the layer's current title", async () => {
             {
                 id: "layer",
                 title: "Layer 1",
-                layer: new TileLayer({})
+                olLayer: new TileLayer({})
             }
         ]
     });
@@ -184,7 +195,7 @@ it("displays the layer's current visibility", async () => {
             {
                 id: "layer",
                 title: "Layer 1",
-                layer: new TileLayer({})
+                olLayer: new TileLayer({})
             }
         ]
     });
@@ -219,7 +230,7 @@ it("changes the layer's visibility when toggling the checkbox", async () => {
             {
                 id: "layer",
                 title: "Layer 1",
-                layer: new TileLayer({})
+                olLayer: new TileLayer({})
             }
         ]
     });
@@ -263,7 +274,7 @@ it("includes the layer id in the item's class list", async () => {
             {
                 id: "some layer id",
                 title: "Layer 1",
-                layer: new TileLayer({})
+                olLayer: new TileLayer({})
             }
         ]
     });
@@ -278,6 +289,117 @@ it("includes the layer id in the item's class list", async () => {
     const item = container.querySelector(".layer-some-layer-id");
     expect(item).toBeTruthy();
     expect(item!.textContent).toBe("Layer 1");
+});
+
+it("renders buttons for all layer's with description property", async () => {
+    const { mapId, registry } = await setupMap({
+        layers: [
+            {
+                title: "Layer 1",
+                olLayer: new TileLayer({}),
+                description: "Description 1"
+            },
+            {
+                title: "Layer 2",
+                olLayer: new TileLayer({})
+            }
+        ]
+    });
+    const map = await registry.expectMapModel(mapId);
+
+    const { container } = render(
+        <PackageContextProvider>
+            <LayerList map={map} />
+        </PackageContextProvider>
+    );
+    const initialItems = queryAllByRole(container, "button");
+    expect(initialItems).toHaveLength(1);
+});
+
+it("changes the description popover's visibility when toggling the button", async () => {
+    const { mapId, registry } = await setupMap({
+        layers: [
+            {
+                id: "layer",
+                title: "Layer 1",
+                olLayer: new TileLayer({}),
+                description: "Description 1"
+            },
+            {
+                title: "Layer 2",
+                olLayer: new TileLayer({})
+            }
+        ]
+    });
+    const map = await registry.expectMapModel(mapId);
+    const layer = map.layers.getLayerById("layer");
+    if (!layer) {
+        throw new Error("test layer not found!");
+    }
+
+    const { container } = render(
+        <PackageContextProvider>
+            <LayerList map={map} />
+        </PackageContextProvider>
+    );
+
+    const button = queryByRole(container, "button");
+    if (!button) {
+        throw new Error("description button not found!");
+    }
+
+    const description = screen.getByText(layer.description);
+
+    // initially hidden
+    expect(description).not.toBeVisible();
+
+    // open the popover
+    fireEvent.click(button);
+    await waitFor(async () => {
+        expect(description).toBeVisible();
+    });
+
+    // close the popover again
+    fireEvent.click(button);
+    await waitFor(async () => {
+        expect(description).not.toBeVisible();
+    });
+});
+
+it("reacts to changes in the layer description", async () => {
+    const { mapId, registry } = await setupMap({
+        layers: [
+            {
+                id: "layer1",
+                title: "Layer 1",
+                olLayer: new TileLayer({}),
+                description: "Description"
+            },
+            {
+                id: "layer2",
+                title: "Layer 2",
+                olLayer: new TileLayer({})
+            }
+        ]
+    });
+    const map = await registry.expectMapModel(mapId);
+    const layer = map.layers.getLayerById("layer1");
+    if (!layer) {
+        throw new Error("test layer not found!");
+    }
+
+    const { container } = render(
+        <PackageContextProvider>
+            <LayerList map={map} />
+        </PackageContextProvider>
+    );
+    const initialItems = queryAllByRole(container, "button");
+    expect(initialItems).toHaveLength(1);
+    screen.getByText("Description");
+    act(() => {
+        layer.setDescription("New description");
+    });
+    screen.getByText("New description");
 });
 
 /** Returns the layer list's current list items. */

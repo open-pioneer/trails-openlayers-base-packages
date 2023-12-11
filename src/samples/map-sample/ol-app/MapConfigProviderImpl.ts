@@ -1,11 +1,9 @@
-// SPDX-FileCopyrightText: con terra GmbH and contributors
+// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { MapConfig, MapConfigProvider } from "@open-pioneer/map";
+import { MapConfig, MapConfigProvider, SimpleLayer, WMSLayer } from "@open-pioneer/map";
 import GeoJSON from "ol/format/GeoJSON";
-import ImageLayer from "ol/layer/Image";
 import TileLayer from "ol/layer/Tile";
 import VectorLayer from "ol/layer/Vector";
-import ImageWMS from "ol/source/ImageWMS";
 import OSM from "ol/source/OSM";
 import VectorSource from "ol/source/Vector";
 import WMTS from "ol/source/WMTS";
@@ -25,50 +23,49 @@ export class MapConfigProviderImpl implements MapConfigProvider {
             },
             projection: "EPSG:25832",
             layers: [
-                {
+                new SimpleLayer({
                     id: "topplus_open",
                     title: "TopPlus Open",
                     isBaseLayer: true,
                     visible: true,
-                    layer: createTopsPlusLayer("web")
-                },
-                {
+                    olLayer: createTopPlusOpenLayer("web")
+                }),
+                new SimpleLayer({
                     id: "topplus_open_grau",
                     title: "TopPlus Open (Grau)",
                     isBaseLayer: true,
                     visible: false,
-                    layer: createTopsPlusLayer("web_grau")
-                },
-                {
+                    olLayer: createTopPlusOpenLayer("web_grau")
+                }),
+                new SimpleLayer({
                     id: "topplus_open_light",
                     title: "TopPlus Open (Light)",
                     isBaseLayer: true,
                     visible: false,
-                    layer: createTopsPlusLayer("web_light")
-                },
-                {
+                    olLayer: createTopPlusOpenLayer("web_light")
+                }),
+                new SimpleLayer({
                     title: "OSM",
                     visible: false,
                     isBaseLayer: true,
-                    layer: new TileLayer({
+                    olLayer: new TileLayer({
                         source: new OSM()
                     })
-                },
-                {
+                }),
+                new SimpleLayer({
                     title: "Haltestellen Stadt Rostock",
                     visible: true,
-                    layer: createHaltestellenLayer()
-                },
-                {
+                    description:
+                        "Haltestellen des öffentlichen Personenverkehrs in der Hanse- und Universitätsstadt Rostock.",
+                    olLayer: createHaltestellenLayer()
+                }),
+                new SimpleLayer({
                     title: "Kindertagesstätten",
                     visible: true,
-                    layer: createKitasLayer()
-                },
-                {
-                    title: "Schulstandorte",
-                    visible: true,
-                    layer: createSchulenLayer()
-                }
+                    olLayer: createKitasLayer()
+                }),
+                createSchulenLayer(),
+                createStrassenLayer()
             ]
         };
     }
@@ -80,7 +77,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
  *
  * For more details, see the documentation of the map package.
  */
-function createTopsPlusLayer(layer: "web" | "web_grau" | "web_light") {
+function createTopPlusOpenLayer(layer: "web" | "web_grau" | "web_light") {
     const topLeftCorner = [-3803165.98427299, 8805908.08284866];
 
     /**
@@ -159,11 +156,40 @@ function createKitasLayer() {
 }
 
 function createSchulenLayer() {
-    return new ImageLayer({
-        source: new ImageWMS({
-            url: "https://www.wms.nrw.de/wms/wms_nw_inspire-schulen",
-            params: { "LAYERS": ["US.education"] },
-            ratio: 1 //Ratio. 1 means image requests are the size of the map viewport
-        })
+    return new WMSLayer({
+        title: "Schulstandorte",
+        description: `Der vorliegende Datenbestand / Dienst zu den Schulstandorten in NRW stammt aus der Schuldatenbank. Die Informationen werden von den Schulträgern bzw. Schulen selbst eingetragen und aktuell gehalten. Die Daten werden tagesaktuell bereitgestellt und enthalten alle grundlegenden Informationen zu Schulen wie Schulnummer, Schulbezeichnung und Adresse.Der vorliegende Datenbestand / Dienst zu den Schulstandorten in NRW stammt aus der Schuldatenbank. Die Informationen werden von den Schulträgern bzw. Schulen selbst eingetragen und aktuell gehalten. Die Daten werden tagesaktuell bereitgestellt und enthalten alle grundlegenden Informationen zu Schulen wie Schulnummer, Schulbezeichnung und Adresse.Der vorliegende Datenbestand / Dienst zu den Schulstandorten in NRW stammt aus der Schuldatenbank. Die Informationen werden von den Schulträgern bzw. Schulen selbst eingetragen und aktuell gehalten. Die Daten werden tagesaktuell bereitgestellt und enthalten alle grundlegenden Informationen zu Schulen wie Schulnummer, Schulbezeichnung und Adresse.Der vorliegende Datenbestand / Dienst zu den Schulstandorten in NRW stammt aus der Schuldatenbank. Die Informationen werden von den Schulträgern bzw. Schulen selbst eingetragen und aktuell gehalten. Die Daten werden tagesaktuell bereitgestellt und enthalten alle grundlegenden Informationen zu Schulen wie Schulnummer, Schulbezeichnung und Adresse.`,
+        visible: true,
+        url: "https://www.wms.nrw.de/wms/wms_nw_inspire-schulen",
+        sublayers: [
+            {
+                name: "US.education",
+                title: "INSPIRE - WMS Schulstandorte NRW"
+            }
+        ],
+        sourceOptions: {
+            ratio: 1
+        }
+    });
+}
+
+function createStrassenLayer() {
+    return new WMSLayer({
+        title: "Straßennetz Landesbetrieb Straßenbau NRW",
+        url: "https://www.wms.nrw.de/wms/strassen_nrw_wms",
+        sublayers: [
+            {
+                name: "1",
+                title: "Verwaltungen"
+            },
+            {
+                name: "4",
+                title: "Abschnitte und Äste"
+            },
+            {
+                name: "6",
+                title: "Unfälle"
+            }
+        ]
     });
 }

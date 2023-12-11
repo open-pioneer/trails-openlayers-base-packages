@@ -1,0 +1,18 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`should successfully create a scale bar component 1`] = `
+<div
+  class="scale-bar css-0"
+  data-testid="scale-bar"
+  data-theme="light"
+>
+  <div
+    class="ol-scale-line ol-unselectable"
+    style="pointer-events: none;"
+  >
+    <div
+      class="ol-scale-line-inner"
+    />
+  </div>
+</div>
+`;

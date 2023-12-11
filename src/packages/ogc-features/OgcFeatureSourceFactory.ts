@@ -1,7 +1,7 @@
-// SPDX-FileCopyrightText: con terra GmbH and contributors
+// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { createLogger, isAbortError } from "@open-pioneer/core";
-import { FeatureLike } from "ol/Feature";
+import Feature, { FeatureLike } from "ol/Feature";
 import { FeatureLoader } from "ol/featureloader";
 import FeatureFormat from "ol/format/Feature";
 import GeoJSON from "ol/format/GeoJSON";
@@ -33,7 +33,8 @@ export interface OgcFeatureSourceOptions {
      * When the `offset` strategy is used for feature fetching, the limit
      * is used for the page size
      *
-     * Default limit is 5000 for Next-Strategy and 2500 for Offset-Strategy
+     * Defaults to `5000` for Next-Strategy.
+     * Defaults to `2500` for Offset-Strategy.
      */
     limit?: number;
 
@@ -44,11 +45,11 @@ export interface OgcFeatureSourceOptions {
     attributions?: AttributionLike | undefined;
 
     /** Optional additional options for the VectorSource. */
-    additionalOptions?: Options<Geometry>;
+    additionalOptions?: Options<Feature<Geometry>>;
 }
 
 /**
- * This function creates an OpenLayers VectorSource for OGC Features API services to be used inside
+ * This function creates an OpenLayers VectorSource for OGC API Features services to be used inside
  * an OpenLayers VectorLayer.
  *
  * @param options Options for the vector source.
@@ -124,7 +125,7 @@ export function _createVectorSource(
         try {
             const features = await loadAllFeatures(strategy, {
                 fullURL: fullURL.toString(),
-                featureFormat: vectorSrc.getFormat()!, // TODO
+                featureFormat: vectorSrc.getFormat()!,
                 queryFeatures: queryFeaturesFunc,
                 addFeatures: addFeaturesFunc,
                 limit: options.limit ?? DEFAULT_LIMIT,
@@ -261,7 +262,7 @@ export async function loadPages(
                 featureResponse.nextURL || "No Next URL"
             }`
         );
-        allFeatureResponse.features = allFeatureResponse.features.concat(featureResponse.features);
+        allFeatureResponse.features.push(...featureResponse.features);
         if (isLast) {
             allFeatureResponse.numberMatched = featureResponse.numberMatched;
             allFeatureResponse.nextURL = featureResponse.nextURL;

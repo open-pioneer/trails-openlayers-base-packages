@@ -8,6 +8,8 @@
 -   Commits are squashed when PRs are merged
 -   Include a changeset entry with your PR when appropriate
 -   Include fully qualified issue id in PR title / final commit message (e.g. `open-pioneer/trails-starter#1234`) [TODO: check]
+-   Remove auto-generated commit messages from PR
+    -   Exceptions: `Co-authored-by: ...`
 -   Project Board: <https://github.com/orgs/open-pioneer/projects/5>
 
 ## Definitions of done
@@ -22,8 +24,8 @@
 3. All automated tests pass.
 4. Features can be demonstrated on the demo deployment.
 5. Applicable guidelines have been checked:
-    - [UI Guidelines](UIGuidelines.md)
-    - [Accessibility guidelines](A11yGuidelines.md)
+    - [UI Guidelines](UI.md)
+    - [Accessibility guidelines](A11y.md)
 6. Packages are translated in english and german.
 7. Important design decisions or non-obvious things to keep in mind
    have been documented in internal dev notes or comments.
@@ -41,6 +43,7 @@
 -   Be strict about TypeScript, especially in public interfaces
 -   Use TODO keyword only for things that are currently in doing, not for things that should be implemented anytime in the future. Exceptional: special usages determined by the team.
 -   If creating a new package that has a name that consists of multiple words, use a dash to connect the words.
+-   If adding own CSS classes, always use the package or component name as a prefix in the class name (seperated using a dash). Example: "<b>measurement-</b>tooltip"
 
 ## Tests
 
@@ -84,7 +87,7 @@
             "scope": "javascript,typescript",
             "prefix": "license",
             "body": [
-                "// SPDX-FileCopyrightText: con terra GmbH and contributors",
+                "// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)",
                 "// SPDX-License-Identifier: Apache-2.0"
             ]
         }

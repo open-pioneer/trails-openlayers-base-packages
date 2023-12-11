@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: con terra GmbH and contributors
+// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
 /**
@@ -31,7 +31,7 @@ const ENFORCED_BY_ROOT_PACKAGE = [
     "@testing-library/jest-dom",
     "@testing-library/user-event",
 
-    // open layers
+    // OpenLayers
     "ol",
 
     // core packages
@@ -45,7 +45,7 @@ const ENFORCED_BY_ROOT_PACKAGE = [
 module.exports = {
     // Indent used in package.json files
     indent: "    ",
-    
+
     // The first entry here forces all packages in the workspace to use the dependency version
     // from the root package.json when the dependency name is listed in `ENFORCED_BY_ROOT_PACKAGE`.
     // See https://jamiemason.github.io/syncpack/config/version-groups for advanced usage of version groups.

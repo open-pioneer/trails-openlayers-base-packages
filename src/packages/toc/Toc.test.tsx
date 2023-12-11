@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: con terra GmbH and contributors
+// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
@@ -15,18 +15,18 @@ it("should successfully create a toc component", async () => {
             {
                 title: "Base layer",
                 id: "base-layer",
-                layer: new TileLayer({}),
+                olLayer: new TileLayer({}),
                 isBaseLayer: true
             },
             {
                 title: "Layer 1",
                 id: "layer-1",
-                layer: new TileLayer({})
+                olLayer: new TileLayer({})
             },
             {
                 title: "Layer 2",
                 id: "layer-2",
-                layer: new TileLayer({})
+                olLayer: new TileLayer({})
             }
         ]
     });
@@ -40,7 +40,13 @@ it("should successfully create a toc component", async () => {
     );
 
     const tocDiv = await findToc();
-    await waitForBasemapSwitcher(tocDiv!);
+    const { basemapSelect } = await waitForBasemapSwitcher(tocDiv!);
+    await waitFor(() => {
+        const option = basemapSelect.options[0];
+        if (!option || option.innerText !== "Base layer") {
+            throw new Error("expected basemap switcher to contain the Base layer option");
+        }
+    });
     expect(tocDiv).toMatchSnapshot();
 });
 
@@ -96,7 +102,7 @@ it("should support overriding basemap-switcher properties", async () => {
         layers: [
             {
                 title: "OSM",
-                layer: new TileLayer({}),
+                olLayer: new TileLayer({}),
                 isBaseLayer: true
             }
         ]
@@ -119,19 +125,19 @@ it("should support overriding basemap-switcher properties", async () => {
 
     const tocDiv = await findToc();
     const { basemapSwitcher, basemapSelect } = await waitForBasemapSwitcher(tocDiv!);
-
     expect(basemapSwitcher?.classList.contains("test-class")).toBe(true);
 
-    // Get options manually (instead of basemapSelect.options); these seems
-    // to be a timing problem with that property (?)
-    const options = basemapSelect.querySelectorAll("option");
-    const optionLabels = Array.from(options).map((opt) => opt.textContent);
-    expect(optionLabels).toMatchInlineSnapshot(`
-      [
-        "OSM",
-        "emptyBasemapLabel",
-      ]
-    `);
+    await waitFor(() => {
+        const options = basemapSelect.querySelectorAll("option");
+        const optionLabels = Array.from(options).map((opt) => opt.textContent);
+        expect(optionLabels, "basemap options are not equal to their expected values")
+            .toMatchInlineSnapshot(`
+        [
+          "OSM",
+          "emptyBasemapLabel",
+        ]
+      `);
+    });
 });
 
 async function findToc() {

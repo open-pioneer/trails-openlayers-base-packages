@@ -16,6 +16,10 @@ Guidelines for React components developed in this repository.
     -   it is good practice to wrap a new React component with a Chakra component (like Box)
 -   Do not use specific colors or font (sizes) in components
     -   see **Theming** below
+-   Components should be usable in different widths and heights
+    -   Do not use specific width and height in components
+    -   Components should use 100% of the parents width
+    -   Exceptions: width and height of icons, etc.
 -   If a new React component requires a value that is not part of the predefined semantic tokens, it must be stated in the documentation of the component
     -   provide a default value in this case; the component must still work if the additional semantic token is missing
 -   Components should be embeddable "anywhere" (with reasonable restrictions)
@@ -23,13 +27,14 @@ Guidelines for React components developed in this repository.
     -   Do not specify max size / min size: let the user control the outer layout
     -   In general: do not implement scrolling yourself, unless it makes sense to do so
 -   "Tool"-Buttons:
-    -   Always use Chakra Button-Component (https://chakra-ui.com/docs/components/button/usage). You can define an icon and/or a label-text.
-    -   If you only want to display an icon on the button, set the iconSpacing-prop to 0 and set the padding-prop to 0. Please don´t use a Chakra IconButton.
-    -   Define a tooltip for each button (https://chakra-ui.com/docs/components/tooltip/usage)
-        -   The label must be an i18n-string (might be same like aria-label)
-        -   "placement" should be "auto"
-        -   "openDelay" should be 500
-        -   Snippet: `<Tooltip label={intl.formatMessage({ id: "description" })} placement="auto" openDelay={500}>..`
+
+    -   Use the `ToolButton` component from `@open-pioneer/react-utils`
+    -   The label must be an i18n-string (might be same like aria-label)
+    -   Snippet:
+        ```jsx
+        <ToolButton label={someLabel} icon={<SomeIcon />} onClick={someEventHandler} />
+        ```
+
 -   Tooltips (yaml / i18n)
     -   Start with a capital letter at the beginning across languages (e.g. "Zoom in", "Vergrößern")
 
@@ -41,7 +46,7 @@ Guidelines for React components developed in this repository.
 ## Documentation and Examples
 
 -   Create a Demo / Samples for components
--   Use the open layers sample app as a showcase with many components
+-   Use the OpenLayers sample app as a showcase with many components
 -   Create a separate sample app for complex components
 
 -   Maintain a high level document explaining the UI-Concept

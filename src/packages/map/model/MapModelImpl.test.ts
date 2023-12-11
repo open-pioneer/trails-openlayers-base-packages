@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: con terra GmbH and contributors
+// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { afterEach, expect, it, describe } from "vitest";
 import { MapModelImpl } from "./MapModelImpl";
@@ -106,7 +106,7 @@ describe("initial extent", () => {
     });
 });
 
-it("tracks the open layers target", async () => {
+it("tracks the OpenLayers target", async () => {
     model = await createMapModel("foo", {});
     expect(model.container).toBeUndefined();
 

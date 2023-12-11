@@ -41,6 +41,16 @@ Example:
 In the preceding example the topmost heading(s) in `TheRestOfYourApplication` start at level 2, and nested headings use increasing levels as usual.
 For more details, see the API documentation.
 
+## Tool buttons
+
+To create a simple icon button with a tooltip and an `aria-label`, use the `ToolButton` component as in the following sample:
+
+```jsx
+<ToolButton label={someLabel} icon={<SomeIcon />} onClick={someEventHandler} />
+```
+
+This is used, for example, to add an icon button to the map.
+
 ## Hooks
 
 ### useCommonComponentProps()
@@ -52,7 +62,7 @@ For the time being, these properties are `className` (combined component class a
 Example:
 
 ```tsx
-// SPDX-FileCopyrightText: con terra GmbH and contributors
+// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 // ...
@@ -106,4 +116,4 @@ For more details, see the API docs of `useEvent` or <https://github.com/reactjs/
 
 ## License
 
-[Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0)
+Apache-2.0 (see `LICENSE` file)

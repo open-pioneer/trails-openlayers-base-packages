@@ -1,27 +1,29 @@
-// SPDX-FileCopyrightText: con terra GmbH and contributors
+// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { createService } from "@open-pioneer/test-utils/services";
-import { screen, waitFor } from "@testing-library/react";
 import {
     ExtentConfig,
     InitialViewConfig,
-    LayerConfig,
     MapConfig,
     MapConfigProvider,
     MapModel,
     MapRegistry,
-    OlMapOptions
+    OlMapOptions,
+    SimpleLayer,
+    SimpleLayerConfig
 } from "@open-pioneer/map";
+import { createService } from "@open-pioneer/test-utils/services";
+import { screen, waitFor } from "@testing-library/react";
+import VectorLayer from "ol/layer/Vector";
+
 // Importing internals: needed for test support
 import { MapRegistryImpl } from "@open-pioneer/map/services";
-import VectorLayer from "ol/layer/Vector";
 
 export interface SimpleMapOptions {
     center?: { x: number; y: number };
     zoom?: number;
     extent?: ExtentConfig;
     projection?: string;
-    layers?: LayerConfig[];
+    layers?: SimpleLayerConfig[];
     advanced?: OlMapOptions;
 
     noInitialView?: boolean;
@@ -29,7 +31,7 @@ export interface SimpleMapOptions {
 }
 
 /**
- * Waits until the open layers map has been mounted in the parent with the given id.
+ * Waits until the OpenLayers map has been mounted in the parent with the given id.
  */
 export async function waitForMapMount(parentTestId = "base") {
     return await waitFor(async () => {
@@ -89,11 +91,11 @@ export async function setupMap(options?: SimpleMapOptions) {
     const mapConfig: MapConfig = {
         initialView: options?.noInitialView ? undefined : getInitialView(),
         projection: options?.noProjection ? undefined : options?.projection ?? "EPSG:3857",
-        layers: options?.layers ?? [
-            {
+        layers: options?.layers?.map((config) => new SimpleLayer(config)) ?? [
+            new SimpleLayer({
                 title: "OSM",
-                layer: new VectorLayer()
-            }
+                olLayer: new VectorLayer()
+            })
         ],
         advanced: options?.advanced
     };

@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: con terra GmbH and contributors
+// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { defineBuildConfig } from "@open-pioneer/build-support";
 
@@ -9,10 +9,10 @@ export default defineBuildConfig({
             provides: "notifier.NotificationService"
         }
     },
-    publishConfig: {
-        strict: true
-    },
     ui: {
         references: ["notifier.NotificationService"]
+    },
+    publishConfig: {
+        strict: true
     }
 });

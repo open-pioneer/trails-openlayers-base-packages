@@ -1,0 +1,36 @@
+{
+    "name": "@open-pioneer/spatial-bookmarks",
+    "version": "0.0.1",
+    "license": "Apache-2.0",
+    "main": "index.ts",
+    "scripts": {
+        "build": "build-pioneer-package"
+    },
+    "peerDependencies": {
+        "@chakra-ui/icons": "^2.1.0",
+        "@open-pioneer/core": "^1.1.0",
+        "@open-pioneer/chakra-integration": "^1.1.0",
+        "@open-pioneer/local-storage": "workspace:^",
+        "@open-pioneer/map": "workspace:^",
+        "@open-pioneer/react-utils": "workspace:^",
+        "@open-pioneer/runtime": "^1.1.0",
+        "ol": "^8.2.0",
+        "react": "^18.2.0",
+        "react-icons": "^4.11.0",
+        "classnames": "^2.3.2"
+    },
+    "devDependencies": {
+        "@open-pioneer/map-test-utils": "workspace:^",
+        "@open-pioneer/test-utils": "^1.0.1",
+        "@types/uuid": "^9.0.2",
+        "openlayers-base-packages": "workspace:*"
+    },
+    "publishConfig": {
+        "directory": "dist",
+        "linkDirectory": false
+    },
+    "dependencies": {
+        "jotai": "^2.5.1",
+        "uuid": "^9.0.0"
+    }
+}

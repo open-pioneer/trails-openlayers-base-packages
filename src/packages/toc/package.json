@@ -1,6 +1,6 @@
 {
     "name": "@open-pioneer/toc",
-    "version": "0.0.1",
+    "version": "0.1.0",
     "license": "Apache-2.0",
     "main": "index.ts",
     "scripts": {
@@ -12,9 +12,10 @@
         "@open-pioneer/basemap-switcher": "workspace:^",
         "@open-pioneer/react-utils": "workspace:^",
         "@open-pioneer/runtime": "^1.1.0",
-        "ol": "^8.1.0",
+        "ol": "^8.2.0",
         "react": "^18.2.0",
-        "classnames": "^2.3.2"
+        "classnames": "^2.3.2",
+        "react-icons": "^4.11.0"
     },
     "devDependencies": {
         "@open-pioneer/test-utils": "^1.0.1",

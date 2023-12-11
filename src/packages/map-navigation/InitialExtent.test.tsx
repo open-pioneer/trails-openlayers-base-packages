@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: con terra GmbH and contributors
+// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { MapContainer } from "@open-pioneer/map";
 import { createServiceOptions, setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
@@ -25,7 +25,7 @@ it("should successfully create a initial extent component with home button", asy
 
     //mount InitExtentComponent
     const initExtentBtn = await screen.findByTestId("initial-extent");
-    expect(initExtentBtn).toBeInstanceOf(HTMLButtonElement);
+    expect(initExtentBtn.tagName).toBe("BUTTON");
     expect(initExtentBtn).toMatchSnapshot();
 });
 
