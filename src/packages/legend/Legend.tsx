@@ -2,10 +2,18 @@
 // SPDX-License-Identifier: Apache-2.0
 import { Box, Image, List, Text } from "@open-pioneer/chakra-integration";
 import { Layer, MapModel, useMapModel, LayerBase, Sublayer } from "@open-pioneer/map";
-import { ComponentType, FC, ReactNode, useCallback, useRef, useSyncExternalStore } from "react";
+import {
+    ComponentType,
+    FC,
+    ReactNode,
+    useCallback,
+    useEffect,
+    useRef,
+    useState,
+    useSyncExternalStore
+} from "react";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import LayerGroup from "ol/layer/Group";
-import { v4 as uuid4v } from "uuid";
 import { useIntl } from "open-pioneer:react-hooks";
 import { WarningTwoIcon } from "@chakra-ui/icons";
 import classNames from "classnames";
@@ -53,11 +61,6 @@ export interface LegendProps extends CommonComponentProps {
     mapId: string;
 
     /**
-     * Additional css class name(s) that will be added to the Legend component.
-     */
-    className?: string;
-
-    /**
      * Specifies whether legend for active base layer is shown in the legend UI.
      * Defaults to `false`.
      */
@@ -76,7 +79,7 @@ export const Legend: FC<LegendProps> = (props) => {
 
     return (
         <Box {...containerProps}>
-            {map ? <LegendList map={map} showBaseLayers={showBaseLayers} /> : ""}
+            {map ? <LegendList map={map} showBaseLayers={showBaseLayers} /> : null}
         </Box>
     );
 };
@@ -87,9 +90,10 @@ function LegendList(props: { map: MapModel; showBaseLayers: boolean }): JSX.Elem
     const layers = useLayers(map);
     // todo documentation: add hint that legend of sublayers is also shown but plain (without hierarchical structure)
     const legendListItems: ReactNode[] = layers.map((layer) => {
-        const id = uuid4v();
-        // todo is it ok to always return a LegendItem even if it is undefined?
-        return <LegendItem key={id} layer={layer} showBaseLayers={showBaseLayers}></LegendItem>;
+        return (
+            // todo is it ok to use the same layer id as key like in the inner box component
+            <LegendItem key={layer.id} layer={layer} showBaseLayers={showBaseLayers}></LegendItem>
+        );
     });
 
     return (
@@ -127,14 +131,13 @@ function LegendItem(props: {
     const legendItems: ReactNode[] = [];
 
     // legend item for this layer
-    legendItems.push(createLegendItem(layer, intl));
+    legendItems.push(createLegendContent(layer, intl));
 
     // legend items for all sublayers
     if (sublayers?.length) {
         sublayers.forEach((sublayer) => {
-            const id = uuid4v();
             legendItems.push(
-                <LegendItem key={id} layer={sublayer} showBaseLayers={showBaseLayers} />
+                <LegendItem key={sublayer.id} layer={sublayer} showBaseLayers={showBaseLayers} />
             );
         });
     }
@@ -142,29 +145,25 @@ function LegendItem(props: {
     return legendItems;
 }
 
-function createLegendItem(layer: LegendLayer, intl: PackageIntl) {
-    const legendAttributes = layer.attributes["legend"] as LegendItemAttributes | undefined;
+function createLegendContent(layer: LegendLayer, intl: PackageIntl) {
+    const legendAttributes = useLegendAttributes(layer.attributes);
     let renderedComponent: ReactNode | undefined;
-    const id = uuid4v();
 
     if (legendAttributes?.Component) {
-        renderedComponent = (
-            <Box key={id} className={classNames("legend-item", `layer-${slug(layer.id)}`)}>
-                <legendAttributes.Component layer={layer} />
-            </Box>
-        );
+        renderedComponent = <legendAttributes.Component layer={layer} />;
     } else if (legendAttributes?.imageUrl) {
         const isBaseLayer = !("parentLayer" in layer) && layer.isBaseLayer;
 
         renderedComponent = (
-            <Box key={id} className={classNames("legend-item", `layer-${slug(layer.id)}`)}>
+            <Box>
                 {/* Render additional text, if layer is a configured basemap */}
                 {isBaseLayer && <Text as="b">{intl.formatMessage({ id: "basemapLabel" })}</Text>}
 
                 <Text>{layer.title}</Text>
                 <Image
                     src={legendAttributes?.imageUrl}
-                    alt={intl.formatMessage({ id: "altLabel" }) + layer.title}
+                    alt={intl.formatMessage({ id: "altLabel" }, { layerName: layer.title })}
+                    className={"legend-item__image"}
                     // TODO: test fallback with NVDA
                     fallbackStrategy={"onError"}
                     fallback={
@@ -182,7 +181,13 @@ function createLegendItem(layer: LegendLayer, intl: PackageIntl) {
         // TODO: implement logic for #204 in own if else
         renderedComponent = undefined;
     }
-    return renderedComponent;
+    return renderedComponent ? (
+        <Box key={layer.id} pb={2} className={classNames("legend-item", `layer-${slug(layer.id)}`)}>
+            {renderedComponent}
+        </Box>
+    ) : (
+        renderedComponent
+    );
 }
 
 // todo: refactor to map package? (!this works with getAllLayers instead of getOperationalLayers)
@@ -288,6 +293,18 @@ function useVisibility(layer: LayerBase): {
     return {
         isVisible
     };
+}
+
+function useLegendAttributes(layerAttributes: Record<string | symbol, unknown>) {
+    const [legendAttributes, setLegendAttributes] = useState<LegendItemAttributes | undefined>();
+
+    useEffect(() => {
+        setLegendAttributes(layerAttributes.legend as LegendItemAttributes | undefined);
+    }, [layerAttributes]);
+
+    // layer.attributes["legend"] as LegendItemAttributes | undefined;
+
+    return legendAttributes;
 }
 
 function slug(id: string) {

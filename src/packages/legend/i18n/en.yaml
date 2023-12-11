@@ -1,4 +1,4 @@
 messages:
-  altLabel: legend image for layer
+  altLabel: legend image for layer {layerName}
   fallbackLabel: legend not available
   basemapLabel: Basemap
