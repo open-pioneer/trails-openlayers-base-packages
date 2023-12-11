@@ -305,13 +305,13 @@ function useVisibility(layer: LayerBase): {
 }
 
 function useLegendAttributes(layerAttributes: Record<string | symbol, unknown>) {
-    const [legendAttributes, setLegendAttributes] = useState<LegendItemAttributes | undefined>();
+    const [legendAttributes, setLegendAttributes] = useState<LegendItemAttributes | undefined>(
+        undefined
+    );
 
     useEffect(() => {
         setLegendAttributes(layerAttributes.legend as LegendItemAttributes | undefined);
     }, [layerAttributes]);
-
-    // layer.attributes["legend"] as LegendItemAttributes | undefined;
 
     return legendAttributes;
 }
