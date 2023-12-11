@@ -7,7 +7,7 @@ import {
     Tooltip,
     Container
 } from "@open-pioneer/chakra-integration";
-import { FC, useCallback, useEffect, useState } from "react";
+import { FC, useCallback, useEffect, useMemo, useState } from "react";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { MapModel, useMapModel } from "@open-pioneer/map";
 import { Geometry } from "ol/geom";
@@ -60,7 +60,7 @@ export const Selection: FC<SelectionProps> = (props) => {
     const { mapId, sourceLabel, activeState } = props;
     const { containerProps } = useCommonComponentProps("selection", props);
 
-    const sources: SelectionSource[] = [new FakePointSelectionSource(2000)];
+    const sources: SelectionSource[] = useMemo(() => [new FakePointSelectionSource(2000)], []);
     const [source, setSource] = useState("");
     const mapState = useMapModel(mapId);
     const { onInputChanged } = useSelectionController(mapState.map, sources);
@@ -156,7 +156,7 @@ function useSelectionController(mapModel: MapModel | undefined, sources: Selecti
 
         setController(controller);
         //TODO dependency sources leads to infinite-Render-Loop
-    }, [mapModel]);
+    }, [mapModel, sources]);
 
     const onInputChanged = useCallback(
         async (geometry: Geometry) => {
