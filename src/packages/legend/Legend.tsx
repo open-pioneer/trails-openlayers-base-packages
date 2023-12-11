@@ -113,8 +113,6 @@ function LegendItem(props: {
     layer: LegendLayer;
     showBaseLayers: boolean;
 }): ReactNode | ReactNode[] {
-    const intl = useIntl();
-
     const { layer, showBaseLayers } = props;
     const { isVisible } = useVisibility(layer);
     const sublayers = useSublayers(layer);
@@ -131,7 +129,7 @@ function LegendItem(props: {
     const legendItems: ReactNode[] = [];
 
     // legend item for this layer
-    legendItems.push(LegendContent(layer, intl));
+    legendItems.push(LegendContent(layer));
 
     // legend items for all sublayers
     if (sublayers?.length) {
@@ -145,16 +143,14 @@ function LegendItem(props: {
     return legendItems;
 }
 
-function LegendContent(layer: LegendLayer, intl: PackageIntl) {
+function LegendContent(layer: LegendLayer) {
     const legendAttributes = useLegendAttributes(layer.attributes);
     let renderedComponent: ReactNode | undefined;
 
     if (legendAttributes?.Component) {
         renderedComponent = <legendAttributes.Component layer={layer} />;
     } else if (legendAttributes?.imageUrl) {
-        renderedComponent = (
-            <LegendBox intl={intl} layer={layer} legendAttributes={legendAttributes} />
-        );
+        renderedComponent = <LegendBox layer={layer} legendAttributes={legendAttributes} />;
     } else {
         // TODO: implement logic for #204 in own if else
         renderedComponent = undefined;
@@ -170,11 +166,12 @@ function LegendContent(layer: LegendLayer, intl: PackageIntl) {
 }
 
 function LegendBox(props: {
-    intl: PackageIntl;
     layer: LegendLayer;
     legendAttributes: LegendItemAttributes | undefined;
 }) {
-    const { intl, layer, legendAttributes } = props;
+    const intl = useIntl();
+
+    const { layer, legendAttributes } = props;
     const isBaseLayer = !("parentLayer" in layer) && layer.isBaseLayer;
 
     return (
