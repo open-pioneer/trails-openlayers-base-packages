@@ -55,6 +55,7 @@ export class DragController {
             dragBox: dragBox,
             destroy() {
                 olMap.removeInteraction(dragBox);
+                dragBox.dispose();
                 element.classList.remove(ACTIVE_CLASS);
             }
         };
@@ -81,6 +82,7 @@ export class DragController {
             element,
             destroy() {
                 olMap.removeOverlay(overlay);
+                overlay.dispose();
                 unByKey(pointHandler);
             }
         };
