@@ -891,6 +891,590 @@ describe("should successfully select the correct basemap from basemap switcher",
     });
 });
 
+it("should deactivate unavailable layers for selection", async () => {
+    const source1 = new OSM();
+    const source2 = new BkgTopPlusOpen();
+
+    const { mapId, registry } = await setupMap({
+        layers: [
+            {
+                id: "osm",
+                title: "OSM",
+                isBaseLayer: true,
+                visible: true,
+                olLayer: new TileLayer({
+                    source: source1
+                })
+            },
+            {
+                id: "topplus-open",
+                title: "TopPlus Open",
+                isBaseLayer: true,
+                visible: true,
+                olLayer: new TileLayer({
+                    source: source2
+                })
+            }
+        ]
+    });
+    const map = await registry.expectMapModel(mapId);
+
+    const injectedServices = createServiceOptions({ registry });
+    render(
+        <PackageContextProvider services={injectedServices}>
+            <BasemapSwitcher mapId={mapId} data-testid="switcher" />
+        </PackageContextProvider>
+    );
+
+    // basemap switcher is mounted
+    const { switcherSelect } = await waitForBasemapSwitcher();
+
+    let activeBaseLayer = map.layers.getActiveBaseLayer();
+    expect(activeBaseLayer?.id).toBe("osm");
+
+    // open dropdown to include options in snapshot; react-select creates list of options in dom after opening selection
+    act(() => {
+        fireEvent.keyDown(switcherSelect, { key: "ArrowDown" });
+    });
+
+    expect(switcherSelect).toMatchInlineSnapshot(`
+      <div
+        class="basemap-switcher-select css-79elbk"
+        data-theme="light"
+      >
+        <span
+          class="css-1f43avz-a11yText-A11yText"
+          id="react-select-12-live-region"
+        />
+        <span
+          aria-atomic="false"
+          aria-live="polite"
+          aria-relevant="additions text"
+          class="css-1f43avz-a11yText-A11yText"
+        />
+        <div
+          class=" css-i2418r"
+          data-theme="light"
+        >
+          <div
+            class=" css-j93siq"
+            data-theme="light"
+          >
+            <div
+              class=" css-1xa1gs2"
+              data-theme="light"
+            >
+              OSM
+            </div>
+            <input
+              aria-autocomplete="list"
+              aria-controls="react-select-12-listbox"
+              aria-expanded="true"
+              aria-haspopup="true"
+              aria-owns="react-select-12-listbox"
+              aria-readonly="true"
+              class="css-mohuvp-dummyInput-DummyInput"
+              id="react-select-12-input"
+              inputmode="none"
+              role="combobox"
+              tabindex="0"
+              value=""
+            />
+          </div>
+          <div
+            class=" css-hfbj6y"
+            data-theme="light"
+          >
+            <hr
+              aria-orientation="vertical"
+              class="chakra-divider css-1i6c5ox"
+              data-theme="light"
+            />
+            <div
+              aria-hidden="true"
+              class=" css-xq12md"
+              data-theme="light"
+            >
+              <svg
+                aria-hidden="true"
+                class="chakra-icon css-onkibi"
+                data-theme="light"
+                focusable="false"
+                role="presentation"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
+                  fill="currentColor"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div
+          class=" css-ky7590"
+          data-theme="light"
+          id="react-select-12-listbox"
+        >
+          <div
+            class=" css-1h5avke"
+            data-theme="light"
+            role="listbox"
+          >
+            <div
+              aria-selected="true"
+              class="basemap-switcher-option css-e8c6zu"
+              data-focus="true"
+              data-theme="light"
+              id="react-select-12-option-0"
+              role="option"
+              tabindex="-1"
+            >
+              OSM
+            </div>
+            <div
+              aria-selected="false"
+              class="basemap-switcher-option css-e8c6zu"
+              data-theme="light"
+              id="react-select-12-option-1"
+              role="option"
+              tabindex="-1"
+            >
+              TopPlus Open
+            </div>
+          </div>
+        </div>
+      </div>
+    `);
+
+    act(() => {
+        source1.setState("error");
+    });
+
+    // switch active layer
+    activeBaseLayer = map.layers.getActiveBaseLayer();
+    expect(activeBaseLayer?.id).toBe("topplus-open");
+
+    // option disabled, warning icon shown and selected option changed?
+    expect(switcherSelect).toMatchInlineSnapshot(`
+      <div
+        class="basemap-switcher-select css-79elbk"
+        data-theme="light"
+      >
+        <span
+          class="css-1f43avz-a11yText-A11yText"
+          id="react-select-12-live-region"
+        />
+        <span
+          aria-atomic="false"
+          aria-live="polite"
+          aria-relevant="additions text"
+          class="css-1f43avz-a11yText-A11yText"
+        />
+        <div
+          class=" css-i2418r"
+          data-theme="light"
+        >
+          <div
+            class=" css-j93siq"
+            data-theme="light"
+          >
+            <div
+              class=" css-1xa1gs2"
+              data-theme="light"
+            >
+              TopPlus Open
+            </div>
+            <input
+              aria-autocomplete="list"
+              aria-controls="react-select-12-listbox"
+              aria-expanded="true"
+              aria-haspopup="true"
+              aria-owns="react-select-12-listbox"
+              aria-readonly="true"
+              class="css-mohuvp-dummyInput-DummyInput"
+              id="react-select-12-input"
+              inputmode="none"
+              role="combobox"
+              tabindex="0"
+              value=""
+            />
+          </div>
+          <div
+            class=" css-hfbj6y"
+            data-theme="light"
+          >
+            <hr
+              aria-orientation="vertical"
+              class="chakra-divider css-1i6c5ox"
+              data-theme="light"
+            />
+            <div
+              aria-hidden="true"
+              class=" css-xq12md"
+              data-theme="light"
+            >
+              <svg
+                aria-hidden="true"
+                class="chakra-icon css-onkibi"
+                data-theme="light"
+                focusable="false"
+                role="presentation"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
+                  fill="currentColor"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div
+          class=" css-ky7590"
+          data-theme="light"
+          id="react-select-12-listbox"
+        >
+          <div
+            class=" css-1h5avke"
+            data-theme="light"
+            role="listbox"
+          >
+            <div
+              aria-disabled="true"
+              aria-selected="false"
+              class="basemap-switcher-option css-e8c6zu"
+              data-focus="true"
+              data-theme="light"
+              id="react-select-12-option-0"
+              role="option"
+              tabindex="-1"
+            >
+              OSM
+              <div
+                class="css-1v4xcoh"
+                data-theme="light"
+              >
+                <span>
+                  <svg
+                    aria-label="layerNotAvailable"
+                    color="red"
+                    fill="none"
+                    height="1em"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    style="color: red;"
+                    viewBox="0 0 24 24"
+                    width="1em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"
+                    />
+                    <line
+                      x1="12"
+                      x2="12"
+                      y1="9"
+                      y2="13"
+                    />
+                    <line
+                      x1="12"
+                      x2="12.01"
+                      y1="17"
+                      y2="17"
+                    />
+                  </svg>
+                </span>
+              </div>
+            </div>
+            <div
+              aria-selected="true"
+              class="basemap-switcher-option css-e8c6zu"
+              data-theme="light"
+              id="react-select-12-option-1"
+              role="option"
+              tabindex="-1"
+            >
+              TopPlus Open
+            </div>
+          </div>
+        </div>
+      </div>
+    `);
+});
+
+it("should update the ui when a layer title changes", async () => {
+    const { mapId, registry } = await setupMap({
+        layers: [
+            {
+                id: "osm",
+                title: "OSM",
+                isBaseLayer: true,
+                visible: true,
+                olLayer: new TileLayer({
+                    source: new OSM()
+                })
+            },
+            {
+                id: "topplus-open",
+                title: "TopPlus Open",
+                isBaseLayer: true,
+                visible: true,
+                olLayer: new TileLayer({
+                    source: new BkgTopPlusOpen()
+                })
+            }
+        ]
+    });
+    const map = await registry.expectMapModel(mapId);
+
+    const injectedServices = createServiceOptions({ registry });
+    render(
+        <PackageContextProvider services={injectedServices}>
+            <BasemapSwitcher mapId={mapId} data-testid="switcher" />
+        </PackageContextProvider>
+    );
+
+    // basemap switcher is mounted
+    const { switcherSelect } = await waitForBasemapSwitcher();
+
+    const activeBaseLayer = map.layers.getActiveBaseLayer();
+    expect(activeBaseLayer?.id).toBe("osm");
+
+    // open dropdown to include options in snapshot; react-select creates list of options in dom after opening selection
+    act(() => {
+        fireEvent.keyDown(switcherSelect, { key: "ArrowDown" });
+    });
+
+    expect(switcherSelect).toMatchInlineSnapshot(`
+      <div
+        class="basemap-switcher-select css-79elbk"
+        data-theme="light"
+      >
+        <span
+          class="css-1f43avz-a11yText-A11yText"
+          id="react-select-13-live-region"
+        />
+        <span
+          aria-atomic="false"
+          aria-live="polite"
+          aria-relevant="additions text"
+          class="css-1f43avz-a11yText-A11yText"
+        />
+        <div
+          class=" css-i2418r"
+          data-theme="light"
+        >
+          <div
+            class=" css-j93siq"
+            data-theme="light"
+          >
+            <div
+              class=" css-1xa1gs2"
+              data-theme="light"
+            >
+              OSM
+            </div>
+            <input
+              aria-autocomplete="list"
+              aria-controls="react-select-13-listbox"
+              aria-expanded="true"
+              aria-haspopup="true"
+              aria-owns="react-select-13-listbox"
+              aria-readonly="true"
+              class="css-mohuvp-dummyInput-DummyInput"
+              id="react-select-13-input"
+              inputmode="none"
+              role="combobox"
+              tabindex="0"
+              value=""
+            />
+          </div>
+          <div
+            class=" css-hfbj6y"
+            data-theme="light"
+          >
+            <hr
+              aria-orientation="vertical"
+              class="chakra-divider css-1i6c5ox"
+              data-theme="light"
+            />
+            <div
+              aria-hidden="true"
+              class=" css-xq12md"
+              data-theme="light"
+            >
+              <svg
+                aria-hidden="true"
+                class="chakra-icon css-onkibi"
+                data-theme="light"
+                focusable="false"
+                role="presentation"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
+                  fill="currentColor"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div
+          class=" css-ky7590"
+          data-theme="light"
+          id="react-select-13-listbox"
+        >
+          <div
+            class=" css-1h5avke"
+            data-theme="light"
+            role="listbox"
+          >
+            <div
+              aria-selected="true"
+              class="basemap-switcher-option css-e8c6zu"
+              data-focus="true"
+              data-theme="light"
+              id="react-select-13-option-0"
+              role="option"
+              tabindex="-1"
+            >
+              OSM
+            </div>
+            <div
+              aria-selected="false"
+              class="basemap-switcher-option css-e8c6zu"
+              data-theme="light"
+              id="react-select-13-option-1"
+              role="option"
+              tabindex="-1"
+            >
+              TopPlus Open
+            </div>
+          </div>
+        </div>
+      </div>
+    `);
+
+    // change layer title
+    act(() => {
+        activeBaseLayer?.setTitle("New Layer Title");
+    });
+
+    // option disabled, warning icon shown and selected option changed?
+    expect(switcherSelect).toMatchInlineSnapshot(`
+      <div
+        class="basemap-switcher-select css-79elbk"
+        data-theme="light"
+      >
+        <span
+          class="css-1f43avz-a11yText-A11yText"
+          id="react-select-13-live-region"
+        />
+        <span
+          aria-atomic="false"
+          aria-live="polite"
+          aria-relevant="additions text"
+          class="css-1f43avz-a11yText-A11yText"
+        />
+        <div
+          class=" css-i2418r"
+          data-theme="light"
+        >
+          <div
+            class=" css-j93siq"
+            data-theme="light"
+          >
+            <div
+              class=" css-1xa1gs2"
+              data-theme="light"
+            >
+              OSM
+            </div>
+            <input
+              aria-autocomplete="list"
+              aria-controls="react-select-13-listbox"
+              aria-expanded="true"
+              aria-haspopup="true"
+              aria-owns="react-select-13-listbox"
+              aria-readonly="true"
+              class="css-mohuvp-dummyInput-DummyInput"
+              id="react-select-13-input"
+              inputmode="none"
+              role="combobox"
+              tabindex="0"
+              value=""
+            />
+          </div>
+          <div
+            class=" css-hfbj6y"
+            data-theme="light"
+          >
+            <hr
+              aria-orientation="vertical"
+              class="chakra-divider css-1i6c5ox"
+              data-theme="light"
+            />
+            <div
+              aria-hidden="true"
+              class=" css-xq12md"
+              data-theme="light"
+            >
+              <svg
+                aria-hidden="true"
+                class="chakra-icon css-onkibi"
+                data-theme="light"
+                focusable="false"
+                role="presentation"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
+                  fill="currentColor"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div
+          class=" css-ky7590"
+          data-theme="light"
+          id="react-select-13-listbox"
+        >
+          <div
+            class=" css-1h5avke"
+            data-theme="light"
+            role="listbox"
+          >
+            <div
+              aria-selected="true"
+              class="basemap-switcher-option css-e8c6zu"
+              data-focus="true"
+              data-theme="light"
+              id="react-select-13-option-0"
+              role="option"
+              tabindex="-1"
+            >
+              New Layer Title
+            </div>
+            <div
+              aria-selected="false"
+              class="basemap-switcher-option css-e8c6zu"
+              data-theme="light"
+              id="react-select-13-option-1"
+              role="option"
+              tabindex="-1"
+            >
+              TopPlus Open
+            </div>
+          </div>
+        </div>
+      </div>
+    `);
+});
+
 async function waitForBasemapSwitcher() {
     const { switcherDiv, switcherSelect } = await waitFor(async () => {
         const switcherDiv: HTMLDivElement | null =
