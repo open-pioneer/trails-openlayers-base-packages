@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import {
-    Button,
+    Box,
     FormControl,
     FormLabel,
     Tooltip,
@@ -11,7 +11,6 @@ import { FC, useCallback, useEffect, useMemo, useState } from "react";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { MapModel, useMapModel } from "@open-pioneer/map";
 import { Geometry } from "ol/geom";
-import { PiUserRectangle } from "react-icons/pi";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FakePointSelectionSource } from "./testSources";
 import { SelectionSource } from "./api";
@@ -45,14 +44,27 @@ export interface SelectionProps extends CommonComponentProps {
  */
 export interface SelectOption {
     /**
-     * The label of the select option.
+     * The label of the select source option.
      */
     label: string;
 
     /**
-     * The value (SelectionSource) of the select option.
+     * The value (SelectionSource) of the select source option.
      */
     value: SelectionSource | undefined;
+} /**
+ * Properties for single select method options.
+ */
+export interface MethodOption {
+    /**
+     * The label of the select method option.
+     */
+    label: string;
+
+    /**
+     * The value of the select method option.
+     */
+    value: string;
 }
 
 export const Selection: FC<SelectionProps> = (props) => {
@@ -76,20 +88,29 @@ export const Selection: FC<SelectionProps> = (props) => {
             sources = [fakeSource];
         }
     } */
-    const options: SelectOption[] = sources.map<SelectOption>((source) => {
+    const selectOptions: SelectOption[] = sources.map<SelectOption>((source) => {
         return { label: source.label, value: source };
     });
 
+    const methodOptions: MethodOption[] = [
+        { label: intl.formatMessage({ id: "rectangle" }), value: "rectangle" }
+    ];
+
     return (
         <Container mb={16}>
-            <Button isActive={true} leftIcon={<PiUserRectangle />}>
-                {intl.formatMessage({ id: "rectangle" })}
-            </Button>
+            <FormControl>
+                <FormLabel>{intl.formatMessage({ id: "selectMethod" })}</FormLabel>
+                <Select
+                    name="select-method"
+                    options={methodOptions}
+                    value={methodOptions.filter((option) => option.value === "rectangle")}
+                />
+            </FormControl>
             <FormControl>
                 <FormLabel>{intl.formatMessage({ id: "selectSource" })}</FormLabel>
                 <Select
                     name="select-source"
-                    options={options}
+                    options={selectOptions}
                     components={{ Option: SourceSelectOption }}
                     isOptionDisabled={(option) => option?.value?.status === "unavailable"}
                 />
@@ -107,15 +128,20 @@ function SourceSelectOption(props: OptionProps<SelectOption>): JSX.Element {
     const isAvailable: boolean | undefined = value?.status === "available";
 
     return (
-        <chakraComponents.Option {...props} isDisabled={!isAvailable}>
+        <chakraComponents.Option
+            {...props}
+            isDisabled={!isAvailable}
+            className="selection-source-option"
+        >
             {label}
-            &nbsp;
             {!isAvailable && (
-                <Tooltip label={notAvailableLabel} placement="right" openDelay={500}>
-                    <span>
-                        <FiAlertTriangle color={"red"} aria-label={notAvailableLabel} />
-                    </span>
-                </Tooltip>
+                <Box ml={2}>
+                    <Tooltip label={notAvailableLabel} placement="right" openDelay={500}>
+                        <span>
+                            <FiAlertTriangle color={"red"} aria-label={notAvailableLabel} />
+                        </span>
+                    </Tooltip>
+                </Box>
             )}
         </chakraComponents.Option>
     );

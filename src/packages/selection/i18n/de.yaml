@@ -1,4 +1,5 @@
 messages:
+  selectMethod: "Methode auswählen"
   rectangle: "Rechteck"
   selectSource: "Quelle auswählen"
   tooltip: "Klicken Sie in die Karte, halten Sie die Maustaste gedrückt und ziehen Sie ein Rechteck auf"
