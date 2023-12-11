@@ -24,8 +24,5 @@
     "publishConfig": {
         "directory": "dist",
         "linkDirectory": false
-    },
-    "dependencies": {
-        "uuid": "^9.0.0"
     }
 }

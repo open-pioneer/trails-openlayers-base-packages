@@ -13,11 +13,9 @@ import {
     useSyncExternalStore
 } from "react";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
-import LayerGroup from "ol/layer/Group";
 import { useIntl } from "open-pioneer:react-hooks";
 import { WarningTwoIcon } from "@chakra-ui/icons";
 import classNames from "classnames";
-import { v4 as uuidv4 } from "uuid";
 
 type LegendLayer = Layer | Sublayer;
 
@@ -97,24 +95,19 @@ function LegendList(props: { map: MapModel; showBaseLayers: boolean }): JSX.Elem
     });
 
     return (
-        /*TODO: listProps: aria-labelledby ? */
         <List
             // Note: not using UnorderedList because it adds default margins
             as="ul"
             className="legend-layer-list"
             listStyleType="none"
+            spacing={2}
         >
             {legendListItems}
         </List>
     );
 }
 
-function LegendItem(props: {
-    layer: LegendLayer;
-    showBaseLayers: boolean;
-}): ReactNode | ReactNode[] {
-    const intl = useIntl();
-
+function LegendItem(props: { layer: LegendLayer; showBaseLayers: boolean }): ReactNode {
     const { layer, showBaseLayers } = props;
     const { isVisible } = useVisibility(layer);
     const sublayers = useSublayers(layer);
@@ -128,41 +121,28 @@ function LegendItem(props: {
         return undefined;
     }
 
-    const legendItems: ReactNode[] = [];
-
-    // legend item for this layer
-    const legendItem = <LegendContent key={layer.id} layer={layer} />;
-
-    const uuid = uuidv4();
-
-    /**
-     * Render additional text, if layer is a configured basemap
-     */
-    const isBaseLayer = !("parentLayer" in layer) && layer.isBaseLayer;
-    if (showBaseLayers && isBaseLayer && legendItem) {
-        legendItems.push(
-            <Text key={uuid} as="b">
-                {intl.formatMessage({ id: "basemapLabel" })}
-            </Text>
-        );
-    }
-
-    legendItems.push(legendItem);
-
     // legend items for all sublayers
+    const childItems: ReactNode[] = [];
     if (sublayers?.length) {
         sublayers.forEach((sublayer) => {
-            legendItems.push(
+            childItems.push(
                 <LegendItem key={sublayer.id} layer={sublayer} showBaseLayers={showBaseLayers} />
             );
         });
     }
 
-    return legendItems;
+    return (
+        <>
+            <LegendContent layer={layer} showBaseLayers={showBaseLayers} />
+            {childItems}
+        </>
+    );
 }
 
-function LegendContent(props: { layer: LegendLayer }) {
-    const { layer } = props;
+function LegendContent(props: { layer: LegendLayer; showBaseLayers: boolean }) {
+    const intl = useIntl();
+
+    const { layer, showBaseLayers } = props;
     const legendAttributes = useLegendAttributes(layer.attributes);
     let renderedComponent: ReactNode | undefined;
 
@@ -175,8 +155,14 @@ function LegendContent(props: { layer: LegendLayer }) {
         renderedComponent = undefined;
     }
 
+    const isBaseLayer = !("parentLayer" in layer) && layer.isBaseLayer;
+
     return renderedComponent ? (
-        <Box pb={2} className={classNames("legend-item", `layer-${slug(layer.id)}`)}>
+        <Box as="li" className={classNames("legend-item", `layer-${slug(layer.id)}`)}>
+            {showBaseLayers && isBaseLayer ? (
+                /* Render additional text, if layer is a configured basemap */
+                <Text as="b">{intl.formatMessage({ id: "basemapLabel" })}</Text>
+            ) : null}
             {renderedComponent}
         </Box>
     ) : (
@@ -214,7 +200,6 @@ function LegendImage(props: {
     );
 }
 
-// todo: refactor to map package? (!this works with getAllLayers instead of getOperationalLayers)
 /** Returns the top level operation layers (without LayerGroups). */
 function useLayers(map: MapModel): Layer[] {
     const subscribe = useCallback(
@@ -226,7 +211,7 @@ function useLayers(map: MapModel): Layer[] {
     );
     const getValue = useCallback(() => {
         let layers = map.layers.getAllLayers({ sortByDisplayOrder: true }) ?? [];
-        layers = layers.reverse().filter(canShowLegendForLayer);
+        layers = layers.reverse();
         return layers;
     }, [map]);
     return useCachedExternalStore(subscribe, getValue);
@@ -294,10 +279,6 @@ function useCachedExternalStore<T>(
         return value;
     }, [getValue]);
     return useSyncExternalStore(cachedSubscribe, cachedGetSnapshot);
-}
-
-function canShowLegendForLayer(layer: Layer) {
-    return !(layer.olLayer instanceof LayerGroup);
 }
 
 /** Returns the layer's current visibility. */
