@@ -1,12 +1,12 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import {
-    Box,
     Flex,
     FormControl,
     FormLabel,
     Icon,
     Tooltip,
+    VStack,
     chakra
 } from "@open-pioneer/chakra-integration";
 import { MapModel, useMapModel } from "@open-pioneer/map";
@@ -16,9 +16,9 @@ import {
     OptionProps,
     Select,
     Props as SelectProps,
-    type SingleValue,
     SingleValueProps,
-    chakraComponents
+    chakraComponents,
+    type SingleValue
 } from "chakra-react-select";
 import { Geometry } from "ol/geom";
 import { useIntl, useService } from "open-pioneer:react-hooks";
@@ -133,7 +133,7 @@ export const Selection: FC<SelectionProps> = (props) => {
     ];
 
     return (
-        <Box {...containerProps}>
+        <VStack {...containerProps} spacing={2}>
             <FormControl>
                 <FormLabel>{intl.formatMessage({ id: "selectMethod" })}</FormLabel>
                 <Select
@@ -157,7 +157,7 @@ export const Selection: FC<SelectionProps> = (props) => {
                     }}
                 />
             </FormControl>
-        </Box>
+        </VStack>
     );
 };
 

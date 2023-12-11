@@ -30,6 +30,8 @@ const selectionSources = [
     new FakePointSelectionSource("Source 3", "unavailable")
 ];
 
+type InteractionType = "measurement" | "selection" | undefined;
+
 export function AppUI() {
     const intl = useIntl();
     const tocTitleId = useId();
@@ -37,19 +39,24 @@ export function AppUI() {
     const selectionTitleId = useId();
     const { map } = useMapModel(MAP_ID);
     const notifier = useService("notifier.NotificationService");
-    const [measurementIsActive, setMeasurementIsActive] = useState<boolean>(false);
     const [showOverviewMap, setShowOverviewMap] = useState<boolean>(true);
     const [showToc, setShowToc] = useState<boolean>(true);
-    const [selectionIsActive, setSelectionIsActive] = useState<boolean>(false);
+    const [currentInteractionType, setCurrentInteractionType] = useState<InteractionType>();
+
+    function toggleInteractionType(type: InteractionType) {
+        if (type === currentInteractionType) {
+            setCurrentInteractionType(undefined);
+        } else {
+            setCurrentInteractionType(type);
+        }
+    }
 
     function toggleMeasurement() {
-        setSelectionIsActive(false);
-        setMeasurementIsActive(!measurementIsActive);
+        toggleInteractionType("measurement");
     }
 
     function toggleSelection() {
-        setMeasurementIsActive(false);
-        setSelectionIsActive(!selectionIsActive);
+        toggleInteractionType("selection");
     }
 
     function toggleOverviewMap() {
@@ -88,6 +95,54 @@ export function AppUI() {
             }),
         []
     );
+
+    let currentInteraction: JSX.Element | null = null;
+    switch (currentInteractionType) {
+        case "selection":
+            currentInteraction = (
+                <Box role="dialog" aria-labelledby={selectionTitleId}>
+                    <TitledSection
+                        title={
+                            <SectionHeading id={selectionTitleId} size="md" mb={2}>
+                                {intl.formatMessage({
+                                    id: "selectionTitle"
+                                })}
+                            </SectionHeading>
+                        }
+                    >
+                        <Selection
+                            mapId={MAP_ID}
+                            sources={selectionSources}
+                            onSelectionComplete={({ results }) => {
+                                notifier.notify({
+                                    level: "info",
+                                    message: `Found ${results.length} results`,
+                                    displayDuration: 2000
+                                });
+                            }}
+                        />
+                    </TitledSection>
+                </Box>
+            );
+            break;
+        case "measurement":
+            currentInteraction = (
+                <Box role="dialog" aria-labelledby={measurementTitleId}>
+                    <TitledSection
+                        title={
+                            <SectionHeading id={measurementTitleId} size="md" mb={2}>
+                                {intl.formatMessage({
+                                    id: "measurementTitle"
+                                })}
+                            </SectionHeading>
+                        }
+                    >
+                        <Measurement mapId={MAP_ID} />
+                    </TitledSection>
+                </Box>
+            );
+            break;
+    }
 
     return (
         <Flex height="100%" direction="column" overflow="hidden">
@@ -130,7 +185,7 @@ export function AppUI() {
                             />
                         </Box>
                         <MapAnchor position="top-left" horizontalGap={10} verticalGap={10}>
-                            {(showToc || measurementIsActive) && (
+                            {(showToc || currentInteractionType) && (
                                 <Box
                                     backgroundColor="white"
                                     borderWidth="1px"
@@ -161,31 +216,13 @@ export function AppUI() {
                                             </TitledSection>
                                         </Box>
                                     )}
-                                    {showToc && measurementIsActive && <Divider mt={4} mb={4} />}
-                                    {measurementIsActive && (
-                                        <Box role="dialog" aria-labelledby={measurementTitleId}>
-                                            <TitledSection
-                                                title={
-                                                    <SectionHeading
-                                                        id={measurementTitleId}
-                                                        size="md"
-                                                        mb={2}
-                                                    >
-                                                        {intl.formatMessage({
-                                                            id: "measurementTitle"
-                                                        })}
-                                                    </SectionHeading>
-                                                }
-                                            >
-                                                <Measurement mapId={MAP_ID} />
-                                            </TitledSection>
-                                        </Box>
-                                    )}
+                                    {showToc && currentInteractionType && <Divider mt={4} mb={4} />}
+                                    {currentInteraction}
                                 </Box>
                             )}
                         </MapAnchor>
                         <MapAnchor position="top-right" horizontalGap={10} verticalGap={10}>
-                            {(showOverviewMap || selectionIsActive) && (
+                            {showOverviewMap && (
                                 <Box
                                     backgroundColor="white"
                                     borderWidth="1px"
@@ -200,38 +237,6 @@ export function AppUI() {
                                                 mapId={MAP_ID}
                                                 olLayer={overviewMapLayer}
                                             />
-                                        </Box>
-                                    )}
-                                    {showOverviewMap && selectionIsActive && (
-                                        <Divider mt={4} mb={4} />
-                                    )}
-                                    {selectionIsActive && (
-                                        <Box role="dialog" aria-labelledby={selectionTitleId}>
-                                            <TitledSection
-                                                title={
-                                                    <SectionHeading
-                                                        id={selectionTitleId}
-                                                        size="md"
-                                                        mb={2}
-                                                    >
-                                                        {intl.formatMessage({
-                                                            id: "selectionTitle"
-                                                        })}
-                                                    </SectionHeading>
-                                                }
-                                            >
-                                                <Selection
-                                                    mapId={MAP_ID}
-                                                    sources={selectionSources}
-                                                    onSelectionComplete={({ results }) => {
-                                                        notifier.notify({
-                                                            level: "info",
-                                                            message: `Found ${results.length} results`,
-                                                            displayDuration: 2000
-                                                        });
-                                                    }}
-                                                />
-                                            </TitledSection>
                                         </Box>
                                     )}
                                 </Box>
@@ -255,13 +260,13 @@ export function AppUI() {
                                 <ToolButton
                                     label={intl.formatMessage({ id: "measurementTitle" })}
                                     icon={<PiRulerLight />}
-                                    isActive={measurementIsActive}
+                                    isActive={currentInteractionType === "measurement"}
                                     onClick={toggleMeasurement}
                                 />
                                 <ToolButton
                                     label={intl.formatMessage({ id: "selectionTitle" })}
                                     icon={<PiSelectionPlusBold />}
-                                    isActive={selectionIsActive}
+                                    isActive={currentInteractionType === "selection"}
                                     onClick={toggleSelection}
                                 />
                                 <ToolButton
