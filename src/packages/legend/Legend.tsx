@@ -65,8 +65,6 @@ export interface LegendProps extends CommonComponentProps {
     showBaseLayers?: boolean;
 }
 
-// TODO: Tests
-
 /**
  * The `Legend` component can be used to display the legend of layers that are visible in the map.
  */
@@ -89,7 +87,6 @@ function LegendList(props: { map: MapModel; showBaseLayers: boolean }): JSX.Elem
     // todo documentation: add hint that legend of sublayers is also shown but plain (without hierarchical structure)
     const legendListItems: ReactNode[] = layers.map((layer) => {
         return (
-            // todo is it ok to use the same layer id as key like in the inner box component
             <LegendItem key={layer.id} layer={layer} showBaseLayers={showBaseLayers}></LegendItem>
         );
     });
