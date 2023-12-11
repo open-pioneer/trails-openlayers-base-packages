@@ -104,9 +104,18 @@ function LayerItem(props: { layer: TocLayer; intl: PackageIntl }): JSX.Element {
                     {title}
                 </Checkbox>
                 {!isAvailable && (
-                    <Tooltip label={notAvailableLabel} placement="right" openDelay={500}>
+                    <Tooltip
+                        className="toc-layer-item-content-tooltip"
+                        label={notAvailableLabel}
+                        placement="right"
+                        openDelay={500}
+                    >
                         <span>
-                            <FiAlertTriangle color={"red"} aria-label={notAvailableLabel} />
+                            <FiAlertTriangle
+                                className="toc-layer-item-content-icon"
+                                color={"red"}
+                                aria-label={notAvailableLabel}
+                            />
                         </span>
                     </Tooltip>
                 )}
