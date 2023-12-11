@@ -1,0 +1,52 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`should successfully create a legend component 1`] = `
+<div
+  class="legend css-0"
+  data-testid="legend"
+  data-theme="light"
+>
+  <ul
+    class="legend-layer-list css-bhb3xr"
+    data-theme="light"
+    role="list"
+  />
+</div>
+`;
+
+exports[`should successfully show legend for imageUrl configuration 1`] = `
+<div
+  class="legend css-0"
+  data-testid="legend"
+  data-theme="light"
+>
+  <ul
+    class="legend-layer-list css-bhb3xr"
+    data-theme="light"
+    role="list"
+  >
+    <li
+      class="legend-item layer-layer-1 css-0"
+      data-theme="light"
+    >
+      <div
+        class="css-0"
+        data-theme="light"
+      >
+        <p
+          class="chakra-text css-0"
+          data-theme="light"
+        >
+          Layer 1
+        </p>
+        <img
+          alt="altLabel"
+          class="legend-item__image css-0"
+          data-theme="light"
+          src="https://avatars.githubusercontent.com/u/121286957?s=200&v=4"
+        />
+      </div>
+    </li>
+  </ul>
+</div>
+`;
