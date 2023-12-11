@@ -276,31 +276,12 @@ it("should allow selecting 'no basemap' when enabled", async () => {
     expect(map.layers.getActiveBaseLayer()).toBe(undefined);
 });
 
-it("should successfully select emptyBasemap, if all configured basemaps are configured as not visible", async () => {
+it("should not allow selecting 'no basemap' by default", async () => {
     const { mapId, registry } = await setupMap({
-        layers: [
-            {
-                id: "b-1",
-                title: "OSM",
-                isBaseLayer: true,
-                visible: false,
-                olLayer: new TileLayer({
-                    source: new OSM()
-                })
-            },
-            {
-                id: "b-2",
-                title: "topplus-open",
-                isBaseLayer: true,
-                visible: false,
-                olLayer: new TileLayer({
-                    source: new BkgTopPlusOpen()
-                })
-            }
-        ]
+        layers: defaultBasemapConfig
     });
-    const map = await registry.expectMapModel(mapId);
 
+    const map = await registry.expectMapModel(mapId);
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
@@ -311,10 +292,8 @@ it("should successfully select emptyBasemap, if all configured basemaps are conf
     // basemap switcher is mounted
     const { switcherSelect } = await waitForBasemapSwitcher();
 
-    expect(switcherSelect.textContent).toBe("emptyBasemapLabel");
-
-    const activeBaseLayer = map.layers.getActiveBaseLayer();
-    expect(activeBaseLayer).toBeUndefined();
+    expect(switcherSelect.textContent).toBe("OSM");
+    expect(map.layers.getActiveBaseLayer()?.id).toBe("osm");
 
     // open dropdown to include options in snapshot; react-select creates list of options in dom after opening selection
     act(() => {
@@ -348,7 +327,7 @@ it("should successfully select emptyBasemap, if all configured basemaps are conf
               class=" css-1xa1gs2"
               data-theme="light"
             >
-              emptyBasemapLabel
+              OSM
             </div>
             <input
               aria-autocomplete="list"
@@ -406,8 +385,9 @@ it("should successfully select emptyBasemap, if all configured basemaps are conf
             role="listbox"
           >
             <div
-              aria-selected="false"
+              aria-selected="true"
               class="basemap-switcher-option css-e8c6zu"
+              data-focus="true"
               data-theme="light"
               id="react-select-6-option-0"
               role="option"
@@ -423,31 +403,49 @@ it("should successfully select emptyBasemap, if all configured basemaps are conf
               role="option"
               tabindex="-1"
             >
-              topplus-open
-            </div>
-            <div
-              aria-selected="true"
-              class="basemap-switcher-option css-e8c6zu"
-              data-focus="true"
-              data-theme="light"
-              id="react-select-6-option-2"
-              role="option"
-              tabindex="-1"
-            >
-              emptyBasemapLabel
+              TopPlus Open
             </div>
           </div>
         </div>
       </div>
     `);
-});
 
-it("should update when a new basemap is registered", async () => {
-    const { mapId, registry } = await setupMap({
-        layers: defaultBasemapConfig
+    act(() => {
+        fireEvent.keyDown(switcherSelect, { key: "ArrowDown" });
     });
 
+    const options = switcherSelect.getElementsByClassName("basemap-switcher-option");
+    const optionsEmptyBasemap = Array.from(options).filter(
+        (option) => option.textContent === "emptyBasemapLabel"
+    );
+    expect(optionsEmptyBasemap).toHaveLength(0);
+});
+
+it("should successfully select emptyBasemap, if all configured basemaps are configured as not visible", async () => {
+    const { mapId, registry } = await setupMap({
+        layers: [
+            {
+                id: "b-1",
+                title: "OSM",
+                isBaseLayer: true,
+                visible: false,
+                olLayer: new TileLayer({
+                    source: new OSM()
+                })
+            },
+            {
+                id: "b-2",
+                title: "topplus-open",
+                isBaseLayer: true,
+                visible: false,
+                olLayer: new TileLayer({
+                    source: new BkgTopPlusOpen()
+                })
+            }
+        ]
+    });
     const map = await registry.expectMapModel(mapId);
+
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
@@ -457,24 +455,16 @@ it("should update when a new basemap is registered", async () => {
 
     // basemap switcher is mounted
     const { switcherSelect } = await waitForBasemapSwitcher();
+
+    expect(switcherSelect.textContent).toBe("emptyBasemapLabel");
+
+    const activeBaseLayer = map.layers.getActiveBaseLayer();
+    expect(activeBaseLayer).toBeUndefined();
+
+    // open dropdown to include options in snapshot; react-select creates list of options in dom after opening selection
     act(() => {
         fireEvent.keyDown(switcherSelect, { key: "ArrowDown" });
     });
-    let options = switcherSelect.getElementsByClassName("basemap-switcher-option");
-    expect(options.length).toBe(2);
-
-    act(() => {
-        const layer = new SimpleLayer({
-            id: "foo",
-            title: "Foo",
-            isBaseLayer: true,
-            olLayer: new TileLayer({})
-        });
-        map.layers.addLayer(layer);
-    });
-
-    options = switcherSelect.getElementsByClassName("basemap-switcher-option");
-    expect(options.length).toBe(3);
 
     expect(switcherSelect).toMatchInlineSnapshot(`
       <div
@@ -503,7 +493,7 @@ it("should update when a new basemap is registered", async () => {
               class=" css-1xa1gs2"
               data-theme="light"
             >
-              OSM
+              emptyBasemapLabel
             </div>
             <input
               aria-autocomplete="list"
@@ -561,9 +551,8 @@ it("should update when a new basemap is registered", async () => {
             role="listbox"
           >
             <div
-              aria-selected="true"
+              aria-selected="false"
               class="basemap-switcher-option css-e8c6zu"
-              data-focus="true"
               data-theme="light"
               id="react-select-7-option-0"
               role="option"
@@ -579,13 +568,169 @@ it("should update when a new basemap is registered", async () => {
               role="option"
               tabindex="-1"
             >
+              topplus-open
+            </div>
+            <div
+              aria-selected="true"
+              class="basemap-switcher-option css-e8c6zu"
+              data-focus="true"
+              data-theme="light"
+              id="react-select-7-option-2"
+              role="option"
+              tabindex="-1"
+            >
+              emptyBasemapLabel
+            </div>
+          </div>
+        </div>
+      </div>
+    `);
+});
+
+it("should update when a new basemap is registered", async () => {
+    const { mapId, registry } = await setupMap({
+        layers: defaultBasemapConfig
+    });
+
+    const map = await registry.expectMapModel(mapId);
+    const injectedServices = createServiceOptions({ registry });
+    render(
+        <PackageContextProvider services={injectedServices}>
+            <BasemapSwitcher mapId={mapId} data-testid="switcher" />
+        </PackageContextProvider>
+    );
+
+    // basemap switcher is mounted
+    const { switcherSelect } = await waitForBasemapSwitcher();
+    act(() => {
+        fireEvent.keyDown(switcherSelect, { key: "ArrowDown" });
+    });
+    let options = switcherSelect.getElementsByClassName("basemap-switcher-option");
+    expect(options.length).toBe(2);
+
+    act(() => {
+        const layer = new SimpleLayer({
+            id: "foo",
+            title: "Foo",
+            isBaseLayer: true,
+            olLayer: new TileLayer({})
+        });
+        map.layers.addLayer(layer);
+    });
+
+    options = switcherSelect.getElementsByClassName("basemap-switcher-option");
+    expect(options.length).toBe(3);
+
+    expect(switcherSelect).toMatchInlineSnapshot(`
+      <div
+        class="basemap-switcher-select css-79elbk"
+        data-theme="light"
+      >
+        <span
+          class="css-1f43avz-a11yText-A11yText"
+          id="react-select-8-live-region"
+        />
+        <span
+          aria-atomic="false"
+          aria-live="polite"
+          aria-relevant="additions text"
+          class="css-1f43avz-a11yText-A11yText"
+        />
+        <div
+          class=" css-i2418r"
+          data-theme="light"
+        >
+          <div
+            class=" css-j93siq"
+            data-theme="light"
+          >
+            <div
+              class=" css-1xa1gs2"
+              data-theme="light"
+            >
+              OSM
+            </div>
+            <input
+              aria-autocomplete="list"
+              aria-controls="react-select-8-listbox"
+              aria-expanded="true"
+              aria-haspopup="true"
+              aria-owns="react-select-8-listbox"
+              aria-readonly="true"
+              class="css-mohuvp-dummyInput-DummyInput"
+              id="react-select-8-input"
+              inputmode="none"
+              role="combobox"
+              tabindex="0"
+              value=""
+            />
+          </div>
+          <div
+            class=" css-hfbj6y"
+            data-theme="light"
+          >
+            <hr
+              aria-orientation="vertical"
+              class="chakra-divider css-1i6c5ox"
+              data-theme="light"
+            />
+            <div
+              aria-hidden="true"
+              class=" css-xq12md"
+              data-theme="light"
+            >
+              <svg
+                aria-hidden="true"
+                class="chakra-icon css-onkibi"
+                data-theme="light"
+                focusable="false"
+                role="presentation"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
+                  fill="currentColor"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div
+          class=" css-ky7590"
+          data-theme="light"
+          id="react-select-8-listbox"
+        >
+          <div
+            class=" css-1h5avke"
+            data-theme="light"
+            role="listbox"
+          >
+            <div
+              aria-selected="true"
+              class="basemap-switcher-option css-e8c6zu"
+              data-focus="true"
+              data-theme="light"
+              id="react-select-8-option-0"
+              role="option"
+              tabindex="-1"
+            >
+              OSM
+            </div>
+            <div
+              aria-selected="false"
+              class="basemap-switcher-option css-e8c6zu"
+              data-theme="light"
+              id="react-select-8-option-1"
+              role="option"
+              tabindex="-1"
+            >
               TopPlus Open
             </div>
             <div
               aria-selected="false"
               class="basemap-switcher-option css-e8c6zu"
               data-theme="light"
-              id="react-select-7-option-2"
+              id="react-select-8-option-2"
               role="option"
               tabindex="-1"
             >
