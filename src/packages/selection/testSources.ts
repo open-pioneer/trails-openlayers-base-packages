@@ -45,8 +45,8 @@ export class FakePointSelectionSource
         this.emit("changed:status");
     }
 
-    // TODO: integrate status
     async select(selectionKind: Extent, options: SelectionOptions): Promise<SelectionResult[]> {
+        if (this.#status != "available") return [];
         return new Promise((resolve) => {
             setTimeout(() => {
                 const allPoints = this.#pointFeatures.map((point, index) => {

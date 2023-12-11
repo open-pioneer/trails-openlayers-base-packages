@@ -17,7 +17,7 @@ describe("point selection source", () => {
     const FULL_EXTENT = [829800, 852011, 6788511, 6809086];
     const POINT_SOURCE = new FakePointSelectionSource(
         FAKE_REQUEST_TIMER,
-        "unavailable",
+        "available",
         ALL_EXPECTED_FEATURES
     );
     const ALL_POINTS_FOUND_RESPONSE = [
@@ -77,8 +77,7 @@ describe("point selection source", () => {
 
         const selectResponse = await controller.select(FULL_EXTENT);
         expect(selectResponse).toStrictEqual(ALL_POINTS_FOUND_RESPONSE);
-        /*expect(logSpy).toMatchInlineSnapshot('[MockFunction error]');*/
-        /*expect(selectResponse).toStrictEqual(ALL_POINTS_FOUND_RESPONSE);*/
+        expect(logSpy).toMatchInlineSnapshot();
     });
 
     it("expect select source to get current map projection in 'options'", async () => {
@@ -101,6 +100,20 @@ describe("point selection source", () => {
         changeProjection("EPSG:3857");
         await controller.select(dummyExtent);
         expect(seenProjections).toEqual(["EPSG:3857"]);
+    });
+
+    it("expect unavailable select source to return empty results", async () => {
+        const currentStatus = POINT_SOURCE.status;
+        POINT_SOURCE.status = "unavailable";
+
+        const { controller, changeProjection } = setup([POINT_SOURCE]);
+
+        const dummyExtent = [Infinity, Infinity, Infinity, Infinity];
+        const emptyResults = await controller.select(dummyExtent);
+        expect(emptyResults[0]).toBeDefined();
+        expect(emptyResults[0] && emptyResults[0].results.length).toBe(0);
+
+        POINT_SOURCE.status = currentStatus;
     });
 });
 
