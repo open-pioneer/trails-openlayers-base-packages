@@ -17,7 +17,7 @@ import LayerGroup from "ol/layer/Group";
 import { useIntl } from "open-pioneer:react-hooks";
 import { WarningTwoIcon } from "@chakra-ui/icons";
 import classNames from "classnames";
-import { PackageIntl } from "@open-pioneer/runtime";
+import { v4 as uuidv4 } from "uuid";
 
 type LegendLayer = Layer | Sublayer;
 
@@ -113,6 +113,8 @@ function LegendItem(props: {
     layer: LegendLayer;
     showBaseLayers: boolean;
 }): ReactNode | ReactNode[] {
+    const intl = useIntl();
+
     const { layer, showBaseLayers } = props;
     const { isVisible } = useVisibility(layer);
     const sublayers = useSublayers(layer);
@@ -129,7 +131,23 @@ function LegendItem(props: {
     const legendItems: ReactNode[] = [];
 
     // legend item for this layer
-    legendItems.push(LegendContent(layer));
+    const legendItem = <LegendContent key={layer.id} layer={layer} />;
+
+    const uuid = uuidv4();
+
+    /**
+     * Render additional text, if layer is a configured basemap
+     */
+    const isBaseLayer = !("parentLayer" in layer) && layer.isBaseLayer;
+    if (showBaseLayers && isBaseLayer && legendItem) {
+        legendItems.push(
+            <Text key={uuid} as="b">
+                {intl.formatMessage({ id: "basemapLabel" })}
+            </Text>
+        );
+    }
+
+    legendItems.push(legendItem);
 
     // legend items for all sublayers
     if (sublayers?.length) {
@@ -143,21 +161,22 @@ function LegendItem(props: {
     return legendItems;
 }
 
-function LegendContent(layer: LegendLayer) {
+function LegendContent(props: { layer: LegendLayer }) {
+    const { layer } = props;
     const legendAttributes = useLegendAttributes(layer.attributes);
     let renderedComponent: ReactNode | undefined;
 
     if (legendAttributes?.Component) {
         renderedComponent = <legendAttributes.Component layer={layer} />;
     } else if (legendAttributes?.imageUrl) {
-        renderedComponent = <LegendBox layer={layer} legendAttributes={legendAttributes} />;
+        renderedComponent = <LegendImage layer={layer} legendAttributes={legendAttributes} />;
     } else {
         // TODO: implement logic for #204 in own if else
         renderedComponent = undefined;
     }
 
     return renderedComponent ? (
-        <Box key={layer.id} pb={2} className={classNames("legend-item", `layer-${slug(layer.id)}`)}>
+        <Box pb={2} className={classNames("legend-item", `layer-${slug(layer.id)}`)}>
             {renderedComponent}
         </Box>
     ) : (
@@ -165,20 +184,16 @@ function LegendContent(layer: LegendLayer) {
     );
 }
 
-function LegendBox(props: {
+function LegendImage(props: {
     layer: LegendLayer;
     legendAttributes: LegendItemAttributes | undefined;
 }) {
     const intl = useIntl();
 
     const { layer, legendAttributes } = props;
-    const isBaseLayer = !("parentLayer" in layer) && layer.isBaseLayer;
 
     return (
         <Box>
-            {/* Render additional text, if layer is a configured basemap */}
-            {isBaseLayer && <Text as="b">{intl.formatMessage({ id: "basemapLabel" })}</Text>}
-
             <Text>{layer.title}</Text>
             <Image
                 src={legendAttributes?.imageUrl}
