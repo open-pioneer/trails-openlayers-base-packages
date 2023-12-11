@@ -1,0 +1,19 @@
+messages:
+  bookmark:
+    button:
+      create: "Add new bookmark"
+      deleteAll: "Delete all bookmarks"
+      deleteOne: "Delete bookmark"
+      save: "Save"
+      cancel: "Cancel"
+      cancelDelete: "No"
+      confirmDelete: "Yes"
+    input:
+      label: "Name"
+      placeholder: "Enter bookmark name"
+    alert:
+      create: "After entering a name you can save the new bookmark. The current map extent is used as the basis for the position."
+      delete: "Do you really want to delete all spatial bookmarks?"
+      noSaved: "No bookmarks saved"
+    list:
+      label: "Spatial bookmarks"

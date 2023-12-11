@@ -1,6 +1,6 @@
 {
-    "name": "@open-pioneer/ogc-features",
-    "version": "0.1.0",
+    "name": "@open-pioneer/local-storage",
+    "version": "0.0.1",
     "license": "Apache-2.0",
     "main": "index.ts",
     "scripts": {
@@ -8,18 +8,10 @@
     },
     "peerDependencies": {
         "@open-pioneer/core": "^1.1.0",
-        "ol": "^8.2.0",
-        "uuid": "^9.0.0",
-        "@open-pioneer/search": "workspace:^"
-    },
-    "peerDependenciesMeta": {
-        "@open-pioneer/search": {
-            "optional": true
-        }
+        "@open-pioneer/runtime": "^2.0.0"
     },
     "devDependencies": {
         "@open-pioneer/test-utils": "^1.0.2",
-        "@open-pioneer/map-test-utils": "workspace:^",
         "openlayers-base-packages": "workspace:*"
     },
     "publishConfig": {

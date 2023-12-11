@@ -83,7 +83,7 @@ it("does not display base layers", async function () {
     expect(labels).toEqual(["Layer 1"]);
 });
 
-it("does not display group layers", async function () {
+it("shows a single entry for layer groups inside a SimpleLayer", async function () {
     const { mapId, registry } = await setupMap({
         layers: [
             {
@@ -105,7 +105,7 @@ it("does not display group layers", async function () {
     );
 
     const labels = getCurrentLabels(container);
-    expect(labels).toEqual(["Layer 1"]);
+    expect(labels).toEqual(["Layer 2", "Layer 1"]);
 });
 
 it("shows a fallback message if there are no layers", async function () {

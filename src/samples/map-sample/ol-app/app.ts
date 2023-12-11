@@ -9,6 +9,13 @@ const element = createCustomElement({
     component: AppUI,
     theme,
     appMetadata,
+    config: {
+        properties: {
+            "@open-pioneer/local-storage": {
+                "storageId": "ol-app-state"
+            }
+        }
+    },
     async resolveConfig(ctx) {
         const locale = ctx.getAttribute("forced-locale");
         if (!locale) {
