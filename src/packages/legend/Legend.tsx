@@ -131,7 +131,7 @@ function LegendItem(props: {
     const legendItems: ReactNode[] = [];
 
     // legend item for this layer
-    legendItems.push(createLegendContent(layer, intl));
+    legendItems.push(LegendContent(layer, intl));
 
     // legend items for all sublayers
     if (sublayers?.length) {
@@ -145,7 +145,7 @@ function LegendItem(props: {
     return legendItems;
 }
 
-function createLegendContent(layer: LegendLayer, intl: PackageIntl) {
+function LegendContent(layer: LegendLayer, intl: PackageIntl) {
     const legendAttributes = useLegendAttributes(layer.attributes);
     let renderedComponent: ReactNode | undefined;
 
