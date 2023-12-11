@@ -16,7 +16,7 @@ import {
     BoxProps
 } from "@open-pioneer/chakra-integration";
 import { CommonComponentProps } from "@open-pioneer/react-utils";
-import { FC } from "react";
+import { FC, ForwardedRef, forwardRef, useRef } from "react";
 import { FiMoreVertical } from "react-icons/fi";
 import { useIntl } from "open-pioneer:react-hooks";
 import { MapModel, SublayersCollection } from "@open-pioneer/map";
@@ -33,8 +33,17 @@ export const TocTools: FC<TocToolsProps> = (props: TocToolsProps) => {
 
     const { map } = props;
 
+    /**
+     * Use `useRef` to focus an element when Popover opens:
+     * https://chakra-ui.com/docs/components/popover/usage#focus-an-element-when-popover-opens
+     *
+     * Add `ref={initialFocusRef}` to the element which should have the initial focus.
+     * The last element will be focused, if `ref` is configured more than once.
+     */
+    const initialFocusRef = useRef(null);
+
     return (
-        <Popover>
+        <Popover initialFocusRef={initialFocusRef}>
             {({ onClose }) => (
                 <>
                     <PopoverTrigger>
@@ -74,6 +83,7 @@ export const TocTools: FC<TocToolsProps> = (props: TocToolsProps) => {
                                         hideAllLayers(map);
                                         onClose();
                                     }}
+                                    ref={initialFocusRef}
                                 >
                                     {intl.formatMessage({
                                         id: "hideAllLayers"
@@ -102,9 +112,17 @@ interface PopoverBoxProps extends BoxProps {
      * Mandatory children representing the label
      */
     children: string;
+
+    /**
+     * Optional ref to set the initial focus
+     */
+    ref?: ForwardedRef<HTMLDivElement>;
 }
 
-function PopoverBox(props: PopoverBoxProps): JSX.Element {
+const PopoverBox: FC<PopoverBoxProps> = forwardRef(function PopoverBox(
+    props: PopoverBoxProps,
+    ref: ForwardedRef<HTMLDivElement>
+): JSX.Element {
     return (
         <Box
             p={2}
@@ -113,6 +131,7 @@ function PopoverBox(props: PopoverBoxProps): JSX.Element {
             rounded="md"
             cursor="pointer"
             outline={0}
+            ref={ref}
             _hover={{ background: "trails.50" }}
             _focusVisible={{ boxShadow: "outline" }}
             {...props}
@@ -122,7 +141,7 @@ function PopoverBox(props: PopoverBoxProps): JSX.Element {
             </Flex>
         </Box>
     );
-}
+});
 
 function hideAllLayers(map: MapModel | undefined) {
     const hideSublayer = (sublayers: SublayersCollection | undefined) => {
