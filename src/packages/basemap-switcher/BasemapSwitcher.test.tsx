@@ -421,7 +421,10 @@ it("should not allow selecting 'no basemap' by default", async () => {
     expect(optionsEmptyBasemap).toHaveLength(0);
 });
 
-it("should successfully select emptyBasemap, if all configured basemaps are configured as not visible", async () => {
+it("should successfully select emptyBasemap, if all configured basemaps are configured as not visible or have error state", async () => {
+    const b2Source = new BkgTopPlusOpen();
+    b2Source.setState("error");
+
     const { mapId, registry } = await setupMap({
         layers: [
             {
@@ -437,9 +440,9 @@ it("should successfully select emptyBasemap, if all configured basemaps are conf
                 id: "b-2",
                 title: "topplus-open",
                 isBaseLayer: true,
-                visible: false,
+                visible: true,
                 olLayer: new TileLayer({
-                    source: new BkgTopPlusOpen()
+                    source: b2Source
                 })
             }
         ]
@@ -561,6 +564,7 @@ it("should successfully select emptyBasemap, if all configured basemaps are conf
               OSM
             </div>
             <div
+              aria-disabled="true"
               aria-selected="false"
               class="basemap-switcher-option css-e8c6zu"
               data-theme="light"
@@ -569,6 +573,43 @@ it("should successfully select emptyBasemap, if all configured basemaps are conf
               tabindex="-1"
             >
               topplus-open
+              <div
+                class="css-1v4xcoh"
+                data-theme="light"
+              >
+                <span>
+                  <svg
+                    aria-label="layerNotAvailable"
+                    color="red"
+                    fill="none"
+                    height="1em"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    style="color: red;"
+                    viewBox="0 0 24 24"
+                    width="1em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"
+                    />
+                    <line
+                      x1="12"
+                      x2="12"
+                      y1="9"
+                      y2="13"
+                    />
+                    <line
+                      x1="12"
+                      x2="12.01"
+                      y1="17"
+                      y2="17"
+                    />
+                  </svg>
+                </span>
+              </div>
             </div>
             <div
               aria-selected="true"
