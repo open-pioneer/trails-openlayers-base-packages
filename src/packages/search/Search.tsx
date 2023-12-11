@@ -326,7 +326,7 @@ function useController(
     }, [controller, searchTypingDelay]);
     useEffect(() => {
         controller && (controller.maxResultsPerSource = maxResultsPerGroup);
-    });
+    }, [controller, maxResultsPerGroup]);
     return controller;
 }
 
