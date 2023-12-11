@@ -152,41 +152,53 @@ function LegendContent(layer: LegendLayer, intl: PackageIntl) {
     if (legendAttributes?.Component) {
         renderedComponent = <legendAttributes.Component layer={layer} />;
     } else if (legendAttributes?.imageUrl) {
-        const isBaseLayer = !("parentLayer" in layer) && layer.isBaseLayer;
-
         renderedComponent = (
-            <Box>
-                {/* Render additional text, if layer is a configured basemap */}
-                {isBaseLayer && <Text as="b">{intl.formatMessage({ id: "basemapLabel" })}</Text>}
-
-                <Text>{layer.title}</Text>
-                <Image
-                    src={legendAttributes?.imageUrl}
-                    alt={intl.formatMessage({ id: "altLabel" }, { layerName: layer.title })}
-                    className={"legend-item__image"}
-                    // TODO: test fallback with NVDA
-                    fallbackStrategy={"onError"}
-                    fallback={
-                        <Box>
-                            <Text>
-                                <WarningTwoIcon me={2} />
-                                {intl.formatMessage({ id: "fallbackLabel" })}
-                            </Text>
-                        </Box>
-                    }
-                />
-            </Box>
+            <LegendBox intl={intl} layer={layer} legendAttributes={legendAttributes} />
         );
     } else {
         // TODO: implement logic for #204 in own if else
         renderedComponent = undefined;
     }
+
     return renderedComponent ? (
         <Box key={layer.id} pb={2} className={classNames("legend-item", `layer-${slug(layer.id)}`)}>
             {renderedComponent}
         </Box>
     ) : (
         renderedComponent
+    );
+}
+
+function LegendBox(props: {
+    intl: PackageIntl;
+    layer: LegendLayer;
+    legendAttributes: LegendItemAttributes | undefined;
+}) {
+    const { intl, layer, legendAttributes } = props;
+    const isBaseLayer = !("parentLayer" in layer) && layer.isBaseLayer;
+
+    return (
+        <Box>
+            {/* Render additional text, if layer is a configured basemap */}
+            {isBaseLayer && <Text as="b">{intl.formatMessage({ id: "basemapLabel" })}</Text>}
+
+            <Text>{layer.title}</Text>
+            <Image
+                src={legendAttributes?.imageUrl}
+                alt={intl.formatMessage({ id: "altLabel" }, { layerName: layer.title })}
+                className={"legend-item__image"}
+                // TODO: test fallback with NVDA
+                fallbackStrategy={"onError"}
+                fallback={
+                    <Box>
+                        <Text>
+                            <WarningTwoIcon me={2} />
+                            {intl.formatMessage({ id: "fallbackLabel" })}
+                        </Text>
+                    </Box>
+                }
+            />
+        </Box>
     );
 }
 
