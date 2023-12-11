@@ -14,9 +14,10 @@ import {
 import userEvent from "@testing-library/user-event";
 import LayerGroup from "ol/layer/Group";
 import TileLayer from "ol/layer/Tile";
+import OSM from "ol/source/OSM";
 import { expect, it } from "vitest";
 import { LayerList } from "./LayerList";
-import { SimpleLayer } from "@open-pioneer/map";
+import { SimpleLayer, WMSLayer } from "@open-pioneer/map";
 
 it("should show layers in the correct order", async () => {
     const { mapId, registry } = await setupMap({
@@ -400,6 +401,62 @@ it("reacts to changes in the layer description", async () => {
         layer.setDescription("New description");
     });
     screen.getByText("New description");
+});
+
+it("reacts to changes of the layer load state", async () => {
+    const source = new OSM();
+
+    const { mapId, registry } = await setupMap({
+        layers: [
+            {
+                id: "layer1",
+                title: "Layer 1",
+                description: "Description 1",
+                olLayer: new TileLayer({
+                    source: source
+                })
+            }
+        ]
+    });
+    const map = await registry.expectMapModel(mapId);
+    const layer = map.layers.getLayerById("layer1");
+
+    const { container } = render(
+        <PackageContextProvider>
+            <LayerList map={map} />
+        </PackageContextProvider>
+    );
+
+    const checkbox = queryByRole<HTMLInputElement>(container, "checkbox")!;
+    const button = queryByRole<HTMLInputElement>(container, "button");
+    let icons = container.querySelectorAll(".toc-layer-item-content-icon");
+
+    expect(checkbox).toBeTruthy();
+    expect(checkbox.disabled).toBe(false);
+    expect(layer?.visible).toBe(true);
+    expect(button?.disabled).toBe(false);
+    expect(icons).toHaveLength(0);
+
+    act(() => {
+        source.setState("error");
+    });
+
+    icons = container.querySelectorAll(".toc-layer-item-content-icon");
+    expect(checkbox.disabled).toBe(true);
+    expect(layer?.visible).toBe(false);
+    expect(button?.disabled).toBe(true);
+    expect(icons).toHaveLength(1);
+
+    // and back
+    act(() => {
+        source.setState("ready");
+    });
+
+    icons = container.querySelectorAll(".toc-layer-item-content-icon");
+    expect(checkbox.disabled).toBe(false);
+    expect(layer?.visible).toBe(false); // make the layer visible again manually
+    expect(button?.disabled).toBe(false);
+    expect(icons).toHaveLength(0);
 });
 
 /** Returns the layer list's current list items. */
