@@ -5,48 +5,28 @@ import {
     SelectionResult,
     SelectionOptions,
     SelectionSourceStatus,
-    SelectionSourceEvents,
     SelectionKind
-} from "./api";
+} from "@open-pioneer/selection";
 import { Point } from "ol/geom";
-import { EventEmitter } from "@open-pioneer/core";
 
 export const fakeSelectedPointFeatures = [
     new Point([852011, 6788511]),
     new Point([829800, 6809086])
 ];
 
-let count = 0;
-
-export class FakePointSelectionSource
-    extends EventEmitter<SelectionSourceEvents>
-    implements SelectionSource
-{
-    readonly label = `Fake Selection Source #${++count}`;
-    #timeout: number;
-    #status: SelectionSourceStatus;
+export class FakePointSelectionSource implements SelectionSource {
+    readonly label: string;
+    readonly status: SelectionSourceStatus;
     #pointFeatures: Point[];
 
     constructor(
-        timeout?: number,
+        label: string,
         status?: SelectionSourceStatus,
         pointFeatures: Point[] = fakeSelectedPointFeatures
     ) {
-        super();
-        this.#timeout = timeout || 0;
-        this.#status = status || "unavailable";
+        this.label = label;
+        this.status = status ?? "unavailable";
         this.#pointFeatures = pointFeatures;
-    }
-
-    get status(): SelectionSourceStatus {
-        return this.#status;
-    }
-
-    set status(value: SelectionSourceStatus) {
-        if (value !== this.#status) {
-            this.#status = value;
-            this.emit("changed:status");
-        }
     }
 
     async select(selection: SelectionKind, options: SelectionOptions): Promise<SelectionResult[]> {
@@ -54,9 +34,7 @@ export class FakePointSelectionSource
             throw new Error(`Unsupported selection kind: ${selection.type}`);
         }
 
-        if (this.#status !== "available") return [];
-
-        await new Promise((resolve) => setTimeout(resolve, this.#timeout));
+        if (this.status !== "available") return [];
 
         const allPoints = this.#pointFeatures.map((point, index) => {
             const result: SelectionResult = {

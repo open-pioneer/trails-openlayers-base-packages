@@ -11,6 +11,10 @@ export default defineBuildConfig({
         }
     },
     ui: {
-        references: ["map-sample-logging.LogService", "map.MapRegistry"]
+        references: [
+            "map-sample-logging.LogService",
+            "map.MapRegistry",
+            "notifier.NotificationService"
+        ]
     }
 });

@@ -16,13 +16,19 @@ import { Selection } from "@open-pioneer/selection";
 import { Toc } from "@open-pioneer/toc";
 import TileLayer from "ol/layer/Tile.js";
 import OSM from "ol/source/OSM.js";
-import { useIntl } from "open-pioneer:react-hooks";
+import { useIntl, useService } from "open-pioneer:react-hooks";
 import { useId, useMemo, useState } from "react";
 import { PiListLight, PiMapTrifold, PiRulerLight, PiSelectionPlusBold } from "react-icons/pi";
 import { MAP_ID } from "./MapConfigProviderImpl";
-import { PhotonGeocoder } from "./search-source-examples/testSources";
+import { PhotonGeocoder } from "./sources/searchSources";
+import { FakePointSelectionSource } from "./sources/selectionSources";
 
 const sources = [new PhotonGeocoder("Photon Geocoder", ["city", "street"])];
+const selectionSources = [
+    new FakePointSelectionSource("Source 1", "available"),
+    new FakePointSelectionSource("Source 2", "available"),
+    new FakePointSelectionSource("Source 3", "unavailable")
+];
 
 export function AppUI() {
     const intl = useIntl();
@@ -30,6 +36,7 @@ export function AppUI() {
     const measurementTitleId = useId();
     const selectionTitleId = useId();
     const { map } = useMapModel(MAP_ID);
+    const notifier = useService("notifier.NotificationService");
     const [measurementIsActive, setMeasurementIsActive] = useState<boolean>(false);
     const [showOverviewMap, setShowOverviewMap] = useState<boolean>(true);
     const [showToc, setShowToc] = useState<boolean>(true);
@@ -215,8 +222,14 @@ export function AppUI() {
                                             >
                                                 <Selection
                                                     mapId={MAP_ID}
-                                                    activeState={selectionIsActive}
-                                                    sourceLabel={["Fake Selection Source"]}
+                                                    sources={selectionSources}
+                                                    onSelectionComplete={({ results }) => {
+                                                        notifier.notify({
+                                                            level: "info",
+                                                            message: `Found ${results.length} results`,
+                                                            displayDuration: 2000
+                                                        });
+                                                    }}
                                                 />
                                             </TitledSection>
                                         </Box>

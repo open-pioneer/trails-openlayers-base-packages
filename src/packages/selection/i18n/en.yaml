@@ -3,3 +3,4 @@ messages:
   selectSource: "Select source"
   tooltip: "Click on the map, hold down the mouse button and draw a rectangle"
   sourceNotAvailable: "Source not available"
+  selectionFailed: "Spatial selection failed"

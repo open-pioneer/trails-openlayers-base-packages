@@ -15,8 +15,7 @@ export interface SelectionSourceResults {
     results: SelectionResult[];
 }
 
-// TODO: Reconsider default value
-const DEFAULT_MAX_RESULTS_PER_SOURCE = 1000;
+const DEFAULT_MAX_RESULTS = 10000;
 
 export class SelectionController {
     #mapModel: MapModel;
@@ -27,23 +26,39 @@ export class SelectionController {
     #sources: SelectionSource[] = [];
 
     /**
-     * Limits the number of results per source.
+     * Limits the number of results.
      */
-    #maxResultsPerSource: number = DEFAULT_MAX_RESULTS_PER_SOURCE;
+    #maxResults: number;
 
-    constructor(mapModel: MapModel, sources: SelectionSource[]) {
+    /**
+     * Called whenever an error happens.
+     */
+    #onError: () => void;
+
+    constructor(options: {
+        mapModel: MapModel;
+        sources: SelectionSource[];
+        onError: () => void;
+        maxResults?: number;
+    }) {
+        const { mapModel, sources, onError, maxResults = DEFAULT_MAX_RESULTS } = options;
         this.#mapModel = mapModel;
         this.#sources = sources;
+        this.#maxResults = maxResults;
+        this.#onError = onError;
     }
 
-    async select(extent: Extent): Promise<SelectionSourceResults[]> {
+    destroy() {}
+
+    async select(
+        source: SelectionSource,
+        extent: Extent
+    ): Promise<SelectionSourceResults | undefined> {
         if (!extent) {
-            return [];
+            return undefined;
         }
-        const settledSelections = await Promise.all(
-            this.#sources.map((source) => this.#selectFromSource(source, extent))
-        );
-        return settledSelections.filter((s): s is SelectionSourceResults => s != null);
+
+        return await this.#selectFromSource(source, extent);
     }
 
     async #selectFromSource(
@@ -52,27 +67,28 @@ export class SelectionController {
     ): Promise<SelectionSourceResults | undefined> {
         const projection = this.#mapModel.olMap.getView().getProjection();
         try {
-            const maxResults = this.#maxResultsPerSource;
-            let results = await source.select(extent, {
-                maxResults,
-                mapProjection: projection
-            });
+            LOG.debug(`Starting selection on source '${source.label}'`);
+
+            const maxResults = this.#maxResults;
+            let results = await source.select(
+                { type: "extent", extent },
+                {
+                    maxResults,
+                    mapProjection: projection,
+                    signal: new AbortController().signal // currently not used
+                }
+            );
             if (results.length > maxResults) {
                 results = results.slice(0, maxResults);
             }
+
+            LOG.debug(`Found ${results.length} results on source '${source.label}'`);
             return { source: source, results: results };
         } catch (e) {
             LOG.error(`selection from source ${source.label} failed`, e);
+            this.#onError();
             return undefined;
         }
-    }
-
-    get maxResultsPerSource(): number {
-        return this.#maxResultsPerSource;
-    }
-
-    set maxResultsPerSource(value: number | undefined) {
-        this.#maxResultsPerSource = value ?? DEFAULT_MAX_RESULTS_PER_SOURCE;
     }
 
     get sources() {

@@ -1,25 +1,20 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import {
-    Button,
-    FormControl,
-    FormLabel,
-    Tooltip,
-    Container
-} from "@open-pioneer/chakra-integration";
-import { FC, useCallback, useEffect, useMemo, useState } from "react";
-import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
+import { Box, Button, FormControl, FormLabel, Tooltip } from "@open-pioneer/chakra-integration";
 import { MapModel, useMapModel } from "@open-pioneer/map";
-import { Geometry } from "ol/geom";
-import { PiUserRectangle } from "react-icons/pi";
-import { useIntl } from "open-pioneer:react-hooks";
-import { FakePointSelectionSource } from "./testSources";
-import { SelectionSource } from "./api";
+import { CommonComponentProps, useCommonComponentProps, useEvent } from "@open-pioneer/react-utils";
 import { PackageIntl } from "@open-pioneer/runtime/i18n";
-import { DragController } from "./DragController";
-import { Select, OptionProps, chakraComponents } from "chakra-react-select";
+import { OptionProps, Select, chakraComponents } from "chakra-react-select";
+import { Geometry } from "ol/geom";
+import { useIntl, useService } from "open-pioneer:react-hooks";
+import { FC, useEffect, useState } from "react";
 import { FiAlertTriangle } from "react-icons/fi";
+import { PiUserRectangle } from "react-icons/pi";
+import { DragController } from "./DragController";
 import { SelectionController } from "./SelectionController";
+import { SelectionResult, SelectionSource } from "./api";
+
+import {} from "@open-pioneer/notifier"; // TODO: Workaround
 
 /**
  * Properties supported by the {@link Selection} component.
@@ -29,21 +24,31 @@ export interface SelectionProps extends CommonComponentProps {
      * The id of the map.
      */
     mapId: string;
-    /**
-     * Array of source labels
-     */
-    sourceLabel: string[];
 
     /**
-     * Is Tool active
+     * Array of selection sources available for spatial selection.
      */
-    activeState: boolean;
+    sources: SelectionSource[];
+
+    /**
+     * This handler is called whenever the user has successfully (successfully) selected
+     * some items.
+     */
+    onSelectionComplete?(event: SelectionCompleteEvent): void;
+}
+
+export interface SelectionCompleteEvent {
+    /** The source that returned the {@link results}. */
+    source: SelectionSource;
+
+    /** Results selected by the user. */
+    results: SelectionResult[];
 }
 
 /**
  * Properties for single select options.
  */
-export interface SelectOption {
+interface SelectOption {
     /**
      * The label of the select option.
      */
@@ -57,44 +62,45 @@ export interface SelectOption {
 
 export const Selection: FC<SelectionProps> = (props) => {
     const intl = useIntl();
-    const { mapId, sourceLabel, activeState } = props;
+    const { mapId, sources, onSelectionComplete } = props;
     const { containerProps } = useCommonComponentProps("selection", props);
 
-    const sources: SelectionSource[] = useMemo(() => [new FakePointSelectionSource(2000)], []);
+    // TODO: manage current source via select
+    const currentSource = sources.find((s) => (s.status ?? "available") === "available");
+
     const [source, setSource] = useState("");
     const mapState = useMapModel(mapId);
-    const { onInputChanged } = useSelectionController(mapState.map, sources);
-    const controller = useDragController(mapState.map, intl, onInputChanged);
+    const { onExtentSelected } = useSelectionController(
+        mapState.map,
+        sources,
+        currentSource,
+        onSelectionComplete
+    );
+    useDragSelection(mapState.map, intl, onExtentSelected);
 
-    useEffect(() => {
-        if (!activeState) controller?.destroy();
-    }, [activeState, controller]);
-
-    /* if (sourceLabel) {
-        const fakeSource = [new FakePointSelectionSource(5000)];
-        if (sourceLabel.includes(fakeSource.label)) {
-            sources = [fakeSource];
-        }
-    } */
     const options: SelectOption[] = sources.map<SelectOption>((source) => {
         return { label: source.label, value: source };
     });
 
     return (
-        <Container mb={16}>
+        <Box {...containerProps}>
             <Button isActive={true} leftIcon={<PiUserRectangle />}>
                 {intl.formatMessage({ id: "rectangle" })}
             </Button>
             <FormControl>
                 <FormLabel>{intl.formatMessage({ id: "selectSource" })}</FormLabel>
                 <Select
-                    name="select-source"
+                    className="selection-sources"
+                    classNamePrefix="react-select"
                     options={options}
+                    menuPosition="fixed"
                     components={{ Option: SourceSelectOption }}
+                    // TODO: watch "status" for changes and set isDisabled in `SourceSelectOption` only.
+                    // It should be OK to remove this prop.
                     isOptionDisabled={(option) => option?.value?.status === "unavailable"}
                 />
             </FormControl>
-        </Container>
+        </Box>
     );
 };
 
@@ -121,12 +127,58 @@ function SourceSelectOption(props: OptionProps<SelectOption>): JSX.Element {
     );
 }
 
-function useDragController(
+function useSelectionController(
+    mapModel: MapModel | undefined,
+    sources: SelectionSource[],
+    currentSource: SelectionSource | undefined,
+    onSelectionComplete: ((event: SelectionCompleteEvent) => void) | undefined
+) {
+    const notifier = useService("notifier.NotificationService");
+    const intl = useIntl();
+    const [controller, setController] = useState<SelectionController | undefined>(undefined);
+    useEffect(() => {
+        if (!mapModel) {
+            return;
+        }
+        const controller = new SelectionController({
+            mapModel,
+            sources,
+            onError() {
+                notifier.notify({
+                    level: "error",
+                    message: intl.formatMessage({ id: "selectionFailed" })
+                });
+            }
+        });
+        setController(controller);
+        return () => {
+            controller.destroy();
+        };
+    }, [mapModel, notifier, sources, intl]);
+
+    const onExtentSelected = useEvent(async (geometry: Geometry) => {
+        if (!controller || !currentSource) {
+            return;
+        }
+
+        const selectionResult = await controller.select(currentSource, geometry.getExtent());
+        if (!selectionResult) {
+            return;
+        }
+
+        onSelectionComplete?.(selectionResult);
+    });
+    return {
+        controller,
+        onExtentSelected
+    };
+}
+
+function useDragSelection(
     map: MapModel | undefined,
     intl: PackageIntl,
-    extendHandler: (geometry: Geometry) => void
+    onExtentSelected: (geometry: Geometry) => void
 ) {
-    const [controller, setController] = useState<DragController | undefined>(undefined);
     useEffect(() => {
         if (!map) {
             return;
@@ -135,44 +187,10 @@ function useDragController(
         const controller = new DragController(
             map.olMap,
             intl.formatMessage({ id: "tooltip" }),
-            extendHandler
+            onExtentSelected
         );
-        setController(controller);
         return () => {
             controller.destroy();
-            setController(undefined);
         };
-    }, [map, intl, extendHandler]);
-    return controller;
-}
-
-function useSelectionController(mapModel: MapModel | undefined, sources: SelectionSource[]) {
-    const [controller, setController] = useState<SelectionController | undefined>(undefined);
-    useEffect(() => {
-        if (!mapModel) {
-            return;
-        }
-        const controller = new SelectionController(mapModel, sources);
-
-        setController(controller);
-        //TODO dependency sources leads to infinite-Render-Loop
-    }, [mapModel, sources]);
-
-    const onInputChanged = useCallback(
-        async (geometry: Geometry) => {
-            const selectionResult = await controller?.select(geometry.getExtent());
-            if (selectionResult) {
-                alert(
-                    selectionResult?.[0]?.source?.label +
-                        ": " +
-                        selectionResult?.[0]?.results.length
-                );
-            }
-        },
-        [controller]
-    );
-    return {
-        controller,
-        onInputChanged
-    };
+    }, [map, intl, onExtentSelected]);
 }

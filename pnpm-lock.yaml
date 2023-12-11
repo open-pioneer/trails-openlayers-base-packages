@@ -735,6 +735,9 @@ importers:
       '@open-pioneer/map':
         specifier: workspace:^
         version: link:../map
+      '@open-pioneer/notifier':
+        specifier: workspace:^
+        version: link:../notifier
       '@open-pioneer/react-utils':
         specifier: workspace:^
         version: link:../react-utils

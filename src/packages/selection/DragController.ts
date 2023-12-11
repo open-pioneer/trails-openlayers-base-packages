@@ -2,12 +2,13 @@
 // SPDX-License-Identifier: Apache-2.0
 import { Resource } from "@open-pioneer/core/resources";
 import OlMap from "ol/Map";
+import { unByKey } from "ol/Observable";
 import Overlay from "ol/Overlay";
 import { mouseActionButton } from "ol/events/condition";
 import Geometry from "ol/geom/Geometry";
 import { DragBox } from "ol/interaction";
 
-interface Selectionbox extends Resource {
+interface SelectionBox extends Resource {
     dragBox: DragBox;
 }
 
@@ -17,39 +18,49 @@ interface Tooltip extends Resource {
     element: HTMLDivElement;
 }
 
+const ACTIVE_CLASS = "spatial-selection-active";
+
 export class DragController {
-    private olMap: OlMap;
-    private messages: string;
     private tooltip: Tooltip;
-    private dragBox: Selectionbox;
-    constructor(olMap: OlMap, messages: string, extendHandler: (geometry: Geometry) => void) {
-        this.olMap = olMap;
-        this.messages = messages;
-        this.dragBox = this.createDragbox(olMap, extendHandler);
-        this.tooltip = this.createHelpTooltip(olMap, messages);
+    private dragBox: SelectionBox;
+
+    constructor(
+        olMap: OlMap,
+        tooltipMessage: string,
+        onExtentSelected: (geometry: Geometry) => void
+    ) {
+        this.dragBox = this.createDragBox(olMap, onExtentSelected);
+        this.tooltip = this.createHelpTooltip(olMap, tooltipMessage);
     }
 
-    createDragbox(olMap: OlMap, extendHandler: (geometry: Geometry) => void) {
+    destroy() {
+        this.tooltip.destroy();
+        this.dragBox.destroy();
+    }
+
+    private createDragBox(olMap: OlMap, onExtentSelected: (geometry: Geometry) => void) {
         const dragBox = new DragBox({
-            className: "selectionDragBox",
+            className: "selection-drag-box",
             condition: mouseActionButton
         });
         olMap.addInteraction(dragBox);
         dragBox.on("boxend", function () {
-            extendHandler(dragBox.getGeometry());
+            onExtentSelected(dragBox.getGeometry());
         });
 
-        const element = document.querySelectorAll<HTMLElement>(".app");
-        if (element[0]) element[0].style.cursor = "crosshair";
+        const element = olMap.getViewport();
+        element.classList.add(ACTIVE_CLASS);
+
         return {
             dragBox: dragBox,
             destroy() {
                 olMap.removeInteraction(dragBox);
+                element.classList.remove(ACTIVE_CLASS);
             }
         };
     }
 
-    createHelpTooltip(olMap: OlMap, message: string) {
+    private createHelpTooltip(olMap: OlMap, message: string) {
         const element = document.createElement("div");
         element.className = "select-tooltip";
         element.textContent = message;
@@ -70,15 +81,8 @@ export class DragController {
             element,
             destroy() {
                 olMap.removeOverlay(overlay);
-                olMap.removeEventListener(pointHandler.type, pointHandler.listener);
+                unByKey(pointHandler);
             }
         };
-    }
-
-    destroy() {
-        this.tooltip.destroy();
-        this.dragBox.destroy();
-        const element = document.querySelectorAll<HTMLElement>(".app");
-        if (element[0]) element[0].style.cursor = "";
     }
 }

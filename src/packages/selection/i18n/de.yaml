@@ -3,3 +3,4 @@ messages:
   selectSource: "Quelle auswählen"
   tooltip: "Klicken Sie in die Karte, halten Sie die Maustaste gedrückt und ziehen Sie ein Rechteck auf"
   sourceNotAvailable: "Quelle nicht verfügbar"
+  selectionFailed: "Die räumliche Auswahl ist fehlgeschlagen"

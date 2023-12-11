@@ -1,5 +1,10 @@
 # @open-pioneer/selection
 
+TODO:
+
+-   Document that notifier is required in app
+-   Document limitation of 10000 items per selection
+
 ## Usage
 
 ## License
