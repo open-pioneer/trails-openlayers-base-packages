@@ -44,6 +44,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                         }
                     }
                 }),
+
                 new SimpleLayer({
                     id: "topplus_open_grau",
                     title: "TopPlus Open (Grau)",
@@ -98,6 +99,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                 }),
                 createSchulenLayer(),
                 createStrassenLayer(),
+                createAdminAreasNRW(),
                 createIsBk5Layer()
             ]
         };
@@ -187,7 +189,19 @@ function createKitasLayer() {
         source: geojsonSource
     });
 }
-
+function createAdminAreasNRW() {
+    return new WMSLayer({
+        title: "Verwaltungsgebiete",
+        visible: true,
+        url: "https://www.wms.nrw.de/geobasis/wms_nw_dvg",
+        sublayers: [
+            {
+                name: "nw_dvg_bld",
+                title: "NRW"
+            }
+        ]
+    });
+}
 function createIsBk5Layer() {
     return new WMSLayer({
         title: "Bodenkarte zur Landwirtschaftlichen Standorterkundung",
@@ -208,23 +222,11 @@ function createIsBk5Layer() {
                                 sublayers: [
                                     {
                                         name: "Sickerwasserrate_Wald",
-                                        title: "Sickerwasserrate Wald",
-                                        attributes: {
-                                            "legend": {
-                                                imageUrl:
-                                                    "https://www.wms.nrw.de/gd/bk05l?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=Sickerwasserrate_Wald"
-                                            }
-                                        }
+                                        title: "Sickerwasserrate Wald"
                                     },
                                     {
                                         name: "Direktabfluss_Wald",
-                                        title: "Direktabfluss Wald",
-                                        attributes: {
-                                            "legend": {
-                                                imageUrl:
-                                                    "https://www.wms.nrw.de/gd/bk05l?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=Direktabfluss_Wald"
-                                            }
-                                        }
+                                        title: "Direktabfluss Wald"
                                     }
                                 ]
                             },

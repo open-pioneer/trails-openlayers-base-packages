@@ -43,6 +43,9 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
     get url(): string {
         return this.#url;
     }
+    get __source() {
+        return this.#source;
+    }
 
     get sublayers(): SublayersCollectionImpl<WMSSublayerImpl> {
         return this.#sublayers;
@@ -148,6 +151,12 @@ class WMSSublayerImpl extends AbstractLayerBase implements Sublayer {
             throw new Error(`WMS sublayer ${this.id} has not been attached to its parent yet.`);
         }
         return parentLayer;
+    }
+    getLegend(): string | undefined {
+        //TODO async
+        const olMap = this.map.olMap;
+        const res = olMap.getView().getResolution();
+        return this.#parentLayer?.__source.getLegendUrl(res, { LAYER: this.name });
     }
 
     /**

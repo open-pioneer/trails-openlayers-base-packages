@@ -169,7 +169,7 @@ export interface Layer<AdditionalEvents = {}> extends LayerBase<AdditionalEvents
 /**
  * Represents a sublayer of another layer.
  */
-export interface Sublayer extends LayerBase {
+export interface Sublayer extends LayerBase, LayerLegend {
     /**
      * The direct parent of this layer instance.
      * This can either be the parent layer or another sublayer.
@@ -180,6 +180,10 @@ export interface Sublayer extends LayerBase {
      * The parent layer that owns this sublayer.
      */
     readonly parentLayer: Layer;
+}
+
+export interface LayerLegend {
+    getLegend?(): string | undefined;
 }
 
 /**

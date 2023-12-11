@@ -151,8 +151,10 @@ function LegendContent(props: { layer: LegendLayer; showBaseLayers: boolean }) {
     } else if (legendAttributes?.imageUrl) {
         renderedComponent = <LegendImage layer={layer} legendAttributes={legendAttributes} />;
     } else {
-        // TODO: implement logic for #204 in own if else
-        renderedComponent = undefined;
+        if ("parentLayer" in layer && layer.sublayers?.getSublayers().length === 0) {
+            layer.updateAttributes({ legend: { imageUrl: layer.getLegend?.() } });
+            renderedComponent = <LegendImage layer={layer} legendAttributes={legendAttributes} />;
+        }
     }
 
     const isBaseLayer = !("parentLayer" in layer) && layer.isBaseLayer;
@@ -165,9 +167,7 @@ function LegendContent(props: { layer: LegendLayer; showBaseLayers: boolean }) {
             ) : null}
             {renderedComponent}
         </Box>
-    ) : (
-        renderedComponent
-    );
+    ) : undefined;
 }
 
 function LegendImage(props: {
