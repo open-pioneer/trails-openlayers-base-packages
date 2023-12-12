@@ -6,3 +6,4 @@ messages:
   error: "Beim Erstellen des Karteninhalts ist ein Fehler aufgetreten."
   toolsLabel: "Kartenwerkzeuge"
   hideAllLayers: "Alle Karteninhalte ausblenden"
+  collapseGroups: "Gruppen einklappen"

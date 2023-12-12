@@ -6,3 +6,4 @@ messages:
   error: "Error while creating map content."
   toolsLabel: "Map tools"
   hideAllLayers: "Hide all layers"
+  collapseGroups: "Collapse groups"

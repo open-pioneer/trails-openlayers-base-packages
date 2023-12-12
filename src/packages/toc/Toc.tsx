@@ -12,7 +12,7 @@ import {
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, useId } from "react";
 import { LayerList } from "./LayerList";
-import { TocTools } from "./TocTools";
+import { TocTools, TocToolsProps } from "./TocTools";
 
 /**
  * Props supported by the {@link Toc} component.
@@ -40,6 +40,12 @@ export interface TocProps extends CommonComponentProps {
      * Property "mapId" is not applied.
      */
     basemapSwitcherProps?: Omit<BasemapSwitcherProps, "mapId">;
+
+    /**
+     * Properties for the embedded toc tool component.
+     * Property "mapId" is not applied.
+     */
+    tocToolsProps?: Omit<TocToolsProps, "mapId">;
 }
 
 const PADDING = 2;
@@ -50,7 +56,13 @@ const PADDING = 2;
 export const Toc: FC<TocProps> = (props: TocProps) => {
     const intl = useIntl();
 
-    const { mapId, showTocTools = false, showBasemapSwitcher = true, basemapSwitcherProps } = props;
+    const {
+        mapId,
+        showTocTools = false,
+        tocToolsProps,
+        showBasemapSwitcher = true,
+        basemapSwitcherProps
+    } = props;
     const { containerProps } = useCommonComponentProps("toc", props);
     const basemapsHeadingId = useId();
     const operationalLayersHeadingId = useId();
@@ -94,7 +106,7 @@ export const Toc: FC<TocProps> = (props: TocProps) => {
                                         })}
                                     </Text>
                                     <Spacer />
-                                    {showTocTools && <TocTools map={state.map!} />}
+                                    {showTocTools && <TocTools mapId={mapId} {...tocToolsProps} />}
                                 </Flex>
                             </SectionHeading>
                         }

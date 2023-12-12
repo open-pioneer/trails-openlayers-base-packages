@@ -121,6 +121,10 @@ export function AppUI() {
                                                 <Toc
                                                     mapId={MAP_ID}
                                                     showTocTools={true}
+                                                    tocToolsProps={{
+                                                        showHideAllLayers: true,
+                                                        showCollapseGroups: false
+                                                    }}
                                                     basemapSwitcherProps={{
                                                         allowSelectingEmptyBasemap: true
                                                     }}
