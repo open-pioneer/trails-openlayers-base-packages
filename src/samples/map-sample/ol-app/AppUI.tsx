@@ -3,7 +3,7 @@
 import { Box, Divider, Flex } from "@open-pioneer/chakra-integration";
 import { CoordinateViewer } from "@open-pioneer/coordinate-viewer";
 import { Geolocation } from "@open-pioneer/geolocation";
-import { MapAnchor, MapContainer, useMapModel } from "@open-pioneer/map";
+import { Layer, MapAnchor, MapContainer, useMapModel } from "@open-pioneer/map";
 import { InitialExtent, ZoomIn, ZoomOut } from "@open-pioneer/map-navigation";
 import { Measurement } from "@open-pioneer/measurement";
 import { Notifier } from "@open-pioneer/notifier";
@@ -17,19 +17,16 @@ import { Toc } from "@open-pioneer/toc";
 import TileLayer from "ol/layer/Tile.js";
 import OSM from "ol/source/OSM.js";
 import { useIntl, useService } from "open-pioneer:react-hooks";
-import { useId, useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useState } from "react";
 import { PiListLight, PiMapTrifold, PiRulerLight, PiSelectionPlusBold } from "react-icons/pi";
 import { MAP_ID } from "./MapConfigProviderImpl";
 import { PhotonGeocoder } from "./sources/searchSources";
-import { FakePointSelectionSource } from "./sources/selectionSources";
+import { FakePointSelectionSource, VectorLayerSelectionSource } from "./sources/selectionSources";
 import { SelectionCompleteEvent } from "@open-pioneer/selection/Selection";
+import VectorLayer from "ol/layer/Vector";
+import type { SelectionSource } from "@open-pioneer/selection";
 
 const sources = [new PhotonGeocoder("Photon Geocoder", ["city", "street"])];
-const selectionSources = [
-    new FakePointSelectionSource("Source 1", "available"),
-    new FakePointSelectionSource("Source 2", "available"),
-    new FakePointSelectionSource("Source 3", "unavailable")
-];
 
 type InteractionType = "measurement" | "selection" | undefined;
 
@@ -43,6 +40,45 @@ export function AppUI() {
     const [showOverviewMap, setShowOverviewMap] = useState<boolean>(true);
     const [showToc, setShowToc] = useState<boolean>(true);
     const [currentInteractionType, setCurrentInteractionType] = useState<InteractionType>();
+    const [selectionSources, setSelectionSources] = useState<SelectionSource[]>([
+        new FakePointSelectionSource("Fake Source Points 1", "available"),
+        new FakePointSelectionSource("Fake Source Points 2", "unavailable")
+    ]);
+    const [selectionLayer, setSelectionLayer] = useState<Layer>();
+
+    // TODO quite big... maybe outsource to hook if possible?
+    useEffect(() => {
+        if (!map) {
+            return;
+        }
+        setSelectionLayer(
+            map.layers
+                .getOperationalLayers()
+                .find((opLayer) => opLayer.title === "Kindertagesstätten")
+        );
+        // TODO: Missing generic VectorLayer<VectorSource>?
+        if (!(selectionLayer?.olLayer instanceof VectorLayer)) return;
+        const sourceAvailable = selectionLayer.visible ? "available" : "unavailable";
+        const layerSelectionSource = new VectorLayerSelectionSource(
+            selectionLayer.olLayer,
+            selectionLayer.title,
+            sourceAvailable
+        );
+        const eventHandler = selectionLayer.on("changed:visible", () => {
+            layerSelectionSource.status = selectionLayer.visible ? "available" : "unavailable";
+            // TODO: Maybe do not remove highlighting at all. Managing different sources maybe complicated
+            if (!selectionLayer.visible) map.removeHighlight();
+        });
+        setSelectionSources((prev) => {
+            if (!prev.includes(layerSelectionSource)) {
+                prev.unshift(layerSelectionSource);
+            }
+            return prev;
+        });
+        return () => {
+            eventHandler.destroy();
+        };
+    }, [map, selectionLayer]);
 
     function toggleInteractionType(type: InteractionType) {
         if (type === currentInteractionType) {

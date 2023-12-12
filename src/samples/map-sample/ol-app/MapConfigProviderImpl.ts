@@ -8,6 +8,7 @@ import OSM from "ol/source/OSM";
 import VectorSource from "ol/source/Vector";
 import WMTS from "ol/source/WMTS";
 import WMTSTileGrid from "ol/tilegrid/WMTS";
+import { Circle, Fill, Style } from "ol/style";
 
 export const MAP_ID = "main";
 
@@ -151,7 +152,13 @@ function createKitasLayer() {
     });
 
     return new VectorLayer({
-        source: geojsonSource
+        source: geojsonSource,
+        style: new Style({
+            image: new Circle({
+                fill: new Fill({ color: "blue" }),
+                radius: 4
+            })
+        })
     });
 }
 
