@@ -84,26 +84,19 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
     };
 
     const { options, selectedLayer } = useMemo(() => {
-        const emptyOption: SelectOption = { value: NO_BASEMAP_ID, layer: undefined };
         const options: SelectOption[] = baseLayers.map<SelectOption>((layer) => {
             return { value: layer.id, layer: layer };
         });
 
-        const defaultLayer = options.find(
-            (option) =>
-                option.layer !== undefined &&
-                option.layer.visible &&
-                option.layer.loadState !== "error"
-        );
-        if (allowSelectingEmptyBasemap || defaultLayer == undefined) {
+        const activeBaseLayer = map?.layers.getActiveBaseLayer();
+        if (allowSelectingEmptyBasemap || activeBaseLayer == undefined) {
+            const emptyOption: SelectOption = { value: NO_BASEMAP_ID, layer: undefined };
             options.push(emptyOption);
         }
 
-        // TODO: I think the selected option chosen here can be inconsistent with the actually activated base map.
-        // It would be smarter to always use the activated basemap here, and have the correct logic in the map model.
-        const selectedLayer: SelectOption = defaultLayer === undefined ? emptyOption : defaultLayer;
+        const selectedLayer = options.filter((l) => l.layer === activeBaseLayer)[0];
         return { options, selectedLayer };
-    }, [allowSelectingEmptyBasemap, baseLayers]);
+    }, [allowSelectingEmptyBasemap, baseLayers, map?.layers]);
 
     const components = useMemo(() => {
         return {
