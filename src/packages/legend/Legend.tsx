@@ -176,9 +176,11 @@ function LegendImage(props: {
     const { layer, legendAttributes } = props;
 
     return (
-        <Box>
+        <Box overflowY="auto">
             <Text>{layer.title}</Text>
             <Image
+                maxW="none"
+                maxH="none"
                 src={legendAttributes?.imageUrl}
                 alt={intl.formatMessage({ id: "altLabel" }, { layerName: layer.title })}
                 className={"legend-item__image"}
