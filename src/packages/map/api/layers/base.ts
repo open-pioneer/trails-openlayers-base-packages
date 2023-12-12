@@ -4,7 +4,6 @@ import type { EventSource } from "@open-pioneer/core";
 import type OlBaseLayer from "ol/layer/Base";
 import type { MapModel } from "../MapModel";
 import type { LayerRetrievalOptions } from "../shared";
-import { SimpleLayerConfig } from "./SimpleLayer";
 
 /** Events emitted by the {@link Layer} and other layer types. */
 export interface LayerBaseEvents {
@@ -19,8 +18,9 @@ export interface LayerBaseEvents {
 
 /** The load state of a layer. */
 export type LayerLoadState = "not-loaded" | "loading" | "loaded" | "error";
-/** Custom function to check the state of a layer and returning a {@link LayerLoadState} */
-export type HealthCheckFunction = (config: SimpleLayerConfig) => Promise<LayerLoadState>;
+
+/** Custom function to check the state of a layer and returning a "loaded" or "error". */
+export type HealthCheckFunction = (layer: LayerConfig) => Promise<"loaded" | "error">;
 
 /**
  * Configuration options supported by all layer types (layers and sublayers).
@@ -145,8 +145,8 @@ export interface LayerConfig extends LayerBaseConfig {
 
     /**
      * Optional to check the availability of the layer. It is possible to provide
-     * * either a URL which indicates the state of the service
-     * * or a {@link HealthCheckFunction} performing a custom check and returning the state
+     * either a URL which indicates the state of the service
+     * or a {@link HealthCheckFunction} performing a custom check and returning the state
      */
     healthCheck?: string | HealthCheckFunction;
 }

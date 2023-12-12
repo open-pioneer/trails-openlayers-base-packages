@@ -259,24 +259,19 @@ function useSublayers(layer: LayerBase): Sublayer[] | undefined {
 
 /** Returns the layers current state. */
 function useLoadState(layer: TocLayer): string {
+    // for sublayers, use the state of the parent
+    const target = "parentLayer" in layer ? layer.parentLayer : layer;
     const subscribe = useCallback(
         (cb: () => void) => {
-            const resource = layer.on("changed:loadState", cb);
+            const resource = target.on("changed:loadState", cb);
             return () => resource.destroy();
         },
-        [layer]
+        [target]
     );
 
     const getSnapshot = useCallback(() => {
-        if ("loadState" in layer) {
-            return layer.loadState;
-        } else if ("parentLayer" in layer) {
-            // for sublayers, use the state of the parent
-            return layer.parentLayer.loadState;
-        } else {
-            return "loaded";
-        }
-    }, [layer]);
+        return target.loadState;
+    }, [target]);
 
     return useSyncExternalStore(subscribe, getSnapshot);
 }

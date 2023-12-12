@@ -36,6 +36,7 @@ export abstract class AbstractLayer<AdditionalEvents = {}>
         this.#healthCheck = config.healthCheck;
 
         const { initial: initialState, resource: stateWatchResource } = watchLoadState(
+            this.id,
             config,
             (state) => {
                 this.#loadState = state;
@@ -113,28 +114,8 @@ export abstract class AbstractLayer<AdditionalEvents = {}>
     }
 }
 
-function healthCheck(config: SimpleLayerConfig): Promise<LayerLoadState> {
-    return new Promise((resolve, reject) => {
-        if (!("healthCheck" in config)) {
-            resolve("loaded");
-        }
-
-        if (typeof config.healthCheck === "function") {
-            config.healthCheck(config).then((result) => resolve(result));
-        } else if (typeof config.healthCheck === "string") {
-            // TODO replace by fetch from HttpService
-            fetch(config.healthCheck)
-                .then((response) => {
-                    response.ok ? resolve("loaded") : resolve("error");
-                })
-                .catch(() => resolve("error"));
-        } else {
-            reject();
-        }
-    });
-}
-
 function watchLoadState(
+    layerId: string,
     config: SimpleLayerConfig,
     onChange: (newState: LayerLoadState) => void
 ): { initial: LayerLoadState; resource: Resource } {
@@ -161,7 +142,7 @@ function watchLoadState(
     // custom health check not needed when OL already returning an error state
     if (currentOlLayerState !== "error") {
         // health check only once during initialization
-        healthCheck(config).then((state: LayerLoadState) => {
+        healthCheck(layerId, config).then((state: LayerLoadState) => {
             currentHealthState = state;
             updateState();
         });
@@ -204,6 +185,41 @@ function watchLoadState(
             }
         }
     };
+}
+
+async function healthCheck(layerId: string, config: SimpleLayerConfig): Promise<LayerLoadState> {
+    const healthCheck = config.healthCheck;
+    if (healthCheck == null) {
+        return "loaded";
+    }
+
+    let healthCheckFn: HealthCheckFunction;
+    if (typeof healthCheck === "function") {
+        healthCheckFn = healthCheck;
+    } else if (typeof healthCheck === "string") {
+        healthCheckFn = async () => {
+            // TODO replace by fetch from HttpService
+            const response = await fetch(healthCheck);
+            if (response.ok) {
+                return "loaded";
+            }
+            LOG.warn(`Health check failed for layer '${layerId}' (http status ${response.status})`);
+            return "error";
+        };
+    } else {
+        LOG.error(
+            `Unexpected object for 'healthCheck' parameter of layer '${layerId}'`,
+            healthCheck
+        );
+        return "error";
+    }
+
+    try {
+        return await healthCheckFn(config);
+    } catch (e) {
+        LOG.warn(`Health check failed for layer '${layerId}'`, e);
+        return "error";
+    }
 }
 
 function mapState(state: OlSourceState | undefined): LayerLoadState {

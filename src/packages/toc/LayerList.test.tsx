@@ -17,7 +17,7 @@ import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
 import { expect, it } from "vitest";
 import { LayerList } from "./LayerList";
-import { SimpleLayer, WMSLayer } from "@open-pioneer/map";
+import { SimpleLayer } from "@open-pioneer/map";
 
 it("should show layers in the correct order", async () => {
     const { mapId, registry } = await setupMap({
