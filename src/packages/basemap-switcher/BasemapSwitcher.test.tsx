@@ -40,10 +40,7 @@ it("should successfully create a basemap switcher component", async () => {
 
     // basemap switcher is mounted
     const { switcherDiv, switcherSelect } = await waitForBasemapSwitcher();
-    // open dropdown to include options in snapshot; react-select creates list of options in dom after opening selection
-    act(() => {
-        fireEvent.keyDown(switcherSelect, { key: "ArrowDown" });
-    });
+    showDropdown(switcherSelect);
     expect(switcherDiv).toMatchSnapshot();
 
     // check basemap switcher box and select is available
@@ -86,30 +83,26 @@ it("should successfully select a basemap from basemap switcher", async () => {
 
     // basemap switcher is mounted
     const { switcherSelect } = await waitForBasemapSwitcher();
+    showDropdown(switcherSelect);
 
-    act(() => {
-        fireEvent.keyDown(switcherSelect, { key: "ArrowDown" });
-    });
-    let options = switcherSelect.getElementsByClassName("basemap-switcher-option");
-    const optionsOsm = Array.from(options).filter((option) => option.textContent === "OSM");
-    if (!optionsOsm[0]) {
+    let options = getCurrentOptions(switcherSelect);
+    const osmOption = options.find((option) => option.textContent === "OSM");
+    if (!osmOption) {
         throw new Error("Layer OSM missing in basemap options");
     }
-    await user.click(optionsOsm[0]);
+    await user.click(osmOption);
+
     const firstActiveBaseLayer = map.layers.getActiveBaseLayer();
     expect(firstActiveBaseLayer?.id).toBe("osm");
 
-    act(() => {
-        fireEvent.keyDown(switcherSelect, { key: "ArrowDown" });
-    });
-    options = switcherSelect.getElementsByClassName("basemap-switcher-option");
-    const optionsTopPlus = Array.from(options).filter(
-        (option) => option.textContent === "TopPlus Open"
-    );
-    if (!optionsTopPlus[0]) {
+    showDropdown(switcherSelect);
+    options = getCurrentOptions(switcherSelect);
+    const topPlusOption = options.find((option) => option.textContent === "TopPlus Open");
+    if (!topPlusOption) {
         throw new Error("Layer topplus-open missing in basemap options");
     }
-    await user.click(optionsTopPlus[0]);
+    await user.click(topPlusOption);
+
     const nextActiveBaseLayer = map.layers.getActiveBaseLayer();
     expect(nextActiveBaseLayer?.id).toBe("topplus-open");
 });
@@ -133,11 +126,7 @@ it("should allow selecting 'no basemap' when enabled", async () => {
 
     expect(switcherSelect.textContent).toBe("OSM");
     expect(map.layers.getActiveBaseLayer()?.id).toBe("osm");
-
-    // open dropdown to include options in snapshot; react-select creates list of options in dom after opening selection
-    act(() => {
-        fireEvent.keyDown(switcherSelect, { key: "ArrowDown" });
-    });
+    showDropdown(switcherSelect);
 
     expect(switcherSelect).toMatchInlineSnapshot(`
       <div
@@ -259,18 +248,13 @@ it("should allow selecting 'no basemap' when enabled", async () => {
       </div>
     `);
 
-    act(() => {
-        fireEvent.keyDown(switcherSelect, { key: "ArrowDown" });
-    });
-
-    const options = switcherSelect.getElementsByClassName("basemap-switcher-option");
-    const optionsBasemap = Array.from(options).filter(
-        (option) => option.textContent === "emptyBasemapLabel"
-    );
-    if (!optionsBasemap[0]) {
+    showDropdown(switcherSelect);
+    const options = getCurrentOptions(switcherSelect);
+    const optionsBasemap = options.find((option) => option.textContent === "emptyBasemapLabel");
+    if (!optionsBasemap) {
         throw new Error("Layer Basemap missing in basemap options");
     }
-    await user.click(optionsBasemap[0]);
+    await user.click(optionsBasemap);
 
     expect(switcherSelect.textContent).toBe("emptyBasemapLabel");
     expect(map.layers.getActiveBaseLayer()).toBe(undefined);
@@ -295,10 +279,7 @@ it("should not allow selecting 'no basemap' by default", async () => {
     expect(switcherSelect.textContent).toBe("OSM");
     expect(map.layers.getActiveBaseLayer()?.id).toBe("osm");
 
-    // open dropdown to include options in snapshot; react-select creates list of options in dom after opening selection
-    act(() => {
-        fireEvent.keyDown(switcherSelect, { key: "ArrowDown" });
-    });
+    showDropdown(switcherSelect);
 
     expect(switcherSelect).toMatchInlineSnapshot(`
       <div
@@ -410,17 +391,15 @@ it("should not allow selecting 'no basemap' by default", async () => {
       </div>
     `);
 
-    act(() => {
-        fireEvent.keyDown(switcherSelect, { key: "ArrowDown" });
-    });
-
-    const options = switcherSelect.getElementsByClassName("basemap-switcher-option");
-    const optionsEmptyBasemap = Array.from(options).filter(
+    showDropdown(switcherSelect);
+    const options = getCurrentOptions(switcherSelect);
+    const optionsEmptyBasemap = options.filter(
         (option) => option.textContent === "emptyBasemapLabel"
     );
     expect(optionsEmptyBasemap).toHaveLength(0);
 });
 
+// TODO: This behavior should be tested in the map model (-> the switcher is only concerned with the current base map, and the map model selects a "working" one)
 it("should successfully select emptyBasemap, if all configured basemaps are configured as not visible or have error state", async () => {
     const b2Source = new BkgTopPlusOpen();
     b2Source.setState("error");
@@ -643,10 +622,9 @@ it("should update when a new basemap is registered", async () => {
 
     // basemap switcher is mounted
     const { switcherSelect } = await waitForBasemapSwitcher();
-    act(() => {
-        fireEvent.keyDown(switcherSelect, { key: "ArrowDown" });
-    });
-    let options = switcherSelect.getElementsByClassName("basemap-switcher-option");
+    showDropdown(switcherSelect);
+
+    let options = getCurrentOptions(switcherSelect);
     expect(options.length).toBe(2);
 
     act(() => {
@@ -659,7 +637,7 @@ it("should update when a new basemap is registered", async () => {
         map.layers.addLayer(layer);
     });
 
-    options = switcherSelect.getElementsByClassName("basemap-switcher-option");
+    options = getCurrentOptions(switcherSelect);
     expect(options.length).toBe(3);
 
     expect(switcherSelect).toMatchInlineSnapshot(`
@@ -892,8 +870,8 @@ describe("should successfully select the correct basemap from basemap switcher",
 });
 
 it("should deactivate unavailable layers for selection", async () => {
-    const source1 = new OSM();
-    const source2 = new BkgTopPlusOpen();
+    const osmSource = new OSM();
+    const topPlusSource = new BkgTopPlusOpen();
 
     const { mapId, registry } = await setupMap({
         layers: [
@@ -903,7 +881,7 @@ it("should deactivate unavailable layers for selection", async () => {
                 isBaseLayer: true,
                 visible: true,
                 olLayer: new TileLayer({
-                    source: source1
+                    source: osmSource
                 })
             },
             {
@@ -912,7 +890,7 @@ it("should deactivate unavailable layers for selection", async () => {
                 isBaseLayer: true,
                 visible: true,
                 olLayer: new TileLayer({
-                    source: source2
+                    source: topPlusSource
                 })
             }
         ]
@@ -932,11 +910,7 @@ it("should deactivate unavailable layers for selection", async () => {
     let activeBaseLayer = map.layers.getActiveBaseLayer();
     expect(activeBaseLayer?.id).toBe("osm");
 
-    // open dropdown to include options in snapshot; react-select creates list of options in dom after opening selection
-    act(() => {
-        fireEvent.keyDown(switcherSelect, { key: "ArrowDown" });
-    });
-
+    showDropdown(switcherSelect);
     expect(switcherSelect).toMatchInlineSnapshot(`
       <div
         class="basemap-switcher-select react-select--has-value css-79elbk"
@@ -1048,7 +1022,7 @@ it("should deactivate unavailable layers for selection", async () => {
     `);
 
     act(() => {
-        source1.setState("error");
+        osmSource.setState("error");
     });
 
     // switch active layer
@@ -1243,11 +1217,7 @@ it("should update the ui when a layer title changes", async () => {
     const activeBaseLayer = map.layers.getActiveBaseLayer();
     expect(activeBaseLayer?.id).toBe("osm");
 
-    // open dropdown to include options in snapshot; react-select creates list of options in dom after opening selection
-    act(() => {
-        fireEvent.keyDown(switcherSelect, { key: "ArrowDown" });
-    });
-
+    showDropdown(switcherSelect);
     expect(switcherSelect).toMatchInlineSnapshot(`
       <div
         class="basemap-switcher-select react-select--has-value css-79elbk"
@@ -1475,6 +1445,19 @@ it("should update the ui when a layer title changes", async () => {
     `);
 });
 
+function showDropdown(switcherSelect: HTMLElement) {
+    // open dropdown to include options in snapshot; react-select creates list of options in dom after opening selection
+    act(() => {
+        fireEvent.keyDown(switcherSelect, { key: "ArrowDown" });
+    });
+}
+
+function getCurrentOptions(switcherSelect: HTMLElement) {
+    return Array.from(
+        switcherSelect.getElementsByClassName("basemap-switcher-option")
+    ) as HTMLElement[];
+}
+
 async function waitForBasemapSwitcher() {
     const { switcherDiv, switcherSelect } = await waitFor(async () => {
         const switcherDiv: HTMLDivElement | null =
@@ -1483,7 +1466,7 @@ async function waitForBasemapSwitcher() {
             throw new Error("basemap switcher not rendered");
         }
 
-        const switcherSelect: HTMLSelectElement | null = switcherDiv.querySelector(
+        const switcherSelect: HTMLElement | null = switcherDiv.querySelector(
             ".basemap-switcher-select"
         );
         if (!switcherSelect) {
