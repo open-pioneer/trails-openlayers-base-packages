@@ -7,7 +7,7 @@ exports[`should successfully create a basemap switcher component 1`] = `
   data-theme="light"
 >
   <div
-    class="basemap-switcher-select css-79elbk"
+    class="basemap-switcher-select react-select--has-value css-79elbk"
     data-theme="light"
   >
     <span
@@ -21,15 +21,15 @@ exports[`should successfully create a basemap switcher component 1`] = `
       class="css-1f43avz-a11yText-A11yText"
     />
     <div
-      class=" css-i2418r"
+      class="react-select__control react-select__control--menu-is-open css-i2418r"
       data-theme="light"
     >
       <div
-        class=" css-j93siq"
+        class="react-select__value-container react-select__value-container--has-value css-j93siq"
         data-theme="light"
       >
         <div
-          class=" css-1xa1gs2"
+          class="react-select__single-value css-1xa1gs2"
           data-theme="light"
         >
           emptyBasemapLabel
@@ -50,17 +50,17 @@ exports[`should successfully create a basemap switcher component 1`] = `
         />
       </div>
       <div
-        class=" css-hfbj6y"
+        class="react-select__indicators css-hfbj6y"
         data-theme="light"
       >
         <hr
           aria-orientation="vertical"
-          class="chakra-divider css-1i6c5ox"
+          class="chakra-divider react-select__indicator-separator css-1i6c5ox"
           data-theme="light"
         />
         <div
           aria-hidden="true"
-          class=" css-xq12md"
+          class="react-select__indicator react-select__dropdown-indicator css-xq12md"
           data-theme="light"
         >
           <svg
@@ -80,18 +80,18 @@ exports[`should successfully create a basemap switcher component 1`] = `
       </div>
     </div>
     <div
-      class=" css-ky7590"
+      class="react-select__menu css-ky7590"
       data-theme="light"
       id="react-select-2-listbox"
     >
       <div
-        class=" css-1h5avke"
+        class="react-select__menu-list css-1h5avke"
         data-theme="light"
         role="listbox"
       >
         <div
           aria-selected="true"
-          class="basemap-switcher-option css-e8c6zu"
+          class="basemap-switcher-option react-select__option react-select__option--is-focused react-select__option--is-selected css-e8c6zu"
           data-focus="true"
           data-theme="light"
           id="react-select-2-option-0"

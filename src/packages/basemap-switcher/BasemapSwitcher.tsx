@@ -3,7 +3,7 @@
 import { Box, Tooltip } from "@open-pioneer/chakra-integration";
 import { Layer, MapModel, useMapModel } from "@open-pioneer/map";
 import { useIntl } from "open-pioneer:react-hooks";
-import { FC, useCallback, useRef, useSyncExternalStore } from "react";
+import { FC, useCallback, useMemo, useRef, useSyncExternalStore } from "react";
 import { Select, OptionProps, chakraComponents } from "chakra-react-select";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { FiAlertTriangle } from "react-icons/fi";
@@ -83,19 +83,33 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
         map?.layers.activateBaseLayer(layerId === NO_BASEMAP_ID ? undefined : layerId);
     };
 
-    const emptyOption: SelectOption = { value: NO_BASEMAP_ID, layer: undefined };
-    const options: SelectOption[] = baseLayers.map<SelectOption>((layer) => {
-        return { value: layer.id, layer: layer };
-    });
+    const { options, selectedLayer } = useMemo(() => {
+        const emptyOption: SelectOption = { value: NO_BASEMAP_ID, layer: undefined };
+        const options: SelectOption[] = baseLayers.map<SelectOption>((layer) => {
+            return { value: layer.id, layer: layer };
+        });
 
-    const defaultLayer = options.find(
-        (option) =>
-            option.layer !== undefined && option.layer.visible && option.layer.loadState !== "error"
-    );
-    if (allowSelectingEmptyBasemap || defaultLayer == undefined) {
-        options.push(emptyOption);
-    }
-    const selectedLayer: SelectOption = defaultLayer === undefined ? emptyOption : defaultLayer;
+        const defaultLayer = options.find(
+            (option) =>
+                option.layer !== undefined &&
+                option.layer.visible &&
+                option.layer.loadState !== "error"
+        );
+        if (allowSelectingEmptyBasemap || defaultLayer == undefined) {
+            options.push(emptyOption);
+        }
+
+        // TODO: I think the selected option chosen here can be inconsistent with the actually activated base map.
+        // It would be smarter to always use the activated basemap here, and have the correct logic in the map model.
+        const selectedLayer: SelectOption = defaultLayer === undefined ? emptyOption : defaultLayer;
+        return { options, selectedLayer };
+    }, [allowSelectingEmptyBasemap, baseLayers]);
+
+    const components = useMemo(() => {
+        return {
+            Option: BasemapSelectOption
+        };
+    }, []);
 
     return (
         <Box {...containerProps}>
@@ -104,6 +118,7 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
                     aria-label={ariaLabel}
                     aria-labelledby={ariaLabelledBy}
                     className="basemap-switcher-select"
+                    classNamePrefix="react-select"
                     value={selectedLayer}
                     onChange={(option) => option && activateLayer(option.value)}
                     isClearable={false}
@@ -112,12 +127,10 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
                         option.layer !== undefined ? option.layer.title : emptyBasemapLabel
                     }
                     isOptionDisabled={(option) => option?.layer?.loadState === "error"}
-                    components={{ Option: BasemapSelectOption }}
+                    components={components}
                     options={options}
                 />
-            ) : (
-                ""
-            )}
+            ) : null}
         </Box>
     );
 };

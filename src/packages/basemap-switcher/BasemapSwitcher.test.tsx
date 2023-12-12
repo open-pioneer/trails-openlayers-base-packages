@@ -141,7 +141,7 @@ it("should allow selecting 'no basemap' when enabled", async () => {
 
     expect(switcherSelect).toMatchInlineSnapshot(`
       <div
-        class="basemap-switcher-select css-79elbk"
+        class="basemap-switcher-select react-select--has-value css-79elbk"
         data-theme="light"
       >
         <span
@@ -155,15 +155,15 @@ it("should allow selecting 'no basemap' when enabled", async () => {
           class="css-1f43avz-a11yText-A11yText"
         />
         <div
-          class=" css-i2418r"
+          class="react-select__control react-select__control--menu-is-open css-i2418r"
           data-theme="light"
         >
           <div
-            class=" css-j93siq"
+            class="react-select__value-container react-select__value-container--has-value css-j93siq"
             data-theme="light"
           >
             <div
-              class=" css-1xa1gs2"
+              class="react-select__single-value css-1xa1gs2"
               data-theme="light"
             >
               OSM
@@ -184,17 +184,17 @@ it("should allow selecting 'no basemap' when enabled", async () => {
             />
           </div>
           <div
-            class=" css-hfbj6y"
+            class="react-select__indicators css-hfbj6y"
             data-theme="light"
           >
             <hr
               aria-orientation="vertical"
-              class="chakra-divider css-1i6c5ox"
+              class="chakra-divider react-select__indicator-separator css-1i6c5ox"
               data-theme="light"
             />
             <div
               aria-hidden="true"
-              class=" css-xq12md"
+              class="react-select__indicator react-select__dropdown-indicator css-xq12md"
               data-theme="light"
             >
               <svg
@@ -214,18 +214,18 @@ it("should allow selecting 'no basemap' when enabled", async () => {
           </div>
         </div>
         <div
-          class=" css-ky7590"
+          class="react-select__menu css-ky7590"
           data-theme="light"
           id="react-select-5-listbox"
         >
           <div
-            class=" css-1h5avke"
+            class="react-select__menu-list css-1h5avke"
             data-theme="light"
             role="listbox"
           >
             <div
               aria-selected="true"
-              class="basemap-switcher-option css-e8c6zu"
+              class="basemap-switcher-option react-select__option react-select__option--is-focused react-select__option--is-selected css-e8c6zu"
               data-focus="true"
               data-theme="light"
               id="react-select-5-option-0"
@@ -236,7 +236,7 @@ it("should allow selecting 'no basemap' when enabled", async () => {
             </div>
             <div
               aria-selected="false"
-              class="basemap-switcher-option css-e8c6zu"
+              class="basemap-switcher-option react-select__option css-e8c6zu"
               data-theme="light"
               id="react-select-5-option-1"
               role="option"
@@ -246,7 +246,7 @@ it("should allow selecting 'no basemap' when enabled", async () => {
             </div>
             <div
               aria-selected="false"
-              class="basemap-switcher-option css-e8c6zu"
+              class="basemap-switcher-option react-select__option css-e8c6zu"
               data-theme="light"
               id="react-select-5-option-2"
               role="option"
@@ -302,7 +302,7 @@ it("should not allow selecting 'no basemap' by default", async () => {
 
     expect(switcherSelect).toMatchInlineSnapshot(`
       <div
-        class="basemap-switcher-select css-79elbk"
+        class="basemap-switcher-select react-select--has-value css-79elbk"
         data-theme="light"
       >
         <span
@@ -316,15 +316,15 @@ it("should not allow selecting 'no basemap' by default", async () => {
           class="css-1f43avz-a11yText-A11yText"
         />
         <div
-          class=" css-i2418r"
+          class="react-select__control react-select__control--menu-is-open css-i2418r"
           data-theme="light"
         >
           <div
-            class=" css-j93siq"
+            class="react-select__value-container react-select__value-container--has-value css-j93siq"
             data-theme="light"
           >
             <div
-              class=" css-1xa1gs2"
+              class="react-select__single-value css-1xa1gs2"
               data-theme="light"
             >
               OSM
@@ -345,17 +345,17 @@ it("should not allow selecting 'no basemap' by default", async () => {
             />
           </div>
           <div
-            class=" css-hfbj6y"
+            class="react-select__indicators css-hfbj6y"
             data-theme="light"
           >
             <hr
               aria-orientation="vertical"
-              class="chakra-divider css-1i6c5ox"
+              class="chakra-divider react-select__indicator-separator css-1i6c5ox"
               data-theme="light"
             />
             <div
               aria-hidden="true"
-              class=" css-xq12md"
+              class="react-select__indicator react-select__dropdown-indicator css-xq12md"
               data-theme="light"
             >
               <svg
@@ -375,18 +375,18 @@ it("should not allow selecting 'no basemap' by default", async () => {
           </div>
         </div>
         <div
-          class=" css-ky7590"
+          class="react-select__menu css-ky7590"
           data-theme="light"
           id="react-select-6-listbox"
         >
           <div
-            class=" css-1h5avke"
+            class="react-select__menu-list css-1h5avke"
             data-theme="light"
             role="listbox"
           >
             <div
               aria-selected="true"
-              class="basemap-switcher-option css-e8c6zu"
+              class="basemap-switcher-option react-select__option react-select__option--is-focused react-select__option--is-selected css-e8c6zu"
               data-focus="true"
               data-theme="light"
               id="react-select-6-option-0"
@@ -397,7 +397,7 @@ it("should not allow selecting 'no basemap' by default", async () => {
             </div>
             <div
               aria-selected="false"
-              class="basemap-switcher-option css-e8c6zu"
+              class="basemap-switcher-option react-select__option css-e8c6zu"
               data-theme="light"
               id="react-select-6-option-1"
               role="option"
@@ -471,7 +471,7 @@ it("should successfully select emptyBasemap, if all configured basemaps are conf
 
     expect(switcherSelect).toMatchInlineSnapshot(`
       <div
-        class="basemap-switcher-select css-79elbk"
+        class="basemap-switcher-select react-select--has-value css-79elbk"
         data-theme="light"
       >
         <span
@@ -485,15 +485,15 @@ it("should successfully select emptyBasemap, if all configured basemaps are conf
           class="css-1f43avz-a11yText-A11yText"
         />
         <div
-          class=" css-i2418r"
+          class="react-select__control react-select__control--menu-is-open css-i2418r"
           data-theme="light"
         >
           <div
-            class=" css-j93siq"
+            class="react-select__value-container react-select__value-container--has-value css-j93siq"
             data-theme="light"
           >
             <div
-              class=" css-1xa1gs2"
+              class="react-select__single-value css-1xa1gs2"
               data-theme="light"
             >
               emptyBasemapLabel
@@ -514,17 +514,17 @@ it("should successfully select emptyBasemap, if all configured basemaps are conf
             />
           </div>
           <div
-            class=" css-hfbj6y"
+            class="react-select__indicators css-hfbj6y"
             data-theme="light"
           >
             <hr
               aria-orientation="vertical"
-              class="chakra-divider css-1i6c5ox"
+              class="chakra-divider react-select__indicator-separator css-1i6c5ox"
               data-theme="light"
             />
             <div
               aria-hidden="true"
-              class=" css-xq12md"
+              class="react-select__indicator react-select__dropdown-indicator css-xq12md"
               data-theme="light"
             >
               <svg
@@ -544,18 +544,18 @@ it("should successfully select emptyBasemap, if all configured basemaps are conf
           </div>
         </div>
         <div
-          class=" css-ky7590"
+          class="react-select__menu css-ky7590"
           data-theme="light"
           id="react-select-7-listbox"
         >
           <div
-            class=" css-1h5avke"
+            class="react-select__menu-list css-1h5avke"
             data-theme="light"
             role="listbox"
           >
             <div
               aria-selected="false"
-              class="basemap-switcher-option css-e8c6zu"
+              class="basemap-switcher-option react-select__option css-e8c6zu"
               data-theme="light"
               id="react-select-7-option-0"
               role="option"
@@ -566,7 +566,7 @@ it("should successfully select emptyBasemap, if all configured basemaps are conf
             <div
               aria-disabled="true"
               aria-selected="false"
-              class="basemap-switcher-option css-e8c6zu"
+              class="basemap-switcher-option react-select__option react-select__option--is-disabled css-e8c6zu"
               data-theme="light"
               id="react-select-7-option-1"
               role="option"
@@ -613,7 +613,7 @@ it("should successfully select emptyBasemap, if all configured basemaps are conf
             </div>
             <div
               aria-selected="true"
-              class="basemap-switcher-option css-e8c6zu"
+              class="basemap-switcher-option react-select__option react-select__option--is-focused react-select__option--is-selected css-e8c6zu"
               data-focus="true"
               data-theme="light"
               id="react-select-7-option-2"
@@ -664,7 +664,7 @@ it("should update when a new basemap is registered", async () => {
 
     expect(switcherSelect).toMatchInlineSnapshot(`
       <div
-        class="basemap-switcher-select css-79elbk"
+        class="basemap-switcher-select react-select--has-value css-79elbk"
         data-theme="light"
       >
         <span
@@ -678,15 +678,15 @@ it("should update when a new basemap is registered", async () => {
           class="css-1f43avz-a11yText-A11yText"
         />
         <div
-          class=" css-i2418r"
+          class="react-select__control react-select__control--menu-is-open css-i2418r"
           data-theme="light"
         >
           <div
-            class=" css-j93siq"
+            class="react-select__value-container react-select__value-container--has-value css-j93siq"
             data-theme="light"
           >
             <div
-              class=" css-1xa1gs2"
+              class="react-select__single-value css-1xa1gs2"
               data-theme="light"
             >
               OSM
@@ -707,17 +707,17 @@ it("should update when a new basemap is registered", async () => {
             />
           </div>
           <div
-            class=" css-hfbj6y"
+            class="react-select__indicators css-hfbj6y"
             data-theme="light"
           >
             <hr
               aria-orientation="vertical"
-              class="chakra-divider css-1i6c5ox"
+              class="chakra-divider react-select__indicator-separator css-1i6c5ox"
               data-theme="light"
             />
             <div
               aria-hidden="true"
-              class=" css-xq12md"
+              class="react-select__indicator react-select__dropdown-indicator css-xq12md"
               data-theme="light"
             >
               <svg
@@ -737,18 +737,18 @@ it("should update when a new basemap is registered", async () => {
           </div>
         </div>
         <div
-          class=" css-ky7590"
+          class="react-select__menu css-ky7590"
           data-theme="light"
           id="react-select-8-listbox"
         >
           <div
-            class=" css-1h5avke"
+            class="react-select__menu-list css-1h5avke"
             data-theme="light"
             role="listbox"
           >
             <div
               aria-selected="true"
-              class="basemap-switcher-option css-e8c6zu"
+              class="basemap-switcher-option react-select__option react-select__option--is-focused react-select__option--is-selected css-e8c6zu"
               data-focus="true"
               data-theme="light"
               id="react-select-8-option-0"
@@ -759,7 +759,7 @@ it("should update when a new basemap is registered", async () => {
             </div>
             <div
               aria-selected="false"
-              class="basemap-switcher-option css-e8c6zu"
+              class="basemap-switcher-option react-select__option css-e8c6zu"
               data-theme="light"
               id="react-select-8-option-1"
               role="option"
@@ -769,7 +769,7 @@ it("should update when a new basemap is registered", async () => {
             </div>
             <div
               aria-selected="false"
-              class="basemap-switcher-option css-e8c6zu"
+              class="basemap-switcher-option react-select__option css-e8c6zu"
               data-theme="light"
               id="react-select-8-option-2"
               role="option"
@@ -939,7 +939,7 @@ it("should deactivate unavailable layers for selection", async () => {
 
     expect(switcherSelect).toMatchInlineSnapshot(`
       <div
-        class="basemap-switcher-select css-79elbk"
+        class="basemap-switcher-select react-select--has-value css-79elbk"
         data-theme="light"
       >
         <span
@@ -953,15 +953,15 @@ it("should deactivate unavailable layers for selection", async () => {
           class="css-1f43avz-a11yText-A11yText"
         />
         <div
-          class=" css-i2418r"
+          class="react-select__control react-select__control--menu-is-open css-i2418r"
           data-theme="light"
         >
           <div
-            class=" css-j93siq"
+            class="react-select__value-container react-select__value-container--has-value css-j93siq"
             data-theme="light"
           >
             <div
-              class=" css-1xa1gs2"
+              class="react-select__single-value css-1xa1gs2"
               data-theme="light"
             >
               OSM
@@ -982,17 +982,17 @@ it("should deactivate unavailable layers for selection", async () => {
             />
           </div>
           <div
-            class=" css-hfbj6y"
+            class="react-select__indicators css-hfbj6y"
             data-theme="light"
           >
             <hr
               aria-orientation="vertical"
-              class="chakra-divider css-1i6c5ox"
+              class="chakra-divider react-select__indicator-separator css-1i6c5ox"
               data-theme="light"
             />
             <div
               aria-hidden="true"
-              class=" css-xq12md"
+              class="react-select__indicator react-select__dropdown-indicator css-xq12md"
               data-theme="light"
             >
               <svg
@@ -1012,18 +1012,18 @@ it("should deactivate unavailable layers for selection", async () => {
           </div>
         </div>
         <div
-          class=" css-ky7590"
+          class="react-select__menu css-ky7590"
           data-theme="light"
           id="react-select-12-listbox"
         >
           <div
-            class=" css-1h5avke"
+            class="react-select__menu-list css-1h5avke"
             data-theme="light"
             role="listbox"
           >
             <div
               aria-selected="true"
-              class="basemap-switcher-option css-e8c6zu"
+              class="basemap-switcher-option react-select__option react-select__option--is-focused react-select__option--is-selected css-e8c6zu"
               data-focus="true"
               data-theme="light"
               id="react-select-12-option-0"
@@ -1034,7 +1034,7 @@ it("should deactivate unavailable layers for selection", async () => {
             </div>
             <div
               aria-selected="false"
-              class="basemap-switcher-option css-e8c6zu"
+              class="basemap-switcher-option react-select__option css-e8c6zu"
               data-theme="light"
               id="react-select-12-option-1"
               role="option"
@@ -1058,7 +1058,7 @@ it("should deactivate unavailable layers for selection", async () => {
     // option disabled, warning icon shown and selected option changed?
     expect(switcherSelect).toMatchInlineSnapshot(`
       <div
-        class="basemap-switcher-select css-79elbk"
+        class="basemap-switcher-select react-select--has-value css-79elbk"
         data-theme="light"
       >
         <span
@@ -1072,15 +1072,15 @@ it("should deactivate unavailable layers for selection", async () => {
           class="css-1f43avz-a11yText-A11yText"
         />
         <div
-          class=" css-i2418r"
+          class="react-select__control react-select__control--menu-is-open css-i2418r"
           data-theme="light"
         >
           <div
-            class=" css-j93siq"
+            class="react-select__value-container react-select__value-container--has-value css-j93siq"
             data-theme="light"
           >
             <div
-              class=" css-1xa1gs2"
+              class="react-select__single-value css-1xa1gs2"
               data-theme="light"
             >
               TopPlus Open
@@ -1101,17 +1101,17 @@ it("should deactivate unavailable layers for selection", async () => {
             />
           </div>
           <div
-            class=" css-hfbj6y"
+            class="react-select__indicators css-hfbj6y"
             data-theme="light"
           >
             <hr
               aria-orientation="vertical"
-              class="chakra-divider css-1i6c5ox"
+              class="chakra-divider react-select__indicator-separator css-1i6c5ox"
               data-theme="light"
             />
             <div
               aria-hidden="true"
-              class=" css-xq12md"
+              class="react-select__indicator react-select__dropdown-indicator css-xq12md"
               data-theme="light"
             >
               <svg
@@ -1131,19 +1131,19 @@ it("should deactivate unavailable layers for selection", async () => {
           </div>
         </div>
         <div
-          class=" css-ky7590"
+          class="react-select__menu css-ky7590"
           data-theme="light"
           id="react-select-12-listbox"
         >
           <div
-            class=" css-1h5avke"
+            class="react-select__menu-list css-1h5avke"
             data-theme="light"
             role="listbox"
           >
             <div
               aria-disabled="true"
               aria-selected="false"
-              class="basemap-switcher-option css-e8c6zu"
+              class="basemap-switcher-option react-select__option react-select__option--is-disabled react-select__option--is-focused css-e8c6zu"
               data-focus="true"
               data-theme="light"
               id="react-select-12-option-0"
@@ -1191,7 +1191,7 @@ it("should deactivate unavailable layers for selection", async () => {
             </div>
             <div
               aria-selected="true"
-              class="basemap-switcher-option css-e8c6zu"
+              class="basemap-switcher-option react-select__option react-select__option--is-selected css-e8c6zu"
               data-theme="light"
               id="react-select-12-option-1"
               role="option"
@@ -1250,7 +1250,7 @@ it("should update the ui when a layer title changes", async () => {
 
     expect(switcherSelect).toMatchInlineSnapshot(`
       <div
-        class="basemap-switcher-select css-79elbk"
+        class="basemap-switcher-select react-select--has-value css-79elbk"
         data-theme="light"
       >
         <span
@@ -1264,15 +1264,15 @@ it("should update the ui when a layer title changes", async () => {
           class="css-1f43avz-a11yText-A11yText"
         />
         <div
-          class=" css-i2418r"
+          class="react-select__control react-select__control--menu-is-open css-i2418r"
           data-theme="light"
         >
           <div
-            class=" css-j93siq"
+            class="react-select__value-container react-select__value-container--has-value css-j93siq"
             data-theme="light"
           >
             <div
-              class=" css-1xa1gs2"
+              class="react-select__single-value css-1xa1gs2"
               data-theme="light"
             >
               OSM
@@ -1293,17 +1293,17 @@ it("should update the ui when a layer title changes", async () => {
             />
           </div>
           <div
-            class=" css-hfbj6y"
+            class="react-select__indicators css-hfbj6y"
             data-theme="light"
           >
             <hr
               aria-orientation="vertical"
-              class="chakra-divider css-1i6c5ox"
+              class="chakra-divider react-select__indicator-separator css-1i6c5ox"
               data-theme="light"
             />
             <div
               aria-hidden="true"
-              class=" css-xq12md"
+              class="react-select__indicator react-select__dropdown-indicator css-xq12md"
               data-theme="light"
             >
               <svg
@@ -1323,18 +1323,18 @@ it("should update the ui when a layer title changes", async () => {
           </div>
         </div>
         <div
-          class=" css-ky7590"
+          class="react-select__menu css-ky7590"
           data-theme="light"
           id="react-select-13-listbox"
         >
           <div
-            class=" css-1h5avke"
+            class="react-select__menu-list css-1h5avke"
             data-theme="light"
             role="listbox"
           >
             <div
               aria-selected="true"
-              class="basemap-switcher-option css-e8c6zu"
+              class="basemap-switcher-option react-select__option react-select__option--is-focused react-select__option--is-selected css-e8c6zu"
               data-focus="true"
               data-theme="light"
               id="react-select-13-option-0"
@@ -1345,7 +1345,7 @@ it("should update the ui when a layer title changes", async () => {
             </div>
             <div
               aria-selected="false"
-              class="basemap-switcher-option css-e8c6zu"
+              class="basemap-switcher-option react-select__option css-e8c6zu"
               data-theme="light"
               id="react-select-13-option-1"
               role="option"
@@ -1366,7 +1366,7 @@ it("should update the ui when a layer title changes", async () => {
     // option disabled, warning icon shown and selected option changed?
     expect(switcherSelect).toMatchInlineSnapshot(`
       <div
-        class="basemap-switcher-select css-79elbk"
+        class="basemap-switcher-select react-select--has-value css-79elbk"
         data-theme="light"
       >
         <span
@@ -1380,15 +1380,15 @@ it("should update the ui when a layer title changes", async () => {
           class="css-1f43avz-a11yText-A11yText"
         />
         <div
-          class=" css-i2418r"
+          class="react-select__control react-select__control--menu-is-open css-i2418r"
           data-theme="light"
         >
           <div
-            class=" css-j93siq"
+            class="react-select__value-container react-select__value-container--has-value css-j93siq"
             data-theme="light"
           >
             <div
-              class=" css-1xa1gs2"
+              class="react-select__single-value css-1xa1gs2"
               data-theme="light"
             >
               OSM
@@ -1409,17 +1409,17 @@ it("should update the ui when a layer title changes", async () => {
             />
           </div>
           <div
-            class=" css-hfbj6y"
+            class="react-select__indicators css-hfbj6y"
             data-theme="light"
           >
             <hr
               aria-orientation="vertical"
-              class="chakra-divider css-1i6c5ox"
+              class="chakra-divider react-select__indicator-separator css-1i6c5ox"
               data-theme="light"
             />
             <div
               aria-hidden="true"
-              class=" css-xq12md"
+              class="react-select__indicator react-select__dropdown-indicator css-xq12md"
               data-theme="light"
             >
               <svg
@@ -1439,18 +1439,18 @@ it("should update the ui when a layer title changes", async () => {
           </div>
         </div>
         <div
-          class=" css-ky7590"
+          class="react-select__menu css-ky7590"
           data-theme="light"
           id="react-select-13-listbox"
         >
           <div
-            class=" css-1h5avke"
+            class="react-select__menu-list css-1h5avke"
             data-theme="light"
             role="listbox"
           >
             <div
               aria-selected="true"
-              class="basemap-switcher-option css-e8c6zu"
+              class="basemap-switcher-option react-select__option react-select__option--is-focused react-select__option--is-selected css-e8c6zu"
               data-focus="true"
               data-theme="light"
               id="react-select-13-option-0"
@@ -1461,7 +1461,7 @@ it("should update the ui when a layer title changes", async () => {
             </div>
             <div
               aria-selected="false"
-              class="basemap-switcher-option css-e8c6zu"
+              class="basemap-switcher-option react-select__option css-e8c6zu"
               data-theme="light"
               id="react-select-13-option-1"
               role="option"
