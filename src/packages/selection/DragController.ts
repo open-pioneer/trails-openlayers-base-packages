@@ -87,4 +87,8 @@ export class DragController {
             }
         };
     }
+
+    getDragBox() {
+        return this.dragBox;
+    }
 }
