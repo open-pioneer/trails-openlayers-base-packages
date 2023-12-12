@@ -399,35 +399,12 @@ it("should not allow selecting 'no basemap' by default", async () => {
     expect(optionsEmptyBasemap).toHaveLength(0);
 });
 
-// TODO: This behavior should be tested in the map model (-> the switcher is only concerned with the current base map, and the map model selects a "working" one)
-it("should successfully select emptyBasemap, if all configured basemaps are configured as not visible or have error state", async () => {
-    const b2Source = new BkgTopPlusOpen();
-    b2Source.setState("error");
-
+it("should update when a new basemap is registered", async () => {
     const { mapId, registry } = await setupMap({
-        layers: [
-            {
-                id: "b-1",
-                title: "OSM",
-                isBaseLayer: true,
-                visible: false,
-                olLayer: new TileLayer({
-                    source: new OSM()
-                })
-            },
-            {
-                id: "b-2",
-                title: "topplus-open",
-                isBaseLayer: true,
-                visible: true,
-                olLayer: new TileLayer({
-                    source: b2Source
-                })
-            }
-        ]
+        layers: defaultBasemapConfig
     });
-    const map = await registry.expectMapModel(mapId);
 
+    const map = await registry.expectMapModel(mapId);
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
@@ -437,16 +414,23 @@ it("should successfully select emptyBasemap, if all configured basemaps are conf
 
     // basemap switcher is mounted
     const { switcherSelect } = await waitForBasemapSwitcher();
+    showDropdown(switcherSelect);
 
-    expect(switcherSelect.textContent).toBe("emptyBasemapLabel");
+    let options = getCurrentOptions(switcherSelect);
+    expect(options.length).toBe(2);
 
-    const activeBaseLayer = map.layers.getActiveBaseLayer();
-    expect(activeBaseLayer).toBeUndefined();
-
-    // open dropdown to include options in snapshot; react-select creates list of options in dom after opening selection
     act(() => {
-        fireEvent.keyDown(switcherSelect, { key: "ArrowDown" });
+        const layer = new SimpleLayer({
+            id: "foo",
+            title: "Foo",
+            isBaseLayer: true,
+            olLayer: new TileLayer({})
+        });
+        map.layers.addLayer(layer);
     });
+
+    options = getCurrentOptions(switcherSelect);
+    expect(options.length).toBe(3);
 
     expect(switcherSelect).toMatchInlineSnapshot(`
       <div
@@ -475,7 +459,7 @@ it("should successfully select emptyBasemap, if all configured basemaps are conf
               class="react-select__single-value css-1xa1gs2"
               data-theme="light"
             >
-              emptyBasemapLabel
+              OSM
             </div>
             <input
               aria-autocomplete="list"
@@ -533,8 +517,9 @@ it("should successfully select emptyBasemap, if all configured basemaps are conf
             role="listbox"
           >
             <div
-              aria-selected="false"
-              class="basemap-switcher-option react-select__option css-e8c6zu"
+              aria-selected="true"
+              class="basemap-switcher-option react-select__option react-select__option--is-focused react-select__option--is-selected css-e8c6zu"
+              data-focus="true"
               data-theme="light"
               id="react-select-7-option-0"
               role="option"
@@ -543,203 +528,10 @@ it("should successfully select emptyBasemap, if all configured basemaps are conf
               OSM
             </div>
             <div
-              aria-disabled="true"
-              aria-selected="false"
-              class="basemap-switcher-option react-select__option react-select__option--is-disabled css-e8c6zu"
-              data-theme="light"
-              id="react-select-7-option-1"
-              role="option"
-              tabindex="-1"
-            >
-              topplus-open
-              <div
-                class="css-1v4xcoh"
-                data-theme="light"
-              >
-                <span>
-                  <svg
-                    aria-label="layerNotAvailable"
-                    color="red"
-                    fill="none"
-                    height="1em"
-                    stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    style="color: red;"
-                    viewBox="0 0 24 24"
-                    width="1em"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"
-                    />
-                    <line
-                      x1="12"
-                      x2="12"
-                      y1="9"
-                      y2="13"
-                    />
-                    <line
-                      x1="12"
-                      x2="12.01"
-                      y1="17"
-                      y2="17"
-                    />
-                  </svg>
-                </span>
-              </div>
-            </div>
-            <div
-              aria-selected="true"
-              class="basemap-switcher-option react-select__option react-select__option--is-focused react-select__option--is-selected css-e8c6zu"
-              data-focus="true"
-              data-theme="light"
-              id="react-select-7-option-2"
-              role="option"
-              tabindex="-1"
-            >
-              emptyBasemapLabel
-            </div>
-          </div>
-        </div>
-      </div>
-    `);
-});
-
-it("should update when a new basemap is registered", async () => {
-    const { mapId, registry } = await setupMap({
-        layers: defaultBasemapConfig
-    });
-
-    const map = await registry.expectMapModel(mapId);
-    const injectedServices = createServiceOptions({ registry });
-    render(
-        <PackageContextProvider services={injectedServices}>
-            <BasemapSwitcher mapId={mapId} data-testid="switcher" />
-        </PackageContextProvider>
-    );
-
-    // basemap switcher is mounted
-    const { switcherSelect } = await waitForBasemapSwitcher();
-    showDropdown(switcherSelect);
-
-    let options = getCurrentOptions(switcherSelect);
-    expect(options.length).toBe(2);
-
-    act(() => {
-        const layer = new SimpleLayer({
-            id: "foo",
-            title: "Foo",
-            isBaseLayer: true,
-            olLayer: new TileLayer({})
-        });
-        map.layers.addLayer(layer);
-    });
-
-    options = getCurrentOptions(switcherSelect);
-    expect(options.length).toBe(3);
-
-    expect(switcherSelect).toMatchInlineSnapshot(`
-      <div
-        class="basemap-switcher-select react-select--has-value css-79elbk"
-        data-theme="light"
-      >
-        <span
-          class="css-1f43avz-a11yText-A11yText"
-          id="react-select-8-live-region"
-        />
-        <span
-          aria-atomic="false"
-          aria-live="polite"
-          aria-relevant="additions text"
-          class="css-1f43avz-a11yText-A11yText"
-        />
-        <div
-          class="react-select__control react-select__control--menu-is-open css-i2418r"
-          data-theme="light"
-        >
-          <div
-            class="react-select__value-container react-select__value-container--has-value css-j93siq"
-            data-theme="light"
-          >
-            <div
-              class="react-select__single-value css-1xa1gs2"
-              data-theme="light"
-            >
-              OSM
-            </div>
-            <input
-              aria-autocomplete="list"
-              aria-controls="react-select-8-listbox"
-              aria-expanded="true"
-              aria-haspopup="true"
-              aria-owns="react-select-8-listbox"
-              aria-readonly="true"
-              class="css-mohuvp-dummyInput-DummyInput"
-              id="react-select-8-input"
-              inputmode="none"
-              role="combobox"
-              tabindex="0"
-              value=""
-            />
-          </div>
-          <div
-            class="react-select__indicators css-hfbj6y"
-            data-theme="light"
-          >
-            <hr
-              aria-orientation="vertical"
-              class="chakra-divider react-select__indicator-separator css-1i6c5ox"
-              data-theme="light"
-            />
-            <div
-              aria-hidden="true"
-              class="react-select__indicator react-select__dropdown-indicator css-xq12md"
-              data-theme="light"
-            >
-              <svg
-                aria-hidden="true"
-                class="chakra-icon css-onkibi"
-                data-theme="light"
-                focusable="false"
-                role="presentation"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
-                  fill="currentColor"
-                />
-              </svg>
-            </div>
-          </div>
-        </div>
-        <div
-          class="react-select__menu css-ky7590"
-          data-theme="light"
-          id="react-select-8-listbox"
-        >
-          <div
-            class="react-select__menu-list css-1h5avke"
-            data-theme="light"
-            role="listbox"
-          >
-            <div
-              aria-selected="true"
-              class="basemap-switcher-option react-select__option react-select__option--is-focused react-select__option--is-selected css-e8c6zu"
-              data-focus="true"
-              data-theme="light"
-              id="react-select-8-option-0"
-              role="option"
-              tabindex="-1"
-            >
-              OSM
-            </div>
-            <div
               aria-selected="false"
               class="basemap-switcher-option react-select__option css-e8c6zu"
               data-theme="light"
-              id="react-select-8-option-1"
+              id="react-select-7-option-1"
               role="option"
               tabindex="-1"
             >
@@ -749,7 +541,7 @@ it("should update when a new basemap is registered", async () => {
               aria-selected="false"
               class="basemap-switcher-option react-select__option css-e8c6zu"
               data-theme="light"
-              id="react-select-8-option-2"
+              id="react-select-7-option-2"
               role="option"
               tabindex="-1"
             >
@@ -918,7 +710,7 @@ it("should deactivate unavailable layers for selection", async () => {
       >
         <span
           class="css-1f43avz-a11yText-A11yText"
-          id="react-select-12-live-region"
+          id="react-select-11-live-region"
         />
         <span
           aria-atomic="false"
@@ -942,13 +734,13 @@ it("should deactivate unavailable layers for selection", async () => {
             </div>
             <input
               aria-autocomplete="list"
-              aria-controls="react-select-12-listbox"
+              aria-controls="react-select-11-listbox"
               aria-expanded="true"
               aria-haspopup="true"
-              aria-owns="react-select-12-listbox"
+              aria-owns="react-select-11-listbox"
               aria-readonly="true"
               class="css-mohuvp-dummyInput-DummyInput"
-              id="react-select-12-input"
+              id="react-select-11-input"
               inputmode="none"
               role="combobox"
               tabindex="0"
@@ -988,7 +780,7 @@ it("should deactivate unavailable layers for selection", async () => {
         <div
           class="react-select__menu css-ky7590"
           data-theme="light"
-          id="react-select-12-listbox"
+          id="react-select-11-listbox"
         >
           <div
             class="react-select__menu-list css-1h5avke"
@@ -1000,7 +792,7 @@ it("should deactivate unavailable layers for selection", async () => {
               class="basemap-switcher-option react-select__option react-select__option--is-focused react-select__option--is-selected css-e8c6zu"
               data-focus="true"
               data-theme="light"
-              id="react-select-12-option-0"
+              id="react-select-11-option-0"
               role="option"
               tabindex="-1"
             >
@@ -1010,7 +802,7 @@ it("should deactivate unavailable layers for selection", async () => {
               aria-selected="false"
               class="basemap-switcher-option react-select__option css-e8c6zu"
               data-theme="light"
-              id="react-select-12-option-1"
+              id="react-select-11-option-1"
               role="option"
               tabindex="-1"
             >
@@ -1037,7 +829,7 @@ it("should deactivate unavailable layers for selection", async () => {
       >
         <span
           class="css-1f43avz-a11yText-A11yText"
-          id="react-select-12-live-region"
+          id="react-select-11-live-region"
         />
         <span
           aria-atomic="false"
@@ -1061,13 +853,13 @@ it("should deactivate unavailable layers for selection", async () => {
             </div>
             <input
               aria-autocomplete="list"
-              aria-controls="react-select-12-listbox"
+              aria-controls="react-select-11-listbox"
               aria-expanded="true"
               aria-haspopup="true"
-              aria-owns="react-select-12-listbox"
+              aria-owns="react-select-11-listbox"
               aria-readonly="true"
               class="css-mohuvp-dummyInput-DummyInput"
-              id="react-select-12-input"
+              id="react-select-11-input"
               inputmode="none"
               role="combobox"
               tabindex="0"
@@ -1107,7 +899,7 @@ it("should deactivate unavailable layers for selection", async () => {
         <div
           class="react-select__menu css-ky7590"
           data-theme="light"
-          id="react-select-12-listbox"
+          id="react-select-11-listbox"
         >
           <div
             class="react-select__menu-list css-1h5avke"
@@ -1120,7 +912,7 @@ it("should deactivate unavailable layers for selection", async () => {
               class="basemap-switcher-option react-select__option react-select__option--is-disabled react-select__option--is-focused css-e8c6zu"
               data-focus="true"
               data-theme="light"
-              id="react-select-12-option-0"
+              id="react-select-11-option-0"
               role="option"
               tabindex="-1"
             >
@@ -1167,7 +959,7 @@ it("should deactivate unavailable layers for selection", async () => {
               aria-selected="true"
               class="basemap-switcher-option react-select__option react-select__option--is-selected css-e8c6zu"
               data-theme="light"
-              id="react-select-12-option-1"
+              id="react-select-11-option-1"
               role="option"
               tabindex="-1"
             >
@@ -1225,7 +1017,7 @@ it("should update the ui when a layer title changes", async () => {
       >
         <span
           class="css-1f43avz-a11yText-A11yText"
-          id="react-select-13-live-region"
+          id="react-select-12-live-region"
         />
         <span
           aria-atomic="false"
@@ -1249,13 +1041,13 @@ it("should update the ui when a layer title changes", async () => {
             </div>
             <input
               aria-autocomplete="list"
-              aria-controls="react-select-13-listbox"
+              aria-controls="react-select-12-listbox"
               aria-expanded="true"
               aria-haspopup="true"
-              aria-owns="react-select-13-listbox"
+              aria-owns="react-select-12-listbox"
               aria-readonly="true"
               class="css-mohuvp-dummyInput-DummyInput"
-              id="react-select-13-input"
+              id="react-select-12-input"
               inputmode="none"
               role="combobox"
               tabindex="0"
@@ -1295,7 +1087,7 @@ it("should update the ui when a layer title changes", async () => {
         <div
           class="react-select__menu css-ky7590"
           data-theme="light"
-          id="react-select-13-listbox"
+          id="react-select-12-listbox"
         >
           <div
             class="react-select__menu-list css-1h5avke"
@@ -1307,7 +1099,7 @@ it("should update the ui when a layer title changes", async () => {
               class="basemap-switcher-option react-select__option react-select__option--is-focused react-select__option--is-selected css-e8c6zu"
               data-focus="true"
               data-theme="light"
-              id="react-select-13-option-0"
+              id="react-select-12-option-0"
               role="option"
               tabindex="-1"
             >
@@ -1317,7 +1109,7 @@ it("should update the ui when a layer title changes", async () => {
               aria-selected="false"
               class="basemap-switcher-option react-select__option css-e8c6zu"
               data-theme="light"
-              id="react-select-13-option-1"
+              id="react-select-12-option-1"
               role="option"
               tabindex="-1"
             >
@@ -1341,7 +1133,7 @@ it("should update the ui when a layer title changes", async () => {
       >
         <span
           class="css-1f43avz-a11yText-A11yText"
-          id="react-select-13-live-region"
+          id="react-select-12-live-region"
         />
         <span
           aria-atomic="false"
@@ -1365,13 +1157,13 @@ it("should update the ui when a layer title changes", async () => {
             </div>
             <input
               aria-autocomplete="list"
-              aria-controls="react-select-13-listbox"
+              aria-controls="react-select-12-listbox"
               aria-expanded="true"
               aria-haspopup="true"
-              aria-owns="react-select-13-listbox"
+              aria-owns="react-select-12-listbox"
               aria-readonly="true"
               class="css-mohuvp-dummyInput-DummyInput"
-              id="react-select-13-input"
+              id="react-select-12-input"
               inputmode="none"
               role="combobox"
               tabindex="0"
@@ -1411,7 +1203,7 @@ it("should update the ui when a layer title changes", async () => {
         <div
           class="react-select__menu css-ky7590"
           data-theme="light"
-          id="react-select-13-listbox"
+          id="react-select-12-listbox"
         >
           <div
             class="react-select__menu-list css-1h5avke"
@@ -1423,7 +1215,7 @@ it("should update the ui when a layer title changes", async () => {
               class="basemap-switcher-option react-select__option react-select__option--is-focused react-select__option--is-selected css-e8c6zu"
               data-focus="true"
               data-theme="light"
-              id="react-select-13-option-0"
+              id="react-select-12-option-0"
               role="option"
               tabindex="-1"
             >
@@ -1433,7 +1225,7 @@ it("should update the ui when a layer title changes", async () => {
               aria-selected="false"
               class="basemap-switcher-option react-select__option css-e8c6zu"
               data-theme="light"
-              id="react-select-13-option-1"
+              id="react-select-12-option-1"
               role="option"
               tabindex="-1"
             >
