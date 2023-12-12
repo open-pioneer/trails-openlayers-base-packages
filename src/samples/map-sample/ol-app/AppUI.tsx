@@ -95,9 +95,9 @@ export function AppUI() {
             return;
         }
 
+        map?.removeHighlight();
         const geometries = event.results.map((result) => result.geometry);
         if (geometries.length > 0) {
-            map?.removeHighlight();
             map.highlightAndZoom(geometries);
         }
 
