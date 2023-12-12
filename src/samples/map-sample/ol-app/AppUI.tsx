@@ -22,6 +22,7 @@ import { PiListLight, PiMapTrifold, PiRulerLight, PiSelectionPlusBold } from "re
 import { MAP_ID } from "./MapConfigProviderImpl";
 import { PhotonGeocoder } from "./sources/searchSources";
 import { FakePointSelectionSource } from "./sources/selectionSources";
+import { SelectionCompleteEvent } from "@open-pioneer/selection/Selection";
 
 const sources = [new PhotonGeocoder("Photon Geocoder", ["city", "street"])];
 const selectionSources = [
@@ -88,6 +89,25 @@ export function AppUI() {
         map?.removeHighlight();
     }
 
+    function onSelectionComplete(event: SelectionCompleteEvent) {
+        if (!map) {
+            console.debug("Map not ready");
+            return;
+        }
+
+        const geometries = event.results.map((result) => result.geometry);
+        if (geometries.length > 0) {
+            map?.removeHighlight();
+            map.highlightAndZoom(geometries);
+        }
+
+        notifier.notify({
+            level: "info",
+            message: `Found ${event.results.length} results`,
+            displayDuration: 2000
+        });
+    }
+
     const overviewMapLayer = useMemo(
         () =>
             new TileLayer({
@@ -113,13 +133,7 @@ export function AppUI() {
                         <Selection
                             mapId={MAP_ID}
                             sources={selectionSources}
-                            onSelectionComplete={({ results }) => {
-                                notifier.notify({
-                                    level: "info",
-                                    message: `Found ${results.length} results`,
-                                    displayDuration: 2000
-                                });
-                            }}
+                            onSelectionComplete={onSelectionComplete}
                         />
                     </TitledSection>
                 </Box>

@@ -14,11 +14,11 @@ afterEach(() => {
 describe("point selection source", () => {
     const FAKE_REQUEST_TIMER = 0;
     const ALL_EXPECTED_FEATURES = [
-        new Point([852011, 6788511]), // Bottom Right
-        new Point([829800, 6809086]) // Top Left
+        new Point([407354, 5754673]), // con terra (Bottom Right)
+        new Point([404740, 5757893]) // Schloss (Top Left)
     ];
-    const FULL_EXTENT = [829800, 6788511, 852011, 6809086]; // [minx, miny, maxx, maxy]
-    const EXTENT_ONLY_FIRST_POINT = [840000, 6780000, 860000, 6810000];
+    const FULL_EXTENT = [404740, 5754673, 407354, 5757893]; // [minx, miny, maxx, maxy]
+    const EXTENT_ONLY_CON_TERRA = [407000, 5754000, 408000, 5755000];
     const POINT_SOURCE = new FakePointSelectionSource(
         FAKE_REQUEST_TIMER,
         "available",
@@ -53,7 +53,7 @@ describe("point selection source", () => {
         };
 
         const { controller } = setup();
-        const selectionResponse = await controller.select(POINT_SOURCE, EXTENT_ONLY_FIRST_POINT);
+        const selectionResponse = await controller.select(POINT_SOURCE, EXTENT_ONLY_CON_TERRA);
         expect(selectionResponse).toStrictEqual(expected);
     });
 
@@ -76,7 +76,7 @@ describe("point selection source", () => {
           [
             [
               "[ERROR] selection:SelectionController: selection from source Rejected failed",
-              [Error: select with {"type":"extent","extent":[829800,6788511,852011,6809086]} rejected],
+              [Error: select with {"type":"extent","extent":[404740,5754673,407354,5757893]} rejected],
             ],
           ]
         `);

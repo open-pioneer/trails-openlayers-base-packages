@@ -12,8 +12,8 @@ import { Point } from "ol/geom";
 import { EventEmitter } from "@open-pioneer/core";
 
 export const fakeSelectedPointFeatures = [
-    new Point([852011, 6788511]),
-    new Point([829800, 6809086])
+    new Point([407354, 5754673]), // con terra (Bottom Right)
+    new Point([404740, 5757893]) // Schloss (Top Left)
 ];
 
 let count = 0;
