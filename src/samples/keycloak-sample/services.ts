@@ -3,7 +3,6 @@
 import Keycloak from "keycloak-js";
 export { KeycloakAuthPlugin } from "./keycloak-auth-plugin/KeycloakAuthPlugin";
 
-
 export class KeycloakConfigProvider {
     getKeycloak() {
         return new Keycloak({
@@ -11,30 +10,28 @@ export class KeycloakConfigProvider {
             realm: "ii",
             clientId: "it-nrw"
         });
-    }      
-    
+    }
+
     getInitOptions() {
-        return { 
+        return {
             onLoad: "check-sso",
             pkceMethod: "S256"
         };
     }
 
-    getLoginOptions(){
+    getLoginOptions() {
         return {};
     }
 
-    getLogoutOptions(){
+    getLogoutOptions() {
         return {};
     }
 
-    getRefreshOptions(){
+    getRefreshOptions() {
         return {
             autoRefresh: true,
             interval: 6000,
             timeLeft: 70
         };
-
     }
 }
-

@@ -10,7 +10,6 @@ import { EventEmitter } from "@open-pioneer/core";
 import { Service, ServiceOptions, ServiceType } from "@open-pioneer/runtime";
 import Keycloak from "keycloak-js";
 
-
 interface References {
     config: ServiceType<"keycloak.KeycloakConfigProvider">;
 }
@@ -33,9 +32,9 @@ export class KeycloakAuthPlugin
         const refreshOptions = config.getRefreshOptions();
         this.#keycloak = config.getKeycloak();
         this.#keycloak.init(config.getInitOptions()).then((data) => {
-            if(data){
+            if (data) {
                 this.#state = {
-                    kind: "authenticated", 
+                    kind: "authenticated",
                     sessionInfo: {
                         userId: this.#keycloak.subject ? this.#keycloak.subject : "undefined",
                         attributes: {
@@ -44,13 +43,12 @@ export class KeycloakAuthPlugin
                     }
                 };
                 this.emit("changed");
-                if(refreshOptions.autoRefresh){
+                if (refreshOptions.autoRefresh) {
                     this.refresh(refreshOptions.interval, refreshOptions.timeLeft);
                 }
-            }
-            else{
+            } else {
                 this.#state = {
-                    kind: "not-authenticated", 
+                    kind: "not-authenticated"
                 };
                 this.emit("changed");
             }
@@ -65,7 +63,6 @@ export class KeycloakAuthPlugin
     getLoginBehavior(): LoginBehavior {
         const doLogin = () => {
             this.#keycloak.login();
-            
         };
         return {
             kind: "effect",
@@ -77,18 +74,21 @@ export class KeycloakAuthPlugin
         this.#keycloak.logout();
     }
 
-    refresh(interval: number, timeLeft: number){
+    refresh(interval: number, timeLeft: number) {
         this.#timerId = setInterval(() => {
-            this.#keycloak.updateToken(timeLeft).then((refreshed) => {
-                if (refreshed) {
-                    console.log("Token refreshed");
-                } else {
-                    console.log("Token still valid");
-                }
-            }).catch(() => {
-                console.log("Failed to refresh token");
-            });
-        }, interval);        
+            this.#keycloak
+                .updateToken(timeLeft)
+                .then((refreshed) => {
+                    if (refreshed) {
+                        console.log("Token refreshed");
+                    } else {
+                        console.log("Token still valid");
+                    }
+                })
+                .catch(() => {
+                    console.log("Failed to refresh token");
+                });
+        }, interval);
     }
 
     destroy() {

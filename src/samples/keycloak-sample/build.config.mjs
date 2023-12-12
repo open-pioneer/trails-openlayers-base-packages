@@ -5,7 +5,7 @@ import { defineBuildConfig } from "@open-pioneer/build-support";
 export default defineBuildConfig({
     services: {
         KeycloakConfigProvider: {
-            provides: "keycloak.KeycloakConfigProvider",
+            provides: "keycloak.KeycloakConfigProvider"
             /*references: {
                 config: "runtime.ApplicationContext"
             }*/
@@ -16,7 +16,6 @@ export default defineBuildConfig({
                 config: "keycloak.KeycloakConfigProvider"
             }
         }
-        
     },
 
     ui: {
