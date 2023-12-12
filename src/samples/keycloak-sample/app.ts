@@ -4,12 +4,6 @@
 import { createCustomElement } from "@open-pioneer/runtime";
 import * as appMetadata from "open-pioneer:app";
 import { AppUI } from "./AppUI";
-import { init } from "./keycloak-auth-plugin/KeycloakAuthPlugin";
-
-await init({url: "https://hsi-pex0-13620.service.it.nrw.de/keycloak/",
-    realm: "trails",
-    clientID: "trails-sample"});
-
 
 const element = createCustomElement({
     component: AppUI,

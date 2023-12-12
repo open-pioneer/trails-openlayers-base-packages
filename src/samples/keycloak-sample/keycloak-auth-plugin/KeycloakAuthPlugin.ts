@@ -7,70 +7,66 @@ import {
     LoginBehavior
 } from "@open-pioneer/authentication";
 import { EventEmitter } from "@open-pioneer/core";
-import { Service } from "@open-pioneer/runtime";
+import { Service, ServiceOptions, ServiceType } from "@open-pioneer/runtime";
 import Keycloak from "keycloak-js";
 
-export interface KeycloakConfig{
-    url: string;
-    realm: string; 
-    clientID: string;
+
+interface References {
+    config: ServiceType<"keycloak.KeycloakConfigProvider">;
 }
 
-export let keycloak: Keycloak;
-
-export async function init(options: KeycloakConfig){
-
-    keycloak = new Keycloak({
-        url: options.url,
-        realm: options.realm,
-        clientId: options.clientID
-    });
-
-    return keycloak.init({onLoad: "check-sso"});
-
-}
-
-export async function setup2(keycloak2: Keycloak){
-
-    keycloak = keycloak2;
-
-    return keycloak.init({onLoad: "check-sso"});
-
-}
-
-export class KeycloakAuthPlugin extends EventEmitter<AuthPluginEvents> implements Service, AuthPlugin {
+export class KeycloakAuthPlugin
+    extends EventEmitter<AuthPluginEvents>
+    implements Service, AuthPlugin
+{
     #state: AuthState = {
-        kind: "not-authenticated"
+        kind: "pending"
     };
     #wasLoggedIn = false;
+    #keycloak: Keycloak;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    #timerId: any;
 
-    constructor() {
+    constructor(options: ServiceOptions<References>) {
         super();
+        const config = options.references.config;
+        const refreshOptions = config.getRefreshOptions();
+        this.#keycloak = config.getKeycloak();
+        this.#keycloak.init(config.getInitOptions()).then((data) => {
+            if(data){
+                this.#state = {
+                    kind: "authenticated", 
+                    sessionInfo: {
+                        userId: this.#keycloak.subject ? this.#keycloak.subject : "undefined",
+                        attributes: {
+                            keycloak: this.#keycloak
+                        }
+                    }
+                };
+                this.emit("changed");
+                if(refreshOptions.autoRefresh){
+                    this.refresh(refreshOptions.interval, refreshOptions.timeLeft);
+                }
+            }
+            else{
+                this.#state = {
+                    kind: "not-authenticated", 
+                };
+                this.emit("changed");
+            }
+        });
     }
 
     getAuthState(): AuthState {
+        console.log(this.#keycloak.subject);
         return this.#state;
     }
 
     getLoginBehavior(): LoginBehavior {
         const doLogin = () => {
-            if (keycloak.authenticated) {
-                this.#state = {
-                    kind: "authenticated",
-                    sessionInfo: {
-                        userId: keycloak.subject ? keycloak.subject : "undefined", 
-                        attributes: {
-                            keycloak
-                        }
-                    }
-                };
-                this.#wasLoggedIn = true;
-                this.emit("changed");
-            } else {
-                keycloak.login();
-            }
+            this.#keycloak.login();
+            
         };
-        
         return {
             kind: "effect",
             login: doLogin
@@ -78,6 +74,25 @@ export class KeycloakAuthPlugin extends EventEmitter<AuthPluginEvents> implement
     }
 
     logout() {
-        keycloak.logout();
+        this.#keycloak.logout();
+    }
+
+    refresh(interval: number, timeLeft: number){
+        this.#timerId = setInterval(() => {
+            this.#keycloak.updateToken(timeLeft).then((refreshed) => {
+                if (refreshed) {
+                    console.log("Token refreshed");
+                } else {
+                    console.log("Token still valid");
+                }
+            }).catch(() => {
+                console.log("Failed to refresh token");
+            });
+        }, interval);        
+    }
+
+    destroy() {
+        clearInterval(this.#timerId);
+        this.#timerId = undefined;
     }
 }

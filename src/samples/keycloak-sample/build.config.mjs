@@ -3,14 +3,23 @@
 import { defineBuildConfig } from "@open-pioneer/build-support";
 
 export default defineBuildConfig({
-
     services: {
+        KeycloakConfigProvider: {
+            provides: "keycloak.KeycloakConfigProvider",
+            /*references: {
+                config: "runtime.ApplicationContext"
+            }*/
+        },
         KeycloakAuthPlugin: {
-            provides: "authentication.AuthPlugin"
+            provides: "authentication.AuthPlugin",
+            references: {
+                config: "keycloak.KeycloakConfigProvider"
+            }
         }
+        
     },
+
     ui: {
         references: ["authentication.AuthService"]
     }
-
 });
