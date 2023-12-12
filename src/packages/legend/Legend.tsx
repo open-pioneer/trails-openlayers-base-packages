@@ -176,7 +176,7 @@ function LegendImage(props: {
     const { layer, legendAttributes } = props;
 
     return (
-        <Box overflowY="auto">
+        <Box>
             <Text>{layer.title}</Text>
             <Image
                 maxW="none"
