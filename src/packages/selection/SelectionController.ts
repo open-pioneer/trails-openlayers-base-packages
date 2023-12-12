@@ -21,11 +21,6 @@ export class SelectionController {
     #mapModel: MapModel;
 
     /**
-     * Select from sources defined by the developer.
-     */
-    #sources: SelectionSource[] = [];
-
-    /**
      * Limits the number of results.
      */
     #maxResults: number;
@@ -35,15 +30,9 @@ export class SelectionController {
      */
     #onError: () => void;
 
-    constructor(options: {
-        mapModel: MapModel;
-        sources: SelectionSource[];
-        onError: () => void;
-        maxResults?: number;
-    }) {
-        const { mapModel, sources, onError, maxResults = DEFAULT_MAX_RESULTS } = options;
+    constructor(options: { mapModel: MapModel; onError: () => void; maxResults?: number }) {
+        const { mapModel, onError, maxResults = DEFAULT_MAX_RESULTS } = options;
         this.#mapModel = mapModel;
-        this.#sources = sources;
         this.#maxResults = maxResults;
         this.#onError = onError;
     }
@@ -89,9 +78,5 @@ export class SelectionController {
             this.#onError();
             return undefined;
         }
-    }
-
-    get sources() {
-        return this.#sources;
     }
 }

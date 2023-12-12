@@ -13,8 +13,12 @@ afterEach(() => {
 
 describe("point selection source", () => {
     const FAKE_REQUEST_TIMER = 0;
-    const ALL_EXPECTED_FEATURES = [new Point([852011, 6788511]), new Point([829800, 6809086])];
-    const FULL_EXTENT = [829800, 852011, 6788511, 6809086];
+    const ALL_EXPECTED_FEATURES = [
+        new Point([852011, 6788511]), // Bottom Right
+        new Point([829800, 6809086]) // Top Left
+    ];
+    const FULL_EXTENT = [829800, 6788511, 852011, 6809086]; // [minx, miny, maxx, maxy]
+    const EXTENT_ONLY_FIRST_POINT = [840000, 6780000, 860000, 6810000];
     const POINT_SOURCE = new FakePointSelectionSource(
         FAKE_REQUEST_TIMER,
         "available",
@@ -37,12 +41,23 @@ describe("point selection source", () => {
     it("expect controller to return results from one source", async () => {
         const expected = ALL_POINTS_FOUND_RESPONSE;
 
-        const { controller } = setup([POINT_SOURCE]);
+        const { controller } = setup();
         const selectionResponse = await controller.select(POINT_SOURCE, FULL_EXTENT);
         expect(selectionResponse).toStrictEqual(expected);
     });
 
-    it("expect controller logs an error if the source throws an error", async () => {
+    it("expect controller to return subset of results from one source", async () => {
+        const expected = {
+            ...ALL_POINTS_FOUND_RESPONSE,
+            results: ALL_POINTS_FOUND_RESPONSE.results.slice(0, 1)
+        };
+
+        const { controller } = setup();
+        const selectionResponse = await controller.select(POINT_SOURCE, EXTENT_ONLY_FIRST_POINT);
+        expect(selectionResponse).toStrictEqual(expected);
+    });
+
+    it("expect controller logs an error and uses callback if the source throws an error", async () => {
         const logSpy = vi.spyOn(global.console, "error").mockImplementation(() => undefined);
         const dummyRejectionSource: SelectionSource = {
             label: "Rejected",
@@ -51,15 +66,17 @@ describe("point selection source", () => {
             }
         };
 
-        const { controller } = setup([POINT_SOURCE, dummyRejectionSource]);
+        const onError = vi.fn();
+        const { controller } = setup(undefined, onError);
 
         const selectResponse = await controller.select(dummyRejectionSource, FULL_EXTENT);
         expect(selectResponse).toBeUndefined();
+        expect(onError).toHaveBeenCalledOnce();
         expect(logSpy.mock.calls).toMatchInlineSnapshot(`
           [
             [
               "[ERROR] selection:SelectionController: selection from source Rejected failed",
-              [Error: select with {"type":"extent","extent":[829800,852011,6788511,6809086]} rejected],
+              [Error: select with {"type":"extent","extent":[829800,6788511,852011,6809086]} rejected],
             ],
           ]
         `);
@@ -75,12 +92,12 @@ describe("point selection source", () => {
                 results: allPointsFoundResponse.results.slice(0, maxResults)
             };
         };
-        const { controller: controller1 } = setup([POINT_SOURCE], 1);
+        const { controller: controller1 } = setup(1);
         const expected1 = getExpectedResult(ALL_POINTS_FOUND_RESPONSE, 1);
         const selectResponse1 = await controller1.select(POINT_SOURCE, FULL_EXTENT);
         expect(selectResponse1).toEqual(expected1);
 
-        const { controller: controller0 } = setup([POINT_SOURCE], 0);
+        const { controller: controller0 } = setup(0);
         const expected2 = getExpectedResult(ALL_POINTS_FOUND_RESPONSE, 0);
         const selectResponse2 = await controller0.select(POINT_SOURCE, FULL_EXTENT);
         expect(selectResponse2).toEqual(expected2);
@@ -97,7 +114,7 @@ describe("point selection source", () => {
             }
         };
 
-        const { controller, changeProjection } = setup([dummySource]);
+        const { controller, changeProjection } = setup();
         const dummyExtent = [Infinity, Infinity, Infinity, Infinity];
         await controller.select(dummySource, dummyExtent);
         const options = seenOptions[0]!;
@@ -113,7 +130,7 @@ describe("point selection source", () => {
     });
 });
 
-function setup(sources: SelectionSource[], maxResults?: number) {
+function setup(maxResults?: number, onError?: () => void) {
     // Map Model mock (just as needed for the controller)
     let mapProjection = getProjection("EPSG:4326");
     const mapModel: any = {
@@ -127,12 +144,10 @@ function setup(sources: SelectionSource[], maxResults?: number) {
             }
         }
     };
+    onError = onError ?? function () {};
     const controller = new SelectionController({
         mapModel,
-        sources,
-        onError() {
-            /* TODO */
-        },
+        onError,
         maxResults
     });
     const changeProjection = (code: string) => {

@@ -229,7 +229,6 @@ function useSelectionController(
         }
         const controller = new SelectionController({
             mapModel,
-            sources,
             onError() {
                 notifier.notify({
                     level: "error",

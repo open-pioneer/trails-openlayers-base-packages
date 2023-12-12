@@ -9,6 +9,7 @@ import {
 } from "@open-pioneer/selection";
 import { Point } from "ol/geom";
 
+// TODO: Use Sample Points in NRW
 export const fakeSelectedPointFeatures = [
     new Point([852011, 6788511]),
     new Point([829800, 6809086])
