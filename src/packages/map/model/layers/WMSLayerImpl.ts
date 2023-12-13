@@ -104,6 +104,9 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
                     visitSublayer(nestedSublayer);
                 }
             } else {
+                /**
+                 * Push sublayer only, if layer name is not an empty string | undefined | ...
+                 */
                 if (sublayer.name) {
                     layers.push(sublayer.name);
                 }
