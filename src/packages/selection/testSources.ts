@@ -115,7 +115,7 @@ export class VectorLayerSelectionSource
             throw new Error(`Unsupported selection kind: ${selection.type}`);
         }
 
-        if (this.#status !== "available") [];
+        if (this.#status !== "available" || this.#vectorLayer.getSource() === null) return [];
 
         const allResults = this.#vectorLayer
             .getSource()!

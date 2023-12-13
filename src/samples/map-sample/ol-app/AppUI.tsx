@@ -3,7 +3,7 @@
 import { Box, Divider, Flex } from "@open-pioneer/chakra-integration";
 import { CoordinateViewer } from "@open-pioneer/coordinate-viewer";
 import { Geolocation } from "@open-pioneer/geolocation";
-import { Layer, MapAnchor, MapContainer, useMapModel } from "@open-pioneer/map";
+import { MapAnchor, MapContainer, useMapModel } from "@open-pioneer/map";
 import { InitialExtent, ZoomIn, ZoomOut } from "@open-pioneer/map-navigation";
 import { Measurement } from "@open-pioneer/measurement";
 import { Notifier } from "@open-pioneer/notifier";
@@ -44,18 +44,15 @@ export function AppUI() {
         new FakePointSelectionSource("Fake Source Points 1", "available"),
         new FakePointSelectionSource("Fake Source Points 2", "unavailable")
     ]);
-    const [selectionLayer, setSelectionLayer] = useState<Layer>();
 
     // TODO quite big... maybe outsource to hook if possible?
     useEffect(() => {
         if (!map) {
             return;
         }
-        setSelectionLayer(
-            map.layers
-                .getOperationalLayers()
-                .find((opLayer) => opLayer.title === "Kindertagesstätten")
-        );
+        const selectionLayer = map.layers
+            .getOperationalLayers()
+            .find((opLayer) => opLayer.title === "Kindertagesstätten");
         // TODO: Missing generic VectorLayer<VectorSource>?
         if (!(selectionLayer?.olLayer instanceof VectorLayer)) return;
         const sourceAvailable = selectionLayer.visible ? "available" : "unavailable";
@@ -65,8 +62,9 @@ export function AppUI() {
             sourceAvailable
         );
         const eventHandler = selectionLayer.on("changed:visible", () => {
+            // TODO: status is readonly in interface but needs to be changed from outside?
             layerSelectionSource.status = selectionLayer.visible ? "available" : "unavailable";
-            // TODO: Maybe do not remove highlighting at all. Managing different sources maybe complicated
+            // TODO: Maybe do not remove highlighting at all. Managing current selection source state maybe complicated
             if (!selectionLayer.visible) map.removeHighlight();
         });
         setSelectionSources((prev) => {
@@ -78,7 +76,7 @@ export function AppUI() {
         return () => {
             eventHandler.destroy();
         };
-    }, [map, selectionLayer]);
+    }, [map]);
 
     function toggleInteractionType(type: InteractionType) {
         if (type === currentInteractionType) {
