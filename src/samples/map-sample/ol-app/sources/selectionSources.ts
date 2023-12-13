@@ -12,6 +12,7 @@ import { Point } from "ol/geom";
 import { EventEmitter } from "@open-pioneer/core";
 import VectorSource from "ol/source/Vector";
 import VectorLayer from "ol/layer/Vector";
+import { EventsKey } from "ol/events";
 
 export const fakeSelectedPointFeatures = [
     new Point([407354, 5754673]), // con terra (Bottom Right)
@@ -67,16 +68,24 @@ export class VectorLayerSelectionSource
     readonly label: string;
     #status: SelectionSourceStatus;
     #vectorLayer: VectorLayer<VectorSource>;
+    #eventHandler: EventsKey;
 
-    constructor(
-        vectorLayer: VectorLayer<VectorSource>,
-        label: string,
-        status?: SelectionSourceStatus
-    ) {
+    constructor(vectorLayer: VectorLayer<VectorSource>, label: string) {
         super();
-        this.#status = status || "unavailable";
+        this.#status = vectorLayer.getVisible() ? "available" : "unavailable";
         this.label = label;
         this.#vectorLayer = vectorLayer;
+        this.#eventHandler = this.#vectorLayer.on("change:visible", () => {
+            this.status = this.#vectorLayer.getVisible() ? "available" : "unavailable";
+        });
+    }
+
+    destroy() {
+        // TODO: Is this the correct way to remove the listener?
+        this.#vectorLayer.removeChangeListener(
+            this.#eventHandler.type,
+            this.#eventHandler.listener
+        );
     }
 
     get status(): SelectionSourceStatus {
@@ -97,18 +106,17 @@ export class VectorLayerSelectionSource
 
         if (this.#status !== "available" || this.#vectorLayer.getSource() === null) return [];
 
-        const allResults = this.#vectorLayer
+        const allResults: SelectionResult[] = [];
+        this.#vectorLayer
             .getSource()!
-            .getFeaturesInExtent(selection.extent, options.mapProjection)
-            .map((feature, index) => {
-                if (!feature.getGeometry()) return undefined;
+            .forEachFeatureIntersectingExtent(selection.extent, (feature) => {
+                if (!feature.getGeometry()) return;
                 const result: SelectionResult = {
-                    id: index,
+                    id: feature.getId()?.toString() || feature.getGeometry.toString(),
                     geometry: feature.getGeometry()!
                 };
-                return result;
+                allResults.push(result);
             });
-
         const selectedFeatures = allResults.filter((s): s is SelectionResult => s != null);
         const limitedFeatures =
             selectedFeatures.length > options.maxResults

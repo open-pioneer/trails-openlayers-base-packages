@@ -9,6 +9,7 @@ import VectorSource from "ol/source/Vector";
 import WMTS from "ol/source/WMTS";
 import WMTSTileGrid from "ol/tilegrid/WMTS";
 import { Circle, Fill, Style } from "ol/style";
+import { createVectorSource } from "@open-pioneer/ogc-features";
 
 export const MAP_ID = "main";
 
@@ -61,9 +62,17 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     olLayer: createHaltestellenLayer()
                 }),
                 new SimpleLayer({
+                    id: "ogc_kitas",
                     title: "Kindertagesstätten",
                     visible: true,
                     olLayer: createKitasLayer()
+                }),
+                // TODO: Remove OGC Feature-Dependency? Or keep it and change createKitasLayer() to use createVectorSource?
+                new SimpleLayer({
+                    id: "ogc_kataster",
+                    title: "Liegenschaftskatasterbezirke in NRW (viele Daten)",
+                    visible: false,
+                    olLayer: createKatasterLayer()
                 }),
                 createSchulenLayer(),
                 createStrassenLayer()
@@ -159,6 +168,21 @@ function createKitasLayer() {
                 radius: 4
             })
         })
+    });
+}
+
+function createKatasterLayer() {
+    const source = createVectorSource({
+        baseUrl: "https://ogc-api.nrw.de/lika/v1",
+        collectionId: "katasterbezirk",
+        limit: 1000,
+        crs: "http://www.opengis.net/def/crs/EPSG/0/25832",
+        attributions:
+            "<a href='https://www.govdata.de/dl-de/by-2-0'>Datenlizenz Deutschland - Namensnennung - Version 2.0</a>"
+    });
+
+    return new VectorLayer({
+        source: source
     });
 }
 

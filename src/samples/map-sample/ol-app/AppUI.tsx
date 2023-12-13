@@ -3,7 +3,7 @@
 import { Box, Divider, Flex } from "@open-pioneer/chakra-integration";
 import { CoordinateViewer } from "@open-pioneer/coordinate-viewer";
 import { Geolocation } from "@open-pioneer/geolocation";
-import { MapAnchor, MapContainer, useMapModel } from "@open-pioneer/map";
+import { MapAnchor, MapContainer, MapModel, useMapModel } from "@open-pioneer/map";
 import { InitialExtent, ZoomIn, ZoomOut } from "@open-pioneer/map-navigation";
 import { Measurement } from "@open-pioneer/measurement";
 import { Notifier } from "@open-pioneer/notifier";
@@ -21,12 +21,16 @@ import { useEffect, useId, useMemo, useState } from "react";
 import { PiListLight, PiMapTrifold, PiRulerLight, PiSelectionPlusBold } from "react-icons/pi";
 import { MAP_ID } from "./MapConfigProviderImpl";
 import { PhotonGeocoder } from "./sources/searchSources";
-import { FakePointSelectionSource, VectorLayerSelectionSource } from "./sources/selectionSources";
+import { VectorLayerSelectionSource } from "./sources/selectionSources";
 import { SelectionCompleteEvent } from "@open-pioneer/selection/Selection";
 import VectorLayer from "ol/layer/Vector";
 import type { SelectionSource } from "@open-pioneer/selection";
+import OlBaseLayer from "ol/layer/Base";
+import VectorSource from "ol/source/Vector";
+import { Resource } from "@open-pioneer/core";
 
 const sources = [new PhotonGeocoder("Photon Geocoder", ["city", "street"])];
+const SELECTION_LAYER_IDS = ["ogc_kitas", "ogc_kataster"];
 
 type InteractionType = "measurement" | "selection" | undefined;
 
@@ -40,43 +44,8 @@ export function AppUI() {
     const [showOverviewMap, setShowOverviewMap] = useState<boolean>(true);
     const [showToc, setShowToc] = useState<boolean>(true);
     const [currentInteractionType, setCurrentInteractionType] = useState<InteractionType>();
-    const [selectionSources, setSelectionSources] = useState<SelectionSource[]>([
-        new FakePointSelectionSource("Fake Source Points 1", "available"),
-        new FakePointSelectionSource("Fake Source Points 2", "unavailable")
-    ]);
 
-    // TODO quite big... maybe outsource to hook if possible?
-    useEffect(() => {
-        if (!map) {
-            return;
-        }
-        const selectionLayer = map.layers
-            .getOperationalLayers()
-            .find((opLayer) => opLayer.title === "Kindertagesstätten");
-        // TODO: Missing generic VectorLayer<VectorSource>?
-        if (!(selectionLayer?.olLayer instanceof VectorLayer)) return;
-        const sourceAvailable = selectionLayer.visible ? "available" : "unavailable";
-        const layerSelectionSource = new VectorLayerSelectionSource(
-            selectionLayer.olLayer,
-            selectionLayer.title,
-            sourceAvailable
-        );
-        const eventHandler = selectionLayer.on("changed:visible", () => {
-            // TODO: status is readonly in interface but needs to be changed from outside?
-            layerSelectionSource.status = selectionLayer.visible ? "available" : "unavailable";
-            // TODO: Maybe do not remove highlighting at all. Managing current selection source state maybe complicated
-            if (!selectionLayer.visible) map.removeHighlight();
-        });
-        setSelectionSources((prev) => {
-            if (!prev.includes(layerSelectionSource)) {
-                prev.unshift(layerSelectionSource);
-            }
-            return prev;
-        });
-        return () => {
-            eventHandler.destroy();
-        };
-    }, [map]);
+    const selectionSources = useVectorLayerSelectionSources(map, SELECTION_LAYER_IDS);
 
     function toggleInteractionType(type: InteractionType) {
         if (type === currentInteractionType) {
@@ -344,4 +313,55 @@ export function AppUI() {
             </TitledSection>
         </Flex>
     );
+}
+
+function useVectorLayerSelectionSources(map: MapModel | undefined, vectorLayerIds: string[]) {
+    const [selectionSources, setSelectionSources] = useState<SelectionSource[]>([]);
+    const [eventHandler, setEventHandler] = useState<Resource[]>([]);
+
+    function isVectorLayerWithVectorSource(layer: OlBaseLayer) {
+        return layer instanceof VectorLayer && layer.getSource() instanceof VectorSource;
+    }
+
+    useEffect(() => {
+        if (!map) {
+            return;
+        }
+        map.layers.getOperationalLayers().forEach((opLayer) => {
+            if (
+                !opLayer ||
+                !vectorLayerIds.includes(opLayer.id) ||
+                !isVectorLayerWithVectorSource(opLayer.olLayer)
+            ) {
+                return;
+            }
+
+            const layerSelectionSource = new VectorLayerSelectionSource(
+                opLayer.olLayer as VectorLayer<VectorSource>,
+                opLayer.title
+            );
+            const eventHandler = layerSelectionSource.on("changed:status", () => {
+                if (layerSelectionSource.status === "unavailable") map.removeHighlight();
+                // TODO: Also listen to "onSourceChanged" event (needs to be implemented)
+            });
+            setSelectionSources((prev) => {
+                if (!prev.includes(layerSelectionSource)) {
+                    return [layerSelectionSource, ...prev];
+                }
+                return prev;
+            });
+            setEventHandler((prev) => {
+                if (!prev.includes(eventHandler)) {
+                    return [eventHandler, ...prev];
+                }
+                return prev;
+            });
+        });
+
+        return () => {
+            eventHandler.forEach((handlder) => handlder.destroy());
+        };
+    }, [map]);
+
+    return selectionSources;
 }

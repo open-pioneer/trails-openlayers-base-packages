@@ -948,6 +948,9 @@ importers:
       '@open-pioneer/notifier':
         specifier: workspace:^
         version: link:../../../packages/notifier
+      '@open-pioneer/ogc-features':
+        specifier: workspace:^
+        version: link:../../../packages/ogc-features
       '@open-pioneer/overview-map':
         specifier: workspace:^
         version: link:../../../packages/overview-map

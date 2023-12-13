@@ -14,6 +14,7 @@
         "@open-pioneer/selection": "workspace:^",
         "@open-pioneer/experimental-layout-sidebar": "workspace:^",
         "@open-pioneer/map": "workspace:^",
+        "@open-pioneer/ogc-features": "workspace:^",
         "@open-pioneer/runtime": "^1.1.0",
         "@open-pioneer/scale-bar": "workspace:^",
         "@open-pioneer/scale-viewer": "workspace:^",
