@@ -49,6 +49,11 @@ export interface SelectionProps extends CommonComponentProps {
      * some items.
      */
     onSelectionComplete?(event: SelectionCompleteEvent): void;
+
+    /**
+     * This handler is called whenever the user has changed the selected source
+     */
+    onSelectionSourceChanged?(event: SelectionSourceChangedEvent): void;
 }
 
 export interface SelectionCompleteEvent {
@@ -57,6 +62,11 @@ export interface SelectionCompleteEvent {
 
     /** Results selected by the user. */
     results: SelectionResult[];
+}
+
+export interface SelectionSourceChangedEvent {
+    /** The new selected source */
+    source: SelectionSource | undefined;
 }
 
 /**
@@ -99,7 +109,7 @@ const COMMON_SELECT_PROPS: SelectProps<any, any, any> = {
 
 export const Selection: FC<SelectionProps> = (props) => {
     const intl = useIntl();
-    const { mapId, sources, onSelectionComplete } = props;
+    const { mapId, sources, onSelectionComplete, onSelectionSourceChanged } = props;
     const { containerProps } = useCommonComponentProps("selection", props);
     const [currentSource, setCurrentSource] = useState<SelectionSource | undefined>(() =>
         sources.find((s) => (s.status ?? "available") === "available")
@@ -126,6 +136,7 @@ export const Selection: FC<SelectionProps> = (props) => {
     );
     const onSourceOptionChanged = useEvent((newValue: SingleValue<SourceOption>) => {
         setCurrentSource(newValue?.value);
+        onSelectionSourceChanged && onSelectionSourceChanged({ source: newValue?.value });
     });
 
     const methodOptions: MethodOption[] = [

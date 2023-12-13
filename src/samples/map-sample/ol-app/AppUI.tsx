@@ -22,7 +22,10 @@ import { PiListLight, PiMapTrifold, PiRulerLight, PiSelectionPlusBold } from "re
 import { MAP_ID } from "./MapConfigProviderImpl";
 import { PhotonGeocoder } from "./sources/searchSources";
 import { VectorLayerSelectionSource } from "./sources/selectionSources";
-import { SelectionCompleteEvent } from "@open-pioneer/selection/Selection";
+import {
+    SelectionCompleteEvent,
+    SelectionSourceChangedEvent
+} from "@open-pioneer/selection/Selection";
 import VectorLayer from "ol/layer/Vector";
 import type { SelectionSource } from "@open-pioneer/selection";
 import OlBaseLayer from "ol/layer/Base";
@@ -111,6 +114,10 @@ export function AppUI() {
         });
     }
 
+    function onSelectionSourceChanged(_: SelectionSourceChangedEvent) {
+        map?.removeHighlight();
+    }
+
     const overviewMapLayer = useMemo(
         () =>
             new TileLayer({
@@ -137,6 +144,7 @@ export function AppUI() {
                             mapId={MAP_ID}
                             sources={selectionSources}
                             onSelectionComplete={onSelectionComplete}
+                            onSelectionSourceChanged={onSelectionSourceChanged}
                         />
                     </TitledSection>
                 </Box>
