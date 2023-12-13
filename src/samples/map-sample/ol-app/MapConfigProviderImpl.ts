@@ -209,15 +209,12 @@ function createIsBk5Layer() {
         url: "https://www.wms.nrw.de/gd/bk05l",
         sublayers: [
             {
-                name: "Versickerung_und_Stofftransport",
                 title: "Versickerung und Stofftransport",
                 sublayers: [
                     {
-                        name: "Sickerwasserrate",
                         title: "Sickerwasserrate",
                         sublayers: [
                             {
-                                name: "Szenario_Wald",
                                 title: "Szenario Wald",
                                 sublayers: [
                                     {
@@ -231,7 +228,6 @@ function createIsBk5Layer() {
                                 ]
                             },
                             {
-                                name: "Szenario_Gruenland",
                                 title: "Szenario Grünland",
                                 sublayers: [
                                     {
@@ -261,7 +257,6 @@ function createIsBk5Layer() {
                 ]
             },
             {
-                name: "Wasserhaushalt",
                 title: "Wasserhaushalt",
                 sublayers: [
                     {

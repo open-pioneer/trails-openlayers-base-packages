@@ -104,7 +104,9 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
                     visitSublayer(nestedSublayer);
                 }
             } else {
-                layers.push(sublayer.name);
+                if (sublayer.name) {
+                    layers.push(sublayer.name);
+                }
             }
         };
 
@@ -118,7 +120,7 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
 class WMSSublayerImpl extends AbstractLayerBase implements Sublayer {
     #parent: WMSSublayerImpl | WMSLayerImpl | undefined;
     #parentLayer: WMSLayerImpl | undefined;
-    #name: string;
+    #name: string | undefined;
     #sublayers: SublayersCollectionImpl<WMSSublayerImpl>;
     #visible: boolean;
 
@@ -129,7 +131,7 @@ class WMSSublayerImpl extends AbstractLayerBase implements Sublayer {
         this.#sublayers = new SublayersCollectionImpl(constructSublayers(config.sublayers));
     }
 
-    get name(): string {
+    get name(): string | undefined {
         return this.#name;
     }
 

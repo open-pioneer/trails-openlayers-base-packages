@@ -27,8 +27,11 @@ export interface WMSLayerConfig extends LayerBaseConfig {
  * Configuration options to construct the sublayers of a WMS layer.
  */
 export interface WMSSublayerConfig extends LayerBaseConfig {
-    /** The name of the WMS sublayer in the service's capabilities. */
-    name: string;
+    /**
+     * The name of the WMS sublayer in the service's capabilities.
+     * Not mandatory, e.g. for WMS group layer. See [WMS spec](https://www.ogc.org/standard/wms/).
+     */
+    name?: string;
 
     /** Configuration for nested sublayers. */
     sublayers?: WMSSublayerConfig[];
