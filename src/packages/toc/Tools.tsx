@@ -14,7 +14,7 @@ import { FiMoreVertical } from "react-icons/fi";
 import { useIntl } from "open-pioneer:react-hooks";
 import { MapModel, SublayersCollection, useMapModel } from "@open-pioneer/map";
 
-export interface TocToolsProps extends CommonComponentProps {
+export interface ToolConfig extends CommonComponentProps {
     /**
      * The id of the map.
      */
@@ -33,7 +33,7 @@ export interface TocToolsProps extends CommonComponentProps {
     showCollapseGroups?: boolean;
 }
 
-export const TocTools: FC<TocToolsProps> = (props: TocToolsProps) => {
+export const Tools: FC<ToolConfig> = (props: ToolConfig) => {
     const intl = useIntl();
     const { mapId, showHideAllLayers = true, showCollapseGroups = true } = props;
     const { map } = useMapModel(mapId);

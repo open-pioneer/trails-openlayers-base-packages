@@ -12,7 +12,7 @@ import {
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, useId } from "react";
 import { LayerList } from "./LayerList";
-import { TocTools, TocToolsProps } from "./TocTools";
+import { Tools, ToolConfig } from "./Tools";
 
 /**
  * Props supported by the {@link Toc} component.
@@ -24,10 +24,16 @@ export interface TocProps extends CommonComponentProps {
     mapId: string;
 
     /**
-     * Defines whether the toc tools component is shown in the toc.
+     * Defines whether the tool component is shown in the toc.
      * Defaults to `false`.
      */
-    showTocTools?: boolean;
+    showTools?: boolean;
+
+    /**
+     * Properties for the embedded tool component.
+     * Property "mapId" is not applied.
+     */
+    toolConfig?: Omit<ToolConfig, "mapId">;
 
     /**
      * Defines whether the basemap switcher is shown in the toc.
@@ -40,12 +46,6 @@ export interface TocProps extends CommonComponentProps {
      * Property "mapId" is not applied.
      */
     basemapSwitcherProps?: Omit<BasemapSwitcherProps, "mapId">;
-
-    /**
-     * Properties for the embedded toc tool component.
-     * Property "mapId" is not applied.
-     */
-    tocToolsProps?: Omit<TocToolsProps, "mapId">;
 }
 
 const PADDING = 2;
@@ -58,8 +58,8 @@ export const Toc: FC<TocProps> = (props: TocProps) => {
 
     const {
         mapId,
-        showTocTools = false,
-        tocToolsProps,
+        showTools = false,
+        toolConfig,
         showBasemapSwitcher = true,
         basemapSwitcherProps
     } = props;
@@ -106,7 +106,7 @@ export const Toc: FC<TocProps> = (props: TocProps) => {
                                         })}
                                     </Text>
                                     <Spacer />
-                                    {showTocTools && <TocTools mapId={mapId} {...tocToolsProps} />}
+                                    {showTools && <Tools mapId={mapId} {...toolConfig} />}
                                 </Flex>
                             </SectionHeading>
                         }

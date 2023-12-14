@@ -120,8 +120,8 @@ export function AppUI() {
                                             >
                                                 <Toc
                                                     mapId={MAP_ID}
-                                                    showTocTools={true}
-                                                    tocToolsProps={{
+                                                    showTools={true}
+                                                    toolConfig={{
                                                         showHideAllLayers: true,
                                                         showCollapseGroups: false
                                                     }}
