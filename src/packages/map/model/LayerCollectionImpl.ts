@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { EventEmitter, createLogger } from "@open-pioneer/core";
+import { EventEmitter, Resource, createLogger } from "@open-pioneer/core";
 import OlBaseLayer from "ol/layer/Base";
 import { LayerCollection, LayerCollectionEvents, Layer, LayerRetrievalOptions } from "../api";
 import { AbstractLayer } from "./AbstractLayer";
@@ -35,6 +35,9 @@ export class LayerCollectionImpl
     /** Reverse index of _all_ layers that have an associated OpenLayers layer. */
     #layersByOlLayer: WeakMap<OlBaseLayer, AbstractLayer> = new WeakMap();
 
+    /** Manages the event handlers for load state changes. */
+    #loadStateHandlers = new Map<AbstractLayer, Resource>();
+
     /** Currently active base layer. */
     #activeBaseLayer: AbstractLayer | undefined;
 
@@ -51,8 +54,12 @@ export class LayerCollectionImpl
         for (const layer of this.#layersById.values()) {
             layer.destroy();
         }
+        for (const handler of this.#loadStateHandlers.values()) {
+            handler.destroy();
+        }
         this.#topLevelLayers.clear();
         this.#layersById.clear();
+        this.#loadStateHandlers.clear();
         this.#activeBaseLayer = undefined;
     }
 
@@ -145,7 +152,7 @@ export class LayerCollectionImpl
                 model.__setVisible(false);
             }
 
-            model?.on("changed:loadState", () => {
+            const loadStateHandler = model?.on("changed:loadState", () => {
                 // if active baselayer is not available, switch to alternative basemap
                 if (this.#activeBaseLayer === model && model.loadState === "error") {
                     const baseLayers = this.getBaseLayers();
@@ -161,6 +168,7 @@ export class LayerCollectionImpl
                     this.emit("changed");
                 }
             });
+            this.#loadStateHandlers.set(model, loadStateHandler);
         } else {
             olLayer.setZIndex(this.#nextIndex++);
             model.__setVisible(model.visible);
@@ -196,6 +204,8 @@ export class LayerCollectionImpl
         if (this.#activeBaseLayer === model) {
             this.#updateBaseLayer(this.getBaseLayers()[0]);
         }
+        this.#loadStateHandlers.get(model)?.destroy();
+        this.#loadStateHandlers.delete(model);
         model.destroy();
         this.emit("changed");
     }
