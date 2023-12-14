@@ -4,7 +4,7 @@ import { createLogger } from "@open-pioneer/core";
 import ImageLayer from "ol/layer/Image";
 import type ImageSource from "ol/source/Image";
 import ImageWMS from "ol/source/ImageWMS";
-import { Sublayer, WMSLayerConfig, WMSLayer, WMSSublayerConfig } from "../../api";
+import { WMSLayerConfig, WMSLayer, WMSSublayerConfig, WMSSublayer } from "../../api";
 import { DeferredExecution, defer } from "../../util/defer";
 import { AbstractLayer } from "../AbstractLayer";
 import { AbstractLayerBase } from "../AbstractLayerBase";
@@ -120,7 +120,7 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
     }
 }
 
-class WMSSublayerImpl extends AbstractLayerBase implements Sublayer {
+class WMSSublayerImpl extends AbstractLayerBase implements WMSSublayer {
     #parent: WMSSublayerImpl | WMSLayerImpl | undefined;
     #parentLayer: WMSLayerImpl | undefined;
     #name: string | undefined;
@@ -159,6 +159,7 @@ class WMSSublayerImpl extends AbstractLayerBase implements Sublayer {
     }
     getLegend(): string | undefined {
         //TODO async
+        // TODO if layer name is undefined, return undefined
         const olMap = this.map.olMap;
         const res = olMap.getView().getResolution();
         return this.#parentLayer?.__source.getLegendUrl(res, { LAYER: this.name });

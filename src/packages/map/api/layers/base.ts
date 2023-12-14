@@ -196,9 +196,10 @@ export interface SublayersCollectionEvents {
 /**
  * Contains the sublayers that belong to a {@link Layer} or {@link Sublayer}.
  */
-export interface SublayersCollection extends EventSource<SublayersCollectionEvents> {
+export interface SublayersCollection<SublayerType = Sublayer>
+    extends EventSource<SublayersCollectionEvents> {
     /**
      * Returns the child sublayers in this collection.
      */
-    getSublayers(options?: LayerRetrievalOptions): Sublayer[];
+    getSublayers(options?: LayerRetrievalOptions): SublayerType[];
 }
