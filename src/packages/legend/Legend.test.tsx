@@ -269,11 +269,81 @@ it("shows legend entries in correct order", async () => {
 });
 
 it("shows legend entries only for visible layers", async () => {
-    // TODO
+    const { mapId, registry } = await setupMap({
+        layers: [
+            {
+                title: "Base layer",
+                id: "base-layer",
+                olLayer: new TileLayer({}),
+                isBaseLayer: true
+            },
+            {
+                title: "Layer 1",
+                id: "layer-1",
+                olLayer: new TileLayer({}),
+                attributes: {
+                    "legend": {
+                        imageUrl: "https://avatars.githubusercontent.com/u/121286957?s=200&v=4"
+                    }
+                }
+            },
+            {
+                title: "Layer 2",
+                id: "layer-2",
+                olLayer: new TileLayer({}),
+                attributes: {
+                    "legend": {
+                        imageUrl: "https://not-visbile-layer.com/"
+                    }
+                },
+                visible: false
+            }
+        ]
+    });
+    await registry.expectMapModel(mapId);
+    const injectedServices = createServiceOptions({ registry });
+
+    render(
+        <PackageContextProvider services={injectedServices}>
+            <Legend mapId={mapId} data-testid="legend" />
+        </PackageContextProvider>
+    );
+
+    const legendDiv = await findLegend();
+    await waitForLegendItem(legendDiv);
+    const images = await getLegendImages(legendDiv);
+    expect(images.length).toBe(1);
+    const src = images[0]?.getAttribute("src");
+    expect(src).not.toBe("https://not-visbile-layer.com/");
 });
 
 it("includes the layer id in the legend item's class list", async () => {
-    // TODO
+    const { mapId, registry } = await setupMap({
+        layers: [
+            {
+                title: "Layer 1",
+                id: "layer-1",
+                olLayer: new TileLayer({}),
+                attributes: {
+                    "legend": {
+                        imageUrl: "https://avatars.githubusercontent.com/u/121286957?s=200&v=4"
+                    }
+                }
+            }
+        ]
+    });
+    await registry.expectMapModel(mapId);
+    const injectedServices = createServiceOptions({ registry });
+
+    render(
+        <PackageContextProvider services={injectedServices}>
+            <Legend mapId={mapId} data-testid="legend" />
+        </PackageContextProvider>
+    );
+
+    const legendDiv = await findLegend();
+    const firstLegendItem = await waitForLegendItem(legendDiv);
+    expect(firstLegendItem.classList.contains("layer-layer-1")).toBe(true);
 });
 
 it("shows an empty box if not legend entries are available", async () => {
