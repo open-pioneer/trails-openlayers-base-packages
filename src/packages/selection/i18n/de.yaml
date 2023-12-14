@@ -1,6 +1,9 @@
 messages:
   selectMethod: "Methode auswählen"
-  rectangle: "Rechteck"
+  EXTEND: "Rechteck"
+  POLYGON: "Polygon"
+  FREEPOLYGON: "Freies Zeichnen"
+  CIRCLE: "Kreis"
   selectSource: "Quelle auswählen"
   tooltip: "Klicken Sie in die Karte, halten Sie die Maustaste gedrückt und ziehen Sie ein Rechteck auf"
   sourceNotAvailable: "Quelle nicht verfügbar"

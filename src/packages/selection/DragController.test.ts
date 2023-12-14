@@ -3,6 +3,7 @@
 import { afterEach, expect, vi, it } from "vitest";
 import { DragController } from "./DragController";
 import OlMap from "ol/Map";
+import { SelectionMethods } from "./Selection";
 
 afterEach(() => {
     vi.restoreAllMocks();
@@ -17,6 +18,7 @@ it("Tooltip successfully create after construction", async () => {
 it("Should drag a Extent", async () => {
     const { controller, extentHandler } = createController();
     const myDragbox = controller.getDragBox();
+    if (!myDragbox) throw new Error("myDragbox not found");
     myDragbox.dragBox.dispatchEvent("boxend");
     expect(extentHandler).toBeCalledTimes(1);
 });
@@ -25,7 +27,12 @@ function createController() {
     const olMap = new OlMap();
     const tooltipTest = "Tooltip wurde gesetzt";
     const extentHandler = vi.fn();
-    const controller = new DragController(olMap, tooltipTest, extentHandler);
+    const controller = new DragController(
+        olMap,
+        SelectionMethods.extent,
+        tooltipTest,
+        extentHandler
+    );
     return { olMap, controller, tooltipTest, extentHandler };
 }
 

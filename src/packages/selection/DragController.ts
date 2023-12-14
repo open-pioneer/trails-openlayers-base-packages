@@ -7,6 +7,7 @@ import Overlay from "ol/Overlay";
 import { mouseActionButton } from "ol/events/condition";
 import Geometry from "ol/geom/Geometry";
 import { DragBox } from "ol/interaction";
+import { SelectionMethods } from "./Selection";
 
 interface SelectionBox extends Resource {
     dragBox: DragBox;
@@ -22,20 +23,27 @@ const ACTIVE_CLASS = "spatial-selection-active";
 
 export class DragController {
     private tooltip: Tooltip;
-    private dragBox: SelectionBox;
+    private dragBox?: SelectionBox;
 
     constructor(
         olMap: OlMap,
+        selectMethode: string,
         tooltipMessage: string,
         onExtentSelected: (geometry: Geometry) => void
     ) {
-        this.dragBox = this.createDragBox(olMap, onExtentSelected);
+        switch (selectMethode) {
+            case SelectionMethods.extent:
+            default:
+                this.dragBox = this.createDragBox(olMap, onExtentSelected);
+                break;
+        }
+
         this.tooltip = this.createHelpTooltip(olMap, tooltipMessage);
     }
 
     destroy() {
         this.tooltip.destroy();
-        this.dragBox.destroy();
+        if (this.dragBox) this.dragBox.destroy();
     }
 
     private createDragBox(olMap: OlMap, onExtentSelected: (geometry: Geometry) => void) {

@@ -45,6 +45,11 @@ export interface SelectionProps extends CommonComponentProps {
     sources: SelectionSource[];
 
     /**
+     * Array of allowed spatial select methods. Default is rectangle
+     */
+    //methods?: SelectionKind[];
+
+    /**
      * This handler is called whenever the user has successfully (successfully) selected
      * some items.
      */
@@ -99,6 +104,16 @@ interface MethodOption {
     value: string;
 }
 
+/**
+ * Supported selection Methods
+ */
+export enum SelectionMethods {
+    extent = "EXTEND",
+    polygon = "POLYGON",
+    free = "FREEPOLYGON",
+    circle = "CIRCLE"
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const COMMON_SELECT_PROPS: SelectProps<any, any, any> = {
     classNamePrefix: "react-select",
@@ -121,7 +136,28 @@ export const Selection: FC<SelectionProps> = (props) => {
         currentSource,
         onSelectionComplete
     );
-    useDragSelection(mapState.map, intl, onExtentSelected);
+
+    /* (props.?methodOptions || props?.methodOptions.length > 0) ?*/
+    /**
+     * Method to build Option-Array from the supported selection methods for the selection-method react-select
+     * If there is no configuration => Default selection method: EXTEND
+     * @param methods
+     * @returns
+     */
+    const buildMethodOptions = (methods = [{ type: SelectionMethods.extent }]) => {
+        const objects: MethodOption[] = [];
+        methods.forEach((item) => {
+            objects.push({ label: intl.formatMessage({ id: item.type }), value: item.type });
+        });
+        return objects;
+    };
+
+    const methodOptions: MethodOption[] = buildMethodOptions();
+    const [selectedMethod, setSelectedMethode] = useState(methodOptions[0] as MethodOption);
+
+    const onMethodeOptionChance = useEvent((newValue: MethodOption) => {
+        setSelectedMethode(newValue);
+    });
 
     const sourceOptions = useMemo(
         () =>
@@ -139,21 +175,22 @@ export const Selection: FC<SelectionProps> = (props) => {
         onSelectionSourceChanged && onSelectionSourceChanged({ source: newValue?.value });
     });
 
-    const methodOptions: MethodOption[] = [
-        { label: intl.formatMessage({ id: "rectangle" }), value: "rectangle" }
-    ];
+    useDragSelection(mapState.map, selectedMethod, intl, onExtentSelected);
 
     return (
         <VStack {...containerProps} spacing={2}>
-            <FormControl>
-                <FormLabel>{intl.formatMessage({ id: "selectMethod" })}</FormLabel>
-                <Select
-                    className="selection-method react-select"
-                    {...COMMON_SELECT_PROPS}
-                    options={methodOptions}
-                    value={methodOptions.filter((option) => option.value === "rectangle")}
-                />
-            </FormControl>
+            {methodOptions.length > 1 && (
+                <FormControl>
+                    <FormLabel>{intl.formatMessage({ id: "selectMethod" })}</FormLabel>
+                    <Select
+                        className="selection-method react-select"
+                        {...COMMON_SELECT_PROPS}
+                        options={methodOptions}
+                        onChange={onMethodeOptionChance}
+                        value={selectedMethod}
+                    />
+                </FormControl>
+            )}
             <FormControl>
                 <FormLabel>{intl.formatMessage({ id: "selectSource" })}</FormLabel>
                 <Select<SourceOption>
@@ -290,6 +327,7 @@ function useSourceStatus(source: SelectionSource | undefined): SelectionSourceSt
 
 function useDragSelection(
     map: MapModel | undefined,
+    selectMethode: MethodOption,
     intl: PackageIntl,
     onExtentSelected: (geometry: Geometry) => void
 ) {
@@ -300,11 +338,12 @@ function useDragSelection(
 
         const controller = new DragController(
             map.olMap,
+            selectMethode.value,
             intl.formatMessage({ id: "tooltip" }),
             onExtentSelected
         );
         return () => {
             controller.destroy();
         };
-    }, [map, intl, onExtentSelected]);
+    }, [map, selectMethode, intl, onExtentSelected]);
 }

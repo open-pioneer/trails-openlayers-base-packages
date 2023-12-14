@@ -1,6 +1,9 @@
 messages:
   selectMethod: Select method
-  rectangle: "Rectangle"
+  EXTEND: "Rechteck"
+  POLYGON: "Polygon"
+  FREEPOLYGON: "Freies Zeichnen"
+  CIRCLE: "Kreis"
   selectSource: "Select source"
   tooltip: "Click on the map, hold down the mouse button and draw a rectangle"
   sourceNotAvailable: "Source not available"
