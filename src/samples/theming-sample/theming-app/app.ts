@@ -7,6 +7,7 @@ import { AppUI } from "./AppUI";
 
 const Element = createCustomElement({
     component: AppUI,
+    openShadowRoot: true,
     theme,
     appMetadata
 });
