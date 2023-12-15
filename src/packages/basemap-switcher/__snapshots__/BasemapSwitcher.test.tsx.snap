@@ -29,10 +29,15 @@ exports[`should successfully create a basemap switcher component 1`] = `
         data-theme="light"
       >
         <div
-          class="react-select__single-value css-1xa1gs2"
+          class="basemap-switcher-value react-select__single-value css-1xa1gs2"
           data-theme="light"
         >
-          emptyBasemapLabel
+          <div
+            class="css-u4p24i"
+            data-theme="light"
+          >
+            emptyBasemapLabel
+          </div>
         </div>
         <input
           aria-autocomplete="list"
@@ -98,7 +103,12 @@ exports[`should successfully create a basemap switcher component 1`] = `
           role="option"
           tabindex="-1"
         >
-          emptyBasemapLabel
+          <div
+            class="css-u4p24i"
+            data-theme="light"
+          >
+            emptyBasemapLabel
+          </div>
         </div>
       </div>
     </div>

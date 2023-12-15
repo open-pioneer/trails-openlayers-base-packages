@@ -97,6 +97,8 @@ function LayerItem(props: { layer: TocLayer; intl: PackageIntl }): JSX.Element {
                 minHeight={10}
             >
                 <Checkbox
+                    // Keyboard navigation jumps only to Checkboxes and uses the texts inside this DOM node. The aria-labels of Tooltip and Icon is ignored by screenreader because they are no child element of the checkbox. To consider the notAvailableLabel, an aria-label at the checkbox is necessary.
+                    aria-label={title + (!isAvailable ? " " + notAvailableLabel : "")}
                     isChecked={isVisible}
                     onChange={(event) => setVisible(event.target.checked)}
                 >

@@ -1,10 +1,10 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box, Tooltip } from "@open-pioneer/chakra-integration";
+import { Box, Flex, Tooltip } from "@open-pioneer/chakra-integration";
 import { Layer, MapModel, useMapModel } from "@open-pioneer/map";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, useCallback, useMemo, useRef, useSyncExternalStore } from "react";
-import { Select, OptionProps, chakraComponents } from "chakra-react-select";
+import { Select, OptionProps, SingleValueProps, chakraComponents } from "chakra-react-select";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { FiAlertTriangle } from "react-icons/fi";
 
@@ -100,7 +100,8 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
 
     const components = useMemo(() => {
         return {
-            Option: BasemapSelectOption
+            Option: BasemapSelectOption,
+            SingleValue: BasemapSelectValue
         };
     }, []);
 
@@ -116,8 +117,14 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
                     onChange={(option) => option && activateLayer(option.value)}
                     isClearable={false}
                     isSearchable={false}
+                    // optionLabel is used by screenreaders
                     getOptionLabel={(option) =>
-                        option.layer !== undefined ? option.layer.title : emptyBasemapLabel
+                        option.layer !== undefined
+                            ? option.layer.title +
+                              (option.layer.loadState === "error"
+                                  ? " " + intl.formatMessage({ id: "layerNotAvailable" })
+                                  : "")
+                            : emptyBasemapLabel
                     }
                     isOptionDisabled={(option) => option?.layer?.loadState === "error"}
                     components={components}
@@ -161,10 +168,7 @@ function useBaseLayers(mapModel: MapModel | undefined): Layer[] {
 
 function BasemapSelectOption(props: OptionProps<SelectOption>): JSX.Element {
     const { layer } = props.data;
-    const intl = useIntl();
-    const notAvailableLabel = intl.formatMessage({ id: "layerNotAvailable" });
-    const label = useTitle(layer);
-    const isAvailable = useLoadState(layer) !== "error";
+    const { isAvailable, content } = useBasemapItem(layer);
 
     return (
         <chakraComponents.Option
@@ -172,18 +176,49 @@ function BasemapSelectOption(props: OptionProps<SelectOption>): JSX.Element {
             isDisabled={!isAvailable}
             className="basemap-switcher-option"
         >
-            {label}
-            {!isAvailable && (
-                <Box ml={2}>
-                    <Tooltip label={notAvailableLabel} placement="right" openDelay={500}>
-                        <span>
-                            <FiAlertTriangle color={"red"} aria-label={notAvailableLabel} />
-                        </span>
-                    </Tooltip>
-                </Box>
-            )}
+            {content}
         </chakraComponents.Option>
     );
+}
+
+function BasemapSelectValue(props: SingleValueProps<SelectOption>): JSX.Element {
+    const { layer } = props.data;
+    const { isAvailable, content } = useBasemapItem(layer);
+
+    return (
+        <chakraComponents.SingleValue
+            {...props}
+            isDisabled={!isAvailable}
+            className="basemap-switcher-value"
+        >
+            {content}
+        </chakraComponents.SingleValue>
+    );
+}
+
+function useBasemapItem(layer: Layer | undefined) {
+    const intl = useIntl();
+    const notAvailableLabel = intl.formatMessage({ id: "layerNotAvailable" });
+    const label = useTitle(layer);
+    const isAvailable = useLoadState(layer) !== "error";
+
+    return {
+        isAvailable,
+        content: (
+            <Flex direction="row" alignItems="center">
+                {label}
+                {!isAvailable && (
+                    <Box ml={2}>
+                        <Tooltip label={notAvailableLabel} placement="right" openDelay={500}>
+                            <span>
+                                <FiAlertTriangle color={"red"} aria-label={notAvailableLabel} />
+                            </span>
+                        </Tooltip>
+                    </Box>
+                )}
+            </Flex>
+        )
+    };
 }
 
 function useTitle(layer: Layer | undefined): string {

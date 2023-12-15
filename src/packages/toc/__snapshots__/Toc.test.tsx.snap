@@ -44,10 +44,15 @@ exports[`should successfully create a toc component 1`] = `
             data-theme="light"
           >
             <div
-              class="react-select__single-value css-1xa1gs2"
+              class="basemap-switcher-value react-select__single-value css-1xa1gs2"
               data-theme="light"
             >
-              Base layer
+              <div
+                class="css-u4p24i"
+                data-theme="light"
+              >
+                Base layer
+              </div>
             </div>
             <input
               aria-autocomplete="list"
@@ -114,7 +119,12 @@ exports[`should successfully create a toc component 1`] = `
               role="option"
               tabindex="-1"
             >
-              Base layer
+              <div
+                class="css-u4p24i"
+                data-theme="light"
+              >
+                Base layer
+              </div>
             </div>
           </div>
         </div>
@@ -152,7 +162,7 @@ exports[`should successfully create a toc component 1`] = `
             data-theme="light"
           >
             <input
-              aria-disabled="false"
+              aria-label="Layer 2"
               class="chakra-checkbox__input"
               style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
               type="checkbox"
@@ -209,7 +219,7 @@ exports[`should successfully create a toc component 1`] = `
             data-theme="light"
           >
             <input
-              aria-disabled="false"
+              aria-label="Layer 1"
               class="chakra-checkbox__input"
               style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
               type="checkbox"

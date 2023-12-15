@@ -152,10 +152,15 @@ it("should allow selecting 'no basemap' when enabled", async () => {
             data-theme="light"
           >
             <div
-              class="react-select__single-value css-1xa1gs2"
+              class="basemap-switcher-value react-select__single-value css-1xa1gs2"
               data-theme="light"
             >
-              OSM
+              <div
+                class="css-u4p24i"
+                data-theme="light"
+              >
+                OSM
+              </div>
             </div>
             <input
               aria-autocomplete="list"
@@ -221,7 +226,12 @@ it("should allow selecting 'no basemap' when enabled", async () => {
               role="option"
               tabindex="-1"
             >
-              OSM
+              <div
+                class="css-u4p24i"
+                data-theme="light"
+              >
+                OSM
+              </div>
             </div>
             <div
               aria-selected="false"
@@ -231,7 +241,12 @@ it("should allow selecting 'no basemap' when enabled", async () => {
               role="option"
               tabindex="-1"
             >
-              TopPlus Open
+              <div
+                class="css-u4p24i"
+                data-theme="light"
+              >
+                TopPlus Open
+              </div>
             </div>
             <div
               aria-selected="false"
@@ -241,7 +256,12 @@ it("should allow selecting 'no basemap' when enabled", async () => {
               role="option"
               tabindex="-1"
             >
-              emptyBasemapLabel
+              <div
+                class="css-u4p24i"
+                data-theme="light"
+              >
+                emptyBasemapLabel
+              </div>
             </div>
           </div>
         </div>
@@ -456,10 +476,15 @@ it("should update when a new basemap is registered", async () => {
             data-theme="light"
           >
             <div
-              class="react-select__single-value css-1xa1gs2"
+              class="basemap-switcher-value react-select__single-value css-1xa1gs2"
               data-theme="light"
             >
-              OSM
+              <div
+                class="css-u4p24i"
+                data-theme="light"
+              >
+                OSM
+              </div>
             </div>
             <input
               aria-autocomplete="list"
@@ -525,7 +550,12 @@ it("should update when a new basemap is registered", async () => {
               role="option"
               tabindex="-1"
             >
-              OSM
+              <div
+                class="css-u4p24i"
+                data-theme="light"
+              >
+                OSM
+              </div>
             </div>
             <div
               aria-selected="false"
@@ -535,7 +565,12 @@ it("should update when a new basemap is registered", async () => {
               role="option"
               tabindex="-1"
             >
-              TopPlus Open
+              <div
+                class="css-u4p24i"
+                data-theme="light"
+              >
+                TopPlus Open
+              </div>
             </div>
             <div
               aria-selected="false"
@@ -545,7 +580,12 @@ it("should update when a new basemap is registered", async () => {
               role="option"
               tabindex="-1"
             >
-              Foo
+              <div
+                class="css-u4p24i"
+                data-theme="light"
+              >
+                Foo
+              </div>
             </div>
           </div>
         </div>
@@ -727,10 +767,15 @@ it("should deactivate unavailable layers for selection", async () => {
             data-theme="light"
           >
             <div
-              class="react-select__single-value css-1xa1gs2"
+              class="basemap-switcher-value react-select__single-value css-1xa1gs2"
               data-theme="light"
             >
-              OSM
+              <div
+                class="css-u4p24i"
+                data-theme="light"
+              >
+                OSM
+              </div>
             </div>
             <input
               aria-autocomplete="list"
@@ -796,7 +841,12 @@ it("should deactivate unavailable layers for selection", async () => {
               role="option"
               tabindex="-1"
             >
-              OSM
+              <div
+                class="css-u4p24i"
+                data-theme="light"
+              >
+                OSM
+              </div>
             </div>
             <div
               aria-selected="false"
@@ -806,7 +856,12 @@ it("should deactivate unavailable layers for selection", async () => {
               role="option"
               tabindex="-1"
             >
-              TopPlus Open
+              <div
+                class="css-u4p24i"
+                data-theme="light"
+              >
+                TopPlus Open
+              </div>
             </div>
           </div>
         </div>
@@ -819,7 +874,7 @@ it("should deactivate unavailable layers for selection", async () => {
 
     // switch active layer
     activeBaseLayer = map.layers.getActiveBaseLayer();
-    expect(activeBaseLayer?.id).toBe("topplus-open");
+    expect(activeBaseLayer?.id).toBe("osm");
 
     // option disabled, warning icon shown and selected option changed?
     expect(switcherSelect).toMatchInlineSnapshot(`
@@ -846,10 +901,52 @@ it("should deactivate unavailable layers for selection", async () => {
             data-theme="light"
           >
             <div
-              class="react-select__single-value css-1xa1gs2"
+              class="basemap-switcher-value react-select__single-value react-select__single-value--is-disabled css-1xa1gs2"
               data-theme="light"
             >
-              TopPlus Open
+              <div
+                class="css-u4p24i"
+                data-theme="light"
+              >
+                OSM
+                <div
+                  class="css-1v4xcoh"
+                  data-theme="light"
+                >
+                  <span>
+                    <svg
+                      aria-label="layerNotAvailable"
+                      color="red"
+                      fill="none"
+                      height="1em"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      style="color: red;"
+                      viewBox="0 0 24 24"
+                      width="1em"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"
+                      />
+                      <line
+                        x1="12"
+                        x2="12"
+                        y1="9"
+                        y2="13"
+                      />
+                      <line
+                        x1="12"
+                        x2="12.01"
+                        y1="17"
+                        y2="17"
+                      />
+                    </svg>
+                  </span>
+                </div>
+              </div>
             </div>
             <input
               aria-autocomplete="list"
@@ -908,62 +1005,72 @@ it("should deactivate unavailable layers for selection", async () => {
           >
             <div
               aria-disabled="true"
-              aria-selected="false"
-              class="basemap-switcher-option react-select__option react-select__option--is-disabled react-select__option--is-focused css-e8c6zu"
+              aria-selected="true"
+              class="basemap-switcher-option react-select__option react-select__option--is-disabled react-select__option--is-focused react-select__option--is-selected css-e8c6zu"
               data-focus="true"
               data-theme="light"
               id="react-select-11-option-0"
               role="option"
               tabindex="-1"
             >
-              OSM
               <div
-                class="css-1v4xcoh"
+                class="css-u4p24i"
                 data-theme="light"
               >
-                <span>
-                  <svg
-                    aria-label="layerNotAvailable"
-                    color="red"
-                    fill="none"
-                    height="1em"
-                    stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    style="color: red;"
-                    viewBox="0 0 24 24"
-                    width="1em"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"
-                    />
-                    <line
-                      x1="12"
-                      x2="12"
-                      y1="9"
-                      y2="13"
-                    />
-                    <line
-                      x1="12"
-                      x2="12.01"
-                      y1="17"
-                      y2="17"
-                    />
-                  </svg>
-                </span>
+                OSM
+                <div
+                  class="css-1v4xcoh"
+                  data-theme="light"
+                >
+                  <span>
+                    <svg
+                      aria-label="layerNotAvailable"
+                      color="red"
+                      fill="none"
+                      height="1em"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      style="color: red;"
+                      viewBox="0 0 24 24"
+                      width="1em"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"
+                      />
+                      <line
+                        x1="12"
+                        x2="12"
+                        y1="9"
+                        y2="13"
+                      />
+                      <line
+                        x1="12"
+                        x2="12.01"
+                        y1="17"
+                        y2="17"
+                      />
+                    </svg>
+                  </span>
+                </div>
               </div>
             </div>
             <div
-              aria-selected="true"
-              class="basemap-switcher-option react-select__option react-select__option--is-selected css-e8c6zu"
+              aria-selected="false"
+              class="basemap-switcher-option react-select__option css-e8c6zu"
               data-theme="light"
               id="react-select-11-option-1"
               role="option"
               tabindex="-1"
             >
-              TopPlus Open
+              <div
+                class="css-u4p24i"
+                data-theme="light"
+              >
+                TopPlus Open
+              </div>
             </div>
           </div>
         </div>
