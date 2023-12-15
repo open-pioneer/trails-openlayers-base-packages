@@ -159,6 +159,9 @@ export const Selection: FC<SelectionProps> = (props) => {
         setSelectedMethode(newValue);
     });
 
+    const [dragControllerActive, setDragControllerActive] = useState<boolean>(true);
+    useDragSelection(mapState.map, selectedMethod, intl, onExtentSelected, dragControllerActive);
+
     const sourceOptions = useMemo(
         () =>
             sources.map<SourceOption>((source) => {
@@ -175,7 +178,17 @@ export const Selection: FC<SelectionProps> = (props) => {
         onSelectionSourceChanged && onSelectionSourceChanged({ source: newValue?.value });
     });
 
-    useDragSelection(mapState.map, selectedMethod, intl, onExtentSelected);
+    useEffect(() => {
+        if (!currentSource) return;
+        setDragControllerActive(currentSource && currentSource.status === "available");
+        /*// TODO: Why can this be undefined after test above?!
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore*/
+        const handle = currentSource.on("changed:status", () => {
+            setDragControllerActive(currentSource && currentSource.status === "available");
+        });
+        return () => handle.destroy();
+    }, [currentSource, setDragControllerActive]);
 
     return (
         <VStack {...containerProps} spacing={2}>
@@ -329,21 +342,25 @@ function useDragSelection(
     map: MapModel | undefined,
     selectMethode: MethodOption,
     intl: PackageIntl,
-    onExtentSelected: (geometry: Geometry) => void
+    onExtentSelected: (geometry: Geometry) => void,
+    isActive: boolean
 ) {
     useEffect(() => {
         if (!map) {
             return;
         }
 
-        const controller = new DragController(
+        const dragController = new DragController(
             map.olMap,
             selectMethode.value,
             intl.formatMessage({ id: "tooltip" }),
+            intl.formatMessage({ id: "disabledTooltip" }),
             onExtentSelected
         );
+        dragController.setActive(isActive);
+
         return () => {
-            controller.destroy();
+            dragController?.destroy();
         };
-    }, [map, selectMethode, intl, onExtentSelected]);
+    }, [map, selectMethode, intl, onExtentSelected, isActive]);
 }

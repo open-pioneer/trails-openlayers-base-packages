@@ -26,14 +26,16 @@ it("Should drag a Extent", async () => {
 function createController() {
     const olMap = new OlMap();
     const tooltipTest = "Tooltip wurde gesetzt";
+    const disabledTooltipText = "Funktion ist deaktiviert";
     const extentHandler = vi.fn();
     const controller = new DragController(
         olMap,
         SelectionMethods.extent,
         tooltipTest,
+        disabledTooltipText,
         extentHandler
     );
-    return { olMap, controller, tooltipTest, extentHandler };
+    return { olMap, controller, tooltipTest, extentHandler, disabledTooltipText };
 }
 
 function getTooltipElement(olMap: OlMap, className: string): HTMLElement {

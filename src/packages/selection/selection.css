@@ -24,3 +24,7 @@
 .map-container .spatial-selection-active {
     cursor: crosshair;
 }
+
+.map-container .spatial-selection-inactive {
+    cursor: no-drop;
+}

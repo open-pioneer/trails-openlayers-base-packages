@@ -6,8 +6,8 @@ import { unByKey } from "ol/Observable";
 import Overlay from "ol/Overlay";
 import { mouseActionButton } from "ol/events/condition";
 import Geometry from "ol/geom/Geometry";
-import { DragBox } from "ol/interaction";
 import { SelectionMethods } from "./Selection";
+import { DragBox } from "ol/interaction";
 
 interface SelectionBox extends Resource {
     dragBox: DragBox;
@@ -20,30 +20,59 @@ interface Tooltip extends Resource {
 }
 
 const ACTIVE_CLASS = "spatial-selection-active";
+const INACTIVE_CLASS = "spatial-selection-inactive";
 
 export class DragController {
     private tooltip: Tooltip;
     private dragBox?: SelectionBox;
+    private olMap: OlMap;
+    private isActive: boolean = true;
+    private tooltipMessage: string;
+    private tooltipDisabledMessage: string;
 
     constructor(
         olMap: OlMap,
         selectMethode: string,
         tooltipMessage: string,
+        tooltipDisabledMessage: string,
         onExtentSelected: (geometry: Geometry) => void
     ) {
         switch (selectMethode) {
             case SelectionMethods.extent:
+                this.dragBox = this.createDragBox(olMap, onExtentSelected);
+                break;
             default:
                 this.dragBox = this.createDragBox(olMap, onExtentSelected);
                 break;
         }
 
         this.tooltip = this.createHelpTooltip(olMap, tooltipMessage);
+        this.olMap = olMap;
+        this.tooltipMessage = tooltipMessage;
+        this.tooltipDisabledMessage = tooltipDisabledMessage;
     }
 
     destroy() {
         this.tooltip.destroy();
         if (this.dragBox) this.dragBox.destroy();
+    }
+
+    setActive(isActive: boolean) {
+        if (this.isActive === isActive || !this.dragBox) return;
+        const viewPort = this.olMap.getViewport();
+        if (isActive) {
+            this.olMap.addInteraction(this.dragBox.dragBox);
+            this.tooltip.element.textContent = this.tooltipMessage;
+            viewPort.classList.remove(INACTIVE_CLASS);
+            viewPort.classList.add(ACTIVE_CLASS);
+            this.isActive = true;
+        } else {
+            this.olMap.removeInteraction(this.dragBox.dragBox);
+            this.tooltip.element.textContent = this.tooltipDisabledMessage;
+            viewPort.classList.remove(ACTIVE_CLASS);
+            viewPort.classList.add(INACTIVE_CLASS);
+            this.isActive = false;
+        }
     }
 
     private createDragBox(olMap: OlMap, onExtentSelected: (geometry: Geometry) => void) {
@@ -56,15 +85,16 @@ export class DragController {
             onExtentSelected(dragBox.getGeometry());
         });
 
-        const element = olMap.getViewport();
-        element.classList.add(ACTIVE_CLASS);
+        const viewPort = olMap.getViewport();
+        viewPort.classList.add(ACTIVE_CLASS);
 
         return {
             dragBox: dragBox,
             destroy() {
                 olMap.removeInteraction(dragBox);
                 dragBox.dispose();
-                element.classList.remove(ACTIVE_CLASS);
+                viewPort.classList.remove(ACTIVE_CLASS);
+                viewPort.classList.remove(INACTIVE_CLASS);
             }
         };
     }
