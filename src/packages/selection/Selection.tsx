@@ -179,7 +179,10 @@ export const Selection: FC<SelectionProps> = (props) => {
     });
 
     useEffect(() => {
-        if (!currentSource) return;
+        if (!currentSource) {
+            setDragControllerActive(false);
+            return;
+        }
         setDragControllerActive(currentSource && currentSource.status === "available");
         /*// TODO: Why can this be undefined after test above?!
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
