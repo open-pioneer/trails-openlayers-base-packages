@@ -40,6 +40,10 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
         this.#updateLayersParam();
     }
 
+    get legend() {
+        return undefined;
+    }
+
     get url(): string {
         return this.#url;
     }
@@ -157,9 +161,11 @@ class WMSSublayerImpl extends AbstractLayerBase implements WMSSublayer {
         }
         return parentLayer;
     }
-    getLegend(): string | undefined {
-        //TODO async
-        // TODO if layer name is undefined, return undefined
+    get legend(): string | undefined {
+        //parent sublayer has not legend
+        if (!this.name || this.sublayers.getSublayers().length) {
+            return;
+        }
         const olMap = this.map.olMap;
         const res = olMap.getView().getResolution();
         return this.#parentLayer?.__source.getLegendUrl(res, { LAYER: this.name });

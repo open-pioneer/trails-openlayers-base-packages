@@ -9,6 +9,7 @@ import type { LayerRetrievalOptions } from "../shared";
 export interface LayerBaseEvents {
     "changed": void;
     "changed:title": void;
+    "changed:legend": void;
     "changed:description": void;
     "changed:visible": void;
     "changed:attributes": void;
@@ -85,6 +86,8 @@ export interface LayerBase<AdditionalEvents = {}>
      * Future versions may completely remove invisible layers from the OpenLayer's map under some circumstances.
      */
     readonly visible: boolean;
+
+    readonly legend: string | undefined;
 
     /**
      * The collection of child sublayers for this layer.
@@ -169,7 +172,7 @@ export interface Layer<AdditionalEvents = {}> extends LayerBase<AdditionalEvents
 /**
  * Represents a sublayer of another layer.
  */
-export interface Sublayer extends LayerBase, LayerLegend {
+export interface Sublayer extends LayerBase {
     /**
      * The direct parent of this layer instance.
      * This can either be the parent layer or another sublayer.
@@ -180,10 +183,6 @@ export interface Sublayer extends LayerBase, LayerLegend {
      * The parent layer that owns this sublayer.
      */
     readonly parentLayer: Layer;
-}
-
-export interface LayerLegend {
-    getLegend?(): string | undefined;
 }
 
 /**

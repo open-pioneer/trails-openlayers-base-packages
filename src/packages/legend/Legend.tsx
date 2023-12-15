@@ -141,16 +141,16 @@ function LegendContent(props: { layer: LegendLayer; showBaseLayers: boolean }) {
 
     const { layer, showBaseLayers } = props;
     const legendAttributes = useLegendAttributes(layer.attributes);
+    const legendUrl = useLegend(layer);
     let renderedComponent: ReactNode | undefined;
 
     if (legendAttributes?.Component) {
         renderedComponent = <legendAttributes.Component layer={layer} />;
     } else if (legendAttributes?.imageUrl) {
-        renderedComponent = <LegendImage layer={layer} legendAttributes={legendAttributes} />;
+        renderedComponent = <LegendImage layer={layer} imageUrl={legendAttributes.imageUrl} />;
     } else {
-        if ("parentLayer" in layer && layer.sublayers?.getSublayers().length === 0) {
-            layer.updateAttributes({ legend: { imageUrl: layer.getLegend?.() } });
-            renderedComponent = <LegendImage layer={layer} legendAttributes={legendAttributes} />;
+        if (legendUrl) {
+            renderedComponent = <LegendImage layer={layer} imageUrl={legendUrl} />;
         }
     }
 
@@ -167,13 +167,10 @@ function LegendContent(props: { layer: LegendLayer; showBaseLayers: boolean }) {
     ) : undefined;
 }
 
-function LegendImage(props: {
-    layer: LegendLayer;
-    legendAttributes: LegendItemAttributes | undefined;
-}) {
+function LegendImage(props: { imageUrl: string; layer: LegendLayer }) {
     const intl = useIntl();
 
-    const { layer, legendAttributes } = props;
+    const { layer, imageUrl } = props;
 
     return (
         <Box>
@@ -181,7 +178,7 @@ function LegendImage(props: {
             <Image
                 maxW="none"
                 maxH="none"
-                src={legendAttributes?.imageUrl}
+                src={imageUrl}
                 alt={intl.formatMessage({ id: "altLabel" }, { layerName: layer.title })}
                 className={"legend-item__image"}
                 // TODO: test fallback with NVDA
@@ -197,6 +194,19 @@ function LegendImage(props: {
             />
         </Box>
     );
+}
+
+function useLegend(layer: LayerBase): string | undefined {
+    const getSnapshot = useCallback(() => layer.legend, [layer]);
+    const subscribe = useCallback(
+        (cb: () => void) => {
+            const resource = layer.on("changed:legend", cb);
+            return () => resource.destroy();
+        },
+        [layer]
+    );
+
+    return useSyncExternalStore(subscribe, getSnapshot);
 }
 
 /** Returns the top level operation layers (without LayerGroups). */
