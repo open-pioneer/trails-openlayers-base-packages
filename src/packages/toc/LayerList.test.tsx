@@ -419,7 +419,6 @@ it("reacts to changes of the layer load state", async () => {
         ]
     });
     const map = await registry.expectMapModel(mapId);
-    const layer = map.layers.getLayerById("layer1");
 
     const { container } = render(
         <PackageContextProvider>
@@ -432,8 +431,6 @@ it("reacts to changes of the layer load state", async () => {
     let icons = container.querySelectorAll(".toc-layer-item-content-icon");
 
     expect(checkbox).toBeTruthy();
-    expect(checkbox.disabled).toBe(false);
-    expect(layer?.visible).toBe(true);
     expect(button?.disabled).toBe(false);
     expect(icons).toHaveLength(0);
 
@@ -442,8 +439,6 @@ it("reacts to changes of the layer load state", async () => {
     });
 
     icons = container.querySelectorAll(".toc-layer-item-content-icon");
-    expect(checkbox.disabled).toBe(true);
-    expect(layer?.visible).toBe(false);
     expect(button?.disabled).toBe(true);
     expect(icons).toHaveLength(1);
 
@@ -453,8 +448,6 @@ it("reacts to changes of the layer load state", async () => {
     });
 
     icons = container.querySelectorAll(".toc-layer-item-content-icon");
-    expect(checkbox.disabled).toBe(false);
-    expect(layer?.visible).toBe(false); // make the layer visible again manually
     expect(button?.disabled).toBe(false);
     expect(icons).toHaveLength(0);
 });

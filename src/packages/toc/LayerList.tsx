@@ -98,7 +98,6 @@ function LayerItem(props: { layer: TocLayer; intl: PackageIntl }): JSX.Element {
             >
                 <Checkbox
                     isChecked={isVisible}
-                    isDisabled={!isAvailable}
                     onChange={(event) => setVisible(event.target.checked)}
                 >
                     {title}

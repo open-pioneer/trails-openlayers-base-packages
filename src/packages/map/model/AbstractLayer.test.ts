@@ -123,39 +123,6 @@ it("tracks the layer source's state", async () => {
     }
 });
 
-it("hides a layer when state changes to error", async () => {
-    const source = new Source({
-        state: "ready"
-    });
-    const olLayer = new Layer({
-        source
-    });
-    const layer = createLayer({
-        id: "a",
-        title: "A",
-        visible: true,
-        olLayer: olLayer
-    });
-
-    {
-        expect(layer.loadState).toBe("loaded");
-        expect(layer.visible).toBe(true);
-
-        source.setState("loading");
-        expect(layer.loadState).toBe("loading");
-        expect(layer.visible).toBe(true);
-
-        source.setState("error");
-        expect(layer.loadState).toBe("error");
-        expect(layer.visible).toBe(false);
-
-        // don't activate visibility again
-        source.setState("ready");
-        expect(layer.loadState).toBe("loaded");
-        expect(layer.visible).toBe(false);
-    }
-});
-
 describe("performs a health check", () => {
     it("when specified as URL, success", async () => {
         const mockedFetch: SpyInstance = vi.spyOn(global, "fetch");
@@ -182,7 +149,6 @@ describe("performs a health check", () => {
         await sleep(25);
         expect(eventEmitted).toBe(0); // no change of state
         expect(layer.loadState).toBe("loaded");
-        expect(layer.visible).toBe(true); // still visible
         // ol layer state remains ready and is overwritten by internal health check
         expect(layer.olLayer.getSourceState()).toBe("ready");
     });
@@ -208,14 +174,12 @@ describe("performs a health check", () => {
         expect(layer.olLayer.getSourceState()).toBe("ready");
         expect(mockedFetch).toHaveBeenCalledWith(testUrl);
         expect(layer.loadState).toBe("loaded");
-        expect(layer.visible).toBe(true);
         expect(eventEmitted).toBe(0);
 
         await sleep(25);
         // ol layer state remains ready and is overwritten by internal health check
         expect(layer.olLayer.getSourceState()).toBe("ready");
         expect(layer.loadState).toBe("error");
-        expect(layer.visible).toBe(false);
         expect(eventEmitted).toBe(1);
 
         expect(mockedWarn.mock.calls).toMatchInlineSnapshot(`
@@ -256,7 +220,6 @@ describe("performs a health check", () => {
         expect(layer.olLayer.getSourceState()).toBe("ready");
         expect(eventEmitted).toBe(0);
         expect(layer.loadState).toBe("loaded");
-        expect(layer.visible).toBe(true);
         expect(didResolve).toBe(false);
 
         await sleep(25);
@@ -265,7 +228,6 @@ describe("performs a health check", () => {
         expect(layer.olLayer.getSourceState()).toBe("ready");
         expect(eventEmitted).toBe(1);
         expect(layer.loadState).toBe("error");
-        expect(layer.visible).toBe(false);
     });
 
     it("when specified as function returning 'loaded'", async () => {
@@ -325,7 +287,6 @@ describe("performs a health check", () => {
         expect(mockedFetch).toHaveBeenCalledTimes(0);
         expect(eventEmitted).toBe(0); // no change of state
         expect(layer.loadState).toBe("loaded");
-        expect(layer.visible).toBe(true);
         expect(layer.olLayer.getSourceState()).toBe("ready");
     });
 
@@ -340,7 +301,6 @@ describe("performs a health check", () => {
         layer.on("changed:loadState", () => eventEmitted++);
 
         expect(layer.loadState).toBe("error");
-        expect(layer.visible).toBe(false);
         expect(layer.olLayer.getSourceState()).toBe("error");
         expect(mockedFetch).toHaveBeenCalledTimes(0);
         expect(eventEmitted).toBe(0); // no event emitted because state was initially error
