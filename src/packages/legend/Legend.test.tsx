@@ -243,14 +243,13 @@ it("shows a legend for active basemap if showBaseLayers is configured to be true
     expect(src).toBe("https://basemap-url.com/");
 });
 
-//TODO: Remove skip after sublayer logic is fixed
+//FIX: Remove snapshot (css class `layer-` with uuid will be updated with every file change)
+//TODO: Remove skip after fix
 it.skip("shows legend entries for nested sublayers", async () => {
     // todo setupMap anpassen
     const { mapId, registry } = await setupMapWithWMSLayer();
     await registry.expectMapModel(mapId);
     const injectedServices = createServiceOptions({ registry });
-
-    console.log(await registry.getMapModel(mapId));
 
     render(
         <PackageContextProvider services={injectedServices}>
@@ -436,47 +435,58 @@ function createLayerWithNestedSublayers() {
     return new WMSLayer({
         title: "Nested Layer",
         visible: true,
-        url: "https://www.wms.nrw.de/gd/bk05l",
+        url: "https://fake.wms.url/service",
         sublayers: [
             {
-                name: "sublayer1",
-                title: "sublayer1",
+                title: "Sublayer 1",
                 sublayers: [
                     {
-                        name: "sublayer2",
-                        title: "sublayer2",
+                        title: "Sublayer 2",
                         sublayers: [
                             {
-                                name: "sublayer3_2",
-                                title: "sublayer3_2",
+                                title: "Sublayer 3.2",
+                                // legend for nested layer group
+                                attributes: {
+                                    "legend": {
+                                        imageUrl: "https://fake.legend.url/sublayer3_2.png"
+                                    }
+                                },
                                 sublayers: [
                                     {
+                                        name: "sublayer4_4",
+                                        title: "Sublayer 4.4",
+                                        attributes: {
+                                            "legend": {
+                                                Component: function EmptyLegend() {
+                                                    return "";
+                                                }
+                                            }
+                                        }
+                                    },
+                                    {
                                         name: "sublayer4_3",
-                                        title: "sublayer4_3"
+                                        title: "Sublayer 4.3"
                                     }
                                 ]
                             },
                             {
-                                name: "sublayer3_1",
-                                title: "sublayer3_1",
+                                title: "Sublayer 3.1",
                                 sublayers: [
                                     {
                                         name: "sublayer4_2",
-                                        title: "sublayer4_2",
+                                        title: "Sublayer 4.2",
                                         attributes: {
                                             "legend": {
-                                                imageUrl:
-                                                    "https://www.wms.nrw.de/gd/bk05l?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=Sickerwasserrate_Gruenland"
+                                                imageUrl: "https://fake.legend.url/sublayer4_2.png"
                                             }
                                         }
                                     },
                                     {
                                         name: "sublayer4_1",
-                                        title: "sublayer4_1",
+                                        title: "Sublayer 4.1",
                                         attributes: {
                                             "legend": {
-                                                imageUrl:
-                                                    "https://www.wms.nrw.de/gd/bk05l?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=Direktabfluss_Gruenland"
+                                                imageUrl: "https://fake.legend.url/sublayer4_1.png"
                                             }
                                         }
                                     }

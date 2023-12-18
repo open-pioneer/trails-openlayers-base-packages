@@ -99,7 +99,7 @@ exports[`shows legend entries for nested sublayers 1`] = `
     role="list"
   >
     <li
-      class="legend-item layer-c789d20c-4c90-4208-9b9a-97bf29c607a3 css-0"
+      class="legend-item layer-4fe37aeb-9a1a-4832-a1c0-ede818aaf340 css-0"
       data-theme="light"
     >
       <div
@@ -110,18 +110,18 @@ exports[`shows legend entries for nested sublayers 1`] = `
           class="chakra-text css-0"
           data-theme="light"
         >
-          sublayer4_1
+          Sublayer 4.1
         </p>
         <img
           alt="altLabel"
           class="legend-item__image css-12ffw4m"
           data-theme="light"
-          src="https://www.wms.nrw.de/gd/bk05l?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetLegendGraphic&FORMAT=image%2Fpng&SCALE=545978.7734655447&LAYERS=sublayer4_3%2Csublayer4_2%2Csublayer4_1&LAYER=sublayer4_1"
+          src="https://fake.legend.url/sublayer4_1.png"
         />
       </div>
     </li>
     <li
-      class="legend-item layer-3481bee8-dfed-4357-9180-982d8e7710e6 css-0"
+      class="legend-item layer-c8e4eba9-9183-4318-8c6e-5e7994006d01 css-0"
       data-theme="light"
     >
       <div
@@ -132,18 +132,18 @@ exports[`shows legend entries for nested sublayers 1`] = `
           class="chakra-text css-0"
           data-theme="light"
         >
-          sublayer4_2
+          Sublayer 4.2
         </p>
         <img
           alt="altLabel"
           class="legend-item__image css-12ffw4m"
           data-theme="light"
-          src="https://www.wms.nrw.de/gd/bk05l?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetLegendGraphic&FORMAT=image%2Fpng&SCALE=545978.7734655447&LAYERS=sublayer4_3%2Csublayer4_2%2Csublayer4_1&LAYER=sublayer4_2"
+          src="https://fake.legend.url/sublayer4_2.png"
         />
       </div>
     </li>
     <li
-      class="legend-item layer-dbe53053-d583-4629-9b29-acd35754cedf css-0"
+      class="legend-item layer-2b2aa59d-6a9a-45ff-9731-f41646324ae0 css-0"
       data-theme="light"
     >
       <div
@@ -154,16 +154,42 @@ exports[`shows legend entries for nested sublayers 1`] = `
           class="chakra-text css-0"
           data-theme="light"
         >
-          sublayer4_3
+          Sublayer 3.2
         </p>
         <img
           alt="altLabel"
           class="legend-item__image css-12ffw4m"
           data-theme="light"
-          src="https://www.wms.nrw.de/gd/bk05l?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetLegendGraphic&FORMAT=image%2Fpng&SCALE=545978.7734655447&LAYERS=sublayer4_3%2Csublayer4_2%2Csublayer4_1&LAYER=sublayer4_3"
+          src="https://fake.legend.url/sublayer3_2.png"
         />
       </div>
     </li>
+    <li
+      class="legend-item layer-ba9dc9d5-1c70-4cb7-8718-afab08c77495 css-0"
+      data-theme="light"
+    >
+      <div
+        class="css-0"
+        data-theme="light"
+      >
+        <p
+          class="chakra-text css-0"
+          data-theme="light"
+        >
+          Sublayer 4.3
+        </p>
+        <img
+          alt="altLabel"
+          class="legend-item__image css-12ffw4m"
+          data-theme="light"
+          src="https://fake.wms.url/service?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetLegendGraphic&FORMAT=image%2Fpng&SCALE=545978.7734655447&LAYERS=sublayer4_4%2Csublayer4_3%2Csublayer4_2%2Csublayer4_1&LAYER=sublayer4_3"
+        />
+      </div>
+    </li>
+    <li
+      class="legend-item layer-75f9cbed-332c-445b-9842-a6bbd465b779 css-0"
+      data-theme="light"
+    />
   </ul>
 </div>
 `;
