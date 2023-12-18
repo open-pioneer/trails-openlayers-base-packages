@@ -40,7 +40,8 @@
             "patches",
             "=======",
             "@changesets/assemble-release-plan: don't bump to major for 0.x packages (see https://github.com/changesets/changesets/issues/1228)",
-            "react-select: patched to use composedPath() in event conditions; needed for web component integration (see $TODO)"
+            "react-select: patched to use composedPath() in event conditions; needed for web component integration (see https://github.com/JedWatson/react-select/issues/5824)",
+            "@chakra-ui/menu;react-use-outside-click;hooks: patched to fix menus in shadow dom (see https://github.com/open-pioneer/trails-openlayers-base-packages/issues/184)"
         ],
         "overrides": {
             "semver@<7.5.2": ">=7.5.2",
@@ -51,7 +52,11 @@
             "ignoreCves": []
         },
         "patchedDependencies": {
-            "@changesets/assemble-release-plan@5.2.4": "patches/@changesets__assemble-release-plan@5.2.4.patch"
+            "@changesets/assemble-release-plan@5.2.4": "patches/@changesets__assemble-release-plan@5.2.4.patch",
+            "react-select@5.7.7": "patches/react-select@5.7.7.patch",
+            "@chakra-ui/menu@2.2.1": "patches/@chakra-ui__menu@2.2.1.patch",
+            "@chakra-ui/react-use-outside-click@2.2.0": "patches/@chakra-ui__react-use-outside-click@2.2.0.patch",
+            "@chakra-ui/hooks@2.2.1": "patches/@chakra-ui__hooks@2.2.1.patch"
         }
     },
     "dependencies": {
