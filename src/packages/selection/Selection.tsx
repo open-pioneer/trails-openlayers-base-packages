@@ -243,12 +243,12 @@ function SourceSelectOption(props: OptionProps<SourceOption>): JSX.Element {
 function SourceSelectValue(props: SingleValueProps<SourceOption>): JSX.Element {
     const { value } = props.data;
     const { isAvailable, content } = useSourceItem(value);
+    const clazz = isAvailable
+        ? "selection-source-value"
+        : "selection-source-value selection-source-value--disabled";
+
     return (
-        <chakraComponents.SingleValue
-            {...props}
-            isDisabled={!isAvailable}
-            className="selection-source-value"
-        >
+        <chakraComponents.SingleValue {...props} isDisabled={!isAvailable} className={clazz}>
             {content}
         </chakraComponents.SingleValue>
     );

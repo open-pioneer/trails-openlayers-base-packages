@@ -28,3 +28,7 @@
 .map-container .spatial-selection-inactive {
     cursor: no-drop;
 }
+
+.selection-source-value.selection-source-value--disabled {
+    opacity: 0.4;
+}
