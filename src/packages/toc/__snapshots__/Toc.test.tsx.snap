@@ -162,6 +162,7 @@ exports[`should successfully create a toc component 1`] = `
             data-theme="light"
           >
             <input
+              aria-disabled="false"
               aria-label="Layer 2"
               class="chakra-checkbox__input"
               style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
@@ -219,6 +220,7 @@ exports[`should successfully create a toc component 1`] = `
             data-theme="light"
           >
             <input
+              aria-disabled="false"
               aria-label="Layer 1"
               class="chakra-checkbox__input"
               style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
