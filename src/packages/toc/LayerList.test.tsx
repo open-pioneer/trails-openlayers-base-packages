@@ -419,7 +419,6 @@ it("reacts to changes of the layer load state", async () => {
         ]
     });
     const map = await registry.expectMapModel(mapId);
-    const layer = map.layers.getLayerById("layer1");
 
     const { container } = render(
         <PackageContextProvider>
