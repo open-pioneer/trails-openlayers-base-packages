@@ -259,8 +259,8 @@ function SourceSelectValue(props: SingleValueProps<SourceOption>): JSX.Element {
 
 function useSourceItem(source: SelectionSource | undefined, isSelected: boolean) {
     const intl = useIntl();
-    // TODO: Label not working?
-    const notAvailableLabel: string | undefined = intl.formatMessage({ id: "sourceNotAvailable" });
+    const notAvailableLabel: string | undefined =
+        source?.unavailableStatusReason ?? intl.formatMessage({ id: "sourceNotAvailable" });
     const label: string | undefined = source?.label;
     const isAvailable = useSourceStatus(source) === "available";
 

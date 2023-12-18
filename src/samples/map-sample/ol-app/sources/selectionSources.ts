@@ -66,17 +66,25 @@ export class VectorLayerSelectionSource
     implements SelectionSource
 {
     readonly label: string;
-    #status: SelectionSourceStatus;
+    #status: SelectionSourceStatus = "available";
     #vectorLayer: VectorLayer<VectorSource>;
     #eventHandler: EventsKey;
 
-    constructor(vectorLayer: VectorLayer<VectorSource>, label: string) {
+    #unavailableStatusReason: string | undefined;
+    #layerNotVisibleReason: string;
+
+    constructor(
+        vectorLayer: VectorLayer<VectorSource>,
+        label: string,
+        layerNotVisibleReason: string
+    ) {
         super();
-        this.#status = vectorLayer.getVisible() ? "available" : "unavailable";
         this.label = label;
         this.#vectorLayer = vectorLayer;
+        this.#layerNotVisibleReason = layerNotVisibleReason;
+        this.updateStatus();
         this.#eventHandler = this.#vectorLayer.on("change:visible", () => {
-            this.status = this.#vectorLayer.getVisible() ? "available" : "unavailable";
+            this.updateStatus();
         });
     }
 
@@ -92,9 +100,18 @@ export class VectorLayerSelectionSource
         return this.#status;
     }
 
-    set status(value: SelectionSourceStatus) {
-        if (value !== this.#status) {
-            this.#status = value;
+    get unavailableStatusReason(): string | undefined {
+        return this.#unavailableStatusReason;
+    }
+
+    private updateStatus() {
+        const layerIsVisible = this.#vectorLayer.getVisible();
+        const newStatus = layerIsVisible ? "available" : "unavailable";
+        if (newStatus !== this.#status) {
+            this.#status = newStatus;
+            this.#unavailableStatusReason = layerIsVisible
+                ? undefined
+                : this.#layerNotVisibleReason;
             this.emit("changed:status");
         }
     }

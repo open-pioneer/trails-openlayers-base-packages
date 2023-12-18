@@ -120,6 +120,14 @@ export interface SelectionSource extends Partial<SelectionSourceEventBase> {
     readonly status?: SelectionSourceStatus;
 
     /**
+     * If the status of this source is unavailable, the reason for this can be stored here.
+     *
+     * This will be displayed by the user interface.
+     */
+    // TODO: Maybe rename to just reason?
+    readonly unavailableStatusReason?: string;
+
+    /**
      * Performs a selection and returns a list of selection results.
      *
      * Implementations should return the results ordered by priority (best match first), if possible.

@@ -327,6 +327,8 @@ function useVectorLayerSelectionSources(map: MapModel | undefined, vectorLayerId
     const [selectionSources, setSelectionSources] = useState<SelectionSource[]>([]);
     const [eventHandler, setEventHandler] = useState<Resource[]>([]);
 
+    const intl = useIntl();
+
     function isVectorLayerWithVectorSource(layer: OlBaseLayer) {
         return layer instanceof VectorLayer && layer.getSource() instanceof VectorSource;
     }
@@ -346,7 +348,8 @@ function useVectorLayerSelectionSources(map: MapModel | undefined, vectorLayerId
 
             const layerSelectionSource = new VectorLayerSelectionSource(
                 opLayer.olLayer as VectorLayer<VectorSource>,
-                opLayer.title
+                opLayer.title,
+                intl.formatMessage({ id: "layerNotVisibleReason" })
             );
             const eventHandler = layerSelectionSource.on("changed:status", () => {
                 if (layerSelectionSource.status === "unavailable") map.removeHighlight();
