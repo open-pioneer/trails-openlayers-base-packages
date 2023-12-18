@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import {
+    Box,
     Flex,
     FormControl,
     FormLabel,
@@ -237,6 +238,13 @@ export const Selection: FC<SelectionProps> = (props) => {
                     isOptionDisabled={(option) =>
                         option.value === undefined || option.value.status === "unavailable"
                     }
+                    // optionLabel is used by screenreaders
+                    getOptionLabel={(option) =>
+                        option.label +
+                        (option.value === undefined || option.value.status === "unavailable"
+                            ? " " + intl.formatMessage({ id: "sourceNotAvailable" })
+                            : "")
+                    }
                 />
             </FormControl>
         </VStack>
@@ -290,11 +298,17 @@ function useSourceItem(source: SelectionSource | undefined, isSelected: boolean)
             <Flex direction="row" alignItems="center" grow={1}>
                 {!isSelected && <Flex grow={1}>{label}</Flex>}
                 {!isAvailable && (
-                    <Tooltip label={notAvailableLabel} placement="right" openDelay={500}>
-                        <chakra.span>
-                            <Icon as={FiAlertTriangle} color="red" aria-label={notAvailableLabel} />
-                        </chakra.span>
-                    </Tooltip>
+                    <Box ml={2}>
+                        <Tooltip label={notAvailableLabel} placement="right" openDelay={500}>
+                            <chakra.span>
+                                <Icon
+                                    as={FiAlertTriangle}
+                                    color="red"
+                                    aria-label={notAvailableLabel}
+                                />
+                            </chakra.span>
+                        </Tooltip>
+                    </Box>
                 )}
                 {isSelected && label}
             </Flex>
