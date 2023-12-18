@@ -37,10 +37,12 @@ export class DragController {
         tooltipDisabledMessage: string,
         onExtentSelected: (geometry: Geometry) => void
     ) {
+        /**
+         * Notice for Projectdeveloper
+         * Add cases for more Selectionmethods
+         */
         switch (selectMethode) {
             case SelectionMethods.extent:
-                this.dragBox = this.createDragBox(olMap, onExtentSelected);
-                break;
             default:
                 this.dragBox = this.createDragBox(olMap, onExtentSelected);
                 break;
@@ -52,6 +54,9 @@ export class DragController {
         this.tooltipDisabledMessage = tooltipDisabledMessage;
     }
 
+    /**
+     * Method for destroying the controller when it is no longer needed
+     */
     destroy() {
         this.tooltip.destroy();
         if (this.dragBox) this.dragBox.destroy();
@@ -75,6 +80,12 @@ export class DragController {
         }
     }
 
+    /**
+     * Method for create a simple extent-selection
+     * @param olMap
+     * @param onExtentSelected
+     * @returns
+     */
     private createDragBox(olMap: OlMap, onExtentSelected: (geometry: Geometry) => void) {
         const dragBox = new DragBox({
             className: "selection-drag-box",
@@ -99,6 +110,12 @@ export class DragController {
         };
     }
 
+    /**
+     * Method to generate a tooltip on the mouse cursor
+     * @param olMap
+     * @param message
+     * @returns
+     */
     private createHelpTooltip(olMap: OlMap, message: string) {
         const element = document.createElement("div");
         element.className = "select-tooltip";
@@ -126,6 +143,10 @@ export class DragController {
         };
     }
 
+    /**
+     * Method for testing purposes only
+     * @returns class DragBox
+     */
     getDragBox() {
         return this.dragBox;
     }

@@ -22,7 +22,7 @@ import {
 } from "chakra-react-select";
 import { Geometry } from "ol/geom";
 import { useIntl, useService } from "open-pioneer:react-hooks";
-import { FC, useEffect, useMemo, useState } from "react";
+import { FC, useCallback, useEffect, useMemo, useState } from "react";
 import { FiAlertTriangle } from "react-icons/fi";
 import { DragController } from "./DragController";
 import { SelectionController } from "./SelectionController";
@@ -137,24 +137,32 @@ export const Selection: FC<SelectionProps> = (props) => {
         onSelectionComplete
     );
 
-    /* (props.?methodOptions || props?.methodOptions.length > 0) ?*/
     /**
      * Method to build Option-Array from the supported selection methods for the selection-method react-select
      * If there is no configuration => Default selection method: EXTEND
      * @param methods
      * @returns
      */
-    const buildMethodOptions = (methods = [{ type: SelectionMethods.extent }]) => {
-        const objects: MethodOption[] = [];
-        methods.forEach((item) => {
-            objects.push({ label: intl.formatMessage({ id: item.type }), value: item.type });
-        });
-        return objects;
-    };
+    const buildMethodOptions = useCallback(
+        (methods: string[] | undefined) => {
+            const objects: MethodOption[] = [];
+            if (!methods) methods = [SelectionMethods.extent];
+            methods.forEach((item) => {
+                if (Object.values(SelectionMethods as unknown as string[]).includes(item))
+                    objects.push({ label: intl.formatMessage({ id: item }), value: item });
+            });
+            if (objects.length === 0) throw new Error("methods does not contain valid values");
+            return objects;
+        },
+        [intl]
+    );
 
-    const methodOptions: MethodOption[] = buildMethodOptions();
+    const methodOptions: MethodOption[] = buildMethodOptions(undefined);
     const [selectedMethod, setSelectedMethode] = useState(methodOptions[0] as MethodOption);
 
+    /**
+     * Method to change used selectmethod
+     */
     const onMethodeOptionChance = useEvent((newValue: MethodOption) => {
         setSelectedMethode(newValue);
     });
@@ -162,6 +170,9 @@ export const Selection: FC<SelectionProps> = (props) => {
     const [dragControllerActive, setDragControllerActive] = useState<boolean>(true);
     useDragSelection(mapState.map, selectedMethod, intl, onExtentSelected, dragControllerActive);
 
+    /**
+     * Method to build Option-Array from sources for the selection-source react-select
+     */
     const sourceOptions = useMemo(
         () =>
             sources.map<SourceOption>((source) => {
@@ -173,6 +184,10 @@ export const Selection: FC<SelectionProps> = (props) => {
         () => sourceOptions.find((option) => option.value === currentSource),
         [sourceOptions, currentSource]
     );
+
+    /**
+     * Method to change used source
+     */
     const onSourceOptionChanged = useEvent((newValue: SingleValue<SourceOption>) => {
         setCurrentSource(newValue?.value);
         onSelectionSourceChanged && onSelectionSourceChanged({ source: newValue?.value });
@@ -257,6 +272,11 @@ function SourceSelectValue(props: SingleValueProps<SourceOption>): JSX.Element {
     );
 }
 
+/**
+ * Hook to manage source option in selection-source react-select
+ * @param source
+ * @returns
+ */
 function useSourceItem(source: SelectionSource | undefined, isSelected: boolean) {
     const intl = useIntl();
     const notAvailableLabel: string | undefined =
@@ -282,6 +302,14 @@ function useSourceItem(source: SelectionSource | undefined, isSelected: boolean)
     };
 }
 
+/**
+ * Hook to manage selection sources
+ * @param mapModel
+ * @param sources
+ * @param currentSource
+ * @param onSelectionComplete
+ * @returns
+ */
 function useSelectionController(
     mapModel: MapModel | undefined,
     sources: SelectionSource[],
@@ -328,6 +356,11 @@ function useSelectionController(
     };
 }
 
+/**
+ * Hook to manage source status
+ * @param source
+ * @returns
+ */
 function useSourceStatus(source: SelectionSource | undefined): SelectionSourceStatus {
     const [status, setStatus] = useState<SelectionSourceStatus>("available");
     useEffect(() => {
@@ -345,6 +378,13 @@ function useSourceStatus(source: SelectionSource | undefined): SelectionSourceSt
     return status;
 }
 
+/**
+ * Hook to manage map controls and tooltip
+ * @param map
+ * @param selectMethode
+ * @param intl
+ * @param onExtentSelected
+ */
 function useDragSelection(
     map: MapModel | undefined,
     selectMethode: MethodOption,
