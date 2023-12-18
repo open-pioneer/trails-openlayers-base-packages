@@ -227,7 +227,7 @@ export const Selection: FC<SelectionProps> = (props) => {
 
 function SourceSelectOption(props: OptionProps<SourceOption>): JSX.Element {
     const { value } = props.data;
-    const { isAvailable, content } = useSourceItem(value);
+    const { isAvailable, content } = useSourceItem(value, false);
 
     return (
         <chakraComponents.Option
@@ -242,7 +242,7 @@ function SourceSelectOption(props: OptionProps<SourceOption>): JSX.Element {
 
 function SourceSelectValue(props: SingleValueProps<SourceOption>): JSX.Element {
     const { value } = props.data;
-    const { isAvailable, content } = useSourceItem(value);
+    const { isAvailable, content } = useSourceItem(value, true);
     const clazz = isAvailable
         ? "selection-source-value"
         : "selection-source-value selection-source-value--disabled";
@@ -254,7 +254,7 @@ function SourceSelectValue(props: SingleValueProps<SourceOption>): JSX.Element {
     );
 }
 
-function useSourceItem(source: SelectionSource | undefined) {
+function useSourceItem(source: SelectionSource | undefined, isSelected: boolean) {
     const intl = useIntl();
     // TODO: Label not working?
     const notAvailableLabel: string | undefined = intl.formatMessage({ id: "sourceNotAvailable" });
@@ -264,15 +264,16 @@ function useSourceItem(source: SelectionSource | undefined) {
     return {
         isAvailable,
         content: (
-            <Flex direction="row" alignItems="baseline">
-                {label}
+            <Flex direction="row" alignItems="baseline" grow={1}>
+                {!isSelected && <Flex grow={1}>{label}</Flex>}
                 {!isAvailable && (
                     <Tooltip label={notAvailableLabel} placement="right" openDelay={500}>
-                        <chakra.span ml={2}>
+                        <chakra.span>
                             <Icon as={FiAlertTriangle} color="red" aria-label={notAvailableLabel} />
                         </chakra.span>
                     </Tooltip>
                 )}
+                {isSelected && label}
             </Flex>
         )
     };

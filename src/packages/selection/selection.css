@@ -32,3 +32,7 @@
 .selection-source-value.selection-source-value--disabled {
     opacity: 0.4;
 }
+
+.selection-source-value.selection-source-value--disabled span {
+    margin: 0px 6px 0px 0px;
+}
