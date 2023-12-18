@@ -28,6 +28,7 @@ const sampleSites = [
     "samples/theming-sample",
     "samples/test-basemap-switcher",
     "samples/test-highlight-and-zoom",
+    "samples/test-menu-fix",
 
     "samples/experimental-sidebar",
 ];

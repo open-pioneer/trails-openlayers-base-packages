@@ -16,6 +16,9 @@ const LOG = createLogger("ogc-features:OgcFeatureSourceFactory");
 const DEFAULT_LIMIT = 5000;
 const DEFAULT_CONCURRENTY = 6;
 
+/**
+ * These are special properties for OGC API Feature search source.
+ */
 export interface OgcFeatureSourceOptions {
     /** The base-URL right to the "/collections"-part */
     baseUrl: string;

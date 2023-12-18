@@ -61,9 +61,24 @@ export interface OgcFeatureSearchSourceOptions {
 
 /** The general shape of features returned by an OGC API Features service. */
 export interface FeatureResponse {
+    /**
+     * The type of the feature (e.g. `Feature`).
+     */
     type: string;
+
+    /**
+     * The id of the feature.
+     */
     id: string | number;
+
+    /**
+     * The geometry of the feature.
+     */
     geometry: unknown;
+
+    /**
+     * The properties of the feature.
+     */
     properties: Readonly<Record<string, unknown>>;
 }
 
