@@ -2,6 +2,8 @@
 
 This package provides a UI component that displays the map content to the user and allows them to control it.
 
+Unavailable operational layers are marked with an icon and will be deactivated for selection. If a layer was configured as initially visible, it remains visible.
+
 ## Usage
 
 To integrate the TOC (table of contents) in your app, insert the following snippet and reference a map ID:
