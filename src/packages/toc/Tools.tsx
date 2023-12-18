@@ -8,40 +8,18 @@ import {
     Button,
     MenuDivider
 } from "@open-pioneer/chakra-integration";
-import { CommonComponentProps } from "@open-pioneer/react-utils";
-import { FC, useEffect, useState } from "react";
+import { FC } from "react";
 import { FiMoreVertical } from "react-icons/fi";
 import { useIntl } from "open-pioneer:react-hooks";
 import { MapModel, SublayersCollection, useMapModel } from "@open-pioneer/map";
+import { ToolConfig } from "./Toc";
 
-export interface ToolConfig extends CommonComponentProps {
-    /**
-     * The id of the map.
-     */
-    mapId: string;
-
-    /**
-     * Optional property to show the `hide all layers` entry.
-     * Defaults to `true`.
-     */
-    showHideAllLayers?: boolean;
-
-    /**
-     * Optional property to show the `collapse groups` entry.
-     * Defaults to `true`.
-     */
-    showCollapseGroups?: boolean;
-}
-
-export const Tools: FC<ToolConfig> = (props: ToolConfig) => {
+export const Tools: FC<{ mapId: string } & ToolConfig> = (props) => {
     const intl = useIntl();
     const { mapId, showHideAllLayers = true, showCollapseGroups = true } = props;
     const { map } = useMapModel(mapId);
-    const [noEntry, setNoEntry] = useState<boolean>(false);
 
-    useEffect(() => {
-        setNoEntry(!showHideAllLayers && !showCollapseGroups);
-    }, [showHideAllLayers, showCollapseGroups]);
+    const noEntry = !showHideAllLayers && !showCollapseGroups;
 
     return (
         <Menu>

@@ -12,7 +12,7 @@ import {
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, useId } from "react";
 import { LayerList } from "./LayerList";
-import { Tools, ToolConfig } from "./Tools";
+import { Tools } from "./Tools";
 
 /**
  * Props supported by the {@link Toc} component.
@@ -33,7 +33,7 @@ export interface TocProps extends CommonComponentProps {
      * Properties for the embedded tool component.
      * Property "mapId" is not applied.
      */
-    toolConfig?: Omit<ToolConfig, "mapId">;
+    toolConfig?: ToolConfig;
 
     /**
      * Defines whether the basemap switcher is shown in the toc.
@@ -46,6 +46,23 @@ export interface TocProps extends CommonComponentProps {
      * Property "mapId" is not applied.
      */
     basemapSwitcherProps?: Omit<BasemapSwitcherProps, "mapId">;
+}
+
+/**
+ * Props supported by the {@link Tools} component.
+ */
+export interface ToolConfig {
+    /**
+     * Optional property to show the `hide all layers` entry.
+     * Defaults to `true`.
+     */
+    showHideAllLayers?: boolean;
+
+    /**
+     * Optional property to show the `collapse groups` entry.
+     * Defaults to `true`.
+     */
+    showCollapseGroups?: boolean;
 }
 
 const PADDING = 2;
