@@ -19,7 +19,7 @@ import {
     Text,
     Tooltip
 } from "@open-pioneer/chakra-integration";
-import { LayerBase, MapModel, Sublayer } from "@open-pioneer/map";
+import { Layer, LayerBase, MapModel, Sublayer } from "@open-pioneer/map";
 import { PackageIntl } from "@open-pioneer/runtime";
 import classNames from "classnames";
 import { useIntl } from "open-pioneer:react-hooks";
