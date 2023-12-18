@@ -1,6 +1,13 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Menu, MenuButton, MenuList, MenuItem, Button } from "@open-pioneer/chakra-integration";
+import {
+    Menu,
+    MenuButton,
+    MenuList,
+    MenuItem,
+    Button,
+    Box
+} from "@open-pioneer/chakra-integration";
 import { FC } from "react";
 import { FiMoreVertical } from "react-icons/fi";
 import { useIntl } from "open-pioneer:react-hooks";
@@ -16,27 +23,30 @@ export const Tools: FC<{ mapId: string } & ToolConfig> = (props) => {
 
     return (
         !noEntry && (
-            <Menu>
-                <Button
-                    as={MenuButton}
-                    className="toc-tools-button"
-                    aria-label={intl.formatMessage({ id: "toolsLabel" })}
-                    borderRadius="full"
-                    iconSpacing={0}
-                    padding={0}
-                    variant="ghost"
-                    leftIcon={<FiMoreVertical />}
-                />
-                <MenuList>
-                    <MenuItem
-                        onClick={() => {
-                            hideAllLayers(map);
-                        }}
-                    >
-                        {intl.formatMessage({ id: "hideAllLayers" })}
-                    </MenuItem>
-                </MenuList>
-            </Menu>
+            <Box className="tools">
+                <Menu>
+                    <Button
+                        as={MenuButton}
+                        className="tools-button"
+                        aria-label={intl.formatMessage({ id: "toolsLabel" })}
+                        borderRadius="full"
+                        iconSpacing={0}
+                        padding={0}
+                        variant="ghost"
+                        leftIcon={<FiMoreVertical />}
+                    />
+                    <MenuList>
+                        <MenuItem
+                            aria-label={intl.formatMessage({ id: "hideAllLayers" })}
+                            onClick={() => {
+                                hideAllLayers(map);
+                            }}
+                        >
+                            {intl.formatMessage({ id: "hideAllLayers" })}
+                        </MenuItem>
+                    </MenuList>
+                </Menu>
+            </Box>
         )
     );
 };

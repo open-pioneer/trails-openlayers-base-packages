@@ -2,11 +2,10 @@
 // SPDX-License-Identifier: Apache-2.0
 import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
-import { render, waitFor } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import TileLayer from "ol/layer/Tile";
 import { expect, it } from "vitest";
 import { Toc } from "./Toc";
-import { findToc } from "./test-utils";
 
 const BASEMAP_SWITCHER_CLASS = ".basemap-switcher";
 
@@ -154,4 +153,9 @@ async function waitForBasemapSwitcher(tocDiv: HTMLElement) {
         }
         return { basemapSwitcher, basemapSelect };
     });
+}
+
+async function findToc() {
+    const tocDiv = await screen.findByTestId("toc");
+    return tocDiv;
 }
