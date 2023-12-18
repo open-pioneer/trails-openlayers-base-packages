@@ -34,8 +34,6 @@ export interface LegendItemComponentProps {
  *
  * To show a legend for the layer, provide an imageUrl to an image to show
  * or provide a React component that will be rendered as a legend.
- *
- * Example: TODO
  */
 export interface LegendItemAttributes {
     /**
@@ -84,7 +82,6 @@ function LegendList(props: { map: MapModel; showBaseLayers: boolean }): JSX.Elem
     const { map, showBaseLayers } = props;
 
     const layers = useLayers(map);
-    // todo documentation: add hint that legend of sublayers is also shown but plain (without hierarchical structure)
     const legendListItems: ReactNode[] = layers.map((layer) => {
         return (
             <LegendItem key={layer.id} layer={layer} showBaseLayers={showBaseLayers}></LegendItem>
