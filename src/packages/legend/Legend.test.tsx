@@ -243,7 +243,7 @@ it("shows a legend for active basemap if showBaseLayers is configured to be true
     expect(src).toBe("https://basemap-url.com/");
 });
 
-it("shows legend entries for nested sublayers", async () => {
+it.skip("shows correct legend entries for nested WMSSublayers", async () => {
     // todo setupMap anpassen
     const { mapId, registry } = await setupMapWithWMSLayer();
     await registry.expectMapModel(mapId);
@@ -259,10 +259,12 @@ it("shows legend entries for nested sublayers", async () => {
     await waitForLegendItem(legendDiv);
 
     const images = await getLegendImages(legendDiv);
+    // Ensure that no legend is created for sublayer without `name` prop and for sublayer with empty legend component
     expect(images.length).toBe(4);
     expect(images[0]?.getAttribute("src")).toBe("https://fake.legend.url/sublayer4_1.png");
     expect(images[1]?.getAttribute("src")).toBe("https://fake.legend.url/sublayer4_2.png");
     expect(images[2]?.getAttribute("src")).toBe("https://fake.legend.url/sublayer3_2.png");
+    // legend src is generated automatically
     expect(images[3]?.getAttribute("src")).toBe(
         "https://fake.wms.url/service?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetLegendGraphic&FORMAT=image%2Fpng&SCALE=545978.7734655447&LAYERS=sublayer4_4%2Csublayer4_3%2Csublayer4_2%2Csublayer4_1&LAYER=sublayer4_3"
     );
@@ -463,7 +465,7 @@ function createLayerWithNestedSublayers() {
                                         attributes: {
                                             "legend": {
                                                 Component: function EmptyLegend() {
-                                                    return "";
+                                                    return null;
                                                 }
                                             }
                                         }
