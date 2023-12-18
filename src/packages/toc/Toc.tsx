@@ -31,7 +31,6 @@ export interface TocProps extends CommonComponentProps {
 
     /**
      * Properties for the embedded tool component.
-     * Property "mapId" is not applied.
      */
     toolConfig?: ToolConfig;
 
@@ -57,12 +56,6 @@ export interface ToolConfig {
      * Defaults to `true`.
      */
     showHideAllLayers?: boolean;
-
-    /**
-     * Optional property to show the `collapse groups` entry.
-     * Defaults to `true`.
-     */
-    showCollapseGroups?: boolean;
 }
 
 const PADDING = 2;
