@@ -6,7 +6,8 @@ import {
     MenuList,
     MenuItem,
     Button,
-    Box
+    Box,
+    Portal
 } from "@open-pioneer/chakra-integration";
 import { FC } from "react";
 import { FiMoreVertical } from "react-icons/fi";
@@ -24,7 +25,7 @@ export const Tools: FC<{ mapId: string } & ToolConfig> = (props) => {
     return (
         !noEntry && (
             <Box className="tools">
-                <Menu>
+                <Menu placement="bottom-start">
                     <Button
                         as={MenuButton}
                         className="tools-button"
@@ -35,16 +36,18 @@ export const Tools: FC<{ mapId: string } & ToolConfig> = (props) => {
                         variant="ghost"
                         leftIcon={<FiMoreVertical />}
                     />
-                    <MenuList>
-                        <MenuItem
-                            aria-label={intl.formatMessage({ id: "hideAllLayers" })}
-                            onClick={() => {
-                                hideAllLayers(map);
-                            }}
-                        >
-                            {intl.formatMessage({ id: "hideAllLayers" })}
-                        </MenuItem>
-                    </MenuList>
+                    <Portal>
+                        <MenuList className="tools-menu">
+                            <MenuItem
+                                aria-label={intl.formatMessage({ id: "hideAllLayers" })}
+                                onClick={() => {
+                                    hideAllLayers(map);
+                                }}
+                            >
+                                {intl.formatMessage({ id: "hideAllLayers" })}
+                            </MenuItem>
+                        </MenuList>
+                    </Portal>
                 </Menu>
             </Box>
         )

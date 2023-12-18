@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import TileLayer from "ol/layer/Tile";
 import { expect, it } from "vitest";
 import { Toc } from "./Toc";
@@ -35,6 +35,9 @@ it("Should successfully create a toc with default tool component", async () => {
 
     const toolsDiv = await findTools();
     expect(toolsDiv).toMatchSnapshot();
+
+    const toolsMenu = await findMenu();
+    expect(toolsMenu).toMatchSnapshot();
 });
 
 it("Should successfully hide all layers in toc", async () => {
@@ -86,4 +89,15 @@ it("Should successfully hide all layers in toc", async () => {
 async function findTools() {
     const tocDiv = await screen.findByTestId("toc");
     return tocDiv.querySelector(".tools");
+}
+
+async function findMenu() {
+    const menu = await waitFor(() => {
+        const menu = document.querySelector(".tools-menu");
+        if (!menu) {
+            throw new Error("Menu not found");
+        }
+        return menu;
+    });
+    return menu;
 }
