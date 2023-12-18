@@ -287,7 +287,7 @@ function useSourceItem(source: SelectionSource | undefined, isSelected: boolean)
     return {
         isAvailable,
         content: (
-            <Flex direction="row" alignItems="baseline" grow={1}>
+            <Flex direction="row" alignItems="center" grow={1}>
                 {!isSelected && <Flex grow={1}>{label}</Flex>}
                 {!isAvailable && (
                     <Tooltip label={notAvailableLabel} placement="right" openDelay={500}>
