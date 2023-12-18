@@ -219,6 +219,9 @@ export const Selection: FC<SelectionProps> = (props) => {
                         Option: SourceSelectOption,
                         SingleValue: SourceSelectValue
                     }}
+                    isOptionDisabled={(option) =>
+                        option.value === undefined || option.value.status === "unavailable"
+                    }
                 />
             </FormControl>
         </VStack>
