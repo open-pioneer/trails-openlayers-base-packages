@@ -78,8 +78,6 @@ To show the legend for the active basemap, set the `showBaseLayers` prop to `tru
 <Legend mapId="map_id" showBaseLayers={true} />
 ```
 
-## Accessibility
-
 ## License
 
 Apache-2.0 (see `LICENSE` file)

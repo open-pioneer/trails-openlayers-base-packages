@@ -5,7 +5,7 @@
  */
 import ImageLayer from "ol/layer/Image";
 import ImageWMS from "ol/source/ImageWMS";
-import { afterEach, beforeEach, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { AbstractLayerBase } from "../AbstractLayerBase";
 import { MapModelImpl } from "../MapModelImpl";
 import { WMSLayerImpl } from "./WMSLayerImpl";
@@ -101,6 +101,31 @@ it("configures the source's LAYERS parameter for sublayers", () => {
             {
                 name: "sublayer-2",
                 title: "Sublayer 2"
+            }
+        ]
+    });
+    const olSource = (layer.olLayer as ImageLayer<any>).getSource() as ImageWMS;
+    const layersParam = olSource.getParams()["LAYERS"];
+    expect(layersParam).toEqual(["sublayer-1", "sublayer-2"]);
+});
+
+it("only configures the source's LAYERS parameter for sublayers with optional `name` prop ", () => {
+    const layer = new WMSLayerImpl({
+        title: "Layer",
+        url: SERVICE_URL,
+        sublayers: [
+            {
+                title: "Parent sublayer",
+                sublayers: [
+                    {
+                        title: "Subparent sublayer",
+                        sublayers: [{ name: "sublayer-1", title: "Sublayer 1" }]
+                    },
+                    {
+                        name: "sublayer-2",
+                        title: "Sublayer 2"
+                    }
+                ]
             }
         ]
     });
