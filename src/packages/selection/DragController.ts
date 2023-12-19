@@ -7,7 +7,7 @@ import Overlay from "ol/Overlay";
 import { mouseActionButton } from "ol/events/condition";
 import Geometry from "ol/geom/Geometry";
 import { SelectionMethods } from "./Selection";
-import { DragBox } from "ol/interaction";
+import { DragBox, DragPan } from "ol/interaction";
 
 interface SelectionBox extends Resource {
     dragBox: DragBox;
@@ -87,10 +87,17 @@ export class DragController {
      * @returns
      */
     private createDragBox(olMap: OlMap, onExtentSelected: (geometry: Geometry) => void) {
+        document.oncontextmenu = (e) => {
+            e.preventDefault();
+            return false;
+        };
         const dragBox = new DragBox({
             className: "selection-drag-box",
             condition: mouseActionButton
         });
+
+        const drag = this.createDrag();
+        olMap.addInteraction(drag);
         olMap.addInteraction(dragBox);
         dragBox.on("boxend", function () {
             onExtentSelected(dragBox.getGeometry());
@@ -103,11 +110,33 @@ export class DragController {
             dragBox: dragBox,
             destroy() {
                 olMap.removeInteraction(dragBox);
+                olMap.removeInteraction(drag);
                 dragBox.dispose();
+                drag.dispose();
                 viewPort.classList.remove(ACTIVE_CLASS);
                 viewPort.classList.remove(INACTIVE_CLASS);
+                document.oncontextmenu = null;
             }
         };
+    }
+
+    /**
+     * Method to activate pan with right-mouse-click
+     * @returns
+     */
+    private createDrag() {
+        const condition = function (mapBrowserEvent: {
+            originalEvent: MouseEvent;
+            dragging: unknown;
+        }) {
+            const originalEvent = /** @type {MouseEvent} */ mapBrowserEvent.originalEvent;
+            return originalEvent.button == 2;
+        };
+        const drag = new DragPan({
+            condition: condition
+        });
+
+        return drag;
     }
 
     /**
