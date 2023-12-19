@@ -9,7 +9,8 @@ import {
     MapRegistry,
     OlMapOptions,
     SimpleLayer,
-    SimpleLayerConfig
+    SimpleLayerConfig,
+    Layer
 } from "@open-pioneer/map";
 import { createService } from "@open-pioneer/test-utils/services";
 import { screen, waitFor } from "@testing-library/react";
@@ -23,7 +24,7 @@ export interface SimpleMapOptions {
     zoom?: number;
     extent?: ExtentConfig;
     projection?: string;
-    layers?: SimpleLayerConfig[];
+    layers?: (SimpleLayerConfig | Layer)[];
     advanced?: OlMapOptions;
 
     noInitialView?: boolean;
@@ -91,7 +92,10 @@ export async function setupMap(options?: SimpleMapOptions) {
     const mapConfig: MapConfig = {
         initialView: options?.noInitialView ? undefined : getInitialView(),
         projection: options?.noProjection ? undefined : options?.projection ?? "EPSG:3857",
-        layers: options?.layers?.map((config) => new SimpleLayer(config)) ?? [
+        layers: options?.layers?.map(
+            (config) => ("map" in config ? config : new SimpleLayer(config))
+            // using map as discriminator (no prototype for Layer)
+        ) ?? [
             new SimpleLayer({
                 title: "OSM",
                 olLayer: new VectorLayer()

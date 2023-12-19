@@ -248,8 +248,9 @@ it("shows a legend for active basemap if showBaseLayers is configured to be true
 });
 
 it.skip("shows correct legend entries for nested WMSSublayers", async () => {
-    // TODO: setupMap anpassen
-    const { mapId, registry } = await setupMapWithWMSLayer();
+    const { mapId, registry } = await setupMap({
+        layers: [createLayerWithNestedSublayers()]
+    });
     await registry.expectMapModel(mapId);
     const injectedServices = createServiceOptions({ registry });
 
