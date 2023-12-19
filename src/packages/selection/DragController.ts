@@ -87,7 +87,10 @@ export class DragController {
      * @returns
      */
     private createDragBox(olMap: OlMap, onExtentSelected: (geometry: Geometry) => void) {
-        document.oncontextmenu = (e) => {
+        const viewPort = olMap.getViewport();
+        viewPort.classList.add(ACTIVE_CLASS);
+
+        viewPort.oncontextmenu = (e) => {
             e.preventDefault();
             return false;
         };
@@ -103,9 +106,6 @@ export class DragController {
             onExtentSelected(dragBox.getGeometry());
         });
 
-        const viewPort = olMap.getViewport();
-        viewPort.classList.add(ACTIVE_CLASS);
-
         return {
             dragBox: dragBox,
             destroy() {
@@ -115,7 +115,7 @@ export class DragController {
                 drag.dispose();
                 viewPort.classList.remove(ACTIVE_CLASS);
                 viewPort.classList.remove(INACTIVE_CLASS);
-                document.oncontextmenu = null;
+                viewPort.oncontextmenu = null;
             }
         };
     }
