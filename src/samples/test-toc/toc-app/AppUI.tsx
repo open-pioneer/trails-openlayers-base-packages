@@ -34,7 +34,7 @@ export function AppUI() {
                     </Box>
                 }
             >
-                <Flex flex="1" direction="column" position="relative">
+                <Flex flex="1" direction="column">
                     <MapContainer
                         mapId={MAP_ID}
                         role="main"
@@ -65,6 +65,7 @@ export function AppUI() {
                                             >
                                                 <Toc
                                                     mapId={MAP_ID}
+                                                    showTools={true}
                                                     basemapSwitcherProps={{
                                                         allowSelectingEmptyBasemap: true
                                                     }}

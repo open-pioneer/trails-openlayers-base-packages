@@ -94,7 +94,7 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
             options.push(emptyOption);
         }
 
-        const selectedLayer = options.filter((l) => l.layer === activeBaseLayer)[0];
+        const selectedLayer = options.find((l) => l.layer === activeBaseLayer);
         return { options, selectedLayer };
     }, [allowSelectingEmptyBasemap, baseLayers, map?.layers]);
 
@@ -113,6 +113,7 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
                     aria-labelledby={ariaLabelledBy}
                     className="basemap-switcher-select"
                     classNamePrefix="react-select"
+                    options={options}
                     value={selectedLayer}
                     onChange={(option) => option && activateLayer(option.value)}
                     isClearable={false}
@@ -128,7 +129,6 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
                     }
                     isOptionDisabled={(option) => option?.layer?.loadState === "error"}
                     components={components}
-                    options={options}
                 />
             ) : null}
         </Box>
