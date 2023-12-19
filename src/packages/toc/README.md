@@ -12,6 +12,14 @@ To integrate the TOC (table of contents) in your app, insert the following snipp
 <Toc mapId="map_id" />
 ```
 
+### Tools
+
+Additional tools are available for the `operational layers`, e.g. to hide all layers with one click. To show the tool menu, set the `showTools` property to `true`:
+
+```tsx
+<Toc mapId="map_id" showTools={true} />
+```
+
 ### Basemaps
 
 By default, the TOC shows the basemap switcher as an embedded element.

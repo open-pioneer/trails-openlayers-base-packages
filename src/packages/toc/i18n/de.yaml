@@ -5,3 +5,6 @@ messages:
   missingLayers: "Es sind keine Layer vorhanden."
   error: "Beim Erstellen des Karteninhalts ist ein Fehler aufgetreten."
   layerNotAvailable: "Layer nicht verfügbar"
+  toolsLabel: "Kartenwerkzeuge"
+  tools:
+    hideAllLayers: "Alle Karteninhalte ausblenden"
