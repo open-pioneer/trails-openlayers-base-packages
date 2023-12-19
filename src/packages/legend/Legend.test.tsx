@@ -426,10 +426,6 @@ it("includes the layer id in the legend item's class list", async () => {
     expect(firstLegendItem.classList.contains("layer-layer-1")).toBe(true);
 });
 
-it.skip("shows an empty box if not legend entries are available", async () => {
-    // TODO
-});
-
 it("reacts to changes in layer visibility", async () => {
     const { mapId, registry } = await setupMap({
         layers: [
@@ -482,9 +478,6 @@ it("reacts to changes in layer visibility", async () => {
         </PackageContextProvider>
     );
 
-    const layers = map.layers.getOperationalLayers();
-    expect(layers.length).toBe(2);
-
     // First check
     const legendDiv = await findLegend();
     await waitForLegendItem(legendDiv);
@@ -493,6 +486,7 @@ it("reacts to changes in layer visibility", async () => {
     expect(images.length).toBe(2);
 
     // Set visible to false
+    const layers = map.layers.getOperationalLayers();
     act(() => {
         layers[0]?.setVisible(false);
     });
