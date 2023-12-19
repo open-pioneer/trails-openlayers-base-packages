@@ -32,7 +32,7 @@ export interface TocProps extends CommonComponentProps {
     /**
      * Properties for the embedded tool component.
      */
-    toolConfig?: ToolConfig;
+    toolsConfig?: ToolsConfig;
 
     /**
      * Defines whether the basemap switcher is shown in the toc.
@@ -50,7 +50,7 @@ export interface TocProps extends CommonComponentProps {
 /**
  * Props supported by the {@link Tools} component.
  */
-export interface ToolConfig {
+export interface ToolsConfig {
     /**
      * Optional property to show the `hide all layers` entry.
      * Defaults to `true`.
@@ -69,7 +69,7 @@ export const Toc: FC<TocProps> = (props: TocProps) => {
     const {
         mapId,
         showTools = false,
-        toolConfig,
+        toolsConfig,
         showBasemapSwitcher = true,
         basemapSwitcherProps
     } = props;
@@ -116,7 +116,7 @@ export const Toc: FC<TocProps> = (props: TocProps) => {
                                         })}
                                     </Text>
                                     <Spacer />
-                                    {showTools && <Tools mapId={mapId} {...toolConfig} />}
+                                    {showTools && <Tools mapId={mapId} {...toolsConfig} />}
                                 </Flex>
                             </SectionHeading>
                         }

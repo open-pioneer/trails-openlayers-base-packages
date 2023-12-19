@@ -2,7 +2,7 @@
 
 exports[`Should successfully create a toc with default tool component 1`] = `
 <div
-  class="tools css-0"
+  class="toc-tools css-0"
   data-theme="light"
 >
   <button
@@ -10,7 +10,7 @@ exports[`Should successfully create a toc with default tool component 1`] = `
     aria-expanded="false"
     aria-haspopup="menu"
     aria-label="toolsLabel"
-    class="chakra-menu__menu-button chakra-button tools-button css-yfj65e"
+    class="chakra-menu__menu-button chakra-button toc-tools-button css-yfj65e"
     data-theme="light"
     id="menu-button-:r3:"
     type="button"
@@ -69,7 +69,7 @@ exports[`Should successfully create a toc with default tool component 2`] = `
   tabindex="-1"
 >
   <button
-    aria-label="hideAllLayers"
+    aria-label="tools.hideAllLayers"
     class="chakra-menu__menuitem css-18esm8n"
     data-index="0"
     data-theme="light"
@@ -78,7 +78,7 @@ exports[`Should successfully create a toc with default tool component 2`] = `
     tabindex="-1"
     type="button"
   >
-    hideAllLayers
+    tools.hideAllLayers
   </button>
 </div>
 `;

@@ -73,7 +73,7 @@ it("Should successfully hide all layers in toc", async () => {
 
     await findTools();
 
-    const itemButton = await screen.findByLabelText("hideAllLayers");
+    const itemButton = await screen.findByLabelText("tools.hideAllLayers");
     expect(itemButton.tagName).toBe("BUTTON");
 
     expect(operationalLayers.length).toBe(2);
@@ -88,7 +88,7 @@ it("Should successfully hide all layers in toc", async () => {
 
 async function findTools() {
     const tocDiv = await screen.findByTestId("toc");
-    return tocDiv.querySelector(".tools");
+    return tocDiv.querySelector(".toc-tools");
 }
 
 async function findMenu() {

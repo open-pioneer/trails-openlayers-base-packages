@@ -13,9 +13,9 @@ import { FC } from "react";
 import { FiMoreVertical } from "react-icons/fi";
 import { useIntl } from "open-pioneer:react-hooks";
 import { MapModel, SublayersCollection, useMapModel } from "@open-pioneer/map";
-import { ToolConfig } from "./Toc";
+import { ToolsConfig } from "./Toc";
 
-export const Tools: FC<{ mapId: string } & ToolConfig> = (props) => {
+export const Tools: FC<{ mapId: string } & ToolsConfig> = (props) => {
     const intl = useIntl();
     const { mapId, showHideAllLayers = true } = props;
     const { map } = useMapModel(mapId);
@@ -24,11 +24,11 @@ export const Tools: FC<{ mapId: string } & ToolConfig> = (props) => {
 
     return (
         !noEntry && (
-            <Box className="tools">
+            <Box className="toc-tools">
                 <Menu placement="bottom-start">
                     <Button
                         as={MenuButton}
-                        className="tools-button"
+                        className="toc-tools-button"
                         aria-label={intl.formatMessage({ id: "toolsLabel" })}
                         borderRadius="full"
                         iconSpacing={0}
@@ -39,12 +39,12 @@ export const Tools: FC<{ mapId: string } & ToolConfig> = (props) => {
                     <Portal>
                         <MenuList className="tools-menu">
                             <MenuItem
-                                aria-label={intl.formatMessage({ id: "hideAllLayers" })}
+                                aria-label={intl.formatMessage({ id: "tools.hideAllLayers" })}
                                 onClick={() => {
                                     hideAllLayers(map);
                                 }}
                             >
-                                {intl.formatMessage({ id: "hideAllLayers" })}
+                                {intl.formatMessage({ id: "tools.hideAllLayers" })}
                             </MenuItem>
                         </MenuList>
                     </Portal>

@@ -5,5 +5,5 @@ messages:
   missingLayers: "There are no layers to display."
   error: "Error while creating map content."
   toolsLabel: "Map tools"
-  hideAllLayers: "Hide all layers"
-  collapseGroups: "Collapse groups"
+  tools:
+    hideAllLayers: "Hide all layers"
