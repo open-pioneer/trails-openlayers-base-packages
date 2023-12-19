@@ -5,9 +5,7 @@
     "peerDependencies": {
         "@open-pioneer/authentication": "workspace:^",
         "@open-pioneer/runtime": "^1.1.0",
-        "@open-pioneer/core": "^1.1.0"
-    },
-    "dependencies": {
-        "keycloak-js": "^22.0.5"
+        "@open-pioneer/core": "^1.1.0",
+        "keycloak-js": "^23.0.3"
     }
 }

@@ -6,7 +6,7 @@ import Keycloak, {
     KeycloakLogoutOptions
 } from "keycloak-js";
 import { KeycloakConfigProvider } from "@open-pioneer/keycloak";
-export { KeycloakAuthPlugin } from "./keycloak-auth-plugin/KeycloakAuthPlugin";
+export { KeycloakAuthPlugin } from "@open-pioneer/keycloak";
 
 export class KeycloakConfigProviderImpl implements KeycloakConfigProvider {
     getKeycloak() {

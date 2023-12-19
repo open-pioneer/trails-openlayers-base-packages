@@ -4,6 +4,7 @@
     "dependencies": {
         "@open-pioneer/authentication": "workspace:^",
         "@open-pioneer/runtime": "^1.1.0",
-        "@open-pioneer/keycloak": "workspace:^"
+        "@open-pioneer/keycloak": "workspace:^",
+        "keycloak-js": "^23.0.3"
     }
 }
