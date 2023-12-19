@@ -1149,19 +1149,7 @@ importers:
         specifier: ^18.2.0
         version: 18.2.0
 
-  src/samples/theming-sample/theming-app:
-    dependencies:
-      '@open-pioneer/chakra-integration':
-        specifier: ^1.1.0
-        version: 1.1.0(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(framer-motion@10.16.5)(react-dom@18.2.0)(react@18.2.0)
-      '@open-pioneer/runtime':
-        specifier: ^1.1.0
-        version: 1.1.0(@formatjs/intl@2.9.9)(@open-pioneer/base-theme@0.1.0)(@open-pioneer/chakra-integration@1.1.0)(@open-pioneer/core@1.1.0)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
-      '@open-pioneer/theme':
-        specifier: workspace:^
-        version: link:../../../packages/theme
-
-  src/samples/toc-sample/toc-app:
+  src/samples/test-toc/toc-app:
     dependencies:
       '@chakra-ui/icons':
         specifier: ^2.1.0
@@ -1202,6 +1190,18 @@ importers:
       react-icons:
         specifier: ^4.11.0
         version: 4.11.0(react@18.2.0)
+
+  src/samples/theming-sample/theming-app:
+    dependencies:
+      '@open-pioneer/chakra-integration':
+        specifier: ^1.1.0
+        version: 1.1.0(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(framer-motion@10.16.5)(react-dom@18.2.0)(react@18.2.0)
+      '@open-pioneer/runtime':
+        specifier: ^1.1.0
+        version: 1.1.0(@formatjs/intl@2.9.9)(@open-pioneer/base-theme@0.1.0)(@open-pioneer/chakra-integration@1.1.0)(@open-pioneer/core@1.1.0)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
+      '@open-pioneer/theme':
+        specifier: workspace:^
+        version: link:../../../packages/theme
 
   support/disabled-package: {}
 
