@@ -500,7 +500,7 @@ it("reacts to changes in layer visibility", async () => {
 });
 
 // TODO: Listen to change events in Legend component
-it.skip("reacts to changes in layer legend attributes", async () => {
+it("reacts to changes in layer legend attributes", async () => {
     const { mapId, registry } = await setupMap({
         layers: [
             {
@@ -530,9 +530,6 @@ it.skip("reacts to changes in layer legend attributes", async () => {
         </PackageContextProvider>
     );
 
-    const layers = map.layers.getOperationalLayers();
-    expect(layers.length).toBe(1);
-
     // First check
     const legendDiv = await findLegend();
     await waitForLegendItem(legendDiv);
@@ -541,7 +538,12 @@ it.skip("reacts to changes in layer legend attributes", async () => {
     expect(images[0]?.getAttribute("src")).toBe("https://fake.image.url/layer-1.png");
 
     // Update attributes
-    layers[0]?.updateAttributes({ legend: { imageUrl: "https://fake.image.url/new_layer.png" } });
+    const layers = map.layers.getOperationalLayers();
+    act(() => {
+        layers[0]?.updateAttributes({
+            legend: { imageUrl: "https://fake.image.url/new_layer.png" }
+        });
+    });
 
     // Second check
     const nextLegendDiv = await findLegend();

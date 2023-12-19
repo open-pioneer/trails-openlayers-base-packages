@@ -137,7 +137,7 @@ function LegendContent(props: { layer: LegendLayer; showBaseLayers: boolean }) {
     const intl = useIntl();
 
     const { layer, showBaseLayers } = props;
-    const legendAttributes = useLegendAttributes(layer.attributes);
+    const legendAttributes = useLegendAttributes(layer);
     const legendUrl = useLegend(layer);
     let renderedComponent: ReactNode | undefined;
 
@@ -306,14 +306,19 @@ function useVisibility(layer: LayerBase): {
     };
 }
 
-function useLegendAttributes(layerAttributes: Record<string | symbol, unknown>) {
+function useLegendAttributes(layer: LayerBase) {
     const [legendAttributes, setLegendAttributes] = useState<LegendItemAttributes | undefined>(
         undefined
     );
 
     useEffect(() => {
-        setLegendAttributes(layerAttributes.legend as LegendItemAttributes | undefined);
-    }, [layerAttributes]);
+        setLegendAttributes(layer.attributes.legend as LegendItemAttributes | undefined);
+
+        const resource = layer.on("changed:attributes", () => {
+            setLegendAttributes(layer.attributes.legend as LegendItemAttributes | undefined);
+        });
+        return () => resource.destroy();
+    }, [layer]);
 
     return legendAttributes;
 }
