@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box, Flex } from "@open-pioneer/chakra-integration";
+import { Box, Flex, VStack, Text } from "@open-pioneer/chakra-integration";
 import { MapAnchor, MapContainer } from "@open-pioneer/map";
 import { SectionHeading, TitledSection, ToolButton } from "@open-pioneer/react-utils";
 import { Toc } from "@open-pioneer/toc";
@@ -74,6 +74,25 @@ export function AppUI() {
                                     )}
                                 </Box>
                             )}
+                        </MapAnchor>
+                        <MapAnchor position="top-right" horizontalGap={10} verticalGap={10}>
+                            <VStack
+                                backgroundColor="whiteAlpha.900"
+                                borderWidth="1px"
+                                borderRadius="lg"
+                                padding={2}
+                                boxShadow="lg"
+                                maxWidth="400px"
+                            >
+                                <Text as="b">Description</Text>
+                                <Text>
+                                    This application can be used to test the TOC, including health
+                                    checks for configured layers. Two base layers ({'"'}TopPlus Open
+                                    {'"'} and {'"'}TopPlus Open (Grau){'"'}) and one operational
+                                    layer ({'"'}Schulstandorte{'"'}) will be unavailable and should
+                                    be marked as such by the UI.
+                                </Text>
+                            </VStack>
                         </MapAnchor>
                         <MapAnchor position="bottom-right" horizontalGap={10} verticalGap={45}>
                             <Flex

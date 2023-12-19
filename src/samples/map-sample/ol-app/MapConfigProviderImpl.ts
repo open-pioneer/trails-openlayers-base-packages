@@ -64,8 +64,6 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                 new SimpleLayer({
                     title: "Kindertagesstätten",
                     visible: true,
-                    healthCheck:
-                        "https://sgx.geodatenzentrum.de/wmts_topplus_open/1.0.0/WMTSCapabilities.xml",
                     olLayer: createKitasLayer()
                 }),
                 createSchulenLayer(),

@@ -144,9 +144,9 @@ export interface LayerConfig extends LayerBaseConfig {
     isBaseLayer?: boolean;
 
     /**
-     * Optional to check the availability of the layer. It is possible to provide
-     * either a URL which indicates the state of the service
-     * or a {@link HealthCheckFunction} performing a custom check and returning the state
+     * Optional property to check the availability of the layer.
+     * It is possible to provide either a URL which indicates the state of the service (2xx response meaning "ok")
+     * or a {@link HealthCheckFunction} performing a custom check and returning the state.
      */
     healthCheck?: string | HealthCheckFunction;
 }

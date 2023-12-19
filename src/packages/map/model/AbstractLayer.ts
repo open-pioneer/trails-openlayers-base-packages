@@ -43,7 +43,6 @@ export abstract class AbstractLayer<AdditionalEvents = {}>
                 this.__emitChangeEvent("changed:loadState");
             }
         );
-        // hide layer when initial state is error
         this.#visible = config.visible ?? true;
         this.#loadState = initialState;
         this.#stateWatchResource = stateWatchResource;

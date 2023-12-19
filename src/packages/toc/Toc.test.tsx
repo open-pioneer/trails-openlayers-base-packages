@@ -46,7 +46,6 @@ it("should successfully create a toc component", async () => {
     // react-select creates list of options in dom after opening selection
     act(() => {
         fireEvent.keyDown(basemapSelect, { key: "ArrowDown" });
-        //await userEvent.click(basemapSelect); // TODO click doesn't work
     });
 
     await waitFor(() => {
@@ -138,7 +137,6 @@ it("should support overriding basemap-switcher properties", async () => {
     // react-select creates list of options in dom after opening selection
     act(() => {
         fireEvent.keyDown(basemapSelect, { key: "ArrowDown" });
-        //await userEvent.click(basemapSelect); // TODO click doesn't work
     });
 
     await waitFor(() => {
