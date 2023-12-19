@@ -123,8 +123,6 @@ export interface SelectionSource extends Partial<SelectionSourceEventBase> {
      * If the status of this source is unavailable, the reason for this can be stored here.
      *
      * This will be displayed by the user interface.
-     *
-     * If it is not defined, a default value will be displayed: "source not available"
      */
     // TODO: Maybe rename to just reason?
     readonly unavailableStatusReason?: string;
