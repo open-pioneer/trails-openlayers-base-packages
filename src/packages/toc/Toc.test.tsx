@@ -140,11 +140,6 @@ it("should support overriding basemap-switcher properties", async () => {
     });
 });
 
-async function findToc() {
-    const tocDiv = await screen.findByTestId("toc");
-    return tocDiv;
-}
-
 async function waitForBasemapSwitcher(tocDiv: HTMLElement) {
     return await waitFor(() => {
         const basemapSwitcher = tocDiv.querySelector(BASEMAP_SWITCHER_CLASS);
@@ -158,4 +153,9 @@ async function waitForBasemapSwitcher(tocDiv: HTMLElement) {
         }
         return { basemapSwitcher, basemapSelect };
     });
+}
+
+async function findToc() {
+    const tocDiv = await screen.findByTestId("toc");
+    return tocDiv;
 }

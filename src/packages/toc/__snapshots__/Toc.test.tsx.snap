@@ -66,7 +66,21 @@ exports[`should successfully create a toc component 1`] = `
       data-theme="light"
       id=":r1:"
     >
-      operationalLayerLabel
+      <div
+        class="css-k008qs"
+        data-theme="light"
+      >
+        <p
+          class="chakra-text css-9515vv"
+          data-theme="light"
+        >
+          operationalLayerLabel
+        </p>
+        <div
+          class="css-17xejub"
+          data-theme="light"
+        />
+      </div>
     </h1>
     <ul
       aria-labelledby=":r1:"

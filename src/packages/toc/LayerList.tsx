@@ -115,7 +115,7 @@ function LayerItemDescriptor(props: {
     const description = useLayerDescription(layer);
 
     return (
-        <Popover>
+        <Popover placement="bottom-start">
             <PopoverTrigger>
                 <Button
                     className="toc-layer-item-details-button"
@@ -130,7 +130,7 @@ function LayerItemDescriptor(props: {
             <Portal>
                 <PopoverContent className="toc-layer-item-details" overflowY="auto" maxHeight="400">
                     <PopoverArrow />
-                    <PopoverCloseButton />
+                    <PopoverCloseButton mt={1} />
                     <PopoverHeader>{title}</PopoverHeader>
                     <PopoverBody>{description}</PopoverBody>
                 </PopoverContent>
