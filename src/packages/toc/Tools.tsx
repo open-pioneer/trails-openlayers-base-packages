@@ -26,13 +26,13 @@ export const Tools: FC<{ mapId: string } & ToolsConfig> = (props) => {
         !noEntry && (
             <Box className="toc-tools">
                 <Menu placement="bottom-start">
-                    <Button
-                        as={MenuButton}
+                    <MenuButton
+                        as={Button}
                         className="toc-tools-button"
                         aria-label={intl.formatMessage({ id: "toolsLabel" })}
                         borderRadius="full"
                         iconSpacing={0}
-                        padding={0}
+                        padding={3}
                         variant="ghost"
                         leftIcon={<FiMoreVertical />}
                     />
