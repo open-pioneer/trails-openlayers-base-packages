@@ -14,7 +14,7 @@ export interface References {
     config: ServiceType<"keycloak.KeycloakConfigProvider">;
 }
 //TODO logger name überarbeiten
-const LOG = createLogger("keycloak-sample:KeycloakAuthPlugin");
+const LOG = createLogger("keycloak:KeycloakAuthPlugin");
 
 export class KeycloakAuthPlugin
     extends EventEmitter<AuthPluginEvents>

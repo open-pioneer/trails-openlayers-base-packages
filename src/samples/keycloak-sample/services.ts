@@ -1,9 +1,14 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import Keycloak from "keycloak-js";
+import Keycloak, {
+    KeycloakInitOptions,
+    KeycloakLoginOptions,
+    KeycloakLogoutOptions
+} from "keycloak-js";
+import { KeycloakConfigProvider } from "@open-pioneer/keycloak";
 export { KeycloakAuthPlugin } from "./keycloak-auth-plugin/KeycloakAuthPlugin";
 
-export class KeycloakConfigProvider {
+export class KeycloakConfigProviderImpl implements KeycloakConfigProvider {
     getKeycloak() {
         return new Keycloak({
             url: "https://auth.ldproxy.net/",
@@ -16,15 +21,19 @@ export class KeycloakConfigProvider {
         return {
             onLoad: "check-sso",
             pkceMethod: "S256"
-        };
+        } as KeycloakInitOptions;
     }
 
     getLoginOptions() {
-        return {};
+        return {
+            redirectUri: undefined
+        } as KeycloakLoginOptions;
     }
 
     getLogoutOptions() {
-        return {};
+        return {
+            redirectUri: undefined
+        } as KeycloakLogoutOptions;
     }
 
     getRefreshOptions() {

@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import { assert, it } from "vitest";
 import { KeycloakAuthPlugin, References } from "./KeycloakAuthPlugin";
-import { KeycloakConfigProvider } from "../api";
+import { KeycloakConfigProvider } from "./api";
 import { ServiceOptions } from "@open-pioneer/runtime";
 
 it("expect state to be 'not-authenticated'", async () => {
