@@ -4,10 +4,10 @@
 import { expect, it } from "vitest";
 import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
 import TileLayer from "ol/layer/Tile";
-import { render, screen, waitFor } from "@testing-library/react";
+import { act, render, screen, waitFor } from "@testing-library/react";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { Legend, LegendItemComponentProps } from "./Legend";
-import { Box, Text } from "@open-pioneer/chakra-integration";
+import { Box, Image, Text } from "@open-pioneer/chakra-integration";
 import { MapConfig, MapConfigProvider, SimpleLayer, WMSLayer } from "@open-pioneer/map";
 import VectorLayer from "ol/layer/Vector";
 import { createService } from "@open-pioneer/test-utils/services";
@@ -189,8 +189,10 @@ it("does not show a legend for basemaps by default", async () => {
 
     const legendDiv = await findLegend();
     await waitForLegendItem(legendDiv);
+
     const images = await getLegendImages(legendDiv);
     expect(images.length).toBe(1);
+
     const src = images[0]?.getAttribute("src");
     expect(src).not.toBe("https://basemap-url.com/");
 });
@@ -237,14 +239,16 @@ it("shows a legend for active basemap if showBaseLayers is configured to be true
 
     const legendDiv = await findLegend();
     await waitForLegendItem(legendDiv);
+
     const images = await getLegendImages(legendDiv);
     expect(images.length).toBe(2);
+
     const src = images[1]?.getAttribute("src");
     expect(src).toBe("https://basemap-url.com/");
 });
 
 it.skip("shows correct legend entries for nested WMSSublayers", async () => {
-    // todo setupMap anpassen
+    // TODO: setupMap anpassen
     const { mapId, registry } = await setupMapWithWMSLayer();
     await registry.expectMapModel(mapId);
     const injectedServices = createServiceOptions({ registry });
@@ -271,7 +275,75 @@ it.skip("shows correct legend entries for nested WMSSublayers", async () => {
 });
 
 it("shows legend entries in correct order", async () => {
-    // TODO
+    const { mapId, registry } = await setupMap({
+        layers: [
+            {
+                title: "Base layer",
+                id: "base-layer",
+                olLayer: new TileLayer({}),
+                isBaseLayer: true
+            },
+            {
+                title: "Layer 1",
+                id: "layer-1",
+                olLayer: new TileLayer({}),
+                attributes: {
+                    "legend": {
+                        imageUrl: "https://fake.image.url/layer-1.png"
+                    }
+                }
+            },
+            {
+                title: "Layer 2",
+                id: "layer-2",
+                olLayer: new TileLayer({}),
+                attributes: {
+                    "legend": {
+                        imageUrl: "https://fake.image.url/layer-2.png"
+                    }
+                }
+            },
+            {
+                title: "Layer 3",
+                id: "layer-3",
+                olLayer: new TileLayer({}),
+                attributes: {
+                    "legend": {
+                        Component: function CustomLegend(props: LegendItemComponentProps) {
+                            return (
+                                <Box>
+                                    <Text>{props.layer.title}</Text>
+                                    <Box>
+                                        <Image
+                                            className="legend-item__image"
+                                            src="https://fake.image.url/layer-3.png"
+                                        ></Image>
+                                    </Box>
+                                </Box>
+                            );
+                        }
+                    }
+                }
+            }
+        ]
+    });
+    await registry.expectMapModel(mapId);
+    const injectedServices = createServiceOptions({ registry });
+
+    render(
+        <PackageContextProvider services={injectedServices}>
+            <Legend mapId={mapId} data-testid="legend" />
+        </PackageContextProvider>
+    );
+
+    const legendDiv = await findLegend();
+    await waitForLegendItem(legendDiv);
+
+    const images = await getLegendImages(legendDiv);
+    expect(images.length).toBe(3);
+    expect(images[0]?.getAttribute("src")).toBe("https://fake.image.url/layer-3.png");
+    expect(images[1]?.getAttribute("src")).toBe("https://fake.image.url/layer-2.png");
+    expect(images[2]?.getAttribute("src")).toBe("https://fake.image.url/layer-1.png");
 });
 
 it("shows legend entries only for visible layers", async () => {
@@ -317,8 +389,10 @@ it("shows legend entries only for visible layers", async () => {
 
     const legendDiv = await findLegend();
     await waitForLegendItem(legendDiv);
+
     const images = await getLegendImages(legendDiv);
     expect(images.length).toBe(1);
+
     const src = images[0]?.getAttribute("src");
     expect(src).not.toBe("https://not-visbile-layer.com/");
 });
@@ -352,20 +426,194 @@ it("includes the layer id in the legend item's class list", async () => {
     expect(firstLegendItem.classList.contains("layer-layer-1")).toBe(true);
 });
 
-it("shows an empty box if not legend entries are available", async () => {
+it.skip("shows an empty box if not legend entries are available", async () => {
     // TODO
 });
 
 it("reacts to changes in layer visibility", async () => {
-    // TODO
+    const { mapId, registry } = await setupMap({
+        layers: [
+            {
+                title: "Base layer",
+                id: "base-layer",
+                olLayer: new TileLayer({}),
+                isBaseLayer: true
+            },
+            {
+                title: "Layer 1",
+                id: "layer-1",
+                olLayer: new TileLayer({}),
+                attributes: {
+                    "legend": {
+                        imageUrl: "https://fake.image.url/layer-1.png"
+                    }
+                }
+            },
+            {
+                title: "Layer 2",
+                id: "layer-2",
+                olLayer: new TileLayer({}),
+                attributes: {
+                    "legend": {
+                        Component: function CustomLegend(props: LegendItemComponentProps) {
+                            return (
+                                <Box>
+                                    <Text>{props.layer.title}</Text>
+                                    <Box>
+                                        <Image
+                                            className="legend-item__image"
+                                            src="https://fake.image.url/layer-2.png"
+                                        ></Image>
+                                    </Box>
+                                </Box>
+                            );
+                        }
+                    }
+                }
+            }
+        ]
+    });
+    const map = await registry.expectMapModel(mapId);
+    const injectedServices = createServiceOptions({ registry });
+
+    render(
+        <PackageContextProvider services={injectedServices}>
+            <Legend mapId={mapId} data-testid="legend" />
+        </PackageContextProvider>
+    );
+
+    const layers = map.layers.getOperationalLayers();
+    expect(layers.length).toBe(2);
+
+    // First check
+    const legendDiv = await findLegend();
+    await waitForLegendItem(legendDiv);
+
+    const images = await getLegendImages(legendDiv);
+    expect(images.length).toBe(2);
+
+    // Set visible to false
+    act(() => {
+        layers[0]?.setVisible(false);
+    });
+
+    // Second check
+    const nextLegendDiv = await findLegend();
+    await waitForLegendItem(legendDiv);
+
+    const nextImages = await getLegendImages(nextLegendDiv);
+    expect(nextImages.length).toBe(1);
 });
 
-it("reacts to changes in layer legend attributes", async () => {
-    // TODO
+// TODO: Listen to change events in Legend component
+it.skip("reacts to changes in layer legend attributes", async () => {
+    const { mapId, registry } = await setupMap({
+        layers: [
+            {
+                title: "Base layer",
+                id: "base-layer",
+                olLayer: new TileLayer({}),
+                isBaseLayer: true
+            },
+            {
+                title: "Layer 1",
+                id: "layer-1",
+                olLayer: new TileLayer({}),
+                attributes: {
+                    "legend": {
+                        imageUrl: "https://fake.image.url/layer-1.png"
+                    }
+                }
+            }
+        ]
+    });
+    const map = await registry.expectMapModel(mapId);
+    const injectedServices = createServiceOptions({ registry });
+
+    render(
+        <PackageContextProvider services={injectedServices}>
+            <Legend mapId={mapId} data-testid="legend" />
+        </PackageContextProvider>
+    );
+
+    const layers = map.layers.getOperationalLayers();
+    expect(layers.length).toBe(1);
+
+    // First check
+    const legendDiv = await findLegend();
+    await waitForLegendItem(legendDiv);
+
+    const images = await getLegendImages(legendDiv);
+    expect(images[0]?.getAttribute("src")).toBe("https://fake.image.url/layer-1.png");
+
+    // Update attributes
+    layers[0]?.updateAttributes({ legend: { imageUrl: "https://fake.image.url/new_layer.png" } });
+
+    // Second check
+    const nextLegendDiv = await findLegend();
+    await waitForLegendItem(legendDiv);
+
+    const nextImages = await getLegendImages(nextLegendDiv);
+    expect(nextImages[0]?.getAttribute("src")).toBe("https://fake.image.url/new_layer.png");
 });
 
 it("reacts to changes in the layer composition", async () => {
-    // TODO
+    const { mapId, registry } = await setupMap({
+        layers: [
+            {
+                title: "Base layer",
+                id: "base-layer",
+                olLayer: new TileLayer({}),
+                isBaseLayer: true
+            },
+            {
+                title: "Layer 1",
+                id: "layer-1",
+                olLayer: new TileLayer({}),
+                attributes: {
+                    "legend": {
+                        imageUrl: "https://fake.image.url/layer-1.png"
+                    }
+                }
+            }
+        ]
+    });
+    const map = await registry.expectMapModel(mapId);
+    const injectedServices = createServiceOptions({ registry });
+
+    render(
+        <PackageContextProvider services={injectedServices}>
+            <Legend mapId={mapId} data-testid="legend" />
+        </PackageContextProvider>
+    );
+
+    const layers = map.layers.getOperationalLayers();
+    expect(layers.length).toBe(1);
+
+    act(() => {
+        map.layers.addLayer(
+            new SimpleLayer({
+                title: "Layer 2",
+                id: "layer-2",
+                olLayer: new TileLayer({}),
+                attributes: {
+                    "legend": {
+                        imageUrl: "https://fake.image.url/layer-2.png"
+                    }
+                }
+            })
+        );
+    });
+
+    const nextLayers = map.layers.getOperationalLayers();
+    expect(nextLayers.length).toBe(2);
+
+    const legendDiv = await findLegend();
+    await waitForLegendItem(legendDiv);
+
+    const images = await getLegendImages(legendDiv);
+    expect(images[0]?.getAttribute("src")).toBe("https://fake.image.url/layer-2.png");
+    expect(images[1]?.getAttribute("src")).toBe("https://fake.image.url/layer-1.png");
 });
 
 async function findLegend() {
