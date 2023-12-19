@@ -2,12 +2,12 @@
 // SPDX-License-Identifier: Apache-2.0
 import type { Options as WMSSourceOptions } from "ol/source/ImageWMS";
 import { WMSLayerImpl } from "../../model/layers/WMSLayerImpl";
-import type { LayerBaseConfig, Layer, SublayersCollection } from "./base";
+import type { LayerBaseConfig, Layer, SublayersCollection, LayerConfig } from "./base";
 
 /**
  * Configuration options to construct a WMS layer.
  */
-export interface WMSLayerConfig extends LayerBaseConfig {
+export interface WMSLayerConfig extends LayerConfig {
     /** URL of the WMS service. */
     url: string;
 

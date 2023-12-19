@@ -258,6 +258,65 @@ layer.updateAttributes({
 layer.deleteAttribute("foo");
 ```
 
+An optional property `healthCheck` allows to determine the availability status of a layer (e.g. map service down). The health check is performed asynchronous.
+
+It is possible to provide
+
+-   either a URL to perform a test request check the returned HTTP status
+-   or a `HealthCheckFunction` performing a custom check and returning the state
+
+**Important**: The availability of a layer is only checked once during initialization to reduce the load on server side. If a service becomes available again later, the application will need to be reloaded in order to update the availability status.
+
+The availability status of a layer can be accessed with the property `loadState`. Its value depends on the result of the health check and the OpenLayers `Source` of the layer. If at least one of both checks returns the state `error`, the `loadState` will be set to `error`.
+
+Example: Check of layer availability ("health check")
+
+```ts
+// YOUR-APP/MapConfigProviderImpl.ts
+import { MapConfig, MapConfigProvider, SimpleLayer } from "@open-pioneer/map";
+import TileLayer from "ol/layer/Tile";
+import OSM from "ol/source/OSM";
+
+export class MapConfigProviderImpl implements MapConfigProvider {
+    async getMapConfig(): Promise<MapConfig> {
+        return {
+            layers: [
+                new SimpleLayer({
+                    id: "1",
+                    title: "Layer 1",
+                    olLayer: new TileLayer({
+                        source: new OSM()
+                    }),
+                    // check layer availability by requesting the provided URL
+                    healthCheck:
+                        "https://sgx.geodatenzentrum.de/wmts_topplus_open/1.0.0/WMTSCapabilities.xml",
+                    isBaseLayer: false,
+                    visible: true
+                }),
+                new SimpleLayer({
+                    id: "2",
+                    title: "Layer 2",
+                    olLayer: new TileLayer({
+                        source: new OSM()
+                    }),
+                    // check layer availability by providing a custom health check function
+                    healthCheck: async () => {
+                        function wait(milliseconds: number): Promise<void> {
+                            return new Promise((resolve) => setTimeout(resolve, milliseconds));
+                        }
+
+                        await wait(3000);
+                        return "error";
+                    },
+                    isBaseLayer: false,
+                    visible: false
+                })
+            ]
+        };
+    }
+}
+```
+
 > NOTE: The visibility of base layers cannot be changed through the method `setVisible`.
 > Call `activateBaseLayer` instead.
 

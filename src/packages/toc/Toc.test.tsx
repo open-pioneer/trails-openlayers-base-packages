@@ -2,12 +2,13 @@
 // SPDX-License-Identifier: Apache-2.0
 import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
-import { render, screen, waitFor } from "@testing-library/react";
+import { act, render, screen, waitFor, fireEvent } from "@testing-library/react";
 import TileLayer from "ol/layer/Tile";
 import { expect, it } from "vitest";
 import { Toc } from "./Toc";
 
 const BASEMAP_SWITCHER_CLASS = ".basemap-switcher";
+const BASEMAP_SWITCHER_SELECT_CLASS = ".basemap-switcher-select";
 
 it("should successfully create a toc component", async () => {
     const { mapId, registry } = await setupMap({
@@ -41,9 +42,15 @@ it("should successfully create a toc component", async () => {
 
     const tocDiv = await findToc();
     const { basemapSelect } = await waitForBasemapSwitcher(tocDiv!);
+
+    // react-select creates list of options in dom after opening selection
+    act(() => {
+        fireEvent.keyDown(basemapSelect, { key: "ArrowDown" });
+    });
+
     await waitFor(() => {
-        const option = basemapSelect.options[0];
-        if (!option || option.innerText !== "Base layer") {
+        const options = tocDiv.getElementsByClassName("basemap-switcher-option");
+        if (options.length !== 1 || options[0]?.textContent !== "Base layer") {
             throw new Error("expected basemap switcher to contain the Base layer option");
         }
     });
@@ -127,8 +134,13 @@ it("should support overriding basemap-switcher properties", async () => {
     const { basemapSwitcher, basemapSelect } = await waitForBasemapSwitcher(tocDiv!);
     expect(basemapSwitcher?.classList.contains("test-class")).toBe(true);
 
+    // react-select creates list of options in dom after opening selection
+    act(() => {
+        fireEvent.keyDown(basemapSelect, { key: "ArrowDown" });
+    });
+
     await waitFor(() => {
-        const options = basemapSelect.querySelectorAll("option");
+        const options = basemapSelect.getElementsByClassName("basemap-switcher-option");
         const optionLabels = Array.from(options).map((opt) => opt.textContent);
         expect(optionLabels, "basemap options are not equal to their expected values")
             .toMatchInlineSnapshot(`
@@ -140,6 +152,10 @@ it("should support overriding basemap-switcher properties", async () => {
     });
 });
 
+async function findToc() {
+    return await screen.findByTestId("toc");
+}
+
 async function waitForBasemapSwitcher(tocDiv: HTMLElement) {
     return await waitFor(() => {
         const basemapSwitcher = tocDiv.querySelector(BASEMAP_SWITCHER_CLASS);
@@ -147,15 +163,10 @@ async function waitForBasemapSwitcher(tocDiv: HTMLElement) {
             throw new Error("basemap switcher not mounted");
         }
 
-        const basemapSelect = basemapSwitcher?.querySelector("select");
+        const basemapSelect = basemapSwitcher?.querySelector(BASEMAP_SWITCHER_SELECT_CLASS);
         if (!basemapSelect) {
             throw new Error("failed to find select element in basemap switcher");
         }
         return { basemapSwitcher, basemapSelect };
     });
-}
-
-async function findToc() {
-    const tocDiv = await screen.findByTestId("toc");
-    return tocDiv;
 }

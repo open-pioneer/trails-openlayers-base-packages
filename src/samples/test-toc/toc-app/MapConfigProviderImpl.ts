@@ -28,8 +28,9 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     title: "TopPlus Open",
                     isBaseLayer: true,
                     visible: true,
+                    // broken URL
                     healthCheck:
-                        "https://sgx.geodatenzentrum.de/wmts_topplus_open/1.0.0/WMTSCapabilities.xml",
+                        "https://sgx.geodatenzentrum.de/wmts_topplus_openERROR/1.0.0/WMTSCapabilities.xml",
                     olLayer: createTopPlusOpenLayer("web")
                 }),
                 new SimpleLayer({
@@ -37,6 +38,15 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     title: "TopPlus Open (Grau)",
                     isBaseLayer: true,
                     visible: false,
+                    // example for a custom health check running async
+                    healthCheck: async () => {
+                        function wait(milliseconds: number): Promise<void> {
+                            return new Promise((resolve) => setTimeout(resolve, milliseconds));
+                        }
+
+                        await wait(2000);
+                        return "error";
+                    },
                     olLayer: createTopPlusOpenLayer("web_grau")
                 }),
                 new SimpleLayer({
@@ -44,6 +54,9 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     title: "TopPlus Open (Light)",
                     isBaseLayer: true,
                     visible: false,
+                    // valid URL
+                    healthCheck:
+                        "https://sgx.geodatenzentrum.de/wmts_topplus_open/1.0.0/WMTSCapabilities.xml",
                     olLayer: createTopPlusOpenLayer("web_light")
                 }),
                 new SimpleLayer({
@@ -64,6 +77,8 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                 new SimpleLayer({
                     title: "Kindertagesstätten",
                     visible: true,
+                    healthCheck:
+                        "https://sgx.geodatenzentrum.de/wmts_topplus_open/1.0.0/WMTSCapabilities.xml",
                     olLayer: createKitasLayer()
                 }),
                 createSchulenLayer(),
@@ -162,6 +177,15 @@ function createSchulenLayer() {
         title: "Schulstandorte",
         description: `Der vorliegende Datenbestand / Dienst zu den Schulstandorten in NRW stammt aus der Schuldatenbank. Die Informationen werden von den Schulträgern bzw. Schulen selbst eingetragen und aktuell gehalten. Die Daten werden tagesaktuell bereitgestellt und enthalten alle grundlegenden Informationen zu Schulen wie Schulnummer, Schulbezeichnung und Adresse.Der vorliegende Datenbestand / Dienst zu den Schulstandorten in NRW stammt aus der Schuldatenbank. Die Informationen werden von den Schulträgern bzw. Schulen selbst eingetragen und aktuell gehalten. Die Daten werden tagesaktuell bereitgestellt und enthalten alle grundlegenden Informationen zu Schulen wie Schulnummer, Schulbezeichnung und Adresse.Der vorliegende Datenbestand / Dienst zu den Schulstandorten in NRW stammt aus der Schuldatenbank. Die Informationen werden von den Schulträgern bzw. Schulen selbst eingetragen und aktuell gehalten. Die Daten werden tagesaktuell bereitgestellt und enthalten alle grundlegenden Informationen zu Schulen wie Schulnummer, Schulbezeichnung und Adresse.Der vorliegende Datenbestand / Dienst zu den Schulstandorten in NRW stammt aus der Schuldatenbank. Die Informationen werden von den Schulträgern bzw. Schulen selbst eingetragen und aktuell gehalten. Die Daten werden tagesaktuell bereitgestellt und enthalten alle grundlegenden Informationen zu Schulen wie Schulnummer, Schulbezeichnung und Adresse.`,
         visible: true,
+        // example for a custom health check running async
+        healthCheck: async () => {
+            function wait(milliseconds: number): Promise<void> {
+                return new Promise((resolve) => setTimeout(resolve, milliseconds));
+            }
+
+            await wait(3000);
+            return "error";
+        },
         url: "https://www.wms.nrw.de/wms/wms_nw_inspire-schulen",
         sublayers: [
             {

@@ -6,7 +6,7 @@ import { EventsKey } from "ol/events";
 import OlBaseLayer from "ol/layer/Base";
 import OlLayer from "ol/layer/Layer";
 import Source, { State as OlSourceState } from "ol/source/Source";
-import { Layer, LayerLoadState, SimpleLayerConfig } from "../api";
+import { HealthCheckFunction, Layer, LayerLoadState, SimpleLayerConfig } from "../api";
 import { AbstractLayerBase } from "./AbstractLayerBase";
 import { MapModelImpl } from "./MapModelImpl";
 
@@ -23,6 +23,7 @@ export abstract class AbstractLayer<AdditionalEvents = {}>
 {
     #olLayer: OlBaseLayer;
     #isBaseLayer: boolean;
+    #healthCheck?: string | HealthCheckFunction;
     #visible: boolean;
 
     #loadState: LayerLoadState;
@@ -32,15 +33,17 @@ export abstract class AbstractLayer<AdditionalEvents = {}>
         super(config);
         this.#olLayer = config.olLayer;
         this.#isBaseLayer = config.isBaseLayer ?? false;
-        this.#visible = config.visible ?? true;
+        this.#healthCheck = config.healthCheck;
 
         const { initial: initialState, resource: stateWatchResource } = watchLoadState(
-            this.#olLayer,
+            this.id,
+            config,
             (state) => {
                 this.#loadState = state;
                 this.__emitChangeEvent("changed:loadState");
             }
         );
+        this.#visible = config.visible ?? true;
         this.#loadState = initialState;
         this.#stateWatchResource = stateWatchResource;
     }
@@ -105,9 +108,12 @@ export abstract class AbstractLayer<AdditionalEvents = {}>
 }
 
 function watchLoadState(
-    olLayer: OlBaseLayer,
+    layerId: string,
+    config: SimpleLayerConfig,
     onChange: (newState: LayerLoadState) => void
 ): { initial: LayerLoadState; resource: Resource } {
+    const olLayer = config.olLayer;
+
     if (!(olLayer instanceof OlLayer)) {
         // Some layers don't have a source (such as group)
         return {
@@ -121,9 +127,25 @@ function watchLoadState(
     }
 
     let currentSource = olLayer?.getSource() as Source | null;
-    let currentLoadState = mapState(currentSource?.getState());
+    const currentOlLayerState = mapState(currentSource?.getState());
+
+    let currentLoadState: LayerLoadState = currentOlLayerState;
+    let currentHealthState = "loading"; // initial state loading until health check finished
+
+    // custom health check not needed when OL already returning an error state
+    if (currentOlLayerState !== "error") {
+        // health check only once during initialization
+        healthCheck(layerId, config).then((state: LayerLoadState) => {
+            currentHealthState = state;
+            updateState();
+        });
+    }
+
     const updateState = () => {
-        const nextLoadState = mapState(currentSource?.getState());
+        const olLayerState = mapState(currentSource?.getState());
+        const nextLoadState: LayerLoadState =
+            currentHealthState === "error" ? "error" : olLayerState;
+
         if (currentLoadState !== nextLoadState) {
             currentLoadState = nextLoadState;
             onChange(currentLoadState);
@@ -156,6 +178,41 @@ function watchLoadState(
             }
         }
     };
+}
+
+async function healthCheck(layerId: string, config: SimpleLayerConfig): Promise<LayerLoadState> {
+    const healthCheck = config.healthCheck;
+    if (healthCheck == null) {
+        return "loaded";
+    }
+
+    let healthCheckFn: HealthCheckFunction;
+    if (typeof healthCheck === "function") {
+        healthCheckFn = healthCheck;
+    } else if (typeof healthCheck === "string") {
+        healthCheckFn = async () => {
+            // TODO replace by fetch from HttpService
+            const response = await fetch(healthCheck);
+            if (response.ok) {
+                return "loaded";
+            }
+            LOG.warn(`Health check failed for layer '${layerId}' (http status ${response.status})`);
+            return "error";
+        };
+    } else {
+        LOG.error(
+            `Unexpected object for 'healthCheck' parameter of layer '${layerId}'`,
+            healthCheck
+        );
+        return "error";
+    }
+
+    try {
+        return await healthCheckFn(config);
+    } catch (e) {
+        LOG.warn(`Health check failed for layer '${layerId}'`, e);
+        return "error";
+    }
 }
 
 function mapState(state: OlSourceState | undefined): LayerLoadState {

@@ -26,3 +26,4 @@ node_modules
 *.sln
 *.sw?
 *.local
+*.iml
