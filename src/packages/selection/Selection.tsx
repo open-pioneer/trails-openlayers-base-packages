@@ -413,7 +413,8 @@ function useDragSelection(
 
         const dragController = new DragController(
             map.olMap,
-            selectMethode.value,
+            // TODO: undo!
+            "BOX_DRAW", //selectMethode.value,
             intl.formatMessage({ id: "tooltip" }),
             intl.formatMessage({ id: "disabledTooltip" }),
             onExtentSelected
