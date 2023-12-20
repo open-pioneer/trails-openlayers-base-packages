@@ -1,15 +1,18 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { createLogger } from "@open-pioneer/core";
+import { createLogger, isAbortError } from "@open-pioneer/core";
 import ImageLayer from "ol/layer/Image";
 import type ImageSource from "ol/source/Image";
 import ImageWMS from "ol/source/ImageWMS";
+import WMSCapabilities from "ol/format/WMSCapabilities";
+
 import { WMSLayerConfig, WMSLayer, WMSSublayerConfig, WMSSublayer } from "../../api";
 import { DeferredExecution, defer } from "../../util/defer";
 import { AbstractLayer } from "../AbstractLayer";
 import { AbstractLayerBase } from "../AbstractLayerBase";
 import { MapModelImpl } from "../MapModelImpl";
 import { SublayersCollectionImpl } from "../SublayersCollectionImpl";
+import { fetchCapabilities } from "../../util/capabilities-utils";
 
 const LOG = createLogger("map:WMSLayer");
 
@@ -19,6 +22,9 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
     #deferredSublayerUpdate: DeferredExecution | undefined;
     #layer: ImageLayer<ImageSource>;
     #source: ImageWMS;
+    /* eslint-disable @typescript-eslint/no-explicit-any */
+    #capabilities: Record<string, any> | undefined;
+    readonly #abortController = new AbortController();
 
     constructor(config: WMSLayerConfig) {
         const layer = new ImageLayer();
@@ -60,6 +66,38 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
         for (const sublayer of this.#sublayers.getSublayers()) {
             sublayer.__attach(map, this, this);
         }
+        const layers: WMSSublayerImpl[] = [];
+        const getNestedSublayer = (sublayers: WMSSublayerImpl[], layers: WMSSublayerImpl[]) => {
+            for (const sublayer of sublayers) {
+                const nested = sublayer.sublayers.getSublayers();
+                if (nested.length) {
+                    getNestedSublayer(nested, layers);
+                } else {
+                    if (sublayer.name) {
+                        layers.push(sublayer);
+                    }
+                }
+            }
+        };
+        this.#fetchWMSCapabilities().then(
+            (result: string) => {
+                const parser = new WMSCapabilities();
+                const capabilities = parser.read(result);
+                this.#capabilities = capabilities;
+                getNestedSublayer(this.#sublayers.getSublayers(), layers);
+                for (const layer of layers) {
+                    const legendUrl = getLegendUrl(capabilities, layer.name!);
+                    console.log(legendUrl, layer.name);
+                    layer.legend = legendUrl;
+                }
+            },
+            (error) => {
+                if (isAbortError(error)) {
+                    LOG.error(`Layer ${this.id} has been destroyed before fetching the data`);
+                }
+                LOG.error(`Failed fetching WMTS capabilities for Layer ${this.id}`, error);
+            }
+        );
     }
 
     /** Called by the sublayers when their visibility changed. */
@@ -122,12 +160,18 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
         }
         return layers;
     }
+
+    async #fetchWMSCapabilities(): Promise<string> {
+        const url = `${this.#url}?LANGUAGE=ger&SERVICE=WMS&REQUEST=GetCapabilities`;
+        return fetchCapabilities(url, this.#abortController.signal);
+    }
 }
 
 class WMSSublayerImpl extends AbstractLayerBase implements WMSSublayer {
     #parent: WMSSublayerImpl | WMSLayerImpl | undefined;
     #parentLayer: WMSLayerImpl | undefined;
     #name: string | undefined;
+    #legend: string | undefined;
     #sublayers: SublayersCollectionImpl<WMSSublayerImpl>;
     #visible: boolean;
 
@@ -162,13 +206,12 @@ class WMSSublayerImpl extends AbstractLayerBase implements WMSSublayer {
         return parentLayer;
     }
     get legend(): string | undefined {
-        //parent sublayer has not legend
-        if (!this.name || this.sublayers.getSublayers().length) {
-            return;
-        }
-        const olMap = this.map.olMap;
-        const res = olMap.getView().getResolution();
-        return this.#parentLayer?.__source.getLegendUrl(res, { LAYER: this.name });
+        return this.#legend;
+    }
+
+    set legend(legendUrl: string | undefined) {
+        this.#legend = legendUrl;
+        this.__emitChangeEvent("changed:legend");
     }
 
     /**
@@ -229,4 +272,30 @@ function constructSublayers(sublayerConfigs: WMSSublayerConfig[] = []): WMSSubla
         }
         throw new Error("Failed to construct sublayers.", { cause: e });
     }
+}
+
+function getLegendUrl(capabilities: Record<string, any>, activeLayerId: string) {
+    const content = capabilities?.Capability;
+    const layer = content?.Layer;
+    let url: string | undefined = undefined;
+
+    const searchNestedLayer = (layer: Record<string, any>[]) => {
+        for (const currentLayer of layer) {
+            // spec. if, a layer has a <Name>, then it is a map layer
+            if (currentLayer?.Name === activeLayerId) {
+                const activeLayer = currentLayer;
+                const styles = activeLayer.Style;
+                if (!styles) {
+                    LOG.debug("No style in WMS layer capabilities - giving up.");
+                    return;
+                }
+                const activeStyle = styles?.[0];
+                url = activeStyle.LegendURL?.[0]?.OnlineResource;
+            } else if (currentLayer.Layer) {
+                searchNestedLayer(currentLayer.Layer);
+            }
+        }
+    };
+    searchNestedLayer(layer.Layer);
+    return url;
 }
