@@ -14,7 +14,9 @@ To integrate the TOC (table of contents) in your app, insert the following snipp
 
 ### Tools
 
-Additional tools are available for the `operational layers`, e.g. to hide all layers with one click. To show the tool menu, set the `showTools` property to `true`:
+Additional tools are available for operational layers.
+To show the toolset menu, set the `showTools` property to `true`.
+The toolset contains a tool with which you can switch off the visibility of all levels at once.
 
 ```tsx
 <Toc mapId="map_id" showTools={true} />
