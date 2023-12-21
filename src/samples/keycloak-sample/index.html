@@ -17,9 +17,28 @@
             }
         </style>
     </head>
-
     <body class="full-height">
-        <keycloak-app-element class="full-height"></keycloak-app-element>
-        <script type="module" src="./app.ts"></script>
+        <script type="module">
+            import "./app.ts";
+            const body = document.getElementsByTagName("body")[0];
+
+            initApp();
+
+            function initApp() {
+                const queryString = window.location.search;
+                const urlParams = new URLSearchParams(queryString);
+                const lang = urlParams.get("lang");
+
+                const app = document.createElement("keycloak-app-element");
+                app.classList.add("full-height");
+                app.setAttribute("id", "test");
+
+                if (lang) {
+                    app.setAttribute("forced-locale", lang);
+                }
+
+                body.appendChild(app);
+            }
+        </script>
     </body>
 </html>

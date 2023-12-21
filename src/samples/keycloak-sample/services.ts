@@ -7,14 +7,15 @@ import Keycloak, {
 } from "keycloak-js";
 import { KeycloakConfigProvider } from "@open-pioneer/keycloak";
 export { KeycloakAuthPlugin } from "@open-pioneer/keycloak";
-
+export { MapConfigProviderImpl } from "./MapConfigProviderImpl";
+export const keycloak = new Keycloak({
+    url: "https://hsi-pex0-13620.service.it.nrw.de/keycloak/",
+    realm: "trails",
+    clientId: "trails-sample"
+});
 export class KeycloakConfigProviderImpl implements KeycloakConfigProvider {
     getKeycloak() {
-        return new Keycloak({
-            url: "https://auth.ldproxy.net/",
-            realm: "ii",
-            clientId: "it-nrw"
-        });
+        return keycloak;
     }
 
     getInitOptions() {

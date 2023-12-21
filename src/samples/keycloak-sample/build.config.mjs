@@ -3,6 +3,7 @@
 import { defineBuildConfig } from "@open-pioneer/build-support";
 
 export default defineBuildConfig({
+    i18n: ["de", "en"],
     services: {
         KeycloakConfigProviderImpl: {
             provides: ["keycloak.KeycloakConfigProvider"]
@@ -12,6 +13,9 @@ export default defineBuildConfig({
             references: {
                 config: "keycloak.KeycloakConfigProvider"
             }
+        },
+        MapConfigProviderImpl: {
+            provides: ["map.MapConfigProvider"]
         }
     },
 
