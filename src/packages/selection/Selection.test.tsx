@@ -19,6 +19,15 @@ it("should successfully create a selection component", async () => {
     expect(selectionDiv).toMatchSnapshot();
 });
 
+// Mögliche Test-Cases:
+// Selectionsquellen aus Komponente auslesen und prüfen, ob das dieselben Quellen sind, die man übergeben hat
+// testen, ob die Quelle in der GUI disabled und einen Warnhinweis(icon) hat, wenn die Quelle den Status "not available" hat
+// testen, ob die Änderung des Status einer Quelle sich auch in der GUI widerspiegelt
+// testen, dass der DragController direkt gestartet wird, wenn Komponente aktiviert wurde
+// testen, ob standardmäßig die Rechteck-Selection als Selektionsmethode aktiv ist
+// wenn mehrere Selection Methoden vorhanden sind, testen, ob in der GUI dann ein React-select mit den Methoden erscheint
+// testen, ob im Fehlerfall eine Notifier-error Message geschmissen wird
+
 async function createSelection() {
     const { mapId, registry } = await setupMap();
 
