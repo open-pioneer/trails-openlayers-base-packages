@@ -8,10 +8,7 @@ import { act, render, screen, waitFor } from "@testing-library/react";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { Legend, LegendItemComponentProps } from "./Legend";
 import { Box, Image, Text } from "@open-pioneer/chakra-integration";
-import { MapConfig, MapConfigProvider, SimpleLayer, WMSLayer } from "@open-pioneer/map";
-import VectorLayer from "ol/layer/Vector";
-import { createService } from "@open-pioneer/test-utils/services";
-import { MapRegistryImpl } from "@open-pioneer/map/MapRegistryImpl";
+import { SimpleLayer, WMSLayer } from "@open-pioneer/map";
 
 const LEGEND_ITEM_CLASS = ".legend-item";
 const LEGEND_IMAGE_CLASS = ".legend-item__image";
@@ -638,49 +635,6 @@ async function getLegendImages(legendDiv: HTMLElement) {
 
         return legendImages;
     });
-}
-
-async function setupMapWithWMSLayer() {
-    // Always use "test" as mapId for unit tests
-    const mapId = "test";
-
-    const mapConfig: MapConfig = {
-        initialView: {
-            kind: "position",
-            center: { x: 847541, y: 6793584 },
-            zoom: 10
-        },
-        projection: "EPSG:3857",
-        layers: [
-            new SimpleLayer({
-                title: "OSM",
-                olLayer: new VectorLayer()
-            }),
-            createLayerWithNestedSublayers()
-        ]
-    };
-
-    const registry = await createService(MapRegistryImpl, {
-        references: {
-            providers: [new MapConfigProviderImpl(mapId, mapConfig)]
-        }
-    });
-
-    return { mapId, registry };
-}
-
-class MapConfigProviderImpl implements MapConfigProvider {
-    mapId = "default";
-    mapConfig: MapConfig;
-
-    constructor(mapId: string, mapConfig?: MapConfig | undefined) {
-        this.mapId = mapId;
-        this.mapConfig = mapConfig ?? {};
-    }
-
-    getMapConfig(): Promise<MapConfig> {
-        return Promise.resolve(this.mapConfig);
-    }
 }
 
 function createLayerWithNestedSublayers() {
