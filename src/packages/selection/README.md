@@ -2,13 +2,9 @@
 
 This package provides a UI component to perform a selection on given selection sources from the map.
 
-TODO:
-
--   Document that notifier is required in app
-
 ## Usage
 
-To use the selection component you have to import `Selection` from `@open-pioneer/selection`.
+To use the selection component you have to import `Selection` from `@open-pioneer/selection`. You also need the required package `@open-pioneer/notifier`.
 The mandatory properties of the `Selection` component are `mapId` and `sources` (layer source to be selected on). Beware the limitation per selection are 10000 items.
 
 ```tsx
