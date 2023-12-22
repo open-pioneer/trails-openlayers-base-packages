@@ -1,15 +1,25 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { OgcFeatureSearchSource } from "@open-pioneer/ogc-features";
+import { OgcFeaturesSearchSourceFactory } from "@open-pioneer/ogc-features";
 import { PackageIntl, ServiceOptions } from "@open-pioneer/runtime";
 import { PhotonGeocoder } from "./search-source-examples/testSources";
 import { SearchSource } from "@open-pioneer/search";
+import { HttpService } from "@open-pioneer/http";
+
+interface References {
+    ogcSearchSourceFactory: OgcFeaturesSearchSourceFactory;
+    httpService: HttpService;
+}
 
 export class AppConfig {
     private intl: PackageIntl;
+    private ogcSearchSourceFactory: OgcFeaturesSearchSourceFactory;
+    private httpService: HttpService;
 
-    constructor({ intl }: ServiceOptions) {
+    constructor({ references, intl }: ServiceOptions<References>) {
         this.intl = intl;
+        this.ogcSearchSourceFactory = references.ogcSearchSourceFactory;
+        this.httpService = references.httpService;
     }
 
     getSearchSources(): SearchSource[] {
@@ -24,7 +34,7 @@ export class AppConfig {
             //     collectionId: "vineyards",
             //     searchProperty: "name"
             // }),
-            new OgcFeatureSearchSource({
+            this.ogcSearchSourceFactory.createSearchSource({
                 label: this.intl.formatMessage({ id: "searchSources.miningPermissions" }),
                 baseUrl: "https://ogc-api.nrw.de/inspire-am-bergbauberechtigungen/v1",
                 collectionId: "managementrestrictionorregulationzone",
@@ -44,7 +54,7 @@ export class AppConfig {
                     return url;
                 }
             }),
-            new PhotonGeocoder("Photon Geocoder", ["city", "street"])
+            new PhotonGeocoder("Photon Geocoder", ["city", "street"], this.httpService)
         ];
         return sources;
     }

@@ -60,6 +60,9 @@ importers:
       '@open-pioneer/core':
         specifier: ^1.2.1
         version: 1.2.1
+      '@open-pioneer/http':
+        specifier: ^2.1.1
+        version: 2.1.1(@open-pioneer/core@1.2.1)(@open-pioneer/runtime@2.0.2)
       '@open-pioneer/integration':
         specifier: ^2.0.2
         version: 2.0.2(@open-pioneer/runtime@2.0.2)
@@ -406,6 +409,9 @@ importers:
       '@open-pioneer/core':
         specifier: ^1.2.1
         version: 1.2.1
+      '@open-pioneer/http':
+        specifier: ^2.1.1
+        version: 2.1.1(@open-pioneer/core@1.2.1)(@open-pioneer/runtime@2.0.2)
       '@open-pioneer/react-utils':
         specifier: workspace:^
         version: link:../react-utils
@@ -572,6 +578,9 @@ importers:
       '@open-pioneer/core':
         specifier: ^1.2.1
         version: 1.2.1
+      '@open-pioneer/http':
+        specifier: ^2.1.1
+        version: 2.1.1(@open-pioneer/core@1.2.1)(@open-pioneer/runtime@2.0.2)
       '@open-pioneer/search':
         specifier: workspace:^
         version: link:../search
@@ -1064,6 +1073,9 @@ importers:
       '@open-pioneer/chakra-integration':
         specifier: ^1.1.1
         version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(framer-motion@10.16.16)(react-dom@18.2.0)(react@18.2.0)
+      '@open-pioneer/http':
+        specifier: ^2.1.1
+        version: 2.1.1(@open-pioneer/core@1.2.1)(@open-pioneer/runtime@2.0.2)
       '@open-pioneer/map':
         specifier: workspace:^
         version: link:../../../packages/map
@@ -3399,6 +3411,16 @@ packages:
 
   /@open-pioneer/core@1.2.1:
     resolution: {integrity: sha512-LuDc+jPxI5U+B0L6+dHu1PNqeVni2FD/mG2A/EoZQMnoT9ICDp3jChEFooGA7RbbR6wSum2DS4OjxBRoJvx0Ng==}
+
+  /@open-pioneer/http@2.1.1(@open-pioneer/core@1.2.1)(@open-pioneer/runtime@2.0.2):
+    resolution: {integrity: sha512-4qA6kQv7LvcNxbJePUuNHlmYq2m5EMxzVCGlztSkOUUYJav62DRZ8DaH7fzVR5X4MF2Hm99IzgRDsQt2fTuBFQ==}
+    peerDependencies:
+      '@open-pioneer/core': ^1.2.1
+      '@open-pioneer/runtime': ^2.0.2
+    dependencies:
+      '@open-pioneer/core': 1.2.1
+      '@open-pioneer/runtime': 2.0.2(@formatjs/intl@2.9.9)(@open-pioneer/base-theme@0.2.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/core@1.2.1)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
+    dev: false
 
   /@open-pioneer/integration@2.0.2(@open-pioneer/runtime@2.0.2):
     resolution: {integrity: sha512-+lB29Fpq3swZ2yR/+ukP+eCDa6U1CGly1JTTXtWH7yim5Iakir0wyn0cuxf6SG2YmdKqiu2AYpE6UZqXU5wshA==}

@@ -1,171 +1,9 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import { HttpService } from "@open-pioneer/http";
 import { SearchSource, SearchResult } from "@open-pioneer/search";
 import { SearchOptions } from "@open-pioneer/search/api";
 import GeoJSON from "ol/format/GeoJSON";
-
-const fakeStreetData = [
-    {
-        text: "Brückenweg 1"
-    },
-    {
-        text: "Mauerstrasse 3"
-    },
-    {
-        text: "Vogelgasse 4"
-    },
-    {
-        text: "Kampweg 8"
-    }
-];
-const fakeCityData = [
-    {
-        text: "Aachen"
-    },
-    {
-        text: "Dortmund"
-    },
-    {
-        text: "Langenfeld"
-    },
-    {
-        text: "Düsseldorf"
-    },
-    {
-        text: "Münster"
-    }
-];
-
-const fakeRiverData = [
-    {
-        text: "Rhein"
-    },
-    {
-        text: "Weser"
-    },
-    {
-        text: "Ems"
-    },
-    {
-        text: "Maas"
-    },
-    {
-        text: "Elbe"
-    }
-];
-
-const getFakeData = async (
-    inputValue: string,
-    responseData: { text: string }[],
-    timeout: number
-) => {
-    return new Promise<typeof responseData>((resolve) => {
-        setTimeout(() => {
-            const cp = responseData.filter((item) =>
-                item.text.toLowerCase().includes(inputValue.toLocaleLowerCase())
-            );
-            resolve(cp);
-        }, timeout);
-    });
-};
-
-export class FakeStreetSource implements SearchSource {
-    label: string = "Streets";
-    timeout: number;
-    constructor(timeout: number = 250) {
-        this.timeout = timeout;
-    }
-    async search(inputValue: string): Promise<SearchResult[]> {
-        const result = await getFakeData(inputValue, fakeStreetData, this.timeout);
-        const results = result.map((item, idx) => ({
-            id: idx,
-            label: item.text
-        }));
-        return results;
-    }
-}
-export class FakeCitySource implements SearchSource {
-    label: string = "Cities";
-    timeout: number;
-    constructor(timeout: number = 250) {
-        this.timeout = timeout;
-    }
-    async search(inputValue: string): Promise<SearchResult[]> {
-        const result = await getFakeData(inputValue, fakeCityData, this.timeout);
-
-        const results = result.map((item, idx) => ({
-            id: idx,
-            label: item.text
-        }));
-
-        return results;
-    }
-}
-
-export class FakeRiverSource implements SearchSource {
-    label: string = "Rivers";
-    timeout: number;
-    constructor(timeout: number = 250) {
-        this.timeout = timeout;
-    }
-    async search(inputValue: string): Promise<SearchResult[]> {
-        const result = await getFakeData(inputValue, fakeRiverData, this.timeout);
-        const results = result.map((item, idx) => ({
-            id: idx,
-            label: item.text
-        }));
-        return results;
-    }
-}
-
-interface NominatimResponse {
-    display_name: string;
-    geojson: {
-        type: string;
-        coordinates: [[number, number]];
-    };
-    boundingbox: string[];
-    lat: number;
-    lon: number;
-    importance: number;
-}
-
-type ValidSearchParams = "city" | "street";
-
-// https://github.com/osm-search/Nominatim and https://nominatim.openstreetmap.org/
-export class NominatimGeocoder implements SearchSource {
-    label: string;
-    searchParameterName: ValidSearchParams;
-
-    constructor(searchParameterName: ValidSearchParams, label: string) {
-        this.searchParameterName = searchParameterName;
-        this.label = label;
-    }
-
-    async search(inputValue: string, options: { signal: AbortSignal }): Promise<SearchResult[]> {
-        const signal = options?.signal;
-        const url = this.#getUrl(inputValue);
-
-        const responses = (await request(url, signal)) as NominatimResponse[];
-        return responses.map(
-            (response, idx): SearchResult => ({
-                // TODO, generate good IDs from server. alternative uuid v4
-                id: idx,
-                label: response.display_name,
-                properties: {
-                    ...response
-                }
-            })
-        );
-    }
-
-    #getUrl(inputValue: string): string {
-        // TODO: URL Klasse benutzen mit searchParameters, alternativ mit encodeURIComponent
-        return encodeURI(
-            `https://nominatim.openstreetmap.org/search?${this.searchParameterName}=${inputValue}&country=Germany&polygon_geojson=1&format=jsonv2`
-        );
-    }
-}
 
 interface PhotonResponseFeature {
     geometry: unknown; // geojson
@@ -187,10 +25,12 @@ interface PhotonResponse {
 export class PhotonGeocoder implements SearchSource {
     label: string;
     filteredTypes: string[];
+    httpService: HttpService;
 
-    constructor(label: string, filteredTypes: string[]) {
+    constructor(label: string, filteredTypes: string[], httpService: HttpService) {
         this.label = label;
         this.filteredTypes = filteredTypes;
+        this.httpService = httpService;
     }
 
     async request(
@@ -204,7 +44,7 @@ export class PhotonGeocoder implements SearchSource {
         url.searchParams.set("lat", "51.961563");
         url.searchParams.set("lon", "7.628202");
         url.searchParams.set("limit", limit.toString());
-        const response = await fetch(url, { signal });
+        const response = await this.httpService.fetch(url, { signal });
         if (!response.ok) {
             throw new Error("Request failed: " + response.status);
         }
@@ -244,13 +84,4 @@ export class PhotonGeocoder implements SearchSource {
                 };
             });
     }
-}
-
-async function request(url: string, signal?: AbortSignal | undefined): Promise<unknown[] | []> {
-    const response = await fetch(url, { signal });
-    if (!response.ok) {
-        throw new Error("Request failed: " + response.status);
-    }
-    const result = await response.json();
-    return result;
 }
