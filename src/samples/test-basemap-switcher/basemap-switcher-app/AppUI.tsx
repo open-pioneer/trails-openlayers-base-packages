@@ -68,39 +68,38 @@ export function AppUI() {
                                     <ClearBaseLayerButton mapId={MAP_ID} />
                                 </Stack>
                             </Box>
-                            <MapAnchor position="top-right" horizontalGap={10} verticalGap={10}>
-                                <VStack
-                                    backgroundColor="whiteAlpha.900"
-                                    borderWidth="1px"
-                                    borderRadius="lg"
-                                    padding={2}
-                                    boxShadow="lg"
-                                    maxWidth="400px"
-                                >
-                                    <Text as="b">Description</Text>
-                                    <Text>
-                                        This application can be used to test the basemap switcher.
-                                        The basemap switcher synchronizes with the state of the
-                                        shared map model. If the map model is changed (for example,
-                                        by changing the current basemap), the basemap switcher must
-                                        update itself accordingly.
-                                    </Text>
-                                    <UnorderedList>
-                                        <ListItem>
-                                            Adding a new basemap updates the dropdown menu (new
-                                            option)
-                                        </ListItem>
-                                        <ListItem>
-                                            Changing the current basemap to another basemap updates
-                                            the selected option
-                                        </ListItem>
-                                        <ListItem>
-                                            Setting the current basemap to {"'undefined'"} also
-                                            updates the selection
-                                        </ListItem>
-                                    </UnorderedList>
-                                </VStack>
-                            </MapAnchor>
+                        </MapAnchor>
+                        <MapAnchor position="top-right" horizontalGap={10} verticalGap={10}>
+                            <VStack
+                                backgroundColor="whiteAlpha.900"
+                                borderWidth="1px"
+                                borderRadius="lg"
+                                padding={2}
+                                boxShadow="lg"
+                                maxWidth="400px"
+                            >
+                                <Text as="b">Description</Text>
+                                <Text>
+                                    This application can be used to test the basemap switcher. The
+                                    basemap switcher synchronizes with the state of the shared map
+                                    model. If the map model is changed (for example, by changing the
+                                    current basemap), the basemap switcher must update itself
+                                    accordingly.
+                                </Text>
+                                <UnorderedList>
+                                    <ListItem>
+                                        Adding a new basemap updates the dropdown menu (new option)
+                                    </ListItem>
+                                    <ListItem>
+                                        Changing the current basemap to another basemap updates the
+                                        selected option
+                                    </ListItem>
+                                    <ListItem>
+                                        Setting the current basemap to {"'undefined'"} also updates
+                                        the selection
+                                    </ListItem>
+                                </UnorderedList>
+                            </VStack>
                         </MapAnchor>
                     </MapContainer>
                 </Flex>

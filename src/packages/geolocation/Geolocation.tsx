@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { MapModel, useMapModel } from "@open-pioneer/map";
+import { NotificationService } from "@open-pioneer/notifier";
 import {
     CommonComponentProps,
     ToolButton,
@@ -11,9 +12,6 @@ import { useIntl, useService } from "open-pioneer:react-hooks";
 import { FC, ForwardedRef, RefAttributes, forwardRef, useEffect, useState } from "react";
 import { MdMyLocation } from "react-icons/md";
 import { GeolocationController } from "./GeolocationController";
-
-// TODO: Workaround for https://github.com/open-pioneer/trails-build-tools/issues/47
-import {} from "@open-pioneer/notifier";
 
 /**
  * These are properties supported by the {@link Geolocation} component.
@@ -56,7 +54,7 @@ export const Geolocation: FC<GeolocationProps> = forwardRef(function Geolocation
     const [isLoading, setLoading] = useState<boolean>(false);
     const { map } = useMapModel(mapId);
     const intl = useIntl();
-    const notificationService = useService("notifier.NotificationService");
+    const notificationService = useService<NotificationService>("notifier.NotificationService");
 
     const controller = useController(
         map,

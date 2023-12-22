@@ -30,6 +30,8 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     title: "TopPlus Open",
                     isBaseLayer: true,
                     visible: true,
+                    healthCheck:
+                        "https://sgx.geodatenzentrum.de/wmts_topplus_open/1.0.0/WMTSCapabilities.xml",
                     olLayer: createTopPlusOpenLayer("web")
                 }),
                 new SimpleLayer({

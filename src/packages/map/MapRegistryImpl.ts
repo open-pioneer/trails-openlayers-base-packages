@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { createLogger } from "@open-pioneer/core";
-import { Service, ServiceOptions, ServiceType } from "@open-pioneer/runtime";
+import { Service, ServiceOptions } from "@open-pioneer/runtime";
 import OlMap from "ol/Map";
 import { MapModelImpl } from "./model/MapModelImpl";
 import { MapConfigProvider, MapModel, MapRegistry } from "./api";
@@ -10,7 +10,7 @@ import { createMapModel } from "./model/createMapModel";
 const LOG = createLogger("map:MapRegistry");
 
 interface References {
-    providers: ServiceType<"map.MapConfigProvider">[];
+    providers: MapConfigProvider[];
 }
 
 type ModelJobResult = { kind: "model"; model: MapModelImpl } | { kind: "error"; error: Error };

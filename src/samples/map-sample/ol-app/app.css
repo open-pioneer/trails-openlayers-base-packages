@@ -18,3 +18,7 @@
         z-index: 1;
     }
 }
+
+.spatial-bookmarks {
+    max-height: 300px;
+}

@@ -1,38 +1,44 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box, Divider, Flex } from "@open-pioneer/chakra-integration";
+import { Box, Divider, Flex, Text } from "@open-pioneer/chakra-integration";
 import { CoordinateViewer } from "@open-pioneer/coordinate-viewer";
+import { Resource } from "@open-pioneer/core";
 import { Geolocation } from "@open-pioneer/geolocation";
 import { MapAnchor, MapContainer, MapModel, useMapModel } from "@open-pioneer/map";
 import { InitialExtent, ZoomIn, ZoomOut } from "@open-pioneer/map-navigation";
 import { Measurement } from "@open-pioneer/measurement";
-import { Notifier } from "@open-pioneer/notifier";
+import { NotificationService, Notifier } from "@open-pioneer/notifier";
 import { OverviewMap } from "@open-pioneer/overview-map";
 import { SectionHeading, TitledSection, ToolButton } from "@open-pioneer/react-utils";
 import { ScaleBar } from "@open-pioneer/scale-bar";
 import { ScaleViewer } from "@open-pioneer/scale-viewer";
 import { Search, SearchSelectEvent } from "@open-pioneer/search";
+import type { SelectionSource } from "@open-pioneer/selection";
 import { Selection } from "@open-pioneer/selection";
-import { Toc } from "@open-pioneer/toc";
-import TileLayer from "ol/layer/Tile.js";
-import OSM from "ol/source/OSM.js";
-import { useIntl, useService } from "open-pioneer:react-hooks";
-import { useEffect, useId, useMemo, useState } from "react";
-import { PiListLight, PiMapTrifold, PiRulerLight, PiSelectionPlusBold } from "react-icons/pi";
-import { MAP_ID } from "./MapConfigProviderImpl";
-import { PhotonGeocoder } from "./sources/searchSources";
-import { VectorLayerSelectionSource } from "./sources/selectionSources";
 import {
     SelectionCompleteEvent,
     SelectionSourceChangedEvent
 } from "@open-pioneer/selection/Selection";
-import VectorLayer from "ol/layer/Vector";
-import type { SelectionSource } from "@open-pioneer/selection";
+import { SpatialBookmarks } from "@open-pioneer/spatial-bookmarks";
+import { Toc } from "@open-pioneer/toc";
 import OlBaseLayer from "ol/layer/Base";
+import TileLayer from "ol/layer/Tile.js";
+import VectorLayer from "ol/layer/Vector";
+import OSM from "ol/source/OSM.js";
 import VectorSource from "ol/source/Vector";
-import { Resource } from "@open-pioneer/core";
+import { useIntl, useService } from "open-pioneer:react-hooks";
+import { useEffect, useId, useMemo, useState } from "react";
+import {
+    PiBookmarksSimpleBold,
+    PiListLight,
+    PiMapTrifold,
+    PiRulerLight,
+    PiSelectionPlusBold
+} from "react-icons/pi";
+import { AppConfig } from "./AppConfig";
+import { MAP_ID } from "./MapConfigProviderImpl";
+import { VectorLayerSelectionSource } from "./sources/selectionSources";
 
-const sources = [new PhotonGeocoder("Photon Geocoder", ["city", "street"])];
 const SELECTION_LAYER_IDS = ["ogc_kitas", "ogc_kataster"];
 
 type InteractionType = "measurement" | "selection" | undefined;
@@ -42,9 +48,14 @@ export function AppUI() {
     const tocTitleId = useId();
     const measurementTitleId = useId();
     const selectionTitleId = useId();
+    const spatialBookmarkTitle = useId();
+    const notifier = useService<NotificationService>("notifier.NotificationService");
     const { map } = useMapModel(MAP_ID);
-    const notifier = useService("notifier.NotificationService");
     const [showOverviewMap, setShowOverviewMap] = useState<boolean>(true);
+    const [bookmarkIsActive, setBookmarkActive] = useState<boolean>(false);
+    function toggleBookmark() {
+        setBookmarkActive(!bookmarkIsActive);
+    }
     const [showToc, setShowToc] = useState<boolean>(true);
     const [currentInteractionType, setCurrentInteractionType] = useState<InteractionType>();
 
@@ -76,26 +87,13 @@ export function AppUI() {
         setShowToc(!showToc);
     }
 
-    function onSearchResultSelected(event: SearchSelectEvent) {
-        console.debug("The user selected the following item: ", event.result);
-        if (!map) {
-            console.debug("Map not ready");
-            return;
-        }
-
-        const geometry = event.result.geometry;
-        if (!geometry) {
-            console.debug("Result has no geometry");
-            return;
-        }
-
-        map.highlightAndZoom([geometry]);
-    }
-
-    function onSearchCleared() {
-        console.debug("The user cleared the search");
-        map?.removeHighlight();
-    }
+    const overviewMapLayer = useMemo(
+        () =>
+            new TileLayer({
+                source: new OSM()
+            }),
+        []
+    );
 
     function onSelectionComplete(event: SelectionCompleteEvent) {
         if (!map) {
@@ -119,14 +117,6 @@ export function AppUI() {
     function onSelectionSourceChanged(_: SelectionSourceChangedEvent) {
         map?.removeHighlight();
     }
-
-    const overviewMapLayer = useMemo(
-        () =>
-            new TileLayer({
-                source: new OSM()
-            }),
-        []
-    );
 
     let currentInteraction: JSX.Element | null = null;
     switch (currentInteractionType) {
@@ -174,6 +164,7 @@ export function AppUI() {
     return (
         <Flex height="100%" direction="column" overflow="hidden">
             <Notifier position="top-right" />
+
             <TitledSection
                 title={
                     <Box
@@ -203,15 +194,9 @@ export function AppUI() {
                             mt={5}
                             className="search-top-center-placement"
                         >
-                            <Search
-                                mapId={MAP_ID}
-                                sources={sources}
-                                maxResultsPerGroup={10}
-                                onSelect={onSearchResultSelected}
-                                onClear={onSearchCleared}
-                            />
+                            <SearchComponent />
                         </Box>
-                        <MapAnchor position="top-left" horizontalGap={10} verticalGap={10}>
+                        <MapAnchor position="top-left" horizontalGap={20} verticalGap={20}>
                             {(showToc || currentInteractionType) && (
                                 <Box
                                     backgroundColor="white"
@@ -219,6 +204,7 @@ export function AppUI() {
                                     borderRadius="lg"
                                     padding={2}
                                     boxShadow="lg"
+                                    width={350}
                                     maxWidth={350}
                                 >
                                     {showToc && (
@@ -230,12 +216,17 @@ export function AppUI() {
                                                         size="md"
                                                         mb={2}
                                                     >
-                                                        {intl.formatMessage({ id: "tocTitle" })}
+                                                        <Text>
+                                                            {intl.formatMessage({
+                                                                id: "tocTitle"
+                                                            })}
+                                                        </Text>
                                                     </SectionHeading>
                                                 }
                                             >
                                                 <Toc
                                                     mapId={MAP_ID}
+                                                    showTools={true}
                                                     basemapSwitcherProps={{
                                                         allowSelectingEmptyBasemap: true
                                                     }}
@@ -248,7 +239,7 @@ export function AppUI() {
                                 </Box>
                             )}
                         </MapAnchor>
-                        <MapAnchor position="top-right" horizontalGap={10} verticalGap={10}>
+                        <MapAnchor position="top-right" horizontalGap={20} verticalGap={20}>
                             {showOverviewMap && (
                                 <Box
                                     backgroundColor="white"
@@ -258,14 +249,71 @@ export function AppUI() {
                                     boxShadow="lg"
                                     maxWidth={325}
                                 >
-                                    {showOverviewMap && (
-                                        <Box role="dialog">
-                                            <OverviewMap
-                                                mapId={MAP_ID}
-                                                olLayer={overviewMapLayer}
-                                            />
-                                        </Box>
-                                    )}
+                                    <Box role="dialog">
+                                        <OverviewMap mapId={MAP_ID} olLayer={overviewMapLayer} />
+                                    </Box>
+                                </Box>
+                            )}
+                        </MapAnchor>
+                        <MapAnchor horizontalGap={20} position="bottom-left">
+                            {bookmarkIsActive && (
+                                <Box
+                                    backgroundColor="white"
+                                    borderWidth="1px"
+                                    borderRadius="lg"
+                                    padding={2}
+                                    boxShadow="lg"
+                                    role="dialog"
+                                    width={350}
+                                >
+                                    <Box role="dialog" aria-labelledby={spatialBookmarkTitle}>
+                                        <TitledSection
+                                            title={
+                                                <SectionHeading
+                                                    id={spatialBookmarkTitle}
+                                                    size="md"
+                                                    mb={2}
+                                                >
+                                                    {intl.formatMessage({
+                                                        id: "spatialBookmarkTitle"
+                                                    })}
+                                                </SectionHeading>
+                                            }
+                                        >
+                                            <SpatialBookmarks mapId={MAP_ID} />
+                                        </TitledSection>
+                                    </Box>
+                                </Box>
+                            )}
+                        </MapAnchor>
+                        <MapAnchor horizontalGap={20} position="bottom-left">
+                            {bookmarkIsActive && (
+                                <Box
+                                    backgroundColor="white"
+                                    borderWidth="1px"
+                                    borderRadius="lg"
+                                    padding={2}
+                                    boxShadow="lg"
+                                    role="dialog"
+                                    width={350}
+                                >
+                                    <Box role="dialog" aria-labelledby={spatialBookmarkTitle}>
+                                        <TitledSection
+                                            title={
+                                                <SectionHeading
+                                                    id={spatialBookmarkTitle}
+                                                    size="md"
+                                                    mb={2}
+                                                >
+                                                    {intl.formatMessage({
+                                                        id: "spatialBookmarkTitle"
+                                                    })}
+                                                </SectionHeading>
+                                            }
+                                        >
+                                            <SpatialBookmarks mapId={MAP_ID} />
+                                        </TitledSection>
+                                    </Box>
                                 </Box>
                             )}
                         </MapAnchor>
@@ -277,6 +325,12 @@ export function AppUI() {
                                 gap={1}
                                 padding={1}
                             >
+                                <ToolButton
+                                    label={intl.formatMessage({ id: "spatialBookmarkTitle" })}
+                                    icon={<PiBookmarksSimpleBold />}
+                                    isActive={bookmarkIsActive}
+                                    onClick={toggleBookmark}
+                                />
                                 <Geolocation mapId={MAP_ID}></Geolocation>
                                 <ToolButton
                                     label={intl.formatMessage({ id: "tocTitle" })}
@@ -322,6 +376,41 @@ export function AppUI() {
                 </Flex>
             </TitledSection>
         </Flex>
+    );
+}
+
+function SearchComponent() {
+    const { map } = useMapModel(MAP_ID);
+    const appConfig = useService<unknown>("ol-app.AppConfig") as AppConfig;
+    const sources = useMemo(() => appConfig.getSearchSources(), [appConfig]);
+
+    function onSearchResultSelected(event: SearchSelectEvent) {
+        console.debug("The user selected the following item: ", event.result);
+        if (!map) {
+            return;
+        }
+
+        const geometry = event.result.geometry;
+        if (!geometry) {
+            return;
+        }
+
+        map.highlightAndZoom([geometry]);
+    }
+
+    function onSearchCleared() {
+        console.debug("The user cleared the search");
+        map?.removeHighlight();
+    }
+
+    return (
+        <Search
+            mapId={MAP_ID}
+            sources={sources}
+            maxResultsPerGroup={10}
+            onSelect={onSearchResultSelected}
+            onClear={onSearchCleared}
+        />
     );
 }
 

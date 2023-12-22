@@ -10,4 +10,7 @@ messages:
     map: "Karte. Mit den Pfeiltasten kannst du die Karte bewegen. Mit der Plus Taste hineinzoomen und mit der Minus Taste herauszoomen."
     toolbar: "Kartenwerkzeuge"
   geolocationTitle: "Geolokalisierung"
+  spatialBookmarkTitle: "Räumliche Lesezeichen"
   layerNotVisibleReason: "Zugehöriger Layer ist nicht sichtbar."
+  searchSources:
+    miningPermissions: Bergbauberechtigungen

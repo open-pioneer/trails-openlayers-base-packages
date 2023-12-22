@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import type { EventSource } from "@open-pioneer/core";
+import type { DeclaredService } from "@open-pioneer/runtime";
 import type { ComponentType } from "react";
 
 /**
@@ -92,7 +93,9 @@ export interface LoginEffect {
  *
  * The current state (such as session info) can be retrieved and watched for changes.
  */
-export interface AuthService extends EventSource<AuthEvents> {
+export interface AuthService
+    extends EventSource<AuthEvents>,
+        DeclaredService<"authentication.AuthService"> {
     /**
      * Returns the current authentication state.
      *
@@ -145,7 +148,9 @@ export type AuthPluginEventBase = EventSource<AuthPluginEvents>;
  * during the lifetime of the plugin.
  * To implement the event, you can write `class MyPlugin extends EventEmitter<AuthPluginEvents>`.
  */
-export interface AuthPlugin extends Partial<AuthPluginEventBase> {
+export interface AuthPlugin
+    extends Partial<AuthPluginEventBase>,
+        DeclaredService<"authentication.AuthPlugin"> {
     /**
      * Returns the current authentication state.
      *
@@ -166,12 +171,4 @@ export interface AuthPlugin extends Partial<AuthPluginEventBase> {
      * was authenticated.
      */
     logout(): Promise<void> | void;
-}
-
-import "@open-pioneer/runtime";
-declare module "@open-pioneer/runtime" {
-    interface ServiceRegistry {
-        "authentication.AuthService": AuthService;
-        "authentication.AuthPlugin": AuthPlugin;
-    }
 }

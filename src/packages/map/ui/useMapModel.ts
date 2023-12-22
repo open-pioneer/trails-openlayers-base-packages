@@ -3,7 +3,7 @@
 import { useService } from "open-pioneer:react-hooks";
 import { useMemo } from "react";
 import { useAsync } from "react-use";
-import { MapModel } from "../api";
+import { MapModel, MapRegistry } from "../api";
 
 /** Return value of {@link useMapModel}. */
 export type UseMapModelResult =
@@ -43,7 +43,7 @@ export interface UseMapModelRejected {
  * The map model cannot be returned directly because it may not have completed its initialization yet.
  */
 export function useMapModel(mapId: string): UseMapModelResult {
-    const mapRegistry = useService("map.MapRegistry");
+    const mapRegistry = useService<MapRegistry>("map.MapRegistry");
     const state = useAsync(() => mapRegistry.getMapModel(mapId), [mapRegistry, mapId]);
     const result = useMemo((): UseMapModelResult => {
         if (state.loading) {

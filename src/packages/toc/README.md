@@ -2,12 +2,24 @@
 
 This package provides a UI component that displays the map content to the user and allows them to control it.
 
+Unavailable operational layers are marked with an icon and will be deactivated for selection. If a layer was configured as initially visible, it remains visible.
+
 ## Usage
 
 To integrate the TOC (table of contents) in your app, insert the following snippet and reference a map ID:
 
 ```tsx
 <Toc mapId="map_id" />
+```
+
+### Tools
+
+Additional tools are available for operational layers.
+To show the toolset menu, set the `showTools` property to `true`.
+The toolset contains a tool with which you can switch off the visibility of all levels at once.
+
+```tsx
+<Toc mapId="map_id" showTools={true} />
 ```
 
 ### Basemaps

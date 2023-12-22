@@ -8,12 +8,16 @@ export default defineBuildConfig({
     services: {
         MapConfigProviderImpl: {
             provides: ["map.MapConfigProvider"]
+        },
+        AppConfig: {
+            provides: "ol-app.AppConfig"
         }
     },
     ui: {
         references: [
             "map-sample-logging.LogService",
             "map.MapRegistry",
+            "ol-app.AppConfig",
             "notifier.NotificationService"
         ]
     }

@@ -15,15 +15,18 @@ import {
     PopoverHeader,
     PopoverTrigger,
     Portal,
-    Text
+    Spacer,
+    Text,
+    Tooltip
 } from "@open-pioneer/chakra-integration";
 import { Layer, LayerBase, MapModel, Sublayer } from "@open-pioneer/map";
 import { PackageIntl } from "@open-pioneer/runtime";
 import classNames from "classnames";
-import LayerGroup from "ol/layer/Group";
 import { useIntl } from "open-pioneer:react-hooks";
 import { useCallback, useRef, useSyncExternalStore } from "react";
-import { FiMoreVertical } from "react-icons/fi";
+import { FiAlertTriangle, FiMoreVertical } from "react-icons/fi";
+
+type TocLayer = Layer | Sublayer;
 
 /**
  * Lists the (top level) operational layers in the map.
@@ -47,7 +50,7 @@ export function LayerList(props: { map: MapModel; "aria-labelledby"?: string }):
     });
 }
 
-function createList(layers: LayerBase[], intl: PackageIntl, listProps: ListProps) {
+function createList(layers: TocLayer[], intl: PackageIntl, listProps: ListProps) {
     const items = layers.map((layer) => <LayerItem key={layer.id} layer={layer} intl={intl} />);
     return (
         <List
@@ -67,11 +70,13 @@ function createList(layers: LayerBase[], intl: PackageIntl, listProps: ListProps
  *
  * The item may have further nested list items if there are sublayers present.
  */
-function LayerItem(props: { layer: LayerBase; intl: PackageIntl }): JSX.Element {
+function LayerItem(props: { layer: TocLayer; intl: PackageIntl }): JSX.Element {
     const { layer, intl } = props;
     const title = useTitle(layer);
     const { isVisible, setVisible } = useVisibility(layer);
     const sublayers = useSublayers(layer);
+    const isAvailable = useLoadState(layer) !== "error";
+    const notAvailableLabel = intl.formatMessage({ id: "layerNotAvailable" });
 
     let nestedChildren;
     if (sublayers?.length) {
@@ -92,11 +97,31 @@ function LayerItem(props: { layer: LayerBase; intl: PackageIntl }): JSX.Element 
                 minHeight={10}
             >
                 <Checkbox
+                    // Keyboard navigation jumps only to Checkboxes and uses the texts inside this DOM node. The aria-labels of Tooltip and Icon is ignored by screenreader because they are no child element of the checkbox. To consider the notAvailableLabel, an aria-label at the checkbox is necessary.
+                    aria-label={title + (!isAvailable ? " " + notAvailableLabel : "")}
                     isChecked={isVisible}
+                    isDisabled={!isAvailable}
                     onChange={(event) => setVisible(event.target.checked)}
                 >
                     {title}
                 </Checkbox>
+                {!isAvailable && (
+                    <Tooltip
+                        className="toc-layer-item-content-tooltip"
+                        label={notAvailableLabel}
+                        placement="right"
+                        openDelay={500}
+                    >
+                        <span>
+                            <FiAlertTriangle
+                                className="toc-layer-item-content-icon"
+                                color={"red"}
+                                aria-label={notAvailableLabel}
+                            />
+                        </span>
+                    </Tooltip>
+                )}
+                <Spacer></Spacer>
                 {layer.description && (
                     <LayerItemDescriptor layer={layer} title={title} intl={intl} />
                 )}
@@ -107,18 +132,20 @@ function LayerItem(props: { layer: LayerBase; intl: PackageIntl }): JSX.Element 
 }
 
 function LayerItemDescriptor(props: {
-    layer: LayerBase;
+    layer: TocLayer;
     title: string;
     intl: PackageIntl;
 }): JSX.Element {
     const { layer, title, intl } = props;
     const buttonLabel = intl.formatMessage({ id: "descriptionLabel" });
     const description = useLayerDescription(layer);
+    const isAvailable = useLoadState(layer) !== "error";
 
     return (
-        <Popover>
+        <Popover placement="bottom-start">
             <PopoverTrigger>
                 <Button
+                    isDisabled={!isAvailable}
                     className="toc-layer-item-details-button"
                     aria-label={buttonLabel}
                     borderRadius="full"
@@ -131,7 +158,7 @@ function LayerItemDescriptor(props: {
             <Portal>
                 <PopoverContent className="toc-layer-item-details" overflowY="auto" maxHeight="400">
                     <PopoverArrow />
-                    <PopoverCloseButton />
+                    <PopoverCloseButton mt={1} />
                     <PopoverHeader>{title}</PopoverHeader>
                     <PopoverBody>{description}</PopoverBody>
                 </PopoverContent>
@@ -194,7 +221,7 @@ function useVisibility(layer: LayerBase): {
 }
 
 /** Returns the top level operation layers (without LayerGroups). */
-function useLayers(map: MapModel): LayerBase[] {
+function useLayers(map: MapModel): Layer[] {
     const subscribe = useCallback(
         (cb: () => void) => {
             const resource = map.layers.on("changed", cb);
@@ -204,7 +231,7 @@ function useLayers(map: MapModel): LayerBase[] {
     );
     const getValue = useCallback(() => {
         let layers = map.layers.getOperationalLayers({ sortByDisplayOrder: true }) ?? [];
-        layers = layers.reverse().filter(canShowOperationalLayer);
+        layers = layers.reverse();
         return layers;
     }, [map]);
     return useCachedExternalStore(subscribe, getValue);
@@ -230,6 +257,25 @@ function useSublayers(layer: LayerBase): Sublayer[] | undefined {
         return layers;
     }, [layer]);
     return useCachedExternalStore(subscribe, getValue);
+}
+
+/** Returns the layers current state. */
+function useLoadState(layer: TocLayer): string {
+    // for sublayers, use the state of the parent
+    const target = "parentLayer" in layer ? layer.parentLayer : layer;
+    const subscribe = useCallback(
+        (cb: () => void) => {
+            const resource = target.on("changed:loadState", cb);
+            return () => resource.destroy();
+        },
+        [target]
+    );
+
+    const getSnapshot = useCallback(() => {
+        return target.loadState;
+    }, [target]);
+
+    return useSyncExternalStore(subscribe, getSnapshot);
 }
 
 /**
@@ -272,10 +318,6 @@ function useCachedExternalStore<T>(
         return value;
     }, [getValue]);
     return useSyncExternalStore(cachedSubscribe, cachedGetSnapshot);
-}
-
-function canShowOperationalLayer(layer: Layer) {
-    return !(layer.olLayer instanceof LayerGroup);
 }
 
 function slug(id: string) {

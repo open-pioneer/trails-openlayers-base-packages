@@ -5,19 +5,14 @@
 import { pioneer } from "@open-pioneer/vite-plugin-pioneer";
 import react from "@vitejs/plugin-react-swc";
 import { resolve } from "node:path";
-import { defineConfig, PluginOption } from "vite";
+import { defineConfig } from "vite";
 import eslint from "vite-plugin-eslint";
-import { visualizer } from "rollup-plugin-visualizer";
 
 // Minimum browser versions supported by generated JS/CSS
 // See also:
 // - https://vitejs.dev/config/build-options.html#build-target
 // - https://esbuild.github.io/api/#target
 const targets = ["chrome92", "edge92", "firefox91", "safari14"];
-
-// Generates a stats.html in the output dir to inspect bundle sizes.
-// See also: https://github.com/btd/rollup-plugin-visualizer
-const visualize = false;
 
 const sampleSites = [
     "samples/map-sample",
@@ -27,7 +22,9 @@ const sampleSites = [
     
     "samples/theming-sample",
     "samples/test-basemap-switcher",
+    "samples/test-toc",
     "samples/test-highlight-and-zoom",
+    "samples/test-menu-fix",
 
     "samples/experimental-sidebar",
 ];
@@ -71,9 +68,7 @@ export default defineConfig(({ mode }) => {
                 // using a recent target allows for better debugging of recent features like private properties (`this.#abc`)
                 devTarget: "es2022"
             }),
-            eslint(),
-            visualize &&
-                (visualizer({ gzipSize: true, brotliSize: true, emitFile: true }) as PluginOption)
+            eslint()
         ],
 
         // define global constants

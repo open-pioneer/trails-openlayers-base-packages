@@ -167,9 +167,7 @@ class WMSSublayerImpl extends AbstractLayerBase implements Sublayer {
         this.#parent = parent;
         if (this.#parentLayer) {
             throw new Error(
-                `WMS sublayer '${this.id}' has already been attached to parent layer '${
-                    this.#parentLayer.id
-                }'`
+                `WMS sublayer '${this.id}' has already been attached to parent layer '${this.#parentLayer.id}'`
             );
         }
         this.#parentLayer = parentLayer;

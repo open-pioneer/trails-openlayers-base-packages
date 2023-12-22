@@ -28,8 +28,7 @@ import { FiAlertTriangle } from "react-icons/fi";
 import { DragController } from "./DragController";
 import { SelectionController } from "./SelectionController";
 import { SelectionResult, SelectionSource, SelectionSourceStatus } from "./api";
-
-import {} from "@open-pioneer/notifier"; // TODO: Workaround
+import { NotificationService } from "@open-pioneer/notifier";
 
 /**
  * Properties supported by the {@link Selection} component.
@@ -330,7 +329,7 @@ function useSelectionController(
     currentSource: SelectionSource | undefined,
     onSelectionComplete: ((event: SelectionCompleteEvent) => void) | undefined
 ) {
-    const notifier = useService("notifier.NotificationService");
+    const notifier = useService<NotificationService>("notifier.NotificationService");
     const intl = useIntl();
     const [controller, setController] = useState<SelectionController | undefined>(undefined);
     useEffect(() => {
