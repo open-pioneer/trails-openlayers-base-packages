@@ -10,6 +10,9 @@ export default defineBuildConfig({
             references: {
                 vectorSourceFactory: "ogc-features.VectorSourceFactory"
             }
+        },
+        SampleTokenInterceptor: {
+            provides: ["http.Interceptor"]
         }
     }
 });
