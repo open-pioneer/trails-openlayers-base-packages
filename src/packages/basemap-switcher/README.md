@@ -2,6 +2,8 @@
 
 This package provides a UI component that allows a user to switch between different base maps.
 
+Unavailable basemaps are marked with an icon and will be deactivated for selection. If a basemap was configured as initially selected, it remains selected and there will not be any automatic fallback to another basemap.
+
 ## Usage
 
 To add the component to your app, insert the following snippet with a reference to a map ID:
@@ -10,7 +12,7 @@ To add the component to your app, insert the following snippet with a reference 
 <BasemapSwitcher mapId="map_id" />
 ```
 
-To provide an option to deactivate all basemap layers, add the optional property `allowSelectingEmptyBasemap`.
+To provide an option to deactivate all basemap layers, add the optional property `allowSelectingEmptyBasemap` (default: `false`).
 
 ```jsx
 <BasemapSwitcher mapId="map_id" allowSelectingEmptyBasemap />

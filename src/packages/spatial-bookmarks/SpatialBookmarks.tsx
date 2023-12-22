@@ -11,7 +11,9 @@ import {
     List,
     Spacer,
     Text,
-    VStack
+    Tooltip,
+    VStack,
+    Center
 } from "@open-pioneer/chakra-integration";
 import { LocalStorageService } from "@open-pioneer/local-storage";
 import { MapModel, useMapModel } from "@open-pioneer/map";
@@ -277,25 +279,29 @@ function BookmarkItem(props: {
             onClick={onActivate}
         >
             <Flex width="100%" flexDirection="row" align="center" gap={1}>
-                <PiMapTrifold />
+                <Center>
+                    <PiMapTrifold />
+                </Center>
                 <Text ps={2} noOfLines={1}>
                     {title}
                 </Text>
                 <Spacer />
-                <Button
-                    className="spatial-bookmarks-item-delete"
-                    aria-label={deleteBtnLabel}
-                    borderRadius="full"
-                    iconSpacing={0}
-                    padding={0}
-                    colorScheme="red"
-                    variant="ghost"
-                    leftIcon={<PiTrashSimpleLight />}
-                    onClick={(event) => {
-                        onDelete();
-                        event.stopPropagation();
-                    }}
-                />
+                <Tooltip key={index} hasArrow label={deleteBtnLabel} placement="right">
+                    <Button
+                        className="spatial-bookmarks-item-delete"
+                        aria-label={deleteBtnLabel}
+                        borderRadius="full"
+                        iconSpacing={0}
+                        padding={0}
+                        colorScheme="red"
+                        variant="ghost"
+                        leftIcon={<PiTrashSimpleLight />}
+                        onClick={(event) => {
+                            onDelete();
+                            event.stopPropagation();
+                        }}
+                    />
+                </Tooltip>
             </Flex>
         </Box>
     );

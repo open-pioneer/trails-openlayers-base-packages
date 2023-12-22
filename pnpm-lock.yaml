@@ -10,6 +10,15 @@ overrides:
   '@mapbox/mapbox-gl-style-spec': npm:@maplibre/maplibre-gl-style-spec@^19.3.3
 
 patchedDependencies:
+  '@chakra-ui/hooks@2.2.1':
+    hash: zntq7izvicj3ptw5qmsyjygbmu
+    path: patches/@chakra-ui__hooks@2.2.1.patch
+  '@chakra-ui/menu@2.2.1':
+    hash: x7y3u4pvzv3wpkejsnxo3rp5vq
+    path: patches/@chakra-ui__menu@2.2.1.patch
+  '@chakra-ui/react-use-outside-click@2.2.0':
+    hash: uw4qsrve2rd7lemccfb44ornky
+    path: patches/@chakra-ui__react-use-outside-click@2.2.0.patch
   '@changesets/assemble-release-plan@5.2.4':
     hash: ixdzxqire6z6wavv7be3kwhyxu
     path: patches/@changesets__assemble-release-plan@5.2.4.patch
@@ -272,12 +281,18 @@ importers:
       '@open-pioneer/runtime':
         specifier: ^2.0.0
         version: 2.0.0(@formatjs/intl@2.9.9)(@open-pioneer/base-theme@0.2.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/core@1.1.0)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
+      chakra-react-select:
+        specifier: ^4.7.6
+        version: 4.7.6(@chakra-ui/form-control@2.2.0)(@chakra-ui/icon@3.2.0)(@chakra-ui/layout@2.3.1)(@chakra-ui/media-query@3.3.0)(@chakra-ui/menu@2.2.1)(@chakra-ui/spinner@2.1.0)(@chakra-ui/system@2.6.2)(@emotion/react@11.11.1)(@types/react@18.2.37)(react-dom@18.2.0)(react@18.2.0)
       ol:
         specifier: ^8.2.0
         version: 8.2.0
       react:
         specifier: ^18.2.0
         version: 18.2.0
+      react-icons:
+        specifier: ^4.11.0
+        version: 4.11.0(react@18.2.0)
     devDependencies:
       '@open-pioneer/map-test-utils':
         specifier: workspace:^
@@ -1119,6 +1134,60 @@ importers:
         specifier: ^18.2.0
         version: 18.2.0
 
+  src/samples/test-menu-fix/menu-fix-app:
+    dependencies:
+      '@open-pioneer/chakra-integration':
+        specifier: ^1.1.1
+        version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(framer-motion@10.16.16)(react-dom@18.2.0)(react@18.2.0)
+      '@open-pioneer/runtime':
+        specifier: ^2.0.0
+        version: 2.0.0(@formatjs/intl@2.9.9)(@open-pioneer/base-theme@0.2.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/core@1.1.0)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
+      react:
+        specifier: ^18.2.0
+        version: 18.2.0
+
+  src/samples/test-toc/toc-app:
+    dependencies:
+      '@chakra-ui/icons':
+        specifier: ^2.1.0
+        version: 2.1.0(@chakra-ui/system@2.6.2)(react@18.2.0)
+      '@chakra-ui/system':
+        specifier: ^2.6.0
+        version: 2.6.2(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(react@18.2.0)
+      '@emotion/react':
+        specifier: ^11.11.1
+        version: 11.11.1(@types/react@18.2.37)(react@18.2.0)
+      '@emotion/styled':
+        specifier: ^11.11.0
+        version: 11.11.0(@emotion/react@11.11.1)(@types/react@18.2.37)(react@18.2.0)
+      '@open-pioneer/chakra-integration':
+        specifier: ^1.1.1
+        version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(framer-motion@10.16.16)(react-dom@18.2.0)(react@18.2.0)
+      '@open-pioneer/map':
+        specifier: workspace:^
+        version: link:../../../packages/map
+      '@open-pioneer/react-utils':
+        specifier: workspace:^
+        version: link:../../../packages/react-utils
+      '@open-pioneer/runtime':
+        specifier: ^2.0.0
+        version: 2.0.0(@formatjs/intl@2.9.9)(@open-pioneer/base-theme@0.2.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/core@1.1.0)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
+      '@open-pioneer/toc':
+        specifier: workspace:^
+        version: link:../../../packages/toc
+      ol:
+        specifier: ^8.2.0
+        version: 8.2.0
+      react:
+        specifier: ^18.2.0
+        version: 18.2.0
+      react-dom:
+        specifier: ^18.2.0
+        version: 18.2.0(react@18.2.0)
+      react-icons:
+        specifier: ^4.11.0
+        version: 4.11.0(react@18.2.0)
+
   src/samples/theming-sample/theming-app:
     dependencies:
       '@open-pioneer/chakra-integration':
@@ -1434,7 +1503,7 @@ packages:
       '@chakra-ui/system': 2.6.2(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(react@18.2.0)
       react: 18.2.0
 
-  /@chakra-ui/hooks@2.2.1(react@18.2.0):
+  /@chakra-ui/hooks@2.2.1(patch_hash=zntq7izvicj3ptw5qmsyjygbmu)(react@18.2.0):
     resolution: {integrity: sha512-RQbTnzl6b1tBjbDPf9zGRo9rf/pQMholsOudTxjy4i9GfTfz6kgp5ValGjQm2z7ng6Z31N1cnjZ1AlSzQ//ZfQ==}
     peerDependencies:
       react: '>=18'
@@ -1444,6 +1513,7 @@ packages:
       compute-scroll-into-view: 3.0.3
       copy-to-clipboard: 3.3.3
       react: 18.2.0
+    patched: true
 
   /@chakra-ui/icon@3.1.0(@chakra-ui/system@2.6.2)(react@18.2.0):
     resolution: {integrity: sha512-t6v0lGCXRbwUJycN8A/nDTuLktMP+LRjKbYJnd2oL6Pm2vOl99XwEQ5cAEyEa4XoseYNEgXiLR+2TfvgfNFvcw==}
@@ -1539,7 +1609,7 @@ packages:
       '@chakra-ui/system': 2.6.2(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(react@18.2.0)
       react: 18.2.0
 
-  /@chakra-ui/menu@2.2.1(@chakra-ui/system@2.6.2)(framer-motion@10.16.16)(react@18.2.0):
+  /@chakra-ui/menu@2.2.1(patch_hash=x7y3u4pvzv3wpkejsnxo3rp5vq)(@chakra-ui/system@2.6.2)(framer-motion@10.16.16)(react@18.2.0):
     resolution: {integrity: sha512-lJS7XEObzJxsOwWQh7yfG4H8FzFPRP5hVPN/CL+JzytEINCSBvsCDHrYPQGp7jzpCi8vnTqQQGQe0f8dwnXd2g==}
     peerDependencies:
       '@chakra-ui/system': '>=2.0.0'
@@ -1557,13 +1627,14 @@ packages:
       '@chakra-ui/react-use-disclosure': 2.1.0(react@18.2.0)
       '@chakra-ui/react-use-focus-effect': 2.1.0(react@18.2.0)
       '@chakra-ui/react-use-merge-refs': 2.1.0(react@18.2.0)
-      '@chakra-ui/react-use-outside-click': 2.2.0(react@18.2.0)
+      '@chakra-ui/react-use-outside-click': 2.2.0(patch_hash=uw4qsrve2rd7lemccfb44ornky)(react@18.2.0)
       '@chakra-ui/react-use-update-effect': 2.1.0(react@18.2.0)
       '@chakra-ui/shared-utils': 2.0.5
       '@chakra-ui/system': 2.6.2(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(react@18.2.0)
       '@chakra-ui/transition': 2.1.0(framer-motion@10.16.16)(react@18.2.0)
       framer-motion: 10.16.16(react-dom@18.2.0)(react@18.2.0)
       react: 18.2.0
+    patched: true
 
   /@chakra-ui/modal@2.3.1(@chakra-ui/system@2.6.2)(@types/react@18.2.37)(framer-motion@10.16.16)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-TQv1ZaiJMZN+rR9DK0snx/OPwmtaGH1HbZtlYt4W4s6CzyK541fxLRTjIXfEzIGpvNW+b6VFuFjbcR78p4DEoQ==}
@@ -1828,13 +1899,14 @@ packages:
     dependencies:
       react: 18.2.0
 
-  /@chakra-ui/react-use-outside-click@2.2.0(react@18.2.0):
+  /@chakra-ui/react-use-outside-click@2.2.0(patch_hash=uw4qsrve2rd7lemccfb44ornky)(react@18.2.0):
     resolution: {integrity: sha512-PNX+s/JEaMneijbgAM4iFL+f3m1ga9+6QK0E5Yh4s8KZJQ/bLwZzdhMz8J/+mL+XEXQ5J0N8ivZN28B82N1kNw==}
     peerDependencies:
       react: '>=18'
     dependencies:
       '@chakra-ui/react-use-callback-ref': 2.1.0(react@18.2.0)
       react: 18.2.0
+    patched: true
 
   /@chakra-ui/react-use-pan-event@2.1.0(react@18.2.0):
     resolution: {integrity: sha512-xmL2qOHiXqfcj0q7ZK5s9UjTh4Gz0/gL9jcWPA6GVf+A0Od5imEDa/Vz+533yQKWiNSm1QGrIj0eJAokc7O4fg==}
@@ -1914,14 +1986,14 @@ packages:
       '@chakra-ui/editable': 3.1.0(@chakra-ui/system@2.6.2)(react@18.2.0)
       '@chakra-ui/focus-lock': 2.1.0(@types/react@18.2.37)(react@18.2.0)
       '@chakra-ui/form-control': 2.2.0(@chakra-ui/system@2.6.2)(react@18.2.0)
-      '@chakra-ui/hooks': 2.2.1(react@18.2.0)
+      '@chakra-ui/hooks': 2.2.1(patch_hash=zntq7izvicj3ptw5qmsyjygbmu)(react@18.2.0)
       '@chakra-ui/icon': 3.2.0(@chakra-ui/system@2.6.2)(react@18.2.0)
       '@chakra-ui/image': 2.1.0(@chakra-ui/system@2.6.2)(react@18.2.0)
       '@chakra-ui/input': 2.1.2(@chakra-ui/system@2.6.2)(react@18.2.0)
       '@chakra-ui/layout': 2.3.1(@chakra-ui/system@2.6.2)(react@18.2.0)
       '@chakra-ui/live-region': 2.1.0(react@18.2.0)
       '@chakra-ui/media-query': 3.3.0(@chakra-ui/system@2.6.2)(react@18.2.0)
-      '@chakra-ui/menu': 2.2.1(@chakra-ui/system@2.6.2)(framer-motion@10.16.16)(react@18.2.0)
+      '@chakra-ui/menu': 2.2.1(patch_hash=x7y3u4pvzv3wpkejsnxo3rp5vq)(@chakra-ui/system@2.6.2)(framer-motion@10.16.16)(react@18.2.0)
       '@chakra-ui/modal': 2.3.1(@chakra-ui/system@2.6.2)(@types/react@18.2.37)(framer-motion@10.16.16)(react-dom@18.2.0)(react@18.2.0)
       '@chakra-ui/number-input': 2.1.2(@chakra-ui/system@2.6.2)(react@18.2.0)
       '@chakra-ui/pin-input': 2.1.0(@chakra-ui/system@2.6.2)(react@18.2.0)
@@ -4419,7 +4491,7 @@ packages:
       '@chakra-ui/icon': 3.2.0(@chakra-ui/system@2.6.2)(react@18.2.0)
       '@chakra-ui/layout': 2.3.1(@chakra-ui/system@2.6.2)(react@18.2.0)
       '@chakra-ui/media-query': 3.3.0(@chakra-ui/system@2.6.2)(react@18.2.0)
-      '@chakra-ui/menu': 2.2.1(@chakra-ui/system@2.6.2)(framer-motion@10.16.16)(react@18.2.0)
+      '@chakra-ui/menu': 2.2.1(patch_hash=x7y3u4pvzv3wpkejsnxo3rp5vq)(@chakra-ui/system@2.6.2)(framer-motion@10.16.16)(react@18.2.0)
       '@chakra-ui/spinner': 2.1.0(@chakra-ui/system@2.6.2)(react@18.2.0)
       '@chakra-ui/system': 2.6.2(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(react@18.2.0)
       '@emotion/react': 11.11.1(@types/react@18.2.37)(react@18.2.0)
