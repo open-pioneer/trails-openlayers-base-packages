@@ -9,14 +9,14 @@
     },
     "peerDependencies": {
         "react": "^18.2.0",
-        "@open-pioneer/core": "^1.1.0",
-        "@open-pioneer/chakra-integration": "^1.1.0",
+        "@open-pioneer/core": "^1.2.1",
+        "@open-pioneer/chakra-integration": "^1.1.1",
         "classnames": "^2.3.2"
     },
     "devDependencies": {
         "openlayers-base-packages": "workspace:*",
         "@testing-library/react": "^14.0.0",
-        "@open-pioneer/test-utils": "^1.0.1"
+        "@open-pioneer/test-utils": "^1.0.2"
     },
     "publishConfig": {
         "directory": "dist",

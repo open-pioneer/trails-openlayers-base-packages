@@ -1,11 +1,14 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import { DeclaredService } from "@open-pioneer/runtime";
 
 /**
  * Provides access to the browser's local storage for trails packages through a convenient API.
  * Use the interface name `"local-storage.LocalStorageService"` to inject an instance of this interface.
  */
-export interface LocalStorageService extends LocalStorageAPI {
+export interface LocalStorageService
+    extends LocalStorageAPI,
+        DeclaredService<"local-storage.LocalStorageService"> {
     /**
      * Whether local storage is supported by the current environment.
      *
@@ -95,11 +98,4 @@ export interface LocalStorageAPI {
 export interface LocalStorageProperties {
     /** The root local storage key used to store application state. */
     storageId: string | null;
-}
-
-import "@open-pioneer/runtime";
-declare module "@open-pioneer/runtime" {
-    interface ServiceRegistry {
-        "local-storage.LocalStorageService": LocalStorageService;
-    }
 }

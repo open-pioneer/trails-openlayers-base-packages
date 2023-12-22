@@ -40,7 +40,9 @@ export interface SpatialBookmarksProps extends CommonComponentProps {
  */
 export const SpatialBookmarks: FC<SpatialBookmarksProps> = (props) => {
     const { map } = useMapModel(props.mapId);
-    const localStorageService = useService("local-storage.LocalStorageService");
+    const localStorageService = useService<LocalStorageService>(
+        "local-storage.LocalStorageService"
+    );
     const viewModel = useViewModel(map, localStorageService);
     return (
         viewModel && (

@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Service, ServiceOptions } from "@open-pioneer/runtime";
+import { DeclaredService, Service, ServiceOptions } from "@open-pioneer/runtime";
 
-export interface Logger {
+export interface Logger extends DeclaredService<"map-sample-logging.LogService"> {
     log(message: string): void;
 }
 
@@ -28,15 +28,4 @@ export class LogService implements Service<Logger> {
 export interface LoggingProperties {
     /** Log level for the shared logger. */
     logLevel: "DEBUG" | "INFO" | "ERROR";
-}
-
-import "@open-pioneer/runtime";
-declare module "@open-pioneer/runtime" {
-    interface ServiceRegistry {
-        "map-sample-logging.LogService": Logger;
-    }
-
-    interface PropertiesRegistry {
-        "map-sample-logging": Partial<LoggingProperties>;
-    }
 }
