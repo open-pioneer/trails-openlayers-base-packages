@@ -107,7 +107,7 @@ export class AppConfig implements Service {
     private async initSelectionSources() {
         const intl = this._intl;
         const map = await this._mapRegistry.expectMapModel(MAP_ID);
-        const opLayers = map.layers.getOperationalLayers();
+        const opLayers = map.layers.getOperationalLayers({ sortByDisplayOrder: true });
 
         for (const opLayer of opLayers) {
             if (
