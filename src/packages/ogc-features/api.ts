@@ -110,60 +110,6 @@ export interface OgcFeatureSearchSourceOptions {
     rewriteUrl?: (url: URL) => URL | undefined;
 }
 
-/** Options for {@link OgcFeatureSearchSource}. */
-export interface OgcFeatureSearchSourceOptions {
-    /** The source's label. May be used as a title for results from this source. */
-    label: string;
-
-    /**
-     * The URL to the service, not including the "/collections"-part.
-     *
-     * Query arguments here are also used for individual requests by default, for example:
-     *
-     * ```js
-     * new OgcFeatureSearchSource({
-     *    // token is also used for all requests made by this class
-     *    baseUrl: `https://example.com/ogc-service?token=...`
-     * })
-     * ```
-     */
-    baseUrl: string;
-
-    /**
-     * The ID of the collection.
-     */
-    collectionId: string;
-
-    /**
-     * Property used for filtering on OGC API Features.
-     */
-    searchProperty: string;
-
-    /**
-     * Property used for labelling.
-     *
-     * Defaults to `searchProperty`.
-     *
-     * This property can be useful if searchProperty is not returned by the service, or
-     * if another field shall be displayed instead.
-     */
-    labelProperty?: string;
-
-    /**
-     * Function to create custom a label for a given feature.
-     *
-     * If the label is not customized by this function, `labelProperty` (or `searchProperty`) will be used instead.
-     */
-    renderLabel?: (feature: FeatureResponse) => string | undefined;
-
-    /**
-     * Rewrite function to modify the original URL.
-     *
-     * NOTE: Do not update the `url` argument. Return a new `URL` instance instead.
-     */
-    rewriteUrl?: (url: URL) => URL | undefined;
-}
-
 /** The general shape of features returned by an OGC API Features service. */
 export interface FeatureResponse {
     /**
