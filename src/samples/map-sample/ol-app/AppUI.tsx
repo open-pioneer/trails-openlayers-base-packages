@@ -2,9 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0
 import { Box, Divider, Flex, Text } from "@open-pioneer/chakra-integration";
 import { CoordinateViewer } from "@open-pioneer/coordinate-viewer";
-import { Resource } from "@open-pioneer/core";
 import { Geolocation } from "@open-pioneer/geolocation";
-import { MapAnchor, MapContainer, MapModel, useMapModel } from "@open-pioneer/map";
+import { MapAnchor, MapContainer, useMapModel } from "@open-pioneer/map";
 import { InitialExtent, ZoomIn, ZoomOut } from "@open-pioneer/map-navigation";
 import { Measurement } from "@open-pioneer/measurement";
 import { NotificationService, Notifier } from "@open-pioneer/notifier";
@@ -13,7 +12,6 @@ import { SectionHeading, TitledSection, ToolButton } from "@open-pioneer/react-u
 import { ScaleBar } from "@open-pioneer/scale-bar";
 import { ScaleViewer } from "@open-pioneer/scale-viewer";
 import { Search, SearchSelectEvent } from "@open-pioneer/search";
-import type { SelectionSource } from "@open-pioneer/selection";
 import { Selection } from "@open-pioneer/selection";
 import {
     SelectionCompleteEvent,
@@ -21,13 +19,10 @@ import {
 } from "@open-pioneer/selection/Selection";
 import { SpatialBookmarks } from "@open-pioneer/spatial-bookmarks";
 import { Toc } from "@open-pioneer/toc";
-import OlBaseLayer from "ol/layer/Base";
 import TileLayer from "ol/layer/Tile.js";
-import VectorLayer from "ol/layer/Vector";
 import OSM from "ol/source/OSM.js";
-import VectorSource from "ol/source/Vector";
 import { useIntl, useService } from "open-pioneer:react-hooks";
-import { useEffect, useId, useMemo, useState } from "react";
+import { useId, useMemo, useState } from "react";
 import {
     PiBookmarksSimpleBold,
     PiListLight,
@@ -35,11 +30,9 @@ import {
     PiRulerLight,
     PiSelectionPlusBold
 } from "react-icons/pi";
+import { useSnapshot } from "valtio";
 import { AppConfig } from "./AppConfig";
 import { MAP_ID } from "./MapConfigProviderImpl";
-import { VectorLayerSelectionSource } from "./sources/selectionSources";
-
-const SELECTION_LAYER_IDS = ["ogc_kitas", "ogc_kataster"];
 
 type InteractionType = "measurement" | "selection" | undefined;
 
@@ -300,7 +293,7 @@ export function AppUI() {
 function SearchComponent() {
     const { map } = useMapModel(MAP_ID);
     const appConfig = useService<unknown>("ol-app.AppConfig") as AppConfig;
-    const sources = useMemo(() => appConfig.getSearchSources(), [appConfig]);
+    const sources = useSnapshot(appConfig.state).searchSources;
 
     function onSearchResultSelected(event: SearchSelectEvent) {
         console.debug("The user selected the following item: ", event.result);
@@ -337,7 +330,8 @@ function SelectionComponent() {
     const notifier = useService<NotificationService>("notifier.NotificationService");
     const selectionTitleId = useId();
     const { map } = useMapModel(MAP_ID);
-    const selectionSources = useVectorLayerSelectionSources(map, SELECTION_LAYER_IDS);
+    const appConfig = useService<unknown>("ol-app.AppConfig") as AppConfig;
+    const sources = useSnapshot(appConfig.state).selectionSources;
 
     function onSelectionComplete(event: SelectionCompleteEvent) {
         if (!map) {
@@ -375,7 +369,7 @@ function SelectionComponent() {
             >
                 <Selection
                     mapId={MAP_ID}
-                    sources={selectionSources}
+                    sources={sources}
                     onSelectionComplete={onSelectionComplete}
                     onSelectionSourceChanged={onSelectionSourceChanged}
                 />
@@ -428,58 +422,4 @@ function OverviewMapComponent() {
             </Box>
         </Box>
     );
-}
-
-function useVectorLayerSelectionSources(map: MapModel | undefined, vectorLayerIds: string[]) {
-    const [selectionSources, setSelectionSources] = useState<SelectionSource[]>([]);
-    const [eventHandler, setEventHandler] = useState<Resource[]>([]);
-
-    const intl = useIntl();
-
-    function isVectorLayerWithVectorSource(layer: OlBaseLayer) {
-        return layer instanceof VectorLayer && layer.getSource() instanceof VectorSource;
-    }
-
-    useEffect(() => {
-        if (!map) {
-            return;
-        }
-        map.layers.getOperationalLayers().forEach((opLayer) => {
-            if (
-                !opLayer ||
-                !vectorLayerIds.includes(opLayer.id) ||
-                !isVectorLayerWithVectorSource(opLayer.olLayer)
-            ) {
-                return;
-            }
-
-            const layerSelectionSource = new VectorLayerSelectionSource(
-                opLayer.olLayer as VectorLayer<VectorSource>,
-                opLayer.title,
-                intl.formatMessage({ id: "layerNotVisibleReason" })
-            );
-            const eventHandler = layerSelectionSource.on("changed:status", () => {
-                if (layerSelectionSource.status === "unavailable") map.removeHighlight();
-                // TODO: Also listen to "onSourceChanged" event (needs to be implemented)
-            });
-            setSelectionSources((prev) => {
-                if (!prev.includes(layerSelectionSource)) {
-                    return [layerSelectionSource, ...prev];
-                }
-                return prev;
-            });
-            setEventHandler((prev) => {
-                if (!prev.includes(eventHandler)) {
-                    return [eventHandler, ...prev];
-                }
-                return prev;
-            });
-        });
-
-        return () => {
-            eventHandler.forEach((handler) => handler.destroy());
-        };
-    }, [map]);
-
-    return selectionSources;
 }

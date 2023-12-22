@@ -10,7 +10,10 @@ export default defineBuildConfig({
             provides: ["map.MapConfigProvider"]
         },
         AppConfig: {
-            provides: "ol-app.AppConfig"
+            provides: "ol-app.AppConfig",
+            references: {
+                mapRegistry: "map.MapRegistry"
+            }
         }
     },
     ui: {
