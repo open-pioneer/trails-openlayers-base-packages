@@ -13,6 +13,7 @@ import { EventEmitter } from "@open-pioneer/core";
 import VectorSource from "ol/source/Vector";
 import VectorLayer from "ol/layer/Vector";
 import { EventsKey } from "ol/events";
+import { unByKey } from "ol/Observable";
 
 export const fakeSelectedPointFeatures = [
     new Point([407354, 5754673]), // con terra (Bottom Right)
@@ -89,11 +90,7 @@ export class VectorLayerSelectionSource
     }
 
     destroy() {
-        // TODO: Is this the correct way to remove the listener?
-        this.#vectorLayer.removeChangeListener(
-            this.#eventHandler.type,
-            this.#eventHandler.listener
-        );
+        unByKey(this.#eventHandler);
     }
 
     get status(): SelectionSourceStatus {

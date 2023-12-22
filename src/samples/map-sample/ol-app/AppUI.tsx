@@ -46,10 +46,7 @@ type InteractionType = "measurement" | "selection" | undefined;
 export function AppUI() {
     const intl = useIntl();
     const tocTitleId = useId();
-    const measurementTitleId = useId();
-    const selectionTitleId = useId();
     const spatialBookmarkTitle = useId();
-    const notifier = useService<NotificationService>("notifier.NotificationService");
     const { map } = useMapModel(MAP_ID);
     const [showOverviewMap, setShowOverviewMap] = useState<boolean>(true);
     const [bookmarkIsActive, setBookmarkActive] = useState<boolean>(false);
@@ -58,8 +55,6 @@ export function AppUI() {
     }
     const [showToc, setShowToc] = useState<boolean>(true);
     const [currentInteractionType, setCurrentInteractionType] = useState<InteractionType>();
-
-    const selectionSources = useVectorLayerSelectionSources(map, SELECTION_LAYER_IDS);
 
     function toggleInteractionType(type: InteractionType) {
         if (type === currentInteractionType) {
@@ -87,77 +82,13 @@ export function AppUI() {
         setShowToc(!showToc);
     }
 
-    const overviewMapLayer = useMemo(
-        () =>
-            new TileLayer({
-                source: new OSM()
-            }),
-        []
-    );
-
-    function onSelectionComplete(event: SelectionCompleteEvent) {
-        if (!map) {
-            console.debug("Map not ready");
-            return;
-        }
-
-        map?.removeHighlight();
-        const geometries = event.results.map((result) => result.geometry);
-        if (geometries.length > 0) {
-            map.highlightAndZoom(geometries);
-        }
-
-        notifier.notify({
-            level: "info",
-            message: `Found ${event.results.length} results`,
-            displayDuration: 2000
-        });
-    }
-
-    function onSelectionSourceChanged(_: SelectionSourceChangedEvent) {
-        map?.removeHighlight();
-    }
-
     let currentInteraction: JSX.Element | null = null;
     switch (currentInteractionType) {
         case "selection":
-            currentInteraction = (
-                <Box role="dialog" aria-labelledby={selectionTitleId}>
-                    <TitledSection
-                        title={
-                            <SectionHeading id={selectionTitleId} size="md" mb={2}>
-                                {intl.formatMessage({
-                                    id: "selectionTitle"
-                                })}
-                            </SectionHeading>
-                        }
-                    >
-                        <Selection
-                            mapId={MAP_ID}
-                            sources={selectionSources}
-                            onSelectionComplete={onSelectionComplete}
-                            onSelectionSourceChanged={onSelectionSourceChanged}
-                        />
-                    </TitledSection>
-                </Box>
-            );
+            currentInteraction = <SelectionComponent />;
             break;
         case "measurement":
-            currentInteraction = (
-                <Box role="dialog" aria-labelledby={measurementTitleId}>
-                    <TitledSection
-                        title={
-                            <SectionHeading id={measurementTitleId} size="md" mb={2}>
-                                {intl.formatMessage({
-                                    id: "measurementTitle"
-                                })}
-                            </SectionHeading>
-                        }
-                    >
-                        <Measurement mapId={MAP_ID} />
-                    </TitledSection>
-                </Box>
-            );
+            currentInteraction = <MeasurementComponent />;
             break;
     }
 
@@ -240,20 +171,7 @@ export function AppUI() {
                             )}
                         </MapAnchor>
                         <MapAnchor position="top-right" horizontalGap={20} verticalGap={20}>
-                            {showOverviewMap && (
-                                <Box
-                                    backgroundColor="white"
-                                    borderWidth="1px"
-                                    borderRadius="lg"
-                                    padding={2}
-                                    boxShadow="lg"
-                                    maxWidth={325}
-                                >
-                                    <Box role="dialog">
-                                        <OverviewMap mapId={MAP_ID} olLayer={overviewMapLayer} />
-                                    </Box>
-                                </Box>
-                            )}
+                            {showOverviewMap && <OverviewMapComponent />}
                         </MapAnchor>
                         <MapAnchor horizontalGap={20} position="bottom-left">
                             {bookmarkIsActive && (
@@ -414,6 +332,104 @@ function SearchComponent() {
     );
 }
 
+function SelectionComponent() {
+    const intl = useIntl();
+    const notifier = useService<NotificationService>("notifier.NotificationService");
+    const selectionTitleId = useId();
+    const { map } = useMapModel(MAP_ID);
+    const selectionSources = useVectorLayerSelectionSources(map, SELECTION_LAYER_IDS);
+
+    function onSelectionComplete(event: SelectionCompleteEvent) {
+        if (!map) {
+            console.debug("Map not ready");
+            return;
+        }
+
+        map?.removeHighlight();
+        const geometries = event.results.map((result) => result.geometry);
+        if (geometries.length > 0) {
+            map.highlightAndZoom(geometries);
+        }
+
+        notifier.notify({
+            level: "info",
+            message: `Found ${event.results.length} results`,
+            displayDuration: 4000
+        });
+    }
+
+    function onSelectionSourceChanged(_: SelectionSourceChangedEvent) {
+        map?.removeHighlight();
+    }
+
+    return (
+        <Box role="dialog" aria-labelledby={selectionTitleId}>
+            <TitledSection
+                title={
+                    <SectionHeading id={selectionTitleId} size="md" mb={2}>
+                        {intl.formatMessage({
+                            id: "selectionTitle"
+                        })}
+                    </SectionHeading>
+                }
+            >
+                <Selection
+                    mapId={MAP_ID}
+                    sources={selectionSources}
+                    onSelectionComplete={onSelectionComplete}
+                    onSelectionSourceChanged={onSelectionSourceChanged}
+                />
+            </TitledSection>
+        </Box>
+    );
+}
+
+function MeasurementComponent() {
+    const measurementTitleId = useId();
+    const intl = useIntl();
+    return (
+        <Box role="dialog" aria-labelledby={measurementTitleId}>
+            <TitledSection
+                title={
+                    <SectionHeading id={measurementTitleId} size="md" mb={2}>
+                        {intl.formatMessage({
+                            id: "measurementTitle"
+                        })}
+                    </SectionHeading>
+                }
+            >
+                <Measurement mapId={MAP_ID} />
+            </TitledSection>
+        </Box>
+    );
+}
+
+function OverviewMapComponent() {
+    // Layer is created in useMemo: don't recreate it on each render.
+    const overviewMapLayer = useMemo(
+        () =>
+            new TileLayer({
+                source: new OSM()
+            }),
+        []
+    );
+
+    return (
+        <Box
+            backgroundColor="white"
+            borderWidth="1px"
+            borderRadius="lg"
+            padding={2}
+            boxShadow="lg"
+            maxWidth={325}
+        >
+            <Box role="dialog">
+                <OverviewMap mapId={MAP_ID} olLayer={overviewMapLayer} />
+            </Box>
+        </Box>
+    );
+}
+
 function useVectorLayerSelectionSources(map: MapModel | undefined, vectorLayerIds: string[]) {
     const [selectionSources, setSelectionSources] = useState<SelectionSource[]>([]);
     const [eventHandler, setEventHandler] = useState<Resource[]>([]);
@@ -461,7 +477,7 @@ function useVectorLayerSelectionSources(map: MapModel | undefined, vectorLayerId
         });
 
         return () => {
-            eventHandler.forEach((handlder) => handlder.destroy());
+            eventHandler.forEach((handler) => handler.destroy());
         };
     }, [map]);
 
