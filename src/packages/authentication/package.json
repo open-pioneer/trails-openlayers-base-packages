@@ -9,10 +9,10 @@
     },
     "dependencies": {},
     "peerDependencies": {
-        "@open-pioneer/runtime": "^2.0.0",
-        "@open-pioneer/core": "^1.1.0",
+        "@open-pioneer/runtime": "^2.0.1",
+        "@open-pioneer/core": "^1.2.0",
         "react": "^18.2.0",
-        "react-use": "^17.4.0"
+        "react-use": "^17.4.2"
     },
     "devDependencies": {
         "openlayers-base-packages": "workspace:*",

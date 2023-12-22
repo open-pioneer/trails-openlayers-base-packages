@@ -7,8 +7,8 @@
         "build": "build-pioneer-package"
     },
     "peerDependencies": {
-        "@open-pioneer/core": "^1.1.0",
-        "@open-pioneer/runtime": "^2.0.0"
+        "@open-pioneer/core": "^1.2.0",
+        "@open-pioneer/runtime": "^2.0.1"
     },
     "devDependencies": {
         "@open-pioneer/test-utils": "^1.0.2",

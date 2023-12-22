@@ -8,7 +8,7 @@
     },
     "peerDependencies": {
         "@open-pioneer/chakra-integration": "^1.1.1",
-        "@open-pioneer/runtime": "^2.0.0",
+        "@open-pioneer/runtime": "^2.0.1",
         "@open-pioneer/base-theme": "^0.2.0"
     },
     "devDependencies": {

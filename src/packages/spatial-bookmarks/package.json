@@ -7,22 +7,22 @@
         "build": "build-pioneer-package"
     },
     "peerDependencies": {
-        "@chakra-ui/icons": "^2.1.0",
-        "@open-pioneer/core": "^1.1.0",
+        "@chakra-ui/icons": "^2.1.1",
         "@open-pioneer/chakra-integration": "^1.1.1",
+        "@open-pioneer/core": "^1.2.0",
         "@open-pioneer/local-storage": "workspace:^",
         "@open-pioneer/map": "workspace:^",
         "@open-pioneer/react-utils": "workspace:^",
-        "@open-pioneer/runtime": "^2.0.0",
+        "@open-pioneer/runtime": "^2.0.1",
+        "classnames": "^2.3.2",
         "ol": "^8.2.0",
         "react": "^18.2.0",
-        "react-icons": "^4.11.0",
-        "classnames": "^2.3.2"
+        "react-icons": "^4.12.0"
     },
     "devDependencies": {
         "@open-pioneer/map-test-utils": "workspace:^",
         "@open-pioneer/test-utils": "^1.0.2",
-        "@types/uuid": "^9.0.2",
+        "@types/uuid": "^9.0.7",
         "openlayers-base-packages": "workspace:*"
     },
     "publishConfig": {
@@ -30,7 +30,7 @@
         "linkDirectory": false
     },
     "dependencies": {
-        "jotai": "^2.5.1",
-        "uuid": "^9.0.0"
+        "jotai": "^2.6.0",
+        "uuid": "^9.0.1"
     }
 }

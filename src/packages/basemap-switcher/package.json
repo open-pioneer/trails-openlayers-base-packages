@@ -9,12 +9,12 @@
     "peerDependencies": {
         "@open-pioneer/chakra-integration": "^1.1.1",
         "@open-pioneer/map": "workspace:^",
-        "@open-pioneer/runtime": "^2.0.0",
+        "@open-pioneer/runtime": "^2.0.1",
         "@open-pioneer/react-utils": "workspace:^",
         "chakra-react-select": "^4.7.6",
         "ol": "^8.2.0",
         "react": "^18.2.0",
-        "react-icons": "^4.11.0"
+        "react-icons": "^4.12.0"
     },
     "devDependencies": {
         "@open-pioneer/test-utils": "^1.0.2",
