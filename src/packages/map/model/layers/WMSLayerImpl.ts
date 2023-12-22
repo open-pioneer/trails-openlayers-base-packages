@@ -1,19 +1,18 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { createLogger, isAbortError } from "@open-pioneer/core";
+import { ImageWrapper } from "ol";
+import WMSCapabilities from "ol/format/WMSCapabilities";
 import ImageLayer from "ol/layer/Image";
 import type ImageSource from "ol/source/Image";
 import ImageWMS from "ol/source/ImageWMS";
-import WMSCapabilities from "ol/format/WMSCapabilities";
-
-import { WMSLayerConfig, WMSLayer, WMSSublayerConfig, WMSSublayer } from "../../api";
+import { WMSLayer, WMSLayerConfig, WMSSublayer, WMSSublayerConfig } from "../../api";
+import { fetchCapabilities } from "../../util/capabilities-utils";
 import { DeferredExecution, defer } from "../../util/defer";
 import { AbstractLayer } from "../AbstractLayer";
 import { AbstractLayerBase } from "../AbstractLayerBase";
 import { MapModelImpl } from "../MapModelImpl";
 import { SublayersCollectionImpl } from "../SublayersCollectionImpl";
-import { ImageWrapper } from "ol";
-import { fetchCapabilities } from "../../util/capabilities-utils";
 
 const LOG = createLogger("map:WMSLayer");
 
@@ -23,7 +22,7 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
     #deferredSublayerUpdate: DeferredExecution | undefined;
     #layer: ImageLayer<ImageSource>;
     #source: ImageWMS;
-    /* eslint-disable @typescript-eslint/no-explicit-any */
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     #capabilities: Record<string, any> | undefined;
     readonly #abortController = new AbortController();
 
@@ -41,7 +40,7 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
             },
             // Use http service to load tiles; needed for authentication etc.
             imageLoadFunction: (wrapper, url) => {
-                return this.#loadTile(wrapper, url).catch((error) => {
+                return this.#loadImage(wrapper, url).catch((error) => {
                     LOG.error(`Failed to load tile at '${url}'`, error);
                 });
             }
@@ -86,8 +85,8 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
                 }
             }
         };
-        this.#fetchWMSCapabilities().then(
-            (result: string) => {
+        this.#fetchWMSCapabilities()
+            .then((result: string) => {
                 const parser = new WMSCapabilities();
                 const capabilities = parser.read(result);
                 this.#capabilities = capabilities;
@@ -97,14 +96,14 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
                     console.log(legendUrl, layer.name);
                     layer.legend = legendUrl;
                 }
-            },
-            (error) => {
+            })
+            .catch((error) => {
                 if (isAbortError(error)) {
                     LOG.error(`Layer ${this.id} has been destroyed before fetching the data`);
+                    return;
                 }
                 LOG.error(`Failed fetching WMTS capabilities for Layer ${this.id}`, error);
-            }
-        );
+            });
     }
 
     /** Called by the sublayers when their visibility changed. */
@@ -169,26 +168,33 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
     }
 
     async #fetchWMSCapabilities(): Promise<string> {
+        const httpService = this.map.__sharedDependencies.httpService;
         const url = `${this.#url}?LANGUAGE=ger&SERVICE=WMS&REQUEST=GetCapabilities`;
-        return fetchCapabilities(url, this.#abortController.signal);
+        return fetchCapabilities(url, httpService, this.#abortController.signal);
     }
 
-    async #loadTile(imageWrapper: ImageWrapper, tileUrl: string): Promise<void> {
+    async #loadImage(imageWrapper: ImageWrapper, imageUrl: string): Promise<void> {
         const httpService = this.map.__sharedDependencies.httpService;
-        const response = await httpService.fetch(tileUrl);
+        const image = imageWrapper.getImage() as HTMLImageElement;
+
+        const response = await httpService.fetch(imageUrl);
         if (!response.ok) {
             throw new Error(`Request failed with status ${response.status}.`);
         }
 
         const blob = await response.blob();
         const objectUrl = URL.createObjectURL(blob);
-        const image = imageWrapper.getImage() as HTMLImageElement;
-        image.src = objectUrl;
-        image.onload = () => {
+        const finish = () => {
             // Cleanup object URL after load to prevent memory leaks.
             // https://stackoverflow.com/questions/62473876/openlayers-6-settileloadfunction-documented-example-uses-url-createobjecturld
             URL.revokeObjectURL(objectUrl);
+            image.removeEventListener("load", finish);
+            image.removeEventListener("error", finish);
         };
+
+        image.addEventListener("load", finish);
+        image.addEventListener("error", finish);
+        image.src = objectUrl;
     }
 }
 
@@ -297,11 +303,13 @@ function constructSublayers(sublayerConfigs: WMSSublayerConfig[] = []): WMSSubla
     }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getLegendUrl(capabilities: Record<string, any>, activeLayerId: string) {
     const content = capabilities?.Capability;
     const layer = content?.Layer;
     let url: string | undefined = undefined;
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const searchNestedLayer = (layer: Record<string, any>[]) => {
         for (const currentLayer of layer) {
             // spec. if, a layer has a <Name>, then it is a map layer
@@ -319,6 +327,8 @@ function getLegendUrl(capabilities: Record<string, any>, activeLayerId: string) 
             }
         }
     };
-    searchNestedLayer(layer.Layer);
+    if (layer) {
+        searchNestedLayer(layer.Layer);
+    }
     return url;
 }

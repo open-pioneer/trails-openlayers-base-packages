@@ -1,22 +1,9 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { createLogger } from "@open-pioneer/core";
+import { HttpService } from "@open-pioneer/http";
 
 const LOG = createLogger("map:WMTSLayer");
-
-const request = async (url: string, signal?: AbortSignal | undefined): Promise<string> => {
-    try {
-        const response = await fetch(url, { signal });
-        if (!response.ok) {
-            throw new Error("Request failed: " + response.status);
-        }
-        const result = await response.text();
-
-        return result;
-    } catch (error) {
-        throw new Error("Request failed: " + error);
-    }
-};
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export function getLegendUrl(
@@ -52,6 +39,15 @@ export function getLegendUrl(
     return legendUrl as string | undefined;
 }
 
-export function fetchCapabilities(url: string, signal: AbortSignal): Promise<string> {
-    return request(url, signal);
+export async function fetchCapabilities(
+    url: string,
+    httpService: HttpService,
+    signal: AbortSignal
+): Promise<string> {
+    const response = await httpService.fetch(url, { signal });
+    if (!response.ok) {
+        throw new Error("Request failed: " + response.status);
+    }
+    const result = await response.text();
+    return result;
 }
