@@ -128,11 +128,12 @@ it("tracks the layer source's state", async () => {
 describe("performs a health check", () => {
     it("when specified as URL, success", async () => {
         const testUrl = "http://example.org/health";
-        const mockedFetch = vi.fn().mockResolvedValue( new Response("", {
-            status: 200
-        })
+        const mockedFetch = vi.fn().mockResolvedValue(
+            new Response("", {
+                status: 200
+            })
         );
-        
+
         const { layer } = createLayerWithHealthCheck({
             healthCheck: testUrl,
             sourceState: "ready",
