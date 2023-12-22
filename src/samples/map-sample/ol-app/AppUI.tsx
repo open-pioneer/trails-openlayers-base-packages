@@ -1,15 +1,9 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box, Button, Divider, Flex } from "@open-pioneer/chakra-integration";
+import { Box, Divider, Flex, Text } from "@open-pioneer/chakra-integration";
 import { CoordinateViewer } from "@open-pioneer/coordinate-viewer";
 import { Geolocation } from "@open-pioneer/geolocation";
-import {
-    MapAnchor,
-    MapContainer,
-    MapModel,
-    SublayersCollection,
-    useMapModel
-} from "@open-pioneer/map";
+import { MapAnchor, MapContainer, useMapModel } from "@open-pioneer/map";
 import { InitialExtent, ZoomIn, ZoomOut } from "@open-pioneer/map-navigation";
 import { Measurement } from "@open-pioneer/measurement";
 import { Notifier } from "@open-pioneer/notifier";
@@ -41,7 +35,6 @@ export function AppUI() {
     const measurementTitleId = useId();
     const legendTitleId = useId();
     const spatialBookmarkTitle = useId();
-    const { map } = useMapModel(MAP_ID);
     const [measurementIsActive, setMeasurementIsActive] = useState<boolean>(false);
     const [legendIsActive, setLegendIsActive] = useState<boolean>(true);
     const [showOverviewMap, setShowOverviewMap] = useState<boolean>(true);
@@ -139,36 +132,23 @@ export function AppUI() {
                                                         size="md"
                                                         mb={2}
                                                     >
-                                                        {intl.formatMessage({ id: "tocTitle" })}
+                                                        <Text>
+                                                            {intl.formatMessage({
+                                                                id: "tocTitle"
+                                                            })}
+                                                        </Text>
                                                     </SectionHeading>
                                                 }
                                             >
                                                 <Box overflowY="auto" maxHeight={maxHeightToc}>
                                                     <Toc
                                                         mapId={MAP_ID}
+                                                        showTools={true}
                                                         basemapSwitcherProps={{
                                                             allowSelectingEmptyBasemap: true
                                                         }}
                                                     />
                                                 </Box>
-                                                <Flex
-                                                    width="100%"
-                                                    my={4}
-                                                    flexDirection="row"
-                                                    gap={1}
-                                                >
-                                                    <Button
-                                                        aria-label={intl.formatMessage({
-                                                            id: "hideAllLayers"
-                                                        })}
-                                                        width="100%"
-                                                        onClick={() => hideAllLayers(map)}
-                                                    >
-                                                        {intl.formatMessage({
-                                                            id: "hideAllLayers"
-                                                        })}
-                                                    </Button>
-                                                </Flex>
                                             </TitledSection>
                                         </Box>
                                     )}
@@ -327,7 +307,7 @@ export function AppUI() {
 
 function SearchComponent() {
     const { map } = useMapModel(MAP_ID);
-    const appConfig = useService("ol-app.AppConfig") as AppConfig;
+    const appConfig = useService<unknown>("ol-app.AppConfig") as AppConfig;
     const sources = useMemo(() => appConfig.getSearchSources(), [appConfig]);
 
     function onSearchResultSelected(event: SearchSelectEvent) {
@@ -358,20 +338,4 @@ function SearchComponent() {
             onClear={onSearchCleared}
         />
     );
-}
-
-function hideAllLayers(map: MapModel | undefined) {
-    const hideSublayer = (sublayers: SublayersCollection | undefined) => {
-        sublayers?.getSublayers().forEach((layer) => {
-            layer.setVisible(false);
-
-            hideSublayer(layer?.sublayers);
-        });
-    };
-
-    map?.layers.getOperationalLayers().forEach((layer) => {
-        layer.setVisible(false);
-
-        hideSublayer(layer?.sublayers);
-    });
 }

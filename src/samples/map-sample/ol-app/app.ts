@@ -9,7 +9,6 @@ const element = createCustomElement({
     component: AppUI,
     theme,
     appMetadata,
-    openShadowRoot: true,
     config: {
         properties: {
             "@open-pioneer/local-storage": {

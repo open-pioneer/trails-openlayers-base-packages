@@ -11,7 +11,5 @@ messages:
     toolbar: "Maptools"
   geolocationTitle: "Geolocation"
   spatialBookmarkTitle: "Spatial bookmarks"
-  hideAllLayers: "Hide all layers"
-
   searchSources:
     miningPermissions: Mining permissions

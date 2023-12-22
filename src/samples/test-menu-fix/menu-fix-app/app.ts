@@ -6,8 +6,7 @@ import { AppUI } from "./AppUI";
 
 const Element = createCustomElement({
     component: AppUI,
-    appMetadata,
-    openShadowRoot: true
+    appMetadata
 });
 
 customElements.define("menu-fix-app", Element);

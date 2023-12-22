@@ -1,10 +1,12 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box, Select } from "@open-pioneer/chakra-integration";
+import { Box, Flex, Tooltip } from "@open-pioneer/chakra-integration";
 import { Layer, MapModel, useMapModel } from "@open-pioneer/map";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, useCallback, useMemo, useRef, useSyncExternalStore } from "react";
+import { Select, OptionProps, SingleValueProps, chakraComponents } from "chakra-react-select";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
+import { FiAlertTriangle } from "react-icons/fi";
 
 /*
     Exported for tests. Feels a bit hacky but should be fine for now.
@@ -13,17 +15,18 @@ import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/rea
 export const NO_BASEMAP_ID = "___NO_BASEMAP___";
 
 /**
- * These are special properties for the `Select`.
+ * Properties for single select options.
  */
-interface SelectOption {
+export interface SelectOption {
     /**
      * The id of the basemap for the select option.
      */
-    id: string;
+    value: string;
+
     /**
-     * The label of the basemap for the select option.
+     * The layer object for the select option.
      */
-    label: string;
+    layer: Layer | undefined;
 }
 
 /**
@@ -44,7 +47,7 @@ export interface BasemapSwitcherProps extends CommonComponentProps {
      * Specifies whether an option to deactivate all basemap layers is available in the BasemapSwitcher.
      * Defaults to `false`.
      */
-    allowSelectingEmptyBasemap?: boolean;
+    allowSelectingEmptyBasemap?: boolean | undefined;
 
     /**
      * Optional aria-labelledby property.
@@ -66,7 +69,7 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
     const intl = useIntl();
     const {
         mapId,
-        allowSelectingEmptyBasemap,
+        allowSelectingEmptyBasemap = false,
         "aria-label": ariaLabel,
         "aria-labelledby": ariaLabelledBy
     } = props;
@@ -75,32 +78,59 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
 
     const { map } = useMapModel(mapId);
     const baseLayers = useBaseLayers(map);
-    const { selectOptions, selectedId } = useMemo(() => {
-        return createOptions({ baseLayers, allowSelectingEmptyBasemap, emptyBasemapLabel });
-    }, [baseLayers, allowSelectingEmptyBasemap, emptyBasemapLabel]);
+
     const activateLayer = (layerId: string) => {
         map?.layers.activateBaseLayer(layerId === NO_BASEMAP_ID ? undefined : layerId);
     };
 
+    const { options, selectedLayer } = useMemo(() => {
+        const options: SelectOption[] = baseLayers.map<SelectOption>((layer) => {
+            return { value: layer.id, layer: layer };
+        });
+
+        const activeBaseLayer = map?.layers.getActiveBaseLayer();
+        if (allowSelectingEmptyBasemap || activeBaseLayer == undefined) {
+            const emptyOption: SelectOption = { value: NO_BASEMAP_ID, layer: undefined };
+            options.push(emptyOption);
+        }
+
+        const selectedLayer = options.find((l) => l.layer === activeBaseLayer);
+        return { options, selectedLayer };
+    }, [allowSelectingEmptyBasemap, baseLayers, map?.layers]);
+
+    const components = useMemo(() => {
+        return {
+            Option: BasemapSelectOption,
+            SingleValue: BasemapSelectValue
+        };
+    }, []);
+
     return (
         <Box {...containerProps}>
             {map ? (
-                <Select
+                <Select<SelectOption>
                     aria-label={ariaLabel}
                     aria-labelledby={ariaLabelledBy}
                     className="basemap-switcher-select"
-                    value={selectedId}
-                    onChange={(e) => activateLayer(e.target.value)}
-                >
-                    {selectOptions.map((opt) => (
-                        <option key={opt.id} value={opt.id}>
-                            {opt.label}
-                        </option>
-                    ))}
-                </Select>
-            ) : (
-                ""
-            )}
+                    classNamePrefix="react-select"
+                    options={options}
+                    value={selectedLayer}
+                    onChange={(option) => option && activateLayer(option.value)}
+                    isClearable={false}
+                    isSearchable={false}
+                    // optionLabel is used by screenreaders
+                    getOptionLabel={(option) =>
+                        option.layer !== undefined
+                            ? option.layer.title +
+                              (option.layer.loadState === "error"
+                                  ? " " + intl.formatMessage({ id: "layerNotAvailable" })
+                                  : "")
+                            : emptyBasemapLabel
+                    }
+                    isOptionDisabled={(option) => option?.layer?.loadState === "error"}
+                    components={components}
+                />
+            ) : null}
         </Box>
     );
 };
@@ -136,30 +166,96 @@ function useBaseLayers(mapModel: MapModel | undefined): Layer[] {
     return useSyncExternalStore(subscribe, getSnapshot);
 }
 
-function createOptions(params: {
-    baseLayers: Layer[];
-    allowSelectingEmptyBasemap: boolean | undefined;
-    emptyBasemapLabel: string;
-}): { selectOptions: SelectOption[]; selectedId: string } {
-    const { baseLayers = [], allowSelectingEmptyBasemap = false, emptyBasemapLabel } = params;
-    const selectOptions: SelectOption[] = baseLayers.map((item) => ({
-        id: item.id,
-        label: item.title
-    }));
+function BasemapSelectOption(props: OptionProps<SelectOption>): JSX.Element {
+    const { layer } = props.data;
+    const { isAvailable, content } = useBasemapItem(layer);
 
-    let selectedId = baseLayers.find((layer) => layer.visible)?.id;
-    if (allowSelectingEmptyBasemap || selectedId == null) {
-        selectOptions.push(getNonBaseMapConfig(emptyBasemapLabel));
-    }
-    if (selectedId == null) {
-        selectedId = NO_BASEMAP_ID;
-    }
-    return { selectOptions, selectedId };
+    return (
+        <chakraComponents.Option
+            {...props}
+            isDisabled={!isAvailable}
+            className="basemap-switcher-option"
+        >
+            {content}
+        </chakraComponents.Option>
+    );
 }
 
-function getNonBaseMapConfig(label: string) {
+function BasemapSelectValue(props: SingleValueProps<SelectOption>): JSX.Element {
+    const { layer } = props.data;
+    const { isAvailable, content } = useBasemapItem(layer);
+
+    return (
+        <chakraComponents.SingleValue
+            {...props}
+            isDisabled={!isAvailable}
+            className="basemap-switcher-value"
+        >
+            {content}
+        </chakraComponents.SingleValue>
+    );
+}
+
+function useBasemapItem(layer: Layer | undefined) {
+    const intl = useIntl();
+    const notAvailableLabel = intl.formatMessage({ id: "layerNotAvailable" });
+    const label = useTitle(layer);
+    const isAvailable = useLoadState(layer) !== "error";
+
     return {
-        id: NO_BASEMAP_ID,
-        label
+        isAvailable,
+        content: (
+            <Flex direction="row" alignItems="center">
+                {label}
+                {!isAvailable && (
+                    <Box ml={2}>
+                        <Tooltip label={notAvailableLabel} placement="right" openDelay={500}>
+                            <span>
+                                <FiAlertTriangle color={"red"} aria-label={notAvailableLabel} />
+                            </span>
+                        </Tooltip>
+                    </Box>
+                )}
+            </Flex>
+        )
     };
+}
+
+function useTitle(layer: Layer | undefined): string {
+    const intl = useIntl();
+    const emptyBasemapLabel = intl.formatMessage({ id: "emptyBasemapLabel" });
+
+    const getSnapshot = useCallback(() => {
+        return layer === undefined ? emptyBasemapLabel : layer.title; // undefined == empty basemap
+    }, [layer, emptyBasemapLabel]);
+    const subscribe = useCallback(
+        (cb: () => void) => {
+            if (layer !== undefined) {
+                const resource = layer.on("changed:title", cb);
+                return () => resource.destroy();
+            }
+            return () => {};
+        },
+        [layer]
+    );
+
+    return useSyncExternalStore(subscribe, getSnapshot);
+}
+
+function useLoadState(layer: Layer | undefined): string {
+    const getSnapshot = useCallback(() => {
+        return layer === undefined ? "loaded" : layer.loadState; // undefined == empty basemap
+    }, [layer]);
+    const subscribe = useCallback(
+        (cb: () => void) => {
+            if (layer !== undefined) {
+                const resource = layer.on("changed:loadState", cb);
+                return () => resource.destroy();
+            }
+            return () => {};
+        },
+        [layer]
+    );
+
+    return useSyncExternalStore(subscribe, getSnapshot);
 }
