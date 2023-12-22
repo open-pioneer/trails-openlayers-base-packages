@@ -33,6 +33,7 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
             params: {
                 ...config.sourceOptions?.params
             },
+            // Use http service to load tiles; needed for authentication etc.
             imageLoadFunction: (wrapper, url) => {
                 return this.#loadTile(wrapper, url).catch((error) => {
                     LOG.error(`Failed to load tile at '${url}'`, error);
