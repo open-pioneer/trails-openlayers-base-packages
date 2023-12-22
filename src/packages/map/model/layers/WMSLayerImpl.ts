@@ -10,6 +10,7 @@ import { AbstractLayer } from "../AbstractLayer";
 import { AbstractLayerBase } from "../AbstractLayerBase";
 import { MapModelImpl } from "../MapModelImpl";
 import { SublayersCollectionImpl } from "../SublayersCollectionImpl";
+import { ImageWrapper } from "ol";
 
 const LOG = createLogger("map:WMSLayer");
 
@@ -31,6 +32,11 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
             url: config.url,
             params: {
                 ...config.sourceOptions?.params
+            },
+            imageLoadFunction: (wrapper, url) => {
+                return this.#loadTile(wrapper, url).catch((error) => {
+                    LOG.error(`Failed to load tile at '${url}'`, error);
+                });
             }
         });
         this.#url = config.url;
@@ -109,6 +115,24 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
             visitSublayer(sublayer);
         }
         return layers;
+    }
+
+    async #loadTile(imageWrapper: ImageWrapper, tileUrl: string): Promise<void> {
+        const httpService = this.map.__sharedDependencies.httpService;
+        const response = await httpService.fetch(tileUrl);
+        if (!response.ok) {
+            throw new Error(`Request failed with status ${response.status}.`);
+        }
+
+        const blob = await response.blob();
+        const objectUrl = URL.createObjectURL(blob);
+        const image = imageWrapper.getImage() as HTMLImageElement;
+        image.src = objectUrl;
+        image.onload = () => {
+            // Cleanup object URL after load to prevent memory leaks.
+            // https://stackoverflow.com/questions/62473876/openlayers-6-settileloadfunction-documented-example-uses-url-createobjecturld
+            URL.revokeObjectURL(objectUrl);
+        };
     }
 }
 

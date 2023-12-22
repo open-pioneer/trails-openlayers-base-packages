@@ -6,24 +6,30 @@ import OlMap from "ol/Map";
 import { MapModelImpl } from "./model/MapModelImpl";
 import { MapConfigProvider, MapModel, MapRegistry } from "./api";
 import { createMapModel } from "./model/createMapModel";
+import { HttpService } from "@open-pioneer/http";
 
 const LOG = createLogger("map:MapRegistry");
 
 interface References {
     providers: MapConfigProvider[];
+    httpService: HttpService;
 }
 
 type ModelJobResult = { kind: "model"; model: MapModelImpl } | { kind: "error"; error: Error };
 
 export class MapRegistryImpl implements Service, MapRegistry {
+    #httpService: HttpService;
+
     #configProviders = new Map<string, MapConfigProvider>();
     #entries = new Map<string, ModelJobResult>();
     #modelCreationJobs = new Map<string, Promise<ModelJobResult>>();
     #modelsByOlMap = new WeakMap<OlMap, MapModel>();
     #destroyed = false;
 
-    constructor(options: ServiceOptions<References>) {
-        const providers = options.references.providers;
+    constructor({ references }: ServiceOptions<References>) {
+        this.#httpService = references.httpService;
+
+        const providers = references.providers;
         for (const provider of providers) {
             this.#configProviders.set(provider.mapId, provider);
         }
@@ -90,7 +96,7 @@ export class MapRegistryImpl implements Service, MapRegistry {
     async #createModel(mapId: string, provider: MapConfigProvider): Promise<ModelJobResult> {
         LOG.info(`Creating map with id '${mapId}'`);
         const mapConfig = await provider.getMapConfig();
-        const mapModel = await createMapModel(mapId, mapConfig);
+        const mapModel = await createMapModel(mapId, mapConfig, this.#httpService);
 
         if (this.#destroyed) {
             mapModel.destroy();

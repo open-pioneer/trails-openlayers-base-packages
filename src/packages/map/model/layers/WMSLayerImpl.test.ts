@@ -1,10 +1,10 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-/**
- * @vitest-environment node
- */
+import { HttpService } from "@open-pioneer/http";
 import ImageLayer from "ol/layer/Image";
+import ImageSource from "ol/source/Image";
 import ImageWMS from "ol/source/ImageWMS";
+import { get as getProjection } from "ol/proj";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { AbstractLayerBase } from "../AbstractLayerBase";
 import { MapModelImpl } from "../MapModelImpl";
@@ -239,6 +239,50 @@ it("provides access to nested sublayers", () => {
     expect(sublayer2.title).toBe("Sublayer 2");
     expect(sublayer2.parentLayer).toBe(layer);
     expect(sublayer2.parent).toBe(sublayer1);
+});
+
+it("uses http service to fetch images", async () => {
+    /*
+        This test ensures that the image source used by WMSLayer uses
+        the httpService provided by the map model to fetch images.
+
+        It triggers a load() on the source used by the image layer (in a way usually done
+        by the open layers map) and checks that the mocked httpService is actually being called for the URL.
+    */
+
+    const layer = new WMSLayerImpl({
+        title: "Layer",
+        url: SERVICE_URL,
+        sublayers: [
+            {
+                name: "sublayer-1",
+                title: "Sublayer 1"
+            }
+        ]
+    });
+    const urls: string[] = [];
+    const httpService: Partial<HttpService> = {
+        async fetch(url) {
+            urls.push(String(url));
+            return new Response("", {
+                status: 200
+            });
+        }
+    };
+    layer.__attach({
+        __sharedDependencies: {
+            httpService: httpService as HttpService
+        }
+    } as MapModelImpl);
+
+    const source = (layer.olLayer as ImageLayer<ImageSource>).getSource()!;
+    const projection = getProjection("EPSG:3857")!;
+    const image = source.getImage([1, 2, 3, 4], 123, 42, projection);
+    image.load();
+
+    vi.advanceTimersByTime(1000);
+    expect(urls).toHaveLength(1);
+    expect(urls[0]!).toMatch(/^https:\/\/example\.com\/wms-service\?REQUEST=GetMap/);
 });
 
 it("does not have a source if no sublayers are visible", () => {
