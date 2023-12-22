@@ -13,7 +13,8 @@ export default defineBuildConfig({
                 providers: {
                     name: "map.MapConfigProvider",
                     all: true
-                }
+                },
+                httpService: "http.HttpService"
             }
         }
     },

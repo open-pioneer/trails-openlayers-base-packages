@@ -537,7 +537,7 @@ registerProjections({
 const mapModel: MapModel = ... // retrieved via MapRegistry service
 await mapModel.whenDisplayed();
 
-const response = await fetch("https://sgx.geodatenzentrum.de/wmts_topplus_open/1.0.0/WMTSCapabilities.xml");
+const response = await httpService.fetch("https://sgx.geodatenzentrum.de/wmts_topplus_open/1.0.0/WMTSCapabilities.xml");
 const responseText = await response.text();
 
 const wmtsParser = new WMTSCapabilities();

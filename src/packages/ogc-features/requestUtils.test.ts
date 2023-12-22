@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { SpyInstance, afterEach, assert, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, assert, describe, expect, it, vi } from "vitest";
 import {
     createCollectionRequestUrl,
     createOffsetURL,
@@ -8,6 +8,7 @@ import {
     queryFeatures
 } from "./requestUtils";
 import GeoJSON from "ol/format/GeoJSON";
+import { HttpService } from "@open-pioneer/http";
 
 describe("collection items url", () => {
     it("expect items url contains extent and crs", () => {
@@ -64,12 +65,6 @@ describe("next links", () => {
 });
 
 describe("query features", () => {
-    let mockedFetch!: SpyInstance;
-
-    beforeEach(() => {
-        mockedFetch = vi.spyOn(global, "fetch");
-    });
-
     afterEach(() => {
         vi.restoreAllMocks();
     });
@@ -94,6 +89,10 @@ describe("query features", () => {
     };
 
     it("expect feature geometry and nextURL are correct", async () => {
+        const httpService: HttpService = {
+            fetch: vi.fn().mockResolvedValue(createFetchResponse(mockedGeoJSON, 200))
+        } satisfies Partial<HttpService> as HttpService;
+
         const requestInit: RequestInit = {
             headers: {
                 Accept: "application/geo+json"
@@ -101,9 +100,8 @@ describe("query features", () => {
         };
         const testUrl = "https://url-to-service.de/items?f=json";
 
-        mockedFetch.mockResolvedValue(createFetchResponse(mockedGeoJSON, 200));
-        const featureResponse = await queryFeatures(testUrl, new GeoJSON(), undefined);
-        expect(mockedFetch).toHaveBeenCalledWith!(testUrl, requestInit);
+        const featureResponse = await queryFeatures(testUrl, new GeoJSON(), httpService, undefined);
+        expect(httpService.fetch).toHaveBeenCalledWith!(testUrl, requestInit);
         const respondedCoordinates = (featureResponse.features[0]?.getGeometry() as any)
             .flatCoordinates;
         expect(respondedCoordinates).toStrictEqual([5752928, 395388]);

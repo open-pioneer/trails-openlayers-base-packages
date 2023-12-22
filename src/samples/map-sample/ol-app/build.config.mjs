@@ -10,7 +10,11 @@ export default defineBuildConfig({
             provides: ["map.MapConfigProvider"]
         },
         AppConfig: {
-            provides: "ol-app.AppConfig"
+            provides: "ol-app.AppConfig",
+            references: {
+                ogcSearchSourceFactory: "ogc-features.SearchSourceFactory",
+                httpService: "http.HttpService"
+            }
         }
     },
     ui: {

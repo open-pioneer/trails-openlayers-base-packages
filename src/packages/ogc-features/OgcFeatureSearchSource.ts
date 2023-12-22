@@ -4,60 +4,8 @@ import { isAbortError } from "@open-pioneer/core";
 import { SearchSource, SearchResult, SearchOptions } from "@open-pioneer/search";
 import { v4 as uuid4v } from "uuid";
 import GeoJSON from "ol/format/GeoJSON";
-
-/** Options for {@link OgcFeatureSearchSource}. */
-export interface OgcFeatureSearchSourceOptions {
-    /** The source's label. May be used as a title for results from this source. */
-    label: string;
-
-    /**
-     * The URL to the service, not including the "/collections"-part.
-     *
-     * Query arguments here are also used for individual requests by default, for example:
-     *
-     * ```js
-     * new OgcFeatureSearchSource({
-     *    // token is also used for all requests made by this class
-     *    baseUrl: `https://example.com/ogc-service?token=...`
-     * })
-     * ```
-     */
-    baseUrl: string;
-
-    /**
-     * The ID of the collection.
-     */
-    collectionId: string;
-
-    /**
-     * Property used for filtering on OGC API Features.
-     */
-    searchProperty: string;
-
-    /**
-     * Property used for labelling.
-     *
-     * Defaults to `searchProperty`.
-     *
-     * This property can be useful if searchProperty is not returned by the service, or
-     * if another field shall be displayed instead.
-     */
-    labelProperty?: string;
-
-    /**
-     * Function to create custom a label for a given feature.
-     *
-     * If the label is not customized by this function, `labelProperty` (or `searchProperty`) will be used instead.
-     */
-    renderLabel?: (feature: FeatureResponse) => string | undefined;
-
-    /**
-     * Rewrite function to modify the original URL.
-     *
-     * NOTE: Do not update the `url` argument. Return a new `URL` instance instead.
-     */
-    rewriteUrl?: (url: URL) => URL | undefined;
-}
+import { OgcFeatureSearchSourceOptions } from "./api";
+import { HttpService } from "@open-pioneer/http";
 
 /** The general shape of features returned by an OGC API Features service. */
 export interface FeatureResponse {
@@ -88,12 +36,14 @@ export interface FeatureResponse {
 export class OgcFeatureSearchSource implements SearchSource {
     readonly label: string;
     #options: OgcFeatureSearchSourceOptions;
+    #httpService: HttpService;
     #baseUrl: string;
     #params: URLSearchParams;
 
-    constructor(options: OgcFeatureSearchSourceOptions) {
+    constructor(options: OgcFeatureSearchSourceOptions, httpService: HttpService) {
         this.label = options.label;
         this.#options = options;
+        this.#httpService = httpService;
 
         const { baseUrl, params } = getBaseUrl(options.baseUrl);
         this.#baseUrl = baseUrl;
@@ -110,7 +60,7 @@ export class OgcFeatureSearchSource implements SearchSource {
             featureProjection: mapProjection
         });
 
-        const responses = await fetchJson(url, signal);
+        const responses = await fetchJson(this.#httpService, url, signal);
         return responses.features.map((feature) => this.#createResult(feature, geojson));
     }
 
@@ -169,9 +119,13 @@ export interface SearchResponse {
     type?: string;
 }
 
-async function fetchJson(url: URL, signal?: AbortSignal | undefined): Promise<SearchResponse> {
+async function fetchJson(
+    httpService: HttpService,
+    url: URL,
+    signal?: AbortSignal | undefined
+): Promise<SearchResponse> {
     try {
-        const response = await fetch(url, {
+        const response = await httpService.fetch(url, {
             signal,
             headers: {
                 "Accept": "application/json"

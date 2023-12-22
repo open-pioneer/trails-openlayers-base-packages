@@ -21,7 +21,7 @@ export interface LayerBaseEvents {
 export type LayerLoadState = "not-loaded" | "loading" | "loaded" | "error";
 
 /** Custom function to check the state of a layer and returning a "loaded" or "error". */
-export type HealthCheckFunction = (layer: LayerConfig) => Promise<"loaded" | "error">;
+export type HealthCheckFunction = (layer: LayerBase) => Promise<"loaded" | "error">;
 
 /**
  * Configuration options supported by all layer types (layers and sublayers).

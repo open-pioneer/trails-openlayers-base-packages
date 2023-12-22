@@ -18,6 +18,7 @@ import VectorLayer from "ol/layer/Vector";
 
 // Importing internals: needed for test support
 import { MapRegistryImpl } from "@open-pioneer/map/services";
+import { HttpService } from "@open-pioneer/http";
 
 export interface SimpleMapOptions {
     center?: { x: number; y: number };
@@ -104,9 +105,18 @@ export async function setupMap(options?: SimpleMapOptions) {
         advanced: options?.advanced
     };
 
+    const httpService: HttpService = {
+        async fetch() {
+            return new Response("mock response from map-test-utils", {
+                status: 200
+            });
+        }
+    };
+
     const registry = await createService(MapRegistryImpl, {
         references: {
-            providers: [new MapConfigProviderImpl(mapId, mapConfig)]
+            providers: [new MapConfigProviderImpl(mapId, mapConfig)],
+            httpService: httpService
         }
     });
 

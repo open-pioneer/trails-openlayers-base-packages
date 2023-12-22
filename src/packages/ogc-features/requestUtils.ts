@@ -3,6 +3,7 @@
 import { Extent } from "ol/extent";
 import FeatureFormat from "ol/format/Feature";
 import { FeatureLike } from "ol/Feature";
+import { HttpService } from "@open-pioneer/http";
 
 const NEXT_LINK_PROP = "next";
 
@@ -62,12 +63,12 @@ export interface FeatureResponse {
 }
 
 /**
- * @internal
  * Performs a single request against the service
  */
 export async function queryFeatures(
     fullURL: string,
     featureFormat: FeatureFormat | undefined,
+    httpService: HttpService,
     signal: AbortSignal | undefined
 ): Promise<FeatureResponse> {
     let features: FeatureLike[] = [];
@@ -77,7 +78,7 @@ export async function queryFeatures(
         },
         signal
     };
-    const response = await fetch(fullURL, requestInit);
+    const response = await httpService.fetch(fullURL, requestInit);
     if (response.status !== 200) {
         throw new Error(`Failed to query features from service (status code ${response.status})`);
     }
