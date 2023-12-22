@@ -7,7 +7,7 @@
         "build": "build-pioneer-package"
     },
     "peerDependencies": {
-        "@open-pioneer/core": "^1.2.0",
+        "@open-pioneer/core": "^1.2.1",
         "ol": "^8.2.0",
         "uuid": "^9.0.1",
         "@open-pioneer/search": "workspace:^"

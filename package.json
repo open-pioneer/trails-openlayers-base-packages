@@ -69,17 +69,17 @@
         "@formatjs/intl": "^2.9.0",
         "@maplibre/maplibre-gl-style-spec": "^19.3.3",
         "@open-pioneer/chakra-integration": "^1.1.1",
-        "@open-pioneer/core": "^1.2.0",
-        "@open-pioneer/integration": "^2.0.1",
+        "@open-pioneer/core": "^1.2.1",
+        "@open-pioneer/integration": "^2.0.2",
         "@open-pioneer/http": "^2.1.0",
-        "@open-pioneer/runtime": "^2.0.1",
+        "@open-pioneer/runtime": "^2.0.2",
         "@open-pioneer/test-utils": "^1.0.2",
         "framer-motion": "^10.16.0",
         "ol": "^8.2.0",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
-        "react-use": "^17.4.2",
-        "react-select": "^5.7.7"
+        "react-select": "^5.7.7",
+        "react-use": "^17.4.2"
     },
     "devDependencies": {
         "@changesets/cli": "^2.26.2",

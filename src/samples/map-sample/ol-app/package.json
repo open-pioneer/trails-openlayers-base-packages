@@ -17,7 +17,7 @@
         "@open-pioneer/ogc-features": "workspace:^",
         "@open-pioneer/overview-map": "workspace:^",
         "@open-pioneer/react-utils": "workspace:^",
-        "@open-pioneer/runtime": "^2.0.1",
+        "@open-pioneer/runtime": "^2.0.2",
         "@open-pioneer/scale-bar": "workspace:^",
         "@open-pioneer/scale-viewer": "workspace:^",
         "@open-pioneer/search": "workspace:^",
