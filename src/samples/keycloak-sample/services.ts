@@ -9,9 +9,9 @@ import { KeycloakConfigProvider } from "@open-pioneer/keycloak";
 export { KeycloakAuthPlugin } from "@open-pioneer/keycloak";
 export { MapConfigProviderImpl } from "./MapConfigProviderImpl";
 export const keycloak = new Keycloak({
-    url: "https://hsi-pex0-13620.service.it.nrw.de/keycloak/",
-    realm: "trails",
-    clientId: "trails-sample"
+    url: "https://auth.ldproxy.net/",
+    realm: "ii",
+    clientId: "it-nrw"
 });
 export class KeycloakConfigProviderImpl implements KeycloakConfigProvider {
     getKeycloak() {
@@ -21,7 +21,8 @@ export class KeycloakConfigProviderImpl implements KeycloakConfigProvider {
     getInitOptions() {
         return {
             onLoad: "check-sso",
-            pkceMethod: "S256"
+            pkceMethod: "S256",
+            scope: "data:read"
         } as KeycloakInitOptions;
     }
 

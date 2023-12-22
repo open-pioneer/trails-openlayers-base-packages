@@ -50,7 +50,8 @@ export class KeycloakAuthPlugin
                             attributes: {
                                 keycloak: this.#keycloak,
                                 familyName: this.#keycloak.idTokenParsed?.family_name,
-                                givenName: this.#keycloak.idTokenParsed?.given_name
+                                givenName: this.#keycloak.idTokenParsed?.given_name,
+                                userName: this.#keycloak.idTokenParsed?.preferred_username
                             }
                         }
                     };

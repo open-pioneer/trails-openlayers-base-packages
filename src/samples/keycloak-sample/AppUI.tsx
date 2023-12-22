@@ -3,12 +3,11 @@
 
 import { ForceAuth, useAuthState } from "@open-pioneer/authentication";
 import { useIntl, useService } from "open-pioneer:react-hooks";
-import Keycloak from "keycloak-js";
 import { MapAnchor, MapContainer } from "@open-pioneer/map";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { ZoomIn, ZoomOut, InitialExtent } from "@open-pioneer/map-navigation";
 import { Toc } from "@open-pioneer/toc";
-import { Flex, Box } from "@open-pioneer/chakra-integration";
+import { Flex, Box, Text } from "@open-pioneer/chakra-integration";
 import { LogoutButton } from "./LogoutButton";
 import { MAP_ID } from "./MapConfigProviderImpl";
 
@@ -16,9 +15,7 @@ export function AppUI() {
     const authService = useService("authentication.AuthService");
     const authState = useAuthState(authService);
     const sessionInfo = authState.kind == "authenticated" ? authState.sessionInfo : undefined;
-    const userId = sessionInfo?.userId;
-    const keycloak = sessionInfo?.attributes?.keycloak as Keycloak;
-    const familyName = sessionInfo?.attributes?.familyName as string;
+    const userName = sessionInfo?.attributes?.userName as string;
     const intl = useIntl();
 
     return (
@@ -30,11 +27,12 @@ export function AppUI() {
                             <SectionHeading size={"md"}>
                                 Open Pioneer - OGC-Feature-Sample
                             </SectionHeading>
+                            <Text>Logged in as: {userName}</Text>
                             <LogoutButton />
                         </Box>
                     }
                 >
-                    <Flex flex="1" direction="column" position="relative">
+                    <Flex flex="3" direction="column" position="relative">
                         <MapContainer mapId={MAP_ID}>
                             <MapAnchor position="top-left" horizontalGap={20} verticalGap={20}>
                                 <Box

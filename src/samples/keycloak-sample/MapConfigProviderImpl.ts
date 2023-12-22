@@ -11,7 +11,7 @@ import { keycloak } from "./services";
 
 export const MAP_ID = "main";
 const query =
-    "https://hsi-pex0-13620.service.it.nrw.de/xtraserver-webapi/inspire-us-krankenhaus/v1/collections/governmentalservice/items?f=json&limit=5000&crs=http://www.opengis.net/def/crs/EPSG/0/3857";
+    "https://inspire-nrw-sec.ldproxy.net/krankenhaus/v1/collections/governmentalservice/items?f=json&limit=5000&crs=http://www.opengis.net/def/crs/EPSG/0/3857";
 const vectorSource = new VectorSource({
     format: new GeoJSON({}),
     loader: function (extent, resolution, projection, onSuccess, onError) {
