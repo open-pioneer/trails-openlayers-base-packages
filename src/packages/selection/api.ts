@@ -10,7 +10,22 @@ import type { EventSource } from "@open-pioneer/core";
  *
  * This is used to indicate whether the source is ready for selection.
  */
-export type SelectionSourceStatus = "available" | "unavailable";
+export type SelectionSourceStatus = "available" | "unavailable" | SelectionSourceStatusObject;
+
+export type SelectionSourceStatusObject =
+    | { kind: "available" }
+    | {
+          kind: "unavailable";
+
+          /**
+           * If the status of this source is unavailable, the reason for this can be stored here.
+           *
+           * This will be displayed by the user interface.
+           *
+           * If it is not defined, a default message will be displayed instead.
+           */
+          reason?: string;
+      };
 
 /**
  * Represents a result returned by a spatial selection.
@@ -118,16 +133,6 @@ export interface SelectionSource extends Partial<SelectionSourceEventBase> {
      * This will be displayed by the user interface.
      */
     readonly status?: SelectionSourceStatus;
-
-    /**
-     * If the status of this source is unavailable, the reason for this can be stored here.
-     *
-     * This will be displayed by the user interface.
-     *
-     * If it is not defined, the i18n value for "sourceNotAvailable" will be displayed
-     */
-    // TODO: Maybe rename to just reason?
-    readonly unavailableStatusReason?: string;
 
     /**
      * Performs a selection and returns a list of selection results.

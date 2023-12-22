@@ -11,6 +11,7 @@ import {
     chakra
 } from "@open-pioneer/chakra-integration";
 import { MapModel, useMapModel } from "@open-pioneer/map";
+import { NotificationService } from "@open-pioneer/notifier";
 import { CommonComponentProps, useCommonComponentProps, useEvent } from "@open-pioneer/react-utils";
 import { PackageIntl } from "@open-pioneer/runtime/i18n";
 import {
@@ -27,8 +28,7 @@ import { FC, useCallback, useEffect, useMemo, useState } from "react";
 import { FiAlertTriangle } from "react-icons/fi";
 import { DragController } from "./DragController";
 import { SelectionController } from "./SelectionController";
-import { SelectionResult, SelectionSource, SelectionSourceStatus } from "./api";
-import { NotificationService } from "@open-pioneer/notifier";
+import { SelectionResult, SelectionSource, SelectionSourceStatusObject } from "./api";
 
 /**
  * Properties supported by the {@link Selection} component.
@@ -285,26 +285,19 @@ function SourceSelectValue(props: SingleValueProps<SourceOption>): JSX.Element {
  * @returns
  */
 function useSourceItem(source: SelectionSource | undefined, isSelected: boolean) {
-    const intl = useIntl();
-    const notAvailableLabel: string | undefined =
-        source?.unavailableStatusReason ?? intl.formatMessage({ id: "sourceNotAvailable" });
     const label: string | undefined = source?.label;
-    const isAvailable = useSourceStatus(source) === "available";
+    const status = useSourceStatus(source);
 
     return {
-        isAvailable,
+        isAvailable: status.kind === "available",
         content: (
             <Flex direction="row" alignItems="center" grow={1}>
                 {!isSelected && <Flex grow={1}>{label}</Flex>}
-                {!isAvailable && (
+                {status.kind === "unavailable" && (
                     <Box ml={2}>
-                        <Tooltip label={notAvailableLabel} placement="right" openDelay={500}>
+                        <Tooltip label={status.reason} placement="right" openDelay={500}>
                             <chakra.span>
-                                <Icon
-                                    as={FiAlertTriangle}
-                                    color="red"
-                                    aria-label={notAvailableLabel}
-                                />
+                                <Icon as={FiAlertTriangle} color="red" aria-label={status.reason} />
                             </chakra.span>
                         </Tooltip>
                     </Box>
@@ -369,25 +362,47 @@ function useSelectionController(
     };
 }
 
+type SimpleStatus =
+    | {
+          kind: "available";
+      }
+    | {
+          kind: "unavailable";
+          reason: string;
+      };
+
 /**
  * Hook to manage source status
- * @param source
- * @returns
  */
-function useSourceStatus(source: SelectionSource | undefined): SelectionSourceStatus {
-    const [status, setStatus] = useState<SelectionSourceStatus>("available");
+function useSourceStatus(source: SelectionSource | undefined): SimpleStatus {
+    const intl = useIntl();
+    const [status, setStatus] = useState<SimpleStatus>(() => ({ kind: "available" }));
     useEffect(() => {
         if (!source) {
-            setStatus("available");
+            setStatus({ kind: "available" });
             return;
         }
 
-        setStatus(source.status ?? "available");
+        const getStatus = (): SimpleStatus => {
+            const rawCurrent = source.status ?? "available";
+            const current: SelectionSourceStatusObject =
+                typeof rawCurrent === "string" ? { kind: rawCurrent } : rawCurrent;
+            if (current.kind === "available") {
+                return current;
+            }
+
+            return {
+                kind: "unavailable",
+                reason: current.reason ?? intl.formatMessage({ id: "sourceNotAvailable" })
+            };
+        };
+
+        setStatus(getStatus());
         const resource = source.on?.("changed:status", () => {
-            setStatus(source.status ?? "available");
+            setStatus(getStatus());
         });
         return () => resource?.destroy();
-    }, [source]);
+    }, [source, intl]);
     return status;
 }
 
