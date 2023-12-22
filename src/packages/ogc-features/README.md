@@ -1,12 +1,12 @@
 # @open-pioneer/ogc-features
 
-This package provides functions to create an OpenLayers vector source and a search source to be used with OGC API Features service.
+This package provides utilities to work with OGC API Features services.
 
 ## Usage
 
 ### Vector source
 
-This vector source should be used inside together with a vector layer.
+This vector source should be used together with a vector layer.
 
 Just import the function with:
 

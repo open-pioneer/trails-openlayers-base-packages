@@ -1,55 +1,20 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { createLogger, isAbortError } from "@open-pioneer/core";
-import Feature, { FeatureLike } from "ol/Feature";
+import { FeatureLike } from "ol/Feature";
 import { FeatureLoader } from "ol/featureloader";
 import FeatureFormat from "ol/format/Feature";
 import GeoJSON from "ol/format/GeoJSON";
-import { Geometry } from "ol/geom";
 import { bbox } from "ol/loadingstrategy";
-import { AttributionLike } from "ol/source/Source";
-import VectorSource, { Options } from "ol/source/Vector";
+import VectorSource from "ol/source/Vector";
 import { CollectionInfos, getCollectionInfos, loadAllFeaturesWithOffset } from "./OffsetStrategy";
 import { FeatureResponse, createCollectionRequestUrl, queryFeatures } from "./requestUtils";
+import { OgcFeatureVectorSourceOptions } from "./api";
+import { HttpService } from "@open-pioneer/http";
 
 const LOG = createLogger("ogc-features:OgcFeatureSourceFactory");
 const DEFAULT_LIMIT = 5000;
 const DEFAULT_CONCURRENTY = 6;
-
-/**
- * These are special properties for OGC API Feature search source.
- */
-export interface OgcFeatureSourceOptions {
-    /** The base-URL right to the "/collections"-part */
-    baseUrl: string;
-
-    /** The collection-ID */
-    collectionId: string;
-
-    /** the URL to the EPSG-Code, e.g. http://www.opengis.net/def/crs/EPSG/0/25832 */
-    crs: string;
-
-    /**
-     * The maximum number of features to fetch within a single request.
-     * Corresponds to the `limit` parameter in the URL.
-     *
-     * When the `offset` strategy is used for feature fetching, the limit
-     * is used for the page size
-     *
-     * Defaults to `5000` for Next-Strategy.
-     * Defaults to `2500` for Offset-Strategy.
-     */
-    limit?: number;
-
-    /** The maximum number of concurrent requests. Defaults to `6`. */
-    maxConcurrentRequests?: number;
-
-    /** Optional attribution for the layer (e.g. copyright hints). */
-    attributions?: AttributionLike | undefined;
-
-    /** Optional additional options for the VectorSource. */
-    additionalOptions?: Options<Feature<Geometry>>;
-}
 
 /**
  * This function creates an OpenLayers VectorSource for OGC API Features services to be used inside
@@ -57,8 +22,22 @@ export interface OgcFeatureSourceOptions {
  *
  * @param options Options for the vector source.
  */
-export function createVectorSource(options: OgcFeatureSourceOptions): VectorSource {
-    return _createVectorSource(options, undefined, undefined, undefined);
+export function createVectorSource(
+    options: OgcFeatureVectorSourceOptions,
+    httpService: HttpService
+): VectorSource {
+    return _createVectorSource(options, { httpService });
+}
+
+/**
+ * @internal
+ * Exported for tests
+ */
+export interface InternalOptions {
+    httpService: HttpService;
+    queryFeaturesParam?: QueryFeaturesFunc | undefined;
+    addFeaturesParam?: AddFeaturesFunc | undefined;
+    getCollectionInfosParam?: GetCollectionInfosFunc | undefined;
 }
 
 /**
@@ -68,11 +47,10 @@ export function createVectorSource(options: OgcFeatureSourceOptions): VectorSour
  * Exposes `queryFeatures`, `addFeatures` and `getCollectionInfos` for easier testing.
  */
 export function _createVectorSource(
-    options: OgcFeatureSourceOptions,
-    queryFeaturesParam: QueryFeaturesFunc | undefined,
-    addFeaturesParam: AddFeaturesFunc | undefined,
-    getCollectionInfosParam: GetCollectionInfosFunc | undefined
+    options: OgcFeatureVectorSourceOptions,
+    internals: InternalOptions
 ): VectorSource {
+    const httpService = internals.httpService;
     const collectionItemsURL = `${options.baseUrl}/collections/${options.collectionId}/items?`;
     const vectorSrc = new VectorSource({
         format: new GeoJSON(),
@@ -81,10 +59,10 @@ export function _createVectorSource(
         ...options.additionalOptions
     });
 
-    const queryFeaturesFunc = queryFeaturesParam ?? queryFeatures;
-    const getCollectionInfosFunc = getCollectionInfosParam ?? getCollectionInfos;
+    const queryFeaturesFunc = internals.queryFeaturesParam ?? queryFeatures;
+    const getCollectionInfosFunc = internals.getCollectionInfosParam ?? getCollectionInfos;
     const addFeaturesFunc =
-        addFeaturesParam ||
+        internals.addFeaturesParam ||
         function (features: FeatureLike[]) {
             LOG.debug(`Adding ${features.length} features`);
 
@@ -106,7 +84,7 @@ export function _createVectorSource(
         success,
         failure
     ): Promise<void> => {
-        collectionInfosPromise ??= getCollectionInfosFunc(collectionItemsURL);
+        collectionInfosPromise ??= getCollectionInfosFunc(collectionItemsURL, httpService);
         let collectionInfos;
         try {
             collectionInfos = await collectionInfosPromise;
@@ -128,6 +106,7 @@ export function _createVectorSource(
         try {
             const features = await loadAllFeatures(strategy, {
                 fullURL: fullURL.toString(),
+                httpService: httpService,
                 featureFormat: vectorSrc.getFormat()!,
                 queryFeatures: queryFeaturesFunc,
                 addFeatures: addFeaturesFunc,
@@ -165,6 +144,7 @@ type AddFeaturesFunc = (features: FeatureLike[]) => void;
 /** @internal **/
 export interface LoadFeatureOptions {
     fullURL: string;
+    httpService: HttpService;
     featureFormat: FeatureFormat;
     queryFeatures: QueryFeaturesFunc;
     addFeatures: AddFeaturesFunc;
@@ -206,6 +186,7 @@ export async function loadAllFeaturesNextStrategy(
         const featureResp = await loadPages(
             [url.toString()],
             options.featureFormat,
+            options.httpService,
             options.signal,
             options.addFeatures,
             options.queryFeatures
@@ -225,11 +206,12 @@ export async function loadAllFeaturesNextStrategy(
 export async function loadFeatures(
     requestUrl: string,
     featureFormat: FeatureFormat,
+    httpService: HttpService,
     signal: AbortSignal | undefined,
     addFeaturesFunc: AddFeaturesFunc,
     queryFeaturesFunc: QueryFeaturesFunc = queryFeatures
 ): Promise<FeatureResponse> {
-    const featureResponse = await queryFeaturesFunc(requestUrl, featureFormat, signal);
+    const featureResponse = await queryFeaturesFunc(requestUrl, featureFormat, httpService, signal);
     const features = featureResponse.features as FeatureLike[];
     addFeaturesFunc(features);
     return featureResponse;
@@ -243,8 +225,9 @@ export async function loadFeatures(
  * @internal
  */
 export async function loadPages(
-    allUrls: Array<string>,
+    allUrls: string[],
     featureFormat: FeatureFormat,
+    httpService: HttpService,
     signal: AbortSignal | undefined,
     addFeaturesFunc: AddFeaturesFunc,
     queryFeaturesFunc: QueryFeaturesFunc = queryFeatures
@@ -257,7 +240,12 @@ export async function loadPages(
     const allRequestPromises = allUrls.map(async (singleUrl, index): Promise<void> => {
         const isLast = index === allUrls.length - 1;
 
-        const featureResponse = await queryFeaturesFunc(singleUrl, featureFormat, signal);
+        const featureResponse = await queryFeaturesFunc(
+            singleUrl,
+            featureFormat,
+            httpService,
+            signal
+        );
         addFeaturesFunc(featureResponse.features as FeatureLike[]);
 
         LOG.debug(

@@ -61,7 +61,7 @@ importers:
         specifier: ^1.2.1
         version: 1.2.1
       '@open-pioneer/http':
-        specifier: ^2.1.0
+        specifier: ^2.1.1
         version: 2.1.1(@open-pioneer/core@1.2.1)(@open-pioneer/runtime@2.0.2)
       '@open-pioneer/integration':
         specifier: ^2.0.2
@@ -410,7 +410,7 @@ importers:
         specifier: ^1.2.1
         version: 1.2.1
       '@open-pioneer/http':
-        specifier: ^2.1.0
+        specifier: ^2.1.1
         version: 2.1.1(@open-pioneer/core@1.2.1)(@open-pioneer/runtime@2.0.2)
       '@open-pioneer/react-utils':
         specifier: workspace:^
@@ -578,6 +578,9 @@ importers:
       '@open-pioneer/core':
         specifier: ^1.2.1
         version: 1.2.1
+      '@open-pioneer/http':
+        specifier: ^2.1.1
+        version: 2.1.1(@open-pioneer/core@1.2.1)(@open-pioneer/runtime@2.0.2)
       '@open-pioneer/search':
         specifier: workspace:^
         version: link:../search

@@ -1,8 +1,9 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { FeatureLike } from "ol/Feature";
-import { LoadFeatureOptions, loadPages } from "./OgcFeatureSourceFactory";
+import { LoadFeatureOptions, loadPages } from "./createVectorSource";
 import { createOffsetURL, getNextURL } from "./requestUtils";
+import { HttpService } from "@open-pioneer/http";
 
 /** @internal */
 export interface CollectionInfos {
@@ -10,7 +11,10 @@ export interface CollectionInfos {
     supportsOffsetStrategy: boolean;
 }
 
-export async function getCollectionInfos(collectionsItemsUrl: string): Promise<CollectionInfos> {
+export async function getCollectionInfos(
+    collectionsItemsUrl: string,
+    httpService: HttpService
+): Promise<CollectionInfos> {
     const infos: CollectionInfos = {
         supportsOffsetStrategy: false
     };
@@ -18,7 +22,7 @@ export async function getCollectionInfos(collectionsItemsUrl: string): Promise<C
     const url = new URL(collectionsItemsUrl);
     url.searchParams.set("limit", "1");
     url.searchParams.set("f", "json");
-    const response = await fetch(url.toString(), {
+    const response = await httpService.fetch(url.toString(), {
         headers: {
             Accept: "application/geo+json"
         }
@@ -70,6 +74,7 @@ export async function loadAllFeaturesWithOffset(
         const allFeatureResp = await loadPages(
             urls,
             featureFormat,
+            options.httpService,
             signal,
             addFeatures,
             queryFeatures

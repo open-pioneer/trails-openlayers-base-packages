@@ -11,8 +11,15 @@ import {
     LoadFeatureOptions,
     _createVectorSource,
     loadAllFeaturesNextStrategy
-} from "./OgcFeatureSourceFactory";
+} from "./createVectorSource";
 import { FeatureResponse } from "./requestUtils";
+import { HttpService } from "@open-pioneer/http";
+
+const DUMMY_HTTP_SERVICE = {
+    fetch() {
+        throw new Error("Not implemented (dummy http service).");
+    }
+} satisfies Partial<HttpService> as HttpService;
 
 async function mockedGetCollectionInfos(_collectionsItemsUrl: string): Promise<CollectionInfos> {
     return {
@@ -37,6 +44,7 @@ it("expect features are parsed from the feature response (offset-strategy)", asy
     const fullUrl = "https://url-to-service.de/items?f=json";
     const options: LoadFeatureOptions = {
         fullURL: fullUrl,
+        httpService: DUMMY_HTTP_SERVICE,
         featureFormat: new GeoJSON(),
         limit: 1234,
         maxConcurrentRequests: 6,
@@ -56,6 +64,7 @@ it("expect features are parsed from the feature response (next-strategy)", async
     const fullUrl = "https://url-to-service.de/items?f=json";
     const options: LoadFeatureOptions = {
         fullURL: fullUrl,
+        httpService: DUMMY_HTTP_SERVICE,
         featureFormat: new GeoJSON(),
         limit: 1234,
         maxConcurrentRequests: 6,
@@ -75,6 +84,7 @@ it("expect feature responses are empty (offset-strategy)", async () => {
     const fullUrl = "https://url-to-service.de/items?f=json";
     const options: LoadFeatureOptions = {
         fullURL: fullUrl,
+        httpService: DUMMY_HTTP_SERVICE,
         featureFormat: new GeoJSON(),
         limit: 1234,
         maxConcurrentRequests: 6,
@@ -94,6 +104,7 @@ it("expect feature responses are empty (next-strategy)", async () => {
     const fullUrl = "https://url-to-service.de/items?f=json";
     const options: LoadFeatureOptions = {
         fullURL: fullUrl,
+        httpService: DUMMY_HTTP_SERVICE,
         featureFormat: new GeoJSON(),
         limit: 1234,
         maxConcurrentRequests: 6,
@@ -117,9 +128,10 @@ it("expect additionalOptions are set on vector-source", () => {
 
     const vectorSource = _createVectorSource(
         { baseUrl: "", collectionId: "", crs: "", additionalOptions: additionalOptions },
-        undefined,
-        undefined,
-        mockedGetCollectionInfos
+        {
+            httpService: DUMMY_HTTP_SERVICE,
+            getCollectionInfosParam: mockedGetCollectionInfos
+        }
     );
     assert.isTrue(
         !vectorSource.getOverlaps() &&
@@ -152,9 +164,12 @@ it("expect url is created correctly on vector-source", async () => {
 
     const vectorSource = _createVectorSource(
         { baseUrl: fullURL, collectionId: collectionId, crs: crs, attributions: attributions },
-        queryFeatures,
-        (_: Array<FeatureLike>) => {},
-        mockedGetCollectionInfos
+        {
+            httpService: DUMMY_HTTP_SERVICE,
+            queryFeaturesParam: queryFeatures,
+            addFeaturesParam() {},
+            getCollectionInfosParam: mockedGetCollectionInfos
+        }
     );
     await vectorSource.loadFeatures(bbox, 1, new Projection({ code: "" }));
     assert.isTrue(urlIsAlwaysCorrect);
@@ -205,6 +220,7 @@ it("expect all feature from 2 query-runs are added", async () => {
 
     const options: LoadFeatureOptions = {
         fullURL: fullUrl,
+        httpService: DUMMY_HTTP_SERVICE,
         featureFormat: new GeoJSON(),
         limit: pageSize,
         maxConcurrentRequests: 2,
