@@ -149,7 +149,7 @@ describe("performs a health check", () => {
         expect(layer.loadState).toBe("loaded");
 
         await sleep(25);
-        // expect(eventEmitted).toBe(0); // no change of state
+        expect(eventEmitted).toBe(0); // no change of state
         expect(layer.loadState).toBe("loaded");
         // ol layer state remains ready and is overwritten by internal health check
         expect(layer.olLayer.getSourceState()).toBe("ready");

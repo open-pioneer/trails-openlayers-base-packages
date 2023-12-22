@@ -8,17 +8,30 @@ This package provides utilities to work with OGC API Features services.
 
 This vector source should be used together with a vector layer.
 
-Just import the function with:
+Inject the vector source factory by referencing `"ogc-features.VectorSourceFactory"`:
 
 ```js
-import { createVectorSource } from "@open-pioneer/ogc-features";
+// build.config.mjs
+import { defineBuildConfig } from "@open-pioneer/build-support";
+
+export default defineBuildConfig({
+    services: {
+        YourService: {
+            // ...
+            references: {
+                vectorSourceFactory: "ogc-features.VectorSourceFactory"
+            }
+        }
+    }
+});
 ```
 
 and use it inside a VectorLayer:
 
 ```ts
-layer: new VectorLayer({
-    source: createVectorSource({
+const vectorSourceFactory = ...; // injected
+const vectorLayer = new VectorLayer({
+    source: vectorSourceFactory.createVectorSource({
         baseUrl: "https://ogc-api.nrw.de/inspire-us-kindergarten/v1",
         collectionId: "governmentalservice",
         crs: "http://www.opengis.net/def/crs/EPSG/0/25832",
@@ -56,16 +69,29 @@ Additional options of the `VectorSource` (see [OpenLayers documentation](https:/
 
 This search source is used to search in OGC API features.
 
-Import the function with:
+Inject the search source factory by referencing `"ogc-features.SearchSourceFactory"`:
 
 ```js
-import { OgcFeatureSearchSource } from "@open-pioneer/ogc-features";
+// build.config.mjs
+import { defineBuildConfig } from "@open-pioneer/build-support";
+
+export default defineBuildConfig({
+    services: {
+        YourService: {
+            // ...
+            references: {
+                searchSourceFactory: "ogc-features.SearchSourceFactory"
+            }
+        }
+    }
+});
 ```
 
-and create a search instance:
+and create a search search instance:
 
 ```ts
-new OgcFeatureSearchSource({
+const searchSourceFactory = ...; // injected
+const searchSource = searchSourceFactory.createSearchSource({
     label: this.intl.formatMessage({ id: "searchSources.miningPermissions" }),
     baseUrl: "https://ogc-api.nrw.de/lika/v1",
     collectionId: "flurstueck",
@@ -77,7 +103,7 @@ new OgcFeatureSearchSource({
 Use the callback function `renderLabel` to create a custom label for the result.
 
 ```ts
-new OgcFeatureSearchSource({
+searchSourceFactory.createSearchSource({
     // ...
     renderLabel(feature) {
         const tntxt = feature?.properties?.tntxt;
@@ -102,7 +128,7 @@ To overwrite the service URL, use the callback function `rewriteUrl`.
 This is useful, for example, to return only a specific attribute in the response, as in the following example:
 
 ```ts
-new OgcFeatureSearchSource({
+searchSourceFactory.createSearchSource({
     // ...
     rewriteUrl(url) {
         url.searchParams.set("properties", "objid");
