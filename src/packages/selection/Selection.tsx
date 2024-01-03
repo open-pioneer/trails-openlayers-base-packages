@@ -297,7 +297,12 @@ function useSourceItem(source: SelectionSource | undefined, isSelected: boolean)
                     <Box ml={2}>
                         <Tooltip label={status.reason} placement="right" openDelay={500}>
                             <chakra.span>
-                                <Icon as={FiAlertTriangle} color="red" aria-label={status.reason} />
+                                <Icon
+                                    as={FiAlertTriangle}
+                                    color="red"
+                                    className="warning-icon"
+                                    aria-label={status.reason}
+                                />
                             </chakra.span>
                         </Tooltip>
                     </Box>

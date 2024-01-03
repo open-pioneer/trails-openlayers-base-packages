@@ -4,10 +4,17 @@
 import { afterEach, expect, it, vi } from "vitest";
 import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
-import { render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { Selection, SelectionCompleteEvent, SelectionSourceChangedEvent } from "./Selection";
 import { FakePointSelectionSource } from "./testSources";
+import { VectorLayerSelectionSource } from "./testSources";
 import { NotificationService } from "@open-pioneer/notifier";
+import { Point } from "ol/geom";
+import { SelectionSource } from "./api";
+import VectorSource from "ol/source/Vector";
+import GeoJSON from "ol/format/GeoJSON";
+import VectorLayer from "ol/layer/Vector";
+import { SimpleLayer } from "@open-pioneer/map";
 
 afterEach(() => {
     vi.restoreAllMocks();
@@ -19,6 +26,59 @@ it("should successfully create a selection component", async () => {
     expect(selectionDiv).toMatchSnapshot();
 });
 
+it("Sources read from component should be same to the provided sources", async () => {
+    const ALL_EXPECTED_FEATURES = [new Point([407354, 5754673]), new Point([404740, 5757893])];
+    const POINT_SOURCE = new FakePointSelectionSource(0, "available", ALL_EXPECTED_FEATURES);
+
+    await createSelection([POINT_SOURCE]);
+    const { selectElement } = await waitForSelection();
+    openOptions(selectElement);
+
+    const options = getOptions(selectElement);
+    const option = options[0];
+
+    expect(options.length).equals(1);
+    expect(option?.textContent).toBe(POINT_SOURCE.label);
+});
+
+it("Should disable option and show warning icon for unavailable sources", async () => {
+    const ALL_EXPECTED_FEATURES = [new Point([407354, 5754673]), new Point([404740, 5757893])];
+    const POINT_SOURCE = new FakePointSelectionSource(0, "unavailable", ALL_EXPECTED_FEATURES);
+
+    await createSelection([POINT_SOURCE]);
+    const { selectionDiv, selectElement } = await waitForSelection();
+    openOptions(selectElement);
+
+    const options = getOptions(selectElement);
+    const option = options[0];
+    const warningIcon = selectionDiv.querySelector(".warning-icon");
+
+    expect(warningIcon).not.toBeNull();
+    expect(warningIcon).toBeDefined();
+    expect(option?.classList.contains("react-select__option--is-disabled")).toBeTruthy();
+});
+
+it("Changing status of source layer Should disable or enable selection option", async () => {
+    const layer = new SimpleLayer({
+        id: "ogc_kitas",
+        title: "Kindertagesstätten",
+        visible: false,
+        olLayer: createKitasLayer()
+    });
+
+    const layerSelectionSource = new VectorLayerSelectionSource(
+        layer.olLayer as VectorLayer<VectorSource>,
+        layer.title,
+        "Layer not visible"
+    );
+    await createSelection([layerSelectionSource]);
+
+    //const { selectionDiv, selectElement } = await waitForSelection();
+    //openOptions(selectElement);
+
+    //Todo: status update is made based on the visibility of the olLayer, not the layer we created
+});
+
 // Mögliche Test-Cases:
 // Selectionsquellen aus Komponente auslesen und prüfen, ob das dieselben Quellen sind, die man übergeben hat
 // testen, ob die Quelle in der GUI disabled und einen Warnhinweis(icon) hat, wenn die Quelle den Status "not available" hat
@@ -28,7 +88,7 @@ it("should successfully create a selection component", async () => {
 // wenn mehrere Selection Methoden vorhanden sind, testen, ob in der GUI dann ein React-select mit den Methoden erscheint
 // testen, ob im Fehlerfall eine Notifier-error Message geschmissen wird
 
-async function createSelection() {
+async function createSelection(selectionSources?: SelectionSource[] | undefined) {
     const { mapId, registry } = await setupMap();
 
     const notifier: Partial<NotificationService> = {
@@ -41,7 +101,7 @@ async function createSelection() {
         registry
     });
     injectedServices["notifier.NotificationService"] = notifier;
-    const sources = [new FakePointSelectionSource()];
+    const sources = selectionSources || [new FakePointSelectionSource()];
     render(
         <PackageContextProvider services={injectedServices}>
             <Selection
@@ -56,8 +116,47 @@ async function createSelection() {
 }
 
 async function waitForSelection() {
-    const selectionDiv = await screen.findByTestId<HTMLDivElement>("selection");
-    return { selectionDiv };
+    const { selectionDiv, selectElement } = await waitFor(async () => {
+        const selectionDiv = await screen.findByTestId<HTMLDivElement>("selection");
+        if (!selectionDiv) {
+            throw new Error("Selection not rendered");
+        }
+
+        const selectElement: HTMLSelectElement | null =
+            selectionDiv.querySelector(".selection-source");
+        if (!selectElement) {
+            throw new Error("Select element not rendered");
+        }
+
+        return { selectionDiv, selectElement };
+    });
+
+    return { selectionDiv, selectElement };
+}
+
+function openOptions(selectElement: HTMLSelectElement) {
+    act(() => {
+        fireEvent.keyDown(selectElement, { key: "ArrowDown" });
+    });
+}
+
+function getOptions(selectElement: HTMLSelectElement) {
+    return Array.from(
+        selectElement.getElementsByClassName("selection-source-option")
+    ) as HTMLElement[];
+}
+
+function createKitasLayer() {
+    const geojsonSource = new VectorSource({
+        url: "https://ogc-api.nrw.de/inspire-us-kindergarten/v1/collections/governmentalservice/items?f=json&limit=10000",
+        format: new GeoJSON(), //assign GeoJson parser
+        attributions:
+            '&copy; <a href="http://www.bkg.bund.de" target="_blank">Bundesamt f&uuml;r Kartographie und Geod&auml;sie</a> 2017, <a href="http://sg.geodatenzentrum.de/web_public/Datenquellen_TopPlus_Open.pdf" target="_blank">Datenquellen</a>'
+    });
+
+    return new VectorLayer({
+        source: geojsonSource
+    });
 }
 
 function onSelectionComplete(event: SelectionCompleteEvent) {
