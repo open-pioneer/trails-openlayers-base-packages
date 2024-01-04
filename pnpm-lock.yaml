@@ -35,7 +35,7 @@ importers:
         version: 2.1.1(@chakra-ui/system@2.6.2)(react@18.2.0)
       '@chakra-ui/react':
         specifier: ^2.8.2
-        version: 2.8.2(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(@types/react@18.2.46)(framer-motion@10.16.16)(react-dom@18.2.0)(react@18.2.0)
+        version: 2.8.2(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(@types/react@18.2.46)(framer-motion@10.17.4)(react-dom@18.2.0)(react@18.2.0)
       '@chakra-ui/system':
         specifier: ^2.6.2
         version: 2.6.2(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(react@18.2.0)
@@ -50,13 +50,13 @@ importers:
         version: 11.11.0(@emotion/react@11.11.3)(@types/react@18.2.46)(react@18.2.0)
       '@formatjs/intl':
         specifier: ^2.9.9
-        version: 2.9.9(typescript@5.1.6)
+        version: 2.9.9(typescript@5.3.3)
       '@maplibre/maplibre-gl-style-spec':
         specifier: ^19.3.3
         version: 19.3.3
       '@open-pioneer/chakra-integration':
         specifier: ^1.1.1
-        version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.16.16)(react-dom@18.2.0)(react@18.2.0)
+        version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.17.4)(react-dom@18.2.0)(react@18.2.0)
       '@open-pioneer/core':
         specifier: ^1.2.1
         version: 1.2.1
@@ -73,8 +73,8 @@ importers:
         specifier: ^1.0.2
         version: 1.0.2(@formatjs/intl@2.9.9)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.3)(@testing-library/react@14.1.2)(react-dom@18.2.0)(react@18.2.0)
       framer-motion:
-        specifier: ^10.16.0
-        version: 10.16.16(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^10.17.4
+        version: 10.17.4(react-dom@18.2.0)(react@18.2.0)
       ol:
         specifier: ^8.2.0
         version: 8.2.0
@@ -96,7 +96,7 @@ importers:
         version: 2.26.2
       '@open-pioneer/build-package-cli':
         specifier: ^2.0.0
-        version: 2.0.0(sass@1.69.7)(typescript@5.1.6)
+        version: 2.0.0(sass@1.69.7)(typescript@5.3.3)
       '@open-pioneer/build-support':
         specifier: ^2.0.0
         version: 2.0.0
@@ -110,10 +110,10 @@ importers:
         specifier: ^9.3.3
         version: 9.3.3
       '@testing-library/jest-dom':
-        specifier: ^6.1.5
-        version: 6.1.5(vitest@0.34.6)
+        specifier: ^6.2.0
+        version: 6.2.0(vitest@0.34.6)
       '@testing-library/react':
-        specifier: ^14.0.0
+        specifier: ^14.1.2
         version: 14.1.2(react-dom@18.2.0)(react@18.2.0)
       '@testing-library/user-event':
         specifier: ^14.5.2
@@ -131,11 +131,11 @@ importers:
         specifier: ^18.2.18
         version: 18.2.18
       '@typescript-eslint/eslint-plugin':
-        specifier: ^6.15.0
-        version: 6.15.0(@typescript-eslint/parser@6.15.0)(eslint@8.56.0)(typescript@5.1.6)
+        specifier: ^6.17.0
+        version: 6.17.0(@typescript-eslint/parser@6.17.0)(eslint@8.56.0)(typescript@5.3.3)
       '@typescript-eslint/parser':
-        specifier: ^6.15.0
-        version: 6.15.0(eslint@8.56.0)(typescript@5.1.6)
+        specifier: ^6.17.0
+        version: 6.17.0(eslint@8.56.0)(typescript@5.3.3)
       '@vitejs/plugin-react-swc':
         specifier: ^3.5.0
         version: 3.5.0(vite@4.5.1)
@@ -147,13 +147,13 @@ importers:
         version: 9.1.0(eslint@8.56.0)
       eslint-import-resolver-typescript:
         specifier: ^3.6.1
-        version: 3.6.1(@typescript-eslint/parser@6.15.0)(eslint-plugin-import@2.29.1)(eslint@8.56.0)
+        version: 3.6.1(@typescript-eslint/parser@6.17.0)(eslint-plugin-import@2.29.1)(eslint@8.56.0)
       eslint-plugin-header:
         specifier: ^3.1.1
         version: 3.1.1(eslint@8.56.0)
       eslint-plugin-import:
         specifier: ^2.29.1
-        version: 2.29.1(@typescript-eslint/parser@6.15.0)(eslint-import-resolver-typescript@3.6.1)(eslint@8.56.0)
+        version: 2.29.1(@typescript-eslint/parser@6.17.0)(eslint-import-resolver-typescript@3.6.1)(eslint@8.56.0)
       eslint-plugin-jsx-a11y:
         specifier: ^6.8.0
         version: 6.8.0(eslint@8.56.0)
@@ -165,7 +165,7 @@ importers:
         version: 4.6.0(eslint@8.56.0)
       eslint-plugin-unused-imports:
         specifier: ^3.0.0
-        version: 3.0.0(@typescript-eslint/eslint-plugin@6.15.0)(eslint@8.56.0)
+        version: 3.0.0(@typescript-eslint/eslint-plugin@6.17.0)(eslint@8.56.0)
       fast-glob:
         specifier: ^3.3.2
         version: 3.3.2
@@ -201,13 +201,13 @@ importers:
         version: 10.5.1
       ts-node:
         specifier: ^10.9.2
-        version: 10.9.2(@types/node@16.18.68)(typescript@5.1.6)
+        version: 10.9.2(@types/node@16.18.68)(typescript@5.3.3)
       typedoc:
-        specifier: ^0.24.8
-        version: 0.24.8(typescript@5.1.6)
+        specifier: ^0.25.6
+        version: 0.25.6(typescript@5.3.3)
       typescript:
-        specifier: ~5.1.6
-        version: 5.1.6
+        specifier: ~5.3.3
+        version: 5.3.3
       vite:
         specifier: ^4.5.1
         version: 4.5.1(@types/node@16.18.68)(sass@1.69.7)
@@ -234,7 +234,7 @@ importers:
         version: 11.11.0(@emotion/react@11.11.3)(@types/react@18.2.46)(react@18.2.0)
       '@open-pioneer/chakra-integration':
         specifier: ^1.1.1
-        version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.16.16)(react-dom@18.2.0)(react@18.2.0)
+        version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.17.4)(react-dom@18.2.0)(react@18.2.0)
       '@open-pioneer/runtime':
         specifier: ^2.0.2
         version: 2.0.2(@formatjs/intl@2.9.9)(@open-pioneer/base-theme@0.2.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/core@1.2.1)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
@@ -266,7 +266,7 @@ importers:
         specifier: ^1.0.2
         version: 1.0.2(@formatjs/intl@2.9.9)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.3)(@testing-library/react@14.1.2)(react-dom@18.2.0)(react@18.2.0)
       '@testing-library/react':
-        specifier: ^14.0.0
+        specifier: ^14.1.2
         version: 14.1.2(react-dom@18.2.0)(react@18.2.0)
       openlayers-base-packages:
         specifier: workspace:*
@@ -277,7 +277,7 @@ importers:
     dependencies:
       '@open-pioneer/chakra-integration':
         specifier: ^1.1.1
-        version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.16.16)(react-dom@18.2.0)(react@18.2.0)
+        version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.17.4)(react-dom@18.2.0)(react@18.2.0)
       '@open-pioneer/map':
         specifier: workspace:^
         version: link:../map
@@ -315,7 +315,7 @@ importers:
     dependencies:
       '@open-pioneer/chakra-integration':
         specifier: ^1.1.1
-        version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.16.16)(react-dom@18.2.0)(react@18.2.0)
+        version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.17.4)(react-dom@18.2.0)(react@18.2.0)
       '@open-pioneer/map':
         specifier: workspace:^
         version: link:../map
@@ -347,7 +347,7 @@ importers:
     dependencies:
       '@open-pioneer/chakra-integration':
         specifier: ^1.1.1
-        version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.16.16)(react-dom@18.2.0)(react@18.2.0)
+        version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.17.4)(react-dom@18.2.0)(react@18.2.0)
       '@open-pioneer/core':
         specifier: ^1.2.1
         version: 1.2.1
@@ -405,7 +405,7 @@ importers:
     dependencies:
       '@open-pioneer/chakra-integration':
         specifier: ^1.1.1
-        version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.16.16)(react-dom@18.2.0)(react@18.2.0)
+        version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.17.4)(react-dom@18.2.0)(react@18.2.0)
       '@open-pioneer/core':
         specifier: ^1.2.1
         version: 1.2.1
@@ -455,7 +455,7 @@ importers:
     dependencies:
       '@open-pioneer/chakra-integration':
         specifier: ^1.1.1
-        version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.16.16)(react-dom@18.2.0)(react@18.2.0)
+        version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.17.4)(react-dom@18.2.0)(react@18.2.0)
       '@open-pioneer/map':
         specifier: workspace:^
         version: link:../map
@@ -498,7 +498,7 @@ importers:
         specifier: ^1.0.2
         version: 1.0.2(@formatjs/intl@2.9.9)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.3)(@testing-library/react@14.1.2)(react-dom@18.2.0)(react@18.2.0)
       '@testing-library/react':
-        specifier: ^14.0.0
+        specifier: ^14.1.2
         version: 14.1.2(react-dom@18.2.0)(react@18.2.0)
       ol:
         specifier: ^8.2.0
@@ -513,7 +513,7 @@ importers:
     dependencies:
       '@open-pioneer/chakra-integration':
         specifier: ^1.1.1
-        version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.16.16)(react-dom@18.2.0)(react@18.2.0)
+        version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.17.4)(react-dom@18.2.0)(react@18.2.0)
       '@open-pioneer/map':
         specifier: workspace:^
         version: link:../map
@@ -551,7 +551,7 @@ importers:
         version: 2.1.1(@chakra-ui/system@2.6.2)(react@18.2.0)
       '@open-pioneer/chakra-integration':
         specifier: ^1.1.1
-        version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.16.16)(react-dom@18.2.0)(react@18.2.0)
+        version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.17.4)(react-dom@18.2.0)(react@18.2.0)
       '@open-pioneer/core':
         specifier: ^1.2.1
         version: 1.2.1
@@ -606,7 +606,7 @@ importers:
     dependencies:
       '@open-pioneer/chakra-integration':
         specifier: ^1.1.1
-        version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.16.16)(react-dom@18.2.0)(react@18.2.0)
+        version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.17.4)(react-dom@18.2.0)(react@18.2.0)
       '@open-pioneer/map':
         specifier: workspace:^
         version: link:../map
@@ -641,7 +641,7 @@ importers:
     dependencies:
       '@open-pioneer/chakra-integration':
         specifier: ^1.1.1
-        version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.16.16)(react-dom@18.2.0)(react@18.2.0)
+        version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.17.4)(react-dom@18.2.0)(react@18.2.0)
       '@open-pioneer/core':
         specifier: ^1.2.1
         version: 1.2.1
@@ -656,7 +656,7 @@ importers:
         specifier: ^1.0.2
         version: 1.0.2(@formatjs/intl@2.9.9)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.3)(@testing-library/react@14.1.2)(react-dom@18.2.0)(react@18.2.0)
       '@testing-library/react':
-        specifier: ^14.0.0
+        specifier: ^14.1.2
         version: 14.1.2(react-dom@18.2.0)(react@18.2.0)
       openlayers-base-packages:
         specifier: workspace:*
@@ -667,7 +667,7 @@ importers:
     dependencies:
       '@open-pioneer/chakra-integration':
         specifier: ^1.1.1
-        version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.16.16)(react-dom@18.2.0)(react@18.2.0)
+        version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.17.4)(react-dom@18.2.0)(react@18.2.0)
       '@open-pioneer/map':
         specifier: workspace:^
         version: link:../map
@@ -699,7 +699,7 @@ importers:
     dependencies:
       '@open-pioneer/chakra-integration':
         specifier: ^1.1.1
-        version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.16.16)(react-dom@18.2.0)(react@18.2.0)
+        version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.17.4)(react-dom@18.2.0)(react@18.2.0)
       '@open-pioneer/map':
         specifier: workspace:^
         version: link:../map
@@ -731,7 +731,7 @@ importers:
         version: 2.1.1(@chakra-ui/system@2.6.2)(react@18.2.0)
       '@open-pioneer/chakra-integration':
         specifier: ^1.1.1
-        version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.16.16)(react-dom@18.2.0)(react@18.2.0)
+        version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.17.4)(react-dom@18.2.0)(react@18.2.0)
       '@open-pioneer/core':
         specifier: ^1.2.1
         version: 1.2.1
@@ -775,7 +775,7 @@ importers:
         version: 2.1.1(@chakra-ui/system@2.6.2)(react@18.2.0)
       '@open-pioneer/chakra-integration':
         specifier: ^1.1.1
-        version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.16.16)(react-dom@18.2.0)(react@18.2.0)
+        version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.17.4)(react-dom@18.2.0)(react@18.2.0)
       '@open-pioneer/core':
         specifier: ^1.2.1
         version: 1.2.1
@@ -831,7 +831,7 @@ importers:
         version: 0.2.0(@open-pioneer/chakra-integration@1.1.1)
       '@open-pioneer/chakra-integration':
         specifier: ^1.1.1
-        version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.16.16)(react-dom@18.2.0)(react@18.2.0)
+        version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.17.4)(react-dom@18.2.0)(react@18.2.0)
       '@open-pioneer/runtime':
         specifier: ^2.0.2
         version: 2.0.2(@formatjs/intl@2.9.9)(@open-pioneer/base-theme@0.2.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/core@1.2.1)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
@@ -848,7 +848,7 @@ importers:
         version: link:../basemap-switcher
       '@open-pioneer/chakra-integration':
         specifier: ^1.1.1
-        version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.16.16)(react-dom@18.2.0)(react@18.2.0)
+        version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.17.4)(react-dom@18.2.0)(react@18.2.0)
       '@open-pioneer/map':
         specifier: workspace:^
         version: link:../map
@@ -892,7 +892,7 @@ importers:
         version: link:../../../packages/authentication
       '@open-pioneer/chakra-integration':
         specifier: ^1.1.1
-        version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.16.16)(react-dom@18.2.0)(react@18.2.0)
+        version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.17.4)(react-dom@18.2.0)(react@18.2.0)
       '@open-pioneer/core':
         specifier: ^1.2.1
         version: 1.2.1
@@ -925,7 +925,7 @@ importers:
         version: link:../../../packages/basemap-switcher
       '@open-pioneer/chakra-integration':
         specifier: ^1.1.1
-        version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.16.16)(react-dom@18.2.0)(react@18.2.0)
+        version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.17.4)(react-dom@18.2.0)(react@18.2.0)
       '@open-pioneer/experimental-layout-sidebar':
         specifier: workspace:^
         version: link:../../../experimental-packages/layout-sidebar
@@ -979,7 +979,7 @@ importers:
         version: 11.11.0(@emotion/react@11.11.3)(@types/react@18.2.46)(react@18.2.0)
       '@open-pioneer/chakra-integration':
         specifier: ^1.1.1
-        version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.16.16)(react-dom@18.2.0)(react@18.2.0)
+        version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.17.4)(react-dom@18.2.0)(react@18.2.0)
       '@open-pioneer/coordinate-viewer':
         specifier: workspace:^
         version: link:../../../packages/coordinate-viewer
@@ -1051,7 +1051,7 @@ importers:
     dependencies:
       '@open-pioneer/chakra-integration':
         specifier: ^1.1.1
-        version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.16.16)(react-dom@18.2.0)(react@18.2.0)
+        version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.17.4)(react-dom@18.2.0)(react@18.2.0)
       '@open-pioneer/notifier':
         specifier: workspace:^
         version: link:../../../packages/notifier
@@ -1072,7 +1072,7 @@ importers:
         version: link:../../../packages/basemap-switcher
       '@open-pioneer/chakra-integration':
         specifier: ^1.1.1
-        version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.16.16)(react-dom@18.2.0)(react@18.2.0)
+        version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.17.4)(react-dom@18.2.0)(react@18.2.0)
       '@open-pioneer/http':
         specifier: ^2.1.1
         version: 2.1.1(@open-pioneer/core@1.2.1)(@open-pioneer/runtime@2.0.2)
@@ -1114,7 +1114,7 @@ importers:
         version: link:../../../packages/basemap-switcher
       '@open-pioneer/chakra-integration':
         specifier: ^1.1.1
-        version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.16.16)(react-dom@18.2.0)(react@18.2.0)
+        version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.17.4)(react-dom@18.2.0)(react@18.2.0)
       '@open-pioneer/map':
         specifier: workspace:^
         version: link:../../../packages/map
@@ -1135,7 +1135,7 @@ importers:
     dependencies:
       '@open-pioneer/chakra-integration':
         specifier: ^1.1.1
-        version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.16.16)(react-dom@18.2.0)(react@18.2.0)
+        version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.17.4)(react-dom@18.2.0)(react@18.2.0)
       '@open-pioneer/map':
         specifier: workspace:^
         version: link:../../../packages/map
@@ -1153,7 +1153,7 @@ importers:
     dependencies:
       '@open-pioneer/chakra-integration':
         specifier: ^1.1.1
-        version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.16.16)(react-dom@18.2.0)(react@18.2.0)
+        version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.17.4)(react-dom@18.2.0)(react@18.2.0)
       '@open-pioneer/runtime':
         specifier: ^2.0.2
         version: 2.0.2(@formatjs/intl@2.9.9)(@open-pioneer/base-theme@0.2.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/core@1.2.1)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
@@ -1177,7 +1177,7 @@ importers:
         version: 11.11.0(@emotion/react@11.11.3)(@types/react@18.2.46)(react@18.2.0)
       '@open-pioneer/chakra-integration':
         specifier: ^1.1.1
-        version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.16.16)(react-dom@18.2.0)(react@18.2.0)
+        version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.17.4)(react-dom@18.2.0)(react@18.2.0)
       '@open-pioneer/map':
         specifier: workspace:^
         version: link:../../../packages/map
@@ -1207,7 +1207,7 @@ importers:
     dependencies:
       '@open-pioneer/chakra-integration':
         specifier: ^1.1.1
-        version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.16.16)(react-dom@18.2.0)(react@18.2.0)
+        version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.17.4)(react-dom@18.2.0)(react@18.2.0)
       '@open-pioneer/runtime':
         specifier: ^2.0.2
         version: 2.0.2(@formatjs/intl@2.9.9)(@open-pioneer/base-theme@0.2.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/core@1.2.1)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
@@ -1298,7 +1298,7 @@ packages:
       '@babel/helper-validator-identifier': 7.22.20
       to-fast-properties: 2.0.0
 
-  /@chakra-ui/accordion@2.3.1(@chakra-ui/system@2.6.2)(framer-motion@10.16.16)(react@18.2.0):
+  /@chakra-ui/accordion@2.3.1(@chakra-ui/system@2.6.2)(framer-motion@10.17.4)(react@18.2.0):
     resolution: {integrity: sha512-FSXRm8iClFyU+gVaXisOSEw0/4Q+qZbFRiuhIAkVU6Boj0FxAMrlo9a8AV5TuF77rgaHytCdHk0Ng+cyUijrag==}
     peerDependencies:
       '@chakra-ui/system': '>=2.0.0'
@@ -1312,8 +1312,8 @@ packages:
       '@chakra-ui/react-use-merge-refs': 2.1.0(react@18.2.0)
       '@chakra-ui/shared-utils': 2.0.5
       '@chakra-ui/system': 2.6.2(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(react@18.2.0)
-      '@chakra-ui/transition': 2.1.0(framer-motion@10.16.16)(react@18.2.0)
-      framer-motion: 10.16.16(react-dom@18.2.0)(react@18.2.0)
+      '@chakra-ui/transition': 2.1.0(framer-motion@10.17.4)(react@18.2.0)
+      framer-motion: 10.17.4(react-dom@18.2.0)(react@18.2.0)
       react: 18.2.0
 
   /@chakra-ui/alert@2.2.2(@chakra-ui/system@2.6.2)(react@18.2.0):
@@ -1613,7 +1613,7 @@ packages:
       '@chakra-ui/system': 2.6.2(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(react@18.2.0)
       react: 18.2.0
 
-  /@chakra-ui/menu@2.2.1(patch_hash=x7y3u4pvzv3wpkejsnxo3rp5vq)(@chakra-ui/system@2.6.2)(framer-motion@10.16.16)(react@18.2.0):
+  /@chakra-ui/menu@2.2.1(patch_hash=x7y3u4pvzv3wpkejsnxo3rp5vq)(@chakra-ui/system@2.6.2)(framer-motion@10.17.4)(react@18.2.0):
     resolution: {integrity: sha512-lJS7XEObzJxsOwWQh7yfG4H8FzFPRP5hVPN/CL+JzytEINCSBvsCDHrYPQGp7jzpCi8vnTqQQGQe0f8dwnXd2g==}
     peerDependencies:
       '@chakra-ui/system': '>=2.0.0'
@@ -1635,12 +1635,12 @@ packages:
       '@chakra-ui/react-use-update-effect': 2.1.0(react@18.2.0)
       '@chakra-ui/shared-utils': 2.0.5
       '@chakra-ui/system': 2.6.2(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(react@18.2.0)
-      '@chakra-ui/transition': 2.1.0(framer-motion@10.16.16)(react@18.2.0)
-      framer-motion: 10.16.16(react-dom@18.2.0)(react@18.2.0)
+      '@chakra-ui/transition': 2.1.0(framer-motion@10.17.4)(react@18.2.0)
+      framer-motion: 10.17.4(react-dom@18.2.0)(react@18.2.0)
       react: 18.2.0
     patched: true
 
-  /@chakra-ui/modal@2.3.1(@chakra-ui/system@2.6.2)(@types/react@18.2.46)(framer-motion@10.16.16)(react-dom@18.2.0)(react@18.2.0):
+  /@chakra-ui/modal@2.3.1(@chakra-ui/system@2.6.2)(@types/react@18.2.46)(framer-motion@10.17.4)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-TQv1ZaiJMZN+rR9DK0snx/OPwmtaGH1HbZtlYt4W4s6CzyK541fxLRTjIXfEzIGpvNW+b6VFuFjbcR78p4DEoQ==}
     peerDependencies:
       '@chakra-ui/system': '>=2.0.0'
@@ -1656,9 +1656,9 @@ packages:
       '@chakra-ui/react-use-merge-refs': 2.1.0(react@18.2.0)
       '@chakra-ui/shared-utils': 2.0.5
       '@chakra-ui/system': 2.6.2(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(react@18.2.0)
-      '@chakra-ui/transition': 2.1.0(framer-motion@10.16.16)(react@18.2.0)
+      '@chakra-ui/transition': 2.1.0(framer-motion@10.17.4)(react@18.2.0)
       aria-hidden: 1.2.3
-      framer-motion: 10.16.16(react-dom@18.2.0)(react@18.2.0)
+      framer-motion: 10.17.4(react-dom@18.2.0)(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
       react-remove-scroll: 2.5.7(@types/react@18.2.46)(react@18.2.0)
@@ -1707,7 +1707,7 @@ packages:
       '@chakra-ui/system': 2.6.2(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(react@18.2.0)
       react: 18.2.0
 
-  /@chakra-ui/popover@2.2.1(@chakra-ui/system@2.6.2)(framer-motion@10.16.16)(react@18.2.0):
+  /@chakra-ui/popover@2.2.1(@chakra-ui/system@2.6.2)(framer-motion@10.17.4)(react@18.2.0):
     resolution: {integrity: sha512-K+2ai2dD0ljvJnlrzesCDT9mNzLifE3noGKZ3QwLqd/K34Ym1W/0aL1ERSynrcG78NKoXS54SdEzkhCZ4Gn/Zg==}
     peerDependencies:
       '@chakra-ui/system': '>=2.0.0'
@@ -1726,7 +1726,7 @@ packages:
       '@chakra-ui/react-use-merge-refs': 2.1.0(react@18.2.0)
       '@chakra-ui/shared-utils': 2.0.5
       '@chakra-ui/system': 2.6.2(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(react@18.2.0)
-      framer-motion: 10.16.16(react-dom@18.2.0)(react@18.2.0)
+      framer-motion: 10.17.4(react-dom@18.2.0)(react@18.2.0)
       react: 18.2.0
 
   /@chakra-ui/popper@3.1.0(react@18.2.0):
@@ -1967,7 +1967,7 @@ packages:
       '@chakra-ui/utils': 2.0.15
       react: 18.2.0
 
-  /@chakra-ui/react@2.8.2(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(@types/react@18.2.46)(framer-motion@10.16.16)(react-dom@18.2.0)(react@18.2.0):
+  /@chakra-ui/react@2.8.2(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(@types/react@18.2.46)(framer-motion@10.17.4)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-Hn0moyxxyCDKuR9ywYpqgX8dvjqwu9ArwpIb9wHNYjnODETjLwazgNIliCVBRcJvysGRiV51U2/JtJVrpeCjUQ==}
     peerDependencies:
       '@emotion/react': ^11.0.0
@@ -1976,7 +1976,7 @@ packages:
       react: '>=18'
       react-dom: '>=18'
     dependencies:
-      '@chakra-ui/accordion': 2.3.1(@chakra-ui/system@2.6.2)(framer-motion@10.16.16)(react@18.2.0)
+      '@chakra-ui/accordion': 2.3.1(@chakra-ui/system@2.6.2)(framer-motion@10.17.4)(react@18.2.0)
       '@chakra-ui/alert': 2.2.2(@chakra-ui/system@2.6.2)(react@18.2.0)
       '@chakra-ui/avatar': 2.3.0(@chakra-ui/system@2.6.2)(react@18.2.0)
       '@chakra-ui/breadcrumb': 2.2.0(@chakra-ui/system@2.6.2)(react@18.2.0)
@@ -1997,11 +1997,11 @@ packages:
       '@chakra-ui/layout': 2.3.1(@chakra-ui/system@2.6.2)(react@18.2.0)
       '@chakra-ui/live-region': 2.1.0(react@18.2.0)
       '@chakra-ui/media-query': 3.3.0(@chakra-ui/system@2.6.2)(react@18.2.0)
-      '@chakra-ui/menu': 2.2.1(patch_hash=x7y3u4pvzv3wpkejsnxo3rp5vq)(@chakra-ui/system@2.6.2)(framer-motion@10.16.16)(react@18.2.0)
-      '@chakra-ui/modal': 2.3.1(@chakra-ui/system@2.6.2)(@types/react@18.2.46)(framer-motion@10.16.16)(react-dom@18.2.0)(react@18.2.0)
+      '@chakra-ui/menu': 2.2.1(patch_hash=x7y3u4pvzv3wpkejsnxo3rp5vq)(@chakra-ui/system@2.6.2)(framer-motion@10.17.4)(react@18.2.0)
+      '@chakra-ui/modal': 2.3.1(@chakra-ui/system@2.6.2)(@types/react@18.2.46)(framer-motion@10.17.4)(react-dom@18.2.0)(react@18.2.0)
       '@chakra-ui/number-input': 2.1.2(@chakra-ui/system@2.6.2)(react@18.2.0)
       '@chakra-ui/pin-input': 2.1.0(@chakra-ui/system@2.6.2)(react@18.2.0)
-      '@chakra-ui/popover': 2.2.1(@chakra-ui/system@2.6.2)(framer-motion@10.16.16)(react@18.2.0)
+      '@chakra-ui/popover': 2.2.1(@chakra-ui/system@2.6.2)(framer-motion@10.17.4)(react@18.2.0)
       '@chakra-ui/popper': 3.1.0(react@18.2.0)
       '@chakra-ui/portal': 2.1.0(react-dom@18.2.0)(react@18.2.0)
       '@chakra-ui/progress': 2.2.0(@chakra-ui/system@2.6.2)(react@18.2.0)
@@ -2016,7 +2016,7 @@ packages:
       '@chakra-ui/stat': 2.1.1(@chakra-ui/system@2.6.2)(react@18.2.0)
       '@chakra-ui/stepper': 2.3.1(@chakra-ui/system@2.6.2)(react@18.2.0)
       '@chakra-ui/styled-system': 2.9.2
-      '@chakra-ui/switch': 2.1.2(@chakra-ui/system@2.6.2)(framer-motion@10.16.16)(react@18.2.0)
+      '@chakra-ui/switch': 2.1.2(@chakra-ui/system@2.6.2)(framer-motion@10.17.4)(react@18.2.0)
       '@chakra-ui/system': 2.6.2(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(react@18.2.0)
       '@chakra-ui/table': 2.1.0(@chakra-ui/system@2.6.2)(react@18.2.0)
       '@chakra-ui/tabs': 3.0.0(@chakra-ui/system@2.6.2)(react@18.2.0)
@@ -2024,14 +2024,14 @@ packages:
       '@chakra-ui/textarea': 2.1.2(@chakra-ui/system@2.6.2)(react@18.2.0)
       '@chakra-ui/theme': 3.3.1(@chakra-ui/styled-system@2.9.2)
       '@chakra-ui/theme-utils': 2.0.21
-      '@chakra-ui/toast': 7.0.2(@chakra-ui/system@2.6.2)(framer-motion@10.16.16)(react-dom@18.2.0)(react@18.2.0)
-      '@chakra-ui/tooltip': 2.3.1(@chakra-ui/system@2.6.2)(framer-motion@10.16.16)(react-dom@18.2.0)(react@18.2.0)
-      '@chakra-ui/transition': 2.1.0(framer-motion@10.16.16)(react@18.2.0)
+      '@chakra-ui/toast': 7.0.2(@chakra-ui/system@2.6.2)(framer-motion@10.17.4)(react-dom@18.2.0)(react@18.2.0)
+      '@chakra-ui/tooltip': 2.3.1(@chakra-ui/system@2.6.2)(framer-motion@10.17.4)(react-dom@18.2.0)(react@18.2.0)
+      '@chakra-ui/transition': 2.1.0(framer-motion@10.17.4)(react@18.2.0)
       '@chakra-ui/utils': 2.0.15
       '@chakra-ui/visually-hidden': 2.2.0(@chakra-ui/system@2.6.2)(react@18.2.0)
       '@emotion/react': 11.11.3(@types/react@18.2.46)(react@18.2.0)
       '@emotion/styled': 11.11.0(@emotion/react@11.11.3)(@types/react@18.2.46)(react@18.2.0)
-      framer-motion: 10.16.16(react-dom@18.2.0)(react@18.2.0)
+      framer-motion: 10.17.4(react-dom@18.2.0)(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
     transitivePeerDependencies:
@@ -2132,7 +2132,7 @@ packages:
       csstype: 3.1.3
       lodash.mergewith: 4.6.2
 
-  /@chakra-ui/switch@2.1.2(@chakra-ui/system@2.6.2)(framer-motion@10.16.16)(react@18.2.0):
+  /@chakra-ui/switch@2.1.2(@chakra-ui/system@2.6.2)(framer-motion@10.17.4)(react@18.2.0):
     resolution: {integrity: sha512-pgmi/CC+E1v31FcnQhsSGjJnOE2OcND4cKPyTE+0F+bmGm48Q/b5UmKD9Y+CmZsrt/7V3h8KNczowupfuBfIHA==}
     peerDependencies:
       '@chakra-ui/system': '>=2.0.0'
@@ -2142,7 +2142,7 @@ packages:
       '@chakra-ui/checkbox': 2.3.2(@chakra-ui/system@2.6.2)(react@18.2.0)
       '@chakra-ui/shared-utils': 2.0.5
       '@chakra-ui/system': 2.6.2(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(react@18.2.0)
-      framer-motion: 10.16.16(react-dom@18.2.0)(react@18.2.0)
+      framer-motion: 10.17.4(react-dom@18.2.0)(react@18.2.0)
       react: 18.2.0
 
   /@chakra-ui/system@2.6.2(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(react@18.2.0):
@@ -2242,7 +2242,7 @@ packages:
       '@chakra-ui/styled-system': 2.9.2
       '@chakra-ui/theme-tools': 2.1.2(@chakra-ui/styled-system@2.9.2)
 
-  /@chakra-ui/toast@7.0.2(@chakra-ui/system@2.6.2)(framer-motion@10.16.16)(react-dom@18.2.0)(react@18.2.0):
+  /@chakra-ui/toast@7.0.2(@chakra-ui/system@2.6.2)(framer-motion@10.17.4)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-yvRP8jFKRs/YnkuE41BVTq9nB2v/KDRmje9u6dgDmE5+1bFt3bwjdf9gVbif4u5Ve7F7BGk5E093ARRVtvLvXA==}
     peerDependencies:
       '@chakra-ui/system': 2.6.2
@@ -2260,11 +2260,11 @@ packages:
       '@chakra-ui/styled-system': 2.9.2
       '@chakra-ui/system': 2.6.2(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(react@18.2.0)
       '@chakra-ui/theme': 3.3.1(@chakra-ui/styled-system@2.9.2)
-      framer-motion: 10.16.16(react-dom@18.2.0)(react@18.2.0)
+      framer-motion: 10.17.4(react-dom@18.2.0)(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
 
-  /@chakra-ui/tooltip@2.3.1(@chakra-ui/system@2.6.2)(framer-motion@10.16.16)(react-dom@18.2.0)(react@18.2.0):
+  /@chakra-ui/tooltip@2.3.1(@chakra-ui/system@2.6.2)(framer-motion@10.17.4)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-Rh39GBn/bL4kZpuEMPPRwYNnccRCL+w9OqamWHIB3Qboxs6h8cOyXfIdGxjo72lvhu1QI/a4KFqkM3St+WfC0A==}
     peerDependencies:
       '@chakra-ui/system': '>=2.0.0'
@@ -2281,18 +2281,18 @@ packages:
       '@chakra-ui/react-use-merge-refs': 2.1.0(react@18.2.0)
       '@chakra-ui/shared-utils': 2.0.5
       '@chakra-ui/system': 2.6.2(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(react@18.2.0)
-      framer-motion: 10.16.16(react-dom@18.2.0)(react@18.2.0)
+      framer-motion: 10.17.4(react-dom@18.2.0)(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
 
-  /@chakra-ui/transition@2.1.0(framer-motion@10.16.16)(react@18.2.0):
+  /@chakra-ui/transition@2.1.0(framer-motion@10.17.4)(react@18.2.0):
     resolution: {integrity: sha512-orkT6T/Dt+/+kVwJNy7zwJ+U2xAZ3EU7M3XCs45RBvUnZDr/u9vdmaM/3D/rOpmQJWgQBwKPJleUXrYWUagEDQ==}
     peerDependencies:
       framer-motion: '>=4.0.0'
       react: '>=18'
     dependencies:
       '@chakra-ui/shared-utils': 2.0.5
-      framer-motion: 10.16.16(react-dom@18.2.0)(react@18.2.0)
+      framer-motion: 10.17.4(react-dom@18.2.0)(react@18.2.0)
       react: 18.2.0
 
   /@chakra-ui/utils@2.0.15:
@@ -3149,7 +3149,7 @@ packages:
     dependencies:
       tslib: 2.6.2
 
-  /@formatjs/intl@2.9.9(typescript@5.1.6):
+  /@formatjs/intl@2.9.9(typescript@5.3.3):
     resolution: {integrity: sha512-JI3CNgL2Zdg5lv9ncT2sYKqbAj2RGrCbdzaCckIxMPxn4QuHuOVvYUGmBAXVusBmfG/0sxLmMrnwnBioz+QKdA==}
     peerDependencies:
       typescript: '5'
@@ -3164,7 +3164,7 @@ packages:
       '@formatjs/intl-listformat': 7.5.3
       intl-messageformat: 10.5.8
       tslib: 2.6.2
-      typescript: 5.1.6
+      typescript: 5.3.3
 
   /@humanwhocodes/config-array@0.11.13:
     resolution: {integrity: sha512-JSBDMiDKSzQVngfRjOdFXgFfklaXI4K9nLF49Auh21lmBWRLIK3+xTErTWD4KU54pb6coM6ESE7Awz/FNU3zgQ==}
@@ -3340,7 +3340,7 @@ packages:
     peerDependencies:
       '@open-pioneer/chakra-integration': ^1.1.1
     dependencies:
-      '@open-pioneer/chakra-integration': 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.16.16)(react-dom@18.2.0)(react@18.2.0)
+      '@open-pioneer/chakra-integration': 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.17.4)(react-dom@18.2.0)(react@18.2.0)
 
   /@open-pioneer/build-common@2.0.0:
     resolution: {integrity: sha512-8j88qeRWTRWsYFhVQl8WmX2NJaQP9oJuKnAe8f4MRgb6ZQ6yrPvkZh916CYT2VF0nsa7X2Hl9hFUKbJJnKp7UQ==}
@@ -3351,12 +3351,12 @@ packages:
       zod-validation-error: 2.1.0(zod@3.22.4)
     dev: true
 
-  /@open-pioneer/build-package-cli@2.0.0(sass@1.69.7)(typescript@5.1.6):
+  /@open-pioneer/build-package-cli@2.0.0(sass@1.69.7)(typescript@5.3.3):
     resolution: {integrity: sha512-/gxShIkf5TAVjgSxJVLjI0HAzUqzb+P2PcXJuKy0mjxdbsnFqb5ODG8lb97C0qfN6ggYuBnQKtIUEvYoqqKgmg==}
     engines: {node: '>= 18'}
     hasBin: true
     dependencies:
-      '@open-pioneer/build-package': 2.0.0(sass@1.69.7)(typescript@5.1.6)
+      '@open-pioneer/build-package': 2.0.0(sass@1.69.7)(typescript@5.3.3)
       chalk: 5.3.0
       commander: 11.1.0
     transitivePeerDependencies:
@@ -3365,7 +3365,7 @@ packages:
       - typescript
     dev: true
 
-  /@open-pioneer/build-package@2.0.0(sass@1.69.7)(typescript@5.1.6):
+  /@open-pioneer/build-package@2.0.0(sass@1.69.7)(typescript@5.3.3):
     resolution: {integrity: sha512-GK1LzG8EJJ/7wdlnvY4q+Y7z8dJGd34c5eNxmIdK9aSwYAkegHyd9YdNPZJ2AohHgckKcrT+IoJJZS92xi/0rA==}
     engines: {node: '>= 18'}
     peerDependencies:
@@ -3389,7 +3389,7 @@ packages:
       rollup: 4.8.0
       rollup-plugin-esbuild: 6.1.0(esbuild@0.19.9)(rollup@4.8.0)
       sass: 1.69.7
-      typescript: 5.1.6
+      typescript: 5.3.3
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -3399,7 +3399,7 @@ packages:
     engines: {node: '>= 18'}
     dev: true
 
-  /@open-pioneer/chakra-integration@1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.16.16)(react-dom@18.2.0)(react@18.2.0):
+  /@open-pioneer/chakra-integration@1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.17.4)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-ZXdyr/5dgY13y/wzS9T6gDgZNxc1Tk6cPSDgqIHA/isjSK9rpyHBJsQXoP+i7+PhoMCZiKMbljG/sBSDTpOQjg==}
     peerDependencies:
       '@chakra-ui/react': ^2.8.2
@@ -3410,11 +3410,11 @@ packages:
       react: ^18.2.0
       react-dom: ^18.2.0
     dependencies:
-      '@chakra-ui/react': 2.8.2(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(@types/react@18.2.46)(framer-motion@10.16.16)(react-dom@18.2.0)(react@18.2.0)
+      '@chakra-ui/react': 2.8.2(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(@types/react@18.2.46)(framer-motion@10.17.4)(react-dom@18.2.0)(react@18.2.0)
       '@emotion/cache': 11.11.0
       '@emotion/react': 11.11.3(@types/react@18.2.46)(react@18.2.0)
       '@emotion/styled': 11.11.0(@emotion/react@11.11.3)(@types/react@18.2.46)(react@18.2.0)
-      framer-motion: 10.16.16(react-dom@18.2.0)(react@18.2.0)
+      framer-motion: 10.17.4(react-dom@18.2.0)(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
 
@@ -3457,9 +3457,9 @@ packages:
       react: ^18.2.0
       react-dom: ^18.2.0
     dependencies:
-      '@formatjs/intl': 2.9.9(typescript@5.1.6)
+      '@formatjs/intl': 2.9.9(typescript@5.3.3)
       '@open-pioneer/base-theme': 0.2.0(@open-pioneer/chakra-integration@1.1.1)
-      '@open-pioneer/chakra-integration': 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.16.16)(react-dom@18.2.0)(react@18.2.0)
+      '@open-pioneer/chakra-integration': 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.17.4)(react-dom@18.2.0)(react@18.2.0)
       '@open-pioneer/core': 1.2.1
       '@open-pioneer/runtime-react-support': 1.0.0(react@18.2.0)
       react: 18.2.0
@@ -3486,8 +3486,8 @@ packages:
       react: ^18.2.0
       react-dom: ^18.2.0
     dependencies:
-      '@formatjs/intl': 2.9.9(typescript@5.1.6)
-      '@open-pioneer/chakra-integration': 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.16.16)(react-dom@18.2.0)(react@18.2.0)
+      '@formatjs/intl': 2.9.9(typescript@5.3.3)
+      '@open-pioneer/chakra-integration': 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.17.4)(react-dom@18.2.0)(react@18.2.0)
       '@open-pioneer/runtime-react-support': 1.0.0(react@18.2.0)
       '@testing-library/dom': 9.3.3
       '@testing-library/react': 14.1.2(react-dom@18.2.0)(react@18.2.0)
@@ -3798,8 +3798,8 @@ packages:
       lz-string: 1.5.0
       pretty-format: 27.5.1
 
-  /@testing-library/jest-dom@6.1.5(vitest@0.34.6):
-    resolution: {integrity: sha512-3y04JLW+EceVPy2Em3VwNr95dOKqA8DhR0RJHhHKDZNYXcVXnEK7WIrpj4eYU8SVt/qYZ2aRWt/WgQ+grNES8g==}
+  /@testing-library/jest-dom@6.2.0(vitest@0.34.6):
+    resolution: {integrity: sha512-+BVQlJ9cmEn5RDMUS8c2+TU6giLvzaHZ8sU/x0Jj7fk+6/46wPdwlgOPcpxS17CjcanBi/3VmGMqVr2rmbUmNw==}
     engines: {node: '>=14', npm: '>=6', yarn: '>=1'}
     peerDependencies:
       '@jest/globals': '>= 28'
@@ -3821,7 +3821,7 @@ packages:
       aria-query: 5.3.0
       chalk: 3.0.0
       css.escape: 1.5.1
-      dom-accessibility-api: 0.5.16
+      dom-accessibility-api: 0.6.3
       lodash: 4.17.21
       redent: 3.0.0
       vitest: 0.34.6(happy-dom@12.10.3)(jsdom@22.1.0)(sass@1.69.7)
@@ -3979,8 +3979,8 @@ packages:
     resolution: {integrity: sha512-WUtIVRUZ9i5dYXefDEAI7sh9/O7jGvHg7Df/5O/gtH3Yabe5odI3UWopVR1qbPXQtvOxWu3mM4XxlYeZtMWF4g==}
     dev: true
 
-  /@typescript-eslint/eslint-plugin@6.15.0(@typescript-eslint/parser@6.15.0)(eslint@8.56.0)(typescript@5.1.6):
-    resolution: {integrity: sha512-j5qoikQqPccq9QoBAupOP+CBu8BaJ8BLjaXSioDISeTZkVO3ig7oSIKh3H+rEpee7xCXtWwSB4KIL5l6hWZzpg==}
+  /@typescript-eslint/eslint-plugin@6.17.0(@typescript-eslint/parser@6.17.0)(eslint@8.56.0)(typescript@5.3.3):
+    resolution: {integrity: sha512-Vih/4xLXmY7V490dGwBQJTpIZxH4ZFH6eCVmQ4RFkB+wmaCTDAx4dtgoWwMNGKLkqRY1L6rPqzEbjorRnDo4rQ==}
     engines: {node: ^16.0.0 || >=18.0.0}
     peerDependencies:
       '@typescript-eslint/parser': ^6.0.0 || ^6.0.0-alpha
@@ -3991,25 +3991,25 @@ packages:
         optional: true
     dependencies:
       '@eslint-community/regexpp': 4.7.0
-      '@typescript-eslint/parser': 6.15.0(eslint@8.56.0)(typescript@5.1.6)
-      '@typescript-eslint/scope-manager': 6.15.0
-      '@typescript-eslint/type-utils': 6.15.0(eslint@8.56.0)(typescript@5.1.6)
-      '@typescript-eslint/utils': 6.15.0(eslint@8.56.0)(typescript@5.1.6)
-      '@typescript-eslint/visitor-keys': 6.15.0
+      '@typescript-eslint/parser': 6.17.0(eslint@8.56.0)(typescript@5.3.3)
+      '@typescript-eslint/scope-manager': 6.17.0
+      '@typescript-eslint/type-utils': 6.17.0(eslint@8.56.0)(typescript@5.3.3)
+      '@typescript-eslint/utils': 6.17.0(eslint@8.56.0)(typescript@5.3.3)
+      '@typescript-eslint/visitor-keys': 6.17.0
       debug: 4.3.4
       eslint: 8.56.0
       graphemer: 1.4.0
       ignore: 5.2.4
       natural-compare: 1.4.0
       semver: 7.5.4
-      ts-api-utils: 1.0.3(typescript@5.1.6)
-      typescript: 5.1.6
+      ts-api-utils: 1.0.3(typescript@5.3.3)
+      typescript: 5.3.3
     transitivePeerDependencies:
       - supports-color
     dev: true
 
-  /@typescript-eslint/parser@6.15.0(eslint@8.56.0)(typescript@5.1.6):
-    resolution: {integrity: sha512-MkgKNnsjC6QwcMdlNAel24jjkEO/0hQaMDLqP4S9zq5HBAUJNQB6y+3DwLjX7b3l2b37eNAxMPLwb3/kh8VKdA==}
+  /@typescript-eslint/parser@6.17.0(eslint@8.56.0)(typescript@5.3.3):
+    resolution: {integrity: sha512-C4bBaX2orvhK+LlwrY8oWGmSl4WolCfYm513gEccdWZj0CwGadbIADb0FtVEcI+WzUyjyoBj2JRP8g25E6IB8A==}
     engines: {node: ^16.0.0 || >=18.0.0}
     peerDependencies:
       eslint: ^7.0.0 || ^8.0.0
@@ -4018,27 +4018,27 @@ packages:
       typescript:
         optional: true
     dependencies:
-      '@typescript-eslint/scope-manager': 6.15.0
-      '@typescript-eslint/types': 6.15.0
-      '@typescript-eslint/typescript-estree': 6.15.0(typescript@5.1.6)
-      '@typescript-eslint/visitor-keys': 6.15.0
+      '@typescript-eslint/scope-manager': 6.17.0
+      '@typescript-eslint/types': 6.17.0
+      '@typescript-eslint/typescript-estree': 6.17.0(typescript@5.3.3)
+      '@typescript-eslint/visitor-keys': 6.17.0
       debug: 4.3.4
       eslint: 8.56.0
-      typescript: 5.1.6
+      typescript: 5.3.3
     transitivePeerDependencies:
       - supports-color
     dev: true
 
-  /@typescript-eslint/scope-manager@6.15.0:
-    resolution: {integrity: sha512-+BdvxYBltqrmgCNu4Li+fGDIkW9n//NrruzG9X1vBzaNK+ExVXPoGB71kneaVw/Jp+4rH/vaMAGC6JfMbHstVg==}
+  /@typescript-eslint/scope-manager@6.17.0:
+    resolution: {integrity: sha512-RX7a8lwgOi7am0k17NUO0+ZmMOX4PpjLtLRgLmT1d3lBYdWH4ssBUbwdmc5pdRX8rXon8v9x8vaoOSpkHfcXGA==}
     engines: {node: ^16.0.0 || >=18.0.0}
     dependencies:
-      '@typescript-eslint/types': 6.15.0
-      '@typescript-eslint/visitor-keys': 6.15.0
+      '@typescript-eslint/types': 6.17.0
+      '@typescript-eslint/visitor-keys': 6.17.0
     dev: true
 
-  /@typescript-eslint/type-utils@6.15.0(eslint@8.56.0)(typescript@5.1.6):
-    resolution: {integrity: sha512-CnmHKTfX6450Bo49hPg2OkIm/D/TVYV7jO1MCfPYGwf6x3GO0VU8YMO5AYMn+u3X05lRRxA4fWCz87GFQV6yVQ==}
+  /@typescript-eslint/type-utils@6.17.0(eslint@8.56.0)(typescript@5.3.3):
+    resolution: {integrity: sha512-hDXcWmnbtn4P2B37ka3nil3yi3VCQO2QEB9gBiHJmQp5wmyQWqnjA85+ZcE8c4FqnaB6lBwMrPkgd4aBYz3iNg==}
     engines: {node: ^16.0.0 || >=18.0.0}
     peerDependencies:
       eslint: ^7.0.0 || ^8.0.0
@@ -4047,23 +4047,23 @@ packages:
       typescript:
         optional: true
     dependencies:
-      '@typescript-eslint/typescript-estree': 6.15.0(typescript@5.1.6)
-      '@typescript-eslint/utils': 6.15.0(eslint@8.56.0)(typescript@5.1.6)
+      '@typescript-eslint/typescript-estree': 6.17.0(typescript@5.3.3)
+      '@typescript-eslint/utils': 6.17.0(eslint@8.56.0)(typescript@5.3.3)
       debug: 4.3.4
       eslint: 8.56.0
-      ts-api-utils: 1.0.3(typescript@5.1.6)
-      typescript: 5.1.6
+      ts-api-utils: 1.0.3(typescript@5.3.3)
+      typescript: 5.3.3
     transitivePeerDependencies:
       - supports-color
     dev: true
 
-  /@typescript-eslint/types@6.15.0:
-    resolution: {integrity: sha512-yXjbt//E4T/ee8Ia1b5mGlbNj9fB9lJP4jqLbZualwpP2BCQ5is6BcWwxpIsY4XKAhmdv3hrW92GdtJbatC6dQ==}
+  /@typescript-eslint/types@6.17.0:
+    resolution: {integrity: sha512-qRKs9tvc3a4RBcL/9PXtKSehI/q8wuU9xYJxe97WFxnzH8NWWtcW3ffNS+EWg8uPvIerhjsEZ+rHtDqOCiH57A==}
     engines: {node: ^16.0.0 || >=18.0.0}
     dev: true
 
-  /@typescript-eslint/typescript-estree@6.15.0(typescript@5.1.6):
-    resolution: {integrity: sha512-7mVZJN7Hd15OmGuWrp2T9UvqR2Ecg+1j/Bp1jXUEY2GZKV6FXlOIoqVDmLpBiEiq3katvj/2n2mR0SDwtloCew==}
+  /@typescript-eslint/typescript-estree@6.17.0(typescript@5.3.3):
+    resolution: {integrity: sha512-gVQe+SLdNPfjlJn5VNGhlOhrXz4cajwFd5kAgWtZ9dCZf4XJf8xmgCTLIqec7aha3JwgLI2CK6GY1043FRxZwg==}
     engines: {node: ^16.0.0 || >=18.0.0}
     peerDependencies:
       typescript: '*'
@@ -4071,20 +4071,21 @@ packages:
       typescript:
         optional: true
     dependencies:
-      '@typescript-eslint/types': 6.15.0
-      '@typescript-eslint/visitor-keys': 6.15.0
+      '@typescript-eslint/types': 6.17.0
+      '@typescript-eslint/visitor-keys': 6.17.0
       debug: 4.3.4
       globby: 11.1.0
       is-glob: 4.0.3
+      minimatch: 9.0.3
       semver: 7.5.4
-      ts-api-utils: 1.0.3(typescript@5.1.6)
-      typescript: 5.1.6
+      ts-api-utils: 1.0.3(typescript@5.3.3)
+      typescript: 5.3.3
     transitivePeerDependencies:
       - supports-color
     dev: true
 
-  /@typescript-eslint/utils@6.15.0(eslint@8.56.0)(typescript@5.1.6):
-    resolution: {integrity: sha512-eF82p0Wrrlt8fQSRL0bGXzK5nWPRV2dYQZdajcfzOD9+cQz9O7ugifrJxclB+xVOvWvagXfqS4Es7vpLP4augw==}
+  /@typescript-eslint/utils@6.17.0(eslint@8.56.0)(typescript@5.3.3):
+    resolution: {integrity: sha512-LofsSPjN/ITNkzV47hxas2JCsNCEnGhVvocfyOcLzT9c/tSZE7SfhS/iWtzP1lKNOEfLhRTZz6xqI8N2RzweSQ==}
     engines: {node: ^16.0.0 || >=18.0.0}
     peerDependencies:
       eslint: ^7.0.0 || ^8.0.0
@@ -4092,9 +4093,9 @@ packages:
       '@eslint-community/eslint-utils': 4.4.0(eslint@8.56.0)
       '@types/json-schema': 7.0.15
       '@types/semver': 7.5.6
-      '@typescript-eslint/scope-manager': 6.15.0
-      '@typescript-eslint/types': 6.15.0
-      '@typescript-eslint/typescript-estree': 6.15.0(typescript@5.1.6)
+      '@typescript-eslint/scope-manager': 6.17.0
+      '@typescript-eslint/types': 6.17.0
+      '@typescript-eslint/typescript-estree': 6.17.0(typescript@5.3.3)
       eslint: 8.56.0
       semver: 7.5.4
     transitivePeerDependencies:
@@ -4102,11 +4103,11 @@ packages:
       - typescript
     dev: true
 
-  /@typescript-eslint/visitor-keys@6.15.0:
-    resolution: {integrity: sha512-1zvtdC1a9h5Tb5jU9x3ADNXO9yjP8rXlaoChu0DQX40vf5ACVpYIVIZhIMZ6d5sDXH7vq4dsZBT1fEGj8D2n2w==}
+  /@typescript-eslint/visitor-keys@6.17.0:
+    resolution: {integrity: sha512-H6VwB/k3IuIeQOyYczyyKN8wH6ed8EwliaYHLxOIhyF0dYEIsN8+Bk3GE19qafeMKyZJJHP8+O1HiFhFLUNKSg==}
     engines: {node: ^16.0.0 || >=18.0.0}
     dependencies:
-      '@typescript-eslint/types': 6.15.0
+      '@typescript-eslint/types': 6.17.0
       eslint-visitor-keys: 3.4.3
     dev: true
 
@@ -4547,7 +4548,7 @@ packages:
       '@chakra-ui/icon': 3.2.0(@chakra-ui/system@2.6.2)(react@18.2.0)
       '@chakra-ui/layout': 2.3.1(@chakra-ui/system@2.6.2)(react@18.2.0)
       '@chakra-ui/media-query': 3.3.0(@chakra-ui/system@2.6.2)(react@18.2.0)
-      '@chakra-ui/menu': 2.2.1(patch_hash=x7y3u4pvzv3wpkejsnxo3rp5vq)(@chakra-ui/system@2.6.2)(framer-motion@10.16.16)(react@18.2.0)
+      '@chakra-ui/menu': 2.2.1(patch_hash=x7y3u4pvzv3wpkejsnxo3rp5vq)(@chakra-ui/system@2.6.2)(framer-motion@10.17.4)(react@18.2.0)
       '@chakra-ui/spinner': 2.1.0(@chakra-ui/system@2.6.2)(react@18.2.0)
       '@chakra-ui/system': 2.6.2(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(react@18.2.0)
       '@emotion/react': 11.11.3(@types/react@18.2.46)(react@18.2.0)
@@ -4966,6 +4967,10 @@ packages:
   /dom-accessibility-api@0.5.16:
     resolution: {integrity: sha512-X7BJ2yElsnOJ30pZF4uIIDfBEVgF4XEBxL9Bxhy6dnrm5hkzqmsWHGTiHqRiITNhMyFLyAiWndIJP7Z1NTteDg==}
 
+  /dom-accessibility-api@0.6.3:
+    resolution: {integrity: sha512-7ZgogeTnjuHbo+ct10G9Ffp0mif17idi0IyWNVA/wcwcm7NPOD/WEHVP3n7n3MhXqxoIYm8d6MuZohYWIZ4T3w==}
+    dev: true
+
   /dom-helpers@5.2.1:
     resolution: {integrity: sha512-nRCa7CK3VTrM2NmGkIy4cbK7IZlgBE/PYMn55rrXefr5xXDP0LdtfPnblFDoVdcAfslJ7or6iqAUnx0CCGIWQA==}
     dependencies:
@@ -5225,7 +5230,7 @@ packages:
       - supports-color
     dev: true
 
-  /eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@6.15.0)(eslint-plugin-import@2.29.1)(eslint@8.56.0):
+  /eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@6.17.0)(eslint-plugin-import@2.29.1)(eslint@8.56.0):
     resolution: {integrity: sha512-xgdptdoi5W3niYeuQxKmzVDTATvLYqhpwmykwsh7f6HIOStGWEIL9iqZgQDF9u9OEzrRwR8no5q2VT+bjAujTg==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
@@ -5235,8 +5240,8 @@ packages:
       debug: 4.3.4
       enhanced-resolve: 5.12.0
       eslint: 8.56.0
-      eslint-module-utils: 2.8.0(@typescript-eslint/parser@6.15.0)(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1)(eslint@8.56.0)
-      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@6.15.0)(eslint-import-resolver-typescript@3.6.1)(eslint@8.56.0)
+      eslint-module-utils: 2.8.0(@typescript-eslint/parser@6.17.0)(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1)(eslint@8.56.0)
+      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@6.17.0)(eslint-import-resolver-typescript@3.6.1)(eslint@8.56.0)
       fast-glob: 3.3.2
       get-tsconfig: 4.7.2
       is-core-module: 2.13.1
@@ -5248,7 +5253,7 @@ packages:
       - supports-color
     dev: true
 
-  /eslint-module-utils@2.8.0(@typescript-eslint/parser@6.15.0)(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1)(eslint@8.56.0):
+  /eslint-module-utils@2.8.0(@typescript-eslint/parser@6.17.0)(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1)(eslint@8.56.0):
     resolution: {integrity: sha512-aWajIYfsqCKRDgUfjEXNN/JlrzauMuSEy5sbd7WXbtW3EH6A6MpwEh42c7qD+MqQo9QMJ6fWLAeIJynx0g6OAw==}
     engines: {node: '>=4'}
     peerDependencies:
@@ -5269,11 +5274,11 @@ packages:
       eslint-import-resolver-webpack:
         optional: true
     dependencies:
-      '@typescript-eslint/parser': 6.15.0(eslint@8.56.0)(typescript@5.1.6)
+      '@typescript-eslint/parser': 6.17.0(eslint@8.56.0)(typescript@5.3.3)
       debug: 3.2.7
       eslint: 8.56.0
       eslint-import-resolver-node: 0.3.9
-      eslint-import-resolver-typescript: 3.6.1(@typescript-eslint/parser@6.15.0)(eslint-plugin-import@2.29.1)(eslint@8.56.0)
+      eslint-import-resolver-typescript: 3.6.1(@typescript-eslint/parser@6.17.0)(eslint-plugin-import@2.29.1)(eslint@8.56.0)
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -5286,7 +5291,7 @@ packages:
       eslint: 8.56.0
     dev: true
 
-  /eslint-plugin-import@2.29.1(@typescript-eslint/parser@6.15.0)(eslint-import-resolver-typescript@3.6.1)(eslint@8.56.0):
+  /eslint-plugin-import@2.29.1(@typescript-eslint/parser@6.17.0)(eslint-import-resolver-typescript@3.6.1)(eslint@8.56.0):
     resolution: {integrity: sha512-BbPC0cuExzhiMo4Ff1BTVwHpjjv28C5R+btTOGaCRC7UEz801up0JadwkeSk5Ued6TG34uaczuVuH6qyy5YUxw==}
     engines: {node: '>=4'}
     peerDependencies:
@@ -5296,7 +5301,7 @@ packages:
       '@typescript-eslint/parser':
         optional: true
     dependencies:
-      '@typescript-eslint/parser': 6.15.0(eslint@8.56.0)(typescript@5.1.6)
+      '@typescript-eslint/parser': 6.17.0(eslint@8.56.0)(typescript@5.3.3)
       array-includes: 3.1.7
       array.prototype.findlastindex: 1.2.3
       array.prototype.flat: 1.3.2
@@ -5305,7 +5310,7 @@ packages:
       doctrine: 2.1.0
       eslint: 8.56.0
       eslint-import-resolver-node: 0.3.9
-      eslint-module-utils: 2.8.0(@typescript-eslint/parser@6.15.0)(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1)(eslint@8.56.0)
+      eslint-module-utils: 2.8.0(@typescript-eslint/parser@6.17.0)(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1)(eslint@8.56.0)
       hasown: 2.0.0
       is-core-module: 2.13.1
       is-glob: 4.0.3
@@ -5380,7 +5385,7 @@ packages:
       string.prototype.matchall: 4.0.8
     dev: true
 
-  /eslint-plugin-unused-imports@3.0.0(@typescript-eslint/eslint-plugin@6.15.0)(eslint@8.56.0):
+  /eslint-plugin-unused-imports@3.0.0(@typescript-eslint/eslint-plugin@6.17.0)(eslint@8.56.0):
     resolution: {integrity: sha512-sduiswLJfZHeeBJ+MQaG+xYzSWdRXoSw61DpU13mzWumCkR0ufD0HmO4kdNokjrkluMHpj/7PJeN35pgbhW3kw==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     peerDependencies:
@@ -5390,7 +5395,7 @@ packages:
       '@typescript-eslint/eslint-plugin':
         optional: true
     dependencies:
-      '@typescript-eslint/eslint-plugin': 6.15.0(@typescript-eslint/parser@6.15.0)(eslint@8.56.0)(typescript@5.1.6)
+      '@typescript-eslint/eslint-plugin': 6.17.0(@typescript-eslint/parser@6.17.0)(eslint@8.56.0)(typescript@5.3.3)
       eslint: 8.56.0
       eslint-rule-composer: 0.3.0
     dev: true
@@ -5651,8 +5656,8 @@ packages:
       mime-types: 2.1.35
     dev: true
 
-  /framer-motion@10.16.16(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-je6j91rd7NmUX7L1XHouwJ4v3R+SO4umso2LUcgOct3rHZ0PajZ80ETYZTajzEXEl9DlKyzjyt4AvGQ+lrebOw==}
+  /framer-motion@10.17.4(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-CYBSs6cWfzcasAX8aofgKFZootmkQtR4qxbfTOksBLny/lbUfkGbQAFOS3qnl6Uau1N9y8tUpI7mVIrHgkFjLQ==}
     peerDependencies:
       react: ^18.0.0
       react-dom: ^18.0.0
@@ -7732,8 +7737,8 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
-  /shiki@0.14.1:
-    resolution: {integrity: sha512-+Jz4nBkCBe0mEDqo1eKRcCdjRtrCjozmcbTUjbPTX7OOJfEbTZzlUWlZtGe3Gb5oV1/jnojhG//YZc3rs9zSEw==}
+  /shiki@0.14.7:
+    resolution: {integrity: sha512-dNPAPrxSc87ua2sKJ3H5dQ/6ZaY8RNnaAqK+t0eG7p0Soi2ydiqbGOTaZCqaYvA/uZYfS1LJnemt3Q+mSfcPCg==}
     dependencies:
       ansi-sequence-parser: 1.1.0
       jsonc-parser: 3.2.0
@@ -8131,20 +8136,20 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
-  /ts-api-utils@1.0.3(typescript@5.1.6):
+  /ts-api-utils@1.0.3(typescript@5.3.3):
     resolution: {integrity: sha512-wNMeqtMz5NtwpT/UZGY5alT+VoKdSsOOP/kqHFcUW1P/VRhH2wJ48+DN2WwUliNbQ976ETwDL0Ifd2VVvgonvg==}
     engines: {node: '>=16.13.0'}
     peerDependencies:
       typescript: '>=4.2.0'
     dependencies:
-      typescript: 5.1.6
+      typescript: 5.3.3
     dev: true
 
   /ts-easing@0.2.0:
     resolution: {integrity: sha512-Z86EW+fFFh/IFB1fqQ3/+7Zpf9t2ebOAxNI/V6Wo7r5gqiqtxmgTlQ1qbqQcjLKYeSHPTsEmvlJUDg/EuL0uHQ==}
     dev: false
 
-  /ts-node@10.9.2(@types/node@16.18.68)(typescript@5.1.6):
+  /ts-node@10.9.2(@types/node@16.18.68)(typescript@5.3.3):
     resolution: {integrity: sha512-f0FFpIdcHgn8zcPSbf1dRevwt047YMnaiJM3u2w2RewrB+fob/zePZcrOyQoLMMO7aBIddLcQIEK5dYjkLnGrQ==}
     hasBin: true
     peerDependencies:
@@ -8170,7 +8175,7 @@ packages:
       create-require: 1.1.1
       diff: 4.0.2
       make-error: 1.3.6
-      typescript: 5.1.6
+      typescript: 5.3.3
       v8-compile-cache-lib: 3.0.1
       yn: 3.1.1
     dev: true
@@ -8278,22 +8283,22 @@ packages:
       is-typed-array: 1.1.12
     dev: true
 
-  /typedoc@0.24.8(typescript@5.1.6):
-    resolution: {integrity: sha512-ahJ6Cpcvxwaxfu4KtjA8qZNqS43wYt6JL27wYiIgl1vd38WW/KWX11YuAeZhuz9v+ttrutSsgK+XO1CjL1kA3w==}
-    engines: {node: '>= 14.14'}
+  /typedoc@0.25.6(typescript@5.3.3):
+    resolution: {integrity: sha512-1rdionQMpOkpA58qfym1J+YD+ukyA1IEIa4VZahQI2ZORez7dhOvEyUotQL/8rSoMBopdzOS+vAIsORpQO4cTA==}
+    engines: {node: '>= 16'}
     hasBin: true
     peerDependencies:
-      typescript: 4.6.x || 4.7.x || 4.8.x || 4.9.x || 5.0.x || 5.1.x
+      typescript: 4.6.x || 4.7.x || 4.8.x || 4.9.x || 5.0.x || 5.1.x || 5.2.x || 5.3.x
     dependencies:
       lunr: 2.3.9
       marked: 4.3.0
       minimatch: 9.0.3
-      shiki: 0.14.1
-      typescript: 5.1.6
+      shiki: 0.14.7
+      typescript: 5.3.3
     dev: true
 
-  /typescript@5.1.6:
-    resolution: {integrity: sha512-zaWCozRZ6DLEWAWFrVDz1H6FVXzUSfTy5FUMWsQlU8Ym5JP9eO4xkTIROFCQvhQf61z6O/G6ugw3SgAnvvm+HA==}
+  /typescript@5.3.3:
+    resolution: {integrity: sha512-pXWcraxM0uxAS+tN0AG/BF2TyqmHO014Z070UsJ+pFvYuRSq8KH8DmWpnbXe0pEPDHXZV3FcAbJkijJ5oNEnWw==}
     engines: {node: '>=14.17'}
     hasBin: true
 
