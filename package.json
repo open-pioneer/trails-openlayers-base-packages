@@ -46,7 +46,8 @@
         "overrides": {
             "semver@<7.5.2": ">=7.5.2",
             "tough-cookie@<4.1.3": ">=4.1.3",
-            "@mapbox/mapbox-gl-style-spec": "npm:@maplibre/maplibre-gl-style-spec@^19.3.3"
+            "@mapbox/mapbox-gl-style-spec": "npm:@maplibre/maplibre-gl-style-spec@^19.3.3",
+            "chakra-react-select>react-select": "^5.8.0"
         },
         "auditConfig": {
             "ignoreCves": []

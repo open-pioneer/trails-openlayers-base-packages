@@ -34,6 +34,7 @@ exports[`should successfully create a toc component 1`] = `
           aria-live="polite"
           aria-relevant="additions text"
           class="css-1f43avz-a11yText-A11yText"
+          role="log"
         />
         <div
           class="react-select__control react-select__control--menu-is-open css-i2418r"
@@ -55,12 +56,12 @@ exports[`should successfully create a toc component 1`] = `
               </div>
             </div>
             <input
+              aria-activedescendant="react-select-2-option-0"
               aria-autocomplete="list"
               aria-controls="react-select-2-listbox"
               aria-expanded="true"
               aria-haspopup="true"
               aria-labelledby=":r0:"
-              aria-owns="react-select-2-listbox"
               aria-readonly="true"
               class="css-mohuvp-dummyInput-DummyInput"
               id="react-select-2-input"
@@ -103,11 +104,12 @@ exports[`should successfully create a toc component 1`] = `
         <div
           class="react-select__menu css-ky7590"
           data-theme="light"
-          id="react-select-2-listbox"
         >
           <div
+            aria-multiselectable="false"
             class="react-select__menu-list css-1h5avke"
             data-theme="light"
+            id="react-select-2-listbox"
             role="listbox"
           >
             <div
