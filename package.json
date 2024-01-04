@@ -56,7 +56,7 @@
             "@chakra-ui/menu@2.2.1": "patches/@chakra-ui__menu@2.2.1.patch",
             "@chakra-ui/react-use-outside-click@2.2.0": "patches/@chakra-ui__react-use-outside-click@2.2.0.patch",
             "@chakra-ui/hooks@2.2.1": "patches/@chakra-ui__hooks@2.2.1.patch",
-            "react-select@5.7.7": "patches/react-select@5.7.7.patch"
+            "react-select@5.8.0": "patches/react-select@5.8.0.patch"
         }
     },
     "dependencies": {
@@ -78,7 +78,7 @@
         "ol": "^8.2.0",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
-        "react-select": "^5.7.7",
+        "react-select": "^5.8.0",
         "react-use": "^17.4.2"
     },
     "devDependencies": {

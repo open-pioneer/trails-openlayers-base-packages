@@ -1,8 +1,8 @@
-diff --git a/dist/Select-a221b56b.esm.js b/dist/Select-a221b56b.esm.js
-index 64edb1f7f8992e1e0215a6a71370fc78c554f7c1..dfdd362097258286bd268ec95943bfbc56d5139c 100644
---- a/dist/Select-a221b56b.esm.js
-+++ b/dist/Select-a221b56b.esm.js
-@@ -1431,7 +1431,7 @@ var Select = /*#__PURE__*/function (_Component) {
+diff --git a/dist/Select-49a62830.esm.js b/dist/Select-49a62830.esm.js
+index bed08498732b023f350d24a62728371af6a4dace..23a5fd969db4d0190cc4b6f05417c9594ddc2931 100644
+--- a/dist/Select-49a62830.esm.js
++++ b/dist/Select-49a62830.esm.js
+@@ -1498,7 +1498,7 @@ var Select = /*#__PURE__*/function (_Component) {
        // close the menu if the user taps outside
        // we're checking on event.target here instead of event.currentTarget, because we want to assert information
        // on events on child elements, not the document (which we've attached this handler to).
