@@ -1,17 +1,11 @@
-# @open-pioneer/spatial-bookmarks
+# highlight-and-zoom-app
 
-## 0.1.0
-
-### Minor Changes
-
-- 3ca8a25: Initial release
+## 0.0.2
 
 ### Patch Changes
 
 - Updated dependencies [08bffbc]
 - Updated dependencies [a58546b]
-- Updated dependencies [3ca8a25]
 - Updated dependencies [a58546b]
 - Updated dependencies [0c4ce04]
   - @open-pioneer/map@0.1.1
-  - @open-pioneer/local-storage@0.1.0
