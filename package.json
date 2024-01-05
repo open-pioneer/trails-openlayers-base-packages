@@ -23,7 +23,7 @@
         "update-shared-versions": "syncpack fix-mismatches",
         "prepare": "husky install",
         "ci:test": "pnpm run clean && pnpm run lint && pnpm run check-types && vitest run",
-        "ci:version": "pnpm changeset version && pnpm install",
+        "ci:version": "pnpm changeset version && pnpm prettier && pnpm install",
         "ci:publish": "pnpm run clean && pnpm run build-packages && pnpm publish -r --access public && tag-current-versions"
     },
     "pnpm": {
