@@ -35,7 +35,7 @@ import { Search, SearchSelectEvent } from "@open-pioneer/search";
 ### Implementing a selection source
 
 You have to provide the selection sources that are used by the selection-UI component by implementing
-the function `select` for each datasource:
+the function `select` for each selection source:
 
 ```tsx
 import {
@@ -65,6 +65,92 @@ const selectionsources: SelectionSource[] = [new MySelectionSource()];
 
 // In your JSX template:
 <Selection mapId={MAP_ID} sources={selectionsources} />;
+```
+
+### VectorLayer as selection source example implementation
+
+To use an ol VectorLayer with an ol VectorSource (e.g. layer of the map) as a selection source, this example implementation
+can be used.
+Key features are:
+
+-   using only the extent as selection kind
+-   listening to layer visibility changes and updating the status of the source
+-   limiting the number of returned selection results to the corresponding selection option
+-   throwing an event `changed:status` when the status updates
+
+This implementation is also used inside the default map sample app.
+
+```ts
+export class VectorLayerSelectionSource
+    extends EventEmitter<SelectionSourceEvents>
+    implements SelectionSource
+{
+    readonly label: string;
+    #status: Exclude<SelectionSourceStatus, string> = { kind: "available" };
+    #vectorLayer: VectorLayer<VectorSource>;
+    #eventHandler: EventsKey;
+    #layerNotVisibleReason: string;
+
+    constructor(
+        vectorLayer: VectorLayer<VectorSource>,
+        label: string,
+        layerNotVisibleReason: string
+    ) {
+        super();
+        this.label = label;
+        this.#vectorLayer = vectorLayer;
+        this.#layerNotVisibleReason = layerNotVisibleReason;
+        this.#updateStatus();
+        this.#eventHandler = this.#vectorLayer.on("change:visible", () => {
+            this.#updateStatus();
+        });
+    }
+
+    destroy() {
+        unByKey(this.#eventHandler);
+    }
+
+    get status(): SelectionSourceStatus {
+        return this.#status;
+    }
+
+    async select(selection: SelectionKind, options: SelectionOptions): Promise<SelectionResult[]> {
+        if (selection.type !== "extent") {
+            throw new Error(`Unsupported selection kind: ${selection.type}`);
+        }
+
+        if (this.#status.kind !== "available" || this.#vectorLayer.getSource() === null) return [];
+
+        const allResults: SelectionResult[] = [];
+        this.#vectorLayer
+            .getSource()!
+            .forEachFeatureIntersectingExtent(selection.extent, (feature) => {
+                if (!feature.getGeometry()) return;
+                const result: SelectionResult = {
+                    id: feature.getId()?.toString() || feature.getGeometry.toString(),
+                    geometry: feature.getGeometry()!
+                };
+                allResults.push(result);
+            });
+        const selectedFeatures = allResults.filter((s): s is SelectionResult => s != null);
+        const limitedFeatures =
+            selectedFeatures.length > options.maxResults
+                ? selectedFeatures.slice(0, options.maxResults)
+                : selectedFeatures;
+        return limitedFeatures;
+    }
+
+    #updateStatus() {
+        const layerIsVisible = this.#vectorLayer.getVisible();
+        const newStatus: SelectionSourceStatus = layerIsVisible
+            ? { kind: "available" }
+            : { kind: "unavailable", reason: this.#layerNotVisibleReason };
+        if (newStatus.kind !== this.#status.kind) {
+            this.#status = newStatus;
+            this.emit("changed:status");
+        }
+    }
+}
 ```
 
 ## License

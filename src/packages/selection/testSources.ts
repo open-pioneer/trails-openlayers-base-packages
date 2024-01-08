@@ -13,6 +13,7 @@ import { EventEmitter } from "@open-pioneer/core";
 import VectorSource from "ol/source/Vector";
 import VectorLayer from "ol/layer/Vector";
 import { EventsKey } from "ol/events";
+import { unByKey } from "ol/Observable";
 
 export const fakeSelectedPointFeatures = [
     new Point([407354, 5754673]), // con terra (Bottom Right)
@@ -86,11 +87,9 @@ export class VectorLayerSelectionSource
     implements SelectionSource
 {
     readonly label: string;
-    #status: SelectionSourceStatus = "available";
+    #status: Exclude<SelectionSourceStatus, string> = { kind: "available" };
     #vectorLayer: VectorLayer<VectorSource>;
     #eventHandler: EventsKey;
-
-    #unavailableStatusReason: string | undefined;
     #layerNotVisibleReason: string;
 
     constructor(
@@ -102,38 +101,18 @@ export class VectorLayerSelectionSource
         this.label = label;
         this.#vectorLayer = vectorLayer;
         this.#layerNotVisibleReason = layerNotVisibleReason;
-        this.updateStatus();
+        this.#updateStatus();
         this.#eventHandler = this.#vectorLayer.on("change:visible", () => {
-            this.updateStatus();
+            this.#updateStatus();
         });
     }
 
     destroy() {
-        // TODO: Is this the correct way to remove the listener?
-        this.#vectorLayer.removeChangeListener(
-            this.#eventHandler.type,
-            this.#eventHandler.listener
-        );
+        unByKey(this.#eventHandler);
     }
 
     get status(): SelectionSourceStatus {
         return this.#status;
-    }
-
-    get unavailableStatusReason(): string | undefined {
-        return this.#unavailableStatusReason;
-    }
-
-    private updateStatus() {
-        const layerIsVisible = this.#vectorLayer.getVisible();
-        const newStatus = layerIsVisible ? "available" : "unavailable";
-        if (newStatus !== this.#status) {
-            this.#status = newStatus;
-            this.#unavailableStatusReason = layerIsVisible
-                ? undefined
-                : this.#layerNotVisibleReason;
-            this.emit("changed:status");
-        }
     }
 
     async select(selection: SelectionKind, options: SelectionOptions): Promise<SelectionResult[]> {
@@ -141,7 +120,7 @@ export class VectorLayerSelectionSource
             throw new Error(`Unsupported selection kind: ${selection.type}`);
         }
 
-        if (this.#status !== "available" || this.#vectorLayer.getSource() === null) return [];
+        if (this.#status.kind !== "available" || this.#vectorLayer.getSource() === null) return [];
 
         const allResults: SelectionResult[] = [];
         this.#vectorLayer
@@ -160,5 +139,16 @@ export class VectorLayerSelectionSource
                 ? selectedFeatures.slice(0, options.maxResults)
                 : selectedFeatures;
         return limitedFeatures;
+    }
+
+    #updateStatus() {
+        const layerIsVisible = this.#vectorLayer.getVisible();
+        const newStatus: SelectionSourceStatus = layerIsVisible
+            ? { kind: "available" }
+            : { kind: "unavailable", reason: this.#layerNotVisibleReason };
+        if (newStatus.kind !== this.#status.kind) {
+            this.#status = newStatus;
+            this.emit("changed:status");
+        }
     }
 }

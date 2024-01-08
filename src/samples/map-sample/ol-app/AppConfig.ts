@@ -124,7 +124,7 @@ export class AppConfig implements Service {
                 intl.formatMessage({ id: "layerNotVisibleReason" })
             );
             const eventHandler = layerSelectionSource.on("changed:status", () => {
-                if (layerSelectionSource.status === "unavailable") map.removeHighlight();
+                if (layerSelectionSource.status.kind === "unavailable") map.removeHighlight();
             });
             this._resources.push(eventHandler, layerSelectionSource);
             this._state.selectionSources.unshift(ref(layerSelectionSource));
