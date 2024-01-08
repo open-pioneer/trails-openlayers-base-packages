@@ -9,3 +9,4 @@ messages:
   disabledTooltip: "Die aktuelle Suchquelle ist nicht verfügbar."
   sourceNotAvailable: "Quelle nicht verfügbar"
   selectionFailed: "Die räumliche Auswahl ist fehlgeschlagen"
+  selectionPlaceholder: "Keine Quelle ausgewählt"

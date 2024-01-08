@@ -237,6 +237,7 @@ export const Selection: FC<SelectionProps> = (props) => {
                     className="selection-source react-select"
                     {...COMMON_SELECT_PROPS}
                     options={sourceOptions}
+                    placeholder={intl.formatMessage({ id: "selectionPlaceholder" })}
                     value={currentSourceOption}
                     onChange={onSourceOptionChanged}
                     components={{

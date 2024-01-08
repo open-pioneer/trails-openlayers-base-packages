@@ -9,3 +9,4 @@ messages:
   disabledTooltip: "The current search source is not available"
   sourceNotAvailable: "Source not available"
   selectionFailed: "Spatial selection failed"
+  selectionPlaceholder: "No source selected"
