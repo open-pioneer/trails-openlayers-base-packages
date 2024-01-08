@@ -273,15 +273,23 @@ function useLoadState(layer: Layer | undefined): string {
  * Customizes components styles within the select component.
  */
 function useChakraStyles() {
-    const [dropDownBackground] = useToken("colors", ["background_body"], ["#ffffff"]);
+    const [dropDownBackground, borderColor] = useToken(
+        "colors",
+        ["background_body", "border"],
+        ["#ffffff", "#ffffff"]
+    );
     return useMemo(() => {
         const chakraStyles: ChakraStylesConfig<SelectOption, false, GroupBase<SelectOption>> = {
             control: (styles) => ({ ...styles, cursor: "pointer" }),
+            indicatorSeparator: (styles) => ({
+                ...styles,
+                borderColor: borderColor
+            }),
             dropdownIndicator: (provided) => ({
                 ...provided,
                 backgroundColor: dropDownBackground
             })
         };
         return chakraStyles;
-    }, [dropDownBackground]);
+    }, [dropDownBackground, borderColor]);
 }

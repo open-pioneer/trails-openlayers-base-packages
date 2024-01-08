@@ -77,7 +77,7 @@ exports[`should successfully create a toc component 1`] = `
           >
             <hr
               aria-orientation="vertical"
-              class="chakra-divider react-select__indicator-separator css-1i6c5ox"
+              class="chakra-divider react-select__indicator-separator css-1611kif"
               data-theme="light"
             />
             <div

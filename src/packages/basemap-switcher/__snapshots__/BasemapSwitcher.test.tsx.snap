@@ -56,7 +56,7 @@ exports[`should deactivate unavailable layers for selection 1`] = `
     >
       <hr
         aria-orientation="vertical"
-        class="chakra-divider react-select__indicator-separator css-1i6c5ox"
+        class="chakra-divider react-select__indicator-separator css-1611kif"
         data-theme="light"
       />
       <div
@@ -220,7 +220,7 @@ exports[`should deactivate unavailable layers for selection 2`] = `
     >
       <hr
         aria-orientation="vertical"
-        class="chakra-divider react-select__indicator-separator css-1i6c5ox"
+        class="chakra-divider react-select__indicator-separator css-1611kif"
         data-theme="light"
       />
       <div
@@ -390,7 +390,7 @@ exports[`should successfully create a basemap switcher component 1`] = `
       >
         <hr
           aria-orientation="vertical"
-          class="chakra-divider react-select__indicator-separator css-1i6c5ox"
+          class="chakra-divider react-select__indicator-separator css-1611kif"
           data-theme="light"
         />
         <div
