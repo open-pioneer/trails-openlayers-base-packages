@@ -1,6 +1,6 @@
 {
     "name": "@open-pioneer/map-test-utils",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "license": "Apache-2.0",
     "main": "index.ts",
     "scripts": {
@@ -8,8 +8,8 @@
     },
     "peerDependencies": {
         "@open-pioneer/map": "workspace:^",
-        "@open-pioneer/test-utils": "^1.0.1",
-        "@testing-library/react": "^14.0.0",
+        "@open-pioneer/test-utils": "^1.0.2",
+        "@testing-library/react": "^14.1.2",
         "ol": "^8.2.0"
     },
     "devDependencies": {

@@ -1,17 +1,14 @@
-# @open-pioneer/map-test-utils
+# highlight-and-zoom-app
 
-## 0.2.0
-
-### Minor Changes
-
--   70349a8: Update to new core packages major versions
+## 0.0.3
 
 ### Patch Changes
 
 -   Updated dependencies [70349a8]
     -   @open-pioneer/map@0.2.0
+    -   @open-pioneer/react-utils@0.2.0
 
-## 0.1.1
+## 0.0.2
 
 ### Patch Changes
 
@@ -20,14 +17,3 @@
 -   Updated dependencies [a58546b]
 -   Updated dependencies [0c4ce04]
     -   @open-pioneer/map@0.1.1
-
-## 0.1.0
-
-### Minor Changes
-
--   90103b9: Initial release.
-
-### Patch Changes
-
--   Updated dependencies [bb2f27a]
-    -   @open-pioneer/map@0.1.0

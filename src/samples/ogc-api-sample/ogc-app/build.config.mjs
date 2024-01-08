@@ -6,7 +6,13 @@ export default defineBuildConfig({
     i18n: ["en", "de"],
     services: {
         MapConfigProviderImpl: {
-            provides: ["map.MapConfigProvider"]
+            provides: ["map.MapConfigProvider"],
+            references: {
+                vectorSourceFactory: "ogc-features.VectorSourceFactory"
+            }
+        },
+        SampleTokenInterceptor: {
+            provides: ["http.Interceptor"]
         }
     }
 });

@@ -14,6 +14,7 @@ import { MapModelImpl } from "./MapModelImpl";
 import { MapConfig } from "../api";
 import { registerProjections } from "../projections";
 import { patchOpenLayersClassesForTesting } from "../util/ol-test-support";
+import { HttpService } from "@open-pioneer/http";
 
 /**
  * Register custom projection to the global proj4js definitions. User can select `EPSG:25832`
@@ -27,17 +28,23 @@ registerProjections({
 });
 const LOG = createLogger("map:createMapModel");
 
-export async function createMapModel(mapId: string, mapConfig: MapConfig): Promise<MapModelImpl> {
-    return await new MapModelFactory(mapId, mapConfig).createMapModel();
+export async function createMapModel(
+    mapId: string,
+    mapConfig: MapConfig,
+    httpService: HttpService
+): Promise<MapModelImpl> {
+    return await new MapModelFactory(mapId, mapConfig, httpService).createMapModel();
 }
 
 class MapModelFactory {
     private mapId: string;
     private mapConfig: MapConfig;
+    private httpService: HttpService;
 
-    constructor(mapId: string, mapConfig: MapConfig) {
+    constructor(mapId: string, mapConfig: MapConfig, httpService: HttpService) {
         this.mapId = mapId;
         this.mapConfig = mapConfig;
+        this.httpService = httpService;
     }
 
     async createMapModel() {
@@ -94,7 +101,8 @@ class MapModelFactory {
         const mapModel = new MapModelImpl({
             id: mapId,
             olMap,
-            initialExtent
+            initialExtent,
+            httpService: this.httpService
         });
 
         try {

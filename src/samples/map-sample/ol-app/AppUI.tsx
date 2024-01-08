@@ -253,7 +253,7 @@ export function AppUI() {
 
 function SearchComponent() {
     const { map } = useMapModel(MAP_ID);
-    const appConfig = useService("ol-app.AppConfig") as AppConfig;
+    const appConfig = useService<unknown>("ol-app.AppConfig") as AppConfig;
     const sources = useMemo(() => appConfig.getSearchSources(), [appConfig]);
 
     function onSearchResultSelected(event: SearchSelectEvent) {

@@ -16,14 +16,24 @@ import { ExtentConfig, HighlightOptions, MapModel, MapModelEvents } from "../api
 import { LayerCollectionImpl } from "./LayerCollectionImpl";
 import { LineString, Point, Polygon } from "ol/geom";
 import { Highlights } from "./Highlights";
+import { HttpService } from "@open-pioneer/http";
 
 const LOG = createLogger("map:MapModel");
+
+/**
+ * Shared services or other entities propagated from the map model to all layer instances.
+ */
+export interface SharedDependencies {
+    httpService: HttpService;
+}
 
 export class MapModelImpl extends EventEmitter<MapModelEvents> implements MapModel {
     readonly #id: string;
     readonly #olMap: OlMap;
     readonly #layers = new LayerCollectionImpl(this);
     readonly #highlights: Highlights;
+    readonly #sharedDeps: SharedDependencies;
+
     #destroyed = false;
     #container: HTMLElement | undefined;
     #initialExtent: ExtentConfig | undefined;
@@ -33,11 +43,19 @@ export class MapModelImpl extends EventEmitter<MapModelEvents> implements MapMod
     #displayStatus: "waiting" | "ready" | "error";
     #displayWaiter: ManualPromise<void> | undefined;
 
-    constructor(properties: { id: string; olMap: OlMap; initialExtent: ExtentConfig | undefined }) {
+    constructor(properties: {
+        id: string;
+        olMap: OlMap;
+        initialExtent: ExtentConfig | undefined;
+        httpService: HttpService;
+    }) {
         super();
         this.#id = properties.id;
         this.#olMap = properties.olMap;
         this.#initialExtent = properties.initialExtent;
+        this.#sharedDeps = {
+            httpService: properties.httpService
+        };
         this.#highlights = new Highlights(this.#olMap);
 
         this.#displayStatus = "waiting";
@@ -103,6 +121,10 @@ export class MapModelImpl extends EventEmitter<MapModelEvents> implements MapMod
 
     get initialExtent(): ExtentConfig | undefined {
         return this.#initialExtent;
+    }
+
+    get __sharedDependencies(): SharedDependencies {
+        return this.#sharedDeps;
     }
 
     highlightAndZoom(geometries: Point[] | LineString[] | Polygon[], options?: HighlightOptions) {

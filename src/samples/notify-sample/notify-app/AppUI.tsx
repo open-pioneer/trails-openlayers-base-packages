@@ -15,12 +15,17 @@ import {
     Text,
     Textarea
 } from "@open-pioneer/chakra-integration";
-import { NotificationLevel, NotificationOptions, Notifier } from "@open-pioneer/notifier";
+import {
+    NotificationLevel,
+    NotificationOptions,
+    NotificationService,
+    Notifier
+} from "@open-pioneer/notifier";
 import { useService } from "open-pioneer:react-hooks";
 import { useState } from "react";
 
 export function AppUI() {
-    const notifications = useService("notifier.NotificationService");
+    const notifications = useService<NotificationService>("notifier.NotificationService");
     const [title, setTitle] = useState("");
     const [level, setLevel] = useState("info");
     const [message, setMessage] = useState("");

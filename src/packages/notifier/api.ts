@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import type { ReactNode } from "react";
+import type { DeclaredService } from "@open-pioneer/runtime";
 
 /** Represents the severity or kind of a notification. */
 export type NotificationLevel = "success" | "info" | "warning" | "error";
@@ -36,7 +37,7 @@ export interface NotificationOptions {
  *
  * You can inject an instance of this service by referencing the interface name `notifier.NotificationService`.
  */
-export interface NotificationService {
+export interface NotificationService extends DeclaredService<"notifier.NotificationService"> {
     /**
      * Emits a new notification.
      *
@@ -49,11 +50,4 @@ export interface NotificationService {
 
     /** Closes all active notifications. */
     closeAll(): void;
-}
-
-import "@open-pioneer/runtime";
-declare module "@open-pioneer/runtime" {
-    interface ServiceRegistry {
-        "notifier.NotificationService": NotificationService;
-    }
 }

@@ -1,7 +1,6 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { MapConfig, MapConfigProvider, SimpleLayer } from "@open-pioneer/map";
-import { createVectorSource } from "@open-pioneer/ogc-features";
 import TileLayer from "ol/layer/Tile";
 import VectorLayer from "ol/layer/Vector";
 import OSM from "ol/source/OSM";
@@ -10,11 +9,23 @@ import { MapboxVectorLayer } from "ol-mapbox-style";
 import { MVT } from "ol/format";
 import VectorTileLayer from "ol/layer/VectorTile";
 import VectorTileSource from "ol/source/VectorTile";
+import { OgcFeaturesVectorSourceFactory } from "@open-pioneer/ogc-features";
+import { ServiceOptions } from "@open-pioneer/runtime";
 
 export const MAP_ID = "main";
 
+interface References {
+    vectorSourceFactory: OgcFeaturesVectorSourceFactory;
+}
+
 export class MapConfigProviderImpl implements MapConfigProvider {
     mapId = MAP_ID;
+
+    private vectorSourceFactory: OgcFeaturesVectorSourceFactory;
+
+    constructor({ references }: ServiceOptions<References>) {
+        this.vectorSourceFactory = references.vectorSourceFactory;
+    }
 
     async getMapConfig(): Promise<MapConfig> {
         return {
@@ -47,7 +58,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                                 radius: 5
                             })
                         }),
-                        source: createVectorSource({
+                        source: this.vectorSourceFactory.createVectorSource({
                             baseUrl: "https://ogc-api.nrw.de/inspire-us-kindergarten/v1",
                             collectionId: "governmentalservice",
                             crs: "http://www.opengis.net/def/crs/EPSG/0/3857",
@@ -61,7 +72,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     title: "Liegenschaftskatasterbezirke in NRW (viele Daten)",
                     visible: false,
                     olLayer: new VectorLayer({
-                        source: createVectorSource({
+                        source: this.vectorSourceFactory.createVectorSource({
                             baseUrl: "https://ogc-api.nrw.de/lika/v1",
                             collectionId: "katasterbezirk",
                             limit: 1000,
