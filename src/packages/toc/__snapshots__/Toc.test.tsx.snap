@@ -37,7 +37,7 @@ exports[`should successfully create a toc component 1`] = `
           role="log"
         />
         <div
-          class="react-select__control react-select__control--menu-is-open css-i2418r"
+          class="react-select__control react-select__control--menu-is-open css-156sfem"
           data-theme="light"
         >
           <div
@@ -82,7 +82,7 @@ exports[`should successfully create a toc component 1`] = `
             />
             <div
               aria-hidden="true"
-              class="react-select__indicator react-select__dropdown-indicator css-xq12md"
+              class="react-select__indicator react-select__dropdown-indicator css-1lza9k0"
               data-theme="light"
             >
               <svg

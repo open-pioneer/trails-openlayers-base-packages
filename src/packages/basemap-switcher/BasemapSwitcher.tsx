@@ -1,10 +1,17 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box, Flex, Tooltip } from "@open-pioneer/chakra-integration";
+import { Box, Flex, Tooltip, useToken } from "@open-pioneer/chakra-integration";
 import { Layer, MapModel, useMapModel } from "@open-pioneer/map";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, useCallback, useMemo, useRef, useSyncExternalStore } from "react";
-import { Select, OptionProps, SingleValueProps, chakraComponents } from "chakra-react-select";
+import {
+    Select,
+    OptionProps,
+    SingleValueProps,
+    chakraComponents,
+    ChakraStylesConfig,
+    GroupBase
+} from "chakra-react-select";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { FiAlertTriangle } from "react-icons/fi";
 
@@ -78,6 +85,7 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
 
     const { map } = useMapModel(mapId);
     const baseLayers = useBaseLayers(map);
+    const chakraStyles = useChakraStyles();
 
     const activateLayer = (layerId: string) => {
         map?.layers.activateBaseLayer(layerId === NO_BASEMAP_ID ? undefined : layerId);
@@ -129,6 +137,7 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
                     }
                     isOptionDisabled={(option) => option?.layer?.loadState === "error"}
                     components={components}
+                    chakraStyles={chakraStyles}
                 />
             ) : null}
         </Box>
@@ -258,4 +267,21 @@ function useLoadState(layer: Layer | undefined): string {
     );
 
     return useSyncExternalStore(subscribe, getSnapshot);
+}
+
+/**
+ * Customizes components styles within the select component.
+ */
+function useChakraStyles() {
+    const [dropDownBackground] = useToken("colors", ["background_body"], ["#ffffff"]);
+    return useMemo(() => {
+        const chakraStyles: ChakraStylesConfig<SelectOption, false, GroupBase<SelectOption>> = {
+            control: (styles) => ({ ...styles, cursor: "pointer" }),
+            dropdownIndicator: (provided) => ({
+                ...provided,
+                backgroundColor: dropDownBackground
+            })
+        };
+        return chakraStyles;
+    }, [dropDownBackground]);
 }
