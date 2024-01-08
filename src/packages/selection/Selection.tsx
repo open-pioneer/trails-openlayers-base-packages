@@ -198,15 +198,24 @@ export const Selection: FC<SelectionProps> = (props) => {
             setDragControllerActive(false);
             return;
         }
-        setDragControllerActive(currentSource && currentSource.status === "available");
+
+        const sourceNotAvailableReason = intl.formatMessage({ id: "sourceNotAvailable" });
+        const isCurrentSourceAvailable = () => {
+            return (
+                currentSource &&
+                getSourceStatus(currentSource, sourceNotAvailableReason).kind === "available"
+            );
+        };
+
+        setDragControllerActive(isCurrentSourceAvailable());
         /*// TODO: Why can this be undefined after test above?!
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore*/
         const handle = currentSource.on("changed:status", () => {
-            setDragControllerActive(currentSource && currentSource.status === "available");
+            setDragControllerActive(isCurrentSourceAvailable());
         });
         return () => handle.destroy();
-    }, [currentSource, setDragControllerActive]);
+    }, [currentSource, setDragControllerActive, intl]);
 
     return (
         <VStack {...containerProps} spacing={2}>
@@ -376,6 +385,20 @@ type SimpleStatus =
           reason: string;
       };
 
+function getSourceStatus(source: SelectionSource, sourceNotAvailableReason: string): SimpleStatus {
+    const rawCurrent = source.status ?? "available";
+    const current: SelectionSourceStatusObject =
+        typeof rawCurrent === "string" ? { kind: rawCurrent } : rawCurrent;
+    if (current.kind === "available") {
+        return current;
+    }
+
+    return {
+        kind: "unavailable",
+        reason: current.reason ?? sourceNotAvailableReason
+    };
+}
+
 /**
  * Hook to manage source status
  */
@@ -387,24 +410,10 @@ function useSourceStatus(source: SelectionSource | undefined): SimpleStatus {
             setStatus({ kind: "available" });
             return;
         }
-
-        const getStatus = (): SimpleStatus => {
-            const rawCurrent = source.status ?? "available";
-            const current: SelectionSourceStatusObject =
-                typeof rawCurrent === "string" ? { kind: rawCurrent } : rawCurrent;
-            if (current.kind === "available") {
-                return current;
-            }
-
-            return {
-                kind: "unavailable",
-                reason: current.reason ?? intl.formatMessage({ id: "sourceNotAvailable" })
-            };
-        };
-
-        setStatus(getStatus());
+        const sourceNotAvailableReason = intl.formatMessage({ id: "sourceNotAvailable" });
+        setStatus(getSourceStatus(source, sourceNotAvailableReason));
         const resource = source.on?.("changed:status", () => {
-            setStatus(getStatus());
+            setStatus(getSourceStatus(source, sourceNotAvailableReason));
         });
         return () => resource?.destroy();
     }, [source, intl]);
