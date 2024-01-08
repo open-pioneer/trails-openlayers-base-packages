@@ -67,9 +67,6 @@ const selectionsources: SelectionSource[] = [new MySelectionSource()];
 <Selection mapId={MAP_ID} sources={selectionsources} />;
 ```
 
-The configured maximum number of `maxResultsPerGroup` is passed as `maxResults` inside the option parameter
-of the search function, so you are able to fetch no more results than necessary.
-
 ## License
 
 [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0)

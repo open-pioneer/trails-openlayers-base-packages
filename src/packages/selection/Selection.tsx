@@ -158,13 +158,13 @@ export const Selection: FC<SelectionProps> = (props) => {
     );
 
     const methodOptions: MethodOption[] = buildMethodOptions(undefined);
-    const [selectedMethod, setSelectedMethode] = useState(methodOptions[0] as MethodOption);
+    const [selectedMethod, setSelectedMethod] = useState(methodOptions[0] as MethodOption);
 
     /**
      * Method to change used selectmethod
      */
     const onMethodeOptionChance = useEvent((newValue: MethodOption) => {
-        setSelectedMethode(newValue);
+        setSelectedMethod(newValue);
     });
 
     const [dragControllerActive, setDragControllerActive] = useState<boolean>(true);
