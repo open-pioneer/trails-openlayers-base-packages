@@ -90,6 +90,9 @@ export interface LayerBase<AdditionalEvents = {}>
      */
     readonly visible: boolean;
 
+    /**
+     * LegendURL from the service capabilties, if available
+     */
     readonly legend: string | undefined;
 
     /**

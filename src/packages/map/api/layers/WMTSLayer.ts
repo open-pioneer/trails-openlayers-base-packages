@@ -9,18 +9,23 @@ export interface WMTSLayerConfig extends LayerBaseConfig {
     /** The name of the WMTS layer in the service's capabilities. */
     name: string;
 
+    /** The name of the tile matrix set in the service's capabilities. */
     matrixSet: string;
 
+    /**Optional license note or source references*/
     attributions?: string;
 }
 export interface WMTSLayer extends Layer {
     /** URL of the WMTS service. */
     readonly url: string;
 
+    /** The name of the WMTS layer in the service's capabilities. */
     readonly name: string;
 
+    /** The name of the tile matrix set in the service's capabilities. */
     readonly matrixSet: string;
 
+    /**Optional license note or source references*/
     readonly attributions?: string;
 }
 export interface WMTSLayerConstructor {

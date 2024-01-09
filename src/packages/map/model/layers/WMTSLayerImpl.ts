@@ -8,7 +8,7 @@ import TileLayer from "ol/layer/Tile";
 import type TileSourceType from "ol/source/Tile";
 import WMTS, { optionsFromCapabilities } from "ol/source/WMTS";
 import { WMTSLayer, WMTSLayerConfig } from "../../api";
-import { fetchCapabilities, getLegendUrl } from "../../util/capabilities-utils";
+import { fetchCapabilities } from "../../util/capabilities-utils";
 import { AbstractLayer } from "../AbstractLayer";
 import { MapModelImpl } from "../MapModelImpl";
 import { ImageTile } from "ol";
@@ -68,7 +68,7 @@ export class WMTSLayerImpl extends AbstractLayer implements WMTSLayer {
                 this.#source = source;
                 this.#layer.setSource(this.#source);
                 const activeStyleId = source.getStyle();
-                const legendUrl = getLegendUrl(capabilities, this.name, activeStyleId);
+                const legendUrl = getWMTSLegendUrl(capabilities, this.name, activeStyleId);
                 this.#legend = legendUrl;
                 this.__emitChangeEvent("changed:legend");
             })
@@ -151,4 +151,37 @@ export class WMTSLayerImpl extends AbstractLayer implements WMTSLayer {
 
 function isHtmlImage(htmlElement: HTMLElement): htmlElement is HTMLImageElement {
     return htmlElement.tagName === "IMG";
+}
+/* eslint-disable @typescript-eslint/no-explicit-any */
+export function getWMTSLegendUrl(
+    capabilities: Record<string, any>,
+    activeLayerId: string | undefined,
+    activeStyleId: string | undefined
+): string | undefined {
+    const content = capabilities?.Contents;
+    const layers = content?.Layer;
+
+    let activeLayer = layers?.find((layer: any) => layer?.Identifier === activeLayerId);
+    if (!activeLayer) {
+        LOG.debug("Failed to find the active layer in WMTS layer capabilities.");
+        activeLayer = layers?.[0];
+        if (!activeLayer) {
+            LOG.debug("No layer in WMTS capabilities - giving up.");
+            return undefined;
+        }
+    }
+
+    const styles = activeLayer.Style;
+    let activeStyle = styles?.find((style: any) => style?.Identifier === activeStyleId);
+    if (!activeStyle) {
+        LOG.debug("Failed to find active style in WMTS layer.");
+        activeStyle = styles?.[0];
+        if (!activeStyle) {
+            LOG.debug("No style in WMTS layer capabilities - giving up.");
+            return undefined;
+        }
+    }
+
+    const legendUrl = activeStyle.LegendURL?.[0]?.href;
+    return legendUrl as string | undefined;
 }

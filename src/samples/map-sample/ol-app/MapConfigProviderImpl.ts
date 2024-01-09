@@ -1,10 +1,9 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { MapConfig, MapConfigProvider, SimpleLayer, WMSLayer } from "@open-pioneer/map";
+import { MapConfig, MapConfigProvider, SimpleLayer, WMSLayer, WMTSLayer } from "@open-pioneer/map";
 import GeoJSON from "ol/format/GeoJSON";
 import TileLayer from "ol/layer/Tile";
 import VectorLayer from "ol/layer/Vector";
-import OSM from "ol/source/OSM";
 import VectorSource from "ol/source/Vector";
 import WMTS from "ol/source/WMTS";
 import WMTSTileGrid from "ol/tilegrid/WMTS";
@@ -31,77 +30,108 @@ export class MapConfigProviderImpl implements MapConfigProvider {
             },
             projection: "EPSG:25832",
             layers: [
-                new SimpleLayer({
-                    id: "topplus_open",
-                    title: "TopPlus Open",
-                    isBaseLayer: true,
+                new WMSLayer({
+                    title: "Linfos",
                     visible: true,
-                    healthCheck:
-                        "https://sgx.geodatenzentrum.de/wmts_topplus_open/1.0.0/WMTSCapabilities.xml",
-                    olLayer: createTopPlusOpenLayer("web"),
-                    attributes: {
-                        "legend": {
-                            imageUrl:
-                                "https://sg.geodatenzentrum.de/wms_topplus_open?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetLegendGraphic&FORMAT=image/png&LAYER=web"
+                    url: "http://www.wms.nrw.de/umwelt/linfos",
+                    sublayers: [
+                        {
+                            name: "SonstigeSchutzgebiete",
+                            title: "SonstigeSchutzgebiete"
+                        },
+                        {
+                            name: "SCH_GSG",
+                            title: "SCH_GSG"
                         }
-                    }
+                    ]
                 }),
+                // new WMSLayer({
+                //     title: "DTK",
+                //     visible: true,
+                //     url: "http://www.wms.nrw.de/geobasis/wms_nw_dtk",
+                //     sublayers: [
+                //         {
+                //             name: "WMS_NW_DTK",
+                //             title: "WMS_NW_DTK"
+                //         }
+                //     ]
+                // }),
+                new WMTSLayer({
+                    title: "Alkis",
+                    url: "https://lv.kommunen.nrw.doi-de.net/wmts/geobasis/wmts_nw_alkis/1.0.0/WMTSCapabilities.xml",
+                    name: "nw_alkis",
+                    matrixSet: "EPSG_25832_16",
+                    visible: false
+                }),
+                // new SimpleLayer({
+                //     id: "topplus_open",
+                //     title: "TopPlus Open",
+                //     isBaseLayer: true,
+                //     visible: true,
+                //     olLayer: createTopPlusOpenLayer("web"),
+                //     attributes: {
+                //         "legend": {
+                //             imageUrl:
+                //                 "https://sg.geodatenzentrum.de/wms_topplus_open?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetLegendGraphic&FORMAT=image/png&LAYER=web"
+                //         }
+                //     }
+                // }),
 
-                new SimpleLayer({
-                    id: "topplus_open_grau",
-                    title: "TopPlus Open (Grau)",
-                    isBaseLayer: true,
-                    visible: false,
-                    olLayer: createTopPlusOpenLayer("web_grau"),
-                    attributes: {
-                        "legend": {
-                            imageUrl:
-                                "https://sg.geodatenzentrum.de/wms_topplus_open?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetLegendGraphic&FORMAT=image/png&LAYER=web_grau"
-                        }
-                    }
-                }),
-                new SimpleLayer({
-                    id: "topplus_open_light",
-                    title: "TopPlus Open (Light)",
-                    isBaseLayer: true,
-                    visible: false,
-                    olLayer: createTopPlusOpenLayer("web_light"),
-                    attributes: {
-                        "legend": {
-                            imageUrl:
-                                "https://sg.geodatenzentrum.de/wms_topplus_open?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetLegendGraphic&FORMAT=image/png&LAYER=web_light"
-                        }
-                    }
-                }),
-                new SimpleLayer({
-                    title: "OSM",
-                    visible: false,
-                    isBaseLayer: true,
-                    olLayer: new TileLayer({
-                        source: new OSM()
-                    })
-                }),
-                new SimpleLayer({
-                    title: "Haltestellen Stadt Rostock",
-                    visible: true,
-                    description:
-                        "Haltestellen des öffentlichen Personenverkehrs in der Hanse- und Universitätsstadt Rostock.",
-                    olLayer: createHaltestellenLayer(),
-                    attributes: {
-                        "legend": pointLayerLegendProps
-                    }
-                }),
-                new SimpleLayer({
-                    title: "Kindertagesstätten",
-                    visible: true,
-                    olLayer: createKitasLayer(),
-                    attributes: {
-                        "legend": pointLayerLegendProps
-                    }
-                }),
-                createSchulenLayer(),
-                createStrassenLayer(),
-                createAdminAreasNRW(),
+                // new SimpleLayer({
+                //     id: "topplus_open_grau",
+                //     title: "TopPlus Open (Grau)",
+                //     isBaseLayer: true,
+                //     visible: false,
+                //     olLayer: createTopPlusOpenLayer("web_grau"),
+                //     attributes: {
+                //         "legend": {
+                //             imageUrl:
+                //                 "https://sg.geodatenzentrum.de/wms_topplus_open?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetLegendGraphic&FORMAT=image/png&LAYER=web_grau"
+                //         }
+                //     }
+                // }),
+                // new SimpleLayer({
+                //     id: "topplus_open_light",
+                //     title: "TopPlus Open (Light)",
+                //     isBaseLayer: true,
+                //     visible: false,
+                //     olLayer: createTopPlusOpenLayer("web_light"),
+                //     attributes: {
+                //         "legend": {
+                //             imageUrl:
+                //                 "https://sg.geodatenzentrum.de/wms_topplus_open?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetLegendGraphic&FORMAT=image/png&LAYER=web_light"
+                //         }
+                //     }
+                // }),
+                // new SimpleLayer({
+                //     title: "OSM",
+                //     visible: false,
+                //     isBaseLayer: true,
+                //     olLayer: new TileLayer({
+                //         source: new OSM()
+                //     })
+                // }),
+                // new SimpleLayer({
+                //     title: "Haltestellen Stadt Rostock",
+                //     visible: true,
+                //     description:
+                //         "Haltestellen des öffentlichen Personenverkehrs in der Hanse- und Universitätsstadt Rostock.",
+                //     olLayer: createHaltestellenLayer(),
+                //     attributes: {
+                //         "legend": pointLayerLegendProps
+                //     }
+                // }),
+                // new SimpleLayer({
+                //     title: "Kindertagesstätten",
+                //     visible: true,
+                //     olLayer: createKitasLayer(),
+                //     attributes: {
+                //         "legend": pointLayerLegendProps
+                //     }
+                // }),
+                // createSchulenLayer(),
+                // createStrassenLayer(),
+                // createAdminAreasNRW(),
                 createIsBk5Layer()
             ]
         };
@@ -204,6 +234,7 @@ function createAdminAreasNRW() {
         ]
     });
 }
+
 function createIsBk5Layer() {
     return new WMSLayer({
         title: "Bodenkarte zur Landwirtschaftlichen Standorterkundung",
@@ -211,46 +242,50 @@ function createIsBk5Layer() {
         url: "https://www.wms.nrw.de/gd/bk05l",
         sublayers: [
             {
+                name: "Versickerung_und_Stofftransport",
                 title: "Versickerung und Stofftransport",
                 sublayers: [
                     {
+                        name: "Sickerwasserrate",
                         title: "Sickerwasserrate",
                         sublayers: [
+                            // {
+                            //     name: "Szenario_Wald",
+                            //     title: "Szenario Wald",
+                            //     sublayers: [
+                            //         {
+                            //             name: "Sickerwasserrate_Wald",
+                            //             title: "Sickerwasserrate Wald"
+                            //         },
+                            //         {
+                            //             name: "Direktabfluss_Wald",
+                            //             title: "Direktabfluss Wald"
+                            //         }
+                            //     ]
+                            // },
                             {
-                                title: "Szenario Wald",
-                                sublayers: [
-                                    {
-                                        name: "Sickerwasserrate_Wald",
-                                        title: "Sickerwasserrate Wald"
-                                    },
-                                    {
-                                        name: "Direktabfluss_Wald",
-                                        title: "Direktabfluss Wald"
-                                    }
-                                ]
-                            },
-                            {
+                                name: "Szenario_Gruenland",
                                 title: "Szenario Grünland",
                                 sublayers: [
                                     {
                                         name: "Sickerwasserrate_Gruenland",
-                                        title: "Sickerwasserrate Grünland",
-                                        attributes: {
-                                            "legend": {
-                                                imageUrl:
-                                                    "https://www.wms.nrw.de/gd/bk05l?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=Sickerwasserrate_Gruenland"
-                                            }
-                                        }
+                                        title: "Sickerwasserrate Grünland"
+                                        // attributes: {
+                                        //     "legend": {
+                                        //         imageUrl:
+                                        //             "https://www.wms.nrw.de/gd/bk05l?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=Sickerwasserrate_Gruenland"
+                                        //     }
+                                        // }
                                     },
                                     {
                                         name: "Direktabfluss_Gruenland",
-                                        title: "Direktabfluss Grünland",
-                                        attributes: {
-                                            "legend": {
-                                                imageUrl:
-                                                    "https://www.wms.nrw.de/gd/bk05l?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=Direktabfluss_Gruenland"
-                                            }
-                                        }
+                                        title: "Direktabfluss Grünland"
+                                        // attributes: {
+                                        //     "legend": {
+                                        //         imageUrl:
+                                        //             "https://www.wms.nrw.de/gd/bk05l?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=Direktabfluss_Gruenland"
+                                        //     }
+                                        // }
                                     }
                                 ]
                             }
@@ -259,6 +294,7 @@ function createIsBk5Layer() {
                 ]
             },
             {
+                name: "Wasserhaushalt",
                 title: "Wasserhaushalt",
                 sublayers: [
                     {
@@ -275,10 +311,10 @@ function createIsBk5Layer() {
                         name: "Luftkapazitaet_We",
                         title: "Luftkapazitaet (We)",
                         attributes: {
-                            "legend": {
-                                imageUrl:
-                                    "https://www.wms.nrw.de/gd/bk05l?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=Luftkapazitaet_We"
-                            }
+                            // "legend": {
+                            //     imageUrl:
+                            //         "https://avatars.githubusercontent.com/u/121286957?s=200&v=4"
+                            // }
                         }
                     }
                 ]
