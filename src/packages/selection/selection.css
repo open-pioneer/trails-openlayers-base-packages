@@ -3,7 +3,7 @@
     border: 3px solid var(--chakra-colors-background_primary) !important;
 }
 
-.select-tooltip {
+.selection-tooltip {
     position: relative;
     background: rgba(255, 255, 255, 0.8);
     border-radius: 4px;
@@ -21,11 +21,11 @@
     cursor: default;
 }
 
-.map-container .spatial-selection-active {
+.map-container .selection-active {
     cursor: crosshair;
 }
 
-.map-container .spatial-selection-inactive {
+.map-container .selection-inactive {
     cursor: no-drop;
 }
 

@@ -26,7 +26,7 @@ it("should successfully create a selection component", async () => {
     expect(selectionDiv).toMatchSnapshot();
 });
 
-it("Sources read from component should be same to the provided sources", async () => {
+it("Sources read from component should be the same as the provided sources", async () => {
     const ALL_EXPECTED_FEATURES = [new Point([407354, 5754673]), new Point([404740, 5757893])];
     const POINT_SOURCE = new FakePointSelectionSource(0, "available", ALL_EXPECTED_FEATURES);
 
@@ -58,7 +58,7 @@ it("Should disable option and show warning icon for unavailable sources", async 
     expect(option?.classList.contains("react-select__option--is-disabled")).toBeTruthy();
 });
 
-it("Changing status of source layer Should disable or enable selection option", async () => {
+it("Should disable or enable selection option when changing the status of a source layer", async () => {
     const layer = new SimpleLayer({
         id: "ogc_kitas",
         title: "Kindertagesstätten",
@@ -83,18 +83,8 @@ it("Changing status of source layer Should disable or enable selection option", 
 
     layer.olLayer.setVisible(true);
     openOptions(selectElement);
-
     expect(option?.classList.contains("react-select__option--is-disabled")).toBeFalsy();
 });
-
-// Mögliche Test-Cases:
-// Selectionsquellen aus Komponente auslesen und prüfen, ob das dieselben Quellen sind, die man übergeben hat
-// testen, ob die Quelle in der GUI disabled und einen Warnhinweis(icon) hat, wenn die Quelle den Status "not available" hat
-// testen, ob die Änderung des Status einer Quelle sich auch in der GUI widerspiegelt
-// testen, dass der DragController direkt gestartet wird, wenn Komponente aktiviert wurde
-// testen, ob standardmäßig die Rechteck-Selection als Selektionsmethode aktiv ist
-// wenn mehrere Selection Methoden vorhanden sind, testen, ob in der GUI dann ein React-select mit den Methoden erscheint
-// testen, ob im Fehlerfall eine Notifier-error Message geschmissen wird
 
 async function createSelection(selectionSources?: SelectionSource[] | undefined) {
     const { mapId, registry } = await setupMap();

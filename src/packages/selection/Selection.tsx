@@ -45,11 +45,6 @@ export interface SelectionProps extends CommonComponentProps {
     sources: SelectionSource[];
 
     /**
-     * Array of allowed spatial select methods. Default is rectangle
-     */
-    //methods?: SelectionKind[];
-
-    /**
      * This handler is called whenever the user has successfully (successfully) selected
      * some items.
      */
@@ -108,7 +103,7 @@ interface MethodOption {
  * Supported selection Methods
  */
 export enum SelectionMethods {
-    extent = "EXTEND",
+    extent = "EXTENT",
     polygon = "POLYGON",
     free = "FREEPOLYGON",
     circle = "CIRCLE"
@@ -139,7 +134,7 @@ export const Selection: FC<SelectionProps> = (props) => {
 
     /**
      * Method to build Option-Array from the supported selection methods for the selection-method react-select
-     * If there is no configuration => Default selection method: EXTEND
+     * If there is no configuration => Default selection method: EXTENT
      * @param methods
      * @returns
      */
@@ -208,9 +203,9 @@ export const Selection: FC<SelectionProps> = (props) => {
         };
 
         setDragControllerActive(isCurrentSourceAvailable());
-        /*// TODO: Why can this be undefined after test above?!
+        // Why can this be undefined after test above?!
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore*/
+        // @ts-ignore
         const handle = currentSource.on("changed:status", () => {
             setDragControllerActive(isCurrentSourceAvailable());
         });

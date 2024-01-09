@@ -1,6 +1,6 @@
 messages:
   selectMethod: Select method
-  EXTEND: "Rechteck"
+  EXTENT: "Rechteck"
   POLYGON: "Polygon"
   FREEPOLYGON: "Freies Zeichnen"
   CIRCLE: "Kreis"

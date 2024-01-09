@@ -24,8 +24,8 @@ interface Tooltip extends Resource {
     element: HTMLDivElement;
 }
 
-const ACTIVE_CLASS = "spatial-selection-active";
-const INACTIVE_CLASS = "spatial-selection-inactive";
+const ACTIVE_CLASS = "selection-active";
+const INACTIVE_CLASS = "selection-inactive";
 
 export class DragController {
     private tooltip: Tooltip;
@@ -190,7 +190,7 @@ export class DragController {
      */
     private createHelpTooltip(olMap: OlMap, message: string) {
         const element = document.createElement("div");
-        element.className = "select-tooltip";
+        element.className = "selection-tooltip";
         element.textContent = message;
 
         const overlay = new Overlay({
