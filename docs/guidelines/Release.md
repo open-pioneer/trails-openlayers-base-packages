@@ -1,7 +1,7 @@
 # Release Process
 
-For the release of the open pioneer trails base packages, pipelines have been implemented so that
-only a few manual steps (see below) are necessary to perform a release.
+For the release of open pioneer base packages, pipelines have been implemented to simplify the release process.
+The pipelines and the release process are equivalent to the ones of the open pioneer core packages.
+Thus, for a release guidance refer to the instructions in the core repository:
 
-The release process is equivalent to the one of the open pioneer trails core packages.
-Thus, refer to [TODO] for a release guide.
+[Release Guide Core Packages](https://github.com/open-pioneer/trails-core-packages/blob/main/docs/internals/Releasing.md)
