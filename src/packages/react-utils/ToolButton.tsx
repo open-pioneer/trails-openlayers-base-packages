@@ -38,7 +38,11 @@ export interface ToolButtonProps extends CommonComponentProps, RefAttributes<HTM
 
     /**
      * If `true`, indicates that the button is currently active with a different style.
-     * Defaults to `false`.
+     * Defaults to `undefined`.
+     *
+     * A value of `true` or `false` indicates that the button supports being active (i.e. pressed).
+     * In that case the `aria-pressed` attribute will be configured automatically
+     * (see https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-pressed).
      */
     isActive?: boolean;
 
@@ -95,6 +99,7 @@ export const ToolButton: FC<ToolButtonProps> = forwardRef(function ToolButton(
         "tool-button--loading": isLoading,
         "tool-button--disabled": isDisabled
     });
+    const ariaPressed = typeof isActive === "boolean" ? (isActive ? "true" : "false") : undefined;
 
     const [tooltipOpen, setTooltipOpen] = useState(false);
     const onClick = (e: MouseEvent<HTMLButtonElement>) => {
@@ -125,6 +130,7 @@ export const ToolButton: FC<ToolButtonProps> = forwardRef(function ToolButton(
                 isDisabled={isDisabled}
                 isLoading={isLoading}
                 isActive={isActive}
+                aria-pressed={ariaPressed}
                 {...containerProps}
                 {...buttonProps}
                 /* don't allow overwrite because component would break */
