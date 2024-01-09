@@ -152,3 +152,21 @@ export class VectorLayerSelectionSource
         }
     }
 }
+
+export class NoStatusSelectionSource
+    extends EventEmitter<SelectionSourceEvents>
+    implements SelectionSource
+{
+    readonly label: string = "Testlabel";
+
+    async select(_: SelectionKind, __: SelectionOptions): Promise<SelectionResult[]> {
+        const allPoints = fakeSelectedPointFeatures.map((point, index) => {
+            const result: SelectionResult = {
+                id: index,
+                geometry: point
+            };
+            return result;
+        });
+        return allPoints;
+    }
+}

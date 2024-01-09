@@ -6,7 +6,7 @@ import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { Selection, SelectionCompleteEvent, SelectionSourceChangedEvent } from "./Selection";
-import { FakePointSelectionSource } from "./testSources";
+import { FakePointSelectionSource, NoStatusSelectionSource } from "./testSources";
 import { VectorLayerSelectionSource } from "./testSources";
 import { NotificationService } from "@open-pioneer/notifier";
 import { Point } from "ol/geom";
@@ -74,7 +74,7 @@ it("Should disable or enable selection option when changing the status of a sour
         "Layer not visible"
     );
     await createSelection([layerSelectionSource]);
-    const { selectionDiv, selectElement } = await waitForSelection();
+    const { selectElement } = await waitForSelection();
     openOptions(selectElement);
 
     const options = getOptions(selectElement);
@@ -83,6 +83,17 @@ it("Should disable or enable selection option when changing the status of a sour
 
     layer.olLayer.setVisible(true);
     openOptions(selectElement);
+    expect(option?.classList.contains("react-select__option--is-disabled")).toBeFalsy();
+});
+
+it("expect selection source with no defined status is still available", async () => {
+    const noStatusSelectionSource = new NoStatusSelectionSource();
+    await createSelection([noStatusSelectionSource]);
+    const { selectElement } = await waitForSelection();
+    openOptions(selectElement);
+
+    const options = getOptions(selectElement);
+    const option = options[0];
     expect(option?.classList.contains("react-select__option--is-disabled")).toBeFalsy();
 });
 
