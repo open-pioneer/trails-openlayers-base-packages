@@ -8,9 +8,14 @@ import { mouseActionButton } from "ol/events/condition";
 import Geometry from "ol/geom/Geometry";
 import { SelectionMethods } from "./Selection";
 import { DragBox, DragPan } from "ol/interaction";
+import PointerInteraction from "ol/interaction/Pointer";
 
 interface SelectionBox extends Resource {
     dragBox: DragBox;
+}
+
+interface InteractionResource extends Resource {
+    interaction: PointerInteraction;
 }
 
 /** Represents a tooltip rendered on the OpenLayers map. */
@@ -24,7 +29,7 @@ const INACTIVE_CLASS = "spatial-selection-inactive";
 
 export class DragController {
     private tooltip: Tooltip;
-    private dragBox?: SelectionBox;
+    private interactionResources: InteractionResource[] = [];
     private olMap: OlMap;
     private isActive: boolean = true;
     private tooltipMessage: string;
@@ -37,6 +42,7 @@ export class DragController {
         tooltipDisabledMessage: string,
         onExtentSelected: (geometry: Geometry) => void
     ) {
+        let viewPort;
         /**
          * Notice for Projectdeveloper
          * Add cases for more Selectionmethods
@@ -44,7 +50,13 @@ export class DragController {
         switch (selectMethode) {
             case SelectionMethods.extent:
             default:
-                this.dragBox = this.createDragBox(olMap, onExtentSelected);
+                viewPort = this.initViewport(olMap);
+                this.interactionResources.push(
+                    this.createDragBox(olMap, onExtentSelected, viewPort, this.interactionResources)
+                );
+                this.interactionResources.push(
+                    this.createDrag(olMap, viewPort, this.interactionResources)
+                );
                 break;
         }
 
@@ -54,25 +66,42 @@ export class DragController {
         this.tooltipDisabledMessage = tooltipDisabledMessage;
     }
 
+    initViewport(olMap: OlMap) {
+        const viewPort = olMap.getViewport();
+        viewPort.classList.add(ACTIVE_CLASS);
+
+        viewPort.oncontextmenu = (e) => {
+            e.preventDefault();
+            return false;
+        };
+        return viewPort;
+    }
+
     /**
      * Method for destroying the controller when it is no longer needed
      */
     destroy() {
         this.tooltip.destroy();
-        if (this.dragBox) this.dragBox.destroy();
+        this.interactionResources.forEach((interaction) => {
+            interaction.destroy();
+        });
     }
 
     setActive(isActive: boolean) {
-        if (this.isActive === isActive || !this.dragBox) return;
+        if (this.isActive === isActive) return;
         const viewPort = this.olMap.getViewport();
         if (isActive) {
-            this.olMap.addInteraction(this.dragBox.dragBox);
+            this.interactionResources.forEach((interaction) =>
+                this.olMap.addInteraction(interaction.interaction)
+            );
             this.tooltip.element.textContent = this.tooltipMessage;
             viewPort.classList.remove(INACTIVE_CLASS);
             viewPort.classList.add(ACTIVE_CLASS);
             this.isActive = true;
         } else {
-            this.olMap.removeInteraction(this.dragBox.dragBox);
+            this.interactionResources.forEach((interaction) =>
+                this.olMap.removeInteraction(interaction.interaction)
+            );
             this.tooltip.element.textContent = this.tooltipDisabledMessage;
             viewPort.classList.remove(ACTIVE_CLASS);
             viewPort.classList.add(INACTIVE_CLASS);
@@ -86,45 +115,45 @@ export class DragController {
      * @param onExtentSelected
      * @returns
      */
-    private createDragBox(olMap: OlMap, onExtentSelected: (geometry: Geometry) => void) {
-        const viewPort = olMap.getViewport();
-        viewPort.classList.add(ACTIVE_CLASS);
-
-        viewPort.oncontextmenu = (e) => {
-            e.preventDefault();
-            return false;
-        };
+    private createDragBox(
+        olMap: OlMap,
+        onExtentSelected: (geometry: Geometry) => void,
+        viewPort: HTMLElement,
+        interactionResources: InteractionResource[]
+    ): InteractionResource {
         const dragBox = new DragBox({
             className: "selection-drag-box",
             condition: mouseActionButton
         });
 
-        const drag = this.createDrag();
-        olMap.addInteraction(drag);
         olMap.addInteraction(dragBox);
         dragBox.on("boxend", function () {
             onExtentSelected(dragBox.getGeometry());
         });
 
-        return {
-            dragBox: dragBox,
+        const interactionResource: InteractionResource = {
+            interaction: dragBox,
             destroy() {
                 olMap.removeInteraction(dragBox);
-                olMap.removeInteraction(drag);
+                interactionResources.splice(interactionResources.indexOf(this));
                 dragBox.dispose();
-                drag.dispose();
                 viewPort.classList.remove(ACTIVE_CLASS);
                 viewPort.classList.remove(INACTIVE_CLASS);
                 viewPort.oncontextmenu = null;
             }
         };
+        return interactionResource;
     }
 
     /**
      * Method to activate pan with right-mouse-click
      * @returns
      */
-    private createDrag() {
+    private createDrag(
+        olMap: OlMap,
+        viewPort: HTMLElement,
+        interactionResources: InteractionResource[]
+    ): InteractionResource {
         const condition = function (mapBrowserEvent: {
             originalEvent: MouseEvent;
             dragging: unknown;
@@ -136,7 +165,21 @@ export class DragController {
             condition: condition
         });
 
-        return drag;
+        olMap.addInteraction(drag);
+
+        const interactionResource: InteractionResource = {
+            interaction: drag,
+            destroy() {
+                olMap.removeInteraction(drag);
+                interactionResources.splice(interactionResources.indexOf(this));
+                drag.dispose();
+                viewPort.classList.remove(ACTIVE_CLASS);
+                viewPort.classList.remove(INACTIVE_CLASS);
+                viewPort.oncontextmenu = null;
+            }
+        };
+
+        return interactionResource;
     }
 
     /**
@@ -174,9 +217,21 @@ export class DragController {
 
     /**
      * Method for testing purposes only
-     * @returns class DragBox
+     * @returns InteractionResource of class DragBox
      */
-    getDragBox() {
-        return this.dragBox;
+    getDragboxInteraction() {
+        return this.interactionResources.find(
+            (interactionResource) => interactionResource.interaction instanceof DragBox
+        );
+    }
+
+    /**
+     * Method for testing purposes only
+     * @returns InteractionResource of class DragPan
+     */
+    getDragPanInteraction() {
+        return this.interactionResources.find(
+            (interactionResource) => interactionResource.interaction instanceof DragPan
+        );
     }
 }

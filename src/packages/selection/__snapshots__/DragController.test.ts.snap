@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Tooltip successfully create after construction > Tooltip wurde gesetzt 1`] = `
+exports[`expect tooltip to be successfully created after construction > Tooltip wurde gesetzt 1`] = `
 <div
   class="select-tooltip"
 >

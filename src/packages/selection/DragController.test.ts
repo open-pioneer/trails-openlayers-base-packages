@@ -9,18 +9,41 @@ afterEach(() => {
     vi.restoreAllMocks();
 });
 
-it("Tooltip successfully create after construction", async () => {
+it("expect tooltip to be successfully created after construction", async () => {
     const { olMap, tooltipTest } = createController();
     const activeTooltip = getTooltipElement(olMap, "select-tooltip");
     expect(activeTooltip).toMatchSnapshot(tooltipTest);
 });
 
-it("Should drag a Extent", async () => {
+it("expect extent handler to be called", async () => {
     const { controller, extentHandler } = createController();
-    const myDragbox = controller.getDragBox();
-    if (!myDragbox) throw new Error("myDragbox not found");
-    myDragbox.dragBox.dispatchEvent("boxend");
+    const dragBox = controller.getDragboxInteraction();
+    if (!dragBox) throw new Error("myDragbox not found");
+    dragBox.interaction.dispatchEvent("boxend");
     expect(extentHandler).toBeCalledTimes(1);
+});
+
+it.skip("expect interactions, tooltip and cursor correspond to controller state", async () => {
+    const { olMap, controller, tooltipTest, disabledTooltipText } = createController();
+    const activeTooltip = getTooltipElement(olMap, "select-tooltip");
+
+    const dragBox = controller.getDragboxInteraction()?.interaction;
+    const dragPan = controller.getDragPanInteraction()?.interaction;
+
+    if (dragBox === undefined || dragPan === undefined)
+        throw new Error("at least one interaction not found");
+
+    expect(olMap.getInteractions().getArray()).contains(dragBox);
+    expect(olMap.getInteractions().getArray()).contains(dragPan);
+    expect(olMap.getViewport().classList.contains("spatial-selection-active")).toBeTruthy();
+    expect(activeTooltip.textContent).toBe(tooltipTest);
+
+    controller.setActive(false);
+
+    expect(olMap.getInteractions().getArray()).not.contains(dragBox);
+    expect(olMap.getInteractions().getArray()).not.contains(dragPan);
+    expect(olMap.getViewport().classList.contains("spatial-selection-inactive")).toBeTruthy();
+    expect(activeTooltip.textContent).toBe(disabledTooltipText);
 });
 
 function createController() {

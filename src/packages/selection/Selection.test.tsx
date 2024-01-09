@@ -66,17 +66,25 @@ it("Changing status of source layer Should disable or enable selection option", 
         olLayer: createKitasLayer()
     });
 
+    layer.olLayer.setVisible(false);
+
     const layerSelectionSource = new VectorLayerSelectionSource(
         layer.olLayer as VectorLayer<VectorSource>,
         layer.title,
         "Layer not visible"
     );
     await createSelection([layerSelectionSource]);
+    const { selectionDiv, selectElement } = await waitForSelection();
+    openOptions(selectElement);
 
-    //const { selectionDiv, selectElement } = await waitForSelection();
-    //openOptions(selectElement);
+    const options = getOptions(selectElement);
+    const option = options[0];
+    expect(option?.classList.contains("react-select__option--is-disabled")).toBeTruthy();
 
-    //Todo: status update is made based on the visibility of the olLayer, not the layer we created
+    layer.olLayer.setVisible(true);
+    openOptions(selectElement);
+
+    expect(option?.classList.contains("react-select__option--is-disabled")).toBeFalsy();
 });
 
 // Mögliche Test-Cases:
