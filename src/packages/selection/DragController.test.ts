@@ -23,7 +23,7 @@ it("expect extent handler to be called", async () => {
     expect(extentHandler).toBeCalledTimes(1);
 });
 
-it.skip("expect interactions, tooltip and cursor correspond to controller state", async () => {
+it("expect interactions, tooltip and cursor correspond to controller state", async () => {
     const { olMap, controller, tooltipTest, disabledTooltipText } = createController();
     const activeTooltip = getTooltipElement(olMap, "select-tooltip");
 
