@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Layer, LayerBaseConfig } from "./base";
+import { Layer, LayerConfig } from "./base";
 import { WMTSLayerImpl } from "../../model/layers/WMTSLayerImpl";
-export interface WMTSLayerConfig extends LayerBaseConfig {
+export interface WMTSLayerConfig extends LayerConfig {
     /** URL of the WMTS service. */
     url: string;
 
