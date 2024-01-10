@@ -185,6 +185,7 @@ export const Search: FC<SearchProps> = (props) => {
                 components={components}
                 onChange={handleSelectChange}
                 value={selectedOption}
+                menuPosition="fixed"
             />
         </Box>
     );
