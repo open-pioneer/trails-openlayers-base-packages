@@ -7,11 +7,16 @@ export default defineBuildConfig({
     i18n: ["en", "de"],
     services: {
         MapConfigProviderImpl: {
-            provides: ["map.MapConfigProvider"]
+            provides: ["map.MapConfigProvider"],
+            references: {
+                vectorSourceFactory: "ogc-features.VectorSourceFactory"
+            }
         },
         AppConfig: {
             provides: "ol-app.AppConfig",
             references: {
+                ogcSearchSourceFactory: "ogc-features.SearchSourceFactory",
+                httpService: "http.HttpService",
                 mapRegistry: "map.MapRegistry"
             }
         }

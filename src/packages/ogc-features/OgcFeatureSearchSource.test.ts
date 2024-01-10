@@ -1,18 +1,11 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { get as getProjection } from "ol/proj";
-import { SpyInstance, afterEach, beforeEach, expect, it, vi } from "vitest";
-import {
-    OgcFeatureSearchSource,
-    OgcFeatureSearchSourceOptions,
-    SearchResponse
-} from "./OgcFeatureSearchSource";
+import { afterEach, expect, it, vi } from "vitest";
+import { OgcFeatureSearchSource, SearchResponse } from "./OgcFeatureSearchSource";
+import { OgcFeatureSearchSourceOptions } from "./api";
 
-let mockedFetch!: SpyInstance;
-
-beforeEach(() => {
-    mockedFetch = vi.spyOn(global, "fetch");
-});
+const mockedFetch = vi.fn();
 
 afterEach(() => {
     vi.restoreAllMocks();
@@ -259,13 +252,18 @@ function createFetchResponse(data: object, statusCode: number) {
 }
 
 function setup(options?: Partial<OgcFeatureSearchSourceOptions>) {
-    const source = new OgcFeatureSearchSource({
-        label: "Test label",
-        baseUrl: "https://example.com",
-        collectionId: "test-collection",
-        searchProperty: "test-property",
-        ...options
-    });
+    const source = new OgcFeatureSearchSource(
+        {
+            label: "Test label",
+            baseUrl: "https://example.com",
+            collectionId: "test-collection",
+            searchProperty: "test-property",
+            ...options
+        },
+        {
+            fetch: mockedFetch
+        }
+    );
 
     const search = (input: string, maxResults = 123) => {
         const controller = new AbortController();

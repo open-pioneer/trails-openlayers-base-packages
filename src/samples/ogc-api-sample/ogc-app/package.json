@@ -7,6 +7,7 @@
         "@open-pioneer/map": "workspace:^",
         "@open-pioneer/map-navigation": "workspace:^",
         "@open-pioneer/ogc-features": "workspace:^",
+        "@open-pioneer/http": "^2.1.1",
         "@open-pioneer/react-utils": "workspace:^",
         "@open-pioneer/runtime": "^2.0.2",
         "@open-pioneer/theme": "workspace:^",
@@ -15,5 +16,5 @@
         "ol-mapbox-style": "^12.1.1",
         "react": "^18.2.0"
     },
-    "version": "0.0.2"
+    "version": "0.0.4"
 }

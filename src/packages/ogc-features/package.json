@@ -1,6 +1,6 @@
 {
     "name": "@open-pioneer/ogc-features",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "license": "Apache-2.0",
     "main": "index.ts",
     "scripts": {
@@ -8,6 +8,7 @@
     },
     "peerDependencies": {
         "@open-pioneer/core": "^1.2.1",
+        "@open-pioneer/http": "^2.1.1",
         "ol": "^8.2.0",
         "uuid": "^9.0.1",
         "@open-pioneer/search": "workspace:^"

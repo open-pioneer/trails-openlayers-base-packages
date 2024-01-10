@@ -10,14 +10,9 @@ import { SelectionMethods } from "./Selection";
 import { DragBox, DragPan } from "ol/interaction";
 import PointerInteraction from "ol/interaction/Pointer";
 
-interface SelectionBox extends Resource {
-    dragBox: DragBox;
-}
-
 interface InteractionResource extends Resource {
     interaction: PointerInteraction;
 }
-
 /** Represents a tooltip rendered on the OpenLayers map. */
 interface Tooltip extends Resource {
     overlay: Overlay;

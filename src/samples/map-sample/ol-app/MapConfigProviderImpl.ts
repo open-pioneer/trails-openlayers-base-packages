@@ -2,19 +2,28 @@
 // SPDX-License-Identifier: Apache-2.0
 import { MapConfig, MapConfigProvider, SimpleLayer, WMSLayer } from "@open-pioneer/map";
 import GeoJSON from "ol/format/GeoJSON";
-import TileLayer from "ol/layer/Tile";
 import VectorLayer from "ol/layer/Vector";
-import OSM from "ol/source/OSM";
 import VectorSource from "ol/source/Vector";
 import WMTS from "ol/source/WMTS";
 import WMTSTileGrid from "ol/tilegrid/WMTS";
 import { Circle, Fill, Style } from "ol/style";
-import { createVectorSource } from "@open-pioneer/ogc-features";
+import TileLayer from "ol/layer/Tile.js";
+import OSM from "ol/source/OSM.js";
+import { ServiceOptions } from "@open-pioneer/runtime";
+import { OgcFeaturesVectorSourceFactory } from "@open-pioneer/ogc-features";
 
+interface References {
+    vectorSourceFactory: OgcFeaturesVectorSourceFactory;
+}
 export const MAP_ID = "main";
 
 export class MapConfigProviderImpl implements MapConfigProvider {
     mapId = MAP_ID;
+    private vectorSourceFactory: OgcFeaturesVectorSourceFactory;
+
+    constructor(options: ServiceOptions<References>) {
+        this.vectorSourceFactory = options.references.vectorSourceFactory;
+    }
 
     async getMapConfig(): Promise<MapConfig> {
         return {
@@ -74,7 +83,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     id: "ogc_kataster",
                     title: "Liegenschaftskatasterbezirke in NRW (viele Daten)",
                     visible: false,
-                    olLayer: createKatasterLayer()
+                    olLayer: createKatasterLayer(this.vectorSourceFactory)
                 }),
                 createSchulenLayer(),
                 createStrassenLayer()
@@ -173,8 +182,8 @@ function createKitasLayer() {
     });
 }
 
-function createKatasterLayer() {
-    const source = createVectorSource({
+function createKatasterLayer(vectorSourceFactory: OgcFeaturesVectorSourceFactory) {
+    const source = vectorSourceFactory.createVectorSource({
         baseUrl: "https://ogc-api.nrw.de/lika/v1",
         collectionId: "katasterbezirk",
         limit: 1000,
