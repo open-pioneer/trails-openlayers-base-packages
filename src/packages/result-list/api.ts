@@ -1,12 +1,17 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Feature } from "ol";
+import { Geometry } from "ol/geom";
+
+export interface ObjectWithAttributsAndGeometry {
+    attributes: Record<string, unknown>;
+    geometry?: Geometry;
+}
 
 /**
  * Object to collect all attribute information for all features with styling informationen
  */
 export interface ResultData {
-    features: Feature[];
+    data: ObjectWithAttributsAndGeometry[];
     metaData?: ResultColumn[];
 }
 
