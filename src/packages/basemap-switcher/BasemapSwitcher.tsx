@@ -126,6 +126,7 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
                     onChange={(option) => option && activateLayer(option.value)}
                     isClearable={false}
                     isSearchable={false}
+                    menuPosition="fixed"
                     // optionLabel is used by screenreaders
                     getOptionLabel={(option) =>
                         option.layer !== undefined
