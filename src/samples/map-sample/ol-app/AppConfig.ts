@@ -34,6 +34,13 @@ export class AppConfig {
             //     collectionId: "vineyards",
             //     searchProperty: "name"
             // }),
+            // this.ogcSearchSourceFactory.createSearchSource({
+            //     label: this.intl.formatMessage({ id: "searchSources.lika" }),
+            //     baseUrl: "https://ogc-api.nrw.de/lika/v1",
+            //     collectionId: "flurstueck",
+            //     searchProperty: "flurstid",
+            //     labelProperty: "objid"
+            // }),
             this.ogcSearchSourceFactory.createSearchSource({
                 label: this.intl.formatMessage({ id: "searchSources.miningPermissions" }),
                 baseUrl: "https://ogc-api.nrw.de/inspire-am-bergbauberechtigungen/v1",

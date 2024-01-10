@@ -1,5 +1,53 @@
 # ol-map
 
+## 0.0.9
+
+### Patch Changes
+
+-   Updated dependencies [70349a8]
+    -   @open-pioneer/coordinate-viewer@0.2.0
+    -   @open-pioneer/geolocation@0.2.0
+    -   @open-pioneer/map@0.2.0
+    -   @open-pioneer/map-navigation@0.2.0
+    -   @open-pioneer/measurement@0.2.0
+    -   @open-pioneer/notifier@0.2.0
+    -   @open-pioneer/ogc-features@0.2.0
+    -   @open-pioneer/overview-map@0.2.0
+    -   @open-pioneer/react-utils@0.2.0
+    -   @open-pioneer/scale-bar@0.2.0
+    -   @open-pioneer/scale-viewer@0.2.0
+    -   @open-pioneer/search@0.2.0
+    -   @open-pioneer/spatial-bookmarks@0.2.0
+    -   @open-pioneer/theme@0.2.0
+    -   @open-pioneer/toc@0.2.0
+
+## 0.0.8
+
+### Patch Changes
+
+-   Updated dependencies [08bffbc]
+-   Updated dependencies [a58546b]
+-   Updated dependencies [a1adcef]
+-   Updated dependencies [dfc0896]
+-   Updated dependencies [3ca8a25]
+-   Updated dependencies [a58546b]
+-   Updated dependencies [0cfbb2f]
+-   Updated dependencies [6209d6c]
+-   Updated dependencies [565bd8b]
+-   Updated dependencies [0c4ce04]
+    -   @open-pioneer/map@0.1.1
+    -   @open-pioneer/measurement@0.1.1
+    -   @open-pioneer/ogc-features@0.1.1
+    -   @open-pioneer/spatial-bookmarks@0.1.0
+    -   @open-pioneer/geolocation@0.1.1
+    -   @open-pioneer/search@0.1.0
+    -   @open-pioneer/coordinate-viewer@0.1.1
+    -   @open-pioneer/map-navigation@0.1.1
+    -   @open-pioneer/overview-map@0.1.1
+    -   @open-pioneer/scale-bar@0.1.1
+    -   @open-pioneer/scale-viewer@0.1.1
+    -   @open-pioneer/toc@0.1.1
+
 ## 0.0.7
 
 ### Patch Changes

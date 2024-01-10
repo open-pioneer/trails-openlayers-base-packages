@@ -1,5 +1,13 @@
 # auth-app
 
+## 0.0.3
+
+### Patch Changes
+
+-   Updated dependencies [70349a8]
+    -   @open-pioneer/authentication@0.2.0
+    -   @open-pioneer/theme@0.2.0
+
 ## 0.0.2
 
 ### Patch Changes
