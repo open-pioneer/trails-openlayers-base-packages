@@ -81,7 +81,9 @@ it("Should disable or enable selection option when changing the status of a sour
     const option = options[0];
     expect(option?.classList.contains("react-select__option--is-disabled")).toBeTruthy();
 
-    layer.olLayer.setVisible(true);
+    act(() => {
+        layer.olLayer.setVisible(true);
+    });
     openOptions(selectElement);
     expect(option?.classList.contains("react-select__option--is-disabled")).toBeFalsy();
 });
