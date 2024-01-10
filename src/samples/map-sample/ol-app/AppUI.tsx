@@ -43,13 +43,13 @@ export function AppUI() {
         setBookmarkActive(!bookmarkIsActive);
     }
     const [showToc, setShowToc] = useState<boolean>(true);
-    const [maxHeightToc, setMaxHeightToc] = useState<number | undefined>(undefined);
+    const [maxHeightToc, setMaxHeightToc] = useState<string | undefined>(undefined);
 
     useEffect(() => {
         if (legendIsActive || measurementIsActive) {
-            setMaxHeightToc(300);
+            setMaxHeightToc("300px");
         } else {
-            setMaxHeightToc(undefined);
+            setMaxHeightToc("75vh");
         }
     }, [showToc, legendIsActive, measurementIsActive]);
 
