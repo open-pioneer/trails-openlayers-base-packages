@@ -86,6 +86,23 @@ export class AppConfig implements Service {
      * These are used by the UI to configure the search widget.
      */
     private initSearchSources() {
+        // new OgcFeatureSearchSource("Feldblöcke", {
+        //     baseUrl: "https://ogc-api.nrw.de/inspire-lc-fb/v1",
+        //     collectionId: "landcoverunit",
+        //     searchProperty: "flik"
+        // }),
+        // new OgcFeatureSearchSource("Weinberge", {
+        //     baseUrl: "https://demo.ldproxy.net/vineyards",
+        //     collectionId: "vineyards",
+        //     searchProperty: "name"
+        // }),
+        // this.ogcSearchSourceFactory.createSearchSource({
+        //     label: this.intl.formatMessage({ id: "searchSources.lika" }),
+        //     baseUrl: "https://ogc-api.nrw.de/lika/v1",
+        //     collectionId: "flurstueck",
+        //     searchProperty: "flurstid",
+        //     labelProperty: "objid"
+        // }),
         const ogcSource = this._ogcSearchSourceFactory.createSearchSource({
             label: this._intl.formatMessage({ id: "searchSources.miningPermissions" }),
             baseUrl: "https://ogc-api.nrw.de/inspire-am-bergbauberechtigungen/v1",
