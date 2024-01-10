@@ -10,10 +10,6 @@ import { SelectionMethods } from "./Selection";
 import { DragBox, DragPan } from "ol/interaction";
 import PointerInteraction from "ol/interaction/Pointer";
 
-interface SelectionBox extends Resource {
-    dragBox: DragBox;
-}
-
 interface InteractionResource extends Resource {
     interaction: PointerInteraction;
 }
