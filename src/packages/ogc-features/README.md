@@ -80,7 +80,7 @@ export default defineBuildConfig({
         YourService: {
             // ...
             references: {
-                searchSourceFactory: "ogc-features.SearchSourceFactory"
+                ogcSearchSourceFactory: "ogc-features.SearchSourceFactory"
             }
         }
     }
@@ -90,14 +90,14 @@ export default defineBuildConfig({
 and create a search search instance:
 
 ```ts
-const searchSourceFactory = ...; // injected
-const searchSource = searchSourceFactory.createSearchSource({
-    label: this.intl.formatMessage({ id: "searchSources.miningPermissions" }),
+const ogcSearchSourceFactory = ...; // injected
+const searchSource = ogcSearchSourceFactory.createSearchSource({
+    label: this.intl.formatMessage({ id: "searchSources.lika" }),
     baseUrl: "https://ogc-api.nrw.de/lika/v1",
     collectionId: "flurstueck",
     searchProperty: "flurstid",
     labelProperty: "objid"
-}),
+});
 ```
 
 Use the callback function `renderLabel` to create a custom label for the result.
