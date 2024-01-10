@@ -4,4 +4,4 @@
 "@open-pioneer/toc": patch
 ---
 
-Add property `menuPosition` to React Select
+Add property `menuPosition` to React Select.
