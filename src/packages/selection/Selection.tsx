@@ -8,7 +8,8 @@ import {
     Icon,
     Tooltip,
     VStack,
-    chakra
+    chakra,
+    useToken
 } from "@open-pioneer/chakra-integration";
 import { MapModel, useMapModel } from "@open-pioneer/map";
 import { NotificationService } from "@open-pioneer/notifier";
@@ -20,7 +21,9 @@ import {
     Props as SelectProps,
     SingleValueProps,
     chakraComponents,
-    type SingleValue
+    type SingleValue,
+    ChakraStylesConfig,
+    GroupBase
 } from "chakra-react-select";
 import { Geometry } from "ol/geom";
 import { useIntl, useService } from "open-pioneer:react-hooks";
@@ -72,7 +75,7 @@ export interface SelectionSourceChangedEvent {
 /**
  * Properties for single select options.
  */
-interface SourceOption {
+interface SelectionOption {
     /**
      * The label of the select source option.
      */
@@ -131,6 +134,7 @@ export const Selection: FC<SelectionProps> = (props) => {
         currentSource,
         onSelectionComplete
     );
+    const chakraStyles = useChakraStyles();
 
     /**
      * Method to build Option-Array from the supported selection methods for the selection-method react-select
@@ -170,7 +174,7 @@ export const Selection: FC<SelectionProps> = (props) => {
      */
     const sourceOptions = useMemo(
         () =>
-            sources.map<SourceOption>((source) => {
+            sources.map<SelectionOption>((source) => {
                 return { label: source.label, value: source };
             }),
         [sources]
@@ -183,7 +187,7 @@ export const Selection: FC<SelectionProps> = (props) => {
     /**
      * Method to change used source
      */
-    const onSourceOptionChanged = useEvent((newValue: SingleValue<SourceOption>) => {
+    const onSourceOptionChanged = useEvent((newValue: SingleValue<SelectionOption>) => {
         setCurrentSource(newValue?.value);
         onSelectionSourceChanged && onSelectionSourceChanged({ source: newValue?.value });
     });
@@ -228,7 +232,7 @@ export const Selection: FC<SelectionProps> = (props) => {
             )}
             <FormControl>
                 <FormLabel>{intl.formatMessage({ id: "selectSource" })}</FormLabel>
-                <Select<SourceOption>
+                <Select<SelectionOption>
                     className="selection-source react-select"
                     {...COMMON_SELECT_PROPS}
                     options={sourceOptions}
@@ -249,13 +253,14 @@ export const Selection: FC<SelectionProps> = (props) => {
                             ? " " + intl.formatMessage({ id: "sourceNotAvailable" })
                             : "")
                     }
+                    chakraStyles={chakraStyles}
                 />
             </FormControl>
         </VStack>
     );
 };
 
-function SourceSelectOption(props: OptionProps<SourceOption>): JSX.Element {
+function SourceSelectOption(props: OptionProps<SelectionOption>): JSX.Element {
     const { value } = props.data;
     const { isAvailable, content } = useSourceItem(value, false);
 
@@ -270,7 +275,7 @@ function SourceSelectOption(props: OptionProps<SourceOption>): JSX.Element {
     );
 }
 
-function SourceSelectValue(props: SingleValueProps<SourceOption>): JSX.Element {
+function SourceSelectValue(props: SingleValueProps<SelectionOption>): JSX.Element {
     const { value } = props.data;
     const { isAvailable, content } = useSourceItem(value, true);
     const clazz = isAvailable
@@ -448,4 +453,33 @@ function useDragSelection(
             dragController?.destroy();
         };
     }, [map, selectMethode, intl, onExtentSelected, isActive]);
+}
+
+/**
+ * Customizes components styles within the select component.
+ */
+function useChakraStyles() {
+    const [dropDownBackground, borderColor] = useToken(
+        "colors",
+        ["background_body", "border"],
+        ["#ffffff", "#ffffff"]
+    );
+    return useMemo(() => {
+        const chakraStyles: ChakraStylesConfig<
+            SelectionOption,
+            false,
+            GroupBase<SelectionOption>
+        > = {
+            control: (styles) => ({ ...styles, cursor: "pointer" }),
+            indicatorSeparator: (styles) => ({
+                ...styles,
+                borderColor: borderColor
+            }),
+            dropdownIndicator: (provided) => ({
+                ...provided,
+                backgroundColor: dropDownBackground
+            })
+        };
+        return chakraStyles;
+    }, [dropDownBackground, borderColor]);
 }
