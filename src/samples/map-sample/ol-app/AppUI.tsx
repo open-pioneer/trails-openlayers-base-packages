@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box, Divider, Flex, Text } from "@open-pioneer/chakra-integration";
+import { Box, Container, Divider, Flex, Text } from "@open-pioneer/chakra-integration";
 import { CoordinateViewer } from "@open-pioneer/coordinate-viewer";
 import { Geolocation } from "@open-pioneer/geolocation";
 import { MapAnchor, MapContainer, useMapModel } from "@open-pioneer/map";
@@ -109,17 +109,19 @@ export function AppUI() {
                         role="main"
                         aria-label={intl.formatMessage({ id: "ariaLabel.map" })}
                     >
-                        <Box
-                            backgroundColor="white"
-                            borderWidth="1px"
-                            borderRadius="lg"
-                            padding={2}
-                            boxShadow="lg"
-                            mt={5}
-                            className="search-top-center-placement"
-                        >
-                            <SearchComponent />
-                        </Box>
+                        <Container centerContent>
+                            <Box
+                                backgroundColor="white"
+                                borderWidth="1px"
+                                borderRadius="lg"
+                                padding={2}
+                                boxShadow="lg"
+                                mt={5}
+                                className="search-box"
+                            >
+                                <SearchComponent />
+                            </Box>
+                        </Container>
                         <MapAnchor position="top-left" horizontalGap={20} verticalGap={20}>
                             {(showToc || currentInteractionType) && (
                                 <Box
