@@ -336,20 +336,27 @@ function SelectionComponent() {
     const sources = useSnapshot(appConfig.state).selectionSources;
 
     function onSelectionComplete(event: SelectionCompleteEvent) {
+        const results = event.results;
+
         if (!map) {
             console.debug("Map not ready");
             return;
         }
 
         map?.removeHighlight();
-        const geometries = event.results.map((result) => result.geometry);
+        const geometries = results.map((result) => result.geometry);
         if (geometries.length > 0) {
             map.highlightAndZoom(geometries);
         }
 
         notifier.notify({
             level: "info",
-            message: `Found ${event.results.length} results`,
+            message: intl.formatMessage(
+                {
+                    id: "foundResults"
+                },
+                { resultsCount: results.length }
+            ),
             displayDuration: 4000
         });
     }
