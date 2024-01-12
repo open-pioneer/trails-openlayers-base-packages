@@ -17,7 +17,7 @@ exports[`should deactivate unavailable layers for selection 1`] = `
     role="log"
   />
   <div
-    class="react-select__control react-select__control--menu-is-open css-i2418r"
+    class="react-select__control react-select__control--menu-is-open css-156sfem"
     data-theme="light"
   >
     <div
@@ -56,12 +56,12 @@ exports[`should deactivate unavailable layers for selection 1`] = `
     >
       <hr
         aria-orientation="vertical"
-        class="chakra-divider react-select__indicator-separator css-1i6c5ox"
+        class="chakra-divider react-select__indicator-separator css-1611kif"
         data-theme="light"
       />
       <div
         aria-hidden="true"
-        class="react-select__indicator react-select__dropdown-indicator css-xq12md"
+        class="react-select__indicator react-select__dropdown-indicator css-1lza9k0"
         data-theme="light"
       >
         <svg
@@ -144,7 +144,7 @@ exports[`should deactivate unavailable layers for selection 2`] = `
     role="log"
   />
   <div
-    class="react-select__control react-select__control--menu-is-open css-i2418r"
+    class="react-select__control react-select__control--menu-is-open css-156sfem"
     data-theme="light"
   >
     <div
@@ -220,12 +220,12 @@ exports[`should deactivate unavailable layers for selection 2`] = `
     >
       <hr
         aria-orientation="vertical"
-        class="chakra-divider react-select__indicator-separator css-1i6c5ox"
+        class="chakra-divider react-select__indicator-separator css-1611kif"
         data-theme="light"
       />
       <div
         aria-hidden="true"
-        class="react-select__indicator react-select__dropdown-indicator css-xq12md"
+        class="react-select__indicator react-select__dropdown-indicator css-1lza9k0"
         data-theme="light"
       >
         <svg
@@ -351,7 +351,7 @@ exports[`should successfully create a basemap switcher component 1`] = `
       role="log"
     />
     <div
-      class="react-select__control react-select__control--menu-is-open css-i2418r"
+      class="react-select__control react-select__control--menu-is-open css-156sfem"
       data-theme="light"
     >
       <div
@@ -390,12 +390,12 @@ exports[`should successfully create a basemap switcher component 1`] = `
       >
         <hr
           aria-orientation="vertical"
-          class="chakra-divider react-select__indicator-separator css-1i6c5ox"
+          class="chakra-divider react-select__indicator-separator css-1611kif"
           data-theme="light"
         />
         <div
           aria-hidden="true"
-          class="react-select__indicator react-select__dropdown-indicator css-xq12md"
+          class="react-select__indicator react-select__dropdown-indicator css-1lza9k0"
           data-theme="light"
         >
           <svg

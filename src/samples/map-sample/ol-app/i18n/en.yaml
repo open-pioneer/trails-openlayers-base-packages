@@ -2,6 +2,7 @@ messages:
   basemapLabel: "Select basemap:"
   tocTitle: "Table of contents"
   measurementTitle: "Measurement"
+  selectionTitle: Selection
   overviewMapTitle: "Overview map"
   ariaLabel:
     header: "Header bar"
@@ -10,5 +11,7 @@ messages:
     toolbar: "Maptools"
   geolocationTitle: "Geolocation"
   spatialBookmarkTitle: "Spatial bookmarks"
+  layerNotVisibleReason: "Matching layer is not visible."
   searchSources:
     miningPermissions: Mining permissions
+    lika: Cadastre data in NRW
