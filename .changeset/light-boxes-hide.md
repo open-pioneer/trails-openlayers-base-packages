@@ -2,4 +2,4 @@
 "@open-pioneer/selection": minor
 ---
 
-Initial release
+Initial release.
