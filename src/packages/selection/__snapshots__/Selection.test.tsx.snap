@@ -1,0 +1,101 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`should successfully create a selection component 1`] = `
+<div
+  class="chakra-stack selection css-ldoqu4"
+  data-testid="selection"
+  data-theme="light"
+>
+  <div
+    class="chakra-form-control css-1kxonj9"
+    data-theme="light"
+    role="group"
+  >
+    <label
+      class="chakra-form__label css-g6pte"
+      data-theme="light"
+      for="field-:r0:"
+      id="field-:r0:-label"
+    >
+      selectSource
+    </label>
+    <div
+      class="selection-source react-select css-79elbk"
+      data-theme="light"
+    >
+      <span
+        class="css-1f43avz-a11yText-A11yText"
+        id="react-select-2-live-region"
+      />
+      <span
+        aria-atomic="false"
+        aria-live="polite"
+        aria-relevant="additions text"
+        class="css-1f43avz-a11yText-A11yText"
+        role="log"
+      />
+      <div
+        class="react-select__control css-156sfem"
+        data-theme="light"
+      >
+        <div
+          class="react-select__value-container css-j93siq"
+          data-theme="light"
+        >
+          <div
+            class="react-select__placeholder css-hji3d9"
+            data-theme="light"
+            id="react-select-2-placeholder"
+          >
+            selectionPlaceholder
+          </div>
+          <input
+            aria-activedescendant=""
+            aria-autocomplete="list"
+            aria-describedby="react-select-2-placeholder"
+            aria-expanded="false"
+            aria-haspopup="true"
+            aria-readonly="true"
+            aria-required="false"
+            class="css-mohuvp-dummyInput-DummyInput"
+            id="field-:r0:"
+            inputmode="none"
+            role="combobox"
+            tabindex="0"
+            value=""
+          />
+        </div>
+        <div
+          class="react-select__indicators css-hfbj6y"
+          data-theme="light"
+        >
+          <hr
+            aria-orientation="vertical"
+            class="chakra-divider react-select__indicator-separator css-1611kif"
+            data-theme="light"
+          />
+          <div
+            aria-hidden="true"
+            class="react-select__indicator react-select__dropdown-indicator css-1lza9k0"
+            data-theme="light"
+          >
+            <svg
+              aria-hidden="true"
+              class="chakra-icon css-onkibi"
+              data-theme="light"
+              focusable="false"
+              role="presentation"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
+                fill="currentColor"
+              />
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
