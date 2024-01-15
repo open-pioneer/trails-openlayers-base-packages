@@ -6,17 +6,17 @@ import { CommonComponentProps } from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
 
 /**
- * These are properties supported by the {@link FeatureEditing} component.
+ * These are properties supported by the {@link Editing} component.
  */
-export interface FeatureEditingProps extends CommonComponentProps, RefAttributes<HTMLDivElement> {
+export interface EditingProps extends CommonComponentProps, RefAttributes<HTMLDivElement> {
     /**
      * The id of the map.
      */
     mapId: string;
 }
 
-export const FeatureEditing: FC<FeatureEditingProps> = forwardRef(function FeatureEditing(
-    props: FeatureEditingProps,
+export const Editing: FC<EditingProps> = forwardRef(function Editing(
+    props: EditingProps,
     ref: ForwardedRef<HTMLDivElement>
 ) {
     const { mapId } = props;

@@ -33,7 +33,7 @@ import {
 import { useSnapshot } from "valtio";
 import { AppConfig } from "./AppConfig";
 import { MAP_ID } from "./MapConfigProviderImpl";
-// import { FeatureEditing } from "@open-pioneer/feature-editing";
+// import { Editing } from "@open-pioneer/editing";
 
 type InteractionType = "measurement" | "selection" | undefined;
 

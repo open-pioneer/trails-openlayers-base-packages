@@ -11,7 +11,7 @@
         "@open-pioneer/selection": "workspace:^",
         "@open-pioneer/experimental-layout-sidebar": "workspace:^",
         "@open-pioneer/geolocation": "workspace:^",
-        "@open-pioneer/feature-editing": "workspace:^",
+        "@open-pioneer/editing": "workspace:^",
         "@open-pioneer/map": "workspace:^",
         "@open-pioneer/ogc-features": "workspace:^",
         "@open-pioneer/map-navigation": "workspace:^",

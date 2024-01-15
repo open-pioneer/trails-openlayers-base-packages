@@ -1,13 +1,13 @@
-# @open-pioneer/feature-editing
+# @open-pioneer/editing
 
-This package provides a feature editing component ...
+This package provides an editing component ...
 
 ## Usage
 
 To add the component to your app, insert the following snippet with a reference to a map ID:
 
 ```jsx
-<FeatureEditing mapId="map_id" />
+<Editing mapId="map_id" />
 ```
 
 ## License
