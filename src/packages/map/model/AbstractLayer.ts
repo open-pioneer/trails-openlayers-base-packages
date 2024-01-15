@@ -140,7 +140,7 @@ function watchLoadState(
     let currentLoadState: LayerLoadState = currentOlLayerState;
     let currentHealthState = "loading"; // initial state loading until health check finished
 
-    // custom health check not needed when OL already returning an error state
+    // custom health check not needed when OpenLayers already returning an error state
     if (currentOlLayerState !== "error") {
         // health check only once during initialization
         doHealthCheck(layer, healthCheck).then((state: LayerLoadState) => {

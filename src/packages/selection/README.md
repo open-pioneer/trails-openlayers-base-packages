@@ -4,7 +4,8 @@ This package provides a UI component to perform a selection on given selection s
 
 ## Usage
 
-To use the selection component you have to import `Selection` from `@open-pioneer/selection`. You also need the required package `@open-pioneer/notifier`.
+To add the component in your app, import `Selection` from `@open-pioneer/selection`. The `@open-pioneer/notifier` package is required too.
+
 The mandatory properties of the `Selection` component are `mapId` and `sources` (layer source to be selected on). Beware the limitation per selection are 10000 items.
 
 ```tsx
@@ -14,6 +15,7 @@ The mandatory properties of the `Selection` component are `mapId` and `sources` 
 ### Listening to events
 
 If you want to listen to the events `onSelectionComplete` and `onSelectionSourceChanged`, you can provide optional callback functions to the component.
+
 In case of the `onSelectionComplete` event, you can access the selection result (and its source)
 from the parameter `SelectionCompleteEvent`. In case of the `onSelectionSourceChanged` event, you can access the selected selection source
 from the parameter `SelectionSourceChangedEvent`.
@@ -67,10 +69,11 @@ const selectionsources: SelectionSource[] = [new MySelectionSource()];
 <Selection mapId={MAP_ID} sources={selectionsources} />;
 ```
 
-### VectorLayer as selection source example implementation
+### VectorLayer as selection source
 
-To use an ol VectorLayer with an ol VectorSource (e.g. layer of the map) as a selection source, this example implementation
+To use an OpenLayers VectorLayer with an OpenLayers VectorSource (e.g. layer of the map) as a selection source, this example implementation
 can be used.
+
 Key features are:
 
 -   using only the extent as selection kind
