@@ -227,6 +227,7 @@ export const Selection: FC<SelectionProps> = (props) => {
                         options={methodOptions}
                         onChange={onMethodeOptionChance}
                         value={selectedMethod}
+                        chakraStyles={chakraStyles}
                     />
                 </FormControl>
             )}
