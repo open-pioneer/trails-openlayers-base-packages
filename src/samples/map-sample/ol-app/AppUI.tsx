@@ -17,24 +17,51 @@ import {
     SelectionCompleteEvent,
     SelectionSourceChangedEvent
 } from "@open-pioneer/selection/Selection";
+
 import { SpatialBookmarks } from "@open-pioneer/spatial-bookmarks";
 import { Toc } from "@open-pioneer/toc";
+import { ResultList, ResultListData, ResultColumn, createColumns } from "@open-pioneer/result-list";
+
 import TileLayer from "ol/layer/Tile.js";
 import OSM from "ol/source/OSM.js";
 import { useIntl, useService } from "open-pioneer:react-hooks";
-import { useId, useMemo, useState } from "react";
+import { useId, useMemo, useState, Dispatch, SetStateAction } from "react";
 import {
     PiBookmarksSimpleBold,
     PiListLight,
     PiMapTrifold,
     PiRulerLight,
-    PiSelectionPlusBold
+    PiSelectionPlusBold,
+    PiListMagnifyingGlassFill
 } from "react-icons/pi";
 import { useSnapshot } from "valtio";
 import { AppConfig } from "./AppConfig";
 import { MAP_ID } from "./MapConfigProviderImpl";
 
 type InteractionType = "measurement" | "selection" | undefined;
+
+interface SelectionComponentProps {
+    setResultListUiData: Dispatch<SetStateAction<ResultListData[]>>;
+}
+
+const resultListColumns: ResultColumn[] = [
+    {
+        name: "id",
+        displayName: "ID"
+    },
+    {
+        name: "name",
+        displayName: "Name"
+    },
+    {
+        name: "inspireId",
+        displayName: "inspireID"
+    },
+    {
+        name: "gefoerdert",
+        displayName: "Gefördert"
+    }
+];
 
 export function AppUI() {
     const intl = useIntl();
@@ -48,7 +75,13 @@ export function AppUI() {
     }
     const [showToc, setShowToc] = useState<boolean>(true);
     const [currentInteractionType, setCurrentInteractionType] = useState<InteractionType>();
+    const [resultListIsActive, setResultListActive] = useState<boolean>(true);
+    const [resultListUiData, setResultListUiData] = useState<ResultListData[]>([]);
+    const columns = createColumns(resultListColumns);
 
+    function toggleResultList() {
+        setResultListActive(!resultListIsActive);
+    }
     function toggleInteractionType(type: InteractionType) {
         if (type === currentInteractionType) {
             setCurrentInteractionType(undefined);
@@ -78,7 +111,7 @@ export function AppUI() {
     let currentInteraction: JSX.Element | null = null;
     switch (currentInteractionType) {
         case "selection":
-            currentInteraction = <SelectionComponent />;
+            currentInteraction = <SelectionComponent setResultListUiData={setResultListUiData} />;
             break;
         case "measurement":
             currentInteraction = <MeasurementComponent />;
@@ -236,6 +269,14 @@ export function AppUI() {
                                 gap={1}
                                 padding={1}
                             >
+                                {resultListUiData.length > 0 && (
+                                    <ToolButton
+                                        label="ResultList"
+                                        icon={<PiListMagnifyingGlassFill />}
+                                        isActive={resultListIsActive}
+                                        onClick={toggleResultList}
+                                    ></ToolButton>
+                                )}
                                 <ToolButton
                                     label={intl.formatMessage({ id: "spatialBookmarkTitle" })}
                                     icon={<PiBookmarksSimpleBold />}
@@ -273,6 +314,11 @@ export function AppUI() {
                             </Flex>
                         </MapAnchor>
                     </MapContainer>
+                    {resultListUiData.length > 0 && resultListIsActive && (
+                        <Box className="result-list" backgroundColor="white" width="100%">
+                            <ResultList data={resultListUiData} columns={columns}></ResultList>
+                        </Box>
+                    )}
                 </Flex>
                 <Flex
                     role="region"
@@ -325,7 +371,8 @@ function SearchComponent() {
     );
 }
 
-function SelectionComponent() {
+function SelectionComponent(props: SelectionComponentProps) {
+    const { setResultListUiData } = props;
     const intl = useIntl();
     const notifier = useService<NotificationService>("notifier.NotificationService");
     const selectionTitleId = useId();
@@ -344,6 +391,11 @@ function SelectionComponent() {
         if (geometries.length > 0) {
             map.highlightAndZoom(geometries);
         }
+
+        console.log(event.results);
+        //const resultListData = event.results.map((item: ResultListData) => item);
+
+        setResultListUiData([...event.results]);
 
         notifier.notify({
             level: "info",

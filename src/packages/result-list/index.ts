@@ -1,3 +1,5 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-export type { ResultData, ResultColumn } from "./api";
+export { ResultList } from "./ResultList";
+export { createColumns } from "./createColumns";
+export type { ResultData, ResultColumn, ResultListData } from "./api";

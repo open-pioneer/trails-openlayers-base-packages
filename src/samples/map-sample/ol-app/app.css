@@ -22,3 +22,9 @@
 .spatial-bookmarks {
     max-height: 300px;
 }
+
+.result-list {
+    position: absolute;
+    bottom: 0px;
+    z-index: 1;
+}

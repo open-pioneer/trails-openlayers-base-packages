@@ -59,10 +59,18 @@ export class VectorLayerSelectionSource
             .getSource()!
             .forEachFeatureIntersectingExtent(selection.extent, (feature) => {
                 if (!feature.getGeometry()) return;
+                const someAttrs = feature
+                    .getKeys()
+                    .slice(0)
+                    .filter((item) => item !== "geometry" && !item.includes("."));
+
                 const result: SelectionResult = {
                     id: feature.getId()?.toString() || feature.getGeometry.toString(),
                     geometry: feature.getGeometry()!
                 };
+                someAttrs.forEach((item: string) => {
+                    result[item as keyof SelectionResult] = feature.getProperties()[item];
+                });
                 allResults.push(result);
             });
         const selectedFeatures = allResults.filter((s): s is SelectionResult => s != null);
