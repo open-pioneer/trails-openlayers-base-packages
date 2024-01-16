@@ -4,6 +4,7 @@ import type { Geometry } from "ol/geom";
 import type { Projection } from "ol/proj";
 import type { Extent } from "ol/extent";
 import type { EventSource } from "@open-pioneer/core";
+import { BaseFeature } from "@open-pioneer/map/api/BaseFeature";
 
 /**
  * The status of a selection source.
@@ -30,31 +31,12 @@ export type SelectionSourceStatusObject =
 /**
  * Represents a result returned by a spatial selection.
  */
-export interface SelectionResult {
-    /**
-     * Identifier for the result object.
-     * Values used here should be unique within the context of the selection source that returns them.
-     *
-     * If your source cannot provide a useful id on its own, another strategy to generate unique ids is to
-     * generate a [UUID](https://www.npmjs.com/package/uuid#uuidv4options-buffer-offset) instead.
-     */
-    id: number | string;
-
+export interface SelectionResult extends BaseFeature {
     /**
      * Geometry of the selection result.
      * One should also specify the {@link projection}.
      */
     geometry: Geometry;
-
-    /**
-     * The projection of the {@link geometry}.
-     */
-    projection?: string;
-
-    /**
-     * Arbitrary additional properties.
-     */
-    properties?: Readonly<Record<string, unknown>>;
 }
 
 /** Options passed to a {@link SelectionSource} when triggering a select. */
