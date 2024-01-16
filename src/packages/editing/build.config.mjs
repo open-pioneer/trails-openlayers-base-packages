@@ -6,6 +6,15 @@ import { defineBuildConfig } from "@open-pioneer/build-support";
 export default defineBuildConfig({
     entryPoints: ["index"],
     i18n: ["en", "de"],
+    services: {
+        EditingImpl: {
+            provides: "editing.Editing",
+            references: {
+                mapRegistry: "map.MapRegistry",
+                httpService: "http.HttpService"
+            }
+        }
+    },
     publishConfig: {
         strict: true
     }

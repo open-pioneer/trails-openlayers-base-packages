@@ -27,13 +27,14 @@ import {
     PiBookmarksSimpleBold,
     PiListLight,
     PiMapTrifold,
+    PiPencil,
     PiRulerLight,
     PiSelectionPlusBold
 } from "react-icons/pi";
 import { useSnapshot } from "valtio";
 import { AppConfig } from "./AppConfig";
 import { MAP_ID } from "./MapConfigProviderImpl";
-// import { Editing } from "@open-pioneer/editing";
+import { EditingImpl } from "@open-pioneer/editing";
 
 type InteractionType = "measurement" | "selection" | undefined;
 
@@ -49,6 +50,7 @@ export function AppUI() {
     }
     const [showToc, setShowToc] = useState<boolean>(true);
     const [currentInteractionType, setCurrentInteractionType] = useState<InteractionType>();
+    const editingService = useService<EditingImpl>("editing.Editing"); // todo typescript integration correct?
 
     function toggleInteractionType(type: InteractionType) {
         if (type === currentInteractionType) {
@@ -70,6 +72,10 @@ export function AppUI() {
 
     function toggleOverviewMap() {
         setShowOverviewMap(!showOverviewMap);
+    }
+
+    function startEditingCreate() {
+        editingService.startEditing(map?.layers.getLayerById("krankenhaus"));
     }
 
     function toggleToc() {
@@ -273,6 +279,11 @@ export function AppUI() {
                                 <InitialExtent mapId={MAP_ID} />
                                 <ZoomIn mapId={MAP_ID} />
                                 <ZoomOut mapId={MAP_ID} />
+                                <ToolButton
+                                    label={intl.formatMessage({ id: "editingTitle" })}
+                                    icon={<PiPencil />}
+                                    onClick={startEditingCreate}
+                                />
                             </Flex>
                         </MapAnchor>
                     </MapContainer>

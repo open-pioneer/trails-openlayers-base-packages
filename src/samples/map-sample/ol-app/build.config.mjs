@@ -26,7 +26,8 @@ export default defineBuildConfig({
             "map-sample-logging.LogService",
             "map.MapRegistry",
             "ol-app.AppConfig",
-            "notifier.NotificationService"
+            "notifier.NotificationService",
+            "editing.Editing"
         ]
     }
 });

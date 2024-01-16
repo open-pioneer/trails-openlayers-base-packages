@@ -4,6 +4,7 @@ messages:
   measurementTitle: "Measurement"
   selectionTitle: Selection
   overviewMapTitle: "Overview map"
+  editingTitle: "Editing - Create new feature"
   ariaLabel:
     header: "Header bar"
     footer: "Base bar with scale information, spatial reference system and coordinate display"
