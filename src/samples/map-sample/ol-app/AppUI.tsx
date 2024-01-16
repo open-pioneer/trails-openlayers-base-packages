@@ -47,19 +47,23 @@ interface SelectionComponentProps {
 const resultListColumns: ResultColumn[] = [
     {
         name: "id",
-        displayName: "ID"
+        displayName: "ID",
+        width: 70
     },
     {
         name: "name",
-        displayName: "Name"
+        displayName: "Name",
+        width: 200
     },
     {
         name: "inspireId",
-        displayName: "inspireID"
+        displayName: "inspireID",
+        width: 400
     },
     {
         name: "gefoerdert",
-        displayName: "Gefördert"
+        displayName: "Gefördert",
+        width: 70
     }
 ];
 
