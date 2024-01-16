@@ -21,6 +21,7 @@ const DEFAULT_CONCURRENTY = 6;
  * an OpenLayers VectorLayer.
  *
  * @param options Options for the vector source.
+ * @param httpService Reference to httpService for fetching the features from the service.
  */
 export function createVectorSource(
     options: OgcFeatureVectorSourceOptions,

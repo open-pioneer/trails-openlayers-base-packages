@@ -7,6 +7,7 @@
         "@emotion/react": "^11.11.3",
         "@emotion/styled": "^11.11.0",
         "@open-pioneer/chakra-integration": "^1.1.1",
+        "@open-pioneer/http": "^2.1.1",
         "@open-pioneer/coordinate-viewer": "workspace:^",
         "@open-pioneer/selection": "workspace:^",
         "@open-pioneer/experimental-layout-sidebar": "workspace:^",
