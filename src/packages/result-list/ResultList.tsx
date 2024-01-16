@@ -2,13 +2,11 @@
 // SPDX-License-Identifier: Apache-2.0
 import { ChakraProvider, Box } from "@open-pioneer/chakra-integration";
 import { createLogger } from "@open-pioneer/core";
-import { MapModel, useMapModel } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps, useEvent } from "@open-pioneer/react-utils";
-import { useIntl } from "open-pioneer:react-hooks";
-import { FC, useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
-import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
+import { FC } from "react";
+import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "./DataTable";
-import { ResultListData, ResultColumn } from "./api";
+import { ResultListData } from "./api";
 
 const LOG = createLogger("result-list:ResultList");
 
@@ -19,7 +17,7 @@ export interface ResultListProps extends CommonComponentProps {
 
 export const ResultList: FC<ResultListProps> = (props) => {
     const { data, columns } = props;
-    const { containerProps } = useCommonComponentProps("search", props);
+    const { containerProps } = useCommonComponentProps("result-list", props);
 
     return (
         <ChakraProvider>

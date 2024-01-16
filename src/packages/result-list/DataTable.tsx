@@ -19,11 +19,7 @@ import {
     getSortedRowModel
 } from "@tanstack/react-table";
 import { TriangleDownIcon, TriangleUpIcon } from "@chakra-ui/icons";
-
-import { useIntl } from "open-pioneer:react-hooks";
-import { createLogger } from "@open-pioneer/core";
-import { useState } from "react";
-import { v4 as uuid4v } from "uuid";
+import { HTMLProps, useRef, useState } from "react";
 
 interface DataTableProps<Data extends object> {
     data: Data[];
@@ -34,14 +30,18 @@ interface DataTableProps<Data extends object> {
 export function DataTable<Data extends object>(props: DataTableProps<Data>) {
     const { data, columns } = props;
     const [sorting, setSorting] = useState<SortingState>([]);
+    const [rowSelection, setRowSelection] = useState({});
     const table = useReactTable({
         columns,
         data,
         getCoreRowModel: getCoreRowModel(),
+        enableRowSelection: true,
+        onRowSelectionChange: setRowSelection,
         onSortingChange: setSorting,
         getSortedRowModel: getSortedRowModel(),
         state: {
-            sorting
+            sorting,
+            rowSelection
         }
     });
 
@@ -50,6 +50,15 @@ export function DataTable<Data extends object>(props: DataTableProps<Data>) {
             <Thead>
                 {table.getHeaderGroups().map((headerGroup) => (
                     <Tr key={headerGroup.id}>
+                        <Th>
+                            <IndeterminateCheckbox
+                                {...{
+                                    checked: table.getIsAllRowsSelected(),
+                                    indeterminate: table.getIsSomeRowsSelected(),
+                                    onChange: table.getToggleAllRowsSelectedHandler()
+                                }}
+                            />
+                        </Th>
                         {headerGroup.headers.map((header) => {
                             // see https://tanstack.com/table/v8/docs/api/core/column-def#meta to type this correctly
                             // eslint-disable-next-line
@@ -83,6 +92,16 @@ export function DataTable<Data extends object>(props: DataTableProps<Data>) {
             <Tbody>
                 {table.getRowModel().rows.map((row) => (
                     <Tr key={row.id}>
+                        <Td>
+                            <IndeterminateCheckbox
+                                {...{
+                                    checked: row.getIsSelected(),
+                                    disabled: !row.getCanSelect(),
+                                    indeterminate: row.getIsSomeSelected(),
+                                    onChange: row.getToggleSelectedHandler()
+                                }}
+                            />
+                        </Td>
                         <>
                             {row.getVisibleCells().map((cell) => {
                                 // see https://tanstack.com/table/v8/docs/api/core/column-def#meta to type this correctly
@@ -100,4 +119,21 @@ export function DataTable<Data extends object>(props: DataTableProps<Data>) {
             </Tbody>
         </Table>
     );
+
+    function IndeterminateCheckbox({
+        indeterminate,
+        className = "",
+        ...rest
+    }: { indeterminate?: boolean } & HTMLProps<HTMLInputElement>) {
+        const ref = useRef<HTMLInputElement>(null!);
+        return (
+            <Checkbox
+                ref={ref}
+                className={className + " cursor-pointer"}
+                isChecked={rest.checked}
+                onChange={rest.onChange}
+                isIndeterminate={indeterminate}
+            ></Checkbox>
+        );
+    }
 }
