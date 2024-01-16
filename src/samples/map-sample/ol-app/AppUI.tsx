@@ -34,7 +34,7 @@ import {
 import { useSnapshot } from "valtio";
 import { AppConfig } from "./AppConfig";
 import { MAP_ID } from "./MapConfigProviderImpl";
-import { EditingImpl } from "@open-pioneer/editing";
+import { Editing } from "@open-pioneer/editing/api";
 
 type InteractionType = "measurement" | "selection" | undefined;
 
@@ -50,7 +50,7 @@ export function AppUI() {
     }
     const [showToc, setShowToc] = useState<boolean>(true);
     const [currentInteractionType, setCurrentInteractionType] = useState<InteractionType>();
-    const editingService = useService<EditingImpl>("editing.Editing"); // todo typescript integration correct?
+    const editingService = useService<Editing>("editing.Editing");
 
     function toggleInteractionType(type: InteractionType) {
         if (type === currentInteractionType) {
