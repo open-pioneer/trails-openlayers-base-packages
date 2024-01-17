@@ -25,7 +25,7 @@ export const ResultList: FC<ResultListProps> = (props) => {
 
     return (
         <ChakraProvider>
-            <Box {...containerProps} maxHeight="300px" overflowY="auto">
+            <Box {...containerProps} height="100%" overflowY="auto">
                 <DataTable columns={columns} data={data} />
             </Box>
         </ChakraProvider>

@@ -12,7 +12,7 @@ import { SectionHeading, TitledSection, ToolButton } from "@open-pioneer/react-u
 import { ScaleBar } from "@open-pioneer/scale-bar";
 import { ScaleViewer } from "@open-pioneer/scale-viewer";
 import { Search, SearchSelectEvent } from "@open-pioneer/search";
-import { Selection } from "@open-pioneer/selection";
+import { Selection, SelectionResult } from "@open-pioneer/selection";
 import {
     SelectionCompleteEvent,
     SelectionSourceChangedEvent
@@ -320,7 +320,12 @@ export function AppUI() {
                         </MapAnchor>
                     </MapContainer>
                     {resultListUiData.length > 0 && resultListIsActive && (
-                        <Box className="result-list" backgroundColor="white" width="100%">
+                        <Box
+                            className="result-list"
+                            backgroundColor="white"
+                            width="100%"
+                            height="300px"
+                        >
                             <ResultList
                                 data={resultListUiData}
                                 metadata={resultListColumns}
@@ -379,6 +384,16 @@ function SearchComponent() {
     );
 }
 
+function createResultUiDataSource(
+    data: Record<string, unknown>[] | SelectionResult[]
+): BaseFeature[] {
+    return data.map((item) => {
+        const { id, ...rest } = item;
+        const resultListItem = { id, ...rest } as BaseFeature;
+        return resultListItem;
+    });
+}
+
 function SelectionComponent(props: SelectionComponentProps) {
     const { setResultListUiData } = props;
     const intl = useIntl();
@@ -402,8 +417,8 @@ function SelectionComponent(props: SelectionComponentProps) {
 
         console.log(event.results);
         //const resultListData = event.results.map((item: ResultListData) => item);
-
-        setResultListUiData([...event.results]);
+        const source = createResultUiDataSource([...event.results]);
+        setResultListUiData(source);
 
         notifier.notify({
             level: "info",
