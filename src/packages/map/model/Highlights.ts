@@ -155,5 +155,22 @@ const defaultHighlightStyle = {
                 color: "rgba(224,255,255,0.35)"
             })
         })
+    ],
+    "MultiPolygon": [
+        new Style({
+            stroke: new Stroke({
+                color: "#fff",
+                width: 5
+            })
+        }),
+        new Style({
+            stroke: new Stroke({
+                color: "#00ffff",
+                width: 3
+            }),
+            fill: new Fill({
+                color: "rgba(224,255,255,0.35)"
+            })
+        })
     ]
 };

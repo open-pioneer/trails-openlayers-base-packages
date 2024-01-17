@@ -23,7 +23,8 @@ const documentedPackages = [
     "packages/local-storage",
     "packages/toc",
     "packages/search",
-    "packages/spatial-bookmarks"
+    "packages/spatial-bookmarks",
+    "packages/selection"
 ];
 
 const packagePaths = documentedPackages.sort().map((p) => `src/${p}`);

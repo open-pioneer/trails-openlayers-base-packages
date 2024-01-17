@@ -1,0 +1,38 @@
+.selection-drag-box {
+    background-color: rgba(255, 255, 255, 0.3) !important;
+    border: 3px solid var(--chakra-colors-background_primary) !important;
+}
+
+.selection-tooltip {
+    position: relative;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 4px;
+    color: black;
+    padding: 4px 8px;
+    opacity: 1;
+    white-space: nowrap;
+    font-size: 12px;
+    cursor: default;
+    user-select: none;
+    font-weight: bold;
+}
+
+.selection .react-select {
+    cursor: default;
+}
+
+.map-container .selection-active {
+    cursor: crosshair;
+}
+
+.map-container .selection-inactive {
+    cursor: no-drop;
+}
+
+.selection-source-value.selection-source-value--disabled {
+    opacity: 0.4;
+}
+
+.selection-source-value.selection-source-value--disabled span {
+    margin: 0px 6px 0px 0px;
+}

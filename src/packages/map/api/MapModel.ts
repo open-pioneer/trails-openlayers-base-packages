@@ -39,6 +39,7 @@ export interface HighlightStyle {
     Point?: StyleLike;
     LineString?: StyleLike;
     Polygon?: StyleLike;
+    MultiPolygon?: StyleLike;
 }
 
 /**

@@ -3,6 +3,7 @@ messages:
   tocTitle: "Karteninhalt"
   legendTitle: "Legende"
   measurementTitle: "Messen"
+  selectionTitle: Selektieren
   overviewMapTitle: "Übersichtskarte"
   ariaLabel:
     header: "Kopfleiste"
@@ -11,6 +12,12 @@ messages:
     toolbar: "Kartenwerkzeuge"
   geolocationTitle: "Geolokalisierung"
   spatialBookmarkTitle: "Räumliche Lesezeichen"
+  layerNotVisibleReason: "Zugehöriger Layer ist nicht sichtbar."
   searchSources:
     miningPermissions: Bergbauberechtigungen
     lika: Daten des Liegenschaftskatasters in NRW
+  foundResults: Es {resultsCount, plural,
+    =0 {wurden keine Ergebnisse}
+    one {wurde 1 Ergebnis}
+    other {wurden {resultsCount} Ergebnisse}
+    } gefunden.

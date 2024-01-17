@@ -2,17 +2,30 @@
 // SPDX-License-Identifier: Apache-2.0
 import { MapConfig, MapConfigProvider, SimpleLayer, WMSLayer, WMTSLayer } from "@open-pioneer/map";
 import GeoJSON from "ol/format/GeoJSON";
-import TileLayer from "ol/layer/Tile";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import { LegendItemAttributes } from "@open-pioneer/legend";
 import { CustomLegend, LoremIpsumLegend } from "./CustomLegend";
 import { OSM } from "ol/source";
+import WMTS from "ol/source/WMTS";
+import WMTSTileGrid from "ol/tilegrid/WMTS";
+import { Circle, Fill, Style } from "ol/style";
+import TileLayer from "ol/layer/Tile.js";
+import { ServiceOptions } from "@open-pioneer/runtime";
+import { OgcFeaturesVectorSourceFactory } from "@open-pioneer/ogc-features";
 
+interface References {
+    vectorSourceFactory: OgcFeaturesVectorSourceFactory;
+}
 export const MAP_ID = "main";
 
 export class MapConfigProviderImpl implements MapConfigProvider {
     mapId = MAP_ID;
+    private vectorSourceFactory: OgcFeaturesVectorSourceFactory;
+
+    constructor(options: ServiceOptions<References>) {
+        this.vectorSourceFactory = options.references.vectorSourceFactory;
+    }
 
     async getMapConfig(): Promise<MapConfig> {
         //const computedValue = "foo"; TODO add good examples for layerLegendProps
@@ -81,12 +94,20 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     }
                 }),
                 new SimpleLayer({
+                    id: "ogc_kitas",
                     title: "Kindertagesstätten",
                     visible: true,
                     olLayer: createKitasLayer(),
                     attributes: {
                         "legend": pointLayerLegendProps
                     }
+                }),
+                // TODO: Remove OGC Feature-Dependency? Or keep it and change createKitasLayer() to use createVectorSource?
+                new SimpleLayer({
+                    id: "ogc_kataster",
+                    title: "Liegenschaftskatasterbezirke in NRW (viele Daten)",
+                    visible: false,
+                    olLayer: createKatasterLayer(this.vectorSourceFactory)
                 }),
                 createSchulenLayer(),
                 createStrassenLayer(),
@@ -118,7 +139,28 @@ function createKitasLayer() {
     });
 
     return new VectorLayer({
-        source: geojsonSource
+        source: geojsonSource,
+        style: new Style({
+            image: new Circle({
+                fill: new Fill({ color: "blue" }),
+                radius: 4
+            })
+        })
+    });
+}
+
+function createKatasterLayer(vectorSourceFactory: OgcFeaturesVectorSourceFactory) {
+    const source = vectorSourceFactory.createVectorSource({
+        baseUrl: "https://ogc-api.nrw.de/lika/v1",
+        collectionId: "katasterbezirk",
+        limit: 1000,
+        crs: "http://www.opengis.net/def/crs/EPSG/0/25832",
+        attributions:
+            "<a href='https://www.govdata.de/dl-de/by-2-0'>Datenlizenz Deutschland - Namensnennung - Version 2.0</a>"
+    });
+
+    return new VectorLayer({
+        source: source
     });
 }
 function createAdminAreasNRW() {
