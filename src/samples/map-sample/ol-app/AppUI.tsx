@@ -20,7 +20,7 @@ import {
 
 import { SpatialBookmarks } from "@open-pioneer/spatial-bookmarks";
 import { Toc } from "@open-pioneer/toc";
-import { ResultList, ResultListData, ResultColumn, createColumns } from "@open-pioneer/result-list";
+import { ResultList, ResultListData, ResultColumn } from "@open-pioneer/result-list";
 
 import TileLayer from "ol/layer/Tile.js";
 import OSM from "ol/source/OSM.js";
@@ -81,7 +81,6 @@ export function AppUI() {
     const [currentInteractionType, setCurrentInteractionType] = useState<InteractionType>();
     const [resultListIsActive, setResultListActive] = useState<boolean>(true);
     const [resultListUiData, setResultListUiData] = useState<ResultListData[]>([]);
-    const columns = createColumns(resultListColumns);
 
     function toggleResultList() {
         setResultListActive(!resultListIsActive);
@@ -320,7 +319,10 @@ export function AppUI() {
                     </MapContainer>
                     {resultListUiData.length > 0 && resultListIsActive && (
                         <Box className="result-list" backgroundColor="white" width="100%">
-                            <ResultList data={resultListUiData} columns={columns}></ResultList>
+                            <ResultList
+                                data={resultListUiData}
+                                metadata={resultListColumns}
+                            ></ResultList>
                         </Box>
                     )}
                 </Flex>
