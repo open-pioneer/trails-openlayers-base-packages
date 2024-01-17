@@ -1084,6 +1084,9 @@ importers:
       '@open-pioneer/legend':
         specifier: workspace:^
         version: link:../../../packages/legend
+      '@open-pioneer/http':
+        specifier: ^2.1.1
+        version: 2.1.1(@open-pioneer/core@1.2.1)(@open-pioneer/runtime@2.0.2)
       '@open-pioneer/map':
         specifier: workspace:^
         version: link:../../../packages/map
