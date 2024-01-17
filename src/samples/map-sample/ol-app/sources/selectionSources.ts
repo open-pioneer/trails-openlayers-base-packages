@@ -47,9 +47,12 @@ export class VectorLayerSelectionSource
         return this.#status;
     }
 
-    async select(selection: SelectionKind, options: SelectionOptions): Promise<SelectionResult[]> {
-        if (selection.type !== "extent") {
-            throw new Error(`Unsupported selection kind: ${selection.type}`);
+    async select(
+        selectionKind: SelectionKind,
+        options: SelectionOptions
+    ): Promise<SelectionResult[]> {
+        if (selectionKind.type !== "extent") {
+            throw new Error(`Unsupported selection kind: ${selectionKind.type}`);
         }
 
         if (this.#status.kind !== "available" || this.#vectorLayer.getSource() === null) return [];
@@ -57,7 +60,7 @@ export class VectorLayerSelectionSource
         const allResults: SelectionResult[] = [];
         this.#vectorLayer
             .getSource()!
-            .forEachFeatureIntersectingExtent(selection.extent, (feature) => {
+            .forEachFeatureIntersectingExtent(selectionKind.extent, (feature) => {
                 if (!feature.getGeometry()) return;
                 const result: SelectionResult = {
                     id: feature.getId()?.toString() || feature.getGeometry.toString(),

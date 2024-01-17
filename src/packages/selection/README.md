@@ -57,9 +57,9 @@ class MySelectionSource implements SelectionSource {
     // The reason that the source is not available. If it is not defined, the i18n value for "sourceNotAvailable" will be displayed
     unavailableStatusReason?: string;
 
-    // Performs a selection and returns a list of selection results.
+    // Performs a selection with a given selectionKind and returns a list of selection results.
     // see the API documentation of `SelectionSource`.
-    select(selection: SelectionKind, options: SelectionOptions): Promise<SelectionResult[]>;
+    select(selectionKind: SelectionKind, options: SelectionOptions): Promise<SelectionResult[]>;
 }
 
 const selectionsources: SelectionSource[] = [new MySelectionSource()];
