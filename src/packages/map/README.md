@@ -698,12 +698,12 @@ We expect to implement more classes in the future.
 Example: Center map to given coordinates using the map model and set layer visibility using the layer instance.
 
 ```ts
-import { ServiceOptions, ServiceType } from "@open-pioneer/runtime";
+import { ServiceOptions } from "@open-pioneer/runtime";
 import { MAP_ID } from "./MapConfigProviderImpl";
 import type { MapRegistry } from "@open-pioneer/map";
 
 interface References {
-    mapRegistry: ServiceType<"map.MapRegistry">;
+    mapRegistry: MapRegistry;
 }
 
 export class TestService {
