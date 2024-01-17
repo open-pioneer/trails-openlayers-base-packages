@@ -181,9 +181,7 @@ export function AppUI() {
                                             </TitledSection>
                                         </Box>
                                     )}
-                                    {showToc && (legendIsActive || currentInteractionType) && (
-                                        <Divider mt={4} mb={4} />
-                                    )}
+                                    {showToc && legendIsActive && <Divider mt={4} mb={4} />}
                                     {legendIsActive && (
                                         <Box role="dialog" aria-labelledby={legendTitleId}>
                                             <TitledSection
