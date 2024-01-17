@@ -82,7 +82,7 @@ export interface ExtentSelection {
 /**
  * The selection made by the user.
  *
- * This us currently always `type: "extent"`, but additional selection kinds
+ * This is currently always `type: "extent"`, but additional selection kinds
  * may be added in the future.
  *
  * Selection sources should check the `type` and throw an error for unsupported
@@ -121,8 +121,9 @@ export interface SelectionSource extends Partial<SelectionSourceEventBase> {
      *
      * Implementations should return the results ordered by priority (best match first), if possible.
      *
-     * @param selectionKind: The geometry with which to perform the spatial selection. Currently only
+     * @param selectionKind The geometry with which to perform the spatial selection. Currently only
      * an extent is supported.
+     * @param options see interface documentation {@link SelectionOptions}
      */
-    select(selection: SelectionKind, options: SelectionOptions): Promise<SelectionResult[]>;
+    select(selectionKind: SelectionKind, options: SelectionOptions): Promise<SelectionResult[]>;
 }

@@ -60,7 +60,6 @@ export function AppUI() {
         } else {
             setCurrentInteractionType(type);
         }
-        // TODO: refactor logik?
         map?.removeHighlight();
     }
 
