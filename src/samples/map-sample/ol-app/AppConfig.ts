@@ -103,6 +103,13 @@ export class AppConfig implements Service {
         //     searchProperty: "flurstid",
         //     labelProperty: "objid"
         // }),
+        const flrstSource = this._ogcSearchSourceFactory.createSearchSource({
+            label: this._intl.formatMessage({ id: "searchSources.lika" }),
+            baseUrl: "https://ogc-api.nrw.de/lika/v1",
+            collectionId: "flurstueck",
+            searchProperty: "flurstid",
+            labelProperty: "objid"
+        });
         const ogcSource = this._ogcSearchSourceFactory.createSearchSource({
             label: this._intl.formatMessage({ id: "searchSources.miningPermissions" }),
             baseUrl: "https://ogc-api.nrw.de/inspire-am-bergbauberechtigungen/v1",
@@ -128,7 +135,7 @@ export class AppConfig implements Service {
             ["city", "street"],
             this._httpService
         );
-        const sources = [ref(ogcSource), ref(photonSource)];
+        const sources = [ref(flrstSource), ref(ogcSource), ref(photonSource)];
         this._state.searchSources = sources;
     }
 

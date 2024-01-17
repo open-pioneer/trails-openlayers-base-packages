@@ -23,9 +23,3 @@ export interface ResultColumn {
     displayName?: string;
     width?: number;
 }
-
-export interface ResultListData {
-    id: number | string;
-    geometry?: Geometry;
-    properties?: Readonly<Record<string, unknown>>;
-}

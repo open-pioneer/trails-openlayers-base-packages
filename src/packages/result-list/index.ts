@@ -2,4 +2,4 @@
 // SPDX-License-Identifier: Apache-2.0
 export { ResultList } from "./ResultList";
 export { createColumns } from "./createColumns";
-export type { ResultData, ResultColumn, ResultListData } from "./api";
+export type { ResultData, ResultColumn } from "./api";

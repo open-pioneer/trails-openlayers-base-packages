@@ -15,3 +15,8 @@ messages:
   searchSources:
     miningPermissions: Mining permissions
     lika: Cadastre data in NRW
+  foundResults: Found {resultsCount, plural,
+    =0 {no results}
+    one {1 result}
+    other {{resultsCount} results}
+    }.

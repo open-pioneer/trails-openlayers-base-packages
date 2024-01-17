@@ -6,14 +6,15 @@ import { CommonComponentProps, useCommonComponentProps, useEvent } from "@open-p
 import { FC, useMemo } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "./DataTable";
-import { ResultListData, ResultColumn } from "./api";
+import { ResultColumn } from "./api";
 
 import { createColumns } from "./createColumns";
+import { BaseFeature } from "@open-pioneer/map/api/BaseFeature";
 
 const LOG = createLogger("result-list:ResultList");
 
 export interface ResultListProps extends CommonComponentProps {
-    data: ResultListData[];
+    data: BaseFeature[];
     metadata: ResultColumn[];
 }
 

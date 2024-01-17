@@ -105,10 +105,7 @@ export class DragController {
     }
 
     /**
-     * Method for create a simple extent-selection
-     * @param olMap
-     * @param onExtentSelected
-     * @returns
+     * Method to create a simple extent-selection
      */
     private createDragBox(
         olMap: OlMap,
@@ -142,7 +139,6 @@ export class DragController {
 
     /**
      * Method to activate pan with right-mouse-click
-     * @returns
      */
     private createDrag(
         olMap: OlMap,
@@ -179,9 +175,6 @@ export class DragController {
 
     /**
      * Method to generate a tooltip on the mouse cursor
-     * @param olMap
-     * @param message
-     * @returns
      */
     private createHelpTooltip(olMap: OlMap, message: string) {
         const element = document.createElement("div");

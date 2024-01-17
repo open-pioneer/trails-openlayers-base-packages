@@ -53,9 +53,12 @@ export class FakePointSelectionSource
         }
     }
 
-    async select(selection: SelectionKind, options: SelectionOptions): Promise<SelectionResult[]> {
-        if (selection.type !== "extent") {
-            throw new Error(`Unsupported selection kind: ${selection.type}`);
+    async select(
+        selectionKind: SelectionKind,
+        options: SelectionOptions
+    ): Promise<SelectionResult[]> {
+        if (selectionKind.type !== "extent") {
+            throw new Error(`Unsupported selection kind: ${selectionKind.type}`);
         }
 
         if (this.#status !== "available") return [];
@@ -67,7 +70,7 @@ export class FakePointSelectionSource
                 id: index,
                 geometry: point
             };
-            if (!point.intersectsExtent(selection.extent)) {
+            if (!point.intersectsExtent(selectionKind.extent)) {
                 return undefined;
             }
             return result;
@@ -82,6 +85,14 @@ export class FakePointSelectionSource
     }
 }
 
+/**
+ * A SelectionSource to use an OpenLayers VectorLayer with an OpenLayers VectorSource (e.g. layer of the map).
+ * Features are:
+ * -   using only the extent as selection kind
+ * -   listening to layer visibility changes and updating the status of the source
+ * -   limiting the number of returned selection results to the corresponding selection option
+ * -   throwing an event `changed:status` when the status updates
+ */
 export class VectorLayerSelectionSource
     extends EventEmitter<SelectionSourceEvents>
     implements SelectionSource
@@ -115,9 +126,12 @@ export class VectorLayerSelectionSource
         return this.#status;
     }
 
-    async select(selection: SelectionKind, options: SelectionOptions): Promise<SelectionResult[]> {
-        if (selection.type !== "extent") {
-            throw new Error(`Unsupported selection kind: ${selection.type}`);
+    async select(
+        selectionKind: SelectionKind,
+        options: SelectionOptions
+    ): Promise<SelectionResult[]> {
+        if (selectionKind.type !== "extent") {
+            throw new Error(`Unsupported selection kind: ${selectionKind.type}`);
         }
 
         if (this.#status.kind !== "available" || this.#vectorLayer.getSource() === null) return [];
@@ -125,7 +139,7 @@ export class VectorLayerSelectionSource
         const allResults: SelectionResult[] = [];
         this.#vectorLayer
             .getSource()!
-            .forEachFeatureIntersectingExtent(selection.extent, (feature) => {
+            .forEachFeatureIntersectingExtent(selectionKind.extent, (feature) => {
                 if (!feature.getGeometry()) return;
                 const result: SelectionResult = {
                     id: feature.getId()?.toString() || feature.getGeometry.toString(),
@@ -153,6 +167,9 @@ export class VectorLayerSelectionSource
     }
 }
 
+/**
+ * For testing purposes only
+ */
 export class NoStatusSelectionSource
     extends EventEmitter<SelectionSourceEvents>
     implements SelectionSource
