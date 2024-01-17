@@ -4,7 +4,9 @@ messages:
   measurementTitle: "Messen"
   selectionTitle: Selektieren
   overviewMapTitle: "Übersichtskarte"
-  editingTitle: "Editing - Neues Feature erstellen"
+  startEditingTitle: "Editing - Neues Feature erstellen"
+  stopEditingTitle: "Editing - Stoppen"
+  resetEditingTitle: "Editing - Zurücksetzen"
   ariaLabel:
     header: "Kopfleiste"
     footer: "Fussleiste mit Maßstabsangabe, Raumbezugssystem und Koordinatenanzeige"

@@ -4,7 +4,9 @@ messages:
   measurementTitle: "Measurement"
   selectionTitle: Selection
   overviewMapTitle: "Overview map"
-  editingTitle: "Editing - Create new feature"
+  startEditingTitle: "Editing - Create new feature"
+  stopEditingTitle: "Editing - Stop"
+  resetEditingTitle: "Editing - Reset"
   ariaLabel:
     header: "Header bar"
     footer: "Base bar with scale information, spatial reference system and coordinate display"

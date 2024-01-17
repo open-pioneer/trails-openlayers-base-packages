@@ -24,10 +24,12 @@ import OSM from "ol/source/OSM.js";
 import { useIntl, useService } from "open-pioneer:react-hooks";
 import { useId, useMemo, useState } from "react";
 import {
+    PiArrowUUpLeft,
     PiBookmarksSimpleBold,
     PiListLight,
     PiMapTrifold,
     PiPencil,
+    PiPencilSlash,
     PiRulerLight,
     PiSelectionPlusBold
 } from "react-icons/pi";
@@ -75,7 +77,18 @@ export function AppUI() {
     }
 
     function startEditingCreate() {
-        editingService.startEditing(map?.layers.getLayerById("krankenhaus"));
+        const layer = map?.layers.getLayerById("krankenhaus");
+        if (layer) {
+            editingService.start(layer);
+        }
+    }
+
+    function stopEditingCreate() {
+        editingService.stop(MAP_ID);
+    }
+
+    function resetEditingCreate() {
+        editingService.reset(MAP_ID);
     }
 
     function toggleToc() {
@@ -280,9 +293,19 @@ export function AppUI() {
                                 <ZoomIn mapId={MAP_ID} />
                                 <ZoomOut mapId={MAP_ID} />
                                 <ToolButton
-                                    label={intl.formatMessage({ id: "editingTitle" })}
+                                    label={intl.formatMessage({ id: "startEditingTitle" })}
                                     icon={<PiPencil />}
                                     onClick={startEditingCreate}
+                                />
+                                <ToolButton
+                                    label={intl.formatMessage({ id: "stopEditingTitle" })}
+                                    icon={<PiPencilSlash />}
+                                    onClick={stopEditingCreate}
+                                />
+                                <ToolButton
+                                    label={intl.formatMessage({ id: "resetEditingTitle" })}
+                                    icon={<PiArrowUUpLeft />}
+                                    onClick={resetEditingCreate}
                                 />
                             </Flex>
                         </MapAnchor>

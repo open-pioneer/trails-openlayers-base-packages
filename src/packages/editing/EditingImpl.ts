@@ -1,7 +1,6 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Layer, MapRegistry, TOPMOST_LAYER_Z } from "@open-pioneer/map";
-import { StyleLike } from "ol/style/Style";
+import { LayerBase, MapRegistry, TOPMOST_LAYER_Z } from "@open-pioneer/map";
 import { Editing } from "./api";
 import Draw from "ol/interaction/Draw";
 import VectorSource from "ol/source/Vector";
@@ -11,32 +10,37 @@ import GeoJSON from "ol/format/GeoJSON";
 import { Polygon } from "ol/geom";
 import { saveCreatedFeature } from "./SaveFeaturesHandler";
 import { HttpService } from "@open-pioneer/http";
+import OlMap from "ol/Map";
 
 interface References {
     mapRegistry: MapRegistry;
     httpService: HttpService;
 }
 
+interface EditingInteraction {
+    // Temporally layer
+    drawLayer: VectorLayer<VectorSource>;
+    // Layer to add geometries
+    editingLayer?: LayerBase;
+    interaction: Draw;
+    olMap: OlMap;
+}
+
 export class EditingImpl implements Editing {
     private readonly _mapRegistry: MapRegistry;
     _httpService: HttpService;
-    private activeLayer?: Layer;
+    private editingInteractions: Map<string, EditingInteraction>;
 
     constructor(serviceOptions: ServiceOptions<References>) {
         this._mapRegistry = serviceOptions.references.mapRegistry;
         this._httpService = serviceOptions.references.httpService;
+        this.editingInteractions = new Map();
     }
 
     async _initializeEditing(mapId: string) {
-        // todo check if was initialized for map
-        // if not:
         const map = await this._mapRegistry.expectMapModel(mapId);
-
         const olMap = map.olMap;
-        this.activeLayer = undefined;
 
-        // todo use pioneer tools to create layer? --> if yes, add specific id to layer (e.g. "editingDrawLayer_MAPID")
-        // Create and add draw source and layer to map
         const drawSource = new VectorSource();
         const drawLayer = new VectorLayer({
             source: drawSource,
@@ -45,15 +49,12 @@ export class EditingImpl implements Editing {
         });
         olMap.addLayer(drawLayer);
 
-        // Create draw interaction
         const drawInteraction = new Draw({
             source: drawSource,
             type: "Polygon"
         });
 
-        // Add event listener
-        const drawAbortListener = drawInteraction.on("drawabort", () => {});
-        const drawEndListener = drawInteraction.on("drawend", (e) => {
+        drawInteraction.on("drawend", (e) => {
             // todo use mapId to get correct layer --> get layer url
             const layerUrl =
                 "https://ogc-api-test.nrw.de/inspire-us-krankenhaus/v1/collections/governmentalservice/items";
@@ -81,47 +82,69 @@ export class EditingImpl implements Editing {
             // todo set default properties when saving feature?
             saveCreatedFeature(this._httpService, layerUrl, geoJSONGeometry);
         });
-        const errorListener = drawInteraction.on("error", () => {
-            // Todo
-        });
 
         // todo register esc listener if possible to do only for focussed map --> call method resetDrawing
 
-        // store that editing has been intitialized for this map
-        // e.g. JS map: "MAPID": DrawInteraction;
+        // store that editing has been initialized for this map
+        this.editingInteractions.set(mapId, {
+            drawLayer: drawLayer,
+            interaction: drawInteraction,
+            olMap: olMap
+        });
+
         return drawInteraction;
     }
 
-    async startEditing(layer: Layer<{}>) {
-        // todo: get map and mapID from layer
+    async start(layer: LayerBase<{}>) {
+        const mapId = layer.map.id;
+        let active = this.editingInteractions.get(mapId);
 
-        // stopEditing before startEditing, if activeLayer is set
-        if (this.activeLayer) {
-            // todo in abhaengigkeit von mapID pruefen
-            this.stopEditing();
+        // initialize editing interaction, if not initialized for the map
+        if (!active) {
+            await this._initializeEditing(mapId);
+            active = this.editingInteractions.get(mapId);
         }
 
-        const drawInteraction = await this._initializeEditing("main"); // todo mapId
+        if (!active) {
+            return;
+        }
 
-        // Set active layer to configured layer
-        this.activeLayer = layer; // todo in abhaenigekeit von mapId merken
+        // stop editing, if editing interaction is currently active
+        if (active.editingLayer) {
+            this.stop(mapId);
+        }
 
-        const map = await this._mapRegistry.getMapModel("main"); // todo remove
-        map?.olMap.addInteraction(drawInteraction);
+        active.editingLayer = layer;
+        this.editingInteractions.set(mapId, active);
+
+        active.olMap.addInteraction(active.interaction);
     }
 
-    // todo oder layer als input, dann aber auch eine getActiveEditedLayerForMap methode einfuehren
-    stopEditing(mapId: string): void {
-        // Delete all features from draw source
-        this.drawSource.clear();
+    // TODO: sicherheitsabfrage, falls stopEditing ausgeführt wird, wenn Feature nicht zu Ende gezeichnet wurde
+    async stop(mapId: string) {
+        const active = this.editingInteractions.get(mapId);
 
-        // Unset active layer
-        this.activeLayer = undefined;
+        if (!active) {
+            return;
+        }
 
-        this.olMap.removeInteraction(this.drawInteraction);
+        // TODO: Move into EventLister drawEnd
+        // active.drawLayer.getSource()?.clear();
+
+        active.editingLayer = undefined;
+        this.editingInteractions.set(mapId, active);
+
+        active.olMap.removeInteraction(active.interaction);
     }
 
-    resetDrawing(mapId: string) {
-        // Todo sicherheitsabfrage?
+    // TODO: sicherheitsabfrage, falls stopEditing ausgeführt wird, wenn Feature nicht zu Ende gezeichnet wurde
+    reset(mapId: string) {
+        const active = this.editingInteractions.get(mapId);
+
+        if (!active) {
+            return;
+        }
+
+        active.interaction.abortDrawing();
     }
 }
