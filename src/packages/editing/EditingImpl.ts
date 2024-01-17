@@ -11,6 +11,8 @@ import { Polygon } from "ol/geom";
 import { saveCreatedFeature } from "./SaveFeaturesHandler";
 import { HttpService } from "@open-pioneer/http";
 import OlMap from "ol/Map";
+// import { StyleLike } from "ol/style/Style";
+import { Style, Fill, Stroke } from "ol/style";
 
 interface References {
     mapRegistry: MapRegistry;
@@ -44,14 +46,14 @@ export class EditingImpl implements Editing {
         const drawSource = new VectorSource();
         const drawLayer = new VectorLayer({
             source: drawSource,
-            // style: editingStyle, todo use default style and allow to set style using service properties
             zIndex: TOPMOST_LAYER_Z
         });
         olMap.addLayer(drawLayer);
 
         const drawInteraction = new Draw({
             source: drawSource,
-            type: "Polygon"
+            type: "Polygon",
+            style: getDefaultStyle()
         });
 
         // Add EventListener on focused map to abort actual interaction via `Escape`
@@ -160,3 +162,15 @@ export class EditingImpl implements Editing {
         active.interaction.abortDrawing();
     }
 }
+
+export const getDefaultStyle = () => {
+    return new Style({
+        stroke: new Stroke({
+            color: "yellow",
+            width: 3
+        }),
+        fill: new Fill({
+            color: "rgba(0, 0, 0, 0.1)"
+        })
+    });
+};
