@@ -38,7 +38,7 @@ import { AppConfig } from "./AppConfig";
 import { MAP_ID } from "./MapConfigProviderImpl";
 import { Editing } from "@open-pioneer/editing/api";
 
-type InteractionType = "measurement" | "selection" | undefined;
+type InteractionType = "measurement" | "selection" | undefined; // TODO: Add editing interaction
 
 export function AppUI() {
     const intl = useIntl();

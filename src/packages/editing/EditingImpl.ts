@@ -11,8 +11,7 @@ import { Polygon } from "ol/geom";
 import { saveCreatedFeature } from "./SaveFeaturesHandler";
 import { HttpService } from "@open-pioneer/http";
 import OlMap from "ol/Map";
-// import { StyleLike } from "ol/style/Style";
-import { Style, Fill, Stroke } from "ol/style";
+import { StyleLike } from "ol/style/Style";
 
 interface References {
     mapRegistry: MapRegistry;
@@ -32,11 +31,13 @@ export class EditingImpl implements Editing {
     private readonly _mapRegistry: MapRegistry;
     _httpService: HttpService;
     private editingInteractions: Map<string, EditingInteraction>;
+    private defaultStyle: StyleLike;
 
     constructor(serviceOptions: ServiceOptions<References>) {
         this._mapRegistry = serviceOptions.references.mapRegistry;
         this._httpService = serviceOptions.references.httpService;
         this.editingInteractions = new Map();
+        this.defaultStyle = serviceOptions.properties.defaultStyle as StyleLike;
     }
 
     async _initializeEditing(mapId: string) {
@@ -53,7 +54,7 @@ export class EditingImpl implements Editing {
         const drawInteraction = new Draw({
             source: drawSource,
             type: "Polygon",
-            style: getDefaultStyle()
+            style: this.defaultStyle
         });
 
         // Add EventListener on focused map to abort actual interaction via `Escape`
@@ -162,15 +163,3 @@ export class EditingImpl implements Editing {
         active.interaction.abortDrawing();
     }
 }
-
-export const getDefaultStyle = () => {
-    return new Style({
-        stroke: new Stroke({
-            color: "yellow",
-            width: 3
-        }),
-        fill: new Fill({
-            color: "rgba(0, 0, 0, 0.1)"
-        })
-    });
-};

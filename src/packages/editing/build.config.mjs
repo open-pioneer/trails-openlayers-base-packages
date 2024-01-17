@@ -15,6 +15,13 @@ export default defineBuildConfig({
             }
         }
     },
+    properties: {
+        defaultStyle: {
+            "stroke-color": "yellow",
+            "stroke-width": 2,
+            "fill-color": "rgba(0, 0, 0, 0.1)"
+        }
+    },
     publishConfig: {
         strict: true
     }
