@@ -6,11 +6,19 @@ import { ResultListData, ResultColumn } from "./api";
 const columnHelper = createColumnHelper<ResultListData>();
 
 export function createColumns(metaData: ResultColumn[]) {
-    return metaData.map((metaDataItem) => {
+    // TODO: Remove unneeded code after clarification
+    /*const fullWidth = metaData.reduce((sum, metaDataItem) => (metaDataItem.width ?? 0) + sum, 0);
+    const undefinedWidthCount = metaData.reduce((sum, metaDataItem) => metaDataItem.width === undefined ? sum + 1 : sum, 0);
+    const remainingWidth = (1920 - 50) - fullWidth;*/
+    return metaData.map((metaDataItem, index) => {
+        const columnWidth = metaDataItem.width; /*|| (remainingWidth / undefinedWidthCount);*/
+        console.debug(`Width for col ${metaDataItem.displayName}: ${columnWidth}`);
         // @ts-expect-error: WIP
         return columnHelper.accessor(metaDataItem.name, {
+            id: index + (metaDataItem.displayName || ""),
             cell: (info) => info.getValue(),
-            header: metaDataItem.displayName
+            header: metaDataItem.displayName,
+            size: columnWidth
         });
     });
 }

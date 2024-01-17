@@ -43,8 +43,6 @@ export function DataTable<Data extends object>(props: DataTableProps<Data>) {
     // TODO: full-width tables (100%) causes problems with cell sizes (maxSize not working...)
     //  --> need to distribute space manually? but then, no good window resizing possible....
 
-    /*columns.forEach((column) => column.maxSize = -1);*/
-
     const [allColumns, setAllColumns] = useState<ColumnDef<Data>[]>([selectColumn, ...columns]);
 
     const table = useReactTable({
@@ -81,9 +79,11 @@ export function DataTable<Data extends object>(props: DataTableProps<Data>) {
 
     return (
         <Table
-            className={"result-list-table-element w-full"}
+            className={"result-list-table-element"}
             {...{
-                style: { ...columnSizeVars }
+                style: { ...columnSizeVars },
+                // 99% to avoid 1 pixel scrollbar
+                width: "99%"
             }}
         >
             <Thead>
@@ -204,8 +204,12 @@ function TableBody<Data extends object>({ table }: { table: TanstackTable<Data> 
                             const width = `calc(var(--header-${cell.column.id}-size) * 1px)`;
                             return (
                                 <>
-                                    {index === 0 ? (
-                                        <Td key={cell.id} style={{ width: "70px" }}>
+                                    <Td
+                                        key={cell.id}
+                                        isNumeric={meta?.isNumeric}
+                                        style={{ width: width }}
+                                    >
+                                        {index === 0 ? (
                                             <IndeterminateCheckbox
                                                 {...{
                                                     checked: row.getIsSelected(),
@@ -214,19 +218,15 @@ function TableBody<Data extends object>({ table }: { table: TanstackTable<Data> 
                                                     onChange: row.getToggleSelectedHandler()
                                                 }}
                                             />
-                                        </Td>
-                                    ) : (
-                                        <Td
-                                            key={cell.id}
-                                            isNumeric={meta?.isNumeric}
-                                            style={{ width: width }}
-                                        >
-                                            {flexRender(
-                                                cell.column.columnDef.cell,
-                                                cell.getContext()
-                                            )}
-                                        </Td>
-                                    )}
+                                        ) : (
+                                            <>
+                                                {flexRender(
+                                                    cell.column.columnDef.cell,
+                                                    cell.getContext()
+                                                )}
+                                            </>
+                                        )}
+                                    </Td>
                                 </>
                             );
                         })}
