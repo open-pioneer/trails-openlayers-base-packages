@@ -54,6 +54,20 @@ export class EditingImpl implements Editing {
             type: "Polygon"
         });
 
+        // Add EventListener on focused map to abort actual interaction via `Escape`
+        const container: HTMLElement | undefined = olMap.getTargetElement() ?? undefined;
+        if (container) {
+            container.addEventListener(
+                "keydown",
+                (e: KeyboardEvent) => {
+                    if (e.code === "Escape" && e.target === olMap.getTargetElement()) {
+                        this.reset(mapId);
+                    }
+                },
+                false
+            );
+        }
+
         drawInteraction.on("drawend", (e) => {
             // todo use mapId to get correct layer --> get layer url
             const layerUrl =
@@ -82,8 +96,6 @@ export class EditingImpl implements Editing {
             // todo set default properties when saving feature?
             saveCreatedFeature(this._httpService, layerUrl, geoJSONGeometry);
         });
-
-        // todo register esc listener if possible to do only for focussed map --> call method resetDrawing
 
         // store that editing has been initialized for this map
         this.editingInteractions.set(mapId, {
