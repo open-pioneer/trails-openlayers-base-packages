@@ -53,12 +53,12 @@ const resultListColumns: ResultColumn[] = [
     {
         name: "name",
         displayName: "Name",
-        width: 200
+        width: 150
     },
     {
         name: "inspireId",
         displayName: "inspireID",
-        width: 400
+        width: 300
     },
     {
         name: "gefoerdert",

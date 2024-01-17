@@ -43,8 +43,6 @@ export function DataTable<Data extends object>(props: DataTableProps<Data>) {
     // TODO: full-width tables (100%) causes problems with cell sizes (maxSize not working...)
     //  --> need to distribute space manually? but then, no good window resizing possible....
 
-    /*columns.forEach((column) => column.maxSize = -1);*/
-
     const [allColumns, setAllColumns] = useState<ColumnDef<Data>[]>([selectColumn, ...columns]);
 
     const table = useReactTable({
@@ -81,9 +79,11 @@ export function DataTable<Data extends object>(props: DataTableProps<Data>) {
 
     return (
         <Table
-            className={"result-list-table-element w-full"}
+            className={"result-list-table-element"}
             {...{
-                style: { ...columnSizeVars }
+                style: { ...columnSizeVars },
+                // 99% to avoid 1 pixel scrollbar
+                width: "99%"
             }}
         >
             <Thead>
@@ -96,67 +96,64 @@ export function DataTable<Data extends object>(props: DataTableProps<Data>) {
                             const width = `calc(var(--header-${header?.id}-size) * 1px)`;
                             return (
                                 <>
-                                    {index === 0 ? (
-                                        <Th
-                                            key={header.id}
-                                            onClick={header.column.getToggleSortingHandler()}
-                                            isNumeric={meta?.isNumeric}
-                                            style={{ width: "50px" }}
-                                        >
-                                            {
-                                                <IndeterminateCheckbox
-                                                    {...{
-                                                        checked: table.getIsAllRowsSelected(),
-                                                        indeterminate:
-                                                            table.getIsSomeRowsSelected(),
-                                                        onChange:
-                                                            table.getToggleAllRowsSelectedHandler()
-                                                    }}
-                                                />
-                                            }
-                                            <chakra.span
-                                                onDoubleClick={() => header.column.resetSize()}
-                                                onMouseDown={header.getResizeHandler()}
-                                                onTouchStart={header.getResizeHandler()}
-                                                className={`resizer ${
-                                                    header.column.getIsResizing()
-                                                        ? "isResizing"
-                                                        : ""
-                                                }`}
-                                            ></chakra.span>
-                                        </Th>
-                                    ) : (
-                                        <Th
-                                            key={header.id}
-                                            onClick={header.column.getToggleSortingHandler()}
-                                            isNumeric={meta?.isNumeric}
-                                            style={{ width: width }}
-                                        >
-                                            {flexRender(
-                                                header.column.columnDef.header,
-                                                header.getContext()
-                                            )}
-                                            <chakra.span pl="4">
-                                                {header.column.getIsSorted() ? (
-                                                    header.column.getIsSorted() === "desc" ? (
-                                                        <TriangleDownIcon aria-label="sorted descending" />
-                                                    ) : (
-                                                        <TriangleUpIcon aria-label="sorted ascending" />
-                                                    )
-                                                ) : null}
-                                            </chakra.span>
-                                            <chakra.span
-                                                onDoubleClick={() => header.column.resetSize()}
-                                                onMouseDown={header.getResizeHandler()}
-                                                onTouchStart={header.getResizeHandler()}
-                                                className={`resizer ${
-                                                    header.column.getIsResizing()
-                                                        ? "isResizing"
-                                                        : ""
-                                                }`}
-                                            ></chakra.span>
-                                        </Th>
-                                    )}
+                                    <Th
+                                        key={header.id}
+                                        onClick={header.column.getToggleSortingHandler()}
+                                        isNumeric={meta?.isNumeric}
+                                        style={{ width: index === 0 ? "50px" : width }}
+                                    >
+                                        {index === 0 ? (
+                                            <>
+                                                {
+                                                    <IndeterminateCheckbox
+                                                        {...{
+                                                            checked: table.getIsAllRowsSelected(),
+                                                            indeterminate:
+                                                                table.getIsSomeRowsSelected(),
+                                                            onChange:
+                                                                table.getToggleAllRowsSelectedHandler()
+                                                        }}
+                                                    />
+                                                }
+                                                <chakra.span
+                                                    onDoubleClick={() => header.column.resetSize()}
+                                                    onMouseDown={header.getResizeHandler()}
+                                                    onTouchStart={header.getResizeHandler()}
+                                                    className={`resizer ${
+                                                        header.column.getIsResizing()
+                                                            ? "isResizing"
+                                                            : ""
+                                                    }`}
+                                                ></chakra.span>
+                                            </>
+                                        ) : (
+                                            <>
+                                                {flexRender(
+                                                    header.column.columnDef.header,
+                                                    header.getContext()
+                                                )}
+                                                <chakra.span pl="4">
+                                                    {header.column.getIsSorted() ? (
+                                                        header.column.getIsSorted() === "desc" ? (
+                                                            <TriangleDownIcon aria-label="sorted descending" />
+                                                        ) : (
+                                                            <TriangleUpIcon aria-label="sorted ascending" />
+                                                        )
+                                                    ) : null}
+                                                </chakra.span>
+                                                <chakra.span
+                                                    onDoubleClick={() => header.column.resetSize()}
+                                                    onMouseDown={header.getResizeHandler()}
+                                                    onTouchStart={header.getResizeHandler()}
+                                                    className={`resizer ${
+                                                        header.column.getIsResizing()
+                                                            ? "isResizing"
+                                                            : ""
+                                                    }`}
+                                                ></chakra.span>
+                                            </>
+                                        )}
+                                    </Th>
                                 </>
                             );
                         })}
@@ -165,9 +162,9 @@ export function DataTable<Data extends object>(props: DataTableProps<Data>) {
             </Thead>
             {/* When resizing any column we will render this special memoized version of our table body */}
             {table.getState().columnSizingInfo.isResizingColumn ? (
-                <MemoizedTableBody table={table}></MemoizedTableBody>
+                <MemoizedTableBody key={76548443} table={table}></MemoizedTableBody>
             ) : (
-                <TableBody table={table}></TableBody>
+                <TableBody key={546756} table={table}></TableBody>
             )}
         </Table>
     );
@@ -204,8 +201,12 @@ function TableBody<Data extends object>({ table }: { table: TanstackTable<Data> 
                             const width = `calc(var(--header-${cell.column.id}-size) * 1px)`;
                             return (
                                 <>
-                                    {index === 0 ? (
-                                        <Td key={cell.id} style={{ width: "70px" }}>
+                                    <Td
+                                        key={cell.id}
+                                        isNumeric={meta?.isNumeric}
+                                        style={{ width: width }}
+                                    >
+                                        {index === 0 ? (
                                             <IndeterminateCheckbox
                                                 {...{
                                                     checked: row.getIsSelected(),
@@ -214,19 +215,15 @@ function TableBody<Data extends object>({ table }: { table: TanstackTable<Data> 
                                                     onChange: row.getToggleSelectedHandler()
                                                 }}
                                             />
-                                        </Td>
-                                    ) : (
-                                        <Td
-                                            key={cell.id}
-                                            isNumeric={meta?.isNumeric}
-                                            style={{ width: width }}
-                                        >
-                                            {flexRender(
-                                                cell.column.columnDef.cell,
-                                                cell.getContext()
-                                            )}
-                                        </Td>
-                                    )}
+                                        ) : (
+                                            <>
+                                                {flexRender(
+                                                    cell.column.columnDef.cell,
+                                                    cell.getContext()
+                                                )}
+                                            </>
+                                        )}
+                                    </Td>
                                 </>
                             );
                         })}
