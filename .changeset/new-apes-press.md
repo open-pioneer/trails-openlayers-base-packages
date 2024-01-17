@@ -4,4 +4,4 @@
 "@open-pioneer/search": minor
 ---
 
-use the BaseFeature Interface
+Use the BaseFeature interface.

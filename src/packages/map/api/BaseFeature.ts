@@ -5,11 +5,11 @@ import { Geometry } from "ol/geom";
 import { Style } from "ol/style";
 
 /**
- * Base Interface for all objects with geometry and / or attributs informationen. The object may be displayed on the map
+ * Base interface for all feature objects with geometry and / or attributs information.
  */
 export interface BaseFeature {
     /**
-     * Identifier for the feature object. Values used here should be unique.
+     * Identifier for the feature object. Must be unique within all features of one source/layer.
      *
      * If your source cannot provide a useful id on its own, another strategy to generate unique ids is to
      * generate a [UUID](https://www.npmjs.com/package/uuid#uuidv4options-buffer-offset) instead.
@@ -17,8 +17,8 @@ export interface BaseFeature {
     id: number | string;
 
     /**
-     * Geometry of the selection result.
-     * One should also specify the {@link projection}.
+     * Geometry of the feature.
+     * Also specify the {@link projection} if geometry is set.
      */
     geometry?: Geometry;
 
@@ -28,12 +28,12 @@ export interface BaseFeature {
     projection?: string;
 
     /**
-     * Arbitrary additional properties.
+     * Properties of the feature.
      */
     properties?: Readonly<Record<string, unknown>>;
 
     /**
-     * Additional style information for display on the map
+     * Additional style information for displaying the feature on the map.
      */
     style?: Style;
 }
