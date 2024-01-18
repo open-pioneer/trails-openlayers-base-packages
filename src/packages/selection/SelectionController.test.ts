@@ -3,7 +3,7 @@
 import { afterEach, expect, vi, it, describe } from "vitest";
 import { SelectionController } from "./SelectionController";
 import { SelectionOptions, SelectionSource } from "./api";
-import { FakePointSelectionSource } from "./testSources";
+import { FakePointSelectionSource } from "./selectionSources";
 import { get as getProjection } from "ol/proj";
 import { Point } from "ol/geom";
 
