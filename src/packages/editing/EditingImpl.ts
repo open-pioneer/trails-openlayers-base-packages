@@ -27,17 +27,18 @@ interface EditingInteraction {
     olMap: OlMap;
 }
 
+// TODO: Tooltip vom Messen abgucken
 export class EditingImpl implements Editing {
     private readonly _mapRegistry: MapRegistry;
-    _httpService: HttpService;
-    private editingInteractions: Map<string, EditingInteraction>;
-    private defaultStyle: StyleLike;
+    private _httpService: HttpService;
+    private _editingProcesses: Map<string, EditingInteraction>;
+    private _polygonDrawStyle: StyleLike;
 
     constructor(serviceOptions: ServiceOptions<References>) {
         this._mapRegistry = serviceOptions.references.mapRegistry;
         this._httpService = serviceOptions.references.httpService;
-        this.editingInteractions = new Map();
-        this.defaultStyle = serviceOptions.properties.defaultStyle as StyleLike;
+        this._editingProcesses = new Map();
+        this._polygonDrawStyle = serviceOptions.properties.polygonDrawStyle as StyleLike;
     }
 
     async _initializeEditing(mapId: string) {
@@ -54,7 +55,7 @@ export class EditingImpl implements Editing {
         const drawInteraction = new Draw({
             source: drawSource,
             type: "Polygon",
-            style: this.defaultStyle
+            style: this._polygonDrawStyle
         });
 
         // Add EventListener on focused map to abort actual interaction via `Escape`
@@ -63,13 +64,19 @@ export class EditingImpl implements Editing {
             container.addEventListener(
                 "keydown",
                 (e: KeyboardEvent) => {
-                    if (e.code === "Escape" && e.target === olMap.getTargetElement()) {
+                    if (e.code === "Escape" && e.target === olMap.getTargetElement() && drawLayer) {
+                        // TODO: Überprüfung active.editingLayer / drawLayer
                         this.reset(mapId);
+                        console.log("Escape key");
                     }
                 },
                 false
             );
         }
+        // this.emit("changed:container");
+        // EventListener entfernen
+
+        // ALternativ document / window.add Even --> constructor
 
         drawInteraction.on("drawend", (e) => {
             // todo use mapId to get correct layer --> get layer url
@@ -101,26 +108,28 @@ export class EditingImpl implements Editing {
         });
 
         // store that editing has been initialized for this map
-        this.editingInteractions.set(mapId, {
+        this._editingProcesses.set(mapId, {
+            // TODO: Als Variable
             drawLayer: drawLayer,
             interaction: drawInteraction,
             olMap: olMap
         });
 
-        return drawInteraction;
+        return drawInteraction; // TODO: Rückgabe der aktuellen Interaktion?
     }
 
     async start(layer: LayerBase<{}>) {
         const mapId = layer.map.id;
-        let active = this.editingInteractions.get(mapId);
+        let active = this._editingProcesses.get(mapId);
 
         // initialize editing interaction, if not initialized for the map
         if (!active) {
             await this._initializeEditing(mapId);
-            active = this.editingInteractions.get(mapId);
+            active = this._editingProcesses.get(mapId);
         }
 
         if (!active) {
+            // TODO: Add error log message
             return;
         }
 
@@ -130,31 +139,30 @@ export class EditingImpl implements Editing {
         }
 
         active.editingLayer = layer;
-        this.editingInteractions.set(mapId, active);
+        this._editingProcesses.set(mapId, active);
 
         active.olMap.addInteraction(active.interaction);
     }
 
     // TODO: sicherheitsabfrage, falls stopEditing ausgeführt wird, wenn Feature nicht zu Ende gezeichnet wurde
     async stop(mapId: string) {
-        const active = this.editingInteractions.get(mapId);
+        const active = this._editingProcesses.get(mapId);
 
         if (!active) {
             return;
         }
 
-        // TODO: Move into EventLister drawEnd
-        // active.drawLayer.getSource()?.clear();
+        active.drawLayer.getSource()?.clear();
 
         active.editingLayer = undefined;
-        this.editingInteractions.set(mapId, active);
+        this._editingProcesses.set(mapId, active);
 
         active.olMap.removeInteraction(active.interaction);
     }
 
     // TODO: sicherheitsabfrage, falls stopEditing ausgeführt wird, wenn Feature nicht zu Ende gezeichnet wurde
     reset(mapId: string) {
-        const active = this.editingInteractions.get(mapId);
+        const active = this._editingProcesses.get(mapId);
 
         if (!active) {
             return;

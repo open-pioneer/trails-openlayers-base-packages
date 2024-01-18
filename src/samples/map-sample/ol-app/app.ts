@@ -13,6 +13,13 @@ const element = createCustomElement({
         properties: {
             "@open-pioneer/local-storage": {
                 "storageId": "ol-app-state"
+            },
+            "@open-pioneer/editing": {
+                "polygonDrawStyle": {
+                    "stroke-color": "red",
+                    "stroke-width": 2,
+                    "fill-color": "rgba(0, 0, 0, 0.1)"
+                }
             }
         }
     },

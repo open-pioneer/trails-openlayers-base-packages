@@ -16,7 +16,14 @@ export default defineBuildConfig({
         }
     },
     properties: {
-        defaultStyle: {
+        // See Open Pioneer "trails-starter" in "Providing helpers for package properties"
+        // Idea: create style object for create, update (, delete?) for different geometry types
+        // create: {
+        //     point: {},
+        //     linestring: {},
+        //     polygon: {}
+        // },
+        polygonDrawStyle: {
             "stroke-color": "yellow",
             "stroke-width": 2,
             "fill-color": "rgba(0, 0, 0, 0.1)"
