@@ -8,7 +8,8 @@ import {
     Th,
     Td,
     chakra,
-    Checkbox
+    Checkbox,
+    Tooltip
 } from "@open-pioneer/chakra-integration";
 import {
     useReactTable,
@@ -20,7 +21,7 @@ import {
     Table as TanstackTable
 } from "@tanstack/react-table";
 import { TriangleDownIcon, TriangleUpIcon } from "@chakra-ui/icons";
-
+import { useIntl } from "open-pioneer:react-hooks";
 import React, { HTMLProps, useRef, useState } from "react";
 import { createColumnHelper } from "@tanstack/react-table";
 
@@ -31,6 +32,7 @@ interface DataTableProps<Data extends object> {
 }
 
 export function DataTable<Data extends object>(props: DataTableProps<Data>) {
+    const intl = useIntl();
     const { data, columns } = props;
     const [sorting, setSorting] = useState<SortingState>([]);
     const [rowSelection, setRowSelection] = useState({});
@@ -111,7 +113,8 @@ export function DataTable<Data extends object>(props: DataTableProps<Data>) {
                                                             indeterminate:
                                                                 table.getIsSomeRowsSelected(),
                                                             onChange:
-                                                                table.getToggleAllRowsSelectedHandler()
+                                                                table.getToggleAllRowsSelectedHandler(),
+                                                            toolTipLabel: getCheckboxToolTip()
                                                         }}
                                                     />
                                                 }
@@ -168,22 +171,32 @@ export function DataTable<Data extends object>(props: DataTableProps<Data>) {
             )}
         </Table>
     );
+    function getCheckboxToolTip() {
+        if (Object.keys(rowSelection).length === table.getRowModel().rows.length) {
+            return intl.formatMessage({ id: "deSelectAllTooltip" });
+        } else {
+            return intl.formatMessage({ id: "selectAllTooltip" });
+        }
+    }
 }
 
 function IndeterminateCheckbox({
     indeterminate,
     className = "",
+    toolTipLabel,
     ...rest
-}: { indeterminate?: boolean } & HTMLProps<HTMLInputElement>) {
+}: { indeterminate?: boolean; toolTipLabel?: string } & HTMLProps<HTMLInputElement>) {
     const ref = useRef<HTMLInputElement>(null!);
     return (
-        <Checkbox
-            ref={ref}
-            className={className + " cursor-pointer"}
-            isChecked={rest.checked}
-            onChange={rest.onChange}
-            isIndeterminate={indeterminate}
-        ></Checkbox>
+        <Tooltip {...{}} label={toolTipLabel} placement="right">
+            <Checkbox
+                ref={ref}
+                className={className + " cursor-pointer"}
+                isChecked={rest.checked}
+                onChange={rest.onChange}
+                isIndeterminate={indeterminate}
+            ></Checkbox>
+        </Tooltip>
     );
 }
 
