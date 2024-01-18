@@ -43,7 +43,7 @@ export function DataTable<Data extends object>(props: DataTableProps<Data>) {
     // TODO: full-width tables (100%) causes problems with cell sizes (maxSize not working...)
     //  --> need to distribute space manually? but then, no good window resizing possible....
 
-    const [allColumns, setAllColumns] = useState<ColumnDef<Data>[]>([selectColumn, ...columns]);
+    const [allColumns] = useState<ColumnDef<Data>[]>([selectColumn, ...columns]);
 
     const table = useReactTable({
         columns: allColumns,

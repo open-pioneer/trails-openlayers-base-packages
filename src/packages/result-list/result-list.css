@@ -1,3 +1,10 @@
+.result-list-table-element thead {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: var(--chakra-colors-background_body);
+}
+
 .result-list-table-element th {
     position: relative;
     border-right-width: thin;
