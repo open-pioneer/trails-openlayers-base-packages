@@ -6,7 +6,8 @@ import {
     SelectionOptions,
     SelectionSourceStatus,
     SelectionSourceEvents,
-    SelectionKind
+    SelectionKind,
+    VectorLayerSelectionSource
 } from "./api";
 import { Point } from "ol/geom";
 import { EventEmitter } from "@open-pioneer/core";
@@ -93,9 +94,9 @@ export class FakePointSelectionSource
  * -   limiting the number of returned selection results to the corresponding selection option
  * -   throwing an event `changed:status` when the status updates
  */
-export class VectorLayerSelectionSource
+export class VectorLayerSelectionSourceImpl
     extends EventEmitter<SelectionSourceEvents>
-    implements SelectionSource
+    implements VectorLayerSelectionSource
 {
     readonly label: string;
     #status: Exclude<SelectionSourceStatus, string> = { kind: "available" };
@@ -122,7 +123,7 @@ export class VectorLayerSelectionSource
         unByKey(this.#eventHandler);
     }
 
-    get status(): SelectionSourceStatus {
+    get status() {
         return this.#status;
     }
 

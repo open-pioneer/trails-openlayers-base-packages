@@ -3,7 +3,7 @@
 import { afterEach, expect, vi, it, describe } from "vitest";
 import { SelectionController } from "./SelectionController";
 import { SelectionOptions, SelectionSource } from "./api";
-import { FakePointSelectionSource } from "./testSources";
+import { FakePointSelectionSource } from "./selectionSources";
 import { get as getProjection } from "ol/proj";
 import { Point } from "ol/geom";
 
@@ -108,7 +108,7 @@ describe("point selection source", () => {
         const dummySource: SelectionSource = {
             label: "Dummy Source",
 
-            async select(extent, options) {
+            async select(_, options) {
                 seenOptions.push(options);
                 return [];
             }

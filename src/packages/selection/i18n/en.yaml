@@ -10,3 +10,4 @@ messages:
   sourceNotAvailable: "Source not available"
   selectionFailed: "Spatial selection failed"
   selectionPlaceholder: "No source selected"
+  layerNotVisibleReason: "Matching layer is not visible."
