@@ -349,6 +349,9 @@ importers:
       '@open-pioneer/chakra-integration':
         specifier: ^1.1.1
         version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.17.4)(react-dom@18.2.0)(react@18.2.0)
+      '@open-pioneer/core':
+        specifier: ^1.2.1
+        version: 1.2.1
       '@open-pioneer/http':
         specifier: ^2.1.1
         version: 2.1.1(@open-pioneer/core@1.2.1)(@open-pioneer/runtime@2.0.2)
