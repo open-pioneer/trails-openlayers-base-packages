@@ -8,7 +8,6 @@ import { BaseFeature } from "@open-pioneer/map/api/BaseFeature";
 import { DeclaredService } from "@open-pioneer/runtime";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
-import { VectorLayerSelectionSourceImpl } from "./selectionSources";
 
 /**
  * The status of a selection source.

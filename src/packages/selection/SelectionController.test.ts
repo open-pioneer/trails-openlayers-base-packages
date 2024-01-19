@@ -108,7 +108,7 @@ describe("point selection source", () => {
         const dummySource: SelectionSource = {
             label: "Dummy Source",
 
-            async select(extent, options) {
+            async select(_, options) {
                 seenOptions.push(options);
                 return [];
             }
