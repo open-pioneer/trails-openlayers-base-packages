@@ -9,12 +9,13 @@ export async function saveCreatedFeature(
     url: string,
     geometry: GeoJSONGeometry
 ) {
+    const crs = "http://www.opengis.net/def/crs/EPSG/0/25832"; // todo
     const response = await httpService.fetch(url, {
         method: "POST",
         body: JSON.stringify({ type: "Feature", properties: {}, geometry: geometry }),
         headers: {
-            "Content-Type": "application/geo+json; charset=utf-8"
-            //"Content-Crs": `<${crs}>`
+            "Content-Type": "application/geo+json; charset=utf-8",
+            "Content-Crs": `<${crs}>`
         }
     });
     if (!response || !response.ok) {

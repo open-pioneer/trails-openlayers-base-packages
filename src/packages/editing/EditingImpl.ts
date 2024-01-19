@@ -7,7 +7,6 @@ import VectorSource from "ol/source/Vector";
 import VectorLayer from "ol/layer/Vector";
 import { ServiceOptions } from "@open-pioneer/runtime";
 import GeoJSON from "ol/format/GeoJSON";
-import { Polygon } from "ol/geom";
 import { saveCreatedFeature } from "./SaveFeaturesHandler";
 import { HttpService } from "@open-pioneer/http";
 import OlMap from "ol/Map";
@@ -83,28 +82,23 @@ export class EditingImpl implements Editing {
             const layerUrl =
                 "https://ogc-api-test.nrw.de/inspire-us-krankenhaus/v1/collections/governmentalservice/items";
 
-            const feature = e.feature;
-            console.log(feature);
-            // todo use actual feature
+            const geometry = e.feature.getGeometry();
+            if (!geometry) {
+                console.log("no geometry available");
+                // todo stop editing?
+                return;
+            }
             const geoJson = new GeoJSON({
-                featureProjection: "EPSG:4326",
-                dataProjection: "EPSG:4326" //map?.olMap.getView().getProjection() // todo is this correct and needed?
+                featureProjection: "EPSG:25832",
+                dataProjection: "EPSG:25832" //map?.olMap.getView().getProjection() // todo is this correct and needed?
             });
-            const geom = new Polygon(
-                [
-                    6.850718726572426, 51.29967131678409, 6.85358546685978, 51.29972391849959,
-                    6.853501609969469, 51.30152106245272, 6.850634757893364, 51.30146845737751,
-                    6.850718726572426, 51.29967131678409
-                ],
-                "XY",
-                [10]
-            );
-            const geoJSONGeometry = geoJson.writeGeometryObject(geom, {
+            const geoJSONGeometry = geoJson.writeGeometryObject(geometry, {
                 rightHanded: true,
                 decimals: 10
             });
             // todo set default properties when saving feature?
             saveCreatedFeature(this._httpService, layerUrl, geoJSONGeometry);
+            // todo stop editing (if request was successful)
         });
 
         // store that editing has been initialized for this map
