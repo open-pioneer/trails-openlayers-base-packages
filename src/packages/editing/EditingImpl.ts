@@ -1,20 +1,32 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import { createLogger, Resource } from "@open-pioneer/core";
 import { LayerBase, MapRegistry, TOPMOST_LAYER_Z } from "@open-pioneer/map";
+import { PackageIntl } from "@open-pioneer/runtime";
 import { Editing } from "./api";
 import Draw from "ol/interaction/Draw";
 import VectorSource from "ol/source/Vector";
 import VectorLayer from "ol/layer/Vector";
 import { ServiceOptions } from "@open-pioneer/runtime";
 import GeoJSON from "ol/format/GeoJSON";
+import { unByKey } from "ol/Observable";
+import Overlay from "ol/Overlay";
 import { saveCreatedFeature } from "./SaveFeaturesHandler";
 import { HttpService } from "@open-pioneer/http";
 import OlMap from "ol/Map";
 import { StyleLike } from "ol/style/Style";
 
+const LOG = createLogger("editing:EditingImpl");
+
 interface References {
     mapRegistry: MapRegistry;
     httpService: HttpService;
+}
+
+// Represents a tooltip rendered on the OpenLayers map
+interface Tooltip extends Resource {
+    overlay: Overlay;
+    element: HTMLDivElement;
 }
 
 interface EditingInteraction {
@@ -24,20 +36,25 @@ interface EditingInteraction {
     editingLayer?: LayerBase;
     interaction: Draw;
     olMap: OlMap;
+    tooltip: Tooltip;
+    // HTML element containing the OL Map
+    mapContainer: HTMLElement | undefined;
 }
 
-// TODO: Tooltip vom Messen abgucken
+// TODO: Messen und Editing gleichzeitig möglich
 export class EditingImpl implements Editing {
     private readonly _mapRegistry: MapRegistry;
     private _httpService: HttpService;
     private _editingProcesses: Map<string, EditingInteraction>;
     private _polygonDrawStyle: StyleLike;
+    private _intl: PackageIntl;
 
     constructor(serviceOptions: ServiceOptions<References>) {
         this._mapRegistry = serviceOptions.references.mapRegistry;
         this._httpService = serviceOptions.references.httpService;
         this._editingProcesses = new Map();
         this._polygonDrawStyle = serviceOptions.properties.polygonDrawStyle as StyleLike;
+        this._intl = serviceOptions.intl;
     }
 
     async _initializeEditing(mapId: string) {
@@ -57,25 +74,22 @@ export class EditingImpl implements Editing {
             style: this._polygonDrawStyle
         });
 
+        const escapeHandler = (e: KeyboardEvent) => {
+            if (e.code === "Escape" && e.target === olMap.getTargetElement()) {
+                this.reset(mapId);
+            }
+        };
         // Add EventListener on focused map to abort actual interaction via `Escape`
-        const container: HTMLElement | undefined = olMap.getTargetElement() ?? undefined;
-        if (container) {
-            container.addEventListener(
-                "keydown",
-                (e: KeyboardEvent) => {
-                    if (e.code === "Escape" && e.target === olMap.getTargetElement() && drawLayer) {
-                        // TODO: Überprüfung active.editingLayer / drawLayer
-                        this.reset(mapId);
-                        console.log("Escape key");
-                    }
-                },
-                false
-            );
+        const mapContainer: HTMLElement | undefined = olMap.getTargetElement() ?? undefined;
+        if (mapContainer) {
+            mapContainer.addEventListener("keydown", escapeHandler, false);
         }
-        // this.emit("changed:container");
-        // EventListener entfernen
 
-        // ALternativ document / window.add Even --> constructor
+        const tooltip = this.createTooltip(olMap);
+
+        drawInteraction.on("drawstart", () => {
+            tooltip.element.textContent = this._intl.formatMessage({ id: "tooltip.continue" });
+        });
 
         drawInteraction.on("drawend", (e) => {
             // todo use mapId to get correct layer --> get layer url
@@ -102,14 +116,27 @@ export class EditingImpl implements Editing {
         });
 
         // store that editing has been initialized for this map
-        this._editingProcesses.set(mapId, {
-            // TODO: Als Variable
+        const editProcess = {
             drawLayer: drawLayer,
             interaction: drawInteraction,
-            olMap: olMap
+            olMap: olMap,
+            tooltip: tooltip,
+            mapContainer: mapContainer
+        };
+        this._editingProcesses.set(mapId, editProcess);
+
+        // TODO: merge with initial addEventListener above?
+        // update event handler when container changes
+        map.on("changed:container", () => {
+            editProcess.mapContainer.removeEventListener("keydown", escapeHandler);
+
+            editProcess.mapContainer = olMap.getTargetElement() ?? undefined;
+            if (editProcess.mapContainer) {
+                editProcess.mapContainer.addEventListener("keydown", escapeHandler, false);
+            }
         });
 
-        return drawInteraction; // TODO: Rückgabe der aktuellen Interaktion?
+        return editProcess;
     }
 
     async start(layer: LayerBase<{}>) {
@@ -118,12 +145,11 @@ export class EditingImpl implements Editing {
 
         // initialize editing interaction, if not initialized for the map
         if (!active) {
-            await this._initializeEditing(mapId);
-            active = this._editingProcesses.get(mapId);
+            active = await this._initializeEditing(mapId);
         }
 
         if (!active) {
-            // TODO: Add error log message
+            LOG.error("Initializing editing process failed");
             return;
         }
 
@@ -133,6 +159,7 @@ export class EditingImpl implements Editing {
         }
 
         active.editingLayer = layer;
+        active.tooltip.element.classList.remove("hidden");
         this._editingProcesses.set(mapId, active);
 
         active.olMap.addInteraction(active.interaction);
@@ -152,16 +179,52 @@ export class EditingImpl implements Editing {
         this._editingProcesses.set(mapId, active);
 
         active.olMap.removeInteraction(active.interaction);
+
+        active.tooltip.element.classList.add("hidden");
+        active.tooltip.element.textContent = this._intl.formatMessage({ id: "tooltip.begin" });
     }
 
     // TODO: sicherheitsabfrage, falls stopEditing ausgeführt wird, wenn Feature nicht zu Ende gezeichnet wurde
     reset(mapId: string) {
         const active = this._editingProcesses.get(mapId);
 
-        if (!active) {
+        // no reset possible/needed when editing is not active
+        if (!active || !active.editingLayer) {
             return;
         }
 
         active.interaction.abortDrawing();
+
+        active.tooltip.element.textContent = this._intl.formatMessage({ id: "tooltip.begin" });
+    }
+
+    private createTooltip(olMap: OlMap): Tooltip {
+        const element = document.createElement("div");
+        element.className = "editing-tooltip hidden";
+        element.textContent = this._intl.formatMessage({ id: "tooltip.begin" });
+
+        const overlay = new Overlay({
+            element: element,
+            offset: [15, 0],
+            positioning: "center-left"
+        });
+
+        const pointerMove = olMap.on("pointermove", (evt) => {
+            if (evt.dragging) {
+                return;
+            }
+
+            overlay.setPosition(evt.coordinate);
+        });
+
+        olMap.addOverlay(overlay);
+        return {
+            overlay,
+            element,
+            destroy() {
+                unByKey(pointerMove);
+                olMap.removeOverlay(overlay);
+            }
+        };
     }
 }

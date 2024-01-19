@@ -18,7 +18,11 @@ const element = createCustomElement({
                 "polygonDrawStyle": {
                     "stroke-color": "red",
                     "stroke-width": 2,
-                    "fill-color": "rgba(0, 0, 0, 0.1)"
+                    "fill-color": "rgba(0, 0, 0, 0.1)",
+                    "circle-radius": 5,
+                    "circle-fill-color": "rgba(255, 0, 0, 0.2)",
+                    "circle-stroke-color": "rgba(255, 0, 0, 0.7)",
+                    "circle-stroke-width": 2
                 }
             }
         }
