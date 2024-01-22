@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Geometry } from "ol/geom";
+import { BaseFeature } from "@open-pioneer/map/api/BaseFeature";
 import { Projection } from "ol/proj";
 
 /**
@@ -84,38 +84,10 @@ export interface SearchOptions {
 /**
  * Represent the result of a search.
  */
-export interface SearchResult {
-    /**
-     * Identifier for the result object.
-     * Values used here should be unique within the context of the search source that returns them.
-     *
-     * If your source cannot provide a useful id on its own, another strategy to generate unique ids is to
-     * generate a [UUID](https://www.npmjs.com/package/uuid#uuidv4options-buffer-offset) instead.
-     */
-    id: number | string;
-
+export interface SearchResult extends BaseFeature {
     /**
      * Display text representing this result.
      * Will be shown in the search widget's suggestion list.
      */
     label: string;
-
-    /**
-     * Optional geometry.
-     *
-     * If a geometry is provided, one should also specify the {@link projection}.
-     *
-     * If no projection has been specified, calling code should assume the map's projection.
-     */
-    geometry?: Geometry;
-
-    /**
-     * The projection of the {@link geometry}.
-     */
-    projection?: string;
-
-    /**
-     * Arbitrary additional properties.
-     */
-    properties?: Readonly<Record<string, unknown>>;
 }

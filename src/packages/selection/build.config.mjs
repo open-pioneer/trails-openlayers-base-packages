@@ -6,6 +6,11 @@ export default defineBuildConfig({
     styles: "./selection.css",
     entryPoints: ["index"],
     i18n: ["en", "de"],
+    services: {
+        VectorSelectionSourceFactory: {
+            provides: "selection.VectorSelectionSourceFactory"
+        }
+    },
     ui: {
         references: ["notifier.NotificationService"]
     }

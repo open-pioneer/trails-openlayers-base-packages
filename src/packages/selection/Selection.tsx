@@ -48,7 +48,7 @@ export interface SelectionProps extends CommonComponentProps {
     sources: SelectionSource[];
 
     /**
-     * This handler is called whenever the user has successfully (successfully) selected
+     * This handler is called whenever the user has successfully selected
      * some items.
      */
     onSelectionComplete?(event: SelectionCompleteEvent): void;
@@ -77,18 +77,18 @@ export interface SelectionSourceChangedEvent {
  */
 interface SelectionOption {
     /**
-     * The label of the select source option.
+     * The label of the selection source option.
      */
     label: string;
 
     /**
-     * The value (SelectionSource) of the select source option.
+     * The value (SelectionSource) of the selection source option.
      */
     value: SelectionSource | undefined;
 }
 
 /**
- * Properties for single select method options.
+ * Properties for single selection method options.
  */
 interface MethodOption {
     /**
@@ -103,7 +103,7 @@ interface MethodOption {
 }
 
 /**
- * Supported selection Methods
+ * Supported selection methods
  */
 export enum SelectionMethods {
     extent = "EXTENT",
@@ -120,6 +120,9 @@ const COMMON_SELECT_PROPS: SelectProps<any, any, any> = {
     isClearable: false
 };
 
+/**
+ * A component that allows the user to perform a spatial selection on a given set of {@link SelectionSource}.
+ */
 export const Selection: FC<SelectionProps> = (props) => {
     const intl = useIntl();
     const { mapId, sources, onSelectionComplete, onSelectionSourceChanged } = props;
@@ -139,8 +142,6 @@ export const Selection: FC<SelectionProps> = (props) => {
     /**
      * Method to build Option-Array from the supported selection methods for the selection-method react-select
      * If there is no configuration => Default selection method: EXTENT
-     * @param methods
-     * @returns
      */
     const buildMethodOptions = useCallback(
         (methods: string[] | undefined) => {
@@ -292,8 +293,6 @@ function SourceSelectValue(props: SingleValueProps<SelectionOption>): JSX.Elemen
 
 /**
  * Hook to manage source option in selection-source react-select
- * @param source
- * @returns
  */
 function useSourceItem(source: SelectionSource | undefined, isSelected: boolean) {
     const label: string | undefined = source?.label;
@@ -326,11 +325,6 @@ function useSourceItem(source: SelectionSource | undefined, isSelected: boolean)
 
 /**
  * Hook to manage selection sources
- * @param mapModel
- * @param sources
- * @param currentSource
- * @param onSelectionComplete
- * @returns
  */
 function useSelectionController(
     mapModel: MapModel | undefined,
@@ -424,10 +418,6 @@ function useSourceStatus(source: SelectionSource | undefined): SimpleStatus {
 
 /**
  * Hook to manage map controls and tooltip
- * @param map
- * @param selectMethode
- * @param intl
- * @param onExtentSelected
  */
 function useDragSelection(
     map: MapModel | undefined,

@@ -61,7 +61,6 @@ export function AppUI() {
         } else {
             setCurrentInteractionType(type);
         }
-        // TODO: refactor logik?
         map?.removeHighlight();
     }
     const [maxHeightToc, setMaxHeightToc] = useState<string | undefined>(undefined);

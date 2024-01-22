@@ -5,13 +5,12 @@ import { OgcFeaturesSearchSourceFactory } from "@open-pioneer/ogc-features";
 import { SearchSource } from "@open-pioneer/search";
 import { PhotonGeocoder } from "./sources/searchSources";
 import { proxy, ref } from "valtio";
-import { SelectionSource } from "@open-pioneer/selection";
+import { SelectionSource, VectorLayerSelectionSourceFactory } from "@open-pioneer/selection";
 import { MapRegistry } from "@open-pioneer/map";
 import { MAP_ID } from "./MapConfigProviderImpl";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import OlBaseLayer from "ol/layer/Base";
-import { VectorLayerSelectionSource } from "./sources/selectionSources";
 import { Resource, createLogger } from "@open-pioneer/core";
 
 const LOG = createLogger("ol-app:AppConfig");
@@ -24,6 +23,7 @@ import { HttpService } from "@open-pioneer/http";
 
 interface References {
     ogcSearchSourceFactory: OgcFeaturesSearchSourceFactory;
+    vectorSelectionSourceFactory: VectorLayerSelectionSourceFactory;
     httpService: HttpService;
     mapRegistry: MapRegistry;
 }
@@ -43,6 +43,7 @@ export class AppConfig implements Service {
     private _intl: PackageIntl;
     private _mapRegistry: MapRegistry;
     private _ogcSearchSourceFactory: OgcFeaturesSearchSourceFactory;
+    private _vectorSelectionSourceFactory: VectorLayerSelectionSourceFactory;
     private _httpService: HttpService;
     private _state: AppState;
     private _resources: Resource[] = [];
@@ -51,6 +52,7 @@ export class AppConfig implements Service {
         this._mapRegistry = references.mapRegistry;
         this._intl = intl;
         this._ogcSearchSourceFactory = references.ogcSearchSourceFactory;
+        this._vectorSelectionSourceFactory = references.vectorSelectionSourceFactory;
         this._httpService = references.httpService;
 
         this._state = proxy<AppState>({
@@ -128,8 +130,7 @@ export class AppConfig implements Service {
             ["city", "street"],
             this._httpService
         );
-        const sources = [ref(flrstSource), ref(ogcSource), ref(photonSource)];
-        this._state.searchSources = sources;
+        this._state.searchSources = [ref(flrstSource), ref(ogcSource), ref(photonSource)];
     }
 
     /**
@@ -137,7 +138,6 @@ export class AppConfig implements Service {
      * Certain vector layers are automatically registered for selection.
      */
     private async initSelectionSources() {
-        const intl = this._intl;
         const map = await this._mapRegistry.expectMapModel(MAP_ID);
         const opLayers = map.layers.getOperationalLayers({ sortByDisplayOrder: true });
 
@@ -150,13 +150,19 @@ export class AppConfig implements Service {
                 continue;
             }
 
-            const layerSelectionSource = new VectorLayerSelectionSource(
-                opLayer.olLayer as VectorLayer<VectorSource>,
-                opLayer.title,
-                intl.formatMessage({ id: "layerNotVisibleReason" })
-            );
+            const layerSelectionSource = this._vectorSelectionSourceFactory.createSelectionSource({
+                vectorLayer: opLayer.olLayer as VectorLayer<VectorSource>,
+                label: opLayer.title
+            });
+
             const eventHandler = layerSelectionSource.on("changed:status", () => {
-                if (layerSelectionSource.status.kind === "unavailable") map.removeHighlight();
+                if (
+                    layerSelectionSource.status !== "available" &&
+                    (layerSelectionSource.status === "unavailable" ||
+                        layerSelectionSource.status?.kind === "unavailable")
+                ) {
+                    map.removeHighlight();
+                }
             });
             this._resources.push(eventHandler, layerSelectionSource);
             this._state.selectionSources.unshift(ref(layerSelectionSource));
