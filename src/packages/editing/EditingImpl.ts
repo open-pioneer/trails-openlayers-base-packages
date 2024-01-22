@@ -15,6 +15,7 @@ import { saveCreatedFeature } from "./SaveFeaturesHandler";
 import { HttpService } from "@open-pioneer/http";
 import OlMap from "ol/Map";
 import { StyleLike } from "ol/style/Style";
+import { EventsKey } from "ol/events";
 
 const LOG = createLogger("editing:EditingImpl");
 
@@ -37,8 +38,6 @@ interface EditingInteraction {
     interaction: Draw;
     olMap: OlMap;
     tooltip: Tooltip;
-    // HTML element containing the OL Map
-    mapContainer: HTMLElement | undefined;
 }
 
 export class EditingImpl implements Editing {
@@ -47,6 +46,8 @@ export class EditingImpl implements Editing {
     private _editingProcesses: Map<string, EditingInteraction>;
     private _polygonDrawStyle: StyleLike;
     private _intl: PackageIntl;
+    private _interactionListener: Array<EventsKey>;
+    private _mapListener: Array<Resource>;
 
     constructor(serviceOptions: ServiceOptions<References>) {
         this._mapRegistry = serviceOptions.references.mapRegistry;
@@ -54,6 +55,45 @@ export class EditingImpl implements Editing {
         this._editingProcesses = new Map();
         this._polygonDrawStyle = serviceOptions.properties.polygonDrawStyle as StyleLike;
         this._intl = serviceOptions.intl;
+        this._interactionListener = [];
+        this._mapListener = [];
+    }
+
+    destroy() {
+        // Remove event listener on interaction and on map
+        this._interactionListener.map((interaction) => {
+            unByKey(interaction);
+        });
+        this._mapListener.map((map) => {
+            map.destroy();
+        });
+
+        // Stop all processes
+        const mapKeys = this._editingProcesses.keys();
+        let k = 0;
+        while (k < this._editingProcesses.size) {
+            this.stop(mapKeys.next().value);
+            k++;
+        }
+
+        const mapValues = this._editingProcesses.values();
+        let i = 0;
+        while (i < this._editingProcesses.size) {
+            const value = mapValues.next().value;
+
+            // Remove layer from olMap
+            value.olMap.removeLayer(value.drawLayer);
+
+            // Remove tooltip
+            value.tooltip.destroy();
+
+            // Remove event escape listener
+            value.olMap.getTargetElement().removeEventListener("keydown", value.escapeHandler);
+
+            i++;
+        }
+
+        this._editingProcesses.clear;
     }
 
     async _initializeEditing(mapId: string) {
@@ -78,41 +118,46 @@ export class EditingImpl implements Editing {
                 this.reset(mapId);
             }
         };
+
         // Add EventListener on focused map to abort actual interaction via `Escape`
-        const mapContainer: HTMLElement | undefined = olMap.getTargetElement() ?? undefined;
+        let mapContainer: HTMLElement | undefined = olMap.getTargetElement() ?? undefined;
         if (mapContainer) {
             mapContainer.addEventListener("keydown", escapeHandler, false);
         }
 
         const tooltip = this.createTooltip(olMap);
 
-        drawInteraction.on("drawstart", () => {
-            tooltip.element.textContent = this._intl.formatMessage({ id: "tooltip.continue" });
-        });
+        this._interactionListener.push(
+            drawInteraction.on("drawstart", () => {
+                tooltip.element.textContent = this._intl.formatMessage({ id: "tooltip.continue" });
+            })
+        );
 
-        drawInteraction.on("drawend", (e) => {
-            // todo use mapId to get correct layer --> get layer url
-            const layerUrl =
-                "https://ogc-api-test.nrw.de/inspire-us-krankenhaus/v1/collections/governmentalservice/items";
+        this._interactionListener.push(
+            drawInteraction.on("drawend", (e) => {
+                // todo use mapId to get correct layer --> get layer url
+                const layerUrl =
+                    "https://ogc-api-test.nrw.de/inspire-us-krankenhaus/v1/collections/governmentalservice/items";
 
-            const geometry = e.feature.getGeometry();
-            if (!geometry) {
-                console.log("no geometry available");
-                // todo stop editing?
-                return;
-            }
-            const geoJson = new GeoJSON({
-                featureProjection: "EPSG:25832",
-                dataProjection: "EPSG:25832" //map?.olMap.getView().getProjection() // todo is this correct and needed?
-            });
-            const geoJSONGeometry = geoJson.writeGeometryObject(geometry, {
-                rightHanded: true,
-                decimals: 10
-            });
-            // todo set default properties when saving feature?
-            saveCreatedFeature(this._httpService, layerUrl, geoJSONGeometry);
-            // todo stop editing (if request was successful)
-        });
+                const geometry = e.feature.getGeometry();
+                if (!geometry) {
+                    console.log("no geometry available");
+                    // todo stop editing?
+                    return;
+                }
+                const geoJson = new GeoJSON({
+                    featureProjection: "EPSG:25832",
+                    dataProjection: "EPSG:25832" //map?.olMap.getView().getProjection() // todo is this correct and needed?
+                });
+                const geoJSONGeometry = geoJson.writeGeometryObject(geometry, {
+                    rightHanded: true,
+                    decimals: 10
+                });
+                // todo set default properties when saving feature?
+                saveCreatedFeature(this._httpService, layerUrl, geoJSONGeometry);
+                // todo stop editing (if request was successful)
+            })
+        );
 
         // store that editing has been initialized for this map
         const editProcess = {
@@ -120,20 +165,21 @@ export class EditingImpl implements Editing {
             interaction: drawInteraction,
             olMap: olMap,
             tooltip: tooltip,
-            mapContainer: mapContainer
+            escapeHandler: escapeHandler
         };
         this._editingProcesses.set(mapId, editProcess);
 
-        // TODO: merge with initial addEventListener above?
         // update event handler when container changes
-        map.on("changed:container", () => {
-            editProcess.mapContainer.removeEventListener("keydown", escapeHandler);
+        this._mapListener.push(
+            map.on("changed:container", () => {
+                mapContainer?.removeEventListener("keydown", escapeHandler);
 
-            editProcess.mapContainer = olMap.getTargetElement() ?? undefined;
-            if (editProcess.mapContainer) {
-                editProcess.mapContainer.addEventListener("keydown", escapeHandler, false);
-            }
-        });
+                mapContainer = olMap.getTargetElement() ?? undefined;
+                if (mapContainer) {
+                    mapContainer.addEventListener("keydown", escapeHandler, false);
+                }
+            })
+        );
 
         return editProcess;
     }
@@ -217,6 +263,7 @@ export class EditingImpl implements Editing {
         });
 
         olMap.addOverlay(overlay);
+
         return {
             overlay,
             element,
