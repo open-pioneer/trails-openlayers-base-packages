@@ -178,7 +178,6 @@ function LegendImage(props: { imageUrl: string; layer: LegendLayer }) {
                 src={imageUrl}
                 alt={intl.formatMessage({ id: "altLabel" }, { layerName: layer.title })}
                 className={"legend-item__image"}
-                // TODO: test fallback with NVDA
                 fallbackStrategy={"onError"}
                 fallback={
                     <Box>
