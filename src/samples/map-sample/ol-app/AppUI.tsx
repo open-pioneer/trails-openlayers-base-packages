@@ -92,14 +92,6 @@ export function AppUI() {
         const layer = map?.layers.getLayerById("krankenhaus");
         if (layer) {
             editingService.start(layer);
-
-            layer.on("feature:created", (featureId) => {
-                console.log(featureId);
-            });
-
-            layer.on("feature:create-failed", (error) => {
-                console.log(error);
-            });
         }
     }
 

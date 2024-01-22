@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { createLogger, Resource } from "@open-pioneer/core";
-import { LayerBase, MapRegistry, TOPMOST_LAYER_Z } from "@open-pioneer/map";
+import { LayerBase, MapModel, MapRegistry, TOPMOST_LAYER_Z } from "@open-pioneer/map";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { Editing } from "./api";
 import Draw from "ol/interaction/Draw";
@@ -97,9 +97,9 @@ export class EditingImpl implements Editing {
         this._editingProcesses.clear;
     }
 
-    async _initializeEditing(mapId: string) {
-        const map = await this._mapRegistry.expectMapModel(mapId);
+    _initializeEditing(map: MapModel) {
         const olMap = map.olMap;
+        const mapId = map.id;
 
         const drawSource = new VectorSource();
         const drawLayer = new VectorLayer({
@@ -195,13 +195,13 @@ export class EditingImpl implements Editing {
         return editProcess;
     }
 
-    async start(layer: LayerBase<{}>) {
+    start(layer: LayerBase<{}>) {
         const mapId = layer.map.id;
         let active = this._editingProcesses.get(mapId);
 
         // initialize editing interaction, if not initialized for the map
         if (!active) {
-            active = await this._initializeEditing(mapId);
+            active = this._initializeEditing(layer.map);
         }
 
         if (!active) {
@@ -222,6 +222,7 @@ export class EditingImpl implements Editing {
     }
 
     // TODO: sicherheitsabfrage, falls stopEditing ausgeführt wird, wenn Feature nicht zu Ende gezeichnet wurde
+    // todo Cancel request
     async stop(mapId: string) {
         const active = this._editingProcesses.get(mapId);
 
