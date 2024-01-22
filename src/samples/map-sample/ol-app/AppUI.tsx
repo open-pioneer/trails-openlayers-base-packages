@@ -41,10 +41,8 @@ type InteractionType = "measurement" | "selection" | undefined;
 export function AppUI() {
     const intl = useIntl();
     const tocTitleId = useId();
-    const measurementTitleId = useId();
     const legendTitleId = useId();
     const spatialBookmarkTitle = useId();
-    const [measurementIsActive, setMeasurementIsActive] = useState<boolean>(false);
     const [legendIsActive, setLegendIsActive] = useState<boolean>(true);
     const { map } = useMapModel(MAP_ID);
     const [showOverviewMap, setShowOverviewMap] = useState<boolean>(true);
@@ -66,12 +64,12 @@ export function AppUI() {
     const [maxHeightToc, setMaxHeightToc] = useState<string | undefined>(undefined);
 
     useEffect(() => {
-        if (legendIsActive || measurementIsActive) {
+        if (legendIsActive || currentInteractionType) {
             setMaxHeightToc("300px");
         } else {
             setMaxHeightToc("75vh");
         }
-    }, [showToc, legendIsActive, measurementIsActive]);
+    }, [showToc, legendIsActive, currentInteractionType]);
 
     function toggleLegend() {
         setLegendIsActive(!legendIsActive);
