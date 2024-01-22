@@ -18,15 +18,19 @@ export async function saveCreatedFeature(
             "Content-Crs": `<${crs}>`
         }
     });
-    if (!response || !response.ok) {
-        throw new Error("Request failed: " + response.status);
+
+    if (!response || !response.ok || response.status !== 201) {
+        return Promise.reject(new Error("Request failed: " + response.status));
     }
-    console.log(response);
-    console.log(
+
+    // @ts-expect-error sdf
+    const featureId = response.headers
+        .get("location")
         // @ts-expect-error sdf
-        response.headers
-            .get("location")
-            // @ts-expect-error sdf
-            .substr(response.headers.get("location").lastIndexOf("/") + 1)
-    );
+        .substr(response.headers.get("location").lastIndexOf("/") + 1);
+
+    console.log(response);
+    console.log(featureId);
+
+    return Promise.resolve(featureId);
 }

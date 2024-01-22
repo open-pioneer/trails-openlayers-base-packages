@@ -40,6 +40,7 @@ interface EditingInteraction {
     tooltip: Tooltip;
 }
 
+// todo add test for feature:created / feature:create-failed event --> C:\Users\brets01\Documents\Git\pioneer\base-packages\src\packages\map\api\layers\base.ts
 export class EditingImpl implements Editing {
     private readonly _mapRegistry: MapRegistry;
     private _httpService: HttpService;
@@ -154,8 +155,18 @@ export class EditingImpl implements Editing {
                     decimals: 10
                 });
                 // todo set default properties when saving feature?
-                saveCreatedFeature(this._httpService, layerUrl, geoJSONGeometry);
-                // todo stop editing (if request was successful)
+                saveCreatedFeature(this._httpService, layerUrl, geoJSONGeometry)
+                    .then((featureId) => {
+                        // todo dispatch success event
+                        console.log(featureId);
+
+                        // If create request was successful, stop editing to force adding only one geometry
+                        this.stop(mapId);
+                    })
+                    .catch((err) => {
+                        // todo dispatch error event
+                        console.log(err);
+                    });
             })
         );
 

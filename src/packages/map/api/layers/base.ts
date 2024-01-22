@@ -13,6 +13,8 @@ export interface LayerBaseEvents {
     "changed:visible": void;
     "changed:attributes": void;
     "changed:loadState": void;
+    "feature:created": string;
+    "feature:create-failed": Error;
     "destroy": void;
 }
 
