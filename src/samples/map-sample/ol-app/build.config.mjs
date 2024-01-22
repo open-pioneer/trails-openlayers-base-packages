@@ -16,6 +16,7 @@ export default defineBuildConfig({
             provides: "ol-app.AppConfig",
             references: {
                 ogcSearchSourceFactory: "ogc-features.SearchSourceFactory",
+                selectionSourceFactory: "selection.SelectionSourceFactory",
                 httpService: "http.HttpService",
                 mapRegistry: "map.MapRegistry"
             }

@@ -6,8 +6,8 @@ import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { Selection, SelectionCompleteEvent, SelectionSourceChangedEvent } from "./Selection";
-import { FakePointSelectionSource, NoStatusSelectionSource } from "./testSources";
-import { VectorLayerSelectionSource } from "./testSources";
+import { FakePointSelectionSource, NoStatusSelectionSource } from "./selectionSources";
+import { VectorLayerSelectionSourceImpl } from "./selectionSources";
 import { NotificationService } from "@open-pioneer/notifier";
 import { Point } from "ol/geom";
 import { SelectionSource } from "./api";
@@ -68,7 +68,7 @@ it("Should disable or enable selection option when changing the status of a sour
 
     layer.olLayer.setVisible(false);
 
-    const layerSelectionSource = new VectorLayerSelectionSource(
+    const layerSelectionSource = new VectorLayerSelectionSourceImpl(
         layer.olLayer as VectorLayer<VectorSource>,
         layer.title,
         "Layer not visible"

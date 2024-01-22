@@ -23,12 +23,12 @@ export class SelectionController {
     /**
      * Limits the number of results.
      */
-    #maxResults: number;
+    readonly #maxResults: number;
 
     /**
      * Called whenever an error happens.
      */
-    #onError: () => void;
+    readonly #onError: () => void;
 
     constructor(options: { mapModel: MapModel; onError: () => void; maxResults?: number }) {
         const { mapModel, onError, maxResults = DEFAULT_MAX_RESULTS } = options;

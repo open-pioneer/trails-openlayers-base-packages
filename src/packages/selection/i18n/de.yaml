@@ -10,3 +10,4 @@ messages:
   sourceNotAvailable: "Quelle nicht verfügbar"
   selectionFailed: "Die räumliche Auswahl ist fehlgeschlagen"
   selectionPlaceholder: "Keine Quelle ausgewählt"
+  layerNotVisibleReason: "Zugehöriger Layer ist nicht sichtbar."
