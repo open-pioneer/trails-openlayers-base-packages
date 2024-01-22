@@ -3,8 +3,11 @@
 import type { Geometry } from "ol/geom";
 import type { Projection } from "ol/proj";
 import type { Extent } from "ol/extent";
-import type { EventSource } from "@open-pioneer/core";
+import type { EventSource, Resource } from "@open-pioneer/core";
 import { BaseFeature } from "@open-pioneer/map/api/BaseFeature";
+import { DeclaredService } from "@open-pioneer/runtime";
+import VectorLayer from "ol/layer/Vector";
+import VectorSource from "ol/source/Vector";
 
 /**
  * The status of a selection source.
@@ -126,4 +129,25 @@ export interface SelectionSource extends Partial<SelectionSourceEventBase> {
      * @param options see interface documentation {@link SelectionOptions}
      */
     select(selectionKind: SelectionKind, options: SelectionOptions): Promise<SelectionResult[]>;
+}
+
+export interface VectorLayerSelectionSourceOptions {
+    vectorLayer: VectorLayer<VectorSource>;
+    label: string;
+}
+
+export interface VectorLayerSelectionSource extends Required<SelectionSource>, Resource {}
+
+/**
+ * A factory that creates {@link VectorLayerSelectionSource | selection sources} to be used on an
+ * OpenLayers VectorLayer with an OpenLayers VectorSource (e.g. layer of the map).
+ *
+ * Use the interface name `"selection.VectorSelectionSourceFactory"` to obtain an instance of this factory.
+ */
+export interface VectorLayerSelectionSourceFactory
+    extends DeclaredService<"selection.VectorSelectionSourceFactory"> {
+    /**
+     * Returns a new {@link VectorLayerSelectionSourceImpl} that operates on the given OpenLayers VectorLayer.
+     */
+    createSelectionSource(options: VectorLayerSelectionSourceOptions): VectorLayerSelectionSource;
 }
