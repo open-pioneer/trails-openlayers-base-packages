@@ -7,8 +7,8 @@ export default defineBuildConfig({
     entryPoints: ["index"],
     i18n: ["en", "de"],
     services: {
-        SelectionSourceFactory: {
-            provides: "selection.SelectionSourceFactory"
+        VectorSelectionSourceFactory: {
+            provides: "selection.VectorSelectionSourceFactory"
         }
     },
     ui: {
