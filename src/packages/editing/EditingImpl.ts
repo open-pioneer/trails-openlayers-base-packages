@@ -41,7 +41,6 @@ interface EditingInteraction {
     mapContainer: HTMLElement | undefined;
 }
 
-// TODO: Messen und Editing gleichzeitig möglich
 export class EditingImpl implements Editing {
     private readonly _mapRegistry: MapRegistry;
     private _httpService: HttpService;

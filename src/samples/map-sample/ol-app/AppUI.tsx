@@ -38,7 +38,7 @@ import { AppConfig } from "./AppConfig";
 import { MAP_ID } from "./MapConfigProviderImpl";
 import { Editing } from "@open-pioneer/editing/api";
 
-type InteractionType = "measurement" | "selection" | undefined; // TODO: Add editing interaction
+type InteractionType = "measurement" | "selection" | "editing" | undefined;
 
 export function AppUI() {
     const intl = useIntl();
@@ -55,12 +55,25 @@ export function AppUI() {
     const editingService = useService<Editing>("editing.Editing");
 
     function toggleInteractionType(type: InteractionType) {
+        if (currentInteractionType === "editing") {
+            stopEditingCreate();
+        }
+
         if (type === currentInteractionType) {
             setCurrentInteractionType(undefined);
         } else {
             setCurrentInteractionType(type);
+
+            if (type === "editing") {
+                startEditingCreate();
+            }
         }
+
         map?.removeHighlight();
+    }
+
+    function toggleEditing() {
+        toggleInteractionType("editing");
     }
 
     function toggleMeasurement() {
@@ -142,7 +155,7 @@ export function AppUI() {
                             </Box>
                         </Container>
                         <MapAnchor position="top-left" horizontalGap={20} verticalGap={20}>
-                            {(showToc || currentInteractionType) && (
+                            {(showToc || currentInteraction) && (
                                 <Box
                                     backgroundColor="white"
                                     borderWidth="1px"
@@ -179,44 +192,13 @@ export function AppUI() {
                                             </TitledSection>
                                         </Box>
                                     )}
-                                    {showToc && currentInteractionType && <Divider mt={4} mb={4} />}
+                                    {showToc && currentInteraction && <Divider mt={4} mb={4} />}
                                     {currentInteraction}
                                 </Box>
                             )}
                         </MapAnchor>
                         <MapAnchor position="top-right" horizontalGap={20} verticalGap={20}>
                             {showOverviewMap && <OverviewMapComponent />}
-                        </MapAnchor>
-                        <MapAnchor horizontalGap={20} position="bottom-left">
-                            {bookmarkIsActive && (
-                                <Box
-                                    backgroundColor="white"
-                                    borderWidth="1px"
-                                    borderRadius="lg"
-                                    padding={2}
-                                    boxShadow="lg"
-                                    role="dialog"
-                                    width={350}
-                                >
-                                    <Box role="dialog" aria-labelledby={spatialBookmarkTitle}>
-                                        <TitledSection
-                                            title={
-                                                <SectionHeading
-                                                    id={spatialBookmarkTitle}
-                                                    size="md"
-                                                    mb={2}
-                                                >
-                                                    {intl.formatMessage({
-                                                        id: "spatialBookmarkTitle"
-                                                    })}
-                                                </SectionHeading>
-                                            }
-                                        >
-                                            <SpatialBookmarks mapId={MAP_ID} />
-                                        </TitledSection>
-                                    </Box>
-                                </Box>
-                            )}
                         </MapAnchor>
                         <MapAnchor horizontalGap={20} position="bottom-left">
                             {bookmarkIsActive && (
@@ -292,14 +274,20 @@ export function AppUI() {
                                 <ZoomIn mapId={MAP_ID} />
                                 <ZoomOut mapId={MAP_ID} />
                                 <ToolButton
-                                    label={intl.formatMessage({ id: "startEditingTitle" })}
-                                    icon={<PiPencil />}
-                                    onClick={startEditingCreate}
-                                />
-                                <ToolButton
-                                    label={intl.formatMessage({ id: "stopEditingTitle" })}
-                                    icon={<PiPencilSlash />}
-                                    onClick={stopEditingCreate}
+                                    label={
+                                        currentInteractionType === "editing"
+                                            ? intl.formatMessage({ id: "stopEditingTitle" })
+                                            : intl.formatMessage({ id: "startEditingTitle" })
+                                    }
+                                    icon={
+                                        currentInteractionType === "editing" ? (
+                                            <PiPencilSlash />
+                                        ) : (
+                                            <PiPencil />
+                                        )
+                                    }
+                                    isActive={currentInteractionType === "editing"}
+                                    onClick={toggleEditing}
                                 />
                                 <ToolButton
                                     label={intl.formatMessage({ id: "resetEditingTitle" })}
