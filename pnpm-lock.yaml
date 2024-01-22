@@ -106,7 +106,7 @@ importers:
         version: 2.0.0
       '@open-pioneer/vite-plugin-pioneer':
         specifier: ^2.0.0
-        version: 2.0.0(@open-pioneer/runtime@2.0.2)(sass@1.69.7)(vite@4.5.1)
+        version: 2.0.0(@open-pioneer/runtime@2.0.2)(sass@1.69.7)(vite@4.5.2)
       '@testing-library/dom':
         specifier: ^9.3.3
         version: 9.3.3
@@ -139,7 +139,7 @@ importers:
         version: 6.17.0(eslint@8.56.0)(typescript@5.3.3)
       '@vitejs/plugin-react-swc':
         specifier: ^3.5.0
-        version: 3.5.0(vite@4.5.1)
+        version: 3.5.0(vite@4.5.2)
       eslint:
         specifier: ^8.56.0
         version: 8.56.0
@@ -210,11 +210,11 @@ importers:
         specifier: ~5.3.3
         version: 5.3.3
       vite:
-        specifier: ^4.5.1
-        version: 4.5.1(@types/node@16.18.68)(sass@1.69.7)
+        specifier: ^4.5.2
+        version: 4.5.2(@types/node@16.18.68)(sass@1.69.7)
       vite-plugin-eslint:
         specifier: ^1.8.1
-        version: 1.8.1(eslint@8.56.0)(vite@4.5.1)
+        version: 1.8.1(eslint@8.56.0)(vite@4.5.2)
       vitest:
         specifier: ^0.34.6
         version: 0.34.6(happy-dom@12.10.3)(jsdom@22.1.0)(sass@1.69.7)
@@ -3545,7 +3545,7 @@ packages:
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
 
-  /@open-pioneer/vite-plugin-pioneer@2.0.0(@open-pioneer/runtime@2.0.2)(sass@1.69.7)(vite@4.5.1):
+  /@open-pioneer/vite-plugin-pioneer@2.0.0(@open-pioneer/runtime@2.0.2)(sass@1.69.7)(vite@4.5.2):
     resolution: {integrity: sha512-tiM2tmsM6TkpaPVdVgn889gnFv0kpRcGvict4Ig9ZkhIxyuhz0EFA+cstIQBT+ZEOOefeiAw9ryvMp83V7fL+Q==}
     engines: {node: '>= 18'}
     peerDependencies:
@@ -3561,7 +3561,7 @@ packages:
       debug: 4.3.4
       js-yaml: 4.1.0
       sass: 1.69.7
-      vite: 4.5.1(@types/node@16.18.68)(sass@1.69.7)
+      vite: 4.5.2(@types/node@16.18.68)(sass@1.69.7)
       zod: 3.22.4
       zod-validation-error: 2.1.0(zod@3.22.4)
     transitivePeerDependencies:
@@ -4166,13 +4166,13 @@ packages:
     resolution: {integrity: sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==}
     dev: true
 
-  /@vitejs/plugin-react-swc@3.5.0(vite@4.5.1):
+  /@vitejs/plugin-react-swc@3.5.0(vite@4.5.2):
     resolution: {integrity: sha512-1PrOvAaDpqlCV+Up8RkAh9qaiUjoDUcjtttyhXDKw53XA6Ve16SOp6cCOpRs8Dj8DqUQs6eTW5YkLcLJjrXAig==}
     peerDependencies:
       vite: ^4 || ^5
     dependencies:
       '@swc/core': 1.3.101
-      vite: 4.5.1(@types/node@16.18.68)(sass@1.69.7)
+      vite: 4.5.2(@types/node@16.18.68)(sass@1.69.7)
     transitivePeerDependencies:
       - '@swc/helpers'
     dev: true
@@ -8508,7 +8508,7 @@ packages:
       mlly: 1.4.0
       pathe: 1.1.1
       picocolors: 1.0.0
-      vite: 4.5.1(@types/node@16.18.68)(sass@1.69.7)
+      vite: 4.5.2(@types/node@16.18.68)(sass@1.69.7)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -8520,7 +8520,7 @@ packages:
       - terser
     dev: true
 
-  /vite-plugin-eslint@1.8.1(eslint@8.56.0)(vite@4.5.1):
+  /vite-plugin-eslint@1.8.1(eslint@8.56.0)(vite@4.5.2):
     resolution: {integrity: sha512-PqdMf3Y2fLO9FsNPmMX+//2BF5SF8nEWspZdgl4kSt7UvHDRHVVfHvxsD7ULYzZrJDGRxR81Nq7TOFgwMnUang==}
     peerDependencies:
       eslint: '>=7'
@@ -8530,11 +8530,11 @@ packages:
       '@types/eslint': 8.21.1
       eslint: 8.56.0
       rollup: 2.79.1
-      vite: 4.5.1(@types/node@16.18.68)(sass@1.69.7)
+      vite: 4.5.2(@types/node@16.18.68)(sass@1.69.7)
     dev: true
 
-  /vite@4.5.1(@types/node@16.18.68)(sass@1.69.7):
-    resolution: {integrity: sha512-AXXFaAJ8yebyqzoNB9fu2pHoo/nWX+xZlaRwoeYUxEqBO+Zj4msE5G+BhGBll9lYEKv9Hfks52PAF2X7qDYXQA==}
+  /vite@4.5.2(@types/node@16.18.68)(sass@1.69.7):
+    resolution: {integrity: sha512-tBCZBNSBbHQkaGyhGCDUGqeo2ph8Fstyp6FMSvTtsXeZSPpSMGlviAOav2hxVTqFcx8Hj/twtWKsMJXNY0xI8w==}
     engines: {node: ^14.18.0 || >=16.0.0}
     hasBin: true
     peerDependencies:
@@ -8624,7 +8624,7 @@ packages:
       strip-literal: 1.0.1
       tinybench: 2.5.0
       tinypool: 0.7.0
-      vite: 4.5.1(@types/node@16.18.68)(sass@1.69.7)
+      vite: 4.5.2(@types/node@16.18.68)(sass@1.69.7)
       vite-node: 0.34.6(@types/node@16.18.68)(sass@1.69.7)
       why-is-node-running: 2.2.2
     transitivePeerDependencies:
