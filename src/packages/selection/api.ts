@@ -142,10 +142,10 @@ export interface VectorLayerSelectionSource extends Required<SelectionSource>, R
  * A factory that creates {@link VectorLayerSelectionSource | selection sources} to be used on an
  * OpenLayers VectorLayer with an OpenLayers VectorSource (e.g. layer of the map).
  *
- * Use the interface name `"selection.SelectionSourceFactory"` to obtain an instance of this factory.
+ * Use the interface name `"selection.VectorSelectionSourceFactory"` to obtain an instance of this factory.
  */
 export interface VectorLayerSelectionSourceFactory
-    extends DeclaredService<"selection.SelectionSourceFactory"> {
+    extends DeclaredService<"selection.VectorSelectionSourceFactory"> {
     /**
      * Returns a new {@link VectorLayerSelectionSourceImpl} that operates on the given OpenLayers VectorLayer.
      */

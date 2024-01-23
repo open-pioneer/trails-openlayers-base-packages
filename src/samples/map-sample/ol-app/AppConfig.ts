@@ -23,7 +23,7 @@ import { HttpService } from "@open-pioneer/http";
 
 interface References {
     ogcSearchSourceFactory: OgcFeaturesSearchSourceFactory;
-    selectionSourceFactory: VectorLayerSelectionSourceFactory;
+    vectorSelectionSourceFactory: VectorLayerSelectionSourceFactory;
     httpService: HttpService;
     mapRegistry: MapRegistry;
 }
@@ -43,7 +43,7 @@ export class AppConfig implements Service {
     private _intl: PackageIntl;
     private _mapRegistry: MapRegistry;
     private _ogcSearchSourceFactory: OgcFeaturesSearchSourceFactory;
-    private _selectionSourceFactory: VectorLayerSelectionSourceFactory;
+    private _vectorSelectionSourceFactory: VectorLayerSelectionSourceFactory;
     private _httpService: HttpService;
     private _state: AppState;
     private _resources: Resource[] = [];
@@ -52,7 +52,7 @@ export class AppConfig implements Service {
         this._mapRegistry = references.mapRegistry;
         this._intl = intl;
         this._ogcSearchSourceFactory = references.ogcSearchSourceFactory;
-        this._selectionSourceFactory = references.selectionSourceFactory;
+        this._vectorSelectionSourceFactory = references.vectorSelectionSourceFactory;
         this._httpService = references.httpService;
 
         this._state = proxy<AppState>({
@@ -150,7 +150,7 @@ export class AppConfig implements Service {
                 continue;
             }
 
-            const layerSelectionSource = this._selectionSourceFactory.createSelectionSource({
+            const layerSelectionSource = this._vectorSelectionSourceFactory.createSelectionSource({
                 vectorLayer: opLayer.olLayer as VectorLayer<VectorSource>,
                 label: opLayer.title
             });

@@ -22,8 +22,9 @@ import { Toc } from "@open-pioneer/toc";
 import TileLayer from "ol/layer/Tile.js";
 import OSM from "ol/source/OSM.js";
 import { useIntl, useService } from "open-pioneer:react-hooks";
-import { useId, useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useState } from "react";
 import {
+    PiImagesLight,
     PiArrowUUpLeft,
     PiBookmarksSimpleBold,
     PiListLight,
@@ -36,6 +37,7 @@ import {
 import { useSnapshot } from "valtio";
 import { AppConfig } from "./AppConfig";
 import { MAP_ID } from "./MapConfigProviderImpl";
+import { Legend } from "@open-pioneer/legend";
 import { Editing } from "@open-pioneer/editing/api";
 
 type InteractionType = "measurement" | "selection" | "editing" | undefined;
@@ -43,7 +45,9 @@ type InteractionType = "measurement" | "selection" | "editing" | undefined;
 export function AppUI() {
     const intl = useIntl();
     const tocTitleId = useId();
+    const legendTitleId = useId();
     const spatialBookmarkTitle = useId();
+    const [legendIsActive, setLegendIsActive] = useState<boolean>(true);
     const { map } = useMapModel(MAP_ID);
     const [showOverviewMap, setShowOverviewMap] = useState<boolean>(true);
     const [bookmarkIsActive, setBookmarkActive] = useState<boolean>(false);
@@ -70,6 +74,19 @@ export function AppUI() {
         }
 
         map?.removeHighlight();
+    }
+    const [maxHeightToc, setMaxHeightToc] = useState<string | undefined>(undefined);
+
+    useEffect(() => {
+        if (legendIsActive || currentInteractionType) {
+            setMaxHeightToc("300px");
+        } else {
+            setMaxHeightToc("75vh");
+        }
+    }, [showToc, legendIsActive, currentInteractionType]);
+
+    function toggleLegend() {
+        setLegendIsActive(!legendIsActive);
     }
 
     function toggleEditing() {
@@ -155,7 +172,7 @@ export function AppUI() {
                             </Box>
                         </Container>
                         <MapAnchor position="top-left" horizontalGap={20} verticalGap={20}>
-                            {(showToc || currentInteraction) && (
+                            {(showToc || legendIsActive || currentInteraction) && (
                                 <Box
                                     backgroundColor="white"
                                     borderWidth="1px"
@@ -182,17 +199,43 @@ export function AppUI() {
                                                     </SectionHeading>
                                                 }
                                             >
-                                                <Toc
-                                                    mapId={MAP_ID}
-                                                    showTools={true}
-                                                    basemapSwitcherProps={{
-                                                        allowSelectingEmptyBasemap: true
-                                                    }}
-                                                />
+                                                <Box overflowY="auto" maxHeight={maxHeightToc}>
+                                                    <Toc
+                                                        mapId={MAP_ID}
+                                                        showTools={true}
+                                                        basemapSwitcherProps={{
+                                                            allowSelectingEmptyBasemap: true
+                                                        }}
+                                                    />
+                                                </Box>
                                             </TitledSection>
                                         </Box>
                                     )}
-                                    {showToc && currentInteraction && <Divider mt={4} mb={4} />}
+                                    {showToc && legendIsActive && <Divider mt={4} mb={4} />}
+                                    {legendIsActive && (
+                                        <Box role="dialog" aria-labelledby={legendTitleId}>
+                                            <TitledSection
+                                                title={
+                                                    <SectionHeading
+                                                        id={legendTitleId}
+                                                        size="md"
+                                                        mb={2}
+                                                    >
+                                                        {intl.formatMessage({
+                                                            id: "legendTitle"
+                                                        })}
+                                                    </SectionHeading>
+                                                }
+                                            >
+                                                <Box overflowY="auto" maxHeight={300}>
+                                                    <Legend mapId={MAP_ID} showBaseLayers={true} />
+                                                </Box>
+                                            </TitledSection>
+                                        </Box>
+                                    )}
+                                    {(showToc || legendIsActive) && currentInteraction && (
+                                        <Divider mt={4} mb={4} />
+                                    )}
                                     {currentInteraction}
                                 </Box>
                             )}
@@ -251,6 +294,12 @@ export function AppUI() {
                                     icon={<PiListLight />}
                                     isActive={showToc}
                                     onClick={toggleToc}
+                                />
+                                <ToolButton
+                                    label={intl.formatMessage({ id: "legendTitle" })}
+                                    icon={<PiImagesLight />}
+                                    isActive={legendIsActive}
+                                    onClick={toggleLegend}
                                 />
                                 <ToolButton
                                     label={intl.formatMessage({ id: "measurementTitle" })}

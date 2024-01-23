@@ -8,7 +8,7 @@ import {
     VectorLayerSelectionSourceOptions
 } from "./api";
 
-export class SelectionSourceFactory implements VectorLayerSelectionSourceFactory {
+export class VectorSelectionSourceFactory implements VectorLayerSelectionSourceFactory {
     #intl: PackageIntl;
 
     constructor({ intl }: ServiceOptions<PackageIntl>) {

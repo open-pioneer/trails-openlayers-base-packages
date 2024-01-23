@@ -1,5 +1,9 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+/*
+ * no xml parser in happy dom
+ * @vitest-environment jsdom
+ */
 import { HttpService } from "@open-pioneer/http";
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
@@ -10,6 +14,7 @@ import { MapModelImpl } from "./MapModelImpl";
 import { createMapModel } from "./createMapModel";
 import { SimpleLayerImpl } from "./layers/SimpleLayerImpl";
 import { WMSLayerImpl } from "./layers/WMSLayerImpl";
+import SimpleWmsCapas from "./layers/test-data/SimpleWMSCapas.xml?raw";
 
 const MOCKED_HTTP_SERVICE = {
     fetch: vi.fn()
@@ -153,6 +158,14 @@ it("generates automatic unique ids for layers", async () => {
 });
 
 it("supports adding custom layer instances", async () => {
+    MOCKED_HTTP_SERVICE.fetch.mockImplementation(async (req: string) => {
+        if (req.includes("GetCapabilities")) {
+            // just valid enough to suppress error messages
+            return new Response(SimpleWmsCapas, { status: 200 });
+        }
+        throw new Error("unexpected request");
+    });
+
     model = await create("foo", {
         layers: [
             new SimpleLayer({

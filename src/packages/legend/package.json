@@ -1,6 +1,6 @@
 {
-    "name": "@open-pioneer/map",
-    "version": "0.2.0",
+    "name": "@open-pioneer/legend",
+    "version": "0.0.1",
     "license": "Apache-2.0",
     "main": "index.ts",
     "scripts": {
@@ -8,28 +8,21 @@
     },
     "peerDependencies": {
         "@open-pioneer/chakra-integration": "^1.1.1",
-        "@open-pioneer/core": "^1.2.1",
-        "@open-pioneer/http": "^2.1.1",
-        "@open-pioneer/react-utils": "workspace:^",
+        "@chakra-ui/icons": "^2.1.1",
         "@open-pioneer/runtime": "^2.0.2",
-        "@types/proj4": "^2.5.2",
+        "@open-pioneer/react-utils": "workspace:^",
+        "@open-pioneer/map": "workspace:^",
         "ol": "^8.2.0",
-        "proj4": "^2.9.0",
         "react": "^18.2.0",
-        "react-dom": "^18.2.0",
-        "react-use": "^17.4.2"
+        "classnames": "^2.3.2"
     },
     "devDependencies": {
+        "@open-pioneer/test-utils": "^1.0.2",
         "@open-pioneer/map-test-utils": "workspace:^",
-        "@types/jsdom": "^21.1.6",
-        "@types/uuid": "^9.0.7",
         "openlayers-base-packages": "workspace:*"
     },
     "publishConfig": {
         "directory": "dist",
         "linkDirectory": false
-    },
-    "dependencies": {
-        "uuid": "^9.0.1"
     }
 }

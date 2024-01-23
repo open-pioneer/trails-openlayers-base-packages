@@ -59,7 +59,7 @@ class MySelectionSource implements SelectionSource {
 
     // Performs a selection with a given selectionKind and returns a list of selection results.
     // see the API documentation of `SelectionSource`.
-    select(selectionKind: SelectionKind, options: SelectionOptions): Promise<SelectionResult[]>;
+    select(selectionKind: SelectionKind, options: SelectionOptions): Promise<SelectionResult[]> {}
 }
 
 const selectionsources: SelectionSource[] = [new MySelectionSource()];
@@ -71,7 +71,7 @@ const selectionsources: SelectionSource[] = [new MySelectionSource()];
 ### VectorLayer as selection source
 
 To use an OpenLayers VectorLayer with an OpenLayers VectorSource (e.g. layer of the map) as a selection source,
-the provided service `SelectionSourceFactory` can be used to create an instance of `VectorLayerSelectionSource`.
+the provided service `VectorSelectionSourceFactory` can be used to create an instance of `VectorLayerSelectionSource`.
 
 Key features of this selection source implementation are:
 
@@ -80,7 +80,7 @@ Key features of this selection source implementation are:
 -   limiting the number of returned selection results to the corresponding selection option
 -   throwing an event `changed:status` when the status updates
 
-Inject the selection source factory by referencing `"selection.SelectionSourceFactory"`:
+Inject the selection source factory by referencing `"selection.VectorSelectionSourceFactory"`:
 
 ```js
 // build.config.mjs
@@ -91,7 +91,7 @@ export default defineBuildConfig({
         YourService: {
             // ...
             references: {
-                selectionSourceFactory: "selection.SelectionSourceFactory"
+                vectorSelectionSourceFactory: "selection.VectorSelectionSourceFactory"
             }
         }
     }
@@ -101,8 +101,8 @@ export default defineBuildConfig({
 and create a selection source instance:
 
 ```ts
-const selectionSourceFactory = this._selectionSourceFactory; // injected
-const layerSelectionSource = selectionSourceFactory.createSelectionSource({
+const vectorSelectionSourceFactory = this._vectorSelectionSourceFactory; // injected
+const layerSelectionSource = vectorSelectionSourceFactory.createSelectionSource({
     vectorLayer: vectorLayer,
     label: "My Vector Layer Title shown in UI"
 });

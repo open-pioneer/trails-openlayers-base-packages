@@ -9,6 +9,7 @@ import type { LayerRetrievalOptions } from "../shared";
 export interface LayerBaseEvents {
     "changed": void;
     "changed:title": void;
+    "changed:legend": void;
     "changed:description": void;
     "changed:visible": void;
     "changed:attributes": void;
@@ -88,6 +89,11 @@ export interface LayerBase<AdditionalEvents = {}>
      * Future versions may completely remove invisible layers from the OpenLayer's map under some circumstances.
      */
     readonly visible: boolean;
+
+    /**
+     * LegendURL from the service capabilties, if available
+     */
+    readonly legend: string | undefined;
 
     /**
      * The collection of child sublayers for this layer.
@@ -202,9 +208,10 @@ export interface SublayersCollectionEvents {
 /**
  * Contains the sublayers that belong to a {@link Layer} or {@link Sublayer}.
  */
-export interface SublayersCollection extends EventSource<SublayersCollectionEvents> {
+export interface SublayersCollection<SublayerType = Sublayer>
+    extends EventSource<SublayersCollectionEvents> {
     /**
      * Returns the child sublayers in this collection.
      */
-    getSublayers(options?: LayerRetrievalOptions): Sublayer[];
+    getSublayers(options?: LayerRetrievalOptions): SublayerType[];
 }

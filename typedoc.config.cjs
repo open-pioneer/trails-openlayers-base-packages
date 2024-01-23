@@ -19,6 +19,7 @@ const documentedPackages = [
     "packages/scale-bar",
     "packages/geolocation",
     "packages/theme",
+    "packages/legend",
     "packages/local-storage",
     "packages/toc",
     "packages/search",
