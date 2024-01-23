@@ -7,8 +7,6 @@ import VectorSource from "ol/source/Vector";
 import { LegendItemAttributes } from "@open-pioneer/legend";
 import { CustomLegend, LoremIpsumLegend } from "./CustomLegend";
 import { OSM } from "ol/source";
-import WMTS from "ol/source/WMTS";
-import WMTSTileGrid from "ol/tilegrid/WMTS";
 import { Circle, Fill, Style } from "ol/style";
 import TileLayer from "ol/layer/Tile.js";
 import { ServiceOptions } from "@open-pioneer/runtime";
