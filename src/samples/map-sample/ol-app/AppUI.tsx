@@ -38,7 +38,7 @@ import { useSnapshot } from "valtio";
 import { AppConfig } from "./AppConfig";
 import { MAP_ID } from "./MapConfigProviderImpl";
 import { Legend } from "@open-pioneer/legend";
-import { Editing } from "@open-pioneer/editing/api";
+import { Editing } from "@open-pioneer/editing";
 
 type InteractionType = "measurement" | "selection" | "editing" | undefined;
 
@@ -57,6 +57,7 @@ export function AppUI() {
     const [showToc, setShowToc] = useState<boolean>(true);
     const [currentInteractionType, setCurrentInteractionType] = useState<InteractionType>();
     const editingService = useService<Editing>("editing.Editing");
+    const notifier = useService<NotificationService>("notifier.NotificationService");
 
     function toggleInteractionType(type: InteractionType) {
         if (currentInteractionType === "editing") {
@@ -108,7 +109,31 @@ export function AppUI() {
     function startEditingCreate() {
         const layer = map?.layers.getLayerById("krankenhaus");
         if (layer) {
-            editingService.start(layer);
+            editingService
+                .start(layer)
+                .whenComplete()
+                .then((featureId) => {
+                    // TODO: Toggle / reset button after successfully drawing
+
+                    notifier.notify({
+                        level: "info",
+                        message: "feature created with id:" + featureId,
+                        // message: intl.formatMessage(
+                        //     {
+                        //         id: "foundResults"
+                        //     },
+                        //     { resultsCount: results.length }
+                        // ),
+                        displayDuration: 4000
+                    });
+                })
+                .catch((error) => {
+                    notifier.notify({
+                        level: "error",
+                        message: error,
+                        displayDuration: 4000
+                    });
+                });
         }
     }
 
