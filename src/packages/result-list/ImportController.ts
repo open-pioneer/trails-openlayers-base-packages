@@ -2,11 +2,14 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { Point } from "ol/geom";
-import { ObjectWithAttributsAndGeometry, ResultData, ResultColumn } from "./api";
+import { ResultColumn } from "./api";
+import { BaseFeature } from "@open-pioneer/map/api/BaseFeature";
 
-export const dummyFeatureData: ObjectWithAttributsAndGeometry[] = [
+// TODO: refactor to better file name
+export const dummyFeatureData: BaseFeature[] = [
     {
-        attributes: {
+        id: "1",
+        properties: {
             "a": "Test",
             "b": 123,
             "c": 4.567,
@@ -16,7 +19,8 @@ export const dummyFeatureData: ObjectWithAttributsAndGeometry[] = [
         geometry: new Point([404567.3, 5757788.32])
     },
     {
-        attributes: {
+        id: "2",
+        properties: {
             "a": "Test123",
             "b": 434,
             "c": 78.567,
@@ -26,7 +30,8 @@ export const dummyFeatureData: ObjectWithAttributsAndGeometry[] = [
         geometry: new Point([406510.87, 5758314.82])
     },
     {
-        attributes: {
+        id: "3",
+        properties: {
             "a": "Testabc",
             "b": 666,
             "c": 8.597,
@@ -39,43 +44,28 @@ export const dummyFeatureData: ObjectWithAttributsAndGeometry[] = [
 
 export const dummyMetaData: ResultColumn[] = [
     {
-        name: "a",
+        attributeName: "properties.a",
         displayName: "Spalte A",
         width: 100
     },
     {
-        name: "b",
+        attributeName: "properties.b",
         displayName: "Spalte B",
         width: 50
     },
     {
-        name: "c",
+        attributeName: "properties.c",
         displayName: "Spalte C",
         width: 150
     },
     {
-        name: "d",
+        attributeName: "properties.d",
         displayName: "Spalte D",
         width: 75
     },
     {
-        name: "e",
+        attributeName: "properties.e",
         displayName: "Spalte E",
         width: 50
     }
 ];
-
-/**
- * Interface for Developer to change data in Result-UI
- */
-export class ImportController {
-    #onSetData: (data: ResultData | null) => Promise<unknown>;
-
-    constructor(onSetData: (data: ResultData | null) => Promise<unknown>) {
-        this.#onSetData = onSetData;
-    }
-
-    setDataSource(data: ResultData | null) {
-        return this.#onSetData(data);
-    }
-}

@@ -46,22 +46,22 @@ interface SelectionComponentProps {
 
 const resultListColumns: ResultColumn[] = [
     {
-        name: "id",
+        attributeName: "id",
         displayName: "ID",
         width: 70
     },
     {
-        name: "name",
+        attributeName: "name",
         displayName: "Name",
         width: 150
     },
     {
-        name: "inspireId",
+        attributeName: "inspireId",
         displayName: "inspireID",
         width: 300
     },
     {
-        name: "gefoerdert",
+        attributeName: "gefoerdert",
         displayName: "Gefördert",
         width: 70
     }
@@ -91,7 +91,6 @@ export function AppUI() {
         } else {
             setCurrentInteractionType(type);
         }
-        // TODO: refactor logik?
         map?.removeHighlight();
     }
 
@@ -388,6 +387,7 @@ function createResultUiDataSource(
     data: Record<string, unknown>[] | SelectionResult[]
 ): BaseFeature[] {
     return data.map((item) => {
+        // TODO: Create ResultData instead?
         const { id, ...rest } = item;
         const resultListItem = { id, ...rest } as BaseFeature;
         return resultListItem;
@@ -415,6 +415,7 @@ function SelectionComponent(props: SelectionComponentProps) {
             map.highlightAndZoom(geometries);
         }
 
+        // TODO: cleanup
         console.log(event.results);
         //const resultListData = event.results.map((item: ResultListData) => item);
         const source = createResultUiDataSource([...event.results]);

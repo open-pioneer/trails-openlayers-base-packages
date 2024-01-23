@@ -24,6 +24,7 @@ import { TriangleDownIcon, TriangleUpIcon } from "@chakra-ui/icons";
 import { useIntl } from "open-pioneer:react-hooks";
 import React, { HTMLProps, useRef, useState } from "react";
 import { createColumnHelper } from "@tanstack/react-table";
+import { v4 as uuid4v } from "uuid";
 
 interface DataTableProps<Data extends object> {
     data: Data[];
@@ -38,7 +39,7 @@ export function DataTable<Data extends object>(props: DataTableProps<Data>) {
     const [rowSelection, setRowSelection] = useState({});
 
     const selectColumn = createColumnHelper<Data>().display({
-        id: "selection",
+        id: uuid4v(),
         size: 70
     });
 
@@ -165,9 +166,9 @@ export function DataTable<Data extends object>(props: DataTableProps<Data>) {
             </Thead>
             {/* When resizing any column we will render this special memoized version of our table body */}
             {table.getState().columnSizingInfo.isResizingColumn ? (
-                <MemoizedTableBody key={76548443} table={table}></MemoizedTableBody>
+                <MemoizedTableBody table={table}></MemoizedTableBody>
             ) : (
-                <TableBody key={546756} table={table}></TableBody>
+                <TableBody table={table}></TableBody>
             )}
         </Table>
     );
@@ -215,7 +216,9 @@ function TableBody<Data extends object>({ table }: { table: TanstackTable<Data> 
                             return (
                                 <>
                                     <Td
-                                        key={cell.id}
+                                        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                                        // @ts-ignore
+                                        key={cell.row.original.internalId}
                                         isNumeric={meta?.isNumeric}
                                         style={{ width: width }}
                                     >

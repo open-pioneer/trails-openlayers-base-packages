@@ -15,6 +15,7 @@ import VectorSource from "ol/source/Vector";
 import VectorLayer from "ol/layer/Vector";
 import { EventsKey } from "ol/events";
 import { unByKey } from "ol/Observable";
+import { v4 as uuid4v } from "uuid";
 
 export const fakeSelectedPointFeatures = [
     new Point([407354, 5754673]), // con terra (Bottom Right)
@@ -142,10 +143,23 @@ export class VectorLayerSelectionSourceImpl
             .getSource()!
             .forEachFeatureIntersectingExtent(selectionKind.extent, (feature) => {
                 if (!feature.getGeometry()) return;
+                const someAttrs = feature
+                    .getKeys()
+                    .slice(0)
+                    .filter((item) => item !== "geometry" && !item.includes("."));
+
+                const filterdProps: Record<string, unknown> = {};
+
+                someAttrs.forEach((item: string) => {
+                    filterdProps[item as keyof SelectionResult] = feature.getProperties()[item];
+                });
+
                 const result: SelectionResult = {
-                    id: feature.getId()?.toString() || feature.getGeometry.toString(),
-                    geometry: feature.getGeometry()!
+                    id: feature.getId()?.toString() || uuid4v(),
+                    geometry: feature.getGeometry()!,
+                    properties: filterdProps
                 };
+
                 allResults.push(result);
             });
         const selectedFeatures = allResults.filter((s): s is SelectionResult => s != null);
