@@ -12,14 +12,14 @@ import { SectionHeading, TitledSection, ToolButton } from "@open-pioneer/react-u
 import { ScaleBar } from "@open-pioneer/scale-bar";
 import { ScaleViewer } from "@open-pioneer/scale-viewer";
 import { Search, SearchSelectEvent } from "@open-pioneer/search";
-import { Selection, SelectionResult } from "@open-pioneer/selection";
+import { Selection } from "@open-pioneer/selection";
 import {
     SelectionCompleteEvent,
     SelectionSourceChangedEvent
 } from "@open-pioneer/selection/Selection";
 import { SpatialBookmarks } from "@open-pioneer/spatial-bookmarks";
 import { Toc } from "@open-pioneer/toc";
-import { ResultList, ResultColumn } from "@open-pioneer/result-list";
+import { ResultList, ResultColumn, ResultListInput } from "@open-pioneer/result-list";
 
 import TileLayer from "ol/layer/Tile.js";
 import OSM from "ol/source/OSM.js";
@@ -41,31 +41,8 @@ import { BaseFeature } from "@open-pioneer/map/api/BaseFeature";
 type InteractionType = "measurement" | "selection" | undefined;
 
 interface SelectionComponentProps {
-    setResultListUiData: Dispatch<SetStateAction<BaseFeature[]>>;
+    setResultListInput: Dispatch<SetStateAction<ResultListInput | undefined>>;
 }
-
-const resultListColumns: ResultColumn[] = [
-    {
-        attributeName: "id",
-        displayName: "ID",
-        width: 70
-    },
-    {
-        attributeName: "name",
-        displayName: "Name",
-        width: 150
-    },
-    {
-        attributeName: "inspireId",
-        displayName: "inspireID",
-        width: 300
-    },
-    {
-        attributeName: "gefoerdert",
-        displayName: "Gefördert",
-        width: 70
-    }
-];
 
 export function AppUI() {
     const intl = useIntl();
@@ -80,7 +57,8 @@ export function AppUI() {
     const [showToc, setShowToc] = useState<boolean>(true);
     const [currentInteractionType, setCurrentInteractionType] = useState<InteractionType>();
     const [resultListIsActive, setResultListActive] = useState<boolean>(true);
-    const [resultListUiData, setResultListUiData] = useState<BaseFeature[]>([]);
+
+    const [resultListInput, setResultListInput] = useState<ResultListInput>();
 
     function toggleResultList() {
         setResultListActive(!resultListIsActive);
@@ -113,7 +91,7 @@ export function AppUI() {
     let currentInteraction: JSX.Element | null = null;
     switch (currentInteractionType) {
         case "selection":
-            currentInteraction = <SelectionComponent setResultListUiData={setResultListUiData} />;
+            currentInteraction = <SelectionComponent setResultListInput={setResultListInput} />;
             break;
         case "measurement":
             currentInteraction = <MeasurementComponent />;
@@ -273,7 +251,7 @@ export function AppUI() {
                                 gap={1}
                                 padding={1}
                             >
-                                {resultListUiData.length > 0 && (
+                                {resultListInput && resultListInput.data.length > 0 && (
                                     <ToolButton
                                         label="ResultList"
                                         icon={<PiListMagnifyingGlassFill />}
@@ -318,17 +296,15 @@ export function AppUI() {
                             </Flex>
                         </MapAnchor>
                     </MapContainer>
-                    {resultListUiData.length > 0 && resultListIsActive && (
+
+                    {resultListInput && resultListInput.data.length > 0 && resultListIsActive && (
                         <Box
                             className="result-list"
                             backgroundColor="white"
                             width="100%"
                             height="300px"
                         >
-                            <ResultList
-                                data={resultListUiData}
-                                metadata={resultListColumns}
-                            ></ResultList>
+                            <ResultList resultListInput={resultListInput}></ResultList>
                         </Box>
                     )}
                 </Flex>
@@ -383,25 +359,27 @@ function SearchComponent() {
     );
 }
 
-function createResultUiDataSource(
-    data: Record<string, unknown>[] | SelectionResult[]
-): BaseFeature[] {
-    return data.map((item) => {
+function createResultListInput(
+    data: Record<string, unknown>[],
+    metadata: ResultColumn[]
+): ResultListInput {
+    const features = data.map((item) => {
         // TODO: Create ResultData instead?
         const { id, ...rest } = item;
         const resultListItem = { id, ...rest } as BaseFeature;
         return resultListItem;
     });
+    return { data: features, metadata };
 }
 
 function SelectionComponent(props: SelectionComponentProps) {
-    const { setResultListUiData } = props;
+    const { setResultListInput } = props;
     const intl = useIntl();
     const notifier = useService<NotificationService>("notifier.NotificationService");
     const selectionTitleId = useId();
     const { map } = useMapModel(MAP_ID);
     const appConfig = useService<unknown>("ol-app.AppConfig") as AppConfig;
-    const sources = useSnapshot(appConfig.state).selectionSources;
+    const { selectionSources, sourceMetadata } = useSnapshot(appConfig.state);
 
     function onSelectionComplete(event: SelectionCompleteEvent) {
         if (!map) {
@@ -415,12 +393,17 @@ function SelectionComponent(props: SelectionComponentProps) {
             map.highlightAndZoom(geometries);
         }
 
-        // TODO: cleanup
-        console.log(event.results);
-        //const resultListData = event.results.map((item: ResultListData) => item);
-        const source = createResultUiDataSource([...event.results]);
-        setResultListUiData(source);
-
+        const currentMetadata = sourceMetadata.get(event.source);
+        if (!currentMetadata) {
+            console.warn("can not show results because no metadata could be found");
+            return;
+        }
+        // TODO: cleanup cast
+        const resultListInput = createResultListInput(
+            [...(event.results as unknown as Record<string, unknown>[])],
+            currentMetadata
+        );
+        setResultListInput(resultListInput);
         notifier.notify({
             level: "info",
             message: `Found ${event.results.length} results`,
@@ -445,7 +428,7 @@ function SelectionComponent(props: SelectionComponentProps) {
             >
                 <Selection
                     mapId={MAP_ID}
-                    sources={sources}
+                    sources={selectionSources}
                     onSelectionComplete={onSelectionComplete}
                     onSelectionSourceChanged={onSelectionSourceChanged}
                 />

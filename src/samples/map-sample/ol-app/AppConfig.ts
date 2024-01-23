@@ -5,6 +5,7 @@ import { OgcFeaturesSearchSourceFactory } from "@open-pioneer/ogc-features";
 import { SearchSource } from "@open-pioneer/search";
 import { PhotonGeocoder } from "./sources/searchSources";
 import { proxy, ref } from "valtio";
+import { proxyMap } from "valtio/utils";
 import { SelectionSource, VectorLayerSelectionSourceFactory } from "@open-pioneer/selection";
 import { MapRegistry } from "@open-pioneer/map";
 import { MAP_ID } from "./MapConfigProviderImpl";
@@ -20,6 +21,7 @@ declare module "valtio" {
     export function useSnapshot<T extends object>(p: T): T;
 }
 import { HttpService } from "@open-pioneer/http";
+import { ResultColumn } from "@open-pioneer/result-list";
 
 interface References {
     ogcSearchSourceFactory: OgcFeaturesSearchSourceFactory;
@@ -31,13 +33,49 @@ interface References {
 export interface AppState {
     searchSources: SearchSource[];
     selectionSources: SelectionSource[];
+    sourceMetadata: Map<unknown, ResultColumn[]>;
 }
 
 interface References {
     mapRegistry: MapRegistry;
 }
-
-const SELECTION_LAYER_IDS = ["ogc_kitas", "ogc_kataster"];
+const SELECTION_LAYERS = new Map<string, ResultColumn[]>([
+    [
+        "ogc_kitas",
+        [
+            {
+                attributeName: "id",
+                displayName: "ID",
+                width: 70
+            },
+            {
+                attributeName: "name",
+                displayName: "Name",
+                width: 150
+            },
+            {
+                attributeName: "inspireId",
+                displayName: "inspireID",
+                width: 300
+            },
+            {
+                attributeName: "gefoerdert",
+                displayName: "Gefördert",
+                width: 70
+            }
+        ]
+    ],
+    [
+        "ogc_kataster",
+        [
+            {
+                attributeName: "id",
+                displayName: "ID",
+                width: 70
+            }
+        ]
+    ]
+]);
 
 export class AppConfig implements Service {
     private _intl: PackageIntl;
@@ -57,7 +95,8 @@ export class AppConfig implements Service {
 
         this._state = proxy<AppState>({
             searchSources: [],
-            selectionSources: []
+            selectionSources: [],
+            sourceMetadata: proxyMap()
         });
         this.initSearchSources();
         this.initSelectionSources().catch((error) => {
@@ -151,7 +190,7 @@ export class AppConfig implements Service {
         for (const opLayer of opLayers) {
             if (
                 !opLayer ||
-                !SELECTION_LAYER_IDS.includes(opLayer.id) ||
+                !SELECTION_LAYERS.has(opLayer.id) ||
                 !isVectorLayerWithVectorSource(opLayer.olLayer)
             ) {
                 continue;
@@ -173,6 +212,10 @@ export class AppConfig implements Service {
             });
             this._resources.push(eventHandler, layerSelectionSource);
             this._state.selectionSources.unshift(ref(layerSelectionSource));
+            const resultListMetadata = SELECTION_LAYERS.get(opLayer.id);
+            if (resultListMetadata) {
+                this._state.sourceMetadata.set(ref(layerSelectionSource), resultListMetadata);
+            }
         }
     }
 }

@@ -146,7 +146,7 @@ export class VectorLayerSelectionSourceImpl
                 const someAttrs = feature
                     .getKeys()
                     .slice(0)
-                    .filter((item) => item !== "geometry" && !item.includes("."));
+                    .filter((item) => item !== "geometry");
 
                 const filterdProps: Record<string, unknown> = {};
 
