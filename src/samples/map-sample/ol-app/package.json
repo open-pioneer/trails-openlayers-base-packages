@@ -27,6 +27,7 @@
         "@open-pioneer/theme": "workspace:^",
         "@open-pioneer/toc": "workspace:^",
         "map-sample-logging": "workspace:^",
+        "@open-pioneer/legend": "workspace:^",
         "ol": "^8.2.0",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
