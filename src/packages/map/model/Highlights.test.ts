@@ -130,7 +130,7 @@ it("should zoom the map to the default or configured zoom level if there is no e
     highlights.addHighlightOrMarkerAndZoom([point], {});
     const defaultZoom = map.getView().getZoom();
 
-    expect(defaultZoom).toStrictEqual(17);
+    expect(defaultZoom).toStrictEqual(14);
 
     highlights.addHighlightOrMarkerAndZoom([point], { pointZoom: 12 });
     const configuredZoom = map.getView().getZoom();

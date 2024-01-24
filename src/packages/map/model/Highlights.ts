@@ -17,7 +17,7 @@ import { TOPMOST_LAYER_Z } from "./LayerCollectionImpl";
 import { Layer as OlLayer } from "ol/layer";
 import { calculateBufferedExtent } from "../util/geometry-utils";
 
-const DEFAULT_OL_POINT_ZOOM_LEVEL = 17;
+const DEFAULT_OL_POINT_ZOOM_LEVEL = 14;
 const DEFAULT_OL_MAX_ZOOM_LEVEL = 20;
 
 export class Highlights {
@@ -61,11 +61,13 @@ export class Highlights {
             extent = extend(extent, geom.getExtent());
         }
 
+        const arePoints = !geometries.find((geom) => geom.getType() != "Point");
         const center = getCenter(extent);
         const isPoint = getArea(extent) === 0;
-        const zoomScale = isPoint
-            ? options?.pointZoom ?? DEFAULT_OL_POINT_ZOOM_LEVEL
-            : options?.maxZoom ?? DEFAULT_OL_MAX_ZOOM_LEVEL;
+        const zoomScale =
+            isPoint || arePoints
+                ? options?.pointZoom ?? DEFAULT_OL_POINT_ZOOM_LEVEL
+                : options?.maxZoom ?? DEFAULT_OL_MAX_ZOOM_LEVEL;
         setCenter(this.olMap, center);
         zoomTo(this.olMap, extent, zoomScale);
         this.createAndAddLayer(geometries, options?.highlightStyle);
