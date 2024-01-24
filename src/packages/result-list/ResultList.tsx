@@ -4,14 +4,11 @@ import { Box } from "@open-pioneer/chakra-integration";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { FC, useMemo } from "react";
 import { DataTable } from "./DataTable";
-import { ResultColumn, ResultListInput } from "./api";
+import { ResultListInput } from "./api";
 import { createColumns } from "./createColumns";
 import { BaseFeature } from "@open-pioneer/map/api/BaseFeature";
 import { v4 as uuid4v } from "uuid";
 export interface ResultListProps extends CommonComponentProps {
-    // data: BaseFeature[];
-    // metadata: ResultColumn[];
-
     resultListInput: ResultListInput;
 }
 
@@ -21,15 +18,12 @@ export interface ResultListData {
 }
 
 export const ResultList: FC<ResultListProps> = (props) => {
-    //const { data, metadata } = props;
     const { resultListInput } = props;
     const data = resultListInput.data;
     const metadata = resultListInput.metadata;
     // TODO: Remove test data
     //const data = dummyFeatureData;
-    //const columns = useMemo(() => createColumns(dummyMetaData), [dummyMetaData]);
     const resultListData = createResultListData(data);
-
     const { containerProps } = useCommonComponentProps("result-list", props);
     const columns = useMemo(() => createColumns(metadata), [metadata]);
 

@@ -395,7 +395,7 @@ function SelectionComponent(props: SelectionComponentProps) {
 
         const currentMetadata = sourceMetadata.get(event.source);
         if (!currentMetadata) {
-            console.warn("can not show results because no metadata could be found");
+            console.warn("Can not show results because no metadata could be found");
             return;
         }
         // TODO: cleanup cast
