@@ -22,10 +22,8 @@ export function createColumns(metaData: ResultColumn[]) {
             {
                 id: "result-list-col_" + index, //metaDataItem.attributeName,
                 cell: (info) => {
-                    // TODO Fix typescript!
-                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                    // @ts-ignore
-                    let cellValue = info.row.original.data[metaDataItem.attributeName];
+                    const data = info.row.original.data as unknown as Record<string, unknown>;
+                    let cellValue = data[metaDataItem.attributeName];
                     cellValue =
                         cellValue ||
                         info.row.original.data.properties?.[metaDataItem.attributeName];
