@@ -9,7 +9,7 @@ export default defineBuildConfig({
     styles: "./editing.css",
     services: {
         EditingImpl: {
-            provides: "editing.Editing",
+            provides: "editing.EditingService",
             references: {
                 mapRegistry: "map.MapRegistry",
                 httpService: "http.HttpService"

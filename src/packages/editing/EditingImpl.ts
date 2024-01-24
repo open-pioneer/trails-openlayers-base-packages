@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { LayerBase, MapRegistry } from "@open-pioneer/map";
-import { Editing } from "./api";
+import { EditingService } from "./api";
 import { EditingWorkflow } from "./EditingWorkflow";
 import { ServiceOptions } from "@open-pioneer/runtime";
 import { HttpService } from "@open-pioneer/http";
@@ -11,7 +11,8 @@ export interface References {
     httpService: HttpService;
 }
 
-export class EditingImpl implements Editing {
+// TODO: destroy und delete does not have effects each other
+export class EditingImpl implements EditingService {
     private _serviceOptions: ServiceOptions<References>;
     private _workflows: Map<string, EditingWorkflow>;
 
@@ -20,13 +21,15 @@ export class EditingImpl implements Editing {
         this._workflows = new Map();
     }
 
-    start(layer: LayerBase): EditingWorkflow {
+    start(layer: LayerBase): EditingWorkflow | Error {
         const map = layer.map;
         const mapId = layer.map.id;
 
         let workflow = this._workflows.get(mapId);
         if (workflow) {
-            this._workflows.delete(mapId);
+            return new Error(
+                "EditingWorkflow could not be started. EditingWorkflow already in progress for this map."
+            );
         }
 
         workflow = new EditingWorkflow(map, this._serviceOptions);
@@ -42,7 +45,7 @@ export class EditingImpl implements Editing {
         return workflow;
     }
 
-    stop(mapId: string) {
+    stop(mapId: string): void {
         const workflow = this._workflows.get(mapId);
         if (workflow) {
             workflow.destroy();

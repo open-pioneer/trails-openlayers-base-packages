@@ -4,8 +4,18 @@ import { LayerBase } from "@open-pioneer/map";
 import type { DeclaredService } from "@open-pioneer/runtime";
 import { EditingWorkflow } from "./EditingWorkflow";
 
-export interface Editing extends DeclaredService<"editing.Editing"> {
-    start(layer: LayerBase): EditingWorkflow;
+// TODO: Add documentation
+
+export type EditingWorkflowState = "active:initialized" | "active:drawing" | "active:saving";
+
+export interface EditingWorkflowType {
+    getState(): EditingWorkflowState;
+
+    whenComplete(): Promise<string>;
+}
+
+export interface EditingService extends DeclaredService<"editing.EditingService"> {
+    start(layer: LayerBase): EditingWorkflow | Error;
 
     stop(mapId: string): void;
 

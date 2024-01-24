@@ -56,7 +56,7 @@ export function AppUI() {
     }
     const [showToc, setShowToc] = useState<boolean>(true);
     const [currentInteractionType, setCurrentInteractionType] = useState<InteractionType>();
-    const editingService = useService<Editing>("editing.Editing");
+    const editingService = useService<Editing>("editing.EditingService");
     const notifier = useService<NotificationService>("notifier.NotificationService");
 
     function toggleInteractionType(type: InteractionType) {

@@ -28,7 +28,7 @@ export default defineBuildConfig({
             "map.MapRegistry",
             "ol-app.AppConfig",
             "notifier.NotificationService",
-            "editing.Editing"
+            "editing.EditingService"
         ]
     }
 });

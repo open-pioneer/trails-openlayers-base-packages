@@ -1,4 +1,4 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
-export { type Editing } from "./api";
+export { type EditingWorkflowState, type EditingWorkflowType, type EditingService } from "./api";

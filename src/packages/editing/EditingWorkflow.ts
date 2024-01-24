@@ -17,6 +17,7 @@ import Overlay from "ol/Overlay";
 import { Resource } from "@open-pioneer/core";
 import { unByKey } from "ol/Observable";
 import { EventsKey } from "ol/events";
+import { EditingWorkflowState, EditingWorkflowType } from "./api";
 
 // const LOG = createLogger("editing:EditingWorkflow");
 
@@ -29,7 +30,7 @@ interface Tooltip extends Resource {
     element: HTMLDivElement;
 }
 
-export class EditingWorkflow {
+export class EditingWorkflow implements EditingWorkflowType {
     #featureId: string | undefined;
     #waiter: ManualPromise<string> | undefined;
 
@@ -39,12 +40,7 @@ export class EditingWorkflow {
 
     private _map: MapModel;
     private _polygonDrawStyle: StyleLike;
-    private _state:
-        | "active:initialized"
-        | "active:drawing"
-        | "active:saving"
-        | "error"
-        | "inactive";
+    private _state: EditingWorkflowState;
 
     private _drawSource: VectorSource;
     private _drawLayer: VectorLayer<VectorSource>;
@@ -56,12 +52,12 @@ export class EditingWorkflow {
     private _interactionListener: Array<EventsKey>;
     private _mapListener: Array<Resource>;
 
-    constructor(map: MapModel, serviceOptions: ServiceOptions<References>) {
-        this._mapRegistry = serviceOptions.references.mapRegistry;
-        this._httpService = serviceOptions.references.httpService;
-        this._intl = serviceOptions.intl;
+    constructor(map: MapModel, options: ServiceOptions<References>) {
+        this._mapRegistry = options.references.mapRegistry;
+        this._httpService = options.references.httpService;
+        this._intl = options.intl;
 
-        this._polygonDrawStyle = serviceOptions.properties.polygonDrawStyle as StyleLike;
+        this._polygonDrawStyle = options.properties.polygonDrawStyle as StyleLike;
 
         this._map = map;
         this._olMap = map.olMap;
@@ -176,17 +172,16 @@ export class EditingWorkflow {
         this._tooltip.destroy();
 
         // Remove event listener on interaction and on map
-        this._interactionListener.map((interaction) => {
-            unByKey(interaction);
+        this._interactionListener.map((listener) => {
+            unByKey(listener);
         });
-        this._mapListener.map((map) => {
-            map.destroy();
+        this._mapListener.map((listener) => {
+            listener.destroy();
         });
 
         // Remove event escape listener
         this._olMap.getTargetElement().removeEventListener("keydown", this._escapeHandler);
 
-        this._state = "inactive";
         this.#waiter?.reject(createAbortError());
     }
 
