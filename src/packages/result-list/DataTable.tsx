@@ -189,7 +189,7 @@ function IndeterminateCheckbox({
 }: { indeterminate?: boolean; toolTipLabel?: string } & HTMLProps<HTMLInputElement>) {
     const ref = useRef<HTMLInputElement>(null!);
     return (
-        <Tooltip {...{}} label={toolTipLabel} placement="right">
+        <Tooltip {...{}} label={toolTipLabel} placement="right" shouldWrapChildren={true}>
             <Checkbox
                 ref={ref}
                 className={className + " cursor-pointer"}
