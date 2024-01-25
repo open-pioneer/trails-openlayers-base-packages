@@ -28,8 +28,7 @@ import { v4 as uuid4v } from "uuid";
 
 interface DataTableProps<Data extends object> {
     data: Data[];
-    // eslint-disable-next-line
-    columns: ColumnDef<Data, any>[];
+    columns: ColumnDef<Data, unknown>[];
 }
 
 export function DataTable<Data extends object>(props: DataTableProps<Data>) {
