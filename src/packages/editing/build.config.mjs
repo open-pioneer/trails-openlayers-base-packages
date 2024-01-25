@@ -8,7 +8,7 @@ export default defineBuildConfig({
     i18n: ["en", "de"],
     styles: "./editing.css",
     services: {
-        EditingImpl: {
+        EditingServiceImpl: {
             provides: "editing.EditingService",
             references: {
                 mapRegistry: "map.MapRegistry",

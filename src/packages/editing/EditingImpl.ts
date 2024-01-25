@@ -11,8 +11,9 @@ export interface References {
     httpService: HttpService;
 }
 
-// TODO: destroy und delete does not have effects each other
-export class EditingImpl implements EditingService {
+// todo rename file to EditingServiceImpl
+
+export class EditingServiceImpl implements EditingService {
     private _serviceOptions: ServiceOptions<References>;
     private _workflows: Map<string, EditingWorkflow>;
 
@@ -21,43 +22,46 @@ export class EditingImpl implements EditingService {
         this._workflows = new Map();
     }
 
-    start(layer: LayerBase): EditingWorkflow | Error {
+    start(layer: LayerBase): EditingWorkflow {
         const map = layer.map;
         const mapId = layer.map.id;
 
         let workflow = this._workflows.get(mapId);
-        if (workflow) {
+        // TODO: fix typescript error in AppUI if Error is part of return type
+        /*if (workflow) {
             return new Error(
                 "EditingWorkflow could not be started. EditingWorkflow already in progress for this map."
             );
-        }
+        }*/
 
         workflow = new EditingWorkflow(map, this._serviceOptions);
         this._workflows.set(mapId, workflow);
-
-        workflow.whenComplete().then(() => {
-            if (workflow) {
-                workflow.destroy();
-                this._workflows.delete(mapId);
-            }
-        });
+        this._connectToWorkflowComplete(workflow, mapId);
 
         return workflow;
     }
 
-    stop(mapId: string): void {
+    stop(mapId: string): Error | void {
         const workflow = this._workflows.get(mapId);
         if (workflow) {
-            workflow.destroy();
+            workflow.stop();
+        } else {
+            return new Error("No workflow found for mapId" + mapId);
         }
-
-        this._workflows.delete(mapId);
     }
 
-    reset(mapId: string): void {
+    reset(mapId: string): Error | void {
         const workflow = this._workflows.get(mapId);
         if (workflow) {
             workflow.reset();
+        } else {
+            return new Error("No workflow found for mapId" + mapId);
         }
+    }
+
+    _connectToWorkflowComplete(workflow: EditingWorkflow, mapId: string) {
+        workflow.whenComplete().finally(() => {
+            this._workflows.delete(mapId);
+        });
     }
 }

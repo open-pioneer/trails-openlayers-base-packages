@@ -75,7 +75,7 @@ export class EditingWorkflow implements EditingWorkflowType {
             style: this._polygonDrawStyle
         });
 
-        this._tooltip = this.createTooltip(this._olMap);
+        this._tooltip = this._createTooltip(this._olMap);
 
         this._escapeHandler = (e: KeyboardEvent) => {
             if (e.code === "Escape" && e.target === this._olMap.getTargetElement()) {
@@ -134,9 +134,10 @@ export class EditingWorkflow implements EditingWorkflowType {
             saveCreatedFeature(this._httpService, layerUrl, geoJSONGeometry)
                 .then((featureId) => {
                     this.#waiter?.resolve(featureId);
+                    this._destroy(); // todo destroy already on drawend to avoid user from drawing during request?
                 })
                 .catch((err) => {
-                    this.#waiter?.reject(err);
+                    this._destroy(err);
                 });
         });
 
@@ -165,8 +166,13 @@ export class EditingWorkflow implements EditingWorkflowType {
         this._tooltip.element.textContent = this._intl.formatMessage({ id: "tooltip.begin" });
     }
 
+    stop() {
+        this._destroy("workflow stopped");
+    }
+
     // TODO: Cancel request
-    destroy() {
+    // TODO: better type for error?
+    private _destroy(error?: unknown) {
         this._olMap.removeLayer(this._drawLayer);
         this._olMap.removeInteraction(this._drawInteraction);
         this._tooltip.destroy();
@@ -182,7 +188,9 @@ export class EditingWorkflow implements EditingWorkflowType {
         // Remove event escape listener
         this._olMap.getTargetElement().removeEventListener("keydown", this._escapeHandler);
 
-        this.#waiter?.reject(createAbortError());
+        // TODO: resolve or reject if destroy is called by stop?
+        const errorToReject = error ? error : createAbortError();
+        this.#waiter?.reject(errorToReject);
     }
 
     whenComplete(): Promise<string> {
@@ -190,7 +198,7 @@ export class EditingWorkflow implements EditingWorkflowType {
         return manualPromise.promise;
     }
 
-    private createTooltip(olMap: OlMap): Tooltip {
+    private _createTooltip(olMap: OlMap): Tooltip {
         const element = document.createElement("div");
         element.className = "editing-tooltip hidden";
         element.textContent = this._intl.formatMessage({ id: "tooltip.begin" });

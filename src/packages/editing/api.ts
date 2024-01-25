@@ -15,7 +15,7 @@ export interface EditingWorkflowType {
 }
 
 export interface EditingService extends DeclaredService<"editing.EditingService"> {
-    start(layer: LayerBase): EditingWorkflow | Error;
+    start(layer: LayerBase): EditingWorkflow; // see todo in EditingImpl about Error return type
 
     stop(mapId: string): void;
 
