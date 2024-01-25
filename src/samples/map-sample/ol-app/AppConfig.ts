@@ -44,8 +44,8 @@ const SELECTION_LAYERS = new Map<string, ResultColumn[]>([
         "ogc_kitas",
         [
             {
-                attributeName: "id",
-                displayName: "ID",
+                attributeName: "pointOfContact.address.postCode",
+                displayName: "PLZ",
                 width: 70
             },
             {
