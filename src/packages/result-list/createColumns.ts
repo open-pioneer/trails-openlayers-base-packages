@@ -25,9 +25,9 @@ export function createColumns(metaData: ResultColumn[]) {
                     const data = info.row.original.data as unknown as Record<string, unknown>;
                     let cellValue = data[metaDataItem.attributeName];
                     cellValue =
-                        cellValue ||
+                        cellValue ??
                         info.row.original.data.properties?.[metaDataItem.attributeName];
-                    return cellValue; //info.getValue() || info.row.original.data[metaDataItem.attributeName];/*info.row.original.data.properties?.[metaDataItem.attributeName]; */
+                    return String(cellValue); //info.getValue() || info.row.original.data[metaDataItem.attributeName];/*info.row.original.data.properties?.[metaDataItem.attributeName]; */
                 },
                 header: metaDataItem.displayName,
                 size: columnWidth
