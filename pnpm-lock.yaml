@@ -1134,6 +1134,9 @@ importers:
       '@open-pioneer/overview-map':
         specifier: workspace:^
         version: link:../../../packages/overview-map
+      '@open-pioneer/printing':
+        specifier: workspace:^
+        version: link:../../../packages/printing
       '@open-pioneer/react-utils':
         specifier: workspace:^
         version: link:../../../packages/react-utils

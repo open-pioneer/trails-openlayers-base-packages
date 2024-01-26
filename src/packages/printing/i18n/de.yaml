@@ -1,3 +1,6 @@
 messages:
   title: "Titel"
-  format: "Format"
+  fileFormat: "Datei Format"
+  export: "Exportieren"
+  input:
+    placeholder: "Titel eingeben"

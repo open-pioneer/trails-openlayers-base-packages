@@ -12,6 +12,7 @@ messages:
     toolbar: "Kartenwerkzeuge"
   geolocationTitle: "Geolokalisierung"
   spatialBookmarkTitle: "Räumliche Lesezeichen"
+  printingTitle: "Drucken"
   searchSources:
     miningPermissions: Bergbauberechtigungen
     lika: Daten des Liegenschaftskatasters in NRW
