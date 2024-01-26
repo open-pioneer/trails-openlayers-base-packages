@@ -43,7 +43,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                 new WMSLayer({
                     title: "Linfos",
                     visible: true,
-                    url: "http://www.wms.nrw.de/umwelt/linfos",
+                    url: "https://www.wms.nrw.de/umwelt/linfos",
                     sublayers: [
                         {
                             name: "SonstigeSchutzgebiete",
