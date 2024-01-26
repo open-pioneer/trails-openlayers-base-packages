@@ -30,9 +30,14 @@ export interface HighlightOptions {
     pointZoom?: number;
 
     /**
-     * The maximum zoom-level for line or polygon results.
+     * The maximum zoom-level for multiple points, line or polygon results.
      */
     maxZoom?: number;
+
+    /**
+     * The view padding to make all features visible.
+     */
+    viewPadding?: number[];
 }
 
 export interface HighlightStyle {
