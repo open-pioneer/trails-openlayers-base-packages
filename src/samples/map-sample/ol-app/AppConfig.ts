@@ -39,27 +39,38 @@ export interface AppState {
 interface References {
     mapRegistry: MapRegistry;
 }
+
 const SELECTION_LAYERS = new Map<string, ResultColumn[]>([
     [
         "ogc_kitas",
         [
             {
-                attributeName: "pointOfContact.address.postCode",
-                displayName: "PLZ",
-                width: 70
+                propertyName: "id",
+                displayName: "ID",
+                getPropertyValue(feature) {
+                    return feature.id;
+                }
             },
             {
-                attributeName: "name",
+                propertyName: "pointOfContact.address.postCode",
+                displayName: "PLZ",
+                width: 70,
+                getPropertyValue(feature) {
+                    return feature.properties!["pointOfContact.address.postCode"] + " Langenfeld";
+                }
+            },
+            {
+                propertyName: "name",
                 displayName: "Name",
                 width: 150
             },
             {
-                attributeName: "inspireId",
+                propertyName: "inspireId",
                 displayName: "inspireID",
                 width: 300
             },
             {
-                attributeName: "gefoerdert",
+                propertyName: "gefoerdert",
                 displayName: "Gefördert",
                 width: 70
             }
@@ -69,9 +80,12 @@ const SELECTION_LAYERS = new Map<string, ResultColumn[]>([
         "ogc_kataster",
         [
             {
-                attributeName: "id",
+                propertyName: "id",
                 displayName: "ID",
-                width: 70
+                width: 70,
+                getPropertyValue(feature) {
+                    return feature.id;
+                }
             }
         ]
     ]

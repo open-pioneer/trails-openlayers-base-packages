@@ -7,9 +7,10 @@ import { BaseFeature } from "@open-pioneer/map/api/BaseFeature";
  * Object to represent attribute information in Table
  */
 export interface ResultColumn {
-    attributeName: string;
+    propertyName: string;
     displayName?: string;
     width?: number;
+    getPropertyValue?: (feature: BaseFeature) => string | number | boolean;
 }
 export interface ResultListInput {
     data: BaseFeature[];

@@ -42,6 +42,7 @@ type InteractionType = "measurement" | "selection" | undefined;
 
 interface SelectionComponentProps {
     setResultListInput: Dispatch<SetStateAction<ResultListInput | undefined>>;
+    setResultListActive: Dispatch<SetStateAction<boolean>>;
 }
 
 export function AppUI() {
@@ -91,7 +92,12 @@ export function AppUI() {
     let currentInteraction: JSX.Element | null = null;
     switch (currentInteractionType) {
         case "selection":
-            currentInteraction = <SelectionComponent setResultListInput={setResultListInput} />;
+            currentInteraction = (
+                <SelectionComponent
+                    setResultListInput={setResultListInput}
+                    setResultListActive={setResultListActive}
+                />
+            );
             break;
         case "measurement":
             currentInteraction = <MeasurementComponent />;
@@ -369,11 +375,14 @@ function createResultListInput(
         const resultListItem = { id, ...rest } as BaseFeature;
         return resultListItem;
     });
-    return { data: features, metadata };
+    return {
+        data: features,
+        metadata
+    };
 }
 
 function SelectionComponent(props: SelectionComponentProps) {
-    const { setResultListInput } = props;
+    const { setResultListInput, setResultListActive } = props;
     const intl = useIntl();
     const notifier = useService<NotificationService>("notifier.NotificationService");
     const selectionTitleId = useId();
@@ -404,6 +413,7 @@ function SelectionComponent(props: SelectionComponentProps) {
             currentMetadata
         );
         setResultListInput(resultListInput);
+        setResultListActive(true);
         notifier.notify({
             level: "info",
             message: `Found ${event.results.length} results`,
