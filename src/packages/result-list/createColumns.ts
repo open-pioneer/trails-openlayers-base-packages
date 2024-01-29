@@ -2,9 +2,9 @@
 // SPDX-License-Identifier: Apache-2.0
 import { createColumnHelper } from "@tanstack/react-table";
 import { ResultColumn } from "./api";
-import { ResultListData } from "./ResultList";
+import { BaseFeature } from "@open-pioneer/map/api/BaseFeature";
 
-const columnHelper = createColumnHelper<ResultListData>();
+const columnHelper = createColumnHelper<BaseFeature>();
 
 export function createColumns(metaData: ResultColumn[]) {
     // TODO: Remove unneeded code after clarification
@@ -16,18 +16,15 @@ export function createColumns(metaData: ResultColumn[]) {
         //console.debug(`Width for col ${metaDataItem.displayName}: ${columnWidth}`);
         const { propertyName, width: columnWidth, getPropertyValue } = metaDataItem;
         return columnHelper.accessor(
-            (resultListData: ResultListData) => {
-                return (
-                    getPropertyValue?.(resultListData.data) ||
-                    resultListData.data.properties?.[propertyName]
-                );
+            (feature: BaseFeature) => {
+                return getPropertyValue?.(feature) || feature.properties?.[propertyName];
             },
             {
                 id: "result-list-col_" + index,
                 cell: (info) => {
                     const cellValue =
-                        getPropertyValue?.(info.row.original.data) ||
-                        info.row.original.data.properties?.[propertyName];
+                        getPropertyValue?.(info.row.original) ||
+                        info.row.original.properties?.[propertyName];
                     return String(cellValue);
                 },
                 header: metaDataItem.displayName,

@@ -5,7 +5,6 @@ import { Point } from "ol/geom";
 import { ResultColumn } from "./api";
 import { BaseFeature } from "@open-pioneer/map/api/BaseFeature";
 
-// TODO: refactor to better file name
 export const dummyFeatureData: BaseFeature[] = [
     {
         id: "1",
@@ -44,27 +43,27 @@ export const dummyFeatureData: BaseFeature[] = [
 
 export const dummyMetaData: ResultColumn[] = [
     {
-        attributeName: "properties.a",
+        propertyName: "properties.a",
         displayName: "Spalte A",
         width: 100
     },
     {
-        attributeName: "properties.b",
+        propertyName: "properties.b",
         displayName: "Spalte B",
         width: 50
     },
     {
-        attributeName: "properties.c",
+        propertyName: "properties.c",
         displayName: "Spalte C",
         width: 150
     },
     {
-        attributeName: "properties.d",
+        propertyName: "properties.d",
         displayName: "Spalte D",
         width: 75
     },
     {
-        attributeName: "properties.e",
+        propertyName: "properties.e",
         displayName: "Spalte E",
         width: 50
     }

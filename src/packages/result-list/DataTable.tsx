@@ -24,7 +24,6 @@ import { TriangleDownIcon, TriangleUpIcon } from "@chakra-ui/icons";
 import { useIntl } from "open-pioneer:react-hooks";
 import React, { HTMLProps, useRef, useState } from "react";
 import { createColumnHelper } from "@tanstack/react-table";
-import { v4 as uuid4v } from "uuid";
 
 interface DataTableProps<Data extends object> {
     data: Data[];
@@ -38,7 +37,7 @@ export function DataTable<Data extends object>(props: DataTableProps<Data>) {
     const [rowSelection, setRowSelection] = useState({});
 
     const selectColumn = createColumnHelper<Data>().display({
-        id: uuid4v(),
+        id: "result-list-col_selection-buttons",
         size: 70
     });
 
