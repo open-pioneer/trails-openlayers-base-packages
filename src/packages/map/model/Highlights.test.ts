@@ -129,7 +129,6 @@ it("should zoom the map to the default or configured zoom level if there is no e
 
     highlights.addHighlightOrMarkerAndZoom([point], {});
     const defaultZoom = map.getView().getZoom();
-
     expect(defaultZoom).toStrictEqual(17);
 
     highlights.addHighlightOrMarkerAndZoom([point], { pointZoom: 12 });
@@ -146,7 +145,7 @@ it("should zoom the map to the right extent", async () => {
         [849081.619449, 6793197.569417]
     ]);
     const expectedExtent = [
-        847187.8920729004, 6790482.143986899, 850000.7747140995, 6793295.026628099
+        845321.8731197501, 6789925.10914325, 851866.7936672498, 6796470.02969075
     ];
     highlights.addHighlightOrMarkerAndZoom([line], {});
     const currentExtent = map.getView().calculateExtent();

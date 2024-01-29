@@ -12,7 +12,7 @@ export { BkgTopPlusOpen, type BkgTopPlusOpenProps } from "../layers/BkgTopPlusOp
 // UI Components and React helpers
 export { useCenter, useProjection, useResolution, useScale } from "../ui/hooks";
 export { MapAnchor, type MapAnchorProps, type MapAnchorPosition } from "../ui/MapAnchor";
-export { MapContainer, type MapContainerProps, type MapPadding } from "../ui/MapContainer";
+export { MapContainer, type MapContainerProps } from "../ui/MapContainer";
 export {
     useMapModel,
     type UseMapModelResult,
