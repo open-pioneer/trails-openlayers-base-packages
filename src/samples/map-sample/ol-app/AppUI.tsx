@@ -257,7 +257,7 @@ export function AppUI() {
                                 gap={1}
                                 padding={1}
                             >
-                                {resultListInput && resultListInput.data.length > 0 && (
+                                {resultListInput && (
                                     <ToolButton
                                         label="ResultList"
                                         icon={<PiListMagnifyingGlassFill />}
@@ -303,7 +303,7 @@ export function AppUI() {
                         </MapAnchor>
                     </MapContainer>
 
-                    {resultListInput && resultListInput.data.length > 0 && resultListIsActive && (
+                    {resultListInput && resultListIsActive && (
                         <Box
                             className="result-list"
                             backgroundColor="white"

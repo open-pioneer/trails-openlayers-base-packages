@@ -17,7 +17,7 @@ export const ResultList: FC<ResultListProps> = (props) => {
     const data = resultListInput.data;
     const metadata = resultListInput.metadata;
 
-    if ((data.length === 0 && metadata.length > 0) || (data.length > 0 && metadata.length === 0)) {
+    if (metadata.length === 0) {
         throw Error(intl.formatMessage({ id: "illegalArgumentException" }));
     }
 
