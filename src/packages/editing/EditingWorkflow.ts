@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { ManualPromise, createAbortError, createManualPromise } from "@open-pioneer/core";
+import { ManualPromise, createManualPromise } from "@open-pioneer/core";
 import { MapModel, TOPMOST_LAYER_Z } from "@open-pioneer/map";
 import { Draw } from "ol/interaction";
 import VectorLayer from "ol/layer/Vector";
@@ -32,7 +32,7 @@ interface Tooltip extends Resource {
 
 export class EditingWorkflow implements EditingWorkflowType {
     #featureId: string | undefined;
-    #waiter: ManualPromise<string> | undefined;
+    #waiter: ManualPromise<string | undefined> | undefined;
 
     private readonly _mapRegistry: MapRegistry;
     private _httpService: HttpService;
@@ -133,11 +133,12 @@ export class EditingWorkflow implements EditingWorkflowType {
             // todo set default properties when saving feature?
             saveCreatedFeature(this._httpService, layerUrl, geoJSONGeometry)
                 .then((featureId) => {
-                    this.#waiter?.resolve(featureId);
                     this._destroy(); // todo destroy already on drawend to avoid user from drawing during request?
+                    this.#waiter?.resolve(featureId);
                 })
-                .catch((err) => {
-                    this._destroy(err);
+                .catch((err: Error) => {
+                    this._destroy();
+                    this.#waiter?.reject(err);
                 });
         });
 
@@ -167,12 +168,12 @@ export class EditingWorkflow implements EditingWorkflowType {
     }
 
     stop() {
-        this._destroy("workflow stopped");
+        this._destroy();
+        this.#waiter?.resolve(undefined);
     }
 
     // TODO: Cancel request
-    // TODO: better type for error?
-    private _destroy(error?: unknown) {
+    private _destroy() {
         this._olMap.removeLayer(this._drawLayer);
         this._olMap.removeInteraction(this._drawInteraction);
         this._tooltip.destroy();
@@ -187,13 +188,9 @@ export class EditingWorkflow implements EditingWorkflowType {
 
         // Remove event escape listener
         this._olMap.getTargetElement().removeEventListener("keydown", this._escapeHandler);
-
-        // TODO: resolve or reject if destroy is called by stop?
-        const errorToReject = error ? error : createAbortError();
-        this.#waiter?.reject(errorToReject);
     }
 
-    whenComplete(): Promise<string> {
+    whenComplete(): Promise<string | undefined> {
         const manualPromise = (this.#waiter ??= createManualPromise());
         return manualPromise.promise;
     }

@@ -11,7 +11,7 @@ export type EditingWorkflowState = "active:initialized" | "active:drawing" | "ac
 export interface EditingWorkflowType {
     getState(): EditingWorkflowState;
 
-    whenComplete(): Promise<string>;
+    whenComplete(): Promise<string | undefined>;
 }
 
 export interface EditingService extends DeclaredService<"editing.EditingService"> {

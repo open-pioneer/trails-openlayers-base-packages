@@ -115,17 +115,20 @@ export function AppUI() {
                 editingService
                     .start(layer)
                     .whenComplete()
-                    .then((featureId: string) => {
-                        notifier.notify({
-                            level: "info",
-                            message: intl.formatMessage(
-                                {
-                                    id: "editing.featureCreated"
-                                },
-                                { featureId: featureId }
-                            ),
-                            displayDuration: 4000
-                        });
+                    .then((featureId: string | undefined) => {
+                        if (featureId) {
+                            // undefined -> no feature saved
+                            notifier.notify({
+                                level: "info",
+                                message: intl.formatMessage(
+                                    {
+                                        id: "editing.featureCreated"
+                                    },
+                                    { featureId: featureId }
+                                ),
+                                displayDuration: 4000
+                            });
+                        }
 
                         setCurrentInteractionType(undefined);
                     })
