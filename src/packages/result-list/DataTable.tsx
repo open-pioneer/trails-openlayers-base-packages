@@ -78,96 +78,102 @@ export function DataTable<Data extends object>(props: DataTableProps<Data>) {
         return colSizes;
     }, [table.getState().columnSizingInfo]);
 
-    return (
-        <Table
-            className={"result-list-table-element"}
-            {...{
-                style: { ...columnSizeVars },
-                // 99% to avoid 1 pixel scrollbar
-                width: "99%"
-            }}
-        >
-            <Thead>
-                {table.getHeaderGroups().map((headerGroup) => (
-                    <Tr key={headerGroup.id}>
-                        {headerGroup.headers.map((header, index) => {
-                            // see https://tanstack.com/table/v8/docs/api/core/column-def#meta to type this correctly
-                            // eslint-disable-next-line
-                            const meta: any = header.column.columnDef.meta;
-                            const width = `calc(var(--header-${header?.id}-size) * 1px)`;
-                            return (
-                                <Th
-                                    key={header.id}
-                                    onClick={header.column.getToggleSortingHandler()}
-                                    isNumeric={meta?.isNumeric}
-                                    style={{ width: index === 0 ? "50px" : width }}
-                                >
-                                    {index === 0 ? (
-                                        <>
-                                            {
-                                                <IndeterminateCheckbox
-                                                    {...{
-                                                        checked: table.getIsAllRowsSelected(),
-                                                        indeterminate:
-                                                            table.getIsSomeRowsSelected(),
-                                                        onChange:
-                                                            table.getToggleAllRowsSelectedHandler(),
-                                                        toolTipLabel: getCheckboxToolTip()
-                                                    }}
-                                                />
-                                            }
-                                            <chakra.span
-                                                onDoubleClick={() => header.column.resetSize()}
-                                                onMouseDown={header.getResizeHandler()}
-                                                onTouchStart={header.getResizeHandler()}
-                                                className={`resizer ${
-                                                    header.column.getIsResizing()
-                                                        ? "isResizing"
-                                                        : ""
-                                                }`}
-                                            ></chakra.span>
-                                        </>
-                                    ) : (
-                                        <>
-                                            {flexRender(
-                                                header.column.columnDef.header,
-                                                header.getContext()
-                                            )}
-                                            <chakra.span pl="4">
-                                                {header.column.getIsSorted() ? (
-                                                    header.column.getIsSorted() === "desc" ? (
-                                                        <TriangleDownIcon aria-label="sorted descending" />
-                                                    ) : (
-                                                        <TriangleUpIcon aria-label="sorted ascending" />
-                                                    )
-                                                ) : null}
-                                            </chakra.span>
-                                            <chakra.span
-                                                onDoubleClick={() => header.column.resetSize()}
-                                                onMouseDown={header.getResizeHandler()}
-                                                onTouchStart={header.getResizeHandler()}
-                                                className={`resizer ${
-                                                    header.column.getIsResizing()
-                                                        ? "isResizing"
-                                                        : ""
-                                                }`}
-                                            ></chakra.span>
-                                        </>
-                                    )}
-                                </Th>
-                            );
-                        })}
-                    </Tr>
-                ))}
-            </Thead>
-            {/* When resizing any column we will render this special memoized version of our table body */}
-            {table.getState().columnSizingInfo.isResizingColumn ? (
-                <MemoizedTableBody table={table}></MemoizedTableBody>
-            ) : (
-                <TableBody table={table}></TableBody>
-            )}
-        </Table>
-    );
+    if (table.getRowModel().rows.length > 0) {
+        return (
+            <Table
+                className={"result-list-table-element"}
+                {...{
+                    style: { ...columnSizeVars },
+                    // 99% to avoid 1 pixel scrollbar
+                    width: "99%"
+                }}
+            >
+                <Thead>
+                    {table.getHeaderGroups().map((headerGroup) => (
+                        <Tr key={headerGroup.id}>
+                            {headerGroup.headers.map((header, index) => {
+                                // see https://tanstack.com/table/v8/docs/api/core/column-def#meta to type this correctly
+                                // eslint-disable-next-line
+                                const meta: any = header.column.columnDef.meta;
+                                const width = `calc(var(--header-${header?.id}-size) * 1px)`;
+                                return (
+                                    <Th
+                                        key={header.id}
+                                        onClick={header.column.getToggleSortingHandler()}
+                                        isNumeric={meta?.isNumeric}
+                                        style={{ width: index === 0 ? "50px" : width }}
+                                    >
+                                        {index === 0 ? (
+                                            <>
+                                                {
+                                                    <IndeterminateCheckbox
+                                                        {...{
+                                                            checked: table.getIsAllRowsSelected(),
+                                                            indeterminate:
+                                                                table.getIsSomeRowsSelected(),
+                                                            onChange:
+                                                                table.getToggleAllRowsSelectedHandler(),
+                                                            toolTipLabel: getCheckboxToolTip()
+                                                        }}
+                                                    />
+                                                }
+                                                <chakra.span
+                                                    onDoubleClick={() => header.column.resetSize()}
+                                                    onMouseDown={header.getResizeHandler()}
+                                                    onTouchStart={header.getResizeHandler()}
+                                                    className={`resizer ${
+                                                        header.column.getIsResizing()
+                                                            ? "isResizing"
+                                                            : ""
+                                                    }`}
+                                                ></chakra.span>
+                                            </>
+                                        ) : (
+                                            <>
+                                                {flexRender(
+                                                    header.column.columnDef.header,
+                                                    header.getContext()
+                                                )}
+                                                <chakra.span pl="4">
+                                                    {header.column.getIsSorted() ? (
+                                                        header.column.getIsSorted() === "desc" ? (
+                                                            <TriangleDownIcon aria-label="sorted descending" />
+                                                        ) : (
+                                                            <TriangleUpIcon aria-label="sorted ascending" />
+                                                        )
+                                                    ) : null}
+                                                </chakra.span>
+                                                <chakra.span
+                                                    onDoubleClick={() => header.column.resetSize()}
+                                                    onMouseDown={header.getResizeHandler()}
+                                                    onTouchStart={header.getResizeHandler()}
+                                                    className={`resizer ${
+                                                        header.column.getIsResizing()
+                                                            ? "isResizing"
+                                                            : ""
+                                                    }`}
+                                                ></chakra.span>
+                                            </>
+                                        )}
+                                    </Th>
+                                );
+                            })}
+                        </Tr>
+                    ))}
+                </Thead>
+                {/* When resizing any column we will render this special memoized version of our table body */}
+                {table.getState().columnSizingInfo.isResizingColumn ? (
+                    <MemoizedTableBody table={table}></MemoizedTableBody>
+                ) : (
+                    <TableBody table={table}></TableBody>
+                )}
+            </Table>
+        );
+    } else {
+        return (
+            <div className={"no-data-message"}>{intl.formatMessage({ id: "noDataMessage" })}</div>
+        );
+    }
     function getCheckboxToolTip() {
         if (Object.keys(rowSelection).length === table.getRowModel().rows.length) {
             return intl.formatMessage({ id: "deSelectAllTooltip" });
