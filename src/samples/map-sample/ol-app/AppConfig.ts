@@ -54,10 +54,7 @@ const SELECTION_LAYERS = new Map<string, ResultColumn[]>([
             {
                 propertyName: "pointOfContact.address.postCode",
                 displayName: "PLZ",
-                width: 70,
-                getPropertyValue(feature) {
-                    return feature.properties!["pointOfContact.address.postCode"] + " Langenfeld";
-                }
+                width: 70
             },
             {
                 propertyName: "name",
@@ -86,6 +83,11 @@ const SELECTION_LAYERS = new Map<string, ResultColumn[]>([
                 getPropertyValue(feature) {
                     return feature.id;
                 }
+            },
+            {
+                propertyName: "aktualit",
+                displayName: "Aktualit",
+                width: 70
             }
         ]
     ]

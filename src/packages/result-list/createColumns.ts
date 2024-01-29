@@ -17,13 +17,13 @@ export function createColumns(metaData: ResultColumn[]) {
         const { propertyName, width: columnWidth, getPropertyValue } = metaDataItem;
         return columnHelper.accessor(
             (feature: BaseFeature) => {
-                return getPropertyValue?.(feature) || feature.properties?.[propertyName];
+                return getPropertyValue?.(feature) ?? feature.properties?.[propertyName];
             },
             {
                 id: "result-list-col_" + index,
                 cell: (info) => {
                     const cellValue =
-                        getPropertyValue?.(info.row.original) ||
+                        getPropertyValue?.(info.row.original) ??
                         info.row.original.properties?.[propertyName];
                     return String(cellValue);
                 },
