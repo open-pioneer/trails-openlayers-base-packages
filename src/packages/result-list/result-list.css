@@ -29,6 +29,10 @@
     opacity: 1;
 }
 
+.result-list-table-element tbody tr:hover {
+    background: var(--chakra-colors-background_light);
+}
+
 @media (hover: hover) {
     .result-list-table-element .resizer {
         opacity: 0;
