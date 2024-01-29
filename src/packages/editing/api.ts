@@ -8,6 +8,13 @@ import { EditingWorkflow } from "./EditingWorkflow";
 
 export type EditingWorkflowState = "active:initialized" | "active:drawing" | "active:saving";
 
+/** Events emitted by the {@link EditingWorkflow}. */
+export interface EditingWorkflowEvents {
+    "active:initialized": void;
+    "active:drawing": void;
+    "active:saving": void;
+}
+
 export interface EditingWorkflowType {
     getState(): EditingWorkflowState;
 

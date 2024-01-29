@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { ManualPromise, createManualPromise } from "@open-pioneer/core";
+import { EventEmitter, ManualPromise, createManualPromise } from "@open-pioneer/core";
 import { MapModel, TOPMOST_LAYER_Z } from "@open-pioneer/map";
 import { Draw } from "ol/interaction";
 import VectorLayer from "ol/layer/Vector";
@@ -17,12 +17,10 @@ import Overlay from "ol/Overlay";
 import { Resource } from "@open-pioneer/core";
 import { unByKey } from "ol/Observable";
 import { EventsKey } from "ol/events";
-import { EditingWorkflowState, EditingWorkflowType } from "./api";
+import { EditingWorkflowEvents, EditingWorkflowState, EditingWorkflowType } from "./api";
 
+// TODO check if needed
 // const LOG = createLogger("editing:EditingWorkflow");
-
-// TODO: Push EventListener to array to destroy/unByKey
-// TODO: Set states / watch state
 
 // Represents a tooltip rendered on the OpenLayers map
 interface Tooltip extends Resource {
@@ -30,8 +28,10 @@ interface Tooltip extends Resource {
     element: HTMLDivElement;
 }
 
-export class EditingWorkflow implements EditingWorkflowType {
-    #featureId: string | undefined;
+export class EditingWorkflow
+    extends EventEmitter<EditingWorkflowEvents>
+    implements EditingWorkflowType
+{
     #waiter: ManualPromise<string | undefined> | undefined;
 
     private readonly _mapRegistry: MapRegistry;
@@ -53,6 +53,7 @@ export class EditingWorkflow implements EditingWorkflowType {
     private _mapListener: Array<Resource>;
 
     constructor(map: MapModel, options: ServiceOptions<References>) {
+        super();
         this._mapRegistry = options.references.mapRegistry;
         this._httpService = options.references.httpService;
         this._intl = options.intl;
@@ -93,6 +94,11 @@ export class EditingWorkflow implements EditingWorkflowType {
         return this._state;
     }
 
+    private _setState(state: EditingWorkflowState) {
+        this._state = state;
+        this.emit(state);
+    }
+
     private _start() {
         this._olMap.addLayer(this._drawLayer);
         this._olMap.addInteraction(this._drawInteraction);
@@ -106,12 +112,15 @@ export class EditingWorkflow implements EditingWorkflowType {
         this._tooltip.element.classList.remove("hidden");
 
         const drawStart = this._drawInteraction.on("drawstart", () => {
+            this._setState("active:drawing");
             this._tooltip.element.textContent = this._intl.formatMessage({
                 id: "tooltip.continue"
             });
         });
 
         const drawEnd = this._drawInteraction.on("drawend", (e) => {
+            this._setState("active:saving");
+
             // todo use mapId to get correct layer --> get layer url
             const layerUrl =
                 "https://ogc-api-test.nrw.de/inspire-us-krankenhaus/v1/collections/governmentalservice/items";
@@ -154,12 +163,6 @@ export class EditingWorkflow implements EditingWorkflowType {
 
         this._interactionListener.push(drawStart, drawEnd);
         this._mapListener.push(changedContainer);
-
-        // // drawstart Event Listener
-        // this._state = "active:drawing";
-
-        // // drawend Event Listener
-        // this._state = "active:saving";
     }
 
     reset() {

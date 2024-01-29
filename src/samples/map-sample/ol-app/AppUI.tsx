@@ -112,8 +112,14 @@ export function AppUI() {
         const layer = map?.layers.getLayerById("krankenhaus");
         if (layer) {
             try {
-                editingService
-                    .start(layer)
+                const workflow = editingService.start(layer);
+                workflow.on("active:drawing", () => {
+                    console.log("start drawing feature");
+                });
+                workflow.on("active:saving", () => {
+                    console.log("start saving feature");
+                });
+                workflow
                     .whenComplete()
                     .then((featureId: string | undefined) => {
                         if (featureId) {
