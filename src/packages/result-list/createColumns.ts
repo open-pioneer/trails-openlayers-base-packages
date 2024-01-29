@@ -13,21 +13,23 @@ export function createColumns(metaData: ResultColumn[]) {
     const undefinedWidthCount = metaData.reduce((sum, metaDataItem) => metaDataItem.width === undefined ? sum + 1 : sum, 0);
     const remainingWidth = (1920 - 50) - fullWidth;*/
     return metaData.map((metaDataItem, index) => {
-        const columnWidth = metaDataItem.width; /*|| (remainingWidth / undefinedWidthCount);*/
+        //const columnWidth = metaDataItem.width; /*|| (remainingWidth / undefinedWidthCount);*/
         //console.debug(`Width for col ${metaDataItem.displayName}: ${columnWidth}`);
+        const { propertyName, width: columnWidth, getPropertyValue } = metaDataItem;
         return columnHelper.accessor(
             (resultListData: ResultListData) => {
-                return resultListData.data.properties?.[metaDataItem.attributeName];
+                return (
+                    getPropertyValue?.(resultListData.data) ||
+                    resultListData.data.properties?.[propertyName]
+                );
             },
             {
-                id: "result-list-col_" + index, //metaDataItem.attributeName,
+                id: "result-list-col_" + index,
                 cell: (info) => {
-                    const data = info.row.original.data as unknown as Record<string, unknown>;
-                    let cellValue = data[metaDataItem.attributeName];
-                    cellValue =
-                        cellValue ??
-                        info.row.original.data.properties?.[metaDataItem.attributeName];
-                    return String(cellValue); //info.getValue() || info.row.original.data[metaDataItem.attributeName];/*info.row.original.data.properties?.[metaDataItem.attributeName]; */
+                    const cellValue =
+                        getPropertyValue?.(info.row.original.data) ||
+                        info.row.original.data.properties?.[propertyName];
+                    return String(cellValue);
                 },
                 header: metaDataItem.displayName,
                 size: columnWidth
