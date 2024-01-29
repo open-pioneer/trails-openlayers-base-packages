@@ -109,10 +109,14 @@ export function AppUI() {
     }
 
     function startEditingCreate() {
-        const layer = map?.layers.getLayerById("krankenhaus");
-        if (layer) {
+        // todo currently it is not possible to retrieve the url from a VectorLayer that was created using the createVectorSource method
+        const url = new URL(
+            "https://ogc-api-test.nrw.de/inspire-us-krankenhaus/v1/collections/governmentalservice/items"
+        );
+
+        if (map) {
             try {
-                const workflow = editingService.start(layer);
+                const workflow = editingService.start(map, url);
                 workflow.on("active:drawing", () => {
                     console.log("start drawing feature");
                 });
@@ -148,6 +152,8 @@ export function AppUI() {
             } catch (e) {
                 LOG.error(e);
             }
+        } else {
+            throw Error("map is undefined");
         }
     }
 

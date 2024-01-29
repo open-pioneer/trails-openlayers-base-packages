@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { LayerBase } from "@open-pioneer/map";
+import { MapModel } from "@open-pioneer/map";
 import type { DeclaredService } from "@open-pioneer/runtime";
 import { EditingWorkflow } from "./EditingWorkflow";
 
@@ -45,7 +45,7 @@ export interface EditingService extends DeclaredService<"editing.EditingService"
     /**
      * Creates and initializes a new {@link EditingWorkflow}.
      */
-    start(layer: LayerBase): EditingWorkflow;
+    start(map: MapModel, ogcApiFeatureLayerUrl: URL): EditingWorkflow;
 
     /**
      * Stops the edit mode and removes an existing {@link EditingWorkflow}.

@@ -2,14 +2,17 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { HttpService } from "@open-pioneer/http";
-import { GeoJSONGeometry } from "ol/format/GeoJSON";
+import GeoJSONGeometry from "ol/format/GeoJSON";
+import GeoJSONGeometryCollection from "ol/format/GeoJSON";
+import { Projection } from "ol/proj";
 
 export async function saveCreatedFeature(
     httpService: HttpService,
-    url: string,
-    geometry: GeoJSONGeometry
+    url: URL,
+    geometry: GeoJSONGeometry | GeoJSONGeometryCollection,
+    projection: Projection
 ) {
-    const crs = "http://www.opengis.net/def/crs/EPSG/0/25832"; // todo
+    const crs = "http://www.opengis.net/def/crs/EPSG/0/25832"; // todo get WKT of Projection
     const response = await httpService.fetch(url, {
         method: "POST",
         body: JSON.stringify({ type: "Feature", properties: {}, geometry: geometry }),

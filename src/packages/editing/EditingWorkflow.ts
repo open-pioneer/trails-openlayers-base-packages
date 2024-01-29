@@ -10,7 +10,9 @@ import { MapRegistry } from "@open-pioneer/map";
 import { HttpService } from "@open-pioneer/http";
 import { PackageIntl, ServiceOptions } from "@open-pioneer/runtime";
 import { StyleLike } from "ol/style/Style";
-import { GeoJSON } from "ol/format";
+import GeoJSON from "ol/format/GeoJSON";
+import GeoJSONGeometry from "ol/format/GeoJSON";
+import GeoJSONGeometryCollection from "ol/format/GeoJSON";
 import { saveCreatedFeature } from "./SaveFeaturesHandler";
 import OlMap from "ol/Map";
 import Overlay from "ol/Overlay";
@@ -19,7 +21,6 @@ import { unByKey } from "ol/Observable";
 import { EventsKey } from "ol/events";
 import { EditingWorkflowEvents, EditingWorkflowState, EditingWorkflowType } from "./api";
 
-// TODO check if needed
 // const LOG = createLogger("editing:EditingWorkflow");
 
 // Represents a tooltip rendered on the OpenLayers map
@@ -41,6 +42,7 @@ export class EditingWorkflow
     private _map: MapModel;
     private _polygonDrawStyle: StyleLike;
     private _state: EditingWorkflowState;
+    private _editLayerURL: URL;
 
     private _drawSource: VectorSource;
     private _drawLayer: VectorLayer<VectorSource>;
@@ -52,7 +54,7 @@ export class EditingWorkflow
     private _interactionListener: Array<EventsKey>;
     private _mapListener: Array<Resource>;
 
-    constructor(map: MapModel, options: ServiceOptions<References>) {
+    constructor(map: MapModel, ogcApiFeatureLayerUrl: URL, options: ServiceOptions<References>) {
         super();
         this._mapRegistry = options.references.mapRegistry;
         this._httpService = options.references.httpService;
@@ -63,6 +65,7 @@ export class EditingWorkflow
         this._map = map;
         this._olMap = map.olMap;
         this._state = "active:initialized";
+        this._editLayerURL = ogcApiFeatureLayerUrl;
 
         this._drawSource = new VectorSource();
         this._drawLayer = new VectorLayer({
@@ -121,9 +124,7 @@ export class EditingWorkflow
         const drawEnd = this._drawInteraction.on("drawend", (e) => {
             this._setState("active:saving");
 
-            // todo use mapId to get correct layer --> get layer url
-            const layerUrl =
-                "https://ogc-api-test.nrw.de/inspire-us-krankenhaus/v1/collections/governmentalservice/items";
+            const layerUrl = this._editLayerURL;
 
             const geometry = e.feature.getGeometry();
             if (!geometry) {
@@ -131,16 +132,17 @@ export class EditingWorkflow
                 // todo stop editing?
                 return;
             }
+            const projection = this._olMap.getView().getProjection();
             const geoJson = new GeoJSON({
-                featureProjection: "EPSG:25832",
-                dataProjection: "EPSG:25832" //map?.olMap.getView().getProjection() // todo is this correct and needed?
+                dataProjection: projection
             });
-            const geoJSONGeometry = geoJson.writeGeometryObject(geometry, {
-                rightHanded: true,
-                decimals: 10
-            });
+            const geoJSONGeometry: GeoJSONGeometry | GeoJSONGeometryCollection =
+                geoJson.writeGeometryObject(geometry, {
+                    rightHanded: true,
+                    decimals: 10
+                });
             // todo set default properties when saving feature?
-            saveCreatedFeature(this._httpService, layerUrl, geoJSONGeometry)
+            saveCreatedFeature(this._httpService, layerUrl, geoJSONGeometry, projection)
                 .then((featureId) => {
                     this._destroy(); // todo destroy already on drawend to avoid user from drawing during request?
                     this.#waiter?.resolve(featureId);

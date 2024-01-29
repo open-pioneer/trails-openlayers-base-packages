@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { LayerBase, MapRegistry } from "@open-pioneer/map";
+import { MapModel, MapRegistry } from "@open-pioneer/map";
 import { EditingService } from "./api";
 import { EditingWorkflow } from "./EditingWorkflow";
 import { ServiceOptions } from "@open-pioneer/runtime";
@@ -20,9 +20,12 @@ export class EditingServiceImpl implements EditingService {
         this._workflows = new Map();
     }
 
-    start(layer: LayerBase): EditingWorkflow {
-        const map = layer.map;
-        const mapId = layer.map.id;
+    start(map: MapModel, ogcApiFeatureLayerUrl: URL): EditingWorkflow {
+        if (!ogcApiFeatureLayerUrl || !map || !map.id) {
+            throw new Error("Map, mapId or url is undefined.");
+        }
+
+        const mapId = map.id;
 
         let workflow = this._workflows.get(mapId);
         if (workflow) {
@@ -31,7 +34,7 @@ export class EditingServiceImpl implements EditingService {
             );
         }
 
-        workflow = new EditingWorkflow(map, this._serviceOptions);
+        workflow = new EditingWorkflow(map, ogcApiFeatureLayerUrl, this._serviceOptions);
         this._workflows.set(mapId, workflow);
         this._connectToWorkflowComplete(workflow, mapId);
 
