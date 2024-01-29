@@ -148,16 +148,16 @@ export class VectorLayerSelectionSourceImpl
                     .slice(0)
                     .filter((item) => item !== "geometry");
 
-                const filterdProps: Record<string, unknown> = {};
+                const filteredProps: Record<string, unknown> = {};
 
                 someAttrs.forEach((item: string) => {
-                    filterdProps[item as keyof SelectionResult] = feature.getProperties()[item];
+                    filteredProps[item as keyof SelectionResult] = feature.getProperties()[item];
                 });
 
                 const result: SelectionResult = {
                     id: feature.getId()?.toString() || uuid4v(),
                     geometry: feature.getGeometry()!,
-                    properties: filterdProps
+                    properties: filteredProps
                 };
 
                 allResults.push(result);
