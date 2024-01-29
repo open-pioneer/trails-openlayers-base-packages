@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import { Box, Container, Divider, Flex, Text } from "@open-pioneer/chakra-integration";
 import { CoordinateViewer } from "@open-pioneer/coordinate-viewer";
+import { createLogger } from "@open-pioneer/core";
 import { Geolocation } from "@open-pioneer/geolocation";
 import { MapAnchor, MapContainer, useMapModel } from "@open-pioneer/map";
 import { InitialExtent, ZoomIn, ZoomOut } from "@open-pioneer/map-navigation";
@@ -43,6 +44,7 @@ import { EditingService } from "@open-pioneer/editing";
 type InteractionType = "measurement" | "selection" | "editing" | undefined;
 
 export function AppUI() {
+    const LOG = createLogger("map:createMapModel");
     const intl = useIntl();
     const tocTitleId = useId();
     const legendTitleId = useId();
@@ -109,31 +111,36 @@ export function AppUI() {
     function startEditingCreate() {
         const layer = map?.layers.getLayerById("krankenhaus");
         if (layer) {
-            editingService
-                .start(layer)
-                .whenComplete()
-                .then((featureId: string) => {
-                    notifier.notify({
-                        level: "info",
-                        message: "feature created with id:" + featureId,
-                        // message: intl.formatMessage(
-                        //     {
-                        //         id: "foundResults"
-                        //     },
-                        //     { resultsCount: results.length }
-                        // ),
-                        displayDuration: 4000
-                    });
+            try {
+                editingService
+                    .start(layer)
+                    .whenComplete()
+                    .then((featureId: string) => {
+                        notifier.notify({
+                            level: "info",
+                            message: "feature created with id:" + featureId,
+                            // TODO take string from i18n
+                            // message: intl.formatMessage(
+                            //     {
+                            //         id: "foundResults"
+                            //     },
+                            //     { resultsCount: results.length }
+                            // ),
+                            displayDuration: 4000
+                        });
 
-                    setCurrentInteractionType(undefined);
-                })
-                .catch((error) => {
-                    notifier.notify({
-                        level: "error",
-                        message: error,
-                        displayDuration: 4000
+                        setCurrentInteractionType(undefined);
+                    })
+                    .catch((error) => {
+                        notifier.notify({
+                            level: "error",
+                            message: error,
+                            displayDuration: 4000
+                        });
                     });
-                });
+            } catch (e) {
+                LOG.error(e);
+            }
         }
     }
 

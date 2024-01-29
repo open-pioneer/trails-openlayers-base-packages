@@ -25,12 +25,11 @@ export class EditingServiceImpl implements EditingService {
         const mapId = layer.map.id;
 
         let workflow = this._workflows.get(mapId);
-        // TODO: fix typescript error in AppUI if Error is part of return type
-        /*if (workflow) {
-            return new Error(
+        if (workflow) {
+            throw new Error(
                 "EditingWorkflow could not be started. EditingWorkflow already in progress for this map."
             );
-        }*/
+        }
 
         workflow = new EditingWorkflow(map, this._serviceOptions);
         this._workflows.set(mapId, workflow);
