@@ -1,3 +1,4 @@
 messages:
   selectAllTooltip: Alle auswählen
   deSelectAllTooltip: Alle abwählen
+  illegalArgumentException: Resultlistinput muss Daten und Metadaten haben

@@ -8,6 +8,7 @@ import { ResultListInput } from "./api";
 import { createColumns } from "./createColumns";
 import { BaseFeature } from "@open-pioneer/map/api/BaseFeature";
 import { v4 as uuid4v } from "uuid";
+import { useIntl } from "open-pioneer:react-hooks";
 export interface ResultListProps extends CommonComponentProps {
     resultListInput: ResultListInput;
 }
@@ -18,9 +19,15 @@ export interface ResultListData {
 }
 
 export const ResultList: FC<ResultListProps> = (props) => {
+    const intl = useIntl();
     const { resultListInput } = props;
     const data = resultListInput.data;
     const metadata = resultListInput.metadata;
+
+    if ((data.length === 0 && metadata.length > 0) || (data.length > 0 && metadata.length === 0)) {
+        throw Error(intl.formatMessage({ id: "illegalArgumentException" }));
+    }
+
     // TODO: Remove test data
     //const data = dummyFeatureData;
     const resultListData = createResultListData(data);
