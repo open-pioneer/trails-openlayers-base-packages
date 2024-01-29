@@ -11,8 +11,6 @@ export interface References {
     httpService: HttpService;
 }
 
-// todo rename file to EditingServiceImpl
-
 export class EditingServiceImpl implements EditingService {
     private _serviceOptions: ServiceOptions<References>;
     private _workflows: Map<string, EditingWorkflow>;
