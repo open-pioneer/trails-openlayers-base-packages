@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: Apache-2.0
 import { createColumnHelper } from "@tanstack/react-table";
 import { ResultColumn } from "./api";
-import { v4 as uuid4v } from "uuid";
 import { ResultListData } from "./ResultList";
 
 const columnHelper = createColumnHelper<ResultListData>();
