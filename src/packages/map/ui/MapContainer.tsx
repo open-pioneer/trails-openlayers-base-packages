@@ -6,21 +6,9 @@ import type OlMap from "ol/Map";
 import { Extent } from "ol/extent";
 import { ReactNode, useEffect, useMemo, useRef } from "react";
 import { useMapModel } from "./useMapModel";
-import { MapModel } from "../api";
+import { MapModel, MapPadding } from "../api";
 import { MapContextProvider, MapContextType } from "./MapContext";
 const LOG = createLogger("map:MapContainer");
-
-/**
- * Map padding, all values are pixels.
- *
- * See https://openlayers.org/en/latest/apidoc/module-ol_View-View.html#padding
- */
-export interface MapPadding {
-    left?: number;
-    right?: number;
-    top?: number;
-    bottom?: number;
-}
 
 export interface MapContainerProps extends CommonComponentProps {
     /** The id of the map to display. */

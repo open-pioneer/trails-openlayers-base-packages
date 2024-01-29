@@ -37,7 +37,7 @@ export interface HighlightOptions {
     /**
      * The view padding to make all features visible.
      */
-    viewPadding?: number[];
+    viewPadding?: MapPadding;
 }
 
 export interface HighlightStyle {
@@ -45,6 +45,18 @@ export interface HighlightStyle {
     LineString?: StyleLike;
     Polygon?: StyleLike;
     MultiPolygon?: StyleLike;
+}
+
+/**
+ * Map padding, all values are pixels.
+ *
+ * See https://openlayers.org/en/latest/apidoc/module-ol_View-View.html#padding
+ */
+export interface MapPadding {
+    left?: number;
+    right?: number;
+    top?: number;
+    bottom?: number;
 }
 
 /**

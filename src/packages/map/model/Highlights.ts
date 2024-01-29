@@ -18,7 +18,7 @@ import { Layer as OlLayer } from "ol/layer";
 
 const DEFAULT_OL_POINT_ZOOM_LEVEL = 17;
 const DEFAULT_OL_MAX_ZOOM_LEVEL = 20;
-const DEFAULT_VIEW_PADDING = [50, 20, 10, 20];
+const DEFAULT_VIEW_PADDING = { top: 50, right: 20, bottom: 10, left: 20 };
 
 export class Highlights {
     private olMap: OlMap;
@@ -67,8 +67,16 @@ export class Highlights {
             ? options?.pointZoom ?? DEFAULT_OL_POINT_ZOOM_LEVEL
             : options?.maxZoom ?? DEFAULT_OL_MAX_ZOOM_LEVEL;
         setCenter(this.olMap, center);
-        const padding = options?.viewPadding ?? DEFAULT_VIEW_PADDING;
+
+        const {
+            top = 0,
+            right = 0,
+            bottom = 0,
+            left = 0
+        } = options?.viewPadding ?? DEFAULT_VIEW_PADDING;
+        const padding = [top, right, bottom, left];
         zoomTo(this.olMap, extent, zoomScale, padding);
+
         this.createAndAddLayer(geometries, options?.highlightStyle);
     }
 

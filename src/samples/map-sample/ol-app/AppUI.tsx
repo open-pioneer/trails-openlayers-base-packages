@@ -356,7 +356,9 @@ function SearchComponent() {
             return;
         }
 
-        map.highlightAndZoom([geometry]);
+        map.highlightAndZoom([geometry], {
+            viewPadding: { top: 150, right: 50, bottom: 50, left: 50 }
+        });
     }
 
     function onSearchCleared() {
@@ -394,7 +396,9 @@ function SelectionComponent() {
         map?.removeHighlight();
         const geometries = results.map((result) => result.geometry);
         if (geometries.length > 0) {
-            map.highlightAndZoom(geometries);
+            map.highlightAndZoom(geometries, {
+                viewPadding: { top: 150, right: 50, bottom: 50, left: 50 }
+            });
         }
 
         notifier.notify({
