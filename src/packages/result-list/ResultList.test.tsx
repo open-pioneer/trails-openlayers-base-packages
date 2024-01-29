@@ -28,27 +28,8 @@ it("expect result list to be created successfully", async () => {
     expect(resultListDiv).toMatchSnapshot();
 });
 
-it("expect empty data + empty meta to be allowed", async () => {
-    const emptyInput: ResultListInput = {
-        data: [],
-        metadata: []
-    };
-
-    let error;
-    try {
-        render(
-            <PackageContextProvider>
-                <ResultList resultListInput={emptyInput} data-testid="result-list" />
-            </PackageContextProvider>
-        );
-    } catch (e) {
-        error = new Error("unexpected failure");
-    }
-    expect(error).not.toBeDefined();
-});
-
-it("expect empty data + non empty meta to throw error", async () => {
-    const halfEmptyInput: ResultListInput = {
+it("expect empty data + non empty meta to be allowed", async () => {
+    const emptyData: ResultListInput = {
         data: [],
         metadata: dummyMetaData
     };
@@ -57,25 +38,17 @@ it("expect empty data + non empty meta to throw error", async () => {
     try {
         render(
             <PackageContextProvider>
-                <ResultList resultListInput={halfEmptyInput} data-testid="result-list" />
+                <ResultList resultListInput={emptyData} data-testid="result-list" />
             </PackageContextProvider>
         );
-        throw new Error("unexpected success");
     } catch (e) {
-        error = e as Error;
+        error = new Error("unexpected failure");
     }
-    expect(error.message).not.toEqual("unexpected success");
-    const chain = getErrorChain(error);
-    const messages = chain.map((error) => error.message);
-    expect(messages).toMatchInlineSnapshot(`
-      [
-        "illegalArgumentException",
-      ]
-    `);
+    expect(error).not.toBeDefined();
 });
 
-it("expect non empty data + empty meta to throw error", async () => {
-    const halfEmptyInput: ResultListInput = {
+it("expect empty metadata to throw error", async () => {
+    const emptyMetadata: ResultListInput = {
         data: dummyFeatureData,
         metadata: []
     };
@@ -84,7 +57,7 @@ it("expect non empty data + empty meta to throw error", async () => {
     try {
         render(
             <PackageContextProvider>
-                <ResultList resultListInput={halfEmptyInput} data-testid="result-list" />
+                <ResultList resultListInput={emptyMetadata} data-testid="result-list" />
             </PackageContextProvider>
         );
         throw new Error("unexpected success");
