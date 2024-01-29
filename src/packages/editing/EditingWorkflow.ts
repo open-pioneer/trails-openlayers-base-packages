@@ -5,7 +5,7 @@ import { MapModel, TOPMOST_LAYER_Z } from "@open-pioneer/map";
 import { Draw } from "ol/interaction";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
-import { References } from "./EditingImpl";
+import { References } from "./EditingServiceImpl";
 import { MapRegistry } from "@open-pioneer/map";
 import { HttpService } from "@open-pioneer/http";
 import { PackageIntl, ServiceOptions } from "@open-pioneer/runtime";
