@@ -21,7 +21,7 @@ describe("create columns for result-list", () => {
             if (metaData[index]?.displayName) {
                 expect(column?.header).toEqual(metaData[index]?.displayName);
             } else {
-                expect(column?.header).toEqual(metaData[index]?.attributeName);
+                expect(column?.header).toEqual(metaData[index]?.propertyName);
             }
             //Column-Size is correct
             if (metaData[index]?.width) {
@@ -34,27 +34,27 @@ describe("create columns for result-list", () => {
 function createMetaData() {
     const dummyMetaData: ResultColumn[] = [
         {
-            attributeName: "properties.a",
+            propertyName: "properties.a",
             displayName: "Spalte A",
             width: 100
         },
         {
-            attributeName: "properties.b",
+            propertyName: "properties.b",
             displayName: "Spalte B",
             width: 50
         },
         {
-            attributeName: "properties.c",
+            propertyName: "properties.c",
             displayName: "Spalte C",
             width: 150
         },
         {
-            attributeName: "properties.d",
+            propertyName: "properties.d",
             displayName: "Spalte D",
             width: 75
         },
         {
-            attributeName: "properties.e",
+            propertyName: "properties.e",
             displayName: "Spalte E",
             width: 50
         }
