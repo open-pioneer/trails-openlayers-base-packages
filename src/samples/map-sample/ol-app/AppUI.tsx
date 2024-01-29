@@ -118,14 +118,12 @@ export function AppUI() {
                     .then((featureId: string) => {
                         notifier.notify({
                             level: "info",
-                            message: "feature created with id:" + featureId,
-                            // TODO take string from i18n
-                            // message: intl.formatMessage(
-                            //     {
-                            //         id: "foundResults"
-                            //     },
-                            //     { resultsCount: results.length }
-                            // ),
+                            message: intl.formatMessage(
+                                {
+                                    id: "editing.featureCreated"
+                                },
+                                { featureId: featureId }
+                            ),
                             displayDuration: 4000
                         });
 

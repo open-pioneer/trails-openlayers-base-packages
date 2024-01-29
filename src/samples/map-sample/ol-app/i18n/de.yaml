@@ -8,6 +8,8 @@ messages:
   startEditingTitle: "Editing - Neues Feature erstellen"
   stopEditingTitle: "Editing - Stoppen"
   resetEditingTitle: "Editing - Zurücksetzen"
+  editing:
+    featureCreated: "Objekt erstellt mit ID: {featureId}"
   ariaLabel:
     header: "Kopfleiste"
     footer: "Fussleiste mit Maßstabsangabe, Raumbezugssystem und Koordinatenanzeige"
