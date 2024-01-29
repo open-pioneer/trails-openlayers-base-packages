@@ -1,0 +1,385 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`expect empty data + empty data to throw error 1`] = `
+<div
+  class="result-list css-u718rw"
+  data-testid="result-list"
+  data-theme="light"
+>
+  <table
+    class="chakra-table result-list-table-element css-ldways"
+    data-theme="light"
+    style="--header-result-list-col_selection-buttons-size: 70; --col-result-list-col_selection-buttons-size: 70;"
+  >
+    <thead
+      class="css-0"
+      data-theme="light"
+    >
+      <tr
+        class="css-0"
+        data-theme="light"
+      >
+        <th
+          class="css-1zts0j"
+          data-theme="light"
+          style="width: 50px;"
+        >
+          <span
+            class="css-1baulvz"
+            data-theme="light"
+            tabindex="0"
+          >
+            <label
+              class="chakra-checkbox  cursor-pointer css-1577qb8"
+              data-theme="light"
+            >
+              <input
+                class="chakra-checkbox__input"
+                style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
+                type="checkbox"
+                value=""
+              />
+              <span
+                aria-hidden="true"
+                class="chakra-checkbox__control css-1ydjfm6"
+                data-theme="light"
+              />
+            </label>
+          </span>
+          <span
+            class="resizer  css-0"
+            data-theme="light"
+          />
+        </th>
+      </tr>
+    </thead>
+    <tbody
+      class="css-0"
+      data-theme="light"
+    />
+  </table>
+</div>
+`;
+
+exports[`expect result list to be created successfully 1`] = `
+<div
+  class="result-list css-u718rw"
+  data-testid="result-list"
+  data-theme="light"
+>
+  <table
+    class="chakra-table result-list-table-element css-ldways"
+    data-theme="light"
+    style="--header-result-list-col_selection-buttons-size: 70; --col-result-list-col_selection-buttons-size: 70; --header-result-list-col_0-size: 100; --col-result-list-col_0-size: 100; --header-result-list-col_1-size: 50; --col-result-list-col_1-size: 50; --header-result-list-col_2-size: 150; --col-result-list-col_2-size: 150; --header-result-list-col_3-size: 75; --col-result-list-col_3-size: 75; --header-result-list-col_4-size: 50; --col-result-list-col_4-size: 50;"
+  >
+    <thead
+      class="css-0"
+      data-theme="light"
+    >
+      <tr
+        class="css-0"
+        data-theme="light"
+      >
+        <th
+          class="css-1zts0j"
+          data-theme="light"
+          style="width: 50px;"
+        >
+          <span
+            class="css-1baulvz"
+            data-theme="light"
+            tabindex="0"
+          >
+            <label
+              class="chakra-checkbox  cursor-pointer css-1577qb8"
+              data-theme="light"
+            >
+              <input
+                class="chakra-checkbox__input"
+                style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
+                type="checkbox"
+                value=""
+              />
+              <span
+                aria-hidden="true"
+                class="chakra-checkbox__control css-1ydjfm6"
+                data-theme="light"
+              />
+            </label>
+          </span>
+          <span
+            class="resizer  css-0"
+            data-theme="light"
+          />
+        </th>
+        <th
+          class="css-1zts0j"
+          data-theme="light"
+          style=""
+        >
+          Spalte A
+          <span
+            class="css-176c8l1"
+            data-theme="light"
+          />
+          <span
+            class="resizer  css-0"
+            data-theme="light"
+          />
+        </th>
+        <th
+          class="css-1zts0j"
+          data-theme="light"
+          style=""
+        >
+          Spalte B
+          <span
+            class="css-176c8l1"
+            data-theme="light"
+          />
+          <span
+            class="resizer  css-0"
+            data-theme="light"
+          />
+        </th>
+        <th
+          class="css-1zts0j"
+          data-theme="light"
+          style=""
+        >
+          Spalte C
+          <span
+            class="css-176c8l1"
+            data-theme="light"
+          />
+          <span
+            class="resizer  css-0"
+            data-theme="light"
+          />
+        </th>
+        <th
+          class="css-1zts0j"
+          data-theme="light"
+          style=""
+        >
+          Spalte D
+          <span
+            class="css-176c8l1"
+            data-theme="light"
+          />
+          <span
+            class="resizer  css-0"
+            data-theme="light"
+          />
+        </th>
+        <th
+          class="css-1zts0j"
+          data-theme="light"
+          style=""
+        >
+          Spalte E
+          <span
+            class="css-176c8l1"
+            data-theme="light"
+          />
+          <span
+            class="resizer  css-0"
+            data-theme="light"
+          />
+        </th>
+      </tr>
+    </thead>
+    <tbody
+      class="css-0"
+      data-theme="light"
+    >
+      <tr
+        class="css-0"
+        data-theme="light"
+      >
+        <td
+          class="css-xumdn4"
+          data-theme="light"
+          style=""
+        >
+          <label
+            class="chakra-checkbox  cursor-pointer css-1577qb8"
+            data-theme="light"
+          >
+            <input
+              class="chakra-checkbox__input"
+              style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
+              type="checkbox"
+              value=""
+            />
+            <span
+              aria-hidden="true"
+              class="chakra-checkbox__control css-1ydjfm6"
+              data-theme="light"
+            />
+          </label>
+        </td>
+        <td
+          class="css-xumdn4"
+          data-theme="light"
+          style=""
+        >
+          undefined
+        </td>
+        <td
+          class="css-xumdn4"
+          data-theme="light"
+          style=""
+        >
+          undefined
+        </td>
+        <td
+          class="css-xumdn4"
+          data-theme="light"
+          style=""
+        >
+          undefined
+        </td>
+        <td
+          class="css-xumdn4"
+          data-theme="light"
+          style=""
+        >
+          undefined
+        </td>
+        <td
+          class="css-xumdn4"
+          data-theme="light"
+          style=""
+        >
+          undefined
+        </td>
+      </tr>
+      <tr
+        class="css-0"
+        data-theme="light"
+      >
+        <td
+          class="css-xumdn4"
+          data-theme="light"
+          style=""
+        >
+          <label
+            class="chakra-checkbox  cursor-pointer css-1577qb8"
+            data-theme="light"
+          >
+            <input
+              class="chakra-checkbox__input"
+              style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
+              type="checkbox"
+              value=""
+            />
+            <span
+              aria-hidden="true"
+              class="chakra-checkbox__control css-1ydjfm6"
+              data-theme="light"
+            />
+          </label>
+        </td>
+        <td
+          class="css-xumdn4"
+          data-theme="light"
+          style=""
+        >
+          undefined
+        </td>
+        <td
+          class="css-xumdn4"
+          data-theme="light"
+          style=""
+        >
+          undefined
+        </td>
+        <td
+          class="css-xumdn4"
+          data-theme="light"
+          style=""
+        >
+          undefined
+        </td>
+        <td
+          class="css-xumdn4"
+          data-theme="light"
+          style=""
+        >
+          undefined
+        </td>
+        <td
+          class="css-xumdn4"
+          data-theme="light"
+          style=""
+        >
+          undefined
+        </td>
+      </tr>
+      <tr
+        class="css-0"
+        data-theme="light"
+      >
+        <td
+          class="css-xumdn4"
+          data-theme="light"
+          style=""
+        >
+          <label
+            class="chakra-checkbox  cursor-pointer css-1577qb8"
+            data-theme="light"
+          >
+            <input
+              class="chakra-checkbox__input"
+              style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
+              type="checkbox"
+              value=""
+            />
+            <span
+              aria-hidden="true"
+              class="chakra-checkbox__control css-1ydjfm6"
+              data-theme="light"
+            />
+          </label>
+        </td>
+        <td
+          class="css-xumdn4"
+          data-theme="light"
+          style=""
+        >
+          undefined
+        </td>
+        <td
+          class="css-xumdn4"
+          data-theme="light"
+          style=""
+        >
+          undefined
+        </td>
+        <td
+          class="css-xumdn4"
+          data-theme="light"
+          style=""
+        >
+          undefined
+        </td>
+        <td
+          class="css-xumdn4"
+          data-theme="light"
+          style=""
+        >
+          undefined
+        </td>
+        <td
+          class="css-xumdn4"
+          data-theme="light"
+          style=""
+        >
+          undefined
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+`;
