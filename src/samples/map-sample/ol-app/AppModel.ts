@@ -1,25 +1,46 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { PackageIntl, Service, ServiceOptions } from "@open-pioneer/runtime";
-import { OgcFeaturesSearchSourceFactory } from "@open-pioneer/ogc-features";
-import { SearchSource } from "@open-pioneer/search";
-import { PhotonGeocoder } from "./sources/searchSources";
-import { proxy, ref } from "valtio";
-import { SelectionSource, VectorLayerSelectionSourceFactory } from "@open-pioneer/selection";
+import { Resource, createLogger } from "@open-pioneer/core";
+import { HttpService } from "@open-pioneer/http";
 import { MapRegistry } from "@open-pioneer/map";
-import { MAP_ID } from "./MapConfigProviderImpl";
+import { OgcFeaturesSearchSourceFactory } from "@open-pioneer/ogc-features";
+import { PackageIntl, Service, ServiceOptions } from "@open-pioneer/runtime";
+import { SearchSource } from "@open-pioneer/search";
+import { SelectionSource, VectorLayerSelectionSourceFactory } from "@open-pioneer/selection";
+import OlBaseLayer from "ol/layer/Base";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
-import OlBaseLayer from "ol/layer/Base";
-import { Resource, createLogger } from "@open-pioneer/core";
+import { proxy, ref } from "valtio";
+import { MAP_ID } from "./MapConfigProviderImpl";
+import { PhotonGeocoder } from "./sources/searchSources";
 
-const LOG = createLogger("ol-app:AppConfig");
+const LOG = createLogger("ol-app:AppModel");
 
 declare module "valtio" {
-    // Relax deep readonly, see https://github.com/pmndrs/valtio/issues/327
+    // Relax deep readonly, see https://github.com/pmndrs/valtio/issues/327.
+    // By default valtio makes everything readonly which causes some problems when functions
+    // don't expect readonly data.
     export function useSnapshot<T extends object>(p: T): T;
 }
-import { HttpService } from "@open-pioneer/http";
+
+/**
+ * Reactive state, rendered by the UI.
+ */
+export interface AppState {
+    /**
+     * The sources currently used in the search component.
+     */
+    searchSources: SearchSource[];
+
+    /**
+     * The sources currently used in the selection component.
+     */
+    selectionSources: SelectionSource[];
+}
+
+interface References {
+    mapRegistry: MapRegistry;
+}
 
 interface References {
     ogcSearchSourceFactory: OgcFeaturesSearchSourceFactory;
@@ -28,18 +49,7 @@ interface References {
     mapRegistry: MapRegistry;
 }
 
-export interface AppState {
-    searchSources: SearchSource[];
-    selectionSources: SelectionSource[];
-}
-
-interface References {
-    mapRegistry: MapRegistry;
-}
-
-const SELECTION_LAYER_IDS = ["ogc_kitas", "ogc_kataster"];
-
-export class AppConfig implements Service {
+export class AppModel implements Service {
     private _intl: PackageIntl;
     private _mapRegistry: MapRegistry;
     private _ogcSearchSourceFactory: OgcFeaturesSearchSourceFactory;
@@ -75,6 +85,8 @@ export class AppConfig implements Service {
      * In this case, we are using a simple "valtio" store.
      * Valtio implements a reactivity system similar to vue.
      *
+     * Use valtio's `useSnapshot()` hook to read values from this state inside react components.
+     *
      * NOTE: "complex" values must be wrapped into `ref` to prevent recursive watches.
      *
      * See also: https://valtio.pmnd.rs/
@@ -88,16 +100,6 @@ export class AppConfig implements Service {
      * These are used by the UI to configure the search widget.
      */
     private initSearchSources() {
-        // new OgcFeatureSearchSource("Feldblöcke", {
-        //     baseUrl: "https://ogc-api.nrw.de/inspire-lc-fb/v1",
-        //     collectionId: "landcoverunit",
-        //     searchProperty: "flik"
-        // }),
-        // new OgcFeatureSearchSource("Weinberge", {
-        //     baseUrl: "https://demo.ldproxy.net/vineyards",
-        //     collectionId: "vineyards",
-        //     searchProperty: "name"
-        // }),
         const flrstSource = this._ogcSearchSourceFactory.createSearchSource({
             label: this._intl.formatMessage({ id: "searchSources.lika" }),
             baseUrl: "https://ogc-api.nrw.de/lika/v1",
@@ -138,12 +140,11 @@ export class AppConfig implements Service {
      * Certain vector layers are automatically registered for selection.
      */
     private async initSelectionSources() {
+        const SELECTION_LAYER_IDS = ["ogc_kitas", "ogc_kataster"];
         const map = await this._mapRegistry.expectMapModel(MAP_ID);
         const opLayers = map.layers.getOperationalLayers({ sortByDisplayOrder: true });
-
         for (const opLayer of opLayers) {
             if (
-                !opLayer ||
                 !SELECTION_LAYER_IDS.includes(opLayer.id) ||
                 !isVectorLayerWithVectorSource(opLayer.olLayer)
             ) {

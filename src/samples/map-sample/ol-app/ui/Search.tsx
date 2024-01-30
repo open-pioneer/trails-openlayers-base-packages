@@ -5,13 +5,13 @@ import { useMapModel } from "@open-pioneer/map";
 import { Search, SearchSelectEvent } from "@open-pioneer/search";
 import { useService } from "open-pioneer:react-hooks";
 import { useSnapshot } from "valtio";
-import { AppConfig } from "../AppConfig"; // TODO
+import { AppModel } from "../AppModel"; // TODO
 import { MAP_ID } from "../MapConfigProviderImpl"; // TODO
 
 export function SearchComponent() {
     const { map } = useMapModel(MAP_ID);
-    const appConfig = useService<unknown>("ol-app.AppConfig") as AppConfig;
-    const sources = useSnapshot(appConfig.state).searchSources;
+    const appModel = useService<unknown>("ol-app.AppModel") as AppModel;
+    const sources = useSnapshot(appModel.state).searchSources;
 
     function onSearchResultSelected(event: SearchSelectEvent) {
         console.debug("The user selected the following item: ", event.result);

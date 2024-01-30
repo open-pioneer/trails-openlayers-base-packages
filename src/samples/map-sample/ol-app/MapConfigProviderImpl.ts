@@ -5,7 +5,7 @@ import GeoJSON from "ol/format/GeoJSON";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import { LegendItemAttributes } from "@open-pioneer/legend";
-import { CustomLegend, LoremIpsumLegend } from "./CustomLegend";
+import { CustomLegendItem, LoremIpsumLegendItem } from "./CustomLegendItems";
 import { OSM } from "ol/source";
 import { Circle, Fill, Style } from "ol/style";
 import TileLayer from "ol/layer/Tile.js";
@@ -29,7 +29,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
         //const computedValue = "foo"; TODO add good examples for layerLegendProps
 
         const pointLayerLegendProps: LegendItemAttributes = {
-            Component: CustomLegend
+            Component: CustomLegendItem
         };
 
         return {
@@ -274,7 +274,7 @@ function createSchulenLayer() {
 }
 
 const loremIpsum: LegendItemAttributes = {
-    Component: LoremIpsumLegend
+    Component: LoremIpsumLegendItem
 };
 
 function createStrassenLayer() {

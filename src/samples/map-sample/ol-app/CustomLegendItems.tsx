@@ -13,7 +13,7 @@ const dotStyle = {
     display: "inline-block "
 };
 
-export function CustomLegend(props: LegendItemComponentProps) {
+export function CustomLegendItem(props: LegendItemComponentProps) {
     return (
         <Box>
             <Text>{props.layer.title}</Text>
@@ -25,7 +25,7 @@ export function CustomLegend(props: LegendItemComponentProps) {
 /**
  * TODO: Remove lorem ipsum component from MapConfigProviderImpl.ts before merge!
  */
-export function LoremIpsumLegend(props: LegendItemComponentProps) {
+export function LoremIpsumLegendItem(props: LegendItemComponentProps) {
     return (
         <Box>
             <Text as="b">{props.layer.title}</Text>
