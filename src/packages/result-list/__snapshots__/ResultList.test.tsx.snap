@@ -191,7 +191,7 @@ exports[`expect result list to be created successfully 1`] = `
           data-theme="light"
           style=""
         >
-          Wed May 13 2020 01:50:21 GMT+0200 (Mitteleuropäische Sommerzeit)
+          Mittwoch, 13. Mai 2020 um 01:50:21 Mitteleuropäische Sommerzeit
         </td>
       </tr>
       <tr
@@ -253,7 +253,7 @@ exports[`expect result list to be created successfully 1`] = `
           data-theme="light"
           style=""
         >
-          Thu May 13 2021 01:50:21 GMT+0200 (Mitteleuropäische Sommerzeit)
+          Donnerstag, 13. Mai 2021 um 01:50:21 Mitteleuropäische Sommerzeit
         </td>
       </tr>
       <tr
@@ -315,7 +315,7 @@ exports[`expect result list to be created successfully 1`] = `
           data-theme="light"
           style=""
         >
-          Tue Oct 13 2020 01:30:21 GMT+0200 (Mitteleuropäische Sommerzeit)
+          Dienstag, 13. Oktober 2020 um 01:30:21 Mitteleuropäische Sommerzeit
         </td>
       </tr>
     </tbody>

@@ -5,6 +5,13 @@ import { Point } from "ol/geom";
 import { ResultColumn } from "./api";
 import { BaseFeature } from "@open-pioneer/map/api/BaseFeature";
 
+const DATE_FORMAT = Intl.DateTimeFormat("de-DE", { dateStyle: "full", "timeStyle": "full" });
+
+// Stable date format for tests.
+function formatDate(date: Date) {
+    return DATE_FORMAT.format(date);
+}
+
 export const dummyFeatureData: BaseFeature[] = [
     {
         id: "1",
@@ -13,7 +20,7 @@ export const dummyFeatureData: BaseFeature[] = [
             "b": 123,
             "c": 4.567,
             "d": true,
-            "e": new Date("2020-05-12T23:50:21.817Z")
+            "e": formatDate(new Date("2020-05-12T23:50:21.817Z"))
         },
         geometry: new Point([404567.3, 5757788.32])
     },
@@ -24,7 +31,7 @@ export const dummyFeatureData: BaseFeature[] = [
             "b": 434,
             "c": 78.567,
             "d": false,
-            "e": new Date("2021-05-12T23:50:21.817Z")
+            "e": formatDate(new Date("2021-05-12T23:50:21.817Z"))
         },
         geometry: new Point([406510.87, 5758314.82])
     },
@@ -35,7 +42,7 @@ export const dummyFeatureData: BaseFeature[] = [
             "b": 666,
             "c": 8.597,
             "d": true,
-            "e": new Date("2020-10-12T23:30:21.817Z")
+            "e": formatDate(new Date("2020-10-12T23:30:21.817Z"))
         },
         geometry: new Point([406590.87, 5758311.82])
     }

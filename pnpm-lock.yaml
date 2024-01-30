@@ -385,6 +385,44 @@ importers:
         version: link:../../..
     publishDirectory: dist
 
+  src/packages/legend:
+    dependencies:
+      '@chakra-ui/icons':
+        specifier: ^2.1.1
+        version: 2.1.1(@chakra-ui/system@2.6.2)(react@18.2.0)
+      '@open-pioneer/chakra-integration':
+        specifier: ^1.1.1
+        version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.17.4)(react-dom@18.2.0)(react@18.2.0)
+      '@open-pioneer/map':
+        specifier: workspace:^
+        version: link:../map
+      '@open-pioneer/react-utils':
+        specifier: workspace:^
+        version: link:../react-utils
+      '@open-pioneer/runtime':
+        specifier: ^2.0.2
+        version: 2.0.2(@formatjs/intl@2.9.9)(@open-pioneer/base-theme@0.2.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/core@1.2.1)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
+      classnames:
+        specifier: ^2.3.2
+        version: 2.3.2
+      ol:
+        specifier: ^8.2.0
+        version: 8.2.0
+      react:
+        specifier: ^18.2.0
+        version: 18.2.0
+    devDependencies:
+      '@open-pioneer/map-test-utils':
+        specifier: workspace:^
+        version: link:../map-test-utils
+      '@open-pioneer/test-utils':
+        specifier: ^1.0.2
+        version: 1.0.2(@formatjs/intl@2.9.9)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.3)(@testing-library/react@14.1.2)(react-dom@18.2.0)(react@18.2.0)
+      openlayers-base-packages:
+        specifier: workspace:*
+        version: link:../../..
+    publishDirectory: dist
+
   src/packages/local-storage:
     dependencies:
       '@open-pioneer/core':
@@ -444,6 +482,9 @@ importers:
       '@open-pioneer/map-test-utils':
         specifier: workspace:^
         version: link:../map-test-utils
+      '@types/jsdom':
+        specifier: ^21.1.6
+        version: 21.1.6
       '@types/uuid':
         specifier: ^9.0.7
         version: 9.0.7
@@ -1055,12 +1096,6 @@ importers:
         specifier: ^17.4.2
         version: 17.4.2(react-dom@18.2.0)(react@18.2.0)
 
-  src/samples/map-sample/map-sample-logging:
-    devDependencies:
-      '@open-pioneer/runtime':
-        specifier: ^2.0.2
-        version: 2.0.2(@formatjs/intl@2.9.9)(@open-pioneer/base-theme@0.2.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/core@1.2.1)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
-
   src/samples/map-sample/ol-app:
     dependencies:
       '@chakra-ui/icons':
@@ -1090,6 +1125,9 @@ importers:
       '@open-pioneer/http':
         specifier: ^2.1.1
         version: 2.1.1(@open-pioneer/core@1.2.1)(@open-pioneer/runtime@2.0.2)
+      '@open-pioneer/legend':
+        specifier: workspace:^
+        version: link:../../../packages/legend
       '@open-pioneer/map':
         specifier: workspace:^
         version: link:../../../packages/map
@@ -1138,9 +1176,6 @@ importers:
       '@open-pioneer/toc':
         specifier: workspace:^
         version: link:../../../packages/toc
-      map-sample-logging:
-        specifier: workspace:^
-        version: link:../map-sample-logging
       ol:
         specifier: ^8.2.0
         version: 8.2.0
@@ -1153,6 +1188,9 @@ importers:
       react-icons:
         specifier: ^4.12.0
         version: 4.12.0(react@18.2.0)
+      react-use:
+        specifier: ^17.4.2
+        version: 17.4.2(react-dom@18.2.0)(react@18.2.0)
       valtio:
         specifier: ^1.12.1
         version: 1.12.1(@types/react@18.2.46)(react@18.2.0)
@@ -4026,6 +4064,14 @@ packages:
     resolution: {integrity: sha512-k4MGaQl5TGo/iipqb2UDG2UwjXziSWkh0uysQelTlJpX1qGlpUZYm8PnO4DxG1qBomtJUdYJ6qR6xdIah10JLg==}
     dev: true
 
+  /@types/jsdom@21.1.6:
+    resolution: {integrity: sha512-/7kkMsC+/kMs7gAYmmBR9P0vGTnOoLhQhyhQJSlXGI5bzTHp6xdo0TtKWQAsz6pmSAeVqKSbqeyP6hytqr9FDw==}
+    dependencies:
+      '@types/node': 16.18.68
+      '@types/tough-cookie': 4.0.5
+      parse5: 7.1.2
+    dev: true
+
   /@types/json-schema@7.0.15:
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
     dev: true
@@ -4091,6 +4137,10 @@ packages:
 
   /@types/semver@7.5.6:
     resolution: {integrity: sha512-dn1l8LaMea/IjDoHNd9J52uBbInB796CDffS6VdIxvqYCPSG0V0DzHp76GpaWnlhg88uYyPbXCDIowa86ybd5A==}
+    dev: true
+
+  /@types/tough-cookie@4.0.5:
+    resolution: {integrity: sha512-/Ad8+nIOV7Rl++6f1BdKxFSMgmoqEoYbHRpPcx3JEfv8VRsQe9Z4mCXeJBzxs7mbHY/XOZZuXlRNfhpVPbs6ZA==}
     dev: true
 
   /@types/uuid@9.0.7:

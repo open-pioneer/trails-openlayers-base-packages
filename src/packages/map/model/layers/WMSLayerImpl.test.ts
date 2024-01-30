@@ -5,10 +5,11 @@ import ImageLayer from "ol/layer/Image";
 import ImageSource from "ol/source/Image";
 import ImageWMS from "ol/source/ImageWMS";
 import { get as getProjection } from "ol/proj";
-import { afterEach, beforeEach, expect, it, vi } from "vitest";
+import { Mock, afterEach, beforeEach, expect, it, vi } from "vitest";
 import { AbstractLayerBase } from "../AbstractLayerBase";
 import { MapModelImpl } from "../MapModelImpl";
 import { WMSLayerImpl } from "./WMSLayerImpl";
+import { WMSLayerConfig } from "../../api";
 
 const SERVICE_URL = "https://example.com/wms-service";
 
@@ -21,7 +22,7 @@ afterEach(() => {
 });
 
 it("provides the wms service url", () => {
-    const layer = new WMSLayerImpl({
+    const { layer } = createLayer({
         title: "Layer",
         url: SERVICE_URL
     });
@@ -29,7 +30,7 @@ it("provides the wms service url", () => {
 });
 
 it("creates and configure a wms source", () => {
-    const layer = new WMSLayerImpl({
+    const { layer } = createLayer({
         title: "Layer",
         url: SERVICE_URL,
         sublayers: [
@@ -48,7 +49,7 @@ it("creates and configure a wms source", () => {
 });
 
 it("supports additional source options", () => {
-    const layer = new WMSLayerImpl({
+    const { layer } = createLayer({
         title: "Layer",
         url: SERVICE_URL,
         sublayers: [
@@ -90,7 +91,7 @@ it("supports additional source options", () => {
 });
 
 it("configures the source's LAYERS parameter for sublayers", () => {
-    const layer = new WMSLayerImpl({
+    const { layer } = createLayer({
         title: "Layer",
         url: SERVICE_URL,
         sublayers: [
@@ -109,8 +110,33 @@ it("configures the source's LAYERS parameter for sublayers", () => {
     expect(layersParam).toEqual(["sublayer-1", "sublayer-2"]);
 });
 
+it("only configures the source's LAYERS parameter for sublayers with optional `name` prop ", () => {
+    const { layer } = createLayer({
+        title: "Layer",
+        url: SERVICE_URL,
+        sublayers: [
+            {
+                title: "Parent sublayer",
+                sublayers: [
+                    {
+                        title: "Subparent sublayer",
+                        sublayers: [{ name: "sublayer-1", title: "Sublayer 1" }]
+                    },
+                    {
+                        name: "sublayer-2",
+                        title: "Sublayer 2"
+                    }
+                ]
+            }
+        ]
+    });
+    const olSource = (layer.olLayer as ImageLayer<any>).getSource() as ImageWMS;
+    const layersParam = olSource.getParams()["LAYERS"];
+    expect(layersParam).toEqual(["sublayer-1", "sublayer-2"]);
+});
+
 it("only configures the source's LAYERS parameter for leaf sublayers", () => {
-    const layer = new WMSLayerImpl({
+    const { layer } = createLayer({
         title: "Layer",
         url: SERVICE_URL,
         sublayers: [
@@ -139,7 +165,7 @@ it("only configures the source's LAYERS parameter for leaf sublayers", () => {
 });
 
 it("excludes invisible sublayers from the LAYERS parameter", () => {
-    const layer = new WMSLayerImpl({
+    const { layer } = createLayer({
         title: "Layer",
         url: SERVICE_URL,
         sublayers: [
@@ -160,7 +186,7 @@ it("excludes invisible sublayers from the LAYERS parameter", () => {
 });
 
 it("updates the layer's LAYERS param if a sublayer's visibility changes", () => {
-    const layer = new WMSLayerImpl({
+    const { layer } = createLayer({
         title: "Layer",
         url: SERVICE_URL,
         sublayers: [
@@ -173,9 +199,9 @@ it("updates the layer's LAYERS param if a sublayer's visibility changes", () => 
                 name: "sublayer-2",
                 title: "Sublayer 2"
             }
-        ]
+        ],
+        attach: true
     });
-    layer.__attach({} as MapModelImpl);
 
     const olSource = (layer.olLayer as ImageLayer<any>).getSource() as ImageWMS;
     const getLayersParam = () => olSource.getParams()["LAYERS"];
@@ -191,7 +217,7 @@ it("updates the layer's LAYERS param if a sublayer's visibility changes", () => 
 });
 
 it("provides access to sublayers", () => {
-    const layer = new WMSLayerImpl({
+    const { layer } = createLayer({
         title: "Layer",
         url: SERVICE_URL,
         sublayers: [
@@ -199,9 +225,9 @@ it("provides access to sublayers", () => {
                 name: "sublayer-1",
                 title: "Sublayer 1"
             }
-        ]
+        ],
+        attach: true
     });
-    layer.__attach({} as MapModelImpl);
 
     const sublayers = layer.sublayers.getSublayers();
     expect(sublayers.length).toBe(1);
@@ -215,7 +241,7 @@ it("provides access to sublayers", () => {
 });
 
 it("provides access to nested sublayers", () => {
-    const layer = new WMSLayerImpl({
+    const { layer } = createLayer({
         title: "Layer",
         url: SERVICE_URL,
         sublayers: [
@@ -229,9 +255,9 @@ it("provides access to nested sublayers", () => {
                     }
                 ]
             }
-        ]
+        ],
+        attach: true
     });
-    layer.__attach({} as MapModelImpl);
 
     const sublayer1 = layer.sublayers.getSublayers()[0]!;
     const sublayer2 = sublayer1.sublayers.getSublayers()[0]!;
@@ -249,8 +275,8 @@ it("uses http service to fetch images", async () => {
         It triggers a load() on the source used by the image layer (in a way usually done
         by the open layers map) and checks that the mocked httpService is actually being called for the URL.
     */
-
-    const layer = new WMSLayerImpl({
+    let urls: string[] = [];
+    const { layer } = createLayer({
         title: "Layer",
         url: SERVICE_URL,
         sublayers: [
@@ -258,22 +284,18 @@ it("uses http service to fetch images", async () => {
                 name: "sublayer-1",
                 title: "Sublayer 1"
             }
-        ]
-    });
-    const urls: string[] = [];
-    const httpService: Partial<HttpService> = {
-        async fetch(url) {
+        ],
+        attach: true,
+        fetch: vi.fn(async (url) => {
             urls.push(String(url));
             return new Response("", {
                 status: 200
             });
-        }
-    };
-    layer.__attach({
-        __sharedDependencies: {
-            httpService: httpService as HttpService
-        }
-    } as MapModelImpl);
+        })
+    });
+
+    await vi.waitUntil(() => urls.length > 0); // Initial metadata
+    urls = [];
 
     const source = (layer.olLayer as ImageLayer<ImageSource>).getSource()!;
     const projection = getProjection("EPSG:3857")!;
@@ -286,7 +308,7 @@ it("uses http service to fetch images", async () => {
 });
 
 it("does not have a source if no sublayers are visible", () => {
-    const layer = new WMSLayerImpl({
+    const { layer } = createLayer({
         title: "Layer",
         url: SERVICE_URL
     });
@@ -296,3 +318,27 @@ it("does not have a source if no sublayers are visible", () => {
     const source = (layer.olLayer as ImageLayer<any>).getSource();
     expect(source).toBeNull();
 });
+
+function createLayer(options: WMSLayerConfig & { fetch?: Mock; attach?: boolean }) {
+    const layer = new WMSLayerImpl(options);
+    const httpService = {
+        fetch:
+            options?.fetch ??
+            vi.fn().mockImplementation(async () => new Response("", { status: 200 }))
+    } as HttpService;
+    const mapModel = {
+        __sharedDependencies: {
+            httpService: httpService as HttpService
+        }
+    } as MapModelImpl;
+
+    if (options?.attach) {
+        layer.__attach(mapModel);
+    }
+
+    return {
+        layer,
+        mapModel,
+        httpService
+    };
+}

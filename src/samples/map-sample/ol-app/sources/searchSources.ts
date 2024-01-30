@@ -22,6 +22,11 @@ interface PhotonResponse {
     features: PhotonResponseFeature[];
 }
 
+/**
+ * A simple search source that queries the [Photon Geocoder service](https://photon.komoot.io/).
+ *
+ * This source is intended to serve as an example.
+ */
 export class PhotonGeocoder implements SearchSource {
     label: string;
     filteredTypes: string[];
@@ -31,33 +36,6 @@ export class PhotonGeocoder implements SearchSource {
         this.label = label;
         this.filteredTypes = filteredTypes;
         this.httpService = httpService;
-    }
-
-    async request(
-        inputValue: string,
-        limit: number,
-        signal?: AbortSignal | undefined
-    ): Promise<PhotonResponse> {
-        const url = new URL("https://photon.komoot.io/api?");
-        url.searchParams.set("q", inputValue);
-        url.searchParams.set("lang", "de");
-        url.searchParams.set("lat", "51.961563");
-        url.searchParams.set("lon", "7.628202");
-        url.searchParams.set("limit", limit.toString());
-        const response = await this.httpService.fetch(url, { signal });
-        if (!response.ok) {
-            throw new Error("Request failed: " + response.status);
-        }
-        const result = (await response.json()) as PhotonResponse;
-        return result;
-    }
-
-    createLabel(feature: PhotonResponseFeature) {
-        return `${feature.properties.name} (${
-            feature.properties.osm_value ? feature.properties.osm_value + ", " : ""
-        }${feature.properties.postcode ? feature.properties.postcode + ", " : ""}${
-            feature.properties.city ? feature.properties.city + ", " : ""
-        }${feature.properties.country ? feature.properties.country + ")" : ")"}`;
     }
 
     async search(
@@ -83,5 +61,32 @@ export class PhotonGeocoder implements SearchSource {
                     properties: feature.properties
                 };
             });
+    }
+
+    private async request(
+        inputValue: string,
+        limit: number,
+        signal?: AbortSignal | undefined
+    ): Promise<PhotonResponse> {
+        const url = new URL("https://photon.komoot.io/api?");
+        url.searchParams.set("q", inputValue);
+        url.searchParams.set("lang", "de");
+        url.searchParams.set("lat", "51.961563");
+        url.searchParams.set("lon", "7.628202");
+        url.searchParams.set("limit", limit.toString());
+        const response = await this.httpService.fetch(url, { signal });
+        if (!response.ok) {
+            throw new Error("Request failed: " + response.status);
+        }
+        const result = (await response.json()) as PhotonResponse;
+        return result;
+    }
+
+    private createLabel(feature: PhotonResponseFeature) {
+        return `${feature.properties.name} (${
+            feature.properties.osm_value ? feature.properties.osm_value + ", " : ""
+        }${feature.properties.postcode ? feature.properties.postcode + ", " : ""}${
+            feature.properties.city ? feature.properties.city + ", " : ""
+        }${feature.properties.country ? feature.properties.country + ")" : ")"}`;
     }
 }

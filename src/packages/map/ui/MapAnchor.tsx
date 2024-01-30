@@ -4,7 +4,7 @@ import { Box, BoxProps, StyleProps } from "@open-pioneer/chakra-integration";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { BaseSyntheticEvent, ReactNode, useMemo } from "react";
 import { createPortal } from "react-dom";
-import { MapPadding } from "./MapContainer";
+import { MapPadding } from "../api";
 import { useMapContext } from "./MapContext";
 
 export type MapAnchorPosition = "top-left" | "top-right" | "bottom-left" | "bottom-right";
