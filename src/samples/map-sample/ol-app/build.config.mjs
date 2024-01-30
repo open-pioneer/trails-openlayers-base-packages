@@ -23,11 +23,6 @@ export default defineBuildConfig({
         }
     },
     ui: {
-        references: [
-            "map-sample-logging.LogService",
-            "map.MapRegistry",
-            "ol-app.AppConfig",
-            "notifier.NotificationService"
-        ]
+        references: ["map.MapRegistry", "ol-app.AppConfig", "notifier.NotificationService"]
     }
 });

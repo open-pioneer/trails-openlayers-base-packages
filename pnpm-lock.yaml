@@ -1049,12 +1049,6 @@ importers:
         specifier: ^17.4.2
         version: 17.4.2(react-dom@18.2.0)(react@18.2.0)
 
-  src/samples/map-sample/map-sample-logging:
-    devDependencies:
-      '@open-pioneer/runtime':
-        specifier: ^2.0.2
-        version: 2.0.2(@formatjs/intl@2.9.9)(@open-pioneer/base-theme@0.2.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/core@1.2.1)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
-
   src/samples/map-sample/ol-app:
     dependencies:
       '@chakra-ui/icons':
@@ -1081,12 +1075,12 @@ importers:
       '@open-pioneer/geolocation':
         specifier: workspace:^
         version: link:../../../packages/geolocation
-      '@open-pioneer/legend':
-        specifier: workspace:^
-        version: link:../../../packages/legend
       '@open-pioneer/http':
         specifier: ^2.1.1
         version: 2.1.1(@open-pioneer/core@1.2.1)(@open-pioneer/runtime@2.0.2)
+      '@open-pioneer/legend':
+        specifier: workspace:^
+        version: link:../../../packages/legend
       '@open-pioneer/map':
         specifier: workspace:^
         version: link:../../../packages/map
@@ -1132,9 +1126,6 @@ importers:
       '@open-pioneer/toc':
         specifier: workspace:^
         version: link:../../../packages/toc
-      map-sample-logging:
-        specifier: workspace:^
-        version: link:../map-sample-logging
       ol:
         specifier: ^8.2.0
         version: 8.2.0
