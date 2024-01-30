@@ -5,7 +5,11 @@ import { Point } from "ol/geom";
 import { ResultColumn } from "./api";
 import { BaseFeature } from "@open-pioneer/map/api/BaseFeature";
 
-const DATE_FORMAT = Intl.DateTimeFormat("de-DE", { dateStyle: "full", "timeStyle": "full" });
+const DATE_FORMAT = Intl.DateTimeFormat("de-DE", {
+    dateStyle: "full",
+    timeStyle: "full",
+    timeZone: "UTC"
+});
 
 // Stable date format for tests.
 function formatDate(date: Date) {
