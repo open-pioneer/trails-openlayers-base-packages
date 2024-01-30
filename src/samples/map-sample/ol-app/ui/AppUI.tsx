@@ -30,10 +30,18 @@ const DEFAULT_TOOL_STATE: IndependentToolState = {
     tocActive: true
 };
 
+/**
+ * The main application layout.
+ * Renders the map and all associated components.
+ */
 export function AppUI() {
     const intl = useIntl();
     const { map } = useMapModel(MAP_ID);
+
+    // The current interaction. Only one interaction can be active at a time.
     const [currentInteractionType, setCurrentInteractionType] = useState<InteractionType>();
+
+    // The active state of tools and their widgets (e.g. toc).
     const [currentToolState, setCurrentToolState] = useState(DEFAULT_TOOL_STATE);
     const toolState: ToolState = {
         ...currentToolState,
@@ -41,22 +49,22 @@ export function AppUI() {
         selectionActive: currentInteractionType === "selection"
     };
 
-    const applyInteractionType = (newType: InteractionType) => {
-        if (newType !== currentInteractionType) {
-            setCurrentInteractionType(newType);
-            map?.removeHighlight();
-        }
-    };
-
+    // Called when a map tool is toggled on or off.
+    // Most tools can be active independently of each other, but those that control interactions
+    // must be handled separately.
     const changeToolState = (toolStateName: keyof ToolState, newValue: boolean) => {
         // Enforce mutually exclusive interaction
         if (toolStateName === "selectionActive" || toolStateName === "measurementActive") {
-            if (newValue) {
-                applyInteractionType(
-                    toolStateName === "selectionActive" ? "selection" : "measurement"
-                );
-            } else {
-                applyInteractionType(undefined);
+            const interactionType =
+                toolStateName === "selectionActive" ? "selection" : "measurement";
+            if (interactionType !== currentInteractionType && newValue) {
+                // A new interaction type was toggled on
+                setCurrentInteractionType(interactionType);
+                map?.removeHighlight();
+            } else if (interactionType === currentInteractionType && !newValue) {
+                // The current interaction type was toggled off
+                setCurrentInteractionType(undefined);
+                map?.removeHighlight();
             }
         } else {
             setCurrentToolState({
@@ -138,6 +146,9 @@ export function AppUI() {
     );
 }
 
+/**
+ * A simple container that separates its children with divider elements.
+ */
 function ComponentContainer(props: { children: ReactNode[] }) {
     const children = props.children;
     const separatedChildren: ReactNode[] = [];

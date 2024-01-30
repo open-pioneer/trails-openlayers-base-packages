@@ -25,14 +25,20 @@ export interface ToolState {
 }
 
 export interface MapToolsProps {
+    /**
+     * Controls the `active` state of all tool buttons.
+     */
     toolState: ToolState;
 
+    /**
+     * Called by the component when a tool button shall be toggled on or off.
+     */
     onToolStateChange(toolStateName: keyof ToolState, newValue: boolean): void;
 }
 
 export function MapTools(props: MapToolsProps) {
-    const intl = useIntl();
     const { toolState, onToolStateChange } = props;
+    const intl = useIntl();
 
     const toggleToolState = (name: keyof ToolState) => {
         onToolStateChange(name, !toolState[name]);
