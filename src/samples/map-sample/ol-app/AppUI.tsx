@@ -357,7 +357,7 @@ function SearchComponent() {
         }
 
         map.highlightAndZoom([geometry], {
-            viewPadding: { top: 150, right: 50, bottom: 50, left: 50 }
+            viewPadding: { top: 150, right: 75, bottom: 50, left: 75 }
         });
     }
 
@@ -397,7 +397,7 @@ function SelectionComponent() {
         const geometries = results.map((result) => result.geometry);
         if (geometries.length > 0) {
             map.highlightAndZoom(geometries, {
-                viewPadding: { top: 150, right: 50, bottom: 50, left: 50 }
+                viewPadding: { top: 150, right: 75, bottom: 50, left: 75 }
             });
         }
 
