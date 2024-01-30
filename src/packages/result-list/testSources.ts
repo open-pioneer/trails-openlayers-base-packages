@@ -68,3 +68,27 @@ export const dummyMetaData: ResultColumn[] = [
         width: 50
     }
 ];
+
+export const dummyFeatureDataAlt: BaseFeature[] = [
+    {
+        id: "1",
+        properties: {
+            "f": "Test 42",
+            "g": undefined
+        },
+        geometry: undefined
+    }
+];
+
+export const dummyMetaDataAlt: ResultColumn[] = [
+    {
+        propertyName: "properties.f",
+        displayName: "Spalte F",
+        width: 200
+    },
+    {
+        propertyName: "properties.g",
+        displayName: "Spalte G",
+        width: 300
+    }
+];

@@ -3,10 +3,14 @@
 import { afterEach, expect, it, vi } from "vitest";
 import { ResultColumn, ResultListInput } from "./api";
 import { render, screen, waitFor } from "@testing-library/react";
-import { dummyFeatureData, dummyMetaData } from "./testSources";
+import {
+    dummyFeatureData,
+    dummyFeatureDataAlt,
+    dummyMetaData,
+    dummyMetaDataAlt
+} from "./testSources";
 import { ResultList } from "./ResultList";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
-import { getErrorChain } from "@open-pioneer/core";
 
 afterEach(() => {
     // TODO: Needed?
@@ -26,6 +30,23 @@ it("expect result list to be created successfully", async () => {
 
     const { resultListDiv } = await waitForResultList();
     expect(resultListDiv).toMatchSnapshot();
+});
+
+it("expect result list column and row count to match data/metadata", async () => {
+    render(
+        <PackageContextProvider>
+            <ResultList
+                resultListInput={{ data: dummyFeatureData, metadata: dummyMetaData }}
+                data-testid="result-list"
+            />
+        </PackageContextProvider>
+    );
+
+    const { allHeaderElements, allRows } = await waitForResultList();
+
+    // +1 because of the added selection column
+    expect(allHeaderElements.length).toEqual(dummyMetaData.length + 1);
+    expect(allRows.length).toEqual(dummyFeatureData.length);
 });
 
 it("expect empty data + non empty meta to be allowed", async () => {
@@ -53,25 +74,13 @@ it("expect empty metadata to throw error", async () => {
         metadata: []
     };
 
-    let error;
-    try {
+    expect(() => {
         render(
             <PackageContextProvider>
                 <ResultList resultListInput={emptyMetadata} data-testid="result-list" />
             </PackageContextProvider>
         );
-        throw new Error("unexpected success");
-    } catch (e) {
-        error = e as Error;
-    }
-    expect(error.message).not.toEqual("unexpected success");
-    const chain = getErrorChain(error);
-    const messages = chain.map((error) => error.message);
-    expect(messages).toMatchInlineSnapshot(`
-      [
-        "illegalArgumentException",
-      ]
-    `);
+    }).toThrowErrorMatchingInlineSnapshot('"illegalArgumentException"');
 });
 
 it("expect getPropertyValue to be used correctly", async () => {
@@ -97,8 +106,51 @@ it("expect getPropertyValue to be used correctly", async () => {
         </PackageContextProvider>
     );
 
+    // TODO: Test Cell Value
+
     expect(getPropertyValueMock).toHaveBeenCalledTimes(dummyFeatureData.length);
 });
+
+it("expect changes of data and metadata to change full table", async () => {
+    const renderResult = render(
+        <PackageContextProvider>
+            <ResultList
+                resultListInput={{ data: dummyFeatureData, metadata: dummyMetaData }}
+                data-testid="result-list"
+            />
+        </PackageContextProvider>
+    );
+
+    const { allHeaderElements, allRows } = await waitForResultList();
+
+    // +1 because of the added selection column
+    expect(allHeaderElements.length).toEqual(dummyMetaData.length + 1);
+    expect(allRows.length).toEqual(dummyFeatureData.length);
+
+    renderResult.rerender(
+        <PackageContextProvider>
+            <ResultList
+                resultListInput={{ data: dummyFeatureDataAlt, metadata: dummyMetaDataAlt }}
+                data-testid="result-list"
+            />
+        </PackageContextProvider>
+    );
+
+    const { allHeaderElements: allHeaderElementsAlt, allRows: allRowsAlt } =
+        await waitForResultList();
+
+    expect(allHeaderElements.length).not.toEqual(allHeaderElementsAlt.length);
+    expect(allRows.length).not.toEqual(allRowsAlt.length);
+    // +1 because of the added selection column
+    expect(allHeaderElementsAlt.length).toEqual(dummyMetaDataAlt.length + 1);
+    expect(allRowsAlt.length).toEqual(dummyFeatureDataAlt.length);
+});
+
+// TODO: Writing tests for:
+//  - Fallback text is beeing shown if no data?
+//  - Is selection column there?
+//  - Test button for (de-)select all
+//  - Test display of all data types (boolean, number, undefined, date)
 
 async function waitForResultList() {
     const { resultListDiv, allHeaderElements, allRows } = await waitFor(async () => {
@@ -109,14 +161,14 @@ async function waitForResultList() {
         }
 
         // TODO: Test with headers
-        const allHeaderElements = resultListDiv.querySelector<HTMLSelectElement>("th");
+        const allHeaderElements = resultListDiv.querySelectorAll<HTMLSelectElement>("thead tr th");
 
         if (!allHeaderElements) {
             throw new Error("Result list headers not rendered");
         }
 
         // TODO: Test with rows
-        const allRows = resultListDiv.querySelector<HTMLSelectElement>("th");
+        const allRows = resultListDiv.querySelectorAll<HTMLSelectElement>("tbody tr");
 
         return { resultListDiv, allHeaderElements, allRows };
     });

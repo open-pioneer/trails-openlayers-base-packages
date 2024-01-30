@@ -1,5 +1,7 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`expect empty metadata to throw error 1`] = `"illegalArgumentException"`;
+
 exports[`expect result list to be created successfully 1`] = `
 <div
   class="result-list css-u718rw"
