@@ -170,6 +170,7 @@ export class EditingWorkflow
     reset() {
         this._drawInteraction.abortDrawing();
         this._tooltip.element.textContent = this._intl.formatMessage({ id: "tooltip.begin" });
+        this._setState("active:initialized");
     }
 
     stop() {
