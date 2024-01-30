@@ -1,5 +1,21 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`expect empty data text to be shown 1`] = `
+<div
+  class="result-list css-u718rw"
+  data-testid="result-list"
+  data-theme="light"
+>
+  <div
+    class="no-data-message"
+  >
+    noDataMessage
+  </div>
+</div>
+`;
+
+exports[`expect empty metadata to throw error > "illegalArgumentException" 1`] = `"illegalArgumentException"`;
+
 exports[`expect result list to be created successfully 1`] = `
 <div
   class="result-list css-u718rw"
@@ -30,7 +46,7 @@ exports[`expect result list to be created successfully 1`] = `
             tabindex="0"
           >
             <label
-              class="chakra-checkbox  cursor-pointer css-1577qb8"
+              class="chakra-checkbox result-list-select-all-checkbox cursor-pointer css-1577qb8"
               data-theme="light"
             >
               <input
@@ -142,7 +158,7 @@ exports[`expect result list to be created successfully 1`] = `
           style=""
         >
           <label
-            class="chakra-checkbox  cursor-pointer css-1577qb8"
+            class="chakra-checkbox result-list-select-row-checkbox cursor-pointer css-1577qb8"
             data-theme="light"
           >
             <input
@@ -204,7 +220,7 @@ exports[`expect result list to be created successfully 1`] = `
           style=""
         >
           <label
-            class="chakra-checkbox  cursor-pointer css-1577qb8"
+            class="chakra-checkbox result-list-select-row-checkbox cursor-pointer css-1577qb8"
             data-theme="light"
           >
             <input
@@ -266,7 +282,7 @@ exports[`expect result list to be created successfully 1`] = `
           style=""
         >
           <label
-            class="chakra-checkbox  cursor-pointer css-1577qb8"
+            class="chakra-checkbox result-list-select-row-checkbox cursor-pointer css-1577qb8"
             data-theme="light"
           >
             <input

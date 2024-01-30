@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import { afterEach, expect, it, vi } from "vitest";
 import { ResultColumn, ResultListInput } from "./api";
-import { render, screen, waitFor } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import {
     dummyFeatureData,
     dummyFeatureDataAlt,
@@ -71,19 +71,7 @@ it("expect empty data text to be shown", async () => {
 
     expect(error).not.toBeDefined();
     expect(resultListDiv.textContent).toEqual("noDataMessage");
-    expect(resultListDiv).toMatchInlineSnapshot(`
-      <div
-        class="result-list css-u718rw"
-        data-testid="result-list"
-        data-theme="light"
-      >
-        <div
-          class="no-data-message"
-        >
-          noDataMessage
-        </div>
-      </div>
-    `);
+    expect(resultListDiv).toMatchSnapshot();
 });
 
 it("expect empty metadata to throw error", async () => {
@@ -98,7 +86,7 @@ it("expect empty metadata to throw error", async () => {
                 <ResultList resultListInput={emptyMetadata} data-testid="result-list" />
             </PackageContextProvider>
         );
-    }).toThrowErrorMatchingInlineSnapshot('"illegalArgumentException"');
+    }).toThrowErrorMatchingSnapshot('"illegalArgumentException"');
 });
 
 it("expect getPropertyValue to be used correctly", async () => {
@@ -176,31 +164,81 @@ it("expect changes of data and metadata to change full table", async () => {
     expect(allRowsAlt.length).toEqual(dummyFeatureDataAlt.length);
 });
 
+it("expect selection column to be added", async () => {
+    render(
+        <PackageContextProvider>
+            <ResultList
+                resultListInput={{ data: dummyFeatureData, metadata: dummyMetaData }}
+                data-testid="result-list"
+            />
+        </PackageContextProvider>
+    );
+
+    const { selectAllSelect, selectRowSelects } = await waitForResultList();
+    expect(selectAllSelect).toBeDefined();
+    expect(selectRowSelects).toBeDefined();
+    expect(selectRowSelects.length).toEqual(dummyFeatureData.length);
+});
+
+it("expect all rows to be selected and deselected", async () => {
+    render(
+        <PackageContextProvider>
+            <ResultList
+                resultListInput={{ data: dummyFeatureData, metadata: dummyMetaData }}
+                data-testid="result-list"
+            />
+        </PackageContextProvider>
+    );
+
+    const { selectAllSelect, selectRowSelects } = await waitForResultList();
+    expect(selectAllSelect).toBeDefined();
+    expect(selectRowSelects).toBeDefined();
+
+    expect(selectAllSelect!.checked).toBeFalsy();
+    selectRowSelects.forEach((checkbox) => expect(checkbox.checked).toBeFalsy());
+
+    act(() => {
+        fireEvent.click(selectAllSelect!);
+    });
+
+    expect(selectAllSelect!.checked).toBeTruthy();
+    selectRowSelects.forEach((checkbox) => expect(checkbox.checked).toBeTruthy());
+
+    act(() => {
+        fireEvent.click(selectAllSelect!);
+    });
+
+    expect(selectAllSelect!.checked).toBeFalsy();
+    selectRowSelects.forEach((checkbox) => expect(checkbox.checked).toBeFalsy());
+});
+
 // TODO: Writing tests for:
-//  - Is selection column there?
-//  - Test button for (de-)select all
 //  - Test display of all data types (boolean, number, undefined, date)
 
 async function waitForResultList() {
-    const { resultListDiv, allHeaderElements, allRows } = await waitFor(async () => {
-        const resultListDiv: HTMLDivElement | null =
-            await screen.findByTestId<HTMLDivElement>("result-list");
-        if (!resultListDiv) {
-            throw new Error("Result list not rendered");
-        }
+    const { resultListDiv, allHeaderElements, allRows, selectAllSelect, selectRowSelects } =
+        await waitFor(async () => {
+            const resultListDiv: HTMLDivElement | null =
+                await screen.findByTestId<HTMLDivElement>("result-list");
+            if (!resultListDiv) {
+                throw new Error("Result list not rendered");
+            }
 
-        // TODO: Test with headers
-        const allHeaderElements = resultListDiv.querySelectorAll<HTMLSelectElement>("thead tr th");
+            const allHeaderElements =
+                resultListDiv.querySelectorAll<HTMLTableHeaderCellElement>("thead tr th");
 
-        if (!allHeaderElements) {
-            throw new Error("Result list headers not rendered");
-        }
+            const allRows = resultListDiv.querySelectorAll<HTMLElement>("tbody tr");
 
-        // TODO: Test with rows
-        const allRows = resultListDiv.querySelectorAll<HTMLSelectElement>("tbody tr");
+            const selectAllSelect = resultListDiv.querySelector<HTMLInputElement>(
+                ".result-list-select-all-checkbox input"
+            );
 
-        return { resultListDiv, allHeaderElements, allRows };
-    });
+            const selectRowSelects = resultListDiv.querySelectorAll<HTMLInputElement>(
+                ".result-list-select-row-checkbox input"
+            );
 
-    return { resultListDiv, allHeaderElements, allRows };
+            return { resultListDiv, allHeaderElements, allRows, selectAllSelect, selectRowSelects };
+        });
+
+    return { resultListDiv, allHeaderElements, allRows, selectAllSelect, selectRowSelects };
 }

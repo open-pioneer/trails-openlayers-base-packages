@@ -106,6 +106,8 @@ export function DataTable<Data extends object>(props: DataTableProps<Data>) {
                                                 {
                                                     <IndeterminateCheckbox
                                                         {...{
+                                                            className:
+                                                                "result-list-select-all-checkbox",
                                                             checked: table.getIsAllRowsSelected(),
                                                             indeterminate:
                                                                 table.getIsSomeRowsSelected(),
@@ -222,6 +224,7 @@ function TableBody<Data extends object>({ table }: { table: TanstackTable<Data> 
                                     {index === 0 ? (
                                         <IndeterminateCheckbox
                                             {...{
+                                                className: "result-list-select-row-checkbox",
                                                 checked: row.getIsSelected(),
                                                 disabled: !row.getCanSelect(),
                                                 indeterminate: row.getIsSomeSelected(),
