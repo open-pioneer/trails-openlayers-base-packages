@@ -11,6 +11,7 @@ import {
 } from "./testSources";
 import { ResultList } from "./ResultList";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
+import { BaseFeature } from "@open-pioneer/map/api/BaseFeature";
 
 afterEach(() => {
     // TODO: Needed?
@@ -49,7 +50,7 @@ it("expect result list column and row count to match data/metadata", async () =>
     expect(allRows.length).toEqual(dummyFeatureData.length);
 });
 
-it("expect empty data + non empty meta to be allowed", async () => {
+it("expect empty data text to be shown", async () => {
     const emptyData: ResultListInput = {
         data: [],
         metadata: dummyMetaData
@@ -65,7 +66,24 @@ it("expect empty data + non empty meta to be allowed", async () => {
     } catch (e) {
         error = new Error("unexpected failure");
     }
+
+    const { resultListDiv } = await waitForResultList();
+
     expect(error).not.toBeDefined();
+    expect(resultListDiv.textContent).toEqual("noDataMessage");
+    expect(resultListDiv).toMatchInlineSnapshot(`
+      <div
+        class="result-list css-u718rw"
+        data-testid="result-list"
+        data-theme="light"
+      >
+        <div
+          class="no-data-message"
+        >
+          noDataMessage
+        </div>
+      </div>
+    `);
 });
 
 it("expect empty metadata to throw error", async () => {
@@ -84,13 +102,23 @@ it("expect empty metadata to throw error", async () => {
 });
 
 it("expect getPropertyValue to be used correctly", async () => {
-    const getPropertyValueMock = vi.fn((_) => {
-        return "";
+    const getPropertyValueMock = vi.fn((feature) => {
+        return feature.properties.b;
     });
+    const dummyFeatureData: BaseFeature[] = [
+        {
+            id: "1",
+            properties: {
+                "b": "123",
+                "c": undefined
+            },
+            geometry: undefined
+        }
+    ];
     const dummyMetaData: ResultColumn[] = [
         {
-            propertyName: "properties.a",
-            displayName: "Spalte A",
+            propertyName: "properties.b",
+            displayName: "Spalte B",
             width: 50,
             getPropertyValue: getPropertyValueMock
         }
@@ -106,9 +134,10 @@ it("expect getPropertyValue to be used correctly", async () => {
         </PackageContextProvider>
     );
 
-    // TODO: Test Cell Value
+    const { allRows } = await waitForResultList();
 
     expect(getPropertyValueMock).toHaveBeenCalledTimes(dummyFeatureData.length);
+    expect(allRows.item(0).children[1]?.textContent).toEqual(dummyFeatureData[0]?.properties?.b);
 });
 
 it("expect changes of data and metadata to change full table", async () => {
@@ -139,6 +168,7 @@ it("expect changes of data and metadata to change full table", async () => {
     const { allHeaderElements: allHeaderElementsAlt, allRows: allRowsAlt } =
         await waitForResultList();
 
+    // Ensure dummydata is different
     expect(allHeaderElements.length).not.toEqual(allHeaderElementsAlt.length);
     expect(allRows.length).not.toEqual(allRowsAlt.length);
     // +1 because of the added selection column
@@ -147,7 +177,6 @@ it("expect changes of data and metadata to change full table", async () => {
 });
 
 // TODO: Writing tests for:
-//  - Fallback text is beeing shown if no data?
 //  - Is selection column there?
 //  - Test button for (de-)select all
 //  - Test display of all data types (boolean, number, undefined, date)
