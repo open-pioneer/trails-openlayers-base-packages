@@ -38,6 +38,17 @@ export const dummyFeatureData: BaseFeature[] = [
             "e": new Date("2020-10-12T23:30:21.817Z")
         },
         geometry: new Point([406590.87, 5758311.82])
+    },
+    {
+        id: "4",
+        properties: {
+            "a": undefined,
+            "b": undefined,
+            "c": undefined,
+            "d": undefined,
+            "e": undefined
+        },
+        geometry: new Point([406590.87, 5758311.82])
     }
 ];
 

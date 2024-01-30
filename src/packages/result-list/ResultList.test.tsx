@@ -146,6 +146,28 @@ it("expect changes of data and metadata to change full table", async () => {
     expect(allRowsAlt.length).toEqual(dummyFeatureDataAlt.length);
 });
 
+it("expect result list display all data types", async () => {
+    render(
+        <PackageContextProvider>
+            <ResultList
+                resultListInput={{ data: dummyFeatureData, metadata: dummyMetaData }}
+                data-testid="result-list"
+            />
+        </PackageContextProvider>
+    );
+
+    const { allCells } = await waitForResultList();
+
+    console.log("Gesamtlänge: " + allCells.length);
+    allCells.forEach((item, index) => {
+        console.log("---------------------------------");
+        console.log(index);
+        console.log(item.outerHTML);
+    });
+
+    expect(allCells.length).toEqual(allCells.length);
+});
+
 // TODO: Writing tests for:
 //  - Fallback text is beeing shown if no data?
 //  - Is selection column there?
@@ -153,7 +175,7 @@ it("expect changes of data and metadata to change full table", async () => {
 //  - Test display of all data types (boolean, number, undefined, date)
 
 async function waitForResultList() {
-    const { resultListDiv, allHeaderElements, allRows } = await waitFor(async () => {
+    const { resultListDiv, allHeaderElements, allRows, allCells } = await waitFor(async () => {
         const resultListDiv: HTMLDivElement | null =
             await screen.findByTestId<HTMLDivElement>("result-list");
         if (!resultListDiv) {
@@ -170,8 +192,10 @@ async function waitForResultList() {
         // TODO: Test with rows
         const allRows = resultListDiv.querySelectorAll<HTMLSelectElement>("tbody tr");
 
-        return { resultListDiv, allHeaderElements, allRows };
+        const allCells = resultListDiv.querySelectorAll<HTMLSelectElement>("tbody td");
+
+        return { resultListDiv, allHeaderElements, allRows, allCells };
     });
 
-    return { resultListDiv, allHeaderElements, allRows };
+    return { resultListDiv, allHeaderElements, allRows, allCells };
 }
