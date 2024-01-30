@@ -47,6 +47,7 @@ const SELECTION_LAYERS = new Map<string, ResultColumn[]>([
             {
                 propertyName: "id",
                 displayName: "ID",
+                width: 50,
                 getPropertyValue(feature) {
                     return feature.id;
                 }
@@ -58,13 +59,11 @@ const SELECTION_LAYERS = new Map<string, ResultColumn[]>([
             },
             {
                 propertyName: "name",
-                displayName: "Name",
-                width: 150
+                displayName: "Name"
             },
             {
                 propertyName: "inspireId",
-                displayName: "inspireID",
-                width: 300
+                displayName: "inspireID"
             },
             {
                 propertyName: "gefoerdert",

@@ -28,24 +28,17 @@ import { createColumnHelper } from "@tanstack/react-table";
 interface DataTableProps<Data extends object> {
     data: Data[];
     columns: ColumnDef<Data, unknown>[];
+    tableWidth: number | undefined;
 }
 
 export function DataTable<Data extends object>(props: DataTableProps<Data>) {
     const intl = useIntl();
-    const { data, columns } = props;
+    const { data, columns, tableWidth } = props;
     const [sorting, setSorting] = useState<SortingState>([]);
     const [rowSelection, setRowSelection] = useState({});
 
-    const selectColumn = createColumnHelper<Data>().display({
-        id: "result-list-col_selection-buttons",
-        size: 70
-    });
-
-    // TODO: full-width tables (100%) causes problems with cell sizes (maxSize not working...)
-    //  --> need to distribute space manually? but then, no good window resizing possible....
-
     const table = useReactTable({
-        columns: [selectColumn, ...columns],
+        columns: columns,
         data,
         columnResizeMode: "onChange",
         getCoreRowModel: getCoreRowModel(),
@@ -74,7 +67,7 @@ export function DataTable<Data extends object>(props: DataTableProps<Data>) {
             colSizes[`--col-${header.column.id}-size`] = header.column.getSize();
         }
         return colSizes;
-    }, [table.getState().columnSizingInfo]);
+    }, [table.getState().columnSizingInfo, tableWidth]);
 
     if (table.getRowModel().rows.length > 0) {
         return (
@@ -82,8 +75,8 @@ export function DataTable<Data extends object>(props: DataTableProps<Data>) {
                 className={"result-list-table-element"}
                 {...{
                     style: { ...columnSizeVars },
-                    // 99% to avoid 1 pixel scrollbar
-                    width: "99%"
+                    // 99.9% to avoid 1 pixel scrollbar
+                    width: "99.9%"
                 }}
             >
                 <Thead>

@@ -14,8 +14,6 @@ import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { BaseFeature } from "@open-pioneer/map/api/BaseFeature";
 
 afterEach(() => {
-    // TODO: Needed?
-    document.body.innerHTML = ""; // clear
     vi.restoreAllMocks();
 });
 
