@@ -1,7 +1,5 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`expect empty metadata to throw error 1`] = `"illegalArgumentException"`;
-
 exports[`expect result list to be created successfully 1`] = `
 <div
   class="result-list css-u718rw"
@@ -165,97 +163,35 @@ exports[`expect result list to be created successfully 1`] = `
           data-theme="light"
           style=""
         >
-          undefined
+          Test
         </td>
         <td
           class="css-xumdn4"
           data-theme="light"
           style=""
         >
-          undefined
+          123
         </td>
         <td
           class="css-xumdn4"
           data-theme="light"
           style=""
         >
-          undefined
+          4.567
         </td>
         <td
           class="css-xumdn4"
           data-theme="light"
           style=""
         >
-          undefined
+          true
         </td>
         <td
           class="css-xumdn4"
           data-theme="light"
           style=""
         >
-          undefined
-        </td>
-      </tr>
-      <tr
-        class="css-0"
-        data-theme="light"
-      >
-        <td
-          class="css-xumdn4"
-          data-theme="light"
-          style=""
-        >
-          <label
-            class="chakra-checkbox  cursor-pointer css-1577qb8"
-            data-theme="light"
-          >
-            <input
-              class="chakra-checkbox__input"
-              style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
-              type="checkbox"
-              value=""
-            />
-            <span
-              aria-hidden="true"
-              class="chakra-checkbox__control css-1ydjfm6"
-              data-theme="light"
-            />
-          </label>
-        </td>
-        <td
-          class="css-xumdn4"
-          data-theme="light"
-          style=""
-        >
-          undefined
-        </td>
-        <td
-          class="css-xumdn4"
-          data-theme="light"
-          style=""
-        >
-          undefined
-        </td>
-        <td
-          class="css-xumdn4"
-          data-theme="light"
-          style=""
-        >
-          undefined
-        </td>
-        <td
-          class="css-xumdn4"
-          data-theme="light"
-          style=""
-        >
-          undefined
-        </td>
-        <td
-          class="css-xumdn4"
-          data-theme="light"
-          style=""
-        >
-          undefined
+          Wed May 13 2020 01:50:21 GMT+0200 (Mitteleuropäische Sommerzeit)
         </td>
       </tr>
       <tr
@@ -289,35 +225,97 @@ exports[`expect result list to be created successfully 1`] = `
           data-theme="light"
           style=""
         >
-          undefined
+          Test123
         </td>
         <td
           class="css-xumdn4"
           data-theme="light"
           style=""
         >
-          undefined
+          434
         </td>
         <td
           class="css-xumdn4"
           data-theme="light"
           style=""
         >
-          undefined
+          78.567
         </td>
         <td
           class="css-xumdn4"
           data-theme="light"
           style=""
         >
-          undefined
+          false
         </td>
         <td
           class="css-xumdn4"
           data-theme="light"
           style=""
         >
-          undefined
+          Thu May 13 2021 01:50:21 GMT+0200 (Mitteleuropäische Sommerzeit)
+        </td>
+      </tr>
+      <tr
+        class="css-0"
+        data-theme="light"
+      >
+        <td
+          class="css-xumdn4"
+          data-theme="light"
+          style=""
+        >
+          <label
+            class="chakra-checkbox  cursor-pointer css-1577qb8"
+            data-theme="light"
+          >
+            <input
+              class="chakra-checkbox__input"
+              style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
+              type="checkbox"
+              value=""
+            />
+            <span
+              aria-hidden="true"
+              class="chakra-checkbox__control css-1ydjfm6"
+              data-theme="light"
+            />
+          </label>
+        </td>
+        <td
+          class="css-xumdn4"
+          data-theme="light"
+          style=""
+        >
+          Testabc
+        </td>
+        <td
+          class="css-xumdn4"
+          data-theme="light"
+          style=""
+        >
+          666
+        </td>
+        <td
+          class="css-xumdn4"
+          data-theme="light"
+          style=""
+        >
+          8.597
+        </td>
+        <td
+          class="css-xumdn4"
+          data-theme="light"
+          style=""
+        >
+          true
+        </td>
+        <td
+          class="css-xumdn4"
+          data-theme="light"
+          style=""
+        >
+          Tue Oct 13 2020 01:30:21 GMT+0200 (Mitteleuropäische Sommerzeit)
         </td>
       </tr>
     </tbody>
