@@ -54,27 +54,27 @@ export const dummyFeatureData: BaseFeature[] = [
 
 export const dummyMetaData: ResultColumn[] = [
     {
-        propertyName: "properties.a",
+        propertyName: "a",
         displayName: "Spalte A",
         width: 100
     },
     {
-        propertyName: "properties.b",
+        propertyName: "b",
         displayName: "Spalte B",
         width: 50
     },
     {
-        propertyName: "properties.c",
+        propertyName: "c",
         displayName: "Spalte C",
         width: 150
     },
     {
-        propertyName: "properties.d",
+        propertyName: "d",
         displayName: "Spalte D",
         width: 75
     },
     {
-        propertyName: "properties.e",
+        propertyName: "e",
         displayName: "Spalte E",
         width: 50
     }

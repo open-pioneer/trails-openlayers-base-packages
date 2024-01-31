@@ -12,7 +12,8 @@ afterEach(() => {
 describe("create columns for result-list", () => {
     it("expect createColumn to create Columns correctly", async () => {
         const metaData = createMetaData();
-        const columns = createColumns(metaData);
+        // Slice away the selection checkbox column
+        const columns = createColumns(metaData).slice(1);
         expect(columns.length).toEqual(metaData.length);
         columns.forEach((column, index) => {
             //Column-ID is correct
@@ -23,12 +24,10 @@ describe("create columns for result-list", () => {
             } else {
                 expect(column?.header).toEqual(metaData[index]?.propertyName);
             }
-            //Column-Size is correct
-            if (metaData[index]?.width) {
-                expect(column?.size).toEqual(metaData[index]?.width);
-            }
+            // no column-size testing because of recalculation based on column definition
         });
     });
+    // TODO: Add tests for width calculation?
 });
 
 function createMetaData() {

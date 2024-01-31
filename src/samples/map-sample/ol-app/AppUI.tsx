@@ -370,7 +370,6 @@ function createResultListInput(
     metadata: ResultColumn[]
 ): ResultListInput {
     const features = data.map((item) => {
-        // TODO: Create ResultData instead?
         const { id, ...rest } = item;
         const resultListItem = { id, ...rest } as BaseFeature;
         return resultListItem;

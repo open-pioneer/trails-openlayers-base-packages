@@ -5,16 +5,20 @@ import { ResultColumn } from "./api";
 import { BaseFeature } from "@open-pioneer/map/api/BaseFeature";
 
 const columnHelper = createColumnHelper<BaseFeature>();
+const SELECT_COLUMN_SIZE = 70;
 
-export function createColumns(metaData: ResultColumn[]) {
-    // TODO: Remove unneeded code after clarification
-    /*const fullWidth = metaData.reduce((sum, metaDataItem) => (metaDataItem.width ?? 0) + sum, 0);
-    const undefinedWidthCount = metaData.reduce((sum, metaDataItem) => metaDataItem.width === undefined ? sum + 1 : sum, 0);
-    const remainingWidth = (1920 - 50) - fullWidth;*/
-    return metaData.map((metaDataItem, index) => {
-        //const columnWidth = metaDataItem.width; /*|| (remainingWidth / undefinedWidthCount);*/
-        //console.debug(`Width for col ${metaDataItem.displayName}: ${columnWidth}`);
-        const { propertyName, width: columnWidth, getPropertyValue } = metaDataItem;
+export function createColumns(metaData: ResultColumn[], tableWidth?: number) {
+    const internalSelectColumn = createColumnHelper<BaseFeature>().display({
+        id: "result-list-col_selection-buttons",
+        size: SELECT_COLUMN_SIZE
+    });
+
+    const remainingColumnWidth: number | undefined =
+        tableWidth === undefined ? undefined : calcRemainingColumnWidth(metaData, tableWidth);
+
+    const columnDef = metaData.map((metaDataItem, index) => {
+        const columnWidth = metaDataItem.width || remainingColumnWidth;
+        const { propertyName, getPropertyValue } = metaDataItem;
         return columnHelper.accessor(
             (feature: BaseFeature) => {
                 return getPropertyValue?.(feature) ?? feature.properties?.[propertyName];
@@ -32,4 +36,20 @@ export function createColumns(metaData: ResultColumn[]) {
             }
         );
     });
+
+    return [internalSelectColumn, ...columnDef];
+}
+
+function calcRemainingColumnWidth(
+    metaData: ResultColumn[],
+    tableWidth: number,
+    selectColumnWidth: number = SELECT_COLUMN_SIZE
+) {
+    const fullWidth = metaData.reduce((sum, metaDataItem) => (metaDataItem.width ?? 0) + sum, 0);
+    const undefinedWidthCount = metaData.reduce(
+        (sum, metaDataItem) => (metaDataItem.width === undefined ? sum + 1 : sum),
+        0
+    );
+    const remainingWidth = tableWidth - selectColumnWidth - fullWidth;
+    return remainingWidth / undefinedWidthCount;
 }
