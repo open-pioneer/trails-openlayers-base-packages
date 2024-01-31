@@ -16,6 +16,8 @@ exports[`expect empty data text to be shown 1`] = `
 
 exports[`expect empty metadata to throw error > "illegalArgumentException" 1`] = `"illegalArgumentException"`;
 
+exports[`expect empty metadata to throw error 1`] = `"illegalArgumentException"`;
+
 exports[`expect result list to be created successfully 1`] = `
 <div
   class="result-list css-u718rw"

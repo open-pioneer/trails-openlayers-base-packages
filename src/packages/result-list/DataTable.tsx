@@ -23,7 +23,6 @@ import {
 import { TriangleDownIcon, TriangleUpIcon } from "@chakra-ui/icons";
 import { useIntl } from "open-pioneer:react-hooks";
 import React, { HTMLProps, useRef, useState } from "react";
-import { createColumnHelper } from "@tanstack/react-table";
 
 interface DataTableProps<Data extends object> {
     data: Data[];
