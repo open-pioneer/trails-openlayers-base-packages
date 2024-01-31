@@ -35,6 +35,7 @@ import { useSnapshot } from "valtio";
 import { AppConfig } from "./AppConfig";
 import { MAP_ID } from "./MapConfigProviderImpl";
 import { Legend } from "@open-pioneer/legend";
+import { highlightAndZoom } from "./util/map-utils";
 
 type InteractionType = "measurement" | "selection" | undefined;
 
@@ -356,9 +357,7 @@ function SearchComponent() {
             return;
         }
 
-        map.highlightAndZoom([geometry], {
-            viewPadding: { top: 150, right: 75, bottom: 50, left: 75 }
-        });
+        highlightAndZoom(map, [geometry]);
     }
 
     function onSearchCleared() {
@@ -396,9 +395,7 @@ function SelectionComponent() {
         map?.removeHighlight();
         const geometries = results.map((result) => result.geometry);
         if (geometries.length > 0) {
-            map.highlightAndZoom(geometries, {
-                viewPadding: { top: 150, right: 75, bottom: 50, left: 75 }
-            });
+            highlightAndZoom(map, geometries);
         }
 
         notifier.notify({
