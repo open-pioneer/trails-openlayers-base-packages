@@ -57,7 +57,7 @@ new SimpleLayer({
 
     // OpenLayers instance
     olLayer: createKatasterLayer(this.vectorSourceFactory)
-}),
+});
 ```
 
 For some layer types (currently WMTS and WMS), additional support has been implemented in the map package.
@@ -81,7 +81,9 @@ new WMSLayer({
 });
 ```
 
-The configured map will will ultimately be rendered by the UI, which brings us to our next topic:
+For more detailed information about map configuration, see the README.md of the `map` package.
+
+The configured map will ultimately be rendered by the UI, which leads over to the next topic:
 
 ```tsx
 // ui/AppUI.tsx
@@ -105,7 +107,7 @@ These wrapper components typically configure the underlying widget's properties,
 
 Some of the React components in this application manage some simple local state (such as whether a tool is active or not).
 Local state (`useState` / `useReducer`) is simple to keep track of and can also easily be forwarded to other components (as `props`).
-This is convenient for simple use cases but will quickly stop scaling: passing state / props over multiple layers of the component hierarchy is cumbersome, even more so if multiple components in different parts of the application depend on the same data.
+This is convenient for simple use cases but will quickly stop scaling: passing state / props over multiple layers of the component hierarchy is cumbersome, especially if multiple components in different parts of the application depend on the same data.
 
 The `AppModel` class is used to handle truly global data.
 It provides a reactive store (`appModel.state`) by using the [Valtio](https://github.com/pmndrs/valtio) library.
@@ -130,4 +132,4 @@ When in doubt, prefer the simpler / less powerful alternative.
 1. For local state or state that only concerns very few layers of components, use React's builtin `useState` / `useReducer`.
 2. For state that is needed across many layers of UI components, consider using React's [Context](https://react.dev/learn/passing-data-deeply-with-context) (not shown in this example).
 3. For state that is needed all around your application, create one (or more) services that manage your data using libraries such as [Zustand](https://github.com/pmndrs/zustand), [Jotai](https://github.com/pmndrs/jotai) or [Valtio](https://github.com/pmndrs/valtio). Keep in mind that not all data is local to the _User Interface_ and that it may also be required that "normal" JavaScript (outside of React) can interact with it.
-4. If your application grows large, consider splitting parts of your business logic, user interface or state management into different packages with well defined responsibilities (also not shown in this example to keep it simple).
+4. If your application grows large, consider splitting parts of your business logic, user interface or state management into different packages with well-defined responsibilities (also not shown in this example to keep it simple).
