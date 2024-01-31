@@ -5,7 +5,7 @@ import { HttpService } from "@open-pioneer/http";
 import { MapRegistry } from "@open-pioneer/map";
 import { OgcFeaturesSearchSourceFactory } from "@open-pioneer/ogc-features";
 import {
-    DECLARE_SERVICE_INTERFACE,
+    type DECLARE_SERVICE_INTERFACE,
     PackageIntl,
     Service,
     ServiceOptions
