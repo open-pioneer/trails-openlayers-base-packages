@@ -100,7 +100,7 @@ The topmost React component is the `AppUI`: it defines the application's layout 
 It also orchestrates some UI-related state, such as the current map interaction (such as `measurement`)
 and the visibility of certain components.
 
-For this example, we have decided to create a file (and a React component) for many Open Pioneer Trails widgets (such es `Legend` or `Toc`).
+For this example, it was decided to create a file (and a React component) for many Open Pioneer Trails widgets (such es `Legend` or `Toc`).
 These wrapper components typically configure the underlying widget's properties, set up application-specific event handling or add custom styles and content to integrate the widget into the application's look and feel.
 
 ## State management
@@ -126,7 +126,7 @@ export function SearchComponent() {
 In the example above, the `SearchComponent` will always use the current `searchSources` defined by the `AppModel`,
 even if those sources are changed in an entirely different part of the application.
 
-In general, we recommend the following approaches to manage your application's state.
+In general, the following approaches are recommended to manage your application's state.
 When in doubt, prefer the simpler / less powerful alternative.
 
 1. For local state or state that only concerns very few layers of components, use React's builtin `useState` / `useReducer`.
