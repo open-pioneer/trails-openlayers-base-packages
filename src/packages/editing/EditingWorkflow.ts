@@ -5,10 +5,9 @@ import { MapModel, TOPMOST_LAYER_Z } from "@open-pioneer/map";
 import { Draw } from "ol/interaction";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
-import { References } from "./EditingServiceImpl";
 import { MapRegistry } from "@open-pioneer/map";
 import { HttpService } from "@open-pioneer/http";
-import { PackageIntl, ServiceOptions } from "@open-pioneer/runtime";
+import { PackageIntl } from "@open-pioneer/runtime";
 import { StyleLike } from "ol/style/Style";
 import GeoJSON from "ol/format/GeoJSON";
 import GeoJSONGeometry from "ol/format/GeoJSON";
@@ -54,13 +53,20 @@ export class EditingWorkflow
     private _interactionListener: Array<EventsKey>;
     private _mapListener: Array<Resource>;
 
-    constructor(map: MapModel, ogcApiFeatureLayerUrl: URL, options: ServiceOptions<References>) {
+    constructor(
+        map: MapModel,
+        ogcApiFeatureLayerUrl: URL,
+        polygonDrawStyle: StyleLike,
+        httpService: HttpService,
+        mapRegistry: MapRegistry,
+        intl: PackageIntl
+    ) {
         super();
-        this._mapRegistry = options.references.mapRegistry;
-        this._httpService = options.references.httpService;
-        this._intl = options.intl;
+        this._mapRegistry = mapRegistry;
+        this._httpService = httpService;
+        this._intl = intl;
 
-        this._polygonDrawStyle = options.properties.polygonDrawStyle as StyleLike;
+        this._polygonDrawStyle = polygonDrawStyle;
 
         this._map = map;
         this._olMap = map.olMap;
