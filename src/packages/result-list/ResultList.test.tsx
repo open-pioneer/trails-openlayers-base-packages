@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { afterEach, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, expect, it, SpyInstance, vi } from "vitest";
 import { ResultColumn, ResultListInput } from "./api";
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import {
@@ -16,6 +16,13 @@ import { BaseFeature } from "@open-pioneer/map/api/BaseFeature";
 afterEach(() => {
     vi.restoreAllMocks();
 });
+
+let errorSpy!: SpyInstance;
+beforeEach(() => {
+    errorSpy = vi.spyOn(console, "error");
+});
+
+function doNothing() {}
 
 it("expect result list to be created successfully", async () => {
     render(
@@ -73,6 +80,8 @@ it("expect empty data text to be shown", async () => {
 });
 
 it("expect empty metadata to throw error", async () => {
+    errorSpy.mockImplementation(doNothing);
+
     const emptyMetadata: ResultListInput = {
         data: dummyFeatureData,
         metadata: []
@@ -84,7 +93,9 @@ it("expect empty metadata to throw error", async () => {
                 <ResultList resultListInput={emptyMetadata} data-testid="result-list" />
             </PackageContextProvider>
         );
-    }).toThrowErrorMatchingSnapshot('"illegalArgumentException"');
+    }).toThrowErrorMatchingSnapshot();
+
+    expect(errorSpy).toHaveBeenCalledOnce();
 });
 
 it("expect getPropertyValue to be used correctly", async () => {
