@@ -13,7 +13,7 @@ import {
     PiRulerLight,
     PiSelectionPlusBold
 } from "react-icons/pi";
-import { MAP_ID } from "../MapConfigProviderImpl"; // TODO
+import { MAP_ID } from "../MapConfigProviderImpl";
 
 export interface ToolState {
     bookmarksActive: boolean;

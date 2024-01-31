@@ -4,7 +4,12 @@ import { Resource, createLogger } from "@open-pioneer/core";
 import { HttpService } from "@open-pioneer/http";
 import { MapRegistry } from "@open-pioneer/map";
 import { OgcFeaturesSearchSourceFactory } from "@open-pioneer/ogc-features";
-import { PackageIntl, Service, ServiceOptions } from "@open-pioneer/runtime";
+import {
+    DECLARE_SERVICE_INTERFACE,
+    PackageIntl,
+    Service,
+    ServiceOptions
+} from "@open-pioneer/runtime";
 import { SearchSource } from "@open-pioneer/search";
 import { SelectionSource, VectorLayerSelectionSourceFactory } from "@open-pioneer/selection";
 import OlBaseLayer from "ol/layer/Base";
@@ -50,6 +55,8 @@ interface References {
 }
 
 export class AppModel implements Service {
+    declare [DECLARE_SERVICE_INTERFACE]: "ol-app.AppModel";
+
     private _intl: PackageIntl;
     private _mapRegistry: MapRegistry;
     private _ogcSearchSourceFactory: OgcFeaturesSearchSourceFactory;

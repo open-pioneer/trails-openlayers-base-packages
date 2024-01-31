@@ -9,7 +9,7 @@ import { ScaleBar } from "@open-pioneer/scale-bar";
 import { ScaleViewer } from "@open-pioneer/scale-viewer";
 import { useIntl } from "open-pioneer:react-hooks";
 import { ReactNode, useState } from "react";
-import { MAP_ID } from "../MapConfigProviderImpl"; // TODO
+import { MAP_ID } from "../MapConfigProviderImpl";
 import { SpatialBookmarksComponent } from "./Bookmarks";
 import { LegendComponent } from "./Legend";
 import { MapTools, ToolState } from "./MapTools";

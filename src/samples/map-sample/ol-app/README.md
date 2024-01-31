@@ -117,7 +117,7 @@ Because the AppModel is registered as a service, all React components in this pa
 ```tsx
 // ui/Search.tsx
 export function SearchComponent() {
-    const appModel = useService<unknown>("ol-app.AppModel") as AppModel;
+    const appModel = useService<AppModel>("ol-app.AppModel");
     const sources = useSnapshot(appModel.state).searchSources;
     // ...
 }

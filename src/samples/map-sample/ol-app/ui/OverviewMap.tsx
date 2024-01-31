@@ -5,7 +5,7 @@ import { OverviewMap } from "@open-pioneer/overview-map";
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
 import { useMemo } from "react";
-import { MAP_ID } from "../MapConfigProviderImpl"; // TODO
+import { MAP_ID } from "../MapConfigProviderImpl";
 
 export function OverviewMapComponent() {
     // Layer is created in useMemo: don't recreate it on each render.

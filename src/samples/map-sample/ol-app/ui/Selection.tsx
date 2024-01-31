@@ -12,15 +12,15 @@ import {
 import { useIntl, useService } from "open-pioneer:react-hooks";
 import { useId } from "react";
 import { useSnapshot } from "valtio";
-import { AppModel } from "../AppModel"; // TODO
-import { MAP_ID } from "../MapConfigProviderImpl"; // TODO
+import { AppModel } from "../AppModel";
+import { MAP_ID } from "../MapConfigProviderImpl";
 
 export function SelectionComponent() {
     const intl = useIntl();
     const notifier = useService<NotificationService>("notifier.NotificationService");
     const selectionTitleId = useId();
     const { map } = useMapModel(MAP_ID);
-    const appModel = useService<unknown>("ol-app.AppModel") as AppModel;
+    const appModel = useService<AppModel>("ol-app.AppModel");
     const sources = useSnapshot(appModel.state).selectionSources;
 
     function onSelectionComplete(event: SelectionCompleteEvent) {
