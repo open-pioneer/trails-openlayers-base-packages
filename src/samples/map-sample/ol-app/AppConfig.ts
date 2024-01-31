@@ -47,7 +47,7 @@ const SELECTION_LAYERS = new Map<string, ResultColumn[]>([
             {
                 propertyName: "id",
                 displayName: "ID",
-                width: 50,
+                width: 100,
                 getPropertyValue(feature) {
                     return feature.id;
                 }
@@ -55,7 +55,7 @@ const SELECTION_LAYERS = new Map<string, ResultColumn[]>([
             {
                 propertyName: "pointOfContact.address.postCode",
                 displayName: "PLZ",
-                width: 70
+                width: 120
             },
             {
                 propertyName: "name",
@@ -68,7 +68,7 @@ const SELECTION_LAYERS = new Map<string, ResultColumn[]>([
             {
                 propertyName: "gefoerdert",
                 displayName: "Gefördert",
-                width: 70
+                width: 160
             }
         ]
     ],
@@ -78,7 +78,7 @@ const SELECTION_LAYERS = new Map<string, ResultColumn[]>([
             {
                 propertyName: "id",
                 displayName: "ID",
-                width: 70,
+                width: 600,
                 getPropertyValue(feature) {
                     return feature.id;
                 }
@@ -86,7 +86,7 @@ const SELECTION_LAYERS = new Map<string, ResultColumn[]>([
             {
                 propertyName: "aktualit",
                 displayName: "Aktualit",
-                width: 70
+                width: 600
             }
         ]
     ]
