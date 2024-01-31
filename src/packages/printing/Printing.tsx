@@ -13,7 +13,10 @@ import {
     Input,
     Select
 } from "@open-pioneer/chakra-integration";
-
+import { useMapModel } from "@open-pioneer/map";
+import OlMap from "ol/Map";
+import html2canvas, { Options } from "html2canvas";
+import { jsPDF } from "jspdf";
 export type FileFormatType = "png" | "pdf";
 
 /**
@@ -34,8 +37,10 @@ export const Printing: FC<PrintingProps> = (props) => {
 
     const { mapId } = props;
     const { containerProps } = useCommonComponentProps("printing", props);
-    const [selectedFileFormat, setSelectedFileFormat] = useState<FileFormatType>("pdf");
+    const [selectedFileFormat, setSelectedFileFormat] = useState<FileFormatType>("png");
     const [title, setTitle] = useState<string>("");
+
+    const { map } = useMapModel(mapId);
 
     function changeFileFormat(fileFormat: string) {
         if (fileFormat === "png" || fileFormat === "pdf") {
@@ -44,14 +49,29 @@ export const Printing: FC<PrintingProps> = (props) => {
     }
 
     function exportMap() {
-        console.log("export clicked");
+        if (map && selectedFileFormat) {
+            const olMap = map.olMap;
+
+            // export options for html2canvas.
+            const exportOptions: Partial<Options> = {};
+
+            html2canvas(olMap.getViewport(), exportOptions).then((canvas: HTMLCanvasElement) => {
+                if (canvas) {
+                    selectedFileFormat == "png"
+                        ? exportMapInPNG(olMap, canvas)
+                        : exportMapInPDF(olMap, canvas);
+                }
+            });
+        }
     }
 
     return (
         <Box {...containerProps}>
             <FormControl mb={4} alignItems="center">
                 <HStack mb={2}>
-                    <FormLabel mb={1}>{intl.formatMessage({ id: "title" })}</FormLabel>
+                    <FormLabel minWidth="82" mb={1}>
+                        {intl.formatMessage({ id: "title" })}
+                    </FormLabel>
                     <Input
                         placeholder={intl.formatMessage({ id: "input.placeholder" })}
                         value={title}
@@ -63,13 +83,15 @@ export const Printing: FC<PrintingProps> = (props) => {
                     />
                 </HStack>
                 <HStack mb={2}>
-                    <FormLabel mb={1}>{intl.formatMessage({ id: "fileFormat" })}</FormLabel>
+                    <FormLabel minWidth="82" mb={1}>
+                        {intl.formatMessage({ id: "fileFormat" })}
+                    </FormLabel>
                     <Select
                         value={selectedFileFormat}
                         onChange={(e) => changeFileFormat(e.target.value)}
                         className="printing-select"
                     >
-                        <option value={"jpg"}>JPG</option>
+                        <option value={"png"}>PNG</option>
                         <option value={"pdf"}>PDF</option>
                     </Select>
                 </HStack>
@@ -80,3 +102,27 @@ export const Printing: FC<PrintingProps> = (props) => {
         </Box>
     );
 };
+
+function exportMapInPNG(map: OlMap, canvas: HTMLCanvasElement) {
+    const imgUrl = canvas.toDataURL("image/png", 0.8);
+
+    // Save the image locally automatically
+    const link = document.createElement("a");
+    link.setAttribute("download", "map.png");
+    link.href = imgUrl;
+    link.click();
+}
+function exportMapInPDF(map: OlMap, canvas: HTMLCanvasElement) {
+    // Landscape map export
+    const size = map.getSize();
+    const pdf = new jsPDF({
+        orientation: "landscape",
+        unit: "px",
+        format: size
+    }); //todo: check format, it determines the size of the printed map
+    const imgUrlStr = canvas.toDataURL("image/jpeg");
+    size && size[0] && size[1] && pdf.addImage(imgUrlStr, "JPEG", 0, 0, size[0], size[1]);
+    pdf.text("Default title", 10, 10);
+
+    pdf.save("map.pdf");
+}

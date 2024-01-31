@@ -76,6 +76,8 @@
         "@open-pioneer/runtime": "^2.1.0",
         "@open-pioneer/test-utils": "^1.0.2",
         "framer-motion": "^10.17.4",
+        "html2canvas": "^1.4.1",
+        "jspdf": "^2.5.1",
         "ol": "^8.2.0",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
