@@ -7,6 +7,7 @@ import { useService } from "open-pioneer:react-hooks";
 import { useSnapshot } from "valtio";
 import { AppModel } from "../AppModel";
 import { MAP_ID } from "../MapConfigProviderImpl";
+import { highlightAndZoom } from "../util/map-utils";
 
 export function SearchComponent() {
     const { map } = useMapModel(MAP_ID);
@@ -24,9 +25,7 @@ export function SearchComponent() {
             return;
         }
 
-        map.highlightAndZoom([geometry], {
-            viewPadding: { top: 150, right: 75, bottom: 50, left: 75 }
-        });
+        highlightAndZoom(map, [geometry]);
     }
 
     function onSearchCleared() {

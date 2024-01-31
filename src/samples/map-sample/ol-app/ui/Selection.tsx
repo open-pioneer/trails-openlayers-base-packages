@@ -14,6 +14,7 @@ import { useId } from "react";
 import { useSnapshot } from "valtio";
 import { AppModel } from "../AppModel";
 import { MAP_ID } from "../MapConfigProviderImpl";
+import { highlightAndZoom } from "../util/map-utils";
 
 export function SelectionComponent() {
     const intl = useIntl();
@@ -34,9 +35,7 @@ export function SelectionComponent() {
         map?.removeHighlight();
         const geometries = results.map((result) => result.geometry);
         if (geometries.length > 0) {
-            map.highlightAndZoom(geometries, {
-                viewPadding: { top: 150, right: 75, bottom: 50, left: 75 }
-            });
+            highlightAndZoom(map, geometries);
         }
 
         notifier.notify({
