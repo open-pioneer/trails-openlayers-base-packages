@@ -8,7 +8,7 @@ import VectorSource from "ol/source/Vector";
 import { MapRegistry } from "@open-pioneer/map";
 import { HttpService } from "@open-pioneer/http";
 import { PackageIntl } from "@open-pioneer/runtime";
-import { StyleLike } from "ol/style/Style";
+import { FlatStyleLike } from "ol/style/flat";
 import GeoJSON from "ol/format/GeoJSON";
 import GeoJSONGeometry from "ol/format/GeoJSON";
 import GeoJSONGeometryCollection from "ol/format/GeoJSON";
@@ -37,7 +37,7 @@ export class EditingWorkflow
     private _intl: PackageIntl;
 
     private _map: MapModel;
-    private _polygonDrawStyle: StyleLike;
+    private _polygonDrawStyle: FlatStyleLike;
     private _state: EditingWorkflowState;
     private _editLayerURL: URL;
 
@@ -54,7 +54,7 @@ export class EditingWorkflow
     constructor(
         map: MapModel,
         ogcApiFeatureLayerUrl: URL,
-        polygonDrawStyle: StyleLike,
+        polygonDrawStyle: FlatStyleLike,
         httpService: HttpService,
         mapRegistry: MapRegistry,
         intl: PackageIntl

@@ -3,7 +3,7 @@
 import { MapModel, MapRegistry } from "@open-pioneer/map";
 import { EditingService } from "./api";
 import { EditingWorkflow } from "./EditingWorkflow";
-import { StyleLike } from "ol/style/Style";
+import { FlatStyleLike } from "ol/style/flat";
 import { ServiceOptions } from "@open-pioneer/runtime";
 import { HttpService } from "@open-pioneer/http";
 
@@ -38,7 +38,7 @@ export class EditingServiceImpl implements EditingService {
         workflow = new EditingWorkflow(
             map,
             ogcApiFeatureLayerUrl,
-            this._serviceOptions.properties.polygonDrawStyle as StyleLike,
+            this._serviceOptions.properties.polygonDrawStyle as FlatStyleLike,
             this._serviceOptions.references.httpService,
             this._serviceOptions.references.mapRegistry,
             this._serviceOptions.intl
