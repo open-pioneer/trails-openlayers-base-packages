@@ -20,8 +20,6 @@ import { unByKey } from "ol/Observable";
 import { EventsKey } from "ol/events";
 import { EditingWorkflowEvents, EditingWorkflowState, EditingWorkflowType } from "./api";
 
-// const LOG = createLogger("editing:EditingWorkflow");
-
 // Represents a tooltip rendered on the OpenLayers map
 interface Tooltip extends Resource {
     overlay: Overlay;
