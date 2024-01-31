@@ -210,8 +210,56 @@ it("expect all rows to be selected and deselected", async () => {
     selectRowSelects.forEach((checkbox) => expect(checkbox.checked).toBeFalsy());
 });
 
-// TODO: Writing tests for:
-//  - Test display of all data types (boolean, number, undefined, date)
+it("expect result list display all data types", async () => {
+    render(
+        <PackageContextProvider>
+            <ResultList
+                resultListInput={{ data: dummyFeatureData, metadata: dummyMetaData }}
+                data-testid="result-list"
+            />
+        </PackageContextProvider>
+    );
+
+    const { allCells } = await waitForResultList();
+    allCells.forEach((item, index) => {
+        switch (index) {
+            //Checkbox
+            case 0:
+                expect(item.innerHTML).contains("input");
+                break;
+            //String
+            case 1:
+                expect(item.innerHTML).toEqual("Test");
+                break;
+            //Integer
+            case 2:
+                expect(item.innerHTML).toEqual("123");
+                break;
+            //Double
+            case 3:
+                expect(item.innerHTML).toEqual("4.567");
+                break;
+            //Boolean
+            case 4:
+                expect(item.innerHTML).toEqual("true");
+                break;
+            //Date
+            case 5:
+                expect(item.innerHTML).toEqual(
+                    "Wed May 13 2020 01:50:21 GMT+0200 (Mitteleuropäische Sommerzeit)"
+                );
+                break;
+            //Undefinded in all Datatypes
+            case 19:
+            case 20:
+            case 21:
+            case 22:
+            case 23:
+                expect(item.innerHTML).toEqual("");
+                break;
+        }
+    });
+});
 
 async function waitForResultList() {
     const {

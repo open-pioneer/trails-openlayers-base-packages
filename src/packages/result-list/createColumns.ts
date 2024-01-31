@@ -26,9 +26,10 @@ export function createColumns(metaData: ResultColumn[], tableWidth?: number) {
             {
                 id: "result-list-col_" + index,
                 cell: (info) => {
-                    const cellValue =
+                    let cellValue =
                         getPropertyValue?.(info.row.original) ??
                         info.row.original.properties?.[propertyName];
+                    if (cellValue === undefined) cellValue = "";
                     return String(cellValue);
                 },
                 header: metaDataItem.displayName,
