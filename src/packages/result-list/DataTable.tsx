@@ -20,7 +20,7 @@ import {
     getSortedRowModel,
     Table as TanstackTable
 } from "@tanstack/react-table";
-import { TriangleDownIcon, TriangleUpIcon } from "@chakra-ui/icons";
+import { TriangleDownIcon, TriangleUpIcon, UpDownIcon } from "@chakra-ui/icons";
 import { useIntl } from "open-pioneer:react-hooks";
 import React, { HTMLProps, useRef, useState } from "react";
 
@@ -126,14 +126,37 @@ export function DataTable<Data extends object>(props: DataTableProps<Data>) {
                                                     header.column.columnDef.header,
                                                     header.getContext()
                                                 )}
+                                                {
+                                                    // TODO: Continue to implement tab-index and visibility of sorting icons
+                                                }
                                                 <chakra.span pl="4">
                                                     {header.column.getIsSorted() ? (
                                                         header.column.getIsSorted() === "desc" ? (
-                                                            <TriangleDownIcon aria-label="sorted descending" />
+                                                            <TriangleDownIcon
+                                                                className="result-list-sort-icon"
+                                                                tab-index={0}
+                                                                aria-label={intl.formatMessage({
+                                                                    id: "ariaLabel.sortAscending"
+                                                                })}
+                                                            />
                                                         ) : (
-                                                            <TriangleUpIcon aria-label="sorted ascending" />
+                                                            <TriangleUpIcon
+                                                                className="result-list-sort-icon"
+                                                                tab-index={0}
+                                                                aria-label={intl.formatMessage({
+                                                                    id: "ariaLabel.sortDescending"
+                                                                })}
+                                                            />
                                                         )
-                                                    ) : null}
+                                                    ) : (
+                                                        <UpDownIcon
+                                                            className="result-list-sort-icon"
+                                                            tab-index={0}
+                                                            aria-label={intl.formatMessage({
+                                                                id: "ariaLabel.sortInitial"
+                                                            })}
+                                                        ></UpDownIcon>
+                                                    )}
                                                 </chakra.span>
                                                 <chakra.span
                                                     onDoubleClick={() => header.column.resetSize()}

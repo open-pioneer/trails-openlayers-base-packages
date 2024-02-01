@@ -3,3 +3,7 @@ messages:
   deSelectAllTooltip: Deselect all
   illegalArgumentException: Resultlistinput must contain metadata,
   noDataMessage: No data available
+  ariaLabel:
+    sortAscending: sort ascending
+    sortDescending: sort descending
+    sortInitial: initial sort

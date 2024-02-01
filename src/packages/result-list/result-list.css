@@ -29,6 +29,9 @@
     opacity: 1;
 }
 
+.result-list-table-element .result-list-sort-icon:focus-visible {
+}
+
 .result-list-table-element tbody tr:hover {
     background: var(--chakra-colors-background_light);
 }
