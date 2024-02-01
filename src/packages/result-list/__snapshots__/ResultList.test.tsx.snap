@@ -1,5 +1,23 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`expect empty data text to be shown 1`] = `
+<div
+  class="result-list css-u718rw"
+  data-testid="result-list"
+  data-theme="light"
+>
+  <div
+    class="no-data-message"
+  >
+    noDataMessage
+  </div>
+</div>
+`;
+
+exports[`expect empty metadata to throw error > "illegalArgumentException" 1`] = `"illegalArgumentException"`;
+
+exports[`expect empty metadata to throw error 1`] = `"illegalArgumentException"`;
+
 exports[`expect result list to be created successfully 1`] = `
 <div
   class="result-list css-u718rw"
@@ -7,7 +25,7 @@ exports[`expect result list to be created successfully 1`] = `
   data-theme="light"
 >
   <table
-    class="chakra-table result-list-table-element css-ldways"
+    class="chakra-table result-list-table-element css-lkg3hs"
     data-theme="light"
     style="--header-result-list-col_selection-buttons-size: 70; --col-result-list-col_selection-buttons-size: 70; --header-result-list-col_0-size: 100; --col-result-list-col_0-size: 100; --header-result-list-col_1-size: 50; --col-result-list-col_1-size: 50; --header-result-list-col_2-size: 150; --col-result-list-col_2-size: 150; --header-result-list-col_3-size: 75; --col-result-list-col_3-size: 75; --header-result-list-col_4-size: 50; --col-result-list-col_4-size: 50;"
   >
@@ -30,7 +48,7 @@ exports[`expect result list to be created successfully 1`] = `
             tabindex="0"
           >
             <label
-              class="chakra-checkbox  cursor-pointer css-1577qb8"
+              class="chakra-checkbox result-list-select-all-checkbox cursor-pointer css-1577qb8"
               data-theme="light"
             >
               <input
@@ -142,7 +160,7 @@ exports[`expect result list to be created successfully 1`] = `
           style=""
         >
           <label
-            class="chakra-checkbox  cursor-pointer css-1577qb8"
+            class="chakra-checkbox result-list-select-row-checkbox cursor-pointer css-1577qb8"
             data-theme="light"
           >
             <input
@@ -204,7 +222,7 @@ exports[`expect result list to be created successfully 1`] = `
           style=""
         >
           <label
-            class="chakra-checkbox  cursor-pointer css-1577qb8"
+            class="chakra-checkbox result-list-select-row-checkbox cursor-pointer css-1577qb8"
             data-theme="light"
           >
             <input
@@ -266,7 +284,7 @@ exports[`expect result list to be created successfully 1`] = `
           style=""
         >
           <label
-            class="chakra-checkbox  cursor-pointer css-1577qb8"
+            class="chakra-checkbox result-list-select-row-checkbox cursor-pointer css-1577qb8"
             data-theme="light"
           >
             <input
@@ -317,6 +335,58 @@ exports[`expect result list to be created successfully 1`] = `
         >
           Montag, 12. Oktober 2020 um 23:30:21 Koordinierte Weltzeit
         </td>
+      </tr>
+      <tr
+        class="css-0"
+        data-theme="light"
+      >
+        <td
+          class="css-xumdn4"
+          data-theme="light"
+          style=""
+        >
+          <label
+            class="chakra-checkbox result-list-select-row-checkbox cursor-pointer css-1577qb8"
+            data-theme="light"
+          >
+            <input
+              class="chakra-checkbox__input"
+              style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
+              type="checkbox"
+              value=""
+            />
+            <span
+              aria-hidden="true"
+              class="chakra-checkbox__control css-1ydjfm6"
+              data-theme="light"
+            />
+          </label>
+        </td>
+        <td
+          class="css-xumdn4"
+          data-theme="light"
+          style=""
+        />
+        <td
+          class="css-xumdn4"
+          data-theme="light"
+          style=""
+        />
+        <td
+          class="css-xumdn4"
+          data-theme="light"
+          style=""
+        />
+        <td
+          class="css-xumdn4"
+          data-theme="light"
+          style=""
+        />
+        <td
+          class="css-xumdn4"
+          data-theme="light"
+          style=""
+        />
       </tr>
     </tbody>
   </table>
