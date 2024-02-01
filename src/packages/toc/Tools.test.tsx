@@ -88,7 +88,14 @@ it("Should successfully hide all layers in toc", async () => {
 
 async function findTools() {
     const tocDiv = await screen.findByTestId("toc");
-    return tocDiv.querySelector(".toc-tools");
+    const tools = await waitFor(() => {
+        const tools = tocDiv.querySelector(".toc-tools");
+        if (!tools) {
+            throw new Error("tools container not found");
+        }
+        return tools;
+    });
+    return tools;
 }
 
 async function findMenu() {
