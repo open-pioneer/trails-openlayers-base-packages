@@ -1,0 +1,4 @@
+messages:
+  altLabel: Legendengrafik für Layer {layerName}
+  fallbackLabel: Legende nicht verfügbar
+  basemapLabel: Hintergrundkarte

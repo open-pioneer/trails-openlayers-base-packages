@@ -12,7 +12,7 @@
         "@open-pioneer/core": "^1.2.1",
         "@open-pioneer/chakra-integration": "^1.1.1",
         "@chakra-ui/icons": "^2.1.1",
-        "@open-pioneer/runtime": "^2.0.2",
+        "@open-pioneer/runtime": "^2.1.0",
         "@open-pioneer/react-utils": "workspace:^",
         "react": "^18.2.0"
     },

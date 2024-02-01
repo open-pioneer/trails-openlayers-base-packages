@@ -30,9 +30,14 @@ export interface HighlightOptions {
     pointZoom?: number;
 
     /**
-     * The maximum zoom-level for line or polygon results.
+     * The maximum zoom-level for multiple points, line or polygon results.
      */
     maxZoom?: number;
+
+    /**
+     * The view padding to make all features visible.
+     */
+    viewPadding?: MapPadding;
 }
 
 export interface HighlightStyle {
@@ -40,6 +45,18 @@ export interface HighlightStyle {
     LineString?: StyleLike;
     Polygon?: StyleLike;
     MultiPolygon?: StyleLike;
+}
+
+/**
+ * Map padding, all values are pixels.
+ *
+ * See https://openlayers.org/en/latest/apidoc/module-ol_View-View.html#padding
+ */
+export interface MapPadding {
+    left?: number;
+    right?: number;
+    top?: number;
+    bottom?: number;
 }
 
 /**

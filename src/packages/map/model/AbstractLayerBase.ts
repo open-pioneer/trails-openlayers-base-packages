@@ -71,6 +71,8 @@ export abstract class AbstractLayerBase<AdditionalEvents = {}>
 
     abstract get sublayers(): SublayersCollectionImpl<Sublayer & AbstractLayerBase> | undefined;
 
+    abstract get legend(): string | undefined;
+
     destroy() {
         if (this.#destroyed) {
             return;

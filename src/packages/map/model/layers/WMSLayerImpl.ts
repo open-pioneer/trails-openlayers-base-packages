@@ -1,16 +1,18 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { createLogger } from "@open-pioneer/core";
+import { createLogger, isAbortError } from "@open-pioneer/core";
+import { ImageWrapper } from "ol";
+import WMSCapabilities from "ol/format/WMSCapabilities";
 import ImageLayer from "ol/layer/Image";
 import type ImageSource from "ol/source/Image";
 import ImageWMS from "ol/source/ImageWMS";
-import { Sublayer, WMSLayerConfig, WMSLayer, WMSSublayerConfig } from "../../api";
+import { WMSLayer, WMSLayerConfig, WMSSublayer, WMSSublayerConfig } from "../../api";
+import { fetchCapabilities } from "../../util/capabilities-utils";
 import { DeferredExecution, defer } from "../../util/defer";
 import { AbstractLayer } from "../AbstractLayer";
 import { AbstractLayerBase } from "../AbstractLayerBase";
 import { MapModelImpl } from "../MapModelImpl";
 import { SublayersCollectionImpl } from "../SublayersCollectionImpl";
-import { ImageWrapper } from "ol";
 
 const LOG = createLogger("map:WMSLayer");
 
@@ -20,6 +22,9 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
     #deferredSublayerUpdate: DeferredExecution | undefined;
     #layer: ImageLayer<ImageSource>;
     #source: ImageWMS;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    #capabilities: Record<string, any> | undefined;
+    readonly #abortController = new AbortController();
 
     constructor(config: WMSLayerConfig) {
         const layer = new ImageLayer();
@@ -35,7 +40,7 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
             },
             // Use http service to load tiles; needed for authentication etc.
             imageLoadFunction: (wrapper, url) => {
-                return this.#loadTile(wrapper, url).catch((error) => {
+                return this.#loadImage(wrapper, url).catch((error) => {
                     LOG.error(`Failed to load tile at '${url}'`, error);
                 });
             }
@@ -47,12 +52,23 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
         this.#updateLayersParam();
     }
 
+    get legend() {
+        return undefined;
+    }
+
     get url(): string {
         return this.#url;
+    }
+    get __source() {
+        return this.#source;
     }
 
     get sublayers(): SublayersCollectionImpl<WMSSublayerImpl> {
         return this.#sublayers;
+    }
+
+    get capabilities() {
+        return this.#capabilities;
     }
 
     __attach(map: MapModelImpl): void {
@@ -60,6 +76,39 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
         for (const sublayer of this.#sublayers.getSublayers()) {
             sublayer.__attach(map, this, this);
         }
+        const layers: WMSSublayerImpl[] = [];
+        /** identify all leaf nodes representing a layer in the structure */
+        const getNestedSublayer = (sublayers: WMSSublayerImpl[], layers: WMSSublayerImpl[]) => {
+            for (const sublayer of sublayers) {
+                const nested = sublayer.sublayers.getSublayers();
+                if (nested.length) {
+                    getNestedSublayer(nested, layers);
+                } else {
+                    if (sublayer.name) {
+                        layers.push(sublayer);
+                    }
+                }
+            }
+        };
+        this.#fetchWMSCapabilities()
+            .then((result: string) => {
+                const parser = new WMSCapabilities();
+                const capabilities = parser.read(result);
+                this.#capabilities = capabilities;
+                getNestedSublayer(this.#sublayers.getSublayers(), layers);
+
+                for (const layer of layers) {
+                    const legendUrl = getWMSLegendUrl(capabilities, layer.name!);
+                    layer.legend = legendUrl;
+                }
+            })
+            .catch((error) => {
+                if (isAbortError(error)) {
+                    LOG.error(`Layer ${this.id} has been destroyed before fetching the data`);
+                    return;
+                }
+                LOG.error(`Failed fetching WMS capabilities for Layer ${this.id}`, error);
+            });
     }
 
     /** Called by the sublayers when their visibility changed. */
@@ -108,7 +157,12 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
                     visitSublayer(nestedSublayer);
                 }
             } else {
-                layers.push(sublayer.name);
+                /**
+                 * Push sublayer only, if layer name is not an empty string | undefined | ...
+                 */
+                if (sublayer.name) {
+                    layers.push(sublayer.name);
+                }
             }
         };
 
@@ -118,29 +172,42 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
         return layers;
     }
 
-    async #loadTile(imageWrapper: ImageWrapper, tileUrl: string): Promise<void> {
+    async #fetchWMSCapabilities(): Promise<string> {
         const httpService = this.map.__sharedDependencies.httpService;
-        const response = await httpService.fetch(tileUrl);
+        const url = `${this.#url}?LANGUAGE=ger&SERVICE=WMS&REQUEST=GetCapabilities`;
+        return fetchCapabilities(url, httpService, this.#abortController.signal);
+    }
+
+    async #loadImage(imageWrapper: ImageWrapper, imageUrl: string): Promise<void> {
+        const httpService = this.map.__sharedDependencies.httpService;
+        const image = imageWrapper.getImage() as HTMLImageElement;
+
+        const response = await httpService.fetch(imageUrl);
         if (!response.ok) {
             throw new Error(`Request failed with status ${response.status}.`);
         }
 
         const blob = await response.blob();
         const objectUrl = URL.createObjectURL(blob);
-        const image = imageWrapper.getImage() as HTMLImageElement;
-        image.src = objectUrl;
-        image.onload = () => {
+        const finish = () => {
             // Cleanup object URL after load to prevent memory leaks.
             // https://stackoverflow.com/questions/62473876/openlayers-6-settileloadfunction-documented-example-uses-url-createobjecturld
             URL.revokeObjectURL(objectUrl);
+            image.removeEventListener("load", finish);
+            image.removeEventListener("error", finish);
         };
+
+        image.addEventListener("load", finish);
+        image.addEventListener("error", finish);
+        image.src = objectUrl;
     }
 }
 
-class WMSSublayerImpl extends AbstractLayerBase implements Sublayer {
+class WMSSublayerImpl extends AbstractLayerBase implements WMSSublayer {
     #parent: WMSSublayerImpl | WMSLayerImpl | undefined;
     #parentLayer: WMSLayerImpl | undefined;
-    #name: string;
+    #name: string | undefined;
+    #legend: string | undefined;
     #sublayers: SublayersCollectionImpl<WMSSublayerImpl>;
     #visible: boolean;
 
@@ -151,7 +218,7 @@ class WMSSublayerImpl extends AbstractLayerBase implements Sublayer {
         this.#sublayers = new SublayersCollectionImpl(constructSublayers(config.sublayers));
     }
 
-    get name(): string {
+    get name(): string | undefined {
         return this.#name;
     }
 
@@ -173,6 +240,14 @@ class WMSSublayerImpl extends AbstractLayerBase implements Sublayer {
             throw new Error(`WMS sublayer ${this.id} has not been attached to its parent yet.`);
         }
         return parentLayer;
+    }
+    get legend(): string | undefined {
+        return this.#legend;
+    }
+
+    set legend(legendUrl: string | undefined) {
+        this.#legend = legendUrl;
+        this.__emitChangeEvent("changed:legend");
     }
 
     /**
@@ -231,4 +306,38 @@ function constructSublayers(sublayerConfigs: WMSSublayerConfig[] = []): WMSSubla
         }
         throw new Error("Failed to construct sublayers.", { cause: e });
     }
+}
+
+/** extract the legend url from the service capabilities */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function getWMSLegendUrl(capabilities: Record<string, any>, layerName: string) {
+    const capabilitiesContent = capabilities?.Capability;
+    const rootLayerCapabilities = capabilitiesContent?.Layer;
+    let url: string | undefined = undefined;
+
+    /** Recurse search for the currrent layer within the parsed capabilities service*/
+    //eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const searchNestedLayer = (layer: Record<string, any>[]) => {
+        for (const currentLayer of layer) {
+            // spec. if, a layer has a <Name>, then it is a map layer
+            if (currentLayer?.Name === layerName) {
+                const activeLayer = currentLayer;
+                const styles = activeLayer.Style;
+                if (!styles || !styles.length) {
+                    LOG.debug("No style in WMS layer capabilities - giving up.");
+                    return;
+                }
+                // by parsing of the service capabilities, every child inherits the parent's legend
+                // theorfore, extract the legendURL from the first style object in the array (its own legend)
+                const activeStyle = styles[0];
+                url = activeStyle.LegendURL?.[0]?.OnlineResource;
+            } else if (currentLayer.Layer) {
+                searchNestedLayer(currentLayer.Layer);
+            }
+        }
+    };
+    if (rootLayerCapabilities) {
+        searchNestedLayer(rootLayerCapabilities.Layer);
+    }
+    return url;
 }

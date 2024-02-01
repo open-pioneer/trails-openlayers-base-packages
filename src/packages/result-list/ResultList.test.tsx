@@ -257,7 +257,7 @@ it("expect result list display all data types", async () => {
             //Date
             case 5:
                 expect(item.innerHTML).toEqual(
-                    "Wed May 13 2020 01:50:21 GMT+0200 (Mitteleuropäische Sommerzeit)"
+                    "Dienstag, 12. Mai 2020 um 23:50:21 Koordinierte Weltzeit"
                 );
                 break;
             //Undefinded in all Datatypes
