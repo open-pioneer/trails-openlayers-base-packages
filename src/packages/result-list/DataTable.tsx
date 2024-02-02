@@ -126,15 +126,20 @@ export function DataTable<Data extends object>(props: DataTableProps<Data>) {
                                                     header.column.columnDef.header,
                                                     header.getContext()
                                                 )}
-                                                {
-                                                    // TODO: Continue to implement tab-index and visibility of sorting icons
-                                                }
-                                                <chakra.span pl="4">
+                                                <chakra.span
+                                                    pl="4"
+                                                    tabIndex={0}
+                                                    onKeyDown={(evt) => {
+                                                        const key = evt.key;
+                                                        if (key === "Enter") {
+                                                            header.column.toggleSorting(undefined);
+                                                        }
+                                                    }}
+                                                >
                                                     {header.column.getIsSorted() ? (
                                                         header.column.getIsSorted() === "desc" ? (
                                                             <TriangleDownIcon
                                                                 className="result-list-sort-icon"
-                                                                tab-index={0}
                                                                 aria-label={intl.formatMessage({
                                                                     id: "ariaLabel.sortAscending"
                                                                 })}
@@ -142,7 +147,6 @@ export function DataTable<Data extends object>(props: DataTableProps<Data>) {
                                                         ) : (
                                                             <TriangleUpIcon
                                                                 className="result-list-sort-icon"
-                                                                tab-index={0}
                                                                 aria-label={intl.formatMessage({
                                                                     id: "ariaLabel.sortDescending"
                                                                 })}
@@ -151,7 +155,6 @@ export function DataTable<Data extends object>(props: DataTableProps<Data>) {
                                                     ) : (
                                                         <UpDownIcon
                                                             className="result-list-sort-icon"
-                                                            tab-index={0}
                                                             aria-label={intl.formatMessage({
                                                                 id: "ariaLabel.sortInitial"
                                                             })}
