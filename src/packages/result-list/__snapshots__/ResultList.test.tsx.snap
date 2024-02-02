@@ -14,8 +14,6 @@ exports[`expect empty data text to be shown 1`] = `
 </div>
 `;
 
-exports[`expect empty metadata to throw error > "illegalArgumentException" 1`] = `"illegalArgumentException"`;
-
 exports[`expect empty metadata to throw error 1`] = `"illegalArgumentException"`;
 
 exports[`expect result list to be created successfully 1`] = `
@@ -78,7 +76,21 @@ exports[`expect result list to be created successfully 1`] = `
           <span
             class="css-176c8l1"
             data-theme="light"
-          />
+          >
+            <svg
+              aria-label="ariaLabel.sortInitial"
+              class="chakra-icon result-list-sort-icon css-onkibi"
+              data-theme="light"
+              focusable="false"
+              tab-index="0"
+              viewBox="-1 -1 9 11"
+            >
+              <path
+                d="M 3.5 0L 3.98809 -0.569442L 3.5 -0.987808L 3.01191 -0.569442L 3.5 0ZM 3.5 9L 3.01191 9.56944L 3.5 9.98781L 3.98809 9.56944L 3.5 9ZM 0.488094 3.56944L 3.98809 0.569442L 3.01191 -0.569442L -0.488094 2.43056L 0.488094 3.56944ZM 3.01191 0.569442L 6.51191 3.56944L 7.48809 2.43056L 3.98809 -0.569442L 3.01191 0.569442ZM -0.488094 6.56944L 3.01191 9.56944L 3.98809 8.43056L 0.488094 5.43056L -0.488094 6.56944ZM 3.98809 9.56944L 7.48809 6.56944L 6.51191 5.43056L 3.01191 8.43056L 3.98809 9.56944Z"
+                fill="currentColor"
+              />
+            </svg>
+          </span>
           <span
             class="resizer  css-0"
             data-theme="light"
@@ -93,7 +105,21 @@ exports[`expect result list to be created successfully 1`] = `
           <span
             class="css-176c8l1"
             data-theme="light"
-          />
+          >
+            <svg
+              aria-label="ariaLabel.sortInitial"
+              class="chakra-icon result-list-sort-icon css-onkibi"
+              data-theme="light"
+              focusable="false"
+              tab-index="0"
+              viewBox="-1 -1 9 11"
+            >
+              <path
+                d="M 3.5 0L 3.98809 -0.569442L 3.5 -0.987808L 3.01191 -0.569442L 3.5 0ZM 3.5 9L 3.01191 9.56944L 3.5 9.98781L 3.98809 9.56944L 3.5 9ZM 0.488094 3.56944L 3.98809 0.569442L 3.01191 -0.569442L -0.488094 2.43056L 0.488094 3.56944ZM 3.01191 0.569442L 6.51191 3.56944L 7.48809 2.43056L 3.98809 -0.569442L 3.01191 0.569442ZM -0.488094 6.56944L 3.01191 9.56944L 3.98809 8.43056L 0.488094 5.43056L -0.488094 6.56944ZM 3.98809 9.56944L 7.48809 6.56944L 6.51191 5.43056L 3.01191 8.43056L 3.98809 9.56944Z"
+                fill="currentColor"
+              />
+            </svg>
+          </span>
           <span
             class="resizer  css-0"
             data-theme="light"
@@ -108,7 +134,21 @@ exports[`expect result list to be created successfully 1`] = `
           <span
             class="css-176c8l1"
             data-theme="light"
-          />
+          >
+            <svg
+              aria-label="ariaLabel.sortInitial"
+              class="chakra-icon result-list-sort-icon css-onkibi"
+              data-theme="light"
+              focusable="false"
+              tab-index="0"
+              viewBox="-1 -1 9 11"
+            >
+              <path
+                d="M 3.5 0L 3.98809 -0.569442L 3.5 -0.987808L 3.01191 -0.569442L 3.5 0ZM 3.5 9L 3.01191 9.56944L 3.5 9.98781L 3.98809 9.56944L 3.5 9ZM 0.488094 3.56944L 3.98809 0.569442L 3.01191 -0.569442L -0.488094 2.43056L 0.488094 3.56944ZM 3.01191 0.569442L 6.51191 3.56944L 7.48809 2.43056L 3.98809 -0.569442L 3.01191 0.569442ZM -0.488094 6.56944L 3.01191 9.56944L 3.98809 8.43056L 0.488094 5.43056L -0.488094 6.56944ZM 3.98809 9.56944L 7.48809 6.56944L 6.51191 5.43056L 3.01191 8.43056L 3.98809 9.56944Z"
+                fill="currentColor"
+              />
+            </svg>
+          </span>
           <span
             class="resizer  css-0"
             data-theme="light"
@@ -123,7 +163,21 @@ exports[`expect result list to be created successfully 1`] = `
           <span
             class="css-176c8l1"
             data-theme="light"
-          />
+          >
+            <svg
+              aria-label="ariaLabel.sortInitial"
+              class="chakra-icon result-list-sort-icon css-onkibi"
+              data-theme="light"
+              focusable="false"
+              tab-index="0"
+              viewBox="-1 -1 9 11"
+            >
+              <path
+                d="M 3.5 0L 3.98809 -0.569442L 3.5 -0.987808L 3.01191 -0.569442L 3.5 0ZM 3.5 9L 3.01191 9.56944L 3.5 9.98781L 3.98809 9.56944L 3.5 9ZM 0.488094 3.56944L 3.98809 0.569442L 3.01191 -0.569442L -0.488094 2.43056L 0.488094 3.56944ZM 3.01191 0.569442L 6.51191 3.56944L 7.48809 2.43056L 3.98809 -0.569442L 3.01191 0.569442ZM -0.488094 6.56944L 3.01191 9.56944L 3.98809 8.43056L 0.488094 5.43056L -0.488094 6.56944ZM 3.98809 9.56944L 7.48809 6.56944L 6.51191 5.43056L 3.01191 8.43056L 3.98809 9.56944Z"
+                fill="currentColor"
+              />
+            </svg>
+          </span>
           <span
             class="resizer  css-0"
             data-theme="light"
@@ -138,7 +192,21 @@ exports[`expect result list to be created successfully 1`] = `
           <span
             class="css-176c8l1"
             data-theme="light"
-          />
+          >
+            <svg
+              aria-label="ariaLabel.sortInitial"
+              class="chakra-icon result-list-sort-icon css-onkibi"
+              data-theme="light"
+              focusable="false"
+              tab-index="0"
+              viewBox="-1 -1 9 11"
+            >
+              <path
+                d="M 3.5 0L 3.98809 -0.569442L 3.5 -0.987808L 3.01191 -0.569442L 3.5 0ZM 3.5 9L 3.01191 9.56944L 3.5 9.98781L 3.98809 9.56944L 3.5 9ZM 0.488094 3.56944L 3.98809 0.569442L 3.01191 -0.569442L -0.488094 2.43056L 0.488094 3.56944ZM 3.01191 0.569442L 6.51191 3.56944L 7.48809 2.43056L 3.98809 -0.569442L 3.01191 0.569442ZM -0.488094 6.56944L 3.01191 9.56944L 3.98809 8.43056L 0.488094 5.43056L -0.488094 6.56944ZM 3.98809 9.56944L 7.48809 6.56944L 6.51191 5.43056L 3.01191 8.43056L 3.98809 9.56944Z"
+                fill="currentColor"
+              />
+            </svg>
+          </span>
           <span
             class="resizer  css-0"
             data-theme="light"

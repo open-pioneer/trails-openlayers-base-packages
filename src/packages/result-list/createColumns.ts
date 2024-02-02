@@ -23,6 +23,7 @@ export function createColumns(metaData: ResultColumn[], tableWidth?: number) {
             (feature: BaseFeature) => {
                 return getPropertyValue?.(feature) ?? feature.properties?.[propertyName];
             },
+            // Todo Formatting of attributes #241
             {
                 id: "result-list-col_" + index,
                 cell: (info) => {
