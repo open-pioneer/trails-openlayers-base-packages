@@ -4,7 +4,14 @@ This package provides a UI component to display Data from other packages, such a
 
 ## Integration UI component
 
-To add the package to your app, import `result-list` from `@open-pioneer/result-list`. To add the UI component take a look at the README.md from sample application. There you can see how the component is installed and how it can be linked to other packages.
+To add the package to your app, import `result-list` from `@open-pioneer/result-list`.
+
+```ts
+import { ResultList } from "@open-pioneer/result-list";
+<ResultList resultListInput={input} />
+```
+
+To add the UI component take a look at the README.md from sample application. There you can see how the component is installed and how it can be linked to other packages.
 
 ## Usage
 
