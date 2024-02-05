@@ -1,5 +1,36 @@
 # ol-map
 
+## 0.0.10
+
+### Patch Changes
+
+-   Updated dependencies [0883bbd]
+-   Updated dependencies [ee7c2d4]
+-   Updated dependencies [a582e5e]
+-   Updated dependencies [61d3e0e]
+-   Updated dependencies [0456500]
+-   Updated dependencies [35be8ef]
+-   Updated dependencies [762e7b9]
+-   Updated dependencies [5ba9c4f]
+    -   @open-pioneer/search@0.3.0
+    -   @open-pioneer/toc@0.3.0
+    -   @open-pioneer/experimental-layout-sidebar@0.2.0
+    -   @open-pioneer/coordinate-viewer@0.3.0
+    -   @open-pioneer/geolocation@0.3.0
+    -   @open-pioneer/legend@0.1.0
+    -   @open-pioneer/map@0.3.0
+    -   @open-pioneer/map-navigation@0.3.0
+    -   @open-pioneer/measurement@0.3.0
+    -   @open-pioneer/notifier@0.3.0
+    -   @open-pioneer/ogc-features@0.3.0
+    -   @open-pioneer/overview-map@0.3.0
+    -   @open-pioneer/scale-bar@0.3.0
+    -   @open-pioneer/scale-viewer@0.3.0
+    -   @open-pioneer/selection@0.1.0
+    -   @open-pioneer/spatial-bookmarks@0.3.0
+    -   @open-pioneer/theme@0.3.0
+    -   @open-pioneer/react-utils@0.2.1
+
 ## 0.0.9
 
 ### Patch Changes
