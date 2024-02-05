@@ -123,11 +123,32 @@ export const Printing: FC<PrintingProps> = (props) => {
     );
 };
 
-function exportMapInPNG(map: OlMap, canvas: HTMLCanvasElement) {
+function exportMapInPNG(map: OlMap, mapCanvas: HTMLCanvasElement) {
+    const containerCanvas = document.createElement("canvas");
+    containerCanvas.width = mapCanvas.width;
+    containerCanvas.height = mapCanvas.height + 50;
+    containerCanvas.style.backgroundColor = "#fff";
+
+    const context = containerCanvas.getContext("2d");
+
+    if (context) {
+        const text = "Default title for printing";
+
+        context.fillStyle = "#fff"; // background color for background rect
+        context.fillRect(0, 0, containerCanvas.width, containerCanvas.height); //draw background rect
+        context.font = 20 + "px bold Arial";
+        context.textAlign = "center";
+        context.fillStyle = "#000"; // text color
+
+        const x = containerCanvas.width / 2; //align text to center
+        context.fillText(text, x, 20);
+    }
+    context?.drawImage(mapCanvas, 0, 50);
+
     const link = document.createElement("a");
     link.setAttribute("download", "map.png");
     // Save the image locally automatically
-    link.href = canvas.toDataURL("image/png", 0.8);
+    link.href = containerCanvas.toDataURL("image/png", 0.8);
     link.click();
 }
 function exportMapInPDF(map: OlMap, canvas: HTMLCanvasElement) {
@@ -138,9 +159,15 @@ function exportMapInPDF(map: OlMap, canvas: HTMLCanvasElement) {
         unit: "px",
         format: size
     });
-    const imgUrlStr = canvas.toDataURL("image/jpeg");
-    size && size[0] && size[1] && pdf.addImage(imgUrlStr, "JPEG", 0, 0, size[0], size[1]);
-    pdf.text("Default title", 10, 10);
 
-    pdf.save("map.pdf");
+    const imgUrlStr = canvas.toDataURL("image/jpeg");
+
+    pdf.setFontSize(20);
+    if (size && size[0] && size[1]) {
+        const height = size[1];
+        const width = size[0];
+        pdf.addImage(imgUrlStr, "JPEG", 0, 50, width, height - 50);
+        pdf.text("Default title for printing", width / 2, 30, { align: "center" });
+        pdf.save("map.pdf");
+    }
 }
