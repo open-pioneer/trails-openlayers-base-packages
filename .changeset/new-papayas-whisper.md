@@ -2,4 +2,4 @@
 "@open-pioneer/selection": minor
 ---
 
-Introduction SelectionSourceFactory
+Introduction of `SelectionSourceFactory` for creating selection sources of an OpenLayers VectorLayer.
