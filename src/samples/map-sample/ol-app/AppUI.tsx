@@ -4,7 +4,7 @@ import { Box, Container, Divider, Flex, Text } from "@open-pioneer/chakra-integr
 import { CoordinateViewer } from "@open-pioneer/coordinate-viewer";
 import { createLogger } from "@open-pioneer/core";
 import { Geolocation } from "@open-pioneer/geolocation";
-import { MapAnchor, MapContainer, useMapModel } from "@open-pioneer/map";
+import { Layer, MapAnchor, MapContainer, useMapModel } from "@open-pioneer/map";
 import { InitialExtent, ZoomIn, ZoomOut } from "@open-pioneer/map-navigation";
 import { Measurement } from "@open-pioneer/measurement";
 import { NotificationService, Notifier } from "@open-pioneer/notifier";
@@ -40,6 +40,8 @@ import { AppConfig } from "./AppConfig";
 import { MAP_ID } from "./MapConfigProviderImpl";
 import { Legend } from "@open-pioneer/legend";
 import { EditingService } from "@open-pioneer/editing";
+import VectorLayer from "ol/layer/Vector";
+import VectorSource from "ol/source/Vector";
 
 type InteractionType = "measurement" | "selection" | "editing" | undefined;
 
@@ -109,13 +111,11 @@ export function AppUI() {
     }
 
     function startEditingCreate() {
-        // todo currently it is not possible to retrieve the url from a VectorLayer that was created using the createVectorSource method
-        const url = new URL(
-            "https://ogc-api-test.nrw.de/inspire-us-krankenhaus/v1/collections/governmentalservice/items"
-        );
-
         if (map) {
             try {
+                const layer = map.layers.getLayerById("krankenhaus") as Layer;
+                const url = new URL(layer.attributes.collectionURL + "/items");
+                console.log(url);
                 const workflow = editingService.start(map, url);
                 workflow.on("active:drawing", () => {
                     console.log("start drawing feature");
@@ -140,14 +140,18 @@ export function AppUI() {
                             });
                         }
 
-                        setCurrentInteractionType(undefined);
+                        const vectorLayer = layer?.olLayer as VectorLayer<VectorSource>;
+                        vectorLayer.getSource()?.refresh();
                     })
                     .catch((error) => {
                         notifier.notify({
                             level: "error",
-                            message: error,
+                            message: error.toString(),
                             displayDuration: 4000
                         });
+                    })
+                    .finally(() => {
+                        setCurrentInteractionType(undefined);
                     });
             } catch (e) {
                 LOG.error(e);

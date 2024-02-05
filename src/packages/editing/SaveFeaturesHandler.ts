@@ -12,7 +12,8 @@ export async function saveCreatedFeature(
     geometry: GeoJSONGeometry | GeoJSONGeometryCollection,
     projection: Projection
 ) {
-    const crs = "http://www.opengis.net/def/crs/EPSG/0/25832"; // todo get WKT of Projection
+    const epsgCode = projection.getCode();
+    const crs = epsgCode.replace("EPSG:", "http://www.opengis.net/def/crs/EPSG/0/");
     const response = await httpService.fetch(url, {
         method: "POST",
         body: JSON.stringify({ type: "Feature", properties: {}, geometry: geometry }),
@@ -31,9 +32,6 @@ export async function saveCreatedFeature(
         .get("location")
         // @ts-expect-error sdf
         .substr(response.headers.get("location").lastIndexOf("/") + 1);
-
-    console.log(response);
-    console.log(featureId);
 
     return Promise.resolve(featureId);
 }

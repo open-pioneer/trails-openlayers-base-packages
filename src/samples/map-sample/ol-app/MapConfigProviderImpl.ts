@@ -106,12 +106,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     visible: false,
                     olLayer: createKatasterLayer(this.vectorSourceFactory)
                 }),
-                new SimpleLayer({
-                    id: "krankenhaus",
-                    title: "Krankenhäuser",
-                    visible: true,
-                    olLayer: createKrankenhausLayer(this.vectorSourceFactory)
-                }),
+                createKrankenhausLayer(this.vectorSourceFactory),
                 createSchulenLayer(),
                 createStrassenLayer(),
                 createAdminAreasNRW(),
@@ -257,16 +252,28 @@ function createIsBk5Layer() {
 }
 
 function createKrankenhausLayer(vectorSourceFactory: OgcFeaturesVectorSourceFactory) {
+    const baseURL = "https://ogc-api-test.nrw.de/inspire-us-krankenhaus/v1";
+    const collectionId = "governmentalservice";
     const source = vectorSourceFactory.createVectorSource({
-        baseUrl: "https://ogc-api-test.nrw.de/inspire-us-krankenhaus/v1",
-        collectionId: "governmentalservice",
+        baseUrl: baseURL,
+        collectionId: collectionId,
         limit: 1000,
         crs: "http://www.opengis.net/def/crs/EPSG/0/25832",
         attributions: "" // todo
     });
 
-    return new VectorLayer({
+    const layer = new VectorLayer({
         source: source
+    });
+
+    return new SimpleLayer({
+        id: "krankenhaus",
+        title: "Krankenhäuser",
+        visible: true,
+        olLayer: layer,
+        attributes: {
+            collectionURL: baseURL + "/collections/" + collectionId
+        }
     });
 }
 
