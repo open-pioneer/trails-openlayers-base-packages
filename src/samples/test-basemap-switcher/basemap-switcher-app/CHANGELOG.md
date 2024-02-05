@@ -1,5 +1,20 @@
 # basemap-switcher-app
 
+## 0.0.5
+
+### Patch Changes
+
+-   Updated dependencies [6984d20]
+-   Updated dependencies [0883bbd]
+-   Updated dependencies [ee7c2d4]
+-   Updated dependencies [a582e5e]
+-   Updated dependencies [0456500]
+-   Updated dependencies [762e7b9]
+    -   @open-pioneer/basemap-switcher@0.3.0
+    -   @open-pioneer/map@0.3.0
+    -   @open-pioneer/theme@0.3.0
+    -   @open-pioneer/react-utils@0.2.1
+
 ## 0.0.4
 
 ### Patch Changes
