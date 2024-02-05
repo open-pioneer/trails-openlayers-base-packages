@@ -4,4 +4,4 @@
 "@open-pioneer/search": minor
 ---
 
-Use the BaseFeature interface.
+Add interface `BaseFeature` to Map API.
