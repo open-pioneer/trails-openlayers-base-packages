@@ -66,6 +66,62 @@ interface References {
     mapRegistry: MapRegistry;
 }
 
+/**
+ * Layers that can be used in the spatial selection component.
+ * Also includes metadata for the result list (which is shown after selection was successful).
+ */
+const SELECTION_LAYERS = new Map<string, ResultColumn[]>([
+    [
+        "ogc_kitas",
+        [
+            {
+                propertyName: "id",
+                displayName: "ID",
+                width: 100,
+                getPropertyValue(feature) {
+                    return feature.id;
+                }
+            },
+            {
+                propertyName: "pointOfContact.address.postCode",
+                displayName: "PLZ",
+                width: 120
+            },
+            {
+                propertyName: "name",
+                displayName: "Name"
+            },
+            {
+                propertyName: "inspireId",
+                displayName: "inspireID"
+            },
+            {
+                propertyName: "gefoerdert",
+                displayName: "Gefördert",
+                width: 160
+            }
+        ]
+    ],
+    [
+        "ogc_kataster",
+        [
+            {
+                propertyName: "id",
+                displayName: "ID",
+                width: 600,
+                getPropertyValue(feature) {
+                    return feature.id;
+                }
+            },
+            {
+                propertyName: "aktualit",
+                displayName: "Aktualit",
+                width: 600
+            }
+        ]
+    ]
+]);
+
 export class AppModel implements Service {
     declare [DECLARE_SERVICE_INTERFACE]: "ol-app.AppModel";
 
@@ -189,12 +245,10 @@ export class AppModel implements Service {
             this._resources.push(eventHandler, layerSelectionSource);
             this._state.selectionSources.unshift(ref(layerSelectionSource));
 
-            /* TODO: needed?
-            const resultListMetadata = SELECTION_LAYER_IDS.get(opLayer.id);
+            const resultListMetadata = SELECTION_LAYERS.get(opLayer.id);
             if (resultListMetadata) {
                 this._state.sourceMetadata.set(ref(layerSelectionSource), resultListMetadata);
             }
-             */
         }
     }
 }
