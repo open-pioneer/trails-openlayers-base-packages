@@ -702,6 +702,12 @@ importers:
       classnames:
         specifier: ^2.3.2
         version: 2.3.2
+      html2canvas:
+        specifier: ^1.4.1
+        version: 1.4.1
+      jspdf:
+        specifier: ^2.5.1
+        version: 2.5.1
       ol:
         specifier: ^8.2.0
         version: 8.2.0
