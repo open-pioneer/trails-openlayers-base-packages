@@ -76,13 +76,13 @@ exports[`expect result list to be created successfully 1`] = `
           <span
             class="css-176c8l1"
             data-theme="light"
+            tabindex="0"
           >
             <svg
               aria-label="ariaLabel.sortInitial"
               class="chakra-icon result-list-sort-icon css-onkibi"
               data-theme="light"
               focusable="false"
-              tab-index="0"
               viewBox="-1 -1 9 11"
             >
               <path
@@ -105,13 +105,13 @@ exports[`expect result list to be created successfully 1`] = `
           <span
             class="css-176c8l1"
             data-theme="light"
+            tabindex="0"
           >
             <svg
               aria-label="ariaLabel.sortInitial"
               class="chakra-icon result-list-sort-icon css-onkibi"
               data-theme="light"
               focusable="false"
-              tab-index="0"
               viewBox="-1 -1 9 11"
             >
               <path
@@ -134,13 +134,13 @@ exports[`expect result list to be created successfully 1`] = `
           <span
             class="css-176c8l1"
             data-theme="light"
+            tabindex="0"
           >
             <svg
               aria-label="ariaLabel.sortInitial"
               class="chakra-icon result-list-sort-icon css-onkibi"
               data-theme="light"
               focusable="false"
-              tab-index="0"
               viewBox="-1 -1 9 11"
             >
               <path
@@ -163,13 +163,13 @@ exports[`expect result list to be created successfully 1`] = `
           <span
             class="css-176c8l1"
             data-theme="light"
+            tabindex="0"
           >
             <svg
               aria-label="ariaLabel.sortInitial"
               class="chakra-icon result-list-sort-icon css-onkibi"
               data-theme="light"
               focusable="false"
-              tab-index="0"
               viewBox="-1 -1 9 11"
             >
               <path
@@ -192,13 +192,13 @@ exports[`expect result list to be created successfully 1`] = `
           <span
             class="css-176c8l1"
             data-theme="light"
+            tabindex="0"
           >
             <svg
               aria-label="ariaLabel.sortInitial"
               class="chakra-icon result-list-sort-icon css-onkibi"
               data-theme="light"
               focusable="false"
-              tab-index="0"
               viewBox="-1 -1 9 11"
             >
               <path
