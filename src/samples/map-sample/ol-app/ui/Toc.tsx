@@ -5,7 +5,7 @@ import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { Toc } from "@open-pioneer/toc";
 import { useIntl } from "open-pioneer:react-hooks";
 import { useId } from "react";
-import { MAP_ID } from "../MapConfigProviderImpl"; // TODO
+import { MAP_ID } from "../MapConfigProviderImpl";
 
 export function TocComponent(props: { maxHeight: string }) {
     const tocTitleId = useId();

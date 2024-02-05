@@ -5,12 +5,13 @@ import { useMapModel } from "@open-pioneer/map";
 import { Search, SearchSelectEvent } from "@open-pioneer/search";
 import { useService } from "open-pioneer:react-hooks";
 import { useSnapshot } from "valtio";
-import { AppModel } from "../AppModel"; // TODO
-import { MAP_ID } from "../MapConfigProviderImpl"; // TODO
+import { AppModel } from "../AppModel";
+import { MAP_ID } from "../MapConfigProviderImpl";
+import { highlightAndZoom } from "../util/map-utils";
 
 export function SearchComponent() {
     const { map } = useMapModel(MAP_ID);
-    const appModel = useService<unknown>("ol-app.AppModel") as AppModel;
+    const appModel = useService<AppModel>("ol-app.AppModel");
     const sources = useSnapshot(appModel.state).searchSources;
 
     function onSearchResultSelected(event: SearchSelectEvent) {
@@ -24,9 +25,7 @@ export function SearchComponent() {
             return;
         }
 
-        map.highlightAndZoom([geometry], {
-            viewPadding: { top: 150, right: 75, bottom: 50, left: 75 }
-        });
+        highlightAndZoom(map, [geometry]);
     }
 
     function onSearchCleared() {

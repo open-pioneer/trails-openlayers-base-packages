@@ -14,7 +14,7 @@ import {
     PiRulerLight,
     PiSelectionPlusBold
 } from "react-icons/pi";
-import { MAP_ID } from "../MapConfigProviderImpl"; // TODO
+import { MAP_ID } from "../MapConfigProviderImpl";
 import { AppModel } from "../AppModel";
 import { useSnapshot } from "valtio";
 
@@ -29,14 +29,20 @@ export interface ToolState {
 }
 
 export interface MapToolsProps {
+    /**
+     * Controls the `active` state of all tool buttons.
+     */
     toolState: ToolState;
 
+    /**
+     * Called by the component when a tool button shall be toggled on or off.
+     */
     onToolStateChange(toolStateName: keyof ToolState, newValue: boolean): void;
 }
 
 export function MapTools(props: MapToolsProps) {
-    const intl = useIntl();
     const { toolState, onToolStateChange } = props;
+    const intl = useIntl();
     const appModel = useService<unknown>("ol-app.AppModel") as AppModel;
     const hasResultListInput = !!useSnapshot(appModel.state).currentResultListInput;
 

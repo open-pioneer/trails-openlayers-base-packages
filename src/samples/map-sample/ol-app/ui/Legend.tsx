@@ -5,7 +5,7 @@ import { Legend } from "@open-pioneer/legend";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
 import { useId } from "react";
-import { MAP_ID } from "../MapConfigProviderImpl"; // TODO
+import { MAP_ID } from "../MapConfigProviderImpl";
 
 export function LegendComponent() {
     const legendTitleId = useId();

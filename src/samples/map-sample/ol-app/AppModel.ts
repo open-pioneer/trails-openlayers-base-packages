@@ -4,7 +4,12 @@ import { Resource, createLogger } from "@open-pioneer/core";
 import { HttpService } from "@open-pioneer/http";
 import { MapRegistry } from "@open-pioneer/map";
 import { OgcFeaturesSearchSourceFactory } from "@open-pioneer/ogc-features";
-import { PackageIntl, Service, ServiceOptions } from "@open-pioneer/runtime";
+import {
+    type DECLARE_SERVICE_INTERFACE,
+    PackageIntl,
+    Service,
+    ServiceOptions
+} from "@open-pioneer/runtime";
 import { SearchSource } from "@open-pioneer/search";
 import { SelectionSource, VectorLayerSelectionSourceFactory } from "@open-pioneer/selection";
 import OlBaseLayer from "ol/layer/Base";
@@ -61,63 +66,9 @@ interface References {
     mapRegistry: MapRegistry;
 }
 
-/**
- * Layers that can be used in the spatial selection component.
- * Also includes metadata for the result list (which is shown after selection was successful).
- */
-const SELECTION_LAYERS = new Map<string, ResultColumn[]>([
-    [
-        "ogc_kitas",
-        [
-            {
-                propertyName: "id",
-                displayName: "ID",
-                width: 100,
-                getPropertyValue(feature) {
-                    return feature.id;
-                }
-            },
-            {
-                propertyName: "pointOfContact.address.postCode",
-                displayName: "PLZ",
-                width: 120
-            },
-            {
-                propertyName: "name",
-                displayName: "Name"
-            },
-            {
-                propertyName: "inspireId",
-                displayName: "inspireID"
-            },
-            {
-                propertyName: "gefoerdert",
-                displayName: "Gefördert",
-                width: 160
-            }
-        ]
-    ],
-    [
-        "ogc_kataster",
-        [
-            {
-                propertyName: "id",
-                displayName: "ID",
-                width: 600,
-                getPropertyValue(feature) {
-                    return feature.id;
-                }
-            },
-            {
-                propertyName: "aktualit",
-                displayName: "Aktualit",
-                width: 600
-            }
-        ]
-    ]
-]);
-
 export class AppModel implements Service {
+    declare [DECLARE_SERVICE_INTERFACE]: "ol-app.AppModel";
+
     private _intl: PackageIntl;
     private _mapRegistry: MapRegistry;
     private _ogcSearchSourceFactory: OgcFeaturesSearchSourceFactory;
@@ -210,11 +161,12 @@ export class AppModel implements Service {
      * Certain vector layers are automatically registered for selection.
      */
     private async initSelectionSources() {
+        const SELECTION_LAYER_IDS = ["ogc_kitas", "ogc_kataster"];
         const map = await this._mapRegistry.expectMapModel(MAP_ID);
         const opLayers = map.layers.getOperationalLayers({ sortByDisplayOrder: true });
         for (const opLayer of opLayers) {
             if (
-                !SELECTION_LAYERS.has(opLayer.id) ||
+                !SELECTION_LAYER_IDS.includes(opLayer.id) ||
                 !isVectorLayerWithVectorSource(opLayer.olLayer)
             ) {
                 continue;
@@ -237,10 +189,12 @@ export class AppModel implements Service {
             this._resources.push(eventHandler, layerSelectionSource);
             this._state.selectionSources.unshift(ref(layerSelectionSource));
 
-            const resultListMetadata = SELECTION_LAYERS.get(opLayer.id);
+            /* TODO: needed?
+            const resultListMetadata = SELECTION_LAYER_IDS.get(opLayer.id);
             if (resultListMetadata) {
                 this._state.sourceMetadata.set(ref(layerSelectionSource), resultListMetadata);
             }
+             */
         }
     }
 }
