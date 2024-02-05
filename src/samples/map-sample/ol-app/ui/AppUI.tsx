@@ -11,6 +11,7 @@ import { useIntl } from "open-pioneer:react-hooks";
 import { ReactNode, useState } from "react";
 import { MAP_ID } from "../MapConfigProviderImpl";
 import { SpatialBookmarksComponent } from "./Bookmarks";
+import { PrintingComponent } from "./Printing";
 import { LegendComponent } from "./Legend";
 import { MapTools, ToolState } from "./MapTools";
 import { MeasurementComponent } from "./Measurement";
@@ -27,7 +28,8 @@ const DEFAULT_TOOL_STATE: IndependentToolState = {
     bookmarksActive: false,
     legendActive: true,
     overviewMapActive: true,
-    tocActive: true
+    tocActive: true,
+    printingActive: false
 };
 
 /**
@@ -124,6 +126,9 @@ export function AppUI() {
                         </MapAnchor>
                         <MapAnchor horizontalGap={20} position="bottom-left">
                             {toolState.bookmarksActive && <SpatialBookmarksComponent />}
+                        </MapAnchor>
+                        <MapAnchor horizontalGap={20} position="bottom-left">
+                            {toolState.printingActive && <PrintingComponent />}
                         </MapAnchor>
                         <MapAnchor position="bottom-right" horizontalGap={10} verticalGap={45}>
                             <MapTools toolState={toolState} onToolStateChange={changeToolState} />

@@ -10,6 +10,7 @@ import {
     PiImagesLight,
     PiListLight,
     PiMapTrifold,
+    PiPrinterBold,
     PiRulerLight,
     PiSelectionPlusBold
 } from "react-icons/pi";
@@ -22,6 +23,7 @@ export interface ToolState {
     measurementActive: boolean;
     selectionActive: boolean;
     overviewMapActive: boolean;
+    printingActive: boolean;
 }
 
 export interface MapToolsProps {
@@ -52,6 +54,12 @@ export function MapTools(props: MapToolsProps) {
             gap={1}
             padding={1}
         >
+            <ToolButton
+                label={intl.formatMessage({ id: "printingTitle" })}
+                icon={<PiPrinterBold />}
+                isActive={toolState.printingActive}
+                onClick={() => toggleToolState("printingActive")}
+            />
             <ToolButton
                 label={intl.formatMessage({ id: "spatialBookmarkTitle" })}
                 icon={<PiBookmarksSimpleBold />}
