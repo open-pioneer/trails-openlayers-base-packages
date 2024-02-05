@@ -17,6 +17,8 @@ import { useMapModel } from "@open-pioneer/map";
 import OlMap from "ol/Map";
 import html2canvas, { Options } from "html2canvas";
 import { jsPDF } from "jspdf";
+import { ScaleLine } from "ol/control";
+import { createManualPromise } from "@open-pioneer/core";
 export type FileFormatType = "png" | "pdf";
 
 /**
@@ -37,7 +39,7 @@ export const Printing: FC<PrintingProps> = (props) => {
 
     const { mapId } = props;
     const { containerProps } = useCommonComponentProps("printing", props);
-    const [selectedFileFormat, setSelectedFileFormat] = useState<FileFormatType>("png");
+    const [selectedFileFormat, setSelectedFileFormat] = useState<FileFormatType>("pdf");
     const [title, setTitle] = useState<string>("");
 
     const { map } = useMapModel(mapId);
@@ -48,9 +50,11 @@ export const Printing: FC<PrintingProps> = (props) => {
         }
     }
 
-    function exportMap() {
+    async function exportMap() {
         if (map && selectedFileFormat) {
             const olMap = map.olMap;
+
+            await handleScaleLine(olMap);
 
             // export options for html2canvas.
             const exportOptions: Partial<Options> = {};
@@ -61,8 +65,24 @@ export const Printing: FC<PrintingProps> = (props) => {
                         ? exportMapInPNG(olMap, canvas)
                         : exportMapInPDF(olMap, canvas);
                 }
+                //olMap.removeControl(scaleLine);
             });
         }
+    }
+
+    async function handleScaleLine(olMap: OlMap) {
+        const scaleLine = new ScaleLine({ bar: true, text: true, minWidth: 125 });
+        const renderPromise = createManualPromise<void>();
+        const oldRender = scaleLine.render;
+        scaleLine.render = (...args) => {
+            oldRender.apply(scaleLine, args);
+            renderPromise.resolve();
+        };
+        olMap.addControl(scaleLine);
+        await renderPromise.promise;
+        await new Promise((resolve) => {
+            requestAnimationFrame(resolve);
+        });
     }
 
     return (
@@ -104,12 +124,10 @@ export const Printing: FC<PrintingProps> = (props) => {
 };
 
 function exportMapInPNG(map: OlMap, canvas: HTMLCanvasElement) {
-    const imgUrl = canvas.toDataURL("image/png", 0.8);
-
-    // Save the image locally automatically
     const link = document.createElement("a");
     link.setAttribute("download", "map.png");
-    link.href = imgUrl;
+    // Save the image locally automatically
+    link.href = canvas.toDataURL("image/png", 0.8);
     link.click();
 }
 function exportMapInPDF(map: OlMap, canvas: HTMLCanvasElement) {
@@ -119,7 +137,7 @@ function exportMapInPDF(map: OlMap, canvas: HTMLCanvasElement) {
         orientation: "landscape",
         unit: "px",
         format: size
-    }); //todo: check format, it determines the size of the printed map
+    });
     const imgUrlStr = canvas.toDataURL("image/jpeg");
     size && size[0] && size[1] && pdf.addImage(imgUrlStr, "JPEG", 0, 0, size[0], size[1]);
     pdf.text("Default title", 10, 10);
