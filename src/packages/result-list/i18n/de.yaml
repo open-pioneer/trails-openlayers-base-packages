@@ -4,6 +4,8 @@ messages:
   illegalArgumentException: Resultlistinput muss Metadaten haben
   noDataMessage: Keine Daten verfügbar
   ariaLabel:
-    sortAscending: aufsteigend sortieren
-    sortDescending: absteigend sortieren
-    sortInitial: initiale Sortierung
+    sortAscending: Aktuell aufsteigende Sortierung. Mit der Enter-Taste kann die Sortierung geändert werden
+    sortDescending: Aktuell absteigende Sortierung. Mit der Enter-Taste kann die Sortierung geändert werden
+    sortInitial: Aktuell initiale Sortierung. Mit der Enter-Taste kann die Sortierung geändert werden
+    selectAll: Drücke Enter-Taste um alle Zeilen ab- oder anzuwählen
+    selectSingle: Zeile ausgewählt

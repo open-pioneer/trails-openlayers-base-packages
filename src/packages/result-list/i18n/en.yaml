@@ -4,6 +4,8 @@ messages:
   illegalArgumentException: Resultlistinput must contain metadata,
   noDataMessage: No data available
   ariaLabel:
-    sortAscending: sort ascending
-    sortDescending: sort descending
-    sortInitial: initial sort
+    sortAscending: Table Column is sorted ascending. Press enter to change sorting.
+    sortDescending: Table Column is sorted descending. Press enter to change sorting.
+    sortInitial: Table Column has the initial sorting. Press enter to change sorting.
+    selectAll: Press enter to select oder deselect all rows.
+    selectSingle: Row selected

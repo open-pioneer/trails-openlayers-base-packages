@@ -50,6 +50,7 @@ exports[`expect result list to be created successfully 1`] = `
               data-theme="light"
             >
               <input
+                aria-label="ariaLabel.selectAll"
                 class="chakra-checkbox__input"
                 style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
                 type="checkbox"
@@ -74,13 +75,13 @@ exports[`expect result list to be created successfully 1`] = `
         >
           Spalte A
           <span
-            class="css-176c8l1"
+            aria-label="ariaLabel.sortInitial"
+            class="result-list-sort-icon css-1q8b5yy"
             data-theme="light"
             tabindex="0"
           >
             <svg
-              aria-label="ariaLabel.sortInitial"
-              class="chakra-icon result-list-sort-icon css-onkibi"
+              class="chakra-icon result-list-sort-initial-icon css-onkibi"
               data-theme="light"
               focusable="false"
               viewBox="-1 -1 9 11"
@@ -103,13 +104,13 @@ exports[`expect result list to be created successfully 1`] = `
         >
           Spalte B
           <span
-            class="css-176c8l1"
+            aria-label="ariaLabel.sortInitial"
+            class="result-list-sort-icon css-1q8b5yy"
             data-theme="light"
             tabindex="0"
           >
             <svg
-              aria-label="ariaLabel.sortInitial"
-              class="chakra-icon result-list-sort-icon css-onkibi"
+              class="chakra-icon result-list-sort-initial-icon css-onkibi"
               data-theme="light"
               focusable="false"
               viewBox="-1 -1 9 11"
@@ -132,13 +133,13 @@ exports[`expect result list to be created successfully 1`] = `
         >
           Spalte C
           <span
-            class="css-176c8l1"
+            aria-label="ariaLabel.sortInitial"
+            class="result-list-sort-icon css-1q8b5yy"
             data-theme="light"
             tabindex="0"
           >
             <svg
-              aria-label="ariaLabel.sortInitial"
-              class="chakra-icon result-list-sort-icon css-onkibi"
+              class="chakra-icon result-list-sort-initial-icon css-onkibi"
               data-theme="light"
               focusable="false"
               viewBox="-1 -1 9 11"
@@ -161,13 +162,13 @@ exports[`expect result list to be created successfully 1`] = `
         >
           Spalte D
           <span
-            class="css-176c8l1"
+            aria-label="ariaLabel.sortInitial"
+            class="result-list-sort-icon css-1q8b5yy"
             data-theme="light"
             tabindex="0"
           >
             <svg
-              aria-label="ariaLabel.sortInitial"
-              class="chakra-icon result-list-sort-icon css-onkibi"
+              class="chakra-icon result-list-sort-initial-icon css-onkibi"
               data-theme="light"
               focusable="false"
               viewBox="-1 -1 9 11"
@@ -190,13 +191,13 @@ exports[`expect result list to be created successfully 1`] = `
         >
           Spalte E
           <span
-            class="css-176c8l1"
+            aria-label="ariaLabel.sortInitial"
+            class="result-list-sort-icon css-1q8b5yy"
             data-theme="light"
             tabindex="0"
           >
             <svg
-              aria-label="ariaLabel.sortInitial"
-              class="chakra-icon result-list-sort-icon css-onkibi"
+              class="chakra-icon result-list-sort-initial-icon css-onkibi"
               data-theme="light"
               focusable="false"
               viewBox="-1 -1 9 11"
@@ -232,6 +233,7 @@ exports[`expect result list to be created successfully 1`] = `
             data-theme="light"
           >
             <input
+              aria-label="ariaLabel.selectSingle"
               class="chakra-checkbox__input"
               style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
               type="checkbox"
@@ -294,6 +296,7 @@ exports[`expect result list to be created successfully 1`] = `
             data-theme="light"
           >
             <input
+              aria-label="ariaLabel.selectSingle"
               class="chakra-checkbox__input"
               style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
               type="checkbox"
@@ -356,6 +359,7 @@ exports[`expect result list to be created successfully 1`] = `
             data-theme="light"
           >
             <input
+              aria-label="ariaLabel.selectSingle"
               class="chakra-checkbox__input"
               style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
               type="checkbox"
@@ -418,6 +422,7 @@ exports[`expect result list to be created successfully 1`] = `
             data-theme="light"
           >
             <input
+              aria-label="ariaLabel.selectSingle"
               class="chakra-checkbox__input"
               style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
               type="checkbox"

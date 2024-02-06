@@ -29,7 +29,15 @@
     opacity: 1;
 }
 
-.result-list-table-element .result-list-sort-icon:focus-visible {
+.result-list-table-element .result-list-sort-initial-icon {
+    opacity: 0;
+}
+
+.result-list-sort-icon:focus {
+    outline: none !important;
+    border-radius: 4px;
+    border: 1px var(--chakra-colors-background_primary);
+    box-shadow: 0 0 0 2px var(--chakra-colors-background_primary);
 }
 
 .result-list-table-element tbody tr:hover {

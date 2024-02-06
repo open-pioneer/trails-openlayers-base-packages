@@ -18,11 +18,13 @@ import {
     ColumnDef,
     SortingState,
     getSortedRowModel,
-    Table as TanstackTable
+    Table as TanstackTable,
+    SortDirection
 } from "@tanstack/react-table";
 import { TriangleDownIcon, TriangleUpIcon, UpDownIcon } from "@chakra-ui/icons";
 import { useIntl } from "open-pioneer:react-hooks";
 import React, { HTMLProps, useRef, useState } from "react";
+import { PackageIntl } from "@open-pioneer/runtime";
 
 interface DataTableProps<Data extends object> {
     data: Data[];
@@ -105,7 +107,11 @@ export function DataTable<Data extends object>(props: DataTableProps<Data>) {
                                                                 table.getIsSomeRowsSelected(),
                                                             onChange:
                                                                 table.getToggleAllRowsSelectedHandler(),
-                                                            toolTipLabel: getCheckboxToolTip()
+                                                            toolTipLabel: getCheckboxToolTip(),
+                                                            // TODO: Is also read by screenreader for all single row select checkboxes?!
+                                                            ariaLabel: intl.formatMessage({
+                                                                id: "ariaLabel.selectAll"
+                                                            })
                                                         }}
                                                     />
                                                 }
@@ -127,8 +133,13 @@ export function DataTable<Data extends object>(props: DataTableProps<Data>) {
                                                     header.getContext()
                                                 )}
                                                 <chakra.span
-                                                    pl="4"
+                                                    ml="4"
                                                     tabIndex={0}
+                                                    className="result-list-sort-icon"
+                                                    aria-label={getSortingAriaLabel(
+                                                        intl,
+                                                        header.column.getIsSorted()
+                                                    )}
                                                     onKeyDown={(evt) => {
                                                         const key = evt.key;
                                                         if (key === "Enter") {
@@ -138,27 +149,12 @@ export function DataTable<Data extends object>(props: DataTableProps<Data>) {
                                                 >
                                                     {header.column.getIsSorted() ? (
                                                         header.column.getIsSorted() === "desc" ? (
-                                                            <TriangleDownIcon
-                                                                className="result-list-sort-icon"
-                                                                aria-label={intl.formatMessage({
-                                                                    id: "ariaLabel.sortAscending"
-                                                                })}
-                                                            />
+                                                            <TriangleDownIcon />
                                                         ) : (
-                                                            <TriangleUpIcon
-                                                                className="result-list-sort-icon"
-                                                                aria-label={intl.formatMessage({
-                                                                    id: "ariaLabel.sortDescending"
-                                                                })}
-                                                            />
+                                                            <TriangleUpIcon />
                                                         )
                                                     ) : (
-                                                        <UpDownIcon
-                                                            className="result-list-sort-icon"
-                                                            aria-label={intl.formatMessage({
-                                                                id: "ariaLabel.sortInitial"
-                                                            })}
-                                                        ></UpDownIcon>
+                                                        <UpDownIcon className="result-list-sort-initial-icon"></UpDownIcon>
                                                     )}
                                                 </chakra.span>
                                                 <chakra.span
@@ -201,17 +197,41 @@ export function DataTable<Data extends object>(props: DataTableProps<Data>) {
     }
 }
 
+type SortState = SortDirection | false;
+// TODO: Outsource into hook?
+function getSortingAriaLabel(intl: PackageIntl, sortState: SortState) {
+    switch (sortState) {
+        case "asc":
+            return intl.formatMessage({
+                id: "ariaLabel.sortAscending"
+            });
+        case "desc":
+            return intl.formatMessage({
+                id: "ariaLabel.sortDescending"
+            });
+        case false:
+            return intl.formatMessage({
+                id: "ariaLabel.sortInitial"
+            });
+    }
+}
+
 function IndeterminateCheckbox({
     indeterminate,
     className = "",
     toolTipLabel,
     ...rest
-}: { indeterminate?: boolean; toolTipLabel?: string } & HTMLProps<HTMLInputElement>) {
+}: {
+    indeterminate?: boolean;
+    toolTipLabel?: string;
+    ariaLabel: string;
+} & HTMLProps<HTMLInputElement>) {
     const ref = useRef<HTMLInputElement>(null!);
     return (
         <Tooltip {...{}} label={toolTipLabel} placement="right" shouldWrapChildren={true}>
             <Checkbox
                 ref={ref}
+                aria-label={rest.ariaLabel}
                 className={className + " cursor-pointer"}
                 isChecked={rest.checked}
                 onChange={rest.onChange}
@@ -223,6 +243,7 @@ function IndeterminateCheckbox({
 
 //un-memoized normal table body component - see memoized version below
 function TableBody<Data extends object>({ table }: { table: TanstackTable<Data> }) {
+    const intl = useIntl();
     return (
         <Tbody>
             {table.getRowModel().rows.map((row) => {
@@ -246,7 +267,10 @@ function TableBody<Data extends object>({ table }: { table: TanstackTable<Data> 
                                                 checked: row.getIsSelected(),
                                                 disabled: !row.getCanSelect(),
                                                 indeterminate: row.getIsSomeSelected(),
-                                                onChange: row.getToggleSelectedHandler()
+                                                onChange: row.getToggleSelectedHandler(),
+                                                ariaLabel: intl.formatMessage({
+                                                    id: "ariaLabel.selectSingle"
+                                                })
                                             }}
                                         />
                                     ) : (
