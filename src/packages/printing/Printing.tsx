@@ -19,6 +19,7 @@ import html2canvas, { Options } from "html2canvas";
 import { jsPDF } from "jspdf";
 import { ScaleLine } from "ol/control";
 import { createManualPromise } from "@open-pioneer/core";
+
 export type FileFormatType = "png" | "pdf";
 
 /**
@@ -57,7 +58,15 @@ export const Printing: FC<PrintingProps> = (props) => {
             await handleScaleLine(olMap);
 
             // export options for html2canvas.
-            const exportOptions: Partial<Options> = {};
+            const exportOptions: Partial<Options> = {
+                useCORS: true,
+                ignoreElements: function (element: Element) {
+                    const classNames: string = element.className || "";
+                    if (typeof classNames === "object") return false;
+
+                    return classNames.includes("map-anchors");
+                }
+            };
 
             html2canvas(olMap.getViewport(), exportOptions).then((canvas: HTMLCanvasElement) => {
                 if (canvas) {
@@ -147,10 +156,10 @@ function exportMapInPNG(map: OlMap, mapCanvas: HTMLCanvasElement) {
 
     const link = document.createElement("a");
     link.setAttribute("download", "map.png");
-    // Save the image locally automatically
     link.href = containerCanvas.toDataURL("image/png", 0.8);
     link.click();
 }
+
 function exportMapInPDF(map: OlMap, canvas: HTMLCanvasElement) {
     // Landscape map export
     const size = map.getSize();
