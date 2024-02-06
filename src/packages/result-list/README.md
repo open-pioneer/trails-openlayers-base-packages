@@ -15,7 +15,35 @@ To add the UI component take a look at the README.md from sample application. Th
 
 ## Usage
 
-Note that all data must satisfy the Interface ResultListInput (see api.ts). This means that metadata must also be available for each data column.
+Note that all data must satisfy the Interface ResultListInput (see api.ts). This means that metadata must also be available for each data column. The metadata has to be configured in the "attributes" for each layer.
+You can configure for each propertyName a displayName as well as the width of the result list column in pixel. Furthermore, the propertyValue has to be defined.
+
+```ts
+new SimpleLayer({
+    id: "ogc_kitas",
+    title: "Kindertagesstätten",
+    visible: true,
+    olLayer: createKitasLayer(),
+    attributes: {
+        "legend": pointLayerLegendProps,
+        "resultListMetadata": [
+            {
+                propertyName: "id",
+                displayName: "ID",
+                width: 100,
+                getPropertyValue(feature: BaseFeature) {
+                    return feature.id;
+                }
+            },
+            {
+                propertyName: "pointOfContact.address.postCode",
+                displayName: "PLZ",
+                width: 120
+            }
+        ]
+    }
+});
+```
 
 ### Select / Deselect Data
 

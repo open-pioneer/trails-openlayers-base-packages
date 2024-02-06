@@ -11,6 +11,7 @@ import { Circle, Fill, Style } from "ol/style";
 import TileLayer from "ol/layer/Tile.js";
 import { ServiceOptions } from "@open-pioneer/runtime";
 import { OgcFeaturesVectorSourceFactory } from "@open-pioneer/ogc-features";
+import { BaseFeature } from "@open-pioneer/map/api/BaseFeature";
 
 interface References {
     vectorSourceFactory: OgcFeaturesVectorSourceFactory;
@@ -97,7 +98,35 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     visible: true,
                     olLayer: createKitasLayer(),
                     attributes: {
-                        "legend": pointLayerLegendProps
+                        "legend": pointLayerLegendProps,
+                        "resultListMetadata": [
+                            {
+                                propertyName: "id",
+                                displayName: "ID",
+                                width: 100,
+                                getPropertyValue(feature: BaseFeature) {
+                                    return feature.id;
+                                }
+                            },
+                            {
+                                propertyName: "pointOfContact.address.postCode",
+                                displayName: "PLZ",
+                                width: 120
+                            },
+                            {
+                                propertyName: "name",
+                                displayName: "Name"
+                            },
+                            {
+                                propertyName: "inspireId",
+                                displayName: "inspireID"
+                            },
+                            {
+                                propertyName: "gefoerdert",
+                                displayName: "Gefördert",
+                                width: 160
+                            }
+                        ]
                     }
                 }),
                 // TODO: Remove OGC Feature-Dependency? Or keep it and change createKitasLayer() to use createVectorSource?
@@ -105,7 +134,24 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     id: "ogc_kataster",
                     title: "Liegenschaftskatasterbezirke in NRW (viele Daten)",
                     visible: false,
-                    olLayer: createKatasterLayer(this.vectorSourceFactory)
+                    olLayer: createKatasterLayer(this.vectorSourceFactory),
+                    attributes: {
+                        "resultListMetadata": [
+                            {
+                                propertyName: "id",
+                                displayName: "ID",
+                                width: 600,
+                                getPropertyValue(feature: BaseFeature) {
+                                    return feature.id;
+                                }
+                            },
+                            {
+                                propertyName: "aktualit",
+                                displayName: "Aktualit",
+                                width: 600
+                            }
+                        ]
+                    }
                 }),
                 createSchulenLayer(),
                 createStrassenLayer(),
