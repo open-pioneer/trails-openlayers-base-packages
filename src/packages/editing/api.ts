@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import { EventEmitter } from "@open-pioneer/core";
 import { MapModel } from "@open-pioneer/map";
 import type { DeclaredService } from "@open-pioneer/runtime";
 
@@ -29,7 +30,7 @@ export interface EditingWorkflowEvents {
 // TODO:
 // - Rename interface to EditingWorkflow (and class to *impl, for example)
 // - Add (?) stop/reset here too
-export interface EditingWorkflowType {
+export interface EditingWorkflowType extends EventEmitter<EditingWorkflowEvents> {
     /**
      * Returns the current state of the editing workflow.
      */

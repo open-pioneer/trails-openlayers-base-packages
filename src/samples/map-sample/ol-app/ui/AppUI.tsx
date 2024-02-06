@@ -19,9 +19,12 @@ import { SearchComponent } from "./Search";
 import { SelectionComponent } from "./Selection";
 import { TocComponent } from "./Toc";
 
-type InteractionType = "measurement" | "selection" | undefined;
+type InteractionType = "measurement" | "selection" | "editing" | undefined;
 
-type IndependentToolState = Omit<ToolState, "measurementActive" | "selectionActive">;
+type IndependentToolState = Omit<
+    ToolState,
+    "measurementActive" | "selectionActive" | "editingActive"
+>;
 
 const DEFAULT_TOOL_STATE: IndependentToolState = {
     bookmarksActive: false,
@@ -45,6 +48,7 @@ export function AppUI() {
     const [currentToolState, setCurrentToolState] = useState(DEFAULT_TOOL_STATE);
     const toolState: ToolState = {
         ...currentToolState,
+        editingActive: currentInteractionType === "editing",
         measurementActive: currentInteractionType === "measurement",
         selectionActive: currentInteractionType === "selection"
     };
@@ -54,9 +58,23 @@ export function AppUI() {
     // must be handled separately.
     const changeToolState = (toolStateName: keyof ToolState, newValue: boolean) => {
         // Enforce mutually exclusive interaction
-        if (toolStateName === "selectionActive" || toolStateName === "measurementActive") {
-            const interactionType =
-                toolStateName === "selectionActive" ? "selection" : "measurement";
+        if (
+            toolStateName === "selectionActive" ||
+            toolStateName === "measurementActive" ||
+            toolStateName === "editingActive"
+        ) {
+            let interactionType: InteractionType;
+            switch (toolStateName) {
+                case "editingActive":
+                    interactionType = "editing";
+                    break;
+                case "measurementActive":
+                    interactionType = "measurement";
+                    break;
+                case "selectionActive":
+                    interactionType = "selection";
+                    break;
+            }
             if (interactionType !== currentInteractionType && newValue) {
                 // A new interaction type was toggled on
                 setCurrentInteractionType(interactionType);
