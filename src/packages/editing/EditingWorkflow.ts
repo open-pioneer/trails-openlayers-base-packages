@@ -74,7 +74,10 @@ export class EditingWorkflow
         this._drawSource = new VectorSource();
         this._drawLayer = new VectorLayer({
             source: this._drawSource,
-            zIndex: TOPMOST_LAYER_Z
+            zIndex: TOPMOST_LAYER_Z,
+            properties: {
+                name: "editing-layer"
+            }
         });
 
         this._drawInteraction = new Draw({
@@ -119,6 +122,7 @@ export class EditingWorkflow
         this._tooltip.element.classList.remove("hidden");
 
         const drawStart = this._drawInteraction.on("drawstart", () => {
+            console.log("drawstart");
             this._setState("active:drawing");
             this._tooltip.element.textContent = this._intl.formatMessage({
                 id: "tooltip.continue"
@@ -165,6 +169,10 @@ export class EditingWorkflow
             if (mapContainer) {
                 mapContainer.addEventListener("keydown", this._escapeHandler, false);
             }
+        });
+
+        this._map.olMap.on("click", () => {
+            console.log("click");
         });
 
         this._interactionListener.push(drawStart, drawEnd);

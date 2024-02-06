@@ -17,6 +17,7 @@
         "react": "^18.2.0"
     },
     "devDependencies": {
+        "@open-pioneer/map-test-utils": "workspace:^",
         "openlayers-base-packages": "workspace:*"
     },
     "publishConfig": {
