@@ -5,7 +5,7 @@
 add optional property for display coordinate projection  
   
 example (show WGS84 coordinates on display):  
-```html
+```jsx
 <CoordinateViewer
     mapId={MAP_ID}
     precision={2}
