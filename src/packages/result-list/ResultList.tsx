@@ -33,14 +33,14 @@ export const ResultList: FC<ResultListProps> = (props) => {
             setTableWidth(event[0].contentBoxSize[0].inlineSize);
         });
         resizeObserver.observe(dataTableRef.current);
-    }, [dataTableRef]);
+    }, [dataTableRef.current]);
 
     const { containerProps } = useCommonComponentProps("result-list", props);
     const columns = useMemo(() => createColumns(metadata, tableWidth), [metadata, tableWidth]);
 
     return (
         <Box {...containerProps} height="100%" overflowY="auto" ref={dataTableRef}>
-            <DataTable columns={columns} data={data} tableWidth={tableWidth} />
+            <DataTable columns={columns} data={data} />
         </Box>
     );
 };

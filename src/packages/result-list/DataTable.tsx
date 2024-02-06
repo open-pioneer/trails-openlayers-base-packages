@@ -23,18 +23,17 @@ import {
 } from "@tanstack/react-table";
 import { TriangleDownIcon, TriangleUpIcon, UpDownIcon } from "@chakra-ui/icons";
 import { useIntl } from "open-pioneer:react-hooks";
-import React, { HTMLProps, useRef, useState } from "react";
+import React, { HTMLProps, useMemo, useRef, useState } from "react";
 import { PackageIntl } from "@open-pioneer/runtime";
 
 interface DataTableProps<Data extends object> {
     data: Data[];
     columns: ColumnDef<Data, unknown>[];
-    tableWidth: number | undefined;
 }
 
 export function DataTable<Data extends object>(props: DataTableProps<Data>) {
     const intl = useIntl();
-    const { data, columns, tableWidth } = props;
+    const { data, columns } = props;
     const [sorting, setSorting] = useState<SortingState>([]);
     const [rowSelection, setRowSelection] = useState({});
 
@@ -53,22 +52,7 @@ export function DataTable<Data extends object>(props: DataTableProps<Data>) {
         }
     });
 
-    /**
-     * Instead of calling `column.getSize()` on every render for every header
-     * and especially every data cell (very expensive),
-     * we will calculate all column sizes at once at the root table level in a useMemo
-     * and pass the column sizes down as CSS variables to the <table> element.
-     */
-    const columnSizeVars = React.useMemo(() => {
-        const headers = table.getFlatHeaders();
-        const colSizes: { [key: string]: number } = {};
-        for (let i = 0; i < headers.length; i++) {
-            const header = headers[i]!;
-            colSizes[`--header-${header.id}-size`] = header.getSize();
-            colSizes[`--col-${header.column.id}-size`] = header.column.getSize();
-        }
-        return colSizes;
-    }, [table.getState().columnSizingInfo, tableWidth]);
+    const columnSizeVars = useColumnSizeVars(table);
 
     function getCheckboxToolTip() {
         if (Object.keys(rowSelection).length === table.getRowModel().rows.length) {
@@ -168,8 +152,32 @@ export function DataTable<Data extends object>(props: DataTableProps<Data>) {
     );
 }
 
+/**
+ * Instead of calling `column.getSize()` on every render for every header
+ * and especially every data cell (very expensive),
+ * we will calculate all column sizes at once at the root table level in a useMemo
+ * and pass the column sizes down as CSS variables to the <table> element.
+ */
+function useColumnSizeVars<Data>(table: TanstackTable<Data>) {
+    const columnSizingInfo = table.getState().columnSizingInfo;
+    const tableHeaders = table.getFlatHeaders();
+
+    // TODO: Needs to be useMemo, not useEffect, to avoid multiple render calls?
+    // Need to add columnSizingInfo to the dependency array to make resizing work
+    const columnSizeVars = useMemo(() => {
+        const colSizes: { [key: string]: number } = {};
+        for (let i = 0; i < tableHeaders.length; i++) {
+            const header = tableHeaders[i]!;
+            colSizes[`--header-${header.id}-size`] = header.getSize();
+            colSizes[`--col-${header.column.id}-size`] = header.column.getSize();
+        }
+        return colSizes;
+    }, [tableHeaders, columnSizingInfo]);
+
+    return columnSizeVars;
+}
+
 type SortState = SortDirection | false;
-// TODO: Outsource into hook?
 function getSortingAriaLabel(intl: PackageIntl, sortState: SortState) {
     switch (sortState) {
         case "asc":
