@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: Apache-2.0
 import { MapModel } from "@open-pioneer/map";
 import type { DeclaredService } from "@open-pioneer/runtime";
-import { EditingWorkflow } from "./EditingWorkflow";
 
 /**
  * state of an editing workflow
@@ -27,6 +26,9 @@ export interface EditingWorkflowEvents {
     "active:saving": void;
 }
 
+// TODO:
+// - Rename interface to EditingWorkflow (and class to *impl, for example)
+// - Add (?) stop/reset here too
 export interface EditingWorkflowType {
     /**
      * Returns the current state of the editing workflow.
@@ -45,7 +47,7 @@ export interface EditingService extends DeclaredService<"editing.EditingService"
     /**
      * Creates and initializes a new {@link EditingWorkflow}.
      */
-    start(map: MapModel, ogcApiFeatureLayerUrl: URL): EditingWorkflow;
+    start(map: MapModel, ogcApiFeatureLayerUrl: URL): EditingWorkflowType;
 
     /**
      * Stops the edit mode and removes an existing {@link EditingWorkflow}.
