@@ -1,5 +1,22 @@
 # @open-pioneer/basemap-switcher
 
+## 0.3.0
+
+### Minor Changes
+
+-   ee7c2d4: Update runtime version.
+
+### Patch Changes
+
+-   6984d20: Adjusted basemap switcher style (changed background color of select indicator and cursor style).
+-   0883bbd: Add property `menuPosition` to React Select.
+-   Updated dependencies [ee7c2d4]
+-   Updated dependencies [a582e5e]
+-   Updated dependencies [0456500]
+-   Updated dependencies [762e7b9]
+    -   @open-pioneer/map@0.3.0
+    -   @open-pioneer/react-utils@0.2.1
+
 ## 0.2.0
 
 ### Minor Changes

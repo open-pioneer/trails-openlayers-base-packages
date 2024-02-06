@@ -12,8 +12,8 @@ export default defineBuildConfig({
                 vectorSourceFactory: "ogc-features.VectorSourceFactory"
             }
         },
-        AppConfig: {
-            provides: "ol-app.AppConfig",
+        AppModel: {
+            provides: "ol-app.AppModel",
             references: {
                 ogcSearchSourceFactory: "ogc-features.SearchSourceFactory",
                 vectorSelectionSourceFactory: "selection.VectorSelectionSourceFactory",
@@ -24,9 +24,8 @@ export default defineBuildConfig({
     },
     ui: {
         references: [
-            "map-sample-logging.LogService",
             "map.MapRegistry",
-            "ol-app.AppConfig",
+            "ol-app.AppModel",
             "notifier.NotificationService",
             "editing.EditingService"
         ]

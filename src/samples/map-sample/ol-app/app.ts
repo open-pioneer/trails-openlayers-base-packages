@@ -3,7 +3,7 @@
 import { createCustomElement } from "@open-pioneer/runtime";
 import { theme } from "@open-pioneer/theme";
 import * as appMetadata from "open-pioneer:app";
-import { AppUI } from "./AppUI";
+import { AppUI } from "./ui/AppUI";
 
 const element = createCustomElement({
     component: AppUI,

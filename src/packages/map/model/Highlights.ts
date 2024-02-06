@@ -15,10 +15,10 @@ import mapMarkerUrl from "../assets/images/mapMarker.png?url";
 import { FeatureLike } from "ol/Feature";
 import { TOPMOST_LAYER_Z } from "./LayerCollectionImpl";
 import { Layer as OlLayer } from "ol/layer";
-import { calculateBufferedExtent } from "../util/geometry-utils";
 
 const DEFAULT_OL_POINT_ZOOM_LEVEL = 17;
 const DEFAULT_OL_MAX_ZOOM_LEVEL = 20;
+const DEFAULT_VIEW_PADDING = { top: 50, right: 20, bottom: 10, left: 20 };
 
 export class Highlights {
     private olMap: OlMap;
@@ -67,7 +67,16 @@ export class Highlights {
             ? options?.pointZoom ?? DEFAULT_OL_POINT_ZOOM_LEVEL
             : options?.maxZoom ?? DEFAULT_OL_MAX_ZOOM_LEVEL;
         setCenter(this.olMap, center);
-        zoomTo(this.olMap, extent, zoomScale);
+
+        const {
+            top = 0,
+            right = 0,
+            bottom = 0,
+            left = 0
+        } = options?.viewPadding ?? DEFAULT_VIEW_PADDING;
+        const padding = [top, right, bottom, left];
+        zoomTo(this.olMap, extent, zoomScale, padding);
+
         this.createAndAddLayer(geometries, options?.highlightStyle);
     }
 
@@ -98,10 +107,14 @@ function setCenter(olMap: OlMap, coordinates: Coordinate | undefined) {
     coordinates && coordinates.length && olMap.getView().setCenter(coordinates);
 }
 
-function zoomTo(olMap: OlMap, extent: Extent | undefined, zoomLevel: number | undefined) {
+function zoomTo(
+    olMap: OlMap,
+    extent: Extent | undefined,
+    zoomLevel: number | undefined,
+    padding: number[]
+) {
     if (extent) {
-        const bufferedExtent: Extent | undefined = calculateBufferedExtent(extent);
-        bufferedExtent && olMap.getView().fit(bufferedExtent, { maxZoom: zoomLevel });
+        olMap.getView().fit(extent, { maxZoom: zoomLevel, padding: padding });
     } else {
         zoomLevel && olMap.getView().setZoom(zoomLevel);
     }

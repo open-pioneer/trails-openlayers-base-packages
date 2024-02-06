@@ -1,6 +1,6 @@
 {
     "name": "@open-pioneer/legend",
-    "version": "0.0.1",
+    "version": "0.1.0",
     "license": "Apache-2.0",
     "main": "index.ts",
     "scripts": {
@@ -9,7 +9,7 @@
     "peerDependencies": {
         "@open-pioneer/chakra-integration": "^1.1.1",
         "@chakra-ui/icons": "^2.1.1",
-        "@open-pioneer/runtime": "^2.0.2",
+        "@open-pioneer/runtime": "^2.1.0",
         "@open-pioneer/react-utils": "workspace:^",
         "@open-pioneer/map": "workspace:^",
         "ol": "^8.2.0",

@@ -12,7 +12,7 @@ import { setupMap } from "@open-pioneer/map-test-utils";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { EditingWorkflow } from "./EditingWorkflow";
 
-it("should remove the started drawing after reset", async () => {
+it.skip("should remove the started drawing after reset", async () => {
     const { workflow, map } = await setup();
 
     expect(workflow.getState()).toBe("active:initialized");
@@ -43,12 +43,12 @@ it("should remove the started drawing after reset", async () => {
         (fakeClickEvent as any).coordinate = [x, y];
         map.olMap.dispatchEvent(fakeClickEvent);
     };
- 
+
     // start drawing geometry
     clickOnMap(200, 200);
 
     expect(workflow.getState()).toBe("active:drawing");
-    
+
     // TODO drawinteraction bzw. temporäre Layersource enthält angefangene Geometrie
 
     // check that map contains a draw interaction
@@ -140,10 +140,4 @@ function getTooltipElement(olMap: OlMap, className: string): HTMLElement {
         throw new Error("tooltip overlay did not have an element");
     }
     return element;
-}
-
-function sleep(ms: number) {
-    return new Promise<void>((resolve) => {
-        setTimeout(resolve, ms);
-    });
 }

@@ -2,14 +2,14 @@
     "name": "@open-pioneer/authentication",
     "description": "Authentication API for open pioneer trails applications.",
     "license": "Apache-2.0",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "main": "index.ts",
     "scripts": {
         "build": "build-pioneer-package"
     },
     "dependencies": {},
     "peerDependencies": {
-        "@open-pioneer/runtime": "^2.0.2",
+        "@open-pioneer/runtime": "^2.1.0",
         "@open-pioneer/core": "^1.2.1",
         "react": "^18.2.0",
         "react-use": "^17.4.2"
