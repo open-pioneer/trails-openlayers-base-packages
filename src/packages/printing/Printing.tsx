@@ -3,7 +3,7 @@
 
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import {
     Box,
     Button,
@@ -13,14 +13,8 @@ import {
     Input,
     Select
 } from "@open-pioneer/chakra-integration";
-import { useMapModel } from "@open-pioneer/map";
-import OlMap from "ol/Map";
-import html2canvas, { Options } from "html2canvas";
-import { jsPDF } from "jspdf";
-import { ScaleLine } from "ol/control";
-import { createManualPromise } from "@open-pioneer/core";
-
-export type FileFormatType = "png" | "pdf";
+import { MapModel, useMapModel } from "@open-pioneer/map";
+import { FileFormatType, PrintingController } from "./PrintingController";
 
 /**
  * This is special property for the Printing.
@@ -45,53 +39,24 @@ export const Printing: FC<PrintingProps> = (props) => {
 
     const { map } = useMapModel(mapId);
 
+    const controller = useController(map);
+
+    useEffect(() => {
+        controller?.setFileFormat(selectedFileFormat);
+    }, [controller, selectedFileFormat]);
+
+    useEffect(() => {
+        controller?.setTitle(title);
+    }, [controller, title]);
+
     function changeFileFormat(fileFormat: string) {
         if (fileFormat === "png" || fileFormat === "pdf") {
             setSelectedFileFormat(fileFormat);
         }
     }
 
-    async function exportMap() {
-        if (map && selectedFileFormat) {
-            const olMap = map.olMap;
-
-            await handleScaleLine(olMap);
-
-            // export options for html2canvas.
-            const exportOptions: Partial<Options> = {
-                useCORS: true,
-                ignoreElements: function (element: Element) {
-                    const classNames: string = element.className || "";
-                    if (typeof classNames === "object") return false;
-
-                    return classNames.includes("map-anchors");
-                }
-            };
-
-            html2canvas(olMap.getViewport(), exportOptions).then((canvas: HTMLCanvasElement) => {
-                if (canvas) {
-                    selectedFileFormat == "png"
-                        ? exportMapInPNG(olMap, canvas)
-                        : exportMapInPDF(olMap, canvas);
-                }
-                //olMap.removeControl(scaleLine);
-            });
-        }
-    }
-
-    async function handleScaleLine(olMap: OlMap) {
-        const scaleLine = new ScaleLine({ bar: true, text: true, minWidth: 125 });
-        const renderPromise = createManualPromise<void>();
-        const oldRender = scaleLine.render;
-        scaleLine.render = (...args) => {
-            oldRender.apply(scaleLine, args);
-            renderPromise.resolve();
-        };
-        olMap.addControl(scaleLine);
-        await renderPromise.promise;
-        await new Promise((resolve) => {
-            requestAnimationFrame(resolve);
-        });
+    function exportMap() {
+        controller?.handleMapExport();
     }
 
     return (
@@ -132,51 +97,21 @@ export const Printing: FC<PrintingProps> = (props) => {
     );
 };
 
-function exportMapInPNG(map: OlMap, mapCanvas: HTMLCanvasElement) {
-    const containerCanvas = document.createElement("canvas");
-    containerCanvas.width = mapCanvas.width;
-    containerCanvas.height = mapCanvas.height + 50;
-    containerCanvas.style.backgroundColor = "#fff";
+function useController(map: MapModel | undefined) {
+    const [controller, setController] = useState<PrintingController | undefined>(undefined);
 
-    const context = containerCanvas.getContext("2d");
+    useEffect(() => {
+        if (!map) {
+            return;
+        }
 
-    if (context) {
-        const text = "Default title for printing";
+        const controller = new PrintingController(map.olMap);
+        setController(controller);
 
-        context.fillStyle = "#fff"; // background color for background rect
-        context.fillRect(0, 0, containerCanvas.width, containerCanvas.height); //draw background rect
-        context.font = 20 + "px bold Arial";
-        context.textAlign = "center";
-        context.fillStyle = "#000"; // text color
-
-        const x = containerCanvas.width / 2; //align text to center
-        context.fillText(text, x, 20);
-    }
-    context?.drawImage(mapCanvas, 0, 50);
-
-    const link = document.createElement("a");
-    link.setAttribute("download", "map.png");
-    link.href = containerCanvas.toDataURL("image/png", 0.8);
-    link.click();
-}
-
-function exportMapInPDF(map: OlMap, canvas: HTMLCanvasElement) {
-    // Landscape map export
-    const size = map.getSize();
-    const pdf = new jsPDF({
-        orientation: "landscape",
-        unit: "px",
-        format: size
-    });
-
-    const imgUrlStr = canvas.toDataURL("image/jpeg");
-
-    pdf.setFontSize(20);
-    if (size && size[0] && size[1]) {
-        const height = size[1];
-        const width = size[0];
-        pdf.addImage(imgUrlStr, "JPEG", 0, 50, width, height - 50);
-        pdf.text("Default title for printing", width / 2, 30, { align: "center" });
-        pdf.save("map.pdf");
-    }
+        return () => {
+            controller.destroy();
+            setController(undefined);
+        };
+    }, [map]);
+    return controller;
 }
