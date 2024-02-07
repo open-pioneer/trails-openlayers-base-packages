@@ -16,3 +16,9 @@ export interface ResultListInput {
     data: BaseFeature[];
     metadata: ResultColumn[];
 }
+
+/** Events emitted by the {@link ResultList}. */
+export interface ResultListSelectionChangedEvent {
+    action: "changed:selection";
+    ids: (number | string)[];
+}

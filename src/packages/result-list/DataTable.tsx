@@ -23,17 +23,29 @@ import {
 } from "@tanstack/react-table";
 import { TriangleDownIcon, TriangleUpIcon, UpDownIcon } from "@chakra-ui/icons";
 import { useIntl } from "open-pioneer:react-hooks";
-import React, { HTMLProps, useMemo, useRef, useState } from "react";
+import React, {
+    Dispatch,
+    HTMLProps,
+    SetStateAction,
+    useEffect,
+    useMemo,
+    useRef,
+    useState
+} from "react";
 import { PackageIntl } from "@open-pioneer/runtime";
+import { BaseFeature } from "@open-pioneer/map/api/BaseFeature";
+import { ResultListSelectionChangedEvent } from "./api";
 
-interface DataTableProps<Data extends object> {
-    data: Data[];
-    columns: ColumnDef<Data, unknown>[];
+interface DataTableProps {
+    data: BaseFeature[];
+    columns: ColumnDef<BaseFeature, unknown>[];
+    setSelectedFeatures?: Dispatch<SetStateAction<BaseFeature[] | null>>;
+    onSelectionChanged?(event: ResultListSelectionChangedEvent): void;
 }
 
-export function DataTable<Data extends object>(props: DataTableProps<Data>) {
+export function DataTable(props: DataTableProps) {
     const intl = useIntl();
-    const { data, columns } = props;
+    const { data, columns, setSelectedFeatures, onSelectionChanged } = props;
     const [sorting, setSorting] = useState<SortingState>([]);
     const [rowSelection, setRowSelection] = useState({});
 
@@ -51,6 +63,21 @@ export function DataTable<Data extends object>(props: DataTableProps<Data>) {
             rowSelection
         }
     });
+
+    /**
+     * On every selection-change throw change-Event and reset selected Features
+     */
+    useEffect(() => {
+        const selectedRows = table.getSelectedRowModel();
+        const features = selectedRows.rows.map((feature) => feature.original);
+        const ids = features.map((feature) => feature.id);
+        if (setSelectedFeatures) setSelectedFeatures(features);
+        if (onSelectionChanged)
+            onSelectionChanged({
+                ids: ids,
+                action: "changed:selection"
+            });
+    }, [onSelectionChanged, rowSelection, setSelectedFeatures, table]);
 
     const columnSizeVars = useColumnSizeVars(table);
 

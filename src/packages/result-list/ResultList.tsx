@@ -2,18 +2,29 @@
 // SPDX-License-Identifier: Apache-2.0
 import { Box } from "@open-pioneer/chakra-integration";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
-import { FC, useEffect, useMemo, useRef, useState } from "react";
+import { Dispatch, FC, SetStateAction, useEffect, useMemo, useRef, useState } from "react";
 import { DataTable } from "./DataTable";
-import { ResultListInput } from "./api";
+import { ResultListInput, ResultListSelectionChangedEvent } from "./api";
 import { createColumns } from "./createColumns";
 import { useIntl } from "open-pioneer:react-hooks";
+import { BaseFeature } from "@open-pioneer/map/api/BaseFeature";
 export interface ResultListProps extends CommonComponentProps {
     resultListInput: ResultListInput;
+
+    /**
+     * This handler is called whenever the user has changed the selected features in the result-list
+     */
+    onSelectionChanged?: (event: ResultListSelectionChangedEvent) => void;
+
+    /**
+     * This state-Handler is called whenever the user has changed the selected features in the result-list
+     */
+    getSelectedFeature?: Dispatch<SetStateAction<BaseFeature[] | null>>;
 }
 
 export const ResultList: FC<ResultListProps> = (props) => {
     const intl = useIntl();
-    const { resultListInput } = props;
+    const { resultListInput, getSelectedFeature, onSelectionChanged } = props;
     const data = resultListInput.data;
     const metadata = resultListInput.metadata;
 
@@ -40,7 +51,12 @@ export const ResultList: FC<ResultListProps> = (props) => {
 
     return (
         <Box {...containerProps} height="100%" overflowY="auto" ref={dataTableRef}>
-            <DataTable columns={columns} data={data} />
+            <DataTable
+                columns={columns}
+                data={data}
+                onSelectionChanged={onSelectionChanged}
+                setSelectedFeatures={getSelectedFeature}
+            />
         </Box>
     );
 };
