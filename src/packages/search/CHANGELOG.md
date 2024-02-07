@@ -1,5 +1,13 @@
 # @open-pioneer/search
 
+## 0.3.1
+
+### Patch Changes
+
+-   611ddb9: Export interface `BaseFeature` from Map API and use it correctly in base packages `selection` and `search`.
+-   Updated dependencies [611ddb9]
+    -   @open-pioneer/map@0.3.1
+
 ## 0.3.0
 
 ### Minor Changes

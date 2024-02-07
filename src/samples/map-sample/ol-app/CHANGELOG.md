@@ -1,5 +1,26 @@
 # ol-map
 
+## 0.0.11
+
+### Patch Changes
+
+-   Updated dependencies [66f5733]
+-   Updated dependencies [611ddb9]
+    -   @open-pioneer/coordinate-viewer@0.4.0
+    -   @open-pioneer/selection@0.1.1
+    -   @open-pioneer/search@0.3.1
+    -   @open-pioneer/map@0.3.1
+    -   @open-pioneer/ogc-features@0.3.1
+    -   @open-pioneer/geolocation@0.3.1
+    -   @open-pioneer/legend@0.1.1
+    -   @open-pioneer/map-navigation@0.3.1
+    -   @open-pioneer/measurement@0.3.1
+    -   @open-pioneer/overview-map@0.3.1
+    -   @open-pioneer/scale-bar@0.3.1
+    -   @open-pioneer/scale-viewer@0.3.1
+    -   @open-pioneer/spatial-bookmarks@0.3.1
+    -   @open-pioneer/toc@0.3.1
+
 ## 0.0.10
 
 ### Patch Changes
