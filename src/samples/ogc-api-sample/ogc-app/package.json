@@ -16,5 +16,5 @@
         "ol-mapbox-style": "^12.1.1",
         "react": "^18.2.0"
     },
-    "version": "0.0.5"
+    "version": "0.0.6"
 }
