@@ -89,29 +89,19 @@ export function DataTable<Data extends object>(props: DataTableProps<Data>) {
                                     style={{ width: index === 0 ? "50px" : width }}
                                 >
                                     {index === 0 ? (
-                                        <>
-                                            <IndeterminateCheckbox
-                                                {...{
-                                                    className: "result-list-select-all-checkbox",
-                                                    checked: table.getIsAllRowsSelected(),
-                                                    indeterminate: table.getIsSomeRowsSelected(),
-                                                    onChange:
-                                                        table.getToggleAllRowsSelectedHandler(),
-                                                    toolTipLabel: getCheckboxToolTip(),
-                                                    // TODO: Is also read by screenreader for all single row select checkboxes?!
-                                                    ariaLabel: intl.formatMessage({
-                                                        id: "ariaLabel.selectAll"
-                                                    })
-                                                }}
-                                            />
-
-                                            <ColumnResizer
-                                                onDoubleClick={() => header.column.resetSize()}
-                                                onMouseDown={header.getResizeHandler()}
-                                                onTouchStart={header.getResizeHandler()}
-                                                isResizing={header.column.getIsResizing()}
-                                            />
-                                        </>
+                                        <IndeterminateCheckbox
+                                            {...{
+                                                className: "result-list-select-all-checkbox",
+                                                checked: table.getIsAllRowsSelected(),
+                                                indeterminate: table.getIsSomeRowsSelected(),
+                                                onChange: table.getToggleAllRowsSelectedHandler(),
+                                                toolTipLabel: getCheckboxToolTip(),
+                                                // TODO: Is also read by screenreader for all single row select checkboxes?!
+                                                ariaLabel: intl.formatMessage({
+                                                    id: "ariaLabel.selectAll"
+                                                })
+                                            }}
+                                        />
                                     ) : (
                                         <>
                                             {flexRender(
@@ -128,14 +118,14 @@ export function DataTable<Data extends object>(props: DataTableProps<Data>) {
                                                     header.column.getIsSorted()
                                                 )}
                                             />
-                                            <ColumnResizer
-                                                onDoubleClick={() => header.column.resetSize()}
-                                                onMouseDown={header.getResizeHandler()}
-                                                onTouchStart={header.getResizeHandler()}
-                                                isResizing={header.column.getIsResizing()}
-                                            />
                                         </>
                                     )}
+                                    <ColumnResizer
+                                        onDoubleClick={() => header.column.resetSize()}
+                                        onMouseDown={header.getResizeHandler()}
+                                        onTouchStart={header.getResizeHandler()}
+                                        isResizing={header.column.getIsResizing()}
+                                    />
                                 </Th>
                             );
                         })}
