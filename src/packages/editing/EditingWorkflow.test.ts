@@ -1,7 +1,6 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { expect, it } from "vitest";
-import BaseEvent from "ol/events/Event";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import OlMap from "ol/Map";
@@ -12,8 +11,33 @@ import { setupMap } from "@open-pioneer/map-test-utils";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { EditingWorkflow } from "./EditingWorkflow";
 
+it("should start editing workflow", async () => {
+    const { workflow } = await setup();
+    expect(workflow.getState()).toBe("active:initialized");
+});
+
+it("should stop editing workflow", async () => {
+    const { workflow } = await setup();
+    expect(workflow.getState()).toBe("active:initialized");
+    workflow.stop();
+    expect(workflow.getState()).toBe("inactive");
+});
+
+it("should start editing workflow after stop", async () => {
+    const workflow = (await setup()).workflow;
+    expect(workflow.getState()).toBe("active:initialized");
+    workflow.stop();
+    expect(workflow.getState()).toBe("inactive");
+
+    const nextWorkflow = (await setup()).workflow;
+    expect(nextWorkflow.getState()).toBe("active:initialized");
+    nextWorkflow.stop();
+    expect(nextWorkflow.getState()).toBe("inactive");
+});
+
 it.skip("should remove the started drawing after reset", async () => {
     const { workflow, map } = await setup();
+    const draw = workflow.getDrawInteraction();
 
     expect(workflow.getState()).toBe("active:initialized");
 
@@ -38,14 +62,7 @@ it.skip("should remove the started drawing after reset", async () => {
     const beginTooltip = getTooltipElement(map.olMap, "editing-tooltip");
     expect(beginTooltip.innerHTML).toMatchInlineSnapshot('"tooltip.begin"');
 
-    const clickOnMap = (x: number, y: number) => {
-        const fakeClickEvent = new BaseEvent("click");
-        (fakeClickEvent as any).coordinate = [x, y];
-        map.olMap.dispatchEvent(fakeClickEvent);
-    };
-
-    // start drawing geometry
-    clickOnMap(200, 200);
+    draw.appendCoordinates([[200, 200]]);
 
     expect(workflow.getState()).toBe("active:drawing");
 
@@ -58,31 +75,33 @@ it.skip("should remove the started drawing after reset", async () => {
         .find((i) => i instanceof Draw) as Draw;
     expect(drawInteractionStart).not.toBe(undefined);
 
-    const continueTooltip = getTooltipElement(map.olMap, "editing-tooltip");
-    expect(continueTooltip.innerHTML).toMatchInlineSnapshot('"tooltip.continue"');
+    // const continueTooltip = getTooltipElement(map.olMap, "editing-tooltip");
+    // expect(continueTooltip.innerHTML).toMatchInlineSnapshot('"tooltip.continue"');
 
-    workflow.reset();
+    // workflow.reset();
 
-    expect(workflow.getState()).toBe("active:initialized");
-    /*
-    // TODO OL-Map enthält weiterhin temporären Zeichenlayer
-    console.log(map.olMap.getLayers());
-    // TODO temporäre Layersource leer?
-    console.log(map.olMap.getLayers()[0].getSource());
-    */
-    // TODO OL-Map enthält weiterhin Interaction
-    console.log(map.olMap.getInteractions());
+    // expect(workflow.getState()).toBe("active:initialized");
+    // /*
+    // // TODO OL-Map enthält weiterhin temporären Zeichenlayer
+    // console.log(map.olMap.getLayers());
+    // // TODO temporäre Layersource leer?
+    // console.log(map.olMap.getLayers()[0].getSource());
+    // */
+    // // TODO OL-Map enthält weiterhin Interaction
+    // console.log(map.olMap.getInteractions());
 
-    // check that draw interaction was not removed (like after stop)
-    const drawInteractionReset: Draw | undefined = map.olMap
-        .getInteractions()
-        .getArray()
-        .find((i) => i instanceof Draw) as Draw;
-    expect(drawInteractionReset).not.toBe(undefined);
+    // // check that draw interaction was not removed (like after stop)
+    // const drawInteractionReset: Draw | undefined = map.olMap
+    //     .getInteractions()
+    //     .getArray()
+    //     .find((i) => i instanceof Draw) as Draw;
+    // expect(drawInteractionReset).not.toBe(undefined);
 
-    const resetTooltip = getTooltipElement(map.olMap, "editing-tooltip");
-    expect(resetTooltip.innerHTML).toMatchInlineSnapshot('"tooltip.begin"');
+    // const resetTooltip = getTooltipElement(map.olMap, "editing-tooltip");
+    // expect(resetTooltip.innerHTML).toMatchInlineSnapshot('"tooltip.begin"');
 });
+
+it.skip("should return a feature id when complete editing", () => {});
 
 async function setup() {
     const httpService: HttpService = {

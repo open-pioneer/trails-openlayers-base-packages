@@ -7,7 +7,11 @@ import type { DeclaredService } from "@open-pioneer/runtime";
 /**
  * state of an editing workflow
  */
-export type EditingWorkflowState = "active:initialized" | "active:drawing" | "active:saving";
+export type EditingWorkflowState =
+    | "active:initialized"
+    | "active:drawing"
+    | "active:saving"
+    | "inactive";
 
 /** Events emitted by the {@link EditingWorkflow}. */
 export interface EditingWorkflowEvents {
@@ -25,6 +29,11 @@ export interface EditingWorkflowEvents {
      * state while feature is being saved after user finished the geometry
      */
     "active:saving": void;
+
+    /**
+     * state after user stops editing
+     */
+    "inactive": void;
 }
 
 // TODO:

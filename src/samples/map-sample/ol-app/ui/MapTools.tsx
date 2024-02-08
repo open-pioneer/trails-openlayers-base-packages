@@ -178,7 +178,7 @@ function useEditingWorkflow(
                             const vectorLayer = layer?.olLayer as VectorLayer<VectorSource>;
                             vectorLayer.getSource()?.refresh();
                         })
-                        .catch((error) => {
+                        .catch((error: Error) => {
                             console.log(error);
                         })
                         .finally(() => {

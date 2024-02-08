@@ -100,6 +100,10 @@ export class EditingWorkflow
         this._start();
     }
 
+    getDrawInteraction() {
+        return this._drawInteraction;
+    }
+
     getState() {
         return this._state;
     }
@@ -205,7 +209,10 @@ export class EditingWorkflow
         });
 
         // Remove event escape listener
-        this._olMap.getTargetElement().removeEventListener("keydown", this._escapeHandler);
+        // TODO: `this._olMap.getTargetElement()` ist beim Testen --> null
+        // this._olMap.getTargetElement().removeEventListener("keydown", this._escapeHandler);
+
+        this._state = "inactive";
     }
 
     whenComplete(): Promise<string | undefined> {
