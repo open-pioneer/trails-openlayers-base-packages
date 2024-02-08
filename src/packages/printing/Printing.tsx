@@ -15,6 +15,9 @@ import {
 } from "@open-pioneer/chakra-integration";
 import { MapModel, useMapModel } from "@open-pioneer/map";
 import { FileFormatType, PrintingController } from "./PrintingController";
+import { createLogger } from "@open-pioneer/core";
+
+const LOG = createLogger("printing");
 
 /**
  * This is special property for the Printing.
@@ -56,7 +59,10 @@ export const Printing: FC<PrintingProps> = (props) => {
     }
 
     function exportMap() {
-        controller?.handleMapExport();
+        //Todo: add notification with the ""
+        controller?.handleMapExport().catch((error) => {
+            LOG.error("Failed to print the map", error);
+        });
     }
 
     return (
@@ -90,7 +96,7 @@ export const Printing: FC<PrintingProps> = (props) => {
                     </Select>
                 </HStack>
             </FormControl>
-            <Button padding={2} className="export-button" onClick={exportMap} width="100%">
+            <Button padding={2} className="printing-export-button" onClick={exportMap} width="100%">
                 {intl.formatMessage({ id: "export" })}
             </Button>
         </Box>

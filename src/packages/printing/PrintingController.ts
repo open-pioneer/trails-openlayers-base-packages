@@ -37,36 +37,36 @@ export class PrintingController {
         this.fileFormat = format;
     }
 
-    removeScaleLine() {
+    private removeScaleLine() {
         if (this.scaleLine) {
             this.olMap.removeControl(this.scaleLine);
+            this.scaleLine = undefined;
         }
     }
 
     async handleMapExport() {
-        if (this.olMap && this.fileFormat) {
-            await this.handleScaleLine();
+        if (!this.olMap || !this.fileFormat) {
+            return;
+        }
 
-            // export options for html2canvas.
-            const exportOptions: Partial<Options> = {
-                useCORS: true,
-                ignoreElements: function (element: Element) {
-                    const classNames: string = element.className || "";
-                    if (typeof classNames === "object") return false;
+        await this.handleScaleLine();
 
-                    return classNames.includes("map-anchors");
-                }
-            };
+        // export options for html2canvas.
+        const exportOptions: Partial<Options> = {
+            useCORS: true,
+            ignoreElements: function (element: Element) {
+                const classNames: string = element.className || "";
+                if (typeof classNames === "object") return false;
 
-            html2canvas(this.olMap.getViewport(), exportOptions).then(
-                (canvas: HTMLCanvasElement) => {
-                    if (canvas) {
-                        this.fileFormat == "png"
-                            ? this.exportMapInPNG(canvas)
-                            : this.exportMapInPDF(canvas);
-                    }
-                }
-            );
+                return classNames.includes("map-anchors");
+            }
+        };
+
+        const canvas = await html2canvas(this.olMap.getViewport(), exportOptions);
+        if (canvas) {
+            this.fileFormat == "png" ? this.exportMapInPNG(canvas) : this.exportMapInPDF(canvas);
+        } else {
+            throw new Error("Canvas export failed");
         }
     }
 
