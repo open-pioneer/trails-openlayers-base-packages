@@ -60,15 +60,15 @@ export const Printing: FC<PrintingProps> = (props) => {
     }
 
     function exportMap() {
-        //Todo: add notification with a generic error message (e.g. "Printing failed")
-        if (running) {
+        if (running || !controller) {
             return;
         }
 
         setRunning(true);
         controller
-            ?.handleMapExport()
+            .handleMapExport()
             .catch((error) => {
+                //Todo: add notification with a generic error message (e.g. "Printing failed")
                 LOG.error("Failed to print the map", error);
             })
             .finally(() => setRunning(false));
