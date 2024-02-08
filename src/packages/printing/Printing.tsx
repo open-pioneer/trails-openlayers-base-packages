@@ -39,6 +39,7 @@ export const Printing: FC<PrintingProps> = (props) => {
     const { containerProps } = useCommonComponentProps("printing", props);
     const [selectedFileFormat, setSelectedFileFormat] = useState<FileFormatType>("pdf");
     const [title, setTitle] = useState<string>("");
+    const [running, setRunning] = useState<boolean>(false);
 
     const { map } = useMapModel(mapId);
 
@@ -60,9 +61,17 @@ export const Printing: FC<PrintingProps> = (props) => {
 
     function exportMap() {
         //Todo: add notification with the ""
-        controller?.handleMapExport().catch((error) => {
-            LOG.error("Failed to print the map", error);
-        });
+        if (running) {
+            return;
+        }
+
+        setRunning(true);
+        controller
+            ?.handleMapExport()
+            .catch((error) => {
+                LOG.error("Failed to print the map", error);
+            })
+            .finally(() => setRunning(false));
     }
 
     return (
@@ -96,7 +105,15 @@ export const Printing: FC<PrintingProps> = (props) => {
                     </Select>
                 </HStack>
             </FormControl>
-            <Button padding={2} className="printing-export-button" onClick={exportMap} width="100%">
+            <Button
+                isLoading={running}
+                loadingText={intl.formatMessage({ id: "export" })} // TODO: Message 'Map is printing...'
+                disabled={running}
+                padding={2}
+                className="printing-export-button"
+                onClick={exportMap}
+                width="100%"
+            >
                 {intl.formatMessage({ id: "export" })}
             </Button>
         </Box>

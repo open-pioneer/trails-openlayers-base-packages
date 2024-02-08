@@ -3,9 +3,8 @@
 import OlMap from "ol/Map";
 import { ScaleLine } from "ol/control";
 import Overlay from "ol/Overlay";
-import html2canvas, { Options } from "html2canvas";
+import type { Options } from "html2canvas";
 import { createManualPromise } from "@open-pioneer/core";
-import { jsPDF } from "jspdf";
 
 export type FileFormatType = "png" | "pdf";
 
@@ -16,6 +15,7 @@ export class PrintingController {
     private olMap: OlMap;
     private title: string = "";
     private fileFormat: FileFormatType = "pdf";
+    private running = false;
 
     private scaleLine: ScaleLine | undefined = undefined;
 
@@ -26,7 +26,7 @@ export class PrintingController {
     }
 
     destroy() {
-        this.removeScaleLine();
+        this.reset();
     }
 
     setTitle(title: string) {
@@ -37,11 +37,9 @@ export class PrintingController {
         this.fileFormat = format;
     }
 
-    private removeScaleLine() {
-        if (this.scaleLine) {
-            this.olMap.removeControl(this.scaleLine);
-            this.scaleLine = undefined;
-        }
+    private reset() {
+        this.removeScaleLine();
+        this.running = false;
     }
 
     async handleMapExport() {
@@ -49,29 +47,53 @@ export class PrintingController {
             return;
         }
 
-        await this.handleScaleLine();
+        if (this.running) {
+            throw new Error("Printing already running.");
+        }
 
-        // export options for html2canvas.
-        const exportOptions: Partial<Options> = {
-            useCORS: true,
-            ignoreElements: function (element: Element) {
-                const classNames: string = element.className || "";
-                if (typeof classNames === "object") return false;
+        try {
+            this.running = true;
+            await this.handleScaleLine();
 
-                return classNames.includes("map-anchors");
+            // export options for html2canvas.
+            const exportOptions: Partial<Options> = {
+                useCORS: true,
+                ignoreElements: function (element: Element) {
+                    if (element.classList && typeof element.classList === "object") {
+                        const classList = element.classList;
+                        // TODO: Document that '.printing-hide' can be used to hide custom elements
+                        return (
+                            classList.contains("map-anchors") || classList.contains("printing-hide")
+                        );
+                    }
+                    return false;
+                }
+            };
+
+            // Lazy load html2canvas: it is a large dependency (>= KiB) that is only
+            // required when actually printed. This speeds up the initial page load.
+            const html2canvas = (await import("html2canvas")).default;
+            const canvas = await html2canvas(this.olMap.getViewport(), exportOptions);
+            if (canvas) {
+                this.fileFormat == "png"
+                    ? await this.exportMapInPNG(canvas)
+                    : await this.exportMapInPDF(canvas);
+            } else {
+                throw new Error("Canvas export failed");
             }
-        };
-
-        const canvas = await html2canvas(this.olMap.getViewport(), exportOptions);
-        if (canvas) {
-            this.fileFormat == "png" ? this.exportMapInPNG(canvas) : this.exportMapInPDF(canvas);
-        } else {
-            throw new Error("Canvas export failed");
+        } finally {
+            // Always remove scale bar
+            this.reset();
         }
     }
 
-    async handleScaleLine() {
-        this.scaleLine = new ScaleLine({ bar: true, text: true, minWidth: 125 });
+    private async handleScaleLine() {
+        this.scaleLine = new ScaleLine({
+            className: "printing-scale-bar ol-scale-bar",
+            bar: true,
+            text: true,
+            minWidth: 125
+        });
         const renderPromise = createManualPromise<void>();
         const oldRender = this.scaleLine.render;
         this.scaleLine.render = (...args) => {
@@ -79,68 +101,91 @@ export class PrintingController {
             renderPromise.resolve();
         };
         this.olMap.addControl(this.scaleLine);
+
+        // Wait until render (+ one additional frame just to be sure).
         await renderPromise.promise;
         await new Promise((resolve) => {
             requestAnimationFrame(resolve);
         });
     }
 
-    getTitleAndFileName() {
+    private getTitleAndFileName() {
         const titleValue = this.title || DEFAULT_TITLE;
         const fileName = this.title || DEFAULT_FILE_NAME;
         return { title: titleValue, fileName: fileName };
     }
 
-    exportMapInPNG(mapCanvas: HTMLCanvasElement) {
+    private async exportMapInPNG(mapCanvas: HTMLCanvasElement) {
         const containerCanvas = document.createElement("canvas");
         containerCanvas.width = mapCanvas.width;
         containerCanvas.height = mapCanvas.height + 50;
         containerCanvas.style.backgroundColor = "#fff";
 
         const context = containerCanvas.getContext("2d");
+        if (!context) {
+            throw new Error("2d canvas rendering context not available");
+        }
 
         const { title, fileName } = this.getTitleAndFileName();
 
-        if (context) {
-            context.fillStyle = "#fff"; // background color for background rect
-            context.fillRect(0, 0, containerCanvas.width, containerCanvas.height); //draw background rect
-            context.font = 20 + "px bold Arial";
-            context.textAlign = "center";
-            context.fillStyle = "#000"; // text color
+        context.fillStyle = "#fff"; // background color for background rect
+        context.fillRect(0, 0, containerCanvas.width, containerCanvas.height); //draw background rect
+        context.font = 20 + "px bold Arial"; // TODO: Use font that is always available (e.g. 'Sans-Serif' ?)
+        context.textAlign = "center";
+        context.fillStyle = "#000"; // text color
 
-            const x = containerCanvas.width / 2; //align text to center
-            context.fillText(title, x, 20);
-        }
-        context?.drawImage(mapCanvas, 0, 50);
+        const x = containerCanvas.width / 2; //align text to center
+        context.fillText(title, x, 20);
+        context.drawImage(mapCanvas, 0, 50);
 
         const link = document.createElement("a");
         link.setAttribute("download", fileName + ".png");
         link.href = containerCanvas.toDataURL("image/png", 0.8);
         link.click();
-        this.destroy();
     }
 
-    exportMapInPDF(canvas: HTMLCanvasElement) {
-        // Landscape map export
-        const size = this.olMap.getSize();
+    private async exportMapInPDF(canvas: HTMLCanvasElement) {
+        // Landscape map export.
+        // Lazy load pdfjs as well.
+        const { jsPDF } = await import("jspdf");
         const pdf = new jsPDF({
             orientation: "landscape",
             unit: "px",
-            format: size
+            format: "a4"
         });
 
-        const imgUrlStr = canvas.toDataURL("image/jpeg");
+        // Simple layout: 50 pixels for the header and
+        // the remaining space can be used by the map export.
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
+        const mapPageHeight = pageHeight - 50;
 
+        // Render title
         pdf.setFontSize(20);
-        if (size && size[0] && size[1]) {
-            const { title, fileName } = this.getTitleAndFileName();
+        const { title, fileName } = this.getTitleAndFileName();
+        pdf.text(title, pageWidth / 2, 30, { align: "center" });
 
-            const height = size[1];
-            const width = size[0];
-            pdf.addImage(imgUrlStr, "JPEG", 0, 50, width, height - 50);
-            pdf.text(title, width / 2, 30, { align: "center" });
-            pdf.save(fileName + ".pdf");
-            this.destroy();
+        // Resize image while keeping aspect ratio
+        const imageAspectRatio = canvas.width / canvas.height;
+        let targetImageHeight = mapPageHeight;
+        let targetImageWidth = targetImageHeight * imageAspectRatio;
+        if (targetImageWidth >= pageWidth) {
+            targetImageWidth = pageWidth;
+            targetImageHeight = targetImageWidth / imageAspectRatio;
+        }
+
+        // Center image
+        const imageX = (pageWidth - targetImageWidth) / 2;
+        const imageY = 50 + (mapPageHeight - targetImageHeight) / 2;
+
+        pdf.addImage(canvas, "", imageX, imageY, targetImageWidth, targetImageHeight);
+        pdf.save(fileName + ".pdf");
+    }
+
+    private removeScaleLine() {
+        if (this.scaleLine) {
+            this.olMap.removeControl(this.scaleLine);
+            this.scaleLine = undefined;
         }
     }
 }
