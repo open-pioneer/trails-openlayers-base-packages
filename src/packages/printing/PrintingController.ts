@@ -10,7 +10,7 @@ import { jsPDF } from "jspdf";
 export type FileFormatType = "png" | "pdf";
 
 const DEFAULT_FILE_NAME = "map";
-const DEFAULT_TITLE = "Default title for printing";
+const DEFAULT_TITLE = "My own map";
 
 export class PrintingController {
     private olMap: OlMap;
@@ -25,7 +25,9 @@ export class PrintingController {
         this.olMap = olMap;
     }
 
-    destroy() {}
+    destroy() {
+        this.removeScaleLine();
+    }
 
     setTitle(title: string) {
         this.title = title;
@@ -33,6 +35,12 @@ export class PrintingController {
 
     setFileFormat(format: FileFormatType) {
         this.fileFormat = format;
+    }
+
+    removeScaleLine() {
+        if (this.scaleLine) {
+            this.olMap.removeControl(this.scaleLine);
+        }
     }
 
     async handleMapExport() {
@@ -54,8 +62,8 @@ export class PrintingController {
                 (canvas: HTMLCanvasElement) => {
                     if (canvas) {
                         this.fileFormat == "png"
-                            ? this.exportMapInPNG(this.olMap, canvas)
-                            : this.exportMapInPDF(this.olMap, canvas);
+                            ? this.exportMapInPNG(canvas)
+                            : this.exportMapInPDF(canvas);
                     }
                 }
             );
@@ -77,7 +85,13 @@ export class PrintingController {
         });
     }
 
-    exportMapInPNG(map: OlMap, mapCanvas: HTMLCanvasElement) {
+    getTitleAndFileName() {
+        const titleValue = this.title || DEFAULT_TITLE;
+        const fileName = this.title || DEFAULT_FILE_NAME;
+        return { title: titleValue, fileName: fileName };
+    }
+
+    exportMapInPNG(mapCanvas: HTMLCanvasElement) {
         const containerCanvas = document.createElement("canvas");
         containerCanvas.width = mapCanvas.width;
         containerCanvas.height = mapCanvas.height + 50;
@@ -85,9 +99,9 @@ export class PrintingController {
 
         const context = containerCanvas.getContext("2d");
 
-        if (context) {
-            const text = this.title || DEFAULT_TITLE;
+        const { title, fileName } = this.getTitleAndFileName();
 
+        if (context) {
             context.fillStyle = "#fff"; // background color for background rect
             context.fillRect(0, 0, containerCanvas.width, containerCanvas.height); //draw background rect
             context.font = 20 + "px bold Arial";
@@ -95,22 +109,20 @@ export class PrintingController {
             context.fillStyle = "#000"; // text color
 
             const x = containerCanvas.width / 2; //align text to center
-            context.fillText(text, x, 20);
+            context.fillText(title, x, 20);
         }
         context?.drawImage(mapCanvas, 0, 50);
-
-        const fileName = this.title || DEFAULT_FILE_NAME;
 
         const link = document.createElement("a");
         link.setAttribute("download", fileName + ".png");
         link.href = containerCanvas.toDataURL("image/png", 0.8);
         link.click();
-        this.scaleLine && this.olMap.removeControl(this.scaleLine);
+        this.destroy();
     }
 
-    exportMapInPDF(map: OlMap, canvas: HTMLCanvasElement) {
+    exportMapInPDF(canvas: HTMLCanvasElement) {
         // Landscape map export
-        const size = map.getSize();
+        const size = this.olMap.getSize();
         const pdf = new jsPDF({
             orientation: "landscape",
             unit: "px",
@@ -121,15 +133,14 @@ export class PrintingController {
 
         pdf.setFontSize(20);
         if (size && size[0] && size[1]) {
-            const text = this.title || DEFAULT_TITLE;
-            const fileName = this.title || DEFAULT_FILE_NAME;
+            const { title, fileName } = this.getTitleAndFileName();
 
             const height = size[1];
             const width = size[0];
             pdf.addImage(imgUrlStr, "JPEG", 0, 50, width, height - 50);
-            pdf.text(text, width / 2, 30, { align: "center" });
+            pdf.text(title, width / 2, 30, { align: "center" });
             pdf.save(fileName + ".pdf");
-            this.scaleLine && this.olMap.removeControl(this.scaleLine);
+            this.destroy();
         }
     }
 }
