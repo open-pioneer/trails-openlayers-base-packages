@@ -1,15 +1,16 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import { createManualPromise } from "@open-pioneer/core";
+import type { Options } from "html2canvas";
 import OlMap from "ol/Map";
 import { ScaleLine } from "ol/control";
-import Overlay from "ol/Overlay";
-import type { Options } from "html2canvas";
-import { createManualPromise } from "@open-pioneer/core";
 
 export type FileFormatType = "png" | "pdf";
 
 const DEFAULT_FILE_NAME = "map";
 const DEFAULT_TITLE = "My own map";
+
+const PRINTING_HIDE_CLASS = "printing-hide";
 
 export class PrintingController {
     private olMap: OlMap;
@@ -19,7 +20,7 @@ export class PrintingController {
 
     private scaleLine: ScaleLine | undefined = undefined;
 
-    private overlay: Overlay | undefined = undefined;
+    private overlay: HTMLDivElement | undefined = undefined;
 
     constructor(olMap: OlMap) {
         this.olMap = olMap;
@@ -37,11 +38,6 @@ export class PrintingController {
         this.fileFormat = format;
     }
 
-    private reset() {
-        this.removeScaleLine();
-        this.running = false;
-    }
-
     async handleMapExport() {
         if (!this.olMap || !this.fileFormat) {
             return;
@@ -52,8 +48,7 @@ export class PrintingController {
         }
 
         try {
-            this.running = true;
-            await this.handleScaleLine();
+            await this.beginExport();
 
             // export options for html2canvas.
             const exportOptions: Partial<Options> = {
@@ -63,7 +58,8 @@ export class PrintingController {
                         const classList = element.classList;
                         // TODO: Document that '.printing-hide' can be used to hide custom elements
                         return (
-                            classList.contains("map-anchors") || classList.contains("printing-hide")
+                            classList.contains("map-anchors") ||
+                            classList.contains(PRINTING_HIDE_CLASS)
                         );
                     }
                     return false;
@@ -87,7 +83,19 @@ export class PrintingController {
         }
     }
 
-    private async handleScaleLine() {
+    private async beginExport() {
+        this.running = true;
+        this.addOverlay();
+        await this.addScaleLine();
+    }
+
+    private reset() {
+        this.removeScaleLine();
+        this.removeOverlay();
+        this.running = false;
+    }
+
+    private async addScaleLine() {
         this.scaleLine = new ScaleLine({
             className: "printing-scale-bar ol-scale-bar",
             bar: true,
@@ -107,6 +115,30 @@ export class PrintingController {
         await new Promise((resolve) => {
             requestAnimationFrame(resolve);
         });
+    }
+
+    private removeScaleLine() {
+        if (this.scaleLine) {
+            this.olMap.removeControl(this.scaleLine);
+            this.scaleLine = undefined;
+        }
+    }
+
+    private addOverlay() {
+        const container = this.olMap.getTargetElement();
+        const overlay = (this.overlay = document.createElement("div"));
+        overlay.classList.add("printing-overlay", PRINTING_HIDE_CLASS);
+        container.appendChild(overlay);
+
+        const message = document.createElement("div");
+        message.classList.add("printing-overlay-status");
+        message.textContent = "Printing map..."; // TODO: i18n
+        overlay.appendChild(message);
+    }
+
+    private removeOverlay() {
+        this.overlay?.remove();
+        this.overlay = undefined;
     }
 
     private getTitleAndFileName() {
@@ -150,7 +182,7 @@ export class PrintingController {
         const { jsPDF } = await import("jspdf");
         const pdf = new jsPDF({
             orientation: "landscape",
-            unit: "px",
+            unit: "mm",
             format: "a4"
         });
 
@@ -158,12 +190,14 @@ export class PrintingController {
         // the remaining space can be used by the map export.
         const pageWidth = pdf.internal.pageSize.getWidth();
         const pageHeight = pdf.internal.pageSize.getHeight();
-        const mapPageHeight = pageHeight - 50;
+        const titleOffset = 15;
+        const mapOffset = 20;
+        const mapPageHeight = pageHeight - mapOffset;
 
         // Render title
         pdf.setFontSize(20);
         const { title, fileName } = this.getTitleAndFileName();
-        pdf.text(title, pageWidth / 2, 30, { align: "center" });
+        pdf.text(title, pageWidth / 2, titleOffset, { align: "center" });
 
         // Resize image while keeping aspect ratio
         const imageAspectRatio = canvas.width / canvas.height;
@@ -176,16 +210,9 @@ export class PrintingController {
 
         // Center image
         const imageX = (pageWidth - targetImageWidth) / 2;
-        const imageY = 50 + (mapPageHeight - targetImageHeight) / 2;
+        const imageY = mapOffset + (mapPageHeight - targetImageHeight) / 2;
 
         pdf.addImage(canvas, "", imageX, imageY, targetImageWidth, targetImageHeight);
         pdf.save(fileName + ".pdf");
-    }
-
-    private removeScaleLine() {
-        if (this.scaleLine) {
-            this.olMap.removeControl(this.scaleLine);
-            this.scaleLine = undefined;
-        }
     }
 }

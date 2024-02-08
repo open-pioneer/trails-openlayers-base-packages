@@ -60,7 +60,7 @@ export const Printing: FC<PrintingProps> = (props) => {
     }
 
     function exportMap() {
-        //Todo: add notification with the ""
+        //Todo: add notification with a generic error message (e.g. "Printing failed")
         if (running) {
             return;
         }
