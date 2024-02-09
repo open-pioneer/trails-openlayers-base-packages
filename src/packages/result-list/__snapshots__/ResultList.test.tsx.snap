@@ -228,23 +228,28 @@ exports[`expect result list to be created successfully 1`] = `
           data-theme="light"
           style=""
         >
-          <label
-            class="chakra-checkbox result-list-select-row-checkbox cursor-pointer css-1577qb8"
+          <div
+            class="css-1baulvz"
             data-theme="light"
           >
-            <input
-              aria-label="ariaLabel.selectSingle"
-              class="chakra-checkbox__input"
-              style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
-              type="checkbox"
-              value=""
-            />
-            <span
-              aria-hidden="true"
-              class="chakra-checkbox__control css-1ydjfm6"
+            <label
+              class="chakra-checkbox result-list-select-row-checkbox cursor-pointer css-1577qb8"
               data-theme="light"
-            />
-          </label>
+            >
+              <input
+                aria-label="ariaLabel.selectSingle"
+                class="chakra-checkbox__input"
+                style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
+                type="checkbox"
+                value=""
+              />
+              <span
+                aria-hidden="true"
+                class="chakra-checkbox__control css-1ydjfm6"
+                data-theme="light"
+              />
+            </label>
+          </div>
         </td>
         <td
           class="css-xumdn4"
@@ -291,23 +296,28 @@ exports[`expect result list to be created successfully 1`] = `
           data-theme="light"
           style=""
         >
-          <label
-            class="chakra-checkbox result-list-select-row-checkbox cursor-pointer css-1577qb8"
+          <div
+            class="css-1baulvz"
             data-theme="light"
           >
-            <input
-              aria-label="ariaLabel.selectSingle"
-              class="chakra-checkbox__input"
-              style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
-              type="checkbox"
-              value=""
-            />
-            <span
-              aria-hidden="true"
-              class="chakra-checkbox__control css-1ydjfm6"
+            <label
+              class="chakra-checkbox result-list-select-row-checkbox cursor-pointer css-1577qb8"
               data-theme="light"
-            />
-          </label>
+            >
+              <input
+                aria-label="ariaLabel.selectSingle"
+                class="chakra-checkbox__input"
+                style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
+                type="checkbox"
+                value=""
+              />
+              <span
+                aria-hidden="true"
+                class="chakra-checkbox__control css-1ydjfm6"
+                data-theme="light"
+              />
+            </label>
+          </div>
         </td>
         <td
           class="css-xumdn4"
@@ -354,23 +364,28 @@ exports[`expect result list to be created successfully 1`] = `
           data-theme="light"
           style=""
         >
-          <label
-            class="chakra-checkbox result-list-select-row-checkbox cursor-pointer css-1577qb8"
+          <div
+            class="css-1baulvz"
             data-theme="light"
           >
-            <input
-              aria-label="ariaLabel.selectSingle"
-              class="chakra-checkbox__input"
-              style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
-              type="checkbox"
-              value=""
-            />
-            <span
-              aria-hidden="true"
-              class="chakra-checkbox__control css-1ydjfm6"
+            <label
+              class="chakra-checkbox result-list-select-row-checkbox cursor-pointer css-1577qb8"
               data-theme="light"
-            />
-          </label>
+            >
+              <input
+                aria-label="ariaLabel.selectSingle"
+                class="chakra-checkbox__input"
+                style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
+                type="checkbox"
+                value=""
+              />
+              <span
+                aria-hidden="true"
+                class="chakra-checkbox__control css-1ydjfm6"
+                data-theme="light"
+              />
+            </label>
+          </div>
         </td>
         <td
           class="css-xumdn4"
@@ -417,23 +432,28 @@ exports[`expect result list to be created successfully 1`] = `
           data-theme="light"
           style=""
         >
-          <label
-            class="chakra-checkbox result-list-select-row-checkbox cursor-pointer css-1577qb8"
+          <div
+            class="css-1baulvz"
             data-theme="light"
           >
-            <input
-              aria-label="ariaLabel.selectSingle"
-              class="chakra-checkbox__input"
-              style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
-              type="checkbox"
-              value=""
-            />
-            <span
-              aria-hidden="true"
-              class="chakra-checkbox__control css-1ydjfm6"
+            <label
+              class="chakra-checkbox result-list-select-row-checkbox cursor-pointer css-1577qb8"
               data-theme="light"
-            />
-          </label>
+            >
+              <input
+                aria-label="ariaLabel.selectSingle"
+                class="chakra-checkbox__input"
+                style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
+                type="checkbox"
+                value=""
+              />
+              <span
+                aria-hidden="true"
+                class="chakra-checkbox__control css-1ydjfm6"
+                data-theme="light"
+              />
+            </label>
+          </div>
         </td>
         <td
           class="css-xumdn4"

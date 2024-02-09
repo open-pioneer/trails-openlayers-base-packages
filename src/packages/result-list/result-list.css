@@ -33,7 +33,7 @@
     opacity: 0;
 }
 
-.result-list-sort-icon:focus {
+.result-list-sort-icon:focus-visible {
     outline: none !important;
     border-radius: 4px;
     border: 1px var(--chakra-colors-background_primary);

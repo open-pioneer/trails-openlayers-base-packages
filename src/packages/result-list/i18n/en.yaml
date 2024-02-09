@@ -8,4 +8,4 @@ messages:
     sortDescending: Table Column is sorted descending. Press enter to change sorting.
     sortInitial: Table Column has the initial sorting. Press enter to change sorting.
     selectAll: Press enter to select oder deselect all rows.
-    selectSingle: Row selected
+    selectSingle: Press enter to select or deselect. Row selected.

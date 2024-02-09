@@ -14,15 +14,13 @@ export interface ResultListProps extends CommonComponentProps {
 export const ResultList: FC<ResultListProps> = (props) => {
     const intl = useIntl();
     const { resultListInput } = props;
+    const dataTableRef = useRef<HTMLDivElement>(null);
+    const [tableWidth, setTableWidth] = useState(0);
     const data = resultListInput.data;
     const metadata = resultListInput.metadata;
-
     if (metadata.length === 0) {
         throw Error(intl.formatMessage({ id: "illegalArgumentException" }));
     }
-
-    const dataTableRef = useRef<HTMLDivElement>(null);
-    const [tableWidth, setTableWidth] = useState(0);
 
     useEffect(() => {
         if (!dataTableRef.current) return;
@@ -36,7 +34,10 @@ export const ResultList: FC<ResultListProps> = (props) => {
     }, [dataTableRef.current]);
 
     const { containerProps } = useCommonComponentProps("result-list", props);
-    const columns = useMemo(() => createColumns(metadata, tableWidth), [metadata, tableWidth]);
+    const columns = useMemo(
+        () => createColumns(metadata, intl, tableWidth),
+        [metadata, intl, tableWidth]
+    );
 
     return (
         <Box {...containerProps} height="100%" overflowY="auto" ref={dataTableRef}>
