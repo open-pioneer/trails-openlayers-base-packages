@@ -134,6 +134,7 @@ export class EditingWorkflow
         });
 
         const drawEnd = this._drawInteraction.on("drawend", (e) => {
+            console.log("drawend");
             this._setState("active:saving");
 
             const layerUrl = this._editLayerURL;

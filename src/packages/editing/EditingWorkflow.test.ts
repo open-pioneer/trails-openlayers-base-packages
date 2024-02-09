@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import OlMap from "ol/Map";
@@ -10,107 +10,284 @@ import { HttpService } from "@open-pioneer/http";
 import { setupMap } from "@open-pioneer/map-test-utils";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { EditingWorkflow } from "./EditingWorkflow";
+import BaseLayer from "ol/layer/Base";
+import { Interaction } from "ol/interaction";
 
-it("should start editing workflow", async () => {
-    const { workflow } = await setup();
-    expect(workflow.getState()).toBe("active:initialized");
-});
+const OGC_API_URL_TEST = "https://example.org/ogc";
 
-it("should stop editing workflow", async () => {
-    const { workflow } = await setup();
-    expect(workflow.getState()).toBe("active:initialized");
-    workflow.stop();
-    expect(workflow.getState()).toBe("inactive");
-});
+describe("starting editing workflow", () => {
+    it("should start an editing workflow", async () => {
+        const { workflow } = await setupMapAndWorkflow();
+        expect(workflow.getState()).toBe("active:initialized");
 
-it("should start editing workflow after stop", async () => {
-    const workflow = (await setup()).workflow;
-    expect(workflow.getState()).toBe("active:initialized");
-    workflow.stop();
-    expect(workflow.getState()).toBe("inactive");
+        workflow.stop();
+    });
 
-    const nextWorkflow = (await setup()).workflow;
-    expect(nextWorkflow.getState()).toBe("active:initialized");
-    nextWorkflow.stop();
-    expect(nextWorkflow.getState()).toBe("inactive");
-});
+    it("should create an editing layer for an editing workflow", async () => {
+        const { map, workflow } = await setupMapAndWorkflow();
+        const layers: BaseLayer[] = map.olMap.getLayers().getArray();
 
-it.skip("should remove the started drawing after reset", async () => {
-    const { workflow, map } = await setup();
-    const draw = workflow.getDrawInteraction();
+        const editingLayer: VectorLayer<VectorSource> | undefined = layers.find(
+            (l) => l.getProperties().name === "editing-layer"
+        ) as VectorLayer<VectorSource>;
 
-    expect(workflow.getState()).toBe("active:initialized");
-
-    // evaluate if editing-layer exists in map
-    const editingLayer: VectorLayer<VectorSource> | undefined = map.olMap
-        .getLayers()
-        .getArray()
-        .find((l) => l.getProperties().name === "editing-layer") as VectorLayer<VectorSource>;
-
-    expect(editingLayer).not.toBe(undefined);
-    if (!editingLayer) {
-        throw new Error("editing layer not found");
-    }
-
-    // check that editing layer source does not contain a geometry
-    const editingSource = editingLayer.getSource();
-    if (!editingSource) {
-        throw new Error("editing source not found");
-    }
-    expect(editingSource.getFeatures().length).toBe(0);
-
-    const beginTooltip = getTooltipElement(map.olMap, "editing-tooltip");
-    expect(beginTooltip.innerHTML).toMatchInlineSnapshot('"tooltip.begin"');
-
-    draw.appendCoordinates([[200, 200]]);
-
-    expect(workflow.getState()).toBe("active:drawing");
-
-    // TODO drawinteraction bzw. temporäre Layersource enthält angefangene Geometrie
-
-    // check that map contains a draw interaction
-    const drawInteractionStart: Draw | undefined = map.olMap
-        .getInteractions()
-        .getArray()
-        .find((i) => i instanceof Draw) as Draw;
-    expect(drawInteractionStart).not.toBe(undefined);
-
-    // const continueTooltip = getTooltipElement(map.olMap, "editing-tooltip");
-    // expect(continueTooltip.innerHTML).toMatchInlineSnapshot('"tooltip.continue"');
-
-    // workflow.reset();
-
-    // expect(workflow.getState()).toBe("active:initialized");
-    // /*
-    // // TODO OL-Map enthält weiterhin temporären Zeichenlayer
-    // console.log(map.olMap.getLayers());
-    // // TODO temporäre Layersource leer?
-    // console.log(map.olMap.getLayers()[0].getSource());
-    // */
-    // // TODO OL-Map enthält weiterhin Interaction
-    // console.log(map.olMap.getInteractions());
-
-    // // check that draw interaction was not removed (like after stop)
-    // const drawInteractionReset: Draw | undefined = map.olMap
-    //     .getInteractions()
-    //     .getArray()
-    //     .find((i) => i instanceof Draw) as Draw;
-    // expect(drawInteractionReset).not.toBe(undefined);
-
-    // const resetTooltip = getTooltipElement(map.olMap, "editing-tooltip");
-    // expect(resetTooltip.innerHTML).toMatchInlineSnapshot('"tooltip.begin"');
-});
-
-it.skip("should return a feature id when complete editing", () => {});
-
-async function setup() {
-    const httpService: HttpService = {
-        async fetch() {
-            return new Response("mock response from map-test-utils", {
-                status: 200
-            });
+        if (!editingLayer) {
+            throw new Error("editing layer not found");
         }
-    };
+        expect(editingLayer).not.toBeUndefined;
+
+        workflow.stop();
+    });
+
+    it("should creates a tooltip after start an editing workflow", async () => {
+        const { map, workflow } = await setupMapAndWorkflow();
+        const beginTooltip = getTooltipElement(map.olMap, "editing-tooltip");
+        expect(beginTooltip.innerHTML).toMatchInlineSnapshot('"tooltip.begin"');
+
+        workflow.stop();
+    });
+
+    it("should add an interaction for an editing workflow", async () => {
+        const { map, workflow } = await setupMapAndWorkflow();
+        const interactions: Interaction[] = map.olMap.getInteractions().getArray();
+        const drawInteraction: Draw | undefined = interactions.find(
+            (i) => i instanceof Draw
+        ) as Draw;
+        expect(drawInteraction).not.toBeUndefined;
+
+        workflow.stop();
+    });
+
+    it("should does not contain a geometry after start an editing workflow", async () => {
+        const { map, workflow } = await setupMapAndWorkflow();
+        const layers: BaseLayer[] = map.olMap.getLayers().getArray();
+
+        const editingLayer: VectorLayer<VectorSource> | undefined = layers.find(
+            (l) => l.getProperties().name === "editing-layer"
+        ) as VectorLayer<VectorSource>;
+        if (!editingLayer) {
+            throw new Error("editing layer not found");
+        }
+
+        const editingSource = editingLayer.getSource();
+        if (!editingSource) {
+            throw new Error("editing source not found");
+        }
+        expect(editingSource.getFeatures().length).toBe(0);
+
+        workflow.stop();
+    });
+
+    it("should start editing workflow after stop", async () => {
+        const workflow = (await setupMapAndWorkflow()).workflow;
+        expect(workflow.getState()).toBe("active:initialized");
+
+        workflow.stop();
+        expect(workflow.getState()).toBe("inactive");
+
+        const nextWorkflow = (await setupMapAndWorkflow()).workflow;
+        expect(nextWorkflow.getState()).toBe("active:initialized");
+
+        nextWorkflow.stop();
+        expect(nextWorkflow.getState()).toBe("inactive");
+    });
+});
+
+describe("stopping editing workflow", () => {
+    it("should stop an editing workflow", async () => {
+        const { workflow } = await setupMapAndWorkflow();
+        expect(workflow.getState()).toBe("active:initialized");
+
+        workflow.stop();
+        expect(workflow.getState()).toBe("inactive");
+    });
+
+    it("should remove an editing layer for an editing workflow after stop", async () => {
+        const { map, workflow } = await setupMapAndWorkflow();
+        workflow.stop();
+        const layers: BaseLayer[] = map.olMap.getLayers().getArray();
+
+        const editingLayer: VectorLayer<VectorSource> | undefined = layers.find(
+            (l) => l.getProperties().name === "editing-layer"
+        ) as VectorLayer<VectorSource>;
+        expect(editingLayer).toBeUndefined;
+    });
+
+    it.skip("should remove a tooltip after stop an editing workflow", async () => {
+        // TODO
+    });
+
+    it("should remove an interaction for an editing workflow", async () => {
+        const { map, workflow } = await setupMapAndWorkflow();
+        workflow.stop();
+
+        const interactions: Interaction[] = map.olMap.getInteractions().getArray();
+        const drawInteraction: Draw | undefined = interactions.find(
+            (i) => i instanceof Draw
+        ) as Draw;
+        expect(drawInteraction).toBeUndefined;
+    });
+});
+
+describe("during editing workflow", () => {
+    it("should change state after starting editing", async () => {
+        const { workflow } = await setupMapAndWorkflow();
+        const draw = workflow.getDrawInteraction();
+
+        draw.appendCoordinates([[200, 200]]);
+        expect(workflow.getState()).toBe("active:drawing");
+
+        workflow.stop();
+    });
+
+    it("should change state after finished editing", async () => {
+        const { workflow } = await setupMapAndWorkflow();
+        const draw = workflow.getDrawInteraction();
+
+        draw.appendCoordinates([[200, 200]]);
+        draw.finishDrawing();
+        expect(workflow.getState()).toBe("active:saving");
+
+        workflow.stop();
+    });
+
+    it("should updates the tooltip text after starting editing", async () => {
+        const { map, workflow } = await setupMapAndWorkflow();
+        const draw = workflow.getDrawInteraction();
+
+        draw.appendCoordinates([[200, 200]]);
+        const beginTooltip = getTooltipElement(map.olMap, "editing-tooltip");
+        expect(beginTooltip.innerHTML).toMatchInlineSnapshot('"tooltip.continue"');
+
+        workflow.stop();
+    });
+
+    it("should contain a geometry after starting editing ", async () => {
+        const { map, workflow } = await setupMapAndWorkflow();
+        const layers: BaseLayer[] = map.olMap.getLayers().getArray();
+        const draw = workflow.getDrawInteraction();
+
+        const editingLayer: VectorLayer<VectorSource> | undefined = layers.find(
+            (l) => l.getProperties().name === "editing-layer"
+        ) as VectorLayer<VectorSource>;
+
+        if (!editingLayer) {
+            throw new Error("editing layer not found");
+        }
+
+        const editingSource = editingLayer.getSource();
+        if (!editingSource) {
+            throw new Error("editing source not found");
+        }
+
+        draw.appendCoordinates([[200, 200]]);
+        draw.appendCoordinates([[400, 300]]);
+
+        const feature = draw.getOverlay().getSource().getFeatures()[0];
+        if (!feature) {
+            throw new Error("no features founded");
+        }
+        expect(feature.getGeometry().getCoordinates()).toStrictEqual([
+            [
+                [200, 200],
+                [400, 300],
+                [400, 300],
+                [200, 200]
+            ]
+        ]);
+
+        workflow.stop();
+    });
+});
+
+describe("reset editing workflow", () => {
+    it("should change state after reset editing", async () => {
+        const { workflow } = await setupMapAndWorkflow();
+        const draw = workflow.getDrawInteraction();
+        expect(workflow.getState()).toBe("active:initialized");
+
+        draw.appendCoordinates([[200, 200]]);
+        expect(workflow.getState()).toBe("active:drawing");
+
+        workflow.reset();
+        expect(workflow.getState()).toBe("active:initialized");
+    });
+
+    it("should updates the tooltip text after reset editing", async () => {
+        const { map, workflow } = await setupMapAndWorkflow();
+        const draw = workflow.getDrawInteraction();
+
+        draw.appendCoordinates([[200, 200]]);
+        const beginTooltip = getTooltipElement(map.olMap, "editing-tooltip");
+        expect(beginTooltip.innerHTML).toMatchInlineSnapshot('"tooltip.continue"');
+
+        workflow.reset();
+        const resetTooltip = getTooltipElement(map.olMap, "editing-tooltip");
+        expect(resetTooltip.innerHTML).toMatchInlineSnapshot('"tooltip.begin"');
+
+        workflow.stop();
+    });
+
+    it("should does not remove interaction after reset editing", async () => {
+        const { map, workflow } = await setupMapAndWorkflow();
+        workflow.reset();
+
+        const interactions: Interaction[] = map.olMap.getInteractions().getArray();
+        const drawInteraction: Draw | undefined = interactions.find(
+            (i) => i instanceof Draw
+        ) as Draw;
+        expect(drawInteraction).not.toBeUndefined;
+
+        workflow.stop();
+    });
+
+    it("should does not contain a geometry after reset editing", async () => {
+        const { workflow } = await setupMapAndWorkflow();
+        const draw = workflow.getDrawInteraction();
+
+        draw.appendCoordinates([[200, 200]]);
+        draw.appendCoordinates([[400, 300]]);
+
+        workflow.reset();
+
+        const features = draw.getOverlay().getSource().getFeatures();
+        expect(features.length).toBe(0);
+
+        workflow.stop();
+    });
+});
+
+describe("when editing workflow complete", () => {
+    it("should return a feature id when complete editing", async () => {
+        const { workflow } = await setupMapAndWorkflow();
+        const draw = workflow.getDrawInteraction();
+
+        workflow.whenComplete().then((featureId: string | undefined) => {
+            expect(featureId).toBe("test_id_1");
+        });
+
+        draw.appendCoordinates([[200, 200]]);
+        draw.appendCoordinates([[400, 300]]);
+
+        draw.finishDrawing();
+    });
+
+    it.skip("should return an error if editing failed", async () => {
+        // TODO
+    });
+});
+
+async function setupMapAndWorkflow() {
+    const httpService: HttpService = {
+        fetch: vi.fn().mockResolvedValue(
+            new Response("", {
+                headers: {
+                    Location: OGC_API_URL_TEST + "/test_id_1"
+                },
+                status: 201
+            })
+        )
+    } satisfies Partial<HttpService> as HttpService;
 
     const intl = {
         formatMessage(props: any) {
@@ -121,7 +298,7 @@ async function setup() {
     const { mapId, registry } = await setupMap();
 
     const map = await registry.expectMapModel(mapId);
-    const ogcApiFeatureLayerUrl = new URL("https://example.org/ogc");
+    const ogcApiFeatureLayerUrl = new URL(OGC_API_URL_TEST);
     const polygonDrawStyle: FlatStyleLike = {
         "stroke-color": "yellow",
         "stroke-width": 2,
@@ -141,17 +318,17 @@ async function setup() {
         intl
     );
 
-    return { workflow, map, ogcApiFeatureLayerUrl };
+    return { map, workflow, ogcApiFeatureLayerUrl };
 }
 
 function getTooltipElement(olMap: OlMap, className: string): HTMLElement {
     const allOverlays = olMap.getOverlays().getArray();
     const tooltips = allOverlays.filter((ol) => ol.getElement()?.classList.contains(className));
     if (tooltips.length === 0) {
-        throw Error("did not find any tooltips");
+        throw new Error("did not find any tooltips");
     }
     if (tooltips.length > 1) {
-        throw Error("found multiple tooltips");
+        throw new Error("found multiple tooltips");
     }
 
     const element = tooltips[0]!.getElement();
