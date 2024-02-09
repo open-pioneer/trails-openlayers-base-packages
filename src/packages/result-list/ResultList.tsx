@@ -3,7 +3,7 @@
 import { Box } from "@open-pioneer/chakra-integration";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { FC, useEffect, useMemo, useRef, useState } from "react";
-import { DataTable } from "./DataTable";
+import { DataTable } from "./DataTable/DataTable";
 import { ResultListInput } from "./api";
 import { createColumns } from "./createColumns";
 import { useIntl } from "open-pioneer:react-hooks";

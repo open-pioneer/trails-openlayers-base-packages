@@ -36,7 +36,7 @@ exports[`expect result list to be created successfully 1`] = `
         data-theme="light"
       >
         <th
-          class="css-1zts0j"
+          class="css-s7brg3"
           data-theme="light"
           style="width: 50px;"
         >
@@ -69,7 +69,7 @@ exports[`expect result list to be created successfully 1`] = `
           />
         </th>
         <th
-          class="css-1zts0j"
+          class="css-14km1nl"
           data-theme="light"
           style=""
         >
@@ -98,7 +98,7 @@ exports[`expect result list to be created successfully 1`] = `
           />
         </th>
         <th
-          class="css-1zts0j"
+          class="css-14km1nl"
           data-theme="light"
           style=""
         >
@@ -127,7 +127,7 @@ exports[`expect result list to be created successfully 1`] = `
           />
         </th>
         <th
-          class="css-1zts0j"
+          class="css-14km1nl"
           data-theme="light"
           style=""
         >
@@ -156,7 +156,7 @@ exports[`expect result list to be created successfully 1`] = `
           />
         </th>
         <th
-          class="css-1zts0j"
+          class="css-14km1nl"
           data-theme="light"
           style=""
         >
@@ -185,7 +185,7 @@ exports[`expect result list to be created successfully 1`] = `
           />
         </th>
         <th
-          class="css-1zts0j"
+          class="css-14km1nl"
           data-theme="light"
           style=""
         >
