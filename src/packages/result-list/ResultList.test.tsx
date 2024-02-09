@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { afterEach, beforeEach, expect, it, SpyInstance, vi } from "vitest";
-import { ResultColumn, ResultListInput } from "./api";
+import { ResultColumn, ResultListInput, ResultListSelectionChangedEvent } from "./api";
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import {
     dummyFeatureData,
@@ -12,6 +12,8 @@ import {
 import { ResultList } from "./ResultList";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { BaseFeature } from "@open-pioneer/map/api/BaseFeature";
+import { useState } from "react";
+import React from "react";
 
 afterEach(() => {
     vi.restoreAllMocks();
@@ -270,6 +272,64 @@ it("expect result list display all data types", async () => {
                 break;
         }
     });
+});
+
+it("expect result-list throws selection-change-Event", async () => {
+    const selectionChangeLisener = vi.fn((_event: ResultListSelectionChangedEvent) => {});
+    render(
+        <PackageContextProvider>
+            <ResultList
+                resultListInput={{ data: dummyFeatureData, metadata: dummyMetaData }}
+                data-testid="result-list"
+                onSelectionChanged={selectionChangeLisener}
+            />
+        </PackageContextProvider>
+    );
+
+    const { selectAllSelect } = await waitForResultList();
+
+    act(() => {
+        fireEvent.click(selectAllSelect!);
+    });
+
+    act(() => {
+        fireEvent.click(selectAllSelect!);
+    });
+
+    /**
+     * 1 Start package
+     * 1 Selection
+     * 1 Deselection
+     * = 3
+     */
+    expect(selectionChangeLisener).toHaveBeenCalledTimes(3);
+});
+
+it("expect result-list has getter for selected Features", async () => {
+    // Implementation
+    const setStateMocked = vi.fn((item) => {
+        return item;
+    });
+    const useStateMock: any = (useState: any) => [setStateMocked];
+    vi.spyOn(React, "useState").mockImplementation(useStateMock);
+    const [setSelectedMock] = useStateMock(null);
+
+    render(
+        <PackageContextProvider>
+            <ResultList
+                resultListInput={{ data: dummyFeatureData, metadata: dummyMetaData }}
+                data-testid="result-list"
+                getSelectedFeature={setSelectedMock}
+            />
+        </PackageContextProvider>
+    );
+
+    const { selectAllSelect } = await waitForResultList();
+
+    act(() => {
+        fireEvent.click(selectAllSelect!);
+    });
+    expect(setStateMocked).toHaveBeenCalledWith(dummyFeatureData);
 });
 
 async function waitForResultList() {
