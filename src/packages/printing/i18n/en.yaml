@@ -5,3 +5,4 @@ messages:
   input:
     placeholder: "Enter title"
   printingMap: "Map is printing ..."
+  printingFailed: "Failed to print the map."

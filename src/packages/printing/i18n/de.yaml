@@ -5,3 +5,4 @@ messages:
   input:
     placeholder: "Titel eingeben"
   printingMap: "Karte wird gedruckt ..."
+  printingFailed: "Die Karte konnte nicht gedruckt werden."

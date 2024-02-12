@@ -7,6 +7,9 @@ export default defineBuildConfig({
     entryPoints: ["index"],
     i18n: ["en", "de"],
     styles: "./styles.css",
+    ui: {
+        references: ["notifier.NotificationService"]
+    },
     publishConfig: {
         strict: true
     }

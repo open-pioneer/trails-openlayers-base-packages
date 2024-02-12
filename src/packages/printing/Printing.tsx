@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
-import { useIntl } from "open-pioneer:react-hooks";
+import { useIntl, useService } from "open-pioneer:react-hooks";
 import { FC, useEffect, useState } from "react";
 import {
     Box,
@@ -14,6 +14,7 @@ import {
     Select
 } from "@open-pioneer/chakra-integration";
 import { MapModel, useMapModel } from "@open-pioneer/map";
+import { NotificationService } from "@open-pioneer/notifier";
 import { FileFormatType, PrintingController } from "./PrintingController";
 import { createLogger } from "@open-pioneer/core";
 import { PackageIntl } from "@open-pioneer/runtime";
@@ -42,6 +43,8 @@ export const Printing: FC<PrintingProps> = (props) => {
     const [title, setTitle] = useState<string>("");
     const [running, setRunning] = useState<boolean>(false);
 
+    const notifier = useService<NotificationService>("notifier.NotificationService");
+
     const { map } = useMapModel(mapId);
 
     const controller = useController(map, intl);
@@ -61,7 +64,6 @@ export const Printing: FC<PrintingProps> = (props) => {
     }
 
     function exportMap() {
-        //Todo: add notification with a generic error message (e.g. "Printing failed")
         if (running) {
             return;
         }
@@ -70,6 +72,11 @@ export const Printing: FC<PrintingProps> = (props) => {
         controller
             ?.handleMapExport()
             .catch((error) => {
+                const errorMessage = intl.formatMessage({ id: "printingFailed" }) || "";
+                notifier.notify({
+                    level: "error",
+                    message: errorMessage + " " + error.message
+                });
                 LOG.error("Failed to print the map", error);
             })
             .finally(() => setRunning(false));
