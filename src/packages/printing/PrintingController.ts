@@ -8,7 +8,6 @@ import { ScaleLine } from "ol/control";
 export type FileFormatType = "png" | "pdf";
 
 const DEFAULT_FILE_NAME = "map";
-const DEFAULT_TITLE = "My own map";
 
 const PRINTING_HIDE_CLASS = "printing-hide";
 
@@ -17,13 +16,15 @@ export class PrintingController {
     private title: string = "";
     private fileFormat: FileFormatType = "pdf";
     private running = false;
+    private i18n: I18n;
 
     private scaleLine: ScaleLine | undefined = undefined;
 
     private overlay: HTMLDivElement | undefined = undefined;
 
-    constructor(olMap: OlMap) {
+    constructor(olMap: OlMap, i18n: I18n) {
         this.olMap = olMap;
+        this.i18n = i18n;
     }
 
     destroy() {
@@ -132,7 +133,7 @@ export class PrintingController {
 
         const message = document.createElement("div");
         message.classList.add("printing-overlay-status");
-        message.textContent = "Printing map..."; // TODO: i18n
+        message.textContent = this.i18n.overlayText;
         overlay.appendChild(message);
     }
 
@@ -142,7 +143,7 @@ export class PrintingController {
     }
 
     private getTitleAndFileName() {
-        const titleValue = this.title || DEFAULT_TITLE;
+        const titleValue = this.title || "";
         const fileName = this.title || DEFAULT_FILE_NAME;
         return { title: titleValue, fileName: fileName };
     }
@@ -215,4 +216,8 @@ export class PrintingController {
         pdf.addImage(canvas, "", imageX, imageY, targetImageWidth, targetImageHeight);
         pdf.save(fileName + ".pdf");
     }
+}
+
+interface I18n {
+    overlayText: string;
 }

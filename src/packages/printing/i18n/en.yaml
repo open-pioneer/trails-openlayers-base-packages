@@ -4,3 +4,4 @@ messages:
   export: "Export"
   input:
     placeholder: "Enter title"
+  printingMap: "Map is printing ..."

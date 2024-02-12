@@ -16,6 +16,7 @@ import {
 import { MapModel, useMapModel } from "@open-pioneer/map";
 import { FileFormatType, PrintingController } from "./PrintingController";
 import { createLogger } from "@open-pioneer/core";
+import { PackageIntl } from "@open-pioneer/runtime";
 
 const LOG = createLogger("printing");
 
@@ -43,7 +44,7 @@ export const Printing: FC<PrintingProps> = (props) => {
 
     const { map } = useMapModel(mapId);
 
-    const controller = useController(map);
+    const controller = useController(map, intl);
 
     useEffect(() => {
         controller?.setFileFormat(selectedFileFormat);
@@ -107,7 +108,7 @@ export const Printing: FC<PrintingProps> = (props) => {
             </FormControl>
             <Button
                 isLoading={running}
-                loadingText={intl.formatMessage({ id: "export" })} // TODO: Message 'Map is printing...'
+                loadingText={intl.formatMessage({ id: "printingMap" })}
                 disabled={running}
                 padding={2}
                 className="printing-export-button"
@@ -120,7 +121,7 @@ export const Printing: FC<PrintingProps> = (props) => {
     );
 };
 
-function useController(map: MapModel | undefined) {
+function useController(map: MapModel | undefined, intl: PackageIntl) {
     const [controller, setController] = useState<PrintingController | undefined>(undefined);
 
     useEffect(() => {
@@ -128,13 +129,15 @@ function useController(map: MapModel | undefined) {
             return;
         }
 
-        const controller = new PrintingController(map.olMap);
+        const controller = new PrintingController(map.olMap, {
+            overlayText: intl.formatMessage({ id: "printingMap" })
+        });
         setController(controller);
 
         return () => {
             controller.destroy();
             setController(undefined);
         };
-    }, [map]);
+    }, [map, intl]);
     return controller;
 }
