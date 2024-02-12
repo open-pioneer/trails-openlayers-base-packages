@@ -163,7 +163,7 @@ export class PrintingController {
 
         context.fillStyle = "#fff"; // background color for background rect
         context.fillRect(0, 0, containerCanvas.width, containerCanvas.height); //draw background rect
-        context.font = 20 + "px bold Arial"; // TODO: Use font that is always available (e.g. 'Sans-Serif' ?)
+        context.font = 20 + "px bold sans-serif";
         context.textAlign = "center";
         context.fillStyle = "#000"; // text color
 
