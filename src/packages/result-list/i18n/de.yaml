@@ -8,4 +8,4 @@ messages:
     sortDescending: Aktuell absteigende Sortierung. Mit der Enter-Taste kann die Sortierung geändert werden
     sortInitial: Aktuell initiale Sortierung. Mit der Enter-Taste kann die Sortierung geändert werden
     selectAll: Drücke Enter-Taste um alle Zeilen ab- oder anzuwählen
-    selectSingle: Zeile ausgewählt
+    selectSingle: Drücke Enter-Taste zum ab- oder anwählen. Zeile ausgewählt.

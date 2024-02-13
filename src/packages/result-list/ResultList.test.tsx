@@ -12,7 +12,6 @@ import {
 import { ResultList } from "./ResultList";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { BaseFeature } from "@open-pioneer/map/api/BaseFeature";
-import { useState } from "react";
 import React from "react";
 
 afterEach(() => {
@@ -310,7 +309,7 @@ it("expect result-list has getter for selected Features", async () => {
     const setStateMocked = vi.fn((item) => {
         return item;
     });
-    const useStateMock: any = (useState: any) => [setStateMocked];
+    const useStateMock: any = () => [setStateMocked];
     vi.spyOn(React, "useState").mockImplementation(useStateMock);
     const [setSelectedMock] = useStateMock(null);
 

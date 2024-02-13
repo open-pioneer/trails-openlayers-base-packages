@@ -1,6 +1,6 @@
 {
     "name": "@open-pioneer/legend",
-    "version": "0.0.1",
+    "version": "0.1.1",
     "license": "Apache-2.0",
     "main": "index.ts",
     "scripts": {
@@ -17,7 +17,7 @@
         "classnames": "^2.3.2"
     },
     "devDependencies": {
-        "@open-pioneer/test-utils": "^1.0.2",
+        "@open-pioneer/test-utils": "^1.1.1",
         "@open-pioneer/map-test-utils": "workspace:^",
         "openlayers-base-packages": "workspace:*"
     },

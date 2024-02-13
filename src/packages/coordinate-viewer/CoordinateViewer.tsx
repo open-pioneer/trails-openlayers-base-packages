@@ -8,6 +8,7 @@ import OlMap from "ol/Map";
 import { unByKey } from "ol/Observable";
 import { Coordinate } from "ol/coordinate";
 import { EventsKey } from "ol/events";
+import { transform } from "ol/proj";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, useEffect, useState } from "react";
 
@@ -26,21 +27,30 @@ export interface CoordinateViewerProps extends CommonComponentProps {
      * Number of decimal places shown for coordinates.
      */
     precision?: number;
+
+    /**
+     * Projection of the coordinates shown in the rendered HTML, does not affect the map projection
+     */
+    displayProjectionCode?: string;
 }
 
 /**
  * The `CoordinateViewer`component can be used in an app to render the coordinates at the current mouse position.
  */
 export const CoordinateViewer: FC<CoordinateViewerProps> = (props) => {
-    const { mapId, precision } = props;
+    const { mapId, precision, displayProjectionCode } = props;
     const { containerProps } = useCommonComponentProps("coordinate-viewer", props);
     const { map } = useMapModel(mapId);
     const olMap = map?.olMap;
-
-    const { coordinates } = useCoordinates(olMap);
+    const mapProjectionCode = useProjection(olMap)?.getCode() ?? "";
+    let { coordinates } = useCoordinates(olMap);
+    coordinates =
+        coordinates && displayProjectionCode
+            ? transformCoordinates(coordinates, mapProjectionCode, displayProjectionCode)
+            : coordinates;
     const coordinatesString = useCoordinatesString(coordinates, precision);
-    const projectionCode = useProjection(olMap)?.getCode() ?? "";
-    const displayString = coordinatesString ? coordinatesString + " " + projectionCode : "";
+    const projectionString = displayProjectionCode ? displayProjectionCode : mapProjectionCode;
+    const displayString = coordinatesString ? coordinatesString + " " + projectionString : "";
     return (
         <Box {...containerProps}>
             <Text className="coordinate-viewer-text">{displayString}</Text>
@@ -88,7 +98,6 @@ function formatCoordinates(
     const precision = configuredPrecision ?? DEFAULT_PRECISION;
     const [x, y] = coordinates;
 
-    // improvement: allow transformation into another coordinate system
     const xString = intl.formatNumber(x, {
         maximumFractionDigits: precision,
         minimumFractionDigits: precision
@@ -100,4 +109,13 @@ function formatCoordinates(
 
     const coordinatesString = xString + " " + yString;
     return coordinatesString;
+}
+
+function transformCoordinates(
+    coordinates: number[],
+    source: string,
+    destination: string
+): number[] {
+    const transformed = transform(coordinates, source, destination);
+    return transformed;
 }

@@ -2,7 +2,7 @@
     "name": "@open-pioneer/authentication",
     "description": "Authentication API for open pioneer trails applications.",
     "license": "Apache-2.0",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "main": "index.ts",
     "scripts": {
         "build": "build-pioneer-package"
@@ -16,7 +16,7 @@
     },
     "devDependencies": {
         "openlayers-base-packages": "workspace:*",
-        "@open-pioneer/test-utils": "^1.0.2",
+        "@open-pioneer/test-utils": "^1.1.1",
         "@testing-library/react": "^14.1.2"
     },
     "publishConfig": {

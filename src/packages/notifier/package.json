@@ -1,7 +1,7 @@
 {
     "name": "@open-pioneer/notifier",
     "description": "Provides support for application-wide notifications",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "license": "Apache-2.0",
     "main": "index.ts",
     "scripts": {
@@ -17,7 +17,7 @@
         "react": "^18.2.0"
     },
     "devDependencies": {
-        "@open-pioneer/test-utils": "^1.0.2",
+        "@open-pioneer/test-utils": "^1.1.1",
         "openlayers-base-packages": "workspace:*"
     },
     "publishConfig": {
