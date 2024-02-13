@@ -53,6 +53,9 @@ describe("starting editing workflow", () => {
     it("should creates a tooltip after start an editing workflow", async () => {
         const { map, workflow } = await setupMapAndWorkflow();
         const beginTooltip = getTooltipElement(map.olMap, "editing-tooltip");
+        if (beginTooltip instanceof Error) {
+            throw beginTooltip;
+        }
         expect(beginTooltip.innerHTML).toMatchInlineSnapshot('"tooltip.begin"');
 
         workflow.stop();
@@ -124,8 +127,12 @@ describe("stopping editing workflow", () => {
         expect(editingLayer).toBeUndefined;
     });
 
-    it.skip("should remove a tooltip after stop an editing workflow", async () => {
-        // TODO
+    it("should remove a tooltip after stop an editing workflow", async () => {
+        const { map, workflow } = await setupMapAndWorkflow();
+        workflow.stop();
+
+        const beginTooltip = getTooltipElement(map.olMap, "editing-tooltip");
+        expect(beginTooltip instanceof Error).toBe(true);
     });
 
     it("should remove an interaction for an editing workflow", async () => {
@@ -168,6 +175,9 @@ describe("during editing workflow", () => {
 
         draw.appendCoordinates([[200, 200]]);
         const beginTooltip = getTooltipElement(map.olMap, "editing-tooltip");
+        if (beginTooltip instanceof Error) {
+            throw beginTooltip;
+        }
         expect(beginTooltip.innerHTML).toMatchInlineSnapshot('"tooltip.continue"');
 
         workflow.stop();
@@ -230,10 +240,16 @@ describe("reset editing workflow", () => {
 
         draw.appendCoordinates([[200, 200]]);
         const beginTooltip = getTooltipElement(map.olMap, "editing-tooltip");
+        if (beginTooltip instanceof Error) {
+            throw beginTooltip;
+        }
         expect(beginTooltip.innerHTML).toMatchInlineSnapshot('"tooltip.continue"');
 
         workflow.reset();
         const resetTooltip = getTooltipElement(map.olMap, "editing-tooltip");
+        if (resetTooltip instanceof Error) {
+            throw resetTooltip;
+        }
         expect(resetTooltip.innerHTML).toMatchInlineSnapshot('"tooltip.begin"');
 
         workflow.stop();
@@ -342,19 +358,20 @@ async function setupMapAndWorkflow(httpService: HttpService = HTTP_SERVICE) {
     return { map, workflow, ogcApiFeatureLayerUrl };
 }
 
-function getTooltipElement(olMap: OlMap, className: string): HTMLElement {
+function getTooltipElement(olMap: OlMap, className: string): HTMLElement | Error {
     const allOverlays = olMap.getOverlays().getArray();
     const tooltips = allOverlays.filter((ol) => ol.getElement()?.classList.contains(className));
     if (tooltips.length === 0) {
-        throw new Error("did not find any tooltips");
+        return new Error("did not find any tooltips");
     }
     if (tooltips.length > 1) {
-        throw new Error("found multiple tooltips");
+        return new Error("found multiple tooltips");
     }
 
     const element = tooltips[0]!.getElement();
     if (!element) {
-        throw new Error("tooltip overlay did not have an element");
+        return new Error("tooltip overlay did not have an element");
     }
+
     return element;
 }
