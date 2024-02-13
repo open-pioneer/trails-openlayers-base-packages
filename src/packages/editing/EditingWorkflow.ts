@@ -45,6 +45,7 @@ export class EditingWorkflow
     private _drawLayer: VectorLayer<VectorSource>;
     private _drawInteraction: Draw;
     private _olMap: OlMap;
+    private _mapContainer: HTMLElement | undefined;
     private _tooltip: Tooltip;
     private _escapeHandler: (e: KeyboardEvent) => void;
 
@@ -118,9 +119,9 @@ export class EditingWorkflow
         this._olMap.addInteraction(this._drawInteraction);
 
         // Add EventListener on focused map to abort actual interaction via `Escape`
-        let mapContainer: HTMLElement | undefined = this._olMap.getTargetElement() ?? undefined;
-        if (mapContainer) {
-            mapContainer.addEventListener("keydown", this._escapeHandler, false);
+        this._mapContainer = this._olMap.getTargetElement() ?? undefined;
+        if (this._mapContainer) {
+            this._mapContainer.addEventListener("keydown", this._escapeHandler, false);
         }
 
         this._tooltip.element.classList.remove("hidden");
@@ -168,11 +169,11 @@ export class EditingWorkflow
 
         // update event handler when container changes
         const changedContainer = this._map.on("changed:container", () => {
-            mapContainer?.removeEventListener("keydown", this._escapeHandler);
+            this._mapContainer?.removeEventListener("keydown", this._escapeHandler);
 
-            mapContainer = this._olMap.getTargetElement() ?? undefined;
-            if (mapContainer) {
-                mapContainer.addEventListener("keydown", this._escapeHandler, false);
+            this._mapContainer = this._olMap.getTargetElement() ?? undefined;
+            if (this._mapContainer) {
+                this._mapContainer.addEventListener("keydown", this._escapeHandler, false);
             }
         });
 
@@ -210,8 +211,7 @@ export class EditingWorkflow
         });
 
         // Remove event escape listener
-        // TODO: `this._olMap.getTargetElement()` ist beim Testen --> null
-        // this._olMap.getTargetElement().removeEventListener("keydown", this._escapeHandler);
+        this._mapContainer?.removeEventListener("keydown", this._escapeHandler);
 
         this._state = "inactive";
     }
