@@ -6,6 +6,7 @@ import OlMap from "ol/Map";
 import { ScaleLine } from "ol/control";
 import { Interaction } from "ol/interaction";
 import Draw from "ol/interaction/Draw";
+import { StyleLike } from "ol/style/Style";
 
 export type FileFormatType = "png" | "pdf";
 
@@ -20,7 +21,7 @@ export class PrintingController {
     private running = false;
     private i18n: I18n;
 
-    private drawInteractions: Interaction[] | undefined = [];
+    private drawInformation: { draw: Draw; style: StyleLike | null | undefined }[] | undefined = [];
 
     private scaleLine: ScaleLine | undefined = undefined;
 
@@ -90,15 +91,22 @@ export class PrintingController {
     private async beginExport() {
         this.running = true;
 
-        /** hides active draw interactions while printing */
-        this.drawInteractions = this.olMap
+        /** hides active draw interactions while printing (set feature style to null ) */
+        const interactions = this.olMap
             .getInteractions()
             .getArray()
             .filter((interaction: Interaction) => {
                 return interaction.getActive() && interaction instanceof Draw;
             });
-        this.drawInteractions?.forEach((interaction) => {
-            interaction.setActive(false);
+        this.drawInformation = [];
+        interactions?.forEach((interaction) => {
+            const draw = interaction as Draw;
+            const previousStyle = draw.getOverlay().getStyle();
+            draw.getOverlay().setStyle(null);
+            this.drawInformation?.push({
+                draw: draw,
+                style: previousStyle
+            });
         });
 
         this.addOverlay();
@@ -110,9 +118,11 @@ export class PrintingController {
         this.removeOverlay();
         this.running = false;
 
-        /** show active draw interactions after printing */
-        this.drawInteractions?.length &&
-            this.drawInteractions.forEach((interaction) => interaction.setActive(true));
+        /** show active draw interactions after printing (reset feature style to its previous style ) */
+        this.drawInformation?.length &&
+            this.drawInformation.forEach((drawInfo) => {
+                drawInfo.draw.getOverlay().setStyle(drawInfo.style);
+            });
     }
 
     private async addScaleLine() {
