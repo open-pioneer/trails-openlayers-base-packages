@@ -14,24 +14,14 @@ export interface ResultListProps extends CommonComponentProps {
 export const ResultList: FC<ResultListProps> = (props) => {
     const intl = useIntl();
     const { resultListInput } = props;
-    const dataTableRef = useRef<HTMLDivElement>(null);
-    const [tableWidth, setTableWidth] = useState(0);
     const data = resultListInput.data;
     const metadata = resultListInput.metadata;
     if (metadata.length === 0) {
         throw Error(intl.formatMessage({ id: "illegalArgumentException" }));
     }
 
-    useEffect(() => {
-        if (!dataTableRef.current) return;
-        const resizeObserver = new ResizeObserver((event) => {
-            // Depending on the layout, you may need to swap inlineSize with blockSize
-            // https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserverEntry/contentBoxSize
-            if (event[0] === undefined || event[0].contentBoxSize[0] === undefined) return;
-            setTableWidth(event[0].contentBoxSize[0].inlineSize);
-        });
-        resizeObserver.observe(dataTableRef.current);
-    }, [dataTableRef.current]);
+    const dataTableRef = useRef<HTMLDivElement>(null);
+    const tableWidth = useTableWidth(dataTableRef);
 
     const { containerProps } = useCommonComponentProps("result-list", props);
     const columns = useMemo(() => createColumns(metadata, tableWidth), [metadata, tableWidth]);
@@ -42,3 +32,20 @@ export const ResultList: FC<ResultListProps> = (props) => {
         </Box>
     );
 };
+
+function useTableWidth(tableRef: React.RefObject<HTMLDivElement> | null) {
+    const [tableWidth, setTableWidth] = useState(0);
+
+    useEffect(() => {
+        if (!tableRef?.current) return;
+        const resizeObserver = new ResizeObserver((event) => {
+            // Depending on the layout, you may need to swap inlineSize with blockSize
+            // https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserverEntry/contentBoxSize
+            if (event[0] === undefined || event[0].contentBoxSize[0] === undefined) return;
+            setTableWidth(event[0].contentBoxSize[0].inlineSize);
+        });
+        resizeObserver.observe(tableRef.current);
+    }, [tableRef?.current]);
+
+    return tableWidth;
+}
