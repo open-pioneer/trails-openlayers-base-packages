@@ -64,13 +64,13 @@ export const Printing: FC<PrintingProps> = (props) => {
     }
 
     function exportMap() {
-        if (running) {
+        if (running || !controller) {
             return;
         }
 
         setRunning(true);
         controller
-            ?.handleMapExport()
+            .handleMapExport()
             .catch((error) => {
                 const errorMessage = intl.formatMessage({ id: "printingFailed" }) || "";
                 notifier.notify({
