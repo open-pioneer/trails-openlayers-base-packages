@@ -15,6 +15,17 @@ import { Interaction } from "ol/interaction";
 
 const OGC_API_URL_TEST = "https://example.org/ogc";
 
+const HTTP_SERVICE: HttpService = {
+    fetch: vi.fn().mockResolvedValue(
+        new Response("", {
+            headers: {
+                Location: OGC_API_URL_TEST + "/test_id_1"
+            },
+            status: 201
+        })
+    )
+} satisfies Partial<HttpService> as HttpService;
+
 describe("starting editing workflow", () => {
     it("should start an editing workflow", async () => {
         const { workflow } = await setupMapAndWorkflow();
@@ -272,23 +283,33 @@ describe("when editing workflow complete", () => {
         draw.finishDrawing();
     });
 
-    it.skip("should return an error if editing failed", async () => {
-        // TODO
+    it("should return an error if editing failed", async () => {
+        const httpService: HttpService = {
+            fetch: vi.fn().mockResolvedValue(
+                new Response("", {
+                    status: 401 // HTTP Unauthorized
+                })
+            )
+        } satisfies Partial<HttpService> as HttpService;
+
+        const { workflow } = await setupMapAndWorkflow(httpService);
+        const draw = workflow.getDrawInteraction();
+
+        workflow
+            .whenComplete()
+            .then(() => {})
+            .catch((error: Error) => {
+                expect(error.message).toBe("Request failed: 401");
+            });
+
+        draw.appendCoordinates([[200, 200]]);
+        draw.appendCoordinates([[400, 300]]);
+
+        draw.finishDrawing();
     });
 });
 
-async function setupMapAndWorkflow() {
-    const httpService: HttpService = {
-        fetch: vi.fn().mockResolvedValue(
-            new Response("", {
-                headers: {
-                    Location: OGC_API_URL_TEST + "/test_id_1"
-                },
-                status: 201
-            })
-        )
-    } satisfies Partial<HttpService> as HttpService;
-
+async function setupMapAndWorkflow(httpService: HttpService = HTTP_SERVICE) {
     const intl = {
         formatMessage(props: any) {
             return props.id;
