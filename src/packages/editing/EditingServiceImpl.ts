@@ -54,7 +54,7 @@ export class EditingServiceImpl implements EditingService {
         if (workflow) {
             workflow.stop();
         } else {
-            return new Error("No workflow found for mapId" + mapId);
+            return new Error("No workflow found for mapId: " + mapId);
         }
     }
 
@@ -63,7 +63,7 @@ export class EditingServiceImpl implements EditingService {
         if (workflow) {
             workflow.reset();
         } else {
-            return new Error("No workflow found for mapId" + mapId);
+            return new Error("No workflow found for mapId: " + mapId);
         }
     }
 

@@ -17,7 +17,7 @@ import BaseLayer from "ol/layer/Base";
 import { Interaction } from "ol/interaction";
 import { MapRegistryImpl } from "@open-pioneer/map/MapRegistryImpl";
 
-const OGC_API_URL_TEST = "https://example.org/ogc";
+const OGC_API_URL_TEST = new URL("https://example.org/ogc");
 
 const HTTP_SERVICE: HttpService = {
     fetch: vi.fn().mockResolvedValue(
@@ -377,7 +377,6 @@ async function setupWorkflow(
         }
     } satisfies Partial<PackageIntl> as PackageIntl;
 
-    const ogcApiFeatureLayerUrl = new URL(OGC_API_URL_TEST);
     const polygonDrawStyle: FlatStyleLike = {
         "stroke-color": "yellow",
         "stroke-width": 2,
@@ -390,14 +389,14 @@ async function setupWorkflow(
 
     const workflow = new EditingWorkflow(
         map,
-        ogcApiFeatureLayerUrl,
+        OGC_API_URL_TEST,
         polygonDrawStyle,
         httpService,
         registry,
         intl
     );
 
-    return { map, workflow, ogcApiFeatureLayerUrl };
+    return { map, workflow };
 }
 
 function getTooltipElement(olMap: OlMap, className: string): HTMLElement | Error {
