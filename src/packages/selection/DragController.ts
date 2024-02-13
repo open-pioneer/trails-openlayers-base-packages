@@ -178,7 +178,7 @@ export class DragController {
      */
     private createHelpTooltip(olMap: OlMap, message: string) {
         const element = document.createElement("div");
-        element.className = "selection-tooltip";
+        element.className = "selection-tooltip printing-hide";
         element.textContent = message;
 
         const overlay = new Overlay({

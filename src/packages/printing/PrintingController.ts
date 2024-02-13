@@ -4,6 +4,8 @@ import { createManualPromise } from "@open-pioneer/core";
 import type { Options } from "html2canvas";
 import OlMap from "ol/Map";
 import { ScaleLine } from "ol/control";
+import { Interaction } from "ol/interaction";
+import Draw from "ol/interaction/Draw";
 
 export type FileFormatType = "png" | "pdf";
 
@@ -17,6 +19,8 @@ export class PrintingController {
     private fileFormat: FileFormatType = "pdf";
     private running = false;
     private i18n: I18n;
+
+    private drawInteractions: Interaction[] | undefined = [];
 
     private scaleLine: ScaleLine | undefined = undefined;
 
@@ -57,7 +61,6 @@ export class PrintingController {
                 ignoreElements: function (element: Element) {
                     if (element.classList && typeof element.classList === "object") {
                         const classList = element.classList;
-                        // TODO: Document that '.printing-hide' can be used to hide custom elements
                         return (
                             classList.contains("map-anchors") ||
                             classList.contains(PRINTING_HIDE_CLASS)
@@ -86,6 +89,18 @@ export class PrintingController {
 
     private async beginExport() {
         this.running = true;
+
+        /** hides active draw interactions while printing */
+        this.drawInteractions = this.olMap
+            .getInteractions()
+            .getArray()
+            .filter((interaction: Interaction) => {
+                return interaction.getActive() && interaction instanceof Draw;
+            });
+        this.drawInteractions?.forEach((interaction) => {
+            interaction.setActive(false);
+        });
+
         this.addOverlay();
         await this.addScaleLine();
     }
@@ -94,6 +109,10 @@ export class PrintingController {
         this.removeScaleLine();
         this.removeOverlay();
         this.running = false;
+
+        /** show active draw interactions after printing */
+        this.drawInteractions?.length &&
+            this.drawInteractions.forEach((interaction) => interaction.setActive(true));
     }
 
     private async addScaleLine() {

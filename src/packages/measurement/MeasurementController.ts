@@ -275,7 +275,7 @@ export class MeasurementController {
 
     private createHelpTooltip(): Tooltip {
         const element = document.createElement("div");
-        element.className = "measurement-tooltip hidden";
+        element.className = "measurement-tooltip printing-hide hidden";
 
         const overlay = new Overlay({
             element: element,
