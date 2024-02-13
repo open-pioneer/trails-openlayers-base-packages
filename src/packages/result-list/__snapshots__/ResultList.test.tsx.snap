@@ -14,7 +14,7 @@ exports[`expect empty data text to be shown 1`] = `
 </div>
 `;
 
-exports[`expect empty metadata to throw error 1`] = `"illegalArgumentException"`;
+exports[`expect empty metadata to throw error 1`] = `"no metadata given! result list cannot be displayed."`;
 
 exports[`expect result list to be created successfully 1`] = `
 <div
@@ -36,9 +36,11 @@ exports[`expect result list to be created successfully 1`] = `
         data-theme="light"
       >
         <th
-          class="css-s7brg3"
+          aria-label="ariaLabel.sortInitial"
+          class="css-1k8lqeb"
           data-theme="light"
           style="width: 50px;"
+          tabindex="0"
         >
           <span
             class="css-1baulvz"
@@ -69,145 +71,85 @@ exports[`expect result list to be created successfully 1`] = `
           />
         </th>
         <th
-          class="css-14km1nl"
+          aria-label="ariaLabel.sortInitial"
+          class="css-1875pyg"
           data-theme="light"
           style=""
+          tabindex="0"
         >
           Spalte A
           <span
-            aria-label="ariaLabel.sortInitial"
-            class="result-list-sort-icon css-1q8b5yy"
+            class="css-1q8b5yy"
             data-theme="light"
-            tabindex="0"
-          >
-            <svg
-              class="chakra-icon result-list-sort-initial-icon css-onkibi"
-              data-theme="light"
-              focusable="false"
-              viewBox="-1 -1 9 11"
-            >
-              <path
-                d="M 3.5 0L 3.98809 -0.569442L 3.5 -0.987808L 3.01191 -0.569442L 3.5 0ZM 3.5 9L 3.01191 9.56944L 3.5 9.98781L 3.98809 9.56944L 3.5 9ZM 0.488094 3.56944L 3.98809 0.569442L 3.01191 -0.569442L -0.488094 2.43056L 0.488094 3.56944ZM 3.01191 0.569442L 6.51191 3.56944L 7.48809 2.43056L 3.98809 -0.569442L 3.01191 0.569442ZM -0.488094 6.56944L 3.01191 9.56944L 3.98809 8.43056L 0.488094 5.43056L -0.488094 6.56944ZM 3.98809 9.56944L 7.48809 6.56944L 6.51191 5.43056L 3.01191 8.43056L 3.98809 9.56944Z"
-                fill="currentColor"
-              />
-            </svg>
-          </span>
+          />
           <span
             class="resizer  css-0"
             data-theme="light"
           />
         </th>
         <th
-          class="css-14km1nl"
+          aria-label="ariaLabel.sortInitial"
+          class="css-1875pyg"
           data-theme="light"
           style=""
+          tabindex="0"
         >
           Spalte B
           <span
-            aria-label="ariaLabel.sortInitial"
-            class="result-list-sort-icon css-1q8b5yy"
+            class="css-1q8b5yy"
             data-theme="light"
-            tabindex="0"
-          >
-            <svg
-              class="chakra-icon result-list-sort-initial-icon css-onkibi"
-              data-theme="light"
-              focusable="false"
-              viewBox="-1 -1 9 11"
-            >
-              <path
-                d="M 3.5 0L 3.98809 -0.569442L 3.5 -0.987808L 3.01191 -0.569442L 3.5 0ZM 3.5 9L 3.01191 9.56944L 3.5 9.98781L 3.98809 9.56944L 3.5 9ZM 0.488094 3.56944L 3.98809 0.569442L 3.01191 -0.569442L -0.488094 2.43056L 0.488094 3.56944ZM 3.01191 0.569442L 6.51191 3.56944L 7.48809 2.43056L 3.98809 -0.569442L 3.01191 0.569442ZM -0.488094 6.56944L 3.01191 9.56944L 3.98809 8.43056L 0.488094 5.43056L -0.488094 6.56944ZM 3.98809 9.56944L 7.48809 6.56944L 6.51191 5.43056L 3.01191 8.43056L 3.98809 9.56944Z"
-                fill="currentColor"
-              />
-            </svg>
-          </span>
+          />
           <span
             class="resizer  css-0"
             data-theme="light"
           />
         </th>
         <th
-          class="css-14km1nl"
+          aria-label="ariaLabel.sortInitial"
+          class="css-1875pyg"
           data-theme="light"
           style=""
+          tabindex="0"
         >
           Spalte C
           <span
-            aria-label="ariaLabel.sortInitial"
-            class="result-list-sort-icon css-1q8b5yy"
+            class="css-1q8b5yy"
             data-theme="light"
-            tabindex="0"
-          >
-            <svg
-              class="chakra-icon result-list-sort-initial-icon css-onkibi"
-              data-theme="light"
-              focusable="false"
-              viewBox="-1 -1 9 11"
-            >
-              <path
-                d="M 3.5 0L 3.98809 -0.569442L 3.5 -0.987808L 3.01191 -0.569442L 3.5 0ZM 3.5 9L 3.01191 9.56944L 3.5 9.98781L 3.98809 9.56944L 3.5 9ZM 0.488094 3.56944L 3.98809 0.569442L 3.01191 -0.569442L -0.488094 2.43056L 0.488094 3.56944ZM 3.01191 0.569442L 6.51191 3.56944L 7.48809 2.43056L 3.98809 -0.569442L 3.01191 0.569442ZM -0.488094 6.56944L 3.01191 9.56944L 3.98809 8.43056L 0.488094 5.43056L -0.488094 6.56944ZM 3.98809 9.56944L 7.48809 6.56944L 6.51191 5.43056L 3.01191 8.43056L 3.98809 9.56944Z"
-                fill="currentColor"
-              />
-            </svg>
-          </span>
+          />
           <span
             class="resizer  css-0"
             data-theme="light"
           />
         </th>
         <th
-          class="css-14km1nl"
+          aria-label="ariaLabel.sortInitial"
+          class="css-1875pyg"
           data-theme="light"
           style=""
+          tabindex="0"
         >
           Spalte D
           <span
-            aria-label="ariaLabel.sortInitial"
-            class="result-list-sort-icon css-1q8b5yy"
+            class="css-1q8b5yy"
             data-theme="light"
-            tabindex="0"
-          >
-            <svg
-              class="chakra-icon result-list-sort-initial-icon css-onkibi"
-              data-theme="light"
-              focusable="false"
-              viewBox="-1 -1 9 11"
-            >
-              <path
-                d="M 3.5 0L 3.98809 -0.569442L 3.5 -0.987808L 3.01191 -0.569442L 3.5 0ZM 3.5 9L 3.01191 9.56944L 3.5 9.98781L 3.98809 9.56944L 3.5 9ZM 0.488094 3.56944L 3.98809 0.569442L 3.01191 -0.569442L -0.488094 2.43056L 0.488094 3.56944ZM 3.01191 0.569442L 6.51191 3.56944L 7.48809 2.43056L 3.98809 -0.569442L 3.01191 0.569442ZM -0.488094 6.56944L 3.01191 9.56944L 3.98809 8.43056L 0.488094 5.43056L -0.488094 6.56944ZM 3.98809 9.56944L 7.48809 6.56944L 6.51191 5.43056L 3.01191 8.43056L 3.98809 9.56944Z"
-                fill="currentColor"
-              />
-            </svg>
-          </span>
+          />
           <span
             class="resizer  css-0"
             data-theme="light"
           />
         </th>
         <th
-          class="css-14km1nl"
+          aria-label="ariaLabel.sortInitial"
+          class="css-1875pyg"
           data-theme="light"
           style=""
+          tabindex="0"
         >
           Spalte E
           <span
-            aria-label="ariaLabel.sortInitial"
-            class="result-list-sort-icon css-1q8b5yy"
+            class="css-1q8b5yy"
             data-theme="light"
-            tabindex="0"
-          >
-            <svg
-              class="chakra-icon result-list-sort-initial-icon css-onkibi"
-              data-theme="light"
-              focusable="false"
-              viewBox="-1 -1 9 11"
-            >
-              <path
-                d="M 3.5 0L 3.98809 -0.569442L 3.5 -0.987808L 3.01191 -0.569442L 3.5 0ZM 3.5 9L 3.01191 9.56944L 3.5 9.98781L 3.98809 9.56944L 3.5 9ZM 0.488094 3.56944L 3.98809 0.569442L 3.01191 -0.569442L -0.488094 2.43056L 0.488094 3.56944ZM 3.01191 0.569442L 6.51191 3.56944L 7.48809 2.43056L 3.98809 -0.569442L 3.01191 0.569442ZM -0.488094 6.56944L 3.01191 9.56944L 3.98809 8.43056L 0.488094 5.43056L -0.488094 6.56944ZM 3.98809 9.56944L 7.48809 6.56944L 6.51191 5.43056L 3.01191 8.43056L 3.98809 9.56944Z"
-                fill="currentColor"
-              />
-            </svg>
-          </span>
+          />
           <span
             class="resizer  css-0"
             data-theme="light"
@@ -232,29 +174,23 @@ exports[`expect result list to be created successfully 1`] = `
             class="css-1baulvz"
             data-theme="light"
           >
-            <span
-              class="css-1baulvz"
+            <label
+              class="chakra-checkbox result-list-select-row-checkbox cursor-pointer css-1577qb8"
               data-theme="light"
-              tabindex="0"
             >
-              <label
-                class="chakra-checkbox result-list-select-row-checkbox cursor-pointer css-1577qb8"
+              <input
+                aria-label="ariaLabel.selectSingle"
+                class="chakra-checkbox__input"
+                style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
+                type="checkbox"
+                value=""
+              />
+              <span
+                aria-hidden="true"
+                class="chakra-checkbox__control css-1ydjfm6"
                 data-theme="light"
-              >
-                <input
-                  aria-label="ariaLabel.selectSingle"
-                  class="chakra-checkbox__input"
-                  style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
-                  type="checkbox"
-                  value=""
-                />
-                <span
-                  aria-hidden="true"
-                  class="chakra-checkbox__control css-1ydjfm6"
-                  data-theme="light"
-                />
-              </label>
-            </span>
+              />
+            </label>
           </div>
         </td>
         <td
@@ -306,29 +242,23 @@ exports[`expect result list to be created successfully 1`] = `
             class="css-1baulvz"
             data-theme="light"
           >
-            <span
-              class="css-1baulvz"
+            <label
+              class="chakra-checkbox result-list-select-row-checkbox cursor-pointer css-1577qb8"
               data-theme="light"
-              tabindex="0"
             >
-              <label
-                class="chakra-checkbox result-list-select-row-checkbox cursor-pointer css-1577qb8"
+              <input
+                aria-label="ariaLabel.selectSingle"
+                class="chakra-checkbox__input"
+                style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
+                type="checkbox"
+                value=""
+              />
+              <span
+                aria-hidden="true"
+                class="chakra-checkbox__control css-1ydjfm6"
                 data-theme="light"
-              >
-                <input
-                  aria-label="ariaLabel.selectSingle"
-                  class="chakra-checkbox__input"
-                  style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
-                  type="checkbox"
-                  value=""
-                />
-                <span
-                  aria-hidden="true"
-                  class="chakra-checkbox__control css-1ydjfm6"
-                  data-theme="light"
-                />
-              </label>
-            </span>
+              />
+            </label>
           </div>
         </td>
         <td
@@ -380,29 +310,23 @@ exports[`expect result list to be created successfully 1`] = `
             class="css-1baulvz"
             data-theme="light"
           >
-            <span
-              class="css-1baulvz"
+            <label
+              class="chakra-checkbox result-list-select-row-checkbox cursor-pointer css-1577qb8"
               data-theme="light"
-              tabindex="0"
             >
-              <label
-                class="chakra-checkbox result-list-select-row-checkbox cursor-pointer css-1577qb8"
+              <input
+                aria-label="ariaLabel.selectSingle"
+                class="chakra-checkbox__input"
+                style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
+                type="checkbox"
+                value=""
+              />
+              <span
+                aria-hidden="true"
+                class="chakra-checkbox__control css-1ydjfm6"
                 data-theme="light"
-              >
-                <input
-                  aria-label="ariaLabel.selectSingle"
-                  class="chakra-checkbox__input"
-                  style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
-                  type="checkbox"
-                  value=""
-                />
-                <span
-                  aria-hidden="true"
-                  class="chakra-checkbox__control css-1ydjfm6"
-                  data-theme="light"
-                />
-              </label>
-            </span>
+              />
+            </label>
           </div>
         </td>
         <td
@@ -454,29 +378,23 @@ exports[`expect result list to be created successfully 1`] = `
             class="css-1baulvz"
             data-theme="light"
           >
-            <span
-              class="css-1baulvz"
+            <label
+              class="chakra-checkbox result-list-select-row-checkbox cursor-pointer css-1577qb8"
               data-theme="light"
-              tabindex="0"
             >
-              <label
-                class="chakra-checkbox result-list-select-row-checkbox cursor-pointer css-1577qb8"
+              <input
+                aria-label="ariaLabel.selectSingle"
+                class="chakra-checkbox__input"
+                style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
+                type="checkbox"
+                value=""
+              />
+              <span
+                aria-hidden="true"
+                class="chakra-checkbox__control css-1ydjfm6"
                 data-theme="light"
-              >
-                <input
-                  aria-label="ariaLabel.selectSingle"
-                  class="chakra-checkbox__input"
-                  style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
-                  type="checkbox"
-                  value=""
-                />
-                <span
-                  aria-hidden="true"
-                  class="chakra-checkbox__control css-1ydjfm6"
-                  data-theme="light"
-                />
-              </label>
-            </span>
+              />
+            </label>
           </div>
         </td>
         <td

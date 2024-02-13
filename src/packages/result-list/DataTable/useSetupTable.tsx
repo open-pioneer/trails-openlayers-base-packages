@@ -9,7 +9,6 @@ import {
 } from "@tanstack/react-table";
 import { DataTableProps } from "./DataTable";
 
-// TODO: Maybe also put createColumns here? But then, ResultColumn must be transported to DataTable instead of ColumnDefs!
 export function useSetupTable<Data extends object>(props: DataTableProps<Data>) {
     const { data, columns } = props;
     const [sorting, setSorting] = useState<SortingState>([]);

@@ -1,11 +1,18 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Table, Thead, Tbody, Tr, Th, Td } from "@open-pioneer/chakra-integration";
-import { flexRender, ColumnDef, Table as TanstackTable, HeaderGroup } from "@tanstack/react-table";
+import {
+    flexRender,
+    ColumnDef,
+    Table as TanstackTable,
+    HeaderGroup,
+    SortDirection
+} from "@tanstack/react-table";
 import { useIntl } from "open-pioneer:react-hooks";
 import React, { useMemo } from "react";
-import { ColumnResizer, ColumnSorter } from "./CustomComponents";
+import { ColumnResizer, ColumnSortIndicator } from "./CustomComponents";
 import { useSetupTable } from "./useSetupTable";
+import { PackageIntl } from "@open-pioneer/runtime";
 
 export interface DataTableProps<Data extends object> {
     data: Data[];
@@ -49,6 +56,7 @@ export function DataTable<Data extends object>(props: DataTableProps<Data>) {
 
 function TableHeaderGroup<Data>(props: { headerGroup: HeaderGroup<Data> }) {
     const { headerGroup } = props;
+    const intl = useIntl();
 
     return (
         <Tr key={headerGroup.id}>
@@ -57,16 +65,22 @@ function TableHeaderGroup<Data>(props: { headerGroup: HeaderGroup<Data> }) {
                 return (
                     <Th
                         key={header.id}
+                        tabIndex={0}
+                        aria-label={getSortingAriaLabel(intl, header.column.getIsSorted())}
                         onClick={header.column.getToggleSortingHandler()}
                         cursor={header.column.getCanSort() ? "pointer" : "unset"}
                         style={{ width: index === 0 ? "50px" : width }}
+                        onKeyDown={(evt) => {
+                            if (evt.key === "Enter") {
+                                header.column.toggleSorting(undefined);
+                            }
+                        }}
+                        _focusVisible={{ textDecorationLine: "underline" }}
+                        _focus={{ outline: "none" }}
                     >
                         {flexRender(header.column.columnDef.header, header.getContext())}
                         {header.column.getCanSort() && (
-                            <ColumnSorter
-                                toggleSorting={() => header.column.toggleSorting(undefined)}
-                                isSorted={header.column.getIsSorted()}
-                            />
+                            <ColumnSortIndicator isSorted={header.column.getIsSorted()} />
                         )}
                         <ColumnResizer
                             onDoubleClick={() => header.column.resetSize()}
@@ -130,4 +144,22 @@ function useColumnSizeVars<Data>(table: TanstackTable<Data>) {
         }
         return colSizes;
     }, [tableHeaders, columnSizingInfo]);
+}
+
+type SortState = SortDirection | false;
+function getSortingAriaLabel(intl: PackageIntl, sortState: SortState) {
+    switch (sortState) {
+        case "asc":
+            return intl.formatMessage({
+                id: "ariaLabel.sortAscending"
+            });
+        case "desc":
+            return intl.formatMessage({
+                id: "ariaLabel.sortDescending"
+            });
+        case false:
+            return intl.formatMessage({
+                id: "ariaLabel.sortInitial"
+            });
+    }
 }

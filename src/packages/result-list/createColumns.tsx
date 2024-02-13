@@ -4,17 +4,17 @@ import { createColumnHelper } from "@tanstack/react-table";
 import { ResultColumn } from "./api";
 import { BaseFeature } from "@open-pioneer/map/api/BaseFeature";
 import { IndeterminateCheckbox } from "./DataTable/CustomComponents";
-import { Table as TanstackTable } from "@tanstack/table-core/build/lib/types";
-import { PackageIntl } from "@open-pioneer/runtime";
 import { chakra } from "@open-pioneer/chakra-integration";
+import { PackageIntl } from "@open-pioneer/runtime";
+import { Table as TanstackTable } from "@tanstack/table-core/build/lib/types";
 
 const columnHelper = createColumnHelper<BaseFeature>();
 export const SELECT_COLUMN_SIZE = 70;
 
-export function createColumns(metaData: ResultColumn[], tableWidth?: number) {
+export function createColumns(metaData: ResultColumn[], intl: PackageIntl, tableWidth?: number) {
     const remainingColumnWidth: number | undefined =
         tableWidth === undefined ? undefined : calcRemainingColumnWidth(metaData, tableWidth);
-    const selectionColumn = createSelectionColumn();
+    const selectionColumn = createSelectionColumn(intl);
     const columnDef = metaData.map((metaDataItem, index) => {
         const columnWidth = metaDataItem.width || remainingColumnWidth;
         return createColumn(metaDataItem, columnWidth, "result-list-col_" + index);
@@ -44,7 +44,7 @@ function createColumn(metaDataItem: ResultColumn, columnWidth: number | undefine
     );
 }
 
-function createSelectionColumn() {
+function createSelectionColumn(intl: PackageIntl) {
     return columnHelper.display({
         id: "result-list-col_selection-buttons",
         size: SELECT_COLUMN_SIZE,
@@ -55,7 +55,11 @@ function createSelectionColumn() {
                         className: "result-list-select-all-checkbox",
                         checked: table.getIsAllRowsSelected(),
                         indeterminate: table.getIsSomeRowsSelected(),
-                        onChange: table.getToggleAllRowsSelectedHandler()
+                        onChange: table.getToggleAllRowsSelectedHandler(),
+                        toolTipLabel: getCheckboxToolTip(table, intl),
+                        ariaLabel: intl.formatMessage({
+                            id: "ariaLabel.selectAll"
+                        })
                     }}
                 />
             );
@@ -74,21 +78,16 @@ function createSelectionColumn() {
                             checked: row.getIsSelected(),
                             disabled: !row.getCanSelect(),
                             indeterminate: row.getIsSomeSelected(),
-                            onChange: row.getToggleSelectedHandler()
+                            onChange: row.getToggleSelectedHandler(),
+                            ariaLabel: intl.formatMessage({
+                                id: "ariaLabel.selectSingle"
+                            })
                         }}
                     />
                 </chakra.div>
             );
         }
     });
-}
-
-function getCheckboxToolTip<Data>(table: TanstackTable<Data>, intl?: PackageIntl) {
-    if (table.getIsAllRowsSelected()) {
-        return intl?.formatMessage({ id: "deSelectAllTooltip" }) || "";
-    } else {
-        return intl?.formatMessage({ id: "selectAllTooltip" }) || "";
-    }
 }
 
 function calcRemainingColumnWidth(
@@ -103,4 +102,12 @@ function calcRemainingColumnWidth(
     );
     const remainingWidth = tableWidth - selectColumnWidth - fullWidth;
     return remainingWidth / undefinedWidthCount;
+}
+
+function getCheckboxToolTip<Data>(table: TanstackTable<Data>, intl: PackageIntl) {
+    if (table.getIsAllRowsSelected()) {
+        return intl.formatMessage({ id: "deSelectAllTooltip" });
+    } else {
+        return intl.formatMessage({ id: "selectAllTooltip" });
+    }
 }

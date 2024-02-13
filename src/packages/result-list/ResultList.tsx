@@ -17,14 +17,17 @@ export const ResultList: FC<ResultListProps> = (props) => {
     const data = resultListInput.data;
     const metadata = resultListInput.metadata;
     if (metadata.length === 0) {
-        throw Error(intl.formatMessage({ id: "illegalArgumentException" }));
+        throw Error("no metadata given! result list cannot be displayed.");
     }
 
     const dataTableRef = useRef<HTMLDivElement>(null);
     const tableWidth = useTableWidth(dataTableRef);
 
     const { containerProps } = useCommonComponentProps("result-list", props);
-    const columns = useMemo(() => createColumns(metadata, tableWidth), [metadata, tableWidth]);
+    const columns = useMemo(
+        () => createColumns(metadata, intl, tableWidth),
+        [metadata, intl, tableWidth]
+    );
 
     return (
         <Box {...containerProps} height="100%" overflowY="auto" ref={dataTableRef}>

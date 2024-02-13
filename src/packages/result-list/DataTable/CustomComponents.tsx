@@ -10,34 +10,19 @@ import { TriangleDownIcon, TriangleUpIcon, UpDownIcon } from "@chakra-ui/icons";
 export function IndeterminateCheckbox({
     indeterminate,
     className = "",
+    toolTipLabel,
     ...rest
 }: {
     indeterminate?: boolean;
     toolTipLabel?: string;
+    ariaLabel: string;
 } & HTMLProps<HTMLInputElement>) {
     const ref = useRef<HTMLInputElement>(null!);
-    const intl = useIntl();
-
-    let ariaLabel;
-    if (className === "result-list-select-all-checkbox") {
-        ariaLabel = intl?.formatMessage({
-            id: "ariaLabel.selectAll"
-        });
-    } else {
-        ariaLabel = intl?.formatMessage({
-            id: "ariaLabel.selectSingle"
-        });
-    }
     return (
-        <Tooltip
-            {...{}}
-            label={getCheckboxToolTip(rest.checked, intl)}
-            placement="right"
-            shouldWrapChildren={true}
-        >
+        <Tooltip {...{}} label={toolTipLabel} placement="right" shouldWrapChildren={true}>
             <Checkbox
                 ref={ref}
-                aria-label={ariaLabel}
+                aria-label={rest.ariaLabel}
                 className={className + " cursor-pointer"}
                 isChecked={rest.checked}
                 onChange={rest.onChange}
@@ -47,46 +32,12 @@ export function IndeterminateCheckbox({
     );
 }
 
-function getCheckboxToolTip<Data>(checked: boolean | undefined, intl: PackageIntl) {
-    if (checked) {
-        return intl?.formatMessage({ id: "deSelectAllTooltip" });
-    } else {
-        return intl?.formatMessage({ id: "selectAllTooltip" });
-    }
-}
-
-export function ColumnSorter(props: {
-    toggleSorting: () => void;
-    isSorted: false | SortDirection;
-}): JSX.Element {
-    const { toggleSorting, isSorted } = props;
-    const intl = useIntl();
-    const ariaLabel = getSortingAriaLabel(intl, isSorted);
-
-    const onEnterPressed = (evt: React.KeyboardEvent<HTMLSpanElement>) => {
-        const key = evt.key;
-        if (key === "Enter") {
-            toggleSorting();
-        }
-    };
+export function ColumnSortIndicator(props: { isSorted: false | SortDirection }): JSX.Element {
+    const { isSorted } = props;
 
     return (
-        <chakra.span
-            ml="4"
-            tabIndex={0}
-            className="result-list-sort-icon"
-            aria-label={ariaLabel}
-            onKeyDown={onEnterPressed}
-        >
-            {isSorted ? (
-                isSorted === "desc" ? (
-                    <TriangleDownIcon />
-                ) : (
-                    <TriangleUpIcon />
-                )
-            ) : (
-                <UpDownIcon className="result-list-sort-initial-icon" />
-            )}
+        <chakra.span ml="4">
+            {isSorted ? isSorted === "desc" ? <TriangleDownIcon /> : <TriangleUpIcon /> : null}
         </chakra.span>
     );
 }
@@ -107,22 +58,4 @@ export function ColumnResizer(props: {
             className={className}
         ></chakra.span>
     );
-}
-
-type SortState = SortDirection | false;
-function getSortingAriaLabel(intl: PackageIntl, sortState: SortState) {
-    switch (sortState) {
-        case "asc":
-            return intl.formatMessage({
-                id: "ariaLabel.sortAscending"
-            });
-        case "desc":
-            return intl.formatMessage({
-                id: "ariaLabel.sortDescending"
-            });
-        case false:
-            return intl.formatMessage({
-                id: "ariaLabel.sortInitial"
-            });
-    }
 }

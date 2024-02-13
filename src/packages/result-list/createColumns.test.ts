@@ -5,16 +5,20 @@ import { afterEach, expect, vi, it, describe } from "vitest";
 import { ResultColumn } from "./api";
 import { createColumns, SELECT_COLUMN_SIZE } from "./createColumns";
 import { dummyMetaDataMissingWidth } from "./testSources";
+import { createIntl } from "@open-pioneer/test-utils/vanilla";
 
 afterEach(() => {
     vi.restoreAllMocks();
 });
 
 describe("create columns for result-list", () => {
+    const intl = createIntl();
+
     it("expect createColumn to create Columns correctly", async () => {
         const metaData = createMetaData();
+
         // Slice away the selection checkbox column
-        const columns = createColumns(metaData).slice(1);
+        const columns = createColumns(metaData, intl).slice(1);
         expect(columns.length).toEqual(metaData.length);
         columns.forEach((column, index) => {
             //Column-ID is correct
@@ -32,7 +36,7 @@ describe("create columns for result-list", () => {
         const metaData = dummyMetaDataMissingWidth;
         const fullWidth = 1000;
         // Slice away the selection checkbox column
-        const columns = createColumns(metaData, fullWidth).slice(1);
+        const columns = createColumns(metaData, intl, fullWidth).slice(1);
         const expectedWidth = (fullWidth - SELECT_COLUMN_SIZE - 300) / 2;
         expect(columns[0]?.size).toEqual(metaData[0]!.width);
         expect(columns[1]?.size).toEqual(expectedWidth);
