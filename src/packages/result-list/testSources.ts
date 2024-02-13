@@ -105,13 +105,34 @@ export const dummyFeatureDataAlt: BaseFeature[] = [
 
 export const dummyMetaDataAlt: ResultColumn[] = [
     {
-        propertyName: "properties.f",
+        propertyName: "f",
         displayName: "Spalte F",
         width: 200
     },
     {
-        propertyName: "properties.g",
+        propertyName: "g",
         displayName: "Spalte G",
         width: 300
+    }
+];
+
+export const dummyMetaDataMissingWidth: ResultColumn[] = [
+    {
+        propertyName: "h",
+        displayName: "Spalte H",
+        width: 100
+    },
+    {
+        propertyName: "i",
+        displayName: "Spalte I"
+    },
+    {
+        propertyName: "j",
+        displayName: "Spalte J"
+    },
+    {
+        propertyName: "k",
+        displayName: "Spalte K",
+        width: 200
     }
 ];

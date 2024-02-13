@@ -34,10 +34,7 @@ export const ResultList: FC<ResultListProps> = (props) => {
     }, [dataTableRef.current]);
 
     const { containerProps } = useCommonComponentProps("result-list", props);
-    const columns = useMemo(
-        () => createColumns(metadata, intl, tableWidth),
-        [metadata, intl, tableWidth]
-    );
+    const columns = useMemo(() => createColumns(metadata, tableWidth), [metadata, tableWidth]);
 
     return (
         <Box {...containerProps} height="100%" overflowY="auto" ref={dataTableRef}>

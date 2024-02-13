@@ -29,5 +29,5 @@ export function useSetupTable<Data extends object>(props: DataTableProps<Data>) 
             rowSelection
         }
     });
-    return table;
+    return { table, sorting, rowSelection };
 }

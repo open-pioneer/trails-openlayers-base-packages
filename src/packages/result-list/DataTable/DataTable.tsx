@@ -14,7 +14,7 @@ export interface DataTableProps<Data extends object> {
 
 export function DataTable<Data extends object>(props: DataTableProps<Data>) {
     const intl = useIntl();
-    const table = useSetupTable(props);
+    const { table } = useSetupTable(props);
     const columnSizeVars = useColumnSizeVars(table);
 
     if (!table.getRowModel().rows.length) {
@@ -47,7 +47,6 @@ export function DataTable<Data extends object>(props: DataTableProps<Data>) {
     );
 }
 
-// TODO: extract handler from table and pass as parameter?
 function TableHeaderGroup<Data>(props: { headerGroup: HeaderGroup<Data> }) {
     const { headerGroup } = props;
 
@@ -70,7 +69,6 @@ function TableHeaderGroup<Data>(props: { headerGroup: HeaderGroup<Data> }) {
                             />
                         )}
                         <ColumnResizer
-                            // TODO: Reseting with DoubleClick seems to not be rendered instantly because of useMemo?
                             onDoubleClick={() => header.column.resetSize()}
                             onMouseDown={header.getResizeHandler()}
                             onTouchStart={header.getResizeHandler()}
@@ -121,7 +119,7 @@ function useColumnSizeVars<Data>(table: TanstackTable<Data>) {
     const columnSizingInfo = table.getState().columnSizingInfo;
     const tableHeaders = table.getFlatHeaders();
 
-    // TODO: Needs to be useMemo, not useEffect, to avoid multiple render calls?
+    // Needs to be useMemo, not useEffect, to avoid multiple render calls?
     // Need to add columnSizingInfo to the dependency array to make resizing work
     return useMemo(() => {
         const colSizes: { [key: string]: number } = {};

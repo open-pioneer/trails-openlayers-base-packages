@@ -9,13 +9,12 @@ import { PackageIntl } from "@open-pioneer/runtime";
 import { chakra } from "@open-pioneer/chakra-integration";
 
 const columnHelper = createColumnHelper<BaseFeature>();
-const SELECT_COLUMN_SIZE = 70;
+export const SELECT_COLUMN_SIZE = 70;
 
-// TODO: intl only optional because of test... thats not good
-export function createColumns(metaData: ResultColumn[], intl?: PackageIntl, tableWidth?: number) {
+export function createColumns(metaData: ResultColumn[], tableWidth?: number) {
     const remainingColumnWidth: number | undefined =
         tableWidth === undefined ? undefined : calcRemainingColumnWidth(metaData, tableWidth);
-    const selectionColumn = createSelectionColumn(intl);
+    const selectionColumn = createSelectionColumn();
     const columnDef = metaData.map((metaDataItem, index) => {
         const columnWidth = metaDataItem.width || remainingColumnWidth;
         return createColumn(metaDataItem, columnWidth, "result-list-col_" + index);
@@ -45,7 +44,7 @@ function createColumn(metaDataItem: ResultColumn, columnWidth: number | undefine
     );
 }
 
-function createSelectionColumn(intl?: PackageIntl) {
+function createSelectionColumn() {
     return columnHelper.display({
         id: "result-list-col_selection-buttons",
         size: SELECT_COLUMN_SIZE,
@@ -56,13 +55,7 @@ function createSelectionColumn(intl?: PackageIntl) {
                         className: "result-list-select-all-checkbox",
                         checked: table.getIsAllRowsSelected(),
                         indeterminate: table.getIsSomeRowsSelected(),
-                        onChange: table.getToggleAllRowsSelectedHandler(),
-                        toolTipLabel: getCheckboxToolTip(table, intl),
-                        // TODO: Is also read by screenreader for all single row select checkboxes?!
-                        ariaLabel:
-                            intl?.formatMessage({
-                                id: "ariaLabel.selectAll"
-                            }) || "Press enter to select oder deselect all rows."
+                        onChange: table.getToggleAllRowsSelectedHandler()
                     }}
                 />
             );
@@ -81,11 +74,7 @@ function createSelectionColumn(intl?: PackageIntl) {
                             checked: row.getIsSelected(),
                             disabled: !row.getCanSelect(),
                             indeterminate: row.getIsSomeSelected(),
-                            onChange: row.getToggleSelectedHandler(),
-                            ariaLabel:
-                                intl?.formatMessage({
-                                    id: "ariaLabel.selectSingle"
-                                }) || "Row selected"
+                            onChange: row.getToggleSelectedHandler()
                         }}
                     />
                 </chakra.div>

@@ -3,7 +3,8 @@
 
 import { afterEach, expect, vi, it, describe } from "vitest";
 import { ResultColumn } from "./api";
-import { createColumns } from "./createColumns";
+import { createColumns, SELECT_COLUMN_SIZE } from "./createColumns";
+import { dummyMetaDataMissingWidth } from "./testSources";
 
 afterEach(() => {
     vi.restoreAllMocks();
@@ -27,7 +28,17 @@ describe("create columns for result-list", () => {
             // no column-size testing because of recalculation based on column definition
         });
     });
-    // TODO: Add tests for width calculation?
+    it("expect createColumn to distribute remaining width on columns with undefined width", async () => {
+        const metaData = dummyMetaDataMissingWidth;
+        const fullWidth = 1000;
+        // Slice away the selection checkbox column
+        const columns = createColumns(metaData, fullWidth).slice(1);
+        const expectedWidth = (fullWidth - SELECT_COLUMN_SIZE - 300) / 2;
+        expect(columns[0]?.size).toEqual(metaData[0]!.width);
+        expect(columns[1]?.size).toEqual(expectedWidth);
+        expect(columns[2]?.size).toEqual(expectedWidth);
+        expect(columns[3]?.size).toEqual(metaData[3]!.width);
+    });
 });
 
 function createMetaData() {

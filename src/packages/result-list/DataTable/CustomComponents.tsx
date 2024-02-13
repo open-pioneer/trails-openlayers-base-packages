@@ -10,19 +10,34 @@ import { TriangleDownIcon, TriangleUpIcon, UpDownIcon } from "@chakra-ui/icons";
 export function IndeterminateCheckbox({
     indeterminate,
     className = "",
-    toolTipLabel,
     ...rest
 }: {
     indeterminate?: boolean;
     toolTipLabel?: string;
-    ariaLabel: string;
 } & HTMLProps<HTMLInputElement>) {
     const ref = useRef<HTMLInputElement>(null!);
+    const intl = useIntl();
+
+    let ariaLabel;
+    if (className === "result-list-select-all-checkbox") {
+        ariaLabel = intl?.formatMessage({
+            id: "ariaLabel.selectAll"
+        });
+    } else {
+        ariaLabel = intl?.formatMessage({
+            id: "ariaLabel.selectSingle"
+        });
+    }
     return (
-        <Tooltip {...{}} label={toolTipLabel} placement="right" shouldWrapChildren={true}>
+        <Tooltip
+            {...{}}
+            label={getCheckboxToolTip(rest.checked, intl)}
+            placement="right"
+            shouldWrapChildren={true}
+        >
             <Checkbox
                 ref={ref}
-                aria-label={rest.ariaLabel}
+                aria-label={ariaLabel}
                 className={className + " cursor-pointer"}
                 isChecked={rest.checked}
                 onChange={rest.onChange}
@@ -31,6 +46,15 @@ export function IndeterminateCheckbox({
         </Tooltip>
     );
 }
+
+function getCheckboxToolTip<Data>(checked: boolean | undefined, intl: PackageIntl) {
+    if (checked) {
+        return intl?.formatMessage({ id: "deSelectAllTooltip" });
+    } else {
+        return intl?.formatMessage({ id: "selectAllTooltip" });
+    }
+}
+
 export function ColumnSorter(props: {
     toggleSorting: () => void;
     isSorted: false | SortDirection;
