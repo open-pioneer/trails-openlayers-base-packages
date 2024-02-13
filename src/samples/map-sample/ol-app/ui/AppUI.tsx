@@ -161,7 +161,11 @@ export function AppUI() {
                     alignItems="center"
                     justifyContent="center"
                 >
-                    <CoordinateViewer mapId={MAP_ID} precision={2} />
+                    <CoordinateViewer
+                        mapId={MAP_ID}
+                        precision={2}
+                        displayProjectionCode="EPSG:4326"
+                    />
                     <ScaleBar mapId={MAP_ID} />
                     <ScaleViewer mapId={MAP_ID} />
                 </Flex>

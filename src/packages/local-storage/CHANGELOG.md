@@ -1,5 +1,11 @@
 # @open-pioneer/local-storage
 
+## 0.3.0
+
+### Minor Changes
+
+-   ee7c2d4: Update runtime version.
+
 ## 0.2.0
 
 ### Minor Changes

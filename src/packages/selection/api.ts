@@ -4,7 +4,7 @@ import type { Geometry } from "ol/geom";
 import type { Projection } from "ol/proj";
 import type { Extent } from "ol/extent";
 import type { EventSource, Resource } from "@open-pioneer/core";
-import { BaseFeature } from "@open-pioneer/map/api/BaseFeature";
+import { BaseFeature } from "@open-pioneer/map";
 import { DeclaredService } from "@open-pioneer/runtime";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
