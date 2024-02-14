@@ -127,7 +127,6 @@ export class EditingWorkflow
         this._tooltip.element.classList.remove("hidden");
 
         const drawStart = this._drawInteraction.on("drawstart", () => {
-            console.log("drawstart");
             this._setState("active:drawing");
             this._tooltip.element.textContent = this._intl.formatMessage({
                 id: "tooltip.continue"
@@ -135,15 +134,14 @@ export class EditingWorkflow
         });
 
         const drawEnd = this._drawInteraction.on("drawend", (e) => {
-            console.log("drawend");
             this._setState("active:saving");
 
             const layerUrl = this._editLayerURL;
 
             const geometry = e.feature.getGeometry();
             if (!geometry) {
-                console.log("no geometry available");
-                // todo stop editing?
+                this._destroy();
+                this.#waiter?.reject(new Error("no geometry available"));
                 return;
             }
             const projection = this._olMap.getView().getProjection();
@@ -175,10 +173,6 @@ export class EditingWorkflow
             if (this._mapContainer) {
                 this._mapContainer.addEventListener("keydown", this._escapeHandler, false);
             }
-        });
-
-        this._map.olMap.on("click", () => {
-            console.log("click");
         });
 
         this._interactionListener.push(drawStart, drawEnd);
