@@ -17,13 +17,13 @@ import { BaseFeature } from "@open-pioneer/map";
 import { ResultListSelectionChangedEvent } from "../api";
 
 export interface DataTableProps<Data extends object> {
-    data: BaseFeature[];
+    data: Data[];
     columns: ColumnDef<BaseFeature, unknown>[];
-    setSelectedFeatures?: Dispatch<SetStateAction<BaseFeature[] | null>>;
+    setSelectedFeatures?: Dispatch<SetStateAction<BaseFeature[]>>;
     onSelectionChanged?(event: ResultListSelectionChangedEvent): void;
 }
 
-export function DataTable<Data extends object>(props: DataTableProps<Data>) {
+export function DataTable(props: DataTableProps<BaseFeature>) {
     const intl = useIntl();
     const { table, rowSelection } = useSetupTable(props);
     const columnSizeVars = useColumnSizeVars(table);
@@ -35,7 +35,7 @@ export function DataTable<Data extends object>(props: DataTableProps<Data>) {
     useEffect(() => {
         const selectedRows = table.getSelectedRowModel();
         const features = selectedRows.rows.map((feature) => feature.original);
-        const ids = features.map((feature) => feature.id);
+        const ids = features.map((feature: BaseFeature) => feature.id);
         if (setSelectedFeatures) setSelectedFeatures(features);
         if (onSelectionChanged)
             onSelectionChanged({

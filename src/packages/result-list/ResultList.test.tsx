@@ -329,6 +329,11 @@ it("expect result-list has getter for selected Features", async () => {
         fireEvent.click(selectAllSelect!);
     });
     expect(setStateMocked).toHaveBeenCalledWith(dummyFeatureData);
+
+    act(() => {
+        fireEvent.click(selectAllSelect!);
+    });
+    expect(setStateMocked).toHaveBeenCalledWith([]);
 });
 
 async function waitForResultList() {

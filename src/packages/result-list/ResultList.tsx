@@ -19,7 +19,7 @@ export interface ResultListProps extends CommonComponentProps {
     /**
      * This state-Handler is called whenever the user has changed the selected features in the result-list
      */
-    getSelectedFeature?: Dispatch<SetStateAction<BaseFeature[] | null>>;
+    getSelectedFeature?: Dispatch<SetStateAction<BaseFeature[]>>;
 }
 
 export const ResultList: FC<ResultListProps> = (props) => {

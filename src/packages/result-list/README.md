@@ -49,6 +49,30 @@ new SimpleLayer({
 
 To select or deselect individual lines, you can click on the checkbox at the beginning of a line. If you want to select or deselect all rows you have to click on the checkbox in the first column header.
 
+#### Listening for Select-change-Events
+
+​The Result-List has an optional property `onSelectionChanged`. A function can be passed here that receives a ResultListSelectionChangedEvent (see api.ts).
+
+```ts
+import { ResultList } from "@open-pioneer/result-list";
+
+const selectionChangeLisener = useCallback((_event: ResultListSelectionChangedEvent) => {
+        console.log("changed");
+    }, []);
+
+<ResultList resultListInput={input} onSelectionChanged={selectionChangeLisener}/>
+```
+
+#### Get selected Data from Result-List
+
+The Result-List has an optional property `getSelectedFeature`. A React.Dispatch-Function can be passed here that receives a Array of Basefeatures.
+
+```ts
+const [selectedFeatures, setSelectedFeatures] = useState<BaseFeature[]>([]);
+
+<ResultList resultListInput={input} getSelectedFeature={setSelectedFeatures}/>
+```
+
 ### Sorting Data
 
 If you want to sort the data by a single columndate you have to click on the column header. The arrows show in which direction the sorting took place.
