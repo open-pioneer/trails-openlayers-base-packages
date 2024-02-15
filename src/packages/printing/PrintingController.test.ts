@@ -6,14 +6,22 @@ import { PrintingController } from "./PrintingController";
 import OlMap from "ol/Map";
 import { createManualPromise } from "@open-pioneer/core";
 
-it("calls the appropriate methods happy path)", async () => {
-    const { olMap, controller, exportMapInPNGSpy } = setUp();
+it("calls the appropriate methods (happy path)", async () => {
+    const { controller, exportToCanvasSpy, exportMapInPNGSpy, exportMapInPDFSpy } = setUp();
 
+    controller.setFileFormat("png");
     await controller.handleMapExport();
-    // TODO: spy...
+
+    expect(exportToCanvasSpy).toBeCalled();
+    expect(exportMapInPNGSpy).toBeCalled();
+
+    controller.setFileFormat("pdf");
+    await controller.handleMapExport();
+
+    expect(exportMapInPDFSpy).toBeCalled();
 });
 
-it("creates an overlay during export", async () => {
+it("creates an overlay during export and removes it after export", async () => {
     const { olMap, exportToCanvasSpy, controller } = setUp();
 
     // Block the canvas export until we tell it to continue.
@@ -51,7 +59,7 @@ function findOverlay(olMap: OlMap) {
         throw new Error("target not present");
     }
 
-    const overlay = target.querySelector("> .printing-overlay");
+    const overlay = target.querySelector(".printing-overlay");
     if (!overlay) {
         return undefined;
     }
