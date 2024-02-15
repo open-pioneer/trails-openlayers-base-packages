@@ -36,10 +36,7 @@ export interface EditingWorkflowEvents {
     "inactive": void;
 }
 
-// TODO:
-// - Rename interface to EditingWorkflow (and class to *impl, for example)
-// - Add (?) stop/reset here too
-export interface EditingWorkflowType extends EventEmitter<EditingWorkflowEvents> {
+export interface EditingWorkflow extends EventEmitter<EditingWorkflowEvents> {
     /**
      * Returns the current state of the editing workflow.
      */
@@ -57,7 +54,7 @@ export interface EditingService extends DeclaredService<"editing.EditingService"
     /**
      * Creates and initializes a new {@link EditingWorkflow}.
      */
-    start(map: MapModel, ogcApiFeatureLayerUrl: URL): EditingWorkflowType;
+    start(map: MapModel, ogcApiFeatureLayerUrl: URL): EditingWorkflow;
 
     /**
      * Stops the edit mode and removes an existing {@link EditingWorkflow}.

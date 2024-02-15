@@ -6,7 +6,7 @@ import { setupMap } from "@open-pioneer/map-test-utils";
 import { HttpService } from "@open-pioneer/http";
 import { createService } from "@open-pioneer/test-utils/services";
 import { FlatStyleLike } from "ol/style/flat";
-import { EditingWorkflow } from "./EditingWorkflow";
+import { EditingWorkflowImpl } from "./EditingWorkflow";
 
 const OGC_API_URL_TEST = new URL("https://example.org/ogc");
 
@@ -47,7 +47,7 @@ describe("tests for starting an editing", () => {
         });
 
         const workflow = editingService.start(map, OGC_API_URL_TEST);
-        expect(workflow instanceof EditingWorkflow).toBe(true);
+        expect(workflow instanceof EditingWorkflowImpl).toBe(true);
     });
 
     it("should throw an error if start editing twice for the same map id", async () => {
@@ -136,7 +136,7 @@ describe("tests for stopping an editing", () => {
     });
 });
 
-describe("tests for resting an editing", () => {
+describe("tests for resetting an editing", () => {
     it("should reset an editing", async () => {
         const { mapId, registry } = await setupMap();
         const map = await registry.expectMapModel(mapId);

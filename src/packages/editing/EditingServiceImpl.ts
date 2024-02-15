@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import { MapModel, MapRegistry } from "@open-pioneer/map";
 import { EditingService } from "./api";
-import { EditingWorkflow } from "./EditingWorkflow";
+import { EditingWorkflowImpl } from "./EditingWorkflow";
 import { FlatStyleLike } from "ol/style/flat";
 import { ServiceOptions } from "@open-pioneer/runtime";
 import { HttpService } from "@open-pioneer/http";
@@ -14,14 +14,14 @@ export interface References {
 
 export class EditingServiceImpl implements EditingService {
     private _serviceOptions: ServiceOptions<References>;
-    private _workflows: Map<string, EditingWorkflow>;
+    private _workflows: Map<string, EditingWorkflowImpl>;
 
     constructor(serviceOptions: ServiceOptions<References>) {
         this._serviceOptions = serviceOptions;
         this._workflows = new Map();
     }
 
-    start(map: MapModel, ogcApiFeatureLayerUrl: URL): EditingWorkflow {
+    start(map: MapModel, ogcApiFeatureLayerUrl: URL): EditingWorkflowImpl {
         if (!ogcApiFeatureLayerUrl || !map || !map.id) {
             throw new Error("Map, mapId or url is undefined.");
         }
@@ -35,7 +35,7 @@ export class EditingServiceImpl implements EditingService {
             );
         }
 
-        workflow = new EditingWorkflow(
+        workflow = new EditingWorkflowImpl(
             map,
             ogcApiFeatureLayerUrl,
             this._serviceOptions.properties.polygonDrawStyle as FlatStyleLike,
@@ -67,7 +67,7 @@ export class EditingServiceImpl implements EditingService {
         }
     }
 
-    _connectToWorkflowComplete(workflow: EditingWorkflow, mapId: string) {
+    _connectToWorkflowComplete(workflow: EditingWorkflowImpl, mapId: string) {
         workflow.whenComplete().finally(() => {
             this._workflows.delete(mapId);
         });

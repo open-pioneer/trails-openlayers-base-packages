@@ -18,7 +18,7 @@ import Overlay from "ol/Overlay";
 import { Resource } from "@open-pioneer/core";
 import { unByKey } from "ol/Observable";
 import { EventsKey } from "ol/events";
-import { EditingWorkflowEvents, EditingWorkflowState, EditingWorkflowType } from "./api";
+import { EditingWorkflowEvents, EditingWorkflowState, EditingWorkflow } from "./api";
 
 // Represents a tooltip rendered on the OpenLayers map
 interface Tooltip extends Resource {
@@ -26,9 +26,9 @@ interface Tooltip extends Resource {
     element: HTMLDivElement;
 }
 
-export class EditingWorkflow
+export class EditingWorkflowImpl
     extends EventEmitter<EditingWorkflowEvents>
-    implements EditingWorkflowType
+    implements EditingWorkflow
 {
     #waiter: ManualPromise<string | undefined> | undefined;
 
@@ -156,7 +156,7 @@ export class EditingWorkflow
             // todo set default properties when saving feature?
             saveCreatedFeature(this._httpService, layerUrl, geoJSONGeometry, projection)
                 .then((featureId) => {
-                    this._destroy(); // todo destroy already on drawend to avoid user from drawing during request?
+                    this._destroy();
                     this.#waiter?.resolve(featureId);
                 })
                 .catch((err: Error) => {

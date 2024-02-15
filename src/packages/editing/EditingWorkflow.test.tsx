@@ -12,7 +12,7 @@ import { createServiceOptions, setupMap, waitForMapMount } from "@open-pioneer/m
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render } from "@testing-library/react";
 import { PackageIntl, Service } from "@open-pioneer/runtime";
-import { EditingWorkflow } from "./EditingWorkflow";
+import { EditingWorkflowImpl } from "./EditingWorkflow";
 import BaseLayer from "ol/layer/Base";
 import { Interaction } from "ol/interaction";
 import { MapRegistryImpl } from "@open-pioneer/map/MapRegistryImpl";
@@ -387,7 +387,7 @@ async function setupWorkflow(
         "circle-stroke-width": 2
     };
 
-    const workflow = new EditingWorkflow(
+    const workflow = new EditingWorkflowImpl(
         map,
         OGC_API_URL_TEST,
         polygonDrawStyle,
