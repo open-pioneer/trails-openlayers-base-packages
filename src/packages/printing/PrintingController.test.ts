@@ -7,7 +7,7 @@ import OlMap from "ol/Map";
 import { createManualPromise } from "@open-pioneer/core";
 
 it("calls the appropriate methods happy path)", async () => {
-    const { olMap, controller, exportMapInPNGSpy} = setUp();
+    const { olMap, controller, exportMapInPNGSpy } = setUp();
 
     await controller.handleMapExport();
     // TODO: spy...

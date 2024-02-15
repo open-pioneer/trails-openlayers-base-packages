@@ -1,13 +1,18 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
-import { expect, it } from "vitest";
+import { beforeEach, expect, it } from "vitest";
 import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { Printing } from "./Printing";
 import { NotificationService } from "@open-pioneer/notifier";
 import userEvent from "@testing-library/user-event";
+import { disableReactActWarnings } from "test-utils";
+
+beforeEach(() => {
+    disableReactActWarnings();
+});
 
 it("should successfully create a printing component", async () => {
     await createPrinting();

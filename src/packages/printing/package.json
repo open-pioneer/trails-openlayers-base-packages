@@ -22,6 +22,7 @@
     "devDependencies": {
         "@open-pioneer/test-utils": "^1.0.2",
         "@open-pioneer/map-test-utils": "workspace:^",
+        "test-utils": "workspace:*",
         "openlayers-base-packages": "workspace:*"
     },
     "publishConfig": {

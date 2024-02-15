@@ -1,30 +1,16 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-
-import { beforeEach, afterEach, expect, it, vi } from "vitest";
+import { beforeEach, expect, it, vi } from "vitest";
 import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render, screen, waitFor } from "@testing-library/react";
 import { Search, SearchSelectEvent } from "./Search";
 import { FakeCitySource, FakeRiverSource, FakeStreetSource } from "./testSources";
 import userEvent from "@testing-library/user-event";
+import { disableReactActWarnings } from "test-utils";
 
 beforeEach(() => {
-    const errorfn = console.error;
-    // HACK to hide act warnings (react select component behaves weird)
-    vi.spyOn(console, "error").mockImplementation((...args: unknown[]) => {
-        if (
-            typeof args[0] === "string" &&
-            args[0].startsWith("Warning: An update to %s inside a test was not wrapped in act")
-        ) {
-            return;
-        }
-        errorfn.call(console, ...args);
-    });
-});
-
-afterEach(() => {
-    vi.restoreAllMocks();
+    disableReactActWarnings();
 });
 
 it("should successfully create a search component", async () => {

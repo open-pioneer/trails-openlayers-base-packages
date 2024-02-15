@@ -730,6 +730,9 @@ importers:
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
+      test-utils:
+        specifier: workspace:*
+        version: link:../../testing/test-utils
     publishDirectory: dist
 
   src/packages/react-utils:
@@ -861,6 +864,9 @@ importers:
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
+      test-utils:
+        specifier: workspace:*
+        version: link:../../testing/test-utils
     publishDirectory: dist
 
   src/packages/selection:
@@ -1365,6 +1371,8 @@ importers:
       '@open-pioneer/theme':
         specifier: workspace:^
         version: link:../../../packages/theme
+
+  src/testing/test-utils: {}
 
   support/disabled-package: {}
 
