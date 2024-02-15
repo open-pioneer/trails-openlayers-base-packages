@@ -11,7 +11,6 @@ const DATE_FORMAT = Intl.DateTimeFormat("de-DE", {
     timeZone: "UTC"
 });
 
-// Todo formatierung der datumswerte. Nochmal anschauen bei Bearbeitung von issue #241.
 // Stable date format for tests.
 function formatDate(date: Date) {
     return DATE_FORMAT.format(date);

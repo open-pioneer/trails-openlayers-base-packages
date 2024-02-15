@@ -6,17 +6,17 @@ import {
     ColumnDef,
     Table as TanstackTable,
     HeaderGroup,
-    SortDirection
+    SortDirection,
+    Column
 } from "@tanstack/react-table";
 import { useIntl } from "open-pioneer:react-hooks";
 import React, { useMemo } from "react";
 import { ColumnResizer, ColumnSortIndicator } from "./CustomComponents";
 import { useSetupTable } from "./useSetupTable";
-import { PackageIntl } from "@open-pioneer/runtime";
 
 export interface DataTableProps<Data extends object> {
     data: Data[];
-    columns: ColumnDef<Data, unknown>[];
+    columns: ColumnDef<Data>[];
 }
 
 export function DataTable<Data extends object>(props: DataTableProps<Data>) {
@@ -26,7 +26,9 @@ export function DataTable<Data extends object>(props: DataTableProps<Data>) {
 
     if (!table.getRowModel().rows.length) {
         return (
-            <div className={"no-data-message"}>{intl.formatMessage({ id: "noDataMessage" })}</div>
+            <div className={"result-list-no-data-message"}>
+                {intl.formatMessage({ id: "noDataMessage" })}
+            </div>
         );
     }
 
@@ -44,7 +46,6 @@ export function DataTable<Data extends object>(props: DataTableProps<Data>) {
                     <TableHeaderGroup key={headerGroup.id} headerGroup={headerGroup} />
                 ))}
             </Thead>
-            {/* When resizing any column we will render this special memoized version of our table body */}
             {table.getState().columnSizingInfo.isResizingColumn ? (
                 <MemoizedTableBody table={table}></MemoizedTableBody>
             ) : (
@@ -56,22 +57,23 @@ export function DataTable<Data extends object>(props: DataTableProps<Data>) {
 
 function TableHeaderGroup<Data>(props: { headerGroup: HeaderGroup<Data> }) {
     const { headerGroup } = props;
-    const intl = useIntl();
 
     return (
-        <Tr key={headerGroup.id}>
+        <Tr key={headerGroup.id} className="result-list-header-tr">
             {headerGroup.headers.map((header, index) => {
                 const width = `calc(var(--header-${header?.id}-size) * 1px)`;
                 return (
                     <Th
+                        className="result-list-th"
                         key={header.id}
                         tabIndex={0}
-                        aria-label={getSortingAriaLabel(intl, header.column.getIsSorted())}
-                        onClick={header.column.getToggleSortingHandler()}
+                        aria-label={getAriaLabelForColumn(header.column)}
+                        aria-sort={mapAriaSorting(header.column.getIsSorted())}
+                        onClick={() => header.column.getCanSort() && header.column.toggleSorting()}
                         cursor={header.column.getCanSort() ? "pointer" : "unset"}
                         style={{ width: index === 0 ? "50px" : width }}
                         onKeyDown={(evt) => {
-                            if (evt.key === "Enter") {
+                            if (evt.key === "Enter" && header.column.getCanSort()) {
                                 header.column.toggleSorting(undefined);
                             }
                         }}
@@ -98,14 +100,18 @@ function TableHeaderGroup<Data>(props: { headerGroup: HeaderGroup<Data> }) {
 //un-memoized normal table body component - see memoized version below
 function TableBody<Data extends object>({ table }: { table: TanstackTable<Data> }) {
     return (
-        <Tbody>
+        <Tbody className="result-list-table-body">
             {table.getRowModel().rows.map((row) => {
                 return (
-                    <Tr key={row.id}>
+                    <Tr key={row.id} className="result-list-table-body-tr">
                         {row.getVisibleCells().map((cell) => {
                             const width = `calc(var(--header-${cell.column.id}-size) * 1px)`;
                             return (
-                                <Td key={cell.id} style={{ width: width }}>
+                                <Td
+                                    key={cell.id}
+                                    style={{ width: width }}
+                                    className="result-list-table-body-td"
+                                >
                                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                 </Td>
                             );
@@ -115,6 +121,15 @@ function TableBody<Data extends object>({ table }: { table: TanstackTable<Data> 
             })}
         </Tbody>
     );
+}
+
+// Workaround: This function removes the aria label for the select all column (IndeterminateCheckbox),
+//      because otherwise it would be read twice due to a bug:
+//      https://github.com/chakra-ui/chakra-ui/issues/8042
+//      This is done by setting aria-label to a single space character. The empty string does not
+//      seem to change the aria-label.
+function getAriaLabelForColumn<Data>(column: Column<Data>) {
+    return column.getCanSort() ? "" : " ";
 }
 
 //special memoized wrapper for our table body that we will use during column resizing
@@ -147,19 +162,13 @@ function useColumnSizeVars<Data>(table: TanstackTable<Data>) {
 }
 
 type SortState = SortDirection | false;
-function getSortingAriaLabel(intl: PackageIntl, sortState: SortState) {
+function mapAriaSorting(sortState: SortState) {
     switch (sortState) {
         case "asc":
-            return intl.formatMessage({
-                id: "ariaLabel.sortAscending"
-            });
+            return "ascending";
         case "desc":
-            return intl.formatMessage({
-                id: "ariaLabel.sortDescending"
-            });
-        case false:
-            return intl.formatMessage({
-                id: "ariaLabel.sortInitial"
-            });
+            return "descending";
+        default:
+            return "none";
     }
 }

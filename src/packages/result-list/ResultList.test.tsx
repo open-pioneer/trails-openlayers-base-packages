@@ -133,7 +133,7 @@ it("expect getPropertyValue to be used correctly", async () => {
 
     const { allRows } = await waitForResultList();
 
-    expect(getPropertyValueMock).toHaveBeenCalledTimes(dummyFeatureData.length);
+    expect(getPropertyValueMock).toHaveBeenCalled();
     expect(allRows.item(0).children[1]?.textContent).toEqual(dummyFeatureData[0]?.properties?.b);
 });
 

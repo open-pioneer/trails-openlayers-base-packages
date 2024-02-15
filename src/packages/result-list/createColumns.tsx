@@ -8,8 +8,8 @@ import { chakra } from "@open-pioneer/chakra-integration";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { Table as TanstackTable } from "@tanstack/table-core/build/lib/types";
 
-const columnHelper = createColumnHelper<BaseFeature>();
 export const SELECT_COLUMN_SIZE = 70;
+const columnHelper = createColumnHelper<BaseFeature>();
 
 export function createColumns(metaData: ResultColumn[], intl: PackageIntl, tableWidth?: number) {
     const remainingColumnWidth: number | undefined =
@@ -28,7 +28,6 @@ function createColumn(metaDataItem: ResultColumn, columnWidth: number | undefine
         (feature: BaseFeature) => {
             return getPropertyValue?.(feature) ?? feature.properties?.[propertyName];
         },
-        // Todo Formatting of attributes #241
         {
             id: id,
             cell: (info) => {
@@ -48,20 +47,26 @@ function createSelectionColumn(intl: PackageIntl) {
     return columnHelper.display({
         id: "result-list-col_selection-buttons",
         size: SELECT_COLUMN_SIZE,
+        enableSorting: false,
         header: ({ table }) => {
             return (
-                <IndeterminateCheckbox
-                    {...{
-                        className: "result-list-select-all-checkbox",
-                        checked: table.getIsAllRowsSelected(),
-                        indeterminate: table.getIsSomeRowsSelected(),
-                        onChange: table.getToggleAllRowsSelectedHandler(),
-                        toolTipLabel: getCheckboxToolTip(table, intl),
-                        ariaLabel: intl.formatMessage({
-                            id: "ariaLabel.selectAll"
-                        })
+                <chakra.div
+                    display="inline-block"
+                    onClick={(e) => {
+                        e.stopPropagation();
                     }}
-                />
+                    className="result-list-select-all-checkbox-container"
+                >
+                    <IndeterminateCheckbox
+                        {...{
+                            className: "result-list-select-all-checkbox",
+                            checked: table.getIsAllRowsSelected(),
+                            indeterminate: table.getIsSomeRowsSelected(),
+                            onChange: table.getToggleAllRowsSelectedHandler(),
+                            toolTipLabel: getCheckboxToolTip(table, intl)
+                        }}
+                    />
+                </chakra.div>
             );
         },
         cell: ({ row }) => {
@@ -71,6 +76,7 @@ function createSelectionColumn(intl: PackageIntl) {
                     onClick={(e) => {
                         e.stopPropagation();
                     }}
+                    className="result-list-select-row-checkbox-container"
                 >
                     <IndeterminateCheckbox
                         {...{

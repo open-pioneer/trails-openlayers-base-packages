@@ -60,7 +60,7 @@ export function MapTools(props: MapToolsProps) {
         >
             {hasResultListInput && (
                 <ToolButton
-                    label="ResultList" // TODO: i18n
+                    label={intl.formatMessage({ id: "resultListTitle" })}
                     icon={<PiListMagnifyingGlassFill />}
                     isActive={toolState.resultListActive}
                     onClick={() => toggleToolState("resultListActive")}

@@ -3,9 +3,7 @@
 import { HTMLProps, useRef } from "react";
 import { Checkbox, Tooltip, chakra } from "@open-pioneer/chakra-integration";
 import { SortDirection } from "@tanstack/react-table";
-import { useIntl } from "open-pioneer:react-hooks";
-import { PackageIntl } from "@open-pioneer/runtime";
-import { TriangleDownIcon, TriangleUpIcon, UpDownIcon } from "@chakra-ui/icons";
+import { TriangleDownIcon, TriangleUpIcon } from "@chakra-ui/icons";
 
 export function IndeterminateCheckbox({
     indeterminate,
@@ -15,20 +13,26 @@ export function IndeterminateCheckbox({
 }: {
     indeterminate?: boolean;
     toolTipLabel?: string;
-    ariaLabel: string;
+    ariaLabel?: string;
 } & HTMLProps<HTMLInputElement>) {
     const ref = useRef<HTMLInputElement>(null!);
-    return (
-        <Tooltip {...{}} label={toolTipLabel} placement="right" shouldWrapChildren={true}>
-            <Checkbox
-                ref={ref}
-                aria-label={rest.ariaLabel}
-                className={className + " cursor-pointer"}
-                isChecked={rest.checked}
-                onChange={rest.onChange}
-                isIndeterminate={indeterminate}
-            ></Checkbox>
+    const checkboxComponent = (
+        <Checkbox
+            aria-label={rest.ariaLabel}
+            tabIndex={0}
+            ref={ref}
+            className={className + " cursor-pointer"}
+            isChecked={rest.checked}
+            onChange={rest.onChange}
+            isIndeterminate={indeterminate}
+        ></Checkbox>
+    );
+    return toolTipLabel ? (
+        <Tooltip {...{}} className={className + "_tooltip"} label={toolTipLabel} placement="right">
+            {checkboxComponent}
         </Tooltip>
+    ) : (
+        checkboxComponent
     );
 }
 
@@ -36,7 +40,7 @@ export function ColumnSortIndicator(props: { isSorted: false | SortDirection }):
     const { isSorted } = props;
 
     return (
-        <chakra.span ml="4">
+        <chakra.span ml="4" className="result-list-sort-indicator">
             {isSorted ? isSorted === "desc" ? <TriangleDownIcon /> : <TriangleUpIcon /> : null}
         </chakra.span>
     );

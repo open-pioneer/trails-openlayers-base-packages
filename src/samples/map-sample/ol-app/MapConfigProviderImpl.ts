@@ -129,7 +129,6 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                         ]
                     }
                 }),
-                // TODO: Remove OGC Feature-Dependency? Or keep it and change createKitasLayer() to use createVectorSource?
                 new SimpleLayer({
                     id: "ogc_kataster",
                     title: "Liegenschaftskatasterbezirke in NRW (viele Daten)",

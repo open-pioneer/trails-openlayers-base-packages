@@ -6,17 +6,30 @@ This package provides a UI component to display Data from other packages, such a
 
 To add the package to your app, import `result-list` from `@open-pioneer/result-list`.
 
-```ts
+```tsx
 import { ResultList } from "@open-pioneer/result-list";
-<ResultList resultListInput={input} />
+<ResultList resultListInput={input} />;
 ```
 
-To add the UI component take a look at the README.md from sample application. There you can see how the component is installed and how it can be linked to other packages.
+To add the UI component take a look at the README.md of the default sample application.
+There you can see how the component is installed and how it can be linked to other packages.
 
 ## Usage
 
-Note that all data must satisfy the Interface ResultListInput (see api.ts). This means that metadata must also be available for each data column. The metadata has to be configured in the "attributes" for each layer.
-You can configure for each propertyName a displayName as well as the width of the result list column in pixel. Furthermore, the propertyValue has to be defined.
+Note that all data must satisfy the Interface ResultListInput (see api.ts).
+This means that metadata must also be available for each data column.
+The metadata has to be configured in the "attributes" of each layer (`resultListMetadata`).
+
+If you want to display the column with a different name, you can configure an optional `displayName`
+for each `propertyName`.
+
+If you want a column to have a defined width, you can provide the optional `width` attribute
+of the result list column in pixel. (If there are only a few columns with a defined width,
+the remaining space is distributed along these columns.)
+
+If you want the values of a column to be other than the `BaseFeature.properties[propertyName]`,
+you can provide a `getPropertyValue` function to return the value of the `BaseFeature` for the
+column. This can be especially useful, if you want to display the id of the feature.
 
 ```ts
 new SimpleLayer({
@@ -47,11 +60,18 @@ new SimpleLayer({
 
 ### Select / Deselect Data
 
-To select or deselect individual lines, you can click on the checkbox at the beginning of a line. If you want to select or deselect all rows you have to click on the checkbox in the first column header.
+To select or deselect individual lines, you can click on the checkbox at the beginning of a line.
+If you want to select or deselect all rows you have to click on the checkbox in the first column header.
+
+Alternatively, you can use the keyboard navigation and select or deselect the checkboxes by pressing
+spacebar.
 
 ### Sorting Data
 
-If you want to sort the data by a single columndate you have to click on the column header. The arrows show in which direction the sorting took place.
+If you want to sort the data by a single column, you have to click on the column header.
+The arrows show in which direction the sorting took place.
+
+Alternatively, you can use the keyboard navigation and toggle sorting by pressing the enter key.
 
 ## License
 

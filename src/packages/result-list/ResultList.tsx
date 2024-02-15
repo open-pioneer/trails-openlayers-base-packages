@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import { Box } from "@open-pioneer/chakra-integration";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
-import { FC, useEffect, useMemo, useRef, useState } from "react";
+import { FC, RefObject, useEffect, useMemo, useRef, useState } from "react";
 import { DataTable } from "./DataTable/DataTable";
 import { ResultListInput } from "./api";
 import { createColumns } from "./createColumns";
@@ -13,7 +13,7 @@ export interface ResultListProps extends CommonComponentProps {
 
 export const ResultList: FC<ResultListProps> = (props) => {
     const intl = useIntl();
-    const { resultListInput } = props;
+    const { resultListInput, className } = props;
     const data = resultListInput.data;
     const metadata = resultListInput.metadata;
     if (metadata.length === 0) {
@@ -30,13 +30,19 @@ export const ResultList: FC<ResultListProps> = (props) => {
     );
 
     return (
-        <Box {...containerProps} height="100%" overflowY="auto" ref={dataTableRef}>
+        <Box
+            {...containerProps}
+            height="100%"
+            overflowY="auto"
+            ref={dataTableRef}
+            className={className || "result-list"}
+        >
             <DataTable columns={columns} data={data} />
         </Box>
     );
 };
 
-function useTableWidth(tableRef: React.RefObject<HTMLDivElement> | null) {
+function useTableWidth(tableRef: RefObject<HTMLDivElement> | null) {
     const [tableWidth, setTableWidth] = useState(0);
 
     useEffect(() => {
@@ -48,7 +54,7 @@ function useTableWidth(tableRef: React.RefObject<HTMLDivElement> | null) {
             setTableWidth(event[0].contentBoxSize[0].inlineSize);
         });
         resizeObserver.observe(tableRef.current);
-    }, [tableRef?.current]);
+    }, [tableRef]);
 
     return tableWidth;
 }

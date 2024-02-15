@@ -29,7 +29,6 @@ describe("create columns for result-list", () => {
             } else {
                 expect(column?.header).toEqual(metaData[index]?.propertyName);
             }
-            // no column-size testing because of recalculation based on column definition
         });
     });
     it("expect createColumn to distribute remaining width on columns with undefined width", async () => {
