@@ -56,25 +56,8 @@ export class PrintingController {
         try {
             await this.beginExport();
 
-            // export options for html2canvas.
-            const exportOptions: Partial<Options> = {
-                useCORS: true,
-                ignoreElements: function (element: Element) {
-                    if (element.classList && typeof element.classList === "object") {
-                        const classList = element.classList;
-                        return (
-                            classList.contains("map-anchors") ||
-                            classList.contains(PRINTING_HIDE_CLASS)
-                        );
-                    }
-                    return false;
-                }
-            };
+            const canvas = await this.exportToCanvas(this.olMap.getViewport());
 
-            // Lazy load html2canvas: it is a large dependency (>= KiB) that is only
-            // required when actually printed. This speeds up the initial page load.
-            const html2canvas = (await import("html2canvas")).default;
-            const canvas = await html2canvas(this.olMap.getViewport(), exportOptions);
             if (canvas) {
                 this.fileFormat == "png"
                     ? await this.exportMapInPNG(canvas)
@@ -86,6 +69,29 @@ export class PrintingController {
             // Always remove scale bar
             this.reset();
         }
+    }
+
+    private async exportToCanvas(element: HTMLElement): Promise<HTMLCanvasElement> {
+        // export options for html2canvas.
+        const exportOptions: Partial<Options> = {
+            useCORS: true,
+            ignoreElements: function (element: Element) {
+                if (element.classList && typeof element.classList === "object") {
+                    const classList = element.classList;
+                    return (
+                        classList.contains("map-anchors") || classList.contains(PRINTING_HIDE_CLASS)
+                    );
+                }
+                return false;
+            }
+        };
+
+        // Lazy load html2canvas: it is a large dependency (>= KiB) that is only
+        // required when actually printed. This speeds up the initial page load.
+        const html2canvas = (await import("html2canvas")).default;
+        const canvas = await html2canvas(element, exportOptions);
+
+        return canvas;
     }
 
     private async beginExport() {
