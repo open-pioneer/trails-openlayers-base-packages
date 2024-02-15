@@ -322,6 +322,21 @@ describe("when editing workflow complete", () => {
         draw.finishDrawing();
     });
 
+    it("should return `undefined` if editing is stop while draw geometry", async () => {
+        const { map, registry } = await renderMap();
+        const { workflow } = await setupWorkflow(map, registry);
+        const draw = workflow.getDrawInteraction();
+
+        workflow.whenComplete().then((featureId: string | undefined) => {
+            expect(featureId).toBeUndefined;
+        });
+
+        draw.appendCoordinates([[200, 200]]);
+        draw.appendCoordinates([[400, 300]]);
+
+        workflow.stop();
+    });
+
     it("should return an error if editing failed", async () => {
         const httpService: HttpService = {
             fetch: vi.fn().mockResolvedValue(
