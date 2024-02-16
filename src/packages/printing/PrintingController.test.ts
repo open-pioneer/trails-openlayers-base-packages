@@ -1,11 +1,15 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
-import { vi, it, expect } from "vitest";
+import { vi, it, expect, afterEach } from "vitest";
 import { PrintingController } from "./PrintingController";
 import OlMap from "ol/Map";
 import { createManualPromise } from "@open-pioneer/core";
 import { ScaleLine } from "ol/control";
+
+afterEach(() => {
+    vi.restoreAllMocks();
+});
 
 it("calls the appropriate methods (happy path)", async () => {
     const { controller, exportToCanvasSpy, exportMapInPNGSpy, exportMapInPDFSpy } = setUp();

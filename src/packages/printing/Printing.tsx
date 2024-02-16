@@ -72,10 +72,10 @@ export const Printing: FC<PrintingProps> = (props) => {
         controller
             .handleMapExport()
             .catch((error) => {
-                const errorMessage = intl.formatMessage({ id: "printingFailed" }) || "";
+                const errorMessage = intl.formatMessage({ id: "printingFailed" });
                 notifier.notify({
                     level: "error",
-                    message: errorMessage + " " + error.message
+                    message: errorMessage
                 });
                 LOG.error("Failed to print the map", error);
             })
