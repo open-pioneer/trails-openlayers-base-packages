@@ -3,9 +3,7 @@
 import { HTMLProps, useRef } from "react";
 import { Checkbox, Tooltip, chakra } from "@open-pioneer/chakra-integration";
 import { SortDirection } from "@tanstack/react-table";
-import { useIntl } from "open-pioneer:react-hooks";
-import { PackageIntl } from "@open-pioneer/runtime";
-import { TriangleDownIcon, TriangleUpIcon, UpDownIcon } from "@chakra-ui/icons";
+import { TriangleDownIcon, TriangleUpIcon } from "@chakra-ui/icons";
 
 export function IndeterminateCheckbox({
     indeterminate,

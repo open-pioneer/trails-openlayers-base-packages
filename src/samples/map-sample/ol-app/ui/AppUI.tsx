@@ -65,6 +65,7 @@ export function AppUI() {
         }
     }, [lastInput, input, currentToolState]);
 
+    // eslint-disable-next-line unused-imports/no-unused-vars
     const applyInteractionType = (newType: InteractionType) => {
         if (newType !== currentInteractionType) {
             setCurrentInteractionType(newType);

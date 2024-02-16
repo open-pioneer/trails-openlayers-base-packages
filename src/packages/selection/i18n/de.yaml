@@ -6,7 +6,7 @@ messages:
   CIRCLE: "Kreis"
   selectSource: "Quelle auswählen"
   tooltip: "Klicken Sie in die Karte, halten Sie die Maustaste gedrückt und ziehen Sie ein Rechteck auf"
-  disabledTooltip: "Die aktuelle Suchquelle ist nicht verfügbar."
+  disabledTooltip: "Die aktuelle Selektionsquelle ist nicht verfügbar."
   sourceNotAvailable: "Quelle nicht verfügbar"
   selectionFailed: "Die räumliche Auswahl ist fehlgeschlagen"
   selectionPlaceholder: "Keine Quelle ausgewählt"

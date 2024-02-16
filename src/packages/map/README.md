@@ -350,12 +350,13 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                 zoom: 13
             },
             layers: [
-                {
+                new SimpleLayer({
                     title: "Abschnitte/Äste mit Unfällen (Mapbox Style)",
-                    layer: new MapboxVectorLayer({
-                        styleUrl: "https://demo.ldproxy.net/strassen/styles/default?f=mbs"
+                    olLayer: new MapboxVectorLayer({
+                        styleUrl:
+                            "https://sgx.geodatenzentrum.de/gdz_basemapde_vektor/styles/bm_web_top.json"
                     })
-                }
+                })
             ]
         };
     }

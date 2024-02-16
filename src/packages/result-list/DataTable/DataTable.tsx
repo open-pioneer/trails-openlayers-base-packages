@@ -146,6 +146,7 @@ function useColumnSizeVars<Data>(table: TanstackTable<Data>) {
             colSizes[`--col-${header.column.id}-size`] = header.column.getSize();
         }
         return colSizes;
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [tableHeaders, columnSizingInfo]);
 }
 

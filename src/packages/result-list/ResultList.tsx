@@ -53,6 +53,7 @@ function useTableWidth(tableRef: React.RefObject<HTMLDivElement> | null) {
             setTableWidth(event[0].contentBoxSize[0].inlineSize);
         });
         resizeObserver.observe(tableRef.current);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [tableRef?.current]);
 
     return tableWidth;

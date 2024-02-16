@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-
+/* eslint-disable unused-imports/no-unused-vars */
 import { Box } from "@open-pioneer/chakra-integration";
 import { ResultList } from "@open-pioneer/result-list";
 import { AppModel } from "../AppModel";

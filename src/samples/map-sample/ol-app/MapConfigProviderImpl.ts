@@ -1,6 +1,13 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { MapConfig, MapConfigProvider, SimpleLayer, WMSLayer, WMTSLayer } from "@open-pioneer/map";
+import {
+    BaseFeature,
+    MapConfig,
+    MapConfigProvider,
+    SimpleLayer,
+    WMSLayer,
+    WMTSLayer
+} from "@open-pioneer/map";
 import GeoJSON from "ol/format/GeoJSON";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
@@ -11,7 +18,7 @@ import { Circle, Fill, Style } from "ol/style";
 import TileLayer from "ol/layer/Tile.js";
 import { ServiceOptions } from "@open-pioneer/runtime";
 import { OgcFeaturesVectorSourceFactory } from "@open-pioneer/ogc-features";
-import { BaseFeature } from "@open-pioneer/map/api/BaseFeature";
+import { View } from "ol";
 
 interface References {
     vectorSourceFactory: OgcFeaturesVectorSourceFactory;
@@ -34,12 +41,14 @@ export class MapConfigProviderImpl implements MapConfigProvider {
         };
 
         return {
-            initialView: {
-                kind: "position",
-                center: { x: 404747, y: 5757920 },
-                zoom: 14
+            advanced: {
+                view: new View({
+                    center: [404747, 5757920],
+                    zoom: 13,
+                    constrainResolution: true,
+                    projection: "EPSG:25832"
+                })
             },
-            projection: "EPSG:25832",
             layers: [
                 new WMSLayer({
                     title: "Linfos",
