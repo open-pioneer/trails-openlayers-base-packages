@@ -49,28 +49,37 @@ new SimpleLayer({
 
 To select or deselect individual lines, you can click on the checkbox at the beginning of a line. If you want to select or deselect all rows you have to click on the checkbox in the first column header.
 
-#### Listening for Select-change-Events
+### Listening for Select-change-Events
 
 ​The Result-List has an optional property `onSelectionChanged`. A function can be passed here that receives a ResultListSelectionChangedEvent (see api.ts).
 
 ```ts
 import { ResultList } from "@open-pioneer/result-list";
 
-const selectionChangeLisener = useCallback((_event: ResultListSelectionChangedEvent) => {
+const selectionChangeListener = useCallback((_event: ResultListSelectionChangedEvent) => {
         console.log("changed");
     }, []);
 
-<ResultList resultListInput={input} onSelectionChanged={selectionChangeLisener}/>
+<ResultList resultListInput={input} onSelectionChanged={selectionChangeListener}/>
 ```
 
-#### Get selected Data from Result-List
+#### Get selected Feature and Feature-Ids from Result-List
 
-The Result-List has an optional property `getSelectedFeature`. A React.Dispatch-Function can be passed here that receives a Array of Basefeatures.
+The ResultListSelectionChangedEvent has a property `features` for all selected Features and a method `getFeatureIds` to get the Ids of all selected Features. You can take this property or method and store the results in states.
 
 ```ts
+//state for selected Features
 const [selectedFeatures, setSelectedFeatures] = useState<BaseFeature[]>([]);
 
-<ResultList resultListInput={input} getSelectedFeature={setSelectedFeatures}/>
+//state for selected Ids
+const [selectedIds, setSelectedIds] = useState<(string | number)[]>([]);
+
+const selectionChangeListener = useCallback((_event: ResultListSelectionChangedEvent) => {
+    setSelectedFeatures(_event.features);
+    setSelectedIds(_event.getFeatureIds());
+}, []);
+
+<ResultList resultListInput={input} onSelectionChanged={selectionChangeListener} />
 ```
 
 ### Sorting Data

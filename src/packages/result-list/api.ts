@@ -19,6 +19,6 @@ export interface ResultListInput {
 
 /** Events emitted by the {@link ResultList}. */
 export interface ResultListSelectionChangedEvent {
-    action: "changed:selection";
-    ids: (number | string)[];
+    features: BaseFeature[];
+    getFeatureIds: () => (number | string)[];
 }

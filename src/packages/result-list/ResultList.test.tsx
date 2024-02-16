@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { afterEach, beforeEach, expect, it, SpyInstance, vi } from "vitest";
+import { afterEach, beforeEach, expect, it, Mock, SpyInstance, vi } from "vitest";
 import { ResultColumn, ResultListInput, ResultListSelectionChangedEvent } from "./api";
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import {
@@ -12,7 +12,6 @@ import {
 import { ResultList } from "./ResultList";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { BaseFeature } from "@open-pioneer/map/api/BaseFeature";
-import React from "react";
 
 afterEach(() => {
     vi.restoreAllMocks();
@@ -274,26 +273,45 @@ it("expect result list display all data types", async () => {
 });
 
 it("expect result-list throws selection-change-Event", async () => {
-    const selectionChangeLisener = vi.fn((_event: ResultListSelectionChangedEvent) => {});
+    const selectionChangeListener = vi.fn();
     render(
         <PackageContextProvider>
             <ResultList
                 resultListInput={{ data: dummyFeatureData, metadata: dummyMetaData }}
                 data-testid="result-list"
-                onSelectionChanged={selectionChangeLisener}
+                onSelectionChanged={selectionChangeListener}
             />
         </PackageContextProvider>
     );
 
     const { selectAllSelect } = await waitForResultList();
 
+    // Result-List has empty Array
+    let features = getSelectionsEvent(selectionChangeListener, 0).features;
+    expect(features).toEqual([]);
+
+    //Selection All
+    act(() => {
+        fireEvent.click(selectAllSelect!);
+    });
+    features = getSelectionsEvent(selectionChangeListener, 1).features;
+    const realIds = features.map((feature: BaseFeature) => feature.id);
+    const eventIds = getSelectionsEvent(selectionChangeListener, 1).getFeatureIds();
+
+    // Result-List has Array of selected Features
+    expect(features).toEqual(dummyFeatureData);
+
+    //getFeatureIds method returns the correct Ids
+    expect(eventIds).toEqual(realIds);
+
+    //Deselect All
     act(() => {
         fireEvent.click(selectAllSelect!);
     });
 
-    act(() => {
-        fireEvent.click(selectAllSelect!);
-    });
+    // Result-List has empty Array
+    features = getSelectionsEvent(selectionChangeListener, 2).features;
+    expect(features).toEqual([]);
 
     /**
      * 1 Start package
@@ -301,40 +319,12 @@ it("expect result-list throws selection-change-Event", async () => {
      * 1 Deselection
      * = 3
      */
-    expect(selectionChangeLisener).toHaveBeenCalledTimes(3);
+    expect(selectionChangeListener).toHaveBeenCalledTimes(3);
 });
 
-it("expect result-list has getter for selected Features", async () => {
-    // Implementation
-    const setStateMocked = vi.fn((item) => {
-        return item;
-    });
-    const useStateMock: any = () => [setStateMocked];
-    vi.spyOn(React, "useState").mockImplementation(useStateMock);
-    const [setSelectedMock] = useStateMock(null);
-
-    render(
-        <PackageContextProvider>
-            <ResultList
-                resultListInput={{ data: dummyFeatureData, metadata: dummyMetaData }}
-                data-testid="result-list"
-                getSelectedFeature={setSelectedMock}
-            />
-        </PackageContextProvider>
-    );
-
-    const { selectAllSelect } = await waitForResultList();
-
-    act(() => {
-        fireEvent.click(selectAllSelect!);
-    });
-    expect(setStateMocked).toHaveBeenCalledWith(dummyFeatureData);
-
-    act(() => {
-        fireEvent.click(selectAllSelect!);
-    });
-    expect(setStateMocked).toHaveBeenCalledWith([]);
-});
+function getSelectionsEvent(listener: Mock, call: number) {
+    return listener.mock.calls[call][0];
+}
 
 async function waitForResultList() {
     const {

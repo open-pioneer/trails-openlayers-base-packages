@@ -9,7 +9,7 @@ import {
     SortDirection
 } from "@tanstack/react-table";
 import { useIntl } from "open-pioneer:react-hooks";
-import React, { Dispatch, SetStateAction, useEffect, useMemo } from "react";
+import React, { useMemo } from "react";
 import { ColumnResizer, ColumnSortIndicator } from "./CustomComponents";
 import { useSetupTable } from "./useSetupTable";
 import { PackageIntl } from "@open-pioneer/runtime";
@@ -19,30 +19,13 @@ import { ResultListSelectionChangedEvent } from "../api";
 export interface DataTableProps<Data extends object> {
     data: Data[];
     columns: ColumnDef<BaseFeature, unknown>[];
-    setSelectedFeatures?: Dispatch<SetStateAction<BaseFeature[]>>;
     onSelectionChanged?(event: ResultListSelectionChangedEvent): void;
 }
 
 export function DataTable(props: DataTableProps<BaseFeature>) {
     const intl = useIntl();
-    const { table, rowSelection } = useSetupTable(props);
+    const { table } = useSetupTable(props);
     const columnSizeVars = useColumnSizeVars(table);
-    const { setSelectedFeatures, onSelectionChanged } = props;
-
-    /**
-     * On every selection-change throw change-Event and reset selected Features
-     */
-    useEffect(() => {
-        const selectedRows = table.getSelectedRowModel();
-        const features = selectedRows.rows.map((feature) => feature.original);
-        const ids = features.map((feature: BaseFeature) => feature.id);
-        if (setSelectedFeatures) setSelectedFeatures(features);
-        if (onSelectionChanged)
-            onSelectionChanged({
-                ids: ids,
-                action: "changed:selection"
-            });
-    }, [rowSelection, table, setSelectedFeatures, onSelectionChanged]);
 
     if (!table.getRowModel().rows.length) {
         return (

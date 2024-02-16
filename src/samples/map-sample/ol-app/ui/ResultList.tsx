@@ -14,8 +14,10 @@ export function ResultListComponent() {
     const appModel = useService<unknown>("ol-app.AppModel") as AppModel;
     const input = useSnapshot(appModel.state).currentResultListInput;
     const [selectedFeatures, setSelectedFeatures] = useState<BaseFeature[]>([]);
-    const selectionChangeLisener = useCallback((_event: ResultListSelectionChangedEvent) => {
-        console.log("changed");
+    const [selectedIds, setSelectedIds] = useState<(string | number)[]>([]);
+    const selectionChangeListener = useCallback((_event: ResultListSelectionChangedEvent) => {
+        setSelectedFeatures(_event.features);
+        setSelectedIds(_event.getFeatureIds());
     }, []);
     if (!input) {
         return undefined;
@@ -23,11 +25,7 @@ export function ResultListComponent() {
 
     return (
         <Box className="result-list" backgroundColor="white" width="100%" height="300px">
-            <ResultList
-                resultListInput={input}
-                onSelectionChanged={selectionChangeLisener}
-                getSelectedFeature={setSelectedFeatures}
-            />
+            <ResultList resultListInput={input} onSelectionChanged={selectionChangeListener} />
         </Box>
     );
 }
