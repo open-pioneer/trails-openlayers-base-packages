@@ -1,17 +1,11 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { afterEach, beforeEach, expect, it, SpyInstance, vi } from "vitest";
-import { ResultColumn, ResultListInput } from "./api";
-import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
-import {
-    dummyFeatureData,
-    dummyFeatureDataAlt,
-    dummyMetaData,
-    dummyMetaDataAlt
-} from "./testSources";
-import { ResultList } from "./ResultList";
+import { BaseFeature } from "@open-pioneer/map";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
-import { BaseFeature } from "@open-pioneer/map/api/BaseFeature";
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { SpyInstance, afterEach, beforeEach, expect, it, vi } from "vitest";
+import { ResultColumn, ResultList, ResultListInput } from "./ResultList";
+import { Point } from "ol/geom";
 
 afterEach(() => {
     vi.restoreAllMocks();
@@ -28,7 +22,8 @@ it("expect result list to be created successfully", async () => {
     render(
         <PackageContextProvider>
             <ResultList
-                resultListInput={{ data: dummyFeatureData, metadata: dummyMetaData }}
+                input={{ data: dummyFeatureData, columns: dummyColumns }}
+                mapId="foo"
                 data-testid="result-list"
             />
         </PackageContextProvider>
@@ -42,7 +37,8 @@ it("expect result list column and row count to match data/metadata", async () =>
     render(
         <PackageContextProvider>
             <ResultList
-                resultListInput={{ data: dummyFeatureData, metadata: dummyMetaData }}
+                input={{ data: dummyFeatureData, columns: dummyColumns }}
+                mapId="foo"
                 data-testid="result-list"
             />
         </PackageContextProvider>
@@ -51,21 +47,21 @@ it("expect result list column and row count to match data/metadata", async () =>
     const { allHeaderElements, allRows } = await waitForResultList();
 
     // +1 because of the added selection column
-    expect(allHeaderElements.length).toEqual(dummyMetaData.length + 1);
+    expect(allHeaderElements.length).toEqual(dummyColumns.length + 1);
     expect(allRows.length).toEqual(dummyFeatureData.length);
 });
 
 it("expect empty data text to be shown", async () => {
     const emptyData: ResultListInput = {
         data: [],
-        metadata: dummyMetaData
+        columns: dummyColumns
     };
 
     let error;
     try {
         render(
             <PackageContextProvider>
-                <ResultList resultListInput={emptyData} data-testid="result-list" />
+                <ResultList input={emptyData} mapId="foo" data-testid="result-list" />
             </PackageContextProvider>
         );
     } catch (e) {
@@ -84,13 +80,13 @@ it("expect empty metadata to throw error", async () => {
 
     const emptyMetadata: ResultListInput = {
         data: dummyFeatureData,
-        metadata: []
+        columns: []
     };
 
     expect(() => {
         render(
             <PackageContextProvider>
-                <ResultList resultListInput={emptyMetadata} data-testid="result-list" />
+                <ResultList input={emptyMetadata} mapId="foo" data-testid="result-list" />
             </PackageContextProvider>
         );
     }).toThrowErrorMatchingSnapshot();
@@ -99,8 +95,8 @@ it("expect empty metadata to throw error", async () => {
 });
 
 it("expect getPropertyValue to be used correctly", async () => {
-    const getPropertyValueMock = vi.fn((feature) => {
-        return feature.properties.b;
+    const getPropertyValueMock = vi.fn((_feature) => {
+        return "virtual property";
     });
     const dummyFeatureData: BaseFeature[] = [
         {
@@ -112,7 +108,7 @@ it("expect getPropertyValue to be used correctly", async () => {
             geometry: undefined
         }
     ];
-    const dummyMetaData: ResultColumn[] = [
+    const columns: ResultColumn[] = [
         {
             propertyName: "properties.b",
             displayName: "Spalte B",
@@ -122,26 +118,28 @@ it("expect getPropertyValue to be used correctly", async () => {
     ];
     const resultListInput = {
         data: dummyFeatureData,
-        metadata: dummyMetaData
+        columns: columns
     };
 
     render(
         <PackageContextProvider>
-            <ResultList resultListInput={resultListInput} data-testid="result-list" />
+            <ResultList input={resultListInput} mapId="foo" data-testid="result-list" />
         </PackageContextProvider>
     );
 
     const { allRows } = await waitForResultList();
 
     expect(getPropertyValueMock).toHaveBeenCalled();
-    expect(allRows.item(0).children[1]?.textContent).toEqual(dummyFeatureData[0]?.properties?.b);
+    expect(getPropertyValueMock).toHaveBeenCalledWith(dummyFeatureData[0]);
+    expect(allRows.item(0).children[1]?.textContent).toEqual("virtual property");
 });
 
 it("expect changes of data and metadata to change full table", async () => {
     const renderResult = render(
         <PackageContextProvider>
             <ResultList
-                resultListInput={{ data: dummyFeatureData, metadata: dummyMetaData }}
+                input={{ data: dummyFeatureData, columns: dummyColumns }}
+                mapId="foo"
                 data-testid="result-list"
             />
         </PackageContextProvider>
@@ -150,13 +148,14 @@ it("expect changes of data and metadata to change full table", async () => {
     const { allHeaderElements, allRows } = await waitForResultList();
 
     // +1 because of the added selection column
-    expect(allHeaderElements.length).toEqual(dummyMetaData.length + 1);
+    expect(allHeaderElements.length).toEqual(dummyColumns.length + 1);
     expect(allRows.length).toEqual(dummyFeatureData.length);
 
     renderResult.rerender(
         <PackageContextProvider>
             <ResultList
-                resultListInput={{ data: dummyFeatureDataAlt, metadata: dummyMetaDataAlt }}
+                input={{ data: dummyFeatureDataAlt, columns: dummyMetaDataAlt }}
+                mapId="foo"
                 data-testid="result-list"
             />
         </PackageContextProvider>
@@ -177,7 +176,8 @@ it("expect selection column to be added", async () => {
     render(
         <PackageContextProvider>
             <ResultList
-                resultListInput={{ data: dummyFeatureData, metadata: dummyMetaData }}
+                input={{ data: dummyFeatureData, columns: dummyColumns }}
+                mapId="foo"
                 data-testid="result-list"
             />
         </PackageContextProvider>
@@ -193,7 +193,8 @@ it("expect all rows to be selected and deselected", async () => {
     render(
         <PackageContextProvider>
             <ResultList
-                resultListInput={{ data: dummyFeatureData, metadata: dummyMetaData }}
+                input={{ data: dummyFeatureData, columns: dummyColumns }}
+                mapId="foo"
                 data-testid="result-list"
             />
         </PackageContextProvider>
@@ -225,62 +226,38 @@ it("expect result list display all data types", async () => {
     render(
         <PackageContextProvider>
             <ResultList
-                resultListInput={{ data: dummyFeatureData, metadata: dummyMetaData }}
+                input={{ data: dummyFeatureData, columns: dummyColumns }}
+                mapId="foo"
                 data-testid="result-list"
             />
         </PackageContextProvider>
     );
 
-    const { allCells } = await waitForResultList();
-    allCells.forEach((item, index) => {
-        switch (index) {
-            //Checkbox
-            case 0:
-                expect(item.innerHTML).contains("input");
-                break;
-            //String
-            case 1:
-                expect(item.innerHTML).toEqual("Test");
-                break;
-            //Integer
-            case 2:
-                expect(item.innerHTML).toEqual("123");
-                break;
-            //Double
-            case 3:
-                expect(item.innerHTML).toEqual("4.567");
-                break;
-            //Boolean
-            case 4:
-                expect(item.innerHTML).toEqual("true");
-                break;
-            //Date
-            case 5:
-                expect(item.innerHTML).toEqual(
-                    "Dienstag, 12. Mai 2020 um 23:50:21 Koordinierte Weltzeit"
-                );
-                break;
-            //Undefinded in all Datatypes
-            case 19:
-            case 20:
-            case 21:
-            case 22:
-            case 23:
-                expect(item.innerHTML).toEqual("");
-                break;
-        }
-    });
+    const { allRows } = await waitForResultList();
+    const firstRowCells = Array.from(allRows[0]!.querySelectorAll("td"));
+    expect(firstRowCells).toHaveLength(6);
+
+    const [selectCell, stringCell, integerCell, floatCell, trueCell, ..._rest] = firstRowCells;
+    expect(selectCell!.innerHTML).includes("<input");
+    expect(stringCell!.textContent).toBe("Test");
+    expect(integerCell!.textContent).toBe("123");
+    expect(floatCell!.textContent).toBe("4.567");
+    expect(trueCell!.textContent).toBe("true");
+
+    const falseCell = allRows[1]?.querySelectorAll("td")[4];
+    expect(falseCell!.textContent).toBe("false"); // false is not rendered as ""
+
+    // Null / Undefined is rendered as an empty string
+    const lastRowCells = Array.from(allRows[3]!.querySelectorAll("td"));
+    expect(lastRowCells).toHaveLength(6);
+    for (let i = 0; i < 6; ++i) {
+        const cell = lastRowCells[i]!;
+        expect(cell.textContent, "cell " + i).toBe("");
+    }
 });
 
 async function waitForResultList() {
-    const {
-        resultListDiv,
-        allHeaderElements,
-        allRows,
-        allCells,
-        selectAllSelect,
-        selectRowSelects
-    } = await waitFor(async () => {
+    return await waitFor(async () => {
         const resultListDiv: HTMLDivElement | null =
             await screen.findByTestId<HTMLDivElement>("result-list");
         if (!resultListDiv) {
@@ -291,7 +268,6 @@ async function waitForResultList() {
             resultListDiv.querySelectorAll<HTMLTableHeaderCellElement>("thead tr th");
 
         const allRows = resultListDiv.querySelectorAll<HTMLElement>("tbody tr");
-        const allCells = resultListDiv.querySelectorAll<HTMLElement>("tbody td");
 
         const selectAllSelect = resultListDiv.querySelector<HTMLInputElement>(
             ".result-list-select-all-checkbox input"
@@ -305,18 +281,118 @@ async function waitForResultList() {
             resultListDiv,
             allHeaderElements,
             allRows,
-            allCells,
             selectAllSelect,
             selectRowSelects
         };
     });
-
-    return {
-        resultListDiv,
-        allHeaderElements,
-        allRows,
-        allCells,
-        selectAllSelect,
-        selectRowSelects
-    };
 }
+
+const DATE_FORMAT = Intl.DateTimeFormat("de-DE", {
+    dateStyle: "full",
+    timeStyle: "full",
+    timeZone: "UTC"
+});
+
+// Stable date format for tests.
+function formatDate(date: Date) {
+    return DATE_FORMAT.format(date);
+}
+
+const dummyFeatureData: BaseFeature[] = [
+    {
+        id: "1",
+        properties: {
+            "a": "Test",
+            "b": 123,
+            "c": 4.567,
+            "d": true,
+            "e": formatDate(new Date("2020-05-12T23:50:21.817Z"))
+        },
+        geometry: new Point([404567.3, 5757788.32])
+    },
+    {
+        id: "2",
+        properties: {
+            "a": "Test123",
+            "b": 434,
+            "c": 78.567,
+            "d": false,
+            "e": formatDate(new Date("2021-05-12T23:50:21.817Z"))
+        },
+        geometry: new Point([406510.87, 5758314.82])
+    },
+    {
+        id: "3",
+        properties: {
+            "a": "Testabc",
+            "b": 666,
+            "c": 8.597,
+            "d": true,
+            "e": formatDate(new Date("2020-10-12T23:30:21.817Z"))
+        },
+        geometry: new Point([406590.87, 5758311.82])
+    },
+    {
+        id: "4",
+        properties: {
+            "a": null,
+            "b": undefined,
+            "c": "",
+            "d": undefined,
+            "e": undefined
+        },
+        geometry: new Point([406590.87, 5758311.82])
+    }
+];
+
+const dummyColumns: ResultColumn[] = [
+    {
+        propertyName: "a",
+        displayName: "Spalte A",
+        width: 100
+    },
+    {
+        propertyName: "b",
+        displayName: "Spalte B",
+        width: 50
+    },
+    {
+        propertyName: "c",
+        displayName: "Spalte C",
+        width: 150
+    },
+    {
+        propertyName: "d",
+        displayName: "Spalte D",
+        width: 75
+    },
+    {
+        propertyName: "e",
+        displayName: "Spalte E",
+        width: 50
+    }
+];
+
+const dummyFeatureDataAlt: BaseFeature[] = [
+    {
+        id: "1",
+        properties: {
+            "f": "Test 42",
+            "g": undefined
+        },
+        geometry: undefined
+    }
+];
+
+const dummyMetaDataAlt: ResultColumn[] = [
+    {
+        propertyName: "f",
+        displayName: "Spalte F",
+        width: 200
+    },
+    {
+        propertyName: "g",
+        displayName: "Spalte G",
+        width: 300
+    }
+];

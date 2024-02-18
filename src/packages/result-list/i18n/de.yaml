@@ -1,7 +1,6 @@
 messages:
   selectAllTooltip: Alle auswählen
   deSelectAllTooltip: Alle abwählen
-  illegalArgumentException: Resultlistinput muss Metadaten haben
   noDataMessage: Keine Daten verfügbar
   ariaLabel:
-    selectSingle: Drücken Sie Leertaste zum ab- oder anwählen.
+    selectSingle: Drücken Sie die Leertaste zum ab- oder anwählen.

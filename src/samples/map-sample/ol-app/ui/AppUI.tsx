@@ -135,6 +135,8 @@ export function AppUI() {
                         mapId={MAP_ID}
                         role="main"
                         aria-label={intl.formatMessage({ id: "ariaLabel.map" })}
+                        /* Note: matches the height of the result list component */
+                        viewPadding={toolState.resultListActive ? { bottom: 400 } : undefined}
                     >
                         <Container centerContent>
                             <SearchComponent />
@@ -151,8 +153,8 @@ export function AppUI() {
                         <MapAnchor position="bottom-right" horizontalGap={10} verticalGap={45}>
                             <MapTools toolState={toolState} onToolStateChange={changeToolState} />
                         </MapAnchor>
+                        {toolState.resultListActive && <ResultListComponent />}
                     </MapContainer>
-                    {toolState.resultListActive && <ResultListComponent />}
                 </Flex>
                 <Flex
                     role="region"

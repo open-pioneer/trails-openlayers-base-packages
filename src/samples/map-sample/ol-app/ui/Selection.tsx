@@ -46,7 +46,7 @@ export function SelectionComponent() {
         }
 
         appModel.state.currentResultListInput = ref({
-            metadata: currentMetadata,
+            columns: currentMetadata,
             data: results
         });
 

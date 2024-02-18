@@ -8,8 +8,9 @@ import {
     useReactTable
 } from "@tanstack/react-table";
 import { DataTableProps } from "./DataTable";
+import { BaseFeature } from "@open-pioneer/map";
 
-export function useSetupTable<Data extends object>(props: DataTableProps<Data>) {
+export function useSetupTable<Data extends BaseFeature>(props: DataTableProps<Data>) {
     const { data, columns } = props;
     const [sorting, setSorting] = useState<SortingState>([]);
     const [rowSelection, setRowSelection] = useState({});
@@ -28,6 +29,9 @@ export function useSetupTable<Data extends object>(props: DataTableProps<Data>) 
     const table = useReactTable({
         columns: columns,
         data,
+        getRowId(feature) {
+            return String(feature.id);
+        },
         columnResizeMode: "onChange",
         getCoreRowModel: getCoreRowModel(),
         enableRowSelection: true,

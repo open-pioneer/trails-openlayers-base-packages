@@ -1,7 +1,6 @@
 messages:
   selectAllTooltip: Select all
   deSelectAllTooltip: Deselect all
-  illegalArgumentException: Resultlistinput must contain metadata,
   noDataMessage: No data available
   ariaLabel:
-    selectSingle: Press spacebar to select or deselect.
+    selectSingle: Press space to select or deselect.
