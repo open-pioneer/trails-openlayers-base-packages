@@ -4,16 +4,19 @@ import { Flex } from "@open-pioneer/chakra-integration";
 import { Geolocation } from "@open-pioneer/geolocation";
 import { InitialExtent, ZoomIn, ZoomOut } from "@open-pioneer/map-navigation";
 import { ToolButton } from "@open-pioneer/react-utils";
-import { useIntl } from "open-pioneer:react-hooks";
+import { useIntl, useService } from "open-pioneer:react-hooks";
 import {
     PiBookmarksSimpleBold,
     PiImagesLight,
     PiListLight,
+    PiListMagnifyingGlassFill,
     PiMapTrifold,
     PiRulerLight,
     PiSelectionPlusBold
 } from "react-icons/pi";
 import { MAP_ID } from "../MapConfigProviderImpl";
+import { AppModel } from "../AppModel";
+import { useSnapshot } from "valtio";
 
 export interface ToolState {
     bookmarksActive: boolean;
@@ -39,6 +42,9 @@ export interface MapToolsProps {
 export function MapTools(props: MapToolsProps) {
     const { toolState, onToolStateChange } = props;
     const intl = useIntl();
+    const appModel = useService<unknown>("ol-app.AppModel") as AppModel;
+    const resultListState = useSnapshot(appModel.state).resultListState;
+    const resultListOpen = resultListState.open;
 
     const toggleToolState = (name: keyof ToolState) => {
         onToolStateChange(name, !toolState[name]);
@@ -52,6 +58,14 @@ export function MapTools(props: MapToolsProps) {
             gap={1}
             padding={1}
         >
+            {resultListState.input && (
+                <ToolButton
+                    label={intl.formatMessage({ id: "resultListTitle" })}
+                    icon={<PiListMagnifyingGlassFill />}
+                    isActive={resultListState.open}
+                    onClick={() => appModel.setResultListVisibility(!resultListOpen)}
+                />
+            )}
             <ToolButton
                 label={intl.formatMessage({ id: "spatialBookmarkTitle" })}
                 icon={<PiBookmarksSimpleBold />}

@@ -3,8 +3,9 @@ messages:
   tocTitle: "Karteninhalt"
   legendTitle: "Legende"
   measurementTitle: "Messen"
-  selectionTitle: Selektieren
+  selectionTitle: "Selektieren"
   overviewMapTitle: "Übersichtskarte"
+  resultListTitle: "Ergebnisliste"
   ariaLabel:
     header: "Kopfleiste"
     footer: "Fussleiste mit Maßstabsangabe, Raumbezugssystem und Koordinatenanzeige"
