@@ -3,26 +3,51 @@
 import { chakra } from "@open-pioneer/chakra-integration";
 import { BaseFeature } from "@open-pioneer/map";
 import { PackageIntl } from "@open-pioneer/runtime";
-import { createColumnHelper } from "@tanstack/react-table";
+import { CellContext, createColumnHelper } from "@tanstack/react-table";
 import { Table as TanstackTable } from "@tanstack/table-core/build/lib/types";
 import { SelectCheckbox } from "./SelectCheckbox";
-import { ResultColumn } from "../ResultList";
+import { ResultColumn, FormatOptions } from "../ResultList";
 
 export const SELECT_COLUMN_SIZE = 70;
+export const DEFAULT_MAX_DECIMAL_PLACES = 2;
+
 const columnHelper = createColumnHelper<BaseFeature>();
 
-export function createColumns(columns: ResultColumn[], intl: PackageIntl, tableWidth?: number) {
+export interface CreateColumnsOptions {
+    columns: ResultColumn[];
+    intl: PackageIntl;
+    tableWidth?: number;
+    formatOptions?: FormatOptions;
+}
+
+export function createColumns(options: CreateColumnsOptions) {
+    const { columns, intl, tableWidth, formatOptions } = options;
     const remainingColumnWidth: number | undefined =
         tableWidth === undefined ? undefined : calcRemainingColumnWidth(columns, tableWidth);
     const selectionColumn = createSelectionColumn(intl);
     const columnDefs = columns.map((column, index) => {
         const columnWidth = column.width || remainingColumnWidth;
-        return createColumn(column, columnWidth, "result-list-col_" + index);
+        return createColumn({
+            id: "result-list-col_" + index,
+            column: column,
+            intl: intl,
+            columnWidth: columnWidth,
+            formatOptions: formatOptions
+        });
     });
     return [selectionColumn, ...columnDefs];
 }
 
-function createColumn(column: ResultColumn, columnWidth: number | undefined, id: string) {
+interface CreateColumnOptions {
+    id: string;
+    column: ResultColumn;
+    intl: PackageIntl;
+    columnWidth?: number;
+    formatOptions?: FormatOptions;
+}
+
+function createColumn(options: CreateColumnOptions) {
+    const { id, column, columnWidth, formatOptions, intl } = options;
     const { propertyName, getPropertyValue } = column;
     const hasPropertyValue = getPropertyValue != null || propertyName != null;
 
@@ -40,17 +65,60 @@ function createColumn(column: ResultColumn, columnWidth: number | undefined, id:
         {
             id: id,
             cell: (info) => {
-                const cellValue = info.getValue();
-                if (cellValue == null) {
-                    return "";
+                if (column.render) {
+                    return column.render(info.row.original);
                 }
-                return String(cellValue);
+                return renderFunc(info, intl, formatOptions);
             },
-
             header: column.displayName ?? column.propertyName,
             size: columnWidth
         }
     );
+}
+
+function renderFunc<BaseFeature>(
+    info: CellContext<BaseFeature, unknown>,
+    intl: PackageIntl,
+    formatOptions?: FormatOptions
+) {
+    const cellValue = info.getValue();
+    const type = typeof cellValue;
+    const formatNumber = (num: number | bigint) => {
+        if (Number.isNaN(num)) return "";
+        const options = {
+            maximumFractionDigits: DEFAULT_MAX_DECIMAL_PLACES
+        };
+        if (formatOptions?.maxDecimalPlaces !== undefined)
+            options.maximumFractionDigits = formatOptions.maxDecimalPlaces;
+        return intl.formatNumber(num, options);
+    };
+    switch (type) {
+        case "number": {
+            return formatNumber(cellValue as number);
+        }
+        case "bigint": {
+            return formatNumber(cellValue as bigint);
+        }
+        case "boolean": {
+            return intl.formatMessage({ id: `displayBoolean.${cellValue}` });
+        }
+        case "string": {
+            return cellValue as string;
+        }
+        case "object": {
+            if (cellValue === null || cellValue === undefined) return "";
+            const cellStr = cellValue.toString();
+            const isDate = !isNaN(Date.parse(cellStr));
+            if (isDate) {
+                return intl.formatDate(cellStr, formatOptions?.dateTimeFormatOptions);
+            }
+            return cellStr;
+        }
+        case "undefined":
+            return "";
+        default:
+            return String(cellValue);
+    }
 }
 
 function createSelectionColumn(intl: PackageIntl) {

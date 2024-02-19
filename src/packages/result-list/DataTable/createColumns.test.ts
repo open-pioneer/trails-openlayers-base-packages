@@ -16,7 +16,7 @@ it("expect createColumn to create columns correctly", async () => {
     const resultListColumns = createResultListColumns();
 
     // Slice away the selection checkbox column
-    const columns = createColumns(resultListColumns, intl).slice(1);
+    const columns = createColumns({ columns: resultListColumns, intl: intl }).slice(1);
     expect(columns.length).toEqual(resultListColumns.length);
     const [simplePropColumn, colWithDisplayName, colWithWidth, colWithGetter] = columns;
 
@@ -39,7 +39,9 @@ it("expect createColumn to distribute remaining width on columns with undefined 
     const metaData = dummyMetaDataMissingWidth;
     const fullWidth = 1000;
     // Slice away the selection checkbox column
-    const columns = createColumns(metaData, intl, fullWidth).slice(1);
+    const columns = createColumns({ columns: metaData, intl: intl, tableWidth: fullWidth }).slice(
+        1
+    );
     const expectedWidth = (fullWidth - SELECT_COLUMN_SIZE - 300) / 2;
     expect(columns[0]?.size).toEqual(metaData[0]!.width);
     expect(columns[1]?.size).toEqual(expectedWidth);

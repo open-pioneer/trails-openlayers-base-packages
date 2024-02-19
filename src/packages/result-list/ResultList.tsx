@@ -4,7 +4,7 @@ import { Box } from "@open-pioneer/chakra-integration";
 import { BaseFeature } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
-import { FC, RefObject, useEffect, useMemo, useRef, useState } from "react";
+import { FC, ReactNode, RefObject, useEffect, useMemo, useRef, useState } from "react";
 import { DataTable } from "./DataTable/DataTable";
 import { createColumns } from "./DataTable/createColumns";
 
@@ -45,6 +45,23 @@ export interface ResultColumn {
      * The return value of this function will be rendered by the table.
      */
     getPropertyValue?: (feature: BaseFeature) => unknown;
+
+    /** Custom render function to render a table cell in this column. */
+    render?: (item: BaseFeature) => ReactNode;
+}
+
+/**
+ * To specify the format of cell values if they are of number or date type.
+ */
+export interface FormatOptions {
+    /**
+     * The (maximum) number of decimal places for number type values
+     */
+    maxDecimalPlaces?: number;
+    /**
+     *  The format options for date type values
+     */
+    dateTimeFormatOptions?: Intl.DateTimeFormatOptions;
 }
 
 /**
@@ -61,6 +78,12 @@ export interface ResultListInput {
      * Every feature will be rendered as an individual row.
      */
     data: BaseFeature[];
+
+    /**
+     * Optional formatOptions to specify the (maximum) number of decimal for number type values and
+     * dateTimeFormatOptions to specify the format of date type values
+     */
+    formatOptions?: FormatOptions;
 }
 
 /**
@@ -85,7 +108,7 @@ export const ResultList: FC<ResultListProps> = (props) => {
     const { containerProps } = useCommonComponentProps("result-list", props);
     const intl = useIntl();
     const {
-        input: { data, columns }
+        input: { data, columns, formatOptions }
     } = props;
     if (columns.length === 0) {
         throw Error("No columns were defined. The result list cannot be displayed.");
@@ -94,8 +117,14 @@ export const ResultList: FC<ResultListProps> = (props) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const tableWidth = useTableWidth(containerRef);
     const dataTableColumns = useMemo(
-        () => createColumns(columns, intl, tableWidth),
-        [columns, intl, tableWidth]
+        () =>
+            createColumns({
+                columns: columns,
+                intl: intl,
+                tableWidth: tableWidth,
+                formatOptions: formatOptions
+            }),
+        [columns, intl, tableWidth, formatOptions]
     );
 
     return (
