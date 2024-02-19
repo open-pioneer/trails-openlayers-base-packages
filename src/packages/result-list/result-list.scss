@@ -1,4 +1,9 @@
 .result-list-table {
+    th,
+    td {
+        overflow-wrap: break-word;
+    }
+
     &.result-list-table--is-resizing * {
         cursor: col-resize;
     }

@@ -17,7 +17,8 @@ export function createColumns(columns: ResultColumn[], intl: PackageIntl, tableW
     const selectionColumn = createSelectionColumn(intl);
     const columnDefs = columns.map((column, index) => {
         const columnWidth = column.width || remainingColumnWidth;
-        return createColumn(column, columnWidth, "result-list-col_" + index);
+        const configuredId = column.id ?? column.propertyName ?? String(index);
+        return createColumn(column, columnWidth, "result-list-col_" + configuredId);
     });
     return [selectionColumn, ...columnDefs];
 }
@@ -46,7 +47,6 @@ function createColumn(column: ResultColumn, columnWidth: number | undefined, id:
                 }
                 return String(cellValue);
             },
-
             header: column.displayName ?? column.propertyName,
             size: columnWidth
         }
@@ -55,7 +55,7 @@ function createColumn(column: ResultColumn, columnWidth: number | undefined, id:
 
 function createSelectionColumn(intl: PackageIntl) {
     return columnHelper.display({
-        id: "result-list-col_selection-buttons",
+        id: "selection-buttons",
         size: SELECT_COLUMN_SIZE,
         enableSorting: false,
         header: ({ table }) => {

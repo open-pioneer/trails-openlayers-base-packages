@@ -20,6 +20,6 @@ export function ColumnResizer(props: {
             onMouseDown={onMouseDown}
             onTouchStart={onTouchStart}
             onClick={(e) => e.stopPropagation()}
-        ></chakra.span>
+        />
     );
 }

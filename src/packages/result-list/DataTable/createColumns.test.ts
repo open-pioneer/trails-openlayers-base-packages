@@ -51,20 +51,24 @@ function createResultListColumns() {
     const columns: ResultColumn[] = [
         {
             // no display name
+            id: "0",
             propertyName: "a"
         },
         {
             // display name
+            id: "1",
             displayName: "column title",
             propertyName: "a"
         },
         {
             // explicit width
+            id: "2",
             propertyName: "c",
             width: 150
         },
         {
             // Getter
+            id: "3",
             propertyName: "d",
             getPropertyValue(_feature) {
                 return "virtual value";

@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Checkbox, Tooltip } from "@open-pioneer/chakra-integration";
+import { Checkbox, Tooltip, chakra } from "@open-pioneer/chakra-integration";
 import { ChangeEvent } from "react";
 
 export interface SelectCheckboxProps {
@@ -25,7 +25,6 @@ export function SelectCheckbox({
     const checkboxComponent = (
         <Checkbox
             aria-label={ariaLabel}
-            tabIndex={0}
             className={className}
             isChecked={isChecked}
             onChange={onChange}
@@ -34,8 +33,15 @@ export function SelectCheckbox({
         />
     );
     return toolTipLabel ? (
-        <Tooltip label={toolTipLabel} placement="right" shouldWrapChildren closeOnClick={false}>
-            {checkboxComponent}
+        <Tooltip label={toolTipLabel} placement="right" closeOnClick={false}>
+            <chakra.span
+            /* 
+               wrap into span to fix tooltip around checkbox, see https://github.com/chakra-ui/chakra-ui/issues/6353
+               not using "shouldWrapChildren" because that also introduces a _focusable_ span (we only want the checkbox)
+            */
+            >
+                {checkboxComponent}
+            </chakra.span>
         </Tooltip>
     ) : (
         checkboxComponent

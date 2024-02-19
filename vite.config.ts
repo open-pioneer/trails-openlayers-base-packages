@@ -25,6 +25,7 @@ const sampleSites = [
     "samples/test-toc",
     "samples/test-highlight-and-zoom",
     "samples/test-menu-fix",
+    "samples/test-result-list",
 
     "samples/experimental-sidebar",
 ];

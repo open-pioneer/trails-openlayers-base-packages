@@ -15,6 +15,15 @@ import { createColumns } from "./DataTable/createColumns";
  */
 export interface ResultColumn {
     /**
+     * Use this option to define an explicit column id.
+     * This can be helpful to track your column when it moves in the table (for example, the sort order can be maintained).
+     *
+     * If this is not defined, {@link propertyName} will serve as a fallback.
+     * If that is also not defined, the column index will be used instead.
+     */
+    id?: string;
+
+    /**
      * The display name of this column.
      *
      * If no `displayName` has been configured, {@link propertyName} will serve as a fallback value.
