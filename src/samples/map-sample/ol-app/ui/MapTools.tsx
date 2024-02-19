@@ -25,7 +25,6 @@ export interface ToolState {
     measurementActive: boolean;
     selectionActive: boolean;
     overviewMapActive: boolean;
-    resultListActive: boolean;
 }
 
 export interface MapToolsProps {
@@ -44,7 +43,8 @@ export function MapTools(props: MapToolsProps) {
     const { toolState, onToolStateChange } = props;
     const intl = useIntl();
     const appModel = useService<unknown>("ol-app.AppModel") as AppModel;
-    const hasResultListInput = !!useSnapshot(appModel.state).currentResultListInput;
+    const resultListState = useSnapshot(appModel.state).resultListState;
+    const resultListOpen = resultListState.open;
 
     const toggleToolState = (name: keyof ToolState) => {
         onToolStateChange(name, !toolState[name]);
@@ -58,12 +58,12 @@ export function MapTools(props: MapToolsProps) {
             gap={1}
             padding={1}
         >
-            {hasResultListInput && (
+            {resultListState.input && (
                 <ToolButton
                     label={intl.formatMessage({ id: "resultListTitle" })}
                     icon={<PiListMagnifyingGlassFill />}
-                    isActive={toolState.resultListActive}
-                    onClick={() => toggleToolState("resultListActive")}
+                    isActive={resultListState.open}
+                    onClick={() => appModel.setResultListVisibility(!resultListOpen)}
                 />
             )}
             <ToolButton

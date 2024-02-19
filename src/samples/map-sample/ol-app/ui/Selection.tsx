@@ -45,10 +45,7 @@ export function SelectionComponent() {
             return;
         }
 
-        appModel.state.currentResultListInput = ref({
-            columns: currentMetadata,
-            data: results
-        });
+        appModel.setResultListInput({ columns: currentMetadata, data: results });
 
         notifier.notify({
             level: "info",
