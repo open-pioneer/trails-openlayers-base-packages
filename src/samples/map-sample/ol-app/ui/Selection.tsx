@@ -11,7 +11,7 @@ import {
 } from "@open-pioneer/selection/Selection";
 import { useIntl, useService } from "open-pioneer:react-hooks";
 import { useId } from "react";
-import { ref, useSnapshot } from "valtio";
+import { useSnapshot } from "valtio";
 import { AppModel } from "../AppModel";
 import { MAP_ID } from "../MapConfigProviderImpl";
 import { highlightAndZoom } from "../util/map-utils";
