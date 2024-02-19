@@ -6,6 +6,8 @@ import GeoJSONGeometry from "ol/format/GeoJSON";
 import GeoJSONGeometryCollection from "ol/format/GeoJSON";
 import { Projection } from "ol/proj";
 
+// todo tests for methods in this file
+
 export async function saveCreatedFeature(
     httpService: HttpService,
     url: URL,

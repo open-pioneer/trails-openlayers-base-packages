@@ -1,10 +1,12 @@
 # @open-pioneer/editing
 
-This package provides an editing component.
+This package provides an editing service that allows to start and handle geometry editing workflows.
+
+Note: The editing only works with OGC API Feature Services. The editing was only tested using the implementation of the OGC API Features in the XtraServer by interactive instruments. The collection in that the geometry will be saved, needs to support the map's coordinate system.
 
 ## Usage
 
-To add the component to your app, inject and import the editing service. Create an new editing workflow with the map model and an URL.
+To use the editing in an app, inject the editing service. Use the `start` method to create a new editing workflow.
 
 Example:
 
@@ -21,13 +23,11 @@ export default defineBuildConfig({
 
 ```tsx
 const editingService = useService<EditingService>("editing.EditingService");
-const url = new URL("...");
-const workflow = editingService.start(map, url);
+const editingCollectionUrl = new URL("...");
+const workflow = editingService.start(map, editingCollectionUrl);
 ```
 
-An editing workflow can be stop and reset using the map id.
-
-Reset an editing workflow, unfinished geometry will be removed without leaving the edit mode.
+An editing workflow can be stopped completely or the current drawing can be deleted without leaving the edit mode.
 
 Example:
 
@@ -38,9 +38,9 @@ editingService.stop("mapId");
 
 ### Watch editing workflow states
 
-During an editing workflow different state can occur. Retrieve the current state with `workflow.getState()`.
+During an editing workflow different state can occur. Retrieve the current state by calling `getState` method on the workflow.
 
-Watch editing states with `on()`.
+Alternatively, the state can be watched using `on()`.
 
 Example:
 
@@ -84,7 +84,3 @@ vectorLayer.getSource()?.refresh();
 ## License
 
 Apache-2.0 (see `LICENSE` file)
-
-```
-
-```
