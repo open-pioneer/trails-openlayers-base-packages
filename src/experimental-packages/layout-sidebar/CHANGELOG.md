@@ -1,5 +1,11 @@
 # @open-pioneer/experimental-layout-sidebar
 
+## 0.2.0
+
+### Minor Changes
+
+-   ee7c2d4: Update runtime version.
+
 ## 0.1.3
 
 ### Patch Changes

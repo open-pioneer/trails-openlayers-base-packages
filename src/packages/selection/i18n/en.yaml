@@ -6,7 +6,7 @@ messages:
   CIRCLE: "Kreis"
   selectSource: "Select source"
   tooltip: "Click on the map, hold down the mouse button and draw a rectangle"
-  disabledTooltip: "The current search source is not available"
+  disabledTooltip: "The current selection source is not available"
   sourceNotAvailable: "Source not available"
   selectionFailed: "Spatial selection failed"
   selectionPlaceholder: "No source selected"

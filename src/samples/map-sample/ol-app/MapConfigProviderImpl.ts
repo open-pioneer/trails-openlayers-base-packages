@@ -11,6 +11,7 @@ import { Circle, Fill, Style } from "ol/style";
 import TileLayer from "ol/layer/Tile.js";
 import { ServiceOptions } from "@open-pioneer/runtime";
 import { OgcFeaturesVectorSourceFactory } from "@open-pioneer/ogc-features";
+import { View } from "ol";
 
 interface References {
     vectorSourceFactory: OgcFeaturesVectorSourceFactory;
@@ -33,12 +34,14 @@ export class MapConfigProviderImpl implements MapConfigProvider {
         };
 
         return {
-            initialView: {
-                kind: "position",
-                center: { x: 404747, y: 5757920 },
-                zoom: 14
+            advanced: {
+                view: new View({
+                    center: [404747, 5757920],
+                    zoom: 13,
+                    constrainResolution: true,
+                    projection: "EPSG:25832"
+                })
             },
-            projection: "EPSG:25832",
             layers: [
                 new WMSLayer({
                     title: "Linfos",

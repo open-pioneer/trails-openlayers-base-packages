@@ -1,5 +1,11 @@
 # @open-pioneer/react-utils
 
+## 0.2.1
+
+### Patch Changes
+
+-   762e7b9: Add 'aria-pressed' attribute to "pressable" tool buttons (when `isActive` is `true` or `false`).
+
 ## 0.2.0
 
 ### Minor Changes
