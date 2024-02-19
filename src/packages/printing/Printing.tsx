@@ -128,6 +128,9 @@ export const Printing: FC<PrintingProps> = (props) => {
     );
 };
 
+/**
+ * Create a PrintingController instance to export the map view.
+ */
 function useController(map: MapModel | undefined, intl: PackageIntl) {
     const [controller, setController] = useState<PrintingController | undefined>(undefined);
 
