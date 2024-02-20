@@ -9,7 +9,6 @@ import { SelectCheckbox } from "./SelectCheckbox";
 import { ResultColumn, FormatOptions } from "../ResultList";
 
 export const SELECT_COLUMN_SIZE = 70;
-export const DEFAULT_MAX_DECIMAL_PLACES = 2;
 
 const columnHelper = createColumnHelper<BaseFeature>();
 
@@ -83,16 +82,13 @@ function renderFunc<BaseFeature>(
     formatOptions?: FormatOptions
 ) {
     const cellValue = info.getValue();
+    if (cellValue === null || cellValue === undefined) return "";
     const type = typeof cellValue;
     const formatNumber = (num: number | bigint) => {
         if (Number.isNaN(num)) return "";
-        const options = {
-            maximumFractionDigits: DEFAULT_MAX_DECIMAL_PLACES
-        };
-        if (formatOptions?.maxDecimalPlaces !== undefined)
-            options.maximumFractionDigits = formatOptions.maxDecimalPlaces;
-        return intl.formatNumber(num, options);
+        return intl.formatNumber(num, formatOptions?.formatNumberOptions);
     };
+
     switch (type) {
         case "number": {
             return formatNumber(cellValue as number);
@@ -107,16 +103,16 @@ function renderFunc<BaseFeature>(
             return cellValue as string;
         }
         case "object": {
-            if (cellValue === null || cellValue === undefined) return "";
+            if (cellValue instanceof Date)
+                return intl.formatDate(cellValue, formatOptions?.dateTimeFormatOptions);
+
             const cellStr = cellValue.toString();
-            const isDate = !isNaN(Date.parse(cellStr));
-            if (isDate) {
+            const isDateString = !isNaN(Date.parse(cellStr));
+            if (isDateString) {
                 return intl.formatDate(cellStr, formatOptions?.dateTimeFormatOptions);
             }
             return cellStr;
         }
-        case "undefined":
-            return "";
         default:
             return String(cellValue);
     }

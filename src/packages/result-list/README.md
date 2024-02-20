@@ -30,7 +30,7 @@ The `ResultList` will render the specified columns in the order in which they ar
 
 `input.formatOptions` is being used to specify how numbers and dates are formatted. You can provide
 `maxDecimalPlaces` and `dateTimeFormatOptions` and these settings are applied for all table cells that
-have no `render` function configured.
+have no `render` function configured and matches the corresponding type.
 
 Consider a set of features which all have the properties `name` and `age`.
 In that case, a simple configuration of the `ResultList` may look as follows:

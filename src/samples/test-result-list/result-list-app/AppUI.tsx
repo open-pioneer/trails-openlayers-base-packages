@@ -238,6 +238,7 @@ const GENERATED: ResultListInput = {
                 "boolean": index % 2 == 0,
                 "empty": index % 2 == 0 ? null : undefined,
                 "number": index,
+                "float": index / 7.0,
                 "string": `Item ${index}`,
                 "date": new Date()
             }
@@ -251,6 +252,9 @@ const GENERATED: ResultListInput = {
             propertyName: "number"
         },
         {
+            propertyName: "float"
+        },
+        {
             propertyName: "string"
         },
         {
@@ -259,7 +263,17 @@ const GENERATED: ResultListInput = {
         {
             propertyName: "empty"
         }
-    ]
+    ],
+    formatOptions: {
+        formatNumberOptions: {
+            maximumFractionDigits: 2
+        },
+        dateTimeFormatOptions: {
+            timeStyle: "full",
+            dateStyle: "full",
+            timeZone: "UTC"
+        }
+    }
 };
 
 const LONG_STRINGS: ResultListInput = {

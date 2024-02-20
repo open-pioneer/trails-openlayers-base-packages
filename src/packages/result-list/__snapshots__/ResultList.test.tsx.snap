@@ -17,6 +17,8 @@ exports[`expect empty data text to be shown 1`] = `
 
 exports[`expect empty metadata to throw error 1`] = `"No columns were defined. The result list cannot be displayed."`;
 
+exports[`expect render function to be applied 1`] = `"This item has the following ID: 1"`;
+
 exports[`expect render function to be used 1`] = `"This item has the following ID: 1"`;
 
 exports[`expect result list to be created successfully 1`] = `
@@ -219,7 +221,7 @@ exports[`expect result list to be created successfully 1`] = `
           data-theme="light"
           style=""
         >
-          4.57
+          4.567
         </td>
         <td
           class="result-list-table-row css-xumdn4"
@@ -288,7 +290,7 @@ exports[`expect result list to be created successfully 1`] = `
           data-theme="light"
           style=""
         >
-          78.57
+          78.567
         </td>
         <td
           class="result-list-table-row css-xumdn4"
@@ -357,7 +359,7 @@ exports[`expect result list to be created successfully 1`] = `
           data-theme="light"
           style=""
         >
-          8.6
+          8.597
         </td>
         <td
           class="result-list-table-row css-xumdn4"

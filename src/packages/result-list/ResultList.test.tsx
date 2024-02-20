@@ -227,12 +227,14 @@ it("expect all rows to be selected and deselected", async () => {
 
 it("expect result list display all data types except dates", async () => {
     render(
-        <PackageContextProvider>
+        <PackageContextProvider locale="de">
             <ResultList
                 input={{
                     data: dummyFeatureData,
                     columns: dummyColumns,
-                    formatOptions: { maxDecimalPlaces: 3, intl: intlDE }
+                    formatOptions: {
+                        formatNumberOptions: { maximumFractionDigits: 3 }
+                    }
                 }}
                 mapId="foo"
                 data-testid="result-list"
@@ -252,7 +254,7 @@ it("expect result list display all data types except dates", async () => {
     expect(trueCell!.textContent).toBe("displayBoolean.true");
 
     const falseCell = allRows[1]?.querySelectorAll("td")[4];
-    expect(falseCell!.textContent).toBe("displayBoolean.false"); // false is not rendered as ""
+    expect(falseCell!.textContent).toBe("displayBoolean.false");
 
     // Null / Undefined is rendered as an empty string
     const lastRowCells = Array.from(allRows[3]!.querySelectorAll("td"));
@@ -270,38 +272,41 @@ it("expect result list display date in given format", async () => {
         timeZone: "UTC"
     };
 
-    //TODO: reconsider how to use intl with internationalization for tests! Maybe expect en-US always?
-    const dateFormater = Intl.DateTimeFormat("de-DE", dateTimeFormatOptions);
+    let dateFormater = Intl.DateTimeFormat("de-DE", dateTimeFormatOptions);
+    const resultListComp = (
+        <ResultList
+            input={{
+                data: dummyDateFeatureData,
+                columns: dummyDateColumns,
+                formatOptions: {
+                    formatNumberOptions: { maximumFractionDigits: 3 },
+                    dateTimeFormatOptions: dateTimeFormatOptions
+                }
+            }}
+            mapId="foo"
+            data-testid="result-list"
+        />
+    );
 
-    render(
-        <PackageContextProvider>
-            <ResultList
-                input={{
-                    data: dummyDateFeatureData,
-                    columns: dummyDateColumns,
-                    formatOptions: {
-                        maxDecimalPlaces: 3,
-                        dateTimeFormatOptions: dateTimeFormatOptions,
-                        intl: intlDE
-                    }
-                }}
-                mapId="foo"
-                data-testid="result-list"
-            />
-        </PackageContextProvider>
+    const renderResult = render(
+        <PackageContextProvider locale="de">{resultListComp}</PackageContextProvider>
     );
 
     const { allRows } = await waitForResultList();
     const firstRowCells = Array.from(allRows[0]!.querySelectorAll("td"));
-    expect(firstRowCells).toHaveLength(2);
-
     const [selectCell, dateCell, ..._rest] = firstRowCells;
+    expect(dateCell!.textContent).toBe(dateFormater.format(new Date("2020-05-12T23:50:21.817Z")));
+
+    renderResult.rerender(
+        <PackageContextProvider locale="en">{resultListComp}</PackageContextProvider>
+    );
+    dateFormater = Intl.DateTimeFormat("en-US", dateTimeFormatOptions);
     expect(dateCell!.textContent).toBe(dateFormater.format(new Date("2020-05-12T23:50:21.817Z")));
 });
 
-it("expect render function to be used", async () => {
+it("expect render function to be applied", async () => {
     render(
-        <PackageContextProvider>
+        <PackageContextProvider locale="de">
             <ResultList
                 input={{
                     data: dummyDateFeatureData,

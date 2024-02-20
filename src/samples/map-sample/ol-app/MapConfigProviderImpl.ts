@@ -104,7 +104,6 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                         "legend": pointLayerLegendProps,
                         "resultListMetadata": [
                             {
-                                propertyName: "id",
                                 displayName: "ID",
                                 width: 100,
                                 getPropertyValue(feature: BaseFeature) {
@@ -125,9 +124,18 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                                 displayName: "inspireID"
                             },
                             {
-                                propertyName: "gefoerdert",
                                 displayName: "Gefördert",
-                                width: 160
+                                width: 160,
+                                getPropertyValue(feature: BaseFeature) {
+                                    switch (feature.properties?.gefoerdert) {
+                                        case "ja":
+                                            return true;
+                                        case "nein":
+                                            return false;
+                                        default:
+                                            return feature.properties?.gefoerdert;
+                                    }
+                                }
                             }
                         ]
                     }
@@ -148,9 +156,16 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                                 }
                             },
                             {
-                                propertyName: "aktualit",
                                 displayName: "Aktualit",
-                                width: 600
+                                width: 600,
+                                getPropertyValue(feature: BaseFeature) {
+                                    const val = feature.properties?.aktualit;
+                                    if (typeof val === "string") {
+                                        const isDateString = !isNaN(Date.parse(val));
+                                        if (isDateString) return new Date(val);
+                                    }
+                                    return val;
+                                }
                             }
                         ]
                     }
