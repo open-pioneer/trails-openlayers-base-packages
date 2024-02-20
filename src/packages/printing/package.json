@@ -20,7 +20,7 @@
         "jspdf": "^2.5.1"
     },
     "devDependencies": {
-        "@open-pioneer/test-utils": "^1.0.2",
+        "@open-pioneer/test-utils": "^1.1.1",
         "@open-pioneer/map-test-utils": "workspace:^",
         "test-utils": "workspace:*",
         "openlayers-base-packages": "workspace:*"

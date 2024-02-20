@@ -3,8 +3,9 @@ messages:
   tocTitle: "Table of contents"
   legendTitle: "Legend"
   measurementTitle: "Measurement"
-  selectionTitle: Selection
+  selectionTitle: "Selection"
   overviewMapTitle: "Overview map"
+  resultListTitle: "Result-List"
   ariaLabel:
     header: "Header bar"
     footer: "Base bar with scale information, spatial reference system and coordinate display"

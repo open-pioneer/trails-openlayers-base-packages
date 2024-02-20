@@ -46,6 +46,7 @@ const semanticTokens = {
     colors: {
         "background_body": "white",
         "background_primary": "trails.500",
+        "background_light": "trails.50",
         //"background_secondary": "trails.700",
         "placeholder": "gray.500",
         "font_primary": "black",

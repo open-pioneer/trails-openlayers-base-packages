@@ -7,7 +7,7 @@ import { Notifier } from "@open-pioneer/notifier";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { ScaleBar } from "@open-pioneer/scale-bar";
 import { ScaleViewer } from "@open-pioneer/scale-viewer";
-import { useIntl } from "open-pioneer:react-hooks";
+import { useIntl, useService } from "open-pioneer:react-hooks";
 import { ReactNode, useState } from "react";
 import { MAP_ID } from "../MapConfigProviderImpl";
 import { SpatialBookmarksComponent } from "./Bookmarks";
@@ -16,13 +16,19 @@ import { LegendComponent } from "./Legend";
 import { MapTools, ToolState } from "./MapTools";
 import { MeasurementComponent } from "./Measurement";
 import { OverviewMapComponent } from "./OverviewMap";
+import { ResultListComponent } from "./ResultList";
 import { SearchComponent } from "./Search";
 import { SelectionComponent } from "./Selection";
 import { TocComponent } from "./Toc";
+import { AppModel } from "../AppModel";
+import { useSnapshot } from "valtio";
 
 type InteractionType = "measurement" | "selection" | undefined;
 
-type IndependentToolState = Omit<ToolState, "measurementActive" | "selectionActive">;
+type IndependentToolState = Omit<
+    ToolState,
+    "measurementActive" | "selectionActive" | "resultListActive"
+>;
 
 const DEFAULT_TOOL_STATE: IndependentToolState = {
     bookmarksActive: false,
@@ -76,6 +82,10 @@ export function AppUI() {
         }
     };
 
+    const appModel = useService<unknown>("ol-app.AppModel") as AppModel;
+    const resultListState = useSnapshot(appModel.state).resultListState;
+    const showResultList = resultListState.input && resultListState.open;
+
     const containerComponents = [
         toolState.tocActive && (
             <TocComponent
@@ -114,6 +124,8 @@ export function AppUI() {
                         mapId={MAP_ID}
                         role="main"
                         aria-label={intl.formatMessage({ id: "ariaLabel.map" })}
+                        /* Note: matches the height of the result list component */
+                        viewPadding={showResultList ? { bottom: 400 } : undefined}
                     >
                         <Container centerContent>
                             <SearchComponent />
@@ -133,6 +145,7 @@ export function AppUI() {
                         <MapAnchor position="bottom-right" horizontalGap={10} verticalGap={45}>
                             <MapTools toolState={toolState} onToolStateChange={changeToolState} />
                         </MapAnchor>
+                        <ResultListComponent /* always here, but may be invisible / empty */ />
                     </MapContainer>
                 </Flex>
                 <Flex

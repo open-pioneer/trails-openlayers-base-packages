@@ -74,7 +74,7 @@
         "@open-pioneer/http": "^2.1.2",
         "@open-pioneer/integration": "^2.0.3",
         "@open-pioneer/runtime": "^2.1.0",
-        "@open-pioneer/test-utils": "^1.0.2",
+        "@open-pioneer/test-utils": "^1.1.1",
         "framer-motion": "^10.17.4",
         "html2canvas": "^1.4.1",
         "jspdf": "^2.5.1",
