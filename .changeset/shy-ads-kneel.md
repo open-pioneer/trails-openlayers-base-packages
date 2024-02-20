@@ -1,5 +1,5 @@
 ---
-"@open-pioneer/editing": patch
+"@open-pioneer/editing": minor
 ---
 
 Initial release.
