@@ -7,6 +7,7 @@ import { useIntl } from "open-pioneer:react-hooks";
 import { FC, ReactNode, RefObject, useEffect, useMemo, useRef, useState } from "react";
 import { DataTable } from "./DataTable/DataTable";
 import { createColumns } from "./DataTable/createColumns";
+import { PackageIntl } from "@open-pioneer/runtime";
 
 /**
  * Configures a column in the result list component.
@@ -62,6 +63,11 @@ export interface FormatOptions {
      *  The format options for date type values
      */
     dateTimeFormatOptions?: Intl.DateTimeFormatOptions;
+
+    /**
+     * For internal testing only TODO: Reconsider!
+     */
+    intl?: PackageIntl;
 }
 
 /**
@@ -106,7 +112,8 @@ export interface ResultListProps extends CommonComponentProps {
  */
 export const ResultList: FC<ResultListProps> = (props) => {
     const { containerProps } = useCommonComponentProps("result-list", props);
-    const intl = useIntl();
+    const intlHook = useIntl();
+    const intl = props.input.formatOptions?.intl || intlHook;
     const {
         input: { data, columns, formatOptions }
     } = props;

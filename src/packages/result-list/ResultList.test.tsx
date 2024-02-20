@@ -6,6 +6,7 @@ import { act, fireEvent, render, screen, waitFor } from "@testing-library/react"
 import { SpyInstance, afterEach, beforeEach, expect, it, vi } from "vitest";
 import { ResultColumn, ResultList, ResultListInput } from "./ResultList";
 import { Point } from "ol/geom";
+import { createIntl } from "@open-pioneer/test-utils/vanilla";
 
 afterEach(() => {
     vi.restoreAllMocks();
@@ -15,6 +16,8 @@ let errorSpy!: SpyInstance;
 beforeEach(() => {
     errorSpy = vi.spyOn(console, "error");
 });
+
+const intlDE = createIntl({ locale: "de-DE" });
 
 function doNothing() {}
 
@@ -229,7 +232,7 @@ it("expect result list display all data types except dates", async () => {
                 input={{
                     data: dummyFeatureData,
                     columns: dummyColumns,
-                    formatOptions: { maxDecimalPlaces: 3 }
+                    formatOptions: { maxDecimalPlaces: 3, intl: intlDE }
                 }}
                 mapId="foo"
                 data-testid="result-list"
@@ -241,12 +244,11 @@ it("expect result list display all data types except dates", async () => {
     const firstRowCells = Array.from(allRows[0]!.querySelectorAll("td"));
     expect(firstRowCells).toHaveLength(6);
 
-    const [selectCell, stringCell, integerCell, floatCell, trueCell, dateCell, ..._rest] =
-        firstRowCells;
+    const [selectCell, stringCell, integerCell, floatCell, trueCell, ..._rest] = firstRowCells;
     expect(selectCell!.innerHTML).includes("<input");
     expect(stringCell!.textContent).toBe("Test");
     expect(integerCell!.textContent).toBe("123");
-    expect(floatCell!.textContent).toBe("4.567");
+    expect(floatCell!.textContent).toBe("4,567");
     expect(trueCell!.textContent).toBe("displayBoolean.true");
 
     const falseCell = allRows[1]?.querySelectorAll("td")[4];
@@ -268,9 +270,8 @@ it("expect result list display date in given format", async () => {
         timeZone: "UTC"
     };
 
-    //TODO: reconsider, if "en-US" is a good idea for all our testing environments, or if the test
-    //  should removed alltogether.
-    const dateFormater = Intl.DateTimeFormat("en-US", dateTimeFormatOptions);
+    //TODO: reconsider how to use intl with internationalization for tests! Maybe expect en-US always?
+    const dateFormater = Intl.DateTimeFormat("de-DE", dateTimeFormatOptions);
 
     render(
         <PackageContextProvider>
@@ -280,7 +281,8 @@ it("expect result list display date in given format", async () => {
                     columns: dummyDateColumns,
                     formatOptions: {
                         maxDecimalPlaces: 3,
-                        dateTimeFormatOptions: dateTimeFormatOptions
+                        dateTimeFormatOptions: dateTimeFormatOptions,
+                        intl: intlDE
                     }
                 }}
                 mapId="foo"
@@ -295,10 +297,27 @@ it("expect result list display date in given format", async () => {
 
     const [selectCell, dateCell, ..._rest] = firstRowCells;
     expect(dateCell!.textContent).toBe(dateFormater.format(new Date("2020-05-12T23:50:21.817Z")));
-    expect(dateCell!.textContent).toMatchInlineSnapshot('"May 12, 2020, 11:50:21 PM"');
 });
 
-// TODO: Add Test for cell renderer usage
+it("expect render function to be used", async () => {
+    render(
+        <PackageContextProvider>
+            <ResultList
+                input={{
+                    data: dummyDateFeatureData,
+                    columns: dummyColumnsWithRenderFunc
+                }}
+                mapId="foo"
+                data-testid="result-list"
+            />
+        </PackageContextProvider>
+    );
+
+    const { allRows } = await waitForResultList();
+    const firstRowCells = Array.from(allRows[0]!.querySelectorAll("td"));
+    const [selectCell, dateCell, ..._rest] = firstRowCells;
+    expect(dateCell!.textContent).toMatchSnapshot();
+});
 
 async function waitForResultList() {
     return await waitFor(async () => {
@@ -360,13 +379,24 @@ const dummyDateColumns: ResultColumn[] = [
     }
 ];
 
+const dummyColumnsWithRenderFunc: ResultColumn[] = [
+    {
+        propertyName: "a",
+        displayName: "Spalte A",
+        width: 100,
+        render: (item) => (
+            <div className="renderTest">{`This item has the following ID: ${item.id}`}</div>
+        )
+    }
+];
+
 const dummyFeatureData: BaseFeature[] = [
     {
         id: "1",
         properties: {
             "a": "Test",
             "b": 123,
-            "c": 4.567,
+            "c": 4.5671365,
             "d": true,
             "e": formatDate(new Date("2020-05-12T23:50:21.817Z"))
         },
