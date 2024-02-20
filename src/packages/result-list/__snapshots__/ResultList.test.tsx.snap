@@ -7,14 +7,15 @@ exports[`expect empty data text to be shown 1`] = `
   data-theme="light"
 >
   <div
-    class="no-data-message"
+    class="result-list-no-data-message css-0"
+    data-theme="light"
   >
     noDataMessage
   </div>
 </div>
 `;
 
-exports[`expect empty metadata to throw error 1`] = `"no metadata given! result list cannot be displayed."`;
+exports[`expect empty metadata to throw error 1`] = `"No columns were defined. The result list cannot be displayed."`;
 
 exports[`expect result list to be created successfully 1`] = `
 <div
@@ -23,162 +24,166 @@ exports[`expect result list to be created successfully 1`] = `
   data-theme="light"
 >
   <table
-    class="chakra-table result-list-table-element css-lkg3hs"
+    class="chakra-table result-list-table css-lkg3hs"
     data-theme="light"
-    style="--header-result-list-col_selection-buttons-size: 70; --col-result-list-col_selection-buttons-size: 70; --header-result-list-col_0-size: 100; --col-result-list-col_0-size: 100; --header-result-list-col_1-size: 50; --col-result-list-col_1-size: 50; --header-result-list-col_2-size: 150; --col-result-list-col_2-size: 150; --header-result-list-col_3-size: 75; --col-result-list-col_3-size: 75; --header-result-list-col_4-size: 50; --col-result-list-col_4-size: 50;"
+    style="--header-selection-buttons-size: 70; --col-selection-buttons-size: 70; --header-result-list-col_a-size: 100; --col-result-list-col_a-size: 100; --header-result-list-col_b-size: 50; --col-result-list-col_b-size: 50; --header-result-list-col_c-size: 150; --col-result-list-col_c-size: 150; --header-result-list-col_d-size: 75; --col-result-list-col_d-size: 75; --header-result-list-col_e-size: 50; --col-result-list-col_e-size: 50;"
   >
     <thead
       class="css-0"
       data-theme="light"
     >
       <tr
-        class="css-0"
+        class="result-list-headers css-0"
         data-theme="light"
       >
         <th
-          aria-label="ariaLabel.sortInitial"
-          class="css-1k8lqeb"
+          aria-sort="none"
+          class="result-list-header css-zdxa4r"
           data-theme="light"
           style="width: 50px;"
           tabindex="0"
         >
-          <span
-            class="css-1baulvz"
+          <div
+            class="result-list-select-all-checkbox-container css-1baulvz"
             data-theme="light"
-            tabindex="0"
           >
-            <label
-              class="chakra-checkbox result-list-select-all-checkbox cursor-pointer css-1577qb8"
+            <span
+              class="css-0"
               data-theme="light"
             >
-              <input
-                aria-label="ariaLabel.selectAll"
-                class="chakra-checkbox__input"
-                style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
-                type="checkbox"
-                value=""
-              />
-              <span
-                aria-hidden="true"
-                class="chakra-checkbox__control css-1ydjfm6"
+              <label
+                class="chakra-checkbox result-list-select-all-checkbox css-1577qb8"
                 data-theme="light"
-              />
-            </label>
-          </span>
+              >
+                <input
+                  class="chakra-checkbox__input"
+                  style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
+                  type="checkbox"
+                  value=""
+                />
+                <span
+                  aria-hidden="true"
+                  class="chakra-checkbox__control css-1ydjfm6"
+                  data-theme="light"
+                />
+              </label>
+            </span>
+          </div>
           <span
-            class="resizer  css-0"
+            class="result-list-resizer css-0"
             data-theme="light"
           />
         </th>
         <th
-          aria-label="ariaLabel.sortInitial"
-          class="css-1875pyg"
+          aria-sort="none"
+          class="result-list-header css-y14pq5"
           data-theme="light"
           style=""
           tabindex="0"
         >
           Spalte A
           <span
-            class="css-1q8b5yy"
+            class="result-list-sort-indicator css-1q8b5yy"
             data-theme="light"
           />
           <span
-            class="resizer  css-0"
+            class="result-list-resizer css-0"
             data-theme="light"
           />
         </th>
         <th
-          aria-label="ariaLabel.sortInitial"
-          class="css-1875pyg"
+          aria-sort="none"
+          class="result-list-header css-y14pq5"
           data-theme="light"
           style=""
           tabindex="0"
         >
           Spalte B
           <span
-            class="css-1q8b5yy"
+            class="result-list-sort-indicator css-1q8b5yy"
             data-theme="light"
           />
           <span
-            class="resizer  css-0"
+            class="result-list-resizer css-0"
             data-theme="light"
           />
         </th>
         <th
-          aria-label="ariaLabel.sortInitial"
-          class="css-1875pyg"
+          aria-sort="none"
+          class="result-list-header css-y14pq5"
           data-theme="light"
           style=""
           tabindex="0"
         >
           Spalte C
           <span
-            class="css-1q8b5yy"
+            class="result-list-sort-indicator css-1q8b5yy"
             data-theme="light"
           />
           <span
-            class="resizer  css-0"
+            class="result-list-resizer css-0"
             data-theme="light"
           />
         </th>
         <th
-          aria-label="ariaLabel.sortInitial"
-          class="css-1875pyg"
+          aria-sort="none"
+          class="result-list-header css-y14pq5"
           data-theme="light"
           style=""
           tabindex="0"
         >
           Spalte D
           <span
-            class="css-1q8b5yy"
+            class="result-list-sort-indicator css-1q8b5yy"
             data-theme="light"
           />
           <span
-            class="resizer  css-0"
+            class="result-list-resizer css-0"
             data-theme="light"
           />
         </th>
         <th
-          aria-label="ariaLabel.sortInitial"
-          class="css-1875pyg"
+          aria-sort="none"
+          class="result-list-header css-y14pq5"
           data-theme="light"
           style=""
           tabindex="0"
         >
           Spalte E
           <span
-            class="css-1q8b5yy"
+            class="result-list-sort-indicator css-1q8b5yy"
             data-theme="light"
           />
           <span
-            class="resizer  css-0"
+            class="result-list-resizer css-0"
             data-theme="light"
           />
         </th>
       </tr>
     </thead>
     <tbody
-      class="css-0"
+      class="result-list-table-body css-0"
       data-theme="light"
     >
       <tr
-        class="css-0"
+        class="result-list-table-row css-0"
         data-theme="light"
       >
         <td
-          class="css-xumdn4"
+          class="result-list-table-row css-xumdn4"
           data-theme="light"
           style=""
         >
           <div
-            class="css-1baulvz"
+            class="result-list-select-row-checkbox-container css-1baulvz"
             data-theme="light"
           >
             <label
-              class="chakra-checkbox result-list-select-row-checkbox cursor-pointer css-1577qb8"
+              class="chakra-checkbox result-list-select-row-checkbox css-1577qb8"
               data-theme="light"
             >
               <input
+                aria-disabled="false"
                 aria-label="ariaLabel.selectSingle"
                 class="chakra-checkbox__input"
                 style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
@@ -194,35 +199,35 @@ exports[`expect result list to be created successfully 1`] = `
           </div>
         </td>
         <td
-          class="css-xumdn4"
+          class="result-list-table-row css-xumdn4"
           data-theme="light"
           style=""
         >
           Test
         </td>
         <td
-          class="css-xumdn4"
+          class="result-list-table-row css-xumdn4"
           data-theme="light"
           style=""
         >
           123
         </td>
         <td
-          class="css-xumdn4"
+          class="result-list-table-row css-xumdn4"
           data-theme="light"
           style=""
         >
           4.567
         </td>
         <td
-          class="css-xumdn4"
+          class="result-list-table-row css-xumdn4"
           data-theme="light"
           style=""
         >
           true
         </td>
         <td
-          class="css-xumdn4"
+          class="result-list-table-row css-xumdn4"
           data-theme="light"
           style=""
         >
@@ -230,23 +235,24 @@ exports[`expect result list to be created successfully 1`] = `
         </td>
       </tr>
       <tr
-        class="css-0"
+        class="result-list-table-row css-0"
         data-theme="light"
       >
         <td
-          class="css-xumdn4"
+          class="result-list-table-row css-xumdn4"
           data-theme="light"
           style=""
         >
           <div
-            class="css-1baulvz"
+            class="result-list-select-row-checkbox-container css-1baulvz"
             data-theme="light"
           >
             <label
-              class="chakra-checkbox result-list-select-row-checkbox cursor-pointer css-1577qb8"
+              class="chakra-checkbox result-list-select-row-checkbox css-1577qb8"
               data-theme="light"
             >
               <input
+                aria-disabled="false"
                 aria-label="ariaLabel.selectSingle"
                 class="chakra-checkbox__input"
                 style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
@@ -262,35 +268,35 @@ exports[`expect result list to be created successfully 1`] = `
           </div>
         </td>
         <td
-          class="css-xumdn4"
+          class="result-list-table-row css-xumdn4"
           data-theme="light"
           style=""
         >
           Test123
         </td>
         <td
-          class="css-xumdn4"
+          class="result-list-table-row css-xumdn4"
           data-theme="light"
           style=""
         >
           434
         </td>
         <td
-          class="css-xumdn4"
+          class="result-list-table-row css-xumdn4"
           data-theme="light"
           style=""
         >
           78.567
         </td>
         <td
-          class="css-xumdn4"
+          class="result-list-table-row css-xumdn4"
           data-theme="light"
           style=""
         >
           false
         </td>
         <td
-          class="css-xumdn4"
+          class="result-list-table-row css-xumdn4"
           data-theme="light"
           style=""
         >
@@ -298,23 +304,24 @@ exports[`expect result list to be created successfully 1`] = `
         </td>
       </tr>
       <tr
-        class="css-0"
+        class="result-list-table-row css-0"
         data-theme="light"
       >
         <td
-          class="css-xumdn4"
+          class="result-list-table-row css-xumdn4"
           data-theme="light"
           style=""
         >
           <div
-            class="css-1baulvz"
+            class="result-list-select-row-checkbox-container css-1baulvz"
             data-theme="light"
           >
             <label
-              class="chakra-checkbox result-list-select-row-checkbox cursor-pointer css-1577qb8"
+              class="chakra-checkbox result-list-select-row-checkbox css-1577qb8"
               data-theme="light"
             >
               <input
+                aria-disabled="false"
                 aria-label="ariaLabel.selectSingle"
                 class="chakra-checkbox__input"
                 style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
@@ -330,35 +337,35 @@ exports[`expect result list to be created successfully 1`] = `
           </div>
         </td>
         <td
-          class="css-xumdn4"
+          class="result-list-table-row css-xumdn4"
           data-theme="light"
           style=""
         >
           Testabc
         </td>
         <td
-          class="css-xumdn4"
+          class="result-list-table-row css-xumdn4"
           data-theme="light"
           style=""
         >
           666
         </td>
         <td
-          class="css-xumdn4"
+          class="result-list-table-row css-xumdn4"
           data-theme="light"
           style=""
         >
           8.597
         </td>
         <td
-          class="css-xumdn4"
+          class="result-list-table-row css-xumdn4"
           data-theme="light"
           style=""
         >
           true
         </td>
         <td
-          class="css-xumdn4"
+          class="result-list-table-row css-xumdn4"
           data-theme="light"
           style=""
         >
@@ -366,23 +373,24 @@ exports[`expect result list to be created successfully 1`] = `
         </td>
       </tr>
       <tr
-        class="css-0"
+        class="result-list-table-row css-0"
         data-theme="light"
       >
         <td
-          class="css-xumdn4"
+          class="result-list-table-row css-xumdn4"
           data-theme="light"
           style=""
         >
           <div
-            class="css-1baulvz"
+            class="result-list-select-row-checkbox-container css-1baulvz"
             data-theme="light"
           >
             <label
-              class="chakra-checkbox result-list-select-row-checkbox cursor-pointer css-1577qb8"
+              class="chakra-checkbox result-list-select-row-checkbox css-1577qb8"
               data-theme="light"
             >
               <input
+                aria-disabled="false"
                 aria-label="ariaLabel.selectSingle"
                 class="chakra-checkbox__input"
                 style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
@@ -398,27 +406,27 @@ exports[`expect result list to be created successfully 1`] = `
           </div>
         </td>
         <td
-          class="css-xumdn4"
+          class="result-list-table-row css-xumdn4"
           data-theme="light"
           style=""
         />
         <td
-          class="css-xumdn4"
+          class="result-list-table-row css-xumdn4"
           data-theme="light"
           style=""
         />
         <td
-          class="css-xumdn4"
+          class="result-list-table-row css-xumdn4"
           data-theme="light"
           style=""
         />
         <td
-          class="css-xumdn4"
+          class="result-list-table-row css-xumdn4"
           data-theme="light"
           style=""
         />
         <td
-          class="css-xumdn4"
+          class="result-list-table-row css-xumdn4"
           data-theme="light"
           style=""
         />

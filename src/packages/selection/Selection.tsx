@@ -14,7 +14,7 @@ import {
 import { MapModel, useMapModel } from "@open-pioneer/map";
 import { NotificationService } from "@open-pioneer/notifier";
 import { CommonComponentProps, useCommonComponentProps, useEvent } from "@open-pioneer/react-utils";
-import { PackageIntl } from "@open-pioneer/runtime/i18n";
+import { PackageIntl } from "@open-pioneer/runtime";
 import {
     OptionProps,
     Select,

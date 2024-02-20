@@ -100,16 +100,6 @@ export function MapContainer(props: MapContainerProps) {
         }
     }, [modelState, mapModel, mapId]);
 
-    useEffect(() => {
-        const mapView = mapModel?.olMap.getView();
-        if (viewPadding && mapView) {
-            const center = mapView.getCenter();
-            const { top = 0, right = 0, bottom = 0, left = 0 } = viewPadding;
-            mapView.padding = [top, right, bottom, left];
-            mapView.animate({ center, duration: 300 });
-        }
-    }, [viewPadding, mapModel]);
-
     const mapContainerStyle: React.CSSProperties = {
         height: "100%"
     };

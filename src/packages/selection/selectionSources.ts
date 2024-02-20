@@ -143,21 +143,14 @@ export class VectorLayerSelectionSourceImpl
             .getSource()!
             .forEachFeatureIntersectingExtent(selectionKind.extent, (feature) => {
                 if (!feature.getGeometry()) return;
-                const someAttrs = feature
-                    .getKeys()
-                    .slice(0)
-                    .filter((item) => item !== "geometry");
 
-                const filteredProps: Record<string, unknown> = {};
-
-                someAttrs.forEach((item: string) => {
-                    filteredProps[item as keyof SelectionResult] = feature.getProperties()[item];
-                });
+                const filteredProperties = { ...feature.getProperties() };
+                delete filteredProperties.geometries;
 
                 const result: SelectionResult = {
                     id: feature.getId()?.toString() || uuid4v(),
                     geometry: feature.getGeometry()!,
-                    properties: filteredProps
+                    properties: filteredProperties
                 };
 
                 allResults.push(result);

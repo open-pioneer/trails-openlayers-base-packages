@@ -3,7 +3,10 @@
 import { defineBuildConfig } from "@open-pioneer/build-support";
 
 export default defineBuildConfig({
-    entryPoints: ["index"],
-    styles: "./result-list.scss",
-    i18n: ["en", "de"]
+    i18n: ["en"],
+    services: {
+        MapConfigProviderImpl: {
+            provides: ["map.MapConfigProvider"]
+        }
+    }
 });
