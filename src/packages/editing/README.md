@@ -71,7 +71,7 @@ workflow
     });
 ```
 
-After a successful editing, the map must be refresh manual by refresh the OpenLayers layer instance.
+After a successful editing, the map must be manually refreshed by refreshing the OpenLayers layer instance.
 
 Example:
 

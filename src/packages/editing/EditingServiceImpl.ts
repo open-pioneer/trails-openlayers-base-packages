@@ -12,8 +12,6 @@ export interface References {
     httpService: HttpService;
 }
 
-//Todo: add sample how to refresh layer in readme
-
 export class EditingServiceImpl implements EditingService {
     private _serviceOptions: ServiceOptions<References>;
     private _workflows: Map<string, EditingWorkflowImpl>;

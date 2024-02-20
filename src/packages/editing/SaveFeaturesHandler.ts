@@ -29,11 +29,12 @@ export async function saveCreatedFeature(
         return Promise.reject(new Error("Request failed: " + response.status));
     }
 
-    // @ts-expect-error sdf
-    const featureId = response.headers
-        .get("location")
-        // @ts-expect-error sdf
-        .substr(response.headers.get("location").lastIndexOf("/") + 1);
+    const location = response.headers.get("location");
+    if (!location) {
+        return Promise.reject(new Error("Request failed: no Location response header"));
+    }
+
+    const featureId = location.substring(location.lastIndexOf("/") + 1);
 
     return Promise.resolve(featureId);
 }
