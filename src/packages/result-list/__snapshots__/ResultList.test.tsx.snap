@@ -28,7 +28,7 @@ exports[`expect result list to be created successfully 1`] = `
   <table
     class="chakra-table result-list-table css-lkg3hs"
     data-theme="light"
-    style="--header-result-list-col_selection-buttons-size: 70; --col-result-list-col_selection-buttons-size: 70; --header-result-list-col_0-size: 100; --col-result-list-col_0-size: 100; --header-result-list-col_1-size: 50; --col-result-list-col_1-size: 50; --header-result-list-col_2-size: 150; --col-result-list-col_2-size: 150; --header-result-list-col_3-size: 75; --col-result-list-col_3-size: 75; --header-result-list-col_4-size: 50; --col-result-list-col_4-size: 50;"
+    style="--header-selection-buttons-size: 70; --col-selection-buttons-size: 70; --header-result-list-col_a-size: 100; --col-result-list-col_a-size: 100; --header-result-list-col_b-size: 50; --col-result-list-col_b-size: 50; --header-result-list-col_c-size: 150; --col-result-list-col_c-size: 150; --header-result-list-col_d-size: 75; --col-result-list-col_d-size: 75; --header-result-list-col_e-size: 50; --col-result-list-col_e-size: 50;"
   >
     <thead
       class="css-0"
@@ -39,7 +39,6 @@ exports[`expect result list to be created successfully 1`] = `
         data-theme="light"
       >
         <th
-          aria-label=" "
           aria-sort="none"
           class="result-list-header css-zdxa4r"
           data-theme="light"
@@ -51,9 +50,8 @@ exports[`expect result list to be created successfully 1`] = `
             data-theme="light"
           >
             <span
-              class="css-1baulvz"
+              class="css-0"
               data-theme="light"
-              tabindex="0"
             >
               <label
                 class="chakra-checkbox result-list-select-all-checkbox css-1577qb8"
@@ -62,7 +60,6 @@ exports[`expect result list to be created successfully 1`] = `
                 <input
                   class="chakra-checkbox__input"
                   style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
-                  tabindex="0"
                   type="checkbox"
                   value=""
                 />
@@ -80,7 +77,6 @@ exports[`expect result list to be created successfully 1`] = `
           />
         </th>
         <th
-          aria-label=""
           aria-sort="none"
           class="result-list-header css-y14pq5"
           data-theme="light"
@@ -98,7 +94,6 @@ exports[`expect result list to be created successfully 1`] = `
           />
         </th>
         <th
-          aria-label=""
           aria-sort="none"
           class="result-list-header css-y14pq5"
           data-theme="light"
@@ -116,7 +111,6 @@ exports[`expect result list to be created successfully 1`] = `
           />
         </th>
         <th
-          aria-label=""
           aria-sort="none"
           class="result-list-header css-y14pq5"
           data-theme="light"
@@ -134,7 +128,6 @@ exports[`expect result list to be created successfully 1`] = `
           />
         </th>
         <th
-          aria-label=""
           aria-sort="none"
           class="result-list-header css-y14pq5"
           data-theme="light"
@@ -152,7 +145,6 @@ exports[`expect result list to be created successfully 1`] = `
           />
         </th>
         <th
-          aria-label=""
           aria-sort="none"
           class="result-list-header css-y14pq5"
           data-theme="light"
@@ -197,7 +189,6 @@ exports[`expect result list to be created successfully 1`] = `
                 aria-label="ariaLabel.selectSingle"
                 class="chakra-checkbox__input"
                 style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
-                tabindex="0"
                 type="checkbox"
                 value=""
               />
@@ -267,7 +258,6 @@ exports[`expect result list to be created successfully 1`] = `
                 aria-label="ariaLabel.selectSingle"
                 class="chakra-checkbox__input"
                 style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
-                tabindex="0"
                 type="checkbox"
                 value=""
               />
@@ -337,7 +327,6 @@ exports[`expect result list to be created successfully 1`] = `
                 aria-label="ariaLabel.selectSingle"
                 class="chakra-checkbox__input"
                 style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
-                tabindex="0"
                 type="checkbox"
                 value=""
               />
@@ -407,7 +396,6 @@ exports[`expect result list to be created successfully 1`] = `
                 aria-label="ariaLabel.selectSingle"
                 class="chakra-checkbox__input"
                 style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
-                tabindex="0"
                 type="checkbox"
                 value=""
               />
@@ -467,7 +455,6 @@ exports[`expect result list to be created successfully 1`] = `
                 aria-label="ariaLabel.selectSingle"
                 class="chakra-checkbox__input"
                 style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
-                tabindex="0"
                 type="checkbox"
                 value=""
               />

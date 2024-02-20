@@ -12,7 +12,7 @@ import TileLayer from "ol/layer/Tile.js";
 import { ServiceOptions } from "@open-pioneer/runtime";
 import { OgcFeaturesVectorSourceFactory } from "@open-pioneer/ogc-features";
 import { View } from "ol";
-import { BaseFeature } from "@open-pioneer/map/api/BaseFeature";
+import { BaseFeature } from "@open-pioneer/map";
 
 interface References {
     vectorSourceFactory: OgcFeaturesVectorSourceFactory;

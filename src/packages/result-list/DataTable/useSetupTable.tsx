@@ -1,30 +1,25 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { useEffect, useState } from "react";
+import { BaseFeature } from "@open-pioneer/map";
 import {
+    RowSelectionState,
+    SortingState,
     getCoreRowModel,
     getSortedRowModel,
-    SortingState,
     useReactTable
 } from "@tanstack/react-table";
+import { useMemo, useState } from "react";
 import { DataTableProps } from "./DataTable";
-import { BaseFeature } from "@open-pioneer/map";
 
 export function useSetupTable<Data extends BaseFeature>(props: DataTableProps<Data>) {
     const { data, columns } = props;
     const [sorting, setSorting] = useState<SortingState>([]);
-    const [rowSelection, setRowSelection] = useState({});
+    const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
-    // if columns changes, everything should reset
-    useEffect(() => {
-        setRowSelection([]);
-        setSorting([]);
-    }, [columns]);
-
-    // if data changes, selection should reset (maybe need to be more fine-grained)
-    useEffect(() => {
-        setRowSelection([]);
-    }, [data]);
+    // Only sort by columns which actually exist
+    const actualSort = useMemo(() => {
+        return sorting.filter((sort) => columns.some((c) => c.id === sort.id));
+    }, [sorting, columns]);
 
     const table = useReactTable({
         columns: columns,
@@ -39,7 +34,7 @@ export function useSetupTable<Data extends BaseFeature>(props: DataTableProps<Da
         onSortingChange: setSorting,
         getSortedRowModel: getSortedRowModel(),
         state: {
-            sorting,
+            sorting: actualSort,
             rowSelection
         }
     });

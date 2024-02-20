@@ -13,7 +13,6 @@ import {
 import { createLogger } from "@open-pioneer/core";
 import { BaseFeature } from "@open-pioneer/map";
 import {
-    Column,
     ColumnDef,
     Header,
     HeaderGroup,
@@ -110,7 +109,6 @@ function TableHeader<Data>(props: {
         <Th
             className="result-list-header"
             tabIndex={0}
-            aria-label={getAriaLabelForColumn(header.column)}
             aria-sort={mapAriaSorting(header.column.getIsSorted())}
             onClick={() => header.column.getCanSort() && header.column.toggleSorting()}
             cursor={header.column.getCanSort() ? "pointer" : "unset"}
@@ -164,15 +162,6 @@ function TableBody<Data extends object>({ table }: { table: TanstackTable<Data> 
             })}
         </Tbody>
     );
-}
-
-// Workaround: This function removes the aria label for the select all column (IndeterminateCheckbox),
-//      because otherwise it would be read twice due to a bug:
-//      https://github.com/chakra-ui/chakra-ui/issues/8042
-//      This is done by setting aria-label to a single space character. The empty string does not
-//      seem to change the aria-label.
-function getAriaLabelForColumn<Data>(column: Column<Data>) {
-    return column.getCanSort() ? "" : " ";
 }
 
 // Special memoized wrapper for our table body that we will use during column resizing.

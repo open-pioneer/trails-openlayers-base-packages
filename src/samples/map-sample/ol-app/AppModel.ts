@@ -50,9 +50,19 @@ export interface AppState {
     sourceMetadata: Map<unknown, ResultColumn[]>;
 
     /**
-     * The input currently displayed by the result list component (or nothing).
+     * State for the result list.
+     * This application can show only a single feature collection at a time.
      */
-    currentResultListInput: ResultListInput | undefined;
+    resultListState: {
+        /** Whether the result list is currently shown. */
+        open: boolean;
+
+        /** Incremented to reset result list state. */
+        key: number;
+
+        /** Input used for the result list component. */
+        input: ResultListInput | undefined;
+    };
 }
 
 interface References {
@@ -88,7 +98,11 @@ export class AppModel implements Service {
             searchSources: [],
             selectionSources: [],
             sourceMetadata: proxyMap(),
-            currentResultListInput: undefined
+            resultListState: {
+                input: undefined,
+                open: false,
+                key: 0
+            }
         });
         this.initSearchSources();
         this.initSelectionSources().catch((error) => {
@@ -114,6 +128,25 @@ export class AppModel implements Service {
      */
     get state(): AppState {
         return this._state;
+    }
+
+    /**
+     * Shows the result list with the given input.
+     */
+    setResultListInput(input: ResultListInput) {
+        const oldKey = this._state.resultListState.key;
+        this._state.resultListState = {
+            open: true,
+            key: oldKey + 1,
+            input
+        };
+    }
+
+    /**
+     * Sets the visibility of the result list to the given value.
+     */
+    setResultListVisibility(visible: boolean) {
+        this._state.resultListState.open = visible;
     }
 
     /**

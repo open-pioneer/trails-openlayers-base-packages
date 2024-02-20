@@ -27,8 +27,9 @@ export function createColumns(options: CreateColumnsOptions) {
     const selectionColumn = createSelectionColumn(intl);
     const columnDefs = columns.map((column, index) => {
         const columnWidth = column.width || remainingColumnWidth;
+        const configuredId = column.id ?? column.propertyName ?? String(index);
         return createColumn({
-            id: "result-list-col_" + index,
+            id: "result-list-col_" + configuredId,
             column: column,
             intl: intl,
             columnWidth: columnWidth,
@@ -123,7 +124,7 @@ function renderFunc<BaseFeature>(
 
 function createSelectionColumn(intl: PackageIntl) {
     return columnHelper.display({
-        id: "result-list-col_selection-buttons",
+        id: "selection-buttons",
         size: SELECT_COLUMN_SIZE,
         enableSorting: false,
         header: ({ table }) => {
