@@ -167,7 +167,7 @@ You have to forward this attribute into the `columns` prop on your own.
 ### Integrating the result list above the map
 
 The following snippet embeds the result list into a fixed-height box at the bottom of the container.
-The example assumes that the surround element (or one its parents) uses `position: relative`.
+The example assumes that the surrounding element (or one of its parents) uses `position: relative`.
 
 Consider configuring the `viewPadding` on the related `MapContainer` whenever the result list component is being displayed
 to inform the map about the "overlay".
