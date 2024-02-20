@@ -389,7 +389,7 @@ const dummyColumnsWithRenderFunc: ResultColumn[] = [
         propertyName: "a",
         displayName: "Spalte A",
         width: 100,
-        render: (item) => (
+        renderCell: (item) => (
             <div className="renderTest">{`This item has the following ID: ${item.id}`}</div>
         )
     }

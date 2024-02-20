@@ -57,7 +57,7 @@ export interface ResultColumn {
     getPropertyValue?: (feature: BaseFeature) => unknown;
 
     /** Custom render function to render a table cell in this column. */
-    render?: (item: BaseFeature) => ReactNode;
+    renderCell?: (item: BaseFeature) => ReactNode;
 }
 
 /**

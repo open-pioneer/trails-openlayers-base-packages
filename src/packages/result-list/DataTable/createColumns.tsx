@@ -65,8 +65,8 @@ function createColumn(options: CreateColumnOptions) {
         {
             id: id,
             cell: (info) => {
-                if (column.render) {
-                    return column.render(info.row.original);
+                if (column.renderCell) {
+                    return column.renderCell(info.row.original);
                 }
                 return renderFunc(info, intl, formatOptions);
             },
