@@ -13,6 +13,7 @@ import GeoJSON from "ol/format/GeoJSON";
 import GeoJSONGeometry from "ol/format/GeoJSON";
 import GeoJSONGeometryCollection from "ol/format/GeoJSON";
 import { saveCreatedFeature } from "./SaveFeaturesHandler";
+import { saveUpdatedFeature } from "./UpdateFeaturesHandler";
 import OlMap from "ol/Map";
 import Overlay from "ol/Overlay";
 import { Resource } from "@open-pioneer/core";
@@ -356,47 +357,70 @@ export class EditingUpdateWorkflowImpl
 
         this._tooltip.element.classList.remove("hidden");
 
+        const modify = this._modifyInteraction.on("modifystart", () => {
+            this._setState("active:drawing");
+
+            this._tooltip.element.textContent = this._intl.formatMessage({
+                id: "update.tooltip.modified"
+            });
+        });
+
         const select = this._selectInteraction.on("select", (e) => {
             console.log(e.selected);
             console.log(e.deselected);
 
-            // TODO:
-            // // if (feature.length === 0) // wenn das Object selektiert wird
-            // this._setState("active:drawing");
-            // this._tooltip.element.textContent = this._intl.formatMessage({
-            //     id: "tooltip.continue"
-            // });
+            if (e.selected.length === 1 && e.deselected.length === 0) {
+                this._tooltip.element.textContent = this._intl.formatMessage({
+                    id: "update.tooltip.deselect"
+                });
+            } else if (e.selected.length === 0 && e.deselected.length === 1) {
+                if (this._state === "active:initialized") {
+                    this._tooltip.element.textContent = this._intl.formatMessage({
+                        id: "update.tooltip.select"
+                    });
+                } else if (this._state === "active:drawing") {
+                    // TODO: Zurücksetzen der Geometrie bei "".reset()""
 
-            // // else // wenn das Object deselektiert wird
-            // this._setState("active:saving");
+                    const layerUrl = this._editLayerURL;
 
-            // const layerUrl = this._editLayerURL;
+                    this._setState("active:saving");
 
-            // const geometry = e.feature.getGeometry();
-            // if (!geometry) {
-            //     this._destroy();
-            //     this.#waiter?.reject(new Error("no geometry available"));
-            //     return;
-            // }
-            // const projection = this._olMap.getView().getProjection();
-            // const geoJson = new GeoJSON({
-            //     dataProjection: projection
-            // });
-            // const geoJSONGeometry: GeoJSONGeometry | GeoJSONGeometryCollection =
-            //     geoJson.writeGeometryObject(geometry, {
-            //         rightHanded: true,
-            //         decimals: 10
-            //     });
-            // // todo set default properties when saving feature?
-            // saveCreatedFeature(this._httpService, layerUrl, geoJSONGeometry, projection)
-            //     .then((featureId) => {
-            //         this._destroy();
-            //         this.#waiter?.resolve(featureId);
-            //     })
-            //     .catch((err: Error) => {
-            //         this._destroy();
-            //         this.#waiter?.reject(err);
-            //     });
+                    const geometry = e.deselected[0]?.getGeometry();
+                    console.log(e.deselected[0]?.getProperties());
+                    if (!geometry) {
+                        this._destroy();
+                        this.#waiter?.reject(new Error("no geometry available"));
+                        return;
+                    }
+                    const projection = this._olMap.getView().getProjection();
+                    const geoJson = new GeoJSON({
+                        dataProjection: projection
+                    });
+                    const geoJSONGeometry: GeoJSONGeometry | GeoJSONGeometryCollection =
+                        geoJson.writeGeometryObject(geometry, {
+                            rightHanded: true,
+                            decimals: 10
+                        });
+
+                    saveUpdatedFeature(this._httpService, layerUrl, geoJSONGeometry, projection)
+                        .then((featureId) => {
+                            this._destroy();
+                            this.#waiter?.resolve(featureId);
+                        })
+                        .catch((err: Error) => {
+                            this._destroy();
+                            this.#waiter?.reject(err);
+                        });
+                }
+            } else if (
+                e.selected.length === 1 &&
+                e.deselected.length === 1 &&
+                this._state === "active:initialized"
+            ) {
+                console.log("----");
+            }
+
+            // TODO: Prüfen, mehrere Vektorlayer new Select
         });
 
         // update event handler when container changes
@@ -409,7 +433,7 @@ export class EditingUpdateWorkflowImpl
             }
         });
 
-        this._interactionListener.push(select);
+        this._interactionListener.push(modify, select);
         this._mapListener.push(changedContainer);
     }
 
@@ -430,6 +454,7 @@ export class EditingUpdateWorkflowImpl
         this.#waiter?.resolve(undefined);
     }
 
+    // TODO: Cancel request
     private _destroy() {
         this._olMap.removeLayer(this._editingLayer);
         this._olMap.removeInteraction(this._selectInteraction);
