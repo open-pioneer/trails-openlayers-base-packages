@@ -1,5 +1,5 @@
 ---
-"@open-pioneer/printing": patch
+"@open-pioneer/printing": minor
 ---
 
 Initial release
