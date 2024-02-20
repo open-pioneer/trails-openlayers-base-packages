@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import { EventEmitter, ManualPromise, createManualPromise } from "@open-pioneer/core";
 import { MapModel, TOPMOST_LAYER_Z } from "@open-pioneer/map";
-import { Draw } from "ol/interaction";
+import { Draw, Modify, Select } from "ol/interaction";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import { MapRegistry } from "@open-pioneer/map";
@@ -26,7 +26,7 @@ interface Tooltip extends Resource {
     element: HTMLDivElement;
 }
 
-export class EditingWorkflowImpl
+export class EditingCreateWorkflowImpl
     extends EventEmitter<EditingWorkflowEvents>
     implements EditingWorkflow
 {
@@ -41,8 +41,8 @@ export class EditingWorkflowImpl
     private _state: EditingWorkflowState;
     private _editLayerURL: URL;
 
-    private _drawSource: VectorSource;
-    private _drawLayer: VectorLayer<VectorSource>;
+    private _editingSource: VectorSource;
+    private _editingLayer: VectorLayer<VectorSource>;
     private _drawInteraction: Draw;
     private _olMap: OlMap;
     private _mapContainer: HTMLElement | undefined;
@@ -72,9 +72,9 @@ export class EditingWorkflowImpl
         this._state = "active:initialized";
         this._editLayerURL = ogcApiFeatureLayerUrl;
 
-        this._drawSource = new VectorSource();
-        this._drawLayer = new VectorLayer({
-            source: this._drawSource,
+        this._editingSource = new VectorSource();
+        this._editingLayer = new VectorLayer({
+            source: this._editingSource,
             zIndex: TOPMOST_LAYER_Z,
             properties: {
                 name: "editing-layer"
@@ -82,7 +82,7 @@ export class EditingWorkflowImpl
         });
 
         this._drawInteraction = new Draw({
-            source: this._drawSource,
+            source: this._editingSource,
             type: "Polygon",
             style: this._polygonDrawStyle
         });
@@ -115,7 +115,7 @@ export class EditingWorkflowImpl
     }
 
     private _start() {
-        this._olMap.addLayer(this._drawLayer);
+        this._olMap.addLayer(this._editingLayer);
         this._olMap.addInteraction(this._drawInteraction);
 
         // Add EventListener on focused map to abort actual interaction via `Escape`
@@ -129,7 +129,7 @@ export class EditingWorkflowImpl
         const drawStart = this._drawInteraction.on("drawstart", () => {
             this._setState("active:drawing");
             this._tooltip.element.textContent = this._intl.formatMessage({
-                id: "tooltip.continue"
+                id: "create.tooltip.continue"
             });
         });
 
@@ -181,7 +181,9 @@ export class EditingWorkflowImpl
 
     reset() {
         this._drawInteraction.abortDrawing();
-        this._tooltip.element.textContent = this._intl.formatMessage({ id: "tooltip.begin" });
+        this._tooltip.element.textContent = this._intl.formatMessage({
+            id: "create.tooltip.begin"
+        });
         this._setState("active:initialized");
     }
 
@@ -192,7 +194,7 @@ export class EditingWorkflowImpl
 
     // TODO: Cancel request
     private _destroy() {
-        this._olMap.removeLayer(this._drawLayer);
+        this._olMap.removeLayer(this._editingLayer);
         this._olMap.removeInteraction(this._drawInteraction);
         this._tooltip.destroy();
 
@@ -218,7 +220,245 @@ export class EditingWorkflowImpl
     private _createTooltip(olMap: OlMap): Tooltip {
         const element = document.createElement("div");
         element.className = "editing-tooltip hidden";
-        element.textContent = this._intl.formatMessage({ id: "tooltip.begin" });
+        element.textContent = this._intl.formatMessage({ id: "create.tooltip.begin" });
+
+        const overlay = new Overlay({
+            element: element,
+            offset: [15, 0],
+            positioning: "center-left"
+        });
+
+        const pointerMove = olMap.on("pointermove", (evt) => {
+            if (evt.dragging) {
+                return;
+            }
+
+            overlay.setPosition(evt.coordinate);
+        });
+
+        olMap.addOverlay(overlay);
+
+        return {
+            overlay,
+            element,
+            destroy() {
+                unByKey(pointerMove);
+                olMap.removeOverlay(overlay);
+            }
+        };
+    }
+}
+
+export class EditingUpdateWorkflowImpl
+    extends EventEmitter<EditingWorkflowEvents>
+    implements EditingWorkflow
+{
+    #waiter: ManualPromise<string | undefined> | undefined;
+
+    private readonly _mapRegistry: MapRegistry;
+    private _httpService: HttpService;
+    private _intl: PackageIntl;
+
+    private _map: MapModel;
+    private _polygonDrawStyle: FlatStyleLike;
+    private _state: EditingWorkflowState;
+    private _editLayerURL: URL;
+
+    private _editingSource: VectorSource;
+    private _editingLayer: VectorLayer<VectorSource>;
+    private _selectInteraction: Select;
+    private _modifyInteraction: Modify;
+    private _olMap: OlMap;
+    private _mapContainer: HTMLElement | undefined;
+    private _tooltip: Tooltip;
+    private _escapeHandler: (e: KeyboardEvent) => void;
+
+    private _interactionListener: Array<EventsKey>;
+    private _mapListener: Array<Resource>;
+
+    constructor(
+        map: MapModel,
+        ogcApiFeatureLayerUrl: URL,
+        polygonDrawStyle: FlatStyleLike,
+        httpService: HttpService,
+        mapRegistry: MapRegistry,
+        intl: PackageIntl
+    ) {
+        super();
+        this._mapRegistry = mapRegistry;
+        this._httpService = httpService;
+        this._intl = intl;
+
+        this._polygonDrawStyle = polygonDrawStyle;
+
+        this._map = map;
+        this._olMap = map.olMap;
+        this._state = "active:initialized";
+        this._editLayerURL = ogcApiFeatureLayerUrl;
+
+        this._editingSource = new VectorSource();
+        this._editingLayer = new VectorLayer({
+            source: this._editingSource,
+            zIndex: TOPMOST_LAYER_Z,
+            properties: {
+                name: "editing-layer"
+            }
+        });
+
+        this._selectInteraction = new Select({});
+
+        this._modifyInteraction = new Modify({
+            features: this._selectInteraction.getFeatures()
+        });
+
+        this._tooltip = this._createTooltip(this._olMap);
+
+        this._escapeHandler = (e: KeyboardEvent) => {
+            if (e.code === "Escape" && e.target === this._olMap.getTargetElement()) {
+                this.reset();
+            }
+        };
+
+        this._interactionListener = [];
+        this._mapListener = [];
+
+        this._start();
+    }
+
+    getSelectInteraction() {
+        return this._selectInteraction;
+    }
+
+    getModifyInteraction() {
+        return this._modifyInteraction;
+    }
+
+    getState() {
+        return this._state;
+    }
+
+    private _setState(state: EditingWorkflowState) {
+        this._state = state;
+        this.emit(state);
+    }
+
+    private _start() {
+        console.log("XXX");
+        this._olMap.addLayer(this._editingLayer);
+        this._olMap.addInteraction(this._selectInteraction);
+        this._olMap.addInteraction(this._modifyInteraction);
+
+        // Add EventListener on focused map to abort actual interaction via `Escape`
+        this._mapContainer = this._olMap.getTargetElement() ?? undefined;
+        if (this._mapContainer) {
+            this._mapContainer.addEventListener("keydown", this._escapeHandler, false);
+        }
+
+        this._tooltip.element.classList.remove("hidden");
+
+        const select = this._selectInteraction.on("select", (e) => {
+            console.log(e.selected);
+            console.log(e.deselected);
+
+            // TODO:
+            // // if (feature.length === 0) // wenn das Object selektiert wird
+            // this._setState("active:drawing");
+            // this._tooltip.element.textContent = this._intl.formatMessage({
+            //     id: "tooltip.continue"
+            // });
+
+            // // else // wenn das Object deselektiert wird
+            // this._setState("active:saving");
+
+            // const layerUrl = this._editLayerURL;
+
+            // const geometry = e.feature.getGeometry();
+            // if (!geometry) {
+            //     this._destroy();
+            //     this.#waiter?.reject(new Error("no geometry available"));
+            //     return;
+            // }
+            // const projection = this._olMap.getView().getProjection();
+            // const geoJson = new GeoJSON({
+            //     dataProjection: projection
+            // });
+            // const geoJSONGeometry: GeoJSONGeometry | GeoJSONGeometryCollection =
+            //     geoJson.writeGeometryObject(geometry, {
+            //         rightHanded: true,
+            //         decimals: 10
+            //     });
+            // // todo set default properties when saving feature?
+            // saveCreatedFeature(this._httpService, layerUrl, geoJSONGeometry, projection)
+            //     .then((featureId) => {
+            //         this._destroy();
+            //         this.#waiter?.resolve(featureId);
+            //     })
+            //     .catch((err: Error) => {
+            //         this._destroy();
+            //         this.#waiter?.reject(err);
+            //     });
+        });
+
+        // update event handler when container changes
+        const changedContainer = this._map.on("changed:container", () => {
+            this._mapContainer?.removeEventListener("keydown", this._escapeHandler);
+
+            this._mapContainer = this._olMap.getTargetElement() ?? undefined;
+            if (this._mapContainer) {
+                this._mapContainer.addEventListener("keydown", this._escapeHandler, false);
+            }
+        });
+
+        this._interactionListener.push(select);
+        this._mapListener.push(changedContainer);
+    }
+
+    reset() {
+        const selectedFeatures = this._selectInteraction.getFeatures();
+        if (selectedFeatures.getLength() > 0) {
+            this._selectInteraction.getFeatures().remove(selectedFeatures.item(0));
+        }
+
+        this._tooltip.element.textContent = this._intl.formatMessage({
+            id: "update.tooltip.select"
+        });
+        this._setState("active:initialized");
+    }
+
+    stop() {
+        this._destroy();
+        this.#waiter?.resolve(undefined);
+    }
+
+    private _destroy() {
+        this._olMap.removeLayer(this._editingLayer);
+        this._olMap.removeInteraction(this._selectInteraction);
+        this._olMap.removeInteraction(this._modifyInteraction);
+        this._tooltip.destroy();
+
+        // Remove event listener on interaction and on map
+        this._interactionListener.map((listener) => {
+            unByKey(listener);
+        });
+        this._mapListener.map((listener) => {
+            listener.destroy();
+        });
+
+        // Remove event escape listener
+        this._mapContainer?.removeEventListener("keydown", this._escapeHandler);
+
+        this._state = "inactive";
+    }
+
+    whenComplete(): Promise<string | undefined> {
+        const manualPromise = (this.#waiter ??= createManualPromise());
+        return manualPromise.promise;
+    }
+
+    private _createTooltip(olMap: OlMap): Tooltip {
+        const element = document.createElement("div");
+        element.className = "editing-tooltip hidden";
+        element.textContent = this._intl.formatMessage({ id: "update.tooltip.select" });
 
         const overlay = new Overlay({
             element: element,

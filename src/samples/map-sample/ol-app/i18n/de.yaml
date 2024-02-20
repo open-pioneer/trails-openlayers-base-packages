@@ -5,11 +5,15 @@ messages:
   measurementTitle: "Messen"
   selectionTitle: Selektieren
   overviewMapTitle: "Übersichtskarte"
-  startEditingTitle: "Editing - Neues Feature erstellen"
-  stopEditingTitle: "Editing - Stoppen"
-  resetEditingTitle: "Editing - Zurücksetzen"
   editing:
-    featureCreated: "Objekt erstellt mit ID: {featureId}"
+    create:
+      startTitle: "Editing - Neues Feature erstellen"
+      featureCreated: "Objekt erstellt mit ID: {featureId}"
+    update:
+      startTitle: "Editing - Feature bearbeiten"
+      featureModified: "Objekt aktualisiert mit ID: {featureId}"
+    stopTitle: "Editing - Stoppen"
+    resetTitle: "Editing - Zurücksetzen"
   ariaLabel:
     header: "Kopfleiste"
     footer: "Fussleiste mit Maßstabsangabe, Raumbezugssystem und Koordinatenanzeige"

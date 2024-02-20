@@ -1,5 +1,11 @@
 messages:
   title: Editierung von Objekten
-  tooltip:
-    begin: Klicken, um mit Erstellung der Geometrie zu beginnen
-    continue: Doppelt klicken, um Geometrie abzuschließen und Feature zu speichern
+  create:
+    tooltip:
+      begin: Klicken, um mit Erstellung der Geometrie zu beginnen
+      continue: Doppelt klicken, um Geometrie abzuschließen und Feature zu speichern
+  update:
+    tooltip:
+      select: Geometrie selektieren, um mit der Bearbeitung zu starten
+      deselect: Bearbeitung starten oder andere Geometrie zur Bearbeitung selektieren
+      modified: Selektion entfernen, um Geometrie abzuschließen und Änderungen zu speichern

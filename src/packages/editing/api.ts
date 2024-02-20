@@ -21,8 +21,10 @@ export interface EditingWorkflowEvents {
     "active:initialized": void;
 
     /**
-     * state after user adds the first vertex of the geometry
+     * state after user adds the first vertex of the geometry for create-mode
+     * state after user selects a feature for modifying the geometry
      */
+    // TODO: Rename?
     "active:drawing": void;
 
     /**
@@ -52,9 +54,14 @@ export interface EditingWorkflow extends EventEmitter<EditingWorkflowEvents> {
 
 export interface EditingService extends DeclaredService<"editing.EditingService"> {
     /**
-     * Creates and initializes a new {@link EditingWorkflow}.
+     * Creates and initializes a new {@link EditingWorkflow} to create geometries.
      */
-    start(map: MapModel, ogcApiFeatureLayerUrl: URL): EditingWorkflow;
+    create(map: MapModel, ogcApiFeatureLayerUrl: URL): EditingWorkflow;
+
+    /**
+     * Creates and initializes a new {@link EditingWorkflow} to update geometries.
+     */
+    update(map: MapModel, ogcApiFeatureLayerUrl: URL): EditingWorkflow;
 
     /**
      * Stops the edit mode and removes an existing {@link EditingWorkflow}.

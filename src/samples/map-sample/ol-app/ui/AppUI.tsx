@@ -19,11 +19,16 @@ import { SearchComponent } from "./Search";
 import { SelectionComponent } from "./Selection";
 import { TocComponent } from "./Toc";
 
-type InteractionType = "measurement" | "selection" | "editing" | undefined;
+type InteractionType =
+    | "measurement"
+    | "selection"
+    | "editing:create"
+    | "editing:update"
+    | undefined;
 
 type IndependentToolState = Omit<
     ToolState,
-    "measurementActive" | "selectionActive" | "editingActive"
+    "measurementActive" | "selectionActive" | "editingCreateActive" | "editingUpdateActive"
 >;
 
 const DEFAULT_TOOL_STATE: IndependentToolState = {
@@ -48,7 +53,8 @@ export function AppUI() {
     const [currentToolState, setCurrentToolState] = useState(DEFAULT_TOOL_STATE);
     const toolState: ToolState = {
         ...currentToolState,
-        editingActive: currentInteractionType === "editing",
+        editingCreateActive: currentInteractionType === "editing:create",
+        editingUpdateActive: currentInteractionType === "editing:update",
         measurementActive: currentInteractionType === "measurement",
         selectionActive: currentInteractionType === "selection"
     };
@@ -61,12 +67,16 @@ export function AppUI() {
         if (
             toolStateName === "selectionActive" ||
             toolStateName === "measurementActive" ||
-            toolStateName === "editingActive"
+            toolStateName === "editingCreateActive" ||
+            toolStateName === "editingUpdateActive"
         ) {
             let interactionType: InteractionType;
             switch (toolStateName) {
-                case "editingActive":
-                    interactionType = "editing";
+                case "editingCreateActive":
+                    interactionType = "editing:create";
+                    break;
+                case "editingUpdateActive":
+                    interactionType = "editing:update";
                     break;
                 case "measurementActive":
                     interactionType = "measurement";

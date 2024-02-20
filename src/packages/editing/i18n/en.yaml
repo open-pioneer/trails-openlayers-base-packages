@@ -1,5 +1,11 @@
 messages:
   title: Editing
-  tooltip:
-    begin: Click to start creating the geometry
-    continue: Double click to finish the geometry and save the feature
+  create:
+    tooltip:
+      begin: Click to start creating the geometry
+      continue: Double click to finish the geometry and save the feature
+  update:
+    tooltip:
+      select: Select geometry to start modifying
+      deselect: Start geometry modifying or select another geometry for modifying
+      modified: Remove selection to finish geometry modifying and save the feature

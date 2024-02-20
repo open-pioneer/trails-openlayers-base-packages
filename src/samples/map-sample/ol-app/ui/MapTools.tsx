@@ -6,6 +6,8 @@ import { EditingService } from "@open-pioneer/editing";
 import { InitialExtent, ZoomIn, ZoomOut } from "@open-pioneer/map-navigation";
 import { ToolButton, useEvent } from "@open-pioneer/react-utils";
 import { useIntl, useService } from "open-pioneer:react-hooks";
+import { TbPolygon, TbPolygonOff } from "react-icons/tb";
+
 import {
     PiArrowUUpLeft,
     PiBookmarksSimpleBold,
@@ -32,7 +34,8 @@ export interface ToolState {
     measurementActive: boolean;
     selectionActive: boolean;
     overviewMapActive: boolean;
-    editingActive: boolean;
+    editingCreateActive: boolean;
+    editingUpdateActive: boolean;
 }
 
 export interface MapToolsProps {
@@ -58,7 +61,23 @@ export function MapTools(props: MapToolsProps) {
         onToolStateChange(name, newValue ?? !toolState[name]);
     });
 
-    useEditingWorkflow(map, editingService, notificationService, intl, toolState, toggleToolState);
+    useEditingCreateWorkflow(
+        map,
+        editingService,
+        notificationService,
+        intl,
+        toolState,
+        toggleToolState
+    );
+
+    useEditingUpdateWorkflow(
+        map,
+        editingService,
+        notificationService,
+        intl,
+        toolState,
+        toggleToolState
+    );
 
     return (
         <Flex
@@ -70,16 +89,26 @@ export function MapTools(props: MapToolsProps) {
         >
             <ToolButton
                 label={
-                    toolState.editingActive
-                        ? intl.formatMessage({ id: "stopEditingTitle" })
-                        : intl.formatMessage({ id: "startEditingTitle" })
+                    toolState.editingCreateActive
+                        ? intl.formatMessage({ id: "editing.stopTitle" })
+                        : intl.formatMessage({ id: "editing.create.startTitle" })
                 }
-                icon={toolState.editingActive ? <PiPencilSlash /> : <PiPencil />}
-                isActive={toolState.editingActive}
-                onClick={() => toggleToolState("editingActive")}
+                icon={toolState.editingCreateActive ? <TbPolygonOff /> : <TbPolygon />}
+                isActive={toolState.editingCreateActive}
+                onClick={() => toggleToolState("editingCreateActive")}
             />
             <ToolButton
-                label={intl.formatMessage({ id: "resetEditingTitle" })}
+                label={
+                    toolState.editingUpdateActive
+                        ? intl.formatMessage({ id: "editing.stopTitle" })
+                        : intl.formatMessage({ id: "editing.update.startTitle" })
+                }
+                icon={toolState.editingUpdateActive ? <PiPencilSlash /> : <PiPencil />}
+                isActive={toolState.editingUpdateActive}
+                onClick={() => toggleToolState("editingUpdateActive")}
+            />
+            <ToolButton
+                label={intl.formatMessage({ id: "editing.resetTitle" })}
                 icon={<PiArrowUUpLeft />}
                 onClick={() => editingService.reset(MAP_ID)}
             />
@@ -128,7 +157,7 @@ export function MapTools(props: MapToolsProps) {
     );
 }
 
-function useEditingWorkflow(
+function useEditingCreateWorkflow(
     map: MapModel | undefined,
     editingService: EditingService,
     notificationService: NotificationService,
@@ -146,7 +175,7 @@ function useEditingWorkflow(
                 try {
                     const layer = map.layers.getLayerById("krankenhaus") as Layer;
                     const url = new URL(layer.attributes.collectionURL + "/items");
-                    const workflow = editingService.start(map, url);
+                    const workflow = editingService.create(map, url);
 
                     console.log(url);
 
@@ -167,7 +196,7 @@ function useEditingWorkflow(
                                     level: "info",
                                     message: intl.formatMessage(
                                         {
-                                            id: "editing.featureCreated"
+                                            id: "editing.create.featureCreated"
                                         },
                                         { featureId: featureId }
                                     ),
@@ -182,7 +211,7 @@ function useEditingWorkflow(
                             console.log(error);
                         })
                         .finally(() => {
-                            toggleToolState("editingActive", false);
+                            toggleToolState("editingCreateActive", false);
                         });
                 } catch (error) {
                     console.log(error);
@@ -196,6 +225,89 @@ function useEditingWorkflow(
             editingService.stop(MAP_ID);
         }
 
-        toolState.editingActive ? startEditingCreate() : stopEditingCreate();
-    }, [map, editingService, notificationService, intl, toolState.editingActive, toggleToolState]);
+        toolState.editingCreateActive ? startEditingCreate() : stopEditingCreate();
+    }, [
+        map,
+        editingService,
+        notificationService,
+        intl,
+        toolState.editingCreateActive,
+        toggleToolState
+    ]);
+}
+
+function useEditingUpdateWorkflow(
+    map: MapModel | undefined,
+    editingService: EditingService,
+    notificationService: NotificationService,
+    intl: PackageIntl,
+    toolState: ToolState,
+    toggleToolState: (name: keyof ToolState, newValue?: boolean | undefined) => void
+) {
+    useEffect(() => {
+        if (!map) {
+            return;
+        }
+
+        function startEditingUpdate() {
+            if (map) {
+                try {
+                    const layer = map.layers.getLayerById("krankenhaus") as Layer;
+                    const url = new URL(layer.attributes.collectionURL + "/items");
+                    const workflow = editingService.update(map, url);
+                    console.log(workflow);
+                    // TODO:
+                    // console.log(url);
+                    // workflow.on("active:drawing", () => {
+                    //     console.log("start drawing feature");
+                    // });
+                    // workflow.on("active:saving", () => {
+                    //     console.log("start saving feature");
+                    // });
+                    // workflow
+                    //     .whenComplete()
+                    //     .then((featureId: string | undefined) => {
+                    //         if (featureId) {
+                    //             // undefined -> no feature saved
+                    //             notificationService.notify({
+                    //                 level: "info",
+                    //                 message: intl.formatMessage(
+                    //                     {
+                    //                         id: "editing.create.featureCreated"
+                    //                     },
+                    //                     { featureId: featureId }
+                    //                 ),
+                    //                 displayDuration: 4000
+                    //             });
+                    //         }
+                    //         const vectorLayer = layer?.olLayer as VectorLayer<VectorSource>;
+                    //         vectorLayer.getSource()?.refresh();
+                    //     })
+                    //     .catch((error: Error) => {
+                    //         console.log(error);
+                    //     })
+                    //     .finally(() => {
+                    //         toggleToolState("editingCreateActive", false);
+                    //     });
+                } catch (error) {
+                    console.log(error);
+                }
+            } else {
+                throw Error("map is undefined");
+            }
+        }
+
+        function stopEditingUpdate() {
+            editingService.stop(MAP_ID);
+        }
+
+        toolState.editingUpdateActive ? startEditingUpdate() : stopEditingUpdate();
+    }, [
+        map,
+        editingService,
+        notificationService,
+        intl,
+        toolState.editingUpdateActive,
+        toggleToolState
+    ]);
 }

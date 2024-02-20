@@ -12,7 +12,7 @@ import { createServiceOptions, setupMap, waitForMapMount } from "@open-pioneer/m
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render } from "@testing-library/react";
 import { PackageIntl, Service } from "@open-pioneer/runtime";
-import { EditingWorkflowImpl } from "./EditingWorkflow";
+import { EditingCreateWorkflowImpl } from "./EditingWorkflow";
 import BaseLayer from "ol/layer/Base";
 import { Interaction } from "ol/interaction";
 import { MapRegistryImpl } from "@open-pioneer/map/MapRegistryImpl";
@@ -63,7 +63,7 @@ describe("starting editing workflow", () => {
         if (beginTooltip instanceof Error) {
             throw beginTooltip;
         }
-        expect(beginTooltip.innerHTML).toMatchInlineSnapshot('"tooltip.begin"');
+        expect(beginTooltip.innerHTML).toMatchInlineSnapshot('"create.tooltip.begin"');
 
         workflow.stop();
     });
@@ -193,7 +193,7 @@ describe("during editing workflow", () => {
         if (beginTooltip instanceof Error) {
             throw beginTooltip;
         }
-        expect(beginTooltip.innerHTML).toMatchInlineSnapshot('"tooltip.continue"');
+        expect(beginTooltip.innerHTML).toMatchInlineSnapshot('"create.tooltip.continue"');
 
         workflow.stop();
     });
@@ -263,14 +263,14 @@ describe("reset editing workflow", () => {
         if (beginTooltip instanceof Error) {
             throw beginTooltip;
         }
-        expect(beginTooltip.innerHTML).toMatchInlineSnapshot('"tooltip.continue"');
+        expect(beginTooltip.innerHTML).toMatchInlineSnapshot('"create.tooltip.continue"');
 
         workflow.reset();
         const resetTooltip = getTooltipElement(map.olMap, "editing-tooltip");
         if (resetTooltip instanceof Error) {
             throw resetTooltip;
         }
-        expect(resetTooltip.innerHTML).toMatchInlineSnapshot('"tooltip.begin"');
+        expect(resetTooltip.innerHTML).toMatchInlineSnapshot('"create.tooltip.begin"');
 
         workflow.stop();
     });
@@ -402,7 +402,7 @@ async function setupWorkflow(
         "circle-stroke-width": 2
     };
 
-    const workflow = new EditingWorkflowImpl(
+    const workflow = new EditingCreateWorkflowImpl(
         map,
         OGC_API_URL_TEST,
         polygonDrawStyle,

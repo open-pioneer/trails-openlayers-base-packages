@@ -6,7 +6,7 @@ import { setupMap } from "@open-pioneer/map-test-utils";
 import { HttpService } from "@open-pioneer/http";
 import { createService } from "@open-pioneer/test-utils/services";
 import { FlatStyleLike } from "ol/style/flat";
-import { EditingWorkflowImpl } from "./EditingWorkflow";
+import { EditingCreateWorkflowImpl } from "./EditingWorkflow";
 
 const OGC_API_URL_TEST = new URL("https://example.org/ogc");
 
@@ -46,8 +46,8 @@ describe("tests for starting an editing", () => {
             }
         });
 
-        const workflow = editingService.start(map, OGC_API_URL_TEST);
-        expect(workflow instanceof EditingWorkflowImpl).toBe(true);
+        const workflow = editingService.create(map, OGC_API_URL_TEST);
+        expect(workflow instanceof EditingCreateWorkflowImpl).toBe(true);
     });
 
     it("should throw an error if start editing twice for the same map id", async () => {
@@ -64,9 +64,9 @@ describe("tests for starting an editing", () => {
             }
         });
 
-        editingService.start(map, OGC_API_URL_TEST);
+        editingService.create(map, OGC_API_URL_TEST);
 
-        expect(() => editingService.start(map, OGC_API_URL_TEST)).toThrowError(
+        expect(() => editingService.create(map, OGC_API_URL_TEST)).toThrowError(
             "EditingWorkflow could not be started. EditingWorkflow already in progress for this map."
         );
     });
@@ -87,7 +87,7 @@ describe("tests for stopping an editing", () => {
             }
         });
 
-        editingService.start(map, OGC_API_URL_TEST);
+        editingService.create(map, OGC_API_URL_TEST);
 
         const stop = editingService.stop(mapId);
         expect(stop).toBeUndefined;
@@ -107,7 +107,7 @@ describe("tests for stopping an editing", () => {
             }
         });
 
-        editingService.start(map, OGC_API_URL_TEST);
+        editingService.create(map, OGC_API_URL_TEST);
 
         editingService.stop(mapId);
         const stop = editingService.stop(mapId);
@@ -128,7 +128,7 @@ describe("tests for stopping an editing", () => {
             }
         });
 
-        editingService.start(map, OGC_API_URL_TEST);
+        editingService.create(map, OGC_API_URL_TEST);
 
         const stop = editingService.stop("mapId");
         expect(stop instanceof Error).toBe(true);
@@ -151,7 +151,7 @@ describe("tests for resetting an editing", () => {
             }
         });
 
-        editingService.start(map, OGC_API_URL_TEST);
+        editingService.create(map, OGC_API_URL_TEST);
 
         const reset = editingService.reset(mapId);
         expect(reset).toBeUndefined;
@@ -171,7 +171,7 @@ describe("tests for resetting an editing", () => {
             }
         });
 
-        editingService.start(map, OGC_API_URL_TEST);
+        editingService.create(map, OGC_API_URL_TEST);
 
         editingService.reset(mapId);
         const reset = editingService.reset(mapId);
@@ -192,7 +192,7 @@ describe("tests for resetting an editing", () => {
             }
         });
 
-        editingService.start(map, OGC_API_URL_TEST);
+        editingService.create(map, OGC_API_URL_TEST);
 
         const reset = editingService.reset("mapId");
         expect(reset instanceof Error).toBe(true);
