@@ -12,6 +12,7 @@ import { fetchCapabilities } from "../../util/capabilities-utils";
 import { AbstractLayer } from "../AbstractLayer";
 import { MapModelImpl } from "../MapModelImpl";
 import { ImageTile } from "ol";
+import type { Options as WMSSourceOptions } from "ol/source/ImageWMS";
 
 const LOG = createLogger("map:WMTSLayer");
 
@@ -19,10 +20,10 @@ export class WMTSLayerImpl extends AbstractLayer implements WMTSLayer {
     #url: string;
     #name: string;
     #matrixSet: string;
-    #attributions?: string | undefined;
     #layer: TileLayer<TileSourceType>;
     #source: WMTS | undefined;
     #legend: string | undefined;
+    #sourceOptions?: Partial<WMSSourceOptions>;
     readonly #abortController = new AbortController();
 
     constructor(config: WMTSLayerConfig) {
@@ -35,6 +36,7 @@ export class WMTSLayerImpl extends AbstractLayer implements WMTSLayer {
         this.#name = config.name;
         this.#layer = layer;
         this.#matrixSet = config.matrixSet;
+        this.#sourceOptions = config.sourceOptions;
     }
 
     destroy(): void {
@@ -61,6 +63,7 @@ export class WMTSLayerImpl extends AbstractLayer implements WMTSLayer {
                 }
                 const source = new WMTS({
                     ...options,
+                    ...this.#sourceOptions,
                     tileLoadFunction: (tile, tileUrl) => {
                         this.#loadTile(tile, tileUrl);
                     }
@@ -95,10 +98,6 @@ export class WMTSLayerImpl extends AbstractLayer implements WMTSLayer {
 
     get matrixSet() {
         return this.#matrixSet;
-    }
-
-    get attributions() {
-        return this.#attributions;
     }
 
     get sublayers(): undefined {
