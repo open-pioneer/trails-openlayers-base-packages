@@ -13,9 +13,10 @@ import { ResultList } from "@open-pioneer/result-list";
 
 See below for how to assemble the `input` parameter.
 
-### Configuring result list data and columns
+### Configuring result list data, columns and formatOptions
 
-The `input` prop determines which features are displayed (`input.data`) and in what format (`input.columns`).
+The `input` prop determines which features are displayed (`input.data`) and in what format (`input.columns`
+and `input.formatOptions`).
 `input` must conform to the TypeScript interface `ResultListInput`.
 
 `input.data` must be an array of features (TypeScript interface `BaseFeature`).
@@ -23,8 +24,13 @@ Features can be defined manually (they are rather simple objects), but they can 
 for example from `@open-pioneer/search` and `@open-pioneer/selection`.
 
 `input.columns` is an array of column definitions (TypeScript interface `ResultColumn`).
-These columns define which properties of the configured features are shown.
+These columns define which properties of the configured features are shown, or how cells of the column
+should be rendered.
 The `ResultList` will render the specified columns in the order in which they are given.
+
+`input.formatOptions` is being used to specify how numbers and dates are formatted. You can provide
+`maxDecimalPlaces` and `dateTimeFormatOptions` and these settings are applied for all table cells that
+have no `render` function configured.
 
 Consider a set of features which all have the properties `name` and `age`.
 In that case, a simple configuration of the `ResultList` may look as follows:
@@ -75,6 +81,24 @@ const columns = [
         getPropertyValue(feature: BaseFeature) {
             return feature.id;
         }
+    }
+]
+```
+
+If you want to display a cell value as a very customizable react component, you can provide a `render` function to each column:
+
+```tsx
+// Simple usage of a render function
+// The `render` function is called for every feature.
+// It should be efficient because it can be invoked many times.
+import {BaseFeature} from "./BaseFeature";
+
+const columns = [
+    {
+        displayName: "ID",
+        render: (item: BaseFeature) => (
+            <chakra.div>{`This item has the following ID: ${item.id}`}</>
+        )
     }
 ]
 ```

@@ -74,7 +74,8 @@ export interface FormatOptions {
     dateTimeFormatOptions?: Intl.DateTimeFormatOptions;
 
     /**
-     * For internal testing only TODO: Reconsider!
+     * For internal testing only. If not provided, the default intl-hook is used.
+     * TODO: Reconsider!
      */
     intl?: PackageIntl;
 }
