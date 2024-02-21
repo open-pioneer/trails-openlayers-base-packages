@@ -33,11 +33,12 @@ const HTTP_SERVICE_FAIL: HttpService = {
 
 it("successfully returns new feature id on saveCreatedFeature", async () => {
     const projection = new Projection({ code: "EPSG:25832" });
-    const geoJsonGeometry = createTestGeoJsonGeometry(projection);
+    const geometry = mockedGeoJSON(projection);
+
     const featureId = await saveCreatedFeature(
         HTTP_SERVICE_SUCCESS,
         OGC_API_URL_TEST,
-        geoJsonGeometry,
+        geometry,
         projection
     );
     expect(featureId).toBe(TEST_ID);
@@ -45,31 +46,34 @@ it("successfully returns new feature id on saveCreatedFeature", async () => {
 
 it("returns an error if saving feature fails", async () => {
     const projection = new Projection({ code: "EPSG:25832" });
-    const geoJsonGeometry = createTestGeoJsonGeometry(projection);
+    const geometry = mockedGeoJSON(projection);
     let result;
+
     try {
         result = await saveCreatedFeature(
             HTTP_SERVICE_FAIL,
             OGC_API_URL_TEST,
-            geoJsonGeometry,
+            geometry,
             projection
         );
     } catch (e) {
         result = e;
     }
-
     expect(result instanceof Error).toBe(true);
 });
 
-function createTestGeoJsonGeometry(projection: Projection) {
-    const geometry = new Point([407354, 5754673]);
-    const geoJson = new GeoJSON({
+function mockedGeoJSON(projection: Projection) {
+    const point = new Point([407354, 5754673]);
+    const geojson = new GeoJSON({
         dataProjection: projection
     });
-    const geoJSONGeometry: GeoJSONGeometry | GeoJSONGeometryCollection =
-        geoJson.writeGeometryObject(geometry, {
+    const geometry: GeoJSONGeometry | GeoJSONGeometryCollection = geojson.writeGeometryObject(
+        point,
+        {
             rightHanded: true,
             decimals: 10
-        });
-    return geoJSONGeometry;
+        }
+    );
+
+    return geometry;
 }
