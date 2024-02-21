@@ -108,7 +108,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                         "legend": pointLayerLegendProps,
                         "resultListMetadata": [
                             {
-                                propertyName: "id",
+                                id: "id",
                                 displayName: "ID",
                                 width: 100,
                                 getPropertyValue(feature: BaseFeature) {

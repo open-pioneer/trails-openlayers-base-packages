@@ -20,6 +20,9 @@ export interface ResultColumn {
      *
      * If this is not defined, {@link propertyName} will serve as a fallback.
      * If that is also not defined, the column index will be used instead.
+     *
+     * It is recommended to specify an id, if no {@link propertyName} has been set, because the
+     * column index fallback is not advised.
      */
     id?: string;
 
