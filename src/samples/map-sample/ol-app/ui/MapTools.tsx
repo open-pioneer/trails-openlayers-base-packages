@@ -187,10 +187,10 @@ function useEditingWorkflow(
                                     ),
                                     displayDuration: 4000
                                 });
-                            }
 
-                            const vectorLayer = layer?.olLayer as VectorLayer<VectorSource>;
-                            vectorLayer.getSource()?.refresh();
+                                const vectorLayer = layer?.olLayer as VectorLayer<VectorSource>;
+                                vectorLayer.getSource()?.refresh();
+                            }
                         })
                         .catch((error: Error) => {
                             console.log(error);
