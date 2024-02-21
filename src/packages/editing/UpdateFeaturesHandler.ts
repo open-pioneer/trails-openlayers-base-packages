@@ -15,7 +15,7 @@ export async function saveUpdatedFeature(
     const epsgCode = projection.getCode();
     const crs = epsgCode.replace("EPSG:", "http://www.opengis.net/def/crs/EPSG/0/");
     const response = await httpService.fetch(url, {
-        method: "UPDATE",
+        method: "PUT",
         body: JSON.stringify({ type: "Feature", properties: {}, geometry: geometry }),
         headers: {
             "Content-Type": "application/geo+json; charset=utf-8",
@@ -23,7 +23,7 @@ export async function saveUpdatedFeature(
         }
     });
 
-    if (!response || !response.ok || response.status !== 201) {
+    if (!response || !response.ok || response.status !== 204) {
         return Promise.reject(new Error("Request failed: " + response.status));
     }
 
