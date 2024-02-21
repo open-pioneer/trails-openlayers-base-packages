@@ -157,12 +157,13 @@ export class EditingUpdateWorkflowImpl
                         id: "update.tooltip.select"
                     });
                 } else if (this._state === "active:drawing") {
-                    const layerUrl = this._editLayerURL;
-
                     this._setState("active:saving");
 
+                    const featureId = "TODO"; // TODO featureId des ausgewählten Features ermitteln
+                    // console.log(e.deselected[0]?.getProperties());
+                    const layerUrl = new URL(`${this._editLayerURL.toString()}/item/${featureId}`);
+
                     const geometry = e.deselected[0]?.getGeometry();
-                    console.log(e.deselected[0]?.getProperties());
                     if (!geometry) {
                         this._destroy();
                         this.#waiter?.reject(new Error("no geometry available"));

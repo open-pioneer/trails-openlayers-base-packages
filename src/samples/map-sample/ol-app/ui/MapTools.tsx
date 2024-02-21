@@ -188,7 +188,7 @@ function useEditingCreateWorkflow(
             if (map) {
                 try {
                     const layer = map.layers.getLayerById("krankenhaus") as Layer;
-                    const url = new URL(layer.attributes.collectionURL + "/items");
+                    const url = new URL(layer.attributes.collectionURL as string);
                     const workflow = editingService.create(map, url);
 
                     console.log(url);
@@ -267,7 +267,7 @@ function useEditingUpdateWorkflow(
             if (map) {
                 try {
                     const layer = map.layers.getLayerById("krankenhaus") as Layer;
-                    const url = new URL(layer.attributes.collectionURL + "/items");
+                    const url = new URL(layer.attributes.collectionURL as string);
                     const workflow = editingService.update(map, url);
 
                     workflow
