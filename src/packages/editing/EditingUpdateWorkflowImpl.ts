@@ -82,7 +82,10 @@ export class EditingUpdateWorkflowImpl
             }
         });
 
-        this._selectInteraction = new Select({});
+        // TODO: aktuell können Features auf allen Layern ausgewählt werden -> nur Features des zu editierenden Layers auswählbar machen
+        this._selectInteraction = new Select({
+            layers: this._editLayerURL // TODO wir haben nur eine URL -> filter function or property filter with filter function
+        });
 
         this._modifyInteraction = new Modify({
             features: this._selectInteraction.getFeatures(),
@@ -135,6 +138,8 @@ export class EditingUpdateWorkflowImpl
 
         const modify = this._modifyInteraction.on("modifystart", () => {
             this._setState("active:drawing");
+            
+            // TODO ab hier dürfen keine anderen Features mehr auswählbar sein; filter function der selectInteraction aktualisieren
 
             this._tooltip.element.textContent = this._intl.formatMessage({
                 id: "update.tooltip.modified"
@@ -184,8 +189,6 @@ export class EditingUpdateWorkflowImpl
                         });
                 }
             }
-
-            // TODO: Prüfen, mehrere Vektorlayer new Select
         });
 
         // update event handler when container changes
