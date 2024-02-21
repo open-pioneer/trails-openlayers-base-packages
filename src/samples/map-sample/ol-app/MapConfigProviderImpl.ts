@@ -5,7 +5,7 @@ import GeoJSON from "ol/format/GeoJSON";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import { LegendItemAttributes } from "@open-pioneer/legend";
-import { CustomLegendItem, LoremIpsumLegendItem } from "./CustomLegendItems";
+import { CustomLegendItem } from "./CustomLegendItems";
 import { OSM } from "ol/source";
 import { Circle, Fill, Style } from "ol/style";
 import TileLayer from "ol/layer/Tile.js";
@@ -28,8 +28,6 @@ export class MapConfigProviderImpl implements MapConfigProvider {
     }
 
     async getMapConfig(): Promise<MapConfig> {
-        //const computedValue = "foo"; TODO add good examples for layerLegendProps
-
         const pointLayerLegendProps: LegendItemAttributes = {
             Component: CustomLegendItem
         };
@@ -294,10 +292,7 @@ function createIsBk5Layer() {
                         name: "Luftkapazitaet_We",
                         title: "Luftkapazitaet (We)",
                         attributes: {
-                            "legend": {
-                                imageUrl:
-                                    "https://avatars.githubusercontent.com/u/121286957?s=200&v=4"
-                            }
+                            "legend": {}
                         }
                     }
                 ]
@@ -343,9 +338,7 @@ function createSchulenLayer() {
                 name: "US.education",
                 title: "INSPIRE - WMS Schulstandorte NRW",
                 attributes: {
-                    "legend": {
-                        imageUrl: "https://avatars.githubusercontent.com/u/121286957?s=200&v=4"
-                    }
+                    "legend": {}
                 }
             }
         ],
@@ -354,10 +347,6 @@ function createSchulenLayer() {
         }
     });
 }
-
-const loremIpsum: LegendItemAttributes = {
-    Component: LoremIpsumLegendItem
-};
 
 function createStrassenLayer() {
     return new WMSLayer({
@@ -376,10 +365,7 @@ function createStrassenLayer() {
             },
             {
                 name: "4",
-                title: "Abschnitte und Äste",
-                attributes: {
-                    "legend": loremIpsum
-                }
+                title: "Abschnitte und Äste"
             },
             {
                 name: "6",
