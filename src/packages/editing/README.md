@@ -81,6 +81,36 @@ const vectorLayer = layer?.olLayer as VectorLayer<VectorSource>;
 vectorLayer.getSource()?.refresh();
 ```
 
+### Custom styling
+
+The default style of the geometries can be overridden with a custom style.
+
+Each geometry type has its own styling property (currently only `polygonDrawStyle`). See OpenLayers [`FlatStyleLike`](https://openlayers.org/en/latest/apidoc/module-ol_style_flat.html) for valid styling options.
+
+```js
+const element = createCustomElement({
+    ...,
+    config: {
+        properties: {
+            "@open-pioneer/editing": {
+                "polygonDrawStyle": {
+                    "stroke-color": "red",
+                    "stroke-width": 2,
+                    "fill-color": "rgba(0, 0, 0, 0.1)",
+                    "circle-radius": 5,
+                    "circle-fill-color": "rgba(255, 0, 0, 0.2)",
+                    "circle-stroke-color": "rgba(255, 0, 0, 0.7)",
+                    "circle-stroke-width": 2
+                }
+            }
+        }
+    },
+    ...
+});
+
+customElements.define("ol-map-app", element);
+```
+
 ## License
 
 Apache-2.0 (see `LICENSE` file)
