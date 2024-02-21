@@ -29,7 +29,7 @@ should be rendered.
 The `ResultList` will render the specified columns in the order in which they are given.
 
 `input.formatOptions` is being used to specify how numbers and dates are formatted. You can provide
-`maxDecimalPlaces` and `dateTimeFormatOptions` and these settings are applied for all table cells that
+`numberOptions` and `dateOptions` and these settings are applied for all table cells that
 have no `render` function configured and matches the corresponding type.
 
 Consider a set of features which all have the properties `name` and `age`.
@@ -85,18 +85,18 @@ const columns = [
 ]
 ```
 
-If you want to display a cell value as a very customizable react component, you can provide a `render` function to each column:
+If you want to display a cell value as a very customizable react component, you can provide a `renderCell` function to each column:
 
 ```tsx
 // Simple usage of a render function
-// The `render` function is called for every feature.
+// The `renderCell` function is called for every feature.
 // It should be efficient because it can be invoked many times.
 import {BaseFeature} from "./BaseFeature";
 
 const columns = [
     {
         displayName: "ID",
-        render: (item: BaseFeature) => (
+        renderCell: (item: BaseFeature) => (
             <chakra.div>{`This item has the following ID: ${item.id}`}</>
         )
     }

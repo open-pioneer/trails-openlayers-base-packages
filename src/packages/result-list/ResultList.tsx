@@ -90,8 +90,8 @@ export interface ResultListInput {
     data: BaseFeature[];
 
     /**
-     * Optional formatOptions to specify the `FormatNumberOptions` for number type values and
-     * `Intl.DateTimeFormatOptions` to specify the format of date type values
+     * Optional formatOptions to specify the `numberOptions` for number type values and
+     * `dateOptions` to specify the format of date type values
      */
     formatOptions?: FormatOptions;
 }
