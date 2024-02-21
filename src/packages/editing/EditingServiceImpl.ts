@@ -67,6 +67,7 @@ export class EditingServiceImpl implements EditingService {
         workflow = new EditingUpdateWorkflowImpl(
             map,
             ogcApiFeatureLayerUrl,
+            this._serviceOptions.properties.polygonDrawStyle as FlatStyleLike,
             this._serviceOptions.references.httpService,
             this._serviceOptions.references.mapRegistry,
             this._serviceOptions.intl
