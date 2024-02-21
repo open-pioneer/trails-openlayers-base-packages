@@ -2,7 +2,7 @@
 
 This package provides an editing service that allows to start and handle geometry editing workflows.
 
-Note: The editing only works with OGC API Feature Services. The editing was only tested using the implementation of the OGC API Features in the XtraServer by interactive instruments. The collection in that the geometry will be saved, needs to support the map's coordinate system.
+Note: The editing only works with OGC API Feature Services. The editing was only tested using the implementation of the OGC API Features in the XtraServer by interactive instruments. The collection where the geometry will be saved, needs to support the map's coordinate system.
 
 ## Usage
 
@@ -38,7 +38,7 @@ editingService.stop("mapId");
 
 ### Watch editing workflow states
 
-During an editing workflow different state can occur. Retrieve the current state by calling `getState` method on the workflow.
+During an editing workflow different states can occur. Retrieve the current state by calling `getState` method on the workflow.
 
 Alternatively, the state can be watched using `on()`.
 
@@ -52,7 +52,7 @@ workflow.on("active:drawing", () => {
 
 ### Finish editing workflow
 
-After finished the editing, a `Promise` will be returned.
+After the editing is finished, a `Promise` will be returned.
 
 -   The returned promise rejects if saving the feature failed.
 -   The promise resolves with `undefined` when the editing was stopped.
@@ -71,11 +71,11 @@ workflow
     });
 ```
 
-After a successful editing, the map must be manually refreshed by refreshing the OpenLayers layer instance.
+After the editing was successful, the map must be refreshed manually by refreshing the OpenLayers layer instance.
 
 Example:
 
-```js
+```ts
 const layer = map.layers.getLayerById("") as Layer;
 const vectorLayer = layer?.olLayer as VectorLayer<VectorSource>;
 vectorLayer.getSource()?.refresh();
