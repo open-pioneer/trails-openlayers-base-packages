@@ -185,12 +185,6 @@ export class EditingUpdateWorkflowImpl
                             this.#waiter?.reject(err);
                         });
                 }
-            } else if (
-                e.selected.length === 1 &&
-                e.deselected.length === 1 &&
-                this._state === "active:initialized"
-            ) {
-                console.log("----");
             }
 
             // TODO: Prüfen, mehrere Vektorlayer new Select
