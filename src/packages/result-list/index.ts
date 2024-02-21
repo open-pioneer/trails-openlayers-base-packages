@@ -5,5 +5,6 @@ export {
     type ResultListProps,
     type ResultColumn,
     type ResultListInput,
-    type FormatOptions
+    type FormatOptions,
+    type RenderCellContext
 } from "./ResultList";
