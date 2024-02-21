@@ -26,7 +26,8 @@ export function createColumns(options: CreateColumnsOptions) {
     const selectionColumn = createSelectionColumn(intl);
     const columnDefs = columns.map((column, index) => {
         const columnWidth = column.width || remainingColumnWidth;
-        const configuredId = column.id ?? column.propertyName ?? String(index);
+        const configuredId =
+            column.id || (column.propertyName && slug(column.propertyName)) || String(index);
         return createColumn({
             id: "result-list-col_" + configuredId,
             column: column,
@@ -180,4 +181,11 @@ function getCheckboxToolTip<Data>(table: TanstackTable<Data>, intl: PackageIntl)
     } else {
         return intl.formatMessage({ id: "selectAllTooltip" });
     }
+}
+
+function slug(id: string) {
+    return id
+        .replace(/[^a-z0-9 -]/g, "")
+        .replace(/\s+/g, "-")
+        .replace(/-+/g, "-");
 }
