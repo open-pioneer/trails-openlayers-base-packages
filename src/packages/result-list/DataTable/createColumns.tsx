@@ -185,6 +185,7 @@ function getCheckboxToolTip<Data>(table: TanstackTable<Data>, intl: PackageIntl)
 
 function slug(id: string) {
     return id
+        .toLowerCase()
         .replace(/[^a-z0-9 -]/g, "")
         .replace(/\s+/g, "-")
         .replace(/-+/g, "-");
