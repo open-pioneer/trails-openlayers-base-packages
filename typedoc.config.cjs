@@ -25,7 +25,8 @@ const documentedPackages = [
     "packages/search",
     "packages/spatial-bookmarks",
     "packages/selection",
-    "packages/editing"
+    "packages/editing",
+    "packages/result-list"
 ];
 
 const packagePaths = documentedPackages.sort().map((p) => `src/${p}`);

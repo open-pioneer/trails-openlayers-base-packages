@@ -5,7 +5,7 @@ import { Geometry } from "ol/geom";
 import { Style } from "ol/style";
 
 /**
- * Base interface for all feature objects with geometry and / or attributs information.
+ * Base interface for all feature objects with geometry and / or attribute information.
  */
 export interface BaseFeature {
     /**

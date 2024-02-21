@@ -1,0 +1,6 @@
+messages:
+  selectAllTooltip: Select all
+  deSelectAllTooltip: Deselect all
+  noDataMessage: No data available
+  ariaLabel:
+    selectSingle: Press space to select or deselect.

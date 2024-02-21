@@ -5,7 +5,7 @@ import { MapModel } from "@open-pioneer/map";
 import type { DeclaredService } from "@open-pioneer/runtime";
 
 /**
- * state of an editing workflow
+ * State of an editing workflow
  */
 export type EditingWorkflowState =
     | "active:initialized"
@@ -16,28 +16,32 @@ export type EditingWorkflowState =
 /** Events emitted by the {@link EditingWorkflow}. */
 export interface EditingWorkflowEvents {
     /**
-     * initial state after editing workflow was started
+     * Initial state after editing workflow was started but user has not yet started drawing.
      */
     "active:initialized": void;
 
     /**
-     * state after user adds the first vertex of the geometry for create-mode
-     * state after user selects a feature for modifying the geometry
+     * State while user is drawing a feature. State is entered when user adds the first vertex of the geometry (`create-mode`).
+     * State while user is updateing an existing feature. State is entered when user moved the first vertex of the geometry (`update-mode`).
      */
     // TODO: Rename?
     "active:drawing": void;
 
     /**
-     * state while feature is being saved after user finished the geometry
+     * State while feature is being saved after user finished the geometry drawing.
      */
     "active:saving": void;
 
     /**
-     * state after user stops editing
+     * State after editing is stopped.
      */
     "inactive": void;
 }
 
+/**
+ * EditingWorkflows are created by the {@link EditingService}
+ * and represent a currently ongoing editing workflow.
+ */
 export interface EditingWorkflow extends EventEmitter<EditingWorkflowEvents> {
     /**
      * Returns the current state of the editing workflow.
@@ -45,13 +49,18 @@ export interface EditingWorkflow extends EventEmitter<EditingWorkflowEvents> {
     getState(): EditingWorkflowState;
 
     /**
-     * Wait for the user to finish the editing. The returned promise rejects if saving the feature
-     * failed. It resolves with undefined when the editing was stopped and resolves with the
-     * feature ID when saving was successful.
+     * Wait for the editing to be finished. The returned promise resolves with the
+     * feature ID when saving was successful and rejects if saving the feature
+     * failed. It resolves with undefined when the editing was stopped.
      */
     whenComplete(): Promise<string | undefined>;
 }
 
+/**
+ * The editing service allows to start and handle editing workflows.
+ *
+ * Inject an instance of this service by referencing the interface name `"editing.EditingService"`.
+ */
 export interface EditingService extends DeclaredService<"editing.EditingService"> {
     /**
      * Creates and initializes a new {@link EditingWorkflow} to create geometries.

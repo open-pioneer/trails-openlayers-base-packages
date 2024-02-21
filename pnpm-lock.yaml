@@ -71,8 +71,8 @@ importers:
         specifier: ^2.1.0
         version: 2.1.1(@formatjs/intl@2.10.0)(@open-pioneer/base-theme@0.2.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/core@1.2.1)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
       '@open-pioneer/test-utils':
-        specifier: ^1.0.2
-        version: 1.1.0(@formatjs/intl@2.10.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.4)(@testing-library/react@14.2.1)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.1.1
+        version: 1.1.1(@formatjs/intl@2.10.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.4)(@testing-library/react@14.2.1)(react-dom@18.2.0)(react@18.2.0)
       framer-motion:
         specifier: ^10.17.4
         version: 10.18.0(react-dom@18.2.0)(react@18.2.0)
@@ -264,8 +264,8 @@ importers:
         version: 17.4.2(react-dom@18.2.0)(react@18.2.0)
     devDependencies:
       '@open-pioneer/test-utils':
-        specifier: ^1.0.2
-        version: 1.1.0(@formatjs/intl@2.10.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.4)(@testing-library/react@14.2.1)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.1.1
+        version: 1.1.1(@formatjs/intl@2.10.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.4)(@testing-library/react@14.2.1)(react-dom@18.2.0)(react@18.2.0)
       '@testing-library/react':
         specifier: ^14.1.2
         version: 14.2.1(react-dom@18.2.0)(react@18.2.0)
@@ -305,8 +305,8 @@ importers:
         specifier: workspace:^
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
-        specifier: ^1.0.2
-        version: 1.1.0(@formatjs/intl@2.10.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.4)(@testing-library/react@14.2.1)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.1.1
+        version: 1.1.1(@formatjs/intl@2.10.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.4)(@testing-library/react@14.2.1)(react-dom@18.2.0)(react@18.2.0)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -340,8 +340,8 @@ importers:
         specifier: workspace:^
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
-        specifier: ^1.0.2
-        version: 1.1.0(@formatjs/intl@2.10.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.4)(@testing-library/react@14.2.1)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.1.1
+        version: 1.1.1(@formatjs/intl@2.10.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.4)(@testing-library/react@14.2.1)(react-dom@18.2.0)(react@18.2.0)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -349,9 +349,6 @@ importers:
 
   src/packages/editing:
     dependencies:
-      '@open-pioneer/chakra-integration':
-        specifier: ^1.1.1
-        version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.18.0)(react-dom@18.2.0)(react@18.2.0)
       '@open-pioneer/core':
         specifier: ^1.2.1
         version: 1.2.1
@@ -361,18 +358,12 @@ importers:
       '@open-pioneer/map':
         specifier: workspace:^
         version: link:../map
-      '@open-pioneer/react-utils':
-        specifier: workspace:^
-        version: link:../react-utils
       '@open-pioneer/runtime':
         specifier: ^2.1.0
         version: 2.1.1(@formatjs/intl@2.10.0)(@open-pioneer/base-theme@0.2.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/core@1.2.1)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
       ol:
         specifier: ^8.2.0
         version: 8.2.0
-      react:
-        specifier: ^18.2.0
-        version: 18.2.0
     devDependencies:
       '@open-pioneer/map-test-utils':
         specifier: workspace:^
@@ -416,8 +407,8 @@ importers:
         specifier: workspace:^
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
-        specifier: ^1.0.2
-        version: 1.1.0(@formatjs/intl@2.10.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.4)(@testing-library/react@14.2.1)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.1.1
+        version: 1.1.1(@formatjs/intl@2.10.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.4)(@testing-library/react@14.2.1)(react-dom@18.2.0)(react@18.2.0)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -454,8 +445,8 @@ importers:
         specifier: workspace:^
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
-        specifier: ^1.0.2
-        version: 1.1.0(@formatjs/intl@2.10.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.4)(@testing-library/react@14.2.1)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.1.1
+        version: 1.1.1(@formatjs/intl@2.10.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.4)(@testing-library/react@14.2.1)(react-dom@18.2.0)(react@18.2.0)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -471,8 +462,8 @@ importers:
         version: 2.1.1(@formatjs/intl@2.10.0)(@open-pioneer/base-theme@0.2.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/core@1.2.1)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
     devDependencies:
       '@open-pioneer/test-utils':
-        specifier: ^1.0.2
-        version: 1.1.0(@formatjs/intl@2.10.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.4)(@testing-library/react@14.2.1)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.1.1
+        version: 1.1.1(@formatjs/intl@2.10.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.4)(@testing-library/react@14.2.1)(react-dom@18.2.0)(react@18.2.0)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -562,8 +553,8 @@ importers:
         specifier: workspace:^
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
-        specifier: ^1.0.2
-        version: 1.1.0(@formatjs/intl@2.10.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.4)(@testing-library/react@14.2.1)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.1.1
+        version: 1.1.1(@formatjs/intl@2.10.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.4)(@testing-library/react@14.2.1)(react-dom@18.2.0)(react@18.2.0)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -575,8 +566,8 @@ importers:
         specifier: workspace:^
         version: link:../map
       '@open-pioneer/test-utils':
-        specifier: ^1.0.2
-        version: 1.1.0(@formatjs/intl@2.10.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.4)(@testing-library/react@14.2.1)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.1.1
+        version: 1.1.1(@formatjs/intl@2.10.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.4)(@testing-library/react@14.2.1)(react-dom@18.2.0)(react@18.2.0)
       '@testing-library/react':
         specifier: ^14.1.2
         version: 14.2.1(react-dom@18.2.0)(react@18.2.0)
@@ -617,8 +608,8 @@ importers:
         specifier: workspace:^
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
-        specifier: ^1.0.2
-        version: 1.1.0(@formatjs/intl@2.10.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.4)(@testing-library/react@14.2.1)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.1.1
+        version: 1.1.1(@formatjs/intl@2.10.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.4)(@testing-library/react@14.2.1)(react-dom@18.2.0)(react@18.2.0)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -646,8 +637,8 @@ importers:
         version: 18.2.0
     devDependencies:
       '@open-pioneer/test-utils':
-        specifier: ^1.0.2
-        version: 1.1.0(@formatjs/intl@2.10.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.4)(@testing-library/react@14.2.1)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.1.1
+        version: 1.1.1(@formatjs/intl@2.10.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.4)(@testing-library/react@14.2.1)(react-dom@18.2.0)(react@18.2.0)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -675,8 +666,8 @@ importers:
         specifier: workspace:^
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
-        specifier: ^1.0.2
-        version: 1.1.0(@formatjs/intl@2.10.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.4)(@testing-library/react@14.2.1)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.1.1
+        version: 1.1.1(@formatjs/intl@2.10.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.4)(@testing-library/react@14.2.1)(react-dom@18.2.0)(react@18.2.0)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -710,8 +701,8 @@ importers:
         specifier: workspace:^
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
-        specifier: ^1.0.2
-        version: 1.1.0(@formatjs/intl@2.10.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.4)(@testing-library/react@14.2.1)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.1.1
+        version: 1.1.1(@formatjs/intl@2.10.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.4)(@testing-library/react@14.2.1)(react-dom@18.2.0)(react@18.2.0)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -733,11 +724,55 @@ importers:
         version: 18.2.0
     devDependencies:
       '@open-pioneer/test-utils':
-        specifier: ^1.0.2
-        version: 1.1.0(@formatjs/intl@2.10.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.4)(@testing-library/react@14.2.1)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.1.1
+        version: 1.1.1(@formatjs/intl@2.10.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.4)(@testing-library/react@14.2.1)(react-dom@18.2.0)(react@18.2.0)
       '@testing-library/react':
         specifier: ^14.1.2
         version: 14.2.1(react-dom@18.2.0)(react@18.2.0)
+      openlayers-base-packages:
+        specifier: workspace:*
+        version: link:../../..
+    publishDirectory: dist
+
+  src/packages/result-list:
+    dependencies:
+      '@chakra-ui/icons':
+        specifier: ^2.1.1
+        version: 2.1.1(@chakra-ui/system@2.6.2)(react@18.2.0)
+      '@open-pioneer/chakra-integration':
+        specifier: ^1.1.1
+        version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.18.0)(react-dom@18.2.0)(react@18.2.0)
+      '@open-pioneer/core':
+        specifier: ^1.2.1
+        version: 1.2.1
+      '@open-pioneer/map':
+        specifier: workspace:^
+        version: link:../map
+      '@open-pioneer/react-utils':
+        specifier: workspace:^
+        version: link:../react-utils
+      '@open-pioneer/runtime':
+        specifier: ^2.1.0
+        version: 2.1.1(@formatjs/intl@2.10.0)(@open-pioneer/base-theme@0.2.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/core@1.2.1)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
+      '@tanstack/react-table':
+        specifier: ^8.11.6
+        version: 8.11.6(react-dom@18.2.0)(react@18.2.0)
+      classnames:
+        specifier: ^2.3.2
+        version: 2.3.2
+      ol:
+        specifier: ^8.2.0
+        version: 8.2.0
+      react:
+        specifier: ^18.2.0
+        version: 18.2.0
+    devDependencies:
+      '@open-pioneer/map-test-utils':
+        specifier: workspace:^
+        version: link:../map-test-utils
+      '@open-pioneer/test-utils':
+        specifier: ^1.1.1
+        version: 1.1.1(@formatjs/intl@2.10.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.4)(@testing-library/react@14.2.1)(react-dom@18.2.0)(react@18.2.0)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -768,8 +803,8 @@ importers:
         specifier: workspace:^
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
-        specifier: ^1.0.2
-        version: 1.1.0(@formatjs/intl@2.10.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.4)(@testing-library/react@14.2.1)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.1.1
+        version: 1.1.1(@formatjs/intl@2.10.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.4)(@testing-library/react@14.2.1)(react-dom@18.2.0)(react@18.2.0)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -797,8 +832,8 @@ importers:
         specifier: workspace:^
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
-        specifier: ^1.0.2
-        version: 1.1.0(@formatjs/intl@2.10.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.4)(@testing-library/react@14.2.1)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.1.1
+        version: 1.1.1(@formatjs/intl@2.10.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.4)(@testing-library/react@14.2.1)(react-dom@18.2.0)(react@18.2.0)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -841,8 +876,8 @@ importers:
         specifier: workspace:^
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
-        specifier: ^1.0.2
-        version: 1.1.0(@formatjs/intl@2.10.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.4)(@testing-library/react@14.2.1)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.1.1
+        version: 1.1.1(@formatjs/intl@2.10.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.4)(@testing-library/react@14.2.1)(react-dom@18.2.0)(react@18.2.0)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -886,13 +921,16 @@ importers:
       react-icons:
         specifier: ^4.12.0
         version: 4.12.0(react@18.2.0)
+      uuid:
+        specifier: ^9.0.1
+        version: 9.0.1
     devDependencies:
       '@open-pioneer/map-test-utils':
         specifier: workspace:^
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
-        specifier: ^1.0.2
-        version: 1.1.0(@formatjs/intl@2.10.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.4)(@testing-library/react@14.2.1)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.1.1
+        version: 1.1.1(@formatjs/intl@2.10.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.4)(@testing-library/react@14.2.1)(react-dom@18.2.0)(react@18.2.0)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -944,8 +982,8 @@ importers:
         specifier: workspace:^
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
-        specifier: ^1.0.2
-        version: 1.1.0(@formatjs/intl@2.10.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.4)(@testing-library/react@14.2.1)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.1.1
+        version: 1.1.1(@formatjs/intl@2.10.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.4)(@testing-library/react@14.2.1)(react-dom@18.2.0)(react@18.2.0)
       '@types/uuid':
         specifier: ^9.0.7
         version: 9.0.7
@@ -1005,8 +1043,8 @@ importers:
         specifier: workspace:^
         version: link:../map-test-utils
       '@open-pioneer/test-utils':
-        specifier: ^1.0.2
-        version: 1.1.0(@formatjs/intl@2.10.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.4)(@testing-library/react@14.2.1)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.1.1
+        version: 1.1.1(@formatjs/intl@2.10.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.4)(@testing-library/react@14.2.1)(react-dom@18.2.0)(react@18.2.0)
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
@@ -1143,6 +1181,9 @@ importers:
       '@open-pioneer/react-utils':
         specifier: workspace:^
         version: link:../../../packages/react-utils
+      '@open-pioneer/result-list':
+        specifier: workspace:^
+        version: link:../../../packages/result-list
       '@open-pioneer/runtime':
         specifier: ^2.1.0
         version: 2.1.1(@formatjs/intl@2.10.0)(@open-pioneer/base-theme@0.2.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/core@1.2.1)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
@@ -1179,6 +1220,9 @@ importers:
       react-icons:
         specifier: ^4.12.0
         version: 4.12.0(react@18.2.0)
+      react-use:
+        specifier: ^17.4.2
+        version: 17.4.2(react-dom@18.2.0)(react@18.2.0)
       valtio:
         specifier: ^1.12.1
         version: 1.12.1(@types/react@18.2.55)(react@18.2.0)
@@ -1293,6 +1337,30 @@ importers:
       '@open-pioneer/runtime':
         specifier: ^2.1.0
         version: 2.1.1(@formatjs/intl@2.10.0)(@open-pioneer/base-theme@0.2.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/core@1.2.1)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
+      react:
+        specifier: ^18.2.0
+        version: 18.2.0
+
+  src/samples/test-result-list/result-list-app:
+    dependencies:
+      '@open-pioneer/chakra-integration':
+        specifier: ^1.1.1
+        version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.18.0)(react-dom@18.2.0)(react@18.2.0)
+      '@open-pioneer/map':
+        specifier: workspace:^
+        version: link:../../../packages/map
+      '@open-pioneer/react-utils':
+        specifier: workspace:^
+        version: link:../../../packages/react-utils
+      '@open-pioneer/result-list':
+        specifier: workspace:^
+        version: link:../../../packages/result-list
+      '@open-pioneer/runtime':
+        specifier: ^2.1.0
+        version: 2.1.1(@formatjs/intl@2.10.0)(@open-pioneer/base-theme@0.2.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/core@1.2.1)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
+      '@open-pioneer/theme':
+        specifier: workspace:^
+        version: link:../../../packages/theme
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -3602,8 +3670,8 @@ packages:
       '@manypkg/get-packages': 2.2.0
     dev: true
 
-  /@open-pioneer/test-utils@1.1.0(@formatjs/intl@2.10.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.4)(@testing-library/react@14.2.1)(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-8FEP+gkaaCrwOLxQ0p9tf2K+O4XuPEn+hWc0+emCilSDbA3KJOG6JDrH+/q4qX+55GppKggsOoB8Tx0NYVqLtg==}
+  /@open-pioneer/test-utils@1.1.1(@formatjs/intl@2.10.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.4)(@testing-library/react@14.2.1)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-QXmCi/eeyLuzAYhIzQ1yFQfsvweEYnzG5aykFPl30hPTPFhvfPNx2JO87lgLVk6baVAjeuJsMd432HhiJtLYxA==}
     peerDependencies:
       '@formatjs/intl': ^2.9.9
       '@open-pioneer/chakra-integration': ^1.1.1
@@ -3911,6 +3979,23 @@ packages:
   /@swc/types@0.1.5:
     resolution: {integrity: sha512-myfUej5naTBWnqOCc/MdVOLVjXUXtIA+NpDrDBKJtLLg2shUjBu3cZmB/85RyitKc55+lUUyl7oRfLOvkr2hsw==}
     dev: true
+
+  /@tanstack/react-table@8.11.6(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-i0heTVZtuHF9VPMwcYoZ21hbzGDmLjxHYemDMvbGpjk5fUZ8nLF3S8qjVRU79XfPW8KK9o7iTU2fGFVQQmxMSQ==}
+    engines: {node: '>=12'}
+    peerDependencies:
+      react: '>=16'
+      react-dom: '>=16'
+    dependencies:
+      '@tanstack/table-core': 8.11.6
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+    dev: false
+
+  /@tanstack/table-core@8.11.6:
+    resolution: {integrity: sha512-69WEY1PaZROaGYUrseng4/4sMYnRGhDe1vM6888CnWekGz/wuCnvqwOoOuKGYivnaiI4BVmZq4WKWhvahyj3/g==}
+    engines: {node: '>=12'}
+    dev: false
 
   /@testing-library/dom@9.3.4:
     resolution: {integrity: sha512-FlS4ZWlp97iiNWig0Muq8p+3rVDjRiYE+YKGbAqXOu9nwJFFOdL00kFpz42M+4huzYi86vAK1sOOfyOG45muIQ==}

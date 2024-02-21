@@ -3,7 +3,7 @@ messages:
   tocTitle: "Karteninhalt"
   legendTitle: "Legende"
   measurementTitle: "Messen"
-  selectionTitle: Selektieren
+  selectionTitle: "Selektieren"
   overviewMapTitle: "Übersichtskarte"
   editing:
     create:
@@ -14,6 +14,7 @@ messages:
       featureModified: "Objekt aktualisiert mit ID: {featureId}"
     stopTitle: "Editing - Stoppen"
     resetTitle: "Editing - Zurücksetzen"
+  resultListTitle: "Ergebnisliste"
   ariaLabel:
     header: "Kopfleiste"
     footer: "Fussleiste mit Maßstabsangabe, Raumbezugssystem und Koordinatenanzeige"

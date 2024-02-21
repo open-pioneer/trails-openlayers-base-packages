@@ -48,6 +48,7 @@ export class EditingCreateWorkflowImpl
     private _olMap: OlMap;
     private _mapContainer: HTMLElement | undefined;
     private _tooltip: Tooltip;
+    private _enterHandler: (e: KeyboardEvent) => void;
     private _escapeHandler: (e: KeyboardEvent) => void;
 
     private _interactionListener: Array<EventsKey>;
@@ -90,6 +91,22 @@ export class EditingCreateWorkflowImpl
 
         this._tooltip = this._createTooltip(this._olMap);
 
+        this._enterHandler = (e: KeyboardEvent) => {
+            if (e.code === "Enter" && e.target === this._olMap.getTargetElement()) {
+                const features = this._drawInteraction.getOverlay().getSource().getFeatures();
+
+                /**
+                 * Get the first linear ring of the polygon
+                 * Coordinates include closing vertex, so a triangle has 4, while drawing the
+                 * actual mouse position is an extra vertex, therefor we have to check
+                 * "length > 4" instead of "length >= 4"
+                 */
+                if (features[0] && features[0].getGeometry().getCoordinates()[0].length > 4) {
+                    this._drawInteraction.finishDrawing();
+                }
+            }
+        };
+
         this._escapeHandler = (e: KeyboardEvent) => {
             if (e.code === "Escape" && e.target === this._olMap.getTargetElement()) {
                 this.reset();
@@ -122,6 +139,7 @@ export class EditingCreateWorkflowImpl
         // Add EventListener on focused map to abort actual interaction via `Escape`
         this._mapContainer = this._olMap.getTargetElement() ?? undefined;
         if (this._mapContainer) {
+            this._mapContainer.addEventListener("keydown", this._enterHandler, false);
             this._mapContainer.addEventListener("keydown", this._escapeHandler, false);
         }
 
@@ -154,13 +172,13 @@ export class EditingCreateWorkflowImpl
                     rightHanded: true,
                     decimals: 10
                 });
-            // todo set default properties when saving feature?
             saveCreatedFeature(this._httpService, layerUrl, geoJSONGeometry, projection)
                 .then((featureId) => {
                     this._destroy();
                     this.#waiter?.resolve(featureId);
                 })
                 .catch((err: Error) => {
+                    console.log(err);
                     this._destroy();
                     this.#waiter?.reject(err);
                 });
@@ -168,10 +186,12 @@ export class EditingCreateWorkflowImpl
 
         // update event handler when container changes
         const changedContainer = this._map.on("changed:container", () => {
+            this._mapContainer?.removeEventListener("keydown", this._enterHandler);
             this._mapContainer?.removeEventListener("keydown", this._escapeHandler);
 
             this._mapContainer = this._olMap.getTargetElement() ?? undefined;
             if (this._mapContainer) {
+                this._mapContainer.addEventListener("keydown", this._enterHandler, false);
                 this._mapContainer.addEventListener("keydown", this._escapeHandler, false);
             }
         });
@@ -193,7 +213,6 @@ export class EditingCreateWorkflowImpl
         this.#waiter?.resolve(undefined);
     }
 
-    // TODO: Cancel request
     private _destroy() {
         this._olMap.removeLayer(this._editingLayer);
         this._olMap.removeInteraction(this._drawInteraction);
@@ -208,6 +227,7 @@ export class EditingCreateWorkflowImpl
         });
 
         // Remove event escape listener
+        this._mapContainer?.removeEventListener("keydown", this._enterHandler);
         this._mapContainer?.removeEventListener("keydown", this._escapeHandler);
 
         this._state = "inactive";

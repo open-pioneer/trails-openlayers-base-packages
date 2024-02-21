@@ -16,8 +16,10 @@ import OlBaseLayer from "ol/layer/Base";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import { proxy, ref } from "valtio";
+import { proxyMap } from "valtio/utils";
 import { MAP_ID } from "./MapConfigProviderImpl";
 import { PhotonGeocoder } from "./sources/searchSources";
+import { ResultColumn, ResultListInput } from "@open-pioneer/result-list";
 
 const LOG = createLogger("ol-app:AppModel");
 
@@ -41,6 +43,26 @@ export interface AppState {
      * The sources currently used in the selection component.
      */
     selectionSources: SelectionSource[];
+
+    /**
+     * Key: selection source, Value: Result list metadata.
+     */
+    sourceMetadata: Map<unknown, ResultColumn[]>;
+
+    /**
+     * State for the result list.
+     * This application can show only a single feature collection at a time.
+     */
+    resultListState: {
+        /** Whether the result list is currently shown. */
+        open: boolean;
+
+        /** Incremented to reset result list state. */
+        key: number;
+
+        /** Input used for the result list component. */
+        input: ResultListInput | undefined;
+    };
 }
 
 interface References {
@@ -74,7 +96,13 @@ export class AppModel implements Service {
 
         this._state = proxy<AppState>({
             searchSources: [],
-            selectionSources: []
+            selectionSources: [],
+            sourceMetadata: proxyMap(),
+            resultListState: {
+                input: undefined,
+                open: false,
+                key: 0
+            }
         });
         this.initSearchSources();
         this.initSelectionSources().catch((error) => {
@@ -100,6 +128,25 @@ export class AppModel implements Service {
      */
     get state(): AppState {
         return this._state;
+    }
+
+    /**
+     * Shows the result list with the given input.
+     */
+    setResultListInput(input: ResultListInput) {
+        const oldKey = this._state.resultListState.key;
+        this._state.resultListState = {
+            open: true,
+            key: oldKey + 1,
+            input
+        };
+    }
+
+    /**
+     * Sets the visibility of the result list to the given value.
+     */
+    setResultListVisibility(visible: boolean) {
+        this._state.resultListState.open = visible;
     }
 
     /**
@@ -174,6 +221,11 @@ export class AppModel implements Service {
             });
             this._resources.push(eventHandler, layerSelectionSource);
             this._state.selectionSources.unshift(ref(layerSelectionSource));
+
+            this._state.sourceMetadata.set(
+                ref(layerSelectionSource),
+                opLayer.attributes.resultListMetadata as ResultColumn[]
+            );
         }
     }
 }

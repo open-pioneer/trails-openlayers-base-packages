@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import { MapModel, MapRegistry } from "@open-pioneer/map";
 import { EditingService } from "./api";
-import { EditingCreateWorkflowImpl, EditingUpdateWorkflowImpl } from "./EditingWorkflow";
+import { EditingCreateWorkflowImpl, EditingUpdateWorkflowImpl } from "./EditingWorkflowImpl";
 import { FlatStyleLike } from "ol/style/flat";
 import { ServiceOptions } from "@open-pioneer/runtime";
 import { HttpService } from "@open-pioneer/http";
