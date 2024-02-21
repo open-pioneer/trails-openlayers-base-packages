@@ -152,8 +152,6 @@ export class EditingUpdateWorkflowImpl
                         id: "update.tooltip.select"
                     });
                 } else if (this._state === "active:drawing") {
-                    // TODO: Zurücksetzen der Geometrie bei "".reset()""
-
                     const layerUrl = this._editLayerURL;
 
                     this._setState("active:saving");
@@ -205,6 +203,8 @@ export class EditingUpdateWorkflowImpl
     }
 
     reset() {
+        // TODO Geometrieänderung zurücksetzen
+
         const selectedFeatures = this._selectInteraction.getFeatures();
         if (selectedFeatures.getLength() > 0) {
             this._selectInteraction.getFeatures().remove(selectedFeatures.item(0));
