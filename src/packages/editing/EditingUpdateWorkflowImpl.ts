@@ -227,7 +227,6 @@ export class EditingUpdateWorkflowImpl
         this.#waiter?.resolve(undefined);
     }
 
-    // TODO: Cancel request
     private _destroy() {
         this._olMap.removeLayer(this._editingLayer);
         this._olMap.removeInteraction(this._selectInteraction);
