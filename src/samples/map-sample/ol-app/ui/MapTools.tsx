@@ -25,7 +25,6 @@ export interface ToolState {
     measurementActive: boolean;
     selectionActive: boolean;
     overviewMapActive: boolean;
-    resultListActive: boolean;
 }
 
 export interface MapToolsProps {

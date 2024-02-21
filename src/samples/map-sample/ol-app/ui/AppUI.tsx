@@ -52,8 +52,7 @@ export function AppUI() {
     const toolState: ToolState = {
         ...currentToolState,
         measurementActive: currentInteractionType === "measurement",
-        selectionActive: currentInteractionType === "selection",
-        resultListActive: false
+        selectionActive: currentInteractionType === "selection"
     };
 
     // Called when a map tool is toggled on or off.

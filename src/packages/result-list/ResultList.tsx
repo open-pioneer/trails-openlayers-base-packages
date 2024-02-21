@@ -7,7 +7,6 @@ import { useIntl } from "open-pioneer:react-hooks";
 import { FC, RefObject, useEffect, useMemo, useRef, useState } from "react";
 import { DataTable } from "./DataTable/DataTable";
 import { createColumns } from "./DataTable/createColumns";
-import { ResultListSelectionChangedEvent } from "./api";
 
 /**
  * Configures a column in the result list component.
@@ -71,6 +70,14 @@ export interface ResultListInput {
      * Every feature will be rendered as an individual row.
      */
     data: BaseFeature[];
+}
+
+/**
+ * Emitted when the selection within the ResultList changes.
+ */
+export interface ResultListSelectionChangedEvent {
+    features: BaseFeature[];
+    getFeatureIds: () => (number | string)[];
 }
 
 /**

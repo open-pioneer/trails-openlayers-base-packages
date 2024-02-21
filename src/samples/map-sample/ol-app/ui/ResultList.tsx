@@ -7,20 +7,20 @@ import { useSnapshot } from "valtio";
 import { AppModel } from "../AppModel";
 import { MAP_ID } from "../MapConfigProviderImpl";
 import { BaseFeature } from "@open-pioneer/map";
-import { ResultListSelectionChangedEvent } from "@open-pioneer/result-list/api";
 import { useState, useCallback } from "react";
+import { ResultListSelectionChangedEvent } from "@open-pioneer/result-list/ResultList";
 
 export function ResultListComponent() {
     const appModel = useService<unknown>("ol-app.AppModel") as AppModel;
     const state = useSnapshot(appModel.state).resultListState;
-    // eslint-disable-next-line unused-imports/no-unused-vars
     const [selectedFeatures, setSelectedFeatures] = useState<BaseFeature[]>([]);
-    // eslint-disable-next-line unused-imports/no-unused-vars
     const [selectedIds, setSelectedIds] = useState<(string | number)[]>([]);
     const selectionChangeListener = useCallback((_event: ResultListSelectionChangedEvent) => {
         setSelectedFeatures(_event.features);
         setSelectedIds(_event.getFeatureIds());
     }, []);
+    console.log("Anzahl Features: " + selectedFeatures.length);
+    console.log("SelectedIds: " + selectedIds.toString());
     return (
         state.input && (
             <Box

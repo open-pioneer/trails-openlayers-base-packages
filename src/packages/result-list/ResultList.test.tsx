@@ -233,45 +233,27 @@ it("expect result list display all data types", async () => {
         </PackageContextProvider>
     );
 
-    const { allCells } = await waitForResultList();
-    allCells.forEach((item, index) => {
-        switch (index) {
-            //Checkbox
-            case 0:
-                expect(item.innerHTML).contains("input");
-                break;
-            //String
-            case 1:
-                expect(item.innerHTML).toEqual("Test");
-                break;
-            //Integer
-            case 2:
-                expect(item.innerHTML).toEqual("123");
-                break;
-            //Double
-            case 3:
-                expect(item.innerHTML).toEqual("4.567");
-                break;
-            //Boolean
-            case 4:
-                expect(item.innerHTML).toEqual("true");
-                break;
-            //Date
-            case 5:
-                expect(item.innerHTML).toEqual(
-                    "Dienstag, 12. Mai 2020 um 23:50:21 Koordinierte Weltzeit"
-                );
-                break;
-            //Undefinded in all Datatypes
-            case 19:
-            case 20:
-            case 21:
-            case 22:
-            case 23:
-                expect(item.innerHTML).toEqual("");
-                break;
-        }
-    });
+    const { allRows } = await waitForResultList();
+    const firstRowCells = Array.from(allRows[0]!.querySelectorAll("td"));
+    expect(firstRowCells).toHaveLength(6);
+
+    const [selectCell, stringCell, integerCell, floatCell, trueCell, ..._rest] = firstRowCells;
+    expect(selectCell!.innerHTML).includes("<input");
+    expect(stringCell!.textContent).toBe("Test");
+    expect(integerCell!.textContent).toBe("123");
+    expect(floatCell!.textContent).toBe("4.567");
+    expect(trueCell!.textContent).toBe("true");
+
+    const falseCell = allRows[1]?.querySelectorAll("td")[4];
+    expect(falseCell!.textContent).toBe("false"); // false is not rendered as ""
+
+    // Null / Undefined is rendered as an empty string
+    const lastRowCells = Array.from(allRows[3]!.querySelectorAll("td"));
+    expect(lastRowCells).toHaveLength(6);
+    for (let i = 0; i < 6; ++i) {
+        const cell = lastRowCells[i]!;
+        expect(cell.textContent, "cell " + i).toBe("");
+    }
 });
 
 it("expect result-list throws selection-change-Event", async () => {

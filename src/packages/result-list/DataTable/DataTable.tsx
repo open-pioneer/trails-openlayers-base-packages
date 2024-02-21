@@ -26,7 +26,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { ColumnResizer } from "./ColumnResizer";
 import { ColumnSortIndicator } from "./ColumnSortIndicator";
 import { useSetupTable } from "./useSetupTable";
-import { ResultListSelectionChangedEvent } from "../api";
+import { ResultListSelectionChangedEvent } from "../ResultList";
 const LOG = createLogger("result-list:DataTable");
 
 export interface DataTableProps<Data extends BaseFeature> {
