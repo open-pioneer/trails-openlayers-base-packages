@@ -91,16 +91,14 @@ If you want to display a cell value as a very customizable react component, you 
 // Simple usage of a render function
 // The `renderCell` function is called for every feature.
 // It should be efficient because it can be invoked many times.
-import {BaseFeature} from "./BaseFeature";
-
 const columns = [
     {
         displayName: "ID",
-        renderCell: (item: BaseFeature) => (
-            <chakra.div>{`This item has the following ID: ${item.id}`}</>
+        renderCell: ({ feature }) => (
+            <chakra.div>{`This item has the following ID: ${feature.id}`}</chakra.div>
         )
     }
-]
+];
 ```
 
 ### Selection

@@ -3,10 +3,10 @@
 import { chakra } from "@open-pioneer/chakra-integration";
 import { BaseFeature } from "@open-pioneer/map";
 import { PackageIntl } from "@open-pioneer/runtime";
-import { CellContext, createColumnHelper } from "@tanstack/react-table";
+import { createColumnHelper } from "@tanstack/react-table";
 import { Table as TanstackTable } from "@tanstack/table-core/build/lib/types";
+import { FormatOptions, ResultColumn } from "../ResultList";
 import { SelectCheckbox } from "./SelectCheckbox";
-import { ResultColumn, FormatOptions } from "../ResultList";
 
 export const SELECT_COLUMN_SIZE = 70;
 
@@ -65,10 +65,14 @@ function createColumn(options: CreateColumnOptions) {
         {
             id: id,
             cell: (info) => {
+                const cellValue = info.getValue();
                 if (column.renderCell) {
-                    return column.renderCell(info.row.original);
+                    return column.renderCell({
+                        feature: info.row.original,
+                        value: cellValue
+                    });
                 }
-                return renderFunc(info, intl, formatOptions);
+                return renderFunc(cellValue, intl, formatOptions);
             },
             header: column.displayName ?? column.propertyName,
             size: columnWidth
@@ -76,12 +80,7 @@ function createColumn(options: CreateColumnOptions) {
     );
 }
 
-function renderFunc<BaseFeature>(
-    info: CellContext<BaseFeature, unknown>,
-    intl: PackageIntl,
-    formatOptions?: FormatOptions
-) {
-    const cellValue = info.getValue();
+function renderFunc(cellValue: unknown, intl: PackageIntl, formatOptions?: FormatOptions) {
     if (cellValue === null || cellValue === undefined) return "";
     const type = typeof cellValue;
     const formatNumber = (num: number | bigint) => {

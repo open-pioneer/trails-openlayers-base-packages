@@ -13,7 +13,10 @@ import {
     Stack,
     Text,
     UnorderedList,
-    VStack
+    VStack,
+    Tooltip,
+    chakra,
+    Checkbox
 } from "@open-pioneer/chakra-integration";
 import { BaseFeature, MapAnchor, MapContainer } from "@open-pioneer/map";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
@@ -85,6 +88,11 @@ export function AppUI() {
                                             <MenuList>
                                                 <MenuItem onClick={() => fillResultList(PERSONS)}>
                                                     Persons
+                                                </MenuItem>
+                                                <MenuItem
+                                                    onClick={() => fillResultList(CUSTOM_RENDER)}
+                                                >
+                                                    Custom render
                                                 </MenuItem>
                                                 <MenuItem onClick={() => fillResultList(GENERATED)}>
                                                     Generated
@@ -275,6 +283,55 @@ const GENERATED: ResultListInput = {
         }
     }
 };
+
+const CUSTOM_RENDER: ResultListInput = {
+    data: [
+        {
+            id: 1,
+            properties: {
+                "bool": true
+            }
+        },
+        {
+            id: 2,
+            properties: {
+                "bool": false
+            }
+        },
+        {
+            id: 3,
+            properties: {
+                "bool": undefined
+            }
+        }
+    ],
+    columns: [
+        {
+            displayName: "id (with tooltip)",
+            getPropertyValue(feature) {
+                return feature.id;
+            },
+            renderCell({ feature }) {
+                return <DisplayFeatureId id={feature.id} />;
+            }
+        },
+        {
+            displayName: "boolean as checkbox (read only)",
+            propertyName: "bool",
+            renderCell({ value }) {
+                return <Checkbox isIndeterminate={value === undefined} isChecked={!!value} />;
+            }
+        }
+    ]
+};
+
+function DisplayFeatureId(props: { id: string | number }) {
+    return (
+        <Tooltip label={`tooltip for feature ${props.id}`} placement="top">
+            <chakra.span>{props.id}</chakra.span>
+        </Tooltip>
+    );
+}
 
 const LONG_STRINGS: ResultListInput = {
     data: [
