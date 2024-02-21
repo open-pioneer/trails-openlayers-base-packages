@@ -121,7 +121,6 @@ export class EditingUpdateWorkflowImpl
     }
 
     private _start() {
-        console.log("XXX");
         this._olMap.addLayer(this._editingLayer);
         this._olMap.addInteraction(this._selectInteraction);
         this._olMap.addInteraction(this._modifyInteraction);
@@ -143,9 +142,6 @@ export class EditingUpdateWorkflowImpl
         });
 
         const select = this._selectInteraction.on("select", (e) => {
-            console.log(e.selected);
-            console.log(e.deselected);
-
             if (e.selected.length === 1 && e.deselected.length === 0) {
                 this._tooltip.element.textContent = this._intl.formatMessage({
                     id: "update.tooltip.deselect"
