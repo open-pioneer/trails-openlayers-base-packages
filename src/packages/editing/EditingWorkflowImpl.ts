@@ -47,6 +47,7 @@ export class EditingWorkflowImpl
     private _olMap: OlMap;
     private _mapContainer: HTMLElement | undefined;
     private _tooltip: Tooltip;
+    private _enterHandler: (e: KeyboardEvent) => void;
     private _escapeHandler: (e: KeyboardEvent) => void;
 
     private _interactionListener: Array<EventsKey>;
@@ -89,6 +90,22 @@ export class EditingWorkflowImpl
 
         this._tooltip = this._createTooltip(this._olMap);
 
+        this._enterHandler = (e: KeyboardEvent) => {
+            if (e.code === "Enter" && e.target === this._olMap.getTargetElement()) {
+                const features = this._drawInteraction.getOverlay().getSource().getFeatures();
+
+                /**
+                 * Get the first linear ring of the polygon
+                 * Coordinates include closing vertex, so a triangle has 4, while drawing the
+                 * actual mouse position is an extra vertex, therefor we have to check
+                 * "length > 4" instead of "length >= 4"
+                 */
+                if (features[0] && features[0].getGeometry().getCoordinates()[0].length > 4) {
+                    this._drawInteraction.finishDrawing();
+                }
+            }
+        };
+
         this._escapeHandler = (e: KeyboardEvent) => {
             if (e.code === "Escape" && e.target === this._olMap.getTargetElement()) {
                 this.reset();
@@ -121,6 +138,7 @@ export class EditingWorkflowImpl
         // Add EventListener on focused map to abort actual interaction via `Escape`
         this._mapContainer = this._olMap.getTargetElement() ?? undefined;
         if (this._mapContainer) {
+            this._mapContainer.addEventListener("keydown", this._enterHandler, false);
             this._mapContainer.addEventListener("keydown", this._escapeHandler, false);
         }
 
@@ -167,10 +185,12 @@ export class EditingWorkflowImpl
 
         // update event handler when container changes
         const changedContainer = this._map.on("changed:container", () => {
+            this._mapContainer?.removeEventListener("keydown", this._enterHandler);
             this._mapContainer?.removeEventListener("keydown", this._escapeHandler);
 
             this._mapContainer = this._olMap.getTargetElement() ?? undefined;
             if (this._mapContainer) {
+                this._mapContainer.addEventListener("keydown", this._enterHandler, false);
                 this._mapContainer.addEventListener("keydown", this._escapeHandler, false);
             }
         });
@@ -204,6 +224,7 @@ export class EditingWorkflowImpl
         });
 
         // Remove event escape listener
+        this._mapContainer?.removeEventListener("keydown", this._enterHandler);
         this._mapContainer?.removeEventListener("keydown", this._escapeHandler);
 
         this._state = "inactive";
