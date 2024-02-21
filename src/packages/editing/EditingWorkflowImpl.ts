@@ -281,7 +281,6 @@ export class EditingUpdateWorkflowImpl
     private _intl: PackageIntl;
 
     private _map: MapModel;
-    private _polygonDrawStyle: FlatStyleLike;
     private _state: EditingWorkflowState;
     private _editLayerURL: URL;
 
@@ -300,7 +299,6 @@ export class EditingUpdateWorkflowImpl
     constructor(
         map: MapModel,
         ogcApiFeatureLayerUrl: URL,
-        polygonDrawStyle: FlatStyleLike,
         httpService: HttpService,
         mapRegistry: MapRegistry,
         intl: PackageIntl
@@ -309,8 +307,6 @@ export class EditingUpdateWorkflowImpl
         this._mapRegistry = mapRegistry;
         this._httpService = httpService;
         this._intl = intl;
-
-        this._polygonDrawStyle = polygonDrawStyle;
 
         this._map = map;
         this._olMap = map.olMap;
