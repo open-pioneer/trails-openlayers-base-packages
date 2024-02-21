@@ -19,8 +19,6 @@ exports[`expect empty metadata to throw error 1`] = `"No columns were defined. T
 
 exports[`expect render function to be applied 1`] = `"This item has the following ID: 1"`;
 
-exports[`expect render function to be used 1`] = `"This item has the following ID: 1"`;
-
 exports[`expect result list to be created successfully 1`] = `
 <div
   class="result-list css-u718rw"

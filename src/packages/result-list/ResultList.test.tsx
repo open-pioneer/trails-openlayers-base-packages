@@ -6,7 +6,6 @@ import { act, fireEvent, render, screen, waitFor } from "@testing-library/react"
 import { SpyInstance, afterEach, beforeEach, expect, it, vi } from "vitest";
 import { ResultColumn, ResultList, ResultListInput } from "./ResultList";
 import { Point } from "ol/geom";
-import { createIntl } from "@open-pioneer/test-utils/vanilla";
 
 afterEach(() => {
     vi.restoreAllMocks();
@@ -16,8 +15,6 @@ let errorSpy!: SpyInstance;
 beforeEach(() => {
     errorSpy = vi.spyOn(console, "error");
 });
-
-const intlDE = createIntl({ locale: "de-DE" });
 
 function doNothing() {}
 
@@ -246,7 +243,7 @@ it("expect result list display all data types except dates", async () => {
     const firstRowCells = Array.from(allRows[0]!.querySelectorAll("td"));
     expect(firstRowCells).toHaveLength(6);
 
-    const [selectCell, stringCell, integerCell, floatCell, trueCell, ..._rest] = firstRowCells;
+    const [selectCell, stringCell, integerCell, floatCell, trueCell] = firstRowCells;
     expect(selectCell!.innerHTML).includes("<input");
     expect(stringCell!.textContent).toBe("Test");
     expect(integerCell!.textContent).toBe("123");
@@ -294,7 +291,7 @@ it("expect result list display date in given format", async () => {
 
     const { allRows } = await waitForResultList();
     const firstRowCells = Array.from(allRows[0]!.querySelectorAll("td"));
-    const [selectCell, dateCell, ..._rest] = firstRowCells;
+    const [_, dateCell] = firstRowCells;
     expect(dateCell!.textContent).toBe(dateFormater.format(new Date("2020-05-12T23:50:21.817Z")));
 
     renderResult.rerender(
@@ -320,7 +317,7 @@ it("expect render function to be applied", async () => {
 
     const { allRows } = await waitForResultList();
     const firstRowCells = Array.from(allRows[0]!.querySelectorAll("td"));
-    const [selectCell, dateCell, ..._rest] = firstRowCells;
+    const [_, dateCell] = firstRowCells;
     expect(dateCell!.textContent).toMatchSnapshot();
 });
 
