@@ -85,7 +85,8 @@ export class EditingUpdateWorkflowImpl
         this._selectInteraction = new Select({});
 
         this._modifyInteraction = new Modify({
-            features: this._selectInteraction.getFeatures()
+            features: this._selectInteraction.getFeatures(),
+            style: this._polygonDrawStyle
         });
 
         this._tooltip = this._createTooltip(this._olMap);
