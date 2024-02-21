@@ -105,7 +105,7 @@ function renderFunc<BaseFeature>(
         case "object": {
             if (cellValue instanceof Date)
                 return intl.formatDate(cellValue, formatOptions?.dateOptions);
-            return cellValue;
+            return cellValue.toString();
         }
         default:
             return String(cellValue);
