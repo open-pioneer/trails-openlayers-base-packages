@@ -3,13 +3,14 @@ messages:
   tocTitle: "Karteninhalt"
   legendTitle: "Legende"
   measurementTitle: "Messen"
-  selectionTitle: Selektieren
+  selectionTitle: "Selektieren"
   overviewMapTitle: "Übersichtskarte"
   startEditingTitle: "Editing - Neues Feature erstellen"
   stopEditingTitle: "Editing - Stoppen"
   resetEditingTitle: "Editing - Zurücksetzen"
   editing:
     featureCreated: "Objekt erstellt mit ID: {featureId}"
+  resultListTitle: "Ergebnisliste"
   ariaLabel:
     header: "Kopfleiste"
     footer: "Fussleiste mit Maßstabsangabe, Raumbezugssystem und Koordinatenanzeige"

@@ -11,6 +11,7 @@ import {
     PiBookmarksSimpleBold,
     PiImagesLight,
     PiListLight,
+    PiListMagnifyingGlassFill,
     PiMapTrifold,
     PiPencil,
     PiPencilSlash,
@@ -24,6 +25,8 @@ import VectorSource from "ol/source/Vector";
 import { useEffect } from "react";
 import { NotificationService } from "@open-pioneer/notifier";
 import { PackageIntl } from "@open-pioneer/runtime";
+import { AppModel } from "../AppModel";
+import { useSnapshot } from "valtio";
 
 export interface ToolState {
     bookmarksActive: boolean;
@@ -50,6 +53,9 @@ export interface MapToolsProps {
 export function MapTools(props: MapToolsProps) {
     const { toolState, onToolStateChange } = props;
     const intl = useIntl();
+    const appModel = useService<unknown>("ol-app.AppModel") as AppModel;
+    const resultListState = useSnapshot(appModel.state).resultListState;
+    const resultListOpen = resultListState.open;
     const { map } = useMapModel(MAP_ID);
     const editingService = useService<EditingService>("editing.EditingService");
     const notificationService = useService<NotificationService>("notifier.NotificationService");
@@ -84,6 +90,14 @@ export function MapTools(props: MapToolsProps) {
                 onClick={() => editingService.reset(MAP_ID)}
             />
 
+            {resultListState.input && (
+                <ToolButton
+                    label={intl.formatMessage({ id: "resultListTitle" })}
+                    icon={<PiListMagnifyingGlassFill />}
+                    isActive={resultListState.open}
+                    onClick={() => appModel.setResultListVisibility(!resultListOpen)}
+                />
+            )}
             <ToolButton
                 label={intl.formatMessage({ id: "spatialBookmarkTitle" })}
                 icon={<PiBookmarksSimpleBold />}

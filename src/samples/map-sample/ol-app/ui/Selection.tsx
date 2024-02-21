@@ -23,9 +23,10 @@ export function SelectionComponent() {
     const { map } = useMapModel(MAP_ID);
     const appModel = useService<AppModel>("ol-app.AppModel");
     const sources = useSnapshot(appModel.state).selectionSources;
+    const sourceMetadata = useSnapshot(appModel.state).sourceMetadata;
 
     function onSelectionComplete(event: SelectionCompleteEvent) {
-        const results = event.results;
+        const { source, results } = event;
 
         if (!map) {
             console.debug("Map not ready");
@@ -37,6 +38,14 @@ export function SelectionComponent() {
         if (geometries.length > 0) {
             highlightAndZoom(map, geometries);
         }
+
+        const currentMetadata = sourceMetadata.get(source);
+        if (!currentMetadata) {
+            console.warn("Can not show results because no metadata could be found");
+            return;
+        }
+
+        appModel.setResultListInput({ columns: currentMetadata, data: results });
 
         notifier.notify({
             level: "info",
