@@ -265,10 +265,10 @@ const GENERATED: ResultListInput = {
         }
     ],
     formatOptions: {
-        formatNumberOptions: {
+        numberOptions: {
             maximumFractionDigits: 2
         },
-        dateTimeFormatOptions: {
+        dateOptions: {
             timeStyle: "full",
             dateStyle: "full",
             timeZone: "UTC"

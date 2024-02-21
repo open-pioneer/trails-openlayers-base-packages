@@ -233,7 +233,7 @@ it("expect result list display all data types except dates", async () => {
                     data: dummyFeatureData,
                     columns: dummyColumns,
                     formatOptions: {
-                        formatNumberOptions: { maximumFractionDigits: 3 }
+                        numberOptions: { maximumFractionDigits: 3 }
                     }
                 }}
                 mapId="foo"
@@ -279,8 +279,8 @@ it("expect result list display date in given format", async () => {
                 data: dummyDateFeatureData,
                 columns: dummyDateColumns,
                 formatOptions: {
-                    formatNumberOptions: { maximumFractionDigits: 3 },
-                    dateTimeFormatOptions: dateTimeFormatOptions
+                    numberOptions: { maximumFractionDigits: 3 },
+                    dateOptions: dateTimeFormatOptions
                 }
             }}
             mapId="foo"

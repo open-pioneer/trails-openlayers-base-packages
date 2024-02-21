@@ -26,10 +26,10 @@ export function SelectionComponent() {
     const sources = useSnapshot(appModel.state).selectionSources;
     const sourceMetadata = useSnapshot(appModel.state).sourceMetadata;
     const formatOptions: FormatOptions = {
-        formatNumberOptions: {
+        numberOptions: {
             maximumFractionDigits: 3
         },
-        dateTimeFormatOptions: {
+        dateOptions: {
             dateStyle: "medium",
             timeStyle: "medium",
             timeZone: "UTC"

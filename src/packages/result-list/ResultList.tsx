@@ -67,11 +67,11 @@ export interface FormatOptions {
     /**
      * To specify the format of number type values
      */
-    formatNumberOptions?: FormatNumberOptions;
+    numberOptions?: FormatNumberOptions;
     /**
      *  To specify the format of date type values
      */
-    dateTimeFormatOptions?: Intl.DateTimeFormatOptions;
+    dateOptions?: Intl.DateTimeFormatOptions;
 }
 
 /**

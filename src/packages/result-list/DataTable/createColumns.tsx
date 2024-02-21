@@ -86,7 +86,7 @@ function renderFunc<BaseFeature>(
     const type = typeof cellValue;
     const formatNumber = (num: number | bigint) => {
         if (Number.isNaN(num)) return "";
-        return intl.formatNumber(num, formatOptions?.formatNumberOptions);
+        return intl.formatNumber(num, formatOptions?.numberOptions);
     };
 
     switch (type) {
@@ -104,14 +104,8 @@ function renderFunc<BaseFeature>(
         }
         case "object": {
             if (cellValue instanceof Date)
-                return intl.formatDate(cellValue, formatOptions?.dateTimeFormatOptions);
-
-            const cellStr = cellValue.toString();
-            const isDateString = !isNaN(Date.parse(cellStr));
-            if (isDateString) {
-                return intl.formatDate(cellStr, formatOptions?.dateTimeFormatOptions);
-            }
-            return cellStr;
+                return intl.formatDate(cellValue, formatOptions?.dateOptions);
+            return cellValue;
         }
         default:
             return String(cellValue);
