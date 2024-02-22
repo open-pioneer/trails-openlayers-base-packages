@@ -138,7 +138,7 @@ export class EditingUpdateWorkflowImpl
 
         const modify = this._modifyInteraction.on("modifystart", () => {
             this._setState("active:drawing");
-            
+
             // TODO ab hier dürfen keine anderen Features mehr auswählbar sein; filter function der selectInteraction aktualisieren
 
             this._tooltip.element.textContent = this._intl.formatMessage({
@@ -184,7 +184,13 @@ export class EditingUpdateWorkflowImpl
                             decimals: 10
                         });
 
-                    saveUpdatedFeature(this._httpService, layerUrl, featureId, geoJSONGeometry, projection)
+                    saveUpdatedFeature(
+                        this._httpService,
+                        layerUrl,
+                        featureId,
+                        geoJSONGeometry,
+                        projection
+                    )
                         .then((featureId) => {
                             this._destroy();
                             this.#waiter?.resolve(featureId);
