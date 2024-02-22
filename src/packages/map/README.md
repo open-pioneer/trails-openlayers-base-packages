@@ -83,7 +83,7 @@ Such a provider is typically located in an app.
 Example: Configuration to register a service providing `map.MapConfigProvider`.
 
 ```js
-// YOUR-APP/build.config.mjs
+// build.config.mjs
 import { defineBuildConfig } from "@open-pioneer/build-support";
 
 export default defineBuildConfig({

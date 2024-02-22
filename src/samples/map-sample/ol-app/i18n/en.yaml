@@ -5,6 +5,11 @@ messages:
   measurementTitle: "Measurement"
   selectionTitle: "Selection"
   overviewMapTitle: "Overview map"
+  startEditingTitle: "Editing - Create new feature"
+  stopEditingTitle: "Editing - Stop"
+  resetEditingTitle: "Editing - Reset"
+  editing:
+    featureCreated: "Created feature with ID: {featureId}"
   resultListTitle: "Result-List"
   ariaLabel:
     header: "Header bar"

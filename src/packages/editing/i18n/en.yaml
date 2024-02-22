@@ -1,0 +1,5 @@
+messages:
+  title: Editing
+  tooltip:
+    begin: Click to start creating the geometry
+    continue: Double click to finish the geometry and save the feature
