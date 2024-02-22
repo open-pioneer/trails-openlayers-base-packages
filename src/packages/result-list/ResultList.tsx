@@ -118,7 +118,7 @@ export interface ResultListInput {
 /**
  * Emitted when the selection within the ResultList changes.
  */
-export interface ResultListSelectionChangedEvent {
+export interface ResultListSelectionChangeEvent {
     features: BaseFeature[];
     getFeatureIds: () => (number | string)[];
 }
@@ -140,7 +140,7 @@ export interface ResultListProps extends CommonComponentProps {
     /**
      * This handler is called whenever the user has changed the selected features in the result-list
      */
-    onSelectionChanged?: (event: ResultListSelectionChangedEvent) => void;
+    onSelectionChange?: (event: ResultListSelectionChangeEvent) => void;
 }
 
 /**
@@ -151,7 +151,7 @@ export const ResultList: FC<ResultListProps> = (props) => {
     const intl = useIntl();
     const {
         input: { data, columns, formatOptions },
-        onSelectionChanged
+        onSelectionChange
     } = props;
     if (columns.length === 0) {
         throw Error("No columns were defined. The result list cannot be displayed.");
@@ -175,7 +175,7 @@ export const ResultList: FC<ResultListProps> = (props) => {
             <DataTable
                 columns={dataTableColumns}
                 data={data}
-                onSelectionChanged={onSelectionChanged}
+                onSelectionChange={onSelectionChange}
             />
         </Box>
     );

@@ -330,7 +330,7 @@ it("expect result-list throws selection-change-Event", async () => {
             <ResultList
                 input={{ data: dummyFeatureData, columns: dummyColumns }}
                 data-testid="result-list"
-                onSelectionChanged={selectionChangeListener}
+                onSelectionChange={selectionChangeListener}
             />
         </PackageContextProvider>
     );

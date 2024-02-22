@@ -106,18 +106,18 @@ A checkbox in the header of the table allows to select (or deselect) _all_ featu
 
 ### Listening for selection changes
 
-​The `ResultList` supports listening to selection changes via the optional property `onSelectionChanged`.
+​The `ResultList` supports listening to selection changes via the optional property `onSelectionChange`.
 An event handler function can be passed that will be invoked whenever the user changes the selection.
 
 ```ts
 import { ResultList } from "@open-pioneer/result-list";
 
-const selectionChangeListener = useCallback((event: ResultListSelectionChangedEvent) => {
+const selectionChangeListener = useCallback((event: ResultListSelectionChangeEvent) => {
     // Logs the currently selected features
     console.log("selection changed", event.features);
 }, []);
 
-<ResultList input={input} onSelectionChanged={selectionChangeListener}/>
+<ResultList input={input} onSelectionChange={selectionChangeListener}/>
 ```
 
 ### Track selected features
@@ -127,13 +127,13 @@ To keep track of the currently selected features (or their ids), store them in a
 ```tsx
 const [selectedFeatures, setSelectedFeatures] = useState<BaseFeature[]>([]);
 
-const selectionChangeListener = useCallback((event: ResultListSelectionChangedEvent) => {
+const selectionChangeListener = useCallback((event: ResultListSelectionChangeEvent) => {
     setSelectedFeatures(event.features);
     // Helper function if you're only interested in the feature ids:
     // event.getFeatureIds()
 }, []);
 
-<ResultList input={input} onSelectionChanged={selectionChangeListener} />;
+<ResultList input={input} onSelectionChange={selectionChangeListener} />;
 ```
 
 ### Sorting data

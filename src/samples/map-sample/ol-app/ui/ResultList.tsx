@@ -8,14 +8,14 @@ import { AppModel } from "../AppModel";
 import { MAP_ID } from "../MapConfigProviderImpl";
 import { BaseFeature } from "@open-pioneer/map";
 import { useState, useCallback, useEffect } from "react";
-import { ResultListSelectionChangedEvent } from "@open-pioneer/result-list/ResultList";
+import { ResultListSelectionChangeEvent } from "@open-pioneer/result-list/ResultList";
 
 export function ResultListComponent() {
     const appModel = useService<unknown>("ol-app.AppModel") as AppModel;
     const state = useSnapshot(appModel.state).resultListState;
     const [selectedFeatures, setSelectedFeatures] = useState<BaseFeature[]>([]);
     const [selectedIds, setSelectedIds] = useState<(string | number)[]>([]);
-    const selectionChangeListener = useCallback((event: ResultListSelectionChangedEvent) => {
+    const selectionChangeListener = useCallback((event: ResultListSelectionChangeEvent) => {
         setSelectedFeatures(event.features);
         setSelectedIds(event.getFeatureIds());
     }, []);
@@ -44,7 +44,7 @@ export function ResultListComponent() {
                     key={state.key}
                     input={state.input}
                     mapId={MAP_ID}
-                    onSelectionChanged={selectionChangeListener}
+                    onSelectionChange={selectionChangeListener}
                 />
             </Box>
         )
