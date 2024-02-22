@@ -337,17 +337,13 @@ it("expect result-list throws selection-change-Event", async () => {
 
     const { selectAllSelect } = await waitForResultList();
 
-    // Result-List has empty Array
-    let features = getSelectionsEvent(selectionChangeListener, 0).features;
-    expect(features).toEqual([]);
-
     //Selection All
     act(() => {
         fireEvent.click(selectAllSelect!);
     });
-    features = getSelectionsEvent(selectionChangeListener, 1).features;
+    let features = getSelectionsEvent(selectionChangeListener, 0).features;
     const realIds = features.map((feature: BaseFeature) => feature.id);
-    const eventIds = getSelectionsEvent(selectionChangeListener, 1).getFeatureIds();
+    const eventIds = getSelectionsEvent(selectionChangeListener, 0).getFeatureIds();
 
     // Result-List has Array of selected Features
     expect(features).toEqual(dummyFeatureData);
@@ -361,16 +357,15 @@ it("expect result-list throws selection-change-Event", async () => {
     });
 
     // Result-List has empty Array
-    features = getSelectionsEvent(selectionChangeListener, 2).features;
+    features = getSelectionsEvent(selectionChangeListener, 1).features;
     expect(features).toEqual([]);
 
     /**
-     * 1 Start package
      * 1 Selection
      * 1 Deselection
-     * = 3
+     * = 2
      */
-    expect(selectionChangeListener).toHaveBeenCalledTimes(3);
+    expect(selectionChangeListener).toHaveBeenCalledTimes(2);
 });
 
 function getSelectionsEvent(listener: Mock, call: number) {
