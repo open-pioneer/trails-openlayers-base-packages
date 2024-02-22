@@ -5,7 +5,6 @@ import { MapModel, TOPMOST_LAYER_Z } from "@open-pioneer/map";
 import { Draw } from "ol/interaction";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
-import { MapRegistry } from "@open-pioneer/map";
 import { HttpService } from "@open-pioneer/http";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { FlatStyleLike } from "ol/style/flat";
@@ -26,13 +25,20 @@ interface Tooltip extends Resource {
     element: HTMLDivElement;
 }
 
+interface EditingWorkflowProps {
+    map: MapModel;
+    ogcApiFeatureLayerUrl: URL;
+    polygonDrawStyle: FlatStyleLike;
+    httpService: HttpService;
+    intl: PackageIntl;
+}
+
 export class EditingWorkflowImpl
     extends EventEmitter<EditingWorkflowEvents>
     implements EditingWorkflow
 {
     #waiter: ManualPromise<string | undefined> | undefined;
 
-    private readonly _mapRegistry: MapRegistry;
     private _httpService: HttpService;
     private _intl: PackageIntl;
 
@@ -53,25 +59,17 @@ export class EditingWorkflowImpl
     private _interactionListener: Array<EventsKey>;
     private _mapListener: Array<Resource>;
 
-    constructor(
-        map: MapModel,
-        ogcApiFeatureLayerUrl: URL,
-        polygonDrawStyle: FlatStyleLike,
-        httpService: HttpService,
-        mapRegistry: MapRegistry,
-        intl: PackageIntl
-    ) {
+    constructor(options: EditingWorkflowProps) {
         super();
-        this._mapRegistry = mapRegistry;
-        this._httpService = httpService;
-        this._intl = intl;
+        this._httpService = options.httpService;
+        this._intl = options.intl;
 
-        this._polygonDrawStyle = polygonDrawStyle;
+        this._polygonDrawStyle = options.polygonDrawStyle;
 
-        this._map = map;
-        this._olMap = map.olMap;
+        this._map = options.map;
+        this._olMap = options.map.olMap;
         this._state = "active:initialized";
-        this._editLayerURL = ogcApiFeatureLayerUrl;
+        this._editLayerURL = options.ogcApiFeatureLayerUrl;
 
         this._drawSource = new VectorSource();
         this._drawLayer = new VectorLayer({
@@ -142,7 +140,7 @@ export class EditingWorkflowImpl
             this._mapContainer.addEventListener("keydown", this._escapeHandler, false);
         }
 
-        this._tooltip.element.classList.remove("hidden");
+        this._tooltip.element.classList.remove("editing-tooltip-hidden");
 
         const drawStart = this._drawInteraction.on("drawstart", () => {
             this._setState("active:drawing");
@@ -237,7 +235,7 @@ export class EditingWorkflowImpl
 
     private _createTooltip(olMap: OlMap): Tooltip {
         const element = document.createElement("div");
-        element.className = "editing-tooltip hidden";
+        element.className = "editing-tooltip editing-tooltip-hidden";
         element.textContent = this._intl.formatMessage({ id: "tooltip.begin" });
 
         const overlay = new Overlay({

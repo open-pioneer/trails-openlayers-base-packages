@@ -222,8 +222,7 @@ function createKatasterLayer(vectorSourceFactory: OgcFeaturesVectorSourceFactory
         collectionId: "katasterbezirk",
         limit: 1000,
         crs: "http://www.opengis.net/def/crs/EPSG/0/25832",
-        attributions:
-            "<a href='https://www.govdata.de/dl-de/by-2-0'>Datenlizenz Deutschland - Namensnennung - Version 2.0</a>"
+        attributions: `Land NRW (${new Date().getFullYear()}), <a href='https://www.govdata.de/dl-de/by-2-0'>Datenlizenz Deutschland - Namensnennung - Version 2.0</a>, <a href='https://ogc-api-test.nrw.de/inspire-us-krankenhaus/v1'>Datenquelle</a>`
     });
 
     return new VectorLayer({
@@ -325,7 +324,7 @@ function createKrankenhausLayer(vectorSourceFactory: OgcFeaturesVectorSourceFact
         collectionId: collectionId,
         limit: 1000,
         crs: "http://www.opengis.net/def/crs/EPSG/0/25832",
-        attributions: "" // todo
+        attributions: `Land NRW (${new Date().getFullYear()}), <a href='https://www.govdata.de/dl-de/by-2-0'>Datenlizenz Deutschland - Namensnennung - Version 2.0</a>, <a href='https://ogc-api-test.nrw.de/inspire-us-krankenhaus/v1'>Datenquelle</a>`
     });
 
     const layer = new VectorLayer({

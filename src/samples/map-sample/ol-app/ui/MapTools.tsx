@@ -156,53 +156,44 @@ function useEditingWorkflow(
         }
 
         function startEditingCreate() {
-            if (map) {
-                try {
-                    const layer = map.layers.getLayerById("krankenhaus") as Layer;
-                    const url = new URL(layer.attributes.collectionURL + "/items");
-                    const workflow = editingService.start(map, url);
-
-                    console.log(url);
-
-                    workflow.on("active:drawing", () => {
-                        console.log("start drawing feature");
-                    });
-
-                    workflow.on("active:saving", () => {
-                        console.log("start saving feature");
-                    });
-
-                    workflow
-                        .whenComplete()
-                        .then((featureId: string | undefined) => {
-                            if (featureId) {
-                                // undefined -> no feature saved
-                                notificationService.notify({
-                                    level: "info",
-                                    message: intl.formatMessage(
-                                        {
-                                            id: "editing.featureCreated"
-                                        },
-                                        { featureId: featureId }
-                                    ),
-                                    displayDuration: 4000
-                                });
-
-                                const vectorLayer = layer?.olLayer as VectorLayer<VectorSource>;
-                                vectorLayer.getSource()?.refresh();
-                            }
-                        })
-                        .catch((error: Error) => {
-                            console.log(error);
-                        })
-                        .finally(() => {
-                            toggleToolState("editingActive", false);
-                        });
-                } catch (error) {
-                    console.log(error);
-                }
-            } else {
+            if (!map) {
                 throw Error("map is undefined");
+            }
+
+            try {
+                const layer = map.layers.getLayerById("krankenhaus") as Layer;
+                const url = new URL(layer.attributes.collectionURL + "/items");
+                const workflow = editingService.start(map, url);
+
+                workflow
+                    .whenComplete()
+                    .then((featureId: string | undefined) => {
+                        if (!featureId) {
+                            return;
+                        }
+
+                        notificationService.notify({
+                            level: "info",
+                            message: intl.formatMessage(
+                                {
+                                    id: "editing.featureCreated"
+                                },
+                                { featureId: featureId }
+                            ),
+                            displayDuration: 4000
+                        });
+
+                        const vectorLayer = layer?.olLayer as VectorLayer<VectorSource>;
+                        vectorLayer.getSource()?.refresh();
+                    })
+                    .catch((error: Error) => {
+                        console.error(error);
+                    })
+                    .finally(() => {
+                        toggleToolState("editingActive", false);
+                    });
+            } catch (error) {
+                console.log(error);
             }
         }
 

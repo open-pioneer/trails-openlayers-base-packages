@@ -114,7 +114,7 @@ describe("tests for stopping an editing", () => {
         expect(stop).toBeUndefined;
     });
 
-    it("should return an error if editing will be stop for a not existing map id", async () => {
+    it("should return an error if editing will be stop for a non existing map id", async () => {
         const { mapId, registry } = await setupMap();
         const map = await registry.expectMapModel(mapId);
 
@@ -178,7 +178,7 @@ describe("tests for resetting an editing", () => {
         expect(reset).toBeUndefined;
     });
 
-    it("should return an error if editing will be reset for a not existing map id", async () => {
+    it("should return an error if editing will be reset for a non existing map id", async () => {
         const { mapId, registry } = await setupMap();
         const map = await registry.expectMapModel(mapId);
 

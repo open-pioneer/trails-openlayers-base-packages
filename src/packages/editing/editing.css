@@ -12,6 +12,6 @@
     font-weight: bold;
 }
 
-.hidden {
+.editing-tooltip-hidden {
     visibility: hidden;
 }
