@@ -12,6 +12,7 @@
         "@open-pioneer/geolocation": "workspace:^",
         "@open-pioneer/http": "^2.1.2",
         "@open-pioneer/legend": "workspace:^",
+        "@open-pioneer/editing": "workspace:^",
         "@open-pioneer/map": "workspace:^",
         "@open-pioneer/map-navigation": "workspace:^",
         "@open-pioneer/measurement": "workspace:^",

@@ -182,6 +182,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                         ]
                     }
                 }),
+                createKrankenhausLayer(this.vectorSourceFactory),
                 createSchulenLayer(),
                 createStrassenLayer(),
                 createAdminAreasNRW(),
@@ -228,8 +229,7 @@ function createKatasterLayer(vectorSourceFactory: OgcFeaturesVectorSourceFactory
         collectionId: "katasterbezirk",
         limit: 1000,
         crs: "http://www.opengis.net/def/crs/EPSG/0/25832",
-        attributions:
-            "<a href='https://www.govdata.de/dl-de/by-2-0'>Datenlizenz Deutschland - Namensnennung - Version 2.0</a>"
+        attributions: `Land NRW (${new Date().getFullYear()}), <a href='https://www.govdata.de/dl-de/by-2-0'>Datenlizenz Deutschland - Namensnennung - Version 2.0</a>, <a href='https://ogc-api-test.nrw.de/inspire-us-krankenhaus/v1'>Datenquelle</a>`
     });
 
     return new VectorLayer({
@@ -320,6 +320,32 @@ function createIsBk5Layer() {
                 ]
             }
         ]
+    });
+}
+
+function createKrankenhausLayer(vectorSourceFactory: OgcFeaturesVectorSourceFactory) {
+    const baseURL = "https://ogc-api-test.nrw.de/inspire-us-krankenhaus/v1";
+    const collectionId = "governmentalservice";
+    const source = vectorSourceFactory.createVectorSource({
+        baseUrl: baseURL,
+        collectionId: collectionId,
+        limit: 1000,
+        crs: "http://www.opengis.net/def/crs/EPSG/0/25832",
+        attributions: `Land NRW (${new Date().getFullYear()}), <a href='https://www.govdata.de/dl-de/by-2-0'>Datenlizenz Deutschland - Namensnennung - Version 2.0</a>, <a href='https://ogc-api-test.nrw.de/inspire-us-krankenhaus/v1'>Datenquelle</a>`
+    });
+
+    const layer = new VectorLayer({
+        source: source
+    });
+
+    return new SimpleLayer({
+        id: "krankenhaus",
+        title: "Krankenhäuser",
+        visible: true,
+        olLayer: layer,
+        attributes: {
+            collectionURL: baseURL + "/collections/" + collectionId
+        }
     });
 }
 

@@ -5,6 +5,11 @@ messages:
   measurementTitle: "Messen"
   selectionTitle: "Selektieren"
   overviewMapTitle: "Übersichtskarte"
+  startEditingTitle: "Editierung - Neues Feature erstellen"
+  stopEditingTitle: "Editierung - Stoppen"
+  resetEditingTitle: "Editierung - Zurücksetzen"
+  editing:
+    featureCreated: "Objekt erstellt mit ID: {featureId}"
   resultListTitle: "Ergebnisliste"
   ariaLabel:
     header: "Kopfleiste"
