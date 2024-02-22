@@ -159,9 +159,14 @@ export class EditingUpdateWorkflowImpl
                 } else if (this._state === "active:drawing") {
                     this._setState("active:saving");
 
-                    const featureId = "TODO"; // TODO featureId des ausgewählten Features ermitteln
-                    // console.log(e.deselected[0]?.getProperties());
-                    const layerUrl = new URL(`${this._editLayerURL.toString()}/item/${featureId}`);
+                    const layerUrl = this._editLayerURL;
+
+                    const featureId = e.deselected[0]?.getId()?.toString();
+                    if (!featureId) {
+                        this._destroy();
+                        this.#waiter?.reject(new Error("no feature id available"));
+                        return;
+                    }
 
                     const geometry = e.deselected[0]?.getGeometry();
                     if (!geometry) {
@@ -179,7 +184,7 @@ export class EditingUpdateWorkflowImpl
                             decimals: 10
                         });
 
-                    saveUpdatedFeature(this._httpService, layerUrl, geoJSONGeometry, projection)
+                    saveUpdatedFeature(this._httpService, layerUrl, featureId, geoJSONGeometry, projection)
                         .then((featureId) => {
                             this._destroy();
                             this.#waiter?.resolve(featureId);

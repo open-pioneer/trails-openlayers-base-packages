@@ -154,7 +154,7 @@ export class EditingCreateWorkflowImpl
         const drawEnd = this._drawInteraction.on("drawend", (e) => {
             this._setState("active:saving");
 
-            const layerUrl = new URL(`${this._editLayerURL.toString()}/items`);
+            const layerUrl = this._editLayerURL;
 
             const geometry = e.feature.getGeometry();
             if (!geometry) {
