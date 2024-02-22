@@ -26,11 +26,13 @@ import React, { useEffect, useMemo, useState } from "react";
 import { ColumnResizer } from "./ColumnResizer";
 import { ColumnSortIndicator } from "./ColumnSortIndicator";
 import { useSetupTable } from "./useSetupTable";
+import { ResultListSelectionChangeEvent } from "../ResultList";
 const LOG = createLogger("result-list:DataTable");
 
 export interface DataTableProps<Data extends BaseFeature> {
     data: Data[];
     columns: ColumnDef<Data>[];
+    onSelectionChange?(event: ResultListSelectionChangeEvent): void;
 }
 
 export function DataTable<Data extends BaseFeature>(props: DataTableProps<Data>) {

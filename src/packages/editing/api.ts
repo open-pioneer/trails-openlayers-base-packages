@@ -22,7 +22,7 @@ export interface EditingWorkflowEvents {
 
     /**
      * State while user is drawing a feature. State is entered when user adds the first vertex of the geometry (`create-mode`).
-     * State while user is updateing an existing feature. State is entered when user moved the first vertex of the geometry (`update-mode`).
+     * State while user is updating an existing feature. State is entered when user moved the first vertex of the geometry (`update-mode`).
      */
     // TODO: Rename?
     "active:drawing": void;

@@ -1,6 +1,13 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { MapConfig, MapConfigProvider, SimpleLayer, WMSLayer, WMTSLayer } from "@open-pioneer/map";
+import {
+    BaseFeature,
+    MapConfig,
+    MapConfigProvider,
+    SimpleLayer,
+    WMSLayer,
+    WMTSLayer
+} from "@open-pioneer/map";
 import GeoJSON from "ol/format/GeoJSON";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
@@ -12,7 +19,6 @@ import TileLayer from "ol/layer/Tile.js";
 import { ServiceOptions } from "@open-pioneer/runtime";
 import { OgcFeaturesVectorSourceFactory } from "@open-pioneer/ogc-features";
 import { View } from "ol";
-import { BaseFeature } from "@open-pioneer/map";
 
 interface References {
     vectorSourceFactory: OgcFeaturesVectorSourceFactory;
@@ -129,13 +135,23 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                                 displayName: "inspireID"
                             },
                             {
-                                propertyName: "gefoerdert",
                                 displayName: "Gefördert",
-                                width: 160
+                                width: 160,
+                                getPropertyValue(feature: BaseFeature) {
+                                    switch (feature.properties?.gefoerdert) {
+                                        case "ja":
+                                            return true;
+                                        case "nein":
+                                            return false;
+                                        default:
+                                            return feature.properties?.gefoerdert;
+                                    }
+                                }
                             }
                         ]
                     }
                 }),
+                // TODO: Remove OGC Feature-Dependency? Or keep it and change createKitasLayer() to use createVectorSource?
                 new SimpleLayer({
                     id: "ogc_kataster",
                     title: "Liegenschaftskatasterbezirke in NRW (viele Daten)",
@@ -152,9 +168,16 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                                 }
                             },
                             {
-                                propertyName: "aktualit",
                                 displayName: "Aktualit",
-                                width: 600
+                                width: 600,
+                                getPropertyValue(feature: BaseFeature) {
+                                    const val = feature.properties?.aktualit;
+                                    if (typeof val === "string") {
+                                        const isDateString = !isNaN(Date.parse(val));
+                                        if (isDateString) return new Date(val);
+                                    }
+                                    return val;
+                                }
                             }
                         ]
                     }
@@ -206,8 +229,7 @@ function createKatasterLayer(vectorSourceFactory: OgcFeaturesVectorSourceFactory
         collectionId: "katasterbezirk",
         limit: 1000,
         crs: "http://www.opengis.net/def/crs/EPSG/0/25832",
-        attributions:
-            "<a href='https://www.govdata.de/dl-de/by-2-0'>Datenlizenz Deutschland - Namensnennung - Version 2.0</a>"
+        attributions: `Land NRW (${new Date().getFullYear()}), <a href='https://www.govdata.de/dl-de/by-2-0'>Datenlizenz Deutschland - Namensnennung - Version 2.0</a>, <a href='https://ogc-api-test.nrw.de/inspire-us-krankenhaus/v1'>Datenquelle</a>`
     });
 
     return new VectorLayer({
@@ -309,7 +331,7 @@ function createKrankenhausLayer(vectorSourceFactory: OgcFeaturesVectorSourceFact
         collectionId: collectionId,
         limit: 1000,
         crs: "http://www.opengis.net/def/crs/EPSG/0/25832",
-        attributions: "" // todo
+        attributions: `Land NRW (${new Date().getFullYear()}), <a href='https://www.govdata.de/dl-de/by-2-0'>Datenlizenz Deutschland - Namensnennung - Version 2.0</a>, <a href='https://ogc-api-test.nrw.de/inspire-us-krankenhaus/v1'>Datenquelle</a>`
     });
 
     const layer = new VectorLayer({
