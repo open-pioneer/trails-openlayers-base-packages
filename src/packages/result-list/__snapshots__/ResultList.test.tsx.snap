@@ -17,6 +17,8 @@ exports[`expect empty data text to be shown 1`] = `
 
 exports[`expect empty metadata to throw error 1`] = `"No columns were defined. The result list cannot be displayed."`;
 
+exports[`expect render function to be applied 1`] = `"This item has the following ID: 1"`;
+
 exports[`expect result list to be created successfully 1`] = `
 <div
   class="result-list css-u718rw"
@@ -224,7 +226,7 @@ exports[`expect result list to be created successfully 1`] = `
           data-theme="light"
           style=""
         >
-          true
+          displayBoolean.true
         </td>
         <td
           class="result-list-table-row css-xumdn4"
@@ -293,7 +295,7 @@ exports[`expect result list to be created successfully 1`] = `
           data-theme="light"
           style=""
         >
-          false
+          displayBoolean.false
         </td>
         <td
           class="result-list-table-row css-xumdn4"
@@ -362,7 +364,7 @@ exports[`expect result list to be created successfully 1`] = `
           data-theme="light"
           style=""
         >
-          true
+          displayBoolean.true
         </td>
         <td
           class="result-list-table-row css-xumdn4"
@@ -371,6 +373,65 @@ exports[`expect result list to be created successfully 1`] = `
         >
           Montag, 12. Oktober 2020 um 23:30:21 Koordinierte Weltzeit
         </td>
+      </tr>
+      <tr
+        class="result-list-table-row css-0"
+        data-theme="light"
+      >
+        <td
+          class="result-list-table-row css-xumdn4"
+          data-theme="light"
+          style=""
+        >
+          <div
+            class="result-list-select-row-checkbox-container css-1baulvz"
+            data-theme="light"
+          >
+            <label
+              class="chakra-checkbox result-list-select-row-checkbox css-1577qb8"
+              data-theme="light"
+            >
+              <input
+                aria-disabled="false"
+                aria-label="ariaLabel.selectSingle"
+                class="chakra-checkbox__input"
+                style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
+                type="checkbox"
+                value=""
+              />
+              <span
+                aria-hidden="true"
+                class="chakra-checkbox__control css-1ydjfm6"
+                data-theme="light"
+              />
+            </label>
+          </div>
+        </td>
+        <td
+          class="result-list-table-row css-xumdn4"
+          data-theme="light"
+          style=""
+        />
+        <td
+          class="result-list-table-row css-xumdn4"
+          data-theme="light"
+          style=""
+        />
+        <td
+          class="result-list-table-row css-xumdn4"
+          data-theme="light"
+          style=""
+        />
+        <td
+          class="result-list-table-row css-xumdn4"
+          data-theme="light"
+          style=""
+        />
+        <td
+          class="result-list-table-row css-xumdn4"
+          data-theme="light"
+          style=""
+        />
       </tr>
       <tr
         class="result-list-table-row css-0"

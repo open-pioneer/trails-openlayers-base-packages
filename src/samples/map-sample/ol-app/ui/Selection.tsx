@@ -15,6 +15,7 @@ import { useSnapshot } from "valtio";
 import { AppModel } from "../AppModel";
 import { MAP_ID } from "../MapConfigProviderImpl";
 import { highlightAndZoom } from "../util/map-utils";
+import { FormatOptions } from "@open-pioneer/result-list";
 
 export function SelectionComponent() {
     const intl = useIntl();
@@ -24,6 +25,16 @@ export function SelectionComponent() {
     const appModel = useService<AppModel>("ol-app.AppModel");
     const sources = useSnapshot(appModel.state).selectionSources;
     const sourceMetadata = useSnapshot(appModel.state).sourceMetadata;
+    const formatOptions: FormatOptions = {
+        numberOptions: {
+            maximumFractionDigits: 3
+        },
+        dateOptions: {
+            dateStyle: "medium",
+            timeStyle: "medium",
+            timeZone: "UTC"
+        }
+    };
 
     function onSelectionComplete(event: SelectionCompleteEvent) {
         const { source, results } = event;
@@ -45,7 +56,11 @@ export function SelectionComponent() {
             return;
         }
 
-        appModel.setResultListInput({ columns: currentMetadata, data: results });
+        appModel.setResultListInput({
+            columns: currentMetadata,
+            data: results,
+            formatOptions: formatOptions
+        });
 
         notifier.notify({
             level: "info",

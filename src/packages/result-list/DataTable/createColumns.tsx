@@ -5,25 +5,50 @@ import { BaseFeature } from "@open-pioneer/map";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { createColumnHelper } from "@tanstack/react-table";
 import { Table as TanstackTable } from "@tanstack/table-core/build/lib/types";
+import { FormatOptions, ResultColumn } from "../ResultList";
 import { SelectCheckbox } from "./SelectCheckbox";
-import { ResultColumn } from "../ResultList";
 
 export const SELECT_COLUMN_SIZE = 70;
+
 const columnHelper = createColumnHelper<BaseFeature>();
 
-export function createColumns(columns: ResultColumn[], intl: PackageIntl, tableWidth?: number) {
+export interface CreateColumnsOptions {
+    columns: ResultColumn[];
+    intl: PackageIntl;
+    tableWidth?: number;
+    formatOptions?: FormatOptions;
+}
+
+export function createColumns(options: CreateColumnsOptions) {
+    const { columns, intl, tableWidth, formatOptions } = options;
     const remainingColumnWidth: number | undefined =
         tableWidth === undefined ? undefined : calcRemainingColumnWidth(columns, tableWidth);
     const selectionColumn = createSelectionColumn(intl);
     const columnDefs = columns.map((column, index) => {
         const columnWidth = column.width || remainingColumnWidth;
-        const configuredId = column.id ?? column.propertyName ?? String(index);
-        return createColumn(column, columnWidth, "result-list-col_" + configuredId);
+        const configuredId =
+            column.id || (column.propertyName && slug(column.propertyName)) || String(index);
+        return createColumn({
+            id: "result-list-col_" + configuredId,
+            column: column,
+            intl: intl,
+            columnWidth: columnWidth,
+            formatOptions: formatOptions
+        });
     });
     return [selectionColumn, ...columnDefs];
 }
 
-function createColumn(column: ResultColumn, columnWidth: number | undefined, id: string) {
+interface CreateColumnOptions {
+    id: string;
+    column: ResultColumn;
+    intl: PackageIntl;
+    columnWidth?: number;
+    formatOptions?: FormatOptions;
+}
+
+function createColumn(options: CreateColumnOptions) {
+    const { id, column, columnWidth, formatOptions, intl } = options;
     const { propertyName, getPropertyValue } = column;
     const hasPropertyValue = getPropertyValue != null || propertyName != null;
 
@@ -42,15 +67,49 @@ function createColumn(column: ResultColumn, columnWidth: number | undefined, id:
             id: id,
             cell: (info) => {
                 const cellValue = info.getValue();
-                if (cellValue == null) {
-                    return "";
+                if (column.renderCell) {
+                    return column.renderCell({
+                        feature: info.row.original,
+                        value: cellValue
+                    });
                 }
-                return String(cellValue);
+                return renderFunc(cellValue, intl, formatOptions);
             },
             header: column.displayName ?? column.propertyName,
             size: columnWidth
         }
     );
+}
+
+function renderFunc(cellValue: unknown, intl: PackageIntl, formatOptions?: FormatOptions) {
+    if (cellValue === null || cellValue === undefined) return "";
+    const type = typeof cellValue;
+    const formatNumber = (num: number | bigint) => {
+        if (Number.isNaN(num)) return "";
+        return intl.formatNumber(num, formatOptions?.numberOptions);
+    };
+
+    switch (type) {
+        case "number": {
+            return formatNumber(cellValue as number);
+        }
+        case "bigint": {
+            return formatNumber(cellValue as bigint);
+        }
+        case "boolean": {
+            return intl.formatMessage({ id: `displayBoolean.${cellValue}` });
+        }
+        case "string": {
+            return cellValue as string;
+        }
+        case "object": {
+            if (cellValue instanceof Date)
+                return intl.formatDate(cellValue, formatOptions?.dateOptions);
+            return cellValue.toString();
+        }
+        default:
+            return String(cellValue);
+    }
 }
 
 function createSelectionColumn(intl: PackageIntl) {
@@ -122,4 +181,12 @@ function getCheckboxToolTip<Data>(table: TanstackTable<Data>, intl: PackageIntl)
     } else {
         return intl.formatMessage({ id: "selectAllTooltip" });
     }
+}
+
+function slug(id: string) {
+    return id
+        .toLowerCase()
+        .replace(/[^a-z0-9 -]/g, "")
+        .replace(/\s+/g, "-")
+        .replace(/-+/g, "-");
 }

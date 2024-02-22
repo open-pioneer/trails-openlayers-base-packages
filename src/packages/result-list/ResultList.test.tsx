@@ -3,7 +3,7 @@
 import { BaseFeature } from "@open-pioneer/map";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { SpyInstance, afterEach, beforeEach, expect, it, vi } from "vitest";
+import { Mock, SpyInstance, afterEach, beforeEach, expect, it, vi } from "vitest";
 import { ResultColumn, ResultList, ResultListInput } from "./ResultList";
 import { Point } from "ol/geom";
 
@@ -222,11 +222,17 @@ it("expect all rows to be selected and deselected", async () => {
     selectRowSelects.forEach((checkbox) => expect(checkbox.checked).toBeFalsy());
 });
 
-it("expect result list display all data types", async () => {
+it("expect result list display all data types except dates", async () => {
     render(
-        <PackageContextProvider>
+        <PackageContextProvider locale="de">
             <ResultList
-                input={{ data: dummyFeatureData, columns: dummyColumns }}
+                input={{
+                    data: dummyFeatureData,
+                    columns: dummyColumns,
+                    formatOptions: {
+                        numberOptions: { maximumFractionDigits: 3 }
+                    }
+                }}
                 mapId="foo"
                 data-testid="result-list"
             />
@@ -237,15 +243,15 @@ it("expect result list display all data types", async () => {
     const firstRowCells = Array.from(allRows[0]!.querySelectorAll("td"));
     expect(firstRowCells).toHaveLength(6);
 
-    const [selectCell, stringCell, integerCell, floatCell, trueCell, ..._rest] = firstRowCells;
+    const [selectCell, stringCell, integerCell, floatCell, trueCell] = firstRowCells;
     expect(selectCell!.innerHTML).includes("<input");
     expect(stringCell!.textContent).toBe("Test");
     expect(integerCell!.textContent).toBe("123");
-    expect(floatCell!.textContent).toBe("4.567");
-    expect(trueCell!.textContent).toBe("true");
+    expect(floatCell!.textContent).toBe("4,567");
+    expect(trueCell!.textContent).toBe("displayBoolean.true");
 
     const falseCell = allRows[1]?.querySelectorAll("td")[4];
-    expect(falseCell!.textContent).toBe("false"); // false is not rendered as ""
+    expect(falseCell!.textContent).toBe("displayBoolean.false");
 
     // Null / Undefined is rendered as an empty string
     const lastRowCells = Array.from(allRows[3]!.querySelectorAll("td"));
@@ -255,6 +261,116 @@ it("expect result list display all data types", async () => {
         expect(cell.textContent, "cell " + i).toBe("");
     }
 });
+
+it("expect result list display date in given format", async () => {
+    const dateTimeFormatOptions: Intl.DateTimeFormatOptions = {
+        dateStyle: "medium",
+        timeStyle: "medium",
+        timeZone: "UTC"
+    };
+
+    let dateFormatter = Intl.DateTimeFormat("de-DE", dateTimeFormatOptions);
+    const resultListComp = (
+        <ResultList
+            input={{
+                data: dummyDateFeatureData,
+                columns: dummyDateColumns,
+                formatOptions: {
+                    numberOptions: { maximumFractionDigits: 3 },
+                    dateOptions: dateTimeFormatOptions
+                }
+            }}
+            mapId="foo"
+            data-testid="result-list"
+        />
+    );
+
+    const renderResult = render(
+        <PackageContextProvider locale="de">{resultListComp}</PackageContextProvider>
+    );
+
+    const { allRows } = await waitForResultList();
+    const firstRowCells = Array.from(allRows[0]!.querySelectorAll("td"));
+    const [_, dateCell] = firstRowCells;
+    expect(dateCell!.textContent).toBe(dateFormatter.format(new Date("2020-05-12T23:50:21.817Z")));
+
+    renderResult.rerender(
+        <PackageContextProvider locale="en">{resultListComp}</PackageContextProvider>
+    );
+    await waitForResultList(); // TODO: Workaround to hide react warning due to useEffect (use disableReactWarning helper after printing merge)
+
+    dateFormatter = Intl.DateTimeFormat("en-US", dateTimeFormatOptions);
+    expect(dateCell!.textContent).toBe(dateFormatter.format(new Date("2020-05-12T23:50:21.817Z")));
+});
+
+it("expect render function to be applied", async () => {
+    render(
+        <PackageContextProvider locale="de">
+            <ResultList
+                input={{
+                    data: dummyDateFeatureData,
+                    columns: dummyColumnsWithRenderFunc
+                }}
+                mapId="foo"
+                data-testid="result-list"
+            />
+        </PackageContextProvider>
+    );
+
+    const { allRows } = await waitForResultList();
+    const firstRowCells = Array.from(allRows[0]!.querySelectorAll("td"));
+    const [_, dateCell] = firstRowCells;
+    expect(dateCell!.textContent).toMatchSnapshot();
+});
+
+it("expect result-list throws selection-change-Event", async () => {
+    const selectionChangeListener = vi.fn();
+    render(
+        <PackageContextProvider>
+            <ResultList
+                input={{ data: dummyFeatureData, columns: dummyColumns }}
+                data-testid="result-list"
+                onSelectionChange={selectionChangeListener}
+            />
+        </PackageContextProvider>
+    );
+
+    const { selectAllSelect } = await waitForResultList();
+
+    //Selection All
+    act(() => {
+        fireEvent.click(selectAllSelect!);
+    });
+    let features = getSelectionsEvent(selectionChangeListener, 0).features;
+    const realIds = features.map((feature: BaseFeature) => feature.id);
+    const eventIds = getSelectionsEvent(selectionChangeListener, 0).getFeatureIds();
+
+    // Result-List has Array of selected Features
+    expect(features).toEqual(dummyFeatureData);
+
+    //getFeatureIds method returns the correct Ids
+    expect(eventIds).toEqual(realIds);
+
+    //Deselect All
+    act(() => {
+        fireEvent.click(selectAllSelect!);
+    });
+
+    // Result-List has empty Array
+    features = getSelectionsEvent(selectionChangeListener, 1).features;
+    expect(features).toEqual([]);
+
+    /**
+     * 1 Selection
+     * 1 Deselection
+     * = 2
+     */
+    expect(selectionChangeListener).toHaveBeenCalledTimes(2);
+});
+
+function getSelectionsEvent(listener: Mock, call: number) {
+    return listener.mock.calls[call][0];
+}
 
 async function waitForResultList() {
     return await waitFor(async () => {
@@ -268,6 +384,7 @@ async function waitForResultList() {
             resultListDiv.querySelectorAll<HTMLTableHeaderCellElement>("thead tr th");
 
         const allRows = resultListDiv.querySelectorAll<HTMLElement>("tbody tr");
+        const allCells = resultListDiv.querySelectorAll<HTMLElement>("tbody td");
 
         const selectAllSelect = resultListDiv.querySelector<HTMLInputElement>(
             ".result-list-select-all-checkbox input"
@@ -281,6 +398,7 @@ async function waitForResultList() {
             resultListDiv,
             allHeaderElements,
             allRows,
+            allCells,
             selectAllSelect,
             selectRowSelects
         };
@@ -298,13 +416,42 @@ function formatDate(date: Date) {
     return DATE_FORMAT.format(date);
 }
 
+const dummyDateFeatureData: BaseFeature[] = [
+    {
+        id: "1",
+        properties: {
+            "a": new Date("2020-05-12T23:50:21.817Z")
+        },
+        geometry: undefined
+    }
+];
+
+const dummyDateColumns: ResultColumn[] = [
+    {
+        propertyName: "a",
+        displayName: "Spalte A",
+        width: 100
+    }
+];
+
+const dummyColumnsWithRenderFunc: ResultColumn[] = [
+    {
+        propertyName: "a",
+        displayName: "Spalte A",
+        width: 100,
+        renderCell: ({ feature }) => (
+            <div className="renderTest">{`This item has the following ID: ${feature.id}`}</div>
+        )
+    }
+];
+
 const dummyFeatureData: BaseFeature[] = [
     {
         id: "1",
         properties: {
             "a": "Test",
             "b": 123,
-            "c": 4.567,
+            "c": 4.5671365,
             "d": true,
             "e": formatDate(new Date("2020-05-12T23:50:21.817Z"))
         },
@@ -342,6 +489,17 @@ const dummyFeatureData: BaseFeature[] = [
             "e": undefined
         },
         geometry: new Point([406590.87, 5758311.82])
+    },
+    {
+        id: "5",
+        properties: {
+            "a": NaN,
+            "b": NaN,
+            "c": NaN,
+            "d": NaN,
+            "e": NaN
+        },
+        geometry: undefined
     }
 ];
 
