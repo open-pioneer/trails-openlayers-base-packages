@@ -12,7 +12,7 @@ import { createServiceOptions, setupMap, waitForMapMount } from "@open-pioneer/m
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render } from "@testing-library/react";
 import { PackageIntl, Service } from "@open-pioneer/runtime";
-import { EditingCreateWorkflowImpl } from "./EditingWorkflowImpl";
+import { EditingCreateWorkflowImpl } from "./EditingCreateWorkflowImpl";
 import BaseLayer from "ol/layer/Base";
 import { Interaction } from "ol/interaction";
 import { MapRegistryImpl } from "@open-pioneer/map/MapRegistryImpl";

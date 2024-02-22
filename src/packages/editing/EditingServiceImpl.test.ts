@@ -6,7 +6,7 @@ import { setupMap } from "@open-pioneer/map-test-utils";
 import { HttpService } from "@open-pioneer/http";
 import { createService } from "@open-pioneer/test-utils/services";
 import { FlatStyleLike } from "ol/style/flat";
-import { EditingCreateWorkflowImpl } from "./EditingWorkflowImpl";
+import { EditingCreateWorkflowImpl } from "./EditingCreateWorkflowImpl";
 
 const OGC_API_URL_TEST = new URL("https://example.org/ogc");
 
