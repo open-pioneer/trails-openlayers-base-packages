@@ -85,6 +85,10 @@ export class EditingUpdateWorkflowImpl
 
         // TODO: aktuell können Features auf allen Layern ausgewählt werden -> nur Features des zu editierenden Layers auswählbar machen
         this._selectInteraction = new Select({
+            // changing selected feature not possible after modification of geometry
+            filter: () => {
+                return this._state === "active:initialized";
+            }
             //layers: this._editLayerURL // TODO wir haben nur eine URL -> filter function or property filter with filter function
         });
 
@@ -139,8 +143,6 @@ export class EditingUpdateWorkflowImpl
 
         const modify = this._modifyInteraction.on("modifystart", () => {
             this._setState("active:drawing");
-
-            // TODO ab hier dürfen keine anderen Features mehr auswählbar sein; filter function der selectInteraction aktualisieren
 
             this._tooltip.element.textContent = this._intl.formatMessage({
                 id: "update.tooltip.modified"
