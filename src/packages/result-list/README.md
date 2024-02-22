@@ -104,40 +104,39 @@ const columns = [
 Users can select (and deselect) individual features by clicking on the checkbox at the beginning of a row.
 A checkbox in the header of the table allows to select (or deselect) _all_ features in the table.
 
-### Listening for Select-change-Events
+### Listening for selection changes
 
-​The Result-List has an optional property `onSelectionChanged`. A function can be passed here that receives a ResultListSelectionChangedEvent (see api.ts).
+​The `ResultList` supports listening to selection changes via the optional property `onSelectionChanged`.
+An event handler function can be passed that will be invoked whenever the user changes the selection.
 
 ```ts
 import { ResultList } from "@open-pioneer/result-list";
 
-const selectionChangeListener = useCallback((_event: ResultListSelectionChangedEvent) => {
-        console.log("changed");
-    }, []);
-
-<ResultList resultListInput={input} onSelectionChanged={selectionChangeListener}/>
-```
-
-#### Get selected Feature and Feature-Ids from Result-List
-
-The ResultListSelectionChangedEvent has a property `features` for all selected Features and a method `getFeatureIds` to get the Ids of all selected Features. You can take this property or method and store the results in states.
-
-```ts
-//state for selected Features
-const [selectedFeatures, setSelectedFeatures] = useState<BaseFeature[]>([]);
-
-//state for selected Ids
-const [selectedIds, setSelectedIds] = useState<(string | number)[]>([]);
-
-const selectionChangeListener = useCallback((_event: ResultListSelectionChangedEvent) => {
-    setSelectedFeatures(_event.features);
-    setSelectedIds(_event.getFeatureIds());
+const selectionChangeListener = useCallback((event: ResultListSelectionChangedEvent) => {
+    // Logs the currently selected features
+    console.log("selection changed", event.features);
 }, []);
 
-<ResultList resultListInput={input} onSelectionChanged={selectionChangeListener} />
+<ResultList input={input} onSelectionChanged={selectionChangeListener}/>
 ```
 
-### Sorting Data
+### Track selected features
+
+To keep track of the currently selected features (or their ids), store them in a `useState` slot (or anywhere else):
+
+```tsx
+const [selectedFeatures, setSelectedFeatures] = useState<BaseFeature[]>([]);
+
+const selectionChangeListener = useCallback((event: ResultListSelectionChangedEvent) => {
+    setSelectedFeatures(event.features);
+    // Helper function if you're only interested in the feature ids:
+    // event.getFeatureIds()
+}, []);
+
+<ResultList input={input} onSelectionChanged={selectionChangeListener} />;
+```
+
+### Sorting data
 
 Users can click on a column header to sort the table by property values associated with that column.
 An icon within the header indicates the current sort order.
