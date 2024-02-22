@@ -14,6 +14,7 @@ import {
 } from "@open-pioneer/map";
 import { createService } from "@open-pioneer/test-utils/services";
 import { screen, waitFor } from "@testing-library/react";
+import { Mock, vi } from "vitest";
 import VectorLayer from "ol/layer/Vector";
 
 // Importing internals: needed for test support
@@ -72,7 +73,7 @@ export async function waitForInitialExtent(model: MapModel) {
  *
  * Returns the map registry and the id of the configured map.
  */
-export async function setupMap(options?: SimpleMapOptions) {
+export async function setupMap(options?: SimpleMapOptions & { fetch?: Mock }) {
     // Always use "test" as mapId for unit tests
     const mapId = "test";
 
@@ -105,13 +106,15 @@ export async function setupMap(options?: SimpleMapOptions) {
         advanced: options?.advanced
     };
 
-    const httpService: HttpService = {
-        async fetch() {
-            return new Response("mock response from map-test-utils", {
-                status: 200
-            });
-        }
-    };
+    const httpService = {
+        fetch:
+            options?.fetch ??
+            vi
+                .fn()
+                .mockImplementation(
+                    async () => new Response("mock response from map-test-utils", { status: 200 })
+                )
+    } as HttpService;
 
     const registry = await createService(MapRegistryImpl, {
         references: {

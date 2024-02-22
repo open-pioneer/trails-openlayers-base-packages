@@ -171,7 +171,7 @@
       <MinScaleDenominator>1000</MinScaleDenominator>
       <MaxScaleDenominator>250000</MaxScaleDenominator>
       <Layer queryable="1">
-        <Name>ROADS_1M</Name>
+        <Name>sublayer4_3</Name>
         <Title>Roads at 1:1M scale</Title>
         <Abstract>Roads at a scale of 1 to 1 million.</Abstract>
 
