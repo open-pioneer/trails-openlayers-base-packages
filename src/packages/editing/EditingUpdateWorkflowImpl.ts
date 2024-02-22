@@ -26,6 +26,7 @@ interface Tooltip extends Resource {
     element: HTMLDivElement;
 }
 
+// TODO remove vertices
 export class EditingUpdateWorkflowImpl
     extends EventEmitter<EditingWorkflowEvents>
     implements EditingWorkflow
@@ -84,12 +85,12 @@ export class EditingUpdateWorkflowImpl
 
         // TODO: aktuell können Features auf allen Layern ausgewählt werden -> nur Features des zu editierenden Layers auswählbar machen
         this._selectInteraction = new Select({
-            layers: this._editLayerURL // TODO wir haben nur eine URL -> filter function or property filter with filter function
+            //layers: this._editLayerURL // TODO wir haben nur eine URL -> filter function or property filter with filter function
         });
 
         this._modifyInteraction = new Modify({
             features: this._selectInteraction.getFeatures(),
-            style: this._polygonDrawStyle
+            style: this._polygonDrawStyle // TODO style really used?
         });
 
         this._tooltip = this._createTooltip(this._olMap);
