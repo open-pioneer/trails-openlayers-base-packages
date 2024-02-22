@@ -11,29 +11,27 @@ import { ResultList } from "@open-pioneer/result-list";
 <ResultList input={input} />;
 ```
 
-See below for how to assemble the `input` parameter.
+The following section describes how to define the `input` parameter.
 
 ### Configuring result list data, columns and formatOptions
 
-The `input` prop determines which features are displayed (`input.data`) and in what format (`input.columns`
+The `input` property determines which features are displayed (`input.data`) and in what format (`input.columns`
 and `input.formatOptions`).
 `input` must conform to the TypeScript interface `ResultListInput`.
 
 `input.data` must be an array of features (TypeScript interface `BaseFeature`).
-Features can be defined manually (they are rather simple objects), but they can also be obtained from other package's UI Components,
+Features can be defined manually or obtained from the UI components of other packages,
 for example from `@open-pioneer/search` and `@open-pioneer/selection`.
 
 `input.columns` is an array of column definitions (TypeScript interface `ResultColumn`).
-These columns define which properties of the configured features are shown, or how cells of the column
-should be rendered.
-The `ResultList` will render the specified columns in the order in which they are given.
+The columns define which fields of the configured features are displayed and how the cells in the column are displayed.
+The result list renders the specified columns in the order in which they are given.
 
-`input.formatOptions` is being used to specify how numbers and dates are formatted. You can provide
-`numberOptions` and `dateOptions` and these settings are applied for all table cells that
-have no `render` function configured and matches the corresponding type.
+`input.formatOptions` determines how numbers and dates are formatted.
+You can specify the `numberOptions` and `dateOptions` properties to format numbers and dates.
+The properties are applied to all table cells of the corresponding type and for which no `render` function is configured.
 
-Consider a set of features which all have the properties `name` and `age`.
-In that case, a simple configuration of the `ResultList` may look as follows:
+The following sample shows a configuration for objects that all have the properties `name` and `age`:
 
 ```jsx
 <ResultList
@@ -51,12 +49,11 @@ In that case, a simple configuration of the `ResultList` may look as follows:
 />
 ```
 
-The `propertyName` of a column also serves as the default header content for that column.
-If you want to display the column with a different title, you can configure an optional `displayName`.
+The `propertyName` of a column serves as the header for that column.
+To display the column with a different title, configure the optional `displayName` property.
 
-If you want a column to have a defined width, you can provide the optional `width` attribute
-of the result list column in pixels.
-If some columns do not have an explicit width, the remaining space is distributed along these columns:
+To define the width for a column, provide the optional `width` property
+(in pixels).
 
 ```js
 // Column with explicit width.
@@ -68,8 +65,9 @@ const columns = [
 ];
 ```
 
-If you want to display values that are not present directly on the feature (i.e. `feature.properties[propertyName]`),
-you can provide a `getPropertyValue` function to provide a custom value:
+The remaining space is distributed to the columns that do not have a defined width.
+
+To display values that are not present directly on the feature (for example `feature.properties[propertyName]`), provide a `getPropertyValue` function:
 
 ```js
 // Simple computed column.
@@ -85,7 +83,7 @@ const columns = [
 ]
 ```
 
-If you want to display a cell value as a very customizable react component, you can provide a `renderCell` function to each column:
+To display a cell value as a customizable react component, provide a `renderCell` function to each column:
 
 ```tsx
 // Simple usage of a render function
@@ -103,8 +101,8 @@ const columns = [
 
 ### Selection
 
-The user can select (and deselect) individual features by clicking on the checkbox at the beginning of a row.
-Another checkbox is present in the header of the table to select (or deselect) _all_ features in the table.
+Users can select (and deselect) individual features by clicking on the checkbox at the beginning of a row.
+A checkbox in the header of the table allows to select (or deselect) _all_ features in the table.
 
 ### Listening for Select-change-Events
 
@@ -141,31 +139,30 @@ const selectionChangeListener = useCallback((_event: ResultListSelectionChangedE
 
 ### Sorting Data
 
-If you want to sort the data by a single columndate you have to click on the column header. The arrows show in which direction the sorting took place.
+Users can click on a column header to sort the table by property values associated with that column.
+An icon within the header indicates the current sort order.
 
-You can then simply retrieve the `resultListColumns` attribute at a later time by accessing `layer.attributes["resultListColumns"]`.
-Note that neither the map model nor the result list will interpret `resultListColumns` by itself in any way - this is a user defined attribute.
-You have to forward this attribute into the `columns` prop on your own.
+Sorting only works for columns with associated sortable property values.
 
 ### State management
 
-The result list will preserve its internal state by default if properties change.
-For example, when `data` or `columns` is modified, the scroll position, the selection and the sort order will remain the same (assuming the sorted column still exists).
+The result list preserves its internal state by default if properties change.
+For example, when `data` or `columns` is modified, the scroll position, the selection and the sort order remains the same (assuming the sorted column still exists).
 
 This is done to enable use cases such as:
 
 -   dynamically showing or hiding certain columns depending on application state
 -   dynamically adding new items to or removing items from the component
--   ...
 
-See example "Resetting component state" for how to throw away existing state under some circumstances.
+To discard the existing state, see "Resetting component state".
 
 ## Examples
 
 ### Defining result list metadata on a layer
 
 Result list metadata (columns etc.) can be defined anywhere.
-It can be convenient to define them directly on a layer (via `attributes`), if features from that layer are always displayed in a certain way. For example:
+To always display features from a layer in the same way, define the metadata directly on the layer (via `attributes`).
+For example:
 
 ```js
 new SimpleLayer({
@@ -192,13 +189,17 @@ new SimpleLayer({
 });
 ```
 
+The `resultListColumns` attribute can be retrieved by accessing `layer.attributes["resultListColumns"]`.
+
+> Neither the map model nor the result list interprets `resultListColumns` by itself.
+> You have to forward this attribute into the `columns` property.
+
 ### Integrating the result list above the map
 
 The following snippet embeds the result list into a fixed-height box at the bottom of the container.
 The example assumes that the surrounding element (or one of its parents) uses `position: relative`.
 
-Consider configuring the `viewPadding` on the related `MapContainer` whenever the result list component is being displayed
-to inform the map about the "overlay".
+Configure the `viewPadding` on the associated `MapContainer` when the result list component is displayed to inform the map about the "overlay".
 
 ```jsx
 <Box
@@ -218,10 +219,9 @@ to inform the map about the "overlay".
 
 ### Resetting component state
 
-As described under "Usage", the result list will usually attempt to preserve its existing state (selection, sort order, etc.) if its properties (data, columns, etc.) change.
+As described in "Usage", the result list preserves its existing state (selection, sort order, etc.) if its properties (data, columns, etc.) change.
 
-This may not be what you want if you're filling the result list with new, completely unrelated data.
-To force the result list to throw away its existing state, simply use React's `key` prop and assign it a new value, for example:
+To force the result list to throw away its existing state, use React's `key` property and assign it a new value, for example:
 
 ```jsx
 <ResultList
