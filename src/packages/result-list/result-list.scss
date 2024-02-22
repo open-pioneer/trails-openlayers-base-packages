@@ -1,3 +1,10 @@
+.result-list-no-data-message {
+    text-align: center;
+    margin-top: 50px;
+    font-weight: bold;
+    font-size: larger;
+}
+
 .result-list-table {
     th,
     td {
@@ -22,13 +29,6 @@
 
     tbody tr:hover {
         background: var(--chakra-colors-background_light);
-    }
-
-    .result-list-no-data-message {
-        text-align: center;
-        margin-top: 50px;
-        font-weight: bold;
-        font-size: larger;
     }
 
     // Resizer

@@ -12,7 +12,7 @@ import GeoJSON from "ol/format/GeoJSON";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import { LegendItemAttributes } from "@open-pioneer/legend";
-import { CustomLegendItem, LoremIpsumLegendItem } from "./CustomLegendItems";
+import { CustomLegendItem } from "./CustomLegendItems";
 import { OSM } from "ol/source";
 import { Circle, Fill, Style } from "ol/style";
 import TileLayer from "ol/layer/Tile.js";
@@ -34,8 +34,6 @@ export class MapConfigProviderImpl implements MapConfigProvider {
     }
 
     async getMapConfig(): Promise<MapConfig> {
-        //const computedValue = "foo"; TODO add good examples for layerLegendProps
-
         const pointLayerLegendProps: LegendItemAttributes = {
             Component: CustomLegendItem
         };
@@ -71,7 +69,10 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     url: "https://www.wmts.nrw.de/topplus_open/1.0.0/WMTSCapabilities.xml",
                     name: "topplus_grau",
                     matrixSet: "EPSG_25832_14",
-                    visible: false
+                    visible: false,
+                    sourceOptions: {
+                        attributions: `Kartendarstellung und Präsentationsgraphiken: &copy; Bundesamt für Kartographie und Geodäsie ${new Date().getFullYear()}, <a title="Datenquellen öffnen" aria-label="Datenquellen öffnen" href="https://sg.geodatenzentrum.de/web_public/gdz/datenquellen/Datenquellen_TopPlusOpen.html " target="_blank">Datenquellen</a>`
+                    }
                 }),
 
                 new WMTSLayer({
@@ -80,7 +81,10 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     url: "https://www.wmts.nrw.de/topplus_open/1.0.0/WMTSCapabilities.xml",
                     name: "topplus_col",
                     matrixSet: "EPSG_25832_14",
-                    visible: false
+                    visible: false,
+                    sourceOptions: {
+                        attributions: `Kartendarstellung und Präsentationsgraphiken: &copy; Bundesamt für Kartographie und Geodäsie ${new Date().getFullYear()}, <a title="Datenquellen öffnen" aria-label="Datenquellen öffnen" href="https://sg.geodatenzentrum.de/web_public/gdz/datenquellen/Datenquellen_TopPlusOpen.html " target="_blank">Datenquellen</a>`
+                    }
                 }),
 
                 new SimpleLayer({
@@ -110,7 +114,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                         "legend": pointLayerLegendProps,
                         "resultListMetadata": [
                             {
-                                propertyName: "id",
+                                id: "id",
                                 displayName: "ID",
                                 width: 100,
                                 getPropertyValue(feature: BaseFeature) {
@@ -131,9 +135,18 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                                 displayName: "inspireID"
                             },
                             {
-                                propertyName: "gefoerdert",
                                 displayName: "Gefördert",
-                                width: 160
+                                width: 160,
+                                getPropertyValue(feature: BaseFeature) {
+                                    switch (feature.properties?.gefoerdert) {
+                                        case "ja":
+                                            return true;
+                                        case "nein":
+                                            return false;
+                                        default:
+                                            return feature.properties?.gefoerdert;
+                                    }
+                                }
                             }
                         ]
                     }
@@ -155,9 +168,16 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                                 }
                             },
                             {
-                                propertyName: "aktualit",
                                 displayName: "Aktualit",
-                                width: 600
+                                width: 600,
+                                getPropertyValue(feature: BaseFeature) {
+                                    const val = feature.properties?.aktualit;
+                                    if (typeof val === "string") {
+                                        const isDateString = !isNaN(Date.parse(val));
+                                        if (isDateString) return new Date(val);
+                                    }
+                                    return val;
+                                }
                             }
                         ]
                     }
@@ -294,10 +314,7 @@ function createIsBk5Layer() {
                         name: "Luftkapazitaet_We",
                         title: "Luftkapazitaet (We)",
                         attributes: {
-                            "legend": {
-                                imageUrl:
-                                    "https://avatars.githubusercontent.com/u/121286957?s=200&v=4"
-                            }
+                            "legend": {}
                         }
                     }
                 ]
@@ -317,9 +334,7 @@ function createSchulenLayer() {
                 name: "US.education",
                 title: "INSPIRE - WMS Schulstandorte NRW",
                 attributes: {
-                    "legend": {
-                        imageUrl: "https://avatars.githubusercontent.com/u/121286957?s=200&v=4"
-                    }
+                    "legend": {}
                 }
             }
         ],
@@ -328,10 +343,6 @@ function createSchulenLayer() {
         }
     });
 }
-
-const loremIpsum: LegendItemAttributes = {
-    Component: LoremIpsumLegendItem
-};
 
 function createStrassenLayer() {
     return new WMSLayer({
@@ -350,10 +361,7 @@ function createStrassenLayer() {
             },
             {
                 name: "4",
-                title: "Abschnitte und Äste",
-                attributes: {
-                    "legend": loremIpsum
-                }
+                title: "Abschnitte und Äste"
             },
             {
                 name: "6",

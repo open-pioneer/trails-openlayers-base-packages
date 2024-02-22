@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import type { Options as WMSSourceOptions } from "ol/source/ImageWMS";
 import { Layer, LayerConfig } from "./base";
 import { WMTSLayerImpl } from "../../model/layers/WMTSLayerImpl";
 export interface WMTSLayerConfig extends LayerConfig {
@@ -12,8 +13,13 @@ export interface WMTSLayerConfig extends LayerConfig {
     /** The name of the tile matrix set in the service's capabilities. */
     matrixSet: string;
 
-    /**Optional license note or source references*/
-    attributions?: string;
+    /**
+     * Additional source options for the layer's WMTS source.
+     *
+     * NOTE: These options are intended for advanced configuration:
+     * the WMTS Layer manages some of the OpenLayers source options itself.
+     */
+    sourceOptions?: Partial<WMSSourceOptions>;
 }
 export interface WMTSLayer extends Layer {
     /** URL of the WMTS service. */
@@ -24,9 +30,6 @@ export interface WMTSLayer extends Layer {
 
     /** The name of the tile matrix set in the service's capabilities. */
     readonly matrixSet: string;
-
-    /**Optional license note or source references*/
-    readonly attributions?: string;
 }
 export interface WMTSLayerConstructor {
     prototype: WMTSLayer;
