@@ -4,9 +4,10 @@ import { Box } from "@open-pioneer/chakra-integration";
 import { BaseFeature } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
-import { FC, RefObject, useEffect, useMemo, useRef, useState } from "react";
+import { FC, ReactNode, RefObject, useEffect, useMemo, useRef, useState } from "react";
 import { DataTable } from "./DataTable/DataTable";
 import { createColumns } from "./DataTable/createColumns";
+import { FormatNumberOptions } from "@formatjs/intl";
 
 /**
  * Configures a column in the result list component.
@@ -57,6 +58,39 @@ export interface ResultColumn {
      * The return value of this function will be rendered by the table.
      */
     getPropertyValue?: (feature: BaseFeature) => unknown;
+
+    /** Custom render function to render a table cell in this column. */
+    renderCell?: (context: RenderCellContext) => ReactNode;
+}
+
+/**
+ * The arguments passed to {@link ResultColumn.renderCell | renderCell}.
+ */
+export interface RenderCellContext {
+    /**
+     * The feature in this row.
+     */
+    feature: BaseFeature;
+
+    /**
+     * The value of this column.
+     * May be undefined if neither `propertyName` nor `getPropertyValue` was specified on the column.
+     */
+    value: unknown;
+}
+
+/**
+ * To specify the format of cell values if they are of number or date type.
+ */
+export interface FormatOptions {
+    /**
+     * To specify the format of number type values
+     */
+    numberOptions?: FormatNumberOptions;
+    /**
+     *  To specify the format of date type values
+     */
+    dateOptions?: Intl.DateTimeFormatOptions;
 }
 
 /**
@@ -73,6 +107,12 @@ export interface ResultListInput {
      * Every feature will be rendered as an individual row.
      */
     data: BaseFeature[];
+
+    /**
+     * Optional formatOptions to specify the `numberOptions` for number type values and
+     * `dateOptions` to specify the format of date type values
+     */
+    formatOptions?: FormatOptions;
 }
 
 /**
@@ -97,7 +137,7 @@ export const ResultList: FC<ResultListProps> = (props) => {
     const { containerProps } = useCommonComponentProps("result-list", props);
     const intl = useIntl();
     const {
-        input: { data, columns }
+        input: { data, columns, formatOptions }
     } = props;
     if (columns.length === 0) {
         throw Error("No columns were defined. The result list cannot be displayed.");
@@ -106,8 +146,14 @@ export const ResultList: FC<ResultListProps> = (props) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const tableWidth = useTableWidth(containerRef);
     const dataTableColumns = useMemo(
-        () => createColumns(columns, intl, tableWidth),
-        [columns, intl, tableWidth]
+        () =>
+            createColumns({
+                columns: columns,
+                intl: intl,
+                tableWidth: tableWidth,
+                formatOptions: formatOptions
+            }),
+        [columns, intl, tableWidth, formatOptions]
     );
 
     return (
