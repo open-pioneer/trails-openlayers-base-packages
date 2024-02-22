@@ -8,11 +8,11 @@ import {
     getSortedRowModel,
     useReactTable
 } from "@tanstack/react-table";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { DataTableProps } from "./DataTable";
 
 export function useSetupTable<Data extends BaseFeature>(props: DataTableProps<Data>) {
-    const { data, columns } = props;
+    const { data, columns, onSelectionChanged } = props;
     const [sorting, setSorting] = useState<SortingState>([]);
     const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
@@ -38,6 +38,21 @@ export function useSetupTable<Data extends BaseFeature>(props: DataTableProps<Da
             rowSelection
         }
     });
+
+    /**
+     * On every selection-change throw change-Event with selected Features
+     */
+    useEffect(() => {
+        const selectedRows = table.getSelectedRowModel();
+        const features = selectedRows.rows.map((feature) => feature.original);
+        if (onSelectionChanged)
+            onSelectionChanged({
+                features: features,
+                getFeatureIds: () => {
+                    return features.map((feature: BaseFeature) => feature.id);
+                }
+            });
+    }, [rowSelection, table, onSelectionChanged]);
 
     return { table, sorting, rowSelection };
 }

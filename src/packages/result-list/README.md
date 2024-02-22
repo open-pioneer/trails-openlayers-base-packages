@@ -106,12 +106,46 @@ const columns = [
 The user can select (and deselect) individual features by clicking on the checkbox at the beginning of a row.
 Another checkbox is present in the header of the table to select (or deselect) _all_ features in the table.
 
+### Listening for Select-change-Events
+
+​The Result-List has an optional property `onSelectionChanged`. A function can be passed here that receives a ResultListSelectionChangedEvent (see api.ts).
+
+```ts
+import { ResultList } from "@open-pioneer/result-list";
+
+const selectionChangeListener = useCallback((_event: ResultListSelectionChangedEvent) => {
+        console.log("changed");
+    }, []);
+
+<ResultList resultListInput={input} onSelectionChanged={selectionChangeListener}/>
+```
+
+#### Get selected Feature and Feature-Ids from Result-List
+
+The ResultListSelectionChangedEvent has a property `features` for all selected Features and a method `getFeatureIds` to get the Ids of all selected Features. You can take this property or method and store the results in states.
+
+```ts
+//state for selected Features
+const [selectedFeatures, setSelectedFeatures] = useState<BaseFeature[]>([]);
+
+//state for selected Ids
+const [selectedIds, setSelectedIds] = useState<(string | number)[]>([]);
+
+const selectionChangeListener = useCallback((_event: ResultListSelectionChangedEvent) => {
+    setSelectedFeatures(_event.features);
+    setSelectedIds(_event.getFeatureIds());
+}, []);
+
+<ResultList resultListInput={input} onSelectionChanged={selectionChangeListener} />
+```
+
 ### Sorting Data
 
-The user can click on a column header to sort the table by property values associated with that column.
-An icon within the header indicates the current sort order.
+If you want to sort the data by a single columndate you have to click on the column header. The arrows show in which direction the sorting took place.
 
-Note that sorting only works for columns with associated sortable property values.
+You can then simply retrieve the `resultListColumns` attribute at a later time by accessing `layer.attributes["resultListColumns"]`.
+Note that neither the map model nor the result list will interpret `resultListColumns` by itself in any way - this is a user defined attribute.
+You have to forward this attribute into the `columns` prop on your own.
 
 ### State management
 
@@ -157,10 +191,6 @@ new SimpleLayer({
     }
 });
 ```
-
-You can then simply retrieve the `resultListColumns` attribute at a later time by accessing `layer.attributes["resultListColumns"]`.
-Note that neither the map model nor the result list will interpret `resultListColumns` by itself in any way - this is a user defined attribute.
-You have to forward this attribute into the `columns` prop on your own.
 
 ### Integrating the result list above the map
 

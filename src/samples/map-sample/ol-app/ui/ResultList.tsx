@@ -6,10 +6,21 @@ import { useService } from "open-pioneer:react-hooks";
 import { useSnapshot } from "valtio";
 import { AppModel } from "../AppModel";
 import { MAP_ID } from "../MapConfigProviderImpl";
+import { BaseFeature } from "@open-pioneer/map";
+import { useState, useCallback } from "react";
+import { ResultListSelectionChangedEvent } from "@open-pioneer/result-list/ResultList";
 
 export function ResultListComponent() {
     const appModel = useService<unknown>("ol-app.AppModel") as AppModel;
     const state = useSnapshot(appModel.state).resultListState;
+    const [selectedFeatures, setSelectedFeatures] = useState<BaseFeature[]>([]);
+    const [selectedIds, setSelectedIds] = useState<(string | number)[]>([]);
+    const selectionChangeListener = useCallback((_event: ResultListSelectionChangedEvent) => {
+        setSelectedFeatures(_event.features);
+        setSelectedIds(_event.getFeatureIds());
+    }, []);
+    console.log("Anzahl Features: " + selectedFeatures.length);
+    console.log("SelectedIds: " + selectedIds.toString());
     return (
         state.input && (
             <Box
@@ -25,7 +36,12 @@ export function ResultListComponent() {
                 borderBottom="2px solid"
                 borderColor={"trails.100"}
             >
-                <ResultList key={state.key} input={state.input} mapId={MAP_ID} />
+                <ResultList
+                    key={state.key}
+                    input={state.input}
+                    mapId={MAP_ID}
+                    onSelectionChanged={selectionChangeListener}
+                />
             </Box>
         )
     );
