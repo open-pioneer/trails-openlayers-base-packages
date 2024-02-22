@@ -3,7 +3,7 @@
 import { BaseFeature } from "@open-pioneer/map";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { SpyInstance, afterEach, beforeEach, expect, it, vi } from "vitest";
+import { Mock, SpyInstance, afterEach, beforeEach, expect, it, vi } from "vitest";
 import { ResultColumn, ResultList, ResultListInput } from "./ResultList";
 import { Point } from "ol/geom";
 
@@ -323,6 +323,55 @@ it("expect render function to be applied", async () => {
     expect(dateCell!.textContent).toMatchSnapshot();
 });
 
+it("expect result-list throws selection-change-Event", async () => {
+    const selectionChangeListener = vi.fn();
+    render(
+        <PackageContextProvider>
+            <ResultList
+                input={{ data: dummyFeatureData, columns: dummyColumns }}
+                data-testid="result-list"
+                onSelectionChange={selectionChangeListener}
+            />
+        </PackageContextProvider>
+    );
+
+    const { selectAllSelect } = await waitForResultList();
+
+    //Selection All
+    act(() => {
+        fireEvent.click(selectAllSelect!);
+    });
+    let features = getSelectionsEvent(selectionChangeListener, 0).features;
+    const realIds = features.map((feature: BaseFeature) => feature.id);
+    const eventIds = getSelectionsEvent(selectionChangeListener, 0).getFeatureIds();
+
+    // Result-List has Array of selected Features
+    expect(features).toEqual(dummyFeatureData);
+
+    //getFeatureIds method returns the correct Ids
+    expect(eventIds).toEqual(realIds);
+
+    //Deselect All
+    act(() => {
+        fireEvent.click(selectAllSelect!);
+    });
+
+    // Result-List has empty Array
+    features = getSelectionsEvent(selectionChangeListener, 1).features;
+    expect(features).toEqual([]);
+
+    /**
+     * 1 Selection
+     * 1 Deselection
+     * = 2
+     */
+    expect(selectionChangeListener).toHaveBeenCalledTimes(2);
+});
+
+function getSelectionsEvent(listener: Mock, call: number) {
+    return listener.mock.calls[call][0];
+}
+
 async function waitForResultList() {
     return await waitFor(async () => {
         const resultListDiv: HTMLDivElement | null =
@@ -335,6 +384,7 @@ async function waitForResultList() {
             resultListDiv.querySelectorAll<HTMLTableHeaderCellElement>("thead tr th");
 
         const allRows = resultListDiv.querySelectorAll<HTMLElement>("tbody tr");
+        const allCells = resultListDiv.querySelectorAll<HTMLElement>("tbody td");
 
         const selectAllSelect = resultListDiv.querySelector<HTMLInputElement>(
             ".result-list-select-all-checkbox input"
@@ -348,6 +398,7 @@ async function waitForResultList() {
             resultListDiv,
             allHeaderElements,
             allRows,
+            allCells,
             selectAllSelect,
             selectRowSelects
         };

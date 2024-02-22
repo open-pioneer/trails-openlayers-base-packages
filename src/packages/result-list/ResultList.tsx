@@ -116,6 +116,14 @@ export interface ResultListInput {
 }
 
 /**
+ * Emitted when the selection within the ResultList changes.
+ */
+export interface ResultListSelectionChangeEvent {
+    features: BaseFeature[];
+    getFeatureIds: () => (number | string)[];
+}
+
+/**
  * Properties supported by the {@link ResultList} component.
  */
 export interface ResultListProps extends CommonComponentProps {
@@ -128,6 +136,11 @@ export interface ResultListProps extends CommonComponentProps {
      * Describes the data rendered by the component.
      */
     input: ResultListInput;
+
+    /**
+     * This handler is called whenever the user has changed the selected features in the result-list
+     */
+    onSelectionChange?: (event: ResultListSelectionChangeEvent) => void;
 }
 
 /**
@@ -137,7 +150,8 @@ export const ResultList: FC<ResultListProps> = (props) => {
     const { containerProps } = useCommonComponentProps("result-list", props);
     const intl = useIntl();
     const {
-        input: { data, columns, formatOptions }
+        input: { data, columns, formatOptions },
+        onSelectionChange
     } = props;
     if (columns.length === 0) {
         throw Error("No columns were defined. The result list cannot be displayed.");
@@ -158,7 +172,11 @@ export const ResultList: FC<ResultListProps> = (props) => {
 
     return (
         <Box {...containerProps} height="100%" overflowY="auto" ref={containerRef}>
-            <DataTable columns={dataTableColumns} data={data} />
+            <DataTable
+                columns={dataTableColumns}
+                data={data}
+                onSelectionChange={onSelectionChange}
+            />
         </Box>
     );
 };

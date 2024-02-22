@@ -1,6 +1,13 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { MapConfig, MapConfigProvider, SimpleLayer, WMSLayer, WMTSLayer } from "@open-pioneer/map";
+import {
+    BaseFeature,
+    MapConfig,
+    MapConfigProvider,
+    SimpleLayer,
+    WMSLayer,
+    WMTSLayer
+} from "@open-pioneer/map";
 import GeoJSON from "ol/format/GeoJSON";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
@@ -12,7 +19,6 @@ import TileLayer from "ol/layer/Tile.js";
 import { ServiceOptions } from "@open-pioneer/runtime";
 import { OgcFeaturesVectorSourceFactory } from "@open-pioneer/ogc-features";
 import { View } from "ol";
-import { BaseFeature } from "@open-pioneer/map";
 
 interface References {
     vectorSourceFactory: OgcFeaturesVectorSourceFactory;
@@ -145,6 +151,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                         ]
                     }
                 }),
+                // TODO: Remove OGC Feature-Dependency? Or keep it and change createKitasLayer() to use createVectorSource?
                 new SimpleLayer({
                     id: "ogc_kataster",
                     title: "Liegenschaftskatasterbezirke in NRW (viele Daten)",
