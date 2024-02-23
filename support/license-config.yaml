@@ -9,6 +9,9 @@ allowedLicenses:
   - "CC0-1.0"
   - "WTFPL"
   - "Unlicense"
+  # Dependencies of jsPdf use this
+  - "(MIT OR Apache-2.0)"
+  - "(MPL-2.0 OR Apache-2.0)"
 
 # Some licenses are detected incorrectly.
 # Their information can be overwritten here.
@@ -114,3 +117,8 @@ overrideLicenses:
     version: "3.0.0"
     licenseFiles:
       - custom: "./licenses/color_rgba_mit"
+
+  # License md present but package.json license field invalid.
+  - name: "rgbcolor"
+    version: "1.0.1"
+    license: "MIT"

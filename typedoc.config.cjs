@@ -25,6 +25,8 @@ const documentedPackages = [
     "packages/search",
     "packages/spatial-bookmarks",
     "packages/selection",
+    "packages/result-list",
+    "packages/printing",
     "packages/editing",
     "packages/result-list"
 ];

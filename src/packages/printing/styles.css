@@ -1,0 +1,23 @@
+.printing-overlay {
+    /* container uses position relative, so this absolute positioning works */
+    position: absolute;
+    inset: 0;
+    z-index: 10000;
+
+    /* non-interactive: the overlay is "in front" of the map and blocks events */
+    user-select: none;
+    pointer-events: all;
+    cursor: wait;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(180, 180, 180, 0.8);
+}
+
+.printing-overlay-status {
+    flex: 1 1 auto;
+    font-size: 1.5em;
+    text-align: center;
+}

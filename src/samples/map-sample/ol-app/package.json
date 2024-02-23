@@ -29,6 +29,7 @@
         "@open-pioneer/spatial-bookmarks": "workspace:^",
         "@open-pioneer/theme": "workspace:^",
         "@open-pioneer/toc": "workspace:^",
+        "@open-pioneer/printing": "workspace:^",
         "ol": "^8.2.0",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",

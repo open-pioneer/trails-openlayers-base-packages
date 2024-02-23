@@ -18,6 +18,7 @@ messages:
     toolbar: "Maptools"
   geolocationTitle: "Geolocation"
   spatialBookmarkTitle: "Spatial bookmarks"
+  printingTitle: "Printing"
   layerNotVisibleReason: "Matching layer is not visible."
   searchSources:
     miningPermissions: Mining permissions
