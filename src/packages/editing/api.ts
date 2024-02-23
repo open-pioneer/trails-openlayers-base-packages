@@ -1,8 +1,10 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { EventEmitter } from "@open-pioneer/core";
+import { HttpService } from "@open-pioneer/http";
 import { MapModel } from "@open-pioneer/map";
-import type { DeclaredService } from "@open-pioneer/runtime";
+import type { DeclaredService, PackageIntl } from "@open-pioneer/runtime";
+import { FlatStyleLike } from "ol/style/flat";
 
 /**
  * State of an editing workflow
@@ -13,7 +15,9 @@ export type EditingWorkflowState =
     | "active:saving"
     | "inactive";
 
-/** Events emitted by the {@link EditingWorkflow}. */
+/**
+ * Events emitted by the {@link EditingWorkflow}.
+ */
 export interface EditingWorkflowEvents {
     /**
      * Initial state after editing workflow was started but user has not yet started drawing.
@@ -36,6 +40,17 @@ export interface EditingWorkflowEvents {
      * State after editing is stopped.
      */
     "inactive": void;
+}
+
+/**
+ * Props of an editing workflow
+ */
+export interface EditingWorkflowProps {
+    map: MapModel;
+    ogcApiFeatureLayerUrl: URL;
+    polygonDrawStyle: FlatStyleLike;
+    httpService: HttpService;
+    intl: PackageIntl;
 }
 
 /**

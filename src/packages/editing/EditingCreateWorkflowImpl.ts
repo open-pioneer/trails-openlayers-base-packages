@@ -17,20 +17,18 @@ import Overlay from "ol/Overlay";
 import { Resource } from "@open-pioneer/core";
 import { unByKey } from "ol/Observable";
 import { EventsKey } from "ol/events";
-import { EditingWorkflowEvents, EditingWorkflowState, EditingWorkflow } from "./api";
+import {
+    EditingWorkflowEvents,
+    EditingWorkflowState,
+    EditingWorkflow,
+    EditingWorkflowProps
+} from "./api";
+import Feature from "ol/Feature";
 
 // Represents a tooltip rendered on the OpenLayers map
 interface Tooltip extends Resource {
     overlay: Overlay;
     element: HTMLDivElement;
-}
-
-interface EditingWorkflowProps {
-    map: MapModel;
-    ogcApiFeatureLayerUrl: URL;
-    polygonDrawStyle: FlatStyleLike;
-    httpService: HttpService;
-    intl: PackageIntl;
 }
 
 export class EditingCreateWorkflowImpl
@@ -129,6 +127,39 @@ export class EditingCreateWorkflowImpl
         this.emit(state);
     }
 
+    private _save(feature: Feature) {
+        this._setState("active:saving");
+
+        const layerUrl = this._editLayerURL;
+
+        const geometry = feature.getGeometry();
+        if (!geometry) {
+            this._destroy();
+            this.#waiter?.reject(new Error("no geometry available"));
+            return;
+        }
+        const projection = this._olMap.getView().getProjection();
+        const geoJson = new GeoJSON({
+            dataProjection: projection
+        });
+        const geoJSONGeometry: GeoJSONGeometry | GeoJSONGeometryCollection =
+            geoJson.writeGeometryObject(geometry, {
+                rightHanded: true,
+                decimals: 10
+            });
+
+        saveCreatedFeature(this._httpService, layerUrl, geoJSONGeometry, projection)
+            .then((featureId) => {
+                this._destroy();
+                this.#waiter?.resolve(featureId);
+            })
+            .catch((err: Error) => {
+                console.log(err);
+                this._destroy();
+                this.#waiter?.reject(err);
+            });
+    }
+
     private _start() {
         this._olMap.addLayer(this._editingLayer);
         this._olMap.addInteraction(this._drawInteraction);
@@ -150,35 +181,13 @@ export class EditingCreateWorkflowImpl
         });
 
         const drawEnd = this._drawInteraction.on("drawend", (e) => {
-            this._setState("active:saving");
-
-            const layerUrl = this._editLayerURL;
-
-            const geometry = e.feature.getGeometry();
-            if (!geometry) {
+            const feature = e.feature;
+            if (!feature) {
                 this._destroy();
-                this.#waiter?.reject(new Error("no geometry available"));
+                this.#waiter?.reject(new Error("no feature available"));
                 return;
             }
-            const projection = this._olMap.getView().getProjection();
-            const geoJson = new GeoJSON({
-                dataProjection: projection
-            });
-            const geoJSONGeometry: GeoJSONGeometry | GeoJSONGeometryCollection =
-                geoJson.writeGeometryObject(geometry, {
-                    rightHanded: true,
-                    decimals: 10
-                });
-            saveCreatedFeature(this._httpService, layerUrl, geoJSONGeometry, projection)
-                .then((featureId) => {
-                    this._destroy();
-                    this.#waiter?.resolve(featureId);
-                })
-                .catch((err: Error) => {
-                    console.log(err);
-                    this._destroy();
-                    this.#waiter?.reject(err);
-                });
+            this._save(feature);
         });
 
         // update event handler when container changes

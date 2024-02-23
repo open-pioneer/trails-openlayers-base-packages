@@ -263,42 +263,42 @@ function useEditingUpdateWorkflow(
         }
 
         function startEditingUpdate() {
-            if (map) {
-                try {
-                    const layer = map.layers.getLayerById("krankenhaus") as Layer;
-                    const url = new URL(layer.attributes.collectionURL + "/items");
-                    const workflow = editingService.update(map, url);
-
-                    workflow
-                        .whenComplete()
-                        .then((featureId: string | undefined) => {
-                            if (featureId) {
-                                // undefined -> no feature saved
-                                notificationService.notify({
-                                    level: "info",
-                                    message: intl.formatMessage(
-                                        {
-                                            id: "editing.update.featureModified"
-                                        },
-                                        { featureId: featureId }
-                                    ),
-                                    displayDuration: 4000
-                                });
-                            }
-                            const vectorLayer = layer?.olLayer as VectorLayer<VectorSource>;
-                            vectorLayer.getSource()?.refresh();
-                        })
-                        .catch((error: Error) => {
-                            console.log(error);
-                        })
-                        .finally(() => {
-                            toggleToolState("editingUpdateActive", false);
-                        });
-                } catch (error) {
-                    console.log(error);
-                }
-            } else {
+            if (!map) {
                 throw Error("map is undefined");
+            }
+
+            try {
+                const layer = map.layers.getLayerById("krankenhaus") as Layer;
+                const url = new URL(layer.attributes.collectionURL + "/items");
+                const workflow = editingService.update(map, url);
+
+                workflow
+                    .whenComplete()
+                    .then((featureId: string | undefined) => {
+                        if (featureId) {
+                            // undefined -> no feature saved
+                            notificationService.notify({
+                                level: "info",
+                                message: intl.formatMessage(
+                                    {
+                                        id: "editing.update.featureModified"
+                                    },
+                                    { featureId: featureId }
+                                ),
+                                displayDuration: 4000
+                            });
+                        }
+                        const vectorLayer = layer?.olLayer as VectorLayer<VectorSource>;
+                        vectorLayer.getSource()?.refresh();
+                    })
+                    .catch((error: Error) => {
+                        console.log(error);
+                    })
+                    .finally(() => {
+                        toggleToolState("editingUpdateActive", false);
+                    });
+            } catch (error) {
+                console.log(error);
             }
         }
 

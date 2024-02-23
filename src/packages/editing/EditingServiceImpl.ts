@@ -63,14 +63,13 @@ export class EditingServiceImpl implements EditingService {
             );
         }
 
-        workflow = new EditingUpdateWorkflowImpl(
+        workflow = new EditingUpdateWorkflowImpl({
             map,
             ogcApiFeatureLayerUrl,
-            this._serviceOptions.properties.polygonDrawStyle as FlatStyleLike,
-            this._serviceOptions.references.httpService,
-            this._serviceOptions.references.mapRegistry,
-            this._serviceOptions.intl
-        );
+            polygonDrawStyle: this._serviceOptions.properties.polygonDrawStyle as FlatStyleLike,
+            httpService: this._serviceOptions.references.httpService,
+            intl: this._serviceOptions.intl
+        });
         this._workflows.set(mapId, workflow);
         this._connectToWorkflowComplete(workflow, mapId);
 

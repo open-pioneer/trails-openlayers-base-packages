@@ -5,7 +5,6 @@ import { MapModel, TOPMOST_LAYER_Z } from "@open-pioneer/map";
 import { Modify, Select } from "ol/interaction";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
-import { MapRegistry } from "@open-pioneer/map";
 import { HttpService } from "@open-pioneer/http";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { FlatStyleLike } from "ol/style/flat";
@@ -19,7 +18,12 @@ import Overlay from "ol/Overlay";
 import { Resource } from "@open-pioneer/core";
 import { unByKey } from "ol/Observable";
 import { EventsKey } from "ol/events";
-import { EditingWorkflowEvents, EditingWorkflowState, EditingWorkflow } from "./api";
+import {
+    EditingWorkflowEvents,
+    EditingWorkflowState,
+    EditingWorkflow,
+    EditingWorkflowProps
+} from "./api";
 
 // Represents a tooltip rendered on the OpenLayers map
 interface Tooltip extends Resource {
@@ -34,7 +38,6 @@ export class EditingUpdateWorkflowImpl
 {
     #waiter: ManualPromise<string | undefined> | undefined;
 
-    private readonly _mapRegistry: MapRegistry;
     private _httpService: HttpService;
     private _intl: PackageIntl;
 
@@ -56,25 +59,17 @@ export class EditingUpdateWorkflowImpl
     private _interactionListener: Array<EventsKey>;
     private _mapListener: Array<Resource>;
 
-    constructor(
-        map: MapModel,
-        ogcApiFeatureLayerUrl: URL,
-        polygonDrawStyle: FlatStyleLike,
-        httpService: HttpService,
-        mapRegistry: MapRegistry,
-        intl: PackageIntl
-    ) {
+    constructor(options: EditingWorkflowProps) {
         super();
-        this._mapRegistry = mapRegistry;
-        this._httpService = httpService;
-        this._intl = intl;
+        this._httpService = options.httpService;
+        this._intl = options.intl;
 
-        this._polygonDrawStyle = polygonDrawStyle;
+        this._polygonDrawStyle = options.polygonDrawStyle;
 
-        this._map = map;
-        this._olMap = map.olMap;
+        this._map = options.map;
+        this._olMap = options.map.olMap;
         this._state = "active:initialized";
-        this._editLayerURL = ogcApiFeatureLayerUrl;
+        this._editLayerURL = options.ogcApiFeatureLayerUrl;
 
         this._editingSource = new VectorSource();
         this._editingLayer = new VectorLayer({
