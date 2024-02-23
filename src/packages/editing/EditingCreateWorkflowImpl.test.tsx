@@ -337,6 +337,8 @@ describe("when editing workflow complete", () => {
     });
 
     it("should return an error if editing failed", async () => {
+        vi.spyOn(console, "log").mockImplementation(() => undefined);
+
         const httpService: HttpService = {
             fetch: vi.fn().mockResolvedValue(
                 new Response("", {
