@@ -7,13 +7,13 @@ messages:
   overviewMapTitle: "Übersichtskarte"
   editing:
     create:
-      startTitle: "Editing - Neues Feature erstellen"
+      startTitle: "Editierung - Neues Feature erstellen"
       featureCreated: "Objekt erstellt mit ID: {featureId}"
     update:
-      startTitle: "Editing - Feature bearbeiten"
+      startTitle: "Editierung - Feature bearbeiten"
       featureModified: "Objekt aktualisiert mit ID: {featureId}"
-    stopTitle: "Editing - Stoppen"
-    resetTitle: "Editing - Zurücksetzen"
+    stopTitle: "Editierung - Stoppen"
+    resetTitle: "Editierung - Zurücksetzen"
   resultListTitle: "Ergebnisliste"
   ariaLabel:
     header: "Kopfleiste"
