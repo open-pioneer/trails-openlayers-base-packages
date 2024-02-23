@@ -63,10 +63,10 @@ importers:
         version: 1.2.1
       '@open-pioneer/http':
         specifier: ^2.1.2
-        version: 2.1.3(@open-pioneer/core@1.2.1)(@open-pioneer/runtime@2.1.1)
+        version: 2.1.2(@open-pioneer/core@1.2.1)(@open-pioneer/runtime@2.1.1)
       '@open-pioneer/integration':
         specifier: ^2.0.3
-        version: 2.0.4(@open-pioneer/runtime@2.1.1)
+        version: 2.0.3(@open-pioneer/runtime@2.1.1)
       '@open-pioneer/runtime':
         specifier: ^2.1.0
         version: 2.1.1(@formatjs/intl@2.10.0)(@open-pioneer/base-theme@0.2.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/core@1.2.1)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
@@ -76,6 +76,12 @@ importers:
       framer-motion:
         specifier: ^10.17.4
         version: 10.18.0(react-dom@18.2.0)(react@18.2.0)
+      html2canvas:
+        specifier: ^1.4.1
+        version: 1.4.1
+      jspdf:
+        specifier: ^2.5.1
+        version: 2.5.1
       ol:
         specifier: ^8.2.0
         version: 8.2.0
@@ -354,7 +360,7 @@ importers:
         version: 1.2.1
       '@open-pioneer/http':
         specifier: ^2.1.2
-        version: 2.1.3(@open-pioneer/core@1.2.1)(@open-pioneer/runtime@2.1.1)
+        version: 2.1.2(@open-pioneer/core@1.2.1)(@open-pioneer/runtime@2.1.1)
       '@open-pioneer/map':
         specifier: workspace:^
         version: link:../map
@@ -479,7 +485,7 @@ importers:
         version: 1.2.1
       '@open-pioneer/http':
         specifier: ^2.1.2
-        version: 2.1.3(@open-pioneer/core@1.2.1)(@open-pioneer/runtime@2.1.1)
+        version: 2.1.2(@open-pioneer/core@1.2.1)(@open-pioneer/runtime@2.1.1)
       '@open-pioneer/react-utils':
         specifier: workspace:^
         version: link:../react-utils
@@ -651,7 +657,7 @@ importers:
         version: 1.2.1
       '@open-pioneer/http':
         specifier: ^2.1.2
-        version: 2.1.3(@open-pioneer/core@1.2.1)(@open-pioneer/runtime@2.1.1)
+        version: 2.1.2(@open-pioneer/core@1.2.1)(@open-pioneer/runtime@2.1.1)
       '@open-pioneer/search':
         specifier: workspace:^
         version: link:../search
@@ -706,6 +712,56 @@ importers:
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
+    publishDirectory: dist
+
+  src/packages/printing:
+    dependencies:
+      '@open-pioneer/chakra-integration':
+        specifier: ^1.1.1
+        version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.18.0)(react-dom@18.2.0)(react@18.2.0)
+      '@open-pioneer/core':
+        specifier: ^1.2.1
+        version: 1.2.1
+      '@open-pioneer/map':
+        specifier: workspace:^
+        version: link:../map
+      '@open-pioneer/notifier':
+        specifier: workspace:^
+        version: link:../notifier
+      '@open-pioneer/react-utils':
+        specifier: workspace:^
+        version: link:../react-utils
+      '@open-pioneer/runtime':
+        specifier: ^2.1.0
+        version: 2.1.1(@formatjs/intl@2.10.0)(@open-pioneer/base-theme@0.2.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/core@1.2.1)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
+      classnames:
+        specifier: ^2.3.2
+        version: 2.3.2
+      html2canvas:
+        specifier: ^1.4.1
+        version: 1.4.1
+      jspdf:
+        specifier: ^2.5.1
+        version: 2.5.1
+      ol:
+        specifier: ^8.2.0
+        version: 8.2.0
+      react:
+        specifier: ^18.2.0
+        version: 18.2.0
+    devDependencies:
+      '@open-pioneer/map-test-utils':
+        specifier: workspace:^
+        version: link:../map-test-utils
+      '@open-pioneer/test-utils':
+        specifier: ^1.1.1
+        version: 1.1.1(@formatjs/intl@2.10.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/runtime-react-support@1.0.0)(@testing-library/dom@9.3.4)(@testing-library/react@14.2.1)(react-dom@18.2.0)(react@18.2.0)
+      openlayers-base-packages:
+        specifier: workspace:*
+        version: link:../../..
+      test-utils:
+        specifier: workspace:*
+        version: link:../../testing/test-utils
     publishDirectory: dist
 
   src/packages/react-utils:
@@ -881,6 +937,9 @@ importers:
       openlayers-base-packages:
         specifier: workspace:*
         version: link:../../..
+      test-utils:
+        specifier: workspace:*
+        version: link:../../testing/test-utils
     publishDirectory: dist
 
   src/packages/selection:
@@ -1156,7 +1215,7 @@ importers:
         version: link:../../../packages/geolocation
       '@open-pioneer/http':
         specifier: ^2.1.2
-        version: 2.1.3(@open-pioneer/core@1.2.1)(@open-pioneer/runtime@2.1.1)
+        version: 2.1.2(@open-pioneer/core@1.2.1)(@open-pioneer/runtime@2.1.1)
       '@open-pioneer/legend':
         specifier: workspace:^
         version: link:../../../packages/legend
@@ -1178,6 +1237,9 @@ importers:
       '@open-pioneer/overview-map':
         specifier: workspace:^
         version: link:../../../packages/overview-map
+      '@open-pioneer/printing':
+        specifier: workspace:^
+        version: link:../../../packages/printing
       '@open-pioneer/react-utils':
         specifier: workspace:^
         version: link:../../../packages/react-utils
@@ -1255,7 +1317,7 @@ importers:
         version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(framer-motion@10.18.0)(react-dom@18.2.0)(react@18.2.0)
       '@open-pioneer/http':
         specifier: ^2.1.2
-        version: 2.1.3(@open-pioneer/core@1.2.1)(@open-pioneer/runtime@2.1.1)
+        version: 2.1.2(@open-pioneer/core@1.2.1)(@open-pioneer/runtime@2.1.1)
       '@open-pioneer/map':
         specifier: workspace:^
         version: link:../../../packages/map
@@ -1418,6 +1480,8 @@ importers:
       '@open-pioneer/theme':
         specifier: workspace:^
         version: link:../../../packages/theme
+
+  src/testing/test-utils: {}
 
   support/disabled-package: {}
 
@@ -3616,20 +3680,20 @@ packages:
   /@open-pioneer/core@1.2.1:
     resolution: {integrity: sha512-LuDc+jPxI5U+B0L6+dHu1PNqeVni2FD/mG2A/EoZQMnoT9ICDp3jChEFooGA7RbbR6wSum2DS4OjxBRoJvx0Ng==}
 
-  /@open-pioneer/http@2.1.3(@open-pioneer/core@1.2.1)(@open-pioneer/runtime@2.1.1):
-    resolution: {integrity: sha512-QL63n+Rh4dNffkaN0l7Fv/+7XvZUnEKpRpH1nlP0COX8Rpj06dfI2OD8K+JVT1eKCxgUHE4OuHNRK4Ad93LhFg==}
+  /@open-pioneer/http@2.1.2(@open-pioneer/core@1.2.1)(@open-pioneer/runtime@2.1.1):
+    resolution: {integrity: sha512-rmoiiAdBUItCXqo7siQ0DPPEaZyfGB1E56syDGu/6x3Ww9bQmDxUfCcgb8ZHBi4o2KQNtfdcgdRpkcBlTwRIjQ==}
     peerDependencies:
       '@open-pioneer/core': ^1.2.1
-      '@open-pioneer/runtime': ^2.1.1
+      '@open-pioneer/runtime': ^2.1.0
     dependencies:
       '@open-pioneer/core': 1.2.1
       '@open-pioneer/runtime': 2.1.1(@formatjs/intl@2.10.0)(@open-pioneer/base-theme@0.2.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/core@1.2.1)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
     dev: false
 
-  /@open-pioneer/integration@2.0.4(@open-pioneer/runtime@2.1.1):
-    resolution: {integrity: sha512-9WL3k1Bx5UjM3ijtH2jhCZk3wi7mE/hTTw49BwPHBmw16HHFpylU2l4qnUneN6JsEDzsz9mhdFKmsv25HTjecA==}
+  /@open-pioneer/integration@2.0.3(@open-pioneer/runtime@2.1.1):
+    resolution: {integrity: sha512-cgEYL3zSOrNgGw9KgaqUofMWE5qGtCdF+RDUvheT6HRuuzXfBMMT9KwVUhj4oE5i18JHb7ETpRvZ21zqo9Ks0w==}
     peerDependencies:
-      '@open-pioneer/runtime': ^2.1.1
+      '@open-pioneer/runtime': ^2.1.0
     dependencies:
       '@open-pioneer/runtime': 2.1.1(@formatjs/intl@2.10.0)(@open-pioneer/base-theme@0.2.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/core@1.2.1)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
     dev: false
@@ -4170,6 +4234,12 @@ packages:
   /@types/prop-types@15.7.11:
     resolution: {integrity: sha512-ga8y9v9uyeiLdpKddhxYQkxNDrfvuPrlFb0N1qnZZByvcElJaXthF1UhvCh9TLWJBEHeNtdnbysW7Y6Uq8CVng==}
 
+  /@types/raf@3.4.3:
+    resolution: {integrity: sha512-c4YAvMedbPZ5tEyxzQdMoOhhJ4RD3rngZIdwC2/qDN3d7JpEhB6fiBRKVY1lg5B7Wk+uPBjn5f39j1/2MY1oOw==}
+    requiresBuild: true
+    dev: false
+    optional: true
+
   /@types/react-dom@18.2.19:
     resolution: {integrity: sha512-aZvQL6uUbIJpjZk4U8JZGbau9KDeAwMfmhyWorxgBkqDIEf6ROjRozcmPIicqsUwPUjbkDfHKgGee1Lq65APcA==}
     dependencies:
@@ -4633,6 +4703,12 @@ packages:
     resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
     dev: true
 
+  /atob@2.1.2:
+    resolution: {integrity: sha512-Wm6ukoaOGJi/73p/cl2GvLjTI5JM1k/O14isD73YML8StrH/7/lRFgmg8nICZgD3bZZvjwCGxtMOD3wWNAu8cg==}
+    engines: {node: '>= 4.5.0'}
+    hasBin: true
+    dev: false
+
   /available-typed-arrays@1.0.5:
     resolution: {integrity: sha512-DMD0KiN46eipeziST1LPP/STfDU0sufISXmjSgvVsoU2tqxctQeASejWcfNtxYKqETM1UxQ8sp2OrSBWpHY6sw==}
     engines: {node: '>= 0.4'}
@@ -4659,6 +4735,11 @@ packages:
   /balanced-match@1.0.2:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
     dev: true
+
+  /base64-arraybuffer@1.0.2:
+    resolution: {integrity: sha512-I3yl4r9QB5ZRY3XuJVEPfc2XhZO6YweFPI+UovAzn+8/hb3oJ6lnysaFcjVpkCPfVWFUDvoZ8kmVDP7WyRtYtQ==}
+    engines: {node: '>= 0.6.0'}
+    dev: false
 
   /better-path-resolve@1.0.0:
     resolution: {integrity: sha512-pbnl5XzGBdrFU/wT4jqmJVPn2B6UHPBOhzMQkY/SPUPB6QtUXtmBHBIwCbXJol93mOpGMnQyP/+BB19q04xj7g==}
@@ -4697,6 +4778,12 @@ packages:
     dependencies:
       wcwidth: 1.0.1
     dev: true
+
+  /btoa@1.2.1:
+    resolution: {integrity: sha512-SB4/MIGlsiVkMcHmT+pSmIPoNDoHg+7cMzmt3Uxt628MTz2487DKSqK/fuhFBrkuqrYv5UCEnACpF4dTFNKc/g==}
+    engines: {node: '>= 0.4.0'}
+    hasBin: true
+    dev: false
 
   /bytewise-core@1.2.3:
     resolution: {integrity: sha512-nZD//kc78OOxeYtRlVk8/zXqTB4gf/nlguL1ggWA8FuchMyOxcyHR4QPQZMUmA7czC+YnaBrPUCubqAWe50DaA==}
@@ -4740,6 +4827,22 @@ packages:
     resolution: {integrity: sha512-L28STB170nwWS63UjtlEOE3dldQApaJXZkOI1uMFfzf3rRuPegHaHesyee+YxQ+W6SvRDQV6UrdOdRiR153wJg==}
     engines: {node: '>=6'}
     dev: true
+
+  /canvg@3.0.10:
+    resolution: {integrity: sha512-qwR2FRNO9NlzTeKIPIKpnTY6fqwuYSequ8Ru8c0YkYU7U0oW+hLUvWadLvAu1Rl72OMNiFhoLu4f8eUjQ7l/+Q==}
+    engines: {node: '>=10.0.0'}
+    requiresBuild: true
+    dependencies:
+      '@babel/runtime': 7.23.9
+      '@types/raf': 3.4.3
+      core-js: 3.36.0
+      raf: 3.4.1
+      regenerator-runtime: 0.13.11
+      rgbcolor: 1.0.1
+      stackblur-canvas: 2.6.0
+      svg-pathdata: 6.0.3
+    dev: false
+    optional: true
 
   /chai@4.3.10:
     resolution: {integrity: sha512-0UXG04VuVbruMUYbJ6JctvH0YnC/4q3/AkT18q4NaITo91CUm0liMS9VqzT9vZhVQ/1eqPanMWjBM+Juhfb/9g==}
@@ -4936,6 +5039,12 @@ packages:
     dependencies:
       toggle-selection: 1.0.6
 
+  /core-js@3.36.0:
+    resolution: {integrity: sha512-mt7+TUBbTFg5+GngsAxeKBTl5/VS0guFeJacYge9OmHb+m058UwwIm41SE9T4Den7ClatV57B6TYTuJ0CX1MAw==}
+    requiresBuild: true
+    dev: false
+    optional: true
+
   /cosmiconfig@7.1.0:
     resolution: {integrity: sha512-AdmX6xUzdNASswsFtmwSt7Vj8po9IuqXm0UXz7QKPuEUmPB4XyjGfaAr2PSuELMwkRMVH1EpIkX5bTZGRB3eCA==}
     engines: {node: '>=10'}
@@ -4986,6 +5095,12 @@ packages:
     resolution: {integrity: sha512-fJAcud6B3rRu+KHYk+Bwf+WFL2MDCJJ1XG9x137tJQ0xYxor7XziQtuGFbWNdqrvF4Tk26O3H73nfVqXt/fW1A==}
     dependencies:
       hyphenate-style-name: 1.0.4
+    dev: false
+
+  /css-line-break@2.1.0:
+    resolution: {integrity: sha512-FHcKFCZcAha3LwfVBhCQbW2nCNbkZXn7KVUJcsT5/P8YmfsVja0FMPJr0B903j/E69HUphKiV9iQArX8SDYA4w==}
+    dependencies:
+      utrie: 1.0.2
     dev: false
 
   /css-tree@1.1.3:
@@ -5217,6 +5332,12 @@ packages:
     dependencies:
       webidl-conversions: 7.0.0
     dev: true
+
+  /dompurify@2.4.7:
+    resolution: {integrity: sha512-kxxKlPEDa6Nc5WJi+qRgPbOAbgTpSULL+vI3NUXsZMlkJxTqYI9wg5ZTay2sFrdZRWHPWNi+EdAhcJf81WtoMQ==}
+    requiresBuild: true
+    dev: false
+    optional: true
 
   /earcut@2.2.4:
     resolution: {integrity: sha512-/pjZsA1b4RPHbeWZQn66SWS8nZZWLQQ23oE3Eam7aroEFGEvwKAsJfZ9ytiEMycfzXWpca4FA9QIOehf7PocBQ==}
@@ -5808,6 +5929,10 @@ packages:
       reusify: 1.0.4
     dev: true
 
+  /fflate@0.4.8:
+    resolution: {integrity: sha512-FJqqoDBR00Mdj9ppamLa/Y7vxm+PRmNWA67N846RvsoYVMKB4q3y/de5PA7gUmRMYK/8CMz2GDZQmCRN1wBcWA==}
+    dev: false
+
   /file-entry-cache@6.0.1:
     resolution: {integrity: sha512-7Gps/XWymbLk2QLYK4NzpMOrYjMhdIxXuIvy2QBsLE6ljuodKvdkWs/cpyJJ3CVIVpH0Oi1Hvg1ovbMzLdFBBg==}
     engines: {node: ^10.12.0 || >=12.0.0}
@@ -6199,6 +6324,14 @@ packages:
     dependencies:
       whatwg-encoding: 2.0.0
     dev: true
+
+  /html2canvas@1.4.1:
+    resolution: {integrity: sha512-fPU6BHNpsyIhr8yyMpTLLxAbkaK8ArIBcmZIRiBLiDhjeqvXolaEmDGmELFuX9I4xDcaKKcJl+TKZLqruBbmWA==}
+    engines: {node: '>=8.0.0'}
+    dependencies:
+      css-line-break: 2.1.0
+      text-segmentation: 1.0.3
+    dev: false
 
   /http-proxy-agent@5.0.0:
     resolution: {integrity: sha512-n2hY8YdoRE1i7r6M0w9DIw5GgZN0G25P8zLCRQ8rjXtTU3vsNFBI/vWK/UIeE6g5MUUz6avwAPXmL6Fy9D/90w==}
@@ -6681,6 +6814,20 @@ packages:
     optionalDependencies:
       graceful-fs: 4.2.10
     dev: true
+
+  /jspdf@2.5.1:
+    resolution: {integrity: sha512-hXObxz7ZqoyhxET78+XR34Xu2qFGrJJ2I2bE5w4SM8eFaFEkW2xcGRVUss360fYelwRSid/jT078kbNvmoW0QA==}
+    dependencies:
+      '@babel/runtime': 7.23.9
+      atob: 2.1.2
+      btoa: 1.2.1
+      fflate: 0.4.8
+    optionalDependencies:
+      canvg: 3.0.10
+      core-js: 3.36.0
+      dompurify: 2.4.7
+      html2canvas: 1.4.1
+    dev: false
 
   /jsx-ast-utils@3.3.5:
     resolution: {integrity: sha512-ZZow9HBI5O6EPgSJLUb8n2NKgmVWTwCvHGwFuJlMjvLFqlGG6pjirPhtdsseaLZjSibD8eegzmYpUZwoIlj2cQ==}
@@ -7261,6 +7408,12 @@ packages:
       resolve-protobuf-schema: 2.1.0
     dev: false
 
+  /performance-now@2.1.0:
+    resolution: {integrity: sha512-7EAHlyLHI56VEIdK57uwHdHKIaAGbnXPiw0yWbarQZOKaKpvUIgW0jWRVLiatnM+XXlSwsanIBH/hzGMJulMow==}
+    requiresBuild: true
+    dev: false
+    optional: true
+
   /picocolors@1.0.0:
     resolution: {integrity: sha512-1fygroTLlHu66zi26VoTDv8yRgm0Fccecssto+MhsZ0D/DGW2sm8E8AjW7NU5VVTRt5GxbeZ5qBuJr+HyLYkjQ==}
     dev: true
@@ -7420,6 +7573,14 @@ packages:
   /quickselect@2.0.0:
     resolution: {integrity: sha512-RKJ22hX8mHe3Y6wH/N3wCM6BWtjaxIyyUIkpHOvfFnxdI4yD4tBXEBKSbriGujF6jnSVkJrffuo6vxACiSSxIw==}
     dev: false
+
+  /raf@3.4.1:
+    resolution: {integrity: sha512-Sq4CW4QhwOHE8ucn6J34MqtZCeWFP2aQSmrlroYgqAV1PjStIhJXxYuTgUIfkEk7zTLjmIjLmU5q+fbD1NnOJA==}
+    requiresBuild: true
+    dependencies:
+      performance-now: 2.1.0
+    dev: false
+    optional: true
 
   /rbush@3.0.1:
     resolution: {integrity: sha512-XRaVO0YecOpEuIvbhbpTrZgoiI6xBlz6hnlr6EHhd+0x9ase6EmeN+hdwwUaJvLcsFFQ8iWVF1GAK1yB0BWi0w==}
@@ -7678,6 +7839,12 @@ packages:
       which-builtin-type: 1.1.3
     dev: true
 
+  /regenerator-runtime@0.13.11:
+    resolution: {integrity: sha512-kY1AZVr2Ra+t+piVaJ4gxaFaReZVH40AKNo7UCX6W+dEwBo/2oZJzqfuN1qLq1oL45o56cPaTXELwrTh8Fpggg==}
+    requiresBuild: true
+    dev: false
+    optional: true
+
   /regenerator-runtime@0.14.1:
     resolution: {integrity: sha512-dYnhHh0nJoMfnkZs6GmmhFknAGRrLznOu5nc9ML+EJxGvrx6H7teuevqVqCuPcPK//3eDrrjQhehXVx9cnkGdw==}
 
@@ -7745,6 +7912,13 @@ packages:
     resolution: {integrity: sha512-U9nH88a3fc/ekCF1l0/UP1IosiuIjyTh7hBvXVMHYgVcfGvt897Xguj2UOLDeI5BG2m7/uwyaLVT6fbtCwTyzw==}
     engines: {iojs: '>=1.0.0', node: '>=0.10.0'}
     dev: true
+
+  /rgbcolor@1.0.1:
+    resolution: {integrity: sha512-9aZLIrhRaD97sgVhtJOW6ckOEh6/GnvQtdVNfdZ6s67+3/XwLS9lBcQYzEEhYVeUowN7pRzMLsyGhK2i/xvWbw==}
+    engines: {node: '>= 0.8.15'}
+    requiresBuild: true
+    dev: false
+    optional: true
 
   /rimraf@3.0.2:
     resolution: {integrity: sha512-JZkJMZkAGFFPP2YqXZXPbMlMBgsxzE8ILs4lMIX/2o0L9UBw9O/Y3o6wFw/i9YLapcUJWwqbi3kdxIPdC62TIA==}
@@ -8089,6 +8263,13 @@ packages:
     resolution: {integrity: sha512-1XMJE5fQo1jGH6Y/7ebnwPOBEkIEnT4QF32d5R1+VXdXveM0IBMJt8zfaxX1P3QhVwrYe+576+jkANtSS2mBbw==}
     dev: true
 
+  /stackblur-canvas@2.6.0:
+    resolution: {integrity: sha512-8S1aIA+UoF6erJYnglGPug6MaHYGo1Ot7h5fuXx4fUPvcvQfcdw2o/ppCse63+eZf8PPidSu4v1JnmEVtEDnpg==}
+    engines: {node: '>=0.1.14'}
+    requiresBuild: true
+    dev: false
+    optional: true
+
   /stackframe@1.3.4:
     resolution: {integrity: sha512-oeVtt7eWQS+Na6F//S4kJ2K2VbRlS9D43mAlMyVpVWovy9o+jfgH8O9agzANzaiLjclA0oYzUXEM4PurhSUChw==}
     dev: false
@@ -8245,6 +8426,13 @@ packages:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
 
+  /svg-pathdata@6.0.3:
+    resolution: {integrity: sha512-qsjeeq5YjBZ5eMdFuUa4ZosMLxgr5RZ+F+Y1OrDhuOCEInRMA3x74XdBtggJcj9kOeInz0WE+LgCPDkZFlBYJw==}
+    engines: {node: '>=12.0.0'}
+    requiresBuild: true
+    dev: false
+    optional: true
+
   /symbol-tree@3.2.4:
     resolution: {integrity: sha512-9QNk5KwDF+Bvz+PyObkmSYjI5ksVUYtjW7AU22r2NKcfLJcXp96hkDWU3+XndOsUb+AQ9QhfzfCT2O+CNWT5Tw==}
     dev: true
@@ -8276,6 +8464,12 @@ packages:
     resolution: {integrity: sha512-wK0Ri4fOGjv/XPy8SBHZChl8CM7uMc5VML7SqiQ0zG7+J5Vr+RMQDoHa2CNT6KHUnTGIXH34UDMkPzAUyapBZg==}
     engines: {node: '>=8'}
     dev: true
+
+  /text-segmentation@1.0.3:
+    resolution: {integrity: sha512-iOiPUo/BGnZ6+54OsWxZidGCsdU8YbE4PSpdPinp7DeMtUJNJBoJ/ouUSTJjHkh1KntHaltHl/gDs2FC4i5+Nw==}
+    dependencies:
+      utrie: 1.0.2
+    dev: false
 
   /text-table@0.2.0:
     resolution: {integrity: sha512-N+8UisAXDGk8PFXP4HAzVR9nbfmVJ3zYLAWiTIoqC5v5isinhr+r5uaO8+7r3BMfuNIufIsA7RdpVgacC2cSpw==}
@@ -8634,6 +8828,12 @@ packages:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
     dependencies:
       react: 18.2.0
+    dev: false
+
+  /utrie@1.0.2:
+    resolution: {integrity: sha512-1MLa5ouZiOmQzUbjbu9VmjLzn1QLXBhwpUa7kdLUQK+KQ5KA9I1vk5U4YHe/X2Ch7PYnJfWuWT+VbuxbGwljhw==}
+    dependencies:
+      base64-arraybuffer: 1.0.2
     dev: false
 
   /uuid@9.0.1:

@@ -1,0 +1,8 @@
+{
+    "name": "test-utils",
+    "description": "Shared local test utilities",
+    "version": "0.0.1",
+    "private": true,
+    "main": "index.ts",
+    "devDependencies": {}
+}

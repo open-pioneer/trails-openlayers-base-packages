@@ -15,6 +15,7 @@ import {
     PiListLight,
     PiListMagnifyingGlassFill,
     PiMapTrifold,
+    PiPrinterBold,
     PiPencil,
     PiPencilSlash,
     PiRulerLight,
@@ -37,6 +38,7 @@ export interface ToolState {
     measurementActive: boolean;
     selectionActive: boolean;
     overviewMapActive: boolean;
+    printingActive: boolean;
     editingCreateActive: boolean;
     editingUpdateActive: boolean;
 }
@@ -127,6 +129,12 @@ export function MapTools(props: MapToolsProps) {
                     onClick={() => appModel.setResultListVisibility(!resultListOpen)}
                 />
             )}
+            <ToolButton
+                label={intl.formatMessage({ id: "printingTitle" })}
+                icon={<PiPrinterBold />}
+                isActive={toolState.printingActive}
+                onClick={() => toggleToolState("printingActive")}
+            />
             <ToolButton
                 label={intl.formatMessage({ id: "spatialBookmarkTitle" })}
                 icon={<PiBookmarksSimpleBold />}

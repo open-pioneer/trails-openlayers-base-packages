@@ -2,7 +2,7 @@
 
 exports[`expect tooltip to be successfully created after construction > Tooltip wurde gesetzt 1`] = `
 <div
-  class="selection-tooltip"
+  class="selection-tooltip printing-hide"
 >
   Tooltip wurde gesetzt
 </div>

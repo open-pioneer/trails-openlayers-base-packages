@@ -15,7 +15,6 @@ import { PackageIntl } from "@open-pioneer/runtime";
 import { EditingCreateWorkflowImpl } from "./EditingCreateWorkflowImpl";
 import BaseLayer from "ol/layer/Base";
 import { Interaction } from "ol/interaction";
-import { MapRegistryImpl } from "@open-pioneer/map/MapRegistryImpl";
 
 const OGC_API_URL_TEST = new URL("https://example.org/ogc");
 

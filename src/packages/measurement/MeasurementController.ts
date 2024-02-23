@@ -209,6 +209,7 @@ export class MeasurementController {
                 // static instead, next to the feature (last known overlay coordinate).
                 const classes = measureTooltip.element.classList;
                 classes.remove("measurement-active-tooltip");
+                classes.remove("printing-hide");
                 classes.add("measurement-finished-tooltip");
                 measureTooltip.overlay.setOffset([0, -7]);
 
@@ -252,7 +253,7 @@ export class MeasurementController {
 
     private createMeasureTooltip(): Tooltip {
         const element = document.createElement("div");
-        element.className = "measurement-tooltip measurement-active-tooltip";
+        element.className = "measurement-tooltip measurement-active-tooltip printing-hide";
 
         const overlay = new Overlay({
             element: element,
@@ -275,7 +276,7 @@ export class MeasurementController {
 
     private createHelpTooltip(): Tooltip {
         const element = document.createElement("div");
-        element.className = "measurement-tooltip hidden";
+        element.className = "measurement-tooltip printing-hide hidden";
 
         const overlay = new Overlay({
             element: element,

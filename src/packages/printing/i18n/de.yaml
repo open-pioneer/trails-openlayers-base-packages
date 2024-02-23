@@ -1,0 +1,8 @@
+messages:
+  title: "Titel"
+  fileFormat: "Datei Format"
+  export: "Exportieren"
+  input:
+    placeholder: "Titel eingeben"
+  printingMap: "Karte wird gedruckt ..."
+  printingFailed: "Die Karte konnte nicht gedruckt werden."

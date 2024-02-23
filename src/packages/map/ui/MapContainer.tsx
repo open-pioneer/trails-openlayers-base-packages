@@ -101,7 +101,8 @@ export function MapContainer(props: MapContainerProps) {
     }, [modelState, mapModel, mapId]);
 
     const mapContainerStyle: React.CSSProperties = {
-        height: "100%"
+        height: "100%",
+        position: "relative"
     };
     return (
         <div
