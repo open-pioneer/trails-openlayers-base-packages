@@ -9,6 +9,7 @@ import { MapRegistry } from "@open-pioneer/map";
 import { HttpService } from "@open-pioneer/http";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { FlatStyleLike } from "ol/style/flat";
+import Feature from "ol/Feature";
 import GeoJSON from "ol/format/GeoJSON";
 import GeoJSONGeometry from "ol/format/GeoJSON";
 import GeoJSONGeometryCollection from "ol/format/GeoJSON";
@@ -49,6 +50,7 @@ export class EditingUpdateWorkflowImpl
     private _olMap: OlMap;
     private _mapContainer: HTMLElement | undefined;
     private _tooltip: Tooltip;
+    private _enterHandler: (e: KeyboardEvent) => void;
     private _escapeHandler: (e: KeyboardEvent) => void;
 
     private _interactionListener: Array<EventsKey>;
@@ -99,6 +101,18 @@ export class EditingUpdateWorkflowImpl
 
         this._tooltip = this._createTooltip(this._olMap);
 
+        this._enterHandler = (e: KeyboardEvent) => {
+            if (e.code === "Enter" && e.target === this._olMap.getTargetElement()) {
+                const feature = this._selectInteraction.getFeatures().getArray()[0];
+                if (!feature) {
+                    this._destroy();
+                    this.#waiter?.reject(new Error("no selected feature available"));
+                    return;
+                }
+                this._save(feature);
+            }
+        };
+
         this._escapeHandler = (e: KeyboardEvent) => {
             if (e.code === "Escape" && e.target === this._olMap.getTargetElement()) {
                 this.reset();
@@ -128,6 +142,45 @@ export class EditingUpdateWorkflowImpl
         this.emit(state);
     }
 
+    private _save(feature: Feature) {
+        this._setState("active:saving");
+
+        const layerUrl = this._editLayerURL;
+
+        const featureId = feature.getId()?.toString();
+        if (!featureId) {
+            this._destroy();
+            this.#waiter?.reject(new Error("no feature id available"));
+            return;
+        }
+
+        const geometry = feature?.getGeometry();
+        if (!geometry) {
+            this._destroy();
+            this.#waiter?.reject(new Error("no geometry available"));
+            return;
+        }
+        const projection = this._olMap.getView().getProjection();
+        const geoJson = new GeoJSON({
+            dataProjection: projection
+        });
+        const geoJSONGeometry: GeoJSONGeometry | GeoJSONGeometryCollection =
+            geoJson.writeGeometryObject(geometry, {
+                rightHanded: true,
+                decimals: 10
+            });
+
+        saveUpdatedFeature(this._httpService, layerUrl, featureId, geoJSONGeometry, projection)
+            .then((featureId) => {
+                this._destroy();
+                this.#waiter?.resolve(featureId);
+            })
+            .catch((err: Error) => {
+                this._destroy();
+                this.#waiter?.reject(err);
+            });
+    }
+
     private _start() {
         this._olMap.addLayer(this._editingLayer);
         this._olMap.addInteraction(this._selectInteraction);
@@ -136,6 +189,7 @@ export class EditingUpdateWorkflowImpl
         // Add EventListener on focused map to abort actual interaction via `Escape`
         this._mapContainer = this._olMap.getTargetElement() ?? undefined;
         if (this._mapContainer) {
+            this._mapContainer.addEventListener("keydown", this._enterHandler, false);
             this._mapContainer.addEventListener("keydown", this._escapeHandler, false);
         }
 
@@ -160,58 +214,25 @@ export class EditingUpdateWorkflowImpl
                         id: "update.tooltip.select"
                     });
                 } else if (this._state === "active:drawing") {
-                    this._setState("active:saving");
-
-                    const layerUrl = this._editLayerURL;
-
-                    const featureId = e.deselected[0]?.getId()?.toString();
-                    if (!featureId) {
+                    const feature = e.deselected[0];
+                    if (!feature) {
                         this._destroy();
-                        this.#waiter?.reject(new Error("no feature id available"));
+                        this.#waiter?.reject(new Error("no selected feature available"));
                         return;
                     }
-
-                    const geometry = e.deselected[0]?.getGeometry();
-                    if (!geometry) {
-                        this._destroy();
-                        this.#waiter?.reject(new Error("no geometry available"));
-                        return;
-                    }
-                    const projection = this._olMap.getView().getProjection();
-                    const geoJson = new GeoJSON({
-                        dataProjection: projection
-                    });
-                    const geoJSONGeometry: GeoJSONGeometry | GeoJSONGeometryCollection =
-                        geoJson.writeGeometryObject(geometry, {
-                            rightHanded: true,
-                            decimals: 10
-                        });
-
-                    saveUpdatedFeature(
-                        this._httpService,
-                        layerUrl,
-                        featureId,
-                        geoJSONGeometry,
-                        projection
-                    )
-                        .then((featureId) => {
-                            this._destroy();
-                            this.#waiter?.resolve(featureId);
-                        })
-                        .catch((err: Error) => {
-                            this._destroy();
-                            this.#waiter?.reject(err);
-                        });
+                    this._save(feature);
                 }
             }
         });
 
         // update event handler when container changes
         const changedContainer = this._map.on("changed:container", () => {
+            this._mapContainer?.removeEventListener("keydown", this._enterHandler);
             this._mapContainer?.removeEventListener("keydown", this._escapeHandler);
 
             this._mapContainer = this._olMap.getTargetElement() ?? undefined;
             if (this._mapContainer) {
+                this._mapContainer.addEventListener("keydown", this._enterHandler, false);
                 this._mapContainer.addEventListener("keydown", this._escapeHandler, false);
             }
         });
@@ -254,6 +275,7 @@ export class EditingUpdateWorkflowImpl
         });
 
         // Remove event escape listener
+        this._mapContainer?.removeEventListener("keydown", this._enterHandler);
         this._mapContainer?.removeEventListener("keydown", this._escapeHandler);
 
         this._state = "inactive";
