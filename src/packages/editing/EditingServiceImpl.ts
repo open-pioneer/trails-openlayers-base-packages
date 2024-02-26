@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { MapModel, MapRegistry } from "@open-pioneer/map";
+import { Layer, MapModel, MapRegistry } from "@open-pioneer/map";
 import { EditingService } from "./api";
 import { EditingCreateWorkflowImpl } from "./EditingCreateWorkflowImpl";
 import { EditingUpdateWorkflowImpl } from "./EditingUpdateWorkflowImpl";
@@ -22,7 +22,7 @@ export class EditingServiceImpl implements EditingService {
         this._workflows = new Map();
     }
 
-    create(map: MapModel, ogcApiFeatureLayerUrl: URL): EditingCreateWorkflowImpl {
+    create(map: MapModel, ogcApiFeatureLayerUrl: URL, layer: Layer): EditingCreateWorkflowImpl {
         if (!ogcApiFeatureLayerUrl || !map || !map.id) {
             throw new Error("Map, mapId or url is undefined.");
         }
@@ -41,7 +41,8 @@ export class EditingServiceImpl implements EditingService {
             ogcApiFeatureLayerUrl,
             polygonDrawStyle: this._serviceOptions.properties.polygonDrawStyle as FlatStyleLike,
             httpService: this._serviceOptions.references.httpService,
-            intl: this._serviceOptions.intl
+            intl: this._serviceOptions.intl,
+            layer
         });
         this._workflows.set(mapId, workflow);
         this._connectToWorkflowComplete(workflow, mapId);
@@ -49,7 +50,7 @@ export class EditingServiceImpl implements EditingService {
         return workflow;
     }
 
-    update(map: MapModel, ogcApiFeatureLayerUrl: URL): EditingUpdateWorkflowImpl {
+    update(map: MapModel, ogcApiFeatureLayerUrl: URL, layer: Layer): EditingUpdateWorkflowImpl {
         if (!ogcApiFeatureLayerUrl || !map || !map.id) {
             throw new Error("Map, mapId or url is undefined.");
         }
@@ -68,7 +69,8 @@ export class EditingServiceImpl implements EditingService {
             ogcApiFeatureLayerUrl,
             polygonDrawStyle: this._serviceOptions.properties.polygonDrawStyle as FlatStyleLike,
             httpService: this._serviceOptions.references.httpService,
-            intl: this._serviceOptions.intl
+            intl: this._serviceOptions.intl,
+            layer
         });
         this._workflows.set(mapId, workflow);
         this._connectToWorkflowComplete(workflow, mapId);

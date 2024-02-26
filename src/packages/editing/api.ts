@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import { EventEmitter } from "@open-pioneer/core";
 import { HttpService } from "@open-pioneer/http";
-import { MapModel } from "@open-pioneer/map";
+import { Layer, MapModel } from "@open-pioneer/map";
 import type { DeclaredService, PackageIntl } from "@open-pioneer/runtime";
 import { FlatStyleLike } from "ol/style/flat";
 
@@ -51,6 +51,7 @@ export interface EditingWorkflowProps {
     polygonDrawStyle: FlatStyleLike;
     httpService: HttpService;
     intl: PackageIntl;
+    layer: Layer;
 }
 
 /**
@@ -80,12 +81,12 @@ export interface EditingService extends DeclaredService<"editing.EditingService"
     /**
      * Creates and initializes a new {@link EditingWorkflow} to create geometries.
      */
-    create(map: MapModel, ogcApiFeatureLayerUrl: URL): EditingWorkflow;
+    create(map: MapModel, ogcApiFeatureLayerUrl: URL, layer: Layer): EditingWorkflow;
 
     /**
      * Creates and initializes a new {@link EditingWorkflow} to update geometries.
      */
-    update(map: MapModel, ogcApiFeatureLayerUrl: URL): EditingWorkflow;
+    update(map: MapModel, ogcApiFeatureLayerUrl: URL, layer: Layer): EditingWorkflow;
 
     /**
      * Stops the edit mode and removes an existing {@link EditingWorkflow}.

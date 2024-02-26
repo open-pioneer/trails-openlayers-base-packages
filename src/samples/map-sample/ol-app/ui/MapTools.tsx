@@ -22,7 +22,7 @@ import {
     PiSelectionPlusBold
 } from "react-icons/pi";
 import { MAP_ID } from "../MapConfigProviderImpl";
-import { Layer, MapModel, useMapModel } from "@open-pioneer/map";
+import { Layer, LayerBase, MapModel, useMapModel } from "@open-pioneer/map";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import { useEffect } from "react";
@@ -200,7 +200,7 @@ function useEditingCreateWorkflow(
             try {
                 const layer = map.layers.getLayerById("krankenhaus") as Layer;
                 const url = new URL(layer.attributes.collectionURL + "/items");
-                const workflow = editingService.create(map, url);
+                const workflow = editingService.create(map, url, layer);
 
                 workflow
                     .whenComplete()
@@ -270,7 +270,7 @@ function useEditingUpdateWorkflow(
             try {
                 const layer = map.layers.getLayerById("krankenhaus") as Layer;
                 const url = new URL(layer.attributes.collectionURL + "/items");
-                const workflow = editingService.update(map, url);
+                const workflow = editingService.update(map, url, layer);
 
                 workflow
                     .whenComplete()
