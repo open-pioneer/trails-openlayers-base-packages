@@ -7,7 +7,6 @@
     "scripts": {
         "build": "build-pioneer-package"
     },
-    "dependencies": {},
     "peerDependencies": {
         "@open-pioneer/runtime": "^2.1.0",
         "@open-pioneer/core": "^1.2.1",
