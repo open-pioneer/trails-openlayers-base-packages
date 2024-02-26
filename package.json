@@ -1,5 +1,6 @@
 {
     "name": "openlayers-base-packages",
+    "version": "0.0.1",
     "private": true,
     "type": "module",
     "license": "Apache-2.0",
@@ -120,7 +121,7 @@
         "resize-observer-polyfill": "^1.5.1",
         "rimraf": "^5.0.5",
         "sass": "^1.69.7",
-        "syncpack": "10.5.1",
+        "syncpack": "12.3.0",
         "ts-node": "^10.9.2",
         "typedoc": "^0.25.6",
         "typescript": "~5.3.3",
