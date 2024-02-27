@@ -8,7 +8,7 @@ import { AppModel } from "../AppModel";
 import { MAP_ID } from "../MapConfigProviderImpl";
 import { BaseFeature } from "@open-pioneer/map";
 import { useState, useCallback, useEffect } from "react";
-import { ResultListSelectionChangeEvent } from "@open-pioneer/result-list/ResultList";
+import { ResultListSelectionChangeEvent } from "@open-pioneer/result-list";
 
 export function ResultListComponent() {
     const appModel = useService<unknown>("ol-app.AppModel") as AppModel;
