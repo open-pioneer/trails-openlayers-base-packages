@@ -6,9 +6,7 @@ const { existsSync } = require("fs");
 const documentedPackages = [
     "packages/map",
     "packages/map-test-utils",
-    "packages/notifier",
     "packages/react-utils",
-    "packages/authentication",
     "packages/coordinate-viewer",
     "packages/scale-viewer",
     "packages/basemap-switcher",
@@ -20,7 +18,6 @@ const documentedPackages = [
     "packages/geolocation",
     "packages/theme",
     "packages/legend",
-    "packages/local-storage",
     "packages/toc",
     "packages/search",
     "packages/spatial-bookmarks",
