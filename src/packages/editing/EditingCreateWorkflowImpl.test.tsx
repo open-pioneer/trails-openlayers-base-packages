@@ -337,7 +337,7 @@ describe("when editing workflow complete", () => {
     });
 
     it("should return an error if editing failed", async () => {
-        vi.spyOn(console, "log").mockImplementation(() => undefined);
+        vi.spyOn(console, "error").mockImplementation(() => undefined);
 
         const httpService: HttpService = {
             fetch: vi.fn().mockResolvedValue(
@@ -355,7 +355,7 @@ describe("when editing workflow complete", () => {
             .whenComplete()
             .then(() => {})
             .catch((error: Error) => {
-                expect(error.message).toBe("Request failed: 401");
+                expect(error.message).toBe("Failed to save feature");
             });
 
         draw.appendCoordinates([[200, 200]]);

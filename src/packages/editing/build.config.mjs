@@ -24,6 +24,9 @@ export default defineBuildConfig({
         //     linestring: {},
         //     polygon: {}
         // },
+        // Todo: Vertex style
+        // Todo: Only one style for create, update, delete
+        // Todo: Test with null -> add to documentation: how to disable vertices
         polygonDrawStyle: {
             "stroke-color": "yellow",
             "stroke-width": 2,

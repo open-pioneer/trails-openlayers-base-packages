@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { EventEmitter, ManualPromise, createManualPromise } from "@open-pioneer/core";
+import { EventEmitter, ManualPromise, createLogger, createManualPromise } from "@open-pioneer/core";
 import { MapModel, TOPMOST_LAYER_Z } from "@open-pioneer/map";
 import { Draw } from "ol/interaction";
 import VectorLayer from "ol/layer/Vector";
@@ -24,6 +24,8 @@ import {
     EditingWorkflowProps
 } from "./api";
 import Feature from "ol/Feature";
+
+const LOG = createLogger("editing:EditingCreateWorkflowImpl");
 
 // Represents a tooltip rendered on the OpenLayers map
 interface Tooltip extends Resource {
@@ -154,9 +156,9 @@ export class EditingCreateWorkflowImpl
                 this.#waiter?.resolve(featureId);
             })
             .catch((err: Error) => {
-                console.log(err);
+                LOG.error(err);
                 this._destroy();
-                this.#waiter?.reject(err);
+                this.#waiter?.reject(new Error("Failed to save feature", { cause: err }));
             });
     }
 
@@ -240,6 +242,10 @@ export class EditingCreateWorkflowImpl
     }
 
     whenComplete(): Promise<string | undefined> {
+        // Todo:
+        // if (this._state === "inactive") {
+        //     return this.error ? Promise.reject(this.error) : Promise.resolve(this.featureId);
+        // }
         const manualPromise = (this.#waiter ??= createManualPromise());
         return manualPromise.promise;
     }

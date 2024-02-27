@@ -98,7 +98,7 @@ export class EditingServiceImpl implements EditingService {
         workflow: EditingCreateWorkflowImpl | EditingUpdateWorkflowImpl,
         mapId: string
     ) {
-        workflow.whenComplete().finally(() => {
+        workflow.on("inactive", () => {
             this._workflows.delete(mapId);
         });
     }
