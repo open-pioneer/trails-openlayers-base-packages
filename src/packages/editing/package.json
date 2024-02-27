@@ -8,8 +8,8 @@
     },
     "peerDependencies": {
         "@open-pioneer/core": "^1.2.1",
-        "@open-pioneer/http": "^2.1.2",
-        "@open-pioneer/runtime": "^2.1.0",
+        "@open-pioneer/http": "^2.1.4",
+        "@open-pioneer/runtime": "^2.1.2",
         "@open-pioneer/map": "workspace:^",
         "ol": "^8.2.0"
     },

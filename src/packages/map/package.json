@@ -9,9 +9,9 @@
     "peerDependencies": {
         "@open-pioneer/chakra-integration": "^1.1.1",
         "@open-pioneer/core": "^1.2.1",
-        "@open-pioneer/http": "^2.1.2",
+        "@open-pioneer/http": "^2.1.4",
         "@open-pioneer/react-utils": "workspace:^",
-        "@open-pioneer/runtime": "^2.1.0",
+        "@open-pioneer/runtime": "^2.1.2",
         "@types/proj4": "^2.5.2",
         "ol": "^8.2.0",
         "proj4": "^2.9.0",
