@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import { EventEmitter, ManualPromise, createManualPromise } from "@open-pioneer/core";
 import { MapModel, TOPMOST_LAYER_Z } from "@open-pioneer/map";
-import { Modify, Select } from "ol/interaction";
+import { Modify } from "ol/interaction";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import { HttpService } from "@open-pioneer/http";
@@ -24,6 +24,7 @@ import {
     EditingWorkflow,
     EditingWorkflowProps
 } from "./api";
+import { Collection } from "ol";
 
 // Represents a tooltip rendered on the OpenLayers map
 interface Tooltip extends Resource {
@@ -31,7 +32,6 @@ interface Tooltip extends Resource {
     element: HTMLDivElement;
 }
 
-// TODO remove vertices
 export class EditingUpdateWorkflowImpl
     extends EventEmitter<EditingWorkflowEvents>
     implements EditingWorkflow
@@ -46,9 +46,9 @@ export class EditingUpdateWorkflowImpl
     private _state: EditingWorkflowState;
     private _editLayerURL: URL;
 
+    private _editingFeature: Feature;
     private _editingSource: VectorSource;
     private _editingLayer: VectorLayer<VectorSource>;
-    private _selectInteraction: Select;
     private _modifyInteraction: Modify;
     private _olMap: OlMap;
     private _mapContainer: HTMLElement | undefined;
@@ -59,7 +59,7 @@ export class EditingUpdateWorkflowImpl
     private _interactionListener: Array<EventsKey>;
     private _mapListener: Array<Resource>;
 
-    constructor(options: EditingWorkflowProps) {
+    constructor(options: { feature: Feature } & EditingWorkflowProps) {
         super();
         this._httpService = options.httpService;
         this._intl = options.intl;
@@ -71,7 +71,10 @@ export class EditingUpdateWorkflowImpl
         this._state = "active:initialized";
         this._editLayerURL = options.ogcApiFeatureLayerUrl;
 
-        this._editingSource = new VectorSource();
+        this._editingFeature = options.feature;
+        this._editingSource = new VectorSource({
+            features: new Collection([this._editingFeature])
+        });
         this._editingLayer = new VectorLayer({
             source: this._editingSource,
             zIndex: TOPMOST_LAYER_Z,
@@ -80,17 +83,8 @@ export class EditingUpdateWorkflowImpl
             }
         });
 
-        // TODO: aktuell können Features auf allen Layern ausgewählt werden -> nur Features des zu editierenden Layers auswählbar machen
-        this._selectInteraction = new Select({
-            // changing selected feature not possible after modification of geometry
-            filter: () => {
-                return this._state === "active:initialized";
-            }
-            //layers: this._editLayerURL // TODO wir haben nur eine URL -> filter function or property filter with filter function
-        });
-
         this._modifyInteraction = new Modify({
-            features: this._selectInteraction.getFeatures(),
+            source: this._editingSource, // alternativ features: new Collection([this._editingFeature])
             style: this._polygonDrawStyle // TODO style really used?
         });
 
@@ -98,13 +92,11 @@ export class EditingUpdateWorkflowImpl
 
         this._enterHandler = (e: KeyboardEvent) => {
             if (e.code === "Enter" && e.target === this._olMap.getTargetElement()) {
-                const feature = this._selectInteraction.getFeatures().getArray()[0];
-                if (!feature) {
-                    this._destroy();
-                    this.#waiter?.reject(new Error("no selected feature available"));
-                    return;
+                const updatedFeature = this._editingSource.getFeatures()[0];
+                if (!updatedFeature) {
+                    throw Error("no updated feature found");
                 }
-                this._save(feature);
+                this._save(updatedFeature);
             }
         };
 
@@ -118,10 +110,6 @@ export class EditingUpdateWorkflowImpl
         this._mapListener = [];
 
         this._start();
-    }
-
-    getSelectInteraction() {
-        return this._selectInteraction;
     }
 
     getModifyInteraction() {
@@ -178,7 +166,6 @@ export class EditingUpdateWorkflowImpl
 
     private _start() {
         this._olMap.addLayer(this._editingLayer);
-        this._olMap.addInteraction(this._selectInteraction);
         this._olMap.addInteraction(this._modifyInteraction);
 
         // Add EventListener on focused map to abort actual interaction via `Escape`
@@ -198,28 +185,6 @@ export class EditingUpdateWorkflowImpl
             });
         });
 
-        const select = this._selectInteraction.on("select", (e) => {
-            if (e.selected.length === 1 && e.deselected.length === 0) {
-                this._tooltip.element.textContent = this._intl.formatMessage({
-                    id: "update.tooltip.deselect"
-                });
-            } else if (e.selected.length === 0 && e.deselected.length === 1) {
-                if (this._state === "active:initialized") {
-                    this._tooltip.element.textContent = this._intl.formatMessage({
-                        id: "update.tooltip.select"
-                    });
-                } else if (this._state === "active:drawing") {
-                    const feature = e.deselected[0];
-                    if (!feature) {
-                        this._destroy();
-                        this.#waiter?.reject(new Error("no selected feature available"));
-                        return;
-                    }
-                    this._save(feature);
-                }
-            }
-        });
-
         // update event handler when container changes
         const changedContainer = this._map.on("changed:container", () => {
             this._mapContainer?.removeEventListener("keydown", this._enterHandler);
@@ -232,17 +197,17 @@ export class EditingUpdateWorkflowImpl
             }
         });
 
-        this._interactionListener.push(modify, select);
+        this._interactionListener.push(modify);
         this._mapListener.push(changedContainer);
     }
 
     reset() {
-        // TODO Geometrieänderung zurücksetzen
-
-        const selectedFeatures = this._selectInteraction.getFeatures();
-        if (selectedFeatures.getLength() > 0) {
-            this._selectInteraction.getFeatures().remove(selectedFeatures.item(0));
+        const resetFeature = this._editingSource.getFeatures()[0];
+        const geometry = this._editingFeature.getGeometry();
+        if (!resetFeature) {
+            throw Error("no updated feature found");
         }
+        resetFeature.setGeometry(geometry);
 
         this._tooltip.element.textContent = this._intl.formatMessage({
             id: "update.tooltip.select"
@@ -257,7 +222,6 @@ export class EditingUpdateWorkflowImpl
 
     private _destroy() {
         this._olMap.removeLayer(this._editingLayer);
-        this._olMap.removeInteraction(this._selectInteraction);
         this._olMap.removeInteraction(this._modifyInteraction);
         this._tooltip.destroy();
 
@@ -273,7 +237,7 @@ export class EditingUpdateWorkflowImpl
         this._mapContainer?.removeEventListener("keydown", this._enterHandler);
         this._mapContainer?.removeEventListener("keydown", this._escapeHandler);
 
-        this._state = "inactive";
+        this._setState("inactive");
     }
 
     whenComplete(): Promise<string | undefined> {

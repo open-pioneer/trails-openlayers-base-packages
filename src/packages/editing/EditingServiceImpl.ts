@@ -7,6 +7,7 @@ import { EditingUpdateWorkflowImpl } from "./EditingUpdateWorkflowImpl";
 import { FlatStyleLike } from "ol/style/flat";
 import { ServiceOptions } from "@open-pioneer/runtime";
 import { HttpService } from "@open-pioneer/http";
+import { Feature } from "ol";
 
 export interface References {
     mapRegistry: MapRegistry;
@@ -49,7 +50,7 @@ export class EditingServiceImpl implements EditingService {
         return workflow;
     }
 
-    update(map: MapModel, ogcApiFeatureLayerUrl: URL): EditingUpdateWorkflowImpl {
+    update(map: MapModel, ogcApiFeatureLayerUrl: URL, feature: Feature): EditingUpdateWorkflowImpl {
         if (!ogcApiFeatureLayerUrl || !map || !map.id) {
             throw new Error("Map, mapId or url is undefined.");
         }
@@ -66,6 +67,7 @@ export class EditingServiceImpl implements EditingService {
         workflow = new EditingUpdateWorkflowImpl({
             map,
             ogcApiFeatureLayerUrl,
+            feature,
             polygonDrawStyle: this._serviceOptions.properties.polygonDrawStyle as FlatStyleLike,
             httpService: this._serviceOptions.references.httpService,
             intl: this._serviceOptions.intl

@@ -238,7 +238,7 @@ export class EditingCreateWorkflowImpl
         this._mapContainer?.removeEventListener("keydown", this._enterHandler);
         this._mapContainer?.removeEventListener("keydown", this._escapeHandler);
 
-        this._state = "inactive";
+        this._setState("inactive");
     }
 
     whenComplete(): Promise<string | undefined> {

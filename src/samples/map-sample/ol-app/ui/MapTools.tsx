@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import { Flex } from "@open-pioneer/chakra-integration";
 import { Geolocation } from "@open-pioneer/geolocation";
-import { EditingService } from "@open-pioneer/editing";
+import { EditingService, EditingWorkflow } from "@open-pioneer/editing";
 import { InitialExtent, ZoomIn, ZoomOut } from "@open-pioneer/map-navigation";
 import { ToolButton, useEvent } from "@open-pioneer/react-utils";
 import { useIntl, useService } from "open-pioneer:react-hooks";
@@ -30,6 +30,8 @@ import { NotificationService } from "@open-pioneer/notifier";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { AppModel } from "../AppModel";
 import { useSnapshot } from "valtio";
+import { Select } from "ol/interaction";
+import { unByKey } from "ol/Observable";
 
 export interface ToolState {
     bookmarksActive: boolean;
@@ -66,7 +68,10 @@ export function MapTools(props: MapToolsProps) {
     const notificationService = useService<NotificationService>("notifier.NotificationService");
 
     const toggleToolState = useEvent((name: keyof ToolState, newValue?: boolean) => {
+        console.log(name, newValue);
+        console.log("create", toolState.editingCreateActive, "update", toolState.editingUpdateActive);
         onToolStateChange(name, newValue ?? !toolState[name]);
+        console.log("create", toolState.editingCreateActive, "update", toolState.editingUpdateActive);
     });
 
     useEditingCreateWorkflow(
@@ -262,6 +267,8 @@ function useEditingUpdateWorkflow(
             return;
         }
 
+        let selectInteraction: Select;
+
         function startEditingUpdate() {
             if (!map) {
                 throw Error("map is undefined");
@@ -269,34 +276,77 @@ function useEditingUpdateWorkflow(
 
             try {
                 const layer = map.layers.getLayerById("krankenhaus") as Layer;
-                const url = new URL(layer.attributes.collectionURL + "/items");
-                const workflow = editingService.update(map, url);
+                const vectorLayer = layer?.olLayer as VectorLayer<VectorSource>;
 
-                workflow
-                    .whenComplete()
-                    .then((featureId: string | undefined) => {
-                        if (featureId) {
-                            // undefined -> no feature saved
-                            notificationService.notify({
-                                level: "info",
-                                message: intl.formatMessage(
-                                    {
-                                        id: "editing.update.featureModified"
-                                    },
-                                    { featureId: featureId }
-                                ),
-                                displayDuration: 4000
-                            });
+                selectInteraction = new Select({
+                    layers: [vectorLayer]
+                });
+
+                map.olMap.addInteraction(selectInteraction);
+
+                const url = new URL(layer.attributes.collectionURL + "/items");
+                let workflow: EditingWorkflow;
+
+                const selectHandler = selectInteraction.on("select", (e) => {
+                    const selected = e.selected;
+                    const deselected = e.deselected;
+
+                    if (selected.length === 1 && deselected.length === 0) {
+                        const feature = selected[0];
+                        if (!feature) {
+                            throw Error("feature is undefined");
                         }
-                        const vectorLayer = layer?.olLayer as VectorLayer<VectorSource>;
-                        vectorLayer.getSource()?.refresh();
-                    })
-                    .catch((error: Error) => {
-                        console.log(error);
-                    })
-                    .finally(() => {
-                        toggleToolState("editingUpdateActive", false);
-                    });
+
+                        workflow = editingService.update(map, url, feature);
+
+                        workflow
+                            .whenComplete()
+                            .then((featureId: string | undefined) => {
+                                if (featureId) {
+                                    // undefined -> no feature saved
+                                    notificationService.notify({
+                                        level: "info",
+                                        message: intl.formatMessage(
+                                            {
+                                                id: "editing.update.featureModified"
+                                            },
+                                            { featureId: featureId }
+                                        ),
+                                        displayDuration: 4000
+                                    });
+                                }
+                                const vectorLayer = layer?.olLayer as VectorLayer<VectorSource>;
+                                vectorLayer.getSource()?.refresh();
+                            })
+                            .catch((error: Error) => {
+                                console.log(error);
+                            })
+                            .finally(() => {
+                                toggleToolState("editingUpdateActive", false);
+                                map.olMap.removeInteraction(selectInteraction);
+                            });
+                    } else if (e.selected.length === 0 && e.deselected.length === 1) {
+                        unByKey(selectHandler);
+                        // Todo: Trigger put request/save
+                    }
+                    //     this._tooltip.element.textContent = this._intl.formatMessage({
+                    //         id: "update.tooltip.deselect"
+                    //     });
+                    // } else if (e.selected.length === 0 && e.deselected.length === 1) {
+                    //     if (this._state === "active:initialized") {
+                    //         this._tooltip.element.textContent = this._intl.formatMessage({
+                    //             id: "update.tooltip.select"
+                    //         });
+                    //     } else if (this._state === "active:drawing") {
+                    //         const feature = e.deselected[0];
+                    //         if (!feature) {
+                    //             this._destroy();
+                    //             this.#waiter?.reject(new Error("no selected feature available"));
+                    //             return;
+                    //         }
+                    //         this._save(feature);
+                    //     }
+                });
             } catch (error) {
                 console.log(error);
             }

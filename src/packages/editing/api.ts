@@ -4,6 +4,7 @@ import { EventEmitter } from "@open-pioneer/core";
 import { HttpService } from "@open-pioneer/http";
 import { MapModel } from "@open-pioneer/map";
 import type { DeclaredService, PackageIntl } from "@open-pioneer/runtime";
+import { Feature } from "ol";
 import { FlatStyleLike } from "ol/style/flat";
 
 /**
@@ -86,7 +87,7 @@ export interface EditingService extends DeclaredService<"editing.EditingService"
     /**
      * Creates and initializes a new {@link EditingWorkflow} to update geometries.
      */
-    update(map: MapModel, ogcApiFeatureLayerUrl: URL): EditingWorkflow;
+    update(map: MapModel, ogcApiFeatureLayerUrl: URL, feature: Feature): EditingWorkflow;
 
     /**
      * Stops the edit mode and removes an existing {@link EditingWorkflow}.
