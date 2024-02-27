@@ -241,6 +241,10 @@ export class EditingCreateWorkflowImpl
         this._setState("inactive");
     }
 
+    save(): void {
+        // Todo: Implement
+    }
+
     whenComplete(): Promise<string | undefined> {
         // Todo:
         // if (this._state === "inactive") {

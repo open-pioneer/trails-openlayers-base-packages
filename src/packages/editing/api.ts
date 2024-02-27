@@ -65,6 +65,11 @@ export interface EditingWorkflow extends EventEmitter<EditingWorkflowEvents> {
     getState(): EditingWorkflowState;
 
     /**
+     * Trigger saving the current feature.
+     */
+    save(): void;
+
+    /**
      * Wait for the editing to be finished. The returned promise resolves with the
      * feature ID when saving was successful and rejects if saving the feature
      * failed. It resolves with undefined when the editing was stopped.

@@ -32,6 +32,9 @@ import { AppModel } from "../AppModel";
 import { useSnapshot } from "valtio";
 import { Select } from "ol/interaction";
 import { unByKey } from "ol/Observable";
+import { Resource } from "@open-pioneer/core";
+import { Overlay } from "ol";
+import OlMap from "ol/Map";
 
 export interface ToolState {
     bookmarksActive: boolean;
@@ -57,6 +60,12 @@ export interface MapToolsProps {
     onToolStateChange(toolStateName: keyof ToolState, newValue: boolean): void;
 }
 
+// Represents a tooltip rendered on the OpenLayers map
+interface Tooltip extends Resource {
+    overlay: Overlay;
+    element: HTMLDivElement;
+}
+
 export function MapTools(props: MapToolsProps) {
     const { toolState, onToolStateChange } = props;
     const intl = useIntl();
@@ -68,12 +77,10 @@ export function MapTools(props: MapToolsProps) {
     const notificationService = useService<NotificationService>("notifier.NotificationService");
 
     const toggleToolState = useEvent((name: keyof ToolState, newValue?: boolean) => {
-        console.log(name, newValue);
-        console.log("create", toolState.editingCreateActive, "update", toolState.editingUpdateActive);
         onToolStateChange(name, newValue ?? !toolState[name]);
-        console.log("create", toolState.editingCreateActive, "update", toolState.editingUpdateActive);
     });
 
+    // Todo: Error during toggle create / update -> Button isn't toggled!
     useEditingCreateWorkflow(
         map,
         editingService,
@@ -269,10 +276,43 @@ function useEditingUpdateWorkflow(
 
         let selectInteraction: Select;
 
+        function _createEditingTooltip(olMap: OlMap): Tooltip {
+            const element = document.createElement("div");
+            element.className = "editing-tooltip hidden";
+            element.textContent = intl.formatMessage({ id: "editing.update.tooltip.select" });
+
+            const overlay = new Overlay({
+                element: element,
+                offset: [15, 0],
+                positioning: "center-left"
+            });
+
+            const pointerMove = olMap.on("pointermove", (evt) => {
+                if (evt.dragging) {
+                    return;
+                }
+
+                overlay.setPosition(evt.coordinate);
+            });
+
+            olMap.addOverlay(overlay);
+
+            return {
+                overlay,
+                element,
+                destroy() {
+                    unByKey(pointerMove);
+                    olMap.removeOverlay(overlay);
+                }
+            };
+        }
+
         function startEditingUpdate() {
             if (!map) {
                 throw Error("map is undefined");
             }
+
+            const tooltip = _createEditingTooltip(map.olMap);
 
             try {
                 const layer = map.layers.getLayerById("krankenhaus") as Layer;
@@ -292,6 +332,10 @@ function useEditingUpdateWorkflow(
                     const deselected = e.deselected;
 
                     if (selected.length === 1 && deselected.length === 0) {
+                        tooltip.element.textContent = intl.formatMessage({
+                            id: "editing.update.tooltip.deselect"
+                        });
+
                         const feature = selected[0];
                         if (!feature) {
                             throw Error("feature is undefined");
@@ -327,25 +371,11 @@ function useEditingUpdateWorkflow(
                             });
                     } else if (e.selected.length === 0 && e.deselected.length === 1) {
                         unByKey(selectHandler);
-                        // Todo: Trigger put request/save
+
+                        tooltip.destroy();
+
+                        workflow.save();
                     }
-                    //     this._tooltip.element.textContent = this._intl.formatMessage({
-                    //         id: "update.tooltip.deselect"
-                    //     });
-                    // } else if (e.selected.length === 0 && e.deselected.length === 1) {
-                    //     if (this._state === "active:initialized") {
-                    //         this._tooltip.element.textContent = this._intl.formatMessage({
-                    //             id: "update.tooltip.select"
-                    //         });
-                    //     } else if (this._state === "active:drawing") {
-                    //         const feature = e.deselected[0];
-                    //         if (!feature) {
-                    //             this._destroy();
-                    //             this.#waiter?.reject(new Error("no selected feature available"));
-                    //             return;
-                    //         }
-                    //         this._save(feature);
-                    //     }
                 });
             } catch (error) {
                 console.log(error);
