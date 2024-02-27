@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { EventEmitter, ManualPromise, createManualPromise } from "@open-pioneer/core";
-import { Layer, MapModel, TOPMOST_LAYER_Z } from "@open-pioneer/map";
+import { MapModel, TOPMOST_LAYER_Z } from "@open-pioneer/map";
 import { Modify, Select } from "ol/interaction";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
@@ -24,7 +24,6 @@ import {
     EditingWorkflow,
     EditingWorkflowProps
 } from "./api";
-import { Geometry } from "ol/geom";
 
 // Represents a tooltip rendered on the OpenLayers map
 interface Tooltip extends Resource {
@@ -33,7 +32,6 @@ interface Tooltip extends Resource {
 }
 
 // TODO remove vertices
-// TODO update tests, caused new mandatory layer prop
 export class EditingUpdateWorkflowImpl
     extends EventEmitter<EditingWorkflowEvents>
     implements EditingWorkflow
@@ -58,10 +56,6 @@ export class EditingUpdateWorkflowImpl
     private _enterHandler: (e: KeyboardEvent) => void;
     private _escapeHandler: (e: KeyboardEvent) => void;
 
-    private _sourceLayer: Layer;
-    private _originalGeometry?: Geometry;
-    private _featureId?: string;
-
     private _interactionListener: Array<EventsKey>;
     private _mapListener: Array<Resource>;
 
@@ -85,8 +79,6 @@ export class EditingUpdateWorkflowImpl
                 name: "editing-layer"
             }
         });
-
-        this._sourceLayer = options.layer;
 
         // TODO: aktuell können Features auf allen Layern ausgewählt werden -> nur Features des zu editierenden Layers auswählbar machen
         this._selectInteraction = new Select({
@@ -150,7 +142,8 @@ export class EditingUpdateWorkflowImpl
 
         const layerUrl = this._editLayerURL;
 
-        if (!this._featureId) {
+        const featureId = feature.getId()?.toString();
+        if (!featureId) {
             this._destroy();
             this.#waiter?.reject(new Error("no feature id available"));
             return;
@@ -172,13 +165,7 @@ export class EditingUpdateWorkflowImpl
                 decimals: 10
             });
 
-        saveUpdatedFeature(
-            this._httpService,
-            layerUrl,
-            this._featureId,
-            geoJSONGeometry,
-            projection
-        )
+        saveUpdatedFeature(this._httpService, layerUrl, featureId, geoJSONGeometry, projection)
             .then((featureId) => {
                 this._destroy();
                 this.#waiter?.resolve(featureId);
@@ -212,26 +199,17 @@ export class EditingUpdateWorkflowImpl
         });
 
         const select = this._selectInteraction.on("select", (e) => {
-            const selected = e.selected;
-            const deselected = e.deselected;
-
-            if (selected.length === 1 && deselected.length === 0) {
+            if (e.selected.length === 1 && e.deselected.length === 0) {
                 this._tooltip.element.textContent = this._intl.formatMessage({
                     id: "update.tooltip.deselect"
                 });
-
-                this._originalGeometry = selected[0]?.getGeometry();
-                this._featureId = selected[0]?.getId()?.toString();
-            } else if (selected.length === 1 && deselected.length === 1) {
-                this._originalGeometry = selected[0]?.getGeometry();
-                this._featureId = selected[0]?.getId()?.toString();
-            } else if (selected.length === 0 && deselected.length === 1) {
+            } else if (e.selected.length === 0 && e.deselected.length === 1) {
                 if (this._state === "active:initialized") {
                     this._tooltip.element.textContent = this._intl.formatMessage({
                         id: "update.tooltip.select"
                     });
                 } else if (this._state === "active:drawing") {
-                    const feature = deselected[0];
+                    const feature = e.deselected[0];
                     if (!feature) {
                         this._destroy();
                         this.#waiter?.reject(new Error("no selected feature available"));
@@ -239,9 +217,6 @@ export class EditingUpdateWorkflowImpl
                     }
                     this._save(feature);
                 }
-
-                this._originalGeometry = undefined;
-                this._featureId = undefined;
             }
         });
 
@@ -262,19 +237,11 @@ export class EditingUpdateWorkflowImpl
     }
 
     reset() {
+        // TODO Geometrieänderung zurücksetzen
+
         const selectedFeatures = this._selectInteraction.getFeatures();
-        selectedFeatures.clear();
-
-        if (this._sourceLayer.olLayer instanceof VectorLayer) {
-            const feature = this._sourceLayer.olLayer
-                .getSource()
-                .getFeatures()
-                .filter((feature: Feature) => feature.getId()?.toString() === this._featureId)[0];
-
-            if (feature) {
-                feature.setGeometry(this._originalGeometry);
-                this._sourceLayer.olLayer.getSource().refresh();
-            }
+        if (selectedFeatures.getLength() > 0) {
+            this._selectInteraction.getFeatures().remove(selectedFeatures.item(0));
         }
 
         this._tooltip.element.textContent = this._intl.formatMessage({
