@@ -1,6 +1,5 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-
 import { expect, it, vi } from "vitest";
 import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
 import TileLayer from "ol/layer/Tile";
@@ -11,6 +10,7 @@ import { Box, Image, Text } from "@open-pioneer/chakra-integration";
 import { SimpleLayer, WMSLayer } from "@open-pioneer/map";
 import SimpleWmsCapas from "./test-data/SimpleWMSCapas.xml?raw";
 
+// Happy dom does not have an XML parser
 import jsdom from "jsdom";
 window.DOMParser = new jsdom.JSDOM().window.DOMParser;
 

@@ -10,7 +10,6 @@
         "@open-pioneer/map": "workspace:^",
         "@open-pioneer/test-utils": "^1.0.2",
         "@testing-library/react": "^14.1.2",
-        "vitest": "^0.34.6",
         "ol": "^8.2.0"
     },
     "devDependencies": {
