@@ -6,5 +6,6 @@ export {
     type ResultColumn,
     type ResultListInput,
     type FormatOptions,
-    type RenderCellContext
+    type RenderCellContext,
+    type ResultListSelectionChangeEvent
 } from "./ResultList";

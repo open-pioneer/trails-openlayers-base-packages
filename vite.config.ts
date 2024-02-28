@@ -16,18 +16,15 @@ const targets = ["chrome92", "edge92", "firefox91", "safari14"];
 
 const sampleSites = [
     "samples/map-sample",
-    "samples/auth-sample",
-    "samples/notify-sample",
     "samples/ogc-api-sample",
-    
-    "samples/theming-sample",
+
     "samples/test-basemap-switcher",
     "samples/test-toc",
     "samples/test-highlight-and-zoom",
     "samples/test-menu-fix",
     "samples/test-result-list",
 
-    "samples/experimental-sidebar",
+    "samples/experimental-sidebar"
 ];
 
 // https://vitejs.dev/config/
