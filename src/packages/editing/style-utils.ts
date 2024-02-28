@@ -7,13 +7,14 @@ import { FlatStyleLike } from "ol/style/flat";
 import VectorLayer from "ol/layer/Vector";
 import { Feature } from "ol";
 
-// Todo: Add documentation
-
 interface FlatStyleProps {
     polygon: FlatStyleLike;
     vertex: FlatStyleLike;
 }
 
+/**
+ * Function to retrieve an OpenLayers style from OpenLayers FlatStyle
+ */
 export function getStyle(flatStyle: FlatStyleProps) {
     let polygonStyle = flatStyleToStyle(flatStyle.polygon);
     if (Array.isArray(polygonStyle)) {

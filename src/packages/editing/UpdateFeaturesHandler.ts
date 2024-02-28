@@ -1,11 +1,14 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-
 import { HttpService } from "@open-pioneer/http";
 import GeoJSONGeometry from "ol/format/GeoJSON";
 import GeoJSONGeometryCollection from "ol/format/GeoJSON";
 import { Projection } from "ol/proj";
 
+/**
+ * Function to save an updated feature to an OGC API service.
+ * Resolves with feature id, or reject if an error occurs.
+ */
 export async function saveUpdatedFeature(
     httpService: HttpService,
     url: URL,

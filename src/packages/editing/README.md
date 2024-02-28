@@ -87,6 +87,8 @@ The default style of the geometries can be overridden with a custom style.
 
 Each geometry type has its own styling property (currently `polygonStyle` and `vertexStyle`). See OpenLayers [`FlatStyleLike`](https://openlayers.org/en/latest/apidoc/module-ol_style_flat.html) for valid styling options.
 
+Example:
+
 ```js
 const element = createCustomElement({
     ...,
@@ -108,6 +110,35 @@ const element = createCustomElement({
                     "circle-stroke-width": 1.25,
                     "circle-stroke-color": "red"
                 }
+            }
+        }
+    },
+    ...
+});
+
+customElements.define("ol-map-app", element);
+```
+
+Set `vertexStyle` to `null`, if no style is needed.
+
+Example:
+
+```js
+const element = createCustomElement({
+    ...,
+    config: {
+        properties: {
+            "@open-pioneer/editing": {
+                "polygonStyle": {
+                    "fill-color": "rgba(255,255,255,0.4)",
+                    "stroke-color": "red",
+                    "stroke-width": 2,
+                    "circle-radius": 5,
+                    "circle-fill-color": "red",
+                    "circle-stroke-width": 1.25,
+                    "circle-stroke-color": "red"
+                },
+                "vertexStyle": null
             }
         }
     },

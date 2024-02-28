@@ -1,6 +1,5 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-
 import { defineBuildConfig } from "@open-pioneer/build-support";
 
 export default defineBuildConfig({
@@ -17,8 +16,6 @@ export default defineBuildConfig({
         }
     },
     properties: {
-        // Todo: Test with null -> add to documentation: how to disable vertices
-
         /**
          * See documentation "Providing helpers for package properties" in Open Pioneer "trails-starter"
          * https://github.com/open-pioneer/trails-starter/blob/main/docs/reference/Services.md#providing-helpers-for-package-properties

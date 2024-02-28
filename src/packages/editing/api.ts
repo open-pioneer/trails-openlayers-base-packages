@@ -12,7 +12,7 @@ import { FlatStyleLike } from "ol/style/flat";
  */
 export type EditingWorkflowState =
     | "active:initialized"
-    | "active:drawing"
+    | "active:drawing" // Todo: Rename state, cause of usage in create and update workflow?
     | "active:saving"
     | "inactive";
 
@@ -29,7 +29,6 @@ export interface EditingWorkflowEvents {
      * State while user is drawing a feature. State is entered when user adds the first vertex of the geometry (`create-mode`).
      * State while user is updating an existing feature. State is entered when user moved the first vertex of the geometry (`update-mode`).
      */
-    // TODO: Rename?
     "active:drawing": void;
 
     /**
@@ -75,8 +74,7 @@ export interface EditingWorkflow extends EventEmitter<EditingWorkflowEvents> {
      * feature ID when saving was successful and rejects if saving the feature
      * failed. It resolves with undefined when the editing was stopped.
      */
-    // TODO: Promise<featureId, string | ...>
-    whenComplete(): Promise<string | undefined>;
+    whenComplete(): Promise<string | undefined>; // Todo: Promise<featureId, string | ...>
 }
 
 /**
