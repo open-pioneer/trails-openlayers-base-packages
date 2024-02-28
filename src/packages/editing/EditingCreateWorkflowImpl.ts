@@ -105,7 +105,7 @@ export class EditingCreateWorkflowImpl
                  * "length > 4" instead of "length >= 4"
                  */
                 if (features[0] && features[0].getGeometry().getCoordinates()[0].length > 4) {
-                    this._drawInteraction.finishDrawing();
+                    this.save();
                 }
             }
         };
@@ -247,8 +247,9 @@ export class EditingCreateWorkflowImpl
         this._setState("inactive");
     }
 
-    save(): void {
-        // Todo: Implement
+    save() {
+        // Stop drawing - the `drawend` event is dispatched before inserting the feature.
+        this._drawInteraction.finishDrawing();
     }
 
     whenComplete(): Promise<string | undefined> {

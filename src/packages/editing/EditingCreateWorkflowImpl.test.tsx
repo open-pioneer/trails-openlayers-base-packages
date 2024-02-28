@@ -178,7 +178,7 @@ describe("during editing workflow", () => {
         const draw = workflow.getDrawInteraction();
 
         draw.appendCoordinates([[200, 200]]);
-        draw.finishDrawing();
+        workflow.save();
         expect(workflow.getState()).toBe("active:saving");
     });
 
@@ -318,7 +318,7 @@ describe("when editing workflow complete", () => {
         draw.appendCoordinates([[200, 200]]);
         draw.appendCoordinates([[400, 300]]);
 
-        draw.finishDrawing();
+        workflow.save();
     });
 
     it("should return `undefined` if editing is stop while draw geometry", async () => {
@@ -361,7 +361,7 @@ describe("when editing workflow complete", () => {
         draw.appendCoordinates([[200, 200]]);
         draw.appendCoordinates([[400, 300]]);
 
-        draw.finishDrawing();
+        workflow.save();
     });
 });
 
