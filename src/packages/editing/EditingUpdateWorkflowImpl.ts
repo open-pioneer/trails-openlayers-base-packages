@@ -23,6 +23,7 @@ import {
     EditingWorkflowProps
 } from "./api";
 import { Collection } from "ol";
+import { getStyle } from "./style-utils";
 
 export class EditingUpdateWorkflowImpl
     extends EventEmitter<EditingWorkflowEvents>
@@ -33,7 +34,8 @@ export class EditingUpdateWorkflowImpl
     private _httpService: HttpService;
 
     private _map: MapModel;
-    private _polygonDrawStyle: FlatStyleLike;
+    private _polygonStyle: FlatStyleLike;
+    private _vertexStyle: FlatStyleLike;
     private _state: EditingWorkflowState;
     private _editLayerURL: URL;
 
@@ -53,7 +55,8 @@ export class EditingUpdateWorkflowImpl
         super();
         this._httpService = options.httpService;
 
-        this._polygonDrawStyle = options.polygonDrawStyle;
+        this._polygonStyle = options.polygonStyle;
+        this._vertexStyle = options.vertexStyle;
 
         this._map = options.map;
         this._olMap = options.map.olMap;
@@ -77,7 +80,10 @@ export class EditingUpdateWorkflowImpl
 
         this._modifyInteraction = new Modify({
             features: new Collection([options.feature]),
-            style: this._polygonDrawStyle // TODO style really used?
+            style: getStyle({
+                polygon: this._polygonStyle,
+                vertex: this._vertexStyle
+            })
         });
 
         this._enterHandler = (e: KeyboardEvent) => {

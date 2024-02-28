@@ -24,6 +24,7 @@ import {
     EditingWorkflowProps
 } from "./api";
 import Feature from "ol/Feature";
+import { getStyle } from "./style-utils";
 
 const LOG = createLogger("editing:EditingCreateWorkflowImpl");
 
@@ -43,7 +44,8 @@ export class EditingCreateWorkflowImpl
     private _intl: PackageIntl;
 
     private _map: MapModel;
-    private _polygonDrawStyle: FlatStyleLike;
+    private _polygonStyle: FlatStyleLike;
+    private _vertexStyle: FlatStyleLike;
     private _state: EditingWorkflowState;
     private _editLayerURL: URL;
 
@@ -64,7 +66,8 @@ export class EditingCreateWorkflowImpl
         this._httpService = options.httpService;
         this._intl = options.intl;
 
-        this._polygonDrawStyle = options.polygonDrawStyle;
+        this._polygonStyle = options.polygonStyle;
+        this._vertexStyle = options.vertexStyle;
 
         this._map = options.map;
         this._olMap = options.map.olMap;
@@ -83,7 +86,10 @@ export class EditingCreateWorkflowImpl
         this._drawInteraction = new Draw({
             source: this._editingSource,
             type: "Polygon",
-            style: this._polygonDrawStyle
+            style: getStyle({
+                polygon: this._polygonStyle,
+                vertex: this._vertexStyle
+            })
         });
 
         this._tooltip = this._createTooltip(this._olMap);

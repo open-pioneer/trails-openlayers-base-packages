@@ -49,7 +49,8 @@ export interface EditingWorkflowEvents {
 export interface EditingWorkflowProps {
     map: MapModel;
     ogcApiFeatureLayerUrl: URL;
-    polygonDrawStyle: FlatStyleLike;
+    polygonStyle: FlatStyleLike;
+    vertexStyle: FlatStyleLike;
     httpService: HttpService;
     intl: PackageIntl;
 }

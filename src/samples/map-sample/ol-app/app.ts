@@ -15,14 +15,20 @@ const element = createCustomElement({
                 "storageId": "ol-app-state"
             },
             "@open-pioneer/editing": {
-                "polygonDrawStyle": {
+                "polygonStyle": {
+                    "fill-color": "rgba(255,255,255,0.4)",
                     "stroke-color": "red",
                     "stroke-width": 2,
-                    "fill-color": "rgba(0, 0, 0, 0.1)",
                     "circle-radius": 5,
-                    "circle-fill-color": "rgba(255, 0, 0, 0.2)",
-                    "circle-stroke-color": "rgba(255, 0, 0, 0.7)",
-                    "circle-stroke-width": 2
+                    "circle-fill-color": "red",
+                    "circle-stroke-width": 1.25,
+                    "circle-stroke-color": "red"
+                },
+                "vertexStyle": {
+                    "circle-radius": 5,
+                    "circle-fill-color": "red",
+                    "circle-stroke-width": 1.25,
+                    "circle-stroke-color": "red"
                 }
             }
         }

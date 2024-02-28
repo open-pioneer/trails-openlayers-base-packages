@@ -17,24 +17,28 @@ export default defineBuildConfig({
         }
     },
     properties: {
-        // See Open Pioneer "trails-starter" in "Providing helpers for package properties"
-        // Idea: create style object for create, update (, delete?) for different geometry types
-        // create: {
-        //     point: {},
-        //     linestring: {},
-        //     polygon: {}
-        // },
-        // Todo: Vertex style
-        // Todo: Only one style for create, update, delete
         // Todo: Test with null -> add to documentation: how to disable vertices
-        polygonDrawStyle: {
-            "stroke-color": "yellow",
-            "stroke-width": 2,
-            "fill-color": "rgba(0, 0, 0, 0.1)",
+
+        /**
+         * See documentation "Providing helpers for package properties" in Open Pioneer "trails-starter"
+         * https://github.com/open-pioneer/trails-starter/blob/main/docs/reference/Services.md#providing-helpers-for-package-properties
+         */
+        polygonStyle: {
+            "fill-color": "rgba(255,255,255,0.4)",
+            "stroke-color": "#3399CC",
+            "stroke-width": 1.25,
+            // circle props used for mouse position circle while editing
             "circle-radius": 5,
-            "circle-fill-color": "rgba(0, 0, 255, 0.2)",
-            "circle-stroke-color": "rgba(0, 0, 255, 0.7)",
-            "circle-stroke-width": 2
+            "circle-fill-color": "rgba(255,255,255,0.4)",
+            "circle-stroke-width": 1.25,
+            "circle-stroke-color": "#3399CC"
+        },
+        vertexStyle: {
+            // circle props used for vertices
+            "circle-radius": 5,
+            "circle-fill-color": "rgba(255,255,255,0.4)",
+            "circle-stroke-width": 1.25,
+            "circle-stroke-color": "#3399CC"
         }
     },
     publishConfig: {

@@ -40,7 +40,8 @@ export class EditingServiceImpl implements EditingService {
         workflow = new EditingCreateWorkflowImpl({
             map,
             ogcApiFeatureLayerUrl,
-            polygonDrawStyle: this._serviceOptions.properties.polygonDrawStyle as FlatStyleLike,
+            polygonStyle: this._serviceOptions.properties.polygonStyle as FlatStyleLike,
+            vertexStyle: this._serviceOptions.properties.vertexStyle as FlatStyleLike,
             httpService: this._serviceOptions.references.httpService,
             intl: this._serviceOptions.intl
         });
@@ -68,7 +69,8 @@ export class EditingServiceImpl implements EditingService {
             map,
             ogcApiFeatureLayerUrl,
             feature,
-            polygonDrawStyle: this._serviceOptions.properties.polygonDrawStyle as FlatStyleLike,
+            polygonStyle: this._serviceOptions.properties.polygonStyle as FlatStyleLike,
+            vertexStyle: this._serviceOptions.properties.vertexStyle as FlatStyleLike,
             httpService: this._serviceOptions.references.httpService,
             intl: this._serviceOptions.intl
         });

@@ -389,20 +389,27 @@ async function setupWorkflow(map: MapModel, httpService: HttpService = HTTP_SERV
         }
     } satisfies Partial<PackageIntl> as PackageIntl;
 
-    const polygonDrawStyle: FlatStyleLike = {
-        "stroke-color": "yellow",
+    const polygonStyle: FlatStyleLike = {
+        "fill-color": "rgba(255,255,255,0.4)",
+        "stroke-color": "red",
         "stroke-width": 2,
-        "fill-color": "rgba(0, 0, 0, 0.1)",
         "circle-radius": 5,
-        "circle-fill-color": "rgba(0, 0, 255, 0.2)",
-        "circle-stroke-color": "rgba(0, 0, 255, 0.7)",
-        "circle-stroke-width": 2
+        "circle-fill-color": "red",
+        "circle-stroke-width": 1.25,
+        "circle-stroke-color": "red"
+    };
+    const vertexStyle: FlatStyleLike = {
+        "circle-radius": 5,
+        "circle-fill-color": "red",
+        "circle-stroke-width": 1.25,
+        "circle-stroke-color": "red"
     };
 
     const workflow = new EditingCreateWorkflowImpl({
         map,
         ogcApiFeatureLayerUrl: OGC_API_URL_TEST,
-        polygonDrawStyle,
+        polygonStyle,
+        vertexStyle,
         httpService,
         intl
     });
