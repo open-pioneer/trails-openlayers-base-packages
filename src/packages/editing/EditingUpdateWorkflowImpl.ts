@@ -67,6 +67,13 @@ export class EditingUpdateWorkflowImpl
         this._initialFeature = options.feature.clone();
         this._initialFeature.setId(options.feature.getId());
 
+        options.feature.setStyle(
+            getStyle({
+                polygon: this._polygonStyle,
+                vertex: this._vertexStyle
+            })
+        );
+
         this._editingSource = new VectorSource({
             features: new Collection([options.feature])
         });
@@ -78,12 +85,9 @@ export class EditingUpdateWorkflowImpl
             }
         });
 
+        // Todo: App UI -> Multiple selection, no highlight style, move vertices not possible
         this._modifyInteraction = new Modify({
-            features: new Collection([options.feature]),
-            style: getStyle({
-                polygon: this._polygonStyle,
-                vertex: this._vertexStyle
-            })
+            features: new Collection([options.feature])
         });
 
         this._enterHandler = (e: KeyboardEvent) => {
