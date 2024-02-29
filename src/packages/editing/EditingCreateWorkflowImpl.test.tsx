@@ -311,8 +311,8 @@ describe("when editing workflow complete", () => {
         const { workflow } = await setupWorkflow(map);
         const draw = workflow.getDrawInteraction();
 
-        workflow.whenComplete().then((featureId: string | undefined) => {
-            expect(featureId).toBe("test_id_1");
+        workflow.whenComplete().then((featureData: Record<string, string> | undefined) => {
+            expect(featureData?.featureId).toBe("test_id_1");
         });
 
         draw.appendCoordinates([[200, 200]]);
@@ -326,8 +326,8 @@ describe("when editing workflow complete", () => {
         const { workflow } = await setupWorkflow(map);
         const draw = workflow.getDrawInteraction();
 
-        workflow.whenComplete().then((featureId: string | undefined) => {
-            expect(featureId).toBeUndefined;
+        workflow.whenComplete().then((featureData: Record<string, string> | undefined) => {
+            expect(featureData?.featureId).toBeUndefined;
         });
 
         draw.appendCoordinates([[200, 200]]);

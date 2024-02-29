@@ -29,7 +29,7 @@ export class EditingUpdateWorkflowImpl
     extends EventEmitter<EditingWorkflowEvents>
     implements EditingWorkflow
 {
-    #waiter: ManualPromise<string | undefined> | undefined;
+    #waiter: ManualPromise<Record<string, string> | undefined> | undefined;
 
     private _httpService: HttpService;
 
@@ -152,7 +152,7 @@ export class EditingUpdateWorkflowImpl
         saveUpdatedFeature(this._httpService, layerUrl, featureId, geoJSONGeometry, projection)
             .then((featureId) => {
                 this._destroy();
-                this.#waiter?.resolve(featureId);
+                this.#waiter?.resolve({ featureId });
             })
             .catch((err: Error) => {
                 this._destroy();
@@ -236,7 +236,7 @@ export class EditingUpdateWorkflowImpl
         this._save(feature);
     }
 
-    whenComplete(): Promise<string | undefined> {
+    whenComplete(): Promise<Record<string, string> | undefined> {
         const manualPromise = (this.#waiter ??= createManualPromise());
         return manualPromise.promise;
     }

@@ -216,8 +216,8 @@ function useEditingCreateWorkflow(
 
                 workflow
                     .whenComplete()
-                    .then((featureId: string | undefined) => {
-                        if (!featureId) {
+                    .then((featureData: Record<string, string> | undefined) => {
+                        if (!featureData) {
                             return;
                         }
 
@@ -227,7 +227,7 @@ function useEditingCreateWorkflow(
                                 {
                                     id: "editing.create.featureCreated"
                                 },
-                                { featureId: featureId }
+                                { featureId: featureData.featureId }
                             ),
                             displayDuration: 4000
                         });
@@ -345,20 +345,22 @@ function useEditingUpdateWorkflow(
 
                         workflow
                             .whenComplete()
-                            .then((featureId: string | undefined) => {
-                                if (featureId) {
-                                    // undefined -> no feature saved
-                                    notificationService.notify({
-                                        level: "info",
-                                        message: intl.formatMessage(
-                                            {
-                                                id: "editing.update.featureModified"
-                                            },
-                                            { featureId: featureId }
-                                        ),
-                                        displayDuration: 4000
-                                    });
+                            .then((featureData: Record<string, string> | undefined) => {
+                                if (!featureData) {
+                                    return;
                                 }
+
+                                notificationService.notify({
+                                    level: "info",
+                                    message: intl.formatMessage(
+                                        {
+                                            id: "editing.update.featureModified"
+                                        },
+                                        { featureId: featureData.featureId }
+                                    ),
+                                    displayDuration: 4000
+                                });
+
                                 const vectorLayer = layer?.olLayer as VectorLayer<VectorSource>;
                                 vectorLayer.getSource()?.refresh();
                             })

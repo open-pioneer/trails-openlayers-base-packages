@@ -38,7 +38,7 @@ export class EditingCreateWorkflowImpl
     extends EventEmitter<EditingWorkflowEvents>
     implements EditingWorkflow
 {
-    #waiter: ManualPromise<string | undefined> | undefined;
+    #waiter: ManualPromise<Record<string, string> | undefined> | undefined;
 
     private _httpService: HttpService;
     private _intl: PackageIntl;
@@ -159,7 +159,7 @@ export class EditingCreateWorkflowImpl
         saveCreatedFeature(this._httpService, layerUrl, geoJSONGeometry, projection)
             .then((featureId) => {
                 this._destroy();
-                this.#waiter?.resolve(featureId);
+                this.#waiter?.resolve({ featureId });
             })
             .catch((err: Error) => {
                 LOG.error(err);
@@ -252,7 +252,7 @@ export class EditingCreateWorkflowImpl
         this._drawInteraction.finishDrawing();
     }
 
-    whenComplete(): Promise<string | undefined> {
+    whenComplete(): Promise<Record<string, string> | undefined> {
         // Todo:
         // if (this._state === "inactive") {
         //     return this.error ? Promise.reject(this.error) : Promise.resolve(this.featureId);

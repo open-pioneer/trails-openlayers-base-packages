@@ -74,7 +74,7 @@ export interface EditingWorkflow extends EventEmitter<EditingWorkflowEvents> {
      * feature ID when saving was successful and rejects if saving the feature
      * failed. It resolves with undefined when the editing was stopped.
      */
-    whenComplete(): Promise<string | undefined>; // Todo: Promise<featureId, string | ...>
+    whenComplete(): Promise<Record<string, string> | undefined>;
 }
 
 /**
