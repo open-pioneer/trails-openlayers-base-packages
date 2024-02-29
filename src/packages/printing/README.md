@@ -2,8 +2,11 @@
 
 This package provides a UI component to export the current map view as a printable file.
 
-The UI contains an input field that allows the user to enter a title, a dropdown to switch between the printing file formats (`PDF`, `PNG`), and a button to trigger the export.
-The map is printed as a DIN A4 size in landscape and the scale of the current map is preserved.
+The UI allows users to enter a title, switch between the printing file formats, and trigger the export.
+
+The supported file formats are PDF and PNG.
+If file format is PNG, the current map canvas is exported as an image.
+If file format is PDF, the map is printed as a DIN A4 landscape PDF file, preserving the current map scale and showing the current map center in the middle of the exported map image.
 
 ## Usage
 
@@ -15,8 +18,8 @@ To integrate the printing in your app, insert the following snippet and referenc
 
 ## Elements
 
-The printed map contains all map elements, visible layers, scale-bar and a title. If the user doesn't enter a title, the map is printed without title.
-To prevent custom elements from showing in the printed map, a classname `printing-hide` can be added to their classnames.
+The printed map contains all map elements, visible layers, scale-bar and a title. If the user does not enter a title, the map is printed without title.
+To prevent custom elements from showing in the printed map, add the classname `printing-hide` to the elements.
 
 ## License
 
