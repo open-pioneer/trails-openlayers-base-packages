@@ -371,7 +371,10 @@ function useEditingUpdateWorkflow(
                                 toggleToolState("editingUpdateActive", false);
                                 map.olMap.removeInteraction(selectInteraction);
                             });
-                    } else if (e.selected.length === 0 && e.deselected.length === 1) {
+                    } else if (selected.length === 1 && deselected.length === 1) {
+                        // Disable change of selected feature (multiple selection)
+                        stopEditingUpdate();
+                    } else if (selected.length === 0 && deselected.length === 1) {
                         unByKey(selectHandler);
 
                         tooltip.destroy();

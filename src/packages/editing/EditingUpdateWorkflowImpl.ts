@@ -85,7 +85,6 @@ export class EditingUpdateWorkflowImpl
             }
         });
 
-        // Todo: App UI -> Multiple selection, no highlight style, move vertices not possible
         this._modifyInteraction = new Modify({
             features: new Collection([options.feature])
         });
