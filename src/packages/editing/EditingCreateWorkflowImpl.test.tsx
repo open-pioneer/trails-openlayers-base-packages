@@ -29,18 +29,18 @@ const HTTP_SERVICE: HttpService = {
     )
 } satisfies Partial<HttpService> as HttpService;
 
-describe("starting editing workflow", () => {
-    it("should start an editing workflow", async () => {
+describe("starting create editing workflow", () => {
+    it("should start a create editing workflow", async () => {
         const { map } = await renderMap();
-        const { workflow } = await setupWorkflow(map);
+        const { workflow } = await setupCreateWorkflow(map);
         expect(workflow.getState()).toBe("active:initialized");
 
         workflow.stop();
     });
 
-    it("should create an editing layer for an editing workflow", async () => {
+    it("should create an editing layer for a create editing workflow", async () => {
         const { map } = await renderMap();
-        const { workflow } = await setupWorkflow(map);
+        const { workflow } = await setupCreateWorkflow(map);
         const layers: BaseLayer[] = map.olMap.getLayers().getArray();
 
         const editingLayer: VectorLayer<VectorSource> | undefined = layers.find(
@@ -50,14 +50,14 @@ describe("starting editing workflow", () => {
         if (!editingLayer) {
             throw new Error("editing layer not found");
         }
-        expect(editingLayer).not.toBeUndefined;
+        expect(editingLayer).not.toBeUndefined();
 
         workflow.stop();
     });
 
-    it("should creates a tooltip after start an editing workflow", async () => {
+    it("should creates a tooltip after start a create editing workflow", async () => {
         const { map } = await renderMap();
-        const { workflow } = await setupWorkflow(map);
+        const { workflow } = await setupCreateWorkflow(map);
         const beginTooltip = getTooltipElement(map.olMap, "editing-tooltip");
         if (beginTooltip instanceof Error) {
             throw beginTooltip;
@@ -67,21 +67,21 @@ describe("starting editing workflow", () => {
         workflow.stop();
     });
 
-    it("should add an interaction for an editing workflow", async () => {
+    it("should add an interaction for a create editing workflow", async () => {
         const { map } = await renderMap();
-        const { workflow } = await setupWorkflow(map);
+        const { workflow } = await setupCreateWorkflow(map);
         const interactions: Interaction[] = map.olMap.getInteractions().getArray();
         const drawInteraction: Draw | undefined = interactions.find(
             (i) => i instanceof Draw
         ) as Draw;
-        expect(drawInteraction).not.toBeUndefined;
+        expect(drawInteraction).not.toBeUndefined();
 
         workflow.stop();
     });
 
-    it("should does not contain a geometry after start an editing workflow", async () => {
+    it("should does not contain a geometry after start a create editing workflow", async () => {
         const { map } = await renderMap();
-        const { workflow } = await setupWorkflow(map);
+        const { workflow } = await setupCreateWorkflow(map);
         const layers: BaseLayer[] = map.olMap.getLayers().getArray();
 
         const editingLayer: VectorLayer<VectorSource> | undefined = layers.find(
@@ -100,70 +100,70 @@ describe("starting editing workflow", () => {
         workflow.stop();
     });
 
-    it("should start editing workflow after stop", async () => {
+    it("should start a create editing workflow after stop", async () => {
         const { map } = await renderMap();
 
-        const workflow = (await setupWorkflow(map)).workflow;
+        const workflow = (await setupCreateWorkflow(map)).workflow;
         expect(workflow.getState()).toBe("active:initialized");
 
         workflow.stop();
         expect(workflow.getState()).toBe("inactive");
 
-        const nextWorkflow = (await setupWorkflow(map)).workflow;
+        const nextWorkflow = (await setupCreateWorkflow(map)).workflow;
         expect(nextWorkflow.getState()).toBe("active:initialized");
 
         nextWorkflow.stop();
     });
 });
 
-describe("stopping editing workflow", () => {
-    it("should stop an editing workflow", async () => {
+describe("stopping create editing workflow", () => {
+    it("should stop a create editing workflow", async () => {
         const { map } = await renderMap();
-        const { workflow } = await setupWorkflow(map);
+        const { workflow } = await setupCreateWorkflow(map);
         expect(workflow.getState()).toBe("active:initialized");
 
         workflow.stop();
         expect(workflow.getState()).toBe("inactive");
     });
 
-    it("should remove an editing layer for an editing workflow after stop", async () => {
+    it("should remove an editing layer for a create editing workflow after stop", async () => {
         const { map } = await renderMap();
-        const { workflow } = await setupWorkflow(map);
+        const { workflow } = await setupCreateWorkflow(map);
         workflow.stop();
         const layers: BaseLayer[] = map.olMap.getLayers().getArray();
 
         const editingLayer: VectorLayer<VectorSource> | undefined = layers.find(
             (l) => l.getProperties().name === "editing-layer"
         ) as VectorLayer<VectorSource>;
-        expect(editingLayer).toBeUndefined;
+        expect(editingLayer).toBeUndefined();
     });
 
-    it("should remove a tooltip after stop an editing workflow", async () => {
+    it("should remove a tooltip after stop a create editing workflow", async () => {
         const { map } = await renderMap();
-        const { workflow } = await setupWorkflow(map);
+        const { workflow } = await setupCreateWorkflow(map);
         workflow.stop();
 
         const beginTooltip = getTooltipElement(map.olMap, "editing-tooltip");
         expect(beginTooltip instanceof Error).toBe(true);
     });
 
-    it("should remove an interaction for an editing workflow", async () => {
+    it("should remove an interaction for a create editing workflow", async () => {
         const { map } = await renderMap();
-        const { workflow } = await setupWorkflow(map);
+        const { workflow } = await setupCreateWorkflow(map);
         workflow.stop();
 
         const interactions: Interaction[] = map.olMap.getInteractions().getArray();
         const drawInteraction: Draw | undefined = interactions.find(
             (i) => i instanceof Draw
         ) as Draw;
-        expect(drawInteraction).toBeUndefined;
+        expect(drawInteraction).toBeUndefined();
     });
 });
 
-describe("during editing workflow", () => {
-    it("should change state after starting editing", async () => {
+describe("during create editing workflow", () => {
+    it("should change state after starting create editing workflow", async () => {
         const { map } = await renderMap();
-        const { workflow } = await setupWorkflow(map);
+        const { workflow } = await setupCreateWorkflow(map);
         const draw = workflow.getDrawInteraction();
 
         draw.appendCoordinates([[200, 200]]);
@@ -172,9 +172,9 @@ describe("during editing workflow", () => {
         workflow.stop();
     });
 
-    it("should change state after finished editing", async () => {
+    it("should change state after finished create editing workflow", async () => {
         const { map } = await renderMap();
-        const { workflow } = await setupWorkflow(map);
+        const { workflow } = await setupCreateWorkflow(map);
         const draw = workflow.getDrawInteraction();
 
         draw.appendCoordinates([[200, 200]]);
@@ -182,9 +182,9 @@ describe("during editing workflow", () => {
         expect(workflow.getState()).toBe("active:saving");
     });
 
-    it("should updates the tooltip text after starting editing", async () => {
+    it("should updates the tooltip text after starting create editing workflow", async () => {
         const { map } = await renderMap();
-        const { workflow } = await setupWorkflow(map);
+        const { workflow } = await setupCreateWorkflow(map);
         const draw = workflow.getDrawInteraction();
 
         draw.appendCoordinates([[200, 200]]);
@@ -197,9 +197,9 @@ describe("during editing workflow", () => {
         workflow.stop();
     });
 
-    it("should contain a geometry after starting editing ", async () => {
+    it("should contain a geometry after starting create editing workflow ", async () => {
         const { map } = await renderMap();
-        const { workflow } = await setupWorkflow(map);
+        const { workflow } = await setupCreateWorkflow(map);
         const layers: BaseLayer[] = map.olMap.getLayers().getArray();
         const draw = workflow.getDrawInteraction();
 
@@ -236,10 +236,10 @@ describe("during editing workflow", () => {
     });
 });
 
-describe("reset editing workflow", () => {
-    it("should change state after reset editing", async () => {
+describe("reset create editing workflow", () => {
+    it("should change state after reset create editing workflow", async () => {
         const { map } = await renderMap();
-        const { workflow } = await setupWorkflow(map);
+        const { workflow } = await setupCreateWorkflow(map);
         const draw = workflow.getDrawInteraction();
         expect(workflow.getState()).toBe("active:initialized");
 
@@ -252,9 +252,9 @@ describe("reset editing workflow", () => {
         workflow.stop();
     });
 
-    it("should updates the tooltip text after reset editing", async () => {
+    it("should updates the tooltip text after reset create editing workflow", async () => {
         const { map } = await renderMap();
-        const { workflow } = await setupWorkflow(map);
+        const { workflow } = await setupCreateWorkflow(map);
         const draw = workflow.getDrawInteraction();
 
         draw.appendCoordinates([[200, 200]]);
@@ -274,23 +274,23 @@ describe("reset editing workflow", () => {
         workflow.stop();
     });
 
-    it("should does not remove interaction after reset editing", async () => {
+    it("should does not remove interaction after reset create editing workflow", async () => {
         const { map } = await renderMap();
-        const { workflow } = await setupWorkflow(map);
+        const { workflow } = await setupCreateWorkflow(map);
         workflow.reset();
 
         const interactions: Interaction[] = map.olMap.getInteractions().getArray();
         const drawInteraction: Draw | undefined = interactions.find(
             (i) => i instanceof Draw
         ) as Draw;
-        expect(drawInteraction).not.toBeUndefined;
+        expect(drawInteraction).not.toBeUndefined();
 
         workflow.stop();
     });
 
-    it("should does not contain a geometry after reset editing", async () => {
+    it("should does not contain a geometry after reset create editing workflow", async () => {
         const { map } = await renderMap();
-        const { workflow } = await setupWorkflow(map);
+        const { workflow } = await setupCreateWorkflow(map);
         const draw = workflow.getDrawInteraction();
 
         draw.appendCoordinates([[200, 200]]);
@@ -305,10 +305,10 @@ describe("reset editing workflow", () => {
     });
 });
 
-describe("when editing workflow complete", () => {
-    it("should return a feature id when complete editing", async () => {
+describe("when create editing workflow complete", () => {
+    it("should return a feature id when create editing workflow is complete", async () => {
         const { map } = await renderMap();
-        const { workflow } = await setupWorkflow(map);
+        const { workflow } = await setupCreateWorkflow(map);
         const draw = workflow.getDrawInteraction();
 
         workflow.whenComplete().then((featureData: Record<string, string> | undefined) => {
@@ -321,13 +321,13 @@ describe("when editing workflow complete", () => {
         workflow.save();
     });
 
-    it("should return `undefined` if editing is stop while draw geometry", async () => {
+    it("should return `undefined` if create editing workflow is stopped while draw geometry", async () => {
         const { map } = await renderMap();
-        const { workflow } = await setupWorkflow(map);
+        const { workflow } = await setupCreateWorkflow(map);
         const draw = workflow.getDrawInteraction();
 
         workflow.whenComplete().then((featureData: Record<string, string> | undefined) => {
-            expect(featureData?.featureId).toBeUndefined;
+            expect(featureData?.featureId).toBeUndefined();
         });
 
         draw.appendCoordinates([[200, 200]]);
@@ -336,7 +336,7 @@ describe("when editing workflow complete", () => {
         workflow.stop();
     });
 
-    it("should return an error if editing failed", async () => {
+    it("should return an error if create editing workflow failed", async () => {
         vi.spyOn(console, "error").mockImplementation(() => undefined);
 
         const httpService: HttpService = {
@@ -348,7 +348,7 @@ describe("when editing workflow complete", () => {
         } satisfies Partial<HttpService> as HttpService;
 
         const { map } = await renderMap();
-        const { workflow } = await setupWorkflow(map, httpService);
+        const { workflow } = await setupCreateWorkflow(map, httpService);
         const draw = workflow.getDrawInteraction();
 
         workflow
@@ -382,7 +382,7 @@ async function renderMap() {
     return { mapId, map };
 }
 
-async function setupWorkflow(map: MapModel, httpService: HttpService = HTTP_SERVICE) {
+async function setupCreateWorkflow(map: MapModel, httpService: HttpService = HTTP_SERVICE) {
     const intl = {
         formatMessage(props: any) {
             return props.id;

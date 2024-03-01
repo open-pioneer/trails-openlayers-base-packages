@@ -1,0 +1,272 @@
+// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-License-Identifier: Apache-2.0
+import { describe, expect, it, vi } from "vitest";
+import VectorLayer from "ol/layer/Vector";
+import VectorSource from "ol/source/Vector";
+import { FlatStyleLike } from "ol/style/flat";
+import { HttpService } from "@open-pioneer/http";
+import { MapContainer, MapModel } from "@open-pioneer/map";
+import { createServiceOptions, setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
+import { PackageContextProvider } from "@open-pioneer/test-utils/react";
+import { render } from "@testing-library/react";
+import { PackageIntl } from "@open-pioneer/runtime";
+import { EditingUpdateWorkflowImpl } from "./EditingUpdateWorkflowImpl";
+import BaseLayer from "ol/layer/Base";
+import { Interaction, Modify } from "ol/interaction";
+import { Feature } from "ol";
+import { Point } from "ol/geom";
+
+const OGC_API_URL_TEST = new URL("https://example.org/ogc");
+
+const HTTP_SERVICE: HttpService = {
+    fetch: vi.fn().mockResolvedValue(
+        new Response("", {
+            headers: {
+                Location: OGC_API_URL_TEST + "/test_id_1"
+            },
+            status: 201
+        })
+    )
+} satisfies Partial<HttpService> as HttpService;
+
+const MOCKED_FEATURE: Feature = new Feature({ geometry: new Point([0, 0]) });
+
+describe("starting update editing workflow", () => {
+    it("should start an update editing workflow", async () => {
+        const { map } = await renderMap();
+        const { workflow } = await setupUpdateWorkflow(map);
+        expect(workflow.getState()).toBe("active:initialized");
+
+        workflow.stop();
+    });
+
+    it("should create an editing layer for an update editing workflow", async () => {
+        const { map } = await renderMap();
+        const { workflow } = await setupUpdateWorkflow(map);
+        const layers: BaseLayer[] = map.olMap.getLayers().getArray();
+
+        const editingLayer: VectorLayer<VectorSource> | undefined = layers.find(
+            (l) => l.getProperties().name === "editing-layer"
+        ) as VectorLayer<VectorSource>;
+
+        if (!editingLayer) {
+            throw new Error("editing layer not found");
+        }
+        expect(editingLayer).not.toBeUndefined;
+
+        workflow.stop();
+    });
+
+    it("should add an interaction for an update editing workflow", async () => {
+        const { map } = await renderMap();
+        const { workflow } = await setupUpdateWorkflow(map);
+        const interactions: Interaction[] = map.olMap.getInteractions().getArray();
+        const modifyInteraction: Modify | undefined = interactions.find(
+            (i) => i instanceof Modify
+        ) as Modify;
+
+        expect(modifyInteraction).not.toBeUndefined();
+
+        workflow.stop();
+    });
+
+    it("should contain a geometry after start an update editing workflow", async () => {
+        const { map } = await renderMap();
+        const { workflow } = await setupUpdateWorkflow(map);
+        const layers: BaseLayer[] = map.olMap.getLayers().getArray();
+
+        const editingLayer: VectorLayer<VectorSource> | undefined = layers.find(
+            (l) => l.getProperties().name === "editing-layer"
+        ) as VectorLayer<VectorSource>;
+        if (!editingLayer) {
+            throw new Error("editing layer not found");
+        }
+
+        const editingSource = editingLayer.getSource();
+        if (!editingSource) {
+            throw new Error("editing source not found");
+        }
+        expect(editingSource.getFeatures().length).toBe(1);
+
+        workflow.stop();
+    });
+
+    it("should start an update editing workflow after stop", async () => {
+        const { map } = await renderMap();
+
+        const workflow = (await setupUpdateWorkflow(map)).workflow;
+        expect(workflow.getState()).toBe("active:initialized");
+
+        workflow.stop();
+        expect(workflow.getState()).toBe("inactive");
+
+        const nextWorkflow = (await setupUpdateWorkflow(map)).workflow;
+        expect(nextWorkflow.getState()).toBe("active:initialized");
+
+        nextWorkflow.stop();
+    });
+});
+
+describe("stopping update editing workflow", () => {
+    it("should stop an update editing workflow", async () => {
+        const { map } = await renderMap();
+        const { workflow } = await setupUpdateWorkflow(map);
+        expect(workflow.getState()).toBe("active:initialized");
+
+        workflow.stop();
+        expect(workflow.getState()).toBe("inactive");
+    });
+
+    it("should remove an editing layer for a n update editing workflow after stop", async () => {
+        const { map } = await renderMap();
+        const { workflow } = await setupUpdateWorkflow(map);
+        workflow.stop();
+        const layers: BaseLayer[] = map.olMap.getLayers().getArray();
+
+        const editingLayer: VectorLayer<VectorSource> | undefined = layers.find(
+            (l) => l.getProperties().name === "editing-layer"
+        ) as VectorLayer<VectorSource>;
+        expect(editingLayer).toBeUndefined();
+    });
+
+    it("should remove an interaction for an update editing workflow", async () => {
+        const { map } = await renderMap();
+        const { workflow } = await setupUpdateWorkflow(map);
+        workflow.stop();
+
+        const interactions: Interaction[] = map.olMap.getInteractions().getArray();
+        const modifyInteraction: Modify | undefined = interactions.find(
+            (i) => i instanceof Modify
+        ) as Modify;
+        expect(modifyInteraction).toBeUndefined();
+    });
+});
+
+describe.skip("during update editing workflow", () => {});
+
+describe("reset update editing workflow", () => {
+    it("should change state after reset update editing workflow", async () => {
+        const { map } = await renderMap();
+        const { workflow } = await setupUpdateWorkflow(map);
+        const modify = workflow.getModifyInteraction();
+        expect(workflow.getState()).toBe("active:initialized");
+
+        modify.dispatchEvent("modifystart");
+        expect(workflow.getState()).toBe("active:drawing");
+
+        workflow.reset();
+        expect(workflow.getState()).toBe("active:initialized");
+
+        workflow.stop();
+    });
+
+    it("should does not remove interaction after reset update editing workflow", async () => {
+        const { map } = await renderMap();
+        const { workflow } = await setupUpdateWorkflow(map);
+        workflow.reset();
+
+        const interactions: Interaction[] = map.olMap.getInteractions().getArray();
+        const modifyInteraction: Modify | undefined = interactions.find(
+            (i) => i instanceof Modify
+        ) as Modify;
+        expect(modifyInteraction).not.toBeUndefined();
+
+        workflow.stop();
+    });
+
+    it("should reset geometry after reset update editing workflow", async () => {
+        const { map } = await renderMap();
+        const { workflow } = await setupUpdateWorkflow(map);
+        const modify = workflow.getModifyInteraction();
+
+        const layers: BaseLayer[] = map.olMap.getLayers().getArray();
+
+        const editingLayer: VectorLayer<VectorSource> | undefined = layers.find(
+            (l) => l.getProperties().name === "editing-layer"
+        ) as VectorLayer<VectorSource>;
+
+        if (!editingLayer) {
+            throw new Error("editing layer not found");
+        }
+
+        const editingSource = editingLayer.getSource();
+        if (!editingSource) {
+            throw new Error("editing source not found");
+        }
+
+        editingSource.getFeatures()[0]?.setGeometry(new Point([8, 51]));
+
+        modify.dispatchEvent("modifystart");
+
+        workflow.reset();
+
+        const feature = editingSource.getFeatures()[0];
+        if (!feature) {
+            throw new Error("feature not found");
+        }
+
+        const geometry: Point = feature.getGeometry() as Point;
+        if (!geometry) {
+            throw new Error("geometry not found");
+        }
+
+        expect(geometry.getCoordinates()).toStrictEqual([0, 0]);
+
+        workflow.stop();
+    });
+});
+
+describe.skip("when update editing workflow complete", () => {});
+
+async function renderMap() {
+    const { mapId, registry } = await setupMap();
+
+    const injectedServices = createServiceOptions({ registry });
+    render(
+        <PackageContextProvider services={injectedServices}>
+            <MapContainer mapId={mapId} data-testid="map" />
+        </PackageContextProvider>
+    );
+
+    await waitForMapMount("map");
+
+    const map = await registry.expectMapModel(mapId);
+
+    return { mapId, map };
+}
+
+async function setupUpdateWorkflow(map: MapModel, httpService: HttpService = HTTP_SERVICE) {
+    const intl = {
+        formatMessage(props: any) {
+            return props.id;
+        }
+    } satisfies Partial<PackageIntl> as PackageIntl;
+
+    const polygonStyle: FlatStyleLike = {
+        "fill-color": "rgba(255,255,255,0.4)",
+        "stroke-color": "red",
+        "stroke-width": 2,
+        "circle-radius": 5,
+        "circle-fill-color": "red",
+        "circle-stroke-width": 1.25,
+        "circle-stroke-color": "red"
+    };
+    const vertexStyle: FlatStyleLike = {
+        "circle-radius": 5,
+        "circle-fill-color": "red",
+        "circle-stroke-width": 1.25,
+        "circle-stroke-color": "red"
+    };
+
+    const workflow = new EditingUpdateWorkflowImpl({
+        map,
+        ogcApiFeatureLayerUrl: OGC_API_URL_TEST,
+        polygonStyle,
+        vertexStyle,
+        httpService,
+        intl,
+        feature: MOCKED_FEATURE
+    });
+
+    return { map, workflow };
+}
