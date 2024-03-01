@@ -7,8 +7,13 @@ export default defineBuildConfig({
     entryPoints: ["index"],
     i18n: ["en", "de"],
     styles: "./styles.css",
+    services: {
+        PrintingServiceImpl: {
+            provides: "printing.PrintingService"
+        }
+    },
     ui: {
-        references: ["notifier.NotificationService"]
+        references: ["notifier.NotificationService", "printing.PrintingService"]
     },
     publishConfig: {
         strict: true
