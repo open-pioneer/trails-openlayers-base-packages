@@ -142,7 +142,13 @@ describe("stopping update editing workflow", () => {
     });
 });
 
-describe.skip("during update editing workflow", () => {});
+describe.skip("during update editing workflow", () => {
+    it("should change state after starting update editing workflow", async () => {});
+
+    it("should change state after finished update editing workflow", async () => {});
+
+    it("should contain a modified geometry after starting update editing workflow ", async () => {});
+});
 
 describe("reset update editing workflow", () => {
     it("should change state after reset update editing workflow", async () => {
@@ -216,7 +222,13 @@ describe("reset update editing workflow", () => {
     });
 });
 
-describe.skip("when update editing workflow complete", () => {});
+describe.skip("when update editing workflow complete", () => {
+    it("should return a feature id when update editing workflow is complete", async () => {});
+
+    it("should return `undefined` if update editing workflow is stopped while modify geometry", async () => {});
+
+    it("should return an error if update editing workflow failed", async () => {});
+});
 
 async function renderMap() {
     const { mapId, registry } = await setupMap();
