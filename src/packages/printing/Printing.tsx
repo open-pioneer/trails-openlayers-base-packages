@@ -18,7 +18,6 @@ import { NotificationService } from "@open-pioneer/notifier";
 import { FileFormatType, PrintingController } from "./PrintingController";
 import { createLogger } from "@open-pioneer/core";
 import { PackageIntl } from "@open-pioneer/runtime";
-import { PrintingService } from "./index";
 
 const LOG = createLogger("printing");
 
@@ -45,8 +44,6 @@ export const Printing: FC<PrintingProps> = (props) => {
     const [running, setRunning] = useState<boolean>(false);
 
     const notifier = useService<NotificationService>("notifier.NotificationService");
-
-    const printingService = useService<PrintingService>("printing.PrintingService");
 
     const { map } = useMapModel(mapId);
 
@@ -84,18 +81,6 @@ export const Printing: FC<PrintingProps> = (props) => {
             })
             .finally(() => {
                 setRunning(false);
-                map &&
-                    printingService.printMap(map.olMap).then(
-                        async (service) => {
-                            const canvas = await service.getCanvas();
-                            console.debug(canvas);
-                            console.debug(service.getPNGDataURL(0.6));
-                            printingService.reset();
-                        },
-                        (error) => {
-                            LOG.error(error);
-                        }
-                    );
             });
     }
 
