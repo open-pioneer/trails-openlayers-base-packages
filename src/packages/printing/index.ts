@@ -10,15 +10,13 @@ export interface PrintingService extends DeclaredService<"printing.PrintingServi
      * The promise resolves with the resulting map image or with any error that occurred
      * while printing the map.
      */
-    printMap(olMap: OlMap): Promise<PrintResult>;
-
-    reset(): void;
+    printMap(olMap: OlMap, addOverlay?: boolean): Promise<PrintResult>;
 }
 
 /** The result of a print operation. */
 export interface PrintResult {
     /** Returns a canvas element that contains the result of the map print. */
-    getCanvas(): Promise<HTMLCanvasElement>;
+    getCanvas(): HTMLCanvasElement;
 
     /**
      * Returns a data URL (i.e. `data:...`) that contains a PNG image.

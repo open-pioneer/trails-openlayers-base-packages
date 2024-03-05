@@ -8,5 +8,8 @@ export default defineBuildConfig({
         MapConfigProviderImpl: {
             provides: ["map.MapConfigProvider"]
         }
+    },
+    ui: {
+        references: ["printing.PrintingService"]
     }
 });

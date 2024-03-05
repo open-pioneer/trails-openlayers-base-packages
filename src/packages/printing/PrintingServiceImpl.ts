@@ -20,20 +20,29 @@ export class PrintingServiceImpl implements PrintingService {
 
     private scaleLine: ScaleLine | undefined = undefined;
 
-    private overlay: HTMLDivElement | undefined = undefined;
+    private blockUserInteraction: boolean = false;
 
-    async printMap(olMap: OlMap): Promise<PrintResultImpl> {
+    async printMap(olMap: OlMap, blockUserInteraction: boolean): Promise<PrintResultImpl> {
         this.olMap = olMap;
+        this.blockUserInteraction = blockUserInteraction;
 
         if (this.running) {
             throw new Error("Printing already running.");
         }
 
-        await this.beginExport();
+        try {
+            await this.beginExport();
 
-        const viewportElement = this.olMap?.getViewport();
-
-        return new PrintResultImpl(viewportElement);
+            const canvas = await this.printToCanvas(this.olMap.getViewport());
+            if (canvas) {
+                return new PrintResultImpl(canvas);
+            } else {
+                throw new Error("Canvas export failed");
+            }
+        } finally {
+            // Always remove scale bar
+            this.reset();
+        }
     }
 
     private async beginExport() {
@@ -57,13 +66,13 @@ export class PrintingServiceImpl implements PrintingService {
             });
         });
 
-        this.addOverlay();
+        this.blockUserInteraction && this.addOverlay();
         await this.addScaleLine();
     }
 
     private addOverlay() {
         const container = this.olMap?.getTargetElement();
-        const overlay = (this.overlay = document.createElement("div"));
+        const overlay = document.createElement("div");
         overlay.classList.add("printing-overlay", PRINTING_HIDE_CLASS);
         container?.appendChild(overlay);
 
@@ -95,33 +104,7 @@ export class PrintingServiceImpl implements PrintingService {
         });
     }
 
-    reset() {
-        if (this.scaleLine) {
-            this.olMap?.removeControl(this.scaleLine);
-            this.scaleLine = undefined;
-        }
-
-        this.overlay?.remove();
-        this.overlay = undefined;
-
-        this.running = false;
-
-        /** show active draw interactions after printing (reset feature style to its previous style ) */
-        this.drawInformation?.length &&
-            this.drawInformation.forEach((drawInfo) => {
-                drawInfo.draw.getOverlay().setStyle(drawInfo.style);
-            });
-    }
-}
-
-class PrintResultImpl implements PrintResult {
-    private mapViewportElement: HTMLElement;
-    private canvas: HTMLCanvasElement | undefined;
-
-    constructor(element: HTMLElement) {
-        this.mapViewportElement = element;
-    }
-    async getCanvas(): Promise<HTMLCanvasElement> {
+    private async printToCanvas(element: HTMLElement): Promise<HTMLCanvasElement> {
         // export options for html2canvas.
         const exportOptions: Partial<Options> = {
             useCORS: true,
@@ -139,8 +122,33 @@ class PrintResultImpl implements PrintResult {
         // Lazy load html2canvas: it is a large dependency (>= KiB) that is only
         // required when actually printed. This speeds up the initial page load.
         const html2canvas = (await import("html2canvas")).default;
-        this.canvas = await html2canvas(this.mapViewportElement, exportOptions);
+        const canvas = await html2canvas(element, exportOptions);
 
+        return canvas;
+    }
+    private reset() {
+        if (this.scaleLine) {
+            this.olMap?.removeControl(this.scaleLine);
+            this.scaleLine = undefined;
+        }
+
+        this.running = false;
+
+        /** show active draw interactions after printing (reset feature style to its previous style ) */
+        this.drawInformation?.length &&
+            this.drawInformation.forEach((drawInfo) => {
+                drawInfo.draw.getOverlay().setStyle(drawInfo.style);
+            });
+    }
+}
+
+class PrintResultImpl implements PrintResult {
+    private canvas: HTMLCanvasElement;
+
+    constructor(canvas: HTMLCanvasElement) {
+        this.canvas = canvas;
+    }
+    getCanvas(): HTMLCanvasElement {
         return this.canvas;
     }
 
