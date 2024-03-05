@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import type { EventSource } from "@open-pioneer/core";
+import type { EventSource, Resource } from "@open-pioneer/core";
 import type OlMap from "ol/Map";
 import type OlBaseLayer from "ol/layer/Base";
 import type { ExtentConfig } from "./MapConfig";
@@ -8,6 +8,7 @@ import type { Layer, LayerBase } from "./layers";
 import type { LayerRetrievalOptions } from "./shared";
 import type { Geometry } from "ol/geom";
 import type { StyleLike } from "ol/style/Style";
+import { BaseFeature } from "./BaseFeature";
 
 /** Events emitted by the {@link MapModel}. */
 export interface MapModelEvents {
@@ -59,6 +60,12 @@ export interface MapPadding {
     bottom?: number;
 }
 
+export interface Highlight extends Resource {
+    readonly isActive: boolean;
+}
+
+export type Highlightable = BaseFeature | Geometry;
+
 /**
  * Represents a map.
  */
@@ -106,18 +113,24 @@ export interface MapModel extends EventSource<MapModelEvents> {
      */
     whenDisplayed(): Promise<void>;
 
+    highlight(geometries: Geometry[], options?: HighlightOptions): Highlight;
+    // highlight(geometries: Highlightable[], options?: HighlightOptions): Highlight;
+
+    zoom(geometries: Geometry[], options?: HighlightOptions): void;
+    // zoom(geometries: Highlightable[], options?: ZoomOptions): void;
+
     /**
      * Highlights the given geometries on the map.
      * Centers and zooms the view on the geometries.
      *
      * Removes any previous highlights.
      */
-    highlightAndZoom(geometries: Geometry[], options?: HighlightOptions): void;
+    highlightAndZoom(geometries: Geometry[], options?: HighlightOptions): Highlight;
 
     /**
      * Removes any existing highlights from the map.
      */
-    removeHighlight(): void;
+    removeHighlight(): void; // TODO: Plural (-> clears ALL highlights)
 }
 
 /** Events emitted by the {@link LayerCollection}. */

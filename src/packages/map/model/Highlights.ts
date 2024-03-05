@@ -10,10 +10,9 @@ import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import { Fill, Icon, Stroke, Style } from "ol/style";
 import { toFunction as toStyleFunction } from "ol/style/Style";
-import { HighlightOptions, HighlightStyle } from "../api/MapModel";
+import { Highlight, HighlightOptions, HighlightStyle } from "../api/MapModel";
 import mapMarkerUrl from "../assets/images/mapMarker.png?url";
 import { FeatureLike } from "ol/Feature";
-import { TOPMOST_LAYER_Z } from "./LayerCollectionImpl";
 import { Layer as OlLayer } from "ol/layer";
 
 const DEFAULT_OL_POINT_ZOOM_LEVEL = 17;
@@ -23,6 +22,11 @@ const DEFAULT_VIEW_PADDING = { top: 50, right: 20, bottom: 10, left: 20 };
 export class Highlights {
     private olMap: OlMap;
     private currentHighlight: OlLayer | undefined;
+
+    // TODO: Create layer / source
+    private olLayer!: VectorLayer<VectorSource>;
+    private olSource!: VectorSource<Feature<Geometry>>;
+    private activeHighlights!: Set<Highlight>;
 
     constructor(olMap: OlMap) {
         this.olMap = olMap;
@@ -48,11 +52,16 @@ export class Highlights {
         this.zoomAndAddMarkers(geometries, options);
     }
 
+    // TODO this is "clear"
     clearHighlight() {
-        if (this.currentHighlight) {
-            this.olMap.removeLayer(this.currentHighlight);
-            this.currentHighlight = undefined;
+        for (const highlight of this.activeHighlights) {
+            highlight.destroy();
         }
+
+        // if (this.currentHighlight) {
+        //     this.olMap.removeLayer(this.currentHighlight);
+        //     this.currentHighlight = undefined;
+        // }
     }
 
     private zoomAndAddMarkers(geometries: Geometry[], options: HighlightOptions | undefined) {
@@ -80,26 +89,50 @@ export class Highlights {
         this.createAndAddLayer(geometries, options?.highlightStyle);
     }
 
-    private createAndAddLayer(geometries: Geometry[], highlightStyle: HighlightStyle | undefined) {
+    private createAndAddLayer(geometries: Geometry[], highlightStyle: HighlightStyle | undefined): Highlight {
         const features = geometries.map((geometry) => {
             return new Feature({
                 type: geometry.getType(),
-                geometry: geometry
+                geometry: geometry,
+                // TODO: Style for THIS highlight
             });
         });
-        const layer = new VectorLayer({
-            className: "highlight-layer",
-            source: new VectorSource({
-                features: features
-            }),
-            style: function (feature, resolution) {
-                return resolveStyle(feature, resolution, highlightStyle);
+
+        const source = this.olSource;
+        const highlights = this.activeHighlights;
+        const highlight: Highlight = {
+            get isActive() {
+                return highlights.has(highlight);
+            },
+            destroy() {
+                if (!this.isActive) {
+                    return;
+                }
+
+                for (const feature of features) {
+                    source.removeFeature(feature);
+                }
+                highlights.delete(highlight);
             }
-        });
-        // Ensure layer is rendered on top of operational layers
-        layer.setZIndex(TOPMOST_LAYER_Z);
-        this.olMap.addLayer(layer);
-        this.currentHighlight = layer;
+        };   
+
+        
+        source.addFeatures(features);
+        return highlight;
+
+        // const layer = new VectorLayer({
+        //     className: "highlight-layer",
+        //     source: new VectorSource({
+        //         features: features
+        //     }),
+        //     style: function (feature, resolution) {
+        //         return resolveStyle(feature, resolution, highlightStyle);
+        //     }
+        // });
+        // // Ensure layer is rendered on top of operational layers
+        // layer.setZIndex(TOPMOST_LAYER_Z);
+        // this.olMap.addLayer(layer);
+        // this.currentHighlight = layer;
     }
 }
 
