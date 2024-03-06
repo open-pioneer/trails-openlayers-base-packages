@@ -74,7 +74,7 @@ export class EditingCreateWorkflowImpl
 
         this._map = options.map;
         this._olMap = options.map.olMap;
-        this._state = "initialized";
+        this._state = "active:initialized";
         this._editLayerURL = options.ogcApiFeatureLayerUrl;
 
         this._editingSource = new VectorSource();
@@ -139,7 +139,7 @@ export class EditingCreateWorkflowImpl
     }
 
     private _save(feature: Feature) {
-        this._setState("saving");
+        this._setState("active:saving");
 
         const layerUrl = this._editLayerURL;
 
@@ -188,7 +188,7 @@ export class EditingCreateWorkflowImpl
         this._tooltip.element.classList.remove("editing-tooltip-hidden");
 
         const drawStart = this._drawInteraction.on("drawstart", () => {
-            this._setState("active");
+            this._setState("active:drawing");
             this._tooltip.element.textContent = this._intl.formatMessage({
                 id: "create.tooltip.continue"
             });
@@ -226,7 +226,7 @@ export class EditingCreateWorkflowImpl
         this._tooltip.element.textContent = this._intl.formatMessage({
             id: "create.tooltip.begin"
         });
-        this._setState("initialized");
+        this._setState("active:initialized");
     }
 
     stop() {

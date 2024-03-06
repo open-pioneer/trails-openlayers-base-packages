@@ -45,7 +45,7 @@ Alternatively, the state can be watched using `on()`.
 Example:
 
 ```js
-workflow.on("active", () => {
+workflow.on("active:drawing", () => {
     // ....
 });
 ```

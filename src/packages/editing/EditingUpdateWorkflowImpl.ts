@@ -63,7 +63,7 @@ export class EditingUpdateWorkflowImpl
 
         this._map = options.map;
         this._olMap = options.map.olMap;
-        this._state = "initialized";
+        this._state = "active:initialized";
         this._editLayerURL = options.ogcApiFeatureLayerUrl;
 
         // Save copy of initial state for reset feature
@@ -128,7 +128,7 @@ export class EditingUpdateWorkflowImpl
     }
 
     private _save(feature: Feature) {
-        this._setState("saving");
+        this._setState("active:saving");
 
         const layerUrl = this._editLayerURL;
 
@@ -188,7 +188,7 @@ export class EditingUpdateWorkflowImpl
         }
 
         const modify = this._modifyInteraction.on("modifystart", () => {
-            this._setState("active");
+            this._setState("active:drawing");
         });
 
         // update event handler when container changes
@@ -217,7 +217,7 @@ export class EditingUpdateWorkflowImpl
         }
         resetFeature.setGeometry(geometry);
 
-        this._setState("initialized");
+        this._setState("active:initialized");
     }
 
     stop() {

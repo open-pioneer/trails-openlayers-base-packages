@@ -33,7 +33,7 @@ describe("starting create editing workflow", () => {
     it("should start a create editing workflow", async () => {
         const { map } = await renderMap();
         const { workflow } = await setupCreateWorkflow(map);
-        expect(workflow.getState()).toBe("initialized");
+        expect(workflow.getState()).toBe("active:initialized");
 
         workflow.stop();
     });
@@ -104,13 +104,13 @@ describe("starting create editing workflow", () => {
         const { map } = await renderMap();
 
         const workflow = (await setupCreateWorkflow(map)).workflow;
-        expect(workflow.getState()).toBe("initialized");
+        expect(workflow.getState()).toBe("active:initialized");
 
         workflow.stop();
         expect(workflow.getState()).toBe("inactive");
 
         const nextWorkflow = (await setupCreateWorkflow(map)).workflow;
-        expect(nextWorkflow.getState()).toBe("initialized");
+        expect(nextWorkflow.getState()).toBe("active:initialized");
 
         nextWorkflow.stop();
     });
@@ -120,7 +120,7 @@ describe("stopping create editing workflow", () => {
     it("should stop a create editing workflow", async () => {
         const { map } = await renderMap();
         const { workflow } = await setupCreateWorkflow(map);
-        expect(workflow.getState()).toBe("initialized");
+        expect(workflow.getState()).toBe("active:initialized");
 
         workflow.stop();
         expect(workflow.getState()).toBe("inactive");
@@ -167,7 +167,7 @@ describe("during create editing workflow", () => {
         const draw = workflow.getDrawInteraction();
 
         draw.appendCoordinates([[200, 200]]);
-        expect(workflow.getState()).toBe("active");
+        expect(workflow.getState()).toBe("active:drawing");
 
         workflow.stop();
     });
@@ -179,7 +179,7 @@ describe("during create editing workflow", () => {
 
         draw.appendCoordinates([[200, 200]]);
         workflow.save();
-        expect(workflow.getState()).toBe("saving");
+        expect(workflow.getState()).toBe("active:saving");
     });
 
     it("should updates the tooltip text after starting create editing workflow", async () => {
@@ -241,13 +241,13 @@ describe("reset create editing workflow", () => {
         const { map } = await renderMap();
         const { workflow } = await setupCreateWorkflow(map);
         const draw = workflow.getDrawInteraction();
-        expect(workflow.getState()).toBe("initialized");
+        expect(workflow.getState()).toBe("active:initialized");
 
         draw.appendCoordinates([[200, 200]]);
-        expect(workflow.getState()).toBe("active");
+        expect(workflow.getState()).toBe("active:drawing");
 
         workflow.reset();
-        expect(workflow.getState()).toBe("initialized");
+        expect(workflow.getState()).toBe("active:initialized");
 
         workflow.stop();
     });
