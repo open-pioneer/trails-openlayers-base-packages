@@ -63,7 +63,7 @@ Example:
 ```js
 workflow
     .whenComplete()
-    .then((featureId: string | undefined) => {
+    .then((featureId: Record<string, string> | undefined) => {
         // ...
     })
     .catch((error: Error) => {

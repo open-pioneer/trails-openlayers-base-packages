@@ -48,6 +48,7 @@ export class EditingCreateWorkflowImpl
     private _vertexStyle: FlatStyleLike;
     private _state: EditingWorkflowState;
     private _editLayerURL: URL;
+    private _featureId: string | undefined;
 
     private _editingSource: VectorSource;
     private _editingLayer: VectorLayer<VectorSource>;
@@ -57,6 +58,8 @@ export class EditingCreateWorkflowImpl
     private _tooltip: Tooltip;
     private _enterHandler: (e: KeyboardEvent) => void;
     private _escapeHandler: (e: KeyboardEvent) => void;
+
+    private _error: Error | undefined;
 
     private _interactionListener: Array<EventsKey>;
     private _mapListener: Array<Resource>;
@@ -143,7 +146,8 @@ export class EditingCreateWorkflowImpl
         const geometry = feature.getGeometry();
         if (!geometry) {
             this._destroy();
-            this.#waiter?.reject(new Error("no geometry available"));
+            this._error = new Error("no geometry available");
+            this.#waiter?.reject(this._error);
             return;
         }
         const projection = this._olMap.getView().getProjection();
@@ -158,13 +162,15 @@ export class EditingCreateWorkflowImpl
 
         saveCreatedFeature(this._httpService, layerUrl, geoJSONGeometry, projection)
             .then((featureId) => {
+                this._featureId = featureId;
                 this._destroy();
-                this.#waiter?.resolve({ featureId });
+                this.#waiter?.resolve({ featureId: this._featureId });
             })
             .catch((err: Error) => {
                 LOG.error(err);
                 this._destroy();
-                this.#waiter?.reject(new Error("Failed to save feature", { cause: err }));
+                this._error = new Error("Failed to save feature", { cause: err });
+                this.#waiter?.reject(this._error);
             });
     }
 
@@ -192,7 +198,8 @@ export class EditingCreateWorkflowImpl
             const feature = e.feature;
             if (!feature) {
                 this._destroy();
-                this.#waiter?.reject(new Error("no feature available"));
+                this._error = new Error("no feature available");
+                this.#waiter?.reject(this._error);
                 return;
             }
             this._save(feature);
@@ -253,10 +260,18 @@ export class EditingCreateWorkflowImpl
     }
 
     whenComplete(): Promise<Record<string, string> | undefined> {
-        // Todo:
-        // if (this._state === "inactive") {
-        //     return this.error ? Promise.reject(this.error) : Promise.resolve(this.featureId);
-        // }
+        if (this._state === "inactive") {
+            if (this._error) {
+                return Promise.reject(this._error);
+            } else {
+                if (this._featureId) {
+                    return Promise.resolve({ featureId: this._featureId });
+                } else {
+                    return Promise.resolve(undefined);
+                }
+            }
+        }
+
         const manualPromise = (this.#waiter ??= createManualPromise());
         return manualPromise.promise;
     }

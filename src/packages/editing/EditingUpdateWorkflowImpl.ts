@@ -38,6 +38,7 @@ export class EditingUpdateWorkflowImpl
     private _vertexStyle: FlatStyleLike;
     private _state: EditingWorkflowState;
     private _editLayerURL: URL;
+    private _featureId: string | undefined;
 
     private _initialFeature: Feature;
     private _editingSource: VectorSource;
@@ -47,6 +48,8 @@ export class EditingUpdateWorkflowImpl
     private _mapContainer: HTMLElement | undefined;
     private _enterHandler: (e: KeyboardEvent) => void;
     private _escapeHandler: (e: KeyboardEvent) => void;
+
+    private _error: Error | undefined;
 
     private _interactionListener: Array<EventsKey>;
     private _mapListener: Array<Resource>;
@@ -129,17 +132,19 @@ export class EditingUpdateWorkflowImpl
 
         const layerUrl = this._editLayerURL;
 
-        const featureId = feature.getId()?.toString();
-        if (!featureId) {
+        this._featureId = feature.getId()?.toString();
+        if (!this._featureId) {
             this._destroy();
-            this.#waiter?.reject(new Error("no feature id available"));
+            this._error = new Error("no feature id available");
+            this.#waiter?.reject(this._error);
             return;
         }
 
         const geometry = feature?.getGeometry();
         if (!geometry) {
             this._destroy();
-            this.#waiter?.reject(new Error("no geometry available"));
+            this._error = new Error("no geometry available");
+            this.#waiter?.reject(this._error);
             return;
         }
         const projection = this._olMap.getView().getProjection();
@@ -152,14 +157,22 @@ export class EditingUpdateWorkflowImpl
                 decimals: 10
             });
 
-        saveUpdatedFeature(this._httpService, layerUrl, featureId, geoJSONGeometry, projection)
+        saveUpdatedFeature(
+            this._httpService,
+            layerUrl,
+            this._featureId,
+            geoJSONGeometry,
+            projection
+        )
             .then((featureId) => {
+                this._featureId = featureId;
                 this._destroy();
-                this.#waiter?.resolve({ featureId });
+                this.#waiter?.resolve({ featureId: this._featureId });
             })
             .catch((err: Error) => {
                 this._destroy();
-                this.#waiter?.reject(new Error("Failed to save feature", { cause: err }));
+                this._error = new Error("Failed to save feature", { cause: err });
+                this.#waiter?.reject(this._error);
             });
     }
 
@@ -240,6 +253,18 @@ export class EditingUpdateWorkflowImpl
     }
 
     whenComplete(): Promise<Record<string, string> | undefined> {
+        if (this._state === "inactive") {
+            if (this._error) {
+                return Promise.reject(this._error);
+            } else {
+                if (this._featureId) {
+                    return Promise.resolve({ featureId: this._featureId });
+                } else {
+                    return Promise.resolve(undefined);
+                }
+            }
+        }
+
         const manualPromise = (this.#waiter ??= createManualPromise());
         return manualPromise.promise;
     }
