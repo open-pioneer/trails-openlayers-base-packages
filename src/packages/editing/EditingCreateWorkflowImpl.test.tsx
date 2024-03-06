@@ -17,7 +17,7 @@ import BaseLayer from "ol/layer/Base";
 import { Interaction } from "ol/interaction";
 
 const OGC_API_URL_TEST = new URL("https://example.org/ogc");
-
+const DEFAULT_SLEEP = 50;
 const HTTP_SERVICE: HttpService = {
     fetch: vi.fn().mockResolvedValue(
         new Response("", {
@@ -311,14 +311,16 @@ describe("when create editing workflow complete", () => {
         const { workflow } = await setupCreateWorkflow(map);
         const draw = workflow.getDrawInteraction();
 
-        workflow.whenComplete().then((featureData: Record<string, string> | undefined) => {
-            expect(featureData?.featureId).toBe("test_id_1");
-        });
-
         draw.appendCoordinates([[200, 200]]);
         draw.appendCoordinates([[400, 300]]);
 
         workflow.save();
+
+        await sleep(DEFAULT_SLEEP);
+
+        workflow.whenComplete().then((featureData: Record<string, string> | undefined) => {
+            expect(featureData?.featureId).toBe("test_id_1");
+        });
     });
 
     it("should return `undefined` if create editing workflow is stopped while draw geometry", async () => {
@@ -326,14 +328,16 @@ describe("when create editing workflow complete", () => {
         const { workflow } = await setupCreateWorkflow(map);
         const draw = workflow.getDrawInteraction();
 
-        workflow.whenComplete().then((featureData: Record<string, string> | undefined) => {
-            expect(featureData?.featureId).toBeUndefined();
-        });
-
         draw.appendCoordinates([[200, 200]]);
         draw.appendCoordinates([[400, 300]]);
 
         workflow.stop();
+
+        await sleep(DEFAULT_SLEEP);
+
+        workflow.whenComplete().then((featureData: Record<string, string> | undefined) => {
+            expect(featureData?.featureId).toBeUndefined();
+        });
     });
 
     it("should return an error if create editing workflow failed", async () => {
@@ -351,17 +355,19 @@ describe("when create editing workflow complete", () => {
         const { workflow } = await setupCreateWorkflow(map, httpService);
         const draw = workflow.getDrawInteraction();
 
+        draw.appendCoordinates([[200, 200]]);
+        draw.appendCoordinates([[400, 300]]);
+
+        workflow.save();
+
+        await sleep(DEFAULT_SLEEP);
+
         workflow
             .whenComplete()
             .then(() => {})
             .catch((error: Error) => {
                 expect(error.message).toBe("Failed to save feature");
             });
-
-        draw.appendCoordinates([[200, 200]]);
-        draw.appendCoordinates([[400, 300]]);
-
-        workflow.save();
     });
 });
 
@@ -433,4 +439,10 @@ function getTooltipElement(olMap: OlMap, className: string): HTMLElement | Error
     }
 
     return element;
+}
+
+function sleep(ms: number) {
+    return new Promise<void>((resolve) => {
+        setTimeout(resolve, ms);
+    });
 }

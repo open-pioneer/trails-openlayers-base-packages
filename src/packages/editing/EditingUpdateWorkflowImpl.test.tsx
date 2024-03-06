@@ -17,7 +17,7 @@ import { Feature } from "ol";
 import { Point } from "ol/geom";
 
 const OGC_API_URL_TEST = new URL("https://example.org/ogc");
-
+const DEFAULT_SLEEP = 50;
 const HTTP_SERVICE: HttpService = {
     fetch: vi.fn().mockResolvedValue(
         new Response(null, {
@@ -249,11 +249,13 @@ describe("when update editing workflow complete", () => {
         }
         feature.setId("test_id_1");
 
+        workflow.save();
+
+        await sleep(DEFAULT_SLEEP);
+
         workflow.whenComplete().then((featureData: Record<string, string> | undefined) => {
             expect(featureData?.featureId).toBe("test_id_1");
         });
-
-        workflow.save();
     });
 
     it("should return `undefined` if update editing workflow is stopped while modify geometry", async () => {
@@ -271,6 +273,8 @@ describe("when update editing workflow complete", () => {
         feature.setId("test_id_1");
 
         workflow.stop();
+
+        await sleep(DEFAULT_SLEEP);
 
         workflow.whenComplete().then((featureData: Record<string, string> | undefined) => {
             expect(featureData?.featureId).toBeUndefined();
@@ -301,14 +305,16 @@ describe("when update editing workflow complete", () => {
         }
         feature.setId("test_id_1");
 
+        workflow.save();
+
+        await sleep(DEFAULT_SLEEP);
+
         workflow
             .whenComplete()
             .then(() => {})
             .catch((error: Error) => {
                 expect(error.message).toBe("Failed to save feature");
             });
-
-        workflow.save();
     });
 });
 
@@ -382,4 +388,10 @@ function getEditingLayerAndSource(map: MapModel) {
     }
 
     return { editingLayer, editingSource };
+}
+
+function sleep(ms: number) {
+    return new Promise<void>((resolve) => {
+        setTimeout(resolve, ms);
+    });
 }
