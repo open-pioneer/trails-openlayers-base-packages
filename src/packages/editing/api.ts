@@ -11,9 +11,9 @@ import { FlatStyleLike } from "ol/style/flat";
  * State of an editing workflow
  */
 export type EditingWorkflowState =
-    | "active:initialized"
-    | "active:drawing" // Todo: Rename state, cause of usage in create and update workflow?
-    | "active:saving"
+    | "initialized"
+    | "active" // Todo: Rename state, cause of usage in create and update workflow?
+    | "saving"
     | "inactive";
 
 /**
@@ -23,18 +23,18 @@ export interface EditingWorkflowEvents {
     /**
      * Initial state after editing workflow was started but user has not yet started drawing.
      */
-    "active:initialized": void;
+    "initialized": void;
 
     /**
      * State while user is drawing a feature. State is entered when user adds the first vertex of the geometry (`create-mode`).
      * State while user is updating an existing feature. State is entered when user moved the first vertex of the geometry (`update-mode`).
      */
-    "active:drawing": void;
+    "active": void;
 
     /**
      * State while feature is being saved after user finished the geometry drawing.
      */
-    "active:saving": void;
+    "saving": void;
 
     /**
      * State after editing is stopped.

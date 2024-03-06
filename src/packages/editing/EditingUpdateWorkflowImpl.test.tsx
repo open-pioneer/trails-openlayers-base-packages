@@ -30,7 +30,7 @@ describe("starting update editing workflow", () => {
     it("should start an update editing workflow", async () => {
         const { map } = await renderMap();
         const { workflow } = await setupUpdateWorkflow(map);
-        expect(workflow.getState()).toBe("active:initialized");
+        expect(workflow.getState()).toBe("initialized");
 
         workflow.stop();
     });
@@ -69,13 +69,13 @@ describe("starting update editing workflow", () => {
         const { map } = await renderMap();
 
         const workflow = (await setupUpdateWorkflow(map)).workflow;
-        expect(workflow.getState()).toBe("active:initialized");
+        expect(workflow.getState()).toBe("initialized");
 
         workflow.stop();
         expect(workflow.getState()).toBe("inactive");
 
         const nextWorkflow = (await setupUpdateWorkflow(map)).workflow;
-        expect(nextWorkflow.getState()).toBe("active:initialized");
+        expect(nextWorkflow.getState()).toBe("initialized");
 
         nextWorkflow.stop();
     });
@@ -85,7 +85,7 @@ describe("stopping update editing workflow", () => {
     it("should stop an update editing workflow", async () => {
         const { map } = await renderMap();
         const { workflow } = await setupUpdateWorkflow(map);
-        expect(workflow.getState()).toBe("active:initialized");
+        expect(workflow.getState()).toBe("initialized");
 
         workflow.stop();
         expect(workflow.getState()).toBe("inactive");
@@ -123,10 +123,10 @@ describe("during update editing workflow", () => {
         const { map } = await renderMap();
         const { workflow } = await setupUpdateWorkflow(map);
         const modify = workflow.getModifyInteraction();
-        expect(workflow.getState()).toBe("active:initialized");
+        expect(workflow.getState()).toBe("initialized");
 
         modify.dispatchEvent("modifystart");
-        expect(workflow.getState()).toBe("active:drawing");
+        expect(workflow.getState()).toBe("active");
 
         workflow.stop();
     });
@@ -147,7 +147,7 @@ describe("during update editing workflow", () => {
 
         workflow.save();
 
-        expect(workflow.getState()).toBe("active:saving");
+        expect(workflow.getState()).toBe("saving");
     });
 
     it("should contain a modified geometry after starting update editing workflow ", async () => {
@@ -181,13 +181,13 @@ describe("reset update editing workflow", () => {
         const { map } = await renderMap();
         const { workflow } = await setupUpdateWorkflow(map);
         const modify = workflow.getModifyInteraction();
-        expect(workflow.getState()).toBe("active:initialized");
+        expect(workflow.getState()).toBe("initialized");
 
         modify.dispatchEvent("modifystart");
-        expect(workflow.getState()).toBe("active:drawing");
+        expect(workflow.getState()).toBe("active");
 
         workflow.reset();
-        expect(workflow.getState()).toBe("active:initialized");
+        expect(workflow.getState()).toBe("initialized");
 
         workflow.stop();
     });
