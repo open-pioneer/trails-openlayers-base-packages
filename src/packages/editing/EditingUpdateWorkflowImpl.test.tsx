@@ -26,8 +26,6 @@ const HTTP_SERVICE: HttpService = {
     )
 } satisfies Partial<HttpService> as HttpService;
 
-const MOCKED_FEATURE: Feature = new Feature({ geometry: new Point([0, 0]) });
-
 describe("starting update editing workflow", () => {
     it("should start an update editing workflow", async () => {
         const { map } = await renderMap();
@@ -40,15 +38,7 @@ describe("starting update editing workflow", () => {
     it("should create an editing layer for an update editing workflow", async () => {
         const { map } = await renderMap();
         const { workflow } = await setupUpdateWorkflow(map);
-        const layers: BaseLayer[] = map.olMap.getLayers().getArray();
-
-        const editingLayer: VectorLayer<VectorSource> | undefined = layers.find(
-            (l) => l.getProperties().name === "editing-layer"
-        ) as VectorLayer<VectorSource>;
-
-        if (!editingLayer) {
-            throw new Error("editing layer not found");
-        }
+        const { editingLayer } = getEditingLayerAndSource(map);
         expect(editingLayer).not.toBeUndefined;
 
         workflow.stop();
@@ -61,7 +51,6 @@ describe("starting update editing workflow", () => {
         const modifyInteraction: Modify | undefined = interactions.find(
             (i) => i instanceof Modify
         ) as Modify;
-
         expect(modifyInteraction).not.toBeUndefined();
 
         workflow.stop();
@@ -70,19 +59,7 @@ describe("starting update editing workflow", () => {
     it("should contain a geometry after start an update editing workflow", async () => {
         const { map } = await renderMap();
         const { workflow } = await setupUpdateWorkflow(map);
-        const layers: BaseLayer[] = map.olMap.getLayers().getArray();
-
-        const editingLayer: VectorLayer<VectorSource> | undefined = layers.find(
-            (l) => l.getProperties().name === "editing-layer"
-        ) as VectorLayer<VectorSource>;
-        if (!editingLayer) {
-            throw new Error("editing layer not found");
-        }
-
-        const editingSource = editingLayer.getSource();
-        if (!editingSource) {
-            throw new Error("editing source not found");
-        }
+        const { editingSource } = getEditingLayerAndSource(map);
         expect(editingSource.getFeatures().length).toBe(1);
 
         workflow.stop();
@@ -114,10 +91,12 @@ describe("stopping update editing workflow", () => {
         expect(workflow.getState()).toBe("inactive");
     });
 
-    it("should remove an editing layer for a n update editing workflow after stop", async () => {
+    it("should remove an editing layer for an update editing workflow after stop", async () => {
         const { map } = await renderMap();
         const { workflow } = await setupUpdateWorkflow(map);
         workflow.stop();
+
+        // Function `getEditingLayer` is not used, caused of throwing new Error
         const layers: BaseLayer[] = map.olMap.getLayers().getArray();
 
         const editingLayer: VectorLayer<VectorSource> | undefined = layers.find(
@@ -139,12 +118,62 @@ describe("stopping update editing workflow", () => {
     });
 });
 
-describe.skip("during update editing workflow", () => {
-    it("should change state after starting update editing workflow", async () => {});
+describe("during update editing workflow", () => {
+    it("should change state after starting update editing workflow", async () => {
+        const { map } = await renderMap();
+        const { workflow } = await setupUpdateWorkflow(map);
+        const modify = workflow.getModifyInteraction();
+        expect(workflow.getState()).toBe("active:initialized");
 
-    it("should change state after finished update editing workflow", async () => {});
+        modify.dispatchEvent("modifystart");
+        expect(workflow.getState()).toBe("active:drawing");
 
-    it("should contain a modified geometry after starting update editing workflow ", async () => {});
+        workflow.stop();
+    });
+
+    it("should change state after finished update editing workflow", async () => {
+        const { map } = await renderMap();
+        const { workflow } = await setupUpdateWorkflow(map);
+        const modify = workflow.getModifyInteraction();
+        const { editingSource } = getEditingLayerAndSource(map);
+
+        modify.dispatchEvent("modifystart");
+
+        const feature = editingSource.getFeatures()[0];
+        if (!feature) {
+            throw new Error("feature not found");
+        }
+        feature.setId("test_id_1");
+
+        workflow.save();
+
+        expect(workflow.getState()).toBe("active:saving");
+    });
+
+    it("should contain a modified geometry after starting update editing workflow ", async () => {
+        const { map } = await renderMap();
+        const { workflow } = await setupUpdateWorkflow(map);
+        const modify = workflow.getModifyInteraction();
+        const { editingSource } = getEditingLayerAndSource(map);
+
+        editingSource.getFeatures()[0]?.setGeometry(new Point([10, 51]));
+
+        modify.dispatchEvent("modifystart");
+
+        const feature = editingSource.getFeatures()[0];
+        if (!feature) {
+            throw new Error("feature not found");
+        }
+
+        const geometry: Point = feature.getGeometry() as Point;
+        if (!geometry) {
+            throw new Error("geometry not found");
+        }
+
+        expect(geometry.getCoordinates()).toStrictEqual([10, 51]);
+
+        workflow.stop();
+    });
 });
 
 describe("reset update editing workflow", () => {
@@ -181,21 +210,7 @@ describe("reset update editing workflow", () => {
         const { map } = await renderMap();
         const { workflow } = await setupUpdateWorkflow(map);
         const modify = workflow.getModifyInteraction();
-
-        const layers: BaseLayer[] = map.olMap.getLayers().getArray();
-
-        const editingLayer: VectorLayer<VectorSource> | undefined = layers.find(
-            (l) => l.getProperties().name === "editing-layer"
-        ) as VectorLayer<VectorSource>;
-
-        if (!editingLayer) {
-            throw new Error("editing layer not found");
-        }
-
-        const editingSource = editingLayer.getSource();
-        if (!editingSource) {
-            throw new Error("editing source not found");
-        }
+        const { editingSource } = getEditingLayerAndSource(map);
 
         editingSource.getFeatures()[0]?.setGeometry(new Point([8, 51]));
 
@@ -224,21 +239,7 @@ describe("when update editing workflow complete", () => {
         const { map } = await renderMap();
         const { workflow } = await setupUpdateWorkflow(map);
         const modify = workflow.getModifyInteraction();
-
-        const layers: BaseLayer[] = map.olMap.getLayers().getArray();
-
-        const editingLayer: VectorLayer<VectorSource> | undefined = layers.find(
-            (l) => l.getProperties().name === "editing-layer"
-        ) as VectorLayer<VectorSource>;
-
-        if (!editingLayer) {
-            throw new Error("editing layer not found");
-        }
-
-        const editingSource = editingLayer.getSource();
-        if (!editingSource) {
-            throw new Error("editing source not found");
-        }
+        const { editingSource } = getEditingLayerAndSource(map);
 
         modify.dispatchEvent("modifystart");
 
@@ -259,21 +260,7 @@ describe("when update editing workflow complete", () => {
         const { map } = await renderMap();
         const { workflow } = await setupUpdateWorkflow(map);
         const modify = workflow.getModifyInteraction();
-
-        const layers: BaseLayer[] = map.olMap.getLayers().getArray();
-
-        const editingLayer: VectorLayer<VectorSource> | undefined = layers.find(
-            (l) => l.getProperties().name === "editing-layer"
-        ) as VectorLayer<VectorSource>;
-
-        if (!editingLayer) {
-            throw new Error("editing layer not found");
-        }
-
-        const editingSource = editingLayer.getSource();
-        if (!editingSource) {
-            throw new Error("editing source not found");
-        }
+        const { editingSource } = getEditingLayerAndSource(map);
 
         modify.dispatchEvent("modifystart");
 
@@ -304,21 +291,7 @@ describe("when update editing workflow complete", () => {
         const { map } = await renderMap();
         const { workflow } = await setupUpdateWorkflow(map, httpService);
         const modify = workflow.getModifyInteraction();
-
-        const layers: BaseLayer[] = map.olMap.getLayers().getArray();
-
-        const editingLayer: VectorLayer<VectorSource> | undefined = layers.find(
-            (l) => l.getProperties().name === "editing-layer"
-        ) as VectorLayer<VectorSource>;
-
-        if (!editingLayer) {
-            throw new Error("editing layer not found");
-        }
-
-        const editingSource = editingLayer.getSource();
-        if (!editingSource) {
-            throw new Error("editing source not found");
-        }
+        const { editingSource } = getEditingLayerAndSource(map);
 
         modify.dispatchEvent("modifystart");
 
@@ -386,8 +359,27 @@ async function setupUpdateWorkflow(map: MapModel, httpService: HttpService = HTT
         vertexStyle,
         httpService,
         intl,
-        feature: MOCKED_FEATURE
+        feature: new Feature({ geometry: new Point([0, 0]) })
     });
 
     return { map, workflow };
+}
+
+function getEditingLayerAndSource(map: MapModel) {
+    const layers: BaseLayer[] = map.olMap.getLayers().getArray();
+
+    const editingLayer: VectorLayer<VectorSource> | undefined = layers.find(
+        (l) => l.getProperties().name === "editing-layer"
+    ) as VectorLayer<VectorSource>;
+
+    if (!editingLayer) {
+        throw new Error("editing layer not found");
+    }
+
+    const editingSource = editingLayer.getSource();
+    if (!editingSource) {
+        throw new Error("editing source not found");
+    }
+
+    return { editingLayer, editingSource };
 }
