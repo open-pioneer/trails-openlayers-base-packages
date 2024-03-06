@@ -18,15 +18,19 @@ import { PrintingService } from "@open-pioneer/printing";
 import { useService } from "open-pioneer:react-hooks";
 import { createLogger } from "@open-pioneer/core";
 import { useEffect, useState } from "react";
+import { ApplicationContext } from "@open-pioneer/runtime";
 
 const LOG = createLogger("printing");
 
 export function AppUI() {
     const { map } = useMapModel(MAP_ID);
     const printingService = useService<PrintingService>("printing.PrintingService");
+    const systemService = useService<ApplicationContext>("runtime.ApplicationContext");
 
     const [canvas, setCanvas] = useState<HTMLCanvasElement>();
     const [dataURL, setDataURL] = useState("");
+    const [showImageWindow, setShowImageWindow] = useState(false);
+    const rootElement = systemService.getApplicationContainer();
 
     useEffect(() => {
         if (!map) {
@@ -36,6 +40,8 @@ export function AppUI() {
             async (service) => {
                 const canvas = service.getCanvas();
                 if (canvas) {
+                    canvas.style.width = "790px";
+                    canvas.style.height = "590px";
                     setCanvas(canvas);
                     const dataURL = service.getPNGDataURL(0.6);
                     setDataURL(dataURL);
@@ -47,6 +53,27 @@ export function AppUI() {
         );
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [map]);
+
+    const addCanvas = () => {
+        setShowImageWindow(false);
+        const canvasContainer = rootElement.querySelector(".canvas-container");
+        if (canvas && !canvasContainer) {
+            const div = document.createElement("div");
+            div.classList.add("canvas-container");
+            div.style.backgroundColor = "rgba(255, 255, 255, 0.92)";
+            div.style.padding = "0.5rem";
+            div.style.borderWidth = "1px";
+            div.appendChild(canvas);
+            const canvasDisplayElement = rootElement.querySelector(".canvas-display");
+            canvasDisplayElement?.appendChild(div);
+        }
+    };
+
+    const showImageFromDataURL = () => {
+        const canvasContainer = rootElement.querySelector(".canvas-container");
+        canvasContainer?.remove();
+        setShowImageWindow(true);
+    };
 
     return (
         <Flex height="100%" direction="column" overflow="hidden">
@@ -91,58 +118,51 @@ export function AppUI() {
                             >
                                 <Text as="b">Description</Text>
                                 <Text>
-                                    This application can be used to test the printing service.
-                                    Internally, this application keeps track of the current result
-                                    list input and displays it when the component shall be shown.
+                                    This application can be used to test the printing service. The
+                                    service provides the screenshot of the given map view in the a
+                                    form of HTMLCanvasElement or a data url.
                                 </Text>
                                 <UnorderedList>
                                     <ListItem>
-                                        If the result list has been filled, it can be hidden and
-                                        shown again while preserving the state (selection, sort,
-                                        scroll, ...).
+                                        Clicking on the {"'Canvas'"} button shows the
+                                        HTMLCanvasElement of the map view embedded in another
+                                        HTMLElement.
                                     </ListItem>
                                     <ListItem>
-                                        The result list is embedded with a fixed height (with
-                                        internal scrolling) above the map (using view padding).
-                                        Showing or hiding the component will animate the view.
+                                        Clicking on the {"'Image data URL'"} button shows the data
+                                        url of the map view image used as source for
+                                        HTMLImageElement.
                                     </ListItem>
                                 </UnorderedList>
                             </VStack>
                         </MapAnchor>
                         <MapAnchor position="top-right" horizontalGap={450} verticalGap={10}>
-                            {dataURL && (
+                            {dataURL && showImageWindow && (
                                 <Box
                                     backgroundColor="whiteAlpha.900"
                                     borderWidth="1px"
                                     borderRadius="lg"
                                     padding={2}
                                     boxShadow="lg"
-                                    className="canvas-display"
+                                    className="image-display"
                                     maxWidth="600"
                                     maxHeight="500"
                                 >
+                                    <Text as="b">Image from data URL</Text>
                                     <Image src={dataURL}></Image>
                                 </Box>
                             )}
-                        </MapAnchor>
-                        <MapAnchor position="top-right" horizontalGap={10} verticalGap={10}>
-                            <Box
-                                maxWidth="400px"
-                                maxHeight="300px"
-                                className="canvas-display"
-                            ></Box>
+                            {canvas && (
+                                <Box
+                                    className="canvas-display"
+                                    minWidth="800"
+                                    minHeight="600"
+                                ></Box>
+                            )}
                         </MapAnchor>
                     </MapContainer>
                 </Flex>
             </TitledSection>
         </Flex>
     );
-}
-
-function addCanvas() {
-    console.debug("from test app");
-}
-
-function showImageFromDataURL() {
-    console.debug("from test app");
 }
