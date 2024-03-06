@@ -159,7 +159,7 @@ export class EditingUpdateWorkflowImpl
             })
             .catch((err: Error) => {
                 this._destroy();
-                this.#waiter?.reject(err);
+                this.#waiter?.reject(new Error("Failed to save feature", { cause: err }));
             });
     }
 

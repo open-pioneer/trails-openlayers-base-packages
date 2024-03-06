@@ -20,11 +20,8 @@ const OGC_API_URL_TEST = new URL("https://example.org/ogc");
 
 const HTTP_SERVICE: HttpService = {
     fetch: vi.fn().mockResolvedValue(
-        new Response("", {
-            headers: {
-                Location: OGC_API_URL_TEST + "/test_id_1"
-            },
-            status: 201
+        new Response(null, {
+            status: 204
         })
     )
 } satisfies Partial<HttpService> as HttpService;
@@ -222,12 +219,124 @@ describe("reset update editing workflow", () => {
     });
 });
 
-describe.skip("when update editing workflow complete", () => {
-    it("should return a feature id when update editing workflow is complete", async () => {});
+describe("when update editing workflow complete", () => {
+    it("should return a feature id when update editing workflow is complete", async () => {
+        const { map } = await renderMap();
+        const { workflow } = await setupUpdateWorkflow(map);
+        const modify = workflow.getModifyInteraction();
 
-    it("should return `undefined` if update editing workflow is stopped while modify geometry", async () => {});
+        const layers: BaseLayer[] = map.olMap.getLayers().getArray();
 
-    it("should return an error if update editing workflow failed", async () => {});
+        const editingLayer: VectorLayer<VectorSource> | undefined = layers.find(
+            (l) => l.getProperties().name === "editing-layer"
+        ) as VectorLayer<VectorSource>;
+
+        if (!editingLayer) {
+            throw new Error("editing layer not found");
+        }
+
+        const editingSource = editingLayer.getSource();
+        if (!editingSource) {
+            throw new Error("editing source not found");
+        }
+
+        modify.dispatchEvent("modifystart");
+
+        const feature = editingSource.getFeatures()[0];
+        if (!feature) {
+            throw new Error("feature not found");
+        }
+        feature.setId("test_id_1");
+
+        workflow.whenComplete().then((featureData: Record<string, string> | undefined) => {
+            expect(featureData?.featureId).toBe("test_id_1");
+        });
+
+        workflow.save();
+    });
+
+    it("should return `undefined` if update editing workflow is stopped while modify geometry", async () => {
+        const { map } = await renderMap();
+        const { workflow } = await setupUpdateWorkflow(map);
+        const modify = workflow.getModifyInteraction();
+
+        const layers: BaseLayer[] = map.olMap.getLayers().getArray();
+
+        const editingLayer: VectorLayer<VectorSource> | undefined = layers.find(
+            (l) => l.getProperties().name === "editing-layer"
+        ) as VectorLayer<VectorSource>;
+
+        if (!editingLayer) {
+            throw new Error("editing layer not found");
+        }
+
+        const editingSource = editingLayer.getSource();
+        if (!editingSource) {
+            throw new Error("editing source not found");
+        }
+
+        modify.dispatchEvent("modifystart");
+
+        const feature = editingSource.getFeatures()[0];
+        if (!feature) {
+            throw new Error("feature not found");
+        }
+        feature.setId("test_id_1");
+
+        workflow.stop();
+
+        workflow.whenComplete().then((featureData: Record<string, string> | undefined) => {
+            expect(featureData?.featureId).toBeUndefined();
+        });
+    });
+
+    it("should return an error if update editing workflow failed", async () => {
+        vi.spyOn(console, "error").mockImplementation(() => undefined);
+
+        const httpService: HttpService = {
+            fetch: vi.fn().mockResolvedValue(
+                new Response("", {
+                    status: 401 // HTTP Unauthorized
+                })
+            )
+        } satisfies Partial<HttpService> as HttpService;
+
+        const { map } = await renderMap();
+        const { workflow } = await setupUpdateWorkflow(map, httpService);
+        const modify = workflow.getModifyInteraction();
+
+        const layers: BaseLayer[] = map.olMap.getLayers().getArray();
+
+        const editingLayer: VectorLayer<VectorSource> | undefined = layers.find(
+            (l) => l.getProperties().name === "editing-layer"
+        ) as VectorLayer<VectorSource>;
+
+        if (!editingLayer) {
+            throw new Error("editing layer not found");
+        }
+
+        const editingSource = editingLayer.getSource();
+        if (!editingSource) {
+            throw new Error("editing source not found");
+        }
+
+        modify.dispatchEvent("modifystart");
+
+        const feature = editingSource.getFeatures()[0];
+        if (!feature) {
+            throw new Error("feature not found");
+        }
+        feature.setId("test_id_1");
+
+        workflow
+            .whenComplete()
+            .then(() => {})
+            .catch((error: Error) => {
+                expect(error.message).toBe("Failed to save feature");
+            });
+
+        workflow.save();
+    });
 });
 
 async function renderMap() {
