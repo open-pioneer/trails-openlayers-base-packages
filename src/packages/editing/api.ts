@@ -12,9 +12,9 @@ import { FlatStyleLike } from "ol/style/flat";
  */
 export type EditingWorkflowState =
     | "active:initialized"
-    | "active:drawing" // Todo: Rename state, cause of usage in create and update workflow?
+    | "active:drawing"
     | "active:saving"
-    | "inactive";
+    | "destroyed";
 
 /**
  * Events emitted by the {@link EditingWorkflow}.
@@ -39,7 +39,7 @@ export interface EditingWorkflowEvents {
     /**
      * State after editing is stopped.
      */
-    "inactive": void;
+    "destroyed": void;
 }
 
 /**

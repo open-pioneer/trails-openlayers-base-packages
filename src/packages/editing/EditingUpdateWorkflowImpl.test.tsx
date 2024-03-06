@@ -72,7 +72,7 @@ describe("starting update editing workflow", () => {
         expect(workflow.getState()).toBe("active:initialized");
 
         workflow.stop();
-        expect(workflow.getState()).toBe("inactive");
+        expect(workflow.getState()).toBe("destroyed");
 
         const nextWorkflow = (await setupUpdateWorkflow(map)).workflow;
         expect(nextWorkflow.getState()).toBe("active:initialized");
@@ -88,7 +88,7 @@ describe("stopping update editing workflow", () => {
         expect(workflow.getState()).toBe("active:initialized");
 
         workflow.stop();
-        expect(workflow.getState()).toBe("inactive");
+        expect(workflow.getState()).toBe("destroyed");
     });
 
     it("should remove an editing layer for an update editing workflow after stop", async () => {

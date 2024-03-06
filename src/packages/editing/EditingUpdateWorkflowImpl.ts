@@ -241,7 +241,7 @@ export class EditingUpdateWorkflowImpl
         this._mapContainer?.removeEventListener("keydown", this._enterHandler);
         this._mapContainer?.removeEventListener("keydown", this._escapeHandler);
 
-        this._setState("inactive");
+        this._setState("destroyed");
     }
 
     save() {
@@ -253,7 +253,7 @@ export class EditingUpdateWorkflowImpl
     }
 
     whenComplete(): Promise<Record<string, string> | undefined> {
-        if (this._state === "inactive") {
+        if (this._state === "destroyed") {
             if (this._error) {
                 return Promise.reject(this._error);
             } else {
