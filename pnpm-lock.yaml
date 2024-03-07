@@ -53,8 +53,8 @@ importers:
         specifier: ^2.9.9
         version: 2.10.0(typescript@5.3.3)
       '@maplibre/maplibre-gl-style-spec':
-        specifier: ^19.3.3
-        version: 19.3.3
+        specifier: ^20.1.1
+        version: 20.1.1
       '@open-pioneer/chakra-integration':
         specifier: ^1.1.1
         version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.4)(@emotion/styled@11.11.0)(framer-motion@10.18.0)(react-dom@18.2.0)(react@18.2.0)
@@ -83,8 +83,8 @@ importers:
         specifier: ^2.5.1
         version: 2.5.1
       ol:
-        specifier: ^8.2.0
-        version: 8.2.0
+        specifier: ^9.0.0
+        version: 9.0.0
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -275,8 +275,8 @@ importers:
         specifier: ^4.7.6
         version: 4.7.6(@chakra-ui/form-control@2.2.0)(@chakra-ui/icon@3.2.0)(@chakra-ui/layout@2.3.1)(@chakra-ui/media-query@3.3.0)(@chakra-ui/menu@2.2.1)(@chakra-ui/spinner@2.1.0)(@chakra-ui/system@2.6.2)(@emotion/react@11.11.4)(@types/react@18.2.55)(react-dom@18.2.0)(react@18.2.0)
       ol:
-        specifier: ^8.2.0
-        version: 8.2.0
+        specifier: ^9.0.0
+        version: 9.0.0
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -310,8 +310,8 @@ importers:
         specifier: ^2.1.2
         version: 2.1.2(@formatjs/intl@2.10.0)(@open-pioneer/base-theme@0.3.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/core@1.2.1)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
       ol:
-        specifier: ^8.2.0
-        version: 8.2.0
+        specifier: ^9.0.0
+        version: 9.0.0
       proj4:
         specifier: ^2.9.0
         version: 2.9.0
@@ -345,8 +345,8 @@ importers:
         specifier: ^2.1.2
         version: 2.1.2(@formatjs/intl@2.10.0)(@open-pioneer/base-theme@0.3.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/core@1.2.1)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
       ol:
-        specifier: ^8.2.0
-        version: 8.2.0
+        specifier: ^9.0.0
+        version: 9.0.0
     devDependencies:
       '@open-pioneer/map-test-utils':
         specifier: workspace:^
@@ -377,8 +377,8 @@ importers:
         specifier: ^2.1.2
         version: 2.1.2(@formatjs/intl@2.10.0)(@open-pioneer/base-theme@0.3.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/core@1.2.1)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
       ol:
-        specifier: ^8.2.0
-        version: 8.2.0
+        specifier: ^9.0.0
+        version: 9.0.0
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -418,8 +418,8 @@ importers:
         specifier: ^2.3.2
         version: 2.3.2
       ol:
-        specifier: ^8.2.0
-        version: 8.2.0
+        specifier: ^9.0.0
+        version: 9.0.0
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -456,8 +456,8 @@ importers:
         specifier: ^2.5.2
         version: 2.5.2
       ol:
-        specifier: ^8.2.0
-        version: 8.2.0
+        specifier: ^9.0.0
+        version: 9.0.0
       proj4:
         specifier: ^2.9.0
         version: 2.9.0
@@ -506,8 +506,8 @@ importers:
         specifier: ^2.3.2
         version: 2.3.2
       ol:
-        specifier: ^8.2.0
-        version: 8.2.0
+        specifier: ^9.0.0
+        version: 9.0.0
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -538,8 +538,8 @@ importers:
         specifier: ^14.1.2
         version: 14.2.1(react-dom@18.2.0)(react@18.2.0)
       ol:
-        specifier: ^8.2.0
-        version: 8.2.0
+        specifier: ^9.0.0
+        version: 9.0.0
     devDependencies:
       openlayers-base-packages:
         specifier: workspace:*
@@ -564,8 +564,8 @@ importers:
         specifier: ^2.3.2
         version: 2.3.2
       ol:
-        specifier: ^8.2.0
-        version: 8.2.0
+        specifier: ^9.0.0
+        version: 9.0.0
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -593,8 +593,8 @@ importers:
         specifier: workspace:^
         version: link:../search
       ol:
-        specifier: ^8.2.0
-        version: 8.2.0
+        specifier: ^9.0.0
+        version: 9.0.0
       uuid:
         specifier: ^9.0.1
         version: 9.0.1
@@ -628,8 +628,8 @@ importers:
         specifier: ^2.1.2
         version: 2.1.2(@formatjs/intl@2.10.0)(@open-pioneer/base-theme@0.3.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/core@1.2.1)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
       ol:
-        specifier: ^8.2.0
-        version: 8.2.0
+        specifier: ^9.0.0
+        version: 9.0.0
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -675,8 +675,8 @@ importers:
         specifier: ^2.5.1
         version: 2.5.1
       ol:
-        specifier: ^8.2.0
-        version: 8.2.0
+        specifier: ^9.0.0
+        version: 9.0.0
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -748,8 +748,8 @@ importers:
         specifier: ^2.3.2
         version: 2.3.2
       ol:
-        specifier: ^8.2.0
-        version: 8.2.0
+        specifier: ^9.0.0
+        version: 9.0.0
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -780,8 +780,8 @@ importers:
         specifier: ^2.1.2
         version: 2.1.2(@formatjs/intl@2.10.0)(@open-pioneer/base-theme@0.3.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/core@1.2.1)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
       ol:
-        specifier: ^8.2.0
-        version: 8.2.0
+        specifier: ^9.0.0
+        version: 9.0.0
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -853,8 +853,8 @@ importers:
         specifier: ^2.3.2
         version: 2.3.2
       ol:
-        specifier: ^8.2.0
-        version: 8.2.0
+        specifier: ^9.0.0
+        version: 9.0.0
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -903,8 +903,8 @@ importers:
         specifier: ^2.3.2
         version: 2.3.2
       ol:
-        specifier: ^8.2.0
-        version: 8.2.0
+        specifier: ^9.0.0
+        version: 9.0.0
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -956,8 +956,8 @@ importers:
         specifier: ^2.6.0
         version: 2.6.0(@types/react@18.2.55)(react@18.2.0)
       ol:
-        specifier: ^8.2.0
-        version: 8.2.0
+        specifier: ^9.0.0
+        version: 9.0.0
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -1020,8 +1020,8 @@ importers:
         specifier: ^2.3.2
         version: 2.3.2
       ol:
-        specifier: ^8.2.0
-        version: 8.2.0
+        specifier: ^9.0.0
+        version: 9.0.0
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -1079,8 +1079,8 @@ importers:
         specifier: workspace:^
         version: link:../../../packages/theme
       ol:
-        specifier: ^8.2.0
-        version: 8.2.0
+        specifier: ^9.0.0
+        version: 9.0.0
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -1181,8 +1181,8 @@ importers:
         specifier: workspace:^
         version: link:../../../packages/toc
       ol:
-        specifier: ^8.2.0
-        version: 8.2.0
+        specifier: ^9.0.0
+        version: 9.0.0
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -1232,11 +1232,11 @@ importers:
         specifier: workspace:^
         version: link:../../../packages/toc
       ol:
-        specifier: ^8.2.0
-        version: 8.2.0
+        specifier: ^9.0.0
+        version: 9.0.0
       ol-mapbox-style:
-        specifier: ^12.1.1
-        version: 12.1.1(ol@8.2.0)
+        specifier: ^12.2.1
+        version: 12.2.1(ol@9.0.0)
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -1349,8 +1349,8 @@ importers:
         specifier: workspace:^
         version: link:../../../packages/toc
       ol:
-        specifier: ^8.2.0
-        version: 8.2.0
+        specifier: ^9.0.0
+        version: 9.0.0
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -3458,6 +3458,18 @@ packages:
       '@mapbox/jsonlint-lines-primitives': 2.0.2
       '@mapbox/unitbezier': 0.0.1
       json-stringify-pretty-compact: 3.0.0
+      minimist: 1.2.8
+      rw: 1.3.3
+      sort-object: 3.0.3
+    dev: false
+
+  /@maplibre/maplibre-gl-style-spec@20.1.1:
+    resolution: {integrity: sha512-z85ARNPCBI2Cs5cPOS3DSbraTN+ue8zrcYVoSWBuNrD/mA+2SKAJ+hIzI22uN7gac6jBMnCdpPKRxS/V0KSZVQ==}
+    hasBin: true
+    dependencies:
+      '@mapbox/jsonlint-lines-primitives': 2.0.2
+      '@mapbox/unitbezier': 0.0.1
+      json-stringify-pretty-compact: 4.0.0
       minimist: 1.2.8
       rw: 1.3.3
       sort-object: 3.0.3
@@ -6837,6 +6849,10 @@ packages:
     resolution: {integrity: sha512-Rc2suX5meI0S3bfdZuA7JMFBGkJ875ApfVyq2WHELjBiiG22My/l7/8zPpH/CfFVQHuVLd8NLR0nv6vi0BYYKA==}
     dev: false
 
+  /json-stringify-pretty-compact@4.0.0:
+    resolution: {integrity: sha512-3CNZ2DnrpByG9Nqj6Xo8vqbjT4F6N+tb4Gb28ESAZjYZ5yqvmc56J+/kuIwkaAMOyblTQhUW7PxMkUb8Q36N3Q==}
+    dev: false
+
   /json5@1.0.2:
     resolution: {integrity: sha512-g1MWMLBiz8FKi1e4w0UyVL3w+iJceWAFBAaBnnGKOpNa5f8TLktkbre1+s6oICydWAm+HRUGTmI+//xv2hvXYA==}
     hasBin: true
@@ -7359,18 +7375,18 @@ packages:
       es-abstract: 1.22.3
     dev: true
 
-  /ol-mapbox-style@12.1.1(ol@8.2.0):
-    resolution: {integrity: sha512-jjIQO2BiO/GTjJO/2Idw0WQQAGorPXewZ5wEuusXM8BRXZHIa3mmDZDWoBWtb0H4VHB9RpLsTbRMj5Dquo9Etg==}
+  /ol-mapbox-style@12.2.1(ol@9.0.0):
+    resolution: {integrity: sha512-soh8x+8CwlA+e3fd8grotA4XXnm0DSWnpzu5Ef3aEQwpM1o2OfoGPSk/hpjhXL5kFUm79pEyiONTw+kdth2FEQ==}
     peerDependencies:
-      ol: 8.x || 7.x
+      ol: '>=9.0.0 || >=9.0.0-dev.0 <9.0.0 || =9.0.0-dev || >=8.0.0 <=8.2.0 || >=7.0.0 <=7.5.2'
     dependencies:
       '@mapbox/mapbox-gl-style-spec': /@maplibre/maplibre-gl-style-spec@19.3.3
       mapbox-to-css-font: 2.4.2
-      ol: 8.2.0
+      ol: 9.0.0
     dev: false
 
-  /ol@8.2.0:
-    resolution: {integrity: sha512-/m1ddd7Jsp4Kbg+l7+ozR5aKHAZNQOBAoNZ5pM9Jvh4Etkf0WGkXr9qXd7PnhmwiC1Hnc2Toz9XjCzBBvexfXw==}
+  /ol@9.0.0:
+    resolution: {integrity: sha512-+nYHZYbHrRUTDJ8ryxXPdDoAiaT6Zea02cocmGqsJXs4Oac1fYC9EbTIU2Y7803QcmG3u2MR88RxbksBvK+ZfQ==}
     dependencies:
       color-rgba: 3.0.0
       color-space: 2.0.1

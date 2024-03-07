@@ -11,7 +11,7 @@
         "@open-pioneer/http": "^2.1.4",
         "@open-pioneer/runtime": "^2.1.2",
         "@open-pioneer/map": "workspace:^",
-        "ol": "^8.2.0"
+        "ol": "^9.0.0"
     },
     "devDependencies": {
         "@open-pioneer/map-test-utils": "workspace:^",
