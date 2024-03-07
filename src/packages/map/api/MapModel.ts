@@ -7,7 +7,6 @@ import type { ExtentConfig } from "./MapConfig";
 import type { Layer, LayerBase } from "./layers";
 import type { LayerRetrievalOptions } from "./shared";
 import type { Geometry } from "ol/geom";
-import type { StyleLike } from "ol/style/Style";
 import { BaseFeature } from "./BaseFeature";
 import { LayerCollectionImpl } from "../model/LayerCollectionImpl";
 import Style from "ol/style/Style";
@@ -78,7 +77,15 @@ export interface Highlight extends Resource {
     readonly isActive: boolean;
 }
 
-export type Highlightable = BaseFeature | Geometry;
+export interface Highlightfeature extends BaseFeature {
+    /**
+     * Geometry of the selection result.
+     * One should also specify the {@link projection}.
+     */
+    geometry: Geometry;
+}
+
+export type Highlightable = Highlightfeature | Geometry;
 
 /**
  * Represents a map.
@@ -127,10 +134,10 @@ export interface MapModel extends EventSource<MapModelEvents> {
      */
     whenDisplayed(): Promise<void>;
 
-    highlight(geometries: Geometry[], options?: HighlightOptions): Highlight | undefined;
+    highlight(geometries: Highlightable[], options?: HighlightOptions): Highlight | undefined;
     // highlight(geometries: Highlightable[], options?: HighlightOptions): Highlight;
 
-    zoom(geometries: Geometry[], options?: HighlightZoomOptions): void;
+    zoom(geometries: Highlightable[], options?: HighlightZoomOptions): void;
     // zoom(geometries: Highlightable[], options?: ZoomOptions): void;
 
     /**
@@ -139,7 +146,10 @@ export interface MapModel extends EventSource<MapModelEvents> {
      *
      * Removes any previous highlights.
      */
-    highlightAndZoom(geometries: Geometry[], options?: HighlightZoomOptions): Highlight | undefined;
+    highlightAndZoom(
+        geometries: Highlightable[],
+        options?: HighlightZoomOptions
+    ): Highlight | undefined;
 
     /**
      * Removes any existing highlights from the map.

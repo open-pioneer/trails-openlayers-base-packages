@@ -5,17 +5,18 @@ import { Feature } from "ol";
 import OlMap from "ol/Map";
 import { Coordinate } from "ol/coordinate";
 import { Extent, createEmpty, extend, getArea, getCenter } from "ol/extent";
-import { Geometry, LineString, Point, Polygon } from "ol/geom";
+import { Geometry } from "ol/geom";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import { Fill, Icon, Stroke, Style } from "ol/style";
-import { StyleLike, toFunction as toStyleFunction } from "ol/style/Style";
+import { toFunction as toStyleFunction } from "ol/style/Style";
 import {
     Highlight,
     HighlightOptions,
     HighlightStyle,
     HighlightStyleType,
-    HighlightZoomOptions
+    HighlightZoomOptions,
+    Highlightable
 } from "../api/MapModel";
 import mapMarkerUrl from "../assets/images/mapMarker.png?url";
 import { FeatureLike } from "ol/Feature";
@@ -54,17 +55,16 @@ export class Highlights {
         this.clearHighlight();
     }
 
-    addHighlight<Type extends Geometry>(
-        geometries: Type[],
-        highlightOptions: HighlightOptions | undefined
-    ) {
-        if (!geometries || !geometries.length) {
+    addHighlight(geoObjects: Highlightable[], highlightOptions: HighlightOptions | undefined) {
+        if (!geoObjects || !geoObjects.length) {
             return;
         }
-        const features = geometries.map((geometry) => {
+
+        const features = geoObjects.map((geoObject) => {
+            const geometry = "getType" in geoObject ? geoObject : geoObject.geometry;
             const type = geometry.getType();
             const feature = new Feature({
-                type: geometry.getType(),
+                type: type,
                 geometry: geometry
             });
             feature.setStyle(getOwnStyle(type, highlightOptions?.highlightStyle));
@@ -94,17 +94,15 @@ export class Highlights {
         return highlight;
     }
 
-    zoomToHighlight<Type extends Geometry>(
-        geometries: Type[],
-        options: HighlightZoomOptions | undefined
-    ) {
-        if (!geometries || !geometries.length) {
+    zoomToHighlight(geoObjects: Highlightable[], options: HighlightZoomOptions | undefined) {
+        if (!geoObjects || !geoObjects.length) {
             return;
         }
 
         let extent = createEmpty();
-        for (const geom of geometries) {
-            extent = extend(extent, geom.getExtent());
+        for (const geoObject of geoObjects) {
+            const geometry = "getType" in geoObject ? geoObject : geoObject.geometry;
+            extent = extend(extent, geometry.getExtent());
         }
 
         const center = getCenter(extent);
@@ -127,15 +125,15 @@ export class Highlights {
     /**
      * This method shows the position of a text search result zoomed to and marked or highlighted in the map.
      */
-    addHighlightAndZoom<Type extends Geometry>(
-        geometries: Type[],
+    addHighlightAndZoom(
+        geoObjects: Highlightable[],
         highlightZoomStyle: HighlightZoomOptions | undefined
     ) {
-        if (!geometries || !geometries.length) {
+        if (!geoObjects || !geoObjects.length) {
             return;
         }
-        const result = this.addHighlight(geometries, highlightZoomStyle);
-        this.zoomToHighlight(geometries, highlightZoomStyle);
+        const result = this.addHighlight(geoObjects, highlightZoomStyle);
+        this.zoomToHighlight(geoObjects, highlightZoomStyle);
         return result;
     }
 
