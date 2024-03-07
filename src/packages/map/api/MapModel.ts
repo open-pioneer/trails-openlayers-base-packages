@@ -9,6 +9,8 @@ import type { LayerRetrievalOptions } from "./shared";
 import type { Geometry } from "ol/geom";
 import type { StyleLike } from "ol/style/Style";
 import { BaseFeature } from "./BaseFeature";
+import { LayerCollectionImpl } from "../model/LayerCollectionImpl";
+import Style from "ol/style/Style";
 
 /** Events emitted by the {@link MapModel}. */
 export interface MapModelEvents {
@@ -18,13 +20,15 @@ export interface MapModelEvents {
     "destroy": void;
 }
 
-/** Options supported by the map model's {@link MapModel.highlightAndZoom | highlightAndZoom} method. */
 export interface HighlightOptions {
     /**
      * Optional styles to override the default styles.
      */
     highlightStyle?: HighlightStyle;
+}
 
+/** Options supported by the map model's {@link MapModel.highlightAndZoom | highlightAndZoom} method. */
+export interface HighlightZoomOptions extends HighlightOptions {
     /**
      * The zoom-level used if there is no valid extend (such as for single points).
      */
@@ -42,11 +46,21 @@ export interface HighlightOptions {
 }
 
 export interface HighlightStyle {
-    Point?: StyleLike;
-    LineString?: StyleLike;
-    Polygon?: StyleLike;
-    MultiPolygon?: StyleLike;
+    Point?: Style;
+    LineString?: Style[];
+    Polygon?: Style[];
+    MultiPolygon?: Style[];
+    MultiPoint?: Style;
+    MultiLineString?: Style[];
 }
+
+export type HighlightStyleType =
+    | "Point"
+    | "LineString"
+    | "Polygon"
+    | "MultiPolygon"
+    | "MultiPoint"
+    | "MultiLineString";
 
 /**
  * Map padding, all values are pixels.
@@ -101,7 +115,7 @@ export interface MapModel extends EventSource<MapModelEvents> {
      * Note that not all layers in this collection may be active in the OpenLayers map.
      * Also note that not all layers in the OpenLayers map may be contained in this collection.
      */
-    readonly layers: LayerCollection;
+    readonly layers: LayerCollectionImpl;
 
     /**
      * The raw OpenLayers map.
@@ -113,10 +127,10 @@ export interface MapModel extends EventSource<MapModelEvents> {
      */
     whenDisplayed(): Promise<void>;
 
-    highlight(geometries: Geometry[], options?: HighlightOptions): Highlight;
+    highlight(geometries: Geometry[], options?: HighlightOptions): Highlight | undefined;
     // highlight(geometries: Highlightable[], options?: HighlightOptions): Highlight;
 
-    zoom(geometries: Geometry[], options?: HighlightOptions): void;
+    zoom(geometries: Geometry[], options?: HighlightZoomOptions): void;
     // zoom(geometries: Highlightable[], options?: ZoomOptions): void;
 
     /**
@@ -125,12 +139,12 @@ export interface MapModel extends EventSource<MapModelEvents> {
      *
      * Removes any previous highlights.
      */
-    highlightAndZoom(geometries: Geometry[], options?: HighlightOptions): Highlight;
+    highlightAndZoom(geometries: Geometry[], options?: HighlightZoomOptions): Highlight | undefined;
 
     /**
      * Removes any existing highlights from the map.
      */
-    removeHighlight(): void; // TODO: Plural (-> clears ALL highlights)
+    removeHighlights(): void;
 }
 
 /** Events emitted by the {@link LayerCollection}. */

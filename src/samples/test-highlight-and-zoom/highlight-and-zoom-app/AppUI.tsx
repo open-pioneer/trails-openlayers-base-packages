@@ -4,8 +4,10 @@ import {
     Box,
     Button,
     Flex,
+    HStack,
     ListItem,
     Stack,
+    StackDivider,
     Text,
     UnorderedList,
     VStack
@@ -14,10 +16,12 @@ import { MapAnchor, MapContainer, MapModel, useMapModel } from "@open-pioneer/ma
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { Geometry, LineString, Point, Polygon } from "ol/geom";
 import { MAP_ID } from "./MapConfigProviderImpl";
+import { Fill, Icon, Stroke, Style } from "ol/style";
+import mapMarkerUrl2 from "@open-pioneer/map/assets/images/mapMarker2.png?url";
 
 export function AppUI() {
     const { map } = useMapModel(MAP_ID);
-
+    let highlightMap = new Map();
     const pointGeometries = [
         new Point([852011.307424, 6788511.322702]),
         new Point([829800.379064, 6809086.916672])
@@ -64,6 +68,41 @@ export function AppUI() {
             ]
         ])
     ];
+
+    function handleClick(map: MapModel | undefined, resultGeometries: Geometry[], id: string) {
+        if (map && !highlightMap.has(id)) {
+            const highlight = map.highlightAndZoom(resultGeometries, {});
+            if (highlight) highlightMap.set(id, highlight);
+        }
+    }
+
+    function handleClickOwnStyle(
+        map: MapModel | undefined,
+        resultGeometries: Geometry[],
+        id: string
+    ) {
+        if (map && !highlightMap.has(id)) {
+            const highlight = map.highlightAndZoom(resultGeometries, {
+                "highlightStyle": ownHighlightStyle
+            });
+            if (highlight) highlightMap.set(id, highlight);
+        }
+    }
+
+    function removeHighlight(id: string) {
+        if (highlightMap.has(id)) {
+            highlightMap.get(id)?.destroy();
+            highlightMap.delete(id);
+        }
+    }
+
+    function reset(map: MapModel | undefined) {
+        if (map) {
+            map.removeHighlights();
+            highlightMap = new Map();
+        }
+    }
+
     return (
         <Flex height="100%" direction="column" overflow="hidden">
             <TitledSection
@@ -85,21 +124,135 @@ export function AppUI() {
                                 padding={2}
                                 boxShadow="lg"
                             >
-                                <Stack pt={5}>
-                                    <Text align="center">Test Controls:</Text>
-                                    <Button onClick={() => handleClick(map, pointGeometries)}>
-                                        Points
-                                    </Button>
-                                    <Button onClick={() => handleClick(map, lineGeometries)}>
-                                        LineString
-                                    </Button>
-                                    <Button onClick={() => handleClick(map, polygonGeometries)}>
-                                        Polygons
-                                    </Button>
-                                    <Button onClick={() => handleClick(map, mixedGeometries)}>
-                                        Mixed
-                                    </Button>
-                                    <Button onClick={() => reset(map)}>Reset</Button>
+                                <Text align="center">Test Controls:</Text>
+                                <Stack divider={<StackDivider borderColor="gray.200" />} pt={5}>
+                                    <Stack pt={5}>
+                                        <Text align="center">Style 1</Text>
+                                        <HStack align="center">
+                                            <Button
+                                                width={105}
+                                                onClick={() =>
+                                                    handleClick(map, pointGeometries, "point")
+                                                }
+                                            >
+                                                Points
+                                            </Button>
+                                            <Button onClick={() => removeHighlight("point")}>
+                                                Remove
+                                            </Button>
+                                        </HStack>
+                                        <HStack>
+                                            <Button
+                                                width={105}
+                                                onClick={() =>
+                                                    handleClick(map, lineGeometries, "line")
+                                                }
+                                            >
+                                                LineString
+                                            </Button>
+                                            <Button onClick={() => removeHighlight("line")}>
+                                                Remove
+                                            </Button>
+                                        </HStack>
+                                        <HStack>
+                                            <Button
+                                                width={105}
+                                                onClick={() =>
+                                                    handleClick(map, polygonGeometries, "polygon")
+                                                }
+                                            >
+                                                Polygons
+                                            </Button>
+                                            <Button onClick={() => removeHighlight("polygon")}>
+                                                Remove
+                                            </Button>
+                                        </HStack>
+                                        <HStack>
+                                            <Button
+                                                width={105}
+                                                onClick={() =>
+                                                    handleClick(map, mixedGeometries, "mix")
+                                                }
+                                            >
+                                                Mixed
+                                            </Button>
+                                            <Button onClick={() => removeHighlight("mix")}>
+                                                Remove
+                                            </Button>
+                                        </HStack>
+                                    </Stack>
+                                    <Stack>
+                                        <Text align="center">Style 2</Text>
+                                        <HStack>
+                                            <Button
+                                                width={105}
+                                                onClick={() =>
+                                                    handleClickOwnStyle(
+                                                        map,
+                                                        pointGeometries,
+                                                        "point2"
+                                                    )
+                                                }
+                                            >
+                                                Points
+                                            </Button>
+                                            <Button onClick={() => removeHighlight("point2")}>
+                                                Remove
+                                            </Button>
+                                        </HStack>
+                                        <HStack>
+                                            <Button
+                                                width={105}
+                                                onClick={() =>
+                                                    handleClickOwnStyle(
+                                                        map,
+                                                        lineGeometries,
+                                                        "line2"
+                                                    )
+                                                }
+                                            >
+                                                LineString
+                                            </Button>
+                                            <Button onClick={() => removeHighlight("line2")}>
+                                                Remove
+                                            </Button>
+                                        </HStack>
+                                        <HStack>
+                                            <Button
+                                                width={105}
+                                                onClick={() =>
+                                                    handleClickOwnStyle(
+                                                        map,
+                                                        polygonGeometries,
+                                                        "polygon2"
+                                                    )
+                                                }
+                                            >
+                                                Polygons
+                                            </Button>
+                                            <Button onClick={() => removeHighlight("polygon2")}>
+                                                Remove
+                                            </Button>
+                                        </HStack>
+                                        <HStack>
+                                            <Button
+                                                width={105}
+                                                onClick={() =>
+                                                    handleClickOwnStyle(
+                                                        map,
+                                                        mixedGeometries,
+                                                        "mix2"
+                                                    )
+                                                }
+                                            >
+                                                Mixed
+                                            </Button>
+                                            <Button onClick={() => removeHighlight("mix2")}>
+                                                Remove
+                                            </Button>
+                                        </HStack>
+                                    </Stack>
+                                    <Button onClick={() => reset(map)}>Reset All</Button>
                                 </Stack>
                             </Box>
                         </MapAnchor>
@@ -117,7 +270,7 @@ export function AppUI() {
                                     This application can be used to test adding highlight or marker,
                                     zoom to their extent, and removing highlight and marker. The
                                     highlight and zoom for point, line string and polygon geometries
-                                    can be tested.
+                                    in two different styles can be tested.
                                 </Text>
                                 <UnorderedList>
                                     <ListItem>
@@ -136,8 +289,12 @@ export function AppUI() {
                                         different types.
                                     </ListItem>
                                     <ListItem>
-                                        Clicking on {"'Reset'"} removes the highlights or markers
-                                        from the map.
+                                        Clicking on {"'Remove'"} will remove the marker or highlight
+                                        added by the button on the left.
+                                    </ListItem>
+                                    <ListItem>
+                                        Clicking on {"'Reset All'"} removes all highlights and
+                                        markers from the map.
                                     </ListItem>
                                 </UnorderedList>
                             </VStack>
@@ -149,13 +306,79 @@ export function AppUI() {
     );
 }
 
-function handleClick(map: MapModel | undefined, resultGeometries: Geometry[]) {
-    if (map) {
-        map.highlightAndZoom(resultGeometries, {});
-    }
-}
-function reset(map: MapModel | undefined) {
-    if (map) {
-        map.removeHighlight();
-    }
-}
+const ownHighlightStyle = {
+    "Point": new Style({
+        image: new Icon({
+            anchor: [0.5, 1],
+            src: mapMarkerUrl2
+        })
+    }),
+    "MultiPoint": new Style({
+        image: new Icon({
+            anchor: [0.5, 1],
+            src: mapMarkerUrl2
+        })
+    }),
+    "LineString": [
+        new Style({
+            stroke: new Stroke({
+                color: "#ff0000",
+                width: 5
+            })
+        }),
+        new Style({
+            stroke: new Stroke({
+                color: "#ff0000",
+                width: 3
+            })
+        })
+    ],
+    "MultiLineString": [
+        new Style({
+            stroke: new Stroke({
+                color: "#ff0000",
+                width: 5
+            })
+        }),
+        new Style({
+            stroke: new Stroke({
+                color: "#ff0000",
+                width: 3
+            })
+        })
+    ],
+    "Polygon": [
+        new Style({
+            stroke: new Stroke({
+                color: "#ff0000",
+                width: 5
+            })
+        }),
+        new Style({
+            stroke: new Stroke({
+                color: "#ff0000",
+                width: 3
+            }),
+            fill: new Fill({
+                color: "rgba(51, 171, 71,0.35)"
+            })
+        })
+    ],
+    "MultiPolygon": [
+        new Style({
+            stroke: new Stroke({
+                color: "#ff0000",
+                width: 5
+            })
+        }),
+        new Style({
+            stroke: new Stroke({
+                color: "#ff0000",
+                width: 3
+            }),
+            fill: new Fill({
+                color: "rgba(51, 171, 71,0.35)"
+            })
+        })
+    ]
+};
