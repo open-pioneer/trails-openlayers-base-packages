@@ -17,7 +17,7 @@ import { MAP_ID } from "./MapConfigProviderImpl";
 import { PrintingService } from "@open-pioneer/printing";
 import { useService } from "open-pioneer:react-hooks";
 import { createLogger } from "@open-pioneer/core";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ApplicationContext } from "@open-pioneer/runtime";
 
 const LOG = createLogger("printing");
@@ -27,22 +27,61 @@ export function AppUI() {
     const printingService = useService<PrintingService>("printing.PrintingService");
     const systemService = useService<ApplicationContext>("runtime.ApplicationContext");
 
-    const [canvas, setCanvas] = useState<HTMLCanvasElement>();
     const [dataURL, setDataURL] = useState("");
     const [showImageWindow, setShowImageWindow] = useState(false);
     const rootElement = systemService.getApplicationContainer();
+    let canvas: HTMLCanvasElement | undefined = undefined;
 
-    useEffect(() => {
+    const addCanvas = async () => {
+        setShowImageWindow(false);
+
+        if (!canvas) {
+            await new Promise<void>((resolve) => {
+                startPrintingService().then(() => {
+                    if (canvas) {
+                        resolve();
+                        appendCanvasElement();
+                    }
+                });
+            });
+        } else {
+            appendCanvasElement();
+        }
+    };
+
+    const appendCanvasElement = () => {
+        const canvasContainer = rootElement.querySelector(".canvas-container");
+        if (!canvasContainer) {
+            const div = document.createElement("div");
+            div.classList.add("canvas-container");
+            div.style.backgroundColor = "rgba(255, 255, 255, 0.92)";
+            div.style.padding = "0.5rem";
+            div.style.borderWidth = "1px";
+            canvas && div.appendChild(canvas);
+            const canvasDisplayElement = rootElement.querySelector(".canvas-display");
+            canvasDisplayElement?.appendChild(div);
+        }
+    };
+
+    const showImageFromDataURL = async () => {
+        if (!canvas) {
+            await startPrintingService();
+        }
+        const canvasContainer = rootElement.querySelector(".canvas-container");
+        canvasContainer?.remove();
+        setShowImageWindow(true);
+    };
+
+    const startPrintingService = async () => {
         if (!map) {
             return;
         }
-        printingService.printMap(map.olMap).then(
-            async (service) => {
-                const canvas = service.getCanvas();
+        await printingService.printMap(map.olMap).then(
+            (service) => {
+                canvas = service.getCanvas();
                 if (canvas) {
                     canvas.style.width = "790px";
                     canvas.style.height = "590px";
-                    setCanvas(canvas);
                     const dataURL = service.getPNGDataURL(0.6);
                     setDataURL(dataURL);
                 }
@@ -51,28 +90,6 @@ export function AppUI() {
                 LOG.error(error);
             }
         );
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [map]);
-
-    const addCanvas = () => {
-        setShowImageWindow(false);
-        const canvasContainer = rootElement.querySelector(".canvas-container");
-        if (canvas && !canvasContainer) {
-            const div = document.createElement("div");
-            div.classList.add("canvas-container");
-            div.style.backgroundColor = "rgba(255, 255, 255, 0.92)";
-            div.style.padding = "0.5rem";
-            div.style.borderWidth = "1px";
-            div.appendChild(canvas);
-            const canvasDisplayElement = rootElement.querySelector(".canvas-display");
-            canvasDisplayElement?.appendChild(div);
-        }
-    };
-
-    const showImageFromDataURL = () => {
-        const canvasContainer = rootElement.querySelector(".canvas-container");
-        canvasContainer?.remove();
-        setShowImageWindow(true);
     };
 
     return (
@@ -152,13 +169,7 @@ export function AppUI() {
                                     <Image src={dataURL}></Image>
                                 </Box>
                             )}
-                            {canvas && (
-                                <Box
-                                    className="canvas-display"
-                                    minWidth="800"
-                                    minHeight="600"
-                                ></Box>
-                            )}
+                            <Box className="canvas-display" minWidth="800" minHeight="600"></Box>
                         </MapAnchor>
                     </MapContainer>
                 </Flex>
