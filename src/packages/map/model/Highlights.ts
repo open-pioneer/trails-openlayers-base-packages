@@ -11,12 +11,12 @@ import VectorSource from "ol/source/Vector";
 import { Fill, Icon, Stroke, Style } from "ol/style";
 import { toFunction as toStyleFunction } from "ol/style/Style";
 import {
+    DisplayTarget,
     Highlight,
     HighlightOptions,
     HighlightStyle,
     HighlightStyleType,
-    HighlightZoomOptions,
-    Highlightable
+    HighlightZoomOptions
 } from "../api/MapModel";
 import mapMarkerUrl from "../assets/images/mapMarker.png?url";
 import { FeatureLike } from "ol/Feature";
@@ -55,14 +55,18 @@ export class Highlights {
         this.clearHighlight();
     }
 
-    addHighlight(geoObjects: Highlightable[], highlightOptions: HighlightOptions | undefined) {
+    addHighlight(displayTarget: DisplayTarget[], highlightOptions: HighlightOptions | undefined) {
+        const geoObjects = displayTarget.filter((item) => {
+            if ("getType" in item || item?.geometry) return item;
+        });
+
         if (!geoObjects || !geoObjects.length) {
             return;
         }
 
         const features = geoObjects.map((geoObject) => {
             const geometry = "getType" in geoObject ? geoObject : geoObject.geometry;
-            const type = geometry.getType();
+            const type = geometry!.getType();
             const feature = new Feature({
                 type: type,
                 geometry: geometry
@@ -94,7 +98,11 @@ export class Highlights {
         return highlight;
     }
 
-    zoomToHighlight(geoObjects: Highlightable[], options: HighlightZoomOptions | undefined) {
+    zoomToHighlight(displayTarget: DisplayTarget[], options: HighlightZoomOptions | undefined) {
+        const geoObjects = displayTarget.filter((item) => {
+            if ("getType" in item || item?.geometry) return item;
+        });
+
         if (!geoObjects || !geoObjects.length) {
             return;
         }
@@ -102,7 +110,7 @@ export class Highlights {
         let extent = createEmpty();
         for (const geoObject of geoObjects) {
             const geometry = "getType" in geoObject ? geoObject : geoObject.geometry;
-            extent = extend(extent, geometry.getExtent());
+            extent = extend(extent, geometry!.getExtent());
         }
 
         const center = getCenter(extent);
@@ -126,7 +134,7 @@ export class Highlights {
      * This method shows the position of a text search result zoomed to and marked or highlighted in the map.
      */
     addHighlightAndZoom(
-        geoObjects: Highlightable[],
+        geoObjects: DisplayTarget[],
         highlightZoomStyle: HighlightZoomOptions | undefined
     ) {
         if (!geoObjects || !geoObjects.length) {

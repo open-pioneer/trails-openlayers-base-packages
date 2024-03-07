@@ -77,15 +77,7 @@ export interface Highlight extends Resource {
     readonly isActive: boolean;
 }
 
-export interface Highlightfeature extends BaseFeature {
-    /**
-     * Geometry of the selection result.
-     * One should also specify the {@link projection}.
-     */
-    geometry: Geometry;
-}
-
-export type Highlightable = Highlightfeature | Geometry;
+export type DisplayTarget = BaseFeature | Geometry;
 
 /**
  * Represents a map.
@@ -134,10 +126,10 @@ export interface MapModel extends EventSource<MapModelEvents> {
      */
     whenDisplayed(): Promise<void>;
 
-    highlight(geometries: Highlightable[], options?: HighlightOptions): Highlight | undefined;
+    highlight(geometries: DisplayTarget[], options?: HighlightOptions): Highlight | undefined;
     // highlight(geometries: Highlightable[], options?: HighlightOptions): Highlight;
 
-    zoom(geometries: Highlightable[], options?: HighlightZoomOptions): void;
+    zoom(geometries: DisplayTarget[], options?: HighlightZoomOptions): void;
     // zoom(geometries: Highlightable[], options?: ZoomOptions): void;
 
     /**
@@ -147,7 +139,7 @@ export interface MapModel extends EventSource<MapModelEvents> {
      * Removes any previous highlights.
      */
     highlightAndZoom(
-        geometries: Highlightable[],
+        geometries: DisplayTarget[],
         options?: HighlightZoomOptions
     ): Highlight | undefined;
 

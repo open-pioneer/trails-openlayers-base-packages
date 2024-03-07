@@ -80,7 +80,7 @@ it("makes the map layers accessible", async () => {
 
     const allLayers = model.layers.getAllLayers();
     expect(allLayers).toEqual(layers);
-    expect(model.olMap.getAllLayers().length).toBe(2);
+    expect(model.olMap.getAllLayers().length).toBe(3);
 });
 
 it("supports ordered retrieval of layers", async () => {
