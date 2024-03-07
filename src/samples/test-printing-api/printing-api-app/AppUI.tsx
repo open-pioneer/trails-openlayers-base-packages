@@ -76,12 +76,13 @@ export function AppUI() {
         if (!map) {
             return;
         }
+        // pass a second argument to printMap inorder to block user interaction (add overlay)
         await printingService.printMap(map.olMap).then(
             (service) => {
                 canvas = service.getCanvas();
                 if (canvas) {
-                    canvas.style.width = "790px";
-                    canvas.style.height = "590px";
+                    canvas.style.width = "100%";
+                    canvas.style.height = "100%";
                     const dataURL = service.getPNGDataURL(0.6);
                     setDataURL(dataURL);
                 }
@@ -90,6 +91,9 @@ export function AppUI() {
                 LOG.error(error);
             }
         );
+
+        const overlayElement = rootElement.querySelector(".printing-overlay");
+        overlayElement?.remove();
     };
 
     return (
@@ -136,8 +140,8 @@ export function AppUI() {
                                 <Text as="b">Description</Text>
                                 <Text>
                                     This application can be used to test the printing service. The
-                                    service provides the screenshot of the given map view in the a
-                                    form of HTMLCanvasElement or a data url.
+                                    service provides the screenshot of the given map view in a form
+                                    of HTMLCanvasElement or a data url.
                                 </Text>
                                 <UnorderedList>
                                     <ListItem>
@@ -169,7 +173,7 @@ export function AppUI() {
                                     <Image src={dataURL}></Image>
                                 </Box>
                             )}
-                            <Box className="canvas-display" minWidth="800" minHeight="600"></Box>
+                            <Box className="canvas-display" width="100%" height="100%"></Box>
                         </MapAnchor>
                     </MapContainer>
                 </Flex>
