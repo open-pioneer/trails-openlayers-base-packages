@@ -51,10 +51,19 @@ export class Highlights {
         this.olMap.addLayer(this.olLayer);
     }
 
+    /**
+     * This method removes all highlights before destroying the class
+     */
     destroy() {
         this.clearHighlight();
     }
 
+    /**
+     * This method displays geometries or BaseFeatures with optional styling in the map
+     * @param displayTarget
+     * @param highlightOptions
+     * @returns
+     */
     addHighlight(displayTarget: DisplayTarget[], highlightOptions: HighlightOptions | undefined) {
         const geoObjects = displayTarget.filter((item) => {
             if ("getType" in item || item?.geometry) return item;
@@ -98,6 +107,12 @@ export class Highlights {
         return highlight;
     }
 
+    /**
+     * This method zoom to geometries or BaseFeatures
+     * @param displayTarget
+     * @param options
+     * @returns
+     */
     zoomToHighlight(displayTarget: DisplayTarget[], options: HighlightZoomOptions | undefined) {
         const geoObjects = displayTarget.filter((item) => {
             if ("getType" in item || item?.geometry) return item;
@@ -131,7 +146,10 @@ export class Highlights {
     }
 
     /**
-     * This method shows the position of a text search result zoomed to and marked or highlighted in the map.
+     * This method displays geometries or BaseFeatures with optional styling in the map and executed a zoom
+     * @param geoObjects
+     * @param highlightZoomStyle
+     * @returns
      */
     addHighlightAndZoom(
         geoObjects: DisplayTarget[],
@@ -169,13 +187,24 @@ function zoomTo(
     }
 }
 
-/** Returns the appropriate style from the user's highlightStyle or falls back to the default style. */
+/**
+ * Returns the appropriate style from the user's highlightStyle or falls back to the default style
+ * @param feature
+ * @param resolution
+ * @returns
+ */
 function resolveStyle(feature: FeatureLike, resolution: number) {
     const type: keyof typeof defaultHighlightStyle = feature.get("type");
     const style = toStyleFunction(getDefaultStyle(type));
     return style(feature, resolution);
 }
 
+/**
+ * This method creates styling for a highlight based on the optional style information or the default style
+ * @param type
+ * @param highlightStyle
+ * @returns
+ */
 function getOwnStyle(type: Type, highlightStyle: HighlightStyle | undefined) {
     if (highlightStyle && type in highlightStyle) {
         const supportedType = type as HighlightStyleType;
@@ -186,6 +215,11 @@ function getOwnStyle(type: Type, highlightStyle: HighlightStyle | undefined) {
     }
 }
 
+/**
+ * This returns default styling for a highlight
+ * @param type
+ * @returns
+ */
 function getDefaultStyle(type: Type) {
     if (type in defaultHighlightStyle) {
         const supportedType = type as HighlightStyleType;
@@ -195,6 +229,9 @@ function getDefaultStyle(type: Type) {
     }
 }
 
+/**
+ * Defaultstyling for Highlights
+ */
 const defaultHighlightStyle = {
     "Point": new Style({
         image: new Icon({
