@@ -1,21 +1,19 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-
 import { vi, it, expect, afterEach } from "vitest";
 import { PrintingController } from "./PrintingController";
 import OlMap from "ol/Map";
 import { createManualPromise } from "@open-pioneer/core";
 import { ScaleLine } from "ol/control";
 import { createService } from "@open-pioneer/test-utils/services";
-import {PrintingServiceImpl} from "./PrintingServiceImpl";
-import {ApplicationContext} from "@open-pioneer/runtime";
+import { PrintJob, PrintingServiceImpl } from "./PrintingServiceImpl";
 
 afterEach(() => {
     vi.restoreAllMocks();
 });
 
 it("calls the appropriate methods (happy path)", async () => {
-    const { controller, exportMapInPNGSpy, exportMapInPDFSpy } = setUp();
+    const { controller, exportMapInPNGSpy, exportMapInPDFSpy } = await setUp();
 
     controller.setFileFormat("png");
     await controller.handleMapExport();
@@ -30,7 +28,7 @@ it("calls the appropriate methods (happy path)", async () => {
 });
 
 it("creates an overlay during export and removes it after export", async () => {
-    const { olMap, exportToCanvasSpy, controller } = setUp();
+    const { olMap, exportToCanvasSpy, controller } = await setUp();
 
     // Block the canvas export until we tell it to continue.
     // This way, we can test the intermediate state (overlay present etc.)
@@ -62,7 +60,7 @@ it("creates an overlay during export and removes it after export", async () => {
 });
 
 it("adds scale-line during export and removes it after export", async () => {
-    const { olMap, exportToCanvasSpy, controller } = setUp();
+    const { olMap, exportToCanvasSpy, controller } = await setUp();
 
     const { promise, resolve } = createManualPromise();
     exportToCanvasSpy.mockImplementation(() => promise);
@@ -123,24 +121,17 @@ async function setUp() {
     olMap.setTarget(target);
 
     const printingService = await createService(PrintingServiceImpl, {});
-    
-    const systemService = {
-        getApplicationContainer(): HTMLElement {
-            return target;
-        }
-    } satisfies Partial<ApplicationContext> as ApplicationContext;
-    
-    const overlayText = {overlayText: "Map printing ..."};
+    const exportToCanvasSpy = vi.spyOn(PrintJob.prototype as any, "printToCanvas");
+    exportToCanvasSpy.mockImplementation(() => document.createElement("canvas"));
 
-    const controller = new PrintingController(olMap, printingService, systemService, overlayText);
+    const overlayText = { overlayText: "Map printing ..." };
+    const controller = new PrintingController(olMap, printingService, overlayText);
 
-    const exportToCanvasSpy = vi.spyOn(controller as any, "exportToCanvas");
     const exportMapInPNGSpy = vi.spyOn(controller as any, "exportMapInPNG");
     const exportMapInPDFSpy = vi.spyOn(controller as any, "exportMapInPDF");
 
-    exportToCanvasSpy.mockImplementation(() => document.createElement("canvas"));
     exportMapInPNGSpy.mockImplementation(() => undefined);
     exportMapInPDFSpy.mockImplementation(() => undefined);
 
-    return {olMap, controller, exportToCanvasSpy, exportMapInPNGSpy, exportMapInPDFSpy};
+    return { olMap, controller, exportToCanvasSpy, exportMapInPNGSpy, exportMapInPDFSpy };
 }

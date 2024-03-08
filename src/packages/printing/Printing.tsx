@@ -1,9 +1,5 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-
-import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
-import { useIntl, useService } from "open-pioneer:react-hooks";
-import { FC, useEffect, useState } from "react";
 import {
     Box,
     Button,
@@ -13,11 +9,14 @@ import {
     Input,
     Select
 } from "@open-pioneer/chakra-integration";
+import { createLogger } from "@open-pioneer/core";
 import { MapModel, useMapModel } from "@open-pioneer/map";
 import { NotificationService } from "@open-pioneer/notifier";
+import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
+import { PackageIntl } from "@open-pioneer/runtime";
+import { useIntl, useService } from "open-pioneer:react-hooks";
+import { FC, useEffect, useState } from "react";
 import { FileFormatType, PrintingController } from "./PrintingController";
-import { createLogger } from "@open-pioneer/core";
-import { ApplicationContext, PackageIntl } from "@open-pioneer/runtime";
 import { PrintingService } from "./index";
 
 const LOG = createLogger("printing");
@@ -44,13 +43,12 @@ export const Printing: FC<PrintingProps> = (props) => {
     const [title, setTitle] = useState<string>("");
     const [running, setRunning] = useState<boolean>(false);
 
-    const systemService = useService<ApplicationContext>("runtime.ApplicationContext");
     const printingService = useService<PrintingService>("printing.PrintingService");
     const notifier = useService<NotificationService>("notifier.NotificationService");
 
     const { map } = useMapModel(mapId);
 
-    const controller = useController(map, intl, printingService, systemService);
+    const controller = useController(map, intl, printingService);
 
     useEffect(() => {
         controller?.setFileFormat(selectedFileFormat);
@@ -139,8 +137,7 @@ export const Printing: FC<PrintingProps> = (props) => {
 function useController(
     map: MapModel | undefined,
     intl: PackageIntl,
-    printingService: PrintingService,
-    systemService: ApplicationContext
+    printingService: PrintingService
 ) {
     const [controller, setController] = useState<PrintingController | undefined>(undefined);
 
@@ -149,7 +146,7 @@ function useController(
             return;
         }
 
-        const controller = new PrintingController(map.olMap, printingService, systemService, {
+        const controller = new PrintingController(map.olMap, printingService, {
             overlayText: intl.formatMessage({ id: "printingMap" })
         });
         setController(controller);
@@ -158,6 +155,6 @@ function useController(
             controller.destroy();
             setController(undefined);
         };
-    }, [map, intl, printingService, systemService]);
+    }, [map, intl, printingService]);
     return controller;
 }

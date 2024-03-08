@@ -4,96 +4,57 @@ import {
     Box,
     Button,
     Flex,
+    Image,
     ListItem,
     Stack,
     Text,
     UnorderedList,
-    VStack,
-    Image
+    VStack
 } from "@open-pioneer/chakra-integration";
-import { MapAnchor, MapContainer, useMapModel } from "@open-pioneer/map";
-import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
-import { MAP_ID } from "./MapConfigProviderImpl";
-import { PrintingService } from "@open-pioneer/printing";
-import { useService } from "open-pioneer:react-hooks";
 import { createLogger } from "@open-pioneer/core";
-import { useState } from "react";
-import { ApplicationContext } from "@open-pioneer/runtime";
+import { MapAnchor, MapContainer, useMapModel } from "@open-pioneer/map";
+import { PrintingService } from "@open-pioneer/printing";
+import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
+import { useService } from "open-pioneer:react-hooks";
+import { useEffect, useRef, useState } from "react";
+import { MAP_ID } from "./MapConfigProviderImpl";
 
 const LOG = createLogger("printing");
 
 export function AppUI() {
     const { map } = useMapModel(MAP_ID);
     const printingService = useService<PrintingService>("printing.PrintingService");
-    const systemService = useService<ApplicationContext>("runtime.ApplicationContext");
-
-    const [dataURL, setDataURL] = useState("");
-    const [showImageWindow, setShowImageWindow] = useState(false);
-    const rootElement = systemService.getApplicationContainer();
-    let canvas: HTMLCanvasElement | undefined = undefined;
+    const [displayState, setDisplayState] = useState<undefined | string | HTMLCanvasElement>(
+        undefined
+    );
 
     const addCanvas = async () => {
-        setShowImageWindow(false);
-
-        if (!canvas) {
-            await new Promise<void>((resolve) => {
-                startPrintingService().then(() => {
-                    if (canvas) {
-                        resolve();
-                        appendCanvasElement();
-                    }
-                });
-            });
-        } else {
-            appendCanvasElement();
-        }
-    };
-
-    const appendCanvasElement = () => {
-        const canvasContainer = rootElement.querySelector(".canvas-container");
-        if (!canvasContainer) {
-            const div = document.createElement("div");
-            div.classList.add("canvas-container");
-            div.style.backgroundColor = "rgba(255, 255, 255, 0.92)";
-            div.style.padding = "0.5rem";
-            div.style.borderWidth = "1px";
-            canvas && div.appendChild(canvas);
-            const canvasDisplayElement = rootElement.querySelector(".canvas-display");
-            canvasDisplayElement?.appendChild(div);
-        }
+        startPrintingService("canvas");
     };
 
     const showImageFromDataURL = async () => {
-        if (!canvas) {
-            await startPrintingService();
-        }
-        const canvasContainer = rootElement.querySelector(".canvas-container");
-        canvasContainer?.remove();
-        setShowImageWindow(true);
+        startPrintingService("png");
     };
 
-    const startPrintingService = async () => {
+    const startPrintingService = async (mode: "canvas" | "png") => {
         if (!map) {
             return;
         }
-        // pass a second argument to printMap inorder to block user interaction (add overlay)
         await printingService.printMap(map.olMap).then(
             (service) => {
-                canvas = service.getCanvas();
-                if (canvas) {
+                const canvas = service.getCanvas();
+                if (mode === "canvas") {
                     canvas.style.width = "100%";
                     canvas.style.height = "100%";
-                    const dataURL = service.getPNGDataURL(0.6);
-                    setDataURL(dataURL);
+                    setDisplayState(canvas);
+                } else {
+                    setDisplayState(service.getPNGDataURL(0.6));
                 }
             },
             (error) => {
                 LOG.error(error);
             }
         );
-
-        const overlayElement = rootElement.querySelector(".printing-overlay");
-        overlayElement?.remove();
     };
 
     return (
@@ -158,26 +119,59 @@ export function AppUI() {
                             </VStack>
                         </MapAnchor>
                         <MapAnchor position="top-right" horizontalGap={450} verticalGap={10}>
-                            {dataURL && showImageWindow && (
-                                <Box
+                            {displayState && (
+                                <VStack
                                     backgroundColor="whiteAlpha.900"
                                     borderWidth="1px"
                                     borderRadius="lg"
                                     padding={2}
                                     boxShadow="lg"
-                                    className="image-display"
+                                    className="result-display"
                                     maxWidth="600"
                                     maxHeight="500"
                                 >
-                                    <Text as="b">Image from data URL</Text>
-                                    <Image src={dataURL}></Image>
-                                </Box>
+                                    <ImageOrCanvasRenderer input={displayState} />
+                                </VStack>
                             )}
-                            <Box className="canvas-display" width="100%" height="100%"></Box>
                         </MapAnchor>
                     </MapContainer>
                 </Flex>
             </TitledSection>
         </Flex>
+    );
+}
+
+function ImageOrCanvasRenderer(props: { input: string | HTMLCanvasElement }) {
+    const imageUrl = typeof props.input === "string" ? props.input : undefined;
+    const imageContent = imageUrl && (
+        <>
+            <Text as="b">Image from data URL</Text>
+            <Image src={imageUrl}></Image>
+        </>
+    );
+    const canvasContent =
+        typeof props.input !== "string" ? <RenderCanvas canvas={props.input} /> : undefined;
+
+    return imageContent || canvasContent;
+}
+
+function RenderCanvas(props: { canvas: HTMLCanvasElement }) {
+    const container = useRef<HTMLDivElement>(null);
+    useEffect(() => {
+        if (!container.current) {
+            return;
+        }
+
+        const box = container.current;
+        box.appendChild(props.canvas);
+        return () => {
+            box.removeChild(props.canvas);
+        };
+    }, [props.canvas]);
+    return (
+        <>
+            <Text as="b">Image from canvas</Text>
+            <Box ref={container}></Box>
+        </>
     );
 }

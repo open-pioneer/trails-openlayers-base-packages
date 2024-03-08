@@ -10,6 +10,6 @@ export default defineBuildConfig({
         }
     },
     ui: {
-        references: ["printing.PrintingService", "runtime.ApplicationContext"]
+        references: ["printing.PrintingService"]
     }
 });

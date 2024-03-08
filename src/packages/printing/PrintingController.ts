@@ -2,7 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0
 import OlMap from "ol/Map";
 import { PrintingService, PrintResult } from "./index";
-import { ApplicationContext } from "@open-pioneer/runtime";
+import { canvasToPng, createBlockUserOverlay } from "./utils";
+import { Resource } from "@open-pioneer/core";
 
 export type FileFormatType = "png" | "pdf";
 
@@ -12,23 +13,16 @@ export class PrintingController {
     private olMap: OlMap;
     private title: string = "";
     private fileFormat: FileFormatType = "pdf";
-    private blockUserInteraction: boolean = true;
     private i18n: I18n;
 
-    private _printingService: PrintingService;
-    private _systemService: ApplicationContext;
+    private printingService: PrintingService;
 
     private printMap: PrintResult | undefined = undefined;
+    private overlay: Resource | undefined = undefined;
 
-    constructor(
-        olMap: OlMap,
-        printingService: PrintingService,
-        systemService: ApplicationContext,
-        i18n: I18n
-    ) {
+    constructor(olMap: OlMap, printingService: PrintingService, i18n: I18n) {
         this.olMap = olMap;
-        this._printingService = printingService;
-        this._systemService = systemService;
+        this.printingService = printingService;
         this.i18n = i18n;
     }
 
@@ -50,11 +44,10 @@ export class PrintingController {
         }
 
         try {
-            this.printMap = await this._printingService.printMap(
-                this.olMap,
-                this.blockUserInteraction,
-                this.i18n.overlayText
-            );
+            this.begin();
+            this.printMap = await this.printingService.printMap(this.olMap, {
+                blockUserInteraction: false
+            });
             const canvas = this.printMap.getCanvas();
             if (canvas) {
                 this.fileFormat == "png"
@@ -64,15 +57,20 @@ export class PrintingController {
                 throw new Error("Canvas export failed");
             }
         } finally {
-            this.blockUserInteraction && this.reset();
+            this.reset();
+        }
+    }
+
+    private begin() {
+        const container = this.olMap.getTargetElement();
+        if (container) {
+            this.overlay = createBlockUserOverlay(container, this.i18n.overlayText);
         }
     }
 
     private reset() {
-        //remove overlay if it is added
-        const rootElement = this._systemService.getApplicationContainer();
-        const overlayElement = rootElement.querySelector(".printing-overlay");
-        overlayElement?.remove();
+        this.overlay?.destroy();
+        this.overlay = undefined;
     }
 
     private getTitleAndFileName() {
@@ -107,11 +105,11 @@ export class PrintingController {
         const link = document.createElement("a");
         link.setAttribute("download", fileName + ".png");
 
-        const dataURL = this.printMap?.getPNGDataURL(0.8, containerCanvas);
-
+        const dataURL = canvasToPng(containerCanvas);
         if (!dataURL) {
             throw new Error("Failed to get image data URL");
         }
+
         link.href = dataURL;
         link.click();
     }

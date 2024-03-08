@@ -1,37 +1,53 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-
-import type { PrintingService, PrintResult } from "./index";
+import type { PrintingOptions, PrintingService, PrintResult } from "./index";
 import OlMap from "ol/Map";
 import Draw from "ol/interaction/Draw";
 import { StyleLike } from "ol/style/Style";
 import { ScaleLine } from "ol/control";
 import { Interaction } from "ol/interaction";
-import { createManualPromise } from "@open-pioneer/core";
+import { createManualPromise, Resource } from "@open-pioneer/core";
 import { Options } from "html2canvas";
+import { canvasToPng, createBlockUserOverlay, PRINTING_HIDE_CLASS } from "./utils";
+import { ServiceOptions } from "@open-pioneer/runtime";
 
-const PRINTING_HIDE_CLASS = "printing-hide";
-const IMAGE_QUALITY = 0.8;
 export class PrintingServiceImpl implements PrintingService {
-    private olMap: OlMap | undefined;
-    private running = false;
+    private defaultOverlayText: string;
 
-    private drawInformation: { draw: Draw; style: StyleLike | null | undefined }[] | undefined = [];
+    constructor(options: ServiceOptions) {
+        this.defaultOverlayText = options.intl.formatMessage({
+            id: "printingMap"
+        });
+    }
 
-    private scaleLine: ScaleLine | undefined = undefined;
+    async printMap(olMap: OlMap, options: PrintingOptions): Promise<PrintResultImpl> {
+        const job = new PrintJob(olMap, {
+            blockUserInteraction: true,
+            overlayText: this.defaultOverlayText,
+            ...options
+        });
+        return await job.printMap();
+    }
+}
 
+// Exported just for test (mocking)
+export class PrintJob {
+    private olMap: OlMap;
     private blockUserInteraction: boolean = false;
-    private overlayText: string = "Karte wird gedruckt ...";
+    private overlayText: string;
 
-    async printMap(
-        olMap: OlMap,
-        blockUserInteraction: boolean,
-        overlayText: string
-    ): Promise<PrintResultImpl> {
+    private running = false;
+    private drawInformation: { draw: Draw; style: StyleLike | null | undefined }[] | undefined = [];
+    private scaleLine: ScaleLine | undefined = undefined;
+    private overlay: Resource | undefined = undefined;
+
+    constructor(olMap: OlMap, options: Required<PrintingOptions>) {
         this.olMap = olMap;
-        this.blockUserInteraction = blockUserInteraction;
-        this.overlayText = overlayText || this.overlayText;
+        this.blockUserInteraction = options.blockUserInteraction;
+        this.overlayText = options.overlayText;
+    }
 
+    async printMap(): Promise<PrintResultImpl> {
         if (this.running) {
             throw new Error("Printing already running.");
         }
@@ -56,7 +72,7 @@ export class PrintingServiceImpl implements PrintingService {
 
         /** hides active draw interactions while printing (set feature style to null ) */
         const interactions = this.olMap
-            ?.getInteractions()
+            .getInteractions()
             .getArray()
             .filter((interaction: Interaction) => {
                 return interaction.getActive() && interaction instanceof Draw;
@@ -72,20 +88,13 @@ export class PrintingServiceImpl implements PrintingService {
             });
         });
 
-        this.blockUserInteraction && this.addOverlay();
+        if (this.blockUserInteraction) {
+            const container = this.olMap?.getTargetElement();
+            if (container) {
+                this.overlay = createBlockUserOverlay(container, this.overlayText);
+            }
+        }
         await this.addScaleLine();
-    }
-
-    private addOverlay() {
-        const container = this.olMap?.getTargetElement();
-        const overlay = document.createElement("div");
-        overlay.classList.add("printing-overlay", PRINTING_HIDE_CLASS);
-        container?.appendChild(overlay);
-
-        const message = document.createElement("div");
-        message.classList.add("printing-overlay-status");
-        message.textContent = this.overlayText;
-        overlay.appendChild(message);
     }
 
     private async addScaleLine() {
@@ -132,10 +141,15 @@ export class PrintingServiceImpl implements PrintingService {
 
         return canvas;
     }
+
     private reset() {
         if (this.scaleLine) {
             this.olMap?.removeControl(this.scaleLine);
             this.scaleLine = undefined;
+        }
+        if (this.overlay) {
+            this.overlay.destroy();
+            this.overlay = undefined;
         }
 
         this.running = false;
@@ -158,15 +172,7 @@ class PrintResultImpl implements PrintResult {
         return this.canvas;
     }
 
-    getPNGDataURL(quality?: number, customCanvas?: HTMLCanvasElement): string {
-        const imageQuality = quality || IMAGE_QUALITY;
-
-        //customized canvas can be provided (adjusting size, adding style or content can be done separately)
-        const canvasToPrint = customCanvas || this.canvas;
-        if (!canvasToPrint) {
-            throw new Error("Canvas export failed");
-        }
-
-        return canvasToPrint.toDataURL("image/png", imageQuality);
+    getPNGDataURL(quality?: number): string {
+        return canvasToPng(this.canvas, quality);
     }
 }

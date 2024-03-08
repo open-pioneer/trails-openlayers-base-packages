@@ -3,6 +3,23 @@
 import { DeclaredService } from "@open-pioneer/runtime";
 import OlMap from "ol/Map";
 
+export interface PrintingOptions {
+    /**
+     * When this is true (the default), an overlay will be added above the map
+     * to block user interactions.
+     *
+     * It is recommended to block user interaction (in some way) while the map is printing
+     * to avoid inconsistencies.
+     */
+    blockUserInteraction?: boolean;
+
+    /**
+     * This option can be used to customize the text content of the overlay (if enabled).
+     */
+    overlayText?: string;
+}
+
+// TODO: Comment
 export interface PrintingService extends DeclaredService<"printing.PrintingService"> {
     /**
      * Starts a map print operation on the specified map.
@@ -10,11 +27,7 @@ export interface PrintingService extends DeclaredService<"printing.PrintingServi
      * The promise resolves with the resulting map image or with any error that occurred
      * while printing the map.
      */
-    printMap(
-        olMap: OlMap,
-        blockUserInteraction?: boolean,
-        overlayText?: string
-    ): Promise<PrintResult>;
+    printMap(olMap: OlMap, options?: PrintingOptions): Promise<PrintResult>;
 }
 
 /** The result of a print operation. */
@@ -29,7 +42,7 @@ export interface PrintResult {
      *
      * See also <https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/toDataURL>.
      */
-    getPNGDataURL(quality?: number, canvas?: HTMLCanvasElement): string;
+    getPNGDataURL(quality?: number): string;
 }
 
 export { Printing, type PrintingProps } from "./Printing";
