@@ -139,7 +139,7 @@ export const Printing: FC<PrintingProps> = (props) => {
 function useController(
     map: MapModel | undefined,
     intl: PackageIntl,
-    service: PrintingService,
+    printingService: PrintingService,
     systemService: ApplicationContext
 ) {
     const [controller, setController] = useState<PrintingController | undefined>(undefined);
@@ -149,7 +149,7 @@ function useController(
             return;
         }
 
-        const controller = new PrintingController(map.olMap, service, systemService, {
+        const controller = new PrintingController(map.olMap, printingService, systemService, {
             overlayText: intl.formatMessage({ id: "printingMap" })
         });
         setController(controller);
@@ -158,6 +158,6 @@ function useController(
             controller.destroy();
             setController(undefined);
         };
-    }, [map, intl]);
+    }, [map, intl, printingService, systemService]);
     return controller;
 }
