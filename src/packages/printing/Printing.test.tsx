@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
 import { act, fireEvent, getByRole, render, screen, waitFor } from "@testing-library/react";
@@ -9,8 +10,6 @@ import { NotificationService } from "@open-pioneer/notifier";
 import userEvent from "@testing-library/user-event";
 import { disableReactActWarnings } from "test-utils";
 import * as PrintingControllerModule from "./PrintingController";
-import { PrintResult, PrintingService } from ".";
-import { canvasToPng } from "./utils";
 
 const setFileFormatSpy = vi.fn();
 const setTitleSpy = vi.fn();
