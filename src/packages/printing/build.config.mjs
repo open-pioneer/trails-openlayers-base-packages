@@ -13,7 +13,11 @@ export default defineBuildConfig({
         }
     },
     ui: {
-        references: ["notifier.NotificationService", "printing.PrintingService"]
+        references: [
+            "notifier.NotificationService",
+            "printing.PrintingService",
+            "runtime.ApplicationContext"
+        ]
     },
     publishConfig: {
         strict: true

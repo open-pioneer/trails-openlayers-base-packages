@@ -10,7 +10,11 @@ export interface PrintingService extends DeclaredService<"printing.PrintingServi
      * The promise resolves with the resulting map image or with any error that occurred
      * while printing the map.
      */
-    printMap(olMap: OlMap, blockUserInteraction?: boolean): Promise<PrintResult>;
+    printMap(
+        olMap: OlMap,
+        blockUserInteraction?: boolean,
+        overlayText?: string
+    ): Promise<PrintResult>;
 }
 
 /** The result of a print operation. */

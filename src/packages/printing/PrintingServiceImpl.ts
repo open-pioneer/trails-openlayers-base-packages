@@ -21,10 +21,16 @@ export class PrintingServiceImpl implements PrintingService {
     private scaleLine: ScaleLine | undefined = undefined;
 
     private blockUserInteraction: boolean = false;
+    private overlayText: string = "Karte wird gedruckt ...";
 
-    async printMap(olMap: OlMap, blockUserInteraction: boolean): Promise<PrintResultImpl> {
+    async printMap(
+        olMap: OlMap,
+        blockUserInteraction: boolean,
+        overlayText: string
+    ): Promise<PrintResultImpl> {
         this.olMap = olMap;
         this.blockUserInteraction = blockUserInteraction;
+        this.overlayText = overlayText || this.overlayText;
 
         if (this.running) {
             throw new Error("Printing already running.");
@@ -78,7 +84,7 @@ export class PrintingServiceImpl implements PrintingService {
 
         const message = document.createElement("div");
         message.classList.add("printing-overlay-status");
-        message.textContent = "Karte wird gedruckt ..."; //todo: use i18n overlayText;
+        message.textContent = this.overlayText;
         overlay.appendChild(message);
     }
 

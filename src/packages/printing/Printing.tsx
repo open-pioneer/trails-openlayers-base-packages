@@ -17,7 +17,8 @@ import { MapModel, useMapModel } from "@open-pioneer/map";
 import { NotificationService } from "@open-pioneer/notifier";
 import { FileFormatType, PrintingController } from "./PrintingController";
 import { createLogger } from "@open-pioneer/core";
-import { PackageIntl } from "@open-pioneer/runtime";
+import { ApplicationContext, PackageIntl } from "@open-pioneer/runtime";
+import { PrintingService } from "./index";
 
 const LOG = createLogger("printing");
 
@@ -43,11 +44,13 @@ export const Printing: FC<PrintingProps> = (props) => {
     const [title, setTitle] = useState<string>("");
     const [running, setRunning] = useState<boolean>(false);
 
+    const systemService = useService<ApplicationContext>("runtime.ApplicationContext");
+    const printingService = useService<PrintingService>("printing.PrintingService");
     const notifier = useService<NotificationService>("notifier.NotificationService");
 
     const { map } = useMapModel(mapId);
 
-    const controller = useController(map, intl);
+    const controller = useController(map, intl, printingService, systemService);
 
     useEffect(() => {
         controller?.setFileFormat(selectedFileFormat);
@@ -133,7 +136,12 @@ export const Printing: FC<PrintingProps> = (props) => {
 /**
  * Create a PrintingController instance to export the map view.
  */
-function useController(map: MapModel | undefined, intl: PackageIntl) {
+function useController(
+    map: MapModel | undefined,
+    intl: PackageIntl,
+    service: PrintingService,
+    systemService: ApplicationContext
+) {
     const [controller, setController] = useState<PrintingController | undefined>(undefined);
 
     useEffect(() => {
@@ -141,7 +149,7 @@ function useController(map: MapModel | undefined, intl: PackageIntl) {
             return;
         }
 
-        const controller = new PrintingController(map.olMap, {
+        const controller = new PrintingController(map.olMap, service, systemService, {
             overlayText: intl.formatMessage({ id: "printingMap" })
         });
         setController(controller);
