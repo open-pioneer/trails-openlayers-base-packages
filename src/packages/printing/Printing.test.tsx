@@ -126,6 +126,9 @@ async function createPrinting() {
     const injectedServices = createServiceOptions({ registry });
     injectedServices["notifier.NotificationService"] = notifier;
 
+    // used via useService, but never called because controller was mocked
+    injectedServices["printing.PrintingService"] = {};
+
     render(
         <PackageContextProvider services={injectedServices}>
             <Printing mapId={mapId} data-testid="printing"></Printing>
