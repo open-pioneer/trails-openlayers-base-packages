@@ -13,8 +13,8 @@ messages:
       startTitle: "Editierung - Feature bearbeiten"
       featureModified: "Objekt aktualisiert mit ID: {featureId}"
       tooltip:
-        select: Geometrie selektieren, um mit der Bearbeitung zu starten
-        deselect: Selektion entfernen, um Geometrie abzuschließen und Änderungen zu speichern
+        select: Geometrie auswählen, um mit der Bearbeitung zu starten
+        deselect: Außerhalb der Geometrie in die Karte klicken, um Änderungen zu speichern
     stopTitle: "Editierung - Stoppen"
     resetTitle: "Editierung - Zurücksetzen"
   resultListTitle: "Ergebnisliste"

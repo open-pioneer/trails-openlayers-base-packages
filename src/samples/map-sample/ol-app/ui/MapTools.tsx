@@ -278,7 +278,7 @@ function useEditingUpdateWorkflow(
 
         function _createEditingTooltip(olMap: OlMap): Tooltip {
             const element = document.createElement("div");
-            element.className = "editing-tooltip hidden";
+            element.className = "editing-tooltip editing-tooltip-hidden";
             element.textContent = intl.formatMessage({ id: "editing.update.tooltip.select" });
 
             const overlay = new Overlay({
@@ -323,6 +323,7 @@ function useEditingUpdateWorkflow(
                 });
 
                 map.olMap.addInteraction(selectInteraction);
+                tooltip.element.classList.remove("editing-tooltip-hidden");
 
                 const url = new URL(layer.attributes.collectionURL + "/items");
                 let workflow: EditingWorkflow;
@@ -372,11 +373,13 @@ function useEditingUpdateWorkflow(
                                 map.olMap.removeInteraction(selectInteraction);
                             });
                     } else if (selected.length === 1 && deselected.length === 1) {
+                        unByKey(selectHandler);
+                        tooltip.destroy();
+
                         // Disable change of selected feature (multiple selection)
                         stopEditingUpdate();
                     } else if (selected.length === 0 && deselected.length === 1) {
                         unByKey(selectHandler);
-
                         tooltip.destroy();
 
                         workflow.save();
