@@ -1,6 +1,6 @@
 # @open-pioneer/map
 
-This package integrates [OpenLayers](https://openlayers.org/) maps into a Trails application.
+This package integrates [OpenLayers](https://openlayers.org/) maps into an open pioneer trails application.
 APIs provided by this package can be used to configure, embed and access the map and its contents.
 
 ## Usage
