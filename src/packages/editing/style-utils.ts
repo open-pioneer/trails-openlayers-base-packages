@@ -8,13 +8,16 @@ import VectorLayer from "ol/layer/Vector";
 import { Feature } from "ol";
 
 interface FlatStyleProps {
-    polygon: FlatStyleLike;
+    polygon: FlatStyleLike; // TODO: if useful, only allow FlatStyle instead of FlatStyleLike (also in API)
     vertex: FlatStyleLike;
 }
 
 /**
  * Function to retrieve an OpenLayers style from OpenLayers FlatStyle
  */
+// TODO: Adjust documentation: Function is doing more than just converting.
+// TODO: Rename parameter to clarify that input is not a flatStyle
+// TODO: Consider renaming method to clarify that function is not just converting to a style
 export function getStyle(flatStyle: FlatStyleProps) {
     let polygonStyle = flatStyleToStyle(flatStyle.polygon);
     if (Array.isArray(polygonStyle)) {
@@ -37,6 +40,7 @@ export function getStyle(flatStyle: FlatStyleProps) {
     return style;
 }
 
+// TODO: use better method name (or add a comment to clarify what the method is doing)
 const constrainGeometryFunction: GeometryFunction = (feature) => {
     if (feature) {
         const geometry = feature.getGeometry() as Polygon;
@@ -50,6 +54,7 @@ const constrainGeometryFunction: GeometryFunction = (feature) => {
     return undefined;
 };
 
+// TODO: refactor
 const flatStyleToStyle = (flatStyle: FlatStyleLike): Style[] | Style | undefined => {
     const vectorLayer = new VectorLayer({ style: flatStyle });
     if (!vectorLayer) return;

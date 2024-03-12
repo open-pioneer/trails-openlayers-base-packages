@@ -84,12 +84,12 @@ export interface EditingWorkflow extends EventEmitter<EditingWorkflowEvents> {
  */
 export interface EditingService extends DeclaredService<"editing.EditingService"> {
     /**
-     * Creates and initializes a new {@link EditingWorkflow} to create geometries.
+     * Creates and initializes a new {@link EditingWorkflow} to create a geometry.
      */
     create(map: MapModel, ogcApiFeatureLayerUrl: URL): EditingWorkflow;
 
     /**
-     * Creates and initializes a new {@link EditingWorkflow} to update geometries.
+     * Creates and initializes a new {@link EditingWorkflow} to update an existing feature's geometry.
      */
     update(map: MapModel, ogcApiFeatureLayerUrl: URL, feature: Feature): EditingWorkflow;
 
@@ -99,7 +99,7 @@ export interface EditingService extends DeclaredService<"editing.EditingService"
     stop(mapId: string): void;
 
     /**
-     * Removes the unfinished geometry from an existing {@link EditingWorkflow} without leaving the edit mode.
+     * Resets the unfinished geometry from an existing {@link EditingWorkflow} without leaving the edit mode.
      */
     reset(mapId: string): void;
 }
