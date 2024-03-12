@@ -1,8 +1,18 @@
 {
     "name": "@open-pioneer/geolocation",
     "version": "0.3.1",
+    "description": "This package provides a component to locate a user's position.",
     "license": "Apache-2.0",
     "main": "index.ts",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/open-pioneer/trails-openlayers-base-packages",
+        "directory": "src/packages/geolocation"
+    },
+    "homepage": "https://github.com/open-pioneer",
+    "keywords": [
+        "open-pioneer-trails"
+    ],
     "scripts": {
         "build": "build-pioneer-package"
     },
