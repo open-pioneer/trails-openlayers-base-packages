@@ -3,6 +3,9 @@
 import { DeclaredService } from "@open-pioneer/runtime";
 import OlMap from "ol/Map";
 
+/**
+ * Options supported when printing the map.
+ */
 export interface PrintingOptions {
     /**
      * When this is true (the default), an overlay will be added above the map

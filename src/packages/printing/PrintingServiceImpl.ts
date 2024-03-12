@@ -104,7 +104,16 @@ export class PrintJob {
             text: true,
             minWidth: 125
         });
+
         const renderPromise = createManualPromise<void>();
+
+        // We expect the scale line to be rendered by the open layers map.
+        // This is a sanity check that throws an error when that either doesn't happen
+        // or if it takes an extremely large time.
+        const timeout = setTimeout(() => {
+            renderPromise.reject(new Error("Scale line did not render"));
+        }, 3000);
+
         const oldRender = this.scaleLine.render;
         this.scaleLine.render = (...args) => {
             oldRender.apply(this.scaleLine, args);
@@ -112,11 +121,15 @@ export class PrintJob {
         };
         this.olMap?.addControl(this.scaleLine);
 
-        // Wait until render (+ one additional frame just to be sure).
-        await renderPromise.promise;
-        await new Promise((resolve) => {
-            requestAnimationFrame(resolve);
-        });
+        try {
+            // Wait until render (+ one additional frame just to be sure).
+            await renderPromise.promise;
+            await new Promise((resolve) => {
+                requestAnimationFrame(resolve);
+            });
+        } finally {
+            clearTimeout(timeout);
+        }
     }
 
     private async printToCanvas(element: HTMLElement): Promise<HTMLCanvasElement> {
@@ -134,7 +147,7 @@ export class PrintJob {
             }
         };
 
-        // Lazy load html2canvas: it is a large dependency (>= KiB) that is only
+        // Lazy load html2canvas: it is a large dependency (a few hundred KiB) that is only
         // required when actually printed. This speeds up the initial page load.
         const html2canvas = (await import("html2canvas")).default;
         const canvas = await html2canvas(element, exportOptions);

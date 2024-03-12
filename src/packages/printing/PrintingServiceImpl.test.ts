@@ -21,7 +21,7 @@ it("Should successfully print a canvas", async () => {
     const canvas = printResult.getCanvas();
 
     expect(canvas).toBeDefined();
-    expect(canvas instanceof HTMLCanvasElement).toBe(true);
+    expect(canvas.tagName).toBe("CANVAS");
 });
 
 it("should create an overlay during print and removes it after print", async () => {
@@ -88,9 +88,6 @@ it("should not create an overlay if `blockUserInteraction` is set to false", asy
 
     // Wait for the method to complete
     await printDonePromise;
-
-    // Overlay has been removed
-    expect(findOverlay(olMap)).toBe(undefined);
 });
 
 it("adds scale-line during print and removes it after print", async () => {

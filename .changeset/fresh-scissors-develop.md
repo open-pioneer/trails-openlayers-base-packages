@@ -2,4 +2,4 @@
 "@open-pioneer/printing": patch
 ---
 
-Initial release
+Provide an API for exporting the map into a canvas / png.
