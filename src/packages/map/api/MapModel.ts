@@ -9,7 +9,7 @@ import type { LayerRetrievalOptions } from "./shared";
 import type { Geometry } from "ol/geom";
 import { BaseFeature } from "./BaseFeature";
 import { LayerCollectionImpl } from "../model/LayerCollectionImpl";
-import Style from "ol/style/Style";
+import { StyleLike } from "ol/style/Style";
 
 /** Events emitted by the {@link MapModel}. */
 export interface MapModelEvents {
@@ -44,22 +44,16 @@ export interface HighlightZoomOptions extends HighlightOptions {
     viewPadding?: MapPadding;
 }
 
-export interface HighlightStyle {
-    Point?: Style;
-    LineString?: Style[];
-    Polygon?: Style[];
-    MultiPolygon?: Style[];
-    MultiPoint?: Style;
-    MultiLineString?: Style[];
-}
+export type HighlightStyle = {
+    Point?: StyleLike;
+    LineString?: StyleLike;
+    Polygon?: StyleLike;
+    MultiPolygon?: StyleLike;
+    MultiPoint?: StyleLike;
+    MultiLineString?: StyleLike;
+};
 
-export type HighlightStyleType =
-    | "Point"
-    | "LineString"
-    | "Polygon"
-    | "MultiPolygon"
-    | "MultiPoint"
-    | "MultiLineString";
+export type HighlightStyleType = keyof HighlightStyle;
 
 /**
  * Map padding, all values are pixels.
