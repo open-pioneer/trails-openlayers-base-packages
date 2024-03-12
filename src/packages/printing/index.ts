@@ -19,7 +19,11 @@ export interface PrintingOptions {
     overlayText?: string;
 }
 
-// TODO: Comment
+/**
+ * The printing service provides an image of a map as a canvas element or a data URL for a PNG image.
+ *
+ * Inject an instance of this service by referencing the interface name `"printing.PrintingService"`.
+ */
 export interface PrintingService extends DeclaredService<"printing.PrintingService"> {
     /**
      * Starts a map print operation on the specified map.
