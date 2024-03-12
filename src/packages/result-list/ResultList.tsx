@@ -130,7 +130,7 @@ export interface ResultListProps extends CommonComponentProps {
     /**
      * The id of the map.
      */
-    mapId?: string;
+    mapId: string;
 
     /**
      * Describes the data rendered by the component.
@@ -150,6 +150,7 @@ export const ResultList: FC<ResultListProps> = (props) => {
     const { containerProps } = useCommonComponentProps("result-list", props);
     const intl = useIntl();
     const {
+        mapId,
         input: { data, columns, formatOptions },
         onSelectionChange
     } = props;
@@ -173,6 +174,7 @@ export const ResultList: FC<ResultListProps> = (props) => {
     return (
         <Box {...containerProps} height="100%" overflowY="auto" ref={containerRef}>
             <DataTable
+                mapId={mapId}
                 columns={dataTableColumns}
                 data={data}
                 onSelectionChange={onSelectionChange}

@@ -328,6 +328,7 @@ it("expect result-list throws selection-change-Event", async () => {
     render(
         <PackageContextProvider>
             <ResultList
+                mapId={"foo"}
                 input={{ data: dummyFeatureData, columns: dummyColumns }}
                 data-testid="result-list"
                 onSelectionChange={selectionChangeListener}

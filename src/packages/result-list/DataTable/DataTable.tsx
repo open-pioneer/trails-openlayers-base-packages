@@ -30,6 +30,7 @@ import { ResultListSelectionChangeEvent } from "../ResultList";
 const LOG = createLogger("result-list:DataTable");
 
 export interface DataTableProps<Data extends BaseFeature> {
+    mapId: string;
     data: Data[];
     columns: ColumnDef<Data>[];
     onSelectionChange?(event: ResultListSelectionChangeEvent): void;
