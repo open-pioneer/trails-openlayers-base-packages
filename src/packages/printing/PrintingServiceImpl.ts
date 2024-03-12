@@ -20,7 +20,7 @@ export class PrintingServiceImpl implements PrintingService {
         });
     }
 
-    async printMap(olMap: OlMap, options: PrintingOptions): Promise<PrintResultImpl> {
+    async printMap(olMap: OlMap, options?: PrintingOptions): Promise<PrintResultImpl> {
         const job = new PrintJob(olMap, {
             blockUserInteraction: true,
             overlayText: this.defaultOverlayText,
