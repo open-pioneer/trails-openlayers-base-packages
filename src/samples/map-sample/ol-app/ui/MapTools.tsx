@@ -333,9 +333,7 @@ function useEditingUpdateWorkflow(
                     const deselected = e.deselected;
 
                     if (selected.length === 1 && deselected.length === 0) {
-                        tooltip.element.textContent = intl.formatMessage({
-                            id: "editing.update.tooltip.deselect"
-                        });
+                        tooltip.destroy();
 
                         const feature = selected[0];
                         if (!feature) {
@@ -362,7 +360,6 @@ function useEditingUpdateWorkflow(
                                     displayDuration: 4000
                                 });
 
-                                const vectorLayer = layer?.olLayer as VectorLayer<VectorSource>;
                                 vectorLayer.getSource()?.refresh();
                             })
                             .catch((error: Error) => {

@@ -22,8 +22,15 @@ import {
     EditingWorkflow,
     EditingWorkflowProps
 } from "./api";
-import { Collection } from "ol";
+import { Collection, Overlay } from "ol";
 import { getStyle } from "./style-utils";
+import { PackageIntl } from "@open-pioneer/runtime";
+
+// Represents a tooltip rendered on the OpenLayers map
+interface Tooltip extends Resource {
+    overlay: Overlay;
+    element: HTMLDivElement;
+}
 
 export class EditingUpdateWorkflowImpl
     extends EventEmitter<EditingWorkflowEvents>
@@ -32,6 +39,7 @@ export class EditingUpdateWorkflowImpl
     #waiter: ManualPromise<Record<string, string> | undefined> | undefined;
 
     private _httpService: HttpService;
+    private _intl: PackageIntl;
 
     private _map: MapModel;
     private _polygonStyle: FlatStyleLike;
@@ -46,6 +54,7 @@ export class EditingUpdateWorkflowImpl
     private _modifyInteraction: Modify;
     private _olMap: OlMap;
     private _mapContainer: HTMLElement | undefined;
+    private _tooltip: Tooltip;
     private _enterHandler: (e: KeyboardEvent) => void;
     private _escapeHandler: (e: KeyboardEvent) => void;
 
@@ -57,6 +66,7 @@ export class EditingUpdateWorkflowImpl
     constructor(options: { feature: Feature } & EditingWorkflowProps) {
         super();
         this._httpService = options.httpService;
+        this._intl = options.intl;
 
         this._polygonStyle = options.polygonStyle;
         this._vertexStyle = options.vertexStyle;
@@ -91,6 +101,8 @@ export class EditingUpdateWorkflowImpl
         this._modifyInteraction = new Modify({
             features: new Collection([options.feature])
         });
+
+        this._tooltip = this._createTooltip(this._olMap);
 
         this._enterHandler = (e: KeyboardEvent) => {
             if (e.code === "Enter" && e.target === this._olMap.getTargetElement()) {
@@ -187,6 +199,8 @@ export class EditingUpdateWorkflowImpl
             this._mapContainer.addEventListener("keydown", this._escapeHandler, false);
         }
 
+        this._tooltip.element.classList.remove("editing-tooltip-hidden");
+
         const modify = this._modifyInteraction.on("modifystart", () => {
             this._setState("active:drawing");
         });
@@ -228,6 +242,7 @@ export class EditingUpdateWorkflowImpl
     private _destroy() {
         this._olMap.removeLayer(this._editingLayer);
         this._olMap.removeInteraction(this._modifyInteraction);
+        this._tooltip.destroy();
 
         // Remove event listener on interaction and on map
         this._interactionListener.map((listener) => {
@@ -267,5 +282,36 @@ export class EditingUpdateWorkflowImpl
 
         const manualPromise = (this.#waiter ??= createManualPromise());
         return manualPromise.promise;
+    }
+
+    private _createTooltip(olMap: OlMap): Tooltip {
+        const element = document.createElement("div");
+        element.className = "editing-tooltip editing-tooltip-hidden";
+        element.textContent = this._intl.formatMessage({ id: "create.tooltip.deselect" });
+
+        const overlay = new Overlay({
+            element: element,
+            offset: [15, 0],
+            positioning: "center-left"
+        });
+
+        const pointerMove = olMap.on("pointermove", (evt) => {
+            if (evt.dragging) {
+                return;
+            }
+
+            overlay.setPosition(evt.coordinate);
+        });
+
+        olMap.addOverlay(overlay);
+
+        return {
+            overlay,
+            element,
+            destroy() {
+                unByKey(pointerMove);
+                olMap.removeOverlay(overlay);
+            }
+        };
     }
 }

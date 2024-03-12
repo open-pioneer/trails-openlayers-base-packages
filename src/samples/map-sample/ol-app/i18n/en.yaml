@@ -14,7 +14,6 @@ messages:
       featureModified: "Modified feature with ID: {featureId}"
       tooltip:
         select: Select geometry to start editing
-        deselect: Click outside the geometry in the map to save changes
     stopTitle: "Editing - Stop"
     resetTitle: "Editing - Reset"
   resultListTitle: "Result-List"
