@@ -31,6 +31,8 @@ const POLYGON_DRAW_STYLE: FlatStyle = {
     "circle-stroke-width": 2
 };
 
+// todo: test für update Schnittstelle fehlt
+
 describe("tests for starting an editing", () => {
     it("should start an editing", async () => {
         const { mapId, registry } = await setupMap();

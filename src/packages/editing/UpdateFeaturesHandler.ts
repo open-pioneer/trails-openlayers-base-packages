@@ -5,6 +5,7 @@ import GeoJSONGeometry from "ol/format/GeoJSON";
 import GeoJSONGeometryCollection from "ol/format/GeoJSON";
 import { Projection } from "ol/proj";
 
+// todo mit in "SaveFeaturesHandler.ts" verschieben?
 /**
  * Function to save an updated feature to an OGC API service.
  * Resolves with feature id, or reject if an error occurs.
@@ -21,6 +22,7 @@ export async function saveUpdatedFeature(
     const featureUrl = new URL(`${url.toString()}/${featureId}`);
     const response = await httpService.fetch(featureUrl, {
         method: "PUT",
+        // Todo: Sicherstellen, dass die Attribute es bisherigen Features nicht ueberschrieben werden
         body: JSON.stringify({ type: "Feature", properties: {}, geometry: geometry }),
         headers: {
             "Content-Type": "application/geo+json; charset=utf-8",

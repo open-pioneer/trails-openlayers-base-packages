@@ -144,6 +144,7 @@ export class EditingUpdateWorkflowImpl
 
         const layerUrl = this._editLayerURL;
 
+        // todo schon beim start machen, damit Nutzer nicht erst nach Editierung in fehler laeuft?
         this._featureId = feature.getId()?.toString();
         if (!this._featureId) {
             this._destroy();

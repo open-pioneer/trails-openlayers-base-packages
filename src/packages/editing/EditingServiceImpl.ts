@@ -98,6 +98,7 @@ export class EditingServiceImpl implements EditingService {
         }
     }
 
+    // todo rename method (e.g. "_connectToWorkflowDestroyEvent")
     _connectToWorkflowComplete(
         workflow: EditingCreateWorkflowImpl | EditingUpdateWorkflowImpl,
         mapId: string

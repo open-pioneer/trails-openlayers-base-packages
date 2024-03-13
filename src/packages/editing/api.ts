@@ -86,11 +86,13 @@ export interface EditingService extends DeclaredService<"editing.EditingService"
     /**
      * Creates and initializes a new {@link EditingWorkflow} to create a geometry.
      */
+    // todo rename to createFeature
     create(map: MapModel, ogcApiFeatureLayerUrl: URL): EditingWorkflow;
 
     /**
      * Creates and initializes a new {@link EditingWorkflow} to update an existing feature's geometry.
      */
+    // Todo rename to updateFeature
     update(map: MapModel, ogcApiFeatureLayerUrl: URL, feature: Feature): EditingWorkflow;
 
     /**

@@ -254,6 +254,7 @@ export class EditingCreateWorkflowImpl
         this._setState("destroyed");
     }
 
+    // todo rename to "triggerSave" and/or remove public access
     save() {
         // Stop drawing - the `drawend` event is dispatched before inserting the feature.
         this._drawInteraction.finishDrawing();
