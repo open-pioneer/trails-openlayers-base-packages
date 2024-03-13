@@ -71,10 +71,13 @@ export class Highlights {
      * @param geoObjects
      * @returns
      */
-    #filterGeoobjects(geoObjects: DisplayTarget[]) {
-        return geoObjects.filter((item) => {
-            if ("getType" in item || item?.geometry) return item;
+    #filterGeoobjects(geoObjects: DisplayTarget[]): Geometry[] {
+        const geometries: Geometry[] = [];
+        geoObjects.forEach((item) => {
+            if ("getType" in item) geometries.push(item);
+            if ("geometry" in item && item.geometry) geometries.push(item.geometry);
         });
+        return geometries;
     }
 
     /**
@@ -84,9 +87,9 @@ export class Highlights {
      * @returns
      */
     addHighlight(displayTarget: DisplayTarget[], highlightOptions: HighlightOptions | undefined) {
-        const geoObjects = this.#filterGeoobjects(displayTarget);
+        const geometries = this.#filterGeoobjects(displayTarget);
 
-        if (geoObjects.length === 0) {
+        if (geometries.length === 0) {
             return {
                 get isActive() {
                     return false;
@@ -95,9 +98,8 @@ export class Highlights {
             };
         }
 
-        const features = geoObjects.map((geoObject) => {
-            const geometry = "getType" in geoObject ? geoObject : geoObject.geometry;
-            const type = geometry!.getType();
+        const features = geometries.map((geometry) => {
+            const type = geometry.getType();
             const feature = new Feature({
                 type: type,
                 geometry: geometry
@@ -136,15 +138,14 @@ export class Highlights {
      * @returns
      */
     zoomToHighlight(displayTarget: DisplayTarget[], options: HighlightZoomOptions | undefined) {
-        const geoObjects = this.#filterGeoobjects(displayTarget);
+        const geometries = this.#filterGeoobjects(displayTarget);
 
-        if (geoObjects.length === 0) {
+        if (geometries.length === 0) {
             return;
         }
 
         let extent = createEmpty();
-        for (const geoObject of geoObjects) {
-            const geometry = "getType" in geoObject ? geoObject : geoObject.geometry;
+        for (const geometry of geometries) {
             extent = extend(extent, geometry!.getExtent());
         }
 
@@ -175,17 +176,8 @@ export class Highlights {
         displayTarget: DisplayTarget[],
         highlightZoomStyle: HighlightZoomOptions | undefined
     ) {
-        const geoObjects = this.#filterGeoobjects(displayTarget);
-        if (geoObjects.length === 0) {
-            return {
-                get isActive() {
-                    return false;
-                },
-                destroy() {}
-            };
-        }
-        const result = this.addHighlight(geoObjects, highlightZoomStyle);
-        this.zoomToHighlight(geoObjects, highlightZoomStyle);
+        const result = this.addHighlight(displayTarget, highlightZoomStyle);
+        this.zoomToHighlight(displayTarget, highlightZoomStyle);
         return result;
     }
 
