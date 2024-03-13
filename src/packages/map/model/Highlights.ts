@@ -30,9 +30,9 @@ const DEFAULT_VIEW_PADDING = { top: 50, right: 20, bottom: 10, left: 20 };
 export class Highlights {
     private olMap: OlMap;
 
-    private olLayer!: VectorLayer<VectorSource>;
-    private olSource!: VectorSource<Feature<Geometry>>;
-    private activeHighlights!: Set<Highlight>;
+    private olLayer: VectorLayer<VectorSource>;
+    private olSource: VectorSource<Feature<Geometry>>;
+    private activeHighlights: Set<Highlight>;
 
     constructor(olMap: OlMap) {
         this.olMap = olMap;
@@ -52,10 +52,32 @@ export class Highlights {
     }
 
     /**
+     * Getter for Hightlightlayer
+     * @returns Highlights.olLayer
+     */
+    getLayer() {
+        return this.olLayer;
+    }
+
+    /**
      * This method removes all highlights before destroying the class
      */
     destroy() {
         this.clearHighlight();
+    }
+
+    /**
+     * Method of filtering out objects that are not geometry or have no property geometry.
+     * @param geoObjects
+     * @returns
+     */
+    #filterGeoobjects(geoObjects: DisplayTarget[]): Geometry[] {
+        const geometries: Geometry[] = [];
+        geoObjects.forEach((item) => {
+            if ("getType" in item) geometries.push(item);
+            if ("geometry" in item && item.geometry) geometries.push(item.geometry);
+        });
+        return geometries;
     }
 
     /**
@@ -65,17 +87,19 @@ export class Highlights {
      * @returns
      */
     addHighlight(displayTarget: DisplayTarget[], highlightOptions: HighlightOptions | undefined) {
-        const geoObjects = displayTarget.filter((item) => {
-            if ("getType" in item || item?.geometry) return item;
-        });
+        const geometries = this.#filterGeoobjects(displayTarget);
 
-        if (!geoObjects || !geoObjects.length) {
-            return;
+        if (geometries.length === 0) {
+            return {
+                get isActive() {
+                    return false;
+                },
+                destroy() {}
+            };
         }
 
-        const features = geoObjects.map((geoObject) => {
-            const geometry = "getType" in geoObject ? geoObject : geoObject.geometry;
-            const type = geometry!.getType();
+        const features = geometries.map((geometry) => {
+            const type = geometry.getType();
             const feature = new Feature({
                 type: type,
                 geometry: geometry
@@ -114,17 +138,14 @@ export class Highlights {
      * @returns
      */
     zoomToHighlight(displayTarget: DisplayTarget[], options: HighlightZoomOptions | undefined) {
-        const geoObjects = displayTarget.filter((item) => {
-            if ("getType" in item || item?.geometry) return item;
-        });
+        const geometries = this.#filterGeoobjects(displayTarget);
 
-        if (!geoObjects || !geoObjects.length) {
+        if (geometries.length === 0) {
             return;
         }
 
         let extent = createEmpty();
-        for (const geoObject of geoObjects) {
-            const geometry = "getType" in geoObject ? geoObject : geoObject.geometry;
+        for (const geometry of geometries) {
             extent = extend(extent, geometry!.getExtent());
         }
 
@@ -152,14 +173,11 @@ export class Highlights {
      * @returns
      */
     addHighlightAndZoom(
-        geoObjects: DisplayTarget[],
+        displayTarget: DisplayTarget[],
         highlightZoomStyle: HighlightZoomOptions | undefined
     ) {
-        if (!geoObjects || !geoObjects.length) {
-            return;
-        }
-        const result = this.addHighlight(geoObjects, highlightZoomStyle);
-        this.zoomToHighlight(geoObjects, highlightZoomStyle);
+        const result = this.addHighlight(displayTarget, highlightZoomStyle);
+        this.zoomToHighlight(displayTarget, highlightZoomStyle);
         return result;
     }
 

@@ -8,8 +8,7 @@ import type { Layer, LayerBase } from "./layers";
 import type { LayerRetrievalOptions } from "./shared";
 import type { Geometry } from "ol/geom";
 import { BaseFeature } from "./BaseFeature";
-import { LayerCollectionImpl } from "../model/LayerCollectionImpl";
-import Style from "ol/style/Style";
+import { StyleLike } from "ol/style/Style";
 
 /** Events emitted by the {@link MapModel}. */
 export interface MapModelEvents {
@@ -44,22 +43,16 @@ export interface HighlightZoomOptions extends HighlightOptions {
     viewPadding?: MapPadding;
 }
 
-export interface HighlightStyle {
-    Point?: Style;
-    LineString?: Style[];
-    Polygon?: Style[];
-    MultiPolygon?: Style[];
-    MultiPoint?: Style;
-    MultiLineString?: Style[];
-}
+export type HighlightStyle = {
+    Point?: StyleLike;
+    LineString?: StyleLike;
+    Polygon?: StyleLike;
+    MultiPolygon?: StyleLike;
+    MultiPoint?: StyleLike;
+    MultiLineString?: StyleLike;
+};
 
-export type HighlightStyleType =
-    | "Point"
-    | "LineString"
-    | "Polygon"
-    | "MultiPolygon"
-    | "MultiPoint"
-    | "MultiLineString";
+export type HighlightStyleType = keyof HighlightStyle;
 
 /**
  * Map padding, all values are pixels.
@@ -73,10 +66,16 @@ export interface MapPadding {
     bottom?: number;
 }
 
+/**
+ * Represents the additional graphical representations of objects.
+ */
 export interface Highlight extends Resource {
     readonly isActive: boolean;
 }
 
+/**
+ * Represents a Object
+ */
 export type DisplayTarget = BaseFeature | Geometry;
 
 /**
@@ -114,7 +113,7 @@ export interface MapModel extends EventSource<MapModelEvents> {
      * Note that not all layers in this collection may be active in the OpenLayers map.
      * Also note that not all layers in the OpenLayers map may be contained in this collection.
      */
-    readonly layers: LayerCollectionImpl;
+    readonly layers: LayerCollection;
 
     /**
      * The raw OpenLayers map.
@@ -126,22 +125,26 @@ export interface MapModel extends EventSource<MapModelEvents> {
      */
     whenDisplayed(): Promise<void>;
 
-    highlight(geometries: DisplayTarget[], options?: HighlightOptions): Highlight | undefined;
-    // highlight(geometries: Highlightable[], options?: HighlightOptions): Highlight;
-
-    zoom(geometries: DisplayTarget[], options?: HighlightZoomOptions): void;
-    // zoom(geometries: Highlightable[], options?: ZoomOptions): void;
+    /**
+     * Method for displaying additional graphical representations of objects
+     * @param geometries
+     * @param options
+     */
+    highlight(geometries: DisplayTarget[], options?: HighlightOptions): Highlight;
 
     /**
-     * Highlights the given geometries on the map.
-     * Centers and zooms the view on the geometries.
-     *
-     * Removes any previous highlights.
+     * Methode to zoom to a graphical representations of objects
+     * @param geometries
+     * @param options
      */
-    highlightAndZoom(
-        geometries: DisplayTarget[],
-        options?: HighlightZoomOptions
-    ): Highlight | undefined;
+    zoom(geometries: DisplayTarget[], options?: HighlightZoomOptions): void;
+
+    /**
+     * Method for displaying and zoom to additional graphical representations of objects
+     * @param geometries
+     * @param options
+     */
+    highlightAndZoom(geometries: DisplayTarget[], options?: HighlightZoomOptions): Highlight;
 
     /**
      * Removes any existing highlights from the map.
