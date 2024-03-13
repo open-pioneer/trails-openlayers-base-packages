@@ -30,7 +30,7 @@ export function SearchComponent() {
 
     function onSearchCleared() {
         console.debug("The user cleared the search");
-        map?.removeHighlight();
+        map?.removeHighlights();
     }
 
     return (

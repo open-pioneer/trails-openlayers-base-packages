@@ -1295,6 +1295,30 @@ importers:
         specifier: ^18.2.0
         version: 18.2.0
 
+  src/samples/test-printing-api/printing-api-app:
+    dependencies:
+      '@open-pioneer/chakra-integration':
+        specifier: ^1.1.1
+        version: 1.1.1(@chakra-ui/react@2.8.2)(@emotion/cache@11.11.0)(@emotion/react@11.11.4)(@emotion/styled@11.11.0)(framer-motion@10.18.0)(react-dom@18.2.0)(react@18.2.0)
+      '@open-pioneer/map':
+        specifier: workspace:^
+        version: link:../../../packages/map
+      '@open-pioneer/printing':
+        specifier: workspace:^
+        version: link:../../../packages/printing
+      '@open-pioneer/react-utils':
+        specifier: workspace:^
+        version: link:../../../packages/react-utils
+      '@open-pioneer/runtime':
+        specifier: ^2.1.2
+        version: 2.1.2(@formatjs/intl@2.10.0)(@open-pioneer/base-theme@0.3.0)(@open-pioneer/chakra-integration@1.1.1)(@open-pioneer/core@1.2.1)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
+      '@open-pioneer/theme':
+        specifier: workspace:^
+        version: link:../../../packages/theme
+      react:
+        specifier: ^18.2.0
+        version: 18.2.0
+
   src/samples/test-result-list/result-list-app:
     dependencies:
       '@open-pioneer/chakra-integration':

@@ -1,34 +1,28 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { createManualPromise } from "@open-pioneer/core";
-import type { Options } from "html2canvas";
 import OlMap from "ol/Map";
-import { ScaleLine } from "ol/control";
-import { Interaction } from "ol/interaction";
-import Draw from "ol/interaction/Draw";
-import { StyleLike } from "ol/style/Style";
+import { PrintingService, PrintResult } from "./index";
+import { canvasToPng, createBlockUserOverlay } from "./utils";
+import { Resource } from "@open-pioneer/core";
 
 export type FileFormatType = "png" | "pdf";
 
 const DEFAULT_FILE_NAME = "map";
 
-const PRINTING_HIDE_CLASS = "printing-hide";
-
 export class PrintingController {
     private olMap: OlMap;
     private title: string = "";
     private fileFormat: FileFormatType = "pdf";
-    private running = false;
     private i18n: I18n;
 
-    private drawInformation: { draw: Draw; style: StyleLike | null | undefined }[] | undefined = [];
+    private printingService: PrintingService;
 
-    private scaleLine: ScaleLine | undefined = undefined;
+    private printMap: PrintResult | undefined = undefined;
+    private overlay: Resource | undefined = undefined;
 
-    private overlay: HTMLDivElement | undefined = undefined;
-
-    constructor(olMap: OlMap, i18n: I18n) {
+    constructor(olMap: OlMap, printingService: PrintingService, i18n: I18n) {
         this.olMap = olMap;
+        this.printingService = printingService;
         this.i18n = i18n;
     }
 
@@ -49,15 +43,12 @@ export class PrintingController {
             return;
         }
 
-        if (this.running) {
-            throw new Error("Printing already running.");
-        }
-
         try {
-            await this.beginExport();
-
-            const canvas = await this.exportToCanvas(this.olMap.getViewport());
-
+            this.begin();
+            this.printMap = await this.printingService.printMap(this.olMap, {
+                blockUserInteraction: false
+            });
+            const canvas = this.printMap.getCanvas();
             if (canvas) {
                 this.fileFormat == "png"
                     ? await this.exportMapInPNG(canvas)
@@ -66,114 +57,19 @@ export class PrintingController {
                 throw new Error("Canvas export failed");
             }
         } finally {
-            // Always remove scale bar
             this.reset();
         }
     }
 
-    private async exportToCanvas(element: HTMLElement): Promise<HTMLCanvasElement> {
-        // export options for html2canvas.
-        const exportOptions: Partial<Options> = {
-            useCORS: true,
-            ignoreElements: function (element: Element) {
-                if (element.classList && typeof element.classList === "object") {
-                    const classList = element.classList;
-                    return (
-                        classList.contains("map-anchors") || classList.contains(PRINTING_HIDE_CLASS)
-                    );
-                }
-                return false;
-            }
-        };
-
-        // Lazy load html2canvas: it is a large dependency (>= KiB) that is only
-        // required when actually printed. This speeds up the initial page load.
-        const html2canvas = (await import("html2canvas")).default;
-        const canvas = await html2canvas(element, exportOptions);
-
-        return canvas;
-    }
-
-    private async beginExport() {
-        this.running = true;
-
-        /** hides active draw interactions while printing (set feature style to null ) */
-        const interactions = this.olMap
-            .getInteractions()
-            .getArray()
-            .filter((interaction: Interaction) => {
-                return interaction.getActive() && interaction instanceof Draw;
-            });
-        this.drawInformation = [];
-        interactions?.forEach((interaction) => {
-            const draw = interaction as Draw;
-            const previousStyle = draw.getOverlay().getStyle();
-            draw.getOverlay().setStyle(null);
-            this.drawInformation?.push({
-                draw: draw,
-                style: previousStyle
-            });
-        });
-
-        this.addOverlay();
-        await this.addScaleLine();
-    }
-
-    private reset() {
-        this.removeScaleLine();
-        this.removeOverlay();
-        this.running = false;
-
-        /** show active draw interactions after printing (reset feature style to its previous style ) */
-        this.drawInformation?.length &&
-            this.drawInformation.forEach((drawInfo) => {
-                drawInfo.draw.getOverlay().setStyle(drawInfo.style);
-            });
-    }
-
-    private async addScaleLine() {
-        this.scaleLine = new ScaleLine({
-            className: "printing-scale-bar ol-scale-bar",
-            bar: true,
-            text: true,
-            minWidth: 125
-        });
-        const renderPromise = createManualPromise<void>();
-        const oldRender = this.scaleLine.render;
-        this.scaleLine.render = (...args) => {
-            oldRender.apply(this.scaleLine, args);
-            renderPromise.resolve();
-        };
-        this.olMap.addControl(this.scaleLine);
-
-        // Wait until render (+ one additional frame just to be sure).
-        await renderPromise.promise;
-        await new Promise((resolve) => {
-            requestAnimationFrame(resolve);
-        });
-    }
-
-    private removeScaleLine() {
-        if (this.scaleLine) {
-            this.olMap.removeControl(this.scaleLine);
-            this.scaleLine = undefined;
+    private begin() {
+        const container = this.olMap.getTargetElement();
+        if (container) {
+            this.overlay = createBlockUserOverlay(container, this.i18n.overlayText);
         }
     }
 
-    private addOverlay() {
-        const container = this.olMap.getTargetElement();
-        const overlay = (this.overlay = document.createElement("div"));
-        overlay.classList.add("printing-overlay", PRINTING_HIDE_CLASS);
-        container.appendChild(overlay);
-
-        const message = document.createElement("div");
-        message.classList.add("printing-overlay-status");
-        message.textContent = this.i18n.overlayText;
-        overlay.appendChild(message);
-    }
-
-    private removeOverlay() {
-        this.overlay?.remove();
+    private reset() {
+        this.overlay?.destroy();
         this.overlay = undefined;
     }
 
@@ -208,7 +104,13 @@ export class PrintingController {
 
         const link = document.createElement("a");
         link.setAttribute("download", fileName + ".png");
-        link.href = containerCanvas.toDataURL("image/png", 0.8);
+
+        const dataURL = canvasToPng(containerCanvas);
+        if (!dataURL) {
+            throw new Error("Failed to get image data URL");
+        }
+
+        link.href = dataURL;
         link.click();
     }
 

@@ -1,8 +1,18 @@
 {
     "name": "@open-pioneer/coordinate-viewer",
     "version": "0.4.0",
+    "description": "This package provides a UI component to show the current coordinates at the users current mouse position.",
     "license": "Apache-2.0",
     "main": "index.ts",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/open-pioneer/trails-openlayers-base-packages",
+        "directory": "src/packages/coordinate-viewer"
+    },
+    "homepage": "https://github.com/open-pioneer",
+    "keywords": [
+        "open-pioneer-trails"
+    ],
     "scripts": {
         "build": "build-pioneer-package"
     },

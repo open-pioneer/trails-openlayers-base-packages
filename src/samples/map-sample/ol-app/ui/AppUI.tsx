@@ -83,11 +83,11 @@ export function AppUI() {
             if (interactionType !== currentInteractionType && newValue) {
                 // A new interaction type was toggled on
                 setCurrentInteractionType(interactionType);
-                map?.removeHighlight();
+                map?.removeHighlights();
             } else if (interactionType === currentInteractionType && !newValue) {
                 // The current interaction type was toggled off
                 setCurrentInteractionType(undefined);
-                map?.removeHighlight();
+                map?.removeHighlights();
             }
         } else {
             setCurrentToolState({

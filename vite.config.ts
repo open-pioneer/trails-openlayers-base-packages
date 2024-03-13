@@ -23,6 +23,7 @@ const sampleSites = [
     "samples/test-highlight-and-zoom",
     "samples/test-menu-fix",
     "samples/test-result-list",
+    "samples/test-printing-api",
 
     "samples/experimental-sidebar"
 ];
