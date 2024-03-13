@@ -8,7 +8,6 @@ import type { Layer, LayerBase } from "./layers";
 import type { LayerRetrievalOptions } from "./shared";
 import type { Geometry } from "ol/geom";
 import { BaseFeature } from "./BaseFeature";
-import { LayerCollectionImpl } from "../model/LayerCollectionImpl";
 import { StyleLike } from "ol/style/Style";
 
 /** Events emitted by the {@link MapModel}. */
@@ -114,7 +113,7 @@ export interface MapModel extends EventSource<MapModelEvents> {
      * Note that not all layers in this collection may be active in the OpenLayers map.
      * Also note that not all layers in the OpenLayers map may be contained in this collection.
      */
-    readonly layers: LayerCollectionImpl;
+    readonly layers: LayerCollection;
 
     /**
      * The raw OpenLayers map.

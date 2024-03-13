@@ -169,7 +169,7 @@ function useEditingWorkflow(
             }
 
             try {
-                const layer = map.layers.getLayerById("krankenhaus") as unknown as Layer;
+                const layer = map.layers.getLayerById("krankenhaus") as Layer;
                 const url = new URL(layer.attributes.collectionURL + "/items");
                 const workflow = editingService.start(map, url);
 
