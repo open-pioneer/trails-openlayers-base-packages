@@ -23,7 +23,7 @@ export class EditingServiceImpl implements EditingService {
         this._workflows = new Map();
     }
 
-    create(map: MapModel, ogcApiFeatureLayerUrl: URL): EditingCreateWorkflowImpl {
+    createFeature(map: MapModel, ogcApiFeatureLayerUrl: URL): EditingCreateWorkflowImpl {
         if (!ogcApiFeatureLayerUrl || !map || !map.id) {
             throw new Error("Map, mapId or url is undefined.");
         }
@@ -46,12 +46,16 @@ export class EditingServiceImpl implements EditingService {
             intl: this._serviceOptions.intl
         });
         this._workflows.set(mapId, workflow);
-        this._connectToWorkflowComplete(workflow, mapId);
+        this._connectToWorkflowDestroyEvent(workflow, mapId);
 
         return workflow;
     }
 
-    update(map: MapModel, ogcApiFeatureLayerUrl: URL, feature: Feature): EditingUpdateWorkflowImpl {
+    updateFeature(
+        map: MapModel,
+        ogcApiFeatureLayerUrl: URL,
+        feature: Feature
+    ): EditingUpdateWorkflowImpl {
         if (!ogcApiFeatureLayerUrl || !map || !map.id) {
             throw new Error("Map, mapId or url is undefined.");
         }
@@ -75,7 +79,7 @@ export class EditingServiceImpl implements EditingService {
             intl: this._serviceOptions.intl
         });
         this._workflows.set(mapId, workflow);
-        this._connectToWorkflowComplete(workflow, mapId);
+        this._connectToWorkflowDestroyEvent(workflow, mapId);
 
         return workflow;
     }
@@ -98,8 +102,7 @@ export class EditingServiceImpl implements EditingService {
         }
     }
 
-    // todo rename method (e.g. "_connectToWorkflowDestroyEvent")
-    _connectToWorkflowComplete(
+    _connectToWorkflowDestroyEvent(
         workflow: EditingCreateWorkflowImpl | EditingUpdateWorkflowImpl,
         mapId: string
     ) {

@@ -48,7 +48,7 @@ describe("tests for starting an editing", () => {
             }
         });
 
-        const workflow = editingService.create(map, OGC_API_URL_TEST);
+        const workflow = editingService.createFeature(map, OGC_API_URL_TEST);
         expect(workflow instanceof EditingCreateWorkflowImpl).toBe(true);
     });
 
@@ -66,9 +66,9 @@ describe("tests for starting an editing", () => {
             }
         });
 
-        editingService.create(map, OGC_API_URL_TEST);
+        editingService.createFeature(map, OGC_API_URL_TEST);
 
-        expect(() => editingService.create(map, OGC_API_URL_TEST)).toThrowError(
+        expect(() => editingService.createFeature(map, OGC_API_URL_TEST)).toThrowError(
             "EditingWorkflow could not be started. EditingWorkflow already in progress for this map."
         );
     });
@@ -89,7 +89,7 @@ describe("tests for stopping an editing", () => {
             }
         });
 
-        editingService.create(map, OGC_API_URL_TEST);
+        editingService.createFeature(map, OGC_API_URL_TEST);
 
         const stop = editingService.stop(mapId);
         expect(stop).toBeUndefined;
@@ -109,7 +109,7 @@ describe("tests for stopping an editing", () => {
             }
         });
 
-        editingService.create(map, OGC_API_URL_TEST);
+        editingService.createFeature(map, OGC_API_URL_TEST);
 
         editingService.stop(mapId);
         const stop = editingService.stop(mapId);
@@ -130,7 +130,7 @@ describe("tests for stopping an editing", () => {
             }
         });
 
-        editingService.create(map, OGC_API_URL_TEST);
+        editingService.createFeature(map, OGC_API_URL_TEST);
 
         const stop = editingService.stop("mapId");
         expect(stop instanceof Error).toBe(true);
@@ -153,7 +153,7 @@ describe("tests for resetting an editing", () => {
             }
         });
 
-        editingService.create(map, OGC_API_URL_TEST);
+        editingService.createFeature(map, OGC_API_URL_TEST);
 
         const reset = editingService.reset(mapId);
         expect(reset).toBeUndefined;
@@ -173,7 +173,7 @@ describe("tests for resetting an editing", () => {
             }
         });
 
-        editingService.create(map, OGC_API_URL_TEST);
+        editingService.createFeature(map, OGC_API_URL_TEST);
 
         editingService.reset(mapId);
         const reset = editingService.reset(mapId);
@@ -194,7 +194,7 @@ describe("tests for resetting an editing", () => {
             }
         });
 
-        editingService.create(map, OGC_API_URL_TEST);
+        editingService.createFeature(map, OGC_API_URL_TEST);
 
         const reset = editingService.reset("mapId");
         expect(reset instanceof Error).toBe(true);

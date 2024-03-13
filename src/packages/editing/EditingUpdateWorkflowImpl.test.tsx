@@ -145,7 +145,7 @@ describe("during update editing workflow", () => {
         }
         feature.setId("test_id_1");
 
-        workflow.save();
+        workflow.triggerSave();
 
         expect(workflow.getState()).toBe("active:saving");
     });
@@ -249,7 +249,7 @@ describe("when update editing workflow complete", () => {
         }
         feature.setId("test_id_1");
 
-        workflow.save();
+        workflow.triggerSave();
 
         await sleep(DEFAULT_SLEEP);
 
@@ -305,7 +305,7 @@ describe("when update editing workflow complete", () => {
         }
         feature.setId("test_id_1");
 
-        workflow.save();
+        workflow.triggerSave();
 
         await sleep(DEFAULT_SLEEP);
 

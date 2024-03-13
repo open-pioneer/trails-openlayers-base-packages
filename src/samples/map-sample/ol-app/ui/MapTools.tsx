@@ -212,7 +212,7 @@ function useEditingCreateWorkflow(
             try {
                 const layer = map.layers.getLayerById("krankenhaus") as Layer;
                 const url = new URL(layer.attributes.collectionURL + "/items");
-                const workflow = editingService.create(map, url);
+                const workflow = editingService.createFeature(map, url);
 
                 workflow
                     .whenComplete()
@@ -340,7 +340,7 @@ function useEditingUpdateWorkflow(
                             throw Error("feature is undefined");
                         }
 
-                        workflow = editingService.update(map, url, feature);
+                        workflow = editingService.updateFeature(map, url, feature);
 
                         workflow
                             .whenComplete()
@@ -379,7 +379,7 @@ function useEditingUpdateWorkflow(
                         unByKey(selectHandler);
                         tooltip.destroy();
 
-                        workflow.save();
+                        workflow.triggerSave();
                     }
                 });
             } catch (error) {

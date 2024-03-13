@@ -67,7 +67,7 @@ export interface EditingWorkflow extends EventEmitter<EditingWorkflowEvents> {
     /**
      * Trigger saving the current feature.
      */
-    save(): void;
+    triggerSave(): void;
 
     /**
      * Wait for the editing to be finished. The returned promise resolves with the
@@ -86,14 +86,12 @@ export interface EditingService extends DeclaredService<"editing.EditingService"
     /**
      * Creates and initializes a new {@link EditingWorkflow} to create a geometry.
      */
-    // todo rename to createFeature
-    create(map: MapModel, ogcApiFeatureLayerUrl: URL): EditingWorkflow;
+    createFeature(map: MapModel, ogcApiFeatureLayerUrl: URL): EditingWorkflow;
 
     /**
      * Creates and initializes a new {@link EditingWorkflow} to update an existing feature's geometry.
      */
-    // Todo rename to updateFeature
-    update(map: MapModel, ogcApiFeatureLayerUrl: URL, feature: Feature): EditingWorkflow;
+    updateFeature(map: MapModel, ogcApiFeatureLayerUrl: URL, feature: Feature): EditingWorkflow;
 
     /**
      * Stops the edit mode and removes an existing {@link EditingWorkflow}.

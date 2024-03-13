@@ -108,7 +108,7 @@ export class EditingCreateWorkflowImpl
                  * "length > 4" instead of "length >= 4"
                  */
                 if (features[0] && features[0].getGeometry().getCoordinates()[0].length > 4) {
-                    this.save();
+                    this.triggerSave();
                 }
             }
         };
@@ -254,8 +254,7 @@ export class EditingCreateWorkflowImpl
         this._setState("destroyed");
     }
 
-    // todo rename to "triggerSave" and/or remove public access
-    save() {
+    triggerSave() {
         // Stop drawing - the `drawend` event is dispatched before inserting the feature.
         this._drawInteraction.finishDrawing();
     }

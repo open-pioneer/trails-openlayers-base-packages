@@ -11,7 +11,6 @@ import Feature from "ol/Feature";
 import GeoJSON from "ol/format/GeoJSON";
 import GeoJSONGeometry from "ol/format/GeoJSON";
 import GeoJSONGeometryCollection from "ol/format/GeoJSON";
-import { saveUpdatedFeature } from "./UpdateFeaturesHandler";
 import OlMap from "ol/Map";
 import { Resource } from "@open-pioneer/core";
 import { unByKey } from "ol/Observable";
@@ -25,6 +24,7 @@ import {
 import { Collection, Overlay } from "ol";
 import { createStyles } from "./style-utils";
 import { PackageIntl } from "@open-pioneer/runtime";
+import { saveUpdatedFeature } from "./SaveFeaturesHandler";
 
 // Represents a tooltip rendered on the OpenLayers map
 interface Tooltip extends Resource {
@@ -260,7 +260,7 @@ export class EditingUpdateWorkflowImpl
         this._setState("destroyed");
     }
 
-    save() {
+    triggerSave() {
         const feature = this._editingSource.getFeatures()[0];
         if (!feature) {
             throw Error("no updated feature found");

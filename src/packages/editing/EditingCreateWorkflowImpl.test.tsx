@@ -178,7 +178,7 @@ describe("during create editing workflow", () => {
         const draw = workflow.getDrawInteraction();
 
         draw.appendCoordinates([[200, 200]]);
-        workflow.save();
+        workflow.triggerSave();
         expect(workflow.getState()).toBe("active:saving");
     });
 
@@ -314,7 +314,7 @@ describe("when create editing workflow complete", () => {
         draw.appendCoordinates([[200, 200]]);
         draw.appendCoordinates([[400, 300]]);
 
-        workflow.save();
+        workflow.triggerSave();
 
         await sleep(DEFAULT_SLEEP);
 
@@ -358,7 +358,7 @@ describe("when create editing workflow complete", () => {
         draw.appendCoordinates([[200, 200]]);
         draw.appendCoordinates([[400, 300]]);
 
-        workflow.save();
+        workflow.triggerSave();
 
         await sleep(DEFAULT_SLEEP);
 
