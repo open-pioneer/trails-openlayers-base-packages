@@ -18,6 +18,7 @@ export interface MapModelEvents {
     "destroy": void;
 }
 
+/** Options supported when creating a new {@link Highlight}. */
 export interface HighlightOptions {
     /**
      * Optional styles to override the default styles.
@@ -43,6 +44,9 @@ export interface HighlightZoomOptions extends HighlightOptions {
     viewPadding?: MapPadding;
 }
 
+/**
+ * Custom styles when creating a new {@link Highlight}.
+ */
 export type HighlightStyle = {
     Point?: StyleLike;
     LineString?: StyleLike;
@@ -51,8 +55,6 @@ export type HighlightStyle = {
     MultiPoint?: StyleLike;
     MultiLineString?: StyleLike;
 };
-
-export type HighlightStyleType = keyof HighlightStyle;
 
 /**
  * Map padding, all values are pixels.
@@ -68,6 +70,8 @@ export interface MapPadding {
 
 /**
  * Represents the additional graphical representations of objects.
+ *
+ * See also {@link MapModel.highlight}.
  */
 export interface Highlight extends Resource {
     readonly isActive: boolean;
@@ -126,23 +130,23 @@ export interface MapModel extends EventSource<MapModelEvents> {
     whenDisplayed(): Promise<void>;
 
     /**
-     * Method for displaying additional graphical representations of objects
-     * @param geometries
-     * @param options
+     * Creates a highlight at the given targets.
+     *
+     * A highlight is a temporary graphic on the map that calls attention to a point or an area.
+     *
+     * Call `destroy()` on the returned highlight object to remove the highlight again.
      */
     highlight(geometries: DisplayTarget[], options?: HighlightOptions): Highlight;
 
     /**
-     * Methode to zoom to a graphical representations of objects
-     * @param geometries
-     * @param options
+     * Zooms to to the given targets.
      */
     zoom(geometries: DisplayTarget[], options?: HighlightZoomOptions): void;
 
     /**
-     * Method for displaying and zoom to additional graphical representations of objects
-     * @param geometries
-     * @param options
+     * Creates a highlight and zooms to the given targets.
+     *
+     * See also {@link highlight} and {@link zoom}.
      */
     highlightAndZoom(geometries: DisplayTarget[], options?: HighlightZoomOptions): Highlight;
 

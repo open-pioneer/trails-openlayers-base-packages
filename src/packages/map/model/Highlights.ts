@@ -15,13 +15,14 @@ import {
     Highlight,
     HighlightOptions,
     HighlightStyle,
-    HighlightStyleType,
     HighlightZoomOptions
 } from "../api/MapModel";
 import mapMarkerUrl from "../assets/images/mapMarker.png?url";
 import { FeatureLike } from "ol/Feature";
 import { TOPMOST_LAYER_Z } from "../api";
 import { Type } from "ol/geom/Geometry";
+
+type HighlightStyleType = keyof HighlightStyle;
 
 const DEFAULT_OL_POINT_ZOOM_LEVEL = 17;
 const DEFAULT_OL_MAX_ZOOM_LEVEL = 20;
@@ -68,8 +69,6 @@ export class Highlights {
 
     /**
      * Method of filtering out objects that are not geometry or have no property geometry.
-     * @param geoObjects
-     * @returns
      */
     #filterGeoobjects(geoObjects: DisplayTarget[]): Geometry[] {
         const geometries: Geometry[] = [];
@@ -82,9 +81,6 @@ export class Highlights {
 
     /**
      * This method displays geometries or BaseFeatures with optional styling in the map
-     * @param displayTarget
-     * @param highlightOptions
-     * @returns
      */
     addHighlight(displayTarget: DisplayTarget[], highlightOptions: HighlightOptions | undefined) {
         const geometries = this.#filterGeoobjects(displayTarget);
@@ -133,9 +129,6 @@ export class Highlights {
 
     /**
      * This method zoom to geometries or BaseFeatures
-     * @param displayTarget
-     * @param options
-     * @returns
      */
     zoomToHighlight(displayTarget: DisplayTarget[], options: HighlightZoomOptions | undefined) {
         const geometries = this.#filterGeoobjects(displayTarget);
@@ -168,9 +161,6 @@ export class Highlights {
 
     /**
      * This method displays geometries or BaseFeatures with optional styling in the map and executed a zoom
-     * @param geoObjects
-     * @param highlightZoomStyle
-     * @returns
      */
     addHighlightAndZoom(
         displayTarget: DisplayTarget[],
@@ -207,9 +197,6 @@ function zoomTo(
 
 /**
  * Returns the appropriate style from the user's highlightStyle or falls back to the default style
- * @param feature
- * @param resolution
- * @returns
  */
 function resolveStyle(feature: FeatureLike, resolution: number) {
     const type: keyof typeof defaultHighlightStyle = feature.get("type");
@@ -219,9 +206,6 @@ function resolveStyle(feature: FeatureLike, resolution: number) {
 
 /**
  * This method creates styling for a highlight based on the optional style information or the default style
- * @param type
- * @param highlightStyle
- * @returns
  */
 function getOwnStyle(type: Type, highlightStyle: HighlightStyle | undefined) {
     if (highlightStyle && type in highlightStyle) {
@@ -235,8 +219,6 @@ function getOwnStyle(type: Type, highlightStyle: HighlightStyle | undefined) {
 
 /**
  * This returns default styling for a highlight
- * @param type
- * @returns
  */
 function getDefaultStyle(type: Type) {
     if (type in defaultHighlightStyle) {
@@ -248,7 +230,7 @@ function getDefaultStyle(type: Type) {
 }
 
 /**
- * Defaultstyling for Highlights
+ * Default styling for highlights
  */
 const defaultHighlightStyle = {
     "Point": new Style({
