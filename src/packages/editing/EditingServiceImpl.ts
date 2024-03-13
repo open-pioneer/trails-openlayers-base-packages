@@ -4,7 +4,7 @@ import { MapModel, MapRegistry } from "@open-pioneer/map";
 import { EditingService } from "./api";
 import { EditingCreateWorkflowImpl } from "./EditingCreateWorkflowImpl";
 import { EditingUpdateWorkflowImpl } from "./EditingUpdateWorkflowImpl";
-import { FlatStyleLike } from "ol/style/flat";
+import { FlatStyle } from "ol/style/flat";
 import { ServiceOptions } from "@open-pioneer/runtime";
 import { HttpService } from "@open-pioneer/http";
 import { Feature } from "ol";
@@ -40,8 +40,8 @@ export class EditingServiceImpl implements EditingService {
         workflow = new EditingCreateWorkflowImpl({
             map,
             ogcApiFeatureLayerUrl,
-            polygonStyle: this._serviceOptions.properties.polygonStyle as FlatStyleLike,
-            vertexStyle: this._serviceOptions.properties.vertexStyle as FlatStyleLike,
+            polygonStyle: this._serviceOptions.properties.polygonStyle as FlatStyle,
+            vertexStyle: this._serviceOptions.properties.vertexStyle as FlatStyle,
             httpService: this._serviceOptions.references.httpService,
             intl: this._serviceOptions.intl
         });
@@ -69,8 +69,8 @@ export class EditingServiceImpl implements EditingService {
             map,
             ogcApiFeatureLayerUrl,
             feature,
-            polygonStyle: this._serviceOptions.properties.polygonStyle as FlatStyleLike,
-            vertexStyle: this._serviceOptions.properties.vertexStyle as FlatStyleLike,
+            polygonStyle: this._serviceOptions.properties.polygonStyle as FlatStyle,
+            vertexStyle: this._serviceOptions.properties.vertexStyle as FlatStyle,
             httpService: this._serviceOptions.references.httpService,
             intl: this._serviceOptions.intl
         });

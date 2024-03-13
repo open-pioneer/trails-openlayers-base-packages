@@ -3,27 +3,30 @@
 import { Style } from "ol/style";
 import { MultiPoint, Polygon } from "ol/geom";
 import { GeometryFunction } from "ol/style/Style";
-import { FlatStyleLike } from "ol/style/flat";
+import { FlatStyle } from "ol/style/flat";
 import VectorLayer from "ol/layer/Vector";
 import { Feature } from "ol";
 
-interface FlatStyleProps {
-    polygon: FlatStyleLike; // TODO: if useful, only allow FlatStyle instead of FlatStyleLike (also in API)
-    vertex: FlatStyleLike;
+interface EditingStyleProps {
+    polygon: FlatStyle;
+    vertex: FlatStyle;
 }
 
 /**
- * Function to retrieve an OpenLayers style from OpenLayers FlatStyle
+ * Function to retrieve an OpenLayers style from OpenLayers FlatStyle.
+ *
+ * The polygon OpenLayers FlatStyle is convert to an OpenLayers style.
+ *
+ * The vertex OpenLayers FlatStyle is convert to an OpenLayers style
+ * by setting an geometry to the style to render a vertex geometry instead of the feature's geometry.
  */
-// TODO: Adjust documentation: Function is doing more than just converting.
-// TODO: Rename parameter to clarify that input is not a flatStyle
-// TODO: Consider renaming method to clarify that function is not just converting to a style
-export function getStyle(flatStyle: FlatStyleProps) {
-    let polygonStyle = flatStyleToStyle(flatStyle.polygon);
+export function createStyles(editingStyle: EditingStyleProps) {
+    let polygonStyle = convertFlatStyleToStyle(editingStyle.polygon);
     if (Array.isArray(polygonStyle)) {
         polygonStyle = polygonStyle[0];
     }
-    let vertexStyle = flatStyleToStyle(flatStyle.vertex);
+
+    let vertexStyle = convertFlatStyleToStyle(editingStyle.vertex);
     if (Array.isArray(vertexStyle)) {
         vertexStyle = vertexStyle[0];
     }
@@ -32,16 +35,21 @@ export function getStyle(flatStyle: FlatStyleProps) {
     if (polygonStyle) {
         style.push(polygonStyle);
     }
+
+    // Set a vertex geometry that is rendered instead of the feature's geometry
     if (vertexStyle) {
-        vertexStyle.setGeometry(constrainGeometryFunction);
+        vertexStyle.setGeometry(createVertexGeometry);
         style.push(vertexStyle);
     }
 
     return style;
 }
 
-// TODO: use better method name (or add a comment to clarify what the method is doing)
-const constrainGeometryFunction: GeometryFunction = (feature) => {
+/**
+ * Function to create a new multi point geometry from a given feature (to style the point as a vertex).
+ * Returns an Openlayers geometry function.
+ */
+const createVertexGeometry: GeometryFunction = (feature) => {
     if (feature) {
         const geometry = feature.getGeometry() as Polygon;
         if (geometry && geometry.getType() === "Polygon") {
@@ -54,20 +62,28 @@ const constrainGeometryFunction: GeometryFunction = (feature) => {
     return undefined;
 };
 
-// TODO: refactor
-const flatStyleToStyle = (flatStyle: FlatStyleLike): Style[] | Style | undefined => {
+/**
+ * Function to convert a OpenLayers FlatStyle to an OpenLayers style by setting the FlatStyle
+ * to an OpenLayers feature and retrieve the style from style function.
+ */
+const convertFlatStyleToStyle = (flatStyle: FlatStyle): Style | Style[] | undefined => {
+    const feature = new Feature();
     const vectorLayer = new VectorLayer({ style: flatStyle });
-    if (!vectorLayer) return;
-    const styleFunction = vectorLayer.getStyleFunction();
-    if (!styleFunction) return;
-    const newFeature = new Feature();
-    const fakeResolution = 1;
-    const styleResponse = styleFunction(newFeature, fakeResolution);
-    if (!styleResponse) return;
 
-    if (Array.isArray(styleResponse)) {
-        return styleResponse?.length > 1 ? styleResponse : styleResponse[0];
+    const styleFunction = vectorLayer.getStyleFunction();
+    if (!styleFunction) {
+        throw new Error("can't retrieve style function");
+    }
+
+    const styles = styleFunction(feature, 1);
+    if (!styles) {
+        throw new Error("can't retrieve styles from feature style function");
+    }
+
+    // Return only first style in array
+    if (Array.isArray(styles) && styles.length) {
+        return styles.length > 1 ? styles : styles[0];
     } else {
-        return styleResponse;
+        return styles;
     }
 };

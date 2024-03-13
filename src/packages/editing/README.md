@@ -85,7 +85,7 @@ vectorLayer.getSource()?.refresh();
 
 The default style of the geometries can be overridden with a custom style.
 
-Each geometry type has its own styling property (currently `polygonStyle` and `vertexStyle`). See OpenLayers [`FlatStyleLike`](https://openlayers.org/en/latest/apidoc/module-ol_style_flat.html) for valid styling options.
+Each geometry type has its own styling property (currently `polygonStyle` and `vertexStyle`). See OpenLayers [`FlatStyle`](https://openlayers.org/en/latest/apidoc/module-ol_style_flat.html#~FlatStyle) for valid styling options.
 
 Example:
 

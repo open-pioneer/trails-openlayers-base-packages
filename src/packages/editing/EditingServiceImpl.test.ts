@@ -5,7 +5,7 @@ import { EditingServiceImpl } from "./EditingServiceImpl";
 import { setupMap } from "@open-pioneer/map-test-utils";
 import { HttpService } from "@open-pioneer/http";
 import { createService } from "@open-pioneer/test-utils/services";
-import { FlatStyleLike } from "ol/style/flat";
+import { FlatStyle } from "ol/style/flat";
 import { EditingCreateWorkflowImpl } from "./EditingCreateWorkflowImpl";
 
 const OGC_API_URL_TEST = new URL("https://example.org/ogc");
@@ -21,7 +21,7 @@ const HTTP_SERVICE: HttpService = {
     )
 } satisfies Partial<HttpService> as HttpService;
 
-const POLYGON_DRAW_STYLE: FlatStyleLike = {
+const POLYGON_DRAW_STYLE: FlatStyle = {
     "stroke-color": "yellow",
     "stroke-width": 2,
     "fill-color": "rgba(0, 0, 0, 0.1)",

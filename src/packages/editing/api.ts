@@ -5,7 +5,7 @@ import { HttpService } from "@open-pioneer/http";
 import { MapModel } from "@open-pioneer/map";
 import type { DeclaredService, PackageIntl } from "@open-pioneer/runtime";
 import { Feature } from "ol";
-import { FlatStyleLike } from "ol/style/flat";
+import { FlatStyle } from "ol/style/flat";
 
 /**
  * State of an editing workflow
@@ -48,8 +48,8 @@ export interface EditingWorkflowEvents {
 export interface EditingWorkflowProps {
     map: MapModel;
     ogcApiFeatureLayerUrl: URL;
-    polygonStyle: FlatStyleLike;
-    vertexStyle: FlatStyleLike;
+    polygonStyle: FlatStyle;
+    vertexStyle: FlatStyle;
     httpService: HttpService;
     intl: PackageIntl;
 }

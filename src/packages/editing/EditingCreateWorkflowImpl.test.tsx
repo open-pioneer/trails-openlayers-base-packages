@@ -5,7 +5,7 @@ import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import OlMap from "ol/Map";
 import Draw from "ol/interaction/Draw";
-import { FlatStyleLike } from "ol/style/flat";
+import { FlatStyle } from "ol/style/flat";
 import { HttpService } from "@open-pioneer/http";
 import { MapContainer, MapModel } from "@open-pioneer/map";
 import { createServiceOptions, setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
@@ -395,7 +395,7 @@ async function setupCreateWorkflow(map: MapModel, httpService: HttpService = HTT
         }
     } satisfies Partial<PackageIntl> as PackageIntl;
 
-    const polygonStyle: FlatStyleLike = {
+    const polygonStyle: FlatStyle = {
         "fill-color": "rgba(255,255,255,0.4)",
         "stroke-color": "red",
         "stroke-width": 2,
@@ -404,7 +404,7 @@ async function setupCreateWorkflow(map: MapModel, httpService: HttpService = HTT
         "circle-stroke-width": 1.25,
         "circle-stroke-color": "red"
     };
-    const vertexStyle: FlatStyleLike = {
+    const vertexStyle: FlatStyle = {
         "circle-radius": 5,
         "circle-fill-color": "red",
         "circle-stroke-width": 1.25,

@@ -7,7 +7,7 @@ import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import { HttpService } from "@open-pioneer/http";
 import { PackageIntl } from "@open-pioneer/runtime";
-import { FlatStyleLike } from "ol/style/flat";
+import { FlatStyle } from "ol/style/flat";
 import GeoJSON from "ol/format/GeoJSON";
 import GeoJSONGeometry from "ol/format/GeoJSON";
 import GeoJSONGeometryCollection from "ol/format/GeoJSON";
@@ -24,7 +24,7 @@ import {
     EditingWorkflowProps
 } from "./api";
 import Feature from "ol/Feature";
-import { getStyle } from "./style-utils";
+import { createStyles } from "./style-utils";
 
 const LOG = createLogger("editing:EditingCreateWorkflowImpl");
 
@@ -44,8 +44,8 @@ export class EditingCreateWorkflowImpl
     private _intl: PackageIntl;
 
     private _map: MapModel;
-    private _polygonStyle: FlatStyleLike;
-    private _vertexStyle: FlatStyleLike;
+    private _polygonStyle: FlatStyle;
+    private _vertexStyle: FlatStyle;
     private _state: EditingWorkflowState;
     private _editLayerURL: URL;
     private _featureId: string | undefined;
@@ -89,7 +89,7 @@ export class EditingCreateWorkflowImpl
         this._drawInteraction = new Draw({
             source: this._editingSource,
             type: "Polygon",
-            style: getStyle({
+            style: createStyles({
                 polygon: this._polygonStyle,
                 vertex: this._vertexStyle
             })
