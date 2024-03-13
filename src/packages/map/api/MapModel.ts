@@ -67,10 +67,16 @@ export interface MapPadding {
     bottom?: number;
 }
 
+/**
+ * Represents the additional graphical representation of a object.
+ */
 export interface Highlight extends Resource {
     readonly isActive: boolean;
 }
 
+/**
+ * Represents an object that is to be displayed graphically
+ */
 export type DisplayTarget = BaseFeature | Geometry;
 
 /**
