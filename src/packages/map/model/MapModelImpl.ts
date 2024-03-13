@@ -134,10 +134,7 @@ export class MapModelImpl extends EventEmitter<MapModelEvents> implements MapMod
         return this.#sharedDeps;
     }
 
-    highlight(
-        geometries: Geometry[],
-        options?: HighlightOptions | undefined
-    ): Highlight | undefined {
+    highlight(geometries: Geometry[], options?: HighlightOptions | undefined): Highlight {
         return this.#highlights.addHighlight(geometries, options);
     }
     zoom(geometries: Geometry[], options?: HighlightZoomOptions | undefined): void {

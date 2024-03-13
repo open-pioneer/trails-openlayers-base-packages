@@ -68,14 +68,14 @@ export interface MapPadding {
 }
 
 /**
- * Represents the additional graphical representation of a object.
+ * Represents the additional graphical representations of objects.
  */
 export interface Highlight extends Resource {
     readonly isActive: boolean;
 }
 
 /**
- * Represents an object that is to be displayed graphically
+ * Represents a Object
  */
 export type DisplayTarget = BaseFeature | Geometry;
 
@@ -126,22 +126,26 @@ export interface MapModel extends EventSource<MapModelEvents> {
      */
     whenDisplayed(): Promise<void>;
 
-    highlight(geometries: DisplayTarget[], options?: HighlightOptions): Highlight | undefined;
-    // highlight(geometries: Highlightable[], options?: HighlightOptions): Highlight;
-
-    zoom(geometries: DisplayTarget[], options?: HighlightZoomOptions): void;
-    // zoom(geometries: Highlightable[], options?: ZoomOptions): void;
+    /**
+     * Method for displaying additional graphical representations of objects
+     * @param geometries
+     * @param options
+     */
+    highlight(geometries: DisplayTarget[], options?: HighlightOptions): Highlight;
 
     /**
-     * Highlights the given geometries on the map.
-     * Centers and zooms the view on the geometries.
-     *
-     * Removes any previous highlights.
+     * Methode to zoom to a graphical representations of objects
+     * @param geometries
+     * @param options
      */
-    highlightAndZoom(
-        geometries: DisplayTarget[],
-        options?: HighlightZoomOptions
-    ): Highlight | undefined;
+    zoom(geometries: DisplayTarget[], options?: HighlightZoomOptions): void;
+
+    /**
+     * Method for displaying and zoom to additional graphical representations of objects
+     * @param geometries
+     * @param options
+     */
+    highlightAndZoom(geometries: DisplayTarget[], options?: HighlightZoomOptions): Highlight;
 
     /**
      * Removes any existing highlights from the map.

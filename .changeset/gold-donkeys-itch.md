@@ -1,5 +1,4 @@
 ---
-"@open-pioneer/map-test-utils": minor
 "@open-pioneer/map": minor
 ---
 

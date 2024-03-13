@@ -7,8 +7,6 @@ import { Highlights } from "./Highlights";
 import { LineString, Point, Polygon } from "ol/geom";
 import View from "ol/View";
 import { approximatelyEquals } from "ol/extent";
-import VectorLayer from "ol/layer/Vector";
-import VectorSource from "ol/source/Vector";
 import { BaseFeature } from "../api/BaseFeature";
 
 let _highlights: Highlights | undefined;
@@ -18,20 +16,20 @@ afterEach(() => {
 });
 
 it("should successfully add marker for point geometries", async () => {
-    const { map, highlights } = setup();
+    const { highlights } = setup();
 
     const point = new Point([852011.307424, 6788511.322702]);
     const highlight = highlights.addHighlight([point], {});
     expect(highlight).toBeDefined();
 
-    const source = getLayerSource(map);
+    const source = getLayerSource(highlights);
     expect(source).toBeDefined();
 
     expect(source?.getFeatures()?.length).toBe(1);
 });
 
 it("should successfully add line geometries", async () => {
-    const { map, highlights } = setup();
+    const { highlights } = setup();
 
     const line = new LineString([
         [851890.680238, 6788133.616293],
@@ -40,14 +38,14 @@ it("should successfully add line geometries", async () => {
     const highlight = highlights.addHighlight([line], {});
     expect(highlight).toBeDefined();
 
-    const source = getLayerSource(map);
+    const source = getLayerSource(highlights);
     expect(source).toBeDefined();
 
     expect(source?.getFeatures()?.length).toBe(1);
 });
 
 it("should successfully add polygon geometries", async () => {
-    const { map, highlights } = setup();
+    const { highlights } = setup();
 
     const polygon = new Polygon([
         [
@@ -61,7 +59,7 @@ it("should successfully add polygon geometries", async () => {
     const highlight = highlights.addHighlight([polygon], {});
     expect(highlight).toBeDefined();
 
-    const source = getLayerSource(map);
+    const source = getLayerSource(highlights);
     expect(source).toBeDefined();
 
     expect(source?.getFeatures()?.length).toBe(1);
@@ -111,7 +109,7 @@ it("should successfully zoom and add geometries", async () => {
     expect(zoomLevel).toBeTruthy();
     expect(zoomLevel).not.toEqual(newZoomLevel);
 
-    const source = getLayerSource(map);
+    const source = getLayerSource(highlights);
     expect(source).toBeDefined();
 
     expect(source?.getFeatures()?.length).toBe(1);
@@ -132,7 +130,7 @@ it("should successfully zoom and add BaseFeatures", async () => {
     expect(zoomLevel).toBeTruthy();
     expect(zoomLevel).not.toEqual(newZoomLevel);
 
-    const source = getLayerSource(map);
+    const source = getLayerSource(highlights);
     expect(source).toBeDefined();
 
     expect(source?.getFeatures()?.length).toBe(1);
@@ -156,20 +154,20 @@ it("should successfully zoom and add only BaseFeatures with geometry", async () 
     expect(zoomLevel).toBeTruthy();
     expect(zoomLevel).not.toEqual(newZoomLevel);
 
-    const source = getLayerSource(map);
+    const source = getLayerSource(highlights);
     expect(source).toBeDefined();
 
     expect(source?.getFeatures()?.length).toBe(2);
 });
 
 it("should successfully remove previously added highlights", async () => {
-    const { map, highlights } = setup();
+    const { highlights } = setup();
 
     const point = new Point([852011.307424, 6788511.322702]);
     const highlight = highlights.addHighlight([point], {});
     expect(highlight).toBeDefined();
 
-    const source = getLayerSource(map);
+    const source = getLayerSource(highlights);
     expect(source).toBeDefined();
 
     expect(source?.getFeatures()?.length).toBe(1);
@@ -181,13 +179,13 @@ it("should successfully remove previously added highlights", async () => {
 });
 
 it("highlights should not be removed multiple times", async () => {
-    const { map, highlights } = setup();
+    const { highlights } = setup();
 
     const point = new Point([852011.307424, 6788511.322702]);
     const highlight = highlights.addHighlight([point], {});
     expect(highlight).toBeDefined();
 
-    const source = getLayerSource(map);
+    const source = getLayerSource(highlights);
     expect(source).toBeDefined();
 
     expect(source?.getFeatures()?.length).toBe(1);
@@ -200,7 +198,7 @@ it("highlights should not be removed multiple times", async () => {
 });
 
 it("should successfully remove all markers or highlights", async () => {
-    const { map, highlights } = setup();
+    const { highlights } = setup();
 
     const points = [
         new Point([852011.307424, 6788511.322702]),
@@ -211,7 +209,7 @@ it("should successfully remove all markers or highlights", async () => {
     const highlight = highlights.addHighlightAndZoom(points, {});
     expect(highlight).toBeDefined();
 
-    const source = getLayerSource(map);
+    const source = getLayerSource(highlights);
     expect(source).toBeDefined();
 
     expect(source?.getFeatures()?.length).toBe(3);
@@ -284,11 +282,8 @@ function setup() {
     return { map, highlights };
 }
 
-function getLayerSource(map: OlMap) {
-    const layers = map.getLayers().getArray();
-    const searchResultLayers = layers.filter((l) => l.getClassName().includes("highlight-layer"));
-    if (!searchResultLayers || !searchResultLayers[0]) return;
-    const highlightLayer = searchResultLayers[0] as VectorLayer<VectorSource>;
+function getLayerSource(highlights: Highlights) {
+    const highlightLayer = highlights.getLayer();
     if (!highlightLayer) return;
     return highlightLayer.getSource();
 }
