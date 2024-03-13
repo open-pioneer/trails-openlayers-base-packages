@@ -80,6 +80,7 @@ it("makes the map layers accessible", async () => {
 
     const allLayers = model.layers.getAllLayers();
     expect(allLayers).toEqual(layers);
+    // OSM + TopPlus Open + "highlight-layer" = 3
     expect(model.olMap.getAllLayers().length).toBe(3);
 });
 
