@@ -44,7 +44,7 @@ export function SelectionComponent() {
             return;
         }
 
-        map?.removeHighlight();
+        map?.removeHighlights();
         const geometries = results.map((result) => result.geometry);
         if (geometries.length > 0) {
             highlightAndZoom(map, geometries);
@@ -75,7 +75,7 @@ export function SelectionComponent() {
     }
 
     function onSelectionSourceChanged(_: SelectionSourceChangedEvent) {
-        map?.removeHighlight();
+        map?.removeHighlights();
     }
 
     return (

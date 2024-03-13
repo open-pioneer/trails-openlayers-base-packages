@@ -12,9 +12,16 @@ import OlMap from "ol/Map";
 import { unByKey } from "ol/Observable";
 import { EventsKey } from "ol/events";
 import { getCenter } from "ol/extent";
-import { ExtentConfig, HighlightOptions, MapModel, MapModelEvents } from "../api";
+import {
+    ExtentConfig,
+    Highlight,
+    HighlightOptions,
+    HighlightZoomOptions,
+    MapModel,
+    MapModelEvents
+} from "../api";
 import { LayerCollectionImpl } from "./LayerCollectionImpl";
-import { LineString, Point, Polygon } from "ol/geom";
+import { Geometry } from "ol/geom";
 import { Highlights } from "./Highlights";
 import { HttpService } from "@open-pioneer/http";
 
@@ -127,11 +134,18 @@ export class MapModelImpl extends EventEmitter<MapModelEvents> implements MapMod
         return this.#sharedDeps;
     }
 
-    highlightAndZoom(geometries: Point[] | LineString[] | Polygon[], options?: HighlightOptions) {
-        this.#highlights.addHighlightOrMarkerAndZoom(geometries, options ?? {});
+    highlight(geometries: Geometry[], options?: HighlightOptions | undefined): Highlight {
+        return this.#highlights.addHighlight(geometries, options);
+    }
+    zoom(geometries: Geometry[], options?: HighlightZoomOptions | undefined): void {
+        this.#highlights.zoomToHighlight(geometries, options);
     }
 
-    removeHighlight() {
+    highlightAndZoom(geometries: Geometry[], options?: HighlightZoomOptions) {
+        return this.#highlights.addHighlightAndZoom(geometries, options ?? {});
+    }
+
+    removeHighlights() {
         this.#highlights.clearHighlight();
     }
 

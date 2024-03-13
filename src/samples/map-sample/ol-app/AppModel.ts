@@ -216,7 +216,7 @@ export class AppModel implements Service {
                     (layerSelectionSource.status === "unavailable" ||
                         layerSelectionSource.status?.kind === "unavailable")
                 ) {
-                    map.removeHighlight();
+                    map.removeHighlights();
                 }
             });
             this._resources.push(eventHandler, layerSelectionSource);

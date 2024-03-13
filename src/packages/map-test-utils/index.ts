@@ -183,3 +183,14 @@ class MapConfigProviderImpl implements MapConfigProvider {
         return Promise.resolve(this.mapConfig);
     }
 }
+
+function mockVectorLayer() {
+    // Overwrite render so it doesn't actually do anything during tests.
+    // Would otherwise error because <canvas /> is not fully implemented in happy dom.
+    const div = document.createElement("div");
+    VectorLayer.prototype.render = () => {
+        return div;
+    };
+}
+
+mockVectorLayer();
