@@ -55,8 +55,7 @@ export async function saveUpdatedFeature(
     const crs = epsgCode.replace("EPSG:", "http://www.opengis.net/def/crs/EPSG/0/");
     const featureUrl = new URL(`${url.toString()}/${featureId}`);
     const response = await httpService.fetch(featureUrl, {
-        method: "PUT",
-        // Todo: Sicherstellen, dass die Attribute es bisherigen Features nicht ueberschrieben werden
+        method: "PATCH",
         body: JSON.stringify({ type: "Feature", properties: {}, geometry: geometry }),
         headers: {
             "Content-Type": "application/geo+json; charset=utf-8",
