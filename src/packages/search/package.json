@@ -1,6 +1,6 @@
 {
     "name": "@open-pioneer/search",
-    "version": "0.3.1",
+    "version": "0.4.0",
     "description": "This package provides a UI component to perform a search on given search sources.",
     "license": "Apache-2.0",
     "main": "index.ts",
