@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import { EventEmitter, ManualPromise, createManualPromise } from "@open-pioneer/core";
 import { MapModel, TOPMOST_LAYER_Z } from "@open-pioneer/map";
-import { Modify } from "ol/interaction";
+import { Modify, Select } from "ol/interaction";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import { HttpService } from "@open-pioneer/http";
@@ -51,6 +51,7 @@ export class EditingUpdateWorkflowImpl
     private _initialFeature: Feature;
     private _editingSource: VectorSource;
     private _editingLayer: VectorLayer<VectorSource>;
+    private _selectInteraction: Select;
     private _modifyInteraction: Modify;
     private _olMap: OlMap;
     private _mapContainer: HTMLElement | undefined;
@@ -96,6 +97,14 @@ export class EditingUpdateWorkflowImpl
             properties: {
                 name: "editing-layer"
             }
+        });
+
+        this._selectInteraction = new Select({
+            features: new Collection([options.feature]),
+            style: createStyles({
+                polygon: this._polygonStyle,
+                vertex: this._vertexStyle
+            })
         });
 
         this._modifyInteraction = new Modify({
@@ -191,6 +200,7 @@ export class EditingUpdateWorkflowImpl
 
     private _start() {
         this._olMap.addLayer(this._editingLayer);
+        this._olMap.addInteraction(this._selectInteraction);
         this._olMap.addInteraction(this._modifyInteraction);
 
         // Add EventListener on focused map to abort actual interaction via `Escape`
@@ -201,6 +211,15 @@ export class EditingUpdateWorkflowImpl
         }
 
         this._tooltip.element.classList.remove("editing-tooltip-hidden");
+
+        const select = this._selectInteraction.on("select", (e) => {
+            const feature = e.deselected[0];
+            if (!feature) {
+                throw Error("feature is undefined");
+            }
+
+            this._save(feature);
+        });
 
         const modify = this._modifyInteraction.on("modifystart", () => {
             this._setState("active:drawing");
@@ -218,7 +237,7 @@ export class EditingUpdateWorkflowImpl
             }
         });
 
-        this._interactionListener.push(modify);
+        this._interactionListener.push(select, modify);
         this._mapListener.push(changedContainer);
     }
 
@@ -242,6 +261,7 @@ export class EditingUpdateWorkflowImpl
 
     private _destroy() {
         this._olMap.removeLayer(this._editingLayer);
+        this._olMap.removeInteraction(this._selectInteraction);
         this._olMap.removeInteraction(this._modifyInteraction);
         this._tooltip.destroy();
 

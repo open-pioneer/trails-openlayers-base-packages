@@ -333,6 +333,8 @@ function useEditingUpdateWorkflow(
                     const deselected = e.deselected;
 
                     if (selected.length === 1 && deselected.length === 0) {
+                        map.olMap.removeInteraction(selectInteraction);
+                        unByKey(selectHandler);
                         tooltip.destroy();
 
                         const feature = selected[0];
@@ -367,19 +369,7 @@ function useEditingUpdateWorkflow(
                             })
                             .finally(() => {
                                 toggleToolState("editingUpdateActive", false);
-                                map.olMap.removeInteraction(selectInteraction);
                             });
-                    } else if (selected.length === 1 && deselected.length === 1) {
-                        unByKey(selectHandler);
-                        tooltip.destroy();
-
-                        // Disable change of selected feature (multiple selection)
-                        stopEditingUpdate();
-                    } else if (selected.length === 0 && deselected.length === 1) {
-                        unByKey(selectHandler);
-                        tooltip.destroy();
-
-                        workflow.triggerSave();
                     }
                 });
             } catch (error) {
