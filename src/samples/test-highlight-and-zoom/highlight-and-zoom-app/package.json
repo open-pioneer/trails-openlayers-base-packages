@@ -8,5 +8,5 @@
         "@open-pioneer/runtime": "^2.1.2",
         "react": "^18.2.0"
     },
-    "version": "0.0.5"
+    "version": "0.0.6"
 }
