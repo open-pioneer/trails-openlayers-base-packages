@@ -1,6 +1,6 @@
 {
     "name": "@open-pioneer/basemap-switcher",
-    "version": "0.3.1",
+    "version": "0.4.0",
     "description": "This package provides a UI component that allows a user to switch between different base maps.",
     "license": "Apache-2.0",
     "main": "index.ts",
@@ -22,7 +22,7 @@
         "@open-pioneer/runtime": "^2.1.2",
         "@open-pioneer/react-utils": "workspace:^",
         "chakra-react-select": "^4.7.6",
-        "ol": "^8.2.0",
+        "ol": "^9.0.0",
         "react": "^18.2.0",
         "react-icons": "^4.12.0"
     },

@@ -1,6 +1,6 @@
 {
     "name": "@open-pioneer/geolocation",
-    "version": "0.3.1",
+    "version": "0.4.0",
     "description": "This package provides a component to locate a user's position.",
     "license": "Apache-2.0",
     "main": "index.ts",
@@ -23,7 +23,7 @@
         "@open-pioneer/react-utils": "workspace:^",
         "@open-pioneer/core": "^1.2.1",
         "@open-pioneer/notifier": "^0.3.1",
-        "ol": "^8.2.0",
+        "ol": "^9.0.0",
         "react": "^18.2.0",
         "react-icons": "^4.12.0"
     },

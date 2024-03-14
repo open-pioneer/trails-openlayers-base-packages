@@ -12,9 +12,9 @@
         "@open-pioneer/runtime": "^2.1.2",
         "@open-pioneer/theme": "workspace:^",
         "@open-pioneer/toc": "workspace:^",
-        "ol": "^8.2.0",
-        "ol-mapbox-style": "^12.1.1",
+        "ol": "^9.0.0",
+        "ol-mapbox-style": "^12.2.1",
         "react": "^18.2.0"
     },
-    "version": "0.0.6"
+    "version": "0.0.7"
 }

@@ -4,18 +4,17 @@ import { Box } from "@open-pioneer/chakra-integration";
 import { useMapModel } from "@open-pioneer/map";
 import { NotificationService } from "@open-pioneer/notifier";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
-import { Selection } from "@open-pioneer/selection";
+import { FormatOptions } from "@open-pioneer/result-list";
 import {
+    Selection,
     SelectionCompleteEvent,
     SelectionSourceChangedEvent
-} from "@open-pioneer/selection/Selection";
+} from "@open-pioneer/selection";
 import { useIntl, useService } from "open-pioneer:react-hooks";
 import { useId } from "react";
 import { useSnapshot } from "valtio";
 import { AppModel } from "../AppModel";
 import { MAP_ID } from "../MapConfigProviderImpl";
-import { highlightAndZoom } from "../util/map-utils";
-import { FormatOptions } from "@open-pioneer/result-list";
 
 export function SelectionComponent() {
     const intl = useIntl();
@@ -44,10 +43,9 @@ export function SelectionComponent() {
             return;
         }
 
-        map?.removeHighlight();
         const geometries = results.map((result) => result.geometry);
         if (geometries.length > 0) {
-            highlightAndZoom(map, geometries);
+            appModel.highlightAndZoom(map, geometries);
         }
 
         const currentMetadata = sourceMetadata.get(source);
@@ -75,7 +73,7 @@ export function SelectionComponent() {
     }
 
     function onSelectionSourceChanged(_: SelectionSourceChangedEvent) {
-        map?.removeHighlight();
+        appModel.clearPreviousHighlight();
     }
 
     return (

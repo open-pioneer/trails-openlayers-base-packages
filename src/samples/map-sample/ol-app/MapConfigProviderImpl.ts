@@ -81,7 +81,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     url: "https://www.wmts.nrw.de/topplus_open/1.0.0/WMTSCapabilities.xml",
                     name: "topplus_col",
                     matrixSet: "EPSG_25832_14",
-                    visible: false,
+                    visible: true,
                     sourceOptions: {
                         attributions: `Kartendarstellung und Präsentationsgraphiken: &copy; Bundesamt für Kartographie und Geodäsie ${new Date().getFullYear()}, <a title="Datenquellen öffnen" aria-label="Datenquellen öffnen" href="https://sg.geodatenzentrum.de/web_public/gdz/datenquellen/Datenquellen_TopPlusOpen.html " target="_blank">Datenquellen</a>`
                     }

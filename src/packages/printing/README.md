@@ -66,6 +66,10 @@ const printResult = await printingService.printMap(map, {
 The printed map contains all map elements, visible layers, scale-bar and a title. If the user does not enter a title, the map is printed without title.
 To prevent custom elements from showing in the printed map, add the classname `printing-hide` to the elements.
 
+## Known issues
+
+-   Printing to PNG may not work on Safari / Chrome on iOS (see <https://github.com/open-pioneer/trails-openlayers-base-packages/issues/294>)
+
 ## License
 
 Apache-2.0 (see `LICENSE` file)

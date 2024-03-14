@@ -1,5 +1,23 @@
 # @open-pioneer/map
 
+## 0.4.0
+
+### Minor Changes
+
+-   a11bf72: Additional helpers for highlight and zoom
+-   9334e81: Update to OpenLayers 9
+
+### Patch Changes
+
+-   1a8ad89: Update package.json metadata
+-   fc6bf82: introduce sourceOptions parameter to WMTS layer
+-   a0d8882: hide help texts during map export
+-   6162979: Update versions of core packages
+-   ac7fdd1: Update documentation
+-   13ea342: Remove duplicate viewPadding application.
+-   Updated dependencies [1a8ad89]
+    -   @open-pioneer/react-utils@0.2.2
+
 ## 0.3.1
 
 ### Patch Changes

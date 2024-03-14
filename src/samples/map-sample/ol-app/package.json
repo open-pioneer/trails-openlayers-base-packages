@@ -30,12 +30,12 @@
         "@open-pioneer/spatial-bookmarks": "workspace:^",
         "@open-pioneer/theme": "workspace:^",
         "@open-pioneer/toc": "workspace:^",
-        "ol": "^8.2.0",
+        "ol": "^9.0.0",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
         "react-icons": "^4.12.0",
         "react-use": "^17.4.2",
         "valtio": "^1.12.1"
     },
-    "version": "0.0.11"
+    "version": "0.0.12"
 }

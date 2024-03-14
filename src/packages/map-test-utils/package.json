@@ -1,6 +1,6 @@
 {
     "name": "@open-pioneer/map-test-utils",
-    "version": "0.2.2",
+    "version": "0.3.0",
     "description": "This package is an internal support package for testing map-related UI components.",
     "license": "Apache-2.0",
     "main": "index.ts",
@@ -20,7 +20,7 @@
         "@open-pioneer/map": "workspace:^",
         "@open-pioneer/test-utils": "^1.1.1",
         "@testing-library/react": "^14.1.2",
-        "ol": "^8.2.0"
+        "ol": "^9.0.0"
     },
     "devDependencies": {
         "openlayers-base-packages": "workspace:*"

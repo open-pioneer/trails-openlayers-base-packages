@@ -1,6 +1,6 @@
 {
     "name": "@open-pioneer/scale-bar",
-    "version": "0.3.1",
+    "version": "0.4.0",
     "description": "This package provides a UI component to show the scale as a line or bar to the user.",
     "license": "Apache-2.0",
     "main": "index.ts",
@@ -21,7 +21,7 @@
         "@open-pioneer/map": "workspace:^",
         "@open-pioneer/react-utils": "workspace:^",
         "@open-pioneer/runtime": "^2.1.2",
-        "ol": "^8.2.0",
+        "ol": "^9.0.0",
         "react": "^18.2.0"
     },
     "devDependencies": {

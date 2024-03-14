@@ -1,13 +1,14 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import type { EventSource } from "@open-pioneer/core";
+import type { EventSource, Resource } from "@open-pioneer/core";
 import type OlMap from "ol/Map";
 import type OlBaseLayer from "ol/layer/Base";
 import type { ExtentConfig } from "./MapConfig";
 import type { Layer, LayerBase } from "./layers";
 import type { LayerRetrievalOptions } from "./shared";
 import type { Geometry } from "ol/geom";
-import type { StyleLike } from "ol/style/Style";
+import { BaseFeature } from "./BaseFeature";
+import { StyleLike } from "ol/style/Style";
 
 /** Events emitted by the {@link MapModel}. */
 export interface MapModelEvents {
@@ -17,13 +18,16 @@ export interface MapModelEvents {
     "destroy": void;
 }
 
-/** Options supported by the map model's {@link MapModel.highlightAndZoom | highlightAndZoom} method. */
+/** Options supported when creating a new {@link Highlight}. */
 export interface HighlightOptions {
     /**
      * Optional styles to override the default styles.
      */
     highlightStyle?: HighlightStyle;
+}
 
+/** Options supported by the map model's {@link MapModel.highlightAndZoom | highlightAndZoom} method. */
+export interface HighlightZoomOptions extends HighlightOptions {
     /**
      * The zoom-level used if there is no valid extend (such as for single points).
      */
@@ -40,12 +44,17 @@ export interface HighlightOptions {
     viewPadding?: MapPadding;
 }
 
-export interface HighlightStyle {
+/**
+ * Custom styles when creating a new {@link Highlight}.
+ */
+export type HighlightStyle = {
     Point?: StyleLike;
     LineString?: StyleLike;
     Polygon?: StyleLike;
     MultiPolygon?: StyleLike;
-}
+    MultiPoint?: StyleLike;
+    MultiLineString?: StyleLike;
+};
 
 /**
  * Map padding, all values are pixels.
@@ -58,6 +67,20 @@ export interface MapPadding {
     top?: number;
     bottom?: number;
 }
+
+/**
+ * Represents the additional graphical representations of objects.
+ *
+ * See also {@link MapModel.highlight}.
+ */
+export interface Highlight extends Resource {
+    readonly isActive: boolean;
+}
+
+/**
+ * Represents a Object
+ */
+export type DisplayTarget = BaseFeature | Geometry;
 
 /**
  * Represents a map.
@@ -107,17 +130,30 @@ export interface MapModel extends EventSource<MapModelEvents> {
     whenDisplayed(): Promise<void>;
 
     /**
-     * Highlights the given geometries on the map.
-     * Centers and zooms the view on the geometries.
+     * Creates a highlight at the given targets.
      *
-     * Removes any previous highlights.
+     * A highlight is a temporary graphic on the map that calls attention to a point or an area.
+     *
+     * Call `destroy()` on the returned highlight object to remove the highlight again.
      */
-    highlightAndZoom(geometries: Geometry[], options?: HighlightOptions): void;
+    highlight(geometries: DisplayTarget[], options?: HighlightOptions): Highlight;
+
+    /**
+     * Zooms to to the given targets.
+     */
+    zoom(geometries: DisplayTarget[], options?: HighlightZoomOptions): void;
+
+    /**
+     * Creates a highlight and zooms to the given targets.
+     *
+     * See also {@link highlight} and {@link zoom}.
+     */
+    highlightAndZoom(geometries: DisplayTarget[], options?: HighlightZoomOptions): Highlight;
 
     /**
      * Removes any existing highlights from the map.
      */
-    removeHighlight(): void;
+    removeHighlights(): void;
 }
 
 /** Events emitted by the {@link LayerCollection}. */

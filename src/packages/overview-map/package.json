@@ -1,6 +1,6 @@
 {
     "name": "@open-pioneer/overview-map",
-    "version": "0.3.1",
+    "version": "0.4.0",
     "description": "This package offers a UI component with which an overview map can be integrated.",
     "license": "Apache-2.0",
     "main": "index.ts",
@@ -22,7 +22,7 @@
         "@open-pioneer/ogc-features": "workspace:^",
         "@open-pioneer/runtime": "^2.1.2",
         "@open-pioneer/react-utils": "workspace:^",
-        "ol": "^8.2.0",
+        "ol": "^9.0.0",
         "react": "^18.2.0"
     },
     "devDependencies": {
