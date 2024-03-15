@@ -6,7 +6,7 @@ Note: The editing only works with OGC API Feature Services. The editing was only
 
 ## Usage
 
-To use the editing in an app, inject the editing service. Use the `start` method to create a new editing workflow.
+To use the editing in an app, inject the editing service. Use the `createFeature` method to create a new `create` editing workflow or `updateFeature` method to create a new `update` editing workflow.
 
 Example:
 
@@ -24,7 +24,10 @@ export default defineBuildConfig({
 ```tsx
 const editingService = useService<EditingService>("editing.EditingService");
 const editingCollectionUrl = new URL("...");
-const workflow = editingService.start(map, editingCollectionUrl);
+const feature = new Feature({});
+
+const createWorkflow = editingService.createFeature(map, editingCollectionUrl);
+const updateWorkflow = editingService.updateFeature(map, editingCollectionUrl, feature);
 ```
 
 An editing workflow can be stopped completely or the current drawing can be deleted without leaving the edit mode.
