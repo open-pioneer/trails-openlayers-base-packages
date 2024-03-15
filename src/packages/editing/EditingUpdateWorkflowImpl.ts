@@ -114,7 +114,10 @@ export class EditingUpdateWorkflowImpl
         this._tooltip = this._createTooltip(this._olMap);
 
         this._enterHandler = (e: KeyboardEvent) => {
-            if (e.code === "Enter" && e.target === this._olMap.getTargetElement()) {
+            if (
+                (e.code === "Enter" || e.code === "NumpadEnter") &&
+                e.target === this._olMap.getTargetElement()
+            ) {
                 const updatedFeature = this._editingSource.getFeatures()[0];
                 if (!updatedFeature) {
                     throw Error("no updated feature found");
