@@ -14,7 +14,6 @@ import { useId } from "react";
 import { useSnapshot } from "valtio";
 import { AppModel } from "../AppModel";
 import { MAP_ID } from "../MapConfigProviderImpl";
-import { highlightAndZoom } from "../util/map-utils";
 import { FormatOptions } from "@open-pioneer/result-list";
 
 export function SelectionComponent() {
@@ -47,7 +46,7 @@ export function SelectionComponent() {
         map?.removeHighlights();
         const geometries = results.map((result) => result.geometry);
         if (geometries.length > 0) {
-            highlightAndZoom(map, geometries);
+            map.zoom(geometries);
         }
 
         const currentMetadata = sourceMetadata.get(source);

@@ -165,7 +165,7 @@ export const ResultList: FC<ResultListProps> = (props) => {
         onSelectionChange,
         highlightOptions
     } = props;
-    const enableHighlight = props.enableHighlight ? props.enableHighlight : true;
+    const enableHighlight = props.enableHighlight !== undefined ? props.enableHighlight : true;
     if (columns.length === 0) {
         throw Error("No columns were defined. The result list cannot be displayed.");
     }
