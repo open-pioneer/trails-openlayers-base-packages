@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Box } from "@open-pioneer/chakra-integration";
-import { BaseFeature } from "@open-pioneer/map";
+import { BaseFeature, HighlightOptions, useMapModel } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, ReactNode, RefObject, useEffect, useMemo, useRef, useState } from "react";
@@ -138,9 +138,19 @@ export interface ResultListProps extends CommonComponentProps {
     input: ResultListInput;
 
     /**
-     * This handler is called whenever the user has changed the selected features in the result-list
+     * This handler is called whenever the user has changed the selected features in the result-list.
      */
     onSelectionChange?: (event: ResultListSelectionChangeEvent) => void;
+
+    /**
+     * Should data be highlighted in the map. Default true.
+     */
+    enableHighlight?: boolean;
+
+    /**
+     * Optional styling option
+     */
+    highlightOptions?: HighlightOptions;
 }
 
 /**
@@ -152,8 +162,10 @@ export const ResultList: FC<ResultListProps> = (props) => {
     const {
         mapId,
         input: { data, columns, formatOptions },
-        onSelectionChange
+        onSelectionChange,
+        highlightOptions
     } = props;
+    const enableHighlight = props.enableHighlight ? props.enableHighlight : true;
     if (columns.length === 0) {
         throw Error("No columns were defined. The result list cannot be displayed.");
     }
@@ -171,10 +183,21 @@ export const ResultList: FC<ResultListProps> = (props) => {
         [columns, intl, tableWidth, formatOptions]
     );
 
+    const { map } = useMapModel(mapId);
+
+    useEffect(() => {
+        if (!map) {
+            return;
+        }
+        if (enableHighlight) {
+            const highlight = map.highlight(data, highlightOptions);
+            return () => highlight.destroy();
+        }
+    }, [map, data, highlightOptions, enableHighlight]);
+
     return (
         <Box {...containerProps} height="100%" overflowY="auto" ref={containerRef}>
             <DataTable
-                mapId={mapId}
                 columns={dataTableColumns}
                 data={data}
                 onSelectionChange={onSelectionChange}

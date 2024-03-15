@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { BaseFeature, useMapModel } from "@open-pioneer/map";
+import { BaseFeature } from "@open-pioneer/map";
 import { useEvent } from "@open-pioneer/react-utils";
 import {
     RowSelectionState,
@@ -14,8 +14,7 @@ import { useMemo, useState } from "react";
 import { DataTableProps } from "./DataTable";
 
 export function useSetupTable<Data extends BaseFeature>(props: DataTableProps<Data>) {
-    const { mapId, data, columns, onSelectionChange: onSelectionChange } = props;
-    const { map } = useMapModel(mapId);
+    const { data, columns, onSelectionChange: onSelectionChange } = props;
     const [sorting, setSorting] = useState<SortingState>([]);
     const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
@@ -47,7 +46,6 @@ export function useSetupTable<Data extends BaseFeature>(props: DataTableProps<Da
 
                 selectedFeatures.push(row.original);
             }
-            map?.highlight(selectedFeatures);
 
             onSelectionChange({
                 features: selectedFeatures,

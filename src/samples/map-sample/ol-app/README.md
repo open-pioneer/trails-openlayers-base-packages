@@ -114,6 +114,10 @@ It provides a reactive store (`appModel.state`) by using the [Valtio](https://gi
 Valtio implements a state management solution based on proxies that feels similar to Vue's reactivity system.
 Because the AppModel is registered as a service, all React components in this package can use it to access global state:
 
+> NOTE: Because Valtio is based on proxies, not all kinds of data can be stored.
+> It is best suited for plain data (string, numbers, objects, arrays, ...).
+> When storing complex data, that does not need to be reactive, use ref().
+
 ```tsx
 // ui/Search.tsx
 export function SearchComponent() {

@@ -138,7 +138,7 @@ export class AppModel implements Service {
         this._state.resultListState = {
             open: true,
             key: oldKey + 1,
-            input
+            input: ref(input)
         };
     }
 
