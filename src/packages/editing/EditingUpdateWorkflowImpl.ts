@@ -147,7 +147,6 @@ export class EditingUpdateWorkflowImpl
 
         const layerUrl = this._editLayerURL;
 
-        // todo schon beim start machen, damit Nutzer nicht erst nach Editierung in fehler laeuft?
         this._featureId = feature.getId()?.toString();
         if (!this._featureId) {
             this._destroy();
@@ -194,6 +193,14 @@ export class EditingUpdateWorkflowImpl
     private _start() {
         this._olMap.addLayer(this._editingLayer);
         this._olMap.addInteraction(this._modifyInteraction);
+
+        const feature = this._editingSource.getFeatures()[0];
+        if (feature && !feature.getId()?.toString()) {
+            this._destroy();
+            this._error = new Error("no feature id available");
+            this.#waiter?.reject(this._error);
+            return;
+        }
 
         // Add EventListener on focused map to abort actual interaction via `Escape`
         this._mapContainer = this._olMap.getTargetElement() ?? undefined;

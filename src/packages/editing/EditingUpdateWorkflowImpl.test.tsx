@@ -143,7 +143,6 @@ describe("during update editing workflow", () => {
         if (!feature) {
             throw new Error("feature not found");
         }
-        feature.setId("test_id_1");
 
         workflow.triggerSave();
 
@@ -247,14 +246,13 @@ describe("when update editing workflow complete", () => {
         if (!feature) {
             throw new Error("feature not found");
         }
-        feature.setId("test_id_1");
 
         workflow.triggerSave();
 
         await sleep(DEFAULT_SLEEP);
 
         workflow.whenComplete().then((featureData: Record<string, string> | undefined) => {
-            expect(featureData?.featureId).toBe("test_id_1");
+            expect(featureData?.featureId).toBe("test_id");
         });
     });
 
@@ -270,7 +268,6 @@ describe("when update editing workflow complete", () => {
         if (!feature) {
             throw new Error("feature not found");
         }
-        feature.setId("test_id_1");
 
         workflow.stop();
 
@@ -303,7 +300,6 @@ describe("when update editing workflow complete", () => {
         if (!feature) {
             throw new Error("feature not found");
         }
-        feature.setId("test_id_1");
 
         workflow.triggerSave();
 
@@ -358,6 +354,9 @@ async function setupUpdateWorkflow(map: MapModel, httpService: HttpService = HTT
         "circle-stroke-color": "red"
     };
 
+    const feature = new Feature({ geometry: new Point([0, 0]) });
+    feature.setId("test_id");
+
     const workflow = new EditingUpdateWorkflowImpl({
         map,
         ogcApiFeatureLayerUrl: OGC_API_URL_TEST,
@@ -365,7 +364,7 @@ async function setupUpdateWorkflow(map: MapModel, httpService: HttpService = HTT
         vertexStyle,
         httpService,
         intl,
-        feature: new Feature({ geometry: new Point([0, 0]) })
+        feature
     });
 
     return { map, workflow };
