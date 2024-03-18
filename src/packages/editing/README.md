@@ -151,6 +151,20 @@ const element = createCustomElement({
 customElements.define("ol-map-app", element);
 ```
 
+### Keyboard shortcuts and operating instructions
+
+The user can use the following keyboard shortcuts / interactions during create feature workflow:
+
+-   `Esc`: Reset the drawing
+-   `Mouse double-click`: Set last vertex and finish drawing
+-   `Enter`: Finish drawing (vertex that is currently drawn is discarded)
+
+The user can use the following keyboard shortcuts / interactions during update feature workflow:
+
+-   `Esc`: Reset the drawing
+-   `Alt + MouseClick`: Remove vertices from feature
+-   `Mouse click (outside feature)` or `Enter`: finish editing
+
 ## License
 
 Apache-2.0 (see `LICENSE` file)

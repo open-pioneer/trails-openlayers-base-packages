@@ -6,8 +6,8 @@ import GeoJSONGeometryCollection from "ol/format/GeoJSON";
 import { Projection } from "ol/proj";
 
 /**
- * Function to save an created feature to an OGC API service.
- * Resolves with feature id, or reject if an error occurs.
+ * Function to save a created feature to an OGC API Features service.
+ * Resolves with feature id, or rejects if an error occurs.
  */
 export async function saveCreatedFeature(
     httpService: HttpService,
@@ -41,8 +41,8 @@ export async function saveCreatedFeature(
 }
 
 /**
- * Function to save an updated feature to an OGC API service.
- * Resolves with feature id, or reject if an error occurs.
+ * Function to save an updated geometry to a feature to an OGC API Features service.
+ * Resolves with feature id, or rejects if an error occurs.
  */
 export async function saveUpdatedFeature(
     httpService: HttpService,

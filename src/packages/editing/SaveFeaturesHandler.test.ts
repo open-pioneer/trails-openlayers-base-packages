@@ -53,7 +53,7 @@ describe("Editing workflow: create", () => {
         expect(featureId).toBe(TEST_ID);
     });
 
-    it("returns an error if saving feature fails", async () => {
+    it("returns an error if saving created feature fails", async () => {
         const projection = new Projection({ code: "EPSG:25832" });
         const geometry = mockedGeoJSON(projection);
         let result;
