@@ -1,5 +1,11 @@
 # @open-pioneer/react-utils
 
+## 0.2.2
+
+### Patch Changes
+
+-   1a8ad89: Update package.json metadata
+
 ## 0.2.1
 
 ### Patch Changes

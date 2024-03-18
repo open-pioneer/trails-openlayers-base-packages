@@ -1,9 +1,5 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-
-import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
-import { useIntl, useService } from "open-pioneer:react-hooks";
-import { FC, useEffect, useState } from "react";
 import {
     Box,
     Button,
@@ -13,11 +9,15 @@ import {
     Input,
     Select
 } from "@open-pioneer/chakra-integration";
+import { createLogger } from "@open-pioneer/core";
 import { MapModel, useMapModel } from "@open-pioneer/map";
 import { NotificationService } from "@open-pioneer/notifier";
-import { FileFormatType, PrintingController } from "./PrintingController";
-import { createLogger } from "@open-pioneer/core";
+import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { PackageIntl } from "@open-pioneer/runtime";
+import { useIntl, useService } from "open-pioneer:react-hooks";
+import { FC, useEffect, useState } from "react";
+import { FileFormatType, PrintingController } from "./PrintingController";
+import { PrintingService } from "./index";
 
 const LOG = createLogger("printing");
 
@@ -43,11 +43,12 @@ export const Printing: FC<PrintingProps> = (props) => {
     const [title, setTitle] = useState<string>("");
     const [running, setRunning] = useState<boolean>(false);
 
+    const printingService = useService<PrintingService>("printing.PrintingService");
     const notifier = useService<NotificationService>("notifier.NotificationService");
 
     const { map } = useMapModel(mapId);
 
-    const controller = useController(map, intl);
+    const controller = useController(map, intl, printingService);
 
     useEffect(() => {
         controller?.setFileFormat(selectedFileFormat);
@@ -79,7 +80,9 @@ export const Printing: FC<PrintingProps> = (props) => {
                 });
                 LOG.error("Failed to print the map", error);
             })
-            .finally(() => setRunning(false));
+            .finally(() => {
+                setRunning(false);
+            });
     }
 
     return (
@@ -131,7 +134,11 @@ export const Printing: FC<PrintingProps> = (props) => {
 /**
  * Create a PrintingController instance to export the map view.
  */
-function useController(map: MapModel | undefined, intl: PackageIntl) {
+function useController(
+    map: MapModel | undefined,
+    intl: PackageIntl,
+    printingService: PrintingService
+) {
     const [controller, setController] = useState<PrintingController | undefined>(undefined);
 
     useEffect(() => {
@@ -139,7 +146,7 @@ function useController(map: MapModel | undefined, intl: PackageIntl) {
             return;
         }
 
-        const controller = new PrintingController(map.olMap, {
+        const controller = new PrintingController(map.olMap, printingService, {
             overlayText: intl.formatMessage({ id: "printingMap" })
         });
         setController(controller);
@@ -148,6 +155,6 @@ function useController(map: MapModel | undefined, intl: PackageIntl) {
             controller.destroy();
             setController(undefined);
         };
-    }, [map, intl]);
+    }, [map, intl, printingService]);
     return controller;
 }

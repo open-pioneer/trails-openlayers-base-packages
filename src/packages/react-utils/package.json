@@ -1,9 +1,18 @@
 {
     "name": "@open-pioneer/react-utils",
     "description": "Contains common react utilities used by the open pioneer trails project",
-    "version": "0.2.1",
+    "version": "0.2.2",
     "license": "Apache-2.0",
     "main": "index.ts",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/open-pioneer/trails-openlayers-base-packages",
+        "directory": "src/packages/react-utils"
+    },
+    "homepage": "https://github.com/open-pioneer",
+    "keywords": [
+        "open-pioneer-trails"
+    ],
     "scripts": {
         "build": "build-pioneer-package"
     },

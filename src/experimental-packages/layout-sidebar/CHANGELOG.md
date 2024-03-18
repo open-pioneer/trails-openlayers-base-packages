@@ -1,5 +1,12 @@
 # @open-pioneer/experimental-layout-sidebar
 
+## 0.2.1
+
+### Patch Changes
+
+-   1a8ad89: Update package.json metadata
+-   6162979: Update versions of core packages
+
 ## 0.2.0
 
 ### Minor Changes

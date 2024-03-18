@@ -18,7 +18,7 @@ import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { Geometry, LineString, Point, Polygon } from "ol/geom";
 import { MAP_ID } from "./MapConfigProviderImpl";
 import { Fill, Icon, Stroke, Style } from "ol/style";
-import mapMarkerUrl2 from "@open-pioneer/map/assets/images/mapMarker2.png?url";
+import mapMarkerUrl2 from "./mapMarker2.png?url";
 import { useRef, useState } from "react";
 
 export function AppUI() {

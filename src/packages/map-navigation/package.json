@@ -1,8 +1,18 @@
 {
     "name": "@open-pioneer/map-navigation",
-    "version": "0.3.1",
+    "version": "0.4.0",
+    "description": "This package provides a collection of map navigation controls.",
     "license": "Apache-2.0",
     "main": "index.ts",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/open-pioneer/trails-openlayers-base-packages",
+        "directory": "src/packages/map-navigation"
+    },
+    "homepage": "https://github.com/open-pioneer",
+    "keywords": [
+        "open-pioneer-trails"
+    ],
     "scripts": {
         "build": "build-pioneer-package"
     },
@@ -12,7 +22,7 @@
         "@open-pioneer/react-utils": "workspace:^",
         "@open-pioneer/runtime": "^2.1.2",
         "classnames": "^2.3.2",
-        "ol": "^8.2.0",
+        "ol": "^9.0.0",
         "react": "^18.2.0",
         "react-icons": "^4.12.0"
     },

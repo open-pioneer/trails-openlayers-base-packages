@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import { Resource, createLogger } from "@open-pioneer/core";
 import { HttpService } from "@open-pioneer/http";
-import { MapRegistry } from "@open-pioneer/map";
+import { Highlight, MapModel, MapRegistry } from "@open-pioneer/map";
 import { OgcFeaturesSearchSourceFactory } from "@open-pioneer/ogc-features";
 import {
     type DECLARE_SERVICE_INTERFACE,
@@ -20,6 +20,7 @@ import { proxyMap } from "valtio/utils";
 import { MAP_ID } from "./MapConfigProviderImpl";
 import { PhotonGeocoder } from "./sources/searchSources";
 import { ResultColumn, ResultListInput } from "@open-pioneer/result-list";
+import { Geometry } from "ol/geom";
 
 const LOG = createLogger("ol-app:AppModel");
 
@@ -87,6 +88,9 @@ export class AppModel implements Service {
     private _state: AppState;
     private _resources: Resource[] = [];
 
+    // Highlight for search or selection results (they remove each other in this app).
+    private _featureHighlight: Highlight | undefined = undefined;
+
     constructor({ references, intl }: ServiceOptions<References>) {
         this._mapRegistry = references.mapRegistry;
         this._intl = intl;
@@ -147,6 +151,43 @@ export class AppModel implements Service {
      */
     setResultListVisibility(visible: boolean) {
         this._state.resultListState.open = visible;
+    }
+
+    /**
+     * Zooms and highlights to the given geometries.
+     * Clears the existing highlight created by earlier calls to this method.
+     */
+    highlightAndZoom(map: MapModel, geometries: Geometry[]): void {
+        const viewport: HTMLElement = map.olMap.getViewport();
+
+        this.clearPreviousHighlight();
+        this._featureHighlight = map.highlightAndZoom(geometries, {
+            viewPadding:
+                viewport && viewport.offsetWidth < 1000
+                    ? { top: 150, right: 75, bottom: 50, left: 75 }
+                    : { top: 150, right: 400, bottom: 50, left: 400 }
+        });
+    }
+
+    /**
+     * Zooms to the given geometries.
+     */
+    zoom(map: MapModel, geometries: Geometry[]): void {
+        const viewport: HTMLElement = map.olMap.getViewport();
+
+        map.zoom(geometries, {
+            viewPadding:
+                viewport && viewport.offsetWidth < 1000
+                    ? { top: 150, right: 75, bottom: 50, left: 75 }
+                    : { top: 150, right: 400, bottom: 50, left: 400 }
+        });
+    }
+
+    clearPreviousHighlight() {
+        if (this._featureHighlight) {
+            this._featureHighlight.destroy();
+            this._featureHighlight = undefined;
+        }
     }
 
     /**
@@ -216,7 +257,7 @@ export class AppModel implements Service {
                     (layerSelectionSource.status === "unavailable" ||
                         layerSelectionSource.status?.kind === "unavailable")
                 ) {
-                    map.removeHighlights();
+                    this.clearPreviousHighlight();
                 }
             });
             this._resources.push(eventHandler, layerSelectionSource);

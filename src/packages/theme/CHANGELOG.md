@@ -1,5 +1,12 @@
 # @open-pioneer/theme
 
+## 0.3.1
+
+### Patch Changes
+
+-   1a8ad89: Update package.json metadata
+-   6162979: Update versions of core packages
+
 ## 0.3.0
 
 ### Minor Changes

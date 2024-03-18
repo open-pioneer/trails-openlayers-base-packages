@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import { Box, Container, Divider, Flex } from "@open-pioneer/chakra-integration";
 import { CoordinateViewer } from "@open-pioneer/coordinate-viewer";
-import { MapAnchor, MapContainer, useMapModel } from "@open-pioneer/map";
+import { MapAnchor, MapContainer } from "@open-pioneer/map";
 import { Notifier } from "@open-pioneer/notifier";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { ScaleBar } from "@open-pioneer/scale-bar";
@@ -44,7 +44,7 @@ const DEFAULT_TOOL_STATE: IndependentToolState = {
  */
 export function AppUI() {
     const intl = useIntl();
-    const { map } = useMapModel(MAP_ID);
+    const appModel = useService<AppModel>("ol-app.AppModel");
 
     // The current interaction. Only one interaction can be active at a time.
     const [currentInteractionType, setCurrentInteractionType] = useState<InteractionType>();
@@ -83,11 +83,11 @@ export function AppUI() {
             if (interactionType !== currentInteractionType && newValue) {
                 // A new interaction type was toggled on
                 setCurrentInteractionType(interactionType);
-                map?.removeHighlights();
+                appModel.clearPreviousHighlight();
             } else if (interactionType === currentInteractionType && !newValue) {
                 // The current interaction type was toggled off
                 setCurrentInteractionType(undefined);
-                map?.removeHighlights();
+                appModel.clearPreviousHighlight();
             }
         } else {
             setCurrentToolState({
@@ -97,7 +97,6 @@ export function AppUI() {
         }
     };
 
-    const appModel = useService<unknown>("ol-app.AppModel") as AppModel;
     const resultListState = useSnapshot(appModel.state).resultListState;
     const showResultList = resultListState.input && resultListState.open;
 
