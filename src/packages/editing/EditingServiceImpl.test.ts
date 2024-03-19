@@ -143,7 +143,7 @@ describe("editing: create", () => {
     });
 
     describe("tests for resetting an editing", () => {
-        it("should reset an editing", async () => {
+        it("should successfully trigger resetting an editing drawing", async () => {
             const { mapId, registry } = await setupMap();
             const map = await registry.expectMapModel(mapId);
 
@@ -316,8 +316,7 @@ describe("editing: update", () => {
     });
 
     describe("tests for resetting an editing", () => {
-        it("should reset an editing", async () => {
-            // todo rename test: e.g. "should successfully trigger resetting an editing drawing"
+        it("should successfully trigger resetting an editing drawing", async () => {
             const { mapId, registry } = await setupMap();
             const map = await registry.expectMapModel(mapId);
 

@@ -13,7 +13,8 @@ interface EditingStyleProps {
 }
 
 /**
- * Function to retrieve an OpenLayers style from OpenLayers FlatStyle. //  todo adjust
+ * Function to retrieve an OpenLayers style for an editing workflow
+ * from editing polygon and vertex style.
  *
  * The polygon OpenLayers FlatStyle is convert to an OpenLayers style.
  *
