@@ -163,10 +163,10 @@ export const ResultList: FC<ResultListProps> = (props) => {
         mapId,
         input: { data, columns, formatOptions },
         onSelectionChange,
+        enableZoom = true,
         highlightZoomOptions
     } = props;
 
-    const enableZoom = props.enableZoom != false;
     const { map } = useMapModel(mapId);
 
     if (columns.length === 0) {
