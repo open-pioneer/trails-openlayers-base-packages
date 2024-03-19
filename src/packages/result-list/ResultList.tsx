@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Box } from "@open-pioneer/chakra-integration";
-import { BaseFeature } from "@open-pioneer/map";
+import { BaseFeature, HighlightZoomOptions, useMapModel } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, ReactNode, RefObject, useEffect, useMemo, useRef, useState } from "react";
@@ -130,7 +130,7 @@ export interface ResultListProps extends CommonComponentProps {
     /**
      * The id of the map.
      */
-    mapId?: string;
+    mapId: string;
 
     /**
      * Describes the data rendered by the component.
@@ -138,9 +138,19 @@ export interface ResultListProps extends CommonComponentProps {
     input: ResultListInput;
 
     /**
-     * This handler is called whenever the user has changed the selected features in the result-list
+     * This handler is called whenever the user has changed the selected features in the result-list.
      */
     onSelectionChange?: (event: ResultListSelectionChangeEvent) => void;
+
+    /**
+     * The map should zoom to features when they are loaded into the result-list.
+     */
+    enableZoom?: boolean;
+
+    /**
+     * Optional zooming options
+     */
+    highlightZoomOptions?: HighlightZoomOptions;
 }
 
 /**
@@ -150,9 +160,15 @@ export const ResultList: FC<ResultListProps> = (props) => {
     const { containerProps } = useCommonComponentProps("result-list", props);
     const intl = useIntl();
     const {
+        mapId,
         input: { data, columns, formatOptions },
-        onSelectionChange
+        onSelectionChange,
+        highlightZoomOptions
     } = props;
+
+    const enableZoom = props.enableZoom != false;
+    const { map } = useMapModel(mapId);
+
     if (columns.length === 0) {
         throw Error("No columns were defined. The result list cannot be displayed.");
     }
@@ -169,6 +185,16 @@ export const ResultList: FC<ResultListProps> = (props) => {
             }),
         [columns, intl, tableWidth, formatOptions]
     );
+
+    useEffect(() => {
+        if (!map) {
+            return;
+        }
+        if (enableZoom) {
+            map.zoom(data, highlightZoomOptions);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [map, highlightZoomOptions, enableZoom]);
 
     return (
         <Box {...containerProps} height="100%" overflowY="auto" ref={containerRef}>
