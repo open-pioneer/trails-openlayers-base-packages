@@ -56,7 +56,7 @@ describe("starting update editing workflow", () => {
         workflow.stop();
     });
 
-    it("should contain a geometry after start an update editing workflow", async () => {
+    it("should hold a geometry after starting an update editing workflow", async () => {
         const { map } = await renderMap();
         const { workflow } = await setupUpdateWorkflow(map);
         const { editingSource } = getEditingLayerAndSource(map);
@@ -65,7 +65,7 @@ describe("starting update editing workflow", () => {
         workflow.stop();
     });
 
-    it("should start an update editing workflow after stop", async () => {
+    it("should start an update editing workflow after stopping another one", async () => {
         const { map } = await renderMap();
 
         const workflow = (await setupUpdateWorkflow(map)).workflow;
@@ -91,7 +91,7 @@ describe("stopping update editing workflow", () => {
         expect(workflow.getState()).toBe("destroyed");
     });
 
-    it("should remove an editing layer for an update editing workflow after stop", async () => {
+    it("should remove the editing layer for an update editing workflow on stopping the workflow", async () => {
         const { map } = await renderMap();
         const { workflow } = await setupUpdateWorkflow(map);
         workflow.stop();
@@ -105,7 +105,7 @@ describe("stopping update editing workflow", () => {
         expect(editingLayer).toBeUndefined();
     });
 
-    it("should remove an interaction for an update editing workflow", async () => {
+    it("should remove an interaction for an update editing workflow  on stopping the workflow", async () => {
         const { map } = await renderMap();
         const { workflow } = await setupUpdateWorkflow(map);
         workflow.stop();
@@ -139,17 +139,12 @@ describe("during update editing workflow", () => {
 
         modify.dispatchEvent("modifystart");
 
-        const feature = editingSource.getFeatures()[0];
-        if (!feature) {
-            throw new Error("feature not found");
-        }
-
         workflow.triggerSave();
 
         expect(workflow.getState()).toBe("active:saving");
     });
 
-    it("should contain a modified geometry after starting update editing workflow ", async () => {
+    it("should contain a modified geometry after starting update editing workflow", async () => {
         const { map } = await renderMap();
         const { workflow } = await setupUpdateWorkflow(map);
         const modify = workflow.getModifyInteraction();
@@ -160,16 +155,16 @@ describe("during update editing workflow", () => {
         modify.dispatchEvent("modifystart");
 
         const feature = editingSource.getFeatures()[0];
-        if (!feature) {
-            throw new Error("feature not found");
-        }
 
-        const geometry: Point = feature.getGeometry() as Point;
-        if (!geometry) {
-            throw new Error("geometry not found");
-        }
+        const geometry = feature?.getGeometry();
 
-        expect(geometry.getCoordinates()).toStrictEqual([10, 51]);
+        expect(geometry).not.toBeUndefined();
+
+        if (geometry instanceof Point) {
+            expect(geometry.getCoordinates()).toStrictEqual([10, 51]);
+        } else {
+            throw new Error("geometry type wrong");
+        }
 
         workflow.stop();
     });
@@ -191,7 +186,7 @@ describe("reset update editing workflow", () => {
         workflow.stop();
     });
 
-    it("should does not remove interaction after reset update editing workflow", async () => {
+    it("should not remove interaction after reset update editing workflow", async () => {
         const { map } = await renderMap();
         const { workflow } = await setupUpdateWorkflow(map);
         workflow.reset();
@@ -256,7 +251,7 @@ describe("when update editing workflow complete", () => {
         });
     });
 
-    it("should return `undefined` if update editing workflow is stopped while modify geometry", async () => {
+    it("should return `undefined` if update editing workflow is stopped while modifying geometry", async () => {
         const { map } = await renderMap();
         const { workflow } = await setupUpdateWorkflow(map);
         const modify = workflow.getModifyInteraction();

@@ -13,7 +13,7 @@ interface EditingStyleProps {
 }
 
 /**
- * Function to retrieve an OpenLayers style from OpenLayers FlatStyle.
+ * Function to retrieve an OpenLayers style from OpenLayers FlatStyle. //  todo adjust
  *
  * The polygon OpenLayers FlatStyle is convert to an OpenLayers style.
  *
@@ -63,8 +63,8 @@ const createVertexGeometry: GeometryFunction = (feature) => {
 };
 
 /**
- * Function to convert a OpenLayers FlatStyle to an OpenLayers style by setting the FlatStyle
- * to an OpenLayers feature and retrieve the style from style function.
+ * Function to convert a OpenLayers FlatStyle to an OpenLayers Style by setting the FlatStyle
+ * to an OpenLayers feature and retrieving the style from a vector layer's style function.
  */
 const convertFlatStyleToStyle = (flatStyle: FlatStyle): Style | Style[] | undefined => {
     const feature = new Feature();

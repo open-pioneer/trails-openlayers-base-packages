@@ -65,7 +65,7 @@ export interface EditingWorkflow extends EventEmitter<EditingWorkflowEvents> {
     getState(): EditingWorkflowState;
 
     /**
-     * Trigger saving the current feature.
+     * Trigger saving the currently drawn/updated feature.
      */
     triggerSave(): void;
 

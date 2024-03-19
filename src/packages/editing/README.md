@@ -30,7 +30,7 @@ const createWorkflow = editingService.createFeature(map, editingCollectionUrl);
 const updateWorkflow = editingService.updateFeature(map, editingCollectionUrl, feature);
 ```
 
-An editing workflow can be stopped completely or the current drawing can be deleted without leaving the edit mode.
+An editing workflow can be stopped completely or the current drawing can be reset to the initial state without leaving the edit mode.
 
 Example:
 

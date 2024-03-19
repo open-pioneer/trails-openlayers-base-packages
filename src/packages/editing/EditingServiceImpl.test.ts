@@ -56,7 +56,7 @@ describe("editing: create", () => {
             expect(workflow instanceof EditingCreateWorkflowImpl).toBe(true);
         });
 
-        it("should throw an error if start editing twice for the same map id", async () => {
+        it("should throw an error if editing is started twice for the same map id", async () => {
             const { mapId, registry } = await setupMap();
             const map = await registry.expectMapModel(mapId);
 
@@ -99,7 +99,7 @@ describe("editing: create", () => {
             expect(stop).toBeUndefined;
         });
 
-        it("should return no error if editing will be stop twice for a given map id", async () => {
+        it("should return no error if editing is stopped twice for a given map id", async () => {
             const { mapId, registry } = await setupMap();
             const map = await registry.expectMapModel(mapId);
 
@@ -120,7 +120,7 @@ describe("editing: create", () => {
             expect(stop).toBeUndefined;
         });
 
-        it("should return an error if editing will be stop for a non existing map id", async () => {
+        it("should return an error if editing is stopped for a non existing map id", async () => {
             const { mapId, registry } = await setupMap();
             const map = await registry.expectMapModel(mapId);
 
@@ -163,7 +163,7 @@ describe("editing: create", () => {
             expect(reset).toBeUndefined;
         });
 
-        it("should return no error if editing will be reset twice for a given map id", async () => {
+        it("should return no error if editing is reset twice for a given map id", async () => {
             const { mapId, registry } = await setupMap();
             const map = await registry.expectMapModel(mapId);
 
@@ -184,7 +184,7 @@ describe("editing: create", () => {
             expect(reset).toBeUndefined;
         });
 
-        it("should return an error if editing will be reset for a non existing map id", async () => {
+        it("should return an error if editing is reset for a non existing map id", async () => {
             const { mapId, registry } = await setupMap();
             const map = await registry.expectMapModel(mapId);
 
@@ -227,7 +227,7 @@ describe("editing: update", () => {
             expect(workflow instanceof EditingUpdateWorkflowImpl).toBe(true);
         });
 
-        it("should throw an error if start editing twice for the same map id", async () => {
+        it("should throw an error if editing is started twice for the same map id", async () => {
             const { mapId, registry } = await setupMap();
             const map = await registry.expectMapModel(mapId);
 
@@ -272,7 +272,7 @@ describe("editing: update", () => {
             expect(stop).toBeUndefined;
         });
 
-        it("should return no error if editing will be stop twice for a given map id", async () => {
+        it("should return no error if editing is stopped twice for a given map id", async () => {
             const { mapId, registry } = await setupMap();
             const map = await registry.expectMapModel(mapId);
 
@@ -293,7 +293,7 @@ describe("editing: update", () => {
             expect(stop).toBeUndefined;
         });
 
-        it("should return an error if editing will be stop for a non existing map id", async () => {
+        it("should return an error if editing is stopped for a non existing map id", async () => {
             const { mapId, registry } = await setupMap();
             const map = await registry.expectMapModel(mapId);
 
@@ -317,6 +317,7 @@ describe("editing: update", () => {
 
     describe("tests for resetting an editing", () => {
         it("should reset an editing", async () => {
+            // todo rename test: e.g. "should successfully trigger resetting an editing drawing"
             const { mapId, registry } = await setupMap();
             const map = await registry.expectMapModel(mapId);
 
@@ -336,7 +337,7 @@ describe("editing: update", () => {
             expect(reset).toBeUndefined;
         });
 
-        it("should return no error if editing will be reset twice for a given map id", async () => {
+        it("should return no error if editing is reset twice for a given map id", async () => {
             const { mapId, registry } = await setupMap();
             const map = await registry.expectMapModel(mapId);
 
@@ -357,7 +358,7 @@ describe("editing: update", () => {
             expect(reset).toBeUndefined;
         });
 
-        it("should return an error if editing will be reset for a non existing map id", async () => {
+        it("should return an error if editing is reset for a non existing map id", async () => {
             const { mapId, registry } = await setupMap();
             const map = await registry.expectMapModel(mapId);
 
