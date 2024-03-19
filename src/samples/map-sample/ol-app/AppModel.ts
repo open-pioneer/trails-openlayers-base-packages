@@ -142,7 +142,7 @@ export class AppModel implements Service {
         this._state.resultListState = {
             open: true,
             key: oldKey + 1,
-            input
+            input: ref(input)
         };
     }
 
@@ -162,6 +162,20 @@ export class AppModel implements Service {
 
         this.clearPreviousHighlight();
         this._featureHighlight = map.highlightAndZoom(geometries, {
+            viewPadding:
+                viewport && viewport.offsetWidth < 1000
+                    ? { top: 150, right: 75, bottom: 50, left: 75 }
+                    : { top: 150, right: 400, bottom: 50, left: 400 }
+        });
+    }
+
+    /**
+     * Zooms to the given geometries.
+     */
+    zoom(map: MapModel, geometries: Geometry[]): void {
+        const viewport: HTMLElement = map.olMap.getViewport();
+
+        map.zoom(geometries, {
             viewPadding:
                 viewport && viewport.offsetWidth < 1000
                     ? { top: 150, right: 75, bottom: 50, left: 75 }

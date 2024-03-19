@@ -45,7 +45,7 @@ export function SelectionComponent() {
 
         const geometries = results.map((result) => result.geometry);
         if (geometries.length > 0) {
-            appModel.highlightAndZoom(map, geometries);
+            appModel.zoom(map, geometries);
         }
 
         const currentMetadata = sourceMetadata.get(source);
