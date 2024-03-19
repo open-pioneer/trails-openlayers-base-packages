@@ -101,10 +101,10 @@ const columns = [
 
 ### Configuring highlighting of data
 
-The optional property `enableHighlight` determines whether data in the results list should be highlighted in the map. The defaulvalue is `true`.
+The optional property `enableHighlight` determines whether data in the results list should be highlighted in the map or not. The default value is `true`.
 The default style can be overridden using the optional `highlightOptions` property. `highlightOptions` must conform to the TypeScript interface `HighlightOptions`. Please note that the highlighting of the result-list can be obscured by highlights from other packages (e.g. selection).
 
-```ts
+```tsx
 import { ResultList } from "@open-pioneer/result-list";
 const ownHighlightStyle = {
     "Polygon": [
@@ -117,9 +117,9 @@ const ownHighlightStyle = {
                 color: "rgba(51, 171, 71,0.35)"
             })
         })
-    ],
+    ]
 };
-<ResultList mapId={mapId} input={input} highlightOptions= {ownHighlightStyle}/>
+<ResultList mapId={mapId} input={input} highlightOptions={ownHighlightStyle} />;
 ```
 
 ### Selection
@@ -132,7 +132,7 @@ A checkbox in the header of the table allows to select (or deselect) _all_ featu
 ​The `ResultList` supports listening to selection changes via the optional property `onSelectionChange`.
 An event handler function can be passed that will be invoked whenever the user changes the selection.
 
-```ts
+```tsx
 import { ResultList } from "@open-pioneer/result-list";
 
 const selectionChangeListener = useCallback((event: ResultListSelectionChangeEvent) => {
@@ -140,7 +140,7 @@ const selectionChangeListener = useCallback((event: ResultListSelectionChangeEve
     console.log("selection changed", event.features);
 }, []);
 
-<ResultList mapId={mapId} input={input} onSelectionChange={selectionChangeListener}/>
+<ResultList mapId={mapId} input={input} onSelectionChange={selectionChangeListener} />;
 ```
 
 ### Track selected features
