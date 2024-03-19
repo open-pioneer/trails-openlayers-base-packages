@@ -30,6 +30,7 @@ export function useSetupTable<Data extends BaseFeature>(props: DataTableProps<Da
         }
 
         setRowSelection(newSelection);
+
         if (onSelectionChange) {
             const rowsById = table.getCoreRowModel().rowsById;
             const selectedFeatures: BaseFeature[] = [];

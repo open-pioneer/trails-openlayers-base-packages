@@ -1,7 +1,12 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Box } from "@open-pioneer/chakra-integration";
-import { BaseFeature, HighlightZoomOptions, useMapModel } from "@open-pioneer/map";
+import {
+    BaseFeature,
+    HighlightOptions,
+    HighlightZoomOptions,
+    useMapModel
+} from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, ReactNode, RefObject, useEffect, useMemo, useRef, useState } from "react";
@@ -148,6 +153,16 @@ export interface ResultListProps extends CommonComponentProps {
     enableZoom?: boolean;
 
     /**
+     * Should data be highlighted in the map. Default true.
+     */
+    enableHighlight?: boolean;
+
+    /**
+     * Optional styling option
+     */
+    highlightOptions?: HighlightOptions;
+
+    /**
      * Optional zooming options
      */
     highlightZoomOptions?: HighlightZoomOptions;
@@ -164,7 +179,9 @@ export const ResultList: FC<ResultListProps> = (props) => {
         input: { data, columns, formatOptions },
         onSelectionChange,
         enableZoom = true,
-        highlightZoomOptions
+        highlightZoomOptions,
+        enableHighlight = true,
+        highlightOptions
     } = props;
 
     const { map } = useMapModel(mapId);
@@ -193,8 +210,12 @@ export const ResultList: FC<ResultListProps> = (props) => {
         if (enableZoom) {
             map.zoom(data, highlightZoomOptions);
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [map, highlightZoomOptions, enableZoom]);
+
+        if (enableHighlight) {
+            const highlight = map.highlight(data, highlightOptions);
+            return () => highlight.destroy();
+        }
+    }, [map, data, highlightZoomOptions, enableZoom, enableHighlight]);
 
     return (
         <Box {...containerProps} height="100%" overflowY="auto" ref={containerRef}>
