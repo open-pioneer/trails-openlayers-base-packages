@@ -22,20 +22,20 @@ export default defineBuildConfig({
          */
         polygonStyle: {
             "fill-color": "rgba(255,255,255,0.4)",
-            "stroke-color": "#3399CC",
+            "stroke-color": "red",
             "stroke-width": 1.25,
             // circle props used for mouse position circle while editing
-            "circle-radius": 5,
-            "circle-fill-color": "rgba(255,255,255,0.4)",
+            "circle-radius": 3,
+            "circle-fill-color": "red",
             "circle-stroke-width": 1.25,
-            "circle-stroke-color": "#3399CC"
+            "circle-stroke-color": "red"
         },
         vertexStyle: {
             // circle props used for vertices
-            "circle-radius": 5,
-            "circle-fill-color": "rgba(255,255,255,0.4)",
+            "circle-radius": 3,
+            "circle-fill-color": "red",
             "circle-stroke-width": 1.25,
-            "circle-stroke-color": "#3399CC"
+            "circle-stroke-color": "red"
         }
     },
     publishConfig: {
