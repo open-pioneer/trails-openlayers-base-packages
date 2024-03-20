@@ -7,7 +7,7 @@
         "@open-pioneer/map": "workspace:^",
         "@open-pioneer/map-navigation": "workspace:^",
         "@open-pioneer/runtime": "^1.1.0",
-        "@open-pioneer/keycloak": "workspace:^",
+        "@open-pioneer/authentication-keycloak": "workspace:^",
         "@open-pioneer/toc": "workspace:^",
         "@open-pioneer/ogc-features": "workspace:^",
         "keycloak-js": "^23.0.3"

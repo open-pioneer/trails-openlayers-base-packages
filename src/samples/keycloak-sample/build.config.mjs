@@ -5,13 +5,10 @@ import { defineBuildConfig } from "@open-pioneer/build-support";
 export default defineBuildConfig({
     i18n: ["de", "en"],
     services: {
-        KeycloakConfigProviderImpl: {
-            provides: ["keycloak.KeycloakConfigProvider"]
-        },
         KeycloakAuthPlugin: {
             provides: ["authentication.AuthPlugin"],
             references: {
-                config: "keycloak.KeycloakConfigProvider"
+                config: "authentication-keycloak.KeycloakConfigProvider"
             }
         },
         MapConfigProviderImpl: {
@@ -20,6 +17,6 @@ export default defineBuildConfig({
     },
 
     ui: {
-        references: ["authentication.AuthService"]
+        references: ["authentication.AuthService", "authentication-keycloak.KeycloakConfigProvider"]
     }
 });

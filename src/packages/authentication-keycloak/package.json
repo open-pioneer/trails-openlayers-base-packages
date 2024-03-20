@@ -1,5 +1,5 @@
 {
-    "name": "@open-pioneer/keycloak",
+    "name": "@open-pioneer/authentication-keycloak",
     "private": true,
     "main": "index.ts",
     "peerDependencies": {

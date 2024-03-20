@@ -7,17 +7,18 @@ import VectorLayer from "ol/layer/Vector";
 import OSM from "ol/source/OSM";
 import { Circle, Fill, Style } from "ol/style";
 import GeoJSON from "ol/format/GeoJSON";
-import { keycloak } from "./services";
+import { uKeycloak } from "@open-pioneer/authentication-keycloak/services";
 
 export const MAP_ID = "main";
 const query =
-    "https://inspire-nrw-sec.ldproxy.net/krankenhaus/v1/collections/governmentalservice/items?f=json&limit=5000&crs=http://www.opengis.net/def/crs/EPSG/0/3857";
+    "https://hsi-pex0-13620.service.it.nrw.de/ldproxy/inspire-us-krankenhaus/v1/collections/governmentalservice/items?f=json&limit=5000&crs=http://www.opengis.net/def/crs/EPSG/0/3857";
+
 const vectorSource = new VectorSource({
     format: new GeoJSON({}),
     loader: function (extent, resolution, projection, onSuccess, onError) {
         fetch(query, {
             headers: {
-                Authorization: "Bearer " + keycloak.token
+                Authorization: "Bearer " + uKeycloak.token
             }
         }).then((response) => {
             if (response.ok) {

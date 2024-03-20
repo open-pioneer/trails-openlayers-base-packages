@@ -261,6 +261,21 @@ importers:
         version: link:../../..
     publishDirectory: dist
 
+  src/packages/authentication-keycloak:
+    dependencies:
+      '@open-pioneer/authentication':
+        specifier: workspace:^
+        version: link:../authentication
+      '@open-pioneer/core':
+        specifier: ^1.1.0
+        version: 1.1.0
+      '@open-pioneer/runtime':
+        specifier: ^1.1.0
+        version: 1.1.0(@formatjs/intl@2.9.0)(@open-pioneer/base-theme@0.1.0)(@open-pioneer/chakra-integration@1.1.0)(@open-pioneer/core@1.1.0)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
+      keycloak-js:
+        specifier: ^23.0.3
+        version: 23.0.3
+
   src/packages/basemap-switcher:
     dependencies:
       '@open-pioneer/chakra-integration':
@@ -324,21 +339,6 @@ importers:
         specifier: workspace:*
         version: link:../../..
     publishDirectory: dist
-
-  src/packages/keycloak:
-    dependencies:
-      '@open-pioneer/authentication':
-        specifier: workspace:^
-        version: link:../authentication
-      '@open-pioneer/core':
-        specifier: ^1.1.0
-        version: 1.1.0
-      '@open-pioneer/runtime':
-        specifier: ^1.1.0
-        version: 1.1.0(@formatjs/intl@2.9.0)(@open-pioneer/base-theme@0.1.0)(@open-pioneer/chakra-integration@1.1.0)(@open-pioneer/core@1.1.0)(@open-pioneer/runtime-react-support@1.0.0)(react-dom@18.2.0)(react@18.2.0)
-      keycloak-js:
-        specifier: ^23.0.3
-        version: 23.0.3
 
   src/packages/map:
     dependencies:
@@ -696,9 +696,9 @@ importers:
       '@open-pioneer/authentication':
         specifier: workspace:^
         version: link:../../packages/authentication
-      '@open-pioneer/keycloak':
+      '@open-pioneer/authentication-keycloak':
         specifier: workspace:^
-        version: link:../../packages/keycloak
+        version: link:../../packages/authentication-keycloak
       '@open-pioneer/map':
         specifier: workspace:^
         version: link:../../packages/map

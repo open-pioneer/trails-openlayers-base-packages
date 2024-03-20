@@ -14,7 +14,7 @@ it("expect state to be 'not-authenticated'", async () => {
     } as unknown;
 
     const config = {
-        getKeycloak() {
+        setKeycloak() {
             return keycloak;
         },
 
@@ -47,4 +47,46 @@ it("expect state to be 'not-authenticated'", async () => {
     x.then(() => assert.strictEqual(plugin.getAuthState().kind, "not-authenticated"));
 });
 
-// authenticated, aut refresh success, auto refresh fail, init fail
+it("expect state to be 'authenticated'", async () => {
+    const x = Promise.resolve(true);
+    const keycloak = {
+        init() {
+            return x;
+        }
+    } as unknown;
+
+    const config = {
+        setKeycloak() {
+            return keycloak;
+        },
+
+        getInitOptions() {
+            return {
+                onLoad: "check-sso",
+                pkceMethod: "S256"
+            };
+        },
+
+        getLoginOptions() {
+            return {};
+        },
+
+        getLogoutOptions() {
+            return {};
+        },
+
+        getRefreshOptions() {
+            return {
+                autoRefresh: true,
+                interval: 6000,
+                timeLeft: 70
+            };
+        }
+    } as KeycloakConfigProvider;
+    const plugin = new KeycloakAuthPlugin({
+        references: { config: config }
+    } as ServiceOptions<References>);
+    x.then(() => assert.strictEqual(plugin.getAuthState().kind, "authenticated"));
+});
+
+// auth refresh success, auto refresh fail, init fail

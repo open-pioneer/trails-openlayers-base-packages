@@ -11,7 +11,7 @@ import { Service, ServiceOptions, ServiceType } from "@open-pioneer/runtime";
 import Keycloak, { KeycloakLoginOptions, KeycloakLogoutOptions } from "keycloak-js";
 
 export interface References {
-    config: ServiceType<"keycloak.KeycloakConfigProvider">;
+    config: ServiceType<"authentication-keycloak.KeycloakConfigProvider">;
 }
 //TODO logger name überarbeiten
 const LOG = createLogger("keycloak:KeycloakAuthPlugin");
@@ -34,13 +34,19 @@ export class KeycloakAuthPlugin
         super();
         const config = options.references.config;
 
-        const refreshOptions = config.getRefreshOptions();
-        this.#logoutOptions = config.getLogoutOptions();
-        this.#loginOptions = config.getLoginOptions();
+        const refreshOptions = config.getRefreshOptions(undefined);
+        this.#logoutOptions = config.getLogoutOptions(undefined);
+        this.#loginOptions = config.getLoginOptions(undefined);
 
-        this.#keycloak = config.getKeycloak();
+        this.#keycloak = config.setKeycloak(
+            new Keycloak({
+                url: "https://hsi-pex0-13620.service.it.nrw.de/keycloak/",
+                realm: "trails",
+                clientId: "trails-sample"
+            })
+        );
         this.#keycloak
-            .init(config.getInitOptions())
+            .init(config.getInitOptions(undefined))
             .then((data) => {
                 if (data) {
                     this.#state = {
