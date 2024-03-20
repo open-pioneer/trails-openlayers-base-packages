@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import { Flex } from "@open-pioneer/chakra-integration";
 import { Geolocation } from "@open-pioneer/geolocation";
-import { EditingService, EditingWorkflow } from "@open-pioneer/editing";
+import { EditingService } from "@open-pioneer/editing";
 import { InitialExtent, ZoomIn, ZoomOut } from "@open-pioneer/map-navigation";
 import { ToolButton, useEvent } from "@open-pioneer/react-utils";
 import { useIntl, useService } from "open-pioneer:react-hooks";
@@ -22,19 +22,8 @@ import {
     PiSelectionPlusBold
 } from "react-icons/pi";
 import { MAP_ID } from "../MapConfigProviderImpl";
-import { Layer, MapModel, useMapModel } from "@open-pioneer/map";
-import VectorLayer from "ol/layer/Vector";
-import VectorSource from "ol/source/Vector";
-import { useEffect } from "react";
-import { NotificationService } from "@open-pioneer/notifier";
-import { PackageIntl } from "@open-pioneer/runtime";
 import { AppModel } from "../AppModel";
 import { useSnapshot } from "valtio";
-import { Select } from "ol/interaction";
-import { unByKey } from "ol/Observable";
-import { Resource } from "@open-pioneer/core";
-import { Overlay } from "ol";
-import OlMap from "ol/Map";
 
 export interface ToolState {
     bookmarksActive: boolean;
@@ -60,44 +49,17 @@ export interface MapToolsProps {
     onToolStateChange(toolStateName: keyof ToolState, newValue: boolean): void;
 }
 
-// Represents a tooltip rendered on the OpenLayers map
-interface Tooltip extends Resource {
-    overlay: Overlay;
-    element: HTMLDivElement;
-}
-
 export function MapTools(props: MapToolsProps) {
     const { toolState, onToolStateChange } = props;
     const intl = useIntl();
     const appModel = useService<unknown>("ol-app.AppModel") as AppModel;
     const resultListState = useSnapshot(appModel.state).resultListState;
     const resultListOpen = resultListState.open;
-    const { map } = useMapModel(MAP_ID);
     const editingService = useService<EditingService>("editing.EditingService");
-    const notificationService = useService<NotificationService>("notifier.NotificationService");
 
     const toggleToolState = useEvent((name: keyof ToolState, newValue?: boolean) => {
         onToolStateChange(name, newValue ?? !toolState[name]);
     });
-
-    // Todo: Error during toggle create / update -> Button isn't toggled!
-    useEditingCreateWorkflow(
-        map,
-        editingService,
-        notificationService,
-        intl,
-        toolState,
-        toggleToolState
-    );
-
-    useEditingUpdateWorkflow(
-        map,
-        editingService,
-        notificationService,
-        intl,
-        toolState,
-        toggleToolState
-    );
 
     return (
         <Flex
@@ -189,205 +151,4 @@ export function MapTools(props: MapToolsProps) {
             <ZoomOut mapId={MAP_ID} />
         </Flex>
     );
-}
-
-function useEditingCreateWorkflow(
-    map: MapModel | undefined,
-    editingService: EditingService,
-    notificationService: NotificationService,
-    intl: PackageIntl,
-    toolState: ToolState,
-    toggleToolState: (name: keyof ToolState, newValue?: boolean | undefined) => void
-) {
-    useEffect(() => {
-        if (!map) {
-            return;
-        }
-
-        function startEditingCreate() {
-            if (!map) {
-                throw Error("map is undefined");
-            }
-
-            try {
-                const layer = map.layers.getLayerById("krankenhaus") as Layer;
-                const url = new URL(layer.attributes.collectionURL + "/items");
-                const workflow = editingService.createFeature(map, url);
-
-                workflow
-                    .whenComplete()
-                    .then((featureData: Record<string, string> | undefined) => {
-                        if (!featureData) {
-                            return;
-                        }
-
-                        notificationService.notify({
-                            level: "info",
-                            message: intl.formatMessage(
-                                {
-                                    id: "editing.create.featureCreated"
-                                },
-                                { featureId: featureData.featureId }
-                            ),
-                            displayDuration: 4000
-                        });
-
-                        const vectorLayer = layer?.olLayer as VectorLayer<VectorSource>;
-                        vectorLayer.getSource()?.refresh();
-                    })
-                    .catch((error: Error) => {
-                        console.error(error);
-                    })
-                    .finally(() => {
-                        toggleToolState("editingCreateActive", false);
-                    });
-            } catch (error) {
-                console.error(error);
-            }
-        }
-
-        function stopEditingCreate() {
-            editingService.stop(MAP_ID);
-        }
-
-        toolState.editingCreateActive ? startEditingCreate() : stopEditingCreate();
-    }, [
-        map,
-        editingService,
-        notificationService,
-        intl,
-        toolState.editingCreateActive,
-        toggleToolState
-    ]);
-}
-
-function useEditingUpdateWorkflow(
-    map: MapModel | undefined,
-    editingService: EditingService,
-    notificationService: NotificationService,
-    intl: PackageIntl,
-    toolState: ToolState,
-    toggleToolState: (name: keyof ToolState, newValue?: boolean | undefined) => void
-) {
-    useEffect(() => {
-        if (!map) {
-            return;
-        }
-
-        let selectInteraction: Select;
-
-        function _createEditingTooltip(olMap: OlMap): Tooltip {
-            const element = document.createElement("div");
-            element.className = "editing-tooltip editing-tooltip-hidden";
-            element.textContent = intl.formatMessage({ id: "editing.update.tooltip.select" });
-
-            const overlay = new Overlay({
-                element: element,
-                offset: [15, 0],
-                positioning: "center-left"
-            });
-
-            const pointerMove = olMap.on("pointermove", (evt) => {
-                if (evt.dragging) {
-                    return;
-                }
-
-                overlay.setPosition(evt.coordinate);
-            });
-
-            olMap.addOverlay(overlay);
-
-            return {
-                overlay,
-                element,
-                destroy() {
-                    unByKey(pointerMove);
-                    olMap.removeOverlay(overlay);
-                }
-            };
-        }
-
-        function startEditingUpdate() {
-            if (!map) {
-                throw Error("map is undefined");
-            }
-
-            const tooltip = _createEditingTooltip(map.olMap);
-
-            try {
-                const layer = map.layers.getLayerById("krankenhaus") as Layer;
-                const vectorLayer = layer?.olLayer as VectorLayer<VectorSource>;
-
-                selectInteraction = new Select({
-                    layers: [vectorLayer]
-                });
-
-                map.olMap.addInteraction(selectInteraction);
-                tooltip.element.classList.remove("editing-tooltip-hidden");
-
-                const url = new URL(layer.attributes.collectionURL + "/items");
-                let workflow: EditingWorkflow;
-
-                const selectHandler = selectInteraction.on("select", (e) => {
-                    const selected = e.selected;
-                    const deselected = e.deselected;
-
-                    if (selected.length === 1 && deselected.length === 0) {
-                        map.olMap.removeInteraction(selectInteraction);
-                        unByKey(selectHandler);
-                        tooltip.destroy();
-
-                        const feature = selected[0];
-                        if (!feature) {
-                            throw Error("feature is undefined");
-                        }
-
-                        workflow = editingService.updateFeature(map, url, feature);
-
-                        workflow
-                            .whenComplete()
-                            .then((featureData: Record<string, string> | undefined) => {
-                                if (!featureData) {
-                                    return;
-                                }
-
-                                notificationService.notify({
-                                    level: "info",
-                                    message: intl.formatMessage(
-                                        {
-                                            id: "editing.update.featureModified"
-                                        },
-                                        { featureId: featureData.featureId }
-                                    ),
-                                    displayDuration: 4000
-                                });
-
-                                vectorLayer.getSource()?.refresh();
-                            })
-                            .catch((error: Error) => {
-                                console.log(error);
-                            })
-                            .finally(() => {
-                                toggleToolState("editingUpdateActive", false);
-                            });
-                    }
-                });
-            } catch (error) {
-                console.log(error);
-            }
-        }
-
-        function stopEditingUpdate() {
-            editingService.stop(MAP_ID);
-        }
-
-        toolState.editingUpdateActive ? startEditingUpdate() : stopEditingUpdate();
-    }, [
-        map,
-        editingService,
-        notificationService,
-        intl,
-        toolState.editingUpdateActive,
-        toggleToolState
-    ]);
 }
