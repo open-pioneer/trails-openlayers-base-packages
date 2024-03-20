@@ -215,7 +215,7 @@ export const ResultList: FC<ResultListProps> = (props) => {
             const highlight = map.highlight(data, highlightOptions);
             return () => highlight.destroy();
         }
-    }, [map, data, highlightZoomOptions, enableZoom, enableHighlight]);
+    }, [map, data, highlightZoomOptions, enableZoom, enableHighlight, highlightOptions]);
 
     return (
         <Box {...containerProps} height="100%" overflowY="auto" ref={containerRef}>
