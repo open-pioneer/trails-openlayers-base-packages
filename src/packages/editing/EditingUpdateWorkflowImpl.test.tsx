@@ -135,7 +135,6 @@ describe("during update editing workflow", () => {
         const { map } = await renderMap();
         const { workflow } = await setupUpdateWorkflow(map);
         const modify = workflow.getModifyInteraction();
-        const { editingSource } = getEditingLayerAndSource(map);
 
         modify.dispatchEvent("modifystart");
 
