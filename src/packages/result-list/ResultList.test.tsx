@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { BaseFeature, HighlightZoomOptions } from "@open-pioneer/map";
+import { BaseFeature, ZoomOptions } from "@open-pioneer/map";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { Mock, SpyInstance, afterEach, beforeEach, expect, it, vi } from "vitest";
@@ -428,7 +428,7 @@ it("should not zoom the map further than the configured maxZoom", async () => {
 
     const map = await registry.expectMapModel(mapId);
 
-    const zoomOptions: HighlightZoomOptions = { maxZoom: 11 };
+    const zoomOptions: ZoomOptions = { maxZoom: 11 };
 
     render(
         <PackageContextProvider services={injectedServices} locale="de">

@@ -15,7 +15,8 @@ import {
     Highlight,
     HighlightOptions,
     HighlightStyle,
-    HighlightZoomOptions
+    HighlightZoomOptions,
+    ZoomOptions
 } from "../api/MapModel";
 import mapMarkerUrl from "../assets/images/mapMarker.png?url";
 import { FeatureLike } from "ol/Feature";
@@ -130,7 +131,7 @@ export class Highlights {
     /**
      * This method zoom to geometries or BaseFeatures
      */
-    zoomToHighlight(displayTarget: DisplayTarget[], options: HighlightZoomOptions | undefined) {
+    zoomToHighlight(displayTarget: DisplayTarget[], options: ZoomOptions | undefined) {
         const geometries = this.#filterGeoobjects(displayTarget);
 
         if (geometries.length === 0) {
