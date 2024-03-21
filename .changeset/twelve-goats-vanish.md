@@ -2,4 +2,4 @@
 "@open-pioneer/result-list": minor
 ---
 
-add zooming
+"Zoom to features loaded into the result-list"
