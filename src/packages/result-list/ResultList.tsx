@@ -148,7 +148,7 @@ export interface ResultListProps extends CommonComponentProps {
     onSelectionChange?: (event: ResultListSelectionChangeEvent) => void;
 
     /**
-     * The map should zoom to features when they are loaded into the result-list.
+     * Specifies if the map should zoom to features when they are loaded into the result-list. Defaults to true.
      */
     enableZoom?: boolean;
 
