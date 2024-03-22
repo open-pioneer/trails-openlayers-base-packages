@@ -81,6 +81,7 @@ export class EditingUpdateWorkflowImpl
         this._initialFeature = options.feature.clone();
         this._initialFeature.setId(options.feature.getId());
 
+        // Work on copied feature to avoid the style to be applied on the original feature
         this._editFeature = options.feature.clone();
         this._editFeature.setId(options.feature.getId());
 

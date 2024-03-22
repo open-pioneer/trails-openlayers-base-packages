@@ -2,7 +2,18 @@
 
 This package provides an editing service that allows to start and handle geometry editing workflows.
 
-Note: The editing only works with OGC API Feature Services. The editing was only tested using the implementation of the OGC API Features in the XtraServer by interactive instruments. The collection where the geometry will be saved, needs to support the map's coordinate system.
+> **_NOTE:_** The editing only works with OGC API Feature Services. The editing was only tested using
+> the implementation of the OGC API Features in the XtraServer by interactive instruments.
+> The collection in that the geometry will be saved, needs to support the map's coordinate system.
+> The saving process may not be suitable for all kinds of OGC API Feature Service set up using the XtraServer.
+> Please note the following additional information to ensure that process is appropriate for your services.
+>
+> Additional information:
+>
+> -   Create Workflow: The feature is saved in the collection as a new feature with an empty properties
+>     object and without an id (using POST).
+> -   Update Workflow: The updated geometry is saved for the feature in the collection using a PATCH request.
+>     In addition to the new geometry, the PATCH request sends an empty properties object within the body.
 
 ## Usage
 
