@@ -4,11 +4,11 @@ This package provides a UI component to display features and their attributes.
 
 ## Usage
 
-To add the package to your app, import `ResultList` from `@open-pioneer/result-list`.
+To add the package to your app, import `ResultList` from `@open-pioneer/result-list`. Furthermore, the Id of the currently used map is required.
 
 ```tsx
 import { ResultList } from "@open-pioneer/result-list";
-<ResultList input={input} />;
+<ResultList mapId={mapId} input={input} />;
 ```
 
 The following section describes how to define the `input` parameter.
@@ -99,6 +99,29 @@ const columns = [
 ];
 ```
 
+### Configuring highlighting of data
+
+The optional property `enableHighlight` determines whether data in the results list should be highlighted in the map or not. The default value is `true`.
+The default style can be overridden using the optional `highlightOptions` property. `highlightOptions` must conform to the TypeScript interface `HighlightOptions`. Please note that the highlighting of the result-list can be obscured by highlights from other packages (e.g. selection).
+
+```tsx
+import { ResultList } from "@open-pioneer/result-list";
+const ownHighlightStyle = {
+    "Polygon": [
+        new Style({
+            stroke: new Stroke({
+                color: "#ff0000",
+                width: 3
+            }),
+            fill: new Fill({
+                color: "rgba(51, 171, 71,0.35)"
+            })
+        })
+    ]
+};
+<ResultList mapId={mapId} input={input} highlightOptions={ownHighlightStyle} />;
+```
+
 ### Selection
 
 Users can select (and deselect) individual features by clicking on the checkbox at the beginning of a row.
@@ -109,7 +132,7 @@ A checkbox in the header of the table allows to select (or deselect) _all_ featu
 ​The `ResultList` supports listening to selection changes via the optional property `onSelectionChange`.
 An event handler function can be passed that will be invoked whenever the user changes the selection.
 
-```ts
+```tsx
 import { ResultList } from "@open-pioneer/result-list";
 
 const selectionChangeListener = useCallback((event: ResultListSelectionChangeEvent) => {
@@ -117,7 +140,7 @@ const selectionChangeListener = useCallback((event: ResultListSelectionChangeEve
     console.log("selection changed", event.features);
 }, []);
 
-<ResultList input={input} onSelectionChange={selectionChangeListener}/>
+<ResultList mapId={mapId} input={input} onSelectionChange={selectionChangeListener} />;
 ```
 
 ### Track selected features
@@ -133,7 +156,7 @@ const selectionChangeListener = useCallback((event: ResultListSelectionChangeEve
     // event.getFeatureIds()
 }, []);
 
-<ResultList input={input} onSelectionChange={selectionChangeListener} />;
+<ResultList mapId={mapId} input={input} onSelectionChange={selectionChangeListener} />;
 ```
 
 ### Sorting data
@@ -212,7 +235,7 @@ Configure the `viewPadding` on the associated `MapContainer` when the result lis
     borderColor="trails.500"
     zIndex={1}
 >
-    <ResultList key={resultListKey} input={resultListInput} />
+    <ResultList key={resultListKey} mapId={mapId} input={resultListInput} />
 </Box>
 ```
 
@@ -228,6 +251,7 @@ To force the result list to throw away its existing state, use React's `key` pro
        to throw away existing state. React will create a new component behind the scenes
        with entirely new state. */
     key={resultListKey}
+    mapId={mapId}
     input={resultListInput}
 />
 ```

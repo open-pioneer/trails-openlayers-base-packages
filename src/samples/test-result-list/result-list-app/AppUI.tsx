@@ -185,7 +185,11 @@ export function AppUI() {
                             borderColor="trails.500"
                             zIndex={1}
                         >
-                            <ResultList key={String(displayVersion)} input={shownInput} />
+                            <ResultList
+                                mapId={MAP_ID}
+                                key={String(displayVersion)}
+                                input={shownInput}
+                            />
                         </Box>
                     )}
                 </Flex>

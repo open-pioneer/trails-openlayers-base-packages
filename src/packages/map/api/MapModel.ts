@@ -26,7 +26,7 @@ export interface HighlightOptions {
     highlightStyle?: HighlightStyle;
 }
 
-/** Options supported by the map model's {@link MapModel.highlightAndZoom | highlightAndZoom} method. */
+/** Options supported by the map model's {@link MapModel.highlightAndZoom | zoom | highlightAndZoom} method. */
 export interface HighlightZoomOptions extends HighlightOptions {
     /**
      * The zoom-level used if there is no valid extend (such as for single points).
@@ -139,7 +139,7 @@ export interface MapModel extends EventSource<MapModelEvents> {
     highlight(geometries: DisplayTarget[], options?: HighlightOptions): Highlight;
 
     /**
-     * Zooms to to the given targets.
+     * Zooms to the given targets.
      */
     zoom(geometries: DisplayTarget[], options?: HighlightZoomOptions): void;
 

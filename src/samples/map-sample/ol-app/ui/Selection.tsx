@@ -43,11 +43,6 @@ export function SelectionComponent() {
             return;
         }
 
-        const geometries = results.map((result) => result.geometry);
-        if (geometries.length > 0) {
-            appModel.highlightAndZoom(map, geometries);
-        }
-
         const currentMetadata = sourceMetadata.get(source);
         if (!currentMetadata) {
             console.warn("Can not show results because no metadata could be found");
