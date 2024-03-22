@@ -13,13 +13,16 @@ import { EditingUpdateWorkflowImpl } from "./EditingUpdateWorkflowImpl";
 
 const OGC_API_URL_TEST = new URL("https://example.org/ogc");
 
+const TEST_ID = "test_id";
+
 const DEFAULT_FEATURE = new Feature({ geometry: new Point([0, 0]) });
+DEFAULT_FEATURE.setId(TEST_ID);
 
 const HTTP_SERVICE: HttpService = {
     fetch: vi.fn().mockResolvedValue(
         new Response("", {
             headers: {
-                Location: OGC_API_URL_TEST + "/test_id_1"
+                Location: `${OGC_API_URL_TEST}/${TEST_ID}`
             },
             status: 201
         })

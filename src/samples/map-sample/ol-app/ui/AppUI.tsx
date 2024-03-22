@@ -22,7 +22,7 @@ import { SelectionComponent } from "./Selection";
 import { TocComponent } from "./Toc";
 import { AppModel } from "../AppModel";
 import { useSnapshot } from "valtio";
-import { EditingService, EditingWorkflow } from "@open-pioneer/editing";
+import { EditingService } from "@open-pioneer/editing";
 import { PackageIntl } from "@open-pioneer/runtime";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
@@ -268,7 +268,6 @@ function useEditingCreateWorkflow(
                     .whenComplete()
                     .then((featureData: Record<string, string> | undefined) => {
                         if (!featureData) {
-                            console.warn("resolved without data");
                             return;
                         }
 
