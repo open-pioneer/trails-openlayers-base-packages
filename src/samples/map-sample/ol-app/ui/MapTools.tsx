@@ -6,6 +6,8 @@ import { EditingService } from "@open-pioneer/editing";
 import { InitialExtent, ZoomIn, ZoomOut } from "@open-pioneer/map-navigation";
 import { ToolButton, useEvent } from "@open-pioneer/react-utils";
 import { useIntl, useService } from "open-pioneer:react-hooks";
+import { TbPolygon, TbPolygonOff } from "react-icons/tb";
+
 import {
     PiArrowUUpLeft,
     PiBookmarksSimpleBold,
@@ -20,12 +22,6 @@ import {
     PiSelectionPlusBold
 } from "react-icons/pi";
 import { MAP_ID } from "../MapConfigProviderImpl";
-import { Layer, MapModel, useMapModel } from "@open-pioneer/map";
-import VectorLayer from "ol/layer/Vector";
-import VectorSource from "ol/source/Vector";
-import { useEffect } from "react";
-import { NotificationService } from "@open-pioneer/notifier";
-import { PackageIntl } from "@open-pioneer/runtime";
 import { AppModel } from "../AppModel";
 import { useSnapshot } from "valtio";
 
@@ -37,7 +33,8 @@ export interface ToolState {
     selectionActive: boolean;
     overviewMapActive: boolean;
     printingActive: boolean;
-    editingActive: boolean;
+    editingCreateActive: boolean;
+    editingUpdateActive: boolean;
 }
 
 export interface MapToolsProps {
@@ -58,15 +55,11 @@ export function MapTools(props: MapToolsProps) {
     const appModel = useService<unknown>("ol-app.AppModel") as AppModel;
     const resultListState = useSnapshot(appModel.state).resultListState;
     const resultListOpen = resultListState.open;
-    const { map } = useMapModel(MAP_ID);
     const editingService = useService<EditingService>("editing.EditingService");
-    const notificationService = useService<NotificationService>("notifier.NotificationService");
 
     const toggleToolState = useEvent((name: keyof ToolState, newValue?: boolean) => {
         onToolStateChange(name, newValue ?? !toolState[name]);
     });
-
-    useEditingWorkflow(map, editingService, notificationService, intl, toolState, toggleToolState);
 
     return (
         <Flex
@@ -78,16 +71,26 @@ export function MapTools(props: MapToolsProps) {
         >
             <ToolButton
                 label={
-                    toolState.editingActive
-                        ? intl.formatMessage({ id: "stopEditingTitle" })
-                        : intl.formatMessage({ id: "startEditingTitle" })
+                    toolState.editingCreateActive
+                        ? intl.formatMessage({ id: "editing.stopTitle" })
+                        : intl.formatMessage({ id: "editing.create.startTitle" })
                 }
-                icon={toolState.editingActive ? <PiPencilSlash /> : <PiPencil />}
-                isActive={toolState.editingActive}
-                onClick={() => toggleToolState("editingActive")}
+                icon={toolState.editingCreateActive ? <TbPolygonOff /> : <TbPolygon />}
+                isActive={toolState.editingCreateActive}
+                onClick={() => toggleToolState("editingCreateActive")}
             />
             <ToolButton
-                label={intl.formatMessage({ id: "resetEditingTitle" })}
+                label={
+                    toolState.editingUpdateActive
+                        ? intl.formatMessage({ id: "editing.stopTitle" })
+                        : intl.formatMessage({ id: "editing.update.startTitle" })
+                }
+                icon={toolState.editingUpdateActive ? <PiPencilSlash /> : <PiPencil />}
+                isActive={toolState.editingUpdateActive}
+                onClick={() => toggleToolState("editingUpdateActive")}
+            />
+            <ToolButton
+                label={intl.formatMessage({ id: "editing.resetTitle" })}
                 icon={<PiArrowUUpLeft />}
                 onClick={() => editingService.reset(MAP_ID)}
             />
@@ -148,67 +151,4 @@ export function MapTools(props: MapToolsProps) {
             <ZoomOut mapId={MAP_ID} />
         </Flex>
     );
-}
-
-function useEditingWorkflow(
-    map: MapModel | undefined,
-    editingService: EditingService,
-    notificationService: NotificationService,
-    intl: PackageIntl,
-    toolState: ToolState,
-    toggleToolState: (name: keyof ToolState, newValue?: boolean | undefined) => void
-) {
-    useEffect(() => {
-        if (!map) {
-            return;
-        }
-
-        function startEditingCreate() {
-            if (!map) {
-                throw Error("map is undefined");
-            }
-
-            try {
-                const layer = map.layers.getLayerById("krankenhaus") as Layer;
-                const url = new URL(layer.attributes.collectionURL + "/items");
-                const workflow = editingService.start(map, url);
-
-                workflow
-                    .whenComplete()
-                    .then((featureId: string | undefined) => {
-                        if (!featureId) {
-                            return;
-                        }
-
-                        notificationService.notify({
-                            level: "info",
-                            message: intl.formatMessage(
-                                {
-                                    id: "editing.featureCreated"
-                                },
-                                { featureId: featureId }
-                            ),
-                            displayDuration: 4000
-                        });
-
-                        const vectorLayer = layer?.olLayer as VectorLayer<VectorSource>;
-                        vectorLayer.getSource()?.refresh();
-                    })
-                    .catch((error: Error) => {
-                        console.error(error);
-                    })
-                    .finally(() => {
-                        toggleToolState("editingActive", false);
-                    });
-            } catch (error) {
-                console.log(error);
-            }
-        }
-
-        function stopEditingCreate() {
-            editingService.stop(MAP_ID);
-        }
-
-        toolState.editingActive ? startEditingCreate() : stopEditingCreate();
-    }, [map, editingService, notificationService, intl, toolState.editingActive, toggleToolState]);
 }

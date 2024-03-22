@@ -5,11 +5,18 @@ messages:
   measurementTitle: "Measurement"
   selectionTitle: "Selection"
   overviewMapTitle: "Overview map"
-  startEditingTitle: "Editing - Create new feature"
-  stopEditingTitle: "Editing - Stop"
-  resetEditingTitle: "Editing - Reset"
   editing:
-    featureCreated: "Created feature with ID: {featureId}"
+    create:
+      startTitle: "Editing - Create new feature"
+      featureCreated: "Created feature with ID: {featureId}"
+    update:
+      startTitle: "Editing - Modify feature"
+      featureModified: "Modified feature with ID: {featureId}"
+      tooltip:
+        select: Select geometry to start editing
+    stopTitle: "Editing - Stop"
+    resetTitle: "Editing - Reset"
+    toggleNotAllowed: "An editing operation is already in progress. Please stop the active operation first."
   resultListTitle: "Result-List"
   ariaLabel:
     header: "Header bar"

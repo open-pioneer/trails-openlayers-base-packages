@@ -5,11 +5,18 @@ messages:
   measurementTitle: "Messen"
   selectionTitle: "Selektieren"
   overviewMapTitle: "Übersichtskarte"
-  startEditingTitle: "Editierung - Neues Feature erstellen"
-  stopEditingTitle: "Editierung - Stoppen"
-  resetEditingTitle: "Editierung - Zurücksetzen"
   editing:
-    featureCreated: "Objekt erstellt mit ID: {featureId}"
+    create:
+      startTitle: "Editierung - Neues Feature erstellen"
+      featureCreated: "Objekt erstellt mit ID: {featureId}"
+    update:
+      startTitle: "Editierung - Feature bearbeiten"
+      featureModified: "Objekt aktualisiert mit ID: {featureId}"
+      tooltip:
+        select: Geometrie auswählen, um mit der Bearbeitung zu starten
+    stopTitle: "Editierung - Stoppen"
+    resetTitle: "Editierung - Zurücksetzen"
+    toggleNotAllowed: "Es ist bereits ein Editiervorgang aktiv. Bitte aktiven Vorgang zunächst beenden."
   resultListTitle: "Ergebnisliste"
   ariaLabel:
     header: "Kopfleiste"

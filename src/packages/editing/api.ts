@@ -1,8 +1,11 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { EventEmitter } from "@open-pioneer/core";
+import { HttpService } from "@open-pioneer/http";
 import { MapModel } from "@open-pioneer/map";
-import type { DeclaredService } from "@open-pioneer/runtime";
+import type { DeclaredService, PackageIntl } from "@open-pioneer/runtime";
+import { Feature } from "ol";
+import { FlatStyle } from "ol/style/flat";
 
 /**
  * State of an editing workflow
@@ -11,9 +14,11 @@ export type EditingWorkflowState =
     | "active:initialized"
     | "active:drawing"
     | "active:saving"
-    | "inactive";
+    | "destroyed";
 
-/** Events emitted by the {@link EditingWorkflow}. */
+/**
+ * Events emitted by the {@link EditingWorkflow}.
+ */
 export interface EditingWorkflowEvents {
     /**
      * Initial state after editing workflow was started but user has not yet started drawing.
@@ -21,7 +26,8 @@ export interface EditingWorkflowEvents {
     "active:initialized": void;
 
     /**
-     * State while user is drawing a feature. State is entered when user adds the first vertex of the geometry.
+     * State while user is drawing a feature. State is entered when user adds the first vertex of the geometry (`create-mode`).
+     * State while user is updating an existing feature. State is entered when user moved the first vertex of the geometry (`update-mode`).
      */
     "active:drawing": void;
 
@@ -33,7 +39,19 @@ export interface EditingWorkflowEvents {
     /**
      * State after editing is stopped.
      */
-    "inactive": void;
+    "destroyed": void;
+}
+
+/**
+ * Props of an editing workflow
+ */
+export interface EditingWorkflowProps {
+    map: MapModel;
+    ogcApiFeatureLayerUrl: URL;
+    polygonStyle: FlatStyle;
+    vertexStyle: FlatStyle;
+    httpService: HttpService;
+    intl: PackageIntl;
 }
 
 /**
@@ -47,11 +65,16 @@ export interface EditingWorkflow extends EventEmitter<EditingWorkflowEvents> {
     getState(): EditingWorkflowState;
 
     /**
+     * Trigger saving the currently drawn/updated feature.
+     */
+    triggerSave(): void;
+
+    /**
      * Wait for the editing to be finished. The returned promise resolves with the
      * feature ID when saving was successful and rejects if saving the feature
      * failed. It resolves with undefined when the editing was stopped.
      */
-    whenComplete(): Promise<string | undefined>;
+    whenComplete(): Promise<Record<string, string> | undefined>;
 }
 
 /**
@@ -61,9 +84,14 @@ export interface EditingWorkflow extends EventEmitter<EditingWorkflowEvents> {
  */
 export interface EditingService extends DeclaredService<"editing.EditingService"> {
     /**
-     * Creates and initializes a new {@link EditingWorkflow}.
+     * Creates and initializes a new {@link EditingWorkflow} to create a geometry.
      */
-    start(map: MapModel, ogcApiFeatureLayerUrl: URL): EditingWorkflow;
+    createFeature(map: MapModel, ogcApiFeatureLayerUrl: URL): EditingWorkflow;
+
+    /**
+     * Creates and initializes a new {@link EditingWorkflow} to update an existing feature's geometry.
+     */
+    updateFeature(map: MapModel, ogcApiFeatureLayerUrl: URL, feature: Feature): EditingWorkflow;
 
     /**
      * Stops the edit mode and removes an existing {@link EditingWorkflow}.
@@ -71,7 +99,7 @@ export interface EditingService extends DeclaredService<"editing.EditingService"
     stop(mapId: string): void;
 
     /**
-     * Removes the unfinished geometry from an existing {@link EditingWorkflow} without leaving the edit mode.
+     * Resets the unfinished geometry from an existing {@link EditingWorkflow} without leaving the edit mode.
      */
     reset(mapId: string): void;
 }
