@@ -49,6 +49,7 @@ export class EditingUpdateWorkflowImpl
     private _featureId: string | undefined;
 
     private _initialFeature: Feature;
+    private _editFeature: Feature;
     private _editingSource: VectorSource;
     private _editingLayer: VectorLayer<VectorSource>;
     private _modifyInteraction: Modify;
@@ -80,7 +81,10 @@ export class EditingUpdateWorkflowImpl
         this._initialFeature = options.feature.clone();
         this._initialFeature.setId(options.feature.getId());
 
-        options.feature.setStyle(
+        this._editFeature = options.feature.clone();
+        this._editFeature.setId(options.feature.getId());
+
+        this._editFeature.setStyle(
             createStyles({
                 polygon: this._polygonStyle,
                 vertex: this._vertexStyle
@@ -88,7 +92,7 @@ export class EditingUpdateWorkflowImpl
         );
 
         this._editingSource = new VectorSource({
-            features: new Collection([options.feature])
+            features: new Collection([this._editFeature])
         });
         this._editingLayer = new VectorLayer({
             source: this._editingSource,
@@ -99,7 +103,7 @@ export class EditingUpdateWorkflowImpl
         });
 
         this._modifyInteraction = new Modify({
-            features: new Collection([options.feature])
+            source: this._editingSource
         });
 
         this._tooltip = this._createTooltip(this._olMap);
@@ -264,6 +268,7 @@ export class EditingUpdateWorkflowImpl
     }
 
     private _destroy() {
+        this._editingSource.clear();
         this._olMap.removeLayer(this._editingLayer);
         this._olMap.removeInteraction(this._modifyInteraction);
         this._tooltip.destroy();

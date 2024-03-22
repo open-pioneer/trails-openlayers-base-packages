@@ -16,6 +16,7 @@ messages:
         select: Geometrie auswählen, um mit der Bearbeitung zu starten
     stopTitle: "Editierung - Stoppen"
     resetTitle: "Editierung - Zurücksetzen"
+    toggleNotAllowed: "Es ist bereits ein Editier-Vorgang aktiv. Bitte aktiven Vorgang zunächst beenden."
   resultListTitle: "Ergebnisliste"
   ariaLabel:
     header: "Kopfleiste"

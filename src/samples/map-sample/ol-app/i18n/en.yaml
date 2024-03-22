@@ -16,6 +16,7 @@ messages:
         select: Select geometry to start editing
     stopTitle: "Editing - Stop"
     resetTitle: "Editing - Reset"
+    toggleNotAllowed: "An editing operation is already in progress. Please stop the active operation first."
   resultListTitle: "Result-List"
   ariaLabel:
     header: "Header bar"
