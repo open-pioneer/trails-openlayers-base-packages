@@ -2,4 +2,4 @@
 "@open-pioneer/map": minor
 ---
 
-add green mapMarker
+Add green map marker

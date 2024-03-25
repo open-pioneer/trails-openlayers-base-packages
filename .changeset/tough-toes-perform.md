@@ -2,4 +2,4 @@
 "@open-pioneer/result-list": minor
 ---
 
-add highlighting
+Add highlight functionality

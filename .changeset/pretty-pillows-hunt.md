@@ -3,4 +3,4 @@
 "@open-pioneer/map": minor
 ---
 
-Introduce ZoomOptions-type
+Add `ZoomOptions` prop in map package
