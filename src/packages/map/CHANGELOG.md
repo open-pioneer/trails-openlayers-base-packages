@@ -1,5 +1,11 @@
 # @open-pioneer/map
 
+## 0.5.0
+
+### Minor Changes
+
+-   520a97b: Add `ZoomOptions` prop in map package
+
 ## 0.4.0
 
 ### Minor Changes

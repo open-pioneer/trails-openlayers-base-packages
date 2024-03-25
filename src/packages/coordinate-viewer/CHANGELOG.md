@@ -1,5 +1,12 @@
 # @open-pioneer/coordinate-viewer
 
+## 0.5.1
+
+### Patch Changes
+
+-   Updated dependencies [520a97b]
+    -   @open-pioneer/map@0.5.0
+
 ## 0.5.0
 
 ### Minor Changes

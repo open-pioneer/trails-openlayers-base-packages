@@ -1,5 +1,13 @@
 # @open-pioneer/overview-map
 
+## 0.4.1
+
+### Patch Changes
+
+-   c386ff0: Update peerDependencies
+-   Updated dependencies [520a97b]
+    -   @open-pioneer/map@0.5.0
+
 ## 0.4.0
 
 ### Minor Changes

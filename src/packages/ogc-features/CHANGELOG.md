@@ -1,5 +1,11 @@
 # @open-pioneer/ogc-features
 
+## 0.4.1
+
+### Patch Changes
+
+-   @open-pioneer/search@0.4.1
+
 ## 0.4.0
 
 ### Minor Changes
