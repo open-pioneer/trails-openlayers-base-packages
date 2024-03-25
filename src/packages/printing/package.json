@@ -1,6 +1,6 @@
 {
     "name": "@open-pioneer/printing",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "This package provides a UI component to export the current map view as a printable file.",
     "license": "Apache-2.0",
     "main": "index.ts",

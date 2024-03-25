@@ -1,5 +1,18 @@
 # @open-pioneer/result-list
 
+## 0.2.0
+
+### Minor Changes
+
+-   520a97b: Add `ZoomOptions` prop in map package
+-   48bdf81: Add highlight functionality
+-   8e764ce: Zoom to features loaded into the result-list
+
+### Patch Changes
+
+-   Updated dependencies [520a97b]
+    -   @open-pioneer/map@0.5.0
+
 ## 0.1.0
 
 ### Minor Changes

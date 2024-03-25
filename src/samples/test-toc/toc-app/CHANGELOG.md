@@ -1,5 +1,13 @@
 # toc-app
 
+## 0.0.7
+
+### Patch Changes
+
+-   Updated dependencies [520a97b]
+    -   @open-pioneer/map@0.5.0
+    -   @open-pioneer/toc@0.4.1
+
 ## 0.0.6
 
 ### Patch Changes
