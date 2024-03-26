@@ -40,9 +40,9 @@ export class KeycloakAuthPlugin
 
         this.#keycloak = config.setKeycloak(
             new Keycloak({
-                url: "https://hsi-pex0-13620.service.it.nrw.de/keycloak/",
-                realm: "trails",
-                clientId: "trails-sample"
+                url: "https://auth.ldproxy.net/",
+                realm: "ii",
+                clientId: "it-nrw"
             })
         );
         this.#keycloak
