@@ -1,9 +1,37 @@
 messages:
   basemapLabel: "Select basemap:"
   tocTitle: "Table of contents"
+  legendTitle: "Legend"
   measurementTitle: "Measurement"
+  selectionTitle: "Selection"
+  overviewMapTitle: "Overview map"
+  editing:
+    create:
+      startTitle: "Editing - Create new feature"
+      featureCreated: "Created feature with ID: {featureId}"
+    update:
+      startTitle: "Editing - Modify feature"
+      featureModified: "Modified feature with ID: {featureId}"
+      tooltip:
+        select: Select geometry to start editing
+    stopTitle: "Editing - Stop"
+    resetTitle: "Editing - Reset"
+    toggleNotAllowed: "An editing operation is already in progress. Please stop the active operation first."
+  resultListTitle: "Result-List"
   ariaLabel:
     header: "Header bar"
     footer: "Base bar with scale information, spatial reference system and coordinate display"
     map: "Map. Use the arrow keys to move the map. Zoom in with the plus button and zoom out with the minus button."
     toolbar: "Maptools"
+  geolocationTitle: "Geolocation"
+  spatialBookmarkTitle: "Spatial bookmarks"
+  printingTitle: "Printing"
+  layerNotVisibleReason: "Matching layer is not visible."
+  searchSources:
+    miningPermissions: Mining permissions
+    lika: Cadastre data in NRW
+  foundResults: Found {resultsCount, plural,
+    =0 {no results}
+    one {1 result}
+    other {{resultsCount} results}
+    }.

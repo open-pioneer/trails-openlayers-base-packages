@@ -1,11 +1,14 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import type { EventSource } from "@open-pioneer/core";
+import type { EventSource, Resource } from "@open-pioneer/core";
 import type OlMap from "ol/Map";
 import type OlBaseLayer from "ol/layer/Base";
 import type { ExtentConfig } from "./MapConfig";
 import type { Layer, LayerBase } from "./layers";
 import type { LayerRetrievalOptions } from "./shared";
+import type { Geometry } from "ol/geom";
+import { BaseFeature } from "./BaseFeature";
+import { StyleLike } from "ol/style/Style";
 
 /** Events emitted by the {@link MapModel}. */
 export interface MapModelEvents {
@@ -14,6 +17,73 @@ export interface MapModelEvents {
     "changed:initialExtent": void;
     "destroy": void;
 }
+
+/** Styleoptions supported when creating a new {@link Highlight}. */
+export interface HighlightOptions {
+    /**
+     * Optional styles to override the default styles.
+     */
+    highlightStyle?: HighlightStyle;
+}
+
+/** Zoomoptions supported when creating a new {@link Highlight}. */
+export interface ZoomOptions {
+    /**
+     * The zoom-level used if there is no valid extend (such as for single points).
+     */
+    pointZoom?: number;
+
+    /**
+     * The maximum zoom-level for multiple points, line or polygon results.
+     */
+    maxZoom?: number;
+
+    /**
+     * The view padding to make all features visible.
+     */
+    viewPadding?: MapPadding;
+}
+
+/** Options supported by the map model's {@link MapModel.highlightAndZoom | zoom | highlightAndZoom} method. */
+export interface HighlightZoomOptions extends HighlightOptions, ZoomOptions {}
+
+/**
+ * Custom styles when creating a new {@link Highlight}.
+ */
+export type HighlightStyle = {
+    Point?: StyleLike;
+    LineString?: StyleLike;
+    Polygon?: StyleLike;
+    MultiPolygon?: StyleLike;
+    MultiPoint?: StyleLike;
+    MultiLineString?: StyleLike;
+};
+
+/**
+ * Map padding, all values are pixels.
+ *
+ * See https://openlayers.org/en/latest/apidoc/module-ol_View-View.html#padding
+ */
+export interface MapPadding {
+    left?: number;
+    right?: number;
+    top?: number;
+    bottom?: number;
+}
+
+/**
+ * Represents the additional graphical representations of objects.
+ *
+ * See also {@link MapModel.highlight}.
+ */
+export interface Highlight extends Resource {
+    readonly isActive: boolean;
+}
+
+/**
+ * Represents a Object
+ */
+export type DisplayTarget = BaseFeature | Geometry;
 
 /**
  * Represents a map.
@@ -61,6 +131,32 @@ export interface MapModel extends EventSource<MapModelEvents> {
      * Returns a promise that resolves when the map has mounted in the DOM.
      */
     whenDisplayed(): Promise<void>;
+
+    /**
+     * Creates a highlight at the given targets.
+     *
+     * A highlight is a temporary graphic on the map that calls attention to a point or an area.
+     *
+     * Call `destroy()` on the returned highlight object to remove the highlight again.
+     */
+    highlight(geometries: DisplayTarget[], options?: HighlightOptions): Highlight;
+
+    /**
+     * Zooms to the given targets.
+     */
+    zoom(geometries: DisplayTarget[], options?: ZoomOptions): void;
+
+    /**
+     * Creates a highlight and zooms to the given targets.
+     *
+     * See also {@link highlight} and {@link zoom}.
+     */
+    highlightAndZoom(geometries: DisplayTarget[], options?: HighlightZoomOptions): Highlight;
+
+    /**
+     * Removes any existing highlights from the map.
+     */
+    removeHighlights(): void;
 }
 
 /** Events emitted by the {@link LayerCollection}. */

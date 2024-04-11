@@ -1,0 +1,66 @@
+.result-list-no-data-message {
+    text-align: center;
+    margin-top: 50px;
+    font-weight: bold;
+    font-size: larger;
+}
+
+.result-list-table {
+    th,
+    td {
+        overflow-wrap: break-word;
+    }
+
+    &.result-list-table--is-resizing * {
+        cursor: col-resize;
+    }
+
+    thead {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        background: var(--chakra-colors-background_body);
+    }
+
+    th {
+        position: relative;
+        border-right-width: thin;
+    }
+
+    tbody tr:hover {
+        background: var(--chakra-colors-background_light);
+    }
+
+    // Resizer
+    .result-list-resizer {
+        position: absolute;
+        top: 0;
+        height: 100%;
+        right: 0;
+        width: 8px;
+        background: var(--chakra-colors-trails-100);
+        transform: scale(0.25, 1);
+        cursor: col-resize;
+        user-select: none;
+        touch-action: none;
+        padding-left: 0px;
+    }
+
+    // Render last one differently (right-aligned)
+    th:last-child .result-list-resizer {
+        width: 8px;
+        transform: translateX(50%) scale(0.25, 1);
+    }
+
+    // Additional th so that these rules are most specific
+    th .result-list-resizer {
+        &.result-list-resizer--is-resizing {
+            background: var(--chakra-colors-trails-500);
+            transform: scale(1);
+        }
+
+        &:hover {
+            transform: scale(1);
+        }
+    }
+}

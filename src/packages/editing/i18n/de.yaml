@@ -1,0 +1,7 @@
+messages:
+  title: Editierung von Objekten
+  create:
+    tooltip:
+      begin: Klicken, um mit Erstellung der Geometrie zu beginnen
+      continue: Doppelt klicken, um Geometrie abzuschließen und Feature zu speichern
+      deselect: Außerhalb der Geometrie in die Karte klicken, um Änderungen zu speichern

@@ -1,21 +1,33 @@
 {
     "name": "@open-pioneer/basemap-switcher",
-    "version": "0.0.1",
+    "version": "0.4.1",
+    "description": "This package provides a UI component that allows a user to switch between different base maps.",
     "license": "Apache-2.0",
     "main": "index.ts",
     "scripts": {
         "build": "build-pioneer-package"
     },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/open-pioneer/trails-openlayers-base-packages",
+        "directory": "src/packages/basemap-switcher"
+    },
+    "homepage": "https://github.com/open-pioneer",
+    "keywords": [
+        "open-pioneer-trails"
+    ],
     "peerDependencies": {
-        "@open-pioneer/chakra-integration": "^1.1.0",
+        "@open-pioneer/chakra-integration": "^1.1.1",
         "@open-pioneer/map": "workspace:^",
-        "@open-pioneer/runtime": "^1.1.0",
+        "@open-pioneer/runtime": "^2.1.2",
         "@open-pioneer/react-utils": "workspace:^",
-        "ol": "^8.1.0",
-        "react": "^18.2.0"
+        "chakra-react-select": "^4.7.6",
+        "ol": "^9.0.0",
+        "react": "^18.2.0",
+        "react-icons": "^4.12.0"
     },
     "devDependencies": {
-        "@open-pioneer/test-utils": "^1.0.1",
+        "@open-pioneer/test-utils": "^1.1.1",
         "@open-pioneer/map-test-utils": "workspace:^",
         "openlayers-base-packages": "workspace:*"
     },

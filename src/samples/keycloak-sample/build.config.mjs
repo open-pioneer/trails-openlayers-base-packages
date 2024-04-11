@@ -6,17 +6,24 @@ export default defineBuildConfig({
     i18n: ["de", "en"],
     services: {
         KeycloakAuthPlugin: {
-            provides: ["authentication.AuthPlugin"],
+            provides: ["authentication-keycloak.KeycloakAuthPlugin"]
+        },
+
+        MapConfigProviderImpl: {
+            provides: ["map.MapConfigProvider"],
             references: {
-                config: "authentication-keycloak.KeycloakConfigProvider"
+                vectorSourceFactory: "ogc-features.VectorSourceFactory"
             }
         },
-        MapConfigProviderImpl: {
-            provides: ["map.MapConfigProvider"]
+        SampleTokenInterceptor: {
+            provides: ["http.Interceptor"],
+            references: {
+                keycloackAuthPlugin: "authentication.AuthService"
+            }
         }
     },
 
     ui: {
-        references: ["authentication.AuthService", "authentication-keycloak.KeycloakConfigProvider"]
+        references: ["authentication.AuthService"]
     }
 });

@@ -3,6 +3,7 @@
 import type OlMap from "ol/Map";
 import type { MapConfig } from "./MapConfig";
 import type { MapModel } from "./MapModel";
+import type { DeclaredService } from "@open-pioneer/runtime";
 
 /**
  * Provides access to registered map instances.
@@ -11,7 +12,7 @@ import type { MapModel } from "./MapModel";
  *
  * Inject an instance of this service by referencing the interface name `"map.MapRegistry"`.
  */
-export interface MapRegistry {
+export interface MapRegistry extends DeclaredService<"map.MapRegistry"> {
     /**
      * Returns the map model associated with the given id.
      * Returns undefined if there is no such model.
@@ -51,12 +52,4 @@ export interface MapConfigProvider {
      * See {@link MapConfig} for supported options.
      */
     getMapConfig(): Promise<MapConfig>;
-}
-
-import "@open-pioneer/runtime";
-declare module "@open-pioneer/runtime" {
-    interface ServiceRegistry {
-        "map.MapRegistry": MapRegistry;
-        "map.MapConfigProvider": MapConfigProvider;
-    }
 }

@@ -4,7 +4,7 @@ import { createLogger } from "@open-pioneer/core";
 import OlMap, { MapOptions } from "ol/Map";
 import View, { ViewOptions } from "ol/View";
 import Attribution from "ol/control/Attribution";
-import { equals as extentEquals, getCenter } from "ol/extent";
+import { getCenter } from "ol/extent";
 import TileLayer from "ol/layer/Tile";
 import { Projection, get as getProjection } from "ol/proj";
 import OSM from "ol/source/OSM";
@@ -13,6 +13,8 @@ import { MapBrowserEvent } from "ol";
 import { MapModelImpl } from "./MapModelImpl";
 import { MapConfig } from "../api";
 import { registerProjections } from "../projections";
+import { patchOpenLayersClassesForTesting } from "../util/ol-test-support";
+import { HttpService } from "@open-pioneer/http";
 
 /**
  * Register custom projection to the global proj4js definitions. User can select `EPSG:25832`
@@ -26,17 +28,23 @@ registerProjections({
 });
 const LOG = createLogger("map:createMapModel");
 
-export async function createMapModel(mapId: string, mapConfig: MapConfig): Promise<MapModelImpl> {
-    return await new MapModelFactory(mapId, mapConfig).createMapModel();
+export async function createMapModel(
+    mapId: string,
+    mapConfig: MapConfig,
+    httpService: HttpService
+): Promise<MapModelImpl> {
+    return await new MapModelFactory(mapId, mapConfig, httpService).createMapModel();
 }
 
 class MapModelFactory {
     private mapId: string;
     private mapConfig: MapConfig;
+    private httpService: HttpService;
 
-    constructor(mapId: string, mapConfig: MapConfig) {
+    constructor(mapId: string, mapConfig: MapConfig, httpService: HttpService) {
         this.mapId = mapId;
         this.mapConfig = mapConfig;
+        this.httpService = httpService;
     }
 
     async createMapModel() {
@@ -82,14 +90,19 @@ class MapModelFactory {
         const initialView = mapConfig.initialView;
         const initialExtent = initialView?.kind === "extent" ? initialView.extent : undefined;
 
-        LOG.debug(`Constructing open layers map with options`, mapOptions);
+        LOG.debug(`Constructing OpenLayers map with options`, mapOptions);
+
+        if (import.meta.env.VITEST) {
+            patchOpenLayersClassesForTesting();
+        }
+
         const olMap = new OlMap(mapOptions);
-        setupTestSupport(olMap);
 
         const mapModel = new MapModelImpl({
             id: mapId,
             olMap,
-            initialExtent
+            initialExtent,
+            httpService: this.httpService
         });
 
         try {
@@ -137,7 +150,7 @@ class MapModelFactory {
                     /*
                         OpenLayers does not support configuration of the initial map extent.
                         The only relevant options here are center, zoom (and resolution).
-                        We must set those values because otherwise OL will not initialize layer sources.
+                        We must set those values because otherwise OpenLayers will not initialize layer sources.
 
                         The actual initial extent is applied once tha map has loaded and its size is known.
                     */
@@ -183,25 +196,5 @@ class MapModelFactory {
             throw new Error(`Failed to retrieve projection for code '${projectionOption}'.`);
         }
         return projection;
-    }
-}
-
-function setupTestSupport(olMap: OlMap) {
-    // Test support: open layers relies on div.offsetHeight (and Width)
-    // plus getComputedStyle(div), which do not work as expected in jsdom.
-    // The following snippet fakes a size so tests can work with the map.
-    if (import.meta.env.VITEST) {
-        olMap.updateSize = () => {
-            const target = olMap.getTargetElement();
-            const height = 500;
-            const width = 500;
-            const size = target ? [width, height] : undefined;
-            const oldSize = olMap.getSize();
-            if (size && (!oldSize || !extentEquals(size, oldSize))) {
-                olMap.setSize(size);
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                (olMap as any).updateViewportSize_();
-            }
-        };
     }
 }

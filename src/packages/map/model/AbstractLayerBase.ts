@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import { EventEmitter, EventNames, createLogger } from "@open-pioneer/core";
 import { v4 as uuid4v } from "uuid";
-import { LayerBase, LayerBaseEvents, MapModel, Sublayer } from "../api";
+import { LayerBase, LayerBaseEvents, Sublayer } from "../api";
 import { MapModelImpl } from "./MapModelImpl";
 import { SublayersCollectionImpl } from "./SublayersCollectionImpl";
 
@@ -43,7 +43,7 @@ export abstract class AbstractLayerBase<AdditionalEvents = {}>
         return this.#destroyed;
     }
 
-    get map(): MapModel {
+    get map(): MapModelImpl {
         const map = this.#map;
         if (!map) {
             throw new Error(`Layer '${this.id}' has not been attached to a map yet.`);
@@ -70,6 +70,8 @@ export abstract class AbstractLayerBase<AdditionalEvents = {}>
     abstract get visible(): boolean;
 
     abstract get sublayers(): SublayersCollectionImpl<Sublayer & AbstractLayerBase> | undefined;
+
+    abstract get legend(): string | undefined;
 
     destroy() {
         if (this.#destroyed) {

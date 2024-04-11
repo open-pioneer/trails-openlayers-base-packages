@@ -5,8 +5,8 @@ import { unByKey } from "ol/Observable";
 import { EventsKey } from "ol/events";
 import OlBaseLayer from "ol/layer/Base";
 import OlLayer from "ol/layer/Layer";
-import Source, { State as OlSourceState } from "ol/source/Source";
-import { Layer, LayerLoadState, SimpleLayerConfig } from "../api";
+import OlSource from "ol/source/Source";
+import { HealthCheckFunction, Layer, LayerConfig, LayerLoadState, SimpleLayerConfig } from "../api";
 import { AbstractLayerBase } from "./AbstractLayerBase";
 import { MapModelImpl } from "./MapModelImpl";
 
@@ -23,6 +23,7 @@ export abstract class AbstractLayer<AdditionalEvents = {}>
 {
     #olLayer: OlBaseLayer;
     #isBaseLayer: boolean;
+    #healthCheck?: string | HealthCheckFunction;
     #visible: boolean;
 
     #loadState: LayerLoadState;
@@ -32,17 +33,10 @@ export abstract class AbstractLayer<AdditionalEvents = {}>
         super(config);
         this.#olLayer = config.olLayer;
         this.#isBaseLayer = config.isBaseLayer ?? false;
-        this.#visible = config.visible ?? true;
+        this.#healthCheck = config.healthCheck;
 
-        const { initial: initialState, resource: stateWatchResource } = watchLoadState(
-            this.#olLayer,
-            (state) => {
-                this.#loadState = state;
-                this.__emitChangeEvent("changed:loadState");
-            }
-        );
-        this.#loadState = initialState;
-        this.#stateWatchResource = stateWatchResource;
+        this.#visible = config.visible ?? true;
+        this.#loadState = getSourceState(getSource(this.#olLayer));
     }
 
     get visible(): boolean {
@@ -76,6 +70,16 @@ export abstract class AbstractLayer<AdditionalEvents = {}>
      */
     __attach(map: MapModelImpl): void {
         super.__attachToMap(map);
+
+        const { initial: initialState, resource: stateWatchResource } = watchLoadState(
+            this,
+            this.#healthCheck,
+            (state) => {
+                this.#setLoadState(state);
+            }
+        );
+        this.#stateWatchResource = stateWatchResource;
+        this.#setLoadState(initialState);
     }
 
     setVisible(newVisibility: boolean): void {
@@ -102,12 +106,22 @@ export abstract class AbstractLayer<AdditionalEvents = {}>
         }
         changed && this.__emitChangeEvent("changed:visible");
     }
+
+    #setLoadState(loadState: LayerLoadState) {
+        if (loadState !== this.#loadState) {
+            this.#loadState = loadState;
+            this.__emitChangeEvent("changed:loadState");
+        }
+    }
 }
 
 function watchLoadState(
-    olLayer: OlBaseLayer,
+    layer: AbstractLayer,
+    healthCheck: LayerConfig["healthCheck"],
     onChange: (newState: LayerLoadState) => void
 ): { initial: LayerLoadState; resource: Resource } {
+    const olLayer = layer.olLayer;
+
     if (!(olLayer instanceof OlLayer)) {
         // Some layers don't have a source (such as group)
         return {
@@ -120,10 +134,26 @@ function watchLoadState(
         };
     }
 
-    let currentSource = olLayer?.getSource() as Source | null;
-    let currentLoadState = mapState(currentSource?.getState());
+    let currentSource = getSource(olLayer);
+    const currentOlLayerState = getSourceState(currentSource);
+
+    let currentLoadState: LayerLoadState = currentOlLayerState;
+    let currentHealthState = "loading"; // initial state loading until health check finished
+
+    // custom health check not needed when OpenLayers already returning an error state
+    if (currentOlLayerState !== "error") {
+        // health check only once during initialization
+        doHealthCheck(layer, healthCheck).then((state: LayerLoadState) => {
+            currentHealthState = state;
+            updateState();
+        });
+    }
+
     const updateState = () => {
-        const nextLoadState = mapState(currentSource?.getState());
+        const olLayerState = getSourceState(currentSource);
+        const nextLoadState: LayerLoadState =
+            currentHealthState === "error" ? "error" : olLayerState;
+
         if (currentLoadState !== nextLoadState) {
             currentLoadState = nextLoadState;
             onChange(currentLoadState);
@@ -141,7 +171,7 @@ function watchLoadState(
         stateHandle = undefined;
 
         // subscribe to new source and update state
-        currentSource = olLayer?.getSource() as Source | null;
+        currentSource = getSource(olLayer);
         stateHandle = currentSource?.on("change", () => {
             updateState();
         });
@@ -158,7 +188,54 @@ function watchLoadState(
     };
 }
 
-function mapState(state: OlSourceState | undefined): LayerLoadState {
+async function doHealthCheck(
+    layer: AbstractLayer,
+    healthCheck: LayerConfig["healthCheck"]
+): Promise<LayerLoadState> {
+    if (healthCheck == null) {
+        return "loaded";
+    }
+
+    let healthCheckFn: HealthCheckFunction;
+    if (typeof healthCheck === "function") {
+        healthCheckFn = healthCheck;
+    } else if (typeof healthCheck === "string") {
+        healthCheckFn = async () => {
+            const httpService = layer.map.__sharedDependencies.httpService;
+            const response = await httpService.fetch(healthCheck);
+            if (response.ok) {
+                return "loaded";
+            }
+            LOG.warn(
+                `Health check failed for layer '${layer.id}' (http status ${response.status})`
+            );
+            return "error";
+        };
+    } else {
+        LOG.error(
+            `Unexpected object for 'healthCheck' parameter of layer '${layer.id}'`,
+            healthCheck
+        );
+        return "error";
+    }
+
+    try {
+        return await healthCheckFn(layer);
+    } catch (e) {
+        LOG.warn(`Health check failed for layer '${layer.id}'`, e);
+        return "error";
+    }
+}
+
+function getSource(olLayer: OlLayer | OlBaseLayer) {
+    if (!(olLayer instanceof OlLayer)) {
+        return undefined;
+    }
+    return (olLayer?.getSource() as OlSource | null) ?? undefined;
+}
+
+function getSourceState(olSource: OlSource | undefined) {
+    const state = olSource?.getState();
     switch (state) {
         case undefined:
             return "loaded";

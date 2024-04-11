@@ -13,11 +13,15 @@ export default defineBuildConfig({
                 providers: {
                     name: "map.MapConfigProvider",
                     all: true
-                }
+                },
+                httpService: "http.HttpService"
             }
         }
     },
     ui: {
         references: ["map.MapRegistry"]
+    },
+    publishConfig: {
+        strict: true
     }
 });

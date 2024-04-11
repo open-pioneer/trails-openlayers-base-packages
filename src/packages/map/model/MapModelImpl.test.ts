@@ -1,10 +1,16 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { afterEach, expect, it, describe } from "vitest";
+import { afterEach, expect, it, describe, vi } from "vitest";
 import { MapModelImpl } from "./MapModelImpl";
 import { createMapModel } from "./createMapModel";
 import { waitFor } from "@testing-library/dom";
 import { waitForInitialExtent } from "@open-pioneer/map-test-utils";
+import { HttpService } from "@open-pioneer/http";
+import { MapConfig } from "../api/MapConfig";
+
+const MOCKED_HTTP_SERVICE = {
+    fetch: vi.fn()
+};
 
 let model: MapModelImpl | undefined;
 
@@ -13,6 +19,7 @@ afterEach(() => {
     model = undefined;
 
     document.body.innerHTML = ""; // clear
+    vi.restoreAllMocks();
 });
 
 describe("initial extent", () => {
@@ -23,7 +30,7 @@ describe("initial extent", () => {
             xMax: 1790460,
             yMax: 7318386
         };
-        model = await createMapModel("foo", {
+        model = await create("foo", {
             initialView: {
                 kind: "extent",
                 extent
@@ -63,7 +70,7 @@ describe("initial extent", () => {
     });
 
     it("sets the initial extent if only center and zoom are configured", async () => {
-        model = await createMapModel("foo", {
+        model = await create("foo", {
             initialView: {
                 kind: "position",
                 center: {
@@ -106,8 +113,8 @@ describe("initial extent", () => {
     });
 });
 
-it("tracks the open layers target", async () => {
-    model = await createMapModel("foo", {});
+it("tracks the OpenLayers target", async () => {
+    model = await create("foo", {});
     expect(model.container).toBeUndefined();
 
     const div = document.createElement("div");
@@ -120,7 +127,7 @@ it("tracks the open layers target", async () => {
 
 describe("whenDisplayed", () => {
     it("notifies the user when the map is already being displayed", async () => {
-        model = await createMapModel("foo", {});
+        model = await create("foo", {});
         model.olMap.setSize([500, 500]); // simulate map mount
 
         await waitForInitialExtent(model);
@@ -136,7 +143,7 @@ describe("whenDisplayed", () => {
     });
 
     it("throws an error if map display already failed", async () => {
-        model = await createMapModel("foo", {});
+        model = await create("foo", {});
         model.destroy();
 
         let error: unknown;
@@ -151,7 +158,7 @@ describe("whenDisplayed", () => {
     });
 
     it("notifies the user when the map is being displayed later", async () => {
-        model = await createMapModel("foo", {});
+        model = await create("foo", {});
 
         let ready = false;
         const promise = model.whenDisplayed().then(() => {
@@ -169,7 +176,7 @@ describe("whenDisplayed", () => {
     });
 
     it("throws an error if the model is destroyed before being displayed", async () => {
-        model = await createMapModel("foo", {});
+        model = await create("foo", {});
 
         const promise = model.whenDisplayed();
         model.destroy();
@@ -177,6 +184,10 @@ describe("whenDisplayed", () => {
         await expect(promise).rejects.toMatchInlineSnapshot("[Error: Map model was destroyed.]");
     });
 });
+
+function create(mapId: string, mapConfig: MapConfig) {
+    return createMapModel(mapId, mapConfig, MOCKED_HTTP_SERVICE as HttpService);
+}
 
 function waitTick() {
     return new Promise<void>((resolve) => resolve());

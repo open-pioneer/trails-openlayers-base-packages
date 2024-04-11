@@ -1,22 +1,32 @@
 {
     "name": "@open-pioneer/measurement",
-    "version": "0.0.1",
+    "version": "0.4.1",
+    "description": "This package provides a UI component that allows the user to perform area and distance measurements on the map.",
     "license": "Apache-2.0",
     "main": "index.ts",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/open-pioneer/trails-openlayers-base-packages",
+        "directory": "src/packages/measurement"
+    },
+    "homepage": "https://github.com/open-pioneer",
+    "keywords": [
+        "open-pioneer-trails"
+    ],
     "scripts": {
         "build": "build-pioneer-package"
     },
     "peerDependencies": {
-        "@open-pioneer/chakra-integration": "^1.1.0",
+        "@open-pioneer/chakra-integration": "^1.1.1",
         "@open-pioneer/map": "workspace:^",
-        "@open-pioneer/runtime": "^1.1.0",
+        "@open-pioneer/runtime": "^2.1.2",
         "@open-pioneer/react-utils": "workspace:^",
-        "ol": "^8.1.0",
+        "ol": "^9.0.0",
         "react": "^18.2.0",
         "classnames": "^2.3.2"
     },
     "devDependencies": {
-        "@open-pioneer/test-utils": "^1.0.1",
+        "@open-pioneer/test-utils": "^1.1.1",
         "@open-pioneer/map-test-utils": "workspace:^",
         "openlayers-base-packages": "workspace:*"
     },

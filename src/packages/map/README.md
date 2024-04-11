@@ -1,6 +1,6 @@
 # @open-pioneer/map
 
-This package integrates [OpenLayers](https://openlayers.org/) maps into a Trails application.
+This package integrates [OpenLayers](https://openlayers.org/) maps into an open pioneer trails application.
 APIs provided by this package can be used to configure, embed and access the map and its contents.
 
 ## Usage
@@ -83,7 +83,7 @@ Such a provider is typically located in an app.
 Example: Configuration to register a service providing `map.MapConfigProvider`.
 
 ```js
-// YOUR-APP/build.config.mjs
+// build.config.mjs
 import { defineBuildConfig } from "@open-pioneer/build-support";
 
 export default defineBuildConfig({
@@ -258,6 +258,65 @@ layer.updateAttributes({
 layer.deleteAttribute("foo");
 ```
 
+An optional property `healthCheck` allows to determine the availability status of a layer (e.g. map service down). The health check is performed asynchronous.
+
+It is possible to provide
+
+-   either a URL to perform a test request check the returned HTTP status
+-   or a `HealthCheckFunction` performing a custom check and returning the state
+
+**Important**: The availability of a layer is only checked once during initialization to reduce the load on server side. If a service becomes available again later, the application will need to be reloaded in order to update the availability status.
+
+The availability status of a layer can be accessed with the property `loadState`. Its value depends on the result of the health check and the OpenLayers `Source` of the layer. If at least one of both checks returns the state `error`, the `loadState` will be set to `error`.
+
+Example: Check of layer availability ("health check")
+
+```ts
+// YOUR-APP/MapConfigProviderImpl.ts
+import { MapConfig, MapConfigProvider, SimpleLayer } from "@open-pioneer/map";
+import TileLayer from "ol/layer/Tile";
+import OSM from "ol/source/OSM";
+
+export class MapConfigProviderImpl implements MapConfigProvider {
+    async getMapConfig(): Promise<MapConfig> {
+        return {
+            layers: [
+                new SimpleLayer({
+                    id: "1",
+                    title: "Layer 1",
+                    olLayer: new TileLayer({
+                        source: new OSM()
+                    }),
+                    // check layer availability by requesting the provided URL
+                    healthCheck:
+                        "https://sgx.geodatenzentrum.de/wmts_topplus_open/1.0.0/WMTSCapabilities.xml",
+                    isBaseLayer: false,
+                    visible: true
+                }),
+                new SimpleLayer({
+                    id: "2",
+                    title: "Layer 2",
+                    olLayer: new TileLayer({
+                        source: new OSM()
+                    }),
+                    // check layer availability by providing a custom health check function
+                    healthCheck: async () => {
+                        function wait(milliseconds: number): Promise<void> {
+                            return new Promise((resolve) => setTimeout(resolve, milliseconds));
+                        }
+
+                        await wait(3000);
+                        return "error";
+                    },
+                    isBaseLayer: false,
+                    visible: false
+                })
+            ]
+        };
+    }
+}
+```
+
 > NOTE: The visibility of base layers cannot be changed through the method `setVisible`.
 > Call `activateBaseLayer` instead.
 
@@ -266,7 +325,7 @@ layer.deleteAttribute("foo");
 To create an OGC API Features layer, use the `ogc-features` package.
 Details about the necessary steps are described in the package's [README](../ogc-features/README.md) file.
 
-##### Mapbox / MapLibre styles
+###### Mapbox / MapLibre styles
 
 To use layers of a Mapbox / MapLibre style document, use the class `MapboxVectorLayer` from the package `ol-mapbox-style` as in the following sample:
 
@@ -291,25 +350,69 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                 zoom: 13
             },
             layers: [
-                {
+                new SimpleLayer({
                     title: "Abschnitte/Äste mit Unfällen (Mapbox Style)",
-                    layer: new MapboxVectorLayer({
-                        styleUrl: "https://demo.ldproxy.net/strassen/styles/default?f=mbs",
-                        accessToken: null
+                    olLayer: new MapboxVectorLayer({
+                        styleUrl:
+                            "https://sgx.geodatenzentrum.de/gdz_basemapde_vektor/styles/bm_web_top.json"
                     })
-                }
+                })
             ]
         };
     }
 }
 ```
 
-As with the current version 12.0.0 of `ol-mapbox-style`, it is not possible to use the MapboxVectorLayer
-with styleUrls in format `mbs` (parameter `f=mbs`) due to a bug. A patch has been provided for this and is active
-with the current version of the trails base package.
-The patch enables the user to explicitly set the `accessToken` to `null`, if it is not needed/supported.
+Because of the changed license of Mapbox as of version 2.0, we recommend to override the implementation with the code of MapLibre (see the main package.json of this repository for a sample).
 
-Because of the changed licence of Mapbox as of version 2.0, we recommend to override the implementation with the code of MapLibre (see the main package.json of this repository for a sample).
+##### OGC API Tiles
+
+OpenLayers supports OGC API Tiles (vector tiles) by default (see [OpenLayers API](https://openlayers.org/en/latest/apidoc/module-ol_source_OGCVectorTile-OGCVectorTile.html)).
+
+> IMPORTANT: The configured vector tile layer must have the same projection like the map. Otherwise OGC API Tiles cannot be displayed correctly in a map.
+
+Example: How to configure a vector tile layer:
+
+```ts
+// YOUR-APP/MapConfigProviderImpl.ts
+export class MapConfigProviderImpl implements MapConfigProvider {
+    async getMapConfig(): Promise<MapConfig> {
+        return {
+            projection: "EPSG:3857",
+            initialView: {
+                kind: "position",
+                center: {
+                    x: 848890,
+                    y: 6793350
+                },
+                zoom: 13
+            },
+            layers: [
+                new SimpleLayer({
+                    title: "Pendleratlas",
+                    visible: true,
+                    olLayer: new VectorTileLayer({
+                        source: new VectorTileSource({
+                            url: "https://pendleratlas.statistikportal.de/_vector_tiles/2022/vg250/{z}/{x}/{y}.pbf",
+                            format: new MVT(),
+                            projection: "EPSG:3857"
+                        }),
+                        style: new Style({
+                            fill: new Fill({
+                                color: "rgba(173, 209, 158, 0.6)"
+                            }),
+                            stroke: new Stroke({
+                                color: "#2d7d9f",
+                                width: 3
+                            })
+                        })
+                    })
+                })
+            ]
+        };
+    }
+}
+```
 
 ##### OGC Web Map Tile Service (WMTS)
 
@@ -435,7 +538,7 @@ registerProjections({
 const mapModel: MapModel = ... // retrieved via MapRegistry service
 await mapModel.whenDisplayed();
 
-const response = await fetch("https://sgx.geodatenzentrum.de/wmts_topplus_open/1.0.0/WMTSCapabilities.xml");
+const response = await httpService.fetch("https://sgx.geodatenzentrum.de/wmts_topplus_open/1.0.0/WMTSCapabilities.xml");
 const responseText = await response.text();
 
 const wmtsParser = new WMTSCapabilities();
@@ -596,12 +699,12 @@ We expect to implement more classes in the future.
 Example: Center map to given coordinates using the map model and set layer visibility using the layer instance.
 
 ```ts
-import { ServiceOptions, ServiceType } from "@open-pioneer/runtime";
+import { ServiceOptions } from "@open-pioneer/runtime";
 import { MAP_ID } from "./MapConfigProviderImpl";
 import type { MapRegistry } from "@open-pioneer/map";
 
 interface References {
-    mapRegistry: ServiceType<"map.MapRegistry">;
+    mapRegistry: MapRegistry;
 }
 
 export class TestService {

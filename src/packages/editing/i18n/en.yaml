@@ -1,0 +1,7 @@
+messages:
+  title: Editing
+  create:
+    tooltip:
+      begin: Click to start creating the geometry
+      continue: Double click to finish the geometry and save the feature
+      deselect: Click outside the geometry in the map to save changes

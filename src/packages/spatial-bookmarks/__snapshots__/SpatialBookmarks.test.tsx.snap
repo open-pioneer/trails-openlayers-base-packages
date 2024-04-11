@@ -1,0 +1,190 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`should load the stored bookmark from local storage and present it visibly within the list 1`] = `
+<ul
+  aria-label="bookmark.list.label"
+  class="spatial-bookmark-list css-gekrs3"
+  data-theme="light"
+  role="listbox"
+>
+  <li
+    class="spatial-bookmarks-item css-1npgjds"
+    data-theme="light"
+    role="option"
+    tabindex="0"
+  >
+    <div
+      class="css-1h36yqy"
+      data-theme="light"
+    >
+      <div
+        class="css-gmuwbf"
+        data-theme="light"
+      >
+        <svg
+          fill="currentColor"
+          height="1em"
+          stroke="currentColor"
+          stroke-width="0"
+          viewBox="0 0 256 256"
+          width="1em"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M228.92,49.69a8,8,0,0,0-6.86-1.45L160.93,63.52,99.58,32.84a8,8,0,0,0-5.52-.6l-64,16A8,8,0,0,0,24,56V200a8,8,0,0,0,9.94,7.76l61.13-15.28,61.35,30.68A8.15,8.15,0,0,0,160,224a8,8,0,0,0,1.94-.24l64-16A8,8,0,0,0,232,200V56A8,8,0,0,0,228.92,49.69ZM104,52.94l48,24V203.06l-48-24ZM40,62.25l48-12v127.5l-48,12Zm176,131.5-48,12V78.25l48-12Z"
+          />
+        </svg>
+      </div>
+      <p
+        class="chakra-text css-1uvjhra"
+        data-theme="light"
+      >
+        Test
+      </p>
+      <div
+        class="css-17xejub"
+        data-theme="light"
+      />
+      <button
+        aria-label="bookmark.button.deleteOne"
+        class="chakra-button spatial-bookmarks-item-delete css-kxp9k4"
+        data-theme="light"
+        type="button"
+      >
+        <span
+          class="chakra-button__icon css-1dwr89y"
+          data-theme="light"
+        >
+          <svg
+            aria-hidden="true"
+            fill="currentColor"
+            focusable="false"
+            height="1em"
+            stroke="currentColor"
+            stroke-width="0"
+            viewBox="0 0 256 256"
+            width="1em"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M216,50H40a6,6,0,0,0,0,12H50V208a14,14,0,0,0,14,14H192a14,14,0,0,0,14-14V62h10a6,6,0,0,0,0-12ZM194,208a2,2,0,0,1-2,2H64a2,2,0,0,1-2-2V62H194ZM82,24a6,6,0,0,1,6-6h80a6,6,0,0,1,0,12H88A6,6,0,0,1,82,24Z"
+            />
+          </svg>
+        </span>
+      </button>
+    </div>
+  </li>
+</ul>
+`;
+
+exports[`should only delete all bookmarks after the user confirms the action. 1`] = `
+<div
+  class="chakra-alert css-134lewa"
+  data-status="warning"
+  data-theme="light"
+  role="alert"
+>
+  <span
+    class="chakra-alert__icon css-14ogjxt"
+    data-status="warning"
+    data-theme="light"
+  >
+    <svg
+      class="chakra-icon css-qk6lof"
+      data-theme="light"
+      focusable="false"
+      viewBox="0 0 24 24"
+    >
+      <path
+        d="M11.983,0a12.206,12.206,0,0,0-8.51,3.653A11.8,11.8,0,0,0,0,12.207,11.779,11.779,0,0,0,11.8,24h.214A12.111,12.111,0,0,0,24,11.791h0A11.766,11.766,0,0,0,11.983,0ZM10.5,16.542a1.476,1.476,0,0,1,1.449-1.53h.027a1.527,1.527,0,0,1,1.523,1.47,1.475,1.475,0,0,1-1.449,1.53h-.027A1.529,1.529,0,0,1,10.5,16.542ZM11,12.5v-6a1,1,0,0,1,2,0v6a1,1,0,1,1-2,0Z"
+        fill="currentColor"
+      />
+    </svg>
+  </span>
+  bookmark.alert.delete
+</div>
+`;
+
+exports[`should only delete all bookmarks after the user confirms the action. 2`] = `
+<div
+  class="chakra-alert css-1sqgcxg"
+  data-status="info"
+  data-theme="light"
+  role="alert"
+>
+  <span
+    class="chakra-alert__icon css-14ogjxt"
+    data-status="info"
+    data-theme="light"
+  >
+    <svg
+      class="chakra-icon css-qk6lof"
+      data-theme="light"
+      focusable="false"
+      viewBox="0 0 24 24"
+    >
+      <path
+        d="M12,0A12,12,0,1,0,24,12,12.013,12.013,0,0,0,12,0Zm.25,5a1.5,1.5,0,1,1-1.5,1.5A1.5,1.5,0,0,1,12.25,5ZM14.5,18.5h-4a1,1,0,0,1,0-2h.75a.25.25,0,0,0,.25-.25v-4.5a.25.25,0,0,0-.25-.25H10.5a1,1,0,0,1,0-2h1a2,2,0,0,1,2,2v4.75a.25.25,0,0,0,.25.25h.75a1,1,0,1,1,0,2Z"
+        fill="currentColor"
+      />
+    </svg>
+  </span>
+  bookmark.alert.noSaved
+</div>
+`;
+
+exports[`should remove bookmark from the list by clicking the remove button 1`] = `
+<div
+  class="chakra-alert css-1sqgcxg"
+  data-status="info"
+  data-theme="light"
+  role="alert"
+>
+  <span
+    class="chakra-alert__icon css-14ogjxt"
+    data-status="info"
+    data-theme="light"
+  >
+    <svg
+      class="chakra-icon css-qk6lof"
+      data-theme="light"
+      focusable="false"
+      viewBox="0 0 24 24"
+    >
+      <path
+        d="M12,0A12,12,0,1,0,24,12,12.013,12.013,0,0,0,12,0Zm.25,5a1.5,1.5,0,1,1-1.5,1.5A1.5,1.5,0,0,1,12.25,5ZM14.5,18.5h-4a1,1,0,0,1,0-2h.75a.25.25,0,0,0,.25-.25v-4.5a.25.25,0,0,0-.25-.25H10.5a1,1,0,0,1,0-2h1a2,2,0,0,1,2,2v4.75a.25.25,0,0,0,.25.25h.75a1,1,0,1,1,0,2Z"
+        fill="currentColor"
+      />
+    </svg>
+  </span>
+  bookmark.alert.noSaved
+</div>
+`;
+
+exports[`should shown an alert message if no bookmarks are saved 1`] = `
+<div
+  class="chakra-alert css-1sqgcxg"
+  data-status="info"
+  data-theme="light"
+  role="alert"
+>
+  <span
+    class="chakra-alert__icon css-14ogjxt"
+    data-status="info"
+    data-theme="light"
+  >
+    <svg
+      class="chakra-icon css-qk6lof"
+      data-theme="light"
+      focusable="false"
+      viewBox="0 0 24 24"
+    >
+      <path
+        d="M12,0A12,12,0,1,0,24,12,12.013,12.013,0,0,0,12,0Zm.25,5a1.5,1.5,0,1,1-1.5,1.5A1.5,1.5,0,0,1,12.25,5ZM14.5,18.5h-4a1,1,0,0,1,0-2h.75a.25.25,0,0,0,.25-.25v-4.5a.25.25,0,0,0-.25-.25H10.5a1,1,0,0,1,0-2h1a2,2,0,0,1,2,2v4.75a.25.25,0,0,0,.25.25h.75a1,1,0,1,1,0,2Z"
+        fill="currentColor"
+      />
+    </svg>
+  </span>
+  bookmark.alert.noSaved
+</div>
+`;

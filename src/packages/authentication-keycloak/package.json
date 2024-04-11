@@ -3,9 +3,9 @@
     "private": true,
     "main": "index.ts",
     "peerDependencies": {
-        "@open-pioneer/authentication": "workspace:^",
-        "@open-pioneer/runtime": "^1.1.0",
-        "@open-pioneer/core": "^1.1.0",
+        "@open-pioneer/authentication": "^0.3.2",
+        "@open-pioneer/runtime": "^2.1.2",
+        "@open-pioneer/core": "^1.2.1",
         "keycloak-js": "^23.0.3"
     }
 }

@@ -9,6 +9,9 @@ allowedLicenses:
   - "CC0-1.0"
   - "WTFPL"
   - "Unlicense"
+  # Dependencies of jsPdf use this
+  - "(MIT OR Apache-2.0)"
+  - "(MPL-2.0 OR Apache-2.0)"
 
 # Some licenses are detected incorrectly.
 # Their information can be overwritten here.
@@ -95,3 +98,27 @@ overrideLicenses:
     version: "1.0.3"
     licenseFiles:
       - custom: "./licenses/typewise_mit"
+
+  # NPM artifact does not ship with a license; github repository tagged with the released version
+  # does contain it however:
+  # https://github.com/JedWatson/react-select/blob/17ab36ec89e6e2b05071cdafecb44421f1e91334/LICENSE
+  # The full license text was retrieved on 2024-01-04
+  - name: "react-select"
+    version: "5.8.0"
+    licenseFiles:
+      - custom: "./licenses/react_select_mit"
+
+  # Missing license document in npm artifact.
+  # Licenses added after 3.0 release via pull request.
+  # License text downloaded on 2023-11-15.
+  #
+  # See https://github.com/colorjs/color-rgba/pull/6
+  - name: "color-rgba"
+    version: "3.0.0"
+    licenseFiles:
+      - custom: "./licenses/color_rgba_mit"
+
+  # License md present but package.json license field invalid.
+  - name: "rgbcolor"
+    version: "1.0.1"
+    license: "MIT"

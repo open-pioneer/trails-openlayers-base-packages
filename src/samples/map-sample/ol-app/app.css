@@ -1,4 +1,14 @@
-.layout-sidebar {
-    /* show above the map */
-    z-index: 99;
+.search-box {
+    position: absolute;
+    width: 500px;
+    max-width: 100%;
+    z-index: 1;
+}
+
+.spatial-bookmarks {
+    max-height: 300px;
+}
+
+.editing-tooltip-hidden {
+    visibility: hidden;
 }

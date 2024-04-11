@@ -1,24 +1,34 @@
 {
     "name": "@open-pioneer/toc",
-    "version": "0.0.1",
+    "version": "0.4.1",
+    "description": "This package provides a UI component that displays the map content to the user and allows them to control it.",
     "license": "Apache-2.0",
     "main": "index.ts",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/open-pioneer/trails-openlayers-base-packages",
+        "directory": "src/packages/toc"
+    },
+    "homepage": "https://github.com/open-pioneer",
+    "keywords": [
+        "open-pioneer-trails"
+    ],
     "scripts": {
         "build": "build-pioneer-package"
     },
     "peerDependencies": {
-        "@open-pioneer/chakra-integration": "^1.1.0",
+        "@open-pioneer/chakra-integration": "^1.1.1",
         "@open-pioneer/map": "workspace:^",
         "@open-pioneer/basemap-switcher": "workspace:^",
         "@open-pioneer/react-utils": "workspace:^",
-        "@open-pioneer/runtime": "^1.1.0",
-        "ol": "^8.1.0",
+        "@open-pioneer/runtime": "^2.1.2",
+        "ol": "^9.0.0",
         "react": "^18.2.0",
         "classnames": "^2.3.2",
-        "react-icons": "^4.11.0"
+        "react-icons": "^4.12.0"
     },
     "devDependencies": {
-        "@open-pioneer/test-utils": "^1.0.1",
+        "@open-pioneer/test-utils": "^1.1.1",
         "@open-pioneer/map-test-utils": "workspace:^",
         "openlayers-base-packages": "workspace:*",
         "resize-observer-polyfill": "^1.5.1"

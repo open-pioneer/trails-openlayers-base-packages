@@ -1,21 +1,31 @@
 {
     "name": "@open-pioneer/react-utils",
     "description": "Contains common react utilities used by the open pioneer trails project",
-    "version": "0.0.1",
+    "version": "0.2.2",
     "license": "Apache-2.0",
     "main": "index.ts",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/open-pioneer/trails-openlayers-base-packages",
+        "directory": "src/packages/react-utils"
+    },
+    "homepage": "https://github.com/open-pioneer",
+    "keywords": [
+        "open-pioneer-trails"
+    ],
     "scripts": {
         "build": "build-pioneer-package"
     },
     "peerDependencies": {
         "react": "^18.2.0",
-        "@open-pioneer/core": "^1.1.0",
-        "@open-pioneer/chakra-integration": "^1.1.0",
+        "@open-pioneer/core": "^1.2.1",
+        "@open-pioneer/chakra-integration": "^1.1.1",
         "classnames": "^2.3.2"
     },
     "devDependencies": {
         "openlayers-base-packages": "workspace:*",
-        "@testing-library/react": "^14.0.0"
+        "@testing-library/react": "^14.1.2",
+        "@open-pioneer/test-utils": "^1.1.1"
     },
     "publishConfig": {
         "directory": "dist",

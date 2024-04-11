@@ -12,15 +12,35 @@ import OlMap from "ol/Map";
 import { unByKey } from "ol/Observable";
 import { EventsKey } from "ol/events";
 import { getCenter } from "ol/extent";
-import { ExtentConfig, MapModel, MapModelEvents } from "../api";
+import {
+    ExtentConfig,
+    Highlight,
+    HighlightOptions,
+    HighlightZoomOptions,
+    MapModel,
+    MapModelEvents
+} from "../api";
 import { LayerCollectionImpl } from "./LayerCollectionImpl";
+import { Geometry } from "ol/geom";
+import { Highlights } from "./Highlights";
+import { HttpService } from "@open-pioneer/http";
 
 const LOG = createLogger("map:MapModel");
+
+/**
+ * Shared services or other entities propagated from the map model to all layer instances.
+ */
+export interface SharedDependencies {
+    httpService: HttpService;
+}
 
 export class MapModelImpl extends EventEmitter<MapModelEvents> implements MapModel {
     readonly #id: string;
     readonly #olMap: OlMap;
     readonly #layers = new LayerCollectionImpl(this);
+    readonly #highlights: Highlights;
+    readonly #sharedDeps: SharedDependencies;
+
     #destroyed = false;
     #container: HTMLElement | undefined;
     #initialExtent: ExtentConfig | undefined;
@@ -30,11 +50,20 @@ export class MapModelImpl extends EventEmitter<MapModelEvents> implements MapMod
     #displayStatus: "waiting" | "ready" | "error";
     #displayWaiter: ManualPromise<void> | undefined;
 
-    constructor(properties: { id: string; olMap: OlMap; initialExtent: ExtentConfig | undefined }) {
+    constructor(properties: {
+        id: string;
+        olMap: OlMap;
+        initialExtent: ExtentConfig | undefined;
+        httpService: HttpService;
+    }) {
         super();
         this.#id = properties.id;
         this.#olMap = properties.olMap;
         this.#initialExtent = properties.initialExtent;
+        this.#sharedDeps = {
+            httpService: properties.httpService
+        };
+        this.#highlights = new Highlights(this.#olMap);
 
         this.#displayStatus = "waiting";
         this.#initializeView().then(
@@ -77,6 +106,7 @@ export class MapModelImpl extends EventEmitter<MapModelEvents> implements MapMod
         this.#abortController.abort();
         this.#displayWaiter?.reject(new Error("Map model was destroyed."));
         this.#layers.destroy();
+        this.#highlights.destroy();
         this.#olMap.dispose();
     }
 
@@ -98,6 +128,25 @@ export class MapModelImpl extends EventEmitter<MapModelEvents> implements MapMod
 
     get initialExtent(): ExtentConfig | undefined {
         return this.#initialExtent;
+    }
+
+    get __sharedDependencies(): SharedDependencies {
+        return this.#sharedDeps;
+    }
+
+    highlight(geometries: Geometry[], options?: HighlightOptions | undefined): Highlight {
+        return this.#highlights.addHighlight(geometries, options);
+    }
+    zoom(geometries: Geometry[], options?: HighlightZoomOptions | undefined): void {
+        this.#highlights.zoomToHighlight(geometries, options);
+    }
+
+    highlightAndZoom(geometries: Geometry[], options?: HighlightZoomOptions) {
+        return this.#highlights.addHighlightAndZoom(geometries, options ?? {});
+    }
+
+    removeHighlights() {
+        this.#highlights.clearHighlight();
     }
 
     whenDisplayed(): Promise<void> {

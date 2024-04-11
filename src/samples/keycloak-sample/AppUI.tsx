@@ -10,9 +10,10 @@ import { Toc } from "@open-pioneer/toc";
 import { Flex, Box, Text } from "@open-pioneer/chakra-integration";
 import { LogoutButton } from "./LogoutButton";
 import { MAP_ID } from "./MapConfigProviderImpl";
+import { AuthService } from "@open-pioneer/authentication";
 
 export function AppUI() {
-    const authService = useService("authentication.AuthService");
+    const authService = useService<AuthService>("authentication.AuthService");
     const authState = useAuthState(authService);
     const sessionInfo = authState.kind == "authenticated" ? authState.sessionInfo : undefined;
     const userName = sessionInfo?.attributes?.userName as string;

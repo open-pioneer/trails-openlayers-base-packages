@@ -9,6 +9,7 @@ import type { LayerRetrievalOptions } from "../shared";
 export interface LayerBaseEvents {
     "changed": void;
     "changed:title": void;
+    "changed:legend": void;
     "changed:description": void;
     "changed:visible": void;
     "changed:attributes": void;
@@ -18,6 +19,9 @@ export interface LayerBaseEvents {
 
 /** The load state of a layer. */
 export type LayerLoadState = "not-loaded" | "loading" | "loaded" | "error";
+
+/** Custom function to check the state of a layer and returning a "loaded" or "error". */
+export type HealthCheckFunction = (layer: LayerBase) => Promise<"loaded" | "error">;
 
 /**
  * Configuration options supported by all layer types (layers and sublayers).
@@ -87,6 +91,11 @@ export interface LayerBase<AdditionalEvents = {}>
     readonly visible: boolean;
 
     /**
+     * LegendURL from the service capabilties, if available
+     */
+    readonly legend: string | undefined;
+
+    /**
      * The collection of child sublayers for this layer.
      *
      * Layers that can never have any sublayers may not have a `sublayers` collection.
@@ -139,6 +148,13 @@ export interface LayerConfig extends LayerBaseConfig {
      * Defaults to `false`.
      */
     isBaseLayer?: boolean;
+
+    /**
+     * Optional property to check the availability of the layer.
+     * It is possible to provide either a URL which indicates the state of the service (2xx response meaning "ok")
+     * or a {@link HealthCheckFunction} performing a custom check and returning the state.
+     */
+    healthCheck?: string | HealthCheckFunction;
 }
 
 /**
@@ -192,9 +208,10 @@ export interface SublayersCollectionEvents {
 /**
  * Contains the sublayers that belong to a {@link Layer} or {@link Sublayer}.
  */
-export interface SublayersCollection extends EventSource<SublayersCollectionEvents> {
+export interface SublayersCollection<SublayerType = Sublayer>
+    extends EventSource<SublayersCollectionEvents> {
     /**
      * Returns the child sublayers in this collection.
      */
-    getSublayers(options?: LayerRetrievalOptions): Sublayer[];
+    getSublayers(options?: LayerRetrievalOptions): SublayerType[];
 }

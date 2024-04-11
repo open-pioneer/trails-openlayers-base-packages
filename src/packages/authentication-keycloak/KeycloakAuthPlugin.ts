@@ -7,19 +7,22 @@ import {
     LoginBehavior
 } from "@open-pioneer/authentication";
 import { EventEmitter, createLogger } from "@open-pioneer/core";
-import { Service, ServiceOptions, ServiceType } from "@open-pioneer/runtime";
-import Keycloak, { KeycloakLoginOptions, KeycloakLogoutOptions } from "keycloak-js";
+import { Service, ServiceOptions, type DECLARE_SERVICE_INTERFACE } from "@open-pioneer/runtime";
+import Keycloak, {
+    type KeycloakInitOptions,
+    type KeycloakLoginOptions,
+    type KeycloakLogoutOptions
+} from "keycloak-js";
+import { KeycloakOptions, RefreshOptions } from "./api";
 
-export interface References {
-    config: ServiceType<"authentication-keycloak.KeycloakConfigProvider">;
-}
-//TODO logger name überarbeiten
-const LOG = createLogger("keycloak:KeycloakAuthPlugin");
+const LOG = createLogger("authentication-keycloak:KeycloakAuthPlugin");
 
 export class KeycloakAuthPlugin
     extends EventEmitter<AuthPluginEvents>
     implements Service, AuthPlugin
 {
+    declare [DECLARE_SERVICE_INTERFACE]: "authentication-keycloak.KeycloakAuthPlugin";
+
     #state: AuthState = {
         kind: "pending"
     };
@@ -30,23 +33,18 @@ export class KeycloakAuthPlugin
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     #timerId: any;
 
-    constructor(options: ServiceOptions<References>) {
+    constructor(options: ServiceOptions) {
         super();
-        const config = options.references.config;
 
-        const refreshOptions = config.getRefreshOptions(undefined);
-        this.#logoutOptions = config.getLogoutOptions(undefined);
-        this.#loginOptions = config.getLoginOptions(undefined);
+        const refreshOptions = options.properties.autoRefreshOptions as RefreshOptions;
+        this.#logoutOptions = { redirectUri: undefined };
+        this.#loginOptions = { redirectUri: undefined };
+        const keycloakInitOptions = options.properties.keycloakInitOptions as KeycloakInitOptions;
 
-        this.#keycloak = config.setKeycloak(
-            new Keycloak({
-                url: "https://auth.ldproxy.net/",
-                realm: "ii",
-                clientId: "it-nrw"
-            })
-        );
+        this.#keycloak = new Keycloak(options.properties.keycloakOptions as KeycloakOptions);
+
         this.#keycloak
-            .init(config.getInitOptions(undefined))
+            .init(keycloakInitOptions)
             .then((data) => {
                 if (data) {
                     this.#state = {
@@ -97,6 +95,9 @@ export class KeycloakAuthPlugin
         };
     }
 
+    get keykloack() {
+        return this.#keycloak;
+    }
     logout() {
         LOG.debug("Logout with options", this.#logoutOptions);
         this.#keycloak.logout(this.#logoutOptions);

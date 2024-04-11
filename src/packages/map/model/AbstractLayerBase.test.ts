@@ -241,6 +241,10 @@ class LayerImpl extends AbstractLayerBase {
         throw new Error("Method not implemented.");
     }
 
+    get legend(): string | undefined {
+        return undefined;
+    }
+
     get sublayers() {
         return this._sublayers;
     }

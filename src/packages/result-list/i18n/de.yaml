@@ -1,0 +1,9 @@
+messages:
+  selectAllTooltip: Alle auswählen
+  deSelectAllTooltip: Alle abwählen
+  noDataMessage: Keine Daten verfügbar
+  displayBoolean:
+    true: ja
+    false: nein
+  ariaLabel:
+    selectSingle: Drücken Sie die Leertaste zum ab- oder anwählen.

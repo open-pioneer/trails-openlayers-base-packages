@@ -1,0 +1,100 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`should successfully create a printing component 1`] = `
+<div
+  class="printing css-0"
+  data-testid="printing"
+  data-theme="light"
+>
+  <div
+    class="chakra-form-control css-1m7igkt"
+    data-focus=""
+    data-theme="light"
+    role="group"
+  >
+    <div
+      class="chakra-stack css-1sgivba"
+      data-theme="light"
+    >
+      <label
+        class="chakra-form__label css-u9crf"
+        data-focus=""
+        data-theme="light"
+        for="field-:r0:"
+        id="field-:r0:-label"
+      >
+        title
+      </label>
+      <input
+        aria-required="true"
+        class="chakra-input css-1cjy4zv"
+        data-theme="light"
+        id="field-:r0:"
+        placeholder="input.placeholder"
+        required=""
+        value=""
+      />
+    </div>
+    <div
+      class="chakra-stack css-1sgivba"
+      data-theme="light"
+    >
+      <label
+        class="chakra-form__label css-u9crf"
+        data-focus=""
+        data-theme="light"
+        for="field-:r0:"
+        id="field-:r0:-label"
+      >
+        fileFormat
+      </label>
+      <div
+        class="chakra-select__wrapper css-42b2qy"
+        data-theme="light"
+      >
+        <select
+          class="chakra-select printing-select css-161pkch"
+          data-theme="light"
+          id="field-:r0:"
+        >
+          <option
+            value="png"
+          >
+            PNG
+          </option>
+          <option
+            value="pdf"
+          >
+            PDF
+          </option>
+        </select>
+        <div
+          class="chakra-select__icon-wrapper css-iohxn1"
+          data-theme="light"
+        >
+          <svg
+            aria-hidden="true"
+            class="chakra-select__icon"
+            focusable="false"
+            role="presentation"
+            style="width: 1em; height: 1em; color: currentcolor;"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
+              fill="currentColor"
+            />
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+  <button
+    class="chakra-button printing-export-button css-14p1tvq"
+    data-theme="light"
+    type="button"
+  >
+    export
+  </button>
+</div>
+`;
