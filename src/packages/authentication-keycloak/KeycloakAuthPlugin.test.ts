@@ -123,9 +123,9 @@ async function setup() {
                     scope: "data:read"
                 },
                 keycloakConfig: {
-                    url: "https://auth.ldproxy.net/",
-                    realm: "ii",
-                    clientId: "it-nrw"
+                    url: "https://auth.exaple.com/",
+                    realm: "realm",
+                    clientId: "test-id"
                 },
                 keycloakLogoutOptions: null,
                 keycloakLoginOptions: null
