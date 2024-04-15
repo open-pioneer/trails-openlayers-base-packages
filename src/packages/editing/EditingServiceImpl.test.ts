@@ -75,7 +75,7 @@ describe("editing: create", () => {
 
             editingService.createFeature(map, OGC_API_URL_TEST);
 
-            expect(() => editingService.createFeature(map, OGC_API_URL_TEST)).rowError(
+            expect(() => editingService.createFeature(map, OGC_API_URL_TEST)).toThrowError(
                 "EditingWorkflow could not be started. EditingWorkflow already in progress for this map."
             );
         });
