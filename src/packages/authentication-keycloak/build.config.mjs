@@ -9,8 +9,12 @@ export default defineBuildConfig({
         }
     },
     properties: {
-        autoRefreshOptions: null,
-        keycloakInitOptions: null,
-        keycloakOptions: null
+        keycloakOptions: {
+            refreshOptions: null,
+            keycloakInitOptions: null,
+            keycloakConfig: null,
+            keycloakLogoutOptions: null,
+            keycloakLoginOptions: null
+        }
     }
 });

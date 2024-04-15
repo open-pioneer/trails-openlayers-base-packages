@@ -4,6 +4,8 @@
 import { createCustomElement } from "@open-pioneer/runtime";
 import * as appMetadata from "open-pioneer:app";
 import { AppUI } from "./AppUI";
+const { VITE_KEYKLOAK_CONFIG_URL, VITE_KEYKLOAK_CONFIG_REALM, VITE_KEYKLOAK_CONFIG_CLIENT_ID } =
+    import.meta.env;
 
 const element = createCustomElement({
     component: AppUI,
@@ -11,20 +13,22 @@ const element = createCustomElement({
     config: {
         properties: {
             "@open-pioneer/authentication-keycloak": {
-                autoRefreshOptions: {
-                    autoRefresh: true,
-                    interval: 6000,
-                    timeLeft: 70
-                },
-                keycloakInitOptions: {
-                    onLoad: "check-sso",
-                    pkceMethod: "S256",
-                    scope: "data:read"
-                },
                 keycloakOptions: {
-                    url: "https://auth.ldproxy.net/",
-                    realm: "ii",
-                    clientId: "it-nrw"
+                    refreshOptions: {
+                        autoRefresh: true,
+                        interval: 6000,
+                        timeLeft: 70
+                    },
+                    keycloakInitOptions: {
+                        onLoad: "check-sso",
+                        pkceMethod: "S256",
+                        scope: "data:read"
+                    },
+                    keycloakConfig: {
+                        url: VITE_KEYKLOAK_CONFIG_URL,
+                        realm: VITE_KEYKLOAK_CONFIG_REALM,
+                        clientId: VITE_KEYKLOAK_CONFIG_CLIENT_ID
+                    }
                 }
             }
         }

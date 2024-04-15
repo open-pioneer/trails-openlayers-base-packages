@@ -8,7 +8,6 @@ export default defineBuildConfig({
         KeycloakAuthPlugin: {
             provides: ["authentication-keycloak.KeycloakAuthPlugin"]
         },
-
         MapConfigProviderImpl: {
             provides: ["map.MapConfigProvider"],
             references: {

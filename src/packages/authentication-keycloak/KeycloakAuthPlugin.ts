@@ -9,13 +9,26 @@ import {
 import { EventEmitter, createLogger } from "@open-pioneer/core";
 import { Service, ServiceOptions, type DECLARE_SERVICE_INTERFACE } from "@open-pioneer/runtime";
 import Keycloak, {
+    type KeycloakConfig,
     type KeycloakInitOptions,
     type KeycloakLoginOptions,
     type KeycloakLogoutOptions
 } from "keycloak-js";
-import { KeycloakOptions, RefreshOptions } from "./api";
+import { RefreshOptions } from "./api";
 
 const LOG = createLogger("authentication-keycloak:KeycloakAuthPlugin");
+
+export interface KeycloakOptions {
+    refreshOptions: RefreshOptions;
+    keycloakInitOptions: Partial<KeycloakInitOptions>;
+    keycloakConfig: KeycloakConfig;
+    keycloakLogoutOptions?: KeycloakLogoutOptions;
+    keycloakLoginOptions?: KeycloakLoginOptions;
+}
+
+export interface KeycloakProperties {
+    keycloakOptions: KeycloakOptions;
+}
 
 export class KeycloakAuthPlugin
     extends EventEmitter<AuthPluginEvents>
@@ -35,13 +48,13 @@ export class KeycloakAuthPlugin
 
     constructor(options: ServiceOptions) {
         super();
-
-        const refreshOptions = options.properties.autoRefreshOptions as RefreshOptions;
         this.#logoutOptions = { redirectUri: undefined };
         this.#loginOptions = { redirectUri: undefined };
-        const keycloakInitOptions = options.properties.keycloakInitOptions as KeycloakInitOptions;
+        const { refreshOptions, keycloakInitOptions, keycloakConfig } = getKeycloakConfig(
+            options.properties
+        );
 
-        this.#keycloak = new Keycloak(options.properties.keycloakOptions as KeycloakOptions);
+        this.#keycloak = new Keycloak(keycloakConfig);
 
         this.#keycloak
             .init(keycloakInitOptions)
@@ -76,6 +89,10 @@ export class KeycloakAuthPlugin
                 }
             })
             .catch((e) => {
+                this.#state = {
+                    kind: "not-authenticated"
+                };
+                this.emit("changed");
                 LOG.error("Failed to check if user is authenticated", e);
             });
     }
@@ -95,9 +112,6 @@ export class KeycloakAuthPlugin
         };
     }
 
-    get keykloack() {
-        return this.#keycloak;
-    }
     logout() {
         LOG.debug("Logout with options", this.#logoutOptions);
         this.#keycloak.logout(this.#logoutOptions);
@@ -107,6 +121,11 @@ export class KeycloakAuthPlugin
         this.#timerId = setInterval(() => {
             this.#keycloak.updateToken(timeLeft).catch((e) => {
                 LOG.error("Failed to refresh token", e);
+                this.#state = {
+                    kind: "not-authenticated"
+                };
+                this.emit("changed");
+                this.destroy();
             });
         }, interval);
     }
@@ -116,3 +135,60 @@ export class KeycloakAuthPlugin
         this.#timerId = undefined;
     }
 }
+const DEFAULT_AUTO_REFRESH_OPT = {
+    autoRefresh: true,
+    interval: 6000,
+    timeLeft: 70
+};
+const DEFAULT_INIT_OPT = {
+    onLoad: "check-sso",
+    pkceMethod: "S256",
+    scope: "data:read"
+};
+
+export function getKeycloakConfig(properties: Partial<KeycloakProperties>): KeycloakOptions {
+    const { keycloakOptions } = properties;
+
+    const { refreshOptions, keycloakInitOptions, keycloakConfig } = keycloakOptions!;
+
+    return {
+        refreshOptions: { ...getRefreshOpt(refreshOptions) },
+        keycloakInitOptions: { ...getInitOpt(keycloakInitOptions) },
+        keycloakConfig: { ...getConfigOpt(keycloakConfig) }
+    };
+}
+
+function getRefreshOpt(autoRefreshOptions: RefreshOptions | undefined): RefreshOptions {
+    if (!autoRefreshOptions || isObjectEmpty(autoRefreshOptions)) {
+        LOG.warn(
+            `The autorefresh options of the Keycloak configuration should be set to ensure automatic refreshes at specified intervals.` +
+                ` Defaulting to '${DEFAULT_AUTO_REFRESH_OPT}'.`
+        );
+        return Object.assign({}, { ...DEFAULT_AUTO_REFRESH_OPT });
+    }
+    return autoRefreshOptions;
+}
+
+function getInitOpt(keycloakInitOptions: KeycloakInitOptions | undefined): KeycloakInitOptions {
+    if (!keycloakInitOptions || isObjectEmpty(keycloakInitOptions)) {
+        LOG.warn(
+            `The Keycloak init options of the keycloak configuration should be set.` +
+                ` Defaulting to '${DEFAULT_INIT_OPT}'.`
+        );
+        return Object.assign({}, { ...DEFAULT_INIT_OPT }) as KeycloakInitOptions;
+    }
+    return keycloakInitOptions;
+}
+
+function getConfigOpt(keycloakConfig: KeycloakConfig | undefined): KeycloakConfig {
+    if (!keycloakConfig || isObjectEmpty(keycloakConfig)) {
+        throw new Error(
+            `KeycloakConfig not found: The Keycloak configuration options are required by the plugin to perform login and logout operations`
+        );
+    }
+    return keycloakConfig;
+}
+
+const isObjectEmpty = (objectName: unknown) => {
+    return objectName && Object.keys(objectName).length === 0 && objectName.constructor === Object;
+};
