@@ -18,16 +18,45 @@ import { RefreshOptions } from "./api";
 
 const LOG = createLogger("authentication-keycloak:KeycloakAuthPlugin");
 
-export interface KeycloakOptions {
-    refreshOptions: RefreshOptions;
-    keycloakInitOptions: Partial<KeycloakInitOptions>;
-    keycloakConfig: KeycloakConfig;
-    keycloakLogoutOptions?: KeycloakLogoutOptions;
-    keycloakLoginOptions?: KeycloakLoginOptions;
-}
-
+/**
+ * The central confuguration properties of the plugin
+ * these properties are requiered by the Keycloak JavaScript adapter
+ */
 export interface KeycloakProperties {
     keycloakOptions: KeycloakOptions;
+}
+export interface KeycloakOptions {
+    /**
+     * Control the automatic refreshing of authentication tokens.
+     * 'autoRefresh': Whether token refreshing should happen automatically.
+     * 'interval': The interval (in milliseconds) at which token refreshing should occur.
+     * 'timeLeft': The remaining time (in milliseconds) before token expiration.
+     */
+    refreshOptions: RefreshOptions;
+    /**
+     * Define how Keycloak initializes.
+     * This properties can be used:
+     * 'onLoad': Specifies when Keycloak should initialize.
+     * 'pkceMethod': The method used for PKCE for enhanced security.
+     * 'scope': The scope of the authentication.
+     *
+     */
+    keycloakInitOptions: Partial<KeycloakInitOptions>;
+    /**
+     * The configuration details for connecting to Keycloak.
+     * 'url': The URL of your Keycloak server.
+     * 'realm': The realm within Keycloak.
+     * 'clientId': The ID of the client application registered in Keycloak.
+     */
+    keycloakConfig: KeycloakConfig;
+    /**
+     * The URI to redirect to after logout.
+     */
+    keycloakLogoutOptions?: KeycloakLogoutOptions;
+    /**
+     * The URI to redirect to after successful login.
+     */
+    keycloakLoginOptions?: KeycloakLoginOptions;
 }
 
 export class KeycloakAuthPlugin
@@ -39,7 +68,6 @@ export class KeycloakAuthPlugin
     #state: AuthState = {
         kind: "pending"
     };
-    #wasLoggedIn = false;
     #keycloak: Keycloak;
     #logoutOptions: KeycloakLogoutOptions;
     #loginOptions: KeycloakLoginOptions;

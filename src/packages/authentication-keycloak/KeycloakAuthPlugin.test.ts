@@ -4,6 +4,7 @@ import { afterEach, beforeEach, it, vi, expect } from "vitest";
 import { KeycloakAuthPlugin } from "./KeycloakAuthPlugin";
 import { createService } from "@open-pioneer/test-utils/services";
 
+//https://vitest.dev/api/vi.html#vi-mock
 const hoisted = vi.hoisted(() => {
     return {
         keycloakMock: {
@@ -12,7 +13,7 @@ const hoisted = vi.hoisted(() => {
         }
     };
 });
-
+//The call to vi.mock is hoisted
 vi.mock("keycloak-js", () => ({
     default: vi.fn().mockReturnValue(hoisted.keycloakMock)
 }));
