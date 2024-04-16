@@ -1,12 +1,12 @@
 # @open-pioneer/authentication-keycloak
 
-This package provide an authentication plugin required by the central [authentication pacakge](#https://github.com/open-pioneer/trails-core-packages/blob/main/src/packages/authentication/README.md#implementing-an-authentication-plugin). The pacakge implements an actual authentication flow using the [Keycloak JavaScript](#https://www.keycloak.org/docs/latest/securing_apps/index.html#_javascript_adapter) adapter. For further Information, how Keycloak works please visit the official documentation of [Keycloak](#https://www.keycloak.org/).
+This package provide an authentication plugin required by the central [authentication pacakge](https://github.com/open-pioneer/trails-core-packages/blob/main/src/packages/authentication/README.md#implementing-an-authentication-plugin). The pacakge implements an actual authentication flow using the [Keycloak JavaScript](#https://www.keycloak.org/docs/latest/securing_apps/index.html#_javascript_adapter) adapter. For further Information, how Keycloak works please visit the official documentation of [Keycloak](https://www.keycloak.org/).
 
-> **_NOTE:_** The package only works with the central [authentication pacakge](#https://github.com/open-pioneer/trails-core-packages/blob/main/src/packages/authentication/README.md#implementing-an-authentication-plugin) and its associated provided plugin.
+> **_NOTE:_** The package only works with the central [authentication pacakge](https://github.com/open-pioneer/trails-core-packages/blob/main/src/packages/authentication/README.md#implementing-an-authentication-plugin) and its associated provided plugin.
 
 ## Usage
 
-To use the package in your app, first import the `<ForceAuth />` component from the [authentication pacakge](#https://github.com/open-pioneer/trails-core-packages/blob/main/src/packages/authentication/README.md#implementing-an-authentication-plugin) to make sure that only users, that are logged in, can use the applicaton.
+To use the package in your app, first import the `<ForceAuth />` component from the [authentication pacakge](https://github.com/open-pioneer/trails-core-packages/blob/main/src/packages/authentication/README.md#implementing-an-authentication-plugin) to make sure that only users, that are logged in, can use the applicaton.
 
 `ForceAuth` renders its children (your application) if the user is authenticated.
 Otherwise, it redirect the user to the Keycloak authentication provider.
@@ -35,7 +35,7 @@ export function AppUI() {
 
 ### Keycloak configuration properties
 
-To configure the 'authentication-keycloak' package, adjust these properties. For more details on the configuration properties, please visit the official documentation [API Reference](#https://www.keycloak.org/docs/latest/securing_apps/index.html#api-reference).
+To configure the 'authentication-keycloak' package, adjust these properties. For more details on the configuration properties, please visit the official documentation [API Reference](https://www.keycloak.org/docs/latest/securing_apps/index.html#api-reference).
 
 | Property              |         Type          |                                                                                                           Description |                                                         Default |
 | --------------------- | :-------------------: | --------------------------------------------------------------------------------------------------------------------: | --------------------------------------------------------------: |
