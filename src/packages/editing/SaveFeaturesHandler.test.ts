@@ -1,13 +1,15 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { describe, expect, it, vi } from "vitest";
 import { HttpService } from "@open-pioneer/http";
-import { saveCreatedFeature, saveUpdatedFeature } from "./SaveFeaturesHandler";
-import { Projection } from "ol/proj";
-import GeoJSONGeometry from "ol/format/GeoJSON";
-import GeoJSONGeometryCollection from "ol/format/GeoJSON";
-import GeoJSON from "ol/format/GeoJSON";
+import {
+    default as GeoJSON,
+    default as GeoJSONGeometry,
+    default as GeoJSONGeometryCollection
+} from "ol/format/GeoJSON";
 import { Point } from "ol/geom";
+import { Projection } from "ol/proj";
+import { describe, expect, it, vi } from "vitest";
+import { saveCreatedFeature, saveUpdatedFeature } from "./SaveFeaturesHandler";
 
 const OGC_API_URL_TEST = new URL("https://example.org/ogc");
 const TEST_ID = "555";
@@ -56,19 +58,14 @@ describe("Editing workflow: create", () => {
     it("returns an error if saving created feature fails", async () => {
         const projection = new Projection({ code: "EPSG:25832" });
         const geometry = mockedGeoJSON(projection);
-        let result;
 
-        try {
-            result = await saveCreatedFeature(
-                HTTP_SERVICE_FAIL,
-                OGC_API_URL_TEST,
-                geometry,
-                projection
-            );
-        } catch (e) {
-            result = e;
-        }
-        expect(result instanceof Error).toBe(true);
+        const promise = saveCreatedFeature(
+            HTTP_SERVICE_FAIL,
+            OGC_API_URL_TEST,
+            geometry,
+            projection
+        );
+        await expect(promise).rejects.toThrowErrorMatchingInlineSnapshot('"Request failed: 400"');
     });
 });
 
@@ -90,20 +87,15 @@ describe("Editing workflow: update", () => {
     it("returns an error if updating feature fails", async () => {
         const projection = new Projection({ code: "EPSG:25832" });
         const geometry = mockedGeoJSON(projection);
-        let result;
 
-        try {
-            result = await saveUpdatedFeature(
-                HTTP_SERVICE_FAIL,
-                OGC_API_URL_TEST,
-                TEST_ID,
-                geometry,
-                projection
-            );
-        } catch (e) {
-            result = e;
-        }
-        expect(result instanceof Error).toBe(true);
+        const promise = saveUpdatedFeature(
+            HTTP_SERVICE_FAIL,
+            OGC_API_URL_TEST,
+            TEST_ID,
+            geometry,
+            projection
+        );
+        await expect(promise).rejects.toThrowErrorMatchingInlineSnapshot('"Request failed: 400"');
     });
 });
 

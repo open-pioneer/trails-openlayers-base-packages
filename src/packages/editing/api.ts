@@ -60,6 +60,16 @@ export interface EditingWorkflowProps {
  */
 export interface EditingWorkflow extends EventEmitter<EditingWorkflowEvents> {
     /**
+     * Stops this editing operation.
+     */
+    stop(): void;
+
+    /**
+     * Resets this workflow to its initial state.
+     */
+    reset(): void;
+
+    /**
      * Returns the current state of the editing workflow.
      */
     getState(): EditingWorkflowState;

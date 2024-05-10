@@ -84,21 +84,21 @@ export class EditingServiceImpl implements EditingService {
         return workflow;
     }
 
-    stop(mapId: string): Error | void {
+    stop(mapId: string): void {
         const workflow = this._workflows.get(mapId);
         if (workflow) {
             workflow.stop();
         } else {
-            return new Error("No workflow found for mapId: " + mapId);
+            throw new Error("No workflow found for mapId: " + mapId);
         }
     }
 
-    reset(mapId: string): Error | void {
+    reset(mapId: string): void {
         const workflow = this._workflows.get(mapId);
         if (workflow) {
             workflow.reset();
         } else {
-            return new Error("No workflow found for mapId: " + mapId);
+            throw new Error("No workflow found for mapId: " + mapId);
         }
     }
 
@@ -107,7 +107,9 @@ export class EditingServiceImpl implements EditingService {
         mapId: string
     ) {
         workflow.on("destroyed", () => {
-            this._workflows.delete(mapId);
+            if (this._workflows.get(mapId) === workflow) {
+                this._workflows.delete(mapId);
+            }
         });
     }
 }

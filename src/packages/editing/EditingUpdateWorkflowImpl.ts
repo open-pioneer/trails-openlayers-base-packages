@@ -21,16 +21,11 @@ import {
     EditingWorkflow,
     EditingWorkflowProps
 } from "./api";
-import { Collection, Overlay } from "ol";
+import { Collection } from "ol";
 import { createStyles } from "./style-utils";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { saveUpdatedFeature } from "./SaveFeaturesHandler";
-
-// Represents a tooltip rendered on the OpenLayers map
-interface Tooltip extends Resource {
-    overlay: Overlay;
-    element: HTMLDivElement;
-}
+import { Tooltip, createTooltip } from "./Tooltip";
 
 export class EditingUpdateWorkflowImpl
     extends EventEmitter<EditingWorkflowEvents>
@@ -107,7 +102,10 @@ export class EditingUpdateWorkflowImpl
             source: this._editingSource
         });
 
-        this._tooltip = this._createTooltip(this._olMap);
+        this._tooltip = createTooltip(
+            this._olMap,
+            this._intl.formatMessage({ id: "create.tooltip.deselect" })
+        );
 
         this._enterHandler = (e: KeyboardEvent) => {
             if (
@@ -214,7 +212,7 @@ export class EditingUpdateWorkflowImpl
             this._mapContainer.addEventListener("keydown", this._escapeHandler, false);
         }
 
-        this._tooltip.element.classList.remove("editing-tooltip-hidden");
+        this._tooltip.setVisible(true);
 
         const click = this._map.olMap.on("click", (e) => {
             const coordinate = e.coordinate;
@@ -312,36 +310,5 @@ export class EditingUpdateWorkflowImpl
 
         const manualPromise = (this.#waiter ??= createManualPromise());
         return manualPromise.promise;
-    }
-
-    private _createTooltip(olMap: OlMap): Tooltip {
-        const element = document.createElement("div");
-        element.className = "editing-tooltip editing-tooltip-hidden";
-        element.textContent = this._intl.formatMessage({ id: "create.tooltip.deselect" });
-
-        const overlay = new Overlay({
-            element: element,
-            offset: [15, 0],
-            positioning: "center-left"
-        });
-
-        const pointerMove = olMap.on("pointermove", (evt) => {
-            if (evt.dragging) {
-                return;
-            }
-
-            overlay.setPosition(evt.coordinate);
-        });
-
-        olMap.addOverlay(overlay);
-
-        return {
-            overlay,
-            element,
-            destroy() {
-                unByKey(pointerMove);
-                olMap.removeOverlay(overlay);
-            }
-        };
     }
 }

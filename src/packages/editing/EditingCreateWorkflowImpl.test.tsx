@@ -318,9 +318,8 @@ describe("when create editing workflow complete", () => {
 
         await sleep(DEFAULT_SLEEP);
 
-        workflow.whenComplete().then((featureData: Record<string, string> | undefined) => {
-            expect(featureData?.featureId).toBe("test_id_1");
-        });
+        const featureData = await workflow.whenComplete();
+        expect(featureData?.featureId).toBe("test_id_1");
     });
 
     it("should return `undefined` if create editing workflow is stopped while draw geometry", async () => {
@@ -335,9 +334,8 @@ describe("when create editing workflow complete", () => {
 
         await sleep(DEFAULT_SLEEP);
 
-        workflow.whenComplete().then((featureData: Record<string, string> | undefined) => {
-            expect(featureData?.featureId).toBeUndefined();
-        });
+        const featureData = await workflow.whenComplete();
+        expect(featureData?.featureId).toBeUndefined();
     });
 
     it("should return an error if create editing workflow failed", async () => {
@@ -361,13 +359,9 @@ describe("when create editing workflow complete", () => {
         workflow.triggerSave();
 
         await sleep(DEFAULT_SLEEP);
-
-        workflow
-            .whenComplete()
-            .then(() => {})
-            .catch((error: Error) => {
-                expect(error.message).toBe("Failed to save feature");
-            });
+        await expect(workflow.whenComplete()).rejects.toThrowErrorMatchingInlineSnapshot(
+            '"Failed to save feature"'
+        );
     });
 });
 
