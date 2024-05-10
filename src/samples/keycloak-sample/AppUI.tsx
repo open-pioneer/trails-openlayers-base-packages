@@ -26,7 +26,7 @@ export function AppUI() {
                     title={
                         <Box textAlign="center" py={1}>
                             <SectionHeading size={"md"}>
-                                Open Pioneer - OGC-Feature-Sample
+                                Open Pioneer - Keycloak Sample
                             </SectionHeading>
                             <Text>Logged in as: {userName}</Text>
                             <LogoutButton />

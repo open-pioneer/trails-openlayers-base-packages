@@ -5,9 +5,6 @@ import { defineBuildConfig } from "@open-pioneer/build-support";
 export default defineBuildConfig({
     i18n: ["de", "en"],
     services: {
-        KeycloakAuthPlugin: {
-            provides: ["authentication-keycloak.KeycloakAuthPlugin"]
-        },
         MapConfigProviderImpl: {
             provides: ["map.MapConfigProvider"],
             references: {
@@ -17,7 +14,7 @@ export default defineBuildConfig({
         SampleTokenInterceptor: {
             provides: ["http.Interceptor"],
             references: {
-                keycloackAuthPlugin: "authentication.AuthService"
+                authService: "authentication.AuthService"
             }
         }
     },

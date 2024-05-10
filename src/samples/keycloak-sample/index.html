@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" style="height: 100%">
+<html lang="en">
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,15 +9,29 @@
             html,
             body {
                 margin: 0px;
+                padding: 0px;
             }
 
-            .full-height {
-                height: 100%;
-                max-height: 100%;
+            .app {
+                width: 100%;
+                height: 500px;
             }
         </style>
     </head>
-    <body class="full-height">
+    <body>
+        <div class="disclaimer">
+            <p>
+                Note: this application requires additional setup to connect to a Keycloak instance.
+            </p>
+            <p>The following environment properties should be set via vite:</p>
+            <ul>
+                <li><code>VITE_KEYCLOAK_CONFIG_URL</code> (the URL to the Keycloak instance)</li>
+                <li><code>VITE_KEYCLOAK_CONFIG_REALM</code> (the Keycloak realm)</li>
+                <li>
+                    <code>VITE_KEYCLOAK_CONFIG_CLIENT_ID</code> (the client id of this application)
+                </li>
+            </ul>
+        </div>
         <script type="module">
             import "./app.ts";
             const body = document.getElementsByTagName("body")[0];
@@ -30,7 +44,7 @@
                 const lang = urlParams.get("lang");
 
                 const app = document.createElement("keycloak-app-element");
-                app.classList.add("full-height");
+                app.classList.add("app");
                 app.setAttribute("id", "test");
 
                 if (lang) {

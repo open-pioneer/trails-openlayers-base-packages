@@ -11,15 +11,18 @@ import { ServiceOptions } from "@open-pioneer/runtime";
  */
 
 interface References {
-    keycloackAuthPlugin: AuthService;
+    authService: AuthService;
 }
+
 export class SampleTokenInterceptor implements Interceptor {
-    private keyclokeycloakAuthPlugin: AuthService;
+    private authService: AuthService;
+
     constructor(options: ServiceOptions<References>) {
-        this.keyclokeycloakAuthPlugin = options.references.keycloackAuthPlugin;
+        this.authService = options.references.authService;
     }
+
     beforeRequest({ target, options }: BeforeRequestParams): void {
-        const authState = this.keyclokeycloakAuthPlugin.getAuthState();
+        const authState = this.authService.getAuthState();
         const sessionInfo = authState.kind == "authenticated" ? authState.sessionInfo : undefined;
         const keycloak = sessionInfo?.attributes?.keycloak;
         const token = (keycloak as { token: string }).token;

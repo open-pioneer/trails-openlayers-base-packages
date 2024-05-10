@@ -14,52 +14,9 @@ import Keycloak, {
     type KeycloakLoginOptions,
     type KeycloakLogoutOptions
 } from "keycloak-js";
-import { RefreshOptions } from "./api";
+import { KeycloakOptions, KeycloakProperties, RefreshOptions } from "./api";
 
 const LOG = createLogger("authentication-keycloak:KeycloakAuthPlugin");
-
-/**
- * The central configuration properties of the plugin.
- *
- * These properties are required by the Keycloak JavaScript adapter.
- */
-export interface KeycloakProperties {
-    keycloakOptions: KeycloakOptions;
-}
-
-export interface KeycloakOptions {
-    /**
-     * Control the automatic refreshing of authentication tokens.
-     * 'autoRefresh': Whether token refreshing should happen automatically.
-     * 'interval': The interval (in milliseconds) at which token refreshing should occur.
-     * 'timeLeft': The remaining time (in milliseconds) before token expiration.
-     */
-    refreshOptions: RefreshOptions;
-    /**
-     * Define how Keycloak initializes.
-     * This properties can be used:
-     * 'onLoad': Specifies when Keycloak should initialize.
-     * 'pkceMethod': The method used for PKCE for enhanced security.
-     * 'scope': The scope of the authentication.
-     *
-     */
-    keycloakInitOptions: Partial<KeycloakInitOptions>;
-    /**
-     * The configuration details for connecting to Keycloak.
-     * 'url': The URL of your Keycloak server.
-     * 'realm': The realm within Keycloak.
-     * 'clientId': The ID of the client application registered in Keycloak.
-     */
-    keycloakConfig: KeycloakConfig;
-    /**
-     * The URI to redirect to after logout.
-     */
-    keycloakLogoutOptions?: KeycloakLogoutOptions;
-    /**
-     * The URI to redirect to after successful login.
-     */
-    keycloakLoginOptions?: KeycloakLoginOptions;
-}
 
 export class KeycloakAuthPlugin
     extends EventEmitter<AuthPluginEvents>
@@ -80,51 +37,74 @@ export class KeycloakAuthPlugin
         super();
         this.#logoutOptions = { redirectUri: undefined };
         this.#loginOptions = { redirectUri: undefined };
-        const { refreshOptions, keycloakInitOptions, keycloakConfig } = getKeycloakConfig(
-            options.properties
-        );
 
-        this.#keycloak = new Keycloak(keycloakConfig);
+        let keycloakOptions: KeycloakOptions;
+        try {
+            keycloakOptions = getKeycloakConfig(options.properties);
+        } catch (e) {
+            throw new Error("Invalid keycloak configuration", { cause: e });
+        }
 
-        this.#keycloak
-            .init(keycloakInitOptions)
-            .then((data) => {
-                if (data) {
-                    this.#state = {
-                        kind: "authenticated",
-                        sessionInfo: {
-                            userId: this.#keycloak.subject ? this.#keycloak.subject : "undefined",
-                            attributes: {
-                                keycloak: this.#keycloak,
-                                familyName: this.#keycloak.idTokenParsed?.family_name,
-                                givenName: this.#keycloak.idTokenParsed?.given_name,
-                                userName: this.#keycloak.idTokenParsed?.preferred_username
+        try {
+            this.#keycloak = new Keycloak(keycloakOptions.keycloakConfig);
+        } catch (e) {
+            throw new Error("Failed to construct keycloak instance", { cause: e });
+        }
+
+        const refreshOptions = keycloakOptions.refreshOptions;
+        try {
+            this.#keycloak
+                .init(keycloakOptions.keycloakInitOptions)
+                .then((data) => {
+                    if (data) {
+                        this.#state = {
+                            kind: "authenticated",
+                            sessionInfo: {
+                                userId: this.#keycloak.subject
+                                    ? this.#keycloak.subject
+                                    : "undefined",
+                                userName: this.#keycloak.idTokenParsed?.preferred_username,
+                                attributes: {
+                                    keycloak: this.#keycloak,
+                                    familyName: this.#keycloak.idTokenParsed?.family_name,
+                                    givenName: this.#keycloak.idTokenParsed?.given_name,
+                                    userName: this.#keycloak.idTokenParsed?.preferred_username
+                                }
                             }
+                        };
+                        this.emit("changed");
+
+                        LOG.debug(`User ${this.#keycloak.subject} is authenticated`);
+
+                        if (refreshOptions.autoRefresh) {
+                            LOG.debug("Starting auto-refresh", refreshOptions);
+                            this.refresh(refreshOptions.interval, refreshOptions.timeLeft);
                         }
-                    };
-                    this.emit("changed");
-
-                    LOG.debug(`User ${this.#keycloak.subject} is authenticated`);
-
-                    if (refreshOptions.autoRefresh) {
-                        LOG.debug("Starting auto-refresh", refreshOptions);
-                        this.refresh(refreshOptions.interval, refreshOptions.timeLeft);
+                    } else {
+                        this.#state = {
+                            kind: "not-authenticated"
+                        };
+                        this.emit("changed");
+                        LOG.debug("User is not authenticated");
                     }
-                } else {
+                })
+                .catch((e) => {
                     this.#state = {
                         kind: "not-authenticated"
                     };
                     this.emit("changed");
-                    LOG.debug("User is not authenticated");
-                }
-            })
-            .catch((e) => {
-                this.#state = {
-                    kind: "not-authenticated"
-                };
-                this.emit("changed");
-                LOG.error("Failed to check if user is authenticated", e);
-            });
+                    LOG.error("Failed to check if user is authenticated", e);
+                });
+        } catch (e) {
+            // Note: keycloak.init() can also throw an exception, in addition to a rejected promise...
+            const error = typeof e === "string" ? new Error(e) : e;
+            throw new Error("Failed to initialize keycloak session", { cause: error });
+        }
+    }
+
+    destroy() {
+        clearInterval(this.#timerId);
+        this.#timerId = undefined;
     }
 
     getAuthState(): AuthState {
@@ -159,11 +139,6 @@ export class KeycloakAuthPlugin
                 this.destroy();
             });
         }, interval);
-    }
-
-    destroy() {
-        clearInterval(this.#timerId);
-        this.#timerId = undefined;
     }
 }
 
