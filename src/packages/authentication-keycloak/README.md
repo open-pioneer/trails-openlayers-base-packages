@@ -77,6 +77,7 @@ interface KeycloakLoginOptions {
 
 ```ts
 // app.ts
+import { KeycloakProperties } from "@open-pioneer/authentication-keycloak";
 import { createCustomElement } from "@open-pioneer/runtime";
 import * as appMetadata from "open-pioneer:app";
 import { AppUI } from "./AppUI";
@@ -95,8 +96,9 @@ const element = createCustomElement({
                     },
                     keycloakInitOptions: {
                         onLoad: "check-sso",
-                        pkceMethod: "S256",
-                        scope: "data:read"
+                        pkceMethod: "S256"
+                        // additional configuration, for example:
+                        // scope: "data:read"
                     },
                     keycloakConfig: {
                         url: "http://keycloak-server/base_path",
@@ -104,7 +106,7 @@ const element = createCustomElement({
                         clientId: "myapp"
                     }
                 }
-            }
+            } satisfies KeycloakProperties // for auto completion / validation
         }
     }
     // ...
