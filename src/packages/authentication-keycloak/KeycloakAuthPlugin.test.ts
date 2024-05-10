@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { afterEach, beforeEach, it, vi, expect } from "vitest";
+import { afterEach, beforeEach, it, vi, expect, SpyInstance } from "vitest";
 import { KeycloakAuthPlugin } from "./KeycloakAuthPlugin";
 import { createService } from "@open-pioneer/test-utils/services";
 
@@ -18,12 +18,18 @@ vi.mock("keycloak-js", () => ({
     default: vi.fn().mockReturnValue(hoisted.keycloakMock)
 }));
 
+let restoreMocks: SpyInstance[] = [];
+
 beforeEach(() => {
     vi.useFakeTimers();
+    restoreMocks = [];
 });
 
 afterEach(() => {
     vi.clearAllMocks();
+    for (const mock of restoreMocks) {
+        mock.mockRestore();
+    }
 });
 
 it("expect state to be 'authenticated'", async () => {
@@ -40,7 +46,10 @@ it("expect state to be 'not-authenticated'", async () => {
 
 it("expect keycloak init to reject'", async () => {
     hoisted.keycloakMock.init.mockRejectedValue(new Error("Error"));
+
     const logSpy = vi.spyOn(global.console, "error").mockImplementation(() => undefined);
+    restoreMocks.push(logSpy);
+
     const keycloakAuthPlugin = await setup();
     await vi.waitUntil(() => keycloakAuthPlugin.getAuthState().kind === "not-authenticated");
     expect(logSpy).toMatchInlineSnapshot(`
@@ -65,8 +74,11 @@ it("should reject by updating the token", async () => {
     hoisted.keycloakMock.init.mockResolvedValue(true);
     hoisted.keycloakMock.updateToken.mockRejectedValue(new Error("Error"));
     const keycloakAuthPlugin = await setup();
-    vi.spyOn(keycloakAuthPlugin, "refresh");
+    restoreMocks.push(vi.spyOn(keycloakAuthPlugin, "refresh"));
+
     const logSpy = vi.spyOn(global.console, "error").mockImplementation(() => undefined);
+    restoreMocks.push(logSpy);
+
     await vi.waitUntil(() => keycloakAuthPlugin.getAuthState().kind === "authenticated");
     vi.advanceTimersToNextTimer();
 
@@ -102,11 +114,12 @@ it("should update the token in interval", async () => {
     hoisted.keycloakMock.updateToken.mockResolvedValue(true);
     const keycloakAuthPlugin = await setup();
     const spy = vi.spyOn(keycloakAuthPlugin, "refresh");
+    restoreMocks.push(spy);
+
     await vi.waitUntil(() => keycloakAuthPlugin.getAuthState().kind === "authenticated");
     expect(keycloakAuthPlugin.refresh).toHaveBeenCalledTimes(1);
     vi.advanceTimersToNextTimer();
     expect(hoisted.keycloakMock.updateToken).toHaveBeenCalledTimes(1);
-    spy.mockRestore();
 });
 
 async function setup() {

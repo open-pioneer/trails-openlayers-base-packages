@@ -19,12 +19,14 @@ import { RefreshOptions } from "./api";
 const LOG = createLogger("authentication-keycloak:KeycloakAuthPlugin");
 
 /**
- * The central confuguration properties of the plugin
- * these properties are requiered by the Keycloak JavaScript adapter
+ * The central configuration properties of the plugin.
+ *
+ * These properties are required by the Keycloak JavaScript adapter.
  */
 export interface KeycloakProperties {
     keycloakOptions: KeycloakOptions;
 }
+
 export interface KeycloakOptions {
     /**
      * Control the automatic refreshing of authentication tokens.
@@ -146,6 +148,7 @@ export class KeycloakAuthPlugin
     }
 
     refresh(interval: number, timeLeft: number) {
+        clearInterval(this.#timerId);
         this.#timerId = setInterval(() => {
             this.#keycloak.updateToken(timeLeft).catch((e) => {
                 LOG.error("Failed to refresh token", e);
@@ -163,11 +166,13 @@ export class KeycloakAuthPlugin
         this.#timerId = undefined;
     }
 }
+
 const DEFAULT_AUTO_REFRESH_OPT = {
     autoRefresh: true,
     interval: 6000,
     timeLeft: 70
 };
+
 const DEFAULT_INIT_OPT = {
     onLoad: "check-sso",
     pkceMethod: "S256",

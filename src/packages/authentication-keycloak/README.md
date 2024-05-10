@@ -1,32 +1,35 @@
 # @open-pioneer/authentication-keycloak
 
-This package provide an authentication plugin required by the central [authentication pacakge](https://github.com/open-pioneer/trails-core-packages/blob/main/src/packages/authentication/README.md#implementing-an-authentication-plugin). The pacakge implements an actual authentication flow using the [Keycloak JavaScript](#https://www.keycloak.org/docs/latest/securing_apps/index.html#_javascript_adapter) adapter. For further Information, how Keycloak works please visit the official documentation of [Keycloak](https://www.keycloak.org/).
+This package provide a plugin for the [authentication package](https://github.com/open-pioneer/trails-core-packages/blob/main/src/packages/authentication/README.md#implementing-an-authentication-plugin) that supports [Keycloak](https://www.keycloak.org/).
 
-> **_NOTE:_** The package only works with the central [authentication pacakge](https://github.com/open-pioneer/trails-core-packages/blob/main/src/packages/authentication/README.md#implementing-an-authentication-plugin) and its associated provided plugin.
+The package implements an actual authentication flow using the [Keycloak JavaScript](#https://www.keycloak.org/docs/latest/securing_apps/index.html#_javascript_adapter) adapter.
+For further Information, how Keycloak works please visit the official documentation of [Keycloak](https://www.keycloak.org/).
+
+> **_NOTE:_** The package only works with the central [authentication package](https://github.com/open-pioneer/trails-core-packages/blob/main/src/packages/authentication/README.md#implementing-an-authentication-plugin).
 
 ## Usage
 
-To use the package in your app, first import the `<ForceAuth />` component from the [authentication pacakge](https://github.com/open-pioneer/trails-core-packages/blob/main/src/packages/authentication/README.md#implementing-an-authentication-plugin) to make sure that only users, that are logged in, can use the applicaton.
+To use the package in your app, first import the `<ForceAuth />` component from the [authentication package](https://github.com/open-pioneer/trails-core-packages/blob/main/src/packages/authentication/README.md#enforcing-authentication) to make sure that only logged in users can use the application.
 
 `ForceAuth` renders its children (your application) if the user is authenticated.
 Otherwise, it redirect the user to the Keycloak authentication provider.
 
-To access the `SessionInfo` for the current logged in user, you can use the `useAuthState` hook provoided by the authentication pacakge.
+To access the `SessionInfo` for the current logged in user, you can use the `useAuthState` hook provided by the authentication package.
 
-```jsx
-// AppUI.jsx
-import { ForceAuth, useAuthState} from "@open-pioneer/authentication";
+```tsx
+// AppUI.tsx
+import { ForceAuth, useAuthState } from "@open-pioneer/authentication";
 import { useService } from "open-pioneer:react-hooks";
 
-const authService = useService<AuthService>("authentication.AuthService");
-const authState = useAuthState(authService);
-const sessionInfo = authState.kind == "authenticated" ? authState.sessionInfo : undefined;
-const userName = sessionInfo?.attributes?.userName as string;
-
 export function AppUI() {
+    const authService = useService<AuthService>("authentication.AuthService");
+    const authState = useAuthState(authService);
+    const sessionInfo = authState.kind == "authenticated" ? authState.sessionInfo : undefined;
+    const userName = sessionInfo?.attributes?.userName as string;
+
     return (
         <ForceAuth>
-			<Text>Logged in as: {userName}</Text>
+            <Text>Logged in as: {userName}</Text>
             <TheRestOfYourApplication />
         </ForceAuth>
     );
@@ -35,7 +38,8 @@ export function AppUI() {
 
 ### Keycloak configuration properties
 
-To configure the 'authentication-keycloak' package, adjust these properties. For more details on the configuration properties, please visit the official documentation [API Reference](https://www.keycloak.org/docs/latest/securing_apps/index.html#api-reference).
+To configure the `authentication-keycloak` package, adjust these properties.
+For more details on the configuration properties, please visit the official documentation [API Reference](https://www.keycloak.org/docs/latest/securing_apps/index.html#api-reference).
 
 | Property              |         Type          |                                                                                                           Description |                                                         Default |
 | --------------------- | :-------------------: | --------------------------------------------------------------------------------------------------------------------: | --------------------------------------------------------------: |
@@ -102,30 +106,34 @@ const element = createCustomElement({
                 }
             }
         }
-    },
-	...
-
+    }
+    // ...
+});
 ```
 
 ### Accessing the Keycloak token in your application
 
-After a successful login, the Keycloak token can be accessed from the `SessionInfo`.
+After a successful login, the Keycloak token can be accessed from the `SessionInfo` of the `AuthService`.
 
 ```ts
 //SampleTokenInterceptor.ts
 import { AuthService } from "@open-pioneer/authentication";
 import { ServiceOptions } from "@open-pioneer/runtime";
-...
+// ...
+
 class SampleTokenInterceptor implements Interceptor {
-    private keyclokeycloakAuthPlugin: AuthService;
+    private authService: AuthService;
+
     constructor(options: ServiceOptions<References>) {
-        this.keyclokeycloakAuthPlugin = options.references.keycloackAuthPlugin;
+        this.authService = options.references.authService;
     }
+
     beforeRequest({ target, options }: BeforeRequestParams): void {
+        const authState = this.authService.getAuthState();
         const sessionInfo = authState.kind == "authenticated" ? authState.sessionInfo : undefined;
         const keycloak = sessionInfo?.attributes?.keycloak;
         const token = (keycloak as { token: string }).token;
-        ...
+        // ...
     }
 }
 ```
