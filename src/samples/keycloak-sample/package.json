@@ -3,14 +3,14 @@
     "private": true,
     "dependencies": {
         "@open-pioneer/authentication": "^0.3.2",
-        "@open-pioneer/http": "^2.1.4",
+        "@open-pioneer/http": "^2.1.5",
         "@open-pioneer/react-utils": "workspace:^",
         "@open-pioneer/map": "workspace:^",
         "@open-pioneer/map-navigation": "workspace:^",
-        "@open-pioneer/runtime": "^2.1.2",
+        "@open-pioneer/runtime": "^2.1.3",
         "@open-pioneer/authentication-keycloak": "workspace:^",
         "@open-pioneer/toc": "workspace:^",
         "@open-pioneer/ogc-features": "workspace:^",
-        "keycloak-js": "^23.0.3"
+        "keycloak-js": "^23.0.7"
     }
 }

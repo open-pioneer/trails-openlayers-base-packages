@@ -1,38 +1,39 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { EventEmitter, ManualPromise, createLogger, createManualPromise } from "@open-pioneer/core";
-import { MapModel, TOPMOST_LAYER_Z } from "@open-pioneer/map";
-import { Draw } from "ol/interaction";
-import VectorLayer from "ol/layer/Vector";
-import VectorSource from "ol/source/Vector";
+import {
+    EventEmitter,
+    ManualPromise,
+    Resource,
+    createLogger,
+    createManualPromise
+} from "@open-pioneer/core";
 import { HttpService } from "@open-pioneer/http";
+import { MapModel, TOPMOST_LAYER_Z } from "@open-pioneer/map";
 import { PackageIntl } from "@open-pioneer/runtime";
-import { FlatStyle } from "ol/style/flat";
-import GeoJSON from "ol/format/GeoJSON";
-import GeoJSONGeometry from "ol/format/GeoJSON";
-import GeoJSONGeometryCollection from "ol/format/GeoJSON";
-import { saveCreatedFeature } from "./SaveFeaturesHandler";
+import Feature from "ol/Feature";
 import OlMap from "ol/Map";
-import Overlay from "ol/Overlay";
-import { Resource } from "@open-pioneer/core";
 import { unByKey } from "ol/Observable";
 import { EventsKey } from "ol/events";
 import {
-    EditingWorkflowEvents,
-    EditingWorkflowState,
+    default as GeoJSON,
+    default as GeoJSONGeometry,
+    default as GeoJSONGeometryCollection
+} from "ol/format/GeoJSON";
+import { Draw } from "ol/interaction";
+import VectorLayer from "ol/layer/Vector";
+import VectorSource from "ol/source/Vector";
+import { FlatStyle } from "ol/style/flat";
+import { saveCreatedFeature } from "./SaveFeaturesHandler";
+import { Tooltip, createTooltip } from "./Tooltip";
+import {
     EditingWorkflow,
-    EditingWorkflowProps
+    EditingWorkflowEvents,
+    EditingWorkflowProps,
+    EditingWorkflowState
 } from "./api";
-import Feature from "ol/Feature";
 import { createStyles } from "./style-utils";
 
 const LOG = createLogger("editing:EditingCreateWorkflowImpl");
-
-// Represents a tooltip rendered on the OpenLayers map
-interface Tooltip extends Resource {
-    overlay: Overlay;
-    element: HTMLDivElement;
-}
 
 export class EditingCreateWorkflowImpl
     extends EventEmitter<EditingWorkflowEvents>
@@ -95,7 +96,10 @@ export class EditingCreateWorkflowImpl
             })
         });
 
-        this._tooltip = this._createTooltip(this._olMap);
+        this._tooltip = createTooltip(
+            this._olMap,
+            this._intl.formatMessage({ id: "create.tooltip.begin" })
+        );
 
         this._enterHandler = (e: KeyboardEvent) => {
             if (
@@ -188,13 +192,15 @@ export class EditingCreateWorkflowImpl
             this._mapContainer.addEventListener("keydown", this._escapeHandler, false);
         }
 
-        this._tooltip.element.classList.remove("editing-tooltip-hidden");
+        this._tooltip.setVisible(true);
 
         const drawStart = this._drawInteraction.on("drawstart", () => {
             this._setState("active:drawing");
-            this._tooltip.element.textContent = this._intl.formatMessage({
-                id: "create.tooltip.continue"
-            });
+            this._tooltip.setText(
+                this._intl.formatMessage({
+                    id: "create.tooltip.continue"
+                })
+            );
         });
 
         const drawEnd = this._drawInteraction.on("drawend", (e) => {
@@ -226,9 +232,11 @@ export class EditingCreateWorkflowImpl
 
     reset() {
         this._drawInteraction.abortDrawing();
-        this._tooltip.element.textContent = this._intl.formatMessage({
-            id: "create.tooltip.begin"
-        });
+        this._tooltip.setText(
+            this._intl.formatMessage({
+                id: "create.tooltip.begin"
+            })
+        );
         this._setState("active:initialized");
     }
 
@@ -277,36 +285,5 @@ export class EditingCreateWorkflowImpl
 
         const manualPromise = (this.#waiter ??= createManualPromise());
         return manualPromise.promise;
-    }
-
-    private _createTooltip(olMap: OlMap): Tooltip {
-        const element = document.createElement("div");
-        element.className = "editing-tooltip editing-tooltip-hidden";
-        element.textContent = this._intl.formatMessage({ id: "create.tooltip.begin" });
-
-        const overlay = new Overlay({
-            element: element,
-            offset: [15, 0],
-            positioning: "center-left"
-        });
-
-        const pointerMove = olMap.on("pointermove", (evt) => {
-            if (evt.dragging) {
-                return;
-            }
-
-            overlay.setPosition(evt.coordinate);
-        });
-
-        olMap.addOverlay(overlay);
-
-        return {
-            overlay,
-            element,
-            destroy() {
-                unByKey(pointerMove);
-                olMap.removeOverlay(overlay);
-            }
-        };
     }
 }

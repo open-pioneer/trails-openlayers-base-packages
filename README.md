@@ -9,7 +9,7 @@ This repository is intended to manage various base packages for building applica
 
 ## Getting started
 
-Requirements: Node >= 18, pnpm >= 8.
+Requirements: Node >= 18, pnpm >= 9.
 
 To start the development server, run:
 

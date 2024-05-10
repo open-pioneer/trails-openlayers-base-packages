@@ -27,16 +27,15 @@ export async function saveCreatedFeature(
     });
 
     if (!response || !response.ok || response.status !== 201) {
-        return Promise.reject(new Error("Request failed: " + response.status));
+        throw new Error("Request failed: " + response.status);
     }
 
     const location = response.headers.get("location");
     if (!location) {
-        return Promise.reject(new Error("Request failed: no Location response header"));
+        throw new Error("Request failed: no Location response header");
     }
 
     const featureId = location.substring(location.lastIndexOf("/") + 1);
-
     return Promise.resolve(featureId);
 }
 
@@ -64,7 +63,7 @@ export async function saveUpdatedFeature(
     });
 
     if (!response || !response.ok || response.status !== 204) {
-        return Promise.reject(new Error("Request failed: " + response.status));
+        throw new Error("Request failed: " + response.status);
     }
 
     return Promise.resolve(featureId);

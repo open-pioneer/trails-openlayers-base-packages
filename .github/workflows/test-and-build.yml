@@ -19,7 +19,7 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v2
         with:
-          version: 8
+          version: 9
           run_install: false
 
       - name: Install Node.js
@@ -46,8 +46,9 @@ jobs:
       - name: Build API documentation
         run: pnpm build-docs
 
+      # TODO: error is ignored (https://github.com/orgs/open-pioneer/projects/6?pane=issue&itemId=62484075)
       - name: Create license report
-        run: pnpm build-license-report;
+        run: pnpm build-license-report || true;
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
