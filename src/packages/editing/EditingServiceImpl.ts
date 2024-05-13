@@ -88,9 +88,8 @@ export class EditingServiceImpl implements EditingService {
         const workflow = this._workflows.get(mapId);
         if (workflow) {
             workflow.stop();
-        } else {
-            throw new Error("No workflow found for mapId: " + mapId);
         }
+        // A missing workflow is not an error if all we want to do is stop it.
     }
 
     reset(mapId: string): void {
