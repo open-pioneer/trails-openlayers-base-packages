@@ -1,11 +1,6 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import type {
-    KeycloakConfig,
-    KeycloakInitOptions,
-    KeycloakLoginOptions,
-    KeycloakLogoutOptions
-} from "keycloak-js";
+import type { KeycloakConfig, KeycloakInitOptions } from "keycloak-js";
 
 /**
  * The central configuration properties of the plugin.
@@ -45,15 +40,6 @@ export interface KeycloakOptions {
      *
      */
     keycloakInitOptions: Partial<KeycloakInitOptions>;
-
-    /**
-     * The URI to redirect to after logout.
-     */
-    keycloakLogoutOptions?: KeycloakLogoutOptions;
-    /**
-     * The URI to redirect to after successful login.
-     */
-    keycloakLoginOptions?: KeycloakLoginOptions;
 }
 
 /**

@@ -8,7 +8,12 @@ import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { Legend, LegendItemComponentProps } from "./Legend";
 import { Box, Image, Text } from "@open-pioneer/chakra-integration";
 import { SimpleLayer, WMSLayer } from "@open-pioneer/map";
-import SimpleWmsCapas from "./test-data/SimpleWMSCapas.xml?raw";
+import { readFileSync } from "node:fs";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const THIS_DIR = dirname(fileURLToPath(import.meta.url));
+const WMTS_CAPAS = readFileSync(resolve(THIS_DIR, "./test-data/SimpleWMSCapas.xml"), "utf-8");
 
 // Happy dom does not have an XML parser
 import jsdom from "jsdom";
@@ -241,7 +246,7 @@ it("shows a legend for active basemap if showBaseLayers is configured to be true
     const legendDiv = await findLegend();
     await waitForLegendItem(legendDiv);
 
-    const images = await getLegendImages(legendDiv);
+    const images = await getLegendImages(legendDiv, 2);
     expect(images.length).toBe(2);
 
     const src = images[1]?.getAttribute("src");
@@ -252,7 +257,7 @@ it("shows correct legend entries for nested WMSSublayers", async () => {
     const { mapId, registry } = await setupMap({
         layers: [createLayerWithNestedSublayers()],
         fetch: vi.fn(async () => {
-            return new Response(SimpleWmsCapas, {
+            return new Response(WMTS_CAPAS, {
                 status: 200
             });
         })
@@ -268,9 +273,7 @@ it("shows correct legend entries for nested WMSSublayers", async () => {
 
     const legendDiv = await findLegend();
     await waitForLegendItem(legendDiv);
-    const images = await getLegendImages(legendDiv);
-
-    expect(images.length).toBe(4);
+    const images = await getLegendImages(legendDiv, 4);
 
     // Ensure that no legend is created for sublayer without `name` prop and for sublayer with empty legend component
     expect(images[0]?.getAttribute("src")).toBe("https://fake.legend.url/sublayer4_1.png");
@@ -345,7 +348,7 @@ it("shows legend entries in correct order", async () => {
     const legendDiv = await findLegend();
     await waitForLegendItem(legendDiv);
 
-    const images = await getLegendImages(legendDiv);
+    const images = await getLegendImages(legendDiv, 3);
     expect(images.length).toBe(3);
     expect(images[0]?.getAttribute("src")).toBe("https://fake.image.url/layer-3.png");
     expect(images[1]?.getAttribute("src")).toBe("https://fake.image.url/layer-2.png");
@@ -488,7 +491,7 @@ it("reacts to changes in layer visibility", async () => {
     const legendDiv = await findLegend();
     await waitForLegendItem(legendDiv);
 
-    const images = await getLegendImages(legendDiv);
+    const images = await getLegendImages(legendDiv, 2);
     expect(images.length).toBe(2);
 
     // Set visible to false
@@ -613,7 +616,7 @@ it("reacts to changes in the layer composition", async () => {
     const legendDiv = await findLegend();
     await waitForLegendItem(legendDiv);
 
-    const images = await getLegendImages(legendDiv);
+    const images = await getLegendImages(legendDiv, 2);
     expect(images[0]?.getAttribute("src")).toBe("https://fake.image.url/layer-2.png");
     expect(images[1]?.getAttribute("src")).toBe("https://fake.image.url/layer-1.png");
 });
@@ -634,14 +637,16 @@ async function waitForLegendItem(legendDiv: HTMLElement) {
     });
 }
 
-async function getLegendImages(legendDiv: HTMLElement) {
+async function getLegendImages(legendDiv: HTMLElement, expectedCount = 1) {
     return await waitFor(() => {
         const legendImages = legendDiv.querySelectorAll(LEGEND_IMAGE_CLASS);
-        if (!legendImages) {
-            throw new Error("legend images not mounted");
+        if (legendImages.length < expectedCount) {
+            throw new Error(
+                `expected at least ${expectedCount} legend image(s), got only ${legendImages.length}`
+            );
         }
 
-        return legendImages;
+        return Array.from(legendImages);
     });
 }
 
