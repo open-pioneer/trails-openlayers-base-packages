@@ -104,7 +104,7 @@ describe("editing: create", () => {
             editingService.createFeature(map, OGC_API_URL_TEST);
 
             expect(() => editingService.reset("mapId")).toThrowErrorMatchingInlineSnapshot(
-                '"No workflow found for mapId: mapId"'
+                `[Error: No workflow found for mapId: mapId]`
             );
         });
     });
@@ -177,7 +177,7 @@ describe("editing: update", () => {
             editingService.updateFeature(map, OGC_API_URL_TEST, DEFAULT_FEATURE);
 
             expect(() => editingService.reset("mapId")).toThrowErrorMatchingInlineSnapshot(
-                '"No workflow found for mapId: mapId"'
+                `[Error: No workflow found for mapId: mapId]`
             );
         });
     });

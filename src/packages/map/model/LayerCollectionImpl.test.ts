@@ -249,7 +249,7 @@ it("results in an error, if using the same layer id twice", async () => {
             ]
         });
     }).rejects.toThrowErrorMatchingInlineSnapshot(
-        "\"Layer id 'l-1' is not unique. Either assign a unique id yourself or skip configuring 'id' for an automatically generated id.\""
+        `[Error: Layer id 'l-1' is not unique. Either assign a unique id yourself or skip configuring 'id' for an automatically generated id.]`
     );
 });
 
@@ -299,7 +299,7 @@ it("registering the same OpenLayers layer twice throws an error", async () => {
             ]
         });
     }).rejects.toThrowErrorMatchingInlineSnapshot(
-        '"OlLayer has already been used in this or another layer."'
+        `[Error: OlLayer has already been used in this or another layer.]`
     );
 });
 
