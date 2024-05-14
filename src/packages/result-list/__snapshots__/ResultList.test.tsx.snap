@@ -15,7 +15,7 @@ exports[`expect empty data text to be shown 1`] = `
 </div>
 `;
 
-exports[`expect empty metadata to throw error 1`] = `"No columns were defined. The result list cannot be displayed."`;
+exports[`expect empty metadata to throw error 1`] = `[Error: No columns were defined. The result list cannot be displayed.]`;
 
 exports[`expect render function to be applied 1`] = `"This item has the following ID: 1"`;
 

@@ -65,7 +65,9 @@ describe("Editing workflow: create", () => {
             geometry,
             projection
         );
-        await expect(promise).rejects.toThrowErrorMatchingInlineSnapshot('"Request failed: 400"');
+        await expect(promise).rejects.toThrowErrorMatchingInlineSnapshot(
+            `[Error: Request failed: 400]`
+        );
     });
 });
 
@@ -95,7 +97,9 @@ describe("Editing workflow: update", () => {
             geometry,
             projection
         );
-        await expect(promise).rejects.toThrowErrorMatchingInlineSnapshot('"Request failed: 400"');
+        await expect(promise).rejects.toThrowErrorMatchingInlineSnapshot(
+            `[Error: Request failed: 400]`
+        );
     });
 });
 

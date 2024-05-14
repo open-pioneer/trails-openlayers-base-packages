@@ -360,7 +360,7 @@ describe("when create editing workflow complete", () => {
 
         await sleep(DEFAULT_SLEEP);
         await expect(workflow.whenComplete()).rejects.toThrowErrorMatchingInlineSnapshot(
-            '"Failed to save feature"'
+            `[Error: Failed to save feature]`
         );
     });
 });

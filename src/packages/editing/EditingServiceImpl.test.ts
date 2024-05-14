@@ -69,14 +69,12 @@ describe("editing: create", () => {
             expect(stop).toBeUndefined();
         });
 
-        it("should return an error if editing is stopped for a non existing map id", async () => {
+        it("should not throw an error if editing is stopped for a non existing map id", async () => {
             const { editingService, map } = await createEditingService();
 
             editingService.createFeature(map, OGC_API_URL_TEST);
 
-            expect(() => editingService.stop("mapId")).toThrowErrorMatchingInlineSnapshot(
-                '"No workflow found for mapId: mapId"'
-            );
+            expect(() => editingService.stop("some-other-map-id")).not.toThrowError();
         });
     });
 
@@ -105,8 +103,8 @@ describe("editing: create", () => {
 
             editingService.createFeature(map, OGC_API_URL_TEST);
 
-            expect(() => editingService.stop("mapId")).toThrowErrorMatchingInlineSnapshot(
-                '"No workflow found for mapId: mapId"'
+            expect(() => editingService.reset("mapId")).toThrowErrorMatchingInlineSnapshot(
+                `[Error: No workflow found for mapId: mapId]`
             );
         });
     });
@@ -144,14 +142,12 @@ describe("editing: update", () => {
             expect(stop).toBeUndefined();
         });
 
-        it("should return an error if editing is stopped for a non existing map id", async () => {
+        it("should not throw an error if editing is stopped for a non existing map id", async () => {
             const { editingService, map } = await createEditingService();
 
             editingService.updateFeature(map, OGC_API_URL_TEST, DEFAULT_FEATURE);
 
-            expect(() => editingService.stop("mapId")).toThrowErrorMatchingInlineSnapshot(
-                '"No workflow found for mapId: mapId"'
-            );
+            expect(() => editingService.stop("some-different-id")).not.toThrowError();
         });
     });
 
@@ -181,7 +177,7 @@ describe("editing: update", () => {
             editingService.updateFeature(map, OGC_API_URL_TEST, DEFAULT_FEATURE);
 
             expect(() => editingService.reset("mapId")).toThrowErrorMatchingInlineSnapshot(
-                '"No workflow found for mapId: mapId"'
+                `[Error: No workflow found for mapId: mapId]`
             );
         });
     });

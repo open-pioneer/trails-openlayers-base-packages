@@ -23,6 +23,6 @@ it("expect to throw an error if the keycloakConfig not provided ", async () => {
         keycloakOptions
     };
     expect(() => getKeycloakConfig(properties)).toThrowErrorMatchingInlineSnapshot(
-        '"KeycloakConfig not found: The Keycloak configuration options are required by the plugin to perform login and logout operations"'
+        `[Error: KeycloakConfig not found: The Keycloak configuration options are required by the plugin to perform login and logout operations]`
     );
 });
