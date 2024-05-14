@@ -4,6 +4,7 @@ import { defineBuildConfig } from "@open-pioneer/build-support";
 
 export default defineBuildConfig({
     entryPoints: ["index.ts"],
+    i18n: ["en", "de"],
     services: {
         KeycloakAuthPlugin: {
             provides: [
@@ -12,7 +13,10 @@ export default defineBuildConfig({
 
                 // Concrete interface for this plugin (note: no additional API yet).
                 "authentication-keycloak.KeycloakAuthPlugin"
-            ]
+            ],
+            references: {
+                "notifier": "notifier.NotificationService"
+            }
         }
     },
     properties: {

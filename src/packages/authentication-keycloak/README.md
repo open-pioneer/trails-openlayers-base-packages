@@ -19,6 +19,7 @@ To access the `SessionInfo` for the current logged in user, you can use the `use
 ```tsx
 // AppUI.tsx
 import { ForceAuth, useAuthState } from "@open-pioneer/authentication";
+import { Notifier } from "@open-pioneer/notifier";
 import { useService } from "open-pioneer:react-hooks";
 
 export function AppUI() {
@@ -28,10 +29,14 @@ export function AppUI() {
     const userName = sessionInfo?.attributes?.userName as string;
 
     return (
-        <ForceAuth>
-            <Text>Logged in as: {userName}</Text>
-            <TheRestOfYourApplication />
-        </ForceAuth>
+        <>
+            {/* recommended for error reporting: */}
+            <Notifier />
+            <ForceAuth>
+                <Text>Logged in as: {userName}</Text>
+                <TheRestOfYourApplication />
+            </ForceAuth>
+        </>
     );
 }
 ```
@@ -104,6 +109,12 @@ const element = createCustomElement({
     // ...
 });
 ```
+
+### Error reporting
+
+In case of an error during authentication (i.e. if the keycloak client lib throws an error during `init`), a notification will be presented to the user via the `NotificationService` (technical details can be found in the developer console).
+You should therefore embed the `<Notifier />` into your application as well.
+Note that the Notifier should not be nested in `<ForceAuth />`, because it would not be rendered in case of an authentication problem.
 
 ### Accessing the Keycloak token in your application
 

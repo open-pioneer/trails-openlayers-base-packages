@@ -3,6 +3,7 @@
 import { afterEach, beforeEach, it, vi, expect, SpyInstance } from "vitest";
 import { KeycloakAuthPlugin } from "./KeycloakAuthPlugin";
 import { createService } from "@open-pioneer/test-utils/services";
+import { NotificationService, NotificationOptions } from "@open-pioneer/notifier";
 
 //https://vitest.dev/api/vi.html#vi-mock
 const hoisted = vi.hoisted(() => {
@@ -34,13 +35,13 @@ afterEach(() => {
 
 it("expect state to be 'authenticated'", async () => {
     hoisted.keycloakMock.init.mockResolvedValue(true);
-    const keycloakAuthPlugin = await setup();
+    const { keycloakAuthPlugin } = await setup();
     await vi.waitUntil(() => keycloakAuthPlugin.getAuthState().kind === "authenticated");
 });
 
 it("expect state to be 'not-authenticated'", async () => {
     hoisted.keycloakMock.init.mockResolvedValue(false);
-    const keycloakAuthPlugin = await setup();
+    const { keycloakAuthPlugin } = await setup();
     await vi.waitUntil(() => keycloakAuthPlugin.getAuthState().kind === "not-authenticated");
 });
 
@@ -50,14 +51,14 @@ it("expect keycloak init to reject'", async () => {
     const logSpy = vi.spyOn(global.console, "error").mockImplementation(() => undefined);
     restoreMocks.push(logSpy);
 
-    const keycloakAuthPlugin = await setup();
-    await vi.waitUntil(() => keycloakAuthPlugin.getAuthState().kind === "not-authenticated");
+    const { notifier } = await setup();
+    await vi.waitUntil(() => logSpy.mock.calls.length > 0); // wait until error is logged
     expect(logSpy).toMatchInlineSnapshot(`
       [MockFunction error] {
         "calls": [
           [
             "[ERROR] authentication-keycloak:KeycloakAuthPlugin: Failed to check if user is authenticated",
-            [Error: Error],
+            [Error: Failed to initialize keycloak session],
           ],
         ],
         "results": [
@@ -68,13 +69,21 @@ it("expect keycloak init to reject'", async () => {
         ],
       }
     `);
+    expect(notifier._notifications).toMatchInlineSnapshot(`
+      [
+        {
+          "level": "error",
+          "message": "loginFailed.message",
+          "title": "loginFailed.title",
+        },
+      ]
+    `);
 });
 
 it("should reject by updating the token", async () => {
     hoisted.keycloakMock.init.mockResolvedValue(true);
     hoisted.keycloakMock.updateToken.mockRejectedValue(new Error("Error"));
-    const keycloakAuthPlugin = await setup();
-    restoreMocks.push(vi.spyOn(keycloakAuthPlugin, "refresh"));
+    const { keycloakAuthPlugin } = await setup();
 
     const logSpy = vi.spyOn(global.console, "error").mockImplementation(() => undefined);
     restoreMocks.push(logSpy);
@@ -112,17 +121,26 @@ it("should reject by updating the token", async () => {
 it("should update the token in interval", async () => {
     hoisted.keycloakMock.init.mockResolvedValue(true);
     hoisted.keycloakMock.updateToken.mockResolvedValue(true);
-    const keycloakAuthPlugin = await setup();
-    const spy = vi.spyOn(keycloakAuthPlugin, "refresh");
-    restoreMocks.push(spy);
+    const { keycloakAuthPlugin } = await setup();
+    const refreshSpy = vi.spyOn(keycloakAuthPlugin as any, "__refresh");
+    restoreMocks.push(refreshSpy);
 
     await vi.waitUntil(() => keycloakAuthPlugin.getAuthState().kind === "authenticated");
-    expect(keycloakAuthPlugin.refresh).toHaveBeenCalledTimes(1);
+    expect(refreshSpy).toHaveBeenCalledTimes(1);
     vi.advanceTimersToNextTimer();
     expect(hoisted.keycloakMock.updateToken).toHaveBeenCalledTimes(1);
 });
 
+type MockedNotifier = Partial<NotificationService> & { _notifications: NotificationOptions[] };
+
 async function setup() {
+    const notifier = {
+        _notifications: [] as NotificationOptions[],
+
+        notify(options) {
+            this._notifications.push(options);
+        }
+    } satisfies MockedNotifier;
     const keycloakAuthPlugin = await createService(KeycloakAuthPlugin, {
         properties: {
             keycloakOptions: {
@@ -144,10 +162,11 @@ async function setup() {
                 keycloakLogoutOptions: null,
                 keycloakLoginOptions: null
             }
+        },
+        references: {
+            notifier
         }
     });
 
-    return keycloakAuthPlugin;
+    return { notifier, keycloakAuthPlugin };
 }
-
-// auth refresh success, auto refresh fail, init fail

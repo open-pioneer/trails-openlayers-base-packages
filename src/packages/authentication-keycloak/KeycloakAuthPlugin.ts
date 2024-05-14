@@ -7,7 +7,13 @@ import {
     LoginBehavior
 } from "@open-pioneer/authentication";
 import { EventEmitter, createLogger } from "@open-pioneer/core";
-import { Service, ServiceOptions, type DECLARE_SERVICE_INTERFACE } from "@open-pioneer/runtime";
+import { NotificationService } from "@open-pioneer/notifier";
+import {
+    Service,
+    ServiceOptions,
+    type DECLARE_SERVICE_INTERFACE,
+    PackageIntl
+} from "@open-pioneer/runtime";
 import Keycloak, {
     type KeycloakConfig,
     type KeycloakInitOptions,
@@ -18,6 +24,10 @@ import { KeycloakOptions, KeycloakProperties, RefreshOptions } from "./api";
 
 const LOG = createLogger("authentication-keycloak:KeycloakAuthPlugin");
 
+interface References {
+    notifier: NotificationService;
+}
+
 export class KeycloakAuthPlugin
     extends EventEmitter<AuthPluginEvents>
     implements Service, AuthPlugin
@@ -27,79 +37,54 @@ export class KeycloakAuthPlugin
     #state: AuthState = {
         kind: "pending"
     };
+    #notifier: NotificationService;
+    #intl: PackageIntl;
+    #keycloakOptions: KeycloakOptions;
     #keycloak: Keycloak;
     #logoutOptions: KeycloakLogoutOptions;
     #loginOptions: KeycloakLoginOptions;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     #timerId: any;
 
-    constructor(options: ServiceOptions) {
+    constructor(options: ServiceOptions<References>) {
         super();
+        this.#notifier = options.references.notifier;
+        this.#intl = options.intl;
         this.#logoutOptions = { redirectUri: undefined };
         this.#loginOptions = { redirectUri: undefined };
 
-        let keycloakOptions: KeycloakOptions;
         try {
-            keycloakOptions = getKeycloakConfig(options.properties);
+            this.#keycloakOptions = getKeycloakConfig(options.properties);
         } catch (e) {
             throw new Error("Invalid keycloak configuration", { cause: e });
         }
 
         try {
-            this.#keycloak = new Keycloak(keycloakOptions.keycloakConfig);
+            this.#keycloak = new Keycloak(this.#keycloakOptions.keycloakConfig);
         } catch (e) {
             throw new Error("Failed to construct keycloak instance", { cause: e });
         }
-
-        const refreshOptions = keycloakOptions.refreshOptions;
-        try {
-            this.#keycloak
-                .init(keycloakOptions.keycloakInitOptions)
-                .then((data) => {
-                    if (data) {
-                        this.#state = {
-                            kind: "authenticated",
-                            sessionInfo: {
-                                userId: this.#keycloak.subject
-                                    ? this.#keycloak.subject
-                                    : "undefined",
-                                userName: this.#keycloak.idTokenParsed?.preferred_username,
-                                attributes: {
-                                    keycloak: this.#keycloak,
-                                    familyName: this.#keycloak.idTokenParsed?.family_name,
-                                    givenName: this.#keycloak.idTokenParsed?.given_name,
-                                    userName: this.#keycloak.idTokenParsed?.preferred_username
-                                }
-                            }
-                        };
-                        this.emit("changed");
-
-                        LOG.debug(`User ${this.#keycloak.subject} is authenticated`);
-
-                        if (refreshOptions.autoRefresh) {
-                            LOG.debug("Starting auto-refresh", refreshOptions);
-                            this.refresh(refreshOptions.interval, refreshOptions.timeLeft);
-                        }
-                    } else {
-                        this.#state = {
-                            kind: "not-authenticated"
-                        };
-                        this.emit("changed");
-                        LOG.debug("User is not authenticated");
-                    }
+        this.#init().catch((e) => {
+            // Stay in pending state when an error happens.
+            // There is currently no useful way to signal an error using the plugin API,
+            // going into 'not-authenticated' could lead to unexpected behavior (e.g. redirect loops).
+            // See https://github.com/open-pioneer/trails-core-packages/issues/47
+            this.#state = {
+                kind: "pending"
+            };
+            this.emit("changed");
+            this.#notifier.notify({
+                level: "error",
+                title: this.#intl.formatMessage({
+                    id: "loginFailed.title"
+                }),
+                message: this.#intl.formatMessage({
+                    id: "loginFailed.message"
                 })
-                .catch((e) => {
-                    this.#state = {
-                        kind: "not-authenticated"
-                    };
-                    this.emit("changed");
-                    LOG.error("Failed to check if user is authenticated", e);
-                });
-        } catch (e) {
-            // Note: keycloak.init() can also throw an exception, in addition to a rejected promise...
-            const error = typeof e === "string" ? new Error(e) : e;
-            throw new Error("Failed to initialize keycloak session", { cause: error });
-        }
+            });
+
+            LOG.error("Failed to check if user is authenticated", e);
+        });
     }
 
     destroy() {
@@ -127,7 +112,54 @@ export class KeycloakAuthPlugin
         this.#keycloak.logout(this.#logoutOptions);
     }
 
-    refresh(interval: number, timeLeft: number) {
+    async #init() {
+        const keycloakOptions = this.#keycloakOptions;
+        const initOptions = this.#keycloakOptions.keycloakInitOptions;
+        const refreshOptions = keycloakOptions.refreshOptions;
+
+        let isAuthenticated: boolean;
+        try {
+            isAuthenticated = await this.#keycloak.init(initOptions);
+        } catch (e) {
+            // Note: keycloak.init() can also throw an exception, in addition to a rejected promise.
+            // It may also just throw a string..
+            const error = typeof e === "string" ? new Error(e) : e;
+            throw new Error("Failed to initialize keycloak session", { cause: error });
+        }
+
+        if (isAuthenticated) {
+            this.#state = {
+                kind: "authenticated",
+                sessionInfo: {
+                    userId: this.#keycloak.subject ? this.#keycloak.subject : "undefined",
+                    userName: this.#keycloak.idTokenParsed?.preferred_username,
+                    attributes: {
+                        keycloak: this.#keycloak,
+                        familyName: this.#keycloak.idTokenParsed?.family_name,
+                        givenName: this.#keycloak.idTokenParsed?.given_name,
+                        userName: this.#keycloak.idTokenParsed?.preferred_username
+                    }
+                }
+            };
+            this.emit("changed");
+
+            LOG.debug(`User ${this.#keycloak.subject} is authenticated`);
+
+            if (refreshOptions.autoRefresh) {
+                LOG.debug("Starting auto-refresh", refreshOptions);
+                this.__refresh(refreshOptions.interval, refreshOptions.timeLeft);
+            }
+        } else {
+            this.#state = {
+                kind: "not-authenticated"
+            };
+            this.emit("changed");
+            LOG.debug("User is not authenticated");
+        }
+    }
+
+    // Mocked in test
+    private __refresh(interval: number, timeLeft: number) {
         clearInterval(this.#timerId);
         this.#timerId = setInterval(() => {
             this.#keycloak.updateToken(timeLeft).catch((e) => {

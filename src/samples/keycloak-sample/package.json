@@ -11,6 +11,7 @@
         "@open-pioneer/authentication-keycloak": "workspace:^",
         "@open-pioneer/toc": "workspace:^",
         "@open-pioneer/ogc-features": "workspace:^",
+        "@open-pioneer/notifier": "^0.3.2",
         "keycloak-js": "^23.0.7"
     }
 }

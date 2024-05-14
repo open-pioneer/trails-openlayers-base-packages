@@ -1,0 +1,4 @@
+messages:
+  loginFailed: 
+    title: "Keycloak login"
+    message: "An error occurred during authentication"
