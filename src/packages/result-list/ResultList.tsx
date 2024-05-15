@@ -1,12 +1,7 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Box } from "@open-pioneer/chakra-integration";
-import {
-    BaseFeature,
-    HighlightOptions,
-    HighlightZoomOptions,
-    useMapModel
-} from "@open-pioneer/map";
+import { BaseFeature, HighlightOptions, useMapModel, ZoomOptions } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, ReactNode, RefObject, useEffect, useMemo, useRef, useState } from "react";
@@ -165,7 +160,7 @@ export interface ResultListProps extends CommonComponentProps {
     /**
      * Optional zooming options
      */
-    highlightZoomOptions?: HighlightZoomOptions;
+    zoomOptions?: ZoomOptions;
 }
 
 /**
@@ -179,7 +174,7 @@ export const ResultList: FC<ResultListProps> = (props) => {
         input: { data, columns, formatOptions },
         onSelectionChange,
         enableZoom = true,
-        highlightZoomOptions,
+        zoomOptions,
         enableHighlight = true,
         highlightOptions
     } = props;
@@ -208,14 +203,14 @@ export const ResultList: FC<ResultListProps> = (props) => {
             return;
         }
         if (enableZoom) {
-            map.zoom(data, highlightZoomOptions);
+            map.zoom(data, zoomOptions);
         }
 
         if (enableHighlight) {
             const highlight = map.highlight(data, highlightOptions);
             return () => highlight.destroy();
         }
-    }, [map, data, highlightZoomOptions, enableZoom, enableHighlight, highlightOptions]);
+    }, [map, data, zoomOptions, enableZoom, enableHighlight, highlightOptions]);
 
     return (
         <Box {...containerProps} height="100%" overflowY="auto" ref={containerRef}>
