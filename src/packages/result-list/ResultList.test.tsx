@@ -439,7 +439,7 @@ it("should not zoom the map further than the configured maxZoom", async () => {
                 }}
                 mapId={mapId}
                 data-testid="result-list"
-                highlightZoomOptions={zoomOptions}
+                zoomOptions={zoomOptions}
             />
         </PackageContextProvider>
     );
