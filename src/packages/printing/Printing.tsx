@@ -98,7 +98,6 @@ export const Printing: FC<PrintingProps> = (props) => {
                         onChange={(event) => {
                             setTitle(event.target.value);
                         }}
-                        isRequired
                         autoFocus // eslint-disable-line jsx-a11y/no-autofocus
                     />
                 </HStack>
