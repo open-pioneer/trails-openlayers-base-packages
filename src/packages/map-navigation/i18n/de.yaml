@@ -2,6 +2,6 @@ messages:
   initial-extent:
     title: Zoom auf initiale Ausdehnung
   zoom-in:
-    title: Vergrößern
+    title: Karte vergrößern
   zoom-out:
-    title: Verkleinern
+    title: Karte verkleinern
