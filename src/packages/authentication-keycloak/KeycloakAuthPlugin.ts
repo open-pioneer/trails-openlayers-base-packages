@@ -182,8 +182,7 @@ const DEFAULT_AUTO_REFRESH_OPT = {
 
 const DEFAULT_INIT_OPT = {
     onLoad: "check-sso",
-    pkceMethod: "S256",
-    scope: "data:read"
+    pkceMethod: "S256"
 };
 
 export function getKeycloakConfig(properties: Partial<KeycloakProperties>): KeycloakOptions {

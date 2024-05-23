@@ -20,7 +20,6 @@ const element = createCustomElement({
                     keycloakInitOptions: {
                         onLoad: "check-sso",
                         pkceMethod: "S256"
-                        //scope: "data:read"
                     },
                     keycloakConfig: {
                         url: import.meta.env.VITE_KEYCLOAK_CONFIG_URL,

@@ -46,11 +46,11 @@ export function AppUI() {
 To configure the `authentication-keycloak` package, adjust these properties.
 For more details on the configuration properties, please visit the official documentation [API Reference](https://www.keycloak.org/docs/latest/securing_apps/index.html#api-reference).
 
-| Property            |        Type         |                                                                                                           Description |                                                         Default |
-| ------------------- | :-----------------: | --------------------------------------------------------------------------------------------------------------------: | --------------------------------------------------------------: |
-| refreshOptions      |   RefreshOptions    |                            Configure token refresh behavior and manage access token lifecycle in client applications. |             `{autoRefresh: true, interval: 6000, timeLeft: 70}` |
-| keycloakInitOptions | KeycloakInitOptions |                                               Configure Keycloak's behavior during client application initialization. | `{onLoad: "check-sso", pkceMethod: "S256", scope: "data:read"}` |
-| keycloakConfig      |   KeycloakConfig    | The configuration settings required to establish a connection between the client application and the Keycloak server. |                                                                 |
+| Property            |        Type         |                                                                                                           Description |                                             Default |
+| ------------------- | :-----------------: | --------------------------------------------------------------------------------------------------------------------: | --------------------------------------------------: |
+| refreshOptions      |   RefreshOptions    |                            Configure token refresh behavior and manage access token lifecycle in client applications. | `{autoRefresh: true, interval: 6000, timeLeft: 70}` |
+| keycloakInitOptions | KeycloakInitOptions |                                               Configure Keycloak's behavior during client application initialization. |         `{onLoad: "check-sso", pkceMethod: "S256"}` |
+| keycloakConfig      |   KeycloakConfig    | The configuration settings required to establish a connection between the client application and the Keycloak server. |                                                     |
 
 ```ts
 interface RefreshOptions {
@@ -95,7 +95,7 @@ const element = createCustomElement({
                         onLoad: "check-sso",
                         pkceMethod: "S256"
                         // additional configuration, for example:
-                        // scope: "data:read"
+                        // scope: "openid address phone"
                     },
                     keycloakConfig: {
                         url: "http://keycloak-server/base_path",

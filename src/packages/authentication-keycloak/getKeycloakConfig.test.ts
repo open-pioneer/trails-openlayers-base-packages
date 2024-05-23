@@ -13,8 +13,7 @@ it("expect to throw an error if the keycloakConfig not provided ", async () => {
         },
         keycloakInitOptions: {
             onLoad: "check-sso",
-            pkceMethod: "S256",
-            scope: "data:read"
+            pkceMethod: "S256"
         },
         keycloakConfig: {}
     } as KeycloakOptions;
