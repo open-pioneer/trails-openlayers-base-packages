@@ -274,6 +274,10 @@ importers:
       keycloak-js:
         specifier: ^23.0.7
         version: 23.0.7
+    devDependencies:
+      openlayers-base-packages:
+        specifier: workspace:*
+        version: link:../../..
     publishDirectory: dist
 
   src/packages/basemap-switcher:

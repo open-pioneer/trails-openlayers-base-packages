@@ -23,6 +23,9 @@
         "@open-pioneer/notifier": "^0.3.2",
         "keycloak-js": "^23.0.7"
     },
+    "devDependencies": {
+        "openlayers-base-packages": "workspace:*"
+    },
     "publishConfig": {
         "directory": "dist",
         "linkDirectory": false
