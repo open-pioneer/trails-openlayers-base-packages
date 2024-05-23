@@ -16,7 +16,7 @@
         "@open-pioneer/map": "workspace:^",
         "@open-pioneer/map-navigation": "workspace:^",
         "@open-pioneer/measurement": "workspace:^",
-        "@open-pioneer/notifier": "^0.3.1",
+        "@open-pioneer/notifier": "^0.3.2",
         "@open-pioneer/ogc-features": "workspace:^",
         "@open-pioneer/overview-map": "workspace:^",
         "@open-pioneer/printing": "workspace:^",

@@ -5,6 +5,9 @@
  * @vitest-environment jsdom
  */
 import { HttpService } from "@open-pioneer/http";
+import { readFileSync } from "node:fs";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -14,7 +17,12 @@ import { MapModelImpl } from "./MapModelImpl";
 import { createMapModel } from "./createMapModel";
 import { SimpleLayerImpl } from "./layers/SimpleLayerImpl";
 import { WMSLayerImpl } from "./layers/WMSLayerImpl";
-import SimpleWmsCapas from "./layers/test-data/SimpleWMSCapas.xml?raw";
+
+const THIS_DIR = dirname(fileURLToPath(import.meta.url));
+const WMTS_CAPAS = readFileSync(
+    resolve(THIS_DIR, "./layers/test-data/SimpleWMSCapas.xml"),
+    "utf-8"
+);
 
 const MOCKED_HTTP_SERVICE = {
     fetch: vi.fn()
@@ -162,7 +170,7 @@ it("supports adding custom layer instances", async () => {
     MOCKED_HTTP_SERVICE.fetch.mockImplementation(async (req: string) => {
         if (req.includes("GetCapabilities")) {
             // just valid enough to suppress error messages
-            return new Response(SimpleWmsCapas, { status: 200 });
+            return new Response(WMTS_CAPAS, { status: 200 });
         }
         throw new Error("unexpected request");
     });

@@ -1,13 +1,13 @@
 {
-    "name": "@open-pioneer/theme",
-    "version": "0.3.1",
-    "description": "This package provides a theme that uses the \"trails\" color scheme.",
+    "name": "@open-pioneer/authentication-keycloak",
+    "version": "0.0.1",
+    "description": "Implements authentication against Keycloak servers.",
     "license": "Apache-2.0",
     "main": "index.ts",
     "repository": {
         "type": "git",
         "url": "https://github.com/open-pioneer/trails-openlayers-base-packages",
-        "directory": "src/packages/theme"
+        "directory": "src/packages/authentication-keycloak"
     },
     "homepage": "https://github.com/open-pioneer",
     "keywords": [
@@ -17,9 +17,11 @@
         "build": "build-pioneer-package"
     },
     "peerDependencies": {
-        "@open-pioneer/chakra-integration": "^1.1.2",
+        "@open-pioneer/authentication": "^0.3.2",
         "@open-pioneer/runtime": "^2.1.3",
-        "@open-pioneer/base-theme": "^0.3.1"
+        "@open-pioneer/core": "^1.2.2",
+        "@open-pioneer/notifier": "^0.3.2",
+        "keycloak-js": "^23.0.7"
     },
     "devDependencies": {
         "openlayers-base-packages": "workspace:*"

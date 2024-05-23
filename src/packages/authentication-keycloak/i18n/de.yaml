@@ -1,0 +1,4 @@
+messages:
+  loginFailed: 
+    title: "Anmeldung fehlgeschlagen"
+    message: "Bei der Anmeldung ist ein Fehler aufgetreten."
