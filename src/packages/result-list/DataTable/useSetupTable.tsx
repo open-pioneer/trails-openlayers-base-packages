@@ -14,7 +14,7 @@ import { useMemo, useState } from "react";
 import { DataTableProps } from "./DataTable";
 
 export function useSetupTable<Data extends BaseFeature>(props: DataTableProps<Data>) {
-    const { data, columns, onSelectionChange: onSelectionChange } = props;
+    const { data, columns, onSelectionChange: onSelectionChange, selectionMode } = props;
     const [sorting, setSorting] = useState<SortingState>([]);
     const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
@@ -65,6 +65,7 @@ export function useSetupTable<Data extends BaseFeature>(props: DataTableProps<Da
         columnResizeMode: "onChange",
         getCoreRowModel: getCoreRowModel(),
         enableRowSelection: true,
+        enableMultiRowSelection: selectionMode === "multi",
         onRowSelectionChange: updateSelection,
         onSortingChange: setSorting,
         getSortedRowModel: getSortedRowModel(),

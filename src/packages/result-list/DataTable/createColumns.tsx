@@ -1,12 +1,13 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { chakra } from "@open-pioneer/chakra-integration";
+import { chakra, Radio } from "@open-pioneer/chakra-integration";
 import { BaseFeature } from "@open-pioneer/map";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { createColumnHelper } from "@tanstack/react-table";
 import { Table as TanstackTable } from "@tanstack/table-core/build/lib/types";
-import { FormatOptions, ResultColumn } from "../ResultList";
+import { FormatOptions, ResultColumn, SelectionStyle } from "../ResultList";
 import { SelectCheckbox } from "./SelectCheckbox";
+import { SelectionMode } from "../ResultList";
 
 export const SELECT_COLUMN_SIZE = 70;
 
@@ -15,15 +16,17 @@ const columnHelper = createColumnHelper<BaseFeature>();
 export interface CreateColumnsOptions {
     columns: ResultColumn[];
     intl: PackageIntl;
+    selectionMode: SelectionMode;
+    selectionStyle: SelectionStyle;
     tableWidth?: number;
     formatOptions?: FormatOptions;
 }
 
 export function createColumns(options: CreateColumnsOptions) {
-    const { columns, intl, tableWidth, formatOptions } = options;
+    const { columns, intl, tableWidth, formatOptions, selectionMode, selectionStyle } = options;
     const remainingColumnWidth: number | undefined =
         tableWidth === undefined ? undefined : calcRemainingColumnWidth(columns, tableWidth);
-    const selectionColumn = createSelectionColumn(intl);
+    const selectionColumn = createSelectionColumn(intl, selectionMode, selectionStyle);
     const columnDefs = columns.map((column, index) => {
         const columnWidth = column.width || remainingColumnWidth;
         const configuredId =
@@ -112,12 +115,17 @@ function renderFunc(cellValue: unknown, intl: PackageIntl, formatOptions?: Forma
     }
 }
 
-function createSelectionColumn(intl: PackageIntl) {
+function createSelectionColumn(
+    intl: PackageIntl,
+    selectionMode: SelectionMode,
+    selectionStyle: SelectionStyle
+) {
     return columnHelper.display({
         id: "selection-buttons",
         size: SELECT_COLUMN_SIZE,
         enableSorting: false,
         header: ({ table }) => {
+            if (selectionMode === "single") return;
             return (
                 <chakra.div
                     display="inline-block"
@@ -137,14 +145,9 @@ function createSelectionColumn(intl: PackageIntl) {
             );
         },
         cell: ({ row }) => {
-            return (
-                <chakra.div
-                    display="inline-block"
-                    onClick={(e) => {
-                        e.stopPropagation();
-                    }}
-                    className="result-list-select-row-checkbox-container"
-                >
+            // TODO: Fix tab problem for radio buttons
+            const selectComp =
+                selectionStyle === "checkbox" ? (
                     <SelectCheckbox
                         className="result-list-select-row-checkbox"
                         isChecked={row.getIsSelected()}
@@ -155,6 +158,25 @@ function createSelectionColumn(intl: PackageIntl) {
                             id: "ariaLabel.selectSingle"
                         })}
                     />
+                ) : (
+                    <Radio
+                        value={row.id}
+                        className="result-list-select-row-checkbox"
+                        isChecked={row.getIsSelected()}
+                        isDisabled={!row.getCanSelect()}
+                        onChange={row.getToggleSelectedHandler()}
+                        tabIndex={0}
+                    />
+                );
+            return (
+                <chakra.div
+                    display="inline-block"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                    }}
+                    className="result-list-select-row-checkbox-container"
+                >
+                    {selectComp}
                 </chakra.div>
             );
         }

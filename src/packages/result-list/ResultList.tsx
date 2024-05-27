@@ -124,6 +124,15 @@ export interface ResultListSelectionChangeEvent {
 }
 
 /**
+ * Should it be possible to select multiple or only single rows. Default "multi".
+ */
+export type SelectionMode = "multi" | "single";
+/**
+ * Should the selection controls be rendered as checkbox or radio. Default depends on `selectionMode`.
+ */
+export type SelectionStyle = "checkbox" | "radio";
+
+/**
  * Properties supported by the {@link ResultList} component.
  */
 export interface ResultListProps extends CommonComponentProps {
@@ -153,6 +162,17 @@ export interface ResultListProps extends CommonComponentProps {
     enableHighlight?: boolean;
 
     /**
+     * Should it be possible to select multiple or only single rows. Default "multi".
+     */
+    selectionMode?: SelectionMode;
+
+    /**
+     * Should the selection controls be rendered as checkbox or radio.
+     * Defaults to "checkbox" if `selectionMode` is "multi" and "radio" if `selectionMode` is "single".
+     */
+    selectionStyle?: SelectionStyle;
+
+    /**
      * Optional styling option
      */
     highlightOptions?: HighlightOptions;
@@ -176,6 +196,10 @@ export const ResultList: FC<ResultListProps> = (props) => {
         enableZoom = true,
         zoomOptions,
         enableHighlight = true,
+        selectionMode = "multi",
+        selectionStyle = selectionMode === "multi" || selectionMode === undefined
+            ? "checkbox"
+            : "radio",
         highlightOptions
     } = props;
 
@@ -193,9 +217,11 @@ export const ResultList: FC<ResultListProps> = (props) => {
                 columns: columns,
                 intl: intl,
                 tableWidth: tableWidth,
-                formatOptions: formatOptions
+                formatOptions: formatOptions,
+                selectionMode,
+                selectionStyle
             }),
-        [columns, intl, tableWidth, formatOptions]
+        [columns, intl, tableWidth, formatOptions, selectionMode, selectionStyle]
     );
 
     useEffect(() => {
@@ -217,6 +243,7 @@ export const ResultList: FC<ResultListProps> = (props) => {
             <DataTable
                 columns={dataTableColumns}
                 data={data}
+                selectionMode={selectionMode}
                 onSelectionChange={onSelectionChange}
             />
         </Box>
