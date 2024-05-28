@@ -10,7 +10,7 @@ console.info("Creating documentation for packages:", documentedPackages);
 
 // See https://typedoc.org/options/
 module.exports = {
-    name: "Open Pioneer Packages",
+    name: "Open Pioneer Trails Packages",
     readme: "none",
     out: "dist/docs",
     entryPointStrategy: "packages",
