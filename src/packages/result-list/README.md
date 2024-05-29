@@ -124,8 +124,21 @@ const ownHighlightStyle = {
 
 ### Selection
 
-Users can select (and deselect) individual features by clicking on the checkbox at the beginning of a row.
-A checkbox in the header of the table allows to select (or deselect) _all_ features in the table.
+Users can select (and deselect) individual features by clicking on the selection control
+(checkbox or radio button) at the beginning of a row.
+
+The optional property `selectionMode` can be used to change the default selection mode "multi" to "single"
+or "single_checkbox". Single selection means, that only one row can be selected at a time.
+With the `selectionMode` "single", the selection control is a radio button, as with `multi` or `single_checkbox`
+it is a checkbox.
+
+A checkbox in the header of the table allows to select (or deselect) _all_ features in the table if
+the `selectionMode` is "multi" (default).
+
+```tsx
+import { ResultList } from "@open-pioneer/result-list";
+<ResultList mapId={mapId} input={input} selectionMode={"single"} />;
+```
 
 ### Listening for selection changes
 
