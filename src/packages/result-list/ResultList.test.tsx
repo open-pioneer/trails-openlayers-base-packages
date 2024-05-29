@@ -291,6 +291,7 @@ it("expect result list display date in given format", async () => {
     };
 
     let dateFormatter = Intl.DateTimeFormat("de-DE", dateTimeFormatOptions);
+    // Don't use memoization, because the table is not updated if locale parameter changes on rerender.
     const resultListComp = (
         <ResultList
             input={{
@@ -302,6 +303,7 @@ it("expect result list display date in given format", async () => {
                 }
             }}
             mapId={mapId}
+            memoizeRows={false}
             data-testid="result-list"
         />
     );

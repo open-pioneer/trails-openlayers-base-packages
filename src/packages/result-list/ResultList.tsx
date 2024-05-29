@@ -158,6 +158,11 @@ export interface ResultListProps extends CommonComponentProps {
     highlightOptions?: HighlightOptions;
 
     /**
+     * Should each row be memoized to improve render performance. Default true.
+     */
+    memoizeRows?: boolean;
+
+    /**
      * Optional zooming options
      */
     zoomOptions?: ZoomOptions;
@@ -176,6 +181,7 @@ export const ResultList: FC<ResultListProps> = (props) => {
         enableZoom = true,
         zoomOptions,
         enableHighlight = true,
+        memoizeRows = true,
         highlightOptions
     } = props;
 
@@ -217,6 +223,7 @@ export const ResultList: FC<ResultListProps> = (props) => {
             <DataTable
                 columns={dataTableColumns}
                 data={data}
+                memoizeRows={memoizeRows}
                 onSelectionChange={onSelectionChange}
             />
         </Box>

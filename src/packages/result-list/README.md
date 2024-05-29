@@ -122,6 +122,26 @@ const ownHighlightStyle = {
 <ResultList mapId={mapId} input={input} highlightOptions={ownHighlightStyle} />;
 ```
 
+### Configuring memoization of rows
+
+The optional property `memoizeRows` determines whether result list table rows should be memoized or not.
+The default value is true.
+
+If memoization is turned on, the result list only rerenders if
+
+-   direct properties of the result list table changes,
+-   a row is selected, or
+-   a column is sorted,
+
+but the performance of the result list is greatly improved, especially for high row counts.
+
+`memoizedRows` should be set to "false", if additional rerender conditions are present.
+
+```tsx
+import { ResultList } from "@open-pioneer/result-list";
+<ResultList mapId={mapId} input={input} memoizedRows={false} />;
+```
+
 ### Selection
 
 Users can select (and deselect) individual features by clicking on the checkbox at the beginning of a row.
