@@ -125,13 +125,9 @@ export interface ResultListSelectionChangeEvent {
 
 /**
  * Should it be possible to select multiple or only single rows. Default "multi".
+ * "single_checkbox" can be used to render checkboxes instead of radio buttons.
  */
-export type SelectionMode = "multi" | "single";
-/**
- * Should the selection controls be rendered as checkbox or radio. Default depends on `selectionMode`.
- */
-export type SelectionStyle = "checkbox" | "radio";
-
+export type SelectionMode = "multi" | "single" | "single_checkbox";
 /**
  * Properties supported by the {@link ResultList} component.
  */
@@ -163,14 +159,9 @@ export interface ResultListProps extends CommonComponentProps {
 
     /**
      * Should it be possible to select multiple or only single rows. Default "multi".
+     * "single_checkbox" can be used to render checkboxes instead of radio buttons.
      */
     selectionMode?: SelectionMode;
-
-    /**
-     * Should the selection controls be rendered as checkbox or radio.
-     * Defaults to "checkbox" if `selectionMode` is "multi" and "radio" if `selectionMode` is "single".
-     */
-    selectionStyle?: SelectionStyle;
 
     /**
      * Optional styling option
@@ -197,9 +188,6 @@ export const ResultList: FC<ResultListProps> = (props) => {
         zoomOptions,
         enableHighlight = true,
         selectionMode = "multi",
-        selectionStyle = selectionMode === "multi" || selectionMode === undefined
-            ? "checkbox"
-            : "radio",
         highlightOptions
     } = props;
 
@@ -218,10 +206,9 @@ export const ResultList: FC<ResultListProps> = (props) => {
                 intl: intl,
                 tableWidth: tableWidth,
                 formatOptions: formatOptions,
-                selectionMode,
-                selectionStyle
+                selectionMode
             }),
-        [columns, intl, tableWidth, formatOptions, selectionMode, selectionStyle]
+        [columns, intl, tableWidth, formatOptions, selectionMode]
     );
 
     useEffect(() => {

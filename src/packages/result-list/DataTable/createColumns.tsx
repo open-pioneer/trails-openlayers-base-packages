@@ -5,7 +5,7 @@ import { BaseFeature } from "@open-pioneer/map";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { createColumnHelper } from "@tanstack/react-table";
 import { Table as TanstackTable } from "@tanstack/table-core/build/lib/types";
-import { FormatOptions, ResultColumn, SelectionStyle } from "../ResultList";
+import { FormatOptions, ResultColumn } from "../ResultList";
 import { SelectCheckbox } from "./SelectCheckbox";
 import { SelectionMode } from "../ResultList";
 
@@ -17,16 +17,15 @@ export interface CreateColumnsOptions {
     columns: ResultColumn[];
     intl: PackageIntl;
     selectionMode: SelectionMode;
-    selectionStyle: SelectionStyle;
     tableWidth?: number;
     formatOptions?: FormatOptions;
 }
 
 export function createColumns(options: CreateColumnsOptions) {
-    const { columns, intl, tableWidth, formatOptions, selectionMode, selectionStyle } = options;
+    const { columns, intl, tableWidth, formatOptions, selectionMode } = options;
     const remainingColumnWidth: number | undefined =
         tableWidth === undefined ? undefined : calcRemainingColumnWidth(columns, tableWidth);
-    const selectionColumn = createSelectionColumn(intl, selectionMode, selectionStyle);
+    const selectionColumn = createSelectionColumn(intl, selectionMode);
     const columnDefs = columns.map((column, index) => {
         const columnWidth = column.width || remainingColumnWidth;
         const configuredId =
@@ -115,24 +114,20 @@ function renderFunc(cellValue: unknown, intl: PackageIntl, formatOptions?: Forma
     }
 }
 
-function createSelectionColumn(
-    intl: PackageIntl,
-    selectionMode: SelectionMode,
-    selectionStyle: SelectionStyle
-) {
+function createSelectionColumn(intl: PackageIntl, selectionMode: SelectionMode) {
     return columnHelper.display({
         id: "selection-buttons",
         size: SELECT_COLUMN_SIZE,
         enableSorting: false,
         header: ({ table }) => {
-            if (selectionMode === "single") return;
+            if (selectionMode !== "multi") return;
             return (
                 <chakra.div
                     display="inline-block"
                     onClick={(e) => {
                         e.stopPropagation();
                     }}
-                    className="result-list-select-all-checkbox-container"
+                    className="result-list-select-all-container"
                 >
                     <SelectCheckbox
                         className="result-list-select-all-checkbox"
@@ -145,9 +140,19 @@ function createSelectionColumn(
             );
         },
         cell: ({ row }) => {
-            // TODO: Fix tab problem for radio buttons
             const selectComp =
-                selectionStyle === "checkbox" ? (
+                selectionMode === "single" ? (
+                    <Radio
+                        name={row.id}
+                        className="result-list-select-row-radio"
+                        isChecked={row.getIsSelected()}
+                        isDisabled={!row.getCanSelect()}
+                        onChange={row.getToggleSelectedHandler()}
+                        aria-label={intl.formatMessage({
+                            id: "ariaLabel.selectSingle"
+                        })}
+                    />
+                ) : (
                     <SelectCheckbox
                         className="result-list-select-row-checkbox"
                         isChecked={row.getIsSelected()}
@@ -158,15 +163,6 @@ function createSelectionColumn(
                             id: "ariaLabel.selectSingle"
                         })}
                     />
-                ) : (
-                    <Radio
-                        value={row.id}
-                        className="result-list-select-row-checkbox"
-                        isChecked={row.getIsSelected()}
-                        isDisabled={!row.getCanSelect()}
-                        onChange={row.getToggleSelectedHandler()}
-                        tabIndex={0}
-                    />
                 );
             return (
                 <chakra.div
@@ -174,7 +170,7 @@ function createSelectionColumn(
                     onClick={(e) => {
                         e.stopPropagation();
                     }}
-                    className="result-list-select-row-checkbox-container"
+                    className="result-list-select-row-container"
                 >
                     {selectComp}
                 </chakra.div>

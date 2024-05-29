@@ -198,10 +198,10 @@ it("expect selection column to be added", async () => {
         </PackageContextProvider>
     );
 
-    const { selectAllSelect, selectRowSelects } = await waitForResultList();
+    const { selectAllSelect, selectRowCheckboxes } = await waitForResultList();
     expect(selectAllSelect).toBeDefined();
-    expect(selectRowSelects).toBeDefined();
-    expect(selectRowSelects.length).toEqual(dummyFeatureData.length);
+    expect(selectRowCheckboxes).toBeDefined();
+    expect(selectRowCheckboxes.length).toEqual(dummyFeatureData.length);
 });
 
 it("expect all rows to be selected and deselected", async () => {
@@ -217,26 +217,98 @@ it("expect all rows to be selected and deselected", async () => {
         </PackageContextProvider>
     );
 
-    const { selectAllSelect, selectRowSelects } = await waitForResultList();
+    const { selectAllSelect, selectRowCheckboxes } = await waitForResultList();
     expect(selectAllSelect).toBeDefined();
-    expect(selectRowSelects).toBeDefined();
+    expect(selectRowCheckboxes).toBeDefined();
 
     expect(selectAllSelect!.checked).toBeFalsy();
-    selectRowSelects.forEach((checkbox) => expect(checkbox.checked).toBeFalsy());
+    selectRowCheckboxes.forEach((checkbox) => expect(checkbox.checked).toBeFalsy());
 
     act(() => {
         fireEvent.click(selectAllSelect!);
     });
 
     expect(selectAllSelect!.checked).toBeTruthy();
-    selectRowSelects.forEach((checkbox) => expect(checkbox.checked).toBeTruthy());
+    selectRowCheckboxes.forEach((checkbox) => expect(checkbox.checked).toBeTruthy());
 
     act(() => {
         fireEvent.click(selectAllSelect!);
     });
 
     expect(selectAllSelect!.checked).toBeFalsy();
-    selectRowSelects.forEach((checkbox) => expect(checkbox.checked).toBeFalsy());
+    selectRowCheckboxes.forEach((checkbox) => expect(checkbox.checked).toBeFalsy());
+});
+
+it("expect only single rows to be selected and deselected by radio buttons", async () => {
+    const { mapId, injectedServices } = await createResultList();
+
+    render(
+        <PackageContextProvider services={injectedServices}>
+            <ResultList
+                input={{ data: dummyFeatureData, columns: dummyColumns }}
+                mapId={mapId}
+                selectionMode={"single"}
+                data-testid="result-list"
+            />
+        </PackageContextProvider>
+    );
+
+    const { selectAllSelect, selectRowCheckboxes, selectRowRadios } = await waitForResultList();
+    expect(selectAllSelect).toBeNull();
+    expect(selectRowCheckboxes.length).toEqual(0);
+    expect(selectRowRadios.length).not.toEqual(0);
+
+    selectRowRadios.forEach((radio) => expect(radio.checked).toBeFalsy());
+
+    const first = selectRowRadios.item(0);
+
+    act(() => {
+        fireEvent.click(first);
+    });
+
+    expect(first.checked).toBeTruthy();
+
+    act(() => {
+        fireEvent.click(selectRowRadios.item(1));
+    });
+
+    expect(selectRowRadios.item(0).checked).toBeFalsy();
+    expect(selectRowRadios.item(1).checked).toBeTruthy();
+});
+
+it("expect only single rows to be selected and deselected by checkboxes", async () => {
+    const { mapId, injectedServices } = await createResultList();
+
+    render(
+        <PackageContextProvider services={injectedServices}>
+            <ResultList
+                input={{ data: dummyFeatureData, columns: dummyColumns }}
+                mapId={mapId}
+                selectionMode={"single_checkbox"}
+                data-testid="result-list"
+            />
+        </PackageContextProvider>
+    );
+
+    const { selectAllSelect, selectRowCheckboxes, selectRowRadios } = await waitForResultList();
+    expect(selectAllSelect).toBeNull();
+    expect(selectRowCheckboxes.length).not.toEqual(0);
+    expect(selectRowRadios.length).toEqual(0);
+
+    selectRowCheckboxes.forEach((checkbox) => expect(checkbox.checked).toBeFalsy());
+
+    act(() => {
+        fireEvent.click(selectRowCheckboxes.item(0));
+    });
+
+    expect(selectRowCheckboxes.item(0).checked).toBeTruthy();
+
+    act(() => {
+        fireEvent.click(selectRowCheckboxes.item(1));
+    });
+
+    expect(selectRowCheckboxes.item(0).checked).toBeFalsy();
+    expect(selectRowCheckboxes.item(1).checked).toBeTruthy();
 });
 
 it("expect result list display all data types except dates", async () => {
@@ -508,8 +580,12 @@ async function waitForResultList() {
             ".result-list-select-all-checkbox input"
         );
 
-        const selectRowSelects = resultListDiv.querySelectorAll<HTMLInputElement>(
+        const selectRowCheckboxes = resultListDiv.querySelectorAll<HTMLInputElement>(
             ".result-list-select-row-checkbox input"
+        );
+
+        const selectRowRadios = resultListDiv.querySelectorAll<HTMLInputElement>(
+            ".result-list-select-row-container .chakra-radio__input"
         );
 
         return {
@@ -518,7 +594,8 @@ async function waitForResultList() {
             allRows,
             allCells,
             selectAllSelect,
-            selectRowSelects
+            selectRowCheckboxes,
+            selectRowRadios
         };
     });
 }

@@ -46,7 +46,7 @@ exports[`expect result list to be created successfully 1`] = `
           tabindex="0"
         >
           <div
-            class="result-list-select-all-checkbox-container css-1baulvz"
+            class="result-list-select-all-container css-1baulvz"
             data-theme="light"
           >
             <span
@@ -177,7 +177,7 @@ exports[`expect result list to be created successfully 1`] = `
           style=""
         >
           <div
-            class="result-list-select-row-checkbox-container css-1baulvz"
+            class="result-list-select-row-container css-1baulvz"
             data-theme="light"
           >
             <label
@@ -246,7 +246,7 @@ exports[`expect result list to be created successfully 1`] = `
           style=""
         >
           <div
-            class="result-list-select-row-checkbox-container css-1baulvz"
+            class="result-list-select-row-container css-1baulvz"
             data-theme="light"
           >
             <label
@@ -315,7 +315,7 @@ exports[`expect result list to be created successfully 1`] = `
           style=""
         >
           <div
-            class="result-list-select-row-checkbox-container css-1baulvz"
+            class="result-list-select-row-container css-1baulvz"
             data-theme="light"
           >
             <label
@@ -384,7 +384,7 @@ exports[`expect result list to be created successfully 1`] = `
           style=""
         >
           <div
-            class="result-list-select-row-checkbox-container css-1baulvz"
+            class="result-list-select-row-container css-1baulvz"
             data-theme="light"
           >
             <label
@@ -443,7 +443,7 @@ exports[`expect result list to be created successfully 1`] = `
           style=""
         >
           <div
-            class="result-list-select-row-checkbox-container css-1baulvz"
+            class="result-list-select-row-container css-1baulvz"
             data-theme="light"
           >
             <label
