@@ -2,10 +2,11 @@
 // SPDX-License-Identifier: Apache-2.0
 export {
     ResultList,
-    type ResultListProps,
-    type ResultColumn,
-    type ResultListInput,
     type FormatOptions,
     type RenderCellContext,
-    type ResultListSelectionChangeEvent
+    type ResultColumn,
+    type ResultListInput,
+    type ResultListProps,
+    type ResultListSelectionChangeEvent,
+    type SelectionMode
 } from "./ResultList";
