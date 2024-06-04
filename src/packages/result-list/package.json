@@ -28,6 +28,9 @@
         "@chakra-ui/icons": "^2.1.1",
         "@tanstack/react-table": "^8.11.6"
     },
+    "dependencies": {
+        "react-use": "^17.4.2"
+    },
     "devDependencies": {
         "@open-pioneer/test-utils": "^1.1.2",
         "@open-pioneer/map-test-utils": "workspace:^",
