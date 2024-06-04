@@ -750,6 +750,9 @@ importers:
       react:
         specifier: ^18.2.0
         version: 18.3.1
+      react-use:
+        specifier: ^17.4.2
+        version: 17.5.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
     devDependencies:
       '@open-pioneer/map-test-utils':
         specifier: workspace:^

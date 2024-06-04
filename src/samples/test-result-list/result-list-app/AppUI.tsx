@@ -1,29 +1,33 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import { ChevronDownIcon } from "@chakra-ui/icons";
 import {
     Box,
     Button,
+    Checkbox,
     Flex,
+    FormControl,
+    FormLabel,
     ListItem,
     Menu,
     MenuButton,
     MenuItem,
     MenuList,
     Portal,
+    Radio,
+    RadioGroup,
     Stack,
     Text,
+    Tooltip,
     UnorderedList,
     VStack,
-    Tooltip,
-    chakra,
-    Checkbox
+    chakra
 } from "@open-pioneer/chakra-integration";
 import { BaseFeature, MapAnchor, MapContainer } from "@open-pioneer/map";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
-import { ResultList, ResultListInput } from "@open-pioneer/result-list";
+import { ResultList, ResultListInput, SelectionMode } from "@open-pioneer/result-list";
 import { useMemo, useState } from "react";
 import { MAP_ID } from "./MapConfigProviderImpl";
-import { ChevronDownIcon } from "@chakra-ui/icons";
 
 const RESULT_LIST_HEIGHT_PIXELS = 400;
 
@@ -32,6 +36,9 @@ export function AppUI() {
     const [currentInput, setCurrentInput] = useState<ResultListInput>();
     const [resultListOpen, setResultListOpen] = useState(false);
     const [hideColumns, setHideColumns] = useState(false);
+    const [selectionMode, setSelectionMode] = useState<SelectionMode>("multi");
+    const [selectionStyle, setSelectionStyle] = useState<"radio" | "checkbox">("checkbox");
+
     const showResultList = !!currentInput && resultListOpen;
     const fillResultList = (input: ResultListInput) => {
         setCurrentInput(input);
@@ -128,6 +135,43 @@ export function AppUI() {
                                     >
                                         Close result list
                                     </Button>
+                                    <FormControl>
+                                        <FormLabel>Selection mode</FormLabel>
+                                        <RadioGroup
+                                            value={selectionMode}
+                                            onChange={(newValue) => {
+                                                const mode = newValue as SelectionMode;
+                                                setSelectionMode(mode);
+                                                setSelectionStyle(
+                                                    mode === "single" ? "radio" : "checkbox"
+                                                );
+                                            }}
+                                        >
+                                            <Stack direction="row">
+                                                <Radio value="single">Single</Radio>
+                                                <Radio value="multi">Multi</Radio>
+                                            </Stack>
+                                        </RadioGroup>
+                                    </FormControl>
+                                    <FormControl>
+                                        <FormLabel>Selection style</FormLabel>
+                                        <RadioGroup
+                                            value={selectionStyle}
+                                            onChange={(newValue) => {
+                                                setSelectionStyle(newValue as "radio" | "checkbox");
+                                            }}
+                                        >
+                                            <Stack direction="row">
+                                                <Radio
+                                                    value="radio"
+                                                    isDisabled={selectionMode === "multi"}
+                                                >
+                                                    Radio
+                                                </Radio>
+                                                <Radio value="checkbox">Checkbox</Radio>
+                                            </Stack>
+                                        </RadioGroup>
+                                    </FormControl>
                                 </Stack>
                             </Box>
                         </MapAnchor>
@@ -189,6 +233,8 @@ export function AppUI() {
                                 mapId={MAP_ID}
                                 key={String(displayVersion)}
                                 input={shownInput}
+                                selectionMode={selectionMode}
+                                selectionStyle={selectionStyle}
                             />
                         </Box>
                     )}

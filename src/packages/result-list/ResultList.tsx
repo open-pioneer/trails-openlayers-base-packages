@@ -124,10 +124,10 @@ export interface ResultListSelectionChangeEvent {
 }
 
 /**
- * Should it be possible to select multiple or only single rows. Default "multi".
- * "single_checkbox" can be used to render checkboxes instead of radio buttons.
+ * Specifies whether it should be possible to select multiple or only single rows.
  */
-export type SelectionMode = "multi" | "single" | "single_checkbox";
+export type SelectionMode = "multi" | "single";
+
 /**
  * Properties supported by the {@link ResultList} component.
  */
@@ -158,10 +158,17 @@ export interface ResultListProps extends CommonComponentProps {
     enableHighlight?: boolean;
 
     /**
-     * Should it be possible to select multiple or only single rows. Default "multi".
-     * "single_checkbox" can be used to render checkboxes instead of radio buttons.
+     * The selection mode used by the result list. Defaults to `"multi"`.
      */
     selectionMode?: SelectionMode;
+
+    /**
+     * The style used for the selection controls in a row.
+     * Defaults to `"checkbox"` if `selectionMode` is `"multi"`, or `"radio"` if `selectionMode` is `"single"`.
+     *
+     * Note: `"radio"` can not be used together with multi selection.
+     */
+    selectionStyle?: "radio" | "checkbox";
 
     /**
      * Optional styling option
@@ -188,6 +195,7 @@ export const ResultList: FC<ResultListProps> = (props) => {
         zoomOptions,
         enableHighlight = true,
         selectionMode = "multi",
+        selectionStyle = selectionMode === "single" ? "radio" : "checkbox",
         highlightOptions
     } = props;
 
@@ -195,6 +203,10 @@ export const ResultList: FC<ResultListProps> = (props) => {
 
     if (columns.length === 0) {
         throw Error("No columns were defined. The result list cannot be displayed.");
+    }
+
+    if (selectionMode === "multi" && selectionStyle === "radio") {
+        throw new Error("Cannot mix multi selection with selectionStyle 'radio'.");
     }
 
     const containerRef = useRef<HTMLDivElement>(null);
@@ -206,9 +218,10 @@ export const ResultList: FC<ResultListProps> = (props) => {
                 intl: intl,
                 tableWidth: tableWidth,
                 formatOptions: formatOptions,
-                selectionMode
+                selectionMode,
+                selectionStyle
             }),
-        [columns, intl, tableWidth, formatOptions, selectionMode]
+        [columns, intl, tableWidth, formatOptions, selectionMode, selectionStyle]
     );
 
     useEffect(() => {

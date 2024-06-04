@@ -284,7 +284,8 @@ it("expect only single rows to be selected and deselected by checkboxes", async 
             <ResultList
                 input={{ data: dummyFeatureData, columns: dummyColumns }}
                 mapId={mapId}
-                selectionMode={"single_checkbox"}
+                selectionMode="single"
+                selectionStyle="checkbox"
                 data-testid="result-list"
             />
         </PackageContextProvider>

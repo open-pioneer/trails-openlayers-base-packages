@@ -1,13 +1,12 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { chakra, Radio } from "@open-pioneer/chakra-integration";
+import { chakra } from "@open-pioneer/chakra-integration";
 import { BaseFeature } from "@open-pioneer/map";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { createColumnHelper } from "@tanstack/react-table";
 import { Table as TanstackTable } from "@tanstack/table-core/build/lib/types";
-import { FormatOptions, ResultColumn } from "../ResultList";
-import { SelectCheckbox } from "./SelectCheckbox";
-import { SelectionMode } from "../ResultList";
+import { FormatOptions, ResultColumn, SelectionMode } from "../ResultList";
+import { SelectComponent } from "./SelectComponent";
 
 export const SELECT_COLUMN_SIZE = 70;
 
@@ -16,16 +15,17 @@ const columnHelper = createColumnHelper<BaseFeature>();
 export interface CreateColumnsOptions {
     columns: ResultColumn[];
     intl: PackageIntl;
-    selectionMode: SelectionMode;
     tableWidth?: number;
     formatOptions?: FormatOptions;
+    selectionMode: SelectionMode;
+    selectionStyle: "radio" | "checkbox";
 }
 
 export function createColumns(options: CreateColumnsOptions) {
-    const { columns, intl, tableWidth, formatOptions, selectionMode } = options;
+    const { columns, intl, tableWidth, formatOptions, selectionMode, selectionStyle } = options;
     const remainingColumnWidth: number | undefined =
         tableWidth === undefined ? undefined : calcRemainingColumnWidth(columns, tableWidth);
-    const selectionColumn = createSelectionColumn(intl, selectionMode);
+    const selectionColumn = createSelectionColumn(intl, selectionMode, selectionStyle);
     const columnDefs = columns.map((column, index) => {
         const columnWidth = column.width || remainingColumnWidth;
         const configuredId =
@@ -114,7 +114,11 @@ function renderFunc(cellValue: unknown, intl: PackageIntl, formatOptions?: Forma
     }
 }
 
-function createSelectionColumn(intl: PackageIntl, selectionMode: SelectionMode) {
+function createSelectionColumn(
+    intl: PackageIntl,
+    selectionMode: SelectionMode,
+    selectionStyle: "radio" | "checkbox"
+) {
     return columnHelper.display({
         id: "selection-buttons",
         size: SELECT_COLUMN_SIZE,
@@ -129,7 +133,7 @@ function createSelectionColumn(intl: PackageIntl, selectionMode: SelectionMode) 
                     }}
                     className="result-list-select-all-container"
                 >
-                    <SelectCheckbox
+                    <SelectComponent
                         className="result-list-select-all-checkbox"
                         isChecked={table.getIsAllRowsSelected()}
                         isIndeterminate={table.getIsSomeRowsSelected()}
@@ -140,30 +144,10 @@ function createSelectionColumn(intl: PackageIntl, selectionMode: SelectionMode) 
             );
         },
         cell: ({ row }) => {
-            const selectComp =
-                selectionMode === "single" ? (
-                    <Radio
-                        name={row.id}
-                        className="result-list-select-row-radio"
-                        isChecked={row.getIsSelected()}
-                        isDisabled={!row.getCanSelect()}
-                        onChange={row.getToggleSelectedHandler()}
-                        aria-label={intl.formatMessage({
-                            id: "ariaLabel.selectSingle"
-                        })}
-                    />
-                ) : (
-                    <SelectCheckbox
-                        className="result-list-select-row-checkbox"
-                        isChecked={row.getIsSelected()}
-                        isDisabled={!row.getCanSelect()}
-                        isIndeterminate={row.getIsSomeSelected()}
-                        onChange={row.getToggleSelectedHandler()}
-                        ariaLabel={intl.formatMessage({
-                            id: "ariaLabel.selectSingle"
-                        })}
-                    />
-                );
+            const className =
+                selectionStyle === "radio"
+                    ? "result-list-select-row-radio"
+                    : "result-list-select-row-checkbox";
             return (
                 <chakra.div
                     display="inline-block"
@@ -172,7 +156,17 @@ function createSelectionColumn(intl: PackageIntl, selectionMode: SelectionMode) 
                     }}
                     className="result-list-select-row-container"
                 >
-                    {selectComp}
+                    <SelectComponent
+                        mode={selectionStyle}
+                        className={className}
+                        isChecked={row.getIsSelected()}
+                        isDisabled={!row.getCanSelect()}
+                        isIndeterminate={row.getIsSomeSelected()}
+                        onChange={row.getToggleSelectedHandler()}
+                        aria-label={intl.formatMessage({
+                            id: "ariaLabel.selectSingle"
+                        })}
+                    />
                 </chakra.div>
             );
         }

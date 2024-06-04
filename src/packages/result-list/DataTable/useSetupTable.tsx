@@ -10,12 +10,14 @@ import {
     getSortedRowModel,
     useReactTable
 } from "@tanstack/react-table";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { usePrevious } from "react-use";
 import { DataTableProps } from "./DataTable";
 
 export function useSetupTable<Data extends BaseFeature>(props: DataTableProps<Data>) {
     const { data, columns, onSelectionChange: onSelectionChange, selectionMode } = props;
     const [sorting, setSorting] = useState<SortingState>([]);
+    const previousSelectionMode = usePrevious(props.selectionMode);
     const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
     // Only sort by columns which actually exist
@@ -74,6 +76,13 @@ export function useSetupTable<Data extends BaseFeature>(props: DataTableProps<Da
             rowSelection
         }
     });
+
+    useEffect(() => {
+        if (previousSelectionMode && selectionMode !== previousSelectionMode) {
+            console.log("change from", previousSelectionMode, "->", selectionMode);
+            table.resetRowSelection();
+        }
+    }, [table, previousSelectionMode, selectionMode]);
 
     return { table, sorting, rowSelection };
 }
