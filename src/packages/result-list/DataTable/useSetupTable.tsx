@@ -79,7 +79,6 @@ export function useSetupTable<Data extends BaseFeature>(props: DataTableProps<Da
 
     useEffect(() => {
         if (previousSelectionMode && selectionMode !== previousSelectionMode) {
-            console.log("change from", previousSelectionMode, "->", selectionMode);
             table.resetRowSelection();
         }
     }, [table, previousSelectionMode, selectionMode]);
