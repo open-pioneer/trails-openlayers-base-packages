@@ -143,6 +143,19 @@ export interface ResultListProps extends CommonComponentProps {
     input: ResultListInput;
 
     /**
+     * The selection mode used by the result list. Defaults to `"multi"`.
+     */
+    selectionMode?: SelectionMode;
+
+    /**
+     * The style used for the selection controls in a row.
+     * Defaults to `"checkbox"` if `selectionMode` is `"multi"`, or `"radio"` if `selectionMode` is `"single"`.
+     *
+     * Note: `"radio"` can not be used together with multi selection.
+     */
+    selectionStyle?: "radio" | "checkbox";
+
+    /**
      * This handler is called whenever the user has changed the selected features in the result-list.
      */
     onSelectionChange?: (event: ResultListSelectionChangeEvent) => void;
@@ -158,32 +171,19 @@ export interface ResultListProps extends CommonComponentProps {
     enableHighlight?: boolean;
 
     /**
-     * The selection mode used by the result list. Defaults to `"multi"`.
-     */
-    selectionMode?: SelectionMode;
-
-    /**
-     * The style used for the selection controls in a row.
-     * Defaults to `"checkbox"` if `selectionMode` is `"multi"`, or `"radio"` if `selectionMode` is `"single"`.
-     *
-     * Note: `"radio"` can not be used together with multi selection.
-     */
-    selectionStyle?: "radio" | "checkbox";
-
-    /**
      * Optional styling option
      */
     highlightOptions?: HighlightOptions;
 
     /**
-     * Should each row be memoized to improve render performance. Default true.
-     */
-    memoizeRows?: boolean;
-
-    /**
      * Optional zooming options
      */
     zoomOptions?: ZoomOptions;
+
+    /**
+     * Should each row be memoized to improve render performance. Default `false`.
+     */
+    memoizeRows?: boolean;
 }
 
 /**
@@ -195,7 +195,7 @@ export const ResultList: FC<ResultListProps> = (props) => {
     const {
         mapId,
         input: { data, columns, formatOptions },
-        memoizeRows = true,
+        memoizeRows = false,
         onSelectionChange,
         enableZoom = true,
         zoomOptions,
