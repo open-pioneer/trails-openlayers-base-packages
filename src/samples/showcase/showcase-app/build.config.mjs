@@ -4,8 +4,15 @@ import { defineBuildConfig } from "@open-pioneer/build-support";
 
 export default defineBuildConfig({
     i18n: ["en", "de"],
-    services: {},
+    services: {
+        MapConfigProviderImpl: {
+            provides: ["map.MapConfigProvider"]
+        },
+        AppModel: {
+            provides: ["app.AppModel"]
+        }
+    },
     ui: {
-        references: []
+        references: ["app.AppModel"]
     }
 });

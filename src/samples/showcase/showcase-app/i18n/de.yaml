@@ -1,1 +1,8 @@
 messages:
+  demos:
+    geolocation:
+      title: Geolocation
+      description: Diese Demo zeigt, wie das Geolocation-Tool verwendet werden kann, um die aktuelle Position des Geräts zu erhalten.
+    printing:
+      title: Printing
+      description: Diese Demo zeigt, wie die Printing-Komponente verwendet werden kann, um einen Screenshot der Karte zu exportieren.

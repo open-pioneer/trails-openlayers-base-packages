@@ -1,1 +1,8 @@
 messages:
+  demos:
+    geolocation:
+      title: Geolocation
+      description: This demo shows how to use the Geolocation tool to get the current position of the device.
+    printing:
+      title: Printing
+      description: This demo shows how to use the Printing component to export a screenshot of the map.
