@@ -9,7 +9,11 @@ export default defineBuildConfig({
             provides: ["map.MapConfigProvider"]
         },
         AppModel: {
-            provides: ["app.AppModel"]
+            provides: ["app.AppModel"],
+            references: {
+                httpService: "http.HttpService",
+                mapRegistry: "map.MapRegistry"
+            }
         }
     },
     ui: {

@@ -3,13 +3,20 @@
 import { Reactive, computed, reactive } from "@conterra/reactivity-core";
 import { Demo, createDemos } from "./Demo";
 import type { DECLARE_SERVICE_INTERFACE, ServiceOptions } from "@open-pioneer/runtime";
+import { MapRegistry } from "@open-pioneer/map";
+import { HttpService } from "@open-pioneer/http";
 
 export type DemoInfo = Pick<Demo, "id" | "title">;
+
+export interface References {
+    httpService: HttpService;
+    mapRegistry: MapRegistry;
+}
 
 export class AppModel {
     declare [DECLARE_SERVICE_INTERFACE]: "app.AppModel";
 
-    #demosById:Map<string, Demo>;
+    #demosById: Map<string, Demo>;
     #currentDemoId: Reactive<string>;
     #currentDemo = computed(() => {
         const currentId = this.#currentDemoId.value;
@@ -23,11 +30,13 @@ export class AppModel {
         return Array.from(this.#demosById.values());
     });
 
-    constructor(serviceOptions: ServiceOptions) {
-        const demos = createDemos(serviceOptions.intl);
-        this.#demosById = new Map(
-            demos.map((demo) => [demo.id, demo])
+    constructor(serviceOptions: ServiceOptions<References>) {
+        const demos = createDemos(
+            serviceOptions.intl,
+            serviceOptions.references.httpService,
+            serviceOptions.references.mapRegistry
         );
+        this.#demosById = new Map(demos.map((demo) => [demo.id, demo]));
 
         if (this.#demosById.size === 0) {
             throw new Error("No demos defined.");

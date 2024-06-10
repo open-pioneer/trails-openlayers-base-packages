@@ -11,9 +11,13 @@
         "@open-pioneer/map": "workspace:^",
         "@open-pioneer/map-navigation": "workspace:^",
         "@open-pioneer/geolocation": "workspace:^",
+        "@open-pioneer/spatial-bookmarks": "workspace:^",
+        "@open-pioneer/search": "workspace:^",
+        "@open-pioneer/overview-map": "workspace:^",
         "@open-pioneer/printing": "workspace:^",
         "@conterra/reactivity-core": "^0.4.0",
         "@open-pioneer/reactivity": "^0.1.0",
+        "@open-pioneer/http": "^2.1.5",
         "ol": "^9.0.0",
         "react": "^18.2.0",
         "react-dom": "^18.2.0"

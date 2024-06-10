@@ -75,23 +75,21 @@ export function AppUI() {
                         mapId={MAP_ID}
                         role="main"
                         /* TODO: aria-label={intl.formatMessage({ id: "ariaLabel.map" })} */
-                        /* Note: matches the height of the result list component */
                     >
                         <MapAnchor position="top-left" horizontalGap={10}>
                             <Box bgColor="whiteAlpha.800">
                                 <TitledSection title={currentDemo.title}>
-                                    <Text>{currentDemo.description}</Text>
+                                    <Text
+                                        dangerouslySetInnerHTML={{
+                                            __html: currentDemo.description
+                                        }}
+                                    ></Text>
                                     {currentDemo.mainWidget}
                                 </TitledSection>
                             </Box>
                         </MapAnchor>
                         <MapAnchor position="bottom-right" horizontalGap={10}>
-                            <VStack>
-                                {currentDemo.additionalTools}
-                                <ZoomIn mapId={MAP_ID} />
-                                <ZoomOut mapId={MAP_ID} />
-                                <InitialExtent mapId={MAP_ID} />
-                            </VStack>
+                            <VStack>{currentDemo.tools}</VStack>
                         </MapAnchor>
                     </MapContainer>
                 </Flex>

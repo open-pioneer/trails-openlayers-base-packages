@@ -1,10 +1,6 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import {
-    MapConfig,
-    MapConfigProvider,
-    SimpleLayer
-} from "@open-pioneer/map";
+import { MapConfig, MapConfigProvider, SimpleLayer } from "@open-pioneer/map";
 import TileLayer from "ol/layer/Tile.js";
 import { OSM } from "ol/source";
 
@@ -22,7 +18,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     olLayer: new TileLayer({
                         source: new OSM()
                     })
-                }),
+                })
             ]
         };
     }

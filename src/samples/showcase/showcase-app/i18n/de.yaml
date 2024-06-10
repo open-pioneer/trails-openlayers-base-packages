@@ -2,7 +2,19 @@ messages:
   demos:
     geolocation:
       title: Geolocation
-      description: Diese Demo zeigt, wie das Geolocation-Tool verwendet werden kann, um die aktuelle Position des Geräts zu erhalten.
+      description: Diese Demo zeigt, wie das <code>Geolocation</code>-Tool verwendet werden kann, um die aktuelle Position des Geräts zu erhalten.
     printing:
-      title: Printing
-      description: Diese Demo zeigt, wie die Printing-Komponente verwendet werden kann, um einen Screenshot der Karte zu exportieren.
+      title: Druck
+      description: Diese Demo zeigt, wie die <code>Printing</code>-Komponente verwendet werden kann, um einen Screenshot der Karte zu exportieren.
+    spatialBookmarks:
+      title: Räumliche Lesezeichen
+      description: Diese Demo zeigt, wie die <code>SpatialBookmarks</code>-Komponente verwendet werden kann, um räumliche Lesezeichen zu speichern und anzuwenden.
+    overviewMap:
+      title: Übersichtskarte
+      description: Diese Demo zeigt, wie die <code>OverviewMap</code> verwendet werden kann.
+    mapNavigation:
+      title: Kartennavigations-Werkzeuge
+      description: "Diese Demo zeigt, wie die Tools zur Kartennavigation verwendet werden können: <code>ZoomIn, ZoomOut, InitialExtent</code>"
+    searchAndHighlight:
+      title: Suche und Feature-Highlight
+      description: Diese Demo zeigt, wie die <code>Search</code>-Komponente verwendet werden kann und wie mittels Highlighting Features in der Karte hervorgehoben werden können.
