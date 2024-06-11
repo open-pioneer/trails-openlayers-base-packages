@@ -15,6 +15,10 @@ import { PhotonGeocoder } from "../sources/PhotonGeocoderSearchSource";
 import { HttpService } from "@open-pioneer/http";
 import { Highlight, MapModel } from "@open-pioneer/map";
 import { Geometry } from "ol/geom";
+import { CoordinateViewer } from "@open-pioneer/coordinate-viewer";
+import { ScaleViewer } from "@open-pioneer/scale-viewer";
+import { ScaleBar } from "@open-pioneer/scale-bar";
+import { Measurement } from "@open-pioneer/measurement";
 
 export interface Demo {
     /** Unique id */
@@ -46,10 +50,30 @@ export function createDemos(
 ): Demo[] {
     return [
         // todo TOC + Basemapswitcher + Legend
-        // todo Coordinate-Viewer
-        // todo Scale-Viewer
-        // todo Scale-Bar
-        // todo Measurement
+        {
+            id: "coordinateViewer",
+            title: intl.formatMessage({ id: "demos.coordinateViewer.title" }),
+            description: intl.formatMessage({ id: "demos.coordinateViewer.description" }),
+            mainWidget: <CoordinateViewer mapId={MAP_ID} />
+        },
+        {
+            id: "scaleViewer",
+            title: intl.formatMessage({ id: "demos.scaleViewer.title" }),
+            description: intl.formatMessage({ id: "demos.scaleViewer.description" }),
+            mainWidget: <ScaleViewer mapId={MAP_ID} />
+        },
+        {
+            id: "scaleBar",
+            title: intl.formatMessage({ id: "demos.scaleBar.title" }),
+            description: intl.formatMessage({ id: "demos.scaleBar.description" }),
+            tools: <ScaleBar mapId={MAP_ID} />
+        },
+        {
+            id: "measurement",
+            title: intl.formatMessage({ id: "demos.measurement.title" }),
+            description: intl.formatMessage({ id: "demos.measurement.description" }),
+            mainWidget: <Measurement mapId={MAP_ID} />
+        },
         // todo Editing
         {
             id: "mapNavigation",

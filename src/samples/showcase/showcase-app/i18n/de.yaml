@@ -21,6 +21,18 @@ messages:
     searchAndHighlight:
       title: Suche und Feature-Highlight
       description: Diese Demo zeigt, wie die <code>Search</code>-Komponente verwendet werden kann und wie mittels Highlighting Features in der Karte hervorgehoben werden können.
+    coordinateViewer:
+      title: Koordinaten-Anzeige
+      description: Diese Demo zeigt, wie die <code>CoordinateViewer</code>-Komponente verwendet werden kann, um sich Koordinaten an der Position des Mauszeigers anzeigen zu lassen.
+    scaleViewer:
+      title: Maßstabs-Anzeige
+      description: Diese Demo zeigt, wie die <code>ScaleViewer</code>-Komponente verwendet werden kann, um den aktuellen Maßstab anzuzeigen.
+    scaleBar:
+      title: Maßstabsleiste
+      description: Diese Demo zeigt, wie die <code>ScaleBar</code>-Komponente verwendet werden kann, um eine Maßstabsleiste anzuzeigen.
+    measurement:
+      title: Messen
+      description: Diese Demo zeigt, wie die <code>Measurement</code>-Komponente verwendet werden kann, um Strecken- und Flächenmessungen in der karte zu durchzuführen.
   demoSelection:
     label: "Demo:"
     notFound: "Demo ''{demoId}'' wurde nicht gefunden."

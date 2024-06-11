@@ -21,6 +21,18 @@ messages:
     searchAndHighlight:
       title: Search and Feature-Highlight
       description: This demo shows how to use the <code>Search</code> component and how features can be highlighted in the map.
+    coordinateViewer:
+      title: Coordinate viewer
+      description: This demo shows how to use the <code>CoordinateViewer</code> component to show the coordinates at the users current mouse position.
+    scaleViewer:
+      title: Scale viewer
+      description: This demo shows how to use the <code>ScaleViewer</code> component.
+    scaleBar:
+      title: Scale bar
+      description: This demo shows how to use the <code>ScaleBar</code> component.
+    measurement:
+      title: Measurement
+      description: This demo shows how to use the <code>Measurement</code> component for measuring distances and areas.
   demoSelection:
     label: "Demo:"
     notFound: "Demo ''{demoId}'' was not found."
