@@ -1,4 +1,7 @@
 messages:
+  header:
+    title: Component Showcase
+  # NOTE: 'description' supports arbitrary HTML!
   demos:
     geolocation:
       title: Geolocation
@@ -19,6 +22,7 @@ messages:
       title: Search and Feature-Highlight
       description: This demo shows how to use the <code>Search</code> component and how features can be highlighted in the map.
   demoSelection:
+    label: "Demo:"
     notFound: "Demo ''{demoId}'' was not found."
   localeSwitcher:
     label: "Language:"
