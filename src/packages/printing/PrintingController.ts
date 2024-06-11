@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import OlMap from "ol/Map";
-import { PrintingService, PrintResult } from "./index";
+import { PrintingService, PrintResult, ViewPaddingBehavior } from "./index";
 import { canvasToPng, createBlockUserOverlay } from "./utils";
 import { Resource } from "@open-pioneer/core";
 
@@ -16,6 +16,7 @@ export class PrintingController {
     private i18n: I18n;
 
     private printingService: PrintingService;
+    private viewPadding: ViewPaddingBehavior | undefined;
 
     private printMap: PrintResult | undefined = undefined;
     private overlay: Resource | undefined = undefined;
@@ -38,6 +39,10 @@ export class PrintingController {
         this.fileFormat = format;
     }
 
+    setViewPadding(padding: ViewPaddingBehavior) {
+        this.viewPadding = padding;
+    }
+
     async handleMapExport() {
         if (!this.olMap || !this.fileFormat) {
             return;
@@ -46,7 +51,8 @@ export class PrintingController {
         try {
             this.begin();
             this.printMap = await this.printingService.printMap(this.olMap, {
-                blockUserInteraction: false
+                blockUserInteraction: false,
+                viewPadding: this.viewPadding
             });
             const canvas = this.printMap.getCanvas();
             if (canvas) {

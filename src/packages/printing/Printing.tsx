@@ -17,7 +17,7 @@ import { PackageIntl } from "@open-pioneer/runtime";
 import { useIntl, useService } from "open-pioneer:react-hooks";
 import { FC, useEffect, useState } from "react";
 import { FileFormatType, PrintingController } from "./PrintingController";
-import { PrintingService } from "./index";
+import { ViewPaddingBehavior, type PrintingService } from "./index";
 
 const LOG = createLogger("printing");
 
@@ -29,6 +29,13 @@ export interface PrintingProps extends CommonComponentProps {
      * The id of the map.
      */
     mapId: string;
+
+    /**
+     * Whether to respect the map's padding when printing (default: `"auto"`).
+     *
+     * See also {@link ViewPaddingBehavior}.
+     */
+    viewPadding?: ViewPaddingBehavior;
 }
 
 /**
@@ -37,7 +44,7 @@ export interface PrintingProps extends CommonComponentProps {
 export const Printing: FC<PrintingProps> = (props) => {
     const intl = useIntl();
 
-    const { mapId } = props;
+    const { mapId, viewPadding = "auto" } = props;
     const { containerProps } = useCommonComponentProps("printing", props);
     const [selectedFileFormat, setSelectedFileFormat] = useState<FileFormatType>("pdf");
     const [title, setTitle] = useState<string>("");
@@ -47,8 +54,7 @@ export const Printing: FC<PrintingProps> = (props) => {
     const notifier = useService<NotificationService>("notifier.NotificationService");
 
     const { map } = useMapModel(mapId);
-
-    const controller = useController(map, intl, printingService);
+    const controller = useController(map, intl, printingService, viewPadding);
 
     useEffect(() => {
         controller?.setFileFormat(selectedFileFormat);
@@ -136,7 +142,8 @@ export const Printing: FC<PrintingProps> = (props) => {
 function useController(
     map: MapModel | undefined,
     intl: PackageIntl,
-    printingService: PrintingService
+    printingService: PrintingService,
+    viewPadding: ViewPaddingBehavior
 ) {
     const [controller, setController] = useState<PrintingController | undefined>(undefined);
 
@@ -155,5 +162,10 @@ function useController(
             setController(undefined);
         };
     }, [map, intl, printingService]);
+
+    useEffect(() => {
+        controller?.setViewPadding(viewPadding);
+    }, [controller, viewPadding]);
+
     return controller;
 }

@@ -13,6 +13,7 @@ import * as PrintingControllerModule from "./PrintingController";
 
 const setFileFormatSpy = vi.fn();
 const setTitleSpy = vi.fn();
+const setViewPaddingSpy = vi.fn();
 const handleMapExportSpy = vi.fn(() => Promise.resolve());
 const notifySpy = vi.fn();
 
@@ -20,6 +21,7 @@ const notifySpy = vi.fn();
 class MockPrintingController {
     setTitle = setTitleSpy;
     setFileFormat = setFileFormatSpy;
+    setViewPadding = setViewPaddingSpy;
     handleMapExport = handleMapExportSpy;
 
     destroy() {}
