@@ -26,8 +26,21 @@ export function LocaleSwitcher() {
     };
 
     return (
-        <FormControl as={HStack}>
-            <FormLabel m={0}>{intl.formatMessage({ id: "localeSwitcher.label" })}</FormLabel>
+        <FormControl
+            as={HStack}
+            maxWidth={{
+                base: "none",
+                md: "20em"
+            }}
+            width={{
+                base: "100%",
+                sm: "47%", // 50% does not work b/c of parent padding
+                md: undefined
+            }}
+        >
+            <FormLabel flexBasis={{ base: "8em", sm: "auto" }} m={0}>
+                {intl.formatMessage({ id: "localeSwitcher.label" })}
+            </FormLabel>
             <Select value={currentLocale} onChange={(e) => changeLocale(e.target.value)}>
                 <option value="de">{intl.formatMessage({ id: `localeSwitcher.locale.de` })}</option>
                 <option value="en">{intl.formatMessage({ id: `localeSwitcher.locale.en` })}</option>

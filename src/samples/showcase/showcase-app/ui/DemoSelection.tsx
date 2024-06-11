@@ -32,8 +32,21 @@ export function DemoSelection({ appModel }: DemoSelectionProps) {
     }, [allDemos]);
 
     return (
-        <FormControl as={HStack}>
-            <FormLabel m={0}>{intl.formatMessage({ id: "demoSelection.label" })}</FormLabel>
+        <FormControl
+            as={HStack}
+            maxWidth={{
+                base: "none",
+                md: "20em"
+            }}
+            width={{
+                base: "100%",
+                sm: "47%", // 50% does not work b/c of parent padding
+                md: undefined
+            }}
+        >
+            <FormLabel flexBasis={{ base: "8em", sm: "auto" }} m={0}>
+                {intl.formatMessage({ id: "demoSelection.label" })}
+            </FormLabel>
             <Select
                 value={currentDemo.id}
                 onChange={(e) => {
