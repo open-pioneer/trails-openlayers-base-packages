@@ -18,3 +18,8 @@ messages:
     searchAndHighlight:
       title: Search and Feature-Highlight
       description: This demo shows how to use the <code>Search</code> component and how features can be highlighted in the map.
+  localeSwitcher:
+    label: "Language:"
+    locale:
+      de: German
+      en: English

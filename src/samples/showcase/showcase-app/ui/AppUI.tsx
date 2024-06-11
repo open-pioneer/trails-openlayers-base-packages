@@ -10,6 +10,7 @@ import { useService } from "open-pioneer:react-hooks";
 import { AppInitModel, AppStateReady } from "../model/AppInitModel";
 import { ReactNode, useMemo } from "react";
 import { createLogger } from "@open-pioneer/core";
+import { LocaleSwitcher } from "./LocaleSwitcher";
 
 const LOG = createLogger("app::AppUI");
 
@@ -89,6 +90,7 @@ function AppContent(props: { state: AppStateReady }) {
                     <HStack>
                         <Box>Select demo:</Box>
                         {demoSelection}
+                        <LocaleSwitcher />
                     </HStack>
                     <MapContainer
                         mapId={MAP_ID}

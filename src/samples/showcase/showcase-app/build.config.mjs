@@ -17,6 +17,6 @@ export default defineBuildConfig({
         }
     },
     ui: {
-        references: ["app.AppInitModel"]
+        references: ["app.AppInitModel", "runtime.ApplicationContext"]
     }
 });

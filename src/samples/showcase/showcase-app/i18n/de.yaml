@@ -18,3 +18,8 @@ messages:
     searchAndHighlight:
       title: Suche und Feature-Highlight
       description: Diese Demo zeigt, wie die <code>Search</code>-Komponente verwendet werden kann und wie mittels Highlighting Features in der Karte hervorgehoben werden können.
+  localeSwitcher:
+    label: "Sprache:"
+    locale:
+      de: Deutsch
+      en: Englisch
