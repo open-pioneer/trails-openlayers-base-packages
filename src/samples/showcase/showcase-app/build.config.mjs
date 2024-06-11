@@ -16,7 +16,8 @@ export default defineBuildConfig({
             references: {
                 httpService: "http.HttpService",
                 mapRegistry: "map.MapRegistry",
-                notifier: "notifier.NotificationService"
+                notifier: "notifier.NotificationService",
+                vectorSelectionSourceFactory: "selection.VectorSelectionSourceFactory"
             }
         }
     },

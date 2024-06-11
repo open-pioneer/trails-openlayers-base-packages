@@ -14,6 +14,7 @@ import { Resource } from "@open-pioneer/core";
 import { MAP_ID } from "../MapConfigProviderImpl";
 import { AppModel } from "./AppModel";
 import { NotificationService } from "@open-pioneer/notifier";
+import { VectorSelectionSourceFactory } from "@open-pioneer/selection/services";
 
 export type DemoInfo = Pick<Demo, "id" | "title">;
 
@@ -21,6 +22,7 @@ export interface References {
     httpService: HttpService;
     mapRegistry: MapRegistry;
     notifier: NotificationService;
+    vectorSelectionSourceFactory: VectorSelectionSourceFactory;
 }
 
 export type AppState = AppStateLoading | AppStateError | AppStateReady;
@@ -48,10 +50,17 @@ export class AppInitModel implements Service {
     #isDestroyed = false;
 
     constructor(serviceOptions: ServiceOptions<References>) {
-        const { mapRegistry, httpService, notifier } = serviceOptions.references;
+        const { mapRegistry, httpService, notifier, vectorSelectionSourceFactory } =
+            serviceOptions.references;
         const intl = serviceOptions.intl;
 
-        this.#init({ mapRegistry, httpService, notifier, intl }).catch((err) => {
+        this.#init({
+            mapRegistry,
+            httpService,
+            notifier,
+            vectorSelectionSourceFactory,
+            intl
+        }).catch((err) => {
             this.#appState.value = {
                 kind: "error",
                 message: (err as Error).message || "Unknown error"
@@ -74,16 +83,17 @@ export class AppInitModel implements Service {
         mapRegistry: MapRegistry;
         httpService: HttpService;
         notifier: NotificationService;
+        vectorSelectionSourceFactory: VectorSelectionSourceFactory;
         intl: PackageIntl;
     }) {
-        const { mapRegistry, httpService, notifier, intl } = options;
+        const { mapRegistry, httpService, notifier, vectorSelectionSourceFactory, intl } = options;
         const mapModel = await mapRegistry.getMapModel(MAP_ID);
 
         if (!mapModel) {
             throw new Error("No mapModel found.");
         }
 
-        const demos = createDemos(intl, httpService, mapModel);
+        const demos = createDemos(intl, httpService, mapModel, vectorSelectionSourceFactory);
         const state: AppStateReady = {
             kind: "ready",
             appModel: new AppModel(mapModel, notifier, intl, demos),

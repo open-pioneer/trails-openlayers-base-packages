@@ -13,7 +13,7 @@ import { InitialExtent, ZoomIn, ZoomOut } from "@open-pioneer/map-navigation";
 import { Search, SearchSelectEvent } from "@open-pioneer/search";
 import { PhotonGeocoder } from "../sources/PhotonGeocoderSearchSource";
 import { HttpService } from "@open-pioneer/http";
-import { Highlight, Layer, MapModel } from "@open-pioneer/map";
+import { Highlight, Layer, MapModel, SimpleLayer } from "@open-pioneer/map";
 import { Geometry } from "ol/geom";
 import { CoordinateViewer } from "@open-pioneer/coordinate-viewer";
 import { ScaleViewer } from "@open-pioneer/scale-viewer";
@@ -24,6 +24,21 @@ import { Legend } from "@open-pioneer/legend";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { Box, Text } from "@open-pioneer/chakra-integration";
 import { useIntl } from "open-pioneer:react-hooks";
+import { Selection, SelectionCompleteEvent, SelectionSource } from "@open-pioneer/selection";
+import VectorLayer from "ol/layer/Vector";
+import VectorSource from "ol/source/Vector";
+import { VectorSelectionSourceFactory } from "@open-pioneer/selection/services";
+import { ReadonlyReactive, reactive } from "@conterra/reactivity-core";
+import { useReactiveSnapshot } from "@open-pioneer/reactivity";
+import {
+    FormatOptions,
+    ResultColumn,
+    ResultList,
+    ResultListInput,
+    ResultListSelectionChangeEvent
+} from "@open-pioneer/result-list";
+import { Simulate } from "react-dom/test-utils";
+import input = Simulate.input;
 
 export interface Demo {
     /** Unique id */
@@ -43,15 +58,33 @@ export interface Demo {
      */
     tools?: ReactNode;
 
+    /**
+     * Method that is called if a demo is activated.
+     */
     activate?: () => void;
 
+    /**
+     * Method that is called if a demo is deactivated.
+     */
     deactivate?: () => void;
+}
+
+interface ResultListState {
+    /** Whether the result list is currently shown. */
+    open: boolean;
+
+    /** Incremented to reset result list state. */
+    key: number;
+
+    /** Input used for the result list component. */
+    input: ResultListInput | undefined;
 }
 
 export function createDemos(
     intl: PackageIntl,
     httpService: HttpService,
-    mapModel: MapModel
+    mapModel: MapModel,
+    vectorSelectionSourceFactory: VectorSelectionSourceFactory
 ): Demo[] {
     return [
         createTocAndBasemapSwitcherAndLegendDemo(intl, mapModel),
@@ -111,7 +144,7 @@ export function createDemos(
             description: intl.formatMessage({ id: "demos.printing.description" }),
             mainWidget: <Printing mapId={MAP_ID} />
         },
-        // todo Selection + Result List
+        createSelectionAndResultListDemo(intl, mapModel, vectorSelectionSourceFactory),
         createSearchAndHighlightDemo(intl, httpService, mapModel)
     ];
 }
@@ -199,6 +232,171 @@ function createOverviewMapDemo(intl: PackageIntl): Demo {
         description: intl.formatMessage({ id: "demos.overviewMap.description" }),
         mainWidget: <OverviewMap mapId={MAP_ID} olLayer={overviewMapLayer} />
     };
+}
+
+function createSelectionAndResultListDemo(
+    intl: PackageIntl,
+    mapModel: MapModel,
+    vectorSelectionSourceFactory: VectorSelectionSourceFactory
+): Demo {
+    const selectionSources = reactive<SelectionSource[]>([]);
+    const resultListState = reactive<ResultListState>({ open: false, key: 0, input: undefined });
+
+    function initSelection() {
+        selectionSources.value = initSelectionSources(mapModel, vectorSelectionSourceFactory);
+
+        const layer = mapModel.layers.getLayerById("krankenhaus") as Layer;
+        layer.setVisible(true);
+    }
+
+    function cleanUp() {
+        const layer = mapModel.layers.getLayerById("krankenhaus") as Layer;
+        layer.setVisible(false);
+
+        // todo empty (and close) resultList
+        // todo highlights clean up
+    }
+
+    function onSelectionComplete(event: SelectionCompleteEvent) {
+        const { source, results } = event;
+
+        console.log(source);
+        console.log(results);
+
+        const formatOptions: FormatOptions = {
+            numberOptions: {
+                maximumFractionDigits: 3
+            },
+            dateOptions: {
+                dateStyle: "medium",
+                timeStyle: "medium",
+                timeZone: "UTC"
+            }
+        };
+        // todo add better column information (https://ogc-api-test.nrw.de/inspire-us-krankenhaus/v1/collections/governmentalservice/items?f=json)
+        const columns: ResultColumn[] = [
+            {
+                propertyName: "thematicId",
+                displayName: "ID",
+                width: 120
+            },
+            {
+                propertyName: "name",
+                displayName: "Name"
+            },
+            {
+                propertyName: "traeger",
+                displayName: "Träger"
+            }
+        ];
+        const input = {
+            columns: columns,
+            data: results,
+            formatOptions: formatOptions
+        };
+
+        const oldKey = resultListState.value.key;
+        const newResultListState = {
+            open: true,
+            key: oldKey + 1,
+            input: input
+        };
+        resultListState.value = newResultListState;
+    }
+
+    function onResultListSelectionChange(event: ResultListSelectionChangeEvent) {
+        // todo show highlight (delete old ones)
+    }
+
+    return {
+        id: "selectionResultList",
+        activate: initSelection,
+        deactivate: cleanUp,
+        title: intl.formatMessage({ id: "demos.selectionResultList.title" }),
+        description: intl.formatMessage({ id: "demos.selectionResultList.description" }),
+        mainWidget: (
+            <>
+                <SelectionComponent
+                    onSelectionComplete={onSelectionComplete}
+                    selectionSources={selectionSources}
+                ></SelectionComponent>
+                {/* todo new anchor point */}
+                <ResultListComponent
+                    resultListState={resultListState}
+                    selectionChangeListener={onResultListSelectionChange}
+                ></ResultListComponent>
+            </>
+        )
+    };
+}
+
+function SelectionComponent(props: {
+    onSelectionComplete: (evt: SelectionCompleteEvent) => void;
+    selectionSources: ReadonlyReactive<SelectionSource[]>;
+}) {
+    const { onSelectionComplete, selectionSources } = props;
+
+    const currentSources = useReactiveSnapshot(() => {
+        return selectionSources.value;
+    }, [selectionSources]);
+
+    return (
+        <Selection
+            mapId={MAP_ID}
+            sources={currentSources}
+            onSelectionComplete={onSelectionComplete}
+        />
+    );
+}
+
+function ResultListComponent(props: {
+    resultListState: ReadonlyReactive<ResultListState>;
+    selectionChangeListener: (evt: ResultListSelectionChangeEvent) => void;
+}) {
+    const { resultListState, selectionChangeListener } = props;
+    const currentState = useReactiveSnapshot(() => {
+        return resultListState.value;
+    }, [resultListState]);
+
+    // add close button
+    return (
+        currentState.input && (
+            <Box
+                className="result-list-container"
+                position="absolute"
+                visibility={currentState.open ? "visible" : "hidden"}
+                bottom="0"
+                backgroundColor="white"
+                width="100%"
+                height="400px"
+                zIndex={1}
+                borderTop="2px solid"
+                borderBottom="2px solid"
+                borderColor={"trails.100"}
+            >
+                <ResultList
+                    key={currentState.key}
+                    input={currentState.input}
+                    mapId={MAP_ID}
+                    onSelectionChange={selectionChangeListener}
+                />
+            </Box>
+        )
+    );
+}
+
+function initSelectionSources(
+    mapModel: MapModel,
+    vectorSelectionSourceFactory: VectorSelectionSourceFactory
+) {
+    const opLayer = mapModel.layers.getLayerById("krankenhaus") as SimpleLayer;
+
+    const layerSelectionSource = vectorSelectionSourceFactory.createSelectionSource({
+        vectorLayer: opLayer.olLayer as VectorLayer<VectorSource>,
+        label: opLayer.title
+    });
+
+    return [layerSelectionSource];
 }
 
 function createSearchAndHighlightDemo(

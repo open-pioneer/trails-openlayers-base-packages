@@ -16,6 +16,8 @@
         "@open-pioneer/scale-viewer": "workspace:^",
         "@open-pioneer/scale-bar": "workspace:^",
         "@open-pioneer/search": "workspace:^",
+        "@open-pioneer/selection": "workspace:^",
+        "@open-pioneer/result-list": "workspace:^",
         "@open-pioneer/measurement": "workspace:^",
         "@open-pioneer/overview-map": "workspace:^",
         "@open-pioneer/toc": "workspace:^",

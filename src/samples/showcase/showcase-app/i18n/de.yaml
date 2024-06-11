@@ -38,6 +38,9 @@ messages:
       description: Diese Demo zeigt, wie die <code>Toc</code>-, <code>BasemapSwitcher</code> und <code>Legend</code>-Komponenten verwendet werden können, um die Karteninhalte zu kontrollieren und eine Legende anzuzeigen.
       tocTitle: Karteninhalt
       legendTitle: Legende
+    selectionResultList:
+      title: Selektion und Ergebnisliste
+      description: Diese Demo zeigt, wie die <code>Selection</code>-Komponente verwendet werden kann, um Features in der Karte zu selektieren und wie die <code>ResultList</code>-Komponente verwendet werden kann, die Attribute von Features in einer Liste anzuzeigen.
   demoSelection:
     label: "Demo:"
     notFound: "Demo ''{demoId}'' wurde nicht gefunden."

@@ -1294,6 +1294,9 @@ importers:
       '@open-pioneer/reactivity':
         specifier: ^0.1.0
         version: 0.1.0(@conterra/reactivity-core@0.4.0)(react@18.3.1)
+      '@open-pioneer/result-list':
+        specifier: workspace:^
+        version: link:../../../packages/result-list
       '@open-pioneer/runtime':
         specifier: ^2.1.5
         version: 2.1.5(6as4seyv4tlwi72ovx7oydseje)
@@ -1306,6 +1309,9 @@ importers:
       '@open-pioneer/search':
         specifier: workspace:^
         version: link:../../../packages/search
+      '@open-pioneer/selection':
+        specifier: workspace:^
+        version: link:../../../packages/selection
       '@open-pioneer/spatial-bookmarks':
         specifier: workspace:^
         version: link:../../../packages/spatial-bookmarks

@@ -38,6 +38,9 @@ messages:
       description: This demo shows how to use the <code>Toc</code>, <code>BasemapSwitcher</code> and <code>Legend</code> components to control the map content and to show the legend for the contents.
       tocTitle: TOC
       legendTitle: Legend
+    selectionResultList:
+      title: Selection and Result List
+      description: This demo shows how to use the <code>Selection</code> component to select feature in the map and how to use the <code>ResultList</code> component to display feature attributes in a table.
   demoSelection:
     label: "Demo:"
     notFound: "Demo ''{demoId}'' was not found."
