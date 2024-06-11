@@ -2,20 +2,39 @@
 // SPDX-License-Identifier: Apache-2.0
 import { Box, Flex, HStack, Select, VStack, Text } from "@open-pioneer/chakra-integration";
 import { MapAnchor, MapContainer } from "@open-pioneer/map";
-import { InitialExtent, ZoomIn, ZoomOut } from "@open-pioneer/map-navigation";
 import { Notifier } from "@open-pioneer/notifier";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { MAP_ID } from "../MapConfigProviderImpl";
 import { useService } from "open-pioneer:react-hooks";
-import { AppModel } from "../model/AppModel";
-import { useMemo } from "react";
+import { AppInitModel, AppStateReady } from "../model/AppInitModel";
+import { ReactNode, useMemo } from "react";
 import { createLogger } from "@open-pioneer/core";
 
 const LOG = createLogger("app::AppUI");
 
 export function AppUI() {
-    const appModel = useService<AppModel>("app.AppModel");
+    const appModel = useService<AppInitModel>("app.AppInitModel");
+    const appState = useReactiveSnapshot(() => appModel.appState, [appModel]);
+
+    let content: ReactNode;
+    switch (appState.kind) {
+        case "loading":
+            content = "Loading...";
+            break;
+        case "error":
+            content = "Error: " + appState.message;
+            break;
+        case "ready":
+            content = <AppContent state={appState} />;
+    }
+
+    return content;
+}
+
+function AppContent(props: { state: AppStateReady }) {
+    const appModel = props.state.appModel;
+
     const { allDemos, currentDemo } = useReactiveSnapshot(
         () => ({
             allDemos: appModel.allDemoInfos,

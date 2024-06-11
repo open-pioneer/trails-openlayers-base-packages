@@ -3,8 +3,7 @@
 import { chakra } from "@open-pioneer/chakra-integration";
 import { BaseFeature } from "@open-pioneer/map";
 import { PackageIntl } from "@open-pioneer/runtime";
-import { createColumnHelper } from "@tanstack/react-table";
-import { Table as TanstackTable } from "@tanstack/table-core/build/lib/types";
+import { createColumnHelper, Table as TanstackTable } from "@tanstack/react-table";
 import { FormatOptions, ResultColumn, SelectionMode } from "../ResultList";
 import { SelectComponent } from "./SelectComponent";
 

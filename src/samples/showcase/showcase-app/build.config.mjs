@@ -8,8 +8,8 @@ export default defineBuildConfig({
         MapConfigProviderImpl: {
             provides: ["map.MapConfigProvider"]
         },
-        AppModel: {
-            provides: ["app.AppModel"],
+        AppInitModel: {
+            provides: ["app.AppInitModel"],
             references: {
                 httpService: "http.HttpService",
                 mapRegistry: "map.MapRegistry"
@@ -17,6 +17,6 @@ export default defineBuildConfig({
         }
     },
     ui: {
-        references: ["app.AppModel"]
+        references: ["app.AppInitModel"]
     }
 });

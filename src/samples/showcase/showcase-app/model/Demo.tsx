@@ -11,9 +11,9 @@ import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
 import { InitialExtent, ZoomIn, ZoomOut } from "@open-pioneer/map-navigation";
 import { Search, SearchSelectEvent } from "@open-pioneer/search";
-import { PhotonGeocoder } from "../../sources/searchSources";
+import { PhotonGeocoder } from "../sources/PhotonGeocoderSearchSource";
 import { HttpService } from "@open-pioneer/http";
-import { Highlight, MapModel, MapRegistry } from "@open-pioneer/map";
+import { Highlight, MapModel } from "@open-pioneer/map";
 import { Geometry } from "ol/geom";
 
 export interface Demo {
@@ -33,19 +33,17 @@ export interface Demo {
      * Tools that are shown next to the zoom buttons on the map.
      */
     tools?: ReactNode;
+
+    activate?: () => void;
+
+    deactivate?: () => void;
 }
 
-export async function createDemos(
+export function createDemos(
     intl: PackageIntl,
     httpService: HttpService,
-    mapRegistry: MapRegistry
+    mapModel: MapModel
 ): Demo[] {
-    // todo handle async code
-    const mapModel = await mapRegistry.getMapModel(MAP_ID);
-    if (!mapModel) {
-        throw Error(`MapModel is missing.`);
-    }
-
     return [
         // todo TOC + Basemapswitcher + Legend
         // todo Coordinate-Viewer
@@ -111,24 +109,22 @@ function createSearchAndHighlightDemo(
     let highlight: Highlight | undefined = undefined;
 
     function onSearchResultSelected(event: SearchSelectEvent) {
-        console.debug("The user selected the following item: ", event.result);
-
         const geometry = event.result.geometry;
         if (!geometry) {
             return;
         }
 
-        // todo does this work?
         highlight = highlightAndZoom(map, [geometry], highlight);
     }
 
-    function onSearchCleared() {
-        console.debug("The user cleared the search");
-        clearPreviousHighlight(highlight);
+    function clearHighlight() {
+        highlight?.destroy();
+        highlight = undefined;
     }
 
     return {
         id: "searchAndHighlight",
+        deactivate: clearHighlight,
         title: intl.formatMessage({ id: "demos.searchAndHighlight.title" }),
         description: intl.formatMessage({ id: "demos.searchAndHighlight.description" }),
         mainWidget: (
@@ -136,12 +132,10 @@ function createSearchAndHighlightDemo(
                 mapId={MAP_ID}
                 sources={[photonSource]}
                 onSelect={onSearchResultSelected}
-                onClear={onSearchCleared}
+                onClear={clearHighlight}
             />
         )
     };
-
-    // todo remove highlights if demo is changed
 }
 
 function highlightAndZoom(

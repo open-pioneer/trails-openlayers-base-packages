@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Resource } from "@open-pioneer/core/resources";
+import { Resource } from "@open-pioneer/core";
 import OlMap from "ol/Map";
 import { unByKey } from "ol/Observable";
 import Overlay from "ol/Overlay";
