@@ -1,8 +1,9 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { FormControl, FormLabel, HStack, Select } from "@open-pioneer/chakra-integration";
+import { Select } from "@open-pioneer/chakra-integration";
 import { ApplicationContext } from "@open-pioneer/runtime";
 import { useIntl, useService } from "open-pioneer:react-hooks";
+import { HeaderFormControl } from "./HeaderFormControl";
 
 /**
  * Implements a simple widget to change the application's locale.
@@ -26,26 +27,12 @@ export function LocaleSwitcher() {
     };
 
     return (
-        <FormControl
-            as={HStack}
-            maxWidth={{
-                base: "none",
-                md: "20em"
-            }}
-            width={{
-                base: "100%",
-                sm: "47%", // 50% does not work b/c of parent padding
-                md: undefined
-            }}
-        >
-            <FormLabel flexBasis={{ base: "8em", sm: "auto" }} m={0}>
-                {intl.formatMessage({ id: "localeSwitcher.label" })}
-            </FormLabel>
+        <HeaderFormControl label={intl.formatMessage({ id: "localeSwitcher.label" })}>
             <Select value={currentLocale} onChange={(e) => changeLocale(e.target.value)}>
                 <option value="de">{intl.formatMessage({ id: `localeSwitcher.locale.de` })}</option>
                 <option value="en">{intl.formatMessage({ id: `localeSwitcher.locale.en` })}</option>
             </Select>
-        </FormControl>
+        </HeaderFormControl>
     );
 }
 

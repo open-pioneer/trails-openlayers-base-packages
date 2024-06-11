@@ -9,7 +9,7 @@ import { useService } from "open-pioneer:react-hooks";
 import { ReactNode } from "react";
 import { MAP_ID } from "../MapConfigProviderImpl";
 import { AppInitModel, AppStateReady } from "../model/AppInitModel";
-import { Header } from "./Header";
+import { Header } from "./Header/Header";
 
 export function AppUI() {
     const appModel = useService<AppInitModel>("app.AppInitModel");

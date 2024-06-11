@@ -3,7 +3,7 @@
 import { Flex } from "@open-pioneer/chakra-integration";
 import { SectionHeading } from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
-import { AppModel } from "../model/AppModel";
+import { AppModel } from "../../model/AppModel";
 import { DemoSelection } from "./DemoSelection";
 import { LocaleSwitcher } from "./LocaleSwitcher";
 
@@ -13,6 +13,7 @@ export interface HeaderProps {
 
 export function Header({ appModel }: HeaderProps) {
     const intl = useIntl();
+
     return (
         <Flex
             as="header"

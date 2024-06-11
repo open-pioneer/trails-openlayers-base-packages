@@ -1,11 +1,12 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { FormControl, FormLabel, HStack, Select } from "@open-pioneer/chakra-integration";
+import { Select } from "@open-pioneer/chakra-integration";
 import { createLogger } from "@open-pioneer/core";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
-import { useMemo } from "react";
-import { AppModel } from "../model/AppModel";
 import { useIntl } from "open-pioneer:react-hooks";
+import { useMemo } from "react";
+import { AppModel } from "../../model/AppModel";
+import { HeaderFormControl } from "./HeaderFormControl";
 
 const LOG = createLogger("app::DemoSelection");
 
@@ -32,21 +33,7 @@ export function DemoSelection({ appModel }: DemoSelectionProps) {
     }, [allDemos]);
 
     return (
-        <FormControl
-            as={HStack}
-            maxWidth={{
-                base: "none",
-                md: "20em"
-            }}
-            width={{
-                base: "100%",
-                sm: "47%", // 50% does not work b/c of parent padding
-                md: undefined
-            }}
-        >
-            <FormLabel flexBasis={{ base: "8em", sm: "auto" }} m={0}>
-                {intl.formatMessage({ id: "demoSelection.label" })}
-            </FormLabel>
+        <HeaderFormControl label={intl.formatMessage({ id: "demoSelection.label" })}>
             <Select
                 value={currentDemo.id}
                 onChange={(e) => {
@@ -60,6 +47,6 @@ export function DemoSelection({ appModel }: DemoSelectionProps) {
             >
                 {options}
             </Select>
-        </FormControl>
+        </HeaderFormControl>
     );
 }
