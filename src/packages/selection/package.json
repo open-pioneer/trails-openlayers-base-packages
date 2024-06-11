@@ -17,12 +17,12 @@
         "build": "build-pioneer-package"
     },
     "peerDependencies": {
-        "@open-pioneer/chakra-integration": "^1.1.2",
+        "@open-pioneer/chakra-integration": "^1.1.3",
         "@open-pioneer/map": "workspace:^",
-        "@open-pioneer/runtime": "^2.1.3",
+        "@open-pioneer/runtime": "^2.1.5",
         "@open-pioneer/react-utils": "workspace:^",
-        "@open-pioneer/core": "^1.2.2",
-        "@open-pioneer/notifier": "^0.3.2",
+        "@open-pioneer/core": "^1.2.3",
+        "@open-pioneer/notifier": "^0.3.4",
         "ol": "^9.0.0",
         "react": "^18.2.0",
         "chakra-react-select": "^4.7.6",
@@ -34,7 +34,7 @@
         "classnames": "^2.3.2"
     },
     "devDependencies": {
-        "@open-pioneer/test-utils": "^1.1.2",
+        "@open-pioneer/test-utils": "^1.1.3",
         "@open-pioneer/map-test-utils": "workspace:^",
         "openlayers-base-packages": "workspace:*"
     },
