@@ -1267,6 +1267,9 @@ importers:
       '@open-pioneer/http':
         specifier: ^2.1.7
         version: 2.1.7(@open-pioneer/core@1.2.3)(@open-pioneer/runtime@2.1.5(6as4seyv4tlwi72ovx7oydseje))
+      '@open-pioneer/legend':
+        specifier: workspace:^
+        version: link:../../../packages/legend
       '@open-pioneer/map':
         specifier: workspace:^
         version: link:../../../packages/map
@@ -1279,6 +1282,9 @@ importers:
       '@open-pioneer/notifier':
         specifier: ^0.3.4
         version: 0.3.4(stf2mfqtqmu37k6stpqwa5thze)
+      '@open-pioneer/ogc-features':
+        specifier: workspace:^
+        version: link:../../../packages/ogc-features
       '@open-pioneer/overview-map':
         specifier: workspace:^
         version: link:../../../packages/overview-map
@@ -1303,6 +1309,9 @@ importers:
       '@open-pioneer/spatial-bookmarks':
         specifier: workspace:^
         version: link:../../../packages/spatial-bookmarks
+      '@open-pioneer/toc':
+        specifier: workspace:^
+        version: link:../../../packages/toc
       ol:
         specifier: ^9.0.0
         version: 9.1.0

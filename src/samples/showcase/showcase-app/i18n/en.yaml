@@ -32,7 +32,12 @@ messages:
       description: This demo shows how to use the <code>ScaleBar</code> component.
     measurement:
       title: Measurement
-      description: This demo shows how to use the <code>Measurement</code> component for measuring distances and areas.
+      description: This demo shows how to use the <code>Measurement</code> component for measuring distances and areas. <code>Measurement</code> component for measuring distances and areas.
+    tocLegend:
+      title: Toc, BasemapSwitcher and Legend
+      description: This demo shows how to use the <code>Toc</code>, <code>BasemapSwitcher</code> and <code>Legend</code> components to control the map content and to show the legend for the contents.
+      tocTitle: TOC
+      legendTitle: Legend
   demoSelection:
     label: "Demo:"
     notFound: "Demo ''{demoId}'' was not found."

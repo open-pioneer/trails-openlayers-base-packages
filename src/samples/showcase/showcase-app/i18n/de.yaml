@@ -33,6 +33,11 @@ messages:
     measurement:
       title: Messen
       description: Diese Demo zeigt, wie die <code>Measurement</code>-Komponente verwendet werden kann, um Strecken- und Flächenmessungen in der karte zu durchzuführen.
+    tocLegend:
+      title: Karteninhalt, Grundkarte und Legende
+      description: Diese Demo zeigt, wie die <code>Toc</code>-, <code>BasemapSwitcher</code> und <code>Legend</code>-Komponenten verwendet werden können, um die Karteninhalte zu kontrollieren und eine Legende anzuzeigen.
+      tocTitle: Karteninhalt
+      legendTitle: Legende
   demoSelection:
     label: "Demo:"
     notFound: "Demo ''{demoId}'' wurde nicht gefunden."

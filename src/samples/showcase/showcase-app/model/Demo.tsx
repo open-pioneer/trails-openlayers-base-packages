@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { PackageIntl } from "@open-pioneer/runtime";
-import { ReactNode } from "react";
+import { ReactNode, useId } from "react";
 import { Geolocation } from "@open-pioneer/geolocation";
 import { MAP_ID } from "../MapConfigProviderImpl";
 import { Printing } from "@open-pioneer/printing";
@@ -13,12 +13,17 @@ import { InitialExtent, ZoomIn, ZoomOut } from "@open-pioneer/map-navigation";
 import { Search, SearchSelectEvent } from "@open-pioneer/search";
 import { PhotonGeocoder } from "../sources/PhotonGeocoderSearchSource";
 import { HttpService } from "@open-pioneer/http";
-import { Highlight, MapModel } from "@open-pioneer/map";
+import { Highlight, Layer, MapModel } from "@open-pioneer/map";
 import { Geometry } from "ol/geom";
 import { CoordinateViewer } from "@open-pioneer/coordinate-viewer";
 import { ScaleViewer } from "@open-pioneer/scale-viewer";
 import { ScaleBar } from "@open-pioneer/scale-bar";
 import { Measurement } from "@open-pioneer/measurement";
+import { Toc } from "@open-pioneer/toc";
+import { Legend } from "@open-pioneer/legend";
+import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
+import { Box, Text } from "@open-pioneer/chakra-integration";
+import { useIntl } from "open-pioneer:react-hooks";
 
 export interface Demo {
     /** Unique id */
@@ -49,7 +54,7 @@ export function createDemos(
     mapModel: MapModel
 ): Demo[] {
     return [
-        // todo TOC + Basemapswitcher + Legend
+        createTocAndBasemapSwitcherAndLegendDemo(intl, mapModel),
         {
             id: "coordinateViewer",
             title: intl.formatMessage({ id: "demos.coordinateViewer.title" }),
@@ -109,6 +114,78 @@ export function createDemos(
         // todo Selection + Result List
         createSearchAndHighlightDemo(intl, httpService, mapModel)
     ];
+}
+
+function createTocAndBasemapSwitcherAndLegendDemo(intl: PackageIntl, mapModel: MapModel): Demo {
+    function setDemoLayerVisible(visible: boolean = true): void {
+        const layer = mapModel.layers.getLayerById("verwaltungsgebiete") as Layer;
+        layer.setVisible(visible);
+    }
+
+    function resetDemoLayers(): void {
+        setDemoLayerVisible(false);
+        mapModel?.layers.activateBaseLayer("osm");
+    }
+
+    return {
+        id: "tocLegend",
+        activate: setDemoLayerVisible,
+        deactivate: resetDemoLayers,
+        title: intl.formatMessage({ id: "demos.tocLegend.title" }),
+        description: intl.formatMessage({ id: "demos.tocLegend.description" }),
+        mainWidget: <TocLegendView />
+    };
+}
+
+function TocLegendView() {
+    const tocTitleId = useId();
+    const legendTitleId = useId();
+    const intl = useIntl();
+
+    return (
+        <>
+            <Box role="dialog" aria-labelledby={tocTitleId}>
+                <TitledSection
+                    title={
+                        <SectionHeading id={tocTitleId} size="md" mb={2}>
+                            <Text>
+                                {intl.formatMessage({
+                                    id: "demos.tocLegend.tocTitle"
+                                })}
+                            </Text>
+                        </SectionHeading>
+                    }
+                >
+                    {/*todo responsive design*/}
+                    <Box overflowY="auto" maxHeight={200}>
+                        <Toc
+                            mapId={MAP_ID}
+                            showTools={true}
+                            basemapSwitcherProps={{
+                                allowSelectingEmptyBasemap: true
+                            }}
+                        />
+                    </Box>
+                </TitledSection>
+            </Box>
+            <Box role="dialog" aria-labelledby={legendTitleId}>
+                <TitledSection
+                    title={
+                        <SectionHeading id={legendTitleId} size="md" mb={2}>
+                            {intl.formatMessage({
+                                id: "demos.tocLegend.legendTitle"
+                            })}
+                        </SectionHeading>
+                    }
+                >
+                    {/*todo responsive design*/}
+                    <Box overflowY="auto" maxHeight={300}>
+                        <Legend mapId={MAP_ID} showBaseLayers={true} />
+                    </Box>
+                </TitledSection>
+            </Box>
+        </>
+    );
 }
 
 function createOverviewMapDemo(intl: PackageIntl): Demo {
