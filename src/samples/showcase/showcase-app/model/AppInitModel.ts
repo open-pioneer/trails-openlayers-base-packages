@@ -13,12 +13,14 @@ import { HttpService } from "@open-pioneer/http";
 import { Resource } from "@open-pioneer/core";
 import { MAP_ID } from "../MapConfigProviderImpl";
 import { AppModel } from "./AppModel";
+import { NotificationService } from "@open-pioneer/notifier";
 
 export type DemoInfo = Pick<Demo, "id" | "title">;
 
 export interface References {
     httpService: HttpService;
     mapRegistry: MapRegistry;
+    notifier: NotificationService;
 }
 
 export type AppState = AppStateLoading | AppStateError | AppStateReady;
@@ -46,11 +48,10 @@ export class AppInitModel implements Service {
     #isDestroyed = false;
 
     constructor(serviceOptions: ServiceOptions<References>) {
-        const mapRegistry = serviceOptions.references.mapRegistry;
-        const httpService = serviceOptions.references.httpService;
+        const { mapRegistry, httpService, notifier } = serviceOptions.references;
         const intl = serviceOptions.intl;
 
-        this.#init({ mapRegistry, httpService, intl }).catch((err) => {
+        this.#init({ mapRegistry, httpService, notifier, intl }).catch((err) => {
             this.#appState.value = {
                 kind: "error",
                 message: (err as Error).message || "Unknown error"
@@ -72,9 +73,10 @@ export class AppInitModel implements Service {
     async #init(options: {
         mapRegistry: MapRegistry;
         httpService: HttpService;
+        notifier: NotificationService;
         intl: PackageIntl;
     }) {
-        const { mapRegistry, httpService, intl } = options;
+        const { mapRegistry, httpService, notifier, intl } = options;
         const mapModel = await mapRegistry.getMapModel(MAP_ID);
 
         if (!mapModel) {
@@ -84,7 +86,7 @@ export class AppInitModel implements Service {
         const demos = createDemos(intl, httpService, mapModel);
         const state: AppStateReady = {
             kind: "ready",
-            appModel: new AppModel(mapModel, demos),
+            appModel: new AppModel(mapModel, notifier, intl, demos),
             destroy() {
                 this.appModel.destroy();
             }

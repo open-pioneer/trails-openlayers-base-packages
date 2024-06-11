@@ -12,7 +12,8 @@ export default defineBuildConfig({
             provides: ["app.AppInitModel"],
             references: {
                 httpService: "http.HttpService",
-                mapRegistry: "map.MapRegistry"
+                mapRegistry: "map.MapRegistry",
+                notifier: "notifier.NotificationService"
             }
         }
     },

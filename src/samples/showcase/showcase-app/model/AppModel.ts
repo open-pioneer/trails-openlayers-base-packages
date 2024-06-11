@@ -1,29 +1,46 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import { Reactive, batch, computed, reactive, watch } from "@conterra/reactivity-core";
+import { Resource, createLogger } from "@open-pioneer/core";
 import { MapModel } from "@open-pioneer/map";
-import { Demo } from "./Demo";
+import { NotificationService } from "@open-pioneer/notifier";
+import { PackageIntl } from "@open-pioneer/runtime";
 import { DemoInfo } from "./AppInitModel";
-import { Reactive, computed, reactive, batch } from "@conterra/reactivity-core";
+import { Demo } from "./Demo";
+
+const LOG = createLogger("app::AppModel");
 
 export class AppModel {
-    readonly mapModel: MapModel;
+    #mapModel: MapModel;
+    #notifier: NotificationService;
+    #intl: PackageIntl;
 
     #demosById: Map<string, Demo>;
     #currentDemo: Reactive<Demo>;
     #allDemoInfos = computed<DemoInfo[]>(() => {
         return Array.from(this.#demosById.values());
     });
+    #resources: Resource[] = [];
 
-    constructor(mapModel: MapModel, demos: Demo[]) {
-        this.mapModel = mapModel;
+    constructor(
+        mapModel: MapModel,
+        notifier: NotificationService,
+        intl: PackageIntl,
+        demos: Demo[]
+    ) {
+        this.#mapModel = mapModel;
+        this.#notifier = notifier;
+        this.#intl = intl;
 
         this.#demosById = new Map(demos.map((demo) => [demo.id, demo]));
-
         if (this.#demosById.size === 0) {
             throw new Error("No demos defined.");
         }
         this.#currentDemo = reactive(demos[0]!);
         this.#currentDemo.value.activate?.();
+
+        this.#applyStateFromUrl();
+        this.#resources.push(this.#syncStateToUrl());
     }
 
     destroy(): void {
@@ -51,5 +68,38 @@ export class AppModel {
             this.#currentDemo.value = newDemo;
             newDemo.activate?.();
         });
+    }
+
+    #applyStateFromUrl(): void {
+        const url = new URL(window.location.href);
+        const demoId = url.searchParams.get("demo");
+        if (!demoId) {
+            return;
+        }
+
+        if (!this.#demosById.has(demoId)) {
+            this.#notifier.notify({
+                title: this.#intl.formatMessage({ id: "demoSelection.notFound" }, { demoId })
+            });
+            return;
+        }
+
+        try {
+            this.selectDemo(demoId);
+        } catch (e) {
+            LOG.error("Failed to select demo from URL", e);
+        }
+    }
+
+    #syncStateToUrl(): Resource {
+        return watch(
+            () => [this.#currentDemo.value.id],
+            ([demoId]) => {
+                const url = new URL(window.location.href);
+                url.searchParams.set("demo", demoId);
+                window.history.replaceState(null, "", url.toString());
+            },
+            { immediate: true }
+        );
     }
 }
