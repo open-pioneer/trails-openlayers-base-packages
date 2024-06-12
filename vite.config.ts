@@ -17,6 +17,7 @@ const targets = ["chrome92", "edge92", "firefox91", "safari14"];
 const sampleSites = [
     "samples/map-sample",
     "samples/ogc-api-sample",
+    "samples/showcase",
 
     "samples/test-basemap-switcher",
     "samples/test-toc",
