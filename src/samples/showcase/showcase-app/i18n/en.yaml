@@ -1,0 +1,53 @@
+messages:
+  header:
+    title: Component Showcase
+  ariaLabels:
+    map: "Map. Use the arrow keys to move the map. Zoom in with the plus button and zoom out with the minus button."
+  demos:
+    # NOTE: 'description' supports arbitrary HTML!
+    geolocation:
+      title: Geolocation
+      description: This demo shows how to use the <code>Geolocation</code> tool to get the current position of the device.
+    printing:
+      title: Printing
+      description: This demo shows how to use the <code>Printing</code> component to export a screenshot of the map.
+    spatialBookmarks:
+      title: Spatial Bookmarks
+      description: This demo shows how to use the <code>SpatialBookmarks</code> component to save und load spatial bookmarks.
+    overviewMap:
+      title: Overview map
+      description: This demo shows how to use the <code>OverviewMap</code>.
+    mapNavigation:
+      title: Map navigation tools
+      description: "This demo shows how to use the map navigation tools: <code>ZoomIn, ZoomOut, InitialExtent</code>"
+    searchAndHighlight:
+      title: Search and Feature-Highlight
+      description: This demo shows how to use the <code>Search</code> component and how features can be highlighted in the map.
+    coordinateViewer:
+      title: Coordinate viewer
+      description: This demo shows how to use the <code>CoordinateViewer</code> component to show the coordinates at the users current mouse position.
+    scaleViewer:
+      title: Scale viewer
+      description: This demo shows how to use the <code>ScaleViewer</code> component.
+    scaleBar:
+      title: Scale bar
+      description: This demo shows how to use the <code>ScaleBar</code> component.
+    measurement:
+      title: Measurement
+      description: This demo shows how to use the <code>Measurement</code> component for measuring distances and areas. <code>Measurement</code> component for measuring distances and areas.
+    tocLegend:
+      title: Toc, BasemapSwitcher and Legend
+      description: This demo shows how to use the <code>Toc</code>, <code>BasemapSwitcher</code> and <code>Legend</code> components to control the map content and to show the legend for the contents.
+      tocTitle: TOC
+      legendTitle: Legend
+    selectionResultList:
+      title: Selection and Result List
+      description: This demo shows how to use the <code>Selection</code> component to select feature in the map and how to use the <code>ResultList</code> component to display feature attributes in a table.
+  demoSelection:
+    label: "Demo:"
+    notFound: "Demo ''{demoId}'' was not found."
+  localeSwitcher:
+    label: "Language:"
+    locale:
+      de: German
+      en: English

@@ -19,6 +19,13 @@ export interface TitledSectionProps {
     title?: string | ReactNode | undefined;
 
     /**
+     * Properties for the automatically generated section heading.
+     *
+     * NOTE: This is only applied if `title` is a string.
+     */
+    sectionHeadingProps?: SectionHeadingProps | undefined;
+
+    /**
      * Children are rendered without any modifications.
      */
     children?: ReactNode | undefined;
@@ -68,9 +75,14 @@ export interface TitledSectionProps {
  * ```
  */
 export function TitledSection(props: TitledSectionProps): JSX.Element {
-    const { title, children } = props;
+    const { title, sectionHeadingProps, children } = props;
     const currentLevel = useContext(LevelContext);
-    const heading = typeof title === "string" ? <SectionHeading>{title}</SectionHeading> : title;
+    const heading =
+        typeof title === "string" ? (
+            <SectionHeading {...sectionHeadingProps}>{title}</SectionHeading>
+        ) : (
+            title
+        );
 
     return (
         <>
