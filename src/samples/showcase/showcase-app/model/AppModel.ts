@@ -6,7 +6,7 @@ import { MapModel } from "@open-pioneer/map";
 import { NotificationService } from "@open-pioneer/notifier";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { DemoInfo } from "./AppInitModel";
-import { Demo } from "../demos/Demo";
+import { Demo, DemoModel } from "../demos/Demo";
 
 const LOG = createLogger("app::AppModel");
 
@@ -16,7 +16,7 @@ export class AppModel {
     #intl: PackageIntl;
 
     #demosById: Map<string, Demo>;
-    #currentDemo: Reactive<Demo>;
+    #currentDemo: Reactive<[Demo, DemoModel]>;
     #allDemoInfos = computed<DemoInfo[]>(() => {
         return Array.from(this.#demosById.values());
     });
@@ -36,19 +36,24 @@ export class AppModel {
         if (this.#demosById.size === 0) {
             throw new Error("No demos defined.");
         }
-        this.#currentDemo = reactive(demos[0]!);
-        this.#currentDemo.value.activate?.();
+
+        const demo = demos[0]!;
+        this.#currentDemo = reactive([demo, demo.createModel()]);
 
         this.#applyStateFromUrl();
         this.#resources.push(this.#syncStateToUrl());
     }
 
     destroy(): void {
-        this.#currentDemo.value.deactivate?.();
+        this.#currentDemo.value[1].destroy?.();
     }
 
     get currentDemo(): Demo {
-        return this.#currentDemo.value;
+        return this.#currentDemo.value[0];
+    }
+
+    get currentDemoModel(): DemoModel {
+        return this.#currentDemo.value[1];
     }
 
     get allDemoInfos(): DemoInfo[] {
@@ -62,11 +67,10 @@ export class AppModel {
         }
 
         batch(() => {
-            const oldDemo = this.#currentDemo.value;
-            oldDemo.deactivate?.();
+            const [, oldDemoModel] = this.#currentDemo.value;
+            oldDemoModel.destroy?.();
 
-            this.#currentDemo.value = newDemo;
-            newDemo.activate?.();
+            this.#currentDemo.value = [newDemo, newDemo.createModel()];
         });
     }
 
@@ -93,7 +97,7 @@ export class AppModel {
 
     #syncStateToUrl(): Resource {
         return watch(
-            () => [this.#currentDemo.value.id],
+            () => [this.#currentDemo.value[0].id],
             ([demoId]) => {
                 const url = new URL(window.location.href);
                 url.searchParams.set("demo", demoId);

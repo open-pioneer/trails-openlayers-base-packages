@@ -32,11 +32,16 @@ export function AppUI() {
 
 function AppContent(props: { state: AppStateReady }) {
     const appModel = props.state.appModel;
-    const { currentDemo } = useReactiveSnapshot(
+    const { currentDemo, currentDemoModel } = useReactiveSnapshot(
         () => ({
-            currentDemo: appModel.currentDemo
+            currentDemo: appModel.currentDemo,
+            currentDemoModel: appModel.currentDemoModel
         }),
         [appModel]
+    );
+    const currentListContainer = useReactiveSnapshot(
+        () => currentDemoModel.listContainer,
+        [currentDemoModel]
     );
 
     return (
@@ -44,7 +49,7 @@ function AppContent(props: { state: AppStateReady }) {
             <Notifier position="top-right" />
             <Flex height="100%" direction="column">
                 <TitledSection title={<Header appModel={appModel} />}>
-                    <Flex flex="1" direction="column">
+                    <Flex flex="1" direction="column" position="relative">
                         <MapContainer
                             mapId={MAP_ID}
                             role="main"
@@ -55,16 +60,31 @@ function AppContent(props: { state: AppStateReady }) {
                                     <TitledSection title={currentDemo.title}>
                                         <Text
                                             dangerouslySetInnerHTML={{
-                                                __html: currentDemo.description
+                                                __html: currentDemoModel.description
                                             }}
                                         ></Text>
-                                        {currentDemo.mainWidget}
+                                        {currentDemoModel.mainWidget}
                                     </TitledSection>
                                 </Box>
                             </MapAnchor>
                             <MapAnchor position="bottom-right" horizontalGap={10}>
-                                <VStack>{currentDemo.tools}</VStack>
+                                <VStack>{currentDemoModel.tools}</VStack>
                             </MapAnchor>
+                            {currentListContainer && (
+                                <Box
+                                    className="list-container"
+                                    position="absolute"
+                                    bottom="0"
+                                    backgroundColor="white"
+                                    width="100%"
+                                    height="400px"
+                                    zIndex={1 /* above map */}
+                                    borderTop="2px solid"
+                                    borderColor="trails.100"
+                                >
+                                    {currentListContainer}
+                                </Box>
+                            )}
                         </MapContainer>
                     </Flex>
                 </TitledSection>
