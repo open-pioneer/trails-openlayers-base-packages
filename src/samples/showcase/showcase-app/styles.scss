@@ -1,0 +1,15 @@
+.map-anchor.main-map-anchor {
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.map-container:focus-visible {
+    border: 3px solid var(--chakra-colors-trails-500);
+    outline: none;
+}
+
+@media screen and (max-width: 48em) {
+    .map-anchor.main-map-anchor {
+        max-height: 45%;    
+    }    
+}

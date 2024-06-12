@@ -1,8 +1,10 @@
 messages:
   header:
     title: Component Showcase
-  # NOTE: 'description' supports arbitrary HTML!
+  ariaLabels:
+    map: "Map. Use the arrow keys to move the map. Zoom in with the plus button and zoom out with the minus button."
   demos:
+  # NOTE: 'description' supports arbitrary HTML!
     geolocation:
       title: Geolocation
       description: This demo shows how to use the <code>Geolocation</code> tool to get the current position of the device.

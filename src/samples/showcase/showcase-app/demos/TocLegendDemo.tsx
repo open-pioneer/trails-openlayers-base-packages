@@ -16,8 +16,11 @@ export function createTocAndLegendDemo({ intl, mapModel }: SharedDemoOptions): D
         title: intl.formatMessage({ id: "demos.tocLegend.title" }),
         createModel() {
             function setDemoLayerVisible(visible: boolean = true): void {
-                const layer = mapModel.layers.getLayerById("verwaltungsgebiete") as Layer;
-                layer.setVisible(visible);
+                const layer1 = mapModel.layers.getLayerById("verwaltungsgebiete") as Layer;
+                layer1.setVisible(visible);
+
+                const layer2 = mapModel.layers.getLayerById("krankenhaus") as Layer;
+                layer2.setVisible(visible);
             }
             function resetDemoLayers(): void {
                 setDemoLayerVisible(false);
@@ -51,19 +54,16 @@ function TocLegendView() {
                         </SectionHeading>
                     }
                 >
-                    {/*todo responsive design*/}
-                    <Box overflowY="auto" maxHeight={200}>
-                        <Toc
-                            mapId={MAP_ID}
-                            showTools={true}
-                            basemapSwitcherProps={{
-                                allowSelectingEmptyBasemap: true
-                            }}
-                        />
-                    </Box>
+                    <Toc
+                        mapId={MAP_ID}
+                        showTools={true}
+                        basemapSwitcherProps={{
+                            allowSelectingEmptyBasemap: true
+                        }}
+                    />
                 </TitledSection>
             </Box>
-            <Box role="dialog" aria-labelledby={legendTitleId}>
+            <Box pt={2} role="dialog" aria-labelledby={legendTitleId}>
                 <TitledSection
                     title={
                         <SectionHeading id={legendTitleId} size="md" mb={2}>
@@ -73,10 +73,7 @@ function TocLegendView() {
                         </SectionHeading>
                     }
                 >
-                    {/*todo responsive design*/}
-                    <Box overflowY="auto" maxHeight={300}>
-                        <Legend mapId={MAP_ID} showBaseLayers={true} />
-                    </Box>
+                    <Legend mapId={MAP_ID} showBaseLayers={true} />
                 </TitledSection>
             </Box>
         </>

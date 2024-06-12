@@ -5,7 +5,7 @@ import { MapAnchor, MapContainer } from "@open-pioneer/map";
 import { Notifier } from "@open-pioneer/notifier";
 import { TitledSection } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
-import { useService } from "open-pioneer:react-hooks";
+import { useIntl, useService } from "open-pioneer:react-hooks";
 import { ReactNode } from "react";
 import { MAP_ID } from "../MapConfigProviderImpl";
 import { AppInitModel, AppStateReady } from "../model/AppInitModel";
@@ -31,6 +31,7 @@ export function AppUI() {
 }
 
 function AppContent(props: { state: AppStateReady }) {
+    const intl = useIntl();
     const appModel = props.state.appModel;
     const { currentDemo, currentDemoModel } = useReactiveSnapshot(
         () => ({
@@ -53,12 +54,21 @@ function AppContent(props: { state: AppStateReady }) {
                         <MapContainer
                             mapId={MAP_ID}
                             role="main"
-                            /* TODO: aria-label={intl.formatMessage({ id: "ariaLabel.map" })} */
+                            aria-label={intl.formatMessage({ id: "ariaLabels.map" })}
                         >
-                            <MapAnchor position="top-left" horizontalGap={10}>
-                                <Box bgColor="whiteAlpha.800">
-                                    <TitledSection title={currentDemo.title}>
+                            <MapAnchor
+                                className="main-map-anchor"
+                                position="top-left"
+                                horizontalGap={10}
+                                verticalGap={10}
+                            >
+                                <Box bgColor="white" borderRadius={10} p={2} maxW="500px">
+                                    <TitledSection
+                                        title={currentDemo.title}
+                                        sectionHeadingProps={{ size: "lg" }}
+                                    >
                                         <Text
+                                            py={4}
                                             dangerouslySetInnerHTML={{
                                                 __html: currentDemoModel.description
                                             }}

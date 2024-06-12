@@ -1,8 +1,10 @@
 messages:
   header:
     title: Component Showcase
-  # NOTE: 'description' supports arbitrary HTML!
+  ariaLabels:
+    map: "Karte. Mit den Pfeiltasten kannst du die Karte bewegen. Mit der Plus Taste hineinzoomen und mit der Minus Taste herauszoomen."
   demos:
+    # NOTE: 'description' supports arbitrary HTML!
     geolocation:
       title: Geolocation
       description: Diese Demo zeigt, wie das <code>Geolocation</code>-Tool verwendet werden kann, um die aktuelle Position des Geräts zu erhalten.
