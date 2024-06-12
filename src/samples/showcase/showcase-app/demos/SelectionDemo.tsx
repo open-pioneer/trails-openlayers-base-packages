@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { reactive } from "@conterra/reactivity-core";
-import { Layer, MapModel, SimpleLayer } from "@open-pioneer/map";
+import { BaseFeature, Layer, MapModel, SimpleLayer } from "@open-pioneer/map";
 import {
     FormatOptions,
     ResultColumn,
@@ -69,14 +69,14 @@ class DemoModelImpl implements DemoModel {
             />
         );
 
-        const layer = mapModel.layers.getLayerById("krankenhaus") as Layer;
+        const layer = mapModel.layers.getLayerById("ogc_kitas") as Layer;
         layer.setVisible(true);
     }
 
     destroy() {
         this.#selectionSource.destroy();
 
-        const layer = this.#mapModel.layers.getLayerById("krankenhaus") as Layer;
+        const layer = this.#mapModel.layers.getLayerById("ogc_kitas") as Layer;
         layer.setVisible(false);
     }
 
@@ -108,11 +108,18 @@ class DemoModelImpl implements DemoModel {
                 timeZone: "UTC"
             }
         };
-        // todo add better column information (https://ogc-api-test.nrw.de/inspire-us-krankenhaus/v1/collections/governmentalservice/items?f=json)
         const columns: ResultColumn[] = [
             {
-                propertyName: "thematicId",
+                id: "id",
                 displayName: "ID",
+                width: 100,
+                getPropertyValue(feature: BaseFeature) {
+                    return feature.id;
+                }
+            },
+            {
+                propertyName: "pointOfContact.address.postCode",
+                displayName: "PLZ",
                 width: 120
             },
             {
@@ -120,8 +127,22 @@ class DemoModelImpl implements DemoModel {
                 displayName: "Name"
             },
             {
-                propertyName: "traeger",
-                displayName: "Träger"
+                propertyName: "inspireId",
+                displayName: "inspireID"
+            },
+            {
+                displayName: "Gefördert",
+                width: 160,
+                getPropertyValue(feature: BaseFeature) {
+                    switch (feature.properties?.gefoerdert) {
+                        case "ja":
+                            return true;
+                        case "nein":
+                            return false;
+                        default:
+                            return feature.properties?.gefoerdert;
+                    }
+                }
             }
         ];
         const input: ResultListInput = {
@@ -147,7 +168,7 @@ function initSelectionSource(
     mapModel: MapModel,
     vectorSelectionSourceFactory: VectorSelectionSourceFactory
 ) {
-    const opLayer = mapModel.layers.getLayerById("krankenhaus") as SimpleLayer;
+    const opLayer = mapModel.layers.getLayerById("ogc_kitas") as SimpleLayer;
 
     const layerSelectionSource = vectorSelectionSourceFactory.createSelectionSource({
         vectorLayer: opLayer.olLayer as VectorLayer<VectorSource>,

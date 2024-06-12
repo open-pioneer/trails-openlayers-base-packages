@@ -6,6 +6,10 @@ import { OSM } from "ol/source";
 import { OgcFeaturesVectorSourceFactory } from "@open-pioneer/ogc-features";
 import VectorLayer from "ol/layer/Vector";
 import { ServiceOptions } from "@open-pioneer/runtime";
+import VectorSource from "ol/source/Vector";
+import GeoJSON from "ol/format/GeoJSON";
+import { LegendItemAttributes } from "@open-pioneer/legend";
+import { CustomLegendItem } from "ol-map/CustomLegendItems";
 
 interface References {
     vectorSourceFactory: OgcFeaturesVectorSourceFactory;
@@ -48,6 +52,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     }
                 }),
                 createAdminAreasLayer(),
+                createKitasLayer(),
                 createKrankenhausLayer(this.vectorSourceFactory)
             ]
         };
@@ -76,6 +81,33 @@ function createKrankenhausLayer(vectorSourceFactory: OgcFeaturesVectorSourceFact
         olLayer: layer,
         attributes: {
             collectionURL: baseURL + "/collections/" + collectionId
+        }
+    });
+}
+
+function createKitasLayer() {
+    const geojsonSource = new VectorSource({
+        url: "https://ogc-api.nrw.de/inspire-us-kindergarten/v1/collections/governmentalservice/items?f=json&limit=10000",
+        format: new GeoJSON(), //assign GeoJson parser
+        attributions:
+            '&copy; <a href="http://www.bkg.bund.de" target="_blank">Bundesamt f&uuml;r Kartographie und Geod&auml;sie</a> 2017, <a href="http://sg.geodatenzentrum.de/web_public/Datenquellen_TopPlus_Open.pdf" target="_blank">Datenquellen</a>'
+    });
+
+    const layer = new VectorLayer({
+        source: geojsonSource
+    });
+
+    const pointLayerLegendProps: LegendItemAttributes = {
+        Component: CustomLegendItem
+    };
+
+    return new SimpleLayer({
+        id: "ogc_kitas",
+        title: "Kindertagesstätten",
+        visible: true,
+        olLayer: layer,
+        attributes: {
+            "legend": pointLayerLegendProps
         }
     });
 }

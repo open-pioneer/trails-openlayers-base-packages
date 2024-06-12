@@ -21,6 +21,9 @@ export function createTocAndLegendDemo({ intl, mapModel }: SharedDemoOptions): D
 
                 const layer2 = mapModel.layers.getLayerById("krankenhaus") as Layer;
                 layer2.setVisible(visible);
+
+                const layer3 = mapModel.layers.getLayerById("ogc_kitas") as Layer;
+                layer3.setVisible(visible);
             }
             function resetDemoLayers(): void {
                 setDemoLayerVisible(false);

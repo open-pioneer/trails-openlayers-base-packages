@@ -93,7 +93,7 @@ export class AppInitModel implements Service {
             throw new Error("No mapModel found.");
         }
 
-        const demos = createDemos({intl, httpService, mapModel, vectorSelectionSourceFactory});
+        const demos = createDemos({ intl, httpService, mapModel, vectorSelectionSourceFactory });
         const state: AppStateReady = {
             kind: "ready",
             appModel: new AppModel(mapModel, notifier, intl, demos),
