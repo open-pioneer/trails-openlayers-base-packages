@@ -6,7 +6,7 @@ import { MapModel } from "@open-pioneer/map";
 import { NotificationService } from "@open-pioneer/notifier";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { DemoInfo } from "./AppInitModel";
-import { Demo } from "./Demo";
+import { Demo } from "../demos/Demo";
 
 const LOG = createLogger("app::AppModel");
 

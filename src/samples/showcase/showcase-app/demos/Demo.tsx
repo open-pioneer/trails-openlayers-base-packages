@@ -1,34 +1,12 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { PackageIntl } from "@open-pioneer/runtime";
-import { ReactNode, useId } from "react";
-import { Geolocation } from "@open-pioneer/geolocation";
-import { MAP_ID } from "../MapConfigProviderImpl";
-import { Printing } from "@open-pioneer/printing";
-import { SpatialBookmarks } from "@open-pioneer/spatial-bookmarks";
-import { OverviewMap } from "@open-pioneer/overview-map";
-import TileLayer from "ol/layer/Tile";
-import OSM from "ol/source/OSM";
-import { InitialExtent, ZoomIn, ZoomOut } from "@open-pioneer/map-navigation";
-import { Search, SearchSelectEvent } from "@open-pioneer/search";
-import { PhotonGeocoder } from "../sources/PhotonGeocoderSearchSource";
-import { HttpService } from "@open-pioneer/http";
-import { Highlight, Layer, MapModel, SimpleLayer } from "@open-pioneer/map";
-import { Geometry } from "ol/geom";
-import { CoordinateViewer } from "@open-pioneer/coordinate-viewer";
-import { ScaleViewer } from "@open-pioneer/scale-viewer";
-import { ScaleBar } from "@open-pioneer/scale-bar";
-import { Measurement } from "@open-pioneer/measurement";
-import { Toc } from "@open-pioneer/toc";
-import { Legend } from "@open-pioneer/legend";
-import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
-import { Box, Text } from "@open-pioneer/chakra-integration";
-import { useIntl } from "open-pioneer:react-hooks";
-import { Selection, SelectionCompleteEvent, SelectionSource } from "@open-pioneer/selection";
-import VectorLayer from "ol/layer/Vector";
-import VectorSource from "ol/source/Vector";
-import { VectorSelectionSourceFactory } from "@open-pioneer/selection/services";
 import { ReadonlyReactive, reactive } from "@conterra/reactivity-core";
+import { Box, Text } from "@open-pioneer/chakra-integration";
+import { HttpService } from "@open-pioneer/http";
+import { Legend } from "@open-pioneer/legend";
+import { Highlight, Layer, MapModel, SimpleLayer } from "@open-pioneer/map";
+import { OverviewMap } from "@open-pioneer/overview-map";
+import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import {
     FormatOptions,
@@ -37,8 +15,30 @@ import {
     ResultListInput,
     ResultListSelectionChangeEvent
 } from "@open-pioneer/result-list";
-import { Simulate } from "react-dom/test-utils";
-import input = Simulate.input;
+import { PackageIntl } from "@open-pioneer/runtime";
+import { Search, SearchSelectEvent } from "@open-pioneer/search";
+import { Selection, SelectionCompleteEvent, SelectionSource } from "@open-pioneer/selection";
+import { VectorSelectionSourceFactory } from "@open-pioneer/selection/services";
+import { Toc } from "@open-pioneer/toc";
+import { Geometry } from "ol/geom";
+import TileLayer from "ol/layer/Tile";
+import VectorLayer from "ol/layer/Vector";
+import OSM from "ol/source/OSM";
+import VectorSource from "ol/source/Vector";
+import { useIntl } from "open-pioneer:react-hooks";
+import { ReactNode, useId } from "react";
+import { MAP_ID } from "../MapConfigProviderImpl";
+import { PhotonGeocoder } from "../sources/PhotonGeocoderSearchSource";
+import {
+    createCoordinateViewerDemo,
+    createScaleViewerDemo,
+    createScaleBarDemo,
+    createMeasurementDemo,
+    createMapNavigationDemo,
+    createGeolocationDemo,
+    createSpatialBookmarksDemo,
+    createPrintingDemo
+} from "./SimpleDemos";
 
 export interface Demo {
     /** Unique id */
@@ -69,6 +69,33 @@ export interface Demo {
     deactivate?: () => void;
 }
 
+export interface Demo2 {
+    /** Unique id */
+    id: string;
+
+    /** Human readable (and translated) title */
+    title: string;
+
+    /** Called by the application (and then rendered) when the demo is active. */
+    createModel(): DemoModel;
+}
+
+export interface DemoModel {
+    /** Human readable description */
+    description: string;
+
+    /** Main widget to display in the app. */
+    mainWidget?: ReactNode;
+
+    /**
+     * Tools that are shown next to the zoom buttons on the map.
+     */
+    tools?: ReactNode;
+
+    /** Cleanup any state used by the demo. Called when the demo is deselected in the application. */
+    destroy?(): void;
+}
+
 interface ResultListState {
     /** Whether the result list is currently shown. */
     open: boolean;
@@ -80,76 +107,33 @@ interface ResultListState {
     input: ResultListInput | undefined;
 }
 
-export function createDemos(
-    intl: PackageIntl,
-    httpService: HttpService,
-    mapModel: MapModel,
-    vectorSelectionSourceFactory: VectorSelectionSourceFactory
-): Demo[] {
+export interface SharedDemoOptions {
+    intl: PackageIntl;
+    httpService: HttpService;
+    mapModel: MapModel;
+    vectorSelectionSourceFactory: VectorSelectionSourceFactory;
+}
+
+export function createDemos(options: SharedDemoOptions): Demo[] {
     return [
-        createTocAndBasemapSwitcherAndLegendDemo(intl, mapModel),
-        {
-            id: "coordinateViewer",
-            title: intl.formatMessage({ id: "demos.coordinateViewer.title" }),
-            description: intl.formatMessage({ id: "demos.coordinateViewer.description" }),
-            mainWidget: <CoordinateViewer mapId={MAP_ID} />
-        },
-        {
-            id: "scaleViewer",
-            title: intl.formatMessage({ id: "demos.scaleViewer.title" }),
-            description: intl.formatMessage({ id: "demos.scaleViewer.description" }),
-            mainWidget: <ScaleViewer mapId={MAP_ID} />
-        },
-        {
-            id: "scaleBar",
-            title: intl.formatMessage({ id: "demos.scaleBar.title" }),
-            description: intl.formatMessage({ id: "demos.scaleBar.description" }),
-            tools: <ScaleBar mapId={MAP_ID} />
-        },
-        {
-            id: "measurement",
-            title: intl.formatMessage({ id: "demos.measurement.title" }),
-            description: intl.formatMessage({ id: "demos.measurement.description" }),
-            mainWidget: <Measurement mapId={MAP_ID} />
-        },
+        createTocAndBasemapSwitcherAndLegendDemo(options),
+        createCoordinateViewerDemo(options),
+        createScaleViewerDemo(options),
+        createScaleBarDemo(options),
+        createMeasurementDemo(options),
+
         // todo Editing
-        {
-            id: "mapNavigation",
-            title: intl.formatMessage({ id: "demos.mapNavigation.title" }),
-            description: intl.formatMessage({ id: "demos.mapNavigation.description" }),
-            tools: (
-                <>
-                    <ZoomIn mapId={MAP_ID} />
-                    <ZoomOut mapId={MAP_ID} />
-                    <InitialExtent mapId={MAP_ID} />
-                </>
-            )
-        },
-        {
-            id: "geolocation",
-            title: intl.formatMessage({ id: "demos.geolocation.title" }),
-            description: intl.formatMessage({ id: "demos.geolocation.description" }),
-            tools: <Geolocation mapId={MAP_ID} />
-        },
-        {
-            id: "spatialBookmarks",
-            title: intl.formatMessage({ id: "demos.spatialBookmarks.title" }),
-            description: intl.formatMessage({ id: "demos.spatialBookmarks.description" }),
-            mainWidget: <SpatialBookmarks mapId={MAP_ID} />
-        },
-        createOverviewMapDemo(intl),
-        {
-            id: "printing",
-            title: intl.formatMessage({ id: "demos.printing.title" }),
-            description: intl.formatMessage({ id: "demos.printing.description" }),
-            mainWidget: <Printing mapId={MAP_ID} />
-        },
-        createSelectionAndResultListDemo(intl, mapModel, vectorSelectionSourceFactory),
-        createSearchAndHighlightDemo(intl, httpService, mapModel)
+        createMapNavigationDemo(options),
+        createGeolocationDemo(options),
+        createSpatialBookmarksDemo(options),
+        createOverviewMapDemo(options),
+        createPrintingDemo(options),
+        createSelectionAndResultListDemo(options),
+        createSearchAndHighlightDemo(options)
     ];
 }
 
-function createTocAndBasemapSwitcherAndLegendDemo(intl: PackageIntl, mapModel: MapModel): Demo {
+function createTocAndBasemapSwitcherAndLegendDemo({ intl, mapModel }: SharedDemoOptions): Demo {
     function setDemoLayerVisible(visible: boolean = true): void {
         const layer = mapModel.layers.getLayerById("verwaltungsgebiete") as Layer;
         layer.setVisible(visible);
@@ -221,7 +205,7 @@ function TocLegendView() {
     );
 }
 
-function createOverviewMapDemo(intl: PackageIntl): Demo {
+function createOverviewMapDemo({ intl }: SharedDemoOptions): Demo {
     const overviewMapLayer = new TileLayer({
         source: new OSM()
     });
@@ -234,11 +218,11 @@ function createOverviewMapDemo(intl: PackageIntl): Demo {
     };
 }
 
-function createSelectionAndResultListDemo(
-    intl: PackageIntl,
-    mapModel: MapModel,
-    vectorSelectionSourceFactory: VectorSelectionSourceFactory
-): Demo {
+function createSelectionAndResultListDemo({
+    intl,
+    mapModel,
+    vectorSelectionSourceFactory
+}: SharedDemoOptions): Demo {
     const selectionSources = reactive<SelectionSource[]>([]);
     const resultListState = reactive<ResultListState>({ open: false, key: 0, input: undefined });
 
@@ -399,11 +383,7 @@ function initSelectionSources(
     return [layerSelectionSource];
 }
 
-function createSearchAndHighlightDemo(
-    intl: PackageIntl,
-    httpService: HttpService,
-    map: MapModel
-): Demo {
+function createSearchAndHighlightDemo({ intl, httpService, mapModel }: SharedDemoOptions): Demo {
     const photonSource = new PhotonGeocoder("Photon Geocoder", ["city", "street"], httpService);
     let highlight: Highlight | undefined = undefined;
 
@@ -413,7 +393,7 @@ function createSearchAndHighlightDemo(
             return;
         }
 
-        highlight = highlightAndZoom(map, [geometry], highlight);
+        highlight = highlightAndZoom(mapModel, [geometry], highlight);
     }
 
     function clearHighlight() {

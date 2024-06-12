@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { reactive } from "@conterra/reactivity-core";
-import { Demo, createDemos } from "./Demo";
+import { Demo, createDemos } from "../demos/Demo";
 import type {
     DECLARE_SERVICE_INTERFACE,
     PackageIntl,
@@ -93,7 +93,7 @@ export class AppInitModel implements Service {
             throw new Error("No mapModel found.");
         }
 
-        const demos = createDemos(intl, httpService, mapModel, vectorSelectionSourceFactory);
+        const demos = createDemos({intl, httpService, mapModel, vectorSelectionSourceFactory});
         const state: AppStateReady = {
             kind: "ready",
             appModel: new AppModel(mapModel, notifier, intl, demos),
