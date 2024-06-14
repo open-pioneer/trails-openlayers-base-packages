@@ -4,8 +4,15 @@
 }
 
 .map-container:focus-visible {
-    border: 3px solid var(--chakra-colors-trails-500);
     outline: none;
+}
+
+.map-container:focus-visible:after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events:none;
+    border: 3px solid var(--chakra-colors-trails-500);
 }
 
 @media screen and (max-width: 48em) {
