@@ -13,15 +13,44 @@ afterEach(() => {
 });
 
 it("Should successfully print a canvas", async () => {
-    const { olMap, printToCanvasSpy, printingService } = await setUp();
-
-    printToCanvasSpy.mockImplementation(() => document.createElement("canvas"));
-
+    const { olMap, printingService } = await setUp();
     const printResult = await printingService.printMap(olMap);
     const canvas = printResult.getCanvas();
 
     expect(canvas).toBeDefined();
     expect(canvas.tagName).toBe("CANVAS");
+});
+
+it("should respect the map's padding by default", async () => {
+    const { olMap, removePaddingSpy, printingService } = await setUp();
+
+    // top, right, bottom, left
+    olMap.getView().padding = [10, 20, 30, 40];
+
+    const printResult = await printingService.printMap(olMap);
+    const canvas = printResult.getCanvas();
+    expect(canvas).toBeDefined();
+
+    expect(removePaddingSpy.mock.lastCall![1]).toMatchInlineSnapshot(`
+      {
+        "bottom": 30,
+        "left": 40,
+        "right": 20,
+        "top": 10,
+      }
+    `);
+});
+
+it("should ignore the map's padding if 'viewPadding' is set to 'ignore'", async () => {
+    const { olMap, removePaddingSpy, printingService } = await setUp();
+
+    // top, right, bottom, left
+    olMap.getView().padding = [10, 20, 30, 40];
+
+    const printResult = await printingService.printMap(olMap, { viewPadding: "ignore" });
+    const canvas = printResult.getCanvas();
+    expect(canvas).toBeDefined();
+    expect(removePaddingSpy).not.toHaveBeenCalled();
 });
 
 it("should create an overlay during print and removes it after print", async () => {
@@ -154,7 +183,16 @@ async function setUp() {
 
     const printingService = await createService(PrintingServiceImpl, {});
     const printToCanvasSpy = vi.spyOn(PrintJob.prototype as any, "printToCanvas");
-    printToCanvasSpy.mockImplementation(() => document.createElement("canvas"));
+    printToCanvasSpy.mockImplementation(() => {
+        const canvas = document.createElement("canvas");
+        canvas.width = 200;
+        canvas.height = 200;
+        return canvas;
+    });
 
-    return { olMap, printToCanvasSpy, printingService };
+    // Cant use canvas.getContext() in tests
+    const removePaddingSpy = vi.spyOn(PrintJob.prototype as any, "removePadding");
+    removePaddingSpy.mockImplementation((canvas: any) => canvas);
+
+    return { olMap, printToCanvasSpy, printingService, removePaddingSpy };
 }

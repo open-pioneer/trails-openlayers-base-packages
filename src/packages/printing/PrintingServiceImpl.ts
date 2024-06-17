@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import type { PrintingOptions, PrintingService, PrintResult } from "./index";
+import type { PrintingOptions, PrintingService, PrintResult, ViewPaddingBehavior } from "./index";
 import OlMap from "ol/Map";
 import Draw from "ol/interaction/Draw";
 import { StyleLike } from "ol/style/Style";
@@ -24,10 +24,18 @@ export class PrintingServiceImpl implements PrintingService {
         const job = new PrintJob(olMap, {
             blockUserInteraction: true,
             overlayText: this.defaultOverlayText,
+            viewPadding: "auto",
             ...options
         });
         return await job.printMap();
     }
+}
+
+interface ViewPadding {
+    top: number;
+    right: number;
+    bottom: number;
+    left: number;
 }
 
 // Exported just for test (mocking)
@@ -35,6 +43,7 @@ export class PrintJob {
     private olMap: OlMap;
     private blockUserInteraction: boolean = false;
     private overlayText: string;
+    private viewPadding: ViewPaddingBehavior;
 
     private running = false;
     private drawInformation: { draw: Draw; style: StyleLike | null | undefined }[] | undefined = [];
@@ -45,6 +54,7 @@ export class PrintJob {
         this.olMap = olMap;
         this.blockUserInteraction = options.blockUserInteraction;
         this.overlayText = options.overlayText;
+        this.viewPadding = options.viewPadding;
     }
 
     async printMap(): Promise<PrintResultImpl> {
@@ -55,12 +65,15 @@ export class PrintJob {
         try {
             await this.beginExport();
 
-            const canvas = await this.printToCanvas(this.olMap.getViewport());
-            if (canvas) {
-                return new PrintResultImpl(canvas);
-            } else {
+            let canvas = await this.printToCanvas(this.olMap.getViewport());
+            if (!canvas) {
                 throw new Error("Canvas export failed");
             }
+
+            if (this.viewPadding === "auto") {
+                canvas = this.removePadding(canvas, this.getViewPadding());
+            }
+            return new PrintResultImpl(canvas);
         } finally {
             // Always remove scale bar
             this.reset();
@@ -98,12 +111,31 @@ export class PrintJob {
     }
 
     private async addScaleLine() {
-        this.scaleLine = new ScaleLine({
+        const scaleLine = (this.scaleLine = new ScaleLine({
             className: "printing-scale-bar ol-scale-bar",
             bar: true,
             text: true,
             minWidth: 125
-        });
+        }));
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const scaleLineElement = (scaleLine as any).element as HTMLElement;
+        if (!scaleLineElement) {
+            throw new Error("Scale line does not have an element");
+        }
+
+        // Position the scale bar manually.
+        // The 50px should be plenty to avoid overlapping with open layers attributions on most cases.
+        // Additionally, take the view padding into account (if behavior is 'auto').
+        let bottom = 50;
+        let left = 8;
+        if (this.viewPadding === "auto") {
+            const { bottom: paddingBottom, left: paddingLeft } = this.getViewPadding();
+            bottom = Math.max(paddingBottom + 8, bottom);
+            left += paddingLeft;
+        }
+        scaleLineElement.style.setProperty("--printing-scale-bar-bottom", `${bottom}px`);
+        scaleLineElement.style.setProperty("--printing-scale-bar-left", `${left}px`);
 
         const renderPromise = createManualPromise<void>();
 
@@ -151,7 +183,6 @@ export class PrintJob {
         // required when actually printed. This speeds up the initial page load.
         const html2canvas = (await import("html2canvas")).default;
         const canvas = await html2canvas(element, exportOptions);
-
         return canvas;
     }
 
@@ -172,6 +203,67 @@ export class PrintJob {
             this.drawInformation.forEach((drawInfo) => {
                 drawInfo.draw.getOverlay().setStyle(drawInfo.style);
             });
+    }
+
+    private removePadding(canvas: HTMLCanvasElement, rawPadding: ViewPadding): HTMLCanvasElement {
+        // The canvas returned by html2canvas is scaled by the device pixel ratio.
+        // The padding needs to be adjusted (because its in css pixels).
+        const dpr = window.devicePixelRatio || 1;
+        const dprPadding = {
+            top: rawPadding.top * dpr,
+            right: rawPadding.right * dpr,
+            bottom: rawPadding.bottom * dpr,
+            left: rawPadding.left * dpr
+        };
+
+        if (
+            dprPadding.left === 0 &&
+            dprPadding.right === 0 &&
+            dprPadding.top === 0 &&
+            dprPadding.bottom === 0
+        ) {
+            return canvas;
+        }
+
+        const { width, height } = canvas;
+        const newCanvas = document.createElement("canvas");
+        newCanvas.width = width - dprPadding.left - dprPadding.right;
+        newCanvas.height = height - dprPadding.top - dprPadding.bottom;
+
+        const newCtx = newCanvas.getContext("2d");
+        if (!newCtx) {
+            throw new Error("Failed to get a canvas context");
+        }
+
+        newCtx.drawImage(
+            canvas,
+            dprPadding.left,
+            dprPadding.top,
+            newCanvas.width,
+            newCanvas.height,
+            0,
+            0,
+            newCanvas.width,
+            newCanvas.height
+        );
+        return newCanvas;
+    }
+
+    private getViewPadding(): ViewPadding {
+        const map = this.olMap;
+        // top, right, bottom, left
+        const rawPadding = (map.getView().padding ?? [0, 0, 0, 0]) as [
+            number,
+            number,
+            number,
+            number
+        ];
+        return {
+            top: rawPadding[0] ?? 0,
+            right: rawPadding[1] ?? 0,
+            bottom: rawPadding[2] ?? 0,
+            left: rawPadding[3] ?? 0
+        };
     }
 }
 
