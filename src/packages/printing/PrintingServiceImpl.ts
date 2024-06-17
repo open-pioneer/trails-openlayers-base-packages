@@ -125,8 +125,8 @@ export class PrintJob {
         }
 
         // Position the scale bar manually.
-        // The 50px should be plenty to avoid overlapping with openlayers attributions on most cases.
-        // Additionally take the view padding into account (if behavior is 'auto').
+        // The 50px should be plenty to avoid overlapping with open layers attributions on most cases.
+        // Additionally, take the view padding into account (if behavior is 'auto').
         let bottom = 50;
         let left = 8;
         if (this.viewPadding === "auto") {
@@ -220,9 +220,8 @@ export class PrintJob {
         newCanvas.width = width - padding.left - padding.right;
         newCanvas.height = height - padding.top - padding.bottom;
 
-        const ctx = canvas.getContext("2d");
         const newCtx = newCanvas.getContext("2d");
-        if (!ctx || !newCtx) {
+        if (!newCtx) {
             throw new Error("Failed to get a canvas context");
         }
 

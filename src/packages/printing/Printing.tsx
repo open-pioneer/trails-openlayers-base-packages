@@ -17,7 +17,7 @@ import { PackageIntl } from "@open-pioneer/runtime";
 import { useIntl, useService } from "open-pioneer:react-hooks";
 import { FC, useEffect, useState } from "react";
 import { FileFormatType, PrintingController } from "./PrintingController";
-import { ViewPaddingBehavior, type PrintingService } from "./index";
+import type { ViewPaddingBehavior, PrintingService } from "./index";
 
 const LOG = createLogger("printing");
 
@@ -31,7 +31,7 @@ export interface PrintingProps extends CommonComponentProps {
     mapId: string;
 
     /**
-     * Whether to respect the map's padding when printing (default: `"auto"`).
+     * Whether to respect the map view's padding when printing (default: `"auto"`).
      *
      * See also {@link ViewPaddingBehavior}.
      */

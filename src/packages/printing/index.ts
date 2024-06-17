@@ -22,13 +22,13 @@ export interface PrintingOptions {
     overlayText?: string;
 
     /**
-     * Whether to respect the map's padding when printing (default: `"auto"`).
+     * Whether to respect the map view's padding when printing (default: `"auto"`).
      */
     viewPadding?: ViewPaddingBehavior;
 }
 
 /**
- * Whether to respect the map's padding when printing.
+ * Whether to respect the map view's padding when printing.
  *
  * - `"auto"`: Respect the map's current viewPadding.
  *   Padded regions of the map will _not_ be included in the print result.
