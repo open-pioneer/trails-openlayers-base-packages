@@ -205,20 +205,30 @@ export class PrintJob {
             });
     }
 
-    private removePadding(canvas: HTMLCanvasElement, padding: ViewPadding): HTMLCanvasElement {
+    private removePadding(canvas: HTMLCanvasElement, rawPadding: ViewPadding): HTMLCanvasElement {
+        // The canvas returned by html2canvas is scaled by the device pixel ratio.
+        // The padding needs to be adjusted (because its in css pixels).
+        const dpr = window.devicePixelRatio || 1;
+        const dprPadding = {
+            top: rawPadding.top * dpr,
+            right: rawPadding.right * dpr,
+            bottom: rawPadding.bottom * dpr,
+            left: rawPadding.left * dpr
+        };
+
         if (
-            padding.left === 0 &&
-            padding.right === 0 &&
-            padding.top === 0 &&
-            padding.bottom === 0
+            dprPadding.left === 0 &&
+            dprPadding.right === 0 &&
+            dprPadding.top === 0 &&
+            dprPadding.bottom === 0
         ) {
             return canvas;
         }
 
         const { width, height } = canvas;
         const newCanvas = document.createElement("canvas");
-        newCanvas.width = width - padding.left - padding.right;
-        newCanvas.height = height - padding.top - padding.bottom;
+        newCanvas.width = width - dprPadding.left - dprPadding.right;
+        newCanvas.height = height - dprPadding.top - dprPadding.bottom;
 
         const newCtx = newCanvas.getContext("2d");
         if (!newCtx) {
@@ -227,8 +237,8 @@ export class PrintJob {
 
         newCtx.drawImage(
             canvas,
-            padding.left,
-            padding.top,
+            dprPadding.left,
+            dprPadding.top,
             newCanvas.width,
             newCanvas.height,
             0,
