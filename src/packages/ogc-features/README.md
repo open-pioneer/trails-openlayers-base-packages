@@ -47,13 +47,29 @@ const vectorLayer = new VectorLayer({
          */
         limit: 5000,
 
+        /**
+         * Use this propertie to define feature fetching strategy.
+         * Value `offset` | `next`
+         * Default value is `offset`.
+         */
+        strategy: "next", // (Optional)
+
         /** The maximum number of concurrent requests. Defaults to `6`. */
         maxConcurrentRequests: 6,
 
         attributions:
             "<a href='https://www.govdata.de/dl-de/by-2-0'>Datenlizenz Deutschland - Namensnennung - Version 2.0</a>",
 
-        additionalOptions: {} // (Optional)
+        additionalOptions: {}, // (Optional)
+
+        /**
+         * To overwrite the service URL, use the callback function `rewriteUrl`.
+         * This is useful, for example, to filter the OGC service on the server side.
+         */
+        rewriteUrl(url) { // (Optional)
+            url.searchParams.set("propertie", "value");
+            return url;
+        }
     })
 });
 ```

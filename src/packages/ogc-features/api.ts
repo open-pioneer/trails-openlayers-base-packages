@@ -7,6 +7,10 @@ import { Geometry } from "ol/geom";
 import { AttributionLike } from "ol/source/Source";
 import VectorSource, { Options } from "ol/source/Vector";
 
+/**PATCH START */
+type Strategy = "next" | "offset";
+/**PATCH END */
+
 /**
  * These are properties for OGC API Features vector source.
  */
@@ -40,6 +44,14 @@ export interface OgcFeatureVectorSourceOptions {
 
     /** Optional additional options for the VectorSource. */
     additionalOptions?: Options<Feature<Geometry>>;
+
+    /**PATCH START  */
+    strategy?: Strategy;
+    /**PATCH END  */
+
+    /**PATCH START  */
+    rewriteUrl?: (url: URL) => URL | undefined;
+    /**PATCH END  */
 }
 
 /**

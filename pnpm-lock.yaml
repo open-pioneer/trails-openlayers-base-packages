@@ -585,10 +585,10 @@ importers:
         version: link:../../..
     publishDirectory: dist
 
-  src/packages/ogc-features:
+  src/packages/ogc-features-patched:
     dependencies:
       '@open-pioneer/core':
-        specifier: ^1.2.3
+        specifier: ^1.2.2
         version: 1.2.3
       '@open-pioneer/http':
         specifier: ^2.1.7
@@ -1147,7 +1147,7 @@ importers:
         version: 0.3.4(stf2mfqtqmu37k6stpqwa5thze)
       '@open-pioneer/ogc-features':
         specifier: workspace:^
-        version: link:../../../packages/ogc-features
+        version: link:../../../packages/ogc-features-patched
       '@open-pioneer/overview-map':
         specifier: workspace:^
         version: link:../../../packages/overview-map
@@ -1222,7 +1222,7 @@ importers:
         version: link:../../../packages/map-navigation
       '@open-pioneer/ogc-features':
         specifier: workspace:^
-        version: link:../../../packages/ogc-features
+        version: link:../../../packages/ogc-features-patched
       '@open-pioneer/react-utils':
         specifier: workspace:^
         version: link:../../../packages/react-utils
@@ -1285,7 +1285,7 @@ importers:
         version: 0.3.4(stf2mfqtqmu37k6stpqwa5thze)
       '@open-pioneer/ogc-features':
         specifier: workspace:^
-        version: link:../../../packages/ogc-features
+        version: link:../../../packages/ogc-features-patched
       '@open-pioneer/overview-map':
         specifier: workspace:^
         version: link:../../../packages/overview-map
