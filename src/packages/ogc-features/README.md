@@ -125,7 +125,7 @@ export default defineBuildConfig({
 });
 ```
 
-and create a search search instance:
+and create a search source instance:
 
 ```ts
 const ogcSearchSourceFactory = ...; // injected
