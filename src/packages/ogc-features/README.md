@@ -35,51 +35,73 @@ const vectorLayer = new VectorLayer({
         baseUrl: "https://ogc-api.nrw.de/inspire-us-kindergarten/v1",
         collectionId: "governmentalservice",
         crs: "http://www.opengis.net/def/crs/EPSG/0/25832",
-
-        /**
-         * The maximum number of features to fetch within a single request.
-         * Corresponds to the `limit` parameter in the URL.
-         *
-         * When the `offset` strategy is used for feature fetching, the limit
-         * is used for the page size.
-         *
-         * Defaults to `5000`.
-         */
-        limit: 5000,
-
-        /**
-         * Use this propertie to define feature fetching strategy.
-         * Value `offset` | `next`
-         * Default value is `offset`.
-         */
-        strategy: "next", // (Optional)
-
-        /** The maximum number of concurrent requests. Defaults to `6`. */
-        maxConcurrentRequests: 6,
-
         attributions:
             "<a href='https://www.govdata.de/dl-de/by-2-0'>Datenlizenz Deutschland - Namensnennung - Version 2.0</a>",
 
-        additionalOptions: {}, // (Optional)
+        /** Optional: number of features loaded per request. */
+        limit: 5000,
 
-        /**
-         * To overwrite the service URL, use the callback function `rewriteUrl`.
-         * This is useful, for example, to filter the OGC service on the server side.
-         */
-        rewriteUrl(url) { // (Optional)
-            url.searchParams.set("propertie", "value");
-            return url;
-        }
+        /** Optional: passed to the Open Layers Vector Source constructor. */
+        additionalOptions: {},
     })
 });
 ```
 
-The optional `limit` configures the concurrent execution of requests by using the `offset` URL property for pagination.
-If the service returns a `numberMatched` property together with its results, it is used alongside the configured pageSize to calculate the optimal number of concurrent requests.
-The number of concurrent requests is never higher than `maxConcurrentRequests`.
-
 Additional options of the `VectorSource` (see [OpenLayers documentation](https://openlayers.org/en/latest/apidoc/module-ol_source_Vector-VectorSource.html)) can be given by the property
 `additionalOptions`.
+
+#### Loading strategies
+
+The vector source supports two different strategies to load features from the server:
+
+-   `"next"`: Fetch large feature results by walking the `next` link of the previous response.
+    This is well supported by most implementations, but can be slow for very large result sets
+    because it does not allow for parallel requests.
+-   `"offset"`: Fetch large feature results using parallel requests.
+    Each request fetches a page of results using an `"offset"` and `"limit"` parameter.
+    This can be much faster than the `"next"` strategy, but it is not supported by all server implementations.
+
+By default, the vector source will attempt to detect the server's capabilities and will prefer `"offset"`, if supported.
+You can overwrite the default behavior by explicitly defining the `strategy` option.
+
+If the `"offset"` strategy is used, you can configure the maximum number of concurrent requests (default: 6).
+
+Example:
+
+```ts
+vectorSourceFactory.createVectorSource({
+    baseUrl: "https://ogc-api.nrw.de/inspire-us-kindergarten/v1",
+    collectionId: "governmentalservice",
+    crs: "http://www.opengis.net/def/crs/EPSG/0/25832",
+
+    strategy: "offset",
+    limit: 2500,
+    maxConcurrentRequests: 6
+});
+```
+
+#### Rewriting request URLs
+
+The optional `rewriteUrl` option can be used to modify the feature requests made by the vector source.
+This is useful, for example, to filter the OGC service on the server side.
+
+Note that modifying the vector source's URL requires some care: existing query parameters should not be overwritten unless you know what you're doing.
+The vector source may add additional query parameters in the future, which might conflict the changes done by custom `rewriteUrl` implementations.
+
+Example:
+
+```ts
+vectorSourceFactory.createVectorSource({
+    baseUrl: "https://ogc-api.nrw.de/inspire-us-kindergarten/v1",
+    collectionId: "governmentalservice",
+    crs: "http://www.opengis.net/def/crs/EPSG/0/25832",
+
+    rewriteUrl(url) {
+        url.searchParams.set("property", "value");
+        return url;
+    }
+});
+```
 
 ### Search source
 
