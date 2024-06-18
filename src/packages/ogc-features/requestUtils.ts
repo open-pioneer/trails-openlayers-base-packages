@@ -13,7 +13,8 @@ const NEXT_LINK_PROP = "next";
 export function createCollectionRequestUrl(
     collectionItemsURL: string,
     extent: Extent,
-    crs: string
+    crs: string,
+    rewriteUrl?: (url: URL) => URL | undefined
 ): URL {
     const urlObj = new URL(collectionItemsURL);
     const searchParams = urlObj.searchParams;
@@ -21,7 +22,7 @@ export function createCollectionRequestUrl(
     searchParams.set("bbox-crs", crs);
     searchParams.set("crs", crs);
     searchParams.set("f", "json");
-    return urlObj;
+    return rewriteUrl?.(new URL(urlObj)) ?? urlObj;
 }
 
 /**

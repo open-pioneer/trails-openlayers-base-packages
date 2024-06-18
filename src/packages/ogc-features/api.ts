@@ -8,6 +8,18 @@ import { AttributionLike } from "ol/source/Source";
 import VectorSource, { Options } from "ol/source/Vector";
 
 /**
+ * The strategy to fetch features from an OGC API Features service.
+ *
+ * - `"next"`: Fetch large feature results by walking the `next` link of the previous response.
+ *             This is well supported by most implementations, but can be slow for very large result sets
+ *             because it does not allow for parallel requests.
+ * - `"offset"`: Fetch large feature results using parallel requests.
+ *               Each request fetches a page of results using an `"offset"` and `"limit"` parameter.
+ *               This can be much faster than the `"next"` strategy, but it is not supported by all server implementations.
+ */
+export type OgcFetchStrategy = "next" | "offset";
+
+/**
  * These are properties for OGC API Features vector source.
  */
 export interface OgcFeatureVectorSourceOptions {
@@ -40,6 +52,25 @@ export interface OgcFeatureVectorSourceOptions {
 
     /** Optional additional options for the VectorSource. */
     additionalOptions?: Options<Feature<Geometry>>;
+
+    /**
+     * Use this property to define the feature fetching strategy.
+     * Allowed value are `offset` and `next`.
+     * By default, the vector source attempts to detect the server's capabilities and will prefer `"offset"`, if possible.
+     */
+    strategy?: OgcFetchStrategy;
+
+    /**
+     * Use this function to rewrite the URL used to fetch features from the OGC API Features service.
+     * This is useful, for example, to filter the OGC service on the server side.
+     *
+     * NOTE: Do not update the `url` argument. Return a new `URL` instance instead.
+     *
+     * NOTE: Be careful with existing URL parameters. The vector source may not work correctly if
+     * predefined parameters (such as the CRS or the response format) are overwritten.
+     * The vector source might add additional parameters to its request URLs in the future.
+     */
+    rewriteUrl?: (url: URL) => URL | undefined;
 }
 
 /**
@@ -56,7 +87,7 @@ export interface OgcFeaturesVectorSourceFactory
     createVectorSource(options: OgcFeatureVectorSourceOptions): VectorSource;
 }
 
-/** Options for {@link OgcFeatureSearchSource}. */
+/** Options for {@link OgcFeaturesVectorSourceFactory.createVectorSource()}. */
 export interface OgcFeatureSearchSourceOptions {
     /** The source's label. May be used as a title for results from this source. */
     label: string;

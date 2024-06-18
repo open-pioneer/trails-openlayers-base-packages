@@ -147,7 +147,7 @@ export interface VectorLayerSelectionSource extends Required<SelectionSource>, R
 export interface VectorLayerSelectionSourceFactory
     extends DeclaredService<"selection.VectorSelectionSourceFactory"> {
     /**
-     * Returns a new {@link VectorLayerSelectionSourceImpl} that operates on the given OpenLayers VectorLayer.
+     * Returns a new {@link VectorLayerSelectionSource} that operates on the given OpenLayers VectorLayer.
      */
     createSelectionSource(options: VectorLayerSelectionSourceOptions): VectorLayerSelectionSource;
 }

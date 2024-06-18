@@ -327,6 +327,7 @@ function createKrankenhausLayer(vectorSourceFactory: OgcFeaturesVectorSourceFact
     const baseURL = "https://ogc-api-test.nrw.de/inspire-us-krankenhaus/v1";
     const collectionId = "governmentalservice";
     const source = vectorSourceFactory.createVectorSource({
+        strategy: "next",
         baseUrl: baseURL,
         collectionId: collectionId,
         limit: 1000,
