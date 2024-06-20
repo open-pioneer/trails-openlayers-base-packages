@@ -4,8 +4,8 @@ messages:
   legendTitle: "Legende"
   measurementTitle: "Messen"
   selectionTitle: "Selektieren"
-  overviewMapTitle: "Übersichtskarte"
   editing:
+    title: "Editierung"
     create:
       startTitle: "Editierung - Neues Feature erstellen"
       featureCreated: "Objekt erstellt mit ID: {featureId}"
@@ -16,21 +16,20 @@ messages:
         select: Geometrie auswählen, um mit der Bearbeitung zu starten
     stopTitle: "Editierung - Stoppen"
     resetTitle: "Editierung - Zurücksetzen"
-    toggleNotAllowed: "Es ist bereits ein Editiervorgang aktiv. Bitte aktiven Vorgang zunächst beenden."
+    error: "Editierung fehlgeschlagen"
+    active: "Editierung ist aktiv"
+    resetGeometry: "Geometrie zurücksetzen"
+    abort: "Abbrechen"
   resultListTitle: "Ergebnisliste"
   ariaLabel:
     header: "Kopfleiste"
     footer: "Fussleiste mit Maßstabsangabe, Raumbezugssystem und Koordinatenanzeige"
     map: "Karte. Mit den Pfeiltasten kannst du die Karte bewegen. Mit der Plus Taste hineinzoomen und mit der Minus Taste herauszoomen."
     toolbar: "Kartenwerkzeuge"
-  geolocationTitle: "Geolokalisierung"
-  spatialBookmarkTitle: "Räumliche Lesezeichen"
-  printingTitle: "Drucken"
-  searchSources:
-    miningPermissions: Bergbauberechtigungen
-    lika: Daten des Liegenschaftskatasters in NRW
   foundResults: Es {resultsCount, plural,
     =0 {wurden keine Ergebnisse}
     one {wurde 1 Ergebnis}
     other {wurden {resultsCount} Ergebnisse}
     } gefunden.
+  mapInteractions:
+    title: Karteninteraktionen
