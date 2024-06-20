@@ -1,5 +1,20 @@
 # @open-pioneer/ogc-features
 
+## 0.4.2
+
+### Patch Changes
+
+-   4140646: Update trails dependencies
+-   4140646: Update to react 18.3.1
+-   6977f0b: Added `strategy` and `rewriteUrl` options to the vector source factory.
+-   81bc7da: Update trails dependencies
+-   2c092dc: Update dependencies
+-   Updated dependencies [4140646]
+-   Updated dependencies [4140646]
+-   Updated dependencies [81bc7da]
+-   Updated dependencies [2c092dc]
+    -   @open-pioneer/search@0.4.2
+
 ## 0.4.1
 
 ### Patch Changes

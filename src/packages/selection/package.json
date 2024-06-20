@@ -1,6 +1,6 @@
 {
     "name": "@open-pioneer/selection",
-    "version": "0.2.1",
+    "version": "0.2.2",
     "description": "This package provides a UI component to perform a selection on given selection sources from the map.",
     "license": "Apache-2.0",
     "main": "index.ts",

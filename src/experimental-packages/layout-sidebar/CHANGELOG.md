@@ -1,5 +1,14 @@
 # @open-pioneer/experimental-layout-sidebar
 
+## 0.2.2
+
+### Patch Changes
+
+-   4140646: Update trails dependencies
+-   4140646: Update to react 18.3.1
+-   81bc7da: Update trails dependencies
+-   2c092dc: Update dependencies
+
 ## 0.2.1
 
 ### Patch Changes

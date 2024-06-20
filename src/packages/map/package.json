@@ -1,6 +1,6 @@
 {
     "name": "@open-pioneer/map",
-    "version": "0.5.0",
+    "version": "0.5.1",
     "description": "This package integrates OpenLayers maps into an open pioneer trails application.",
     "license": "Apache-2.0",
     "main": "index.ts",
