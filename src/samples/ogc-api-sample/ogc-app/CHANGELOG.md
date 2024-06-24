@@ -1,5 +1,25 @@
 # ogc-app
 
+## 0.0.9
+
+### Patch Changes
+
+-   Updated dependencies [4140646]
+-   Updated dependencies [4140646]
+-   Updated dependencies [f2912be]
+-   Updated dependencies [6977f0b]
+-   Updated dependencies [b5bb7a1]
+-   Updated dependencies [81bc7da]
+-   Updated dependencies [2c092dc]
+-   Updated dependencies [4140646]
+    -   @open-pioneer/basemap-switcher@0.4.2
+    -   @open-pioneer/map-navigation@0.4.2
+    -   @open-pioneer/ogc-features@0.4.2
+    -   @open-pioneer/react-utils@0.2.3
+    -   @open-pioneer/theme@0.3.2
+    -   @open-pioneer/map@0.5.1
+    -   @open-pioneer/toc@0.4.2
+
 ## 0.0.8
 
 ### Patch Changes

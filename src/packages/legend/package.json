@@ -1,6 +1,6 @@
 {
     "name": "@open-pioneer/legend",
-    "version": "0.2.1",
+    "version": "0.2.2",
     "description": "This package provides a legend UI component that allows a user to see legend information for layers in the map.",
     "license": "Apache-2.0",
     "main": "index.ts",

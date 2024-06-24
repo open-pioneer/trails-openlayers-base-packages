@@ -1,5 +1,25 @@
 # @open-pioneer/printing
 
+## 0.1.2
+
+### Patch Changes
+
+-   c927f60: Remove 'required' attribute from title input since it is not actually required
+-   4140646: Update trails dependencies
+-   4140646: Update to react 18.3.1
+-   f2912be: Added more context to some button labels and tooltips for better usability.
+-   0fd366f: Don't include the map view's padding by default (see open-pioneer/trails-openlayers-base-packages#311)
+-   81bc7da: Update trails dependencies
+-   2c092dc: Update dependencies
+-   Updated dependencies [4140646]
+-   Updated dependencies [4140646]
+-   Updated dependencies [b5bb7a1]
+-   Updated dependencies [81bc7da]
+-   Updated dependencies [2c092dc]
+-   Updated dependencies [4140646]
+    -   @open-pioneer/react-utils@0.2.3
+    -   @open-pioneer/map@0.5.1
+
 ## 0.1.1
 
 ### Patch Changes
