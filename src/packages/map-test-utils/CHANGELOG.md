@@ -1,5 +1,13 @@
 # @open-pioneer/map-test-utils
 
+## 0.3.3
+
+### Patch Changes
+
+-   76f8863: Don't import map package internals using the services module.
+-   Updated dependencies [76f8863]
+    -   @open-pioneer/map@0.5.2
+
 ## 0.3.2
 
 ### Patch Changes

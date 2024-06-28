@@ -1,5 +1,11 @@
 # @open-pioneer/map
 
+## 0.5.2
+
+### Patch Changes
+
+-   76f8863: Add a new (internal) entry point to support the map-test-utils package.
+
 ## 0.5.1
 
 ### Patch Changes

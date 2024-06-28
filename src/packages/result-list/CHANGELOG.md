@@ -1,5 +1,12 @@
 # @open-pioneer/result-list
 
+## 0.3.1
+
+### Patch Changes
+
+-   Updated dependencies [76f8863]
+    -   @open-pioneer/map@0.5.2
+
 ## 0.3.0
 
 ### Minor Changes
