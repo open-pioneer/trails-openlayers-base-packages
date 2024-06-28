@@ -3,14 +3,14 @@
 import { Box, Flex, Tooltip, useToken } from "@open-pioneer/chakra-integration";
 import { Layer, MapModel, useMapModel } from "@open-pioneer/map";
 import { useIntl } from "open-pioneer:react-hooks";
-import { FC, useCallback, useMemo, useRef, useSyncExternalStore } from "react";
+import { FC, useCallback, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import {
-    Select,
-    OptionProps,
-    SingleValueProps,
     chakraComponents,
     ChakraStylesConfig,
-    GroupBase
+    GroupBase,
+    OptionProps,
+    Select,
+    SingleValueProps
 } from "chakra-react-select";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { FiAlertTriangle } from "react-icons/fi";
@@ -86,6 +86,7 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
     const { map } = useMapModel(mapId);
     const baseLayers = useBaseLayers(map);
     const chakraStyles = useChakraStyles();
+    const [isOpenSelect, setIsOpenSelect] = useState(false);
 
     const activateLayer = (layerId: string) => {
         map?.layers.activateBaseLayer(layerId === NO_BASEMAP_ID ? undefined : layerId);
@@ -112,6 +113,16 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
             SingleValue: BasemapSelectValue
         };
     }, []);
+    const keyDownFunction = (event: React.KeyboardEvent<HTMLDivElement>) => {
+        //if the menu is already open, do noting
+        if (isOpenSelect) {
+            return;
+        }
+        switch (event.key) {
+            case "Enter":
+                setIsOpenSelect(true);
+        }
+    };
 
     return (
         <Box {...containerProps}>
@@ -139,6 +150,10 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
                     isOptionDisabled={(option) => option?.layer?.loadState === "error"}
                     components={components}
                     chakraStyles={chakraStyles}
+                    onKeyDown={keyDownFunction}
+                    menuIsOpen={isOpenSelect}
+                    onMenuOpen={() => setIsOpenSelect(true)}
+                    onMenuClose={() => setIsOpenSelect(false)}
                 />
             ) : null}
         </Box>
