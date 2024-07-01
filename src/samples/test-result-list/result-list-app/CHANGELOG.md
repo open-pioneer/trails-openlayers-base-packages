@@ -1,5 +1,13 @@
 # result-list-app
 
+## 0.0.5
+
+### Patch Changes
+
+-   Updated dependencies [76f8863]
+    -   @open-pioneer/map@0.5.2
+    -   @open-pioneer/result-list@0.3.1
+
 ## 0.0.4
 
 ### Patch Changes

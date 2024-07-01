@@ -1,5 +1,13 @@
 # @open-pioneer/selection
 
+## 0.2.3
+
+### Patch Changes
+
+-   65a14f4: Open select-menu on enter (fixes issue [#320](https://github.com/open-pioneer/trails-openlayers-base-packages/issues/320))
+-   Updated dependencies [76f8863]
+    -   @open-pioneer/map@0.5.2
+
 ## 0.2.2
 
 ### Patch Changes
