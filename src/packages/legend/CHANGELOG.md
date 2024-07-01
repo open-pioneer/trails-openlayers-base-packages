@@ -1,5 +1,12 @@
 # @open-pioneer/legend
 
+## 0.2.3
+
+### Patch Changes
+
+-   Updated dependencies [76f8863]
+    -   @open-pioneer/map@0.5.2
+
 ## 0.2.2
 
 ### Patch Changes

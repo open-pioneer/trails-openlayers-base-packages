@@ -1,5 +1,13 @@
 # @open-pioneer/toc
 
+## 0.4.3
+
+### Patch Changes
+
+-   Updated dependencies [76f8863]
+    -   @open-pioneer/map@0.5.2
+    -   @open-pioneer/basemap-switcher@0.4.3
+
 ## 0.4.2
 
 ### Patch Changes
