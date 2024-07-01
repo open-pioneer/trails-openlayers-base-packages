@@ -27,7 +27,7 @@ import {
 } from "chakra-react-select";
 import { Geometry } from "ol/geom";
 import { useIntl, useService } from "open-pioneer:react-hooks";
-import { FC, useCallback, useEffect, useMemo, useState } from "react";
+import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
 import { FiAlertTriangle } from "react-icons/fi";
 import { DragController } from "./DragController";
 import { SelectionController } from "./SelectionController";
@@ -138,6 +138,7 @@ export const Selection: FC<SelectionProps> = (props) => {
         onSelectionComplete
     );
     const chakraStyles = useChakraStyles();
+    const [isOpenSelect, setIsOpenSelect] = useState(false);
 
     /**
      * Method to build Option-Array from the supported selection methods for the selection-method react-select
@@ -216,6 +217,12 @@ export const Selection: FC<SelectionProps> = (props) => {
         });
         return () => handle.destroy();
     }, [currentSource, setDragControllerActive, intl]);
+    const keyDown = useEvent((event: React.KeyboardEvent<HTMLDivElement>) => {
+        //if the menu is already open, do noting
+        if (!isOpenSelect && event.key === "Enter") {
+            setIsOpenSelect(true);
+        }
+    });
 
     return (
         <VStack {...containerProps} spacing={2}>
@@ -256,6 +263,10 @@ export const Selection: FC<SelectionProps> = (props) => {
                             : "")
                     }
                     chakraStyles={chakraStyles}
+                    onKeyDown={keyDown}
+                    menuIsOpen={isOpenSelect}
+                    onMenuOpen={() => setIsOpenSelect(true)}
+                    onMenuClose={() => setIsOpenSelect(false)}
                 />
             </FormControl>
         </VStack>
