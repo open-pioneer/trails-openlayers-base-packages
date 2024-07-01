@@ -3,7 +3,7 @@
 import { Box, Flex, Tooltip, useToken } from "@open-pioneer/chakra-integration";
 import { Layer, MapModel, useMapModel } from "@open-pioneer/map";
 import { useIntl } from "open-pioneer:react-hooks";
-import { FC, useCallback, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import React, { FC, useCallback, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import {
     chakraComponents,
     ChakraStylesConfig,
@@ -12,7 +12,7 @@ import {
     Select,
     SingleValueProps
 } from "chakra-react-select";
-import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
+import { CommonComponentProps, useCommonComponentProps, useEvent } from "@open-pioneer/react-utils";
 import { FiAlertTriangle } from "react-icons/fi";
 
 /*
@@ -113,16 +113,12 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
             SingleValue: BasemapSelectValue
         };
     }, []);
-    const keyDownFunction = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    const keyDown = useEvent((event: React.KeyboardEvent<HTMLDivElement>) => {
         //if the menu is already open, do noting
-        if (isOpenSelect) {
-            return;
+        if (!isOpenSelect && event.key === "Enter") {
+            setIsOpenSelect(true);
         }
-        switch (event.key) {
-            case "Enter":
-                setIsOpenSelect(true);
-        }
-    };
+    });
 
     return (
         <Box {...containerProps}>
@@ -150,7 +146,7 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
                     isOptionDisabled={(option) => option?.layer?.loadState === "error"}
                     components={components}
                     chakraStyles={chakraStyles}
-                    onKeyDown={keyDownFunction}
+                    onKeyDown={keyDown}
                     menuIsOpen={isOpenSelect}
                     onMenuOpen={() => setIsOpenSelect(true)}
                     onMenuClose={() => setIsOpenSelect(false)}
