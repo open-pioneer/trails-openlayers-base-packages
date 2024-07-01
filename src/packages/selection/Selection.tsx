@@ -32,6 +32,7 @@ import { FiAlertTriangle } from "react-icons/fi";
 import { DragController } from "./DragController";
 import { SelectionController } from "./SelectionController";
 import { SelectionResult, SelectionSource, SelectionSourceStatusObject } from "./api";
+import { KeyboardEvent } from "react";
 
 /**
  * Properties supported by the {@link Selection} component.
@@ -138,6 +139,7 @@ export const Selection: FC<SelectionProps> = (props) => {
         onSelectionComplete
     );
     const chakraStyles = useChakraStyles();
+    const [isOpenSelect, setIsOpenSelect] = useState(false);
 
     /**
      * Method to build Option-Array from the supported selection methods for the selection-method react-select
@@ -216,6 +218,12 @@ export const Selection: FC<SelectionProps> = (props) => {
         });
         return () => handle.destroy();
     }, [currentSource, setDragControllerActive, intl]);
+    const keyDown = useEvent((event: KeyboardEvent<HTMLDivElement>) => {
+        //if the menu is already open, do noting
+        if (!isOpenSelect && event.key === "Enter") {
+            setIsOpenSelect(true);
+        }
+    });
 
     return (
         <VStack {...containerProps} spacing={2}>
@@ -256,6 +264,10 @@ export const Selection: FC<SelectionProps> = (props) => {
                             : "")
                     }
                     chakraStyles={chakraStyles}
+                    onKeyDown={keyDown}
+                    menuIsOpen={isOpenSelect}
+                    onMenuOpen={() => setIsOpenSelect(true)}
+                    onMenuClose={() => setIsOpenSelect(false)}
                 />
             </FormControl>
         </VStack>
