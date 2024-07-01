@@ -3,7 +3,7 @@
 import { Box, Flex, Tooltip, useToken } from "@open-pioneer/chakra-integration";
 import { Layer, MapModel, useMapModel } from "@open-pioneer/map";
 import { useIntl } from "open-pioneer:react-hooks";
-import React, { FC, useCallback, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import { FC, useCallback, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import {
     chakraComponents,
     ChakraStylesConfig,
@@ -14,6 +14,7 @@ import {
 } from "chakra-react-select";
 import { CommonComponentProps, useCommonComponentProps, useEvent } from "@open-pioneer/react-utils";
 import { FiAlertTriangle } from "react-icons/fi";
+import { KeyboardEvent } from "react";
 
 /*
     Exported for tests. Feels a bit hacky but should be fine for now.
@@ -113,7 +114,7 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
             SingleValue: BasemapSelectValue
         };
     }, []);
-    const keyDown = useEvent((event: React.KeyboardEvent<HTMLDivElement>) => {
+    const keyDown = useEvent((event: KeyboardEvent<HTMLDivElement>) => {
         //if the menu is already open, do noting
         if (!isOpenSelect && event.key === "Enter") {
             setIsOpenSelect(true);

@@ -27,11 +27,12 @@ import {
 } from "chakra-react-select";
 import { Geometry } from "ol/geom";
 import { useIntl, useService } from "open-pioneer:react-hooks";
-import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
+import { FC, useCallback, useEffect, useMemo, useState } from "react";
 import { FiAlertTriangle } from "react-icons/fi";
 import { DragController } from "./DragController";
 import { SelectionController } from "./SelectionController";
 import { SelectionResult, SelectionSource, SelectionSourceStatusObject } from "./api";
+import { KeyboardEvent } from "react";
 
 /**
  * Properties supported by the {@link Selection} component.
@@ -217,7 +218,7 @@ export const Selection: FC<SelectionProps> = (props) => {
         });
         return () => handle.destroy();
     }, [currentSource, setDragControllerActive, intl]);
-    const keyDown = useEvent((event: React.KeyboardEvent<HTMLDivElement>) => {
+    const keyDown = useEvent((event: KeyboardEvent<HTMLDivElement>) => {
         //if the menu is already open, do noting
         if (!isOpenSelect && event.key === "Enter") {
             setIsOpenSelect(true);
