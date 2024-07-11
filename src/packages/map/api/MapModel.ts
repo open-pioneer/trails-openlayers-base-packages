@@ -18,7 +18,7 @@ export interface MapModelEvents {
     "destroy": void;
 }
 
-/** Options supported when creating a new {@link Highlight}. */
+/** Styleoptions supported when creating a new {@link Highlight}. */
 export interface HighlightOptions {
     /**
      * Optional styles to override the default styles.
@@ -26,8 +26,8 @@ export interface HighlightOptions {
     highlightStyle?: HighlightStyle;
 }
 
-/** Options supported by the map model's {@link MapModel.highlightAndZoom | zoom | highlightAndZoom} method. */
-export interface HighlightZoomOptions extends HighlightOptions {
+/** Zoomoptions supported when creating a new {@link Highlight}. */
+export interface ZoomOptions {
     /**
      * The zoom-level used if there is no valid extend (such as for single points).
      */
@@ -43,6 +43,9 @@ export interface HighlightZoomOptions extends HighlightOptions {
      */
     viewPadding?: MapPadding;
 }
+
+/** Options supported by the map model's {@link MapModel.highlightAndZoom | zoom | highlightAndZoom} method. */
+export interface HighlightZoomOptions extends HighlightOptions, ZoomOptions {}
 
 /**
  * Custom styles when creating a new {@link Highlight}.
@@ -141,7 +144,7 @@ export interface MapModel extends EventSource<MapModelEvents> {
     /**
      * Zooms to the given targets.
      */
-    zoom(geometries: DisplayTarget[], options?: HighlightZoomOptions): void;
+    zoom(geometries: DisplayTarget[], options?: ZoomOptions): void;
 
     /**
      * Creates a highlight and zooms to the given targets.

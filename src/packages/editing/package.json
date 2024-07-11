@@ -1,6 +1,6 @@
 {
     "name": "@open-pioneer/editing",
-    "version": "0.1.0",
+    "version": "0.2.1",
     "description": "This package provides an editing service that allows to start and handle geometry editing workflows.",
     "license": "Apache-2.0",
     "main": "index.ts",
@@ -17,9 +17,9 @@
         "build": "build-pioneer-package"
     },
     "peerDependencies": {
-        "@open-pioneer/core": "^1.2.1",
-        "@open-pioneer/http": "^2.1.4",
-        "@open-pioneer/runtime": "^2.1.2",
+        "@open-pioneer/core": "^1.2.3",
+        "@open-pioneer/http": "^2.1.7",
+        "@open-pioneer/runtime": "^2.1.5",
         "@open-pioneer/map": "workspace:^",
         "ol": "^9.0.0"
     },

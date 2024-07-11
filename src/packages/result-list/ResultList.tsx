@@ -1,12 +1,7 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Box } from "@open-pioneer/chakra-integration";
-import {
-    BaseFeature,
-    HighlightOptions,
-    HighlightZoomOptions,
-    useMapModel
-} from "@open-pioneer/map";
+import { BaseFeature, HighlightOptions, useMapModel, ZoomOptions } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, ReactNode, RefObject, useEffect, useMemo, useRef, useState } from "react";
@@ -129,6 +124,11 @@ export interface ResultListSelectionChangeEvent {
 }
 
 /**
+ * Specifies whether it should be possible to select multiple or only single rows.
+ */
+export type SelectionMode = "multi" | "single";
+
+/**
  * Properties supported by the {@link ResultList} component.
  */
 export interface ResultListProps extends CommonComponentProps {
@@ -141,6 +141,19 @@ export interface ResultListProps extends CommonComponentProps {
      * Describes the data rendered by the component.
      */
     input: ResultListInput;
+
+    /**
+     * The selection mode used by the result list. Defaults to `"multi"`.
+     */
+    selectionMode?: SelectionMode;
+
+    /**
+     * The style used for the selection controls in a row.
+     * Defaults to `"checkbox"` if `selectionMode` is `"multi"`, or `"radio"` if `selectionMode` is `"single"`.
+     *
+     * Note: `"radio"` can not be used together with multi selection.
+     */
+    selectionStyle?: "radio" | "checkbox";
 
     /**
      * This handler is called whenever the user has changed the selected features in the result-list.
@@ -165,7 +178,12 @@ export interface ResultListProps extends CommonComponentProps {
     /**
      * Optional zooming options
      */
-    highlightZoomOptions?: HighlightZoomOptions;
+    zoomOptions?: ZoomOptions;
+
+    /**
+     * Should each row be memoized to improve render performance. Default `false`.
+     */
+    memoizeRows?: boolean;
 }
 
 /**
@@ -177,10 +195,13 @@ export const ResultList: FC<ResultListProps> = (props) => {
     const {
         mapId,
         input: { data, columns, formatOptions },
+        memoizeRows = false,
         onSelectionChange,
         enableZoom = true,
-        highlightZoomOptions,
+        zoomOptions,
         enableHighlight = true,
+        selectionMode = "multi",
+        selectionStyle = selectionMode === "single" ? "radio" : "checkbox",
         highlightOptions
     } = props;
 
@@ -188,6 +209,10 @@ export const ResultList: FC<ResultListProps> = (props) => {
 
     if (columns.length === 0) {
         throw Error("No columns were defined. The result list cannot be displayed.");
+    }
+
+    if (selectionMode === "multi" && selectionStyle === "radio") {
+        throw new Error("Cannot mix multi selection with selectionStyle 'radio'.");
     }
 
     const containerRef = useRef<HTMLDivElement>(null);
@@ -198,9 +223,11 @@ export const ResultList: FC<ResultListProps> = (props) => {
                 columns: columns,
                 intl: intl,
                 tableWidth: tableWidth,
-                formatOptions: formatOptions
+                formatOptions: formatOptions,
+                selectionMode,
+                selectionStyle
             }),
-        [columns, intl, tableWidth, formatOptions]
+        [columns, intl, tableWidth, formatOptions, selectionMode, selectionStyle]
     );
 
     useEffect(() => {
@@ -208,20 +235,22 @@ export const ResultList: FC<ResultListProps> = (props) => {
             return;
         }
         if (enableZoom) {
-            map.zoom(data, highlightZoomOptions);
+            map.zoom(data, zoomOptions);
         }
 
         if (enableHighlight) {
             const highlight = map.highlight(data, highlightOptions);
             return () => highlight.destroy();
         }
-    }, [map, data, highlightZoomOptions, enableZoom, enableHighlight, highlightOptions]);
+    }, [map, data, zoomOptions, enableZoom, enableHighlight, highlightOptions]);
 
     return (
         <Box {...containerProps} height="100%" overflowY="auto" ref={containerRef}>
             <DataTable
                 columns={dataTableColumns}
                 data={data}
+                memoizeRows={memoizeRows}
+                selectionMode={selectionMode}
                 onSelectionChange={onSelectionChange}
             />
         </Box>

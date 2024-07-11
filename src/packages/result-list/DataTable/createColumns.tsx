@@ -3,10 +3,9 @@
 import { chakra } from "@open-pioneer/chakra-integration";
 import { BaseFeature } from "@open-pioneer/map";
 import { PackageIntl } from "@open-pioneer/runtime";
-import { createColumnHelper } from "@tanstack/react-table";
-import { Table as TanstackTable } from "@tanstack/table-core/build/lib/types";
-import { FormatOptions, ResultColumn } from "../ResultList";
-import { SelectCheckbox } from "./SelectCheckbox";
+import { createColumnHelper, Table as TanstackTable } from "@tanstack/react-table";
+import { FormatOptions, ResultColumn, SelectionMode } from "../ResultList";
+import { SelectComponent } from "./SelectComponent";
 
 export const SELECT_COLUMN_SIZE = 70;
 
@@ -17,13 +16,15 @@ export interface CreateColumnsOptions {
     intl: PackageIntl;
     tableWidth?: number;
     formatOptions?: FormatOptions;
+    selectionMode: SelectionMode;
+    selectionStyle: "radio" | "checkbox";
 }
 
 export function createColumns(options: CreateColumnsOptions) {
-    const { columns, intl, tableWidth, formatOptions } = options;
+    const { columns, intl, tableWidth, formatOptions, selectionMode, selectionStyle } = options;
     const remainingColumnWidth: number | undefined =
         tableWidth === undefined ? undefined : calcRemainingColumnWidth(columns, tableWidth);
-    const selectionColumn = createSelectionColumn(intl);
+    const selectionColumn = createSelectionColumn(intl, selectionMode, selectionStyle);
     const columnDefs = columns.map((column, index) => {
         const columnWidth = column.width || remainingColumnWidth;
         const configuredId =
@@ -112,21 +113,26 @@ function renderFunc(cellValue: unknown, intl: PackageIntl, formatOptions?: Forma
     }
 }
 
-function createSelectionColumn(intl: PackageIntl) {
+function createSelectionColumn(
+    intl: PackageIntl,
+    selectionMode: SelectionMode,
+    selectionStyle: "radio" | "checkbox"
+) {
     return columnHelper.display({
         id: "selection-buttons",
         size: SELECT_COLUMN_SIZE,
         enableSorting: false,
         header: ({ table }) => {
+            if (selectionMode !== "multi") return;
             return (
                 <chakra.div
                     display="inline-block"
                     onClick={(e) => {
                         e.stopPropagation();
                     }}
-                    className="result-list-select-all-checkbox-container"
+                    className="result-list-select-all-container"
                 >
-                    <SelectCheckbox
+                    <SelectComponent
                         className="result-list-select-all-checkbox"
                         isChecked={table.getIsAllRowsSelected()}
                         isIndeterminate={table.getIsSomeRowsSelected()}
@@ -137,21 +143,26 @@ function createSelectionColumn(intl: PackageIntl) {
             );
         },
         cell: ({ row }) => {
+            const className =
+                selectionStyle === "radio"
+                    ? "result-list-select-row-radio"
+                    : "result-list-select-row-checkbox";
             return (
                 <chakra.div
                     display="inline-block"
                     onClick={(e) => {
                         e.stopPropagation();
                     }}
-                    className="result-list-select-row-checkbox-container"
+                    className="result-list-select-row-container"
                 >
-                    <SelectCheckbox
-                        className="result-list-select-row-checkbox"
+                    <SelectComponent
+                        mode={selectionStyle}
+                        className={className}
                         isChecked={row.getIsSelected()}
                         isDisabled={!row.getCanSelect()}
                         isIndeterminate={row.getIsSomeSelected()}
                         onChange={row.getToggleSelectedHandler()}
-                        ariaLabel={intl.formatMessage({
+                        aria-label={intl.formatMessage({
                             id: "ariaLabel.selectSingle"
                         })}
                     />

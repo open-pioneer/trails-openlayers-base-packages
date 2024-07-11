@@ -128,7 +128,7 @@ async function fetchJson(
         const response = await httpService.fetch(url, {
             signal,
             headers: {
-                "Accept": "application/json"
+                Accept: "application/json"
             }
         });
         if (!response.ok) {

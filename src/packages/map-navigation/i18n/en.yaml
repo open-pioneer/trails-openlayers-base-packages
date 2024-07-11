@@ -2,6 +2,6 @@ messages:
   initial-extent:
     title: Zoom to initial extent
   zoom-in:
-    title: Zoom in
+    title: Zoom in map
   zoom-out:
-    title: Zoom out
+    title: Zoom out map

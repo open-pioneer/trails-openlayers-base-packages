@@ -64,7 +64,14 @@ const printResult = await printingService.printMap(map, {
 ### Printed elements
 
 The printed map contains all map elements, visible layers, scale-bar and a title. If the user does not enter a title, the map is printed without title.
-To prevent custom elements from showing in the printed map, add the classname `printing-hide` to the elements.
+To prevent custom elements from showing in the printed map, add the CSS class name `printing-hide` to the elements.
+
+### View padding
+
+The printing widget and the printing service will by default respect the map's current view `padding` (see OpenLayers [View class](https://openlayers.org/en/latest/apidoc/module-ol_View-View.html)).
+This means that padded regions (a border on every side) will _not_ be included in the printed result.
+
+To ignore the view padding when printing the map, you can pass `viewPadding: "ignore"` to the printing service or the printing component.
 
 ## Known issues
 

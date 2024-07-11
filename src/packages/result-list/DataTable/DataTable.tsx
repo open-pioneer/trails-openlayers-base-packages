@@ -22,21 +22,24 @@ import {
 } from "@tanstack/react-table";
 import classNames from "classnames";
 import { useIntl } from "open-pioneer:react-hooks";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { ReactNode, useEffect, useMemo, useState } from "react";
 import { ColumnResizer } from "./ColumnResizer";
 import { ColumnSortIndicator } from "./ColumnSortIndicator";
 import { useSetupTable } from "./useSetupTable";
-import { ResultListSelectionChangeEvent } from "../ResultList";
+import { ResultListSelectionChangeEvent, SelectionMode } from "../ResultList";
 const LOG = createLogger("result-list:DataTable");
 
 export interface DataTableProps<Data extends BaseFeature> {
     data: Data[];
     columns: ColumnDef<Data>[];
+    memoizeRows: boolean;
+    selectionMode: SelectionMode;
     onSelectionChange?(event: ResultListSelectionChangeEvent): void;
 }
 
 export function DataTable<Data extends BaseFeature>(props: DataTableProps<Data>) {
     const intl = useIntl();
+    const { memoizeRows } = props;
     const { table } = useSetupTable(props);
     const isResizing = !!table.getState().columnSizingInfo.isResizingColumn;
     const columnSizeVars = useColumnSizeVars(table);
@@ -76,7 +79,13 @@ export function DataTable<Data extends BaseFeature>(props: DataTableProps<Data>)
                     <TableHeaderGroup key={headerGroup.id} headerGroup={headerGroup} />
                 ))}
             </Thead>
-            {isResizing ? <MemoizedTableBody table={table} /> : <TableBody table={table} />}
+            <Tbody className="result-list-table-body">
+                {memoizeRows || isResizing ? (
+                    <MemoizedTableRows table={table} />
+                ) : (
+                    <TableRows table={table} />
+                )}
+            </Tbody>
         </Table>
     );
 }
@@ -140,38 +149,38 @@ function TableHeader<Data>(props: {
     );
 }
 
-//un-memoized normal table body component - see memoized version below
-function TableBody<Data extends object>({ table }: { table: TanstackTable<Data> }) {
-    return (
-        <Tbody className="result-list-table-body">
-            {table.getRowModel().rows.map((row) => {
-                return (
-                    <Tr key={row.id} className="result-list-table-row">
-                        {row.getVisibleCells().map((cell) => {
-                            const width = `calc(var(--header-${cell.column.id}-size) * 1px)`;
-                            return (
-                                <Td
-                                    key={cell.id}
-                                    style={{ width: width }}
-                                    className="result-list-table-row"
-                                >
-                                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                </Td>
-                            );
-                        })}
-                    </Tr>
-                );
-            })}
-        </Tbody>
-    );
+function TableRows<Data extends object>({ table }: { table: TanstackTable<Data> }) {
+    return table.getRowModel().rows.map((row) => {
+        return (
+            <Tr key={row.id} className="result-list-table-row">
+                {row.getVisibleCells().map((cell) => {
+                    const width = `calc(var(--header-${cell.column.id}-size) * 1px)`;
+                    return (
+                        <Td
+                            key={cell.id}
+                            style={{ width: width }}
+                            className="result-list-table-row"
+                        >
+                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        </Td>
+                    );
+                })}
+            </Tr>
+        );
+    });
 }
 
-// Special memoized wrapper for our table body that we will use during column resizing.
-// See https://tanstack.com/table/v8/docs/framework/react/examples/column-resizing-performant
-const MemoizedTableBody = React.memo(
-    TableBody,
-    (prev, next) => prev.table.options.data === next.table.options.data
-) as typeof TableBody;
+/**
+ * Rows are memoized and only updating on changes due to sorting columns or selecting rows.
+ * Removed full Memoization on Resizing because it does not have an additional effect.
+ */
+function MemoizedTableRows<Data extends object>({ table }: { table: TanstackTable<Data> }) {
+    const memoizedRows = React.useMemo<ReactNode>(() => {
+        return <TableRows table={table} />;
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [table, table.getSortedRowModel().rows, table.getSelectedRowModel().rows]);
+    return memoizedRows;
+}
 
 /**
  * Instead of calling `column.getSize()` on every render for every header

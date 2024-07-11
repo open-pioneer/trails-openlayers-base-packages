@@ -17,6 +17,7 @@ const targets = ["chrome92", "edge92", "firefox91", "safari14"];
 const sampleSites = [
     "samples/map-sample",
     "samples/ogc-api-sample",
+    "samples/showcase",
 
     "samples/test-basemap-switcher",
     "samples/test-toc",
@@ -37,6 +38,9 @@ export default defineConfig(({ mode }) => {
 
     return {
         root: resolve(__dirname, "src"),
+
+        // Load .env files from this directory instead of `root`.
+        envDir: __dirname,
 
         // Generates relative urls in html etc.
         base: "./",

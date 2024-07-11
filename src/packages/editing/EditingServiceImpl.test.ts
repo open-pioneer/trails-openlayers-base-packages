@@ -5,23 +5,31 @@ import { EditingServiceImpl } from "./EditingServiceImpl";
 import { setupMap } from "@open-pioneer/map-test-utils";
 import { HttpService } from "@open-pioneer/http";
 import { createService } from "@open-pioneer/test-utils/services";
-import { FlatStyleLike } from "ol/style/flat";
-import { EditingWorkflowImpl } from "./EditingWorkflowImpl";
+import { FlatStyle } from "ol/style/flat";
+import { Feature } from "ol";
+import { Point } from "ol/geom";
+import { EditingCreateWorkflowImpl } from "./EditingCreateWorkflowImpl";
+import { EditingUpdateWorkflowImpl } from "./EditingUpdateWorkflowImpl";
 
 const OGC_API_URL_TEST = new URL("https://example.org/ogc");
+
+const TEST_ID = "test_id";
+
+const DEFAULT_FEATURE = new Feature({ geometry: new Point([0, 0]) });
+DEFAULT_FEATURE.setId(TEST_ID);
 
 const HTTP_SERVICE: HttpService = {
     fetch: vi.fn().mockResolvedValue(
         new Response("", {
             headers: {
-                Location: OGC_API_URL_TEST + "/test_id_1"
+                Location: `${OGC_API_URL_TEST}/${TEST_ID}`
             },
             status: 201
         })
     )
 } satisfies Partial<HttpService> as HttpService;
 
-const POLYGON_DRAW_STYLE: FlatStyleLike = {
+const POLYGON_DRAW_STYLE: FlatStyle = {
     "stroke-color": "yellow",
     "stroke-width": 2,
     "fill-color": "rgba(0, 0, 0, 0.1)",
@@ -31,171 +39,163 @@ const POLYGON_DRAW_STYLE: FlatStyleLike = {
     "circle-stroke-width": 2
 };
 
-describe("tests for starting an editing", () => {
-    it("should start an editing", async () => {
-        const { mapId, registry } = await setupMap();
-        const map = await registry.expectMapModel(mapId);
+describe("editing: create", () => {
+    describe("tests for starting an editing", () => {
+        it("should start an editing", async () => {
+            const { editingService, map } = await createEditingService();
 
-        const editingService = await createService(EditingServiceImpl, {
-            references: {
-                mapRegistry: registry,
-                httpService: HTTP_SERVICE
-            },
-            properties: {
-                POLYGON_DRAW_STYLE
-            }
+            const workflow = editingService.createFeature(map, OGC_API_URL_TEST);
+            expect(workflow instanceof EditingCreateWorkflowImpl).toBe(true);
         });
 
-        const workflow = editingService.start(map, OGC_API_URL_TEST);
-        expect(workflow instanceof EditingWorkflowImpl).toBe(true);
+        it("should throw an error if editing is started twice for the same map id", async () => {
+            const { editingService, map } = await createEditingService();
+
+            editingService.createFeature(map, OGC_API_URL_TEST);
+
+            expect(() => editingService.createFeature(map, OGC_API_URL_TEST)).toThrowError(
+                "EditingWorkflow could not be started. EditingWorkflow already in progress for this map."
+            );
+        });
     });
 
-    it("should throw an error if start editing twice for the same map id", async () => {
-        const { mapId, registry } = await setupMap();
-        const map = await registry.expectMapModel(mapId);
+    describe("tests for stopping an editing", () => {
+        it("should stop an editing", async () => {
+            const { editingService, mapId, map } = await createEditingService();
 
-        const editingService = await createService(EditingServiceImpl, {
-            references: {
-                mapRegistry: registry,
-                httpService: HTTP_SERVICE
-            },
-            properties: {
-                POLYGON_DRAW_STYLE
-            }
+            editingService.createFeature(map, OGC_API_URL_TEST);
+
+            const stop = editingService.stop(mapId);
+            expect(stop).toBeUndefined();
         });
 
-        editingService.start(map, OGC_API_URL_TEST);
+        it("should not throw an error if editing is stopped for a non existing map id", async () => {
+            const { editingService, map } = await createEditingService();
 
-        expect(() => editingService.start(map, OGC_API_URL_TEST)).toThrowError(
-            "EditingWorkflow could not be started. EditingWorkflow already in progress for this map."
-        );
-    });
-});
+            editingService.createFeature(map, OGC_API_URL_TEST);
 
-describe("tests for stopping an editing", () => {
-    it("should stop an editing", async () => {
-        const { mapId, registry } = await setupMap();
-        const map = await registry.expectMapModel(mapId);
-
-        const editingService = await createService(EditingServiceImpl, {
-            references: {
-                mapRegistry: registry,
-                httpService: HTTP_SERVICE
-            },
-            properties: {
-                POLYGON_DRAW_STYLE
-            }
+            expect(() => editingService.stop("some-other-map-id")).not.toThrowError();
         });
-
-        editingService.start(map, OGC_API_URL_TEST);
-
-        const stop = editingService.stop(mapId);
-        expect(stop).toBeUndefined;
     });
 
-    it("should return no error if editing will be stop twice for a given map id", async () => {
-        const { mapId, registry } = await setupMap();
-        const map = await registry.expectMapModel(mapId);
+    describe("tests for resetting an editing", () => {
+        it("should successfully trigger resetting an editing drawing", async () => {
+            const { editingService, mapId, map } = await createEditingService();
 
-        const editingService = await createService(EditingServiceImpl, {
-            references: {
-                mapRegistry: registry,
-                httpService: HTTP_SERVICE
-            },
-            properties: {
-                POLYGON_DRAW_STYLE
-            }
+            editingService.createFeature(map, OGC_API_URL_TEST);
+
+            const reset = editingService.reset(mapId);
+            expect(reset).toBeUndefined();
         });
 
-        editingService.start(map, OGC_API_URL_TEST);
+        it("should return no error if editing is reset twice for a given map id", async () => {
+            const { editingService, mapId, map } = await createEditingService();
 
-        editingService.stop(mapId);
-        const stop = editingService.stop(mapId);
-        expect(stop).toBeUndefined;
-    });
+            editingService.createFeature(map, OGC_API_URL_TEST);
 
-    it("should return an error if editing will be stop for a non existing map id", async () => {
-        const { mapId, registry } = await setupMap();
-        const map = await registry.expectMapModel(mapId);
-
-        const editingService = await createService(EditingServiceImpl, {
-            references: {
-                mapRegistry: registry,
-                httpService: HTTP_SERVICE
-            },
-            properties: {
-                POLYGON_DRAW_STYLE
-            }
+            editingService.reset(mapId);
+            const reset = editingService.reset(mapId);
+            expect(reset).toBeUndefined();
         });
 
-        editingService.start(map, OGC_API_URL_TEST);
+        it("should return an error if editing is reset for a non existing map id", async () => {
+            const { editingService, map } = await createEditingService();
 
-        const stop = editingService.stop("mapId");
-        expect(stop instanceof Error).toBe(true);
-        expect(stop?.message).toBe("No workflow found for mapId: mapId");
+            editingService.createFeature(map, OGC_API_URL_TEST);
+
+            expect(() => editingService.reset("mapId")).toThrowErrorMatchingInlineSnapshot(
+                `[Error: No workflow found for mapId: mapId]`
+            );
+        });
     });
 });
 
-describe("tests for resetting an editing", () => {
-    it("should reset an editing", async () => {
-        const { mapId, registry } = await setupMap();
-        const map = await registry.expectMapModel(mapId);
+describe("editing: update", () => {
+    describe("tests for starting an editing", () => {
+        it("should start an editing", async () => {
+            const { editingService, map } = await createEditingService();
 
-        const editingService = await createService(EditingServiceImpl, {
-            references: {
-                mapRegistry: registry,
-                httpService: HTTP_SERVICE
-            },
-            properties: {
-                POLYGON_DRAW_STYLE
-            }
+            const workflow = editingService.updateFeature(map, OGC_API_URL_TEST, DEFAULT_FEATURE);
+            expect(workflow instanceof EditingUpdateWorkflowImpl).toBe(true);
         });
 
-        editingService.start(map, OGC_API_URL_TEST);
+        it("should throw an error if editing is started twice for the same map id", async () => {
+            const { editingService, map } = await createEditingService();
 
-        const reset = editingService.reset(mapId);
-        expect(reset).toBeUndefined;
+            editingService.updateFeature(map, OGC_API_URL_TEST, DEFAULT_FEATURE);
+
+            expect(() =>
+                editingService.updateFeature(map, OGC_API_URL_TEST, DEFAULT_FEATURE)
+            ).toThrowError(
+                "EditingWorkflow could not be started. EditingWorkflow already in progress for this map."
+            );
+        });
     });
 
-    it("should return no error if editing will be reset twice for a given map id", async () => {
-        const { mapId, registry } = await setupMap();
-        const map = await registry.expectMapModel(mapId);
+    describe("tests for stopping an editing", () => {
+        it("should stop an editing", async () => {
+            const { editingService, mapId, map } = await createEditingService();
 
-        const editingService = await createService(EditingServiceImpl, {
-            references: {
-                mapRegistry: registry,
-                httpService: HTTP_SERVICE
-            },
-            properties: {
-                POLYGON_DRAW_STYLE
-            }
+            editingService.updateFeature(map, OGC_API_URL_TEST, DEFAULT_FEATURE);
+
+            const stop = editingService.stop(mapId);
+            expect(stop).toBeUndefined();
         });
 
-        editingService.start(map, OGC_API_URL_TEST);
+        it("should not throw an error if editing is stopped for a non existing map id", async () => {
+            const { editingService, map } = await createEditingService();
 
-        editingService.reset(mapId);
-        const reset = editingService.reset(mapId);
-        expect(reset).toBeUndefined;
+            editingService.updateFeature(map, OGC_API_URL_TEST, DEFAULT_FEATURE);
+
+            expect(() => editingService.stop("some-different-id")).not.toThrowError();
+        });
     });
 
-    it("should return an error if editing will be reset for a non existing map id", async () => {
-        const { mapId, registry } = await setupMap();
-        const map = await registry.expectMapModel(mapId);
+    describe("tests for resetting an editing", () => {
+        it("should successfully trigger resetting an editing drawing", async () => {
+            const { editingService, mapId, map } = await createEditingService();
 
-        const editingService = await createService(EditingServiceImpl, {
-            references: {
-                mapRegistry: registry,
-                httpService: HTTP_SERVICE
-            },
-            properties: {
-                POLYGON_DRAW_STYLE
-            }
+            editingService.updateFeature(map, OGC_API_URL_TEST, DEFAULT_FEATURE);
+
+            const reset = editingService.reset(mapId);
+            expect(reset).toBeUndefined();
         });
 
-        editingService.start(map, OGC_API_URL_TEST);
+        it("should return no error if editing is reset twice for a given map id", async () => {
+            const { editingService, mapId, map } = await createEditingService();
 
-        const reset = editingService.reset("mapId");
-        expect(reset instanceof Error).toBe(true);
-        expect(reset?.message).toBe("No workflow found for mapId: mapId");
+            editingService.updateFeature(map, OGC_API_URL_TEST, DEFAULT_FEATURE);
+
+            editingService.reset(mapId);
+            const reset = editingService.reset(mapId);
+            expect(reset).toBeUndefined();
+        });
+
+        it("should return an error if editing is reset for a non existing map id", async () => {
+            const { editingService, map } = await createEditingService();
+
+            editingService.updateFeature(map, OGC_API_URL_TEST, DEFAULT_FEATURE);
+
+            expect(() => editingService.reset("mapId")).toThrowErrorMatchingInlineSnapshot(
+                `[Error: No workflow found for mapId: mapId]`
+            );
+        });
     });
 });
+
+async function createEditingService() {
+    const { mapId, registry } = await setupMap();
+    const map = await registry.expectMapModel(mapId);
+
+    const editingService = await createService(EditingServiceImpl, {
+        references: {
+            mapRegistry: registry,
+            httpService: HTTP_SERVICE
+        },
+        properties: {
+            POLYGON_DRAW_STYLE
+        }
+    });
+
+    return { editingService, mapId, map };
+}

@@ -9,7 +9,12 @@ import { Mock, afterEach, expect, it, vi } from "vitest";
 import { WMTSLayer, WMTSLayerConfig } from "../../api";
 import { MapModelImpl } from "../MapModelImpl";
 import { WMTSLayerImpl } from "./WMTSLayerImpl";
-import SimpleWMTSCapas from "./test-data/SimpleWMTSCapas.xml?raw";
+import { readFileSync } from "node:fs";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const THIS_DIR = dirname(fileURLToPath(import.meta.url));
+const WMTS_CAPAS = readFileSync(resolve(THIS_DIR, "./test-data/SimpleWMTSCapas.xml"), "utf-8");
 
 // happy dom does not implement an XML parser
 // https://github.com/capricorn86/happy-dom/issues/282
@@ -33,7 +38,7 @@ it("uses http service to fetch images", async () => {
 
     const fetch = vi.fn(async (url: string) => {
         if (url === SERVICE_URL) {
-            return new Response(SimpleWMTSCapas, {
+            return new Response(WMTS_CAPAS, {
                 status: 200
             });
         }

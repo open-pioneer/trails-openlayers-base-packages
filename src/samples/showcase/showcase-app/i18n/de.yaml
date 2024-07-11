@@ -1,0 +1,53 @@
+messages:
+  header:
+    title: Component Showcase
+  ariaLabels:
+    map: "Karte. Mit den Pfeiltasten kannst du die Karte bewegen. Mit der Plus Taste hineinzoomen und mit der Minus Taste herauszoomen."
+  demos:
+    # NOTE: 'description' supports arbitrary HTML!
+    geolocation:
+      title: Geolocation
+      description: Diese Demo zeigt, wie das <code>Geolocation</code>-Tool verwendet werden kann, um die aktuelle Position des Geräts zu erhalten.
+    printing:
+      title: Druck
+      description: Diese Demo zeigt, wie die <code>Printing</code>-Komponente verwendet werden kann, um einen Screenshot der Karte zu exportieren.
+    spatialBookmarks:
+      title: Räumliche Lesezeichen
+      description: Diese Demo zeigt, wie die <code>SpatialBookmarks</code>-Komponente verwendet werden kann, um räumliche Lesezeichen zu speichern und anzuwenden.
+    overviewMap:
+      title: Übersichtskarte
+      description: Diese Demo zeigt, wie die <code>OverviewMap</code> verwendet werden kann.
+    mapNavigation:
+      title: Kartennavigations-Werkzeuge
+      description: "Diese Demo zeigt, wie die Tools zur Kartennavigation verwendet werden können: <code>ZoomIn, ZoomOut, InitialExtent</code>"
+    searchAndHighlight:
+      title: Suche und Feature-Highlight
+      description: Diese Demo zeigt, wie die <code>Search</code>-Komponente verwendet werden kann und wie mittels Highlighting Features in der Karte hervorgehoben werden können.
+    coordinateViewer:
+      title: Koordinaten-Anzeige
+      description: Diese Demo zeigt, wie die <code>CoordinateViewer</code>-Komponente verwendet werden kann, um sich Koordinaten an der Position des Mauszeigers anzeigen zu lassen.
+    scaleViewer:
+      title: Maßstabs-Anzeige
+      description: Diese Demo zeigt, wie die <code>ScaleViewer</code>-Komponente verwendet werden kann, um den aktuellen Maßstab anzuzeigen.
+    scaleBar:
+      title: Maßstabsleiste
+      description: Diese Demo zeigt, wie die <code>ScaleBar</code>-Komponente verwendet werden kann, um eine Maßstabsleiste anzuzeigen.
+    measurement:
+      title: Messen
+      description: Diese Demo zeigt, wie die <code>Measurement</code>-Komponente verwendet werden kann, um Strecken- und Flächenmessungen in der karte zu durchzuführen.
+    tocLegend:
+      title: Karteninhalt, Grundkarte und Legende
+      description: Diese Demo zeigt, wie die <code>Toc</code>-, <code>BasemapSwitcher</code> und <code>Legend</code>-Komponenten verwendet werden können, um die Karteninhalte zu kontrollieren und eine Legende anzuzeigen.
+      tocTitle: Karteninhalt
+      legendTitle: Legende
+    selectionResultList:
+      title: Selektion und Ergebnisliste
+      description: Diese Demo zeigt, wie die <code>Selection</code>-Komponente verwendet werden kann, um Features in der Karte zu selektieren und wie die <code>ResultList</code>-Komponente verwendet werden kann, die Attribute von Features in einer Liste anzuzeigen.
+  demoSelection:
+    label: "Demo:"
+    notFound: "Demo ''{demoId}'' wurde nicht gefunden."
+  localeSwitcher:
+    label: "Sprache:"
+    locale:
+      de: Deutsch
+      en: Englisch

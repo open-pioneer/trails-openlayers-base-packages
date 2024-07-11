@@ -25,11 +25,11 @@ it("should successfully create and destroy a mapModel", async () => {
     registry.destroy();
 
     await expect(() => registry.expectMapModel(mapId)).rejects.toThrowErrorMatchingInlineSnapshot(
-        '"MapRegistry has already been destroyed."'
+        `[Error: MapRegistry has already been destroyed.]`
     );
 
     await expect(() => mapModel.whenDisplayed()).rejects.toThrowErrorMatchingInlineSnapshot(
-        '"Map model was destroyed."'
+        `[Error: Map model was destroyed.]`
     );
 });
 

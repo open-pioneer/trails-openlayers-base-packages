@@ -102,8 +102,20 @@ export function _createVectorSource(
         abortController?.abort("Extent changed");
         abortController = new AbortController();
 
-        const fullURL = createCollectionRequestUrl(collectionItemsURL, extent, options.crs);
-        const strategy = collectionInfos?.supportsOffsetStrategy ? "offset" : "next";
+        const fullURL = createCollectionRequestUrl(
+            collectionItemsURL,
+            extent,
+            options.crs,
+            options.rewriteUrl
+        );
+
+        let strategy =
+            options?.strategy || (collectionInfos?.supportsOffsetStrategy ? "offset" : "next");
+
+        if (strategy === "offset" && !collectionInfos?.supportsOffsetStrategy) {
+            strategy = "next";
+        }
+
         try {
             const features = await loadAllFeatures(strategy, {
                 fullURL: fullURL.toString(),

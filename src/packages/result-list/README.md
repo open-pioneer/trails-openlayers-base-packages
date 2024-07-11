@@ -122,10 +122,52 @@ const ownHighlightStyle = {
 <ResultList mapId={mapId} input={input} highlightOptions={ownHighlightStyle} />;
 ```
 
+### Configuring memoization of rows
+
+The optional property `memoizeRows` determines whether result list table rows should be memoized or not.
+The default value is `false`.
+
+If memoization is turned on, the result list only rerenders if
+
+-   direct properties of the result list table changes,
+-   a row is selected (or deselected), or
+-   the sort order is changed,
+
+but the performance of the result list is greatly improved, especially for high row counts.
+
+`memoizeRows` should remain `false` if additional rerender conditions are present.
+
+Example:
+
+```tsx
+import { ResultList } from "@open-pioneer/result-list";
+<ResultList mapId={mapId} input={input} memoizeRows={true} />;
+```
+
 ### Selection
 
-Users can select (and deselect) individual features by clicking on the checkbox at the beginning of a row.
-A checkbox in the header of the table allows to select (or deselect) _all_ features in the table.
+Users can select (and deselect) individual features by clicking on the selection control
+(checkbox or radio button) at the beginning of a row.
+
+The optional property `selectionMode` can be used to change the default selection mode "multi" to "single".
+Single selection means that only one row can be selected at a time.
+With the `selectionMode` `"single"`, the selection control is a radio button by default.
+
+A checkbox in the header of the table allows to select (or deselect) _all_ features in the table if
+the `selectionMode` is "multi" (default).
+
+```tsx
+import { ResultList } from "@open-pioneer/result-list";
+<ResultList mapId={mapId} input={input} selectionMode="single" />;
+```
+
+The style of the selection control can be configured by using the `"selectionStyle"` property (`"checkbox"` or `"radio`).
+Note that the combination of `selectionMode` `"single"` with `selectionStyle` `"radio"` is not allowed:
+
+```tsx
+import { ResultList } from "@open-pioneer/result-list";
+<ResultList mapId={mapId} input={input} selectionMode="single" selectionStyle="checkbox" />;
+```
 
 ### Listening for selection changes
 

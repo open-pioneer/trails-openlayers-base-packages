@@ -1,5 +1,51 @@
 # @open-pioneer/result-list
 
+## 0.3.0
+
+### Minor Changes
+
+-   fbd12d6: Added the possibility to configure single or multi row selection mode.
+-   9a0c1a9: Added a new optional parameter `memoizeRows` to improve render performance.
+    When rows are memoized, they are only rerendered under certain conditions (e.g. selection changes, sort order changes), which can
+    greatly improve performance in some circumstances.
+
+    Example:
+
+    ```tsx
+    <ResultList mapId={mapId} input={input} memoizeRows={true} />
+    ```
+
+-   5623b5e: Changed ResultListProps interface to differentiate between highlightOptions and zoomOptions.
+
+### Patch Changes
+
+-   4140646: Fix imports.
+-   4140646: Update trails dependencies
+-   4140646: Update to react 18.3.1
+-   81bc7da: Update trails dependencies
+-   2c092dc: Update dependencies
+-   Updated dependencies [4140646]
+-   Updated dependencies [4140646]
+-   Updated dependencies [b5bb7a1]
+-   Updated dependencies [81bc7da]
+-   Updated dependencies [2c092dc]
+-   Updated dependencies [4140646]
+    -   @open-pioneer/react-utils@0.2.3
+    -   @open-pioneer/map@0.5.1
+
+## 0.2.0
+
+### Minor Changes
+
+-   520a97b: Add `ZoomOptions` prop in map package
+-   48bdf81: Add highlight functionality
+-   8e764ce: Zoom to features loaded into the result-list
+
+### Patch Changes
+
+-   Updated dependencies [520a97b]
+    -   @open-pioneer/map@0.5.0
+
 ## 0.1.0
 
 ### Minor Changes

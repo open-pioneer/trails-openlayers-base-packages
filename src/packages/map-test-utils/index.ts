@@ -13,12 +13,10 @@ import {
     SimpleLayer,
     SimpleLayerConfig
 } from "@open-pioneer/map";
+import { MapRegistryImpl } from "@open-pioneer/map/internalTestSupport";
 import { createService } from "@open-pioneer/test-utils/services";
 import { screen, waitFor } from "@testing-library/react";
 import VectorLayer from "ol/layer/Vector";
-
-// Importing internals: needed for test support
-import { MapRegistryImpl } from "@open-pioneer/map/services";
 
 export interface SimpleMapOptions {
     /** Center coordinates for the map. */

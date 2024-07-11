@@ -1,5 +1,25 @@
 # highlight-and-zoom-app
 
+## 0.0.8
+
+### Patch Changes
+
+-   Updated dependencies [4140646]
+-   Updated dependencies [4140646]
+-   Updated dependencies [b5bb7a1]
+-   Updated dependencies [81bc7da]
+-   Updated dependencies [2c092dc]
+-   Updated dependencies [4140646]
+    -   @open-pioneer/react-utils@0.2.3
+    -   @open-pioneer/map@0.5.1
+
+## 0.0.7
+
+### Patch Changes
+
+-   Updated dependencies [520a97b]
+    -   @open-pioneer/map@0.5.0
+
 ## 0.0.6
 
 ### Patch Changes

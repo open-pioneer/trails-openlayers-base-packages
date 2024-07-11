@@ -1,5 +1,27 @@
 # @open-pioneer/map-test-utils
 
+## 0.3.2
+
+### Patch Changes
+
+-   4140646: Update trails dependencies
+-   4140646: Update to react 18.3.1
+-   81bc7da: Update trails dependencies
+-   2c092dc: Update dependencies
+-   Updated dependencies [4140646]
+-   Updated dependencies [4140646]
+-   Updated dependencies [b5bb7a1]
+-   Updated dependencies [81bc7da]
+-   Updated dependencies [2c092dc]
+    -   @open-pioneer/map@0.5.1
+
+## 0.3.1
+
+### Patch Changes
+
+-   Updated dependencies [520a97b]
+    -   @open-pioneer/map@0.5.0
+
 ## 0.3.0
 
 ### Minor Changes

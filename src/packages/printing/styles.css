@@ -21,3 +21,10 @@
     font-size: 1.5em;
     text-align: center;
 }
+
+/* more specific than the open layers selector */
+.printing-scale-bar.ol-scale-bar {
+    /* these variables are set in the PrintingService and may include the map view's padding */
+    left: var(--printing-scale-bar-left);
+    bottom: var(--printing-scale-bar-bottom);
+}

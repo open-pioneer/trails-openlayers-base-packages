@@ -1,6 +1,6 @@
 {
     "name": "@open-pioneer/overview-map",
-    "version": "0.4.0",
+    "version": "0.4.2",
     "description": "This package offers a UI component with which an overview map can be integrated.",
     "license": "Apache-2.0",
     "main": "index.ts",
@@ -17,15 +17,15 @@
         "build": "build-pioneer-package"
     },
     "peerDependencies": {
-        "@open-pioneer/chakra-integration": "^1.1.1",
+        "@open-pioneer/chakra-integration": "^1.1.3",
         "@open-pioneer/map": "workspace:^",
-        "@open-pioneer/runtime": "^2.1.2",
+        "@open-pioneer/runtime": "^2.1.5",
         "@open-pioneer/react-utils": "workspace:^",
         "ol": "^9.0.0",
-        "react": "^18.2.0"
+        "react": "^18.3.1"
     },
     "devDependencies": {
-        "@open-pioneer/test-utils": "^1.1.1",
+        "@open-pioneer/test-utils": "^1.1.3",
         "@open-pioneer/map-test-utils": "workspace:^",
         "openlayers-base-packages": "workspace:*"
     },

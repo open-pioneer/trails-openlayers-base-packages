@@ -1,5 +1,29 @@
 # sidebar-app
 
+## 0.0.9
+
+### Patch Changes
+
+-   Updated dependencies [4140646]
+-   Updated dependencies [4140646]
+-   Updated dependencies [b5bb7a1]
+-   Updated dependencies [81bc7da]
+-   Updated dependencies [2c092dc]
+-   Updated dependencies [4140646]
+    -   @open-pioneer/experimental-layout-sidebar@0.2.2
+    -   @open-pioneer/basemap-switcher@0.4.2
+    -   @open-pioneer/react-utils@0.2.3
+    -   @open-pioneer/theme@0.3.2
+    -   @open-pioneer/map@0.5.1
+
+## 0.0.8
+
+### Patch Changes
+
+-   Updated dependencies [520a97b]
+    -   @open-pioneer/map@0.5.0
+    -   @open-pioneer/basemap-switcher@0.4.1
+
 ## 0.0.7
 
 ### Patch Changes

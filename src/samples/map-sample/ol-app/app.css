@@ -8,3 +8,7 @@
 .spatial-bookmarks {
     max-height: 300px;
 }
+
+.editing-tooltip-hidden {
+    visibility: hidden;
+}

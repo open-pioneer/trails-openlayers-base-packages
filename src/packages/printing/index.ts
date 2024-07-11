@@ -20,7 +20,21 @@ export interface PrintingOptions {
      * This option can be used to customize the text content of the overlay (if enabled).
      */
     overlayText?: string;
+
+    /**
+     * Whether to respect the map view's padding when printing (default: `"auto"`).
+     */
+    viewPadding?: ViewPaddingBehavior;
 }
+
+/**
+ * Whether to respect the map view's padding when printing.
+ *
+ * - `"auto"`: Respect the map's current viewPadding.
+ *   Padded regions of the map will _not_ be included in the print result.
+ * - `"ignore"`: Ignore the map's viewPadding. The entire map will be printed.
+ */
+export type ViewPaddingBehavior = "auto" | "ignore";
 
 /**
  * The printing service provides an image of a map as a canvas element or a data URL for a PNG image.
