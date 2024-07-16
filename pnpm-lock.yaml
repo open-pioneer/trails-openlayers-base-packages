@@ -1337,6 +1337,9 @@ importers:
       '@open-pioneer/scale-bar':
         specifier: workspace:^
         version: link:../../../packages/scale-bar
+      '@open-pioneer/scale-setter':
+        specifier: workspace:^
+        version: link:../../../packages/scale-setter
       '@open-pioneer/scale-viewer':
         specifier: workspace:^
         version: link:../../../packages/scale-viewer

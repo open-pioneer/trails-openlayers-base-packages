@@ -14,6 +14,7 @@
         "@open-pioneer/spatial-bookmarks": "workspace:^",
         "@open-pioneer/coordinate-viewer": "workspace:^",
         "@open-pioneer/scale-viewer": "workspace:^",
+        "@open-pioneer/scale-setter": "workspace:^",
         "@open-pioneer/scale-bar": "workspace:^",
         "@open-pioneer/search": "workspace:^",
         "@open-pioneer/selection": "workspace:^",

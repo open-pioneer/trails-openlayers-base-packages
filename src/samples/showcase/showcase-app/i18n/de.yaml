@@ -29,6 +29,9 @@ messages:
     scaleViewer:
       title: Maßstabs-Anzeige
       description: Diese Demo zeigt, wie die <code>ScaleViewer</code>-Komponente verwendet werden kann, um den aktuellen Maßstab anzuzeigen.
+    scaleSetter:
+      title: Maßstab setzen
+      description: Diese Demo zeigt, wie die <code>ScaleSetter</code>-Komponente verwendet werden kann, um den Maßstab der Karte anzupassen.
     scaleBar:
       title: Maßstabsleiste
       description: Diese Demo zeigt, wie die <code>ScaleBar</code>-Komponente verwendet werden kann, um eine Maßstabsleiste anzuzeigen.

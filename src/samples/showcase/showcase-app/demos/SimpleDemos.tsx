@@ -7,6 +7,7 @@ import { Measurement } from "@open-pioneer/measurement";
 import { Printing } from "@open-pioneer/printing";
 import { ScaleBar } from "@open-pioneer/scale-bar";
 import { ScaleViewer } from "@open-pioneer/scale-viewer";
+import { ScaleSetter } from "@open-pioneer/scale-setter";
 import { SpatialBookmarks } from "@open-pioneer/spatial-bookmarks";
 import { MAP_ID } from "../MapConfigProviderImpl";
 import { Demo, SharedDemoOptions } from "./Demo";
@@ -32,6 +33,19 @@ export function createScaleViewerDemo({ intl }: SharedDemoOptions): Demo {
             return {
                 description: intl.formatMessage({ id: "demos.scaleViewer.description" }),
                 mainWidget: <ScaleViewer mapId={MAP_ID} />
+            };
+        }
+    };
+}
+
+export function createScaleSetterDemo({ intl }: SharedDemoOptions): Demo {
+    return {
+        id: "scaleSetter",
+        title: intl.formatMessage({ id: "demos.scaleSetter.title" }),
+        createModel() {
+            return {
+                description: intl.formatMessage({ id: "demos.scaleSetter.description" }),
+                mainWidget: <ScaleSetter mapId={MAP_ID} />
             };
         }
     };
