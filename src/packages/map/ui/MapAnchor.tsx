@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box, BoxProps, StyleProps } from "@open-pioneer/chakra-integration";
+import { Box, StyleProps } from "@open-pioneer/chakra-integration";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
-import { BaseSyntheticEvent, ReactNode, useMemo } from "react";
+import { ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { MapPadding } from "../api";
 import { useMapContext } from "./MapContext";
@@ -41,13 +41,8 @@ export interface MapAnchorProps extends CommonComponentProps {
     verticalGap?: number;
 
     /**
-     * Prevent some events from the map anchor's children from bubbling towards the map, effectively hiding them from map interactions.
-     * Defaults to `true`.
-     *
-     * If this value is enabled, events such as `pointer-down` are hidden from the map when they occur
-     * within the map anchor.
-     * This is essential when the user wants to select text, or open the browser context menu within the anchor.
-     * If that is not required, set `stopEvents` to `false` instead.
+     * @deprecated This property no longer does anything. Browser events happening inside a map anchor
+     * or its children will no longer affect the map.
      */
     stopEvents?: boolean;
 
@@ -55,34 +50,13 @@ export interface MapAnchorProps extends CommonComponentProps {
 }
 
 export function MapAnchor(props: MapAnchorProps): JSX.Element {
-    const {
-        position = defaultPosition,
-        stopEvents = true,
-        children,
-        horizontalGap,
-        verticalGap
-    } = props;
+    const { position = defaultPosition, children, horizontalGap, verticalGap } = props;
     const { containerProps } = useCommonComponentProps("map-anchor", props);
     const { padding, mapAnchorsHost } = useMapContext();
-
-    const eventHandlers: Partial<BoxProps> = useMemo(() => {
-        const stopHandler = stopEvents ? stopPropagation : undefined;
-        return {
-            onPointerDown: stopHandler,
-            onPointerUp: stopHandler,
-            onContextMenu: stopHandler
-        };
-    }, [stopEvents]);
 
     return createPortal(
         <Box
             {...containerProps}
-            /* Overlay container uses pointer-events: none, this restores interactivity */
-            pointerEvents="auto"
-            /* Restore user-select: none set by ol-viewport parent */
-            userSelect="text"
-            /** Hide pointer up/down and context menu events from the map parent.  */
-            {...eventHandlers}
             {...computePositionStyles(position, padding, horizontalGap, verticalGap)}
         >
             {children}
@@ -120,6 +94,7 @@ export function computePositionStyles(
 ): StyleProps {
     const props: StyleProps = {
         position: "absolute",
+        zIndex: 1, // above map
         transitionProperty: "left, right, top, bottom",
         transitionDuration: "200ms",
         transitionTimingFunction: "ease-out"
@@ -166,8 +141,4 @@ export function computePositionStyles(
     props.overflow = "hidden";
 
     return props;
-}
-
-function stopPropagation(e: BaseSyntheticEvent) {
-    e.stopPropagation();
 }
