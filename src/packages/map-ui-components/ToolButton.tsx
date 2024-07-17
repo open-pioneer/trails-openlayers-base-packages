@@ -10,7 +10,7 @@ import {
     forwardRef,
     useState
 } from "react";
-import { CommonComponentProps, useCommonComponentProps } from "./useCommonComponentProps";
+import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import classNames from "classnames";
 
 /**

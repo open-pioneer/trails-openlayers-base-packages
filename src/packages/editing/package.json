@@ -18,8 +18,8 @@
     },
     "peerDependencies": {
         "@open-pioneer/core": "^1.2.3",
-        "@open-pioneer/http": "^2.1.7",
-        "@open-pioneer/runtime": "^2.1.5",
+        "@open-pioneer/http": "^2.1.8",
+        "@open-pioneer/runtime": "^2.1.6",
         "@open-pioneer/map": "workspace:^",
         "ol": "^9.0.0"
     },

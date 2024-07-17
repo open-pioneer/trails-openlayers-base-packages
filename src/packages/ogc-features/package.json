@@ -18,7 +18,7 @@
     },
     "peerDependencies": {
         "@open-pioneer/core": "^1.2.3",
-        "@open-pioneer/http": "^2.1.7",
+        "@open-pioneer/http": "^2.1.8",
         "ol": "^9.0.0",
         "uuid": "^9.0.1",
         "@open-pioneer/search": "workspace:^"

@@ -4,7 +4,8 @@ import { Flex } from "@open-pioneer/chakra-integration";
 import { Geolocation } from "@open-pioneer/geolocation";
 import { EditingService } from "@open-pioneer/editing";
 import { InitialExtent, ZoomIn, ZoomOut } from "@open-pioneer/map-navigation";
-import { ToolButton, useEvent } from "@open-pioneer/react-utils";
+import { useEvent } from "@open-pioneer/react-utils";
+import { ToolButton } from "@open-pioneer/map-ui-components";
 import { useIntl, useService } from "open-pioneer:react-hooks";
 import { TbPolygon, TbPolygonOff } from "react-icons/tb";
 
