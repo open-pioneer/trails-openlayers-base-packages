@@ -104,12 +104,10 @@ export function MapContainer(props: MapContainerProps) {
         }
     }, [modelState, mapModel, mapId]);
 
-    // This has the side effect that we wait for the initial render.
-    // This means, that when the map container is ready, the `mapAnchors` ref will also be
-    // available to the map anchor children.
+    // Wait for mount to make sure that the map anchors host is available
     useEffect(() => {
-        setReady(mapModel != null);
-    }, [mapModel]);
+        setReady(true);
+    }, []);
 
     const mapContainerStyle: React.CSSProperties = {
         height: "100%",

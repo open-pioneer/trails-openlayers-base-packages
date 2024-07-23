@@ -40,12 +40,6 @@ export interface MapAnchorProps extends CommonComponentProps {
      */
     verticalGap?: number;
 
-    /**
-     * @deprecated This property no longer does anything. Browser events happening inside a map anchor
-     * or its children will no longer affect the map.
-     */
-    stopEvents?: boolean;
-
     children?: ReactNode;
 }
 

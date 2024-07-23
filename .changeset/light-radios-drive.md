@@ -31,3 +31,6 @@ Now, the DOM looks like this:
 Which means that the map-anchors are no longer children of the map.
 
 You may have to update your custom styles if you relied on the previous DOM hierarchy.
+
+The `MapAnchor`'s prop `stopEvents` has been deleted as it is no longer needed.
+Browser events happening inside a map anchor or its children will no longer affect the map.
