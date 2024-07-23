@@ -1,5 +1,21 @@
 # @open-pioneer/map
 
+## 0.5.1
+
+### Patch Changes
+
+-   4140646: Update trails dependencies
+-   4140646: Update to react 18.3.1
+-   b5bb7a1: Adjusted name of Open Pioneer project to Open Pioneer Trails
+-   81bc7da: Update trails dependencies
+-   2c092dc: Update dependencies
+-   Updated dependencies [4140646]
+-   Updated dependencies [4140646]
+-   Updated dependencies [81bc7da]
+-   Updated dependencies [2c092dc]
+-   Updated dependencies [4140646]
+    -   @open-pioneer/react-utils@0.2.3
+
 ## 0.5.0
 
 ### Minor Changes

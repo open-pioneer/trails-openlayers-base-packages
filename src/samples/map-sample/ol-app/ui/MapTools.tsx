@@ -12,7 +12,7 @@ import {
     usePopoverContext
 } from "@open-pioneer/chakra-integration";
 import { InitialExtent, ZoomIn, ZoomOut } from "@open-pioneer/map-navigation";
-import { ToolButton } from "@open-pioneer/react-utils";
+import { ToolButton } from "@open-pioneer/map-ui-components";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { useIntl, useService } from "open-pioneer:react-hooks";
 import { ForwardedRef, forwardRef, useState } from "react";

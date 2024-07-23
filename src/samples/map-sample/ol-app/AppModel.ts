@@ -6,6 +6,7 @@ import { Highlight, MapModel, MapRegistry } from "@open-pioneer/map";
 import { type DECLARE_SERVICE_INTERFACE, Service, ServiceOptions } from "@open-pioneer/runtime";
 import { SearchSource } from "@open-pioneer/search";
 import { SelectionSource, VectorLayerSelectionSourceFactory } from "@open-pioneer/selection";
+import Feature from "ol/Feature";
 import OlBaseLayer from "ol/layer/Base";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
@@ -283,7 +284,7 @@ export class AppModel implements Service, AppState {
             }
 
             const layerSelectionSource = this._vectorSelectionSourceFactory.createSelectionSource({
-                vectorLayer: opLayer.olLayer as VectorLayer<VectorSource>,
+                vectorLayer: opLayer.olLayer as VectorLayer<Feature>,
                 label: opLayer.title
             });
 

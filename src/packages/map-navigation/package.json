@@ -1,6 +1,6 @@
 {
     "name": "@open-pioneer/map-navigation",
-    "version": "0.4.1",
+    "version": "0.4.2",
     "description": "This package provides a collection of map navigation controls.",
     "license": "Apache-2.0",
     "main": "index.ts",
@@ -19,12 +19,13 @@
     "peerDependencies": {
         "@open-pioneer/chakra-integration": "^1.1.3",
         "@open-pioneer/map": "workspace:^",
-        "@open-pioneer/react-utils": "workspace:^",
-        "@open-pioneer/runtime": "^2.1.5",
+        "@open-pioneer/map-ui-components": "workspace:^",
+        "@open-pioneer/react-utils": "^1.0.0",
+        "@open-pioneer/runtime": "^2.1.6",
         "classnames": "^2.3.2",
-        "ol": "^9.0.0",
+        "ol": "^9.2.4",
         "react": "^18.3.1",
-        "react-icons": "^4.12.0"
+        "react-icons": "^5.2.1"
     },
     "devDependencies": {
         "@open-pioneer/test-utils": "^1.1.3",

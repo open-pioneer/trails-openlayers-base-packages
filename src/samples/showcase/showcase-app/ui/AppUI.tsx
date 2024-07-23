@@ -77,8 +77,8 @@ function AppContent(props: { state: AppStateReady }) {
                                     </TitledSection>
                                 </Box>
                             </MapAnchor>
-                            <MapAnchor position="bottom-right" horizontalGap={10}>
-                                <VStack>{currentDemoModel.tools}</VStack>
+                            <MapAnchor position="bottom-right" horizontalGap={6}>
+                                <VStack p={1}>{currentDemoModel.tools}</VStack>
                             </MapAnchor>
                             {currentListContainer && (
                                 <Box

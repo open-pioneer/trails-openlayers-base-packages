@@ -14,16 +14,16 @@ jobs:
       contents: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v4
         with:
           version: 9
           run_install: false
 
       - name: Install Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 18
           cache: "pnpm"
@@ -46,12 +46,11 @@ jobs:
       - name: Build API documentation
         run: pnpm build-docs
 
-      # TODO: error is ignored (https://github.com/orgs/open-pioneer/projects/6?pane=issue&itemId=62484075)
       - name: Create license report
-        run: pnpm build-license-report || true;
+        run: pnpm build-license-report;
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: build
           path: dist/
@@ -72,10 +71,10 @@ jobs:
     needs: test
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Load artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: build
           path: dist/

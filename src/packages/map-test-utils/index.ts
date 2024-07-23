@@ -13,12 +13,10 @@ import {
     SimpleLayer,
     SimpleLayerConfig
 } from "@open-pioneer/map";
+import { MapRegistryImpl } from "@open-pioneer/map/internalTestSupport";
 import { createService } from "@open-pioneer/test-utils/services";
 import { screen, waitFor } from "@testing-library/react";
 import VectorLayer from "ol/layer/Vector";
-
-// Importing internals: needed for test support
-import { MapRegistryImpl } from "@open-pioneer/map/services";
 
 export interface SimpleMapOptions {
     /** Center coordinates for the map. */
@@ -123,7 +121,7 @@ export async function setupMap(options?: SimpleMapOptions) {
 
     const mapConfig: MapConfig = {
         initialView: options?.noInitialView ? undefined : getInitialView(),
-        projection: options?.noProjection ? undefined : options?.projection ?? "EPSG:3857",
+        projection: options?.noProjection ? undefined : (options?.projection ?? "EPSG:3857"),
         layers: options?.layers?.map(
             (config) => ("map" in config ? config : new SimpleLayer(config))
             // using map as discriminator (no prototype for Layer)

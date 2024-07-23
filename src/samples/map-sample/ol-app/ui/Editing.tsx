@@ -19,7 +19,6 @@ import { unByKey } from "ol/Observable";
 import { EventsKey } from "ol/events";
 import { Select } from "ol/interaction";
 import VectorLayer from "ol/layer/Vector";
-import VectorSource from "ol/source/Vector";
 import { useIntl, useService } from "open-pioneer:react-hooks";
 import { useEffect, useId, useState } from "react";
 import { AppModel } from "../AppModel";
@@ -216,7 +215,7 @@ class EditingViewModel {
                     )
                 });
 
-                const vectorLayer = layer?.olLayer as VectorLayer<VectorSource>;
+                const vectorLayer = layer?.olLayer as VectorLayer<Feature>;
                 vectorLayer.getSource()?.refresh(); // trigger reload to show feature
             }
         };
@@ -254,7 +253,7 @@ class EditingViewModel {
 
             run: async () => {
                 const layer = this.findLayer();
-                const vectorLayer = layer.olLayer as VectorLayer<VectorSource>;
+                const vectorLayer = layer.olLayer as VectorLayer<Feature>;
                 const url = new URL(layer.attributes.collectionURL + "/items");
 
                 selectInteraction = new Select({

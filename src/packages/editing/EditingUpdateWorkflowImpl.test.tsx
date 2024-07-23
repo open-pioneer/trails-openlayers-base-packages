@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: Apache-2.0
 import { describe, expect, it, vi } from "vitest";
 import VectorLayer from "ol/layer/Vector";
-import VectorSource from "ol/source/Vector";
 import { FlatStyle } from "ol/style/flat";
 import { HttpService } from "@open-pioneer/http";
 import { MapContainer, MapModel } from "@open-pioneer/map";
@@ -11,7 +10,6 @@ import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render } from "@testing-library/react";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { EditingUpdateWorkflowImpl } from "./EditingUpdateWorkflowImpl";
-import BaseLayer from "ol/layer/Base";
 import { Interaction, Modify } from "ol/interaction";
 import { Feature } from "ol";
 import { Point } from "ol/geom";
@@ -96,12 +94,7 @@ describe("stopping update editing workflow", () => {
         const { workflow } = await setupUpdateWorkflow(map);
         workflow.stop();
 
-        // Function `getEditingLayer` is not used, caused of throwing new Error
-        const layers: BaseLayer[] = map.olMap.getLayers().getArray();
-
-        const editingLayer: VectorLayer<VectorSource> | undefined = layers.find(
-            (l) => l.getProperties().name === "editing-layer"
-        ) as VectorLayer<VectorSource>;
+        const editingLayer = findEditingLayer(map);
         expect(editingLayer).toBeUndefined();
     });
 
@@ -358,12 +351,7 @@ async function setupUpdateWorkflow(map: MapModel, httpService: HttpService = HTT
 }
 
 function getEditingLayerAndSource(map: MapModel) {
-    const layers: BaseLayer[] = map.olMap.getLayers().getArray();
-
-    const editingLayer: VectorLayer<VectorSource> | undefined = layers.find(
-        (l) => l.getProperties().name === "editing-layer"
-    ) as VectorLayer<VectorSource>;
-
+    const editingLayer = findEditingLayer(map);
     if (!editingLayer) {
         throw new Error("editing layer not found");
     }
@@ -374,6 +362,14 @@ function getEditingLayerAndSource(map: MapModel) {
     }
 
     return { editingLayer, editingSource };
+}
+
+function findEditingLayer(map: MapModel) {
+    const layers = map.olMap.getLayers().getArray();
+    const editingLayer = layers.find((l) => l.getProperties().name === "editing-layer") as
+        | VectorLayer<Feature>
+        | undefined;
+    return editingLayer;
 }
 
 function sleep(ms: number) {
