@@ -4,14 +4,17 @@ import { Resource, createLogger } from "@open-pioneer/core";
 import { HttpService } from "@open-pioneer/http";
 import { Highlight, MapModel, MapRegistry } from "@open-pioneer/map";
 import { OgcFeaturesSearchSourceFactory } from "@open-pioneer/ogc-features";
+import { ResultColumn, ResultListInput } from "@open-pioneer/result-list";
 import {
-    type DECLARE_SERVICE_INTERFACE,
     PackageIntl,
     Service,
-    ServiceOptions
+    ServiceOptions,
+    type DECLARE_SERVICE_INTERFACE
 } from "@open-pioneer/runtime";
 import { SearchSource } from "@open-pioneer/search";
 import { SelectionSource, VectorLayerSelectionSourceFactory } from "@open-pioneer/selection";
+import Feature from "ol/Feature";
+import { Geometry } from "ol/geom";
 import OlBaseLayer from "ol/layer/Base";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
@@ -19,8 +22,6 @@ import { proxy, ref } from "valtio";
 import { proxyMap } from "valtio/utils";
 import { MAP_ID } from "./MapConfigProviderImpl";
 import { PhotonGeocoder } from "./sources/searchSources";
-import { ResultColumn, ResultListInput } from "@open-pioneer/result-list";
-import { Geometry } from "ol/geom";
 
 const LOG = createLogger("ol-app:AppModel");
 
@@ -247,7 +248,7 @@ export class AppModel implements Service {
             }
 
             const layerSelectionSource = this._vectorSelectionSourceFactory.createSelectionSource({
-                vectorLayer: opLayer.olLayer as VectorLayer<VectorSource>,
+                vectorLayer: opLayer.olLayer as VectorLayer<Feature>,
                 label: opLayer.title
             });
 

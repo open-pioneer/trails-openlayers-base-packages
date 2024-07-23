@@ -6,7 +6,7 @@
 import Layer from "ol/layer/Layer";
 import TileLayer from "ol/layer/Tile";
 import { HttpService } from "@open-pioneer/http";
-import { Mock, SpyInstance, afterEach, describe, expect, it, vi } from "vitest";
+import { Mock, MockInstance, afterEach, describe, expect, it, vi } from "vitest";
 import { HealthCheckFunction, LayerConfig, SimpleLayerConfig } from "../api";
 import { AbstractLayer } from "./AbstractLayer";
 import Source, { State } from "ol/source/Source";
@@ -195,7 +195,7 @@ describe("performs a health check", () => {
 
     it("when specified as function", async () => {
         let didResolve = false;
-        const mockedFetch: SpyInstance = vi.spyOn(global, "fetch");
+        const mockedFetch: MockInstance = vi.spyOn(global, "fetch");
         const customHealthCheck: HealthCheckFunction = async () => {
             function wait(milliseconds: number): Promise<void> {
                 return new Promise((resolve) => setTimeout(resolve, milliseconds));
@@ -233,7 +233,7 @@ describe("performs a health check", () => {
     });
 
     it("when specified as function returning 'loaded'", async () => {
-        const _mockedFetch: SpyInstance = vi.spyOn(global, "fetch");
+        const _mockedFetch: MockInstance = vi.spyOn(global, "fetch");
         const customHealthCheck: HealthCheckFunction = async () => {
             return "loaded";
         };
@@ -251,7 +251,7 @@ describe("performs a health check", () => {
 
     it("when specified as function throwing an error", async () => {
         const mockedWarn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
-        const _mockedFetch: SpyInstance = vi.spyOn(global, "fetch");
+        const _mockedFetch: MockInstance = vi.spyOn(global, "fetch");
         const customHealthCheck: HealthCheckFunction = async () => {
             throw new Error("broken!");
         };
@@ -277,7 +277,7 @@ describe("performs a health check", () => {
     });
 
     it("not when no health check specified in layer config", async () => {
-        const mockedFetch: SpyInstance = vi.spyOn(global, "fetch");
+        const mockedFetch: MockInstance = vi.spyOn(global, "fetch");
         const { layer } = createLayerWithHealthCheck({
             healthCheck: undefined,
             sourceState: "ready"
@@ -293,7 +293,7 @@ describe("performs a health check", () => {
     });
 
     it("not when ol layer state already is error", async () => {
-        const mockedFetch: SpyInstance = vi.spyOn(global, "fetch");
+        const mockedFetch: MockInstance = vi.spyOn(global, "fetch");
         const { layer } = createLayerWithHealthCheck({
             healthCheck: "http://example.org/health",
             sourceState: "error"

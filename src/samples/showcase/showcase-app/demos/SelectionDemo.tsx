@@ -16,10 +16,10 @@ import {
 } from "@open-pioneer/selection";
 import { VectorSelectionSourceFactory } from "@open-pioneer/selection/services";
 import VectorLayer from "ol/layer/Vector";
-import VectorSource from "ol/source/Vector";
 import { ReactNode } from "react";
 import { MAP_ID } from "../MapConfigProviderImpl";
 import { Demo, DemoModel, SharedDemoOptions } from "./Demo";
+import { Feature } from "ol";
 
 interface ResultListState {
     /** Whether the result list is currently shown. */
@@ -171,7 +171,7 @@ function initSelectionSource(
     const opLayer = mapModel.layers.getLayerById("ogc_kitas") as SimpleLayer;
 
     const layerSelectionSource = vectorSelectionSourceFactory.createSelectionSource({
-        vectorLayer: opLayer.olLayer as VectorLayer<VectorSource>,
+        vectorLayer: opLayer.olLayer as VectorLayer<Feature>,
         label: opLayer.title
     });
 

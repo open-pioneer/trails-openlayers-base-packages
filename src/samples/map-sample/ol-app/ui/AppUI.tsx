@@ -25,13 +25,13 @@ import { useSnapshot } from "valtio";
 import { EditingService } from "@open-pioneer/editing";
 import { PackageIntl } from "@open-pioneer/runtime";
 import VectorLayer from "ol/layer/Vector";
-import VectorSource from "ol/source/Vector";
 import { Select } from "ol/interaction";
 import { Resource } from "@open-pioneer/core";
 import { Overlay } from "ol";
 import OlMap from "ol/Map";
 import { unByKey } from "ol/Observable";
 import { EventsKey } from "ol/events";
+import { FeatureLike } from "ol/Feature";
 
 type InteractionType = "measurement" | "selection" | undefined;
 
@@ -281,7 +281,7 @@ function useEditingCreateWorkflow(
                             )
                         });
 
-                        const vectorLayer = layer?.olLayer as VectorLayer<VectorSource>;
+                        const vectorLayer = layer?.olLayer as VectorLayer<FeatureLike>;
                         vectorLayer.getSource()?.refresh();
                     })
                     .catch((error: Error) => {
@@ -367,7 +367,7 @@ function useEditingUpdateWorkflow(
 
             try {
                 const layer = map.layers.getLayerById("krankenhaus") as Layer;
-                const vectorLayer = layer?.olLayer as VectorLayer<VectorSource>;
+                const vectorLayer = layer?.olLayer as VectorLayer<FeatureLike>;
 
                 selectInteraction = new Select({
                     layers: [vectorLayer]

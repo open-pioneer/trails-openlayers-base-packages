@@ -7,7 +7,7 @@ import type { EventSource, Resource } from "@open-pioneer/core";
 import { BaseFeature } from "@open-pioneer/map";
 import { DeclaredService } from "@open-pioneer/runtime";
 import VectorLayer from "ol/layer/Vector";
-import VectorSource from "ol/source/Vector";
+import Feature from "ol/Feature";
 
 /**
  * The status of a selection source.
@@ -132,7 +132,7 @@ export interface SelectionSource extends Partial<SelectionSourceEventBase> {
 }
 
 export interface VectorLayerSelectionSourceOptions {
-    vectorLayer: VectorLayer<VectorSource>;
+    vectorLayer: VectorLayer<Feature>;
     label: string;
 }
 

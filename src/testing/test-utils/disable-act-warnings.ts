@@ -1,14 +1,8 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { SpyInstance, afterEach, vi } from "vitest";
+import { MockInstance, vi, onTestFinished } from "vitest";
 
-let consoleSpy: SpyInstance | undefined;
-afterEach(() => {
-    if (consoleSpy) {
-        consoleSpy.mockRestore();
-        consoleSpy = undefined;
-    }
-});
+let consoleSpy: MockInstance | undefined;
 
 /**
  * Disables `act(...)` warnings from react during tests.
@@ -39,5 +33,9 @@ export function disableReactActWarnings() {
         }
         // Otherwise: call original method
         errorfn.call(console, ...args);
+    });
+    onTestFinished(() => {
+        consoleSpy?.mockRestore();
+        consoleSpy = undefined;
     });
 }
