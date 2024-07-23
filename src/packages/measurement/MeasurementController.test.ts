@@ -90,7 +90,7 @@ it("should respect the map's current projection (EPSG:3857)", async () => {
     ]);
 
     const finishedTooltip = getTooltipElement(olMap, "measurement-finished-tooltip");
-    expect(finishedTooltip.innerHTML).toMatchInlineSnapshot('"68.45 m"');
+    expect(finishedTooltip.innerHTML).toMatchInlineSnapshot(`"<span>68.45 m</span>"`);
 
     controller.stopMeasurement();
 });
@@ -112,7 +112,7 @@ it("should respect the map's current projection (EPSG:4326)", async () => {
     ]);
 
     const finishedTooltip = getTooltipElement(olMap, "measurement-finished-tooltip");
-    expect(finishedTooltip.innerHTML).toMatchInlineSnapshot('"100.13 m"');
+    expect(finishedTooltip.innerHTML).toMatchInlineSnapshot(`"<span>100.13 m</span>"`);
 
     controller.stopMeasurement();
 });
@@ -128,16 +128,16 @@ it("should show active tooltip on draw start and finished tooltip on draw end", 
 
     // Tooltip is created
     const activeTooltip = getTooltipElement(olMap, "measurement-active-tooltip");
-    expect(activeTooltip.innerHTML).toMatchInlineSnapshot('"0 m"');
+    expect(activeTooltip.innerHTML).toMatchInlineSnapshot(`"<span>0 m</span>"`);
 
     // Append another coordinate, expect distance to be computed
     draw.appendCoordinates([[851873.959638, 6788406.97408]]);
-    expect(activeTooltip.innerHTML).toMatchInlineSnapshot('"0.37 m"');
+    expect(activeTooltip.innerHTML).toMatchInlineSnapshot(`"<span>0.37 m</span>"`);
 
     // Finish drawing: tooltip should have a different class but same content
     draw.finishDrawing();
     const finishedTooltip = getTooltipElement(olMap, "measurement-finished-tooltip");
-    expect(finishedTooltip.innerHTML).toMatchInlineSnapshot('"0.37 m"');
+    expect(finishedTooltip.innerHTML).toMatchInlineSnapshot(`"<span>0.37 m</span>"`);
 
     controller.stopMeasurement();
 });

@@ -62,7 +62,7 @@ describe("starting create editing workflow", () => {
         if (beginTooltip instanceof Error) {
             throw beginTooltip;
         }
-        expect(beginTooltip.innerHTML).toMatchInlineSnapshot('"create.tooltip.begin"');
+        expect(beginTooltip.innerHTML).toMatchInlineSnapshot(`"<span>create.tooltip.begin</span>"`);
 
         workflow.stop();
     });
@@ -192,7 +192,9 @@ describe("during create editing workflow", () => {
         if (beginTooltip instanceof Error) {
             throw beginTooltip;
         }
-        expect(beginTooltip.innerHTML).toMatchInlineSnapshot('"create.tooltip.continue"');
+        expect(beginTooltip.innerHTML).toMatchInlineSnapshot(
+            `"<span>create.tooltip.continue</span>"`
+        );
 
         workflow.stop();
     });
@@ -262,14 +264,16 @@ describe("reset create editing workflow", () => {
         if (beginTooltip instanceof Error) {
             throw beginTooltip;
         }
-        expect(beginTooltip.innerHTML).toMatchInlineSnapshot('"create.tooltip.continue"');
+        expect(beginTooltip.innerHTML).toMatchInlineSnapshot(
+            `"<span>create.tooltip.continue</span>"`
+        );
 
         workflow.reset();
         const resetTooltip = getTooltipElement(map.olMap, "editing-tooltip");
         if (resetTooltip instanceof Error) {
             throw resetTooltip;
         }
-        expect(resetTooltip.innerHTML).toMatchInlineSnapshot('"create.tooltip.begin"');
+        expect(resetTooltip.innerHTML).toMatchInlineSnapshot(`"<span>create.tooltip.begin</span>"`);
 
         workflow.stop();
     });

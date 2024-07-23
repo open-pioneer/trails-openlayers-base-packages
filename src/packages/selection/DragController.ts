@@ -17,6 +17,7 @@ interface InteractionResource extends Resource {
 interface Tooltip extends Resource {
     overlay: Overlay;
     element: HTMLDivElement;
+    setText(value: string): void;
 }
 
 const ACTIVE_CLASS = "selection-active";
@@ -89,7 +90,7 @@ export class DragController {
             this.interactionResources.forEach((interaction) =>
                 this.olMap.addInteraction(interaction.interaction)
             );
-            this.tooltip.element.textContent = this.tooltipMessage;
+            this.tooltip.setText(this.tooltipMessage);
             viewPort.classList.remove(INACTIVE_CLASS);
             viewPort.classList.add(ACTIVE_CLASS);
             this.isActive = true;
@@ -97,7 +98,7 @@ export class DragController {
             this.interactionResources.forEach((interaction) =>
                 this.olMap.removeInteraction(interaction.interaction)
             );
-            this.tooltip.element.textContent = this.tooltipDisabledMessage;
+            this.tooltip.setText(this.tooltipDisabledMessage);
             viewPort.classList.remove(ACTIVE_CLASS);
             viewPort.classList.add(INACTIVE_CLASS);
             this.isActive = false;
@@ -176,10 +177,14 @@ export class DragController {
     /**
      * Method to generate a tooltip on the mouse cursor
      */
-    private createHelpTooltip(olMap: OlMap, message: string) {
+    private createHelpTooltip(olMap: OlMap, message: string): Tooltip {
         const element = document.createElement("div");
         element.className = "selection-tooltip printing-hide";
-        element.textContent = message;
+        element.role = "tooltip";
+
+        const content = document.createElement("span");
+        content.textContent = message;
+        element.appendChild(content);
 
         const overlay = new Overlay({
             element: element,
@@ -199,6 +204,9 @@ export class DragController {
                 olMap.removeOverlay(overlay);
                 overlay.dispose();
                 unByKey(pointHandler);
+            },
+            setText(value) {
+                content.textContent = value;
             }
         };
     }
