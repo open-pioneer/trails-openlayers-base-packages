@@ -7,3 +7,5 @@ export {
     type SelectionCompleteEvent,
     type SelectionSourceChangedEvent
 } from "./Selection";
+
+console.log("hi");
