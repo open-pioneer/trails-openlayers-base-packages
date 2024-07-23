@@ -32,7 +32,7 @@ const DEFAULT_VIEW_PADDING = { top: 50, right: 20, bottom: 10, left: 20 };
 export class Highlights {
     private olMap: OlMap;
 
-    private olLayer: VectorLayer<VectorSource>;
+    private olLayer: VectorLayer<Feature>;
     private olSource: VectorSource<Feature<Geometry>>;
     private activeHighlights: Set<Highlight>;
 
@@ -146,8 +146,8 @@ export class Highlights {
         const center = getCenter(extent);
         const isPoint = getArea(extent) === 0;
         const zoomScale = isPoint
-            ? options?.pointZoom ?? DEFAULT_OL_POINT_ZOOM_LEVEL
-            : options?.maxZoom ?? DEFAULT_OL_MAX_ZOOM_LEVEL;
+            ? (options?.pointZoom ?? DEFAULT_OL_POINT_ZOOM_LEVEL)
+            : (options?.maxZoom ?? DEFAULT_OL_MAX_ZOOM_LEVEL);
         setCenter(this.olMap, center);
 
         const {

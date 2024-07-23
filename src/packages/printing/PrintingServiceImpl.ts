@@ -1,15 +1,16 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import type { PrintingOptions, PrintingService, PrintResult, ViewPaddingBehavior } from "./index";
-import OlMap from "ol/Map";
-import Draw from "ol/interaction/Draw";
-import { StyleLike } from "ol/style/Style";
+import { createManualPromise, Resource } from "@open-pioneer/core";
+import { ServiceOptions } from "@open-pioneer/runtime";
+import { Options } from "html2canvas";
 import { ScaleLine } from "ol/control";
 import { Interaction } from "ol/interaction";
-import { createManualPromise, Resource } from "@open-pioneer/core";
-import { Options } from "html2canvas";
+import Draw from "ol/interaction/Draw";
+import OlMap from "ol/Map";
+import { FlatStyleLike } from "ol/style/flat";
+import { StyleLike } from "ol/style/Style";
+import type { PrintingOptions, PrintingService, PrintResult, ViewPaddingBehavior } from "./index";
 import { canvasToPng, createBlockUserOverlay, PRINTING_HIDE_CLASS } from "./utils";
-import { ServiceOptions } from "@open-pioneer/runtime";
 
 export class PrintingServiceImpl implements PrintingService {
     private defaultOverlayText: string;
@@ -38,6 +39,11 @@ interface ViewPadding {
     left: number;
 }
 
+interface DrawInfo {
+    draw: Draw;
+    style: StyleLike | FlatStyleLike | null | undefined;
+}
+
 // Exported just for test (mocking)
 export class PrintJob {
     private olMap: OlMap;
@@ -46,7 +52,7 @@ export class PrintJob {
     private viewPadding: ViewPaddingBehavior;
 
     private running = false;
-    private drawInformation: { draw: Draw; style: StyleLike | null | undefined }[] | undefined = [];
+    private drawInformation: DrawInfo[] | undefined = [];
     private scaleLine: ScaleLine | undefined = undefined;
     private overlay: Resource | undefined = undefined;
 

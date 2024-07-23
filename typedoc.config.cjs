@@ -4,11 +4,16 @@
 const { readFileSync } = require("fs");
 const { sync: fastGlobSync } = require("fast-glob");
 const { dirname } = require("path");
+const DEFAULT_HIGHLIGHT_LANGS = require("typedoc").OptionDefaults.highlightLanguages;
 
 const documentedPackages = getPackageDirectories().sort();
 console.info("Creating documentation for packages:", documentedPackages);
 
-// See https://typedoc.org/options/
+/**
+ * See https://typedoc.org/options/
+ *
+ * @type {import("typedoc").TypeDocOptions}
+ */
 module.exports = {
     name: "Open Pioneer Trails Packages",
     readme: "none",
@@ -20,7 +25,10 @@ module.exports = {
         notExported: false,
         invalidLink: true,
         notDocumented: true
-    }
+    },
+
+    // 'tsx' is in default, but 'jsx' is not..
+    highlightLanguages: [...DEFAULT_HIGHLIGHT_LANGS, "jsx"]
 };
 
 function getPackageDirectories() {
