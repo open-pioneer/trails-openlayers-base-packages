@@ -37,7 +37,7 @@ it("should successfully create a map anchor component", async () => {
 
     expect(mapAnchor).toMatchInlineSnapshot(`
       <div
-        class="map-anchor css-3czzey"
+        class="map-anchor css-1niqg8c"
         data-theme="light"
       />
     `);

@@ -1,13 +1,14 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import { chakra } from "@open-pioneer/chakra-integration";
 import { Resource, createLogger } from "@open-pioneer/core";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import type OlMap from "ol/Map";
 import { Extent } from "ol/extent";
-import { ReactNode, useEffect, useMemo, useRef } from "react";
-import { useMapModel } from "./useMapModel";
+import { ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { MapModel, MapPadding } from "../api";
 import { MapContextProvider, MapContextType } from "./MapContext";
+import { useMapModel } from "./useMapModel";
 const LOG = createLogger("map:MapContainer");
 
 export interface MapContainerProps extends CommonComponentProps {
@@ -74,9 +75,12 @@ export function MapContainer(props: MapContainerProps) {
         "aria-labelledby": ariaLabelledBy
     } = props;
     const { containerProps } = useCommonComponentProps("map-container", props);
-    const mapElement = useRef<HTMLDivElement>(null);
+    const mapContainer = useRef<HTMLDivElement>(null);
+    const mapAnchorsHost = useRef<HTMLDivElement>(null);
     const modelState = useMapModel(mapId);
     const mapModel = modelState.map;
+
+    const [ready, setReady] = useState(false);
 
     useEffect(() => {
         if (modelState.kind === "loading") {
@@ -94,63 +98,51 @@ export function MapContainer(props: MapContainerProps) {
         }
 
         // Mount the map into the DOM
-        if (mapElement.current) {
-            const resource = registerMapTarget(mapModel, mapElement.current);
+        if (mapContainer.current) {
+            const resource = registerMapTarget(mapModel, mapContainer.current);
             return () => resource?.destroy();
         }
     }, [modelState, mapModel, mapId]);
+
+    // Wait for mount to make sure that the map anchors host is available
+    useEffect(() => {
+        setReady(true);
+    }, []);
 
     const mapContainerStyle: React.CSSProperties = {
         height: "100%",
         position: "relative"
     };
     return (
-        <div
+        <chakra.div
             {...containerProps}
             role={role}
             aria-label={ariaLabel}
             aria-labelledby={ariaLabelledBy}
-            ref={mapElement}
+            ref={mapContainer}
             style={mapContainerStyle}
             //eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
             tabIndex={0}
         >
-            {mapModel && (
+            {ready && mapModel && (
                 <MapContainerReady
                     map={mapModel.olMap}
+                    mapAnchorsHost={mapAnchorsHost.current!}
                     viewPadding={viewPadding}
                     viewPaddingChangeBehavior={viewPaddingChangeBehavior}
                 >
                     {children}
                 </MapContainerReady>
             )}
-        </div>
+            <chakra.div
+                ref={mapAnchorsHost}
+                className="map-anchors"
+                /* note: zero sized, children have a size and are positioned relative to the map-container */
+            >
+                {/* Map anchors will be mounted here via portal */}
+            </chakra.div>
+        </chakra.div>
     );
-}
-
-function registerMapTarget(mapModel: MapModel, target: HTMLDivElement): Resource | undefined {
-    const mapId = mapModel.id;
-    const olMap = mapModel.olMap;
-    if (olMap.getTarget()) {
-        LOG.error(
-            `Failed to display the map: the map already has a target. There may be more than one <MapContainer />.`
-        );
-        return undefined;
-    }
-
-    LOG.isDebug() && LOG.debug(`Setting target of map '${mapId}':`, target);
-    olMap.setTarget(target);
-
-    let unregistered = false;
-    return {
-        destroy() {
-            if (!unregistered) {
-                LOG.isDebug() && LOG.debug(`Removing target of map '${mapId}':`, target);
-                olMap.setTarget(undefined);
-                unregistered = true;
-            }
-        }
-    };
 }
 
 /**
@@ -159,16 +151,18 @@ function registerMapTarget(mapModel: MapModel, target: HTMLDivElement): Resource
  * It provides the map instance and additional properties down the component tree.
  */
 function MapContainerReady(
-    props: { map: OlMap } & Omit<MapContainerProps, "mapId" | "className">
+    props: { map: OlMap; mapAnchorsHost: HTMLElement } & Omit<
+        MapContainerProps,
+        "mapId" | "className"
+    >
 ): JSX.Element {
     const {
         map,
+        mapAnchorsHost,
         viewPadding: viewPaddingProp,
         viewPaddingChangeBehavior = "preserve-center",
         children
     } = props;
-
-    const mapAnchorsHost = useMapAnchorsHost(map);
 
     const viewPadding = useMemo<Required<MapPadding>>(() => {
         return {
@@ -219,28 +213,29 @@ function MapContainerReady(
     return <MapContextProvider value={mapContext}>{children}</MapContextProvider>;
 }
 
-/**
- * Creates a div to host the map anchors and mounts it as the first child
- * of the map's overlay container.
- *
- * The purpose of this wrapper div is only to ensure the correct tab order:
- * the map anchors should be focussed before the builtin attribution widget.
- */
-function useMapAnchorsHost(olMap: OlMap): HTMLDivElement {
-    const div = useRef<HTMLDivElement>();
-    if (!div.current) {
-        div.current = document.createElement("div");
-        div.current.classList.add("map-anchors");
+function registerMapTarget(mapModel: MapModel, target: HTMLDivElement): Resource | undefined {
+    const mapId = mapModel.id;
+    const olMap = mapModel.olMap;
+    if (olMap.getTarget()) {
+        LOG.error(
+            `Failed to display the map: the map already has a target. There may be more than one <MapContainer />.`
+        );
+        return undefined;
     }
 
-    useEffect(() => {
-        const child = div.current!;
-        const overlayContainer = olMap.getOverlayContainerStopEvent();
-        overlayContainer.insertBefore(child, overlayContainer.firstChild);
-        return () => child.remove();
-    }, [olMap]);
+    LOG.isDebug() && LOG.debug(`Setting target of map '${mapId}':`, target);
+    olMap.setTarget(target);
 
-    return div.current;
+    let unregistered = false;
+    return {
+        destroy() {
+            if (!unregistered) {
+                LOG.isDebug() && LOG.debug(`Removing target of map '${mapId}':`, target);
+                olMap.setTarget(undefined);
+                unregistered = true;
+            }
+        }
+    };
 }
 
 /**
