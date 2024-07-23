@@ -23,16 +23,16 @@
         "@open-pioneer/react-utils": "^1.0.0",
         "@open-pioneer/runtime": "^2.1.6",
         "@types/proj4": "^2.5.2",
-        "ol": "^9.0.0",
+        "ol": "^9.2.4",
         "proj4": "^2.9.0",
         "react": "^18.3.1",
         "react-dom": "^18.3.1",
-        "react-use": "^17.4.2"
+        "react-use": "^17.5.1"
     },
     "devDependencies": {
         "@open-pioneer/map-test-utils": "workspace:^",
-        "@types/jsdom": "^21.1.6",
-        "@types/uuid": "^9.0.7",
+        "@types/jsdom": "^21.1.7",
+        "@types/uuid": "^10.0.0",
         "openlayers-base-packages": "workspace:*"
     },
     "publishConfig": {
@@ -40,6 +40,6 @@
         "linkDirectory": false
     },
     "dependencies": {
-        "uuid": "^9.0.1"
+        "uuid": "^10.0.0"
     }
 }

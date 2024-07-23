@@ -22,7 +22,7 @@
         "@open-pioneer/runtime": "^2.1.6",
         "@open-pioneer/react-utils": "^1.0.0",
         "@open-pioneer/map": "workspace:^",
-        "ol": "^9.0.0",
+        "ol": "^9.2.4",
         "react": "^18.3.1",
         "classnames": "^2.3.2"
     },

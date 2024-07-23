@@ -12,8 +12,8 @@
         "@open-pioneer/runtime": "^2.1.6",
         "@open-pioneer/theme": "workspace:^",
         "@open-pioneer/toc": "workspace:^",
-        "ol": "^9.0.0",
-        "ol-mapbox-style": "^12.2.1",
+        "ol": "^9.2.4",
+        "ol-mapbox-style": "^12.3.4",
         "react": "^18.3.1"
     },
     "version": "0.0.9"

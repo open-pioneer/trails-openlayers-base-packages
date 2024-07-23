@@ -1,18 +1,18 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { BaseFeature, ZoomOptions } from "@open-pioneer/map";
+import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { Mock, SpyInstance, afterEach, beforeEach, expect, it, vi } from "vitest";
-import { ResultColumn, ResultList, ResultListInput } from "./ResultList";
 import { Point } from "ol/geom";
-import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
+import { Mock, MockInstance, afterEach, beforeEach, expect, it, vi } from "vitest";
+import { ResultColumn, ResultList, ResultListInput } from "./ResultList";
 
 afterEach(() => {
     vi.restoreAllMocks();
 });
 
-let errorSpy!: SpyInstance;
+let errorSpy!: MockInstance;
 beforeEach(() => {
     errorSpy = vi.spyOn(console, "error");
 });
@@ -554,7 +554,7 @@ it("should be possible to disable zooming altogether", async () => {
 });
 
 function getSelectionsEvent(listener: Mock, call: number) {
-    return listener.mock.calls[call][0];
+    return listener.mock.calls![call]![0];
 }
 
 async function createResultList() {
