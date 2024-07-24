@@ -6,13 +6,13 @@ exports[`Should successfully create a toc with default tool component 1`] = `
   data-theme="light"
 >
   <button
-    aria-controls="menu-list-:r3:"
+    aria-controls="menu-list-:r2:"
     aria-expanded="false"
     aria-haspopup="menu"
     aria-label="toolsLabel"
     class="chakra-button chakra-menu__menu-button toc-tools-button css-170smba"
     data-theme="light"
-    id="menu-button-:r3:"
+    id="menu-button-:r2:"
     type="button"
   >
     <span
@@ -62,7 +62,7 @@ exports[`Should successfully create a toc with default tool component 2`] = `
   aria-orientation="vertical"
   class="tools-menu css-1kfu8nn"
   data-theme="light"
-  id="menu-list-:r3:"
+  id="menu-list-:r2:"
   role="menu"
   style="transform-origin: var(--popper-transform-origin); opacity: 0; visibility: hidden; transform: scale(0.8) translateZ(0);"
   tabindex="-1"
@@ -72,7 +72,7 @@ exports[`Should successfully create a toc with default tool component 2`] = `
     class="chakra-menu__menuitem css-18esm8n"
     data-index="0"
     data-theme="light"
-    id="menu-list-:r3:-menuitem-:r4:"
+    id="menu-list-:r2:-menuitem-:r3:"
     role="menuitem"
     tabindex="-1"
     type="button"
