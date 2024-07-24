@@ -9,6 +9,7 @@ import {
     PopoverContent,
     PopoverTrigger,
     Portal,
+    TooltipProps,
     usePopoverContext
 } from "@open-pioneer/chakra-integration";
 import { InitialExtent, ZoomIn, ZoomOut } from "@open-pioneer/map-navigation";
@@ -105,6 +106,9 @@ function InteractionsMenu() {
         };
     };
 
+    const tooltipProps: Partial<TooltipProps> = {
+        placement: "top"
+    };
     const interactionButtons = (
         <>
             <ToolButton
@@ -118,6 +122,7 @@ function InteractionsMenu() {
                 onClick={interactionsMenuHandler(() =>
                     appModel.toggleMainContent("editing-create")
                 )}
+                tooltipProps={tooltipProps}
             />
             <ToolButton
                 label={
@@ -130,18 +135,21 @@ function InteractionsMenu() {
                 onClick={interactionsMenuHandler(() =>
                     appModel.toggleMainContent("editing-update")
                 )}
+                tooltipProps={tooltipProps}
             />
             <ToolButton
                 label={intl.formatMessage({ id: "measurementTitle" })}
                 icon={<PiRulerLight />}
                 isActive={isMeasurementActive}
                 onClick={interactionsMenuHandler(() => appModel.toggleMainContent("measurement"))}
+                tooltipProps={tooltipProps}
             />
             <ToolButton
                 label={intl.formatMessage({ id: "selectionTitle" })}
                 icon={<PiSelectionPlusBold />}
                 isActive={isSelectionActive}
                 onClick={interactionsMenuHandler(() => appModel.toggleMainContent("selection"))}
+                tooltipProps={tooltipProps}
             />
         </>
     );
