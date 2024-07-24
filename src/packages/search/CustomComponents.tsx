@@ -35,9 +35,10 @@ export function MenuComp(props: MenuProps<SearchOption, false, SearchGroupOption
 export function GroupComp(props: GroupProps<SearchOption, false, SearchGroupOption>) {
     const ariaLabel = props.data.label;
     return (
-        <Box aria-label={ariaLabel} role="group">
-            <chakraComponents.Group {...props}></chakraComponents.Group>
-        </Box>
+        <chakraComponents.Group
+            {...props}
+            innerProps={{ "aria-label": ariaLabel, role: "group" }}
+        ></chakraComponents.Group>
     );
 }
 
