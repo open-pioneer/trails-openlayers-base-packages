@@ -202,26 +202,17 @@ function useAriaMessages(
         /**
          * Method to create Aria-String for focus-Event
          */
-        const onFocus: AriaOnFocus<SearchOption> = ({ focused }) => {
-            return `${focused.label} ${intl.formatMessage({ id: "ariaLabel.searchFocus" })}.`;
+        const onFocus: AriaOnFocus<SearchOption> = () => {
+            //no aria string for focus-events because in some screen readers (NVDA) and browsers (Chrome) updating the aria string causes the instructions to be read out again each time a select option is focused
+            return "";
         };
 
         /**
          * Method to create Aria-String for value-change-Event
          */
-        const onChange: AriaOnChange<SearchOption, boolean> = ({ action, label }) => {
-            let message = "";
-            switch (action) {
-                case "select-option":
-                    message = `${label} ${intl.formatMessage({ id: "ariaLabel.searchSelect" })}.`;
-                    break;
-                case "clear":
-                    message = `${label} ${intl.formatMessage({ id: "ariaLabel.searchClear" })}.`;
-                    break;
-                default:
-                    break;
-            }
-            return message;
+        const onChange: AriaOnChange<SearchOption, boolean> = () => {
+            //no aria string for change-events because in some screen readers (NVDA) and browsers (Chrome) updating the aria string causes the instructions to be read out again each time a select option is focused
+            return "";
         };
 
         /**
