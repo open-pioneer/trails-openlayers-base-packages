@@ -20,6 +20,7 @@ import { useIntl } from "open-pioneer:react-hooks";
 import { FC, useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
 import {
     ClearIndicator,
+    GroupComp,
     HighlightOption,
     IndicatorsContainer,
     Input,
@@ -260,7 +261,8 @@ function useCustomComponents(): SelectProps<SearchOption, false, SearchGroupOpti
             LoadingMessage: LoadingMessage,
             ValueContainer: ValueContainer,
             IndicatorsContainer: IndicatorsContainer,
-            ClearIndicator: ClearIndicator
+            ClearIndicator: ClearIndicator,
+            Group: GroupComp
         };
     }, []);
 }
