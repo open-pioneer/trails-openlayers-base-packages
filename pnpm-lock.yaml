@@ -1132,12 +1132,6 @@ importers:
       '@open-pioneer/editing':
         specifier: workspace:^
         version: link:../../../packages/editing
-      '@open-pioneer/experimental-layout-sidebar':
-        specifier: workspace:^
-        version: link:../../../experimental-packages/layout-sidebar
-      '@open-pioneer/geolocation':
-        specifier: workspace:^
-        version: link:../../../packages/geolocation
       '@open-pioneer/http':
         specifier: ^2.1.8
         version: 2.1.8(@open-pioneer/core@1.2.3)(@open-pioneer/runtime@2.1.6(55tcge6z6a4x6cc2hnasibnwgq))
@@ -1162,9 +1156,6 @@ importers:
       '@open-pioneer/ogc-features':
         specifier: workspace:^
         version: link:../../../packages/ogc-features
-      '@open-pioneer/overview-map':
-        specifier: workspace:^
-        version: link:../../../packages/overview-map
       '@open-pioneer/printing':
         specifier: workspace:^
         version: link:../../../packages/printing

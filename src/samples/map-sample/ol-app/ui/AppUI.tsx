@@ -18,6 +18,7 @@ import { ResultListComponent } from "./ResultList";
 import { SearchComponent } from "./Search";
 import { SelectionComponent } from "./Selection";
 import { TocComponent } from "./Toc";
+import { PrintingComponent } from "./Printing";
 
 /**
  * The main application layout.
@@ -88,6 +89,8 @@ function MainContentComponent(props: { mainContent: readonly MainContentId[] }) 
                     return <TocComponent key={content} />;
                 case "legend":
                     return <LegendComponent key={content} />;
+                case "printing":
+                    return <PrintingComponent key={content} />;
                 case "selection":
                     return <SelectionComponent key={content} />;
                 case "measurement":

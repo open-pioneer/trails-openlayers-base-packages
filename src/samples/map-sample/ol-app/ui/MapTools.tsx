@@ -17,7 +17,6 @@ import { ToolButton } from "@open-pioneer/map-ui-components";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { useIntl, useService } from "open-pioneer:react-hooks";
 import { ForwardedRef, forwardRef, useState } from "react";
-import { FiCrosshair } from "react-icons/fi";
 import {
     PiImagesLight,
     PiListLight,
@@ -25,7 +24,9 @@ import {
     PiPencil,
     PiPencilSlash,
     PiRulerLight,
-    PiSelectionPlusBold
+    PiSelectionPlusBold,
+    PiCursorClick,
+    PiPrinterLight
 } from "react-icons/pi";
 import { TbPolygon, TbPolygonOff } from "react-icons/tb";
 import { AppModel } from "../AppModel";
@@ -37,10 +38,11 @@ export function MapTools() {
     const resultListState = useReactiveSnapshot(() => appModel.resultListState, [appModel]);
     const resultListOpen = resultListState.open;
 
-    const { isTocActive, isLegendActive } = useReactiveSnapshot(() => {
+    const { isTocActive, isLegendActive, isPrintingActive } = useReactiveSnapshot(() => {
         return {
             isTocActive: appModel.mainContent.includes("toc"),
-            isLegendActive: appModel.mainContent.includes("legend")
+            isLegendActive: appModel.mainContent.includes("legend"),
+            isPrintingActive: appModel.mainContent.includes("printing")
         };
     }, [appModel]);
 
@@ -74,6 +76,12 @@ export function MapTools() {
                 icon={<PiImagesLight />}
                 isActive={isLegendActive}
                 onClick={() => appModel.toggleMainContent("legend")}
+            />
+            <ToolButton
+                label={intl.formatMessage({ id: "printingTitle" })}
+                icon={<PiPrinterLight />}
+                isActive={isPrintingActive}
+                onClick={() => appModel.toggleMainContent("printing")}
             />
 
             <InitialExtent mapId={MAP_ID} />
@@ -191,7 +199,7 @@ const PopoverTriggerTool = forwardRef(function PopoverTriggerTool(
         <ToolButton
             ref={ref}
             label={intl.formatMessage({ id: "mapInteractions.title" })}
-            icon={<FiCrosshair />}
+            icon={<PiCursorClick />}
             onClick={onClick}
             buttonProps={triggerProps}
         />

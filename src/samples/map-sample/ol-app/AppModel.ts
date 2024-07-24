@@ -72,6 +72,7 @@ export interface ResultListState {
 export type MainContentId =
     | "toc"
     | "legend"
+    | "printing"
     | "selection"
     | "measurement"
     | "editing-create"

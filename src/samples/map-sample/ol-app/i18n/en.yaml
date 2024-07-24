@@ -2,6 +2,7 @@ messages:
   basemapLabel: "Select basemap:"
   tocTitle: "Table of contents"
   legendTitle: "Legend"
+  printingTitle: "Printing"
   measurementTitle: "Measurement"
   selectionTitle: "Selection"
   editing:
