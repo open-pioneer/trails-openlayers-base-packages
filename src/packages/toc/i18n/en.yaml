@@ -2,6 +2,7 @@ messages:
   basemapsLabel: "Basemaps"
   descriptionLabel: "Layer description"
   operationalLayerLabel: "Operational layers"
+  childgroupLabel: "Layer group {title}"
   missingLayers: "There are no layers to display."
   error: "Error while creating map content."
   layerNotAvailable: "Layer not available"
