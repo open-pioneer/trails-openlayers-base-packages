@@ -142,6 +142,7 @@ exports[`should successfully create a toc component 1`] = `
     data-theme="light"
   >
     <h1
+      aria-label="operationalLayerLabel"
       class="chakra-heading css-1mnao0q"
       data-theme="light"
       id=":r1:"
@@ -166,7 +167,7 @@ exports[`should successfully create a toc component 1`] = `
       aria-labelledby=":r1:"
       class="toc-layer-list css-155za0w"
       data-theme="light"
-      role="list"
+      role="group"
     >
       <li
         class="toc-layer-item layer-layer-2 css-0"
@@ -185,6 +186,7 @@ exports[`should successfully create a toc component 1`] = `
               aria-disabled="false"
               aria-label="Layer 2"
               class="chakra-checkbox__input"
+              id=":r2:"
               style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
               type="checkbox"
               value=""
@@ -243,6 +245,7 @@ exports[`should successfully create a toc component 1`] = `
               aria-disabled="false"
               aria-label="Layer 1"
               class="chakra-checkbox__input"
+              id=":r3:"
               style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
               type="checkbox"
               value=""
