@@ -20,9 +20,6 @@ import { Reactive, reactive } from "@conterra/reactivity-core";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 
 const EDIT_LAYER_ID: string = "krankenhaus";
-let selectInteraction: Select | undefined;
-let editUpdateSelectHandler: EventsKey | undefined;
-let updateEditSelectTooltip: Tooltip | undefined;
 
 // Represents a tooltip rendered on the OpenLayers map
 interface Tooltip extends Resource {
@@ -83,6 +80,10 @@ class EditingController {
     #notificationService: NotificationService;
     #intl: PackageIntl;
 
+    #selectInteraction: Select | undefined;
+    #editUpdateSelectHandler: EventsKey | undefined;
+    #updateEditSelectTooltip: Tooltip | undefined;
+
     constructor(
         mapModel: MapModel,
         editingService: EditingService,
@@ -101,14 +102,16 @@ class EditingController {
     }
 
     startCreateWorkflow() {
+        if (this.#editingActive.value) {
+            return;
+        }
+
         try {
             this.#editingActive.value = true;
 
             const layer = this.#mapModel.layers.getLayerById("krankenhaus") as Layer;
             const url = new URL(layer.attributes.collectionURL + "/items");
-
             const workflow = this.#editingService.createFeature(this.#mapModel, url);
-
             workflow
                 .whenComplete()
                 .then((featureData: Record<string, string> | undefined) => {
@@ -136,74 +139,73 @@ class EditingController {
                     this.#editingActive.value = false;
                 });
         } catch (error) {
+            this.#editingActive.value = false;
             console.error(error);
         }
     }
 
     startUpdateWorkflow() {
+        if (this.#editingActive.value) {
+            return;
+        }
+
         try {
             this.#editingActive.value = true;
-
-            updateEditSelectTooltip = this._createEditingSelectTooltip();
+            this.#updateEditSelectTooltip = this._createEditingSelectTooltip();
 
             const layer = this.#mapModel.layers.getLayerById("krankenhaus") as Layer;
             const vectorLayer = layer?.olLayer as VectorLayer<FeatureLike>;
 
-            selectInteraction = new Select({
+            this.#selectInteraction = new Select({
                 layers: [vectorLayer]
             });
 
-            this.#mapModel.olMap.addInteraction(selectInteraction);
-            updateEditSelectTooltip.element.classList.remove("editing-tooltip-hidden");
+            this.#mapModel.olMap.addInteraction(this.#selectInteraction);
+            this.#updateEditSelectTooltip.element.classList.remove("editing-tooltip-hidden");
 
-            const url = new URL(layer.attributes.collectionURL + "/items");
-
-            editUpdateSelectHandler = selectInteraction.on("select", (e) => {
+            this.#editUpdateSelectHandler = this.#selectInteraction.on("select", (e) => {
                 const selected = e.selected;
                 const deselected = e.deselected;
-
-                if (selected.length === 1 && deselected.length === 0) {
-                    this._stopUpdateSelection();
-
-                    const feature = selected[0];
-                    if (!feature) {
-                        throw Error("feature is undefined");
-                    }
-
-                    const workflow = this.#editingService.updateFeature(
-                        this.#mapModel,
-                        url,
-                        feature
-                    );
-
-                    workflow
-                        .whenComplete()
-                        .then((featureData: Record<string, string> | undefined) => {
-                            if (!featureData) {
-                                return;
-                            }
-
-                            this.#notificationService.notify({
-                                level: "info",
-                                message: this.#intl.formatMessage(
-                                    {
-                                        id: "demos.editing.update.featureModified"
-                                    },
-                                    { featureId: featureData.featureId }
-                                )
-                            });
-
-                            vectorLayer.getSource()?.refresh();
-                        })
-                        .catch((error: Error) => {
-                            console.error(error);
-                        })
-                        .finally(() => {
-                            this.#editingActive.value = false;
-                        });
+                if (selected.length !== 1 || deselected.length !== 0) {
+                    return;
                 }
+
+                this._stopUpdateSelection();
+                const feature = selected[0];
+                if (!feature) {
+                    throw Error("feature is undefined");
+                }
+
+                const url = new URL(layer.attributes.collectionURL + "/items");
+                const workflow = this.#editingService.updateFeature(this.#mapModel, url, feature);
+                workflow
+                    .whenComplete()
+                    .then((featureData: Record<string, string> | undefined) => {
+                        if (!featureData) {
+                            return;
+                        }
+
+                        this.#notificationService.notify({
+                            level: "info",
+                            message: this.#intl.formatMessage(
+                                {
+                                    id: "demos.editing.update.featureModified"
+                                },
+                                { featureId: featureData.featureId }
+                            )
+                        });
+
+                        vectorLayer.getSource()?.refresh();
+                    })
+                    .catch((error: Error) => {
+                        console.error(error);
+                    })
+                    .finally(() => {
+                        this.#editingActive.value = false;
+                    });
             });
         } catch (error) {
+            this.#editingActive.value = false;
             console.error(error);
         }
     }
@@ -243,18 +245,18 @@ class EditingController {
     }
 
     _stopUpdateSelection() {
-        selectInteraction && this.#mapModel.olMap.removeInteraction(selectInteraction);
-        editUpdateSelectHandler && unByKey(editUpdateSelectHandler);
-        updateEditSelectTooltip && updateEditSelectTooltip.destroy();
+        this.#selectInteraction && this.#mapModel.olMap.removeInteraction(this.#selectInteraction);
+        this.#editUpdateSelectHandler && unByKey(this.#editUpdateSelectHandler);
+        this.#updateEditSelectTooltip && this.#updateEditSelectTooltip.destroy();
 
-        selectInteraction = undefined;
-        editUpdateSelectHandler = undefined;
-        updateEditSelectTooltip = undefined;
+        this.#selectInteraction = undefined;
+        this.#editUpdateSelectHandler = undefined;
+        this.#updateEditSelectTooltip = undefined;
     }
 
     stopEditing() {
         this.#editingService.stop(MAP_ID);
-        if (this.#mapModel) this._stopUpdateSelection();
+        this._stopUpdateSelection();
         this.#editingActive.value = false;
     }
 }
