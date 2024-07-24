@@ -1273,6 +1273,9 @@ importers:
       '@open-pioneer/coordinate-viewer':
         specifier: workspace:^
         version: link:../../../packages/coordinate-viewer
+      '@open-pioneer/editing':
+        specifier: workspace:^
+        version: link:../../../packages/editing
       '@open-pioneer/geolocation':
         specifier: workspace:^
         version: link:../../../packages/geolocation

@@ -43,6 +43,22 @@ messages:
     selectionResultList:
       title: Selection and Result List
       description: This demo shows how to use the <code>Selection</code> component to select feature in the map and how to use the <code>ResultList</code> component to display feature attributes in a table.
+    editing:
+      title: Editing
+      description: This demo shows how the API of the <code>editing</code> package can be used to provide editing functionality.
+      startCreateButton: create feature
+      startUpdateButton: update feature
+      stopButton: stop editing
+      create:
+        startTitle: "Editing - Create new feature"
+        featureCreated: "Created feature with ID: {featureId}"
+      update:
+        startTitle: "Editing - Modify feature"
+        featureModified: "Modified feature with ID: {featureId}"
+        tooltip:
+          select: Select geometry to start editing
+      activeInfo: "Status: editing active"
+      inactiveInfo: "Status: editing inactive"
   demoSelection:
     label: "Demo:"
     notFound: "Demo ''{demoId}'' was not found."
