@@ -108,7 +108,12 @@ export const Toc: FC<TocProps> = (props: TocProps) => {
                 <Box className="toc-operational-layers">
                     <TitledSection
                         title={
-                            <SectionHeading id={operationalLayersHeadingId} size={"sm"} mb={2}>
+                            <SectionHeading
+                                id={operationalLayersHeadingId}
+                                size={"sm"}
+                                mb={2}
+                                aria-label={intl.formatMessage({ id: "operationalLayerLabel" })}
+                            >
                                 <Flex>
                                     <Text my={3}>
                                         {intl.formatMessage({
