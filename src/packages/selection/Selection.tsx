@@ -105,6 +105,8 @@ export const Selection: FC<SelectionProps> = (props) => {
     const [currentSource, setCurrentSource] = useState<SelectionSource | undefined>(() =>
         sources.find((s) => (s.status ?? "available") === "available")
     );
+    const currentSourceStatus = useSourceStatus(currentSource);
+
     const mapState = useMapModel(mapId);
     const { onExtentSelected } = useSelectionController(
         mapState.map,
@@ -115,8 +117,12 @@ export const Selection: FC<SelectionProps> = (props) => {
     const chakraStyles = useChakraStyles();
     const [isOpenSelect, setIsOpenSelect] = useState(false);
 
-    const [dragControllerActive, setDragControllerActive] = useState<boolean>(true);
-    useDragSelection(mapState.map, intl, onExtentSelected, dragControllerActive);
+    useDragSelection(
+        mapState.map,
+        intl,
+        onExtentSelected,
+        currentSourceStatus.kind === "available"
+    );
 
     const sourceOptions = useMemo(
         () =>
@@ -135,29 +141,6 @@ export const Selection: FC<SelectionProps> = (props) => {
         onSelectionSourceChanged && onSelectionSourceChanged({ source: newValue?.value });
     });
 
-    useEffect(() => {
-        if (!currentSource) {
-            setDragControllerActive(false);
-            return;
-        }
-
-        const sourceNotAvailableReason = intl.formatMessage({ id: "sourceNotAvailable" });
-        const isCurrentSourceAvailable = () => {
-            return (
-                currentSource &&
-                getSourceStatus(currentSource, sourceNotAvailableReason).kind === "available"
-            );
-        };
-
-        setDragControllerActive(isCurrentSourceAvailable());
-        // Why can this be undefined after test above?!
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        const handle = currentSource.on("changed:status", () => {
-            setDragControllerActive(isCurrentSourceAvailable());
-        });
-        return () => handle.destroy();
-    }, [currentSource, setDragControllerActive, intl]);
     const keyDown = useEvent((event: KeyboardEvent<HTMLDivElement>) => {
         //if the menu is already open, do noting
         if (!isOpenSelect && event.key === "Enter") {
@@ -339,10 +322,13 @@ function getSourceStatus(source: SelectionSource, sourceNotAvailableReason: stri
  */
 function useSourceStatus(source: SelectionSource | undefined): SimpleStatus {
     const intl = useIntl();
-    const [status, setStatus] = useState<SimpleStatus>(() => ({ kind: "available" }));
+    const [status, setStatus] = useState<SimpleStatus>(() => ({
+        kind: "unavailable",
+        reason: "TODO" // default message
+    }));
     useEffect(() => {
         if (!source) {
-            setStatus({ kind: "available" });
+            setStatus({ kind: "unavailable", reason: "TODO" }); // default message
             return;
         }
         const sourceNotAvailableReason = intl.formatMessage({ id: "sourceNotAvailable" });
@@ -375,8 +361,8 @@ function useDragSelection(
             intl.formatMessage({ id: "disabledTooltip" }),
             onExtentSelected
         );
-        dragController.setActive(isActive);
 
+        dragController.setActive(isActive);
         return () => {
             dragController?.destroy();
         };
