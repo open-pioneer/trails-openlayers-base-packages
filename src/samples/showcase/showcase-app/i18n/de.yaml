@@ -43,6 +43,22 @@ messages:
     selectionResultList:
       title: Selektion und Ergebnisliste
       description: Diese Demo zeigt, wie die <code>Selection</code>-Komponente verwendet werden kann, um Features in der Karte zu selektieren und wie die <code>ResultList</code>-Komponente verwendet werden kann, die Attribute von Features in einer Liste anzuzeigen.
+    editing:
+      title: Editing
+      description: Diese Demo zeigt, wie mit Hilfe der API des Paketes <code>editing</code> Editier-Funktionen angeboten werden können.
+      startCreateButton: Feature erstellen
+      startUpdateButton: Feature bearbeiten
+      stopButton: Editierung stoppen
+      create:
+        startTitle: "Editierung - Neues Feature erstellen"
+        featureCreated: "Objekt erstellt mit ID: {featureId}"
+      update:
+        startTitle: "Editierung - Feature bearbeiten"
+        featureModified: "Objekt aktualisiert mit ID: {featureId}"
+        tooltip:
+          select: Geometrie auswählen, um mit der Bearbeitung zu starten
+      activeInfo: "Status: Editierung aktiv"
+      inactiveInfo: "Status: Editierung inaktiv"
   demoSelection:
     label: "Demo:"
     notFound: "Demo ''{demoId}'' wurde nicht gefunden."
