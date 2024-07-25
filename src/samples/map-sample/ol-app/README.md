@@ -178,8 +178,8 @@ export function MapTools() {
 }
 ```
 
-In the example above, the tool button rendered by the component will always reflect the current state of the widget, because `isTocActive` is derived from the app model's `mainContent` array.
-When the button is clicked, the `toggleMainContent` method of the `AppModel` is called to change the state (which will in turn update the current value of `isTocActive` once the change has been made).
+In the example above, the tool button rendered by the component will always reflect the current state of the widget, because `isTocActive` is derived from the app model's `mainContent` array (in **(1)**).
+When the button is clicked (in **(2)**), the `toggleMainContent` method of the `AppModel` is called to change the state (which will in turn update the current value of `isTocActive` once the change has been made).
 
 ### Recommendations
 
