@@ -3,7 +3,6 @@
 import { afterEach, expect, vi, it } from "vitest";
 import { DragController } from "./DragController";
 import OlMap from "ol/Map";
-import { SelectionMethods } from "./Selection";
 
 afterEach(() => {
     vi.restoreAllMocks();
@@ -53,7 +52,6 @@ function createController() {
     const extentHandler = vi.fn();
     const controller = new DragController(
         olMap,
-        SelectionMethods.extent,
         tooltipTest,
         disabledTooltipText,
         extentHandler

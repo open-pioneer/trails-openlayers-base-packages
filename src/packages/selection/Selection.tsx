@@ -16,23 +16,22 @@ import { NotificationService } from "@open-pioneer/notifier";
 import { CommonComponentProps, useCommonComponentProps, useEvent } from "@open-pioneer/react-utils";
 import { PackageIntl } from "@open-pioneer/runtime";
 import {
+    ChakraStylesConfig,
+    GroupBase,
     OptionProps,
     Select,
     Props as SelectProps,
     SingleValueProps,
     chakraComponents,
-    type SingleValue,
-    ChakraStylesConfig,
-    GroupBase
+    type SingleValue
 } from "chakra-react-select";
 import { Geometry } from "ol/geom";
 import { useIntl, useService } from "open-pioneer:react-hooks";
-import { FC, useCallback, useEffect, useMemo, useState } from "react";
+import { FC, KeyboardEvent, useEffect, useMemo, useState } from "react";
 import { FiAlertTriangle } from "react-icons/fi";
 import { DragController } from "./DragController";
 import { SelectionController } from "./SelectionController";
 import { SelectionResult, SelectionSource, SelectionSourceStatusObject } from "./api";
-import { KeyboardEvent } from "react";
 
 /**
  * Properties supported by the {@link Selection} component.
@@ -88,31 +87,6 @@ interface SelectionOption {
     value: SelectionSource | undefined;
 }
 
-/**
- * Properties for single selection method options.
- */
-interface MethodOption {
-    /**
-     * The label of the select method option.
-     */
-    label: string;
-
-    /**
-     * The value of the select method option.
-     */
-    value: string;
-}
-
-/**
- * Supported selection methods
- */
-export enum SelectionMethods {
-    extent = "EXTENT",
-    polygon = "POLYGON",
-    free = "FREEPOLYGON",
-    circle = "CIRCLE"
-}
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const COMMON_SELECT_PROPS: SelectProps<any, any, any> = {
     classNamePrefix: "react-select",
@@ -141,40 +115,9 @@ export const Selection: FC<SelectionProps> = (props) => {
     const chakraStyles = useChakraStyles();
     const [isOpenSelect, setIsOpenSelect] = useState(false);
 
-    /**
-     * Method to build Option-Array from the supported selection methods for the selection-method react-select
-     * If there is no configuration => Default selection method: EXTENT
-     */
-    const buildMethodOptions = useCallback(
-        (methods: string[] | undefined) => {
-            const objects: MethodOption[] = [];
-            if (!methods) methods = [SelectionMethods.extent];
-            methods.forEach((item) => {
-                if (Object.values(SelectionMethods as unknown as string[]).includes(item))
-                    objects.push({ label: intl.formatMessage({ id: item }), value: item });
-            });
-            if (objects.length === 0) throw new Error("methods does not contain valid values");
-            return objects;
-        },
-        [intl]
-    );
-
-    const methodOptions: MethodOption[] = buildMethodOptions(undefined);
-    const [selectedMethod, setSelectedMethod] = useState(methodOptions[0] as MethodOption);
-
-    /**
-     * Method to change used selectmethod
-     */
-    const onMethodeOptionChance = useEvent((newValue: MethodOption) => {
-        setSelectedMethod(newValue);
-    });
-
     const [dragControllerActive, setDragControllerActive] = useState<boolean>(true);
-    useDragSelection(mapState.map, selectedMethod, intl, onExtentSelected, dragControllerActive);
+    useDragSelection(mapState.map, intl, onExtentSelected, dragControllerActive);
 
-    /**
-     * Method to build Option-Array from sources for the selection-source react-select
-     */
     const sourceOptions = useMemo(
         () =>
             sources.map<SelectionOption>((source) => {
@@ -187,9 +130,6 @@ export const Selection: FC<SelectionProps> = (props) => {
         [sourceOptions, currentSource]
     );
 
-    /**
-     * Method to change used source
-     */
     const onSourceOptionChanged = useEvent((newValue: SingleValue<SelectionOption>) => {
         setCurrentSource(newValue?.value);
         onSelectionSourceChanged && onSelectionSourceChanged({ source: newValue?.value });
@@ -227,19 +167,6 @@ export const Selection: FC<SelectionProps> = (props) => {
 
     return (
         <VStack {...containerProps} spacing={2}>
-            {methodOptions.length > 1 && (
-                <FormControl>
-                    <FormLabel>{intl.formatMessage({ id: "selectMethod" })}</FormLabel>
-                    <Select
-                        className="selection-method react-select"
-                        {...COMMON_SELECT_PROPS}
-                        options={methodOptions}
-                        onChange={onMethodeOptionChance}
-                        value={selectedMethod}
-                        chakraStyles={chakraStyles}
-                    />
-                </FormControl>
-            )}
             <FormControl>
                 <FormLabel>{intl.formatMessage({ id: "selectSource" })}</FormLabel>
                 <Select<SelectionOption>
@@ -433,7 +360,6 @@ function useSourceStatus(source: SelectionSource | undefined): SimpleStatus {
  */
 function useDragSelection(
     map: MapModel | undefined,
-    selectMethode: MethodOption,
     intl: PackageIntl,
     onExtentSelected: (geometry: Geometry) => void,
     isActive: boolean
@@ -445,7 +371,6 @@ function useDragSelection(
 
         const dragController = new DragController(
             map.olMap,
-            selectMethode.value,
             intl.formatMessage({ id: "tooltip" }),
             intl.formatMessage({ id: "disabledTooltip" }),
             onExtentSelected
@@ -455,7 +380,7 @@ function useDragSelection(
         return () => {
             dragController?.destroy();
         };
-    }, [map, selectMethode, intl, onExtentSelected, isActive]);
+    }, [map, intl, onExtentSelected, isActive]);
 }
 
 /**
