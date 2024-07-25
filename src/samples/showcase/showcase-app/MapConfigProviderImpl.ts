@@ -1,15 +1,15 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { MapConfig, MapConfigProvider, SimpleLayer, WMSLayer, WMTSLayer } from "@open-pioneer/map";
-import TileLayer from "ol/layer/Tile.js";
-import { OSM } from "ol/source";
-import { OgcFeaturesVectorSourceFactory } from "@open-pioneer/ogc-features";
-import VectorLayer from "ol/layer/Vector";
-import { ServiceOptions } from "@open-pioneer/runtime";
-import VectorSource from "ol/source/Vector";
-import GeoJSON from "ol/format/GeoJSON";
 import { LegendItemAttributes } from "@open-pioneer/legend";
-import { CustomLegendItem } from "ol-map/CustomLegendItems";
+import { MapConfig, MapConfigProvider, SimpleLayer, WMSLayer, WMTSLayer } from "@open-pioneer/map";
+import { OgcFeaturesVectorSourceFactory } from "@open-pioneer/ogc-features";
+import { ServiceOptions } from "@open-pioneer/runtime";
+import GeoJSON from "ol/format/GeoJSON";
+import TileLayer from "ol/layer/Tile.js";
+import VectorLayer from "ol/layer/Vector";
+import { OSM } from "ol/source";
+import VectorSource from "ol/source/Vector";
+import { CustomLegendItem } from "./CustomLegendItems";
 
 interface References {
     vectorSourceFactory: OgcFeaturesVectorSourceFactory;

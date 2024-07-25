@@ -1114,6 +1114,9 @@ importers:
       '@chakra-ui/system':
         specifier: ^2.6.2
         version: 2.6.2(@emotion/react@11.13.0(@types/react@18.3.3)(react@18.3.1))(@emotion/styled@11.13.0(@emotion/react@11.13.0(@types/react@18.3.3)(react@18.3.1))(@types/react@18.3.3)(react@18.3.1))(react@18.3.1)
+      '@conterra/reactivity-core':
+        specifier: ^0.4.0
+        version: 0.4.0
       '@emotion/react':
         specifier: ^11.13.0
         version: 11.13.0(@types/react@18.3.3)(react@18.3.1)
@@ -1129,12 +1132,6 @@ importers:
       '@open-pioneer/editing':
         specifier: workspace:^
         version: link:../../../packages/editing
-      '@open-pioneer/experimental-layout-sidebar':
-        specifier: workspace:^
-        version: link:../../../experimental-packages/layout-sidebar
-      '@open-pioneer/geolocation':
-        specifier: workspace:^
-        version: link:../../../packages/geolocation
       '@open-pioneer/http':
         specifier: ^2.1.8
         version: 2.1.8(@open-pioneer/core@1.2.3)(@open-pioneer/runtime@2.1.6(55tcge6z6a4x6cc2hnasibnwgq))
@@ -1159,15 +1156,15 @@ importers:
       '@open-pioneer/ogc-features':
         specifier: workspace:^
         version: link:../../../packages/ogc-features
-      '@open-pioneer/overview-map':
-        specifier: workspace:^
-        version: link:../../../packages/overview-map
       '@open-pioneer/printing':
         specifier: workspace:^
         version: link:../../../packages/printing
       '@open-pioneer/react-utils':
         specifier: ^1.0.0
         version: 1.0.0(@open-pioneer/chakra-integration@1.1.3(@chakra-ui/react@2.8.2(@emotion/react@11.13.0(@types/react@18.3.3)(react@18.3.1))(@emotion/styled@11.13.0(@emotion/react@11.13.0(@types/react@18.3.3)(react@18.3.1))(@types/react@18.3.3)(react@18.3.1))(@types/react@18.3.3)(framer-motion@10.18.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@emotion/cache@11.13.0)(@emotion/react@11.13.0(@types/react@18.3.3)(react@18.3.1))(@emotion/styled@11.13.0(@emotion/react@11.13.0(@types/react@18.3.3)(react@18.3.1))(@types/react@18.3.3)(react@18.3.1))(framer-motion@10.18.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@open-pioneer/core@1.2.3)(classnames@2.5.1)(react@18.3.1)
+      '@open-pioneer/reactivity':
+        specifier: ^0.1.0
+        version: 0.1.0(@conterra/reactivity-core@0.4.0)(react@18.3.1)
       '@open-pioneer/result-list':
         specifier: workspace:^
         version: link:../../../packages/result-list
@@ -1186,9 +1183,6 @@ importers:
       '@open-pioneer/selection':
         specifier: workspace:^
         version: link:../../../packages/selection
-      '@open-pioneer/spatial-bookmarks':
-        specifier: workspace:^
-        version: link:../../../packages/spatial-bookmarks
       '@open-pioneer/theme':
         specifier: workspace:^
         version: link:../../../packages/theme
@@ -1210,9 +1204,6 @@ importers:
       react-use:
         specifier: ^17.5.1
         version: 17.5.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      valtio:
-        specifier: ^1.12.1
-        version: 1.13.2(@types/react@18.3.3)(react@18.3.1)
 
   src/samples/ogc-api-sample/ogc-app:
     dependencies:
@@ -1273,6 +1264,9 @@ importers:
       '@open-pioneer/coordinate-viewer':
         specifier: workspace:^
         version: link:../../../packages/coordinate-viewer
+      '@open-pioneer/editing':
+        specifier: workspace:^
+        version: link:../../../packages/editing
       '@open-pioneer/geolocation':
         specifier: workspace:^
         version: link:../../../packages/geolocation
@@ -3494,11 +3488,6 @@ packages:
     resolution: {integrity: sha512-0je+qPKHEMohvfRTCEo3CrPG6cAzAYgmzKyxRiYSSDkS6eGJdyVJm7WaYA5ECaAD9wLB2T4EEeymA5aFVcYXCA==}
     engines: {node: '>=6'}
 
-  derive-valtio@0.1.0:
-    resolution: {integrity: sha512-OCg2UsLbXK7GmmpzMXhYkdO64vhJ1ROUUGaTFyHjVwEdMEcTTRj7W1TxLbSBxdY8QLBPCcp66MTyaSy0RpO17A==}
-    peerDependencies:
-      valtio: '*'
-
   detect-indent@6.1.0:
     resolution: {integrity: sha512-reYkTUJAZb9gUuZ2RvVCNhVHdg62RHnJ7WJl8ftMi4diZ6NWlciOzQN88pUhSELEwflJht4oQDv0F0BMlwaYtA==}
     engines: {node: '>=8'}
@@ -4862,9 +4851,6 @@ packages:
   protocol-buffers-schema@3.6.0:
     resolution: {integrity: sha512-TdDRD+/QNdrCGCE7v8340QyuXd4kIWIgapsE2+n/SaGiSSbomYl4TjHlvIoCWRpE7wFt02EpB35VVA2ImcBVqw==}
 
-  proxy-compare@2.6.0:
-    resolution: {integrity: sha512-8xuCeM3l8yqdmbPoYeLbrAXCBWu19XEYc5/F28f5qOaoAIMyfmBUkl5axiK+x9olUvRlcekvnm98AP9RDngOIw==}
-
   pseudomap@1.0.2:
     resolution: {integrity: sha512-b/YwNhb8lk1Zz2+bXXpS/LK9OisiZZ1SNsSLxN1x2OXVEhW2Ckr/7mWE5vrC1ZTiJlD9g19jWszTmJsB+oEpFQ==}
 
@@ -5649,11 +5635,6 @@ packages:
       '@types/react':
         optional: true
 
-  use-sync-external-store@1.2.0:
-    resolution: {integrity: sha512-eEgnFxGQ1Ife9bzYs6VLi8/4X6CObHMw9Qr9tPY43iKwsPw8xE8+EFsf/2cFZ5S3esXgpWgtSCtLNS41F+sKPA==}
-    peerDependencies:
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0
-
   util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
 
@@ -5670,18 +5651,6 @@ packages:
   validate-npm-package-name@5.0.1:
     resolution: {integrity: sha512-OljLrQ9SQdOUqTaQxqL5dEfZWrXExyyWsozYlAWFawPVNuD83igl7uJD2RTkNMbniIYgt8l81eCJGIdQF7avLQ==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
-
-  valtio@1.13.2:
-    resolution: {integrity: sha512-Qik0o+DSy741TmkqmRfjq+0xpZBXi/Y6+fXZLn0xNF1z/waFMbE3rkivv5Zcf9RrMUp6zswf2J7sbh2KBlba5A==}
-    engines: {node: '>=12.20.0'}
-    peerDependencies:
-      '@types/react': '>=16.8'
-      react: '>=16.8'
-    peerDependenciesMeta:
-      '@types/react':
-        optional: true
-      react:
-        optional: true
 
   vite-node@2.0.4:
     resolution: {integrity: sha512-ZpJVkxcakYtig5iakNeL7N3trufe3M6vGuzYAr4GsbCTwobDeyPJpE4cjDhhPluv8OvQCFzu2LWp6GkoKRITXA==}
@@ -8319,10 +8288,6 @@ snapshots:
 
   dequal@2.0.3: {}
 
-  derive-valtio@0.1.0(valtio@1.13.2(@types/react@18.3.3)(react@18.3.1)):
-    dependencies:
-      valtio: 1.13.2(@types/react@18.3.3)(react@18.3.1)
-
   detect-indent@6.1.0: {}
 
   detect-node-es@1.1.0: {}
@@ -9877,8 +9842,6 @@ snapshots:
 
   protocol-buffers-schema@3.6.0: {}
 
-  proxy-compare@2.6.0: {}
-
   pseudomap@1.0.2: {}
 
   psl@1.9.0: {}
@@ -10727,10 +10690,6 @@ snapshots:
     optionalDependencies:
       '@types/react': 18.3.3
 
-  use-sync-external-store@1.2.0(react@18.3.1):
-    dependencies:
-      react: 18.3.1
-
   util-deprecate@1.0.2: {}
 
   utrie@1.0.2:
@@ -10745,15 +10704,6 @@ snapshots:
       spdx-expression-parse: 3.0.1
 
   validate-npm-package-name@5.0.1: {}
-
-  valtio@1.13.2(@types/react@18.3.3)(react@18.3.1):
-    dependencies:
-      derive-valtio: 0.1.0(valtio@1.13.2(@types/react@18.3.3)(react@18.3.1))
-      proxy-compare: 2.6.0
-      use-sync-external-store: 1.2.0(react@18.3.1)
-    optionalDependencies:
-      '@types/react': 18.3.3
-      react: 18.3.1
 
   vite-node@2.0.4(@types/node@18.19.41)(sass@1.77.8):
     dependencies:

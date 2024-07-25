@@ -19,6 +19,9 @@ import {
 } from "./SimpleDemos";
 import { createTocAndLegendDemo } from "./TocLegendDemo";
 import { createSelectionDemo } from "./SelectionDemo";
+import { createEditingDemo } from "./EditingDemo";
+import { EditingService } from "@open-pioneer/editing";
+import { NotificationService } from "@open-pioneer/notifier";
 
 export interface DemoInfo {
     /** Unique id */
@@ -57,6 +60,8 @@ export interface SharedDemoOptions {
     httpService: HttpService;
     mapModel: MapModel;
     vectorSelectionSourceFactory: VectorSelectionSourceFactory;
+    editingService: EditingService;
+    notificationService: NotificationService;
 }
 
 export function createDemos(options: SharedDemoOptions): Demo[] {
@@ -66,8 +71,7 @@ export function createDemos(options: SharedDemoOptions): Demo[] {
         createScaleViewerDemo(options),
         createScaleBarDemo(options),
         createMeasurementDemo(options),
-
-        // todo Editing
+        createEditingDemo(options),
         createMapNavigationDemo(options),
         createGeolocationDemo(options),
         createSpatialBookmarksDemo(options),

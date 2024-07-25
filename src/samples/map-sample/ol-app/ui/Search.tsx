@@ -4,14 +4,14 @@ import { Box } from "@open-pioneer/chakra-integration";
 import { useMapModel } from "@open-pioneer/map";
 import { Search, SearchSelectEvent } from "@open-pioneer/search";
 import { useService } from "open-pioneer:react-hooks";
-import { useSnapshot } from "valtio";
 import { AppModel } from "../AppModel";
-import { MAP_ID } from "../MapConfigProviderImpl";
+import { MAP_ID } from "../map/MapConfigProviderImpl";
+import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 
 export function SearchComponent() {
     const { map } = useMapModel(MAP_ID);
     const appModel = useService<AppModel>("ol-app.AppModel");
-    const sources = useSnapshot(appModel.state).searchSources;
+    const sources = useReactiveSnapshot(() => appModel.searchSources.getItems(), [appModel]);
 
     function onSearchResultSelected(event: SearchSelectEvent) {
         console.debug("The user selected the following item: ", event.result);
@@ -29,7 +29,7 @@ export function SearchComponent() {
 
     function onSearchCleared() {
         console.debug("The user cleared the search");
-        appModel.clearPreviousHighlight();
+        appModel.clearHighlight();
     }
 
     return (

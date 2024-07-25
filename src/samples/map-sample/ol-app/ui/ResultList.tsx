@@ -3,16 +3,16 @@
 import { Box } from "@open-pioneer/chakra-integration";
 import { ResultList } from "@open-pioneer/result-list";
 import { useService } from "open-pioneer:react-hooks";
-import { useSnapshot } from "valtio";
 import { AppModel } from "../AppModel";
-import { MAP_ID } from "../MapConfigProviderImpl";
+import { MAP_ID } from "../map/MapConfigProviderImpl";
 import { BaseFeature } from "@open-pioneer/map";
 import { useState, useCallback, useEffect } from "react";
 import { ResultListSelectionChangeEvent } from "@open-pioneer/result-list";
+import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 
 export function ResultListComponent() {
     const appModel = useService<unknown>("ol-app.AppModel") as AppModel;
-    const state = useSnapshot(appModel.state).resultListState;
+    const state = useReactiveSnapshot(() => appModel.resultListState, [appModel]);
     const [selectedFeatures, setSelectedFeatures] = useState<BaseFeature[]>([]);
     const [selectedIds, setSelectedIds] = useState<(string | number)[]>([]);
     const selectionChangeListener = useCallback((event: ResultListSelectionChangeEvent) => {
