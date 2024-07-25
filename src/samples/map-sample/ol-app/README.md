@@ -106,7 +106,7 @@ The `AppUI` implements a very simple layout mechanism.
 It retrieves a list of currently opened widgets from the `AppModel` (these are simple string ids) and renders them into a single container (`MainContentComponent`).
 The `AppModel` is in charge of managing the list of widgets:
 
--   They can be be toggled on or off.
+-   They can be toggled on or off.
 -   When an interaction (such as spatial selection) is enabled, all other widgets are hidden.
 
 The logic for this approach is implemented in the `AppModel` (`toggleMainContent` and other related methods).
