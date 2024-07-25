@@ -39,9 +39,7 @@ export class DragController {
         this.interactionResources.push(
             this.createDragBox(olMap, onExtentSelected, viewPort, this.interactionResources)
         );
-        this.interactionResources.push(
-            this.createDrag(olMap, viewPort, this.interactionResources)
-        );
+        this.interactionResources.push(this.createDrag(olMap, viewPort, this.interactionResources));
 
         this.tooltip = this.createHelpTooltip(olMap, tooltipMessage);
         this.olMap = olMap;

@@ -50,12 +50,7 @@ function createController() {
     const tooltipTest = "Tooltip wurde gesetzt";
     const disabledTooltipText = "Funktion ist deaktiviert";
     const extentHandler = vi.fn();
-    const controller = new DragController(
-        olMap,
-        tooltipTest,
-        disabledTooltipText,
-        extentHandler
-    );
+    const controller = new DragController(olMap, tooltipTest, disabledTooltipText, extentHandler);
     return { olMap, controller, tooltipTest, extentHandler, disabledTooltipText };
 }
 

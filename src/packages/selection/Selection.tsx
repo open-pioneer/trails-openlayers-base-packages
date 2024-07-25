@@ -84,7 +84,7 @@ interface SelectionOption {
     /**
      * The value (SelectionSource) of the selection source option.
      */
-    value: SelectionSource | undefined;
+    value: SelectionSource;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -102,10 +102,12 @@ export const Selection: FC<SelectionProps> = (props) => {
     const intl = useIntl();
     const { mapId, sources, onSelectionComplete, onSelectionSourceChanged } = props;
     const { containerProps } = useCommonComponentProps("selection", props);
-    const [currentSource, setCurrentSource] = useState<SelectionSource | undefined>(() =>
-        sources.find((s) => (s.status ?? "available") === "available")
+    const defaultNotAvailableMessage = intl.formatMessage({ id: "sourceNotAvailable" });
+
+    const [currentSource, setCurrentSource] = useState<SelectionSource | undefined>(
+        () => sources.find((s) => (s.status ?? "available") === "available") // todo intitialer wert --> sources[0]
     );
-    const currentSourceStatus = useSourceStatus(currentSource);
+    const currentSourceStatus = useSourceStatus(currentSource, defaultNotAvailableMessage);
 
     const mapState = useMapModel(mapId);
     const { onExtentSelected } = useSelectionController(
@@ -121,7 +123,8 @@ export const Selection: FC<SelectionProps> = (props) => {
         mapState.map,
         intl,
         onExtentSelected,
-        currentSourceStatus.kind === "available"
+        currentSourceStatus.kind === "available",
+        !!currentSource
     );
 
     const sourceOptions = useMemo(
@@ -163,16 +166,24 @@ export const Selection: FC<SelectionProps> = (props) => {
                         Option: SourceSelectOption,
                         SingleValue: SourceSelectValue
                     }}
-                    isOptionDisabled={(option) =>
-                        option.value === undefined || option.value.status === "unavailable"
-                    }
+                    isOptionDisabled={() => false} // allow to select disabled options; optical disabling is done in option
                     // optionLabel is used by screenreaders
-                    getOptionLabel={(option) =>
-                        option.label +
-                        (option.value === undefined || option.value.status === "unavailable"
-                            ? " " + intl.formatMessage({ id: "sourceNotAvailable" })
-                            : "")
-                    }
+                    getOptionLabel={(option) => {
+                        const label = option.label;
+                        const status = getSourceStatus(option.value, defaultNotAvailableMessage);
+                        if (status.kind == "available") return label;
+                        return label + " " + status.reason;
+                    }}
+                    ariaLiveMessages={{
+                        guidance: () => "",
+                        onChange: (props) => {
+                            if (props.action == "select-option")
+                                return props.label + " " + intl.formatMessage({ id: "selected" });
+                            else return "";
+                        },
+                        onFilter: () => "",
+                        onFocus: () => ""
+                    }}
                     chakraStyles={chakraStyles}
                     onKeyDown={keyDown}
                     menuIsOpen={isOpenSelect}
@@ -217,8 +228,10 @@ function SourceSelectValue(props: SingleValueProps<SelectionOption>): JSX.Elemen
  * Hook to manage source option in selection-source react-select
  */
 function useSourceItem(source: SelectionSource | undefined, isSelected: boolean) {
+    const intl = useIntl();
     const label: string | undefined = source?.label;
-    const status = useSourceStatus(source);
+    const defaultNotAvailableMessage = intl.formatMessage({ id: "sourceNotAvailable" });
+    const status = useSourceStatus(source, defaultNotAvailableMessage);
 
     return {
         isAvailable: status.kind === "available",
@@ -320,24 +333,25 @@ function getSourceStatus(source: SelectionSource, sourceNotAvailableReason: stri
 /**
  * Hook to manage source status
  */
-function useSourceStatus(source: SelectionSource | undefined): SimpleStatus {
-    const intl = useIntl();
+function useSourceStatus(
+    source: SelectionSource | undefined,
+    defaultNotAvailableMessage: string
+): SimpleStatus {
     const [status, setStatus] = useState<SimpleStatus>(() => ({
         kind: "unavailable",
-        reason: "TODO" // default message
+        reason: defaultNotAvailableMessage
     }));
     useEffect(() => {
         if (!source) {
-            setStatus({ kind: "unavailable", reason: "TODO" }); // default message
+            setStatus({ kind: "unavailable", reason: defaultNotAvailableMessage });
             return;
         }
-        const sourceNotAvailableReason = intl.formatMessage({ id: "sourceNotAvailable" });
-        setStatus(getSourceStatus(source, sourceNotAvailableReason));
+        setStatus(getSourceStatus(source, defaultNotAvailableMessage));
         const resource = source.on?.("changed:status", () => {
-            setStatus(getSourceStatus(source, sourceNotAvailableReason));
+            setStatus(getSourceStatus(source, defaultNotAvailableMessage));
         });
         return () => resource?.destroy();
-    }, [source, intl]);
+    }, [source, defaultNotAvailableMessage]);
     return status;
 }
 
@@ -348,17 +362,22 @@ function useDragSelection(
     map: MapModel | undefined,
     intl: PackageIntl,
     onExtentSelected: (geometry: Geometry) => void,
-    isActive: boolean
+    isActive: boolean,
+    hasSelectedSource: boolean
 ) {
     useEffect(() => {
         if (!map) {
             return;
         }
 
+        const disabledMessage = hasSelectedSource
+            ? intl.formatMessage({ id: "disabledTooltip" })
+            : intl.formatMessage({ id: "noSourceTooltip" });
+
         const dragController = new DragController(
             map.olMap,
             intl.formatMessage({ id: "tooltip" }),
-            intl.formatMessage({ id: "disabledTooltip" }),
+            disabledMessage,
             onExtentSelected
         );
 
@@ -366,7 +385,7 @@ function useDragSelection(
         return () => {
             dragController?.destroy();
         };
-    }, [map, intl, onExtentSelected, isActive]);
+    }, [map, intl, onExtentSelected, isActive, hasSelectedSource]);
 }
 
 /**
