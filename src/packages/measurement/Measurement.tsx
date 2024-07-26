@@ -16,7 +16,12 @@ import { Circle as CircleStyle, Fill, Stroke, Style } from "ol/style";
 import { StyleLike } from "ol/style/Style";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, useEffect, useState } from "react";
-import { MeasurementController, MeasurementGeometry, MeasurementsChangedHandler, MeasurementType } from "./MeasurementController";
+import {
+    MeasurementController,
+    MeasurementGeometry,
+    MeasurementsChangedHandler,
+    MeasurementType
+} from "./MeasurementController";
 
 /**
  * This is for special properties of the Measurement.
@@ -45,7 +50,7 @@ export interface MeasurementProps extends CommonComponentProps {
     /**
      * list of measurements to be rendered when the component is initialized
      */
-    initialMeasurements?: MeasurementGeometry[]
+    predefinedMeasurments?: MeasurementGeometry[];
 }
 
 /**
@@ -54,12 +59,18 @@ export interface MeasurementProps extends CommonComponentProps {
 export const Measurement: FC<MeasurementProps> = (props) => {
     const intl = useIntl();
 
-    const { mapId, activeFeatureStyle, finishedFeatureStyle, measurmentsHandler, initialMeasurements} = props;
+    const {
+        mapId,
+        activeFeatureStyle,
+        finishedFeatureStyle,
+        measurmentsHandler,
+        predefinedMeasurments
+    } = props;
     const { containerProps } = useCommonComponentProps("measurement", props);
     const [selectedMeasurement, setMeasurement] = useState<MeasurementType>("distance");
     const label = (id: string) => intl.formatMessage({ id: id });
     const mapState = useMapModel(mapId);
-    const controller = useController(mapState.map, intl, initialMeasurements ?? []);
+    const controller = useController(mapState.map, intl);
 
     // Synchronize styles with controller
     useEffect(() => {
@@ -72,10 +83,16 @@ export const Measurement: FC<MeasurementProps> = (props) => {
     }, [controller, finishedFeatureStyle]);
 
     useEffect(() => {
-        if(measurmentsHandler){
+        if (measurmentsHandler) {
             controller?.setMeasurementSourceChangedHandler(measurmentsHandler);
         }
     }, [controller, measurmentsHandler]);
+
+    useEffect(() => {
+        if (predefinedMeasurments) {
+            controller?.setPredefinedMeasurements(predefinedMeasurments);
+        }
+    }, [controller, predefinedMeasurments]);
 
     // Start / Stop measurement on selection change
     useEffect(() => {
@@ -130,7 +147,7 @@ export const Measurement: FC<MeasurementProps> = (props) => {
 };
 
 /** Creates a MeasurementController instance for the given map. */
-function useController(map: MapModel | undefined, intl: PackageIntl, initialMeasurements: MeasurementGeometry[]) {
+function useController(map: MapModel | undefined, intl: PackageIntl) {
     const [controller, setController] = useState<MeasurementController | undefined>(undefined);
     useEffect(() => {
         if (!map) {
@@ -148,16 +165,14 @@ function useController(map: MapModel | undefined, intl: PackageIntl, initialMeas
                     maximumFractionDigits: 2
                 });
             }
-        },
-        initialMeasurements
-        );
+        });
 
         setController(controller);
         return () => {
             controller.destroy();
             setController(undefined);
         };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [map, intl]); //do not re-init controller for intialMeasurements because it describes the intital state of the component
     return controller;
 }
