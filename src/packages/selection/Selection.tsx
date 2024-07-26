@@ -177,7 +177,10 @@ export const Selection: FC<SelectionProps> = (props) => {
                     ariaLiveMessages={{
                         guidance: () => "",
                         onChange: (props) => {
-                            if (props.action == "select-option")
+                            if (
+                                props.action == "select-option" ||
+                                props.action == "initial-input-focus"
+                            )
                                 return props.label + " " + intl.formatMessage({ id: "selected" });
                             else return "";
                         },
