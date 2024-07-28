@@ -100,9 +100,12 @@ export class MeasurementController {
         this.messages = messages;
         const source = (this.source = new VectorSource());
         this.layer = new VectorLayer({
-            source
+            source: source,
+            zIndex: TOPMOST_LAYER_Z,
+            properties: {
+                name: "measurement-layer"
+            }
         });
-        this.layer.setZIndex(TOPMOST_LAYER_Z);
         olMap.addLayer(this.layer);
 
         const pointerMoveKey = olMap.on("pointermove", this.handlePointerMove.bind(this));
