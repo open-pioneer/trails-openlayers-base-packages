@@ -23,7 +23,7 @@ import { Layer, LayerBase, MapModel, Sublayer } from "@open-pioneer/map";
 import { PackageIntl } from "@open-pioneer/runtime";
 import classNames from "classnames";
 import { useIntl } from "open-pioneer:react-hooks";
-import { useCallback, useId, useRef, useSyncExternalStore } from "react";
+import { useCallback, useRef, useSyncExternalStore } from "react";
 import { FiAlertTriangle, FiMoreVertical } from "react-icons/fi";
 
 type TocLayer = Layer | Sublayer;
@@ -74,7 +74,6 @@ function createList(layers: TocLayer[], intl: PackageIntl, listProps: ListProps)
 function LayerItem(props: { layer: TocLayer; intl: PackageIntl }): JSX.Element {
     const { layer, intl } = props;
     const title = useTitle(layer);
-    const checkboxId = useId();
     const { isVisible, setVisible } = useVisibility(layer);
     const sublayers = useSublayers(layer);
     const isAvailable = useLoadState(layer) !== "error";
@@ -103,7 +102,6 @@ function LayerItem(props: { layer: TocLayer; intl: PackageIntl }): JSX.Element {
             >
                 <Checkbox
                     // Keyboard navigation jumps only to Checkboxes and uses the texts inside this DOM node. The aria-labels of Tooltip and Icon is ignored by screenreader because they are no child element of the checkbox. To consider the notAvailableLabel, an aria-label at the checkbox is necessary.
-                    id={checkboxId}
                     aria-label={title + (!isAvailable ? " " + notAvailableLabel : "")}
                     isChecked={isVisible}
                     isDisabled={!isAvailable}
