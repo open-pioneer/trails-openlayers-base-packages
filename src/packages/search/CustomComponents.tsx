@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { SearchIcon } from "@chakra-ui/icons";
-import { Box, CloseButton, chakra } from "@open-pioneer/chakra-integration";
+import { CloseButton, chakra } from "@open-pioneer/chakra-integration";
 import {
     ClearIndicatorProps,
     GroupProps,
@@ -34,10 +34,15 @@ export function MenuComp(props: MenuProps<SearchOption, false, SearchGroupOption
 
 export function GroupComp(props: GroupProps<SearchOption, false, SearchGroupOption>) {
     const ariaLabel = props.data.label;
+    const innerProps = {
+        ...props.innerProps,
+        "aria-label": ariaLabel,
+        role: "group"
+    };
     return (
         <chakraComponents.Group
             {...props}
-            innerProps={{ "aria-label": ariaLabel, role: "group" }}
+            innerProps={innerProps}
         ></chakraComponents.Group>
     );
 }
