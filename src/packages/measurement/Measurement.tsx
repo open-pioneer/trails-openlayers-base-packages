@@ -45,7 +45,7 @@ export interface MeasurementProps extends CommonComponentProps {
     /**
      * handler that is called whenever a measurement is added or removed
      */
-    measurmentsHandler?: MeasurementsChangedHandler;
+    measurementsHandler?: MeasurementsChangedHandler;
 
     /**
      * list of measurements to be rendered when the component is initialized
@@ -63,7 +63,7 @@ export const Measurement: FC<MeasurementProps> = (props) => {
         mapId,
         activeFeatureStyle,
         finishedFeatureStyle,
-        measurmentsHandler,
+        measurementsHandler: measurmentsHandler,
         predefinedMeasurments
     } = props;
     const { containerProps } = useCommonComponentProps("measurement", props);
