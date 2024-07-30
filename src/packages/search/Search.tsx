@@ -20,6 +20,7 @@ import { useIntl } from "open-pioneer:react-hooks";
 import { FC, useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
 import {
     ClearIndicator,
+    GroupComp,
     HighlightOption,
     IndicatorsContainer,
     Input,
@@ -201,26 +202,17 @@ function useAriaMessages(
         /**
          * Method to create Aria-String for focus-Event
          */
-        const onFocus: AriaOnFocus<SearchOption> = ({ focused }) => {
-            return `${focused.label} ${intl.formatMessage({ id: "ariaLabel.searchFocus" })}.`;
+        const onFocus: AriaOnFocus<SearchOption> = () => {
+            //no aria string for focus-events because in some screen readers (NVDA) and browsers (Chrome) updating the aria string causes the instructions to be read out again each time a select option is focused
+            return "";
         };
 
         /**
          * Method to create Aria-String for value-change-Event
          */
-        const onChange: AriaOnChange<SearchOption, boolean> = ({ action, label }) => {
-            let message = "";
-            switch (action) {
-                case "select-option":
-                    message = `${label} ${intl.formatMessage({ id: "ariaLabel.searchSelect" })}.`;
-                    break;
-                case "clear":
-                    message = `${label} ${intl.formatMessage({ id: "ariaLabel.searchClear" })}.`;
-                    break;
-                default:
-                    break;
-            }
-            return message;
+        const onChange: AriaOnChange<SearchOption, boolean> = () => {
+            //no aria string for change-events because in some screen readers (NVDA) and browsers (Chrome) updating the aria string causes the instructions to be read out again each time a select option is focused
+            return "";
         };
 
         /**
@@ -260,7 +252,8 @@ function useCustomComponents(): SelectProps<SearchOption, false, SearchGroupOpti
             LoadingMessage: LoadingMessage,
             ValueContainer: ValueContainer,
             IndicatorsContainer: IndicatorsContainer,
-            ClearIndicator: ClearIndicator
+            ClearIndicator: ClearIndicator,
+            Group: GroupComp
         };
     }, []);
 }
