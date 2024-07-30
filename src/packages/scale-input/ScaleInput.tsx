@@ -47,10 +47,10 @@ export const ScaleInput: FC<ScaleInputProps> = (props) => {
         const projection = map.olMap.getView().getProjection();
         let mpu = projection.getMetersPerUnit();
         if (mpu == undefined) mpu = 1;
-        const resolution = parseInt(sc) / (INCHES_PER_METRE * DEFAULT_DPI * mpu);
+        const resolution = INCHES_PER_METRE * DEFAULT_DPI * mpu;
         const center = map.olMap.getView().getCenter();
         if (center == undefined) return;
-        const pointResolution = getPointResolution(projection, resolution, center);
+        const pointResolution = parseInt(sc) / getPointResolution(projection, resolution, center);
         tempView.setResolution(pointResolution);
     }
 
