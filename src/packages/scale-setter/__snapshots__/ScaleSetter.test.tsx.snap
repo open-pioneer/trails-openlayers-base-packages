@@ -6,121 +6,221 @@ exports[`should successfully create a scale Setter component 1`] = `
   data-testid="scale-setter"
   data-theme="light"
 >
-  <div
-    class="chakra-select__wrapper css-42b2qy"
+  <button
+    aria-controls="menu-list-:r1:"
+    aria-expanded="false"
+    aria-haspopup="menu"
+    class="chakra-button chakra-menu__menu-button scale-setter-menubutton css-ez23ye"
     data-theme="light"
+    id="menu-button-:r1:"
+    type="button"
   >
-    <select
-      class="chakra-select css-161pkch"
+    <span
+      class="css-xl71ch"
       data-theme="light"
     >
-      <option
-        value=""
-      >
-        1 : 336,409
-      </option>
-      <option
-        value="17471320"
-      >
-        1 : 
-        17,471,320
-      </option>
-      <option
-        value="8735660"
-      >
-        1 : 
-        8,735,660
-      </option>
-      <option
-        value="4367830"
-      >
-        1 : 
-        4,367,830
-      </option>
-      <option
-        value="2183915"
-      >
-        1 : 
-        2,183,915
-      </option>
-      <option
-        value="1091957"
-      >
-        1 : 
-        1,091,957
-      </option>
-      <option
-        value="545978"
-      >
-        1 : 
-        545,978
-      </option>
-      <option
-        value="272989"
-      >
-        1 : 
-        272,989
-      </option>
-      <option
-        value="136494"
-      >
-        1 : 
-        136,494
-      </option>
-      <option
-        value="68247"
-      >
-        1 : 
-        68,247
-      </option>
-      <option
-        value="34123"
-      >
-        1 : 
-        34,123
-      </option>
-      <option
-        value="17061"
-      >
-        1 : 
-        17,061
-      </option>
-      <option
-        value="8530"
-      >
-        1 : 
-        8,530
-      </option>
-      <option
-        value="4265"
-      >
-        1 : 
-        4,265
-      </option>
-      <option
-        value="2132"
-      >
-        1 : 
-        2,132
-      </option>
-    </select>
-    <div
-      class="chakra-select__icon-wrapper css-iohxn1"
+      1 : 336,409
+    </span>
+    <span
+      class="chakra-button__icon css-1hzyiq5"
       data-theme="light"
     >
       <svg
         aria-hidden="true"
-        class="chakra-select__icon"
+        class="chakra-icon css-onkibi"
+        data-theme="light"
         focusable="false"
-        role="presentation"
-        style="width: 1em; height: 1em; color: currentcolor;"
         viewBox="0 0 24 24"
       >
         <path
-          d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
+          d="M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14z"
           fill="currentColor"
         />
       </svg>
+    </span>
+  </button>
+  <div
+    class="css-r6z5ec"
+    data-theme="light"
+    style="visibility: hidden; position: absolute; min-width: max-content;"
+  >
+    <div
+      aria-orientation="vertical"
+      class="scale-setter-menuoptions css-1kfu8nn"
+      data-theme="light"
+      id="menu-list-:r1:"
+      role="menu"
+      style="transform-origin: var(--popper-transform-origin); opacity: 0; visibility: hidden; transform: scale(0.8) translateZ(0);"
+      tabindex="-1"
+    >
+      <button
+        class="chakra-menu__menuitem scale-setter-option css-18esm8n"
+        data-index="0"
+        data-theme="light"
+        id="menu-list-:r1:-menuitem-:r2:"
+        role="menuitem"
+        tabindex="-1"
+        type="button"
+        value="17471320"
+      >
+        1 : 17,471,320
+      </button>
+      <button
+        class="chakra-menu__menuitem scale-setter-option css-18esm8n"
+        data-index="1"
+        data-theme="light"
+        id="menu-list-:r1:-menuitem-:r3:"
+        role="menuitem"
+        tabindex="-1"
+        type="button"
+        value="8735660"
+      >
+        1 : 8,735,660
+      </button>
+      <button
+        class="chakra-menu__menuitem scale-setter-option css-18esm8n"
+        data-index="2"
+        data-theme="light"
+        id="menu-list-:r1:-menuitem-:r4:"
+        role="menuitem"
+        tabindex="-1"
+        type="button"
+        value="4367830"
+      >
+        1 : 4,367,830
+      </button>
+      <button
+        class="chakra-menu__menuitem scale-setter-option css-18esm8n"
+        data-index="3"
+        data-theme="light"
+        id="menu-list-:r1:-menuitem-:r5:"
+        role="menuitem"
+        tabindex="-1"
+        type="button"
+        value="2183915"
+      >
+        1 : 2,183,915
+      </button>
+      <button
+        class="chakra-menu__menuitem scale-setter-option css-18esm8n"
+        data-index="4"
+        data-theme="light"
+        id="menu-list-:r1:-menuitem-:r6:"
+        role="menuitem"
+        tabindex="-1"
+        type="button"
+        value="1091957"
+      >
+        1 : 1,091,957
+      </button>
+      <button
+        class="chakra-menu__menuitem scale-setter-option css-18esm8n"
+        data-index="5"
+        data-theme="light"
+        id="menu-list-:r1:-menuitem-:r7:"
+        role="menuitem"
+        tabindex="-1"
+        type="button"
+        value="545978"
+      >
+        1 : 545,978
+      </button>
+      <button
+        class="chakra-menu__menuitem scale-setter-option css-18esm8n"
+        data-index="6"
+        data-theme="light"
+        id="menu-list-:r1:-menuitem-:r8:"
+        role="menuitem"
+        tabindex="-1"
+        type="button"
+        value="272989"
+      >
+        1 : 272,989
+      </button>
+      <button
+        class="chakra-menu__menuitem scale-setter-option css-18esm8n"
+        data-index="7"
+        data-theme="light"
+        id="menu-list-:r1:-menuitem-:r9:"
+        role="menuitem"
+        tabindex="-1"
+        type="button"
+        value="136494"
+      >
+        1 : 136,494
+      </button>
+      <button
+        class="chakra-menu__menuitem scale-setter-option css-18esm8n"
+        data-index="8"
+        data-theme="light"
+        id="menu-list-:r1:-menuitem-:ra:"
+        role="menuitem"
+        tabindex="-1"
+        type="button"
+        value="68247"
+      >
+        1 : 68,247
+      </button>
+      <button
+        class="chakra-menu__menuitem scale-setter-option css-18esm8n"
+        data-index="9"
+        data-theme="light"
+        id="menu-list-:r1:-menuitem-:rb:"
+        role="menuitem"
+        tabindex="-1"
+        type="button"
+        value="34123"
+      >
+        1 : 34,123
+      </button>
+      <button
+        class="chakra-menu__menuitem scale-setter-option css-18esm8n"
+        data-index="10"
+        data-theme="light"
+        id="menu-list-:r1:-menuitem-:rc:"
+        role="menuitem"
+        tabindex="-1"
+        type="button"
+        value="17061"
+      >
+        1 : 17,061
+      </button>
+      <button
+        class="chakra-menu__menuitem scale-setter-option css-18esm8n"
+        data-index="11"
+        data-theme="light"
+        id="menu-list-:r1:-menuitem-:rd:"
+        role="menuitem"
+        tabindex="-1"
+        type="button"
+        value="8530"
+      >
+        1 : 8,530
+      </button>
+      <button
+        class="chakra-menu__menuitem scale-setter-option css-18esm8n"
+        data-index="12"
+        data-theme="light"
+        id="menu-list-:r1:-menuitem-:re:"
+        role="menuitem"
+        tabindex="-1"
+        type="button"
+        value="4265"
+      >
+        1 : 4,265
+      </button>
+      <button
+        class="chakra-menu__menuitem scale-setter-option css-18esm8n"
+        data-index="13"
+        data-theme="light"
+        id="menu-list-:r1:-menuitem-:rf:"
+        role="menuitem"
+        tabindex="-1"
+        type="button"
+        value="2132"
+      >
+        1 : 2,132
+      </button>
     </div>
   </div>
 </div>
@@ -132,121 +232,221 @@ exports[`should successfully create a scale setter component with additional css
   data-testid="scale-setter"
   data-theme="light"
 >
-  <div
-    class="chakra-select__wrapper css-42b2qy"
+  <button
+    aria-controls="menu-list-:rh:"
+    aria-expanded="false"
+    aria-haspopup="menu"
+    class="chakra-button chakra-menu__menu-button scale-setter-menubutton css-ez23ye"
     data-theme="light"
+    id="menu-button-:rh:"
+    type="button"
   >
-    <select
-      class="chakra-select css-161pkch"
+    <span
+      class="css-xl71ch"
       data-theme="light"
     >
-      <option
-        value=""
-      >
-        1 : 336,409
-      </option>
-      <option
-        value="17471320"
-      >
-        1 : 
-        17,471,320
-      </option>
-      <option
-        value="8735660"
-      >
-        1 : 
-        8,735,660
-      </option>
-      <option
-        value="4367830"
-      >
-        1 : 
-        4,367,830
-      </option>
-      <option
-        value="2183915"
-      >
-        1 : 
-        2,183,915
-      </option>
-      <option
-        value="1091957"
-      >
-        1 : 
-        1,091,957
-      </option>
-      <option
-        value="545978"
-      >
-        1 : 
-        545,978
-      </option>
-      <option
-        value="272989"
-      >
-        1 : 
-        272,989
-      </option>
-      <option
-        value="136494"
-      >
-        1 : 
-        136,494
-      </option>
-      <option
-        value="68247"
-      >
-        1 : 
-        68,247
-      </option>
-      <option
-        value="34123"
-      >
-        1 : 
-        34,123
-      </option>
-      <option
-        value="17061"
-      >
-        1 : 
-        17,061
-      </option>
-      <option
-        value="8530"
-      >
-        1 : 
-        8,530
-      </option>
-      <option
-        value="4265"
-      >
-        1 : 
-        4,265
-      </option>
-      <option
-        value="2132"
-      >
-        1 : 
-        2,132
-      </option>
-    </select>
-    <div
-      class="chakra-select__icon-wrapper css-iohxn1"
+      1 : 336,409
+    </span>
+    <span
+      class="chakra-button__icon css-1hzyiq5"
       data-theme="light"
     >
       <svg
         aria-hidden="true"
-        class="chakra-select__icon"
+        class="chakra-icon css-onkibi"
+        data-theme="light"
         focusable="false"
-        role="presentation"
-        style="width: 1em; height: 1em; color: currentcolor;"
         viewBox="0 0 24 24"
       >
         <path
-          d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
+          d="M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14z"
           fill="currentColor"
         />
       </svg>
+    </span>
+  </button>
+  <div
+    class="css-r6z5ec"
+    data-theme="light"
+    style="visibility: hidden; position: absolute; min-width: max-content;"
+  >
+    <div
+      aria-orientation="vertical"
+      class="scale-setter-menuoptions css-1kfu8nn"
+      data-theme="light"
+      id="menu-list-:rh:"
+      role="menu"
+      style="transform-origin: var(--popper-transform-origin); opacity: 0; visibility: hidden; transform: scale(0.8) translateZ(0);"
+      tabindex="-1"
+    >
+      <button
+        class="chakra-menu__menuitem scale-setter-option css-18esm8n"
+        data-index="0"
+        data-theme="light"
+        id="menu-list-:rh:-menuitem-:ri:"
+        role="menuitem"
+        tabindex="-1"
+        type="button"
+        value="17471320"
+      >
+        1 : 17,471,320
+      </button>
+      <button
+        class="chakra-menu__menuitem scale-setter-option css-18esm8n"
+        data-index="1"
+        data-theme="light"
+        id="menu-list-:rh:-menuitem-:rj:"
+        role="menuitem"
+        tabindex="-1"
+        type="button"
+        value="8735660"
+      >
+        1 : 8,735,660
+      </button>
+      <button
+        class="chakra-menu__menuitem scale-setter-option css-18esm8n"
+        data-index="2"
+        data-theme="light"
+        id="menu-list-:rh:-menuitem-:rk:"
+        role="menuitem"
+        tabindex="-1"
+        type="button"
+        value="4367830"
+      >
+        1 : 4,367,830
+      </button>
+      <button
+        class="chakra-menu__menuitem scale-setter-option css-18esm8n"
+        data-index="3"
+        data-theme="light"
+        id="menu-list-:rh:-menuitem-:rl:"
+        role="menuitem"
+        tabindex="-1"
+        type="button"
+        value="2183915"
+      >
+        1 : 2,183,915
+      </button>
+      <button
+        class="chakra-menu__menuitem scale-setter-option css-18esm8n"
+        data-index="4"
+        data-theme="light"
+        id="menu-list-:rh:-menuitem-:rm:"
+        role="menuitem"
+        tabindex="-1"
+        type="button"
+        value="1091957"
+      >
+        1 : 1,091,957
+      </button>
+      <button
+        class="chakra-menu__menuitem scale-setter-option css-18esm8n"
+        data-index="5"
+        data-theme="light"
+        id="menu-list-:rh:-menuitem-:rn:"
+        role="menuitem"
+        tabindex="-1"
+        type="button"
+        value="545978"
+      >
+        1 : 545,978
+      </button>
+      <button
+        class="chakra-menu__menuitem scale-setter-option css-18esm8n"
+        data-index="6"
+        data-theme="light"
+        id="menu-list-:rh:-menuitem-:ro:"
+        role="menuitem"
+        tabindex="-1"
+        type="button"
+        value="272989"
+      >
+        1 : 272,989
+      </button>
+      <button
+        class="chakra-menu__menuitem scale-setter-option css-18esm8n"
+        data-index="7"
+        data-theme="light"
+        id="menu-list-:rh:-menuitem-:rp:"
+        role="menuitem"
+        tabindex="-1"
+        type="button"
+        value="136494"
+      >
+        1 : 136,494
+      </button>
+      <button
+        class="chakra-menu__menuitem scale-setter-option css-18esm8n"
+        data-index="8"
+        data-theme="light"
+        id="menu-list-:rh:-menuitem-:rq:"
+        role="menuitem"
+        tabindex="-1"
+        type="button"
+        value="68247"
+      >
+        1 : 68,247
+      </button>
+      <button
+        class="chakra-menu__menuitem scale-setter-option css-18esm8n"
+        data-index="9"
+        data-theme="light"
+        id="menu-list-:rh:-menuitem-:rr:"
+        role="menuitem"
+        tabindex="-1"
+        type="button"
+        value="34123"
+      >
+        1 : 34,123
+      </button>
+      <button
+        class="chakra-menu__menuitem scale-setter-option css-18esm8n"
+        data-index="10"
+        data-theme="light"
+        id="menu-list-:rh:-menuitem-:rs:"
+        role="menuitem"
+        tabindex="-1"
+        type="button"
+        value="17061"
+      >
+        1 : 17,061
+      </button>
+      <button
+        class="chakra-menu__menuitem scale-setter-option css-18esm8n"
+        data-index="11"
+        data-theme="light"
+        id="menu-list-:rh:-menuitem-:rt:"
+        role="menuitem"
+        tabindex="-1"
+        type="button"
+        value="8530"
+      >
+        1 : 8,530
+      </button>
+      <button
+        class="chakra-menu__menuitem scale-setter-option css-18esm8n"
+        data-index="12"
+        data-theme="light"
+        id="menu-list-:rh:-menuitem-:ru:"
+        role="menuitem"
+        tabindex="-1"
+        type="button"
+        value="4265"
+      >
+        1 : 4,265
+      </button>
+      <button
+        class="chakra-menu__menuitem scale-setter-option css-18esm8n"
+        data-index="13"
+        data-theme="light"
+        id="menu-list-:rh:-menuitem-:rv:"
+        role="menuitem"
+        tabindex="-1"
+        type="button"
+        value="2132"
+      >
+        1 : 2,132
+      </button>
     </div>
   </div>
 </div>
