@@ -9,7 +9,8 @@ import {
     Menu,
     MenuButton,
     MenuItem,
-    MenuList
+    MenuList,
+    Portal
 } from "@open-pioneer/chakra-integration";
 import { useIntl } from "open-pioneer:react-hooks";
 import { PackageIntl } from "@open-pioneer/runtime";
@@ -71,7 +72,7 @@ export const ScaleSetter: FC<ScaleSetterProps> = (props) => {
 
     return (
         <Box {...containerProps}>
-            <Menu>
+            <Menu isLazy>
                 <MenuButton
                     as={Button}
                     rightIcon={<ChevronUpIcon />}
@@ -79,7 +80,9 @@ export const ScaleSetter: FC<ScaleSetterProps> = (props) => {
                 >
                     {renderDisplayScale(intl, activeScale ? activeScale : 1)}
                 </MenuButton>
-                <MenuList className="scale-setter-menuoptions">{scaleSelectOptions}</MenuList>
+                <Portal>
+                    <MenuList className="scale-setter-menuoptions">{scaleSelectOptions}</MenuList>
+                </Portal>
             </Menu>
         </Box>
     );
