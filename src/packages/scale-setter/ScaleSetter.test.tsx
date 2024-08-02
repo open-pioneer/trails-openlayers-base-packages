@@ -105,8 +105,7 @@ it("should successfully render the scale in the correct locale", async () => {
     expect(setterButton.textContent).toBe("1 : 21.026");
 });
 
-it("should successfully update the map scale when selection changes", async () => {
-    const user = userEvent.setup();
+it("should successfully update the map scale and label when selection changes", async () => {
     const { mapId, registry } = await setupMap({
         layers: defaultBasemapConfig
     });
@@ -127,18 +126,16 @@ it("should successfully update the map scale when selection changes", async () =
     const INCHES_PER_METRE = 39.37;
     const resolution = olMap.getView().getResolution();
     const center = olMap.getView().getCenter();
-    if (resolution !== undefined && center !== undefined) {
-        const pointResolution = getPointResolution(
-            olMap.getView().getProjection(),
-            resolution,
-            center
-        );
-        const scale = Math.round(pointResolution * INCHES_PER_METRE * DEFAULT_DPI);
-        expect(scale.toString()).toBe(setterOptions[0]!.value);
+    if (resolution == undefined || center == undefined) {
+        throw new Error("Map view not rendered");
     }
+    const pointResolution = getPointResolution(olMap.getView().getProjection(), resolution, center);
+    const scale = Math.round(pointResolution * INCHES_PER_METRE * DEFAULT_DPI);
+    expect(scale.toString()).toBe(setterOptions[0]!.value);
+    expect(setterButton.textContent).toBe("1 : " + scale.toLocaleString());
 });
 
-it("should successfully update the label when selection changes", async () => {
+it("should successfully update the label when map scale changes after creation", async () => {
     const { mapId, registry } = await setupMap({
         layers: defaultBasemapConfig
     });
@@ -150,24 +147,23 @@ it("should successfully update the label when selection changes", async () => {
             <ScaleSetter mapId={mapId} data-testid="scale-setter" />
         </PackageContextProvider>
     );
-    const { setterButton, setterMenu } = await waitForScaleSetter();
-    await showMenuoptions(setterButton);
-    const setterOptions = await getMenuOptions(setterMenu);
-    if (setterOptions[0] == undefined) return;
-    await userEvent.click(setterOptions[0]!);
+    const { setterButton } = await waitForScaleSetter();
+    if (olMap.getView() == undefined || olMap.getView().getZoom() == undefined) {
+        throw new Error("Map view not rendered");
+    }
+    act(() => {
+        olMap.getView().setZoom(olMap.getView().getZoom()! - 1);
+    });
     const DEFAULT_DPI = 25.4 / 0.28;
     const INCHES_PER_METRE = 39.37;
     const resolution = olMap.getView().getResolution();
     const center = olMap.getView().getCenter();
-    if (resolution !== undefined && center !== undefined) {
-        const pointResolution = getPointResolution(
-            olMap.getView().getProjection(),
-            resolution,
-            center
-        );
-        const scale = Math.round(pointResolution * INCHES_PER_METRE * DEFAULT_DPI);
-        expect(setterButton.textContent).toBe("1 : " + scale.toLocaleString());
+    if (resolution == undefined || center == undefined) {
+        throw new Error("Map view not rendered");
     }
+    const pointResolution = getPointResolution(olMap.getView().getProjection(), resolution, center);
+    const scale = Math.round(pointResolution * INCHES_PER_METRE * DEFAULT_DPI);
+    expect(setterButton.textContent).toBe("1 : " + scale.toLocaleString());
 });
 
 it("should use default scales when nothing is set", async () => {
@@ -251,4 +247,10 @@ function getOptionValues(setterOptions: HTMLButtonElement[]) {
         optionValues.push(parseInt(option.value));
     });
     return optionValues;
+}
+
+function sleep(ms: number) {
+    return new Promise<void>((resolve) => {
+        setTimeout(resolve, ms);
+    });
 }
