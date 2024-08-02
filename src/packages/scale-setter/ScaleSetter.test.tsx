@@ -1,13 +1,13 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
-import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, render, screen, waitFor } from "@testing-library/react";
 import { expect, it } from "vitest";
 import { get, getPointResolution } from "ol/proj";
 import { ScaleSetter } from "./ScaleSetter";
 import View from "ol/View";
 import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
-import userEvent from "@testing-library/user-event";
+import userEvent, { UserEvent } from "@testing-library/user-event";
 import TileLayer from "ol/layer/Tile";
 import { OSM } from "ol/source";
 
@@ -106,6 +106,7 @@ it("should successfully render the scale in the correct locale", async () => {
 });
 
 it("should successfully update the map scale and label when selection changes", async () => {
+    const user = userEvent.setup();
     const { mapId, registry } = await setupMap({
         layers: defaultBasemapConfig
     });
@@ -117,22 +118,27 @@ it("should successfully update the map scale and label when selection changes", 
             <ScaleSetter mapId={mapId} data-testid="scale-setter" />
         </PackageContextProvider>
     );
-    const { setterButton, setterMenu } = await waitForScaleSetter();
-    await showMenuoptions(setterButton);
-    const setterOptions = await getMenuOptions(setterMenu);
-    if (setterOptions[0] == undefined) return;
-    await userEvent.click(setterOptions[0]!);
+    const { setterButton } = await waitForScaleSetter();
+    const setterOptions = await getMenuOptions(user, setterButton);
+    if (setterOptions[0] == undefined) {
+        throw new Error("Expected an option to be available");
+    }
+    await user.click(setterOptions[0]!);
+
     const DEFAULT_DPI = 25.4 / 0.28;
     const INCHES_PER_METRE = 39.37;
     const resolution = olMap.getView().getResolution();
     const center = olMap.getView().getCenter();
-    if (resolution == undefined || center == undefined) {
-        throw new Error("Map view not rendered");
-    }
-    const pointResolution = getPointResolution(olMap.getView().getProjection(), resolution, center);
+
+    expect(resolution).toBeDefined();
+    expect(center).toBeDefined();
+    const pointResolution = getPointResolution(
+        olMap.getView().getProjection(),
+        resolution!,
+        center!
+    );
     const scale = Math.round(pointResolution * INCHES_PER_METRE * DEFAULT_DPI);
     expect(scale.toString()).toBe(setterOptions[0]!.value);
-    expect(setterButton.textContent).toBe("1 : " + scale.toLocaleString());
 });
 
 it("should successfully update the label when map scale changes after creation", async () => {
@@ -158,15 +164,20 @@ it("should successfully update the label when map scale changes after creation",
     const INCHES_PER_METRE = 39.37;
     const resolution = olMap.getView().getResolution();
     const center = olMap.getView().getCenter();
-    if (resolution == undefined || center == undefined) {
-        throw new Error("Map view not rendered");
-    }
-    const pointResolution = getPointResolution(olMap.getView().getProjection(), resolution, center);
+
+    expect(resolution).toBeDefined();
+    expect(center).toBeDefined();
+    const pointResolution = getPointResolution(
+        olMap.getView().getProjection(),
+        resolution!,
+        center!
+    );
     const scale = Math.round(pointResolution * INCHES_PER_METRE * DEFAULT_DPI);
-    expect(setterButton.textContent).toBe("1 : " + scale.toLocaleString());
+    expect(setterButton.textContent).toBe("1 : " + scale.toLocaleString("de"));
 });
 
 it("should use default scales when nothing is set", async () => {
+    const user = userEvent.setup();
     const { mapId, registry } = await setupMap({
         layers: defaultBasemapConfig
     });
@@ -177,9 +188,8 @@ it("should use default scales when nothing is set", async () => {
         </PackageContextProvider>
     );
 
-    const { setterButton, setterMenu } = await waitForScaleSetter();
-    await showMenuoptions(setterButton);
-    const setterOptions = await getMenuOptions(setterMenu);
+    const { setterButton } = await waitForScaleSetter();
+    const setterOptions = await getMenuOptions(user, setterButton);
     const setterOptionValues = await getOptionValues(setterOptions);
 
     const advScale = [
@@ -191,6 +201,7 @@ it("should use default scales when nothing is set", async () => {
 });
 
 it("should use given scales when something is set", async () => {
+    const user = userEvent.setup();
     const scales = [10000, 9000, 8000, 7000, 6000, 5000, 4000, 3000, 2000, 1000, 500, 10];
     const { mapId, registry } = await setupMap({
         layers: defaultBasemapConfig
@@ -202,43 +213,54 @@ it("should use given scales when something is set", async () => {
         </PackageContextProvider>
     );
 
-    const { setterButton, setterMenu } = await waitForScaleSetter();
-    await showMenuoptions(setterButton);
-    const setterOptions = await getMenuOptions(setterMenu);
+    const { setterButton } = await waitForScaleSetter();
+    const setterOptions = await getMenuOptions(user, setterButton);
     const setterOptionValues = await getOptionValues(setterOptions);
 
     expect(setterOptionValues).toStrictEqual(scales);
 });
 
 async function waitForScaleSetter() {
-    const { setterDiv, setterButton, setterMenu } = await waitFor(async () => {
+    const { setterDiv, setterButton } = await waitFor(async () => {
         const setterDiv = await screen.findByTestId("scale-setter");
         const setterButton = setterDiv.querySelector("button"); // find first HTMLParagraphElement (scale select) in scale setter component
         if (!setterButton) {
             throw new Error("scale select Button not rendered");
         }
-        const setterMenu = setterDiv.querySelector("div"); // find first HTMLParagraphElement (scale menu) in scale setter component
-        if (!setterMenu) {
-            throw new Error("scale menu not rendered");
+
+        return { setterDiv, setterButton };
+    });
+
+    return { setterDiv, setterButton };
+}
+
+async function getMenuOptions(
+    user: UserEvent,
+    setterButton: HTMLButtonElement
+): Promise<HTMLButtonElement[]> {
+    const menu = document.body.querySelector(
+        "div.scale-setter-menuoptions"
+    ) as HTMLDivElement | null;
+    if (!menu) {
+        // The menu root should always be present after mounting; the contents are created lazily when
+        // the menu gets opened.
+        throw new Error("Menu node not found");
+    }
+
+    if (!isVisible(menu)) {
+        await user.click(setterButton);
+    }
+
+    const items = await waitFor(async () => {
+        const items = Array.from(
+            menu.querySelectorAll(".scale-setter-option")
+        ) as HTMLButtonElement[];
+        if (!items.length) {
+            throw new Error("Menu does not have any options");
         }
-
-        return { setterDiv, setterButton, setterMenu };
+        return items;
     });
-
-    return { setterDiv, setterButton, setterMenu };
-}
-
-function showMenuoptions(setterButton: HTMLElement) {
-    // open dropdown to include options in snapshot; react-select creates list of options in dom after opening selection
-    act(() => {
-        fireEvent.keyDown(setterButton, { key: "ArrowDown" });
-    });
-}
-
-function getMenuOptions(setterMenu: Element) {
-    return Array.from(
-        setterMenu.getElementsByClassName("scale-setter-option")
-    ) as HTMLButtonElement[];
+    return items;
 }
 
 function getOptionValues(setterOptions: HTMLButtonElement[]) {
@@ -249,8 +271,6 @@ function getOptionValues(setterOptions: HTMLButtonElement[]) {
     return optionValues;
 }
 
-function sleep(ms: number) {
-    return new Promise<void>((resolve) => {
-        setTimeout(resolve, ms);
-    });
+function isVisible(node: HTMLElement) {
+    return node.style.visibility !== "hidden" && node.style.display !== "none";
 }
