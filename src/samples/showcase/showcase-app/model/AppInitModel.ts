@@ -15,6 +15,7 @@ import { MAP_ID } from "../MapConfigProviderImpl";
 import { AppModel } from "./AppModel";
 import { NotificationService } from "@open-pioneer/notifier";
 import { VectorSelectionSourceFactory } from "@open-pioneer/selection/services";
+import { EditingService } from "@open-pioneer/editing";
 
 export type DemoInfo = Pick<Demo, "id" | "title">;
 
@@ -23,6 +24,8 @@ export interface References {
     mapRegistry: MapRegistry;
     notifier: NotificationService;
     vectorSelectionSourceFactory: VectorSelectionSourceFactory;
+    editingService: EditingService;
+    notificationService: NotificationService;
 }
 
 export type AppState = AppStateLoading | AppStateError | AppStateReady;
@@ -50,8 +53,14 @@ export class AppInitModel implements Service {
     #isDestroyed = false;
 
     constructor(serviceOptions: ServiceOptions<References>) {
-        const { mapRegistry, httpService, notifier, vectorSelectionSourceFactory } =
-            serviceOptions.references;
+        const {
+            mapRegistry,
+            httpService,
+            notifier,
+            vectorSelectionSourceFactory,
+            editingService,
+            notificationService
+        } = serviceOptions.references;
         const intl = serviceOptions.intl;
 
         this.#init({
@@ -59,7 +68,9 @@ export class AppInitModel implements Service {
             httpService,
             notifier,
             vectorSelectionSourceFactory,
-            intl
+            editingService,
+            intl,
+            notificationService
         }).catch((err) => {
             this.#appState.value = {
                 kind: "error",
@@ -84,16 +95,33 @@ export class AppInitModel implements Service {
         httpService: HttpService;
         notifier: NotificationService;
         vectorSelectionSourceFactory: VectorSelectionSourceFactory;
+        editingService: EditingService;
         intl: PackageIntl;
+        notificationService: NotificationService;
     }) {
-        const { mapRegistry, httpService, notifier, vectorSelectionSourceFactory, intl } = options;
+        const {
+            mapRegistry,
+            httpService,
+            notifier,
+            vectorSelectionSourceFactory,
+            editingService,
+            intl,
+            notificationService
+        } = options;
         const mapModel = await mapRegistry.getMapModel(MAP_ID);
 
         if (!mapModel) {
             throw new Error("No mapModel found.");
         }
 
-        const demos = createDemos({ intl, httpService, mapModel, vectorSelectionSourceFactory });
+        const demos = createDemos({
+            intl,
+            httpService,
+            mapModel,
+            vectorSelectionSourceFactory,
+            editingService,
+            notificationService
+        });
         const state: AppStateReady = {
             kind: "ready",
             appModel: new AppModel(mapModel, notifier, intl, demos),

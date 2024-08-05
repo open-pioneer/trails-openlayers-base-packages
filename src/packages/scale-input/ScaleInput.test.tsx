@@ -11,8 +11,6 @@ import userEvent from "@testing-library/user-event";
 import TileLayer from "ol/layer/Tile";
 import { OSM } from "ol/source";
 
-//TODO more tests
-
 const defaultBasemapConfig = [
     {
         id: "osm",
@@ -139,7 +137,7 @@ it("should successfully write user input in field", async () => {
     expect(inputSelect).toHaveValue("20.000");
 });
 
-it("should successfully change map scale on input", async () => {
+it("should successfully change map scale and label on input", async () => {
     const user = userEvent.setup();
     const { mapId, registry } = await setupMap({
         layers: defaultBasemapConfig
@@ -172,33 +170,44 @@ it("should successfully change map scale on input", async () => {
         );
         const scale = Math.round(pointResolution * INCHES_PER_METRE * DEFAULT_DPI);
         expect(scale).toBe(8000);
+        expect(inputSelect.value).toBe(scale.toLocaleString("de"));
     }
 });
-/*
-it("should successfully change input value to real scale", async () => {
-    const user = userEvent.setup();
+
+it("should successfully update the label when map scale changes after creation", async () => {
     const { mapId, registry } = await setupMap({
         layers: defaultBasemapConfig
     });
+    const map = await registry.expectMapModel(mapId);
+    const olMap = map.olMap;
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices} locale="de">
             <ScaleInput mapId={mapId} data-testid="scale-input" />
         </PackageContextProvider>
     );
-
     const { inputSelect } = await waitForScaleInput();
-
+    if (olMap.getView() == undefined || olMap.getView().getZoom() == undefined) {
+        throw new Error("Map view not rendered");
+    }
     act(() => {
-        userEvent.clear(inputSelect);
-        userEvent.type(inputSelect, "5.000");
-
-        inputSelect.focus();
-        expect(document.activeElement).toBe(inputSelect);
-        userEvent.keyboard("{Enter}");
-        expect(inputSelect).toHaveValue("5.026");
+        olMap.getView().setZoom(olMap.getView().getZoom()! - 1);
     });
-});*/
+    const DEFAULT_DPI = 25.4 / 0.28;
+    const INCHES_PER_METRE = 39.37;
+    const resolution = olMap.getView().getResolution();
+    const center = olMap.getView().getCenter();
+
+    expect(resolution).toBeDefined();
+    expect(center).toBeDefined();
+    const pointResolution = getPointResolution(
+        olMap.getView().getProjection(),
+        resolution!,
+        center!
+    );
+    const scale = Math.round(pointResolution * INCHES_PER_METRE * DEFAULT_DPI);
+    expect(inputSelect.value).toBe(scale.toLocaleString("de"));
+});
 
 async function waitForScaleInput() {
     const { inputDiv, inputSelect } = await waitFor(async () => {

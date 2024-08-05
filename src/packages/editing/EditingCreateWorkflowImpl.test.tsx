@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: Apache-2.0
 import { describe, expect, it, vi } from "vitest";
 import VectorLayer from "ol/layer/Vector";
-import VectorSource from "ol/source/Vector";
 import OlMap from "ol/Map";
 import Draw from "ol/interaction/Draw";
 import { FlatStyle } from "ol/style/flat";
@@ -15,6 +14,7 @@ import { PackageIntl } from "@open-pioneer/runtime";
 import { EditingCreateWorkflowImpl } from "./EditingCreateWorkflowImpl";
 import BaseLayer from "ol/layer/Base";
 import { Interaction } from "ol/interaction";
+import { Feature } from "ol";
 
 const OGC_API_URL_TEST = new URL("https://example.org/ogc");
 const DEFAULT_SLEEP = 50;
@@ -43,9 +43,9 @@ describe("starting create editing workflow", () => {
         const { workflow } = await setupCreateWorkflow(map);
         const layers: BaseLayer[] = map.olMap.getLayers().getArray();
 
-        const editingLayer: VectorLayer<VectorSource> | undefined = layers.find(
-            (l) => l.getProperties().name === "editing-layer"
-        ) as VectorLayer<VectorSource>;
+        const editingLayer = layers.find((l) => l.getProperties().name === "editing-layer") as
+            | VectorLayer<Feature>
+            | undefined;
 
         if (!editingLayer) {
             throw new Error("editing layer not found");
@@ -62,7 +62,7 @@ describe("starting create editing workflow", () => {
         if (beginTooltip instanceof Error) {
             throw beginTooltip;
         }
-        expect(beginTooltip.innerHTML).toMatchInlineSnapshot('"create.tooltip.begin"');
+        expect(beginTooltip.innerHTML).toMatchInlineSnapshot(`"<span>create.tooltip.begin</span>"`);
 
         workflow.stop();
     });
@@ -82,11 +82,8 @@ describe("starting create editing workflow", () => {
     it("should does not contain a geometry after start a create editing workflow", async () => {
         const { map } = await renderMap();
         const { workflow } = await setupCreateWorkflow(map);
-        const layers: BaseLayer[] = map.olMap.getLayers().getArray();
 
-        const editingLayer: VectorLayer<VectorSource> | undefined = layers.find(
-            (l) => l.getProperties().name === "editing-layer"
-        ) as VectorLayer<VectorSource>;
+        const editingLayer = findEditingLayer(map);
         if (!editingLayer) {
             throw new Error("editing layer not found");
         }
@@ -130,11 +127,8 @@ describe("stopping create editing workflow", () => {
         const { map } = await renderMap();
         const { workflow } = await setupCreateWorkflow(map);
         workflow.stop();
-        const layers: BaseLayer[] = map.olMap.getLayers().getArray();
 
-        const editingLayer: VectorLayer<VectorSource> | undefined = layers.find(
-            (l) => l.getProperties().name === "editing-layer"
-        ) as VectorLayer<VectorSource>;
+        const editingLayer = findEditingLayer(map);
         expect(editingLayer).toBeUndefined();
     });
 
@@ -192,7 +186,9 @@ describe("during create editing workflow", () => {
         if (beginTooltip instanceof Error) {
             throw beginTooltip;
         }
-        expect(beginTooltip.innerHTML).toMatchInlineSnapshot('"create.tooltip.continue"');
+        expect(beginTooltip.innerHTML).toMatchInlineSnapshot(
+            `"<span>create.tooltip.continue</span>"`
+        );
 
         workflow.stop();
     });
@@ -200,13 +196,9 @@ describe("during create editing workflow", () => {
     it("should contain a geometry after starting create editing workflow ", async () => {
         const { map } = await renderMap();
         const { workflow } = await setupCreateWorkflow(map);
-        const layers: BaseLayer[] = map.olMap.getLayers().getArray();
         const draw = workflow.getDrawInteraction();
 
-        const editingLayer: VectorLayer<VectorSource> | undefined = layers.find(
-            (l) => l.getProperties().name === "editing-layer"
-        ) as VectorLayer<VectorSource>;
-
+        const editingLayer = findEditingLayer(map);
         if (!editingLayer) {
             throw new Error("editing layer not found");
         }
@@ -219,7 +211,7 @@ describe("during create editing workflow", () => {
         draw.appendCoordinates([[200, 200]]);
         draw.appendCoordinates([[400, 300]]);
 
-        const feature = draw.getOverlay().getSource().getFeatures()[0];
+        const feature = draw.getOverlay().getSource()!.getFeatures()[0];
         if (!feature) {
             throw new Error("no features founded");
         }
@@ -262,14 +254,16 @@ describe("reset create editing workflow", () => {
         if (beginTooltip instanceof Error) {
             throw beginTooltip;
         }
-        expect(beginTooltip.innerHTML).toMatchInlineSnapshot('"create.tooltip.continue"');
+        expect(beginTooltip.innerHTML).toMatchInlineSnapshot(
+            `"<span>create.tooltip.continue</span>"`
+        );
 
         workflow.reset();
         const resetTooltip = getTooltipElement(map.olMap, "editing-tooltip");
         if (resetTooltip instanceof Error) {
             throw resetTooltip;
         }
-        expect(resetTooltip.innerHTML).toMatchInlineSnapshot('"create.tooltip.begin"');
+        expect(resetTooltip.innerHTML).toMatchInlineSnapshot(`"<span>create.tooltip.begin</span>"`);
 
         workflow.stop();
     });
@@ -298,7 +292,7 @@ describe("reset create editing workflow", () => {
 
         workflow.reset();
 
-        const features = draw.getOverlay().getSource().getFeatures();
+        const features = draw.getOverlay().getSource()!.getFeatures();
         expect(features.length).toBe(0);
 
         workflow.stop();
@@ -439,4 +433,12 @@ function sleep(ms: number) {
     return new Promise<void>((resolve) => {
         setTimeout(resolve, ms);
     });
+}
+
+function findEditingLayer(map: MapModel) {
+    const layers = map.olMap.getLayers().getArray();
+    const editingLayer = layers.find((l) => l.getProperties().name === "editing-layer") as
+        | VectorLayer<Feature>
+        | undefined;
+    return editingLayer;
 }

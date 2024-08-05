@@ -33,7 +33,7 @@ export class MeasurementController {
     /**
      * The layer rendering the measurement "features".
      */
-    private layer: VectorLayer<VectorSource>;
+    private layer: VectorLayer<Feature>;
 
     /**
      * Source of {@link layer}.
@@ -195,7 +195,7 @@ export class MeasurementController {
                 }
 
                 if (measureTooltip) {
-                    measureTooltip.element.innerHTML = output;
+                    measureTooltip.setHtml(output);
                     if (tooltipCoord) {
                         measureTooltip?.overlay.setPosition(tooltipCoord);
                     }
@@ -254,6 +254,10 @@ export class MeasurementController {
     private createMeasureTooltip(): Tooltip {
         const element = document.createElement("div");
         element.className = "measurement-tooltip measurement-active-tooltip printing-hide";
+        element.role = "tooltip";
+
+        const content = document.createElement("span");
+        element.appendChild(content);
 
         const overlay = new Overlay({
             element: element,
@@ -270,6 +274,12 @@ export class MeasurementController {
             element,
             destroy() {
                 olMap.removeOverlay(overlay);
+            },
+            setText(value) {
+                content.textContent = value;
+            },
+            setHtml(value) {
+                content.innerHTML = value;
             }
         };
     }
@@ -277,6 +287,10 @@ export class MeasurementController {
     private createHelpTooltip(): Tooltip {
         const element = document.createElement("div");
         element.className = "measurement-tooltip printing-hide hidden";
+        element.role = "tooltip";
+
+        const content = document.createElement("span");
+        element.appendChild(content);
 
         const overlay = new Overlay({
             element: element,
@@ -291,6 +305,12 @@ export class MeasurementController {
             element,
             destroy() {
                 olMap.removeOverlay(overlay);
+            },
+            setText(value) {
+                content.textContent = value;
+            },
+            setHtml(value) {
+                content.innerHTML = value;
             }
         };
     }
@@ -302,7 +322,7 @@ export class MeasurementController {
 
         const tooltip = this.helpTooltip;
         const helpMessage = getHelpMessage(this.messages, this.sketch);
-        tooltip.element.textContent = helpMessage;
+        tooltip.setText(helpMessage);
         tooltip.overlay.setPosition(evt.coordinate);
         tooltip.element.classList.remove("hidden");
     }
@@ -312,6 +332,9 @@ export class MeasurementController {
 interface Tooltip extends Resource {
     overlay: Overlay;
     element: HTMLDivElement;
+
+    setText(value: string): void;
+    setHtml(value: string): void;
 }
 
 function getHelpMessage(messages: Messages, sketch: Feature | undefined) {

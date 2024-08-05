@@ -5,9 +5,9 @@ import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { Toc } from "@open-pioneer/toc";
 import { useIntl } from "open-pioneer:react-hooks";
 import { useId } from "react";
-import { MAP_ID } from "../MapConfigProviderImpl";
+import { MAP_ID } from "../map/MapConfigProviderImpl";
 
-export function TocComponent(props: { maxHeight: string }) {
+export function TocComponent() {
     const tocTitleId = useId();
     const intl = useIntl();
 
@@ -24,7 +24,7 @@ export function TocComponent(props: { maxHeight: string }) {
                     </SectionHeading>
                 }
             >
-                <Box overflowY="auto" maxHeight={props.maxHeight}>
+                <Box overflowY="auto" maxHeight={300}>
                     <Toc
                         mapId={MAP_ID}
                         showTools={true}

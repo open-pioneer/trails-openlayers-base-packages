@@ -68,7 +68,6 @@ export const ScaleInput: FC<ScaleInputProps> = (props) => {
                     }}
                     onKeyDown={(e) => {
                         if (e.key == "Enter") {
-                            console.log(scaleValue);
                             setNewZoom(scaleValue.toString().replaceAll(".", ""));
                         }
                     }}

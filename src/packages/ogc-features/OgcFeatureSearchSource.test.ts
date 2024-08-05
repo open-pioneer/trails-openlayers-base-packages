@@ -179,7 +179,7 @@ it("expect search source to use the rewriteUrlFunction", async () => {
     expect(results.length).toBe(0);
 
     expect(spy).toHaveBeenCalledOnce();
-    expect(spy.mock.calls[0][0]).toMatchInlineSnapshot(
+    expect(spy.mock.calls![0]![0]).toMatchInlineSnapshot(
         '"https://example.com/collections/test-collection/items?test-property=*does-not-matter*&limit=123&f=json"'
     );
     expect(mockedFetch).toHaveBeenCalledOnce();

@@ -1,4 +1,0 @@
-{
-    "extends": ["openlayers-base-packages/typedoc.base.json"],
-    "entryPoints": ["./index.ts"]
-}

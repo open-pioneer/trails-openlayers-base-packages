@@ -4,6 +4,7 @@ import { SearchIcon } from "@chakra-ui/icons";
 import { CloseButton, chakra } from "@open-pioneer/chakra-integration";
 import {
     ClearIndicatorProps,
+    GroupProps,
     IndicatorsContainerProps,
     InputProps,
     MenuProps,
@@ -29,6 +30,16 @@ export function MenuComp(props: MenuProps<SearchOption, false, SearchGroupOption
     };
 
     return <chakraComponents.Menu {...menuProps}>{props.children}</chakraComponents.Menu>;
+}
+
+export function GroupComp(props: GroupProps<SearchOption, false, SearchGroupOption>) {
+    const ariaLabel = props.data.label;
+    const innerProps = {
+        ...props.innerProps,
+        "aria-label": ariaLabel,
+        role: "group"
+    };
+    return <chakraComponents.Group {...props} innerProps={innerProps}></chakraComponents.Group>;
 }
 
 export function NoOptionsMessage(props: NoticeProps<SearchOption, false, SearchGroupOption>) {
