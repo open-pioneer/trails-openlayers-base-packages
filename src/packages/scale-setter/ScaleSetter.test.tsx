@@ -35,7 +35,9 @@ it("should successfully create a scale Setter component", async () => {
     );
 
     // scale Setter is mounted
-    const { setterDiv, setterButton } = await waitForScaleSetter();
+    const { setterDiv, setterButton } = await act(async () => {
+        return await waitForScaleSetter();
+    });
     expect(setterDiv).toMatchSnapshot();
 
     // check scale setter box is available
@@ -53,7 +55,9 @@ it("should successfully create a scale setter component with additional css clas
     );
 
     // scale setter is mounted
-    const { setterDiv } = await waitForScaleSetter();
+    const { setterDiv } = await act(async () => {
+        return await waitForScaleSetter();
+    });
     expect(setterDiv).toMatchSnapshot();
 
     // check scale setter box is available
