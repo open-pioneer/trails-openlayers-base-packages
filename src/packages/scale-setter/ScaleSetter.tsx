@@ -77,7 +77,9 @@ export const ScaleSetter: FC<ScaleSetterProps> = (props) => {
                 onClick={() => setScale(sc)}
                 onFocus={(e) => {
                     // Not available in unit tests
-                    e.target?.scrollIntoView?.(false);
+                    e.target?.scrollIntoView?.({
+                        block: "nearest"
+                    });
                 }}
                 className="scale-setter-option"
             >
