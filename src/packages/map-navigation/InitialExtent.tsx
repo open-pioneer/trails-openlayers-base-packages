@@ -1,11 +1,8 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { useMapModel } from "@open-pioneer/map";
-import {
-    CommonComponentProps,
-    ToolButton,
-    useCommonComponentProps
-} from "@open-pioneer/react-utils";
+import { ToolButton } from "@open-pioneer/map-ui-components";
+import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { Extent } from "ol/extent";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, ForwardedRef, RefAttributes, forwardRef } from "react";

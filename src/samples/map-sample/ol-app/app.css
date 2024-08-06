@@ -4,11 +4,3 @@
     max-width: 100%;
     z-index: 1;
 }
-
-.spatial-bookmarks {
-    max-height: 300px;
-}
-
-.editing-tooltip-hidden {
-    visibility: hidden;
-}

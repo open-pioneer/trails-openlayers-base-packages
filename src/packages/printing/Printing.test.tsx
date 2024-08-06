@@ -100,7 +100,7 @@ it("should trigger a notification if the map export fails", async () => {
     // Expect a notification
     expect(handleMapExportSpy).toHaveBeenCalledOnce();
     expect(notifySpy).toHaveBeenCalledOnce();
-    expect(notifySpy.mock.lastCall[0]).toMatchInlineSnapshot(`
+    expect(notifySpy.mock.lastCall![0]).toMatchInlineSnapshot(`
       {
         "level": "error",
         "message": "printingFailed",

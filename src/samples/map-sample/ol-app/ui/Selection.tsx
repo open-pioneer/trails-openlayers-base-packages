@@ -4,6 +4,7 @@ import { Box } from "@open-pioneer/chakra-integration";
 import { useMapModel } from "@open-pioneer/map";
 import { NotificationService } from "@open-pioneer/notifier";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
+import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { FormatOptions } from "@open-pioneer/result-list";
 import {
     Selection,
@@ -12,9 +13,8 @@ import {
 } from "@open-pioneer/selection";
 import { useIntl, useService } from "open-pioneer:react-hooks";
 import { useId } from "react";
-import { useSnapshot } from "valtio";
 import { AppModel } from "../AppModel";
-import { MAP_ID } from "../MapConfigProviderImpl";
+import { MAP_ID } from "../map/MapConfigProviderImpl";
 
 export function SelectionComponent() {
     const intl = useIntl();
@@ -22,8 +22,8 @@ export function SelectionComponent() {
     const selectionTitleId = useId();
     const { map } = useMapModel(MAP_ID);
     const appModel = useService<AppModel>("ol-app.AppModel");
-    const sources = useSnapshot(appModel.state).selectionSources;
-    const sourceMetadata = useSnapshot(appModel.state).sourceMetadata;
+    const sources = useReactiveSnapshot(() => appModel.selectionSources.getItems(), [appModel]);
+
     const formatOptions: FormatOptions = {
         numberOptions: {
             maximumFractionDigits: 3
@@ -43,7 +43,7 @@ export function SelectionComponent() {
             return;
         }
 
-        const currentMetadata = sourceMetadata.get(source);
+        const currentMetadata = appModel.sourceMetadata.get(source);
         if (!currentMetadata) {
             console.warn("Can not show results because no metadata could be found");
             return;
@@ -68,7 +68,7 @@ export function SelectionComponent() {
     }
 
     function onSelectionSourceChanged(_: SelectionSourceChangedEvent) {
-        appModel.clearPreviousHighlight();
+        appModel.clearHighlight();
     }
 
     return (

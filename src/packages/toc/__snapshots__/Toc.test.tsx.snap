@@ -102,7 +102,7 @@ exports[`should successfully create a toc component 1`] = `
           </div>
         </div>
         <div
-          class="react-select__menu-portal css-19sbml-MenuPortal"
+          class="react-select__menu-portal css-1vbk7iu"
         >
           <div
             class="react-select__menu css-ky7590"

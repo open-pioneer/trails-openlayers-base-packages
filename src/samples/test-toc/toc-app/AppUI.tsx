@@ -2,7 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0
 import { Box, Flex, VStack, Text } from "@open-pioneer/chakra-integration";
 import { MapAnchor, MapContainer } from "@open-pioneer/map";
-import { SectionHeading, TitledSection, ToolButton } from "@open-pioneer/react-utils";
+import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
+import { ToolButton } from "@open-pioneer/map-ui-components";
 import { Toc } from "@open-pioneer/toc";
 import { useIntl } from "open-pioneer:react-hooks";
 import { useId, useState } from "react";

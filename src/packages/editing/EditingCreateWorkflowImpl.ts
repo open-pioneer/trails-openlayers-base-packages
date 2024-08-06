@@ -52,7 +52,7 @@ export class EditingCreateWorkflowImpl
     private _featureId: string | undefined;
 
     private _editingSource: VectorSource;
-    private _editingLayer: VectorLayer<VectorSource>;
+    private _editingLayer: VectorLayer<Feature>;
     private _drawInteraction: Draw;
     private _olMap: OlMap;
     private _mapContainer: HTMLElement | undefined;
@@ -106,7 +106,8 @@ export class EditingCreateWorkflowImpl
                 (e.code === "Enter" || e.code === "NumpadEnter") &&
                 e.target === this._olMap.getTargetElement()
             ) {
-                const features = this._drawInteraction.getOverlay().getSource().getFeatures();
+                const features =
+                    this._drawInteraction.getOverlay().getSource()?.getFeatures() ?? [];
 
                 /**
                  * Get the first linear ring of the polygon

@@ -27,7 +27,7 @@ interface Events {
 
 export class GeolocationController extends EventEmitter<Events> {
     private readonly olMap: OlMap;
-    private readonly positionHighlightLayer: VectorLayer<VectorSource>;
+    private readonly positionHighlightLayer: VectorLayer<Feature>;
     private readonly geolocation: olGeolocation;
     private maxZoom: number = DEFAULT_MAX_ZOOM;
     private accuracyFeature: Feature | undefined;

@@ -15,6 +15,7 @@ import VectorSource from "ol/source/Vector";
 import GeoJSON from "ol/format/GeoJSON";
 import VectorLayer from "ol/layer/Vector";
 import { SimpleLayer } from "@open-pioneer/map";
+import { Feature } from "ol";
 
 afterEach(() => {
     vi.restoreAllMocks();
@@ -69,7 +70,7 @@ it("Should disable or enable selection option when changing the status of a sour
     layer.olLayer.setVisible(false);
 
     const layerSelectionSource = new VectorLayerSelectionSourceImpl(
-        layer.olLayer as VectorLayer<VectorSource>,
+        layer.olLayer as VectorLayer<Feature>,
         layer.title,
         "Layer not visible"
     );
