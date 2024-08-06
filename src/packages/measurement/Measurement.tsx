@@ -16,7 +16,17 @@ import { Circle as CircleStyle, Fill, Stroke, Style } from "ol/style";
 import { StyleLike } from "ol/style/Style";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, useEffect, useState } from "react";
-import { MeasurementController, MeasurementType } from "./MeasurementController";
+import {
+    MeasurementController,
+    MeasurementsChangedEvent,
+    MeasurementType
+} from "./MeasurementController";
+import LineString from "ol/geom/LineString";
+import Polygon from "ol/geom/Polygon";
+
+export type MeasurementsChangedHandler = (e: MeasurementsChangedEvent) => void;
+
+export type MeasurementGeometry = LineString | Polygon;
 
 /**
  * This is for special properties of the Measurement.
@@ -36,6 +46,16 @@ export interface MeasurementProps extends CommonComponentProps {
      * The style for the finished drawn feature's geometry.
      */
     finishedFeatureStyle?: StyleLike;
+
+    /**
+     * handler that is called whenever a measurement is added or removed
+     */
+    onMeasurementsChange?: MeasurementsChangedHandler;
+
+    /**
+     * list of measurements to be rendered when the component is initialized
+     */
+    predefinedMeasurements?: MeasurementGeometry[];
 }
 
 /**
@@ -44,11 +64,16 @@ export interface MeasurementProps extends CommonComponentProps {
 export const Measurement: FC<MeasurementProps> = (props) => {
     const intl = useIntl();
 
-    const { mapId, activeFeatureStyle, finishedFeatureStyle } = props;
+    const {
+        mapId,
+        activeFeatureStyle,
+        finishedFeatureStyle,
+        onMeasurementsChange: measurementsChangeHandler,
+        predefinedMeasurements: predefinedMeasurements
+    } = props;
     const { containerProps } = useCommonComponentProps("measurement", props);
     const [selectedMeasurement, setMeasurement] = useState<MeasurementType>("distance");
     const label = (id: string) => intl.formatMessage({ id: id });
-
     const mapState = useMapModel(mapId);
     const controller = useController(mapState.map, intl);
 
@@ -61,6 +86,18 @@ export const Measurement: FC<MeasurementProps> = (props) => {
             finishedFeatureStyle ?? getDefaultFinishedFeatureStyle()
         );
     }, [controller, finishedFeatureStyle]);
+
+    useEffect(() => {
+        if (measurementsChangeHandler) {
+            controller?.setMeasurementSourceChangedHandler(measurementsChangeHandler);
+        }
+    }, [controller, measurementsChangeHandler]);
+
+    useEffect(() => {
+        if (predefinedMeasurements) {
+            controller?.setPredefinedMeasurements(predefinedMeasurements);
+        }
+    }, [controller, predefinedMeasurements]);
 
     // Start / Stop measurement on selection change
     useEffect(() => {
@@ -121,7 +158,6 @@ function useController(map: MapModel | undefined, intl: PackageIntl) {
         if (!map) {
             return;
         }
-
         const controller = new MeasurementController(map.olMap, {
             getContinueMessage() {
                 return intl.formatMessage({ id: "tooltips.continue" });
@@ -135,6 +171,7 @@ function useController(map: MapModel | undefined, intl: PackageIntl) {
                 });
             }
         });
+
         setController(controller);
         return () => {
             controller.destroy();

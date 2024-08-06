@@ -16,8 +16,11 @@ import { getArea, getLength } from "ol/sphere";
 import { Projection } from "ol/proj";
 import { StyleFunction, StyleLike, toFunction as toStyleFunction } from "ol/style/Style";
 import { TOPMOST_LAYER_Z } from "@open-pioneer/map";
+import { MeasurementGeometry, MeasurementsChangedHandler } from "./Measurement";
 
 export type MeasurementType = "area" | "distance";
+
+export type MeasurementEventType = "remove-measurement" | "add-measurement";
 
 export interface Messages {
     getContinueMessage(): string;
@@ -25,11 +28,15 @@ export interface Messages {
     formatNumber(value: number): string;
 }
 
+export interface MeasurementsChangedEvent {
+    eventType: MeasurementEventType;
+    geometry: MeasurementGeometry;
+}
+
 export class MeasurementController {
     private olMap: OlMap;
     private messages: Messages;
     private activeFeatureStyle: StyleFunction | undefined;
-
     /**
      * The layer rendering the measurement "features".
      */
@@ -70,14 +77,31 @@ export class MeasurementController {
      */
     private resources: Resource[] = [];
 
+    /**
+     * called when a measurement is added or removed to the source
+     */
+    private measurementChangedHandler: MeasurementsChangedHandler | undefined;
+
+    /**
+     * map that is used to track all predefined measurements currently added to the source,
+     * it asscociates the measurement geometry (key) with the corresponding feature and tootip (value)
+     */
+    private predefinedMeasurements: Map<MeasurementGeometry, MeasurementEntry> = new Map<
+        MeasurementGeometry,
+        MeasurementEntry
+    >();
+
     constructor(olMap: OlMap, messages: Messages) {
         this.olMap = olMap;
         this.messages = messages;
         const source = (this.source = new VectorSource());
         this.layer = new VectorLayer({
-            source
+            source: source,
+            zIndex: TOPMOST_LAYER_Z,
+            properties: {
+                name: "measurement-layer"
+            }
         });
-        this.layer.setZIndex(TOPMOST_LAYER_Z);
         olMap.addLayer(this.layer);
 
         const pointerMoveKey = olMap.on("pointermove", this.handlePointerMove.bind(this));
@@ -108,7 +132,6 @@ export class MeasurementController {
             resource.destroy();
         }
         this.resources = [];
-
         // Cleanup tooltips
         this.helpTooltip.destroy();
         this.measureTooltip?.destroy();
@@ -121,6 +144,9 @@ export class MeasurementController {
         this.olMap.removeLayer(this.layer);
         this.layer.dispose();
         this.source.dispose();
+
+        this.measurementChangedHandler = undefined;
+        this.predefinedMeasurements.clear();
     }
 
     /** Returns the vector layer used for finished features. */
@@ -131,6 +157,14 @@ export class MeasurementController {
     /** Updates the style used for finished features. */
     setFinishedFeatureStyle(style: StyleLike) {
         this.layer.setStyle(style);
+    }
+
+    setMeasurementSourceChangedHandler(handler: MeasurementsChangedHandler) {
+        this.measurementChangedHandler = handler;
+    }
+
+    setPredefinedMeasurements(geometries: MeasurementGeometry[]) {
+        this.updatePredefinedMeasurements(geometries);
     }
 
     /** Updates the style used for active measurements. */
@@ -148,7 +182,13 @@ export class MeasurementController {
 
     /** Removes all finished measurements. */
     clearMeasurements() {
+        const currentFeatures = this.source.getFeatures(); //returns snapshot copy of the features on the source
         this.source.clear();
+        currentFeatures.forEach((feature) => {
+            //raise remove-measurement event for each measurement after the source was cleared
+            this.raiseMeasurementsChangeEvent(feature, "remove-measurement");
+        });
+        this.predefinedMeasurements.clear();
         for (const tooltip of this.overlayTooltips) {
             tooltip.destroy();
         }
@@ -185,14 +225,8 @@ export class MeasurementController {
                 const geom = evt.target;
                 const projection = this.olMap.getView().getProjection();
 
-                let output = "";
-                if (geom instanceof Polygon) {
-                    output = formatArea(geom, projection, this.messages);
-                    tooltipCoord = geom.getInteriorPoint().getCoordinates() || null;
-                } else if (geom instanceof LineString) {
-                    output = formatLength(geom, projection, this.messages);
-                    tooltipCoord = geom.getLastCoordinate() || null;
-                }
+                tooltipCoord = this.getTooltipCoord(geom);
+                const output = this.getTooltipContent(geom, projection);
 
                 if (measureTooltip) {
                     measureTooltip.setHtml(output);
@@ -216,6 +250,8 @@ export class MeasurementController {
                 this.overlayTooltips.push(measureTooltip);
                 this.measureTooltip = measureTooltip = undefined;
             }
+
+            this.raiseMeasurementsChangeEvent(this.sketch!, "add-measurement");
 
             // unset sketch
             this.sketch = undefined;
@@ -326,6 +362,84 @@ export class MeasurementController {
         tooltip.overlay.setPosition(evt.coordinate);
         tooltip.element.classList.remove("hidden");
     }
+
+    private updatePredefinedMeasurements(geometries: MeasurementGeometry[]) {
+        const addedMeasurements = geometries.filter(
+            (geom) => !this.predefinedMeasurements.has(geom)
+        );
+        const removedMeasurements: MeasurementGeometry[] = [];
+        for (const geom of this.predefinedMeasurements.keys()) {
+            if (!geometries.includes(geom)) {
+                removedMeasurements.push(geom);
+            }
+        }
+
+        addedMeasurements.forEach((geom) => {
+            const measurementFeature = new Feature(geom);
+            this.source.addFeature(measurementFeature);
+            const tooltip = this.createMeasureTooltip();
+            this.overlayTooltips.push(tooltip);
+            this.predefinedMeasurements.set(geom, {
+                feature: measurementFeature,
+                tooltip: tooltip
+            });
+            tooltip.element.innerHTML = this.getTooltipContent(
+                geom,
+                this.olMap.getView().getProjection()
+            );
+            tooltip.overlay.setPosition(this.getTooltipCoord(geom));
+            this.raiseMeasurementsChangeEvent(measurementFeature, "add-measurement");
+        });
+
+        removedMeasurements.forEach((geom) => {
+            const measurementEntry = this.predefinedMeasurements.get(geom);
+            if (measurementEntry) {
+                //remove measurement feature from source and destroy associated tooltip
+                this.source.removeFeature(measurementEntry.feature);
+                measurementEntry.tooltip.destroy();
+                this.raiseMeasurementsChangeEvent(measurementEntry.feature, "remove-measurement");
+            }
+            this.predefinedMeasurements.delete(geom);
+        });
+    }
+
+    private getTooltipCoord(geom: MeasurementGeometry): Coordinate {
+        let tooltipCoord: Coordinate;
+        if (geom instanceof Polygon) {
+            tooltipCoord = geom.getInteriorPoint().getCoordinates() || null;
+        } else {
+            tooltipCoord = geom.getLastCoordinate() || null;
+        }
+
+        return tooltipCoord;
+    }
+
+    private getTooltipContent(geom: MeasurementGeometry, projection: Projection): string {
+        let output: string;
+        if (geom instanceof Polygon) {
+            output = formatArea(geom, projection, this.messages);
+        } else {
+            output = formatLength(geom, projection, this.messages);
+        }
+
+        return output;
+    }
+
+    private raiseMeasurementsChangeEvent(
+        measurementFeature: Feature,
+        eventType: MeasurementEventType
+    ) {
+        const measurementGeom = measurementFeature.getGeometry();
+        if (this.measurementChangedHandler && measurementGeom) {
+            this.measurementChangedHandler({
+                geometry:
+                    measurementGeom instanceof Polygon
+                        ? (measurementGeom as Polygon)
+                        : (measurementGeom as LineString),
+                eventType: eventType
+            });
+        }
+    }
 }
 
 /** Represents a tooltip rendered on the OpenLayers map. */
@@ -367,4 +481,9 @@ function formatLength(line: LineString, projection: Projection, messages: Messag
         output = `${messages.formatNumber(length)} m`;
     }
     return output;
+}
+
+interface MeasurementEntry {
+    feature: Feature;
+    tooltip: Tooltip;
 }
