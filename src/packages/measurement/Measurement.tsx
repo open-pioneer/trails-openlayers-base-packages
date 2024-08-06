@@ -18,10 +18,15 @@ import { useIntl } from "open-pioneer:react-hooks";
 import { FC, useEffect, useState } from "react";
 import {
     MeasurementController,
-    MeasurementGeometry,
-    MeasurementsChangedHandler,
+    MeasurementsChangedEvent,
     MeasurementType
 } from "./MeasurementController";
+import LineString from "ol/geom/LineString";
+import Polygon from "ol/geom/Polygon";
+
+export type MeasurementsChangedHandler = (e: MeasurementsChangedEvent) => void;
+
+export type MeasurementGeometry = LineString | Polygon;
 
 /**
  * This is for special properties of the Measurement.

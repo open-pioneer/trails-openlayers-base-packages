@@ -16,12 +16,9 @@ import { getArea, getLength } from "ol/sphere";
 import { Projection } from "ol/proj";
 import { StyleFunction, StyleLike, toFunction as toStyleFunction } from "ol/style/Style";
 import { TOPMOST_LAYER_Z } from "@open-pioneer/map";
+import { MeasurementGeometry, MeasurementsChangedHandler } from "./Measurement";
 
 export type MeasurementType = "area" | "distance";
-
-export type MeasurementsChangedHandler = (e: MeasurementsChangedEvent) => void;
-
-export type MeasurementGeometry = LineString | Polygon;
 
 export type MeasurementEventType = "remove-measurement" | "add-measurement";
 
