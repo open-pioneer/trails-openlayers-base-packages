@@ -88,6 +88,7 @@ export const ScaleSetter: FC<ScaleSetterProps> = (props) => {
         );
     });
 
+    const renderedScale = renderDisplayScale(intl, activeScale);
     return (
         <Box {...containerProps}>
             <Menu isLazy>
@@ -99,10 +100,10 @@ export const ScaleSetter: FC<ScaleSetterProps> = (props) => {
                         {
                             id: "button.ariaLabel"
                         },
-                        { scale: activeScale }
+                        { scale: renderedScale }
                     )}
                 >
-                    {renderDisplayScale(intl, activeScale)}
+                    {renderedScale}
                 </MenuButton>
                 <Portal>
                     <MenuList
