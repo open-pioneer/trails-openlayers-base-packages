@@ -1,5 +1,14 @@
 # @open-pioneer/ogc-features
 
+## 0.4.3
+
+### Patch Changes
+
+-   28e092a: Update dependencies
+-   Updated dependencies [7f5e58a]
+-   Updated dependencies [28e092a]
+    -   @open-pioneer/search@0.4.3
+
 ## 0.4.2
 
 ### Patch Changes

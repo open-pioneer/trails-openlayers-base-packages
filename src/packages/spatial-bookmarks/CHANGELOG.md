@@ -1,5 +1,15 @@
 # @open-pioneer/spatial-bookmarks
 
+## 0.4.3
+
+### Patch Changes
+
+-   28e092a: Update dependencies
+-   Updated dependencies [28e092a]
+-   Updated dependencies [0d51d2f]
+-   Updated dependencies [76f8863]
+    -   @open-pioneer/map@0.6.0
+
 ## 0.4.2
 
 ### Patch Changes

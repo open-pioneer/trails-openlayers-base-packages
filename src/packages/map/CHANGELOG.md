@@ -1,5 +1,47 @@
 # @open-pioneer/map
 
+## 0.6.0
+
+### Minor Changes
+
+-   0d51d2f: Change how map anchors are positioned in the DOM.
+
+    Previously, map anchor divs were children of the OpenLayers map viewport:
+
+    ```
+    .map-container
+    └── .ol-viewport
+        └── .ol-overlaycontainer-stopevent
+            └── .map-anchors
+                └── .map-anchor
+                    └── ... children ...
+    ```
+
+    This interfered with browser event handling, especially if the map anchor's content was interactive.
+    The workarounds to stop events from map-anchors to bubble into the map caused surprising behavior (e.g. https://github.com/open-pioneer/trails-openlayers-base-packages/issues/312).
+
+    Now, the DOM looks like this:
+
+    ```
+    .map-container
+    ├── .map-anchors
+    │   └── .map-anchor
+    │       └── ... children ...
+    └── .ol-viewport
+    ```
+
+    Which means that the map-anchors are no longer children of the map.
+
+    You may have to update your custom styles if you relied on the previous DOM hierarchy.
+
+    The `MapAnchor`'s prop `stopEvents` has been deleted as it is no longer needed.
+    Browser events happening inside a map anchor or its children will no longer affect the map.
+
+### Patch Changes
+
+-   28e092a: Update dependencies
+-   76f8863: Add a new (internal) entry point to support the map-test-utils package.
+
 ## 0.5.1
 
 ### Patch Changes

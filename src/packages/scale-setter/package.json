@@ -1,6 +1,6 @@
 {
     "name": "@open-pioneer/scale-setter",
-    "version": "0.0.1",
+    "version": "0.1.0",
     "description": "This package provides a UI component to change the scale of the map.",
     "license": "Apache-2.0",
     "main": "index.ts",
