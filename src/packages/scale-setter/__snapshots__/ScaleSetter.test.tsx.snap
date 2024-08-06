@@ -1,0 +1,87 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`should successfully create a scale Setter component 1`] = `
+<div
+  class="scale-setter css-0"
+  data-testid="scale-setter"
+  data-theme="light"
+>
+  <button
+    aria-controls="menu-list-:r1:"
+    aria-expanded="false"
+    aria-haspopup="menu"
+    aria-label="button.ariaLabel"
+    class="chakra-button chakra-menu__menu-button scale-setter-menubutton css-ez23ye"
+    data-theme="light"
+    id="menu-button-:r1:"
+    type="button"
+  >
+    <span
+      class="css-xl71ch"
+      data-theme="light"
+    >
+      1 : 336,409
+    </span>
+    <span
+      class="chakra-button__icon css-1hzyiq5"
+      data-theme="light"
+    >
+      <svg
+        aria-hidden="true"
+        class="chakra-icon css-onkibi"
+        data-theme="light"
+        focusable="false"
+        viewBox="0 0 24 24"
+      >
+        <path
+          d="M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14z"
+          fill="currentColor"
+        />
+      </svg>
+    </span>
+  </button>
+</div>
+`;
+
+exports[`should successfully create a scale setter component with additional css classes and box properties 1`] = `
+<div
+  class="scale-setter test test1 test2 css-0"
+  data-testid="scale-setter"
+  data-theme="light"
+>
+  <button
+    aria-controls="menu-list-:r3:"
+    aria-expanded="false"
+    aria-haspopup="menu"
+    aria-label="button.ariaLabel"
+    class="chakra-button chakra-menu__menu-button scale-setter-menubutton css-ez23ye"
+    data-theme="light"
+    id="menu-button-:r3:"
+    type="button"
+  >
+    <span
+      class="css-xl71ch"
+      data-theme="light"
+    >
+      1 : 336,409
+    </span>
+    <span
+      class="chakra-button__icon css-1hzyiq5"
+      data-theme="light"
+    >
+      <svg
+        aria-hidden="true"
+        class="chakra-icon css-onkibi"
+        data-theme="light"
+        focusable="false"
+        viewBox="0 0 24 24"
+      >
+        <path
+          d="M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14z"
+          fill="currentColor"
+        />
+      </svg>
+    </span>
+  </button>
+</div>
+`;

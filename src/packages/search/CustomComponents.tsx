@@ -39,12 +39,7 @@ export function GroupComp(props: GroupProps<SearchOption, false, SearchGroupOpti
         "aria-label": ariaLabel,
         role: "group"
     };
-    return (
-        <chakraComponents.Group
-            {...props}
-            innerProps={innerProps}
-        ></chakraComponents.Group>
-    );
+    return <chakraComponents.Group {...props} innerProps={innerProps}></chakraComponents.Group>;
 }
 
 export function NoOptionsMessage(props: NoticeProps<SearchOption, false, SearchGroupOption>) {

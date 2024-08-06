@@ -14,6 +14,7 @@ import {
     createMeasurementDemo,
     createPrintingDemo,
     createScaleBarDemo,
+    createScaleSetterDemo,
     createScaleViewerDemo,
     createSpatialBookmarksDemo
 } from "./SimpleDemos";
@@ -69,6 +70,7 @@ export function createDemos(options: SharedDemoOptions): Demo[] {
         createTocAndLegendDemo(options),
         createCoordinateViewerDemo(options),
         createScaleViewerDemo(options),
+        createScaleSetterDemo(options),
         createScaleBarDemo(options),
         createMeasurementDemo(options),
         createEditingDemo(options),

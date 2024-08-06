@@ -29,6 +29,9 @@ messages:
     scaleViewer:
       title: Scale viewer
       description: This demo shows how to use the <code>ScaleViewer</code> component.
+    scaleSetter:
+      title: Scale setter
+      description: This demo shows how to use the <code>ScaleSetter</code> component to change the scale of the map.
     scaleBar:
       title: Scale bar
       description: This demo shows how to use the <code>ScaleBar</code> component.
