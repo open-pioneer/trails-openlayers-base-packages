@@ -8,6 +8,7 @@ exports[`should successfully create a scale Setter component 1`] = `
 >
   <button
     aria-controls="menu-list-:r1:"
+    aria-description="button.ariaDescription"
     aria-expanded="false"
     aria-haspopup="menu"
     aria-label="button.ariaLabel"
@@ -51,6 +52,7 @@ exports[`should successfully create a scale setter component with additional css
 >
   <button
     aria-controls="menu-list-:r3:"
+    aria-description="button.ariaDescription"
     aria-expanded="false"
     aria-haspopup="menu"
     aria-label="button.ariaLabel"

@@ -102,6 +102,10 @@ export const ScaleSetter: FC<ScaleSetterProps> = (props) => {
                         },
                         { scale: renderedScale }
                     )}
+                    // eslint-disable-next-line jsx-a11y/aria-props
+                    aria-description={intl.formatMessage({
+                        id: "button.ariaDescription"
+                    })}
                 >
                     {renderedScale}
                 </MenuButton>
