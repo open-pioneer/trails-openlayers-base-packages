@@ -1,5 +1,16 @@
 # @open-pioneer/search
 
+## 0.4.3
+
+### Patch Changes
+
+-   7f5e58a: add aria role group for sections in search results (fixes issue [#322](https://github.com/open-pioneer/trails-openlayers-base-packages/issues/322))
+-   28e092a: Update dependencies
+-   Updated dependencies [28e092a]
+-   Updated dependencies [0d51d2f]
+-   Updated dependencies [76f8863]
+    -   @open-pioneer/map@0.6.0
+
 ## 0.4.2
 
 ### Patch Changes
