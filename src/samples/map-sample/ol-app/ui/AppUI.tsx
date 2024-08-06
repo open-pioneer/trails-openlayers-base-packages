@@ -32,7 +32,6 @@ import { Overlay } from "ol";
 import OlMap from "ol/Map";
 import { unByKey } from "ol/Observable";
 import { EventsKey } from "ol/events";
-import { ScaleSetter } from "@open-pioneer/scale-setter";
 
 type InteractionType = "measurement" | "selection" | undefined;
 
@@ -229,7 +228,6 @@ export function AppUI() {
                     />
                     <ScaleBar mapId={MAP_ID} />
                     <ScaleViewer mapId={MAP_ID} />
-                    <ScaleSetter mapId={MAP_ID} />
                 </Flex>
             </TitledSection>
         </Flex>

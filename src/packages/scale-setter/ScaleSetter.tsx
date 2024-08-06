@@ -1,8 +1,6 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { useMapModel, useScale } from "@open-pioneer/map";
-import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
-import { FC } from "react";
+import { ChevronUpIcon } from "@chakra-ui/icons";
 import {
     Box,
     Button,
@@ -12,12 +10,20 @@ import {
     MenuList,
     Portal
 } from "@open-pioneer/chakra-integration";
-import { useIntl } from "open-pioneer:react-hooks";
+import { useMapModel, useScale } from "@open-pioneer/map";
+import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { getPointResolution } from "ol/proj";
-import { ChevronUpIcon } from "@chakra-ui/icons";
+import { useIntl } from "open-pioneer:react-hooks";
+import { FC } from "react";
+
 const DEFAULT_DPI = 25.4 / 0.28;
 const INCHES_PER_METRE = 39.37;
+const DEFAULT_SCALES = [
+    17471320, 8735660, 4367830, 2183915, 1091957, 545978, 272989, 136494, 68247, 34123, 17061, 8530,
+    4265, 2132
+];
+
 /**
  * These are the properties supported by the {@link ScaleSetter}.
  */
@@ -27,42 +33,52 @@ export interface ScaleSetterProps extends CommonComponentProps {
      */
     mapId: string;
 
+    /**
+     * The set of scales that can be selected by the user.
+     */
     scales?: number[];
 }
 
+/**
+ * Displays the current scale and allows the user to change it.
+ */
 export const ScaleSetter: FC<ScaleSetterProps> = (props) => {
-    const { mapId, scales } = props;
+    const { mapId, scales = DEFAULT_SCALES } = props;
     const { containerProps } = useCommonComponentProps("scale-setter", props);
     const { map } = useMapModel(mapId);
     const intl = useIntl();
 
-    const activeScale = useScale(map?.olMap);
+    const activeScale = useScale(map?.olMap) ?? 1;
 
-    const advScale = [
-        17471320, 8735660, 4367830, 2183915, 1091957, 545978, 272989, 136494, 68247, 34123, 17061,
-        8530, 4265, 2132
-    ];
-    const scaleOptions = scales || advScale;
+    // TODO: Move to map model (reactivity API refactoring)
+    function setScale(scale: number) {
+        if (!map) {
+            return;
+        }
 
-    function setNewZoom(sc: string) {
-        if (sc == undefined) return;
-        if (map == undefined) return;
-        const tempView = map.olMap.getView();
+        const view = map.olMap.getView();
         const projection = map.olMap.getView().getProjection();
-        let mpu = projection.getMetersPerUnit();
-        if (mpu == undefined) mpu = 1;
+        const mpu = projection.getMetersPerUnit() ?? 1;
         const resolution = INCHES_PER_METRE * DEFAULT_DPI * mpu;
         const center = map.olMap.getView().getCenter();
-        if (center == undefined) return;
-        const pointResolution = parseInt(sc) / getPointResolution(projection, resolution, center);
-        tempView.setResolution(pointResolution);
+        if (!center) {
+            return;
+        }
+
+        const pointResolution = scale / getPointResolution(projection, resolution, center);
+        view.setResolution(pointResolution);
     }
-    const scaleSelectOptions = scaleOptions?.map((sc) => {
+
+    const scaleSelectOptions = scales.map((sc) => {
         return (
             <MenuItem
                 value={sc}
                 key={sc}
-                onClick={() => setNewZoom(sc.toString())}
+                onClick={() => setScale(sc)}
+                onFocus={(e) => {
+                    // Not available in unit tests
+                    e.target?.scrollIntoView?.(false);
+                }}
                 className="scale-setter-option"
             >
                 {renderDisplayScale(intl, sc)}
@@ -77,11 +93,23 @@ export const ScaleSetter: FC<ScaleSetterProps> = (props) => {
                     as={Button}
                     rightIcon={<ChevronUpIcon />}
                     className="scale-setter-menubutton"
+                    aria-label={intl.formatMessage(
+                        {
+                            id: "button.ariaLabel"
+                        },
+                        { scale: activeScale }
+                    )}
                 >
-                    {renderDisplayScale(intl, activeScale ? activeScale : 1)}
+                    {renderDisplayScale(intl, activeScale)}
                 </MenuButton>
                 <Portal>
-                    <MenuList className="scale-setter-menuoptions">{scaleSelectOptions}</MenuList>
+                    <MenuList
+                        className="scale-setter-menuoptions"
+                        maxHeight="20em"
+                        overflowY="auto"
+                    >
+                        {scaleSelectOptions}
+                    </MenuList>
                 </Portal>
             </Menu>
         </Box>

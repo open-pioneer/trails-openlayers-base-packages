@@ -1,13 +1,14 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
-import { act, render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import { expect, it } from "vitest";
 import { get, getPointResolution } from "ol/proj";
 import { ScaleSetter } from "./ScaleSetter";
 import View from "ol/View";
 import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
 import userEvent, { UserEvent } from "@testing-library/user-event";
+import { act } from "react";
 import TileLayer from "ol/layer/Tile";
 import { OSM } from "ol/source";
 
@@ -35,9 +36,7 @@ it("should successfully create a scale Setter component", async () => {
     );
 
     // scale Setter is mounted
-    const { setterDiv, setterButton } = await act(async () => {
-        return await waitForScaleSetter();
-    });
+    const { setterDiv, setterButton } = await waitForScaleSetter();
     expect(setterDiv).toMatchSnapshot();
 
     // check scale setter box is available
@@ -55,9 +54,7 @@ it("should successfully create a scale setter component with additional css clas
     );
 
     // scale setter is mounted
-    const { setterDiv } = await act(async () => {
-        return await waitForScaleSetter();
-    });
+    const { setterDiv } = await waitForScaleSetter();
     expect(setterDiv).toMatchSnapshot();
 
     // check scale setter box is available
@@ -157,13 +154,26 @@ it("should successfully update the label when map scale changes after creation",
             <ScaleSetter mapId={mapId} data-testid="scale-setter" />
         </PackageContextProvider>
     );
+
     const { setterButton } = await waitForScaleSetter();
     if (olMap.getView() == undefined || olMap.getView().getZoom() == undefined) {
         throw new Error("Map view not rendered");
     }
-    act(() => {
+
+    const initialLabel = setterButton.textContent;
+    expect(initialLabel).toBeTruthy();
+
+    await act(async () => {
         olMap.getView().setZoom(olMap.getView().getZoom()! - 1);
     });
+
+    // Wait until the label changes.. There seems to be some instability in this test.
+    await waitFor(() => {
+        if (setterButton.textContent === initialLabel) {
+            throw new Error("Button label did not update");
+        }
+    });
+
     const DEFAULT_DPI = 25.4 / 0.28;
     const INCHES_PER_METRE = 39.37;
     const resolution = olMap.getView().getResolution();

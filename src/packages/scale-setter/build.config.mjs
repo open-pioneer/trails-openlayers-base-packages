@@ -4,6 +4,7 @@
 import { defineBuildConfig } from "@open-pioneer/build-support";
 
 export default defineBuildConfig({
+    i18n: ["en", "de"],
     styles: "./scale-setter.scss",
     entryPoints: ["index"],
     publishConfig: {

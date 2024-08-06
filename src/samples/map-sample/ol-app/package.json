@@ -25,7 +25,6 @@
         "@open-pioneer/runtime": "^2.1.5",
         "@open-pioneer/scale-bar": "workspace:^",
         "@open-pioneer/scale-viewer": "workspace:^",
-        "@open-pioneer/scale-setter": "workspace:^",
         "@open-pioneer/search": "workspace:^",
         "@open-pioneer/selection": "workspace:^",
         "@open-pioneer/spatial-bookmarks": "workspace:^",

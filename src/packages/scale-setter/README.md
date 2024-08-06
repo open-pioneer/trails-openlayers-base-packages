@@ -4,13 +4,14 @@ This package provides a UI component to change the scale of the map.
 
 ## Usage
 
-To integrate the scale-setter as a select in your app, insert the following snippet and reference a map ID:
+To integrate the scale-setter into your app, insert the following snippet and reference a map ID:
 
 ```jsx
 <ScaleSetter mapId="map_id" />
 ```
 
-Setting property `scales` to an number[], options in the select will be set to given. By default the zoomlevels are the [standard levels by AdV](https://www.adv-online.de/AdV-Produkte/Standards-und-Produktblaetter/AdV-Profile/binarywriterservlet?imgUid=36060b99-b8c4-0a41-ba3c-cdd1072e13d6&uBasVariant=11111111-1111-1111-1111-111111111111).
+To configure custom scales, provide the optional `scales` prop (a `number[]`) to the component.
+By default, scale options are taken from the [standard levels by AdV](https://www.adv-online.de/AdV-Produkte/Standards-und-Produktblaetter/AdV-Profile/binarywriterservlet?imgUid=36060b99-b8c4-0a41-ba3c-cdd1072e13d6&uBasVariant=11111111-1111-1111-1111-111111111111).
 
 ```jsx
 <ScaleSetter
