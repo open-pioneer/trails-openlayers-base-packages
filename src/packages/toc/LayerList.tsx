@@ -33,20 +33,20 @@ type TocLayer = Layer | Sublayer;
  *
  * Layer Groups are skipped in the current implementation.
  */
-export function LayerList(props: { map: MapModel; "aria-labelledby"?: string }): JSX.Element {
-    const { map, "aria-labelledby": ariaLabelledBy } = props;
+export function LayerList(props: { map: MapModel; "aria-label"?: string }): JSX.Element {
+    const { map, "aria-label": ariaLabel } = props;
     const intl = useIntl();
     const layers = useLayers(map);
     if (!layers.length) {
         return (
-            <Text className="toc-missing-layers" aria-labelledby={ariaLabelledBy}>
+            <Text className="toc-missing-layers" aria-label={ariaLabel}>
                 {intl.formatMessage({ id: "missingLayers" })}
             </Text>
         );
     }
 
     return createList(layers, intl, {
-        "aria-labelledby": ariaLabelledBy
+        "aria-label": ariaLabel
     });
 }
 
@@ -58,6 +58,7 @@ function createList(layers: TocLayer[], intl: PackageIntl, listProps: ListProps)
             as="ul"
             className="toc-layer-list"
             listStyleType="none"
+            role="group"
             {...listProps}
         >
             {items}
@@ -80,7 +81,10 @@ function LayerItem(props: { layer: TocLayer; intl: PackageIntl }): JSX.Element {
 
     let nestedChildren;
     if (sublayers?.length) {
-        nestedChildren = createList(sublayers, intl, { ml: 4 });
+        nestedChildren = createList(sublayers, intl, {
+            ml: 4,
+            "aria-label": intl.formatMessage({ id: "childgroupLabel" }, { title: title })
+        });
     }
 
     return (
