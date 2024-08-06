@@ -16,7 +16,6 @@ import { getArea, getLength } from "ol/sphere";
 import { Projection } from "ol/proj";
 import { StyleFunction, StyleLike, toFunction as toStyleFunction } from "ol/style/Style";
 import { TOPMOST_LAYER_Z } from "@open-pioneer/map";
-import { VectorSourceEvent } from "ol/source/Vector";
 
 export type MeasurementType = "area" | "distance";
 
@@ -82,15 +81,15 @@ export class MeasurementController {
     private resources: Resource[] = [];
 
     /**
-     * called when a mesurement is added or removed to the source
+     * called when a measurement is added or removed to the source
      */
     private measurementChangedHandler: MeasurementsChangedHandler | undefined;
 
     /**
-     * map that is used to track all predefined measurments currently added to the source,
+     * map that is used to track all predefined measurements currently added to the source,
      * it asscociates the measurement geometry (key) with the corresponding feature and tootip (value)
      */
-    private predefinedMeasurments: Map<MeasurementGeometry, MeasurementEntry> = new Map<
+    private predefinedMeasurements: Map<MeasurementGeometry, MeasurementEntry> = new Map<
         MeasurementGeometry,
         MeasurementEntry
     >();
@@ -125,21 +124,6 @@ export class MeasurementController {
             }
         });
 
-        this.source.on(["addfeature", "removefeature"], (e) => {
-            if (this.measurementChangedHandler) {
-                const measurementSrcEvent = e as VectorSourceEvent;
-                const measurementGeom = measurementSrcEvent.feature!.getGeometry(); //feature is always set for add/remove events
-                this.measurementChangedHandler({
-                    eventType:
-                        e.type === "removefeature" ? "remove-measurement" : "add-measurement",
-                    geometry:
-                        measurementGeom instanceof Polygon
-                            ? (measurementGeom as Polygon)
-                            : (measurementGeom as LineString) //must be Polygon or LineString
-                });
-            }
-        });
-
         this.helpTooltip = this.createHelpTooltip();
     }
 
@@ -165,7 +149,7 @@ export class MeasurementController {
         this.source.dispose();
 
         this.measurementChangedHandler = undefined;
-        this.predefinedMeasurments.clear();
+        this.predefinedMeasurements.clear();
     }
 
     /** Returns the vector layer used for finished features. */
@@ -201,8 +185,13 @@ export class MeasurementController {
 
     /** Removes all finished measurements. */
     clearMeasurements() {
-        this.source.clear(); //will raise remove event for each measurment feature that is deleted from the source
-        this.predefinedMeasurments.clear();
+        const currentFeatures = this.source.getFeatures(); //returns snapshot copy of the features on the source
+        this.source.clear();
+        currentFeatures.forEach((feature) => {
+            //raise remove-measurement event for each measurement after the source was cleared
+            this.raiseMeasurementsChangeEvent(feature, "remove-measurement");
+        });
+        this.predefinedMeasurements.clear();
         for (const tooltip of this.overlayTooltips) {
             tooltip.destroy();
         }
@@ -264,6 +253,8 @@ export class MeasurementController {
                 this.overlayTooltips.push(measureTooltip);
                 this.measureTooltip = measureTooltip = undefined;
             }
+
+            this.raiseMeasurementsChangeEvent(this.sketch!, "add-measurement");
 
             // unset sketch
             this.sketch = undefined;
@@ -357,10 +348,10 @@ export class MeasurementController {
 
     private updatePredefinedMeasurements(geometries: MeasurementGeometry[]) {
         const addedMeasurements = geometries.filter(
-            (geom) => !this.predefinedMeasurments.has(geom)
+            (geom) => !this.predefinedMeasurements.has(geom)
         );
         const removedMeasurements: MeasurementGeometry[] = [];
-        for (const geom of this.predefinedMeasurments.keys()) {
+        for (const geom of this.predefinedMeasurements.keys()) {
             if (!geometries.includes(geom)) {
                 removedMeasurements.push(geom);
             }
@@ -371,22 +362,27 @@ export class MeasurementController {
             this.source.addFeature(measurementFeature);
             const tooltip = this.createMeasureTooltip();
             this.overlayTooltips.push(tooltip);
-            this.predefinedMeasurments.set(geom, { feature: measurementFeature, tooltip: tooltip });
+            this.predefinedMeasurements.set(geom, {
+                feature: measurementFeature,
+                tooltip: tooltip
+            });
             tooltip.element.innerHTML = this.getTooltipContent(
                 geom,
                 this.olMap.getView().getProjection()
             );
             tooltip.overlay.setPosition(this.getTooltipCoord(geom));
+            this.raiseMeasurementsChangeEvent(measurementFeature, "add-measurement");
         });
 
         removedMeasurements.forEach((geom) => {
-            const measurementEntry = this.predefinedMeasurments.get(geom);
+            const measurementEntry = this.predefinedMeasurements.get(geom);
             if (measurementEntry) {
                 //remove measurement feature from source and destroy associated tooltip
                 this.source.removeFeature(measurementEntry.feature);
                 measurementEntry.tooltip.destroy();
+                this.raiseMeasurementsChangeEvent(measurementEntry.feature, "remove-measurement");
             }
-            this.predefinedMeasurments.delete(geom);
+            this.predefinedMeasurements.delete(geom);
         });
     }
 
@@ -410,6 +406,22 @@ export class MeasurementController {
         }
 
         return output;
+    }
+
+    private raiseMeasurementsChangeEvent(
+        measurementFeature: Feature,
+        eventType: MeasurementEventType
+    ) {
+        const measurementGeom = measurementFeature.getGeometry();
+        if (this.measurementChangedHandler && measurementGeom) {
+            this.measurementChangedHandler({
+                geometry:
+                    measurementGeom instanceof Polygon
+                        ? (measurementGeom as Polygon)
+                        : (measurementGeom as LineString),
+                eventType: eventType
+            });
+        }
     }
 }
 

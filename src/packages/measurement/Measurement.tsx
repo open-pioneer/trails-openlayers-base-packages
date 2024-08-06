@@ -45,12 +45,12 @@ export interface MeasurementProps extends CommonComponentProps {
     /**
      * handler that is called whenever a measurement is added or removed
      */
-    measurementsHandler?: MeasurementsChangedHandler;
+    onMeasurementsChange?: MeasurementsChangedHandler;
 
     /**
      * list of measurements to be rendered when the component is initialized
      */
-    predefinedMeasurments?: MeasurementGeometry[];
+    predefinedMeasurements?: MeasurementGeometry[];
 }
 
 /**
@@ -63,8 +63,8 @@ export const Measurement: FC<MeasurementProps> = (props) => {
         mapId,
         activeFeatureStyle,
         finishedFeatureStyle,
-        measurementsHandler: measurmentsHandler,
-        predefinedMeasurments
+        onMeasurementsChange: measurementsChangeHandler,
+        predefinedMeasurements: predefinedMeasurements
     } = props;
     const { containerProps } = useCommonComponentProps("measurement", props);
     const [selectedMeasurement, setMeasurement] = useState<MeasurementType>("distance");
@@ -83,16 +83,16 @@ export const Measurement: FC<MeasurementProps> = (props) => {
     }, [controller, finishedFeatureStyle]);
 
     useEffect(() => {
-        if (measurmentsHandler) {
-            controller?.setMeasurementSourceChangedHandler(measurmentsHandler);
+        if (measurementsChangeHandler) {
+            controller?.setMeasurementSourceChangedHandler(measurementsChangeHandler);
         }
-    }, [controller, measurmentsHandler]);
+    }, [controller, measurementsChangeHandler]);
 
     useEffect(() => {
-        if (predefinedMeasurments) {
-            controller?.setPredefinedMeasurements(predefinedMeasurments);
+        if (predefinedMeasurements) {
+            controller?.setPredefinedMeasurements(predefinedMeasurements);
         }
-    }, [controller, predefinedMeasurments]);
+    }, [controller, predefinedMeasurements]);
 
     // Start / Stop measurement on selection change
     useEffect(() => {
@@ -172,8 +172,7 @@ function useController(map: MapModel | undefined, intl: PackageIntl) {
             controller.destroy();
             setController(undefined);
         };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [map, intl]); //do not re-init controller for intialMeasurements because it describes the intital state of the component
+    }, [map, intl]);
     return controller;
 }
 

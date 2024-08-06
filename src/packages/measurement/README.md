@@ -60,18 +60,27 @@ function AppUI() {
 }
 ```
 
-### add predefined measurments
-The optional property `predefinedMeasurments` can be used to render predefined measurement geometries (linestrings and polygons). The predefined measurements will have the same style (inculding corresponding tooltip) as measurements created by a user.
+### add predefined measurements
+
+The optional property `predefinedMeasurements` can be used to render predefined measurement geometries (linestrings and polygons). The predefined measurements will have the same style (inculding corresponding tooltip) as measurements created by a user.
 
 ```tsx
 import LineString from "ol/geom/LineString";
 import { MeasurementGeometry } from "@open-pioneer/measurement/MeasurementController";
 
-<Measurement predefinedMeasurments={[new LineString([[398657.97, 5755696.26], [402570.98, 5757547.78]])]} />
+<Measurement
+    predefinedMeasurements={[
+        new LineString([
+            [398657.97, 5755696.26],
+            [402570.98, 5757547.78]
+        ])
+    ]}
+/>;
 ```
 
 ### listen for added/removed measurements
-The optional property `measurementsHandler` can be used to register a handler function which is called for each measurement that is added or removed (user created measurements and  `predefinedMeasurments`).
+
+The optional property `measurementsHandler` can be used to register a handler function which is called for each measurement that is added or removed (user created measurements and `predefinedMeasurements`).
 No remove-measurement events will be raised if the component is destroyed, only if measurements are removed explicitly.
 
 ```tsx
