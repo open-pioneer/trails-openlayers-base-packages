@@ -5,3 +5,7 @@ messages:
     title: Zoom in map
   zoom-out:
     title: Zoom out map
+  view-backward:
+    title: One map view back
+  view-forward:
+    title: One map view ahead

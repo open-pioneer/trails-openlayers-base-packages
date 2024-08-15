@@ -5,3 +5,7 @@ messages:
     title: Karte vergrößern
   zoom-out:
     title: Karte verkleinern
+  view-backward:
+    title: Eine Kartenansicht zurück
+  view-forward:
+    title: Eine Kartenansicht vor

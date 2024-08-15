@@ -30,6 +30,21 @@ You can also use the generic `Zoom` component:
 <Zoom mapId="map_id" zoomDirection="in" />
 ```
 
+### NaviHistory
+
+To integrate the component in your app, insert the following snippet and reference a map ID:
+
+```jsx
+<NaviHistoryForward mapId="map_id" />
+<NaviHistoryBackward mapId="map_id" />
+```
+
+You can also use the generic `NaviHistory` component:
+
+```jsx
+<NaviHistory mapId="map_id" viewDirection="forward" />
+```
+
 ## License
 
 Apache-2.0 (see `LICENSE` file)

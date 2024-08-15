@@ -19,6 +19,7 @@ import { SearchComponent } from "./Search";
 import { SelectionComponent } from "./Selection";
 import { TocComponent } from "./Toc";
 import { PrintingComponent } from "./Printing";
+import { MapViewNavigation } from "./MapViewNavigation";
 
 /**
  * The main application layout.
@@ -60,6 +61,9 @@ export function AppUI() {
                         /* Note: matches the height of the result list component */
                         viewPadding={showResultList ? { bottom: 400 } : undefined}
                     >
+                        <MapAnchor position="top-left" horizontalGap={10} verticalGap={10}>
+                            <MapViewNavigation />
+                        </MapAnchor>
                         <Container centerContent>
                             <SearchComponent />
                         </Container>
