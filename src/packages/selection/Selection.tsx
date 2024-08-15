@@ -105,7 +105,7 @@ export const Selection: FC<SelectionProps> = (props) => {
     const defaultNotAvailableMessage = intl.formatMessage({ id: "sourceNotAvailable" });
 
     const [currentSource, setCurrentSource] = useState<SelectionSource | undefined>(
-        () => sources.find((s) => (s.status ?? "available") === "available") // todo intitialer wert --> sources[0]
+        () => sources[0]
     );
     const currentSourceStatus = useSourceStatus(currentSource, defaultNotAvailableMessage);
 
@@ -134,10 +134,12 @@ export const Selection: FC<SelectionProps> = (props) => {
             }),
         [sources]
     );
-    const currentSourceOption = useMemo(
-        () => sourceOptions.find((option) => option.value === currentSource),
-        [sourceOptions, currentSource]
-    );
+    const currentSourceOption = useMemo(() => {
+        const foundOption: SelectionOption | undefined = sourceOptions.find(
+            (option) => option.value === currentSource
+        );
+        return foundOption || null;
+    }, [sourceOptions, currentSource]);
 
     const onSourceOptionChanged = useEvent((newValue: SingleValue<SelectionOption>) => {
         setCurrentSource(newValue?.value);
