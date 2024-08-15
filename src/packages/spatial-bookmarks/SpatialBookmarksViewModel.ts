@@ -1,12 +1,12 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { MapModel } from "@open-pioneer/map";
-import { Atom, atom, createStore } from "jotai";
 import { LocalStorageNamespace, LocalStorageService } from "@open-pioneer/local-storage";
 import { v4 as uuid4v } from "uuid";
 import { Extent as OlExtent, getCenter } from "ol/extent";
 import { transformExtent } from "ol/proj";
 import { createLogger } from "@open-pioneer/core";
+import { CleanupHandle, reactiveArray, watch } from "@conterra/reactivity-core";
 
 const LOG = createLogger("spatial-bookmark:SpatialBookmarkViewModel");
 
@@ -24,40 +24,36 @@ export interface Bookmark {
     projection: string;
 }
 
-type Store = ReturnType<typeof createStore>;
-
 export class SpatialBookmarkViewModel {
     private map: MapModel;
     private packageNamespace: LocalStorageNamespace;
-    private writableBookmarks = atom<Bookmark[]>([]);
-    private stopBookmarksListener: () => void;
-
-    /** Contains the jotai state (atoms + store === value). */
-    readonly store: Store; // contains jotai state
+    private writableBookmarks = reactiveArray<Bookmark>([]);
+    private watchBookmarksHandle: CleanupHandle;
 
     /**
      * Provides read-only access to the bookmarks array.
      * The UI simply renders the contents of the store and
      * uses the methods below to modify the state.
      */
-    get bookmarks(): Atom<Bookmark[]> {
-        return this.writableBookmarks;
+    get bookmarks(): Bookmark[] {
+        return this.writableBookmarks.getItems();
     }
 
     constructor(map: MapModel, localStorageService: LocalStorageService) {
         this.map = map;
         this.packageNamespace = localStorageService.getNamespace("spatial-bookmarks");
-        this.store = createStore();
 
         // Load from local storage on start; save changes whenever bookmarks change.
         this.loadState();
-        this.stopBookmarksListener = this.store.sub(this.bookmarks, () => {
-            this.saveState();
-        });
+        this.watchBookmarksHandle = watch(
+            () => this.writableBookmarks.getItems(),
+            () => this.saveState(),
+            { immediate: false }
+        );
     }
 
     destroy() {
-        this.stopBookmarksListener();
+        this.watchBookmarksHandle.destroy();
     }
 
     /**
@@ -84,7 +80,7 @@ export class SpatialBookmarkViewModel {
         LOG.debug("Created a new bookmark", bookmark);
 
         const bookmarks = this.writableBookmarks;
-        this.store.set(bookmarks, [...this.store.get(bookmarks), bookmark]);
+        bookmarks.push(bookmark);
     }
 
     /**
@@ -104,8 +100,10 @@ export class SpatialBookmarkViewModel {
      */
     deleteBookmark(id: string) {
         LOG.debug("Deleting bookmark", id);
-        const bookmarks = this.writableBookmarks;
-        this.store.set(bookmarks, [...this.store.get(bookmarks).filter((b) => b.id !== id)]);
+        const index = this.writableBookmarks.findIndex((bookmark) => bookmark.id === id);
+        if (index > -1) {
+            this.writableBookmarks.splice(index, 1);
+        }
     }
 
     /**
@@ -113,7 +111,7 @@ export class SpatialBookmarkViewModel {
      */
     deleteAllBookmarks() {
         LOG.debug("Deleting all bookmarks");
-        this.store.set(this.writableBookmarks, []);
+        this.writableBookmarks.splice(0);
     }
 
     /**
@@ -126,10 +124,10 @@ export class SpatialBookmarkViewModel {
         const rawBookmarks = this.packageNamespace.get("bookmarks") ?? [];
         try {
             validateBookmarks(rawBookmarks);
-            this.store.set(this.writableBookmarks, rawBookmarks);
+            this.writableBookmarks.push(...rawBookmarks);
         } catch (e) {
             LOG.error("Bookmarks data in local storage is invalid, resetting to default value.", e);
-            this.store.set(this.writableBookmarks, []);
+            this.writableBookmarks.splice(0);
             this.saveState();
         }
     }
@@ -139,7 +137,7 @@ export class SpatialBookmarkViewModel {
      */
     private saveState() {
         LOG.debug("Saving bookmarks to local storage");
-        this.packageNamespace.set("bookmarks", this.store.get(this.bookmarks));
+        this.packageNamespace.set("bookmarks", this.bookmarks);
     }
 
     /** Computes an OpenLayers extent for the given bookmark. */
