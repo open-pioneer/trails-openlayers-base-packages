@@ -46,8 +46,8 @@ export class SpatialBookmarkViewModel {
         // Load from local storage on start; save changes whenever bookmarks change.
         this.loadState();
         this.watchBookmarksHandle = watch(
-            () => this.writableBookmarks.getItems(),
-            () => this.saveState(),
+            () => [this.writableBookmarks.getItems()],
+            ([bookmarks]) => this.saveState(bookmarks),
             { immediate: false }
         );
     }
@@ -128,16 +128,16 @@ export class SpatialBookmarkViewModel {
         } catch (e) {
             LOG.error("Bookmarks data in local storage is invalid, resetting to default value.", e);
             this.writableBookmarks.splice(0);
-            this.saveState();
+            this.saveState([]);
         }
     }
 
     /**
      * Saves the bookmarks to local storage.
      */
-    private saveState() {
+    private saveState(bookmarks: Bookmark[]) {
         LOG.debug("Saving bookmarks to local storage");
-        this.packageNamespace.set("bookmarks", this.bookmarks);
+        this.packageNamespace.set("bookmarks", bookmarks);
     }
 
     /** Computes an OpenLayers extent for the given bookmark. */
