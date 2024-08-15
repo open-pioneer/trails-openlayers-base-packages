@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { EventEmitter, createLogger } from "@open-pioneer/core";
+import { reactive } from "@conterra/reactivity-core";
+import { createLogger } from "@open-pioneer/core";
 import { TOPMOST_LAYER_Z, calculateBufferedExtent } from "@open-pioneer/map";
 import Feature from "ol/Feature";
 import olGeolocation, { GeolocationError } from "ol/Geolocation";
@@ -19,28 +20,33 @@ import { StyleLike } from "ol/style/Style";
 const LOG = createLogger("geolocation:GeolocationController");
 const DEFAULT_MAX_ZOOM = 17;
 
-type ErrorEvent = "permission-denied" | "position-unavailable" | "timeout" | "unknown";
+export type ErrorEvent = "permission-denied" | "position-unavailable" | "timeout" | "unknown";
 
-interface Events {
-    error: ErrorEvent;
-}
+export type OnErrorCallback = (errorEvent: ErrorEvent) => void;
 
-export class GeolocationController extends EventEmitter<Events> {
+export class GeolocationController {
+    /** True if location tracking is supported by the browser. */
+    public readonly supported = !!navigator.geolocation;
+
     private readonly olMap: OlMap;
     private readonly positionHighlightLayer: VectorLayer<Feature>;
     private readonly geolocation: olGeolocation;
+    private readonly onError: OnErrorCallback;
+
     private maxZoom: number = DEFAULT_MAX_ZOOM;
     private accuracyFeature: Feature | undefined;
     private positionFeature: Feature | undefined;
     private changeHandlers: EventsKey[] = [];
-    private isCurrentlyActive: boolean = false;
     private setMapToPosition: boolean = true;
     private trackingOptions: PositionOptions = {};
     private isInitialZoom: boolean = true;
 
-    constructor(olMap: OlMap, trackingOptions?: PositionOptions) {
-        super();
+    #loading = reactive(false);
+    #active = reactive(false);
+
+    constructor(olMap: OlMap, onError: OnErrorCallback, trackingOptions?: PositionOptions) {
         this.olMap = olMap;
+        this.onError = onError;
         this.isInitialZoom = true;
 
         this.accuracyFeature = new Feature();
@@ -78,14 +84,16 @@ export class GeolocationController extends EventEmitter<Events> {
         this.positionHighlightLayer.dispose();
     }
 
-    startGeolocation(): Promise<void> {
-        if (this.isCurrentlyActive) {
+    startGeolocation() {
+        if (this.#active.value) {
             return Promise.resolve();
         }
 
         const olMap = this.olMap;
         const geolocationPromise = new Promise<void>((resolve) => {
-            this.isCurrentlyActive = true;
+            this.#active.value = true;
+            this.#loading.value = true;
+
             this.geolocation?.setProjection(olMap.getView()?.getProjection());
             this.geolocation?.setTracking(true);
 
@@ -155,14 +163,20 @@ export class GeolocationController extends EventEmitter<Events> {
             olMap.addLayer(this.positionHighlightLayer);
         });
 
-        return geolocationPromise.catch((error: Error) => {
-            LOG.error("Failed to determine location", error);
-        });
+        geolocationPromise
+            .then(() => {
+                // Promise resolves once we have a position
+                this.#loading.value = false;
+            })
+            .catch((error: Error) => {
+                LOG.error("Failed to determine location", error);
+            });
     }
 
     stopGeolocation() {
         this.geolocation?.setTracking(false);
-        this.isCurrentlyActive = false;
+        this.#active.value = false;
+        this.#loading.value = false;
         this.trackingOptions = {};
         this.setMapToPosition = true;
         this.isInitialZoom = true;
@@ -174,6 +188,19 @@ export class GeolocationController extends EventEmitter<Events> {
         this.accuracyFeature?.setGeometry(undefined);
         this.positionFeature?.setGeometry(undefined);
         this.olMap.removeLayer(this.positionHighlightLayer);
+    }
+
+    /** True if the position is being tracked. */
+    get active(): boolean {
+        return this.#active.value;
+    }
+
+    /**
+     * True if loading (active but no position available yet).
+     * Use this to show a progress indicator.
+     */
+    get loading(): boolean {
+        return this.#loading.value;
     }
 
     setPositionFeatureStyle(styleLike: StyleLike | undefined) {
@@ -211,6 +238,7 @@ export class GeolocationController extends EventEmitter<Events> {
     private handleGeolocationError(event: GeolocationError) {
         LOG.error("Error from geolocation API:", event.message);
 
+        this.stopGeolocation();
         const error: ErrorEvent = (() => {
             switch (event.code) {
                 case 1:
@@ -223,7 +251,7 @@ export class GeolocationController extends EventEmitter<Events> {
                     return "unknown";
             }
         })();
-        this.emit("error", error);
+        this.onError(error);
     }
 }
 
