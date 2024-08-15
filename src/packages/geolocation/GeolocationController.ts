@@ -86,7 +86,7 @@ export class GeolocationController {
 
     startGeolocation() {
         if (this.#active.value) {
-            return Promise.resolve();
+            return;
         }
 
         const olMap = this.olMap;
