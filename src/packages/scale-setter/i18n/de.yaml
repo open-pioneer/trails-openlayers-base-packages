@@ -1,0 +1,4 @@
+messages:
+  button:
+    ariaLabel: "Aktueller Maßstab: {scale}."
+    ariaDescription: "Drücken Sie Enter um den Maßstab zu ändern."

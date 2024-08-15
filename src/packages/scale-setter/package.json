@@ -1,0 +1,37 @@
+{
+    "name": "@open-pioneer/scale-setter",
+    "version": "0.1.0",
+    "description": "This package provides a UI component to change the scale of the map.",
+    "license": "Apache-2.0",
+    "main": "index.ts",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/open-pioneer/trails-openlayers-base-packages",
+        "directory": "src/packages/scale-setter"
+    },
+    "homepage": "https://github.com/open-pioneer",
+    "keywords": [
+        "open-pioneer-trails"
+    ],
+    "scripts": {
+        "build": "build-pioneer-package"
+    },
+    "peerDependencies": {
+        "@chakra-ui/icons": "^2.1.1",
+        "@open-pioneer/chakra-integration": "^1.1.3",
+        "@open-pioneer/map": "workspace:^",
+        "@open-pioneer/react-utils": "^1.0.0",
+        "@open-pioneer/runtime": "^2.1.6",
+        "ol": "^9.2.4",
+        "react": "^18.3.1"
+    },
+    "devDependencies": {
+        "@open-pioneer/map-test-utils": "workspace:^",
+        "@open-pioneer/test-utils": "^1.1.3",
+        "openlayers-base-packages": "workspace:*"
+    },
+    "publishConfig": {
+        "directory": "dist",
+        "linkDirectory": false
+    }
+}

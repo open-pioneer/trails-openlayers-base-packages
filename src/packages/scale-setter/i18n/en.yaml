@@ -1,0 +1,4 @@
+messages:
+  button:
+    ariaLabel: "Current scale: {scale}."
+    ariaDescription: "Press Enter to change the scale."

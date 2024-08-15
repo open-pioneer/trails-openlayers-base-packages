@@ -1,5 +1,16 @@
 # @open-pioneer/editing
 
+## 0.2.2
+
+### Patch Changes
+
+-   28e092a: Update dependencies
+-   484ad86: Add tooltip role to tooltip divs (See https://github.com/open-pioneer/trails-openlayers-base-packages/issues/309).
+-   Updated dependencies [28e092a]
+-   Updated dependencies [0d51d2f]
+-   Updated dependencies [76f8863]
+    -   @open-pioneer/map@0.6.0
+
 ## 0.2.1
 
 ### Patch Changes

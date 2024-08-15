@@ -1,5 +1,15 @@
 # printing-api-app
 
+## 0.0.5
+
+### Patch Changes
+
+-   Updated dependencies [28e092a]
+-   Updated dependencies [0d51d2f]
+-   Updated dependencies [76f8863]
+    -   @open-pioneer/printing@0.1.3
+    -   @open-pioneer/map@0.6.0
+
 ## 0.0.4
 
 ### Patch Changes

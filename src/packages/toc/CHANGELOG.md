@@ -1,5 +1,18 @@
 # @open-pioneer/toc
 
+## 0.4.3
+
+### Patch Changes
+
+-   0b48e97: improve aria labels and roles for hierachical layer groups in toc (fixes issue [#321](https://github.com/open-pioneer/trails-openlayers-base-packages/issues/321))
+-   28e092a: Update dependencies
+-   Updated dependencies [28e092a]
+-   Updated dependencies [0d51d2f]
+-   Updated dependencies [65a14f4]
+-   Updated dependencies [76f8863]
+    -   @open-pioneer/basemap-switcher@0.4.3
+    -   @open-pioneer/map@0.6.0
+
 ## 0.4.2
 
 ### Patch Changes
