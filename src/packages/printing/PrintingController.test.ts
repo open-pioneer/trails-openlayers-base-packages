@@ -14,14 +14,16 @@ afterEach(() => {
 it("calls the appropriate methods (happy path)", async () => {
     const { controller, exportMapInPNGSpy, exportMapInPDFSpy } = await setUp();
 
-    controller.setFileFormat("png");
-    await controller.handleMapExport();
+    await controller.handleMapExport({
+        fileFormat: "png"
+    });
 
     //expect(exportToCanvasSpy).toBeCalled();
     expect(exportMapInPNGSpy).toBeCalled();
 
-    controller.setFileFormat("pdf");
-    await controller.handleMapExport();
+    await controller.handleMapExport({
+        fileFormat: "pdf"
+    });
 
     expect(exportMapInPDFSpy).toBeCalled();
 });
@@ -36,7 +38,9 @@ it("creates an overlay during export and removes it after export", async () => {
     exportToCanvasSpy.mockImplementation(() => promise);
 
     // Start the export, but do _not_ wait for it to finish.
-    const exportDonePromise = controller.handleMapExport();
+    const exportDonePromise = controller.handleMapExport({
+        fileFormat: "pdf"
+    });
 
     // Wait for the overlay to appear.
     const overlay = await vi.waitFor(() => {

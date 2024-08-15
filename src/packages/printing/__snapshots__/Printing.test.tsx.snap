@@ -6,15 +6,15 @@ exports[`should successfully create a printing component 1`] = `
   data-testid="printing"
   data-theme="light"
 >
-  <div
-    class="chakra-form-control css-1m7igkt"
-    data-focus=""
+  <form
+    class="css-162gbd7"
     data-theme="light"
-    role="group"
   >
     <div
-      class="chakra-stack css-1sgivba"
+      class="chakra-stack chakra-form-control css-18uenf7"
+      data-focus=""
       data-theme="light"
+      role="group"
     >
       <label
         class="chakra-form__label css-u9crf"
@@ -34,15 +34,15 @@ exports[`should successfully create a printing component 1`] = `
       />
     </div>
     <div
-      class="chakra-stack css-1sgivba"
+      class="chakra-stack chakra-form-control css-18uenf7"
       data-theme="light"
+      role="group"
     >
       <label
         class="chakra-form__label css-u9crf"
-        data-focus=""
         data-theme="light"
-        for="field-:r0:"
-        id="field-:r0:-label"
+        for="field-:r1:"
+        id="field-:r1:-label"
       >
         fileFormat
       </label>
@@ -53,7 +53,7 @@ exports[`should successfully create a printing component 1`] = `
         <select
           class="chakra-select printing-select css-161pkch"
           data-theme="light"
-          id="field-:r0:"
+          id="field-:r1:"
         >
           <option
             value="png"
@@ -86,13 +86,13 @@ exports[`should successfully create a printing component 1`] = `
         </div>
       </div>
     </div>
-  </div>
-  <button
-    class="chakra-button printing-export-button css-14p1tvq"
-    data-theme="light"
-    type="button"
-  >
-    export
-  </button>
+    <button
+      class="chakra-button printing-export-button css-166bd52"
+      data-theme="light"
+      type="submit"
+    >
+      export
+    </button>
+  </form>
 </div>
 `;

@@ -15,7 +15,7 @@ import { NotificationService } from "@open-pioneer/notifier";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { useIntl, useService } from "open-pioneer:react-hooks";
-import { FC, useEffect, useState } from "react";
+import { FC, FormEvent, useEffect, useState } from "react";
 import { FileFormatType, PrintingController } from "./PrintingController";
 import type { ViewPaddingBehavior, PrintingService } from "./index";
 
@@ -50,19 +50,10 @@ export const Printing: FC<PrintingProps> = (props) => {
     const [title, setTitle] = useState<string>("");
     const [running, setRunning] = useState<boolean>(false);
 
-    const printingService = useService<PrintingService>("printing.PrintingService");
     const notifier = useService<NotificationService>("notifier.NotificationService");
 
     const { map } = useMapModel(mapId);
-    const controller = useController(map, intl, printingService, viewPadding);
-
-    useEffect(() => {
-        controller?.setFileFormat(selectedFileFormat);
-    }, [controller, selectedFileFormat]);
-
-    useEffect(() => {
-        controller?.setTitle(title);
-    }, [controller, title]);
+    const controller = useController(map, intl, viewPadding);
 
     function changeFileFormat(fileFormat: string) {
         if (fileFormat === "png" || fileFormat === "pdf") {
@@ -77,7 +68,10 @@ export const Printing: FC<PrintingProps> = (props) => {
 
         setRunning(true);
         controller
-            .handleMapExport()
+            .handleMapExport({
+                title,
+                fileFormat: selectedFileFormat
+            })
             .catch((error) => {
                 const errorMessage = intl.formatMessage({ id: "printingFailed" });
                 notifier.notify({
@@ -93,8 +87,16 @@ export const Printing: FC<PrintingProps> = (props) => {
 
     return (
         <Box {...containerProps}>
-            <FormControl mb={4} alignItems="center">
-                <HStack mb={2}>
+            <Box
+                as="form"
+                m={2}
+                alignItems="center"
+                onSubmit={(e: FormEvent) => {
+                    e.preventDefault();
+                    exportMap();
+                }}
+            >
+                <FormControl as={HStack} mb={2}>
                     <FormLabel minWidth="82" mb={1}>
                         {intl.formatMessage({ id: "title" })}
                     </FormLabel>
@@ -106,8 +108,8 @@ export const Printing: FC<PrintingProps> = (props) => {
                         }}
                         autoFocus // eslint-disable-line jsx-a11y/no-autofocus
                     />
-                </HStack>
-                <HStack mb={2}>
+                </FormControl>
+                <FormControl as={HStack} mb={2}>
                     <FormLabel minWidth="82" mb={1}>
                         {intl.formatMessage({ id: "fileFormat" })}
                     </FormLabel>
@@ -119,19 +121,20 @@ export const Printing: FC<PrintingProps> = (props) => {
                         <option value={"png"}>PNG</option>
                         <option value={"pdf"}>PDF</option>
                     </Select>
-                </HStack>
-            </FormControl>
-            <Button
-                isLoading={running}
-                loadingText={intl.formatMessage({ id: "printingMap" })}
-                disabled={running}
-                padding={2}
-                className="printing-export-button"
-                onClick={exportMap}
-                width="100%"
-            >
-                {intl.formatMessage({ id: "export" })}
-            </Button>
+                </FormControl>
+                <Button
+                    isLoading={running}
+                    loadingText={intl.formatMessage({ id: "printingMap" })}
+                    disabled={running}
+                    mt={2}
+                    p={2}
+                    className="printing-export-button"
+                    type="submit"
+                    width="100%"
+                >
+                    {intl.formatMessage({ id: "export" })}
+                </Button>
+            </Box>
         </Box>
     );
 };
@@ -142,9 +145,9 @@ export const Printing: FC<PrintingProps> = (props) => {
 function useController(
     map: MapModel | undefined,
     intl: PackageIntl,
-    printingService: PrintingService,
     viewPadding: ViewPaddingBehavior
 ) {
+    const printingService = useService<PrintingService>("printing.PrintingService");
     const [controller, setController] = useState<PrintingController | undefined>(undefined);
 
     useEffect(() => {
