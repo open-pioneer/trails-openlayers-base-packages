@@ -9,10 +9,13 @@ export type FileFormatType = "png" | "pdf";
 
 const DEFAULT_FILE_NAME = "map";
 
+export interface ExportOptions {
+    title?: string | undefined;
+    fileFormat: FileFormatType;
+}
+
 export class PrintingController {
     private olMap: OlMap;
-    private title: string = "";
-    private fileFormat: FileFormatType = "pdf";
     private i18n: I18n;
 
     private printingService: PrintingService;
@@ -31,20 +34,12 @@ export class PrintingController {
         this.reset();
     }
 
-    setTitle(title: string) {
-        this.title = title;
-    }
-
-    setFileFormat(format: FileFormatType) {
-        this.fileFormat = format;
-    }
-
     setViewPadding(padding: ViewPaddingBehavior) {
         this.viewPadding = padding;
     }
 
-    async handleMapExport() {
-        if (!this.olMap || !this.fileFormat) {
+    async handleMapExport(options: ExportOptions) {
+        if (!this.olMap) {
             return;
         }
 
@@ -56,9 +51,9 @@ export class PrintingController {
             });
             const canvas = this.printMap.getCanvas();
             if (canvas) {
-                this.fileFormat == "png"
-                    ? await this.exportMapInPNG(canvas)
-                    : await this.exportMapInPDF(canvas);
+                options.fileFormat == "png"
+                    ? await this.exportMapInPNG(canvas, options)
+                    : await this.exportMapInPDF(canvas, options);
             } else {
                 throw new Error("Canvas export failed");
             }
@@ -79,13 +74,13 @@ export class PrintingController {
         this.overlay = undefined;
     }
 
-    private getTitleAndFileName() {
-        const titleValue = this.title || "";
-        const fileName = this.title || DEFAULT_FILE_NAME;
+    private getTitleAndFileName(options: ExportOptions) {
+        const titleValue = options.title || "";
+        const fileName = options.title || DEFAULT_FILE_NAME;
         return { title: titleValue, fileName: fileName };
     }
 
-    private async exportMapInPNG(mapCanvas: HTMLCanvasElement) {
+    private async exportMapInPNG(mapCanvas: HTMLCanvasElement, options: ExportOptions) {
         const containerCanvas = document.createElement("canvas");
         containerCanvas.width = mapCanvas.width;
         containerCanvas.height = mapCanvas.height + 50;
@@ -96,7 +91,7 @@ export class PrintingController {
             throw new Error("2d canvas rendering context not available");
         }
 
-        const { title, fileName } = this.getTitleAndFileName();
+        const { title, fileName } = this.getTitleAndFileName(options);
 
         context.fillStyle = "#fff"; // background color for background rect
         context.fillRect(0, 0, containerCanvas.width, containerCanvas.height); //draw background rect
@@ -120,7 +115,7 @@ export class PrintingController {
         link.click();
     }
 
-    private async exportMapInPDF(canvas: HTMLCanvasElement) {
+    private async exportMapInPDF(canvas: HTMLCanvasElement, options: ExportOptions) {
         // Landscape map export.
         // Lazy load pdfjs as well.
         const { jsPDF } = await import("jspdf");
@@ -140,7 +135,7 @@ export class PrintingController {
 
         // Render title
         pdf.setFontSize(20);
-        const { title, fileName } = this.getTitleAndFileName();
+        const { title, fileName } = this.getTitleAndFileName(options);
         pdf.text(title, pageWidth / 2, titleOffset, { align: "center" });
 
         // Resize image while keeping aspect ratio
