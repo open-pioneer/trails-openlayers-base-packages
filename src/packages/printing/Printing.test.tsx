@@ -14,7 +14,7 @@ import * as PrintingControllerModule from "./PrintingController";
 const setFileFormatSpy = vi.fn();
 const setTitleSpy = vi.fn();
 const setViewPaddingSpy = vi.fn();
-const handleMapExportSpy = vi.fn(() => Promise.resolve());
+const handleMapExportSpy = vi.fn((..._args) => Promise.resolve());
 const notifySpy = vi.fn();
 
 /** Mock implementation used by the UI. */
@@ -80,9 +80,11 @@ it("should trigger the map export with the requested title and the request forma
 
     await user.click(printingButton);
 
-    expect(setTitleSpy).toHaveBeenLastCalledWith("test title");
-    expect(setFileFormatSpy).toHaveBeenLastCalledWith("pdf");
     expect(handleMapExportSpy).toHaveBeenCalledOnce();
+    expect(handleMapExportSpy.mock.lastCall![0]).toEqual({
+        "fileFormat": "pdf",
+        "title": "test title"
+    });
 });
 
 it("should trigger a notification if the map export fails", async () => {

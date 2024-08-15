@@ -51,7 +51,12 @@ export function mockErrorGeolocation() {
 
 export function setup() {
     const olMap = new OlMap();
-    return { olMap, controller: new GeolocationController(olMap) };
+    return {
+        olMap,
+        controller: new GeolocationController(olMap, (error) => {
+            console.error("Unexpected error", error);
+        })
+    };
 }
 
 export function setupWithCustomProperties() {
@@ -61,7 +66,13 @@ export function setupWithCustomProperties() {
     const accuracyFeatureStyle: Style = getCustomAccuracyStyle();
     const trackingOptions: PositionOptions = getCustomTrackingOptions();
 
-    const controller = new GeolocationController(olMap, trackingOptions);
+    const controller = new GeolocationController(
+        olMap,
+        (error) => {
+            console.error("Unexpected error", error);
+        },
+        trackingOptions
+    );
     controller.setMaxZoom(maxZoom);
     controller.setPositionFeatureStyle(positionFeatureStyle);
     controller.setAccuracyFeatureStyle(accuracyFeatureStyle);
