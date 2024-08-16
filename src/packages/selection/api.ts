@@ -3,7 +3,7 @@
 import type { Geometry } from "ol/geom";
 import type { Projection } from "ol/proj";
 import type { Extent } from "ol/extent";
-import type { EventSource, Resource } from "@open-pioneer/core";
+import type { Resource } from "@open-pioneer/core";
 import { BaseFeature } from "@open-pioneer/map";
 import { DeclaredService } from "@open-pioneer/runtime";
 import VectorLayer from "ol/layer/Vector";
@@ -16,6 +16,9 @@ import Feature from "ol/Feature";
  */
 export type SelectionSourceStatus = "available" | "unavailable" | SelectionSourceStatusObject;
 
+/**
+ * Advanced form of the {@link SelectionSourceStatus} that allows providing a reason why the source is not available.
+ */
 export type SelectionSourceStatusObject =
     | { kind: "available" }
     | {
@@ -66,14 +69,6 @@ export interface SelectionOptions {
     signal: AbortSignal;
 }
 
-/** Events emitted by the {@link SelectionSource}. */
-export interface SelectionSourceEvents {
-    "changed:status": void;
-}
-
-/** Optional base type for selection source: the event emitter interface is not required. */
-export type SelectionSourceEventBase = EventSource<SelectionSourceEvents>;
-
 /**
  * The user has selected an extent.
  */
@@ -97,13 +92,8 @@ export type SelectionKind = ExtentSelection;
  * An object that allows spatial selection.
  *
  * Developers can create classes that implement this interface for different selection sources.
- *
- * The implementation of `SelectionSourceEventBase` is optional: it is only necessary if the status changes
- * during the lifetime of the selection source.
- * To implement events, you can write `class MySelectionSource extends EventEmitter<SelectionSourceEvents>`.
- *
  */
-export interface SelectionSource extends Partial<SelectionSourceEventBase> {
+export interface SelectionSource {
     /**
      * The label of this source.
      *
@@ -116,6 +106,8 @@ export interface SelectionSource extends Partial<SelectionSourceEventBase> {
      * source is always available.
      *
      * This will be displayed by the user interface.
+     *
+     * This value can be reactive; changes will be reflected in the UI.
      */
     readonly status?: SelectionSourceStatus;
 
