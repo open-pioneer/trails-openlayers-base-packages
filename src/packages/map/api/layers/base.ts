@@ -7,13 +7,6 @@ import type { LayerRetrievalOptions } from "../shared";
 
 /** Events emitted by the {@link Layer} and other layer types. */
 export interface LayerBaseEvents {
-    "changed": void;
-    "changed:title": void;
-    "changed:legend": void;
-    "changed:description": void;
-    "changed:visible": void;
-    "changed:attributes": void;
-    "changed:loadState": void;
     "destroy": void;
 }
 
@@ -199,17 +192,9 @@ export interface Sublayer extends LayerBase {
 }
 
 /**
- * Events emitted by the {@link SublayersCollection}.
- */
-export interface SublayersCollectionEvents {
-    changed: void;
-}
-
-/**
  * Contains the sublayers that belong to a {@link Layer} or {@link Sublayer}.
  */
-export interface SublayersCollection<SublayerType = Sublayer>
-    extends EventSource<SublayersCollectionEvents> {
+export interface SublayersCollection<SublayerType = Sublayer> {
     /**
      * Returns the child sublayers in this collection.
      */

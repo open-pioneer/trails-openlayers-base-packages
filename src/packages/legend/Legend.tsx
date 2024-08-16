@@ -1,21 +1,13 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box, Image, List, Text } from "@open-pioneer/chakra-integration";
-import { Layer, MapModel, useMapModel, LayerBase, Sublayer } from "@open-pioneer/map";
-import {
-    ComponentType,
-    FC,
-    ReactNode,
-    useCallback,
-    useEffect,
-    useRef,
-    useState,
-    useSyncExternalStore
-} from "react";
-import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
-import { useIntl } from "open-pioneer:react-hooks";
 import { WarningTwoIcon } from "@chakra-ui/icons";
+import { Box, Image, List, Text } from "@open-pioneer/chakra-integration";
+import { Layer, LayerBase, MapModel, Sublayer, useMapModel } from "@open-pioneer/map";
+import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
+import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import classNames from "classnames";
+import { useIntl } from "open-pioneer:react-hooks";
+import { ComponentType, FC, ReactNode } from "react";
 
 type LegendLayer = Layer | Sublayer;
 
@@ -103,7 +95,7 @@ function LegendList(props: { map: MapModel; showBaseLayers: boolean }): JSX.Elem
 
 function LegendItem(props: { layer: LegendLayer; showBaseLayers: boolean }): ReactNode {
     const { layer, showBaseLayers } = props;
-    const { isVisible } = useVisibility(layer);
+    const isVisible = useReactiveSnapshot(() => layer.visible, [layer]);
     const sublayers = useSublayers(layer);
 
     if (!isVisible) {
@@ -111,7 +103,7 @@ function LegendItem(props: { layer: LegendLayer; showBaseLayers: boolean }): Rea
     }
 
     // '!("parentLayer" in layer)' checks if the layer is no sublayer
-    if (!showBaseLayers && !("parentLayer" in layer) && layer.isBaseLayer) {
+    if (!showBaseLayers && isBaseLayer(layer)) {
         return undefined;
     }
 
@@ -137,10 +129,11 @@ function LegendContent(props: { layer: LegendLayer; showBaseLayers: boolean }) {
     const intl = useIntl();
 
     const { layer, showBaseLayers } = props;
+    const baseLayer = isBaseLayer(layer);
     const legendAttributes = useLegendAttributes(layer);
-    const legendUrl = useLegend(layer);
-    let renderedComponent: ReactNode | undefined;
+    const legendUrl = useReactiveSnapshot(() => layer.legend, [layer]);
 
+    let renderedComponent: ReactNode | undefined;
     if (legendAttributes?.Component) {
         renderedComponent = <legendAttributes.Component layer={layer} />;
     } else if (legendAttributes?.imageUrl) {
@@ -151,11 +144,9 @@ function LegendContent(props: { layer: LegendLayer; showBaseLayers: boolean }) {
         }
     }
 
-    const isBaseLayer = !("parentLayer" in layer) && layer.isBaseLayer;
-
     return renderedComponent ? (
         <Box as="li" className={classNames("legend-item", `layer-${slug(layer.id)}`)}>
-            {showBaseLayers && isBaseLayer ? (
+            {showBaseLayers && baseLayer ? (
                 /* Render additional text, if layer is a configured basemap */
                 <Text as="b">{intl.formatMessage({ id: "basemapLabel" })}</Text>
             ) : null}
@@ -192,134 +183,40 @@ function LegendImage(props: { imageUrl: string; layer: LegendLayer }) {
     );
 }
 
-function useLegend(layer: LayerBase): string | undefined {
-    const getSnapshot = useCallback(() => layer.legend, [layer]);
-    const subscribe = useCallback(
-        (cb: () => void) => {
-            const resource = layer.on("changed:legend", cb);
-            return () => resource.destroy();
-        },
-        [layer]
-    );
-
-    return useSyncExternalStore(subscribe, getSnapshot);
-}
-
-/** Returns the top level operation layers (without LayerGroups). */
+/** Returns the top level operational layers in render order (topmost layer first). */
 function useLayers(map: MapModel): Layer[] {
-    const subscribe = useCallback(
-        (cb: () => void) => {
-            const resource = map.layers.on("changed", cb);
-            return () => resource.destroy();
-        },
-        [map]
-    );
-    const getValue = useCallback(() => {
-        let layers = map.layers.getAllLayers({ sortByDisplayOrder: true }) ?? [];
-        layers = layers.reverse();
+    return useReactiveSnapshot(() => {
+        const layers = map.layers.getAllLayers({ sortByDisplayOrder: true }) ?? [];
+        layers.reverse(); // render topmost layer first
         return layers;
     }, [map]);
-    return useCachedExternalStore(subscribe, getValue);
 }
 
-/** Returns the sublayers of the given layer (or undefined, if the sublayer cannot have any). */
+/**
+ * Returns the sublayers of the given layer (or undefined, if the sublayer cannot have any).
+ * Sublayers are returned in render order (topmost sublayer first).
+ */
 function useSublayers(layer: LayerBase): Sublayer[] | undefined {
-    const subscribe = useCallback(
-        (cb: () => void) => {
-            const resource = layer.sublayers?.on("changed", cb);
-            return () => resource?.destroy();
-        },
-        [layer]
-    );
-    const getValue = useCallback((): Sublayer[] | undefined => {
-        const sublayers = layer.sublayers;
+    return useReactiveSnapshot(() => {
+        const sublayers = layer.sublayers?.getSublayers({ sortByDisplayOrder: true });
         if (!sublayers) {
             return undefined;
         }
 
-        let layers = layer.sublayers?.getSublayers({ sortByDisplayOrder: true });
-        layers = layers.reverse();
-        return layers;
+        sublayers.reverse(); // render topmost layer first
+        return sublayers;
     }, [layer]);
-    return useCachedExternalStore(subscribe, getValue);
 }
 
-/**
- * This hooks wraps an external store that does not cache its own values, i.e.
- * it may return a different value each time from `getValue()`.
- *
- * The results returned from `getValue()` are cached locally; the cache
- * is only invalidated on re-subscription or if a change event has been observed.
- */
-function useCachedExternalStore<T>(
-    subscribe: (onStoreChanged: () => void) => () => void,
-    getValue: () => T
-): T {
-    const cachedValue = useRef<{ value: T } | undefined>();
-
-    const cachedSubscribe = useCallback(
-        (cb: () => void) => {
-            const cleanup = subscribe(() => {
-                // Reset cache on change
-                cachedValue.current = undefined;
-                cb();
-            });
-            return () => {
-                // Reset cache when (re-) subscribing
-                cachedValue.current = undefined;
-                cleanup();
-            };
-        },
-        [subscribe]
-    );
-    const cachedGetSnapshot = useCallback(() => {
-        // Return cached values if still up to date (see resets above).
-        if (cachedValue.current) {
-            return cachedValue.current.value;
-        }
-
-        // Compute values and cache the result.
-        const value = getValue();
-        cachedValue.current = { value };
-        return value;
-    }, [getValue]);
-    return useSyncExternalStore(cachedSubscribe, cachedGetSnapshot);
-}
-
-/** Returns the layer's current visibility. */
-function useVisibility(layer: LayerBase): {
-    isVisible: boolean;
-} {
-    const getSnapshot = useCallback(() => layer.visible, [layer]);
-    const subscribe = useCallback(
-        (cb: () => void) => {
-            const resource = layer.on("changed:visible", cb);
-            return () => resource.destroy();
-        },
+function useLegendAttributes(layer: LayerBase): LegendItemAttributes | undefined {
+    return useReactiveSnapshot(
+        () => layer.attributes.legend as LegendItemAttributes | undefined,
         [layer]
     );
-    const isVisible = useSyncExternalStore(subscribe, getSnapshot);
-
-    return {
-        isVisible
-    };
 }
 
-function useLegendAttributes(layer: LayerBase) {
-    const [legendAttributes, setLegendAttributes] = useState<LegendItemAttributes | undefined>(
-        undefined
-    );
-
-    useEffect(() => {
-        setLegendAttributes(layer.attributes.legend as LegendItemAttributes | undefined);
-
-        const resource = layer.on("changed:attributes", () => {
-            setLegendAttributes(layer.attributes.legend as LegendItemAttributes | undefined);
-        });
-        return () => resource.destroy();
-    }, [layer]);
-
-    return legendAttributes;
+function isBaseLayer(layer: LegendLayer) {
+    return !("parentLayer" in layer) && layer.isBaseLayer;
 }
 
 function slug(id: string) {

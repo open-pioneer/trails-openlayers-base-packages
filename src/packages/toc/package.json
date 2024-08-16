@@ -21,6 +21,7 @@
         "@open-pioneer/map": "workspace:^",
         "@open-pioneer/basemap-switcher": "workspace:^",
         "@open-pioneer/react-utils": "^1.0.0",
+        "@open-pioneer/reactivity": "^0.1.0",
         "@open-pioneer/runtime": "^2.1.6",
         "ol": "^9.2.4",
         "react": "^18.3.1",

@@ -13,6 +13,7 @@ import { AbstractLayer } from "../AbstractLayer";
 import { MapModelImpl } from "../MapModelImpl";
 import { ImageTile } from "ol";
 import type { Options as WMSSourceOptions } from "ol/source/ImageWMS";
+import { reactive } from "@conterra/reactivity-core";
 
 const LOG = createLogger("map:WMTSLayer");
 
@@ -22,8 +23,8 @@ export class WMTSLayerImpl extends AbstractLayer implements WMTSLayer {
     #matrixSet: string;
     #layer: TileLayer<TileSourceType>;
     #source: WMTS | undefined;
-    #legend: string | undefined;
     #sourceOptions?: Partial<WMSSourceOptions>;
+    #legend = reactive<string | undefined>();
     readonly #abortController = new AbortController();
 
     constructor(config: WMTSLayerConfig) {
@@ -40,12 +41,12 @@ export class WMTSLayerImpl extends AbstractLayer implements WMTSLayer {
     }
 
     destroy(): void {
-        super.destroy();
         this.#abortController.abort();
+        super.destroy();
     }
 
     get legend(): string | undefined {
-        return this.#legend;
+        return this.#legend.value;
     }
 
     __attach(map: MapModelImpl): void {
@@ -72,8 +73,7 @@ export class WMTSLayerImpl extends AbstractLayer implements WMTSLayer {
                 this.#layer.setSource(this.#source);
                 const activeStyleId = source.getStyle();
                 const legendUrl = getWMTSLegendUrl(capabilities, this.name, activeStyleId);
-                this.#legend = legendUrl;
-                this.__emitChangeEvent("changed:legend");
+                this.#legend.value = legendUrl;
             })
             .catch((error) => {
                 if (isAbortError(error)) {

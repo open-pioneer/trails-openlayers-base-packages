@@ -17,6 +17,7 @@
         "build": "build-pioneer-package"
     },
     "peerDependencies": {
+        "@conterra/reactivity-core": "^0.4.0",
         "@open-pioneer/core": "^1.2.3",
         "@open-pioneer/http": "^2.1.8",
         "@open-pioneer/runtime": "^2.1.6",

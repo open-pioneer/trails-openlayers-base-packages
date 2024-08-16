@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Resource, createLogger } from "@open-pioneer/core";
+import { ExternalReactive, reactive, external, Reactive } from "@conterra/reactivity-core";
+import { createLogger, destroyResource, Resource } from "@open-pioneer/core";
 import { unByKey } from "ol/Observable";
 import { EventsKey } from "ol/events";
 import OlBaseLayer from "ol/layer/Base";
@@ -24,9 +25,11 @@ export abstract class AbstractLayer<AdditionalEvents = {}>
     #olLayer: OlBaseLayer;
     #isBaseLayer: boolean;
     #healthCheck?: string | HealthCheckFunction;
-    #visible: boolean;
 
-    #loadState: LayerLoadState;
+    #visible: ExternalReactive<boolean>;
+    #loadState: Reactive<LayerLoadState>;
+
+    #visibilityWatchKey: EventsKey | undefined;
     #stateWatchResource: Resource | undefined;
 
     constructor(config: SimpleLayerConfig) {
@@ -35,12 +38,15 @@ export abstract class AbstractLayer<AdditionalEvents = {}>
         this.#isBaseLayer = config.isBaseLayer ?? false;
         this.#healthCheck = config.healthCheck;
 
-        this.#visible = config.visible ?? true;
-        this.#loadState = getSourceState(getSource(this.#olLayer));
+        this.#visible = external(() => this.#olLayer.getVisible());
+        this.#visibilityWatchKey = this.#olLayer.on("change:visible", this.#visible.trigger);
+
+        this.#loadState = reactive(getSourceState(getSource(this.#olLayer)));
+        this.__setVisible(config.visible ?? true);
     }
 
     get visible(): boolean {
-        return this.#visible;
+        return this.#visible.value;
     }
 
     get olLayer(): OlBaseLayer {
@@ -52,7 +58,7 @@ export abstract class AbstractLayer<AdditionalEvents = {}>
     }
 
     get loadState(): LayerLoadState {
-        return this.#loadState;
+        return this.#loadState.value;
     }
 
     destroy() {
@@ -60,7 +66,9 @@ export abstract class AbstractLayer<AdditionalEvents = {}>
             return;
         }
 
-        this.#stateWatchResource?.destroy();
+        this.#stateWatchResource = destroyResource(this.#stateWatchResource);
+        this.#visibilityWatchKey && unByKey(this.#visibilityWatchKey);
+        this.#visibilityWatchKey = undefined;
         this.olLayer.dispose();
         super.destroy();
     }
@@ -75,11 +83,11 @@ export abstract class AbstractLayer<AdditionalEvents = {}>
             this,
             this.#healthCheck,
             (state) => {
-                this.#setLoadState(state);
+                this.#loadState.value = state;
             }
         );
         this.#stateWatchResource = stateWatchResource;
-        this.#setLoadState(initialState);
+        this.#loadState.value = initialState;
     }
 
     setVisible(newVisibility: boolean): void {
@@ -94,23 +102,8 @@ export abstract class AbstractLayer<AdditionalEvents = {}>
     }
 
     __setVisible(newVisibility: boolean): void {
-        let changed = false;
-        if (this.#visible !== newVisibility) {
-            this.#visible = newVisibility;
-            changed = true;
-        }
-
-        // Improvement: actual map sync?
-        if (this.#olLayer.getVisible() != this.#visible) {
+        if (this.#olLayer.getVisible() !== newVisibility) {
             this.#olLayer.setVisible(newVisibility);
-        }
-        changed && this.__emitChangeEvent("changed:visible");
-    }
-
-    #setLoadState(loadState: LayerLoadState) {
-        if (loadState !== this.#loadState) {
-            this.#loadState = loadState;
-            this.__emitChangeEvent("changed:loadState");
         }
     }
 }

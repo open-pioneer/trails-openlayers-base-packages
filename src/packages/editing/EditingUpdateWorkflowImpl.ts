@@ -1,27 +1,28 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { ManualPromise, createManualPromise } from "@open-pioneer/core";
+import { Reactive, effect, reactive } from "@conterra/reactivity-core";
+import { ManualPromise, Resource, createManualPromise } from "@open-pioneer/core";
+import { HttpService } from "@open-pioneer/http";
 import { MapModel, TOPMOST_LAYER_Z } from "@open-pioneer/map";
+import { PackageIntl } from "@open-pioneer/runtime";
+import { Collection } from "ol";
+import { EventsKey } from "ol/events";
+import Feature from "ol/Feature";
+import {
+    default as GeoJSON,
+    default as GeoJSONGeometry,
+    default as GeoJSONGeometryCollection
+} from "ol/format/GeoJSON";
 import { Modify } from "ol/interaction";
 import VectorLayer from "ol/layer/Vector";
-import VectorSource from "ol/source/Vector";
-import { HttpService } from "@open-pioneer/http";
-import { FlatStyle } from "ol/style/flat";
-import Feature from "ol/Feature";
-import GeoJSON from "ol/format/GeoJSON";
-import GeoJSONGeometry from "ol/format/GeoJSON";
-import GeoJSONGeometryCollection from "ol/format/GeoJSON";
 import OlMap from "ol/Map";
-import { Resource } from "@open-pioneer/core";
 import { unByKey } from "ol/Observable";
-import { EventsKey } from "ol/events";
-import { EditingWorkflowState, EditingWorkflow, EditingWorkflowProps } from "./api";
-import { Collection } from "ol";
-import { createStyles } from "./style-utils";
-import { PackageIntl } from "@open-pioneer/runtime";
+import VectorSource from "ol/source/Vector";
+import { FlatStyle } from "ol/style/flat";
+import { EditingWorkflow, EditingWorkflowProps, EditingWorkflowState } from "./api";
 import { saveUpdatedFeature } from "./SaveFeaturesHandler";
+import { createStyles } from "./style-utils";
 import { Tooltip, createTooltip } from "./Tooltip";
-import { reactive, Reactive } from "@conterra/reactivity-core";
 
 export class EditingUpdateWorkflowImpl implements EditingWorkflow {
     #waiter: ManualPromise<Record<string, string> | undefined> | undefined;
@@ -42,7 +43,6 @@ export class EditingUpdateWorkflowImpl implements EditingWorkflow {
     private _editingLayer: VectorLayer<Feature>;
     private _modifyInteraction: Modify;
     private _olMap: OlMap;
-    private _mapContainer: HTMLElement | undefined;
     private _tooltip: Tooltip;
     private _enterHandler: (e: KeyboardEvent) => void;
     private _escapeHandler: (e: KeyboardEvent) => void;
@@ -200,11 +200,19 @@ export class EditingUpdateWorkflowImpl implements EditingWorkflow {
         }
 
         // Add EventListener on focused map to abort actual interaction via `Escape`
-        this._mapContainer = this._olMap.getTargetElement() ?? undefined;
-        if (this._mapContainer) {
-            this._mapContainer.addEventListener("keydown", this._enterHandler, false);
-            this._mapContainer.addEventListener("keydown", this._escapeHandler, false);
-        }
+        const containerEvents = effect(() => {
+            const container = this._map.container;
+            if (!container) {
+                return;
+            }
+
+            container.addEventListener("keydown", this._enterHandler, false);
+            container.addEventListener("keydown", this._escapeHandler, false);
+            return () => {
+                container.removeEventListener("keydown", this._enterHandler);
+                container.removeEventListener("keydown", this._escapeHandler);
+            };
+        });
 
         this._tooltip.setVisible(true);
 
@@ -226,20 +234,8 @@ export class EditingUpdateWorkflowImpl implements EditingWorkflow {
             this._setState("active:drawing");
         });
 
-        // update event handler when container changes
-        const changedContainer = this._map.on("changed:container", () => {
-            this._mapContainer?.removeEventListener("keydown", this._enterHandler);
-            this._mapContainer?.removeEventListener("keydown", this._escapeHandler);
-
-            this._mapContainer = this._olMap.getTargetElement() ?? undefined;
-            if (this._mapContainer) {
-                this._mapContainer.addEventListener("keydown", this._enterHandler, false);
-                this._mapContainer.addEventListener("keydown", this._escapeHandler, false);
-            }
-        });
-
         this._interactionListener.push(click, modify);
-        this._mapListener.push(changedContainer);
+        this._mapListener.push(containerEvents);
     }
 
     reset() {
@@ -267,16 +263,12 @@ export class EditingUpdateWorkflowImpl implements EditingWorkflow {
         this._tooltip.destroy();
 
         // Remove event listener on interaction and on map
-        this._interactionListener.map((listener) => {
+        this._interactionListener.forEach((listener) => {
             unByKey(listener);
         });
-        this._mapListener.map((listener) => {
+        this._mapListener.forEach((listener) => {
             listener.destroy();
         });
-
-        // Remove event escape listener
-        this._mapContainer?.removeEventListener("keydown", this._enterHandler);
-        this._mapContainer?.removeEventListener("keydown", this._escapeHandler);
 
         this._setState("destroyed");
     }

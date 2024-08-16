@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import { Reactive, effect, reactive } from "@conterra/reactivity-core";
 import { ManualPromise, Resource, createLogger, createManualPromise } from "@open-pioneer/core";
 import { HttpService } from "@open-pioneer/http";
 import { MapModel, TOPMOST_LAYER_Z } from "@open-pioneer/map";
@@ -21,7 +22,6 @@ import { saveCreatedFeature } from "./SaveFeaturesHandler";
 import { Tooltip, createTooltip } from "./Tooltip";
 import { EditingWorkflow, EditingWorkflowProps, EditingWorkflowState } from "./api";
 import { createStyles } from "./style-utils";
-import { reactive, Reactive } from "@conterra/reactivity-core";
 
 const LOG = createLogger("editing:EditingCreateWorkflowImpl");
 
@@ -42,7 +42,6 @@ export class EditingCreateWorkflowImpl implements EditingWorkflow {
     private _editingLayer: VectorLayer<Feature>;
     private _drawInteraction: Draw;
     private _olMap: OlMap;
-    private _mapContainer: HTMLElement | undefined;
     private _tooltip: Tooltip;
     private _enterHandler: (e: KeyboardEvent) => void;
     private _escapeHandler: (e: KeyboardEvent) => void;
@@ -175,11 +174,19 @@ export class EditingCreateWorkflowImpl implements EditingWorkflow {
         this._olMap.addInteraction(this._drawInteraction);
 
         // Add EventListener on focused map to abort actual interaction via `Escape`
-        this._mapContainer = this._olMap.getTargetElement() ?? undefined;
-        if (this._mapContainer) {
-            this._mapContainer.addEventListener("keydown", this._enterHandler, false);
-            this._mapContainer.addEventListener("keydown", this._escapeHandler, false);
-        }
+        const containerEvents = effect(() => {
+            const container = this._map.container;
+            if (!container) {
+                return;
+            }
+
+            container.addEventListener("keydown", this._enterHandler, false);
+            container.addEventListener("keydown", this._escapeHandler, false);
+            return () => {
+                container.removeEventListener("keydown", this._enterHandler);
+                container.removeEventListener("keydown", this._escapeHandler);
+            };
+        });
 
         this._tooltip.setVisible(true);
 
@@ -203,20 +210,8 @@ export class EditingCreateWorkflowImpl implements EditingWorkflow {
             this._save(feature);
         });
 
-        // update event handler when container changes
-        const changedContainer = this._map.on("changed:container", () => {
-            this._mapContainer?.removeEventListener("keydown", this._enterHandler);
-            this._mapContainer?.removeEventListener("keydown", this._escapeHandler);
-
-            this._mapContainer = this._olMap.getTargetElement() ?? undefined;
-            if (this._mapContainer) {
-                this._mapContainer.addEventListener("keydown", this._enterHandler, false);
-                this._mapContainer.addEventListener("keydown", this._escapeHandler, false);
-            }
-        });
-
         this._interactionListener.push(drawStart, drawEnd);
-        this._mapListener.push(changedContainer);
+        this._mapListener.push(containerEvents);
     }
 
     reset() {
@@ -240,16 +235,12 @@ export class EditingCreateWorkflowImpl implements EditingWorkflow {
         this._tooltip.destroy();
 
         // Remove event listener on interaction and on map
-        this._interactionListener.map((listener) => {
+        this._interactionListener.forEach((listener) => {
             unByKey(listener);
         });
-        this._mapListener.map((listener) => {
+        this._mapListener.forEach((listener) => {
             listener.destroy();
         });
-
-        // Remove event escape listener
-        this._mapContainer?.removeEventListener("keydown", this._enterHandler);
-        this._mapContainer?.removeEventListener("keydown", this._escapeHandler);
 
         this._setState("destroyed");
     }
