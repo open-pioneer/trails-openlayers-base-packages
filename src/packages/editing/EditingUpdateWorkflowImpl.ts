@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { EventEmitter, ManualPromise, createManualPromise } from "@open-pioneer/core";
+import { ManualPromise, createManualPromise } from "@open-pioneer/core";
 import { MapModel, TOPMOST_LAYER_Z } from "@open-pioneer/map";
 import { Modify } from "ol/interaction";
 import VectorLayer from "ol/layer/Vector";
@@ -15,22 +15,15 @@ import OlMap from "ol/Map";
 import { Resource } from "@open-pioneer/core";
 import { unByKey } from "ol/Observable";
 import { EventsKey } from "ol/events";
-import {
-    EditingWorkflowEvents,
-    EditingWorkflowState,
-    EditingWorkflow,
-    EditingWorkflowProps
-} from "./api";
+import { EditingWorkflowState, EditingWorkflow, EditingWorkflowProps } from "./api";
 import { Collection } from "ol";
 import { createStyles } from "./style-utils";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { saveUpdatedFeature } from "./SaveFeaturesHandler";
 import { Tooltip, createTooltip } from "./Tooltip";
+import { reactive, Reactive } from "@conterra/reactivity-core";
 
-export class EditingUpdateWorkflowImpl
-    extends EventEmitter<EditingWorkflowEvents>
-    implements EditingWorkflow
-{
+export class EditingUpdateWorkflowImpl implements EditingWorkflow {
     #waiter: ManualPromise<Record<string, string> | undefined> | undefined;
 
     private _httpService: HttpService;
@@ -39,7 +32,7 @@ export class EditingUpdateWorkflowImpl
     private _map: MapModel;
     private _polygonStyle: FlatStyle;
     private _vertexStyle: FlatStyle;
-    private _state: EditingWorkflowState;
+    private _state: Reactive<EditingWorkflowState>;
     private _editLayerURL: URL;
     private _featureId: string | undefined;
 
@@ -60,7 +53,6 @@ export class EditingUpdateWorkflowImpl
     private _mapListener: Array<Resource>;
 
     constructor(options: { feature: Feature } & EditingWorkflowProps) {
-        super();
         this._httpService = options.httpService;
         this._intl = options.intl;
 
@@ -69,7 +61,7 @@ export class EditingUpdateWorkflowImpl
 
         this._map = options.map;
         this._olMap = options.map.olMap;
-        this._state = "active:initialized";
+        this._state = reactive("active:initialized");
         this._editLayerURL = options.ogcApiFeatureLayerUrl;
 
         // Save copy of initial state for reset feature
@@ -137,12 +129,11 @@ export class EditingUpdateWorkflowImpl
     }
 
     getState() {
-        return this._state;
+        return this._state.value;
     }
 
     private _setState(state: EditingWorkflowState) {
-        this._state = state;
-        this.emit(state);
+        this._state.value = state;
     }
 
     private _save(feature: Feature) {
@@ -174,6 +165,9 @@ export class EditingUpdateWorkflowImpl
                 rightHanded: true,
                 decimals: 10
             });
+
+        this._olMap.removeInteraction(this._modifyInteraction);
+        this._tooltip.destroy();
 
         saveUpdatedFeature(
             this._httpService,
@@ -296,7 +290,7 @@ export class EditingUpdateWorkflowImpl
     }
 
     whenComplete(): Promise<Record<string, string> | undefined> {
-        if (this._state === "destroyed") {
+        if (this._state.value === "destroyed") {
             if (this._error) {
                 return Promise.reject(this._error);
             } else {

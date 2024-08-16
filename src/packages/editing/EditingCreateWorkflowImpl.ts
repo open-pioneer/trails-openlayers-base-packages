@@ -1,12 +1,6 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import {
-    EventEmitter,
-    ManualPromise,
-    Resource,
-    createLogger,
-    createManualPromise
-} from "@open-pioneer/core";
+import { ManualPromise, Resource, createLogger, createManualPromise } from "@open-pioneer/core";
 import { HttpService } from "@open-pioneer/http";
 import { MapModel, TOPMOST_LAYER_Z } from "@open-pioneer/map";
 import { PackageIntl } from "@open-pioneer/runtime";
@@ -25,20 +19,13 @@ import VectorSource from "ol/source/Vector";
 import { FlatStyle } from "ol/style/flat";
 import { saveCreatedFeature } from "./SaveFeaturesHandler";
 import { Tooltip, createTooltip } from "./Tooltip";
-import {
-    EditingWorkflow,
-    EditingWorkflowEvents,
-    EditingWorkflowProps,
-    EditingWorkflowState
-} from "./api";
+import { EditingWorkflow, EditingWorkflowProps, EditingWorkflowState } from "./api";
 import { createStyles } from "./style-utils";
+import { reactive, Reactive } from "@conterra/reactivity-core";
 
 const LOG = createLogger("editing:EditingCreateWorkflowImpl");
 
-export class EditingCreateWorkflowImpl
-    extends EventEmitter<EditingWorkflowEvents>
-    implements EditingWorkflow
-{
+export class EditingCreateWorkflowImpl implements EditingWorkflow {
     #waiter: ManualPromise<Record<string, string> | undefined> | undefined;
 
     private _httpService: HttpService;
@@ -47,7 +34,7 @@ export class EditingCreateWorkflowImpl
     private _map: MapModel;
     private _polygonStyle: FlatStyle;
     private _vertexStyle: FlatStyle;
-    private _state: EditingWorkflowState;
+    private _state: Reactive<EditingWorkflowState>;
     private _editLayerURL: URL;
     private _featureId: string | undefined;
 
@@ -66,7 +53,6 @@ export class EditingCreateWorkflowImpl
     private _mapListener: Array<Resource>;
 
     constructor(options: EditingWorkflowProps) {
-        super();
         this._httpService = options.httpService;
         this._intl = options.intl;
 
@@ -75,7 +61,7 @@ export class EditingCreateWorkflowImpl
 
         this._map = options.map;
         this._olMap = options.map.olMap;
-        this._state = "active:initialized";
+        this._state = reactive("active:initialized");
         this._editLayerURL = options.ogcApiFeatureLayerUrl;
 
         this._editingSource = new VectorSource();
@@ -138,12 +124,11 @@ export class EditingCreateWorkflowImpl
     }
 
     getState() {
-        return this._state;
+        return this._state.value;
     }
 
     private _setState(state: EditingWorkflowState) {
-        this._state = state;
-        this.emit(state);
+        this._state.value = state;
     }
 
     private _save(feature: Feature) {
@@ -167,6 +152,9 @@ export class EditingCreateWorkflowImpl
                 rightHanded: true,
                 decimals: 10
             });
+
+        this._olMap.removeInteraction(this._drawInteraction);
+        this._tooltip.destroy();
 
         saveCreatedFeature(this._httpService, layerUrl, geoJSONGeometry, projection)
             .then((featureId) => {
@@ -272,7 +260,7 @@ export class EditingCreateWorkflowImpl
     }
 
     whenComplete(): Promise<Record<string, string> | undefined> {
-        if (this._state === "destroyed") {
+        if (this._state.value === "destroyed") {
             if (this._error) {
                 return Promise.reject(this._error);
             } else {

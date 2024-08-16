@@ -21,6 +21,7 @@
         "@open-pioneer/http": "^2.1.8",
         "@open-pioneer/runtime": "^2.1.6",
         "@open-pioneer/map": "workspace:^",
+        "@conterra/reactivity-core": "^0.4.0",
         "ol": "^9.2.4"
     },
     "devDependencies": {

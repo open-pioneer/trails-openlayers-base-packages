@@ -1,6 +1,5 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { EventEmitter } from "@open-pioneer/core";
 import { HttpService } from "@open-pioneer/http";
 import { MapModel } from "@open-pioneer/map";
 import type { DeclaredService, PackageIntl } from "@open-pioneer/runtime";
@@ -9,38 +8,26 @@ import { FlatStyle } from "ol/style/flat";
 
 /**
  * State of an editing workflow
+ *
+ * "active:initialized":
+ * Initial state after editing workflow was started but user has not yet started drawing.
+ *
+ * "active:drawing":
+ * State while user is drawing a feature. State is entered when user adds the first vertex of the geometry (`create-mode`).
+ * State while user is updating an existing feature. State is entered when user moved the first vertex of the geometry (`update-mode`).
+ *
+ * "active:saving":
+ * State while feature is being saved after user finished the geometry drawing.
+ *
+ * "destroyed:
+ * tate after editing is stopped.
+ *
  */
 export type EditingWorkflowState =
     | "active:initialized"
     | "active:drawing"
     | "active:saving"
     | "destroyed";
-
-/**
- * Events emitted by the {@link EditingWorkflow}.
- */
-export interface EditingWorkflowEvents {
-    /**
-     * Initial state after editing workflow was started but user has not yet started drawing.
-     */
-    "active:initialized": void;
-
-    /**
-     * State while user is drawing a feature. State is entered when user adds the first vertex of the geometry (`create-mode`).
-     * State while user is updating an existing feature. State is entered when user moved the first vertex of the geometry (`update-mode`).
-     */
-    "active:drawing": void;
-
-    /**
-     * State while feature is being saved after user finished the geometry drawing.
-     */
-    "active:saving": void;
-
-    /**
-     * State after editing is stopped.
-     */
-    "destroyed": void;
-}
 
 /**
  * Props of an editing workflow
@@ -58,7 +45,7 @@ export interface EditingWorkflowProps {
  * EditingWorkflows are created by the {@link EditingService}
  * and represent a currently ongoing editing workflow.
  */
-export interface EditingWorkflow extends EventEmitter<EditingWorkflowEvents> {
+export interface EditingWorkflow {
     /**
      * Stops this editing operation.
      */

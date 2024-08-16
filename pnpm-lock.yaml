@@ -338,6 +338,9 @@ importers:
 
   src/packages/editing:
     dependencies:
+      '@conterra/reactivity-core':
+        specifier: ^0.4.0
+        version: 0.4.0
       '@open-pioneer/core':
         specifier: ^1.2.3
         version: 1.2.3
