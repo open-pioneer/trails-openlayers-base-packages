@@ -8,7 +8,7 @@ import { FlatStyle } from "ol/style/flat";
 import { ServiceOptions } from "@open-pioneer/runtime";
 import { HttpService } from "@open-pioneer/http";
 import { Feature } from "ol";
-import { watch } from "@conterra/reactivity-core";
+import { syncWatch } from "@conterra/reactivity-core";
 
 export interface References {
     mapRegistry: MapRegistry;
@@ -106,10 +106,10 @@ export class EditingServiceImpl implements EditingService {
         workflow: EditingCreateWorkflowImpl | EditingUpdateWorkflowImpl,
         mapId: string
     ) {
-        const watchStateHandle = watch(
+        const watchStateHandle = syncWatch(
             () => [workflow.getState()],
-            (newState) => {
-                if (newState[0] === "destroyed") {
+            ([newState]) => {
+                if (newState === "destroyed") {
                     if (this._workflows.get(mapId) === workflow) {
                         this._workflows.delete(mapId);
                     }
