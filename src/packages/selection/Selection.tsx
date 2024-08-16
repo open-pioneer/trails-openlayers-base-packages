@@ -109,6 +109,12 @@ export const Selection: FC<SelectionProps> = (props) => {
     );
     const currentSourceStatus = useSourceStatus(currentSource, defaultNotAvailableMessage);
 
+    useEffect(() => {
+        if (currentSource && !sources.includes(currentSource!)) {
+            setCurrentSource(undefined);
+        }
+    }, [sources, currentSource]);
+
     const mapState = useMapModel(mapId);
     const { onExtentSelected } = useSelectionController(
         mapState.map,

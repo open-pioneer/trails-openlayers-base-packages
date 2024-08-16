@@ -21,7 +21,7 @@ afterEach(() => {
     vi.restoreAllMocks();
 });
 
-it("should successfully create a selection component", async () => {
+it("should successfully create a selection component and select the first selection source", async () => {
     await createSelection();
     const { selectionDiv } = await waitForSelection();
     expect(selectionDiv).toMatchSnapshot();
@@ -67,8 +67,6 @@ it("Should disable or enable selection option when changing the status of a sour
         olLayer: createKitasLayer()
     });
 
-    layer.olLayer.setVisible(false);
-
     const layerSelectionSource = new VectorLayerSelectionSourceImpl(
         layer.olLayer as VectorLayer<Feature>,
         layer.title,
@@ -83,7 +81,7 @@ it("Should disable or enable selection option when changing the status of a sour
     expect(option?.classList.contains("react-select__option--is-disabled")).toBeTruthy();
 
     act(() => {
-        layer.olLayer.setVisible(true);
+        layer.setVisible(true);
     });
     openOptions(selectElement);
     expect(option?.classList.contains("react-select__option--is-disabled")).toBeFalsy();
@@ -100,6 +98,42 @@ it("expect selection source with no defined status is still available", async ()
     expect(option?.classList.contains("react-select__option--is-disabled")).toBeFalsy();
 });
 
+it("retains the selected source if the sources change but the selected source still exits", async () => {
+    const layerSelectionSource = createTestSelectionSource("ogc_kitas", "Kindertagesstätten");
+    const layerSelectionSource2 = createTestSelectionSource("ogc_kitas2", "Layer 2");
+
+    const rerender = await createSelection([layerSelectionSource, layerSelectionSource2]);
+
+    rerender.rerenderWithSources([layerSelectionSource]); // keep currently selected source
+
+    const { selectElement } = await waitForSelection();
+    const sourceValue = selectElement.getElementsByClassName("selection-source-value");
+    const text = sourceValue[0]?.textContent;
+
+    expect(text).toBe("Kindertagesstätten");
+});
+
+it("selects no selection source if the sources change and the currently selected source no longer exists", async () => {
+    const layerSelectionSource = createTestSelectionSource("ogc_kitas", "Kindertagesstätten");
+    const layerSelectionSource2 = createTestSelectionSource("ogc_kitas2", "Layer 2");
+
+    const rerender = await createSelection([layerSelectionSource, layerSelectionSource2]);
+
+    const { selectElement } = await waitForSelection();
+    const sourceValue = selectElement.getElementsByClassName("selection-source-value");
+    const text = sourceValue[0]?.textContent;
+    expect(text).toBe("Kindertagesstätten");
+
+    rerender.rerenderWithSources([layerSelectionSource2]); // remove currently selected source
+
+    const sel = await waitForSelection();
+    const selectElement2 = sel.selectElement;
+    const placeholder = selectElement2.getElementsByClassName("react-select__placeholder");
+    const placeholderTextContent = placeholder[0]?.textContent;
+
+    expect(placeholderTextContent).toBe("selectionPlaceholder");
+});
+
 async function createSelection(selectionSources?: SelectionSource[] | undefined) {
     const { mapId, registry } = await setupMap();
 
@@ -114,17 +148,28 @@ async function createSelection(selectionSources?: SelectionSource[] | undefined)
     });
     injectedServices["notifier.NotificationService"] = notifier;
     const sources = selectionSources || [new FakePointSelectionSource()];
-    render(
-        <PackageContextProvider services={injectedServices}>
-            <Selection
-                data-testid="selection"
-                mapId={mapId}
-                sources={sources}
-                onSelectionComplete={onSelectionComplete}
-                onSelectionSourceChanged={onSelectionSourceChanged}
-            ></Selection>
-        </PackageContextProvider>
-    );
+
+    const renderSelection = (sources: SelectionSource[]) => {
+        return (
+            <PackageContextProvider services={injectedServices}>
+                <Selection
+                    data-testid="selection"
+                    mapId={mapId}
+                    sources={sources}
+                    onSelectionComplete={onSelectionComplete}
+                    onSelectionSourceChanged={onSelectionSourceChanged}
+                ></Selection>
+            </PackageContextProvider>
+        );
+    };
+
+    const { rerender } = render(renderSelection(sources));
+
+    return {
+        rerenderWithSources(newSources: SelectionSource[]) {
+            rerender(renderSelection(newSources));
+        }
+    };
 }
 
 async function waitForSelection() {
@@ -156,6 +201,20 @@ function getOptions(selectElement: HTMLSelectElement) {
     return Array.from(
         selectElement.getElementsByClassName("selection-source-option")
     ) as HTMLElement[];
+}
+
+function createTestSelectionSource(id: string, title: string, visibility: boolean = true) {
+    const layer = new SimpleLayer({
+        id: id,
+        title: title,
+        visible: visibility,
+        olLayer: createKitasLayer()
+    });
+    return new VectorLayerSelectionSourceImpl(
+        layer.olLayer as VectorLayer<Feature>,
+        layer.title,
+        "Layer not visible"
+    );
 }
 
 function createKitasLayer() {
