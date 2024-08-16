@@ -146,6 +146,19 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
                     }
                     isOptionDisabled={(option) => option?.layer?.loadState === "error"}
                     components={components}
+                    ariaLiveMessages={{
+                        guidance: () => "",
+                        onChange: (props) => {
+                            if (
+                                props.action == "select-option" ||
+                                props.action == "initial-input-focus"
+                            )
+                                return props.label + " " + intl.formatMessage({ id: "selected" });
+                            else return "";
+                        },
+                        onFilter: () => "",
+                        onFocus: () => ""
+                    }}
                     chakraStyles={chakraStyles}
                     onKeyDown={keyDown}
                     menuIsOpen={isOpenSelect}
