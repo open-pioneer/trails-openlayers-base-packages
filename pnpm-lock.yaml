@@ -558,6 +558,9 @@ importers:
 
   src/packages/map-test-utils:
     dependencies:
+      '@conterra/reactivity-core':
+        specifier: ^0.4.0
+        version: 0.4.0
       '@open-pioneer/map':
         specifier: workspace:^
         version: link:../map

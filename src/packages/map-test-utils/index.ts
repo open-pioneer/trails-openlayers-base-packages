@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import { watch } from "@conterra/reactivity-core";
 import { HttpService, HttpServiceRequestInit } from "@open-pioneer/http";
 import {
     ExtentConfig,
@@ -84,13 +85,17 @@ export async function waitForInitialExtent(model: MapModel) {
     }
 
     await new Promise<void>((resolve, reject) => {
-        model?.once("changed:initialExtent", () => {
-            if (model?.initialExtent) {
-                resolve();
-            } else {
-                reject(new Error("expected a valid extent"));
+        const resource = watch(
+            () => [model.initialExtent],
+            ([extent]) => {
+                resource.destroy();
+                if (extent) {
+                    resolve();
+                } else {
+                    reject(new Error("Expected a valid initial extent"));
+                }
             }
-        });
+        );
     });
 }
 
