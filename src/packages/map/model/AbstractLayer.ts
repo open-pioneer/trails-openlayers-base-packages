@@ -42,7 +42,7 @@ export abstract class AbstractLayer<AdditionalEvents = {}>
         this.#visibilityWatchKey = this.#olLayer.on("change:visible", this.#visible.trigger);
 
         this.#loadState = reactive(getSourceState(getSource(this.#olLayer)));
-        this.__setVisible(config.visible ?? true);
+        this.__setVisible(config.visible ?? true); // apply initial visibility
     }
 
     get visible(): boolean {
