@@ -19,7 +19,8 @@ import {
     ReadonlyReactiveMap,
     reactive,
     reactiveArray,
-    reactiveMap
+    reactiveMap,
+    watch
 } from "@conterra/reactivity-core";
 
 const LOG = createLogger("ol-app:AppModel");
@@ -289,16 +290,19 @@ export class AppModel implements Service, AppState {
                 label: opLayer.title
             });
 
-            const eventHandler = layerSelectionSource.on("changed:status", () => {
-                if (
-                    layerSelectionSource.status !== "available" &&
-                    (layerSelectionSource.status === "unavailable" ||
-                        layerSelectionSource.status?.kind === "unavailable")
-                ) {
-                    this.clearHighlight();
+            const statusWatch = watch(
+                () => [layerSelectionSource.status],
+                ([newStatus]) => {
+                    if (
+                        newStatus !== "available" &&
+                        (newStatus === "unavailable" || newStatus?.kind === "unavailable")
+                    ) {
+                        this.clearHighlight();
+                    }
                 }
-            });
-            this._resources.push(eventHandler, layerSelectionSource);
+            );
+
+            this._resources.push(statusWatch, layerSelectionSource);
             this._selectionSources.unshift(layerSelectionSource);
             this._sourceMetadata.set(
                 layerSelectionSource,

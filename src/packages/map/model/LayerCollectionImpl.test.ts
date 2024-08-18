@@ -17,6 +17,7 @@ import { MapModelImpl } from "./MapModelImpl";
 import { createMapModel } from "./createMapModel";
 import { SimpleLayerImpl } from "./layers/SimpleLayerImpl";
 import { WMSLayerImpl } from "./layers/WMSLayerImpl";
+import { syncWatch } from "@conterra/reactivity-core";
 
 const THIS_DIR = dirname(fileURLToPath(import.meta.url));
 const WMTS_CAPAS = readFileSync(
@@ -318,9 +319,12 @@ it("supports adding a layer to the model", async () => {
     expect(model.layers.getAllLayers()).toHaveLength(0);
 
     let changed = 0;
-    model.layers.on("changed", () => {
-        ++changed;
-    });
+    syncWatch(
+        () => [model!.layers.getAllLayers()],
+        () => {
+            ++changed;
+        }
+    );
 
     const layer = new SimpleLayer({
         title: "foo",
@@ -356,9 +360,12 @@ it("supports removing a layer from the model", async () => {
     });
 
     let changed = 0;
-    model.layers.on("changed", () => {
-        ++changed;
-    });
+    syncWatch(
+        () => [model!.layers.getAllLayers()],
+        () => {
+            ++changed;
+        }
+    );
 
     expect(model.layers.getAllLayers()).toHaveLength(1);
     model.layers.removeLayerById("l-1");
@@ -394,7 +401,12 @@ describe("base layers", () => {
         const b2 = layers.getLayerById("b-2")! as SimpleLayerImpl;
 
         let events = 0;
-        layers.on("changed", () => ++events);
+        syncWatch(
+            () => [model!.layers.getActiveBaseLayer()],
+            () => {
+                ++events;
+            }
+        );
 
         const zOrders = [b1, b2].map((l) => l.olLayer.getZIndex());
         expect(zOrders).toEqual([0, 0]); // base layers always have z-index 0
@@ -453,7 +465,12 @@ describe("base layers", () => {
         expect(layers.getBaseLayers().length).toBe(2);
 
         let events = 0;
-        layers.on("changed", () => ++events);
+        syncWatch(
+            () => [model!.layers.getAllLayers()],
+            () => {
+                ++events;
+            }
+        );
 
         expect(layers.getActiveBaseLayer()).toBe(b1);
 

@@ -185,7 +185,7 @@ it("excludes invisible sublayers from the LAYERS parameter", () => {
     expect(layersParam).toEqual(["sublayer-2"]);
 });
 
-it("updates the layer's LAYERS param if a sublayer's visibility changes", () => {
+it("updates the layer's LAYERS param if a sublayer's visibility changes", async () => {
     const { layer } = createLayer({
         title: "Layer",
         url: SERVICE_URL,
@@ -209,10 +209,14 @@ it("updates the layer's LAYERS param if a sublayer's visibility changes", () => 
 
     layer.sublayers.getSublayers()[0]!.setVisible(true);
     vi.advanceTimersByTime(1000);
+    await waitTick();
+
     expect(getLayersParam()).toEqual(["sublayer-1", "sublayer-2"]);
 
     layer.sublayers.getSublayers()[1]!.setVisible(false);
     vi.advanceTimersByTime(1000);
+    await waitTick();
+
     expect(getLayersParam()).toEqual(["sublayer-1"]);
 });
 
@@ -341,4 +345,12 @@ function createLayer(options: WMSLayerConfig & { fetch?: Mock; attach?: boolean 
         mapModel,
         httpService
     };
+}
+
+/** Reactive updates have a slight delay by default. */
+async function waitTick() {
+    // TODO: More complex implementation because the test suite uses fake timers
+    vi.useRealTimers();
+    await new Promise((resolve) => setTimeout(resolve, 4));
+    vi.useFakeTimers();
 }

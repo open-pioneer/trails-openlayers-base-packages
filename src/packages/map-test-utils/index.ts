@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import { watch } from "@conterra/reactivity-core";
 import { HttpService, HttpServiceRequestInit } from "@open-pioneer/http";
 import {
     ExtentConfig,
@@ -84,13 +85,17 @@ export async function waitForInitialExtent(model: MapModel) {
     }
 
     await new Promise<void>((resolve, reject) => {
-        model?.once("changed:initialExtent", () => {
-            if (model?.initialExtent) {
-                resolve();
-            } else {
-                reject(new Error("expected a valid extent"));
+        const resource = watch(
+            () => [model.initialExtent],
+            ([extent]) => {
+                resource.destroy();
+                if (extent) {
+                    resolve();
+                } else {
+                    reject(new Error("Expected a valid initial extent"));
+                }
             }
-        });
+        );
     });
 }
 
@@ -121,7 +126,7 @@ export async function setupMap(options?: SimpleMapOptions) {
 
     const mapConfig: MapConfig = {
         initialView: options?.noInitialView ? undefined : getInitialView(),
-        projection: options?.noProjection ? undefined : options?.projection ?? "EPSG:3857",
+        projection: options?.noProjection ? undefined : (options?.projection ?? "EPSG:3857"),
         layers: options?.layers?.map(
             (config) => ("map" in config ? config : new SimpleLayer(config))
             // using map as discriminator (no prototype for Layer)

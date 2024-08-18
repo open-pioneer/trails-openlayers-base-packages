@@ -3,7 +3,7 @@
 import { Demo, DemoModel, SharedDemoOptions } from "./Demo";
 import { Button, Flex } from "@open-pioneer/chakra-integration";
 import { useIntl } from "open-pioneer:react-hooks";
-import { EditingService } from "@open-pioneer/editing";
+import { EditingService, type EditingWorkflow } from "@open-pioneer/editing";
 import { MAP_ID } from "../MapConfigProviderImpl";
 import { Layer, MapModel } from "@open-pioneer/map";
 import { NotificationService } from "@open-pioneer/notifier";
@@ -18,6 +18,7 @@ import { ReactNode } from "react";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { Reactive, reactive } from "@conterra/reactivity-core";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
+import { watch } from "@conterra/reactivity-core";
 
 const EDIT_LAYER_ID: string = "krankenhaus";
 
@@ -112,6 +113,7 @@ class EditingController {
             const layer = this.#mapModel.layers.getLayerById("krankenhaus") as Layer;
             const url = new URL(layer.attributes.collectionURL + "/items");
             const workflow = this.#editingService.createFeature(this.#mapModel, url);
+            this._watchState(workflow);
             workflow
                 .whenComplete()
                 .then((featureData: Record<string, string> | undefined) => {
@@ -178,6 +180,7 @@ class EditingController {
 
                 const url = new URL(layer.attributes.collectionURL + "/items");
                 const workflow = this.#editingService.updateFeature(this.#mapModel, url, feature);
+                this._watchState(workflow);
                 workflow
                     .whenComplete()
                     .then((featureData: Record<string, string> | undefined) => {
@@ -208,6 +211,26 @@ class EditingController {
             this.#editingActive.value = false;
             console.error(error);
         }
+    }
+
+    _watchState(workflow: EditingWorkflow) {
+        const watchStateHandle = watch(
+            () => [workflow.getState()],
+            (newState) => {
+                if (newState[0] === "active:saving") {
+                    this.#notificationService.notify({
+                        level: "info",
+                        message: this.#intl.formatMessage({
+                            id: "demos.editing.update.savingStared"
+                        })
+                    });
+                }
+                if (newState[0] === "destroyed") {
+                    watchStateHandle.destroy();
+                    console.log("destroyed");
+                }
+            }
+        );
     }
 
     _createEditingSelectTooltip(): Tooltip {

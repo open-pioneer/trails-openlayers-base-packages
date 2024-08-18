@@ -156,7 +156,7 @@ exports[`should deactivate unavailable layers for selection 2`] = `
       data-theme="light"
     >
       <div
-        class="basemap-switcher-value react-select__single-value react-select__single-value--is-disabled css-1xa1gs2"
+        class="basemap-switcher-value react-select__single-value css-1xa1gs2"
         data-theme="light"
       >
         <div
@@ -164,43 +164,6 @@ exports[`should deactivate unavailable layers for selection 2`] = `
           data-theme="light"
         >
           OSM
-          <div
-            class="css-1v4xcoh"
-            data-theme="light"
-          >
-            <span>
-              <svg
-                aria-label="layerNotAvailable"
-                color="red"
-                fill="none"
-                height="1em"
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                style="color: red;"
-                viewBox="0 0 24 24"
-                width="1em"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"
-                />
-                <line
-                  x1="12"
-                  x2="12"
-                  y1="9"
-                  y2="13"
-                />
-                <line
-                  x1="12"
-                  x2="12.01"
-                  y1="17"
-                  y2="17"
-                />
-              </svg>
-            </span>
-          </div>
         </div>
       </div>
       <input
@@ -263,9 +226,8 @@ exports[`should deactivate unavailable layers for selection 2`] = `
         role="listbox"
       >
         <div
-          aria-disabled="true"
           aria-selected="true"
-          class="basemap-switcher-option react-select__option react-select__option--is-disabled react-select__option--is-focused react-select__option--is-selected css-e8c6zu"
+          class="basemap-switcher-option react-select__option react-select__option--is-focused react-select__option--is-selected css-e8c6zu"
           data-focus="true"
           data-theme="light"
           id="react-select-11-option-0"
@@ -277,43 +239,6 @@ exports[`should deactivate unavailable layers for selection 2`] = `
             data-theme="light"
           >
             OSM
-            <div
-              class="css-1v4xcoh"
-              data-theme="light"
-            >
-              <span>
-                <svg
-                  aria-label="layerNotAvailable"
-                  color="red"
-                  fill="none"
-                  height="1em"
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  style="color: red;"
-                  viewBox="0 0 24 24"
-                  width="1em"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"
-                  />
-                  <line
-                    x1="12"
-                    x2="12"
-                    y1="9"
-                    y2="13"
-                  />
-                  <line
-                    x1="12"
-                    x2="12.01"
-                    y1="17"
-                    y2="17"
-                  />
-                </svg>
-              </span>
-            </div>
           </div>
         </div>
         <div

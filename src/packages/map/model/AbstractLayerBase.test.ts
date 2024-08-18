@@ -8,6 +8,7 @@ import { Sublayer } from "../api/layers/base";
 import { AbstractLayerBase, AbstractLayerBaseOptions } from "./AbstractLayerBase";
 import { MapModelImpl } from "./MapModelImpl";
 import { SublayersCollectionImpl } from "./SublayersCollectionImpl";
+import { syncWatch } from "@conterra/reactivity-core";
 
 afterEach(() => {
     vi.restoreAllMocks();
@@ -76,14 +77,16 @@ it("supports the title attribute", async () => {
     expect(layer.title).toBe("A");
 
     let changedTitle = 0;
-    let changed = 0;
-    layer.on("changed:title", () => ++changedTitle);
-    layer.on("changed", () => ++changed);
+    syncWatch(
+        () => [layer.title],
+        () => {
+            ++changedTitle;
+        }
+    );
 
     layer.setTitle("B");
     expect(layer.title).toBe("B");
     expect(changedTitle).toBe(1);
-    expect(changed).toBe(1);
 });
 
 it("supports the description attribute", async () => {
@@ -93,15 +96,17 @@ it("supports the description attribute", async () => {
     });
     expect(layer.description).toBe("");
 
-    let changedDesc = 0;
-    let changed = 0;
-    layer.on("changed:description", () => ++changedDesc);
-    layer.on("changed", () => ++changed);
+    let changedDescription = 0;
+    syncWatch(
+        () => [layer.description],
+        () => {
+            ++changedDescription;
+        }
+    );
 
     layer.setDescription("Description");
     expect(layer.description).toBe("Description");
-    expect(changedDesc).toBe(1);
-    expect(changed).toBe(1);
+    expect(changedDescription).toBe(1);
 });
 
 it("supports arbitrary additional attributes", async () => {
@@ -124,9 +129,12 @@ it("supports arbitrary additional attributes", async () => {
     `);
 
     let changedAttributes = 0;
-    let changed = 0;
-    layer.on("changed:attributes", () => ++changedAttributes);
-    layer.on("changed", () => ++changed);
+    syncWatch(
+        () => [layer.attributes],
+        () => {
+            ++changedAttributes;
+        }
+    );
 
     layer.updateAttributes({
         foo: "baz",
@@ -143,7 +151,6 @@ it("supports arbitrary additional attributes", async () => {
       }
     `);
     expect(changedAttributes).toBe(1);
-    expect(changed).toBe(1);
 });
 
 it("supports deletion of attributes", async () => {
@@ -168,9 +175,12 @@ it("supports deletion of attributes", async () => {
     `);
 
     let changedAttributes = 0;
-    let changed = 0;
-    layer.on("changed:attributes", () => ++changedAttributes);
-    layer.on("changed", () => ++changed);
+    syncWatch(
+        () => [layer.attributes],
+        () => {
+            ++changedAttributes;
+        }
+    );
 
     layer.deleteAttribute("foo");
     layer.deleteAttribute(hidden);
@@ -183,7 +193,6 @@ it("supports deletion of attributes", async () => {
       }
     `);
     expect(changedAttributes).toBe(2);
-    expect(changed).toBe(2);
 });
 
 it("supports initial empty attribute object and empty attribute object after updating/deleting", async () => {
@@ -192,11 +201,14 @@ it("supports initial empty attribute object and empty attribute object after upd
         id: "a",
         title: "A"
     });
-    let changedAttributes = 0;
-    let changed = 0;
-    layer.on("changed:attributes", () => ++changedAttributes);
-    layer.on("changed", () => ++changed);
 
+    let changedAttributes = 0;
+    syncWatch(
+        () => [layer.attributes],
+        () => {
+            ++changedAttributes;
+        }
+    );
     // check layer attributes is empty object
     expect(layer.attributes).toMatchInlineSnapshot(`
       {}
@@ -212,7 +224,6 @@ it("supports initial empty attribute object and empty attribute object after upd
     }
     `);
     expect(changedAttributes).toBe(1);
-    expect(changed).toBe(1);
 
     // delete layer attributes and check, if layer attributes is empty object
     layer.deleteAttribute(hidden);
@@ -220,7 +231,6 @@ it("supports initial empty attribute object and empty attribute object after upd
       {}
     `);
     expect(changedAttributes).toBe(2);
-    expect(changed).toBe(2);
 });
 
 class LayerImpl extends AbstractLayerBase {

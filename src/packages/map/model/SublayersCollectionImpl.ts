@@ -1,23 +1,18 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { EventEmitter } from "@open-pioneer/core";
-import {
-    LayerRetrievalOptions,
-    Sublayer as SublayerInterface,
-    SublayersCollection,
-    SublayersCollectionEvents
-} from "../api";
+import { LayerRetrievalOptions, Sublayer as SublayerInterface, SublayersCollection } from "../api";
 import { AbstractLayerBase } from "./AbstractLayerBase";
 
 // NOTE: adding / removing sublayers currently not supported
+/* eslint-disable indent */
 export class SublayersCollectionImpl<Sublayer extends SublayerInterface & AbstractLayerBase>
-    extends EventEmitter<SublayersCollectionEvents>
     implements SublayersCollection
 {
+    /* eslint-enable indent */
+
     #sublayers: Sublayer[];
 
     constructor(sublayers: Sublayer[]) {
-        super();
         this.#sublayers = sublayers;
     }
 

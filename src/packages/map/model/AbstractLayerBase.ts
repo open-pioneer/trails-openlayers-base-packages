@@ -1,7 +1,15 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { EventEmitter, EventNames, createLogger } from "@open-pioneer/core";
+import { EventEmitter, createLogger } from "@open-pioneer/core";
 import { v4 as uuid4v } from "uuid";
+import {
+    batch,
+    computed,
+    reactive,
+    Reactive,
+    reactiveMap,
+    ReadonlyReactive
+} from "@conterra/reactivity-core";
 import { LayerBase, LayerBaseEvents, Sublayer } from "../api";
 import { MapModelImpl } from "./MapModelImpl";
 import { SublayersCollectionImpl } from "./SublayersCollectionImpl";
@@ -25,18 +33,25 @@ export abstract class AbstractLayerBase<AdditionalEvents = {}>
 {
     #map: MapModelImpl | undefined;
 
-    #id: string;
-    #title: string;
-    #description: string;
-    #attributes: Record<string | symbol, unknown>;
+    #id: Reactive<string>;
+    #title: Reactive<string>;
+    #description: Reactive<string>;
+    #attributesMap = reactiveMap<string | symbol, unknown>();
+    #attributes: ReadonlyReactive<Record<string | symbol, unknown>>;
     #destroyed = false;
 
     constructor(config: AbstractLayerBaseOptions) {
         super();
-        this.#id = config.id ?? uuid4v();
-        this.#attributes = config.attributes ?? {};
-        this.#title = config.title;
-        this.#description = config.description ?? "";
+        this.#id = reactive(config.id ?? uuid4v());
+        this.#attributes = computed(() => {
+            return Object.fromEntries(this.#attributesMap.entries());
+        });
+        this.#title = reactive(config.title);
+        this.#description = reactive(config.description ?? "");
+
+        if (config.attributes) {
+            this.updateAttributes(config.attributes);
+        }
     }
 
     protected get __destroyed(): boolean {
@@ -52,19 +67,19 @@ export abstract class AbstractLayerBase<AdditionalEvents = {}>
     }
 
     get id(): string {
-        return this.#id;
+        return this.#id.value;
     }
 
     get title(): string {
-        return this.#title;
+        return this.#title.value;
     }
 
     get description(): string {
-        return this.#description;
+        return this.#description.value;
     }
 
     get attributes(): Record<string | symbol, unknown> {
-        return this.#attributes;
+        return this.#attributes.value;
     }
 
     abstract get visible(): boolean;
@@ -100,53 +115,25 @@ export abstract class AbstractLayerBase<AdditionalEvents = {}>
     }
 
     setTitle(newTitle: string): void {
-        if (newTitle !== this.#title) {
-            this.#title = newTitle;
-            this.__emitChangeEvent("changed:title");
-        }
+        this.#title.value = newTitle;
     }
 
     setDescription(newDescription: string): void {
-        if (newDescription !== this.#description) {
-            this.#description = newDescription;
-            this.__emitChangeEvent("changed:description");
-        }
+        this.#description.value = newDescription;
     }
 
     updateAttributes(newAttributes: Record<string | symbol, unknown>): void {
-        const attributes = this.#attributes;
         const keys = Reflect.ownKeys(newAttributes);
-
-        let changed = false;
-        for (const key of keys) {
-            const existing = attributes[key];
-            const value = newAttributes[key];
-            if (existing !== value) {
-                attributes[key] = value;
-                changed = true;
+        batch(() => {
+            for (const key of keys) {
+                this.#attributesMap.set(key, newAttributes[key]);
             }
-        }
-
-        if (changed) {
-            this.__emitChangeEvent("changed:attributes");
-        }
+        });
     }
 
     deleteAttribute(deleteAttribute: string | symbol): void {
-        const attributes = this.#attributes;
-        if (attributes[deleteAttribute]) {
-            delete attributes[deleteAttribute];
-            this.__emitChangeEvent("changed:attributes");
-        }
+        this.#attributesMap.delete(deleteAttribute);
     }
 
     abstract setVisible(newVisibility: boolean): void;
-
-    protected __emitChangeEvent<Name extends EventNames<LayerBaseEvents & AdditionalEvents>>(
-        event: Name
-    ) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (this as any).emit(event);
-        this.emit("changed");
-    }
 }

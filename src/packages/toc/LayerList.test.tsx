@@ -1,23 +1,23 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import { SimpleLayer } from "@open-pioneer/map";
 import { setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import {
-    act,
-    waitFor,
     fireEvent,
-    screen,
     queryAllByRole,
     queryByRole,
-    render
+    render,
+    screen,
+    waitFor
 } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import LayerGroup from "ol/layer/Group";
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
+import { act } from "react";
 import { expect, it } from "vitest";
 import { LayerList } from "./LayerList";
-import { SimpleLayer } from "@open-pioneer/map";
 
 it("should show layers in the correct order", async () => {
     const { mapId, registry } = await setupMap({
@@ -144,13 +144,14 @@ it("reacts to changes in the layer composition", async function () {
     const initialItems = getCurrentItems(container);
     expect(initialItems).toHaveLength(1);
 
-    act(() => {
+    await act(async () => {
         map.layers.addLayer(
             new SimpleLayer({
                 title: "Layer 2",
                 olLayer: new TileLayer({})
             })
         );
+        await waitTick();
     });
 
     const itemsAfterChange = getCurrentItems(container);
@@ -184,8 +185,9 @@ it("displays the layer's current title", async () => {
     );
 
     expect(getCurrentLabels(container)).toEqual(["Layer 1"]);
-    act(() => {
+    await act(async () => {
         layer.setTitle("New title");
+        await waitTick();
     });
     expect(getCurrentLabels(container)).toEqual(["New title"]);
 });
@@ -218,8 +220,9 @@ it("displays the layer's current visibility", async () => {
     expect(checkbox).toBeTruthy();
     expect(checkbox!.checked).toBe(true);
 
-    act(() => {
+    await act(async () => {
         layer.setVisible(false);
+        await waitTick();
     });
     expect(checkbox!.checked).toBe(false);
 });
@@ -255,16 +258,12 @@ it("changes the layer's visibility when toggling the checkbox", async () => {
     expect(layer.visible).toBe(true);
 
     // Click sets both to false
-    await act(async () => {
-        await user.click(checkbox);
-    });
+    await user.click(checkbox);
     expect(checkbox!.checked).toBe(false);
     expect(layer.visible).toBe(false);
 
     // Clicking again sets it to true again
-    await act(async () => {
-        await user.click(checkbox);
-    });
+    await user.click(checkbox);
     expect(checkbox!.checked).toBe(true);
     expect(layer.visible).toBe(true);
 });
@@ -397,8 +396,9 @@ it("reacts to changes in the layer description", async () => {
     const initialItems = queryAllByRole(container, "button");
     expect(initialItems).toHaveLength(1);
     screen.getByText("Description");
-    act(() => {
+    await act(async () => {
         layer.setDescription("New description");
+        await waitTick();
     });
     screen.getByText("New description");
 });
@@ -435,8 +435,9 @@ it("reacts to changes of the layer load state", async () => {
     expect(button?.disabled).toBe(false);
     expect(icons).toHaveLength(0);
 
-    act(() => {
+    await act(async () => {
         source.setState("error");
+        await waitTick();
     });
 
     icons = container.querySelectorAll(".toc-layer-item-content-icon");
@@ -445,8 +446,9 @@ it("reacts to changes of the layer load state", async () => {
     expect(icons).toHaveLength(1);
 
     // and back
-    act(() => {
+    await act(async () => {
         source.setState("ready");
+        await waitTick();
     });
 
     icons = container.querySelectorAll(".toc-layer-item-content-icon");
@@ -463,4 +465,9 @@ function getCurrentItems(container: HTMLElement) {
 /** Returns only the labels of the layer list's current items. */
 function getCurrentLabels(container: HTMLElement) {
     return getCurrentItems(container).map((item) => item.textContent);
+}
+
+/** Reactive updates have a slight delay by default. */
+function waitTick() {
+    return new Promise((resolve) => setTimeout(resolve, 4));
 }
