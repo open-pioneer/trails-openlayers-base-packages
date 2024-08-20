@@ -27,7 +27,7 @@ import {
 } from "chakra-react-select";
 import { Geometry } from "ol/geom";
 import { useIntl, useService } from "open-pioneer:react-hooks";
-import { FC, KeyboardEvent, useEffect, useMemo, useState } from "react";
+import { FC, KeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
 import { FiAlertTriangle } from "react-icons/fi";
 import { DragController } from "./DragController";
 import { SelectionController } from "./SelectionController";
@@ -104,17 +104,12 @@ export const Selection: FC<SelectionProps> = (props) => {
     const { containerProps } = useCommonComponentProps("selection", props);
     const defaultNotAvailableMessage = intl.formatMessage({ id: "sourceNotAvailable" });
 
-    const [currentSource, setCurrentSource] = useState<SelectionSource | undefined>(
-        () => sources[0]
+    const [currentSource, setCurrentSource] = useCurrentSelectionSource(
+        sources,
+        onSelectionSourceChanged
     );
-    const currentSourceStatus = useSourceStatus(currentSource, defaultNotAvailableMessage);
 
-    useEffect(() => {
-        if (currentSource && !sources.includes(currentSource!)) {
-            setCurrentSource(undefined);
-            onSelectionSourceChanged && onSelectionSourceChanged({ source: undefined });
-        }
-    }, [sources, currentSource]);
+    const currentSourceStatus = useSourceStatus(currentSource, defaultNotAvailableMessage);
 
     const mapState = useMapModel(mapId);
     const { onExtentSelected } = useSelectionController(
@@ -150,7 +145,6 @@ export const Selection: FC<SelectionProps> = (props) => {
 
     const onSourceOptionChanged = useEvent((newValue: SingleValue<SelectionOption>) => {
         setCurrentSource(newValue?.value);
-        onSelectionSourceChanged && onSelectionSourceChanged({ source: newValue?.value });
     });
 
     const keyDown = useEvent((event: KeyboardEvent<HTMLDivElement>) => {
@@ -234,6 +228,32 @@ function SourceSelectValue(props: SingleValueProps<SelectionOption>): JSX.Elemen
             {content}
         </chakraComponents.SingleValue>
     );
+}
+
+function useCurrentSelectionSource(
+    sources: SelectionSource[],
+    onSourceChanged: ((event: SelectionSourceChangedEvent) => void) | undefined
+): [SelectionSource | undefined, (source: SelectionSource | undefined) => void] {
+    const [currentSource, setCurrentSource] = useState<SelectionSource | undefined>(
+        () => sources[0]
+    );
+
+    // Reset to undefined if the current source is not in the list of sources
+    useEffect(() => {
+        if (currentSource && !sources.includes(currentSource)) {
+            setCurrentSource(undefined);
+        }
+    }, [sources, currentSource]);
+
+    // Track the current source and notify the parent component if it changes
+    const prevSelectedSource = useRef<SelectionSource | undefined>(undefined);
+    useEffect(() => {
+        if (currentSource !== prevSelectedSource.current) {
+            prevSelectedSource.current = currentSource;
+            onSourceChanged?.({ source: currentSource });
+        }
+    }, [currentSource, onSourceChanged]);
+    return [currentSource, setCurrentSource];
 }
 
 /**
