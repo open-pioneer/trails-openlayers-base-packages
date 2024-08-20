@@ -112,6 +112,7 @@ export const Selection: FC<SelectionProps> = (props) => {
     useEffect(() => {
         if (currentSource && !sources.includes(currentSource!)) {
             setCurrentSource(undefined);
+            onSelectionSourceChanged && onSelectionSourceChanged({ source: undefined });
         }
     }, [sources, currentSource]);
 
