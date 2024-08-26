@@ -1,5 +1,22 @@
 # @open-pioneer/selection
 
+## 0.2.3
+
+### Patch Changes
+
+-   28e092a: Update dependencies
+-   28e092a: Adapt to OpenLayers type changes.
+
+    When creating a selection source for a `VectorLayer`, the precise type of that vector layer must now be `VectorLayer<Feature>` (instead of `VectorLayer<VectorSource>`).
+    This is a TypeScript-only change that has no effects on the JavaScript code at runtime.
+
+-   65a14f4: Open select-menu on enter (fixes issue [#320](https://github.com/open-pioneer/trails-openlayers-base-packages/issues/320))
+-   484ad86: Add tooltip role to tooltip divs (See https://github.com/open-pioneer/trails-openlayers-base-packages/issues/309).
+-   Updated dependencies [28e092a]
+-   Updated dependencies [0d51d2f]
+-   Updated dependencies [76f8863]
+    -   @open-pioneer/map@0.6.0
+
 ## 0.2.2
 
 ### Patch Changes

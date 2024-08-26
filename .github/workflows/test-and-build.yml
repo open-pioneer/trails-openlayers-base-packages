@@ -46,9 +46,8 @@ jobs:
       - name: Build API documentation
         run: pnpm build-docs
 
-      # TODO: error is ignored (https://github.com/orgs/open-pioneer/projects/6?pane=issue&itemId=62484075)
       - name: Create license report
-        run: pnpm build-license-report || true;
+        run: pnpm build-license-report;
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4

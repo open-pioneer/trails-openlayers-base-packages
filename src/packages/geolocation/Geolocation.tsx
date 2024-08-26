@@ -1,17 +1,15 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { MapModel, useMapModel } from "@open-pioneer/map";
+import { ToolButton } from "@open-pioneer/map-ui-components";
 import { NotificationService } from "@open-pioneer/notifier";
-import {
-    CommonComponentProps,
-    ToolButton,
-    useCommonComponentProps
-} from "@open-pioneer/react-utils";
+import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
+import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { StyleLike } from "ol/style/Style";
 import { useIntl, useService } from "open-pioneer:react-hooks";
 import { FC, ForwardedRef, RefAttributes, forwardRef, useEffect, useState } from "react";
 import { MdMyLocation } from "react-icons/md";
-import { GeolocationController } from "./GeolocationController";
+import { GeolocationController, OnErrorCallback } from "./GeolocationController";
 
 /**
  * These are properties supported by the {@link Geolocation} component.
@@ -47,15 +45,7 @@ export const Geolocation: FC<GeolocationProps> = forwardRef(function Geolocation
     ref: ForwardedRef<HTMLButtonElement>
 ) {
     const { mapId, maxZoom, positionFeatureStyle, accuracyFeatureStyle, trackingOptions } = props;
-    const { containerProps } = useCommonComponentProps("geolocation", props);
-
-    const supportsGeolocation = !!navigator.geolocation;
-    const [isActive, setActive] = useState<boolean>(false);
-    const [isLoading, setLoading] = useState<boolean>(false);
     const { map } = useMapModel(mapId);
-    const intl = useIntl();
-    const notificationService = useService<NotificationService>("notifier.NotificationService");
-
     const controller = useController(
         map,
         maxZoom,
@@ -63,9 +53,27 @@ export const Geolocation: FC<GeolocationProps> = forwardRef(function Geolocation
         positionFeatureStyle,
         accuracyFeatureStyle
     );
+    return controller && <GeolocationImpl {...props} controller={controller} ref={ref} />;
+});
 
+// This is a separate component so we can act like the controller is always present.
+// This is the case in practice (except for the initial loading phase where the component is not-yet-mounted).
+const GeolocationImpl = forwardRef(function GeolocationImpl(
+    props: GeolocationProps & { controller: GeolocationController },
+    ref: ForwardedRef<HTMLButtonElement>
+) {
+    const { controller } = props;
+    const { containerProps } = useCommonComponentProps("geolocation", props);
+    const { isLoading, isActive } = useReactiveSnapshot(() => {
+        return {
+            isLoading: controller.loading,
+            isActive: controller.active
+        };
+    }, [controller]);
+
+    const intl = useIntl();
     const label = (() => {
-        if (!supportsGeolocation) {
+        if (!controller.supported) {
             return intl.formatMessage({ id: "locateNotSupported" });
         }
 
@@ -76,12 +84,44 @@ export const Geolocation: FC<GeolocationProps> = forwardRef(function Geolocation
         }
     })();
 
+    const toggleActiveState = () => {
+        if (controller.active) {
+            controller.stopGeolocation();
+        } else {
+            controller.startGeolocation();
+        }
+    };
+
+    return (
+        <ToolButton
+            ref={ref}
+            label={label}
+            icon={<MdMyLocation />}
+            onClick={() => toggleActiveState()}
+            isActive={isActive}
+            isLoading={isLoading}
+            isDisabled={!controller.supported}
+            {...containerProps}
+        />
+    );
+});
+
+function useController(
+    map: MapModel | undefined,
+    maxZoom: number | undefined,
+    trackingOptions: PositionOptions | undefined,
+    positionFeatureStyle: StyleLike | undefined,
+    accuracyFeatureStyle: StyleLike | undefined
+): GeolocationController | undefined {
+    const intl = useIntl();
+    const notificationService = useService<NotificationService>("notifier.NotificationService");
+    const [controller, setController] = useState<GeolocationController>();
     useEffect(() => {
-        if (controller === undefined) {
+        if (!map) {
             return;
         }
 
-        const eventsKey = controller.on("error", function (error) {
+        const onError: OnErrorCallback = (error) => {
             const title = intl.formatMessage({ id: "error" });
             const description = (() => {
                 switch (error) {
@@ -96,78 +136,25 @@ export const Geolocation: FC<GeolocationProps> = forwardRef(function Geolocation
                 }
             })();
 
-            setLoading(false);
-            setActive(false);
-
             notificationService.notify({
                 level: "error",
                 title: title,
                 message: description
             });
-        });
-        return () => {
-            eventsKey.destroy();
         };
-    }, [controller, intl, notificationService]);
 
-    useEffect(() => {
-        if (!controller) {
-            setLoading(false);
-            return;
-        }
-        if (isActive) {
-            setLoading(true);
-            controller.startGeolocation().then(() => {
-                setLoading(false);
-            });
-        }
-        return () => {
-            controller?.stopGeolocation();
-            setLoading(false);
-        };
-    }, [controller, isActive]);
-
-    const toggleActiveState = () => {
-        if (!map) {
-            return;
-        }
-        setActive(!isActive);
-    };
-
-    return (
-        <ToolButton
-            ref={ref}
-            label={label}
-            icon={<MdMyLocation />}
-            onClick={() => toggleActiveState()}
-            isActive={isActive}
-            isLoading={isLoading}
-            isDisabled={!supportsGeolocation}
-            {...containerProps}
-        />
-    );
-});
-
-function useController(
-    map: MapModel | undefined,
-    maxZoom: number | undefined,
-    trackingOptions: PositionOptions | undefined,
-    positionFeatureStyle: StyleLike | undefined,
-    accuracyFeatureStyle: StyleLike | undefined
-): GeolocationController | undefined {
-    const [controller, setController] = useState<GeolocationController>();
-    useEffect(() => {
-        if (!map) {
-            return;
-        }
-        const geolocationController = new GeolocationController(map.olMap, trackingOptions);
+        const geolocationController = new GeolocationController(
+            map.olMap,
+            onError,
+            trackingOptions
+        );
         setController(geolocationController);
 
         return () => {
             geolocationController.destroy();
             setController(undefined);
         };
-    }, [map, trackingOptions]);
+    }, [map, trackingOptions, intl, notificationService]);
     useEffect(() => {
         controller?.setPositionFeatureStyle(positionFeatureStyle);
     }, [controller, positionFeatureStyle]);

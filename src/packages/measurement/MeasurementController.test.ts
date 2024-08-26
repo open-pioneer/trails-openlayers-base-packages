@@ -8,9 +8,8 @@ import { Interaction } from "ol/interaction";
 import Draw from "ol/interaction/Draw";
 import LineString from "ol/geom/LineString";
 import VectorLayer from "ol/layer/Vector";
-import VectorSource from "ol/source/Vector";
 import { Fill, Style } from "ol/style";
-import { toFunction as toStyleFunction } from "ol/style/Style";
+import { StyleLike, toFunction as toStyleFunction } from "ol/style/Style";
 import { Geometry, Polygon } from "ol/geom";
 import { Feature, View } from "ol";
 
@@ -90,7 +89,7 @@ it("should respect the map's current projection (EPSG:3857)", async () => {
     ]);
 
     const finishedTooltip = getTooltipElement(olMap, "measurement-finished-tooltip");
-    expect(finishedTooltip.innerHTML).toMatchInlineSnapshot('"68.45 m"');
+    expect(finishedTooltip.innerHTML).toMatchInlineSnapshot(`"<span>68.45 m</span>"`);
 
     controller.stopMeasurement();
 });
@@ -112,7 +111,7 @@ it("should respect the map's current projection (EPSG:4326)", async () => {
     ]);
 
     const finishedTooltip = getTooltipElement(olMap, "measurement-finished-tooltip");
-    expect(finishedTooltip.innerHTML).toMatchInlineSnapshot('"100.13 m"');
+    expect(finishedTooltip.innerHTML).toMatchInlineSnapshot(`"<span>100.13 m</span>"`);
 
     controller.stopMeasurement();
 });
@@ -128,16 +127,16 @@ it("should show active tooltip on draw start and finished tooltip on draw end", 
 
     // Tooltip is created
     const activeTooltip = getTooltipElement(olMap, "measurement-active-tooltip");
-    expect(activeTooltip.innerHTML).toMatchInlineSnapshot('"0 m"');
+    expect(activeTooltip.innerHTML).toMatchInlineSnapshot(`"<span>0 m</span>"`);
 
     // Append another coordinate, expect distance to be computed
     draw.appendCoordinates([[851873.959638, 6788406.97408]]);
-    expect(activeTooltip.innerHTML).toMatchInlineSnapshot('"0.37 m"');
+    expect(activeTooltip.innerHTML).toMatchInlineSnapshot(`"<span>0.37 m</span>"`);
 
     // Finish drawing: tooltip should have a different class but same content
     draw.finishDrawing();
     const finishedTooltip = getTooltipElement(olMap, "measurement-finished-tooltip");
-    expect(finishedTooltip.innerHTML).toMatchInlineSnapshot('"0.37 m"');
+    expect(finishedTooltip.innerHTML).toMatchInlineSnapshot(`"<span>0.37 m</span>"`);
 
     controller.stopMeasurement();
 });
@@ -294,11 +293,7 @@ async () => {
  * Draws a graphic using the "draw" interaction that has been registered by the controller.
  * Triggers side effects in the controller that ultimately (on completion) put a feature in the vector layer.
  */
-function doDraw(
-    olMap: OlMap,
-    vectorLayer: VectorLayer<VectorSource>,
-    coordinates: [number, number][]
-) {
+function doDraw(olMap: OlMap, vectorLayer: VectorLayer<Feature>, coordinates: [number, number][]) {
     if (getFirstFeature(vectorLayer)) {
         throw new Error("vector layer should be empty at the start of the test");
     }
@@ -340,7 +335,9 @@ function getDrawInteraction(olMap: OlMap) {
 }
 
 function getDrawStyle(draw: Draw) {
-    const overlayStyle = toStyleFunction(draw.getOverlay().getStyle()!);
+    // Currently always a style like (not flat style like).
+    const style = draw.getOverlay().getStyle()! as StyleLike;
+    const overlayStyle = toStyleFunction(style);
 
     // render a dummy feature (see setActiveFeatureStyle method).
     // "LineString" is checked in the implementation.
@@ -364,7 +361,7 @@ function getDrawStyle(draw: Draw) {
     return lineStyle[0];
 }
 
-function getFirstFeature(layer: VectorLayer<VectorSource>) {
+function getFirstFeature(layer: VectorLayer<Feature>) {
     return layer.getSource()?.getFeatures()[0]?.getGeometry();
 }
 

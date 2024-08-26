@@ -2,6 +2,7 @@ messages:
   basemapsLabel: "Hintergrundkarten"
   descriptionLabel: "Layer Beschreibung"
   operationalLayerLabel: "Layer"
+  childgroupLabel: "Layergruppe {title}"
   missingLayers: "Es sind keine Layer vorhanden."
   error: "Beim Erstellen des Karteninhalts ist ein Fehler aufgetreten."
   layerNotAvailable: "Layer nicht verfügbar"

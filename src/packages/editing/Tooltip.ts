@@ -23,7 +23,11 @@ export interface Tooltip extends Resource {
 export function createTooltip(olMap: OlMap, text: string): Tooltip {
     const element = document.createElement("div");
     element.className = "editing-tooltip editing-tooltip-hidden";
-    element.textContent = text;
+    element.role = "tooltip";
+
+    const content = document.createElement("span");
+    content.textContent = text;
+    element.appendChild(content);
 
     const overlay = new Overlay({
         element: element,
@@ -49,7 +53,7 @@ export function createTooltip(olMap: OlMap, text: string): Tooltip {
             element.classList.toggle("editing-tooltip-hidden", !visible);
         },
         setText(text) {
-            element.textContent = text;
+            content.textContent = text;
         }
     };
 }

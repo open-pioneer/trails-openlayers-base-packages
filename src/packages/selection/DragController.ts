@@ -6,7 +6,6 @@ import { unByKey } from "ol/Observable";
 import Overlay from "ol/Overlay";
 import { mouseActionButton } from "ol/events/condition";
 import Geometry from "ol/geom/Geometry";
-import { SelectionMethods } from "./Selection";
 import { DragBox, DragPan } from "ol/interaction";
 import PointerInteraction from "ol/interaction/Pointer";
 
@@ -17,6 +16,7 @@ interface InteractionResource extends Resource {
 interface Tooltip extends Resource {
     overlay: Overlay;
     element: HTMLDivElement;
+    setText(value: string): void;
 }
 
 const ACTIVE_CLASS = "selection-active";
@@ -32,28 +32,15 @@ export class DragController {
 
     constructor(
         olMap: OlMap,
-        selectMethode: string,
         tooltipMessage: string,
         tooltipDisabledMessage: string,
         onExtentSelected: (geometry: Geometry) => void
     ) {
-        let viewPort;
-        /**
-         * Notice for Projectdeveloper
-         * Add cases for more Selectionmethods
-         */
-        switch (selectMethode) {
-            case SelectionMethods.extent:
-            default:
-                viewPort = this.initViewport(olMap);
-                this.interactionResources.push(
-                    this.createDragBox(olMap, onExtentSelected, viewPort, this.interactionResources)
-                );
-                this.interactionResources.push(
-                    this.createDrag(olMap, viewPort, this.interactionResources)
-                );
-                break;
-        }
+        const viewPort = this.initViewport(olMap);
+        this.interactionResources.push(
+            this.createDragBox(olMap, onExtentSelected, viewPort, this.interactionResources)
+        );
+        this.interactionResources.push(this.createDrag(olMap, viewPort, this.interactionResources));
 
         this.tooltip = this.createHelpTooltip(olMap, tooltipMessage);
         this.olMap = olMap;
@@ -89,7 +76,7 @@ export class DragController {
             this.interactionResources.forEach((interaction) =>
                 this.olMap.addInteraction(interaction.interaction)
             );
-            this.tooltip.element.textContent = this.tooltipMessage;
+            this.tooltip.setText(this.tooltipMessage);
             viewPort.classList.remove(INACTIVE_CLASS);
             viewPort.classList.add(ACTIVE_CLASS);
             this.isActive = true;
@@ -97,7 +84,7 @@ export class DragController {
             this.interactionResources.forEach((interaction) =>
                 this.olMap.removeInteraction(interaction.interaction)
             );
-            this.tooltip.element.textContent = this.tooltipDisabledMessage;
+            this.tooltip.setText(this.tooltipDisabledMessage);
             viewPort.classList.remove(ACTIVE_CLASS);
             viewPort.classList.add(INACTIVE_CLASS);
             this.isActive = false;
@@ -176,10 +163,14 @@ export class DragController {
     /**
      * Method to generate a tooltip on the mouse cursor
      */
-    private createHelpTooltip(olMap: OlMap, message: string) {
+    private createHelpTooltip(olMap: OlMap, message: string): Tooltip {
         const element = document.createElement("div");
         element.className = "selection-tooltip printing-hide";
-        element.textContent = message;
+        element.role = "tooltip";
+
+        const content = document.createElement("span");
+        content.textContent = message;
+        element.appendChild(content);
 
         const overlay = new Overlay({
             element: element,
@@ -199,6 +190,9 @@ export class DragController {
                 olMap.removeOverlay(overlay);
                 overlay.dispose();
                 unByKey(pointHandler);
+            },
+            setText(value) {
+                content.textContent = value;
             }
         };
     }

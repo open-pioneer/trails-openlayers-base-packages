@@ -9,6 +9,9 @@ allowedLicenses:
   - "CC0-1.0"
   - "WTFPL"
   - "Unlicense"
+  # zstddec
+  - MIT AND BSD-3-Clause
+
   # Dependencies of jsPdf use this
   - "(MIT OR Apache-2.0)"
   - "(MPL-2.0 OR Apache-2.0)"
@@ -48,7 +51,7 @@ overrideLicenses:
 
   # readme contains license text
   - name: "react-remove-scroll-bar"
-    version: "2.3.4"
+    version: "2.3.6"
     licenseFiles:
       - "./README.md"
 

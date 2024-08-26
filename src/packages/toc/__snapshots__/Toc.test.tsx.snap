@@ -102,7 +102,7 @@ exports[`should successfully create a toc component 1`] = `
           </div>
         </div>
         <div
-          class="react-select__menu-portal css-19sbml-MenuPortal"
+          class="react-select__menu-portal css-1vbk7iu"
         >
           <div
             class="react-select__menu css-ky7590"
@@ -144,7 +144,6 @@ exports[`should successfully create a toc component 1`] = `
     <h1
       class="chakra-heading css-1mnao0q"
       data-theme="light"
-      id=":r1:"
     >
       <div
         class="css-k008qs"
@@ -163,10 +162,10 @@ exports[`should successfully create a toc component 1`] = `
       </div>
     </h1>
     <ul
-      aria-labelledby=":r1:"
+      aria-label="operationalLayerLabel"
       class="toc-layer-list css-155za0w"
       data-theme="light"
-      role="list"
+      role="group"
     >
       <li
         class="toc-layer-item layer-layer-2 css-0"

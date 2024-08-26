@@ -11,11 +11,11 @@ import {
 } from "./api";
 import { Point } from "ol/geom";
 import { EventEmitter } from "@open-pioneer/core";
-import VectorSource from "ol/source/Vector";
 import VectorLayer from "ol/layer/Vector";
 import { EventsKey } from "ol/events";
 import { unByKey } from "ol/Observable";
 import { v4 as uuid4v } from "uuid";
+import Feature from "ol/Feature";
 
 export const fakeSelectedPointFeatures = [
     new Point([407354, 5754673]), // con terra (Bottom Right)
@@ -101,15 +101,11 @@ export class VectorLayerSelectionSourceImpl
 {
     readonly label: string;
     #status: Exclude<SelectionSourceStatus, string> = { kind: "available" };
-    #vectorLayer: VectorLayer<VectorSource>;
+    #vectorLayer: VectorLayer<Feature>;
     #eventHandler: EventsKey;
     #layerNotVisibleReason: string;
 
-    constructor(
-        vectorLayer: VectorLayer<VectorSource>,
-        label: string,
-        layerNotVisibleReason: string
-    ) {
+    constructor(vectorLayer: VectorLayer<Feature>, label: string, layerNotVisibleReason: string) {
         super();
         this.label = label;
         this.#vectorLayer = vectorLayer;
