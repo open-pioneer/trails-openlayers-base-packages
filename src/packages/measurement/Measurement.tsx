@@ -16,16 +16,28 @@ import { Circle as CircleStyle, Fill, Stroke, Style } from "ol/style";
 import { StyleLike } from "ol/style/Style";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, useEffect, useState } from "react";
-import {
-    MeasurementController,
-    MeasurementsChangedEvent,
-    MeasurementType
-} from "./MeasurementController";
+import { MeasurementController, MeasurementType } from "./MeasurementController";
 import LineString from "ol/geom/LineString";
 import Polygon from "ol/geom/Polygon";
 
-export type MeasurementsChangedHandler = (e: MeasurementsChangedEvent) => void;
+/** Emitted when a new measurement is being added to the map. */
+export interface MeasurementsAddEvent {
+    kind: "add-measurement";
+    geometry: MeasurementGeometry;
+}
 
+/** Emitted when a measurement is being removed from the map. */
+export interface MeasurementsRemoveEvent {
+    kind: "remove-measurement";
+    geometry: MeasurementGeometry;
+}
+
+/** A change event emitted by {@link Measurement} when measurements change. */
+export type MeasurementsChangeEvent = MeasurementsAddEvent | MeasurementsRemoveEvent;
+
+/**
+ * Represents the geometry of a measurement.
+ */
 export type MeasurementGeometry = LineString | Polygon;
 
 /**
@@ -48,56 +60,27 @@ export interface MeasurementProps extends CommonComponentProps {
     finishedFeatureStyle?: StyleLike;
 
     /**
-     * handler that is called whenever a measurement is added or removed
-     */
-    onMeasurementsChange?: MeasurementsChangedHandler;
-
-    /**
-     * list of measurements to be rendered when the component is initialized
+     * List of measurements to be rendered when the component is initialized.
      */
     predefinedMeasurements?: MeasurementGeometry[];
+
+    /**
+     * Event handler that is called whenever a measurement is added or removed.
+     */
+    onMeasurementsChange?: (event: MeasurementsChangeEvent) => void;
 }
 
 /**
- * The `Measurement` component can be used in an app to switch between distance and area measurements and to delete all current measurements.
+ * The `Measurement` component can be used in an app to measure geometries (areas or lines) on the map.
  */
 export const Measurement: FC<MeasurementProps> = (props) => {
     const intl = useIntl();
-
-    const {
-        mapId,
-        activeFeatureStyle,
-        finishedFeatureStyle,
-        onMeasurementsChange: measurementsChangeHandler,
-        predefinedMeasurements: predefinedMeasurements
-    } = props;
+    const { mapId } = props;
     const { containerProps } = useCommonComponentProps("measurement", props);
     const [selectedMeasurement, setMeasurement] = useState<MeasurementType>("distance");
     const label = (id: string) => intl.formatMessage({ id: id });
     const mapState = useMapModel(mapId);
-    const controller = useController(mapState.map, intl);
-
-    // Synchronize styles with controller
-    useEffect(() => {
-        controller?.setActiveFeatureStyle(activeFeatureStyle ?? getDefaultActiveFeatureStyle());
-    }, [controller, activeFeatureStyle]);
-    useEffect(() => {
-        controller?.setFinishedFeatureStyle(
-            finishedFeatureStyle ?? getDefaultFinishedFeatureStyle()
-        );
-    }, [controller, finishedFeatureStyle]);
-
-    useEffect(() => {
-        if (measurementsChangeHandler) {
-            controller?.setMeasurementSourceChangedHandler(measurementsChangeHandler);
-        }
-    }, [controller, measurementsChangeHandler]);
-
-    useEffect(() => {
-        if (predefinedMeasurements) {
-            controller?.setPredefinedMeasurements(predefinedMeasurements);
-        }
-    }, [controller, predefinedMeasurements]);
+    const controller = useController(mapState.map, props, intl);
 
     // Start / Stop measurement on selection change
     useEffect(() => {
@@ -152,7 +135,13 @@ export const Measurement: FC<MeasurementProps> = (props) => {
 };
 
 /** Creates a MeasurementController instance for the given map. */
-function useController(map: MapModel | undefined, intl: PackageIntl) {
+function useController(map: MapModel | undefined, props: MeasurementProps, intl: PackageIntl) {
+    const {
+        activeFeatureStyle,
+        finishedFeatureStyle,
+        onMeasurementsChange,
+        predefinedMeasurements
+    } = props;
     const [controller, setController] = useState<MeasurementController | undefined>(undefined);
     useEffect(() => {
         if (!map) {
@@ -178,6 +167,23 @@ function useController(map: MapModel | undefined, intl: PackageIntl) {
             setController(undefined);
         };
     }, [map, intl]);
+
+    // Synchronize styles with controller
+    useEffect(() => {
+        controller?.setActiveFeatureStyle(activeFeatureStyle ?? getDefaultActiveFeatureStyle());
+    }, [controller, activeFeatureStyle]);
+    useEffect(() => {
+        controller?.setFinishedFeatureStyle(
+            finishedFeatureStyle ?? getDefaultFinishedFeatureStyle()
+        );
+    }, [controller, finishedFeatureStyle]);
+    useEffect(() => {
+        controller?.setMeasurementSourceChangedHandler(onMeasurementsChange);
+    }, [controller, onMeasurementsChange]);
+
+    useEffect(() => {
+        controller?.setPredefinedMeasurements(predefinedMeasurements ?? []);
+    }, [controller, predefinedMeasurements]);
     return controller;
 }
 

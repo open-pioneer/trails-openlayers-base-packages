@@ -1,18 +1,26 @@
 ---
-"@open-pioneer/measurement": minor
+"@open-pioneer/measurement": patch
 ---
 
-add optional properties for predefined measurements and event listener which is called when measurements are added or remove
+Add two new optional properties:
+
+-   `predefinedMeasurements`: an array of measurements that will be added to the map (without user interaction)
+-   `onMeasurementsChange`: an event listener that will be called when measurements are added or removed
 
 ```tsx
-<Measurement
-    mapId={MAP_ID}
-    measurementsHandler={(e) => console.log(e.eventType)}
-    predefinedMeasurements={[
+const predefinedMeasurements = useMemo(
+    () => [
         new LineString([
             [398657.97, 5755696.26],
             [402570.98, 5757547.78]
         ])
-    ]}
-/>
+    ],
+    []
+);
+
+<Measurement
+    mapId={MAP_ID}
+    onMeasurementsChange={(e) => console.log(e.kind, e.geometry)}
+    predefinedMeasurements={predefinedMeasurements}
+/>;
 ```

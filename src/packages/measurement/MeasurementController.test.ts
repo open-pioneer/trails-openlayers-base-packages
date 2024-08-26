@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-
 import { expect, it } from "vitest";
-import { MeasurementController, MeasurementsChangedEvent } from "./MeasurementController";
+import { MeasurementsChangeEvent } from "./Measurement";
+import { MeasurementController } from "./MeasurementController";
 import OlMap from "ol/Map";
 import { Interaction } from "ol/interaction";
 import Draw from "ol/interaction/Draw";
@@ -238,11 +238,11 @@ it("should raise add/remove events if predefined measurements are added/deleted"
 
     let addCounter = 0;
     let removeCounter = 0;
-    const handlerFn = (e: MeasurementsChangedEvent) => {
+    const handlerFn = (e: MeasurementsChangeEvent) => {
         expect(e.geometry).toEqual(predefinedMeasurementGeom);
-        if (e.eventType === "add-measurement") {
+        if (e.kind === "add-measurement") {
             addCounter++;
-        } else if (e.eventType === "remove-measurement") {
+        } else if (e.kind === "remove-measurement") {
             removeCounter++;
         }
     };
@@ -262,10 +262,10 @@ it("should raise add/remove events if user adds/clears measurements", async () =
 
     let addCounter = 0;
     let removeCounter = 0;
-    const handlerFn = (e: MeasurementsChangedEvent) => {
-        if (e.eventType === "add-measurement") {
+    const handlerFn = (e: MeasurementsChangeEvent) => {
+        if (e.kind === "add-measurement") {
             addCounter++;
-        } else if (e.eventType === "remove-measurement") {
+        } else if (e.kind === "remove-measurement") {
             removeCounter++;
         }
     };
@@ -281,13 +281,12 @@ it("should raise add/remove events if user adds/clears measurements", async () =
     expect(removeCounter).toEqual(1);
 });
 
-it("should add name property to measurement layer"),
-async () => {
+it("should add name property to measurement layer", async () => {
     const { controller } = setup();
     const layer = controller.getVectorLayer();
 
-    expect(layer.getProperties()["name"] === "measurement-layer");
-};
+    expect(layer.getProperties()["name"]).toBe("measurement-layer");
+});
 
 /**
  * Draws a graphic using the "draw" interaction that has been registered by the controller.

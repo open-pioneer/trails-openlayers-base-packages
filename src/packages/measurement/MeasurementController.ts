@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Resource } from "@open-pioneer/core";
+import { TOPMOST_LAYER_Z } from "@open-pioneer/map";
 import Feature from "ol/Feature";
 import OlMap from "ol/Map";
 import MapBrowserEvent from "ol/MapBrowserEvent";
@@ -11,26 +12,20 @@ import { EventsKey } from "ol/events";
 import { LineString, Polygon } from "ol/geom";
 import Draw from "ol/interaction/Draw";
 import { Vector as VectorLayer } from "ol/layer";
+import { Projection } from "ol/proj";
 import { Vector as VectorSource } from "ol/source";
 import { getArea, getLength } from "ol/sphere";
-import { Projection } from "ol/proj";
 import { StyleFunction, StyleLike, toFunction as toStyleFunction } from "ol/style/Style";
-import { TOPMOST_LAYER_Z } from "@open-pioneer/map";
-import { MeasurementGeometry, MeasurementsChangedHandler } from "./Measurement";
+import type { MeasurementsChangeEvent, MeasurementGeometry, MeasurementProps } from "./Measurement";
+
+type MeasurementsChangeHandler = NonNullable<MeasurementProps["onMeasurementsChange"]>;
 
 export type MeasurementType = "area" | "distance";
-
-export type MeasurementEventType = "remove-measurement" | "add-measurement";
 
 export interface Messages {
     getContinueMessage(): string;
     getHelpMessage(): string;
     formatNumber(value: number): string;
-}
-
-export interface MeasurementsChangedEvent {
-    eventType: MeasurementEventType;
-    geometry: MeasurementGeometry;
 }
 
 export class MeasurementController {
@@ -78,13 +73,13 @@ export class MeasurementController {
     private resources: Resource[] = [];
 
     /**
-     * called when a measurement is added or removed to the source
+     * Called when a measurement is added to or removed from the source.
      */
-    private measurementChangedHandler: MeasurementsChangedHandler | undefined;
+    private measurementChangedHandler: MeasurementsChangeHandler | undefined;
 
     /**
-     * map that is used to track all predefined measurements currently added to the source,
-     * it asscociates the measurement geometry (key) with the corresponding feature and tootip (value)
+     * Map that is used to track all predefined measurements currently added to the source.
+     * It associates the measurement geometry (key) with the corresponding feature and tooltip (value).
      */
     private predefinedMeasurements: Map<MeasurementGeometry, MeasurementEntry> = new Map<
         MeasurementGeometry,
@@ -159,7 +154,7 @@ export class MeasurementController {
         this.layer.setStyle(style);
     }
 
-    setMeasurementSourceChangedHandler(handler: MeasurementsChangedHandler) {
+    setMeasurementSourceChangedHandler(handler: MeasurementsChangeHandler | undefined) {
         this.measurementChangedHandler = handler;
     }
 
@@ -186,7 +181,7 @@ export class MeasurementController {
         this.source.clear();
         currentFeatures.forEach((feature) => {
             //raise remove-measurement event for each measurement after the source was cleared
-            this.raiseMeasurementsChangeEvent(feature, "remove-measurement");
+            this.raiseMeasurementsChangeEvent("remove-measurement", feature);
         });
         this.predefinedMeasurements.clear();
         for (const tooltip of this.overlayTooltips) {
@@ -251,7 +246,7 @@ export class MeasurementController {
                 this.measureTooltip = measureTooltip = undefined;
             }
 
-            this.raiseMeasurementsChangeEvent(this.sketch!, "add-measurement");
+            this.raiseMeasurementsChangeEvent("add-measurement", this.sketch!);
 
             // unset sketch
             this.sketch = undefined;
@@ -388,7 +383,7 @@ export class MeasurementController {
                 this.olMap.getView().getProjection()
             );
             tooltip.overlay.setPosition(this.getTooltipCoord(geom));
-            this.raiseMeasurementsChangeEvent(measurementFeature, "add-measurement");
+            this.raiseMeasurementsChangeEvent("add-measurement", measurementFeature);
         });
 
         removedMeasurements.forEach((geom) => {
@@ -397,7 +392,7 @@ export class MeasurementController {
                 //remove measurement feature from source and destroy associated tooltip
                 this.source.removeFeature(measurementEntry.feature);
                 measurementEntry.tooltip.destroy();
-                this.raiseMeasurementsChangeEvent(measurementEntry.feature, "remove-measurement");
+                this.raiseMeasurementsChangeEvent("remove-measurement", measurementEntry.feature);
             }
             this.predefinedMeasurements.delete(geom);
         });
@@ -426,17 +421,17 @@ export class MeasurementController {
     }
 
     private raiseMeasurementsChangeEvent(
-        measurementFeature: Feature,
-        eventType: MeasurementEventType
+        kind: MeasurementsChangeEvent["kind"],
+        measurementFeature: Feature
     ) {
         const measurementGeom = measurementFeature.getGeometry();
         if (this.measurementChangedHandler && measurementGeom) {
             this.measurementChangedHandler({
+                kind: kind,
                 geometry:
                     measurementGeom instanceof Polygon
                         ? (measurementGeom as Polygon)
-                        : (measurementGeom as LineString),
-                eventType: eventType
+                        : (measurementGeom as LineString)
             });
         }
     }
