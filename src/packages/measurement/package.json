@@ -17,6 +17,7 @@
         "build": "build-pioneer-package"
     },
     "peerDependencies": {
+        "@open-pioneer/core": "^1.2.3",
         "@open-pioneer/chakra-integration": "^1.1.3",
         "@open-pioneer/map": "workspace:^",
         "@open-pioneer/runtime": "^2.1.6",
