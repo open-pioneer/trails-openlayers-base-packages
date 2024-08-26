@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { expect, it } from "vitest";
+import { expect, it, vi } from "vitest";
 import { MeasurementsChangeEvent } from "./Measurement";
 import { MeasurementController } from "./MeasurementController";
 import OlMap from "ol/Map";
@@ -236,23 +236,16 @@ it("should raise add/remove events if predefined measurements are added/deleted"
         [402570.98, 5757547.78]
     ]);
 
-    let addCounter = 0;
-    let removeCounter = 0;
-    const handlerFn = (e: MeasurementsChangeEvent) => {
-        expect(e.geometry).toEqual(predefinedMeasurementGeom);
-        if (e.kind === "add-measurement") {
-            addCounter++;
-        } else if (e.kind === "remove-measurement") {
-            removeCounter++;
-        }
-    };
-
+    const handlerFn = vi.fn();
     controller.setMeasurementSourceChangedHandler(handlerFn);
     controller.setPredefinedMeasurements([predefinedMeasurementGeom]);
     controller.setPredefinedMeasurements([]);
 
-    expect(addCounter).toEqual(1);
-    expect(removeCounter).toEqual(1);
+    const events = handlerFn.mock.calls.map(([event]) => event as MeasurementsChangeEvent);
+    const kinds = events.map((e) => e.kind);
+    expect(kinds).toEqual(["add-measurement", "remove-measurement"]);
+    expect(events[0]?.geometry).toBe(predefinedMeasurementGeom);
+    expect(events[1]?.geometry).toBe(predefinedMeasurementGeom);
 });
 
 it("should raise add/remove events if user adds/clears measurements", async () => {
@@ -260,15 +253,7 @@ it("should raise add/remove events if user adds/clears measurements", async () =
     const layer = controller.getVectorLayer();
     controller.startMeasurement("distance");
 
-    let addCounter = 0;
-    let removeCounter = 0;
-    const handlerFn = (e: MeasurementsChangeEvent) => {
-        if (e.kind === "add-measurement") {
-            addCounter++;
-        } else if (e.kind === "remove-measurement") {
-            removeCounter++;
-        }
-    };
+    const handlerFn = vi.fn();
     controller.setMeasurementSourceChangedHandler(handlerFn);
 
     doDraw(olMap, layer, [
@@ -277,8 +262,10 @@ it("should raise add/remove events if user adds/clears measurements", async () =
     ]);
     controller.clearMeasurements();
 
-    expect(addCounter).toEqual(1);
-    expect(removeCounter).toEqual(1);
+    const events = handlerFn.mock.calls.map(([event]) => event as MeasurementsChangeEvent);
+    const kinds = events.map((e) => e.kind);
+    expect(kinds).toEqual(["add-measurement", "remove-measurement"]);
+    expect(events[0]?.geometry).toBeInstanceOf(LineString);
 });
 
 it("should add name property to measurement layer", async () => {
