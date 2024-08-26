@@ -32,7 +32,11 @@ export interface MeasurementsRemoveEvent {
     geometry: MeasurementGeometry;
 }
 
-/** A change event emitted by {@link Measurement} when measurements change. */
+/**
+ * A change event emitted by {@link Measurement} when measurements change.
+ *
+ * NOTE: Non-exhaustive. More event types may be added in a future version.
+ **/
 export type MeasurementsChangeEvent = MeasurementsAddEvent | MeasurementsRemoveEvent;
 
 /**
