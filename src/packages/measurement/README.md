@@ -95,7 +95,7 @@ Unmounting the component will not trigger a change event.
 
 ```tsx
 // outputs either add-measurement or remove-measurement and the measurement geometry
-<Measurement measurementsHandler={(e) => console.log(e.kind, e.geometry)} />
+<Measurement onMeasurementsChange={(e) => console.log(e.kind, e.geometry)} />
 ```
 
 ## License
