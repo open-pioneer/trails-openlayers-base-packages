@@ -60,6 +60,44 @@ function AppUI() {
 }
 ```
 
+### Adding predefined measurements
+
+The optional property `predefinedMeasurements` can be used to add predefined measurement geometries (line strings and polygons).
+The predefined measurements will have the same style and tooltip as measurements created by a user.
+
+Note that predefined measurements are re-applied when the array changes.
+To prevent accidental updates, wrap the array in a `useMemo` hook or store it somewhere outside the render function.
+
+```tsx
+import LineString from "ol/geom/LineString";
+import { MeasurementGeometry } from "@open-pioneer/measurement/MeasurementController";
+
+const measurements = useMemo(
+    () => [
+        new LineString([
+            [398657.97, 5755696.26],
+            [402570.98, 5757547.78]
+        ])
+    ],
+    []
+);
+
+<Measurement predefinedMeasurements={measurements} />;
+```
+
+### Listen for changes
+
+The optional property `onMeasurementsChange` can be used to register an event handler function.
+This function is called whenever the set of measurements changes (i.e. add or remove actions).
+
+Changes include both user actions or updates triggered by `predefinedMeasurements`.
+Unmounting the component will not trigger a change event.
+
+```tsx
+// outputs either add-measurement or remove-measurement and the measurement geometry
+<Measurement onMeasurementsChange={(e) => console.log(e.kind, e.geometry)} />
+```
+
 ## License
 
 Apache-2.0 (see `LICENSE` file)
