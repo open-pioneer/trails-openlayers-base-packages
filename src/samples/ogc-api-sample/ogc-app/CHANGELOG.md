@@ -1,5 +1,19 @@
 # ogc-app
 
+## 0.0.11
+
+### Patch Changes
+
+-   Updated dependencies [291ccb6]
+-   Updated dependencies [b152428]
+-   Updated dependencies [291ccb6]
+    -   @open-pioneer/basemap-switcher@0.4.4
+    -   @open-pioneer/map-navigation@0.4.4
+    -   @open-pioneer/ogc-features@0.4.4
+    -   @open-pioneer/theme@0.3.3
+    -   @open-pioneer/map@0.6.1
+    -   @open-pioneer/toc@0.4.4
+
 ## 0.0.10
 
 ### Patch Changes

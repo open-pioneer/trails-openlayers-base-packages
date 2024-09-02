@@ -1,5 +1,16 @@
 # @open-pioneer/geolocation
 
+## 0.4.4
+
+### Patch Changes
+
+-   3e7d978: Refactor implementation (internal state management now based on the reactivity API)
+-   b152428: Update trails dependencies
+-   Updated dependencies [b152428]
+-   Updated dependencies [291ccb6]
+    -   @open-pioneer/map-ui-components@0.1.1
+    -   @open-pioneer/map@0.6.1
+
 ## 0.4.3
 
 ### Patch Changes

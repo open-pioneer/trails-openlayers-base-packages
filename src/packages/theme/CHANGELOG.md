@@ -1,5 +1,11 @@
 # @open-pioneer/theme
 
+## 0.3.3
+
+### Patch Changes
+
+-   b152428: Update trails dependencies
+
 ## 0.3.2
 
 ### Patch Changes

@@ -1,5 +1,12 @@
 # @open-pioneer/map
 
+## 0.6.1
+
+### Patch Changes
+
+-   b152428: Update trails dependencies
+-   291ccb6: Apply layer visibility initially to be consistent with the layer configuration.
+
 ## 0.6.0
 
 ### Minor Changes
