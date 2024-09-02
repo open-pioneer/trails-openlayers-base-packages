@@ -17,9 +17,9 @@
         "build": "build-pioneer-package"
     },
     "peerDependencies": {
-        "@open-pioneer/chakra-integration": "^1.1.3",
-        "@open-pioneer/runtime": "^2.1.6",
-        "@open-pioneer/base-theme": "^0.3.2"
+        "@open-pioneer/chakra-integration": "^1.1.4",
+        "@open-pioneer/runtime": "^2.1.7",
+        "@open-pioneer/base-theme": "^0.3.3"
     },
     "devDependencies": {
         "openlayers-base-packages": "workspace:*"

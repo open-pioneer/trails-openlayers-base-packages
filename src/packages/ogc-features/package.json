@@ -17,11 +17,11 @@
         "build": "build-pioneer-package"
     },
     "peerDependencies": {
-        "@open-pioneer/core": "^1.2.3",
-        "@open-pioneer/http": "^2.1.8",
+        "@open-pioneer/core": "^1.3.0",
+        "@open-pioneer/http": "^2.1.9",
+        "@open-pioneer/search": "workspace:^",
         "ol": "^9.2.4",
-        "uuid": "^10.0.0",
-        "@open-pioneer/search": "workspace:^"
+        "uuid": "^10.0.0"
     },
     "peerDependenciesMeta": {
         "@open-pioneer/search": {
@@ -29,8 +29,8 @@
         }
     },
     "devDependencies": {
-        "@open-pioneer/test-utils": "^1.1.3",
         "@open-pioneer/map-test-utils": "workspace:^",
+        "@open-pioneer/test-utils": "^1.1.4",
         "openlayers-base-packages": "workspace:*"
     },
     "publishConfig": {
