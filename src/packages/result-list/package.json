@@ -1,6 +1,6 @@
 {
     "name": "@open-pioneer/result-list",
-    "version": "0.3.1",
+    "version": "0.3.2",
     "description": "This package provides a UI component to display features and their attributes.",
     "license": "Apache-2.0",
     "main": "index.ts",

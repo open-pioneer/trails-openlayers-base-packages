@@ -1,6 +1,6 @@
 {
     "name": "@open-pioneer/experimental-layout-sidebar",
-    "version": "0.2.3",
+    "version": "0.2.4",
     "license": "Apache-2.0",
     "main": "index.ts",
     "repository": {

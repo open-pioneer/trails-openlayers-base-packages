@@ -1,5 +1,11 @@
 # @open-pioneer/experimental-layout-sidebar
 
+## 0.2.4
+
+### Patch Changes
+
+-   b152428: Update trails dependencies
+
 ## 0.2.3
 
 ### Patch Changes

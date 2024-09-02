@@ -1,5 +1,11 @@
 # @open-pioneer/map-ui-components
 
+## 0.1.1
+
+### Patch Changes
+
+-   b152428: Update trails dependencies
+
 ## 0.1.0
 
 ### Minor Changes
