@@ -70,7 +70,7 @@ To prevent accidental updates, wrap the array in a `useMemo` hook or store it so
 
 ```tsx
 import LineString from "ol/geom/LineString";
-import { MeasurementGeometry } from "@open-pioneer/measurement/MeasurementController";
+import { MeasurementGeometry } from "@open-pioneer/measurement";
 
 const measurements = useMemo(
     () => [
