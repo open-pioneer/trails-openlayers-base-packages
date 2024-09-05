@@ -7,14 +7,11 @@ import type OlMap from "ol/Map";
 import { Extent } from "ol/extent";
 import { ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { MapModel, MapPadding } from "../api";
-import { MapContextProvider, MapContextType } from "./MapContext";
-import { useMapModel } from "./useMapModel";
+import { MapContainerContextProvider, MapContainerContextType } from "./MapContainerContext";
+import { MapModelProps, useMapModel } from "./useMapModel";
 const LOG = createLogger("map:MapContainer");
 
-export interface MapContainerProps extends CommonComponentProps {
-    /** The id of the map to display. */
-    mapId: string;
-
+export interface MapContainerProps extends CommonComponentProps, MapModelProps {
     /**
      * Sets the map's padding directly.
      *
@@ -66,7 +63,6 @@ export interface MapContainerProps extends CommonComponentProps {
  */
 export function MapContainer(props: MapContainerProps) {
     const {
-        mapId,
         viewPadding,
         viewPaddingChangeBehavior,
         children,
@@ -77,8 +73,8 @@ export function MapContainer(props: MapContainerProps) {
     const { containerProps } = useCommonComponentProps("map-container", props);
     const mapContainer = useRef<HTMLDivElement>(null);
     const mapAnchorsHost = useRef<HTMLDivElement>(null);
-    const modelState = useMapModel(mapId);
-    const mapModel = modelState.map;
+    const modelState = useMapModel(props);
+    const map = modelState.map;
 
     const [ready, setReady] = useState(false);
 
@@ -92,17 +88,17 @@ export function MapContainer(props: MapContainerProps) {
             return;
         }
 
-        if (!mapModel) {
-            LOG.error(`No configuration available for map with id '${mapId}'.`);
+        if (!map) {
+            LOG.error(`No configuration available for the configured map.`);
             return;
         }
 
         // Mount the map into the DOM
         if (mapContainer.current) {
-            const resource = registerMapTarget(mapModel, mapContainer.current);
+            const resource = registerMapTarget(map, mapContainer.current);
             return () => resource?.destroy();
         }
-    }, [modelState, mapModel, mapId]);
+    }, [modelState, map]);
 
     // Wait for mount to make sure that the map anchors host is available
     useEffect(() => {
@@ -124,9 +120,9 @@ export function MapContainer(props: MapContainerProps) {
             //eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
             tabIndex={0}
         >
-            {ready && mapModel && (
+            {ready && map && (
                 <MapContainerReady
-                    map={mapModel.olMap}
+                    olMap={map.olMap}
                     mapAnchorsHost={mapAnchorsHost.current!}
                     viewPadding={viewPadding}
                     viewPaddingChangeBehavior={viewPaddingChangeBehavior}
@@ -151,13 +147,13 @@ export function MapContainer(props: MapContainerProps) {
  * It provides the map instance and additional properties down the component tree.
  */
 function MapContainerReady(
-    props: { map: OlMap; mapAnchorsHost: HTMLElement } & Omit<
+    props: { olMap: OlMap; mapAnchorsHost: HTMLElement } & Omit<
         MapContainerProps,
-        "mapId" | "className"
+        "mapId" | "map" | "className"
     >
 ): JSX.Element {
     const {
-        map,
+        olMap,
         mapAnchorsHost,
         viewPadding: viewPaddingProp,
         viewPaddingChangeBehavior = "preserve-center",
@@ -175,14 +171,14 @@ function MapContainerReady(
 
     // Apply view padding
     useEffect(() => {
-        const mapView = map?.getView();
-        if (!map || !mapView) {
+        const mapView = olMap?.getView();
+        if (!olMap || !mapView) {
             return;
         }
 
         const oldCenter = mapView.getCenter();
         const oldPadding = fromOlPadding(mapView.padding);
-        const oldExtent = extentIncludingPadding(map, oldPadding);
+        const oldExtent = extentIncludingPadding(olMap, oldPadding);
 
         mapView.padding = toOlPadding(viewPadding);
         switch (viewPaddingChangeBehavior) {
@@ -201,16 +197,15 @@ function MapContainerReady(
             }
             case "none":
         }
-    }, [viewPadding, map, viewPaddingChangeBehavior]);
+    }, [viewPadding, olMap, viewPaddingChangeBehavior]);
 
-    const mapContext = useMemo((): MapContextType => {
+    const mapContext = useMemo((): MapContainerContextType => {
         return {
-            map,
             mapAnchorsHost,
             padding: viewPadding
         };
-    }, [map, viewPadding, mapAnchorsHost]);
-    return <MapContextProvider value={mapContext}>{children}</MapContextProvider>;
+    }, [viewPadding, mapAnchorsHost]);
+    return <MapContainerContextProvider value={mapContext}>{children}</MapContainerContextProvider>;
 }
 
 function registerMapTarget(mapModel: MapModel, target: HTMLDivElement): Resource | undefined {

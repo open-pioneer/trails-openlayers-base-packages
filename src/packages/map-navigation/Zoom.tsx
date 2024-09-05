@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { useMapModel } from "@open-pioneer/map";
+import { MapModelProps, useMapModel } from "@open-pioneer/map";
 import { ToolButton } from "@open-pioneer/map-ui-components";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { PackageIntl } from "@open-pioneer/runtime";
@@ -31,12 +31,10 @@ export const ZoomOut: FC<ZoomOutProps> = forwardRef(function ZoomOut(props, ref)
     return <Zoom zoomDirection="out" ref={ref} {...props} />;
 });
 
-export interface ZoomProps extends CommonComponentProps, RefAttributes<HTMLButtonElement> {
-    /**
-     * The map id.
-     */
-    mapId: string;
-
+export interface ZoomProps
+    extends CommonComponentProps,
+        RefAttributes<HTMLButtonElement>,
+        MapModelProps {
     /**
      * The zoom direction.
      *
@@ -52,8 +50,8 @@ export const Zoom: FC<ZoomProps> = forwardRef(function Zoom(
     props: ZoomProps,
     ref: ForwardedRef<HTMLButtonElement>
 ) {
-    const { mapId, zoomDirection } = props;
-    const { map } = useMapModel(mapId);
+    const { zoomDirection } = props;
+    const { map } = useMapModel(props);
     const intl = useIntl();
     const { defaultClassName, buttonLabel, buttonIcon } = getDirectionProps(intl, zoomDirection);
 

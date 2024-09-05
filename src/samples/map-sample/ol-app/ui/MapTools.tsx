@@ -30,7 +30,6 @@ import {
 } from "react-icons/pi";
 import { TbPolygon, TbPolygonOff } from "react-icons/tb";
 import { AppModel } from "../AppModel";
-import { MAP_ID } from "../map/MapConfigProviderImpl";
 
 export function MapTools() {
     const intl = useIntl();
@@ -84,9 +83,9 @@ export function MapTools() {
                 onClick={() => appModel.toggleMainContent("printing")}
             />
 
-            <InitialExtent mapId={MAP_ID} />
-            <ZoomIn mapId={MAP_ID} />
-            <ZoomOut mapId={MAP_ID} />
+            <InitialExtent />
+            <ZoomIn />
+            <ZoomOut />
         </Flex>
     );
 }

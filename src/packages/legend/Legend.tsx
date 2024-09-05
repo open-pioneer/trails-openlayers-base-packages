@@ -1,7 +1,14 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Box, Image, List, Text } from "@open-pioneer/chakra-integration";
-import { Layer, MapModel, useMapModel, LayerBase, Sublayer } from "@open-pioneer/map";
+import {
+    Layer,
+    MapModel,
+    useMapModel,
+    LayerBase,
+    Sublayer,
+    MapModelProps
+} from "@open-pioneer/map";
 import {
     ComponentType,
     FC,
@@ -50,12 +57,7 @@ export interface LegendItemAttributes {
 /**
  * These are special properties for the Legend.
  */
-export interface LegendProps extends CommonComponentProps {
-    /**
-     * The id of the map.
-     */
-    mapId: string;
-
+export interface LegendProps extends CommonComponentProps, MapModelProps {
     /**
      * Specifies whether legend for active base layer is shown in the legend UI.
      * Defaults to `false`.
@@ -67,9 +69,9 @@ export interface LegendProps extends CommonComponentProps {
  * The `Legend` component can be used to display the legend of layers that are visible in the map.
  */
 export const Legend: FC<LegendProps> = (props) => {
-    const { mapId, showBaseLayers = false } = props;
+    const { showBaseLayers = false } = props;
     const { containerProps } = useCommonComponentProps("legend", props);
-    const { map } = useMapModel(mapId);
+    const { map } = useMapModel(props);
 
     return (
         <Box {...containerProps}>

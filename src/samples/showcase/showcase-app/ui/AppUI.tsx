@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Box, Flex, Text, VStack } from "@open-pioneer/chakra-integration";
-import { MapAnchor, MapContainer } from "@open-pioneer/map";
+import { DefaultMapProvider, MapAnchor, MapContainer } from "@open-pioneer/map";
 import { Notifier } from "@open-pioneer/notifier";
 import { TitledSection } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
@@ -51,51 +51,52 @@ function AppContent(props: { state: AppStateReady }) {
             <Flex height="100%" direction="column">
                 <TitledSection title={<Header appModel={appModel} />}>
                     <Flex flex="1" direction="column" position="relative">
-                        <MapContainer
-                            mapId={MAP_ID}
-                            role="main"
-                            aria-label={intl.formatMessage({ id: "ariaLabels.map" })}
-                        >
-                            <MapAnchor
-                                className="main-map-anchor"
-                                position="top-left"
-                                horizontalGap={10}
-                                verticalGap={10}
+                        <DefaultMapProvider mapId={MAP_ID}>
+                            <MapContainer
+                                role="main"
+                                aria-label={intl.formatMessage({ id: "ariaLabels.map" })}
                             >
-                                <Box bgColor="white" borderRadius={10} p={2} maxW="500px">
-                                    <TitledSection
-                                        title={currentDemo.title}
-                                        sectionHeadingProps={{ size: "lg" }}
-                                    >
-                                        <Text
-                                            py={4}
-                                            dangerouslySetInnerHTML={{
-                                                __html: currentDemoModel.description
-                                            }}
-                                        ></Text>
-                                        {currentDemoModel.mainWidget}
-                                    </TitledSection>
-                                </Box>
-                            </MapAnchor>
-                            <MapAnchor position="bottom-right" horizontalGap={6}>
-                                <VStack p={1}>{currentDemoModel.tools}</VStack>
-                            </MapAnchor>
-                            {currentListContainer && (
-                                <Box
-                                    className="list-container"
-                                    position="absolute"
-                                    bottom="0"
-                                    backgroundColor="white"
-                                    width="100%"
-                                    height="400px"
-                                    zIndex={1 /* above map */}
-                                    borderTop="2px solid"
-                                    borderColor="trails.100"
+                                <MapAnchor
+                                    className="main-map-anchor"
+                                    position="top-left"
+                                    horizontalGap={10}
+                                    verticalGap={10}
                                 >
-                                    {currentListContainer}
-                                </Box>
-                            )}
-                        </MapContainer>
+                                    <Box bgColor="white" borderRadius={10} p={2} maxW="500px">
+                                        <TitledSection
+                                            title={currentDemo.title}
+                                            sectionHeadingProps={{ size: "lg" }}
+                                        >
+                                            <Text
+                                                py={4}
+                                                dangerouslySetInnerHTML={{
+                                                    __html: currentDemoModel.description
+                                                }}
+                                            ></Text>
+                                            {currentDemoModel.mainWidget}
+                                        </TitledSection>
+                                    </Box>
+                                </MapAnchor>
+                                <MapAnchor position="bottom-right" horizontalGap={6}>
+                                    <VStack p={1}>{currentDemoModel.tools}</VStack>
+                                </MapAnchor>
+                                {currentListContainer && (
+                                    <Box
+                                        className="list-container"
+                                        position="absolute"
+                                        bottom="0"
+                                        backgroundColor="white"
+                                        width="100%"
+                                        height="400px"
+                                        zIndex={1 /* above map */}
+                                        borderTop="2px solid"
+                                        borderColor="trails.100"
+                                    >
+                                        {currentListContainer}
+                                    </Box>
+                                )}
+                            </MapContainer>
+                        </DefaultMapProvider>
                     </Flex>
                 </TitledSection>
             </Flex>

@@ -5,7 +5,7 @@ import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/rea
 import { ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { MapPadding } from "../api";
-import { useMapContext } from "./MapContext";
+import { useMapContainerContext } from "./MapContainerContext";
 
 export type MapAnchorPosition = "top-left" | "top-right" | "bottom-left" | "bottom-right";
 
@@ -46,7 +46,7 @@ export interface MapAnchorProps extends CommonComponentProps {
 export function MapAnchor(props: MapAnchorProps): JSX.Element {
     const { position = defaultPosition, children, horizontalGap, verticalGap } = props;
     const { containerProps } = useCommonComponentProps("map-anchor", props);
-    const { padding, mapAnchorsHost } = useMapContext();
+    const { padding, mapAnchorsHost } = useMapContainerContext();
 
     return createPortal(
         <Box

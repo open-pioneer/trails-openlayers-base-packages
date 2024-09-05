@@ -5,7 +5,6 @@ import { Measurement } from "@open-pioneer/measurement";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
 import { useId } from "react";
-import { MAP_ID } from "../map/MapConfigProviderImpl";
 
 export function MeasurementComponent() {
     const measurementTitleId = useId();
@@ -21,7 +20,7 @@ export function MeasurementComponent() {
                     </SectionHeading>
                 }
             >
-                <Measurement mapId={MAP_ID} />
+                <Measurement />
             </TitledSection>
         </Box>
     );

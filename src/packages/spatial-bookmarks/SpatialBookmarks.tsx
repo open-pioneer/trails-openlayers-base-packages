@@ -16,7 +16,7 @@ import {
     Center
 } from "@open-pioneer/chakra-integration";
 import { LocalStorageService } from "@open-pioneer/local-storage";
-import { MapModel, useMapModel } from "@open-pioneer/map";
+import { MapModel, MapModelProps, useMapModel } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { PackageIntl } from "@open-pioneer/runtime";
 import classNames from "classnames";
@@ -28,18 +28,13 @@ import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 
 type UIMode = "list" | "create" | "delete";
 
-export interface SpatialBookmarksProps extends CommonComponentProps {
-    /**
-     * The id of the map.
-     */
-    mapId: string;
-}
+export interface SpatialBookmarksProps extends CommonComponentProps, MapModelProps {}
 
 /**
  * A component that allows the user to manage a set of spatial bookmarks.
  */
 export const SpatialBookmarks: FC<SpatialBookmarksProps> = (props) => {
-    const { map } = useMapModel(props.mapId);
+    const { map } = useMapModel(props);
     const localStorageService = useService<LocalStorageService>(
         "local-storage.LocalStorageService"
     );

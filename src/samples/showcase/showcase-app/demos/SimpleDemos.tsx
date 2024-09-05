@@ -9,7 +9,6 @@ import { ScaleBar } from "@open-pioneer/scale-bar";
 import { ScaleViewer } from "@open-pioneer/scale-viewer";
 import { ScaleSetter } from "@open-pioneer/scale-setter";
 import { SpatialBookmarks } from "@open-pioneer/spatial-bookmarks";
-import { MAP_ID } from "../MapConfigProviderImpl";
 import { Demo, SharedDemoOptions } from "./Demo";
 
 export function createCoordinateViewerDemo({ intl }: SharedDemoOptions): Demo {
@@ -19,7 +18,7 @@ export function createCoordinateViewerDemo({ intl }: SharedDemoOptions): Demo {
         createModel() {
             return {
                 description: intl.formatMessage({ id: "demos.coordinateViewer.description" }),
-                mainWidget: <CoordinateViewer mapId={MAP_ID} />
+                mainWidget: <CoordinateViewer />
             };
         }
     };
@@ -32,7 +31,7 @@ export function createScaleViewerDemo({ intl }: SharedDemoOptions): Demo {
         createModel() {
             return {
                 description: intl.formatMessage({ id: "demos.scaleViewer.description" }),
-                mainWidget: <ScaleViewer mapId={MAP_ID} />
+                mainWidget: <ScaleViewer />
             };
         }
     };
@@ -45,7 +44,7 @@ export function createScaleSetterDemo({ intl }: SharedDemoOptions): Demo {
         createModel() {
             return {
                 description: intl.formatMessage({ id: "demos.scaleSetter.description" }),
-                mainWidget: <ScaleSetter mapId={MAP_ID} />
+                mainWidget: <ScaleSetter />
             };
         }
     };
@@ -58,7 +57,7 @@ export function createScaleBarDemo({ intl }: SharedDemoOptions): Demo {
         createModel() {
             return {
                 description: intl.formatMessage({ id: "demos.scaleBar.description" }),
-                tools: <ScaleBar mapId={MAP_ID} />
+                tools: <ScaleBar />
             };
         }
     };
@@ -71,7 +70,7 @@ export function createMeasurementDemo({ intl }: SharedDemoOptions): Demo {
         createModel() {
             return {
                 description: intl.formatMessage({ id: "demos.measurement.description" }),
-                mainWidget: <Measurement mapId={MAP_ID} />
+                mainWidget: <Measurement />
             };
         }
     };
@@ -86,9 +85,9 @@ export function createMapNavigationDemo({ intl }: SharedDemoOptions): Demo {
                 description: intl.formatMessage({ id: "demos.mapNavigation.description" }),
                 tools: (
                     <>
-                        <ZoomIn mapId={MAP_ID} />
-                        <ZoomOut mapId={MAP_ID} />
-                        <InitialExtent mapId={MAP_ID} />
+                        <ZoomIn />
+                        <ZoomOut />
+                        <InitialExtent />
                     </>
                 )
             };
@@ -103,7 +102,7 @@ export function createGeolocationDemo({ intl }: SharedDemoOptions): Demo {
         createModel() {
             return {
                 description: intl.formatMessage({ id: "demos.geolocation.description" }),
-                tools: <Geolocation mapId={MAP_ID} />
+                tools: <Geolocation />
             };
         }
     };
@@ -116,7 +115,7 @@ export function createSpatialBookmarksDemo({ intl }: SharedDemoOptions): Demo {
         createModel() {
             return {
                 description: intl.formatMessage({ id: "demos.spatialBookmarks.description" }),
-                mainWidget: <SpatialBookmarks mapId={MAP_ID} />
+                mainWidget: <SpatialBookmarks />
             };
         }
     };
@@ -129,7 +128,7 @@ export function createPrintingDemo({ intl }: SharedDemoOptions): Demo {
         createModel() {
             return {
                 description: intl.formatMessage({ id: "demos.printing.description" }),
-                mainWidget: <Printing mapId={MAP_ID} />
+                mainWidget: <Printing />
             };
         }
     };

@@ -10,26 +10,21 @@ import {
     Select
 } from "@open-pioneer/chakra-integration";
 import { createLogger } from "@open-pioneer/core";
-import { MapModel, useMapModel } from "@open-pioneer/map";
+import { MapModel, MapModelProps, useMapModel } from "@open-pioneer/map";
 import { NotificationService } from "@open-pioneer/notifier";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { useIntl, useService } from "open-pioneer:react-hooks";
 import { FC, FormEvent, useEffect, useState } from "react";
 import { FileFormatType, PrintingController } from "./PrintingController";
-import type { ViewPaddingBehavior, PrintingService } from "./index";
+import type { PrintingService, ViewPaddingBehavior } from "./index";
 
 const LOG = createLogger("printing");
 
 /**
  * This is special property for the Printing.
  */
-export interface PrintingProps extends CommonComponentProps {
-    /**
-     * The id of the map.
-     */
-    mapId: string;
-
+export interface PrintingProps extends CommonComponentProps, MapModelProps {
     /**
      * Whether to respect the map view's padding when printing (default: `"auto"`).
      *
@@ -44,7 +39,7 @@ export interface PrintingProps extends CommonComponentProps {
 export const Printing: FC<PrintingProps> = (props) => {
     const intl = useIntl();
 
-    const { mapId, viewPadding = "auto" } = props;
+    const { viewPadding = "auto" } = props;
     const { containerProps } = useCommonComponentProps("printing", props);
     const [selectedFileFormat, setSelectedFileFormat] = useState<FileFormatType>("pdf");
     const [title, setTitle] = useState<string>("");
@@ -52,7 +47,7 @@ export const Printing: FC<PrintingProps> = (props) => {
 
     const notifier = useService<NotificationService>("notifier.NotificationService");
 
-    const { map } = useMapModel(mapId);
+    const { map } = useMapModel(props);
     const controller = useController(map, intl, viewPadding);
 
     function changeFileFormat(fileFormat: string) {

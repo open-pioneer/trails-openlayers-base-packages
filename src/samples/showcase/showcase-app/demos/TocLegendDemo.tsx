@@ -7,7 +7,6 @@ import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { Toc } from "@open-pioneer/toc";
 import { useIntl } from "open-pioneer:react-hooks";
 import { useId } from "react";
-import { MAP_ID } from "../MapConfigProviderImpl";
 import { Demo, SharedDemoOptions } from "./Demo";
 
 export function createTocAndLegendDemo({ intl, mapModel }: SharedDemoOptions): Demo {
@@ -58,7 +57,6 @@ function TocLegendView() {
                     }
                 >
                     <Toc
-                        mapId={MAP_ID}
                         showTools={true}
                         basemapSwitcherProps={{
                             allowSelectingEmptyBasemap: true
@@ -76,7 +74,7 @@ function TocLegendView() {
                         </SectionHeading>
                     }
                 >
-                    <Legend mapId={MAP_ID} showBaseLayers={true} />
+                    <Legend showBaseLayers={true} />
                 </TitledSection>
             </Box>
         </>
