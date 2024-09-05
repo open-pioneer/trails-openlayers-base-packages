@@ -22,7 +22,3 @@ The `mapId` or `map` properties are now optional on individual components.
 You can use the `DefaultMapProvider` to configure an implicit default value.
 
 Note that configuring _neither_ a default _nor_ an explicit `map` or `mapId` will trigger a runtime error.
-
-```
-
-```
