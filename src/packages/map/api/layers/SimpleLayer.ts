@@ -27,5 +27,8 @@ export interface SimpleLayerConstructor {
 /**
  * A simple layer type wrapping an OpenLayers layer.
  */
-export type SimpleLayer = Layer;
+export interface SimpleLayer extends Layer {
+    readonly type: "simple";
+}
+
 export const SimpleLayer: SimpleLayerConstructor = SimpleLayerImpl;

@@ -4,6 +4,8 @@ import type { EventSource } from "@open-pioneer/core";
 import type OlBaseLayer from "ol/layer/Base";
 import type { MapModel } from "../MapModel";
 import type { LayerRetrievalOptions } from "../shared";
+import type { SimpleLayer } from "./SimpleLayer";
+import type { WMSLayer, WMSSublayer } from "./WMSLayer";
 
 /** Events emitted by the {@link Layer} and other layer types. */
 export interface LayerBaseEvents {
@@ -215,3 +217,10 @@ export interface SublayersCollection<SublayerType = Sublayer>
      */
     getSublayers(options?: LayerRetrievalOptions): SublayerType[];
 }
+
+// TODO: Think of a better name, maybe refactor old names to something different
+type LayerUnion = SimpleLayer | WMSLayer;
+
+type SublayerUnion = WMSSublayer;
+
+type AnyLayer = LayerUnion | SublayerUnion;

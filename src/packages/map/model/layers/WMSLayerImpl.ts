@@ -52,6 +52,10 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
         this.#updateLayersParam();
     }
 
+    get type() {
+        return "wms" as const;
+    }
+
     get legend() {
         return undefined;
     }

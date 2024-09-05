@@ -39,6 +39,8 @@ export interface WMSSublayerConfig extends LayerBaseConfig {
 
 /** Represents a WMS layer. */
 export interface WMSLayer extends Layer {
+    readonly type: "wms";
+
     readonly sublayers: SublayersCollection<WMSSublayer>;
 
     /** The URL of the WMS service that was used during layer construction. */
