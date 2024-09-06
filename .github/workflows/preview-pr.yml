@@ -40,6 +40,8 @@ jobs:
         run: |
           WORKFLOW_RUN=$(gh run list -c ${{ github.event.pull_request.head.sha }} -w "test-and-build.yml" -e push --json databaseId --limit 1 | jq .[0].databaseId -r)
           echo "Latest workflow run: $WORKFLOW_RUN"
+        env: 
+          GH_TOKEN: ${{ github.token }}
 
       - name: Deploy PR Preview
         uses: rossjrw/pr-preview-action@v1.4.7
