@@ -9,18 +9,19 @@ import {
     InputRightAddon,
     InputRightElement
 } from "@open-pioneer/chakra-integration";
-import { useMapModel, useProjection } from "@open-pioneer/map";
-import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
-import { get as getProjection, transform } from "ol/proj";
-import { useIntl } from "open-pioneer:react-hooks";
-import { FC, useEffect, useState } from "react";
-import { Select } from "chakra-react-select";
-import { Coordinate } from "ol/coordinate";
-import { CloseIcon } from "@chakra-ui/icons";
-import { PackageIntl } from "@open-pioneer/runtime";
-import { EventsKey } from "ol/events";
-import { unByKey } from "ol/Observable";
+import {useMapModel, useProjection} from "@open-pioneer/map";
+import {CommonComponentProps, useCommonComponentProps} from "@open-pioneer/react-utils";
+import {get as getProjection, transform} from "ol/proj";
+import {useIntl} from "open-pioneer:react-hooks";
+import {FC, useEffect, useState} from "react";
+import {Select} from "chakra-react-select";
+import {Coordinate} from "ol/coordinate";
+import {CloseIcon} from "@chakra-ui/icons";
+import {PackageIntl} from "@open-pioneer/runtime";
+import {EventsKey} from "ol/events";
+import {unByKey} from "ol/Observable";
 import OlMap from "ol/Map";
+
 const DEFAULT_PRECISION = 3;
 
 /**
