@@ -4,7 +4,6 @@
  * @vitest-environment node
  */
 import { afterEach, expect, it, vi } from "vitest";
-import { Sublayer } from "../api/layers/base";
 import { AbstractLayerBase, AbstractLayerBaseOptions } from "./AbstractLayerBase";
 import { MapModelImpl } from "./MapModelImpl";
 import { SublayersCollectionImpl } from "./SublayersCollectionImpl";

@@ -69,7 +69,7 @@ export interface LayerBaseConfig {
 export interface AnyLayerBaseType<AdditionalEvents = {}>
     extends EventSource<LayerBaseEvents & AdditionalEvents> {
     /**
-     * Possible layer types.
+     * Identifies the type of this layer.
      */
     readonly type: AnyLayerTypes;
 
@@ -173,7 +173,7 @@ export interface LayerConfig extends LayerBaseConfig {
  */
 export interface LayerBaseType<AdditionalEvents = {}> extends AnyLayerBaseType<AdditionalEvents> {
     /**
-     * Possible layer types
+     * Identifies the type of this layer.
      */
     readonly type: LayerTypes;
 
@@ -200,7 +200,7 @@ export interface LayerBaseType<AdditionalEvents = {}> extends AnyLayerBaseType<A
  */
 export interface SublayerBaseType extends AnyLayerBaseType {
     /**
-     * Possible sublayer types.
+     * Identifies the type of this sublayer.
      */
     readonly type: SublayerTypes;
 
@@ -253,14 +253,14 @@ export type AnyLayer = Layer | Sublayer;
 export type AnyLayerTypes = AnyLayer["type"];
 
 /**
- * Type guard for checking if the layer is a {@link Sublayer}
+ * Type guard for checking if the layer is a {@link Sublayer}.
  */
 export function isSublayer(layer: AnyLayer): layer is Sublayer {
     return "parentLayer" in layer;
 }
 
 /**
- * Type guard for checking if the layer is a {@link Layer} (and not a {@link Sublayer})
+ * Type guard for checking if the layer is a {@link Layer} (and not a {@link Sublayer}).
  */
 export function isLayer(layer: AnyLayer): layer is Layer {
     return "olLayer" in layer;
