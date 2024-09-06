@@ -9,7 +9,7 @@ on:
 
 jobs:
   wait:
-    name: Preview PR
+    name: Wait for checks
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -32,6 +32,9 @@ jobs:
     timeout-minutes: 5
     needs: wait
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Download artifact
         id: download-artifact
         uses: dawidd6/action-download-artifact@v6
