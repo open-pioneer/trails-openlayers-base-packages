@@ -36,19 +36,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Find latest workflow run
+      - name: Download latest build artifact
         run: |
           WORKFLOW_RUN=$(gh run list -c ${{ github.event.pull_request.head.sha }} -w "test-and-build.yml" -e push --json databaseId --limit 1 | jq .[0].databaseId -r)
           echo "Latest workflow run: $WORKFLOW_RUN"
-          echo "WORKFLOW_RUN=$WORKFLOW_RUN" >> $GITHUB_ENV
+          
+          gh run download $WORKFLOW_RUN -n build
         env: 
           GH_TOKEN: ${{ github.token }}
-
-      - name: Download site artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: build
-          run-id: ${{ env.WORKFLOW_RUN }}
 
       - name: Deploy PR Preview
         uses: rossjrw/pr-preview-action@v1.4.7
