@@ -316,6 +316,9 @@ importers:
       '@open-pioneer/runtime':
         specifier: ^2.1.7
         version: 2.1.7(qkqsbwnrsxepkmv7rmx2bt5chi)
+      chakra-react-select:
+        specifier: ^4.7.6
+        version: 4.9.1(3svyllrx4j2kvkpkxv2v67k5e4)
       ol:
         specifier: ^9.2.4
         version: 9.2.4
@@ -325,6 +328,9 @@ importers:
       react:
         specifier: ^18.3.1
         version: 18.3.1
+      react-icons:
+        specifier: ^5.2.1
+        version: 5.2.1(react@18.3.1)
     devDependencies:
       '@open-pioneer/map-test-utils':
         specifier: workspace:^
