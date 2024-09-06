@@ -17,6 +17,32 @@ import { StyleLike } from "ol/style/Style";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, useEffect, useState } from "react";
 import { MeasurementController, MeasurementType } from "./MeasurementController";
+import LineString from "ol/geom/LineString";
+import Polygon from "ol/geom/Polygon";
+
+/** Emitted when a new measurement is being added to the map. */
+export interface MeasurementsAddEvent {
+    kind: "add-measurement";
+    geometry: MeasurementGeometry;
+}
+
+/** Emitted when a measurement is being removed from the map. */
+export interface MeasurementsRemoveEvent {
+    kind: "remove-measurement";
+    geometry: MeasurementGeometry;
+}
+
+/**
+ * A change event emitted by {@link Measurement} when measurements change.
+ *
+ * NOTE: Non-exhaustive. More event types may be added in a future version.
+ **/
+export type MeasurementsChangeEvent = MeasurementsAddEvent | MeasurementsRemoveEvent;
+
+/**
+ * Represents the geometry of a measurement.
+ */
+export type MeasurementGeometry = LineString | Polygon;
 
 /**
  * This is for special properties of the Measurement.
@@ -36,31 +62,29 @@ export interface MeasurementProps extends CommonComponentProps {
      * The style for the finished drawn feature's geometry.
      */
     finishedFeatureStyle?: StyleLike;
+
+    /**
+     * List of measurements to be rendered when the component is initialized.
+     */
+    predefinedMeasurements?: MeasurementGeometry[];
+
+    /**
+     * Event handler that is called whenever a measurement is added or removed.
+     */
+    onMeasurementsChange?: (event: MeasurementsChangeEvent) => void;
 }
 
 /**
- * The `Measurement` component can be used in an app to switch between distance and area measurements and to delete all current measurements.
+ * The `Measurement` component can be used in an app to measure geometries (areas or lines) on the map.
  */
 export const Measurement: FC<MeasurementProps> = (props) => {
     const intl = useIntl();
-
-    const { mapId, activeFeatureStyle, finishedFeatureStyle } = props;
+    const { mapId } = props;
     const { containerProps } = useCommonComponentProps("measurement", props);
     const [selectedMeasurement, setMeasurement] = useState<MeasurementType>("distance");
     const label = (id: string) => intl.formatMessage({ id: id });
-
     const mapState = useMapModel(mapId);
-    const controller = useController(mapState.map, intl);
-
-    // Synchronize styles with controller
-    useEffect(() => {
-        controller?.setActiveFeatureStyle(activeFeatureStyle ?? getDefaultActiveFeatureStyle());
-    }, [controller, activeFeatureStyle]);
-    useEffect(() => {
-        controller?.setFinishedFeatureStyle(
-            finishedFeatureStyle ?? getDefaultFinishedFeatureStyle()
-        );
-    }, [controller, finishedFeatureStyle]);
+    const controller = useController(mapState.map, props, intl);
 
     // Start / Stop measurement on selection change
     useEffect(() => {
@@ -115,13 +139,18 @@ export const Measurement: FC<MeasurementProps> = (props) => {
 };
 
 /** Creates a MeasurementController instance for the given map. */
-function useController(map: MapModel | undefined, intl: PackageIntl) {
+function useController(map: MapModel | undefined, props: MeasurementProps, intl: PackageIntl) {
+    const {
+        activeFeatureStyle,
+        finishedFeatureStyle,
+        onMeasurementsChange,
+        predefinedMeasurements
+    } = props;
     const [controller, setController] = useState<MeasurementController | undefined>(undefined);
     useEffect(() => {
         if (!map) {
             return;
         }
-
         const controller = new MeasurementController(map.olMap, {
             getContinueMessage() {
                 return intl.formatMessage({ id: "tooltips.continue" });
@@ -135,12 +164,30 @@ function useController(map: MapModel | undefined, intl: PackageIntl) {
                 });
             }
         });
+
         setController(controller);
         return () => {
             controller.destroy();
             setController(undefined);
         };
     }, [map, intl]);
+
+    // Synchronize styles with controller
+    useEffect(() => {
+        controller?.setActiveFeatureStyle(activeFeatureStyle ?? getDefaultActiveFeatureStyle());
+    }, [controller, activeFeatureStyle]);
+    useEffect(() => {
+        controller?.setFinishedFeatureStyle(
+            finishedFeatureStyle ?? getDefaultFinishedFeatureStyle()
+        );
+    }, [controller, finishedFeatureStyle]);
+    useEffect(() => {
+        controller?.setMeasurementSourceChangedHandler(onMeasurementsChange);
+    }, [controller, onMeasurementsChange]);
+
+    useEffect(() => {
+        controller?.setPredefinedMeasurements(predefinedMeasurements ?? []);
+    }, [controller, predefinedMeasurements]);
     return controller;
 }
 

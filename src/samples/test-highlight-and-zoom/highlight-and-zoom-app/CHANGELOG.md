@@ -1,5 +1,13 @@
 # highlight-and-zoom-app
 
+## 0.0.10
+
+### Patch Changes
+
+-   Updated dependencies [b152428]
+-   Updated dependencies [291ccb6]
+    -   @open-pioneer/map@0.6.1
+
 ## 0.0.9
 
 ### Patch Changes

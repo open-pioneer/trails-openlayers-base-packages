@@ -1,5 +1,19 @@
 # @open-pioneer/printing
 
+## 0.2.0
+
+### Minor Changes
+
+-   3e7d978: Wrap the content of the printing widget into a `<form>`.
+    This change also fixes invalid DOM ids that were accidentally reused for the two form items.
+
+### Patch Changes
+
+-   b152428: Update trails dependencies
+-   Updated dependencies [b152428]
+-   Updated dependencies [291ccb6]
+    -   @open-pioneer/map@0.6.1
+
 ## 0.1.3
 
 ### Patch Changes

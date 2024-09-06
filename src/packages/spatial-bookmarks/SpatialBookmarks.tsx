@@ -20,11 +20,11 @@ import { MapModel, useMapModel } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { PackageIntl } from "@open-pioneer/runtime";
 import classNames from "classnames";
-import { Provider as JotaiProvider, useAtomValue } from "jotai";
 import { useIntl, useService } from "open-pioneer:react-hooks";
 import { FC, KeyboardEvent, ReactNode, useEffect, useRef, useState } from "react";
 import { PiMapTrifold, PiTrashSimpleLight } from "react-icons/pi";
 import { Bookmark, SpatialBookmarkViewModel } from "./SpatialBookmarksViewModel";
+import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 
 type UIMode = "list" | "create" | "delete";
 
@@ -44,14 +44,7 @@ export const SpatialBookmarks: FC<SpatialBookmarksProps> = (props) => {
         "local-storage.LocalStorageService"
     );
     const viewModel = useViewModel(map, localStorageService);
-    return (
-        viewModel && (
-            // Makes the store accessible to useAtom() etc. in the UI
-            <JotaiProvider store={viewModel.store}>
-                <SpatialBookmarkUI {...props} viewModel={viewModel} />
-            </JotaiProvider>
-        )
-    );
+    return viewModel && <SpatialBookmarkUI {...props} viewModel={viewModel} />;
 };
 
 function SpatialBookmarkUI(props: SpatialBookmarksProps & { viewModel: SpatialBookmarkViewModel }) {
@@ -59,8 +52,7 @@ function SpatialBookmarkUI(props: SpatialBookmarksProps & { viewModel: SpatialBo
     const intl = useIntl();
     const listItemNodes = useRef<HTMLElement[]>([]);
     const [scrollToLastItem, setScrollToLastItem] = useState(false);
-
-    const bookmarks = useAtomValue(viewModel.bookmarks);
+    const bookmarks = useReactiveSnapshot(() => viewModel.bookmarks, [viewModel]);
     const [bookmarkName, setBookmarkName] = useState<string>("");
     const isValidBookmarkName = bookmarkName.trim().length > 0; // use trim to avoid bookmarks with space character only
     const { containerProps } = useCommonComponentProps("spatial-bookmarks", props);

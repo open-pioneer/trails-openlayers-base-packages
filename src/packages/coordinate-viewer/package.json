@@ -1,6 +1,6 @@
 {
     "name": "@open-pioneer/coordinate-viewer",
-    "version": "0.5.3",
+    "version": "0.5.4",
     "description": "This package provides a UI component to show the current coordinates at the users current mouse position.",
     "license": "Apache-2.0",
     "main": "index.ts",
@@ -17,17 +17,17 @@
         "build": "build-pioneer-package"
     },
     "peerDependencies": {
-        "@open-pioneer/chakra-integration": "^1.1.3",
+        "@open-pioneer/chakra-integration": "^1.1.4",
         "@open-pioneer/map": "workspace:^",
-        "@open-pioneer/runtime": "^2.1.6",
-        "@open-pioneer/react-utils": "^1.0.0",
+        "@open-pioneer/react-utils": "^1.0.1",
+        "@open-pioneer/runtime": "^2.1.7",
         "ol": "^9.2.4",
-        "react": "^18.3.1",
-        "proj4": "^2.9.0"
+        "proj4": "^2.9.0",
+        "react": "^18.3.1"
     },
     "devDependencies": {
-        "@open-pioneer/test-utils": "^1.1.3",
         "@open-pioneer/map-test-utils": "workspace:^",
+        "@open-pioneer/test-utils": "^1.1.4",
         "openlayers-base-packages": "workspace:*"
     },
     "publishConfig": {

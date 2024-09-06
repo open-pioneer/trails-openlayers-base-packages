@@ -1,5 +1,16 @@
 # @open-pioneer/selection
 
+## 0.2.4
+
+### Patch Changes
+
+-   291ccb6: Automatically select initial selection-source.
+-   b152428: Update trails dependencies
+-   da18bda: The `onSelectionSourceChange` event is no longer thrown if user selects the currently selected source again.
+-   Updated dependencies [b152428]
+-   Updated dependencies [291ccb6]
+    -   @open-pioneer/map@0.6.1
+
 ## 0.2.3
 
 ### Patch Changes

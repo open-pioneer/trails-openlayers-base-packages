@@ -1,6 +1,6 @@
 {
     "name": "@open-pioneer/printing",
-    "version": "0.1.3",
+    "version": "0.2.0",
     "description": "This package provides a UI component to export the current map view as a printable file.",
     "license": "Apache-2.0",
     "main": "index.ts",
@@ -17,23 +17,23 @@
         "build": "build-pioneer-package"
     },
     "peerDependencies": {
-        "@open-pioneer/chakra-integration": "^1.1.3",
+        "@open-pioneer/chakra-integration": "^1.1.4",
+        "@open-pioneer/core": "^1.3.0",
         "@open-pioneer/map": "workspace:^",
-        "@open-pioneer/runtime": "^2.1.6",
-        "@open-pioneer/react-utils": "^1.0.0",
-        "@open-pioneer/core": "^1.2.3",
-        "@open-pioneer/notifier": "^0.3.5",
-        "ol": "^9.2.4",
-        "react": "^18.3.1",
+        "@open-pioneer/notifier": "^0.3.6",
+        "@open-pioneer/react-utils": "^1.0.1",
+        "@open-pioneer/runtime": "^2.1.7",
         "classnames": "^2.3.2",
         "html2canvas": "^1.4.1",
-        "jspdf": "^2.5.1"
+        "jspdf": "^2.5.1",
+        "ol": "^9.2.4",
+        "react": "^18.3.1"
     },
     "devDependencies": {
-        "@open-pioneer/test-utils": "^1.1.3",
         "@open-pioneer/map-test-utils": "workspace:^",
-        "test-utils": "workspace:*",
-        "openlayers-base-packages": "workspace:*"
+        "@open-pioneer/test-utils": "^1.1.4",
+        "openlayers-base-packages": "workspace:*",
+        "test-utils": "workspace:*"
     },
     "publishConfig": {
         "directory": "dist",

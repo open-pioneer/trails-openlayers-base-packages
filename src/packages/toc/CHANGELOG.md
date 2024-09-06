@@ -1,5 +1,16 @@
 # @open-pioneer/toc
 
+## 0.4.4
+
+### Patch Changes
+
+-   b152428: Update trails dependencies
+-   Updated dependencies [291ccb6]
+-   Updated dependencies [b152428]
+-   Updated dependencies [291ccb6]
+    -   @open-pioneer/basemap-switcher@0.4.4
+    -   @open-pioneer/map@0.6.1
+
 ## 0.4.3
 
 ### Patch Changes

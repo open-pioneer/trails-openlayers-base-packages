@@ -7,7 +7,6 @@ import { ScaleBar } from "@open-pioneer/scale-bar";
 import { ScaleViewer } from "@open-pioneer/scale-viewer";
 import { useIntl } from "open-pioneer:react-hooks";
 import { MAP_ID } from "../map/MapConfigProviderImpl";
-import { CoordinateSearch } from "@open-pioneer/coordinate-search";
 import { CoordinateSearchComponent } from "./CoordinateSearch";
 
 export function Footer() {

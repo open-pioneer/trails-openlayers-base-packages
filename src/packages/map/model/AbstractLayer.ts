@@ -37,6 +37,8 @@ export abstract class AbstractLayer<AdditionalEvents = {}>
 
         this.#visible = config.visible ?? true;
         this.#loadState = getSourceState(getSource(this.#olLayer));
+
+        this.__setVisible(this.#visible); // apply initial visibility
     }
 
     get visible(): boolean {

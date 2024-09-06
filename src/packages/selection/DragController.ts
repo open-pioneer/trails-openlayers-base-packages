@@ -6,7 +6,6 @@ import { unByKey } from "ol/Observable";
 import Overlay from "ol/Overlay";
 import { mouseActionButton } from "ol/events/condition";
 import Geometry from "ol/geom/Geometry";
-import { SelectionMethods } from "./Selection";
 import { DragBox, DragPan } from "ol/interaction";
 import PointerInteraction from "ol/interaction/Pointer";
 
@@ -33,28 +32,15 @@ export class DragController {
 
     constructor(
         olMap: OlMap,
-        selectMethode: string,
         tooltipMessage: string,
         tooltipDisabledMessage: string,
         onExtentSelected: (geometry: Geometry) => void
     ) {
-        let viewPort;
-        /**
-         * Notice for Projectdeveloper
-         * Add cases for more Selectionmethods
-         */
-        switch (selectMethode) {
-            case SelectionMethods.extent:
-            default:
-                viewPort = this.initViewport(olMap);
-                this.interactionResources.push(
-                    this.createDragBox(olMap, onExtentSelected, viewPort, this.interactionResources)
-                );
-                this.interactionResources.push(
-                    this.createDrag(olMap, viewPort, this.interactionResources)
-                );
-                break;
-        }
+        const viewPort = this.initViewport(olMap);
+        this.interactionResources.push(
+            this.createDragBox(olMap, onExtentSelected, viewPort, this.interactionResources)
+        );
+        this.interactionResources.push(this.createDrag(olMap, viewPort, this.interactionResources));
 
         this.tooltip = this.createHelpTooltip(olMap, tooltipMessage);
         this.olMap = olMap;
