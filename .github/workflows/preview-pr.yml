@@ -39,7 +39,9 @@ jobs:
       - name: Download latest build artifact
         run: |
           WORKFLOW_RUN=$(gh run list -c ${{ github.event.pull_request.head.sha }} -w "test-and-build.yml" -e push --json databaseId --limit 1 | jq .[0].databaseId -r)
-          echo "Latest workflow run: $WORKFLOW_RUN"          
+          echo "Latest workflow run: $WORKFLOW_RUN"
+
+          mkdir site && cd site;
 
           echo "Downloading build artifact"
           gh run download $WORKFLOW_RUN -n build
@@ -51,4 +53,4 @@ jobs:
       - name: Deploy PR Preview
         uses: rossjrw/pr-preview-action@v1.4.7
         with:
-          source-dir: ./www/
+          source-dir: ./site/www/
