@@ -1,1 +1,7 @@
 @import "ol/ol.css";
+
+/* Move attribution according to map view's padding */
+.map-container .ol-viewport .ol-attribution {
+    bottom: var(--map-padding-bottom);
+    right: var(--map-padding-right);
+}
