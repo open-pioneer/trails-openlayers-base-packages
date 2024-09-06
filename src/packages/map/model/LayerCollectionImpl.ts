@@ -2,7 +2,14 @@
 // SPDX-License-Identifier: Apache-2.0
 import { EventEmitter, createLogger } from "@open-pioneer/core";
 import OlBaseLayer from "ol/layer/Base";
-import { LayerCollection, LayerCollectionEvents, Layer, LayerRetrievalOptions } from "../api";
+import {
+    LayerCollection,
+    LayerCollectionEvents,
+    Layer,
+    LayerRetrievalOptions,
+    AnyLayer,
+    Sublayer
+} from "../api";
 import { AbstractLayer } from "./AbstractLayer";
 import { AbstractLayerBase } from "./AbstractLayerBase";
 import { MapModelImpl } from "./MapModelImpl";
@@ -11,6 +18,9 @@ const LOG = createLogger("map:LayerCollection");
 
 const BASE_LAYER_Z = 0;
 const OPERATION_LAYER_INITIAL_Z = 1;
+
+type LayerType = AbstractLayer & Layer;
+type LayerBaseType = (AbstractLayerBase & Layer) | (AbstractLayerBase & Sublayer);
 
 /**
  * Z index for layers that should always be rendered on top of all other layers.
@@ -27,16 +37,16 @@ export class LayerCollectionImpl
     #map: MapModelImpl;
 
     /** Top level layers (base layers, operational layers). No sublayers. */
-    #topLevelLayers = new Set<AbstractLayer>();
+    #topLevelLayers = new Set<LayerType>();
 
     /** Index of _all_ layer instances, including sublayers. */
-    #layersById = new Map<string, AbstractLayerBase>();
+    #layersById = new Map<string, LayerBaseType>();
 
     /** Reverse index of _all_ layers that have an associated OpenLayers layer. */
-    #layersByOlLayer: WeakMap<OlBaseLayer, AbstractLayer> = new WeakMap();
+    #layersByOlLayer: WeakMap<OlBaseLayer, LayerType> = new WeakMap();
 
     /** Currently active base layer. */
-    #activeBaseLayer: AbstractLayer | undefined;
+    #activeBaseLayer: LayerType | undefined;
 
     /** next z-index for operational layer. currently just auto-increments. */
     #nextIndex = OPERATION_LAYER_INITIAL_Z;
@@ -57,21 +67,17 @@ export class LayerCollectionImpl
     }
 
     addLayer(layer: Layer): void {
-        if (!isLayerInstance(layer)) {
-            throw new Error(
-                `Layer is not a valid layer instance. Use one of the classes provided by the map package instead.`
-            );
-        }
+        checkLayerInstance(layer);
 
         layer.__attach(this.#map);
         this.#addLayer(layer);
     }
 
-    getBaseLayers(): AbstractLayer[] {
+    getBaseLayers(): Layer[] {
         return this.getAllLayers().filter((layer) => layer.isBaseLayer);
     }
 
-    getActiveBaseLayer(): AbstractLayer | undefined {
+    getActiveBaseLayer(): Layer | undefined {
         return this.#activeBaseLayer;
     }
 
@@ -100,11 +106,11 @@ export class LayerCollectionImpl
         return true;
     }
 
-    getOperationalLayers(options?: LayerRetrievalOptions): AbstractLayer[] {
+    getOperationalLayers(options?: LayerRetrievalOptions): Layer[] {
         return this.getAllLayers(options).filter((layer) => !layer.isBaseLayer);
     }
 
-    getAllLayers(options?: LayerRetrievalOptions): AbstractLayer[] {
+    getAllLayers(options?: LayerRetrievalOptions): Layer[] {
         const layers = Array.from(this.#topLevelLayers.values());
         if (options?.sortByDisplayOrder) {
             sortLayersByDisplayOrder(layers);
@@ -112,7 +118,7 @@ export class LayerCollectionImpl
         return layers;
     }
 
-    getLayerById(id: string): AbstractLayerBase | undefined {
+    getLayerById(id: string): AnyLayer | undefined {
         return this.#layersById.get(id);
     }
 
@@ -133,7 +139,7 @@ export class LayerCollectionImpl
     /**
      * Adds the given layer to the map and all relevant indices.
      */
-    #addLayer(model: AbstractLayer) {
+    #addLayer(model: LayerType) {
         this.#indexLayer(model);
 
         const olLayer = model.olLayer;
@@ -158,7 +164,7 @@ export class LayerCollectionImpl
      * Removes the given layer from the map and all relevant indices.
      * The layer will be destroyed.
      */
-    #removeLayer(model: AbstractLayer | AbstractLayerBase) {
+    #removeLayer(model: LayerType | LayerBaseType) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         if (!this.#topLevelLayers.has(model as any)) {
             LOG.warn(
@@ -177,13 +183,17 @@ export class LayerCollectionImpl
         this.#topLevelLayers.delete(model);
         this.#unIndexLayer(model);
         if (this.#activeBaseLayer === model) {
-            this.#updateBaseLayer(this.getBaseLayers()[0]);
+            const newBaselayer = this.getBaseLayers()[0];
+            if (newBaselayer) {
+                checkLayerInstance(newBaselayer);
+            }
+            this.#updateBaseLayer(newBaselayer);
         }
         model.destroy();
         this.emit("changed");
     }
 
-    #updateBaseLayer(model: AbstractLayer | undefined) {
+    #updateBaseLayer(model: LayerType | undefined) {
         if (this.#activeBaseLayer === model) {
             return;
         }
@@ -207,10 +217,10 @@ export class LayerCollectionImpl
     /**
      * Index the layer and all its children.
      */
-    #indexLayer(model: AbstractLayer) {
+    #indexLayer(model: LayerType) {
         // layer id -> layer (or sublayer)
         const registrations: [string, OlBaseLayer | undefined][] = [];
-        const visit = (model: AbstractLayer | AbstractLayerBase) => {
+        const visit = (model: LayerType | (AbstractLayerBase & Sublayer)) => {
             const id = model.id;
             const olLayer = "olLayer" in model ? model.olLayer : undefined;
             if (this.#layersById.has(id)) {
@@ -226,7 +236,7 @@ export class LayerCollectionImpl
             // Register this layer with the maps.
             this.#layersById.set(id, model);
             if (olLayer) {
-                this.#layersByOlLayer.set(olLayer, model as AbstractLayer);
+                this.#layersByOlLayer.set(olLayer, model as LayerType); // ol is present --> not a sublayer
             }
             registrations.push([id, olLayer]);
 
@@ -280,6 +290,10 @@ function sortLayersByDisplayOrder(layers: Layer[]) {
     });
 }
 
-function isLayerInstance(object: unknown): object is AbstractLayer {
-    return object instanceof AbstractLayer;
+function checkLayerInstance(object: Layer): asserts object is Layer & AbstractLayer {
+    if (!(object instanceof AbstractLayer)) {
+        throw new Error(
+            `Layer is not a valid layer instance. Use one of the classes provided by the map package instead.`
+        );
+    }
 }

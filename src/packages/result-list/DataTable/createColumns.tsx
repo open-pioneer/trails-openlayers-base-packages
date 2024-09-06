@@ -53,7 +53,6 @@ function createColumn(options: CreateColumnOptions) {
     const { propertyName, getPropertyValue } = column;
     const hasPropertyValue = getPropertyValue != null || propertyName != null;
 
-    // TODO: Another issue
     if (!hasPropertyValue) {
         throw new Error(
             "Display columns are not yet implemented. You must either specify 'propertyName' or 'getPropertyValue'."
