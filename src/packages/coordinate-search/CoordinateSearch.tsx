@@ -46,12 +46,12 @@ export interface CoordinateSearchProps extends CommonComponentProps {
     /**
      * Function that gets called if some cordinates or projection is called.
      */
-    onSelect: (selectProps: CoordsSelectEvent) => void;
+    onSelect?: (selectProps: CoordsSelectEvent) => void;
 
     /**
      * Function, that gets called, if the search is cleared.
      */
-    onClear: () => void;
+    onClear?: () => void;
 }
 
 /**
@@ -151,7 +151,9 @@ export const CoordinateSearch: FC<CoordinateSearchProps> = (props) => {
                                 size="sm"
                                 onClick={() => {
                                     setCoordinateSearchInput("");
-                                    onClear();
+                                    if (onClear) {
+                                        onClear();
+                                    }
                                 }}
                                 isDisabled={coordinateSearchInput == ""}
                                 padding={"0px"}
@@ -265,7 +267,7 @@ function onCoordinateSearch(
     coordinateString: string,
     coordinateSystem: string | undefined,
     mapCoordinateSystem: string,
-    onSelect: (selectProps: CoordsSelectEvent) => void
+    onSelect?: (selectProps: CoordsSelectEvent) => void
 ) {
     if (
         coordinateSystem == undefined ||
@@ -274,7 +276,9 @@ function onCoordinateSearch(
     )
         return;
     const coordsForZoom = getCoordsForZoom(coordinateString, coordinateSystem, mapCoordinateSystem);
-    onSelect({ coords: coordsForZoom, projection: mapCoordinateSystem });
+    if (onSelect) {
+        onSelect({coords: coordsForZoom, projection: mapCoordinateSystem});
+    }
 }
 
 function getCoordsForZoom(
