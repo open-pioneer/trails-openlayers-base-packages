@@ -82,7 +82,9 @@ jobs:
     name: "Deploy site"
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    needs: build_site
+    needs:
+      - checks
+      - build_site
     steps:
       - name: Checkout
         uses: actions/checkout@v4
