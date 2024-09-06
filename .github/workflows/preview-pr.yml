@@ -22,7 +22,7 @@ jobs:
         uses: lewagon/wait-on-check-action@v1.3.4
         with:
           ref: ${{ github.event.pull_request.head.sha }}
-          check-name: "Test and Build"
+          check-name: "Build samples and documentation"
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           wait-interval: 10
 
@@ -36,16 +36,21 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Download artifact
-        id: download-artifact
-        uses: dawidd6/action-download-artifact@v6
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          workflow: test-and-build.yml
-          commit: ${{ github.event.pull_request.head.sha }}
-          name: build
+      - name: Download latest build artifact
+        run: |
+          WORKFLOW_RUN=$(gh run list -c ${{ github.event.pull_request.head.sha }} -w "test-and-build.yml" -e push --json databaseId --limit 1 | jq .[0].databaseId -r)
+          echo "Latest workflow run: $WORKFLOW_RUN"
+
+          mkdir site && cd site;
+
+          echo "Downloading build artifact"
+          gh run download $WORKFLOW_RUN -n build
+          echo "Download successful:"
+          ls -alh
+        env: 
+          GH_TOKEN: ${{ github.token }}
 
       - name: Deploy PR Preview
         uses: rossjrw/pr-preview-action@v1.4.7
         with:
-          source-dir: ./www/
+          source-dir: ./site/www/
