@@ -18,6 +18,7 @@ jobs:
       # Checks and builds run on all branches (on _push_) but this workflow runs only on PR events.
       # If you know a smarter way, let us now.
       - name: Wait for other checks to succeed
+        if: github.event.action != 'closed'
         uses: lewagon/wait-on-check-action@v1.3.4
         with:
           ref: ${{ github.event.pull_request.head.sha }}
