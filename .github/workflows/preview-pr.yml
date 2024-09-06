@@ -36,9 +36,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # Timing problem with artifacts?
+      - name: Sleep
+        if: github.event.action != 'closed'
+        run: sleep 5
+
       - name: Download artifact
-        id: download-artifact
         uses: dawidd6/action-download-artifact@v6
+        if: github.event.action != 'closed'
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: test-and-build.yml
