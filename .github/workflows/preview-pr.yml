@@ -40,7 +40,7 @@ jobs:
         run: |
           WORKFLOW_RUN=$(gh run list -c ${{ github.event.pull_request.head.sha }} -w "test-and-build.yml" -e push --json databaseId --limit 1 | jq .[0].databaseId -r)
           echo "Latest workflow run: $WORKFLOW_RUN"
-          echo $WORKFLOW_RUN >> $GITHUB_ENV
+          echo "WORKFLOW_RUN=$WORKFLOW_RUN" >> $GITHUB_ENV
         env: 
           GH_TOKEN: ${{ github.token }}
 
