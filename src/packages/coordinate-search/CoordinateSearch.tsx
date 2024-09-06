@@ -269,7 +269,7 @@ function onCoordinateSearch(
     if (
         coordinateSystem == undefined ||
         coordinateString == "" ||
-        checkIfStringInvalid(coordinateString, coordinateSystem) == true
+        checkIfStringInvalid(coordinateString, coordinateSystem)
     )
         return;
     const coordsForZoom = getCoordsForZoom(coordinateString, coordinateSystem, mapCoordinateSystem);
@@ -286,8 +286,7 @@ function getCoordsForZoom(
         parseFloat(coordsString[0]!.replace(",", ".")),
         parseFloat(coordsString[1]!.replace(",", "."))
     ];
-    const tfCoords = transformCoordinates(coords, coordinateSystem, mapCoordinateSystem);
-    return tfCoords;
+    return transformCoordinates(coords, coordinateSystem, mapCoordinateSystem);
 }
 
 function transformCoordinates(
@@ -295,8 +294,7 @@ function transformCoordinates(
     source: string,
     destination: string
 ): number[] {
-    const transformed = transform(coordinates, source, destination);
-    return transformed;
+    return transform(coordinates, source, destination);
 }
 
 /* Separate function for easier testing */
@@ -305,8 +303,7 @@ export function useCoordinatesString(
     precision: number | undefined
 ): string {
     const intl = useIntl();
-    const coordinatesString = coordinates ? formatCoordinates(coordinates, precision, intl) : "";
-    return coordinatesString;
+    return coordinates ? formatCoordinates(coordinates, precision, intl) : "";
 }
 function formatCoordinates(
     coordinates: number[],
@@ -329,8 +326,7 @@ function formatCoordinates(
         minimumFractionDigits: precision
     });
 
-    const coordinatesString = xString + " " + yString;
-    return coordinatesString;
+    return xString + " " + yString;
 }
 function useCoordinates(map: OlMap | undefined): { coordinates: Coordinate | undefined } {
     const [coordinates, setCoordinates] = useState<Coordinate | undefined>();
