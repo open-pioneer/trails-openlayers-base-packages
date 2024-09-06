@@ -2,7 +2,13 @@
 // SPDX-License-Identifier: Apache-2.0
 import type { Options as WMSSourceOptions } from "ol/source/ImageWMS";
 import { WMSLayerImpl } from "../../model/layers/WMSLayerImpl";
-import type { LayerBaseConfig, Layer, SublayersCollection, Sublayer, LayerConfig } from "./base";
+import type {
+    LayerBaseConfig,
+    SublayersCollection,
+    LayerConfig,
+    LayerBaseType,
+    SublayerBaseType
+} from "./base";
 
 /**
  * Configuration options to construct a WMS layer.
@@ -38,7 +44,7 @@ export interface WMSSublayerConfig extends LayerBaseConfig {
 }
 
 /** Represents a WMS layer. */
-export interface WMSLayer extends Layer {
+export interface WMSLayer extends LayerBaseType {
     readonly type: "wms";
 
     readonly sublayers: SublayersCollection<WMSSublayer>;
@@ -48,7 +54,8 @@ export interface WMSLayer extends Layer {
 }
 
 /** Represents a WMS sublayer */
-export interface WMSSublayer extends Sublayer {
+export interface WMSSublayer extends SublayerBaseType {
+    readonly type: "wms-sublayer";
     /**
      * The name of the WMS sublayer in the service's capabilities.
      *

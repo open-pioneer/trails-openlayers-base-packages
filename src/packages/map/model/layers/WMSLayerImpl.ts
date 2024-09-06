@@ -222,6 +222,10 @@ class WMSSublayerImpl extends AbstractLayerBase implements WMSSublayer {
         this.#sublayers = new SublayersCollectionImpl(constructSublayers(config.sublayers));
     }
 
+    get type() {
+        return "wms-sublayer" as const;
+    }
+
     get name(): string | undefined {
         return this.#name;
     }

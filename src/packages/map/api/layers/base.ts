@@ -6,6 +6,7 @@ import type { MapModel } from "../MapModel";
 import type { LayerRetrievalOptions } from "../shared";
 import type { SimpleLayer } from "./SimpleLayer";
 import type { WMSLayer, WMSSublayer } from "./WMSLayer";
+import { WMTSLayer } from "./WMTSLayer";
 
 /** Events emitted by the {@link Layer} and other layer types. */
 export interface LayerBaseEvents {
@@ -23,7 +24,7 @@ export interface LayerBaseEvents {
 export type LayerLoadState = "not-loaded" | "loading" | "loaded" | "error";
 
 /** Custom function to check the state of a layer and returning a "loaded" or "error". */
-export type HealthCheckFunction = (layer: LayerBase) => Promise<"loaded" | "error">;
+export type HealthCheckFunction = (layer: Layer) => Promise<"loaded" | "error">;
 
 /**
  * Configuration options supported by all layer types (layers and sublayers).
@@ -65,8 +66,13 @@ export interface LayerBaseConfig {
  * Instances of this interface cannot be constructed directly; use a real layer
  * class such as {@link SimpleLayer} instead.
  */
-export interface LayerBase<AdditionalEvents = {}>
+export interface AnyLayerBaseType<AdditionalEvents = {}>
     extends EventSource<LayerBaseEvents & AdditionalEvents> {
+    /**
+     * Possible layer types.
+     */
+    readonly type: AnyLayerTypes;
+
     /** The map this layer belongs to. */
     readonly map: MapModel;
 
@@ -165,7 +171,12 @@ export interface LayerConfig extends LayerBaseConfig {
  * Instances of this interface cannot be constructed directly; use a real layer
  * class such as {@link SimpleLayer} instead.
  */
-export interface Layer<AdditionalEvents = {}> extends LayerBase<AdditionalEvents> {
+export interface LayerBaseType<AdditionalEvents = {}> extends AnyLayerBaseType<AdditionalEvents> {
+    /**
+     * Possible layer types
+     */
+    readonly type: LayerTypes;
+
     /**
      * The load state of a layer.
      */
@@ -187,12 +198,17 @@ export interface Layer<AdditionalEvents = {}> extends LayerBase<AdditionalEvents
 /**
  * Represents a sublayer of another layer.
  */
-export interface Sublayer extends LayerBase {
+export interface SublayerBaseType extends AnyLayerBaseType {
+    /**
+     * Possible sublayer types.
+     */
+    readonly type: SublayerTypes;
+
     /**
      * The direct parent of this layer instance.
      * This can either be the parent layer or another sublayer.
      */
-    readonly parent: Layer | Sublayer;
+    readonly parent: AnyLayer;
 
     /**
      * The parent layer that owns this sublayer.
@@ -218,9 +234,34 @@ export interface SublayersCollection<SublayerType = Sublayer>
     getSublayers(options?: LayerRetrievalOptions): SublayerType[];
 }
 
-// TODO: Think of a better name, maybe refactor old names to something different
-type LayerUnion = SimpleLayer | WMSLayer;
+/**
+ * Union type for all layers (extending {@link LayerBaseType})
+ */
+export type Layer = SimpleLayer | WMSLayer | WMTSLayer;
+export type LayerTypes = Layer["type"];
 
-type SublayerUnion = WMSSublayer;
+/**
+ * Union type for all sublayers (extending {@link SublayerBaseType}
+ */
+export type Sublayer = WMSSublayer;
+export type SublayerTypes = Sublayer["type"];
 
-type AnyLayer = LayerUnion | SublayerUnion;
+/**
+ * Union for all types of layers
+ */
+export type AnyLayer = Layer | Sublayer;
+export type AnyLayerTypes = AnyLayer["type"];
+
+/**
+ * Type guard for checking if the layer is a {@link Sublayer}
+ */
+export function isSublayer(layer: AnyLayer): layer is Sublayer {
+    return "parentLayer" in layer;
+}
+
+/**
+ * Type guard for checking if the layer is a {@link Layer} (and not a {@link Sublayer})
+ */
+export function isLayer(layer: AnyLayer): layer is Layer {
+    return "olLayer" in layer;
+}

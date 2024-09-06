@@ -508,7 +508,6 @@ it("reacts to changes in layer visibility", async () => {
     expect(nextImages.length).toBe(1);
 });
 
-// TODO: Listen to change events in Legend component
 it("reacts to changes in layer legend attributes", async () => {
     const { mapId, registry } = await setupMap({
         layers: [

@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import { EventEmitter, EventNames, createLogger } from "@open-pioneer/core";
 import { v4 as uuid4v } from "uuid";
-import { LayerBase, LayerBaseEvents, Sublayer } from "../api";
+import { AnyLayerBaseType, AnyLayerTypes, LayerBaseEvents, Sublayer } from "../api";
 import { MapModelImpl } from "./MapModelImpl";
 import { SublayersCollectionImpl } from "./SublayersCollectionImpl";
 
@@ -21,7 +21,7 @@ export interface AbstractLayerBaseOptions {
  */
 export abstract class AbstractLayerBase<AdditionalEvents = {}>
     extends EventEmitter<LayerBaseEvents & AdditionalEvents>
-    implements LayerBase
+    implements AnyLayerBaseType
 {
     #map: MapModelImpl | undefined;
 
@@ -66,6 +66,8 @@ export abstract class AbstractLayerBase<AdditionalEvents = {}>
     get attributes(): Record<string | symbol, unknown> {
         return this.#attributes;
     }
+
+    abstract get type(): AnyLayerTypes;
 
     abstract get visible(): boolean;
 

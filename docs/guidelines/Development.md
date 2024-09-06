@@ -7,7 +7,6 @@
     -   Exceptions: direct commits for trivial changes (typos in documentation, administrative work)
 -   Commits are squashed when PRs are merged
 -   Include a changeset entry with your PR when appropriate
--   Include fully qualified issue id in PR title / final commit message (e.g. `open-pioneer/trails-starter#1234`) [TODO: check]
 -   Remove auto-generated commit messages from PR
     -   Exceptions: `Co-authored-by: ...`
 -   Project Board: <https://github.com/orgs/open-pioneer/projects/5>
