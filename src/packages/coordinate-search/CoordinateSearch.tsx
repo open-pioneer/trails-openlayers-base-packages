@@ -24,6 +24,16 @@ import OlMap from "ol/Map";
 const DEFAULT_PRECISION = 3;
 
 /**
+ * Event type emitted when the user selects an item.
+ */
+export interface CoordsSelectEvent {
+    /** The selected coordinates in the projection of the map */
+    coords: Coordinate;
+    /** The current map projection and projection of the coords. */
+    projection: string;
+}
+
+/**
  * These are special properties for the CoordinateSearch.
  */
 export interface CoordinateSearchProps extends CommonComponentProps {
@@ -32,8 +42,14 @@ export interface CoordinateSearchProps extends CommonComponentProps {
      */
     mapId: string;
 
-    onSelect: (coords: Coordinate) => void;
+    /**
+     * Function that gets called if some cordinates or projection is called.
+     */
+    onSelect: (selectProps: CoordsSelectEvent) => void;
 
+    /**
+     * Function, that gets called, if the search is cleared.
+     */
     onClear: () => void;
 }
 
@@ -93,8 +109,8 @@ export const CoordinateSearch: FC<CoordinateSearchProps> = (props) => {
     return (
         <Box {...containerProps}>
             <Flex flexDirection={"row"} flexDir={"row"}>
-                <InputGroup>
-                    <InputGroup>
+                <InputGroup className="coordinateSearchGroup">
+                    <InputGroup className="coordinateInputGroup">
                         <Input
                             type="text"
                             value={coordinateSearchInput}
@@ -130,6 +146,7 @@ export const CoordinateSearch: FC<CoordinateSearchProps> = (props) => {
                         />
                         <InputRightElement>
                             <IconButton
+                                id="clearCoordinateSearch"
                                 size="sm"
                                 onClick={() => {
                                     setCoordinateSearchInput("");
@@ -153,6 +170,7 @@ export const CoordinateSearch: FC<CoordinateSearchProps> = (props) => {
                             options={availableCoordinateSystems}
                             menuPlacement="top"
                             aria-label={intl.formatMessage({ id: "coordinateSearch.ariaLabel" })}
+                            classNamePrefix={"coordinate-Search-Select"}
                             chakraStyles={{
                                 menu: (base) => ({
                                     ...base,
@@ -246,7 +264,7 @@ function onCoordinateSearch(
     coordinateString: string,
     coordinateSystem: string | undefined,
     mapCoordinateSystem: string,
-    onSelect: (coords: Coordinate) => void
+    onSelect: (selectProps: CoordsSelectEvent) => void
 ) {
     if (
         coordinateSystem == undefined ||
@@ -255,7 +273,7 @@ function onCoordinateSearch(
     )
         return;
     const coordsForZoom = getCoordsForZoom(coordinateString, coordinateSystem, mapCoordinateSystem);
-    onSelect(coordsForZoom);
+    onSelect({ coords: coordsForZoom, projection: mapCoordinateSystem });
 }
 
 function getCoordsForZoom(

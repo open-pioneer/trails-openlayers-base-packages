@@ -31,7 +31,7 @@ export function CoordinateSearchComponent() {
     return (
         <CoordinateSearch
             mapId={MAP_ID}
-            onSelect={(coords) => onCoordinateSearch(coords)}
+            onSelect={({ coords }) => onCoordinateSearch(coords)}
             onClear={onSearchCleared}
         />
     );
