@@ -32,14 +32,13 @@ jobs:
     concurrency: preview-${{ github.ref }}
     timeout-minutes: 5
     needs: wait
+    permissions: write-all
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Download latest build artifact
         run: |
-          set -x
-
           # Use build result of latest push for local branches
           WORKFLOW_EVENT=
           if [[ "${{ github.event.pull_request.head.repo.full_name }}" != "${{ github.event.pull_request.base.repo.full_name }}" ]]; then
