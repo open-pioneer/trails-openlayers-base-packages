@@ -38,8 +38,6 @@ jobs:
 
       - name: Download latest build artifact
         run: |
-          set -x
-
           # Use build result of latest push for local branches
           WORKFLOW_EVENT=
           if [[ "${{ github.event.pull_request.head.repo.full_name }}" != "${{ github.event.pull_request.base.repo.full_name }}" ]]; then
@@ -56,10 +54,17 @@ jobs:
           gh run download $WORKFLOW_RUN -n build
           echo "Download successful:"
           ls -alh
-        env: 
+        env:
           GH_TOKEN: ${{ github.token }}
+
+      - name: Configure git user
+        shell: bash
+        run: |
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
 
       - name: Deploy PR Preview
         uses: rossjrw/pr-preview-action@v1.4.7
         with:
           source-dir: ./site/www/
+          token: ${{ secrets.DEPLOY_TOKEN }}
