@@ -32,6 +32,7 @@ jobs:
     concurrency: preview-${{ github.ref }}
     timeout-minutes: 5
     needs: wait
+    permissions: write-all
     steps:
       - name: Checkout
         uses: actions/checkout@v4
