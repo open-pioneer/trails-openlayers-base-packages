@@ -72,4 +72,5 @@ jobs:
           source-dir: ./site/www/
           umbrella-dir: "openlayers-base-packages/pr-previews"
           deploy-repository: open-pioneer/trails-pr-previews
+          preview-branch: "main"
           token: ${{ secrets.DEPLOY_TOKEN }}
