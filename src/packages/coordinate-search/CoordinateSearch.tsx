@@ -105,6 +105,14 @@ export const CoordinateSearch: FC<CoordinateSearchProps> = (props) => {
             : coordinates;
     const coordinatesString = useCoordinatesString(coordinates, DEFAULT_PRECISION);
     const displayString = coordinatesString ? coordinatesString : "";
+    const [displayPlaceholder, setDisplayPlaceholder] = useState<boolean>(false);
+    const stringInvalid =
+        !displayPlaceholder &&
+        checkIfStringInvalid(intl, coordinateSearchInput, coordinateSearchSystem.value);
+    useEffect(() => {
+        if (coordinateSearchInput === "") setDisplayPlaceholder(true);
+        if (coordinateSearchInput !== "") setDisplayPlaceholder(false);
+    }, [coordinateSearchInput]);
 
     return (
         <Box {...containerProps}>
@@ -113,29 +121,22 @@ export const CoordinateSearch: FC<CoordinateSearchProps> = (props) => {
                     <InputGroup className="coordinateInputGroup">
                         <Input
                             type="text"
-                            value={coordinateSearchInput}
+                            value={displayPlaceholder ? displayString : coordinateSearchInput}
                             id="coordinateInput"
                             onChange={(eve) => {
                                 setCoordinateSearchInput(eve.target.value);
                             }}
-                            isInvalid={checkIfStringInvalid(
-                                coordinateSearchInput,
-                                coordinateSearchSystem.value
-                            )}
-                            backgroundColor={
-                                checkIfStringInvalid(
-                                    coordinateSearchInput,
-                                    coordinateSearchSystem.value
-                                )
-                                    ? "red.100"
-                                    : "unset"
-                            }
+                            isInvalid={stringInvalid}
+                            backgroundColor={stringInvalid ? "red.100" : "unset"}
                             placeholder={displayString}
                             errorBorderColor="red.500"
                             aria-label={intl.formatMessage({ id: "coordinateSearch.ariaLabel" })}
                             onKeyDown={(eve) => {
+                                if (displayPlaceholder && !eve.ctrlKey)
+                                    setDisplayPlaceholder(false);
                                 if (eve.key == "Enter") {
                                     onCoordinateSearch(
+                                        intl,
                                         coordinateSearchInput,
                                         coordinateSearchSystem.value,
                                         mapProjectionCode,
@@ -145,20 +146,22 @@ export const CoordinateSearch: FC<CoordinateSearchProps> = (props) => {
                             }}
                         />
                         <InputRightElement>
-                            <IconButton
-                                id="clearCoordinateSearch"
-                                size="sm"
-                                onClick={() => {
-                                    setCoordinateSearchInput("");
-                                    onClear();
-                                }}
-                                isDisabled={coordinateSearchInput == ""}
-                                padding={"0px"}
-                                icon={<CloseIcon />}
-                                aria-label={intl.formatMessage({
-                                    id: "coordinateSearch.ariaLabel"
-                                })}
-                            />
+                            {coordinateSearchInput !== "" && (
+                                <IconButton
+                                    id="clearCoordinateSearch"
+                                    size="sm"
+                                    onClick={() => {
+                                        setCoordinateSearchInput("");
+                                        onClear();
+                                    }}
+                                    isDisabled={coordinateSearchInput == ""}
+                                    padding={"0px"}
+                                    icon={<CloseIcon />}
+                                    aria-label={intl.formatMessage({
+                                        id: "coordinateSearch.ariaLabel"
+                                    })}
+                                />
+                            )}
                         </InputRightElement>
                     </InputGroup>
                     <InputRightAddon padding={"0px"} borderLeft={"0px"}>
@@ -171,6 +174,7 @@ export const CoordinateSearch: FC<CoordinateSearchProps> = (props) => {
                             menuPlacement="top"
                             aria-label={intl.formatMessage({ id: "coordinateSearch.ariaLabel" })}
                             classNamePrefix={"coordinate-Search-Select"}
+                            isSearchable={false}
                             chakraStyles={{
                                 menu: (base) => ({
                                     ...base,
@@ -203,6 +207,7 @@ export const CoordinateSearch: FC<CoordinateSearchProps> = (props) => {
                                 if (e?.value !== undefined) {
                                     setCoordinateSearchSystem(e);
                                     onCoordinateSearch(
+                                        intl,
                                         coordinateSearchInput,
                                         e?.value,
                                         mapProjectionCode,
@@ -218,24 +223,38 @@ export const CoordinateSearch: FC<CoordinateSearchProps> = (props) => {
     );
 };
 
-function checkIfStringInvalid(inputString: string, coordinateSystem: string) {
+function checkIfStringInvalid(intl: PackageIntl, inputString: string, coordinateSystem: string) {
+    console.log("test");
     if (inputString == "") return false;
     if (!inputString.includes(" ")) return true;
     if (inputString.split(" ").length != 2) return true;
-    if (!/^\d+$/.test(inputString.replace(" ", ""))) return true;
+    let inputStringWithoutHundredDivider = inputString;
+    if (intl.locale === "de") {
+        if (!/^\d+(,\d+)? \d+(,\d+)?$/.test(inputString.replaceAll(".", ""))) return true;
+        inputStringWithoutHundredDivider = inputString.replaceAll(".", "");
+    } else if (intl.locale === "en") {
+        if (!/^\d+(.\d+)? \d+(.\d+)?$/.test(inputString.replaceAll(",", ""))) return true;
+        inputStringWithoutHundredDivider = inputString.replaceAll(",", "");
+    }
+    console.log(inputStringWithoutHundredDivider);
     const choosenProjection = getProjection(coordinateSystem);
     if (choosenProjection !== null && choosenProjection.getExtent() !== null) {
         if (
             choosenProjection.getExtent().length == 4 &&
-            choosenProjection.getExtent()[0]! > parseFloat(inputString.split(" ")[0]!) &&
-            choosenProjection.getExtent()[1]! > parseFloat(inputString.split(" ")[1]!) &&
-            choosenProjection.getExtent()[2]! < parseFloat(inputString.split(" ")[0]!) &&
-            choosenProjection.getExtent()[3]! < parseFloat(inputString.split(" ")[1]!)
+            choosenProjection.getExtent()[0]! >
+                parseFloat(inputStringWithoutHundredDivider.split(" ")[0]!) &&
+            choosenProjection.getExtent()[1]! >
+                parseFloat(inputStringWithoutHundredDivider.split(" ")[1]!) &&
+            choosenProjection.getExtent()[2]! <
+                parseFloat(inputStringWithoutHundredDivider.split(" ")[0]!) &&
+            choosenProjection.getExtent()[3]! <
+                parseFloat(inputStringWithoutHundredDivider.split(" ")[1]!)
         ) {
+            console.log("test1");
             return true;
         }
     }
-    const coordsString = inputString.split(" ");
+    const coordsString = inputStringWithoutHundredDivider.split(" ");
     const coords = [
         parseFloat(coordsString[0]!.replace(",", ".")),
         parseFloat(coordsString[1]!.replace(",", "."))
@@ -261,6 +280,7 @@ function checkIfStringInvalid(inputString: string, coordinateSystem: string) {
 }
 
 function onCoordinateSearch(
+    intl: PackageIntl,
     coordinateString: string,
     coordinateSystem: string | undefined,
     mapCoordinateSystem: string,
@@ -269,10 +289,22 @@ function onCoordinateSearch(
     if (
         coordinateSystem == undefined ||
         coordinateString == "" ||
-        checkIfStringInvalid(coordinateString, coordinateSystem) == true
+        checkIfStringInvalid(intl, coordinateString, coordinateSystem) == true
     )
         return;
-    const coordsForZoom = getCoordsForZoom(coordinateString, coordinateSystem, mapCoordinateSystem);
+    let inputStringWithoutHundredDivider = coordinateString;
+    if (intl.locale === "de") {
+        if (!/^\d+(,\d+)? \d+(,\d+)?$/.test(coordinateString.replaceAll(".", ""))) return true;
+        inputStringWithoutHundredDivider = coordinateString.replaceAll(".", "");
+    } else if (intl.locale === "en") {
+        if (!/^\d+(.\d+)? \d+(.\d+)?$/.test(coordinateString.replaceAll(",", ""))) return true;
+        inputStringWithoutHundredDivider = coordinateString.replaceAll(",", "");
+    }
+    const coordsForZoom = getCoordsForZoom(
+        inputStringWithoutHundredDivider,
+        coordinateSystem,
+        mapCoordinateSystem
+    );
     onSelect({ coords: coordsForZoom, projection: mapCoordinateSystem });
 }
 
