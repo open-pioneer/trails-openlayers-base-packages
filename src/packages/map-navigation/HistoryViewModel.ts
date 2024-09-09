@@ -1,17 +1,12 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Flex } from "@open-pioneer/chakra-integration";
-import { NaviHistoryForward, NaviHistoryBackward } from "@open-pioneer/map-navigation";
-import { useIntl } from "open-pioneer:react-hooks";
-import { MAP_ID } from "../map/MapConfigProviderImpl";
-import { Coordinate } from "ol/coordinate";
-import { useEffect, useRef, useState } from "react";
-import { MapModel, useMapModel } from "@open-pioneer/map";
+import { MapModel } from "@open-pioneer/map";
 import { View } from "ol";
 import { EventsKey } from "ol/events";
 import { unByKey } from "ol/Observable";
 import OlMap from "ol/Map";
 import { Reactive, reactive, ReactiveMap, reactiveMap } from "@conterra/reactivity-core";
+import { Coordinate } from "ol/coordinate";
 
 interface mapViewState {
     /** Map resolution */
@@ -20,43 +15,8 @@ interface mapViewState {
     /** Map center */
     center: Coordinate;
 }
-export function MapViewNavigation() {
-    const intl = useIntl();
-    const { map } = useMapModel(MAP_ID);
-    const [mapViews, setMapViews] = useState<Map<number, mapViewState>>(
-        new Map<number, mapViewState>()
-    );
-    const [activeViewId, setActiveViewId] = useState<number>(-1);
-    const useLocalContext = (data: { activeViewId: number }) => {
-        const ctx = useRef(data);
-        ctx.current = data;
-        return ctx;
-    };
-    const ctx = useLocalContext({ activeViewId });
 
-    function viewChange(viewDirection: string) {
-        if (viewDirection === "forward") {
-            setActiveViewId(activeViewId + 1);
-        } else {
-            setActiveViewId(activeViewId - 1);
-        }
-    }
-
-    return (
-        <Flex
-            role="toolbar"
-            aria-label={intl.formatMessage({ id: "ariaLabel.toolbar" })}
-            direction="row"
-            gap={1}
-            padding={1}
-        >
-            <NaviHistoryBackward viewModel={historyViewModel} />
-            <NaviHistoryForward viewModel={historyViewModel} />
-        </Flex>
-    );
-}
-
-class HistoryViewModel {
+export class HistoryViewModel {
     private olMap: OlMap;
     private handle: EventsKey | undefined;
 
