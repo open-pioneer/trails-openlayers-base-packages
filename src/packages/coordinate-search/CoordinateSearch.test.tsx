@@ -282,10 +282,11 @@ it("should successfully call onClear if Button is clicked", async () => {
     );
 
     await waitForMapMount("map");
-    const { coordInput, clearButton } = await waitForCoordinateSearch();
+    const { coordInput, coordinateSearchGroup } = await waitForCoordinateSearch();
     await act(async () => {
         await user.type(coordInput, "404000 5700000{enter}");
     });
+    const clearButton = getClearButton(coordinateSearchGroup);
     expect(cleared).toBe(false);
     await act(async () => {
         await user.click(clearButton);
@@ -294,34 +295,31 @@ it("should successfully call onClear if Button is clicked", async () => {
 });
 
 async function waitForCoordinateSearch() {
-    const { coordsSearchDiv, coordInput, clearButton, projSelect } = await waitFor(async () => {
-        const coordsSearchDiv = await screen.findByTestId("coordinate-search");
+    const { coordsSearchDiv, coordInput, coordinateSearchGroup, projSelect } = await waitFor(
+        async () => {
+            const coordsSearchDiv = await screen.findByTestId("coordinate-search");
 
-        const coordinateSearchGroup = coordsSearchDiv.querySelector(".coordinateSearchGroup");
-        if (!coordinateSearchGroup) {
-            throw new Error("coordinate search group not rendered");
+            const coordinateSearchGroup = coordsSearchDiv.querySelector(".coordinateSearchGroup");
+            if (!coordinateSearchGroup) {
+                throw new Error("coordinate search group not rendered");
+            }
+
+            const coordInput = coordinateSearchGroup.querySelector("#coordinateInput");
+            if (!coordInput) {
+                throw new Error("coordinate search input field not rendered");
+            }
+
+            const projSelect: HTMLElement | null =
+                coordinateSearchGroup.querySelector("#selectCoordinateSystem");
+            if (!projSelect) {
+                throw new Error("coordinate search projection select not rendered");
+            }
+
+            return { coordsSearchDiv, coordInput, coordinateSearchGroup, projSelect };
         }
+    );
 
-        const coordInput = coordinateSearchGroup.querySelector("#coordinateInput");
-        if (!coordInput) {
-            throw new Error("coordinate search input field not rendered");
-        }
-
-        const clearButton = coordinateSearchGroup.querySelector("#clearCoordinateSearch");
-        if (!clearButton) {
-            throw new Error("coordinate search clear button not rendered");
-        }
-
-        const projSelect: HTMLElement | null =
-            coordinateSearchGroup.querySelector("#selectCoordinateSystem");
-        if (!projSelect) {
-            throw new Error("coordinate search projection select not rendered");
-        }
-
-        return { coordsSearchDiv, coordInput, clearButton, projSelect };
-    });
-
-    return { coordsSearchDiv, coordInput, clearButton, projSelect };
+    return { coordsSearchDiv, coordInput, coordinateSearchGroup, projSelect };
 }
 
 function showDropdown(projSelect: HTMLElement) {
@@ -335,4 +333,12 @@ function getCurrentOptions(projSelect: HTMLElement) {
     return Array.from(
         projSelect.getElementsByClassName("coordinate-Search-Select__option")
     ) as HTMLElement[];
+}
+
+function getClearButton(coordinateSearchGroup: Element) {
+    const clearButton = coordinateSearchGroup.querySelector("#clearCoordinateSearch");
+    if (!clearButton) {
+        throw new Error("coordinate search clear button not rendered");
+    }
+    return clearButton;
 }

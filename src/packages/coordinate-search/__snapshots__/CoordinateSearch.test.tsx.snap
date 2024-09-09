@@ -32,29 +32,7 @@ exports[`should successfully create a coordinate search component 1`] = `
         <div
           class="chakra-input__right-element css-1lds0jh"
           data-theme="light"
-        >
-          <button
-            aria-label="coordinateSearch.ariaLabel"
-            class="chakra-button css-fx3q01"
-            data-theme="light"
-            disabled=""
-            id="clearCoordinateSearch"
-            type="button"
-          >
-            <svg
-              aria-hidden="true"
-              class="chakra-icon css-onkibi"
-              data-theme="light"
-              focusable="false"
-              viewBox="0 0 24 24"
-            >
-              <path
-                d="M.439,21.44a1.5,1.5,0,0,0,2.122,2.121L11.823,14.3a.25.25,0,0,1,.354,0l9.262,9.263a1.5,1.5,0,1,0,2.122-2.121L14.3,12.177a.25.25,0,0,1,0-.354l9.263-9.262A1.5,1.5,0,0,0,21.439.44L12.177,9.7a.25.25,0,0,1-.354,0L2.561.44A1.5,1.5,0,0,0,.439,2.561L9.7,11.823a.25.25,0,0,1,0,.354Z"
-                fill="currentColor"
-              />
-            </svg>
-          </button>
-        </div>
+        />
       </div>
       <div
         class="chakra-input__right-addon css-vqkjic"
@@ -90,29 +68,19 @@ exports[`should successfully create a coordinate search component 1`] = `
               >
                 EPSG:25832
               </div>
-              <div
-                class="coordinate-Search-Select__input-container css-18euh9p"
-                data-theme="light"
-                data-value=""
-              >
-                <input
-                  aria-autocomplete="list"
-                  aria-expanded="false"
-                  aria-haspopup="true"
-                  aria-label="coordinateSearch.ariaLabel"
-                  autocapitalize="none"
-                  autocomplete="off"
-                  autocorrect="off"
-                  class="coordinate-Search-Select__input css-10wwmqn"
-                  data-theme="light"
-                  id="react-select-2-input"
-                  role="combobox"
-                  spellcheck="false"
-                  tabindex="0"
-                  type="text"
-                  value=""
-                />
-              </div>
+              <input
+                aria-autocomplete="list"
+                aria-expanded="false"
+                aria-haspopup="true"
+                aria-label="coordinateSearch.ariaLabel"
+                aria-readonly="true"
+                class="css-mohuvp-dummyInput-DummyInput"
+                id="react-select-2-input"
+                inputmode="none"
+                role="combobox"
+                tabindex="0"
+                value=""
+              />
             </div>
             <div
               class="coordinate-Search-Select__indicators css-hfbj6y"
