@@ -46,11 +46,6 @@ export interface ZoomProps extends CommonComponentProps, RefAttributes<HTMLButto
      * The button will either zoom in or zoom out depending on this value.
      */
     zoomDirection: "in" | "out";
-
-    /**
-     * Disable the button while the animation is running.
-     */
-    disableZoomBetweenAnimation?: boolean;
 }
 
 /**
@@ -60,7 +55,7 @@ export const Zoom: FC<ZoomProps> = forwardRef(function Zoom(
     props: ZoomProps,
     ref: ForwardedRef<HTMLButtonElement>
 ) {
-    const { mapId, zoomDirection, disableZoomBetweenAnimation } = props;
+    const { mapId, zoomDirection } = props;
     const { map } = useMapModel(mapId);
     const intl = useIntl();
     const [disabled, setDisabled] = useState<boolean>(false);
@@ -69,10 +64,10 @@ export const Zoom: FC<ZoomProps> = forwardRef(function Zoom(
     const { containerProps } = useCommonComponentProps(classNames("zoom", defaultClassName), props);
 
     function zoom() {
-        if (disableZoomBetweenAnimation && disabled) {
+        if (disabled) {
             return;
         }
-        setDisabled(!!disableZoomBetweenAnimation);
+        setDisabled(true);
         const view = map?.olMap.getView();
         let currZoom = view?.getZoom();
 
@@ -91,7 +86,6 @@ export const Zoom: FC<ZoomProps> = forwardRef(function Zoom(
 
     return (
         <ToolButton
-            isDisabled={disabled}
             ref={ref}
             label={buttonLabel}
             icon={buttonIcon}
