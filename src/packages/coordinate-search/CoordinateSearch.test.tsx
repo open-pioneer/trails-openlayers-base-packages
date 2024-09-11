@@ -85,17 +85,13 @@ it("tracks the user's mouse position", async () => {
     act(() => {
         simulateMove(777000, 6698400);
     });
-    expect(coordInput.getAttribute("placeholder")).toMatchInlineSnapshot(
-        '"359.583,582 5.700.009,146"'
-    );
+    expect(coordInput.getAttribute("placeholder")).toMatchInlineSnapshot('"6,980 51,434"');
 
     // Another move + projection change
     act(() => {
         simulateMove(754602, 6664688);
     });
-    expect(coordInput.getAttribute("placeholder")).toMatchInlineSnapshot(
-        '"344.962,195 5.679.378,056"'
-    );
+    expect(coordInput.getAttribute("placeholder")).toMatchInlineSnapshot('"6,779 51,245"');
 });
 it("should format coordinates to correct coordinate string for the corresponding locale and precision", async () => {
     const coords = [3545.08081, 4543543.009];
@@ -154,25 +150,6 @@ it("should display transformed coordinates in selected option", async () => {
     };
 
     let options = getCurrentOptions(projSelect);
-    const option25832 = options.find((option) => option.textContent === "EPSG:25832");
-    if (!option25832) {
-        throw new Error("EPSG 25832 missing in options");
-    }
-
-    await act(async () => {
-        await user.click(option25832);
-    });
-
-    // Simple move
-    act(() => {
-        simulateMove(850000.11, 6789000.95); //map projection is EPSG:3857 (Web Mercator)
-    });
-    expect(coordInput.getAttribute("placeholder")).toMatchInlineSnapshot(
-        '"406,212.433 5,755,069.812"'
-    ); //should display EPSG 25832
-
-    showDropdown(projSelect);
-    options = getCurrentOptions(projSelect);
     const option4326 = options.find((option) => option.textContent === "EPSG:4326");
     if (!option4326) {
         throw new Error("EPSG 4326 missing in options");
@@ -219,6 +196,7 @@ it("should successfully give back the search coordinates in the projection of th
                 mapId={mapId}
                 data-testid="coordinate-search"
                 onSelect={({ coords }) => {
+                    console.log(coords);
                     searchedCoords = coords;
                 }}
                 onClear={() => {}}
@@ -229,9 +207,9 @@ it("should successfully give back the search coordinates in the projection of th
     await waitForMapMount("map");
     const { coordInput } = await waitForCoordinateSearch();
     await act(async () => {
-        await user.type(coordInput, "404000 5700000{enter}");
+        await user.type(coordInput, "7 51{enter}");
     });
-    expect(searchedCoords).toStrictEqual([848105.3430661911, 6700040.519469939]);
+    expect(searchedCoords).toStrictEqual([779236.4355529151, 6621293.722740165]);
 });
 
 it("should successfully give back the projection of the map as callback", async () => {
@@ -257,7 +235,7 @@ it("should successfully give back the projection of the map as callback", async 
     await waitForMapMount("map");
     const { coordInput } = await waitForCoordinateSearch();
     await act(async () => {
-        await user.type(coordInput, "404000 5700000{enter}");
+        await user.type(coordInput, "7 51{enter}");
     });
     expect(callbackProj).toBe("EPSG:3857");
 });

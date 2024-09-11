@@ -7,7 +7,8 @@ import {
     Input,
     InputGroup,
     InputRightAddon,
-    InputRightElement
+    InputRightElement,
+    Tooltip
 } from "@open-pioneer/chakra-integration";
 import { useMapModel, useProjection } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
@@ -43,6 +44,8 @@ export interface CoordinateSearchProps extends CommonComponentProps {
      */
     mapId: string;
 
+    coordinateSystems?: { label: string; value: string }[];
+
     /**
      * Function that gets called if some cordinates or projection is called.
      */
@@ -58,47 +61,35 @@ export interface CoordinateSearchProps extends CommonComponentProps {
  * The `CoordinateSearch`component can be used in an app to render the coordinates at the current mouse position.
  */
 export const CoordinateSearch: FC<CoordinateSearchProps> = (props) => {
-    const { mapId, onSelect, onClear } = props;
+    const {
+        mapId,
+        onSelect,
+        onClear,
+        coordinateSystems = [
+            {
+                label: "EPSG:4326",
+                value: "EPSG:4326"
+            },
+            {
+                label: "EPSG:3857",
+                value: "EPSG:3857"
+            }
+        ]
+    } = props;
     const { containerProps } = useCommonComponentProps("coordinate-search", props);
     const { map } = useMapModel(mapId);
     const intl = useIntl();
     const olMap = map?.olMap;
     const mapProjectionCode = useProjection(olMap)?.getCode() ?? "";
-    const availableCoordinateSystems = [
-        {
-            label: "EPSG:25832",
-            value: "EPSG:25832"
-        },
-        {
-            label: "EPSG:4326",
-            value: "EPSG:4326"
-        },
-        {
-            label: "EPSG:3857",
-            value: "EPSG:3857"
-        },
-        {
-            label: "EPSG:25833",
-            value: "EPSG:25833"
-        }
-        /*{
-            label: "EPSG:31466",
-            value: "EPSG:31466"
-        },
-        {
-            label: "EPSG:31467",
-            value: "EPSG:31467"
-        },
-        {
-            label: "EPSG:3035",
-            value: "EPSG:3035"
-        }*/
-    ];
+    const availableCoordinateSystems = coordinateSystems.filter(
+        (cs) => getProjection(cs.value) != null
+    );
     const [coordinateSearchSystem, setCoordinateSearchSystem] = useState<{
         label: string;
         value: string;
     }>(availableCoordinateSystems[0]!);
     const [coordinateSearchInput, setCoordinateSearchInput] = useState<string>("");
+    let tooltipMessage = "tooltip.basic";
     let { coordinates } = useCoordinates(olMap);
     coordinates =
         coordinates && mapProjectionCode
@@ -109,137 +100,177 @@ export const CoordinateSearch: FC<CoordinateSearchProps> = (props) => {
     const [displayPlaceholder, setDisplayPlaceholder] = useState<boolean>(false);
     const stringInvalid =
         !displayPlaceholder &&
-        checkIfStringInvalid(intl, coordinateSearchInput, coordinateSearchSystem.value);
+        checkIfStringInvalid(
+            intl,
+            coordinateSearchInput,
+            coordinateSearchSystem.value,
+            setTooltipMessage
+        );
     useEffect(() => {
         if (coordinateSearchInput === "") setDisplayPlaceholder(true);
         if (coordinateSearchInput !== "") setDisplayPlaceholder(false);
     }, [coordinateSearchInput]);
 
+    function setTooltipMessage(newId: string) {
+        tooltipMessage = newId;
+    }
+
     return (
         <Box {...containerProps}>
             <Flex flexDirection={"row"} flexDir={"row"}>
-                <InputGroup className="coordinateSearchGroup">
-                    <InputGroup className="coordinateInputGroup">
-                        <Input
-                            type="text"
-                            value={displayPlaceholder ? displayString : coordinateSearchInput}
-                            id="coordinateInput"
-                            onChange={(eve) => {
-                                setCoordinateSearchInput(eve.target.value);
-                            }}
-                            isInvalid={stringInvalid}
-                            backgroundColor={stringInvalid ? "red.100" : "unset"}
-                            placeholder={displayString}
-                            errorBorderColor="red.500"
-                            aria-label={intl.formatMessage({ id: "coordinateSearch.ariaLabel" })}
-                            onKeyDown={(eve) => {
-                                if (displayPlaceholder && !eve.ctrlKey)
-                                    setDisplayPlaceholder(false);
-                                if (eve.key == "Enter") {
-                                    onCoordinateSearch(
-                                        intl,
-                                        coordinateSearchInput,
-                                        coordinateSearchSystem.value,
-                                        mapProjectionCode,
-                                        onSelect
-                                    );
-                                }
-                            }}
-                        />
-                        <InputRightElement>
-                            {coordinateSearchInput !== "" && (
-                                <IconButton
-                                    id="clearCoordinateSearch"
-                                    size="sm"
-                                    onClick={() => {
-                                        setCoordinateSearchInput("");
-                                        if (onClear) {
-                                            onClear();
-                                        }
-                                    }}
-                                    isDisabled={coordinateSearchInput == ""}
-                                    padding={"0px"}
-                                    icon={<CloseIcon />}
-                                    aria-label={intl.formatMessage({
-                                        id: "coordinateSearch.ariaLabel"
-                                    })}
-                                />
-                            )}
-                        </InputRightElement>
-                    </InputGroup>
-                    <InputRightAddon padding={"0px"} borderLeft={"0px"}>
-                        <Select
-                            {...containerProps}
-                            id="selectCoordinateSystem"
-                            value={coordinateSearchSystem}
-                            defaultValue={coordinateSearchSystem}
-                            options={availableCoordinateSystems}
-                            menuPlacement="top"
-                            aria-label={intl.formatMessage({ id: "coordinateSearch.ariaLabel" })}
-                            classNamePrefix={"coordinate-Search-Select"}
-                            isSearchable={false}
-                            chakraStyles={{
-                                menu: (base) => ({
-                                    ...base,
-                                    width: "max-content",
-                                    minWidth: "100%"
-                                }),
-                                control: (base) => ({
-                                    ...base,
-                                    width: "max-content",
-                                    minWidth: "100%",
-                                    color: "white",
-                                    borderleftstyle: "none",
-                                    borderLeftRadius: 0,
-                                    padding: 0
-                                }),
-                                valueContainer: (base) => ({
-                                    ...base,
-                                    paddingEnd: 0
-                                }),
-                                dropdownIndicator: (base, { selectProps: { menuIsOpen } }) => ({
-                                    ...base,
-                                    paddingStart: 0,
-                                    "> svg": {
-                                        transitionDuration: "normal",
-                                        transform: `rotate(${menuIsOpen ? 0 : -180}deg)`
+                <Tooltip
+                    label={intl.formatMessage({ id: tooltipMessage })}
+                    hasArrow
+                    placement="top"
+                    isOpen={stringInvalid}
+                >
+                    <InputGroup className="coordinateSearchGroup">
+                        <InputGroup className="coordinateInputGroup">
+                            <Input
+                                type="text"
+                                value={displayPlaceholder ? displayString : coordinateSearchInput}
+                                id="coordinateInput"
+                                onChange={(eve) => {
+                                    setCoordinateSearchInput(eve.target.value);
+                                }}
+                                isInvalid={stringInvalid}
+                                backgroundColor={stringInvalid ? "red.100" : "unset"}
+                                placeholder={displayString}
+                                errorBorderColor="red.500"
+                                aria-label={intl.formatMessage({
+                                    id: "coordinateSearch.ariaLabel"
+                                })}
+                                onKeyDown={(eve) => {
+                                    if (displayPlaceholder && !eve.ctrlKey)
+                                        setDisplayPlaceholder(false);
+                                    if (eve.key == "Enter") {
+                                        onCoordinateSearch(
+                                            intl,
+                                            coordinateSearchInput,
+                                            coordinateSearchSystem.value,
+                                            mapProjectionCode,
+                                            onSelect
+                                        );
                                     }
-                                })
-                            }}
-                            onChange={(e) => {
-                                if (e?.value !== undefined) {
-                                    setCoordinateSearchSystem(e);
-                                    onCoordinateSearch(
-                                        intl,
-                                        coordinateSearchInput,
-                                        e?.value,
-                                        mapProjectionCode,
-                                        onSelect
-                                    );
-                                }
-                            }}
-                        />
-                    </InputRightAddon>
-                </InputGroup>
+                                }}
+                            />
+                            <InputRightElement>
+                                {coordinateSearchInput !== "" && (
+                                    <IconButton
+                                        id="clearCoordinateSearch"
+                                        size="sm"
+                                        onClick={() => {
+                                            setCoordinateSearchInput("");
+                                            if (onClear) {
+                                                onClear();
+                                            }
+                                        }}
+                                        isDisabled={coordinateSearchInput == ""}
+                                        padding={"0px"}
+                                        icon={<CloseIcon />}
+                                        aria-label={intl.formatMessage({
+                                            id: "coordinateSearch.ariaLabel"
+                                        })}
+                                    />
+                                )}
+                            </InputRightElement>
+                        </InputGroup>
+                        <InputRightAddon padding={"0px"} borderLeft={"0px"}>
+                            <Select
+                                {...containerProps}
+                                id="selectCoordinateSystem"
+                                value={coordinateSearchSystem}
+                                defaultValue={coordinateSearchSystem}
+                                options={availableCoordinateSystems}
+                                menuPlacement="top"
+                                aria-label={intl.formatMessage({
+                                    id: "coordinateSearch.ariaLabel"
+                                })}
+                                classNamePrefix={"coordinate-Search-Select"}
+                                isSearchable={false}
+                                chakraStyles={{
+                                    menu: (base) => ({
+                                        ...base,
+                                        width: "max-content",
+                                        minWidth: "100%"
+                                    }),
+                                    control: (base) => ({
+                                        ...base,
+                                        width: "max-content",
+                                        minWidth: "100%",
+                                        color: "white",
+                                        borderleftstyle: "none",
+                                        borderLeftRadius: 0,
+                                        padding: 0
+                                    }),
+                                    valueContainer: (base) => ({
+                                        ...base,
+                                        paddingEnd: 0
+                                    }),
+                                    dropdownIndicator: (base, { selectProps: { menuIsOpen } }) => ({
+                                        ...base,
+                                        paddingStart: 0,
+                                        "> svg": {
+                                            transitionDuration: "normal",
+                                            transform: `rotate(${menuIsOpen ? 0 : -180}deg)`
+                                        }
+                                    })
+                                }}
+                                onChange={(e) => {
+                                    if (e?.value !== undefined) {
+                                        setCoordinateSearchSystem(e);
+                                        onCoordinateSearch(
+                                            intl,
+                                            coordinateSearchInput,
+                                            e?.value,
+                                            mapProjectionCode,
+                                            onSelect
+                                        );
+                                    }
+                                }}
+                            />
+                        </InputRightAddon>
+                    </InputGroup>
+                </Tooltip>
             </Flex>
         </Box>
     );
 };
 
-function checkIfStringInvalid(intl: PackageIntl, inputString: string, coordinateSystem: string) {
-    console.log("test");
+function checkIfStringInvalid(
+    intl: PackageIntl,
+    inputString: string,
+    coordinateSystem: string,
+    setTooltipMessage?: (newId: string) => void
+) {
     if (inputString == "") return false;
-    if (!inputString.includes(" ")) return true;
-    if (inputString.split(" ").length != 2) return true;
+
+    if (!inputString.includes(" ")) {
+        if (setTooltipMessage) setTooltipMessage("tooltip.space");
+        return true;
+    }
+    if (
+        inputString.split(" ").length != 2 ||
+        inputString.split(" ")[0] == "" ||
+        inputString.split(" ")[1] == ""
+    ) {
+        if (setTooltipMessage) setTooltipMessage("tooltip.2coords");
+        return true;
+    }
     let inputStringWithoutHundredDivider = inputString;
     if (intl.locale === "de") {
-        if (!/^\d+(,\d+)? \d+(,\d+)?$/.test(inputString.replaceAll(".", ""))) return true;
+        if (!/^\d+(,\d+)? \d+(,\d+)?$/.test(inputString.replaceAll(".", ""))) {
+            if (setTooltipMessage) setTooltipMessage("tooltip.dividerDe");
+            return true;
+        }
         inputStringWithoutHundredDivider = inputString.replaceAll(".", "");
     } else if (intl.locale === "en") {
-        if (!/^\d+(.\d+)? \d+(.\d+)?$/.test(inputString.replaceAll(",", ""))) return true;
+        if (!/^\d+(.\d+)? \d+(.\d+)?$/.test(inputString.replaceAll(",", ""))) {
+            if (setTooltipMessage) setTooltipMessage("tooltip.dividerEn");
+            return true;
+        }
         inputStringWithoutHundredDivider = inputString.replaceAll(",", "");
     }
-    console.log(inputStringWithoutHundredDivider);
     const choosenProjection = getProjection(coordinateSystem);
     if (choosenProjection !== null && choosenProjection.getExtent() !== null) {
         if (
@@ -253,7 +284,7 @@ function checkIfStringInvalid(intl: PackageIntl, inputString: string, coordinate
             choosenProjection.getExtent()[3]! <
                 parseFloat(inputStringWithoutHundredDivider.split(" ")[1]!)
         ) {
-            console.log("test1");
+            if (setTooltipMessage) setTooltipMessage("tooltip.extent");
             return true;
         }
     }
@@ -273,10 +304,12 @@ function checkIfStringInvalid(intl: PackageIntl, inputString: string, coordinate
                 proj4326.getExtent()[2]! < tempCoords[0]! &&
                 proj4326.getExtent()[3]! < tempCoords[1]!
             ) {
+                if (setTooltipMessage) setTooltipMessage("tooltip.extent");
                 return true;
             }
         }
     } catch (e) {
+        if (setTooltipMessage) setTooltipMessage("tooltip.projection");
         return true;
     }
     return false;
@@ -297,10 +330,8 @@ function onCoordinateSearch(
         return;
     let inputStringWithoutHundredDivider = coordinateString;
     if (intl.locale === "de") {
-        if (!/^\d+(,\d+)? \d+(,\d+)?$/.test(coordinateString.replaceAll(".", ""))) return true;
         inputStringWithoutHundredDivider = coordinateString.replaceAll(".", "");
     } else if (intl.locale === "en") {
-        if (!/^\d+(.\d+)? \d+(.\d+)?$/.test(coordinateString.replaceAll(",", ""))) return true;
         inputStringWithoutHundredDivider = coordinateString.replaceAll(",", "");
     }
     const coordsForZoom = getCoordsForZoom(

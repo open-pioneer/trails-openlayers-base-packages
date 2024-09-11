@@ -1,3 +1,10 @@
 messages:
   coordinateSearch:
     ariaLabel: Coordinate Search
+  tooltip:
+    basic: "Invalid Input"
+    space: "Invalid Input: Please write the coordinates with withspace."
+    2coords: "Invalid Input: Please write 2 numbers."
+    dividerEn: "Inavlid Input: Please use '.' only as decimal separator."
+    extent: "The coordinates are not in the bounds of the system. Please change system or coordinates."
+    projection: "The projection isnt working. Please change to another system."

@@ -33,6 +33,36 @@ export function CoordinateSearchComponent() {
             mapId={MAP_ID}
             onSelect={({ coords }) => onCoordinateSearch(coords)}
             onClear={onSearchCleared}
+            coordinateSystems={[
+                {
+                    label: "EPSG:25832",
+                    value: "EPSG:25832"
+                },
+                {
+                    label: "EPSG:4326",
+                    value: "EPSG:4326"
+                },
+                {
+                    label: "EPSG:3857",
+                    value: "EPSG:3857"
+                },
+                {
+                    label: "EPSG:25833",
+                    value: "EPSG:25833"
+                },
+                {
+                    label: "EPSG:31466",
+                    value: "EPSG:31466"
+                },
+                {
+                    label: "EPSG:31467",
+                    value: "EPSG:31467"
+                },
+                {
+                    label: "EPSG:3035",
+                    value: "EPSG:3035"
+                }
+            ]}
         />
     );
 }
