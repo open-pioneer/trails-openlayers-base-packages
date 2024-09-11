@@ -9,7 +9,7 @@ import {
 import { PackageIntl } from "@open-pioneer/runtime";
 import classNames from "classnames";
 import { useIntl } from "open-pioneer:react-hooks";
-import { FC, ForwardedRef, RefAttributes, forwardRef } from "react";
+import { FC, ForwardedRef, RefAttributes, forwardRef, useState } from "react";
 import { FiMinus, FiPlus } from "react-icons/fi";
 
 export type ZoomInProps = Omit<ZoomProps, "zoomDirection">;
@@ -46,6 +46,11 @@ export interface ZoomProps extends CommonComponentProps, RefAttributes<HTMLButto
      * The button will either zoom in or zoom out depending on this value.
      */
     zoomDirection: "in" | "out";
+
+    /**
+     * Disable the button while the animation is running.
+     */
+    disableZoomBetweenAnimation?: boolean;
 }
 
 /**
@@ -55,30 +60,38 @@ export const Zoom: FC<ZoomProps> = forwardRef(function Zoom(
     props: ZoomProps,
     ref: ForwardedRef<HTMLButtonElement>
 ) {
-    const { mapId, zoomDirection } = props;
+    const { mapId, zoomDirection, disableZoomBetweenAnimation } = props;
     const { map } = useMapModel(mapId);
     const intl = useIntl();
+    const [disabled, setDisabled] = useState<boolean>(false);
     const { defaultClassName, buttonLabel, buttonIcon } = getDirectionProps(intl, zoomDirection);
 
     const { containerProps } = useCommonComponentProps(classNames("zoom", defaultClassName), props);
 
     function zoom() {
+        if (disableZoomBetweenAnimation && disabled) {
+            return;
+        }
+        setDisabled(!!disableZoomBetweenAnimation);
         const view = map?.olMap.getView();
         let currZoom = view?.getZoom();
 
+        const maxZoom = view?.getMaxZoom() || Number.MAX_SAFE_INTEGER;
+        const minZoom = view?.getMinZoom() || 0;
         if (view && currZoom !== undefined) {
-            if (zoomDirection === "in") {
+            if (zoomDirection === "in" && currZoom < maxZoom) {
                 ++currZoom;
-            } else {
+            } else if (zoomDirection === "out" && currZoom > minZoom) {
                 --currZoom;
             }
 
-            view.animate({ zoom: currZoom, duration: 200 });
+            view.animate({ zoom: currZoom, duration: 200 }, () => setDisabled(false));
         }
     }
 
     return (
         <ToolButton
+            isDisabled={disabled}
             ref={ref}
             label={buttonLabel}
             icon={buttonIcon}
