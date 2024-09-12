@@ -6,7 +6,7 @@ import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/rea
 import { PackageIntl } from "@open-pioneer/runtime";
 import classNames from "classnames";
 import { useIntl } from "open-pioneer:react-hooks";
-import { FC, ForwardedRef, RefAttributes, forwardRef } from "react";
+import { FC, ForwardedRef, RefAttributes, forwardRef, useState } from "react";
 import { FiMinus, FiPlus } from "react-icons/fi";
 
 export type ZoomInProps = Omit<ZoomProps, "zoomDirection">;
@@ -55,22 +55,29 @@ export const Zoom: FC<ZoomProps> = forwardRef(function Zoom(
     const { mapId, zoomDirection } = props;
     const { map } = useMapModel(mapId);
     const intl = useIntl();
+    const [disabled, setDisabled] = useState<boolean>(false);
     const { defaultClassName, buttonLabel, buttonIcon } = getDirectionProps(intl, zoomDirection);
 
     const { containerProps } = useCommonComponentProps(classNames("zoom", defaultClassName), props);
 
     function zoom() {
+        if (disabled) {
+            return;
+        }
+        setDisabled(true);
         const view = map?.olMap.getView();
         let currZoom = view?.getZoom();
 
+        const maxZoom = view?.getMaxZoom() || Number.MAX_SAFE_INTEGER;
+        const minZoom = view?.getMinZoom() || 0;
         if (view && currZoom !== undefined) {
-            if (zoomDirection === "in") {
+            if (zoomDirection === "in" && currZoom < maxZoom) {
                 ++currZoom;
-            } else {
+            } else if (zoomDirection === "out" && currZoom > minZoom) {
                 --currZoom;
             }
 
-            view.animate({ zoom: currZoom, duration: 200 });
+            view.animate({ zoom: currZoom, duration: 200 }, () => setDisabled(false));
         }
     }
 
