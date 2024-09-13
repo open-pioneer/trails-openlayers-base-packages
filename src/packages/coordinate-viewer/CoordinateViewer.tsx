@@ -13,7 +13,7 @@ import { useIntl } from "open-pioneer:react-hooks";
 import { FC, useEffect, useState } from "react";
 
 const DEFAULT_PRECISION = 4;
-const DEFAULT_DISPLAY_DEGREE = false;
+const DEFAULT_DISPLAY_FORMAT = "decimal";
 
 /**
  * These are special properties for the CoordinateViewer.
@@ -37,14 +37,14 @@ export interface CoordinateViewerProps extends CommonComponentProps {
     /**
      * Projection of the coordinates shown in the rendered HTML as Degree Format, does not affect the map projection
      */
-    displayProjectionAsDegree?: boolean;
+    format?: string;
 }
 
 /**
  * The `CoordinateViewer`component can be used in an app to render the coordinates at the current mouse position.
  */
 export const CoordinateViewer: FC<CoordinateViewerProps> = (props) => {
-    const { mapId, precision, displayProjectionCode, displayProjectionAsDegree } = props;
+    const { mapId, precision, displayProjectionCode, format } = props;
     const { containerProps } = useCommonComponentProps("coordinate-viewer", props);
     const { map } = useMapModel(mapId);
     const olMap = map?.olMap;
@@ -54,11 +54,7 @@ export const CoordinateViewer: FC<CoordinateViewerProps> = (props) => {
         coordinates && displayProjectionCode
             ? transformCoordinates(coordinates, mapProjectionCode, displayProjectionCode)
             : coordinates;
-    const coordinatesString = useCoordinatesString(
-        coordinates,
-        precision,
-        displayProjectionAsDegree
-    );
+    const coordinatesString = useCoordinatesString(coordinates, precision, format);
     const projectionString = displayProjectionCode ? displayProjectionCode : mapProjectionCode;
     const displayString = coordinatesString ? coordinatesString + " " + projectionString : "";
     return (
@@ -72,11 +68,11 @@ export const CoordinateViewer: FC<CoordinateViewerProps> = (props) => {
 export function useCoordinatesString(
     coordinates: number[] | undefined,
     precision: number | undefined,
-    displayProjectionAsDegree: boolean | undefined
+    format: string | undefined
 ): string {
     const intl = useIntl();
     const coordinatesString = coordinates
-        ? formatCoordinates(coordinates, precision, intl, displayProjectionAsDegree)
+        ? formatCoordinates(coordinates, precision, intl, format)
         : "";
     return coordinatesString;
 }
@@ -103,17 +99,17 @@ function formatCoordinates(
     coordinates: number[],
     configuredPrecision: number | undefined,
     intl: PackageIntl,
-    displayProjectionAsDegree: boolean | undefined
+    configuredFormat: string | undefined
 ) {
     if (coordinates[0] == null || coordinates[1] == null) {
         return "";
     }
 
     const precision = configuredPrecision ?? DEFAULT_PRECISION;
-    const asDegree = displayProjectionAsDegree ?? DEFAULT_DISPLAY_DEGREE;
+    const format = configuredFormat ?? DEFAULT_DISPLAY_FORMAT;
     const [x, y] = coordinates;
 
-    if (asDegree && isFinite(x) && isFinite(y)) {
+    if (format === "degree" || (format === "degrees" && isFinite(x) && isFinite(y))) {
         const [xHour, xMin, xSek] = toDegree(x, intl, precision);
         const [yHour, yMin, ySek] = toDegree(y, intl, precision);
 

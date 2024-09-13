@@ -22,6 +22,12 @@ To show the coordinates in a specific projection, set the optional `displayProje
 <CoordinateViewer mapId="map_id" displayProjectionCode="EPSG:4326" />
 ```
 
+To show the coordinates in a specific coordinate format, set the optional `format` property (default: `decimal`):
+
+```jsx
+<CoordinateViewer mapId="map_id" format="degrees" />
+```
+
 ## License
 
 Apache-2.0 (see `LICENSE` file)

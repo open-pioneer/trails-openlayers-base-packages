@@ -153,7 +153,7 @@ it("should display transformed coordinates if output projection is provided", as
     expect(viewerText.textContent).toMatchInlineSnapshot('"7.65 51.94 EPSG:4326"'); //should display WGS84
 });
 
-it("tracks the user's mouse position, when displayProjectionAsDegree={true}", async () => {
+it("tracks the user's mouse position, when format is set to 'degree'", async () => {
     const { mapId, registry } = await setupMap();
 
     const injectedServices = createServiceOptions({ registry });
@@ -163,7 +163,7 @@ it("tracks the user's mouse position, when displayProjectionAsDegree={true}", as
             <CoordinateViewer
                 mapId={mapId}
                 precision={2}
-                displayProjectionAsDegree={true}
+                format="degrees"
                 data-testid="coordinate-viewer"
             />
         </PackageContextProvider>
@@ -205,9 +205,9 @@ it("tracks the user's mouse position, when displayProjectionAsDegree={true}", as
     );
 });
 
-it("should display transformed coordinates if output projection is provided", async () => {
+it("should display transformed coordinates if output projection and format is set to 'degree' is provided", async () => {
     const outputProjection = "EPSG:4326"; //WGS84
-    const asDegree = true;
+    const format = "degree";
     const { mapId, registry } = await setupMap();
 
     const injectedServices = createServiceOptions({ registry });
@@ -218,7 +218,7 @@ it("should display transformed coordinates if output projection is provided", as
                 mapId={mapId}
                 precision={2}
                 displayProjectionCode={outputProjection}
-                displayProjectionAsDegree={asDegree}
+                format={format}
                 data-testid="coordinate-viewer"
             />
         </PackageContextProvider>
