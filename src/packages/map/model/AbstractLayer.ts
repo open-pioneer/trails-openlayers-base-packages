@@ -6,7 +6,14 @@ import { EventsKey } from "ol/events";
 import OlBaseLayer from "ol/layer/Base";
 import OlLayer from "ol/layer/Layer";
 import OlSource from "ol/source/Source";
-import { HealthCheckFunction, Layer, LayerConfig, LayerLoadState, SimpleLayerConfig } from "../api";
+import {
+    HealthCheckFunction,
+    Layer,
+    LayerBaseType,
+    LayerConfig,
+    LayerLoadState,
+    SimpleLayerConfig
+} from "../api";
 import { AbstractLayerBase } from "./AbstractLayerBase";
 import { MapModelImpl } from "./MapModelImpl";
 
@@ -19,7 +26,7 @@ const LOG = createLogger("map:AbstractLayer");
  */
 export abstract class AbstractLayer<AdditionalEvents = {}>
     extends AbstractLayerBase<AdditionalEvents>
-    implements Layer
+    implements LayerBaseType
 {
     #olLayer: OlBaseLayer;
     #isBaseLayer: boolean;
@@ -115,6 +122,8 @@ export abstract class AbstractLayer<AdditionalEvents = {}>
             this.__emitChangeEvent("changed:loadState");
         }
     }
+
+    abstract readonly type: "simple" | "wms" | "wmts";
 }
 
 function watchLoadState(
@@ -222,7 +231,7 @@ async function doHealthCheck(
     }
 
     try {
-        return await healthCheckFn(layer);
+        return await healthCheckFn(layer as Layer);
     } catch (e) {
         LOG.warn(`Health check failed for layer '${layer.id}'`, e);
         return "error";
