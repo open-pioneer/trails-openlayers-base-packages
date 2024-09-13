@@ -163,7 +163,7 @@ it("tracks the user's mouse position, when format is set to 'degree'", async () 
             <CoordinateViewer
                 mapId={mapId}
                 precision={2}
-                format="degrees"
+                format="degree"
                 data-testid="coordinate-viewer"
             />
         </PackageContextProvider>

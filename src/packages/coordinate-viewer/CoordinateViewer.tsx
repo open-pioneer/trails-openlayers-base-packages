@@ -35,9 +35,13 @@ export interface CoordinateViewerProps extends CommonComponentProps {
     displayProjectionCode?: string;
 
     /**
-     * Projection of the coordinates shown in the rendered HTML as Degree Format, does not affect the map projection
+     * Configures the display format.
+     * By default, the current coordinates are shown as decimal numbers (format: "decimal").
+     *
+     * If the format is set to "degree", the coordinates are shown in angular degrees (DMS).
+     * This can only be used meaningfully (at this time) if the underlying projection provides lat/lon coordinates.
      */
-    format?: string;
+    format?: "decimal" | "degree";
 }
 
 /**
@@ -68,7 +72,7 @@ export const CoordinateViewer: FC<CoordinateViewerProps> = (props) => {
 export function useCoordinatesString(
     coordinates: number[] | undefined,
     precision: number | undefined,
-    format: string | undefined
+    format: CoordinateViewerProps["format"]
 ): string {
     const intl = useIntl();
     const coordinatesString = coordinates
@@ -99,7 +103,7 @@ function formatCoordinates(
     coordinates: number[],
     configuredPrecision: number | undefined,
     intl: PackageIntl,
-    configuredFormat: string | undefined
+    configuredFormat: CoordinateViewerProps["format"]
 ) {
     if (coordinates[0] == null || coordinates[1] == null) {
         return "";
@@ -109,15 +113,15 @@ function formatCoordinates(
     const format = configuredFormat ?? DEFAULT_DISPLAY_FORMAT;
     const [x, y] = coordinates;
 
-    if (format === "degree" || (format === "degrees" && isFinite(x) && isFinite(y))) {
+    let str;
+    if (format === "degree" && isFinite(x) && isFinite(y)) {
         const [xHour, xMin, xSek] = toDegree(x, intl, precision);
         const [yHour, yMin, ySek] = toDegree(y, intl, precision);
 
         const xString = `${Math.abs(xHour)}°${xMin}'${xSek}"${0 <= xHour ? "(E)" : "(W)"}`;
         const yString = `${Math.abs(yHour)}°${yMin}'${ySek}"${0 <= yHour ? "(N)" : "(S)"}`;
 
-        const coordinatesString = xString + " " + yString;
-        return coordinatesString;
+        str = xString + " " + yString;
     } else {
         const xString = intl.formatNumber(x, {
             maximumFractionDigits: precision,
@@ -127,9 +131,9 @@ function formatCoordinates(
             maximumFractionDigits: precision,
             minimumFractionDigits: precision
         });
-        const coordinatesString = xString + " " + yString;
-        return coordinatesString;
+        str = xString + " " + yString;
     }
+    return str;
 }
 
 function toDegree(
@@ -141,7 +145,6 @@ function toDegree(
     const cNach = coordPart - cHour;
 
     const cMin = Math.floor(60 * cNach);
-
     const cMinNach = 60 * cNach - cMin;
 
     const cSek = 60 * cMinNach;

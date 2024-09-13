@@ -25,7 +25,7 @@ To show the coordinates in a specific projection, set the optional `displayProje
 To show the coordinates in a specific coordinate format, set the optional `format` property (default: `decimal`):
 
 ```jsx
-<CoordinateViewer mapId="map_id" format="degrees" />
+<CoordinateViewer mapId="map_id" format="degree" />
 ```
 
 ## License
