@@ -8,7 +8,6 @@ import type OlMap from "ol/Map";
 export interface MapContextType {
     map: OlMap;
     mapAnchorsHost: HTMLElement;
-    padding: Required<MapPadding>;
 }
 
 const MapContext = createContext<MapContextType | undefined>(undefined);

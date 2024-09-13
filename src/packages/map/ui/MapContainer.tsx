@@ -9,6 +9,7 @@ import { ReactNode, useEffect, useMemo, useRef, useState, CSSProperties } from "
 import { MapModel, MapPadding } from "../api";
 import { MapContextProvider, MapContextType } from "./MapContext";
 import { useMapModel } from "./useMapModel";
+import { PADDING_BOTTOM, PADDING_LEFT, PADDING_RIGHT, PADDING_TOP } from "./CssProps";
 const LOG = createLogger("map:MapContainer");
 
 export interface MapContainerProps extends CommonComponentProps {
@@ -116,11 +117,13 @@ export function MapContainer(props: MapContainerProps) {
             position: "relative",
 
             // set css variables according to view padding
-            "--map-padding-top": viewPadding?.top != undefined ? viewPadding.top + "px" : "0px",
-            "--map-padding-bottom":
+            [PADDING_TOP.definition]:
+                viewPadding?.top != undefined ? viewPadding.top + "px" : "0px",
+            [PADDING_BOTTOM.definition]:
                 viewPadding?.bottom != undefined ? viewPadding.bottom + "px" : "0px",
-            "--map-padding-left": viewPadding?.left != undefined ? viewPadding.left + "px" : "0px",
-            "--map-padding-right":
+            [PADDING_LEFT.definition]:
+                viewPadding?.left != undefined ? viewPadding.left + "px" : "0px",
+            [PADDING_RIGHT.definition]:
                 viewPadding?.right != undefined ? viewPadding.right + "px" : "0px"
         } as CSSProperties;
     }, [viewPadding]);
@@ -218,10 +221,9 @@ function MapContainerReady(
     const mapContext = useMemo((): MapContextType => {
         return {
             map,
-            mapAnchorsHost,
-            padding: viewPadding
+            mapAnchorsHost
         };
-    }, [map, viewPadding, mapAnchorsHost]);
+    }, [map, mapAnchorsHost]);
     return <MapContextProvider value={mapContext}>{children}</MapContextProvider>;
 }
 

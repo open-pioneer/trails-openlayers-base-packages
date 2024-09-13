@@ -4,8 +4,8 @@ import { Box, StyleProps } from "@open-pioneer/chakra-integration";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { ReactNode } from "react";
 import { createPortal } from "react-dom";
-import { MapPadding } from "../api";
 import { useMapContext } from "./MapContext";
+import { PADDING_BOTTOM, PADDING_LEFT, PADDING_RIGHT, PADDING_TOP } from "./CssProps";
 
 export type MapAnchorPosition = "top-left" | "top-right" | "bottom-left" | "bottom-right";
 
@@ -46,13 +46,10 @@ export interface MapAnchorProps extends CommonComponentProps {
 export function MapAnchor(props: MapAnchorProps): JSX.Element {
     const { position = defaultPosition, children, horizontalGap, verticalGap } = props;
     const { containerProps } = useCommonComponentProps("map-anchor", props);
-    const { padding, mapAnchorsHost } = useMapContext();
+    const { mapAnchorsHost } = useMapContext();
 
     return createPortal(
-        <Box
-            {...containerProps}
-            {...computePositionStyles(position, padding, horizontalGap, verticalGap)}
-        >
+        <Box {...containerProps} {...computePositionStyles(position, horizontalGap, verticalGap)}>
             {children}
         </Box>,
         mapAnchorsHost
@@ -82,16 +79,16 @@ export function computeAttributionGap(verticalGap?: number): {
 
 export function computePositionStyles(
     position: MapAnchorPosition,
-    padding: Required<MapPadding>,
     horizontalGap?: number | undefined,
     verticalGap?: number | undefined
 ): StyleProps {
-    const props: StyleProps = {
+    const styleProps: StyleProps = {
         position: "absolute",
         zIndex: 1, // above map
         transitionProperty: "left, right, top, bottom",
         transitionDuration: "200ms",
-        transitionTimingFunction: "ease-out"
+        transitionTimingFunction: "ease-out",
+        overflow: "hidden"
     };
 
     const defaultHorizontalGap = 0;
@@ -101,38 +98,49 @@ export function computePositionStyles(
     const vertical = verticalGap ?? defaultVerticalGap;
 
     const attribution = computeAttributionGap(verticalGap);
-    const gap = (n: number) => `${n}px`;
+    const gap = (paddingProp: string, pixels: number) => `(${paddingProp} + ${pixels}px)`;
 
+    interface PosExprs {
+        left?: string;
+        right?: string;
+        top?: string;
+        bottom?: string;
+    }
+
+    // CSS Expressions for inside calc(...)
+    const posExprs: PosExprs = {};
     switch (position) {
         case "top-left":
-            props.left = gap(padding.left + horizontal);
-            props.top = gap(padding.top + vertical);
+            posExprs.left = gap(PADDING_LEFT.ref, horizontal);
+            posExprs.top = gap(PADDING_TOP.ref, vertical);
             break;
         case "top-right":
-            props.right = gap(padding.right + horizontal);
-            props.top = gap(padding.top + vertical);
+            posExprs.right = gap(PADDING_RIGHT.ref, horizontal);
+            posExprs.top = gap(PADDING_TOP.ref, vertical);
             break;
         case "bottom-left":
-            props.left = gap(padding.left + horizontal);
-            props.bottom = gap(padding.bottom + vertical + attribution.gap);
+            posExprs.left = gap(PADDING_LEFT.ref, horizontal);
+            posExprs.bottom = gap(PADDING_BOTTOM.ref, vertical + attribution.gap);
             break;
         case "bottom-right":
-            props.right = gap(padding.right + horizontal);
-            props.bottom = gap(padding.bottom + vertical + attribution.gap);
+            posExprs.right = gap(PADDING_RIGHT.ref, horizontal);
+            posExprs.bottom = gap(PADDING_BOTTOM.ref, vertical + attribution.gap);
             break;
+    }
+
+    for (const [key, value] of Object.entries(posExprs)) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (styleProps as any)[key] = `calc(${value})`;
     }
 
     /**
      * Apply max-height and max-width to MapAnchor to avoid content overflow
      */
-    props.maxH = `calc((100%) - ${props.top ?? "0px"} - ${
-        props.bottom ?? attribution.gap + "px"
-    } - ${vertical + "px"} - ${attribution.space + "px"})`;
+    styleProps.maxH = `calc((100%) - ${defaultValue(posExprs.top, "0px")} - ${defaultValue(posExprs.bottom, attribution.gap + "px")} - ${vertical}px - ${attribution.space}px)`;
+    styleProps.maxW = `calc((100%) - ${defaultValue(posExprs.left, "0px")} - ${defaultValue(posExprs.right, "0px")} - ${horizontal}px)`;
+    return styleProps;
+}
 
-    props.maxW = `calc((100%) - ${props.left ?? "0px"} - ${props.right ?? "0px"} - ${
-        horizontal + "px"
-    })`;
-    props.overflow = "hidden";
-
-    return props;
+function defaultValue(value: string | undefined, defaultValue: string): string {
+    return value ?? defaultValue;
 }

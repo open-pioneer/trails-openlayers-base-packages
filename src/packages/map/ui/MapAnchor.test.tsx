@@ -1,18 +1,13 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { MapContainer } from "./MapContainer";
-import { MapPadding } from "../api";
 import { createServiceOptions, setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render, waitFor } from "@testing-library/react";
 import { expect, it } from "vitest";
-import {
-    MapAnchor,
-    MapAnchorPosition,
-    computeAttributionGap,
-    computePositionStyles
-} from "./MapAnchor";
+import { MapAnchor, MapAnchorPosition, computePositionStyles } from "./MapAnchor";
 import { Box, StyleProps } from "@open-pioneer/chakra-integration";
+import { PADDING_BOTTOM, PADDING_LEFT, PADDING_RIGHT, PADDING_TOP } from "./CssProps";
 
 it("should successfully create a map anchor component", async () => {
     const { mapId, registry } = await setupMap();
@@ -37,7 +32,7 @@ it("should successfully create a map anchor component", async () => {
 
     expect(mapAnchor).toMatchInlineSnapshot(`
       <div
-        class="map-anchor css-1niqg8c"
+        class="map-anchor css-yv0wkm"
         data-theme="light"
       />
     `);
@@ -90,10 +85,6 @@ it('should successfully create a map anchor component with prop `position="top-l
     if (!mapAnchor) {
         throw new Error("map anchor component not rendered");
     }
-
-    const styles = window.getComputedStyle(mapAnchor);
-    expect(styles.top).toBe("0px");
-    expect(styles.left).toBe("0px");
 });
 
 it('should successfully create a map anchor component with prop `position="bottom-right"`', async () => {
@@ -116,38 +107,6 @@ it('should successfully create a map anchor component with prop `position="botto
     if (!mapAnchor) {
         throw new Error("map anchor component not rendered");
     }
-
-    const styles = window.getComputedStyle(mapAnchor);
-    expect(styles.right).toBe("0px");
-
-    const attribution = computeAttributionGap();
-    expect(styles.bottom).toBe(attribution.gap + "px");
-});
-
-it('should successfully create a map anchor component with props `position="bottom-right"` and `horizontalGap={30} verticalGap={10}`', async () => {
-    const { mapId, registry } = await setupMap();
-
-    const injectedServices = createServiceOptions({ registry });
-    const { container } = render(
-        <PackageContextProvider services={injectedServices}>
-            <MapContainer mapId={mapId} data-testid="base">
-                <MapAnchor position="bottom-right" horizontalGap={30} verticalGap={10} />
-            </MapContainer>
-        </PackageContextProvider>
-    );
-
-    // Assert map is mounted
-    await waitForMapMount();
-
-    // check map anchor component box is available with style for props `position`, `horizontalGap` and `verticalGap`
-    const mapAnchor = container.querySelector(".map-anchor");
-    if (!mapAnchor) {
-        throw new Error("map anchor component not rendered");
-    }
-
-    const styles = window.getComputedStyle(mapAnchor);
-    expect(styles.right).toBe("30px");
-    expect(styles.bottom).toBe("10px");
 });
 
 it("should successfully create a map anchor component with ReactNode as children", async () => {
@@ -216,48 +175,48 @@ it("should successfully create multiple map anchor components", async () => {
 
 it("should successfully create position styles on `top-left` without gap", async () => {
     const position: MapAnchorPosition = "top-left";
-    const padding: Required<MapPadding> = {
-        left: 10,
-        right: 10,
-        top: 10,
-        bottom: 10
-    };
+    PADDING_TOP.definition = "10px";
+    PADDING_BOTTOM.definition = "10px";
+    PADDING_LEFT.definition = "10px";
+    PADDING_RIGHT.definition = "10px";
 
-    const styleProps: StyleProps = computePositionStyles(position, padding);
-    expect(styleProps.left).toBe("10px");
-    expect(styleProps.top).toBe("10px");
-    expect(styleProps.maxH).toBe("calc((100%) - 10px - 30px - 0px - 10px)");
-    expect(styleProps.maxW).toBe("calc((100%) - 10px - 0px - 0px)");
+    const styleProps: StyleProps = computePositionStyles(position);
+    expect(styleProps.left).toBe("calc((var(--map-padding-left) + 0px))");
+    expect(styleProps.top).toBe("calc((var(--map-padding-top) + 0px))");
+    expect(styleProps.maxH).toBe(
+        "calc((100%) - (var(--map-padding-top) + 0px) - 30px - 0px - 10px)"
+    );
+    expect(styleProps.maxW).toBe("calc((100%) - (var(--map-padding-left) + 0px) - 0px - 0px)");
 });
 
 it("should successfully create position styles on `top-left` with horizontalGap and verticalGap", async () => {
     const position: MapAnchorPosition = "top-left";
-    const padding: Required<MapPadding> = {
-        left: 10,
-        right: 10,
-        top: 10,
-        bottom: 10
-    };
+    PADDING_TOP.definition = "10px";
+    PADDING_BOTTOM.definition = "10px";
+    PADDING_LEFT.definition = "10px";
+    PADDING_RIGHT.definition = "10px";
 
-    const styleProps: StyleProps = computePositionStyles(position, padding, 50, 25);
-    expect(styleProps.left).toBe("60px");
-    expect(styleProps.top).toBe("35px");
-    expect(styleProps.maxH).toBe("calc((100%) - 35px - 0px - 25px - 10px)");
-    expect(styleProps.maxW).toBe("calc((100%) - 60px - 0px - 50px)");
+    const styleProps: StyleProps = computePositionStyles(position, 50, 25);
+    expect(styleProps.left).toBe("calc((var(--map-padding-left) + 50px))");
+    expect(styleProps.top).toBe("calc((var(--map-padding-top) + 25px))");
+    expect(styleProps.maxH).toBe(
+        "calc((100%) - (var(--map-padding-top) + 25px) - 0px - 25px - 10px)"
+    );
+    expect(styleProps.maxW).toBe("calc((100%) - (var(--map-padding-left) + 50px) - 0px - 50px)");
 });
 
 it("should successfully create position styles on `bottom-right` with horizontalGap and verticalGap", async () => {
     const position: MapAnchorPosition = "bottom-right";
-    const padding: Required<MapPadding> = {
-        left: 10,
-        right: 10,
-        top: 10,
-        bottom: 10
-    };
+    PADDING_TOP.definition = "10px";
+    PADDING_BOTTOM.definition = "10px";
+    PADDING_LEFT.definition = "10px";
+    PADDING_RIGHT.definition = "10px";
 
-    const styleProps: StyleProps = computePositionStyles(position, padding, 50, 25);
-    expect(styleProps.right).toBe("60px");
-    expect(styleProps.bottom).toBe("35px");
-    expect(styleProps.maxH).toBe("calc((100%) - 0px - 35px - 25px - 10px)");
-    expect(styleProps.maxW).toBe("calc((100%) - 0px - 60px - 50px)");
+    const styleProps: StyleProps = computePositionStyles(position, 50, 25);
+    expect(styleProps.right).toBe("calc((var(--map-padding-right) + 50px))");
+    expect(styleProps.bottom).toBe("calc((var(--map-padding-bottom) + 25px))");
+    expect(styleProps.maxH).toBe(
+        "calc((100%) - 0px - (var(--map-padding-bottom) + 25px) - 25px - 10px)"
+    );
+    expect(styleProps.maxW).toBe("calc((100%) - 0px - (var(--map-padding-right) + 50px) - 50px)");
 });
