@@ -1,6 +1,16 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box, Flex, Tooltip, useToken } from "@open-pioneer/chakra-integration";
+import {
+    Box,
+    Button,
+    Flex,
+    Menu,
+    MenuButton,
+    MenuList,
+    Tooltip,
+    useToken
+} from "@open-pioneer/chakra-integration";
+import { Image, MenuItem } from "@chakra-ui/react";
 import { Layer, MapModel, useMapModel } from "@open-pioneer/map";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, useCallback, useMemo, useRef, useSyncExternalStore } from "react";
@@ -36,6 +46,19 @@ export interface SelectOption {
     layer: Layer | undefined;
 }
 
+export interface BasemapOnMapSwitcherImageProps {
+    selectedImageLabel: ImageLabelSwitchObject;
+    choosableImageLabel: ImageLabelSwitchObject[];
+    selectedImageStyle?: { width: string; height: string };
+    choosableImageStyle?: { width: string; height: string };
+}
+
+export interface ImageLabelSwitchObject {
+    image: string;
+    label: string;
+    callBack: () => void;
+}
+
 /**
  * These are special properties for the BasemapSwitcher.
  */
@@ -67,6 +90,11 @@ export interface BasemapSwitcherProps extends CommonComponentProps {
      * Do not use together with aria-label.
      */
     "aria-label"?: string;
+
+    /**
+     * Optional use the image basemap switcher instead of the select basemap switcher.
+     */
+    imageBasemapSwitcher?: BasemapOnMapSwitcherImageProps;
 }
 
 /**
@@ -78,10 +106,18 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
         mapId,
         allowSelectingEmptyBasemap = false,
         "aria-label": ariaLabel,
-        "aria-labelledby": ariaLabelledBy
+        "aria-labelledby": ariaLabelledBy,
+        imageBasemapSwitcher = {
+            selectedImageLabel: null,
+            choosableImageLabel: [],
+            selectedImageStyle: { width: "10px", height: "10px" },
+            choosableImageStyle: { width: "60px", height: "40px" }
+        }
     } = props;
     const { containerProps } = useCommonComponentProps("basemap-switcher", props);
     const emptyBasemapLabel = intl.formatMessage({ id: "emptyBasemapLabel" });
+    const { selectedImageLabel, choosableImageLabel, selectedImageStyle, choosableImageStyle } =
+        imageBasemapSwitcher;
 
     const { map } = useMapModel(mapId);
     const baseLayers = useBaseLayers(map);
@@ -116,30 +152,60 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
     return (
         <Box {...containerProps}>
             {map ? (
-                <Select<SelectOption>
-                    aria-label={ariaLabel}
-                    aria-labelledby={ariaLabelledBy}
-                    className="basemap-switcher-select"
-                    classNamePrefix="react-select"
-                    options={options}
-                    value={selectedLayer}
-                    onChange={(option) => option && activateLayer(option.value)}
-                    isClearable={false}
-                    isSearchable={false}
-                    menuPosition="fixed"
-                    // optionLabel is used by screenreaders
-                    getOptionLabel={(option) =>
-                        option.layer !== undefined
-                            ? option.layer.title +
-                              (option.layer.loadState === "error"
-                                  ? " " + intl.formatMessage({ id: "layerNotAvailable" })
-                                  : "")
-                            : emptyBasemapLabel
-                    }
-                    isOptionDisabled={(option) => option?.layer?.loadState === "error"}
-                    components={components}
-                    chakraStyles={chakraStyles}
-                />
+                selectedImageLabel && choosableImageLabel ? (
+                    <Menu>
+                        <Flex>
+                            <Tooltip label={selectedImageLabel.label}>
+                                <MenuButton as={Button}>
+                                    <Image
+                                        width={selectedImageStyle?.width || "40px"}
+                                        height={selectedImageStyle?.height || "60py"}
+                                        src={selectedImageLabel.image}
+                                    ></Image>
+                                </MenuButton>
+                            </Tooltip>
+                        </Flex>
+                        <MenuList display="contents">
+                            {choosableImageLabel.map((imageLabel, index) => {
+                                return (
+                                    <BasemapOnMapSwitcherElement
+                                        key={imageLabel.label + index}
+                                        src={imageLabel.image}
+                                        label={imageLabel.label}
+                                        callback={imageLabel.callBack}
+                                        width={choosableImageStyle?.width}
+                                        height={choosableImageStyle?.height}
+                                    />
+                                );
+                            })}
+                        </MenuList>
+                    </Menu>
+                ) : (
+                    <Select<SelectOption>
+                        aria-label={ariaLabel}
+                        aria-labelledby={ariaLabelledBy}
+                        className="basemap-switcher-select"
+                        classNamePrefix="react-select"
+                        options={options}
+                        value={selectedLayer}
+                        onChange={(option) => option && activateLayer(option.value)}
+                        isClearable={false}
+                        isSearchable={false}
+                        menuPosition="fixed"
+                        // optionLabel is used by screenreaders
+                        getOptionLabel={(option) =>
+                            option.layer !== undefined
+                                ? option.layer.title +
+                                  (option.layer.loadState === "error"
+                                      ? " " + intl.formatMessage({ id: "layerNotAvailable" })
+                                      : "")
+                                : emptyBasemapLabel
+                        }
+                        isOptionDisabled={(option) => option?.layer?.loadState === "error"}
+                        components={components}
+                        chakraStyles={chakraStyles}
+                    />
+                )
             ) : null}
         </Box>
     );
@@ -293,4 +359,23 @@ function useChakraStyles() {
         };
         return chakraStyles;
     }, [dropDownBackground, borderColor]);
+}
+
+interface BasemapOnMapSwitcherElementProps {
+    src: string;
+    label: string;
+    callback: () => void;
+    width?: string;
+    height?: string;
+}
+
+export function BasemapOnMapSwitcherElement(props: BasemapOnMapSwitcherElementProps) {
+    const { src, label, callback, width, height } = props;
+    return (
+        <MenuItem onClick={() => callback()}>
+            <Tooltip label={label}>
+                <Image src={src} width={width || "60px"} height={height || "40px"}></Image>
+            </Tooltip>
+        </MenuItem>
+    );
 }
