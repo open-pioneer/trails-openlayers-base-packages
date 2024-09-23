@@ -4,8 +4,9 @@ import { useService } from "open-pioneer:react-hooks";
 import { useMemo } from "react";
 import { useAsync } from "react-use";
 import { MapModel, MapRegistry } from "../api";
+import { MapModelImpl } from "../model/MapModelImpl";
 // eslint-disable-next-line unused-imports/no-unused-imports
-import { useDefaultMapProps, DefaultMapProvider } from "./DefaultMapProvider";
+import { DefaultMapProvider, useDefaultMapProps } from "./DefaultMapProvider";
 
 /** Return value of {@link useMapModel}. */
 export type UseMapModelResult = UseMapModelLoading | UseMapModelResolved | UseMapModelRejected;
@@ -73,10 +74,39 @@ export function useMapModel(props: MapModelProps): UseMapModelResult;
  */
 export function useMapModel(): UseMapModelResult;
 export function useMapModel(props?: undefined | string | MapModelProps): UseMapModelResult {
+    const resolvedMapArg = useResolvedMapArg(props);
+    const mapRegistry = useService<MapRegistry>("map.MapRegistry");
+    const state = useAsync(async () => {
+        if (typeof resolvedMapArg === "string") {
+            return await mapRegistry.expectMapModel(resolvedMapArg);
+        }
+        return Promise.resolve(resolvedMapArg);
+    }, [mapRegistry, resolvedMapArg]);
+    const result = useMemo((): UseMapModelResult => {
+        if (state.loading) {
+            return { kind: "loading" };
+        }
+        if (state.error) {
+            return { kind: "rejected", error: state.error };
+        }
+        return { kind: "resolved", map: state.value! };
+    }, [state]);
+    return result;
+}
+
+/**
+ * Resolves the map model (or its id) from the given props and the default map props.
+ */
+function useResolvedMapArg(props?: undefined | string | MapModelProps): MapModel | string {
     if (typeof props === "object" && props.mapId != null && props.map != null) {
         throw new Error(`Cannot specify both 'mapId' and 'map' in useMapModel at the same time.`);
     }
-    const mapRegistry = useService<MapRegistry>("map.MapRegistry");
+    if (props instanceof MapModelImpl) {
+        // This cannot happen in valid typescript code, but it might be a common mistake.
+        throw new Error(
+            `Map model instances cannot be passed directly to 'useMapModel' (see TypeScript signature).`
+        );
+    }
     const localProps = useMemo((): MapModelProps => {
         // Normalize local props for compatibility with old string overload.
         if (props == null) {
@@ -97,23 +127,7 @@ export function useMapModel(props?: undefined | string | MapModelProps): UseMapM
                 `You must either specify the map (or its id) via a DefaultMapProvider parent or configure it explicitly.`
         );
     }
-
-    const state = useAsync(async () => {
-        if (typeof resolvedMapArg === "string") {
-            return await mapRegistry.expectMapModel(resolvedMapArg);
-        }
-        return Promise.resolve(resolvedMapArg);
-    }, [mapRegistry, resolvedMapArg]);
-    const result = useMemo((): UseMapModelResult => {
-        if (state.loading) {
-            return { kind: "loading" };
-        }
-        if (state.error) {
-            return { kind: "rejected", error: state.error };
-        }
-        return { kind: "resolved", map: state.value! };
-    }, [state]);
-    return result;
+    return resolvedMapArg;
 }
 
 function resolveMap(props?: MapModelProps): MapModel | string | undefined {

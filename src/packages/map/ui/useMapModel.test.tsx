@@ -10,6 +10,7 @@ import {
     PackageContextProviderProps
 } from "@open-pioneer/test-utils/react";
 import { createManualPromise } from "@open-pioneer/core";
+import { MapModelImpl } from "../model/MapModelImpl";
 
 afterEach(() => {
     vi.restoreAllMocks();
@@ -112,19 +113,22 @@ it("throws an error if neither local nor default configuration is available", as
     );
 });
 
-it("throws an error if an unrelated object is passed directly", async () => {
+it("throws an error if the map model is passed directly", async () => {
     vi.spyOn(console, "error").mockImplementation(() => undefined); // react also logs this error
 
+    const services = mockServices();
     const mapModel = mockMapModel();
+    const otherMapModel = mockMapModel();
     expect(() => {
-        const services = mockServices();
-        // Happens to test the same code path as the test above (the mocked map model has neither
-        // a `mapId` nor a `map` property, so it is treaded the same as an empty object).
         renderHook(() => useMapModel(mapModel as any), {
-            wrapper: (props) => <PackageContextProvider services={services} {...props} />
+            wrapper: (props) => (
+                <PackageContextProvider services={services}>
+                    <DefaultMapProvider map={otherMapModel}>{props.children}</DefaultMapProvider>
+                </PackageContextProvider>
+            )
         });
     }).toThrowErrorMatchingInlineSnapshot(
-        `[Error: No map specified. You must either specify the map (or its id) via a DefaultMapProvider parent or configure it explicitly.]`
+        `[Error: Map model instances cannot be passed directly to 'useMapModel' (see TypeScript signature).]`
     );
 });
 
@@ -222,10 +226,15 @@ function mockMapRegistry(options?: MockModelOptions): MapRegistry {
 }
 
 function mockMapModel(): MapModel {
-    return {
-        id: "1234",
-        container: document.createElement("div"),
-        layers: {},
-        olMap: {}
-    } as unknown as MapModel;
+    const map = Object.create(MapModelImpl.prototype);
+    if (!(map instanceof MapModelImpl)) {
+        throw new Error("not instanceof");
+    }
+
+    return Object.defineProperties(map, {
+        id: { value: "1234" },
+        container: { value: document.createElement("div") },
+        layers: { value: {} },
+        olMap: { value: {} }
+    });
 }
