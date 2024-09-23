@@ -1,5 +1,15 @@
 # @open-pioneer/map-navigation
 
+## 0.4.4
+
+### Patch Changes
+
+-   b152428: Update trails dependencies
+-   Updated dependencies [b152428]
+-   Updated dependencies [291ccb6]
+    -   @open-pioneer/map-ui-components@0.1.1
+    -   @open-pioneer/map@0.6.1
+
 ## 0.4.3
 
 ### Patch Changes

@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Box, Image, List, Text } from "@open-pioneer/chakra-integration";
-import { Layer, MapModel, useMapModel, LayerBase, Sublayer } from "@open-pioneer/map";
+import { Layer, MapModel, useMapModel, AnyLayer, Sublayer, isLayer } from "@open-pioneer/map";
 import {
     ComponentType,
     FC,
@@ -17,8 +17,6 @@ import { useIntl } from "open-pioneer:react-hooks";
 import { WarningTwoIcon } from "@chakra-ui/icons";
 import classNames from "classnames";
 
-type LegendLayer = Layer | Sublayer;
-
 /**
  * Properties of a legend item React component.
  */
@@ -26,7 +24,7 @@ export interface LegendItemComponentProps {
     /**
      * Related layer of the legend.
      */
-    layer: LayerBase;
+    layer: AnyLayer;
 }
 
 /**
@@ -101,7 +99,7 @@ function LegendList(props: { map: MapModel; showBaseLayers: boolean }): JSX.Elem
     );
 }
 
-function LegendItem(props: { layer: LegendLayer; showBaseLayers: boolean }): ReactNode {
+function LegendItem(props: { layer: AnyLayer; showBaseLayers: boolean }): ReactNode {
     const { layer, showBaseLayers } = props;
     const { isVisible } = useVisibility(layer);
     const sublayers = useSublayers(layer);
@@ -110,8 +108,7 @@ function LegendItem(props: { layer: LegendLayer; showBaseLayers: boolean }): Rea
         return undefined;
     }
 
-    // '!("parentLayer" in layer)' checks if the layer is no sublayer
-    if (!showBaseLayers && !("parentLayer" in layer) && layer.isBaseLayer) {
+    if (!showBaseLayers && isLayer(layer) && layer.isBaseLayer) {
         return undefined;
     }
 
@@ -133,7 +130,7 @@ function LegendItem(props: { layer: LegendLayer; showBaseLayers: boolean }): Rea
     );
 }
 
-function LegendContent(props: { layer: LegendLayer; showBaseLayers: boolean }) {
+function LegendContent(props: { layer: AnyLayer; showBaseLayers: boolean }) {
     const intl = useIntl();
 
     const { layer, showBaseLayers } = props;
@@ -151,7 +148,7 @@ function LegendContent(props: { layer: LegendLayer; showBaseLayers: boolean }) {
         }
     }
 
-    const isBaseLayer = !("parentLayer" in layer) && layer.isBaseLayer;
+    const isBaseLayer = isLayer(layer) && layer.isBaseLayer;
 
     return renderedComponent ? (
         <Box as="li" className={classNames("legend-item", `layer-${slug(layer.id)}`)}>
@@ -164,7 +161,7 @@ function LegendContent(props: { layer: LegendLayer; showBaseLayers: boolean }) {
     ) : undefined;
 }
 
-function LegendImage(props: { imageUrl: string; layer: LegendLayer }) {
+function LegendImage(props: { imageUrl: string; layer: AnyLayer }) {
     const intl = useIntl();
 
     const { layer, imageUrl } = props;
@@ -192,7 +189,7 @@ function LegendImage(props: { imageUrl: string; layer: LegendLayer }) {
     );
 }
 
-function useLegend(layer: LayerBase): string | undefined {
+function useLegend(layer: AnyLayer): string | undefined {
     const getSnapshot = useCallback(() => layer.legend, [layer]);
     const subscribe = useCallback(
         (cb: () => void) => {
@@ -223,7 +220,7 @@ function useLayers(map: MapModel): Layer[] {
 }
 
 /** Returns the sublayers of the given layer (or undefined, if the sublayer cannot have any). */
-function useSublayers(layer: LayerBase): Sublayer[] | undefined {
+function useSublayers(layer: AnyLayer): Sublayer[] | undefined {
     const subscribe = useCallback(
         (cb: () => void) => {
             const resource = layer.sublayers?.on("changed", cb);
@@ -287,7 +284,7 @@ function useCachedExternalStore<T>(
 }
 
 /** Returns the layer's current visibility. */
-function useVisibility(layer: LayerBase): {
+function useVisibility(layer: AnyLayer): {
     isVisible: boolean;
 } {
     const getSnapshot = useCallback(() => layer.visible, [layer]);
@@ -305,7 +302,7 @@ function useVisibility(layer: LayerBase): {
     };
 }
 
-function useLegendAttributes(layer: LayerBase) {
+function useLegendAttributes(layer: AnyLayer) {
     const [legendAttributes, setLegendAttributes] = useState<LegendItemAttributes | undefined>(
         undefined
     );

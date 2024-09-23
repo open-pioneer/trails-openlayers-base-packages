@@ -1,5 +1,13 @@
 # @open-pioneer/ogc-features
 
+## 0.4.4
+
+### Patch Changes
+
+-   b152428: Update trails dependencies
+-   Updated dependencies [b152428]
+    -   @open-pioneer/search@0.4.4
+
 ## 0.4.3
 
 ### Patch Changes

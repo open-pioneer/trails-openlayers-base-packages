@@ -26,7 +26,14 @@ it("should successfully return a geolocation position", async () => {
     mockSuccessGeolocation([51.1, 45.3]);
 
     const { controller } = setup();
-    await controller.startGeolocation();
+    controller.startGeolocation();
+
+    await vi.waitFor(() => {
+        if (controller.active && !controller.loading) {
+            return;
+        }
+        throw new Error("Geolocation not ready");
+    });
 
     const positionFeature: Feature<Geometry> | undefined = controller.getPositionFeature();
 

@@ -19,14 +19,12 @@ import {
     Text,
     Tooltip
 } from "@open-pioneer/chakra-integration";
-import { Layer, LayerBase, MapModel, Sublayer } from "@open-pioneer/map";
+import { Layer, AnyLayer, MapModel, Sublayer, isSublayer } from "@open-pioneer/map";
 import { PackageIntl } from "@open-pioneer/runtime";
 import classNames from "classnames";
 import { useIntl } from "open-pioneer:react-hooks";
 import { useCallback, useRef, useSyncExternalStore } from "react";
 import { FiAlertTriangle, FiMoreVertical } from "react-icons/fi";
-
-type TocLayer = Layer | Sublayer;
 
 /**
  * Lists the (top level) operational layers in the map.
@@ -50,7 +48,7 @@ export function LayerList(props: { map: MapModel; "aria-label"?: string }): JSX.
     });
 }
 
-function createList(layers: TocLayer[], intl: PackageIntl, listProps: ListProps) {
+function createList(layers: AnyLayer[], intl: PackageIntl, listProps: ListProps) {
     const items = layers.map((layer) => <LayerItem key={layer.id} layer={layer} intl={intl} />);
     return (
         <List
@@ -71,7 +69,7 @@ function createList(layers: TocLayer[], intl: PackageIntl, listProps: ListProps)
  *
  * The item may have further nested list items if there are sublayers present.
  */
-function LayerItem(props: { layer: TocLayer; intl: PackageIntl }): JSX.Element {
+function LayerItem(props: { layer: AnyLayer; intl: PackageIntl }): JSX.Element {
     const { layer, intl } = props;
     const title = useTitle(layer);
     const { isVisible, setVisible } = useVisibility(layer);
@@ -136,7 +134,7 @@ function LayerItem(props: { layer: TocLayer; intl: PackageIntl }): JSX.Element {
 }
 
 function LayerItemDescriptor(props: {
-    layer: TocLayer;
+    layer: AnyLayer;
     title: string;
     intl: PackageIntl;
 }): JSX.Element {
@@ -171,7 +169,7 @@ function LayerItemDescriptor(props: {
     );
 }
 
-function useLayerDescription(layer: LayerBase): string {
+function useLayerDescription(layer: AnyLayer): string {
     const getSnapshot = useCallback(() => layer.description, [layer]);
     const subscribe = useCallback(
         (cb: () => void) => {
@@ -184,7 +182,7 @@ function useLayerDescription(layer: LayerBase): string {
 }
 
 /** Returns the layers current title. */
-function useTitle(layer: LayerBase): string {
+function useTitle(layer: AnyLayer): string {
     const getSnapshot = useCallback(() => layer.title, [layer]);
     const subscribe = useCallback(
         (cb: () => void) => {
@@ -198,7 +196,7 @@ function useTitle(layer: LayerBase): string {
 }
 
 /** Returns the layer's current visibility and a function to change it. */
-function useVisibility(layer: LayerBase): {
+function useVisibility(layer: AnyLayer): {
     isVisible: boolean;
     setVisible(visible: boolean): void;
 } {
@@ -242,7 +240,7 @@ function useLayers(map: MapModel): Layer[] {
 }
 
 /** Returns the sublayers of the given layer (or undefined, if the sublayer cannot have any). */
-function useSublayers(layer: LayerBase): Sublayer[] | undefined {
+function useSublayers(layer: AnyLayer): Sublayer[] | undefined {
     const subscribe = useCallback(
         (cb: () => void) => {
             const resource = layer.sublayers?.on("changed", cb);
@@ -264,9 +262,9 @@ function useSublayers(layer: LayerBase): Sublayer[] | undefined {
 }
 
 /** Returns the layers current state. */
-function useLoadState(layer: TocLayer): string {
+function useLoadState(layer: AnyLayer): string {
     // for sublayers, use the state of the parent
-    const target = "parentLayer" in layer ? layer.parentLayer : layer;
+    const target = isSublayer(layer) ? layer.parentLayer : layer;
     const subscribe = useCallback(
         (cb: () => void) => {
             const resource = target.on("changed:loadState", cb);

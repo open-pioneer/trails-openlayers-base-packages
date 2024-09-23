@@ -121,7 +121,7 @@ export async function setupMap(options?: SimpleMapOptions) {
 
     const mapConfig: MapConfig = {
         initialView: options?.noInitialView ? undefined : getInitialView(),
-        projection: options?.noProjection ? undefined : options?.projection ?? "EPSG:3857",
+        projection: options?.noProjection ? undefined : (options?.projection ?? "EPSG:3857"),
         layers: options?.layers?.map(
             (config) => ("map" in config ? config : new SimpleLayer(config))
             // using map as discriminator (no prototype for Layer)

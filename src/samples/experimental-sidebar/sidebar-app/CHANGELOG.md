@@ -1,5 +1,17 @@
 # sidebar-app
 
+## 0.0.11
+
+### Patch Changes
+
+-   Updated dependencies [291ccb6]
+-   Updated dependencies [b152428]
+-   Updated dependencies [291ccb6]
+    -   @open-pioneer/basemap-switcher@0.4.4
+    -   @open-pioneer/experimental-layout-sidebar@0.2.4
+    -   @open-pioneer/theme@0.3.3
+    -   @open-pioneer/map@0.6.1
+
 ## 0.0.10
 
 ### Patch Changes

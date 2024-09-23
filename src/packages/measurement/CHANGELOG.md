@@ -1,5 +1,37 @@
 # @open-pioneer/measurement
 
+## 0.4.4
+
+### Patch Changes
+
+-   b152428: Update trails dependencies
+-   23b48ad: Add two new optional properties:
+
+    -   `predefinedMeasurements`: an array of measurements that will be added to the map (without user interaction)
+    -   `onMeasurementsChange`: an event listener that will be called when measurements are added or removed
+
+    ```tsx
+    const predefinedMeasurements = useMemo(
+        () => [
+            new LineString([
+                [398657.97, 5755696.26],
+                [402570.98, 5757547.78]
+            ])
+        ],
+        []
+    );
+
+    <Measurement
+        mapId={MAP_ID}
+        onMeasurementsChange={(e) => console.log(e.kind, e.geometry)}
+        predefinedMeasurements={predefinedMeasurements}
+    />;
+    ```
+
+-   Updated dependencies [b152428]
+-   Updated dependencies [291ccb6]
+    -   @open-pioneer/map@0.6.1
+
 ## 0.4.3
 
 ### Patch Changes

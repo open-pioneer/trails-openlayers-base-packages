@@ -1,27 +1,29 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-
-import { afterEach, expect, it, vi } from "vitest";
+import { SimpleLayer } from "@open-pioneer/map";
 import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
+import { NotificationService } from "@open-pioneer/notifier";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { Selection, SelectionCompleteEvent, SelectionSourceChangedEvent } from "./Selection";
-import { FakePointSelectionSource, NoStatusSelectionSource } from "./selectionSources";
-import { VectorLayerSelectionSourceImpl } from "./selectionSources";
-import { NotificationService } from "@open-pioneer/notifier";
-import { Point } from "ol/geom";
-import { SelectionSource } from "./api";
-import VectorSource from "ol/source/Vector";
-import GeoJSON from "ol/format/GeoJSON";
-import VectorLayer from "ol/layer/Vector";
-import { SimpleLayer } from "@open-pioneer/map";
 import { Feature } from "ol";
+import GeoJSON from "ol/format/GeoJSON";
+import { Point } from "ol/geom";
+import VectorLayer from "ol/layer/Vector";
+import VectorSource from "ol/source/Vector";
+import { afterEach, expect, it, vi } from "vitest";
+import { SelectionSource } from "./api";
+import { Selection, SelectionSourceChangedEvent } from "./Selection";
+import {
+    FakePointSelectionSource,
+    NoStatusSelectionSource,
+    VectorLayerSelectionSourceImpl
+} from "./selectionSources";
 
 afterEach(() => {
     vi.restoreAllMocks();
 });
 
-it("should successfully create a selection component", async () => {
+it("should successfully create a selection component and select the first selection source", async () => {
     await createSelection();
     const { selectionDiv } = await waitForSelection();
     expect(selectionDiv).toMatchSnapshot();
@@ -59,6 +61,31 @@ it("Should disable option and show warning icon for unavailable sources", async 
     expect(option?.classList.contains("react-select__option--is-disabled")).toBeTruthy();
 });
 
+it("Should fire selection source change events when the user selects a different source", async () => {
+    const source1 = createTestSelectionSource("layer1", "Source 1");
+    const source2 = createTestSelectionSource("layer2", "Source 2");
+    const onSourceChanged = vi.fn();
+
+    await createSelection([source1, source2], onSourceChanged);
+    expect(onSourceChanged).toHaveBeenCalledTimes(1);
+    expect(onSourceChanged.mock.lastCall![0]!.source).toBe(source1);
+
+    const { selectElement, getCurrentSelection } = await waitForSelection();
+    expect(getCurrentSelection()).toBe("Source 1");
+
+    openOptions(selectElement);
+    const option2 = getOptions(selectElement)[1]!;
+    expect(option2.textContent).toBe("Source 2");
+    await act(() => {
+        // For some reason userEvent.click does not work here.
+        fireEvent.click(option2);
+    });
+
+    expect(getCurrentSelection()).toBe("Source 2");
+    expect(onSourceChanged).toHaveBeenCalledTimes(2);
+    expect(onSourceChanged.mock.lastCall![0]!.source).toBe(source2);
+});
+
 it("Should disable or enable selection option when changing the status of a source layer", async () => {
     const layer = new SimpleLayer({
         id: "ogc_kitas",
@@ -66,8 +93,6 @@ it("Should disable or enable selection option when changing the status of a sour
         visible: false,
         olLayer: createKitasLayer()
     });
-
-    layer.olLayer.setVisible(false);
 
     const layerSelectionSource = new VectorLayerSelectionSourceImpl(
         layer.olLayer as VectorLayer<Feature>,
@@ -83,7 +108,7 @@ it("Should disable or enable selection option when changing the status of a sour
     expect(option?.classList.contains("react-select__option--is-disabled")).toBeTruthy();
 
     act(() => {
-        layer.olLayer.setVisible(true);
+        layer.setVisible(true);
     });
     openOptions(selectElement);
     expect(option?.classList.contains("react-select__option--is-disabled")).toBeFalsy();
@@ -100,7 +125,50 @@ it("expect selection source with no defined status is still available", async ()
     expect(option?.classList.contains("react-select__option--is-disabled")).toBeFalsy();
 });
 
-async function createSelection(selectionSources?: SelectionSource[] | undefined) {
+it("retains the selected source if the sources change but the selected source still exits", async () => {
+    const layerSelectionSource = createTestSelectionSource("ogc_kitas", "Kindertagesstätten");
+    const layerSelectionSource2 = createTestSelectionSource("ogc_kitas2", "Layer 2");
+
+    const rerender = await createSelection([layerSelectionSource, layerSelectionSource2]);
+
+    rerender.rerenderWithSources([layerSelectionSource]); // keep currently selected source
+
+    const { selectElement } = await waitForSelection();
+    const sourceValue = selectElement.getElementsByClassName("selection-source-value");
+    const text = sourceValue[0]?.textContent;
+
+    expect(text).toBe("Kindertagesstätten");
+});
+
+it("selects no selection source if the sources change and the currently selected source no longer exists", async () => {
+    const layerSelectionSource = createTestSelectionSource("ogc_kitas", "Kindertagesstätten");
+    const layerSelectionSource2 = createTestSelectionSource("ogc_kitas2", "Layer 2");
+
+    const onSourceChanged = vi.fn();
+    const rerender = await createSelection(
+        [layerSelectionSource, layerSelectionSource2],
+        onSourceChanged
+    );
+
+    const { getCurrentSelection } = await waitForSelection();
+    expect(getCurrentSelection()).toBe("Kindertagesstätten");
+
+    // Event handler called for initial selection
+    expect(onSourceChanged).toHaveBeenCalledTimes(1);
+    expect(onSourceChanged.mock.lastCall![0]!.source).toBe(layerSelectionSource);
+
+    rerender.rerenderWithSources([layerSelectionSource2]); // remove currently selected source
+    expect(getCurrentSelection()).toBe(undefined);
+
+    // Event handler called for reset
+    expect(onSourceChanged).toHaveBeenCalledTimes(2);
+    expect(onSourceChanged.mock.lastCall![0]!.source).toBe(undefined);
+});
+
+async function createSelection(
+    selectionSources?: SelectionSource[] | undefined,
+    onSourceChanged?: (event: SelectionSourceChangedEvent) => void
+) {
     const { mapId, registry } = await setupMap();
 
     const notifier: Partial<NotificationService> = {
@@ -114,21 +182,31 @@ async function createSelection(selectionSources?: SelectionSource[] | undefined)
     });
     injectedServices["notifier.NotificationService"] = notifier;
     const sources = selectionSources || [new FakePointSelectionSource()];
-    render(
-        <PackageContextProvider services={injectedServices}>
-            <Selection
-                data-testid="selection"
-                mapId={mapId}
-                sources={sources}
-                onSelectionComplete={onSelectionComplete}
-                onSelectionSourceChanged={onSelectionSourceChanged}
-            ></Selection>
-        </PackageContextProvider>
-    );
+
+    const renderSelection = (sources: SelectionSource[]) => {
+        return (
+            <PackageContextProvider services={injectedServices}>
+                <Selection
+                    data-testid="selection"
+                    mapId={mapId}
+                    sources={sources}
+                    onSelectionSourceChanged={onSourceChanged ?? (() => {})}
+                />
+            </PackageContextProvider>
+        );
+    };
+
+    const { rerender } = render(renderSelection(sources));
+
+    return {
+        rerenderWithSources(newSources: SelectionSource[]) {
+            rerender(renderSelection(newSources));
+        }
+    };
 }
 
 async function waitForSelection() {
-    const { selectionDiv, selectElement } = await waitFor(async () => {
+    return await waitFor(async () => {
         const selectionDiv = await screen.findByTestId<HTMLDivElement>("selection");
         if (!selectionDiv) {
             throw new Error("Selection not rendered");
@@ -140,10 +218,16 @@ async function waitForSelection() {
             throw new Error("Select element not rendered");
         }
 
-        return { selectionDiv, selectElement };
+        return {
+            selectionDiv,
+            selectElement,
+            getCurrentSelection() {
+                // The dom element here is not stable so we're looking it up again every time.
+                const value = selectElement.getElementsByClassName("selection-source-value")[0];
+                return value?.textContent;
+            }
+        };
     });
-
-    return { selectionDiv, selectElement };
 }
 
 function openOptions(selectElement: HTMLSelectElement) {
@@ -158,6 +242,20 @@ function getOptions(selectElement: HTMLSelectElement) {
     ) as HTMLElement[];
 }
 
+function createTestSelectionSource(id: string, title: string, visibility: boolean = true) {
+    const layer = new SimpleLayer({
+        id: id,
+        title: title,
+        visible: visibility,
+        olLayer: createKitasLayer()
+    });
+    return new VectorLayerSelectionSourceImpl(
+        layer.olLayer as VectorLayer<Feature>,
+        layer.title,
+        "Layer not visible"
+    );
+}
+
 function createKitasLayer() {
     const geojsonSource = new VectorSource({
         url: "https://ogc-api.nrw.de/inspire-us-kindergarten/v1/collections/governmentalservice/items?f=json&limit=10000",
@@ -169,13 +267,4 @@ function createKitasLayer() {
     return new VectorLayer({
         source: geojsonSource
     });
-}
-
-function onSelectionComplete(event: SelectionCompleteEvent) {
-    const geometries = event.results.map((result) => result.geometry);
-    return geometries;
-}
-
-function onSelectionSourceChanged(_: SelectionSourceChangedEvent) {
-    return;
 }

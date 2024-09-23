@@ -1,5 +1,14 @@
 # @open-pioneer/editing
 
+## 0.2.3
+
+### Patch Changes
+
+-   b152428: Update trails dependencies
+-   Updated dependencies [b152428]
+-   Updated dependencies [291ccb6]
+    -   @open-pioneer/map@0.6.1
+
 ## 0.2.2
 
 ### Patch Changes

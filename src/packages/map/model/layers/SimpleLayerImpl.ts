@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import { SimpleLayer } from "../../api";
 import { AbstractLayer } from "../AbstractLayer";
 
 /**
@@ -7,7 +8,10 @@ import { AbstractLayer } from "../AbstractLayer";
  *
  * Some API features (such as sublayers) will not be available.
  */
-export class SimpleLayerImpl extends AbstractLayer {
+export class SimpleLayerImpl extends AbstractLayer implements SimpleLayer {
+    get type() {
+        return "simple" as const;
+    }
     get legend() {
         return undefined;
     }

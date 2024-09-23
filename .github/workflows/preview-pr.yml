@@ -1,0 +1,69 @@
+name: Preview PR
+on:
+  pull_request_target:
+    types:
+      - opened
+      - closed
+      - reopened
+      - synchronize
+
+jobs:
+  wait:
+    name: Wait for checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      # This is a separate file that simply waits for the other checks to complete because
+      # we don't want to run duplicate checks for pr + push events.
+      # Checks and builds run on all branches (on _push_) but this workflow runs only on PR events.
+      # If you know a smarter way, let us now.
+      - name: Wait for other checks to succeed
+        if: github.event.action != 'closed'
+        uses: lewagon/wait-on-check-action@v1.3.4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          check-name: "Build samples and documentation"
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          wait-interval: 10
+
+  deploy:
+    name: Preview PR
+    runs-on: ubuntu-latest
+    concurrency: preview-${{ github.ref }}
+    timeout-minutes: 5
+    needs: wait
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download latest build artifact
+        run: |
+          # Use build result of latest push for local branches
+          WORKFLOW_EVENT=
+          if [[ "${{ github.event.pull_request.head.repo.full_name }}" != "${{ github.event.pull_request.base.repo.full_name }}" ]]; then
+            WORKFLOW_EVENT="pull_request"
+          else
+            WORKFLOW_EVENT="push"
+          fi
+          WORKFLOW_RUN=$(gh run list -c ${{ github.event.pull_request.head.sha }} -w "test-and-build.yml" -e $WORKFLOW_EVENT --json databaseId --limit 1 | jq .[0].databaseId -r)
+          echo "Latest workflow run: $WORKFLOW_RUN"
+
+          mkdir site && cd site;
+
+          echo "Downloading build artifact"
+          gh run download $WORKFLOW_RUN -n build
+          echo "Download successful:"
+          ls -alh
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Deploy PR Preview
+        uses: rossjrw/pr-preview-action@v1.4.7
+        with:
+          source-dir: ./site/www/
+          umbrella-dir: "openlayers-base-packages/pr-previews"
+          deploy-repository: open-pioneer/trails-pr-previews
+          token: ${{ secrets.DEPLOY_TOKEN }}

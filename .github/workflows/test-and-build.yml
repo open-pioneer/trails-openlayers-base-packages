@@ -4,32 +4,18 @@ on:
   push:
   pull_request:
 jobs:
-  test:
+  checks:
     # Don't run for pull requests from this repository to avoid duplicate builds (push also triggers build).
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
-    name: "Test and Build"
+    name: "Run quality checks"
     runs-on: ubuntu-latest
-    timeout-minutes: 15
-    permissions:
-      contents: write
+    timeout-minutes: 5
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9
-          run_install: false
-
-      - name: Install Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18
-          cache: "pnpm"
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+      - name: Install
+        uses: ./.github/actions/install
 
       - name: Lint dependencies
         run: pnpm lint-shared-versions
@@ -37,13 +23,23 @@ jobs:
       - name: Run tests
         run: pnpm ci:test
 
+  build_site:
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
+    name: "Build samples and documentation"
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install
+        uses: ./.github/actions/install
+
       - name: Build samples
         run: pnpm build
 
-      - name: Build packages
-        run: pnpm build-packages
-
       - name: Build API documentation
+        if: github.ref == 'refs/heads/main'
         run: pnpm build-docs
 
       - name: Create license report
@@ -56,19 +52,39 @@ jobs:
           path: dist/
           retention-days: ${{ github.ref == 'refs/heads/main' && 7 || 1 }}
 
+  build_packages:
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
+    name: "Build packages"
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install
+        uses: ./.github/actions/install
+
+      - name: Build packages
+        run: pnpm build-packages
+
   call_version:
     if: github.ref == 'refs/heads/main'
     name: "Publish or create version PR"
     uses: "./.github/workflows/version.yml"
-    needs: test
+    needs:
+      - checks
+      - build_packages
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
   deploy:
     if: github.ref == 'refs/heads/main'
+    name: "Deploy site"
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    needs: test
+    needs:
+      - checks
+      - build_site
     steps:
       - name: Checkout
         uses: actions/checkout@v4

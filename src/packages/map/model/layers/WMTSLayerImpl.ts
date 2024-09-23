@@ -39,6 +39,10 @@ export class WMTSLayerImpl extends AbstractLayer implements WMTSLayer {
         this.#sourceOptions = config.sourceOptions;
     }
 
+    get type() {
+        return "wmts" as const;
+    }
+
     destroy(): void {
         super.destroy();
         this.#abortController.abort();

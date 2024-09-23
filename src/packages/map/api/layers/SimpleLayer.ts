@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import type OlBaseLayer from "ol/layer/Base";
-import { LayerConfig, Layer } from "./base";
+import { LayerConfig, LayerBaseType } from "./base";
 import { SimpleLayerImpl } from "../../model/layers/SimpleLayerImpl";
 
 /**
@@ -27,5 +27,8 @@ export interface SimpleLayerConstructor {
 /**
  * A simple layer type wrapping an OpenLayers layer.
  */
-export type SimpleLayer = Layer;
+export interface SimpleLayer extends LayerBaseType {
+    readonly type: "simple";
+}
+
 export const SimpleLayer: SimpleLayerConstructor = SimpleLayerImpl;

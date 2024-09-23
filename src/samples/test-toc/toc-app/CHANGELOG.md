@@ -1,5 +1,15 @@
 # toc-app
 
+## 0.0.10
+
+### Patch Changes
+
+-   Updated dependencies [b152428]
+-   Updated dependencies [291ccb6]
+    -   @open-pioneer/map-ui-components@0.1.1
+    -   @open-pioneer/map@0.6.1
+    -   @open-pioneer/toc@0.4.4
+
 ## 0.0.9
 
 ### Patch Changes
