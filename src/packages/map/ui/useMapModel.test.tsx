@@ -15,7 +15,7 @@ afterEach(() => {
     vi.restoreAllMocks();
 });
 
-it("returns the immediately configured map model when specified", async () => {
+it("returns the immediately configured map model if specified", async () => {
     const services = mockServices();
     const mapModel = mockMapModel();
     const hook = renderHook(() => useMapModel({ map: mapModel }), {
@@ -25,7 +25,7 @@ it("returns the immediately configured map model when specified", async () => {
     expect(result).toBe(mapModel);
 });
 
-it("resolves the map model from the registry when mapId is specified", async () => {
+it("resolves the map model from the registry if mapId is specified", async () => {
     const services = mockServices({ expectedMapId: "foo" });
     const hook = renderHook(() => useMapModel({ mapId: "foo" }), {
         wrapper: (props) => <PackageContextProvider services={services} {...props} />
@@ -34,7 +34,7 @@ it("resolves the map model from the registry when mapId is specified", async () 
     expect(result).toBeDefined();
 });
 
-it("resolves the map model from the registry when mapId is specified (old overload)", async () => {
+it("resolves the map model from the registry if mapId is specified (old overload)", async () => {
     const services = mockServices({ expectedMapId: "foo" });
     const hook = renderHook(() => useMapModel("foo"), {
         wrapper: (props) => <PackageContextProvider services={services} {...props} />
@@ -100,11 +100,27 @@ it("local configuration of map id takes precedence", async () => {
     expect(result).not.toBe(otherMapModel);
 });
 
-it("returns an error if neither local nor default configuration is available", async () => {
+it("throws an error if neither local nor default configuration is available", async () => {
     vi.spyOn(console, "error").mockImplementation(() => undefined); // react also logs this error
     expect(() => {
         const services = mockServices();
         renderHook(() => useMapModel({}), {
+            wrapper: (props) => <PackageContextProvider services={services} {...props} />
+        });
+    }).toThrowErrorMatchingInlineSnapshot(
+        `[Error: No map specified. You must either specify the map (or its id) via a DefaultMapProvider parent or configure it explicitly.]`
+    );
+});
+
+it("throws an error if an unrelated object is passed directly", async () => {
+    vi.spyOn(console, "error").mockImplementation(() => undefined); // react also logs this error
+
+    const mapModel = mockMapModel();
+    expect(() => {
+        const services = mockServices();
+        // Happens to test the same code path as the test above (the mocked map model has neither
+        // a `mapId` nor a `map` property, so it is treaded the same as an empty object).
+        renderHook(() => useMapModel(mapModel as any), {
             wrapper: (props) => <PackageContextProvider services={services} {...props} />
         });
     }).toThrowErrorMatchingInlineSnapshot(
@@ -206,5 +222,10 @@ function mockMapRegistry(options?: MockModelOptions): MapRegistry {
 }
 
 function mockMapModel(): MapModel {
-    return {} as unknown as MapModel;
+    return {
+        id: "1234",
+        container: document.createElement("div"),
+        layers: {},
+        olMap: {}
+    } as unknown as MapModel;
 }
