@@ -11,7 +11,7 @@ DefaultMapContext.displayName = "DefaultMapContext";
  * Child components do not need to specify the map explicitly, unless they wish to use a different one.
  *
  * The map can be specified either by its id (`mapId`) or by a direct reference to the map model (`map`).
- * Specifying both `mapId` and `mapModel` at the same time will result in an error.
+ * Specifying both `mapId` and `map` at the same time will result in an error.
  *
  * @example
  *
