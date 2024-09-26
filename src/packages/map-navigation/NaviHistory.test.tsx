@@ -30,7 +30,7 @@ it("should successfully create an view history navigation component", async () =
     expect(naviHistoryDivBackward).toMatchSnapshot();
 });
 
-it("should successfully diable/enable buttons", async () => {
+it("should successfully disable/enable buttons", async () => {
     const user = userEvent.setup();
     const { mapId, registry } = await setupMap();
     const map = await registry.expectMapModel(mapId);
