@@ -59,24 +59,29 @@ it("should successfully diable/enable buttons", async () => {
     const { naviHistoryDivForward, naviHistoryDivBackward } = await waitForNaviHistoryComponent();
     expect(naviHistoryDivForward.disabled).toBe(true);
     expect(naviHistoryDivBackward.disabled).toBe(true);
+
     await act(async () => {
         map.olMap.getView().setZoom(initialZoom + 1);
         map.olMap.dispatchEvent("moveend");
     });
     expect(naviHistoryDivForward.disabled).toBe(true);
     expect(naviHistoryDivBackward.disabled).toBe(false);
+
     await act(async () => {
         map.olMap.getView().setCenter([1489200, 6894026]);
         map.olMap.dispatchEvent("moveend");
     });
     expect(naviHistoryDivForward.disabled).toBe(true);
     expect(naviHistoryDivBackward.disabled).toBe(false);
+
     await user.click(naviHistoryDivBackward);
     expect(naviHistoryDivForward.disabled).toBe(false);
     expect(naviHistoryDivBackward.disabled).toBe(false);
+
     await user.click(naviHistoryDivBackward);
     expect(naviHistoryDivForward.disabled).toBe(false);
     expect(naviHistoryDivBackward.disabled).toBe(true);
+
     await act(async () => {
         map.olMap.getView().setCenter([1234500, 6894026]);
         map.olMap.dispatchEvent("moveend");
@@ -109,6 +114,7 @@ it("should successfully change the map view on forward", async () => {
     if (!initialZoom) {
         throw new Error("zoom not defined");
     }
+
     await act(async () => {
         map.olMap.getView().setZoom(initialZoom + 1);
         map.olMap.dispatchEvent("moveend");
@@ -122,10 +128,13 @@ it("should successfully change the map view on forward", async () => {
         map.olMap.dispatchEvent("moveend");
     });
     await user.click(naviHistoryDivBackward);
+
     const tempViewCenter = map.olMap.getView().getCenter();
     const tempViewZoom = map.olMap.getView().getZoom();
+
     await user.click(naviHistoryDivBackward);
     await user.click(naviHistoryDivForward);
+
     const actView = map.olMap.getView();
     expect(actView.getCenter()).toBe(tempViewCenter);
     expect(actView.getZoom()).toBe(tempViewZoom);
@@ -155,6 +164,7 @@ it("should successfully change the map view on backward", async () => {
     if (!initialZoom) {
         throw new Error("zoom not defined");
     }
+
     await act(async () => {
         map.olMap.getView().setZoom(initialZoom + 1);
         map.olMap.dispatchEvent("moveend");
@@ -163,13 +173,16 @@ it("should successfully change the map view on backward", async () => {
         map.olMap.getView().setCenter([1900000, 6900000]);
         map.olMap.dispatchEvent("moveend");
     });
+
     const tempViewCenter = map.olMap.getView().getCenter();
     const tempViewZoom = map.olMap.getView().getZoom();
+
     await act(async () => {
         map.olMap.getView().setCenter([1500000, 6500000]);
         map.olMap.dispatchEvent("moveend");
     });
     await user.click(naviHistoryDivBackward);
+
     const actView = map.olMap.getView();
     expect(actView.getCenter()).toBe(tempViewCenter);
     expect(actView.getZoom()).toBe(tempViewZoom);
@@ -179,8 +192,10 @@ async function waitForNaviHistoryComponent() {
     const naviHistoryDivForward = (await screen.findByTestId(
         "navi-history-for"
     )) as HTMLButtonElement;
+
     const naviHistoryDivBackward = (await screen.findByTestId(
         "navi-history-back"
     )) as HTMLButtonElement;
+
     return { naviHistoryDivForward, naviHistoryDivBackward };
 }
