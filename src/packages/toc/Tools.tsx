@@ -12,13 +12,12 @@ import {
 import { FC } from "react";
 import { FiMoreVertical } from "react-icons/fi";
 import { useIntl } from "open-pioneer:react-hooks";
-import { MapModel, SublayersCollection, useMapModel } from "@open-pioneer/map";
+import { MapModel, SublayersCollection } from "@open-pioneer/map";
 import { ToolsConfig } from "./Toc";
 
-export const Tools: FC<{ mapId: string } & ToolsConfig> = (props) => {
+export const Tools: FC<{ map: MapModel } & ToolsConfig> = (props) => {
     const intl = useIntl();
-    const { mapId, showHideAllLayers = true } = props;
-    const { map } = useMapModel(mapId);
+    const { map, showHideAllLayers = true } = props;
 
     const noEntry = !showHideAllLayers;
 

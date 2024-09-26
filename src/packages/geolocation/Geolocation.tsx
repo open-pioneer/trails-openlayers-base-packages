@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { MapModel, useMapModel } from "@open-pioneer/map";
+import { MapModel, MapModelProps, useMapModel } from "@open-pioneer/map";
 import { ToolButton } from "@open-pioneer/map-ui-components";
 import { NotificationService } from "@open-pioneer/notifier";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
@@ -14,11 +14,10 @@ import { GeolocationController, OnErrorCallback } from "./GeolocationController"
 /**
  * These are properties supported by the {@link Geolocation} component.
  */
-export interface GeolocationProps extends CommonComponentProps, RefAttributes<HTMLButtonElement> {
-    /**
-     * The id of the map.
-     */
-    mapId: string;
+export interface GeolocationProps
+    extends CommonComponentProps,
+        RefAttributes<HTMLButtonElement>,
+        MapModelProps {
     /**
      * The default maximal zoom level
      */
@@ -44,8 +43,8 @@ export const Geolocation: FC<GeolocationProps> = forwardRef(function Geolocation
     props: GeolocationProps,
     ref: ForwardedRef<HTMLButtonElement>
 ) {
-    const { mapId, maxZoom, positionFeatureStyle, accuracyFeatureStyle, trackingOptions } = props;
-    const { map } = useMapModel(mapId);
+    const { maxZoom, positionFeatureStyle, accuracyFeatureStyle, trackingOptions } = props;
+    const { map } = useMapModel(props);
     const controller = useController(
         map,
         maxZoom,

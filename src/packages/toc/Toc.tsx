@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import { BasemapSwitcher, BasemapSwitcherProps } from "@open-pioneer/basemap-switcher";
 import { Box, Flex, Spacer, Text } from "@open-pioneer/chakra-integration";
-import { useMapModel } from "@open-pioneer/map";
+import { MapModelProps, useMapModel } from "@open-pioneer/map";
 import {
     CommonComponentProps,
     SectionHeading,
@@ -17,12 +17,7 @@ import { Tools } from "./Tools";
 /**
  * Props supported by the {@link Toc} component.
  */
-export interface TocProps extends CommonComponentProps {
-    /**
-     * The id of the map.
-     */
-    mapId: string;
-
+export interface TocProps extends CommonComponentProps, MapModelProps {
     /**
      * Defines whether the tool component is shown in the toc.
      * Defaults to `false`.
@@ -65,9 +60,7 @@ const PADDING = 2;
  */
 export const Toc: FC<TocProps> = (props: TocProps) => {
     const intl = useIntl();
-
     const {
-        mapId,
         showTools = false,
         toolsConfig,
         showBasemapSwitcher = true,
@@ -75,7 +68,7 @@ export const Toc: FC<TocProps> = (props: TocProps) => {
     } = props;
     const { containerProps } = useCommonComponentProps("toc", props);
     const basemapsHeadingId = useId();
-    const state = useMapModel(mapId);
+    const state = useMapModel(props);
 
     let content: JSX.Element | null;
     switch (state.kind) {
@@ -86,6 +79,7 @@ export const Toc: FC<TocProps> = (props: TocProps) => {
             content = <Text className="toc-error">{intl.formatMessage({ id: "error" })}</Text>;
             break;
         case "resolved": {
+            const map = state.map;
             const basemapSwitcher = showBasemapSwitcher && (
                 <Box className="toc-basemap-switcher">
                     <TitledSection
@@ -96,7 +90,7 @@ export const Toc: FC<TocProps> = (props: TocProps) => {
                         }
                     >
                         <BasemapSwitcher
-                            mapId={mapId}
+                            map={map}
                             aria-labelledby={basemapsHeadingId}
                             {...basemapSwitcherProps}
                         />
@@ -115,13 +109,13 @@ export const Toc: FC<TocProps> = (props: TocProps) => {
                                         })}
                                     </Text>
                                     <Spacer />
-                                    {showTools && <Tools mapId={mapId} {...toolsConfig} />}
+                                    {showTools && <Tools map={map} {...toolsConfig} />}
                                 </Flex>
                             </SectionHeading>
                         }
                     >
                         <LayerList
-                            map={state.map!}
+                            map={map}
                             aria-label={intl.formatMessage({ id: "operationalLayerLabel" })}
                         />
                     </TitledSection>

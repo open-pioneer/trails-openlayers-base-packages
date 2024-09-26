@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Box, Text } from "@open-pioneer/chakra-integration";
-import { useMapModel, useProjection } from "@open-pioneer/map";
+import { MapModelProps, useMapModel, useProjection } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { PackageIntl } from "@open-pioneer/runtime";
 import OlMap from "ol/Map";
@@ -18,12 +18,7 @@ const DEFAULT_DISPLAY_FORMAT = "decimal";
 /**
  * These are special properties for the CoordinateViewer.
  */
-export interface CoordinateViewerProps extends CommonComponentProps {
-    /**
-     * The id of the map.
-     */
-    mapId: string;
-
+export interface CoordinateViewerProps extends CommonComponentProps, MapModelProps {
     /**
      * Number of decimal places shown for coordinates.
      */
@@ -48,9 +43,9 @@ export interface CoordinateViewerProps extends CommonComponentProps {
  * The `CoordinateViewer`component can be used in an app to render the coordinates at the current mouse position.
  */
 export const CoordinateViewer: FC<CoordinateViewerProps> = (props) => {
-    const { mapId, precision, displayProjectionCode, format } = props;
+    const { precision, displayProjectionCode, format } = props;
     const { containerProps } = useCommonComponentProps("coordinate-viewer", props);
-    const { map } = useMapModel(mapId);
+    const { map } = useMapModel(props);
     const olMap = map?.olMap;
     const mapProjectionCode = useProjection(olMap)?.getCode() ?? "";
     let { coordinates } = useCoordinates(olMap);

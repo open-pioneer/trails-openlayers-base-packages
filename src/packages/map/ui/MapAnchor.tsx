@@ -4,8 +4,8 @@ import { Box } from "@open-pioneer/chakra-integration";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { ReactNode } from "react";
 import { createPortal } from "react-dom";
-import { useMapContext } from "./MapContext";
 import { computeMapAnchorStyles } from "./computeMapAnchorStyles";
+import { useMapContainerContext } from "./MapContainerContext";
 
 export type MapAnchorPosition = "top-left" | "top-right" | "bottom-left" | "bottom-right";
 
@@ -46,7 +46,7 @@ export interface MapAnchorProps extends CommonComponentProps {
 export function MapAnchor(props: MapAnchorProps): JSX.Element {
     const { position = defaultPosition, children, horizontalGap, verticalGap } = props;
     const { containerProps } = useCommonComponentProps("map-anchor", props);
-    const { mapAnchorsHost } = useMapContext();
+    const { mapAnchorsHost } = useMapContainerContext();
 
     return createPortal(
         <Box {...containerProps} {...computeMapAnchorStyles(position, horizontalGap, verticalGap)}>
