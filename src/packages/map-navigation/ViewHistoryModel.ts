@@ -8,7 +8,7 @@ import OlMap from "ol/Map";
 import { Reactive, reactive, ReactiveMap, reactiveMap } from "@conterra/reactivity-core";
 import { Coordinate } from "ol/coordinate";
 
-interface mapViewState {
+interface MapViewState {
     /** Map resolution */
     resolution: number;
 
@@ -20,7 +20,7 @@ export class ViewHistoryModel {
     private olMap: OlMap;
     private handle: EventsKey | undefined;
 
-    private _mapViews: ReactiveMap<number, mapViewState> = reactiveMap<number, mapViewState>();
+    private _mapViews: ReactiveMap<number, MapViewState> = reactiveMap<number, MapViewState>();
     private _activeViewId: Reactive<number> = reactive(0);
 
     constructor(map: MapModel) {
@@ -43,7 +43,7 @@ export class ViewHistoryModel {
         this._activeViewId.value = activeViewId;
     }
 
-    get mapViews(): ReactiveMap<number, mapViewState> {
+    get mapViews(): ReactiveMap<number, MapViewState> {
         return this._mapViews;
     }
 
