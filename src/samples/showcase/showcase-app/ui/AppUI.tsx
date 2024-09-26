@@ -6,7 +6,7 @@ import { Notifier } from "@open-pioneer/notifier";
 import { TitledSection } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { useIntl, useService } from "open-pioneer:react-hooks";
-import { ReactNode } from "react";
+import { ReactNode, useMemo } from "react";
 import { MAP_ID } from "../MapConfigProviderImpl";
 import { AppInitModel, AppStateReady } from "../model/AppInitModel";
 import { Header } from "./Header/Header";
@@ -45,6 +45,16 @@ function AppContent(props: { state: AppStateReady }) {
         [currentDemoModel]
     );
 
+    const viewPadding = useMemo(() => {
+        // adjust map view whether list container (bottom = height of list component)
+        return {
+            left: 0,
+            right: 0,
+            bottom: currentListContainer != null ? 400 : 0,
+            top: 0
+        };
+    }, [currentListContainer]);
+
     return (
         <>
             <Notifier position="top-right" />
@@ -53,6 +63,7 @@ function AppContent(props: { state: AppStateReady }) {
                     <Flex flex="1" direction="column" position="relative">
                         <DefaultMapProvider mapId={MAP_ID}>
                             <MapContainer
+                                viewPadding={viewPadding}
                                 role="main"
                                 aria-label={intl.formatMessage({ id: "ariaLabels.map" })}
                             >
