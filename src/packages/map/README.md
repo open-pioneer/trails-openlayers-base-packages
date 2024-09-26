@@ -40,6 +40,17 @@ function AppUI() {
 
 The component itself uses the map registry service to create the map using the provided `mapId`.
 
+#### Changing the map view's padding
+
+The MapContainer provides a prop `viewPadding` that allows to set the map's view padding
+(see [padding property on OL View](https://openlayers.org/en/latest/apidoc/module-ol_View-View.html#padding)).
+This prop musst be used to set the views padding instead of directly setting the padding on the
+OL map's view to ensure that map anchor are positioned correctly.
+
+Additionally, using the prop `viewPaddingChangeBehavior` it is possible to specify how the map behaves when the view padding changes.
+Possible values are `none` (no nothing), `preserve-center`(ensures that the center point remains the same
+by animating the view) and `preserve-extent` ´(ensures that the extent remains the same by zooming).
+
 ### Map anchor component
 
 To pass custom React components onto the map, the following anchor-points are provided:

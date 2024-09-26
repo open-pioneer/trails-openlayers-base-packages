@@ -1,14 +1,12 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Provider, createContext, useContext } from "react";
-import { type MapPadding } from "../api";
 import type OlMap from "ol/Map";
 
 /** Values provided to children of {@link MapContainer}. */
 export interface MapContextType {
     map: OlMap;
     mapAnchorsHost: HTMLElement;
-    padding: Required<MapPadding>;
 }
 
 const MapContext = createContext<MapContextType | undefined>(undefined);

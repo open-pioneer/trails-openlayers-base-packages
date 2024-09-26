@@ -5,10 +5,11 @@ import { Resource, createLogger } from "@open-pioneer/core";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import type OlMap from "ol/Map";
 import { Extent } from "ol/extent";
-import { ReactNode, useEffect, useMemo, useRef, useState } from "react";
+import { ReactNode, useEffect, useMemo, useRef, useState, CSSProperties } from "react";
 import { MapModel, MapPadding } from "../api";
 import { MapContextProvider, MapContextType } from "./MapContext";
 import { useMapModel } from "./useMapModel";
+import { PADDING_BOTTOM, PADDING_LEFT, PADDING_RIGHT, PADDING_TOP } from "./CssProps";
 const LOG = createLogger("map:MapContainer");
 
 export interface MapContainerProps extends CommonComponentProps {
@@ -17,6 +18,7 @@ export interface MapContainerProps extends CommonComponentProps {
 
     /**
      * Sets the map's padding directly.
+     * Do not use the view's padding property directly on the OL map.
      *
      * See: https://openlayers.org/en/latest/apidoc/module-ol_View-View.html#padding)
      */
@@ -109,10 +111,23 @@ export function MapContainer(props: MapContainerProps) {
         setReady(true);
     }, []);
 
-    const mapContainerStyle: React.CSSProperties = {
-        height: "100%",
-        position: "relative"
-    };
+    const styleProps = useMemo(() => {
+        return {
+            height: "100%",
+            position: "relative",
+
+            // set css variables according to view padding
+            [PADDING_TOP.definition]:
+                viewPadding?.top != undefined ? viewPadding.top + "px" : "0px",
+            [PADDING_BOTTOM.definition]:
+                viewPadding?.bottom != undefined ? viewPadding.bottom + "px" : "0px",
+            [PADDING_LEFT.definition]:
+                viewPadding?.left != undefined ? viewPadding.left + "px" : "0px",
+            [PADDING_RIGHT.definition]:
+                viewPadding?.right != undefined ? viewPadding.right + "px" : "0px"
+        } as CSSProperties;
+    }, [viewPadding]);
+
     return (
         <chakra.div
             {...containerProps}
@@ -120,7 +135,7 @@ export function MapContainer(props: MapContainerProps) {
             aria-label={ariaLabel}
             aria-labelledby={ariaLabelledBy}
             ref={mapContainer}
-            style={mapContainerStyle}
+            style={styleProps}
             //eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
             tabIndex={0}
         >
@@ -206,10 +221,9 @@ function MapContainerReady(
     const mapContext = useMemo((): MapContextType => {
         return {
             map,
-            mapAnchorsHost,
-            padding: viewPadding
+            mapAnchorsHost
         };
-    }, [map, viewPadding, mapAnchorsHost]);
+    }, [map, mapAnchorsHost]);
     return <MapContextProvider value={mapContext}>{children}</MapContextProvider>;
 }
 
