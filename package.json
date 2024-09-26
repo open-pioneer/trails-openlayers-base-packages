@@ -23,7 +23,7 @@
         "prepare": "husky",
         "ci:test": "pnpm run clean && pnpm run lint && pnpm run check-types && vitest run",
         "ci:version": "pnpm changeset version && pnpm exec prettier './src/**/CHANGELOG.md' --write --ignore-path .eslintignore && pnpm install",
-        "ci:publish": "pnpm run clean && pnpm run build-packages && pnpm publish -r --access public && tag-current-versions"
+        "ci:publish": "pnpm run clean && pnpm run build-packages && pnpm publish -r --access public && pnpm changeset tag"
     },
     "pnpm": {
         "//": [
@@ -42,7 +42,7 @@
             "",
             "patches",
             "=======",
-            "@changesets/assemble-release-plan: don't bump to major for 0.x packages (see https://github.com/changesets/changesets/issues/1228)",
+            "@changesets/assemble-release-plan: don't bump major when peers change",
             "react-select: patched to use composedPath() in event conditions; needed for web component integration (see https://github.com/JedWatson/react-select/issues/5824)",
             "@chakra-ui/menu;react-use-outside-click;hooks: patched to fix menus in shadow dom (see https://github.com/open-pioneer/trails-openlayers-base-packages/issues/184)"
         ],
@@ -60,7 +60,7 @@
             "ignoreCves": []
         },
         "patchedDependencies": {
-            "@changesets/assemble-release-plan@5.2.4": "patches/@changesets__assemble-release-plan@5.2.4.patch",
+            "@changesets/assemble-release-plan": "patches/@changesets__assemble-release-plan.patch",
             "@chakra-ui/menu@2.2.1": "patches/@chakra-ui__menu@2.2.1.patch",
             "@chakra-ui/react-use-outside-click@2.2.0": "patches/@chakra-ui__react-use-outside-click@2.2.0.patch",
             "@chakra-ui/hooks@2.2.1": "patches/@chakra-ui__hooks@2.2.1.patch",
@@ -72,7 +72,6 @@
         "@changesets/cli": "catalog:",
         "@open-pioneer/build-package-cli": "catalog:",
         "@open-pioneer/build-support": "catalog:",
-        "@open-pioneer/tag-current-versions": "catalog:",
         "@open-pioneer/vite-plugin-pioneer": "catalog:",
         "@testing-library/dom": "catalog:",
         "@testing-library/jest-dom": "catalog:",

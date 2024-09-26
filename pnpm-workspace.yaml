@@ -29,7 +29,7 @@ catalog:
   "@chakra-ui/icons": ^2.1.1
   "@chakra-ui/react": ^2.8.2
   "@chakra-ui/system": ^2.6.2
-  "@changesets/cli": 2.26.2
+  "@changesets/cli": ^2.27.8
   "@conterra/reactivity-core": ^0.4.2
   "@emotion/cache": ^11.13.0
   "@emotion/react": ^11.13.0
@@ -38,7 +38,6 @@ catalog:
   "@maplibre/maplibre-gl-style-spec": ^20.1.1
   "@open-pioneer/build-package-cli": ^2.1.0
   "@open-pioneer/build-support": ^2.0.2
-  "@open-pioneer/tag-current-versions": ^2.0.2
   "@open-pioneer/vite-plugin-pioneer": ^3.0.4
   "@tanstack/react-table": "^8.11.6"
   "@testing-library/dom": ^10.0.0
