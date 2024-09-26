@@ -13,7 +13,7 @@ import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 export type NaviHistoryForwardProps = Omit<NaviHistoryProps, "viewDirection">;
 
 /**
- * Provides a button by which the user can view forward the map.
+ * Provides a button by which the user can navigate to the next map view.
  *
  * This component composes {@link NaviHistory}.
  */
@@ -29,7 +29,7 @@ export const NaviHistoryForward: FC<NaviHistoryForwardProps> = forwardRef(
 export type NaviHistoryBackwardProps = NaviHistoryForwardProps;
 
 /**
- * Provides a button by which the user can view backward the map.
+ * Provides a button by which the user can navigate to the previous map view.
  *
  * This component composes {@link NaviHistory}.
  */
@@ -54,7 +54,7 @@ export interface NaviHistoryProps extends CommonComponentProps, RefAttributes<HT
 }
 
 /**
- * Provides a button by which the user can view forwardor view backward of the map.
+ * Provides a button by which the user can navigate forward or backward in the view history of the map.
  */
 export const NaviHistory: FC<NaviHistoryProps> = forwardRef(function NaviHistory(
     props: NaviHistoryProps,
