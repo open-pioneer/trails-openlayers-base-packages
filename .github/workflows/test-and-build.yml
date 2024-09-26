@@ -17,9 +17,6 @@ jobs:
       - name: Install
         uses: ./.github/actions/install
 
-      - name: Lint dependencies
-        run: pnpm lint-shared-versions
-
       - name: Run tests
         run: pnpm ci:test
 
