@@ -5,7 +5,7 @@ import { View } from "ol";
 import { EventsKey } from "ol/events";
 import { unByKey } from "ol/Observable";
 import OlMap from "ol/Map";
-import { Reactive, reactive, ReactiveMap, reactiveMap, computed } from "@conterra/reactivity-core";
+import { Reactive, reactive, ReactiveMap, reactiveMap } from "@conterra/reactivity-core";
 import { Coordinate } from "ol/coordinate";
 
 interface mapViewState {
