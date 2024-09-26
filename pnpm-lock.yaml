@@ -214,7 +214,7 @@ catalogs:
       specifier: ^10.0.0
       version: 10.0.0
     vite:
-      specifier: ^5.3.4
+      specifier: ^5.4.8
       version: 5.4.8
     vite-plugin-eslint:
       specifier: ^1.8.1
