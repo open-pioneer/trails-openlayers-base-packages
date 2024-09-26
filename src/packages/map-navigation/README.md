@@ -30,19 +30,16 @@ You can also use the generic `Zoom` component:
 <Zoom mapId="map_id" zoomDirection="in" />
 ```
 
-### NaviHistory
+### NaviHistory Forward and Backward
 
-To integrate the component in your app, insert the following snippet and reference a map ID:
-
-```jsx
-<NaviHistoryForward mapId="map_id" />
-<NaviHistoryBackward mapId="map_id" />
-```
-
-You can also use the generic `NaviHistory` component:
+To integrate the component in your app, insert the following snippet and reference a view Model:
 
 ```jsx
-<NaviHistory mapId="map_id" viewDirection="forward" />
+const viewModel = new ViewHistoryModel(map);
+
+// Later ...
+<NaviHistoryBackward viewModel={viewModel} />
+<NaviHistoryForward viewModel={viewModel} />
 ```
 
 ## License
