@@ -101,6 +101,7 @@ export const CoordinateSearch: FC<CoordinateSearchProps> = (props) => {
             coordinateSearchSystem.value,
             setTooltipMessage
         );
+
     useEffect(() => {
         if (coordinateSearchInput === "") setDisplayPlaceholder(true);
         if (coordinateSearchInput !== "") setDisplayPlaceholder(false);
@@ -368,6 +369,7 @@ export function useCoordinatesString(
     const intl = useIntl();
     return coordinates ? formatCoordinates(coordinates, precision, intl) : "";
 }
+
 function formatCoordinates(
     coordinates: number[],
     configuredPrecision: number | undefined,
@@ -391,6 +393,7 @@ function formatCoordinates(
 
     return xString + " " + yString;
 }
+
 function useCoordinates(map: OlMap | undefined): { coordinates: Coordinate | undefined } {
     const [coordinates, setCoordinates] = useState<Coordinate | undefined>();
 
