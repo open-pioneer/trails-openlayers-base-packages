@@ -18,7 +18,6 @@ import {
 import { Feature } from "ol";
 import VectorLayer from "ol/layer/Vector";
 import { ReactNode } from "react";
-import { MAP_ID } from "../MapConfigProviderImpl";
 import { Demo, DemoModel, SharedDemoOptions } from "./Demo";
 
 interface ResultListState {
@@ -63,7 +62,6 @@ class DemoModelImpl implements DemoModel {
         this.description = intl.formatMessage({ id: "demos.selectionResultList.description" });
         this.mainWidget = (
             <Selection
-                mapId={MAP_ID}
                 sources={[this.#selectionSource]}
                 onSelectionComplete={this.#onSelectionComplete}
             />
@@ -90,7 +88,6 @@ class DemoModelImpl implements DemoModel {
             <ResultList
                 key={currentState.key}
                 input={currentState.input}
-                mapId={MAP_ID}
                 onSelectionChange={this.#onResultListSelectionChange}
             />
         );

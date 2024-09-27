@@ -139,10 +139,6 @@ export class VectorLayerSelectionSourceImpl
             .getSource()!
             .forEachFeatureIntersectingExtent(selectionKind.extent, (feature) => {
                 if (!feature.getGeometry()) return;
-
-                // TODO: Think about where to implement Date-Formatting, if the dates are already
-                //  encoded as Strings...
-
                 const filteredProperties = { ...feature.getProperties() };
                 delete filteredProperties.geometries;
 

@@ -3,18 +3,18 @@
     "private": true,
     "dependencies": {
         "@open-pioneer/basemap-switcher": "workspace:^",
-        "@open-pioneer/chakra-integration": "^1.1.4",
-        "@open-pioneer/http": "^2.1.9",
+        "@open-pioneer/chakra-integration": "catalog:",
+        "@open-pioneer/http": "catalog:",
         "@open-pioneer/map": "workspace:^",
         "@open-pioneer/map-navigation": "workspace:^",
         "@open-pioneer/ogc-features": "workspace:^",
-        "@open-pioneer/react-utils": "^1.0.1",
-        "@open-pioneer/runtime": "^2.1.7",
+        "@open-pioneer/react-utils": "catalog:",
+        "@open-pioneer/runtime": "catalog:",
         "@open-pioneer/theme": "workspace:^",
         "@open-pioneer/toc": "workspace:^",
-        "ol": "^9.2.4",
-        "ol-mapbox-style": "^12.3.4",
-        "react": "^18.3.1"
+        "ol": "catalog:",
+        "ol-mapbox-style": "catalog:",
+        "react": "catalog:"
     },
     "version": "0.0.11"
 }

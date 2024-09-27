@@ -17,16 +17,16 @@
         "build": "build-pioneer-package"
     },
     "peerDependencies": {
-        "@open-pioneer/chakra-integration": "^1.1.4",
+        "@open-pioneer/chakra-integration": "catalog:",
         "@open-pioneer/map": "workspace:^",
-        "@open-pioneer/react-utils": "^1.0.1",
-        "@open-pioneer/runtime": "^2.1.7",
-        "ol": "^9.2.4",
-        "react": "^18.3.1"
+        "@open-pioneer/react-utils": "catalog:",
+        "@open-pioneer/runtime": "catalog:",
+        "ol": "catalog:",
+        "react": "catalog:"
     },
     "devDependencies": {
         "@open-pioneer/map-test-utils": "workspace:^",
-        "@open-pioneer/test-utils": "^1.1.4",
+        "@open-pioneer/test-utils": "catalog:",
         "openlayers-base-packages": "workspace:*"
     },
     "publishConfig": {

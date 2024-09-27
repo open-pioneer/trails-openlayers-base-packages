@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import type { Options as WMSSourceOptions } from "ol/source/ImageWMS";
-import { Layer, LayerConfig } from "./base";
+import { LayerBaseType, LayerConfig } from "./base";
 import { WMTSLayerImpl } from "../../model/layers/WMTSLayerImpl";
 export interface WMTSLayerConfig extends LayerConfig {
     /** URL of the WMTS service. */
@@ -21,7 +21,9 @@ export interface WMTSLayerConfig extends LayerConfig {
      */
     sourceOptions?: Partial<WMSSourceOptions>;
 }
-export interface WMTSLayer extends Layer {
+export interface WMTSLayer extends LayerBaseType {
+    readonly type: "wmts";
+
     /** URL of the WMTS service. */
     readonly url: string;
 

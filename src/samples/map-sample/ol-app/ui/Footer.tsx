@@ -6,7 +6,6 @@ import { CoordinateViewer } from "@open-pioneer/coordinate-viewer";
 import { ScaleBar } from "@open-pioneer/scale-bar";
 import { ScaleViewer } from "@open-pioneer/scale-viewer";
 import { useIntl } from "open-pioneer:react-hooks";
-import { MAP_ID } from "../map/MapConfigProviderImpl";
 import { CoordinateSearchComponent } from "./CoordinateSearch";
 
 export function Footer() {
@@ -20,10 +19,10 @@ export function Footer() {
             alignItems="center"
             justifyContent="center"
         >
-            <CoordinateViewer mapId={MAP_ID} precision={2} displayProjectionCode="EPSG:4326" />
+            <CoordinateViewer precision={2} displayProjectionCode="EPSG:4326" />
             <CoordinateSearchComponent />
-            <ScaleBar mapId={MAP_ID} />
-            <ScaleViewer mapId={MAP_ID} />
+            <ScaleBar />
+            <ScaleViewer />
         </Flex>
     );
 }

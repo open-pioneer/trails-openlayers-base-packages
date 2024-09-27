@@ -2,11 +2,11 @@
     "name": "highlight-and-zoom-app",
     "private": true,
     "dependencies": {
-        "@open-pioneer/chakra-integration": "^1.1.4",
+        "@open-pioneer/chakra-integration": "catalog:",
         "@open-pioneer/map": "workspace:^",
-        "@open-pioneer/react-utils": "^1.0.1",
-        "@open-pioneer/runtime": "^2.1.7",
-        "react": "^18.3.1"
+        "@open-pioneer/react-utils": "catalog:",
+        "@open-pioneer/runtime": "catalog:",
+        "react": "catalog:"
     },
     "version": "0.0.10"
 }

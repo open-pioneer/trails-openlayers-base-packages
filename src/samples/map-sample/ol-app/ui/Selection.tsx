@@ -14,13 +14,12 @@ import {
 import { useIntl, useService } from "open-pioneer:react-hooks";
 import { useId } from "react";
 import { AppModel } from "../AppModel";
-import { MAP_ID } from "../map/MapConfigProviderImpl";
 
 export function SelectionComponent() {
     const intl = useIntl();
     const notifier = useService<NotificationService>("notifier.NotificationService");
     const selectionTitleId = useId();
-    const { map } = useMapModel(MAP_ID);
+    const { map } = useMapModel(); // uses default map configured in AppUI.tsx
     const appModel = useService<AppModel>("ol-app.AppModel");
     const sources = useReactiveSnapshot(() => appModel.selectionSources.getItems(), [appModel]);
 
@@ -83,7 +82,6 @@ export function SelectionComponent() {
                 }
             >
                 <Selection
-                    mapId={MAP_ID}
                     sources={sources}
                     onSelectionComplete={onSelectionComplete}
                     onSelectionSourceChanged={onSelectionSourceChanged}

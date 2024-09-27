@@ -17,18 +17,18 @@
         "open-pioneer-trails"
     ],
     "peerDependencies": {
-        "@open-pioneer/chakra-integration": "^1.1.4",
+        "@open-pioneer/chakra-integration": "catalog:",
         "@open-pioneer/map": "workspace:^",
-        "@open-pioneer/react-utils": "^1.0.1",
-        "@open-pioneer/runtime": "^2.1.7",
-        "chakra-react-select": "^4.7.6",
-        "ol": "^9.2.4",
-        "react": "^18.3.1",
-        "react-icons": "^5.2.1"
+        "@open-pioneer/react-utils": "catalog:",
+        "@open-pioneer/runtime": "catalog:",
+        "chakra-react-select": "catalog:",
+        "ol": "catalog:",
+        "react": "catalog:",
+        "react-icons": "catalog:"
     },
     "devDependencies": {
         "@open-pioneer/map-test-utils": "workspace:^",
-        "@open-pioneer/test-utils": "^1.1.4",
+        "@open-pioneer/test-utils": "catalog:",
         "openlayers-base-packages": "workspace:*"
     },
     "publishConfig": {

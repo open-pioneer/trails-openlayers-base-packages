@@ -11,7 +11,7 @@ import {
     chakra,
     useToken
 } from "@open-pioneer/chakra-integration";
-import { MapModel, useMapModel } from "@open-pioneer/map";
+import { MapModel, MapModelProps, useMapModel } from "@open-pioneer/map";
 import { NotificationService } from "@open-pioneer/notifier";
 import { CommonComponentProps, useCommonComponentProps, useEvent } from "@open-pioneer/react-utils";
 import { PackageIntl } from "@open-pioneer/runtime";
@@ -36,12 +36,7 @@ import { SelectionResult, SelectionSource, SelectionSourceStatusObject } from ".
 /**
  * Properties supported by the {@link Selection} component.
  */
-export interface SelectionProps extends CommonComponentProps {
-    /**
-     * The id of the map.
-     */
-    mapId: string;
-
+export interface SelectionProps extends CommonComponentProps, MapModelProps {
     /**
      * Array of selection sources available for spatial selection.
      */
@@ -100,7 +95,7 @@ const COMMON_SELECT_PROPS: SelectProps<any, any, any> = {
  */
 export const Selection: FC<SelectionProps> = (props) => {
     const intl = useIntl();
-    const { mapId, sources, onSelectionComplete, onSelectionSourceChanged } = props;
+    const { sources, onSelectionComplete, onSelectionSourceChanged } = props;
     const { containerProps } = useCommonComponentProps("selection", props);
     const defaultNotAvailableMessage = intl.formatMessage({ id: "sourceNotAvailable" });
 
@@ -111,7 +106,7 @@ export const Selection: FC<SelectionProps> = (props) => {
 
     const currentSourceStatus = useSourceStatus(currentSource, defaultNotAvailableMessage);
 
-    const mapState = useMapModel(mapId);
+    const mapState = useMapModel(props);
     const { onExtentSelected } = useSelectionController(
         mapState.map,
         sources,

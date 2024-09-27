@@ -5,11 +5,10 @@ import { useMapModel } from "@open-pioneer/map";
 import { Search, SearchSelectEvent } from "@open-pioneer/search";
 import { useService } from "open-pioneer:react-hooks";
 import { AppModel } from "../AppModel";
-import { MAP_ID } from "../map/MapConfigProviderImpl";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 
 export function SearchComponent() {
-    const { map } = useMapModel(MAP_ID);
+    const { map } = useMapModel(); // uses default map configured in AppUI.tsx
     const appModel = useService<AppModel>("ol-app.AppModel");
     const sources = useReactiveSnapshot(() => appModel.searchSources.getItems(), [appModel]);
 
@@ -43,7 +42,6 @@ export function SearchComponent() {
             className="search-box"
         >
             <Search
-                mapId={MAP_ID}
                 sources={sources}
                 maxResultsPerGroup={10}
                 onSelect={onSearchResultSelected}

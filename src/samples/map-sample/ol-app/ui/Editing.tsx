@@ -22,7 +22,6 @@ import VectorLayer from "ol/layer/Vector";
 import { useIntl, useService } from "open-pioneer:react-hooks";
 import { useEffect, useId, useState } from "react";
 import { AppModel } from "../AppModel";
-import { MAP_ID } from "../map/MapConfigProviderImpl";
 import { SelectEvent } from "ol/interaction/Select";
 import { Geometry } from "ol/geom";
 
@@ -82,7 +81,7 @@ function useEditingViewModel(kind: EditingKind): EditingViewModel | undefined {
     const editingService = useService<EditingService>("editing.EditingService");
     const intl = useIntl();
     const appModel = useService<AppModel>("ol-app.AppModel");
-    const { map } = useMapModel(MAP_ID);
+    const { map } = useMapModel(); // uses default map configured in AppUI.tsx
 
     const [viewModel, setViewModel] = useState<EditingViewModel>();
     useEffect(() => {
