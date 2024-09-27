@@ -26,10 +26,10 @@ import OlMap from "ol/Map";
 const DEFAULT_PRECISION = 3;
 
 /**
- * Event type emitted when the user selects an item.
+ * Event type emitted when the user enters new coordinates or projection is changed by the user.
  */
 export interface CoordsSelectEvent {
-    /** The selected coordinates in the projection of the map */
+    /** The entered coordinates in the projection of the map */
     coords: Coordinate;
 
     /** The current map projection and projection of the coords. */
@@ -48,13 +48,13 @@ export interface CoordinateSearchProps extends CommonComponentProps, MapModelPro
     onSelect?: (selectProps: CoordsSelectEvent) => void;
 
     /**
-     * Function, that gets called, if the search is cleared.
+     * Function that gets called if the input is cleared.
      */
     onClear?: () => void;
 }
 
 /**
- * The `CoordinateSearch`component can be used in an app to render the coordinates at the current mouse position.
+ * The `CoordinateSearch`component can be used in an app to center the map to entered coordinates
  */
 export const CoordinateSearch: FC<CoordinateSearchProps> = (props) => {
     const {

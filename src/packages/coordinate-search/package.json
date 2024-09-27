@@ -1,7 +1,7 @@
 {
     "name": "@open-pioneer/coordinate-search",
     "version": "0.0.1",
-    "description": "This package provides a UI component to search coordinates in the map.",
+    "description": "This package provides a UI component to center the map to entered coordinates.",
     "license": "Apache-2.0",
     "main": "index.ts",
     "repository": {
