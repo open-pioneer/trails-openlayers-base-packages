@@ -32,6 +32,7 @@ it("should successfully create a coordinate search component", async () => {
     // check coordinate search box is available
     expect(coordsSearchDiv.tagName).toBe("DIV");
 });
+
 it("should successfully create a coordinate search component with additional css classes", async () => {
     const { mapId, registry } = await setupMap();
 
@@ -232,6 +233,7 @@ it("should successfully return the projection of the map as callback", async () 
     await user.type(coordInput, "7 51{enter}");
     expect(callbackProj).toBe("EPSG:3857");
 });
+
 it("should successfully call onClear if clear button is clicked", async () => {
     const user = userEvent.setup();
     const { mapId, registry } = await setupMap();
