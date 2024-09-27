@@ -7,7 +7,7 @@ import { MAP_ID } from "../map/MapConfigProviderImpl";
 import { CoordinateSearch } from "@open-pioneer/coordinate-search";
 import { Coordinate } from "ol/coordinate";
 import { Point } from "ol/geom";
-import { Box, Flex } from "@open-pioneer/chakra-integration";
+import { Box } from "@open-pioneer/chakra-integration";
 
 export function CoordinateSearchComponent() {
     const { map } = useMapModel(MAP_ID);

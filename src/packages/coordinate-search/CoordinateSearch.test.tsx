@@ -93,6 +93,7 @@ it("tracks the user's mouse position", async () => {
     });
     expect(coordInput.getAttribute("placeholder")).toMatchInlineSnapshot('"6,779 51,245"');
 });
+
 it("should format coordinates to correct coordinate string for the corresponding locale and precision", async () => {
     const coords = [3545.08081, 4543543.009];
 
@@ -120,6 +121,7 @@ it("should format coordinates to correct coordinate string with default precisio
     });
     expect(hookDeWithoutPrecision.result.current).equals("3.545,081 4.543.543,009");
 });
+
 it("should display transformed coordinates in selected option", async () => {
     const user = userEvent.setup();
     const { mapId, registry } = await setupMap();
@@ -183,7 +185,7 @@ it("should display transformed coordinates in selected option", async () => {
     ); //should display EPSG 3857
 });
 
-it("should successfully give back the search coordinates in the projection of the map", async () => {
+it("should successfully return the search coordinates in the projection of the map", async () => {
     const user = userEvent.setup();
     const { mapId, registry } = await setupMap();
 
@@ -196,7 +198,6 @@ it("should successfully give back the search coordinates in the projection of th
                 mapId={mapId}
                 data-testid="coordinate-search"
                 onSelect={({ coords }) => {
-                    console.log(coords);
                     searchedCoords = coords;
                 }}
                 onClear={() => {}}
@@ -212,7 +213,7 @@ it("should successfully give back the search coordinates in the projection of th
     expect(searchedCoords).toStrictEqual([779236.4355529151, 6621293.722740165]);
 });
 
-it("should successfully give back the projection of the map as callback", async () => {
+it("should successfully return the projection of the map as callback", async () => {
     const user = userEvent.setup();
     const { mapId, registry } = await setupMap();
 
@@ -239,7 +240,7 @@ it("should successfully give back the projection of the map as callback", async 
     });
     expect(callbackProj).toBe("EPSG:3857");
 });
-it("should successfully call onClear if Button is clicked", async () => {
+it("should successfully call onClear if clear button is clicked", async () => {
     const user = userEvent.setup();
     const { mapId, registry } = await setupMap();
 

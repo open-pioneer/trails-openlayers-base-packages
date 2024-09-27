@@ -3,8 +3,8 @@ messages:
     ariaLabel: Koordinaten Suche
   tooltip:
     basic: "Ungültige Eingabe"
-    space: "Ungültige Eingabe: Bitte trennen Sie die Koordinaten mit Leerzeichen."
+    space: "Ungültige Eingabe: Bitte trennen Sie die Koordinaten mit einem Leerzeichen."
     2coords: "Ungültige Eingabe: Es müssen 2 Zahlen eingegeben werden."
     dividerDe: "Ungültige Eingabe: Bitte verwenden Sie ',' nur als Dezimaltrennzeichen."
     extent: "Die eingegebenen Koordinaten passen nicht zum Koordinatensystem. Bitte Koordinatensystem oder Koordinaten ändern."
-    projection: "Es gibt einen Fehler mit der Projektion. Bitte andere auswählen."
+    projection: "Es gibt einen Fehler mit der Projektion. Bitte eine andere Projektion auswählen."

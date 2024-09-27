@@ -31,6 +31,7 @@ const DEFAULT_PRECISION = 3;
 export interface CoordsSelectEvent {
     /** The selected coordinates in the projection of the map */
     coords: Coordinate;
+
     /** The current map projection and projection of the coords. */
     projection: string;
 }
@@ -42,7 +43,7 @@ export interface CoordinateSearchProps extends CommonComponentProps, MapModelPro
     coordinateSystems?: { label: string; value: string }[];
 
     /**
-     * Function that gets called if some cordinates or projection is called.
+     * Function that gets called if some coordinates are entered or projection is changed by the user.
      */
     onSelect?: (selectProps: CoordsSelectEvent) => void;
 
@@ -265,17 +266,17 @@ function checkIfStringInvalid(
         }
         inputStringWithoutHundredDivider = inputString.replaceAll(",", "");
     }
-    const choosenProjection = getProjection(coordinateSystem);
-    if (choosenProjection !== null && choosenProjection.getExtent() !== null) {
+    const chosenProjection = getProjection(coordinateSystem);
+    if (chosenProjection !== null && chosenProjection.getExtent() !== null) {
         if (
-            choosenProjection.getExtent().length == 4 &&
-            choosenProjection.getExtent()[0]! >
+            chosenProjection.getExtent().length == 4 &&
+            chosenProjection.getExtent()[0]! >
                 parseFloat(inputStringWithoutHundredDivider.split(" ")[0]!) &&
-            choosenProjection.getExtent()[1]! >
+            chosenProjection.getExtent()[1]! >
                 parseFloat(inputStringWithoutHundredDivider.split(" ")[1]!) &&
-            choosenProjection.getExtent()[2]! <
+            chosenProjection.getExtent()[2]! <
                 parseFloat(inputStringWithoutHundredDivider.split(" ")[0]!) &&
-            choosenProjection.getExtent()[3]! <
+            chosenProjection.getExtent()[3]! <
                 parseFloat(inputStringWithoutHundredDivider.split(" ")[1]!)
         ) {
             if (setTooltipMessage) setTooltipMessage("tooltip.extent");

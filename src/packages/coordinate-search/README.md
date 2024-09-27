@@ -15,14 +15,16 @@ To integrate the coordinate search in your app, insert the following snippet and
 To listen to the events `onSelect` and `onClear`, provide optional callback functions to the component.
 In case of the `onSelect` event, you can access the entered coordinate from the parameter `CoordsSelectEvent`.
 
-```jsx
-<CoordinateSearch mapId="map_id"
+```tsx
+<CoordinateSearch
+    mapId="map_id"
     onSelect={(event: CoordsSelectEvent) => {
         // do something
     }}
     onClear={() => {
         // do something
-    }} />
+    }}
+/>
 ```
 
 ## License
