@@ -10,7 +10,7 @@ import {
     InputRightElement,
     Tooltip
 } from "@open-pioneer/chakra-integration";
-import { useMapModel, useProjection } from "@open-pioneer/map";
+import { MapModelProps, useMapModel, useProjection } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { get as getProjection, transform } from "ol/proj";
 import { useIntl } from "open-pioneer:react-hooks";
@@ -38,12 +38,7 @@ export interface CoordsSelectEvent {
 /**
  * These are special properties for the CoordinateSearch.
  */
-export interface CoordinateSearchProps extends CommonComponentProps {
-    /**
-     * The id of the map.
-     */
-    mapId: string;
-
+export interface CoordinateSearchProps extends CommonComponentProps, MapModelProps {
     coordinateSystems?: { label: string; value: string }[];
 
     /**
@@ -62,7 +57,6 @@ export interface CoordinateSearchProps extends CommonComponentProps {
  */
 export const CoordinateSearch: FC<CoordinateSearchProps> = (props) => {
     const {
-        mapId,
         onSelect,
         onClear,
         coordinateSystems = [
@@ -77,7 +71,7 @@ export const CoordinateSearch: FC<CoordinateSearchProps> = (props) => {
         ]
     } = props;
     const { containerProps } = useCommonComponentProps("coordinate-search", props);
-    const { map } = useMapModel(mapId);
+    const { map } = useMapModel(props);
     const intl = useIntl();
     const olMap = map?.olMap;
     const mapProjectionCode = useProjection(olMap)?.getCode() ?? "";
