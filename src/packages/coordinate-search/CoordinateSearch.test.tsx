@@ -156,9 +156,7 @@ it("should display transformed coordinates in selected option", async () => {
     if (!option4326) {
         throw new Error("EPSG 4326 missing in options");
     }
-    await act(async () => {
-        await user.click(option4326);
-    });
+    await user.click(option4326);
 
     // Simple move
     act(() => {
@@ -172,9 +170,7 @@ it("should display transformed coordinates in selected option", async () => {
     if (!option3857) {
         throw new Error("EPSG 3857 missing in options");
     }
-    await act(async () => {
-        await user.click(option3857);
-    });
+    await user.click(option3857);
 
     // Simple move
     act(() => {
@@ -207,9 +203,7 @@ it("should successfully return the search coordinates in the projection of the m
 
     await waitForMapMount("map");
     const { coordInput } = await waitForCoordinateSearch();
-    await act(async () => {
-        await user.type(coordInput, "7 51{enter}");
-    });
+    await user.type(coordInput, "7 51{enter}");
     expect(searchedCoords).toStrictEqual([779236.4355529151, 6621293.722740165]);
 });
 
@@ -235,9 +229,7 @@ it("should successfully return the projection of the map as callback", async () 
 
     await waitForMapMount("map");
     const { coordInput } = await waitForCoordinateSearch();
-    await act(async () => {
-        await user.type(coordInput, "7 51{enter}");
-    });
+    await user.type(coordInput, "7 51{enter}");
     expect(callbackProj).toBe("EPSG:3857");
 });
 it("should successfully call onClear if clear button is clicked", async () => {
@@ -262,14 +254,12 @@ it("should successfully call onClear if clear button is clicked", async () => {
 
     await waitForMapMount("map");
     const { coordInput, coordinateSearchGroup } = await waitForCoordinateSearch();
-    await act(async () => {
-        await user.type(coordInput, "404000 5700000{enter}");
-    });
+
+    await user.type(coordInput, "404000 5700000{enter}");
     const clearButton = getClearButton(coordinateSearchGroup);
     expect(cleared).toBe(false);
-    await act(async () => {
-        await user.click(clearButton);
-    });
+
+    await user.click(clearButton);
     expect(cleared).toBe(true);
 });
 
