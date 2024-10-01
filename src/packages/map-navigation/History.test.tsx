@@ -21,13 +21,13 @@ it("should successfully create an view history navigation component", async () =
         </PackageContextProvider>
     );
 
-    const { naviHistoryDivForward, naviHistoryDivBackward } = await waitForNaviHistoryComponent();
+    const { historyDivForward, historyDivBackward } = await waitForHistoryComponent();
 
     // Parent elements
-    expect(naviHistoryDivForward.tagName).toBe("BUTTON");
-    expect(naviHistoryDivBackward.tagName).toBe("BUTTON");
-    expect(naviHistoryDivForward).toMatchSnapshot();
-    expect(naviHistoryDivBackward).toMatchSnapshot();
+    expect(historyDivForward.tagName).toBe("BUTTON");
+    expect(historyDivBackward.tagName).toBe("BUTTON");
+    expect(historyDivForward).toMatchSnapshot();
+    expect(historyDivBackward).toMatchSnapshot();
 });
 
 it("should successfully disable/enable buttons", async () => {
@@ -56,38 +56,38 @@ it("should successfully disable/enable buttons", async () => {
         throw new Error("zoom not defined");
     }
 
-    const { naviHistoryDivForward, naviHistoryDivBackward } = await waitForNaviHistoryComponent();
-    expect(naviHistoryDivForward.disabled).toBe(true);
-    expect(naviHistoryDivBackward.disabled).toBe(true);
+    const { historyDivForward, historyDivBackward } = await waitForHistoryComponent();
+    expect(historyDivForward.disabled).toBe(true);
+    expect(historyDivBackward.disabled).toBe(true);
 
     await act(async () => {
         map.olMap.getView().setZoom(initialZoom + 1);
         map.olMap.dispatchEvent("moveend");
     });
-    expect(naviHistoryDivForward.disabled).toBe(true);
-    expect(naviHistoryDivBackward.disabled).toBe(false);
+    expect(historyDivForward.disabled).toBe(true);
+    expect(historyDivBackward.disabled).toBe(false);
 
     await act(async () => {
         map.olMap.getView().setCenter([1489200, 6894026]);
         map.olMap.dispatchEvent("moveend");
     });
-    expect(naviHistoryDivForward.disabled).toBe(true);
-    expect(naviHistoryDivBackward.disabled).toBe(false);
+    expect(historyDivForward.disabled).toBe(true);
+    expect(historyDivBackward.disabled).toBe(false);
 
-    await user.click(naviHistoryDivBackward);
-    expect(naviHistoryDivForward.disabled).toBe(false);
-    expect(naviHistoryDivBackward.disabled).toBe(false);
+    await user.click(historyDivBackward);
+    expect(historyDivForward.disabled).toBe(false);
+    expect(historyDivBackward.disabled).toBe(false);
 
-    await user.click(naviHistoryDivBackward);
-    expect(naviHistoryDivForward.disabled).toBe(false);
-    expect(naviHistoryDivBackward.disabled).toBe(true);
+    await user.click(historyDivBackward);
+    expect(historyDivForward.disabled).toBe(false);
+    expect(historyDivBackward.disabled).toBe(true);
 
     await act(async () => {
         map.olMap.getView().setCenter([1234500, 6894026]);
         map.olMap.dispatchEvent("moveend");
     });
-    expect(naviHistoryDivForward.disabled).toBe(true);
-    expect(naviHistoryDivBackward.disabled).toBe(false);
+    expect(historyDivForward.disabled).toBe(true);
+    expect(historyDivBackward.disabled).toBe(false);
 });
 
 it("should successfully change the map view on forward", async () => {
@@ -103,7 +103,7 @@ it("should successfully change the map view on forward", async () => {
         </PackageContextProvider>
     );
 
-    const { naviHistoryDivForward, naviHistoryDivBackward } = await waitForNaviHistoryComponent();
+    const { historyDivForward, historyDivBackward } = await waitForHistoryComponent();
 
     const view = map.olMap.getView();
     if (!view) {
@@ -127,13 +127,13 @@ it("should successfully change the map view on forward", async () => {
         map.olMap.getView().setCenter([1100000, 6100000]);
         map.olMap.dispatchEvent("moveend");
     });
-    await user.click(naviHistoryDivBackward);
+    await user.click(historyDivBackward);
 
     const tempViewCenter = map.olMap.getView().getCenter();
     const tempViewZoom = map.olMap.getView().getZoom();
 
-    await user.click(naviHistoryDivBackward);
-    await user.click(naviHistoryDivForward);
+    await user.click(historyDivBackward);
+    await user.click(historyDivForward);
 
     const actView = map.olMap.getView();
     expect(actView.getCenter()).toBe(tempViewCenter);
@@ -153,7 +153,7 @@ it("should successfully change the map view on backward", async () => {
         </PackageContextProvider>
     );
 
-    const { naviHistoryDivBackward } = await waitForNaviHistoryComponent();
+    const { historyDivBackward } = await waitForHistoryComponent();
 
     const view = map.olMap.getView();
     if (!view) {
@@ -181,21 +181,19 @@ it("should successfully change the map view on backward", async () => {
         map.olMap.getView().setCenter([1500000, 6500000]);
         map.olMap.dispatchEvent("moveend");
     });
-    await user.click(naviHistoryDivBackward);
+    await user.click(historyDivBackward);
 
     const actView = map.olMap.getView();
     expect(actView.getCenter()).toBe(tempViewCenter);
     expect(actView.getZoom()).toBe(tempViewZoom);
 });
 
-async function waitForNaviHistoryComponent() {
-    const naviHistoryDivForward = (await screen.findByTestId(
-        "navi-history-for"
-    )) as HTMLButtonElement;
+async function waitForHistoryComponent() {
+    const historyDivForward = (await screen.findByTestId("navi-history-for")) as HTMLButtonElement;
 
-    const naviHistoryDivBackward = (await screen.findByTestId(
+    const historyDivBackward = (await screen.findByTestId(
         "navi-history-back"
     )) as HTMLButtonElement;
 
-    return { naviHistoryDivForward, naviHistoryDivBackward };
+    return { historyDivForward, historyDivBackward };
 }

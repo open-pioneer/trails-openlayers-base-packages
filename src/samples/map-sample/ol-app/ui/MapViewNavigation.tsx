@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Flex } from "@open-pioneer/chakra-integration";
-import { NaviHistoryForward, NaviHistoryBackward } from "@open-pioneer/map-navigation";
+import { HistoryForward, HistoryBackward } from "@open-pioneer/map-navigation";
 import { useIntl } from "open-pioneer:react-hooks";
 import { MAP_ID } from "../map/MapConfigProviderImpl";
 import { useMapModel } from "@open-pioneer/map";
@@ -33,8 +33,8 @@ export function MapViewNavigation() {
                     padding={1}
                 >
                     {" "}
-                    <NaviHistoryBackward viewModel={viewModel} />
-                    <NaviHistoryForward viewModel={viewModel} />
+                    <HistoryBackward viewModel={viewModel} />
+                    <HistoryForward viewModel={viewModel} />
                 </Flex>
             )}
         </>

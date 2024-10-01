@@ -52,7 +52,7 @@ export interface HistoryProps extends CommonComponentProps, RefAttributes<HTMLBu
 /**
  * Provides a button by which the user can navigate forward or backward in the view history of the map.
  */
-export const History: FC<HistoryProps> = forwardRef(function NaviHistory(
+export const History: FC<HistoryProps> = forwardRef(function History(
     props: HistoryProps,
     ref: ForwardedRef<HTMLButtonElement>
 ) {
