@@ -6,24 +6,37 @@ import { useIntl } from "open-pioneer:react-hooks";
 import { MAP_ID } from "../map/MapConfigProviderImpl";
 import { useMapModel } from "@open-pioneer/map";
 import { ViewHistoryModel } from "@open-pioneer/map-navigation/ViewHistoryModel";
+import { useEffect, useState } from "react";
 export function MapViewNavigation() {
     const { map } = useMapModel(MAP_ID);
     const intl = useIntl();
-    if (!map) {
-        return;
-    }
-    const viewModel = new ViewHistoryModel(map);
+    const [viewModel, setViewModel] = useState<ViewHistoryModel | undefined>(undefined);
+    useEffect(() => {
+        if (!map) {
+            return;
+        }
+        // Initialized on mount or (in theory) if the map changes
+        const newViewModel = new ViewHistoryModel(map);
+        setViewModel(newViewModel);
+        // Automatically cleaned up by react
+        return () => newViewModel.destroy();
+    }, [map]);
 
     return (
-        <Flex
-            role="toolbar"
-            aria-label={intl.formatMessage({ id: "ariaLabel.toolbar" })}
-            direction="row"
-            gap={1}
-            padding={1}
-        >
-            <NaviHistoryBackward viewModel={viewModel} />
-            <NaviHistoryForward viewModel={viewModel} />
-        </Flex>
+        <>
+            {viewModel && (
+                <Flex
+                    role="toolbar"
+                    aria-label={intl.formatMessage({ id: "ariaLabel.toolbar" })}
+                    direction="row"
+                    gap={1}
+                    padding={1}
+                >
+                    {" "}
+                    <NaviHistoryBackward viewModel={viewModel} />
+                    <NaviHistoryForward viewModel={viewModel} />
+                </Flex>
+            )}
+        </>
     );
 }

@@ -10,39 +10,35 @@ import { useIntl } from "open-pioneer:react-hooks";
 import { ViewHistoryModel } from "./ViewHistoryModel";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 
-export type NaviHistoryForwardProps = Omit<NaviHistoryProps, "viewDirection">;
+export type HistoryForwardProps = Omit<HistoryProps, "viewDirection">;
 
 /**
  * Provides a button by which the user can navigate to the next map view.
  *
- * This component composes {@link NaviHistory}.
+ * This component composes {@link History}.
  */
-export const NaviHistoryForward: FC<NaviHistoryForwardProps> = forwardRef(
-    function NaviHistoryForward(
-        props: NaviHistoryForwardProps,
-        ref: ForwardedRef<HTMLButtonElement>
-    ) {
-        return <NaviHistory viewDirection="forward" ref={ref} {...props} />;
-    }
-);
+export const HistoryForward: FC<HistoryForwardProps> = forwardRef(function HistoryForward(
+    props: HistoryForwardProps,
+    ref: ForwardedRef<HTMLButtonElement>
+) {
+    return <History viewDirection="forward" ref={ref} {...props} />;
+});
 
-export type NaviHistoryBackwardProps = NaviHistoryForwardProps;
+export type HistoryBackwardProps = HistoryForwardProps;
 
 /**
  * Provides a button by which the user can navigate to the previous map view.
  *
- * This component composes {@link NaviHistory}.
+ * This component composes {@link History}.
  */
-export const NaviHistoryBackward: FC<NaviHistoryBackwardProps> = forwardRef(
-    function NaviHistoryBackward(
-        props: NaviHistoryBackwardProps,
-        ref: ForwardedRef<HTMLButtonElement>
-    ) {
-        return <NaviHistory viewDirection="backward" ref={ref} {...props} />;
-    }
-);
+export const HistoryBackward: FC<HistoryBackwardProps> = forwardRef(function HistoryBackward(
+    props: HistoryBackwardProps,
+    ref: ForwardedRef<HTMLButtonElement>
+) {
+    return <History viewDirection="backward" ref={ref} {...props} />;
+});
 
-export interface NaviHistoryProps extends CommonComponentProps, RefAttributes<HTMLButtonElement> {
+export interface HistoryProps extends CommonComponentProps, RefAttributes<HTMLButtonElement> {
     /**
      * The view direction.
      *
@@ -56,8 +52,8 @@ export interface NaviHistoryProps extends CommonComponentProps, RefAttributes<HT
 /**
  * Provides a button by which the user can navigate forward or backward in the view history of the map.
  */
-export const NaviHistory: FC<NaviHistoryProps> = forwardRef(function NaviHistory(
-    props: NaviHistoryProps,
+export const History: FC<HistoryProps> = forwardRef(function NaviHistory(
+    props: HistoryProps,
     ref: ForwardedRef<HTMLButtonElement>
 ) {
     const { viewDirection, viewModel } = props;

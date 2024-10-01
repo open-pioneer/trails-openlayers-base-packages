@@ -27,12 +27,12 @@ export class ViewHistoryModel {
         this.backward = this.backward.bind(this);
         this.forward = this.forward.bind(this);
         this.olMap = map.olMap;
-        this.destroy();
         this.handle = this.#subscribeToMapEvents();
     }
 
     destroy() {
         this.handle && unByKey(this.handle);
+        this.handle = undefined;
     }
 
     get activeViewId(): number {
@@ -60,13 +60,17 @@ export class ViewHistoryModel {
     }
 
     backward() {
-        this.activeViewId -= 1;
-        this.#goto(this.activeViewId);
+        if (this.canBackward) {
+            this.activeViewId -= 1;
+            this.#goto(this.activeViewId);
+        } else throw new Error("Backward is not possible at the moment");
     }
 
     forward() {
-        this.activeViewId += 1;
-        this.#goto(this.activeViewId);
+        if (this.canForward) {
+            this.activeViewId += 1;
+            this.#goto(this.activeViewId);
+        } else throw new Error("Vorward is not possible at the moment");
     }
 
     #goto(activeViewId: number) {
@@ -81,8 +85,7 @@ export class ViewHistoryModel {
     }
 
     #subscribeToMapEvents() {
-        this.destroy();
-        const eventsKey: EventsKey = this.olMap.on("moveend", async () => {
+        const eventsKey: EventsKey = this.olMap.on("moveend", () => {
             onCenterResChange();
         });
 
@@ -90,14 +93,16 @@ export class ViewHistoryModel {
             const olMap = this.olMap;
             const mapViews = this.mapViews;
             const tempView = olMap.getView();
-            if (tempView.getResolution() !== undefined && tempView.getCenter() !== undefined) {
+            const tempRes = tempView.getResolution();
+            const tempCenter = tempView.getCenter();
+            if (tempRes !== undefined && tempCenter !== undefined) {
                 if (
-                    tempView.getCenter() !== mapViews.get(this.activeViewId)?.center ||
-                    tempView.getResolution() !== mapViews.get(this.activeViewId)?.resolution
+                    tempCenter !== mapViews.get(this.activeViewId)?.center ||
+                    tempRes !== mapViews.get(this.activeViewId)?.resolution
                 ) {
                     const tempMapState = {
-                        resolution: tempView.getResolution()!,
-                        center: tempView.getCenter()!
+                        resolution: tempRes!,
+                        center: tempCenter!
                     };
                     for (const k of mapViews.keys()) {
                         if (k > this.activeViewId + 1) {
@@ -106,7 +111,6 @@ export class ViewHistoryModel {
                     }
                     this.activeViewId += 1;
                     mapViews.set(this.activeViewId, tempMapState);
-                    this.mapViews = mapViews;
                 }
             }
         };

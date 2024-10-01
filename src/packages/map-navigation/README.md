@@ -31,7 +31,7 @@ You can also use the generic `Zoom` component:
 <Zoom mapId="map_id" zoomDirection="in" />
 ```
 
-### Navigate History Forward and Backward
+### View History Forward and Backward
 
 To integrate the component in your app, insert the following snippet and reference a view Model:
 
@@ -39,8 +39,8 @@ To integrate the component in your app, insert the following snippet and referen
 const viewModel = new ViewHistoryModel(map);
 
 // Later ...
-<NaviHistoryBackward viewModel={viewModel} />
-<NaviHistoryForward viewModel={viewModel} />
+<HistoryBackward viewModel={viewModel} />
+<HistoryForward viewModel={viewModel} />
 ```
 
 ## License

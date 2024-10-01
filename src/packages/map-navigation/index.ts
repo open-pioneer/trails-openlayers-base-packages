@@ -3,8 +3,8 @@
 export { InitialExtent, type InitialExtentProps } from "./InitialExtent";
 export { Zoom, type ZoomProps, ZoomIn, type ZoomInProps, ZoomOut, type ZoomOutProps } from "./Zoom";
 export {
-    NaviHistoryForward,
-    type NaviHistoryForwardProps,
-    NaviHistoryBackward,
-    type NaviHistoryBackwardProps
-} from "./NaviHistory";
+    HistoryForward as NaviHistoryForward,
+    type HistoryForwardProps as NaviHistoryForwardProps,
+    HistoryBackward as NaviHistoryBackward,
+    type HistoryBackwardProps as NaviHistoryBackwardProps
+} from "./History";

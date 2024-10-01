@@ -4,7 +4,7 @@
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render, screen, act } from "@testing-library/react";
 import { expect, it } from "vitest";
-import { NaviHistoryBackward, NaviHistoryForward } from "./NaviHistory";
+import { HistoryBackward, HistoryForward } from "./History";
 import { ViewHistoryModel } from "./ViewHistoryModel";
 import { setupMap } from "@open-pioneer/map-test-utils";
 import userEvent from "@testing-library/user-event";
@@ -16,8 +16,8 @@ it("should successfully create an view history navigation component", async () =
 
     render(
         <PackageContextProvider>
-            <NaviHistoryBackward viewModel={viewModel} data-testid="navi-history-back" />
-            <NaviHistoryForward viewModel={viewModel} data-testid="navi-history-for" />
+            <HistoryBackward viewModel={viewModel} data-testid="navi-history-back" />
+            <HistoryForward viewModel={viewModel} data-testid="navi-history-for" />
         </PackageContextProvider>
     );
 
@@ -38,8 +38,8 @@ it("should successfully disable/enable buttons", async () => {
 
     render(
         <PackageContextProvider>
-            <NaviHistoryBackward viewModel={viewModel} data-testid="navi-history-back" />
-            <NaviHistoryForward viewModel={viewModel} data-testid="navi-history-for" />
+            <HistoryBackward viewModel={viewModel} data-testid="navi-history-back" />
+            <HistoryForward viewModel={viewModel} data-testid="navi-history-for" />
         </PackageContextProvider>
     );
     await act(async () => {
@@ -98,8 +98,8 @@ it("should successfully change the map view on forward", async () => {
 
     render(
         <PackageContextProvider>
-            <NaviHistoryBackward viewModel={viewModel} data-testid="navi-history-back" />
-            <NaviHistoryForward viewModel={viewModel} data-testid="navi-history-for" />
+            <HistoryBackward viewModel={viewModel} data-testid="navi-history-back" />
+            <HistoryForward viewModel={viewModel} data-testid="navi-history-for" />
         </PackageContextProvider>
     );
 
@@ -148,8 +148,8 @@ it("should successfully change the map view on backward", async () => {
 
     render(
         <PackageContextProvider>
-            <NaviHistoryBackward viewModel={viewModel} data-testid="navi-history-back" />
-            <NaviHistoryForward viewModel={viewModel} data-testid="navi-history-for" />
+            <HistoryBackward viewModel={viewModel} data-testid="navi-history-back" />
+            <HistoryForward viewModel={viewModel} data-testid="navi-history-for" />
         </PackageContextProvider>
     );
 
