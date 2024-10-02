@@ -10,3 +10,6 @@ export {
     History,
     type HistoryProps
 } from "./History";
+
+// TODO: API not final
+export { ViewHistoryModel } from "./ViewHistoryModel";
