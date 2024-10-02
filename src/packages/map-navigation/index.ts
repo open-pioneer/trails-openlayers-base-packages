@@ -6,5 +6,7 @@ export {
     HistoryForward,
     type HistoryForwardProps,
     HistoryBackward,
-    type HistoryBackwardProps
+    type HistoryBackwardProps,
+    History,
+    type HistoryProps
 } from "./History";

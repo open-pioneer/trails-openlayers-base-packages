@@ -24,8 +24,6 @@ export class ViewHistoryModel {
     private _activeViewId: Reactive<number> = reactive(0);
 
     constructor(map: MapModel) {
-        this.backward = this.backward.bind(this);
-        this.forward = this.forward.bind(this);
         this.olMap = map.olMap;
         this.handle = this.#subscribeToMapEvents();
     }
@@ -39,16 +37,8 @@ export class ViewHistoryModel {
         return this._activeViewId.value;
     }
 
-    set activeViewId(activeViewId) {
-        this._activeViewId.value = activeViewId;
-    }
-
     get mapViews(): ReactiveMap<number, MapViewState> {
         return this._mapViews;
-    }
-
-    set mapViews(mapViews) {
-        this._mapViews = mapViews;
     }
 
     get canBackward(): boolean {
@@ -59,19 +49,19 @@ export class ViewHistoryModel {
         return this.mapViews.get(this.activeViewId + 1) != null;
     }
 
-    backward() {
+    backward = () => {
         if (this.canBackward) {
-            this.activeViewId -= 1;
+            this.#setActiveView(this.activeViewId - 1);
             this.#goto(this.activeViewId);
         } else throw new Error("Backward is not possible at the moment");
-    }
+    };
 
-    forward() {
+    forward = () => {
         if (this.canForward) {
-            this.activeViewId += 1;
+            this.#setActiveView(this.activeViewId + 1);
             this.#goto(this.activeViewId);
-        } else throw new Error("Vorward is not possible at the moment");
-    }
+        } else throw new Error("Forward is not possible at the moment");
+    };
 
     #goto(activeViewId: number) {
         const view = this.olMap.getView();
@@ -84,6 +74,10 @@ export class ViewHistoryModel {
         );
     }
 
+    #setActiveView(activeViewId: number) {
+        this._activeViewId.value = activeViewId;
+    }
+
     #subscribeToMapEvents() {
         const eventsKey: EventsKey = this.olMap.on("moveend", () => {
             onCenterResChange();
@@ -92,25 +86,26 @@ export class ViewHistoryModel {
         const onCenterResChange = () => {
             const olMap = this.olMap;
             const mapViews = this.mapViews;
-            const tempView = olMap.getView();
-            const tempRes = tempView.getResolution();
-            const tempCenter = tempView.getCenter();
-            if (tempRes !== undefined && tempCenter !== undefined) {
+            const view = olMap.getView();
+            const resolution = view.getResolution();
+            const center = view.getCenter();
+            if (resolution != null && center != null) {
                 if (
-                    tempCenter !== mapViews.get(this.activeViewId)?.center ||
-                    tempRes !== mapViews.get(this.activeViewId)?.resolution
+                    center !== mapViews.get(this.activeViewId)?.center ||
+                    resolution !== mapViews.get(this.activeViewId)?.resolution
                 ) {
-                    const tempMapState = {
-                        resolution: tempRes!,
-                        center: tempCenter!
+                    const mapState = {
+                        resolution: resolution,
+                        center: center
                     };
+                    const nextViewId = this.activeViewId + 1;
                     for (const k of mapViews.keys()) {
-                        if (k > this.activeViewId + 1) {
+                        if (k > nextViewId) {
                             mapViews.delete(k);
                         }
                     }
-                    this.activeViewId += 1;
-                    mapViews.set(this.activeViewId, tempMapState);
+                    this.#setActiveView(nextViewId);
+                    mapViews.set(nextViewId, mapState);
                 }
             }
         };
