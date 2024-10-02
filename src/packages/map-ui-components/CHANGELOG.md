@@ -1,5 +1,12 @@
 # @open-pioneer/map-ui-components
 
+## 0.7.0
+
+### Patch Changes
+
+-   a8b3449: Switch to a new versioning strategy.
+    From now on, packages released by this repository share a common version number.
+
 ## 0.1.1
 
 ### Patch Changes

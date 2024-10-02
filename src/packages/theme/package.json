@@ -1,6 +1,6 @@
 {
     "name": "@open-pioneer/theme",
-    "version": "0.3.3",
+    "version": "0.7.0",
     "description": "This package provides a theme that uses the \"trails\" color scheme.",
     "license": "Apache-2.0",
     "main": "index.ts",
