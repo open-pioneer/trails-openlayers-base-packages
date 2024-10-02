@@ -3,7 +3,6 @@
 import { OverviewMap } from "@open-pioneer/overview-map/OverviewMap";
 import TileLayer from "ol/layer/Tile";
 import { OSM } from "ol/source";
-import { MAP_ID } from "../MapConfigProviderImpl";
 import { Demo, SharedDemoOptions } from "./Demo";
 
 export function createOverviewMapDemo({ intl }: SharedDemoOptions): Demo {
@@ -17,7 +16,7 @@ export function createOverviewMapDemo({ intl }: SharedDemoOptions): Demo {
 
             return {
                 description: intl.formatMessage({ id: "demos.overviewMap.description" }),
-                mainWidget: <OverviewMap mapId={MAP_ID} olLayer={overviewMapLayer} />,
+                mainWidget: <OverviewMap olLayer={overviewMapLayer} />,
                 destroy() {
                     overviewMapLayer.dispose();
                 }

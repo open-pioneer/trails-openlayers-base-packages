@@ -1,7 +1,13 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Box } from "@open-pioneer/chakra-integration";
-import { BaseFeature, HighlightOptions, useMapModel, ZoomOptions } from "@open-pioneer/map";
+import {
+    BaseFeature,
+    HighlightOptions,
+    MapModelProps,
+    useMapModel,
+    ZoomOptions
+} from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, ReactNode, RefObject, useEffect, useMemo, useRef, useState } from "react";
@@ -131,12 +137,7 @@ export type SelectionMode = "multi" | "single";
 /**
  * Properties supported by the {@link ResultList} component.
  */
-export interface ResultListProps extends CommonComponentProps {
-    /**
-     * The id of the map.
-     */
-    mapId: string;
-
+export interface ResultListProps extends CommonComponentProps, MapModelProps {
     /**
      * Describes the data rendered by the component.
      */
@@ -193,7 +194,6 @@ export const ResultList: FC<ResultListProps> = (props) => {
     const { containerProps } = useCommonComponentProps("result-list", props);
     const intl = useIntl();
     const {
-        mapId,
         input: { data, columns, formatOptions },
         memoizeRows = false,
         onSelectionChange,
@@ -205,7 +205,7 @@ export const ResultList: FC<ResultListProps> = (props) => {
         highlightOptions
     } = props;
 
-    const { map } = useMapModel(mapId);
+    const { map } = useMapModel(props);
 
     if (columns.length === 0) {
         throw Error("No columns were defined. The result list cannot be displayed.");

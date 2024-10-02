@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { useMapModel } from "@open-pioneer/map";
+import { MapModelProps, useMapModel } from "@open-pioneer/map";
 import { ToolButton } from "@open-pioneer/map-ui-components";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { Extent } from "ol/extent";
@@ -8,12 +8,10 @@ import { useIntl } from "open-pioneer:react-hooks";
 import { FC, ForwardedRef, RefAttributes, forwardRef } from "react";
 import { FiHome } from "react-icons/fi";
 
-export interface InitialExtentProps extends CommonComponentProps, RefAttributes<HTMLButtonElement> {
-    /**
-     * The map id.
-     */
-    mapId: string;
-}
+export interface InitialExtentProps
+    extends CommonComponentProps,
+        RefAttributes<HTMLButtonElement>,
+        MapModelProps {}
 
 /**
  * Provides a simple button that switches the view to its initial viewpoint.
@@ -22,9 +20,8 @@ export const InitialExtent: FC<InitialExtentProps> = forwardRef(function Initial
     props: InitialExtentProps,
     ref: ForwardedRef<HTMLButtonElement>
 ) {
-    const { mapId } = props;
     const { containerProps } = useCommonComponentProps("initial-extent", props);
-    const { map } = useMapModel(mapId);
+    const { map } = useMapModel(props);
     const intl = useIntl();
 
     function setInitExtent() {

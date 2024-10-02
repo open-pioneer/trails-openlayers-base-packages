@@ -4,7 +4,6 @@ import { Box } from "@open-pioneer/chakra-integration";
 import { ResultList } from "@open-pioneer/result-list";
 import { useService } from "open-pioneer:react-hooks";
 import { AppModel } from "../AppModel";
-import { MAP_ID } from "../map/MapConfigProviderImpl";
 import { BaseFeature } from "@open-pioneer/map";
 import { useState, useCallback, useEffect } from "react";
 import { ResultListSelectionChangeEvent } from "@open-pioneer/result-list";
@@ -43,7 +42,6 @@ export function ResultListComponent() {
                 <ResultList
                     key={state.key}
                     input={state.input}
-                    mapId={MAP_ID}
                     onSelectionChange={selectionChangeListener}
                 />
             </Box>

@@ -19,8 +19,10 @@ export {
     type UseMapModelResult,
     type UseMapModelLoading,
     type UseMapModelResolved,
-    type UseMapModelRejected
+    type UseMapModelRejected,
+    type MapModelProps
 } from "../ui/useMapModel";
+export { DefaultMapProvider } from "../ui/DefaultMapProvider";
 
 export { calculateBufferedExtent } from "../util/geometry-utils";
 

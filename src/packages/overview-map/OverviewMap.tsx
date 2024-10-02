@@ -1,21 +1,16 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { FC, useEffect, useRef } from "react";
-import { useMapModel } from "@open-pioneer/map";
 import { Box, BoxProps } from "@open-pioneer/chakra-integration";
-import { OverviewMap as OlOverviewMap } from "ol/control";
+import { MapModelProps, useMapModel } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
+import { OverviewMap as OlOverviewMap } from "ol/control";
 import OlBaseLayer from "ol/layer/Base";
+import { FC, useEffect, useRef } from "react";
 
 /**
  * These are properties supported by the {@link OverviewMap}.
  */
-export interface OverviewMapProps extends CommonComponentProps {
-    /**
-     * The id of the map.
-     */
-    mapId: string;
-
+export interface OverviewMapProps extends CommonComponentProps, MapModelProps {
     /**
      * The layer shown in the overview map.
      */
@@ -41,10 +36,10 @@ const DEFAULT_WIDTH = "300px";
  * The `OverviewMap` component can be used in an app to have a better overview of the current location in the map.
  */
 export const OverviewMap: FC<OverviewMapProps> = (props) => {
-    const { mapId, olLayer, height = DEFAULT_HEIGHT, width = DEFAULT_WIDTH } = props;
+    const { olLayer, height = DEFAULT_HEIGHT, width = DEFAULT_WIDTH } = props;
     const { containerProps } = useCommonComponentProps("overview-map", props);
     const overviewMapControlElem = useRef(null);
-    const { map } = useMapModel(mapId);
+    const { map } = useMapModel(props);
 
     useEffect(() => {
         if (overviewMapControlElem.current && map && olLayer) {

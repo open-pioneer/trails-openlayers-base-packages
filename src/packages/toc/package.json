@@ -18,20 +18,20 @@
     },
     "peerDependencies": {
         "@open-pioneer/basemap-switcher": "workspace:^",
-        "@open-pioneer/chakra-integration": "^1.1.4",
+        "@open-pioneer/chakra-integration": "catalog:",
         "@open-pioneer/map": "workspace:^",
-        "@open-pioneer/react-utils": "^1.0.1",
-        "@open-pioneer/runtime": "^2.1.7",
-        "classnames": "^2.3.2",
-        "ol": "^9.2.4",
-        "react": "^18.3.1",
-        "react-icons": "^5.2.1"
+        "@open-pioneer/react-utils": "catalog:",
+        "@open-pioneer/runtime": "catalog:",
+        "classnames": "catalog:",
+        "ol": "catalog:",
+        "react": "catalog:",
+        "react-icons": "catalog:"
     },
     "devDependencies": {
         "@open-pioneer/map-test-utils": "workspace:^",
-        "@open-pioneer/test-utils": "^1.1.4",
+        "@open-pioneer/test-utils": "catalog:",
         "openlayers-base-packages": "workspace:*",
-        "resize-observer-polyfill": "^1.5.1"
+        "resize-observer-polyfill": "catalog:"
     },
     "publishConfig": {
         "directory": "dist",

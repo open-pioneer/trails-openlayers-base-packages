@@ -10,7 +10,7 @@ import {
     MenuList,
     Portal
 } from "@open-pioneer/chakra-integration";
-import { useMapModel, useScale } from "@open-pioneer/map";
+import { MapModelProps, useMapModel, useScale } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { getPointResolution } from "ol/proj";
@@ -27,12 +27,7 @@ const DEFAULT_SCALES = [
 /**
  * These are the properties supported by the {@link ScaleSetter}.
  */
-export interface ScaleSetterProps extends CommonComponentProps {
-    /**
-     * The map id.
-     */
-    mapId: string;
-
+export interface ScaleSetterProps extends CommonComponentProps, MapModelProps {
     /**
      * The set of scales that can be selected by the user.
      */
@@ -43,9 +38,9 @@ export interface ScaleSetterProps extends CommonComponentProps {
  * Displays the current scale and allows the user to change it.
  */
 export const ScaleSetter: FC<ScaleSetterProps> = (props) => {
-    const { mapId, scales = DEFAULT_SCALES } = props;
+    const { scales = DEFAULT_SCALES } = props;
     const { containerProps } = useCommonComponentProps("scale-setter", props);
-    const { map } = useMapModel(mapId);
+    const { map } = useMapModel(props);
     const intl = useIntl();
 
     const activeScale = useScale(map?.olMap) ?? 1;

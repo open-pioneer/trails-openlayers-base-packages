@@ -110,7 +110,7 @@ it("should trigger a notification if the map export fails", async () => {
     `);
 
     // Expect message in the log
-    expect(errorSpy).toHaveBeenCalledTimes(2); // react act (for some reason) and the actual error message
+    expect(errorSpy).toHaveBeenCalledTimes(1);
     expect(errorSpy.mock.lastCall).toMatchInlineSnapshot(`
       [
         "[ERROR] printing: Failed to print the map",

@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Box, Text } from "@open-pioneer/chakra-integration";
-import { useMapModel, useScale } from "@open-pioneer/map";
+import { MapModelProps, useMapModel, useScale } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC } from "react";
@@ -9,18 +9,11 @@ import { FC } from "react";
 /**
  * These are the properties supported by the {@link ScaleViewer}.
  */
-export interface ScaleViewerProps extends CommonComponentProps {
-    /**
-     * The map id.
-     */
-    mapId: string;
-}
+export interface ScaleViewerProps extends CommonComponentProps, MapModelProps {}
 
 export const ScaleViewer: FC<ScaleViewerProps> = (props) => {
-    const { mapId } = props;
     const { containerProps } = useCommonComponentProps("scale-viewer", props);
-
-    const { map } = useMapModel(mapId);
+    const { map } = useMapModel(props);
     const intl = useIntl();
     const scale = useScale(map?.olMap);
     const displayScale = scale ? intl.formatNumber(scale) : undefined;

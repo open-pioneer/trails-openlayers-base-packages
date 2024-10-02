@@ -5,7 +5,6 @@ import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { Toc } from "@open-pioneer/toc";
 import { useIntl } from "open-pioneer:react-hooks";
 import { useId } from "react";
-import { MAP_ID } from "../map/MapConfigProviderImpl";
 
 export function TocComponent() {
     const tocTitleId = useId();
@@ -26,7 +25,6 @@ export function TocComponent() {
             >
                 <Box overflowY="auto" maxHeight={300}>
                     <Toc
-                        mapId={MAP_ID}
                         showTools={true}
                         basemapSwitcherProps={{
                             allowSelectingEmptyBasemap: true

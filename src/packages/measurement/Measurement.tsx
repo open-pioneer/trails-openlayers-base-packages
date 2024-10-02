@@ -9,7 +9,7 @@ import {
     Select,
     Text
 } from "@open-pioneer/chakra-integration";
-import { MapModel, useMapModel } from "@open-pioneer/map";
+import { MapModel, MapModelProps, useMapModel } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { Circle as CircleStyle, Fill, Stroke, Style } from "ol/style";
@@ -47,12 +47,7 @@ export type MeasurementGeometry = LineString | Polygon;
 /**
  * This is for special properties of the Measurement.
  */
-export interface MeasurementProps extends CommonComponentProps {
-    /**
-     * The id of the map.
-     */
-    mapId: string;
-
+export interface MeasurementProps extends CommonComponentProps, MapModelProps {
     /**
      * The style for the active drawing feature's geometry.
      */
@@ -79,11 +74,10 @@ export interface MeasurementProps extends CommonComponentProps {
  */
 export const Measurement: FC<MeasurementProps> = (props) => {
     const intl = useIntl();
-    const { mapId } = props;
     const { containerProps } = useCommonComponentProps("measurement", props);
     const [selectedMeasurement, setMeasurement] = useState<MeasurementType>("distance");
     const label = (id: string) => intl.formatMessage({ id: id });
-    const mapState = useMapModel(mapId);
+    const mapState = useMapModel(props);
     const controller = useController(mapState.map, props, intl);
 
     // Start / Stop measurement on selection change

@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Box, Flex, Tooltip, useToken } from "@open-pioneer/chakra-integration";
-import { Layer, MapModel, useMapModel } from "@open-pioneer/map";
+import { Layer, MapModel, MapModelProps, useMapModel } from "@open-pioneer/map";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, useCallback, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import {
@@ -40,12 +40,7 @@ export interface SelectOption {
 /**
  * These are special properties for the BasemapSwitcher.
  */
-export interface BasemapSwitcherProps extends CommonComponentProps {
-    /**
-     * The id of the map.
-     */
-    mapId: string;
-
+export interface BasemapSwitcherProps extends CommonComponentProps, MapModelProps {
     /**
      * Additional css class name(s) that will be added to the BasemapSwitcher component.
      */
@@ -76,7 +71,6 @@ export interface BasemapSwitcherProps extends CommonComponentProps {
 export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
     const intl = useIntl();
     const {
-        mapId,
         allowSelectingEmptyBasemap = false,
         "aria-label": ariaLabel,
         "aria-labelledby": ariaLabelledBy
@@ -84,7 +78,7 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
     const { containerProps } = useCommonComponentProps("basemap-switcher", props);
     const emptyBasemapLabel = intl.formatMessage({ id: "emptyBasemapLabel" });
 
-    const { map } = useMapModel(mapId);
+    const { map } = useMapModel(props);
     const baseLayers = useBaseLayers(map);
     const chakraStyles = useChakraStyles();
     const [isOpenSelect, setIsOpenSelect] = useState(false);
