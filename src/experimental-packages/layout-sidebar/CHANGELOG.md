@@ -1,5 +1,12 @@
 # @open-pioneer/experimental-layout-sidebar
 
+## 0.7.0
+
+### Patch Changes
+
+-   a8b3449: Switch to a new versioning strategy.
+    From now on, packages released by this repository share a common version number.
+
 ## 0.2.4
 
 ### Patch Changes

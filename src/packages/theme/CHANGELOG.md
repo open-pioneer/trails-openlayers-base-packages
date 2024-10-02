@@ -1,5 +1,12 @@
 # @open-pioneer/theme
 
+## 0.7.0
+
+### Patch Changes
+
+-   a8b3449: Switch to a new versioning strategy.
+    From now on, packages released by this repository share a common version number.
+
 ## 0.3.3
 
 ### Patch Changes

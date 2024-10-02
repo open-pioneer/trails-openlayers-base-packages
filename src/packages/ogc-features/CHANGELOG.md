@@ -1,5 +1,16 @@
 # @open-pioneer/ogc-features
 
+## 0.7.0
+
+### Patch Changes
+
+-   a8b3449: Switch to a new versioning strategy.
+    From now on, packages released by this repository share a common version number.
+-   Updated dependencies [583f1d6]
+-   Updated dependencies [583f1d6]
+-   Updated dependencies [a8b3449]
+    -   @open-pioneer/search@0.7.0
+
 ## 0.4.4
 
 ### Patch Changes
