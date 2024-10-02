@@ -1,0 +1,81 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`should successfully create an view history navigation component 1`] = `
+<button
+  aria-label="view-forward.title"
+  class="chakra-button tool-button view view-forward tool-button--disabled css-22xpxh"
+  data-testid="navi-history-for"
+  data-theme="light"
+  disabled=""
+  type="button"
+>
+  <span
+    class="chakra-button__icon css-1dwr89y"
+    data-theme="light"
+  >
+    <svg
+      aria-hidden="true"
+      fill="none"
+      focusable="false"
+      height="1em"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      viewBox="0 0 24 24"
+      width="1em"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <line
+        x1="5"
+        x2="19"
+        y1="12"
+        y2="12"
+      />
+      <polyline
+        points="12 5 19 12 12 19"
+      />
+    </svg>
+  </span>
+</button>
+`;
+
+exports[`should successfully create an view history navigation component 2`] = `
+<button
+  aria-label="view-backward.title"
+  class="chakra-button tool-button view view-backward tool-button--disabled css-22xpxh"
+  data-testid="navi-history-back"
+  data-theme="light"
+  disabled=""
+  type="button"
+>
+  <span
+    class="chakra-button__icon css-1dwr89y"
+    data-theme="light"
+  >
+    <svg
+      aria-hidden="true"
+      fill="none"
+      focusable="false"
+      height="1em"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      viewBox="0 0 24 24"
+      width="1em"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <line
+        x1="19"
+        x2="5"
+        y1="12"
+        y2="12"
+      />
+      <polyline
+        points="12 19 5 12 12 5"
+      />
+    </svg>
+  </span>
+</button>
+`;

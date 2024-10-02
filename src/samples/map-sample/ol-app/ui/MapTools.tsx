@@ -18,15 +18,15 @@ import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { useIntl, useService } from "open-pioneer:react-hooks";
 import { ForwardedRef, forwardRef, useState } from "react";
 import {
+    PiCursorClick,
     PiImagesLight,
     PiListLight,
     PiListMagnifyingGlassFill,
     PiPencil,
     PiPencilSlash,
+    PiPrinterLight,
     PiRulerLight,
-    PiSelectionPlusBold,
-    PiCursorClick,
-    PiPrinterLight
+    PiSelectionPlusBold
 } from "react-icons/pi";
 import { TbPolygon, TbPolygonOff } from "react-icons/tb";
 import { AppModel } from "../AppModel";
@@ -82,7 +82,6 @@ export function MapTools() {
                 isActive={isPrintingActive}
                 onClick={() => appModel.toggleMainContent("printing")}
             />
-
             <InitialExtent />
             <ZoomIn />
             <ZoomOut />
