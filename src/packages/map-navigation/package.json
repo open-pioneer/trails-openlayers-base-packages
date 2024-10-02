@@ -17,6 +17,7 @@
         "build": "build-pioneer-package"
     },
     "peerDependencies": {
+        "@conterra/reactivity-core": "catalog:",
         "@open-pioneer/chakra-integration": "catalog:",
         "@open-pioneer/map": "workspace:^",
         "@open-pioneer/map-ui-components": "workspace:^",
