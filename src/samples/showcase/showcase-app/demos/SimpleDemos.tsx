@@ -2,13 +2,22 @@
 // SPDX-License-Identifier: Apache-2.0
 import { CoordinateViewer } from "@open-pioneer/coordinate-viewer";
 import { Geolocation } from "@open-pioneer/geolocation";
-import { InitialExtent, ZoomIn, ZoomOut } from "@open-pioneer/map-navigation";
+import { useMapModel } from "@open-pioneer/map";
+import {
+    HistoryBackward,
+    HistoryForward,
+    InitialExtent,
+    ZoomIn,
+    ZoomOut
+} from "@open-pioneer/map-navigation";
+import { ViewHistoryModel } from "@open-pioneer/map-navigation";
 import { Measurement } from "@open-pioneer/measurement";
 import { Printing } from "@open-pioneer/printing";
 import { ScaleBar } from "@open-pioneer/scale-bar";
-import { ScaleViewer } from "@open-pioneer/scale-viewer";
 import { ScaleSetter } from "@open-pioneer/scale-setter";
+import { ScaleViewer } from "@open-pioneer/scale-viewer";
 import { SpatialBookmarks } from "@open-pioneer/spatial-bookmarks";
+import { useEffect, useState } from "react";
 import { Demo, SharedDemoOptions } from "./Demo";
 
 export function createCoordinateViewerDemo({ intl }: SharedDemoOptions): Demo {
@@ -87,12 +96,35 @@ export function createMapNavigationDemo({ intl }: SharedDemoOptions): Demo {
                     <>
                         <ZoomIn />
                         <ZoomOut />
+                        <MapViewNavigation />
                         <InitialExtent />
                     </>
                 )
             };
         }
     };
+}
+
+function MapViewNavigation() {
+    const { map } = useMapModel();
+    const [viewModel, setViewModel] = useState<ViewHistoryModel | undefined>(undefined);
+    useEffect(() => {
+        if (!map) {
+            return;
+        }
+        const newViewModel = new ViewHistoryModel(map);
+        setViewModel(newViewModel);
+        return () => newViewModel.destroy();
+    }, [map]);
+
+    return (
+        viewModel && (
+            <>
+                <HistoryBackward viewModel={viewModel} />
+                <HistoryForward viewModel={viewModel} />
+            </>
+        )
+    );
 }
 
 export function createGeolocationDemo({ intl }: SharedDemoOptions): Demo {

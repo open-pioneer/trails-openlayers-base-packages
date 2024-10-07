@@ -17,10 +17,12 @@
         "build": "build-pioneer-package"
     },
     "peerDependencies": {
+        "@conterra/reactivity-core": "catalog:",
         "@open-pioneer/chakra-integration": "catalog:",
         "@open-pioneer/map": "workspace:^",
         "@open-pioneer/map-ui-components": "workspace:^",
         "@open-pioneer/react-utils": "catalog:",
+        "@open-pioneer/reactivity": "catalog:",
         "@open-pioneer/runtime": "catalog:",
         "classnames": "catalog:",
         "ol": "catalog:",
