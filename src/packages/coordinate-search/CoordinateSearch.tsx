@@ -11,7 +11,7 @@ import {
     Tooltip
 } from "@open-pioneer/chakra-integration";
 import { MapModelProps, useMapModel, useProjection } from "@open-pioneer/map";
-import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
+import { CommonComponentProps, useCommonComponentProps, useEvent } from "@open-pioneer/react-utils";
 import { get as getProjection, transform } from "ol/proj";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, useEffect, useState } from "react";
@@ -22,6 +22,7 @@ import { PackageIntl } from "@open-pioneer/runtime";
 import { EventsKey } from "ol/events";
 import { unByKey } from "ol/Observable";
 import OlMap from "ol/Map";
+import { KeyboardEvent } from "react";
 
 const DEFAULT_PRECISION = 3;
 
@@ -40,7 +41,11 @@ export interface CoordsSelectEvent {
  * These are special properties for the CoordinateSearch.
  */
 export interface CoordinateSearchProps extends CommonComponentProps, MapModelProps {
-    coordinateSystems?: { label: string; value: string }[];
+    /**
+     * Searchable coordinate Systems, only coordinate systems that are known as projection are shown.
+     * Each System can have an individual precision. If no precision is given, the default Presision is used.
+     */
+    coordinateSystems?: { label: string; value: string; precision?: number }[];
 
     /**
      * Function that gets called if some coordinates are entered or projection is changed by the user.
@@ -54,7 +59,7 @@ export interface CoordinateSearchProps extends CommonComponentProps, MapModelPro
 }
 
 /**
- * The `CoordinateSearch`component can be used in an app to center the map to entered coordinates
+ * The `CoordinateSearch`component can be used in an app to search for entered coordinates on the choosen projection
  */
 export const CoordinateSearch: FC<CoordinateSearchProps> = (props) => {
     const {
@@ -63,11 +68,13 @@ export const CoordinateSearch: FC<CoordinateSearchProps> = (props) => {
         coordinateSystems = [
             {
                 label: "EPSG:4326",
-                value: "EPSG:4326"
+                value: "EPSG:4326",
+                precision: 3
             },
             {
                 label: "EPSG:3857",
-                value: "EPSG:3857"
+                value: "EPSG:3857",
+                precision: 2
             }
         ]
     } = props;
@@ -75,23 +82,35 @@ export const CoordinateSearch: FC<CoordinateSearchProps> = (props) => {
     const { map } = useMapModel(props);
     const intl = useIntl();
     const olMap = map?.olMap;
-    const mapProjectionCode = useProjection(olMap)?.getCode() ?? "";
-    const availableCoordinateSystems = coordinateSystems.filter(
-        (cs) => getProjection(cs.value) != null
+    const mapProjectionCode = useProjection(olMap)?.getCode() ?? ""; //projection of the map
+    const coordinateSystemsWithPrec: { label: string; value: string; precision: number }[] = [];
+    coordinateSystems.forEach(
+        (ele) =>
+            coordinateSystemsWithPrec.push({
+                label: ele.label,
+                value: ele.value,
+                precision: ele.precision || DEFAULT_PRECISION
+            }) // add precision to every projection, if nothing is set
     );
+    const availableCoordinateSystems: { label: string; value: string; precision: number }[] =
+        coordinateSystemsWithPrec.filter((cs) => getProjection(cs.value) != null); // filter for projections that are known
     const [coordinateSearchSystem, setCoordinateSearchSystem] = useState<{
         label: string;
         value: string;
-    }>(availableCoordinateSystems[0]!);
-    const [coordinateSearchInput, setCoordinateSearchInput] = useState<string>("");
+        precision: number;
+    }>({
+        label: availableCoordinateSystems[0]!.label,
+        value: availableCoordinateSystems[0]!.value,
+        precision: availableCoordinateSystems[0]!.precision
+    }); // set projection select initial on first one in list
+    const [coordinateSearchInput, setCoordinateSearchInput] = useState<string>(""); // coordinate input field
     let tooltipMessage = "tooltip.basic";
-    let { coordinates } = useCoordinates(olMap);
+    let { coordinates } = useCoordinates(olMap); //coordinates of the pointer in the map
     coordinates =
         coordinates && mapProjectionCode
             ? transformCoordinates(coordinates, mapProjectionCode, coordinateSearchSystem.value)
             : coordinates;
-    const coordinatesString = useCoordinatesString(coordinates, DEFAULT_PRECISION);
-    const displayString = coordinatesString ? coordinatesString : "";
+    const displayString = useCoordinatesString(coordinates, coordinateSearchSystem.precision);
     const [displayPlaceholder, setDisplayPlaceholder] = useState<boolean>(false);
     const stringInvalid =
         !displayPlaceholder &&
@@ -101,6 +120,8 @@ export const CoordinateSearch: FC<CoordinateSearchProps> = (props) => {
             coordinateSearchSystem.value,
             setTooltipMessage
         );
+    const [isOpenSelect, setIsOpenSelect] = useState(false); // if the select menu is open
+    const [menuPlacement, setMenuPlacement] = useState<string>(""); // where is menu is places (top/bottom)
 
     useEffect(() => {
         if (coordinateSearchInput === "") setDisplayPlaceholder(true);
@@ -111,13 +132,20 @@ export const CoordinateSearch: FC<CoordinateSearchProps> = (props) => {
         tooltipMessage = newId;
     }
 
+    const keyDown = useEvent((event: KeyboardEvent<HTMLDivElement>) => {
+        //if the menu is already open, do noting
+        if (!isOpenSelect && event.key === "Enter") {
+            setIsOpenSelect(true);
+        }
+    });
+
     return (
         <Box {...containerProps}>
             <Flex flexDirection={"row"} flexDir={"row"}>
                 <Tooltip
                     label={intl.formatMessage({ id: tooltipMessage })}
                     hasArrow
-                    placement="top"
+                    placement="auto"
                     isOpen={stringInvalid}
                 >
                     <InputGroup className="coordinateSearchGroup">
@@ -125,17 +153,17 @@ export const CoordinateSearch: FC<CoordinateSearchProps> = (props) => {
                             <Input
                                 type="text"
                                 value={displayPlaceholder ? displayString : coordinateSearchInput}
-                                id="coordinateInput"
                                 onChange={(eve) => {
                                     setCoordinateSearchInput(eve.target.value);
                                 }}
                                 isInvalid={stringInvalid}
-                                backgroundColor={stringInvalid ? "red.100" : "unset"}
+                                backgroundColor={stringInvalid ? "red.100" : "undefined"}
                                 placeholder={displayString}
                                 errorBorderColor="red.500"
                                 aria-label={intl.formatMessage({
                                     id: "coordinateSearch.ariaLabel"
                                 })}
+                                borderRightRadius={0}
                                 onKeyDown={(eve) => {
                                     if (displayPlaceholder && !eve.ctrlKey)
                                         setDisplayPlaceholder(false);
@@ -150,10 +178,9 @@ export const CoordinateSearch: FC<CoordinateSearchProps> = (props) => {
                                     }
                                 }}
                             />
-                            <InputRightElement>
-                                {coordinateSearchInput !== "" && (
+                            {coordinateSearchInput !== "" && (
+                                <InputRightElement>
                                     <IconButton
-                                        id="clearCoordinateSearch"
                                         size="sm"
                                         onClick={() => {
                                             setCoordinateSearchInput("");
@@ -162,42 +189,51 @@ export const CoordinateSearch: FC<CoordinateSearchProps> = (props) => {
                                             }
                                         }}
                                         isDisabled={coordinateSearchInput == ""}
-                                        padding={"0px"}
+                                        padding={0}
                                         icon={<CloseIcon />}
                                         aria-label={intl.formatMessage({
                                             id: "coordinateSearch.ariaLabel"
                                         })}
                                     />
-                                )}
-                            </InputRightElement>
+                                </InputRightElement>
+                            )}
                         </InputGroup>
                         <InputRightAddon padding={"0px"} borderLeft={"0px"}>
                             <Select
-                                {...containerProps}
-                                id="selectCoordinateSystem"
                                 value={coordinateSearchSystem}
                                 defaultValue={coordinateSearchSystem}
                                 options={availableCoordinateSystems}
-                                menuPlacement="top"
+                                menuPlacement="auto"
                                 aria-label={intl.formatMessage({
+                                    id: "coordinateSearch.ariaLabel"
+                                })}
+                                aria-labelledby={intl.formatMessage({
                                     id: "coordinateSearch.ariaLabel"
                                 })}
                                 classNamePrefix={"coordinate-Search-Select"}
                                 isSearchable={false}
                                 chakraStyles={{
-                                    menu: (base) => ({
-                                        ...base,
-                                        width: "max-content",
-                                        minWidth: "100%"
-                                    }),
-                                    control: (base) => ({
+                                    menu: (base, selectProps) => {
+                                        setMenuPlacement(selectProps.placement);
+                                        return {
+                                            ...base,
+                                            width: "max-content",
+                                            minWidth: "100%"
+                                        };
+                                    },
+                                    control: (base, { selectProps: { menuIsOpen } }) => ({
                                         ...base,
                                         width: "max-content",
                                         minWidth: "100%",
                                         color: "white",
                                         borderleftstyle: "none",
                                         borderLeftRadius: 0,
-                                        padding: 0
+                                        padding: 0,
+                                        backgroundColor: `${menuIsOpen ? "rgb(27, 75, 95)" : "var(--chakra-colors-background_primary)"}`,
+                                        //borderColor: `${menuIsOpen ? "rgb(27, 75, 95)" : "var(--chakra-colors-background_primary)"}`,
+                                        _focus: {
+                                            boxShadow: "var(--chakra-shadows-outline)"
+                                        }
                                     }),
                                     valueContainer: (base) => ({
                                         ...base,
@@ -208,9 +244,42 @@ export const CoordinateSearch: FC<CoordinateSearchProps> = (props) => {
                                         paddingStart: 0,
                                         "> svg": {
                                             transitionDuration: "normal",
-                                            transform: `rotate(${menuIsOpen ? 0 : -180}deg)`
+                                            transform: `rotate(${menuIsOpen && menuPlacement == "top" ? 0 : menuIsOpen && menuPlacement == "bottom" ? -180 : !menuIsOpen && menuPlacement == "top" ? -180 : !menuIsOpen && menuPlacement == "btoom" ? 0 : 0}deg)`
+                                        },
+                                        backgroundColor: `${menuIsOpen ? "rgb(27, 75, 95)" : "var(--chakra-colors-background_primary)"}`
+                                        //borderColor: `${menuIsOpen ? "rgb(27, 75, 95)" : "var(--chakra-colors-background_primary)"}`
+                                    }),
+                                    option: (base) => ({
+                                        ...base,
+                                        _focus: {
+                                            background: "var(--chakra-colors-trails-300)"
                                         }
+                                    }),
+                                    indicatorSeparator: (
+                                        base,
+                                        { selectProps: { menuIsOpen } }
+                                    ) => ({
+                                        ...base,
+                                        backgroundColor: `${menuIsOpen ? "rgb(27, 75, 95)" : "var(--chakra-colors-background_primary)"}`
+                                        //borderColor: `${menuIsOpen ? "rgb(27, 75, 95)" : "var(--chakra-colors-background_primary)"}`
                                     })
+                                }}
+                                ariaLiveMessages={{
+                                    guidance: () => "",
+                                    onChange: (props) => {
+                                        if (
+                                            props.action == "select-option" ||
+                                            props.action == "initial-input-focus"
+                                        )
+                                            return (
+                                                props.label +
+                                                " " +
+                                                intl.formatMessage({ id: "selected" })
+                                            );
+                                        else return "";
+                                    },
+                                    onFilter: () => "",
+                                    onFocus: () => ""
                                 }}
                                 onChange={(e) => {
                                     if (e?.value !== undefined) {
@@ -224,6 +293,10 @@ export const CoordinateSearch: FC<CoordinateSearchProps> = (props) => {
                                         );
                                     }
                                 }}
+                                onKeyDown={keyDown}
+                                menuIsOpen={isOpenSelect}
+                                onMenuOpen={() => setIsOpenSelect(true)}
+                                onMenuClose={() => setIsOpenSelect(false)}
                             />
                         </InputRightAddon>
                     </InputGroup>
@@ -243,6 +316,10 @@ function checkIfStringInvalid(
 
     if (!inputString.includes(" ")) {
         if (setTooltipMessage) setTooltipMessage("tooltip.space");
+        return true;
+    }
+    if (inputString.indexOf(" ") != inputString.lastIndexOf(" ")) {
+        if (setTooltipMessage) setTooltipMessage("tooltip.spaceOne");
         return true;
     }
     if (
@@ -340,6 +417,7 @@ function onCoordinateSearch(
     }
 }
 
+/* gives back the given coordinates in the projection of the map */
 function getCoordsForZoom(
     coordinateString: string,
     coordinateSystem: string,
@@ -353,6 +431,7 @@ function getCoordsForZoom(
     return transformCoordinates(coords, coordinateSystem, mapCoordinateSystem);
 }
 
+/* transforms the given coordinates in the given destination projection */
 function transformCoordinates(
     coordinates: number[],
     source: string,
@@ -362,24 +441,17 @@ function transformCoordinates(
 }
 
 /* Separate function for easier testing */
-export function useCoordinatesString(
-    coordinates: number[] | undefined,
-    precision: number | undefined
-): string {
+export function useCoordinatesString(coordinates: number[] | undefined, precision: number): string {
     const intl = useIntl();
     return coordinates ? formatCoordinates(coordinates, precision, intl) : "";
 }
 
-function formatCoordinates(
-    coordinates: number[],
-    configuredPrecision: number | undefined,
-    intl: PackageIntl
-) {
+/* formats the coordinates into a string with x withspace y */
+function formatCoordinates(coordinates: number[], precision: number, intl: PackageIntl) {
     if (coordinates[0] == null || coordinates[1] == null) {
         return "";
     }
 
-    const precision = configuredPrecision ?? DEFAULT_PRECISION;
     const [x, y] = coordinates;
 
     const xString = intl.formatNumber(x, {
@@ -394,6 +466,7 @@ function formatCoordinates(
     return xString + " " + yString;
 }
 
+/** function to get the coordinates of the pointer in the map */
 function useCoordinates(map: OlMap | undefined): { coordinates: Coordinate | undefined } {
     const [coordinates, setCoordinates] = useState<Coordinate | undefined>();
 

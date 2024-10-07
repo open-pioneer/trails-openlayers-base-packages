@@ -117,7 +117,7 @@ it("should format coordinates to correct coordinate string for the corresponding
 
 it("should format coordinates to correct coordinate string with default precision", async () => {
     const coords = [3545.08081, 4543543.009];
-    const hookDeWithoutPrecision = renderHook(() => useCoordinatesString(coords, undefined), {
+    const hookDeWithoutPrecision = renderHook(() => useCoordinatesString(coords, 3), {
         wrapper: (props) => <PackageContextProvider {...props} locale="de" />
     });
     expect(hookDeWithoutPrecision.result.current).equals("3.545,081 4.543.543,009");
@@ -178,7 +178,7 @@ it("should display transformed coordinates in selected option", async () => {
         simulateMove(851594.11, 6789283.95); //map projection is EPSG:3857 (Web Mercator)
     });
     expect(coordInput.getAttribute("placeholder")).toMatchInlineSnapshot(
-        '"851,594.110 6,789,283.950"'
+        '"851,594.11 6,789,283.95"'
     ); //should display EPSG 3857
 });
 
@@ -275,13 +275,19 @@ async function waitForCoordinateSearch() {
                 throw new Error("coordinate search group not rendered");
             }
 
-            const coordInput = coordinateSearchGroup.querySelector("#coordinateInput");
+            const coordInputDiv = coordinateSearchGroup.querySelector(".coordinateInputGroup");
+            if (!coordInputDiv) {
+                throw new Error("coordinate search input field not rendered");
+            }
+
+            const coordInput = coordInputDiv.querySelector(".chakra-input");
             if (!coordInput) {
                 throw new Error("coordinate search input field not rendered");
             }
 
-            const projSelect: HTMLElement | null =
-                coordinateSearchGroup.querySelector("#selectCoordinateSystem");
+            const projSelect: HTMLElement | null = coordinateSearchGroup.querySelector(
+                ".coordinate-Search-Select--has-value"
+            );
             if (!projSelect) {
                 throw new Error("coordinate search projection select not rendered");
             }
@@ -307,7 +313,11 @@ function getCurrentOptions(projSelect: HTMLElement) {
 }
 
 function getClearButton(coordinateSearchGroup: Element) {
-    const clearButton = coordinateSearchGroup.querySelector("#clearCoordinateSearch");
+    const clearButtonDiv = coordinateSearchGroup.querySelector(".chakra-input__right-element");
+    if (!clearButtonDiv) {
+        throw new Error("coordinate search clear button not rendered");
+    }
+    const clearButton = clearButtonDiv.querySelector(".chakra-button");
     if (!clearButton) {
         throw new Error("coordinate search clear button not rendered");
     }

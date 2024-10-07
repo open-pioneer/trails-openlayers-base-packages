@@ -9,7 +9,6 @@
         "@emotion/styled": "catalog:",
         "@open-pioneer/chakra-integration": "catalog:",
         "@open-pioneer/coordinate-viewer": "workspace:^",
-        "@open-pioneer/coordinate-search": "workspace:^",
         "@open-pioneer/editing": "workspace:^",
         "@open-pioneer/http": "catalog:",
         "@open-pioneer/legend": "workspace:^",

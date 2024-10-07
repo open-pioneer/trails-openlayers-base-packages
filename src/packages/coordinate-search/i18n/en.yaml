@@ -4,7 +4,9 @@ messages:
   tooltip:
     basic: "Invalid input"
     space: "Invalid input: Please enter the coordinates with whitespace."
+    spaceOne: "Invalid input: Please use whitespace just once for the coordinates."
     2coords: "Invalid input: Please enter two numbers."
     dividerEn: "Invalid input: Please use '.' only as decimal separator."
     extent: "The coordinates are not in the bounds of the reference system. Please change the projection or coordinates."
     projection: "The projection is not working. Please change to another projection."
+  selected: selected

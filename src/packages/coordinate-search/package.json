@@ -1,13 +1,13 @@
 {
     "name": "@open-pioneer/coordinate-search",
     "version": "0.0.1",
-    "description": "This package provides a UI component to center the map to entered coordinates.",
+    "description": "This package provides a UI component to search for entered coordinates in the choosen projection.",
     "license": "Apache-2.0",
     "main": "index.ts",
     "repository": {
         "type": "git",
         "url": "https://github.com/open-pioneer/trails-openlayers-base-packages",
-        "directory": "src/packages/coordinate-viewer"
+        "directory": "src/packages/coordinate-search"
     },
     "homepage": "https://github.com/open-pioneer",
     "keywords": [
@@ -24,8 +24,7 @@
         "chakra-react-select": "catalog:",
         "@chakra-ui/icons": "catalog:",
         "ol": "catalog:",
-        "react": "catalog:",
-        "proj4": "catalog:"
+        "react": "catalog:"
     },
     "devDependencies": {
         "@open-pioneer/test-utils": "catalog:",
