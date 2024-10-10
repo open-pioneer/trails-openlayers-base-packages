@@ -42,8 +42,8 @@ export interface CoordsSelectEvent {
  */
 export interface CoordinateSearchProps extends CommonComponentProps, MapModelProps {
     /**
-     * Searchable coordinate Systems, only coordinate systems that are known as projection are shown.
-     * Each System can have an individual precision. If no precision is given, the default Presision is used.
+     * Searchable coordinate systems, only coordinate systems that are known by the map as projection are shown.
+     * Each System can have an individual precision. If no precision is given, the default precision is used.
      */
     coordinateSystems?: { label: string; value: string; precision?: number }[];
 
@@ -59,7 +59,7 @@ export interface CoordinateSearchProps extends CommonComponentProps, MapModelPro
 }
 
 /**
- * The `CoordinateSearch`component can be used in an app to search for entered coordinates on the choosen projection
+ * The `CoordinateSearch`component can be used in an app to search for entered coordinates in a selected projection
  */
 export const CoordinateSearch: FC<CoordinateSearchProps> = (props) => {
     const {
@@ -417,7 +417,7 @@ function onCoordinateSearch(
     }
 }
 
-/* gives back the given coordinates in the projection of the map */
+/* returns the given coordinates in the projection of the map */
 function getCoordsForZoom(
     coordinateString: string,
     coordinateSystem: string,

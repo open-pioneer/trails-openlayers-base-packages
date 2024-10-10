@@ -4,7 +4,7 @@ messages:
   tooltip:
     basic: "Ungültige Eingabe"
     space: "Ungültige Eingabe: Bitte trennen Sie die Koordinaten mit genau einem Leerzeichen."
-    spaceOne: "Ungültige Eingabe: Bitte verwenden Sie genau ein Leerzeichen nur zum trennen der Koordinaten."
+    spaceOne: "Ungültige Eingabe: Bitte verwenden Sie nur genau ein Leerzeichen zum Trennen der Koordinaten."
     2coords: "Ungültige Eingabe: Es müssen 2 Zahlen eingegeben werden."
     dividerDe: "Ungültige Eingabe: Bitte verwenden Sie ',' nur als Dezimaltrennzeichen."
     extent: "Die eingegebenen Koordinaten passen nicht zum Koordinatensystem. Bitte Koordinatensystem oder Koordinaten ändern."
