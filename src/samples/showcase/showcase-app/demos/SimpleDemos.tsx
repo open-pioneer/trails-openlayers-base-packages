@@ -19,6 +19,9 @@ import { ScaleViewer } from "@open-pioneer/scale-viewer";
 import { SpatialBookmarks } from "@open-pioneer/spatial-bookmarks";
 import { useEffect, useState } from "react";
 import { Demo, SharedDemoOptions } from "./Demo";
+import { Coordinate } from "ol/coordinate";
+import { CoordinateSearch } from "@open-pioneer/coordinate-search";
+import { MAP_ID } from "../MapConfigProviderImpl";
 
 export function createCoordinateViewerDemo({ intl }: SharedDemoOptions): Demo {
     return {
@@ -31,6 +34,67 @@ export function createCoordinateViewerDemo({ intl }: SharedDemoOptions): Demo {
             };
         }
     };
+}
+
+export function createCoordinateSearchDemo({ intl }: SharedDemoOptions): Demo {
+    return {
+        id: "coordinateSearch",
+        title: intl.formatMessage({ id: "demos.coordinateSearch.title" }),
+        createModel() {
+            return {
+                description: intl.formatMessage({ id: "demos.coordinateSearch.description" }),
+                mainWidget: <CoordinateSearchComponent />
+            };
+        }
+    };
+}
+
+function CoordinateSearchComponent() {
+    function onCoordinateSearch(coords: Coordinate) {
+        console.log("searched for: ", coords);
+    }
+
+    function onSearchCleared() {
+        console.log("search cleared");
+    }
+
+    return (
+        <CoordinateSearch
+            mapId={MAP_ID}
+            onSelect={({ coords }) => onCoordinateSearch(coords)}
+            onClear={onSearchCleared}
+            coordinateSystems={[
+                {
+                    label: "EPSG:25832",
+                    value: "EPSG:25832"
+                },
+                {
+                    label: "EPSG:4326",
+                    value: "EPSG:4326"
+                },
+                {
+                    label: "EPSG:3857",
+                    value: "EPSG:3857"
+                },
+                {
+                    label: "EPSG:25833",
+                    value: "EPSG:25833"
+                },
+                {
+                    label: "EPSG:31466",
+                    value: "EPSG:31466"
+                },
+                {
+                    label: "EPSG:31467",
+                    value: "EPSG:31467"
+                },
+                {
+                    label: "EPSG:3035",
+                    value: "EPSG:3035"
+                }
+            ]}
+        />
+    );
 }
 
 export function createScaleViewerDemo({ intl }: SharedDemoOptions): Demo {
