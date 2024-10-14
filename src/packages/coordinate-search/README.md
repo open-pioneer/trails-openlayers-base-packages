@@ -10,6 +10,28 @@ To integrate the coordinate search in your app, insert the following snippet and
 <CoordinateSearch mapId="map_id" />
 ```
 
+To define the selectable projections, set the optional `projections` property:
+
+```jsx
+<CoordinateSearch
+    mapId="map_id"
+    projections={[
+        {
+            label: "EPSG:25832",
+            value: "EPSG:25832"
+        },
+        {
+            label: "WGS 84",
+            value: "EPSG:4326"
+        },
+        {
+            label: "Web Mercator",
+            value: "EPSG:3857"
+        }
+    ]}
+/>
+```
+
 ### Listening to events
 
 To listen to the events `onSelect` and `onClear`, provide optional callback functions to the component.

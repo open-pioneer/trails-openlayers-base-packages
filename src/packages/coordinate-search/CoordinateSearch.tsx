@@ -42,10 +42,10 @@ export interface CoordsSelectEvent {
  */
 export interface CoordinateSearchProps extends CommonComponentProps, MapModelProps {
     /**
-     * Searchable coordinate Systems, only coordinate systems that are known as projection are shown.
+     * Searchable projections, only projections that are known as projection are shown.
      * Each System can have an individual precision. If no precision is given, the default Presision is used.
      */
-    coordinateSystems?: { label: string; value: string; precision?: number }[];
+    projections?: { label: string; value: string; precision?: number }[];
 
     /**
      * Function that gets called if some coordinates are entered or projection is changed by the user.
@@ -65,14 +65,14 @@ export const CoordinateSearch: FC<CoordinateSearchProps> = (props) => {
     const {
         onSelect,
         onClear,
-        coordinateSystems = [
+        projections: projections = [
             {
-                label: "EPSG:4326",
+                label: "WGS 84",
                 value: "EPSG:4326",
                 precision: 3
             },
             {
-                label: "EPSG:3857",
+                label: "Web Mercator",
                 value: "EPSG:3857",
                 precision: 2
             }
@@ -83,41 +83,41 @@ export const CoordinateSearch: FC<CoordinateSearchProps> = (props) => {
     const intl = useIntl();
     const olMap = map?.olMap;
     const mapProjectionCode = useProjection(olMap)?.getCode() ?? ""; //projection of the map
-    const coordinateSystemsWithPrec: { label: string; value: string; precision: number }[] = [];
-    coordinateSystems.forEach(
+    const projectionsWithPrec: { label: string; value: string; precision: number }[] = [];
+    projections.forEach(
         (ele) =>
-            coordinateSystemsWithPrec.push({
+            projectionsWithPrec.push({
                 label: ele.label,
                 value: ele.value,
                 precision: ele.precision || DEFAULT_PRECISION
             }) // add precision to every projection, if nothing is set
     );
-    const availableCoordinateSystems: { label: string; value: string; precision: number }[] =
-        coordinateSystemsWithPrec.filter((cs) => getProjection(cs.value) != null); // filter for projections that are known
-    const [coordinateSearchSystem, setCoordinateSearchSystem] = useState<{
+    const availableProjections: { label: string; value: string; precision: number }[] =
+        projectionsWithPrec.filter((cs) => getProjection(cs.value) != null); // filter for projections that are known
+    const [selectedProjection, setSelectedProjection] = useState<{
         label: string;
         value: string;
         precision: number;
     }>({
-        label: availableCoordinateSystems[0]!.label,
-        value: availableCoordinateSystems[0]!.value,
-        precision: availableCoordinateSystems[0]!.precision
+        label: availableProjections[0]!.label,
+        value: availableProjections[0]!.value,
+        precision: availableProjections[0]!.precision
     }); // set projection select initial on first one in list
     const [coordinateSearchInput, setCoordinateSearchInput] = useState<string>(""); // coordinate input field
     let tooltipMessage = "tooltip.basic";
     let { coordinates } = useCoordinates(olMap); //coordinates of the pointer in the map
     coordinates =
         coordinates && mapProjectionCode
-            ? transformCoordinates(coordinates, mapProjectionCode, coordinateSearchSystem.value)
+            ? transformCoordinates(coordinates, mapProjectionCode, selectedProjection.value)
             : coordinates;
-    const displayString = useCoordinatesString(coordinates, coordinateSearchSystem.precision);
+    const displayString = useCoordinatesString(coordinates, selectedProjection.precision);
     const [displayPlaceholder, setDisplayPlaceholder] = useState<boolean>(false);
     const stringInvalid =
         !displayPlaceholder &&
         checkIfStringInvalid(
             intl,
             coordinateSearchInput,
-            coordinateSearchSystem.value,
+            selectedProjection.value,
             setTooltipMessage
         );
     const [isOpenSelect, setIsOpenSelect] = useState(false); // if the select menu is open
@@ -171,7 +171,7 @@ export const CoordinateSearch: FC<CoordinateSearchProps> = (props) => {
                                         onCoordinateSearch(
                                             intl,
                                             coordinateSearchInput,
-                                            coordinateSearchSystem.value,
+                                            selectedProjection.value,
                                             mapProjectionCode,
                                             onSelect
                                         );
@@ -200,14 +200,11 @@ export const CoordinateSearch: FC<CoordinateSearchProps> = (props) => {
                         </InputGroup>
                         <InputRightAddon padding={"0px"} borderLeft={"0px"}>
                             <Select
-                                value={coordinateSearchSystem}
-                                defaultValue={coordinateSearchSystem}
-                                options={availableCoordinateSystems}
+                                value={selectedProjection}
+                                defaultValue={selectedProjection}
+                                options={availableProjections}
                                 menuPlacement="auto"
                                 aria-label={intl.formatMessage({
-                                    id: "coordinateSearch.ariaLabel"
-                                })}
-                                aria-labelledby={intl.formatMessage({
                                     id: "coordinateSearch.ariaLabel"
                                 })}
                                 classNamePrefix={"coordinate-Search-Select"}
@@ -283,7 +280,7 @@ export const CoordinateSearch: FC<CoordinateSearchProps> = (props) => {
                                 }}
                                 onChange={(e) => {
                                     if (e?.value !== undefined) {
-                                        setCoordinateSearchSystem(e);
+                                        setSelectedProjection(e);
                                         onCoordinateSearch(
                                             intl,
                                             coordinateSearchInput,
@@ -309,7 +306,7 @@ export const CoordinateSearch: FC<CoordinateSearchProps> = (props) => {
 function checkIfStringInvalid(
     intl: PackageIntl,
     inputString: string,
-    coordinateSystem: string,
+    projection: string,
     setTooltipMessage?: (newId: string) => void
 ) {
     if (inputString == "") return false;
@@ -344,7 +341,7 @@ function checkIfStringInvalid(
         }
         inputStringWithoutHundredDivider = inputString.replaceAll(",", "");
     }
-    const chosenProjection = getProjection(coordinateSystem);
+    const chosenProjection = getProjection(projection);
     if (chosenProjection !== null && chosenProjection.getExtent() !== null) {
         if (
             chosenProjection.getExtent().length == 4 &&
@@ -367,8 +364,8 @@ function checkIfStringInvalid(
         parseFloat(coordsString[1]!.replace(",", "."))
     ];
     try {
-        const tempCoords = transformCoordinates(coords, coordinateSystem, "EPSG:4326");
-        const proj4326 = getProjection(coordinateSystem);
+        const tempCoords = transformCoordinates(coords, projection, "EPSG:4326");
+        const proj4326 = getProjection(projection);
         if (proj4326 !== null && proj4326.getExtent() !== null) {
             if (
                 proj4326.getExtent().length == 4 &&
@@ -391,14 +388,14 @@ function checkIfStringInvalid(
 function onCoordinateSearch(
     intl: PackageIntl,
     coordinateString: string,
-    coordinateSystem: string | undefined,
-    mapCoordinateSystem: string,
+    projection: string | undefined,
+    mapProjection: string,
     onSelect?: (selectProps: CoordsSelectEvent) => void
 ) {
     if (
-        coordinateSystem == undefined ||
+        projection == undefined ||
         coordinateString == "" ||
-        checkIfStringInvalid(intl, coordinateString, coordinateSystem)
+        checkIfStringInvalid(intl, coordinateString, projection)
     )
         return;
     let inputStringWithoutHundredDivider = coordinateString;
@@ -409,26 +406,26 @@ function onCoordinateSearch(
     }
     const coordsForZoom = getCoordsForZoom(
         inputStringWithoutHundredDivider,
-        coordinateSystem,
-        mapCoordinateSystem
+        projection,
+        mapProjection
     );
     if (onSelect) {
-        onSelect({ coords: coordsForZoom, projection: mapCoordinateSystem });
+        onSelect({ coords: coordsForZoom, projection: mapProjection });
     }
 }
 
 /* gives back the given coordinates in the projection of the map */
 function getCoordsForZoom(
     coordinateString: string,
-    coordinateSystem: string,
-    mapCoordinateSystem: string
+    projection: string,
+    mapProjection: string
 ): Coordinate {
     const coordsString = coordinateString.split(" ");
     const coords = [
         parseFloat(coordsString[0]!.replace(",", ".")),
         parseFloat(coordsString[1]!.replace(",", "."))
     ];
-    return transformCoordinates(coords, coordinateSystem, mapCoordinateSystem);
+    return transformCoordinates(coords, projection, mapProjection);
 }
 
 /* transforms the given coordinates in the given destination projection */

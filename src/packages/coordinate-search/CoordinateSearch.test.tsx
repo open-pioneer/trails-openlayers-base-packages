@@ -153,7 +153,7 @@ it("should display transformed coordinates in selected option", async () => {
     };
 
     let options = getCurrentOptions(projSelect);
-    const option4326 = options.find((option) => option.textContent === "EPSG:4326");
+    const option4326 = options.find((option) => option.textContent === "WGS 84");
     if (!option4326) {
         throw new Error("EPSG 4326 missing in options");
     }
@@ -167,7 +167,7 @@ it("should display transformed coordinates in selected option", async () => {
 
     showDropdown(projSelect);
     options = getCurrentOptions(projSelect);
-    const option3857 = options.find((option) => option.textContent === "EPSG:3857");
+    const option3857 = options.find((option) => option.textContent === "Web Mercator");
     if (!option3857) {
         throw new Error("EPSG 3857 missing in options");
     }

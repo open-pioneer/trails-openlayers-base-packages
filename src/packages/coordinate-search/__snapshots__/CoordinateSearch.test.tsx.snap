@@ -60,14 +60,13 @@ exports[`should successfully create a coordinate search component 1`] = `
                 class="coordinate-Search-Select__single-value css-1xa1gs2"
                 data-theme="light"
               >
-                EPSG:4326
+                WGS 84
               </div>
               <input
                 aria-autocomplete="list"
                 aria-expanded="false"
                 aria-haspopup="true"
                 aria-label="coordinateSearch.ariaLabel"
-                aria-labelledby="coordinateSearch.ariaLabel"
                 aria-readonly="true"
                 class="css-mohuvp-dummyInput-DummyInput"
                 id="react-select-2-input"

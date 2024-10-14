@@ -63,17 +63,17 @@ function CoordinateSearchComponent() {
             mapId={MAP_ID}
             onSelect={({ coords }) => onCoordinateSearch(coords)}
             onClear={onSearchCleared}
-            coordinateSystems={[
+            projections={[
                 {
                     label: "EPSG:25832",
                     value: "EPSG:25832"
                 },
                 {
-                    label: "EPSG:4326",
+                    label: "WGS 84",
                     value: "EPSG:4326"
                 },
                 {
-                    label: "EPSG:3857",
+                    label: "Web Mercator",
                     value: "EPSG:3857"
                 },
                 {
