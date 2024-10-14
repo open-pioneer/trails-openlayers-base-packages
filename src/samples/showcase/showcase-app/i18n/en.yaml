@@ -26,9 +26,9 @@ messages:
     coordinateViewer:
       title: Coordinate viewer
       description: This demo shows how to use the <code>CoordinateViewer</code> component to show the coordinates at the users current mouse position.
-    coordinateSearcg:
+    coordinateSearch:
       title: Coordinate search
-      description: This demo shows how to use the <code>CoordinateSearch</code> component to show the coordinates at the users current mouse position and to search for coordinates. There for you can choose a projection that is known to the map.
+      description: This demo shows how to use the <code>CoordinateSearch</code> component to show the coordinates at the users current mouse position and to search for coordinates. It is possible to switch between different projections.
     scaleViewer:
       title: Scale viewer
       description: This demo shows how to use the <code>ScaleViewer</code> component.
