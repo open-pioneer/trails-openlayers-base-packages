@@ -1,6 +1,7 @@
 messages:
   coordinateSearch:
     ariaLabel: Koordinatensuche
+    copyPlaceholder: Kopieren
   tooltip:
     basic: "Ungültige Eingabe"
     space: "Ungültige Eingabe: Bitte trennen Sie die Koordinaten mit genau einem Leerzeichen."

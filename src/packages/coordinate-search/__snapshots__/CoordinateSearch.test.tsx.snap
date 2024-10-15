@@ -22,12 +22,36 @@ exports[`should successfully create a coordinate search component 1`] = `
       >
         <input
           aria-label="coordinateSearch.ariaLabel"
-          class="chakra-input css-1r29ykt"
+          class="chakra-input css-1bia1r0"
           data-theme="light"
           placeholder=""
           type="text"
           value=""
         />
+        <div
+          class="chakra-input__right-element css-1lds0jh"
+          data-theme="light"
+        >
+          <button
+            aria-label="coordinateSearch.copyPlaceholder"
+            class="chakra-button copyButton css-fx3q01"
+            data-theme="light"
+            type="button"
+          >
+            <svg
+              aria-hidden="true"
+              class="chakra-icon css-onkibi"
+              data-theme="light"
+              focusable="false"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"
+                fill="currentColor"
+              />
+            </svg>
+          </button>
+        </div>
       </div>
       <div
         class="chakra-input__right-addon css-vqkjic"

@@ -1,6 +1,7 @@
 messages:
   coordinateSearch:
     ariaLabel: Coordinate search
+    copyPlaceholder: Copy
   tooltip:
     basic: "Invalid input"
     space: "Invalid input: Please enter the coordinates seperated by a space."

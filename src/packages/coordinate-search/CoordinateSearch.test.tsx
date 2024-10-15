@@ -5,10 +5,11 @@ import { createServiceOptions, setupMap, waitForMapMount } from "@open-pioneer/m
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { act, fireEvent, render, renderHook, screen, waitFor } from "@testing-library/react";
 import BaseEvent from "ol/events/Event";
-import { expect, it } from "vitest";
+import { expect, it, vi } from "vitest";
 import { CoordinateSearch, useCoordinatesString } from "./CoordinateSearch";
 import userEvent from "@testing-library/user-event";
 import { Coordinate } from "ol/coordinate";
+import { resolve } from "path";
 
 it("should successfully create a coordinate search component", async () => {
     const { mapId, registry } = await setupMap();
@@ -265,6 +266,67 @@ it("should successfully call onClear if clear button is clicked", async () => {
     expect(cleared).toBe(true);
 });
 
+it("should successfully copy to clipboard if copy button is clicked", async () => {
+    const user = userEvent.setup();
+    const { mapId, registry } = await setupMap();
+    let copiedText = "";
+
+    const injectedServices = createServiceOptions({ registry });
+    let cleared: boolean = false;
+    render(
+        <PackageContextProvider services={injectedServices}>
+            <MapContainer mapId={mapId} data-testid="map" />
+            <CoordinateSearch
+                mapId={mapId}
+                data-testid="coordinate-search"
+                onSelect={() => {}}
+                onClear={() => {
+                    cleared = true;
+                }}
+            />
+        </PackageContextProvider>
+    );
+
+    await waitForMapMount("map");
+    const { coordinateSearchGroup } = await waitForCoordinateSearch();
+
+    const map = await registry.expectMapModel(mapId);
+
+    const simulateMove = (x: number, y: number) => {
+        const fakeMoveEvent = new BaseEvent("pointermove");
+        (fakeMoveEvent as any).coordinate = [x, y];
+        map.olMap.dispatchEvent(fakeMoveEvent);
+    };
+
+    // Simple move
+    act(() => {
+        simulateMove(850000, 6800000); //map projection is EPSG:3857 (Web Mercator)
+    });
+    vi.spyOn(navigator, "clipboard", "get").mockReturnValue({
+        writeText(input: string) {
+            copiedText = input;
+            return new Promise<void>((resolve) => resolve());
+        },
+        readText(): Promise<string> {
+            return new Promise<string>((resolve) => resolve(""));
+        },
+        write(): Promise<void> {
+            return new Promise<void>((resolve) => resolve());
+        },
+        addEventListener(): void {},
+        dispatchEvent(): boolean {
+            return false;
+        },
+        removeEventListener(): void {},
+        read(): Promise<ClipboardItems> {
+            return new Promise<ClipboardItems>((resolve) => resolve([]));
+        }
+    });
+    const copyButton = getCopyButton(coordinateSearchGroup);
+    await act(async () => await user.click(copyButton));
+    expect(copiedText).toBe("7.636 51.999");
+});
+
 async function waitForCoordinateSearch() {
     const { coordsSearchDiv, coordInput, coordinateSearchGroup, projSelect } = await waitFor(
         async () => {
@@ -313,13 +375,30 @@ function getCurrentOptions(projSelect: HTMLElement) {
 }
 
 function getClearButton(coordinateSearchGroup: Element) {
-    const clearButtonDiv = coordinateSearchGroup.querySelector(".chakra-input__right-element");
-    if (!clearButtonDiv) {
-        throw new Error("coordinate search clear button not rendered");
+    const buttonDiv = coordinateSearchGroup.querySelector(".chakra-input__right-element");
+    if (!buttonDiv) {
+        throw new Error("coordinate search buttons not rendered");
     }
-    const clearButton = clearButtonDiv.querySelector(".chakra-button");
+    const clearButton = buttonDiv.querySelector(".clearButton");
     if (!clearButton) {
         throw new Error("coordinate search clear button not rendered");
     }
     return clearButton;
+}
+
+function getCopyButton(coordinateSearchGroup: Element) {
+    const buttonDiv = coordinateSearchGroup.querySelector(".chakra-input__right-element");
+    if (!buttonDiv) {
+        throw new Error("coordinate search buttons not rendered");
+    }
+    const copyButton = buttonDiv.querySelector(".copyButton");
+    if (!copyButton) {
+        throw new Error("coordinate search copy button not rendered");
+    }
+    return copyButton;
+}
+function createFetchResponse(data: string, statusCode: number) {
+    return new Response(data, {
+        status: statusCode
+    });
 }

@@ -17,7 +17,7 @@ import { useIntl } from "open-pioneer:react-hooks";
 import { FC, useEffect, useState } from "react";
 import { Select } from "chakra-react-select";
 import { Coordinate } from "ol/coordinate";
-import { CloseIcon } from "@chakra-ui/icons";
+import { CloseIcon, CopyIcon } from "@chakra-ui/icons";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { EventsKey } from "ol/events";
 import { unByKey } from "ol/Observable";
@@ -111,22 +111,14 @@ export const CoordinateSearch: FC<CoordinateSearchProps> = (props) => {
             ? transformCoordinates(coordinates, mapProjectionCode, selectedProjection.value)
             : coordinates;
     const displayString = useCoordinatesString(coordinates, selectedProjection.precision);
-    const [displayPlaceholder, setDisplayPlaceholder] = useState<boolean>(false);
-    const stringInvalid =
-        !displayPlaceholder &&
-        checkIfStringInvalid(
-            intl,
-            coordinateSearchInput,
-            selectedProjection.value,
-            setTooltipMessage
-        );
+    const stringInvalid = checkIfStringInvalid(
+        intl,
+        coordinateSearchInput,
+        selectedProjection.value,
+        setTooltipMessage
+    );
     const [isOpenSelect, setIsOpenSelect] = useState(false); // if the select menu is open
     const [menuPlacement, setMenuPlacement] = useState<string>(""); // where is menu is places (top/bottom)
-
-    useEffect(() => {
-        if (coordinateSearchInput === "") setDisplayPlaceholder(true);
-        if (coordinateSearchInput !== "") setDisplayPlaceholder(false);
-    }, [coordinateSearchInput]);
 
     function setTooltipMessage(newId: string) {
         tooltipMessage = newId;
@@ -152,7 +144,7 @@ export const CoordinateSearch: FC<CoordinateSearchProps> = (props) => {
                         <InputGroup className="coordinateInputGroup">
                             <Input
                                 type="text"
-                                value={displayPlaceholder ? displayString : coordinateSearchInput}
+                                value={coordinateSearchInput}
                                 onChange={(eve) => {
                                     setCoordinateSearchInput(eve.target.value);
                                 }}
@@ -165,8 +157,6 @@ export const CoordinateSearch: FC<CoordinateSearchProps> = (props) => {
                                 })}
                                 borderRightRadius={0}
                                 onKeyDown={(eve) => {
-                                    if (displayPlaceholder && !eve.ctrlKey)
-                                        setDisplayPlaceholder(false);
                                     if (eve.key == "Enter") {
                                         onCoordinateSearch(
                                             intl,
@@ -181,6 +171,7 @@ export const CoordinateSearch: FC<CoordinateSearchProps> = (props) => {
                             {coordinateSearchInput !== "" && (
                                 <InputRightElement>
                                     <IconButton
+                                        className="clearButton"
                                         size="sm"
                                         onClick={() => {
                                             setCoordinateSearchInput("");
@@ -193,6 +184,22 @@ export const CoordinateSearch: FC<CoordinateSearchProps> = (props) => {
                                         icon={<CloseIcon />}
                                         aria-label={intl.formatMessage({
                                             id: "coordinateSearch.ariaLabel"
+                                        })}
+                                    />
+                                </InputRightElement>
+                            )}
+                            {coordinateSearchInput == "" && (
+                                <InputRightElement>
+                                    <IconButton
+                                        className="copyButton"
+                                        size="sm"
+                                        onClick={() => {
+                                            navigator.clipboard.writeText(displayString);
+                                        }}
+                                        padding={0}
+                                        icon={<CopyIcon />}
+                                        aria-label={intl.formatMessage({
+                                            id: "coordinateSearch.copyPlaceholder"
                                         })}
                                     />
                                 </InputRightElement>
