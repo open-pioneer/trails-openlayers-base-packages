@@ -22,6 +22,7 @@ import { Demo, SharedDemoOptions } from "./Demo";
 import { Coordinate } from "ol/coordinate";
 import { CoordinateSearch } from "@open-pioneer/coordinate-search";
 import { MAP_ID } from "../MapConfigProviderImpl";
+import { Box, Button, Flex } from "@open-pioneer/chakra-integration";
 
 export function createCoordinateViewerDemo({ intl }: SharedDemoOptions): Demo {
     return {
@@ -50,50 +51,62 @@ export function createCoordinateSearchDemo({ intl }: SharedDemoOptions): Demo {
 }
 
 function CoordinateSearchComponent() {
+    const [input, setInput] = useState<Coordinate | undefined>();
     function onCoordinateSearch(coords: Coordinate) {
         console.log("searched for: ", coords);
     }
 
     function onSearchCleared() {
         console.log("search cleared");
+        setInput(undefined);
     }
 
     return (
-        <CoordinateSearch
-            mapId={MAP_ID}
-            onSelect={({ coords }) => onCoordinateSearch(coords)}
-            onClear={onSearchCleared}
-            projections={[
-                {
-                    label: "EPSG:25832",
-                    value: "EPSG:25832"
-                },
-                {
-                    label: "WGS 84",
-                    value: "EPSG:4326"
-                },
-                {
-                    label: "Web Mercator",
-                    value: "EPSG:3857"
-                },
-                {
-                    label: "EPSG:25833",
-                    value: "EPSG:25833"
-                },
-                {
-                    label: "EPSG:31466",
-                    value: "EPSG:31466"
-                },
-                {
-                    label: "EPSG:31467",
-                    value: "EPSG:31467"
-                },
-                {
-                    label: "EPSG:3035",
-                    value: "EPSG:3035"
-                }
-            ]}
-        />
+        <Flex direction={"column"} gap={10}>
+            <CoordinateSearch
+                mapId={MAP_ID}
+                input={input}
+                onSelect={({ coords }) => onCoordinateSearch(coords)}
+                onClear={onSearchCleared}
+                projections={[
+                    {
+                        label: "EPSG:25832",
+                        value: "EPSG:25832"
+                    },
+                    {
+                        label: "WGS 84",
+                        value: "EPSG:4326"
+                    },
+                    {
+                        label: "Web Mercator",
+                        value: "EPSG:3857"
+                    },
+                    {
+                        label: "EPSG:25833",
+                        value: "EPSG:25833"
+                    },
+                    {
+                        label: "EPSG:31466",
+                        value: "EPSG:31466"
+                    },
+                    {
+                        label: "EPSG:31467",
+                        value: "EPSG:31467"
+                    },
+                    {
+                        label: "EPSG:3035",
+                        value: "EPSG:3035"
+                    }
+                ]}
+            />
+            <Button
+                onClick={() => {
+                    setInput([761166, 6692084]);
+                }}
+            >
+                Set input extern
+            </Button>
+        </Flex>
     );
 }
 

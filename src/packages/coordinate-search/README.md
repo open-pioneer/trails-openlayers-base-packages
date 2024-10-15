@@ -32,6 +32,18 @@ To define the selectable projections, set the optional `projections` property:
 />
 ```
 
+To set the value of the input field from outside the component,
+set the optional `input` property from type Coordinate.
+The Coordinates have to be in the projection of the map.
+If the value changes, the `onSelect` function is triggered.
+
+```jsx
+<CoordinateSearch
+    mapId="map_id"
+    input=[761166, 6692084]
+/>
+```
+
 ### Listening to events
 
 To listen to the events `onSelect` and `onClear`, provide optional callback functions to the component.

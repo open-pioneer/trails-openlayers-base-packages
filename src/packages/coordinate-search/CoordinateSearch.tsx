@@ -56,6 +56,12 @@ export interface CoordinateSearchProps extends CommonComponentProps, MapModelPro
      * Function that gets called if the input is cleared.
      */
     onClear?: () => void;
+
+    /**
+     * Coordinates that can be set in the input Field from outside
+     * (for example a pointer click) in the projection of the map
+     */
+    input?: Coordinate;
 }
 
 /**
@@ -76,7 +82,8 @@ export const CoordinateSearch: FC<CoordinateSearchProps> = (props) => {
                 value: "EPSG:3857",
                 precision: 2
             }
-        ]
+        ],
+        input
     } = props;
     const { containerProps } = useCommonComponentProps("coordinate-search", props);
     const { map } = useMapModel(props);
@@ -111,6 +118,13 @@ export const CoordinateSearch: FC<CoordinateSearchProps> = (props) => {
             ? transformCoordinates(coordinates, mapProjectionCode, selectedProjection.value)
             : coordinates;
     const displayString = useCoordinatesString(coordinates, selectedProjection.precision);
+    const inputFromOutside = useCoordinatesString(
+        input != undefined && mapProjectionCode
+            ? transformCoordinates(input, mapProjectionCode, selectedProjection.value)
+            : undefined,
+        selectedProjection.precision
+    );
+
     const stringInvalid = checkIfStringInvalid(
         intl,
         coordinateSearchInput,
@@ -130,6 +144,19 @@ export const CoordinateSearch: FC<CoordinateSearchProps> = (props) => {
             setIsOpenSelect(true);
         }
     });
+
+    useEffect(() => {
+        if (input != undefined) {
+            setCoordinateSearchInput(inputFromOutside);
+            onCoordinateSearch(
+                intl,
+                inputFromOutside,
+                selectedProjection.value,
+                mapProjectionCode,
+                onSelect
+            );
+        }
+    }, [input, inputFromOutside, intl, mapProjectionCode, onSelect, selectedProjection]);
 
     return (
         <Box {...containerProps}>
