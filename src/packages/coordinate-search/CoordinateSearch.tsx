@@ -149,7 +149,7 @@ export const CoordinateSearch: FC<CoordinateSearchProps> = (props) => {
         selectedProjection.precision
     );
 
-    const stringInvalid = checkIfStringInvalid(
+    const stringInvalid = isInputInvalid(
         intl,
         coordinateSearchInput,
         selectedProjection.value,
@@ -361,7 +361,7 @@ export const CoordinateSearch: FC<CoordinateSearchProps> = (props) => {
     );
 };
 
-function checkIfStringInvalid(
+function isInputInvalid(
     intl: PackageIntl,
     inputString: string,
     projection: string,
@@ -377,70 +377,61 @@ function checkIfStringInvalid(
         if (setTooltipMessage) setTooltipMessage("tooltip.spaceOne");
         return true;
     }
-    if (
-        inputString.split(" ").length != 2 ||
-        inputString.split(" ")[0] == "" ||
-        inputString.split(" ")[1] == ""
-    ) {
+
+    const coordsString = inputString.split(" ");
+    if (coordsString.length != 2 || coordsString[0] == "" || coordsString[1] == "") {
         if (setTooltipMessage) setTooltipMessage("tooltip.2coords");
         return true;
     }
-    let inputStringWithoutHundredDivider = inputString;
+
+    let thousandSeparator = "";
     if (intl.locale === "de") {
-        if (!/^\d+(,\d+)? \d+(,\d+)?$/.test(inputString.replaceAll(".", ""))) {
+        thousandSeparator = ".";
+
+        if (!/^\d+(,\d+)? \d+(,\d+)?$/.test(inputString)) {
             if (setTooltipMessage) setTooltipMessage("tooltip.dividerDe");
             return true;
         }
-        inputStringWithoutHundredDivider = inputString.replaceAll(".", "");
     } else if (intl.locale === "en") {
-        if (!/^\d+(.\d+)? \d+(.\d+)?$/.test(inputString.replaceAll(",", ""))) {
+        thousandSeparator = ",";
+
+        if (!/^\d+(.\d+)? \d+(.\d+)?$/.test(inputString)) {
             if (setTooltipMessage) setTooltipMessage("tooltip.dividerEn");
             return true;
         }
-        inputStringWithoutHundredDivider = inputString.replaceAll(",", "");
     }
-    const chosenProjection = getProjection(projection);
-    if (chosenProjection !== null && chosenProjection.getExtent() !== null) {
+
+    let coords = parseCoords(inputString, thousandSeparator);
+
+    let chosenProjection = getProjection(projection);
+    if (chosenProjection === null || chosenProjection.getExtent() === null) {
+        chosenProjection = getProjection("EPSG:4326");
+
+        coords = transformCoordinates(coords, projection, "EPSG:4326");
+    }
+
+    try {
         if (
-            chosenProjection.getExtent().length == 4 &&
-            chosenProjection.getExtent()[0]! >
-                parseFloat(inputStringWithoutHundredDivider.split(" ")[0]!) &&
-            chosenProjection.getExtent()[1]! >
-                parseFloat(inputStringWithoutHundredDivider.split(" ")[1]!) &&
-            chosenProjection.getExtent()[2]! <
-                parseFloat(inputStringWithoutHundredDivider.split(" ")[0]!) &&
-            chosenProjection.getExtent()[3]! <
-                parseFloat(inputStringWithoutHundredDivider.split(" ")[1]!)
+            chosenProjection!.getExtent().length == 4 &&
+            chosenProjection!.getExtent()[0]! > coords[0]! &&
+            chosenProjection!.getExtent()[1]! > coords[1]! &&
+            chosenProjection!.getExtent()[2]! < coords[0]! &&
+            chosenProjection!.getExtent()[3]! < coords[1]!
         ) {
             if (setTooltipMessage) setTooltipMessage("tooltip.extent");
             return true;
-        }
-    }
-    const coordsString = inputStringWithoutHundredDivider.split(" ");
-    const coords = [
-        parseFloat(coordsString[0]!.replace(",", ".")),
-        parseFloat(coordsString[1]!.replace(",", "."))
-    ];
-    try {
-        const tempCoords = transformCoordinates(coords, projection, "EPSG:4326");
-        const proj4326 = getProjection("EPSG:4326");
-        if (proj4326 !== null && proj4326.getExtent() !== null) {
-            if (
-                proj4326.getExtent().length == 4 &&
-                proj4326.getExtent()[0]! > tempCoords[0]! &&
-                proj4326.getExtent()[1]! > tempCoords[1]! &&
-                proj4326.getExtent()[2]! < tempCoords[0]! &&
-                proj4326.getExtent()[3]! < tempCoords[1]!
-            ) {
-                if (setTooltipMessage) setTooltipMessage("tooltip.extent");
-                return true;
-            }
         }
     } catch (e) {
         if (setTooltipMessage) setTooltipMessage("tooltip.projection");
         return true;
     }
     return false;
+}
+
+function parseCoords(inputString: string, thousandSeparator: string) {
+    const inputStringWithoutThousandSeparator = inputString.replaceAll(thousandSeparator, "");
+    const coordsString = inputStringWithoutThousandSeparator.replaceAll(",", ".");
+    return [parseFloat(coordsString[0]!), parseFloat(coordsString[1]!)];
 }
 
 function onCoordinateSearch(
@@ -453,7 +444,7 @@ function onCoordinateSearch(
     if (
         projection == undefined ||
         coordinateString == "" ||
-        checkIfStringInvalid(intl, coordinateString, projection)
+        isInputInvalid(intl, coordinateString, projection)
     )
         return;
     let inputStringWithoutHundredDivider = coordinateString;
