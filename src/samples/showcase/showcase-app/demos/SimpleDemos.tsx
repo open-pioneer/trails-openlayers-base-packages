@@ -22,7 +22,7 @@ import { Demo, SharedDemoOptions } from "./Demo";
 import { Coordinate } from "ol/coordinate";
 import { CoordinateSearch } from "@open-pioneer/coordinate-search";
 import { MAP_ID } from "../MapConfigProviderImpl";
-import { Box, Button, Flex } from "@open-pioneer/chakra-integration";
+import { Button, Flex } from "@open-pioneer/chakra-integration";
 
 export function createCoordinateViewerDemo({ intl }: SharedDemoOptions): Demo {
     return {
