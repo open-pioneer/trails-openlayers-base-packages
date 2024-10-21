@@ -10,7 +10,6 @@ import {
     ZoomIn,
     ZoomOut
 } from "@open-pioneer/map-navigation";
-import { ViewHistoryModel } from "@open-pioneer/map-navigation";
 import { Measurement } from "@open-pioneer/measurement";
 import { Printing } from "@open-pioneer/printing";
 import { ScaleBar } from "@open-pioneer/scale-bar";
@@ -96,35 +95,14 @@ export function createMapNavigationDemo({ intl }: SharedDemoOptions): Demo {
                     <>
                         <ZoomIn />
                         <ZoomOut />
-                        <MapViewNavigation />
+                        <HistoryBackward />
+                        <HistoryForward />
                         <InitialExtent />
                     </>
                 )
             };
         }
     };
-}
-
-function MapViewNavigation() {
-    const { map } = useMapModel();
-    const [viewModel, setViewModel] = useState<ViewHistoryModel | undefined>(undefined);
-    useEffect(() => {
-        if (!map) {
-            return;
-        }
-        const newViewModel = new ViewHistoryModel(map);
-        setViewModel(newViewModel);
-        return () => newViewModel.destroy();
-    }, [map]);
-
-    return (
-        viewModel && (
-            <>
-                <HistoryBackward viewModel={viewModel} />
-                <HistoryForward viewModel={viewModel} />
-            </>
-        )
-    );
 }
 
 export function createGeolocationDemo({ intl }: SharedDemoOptions): Demo {

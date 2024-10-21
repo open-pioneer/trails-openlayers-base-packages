@@ -7,6 +7,7 @@ import { unByKey } from "ol/Observable";
 import OlMap from "ol/Map";
 import { Reactive, reactive, ReactiveMap, reactiveMap } from "@conterra/reactivity-core";
 import { Coordinate } from "ol/coordinate";
+import { useEffect, useState } from "react";
 
 interface MapViewState {
     /** Map resolution */
@@ -112,4 +113,53 @@ export class ViewHistoryModel {
 
         return eventsKey;
     }
+}
+
+interface ViewModelState {
+    vm: ViewHistoryModel;
+    useCount: number; // 0 -> must destroy
+}
+
+const VIEW_MODELS = new WeakMap<MapModel, ViewModelState>();
+
+/**
+ * An internal hook that returns a shared HistoryViewModel.
+ * History tools that are active at the same time share a single model.
+ *
+ * The model is destroyed when the last tool is unmounted.
+ *
+ * TODO: `undefined` only because the map can be undefined at the moment (loading).
+ *
+ * NOTE: May be useful to have this a general solution in the future; but this is the only usage right now.
+ */
+export function useHistoryViewModel(map: MapModel | undefined): ViewHistoryModel | undefined {
+    const [vm, setVm] = useState<ViewHistoryModel>();
+    useEffect(() => {
+        if (!map) {
+            return;
+        }
+
+        let state = VIEW_MODELS.get(map);
+        if (state == null) {
+            state = {
+                vm: new ViewHistoryModel(map),
+                useCount: 1
+            };
+            VIEW_MODELS.set(map, state);
+        } else {
+            state.useCount++;
+        }
+        setVm(state.vm);
+
+        return () => {
+            setVm(undefined);
+
+            state.useCount--;
+            if (state.useCount === 0) {
+                state.vm.destroy();
+                VIEW_MODELS.delete(map);
+            }
+        };
+    }, [map]);
+    return vm;
 }
