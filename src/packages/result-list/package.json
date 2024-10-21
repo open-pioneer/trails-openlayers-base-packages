@@ -16,7 +16,7 @@
     "scripts": {
         "build": "build-pioneer-package"
     },
-    "peerDependencies": {
+    "dependencies": {
         "@chakra-ui/icons": "catalog:",
         "@open-pioneer/chakra-integration": "catalog:",
         "@open-pioneer/core": "catalog:",
@@ -26,9 +26,7 @@
         "@tanstack/react-table": "catalog:",
         "classnames": "catalog:",
         "ol": "catalog:",
-        "react": "catalog:"
-    },
-    "dependencies": {
+        "react": "catalog:",
         "react-use": "catalog:"
     },
     "devDependencies": {

@@ -16,7 +16,7 @@
     "scripts": {
         "build": "build-pioneer-package"
     },
-    "peerDependencies": {
+    "dependencies": {
         "@open-pioneer/core": "catalog:",
         "@open-pioneer/http": "catalog:",
         "@open-pioneer/runtime": "catalog:",

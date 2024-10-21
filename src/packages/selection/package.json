@@ -16,7 +16,7 @@
     "scripts": {
         "build": "build-pioneer-package"
     },
-    "peerDependencies": {
+    "dependencies": {
         "@chakra-ui/icons": "catalog:",
         "@open-pioneer/chakra-integration": "catalog:",
         "@open-pioneer/core": "catalog:",
@@ -24,13 +24,11 @@
         "@open-pioneer/notifier": "catalog:",
         "@open-pioneer/react-utils": "catalog:",
         "@open-pioneer/runtime": "catalog:",
+        "classnames": "catalog:",
         "chakra-react-select": "catalog:",
         "ol": "catalog:",
         "react": "catalog:",
-        "react-icons": "catalog:"
-    },
-    "dependencies": {
-        "classnames": "catalog:",
+        "react-icons": "catalog:",
         "uuid": "catalog:"
     },
     "devDependencies": {

@@ -16,7 +16,7 @@
     "scripts": {
         "build": "build-pioneer-package"
     },
-    "peerDependencies": {
+    "dependencies": {
         "@open-pioneer/chakra-integration": "catalog:",
         "@open-pioneer/map": "workspace:^",
         "@open-pioneer/react-utils": "catalog:",

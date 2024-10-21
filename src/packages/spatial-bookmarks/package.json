@@ -16,7 +16,7 @@
     "scripts": {
         "build": "build-pioneer-package"
     },
-    "peerDependencies": {
+    "dependencies": {
         "@chakra-ui/icons": "catalog:",
         "@open-pioneer/chakra-integration": "catalog:",
         "@open-pioneer/core": "catalog:",
@@ -27,7 +27,10 @@
         "classnames": "catalog:",
         "ol": "catalog:",
         "react": "catalog:",
-        "react-icons": "catalog:"
+        "react-icons": "catalog:",
+        "@conterra/reactivity-core": "catalog:",
+        "@open-pioneer/reactivity": "catalog:",
+        "uuid": "catalog:"
     },
     "devDependencies": {
         "@open-pioneer/map-test-utils": "workspace:^",
@@ -38,10 +41,5 @@
     "publishConfig": {
         "directory": "dist",
         "linkDirectory": false
-    },
-    "dependencies": {
-        "@conterra/reactivity-core": "catalog:",
-        "@open-pioneer/reactivity": "catalog:",
-        "uuid": "catalog:"
     }
 }

@@ -9,22 +9,23 @@ packages:
 # This is a yaml feature and is not interpreted by pnpm directly.
 __versions:
   - &react_version ^18.3.1
+  - &core_packages_version ^2.3.0
 
 # https://pnpm.io/catalogs
 catalog:
   # Trails core packages
   # https://github.com/open-pioneer/trails-core-packages
-  "@open-pioneer/base-theme": ^0.3.3
-  "@open-pioneer/chakra-integration": ^1.1.4
-  "@open-pioneer/core": ^1.3.0
-  "@open-pioneer/http": ^2.1.9
-  "@open-pioneer/integration": ^2.0.10
-  "@open-pioneer/local-storage": ^0.3.5
-  "@open-pioneer/notifier": ^0.3.6
-  "@open-pioneer/react-utils": ^1.0.1
-  "@open-pioneer/reactivity": ^0.1.0
-  "@open-pioneer/runtime": ^2.1.7
-  "@open-pioneer/test-utils": ^1.1.4
+  "@open-pioneer/base-theme": *core_packages_version
+  "@open-pioneer/chakra-integration": *core_packages_version
+  "@open-pioneer/core": *core_packages_version
+  "@open-pioneer/http": *core_packages_version
+  "@open-pioneer/integration": *core_packages_version
+  "@open-pioneer/local-storage": *core_packages_version
+  "@open-pioneer/notifier": *core_packages_version
+  "@open-pioneer/react-utils": *core_packages_version
+  "@open-pioneer/reactivity": *core_packages_version
+  "@open-pioneer/runtime": *core_packages_version
+  "@open-pioneer/test-utils": *core_packages_version
 
   "@chakra-ui/icons": ^2.1.1
   "@chakra-ui/react": ^2.8.2
