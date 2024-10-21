@@ -388,14 +388,18 @@ function isInputInvalid(
     if (intl.locale === "de") {
         thousandSeparator = ".";
 
-        if (!/^\d+(,\d+)? \d+(,\d+)?$/.test(inputString)) {
+        const inputStringWithoutThousandSeparator = inputString.replaceAll(thousandSeparator, "");
+
+        if (!/^\d+(,\d+)? \d+(,\d+)?$/.test(inputStringWithoutThousandSeparator)) {
             if (setTooltipMessage) setTooltipMessage("tooltip.dividerDe");
             return true;
         }
     } else if (intl.locale === "en") {
         thousandSeparator = ",";
 
-        if (!/^\d+(.\d+)? \d+(.\d+)?$/.test(inputString)) {
+        const inputStringWithoutThousandSeparator = inputString.replaceAll(thousandSeparator, "");
+
+        if (!/^\d+(.\d+)? \d+(.\d+)?$/.test(inputStringWithoutThousandSeparator)) {
             if (setTooltipMessage) setTooltipMessage("tooltip.dividerEn");
             return true;
         }
