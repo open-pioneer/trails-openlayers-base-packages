@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: Apache-2.0
 import { CoordinateViewer } from "@open-pioneer/coordinate-viewer";
 import { Geolocation } from "@open-pioneer/geolocation";
-import { useMapModel } from "@open-pioneer/map";
 import {
     HistoryBackward,
     HistoryForward,
@@ -16,7 +15,6 @@ import { ScaleBar } from "@open-pioneer/scale-bar";
 import { ScaleSetter } from "@open-pioneer/scale-setter";
 import { ScaleViewer } from "@open-pioneer/scale-viewer";
 import { SpatialBookmarks } from "@open-pioneer/spatial-bookmarks";
-import { useEffect, useState } from "react";
 import { Demo, SharedDemoOptions } from "./Demo";
 
 export function createCoordinateViewerDemo({ intl }: SharedDemoOptions): Demo {
