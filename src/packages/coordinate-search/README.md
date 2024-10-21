@@ -44,8 +44,10 @@ If the value changes, the `onSelect` function is triggered.
 ### Listening to events
 
 To listen to the events `onSelect` and `onClear`, provide optional callback functions to the component.
+
 In case of the `onSelect` event, you can access the entered coordinate from the parameter `CoordsSelectEvent`. The `onSelect` event gets called if you enter the input or if there is input and you select a projection.
-With the `onSelect` option, you can set a callback function that gets called if the clear button is clicked.
+
+With the `onClear` option, you can set a callback function that gets called if the clear button is clicked.
 
 ```tsx
 <CoordinateSearch
