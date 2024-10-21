@@ -17,6 +17,8 @@ interface MapViewState {
     center: Coordinate;
 }
 
+const SIZE_LIMIT = 200;
+
 export class ViewHistoryModel {
     private olMap: OlMap;
     private handle: EventsKey | undefined;
@@ -100,11 +102,22 @@ export class ViewHistoryModel {
                         center: center
                     };
                     const nextViewId = this.activeViewId + 1;
+
+                    // Remove keys in the "future". Note: an array would probably be more efficient.
                     for (const k of mapViews.keys()) {
                         if (k > nextViewId) {
                             mapViews.delete(k);
                         }
                     }
+
+                    // Remove old keys above limit (maps are sorted by insertion order, so this removes the oldest entries)
+                    for (const k of mapViews.keys()) {
+                        if (mapViews.size < SIZE_LIMIT) {
+                            break;
+                        }
+                        mapViews.delete(k);
+                    }
+
                     this.#setActiveView(nextViewId);
                     mapViews.set(nextViewId, mapState);
                 }
