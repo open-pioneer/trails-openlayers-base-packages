@@ -38,10 +38,7 @@ The Coordinates have to be in the projection of the map.
 If the value changes, the `onSelect` function is triggered.
 
 ```jsx
-<CoordinateSearch
-    mapId="map_id"
-    input=[761166, 6692084]
-/>
+<CoordinateSearch mapId="map_id" input={[761166, 6692084]} />
 ```
 
 ### Listening to events
