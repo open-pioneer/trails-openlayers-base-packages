@@ -1,6 +1,6 @@
 {
     "name": "showcase-app",
-    "version": "0.0.4",
+    "version": "0.0.5",
     "private": true,
     "dependencies": {
         "@conterra/reactivity-core": "catalog:",
@@ -8,6 +8,7 @@
         "@emotion/styled": "catalog:",
         "@open-pioneer/chakra-integration": "catalog:",
         "@open-pioneer/coordinate-viewer": "workspace:^",
+        "@open-pioneer/coordinate-search": "workspace:^",
         "@open-pioneer/editing": "workspace:^",
         "@open-pioneer/geolocation": "workspace:^",
         "@open-pioneer/http": "catalog:",
