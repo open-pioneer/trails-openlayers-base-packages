@@ -43,7 +43,7 @@ export interface CoordsSelectEvent {
 export interface CoordinateSearchProps extends CommonComponentProps, MapModelProps {
     /**
      * Searchable projections, only projections that are known by the map as projection are shown.
-     * Each System can have an individual precision. If no precision is given, the default precision is used.
+     * Each projection can have an individual precision of coordinates. If no precision is given, the default precision is used.
      */
     projections?: { label: string; value: string; precision?: number }[];
 
