@@ -74,6 +74,16 @@ export default defineConfig(({ mode }) => {
             eslint()
         ],
 
+        // Ignore irrelevant deprecations
+        // https://github.com/vitejs/vite/issues/18164
+        css: {
+            preprocessorOptions: {
+                scss: {
+                    silenceDeprecations: ["legacy-js-api", "import"]
+                }
+            }
+        },
+
         // define global constants
         // See also: https://vitejs.dev/config/shared-options.html#define
         define: {
