@@ -1,23 +1,22 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
+import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
-import { render, screen, act } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { expect, it } from "vitest";
 import { HistoryBackward, HistoryForward } from "./History";
-import { ViewHistoryModel } from "./ViewHistoryModel";
-import { setupMap } from "@open-pioneer/map-test-utils";
-import userEvent from "@testing-library/user-event";
 
 it("should successfully create an view history navigation component", async () => {
     const { mapId, registry } = await setupMap();
     const map = await registry.expectMapModel(mapId);
-    const viewModel = new ViewHistoryModel(map);
+    const services = createServiceOptions({ registry });
 
     render(
-        <PackageContextProvider>
-            <HistoryBackward viewModel={viewModel} data-testid="navi-history-back" />
-            <HistoryForward viewModel={viewModel} data-testid="navi-history-for" />
+        <PackageContextProvider services={services}>
+            <HistoryBackward map={map} data-testid="navi-history-back" />
+            <HistoryForward map={map} data-testid="navi-history-for" />
         </PackageContextProvider>
     );
 
@@ -34,14 +33,20 @@ it("should successfully disable/enable buttons", async () => {
     const user = userEvent.setup();
     const { mapId, registry } = await setupMap();
     const map = await registry.expectMapModel(mapId);
-    const viewModel = new ViewHistoryModel(map);
+    const services = createServiceOptions({ registry });
 
     render(
-        <PackageContextProvider>
-            <HistoryBackward viewModel={viewModel} data-testid="navi-history-back" />
-            <HistoryForward viewModel={viewModel} data-testid="navi-history-for" />
+        <PackageContextProvider services={services}>
+            <HistoryBackward map={map} data-testid="navi-history-back" />
+            <HistoryForward map={map} data-testid="navi-history-for" />
         </PackageContextProvider>
     );
+
+    // Wait for mount to ensure view model is present and listening
+    const { historyDivForward, historyDivBackward } = await waitForHistoryComponent();
+    expect(historyDivForward.disabled).toBe(true);
+    expect(historyDivBackward.disabled).toBe(true);
+
     await act(async () => {
         map.olMap.dispatchEvent("moveend");
     });
@@ -55,10 +60,6 @@ it("should successfully disable/enable buttons", async () => {
     if (!initialZoom) {
         throw new Error("zoom not defined");
     }
-
-    const { historyDivForward, historyDivBackward } = await waitForHistoryComponent();
-    expect(historyDivForward.disabled).toBe(true);
-    expect(historyDivBackward.disabled).toBe(true);
 
     await act(async () => {
         map.olMap.getView().setZoom(initialZoom + 1);
@@ -94,12 +95,12 @@ it("should successfully change the map view on forward", async () => {
     const user = userEvent.setup();
     const { mapId, registry } = await setupMap();
     const map = await registry.expectMapModel(mapId);
-    const viewModel = new ViewHistoryModel(map);
+    const services = createServiceOptions({ registry });
 
     render(
-        <PackageContextProvider>
-            <HistoryBackward viewModel={viewModel} data-testid="navi-history-back" />
-            <HistoryForward viewModel={viewModel} data-testid="navi-history-for" />
+        <PackageContextProvider services={services}>
+            <HistoryBackward map={map} data-testid="navi-history-back" />
+            <HistoryForward map={map} data-testid="navi-history-for" />
         </PackageContextProvider>
     );
 
@@ -144,12 +145,12 @@ it("should successfully change the map view on backward", async () => {
     const user = userEvent.setup();
     const { mapId, registry } = await setupMap();
     const map = await registry.expectMapModel(mapId);
-    const viewModel = new ViewHistoryModel(map);
+    const services = createServiceOptions({ registry });
 
     render(
-        <PackageContextProvider>
-            <HistoryBackward viewModel={viewModel} data-testid="navi-history-back" />
-            <HistoryForward viewModel={viewModel} data-testid="navi-history-for" />
+        <PackageContextProvider services={services}>
+            <HistoryBackward map={map} data-testid="navi-history-back" />
+            <HistoryForward map={map} data-testid="navi-history-for" />
         </PackageContextProvider>
     );
 

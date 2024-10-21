@@ -112,6 +112,13 @@
                     }
                 }
             }
+        ],
+
+        "react-hooks/exhaustive-deps": [
+            "warn",
+            {
+                "additionalHooks": "(useReactiveSnapshot|useComputed)"
+            }
         ]
     },
     "overrides": [
