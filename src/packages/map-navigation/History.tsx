@@ -2,13 +2,13 @@
 // SPDX-License-Identifier: Apache-2.0
 import { ToolButton } from "@open-pioneer/map-ui-components";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
+import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { PackageIntl } from "@open-pioneer/runtime";
 import classNames from "classnames";
-import { FC, ForwardedRef, forwardRef, RefAttributes } from "react";
-import { FiArrowRight, FiArrowLeft } from "react-icons/fi";
 import { useIntl } from "open-pioneer:react-hooks";
+import { FC, ForwardedRef, forwardRef, RefAttributes } from "react";
+import { FiCornerUpLeft, FiCornerUpRight } from "react-icons/fi";
 import { ViewHistoryModel } from "./ViewHistoryModel";
-import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 
 export type HistoryForwardProps = Omit<HistoryProps, "viewDirection">;
 
@@ -65,7 +65,7 @@ export const History: FC<HistoryProps> = forwardRef(function History(
         return {
             isDisabled: viewDirection == "forward" ? !viewModel.canForward : !viewModel.canBackward
         };
-    }, [viewModel]);
+    }, [viewModel, viewDirection]);
 
     return (
         <ToolButton
@@ -85,13 +85,13 @@ function getDirectionProps(intl: PackageIntl, viewDirection: "forward" | "backwa
             return {
                 defaultClassName: "view-forward",
                 buttonLabel: intl.formatMessage({ id: "view-forward.title" }),
-                buttonIcon: <FiArrowRight />
+                buttonIcon: <FiCornerUpRight />
             };
         case "backward":
             return {
                 defaultClassName: "view-backward",
                 buttonLabel: intl.formatMessage({ id: "view-backward.title" }),
-                buttonIcon: <FiArrowLeft />
+                buttonIcon: <FiCornerUpLeft />
             };
     }
 }
