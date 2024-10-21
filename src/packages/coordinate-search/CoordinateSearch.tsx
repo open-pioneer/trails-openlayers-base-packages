@@ -27,6 +27,33 @@ import { KeyboardEvent } from "react";
 const DEFAULT_PRECISION = 3;
 
 /**
+ * dropdown items of projection selection with an optional coordinate precision
+ */
+export interface ProjectionOption {
+    /**
+     * Label to show
+     */
+    label: string;
+
+    /**
+     * Returns all configured base layers.
+     */
+    value: string;
+
+    /**
+     * Returns all configured base layers.
+     */
+    precision?: number;
+}
+
+/**
+ * dropdown items of projection selection, must have a specified precision
+ */
+interface ProjectionItem extends Omit<ProjectionOption, "precision"> {
+    precision: number;
+}
+
+/**
  * Event type emitted when the user enters new coordinates or projection is changed by the user.
  */
 export interface CoordsSelectEvent {
@@ -45,7 +72,7 @@ export interface CoordinateSearchProps extends CommonComponentProps, MapModelPro
      * Searchable projections, only projections that are known by the map as projection are shown.
      * Each projection can have an individual precision of coordinates. If no precision is given, the default precision is used.
      */
-    projections?: { label: string; value: string; precision?: number }[];
+    projections?: ProjectionOption[];
 
     /**
      * Function that gets called if some coordinates are entered or projection is changed by the user.
@@ -90,7 +117,7 @@ export const CoordinateSearch: FC<CoordinateSearchProps> = (props) => {
     const intl = useIntl();
     const olMap = map?.olMap;
     const mapProjectionCode = useProjection(olMap)?.getCode() ?? ""; //projection of the map
-    const projectionsWithPrec: { label: string; value: string; precision: number }[] = [];
+    const projectionsWithPrec: ProjectionItem[] = [];
     projections.forEach(
         (ele) =>
             projectionsWithPrec.push({
@@ -99,13 +126,10 @@ export const CoordinateSearch: FC<CoordinateSearchProps> = (props) => {
                 precision: ele.precision || DEFAULT_PRECISION
             }) // add precision to every projection, if nothing is set
     );
-    const availableProjections: { label: string; value: string; precision: number }[] =
-        projectionsWithPrec.filter((cs) => getProjection(cs.value) != null); // filter for projections that are known
-    const [selectedProjection, setSelectedProjection] = useState<{
-        label: string;
-        value: string;
-        precision: number;
-    }>({
+    const availableProjections = projectionsWithPrec.filter(
+        (cs) => getProjection(cs.value) != null
+    ); // filter for projections that are known
+    const [selectedProjection, setSelectedProjection] = useState<ProjectionItem>({
         label: availableProjections[0]!.label,
         value: availableProjections[0]!.value,
         precision: availableProjections[0]!.precision
