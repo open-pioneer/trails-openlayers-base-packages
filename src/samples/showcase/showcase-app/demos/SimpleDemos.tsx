@@ -52,8 +52,8 @@ export function createCoordinateSearchDemo({ intl }: SharedDemoOptions): Demo {
 
 function CoordinateSearchComponent() {
     const [input, setInput] = useState<Coordinate | undefined>();
-    function onCoordinateSearch(coords: Coordinate) {
-        console.log("searched for: ", coords);
+    function onCoordinateSearch(coords: Coordinate, projection: string) {
+        console.log("searched for: ", coords, projection);
     }
 
     function onSearchCleared() {
@@ -66,7 +66,7 @@ function CoordinateSearchComponent() {
             <CoordinateSearch
                 mapId={MAP_ID}
                 input={input}
-                onSelect={({ coords }) => onCoordinateSearch(coords)}
+                onSelect={({ coords, projection }) => onCoordinateSearch(coords, projection)}
                 onClear={onSearchCleared}
                 projections={[
                     {

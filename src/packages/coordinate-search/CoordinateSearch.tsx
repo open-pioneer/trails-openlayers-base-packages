@@ -399,7 +399,7 @@ function checkIfStringInvalid(
     ];
     try {
         const tempCoords = transformCoordinates(coords, projection, "EPSG:4326");
-        const proj4326 = getProjection(projection);
+        const proj4326 = getProjection("EPSG:4326");
         if (proj4326 !== null && proj4326.getExtent() !== null) {
             if (
                 proj4326.getExtent().length == 4 &&
