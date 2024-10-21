@@ -39,6 +39,7 @@ catalog:
   "@open-pioneer/build-package-cli": ^2.1.0
   "@open-pioneer/build-support": ^2.0.2
   "@open-pioneer/vite-plugin-pioneer": ^3.0.4
+  "@open-pioneer/check-pnpm-duplicates": "^0.1.0"
   "@tanstack/react-table": "^8.11.6"
   "@testing-library/dom": ^10.0.0
   "@testing-library/jest-dom": ^6.4.7
