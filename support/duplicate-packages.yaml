@@ -1,0 +1,25 @@
+# This is the configuration file for the check-pnpm-duplicates CLI.
+# See <https://www.npmjs.com/package/@open-pioneer/check-pnpm-duplicates> for more details.
+
+# Ignore any duplicates in devDependencies.
+skipDevDependencies: true
+
+# List of packages that are allowed to have duplicates.
+#
+# You can list packages here that do not cause issues when they are present multiple times in your project.
+# You SHOULD NOT list central dependencies here, such as react or any trails packages.
+allowed:
+  - "ansi-styles"
+  - "chalk"
+  - "color-convert"
+  - "color-name"
+  - "escape-string-regexp"
+  - "extend-shallow"
+  - "has-flag"
+  - "is-extendable"
+  - "react-is"
+  - "regenerator-runtime"
+  - "source-map"
+  - "stylis"
+  - "supports-color"
+  - "tslib"

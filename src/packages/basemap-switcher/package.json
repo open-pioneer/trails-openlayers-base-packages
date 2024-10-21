@@ -16,7 +16,7 @@
     "keywords": [
         "open-pioneer-trails"
     ],
-    "peerDependencies": {
+    "dependencies": {
         "@open-pioneer/chakra-integration": "catalog:",
         "@open-pioneer/map": "workspace:^",
         "@open-pioneer/react-utils": "catalog:",
