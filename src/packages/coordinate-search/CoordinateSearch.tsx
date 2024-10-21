@@ -71,7 +71,7 @@ export const CoordinateSearch: FC<CoordinateSearchProps> = (props) => {
     const {
         onSelect,
         onClear,
-        projections: projections = [
+        projections = [
             {
                 label: "WGS 84",
                 value: "EPSG:4326",
