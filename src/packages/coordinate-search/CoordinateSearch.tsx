@@ -2,14 +2,12 @@
 // SPDX-License-Identifier: Apache-2.0
 import { MapModelProps, useMapModel, useProjection } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
-import { useService } from "open-pioneer:react-hooks";
 import { FC, useEffect, useState } from "react";
 import { Coordinate } from "ol/coordinate";
 import { EventsKey } from "ol/events";
 import { unByKey } from "ol/Observable";
 import OlMap from "ol/Map";
 import { CoordinateInput, CoordsInputEvent } from "./CoordinateInput";
-import { AppModel } from "ol-map/AppModel";
 
 /**
  * dropdown items of projection selection with an optional coordinate precision
@@ -84,7 +82,6 @@ export const CoordinateSearch: FC<CoordinateSearchProps> = (props) => {
         ]
     } = props;
     const { containerProps } = useCommonComponentProps("coordinate-search", props);
-    const appModel = useService<AppModel>("ol-app.AppModel");
     const { map } = useMapModel(props);
     const olMap = map?.olMap;
 
