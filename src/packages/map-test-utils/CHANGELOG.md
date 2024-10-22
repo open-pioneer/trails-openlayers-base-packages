@@ -1,5 +1,29 @@
 # @open-pioneer/map-test-utils
 
+## 0.7.0
+
+### Minor Changes
+
+-   310800c: Switch from `peerDependencies` to normal `dependencies`. Peer dependencies have some usability problems when used at scale.
+
+### Patch Changes
+
+-   310800c: Update core packages version.
+-   a8b3449: Switch to a new versioning strategy.
+    From now on, packages released by this repository share a common version number.
+-   900eb11: Update dependencies.
+-   Updated dependencies [310800c]
+-   Updated dependencies [2502050]
+-   Updated dependencies [583f1d6]
+-   Updated dependencies [583f1d6]
+-   Updated dependencies [397d617]
+-   Updated dependencies [a8b3449]
+-   Updated dependencies [310800c]
+-   Updated dependencies [900eb11]
+-   Updated dependencies [583f1d6]
+-   Updated dependencies [397d617]
+    -   @open-pioneer/map@0.7.0
+
 ## 0.3.4
 
 ### Patch Changes
