@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { MapModelProps, useMapModel, useProjection } from "@open-pioneer/map";
+import { MapModelProps, useMapModel } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { FC, useEffect, useState } from "react";
 import { Coordinate } from "ol/coordinate";
@@ -85,8 +85,6 @@ export const CoordinateSearch: FC<CoordinateSearchProps> = (props) => {
     const { map } = useMapModel(props);
     const olMap = map?.olMap;
 
-    const mapProjectionCode = useProjection(olMap)?.getCode() ?? ""; // projection of the map
-
     const { coordinates } = useCoordinates(olMap); // coordinates of the pointer in the map
 
     return (
@@ -105,7 +103,7 @@ export const CoordinateSearch: FC<CoordinateSearchProps> = (props) => {
                 }
             }}
             onClear={() => onClear}
-            placeholder={coordinates ? { coords: coordinates, projection: mapProjectionCode } : ""}
+            placeholder={coordinates ? coordinates : ""}
             projections={projections}
         />
     );

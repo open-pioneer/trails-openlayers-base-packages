@@ -91,8 +91,10 @@ export interface CoordinateInputProps extends CommonComponentProps, MapModelProp
      * * hint for the user ("enter coordinate here")
      * * example coordinate ("12.345 67.890")
      * * current mouse position
+     *
+     * If a Coordinate is given, it has to be in the current projection of the map
      */
-    placeholder?: string | CoordsInputEvent;
+    placeholder?: string | Coordinate;
 }
 
 /**
@@ -121,7 +123,7 @@ export const CoordinateInput: FC<CoordinateInputProps> = (props) => {
     const { map } = useMapModel(props);
     const intl = useIntl();
     const olMap = map?.olMap;
-    const mapProjectionCode = useProjection(olMap)?.getCode() ?? ""; //projection of the map
+    const mapProjectionCode = useProjection(olMap)?.getCode() ?? ""; // projection of the map
     const projectionsWithPrec: ProjectionItem[] = [];
     projections.forEach(
         (ele) =>
@@ -148,7 +150,18 @@ export const CoordinateInput: FC<CoordinateInputProps> = (props) => {
         selectedProjection.precision
     );
 
-    const placeholderString: string = placeholderToString(placeholder, selectedProjection, intl);
+    const placeholderString =
+        typeof placeholder === "object"
+            ? formatCoordinates(
+                  transformCoordinates(
+                      placeholder as Coordinate,
+                      mapProjectionCode,
+                      selectedProjection.value
+                  ),
+                  selectedProjection.precision,
+                  intl
+              )
+            : (placeholder as string);
 
     const stringInvalid = isInputInvalid(
         intl,
@@ -240,7 +253,7 @@ export const CoordinateInput: FC<CoordinateInputProps> = (props) => {
                                     />
                                 </InputRightElement>
                             )}
-                            {(placeholder as CoordsInputEvent).coords &&
+                            {typeof placeholder === "object" && // show copy-to-clipboard only for coordinates, not descriptions
                                 coordinateSearchInput == "" && (
                                     <InputRightElement>
                                         <IconButton
@@ -438,26 +451,6 @@ function parseCoords(inputString: string, thousandSeparator: string) {
     const inputStringWithoutThousandSeparator = inputString.replaceAll(thousandSeparator, "");
     const coordsString = inputStringWithoutThousandSeparator.replaceAll(",", ".");
     return [parseFloat(coordsString[0]!), parseFloat(coordsString[1]!)];
-}
-
-function placeholderToString(
-    placeholder: CoordsInputEvent | string,
-    selectedProjection: ProjectionItem,
-    intl: PackageIntl
-): string {
-    if ((placeholder as CoordsInputEvent).coords) {
-        return formatCoordinates(
-            transformCoordinates(
-                (placeholder as CoordsInputEvent).coords,
-                (placeholder as CoordsInputEvent).projection,
-                selectedProjection.value
-            ),
-            selectedProjection.precision,
-            intl
-        );
-    }
-
-    return placeholder as string;
 }
 
 function onCoordinateInput(
