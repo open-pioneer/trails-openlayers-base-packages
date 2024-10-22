@@ -1,6 +1,6 @@
 {
     "name": "@open-pioneer/geolocation",
-    "version": "0.4.4",
+    "version": "0.7.0",
     "description": "This package provides a component to locate a user's position.",
     "license": "Apache-2.0",
     "main": "index.ts",

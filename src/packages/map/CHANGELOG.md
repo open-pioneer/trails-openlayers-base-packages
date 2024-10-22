@@ -1,5 +1,86 @@
 # @open-pioneer/map
 
+## 0.7.0
+
+### Minor Changes
+
+-   2502050: Introduce union types and `type` attributes for layers. This allows TypeScript narrowing for layers and determining a layer's type.
+
+    The `Layer` and `Sublayer` types for layers remain, but are unions of the corresponding concrete layer types now.
+    The layer type `LayerBase` has been removed and is replaced by `AnyLayerType`
+    to clarify that this type represents a union of all types of layer (currently `Layer` and `Sublayer`).
+
+    Two type guards have been implemented that allow to check if a layer instance is a `Layer` or `Sublayer`: `isLayer()`and `isSublayer()` (see example below).
+
+    The following `type` attribute values have been implemented at the layers:
+
+    -   SimpleLayer: `simple`
+    -   WMSLayer: `wms`
+    -   WMSSubLayer: `wms-sublayer`
+    -   WMTSLayer: `wmts`
+
+    Example of usage:
+
+    ```ts
+    import { AnyLayer, WMTSLayer, isSublayer } from "@open-pioneer/map";
+
+    export class ExampleClass {
+        //...
+
+        exampleFunction(layer: AnyLayer) {
+            // prop may be a layer of any type
+
+            // use layers type attribute to check layer type
+            if (layer.type === "wmts") {
+                layer.matrixSet; // prop only available on WMTSLayer
+
+                const wmtsLayer: WMTSLayer = layer; // type of layer is now narrowed to `WMTSLayer`
+            }
+
+            // use new type guard to check if layer is a Sublayer
+            if (isSublayer(layer)) {
+                // type of layer is now narrowed to `WMSSublayer` (as it is currently the only type of Sublayer existing)
+                layer.parentLayer; // prop only available on Sublayers
+            }
+        }
+    }
+    ```
+
+-   310800c: Switch from `peerDependencies` to normal `dependencies`. Peer dependencies have some usability problems when used at scale.
+
+### Patch Changes
+
+-   310800c: Update core packages version.
+-   583f1d6: The `mapId` or `map` properties are now optional on individual components.
+    You can use the `DefaultMapProvider` to configure an implicit default value.
+
+    Note that configuring _neither_ a default _nor_ an explicit `map` or `mapId` will trigger a runtime error.
+
+-   583f1d6: All UI components in this project now accept the `mapId` (a `string`) _or_ the `map` (a `MapModel`) directly.
+-   397d617: Reimplement computation of map anchor positioning using new css props.
+-   a8b3449: Switch to a new versioning strategy.
+    From now on, packages released by this repository share a common version number.
+-   900eb11: Update dependencies.
+-   583f1d6: The new component `DefaultMapProvider` allows you to configure the _default map_ for its children.
+    If `DefaultMapProvider` is used, you can omit the explicit `mapId` (or `map`) property on the individual UI components.
+
+    For many applications, `DefaultMapProvider` can be used to surround all (or most of) the application's UI.
+
+    Example:
+
+    ```tsx
+    import { DefaultMapProvider } from "@open-pioneer/map";
+
+    <DefaultMapProvider mapId={MAP_ID}>
+        {/* no need to repeat the map id in this subtree, unless you want to use a different one */}
+        <MapContainer />
+        <Toc />
+        <ComplexChild />
+    </DefaultMapProvider>;
+    ```
+
+-   397d617: Move attribution of OL map according to the map view's padding.
+
 ## 0.6.1
 
 ### Patch Changes
