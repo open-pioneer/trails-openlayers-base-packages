@@ -40,6 +40,12 @@ To integrate the component in your app, insert the following snippet and referen
 <HistoryForward mapId="map_id" />
 ```
 
+#### Limitations
+
+The history tools use a shared history of previous map states.
+Map states are tracked while at least one history tool is mounted into the application.
+If all history tools are unmounted, the history of previous map states is discarded.
+
 ## License
 
 Apache-2.0 (see `LICENSE` file)
