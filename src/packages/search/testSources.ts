@@ -103,7 +103,7 @@ export class GeoSearchSource implements SearchSource {
                 id: idx,
                 label: feature.properties?.text as string
             })) satisfies SearchResult[];
-        } catch (error) {
+        } catch (_error) {
             return [];
         }
     }

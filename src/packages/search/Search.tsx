@@ -311,10 +311,14 @@ function useController(
     }, [map, sources]);
 
     useEffect(() => {
-        controller && (controller.searchTypingDelay = searchTypingDelay);
+        if (controller) {
+            controller.searchTypingDelay = searchTypingDelay;
+        }
     }, [controller, searchTypingDelay]);
     useEffect(() => {
-        controller && (controller.maxResultsPerSource = maxResultsPerGroup);
+        if (controller) {
+            controller.maxResultsPerSource = maxResultsPerGroup;
+        }
     }, [controller, maxResultsPerGroup]);
     return controller;
 }

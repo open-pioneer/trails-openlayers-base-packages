@@ -70,7 +70,7 @@ it("expect empty data text to be shown", async () => {
                 <ResultList input={emptyData} mapId={mapId} data-testid="result-list" />
             </PackageContextProvider>
         );
-    } catch (e) {
+    } catch (_e) {
         error = new Error("unexpected failure");
     }
 
