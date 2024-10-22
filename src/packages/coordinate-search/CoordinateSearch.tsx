@@ -6,7 +6,6 @@ import { useService } from "open-pioneer:react-hooks";
 import { FC, useEffect, useState } from "react";
 import { Coordinate } from "ol/coordinate";
 import { EventsKey } from "ol/events";
-import { Point } from "ol/geom";
 import { unByKey } from "ol/Observable";
 import OlMap from "ol/Map";
 import { CoordinateInput, CoordsInputEvent } from "./CoordinateInput";
@@ -102,8 +101,7 @@ export const CoordinateSearch: FC<CoordinateSearchProps> = (props) => {
                     return;
                 }
 
-                const geom = new Point(event.coords);
-                appModel.highlightAndZoom(map, [geom]);
+                olMap?.getView().setCenter(event.coords);
 
                 if (onSelect) {
                     onSelect(event);
