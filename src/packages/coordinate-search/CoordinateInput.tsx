@@ -148,7 +148,7 @@ export const CoordinateInput: FC<CoordinateInputProps> = (props) => {
         selectedProjection.precision
     );
 
-    const placeholderString: string = (placeholder as CoordsInputEvent).coords ? formatCoordinates(transformCoordinates((placeholder as CoordsInputEvent).coords, (placeholder as CoordsInputEvent).projection, selectedProjection.value), selectedProjection.precision, intl) : placeholder as string;
+    const placeholderString: string = placeholderToString(placeholder, selectedProjection, intl);
 
     const stringInvalid = isInputInvalid(
         intl,
@@ -240,22 +240,23 @@ export const CoordinateInput: FC<CoordinateInputProps> = (props) => {
                                     />
                                 </InputRightElement>
                             )}
-                            {coordinateSearchInput == "" && (placeholder as CoordsInputEvent).coords && (
-                                <InputRightElement>
-                                    <IconButton
-                                        className="copyButton"
-                                        size="sm"
-                                        onClick={() => {
-                                            navigator.clipboard.writeText(placeholderString);
-                                        }}
-                                        padding={0}
-                                        icon={<CopyIcon />}
-                                        aria-label={intl.formatMessage({
-                                            id: "coordinateSearch.copyPlaceholder"
-                                        })}
-                                    />
-                                </InputRightElement>
-                            )}
+                            {(placeholder as CoordsInputEvent).coords &&
+                                coordinateSearchInput == "" && (
+                                    <InputRightElement>
+                                        <IconButton
+                                            className="copyButton"
+                                            size="sm"
+                                            onClick={() => {
+                                                navigator.clipboard.writeText(placeholderString);
+                                            }}
+                                            padding={0}
+                                            icon={<CopyIcon />}
+                                            aria-label={intl.formatMessage({
+                                                id: "coordinateSearch.copyPlaceholder"
+                                            })}
+                                        />
+                                    </InputRightElement>
+                                )}
                         </InputGroup>
                         <InputRightAddon padding={"0px"} borderLeft={"0px"}>
                             <Select
@@ -412,7 +413,7 @@ function isInputInvalid(
         let chosenProjection = getProjection(projection);
         if (chosenProjection === null || chosenProjection.getExtent() === null) {
             chosenProjection = getProjection("EPSG:4326");
-    
+
             coords = transformCoordinates(coords, projection, "EPSG:4326");
         }
 
@@ -437,6 +438,26 @@ function parseCoords(inputString: string, thousandSeparator: string) {
     const inputStringWithoutThousandSeparator = inputString.replaceAll(thousandSeparator, "");
     const coordsString = inputStringWithoutThousandSeparator.replaceAll(",", ".");
     return [parseFloat(coordsString[0]!), parseFloat(coordsString[1]!)];
+}
+
+function placeholderToString(
+    placeholder: CoordsInputEvent | string,
+    selectedProjection: ProjectionItem,
+    intl: PackageIntl
+): string {
+    if ((placeholder as CoordsInputEvent).coords) {
+        return formatCoordinates(
+            transformCoordinates(
+                (placeholder as CoordsInputEvent).coords,
+                (placeholder as CoordsInputEvent).projection,
+                selectedProjection.value
+            ),
+            selectedProjection.precision,
+            intl
+        );
+    }
+
+    return placeholder as string;
 }
 
 function onCoordinateInput(

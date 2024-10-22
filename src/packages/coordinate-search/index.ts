@@ -3,7 +3,7 @@
 export {
     CoordinateSearch,
     type CoordinateSearchProps,
-    type CoordsSelectEvent,
+    type CoordsSelectEvent
 } from "./CoordinateSearch";
 
 export {

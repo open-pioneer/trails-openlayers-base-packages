@@ -9,8 +9,8 @@ import { EventsKey } from "ol/events";
 import { Point } from "ol/geom";
 import { unByKey } from "ol/Observable";
 import OlMap from "ol/Map";
-import {CoordinateInput, CoordsInputEvent} from "./CoordinateInput";
-import {AppModel} from "ol-map/AppModel";
+import { CoordinateInput, CoordsInputEvent } from "./CoordinateInput";
+import { AppModel } from "ol-map/AppModel";
 
 /**
  * dropdown items of projection selection with an optional coordinate precision
@@ -110,7 +110,7 @@ export const CoordinateSearch: FC<CoordinateSearchProps> = (props) => {
                 }
             }}
             onClear={() => onClear}
-            placeholder={coordinates ? { coords: coordinates, projection: mapProjectionCode} : ""}
+            placeholder={coordinates ? { coords: coordinates, projection: mapProjectionCode } : ""}
             projections={projections}
         />
     );
