@@ -28,7 +28,7 @@ messages:
       description: Diese Demo zeigt, wie die <code>CoordinateViewer</code>-Komponente verwendet werden kann, um sich Koordinaten an der Position des Mauszeigers anzeigen zu lassen.
     coordinateSearch:
       title: Koordinaten-Suche
-      description: Diese Demo zeigt, wie die <code>CoordinateSearch</code>-Komponente verwendet werden kann, um sich Koordinaten an der Position des Mauszeigers anzeigen zu lassen und nach Koordinaten zu suchen. Dafür kann zwischen verschiedene Projektionen gewechselt werden.
+      description: Diese Demo zeigt, wie die <code>CoordinateSearch</code>-Komponente verwendet werden kann, um sich Koordinaten an der Position des Mauszeigers anzeigen zu lassen und nach Koordinaten zu suchen. Dafür kann zwischen verschiedenen Projektionen gewechselt werden.
     scaleViewer:
       title: Maßstabs-Anzeige
       description: Diese Demo zeigt, wie die <code>ScaleViewer</code>-Komponente verwendet werden kann, um den aktuellen Maßstab anzuzeigen.
