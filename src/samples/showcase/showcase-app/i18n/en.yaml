@@ -26,6 +26,9 @@ messages:
     coordinateViewer:
       title: Coordinate viewer
       description: This demo shows how to use the <code>CoordinateViewer</code> component to show the coordinates at the users current mouse position.
+    coordinateInput:
+      title: Coordinate input
+      description: This demo shows how to use the <code>CoordinateInput</code> component to allow users to enter coordinates. The validation checks if the input is a valid coordinate for the selected projection.
     coordinateSearch:
       title: Coordinate search
       description: This demo shows how to use the <code>CoordinateSearch</code> component to show the coordinates at the users current mouse position and to search for coordinates. It is possible to switch between different projections.

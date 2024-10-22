@@ -26,6 +26,9 @@ messages:
     coordinateViewer:
       title: Koordinaten-Anzeige
       description: Diese Demo zeigt, wie die <code>CoordinateViewer</code>-Komponente verwendet werden kann, um sich Koordinaten an der Position des Mauszeigers anzeigen zu lassen.
+    coordinateInput:
+      title: Koordinaten-Eingabe
+      description: Diese Demo zeigt, wie die <code>CoordinateInput</code>-Komponente verwendet werden kann, um Usern die Eingabe von Koordinaten zu ermöglichen. Es findet eine Validierung statt, ob die Eingabe eine gültige Koordinate in der ausgewählten Projektion darstellt.
     coordinateSearch:
       title: Koordinaten-Suche
       description: Diese Demo zeigt, wie die <code>CoordinateSearch</code>-Komponente verwendet werden kann, um sich Koordinaten an der Position des Mauszeigers anzeigen zu lassen und nach Koordinaten zu suchen. Dafür kann zwischen verschiedenen Projektionen gewechselt werden.

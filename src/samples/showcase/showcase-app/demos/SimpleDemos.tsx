@@ -20,7 +20,7 @@ import { SpatialBookmarks } from "@open-pioneer/spatial-bookmarks";
 import { useEffect, useState } from "react";
 import { Demo, SharedDemoOptions } from "./Demo";
 import { Coordinate } from "ol/coordinate";
-import { CoordinateSearch } from "@open-pioneer/coordinate-search";
+import { CoordinateInput, CoordinateSearch } from "@open-pioneer/coordinate-search";
 import { MAP_ID } from "../MapConfigProviderImpl";
 import { Button, Flex } from "@open-pioneer/chakra-integration";
 
@@ -37,23 +37,23 @@ export function createCoordinateViewerDemo({ intl }: SharedDemoOptions): Demo {
     };
 }
 
-export function createCoordinateSearchDemo({ intl }: SharedDemoOptions): Demo {
+export function createCoordinateInputDemo({ intl }: SharedDemoOptions): Demo {
     return {
-        id: "coordinateSearch",
-        title: intl.formatMessage({ id: "demos.coordinateSearch.title" }),
+        id: "coordinateInput",
+        title: intl.formatMessage({ id: "demos.coordinateInput.title" }),
         createModel() {
             return {
-                description: intl.formatMessage({ id: "demos.coordinateSearch.description" }),
-                mainWidget: <CoordinateSearchComponent />
+                description: intl.formatMessage({ id: "demos.coordinateInput.description" }),
+                mainWidget: <CoordinateInputComponent />
             };
         }
     };
 }
 
-function CoordinateSearchComponent() {
+function CoordinateInputComponent() {
     const [input, setInput] = useState<Coordinate | undefined>();
-    function onCoordinateSearch(coords: Coordinate, projection: string) {
-        console.log("searched for: ", coords, projection);
+    function onCoordinateInput(coords: Coordinate, projection: string) {
+        console.log("coordinate entered: ", coords, projection);
     }
 
     function onSearchCleared() {
@@ -63,10 +63,11 @@ function CoordinateSearchComponent() {
 
     return (
         <Flex direction={"column"} gap={10}>
-            <CoordinateSearch
+            <CoordinateInput
                 mapId={MAP_ID}
                 input={input}
-                onSelect={({ coords, projection }) => onCoordinateSearch(coords, projection)}
+                placeholder={"Enter coordinate here"}
+                onSelect={({ coords, projection }) => onCoordinateInput(coords, projection)}
                 onClear={onSearchCleared}
                 projections={[
                     {
@@ -104,8 +105,71 @@ function CoordinateSearchComponent() {
                     setInput([761166, 6692084]);
                 }}
             >
-                Set input extern
+                Set input value
             </Button>
+        </Flex>
+    );
+}
+
+export function createCoordinateSearchDemo({ intl }: SharedDemoOptions): Demo {
+    return {
+        id: "coordinateSearch",
+        title: intl.formatMessage({ id: "demos.coordinateSearch.title" }),
+        createModel() {
+            return {
+                description: intl.formatMessage({ id: "demos.coordinateSearch.description" }),
+                mainWidget: <CoordinateSearchComponent />
+            };
+        }
+    };
+}
+
+function CoordinateSearchComponent() {
+    function onCoordinateSearch(coords: Coordinate, projection: string) {
+        console.log("searched for: ", coords, projection);
+    }
+
+    function onSearchCleared() {
+        console.log("search cleared");
+    }
+
+    return (
+        <Flex direction={"column"} gap={10}>
+            <CoordinateSearch
+                mapId={MAP_ID}
+                onSelect={({ coords, projection }) => onCoordinateSearch(coords, projection)}
+                onClear={onSearchCleared}
+                projections={[
+                    {
+                        label: "EPSG:25832",
+                        value: "EPSG:25832"
+                    },
+                    {
+                        label: "WGS 84",
+                        value: "EPSG:4326"
+                    },
+                    {
+                        label: "Web Mercator",
+                        value: "EPSG:3857"
+                    },
+                    {
+                        label: "EPSG:25833",
+                        value: "EPSG:25833"
+                    },
+                    {
+                        label: "EPSG:31466",
+                        value: "EPSG:31466"
+                    },
+                    {
+                        label: "EPSG:31467",
+                        value: "EPSG:31467"
+                    },
+                    {
+                        label: "EPSG:3035",
+                        value: "EPSG:3035"
+                    }
+                ]}
+            />
         </Flex>
     );
 }
