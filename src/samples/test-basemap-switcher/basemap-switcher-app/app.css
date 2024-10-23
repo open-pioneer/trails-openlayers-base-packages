@@ -1,0 +1,4 @@
+/* This is a workaround for the issue that the image Basemap switcher menulist is hidden if it's too long */
+.map-anchor-visibility {
+    overflow: visible !important;
+}
