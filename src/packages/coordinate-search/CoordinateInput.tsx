@@ -123,7 +123,7 @@ export const CoordinateInput: FC<CoordinateInputProps> = (props) => {
     const { map } = useMapModel(props);
     const intl = useIntl();
     const olMap = map?.olMap;
-    const mapProjectionCode = useProjection(olMap)?.getCode() ?? ""; // projection of the map
+    const mapProjCode = useProjection(olMap)?.getCode() ?? ""; // projection of the map
     const projectionsWithPrec: ProjectionItem[] = [];
     projections.forEach(
         (ele) =>
@@ -136,7 +136,7 @@ export const CoordinateInput: FC<CoordinateInputProps> = (props) => {
     const availableProjections = projectionsWithPrec.filter(
         (cs) => getProjection(cs.value) != null
     ); // filter for projections that are known
-    const [selectedProjection, setSelectedProjection] = useState<ProjectionItem>({
+    const [slcProjection, setSlcProjection] = useState<ProjectionItem>({
         label: availableProjections[0]!.label,
         value: availableProjections[0]!.value,
         precision: availableProjections[0]!.precision
@@ -144,29 +144,23 @@ export const CoordinateInput: FC<CoordinateInputProps> = (props) => {
     const [coordinateSearchInput, setCoordinateSearchInput] = useState<string>(""); // coordinate input field
     let tooltipMessage = "tooltip.basic";
     const inputFromOutside = useCoordinatesString(
-        input != undefined && mapProjectionCode
-            ? transformCoordinates(input, mapProjectionCode, selectedProjection.value)
+        input != undefined && mapProjCode
+            ? transformCoordinates(input, mapProjCode, slcProjection.value)
             : undefined,
-        selectedProjection.precision
+        slcProjection.precision
     );
-
+    const tempTfCoords =
+        mapProjCode != "" && typeof placeholder === "object"
+            ? transformCoordinates(placeholder as Coordinate, mapProjCode, slcProjection.value)
+            : [];
+    const tempFmCoords = formatCoordinates(tempTfCoords, slcProjection.precision, intl);
     const placeholderString =
-        typeof placeholder === "object"
-            ? formatCoordinates(
-                  transformCoordinates(
-                      placeholder as Coordinate,
-                      mapProjectionCode,
-                      selectedProjection.value
-                  ),
-                  selectedProjection.precision,
-                  intl
-              )
-            : (placeholder as string);
+        typeof placeholder === "object" ? tempFmCoords : (placeholder as string);
 
     const stringInvalid = isInputInvalid(
         intl,
         coordinateSearchInput,
-        selectedProjection.value,
+        slcProjection.value,
         setTooltipMessage
     );
     const [isOpenSelect, setIsOpenSelect] = useState(false); // if the select menu is open
@@ -186,15 +180,9 @@ export const CoordinateInput: FC<CoordinateInputProps> = (props) => {
     useEffect(() => {
         if (input != undefined) {
             setCoordinateSearchInput(inputFromOutside);
-            onCoordinateInput(
-                intl,
-                inputFromOutside,
-                selectedProjection.value,
-                mapProjectionCode,
-                onSelect
-            );
+            onCoordinateInput(intl, inputFromOutside, slcProjection.value, mapProjCode, onSelect);
         }
-    }, [input, inputFromOutside, intl, mapProjectionCode, onSelect, selectedProjection]);
+    }, [input, inputFromOutside, intl, mapProjCode, onSelect, slcProjection]);
 
     return (
         <Box {...containerProps}>
@@ -226,8 +214,8 @@ export const CoordinateInput: FC<CoordinateInputProps> = (props) => {
                                         onCoordinateInput(
                                             intl,
                                             coordinateSearchInput,
-                                            selectedProjection.value,
-                                            mapProjectionCode,
+                                            slcProjection.value,
+                                            mapProjCode,
                                             onSelect
                                         );
                                     }
@@ -253,28 +241,27 @@ export const CoordinateInput: FC<CoordinateInputProps> = (props) => {
                                     />
                                 </InputRightElement>
                             )}
-                            {typeof placeholder === "object" && // show copy-to-clipboard only for coordinates, not descriptions
-                                coordinateSearchInput == "" && (
-                                    <InputRightElement>
-                                        <IconButton
-                                            className="copyButton"
-                                            size="sm"
-                                            onClick={() => {
-                                                navigator.clipboard.writeText(placeholderString);
-                                            }}
-                                            padding={0}
-                                            icon={<CopyIcon />}
-                                            aria-label={intl.formatMessage({
-                                                id: "coordinateSearch.copyPlaceholder"
-                                            })}
-                                        />
-                                    </InputRightElement>
-                                )}
+                            {typeof placeholder === "object" && coordinateSearchInput == "" && (
+                                <InputRightElement>
+                                    <IconButton
+                                        className="copyButton"
+                                        size="sm"
+                                        onClick={() => {
+                                            navigator.clipboard.writeText(placeholderString);
+                                        }}
+                                        padding={0}
+                                        icon={<CopyIcon />}
+                                        aria-label={intl.formatMessage({
+                                            id: "coordinateSearch.copyPlaceholder"
+                                        })}
+                                    />
+                                </InputRightElement>
+                            )}
                         </InputGroup>
                         <InputRightAddon padding={"0px"} borderLeft={"0px"}>
                             <Select
-                                value={selectedProjection}
-                                defaultValue={selectedProjection}
+                                value={slcProjection}
+                                defaultValue={slcProjection}
                                 options={availableProjections}
                                 menuPlacement="auto"
                                 aria-label={intl.formatMessage({
@@ -353,12 +340,12 @@ export const CoordinateInput: FC<CoordinateInputProps> = (props) => {
                                 }}
                                 onChange={(e) => {
                                     if (e?.value !== undefined) {
-                                        setSelectedProjection(e);
+                                        setSlcProjection(e);
                                         onCoordinateInput(
                                             intl,
                                             coordinateSearchInput,
                                             e?.value,
-                                            mapProjectionCode,
+                                            mapProjCode,
                                             onSelect
                                         );
                                     }
