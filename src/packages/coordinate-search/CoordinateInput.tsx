@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import { CloseIcon, CopyIcon } from "@chakra-ui/icons";
 import {
     Box,
     Flex,
@@ -13,16 +14,26 @@ import {
 } from "@open-pioneer/chakra-integration";
 import { MapModelProps, useMapModel, useProjection } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps, useEvent } from "@open-pioneer/react-utils";
-import { get as getProjection, transform } from "ol/proj";
-import { useIntl } from "open-pioneer:react-hooks";
-import { FC, useEffect, useRef, useState } from "react";
+import { PackageIntl } from "@open-pioneer/runtime";
 import { Select } from "chakra-react-select";
 import { Coordinate } from "ol/coordinate";
-import { CloseIcon, CopyIcon } from "@chakra-ui/icons";
-import { PackageIntl } from "@open-pioneer/runtime";
-import { KeyboardEvent } from "react";
+import { get as getProjection, transform } from "ol/proj";
+import { useIntl } from "open-pioneer:react-hooks";
+import { FC, KeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
 
 const DEFAULT_PRECISION = 3;
+const DEFAULT_PROJECTIONS = [
+    {
+        label: "WGS 84",
+        value: "EPSG:4326",
+        precision: 3
+    },
+    {
+        label: "Web Mercator",
+        value: "EPSG:3857",
+        precision: 2
+    }
+];
 
 /**
  * dropdown items of projection selection with an optional coordinate precision
@@ -100,74 +111,32 @@ export interface CoordinateInputProps extends CommonComponentProps, MapModelProp
  * The `CoordinateSearch`component can be used in an app to search for entered coordinates in a selected projection
  */
 export const CoordinateInput: FC<CoordinateInputProps> = (props) => {
-    const {
-        onSelect,
-        onClear,
-        projections = [
-            {
-                label: "WGS 84",
-                value: "EPSG:4326",
-                precision: 3
-            },
-            {
-                label: "Web Mercator",
-                value: "EPSG:3857",
-                precision: 2
-            }
-        ],
-        input,
-        placeholder = ""
-    } = props;
+    const { onSelect, onClear, projections = DEFAULT_PROJECTIONS, input, placeholder = "" } = props;
     const { containerProps } = useCommonComponentProps("coordinate-input", props);
     const { map } = useMapModel(props);
     const intl = useIntl();
     const olMap = map?.olMap;
     const mapProjCode = useProjection(olMap)?.getCode() ?? ""; // projection of the map
-    const projectionsWithPrec: ProjectionItem[] = [];
-    projections.forEach(
-        (ele) =>
-            projectionsWithPrec.push({
-                label: ele.label,
-                value: ele.value,
-                precision: ele.precision || DEFAULT_PRECISION
-            }) // add precision to every projection, if nothing is set
-    );
-    const availableProjections = projectionsWithPrec.filter(
-        (cs) => getProjection(cs.value) != null
-    ); // filter for projections that are known
-    const [slcProjection, setSlcProjection] = useState<ProjectionItem>({
-        label: availableProjections[0]!.label,
-        value: availableProjections[0]!.value,
-        precision: availableProjections[0]!.precision
-    }); // set projection select initial on first one in list
-    const [coordinateSearchInput, setCoordinateSearchInput] = useState<string>(""); // coordinate input field
-    let tooltipMessage = "tooltip.basic";
-    const inputFromOutside = useCoordinatesString(
-        input != undefined && mapProjCode
-            ? transformCoordinates(input, mapProjCode, slcProjection.value)
-            : undefined,
-        slcProjection.precision
-    );
-    const tempTfCoords =
-        mapProjCode != "" && typeof placeholder === "object"
-            ? transformCoordinates(placeholder as Coordinate, mapProjCode, slcProjection.value)
-            : [];
-    const tempFmCoords = formatCoordinates(tempTfCoords, slcProjection.precision, intl);
-    const placeholderString =
-        typeof placeholder === "object" ? tempFmCoords : (placeholder as string);
 
-    const stringInvalid = isInputInvalid(
-        intl,
-        coordinateSearchInput,
-        slcProjection.value,
-        setTooltipMessage
+    // Projection items (dropdown)
+    const availableProjections = useProjectionItems(projections); // filter for projections that are known
+    const [selectedProjection, setSelectedProjection] = useState<ProjectionItem>(
+        // set projection select initial on first one in list
+        availableProjections[0]!
     );
+
+    // Input state
+    const [coordinateSearchInput, setCoordinateSearchInput] = useInput(
+        input,
+        mapProjCode,
+        selectedProjection
+    );
+    const placeholderString = usePlaceholder(placeholder, mapProjCode, selectedProjection);
+    const validationResult = validateInput(intl, coordinateSearchInput, selectedProjection.value);
+    const isInputValid = validationResult === "success";
+
     const [isOpenSelect, setIsOpenSelect] = useState(false); // if the select menu is open
     const [menuPlacement, setMenuPlacement] = useState<string>(""); // where is menu is places (top/bottom)
-
-    function setTooltipMessage(newId: string) {
-        tooltipMessage = newId;
-    }
 
     const keyDown = useEvent((event: KeyboardEvent<HTMLDivElement>) => {
         //if the menu is already open, do noting
@@ -175,13 +144,6 @@ export const CoordinateInput: FC<CoordinateInputProps> = (props) => {
             setIsOpenSelect(true);
         }
     });
-
-    useEffect(() => {
-        if (input != undefined) {
-            setCoordinateSearchInput(inputFromOutside);
-            onCoordinateInput(intl, inputFromOutside, slcProjection.value, mapProjCode, onSelect);
-        }
-    }, [input, inputFromOutside, intl, mapProjCode, onSelect, slcProjection]);
 
     const portalElement = useRef<HTMLDivElement>(null);
 
@@ -192,10 +154,10 @@ export const CoordinateInput: FC<CoordinateInputProps> = (props) => {
             </Portal>
             <Flex flexDirection={"row"} flexDir={"row"}>
                 <Tooltip
-                    label={intl.formatMessage({ id: tooltipMessage })}
+                    label={!isInputValid ? intl.formatMessage({ id: validationResult }) : undefined}
                     hasArrow
                     placement="auto"
-                    isOpen={stringInvalid}
+                    isOpen={!isInputValid}
                 >
                     <InputGroup className="coordinateSearchGroup">
                         <InputGroup className="coordinateInputGroup">
@@ -205,8 +167,8 @@ export const CoordinateInput: FC<CoordinateInputProps> = (props) => {
                                 onChange={(eve) => {
                                     setCoordinateSearchInput(eve.target.value);
                                 }}
-                                isInvalid={stringInvalid}
-                                backgroundColor={stringInvalid ? "red.100" : "undefined"}
+                                isInvalid={!isInputValid}
+                                backgroundColor={!isInputValid ? "red.100" : "undefined"}
                                 placeholder={placeholderString}
                                 errorBorderColor="red.500"
                                 aria-label={intl.formatMessage({
@@ -218,7 +180,7 @@ export const CoordinateInput: FC<CoordinateInputProps> = (props) => {
                                         onCoordinateInput(
                                             intl,
                                             coordinateSearchInput,
-                                            slcProjection.value,
+                                            selectedProjection.value,
                                             mapProjCode,
                                             onSelect
                                         );
@@ -264,8 +226,8 @@ export const CoordinateInput: FC<CoordinateInputProps> = (props) => {
                         </InputGroup>
                         <InputRightAddon padding={"0px"} borderLeft={"0px"}>
                             <Select
-                                value={slcProjection}
-                                defaultValue={slcProjection}
+                                value={selectedProjection}
+                                defaultValue={selectedProjection}
                                 options={availableProjections}
                                 menuPlacement="auto"
                                 menuPortalTarget={portalElement.current}
@@ -346,7 +308,7 @@ export const CoordinateInput: FC<CoordinateInputProps> = (props) => {
                                 }}
                                 onChange={(e) => {
                                     if (e?.value !== undefined) {
-                                        setSlcProjection(e);
+                                        setSelectedProjection(e);
                                         onCoordinateInput(
                                             intl,
                                             coordinateSearchInput,
@@ -369,29 +331,109 @@ export const CoordinateInput: FC<CoordinateInputProps> = (props) => {
     );
 };
 
-function isInputInvalid(
+/**
+ * Returns the current text input and a callback to change it (used for interactive user input).
+ * The current text may also change if the input prop changes (controlled usage).
+ */
+function useInput(
+    inputProp: Coordinate | undefined,
+    mapProjCode: string,
+    selectedProjection: ProjectionItem
+): [string, (value: string) => void] {
+    const intl = useIntl();
+    const [coordinateSearchInput, setCoordinateSearchInput] = useState<string>(""); // coordinate input field
+    const inputFromOutside = useMemo(() => {
+        if (!inputProp || !mapProjCode) {
+            return "";
+        }
+        const transformed = transformCoordinates(inputProp, mapProjCode, selectedProjection.value);
+        return formatCoordinates(transformed, selectedProjection.precision, intl);
+    }, [inputProp, mapProjCode, selectedProjection, intl]);
+
+    useEffect(() => {
+        if (inputProp != undefined) {
+            setCoordinateSearchInput(inputFromOutside);
+        }
+    }, [inputProp, inputFromOutside]);
+    return [coordinateSearchInput, setCoordinateSearchInput];
+}
+
+/**
+ * Parses the projections defined by the user.
+ */
+function useProjectionItems(projections: ProjectionOption[]) {
+    return useMemo(() => {
+        const items: ProjectionItem[] = projections.map((ele) => {
+            return {
+                label: ele.label,
+                value: ele.value,
+                precision: ele.precision ?? DEFAULT_PRECISION
+                // TODO: Find available projection and store it, or filter the element (e.g. with flatmap or map + filter)
+            };
+        });
+        // filter for projections that are known
+        const availableProjections = items.filter((cs) => getProjection(cs.value) != null);
+        return availableProjections;
+    }, [projections]);
+}
+
+/**
+ * Returns the current placeholder string.
+ */
+function usePlaceholder(
+    placeholderProp: string | Coordinate,
+    mapProjectionCode: string,
+    selectedProjection: ProjectionItem
+) {
+    const intl = useIntl();
+    return useMemo(() => {
+        let placeholder: string;
+        if (typeof placeholderProp === "string") {
+            placeholder = placeholderProp;
+        } else if (!mapProjectionCode) {
+            placeholder = "";
+        } else {
+            const coords = transformCoordinates(
+                placeholderProp as Coordinate,
+                mapProjectionCode,
+                selectedProjection.value
+            );
+            placeholder = formatCoordinates(coords, selectedProjection.precision, intl);
+        }
+        return placeholder;
+    }, [placeholderProp, mapProjectionCode, selectedProjection, intl]);
+}
+
+type ValidationResult =
+    | "success"
+    | "tooltip.space"
+    | "tooltip.spaceOne"
+    | "tooltip.2coords"
+    | "tooltip.dividerDe"
+    | "tooltip.dividerEn"
+    | "tooltip.extent"
+    | "tooltip.projection";
+
+function validateInput(
     intl: PackageIntl,
     inputString: string,
-    projection: string,
-    setTooltipMessage?: (newId: string) => void
-) {
-    if (inputString == "") return false;
+    projection: string
+): ValidationResult {
+    if (inputString == "") return "success";
 
     if (!inputString.includes(" ")) {
-        if (setTooltipMessage) setTooltipMessage("tooltip.space");
-        return true;
+        return "tooltip.space";
     }
     if (inputString.indexOf(" ") != inputString.lastIndexOf(" ")) {
-        if (setTooltipMessage) setTooltipMessage("tooltip.spaceOne");
-        return true;
+        return "tooltip.spaceOne";
     }
 
     const coordsString = inputString.split(" ");
     if (coordsString.length != 2 || coordsString[0] == "" || coordsString[1] == "") {
-        if (setTooltipMessage) setTooltipMessage("tooltip.2coords");
-        return true;
+        return "tooltip.2coords";
     }
 
+    // TODO: NumberParser in core
     let thousandSeparator = "";
     if (intl.locale === "de") {
         thousandSeparator = ".";
@@ -399,8 +441,7 @@ function isInputInvalid(
         const inputStringWithoutThousandSeparator = inputString.replaceAll(thousandSeparator, "");
 
         if (!/^-?\d+(,\d+)? -?\d+(,\d+)?$/.test(inputStringWithoutThousandSeparator)) {
-            if (setTooltipMessage) setTooltipMessage("tooltip.dividerDe");
-            return true;
+            return "tooltip.dividerDe";
         }
     } else if (intl.locale === "en") {
         thousandSeparator = ",";
@@ -408,13 +449,11 @@ function isInputInvalid(
         const inputStringWithoutThousandSeparator = inputString.replaceAll(thousandSeparator, "");
 
         if (!/^-?\d+(.\d+)? -?\d+(.\d+)?$/.test(inputStringWithoutThousandSeparator)) {
-            if (setTooltipMessage) setTooltipMessage("tooltip.dividerEn");
-            return true;
+            return "tooltip.dividerEn";
         }
     }
 
     let coords = parseCoords(inputString, thousandSeparator);
-
     try {
         let chosenProjection = getProjection(projection);
         if (chosenProjection === null || chosenProjection.getExtent() === null) {
@@ -430,20 +469,20 @@ function isInputInvalid(
             chosenProjection!.getExtent()[2]! < coords[0]! &&
             chosenProjection!.getExtent()[3]! < coords[1]!
         ) {
-            if (setTooltipMessage) setTooltipMessage("tooltip.extent");
-            return true;
+            return "tooltip.extent";
         }
     } catch (e) {
-        if (setTooltipMessage) setTooltipMessage("tooltip.projection");
-        return true;
+        return "tooltip.projection";
     }
-    return false;
+    return "success";
 }
 
 function parseCoords(inputString: string, thousandSeparator: string) {
     const inputStringWithoutThousandSeparator = inputString.replaceAll(thousandSeparator, "");
     const coordsString = inputStringWithoutThousandSeparator.replaceAll(",", ".");
-    return [parseFloat(coordsString[0]!), parseFloat(coordsString[1]!)];
+
+    const splitCoords = coordsString.split(" ");
+    return [parseFloat(splitCoords[0]!), parseFloat(splitCoords[1]!)];
 }
 
 function onCoordinateInput(
@@ -456,7 +495,7 @@ function onCoordinateInput(
     if (
         projection == undefined ||
         coordinateString == "" ||
-        isInputInvalid(intl, coordinateString, projection)
+        validateInput(intl, coordinateString, projection) !== "success"
     )
         return;
     let inputStringWithoutHundredDivider = coordinateString;
@@ -496,12 +535,6 @@ function transformCoordinates(
     destination: string
 ): number[] {
     return transform(coordinates, source, destination);
-}
-
-/* Separate function for easier testing */
-export function useCoordinatesString(coordinates: number[] | undefined, precision: number): string {
-    const intl = useIntl();
-    return coordinates ? formatCoordinates(coordinates, precision, intl) : "";
 }
 
 /* formats the coordinates into a string with x withspace y */
