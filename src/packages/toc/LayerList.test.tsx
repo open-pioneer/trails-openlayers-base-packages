@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import { nextTick } from "@conterra/reactivity-core";
 import { SimpleLayer } from "@open-pioneer/map";
 import { setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
@@ -151,7 +152,7 @@ it("reacts to changes in the layer composition", async function () {
                 olLayer: new TileLayer({})
             })
         );
-        await waitTick();
+        await nextTick();
     });
 
     const itemsAfterChange = getCurrentItems(container);
@@ -187,7 +188,7 @@ it("displays the layer's current title", async () => {
     expect(getCurrentLabels(container)).toEqual(["Layer 1"]);
     await act(async () => {
         layer.setTitle("New title");
-        await waitTick();
+        await nextTick();
     });
     expect(getCurrentLabels(container)).toEqual(["New title"]);
 });
@@ -222,7 +223,7 @@ it("displays the layer's current visibility", async () => {
 
     await act(async () => {
         layer.setVisible(false);
-        await waitTick();
+        await nextTick();
     });
     expect(checkbox!.checked).toBe(false);
 });
@@ -398,7 +399,7 @@ it("reacts to changes in the layer description", async () => {
     screen.getByText("Description");
     await act(async () => {
         layer.setDescription("New description");
-        await waitTick();
+        await nextTick();
     });
     screen.getByText("New description");
 });
@@ -437,7 +438,7 @@ it("reacts to changes of the layer load state", async () => {
 
     await act(async () => {
         source.setState("error");
-        await waitTick();
+        await nextTick();
     });
 
     icons = container.querySelectorAll(".toc-layer-item-content-icon");
@@ -448,7 +449,7 @@ it("reacts to changes of the layer load state", async () => {
     // and back
     await act(async () => {
         source.setState("ready");
-        await waitTick();
+        await nextTick();
     });
 
     icons = container.querySelectorAll(".toc-layer-item-content-icon");
@@ -465,9 +466,4 @@ function getCurrentItems(container: HTMLElement) {
 /** Returns only the labels of the layer list's current items. */
 function getCurrentLabels(container: HTMLElement) {
     return getCurrentItems(container).map((item) => item.textContent);
-}
-
-/** Reactive updates have a slight delay by default. */
-function waitTick() {
-    return new Promise((resolve) => setTimeout(resolve, 4));
 }

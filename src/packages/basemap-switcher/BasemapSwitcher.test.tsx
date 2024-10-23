@@ -1,13 +1,14 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import { nextTick } from "@conterra/reactivity-core";
 import { BkgTopPlusOpen, SimpleLayer } from "@open-pioneer/map";
 import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { act } from "react";
 import userEvent from "@testing-library/user-event";
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
+import { act } from "react";
 import { describe, expect, it } from "vitest";
 import { BasemapSwitcher } from "./BasemapSwitcher";
 
@@ -195,7 +196,7 @@ it("should update when a new basemap is registered", async () => {
             olLayer: new TileLayer({})
         });
         map.layers.addLayer(layer);
-        await waitTick();
+        await nextTick();
     });
 
     options = getCurrentOptions(switcherSelect);
@@ -230,7 +231,7 @@ it("should update when a different basemap is activated from somewhere else", as
 
     await act(async () => {
         map.layers.activateBaseLayer("topplus-open");
-        await waitTick();
+        await nextTick();
     });
     expect(switcherSelect.textContent).toBe("TopPlus Open");
 });
@@ -428,7 +429,7 @@ it("should update the ui when a layer title changes", async () => {
     // change layer title
     await act(async () => {
         activeBaseLayer?.setTitle("New Layer Title");
-        await waitTick();
+        await nextTick();
     });
 
     options = getCurrentOptions(switcherSelect);
@@ -471,9 +472,4 @@ async function waitForBasemapSwitcher() {
         return { switcherDiv, switcherSelect };
     });
     return { switcherDiv, switcherSelect };
-}
-
-/** Reactive updates have a slight delay by default. */
-function waitTick() {
-    return new Promise((resolve) => setTimeout(resolve, 4));
 }

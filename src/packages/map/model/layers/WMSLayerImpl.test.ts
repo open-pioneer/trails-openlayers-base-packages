@@ -1,15 +1,16 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import { nextTick } from "@conterra/reactivity-core";
 import { HttpService } from "@open-pioneer/http";
 import ImageLayer from "ol/layer/Image";
+import { get as getProjection } from "ol/proj";
 import ImageSource from "ol/source/Image";
 import ImageWMS from "ol/source/ImageWMS";
-import { get as getProjection } from "ol/proj";
 import { Mock, afterEach, beforeEach, expect, it, vi } from "vitest";
+import { WMSLayerConfig } from "../../api";
 import { AbstractLayerBase } from "../AbstractLayerBase";
 import { MapModelImpl } from "../MapModelImpl";
 import { WMSLayerImpl } from "./WMSLayerImpl";
-import { WMSLayerConfig } from "../../api";
 
 const SERVICE_URL = "https://example.com/wms-service";
 
@@ -209,13 +210,13 @@ it("updates the layer's LAYERS param if a sublayer's visibility changes", async 
 
     layer.sublayers.getSublayers()[0]!.setVisible(true);
     vi.advanceTimersByTime(1000);
-    await waitTick();
+    await nextTick();
 
     expect(getLayersParam()).toEqual(["sublayer-1", "sublayer-2"]);
 
     layer.sublayers.getSublayers()[1]!.setVisible(false);
     vi.advanceTimersByTime(1000);
-    await waitTick();
+    await nextTick();
 
     expect(getLayersParam()).toEqual(["sublayer-1"]);
 });
@@ -345,12 +346,4 @@ function createLayer(options: WMSLayerConfig & { fetch?: Mock; attach?: boolean 
         mapModel,
         httpService
     };
-}
-
-/** Reactive updates have a slight delay by default. */
-async function waitTick() {
-    // TODO: More complex implementation because the test suite uses fake timers
-    vi.useRealTimers();
-    await new Promise((resolve) => setTimeout(resolve, 4));
-    vi.useFakeTimers();
 }
