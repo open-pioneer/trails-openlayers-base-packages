@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import { Box, useToken } from "@open-pioneer/chakra-integration";
 import { createLogger, isAbortError } from "@open-pioneer/core";
-import { MapModel, useMapModel } from "@open-pioneer/map";
+import { MapModel, MapModelProps, useMapModel } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps, useEvent } from "@open-pioneer/react-utils";
 import {
     ActionMeta,
@@ -72,12 +72,7 @@ export interface SearchSelectEvent {
 /**
  * Properties supported by the {@link Search} component.
  */
-export interface SearchProps extends CommonComponentProps {
-    /**
-     * The id of the map.
-     */
-    mapId: string;
-
+export interface SearchProps extends CommonComponentProps, MapModelProps {
     /**
      * Data sources to be searched on.
      */
@@ -110,9 +105,9 @@ export interface SearchProps extends CommonComponentProps {
  * A component that allows the user to search a given set of {@link SearchSource | SearchSources}.
  */
 export const Search: FC<SearchProps> = (props) => {
-    const { mapId, sources, searchTypingDelay, maxResultsPerGroup, onSelect, onClear } = props;
+    const { sources, searchTypingDelay, maxResultsPerGroup, onSelect, onClear } = props;
     const { containerProps } = useCommonComponentProps("search", props);
-    const { map } = useMapModel(mapId);
+    const { map } = useMapModel(props);
     const intl = useIntl();
     const controller = useController(sources, searchTypingDelay, maxResultsPerGroup, map);
     const { input, search, selectedOption, onInputChanged, onResultConfirmed } =
@@ -316,10 +311,14 @@ function useController(
     }, [map, sources]);
 
     useEffect(() => {
-        controller && (controller.searchTypingDelay = searchTypingDelay);
+        if (controller) {
+            controller.searchTypingDelay = searchTypingDelay;
+        }
     }, [controller, searchTypingDelay]);
     useEffect(() => {
-        controller && (controller.maxResultsPerSource = maxResultsPerGroup);
+        if (controller) {
+            controller.maxResultsPerSource = maxResultsPerGroup;
+        }
     }, [controller, maxResultsPerGroup]);
     return controller;
 }

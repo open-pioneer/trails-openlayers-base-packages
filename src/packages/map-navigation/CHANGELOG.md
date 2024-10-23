@@ -1,5 +1,55 @@
 # @open-pioneer/map-navigation
 
+## 0.7.0
+
+### Minor Changes
+
+-   440b165: Create new tool buttons that allow the user to navigate the history of map views (e.g. jump back to previous map extent):
+
+    ```jsx
+    <HistoryBackward /* ... */  />
+    <HistoryForward /* ... */ />
+    ```
+
+-   310800c: Switch from `peerDependencies` to normal `dependencies`. Peer dependencies have some usability problems when used at scale.
+
+### Patch Changes
+
+-   310800c: Update core packages version.
+-   483c416: Don't attempt to zoom past configured zoom limits (#356).
+    As a side effect of this change, clicks on the zoom in/out buttons are ignored during the brief animation period (currently 200ms).
+-   583f1d6: The `mapId` or `map` properties are now optional on individual components.
+    You can use the `DefaultMapProvider` to configure an implicit default value.
+
+    Note that configuring _neither_ a default _nor_ an explicit `map` or `mapId` will trigger a runtime error.
+
+-   583f1d6: All UI components in this project now accept the `mapId` (a `string`) _or_ the `map` (a `MapModel`) directly.
+-   a8b3449: Switch to a new versioning strategy.
+    From now on, packages released by this repository share a common version number.
+-   900eb11: Update dependencies.
+-   Updated dependencies [310800c]
+-   Updated dependencies [2502050]
+-   Updated dependencies [583f1d6]
+-   Updated dependencies [583f1d6]
+-   Updated dependencies [397d617]
+-   Updated dependencies [a8b3449]
+-   Updated dependencies [310800c]
+-   Updated dependencies [900eb11]
+-   Updated dependencies [583f1d6]
+-   Updated dependencies [397d617]
+    -   @open-pioneer/map-ui-components@0.7.0
+    -   @open-pioneer/map@0.7.0
+
+## 0.4.4
+
+### Patch Changes
+
+-   b152428: Update trails dependencies
+-   Updated dependencies [b152428]
+-   Updated dependencies [291ccb6]
+    -   @open-pioneer/map-ui-components@0.1.1
+    -   @open-pioneer/map@0.6.1
+
 ## 0.4.3
 
 ### Patch Changes

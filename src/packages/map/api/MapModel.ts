@@ -4,7 +4,7 @@ import type { EventSource, Resource } from "@open-pioneer/core";
 import type OlMap from "ol/Map";
 import type OlBaseLayer from "ol/layer/Base";
 import type { ExtentConfig } from "./MapConfig";
-import type { Layer, LayerBase } from "./layers";
+import type { AnyLayer, Layer } from "./layers";
 import type { LayerRetrievalOptions } from "./shared";
 import type { Geometry } from "ol/geom";
 import { BaseFeature } from "./BaseFeature";
@@ -193,7 +193,7 @@ export interface LayerCollection {
     /**
      * Returns the layer identified by the `id` or undefined, if no such layer exists.
      */
-    getLayerById(id: string): LayerBase | undefined;
+    getLayerById(id: string): AnyLayer | undefined;
 
     /**
      * Returns all layers known to this collection.

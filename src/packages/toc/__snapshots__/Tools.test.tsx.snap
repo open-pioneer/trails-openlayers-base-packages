@@ -64,7 +64,7 @@ exports[`Should successfully create a toc with default tool component 2`] = `
   data-theme="light"
   id="menu-list-:r2:"
   role="menu"
-  style="transform-origin: var(--popper-transform-origin); opacity: 0; visibility: hidden; transform: scale(0.8) translateZ(0);"
+  style="transform-origin: var(--popper-transform-origin); opacity: 0; visibility: hidden; transform: scale(0.8);"
   tabindex="-1"
 >
   <button

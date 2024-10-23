@@ -37,7 +37,7 @@ describe("starting update editing workflow", () => {
         const { map } = await renderMap();
         const { workflow } = await setupUpdateWorkflow(map);
         const { editingLayer } = getEditingLayerAndSource(map);
-        expect(editingLayer).not.toBeUndefined;
+        expect(editingLayer).not.toBeUndefined();
 
         workflow.stop();
     });

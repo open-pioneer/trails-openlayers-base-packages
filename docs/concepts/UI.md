@@ -61,7 +61,3 @@ return (
 ```
 
 More information: [React `forwardRef`](https://react.dev/reference/react/forwardRef)
-
-## TODO
-
--   add documentation for Chakra UI theming

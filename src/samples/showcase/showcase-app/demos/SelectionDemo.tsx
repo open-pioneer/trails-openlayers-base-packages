@@ -12,14 +12,13 @@ import {
 import {
     Selection,
     SelectionCompleteEvent,
-    VectorLayerSelectionSource
+    VectorLayerSelectionSource,
+    VectorLayerSelectionSourceFactory
 } from "@open-pioneer/selection";
-import { VectorSelectionSourceFactory } from "@open-pioneer/selection/services";
+import { Feature } from "ol";
 import VectorLayer from "ol/layer/Vector";
 import { ReactNode } from "react";
-import { MAP_ID } from "../MapConfigProviderImpl";
 import { Demo, DemoModel, SharedDemoOptions } from "./Demo";
-import { Feature } from "ol";
 
 interface ResultListState {
     /** Whether the result list is currently shown. */
@@ -63,7 +62,6 @@ class DemoModelImpl implements DemoModel {
         this.description = intl.formatMessage({ id: "demos.selectionResultList.description" });
         this.mainWidget = (
             <Selection
-                mapId={MAP_ID}
                 sources={[this.#selectionSource]}
                 onSelectionComplete={this.#onSelectionComplete}
             />
@@ -90,7 +88,6 @@ class DemoModelImpl implements DemoModel {
             <ResultList
                 key={currentState.key}
                 input={currentState.input}
-                mapId={MAP_ID}
                 onSelectionChange={this.#onResultListSelectionChange}
             />
         );
@@ -166,7 +163,7 @@ class DemoModelImpl implements DemoModel {
 
 function initSelectionSource(
     mapModel: MapModel,
-    vectorSelectionSourceFactory: VectorSelectionSourceFactory
+    vectorSelectionSourceFactory: VectorLayerSelectionSourceFactory
 ) {
     const opLayer = mapModel.layers.getLayerById("ogc_kitas") as SimpleLayer;
 

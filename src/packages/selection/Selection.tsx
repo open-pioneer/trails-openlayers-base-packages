@@ -11,7 +11,7 @@ import {
     chakra,
     useToken
 } from "@open-pioneer/chakra-integration";
-import { MapModel, useMapModel } from "@open-pioneer/map";
+import { MapModel, MapModelProps, useMapModel } from "@open-pioneer/map";
 import { NotificationService } from "@open-pioneer/notifier";
 import { CommonComponentProps, useCommonComponentProps, useEvent } from "@open-pioneer/react-utils";
 import { PackageIntl } from "@open-pioneer/runtime";
@@ -27,7 +27,7 @@ import {
 } from "chakra-react-select";
 import { Geometry } from "ol/geom";
 import { useIntl, useService } from "open-pioneer:react-hooks";
-import { FC, KeyboardEvent, useEffect, useMemo, useState } from "react";
+import { FC, KeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
 import { FiAlertTriangle } from "react-icons/fi";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { DragController } from "./DragController";
@@ -37,12 +37,7 @@ import { SelectionResult, SelectionSource, SelectionSourceStatusObject } from ".
 /**
  * Properties supported by the {@link Selection} component.
  */
-export interface SelectionProps extends CommonComponentProps {
-    /**
-     * The id of the map.
-     */
-    mapId: string;
-
+export interface SelectionProps extends CommonComponentProps, MapModelProps {
     /**
      * Array of selection sources available for spatial selection.
      */
@@ -101,22 +96,18 @@ const COMMON_SELECT_PROPS: SelectProps<any, any, any> = {
  */
 export const Selection: FC<SelectionProps> = (props) => {
     const intl = useIntl();
-    const { mapId, sources, onSelectionComplete, onSelectionSourceChanged } = props;
+    const { sources, onSelectionComplete, onSelectionSourceChanged } = props;
     const { containerProps } = useCommonComponentProps("selection", props);
     const defaultNotAvailableMessage = intl.formatMessage({ id: "sourceNotAvailable" });
 
-    const [currentSource, setCurrentSource] = useState<SelectionSource | undefined>(
-        () => sources[0]
+    const [currentSource, setCurrentSource] = useCurrentSelectionSource(
+        sources,
+        onSelectionSourceChanged
     );
+
     const currentSourceStatus = useSourceStatus(currentSource, defaultNotAvailableMessage);
 
-    useEffect(() => {
-        if (currentSource && !sources.includes(currentSource!)) {
-            setCurrentSource(undefined);
-        }
-    }, [sources, currentSource]);
-
-    const mapState = useMapModel(mapId);
+    const mapState = useMapModel(props);
     const { onExtentSelected } = useSelectionController(
         mapState.map,
         sources,
@@ -150,7 +141,6 @@ export const Selection: FC<SelectionProps> = (props) => {
 
     const onSourceOptionChanged = useEvent((newValue: SingleValue<SelectionOption>) => {
         setCurrentSource(newValue?.value);
-        onSelectionSourceChanged && onSelectionSourceChanged({ source: newValue?.value });
     });
 
     const keyDown = useEvent((event: KeyboardEvent<HTMLDivElement>) => {
@@ -234,6 +224,32 @@ function SourceSelectValue(props: SingleValueProps<SelectionOption>): JSX.Elemen
             {content}
         </chakraComponents.SingleValue>
     );
+}
+
+function useCurrentSelectionSource(
+    sources: SelectionSource[],
+    onSourceChanged: ((event: SelectionSourceChangedEvent) => void) | undefined
+): [SelectionSource | undefined, (source: SelectionSource | undefined) => void] {
+    const [currentSource, setCurrentSource] = useState<SelectionSource | undefined>(
+        () => sources[0]
+    );
+
+    // Reset to undefined if the current source is not in the list of sources
+    useEffect(() => {
+        if (currentSource && !sources.includes(currentSource)) {
+            setCurrentSource(undefined);
+        }
+    }, [sources, currentSource]);
+
+    // Track the current source and notify the parent component if it changes
+    const prevSelectedSource = useRef<SelectionSource | undefined>(undefined);
+    useEffect(() => {
+        if (currentSource !== prevSelectedSource.current) {
+            prevSelectedSource.current = currentSource;
+            onSourceChanged?.({ source: currentSource });
+        }
+    }, [currentSource, onSourceChanged]);
+    return [currentSource, setCurrentSource];
 }
 
 /**

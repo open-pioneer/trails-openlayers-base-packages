@@ -82,6 +82,10 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
         super.destroy();
     }
 
+    get type() {
+        return "wms" as const;
+    }
+
     get legend() {
         return undefined;
     }
@@ -235,6 +239,10 @@ class WMSSublayerImpl extends AbstractLayerBase implements WMSSublayer {
         this.#name = config.name;
         this.#visible = reactive(config.visible ?? true);
         this.#sublayers = new SublayersCollectionImpl(constructSublayers(config.sublayers));
+    }
+
+    get type() {
+        return "wms-sublayer" as const;
     }
 
     get name(): string | undefined {

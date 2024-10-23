@@ -1,15 +1,12 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { LayerRetrievalOptions, Sublayer as SublayerInterface, SublayersCollection } from "../api";
+import { LayerRetrievalOptions, SublayerBaseType, SublayersCollection } from "../api";
 import { AbstractLayerBase } from "./AbstractLayerBase";
 
 // NOTE: adding / removing sublayers currently not supported
-/* eslint-disable indent */
-export class SublayersCollectionImpl<Sublayer extends SublayerInterface & AbstractLayerBase>
-    implements SublayersCollection
+export class SublayersCollectionImpl<Sublayer extends SublayerBaseType & AbstractLayerBase>
+implements SublayersCollection<Sublayer>
 {
-    /* eslint-enable indent */
-
     #sublayers: Sublayer[];
 
     constructor(sublayers: Sublayer[]) {

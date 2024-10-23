@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Box, Flex, Tooltip, useToken } from "@open-pioneer/chakra-integration";
-import { Layer, MapModel, useMapModel } from "@open-pioneer/map";
+import { Layer, MapModel, useMapModel, MapModelProps } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps, useEvent } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import {
@@ -40,12 +40,7 @@ export interface SelectOption {
 /**
  * These are special properties for the BasemapSwitcher.
  */
-export interface BasemapSwitcherProps extends CommonComponentProps {
-    /**
-     * The id of the map.
-     */
-    mapId: string;
-
+export interface BasemapSwitcherProps extends CommonComponentProps, MapModelProps {
     /**
      * Additional css class name(s) that will be added to the BasemapSwitcher component.
      */
@@ -76,13 +71,14 @@ export interface BasemapSwitcherProps extends CommonComponentProps {
 export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
     const intl = useIntl();
     const {
-        mapId,
         allowSelectingEmptyBasemap = false,
         "aria-label": ariaLabel,
         "aria-labelledby": ariaLabelledBy
     } = props;
     const { containerProps } = useCommonComponentProps("basemap-switcher", props);
-    const { map } = useMapModel(mapId);
+    const emptyBasemapLabel = intl.formatMessage({ id: "emptyBasemapLabel" });
+
+    const { map } = useMapModel(props);
     const baseLayers = useBaseLayers(map);
     const activeBaseLayer = useReactiveSnapshot(() => map?.layers.getActiveBaseLayer(), [map]);
 
@@ -104,7 +100,6 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
         return { options, selectedLayer };
     }, [allowSelectingEmptyBasemap, baseLayers, activeBaseLayer]);
 
-    const emptyBasemapLabel = intl.formatMessage({ id: "emptyBasemapLabel" });
     const chakraStyles = useChakraStyles();
     const [isOpenSelect, setIsOpenSelect] = useState(false);
     const components = useMemo(() => {

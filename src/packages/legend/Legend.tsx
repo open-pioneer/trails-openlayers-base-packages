@@ -2,14 +2,20 @@
 // SPDX-License-Identifier: Apache-2.0
 import { WarningTwoIcon } from "@chakra-ui/icons";
 import { Box, Image, List, Text } from "@open-pioneer/chakra-integration";
-import { Layer, LayerBase, MapModel, Sublayer, useMapModel } from "@open-pioneer/map";
+import {
+    Layer,
+    AnyLayer,
+    MapModel,
+    Sublayer,
+    useMapModel,
+    MapModelProps,
+    isLayer
+} from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import classNames from "classnames";
 import { useIntl } from "open-pioneer:react-hooks";
 import { ComponentType, FC, ReactNode } from "react";
-
-type LegendLayer = Layer | Sublayer;
 
 /**
  * Properties of a legend item React component.
@@ -18,7 +24,7 @@ export interface LegendItemComponentProps {
     /**
      * Related layer of the legend.
      */
-    layer: LayerBase;
+    layer: AnyLayer;
 }
 
 /**
@@ -42,12 +48,7 @@ export interface LegendItemAttributes {
 /**
  * These are special properties for the Legend.
  */
-export interface LegendProps extends CommonComponentProps {
-    /**
-     * The id of the map.
-     */
-    mapId: string;
-
+export interface LegendProps extends CommonComponentProps, MapModelProps {
     /**
      * Specifies whether legend for active base layer is shown in the legend UI.
      * Defaults to `false`.
@@ -59,9 +60,9 @@ export interface LegendProps extends CommonComponentProps {
  * The `Legend` component can be used to display the legend of layers that are visible in the map.
  */
 export const Legend: FC<LegendProps> = (props) => {
-    const { mapId, showBaseLayers = false } = props;
+    const { showBaseLayers = false } = props;
     const { containerProps } = useCommonComponentProps("legend", props);
-    const { map } = useMapModel(mapId);
+    const { map } = useMapModel(props);
 
     return (
         <Box {...containerProps}>
@@ -93,7 +94,7 @@ function LegendList(props: { map: MapModel; showBaseLayers: boolean }): JSX.Elem
     );
 }
 
-function LegendItem(props: { layer: LegendLayer; showBaseLayers: boolean }): ReactNode {
+function LegendItem(props: { layer: AnyLayer; showBaseLayers: boolean }): ReactNode {
     const { layer, showBaseLayers } = props;
     const isVisible = useReactiveSnapshot(() => layer.visible, [layer]);
     const sublayers = useSublayers(layer);
@@ -102,8 +103,7 @@ function LegendItem(props: { layer: LegendLayer; showBaseLayers: boolean }): Rea
         return undefined;
     }
 
-    // '!("parentLayer" in layer)' checks if the layer is no sublayer
-    if (!showBaseLayers && isBaseLayer(layer)) {
+    if (!showBaseLayers && isLayer(layer) && isBaseLayer(layer)) {
         return undefined;
     }
 
@@ -125,7 +125,7 @@ function LegendItem(props: { layer: LegendLayer; showBaseLayers: boolean }): Rea
     );
 }
 
-function LegendContent(props: { layer: LegendLayer; showBaseLayers: boolean }) {
+function LegendContent(props: { layer: AnyLayer; showBaseLayers: boolean }) {
     const intl = useIntl();
 
     const { layer, showBaseLayers } = props;
@@ -155,7 +155,7 @@ function LegendContent(props: { layer: LegendLayer; showBaseLayers: boolean }) {
     ) : undefined;
 }
 
-function LegendImage(props: { imageUrl: string; layer: LegendLayer }) {
+function LegendImage(props: { imageUrl: string; layer: AnyLayer }) {
     const intl = useIntl();
 
     const { layer, imageUrl } = props;
@@ -196,7 +196,7 @@ function useLayers(map: MapModel): Layer[] {
  * Returns the sublayers of the given layer (or undefined, if the sublayer cannot have any).
  * Sublayers are returned in render order (topmost sublayer first).
  */
-function useSublayers(layer: LayerBase): Sublayer[] | undefined {
+function useSublayers(layer: AnyLayer): Sublayer[] | undefined {
     return useReactiveSnapshot(() => {
         const sublayers = layer.sublayers?.getSublayers({ sortByDisplayOrder: true });
         if (!sublayers) {
@@ -208,14 +208,14 @@ function useSublayers(layer: LayerBase): Sublayer[] | undefined {
     }, [layer]);
 }
 
-function useLegendAttributes(layer: LayerBase): LegendItemAttributes | undefined {
+function useLegendAttributes(layer: AnyLayer): LegendItemAttributes | undefined {
     return useReactiveSnapshot(
         () => layer.attributes.legend as LegendItemAttributes | undefined,
         [layer]
     );
 }
 
-function isBaseLayer(layer: LegendLayer) {
+function isBaseLayer(layer: AnyLayer) {
     return !("parentLayer" in layer) && layer.isBaseLayer;
 }
 

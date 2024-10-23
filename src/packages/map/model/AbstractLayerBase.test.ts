@@ -4,7 +4,6 @@
  * @vitest-environment node
  */
 import { afterEach, expect, it, vi } from "vitest";
-import { Sublayer } from "../api/layers/base";
 import { AbstractLayerBase, AbstractLayerBaseOptions } from "./AbstractLayerBase";
 import { MapModelImpl } from "./MapModelImpl";
 import { SublayersCollectionImpl } from "./SublayersCollectionImpl";
@@ -233,8 +232,9 @@ it("supports initial empty attribute object and empty attribute object after upd
     expect(changedAttributes).toBe(2);
 });
 
-class LayerImpl extends AbstractLayerBase {
-    private _sublayers: SublayersCollectionImpl<SublayerImpl> | undefined;
+abstract class SharedParent extends AbstractLayerBase {
+    // xxx lying to the compiler (not a real sublayer)
+    private _sublayers: SublayersCollectionImpl<any> | undefined;
 
     constructor(options: AbstractLayerBaseOptions & { sublayer?: SublayerImpl }) {
         super(options);
@@ -264,7 +264,13 @@ class LayerImpl extends AbstractLayerBase {
     }
 }
 
-class SublayerImpl extends LayerImpl implements Sublayer {
+class LayerImpl extends SharedParent {
+    type = "simple" as const;
+}
+
+class SublayerImpl extends SharedParent {
+    type = "wms-sublayer" as const;
+
     $destroyCalled = false;
 
     destroy(): void {

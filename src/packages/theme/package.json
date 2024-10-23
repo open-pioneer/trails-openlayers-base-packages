@@ -1,6 +1,6 @@
 {
     "name": "@open-pioneer/theme",
-    "version": "0.3.2",
+    "version": "0.7.0",
     "description": "This package provides a theme that uses the \"trails\" color scheme.",
     "license": "Apache-2.0",
     "main": "index.ts",
@@ -16,10 +16,10 @@
     "scripts": {
         "build": "build-pioneer-package"
     },
-    "peerDependencies": {
-        "@open-pioneer/chakra-integration": "^1.1.3",
-        "@open-pioneer/runtime": "^2.1.6",
-        "@open-pioneer/base-theme": "^0.3.2"
+    "dependencies": {
+        "@open-pioneer/chakra-integration": "catalog:",
+        "@open-pioneer/runtime": "catalog:",
+        "@open-pioneer/base-theme": "catalog:"
     },
     "devDependencies": {
         "openlayers-base-packages": "workspace:*"

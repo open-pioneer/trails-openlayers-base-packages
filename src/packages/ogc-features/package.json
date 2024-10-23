@@ -1,6 +1,6 @@
 {
     "name": "@open-pioneer/ogc-features",
-    "version": "0.4.3",
+    "version": "0.7.0",
     "description": "This package provides utilities to work with OGC API Features services.",
     "license": "Apache-2.0",
     "main": "index.ts",
@@ -16,21 +16,16 @@
     "scripts": {
         "build": "build-pioneer-package"
     },
-    "peerDependencies": {
-        "@open-pioneer/core": "^1.2.3",
-        "@open-pioneer/http": "^2.1.8",
-        "ol": "^9.2.4",
-        "uuid": "^10.0.0",
-        "@open-pioneer/search": "workspace:^"
-    },
-    "peerDependenciesMeta": {
-        "@open-pioneer/search": {
-            "optional": true
-        }
+    "dependencies": {
+        "@open-pioneer/core": "catalog:",
+        "@open-pioneer/http": "catalog:",
+        "ol": "catalog:",
+        "uuid": "catalog:"
     },
     "devDependencies": {
-        "@open-pioneer/test-utils": "^1.1.3",
+        "@open-pioneer/search": "workspace:^",
         "@open-pioneer/map-test-utils": "workspace:^",
+        "@open-pioneer/test-utils": "catalog:",
         "openlayers-base-packages": "workspace:*"
     },
     "publishConfig": {

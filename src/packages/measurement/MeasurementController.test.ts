@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-
-import { expect, it } from "vitest";
+import { expect, it, vi } from "vitest";
+import { MeasurementsChangeEvent } from "./Measurement";
 import { MeasurementController } from "./MeasurementController";
 import OlMap from "ol/Map";
 import { Interaction } from "ol/interaction";
@@ -160,6 +160,119 @@ it("uses the configured style for the active features", async () => {
     expect(getActiveStyle()).toEqual(style1);
     controller.setActiveFeatureStyle(style2);
     expect(getActiveStyle()).toEqual(style2);
+});
+
+it("should add predefined measurement to vector source", async () => {
+    const { controller } = setup();
+    const predefinedMeasurementGeom = new LineString([
+        [398657.97, 5755696.26],
+        [402570.98, 5757547.78]
+    ]);
+    controller.setPredefinedMeasurements([predefinedMeasurementGeom]);
+
+    const layer = controller.getVectorLayer();
+    const source = layer.getSource();
+    //source stores features => check the feature's geometry
+    const measurementFromSource = source
+        ?.getFeatures()
+        .find((feature) => feature.getGeometry() === predefinedMeasurementGeom);
+
+    expect(measurementFromSource?.getGeometry()).toEqual(predefinedMeasurementGeom);
+    expect(source?.getFeatures().length).toEqual(1);
+});
+
+it("should not add a predefined measurement to vector source a second time", async () => {
+    const { controller } = setup();
+    const predefinedMeasurementGeomA = new LineString([
+        [398657.97, 5755696.26],
+        [402570.98, 5757547.78]
+    ]);
+    const predefinedMeasurementGeomB = new LineString([
+        [398999.97, 5755696.26],
+        [402999.98, 5757547.78]
+    ]);
+    controller.setPredefinedMeasurements([predefinedMeasurementGeomA]);
+    controller.setPredefinedMeasurements([predefinedMeasurementGeomA, predefinedMeasurementGeomB]);
+
+    const layer = controller.getVectorLayer();
+    const source = layer.getSource();
+    //source stores features => check the feature's geometry
+    const matches = source
+        ?.getFeatures()
+        .filter((feature) => feature.getGeometry() === predefinedMeasurementGeomA);
+
+    expect(matches?.length).toEqual(1);
+    expect(source?.getFeatures().length).toEqual(2);
+});
+
+it("should remove previous predefine measurement from vector source", async () => {
+    const { controller } = setup();
+    const predefinedMeasurementGeomA = new LineString([
+        [398657.97, 5755696.26],
+        [402570.98, 5757547.78]
+    ]);
+    const predefinedMeasurementGeomB = new LineString([
+        [398999.97, 5755696.26],
+        [402999.98, 5757547.78]
+    ]);
+    controller.setPredefinedMeasurements([predefinedMeasurementGeomA, predefinedMeasurementGeomB]);
+    controller.setPredefinedMeasurements([predefinedMeasurementGeomA]); //predefinedMeasurementGeomB should not be on vector source anymore
+
+    const layer = controller.getVectorLayer();
+    const source = layer.getSource();
+    //source stores features => check the feature's geometry
+    const index = source
+        ?.getFeatures()
+        .findIndex((feature) => feature.getGeometry() === predefinedMeasurementGeomB); //-1 if not found
+
+    expect(index).toEqual(-1);
+    expect(source?.getFeatures().length).toEqual(1);
+});
+
+it("should raise add/remove events if predefined measurements are added/deleted", async () => {
+    const { controller } = setup();
+    const predefinedMeasurementGeom = new LineString([
+        [398657.97, 5755696.26],
+        [402570.98, 5757547.78]
+    ]);
+
+    const handlerFn = vi.fn();
+    controller.setMeasurementSourceChangedHandler(handlerFn);
+    controller.setPredefinedMeasurements([predefinedMeasurementGeom]);
+    controller.setPredefinedMeasurements([]);
+
+    const events = handlerFn.mock.calls.map(([event]) => event as MeasurementsChangeEvent);
+    const kinds = events.map((e) => e.kind);
+    expect(kinds).toEqual(["add-measurement", "remove-measurement"]);
+    expect(events[0]?.geometry).toBe(predefinedMeasurementGeom);
+    expect(events[1]?.geometry).toBe(predefinedMeasurementGeom);
+});
+
+it("should raise add/remove events if user adds/clears measurements", async () => {
+    const { olMap, controller } = setup();
+    const layer = controller.getVectorLayer();
+    controller.startMeasurement("distance");
+
+    const handlerFn = vi.fn();
+    controller.setMeasurementSourceChangedHandler(handlerFn);
+
+    doDraw(olMap, layer, [
+        [851873, 6788406],
+        [851874, 6788407]
+    ]);
+    controller.clearMeasurements();
+
+    const events = handlerFn.mock.calls.map(([event]) => event as MeasurementsChangeEvent);
+    const kinds = events.map((e) => e.kind);
+    expect(kinds).toEqual(["add-measurement", "remove-measurement"]);
+    expect(events[0]?.geometry).toBeInstanceOf(LineString);
+});
+
+it("should add name property to measurement layer", async () => {
+    const { controller } = setup();
+    const layer = controller.getVectorLayer();
+
+    expect(layer.getProperties()["name"]).toBe("measurement-layer");
 });
 
 /**

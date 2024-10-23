@@ -10,7 +10,7 @@ import {
     reactiveMap,
     ReadonlyReactive
 } from "@conterra/reactivity-core";
-import { LayerBase, LayerBaseEvents, Sublayer } from "../api";
+import { AnyLayerBaseType, AnyLayerTypes, LayerBaseEvents, Sublayer } from "../api";
 import { MapModelImpl } from "./MapModelImpl";
 import { SublayersCollectionImpl } from "./SublayersCollectionImpl";
 
@@ -29,7 +29,7 @@ export interface AbstractLayerBaseOptions {
  */
 export abstract class AbstractLayerBase<AdditionalEvents = {}>
     extends EventEmitter<LayerBaseEvents & AdditionalEvents>
-    implements LayerBase
+    implements AnyLayerBaseType
 {
     #map: MapModelImpl | undefined;
 
@@ -81,6 +81,8 @@ export abstract class AbstractLayerBase<AdditionalEvents = {}>
     get attributes(): Record<string | symbol, unknown> {
         return this.#attributes.value;
     }
+
+    abstract get type(): AnyLayerTypes;
 
     abstract get visible(): boolean;
 

@@ -19,14 +19,12 @@ import {
     Text,
     Tooltip
 } from "@open-pioneer/chakra-integration";
-import { Layer, LayerBase, MapModel, Sublayer } from "@open-pioneer/map";
+import { Layer, AnyLayer, MapModel, Sublayer } from "@open-pioneer/map";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { PackageIntl } from "@open-pioneer/runtime";
 import classNames from "classnames";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FiAlertTriangle, FiMoreVertical } from "react-icons/fi";
-
-type TocLayer = Layer | Sublayer;
 
 /**
  * Lists the (top level) operational layers in the map.
@@ -50,7 +48,7 @@ export function LayerList(props: { map: MapModel; "aria-label"?: string }): JSX.
     });
 }
 
-function createList(layers: TocLayer[], intl: PackageIntl, listProps: ListProps) {
+function createList(layers: AnyLayer[], intl: PackageIntl, listProps: ListProps) {
     const items = layers.map((layer) => <LayerItem key={layer.id} layer={layer} intl={intl} />);
     return (
         <List
@@ -71,7 +69,7 @@ function createList(layers: TocLayer[], intl: PackageIntl, listProps: ListProps)
  *
  * The item may have further nested list items if there are sublayers present.
  */
-function LayerItem(props: { layer: TocLayer; intl: PackageIntl }): JSX.Element {
+function LayerItem(props: { layer: AnyLayer; intl: PackageIntl }): JSX.Element {
     const { layer, intl } = props;
     const { title, description, isVisible } = useReactiveSnapshot(() => {
         return {
@@ -146,7 +144,7 @@ function LayerItem(props: { layer: TocLayer; intl: PackageIntl }): JSX.Element {
 }
 
 function LayerItemDescriptor(props: {
-    layer: TocLayer;
+    layer: AnyLayer;
     title: string;
     description: string;
     intl: PackageIntl;
@@ -194,7 +192,7 @@ function useLayers(map: MapModel): Layer[] {
  * Returns the sublayers of the given layer (or undefined, if the sublayer cannot have any).
  * Sublayers are returned in render order (topmost sublayer first).
  */
-function useSublayers(layer: LayerBase): Sublayer[] | undefined {
+function useSublayers(layer: AnyLayer): Sublayer[] | undefined {
     return useReactiveSnapshot(() => {
         const sublayers = layer.sublayers?.getSublayers({ sortByDisplayOrder: true });
         if (!sublayers) {
@@ -207,7 +205,7 @@ function useSublayers(layer: LayerBase): Sublayer[] | undefined {
 }
 
 /** Returns the layers current state. */
-function useLoadState(layer: TocLayer): string {
+function useLoadState(layer: AnyLayer): string {
     return useReactiveSnapshot(() => {
         // for sublayers, use the state of the parent
         const target = "parentLayer" in layer ? layer.parentLayer : layer;

@@ -1,6 +1,6 @@
 {
     "name": "@open-pioneer/map",
-    "version": "0.6.0",
+    "version": "0.7.0",
     "description": "This package integrates OpenLayers maps into an open pioneer trails application.",
     "license": "Apache-2.0",
     "main": "index.ts",
@@ -16,31 +16,29 @@
     "scripts": {
         "build": "build-pioneer-package"
     },
-    "peerDependencies": {
-        "@conterra/reactivity-core": "^0.4.0",
-        "@open-pioneer/chakra-integration": "^1.1.3",
-        "@open-pioneer/core": "^1.2.3",
-        "@open-pioneer/http": "^2.1.8",
-        "@open-pioneer/react-utils": "^1.0.0",
-        "@open-pioneer/runtime": "^2.1.6",
-        "@types/proj4": "^2.5.2",
-        "ol": "^9.2.4",
-        "proj4": "^2.9.0",
-        "react": "^18.3.1",
-        "react-dom": "^18.3.1",
-        "react-use": "^17.5.1"
+    "dependencies": {
+        "@open-pioneer/chakra-integration": "catalog:",
+        "@open-pioneer/core": "catalog:",
+        "@open-pioneer/http": "catalog:",
+        "@open-pioneer/react-utils": "catalog:",
+        "@open-pioneer/runtime": "catalog:",
+        "@types/proj4": "catalog:",
+        "ol": "catalog:",
+        "proj4": "catalog:",
+        "react": "catalog:",
+        "react-dom": "catalog:",
+        "react-use": "catalog:",
+        "uuid": "catalog:",
+        "@conterra/reactivity-core": "catalog:"
     },
     "devDependencies": {
         "@open-pioneer/map-test-utils": "workspace:^",
-        "@types/jsdom": "^21.1.7",
-        "@types/uuid": "^10.0.0",
+        "@types/jsdom": "catalog:",
+        "@types/uuid": "catalog:",
         "openlayers-base-packages": "workspace:*"
     },
     "publishConfig": {
         "directory": "dist",
         "linkDirectory": false
-    },
-    "dependencies": {
-        "uuid": "^10.0.0"
     }
 }
