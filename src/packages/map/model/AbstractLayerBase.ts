@@ -33,7 +33,7 @@ export abstract class AbstractLayerBase<AdditionalEvents = {}>
 {
     #map: MapModelImpl | undefined;
 
-    #id: Reactive<string>;
+    #id: string;
     #title: Reactive<string>;
     #description: Reactive<string>;
     #attributesMap = reactiveMap<string | symbol, unknown>();
@@ -42,7 +42,7 @@ export abstract class AbstractLayerBase<AdditionalEvents = {}>
 
     constructor(config: AbstractLayerBaseOptions) {
         super();
-        this.#id = reactive(config.id ?? uuid4v());
+        this.#id = config.id ?? uuid4v();
         this.#attributes = computed(() => {
             return Object.fromEntries(this.#attributesMap.entries());
         });
@@ -67,7 +67,7 @@ export abstract class AbstractLayerBase<AdditionalEvents = {}>
     }
 
     get id(): string {
-        return this.#id.value;
+        return this.#id;
     }
 
     get title(): string {
