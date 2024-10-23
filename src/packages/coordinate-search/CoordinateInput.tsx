@@ -392,7 +392,7 @@ function isInputInvalid(
 
         const inputStringWithoutThousandSeparator = inputString.replaceAll(thousandSeparator, "");
 
-        if (!/^\d+(,\d+)? \d+(,\d+)?$/.test(inputStringWithoutThousandSeparator)) {
+        if (!/^-?\d+(,\d+)? -?\d+(,\d+)?$/.test(inputStringWithoutThousandSeparator)) {
             if (setTooltipMessage) setTooltipMessage("tooltip.dividerDe");
             return true;
         }
@@ -401,7 +401,7 @@ function isInputInvalid(
 
         const inputStringWithoutThousandSeparator = inputString.replaceAll(thousandSeparator, "");
 
-        if (!/^\d+(.\d+)? \d+(.\d+)?$/.test(inputStringWithoutThousandSeparator)) {
+        if (!/^-?\d+(.\d+)? -?\d+(.\d+)?$/.test(inputStringWithoutThousandSeparator)) {
             if (setTooltipMessage) setTooltipMessage("tooltip.dividerEn");
             return true;
         }
