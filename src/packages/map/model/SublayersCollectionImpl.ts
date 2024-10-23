@@ -4,8 +4,9 @@ import { LayerRetrievalOptions, SublayerBaseType, SublayersCollection } from "..
 import { AbstractLayerBase } from "./AbstractLayerBase";
 
 // NOTE: adding / removing sublayers currently not supported
+/* eslint-disable indent */
 export class SublayersCollectionImpl<Sublayer extends SublayerBaseType & AbstractLayerBase>
-implements SublayersCollection<Sublayer>
+    implements SublayersCollection<Sublayer>
 {
     #sublayers: Sublayer[];
 
