@@ -8,13 +8,14 @@ import {
     InputGroup,
     InputRightAddon,
     InputRightElement,
+    Portal,
     Tooltip
 } from "@open-pioneer/chakra-integration";
 import { MapModelProps, useMapModel, useProjection } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps, useEvent } from "@open-pioneer/react-utils";
 import { get as getProjection, transform } from "ol/proj";
 import { useIntl } from "open-pioneer:react-hooks";
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import { Select } from "chakra-react-select";
 import { Coordinate } from "ol/coordinate";
 import { CloseIcon, CopyIcon } from "@chakra-ui/icons";
@@ -38,7 +39,7 @@ export interface ProjectionOption {
     value: string;
 
     /**
-     * The number of decimal places.
+     * The number of displayed decimal places.
      */
     precision?: number;
 }
@@ -46,9 +47,7 @@ export interface ProjectionOption {
 /**
  * dropdown items of projection selection, must have a specified precision
  */
-interface ProjectionItem extends Omit<ProjectionOption, "precision"> {
-    precision: number;
-}
+type ProjectionItem = Required<ProjectionOption>;
 
 /**
  * Event type emitted when the user enters new coordinates or projection is changed by the user.
@@ -62,7 +61,7 @@ export interface CoordsInputEvent {
 }
 
 /**
- * These are special properties for the CoordinateSearch.
+ * Props for the {@link CoordinateInput} component.
  */
 export interface CoordinateInputProps extends CommonComponentProps, MapModelProps {
     /**
@@ -184,8 +183,13 @@ export const CoordinateInput: FC<CoordinateInputProps> = (props) => {
         }
     }, [input, inputFromOutside, intl, mapProjCode, onSelect, slcProjection]);
 
+    const portalElement = useRef<HTMLDivElement>(null);
+
     return (
         <Box {...containerProps}>
+            <Portal>
+                <div ref={portalElement} />
+            </Portal>
             <Flex flexDirection={"row"} flexDir={"row"}>
                 <Tooltip
                     label={intl.formatMessage({ id: tooltipMessage })}
@@ -264,6 +268,7 @@ export const CoordinateInput: FC<CoordinateInputProps> = (props) => {
                                 defaultValue={slcProjection}
                                 options={availableProjections}
                                 menuPlacement="auto"
+                                menuPortalTarget={portalElement.current}
                                 aria-label={intl.formatMessage({
                                     id: "coordinateSearch.ariaLabel"
                                 })}
@@ -294,7 +299,8 @@ export const CoordinateInput: FC<CoordinateInputProps> = (props) => {
                                     }),
                                     valueContainer: (base) => ({
                                         ...base,
-                                        paddingEnd: 0
+                                        paddingEnd: 0,
+                                        cursor: "pointer"
                                     }),
                                     dropdownIndicator: (base, { selectProps: { menuIsOpen } }) => ({
                                         ...base,

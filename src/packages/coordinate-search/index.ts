@@ -9,5 +9,6 @@ export {
 export {
     CoordinateInput,
     type CoordinateInputProps,
-    type CoordsInputEvent
+    type CoordsInputEvent,
+    type ProjectionOption
 } from "./CoordinateInput";

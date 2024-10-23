@@ -7,27 +7,7 @@ import { Coordinate } from "ol/coordinate";
 import { EventsKey } from "ol/events";
 import { unByKey } from "ol/Observable";
 import OlMap from "ol/Map";
-import { CoordinateInput, CoordsInputEvent } from "./CoordinateInput";
-
-/**
- * dropdown items of projection selection with an optional coordinate precision
- */
-export interface ProjectionOption {
-    /**
-     * Label to show
-     */
-    label: string;
-
-    /**
-     * Returns all configured base layers.
-     */
-    value: string;
-
-    /**
-     * Returns all configured base layers.
-     */
-    precision?: number;
-}
+import { CoordinateInput, CoordsInputEvent, ProjectionOption } from "./CoordinateInput";
 
 /**
  * Event type emitted when the user enters new coordinates or projection is changed by the user.
@@ -41,7 +21,7 @@ export interface CoordsSelectEvent {
 }
 
 /**
- * These are special properties for the CoordinateSearch.
+ * Properties for the {@link CoordinateSearch}.
  */
 export interface CoordinateSearchProps extends CommonComponentProps, MapModelProps {
     /**
@@ -65,22 +45,7 @@ export interface CoordinateSearchProps extends CommonComponentProps, MapModelPro
  * The `CoordinateSearch`component can be used in an app to search for entered coordinates in a selected projection
  */
 export const CoordinateSearch: FC<CoordinateSearchProps> = (props) => {
-    const {
-        onSelect,
-        onClear,
-        projections = [
-            {
-                label: "WGS 84",
-                value: "EPSG:4326",
-                precision: 3
-            },
-            {
-                label: "Web Mercator",
-                value: "EPSG:3857",
-                precision: 2
-            }
-        ]
-    } = props;
+    const { onSelect, onClear, projections } = props;
     const { containerProps } = useCommonComponentProps("coordinate-search", props);
     const { map } = useMapModel(props);
     const olMap = map?.olMap;
@@ -97,12 +62,9 @@ export const CoordinateSearch: FC<CoordinateSearchProps> = (props) => {
                 }
 
                 olMap?.getView().setCenter(event.coords);
-
-                if (onSelect) {
-                    onSelect(event);
-                }
+                onSelect?.(event);
             }}
-            onClear={() => onClear}
+            onClear={onClear}
             placeholder={coordinates ? coordinates : ""}
             projections={projections}
         />
