@@ -1,5 +1,13 @@
 # @open-pioneer/map-test-utils
 
+## 0.8.0
+
+### Patch Changes
+
+-   224102d: Use reactive map model API to watch for changes of initialExtent.
+-   Updated dependencies [e7978a8]
+    -   @open-pioneer/map@0.8.0
+
 ## 0.7.0
 
 ### Minor Changes

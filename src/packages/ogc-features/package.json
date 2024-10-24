@@ -1,6 +1,6 @@
 {
     "name": "@open-pioneer/ogc-features",
-    "version": "0.7.0",
+    "version": "0.8.0",
     "description": "This package provides utilities to work with OGC API Features services.",
     "license": "Apache-2.0",
     "main": "index.ts",

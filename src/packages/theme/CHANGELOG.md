@@ -1,5 +1,7 @@
 # @open-pioneer/theme
 
+## 0.8.0
+
 ## 0.7.0
 
 ### Minor Changes

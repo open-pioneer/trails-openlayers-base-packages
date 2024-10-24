@@ -1,7 +1,7 @@
 {
     "name": "@open-pioneer/map-ui-components",
     "description": "Contains ui components that can used together with the map",
-    "version": "0.7.0",
+    "version": "0.8.0",
     "license": "Apache-2.0",
     "main": "index.ts",
     "repository": {
