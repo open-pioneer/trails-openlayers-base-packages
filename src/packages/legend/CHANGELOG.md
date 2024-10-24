@@ -1,5 +1,13 @@
 # @open-pioneer/legend
 
+## 0.8.0
+
+### Patch Changes
+
+-   e7978a8: Use reactive map model APIs to access the current layers and their attributes.
+-   Updated dependencies [e7978a8]
+    -   @open-pioneer/map@0.8.0
+
 ## 0.7.0
 
 ### Minor Changes

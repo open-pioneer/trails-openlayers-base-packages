@@ -1,5 +1,18 @@
 # @open-pioneer/editing
 
+## 0.8.0
+
+### Minor Changes
+
+-   e7978a8: Removed EditingWorkflowEvent; the state of the EditingWorkflow is now reactive and should be used instead.
+
+### Patch Changes
+
+-   e7978a8: Use reactive map model APIs to access the current map container element.
+-   e7978a8: Stop draw interactions and remove tooltips before saving.
+-   Updated dependencies [e7978a8]
+    -   @open-pioneer/map@0.8.0
+
 ## 0.7.0
 
 ### Minor Changes
