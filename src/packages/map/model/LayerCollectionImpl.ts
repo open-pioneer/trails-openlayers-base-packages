@@ -1,15 +1,9 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { EventEmitter, createLogger } from "@open-pioneer/core";
+import { batch, reactive, reactiveSet } from "@conterra/reactivity-core";
+import { createLogger } from "@open-pioneer/core";
 import OlBaseLayer from "ol/layer/Base";
-import {
-    LayerCollection,
-    LayerCollectionEvents,
-    Layer,
-    LayerRetrievalOptions,
-    AnyLayer,
-    Sublayer
-} from "../api";
+import { Layer, LayerCollection, LayerRetrievalOptions, AnyLayer, Sublayer } from "../api";
 import { AbstractLayer } from "./AbstractLayer";
 import { AbstractLayerBase } from "./AbstractLayerBase";
 import { MapModelImpl } from "./MapModelImpl";
@@ -30,14 +24,11 @@ type LayerBaseType = (AbstractLayerBase & Layer) | (AbstractLayerBase & Sublayer
  */
 export const TOPMOST_LAYER_Z = 9999999;
 
-export class LayerCollectionImpl
-    extends EventEmitter<LayerCollectionEvents>
-    implements LayerCollection
-{
+export class LayerCollectionImpl implements LayerCollection {
     #map: MapModelImpl;
 
     /** Top level layers (base layers, operational layers). No sublayers. */
-    #topLevelLayers = new Set<LayerType>();
+    #topLevelLayers = reactiveSet<LayerType>();
 
     /** Index of _all_ layer instances, including sublayers. */
     #layersById = new Map<string, LayerBaseType>();
@@ -46,13 +37,12 @@ export class LayerCollectionImpl
     #layersByOlLayer: WeakMap<OlBaseLayer, LayerType> = new WeakMap();
 
     /** Currently active base layer. */
-    #activeBaseLayer: LayerType | undefined;
+    #activeBaseLayer = reactive<LayerType>();
 
     /** next z-index for operational layer. currently just auto-increments. */
     #nextIndex = OPERATION_LAYER_INITIAL_Z;
 
     constructor(map: MapModelImpl) {
-        super();
         this.#map = map;
     }
 
@@ -63,7 +53,7 @@ export class LayerCollectionImpl
         }
         this.#topLevelLayers.clear();
         this.#layersById.clear();
-        this.#activeBaseLayer = undefined;
+        this.#activeBaseLayer.value = undefined;
     }
 
     addLayer(layer: Layer): void {
@@ -78,7 +68,7 @@ export class LayerCollectionImpl
     }
 
     getActiveBaseLayer(): Layer | undefined {
-        return this.#activeBaseLayer;
+        return this.#activeBaseLayer.value;
     }
 
     activateBaseLayer(id: string | undefined): boolean {
@@ -99,10 +89,7 @@ export class LayerCollectionImpl
             }
         }
 
-        if (newBaseLayer !== this.#activeBaseLayer) {
-            this.#updateBaseLayer(newBaseLayer);
-            this.emit("changed");
-        }
+        this.#updateBaseLayer(newBaseLayer);
         return true;
     }
 
@@ -145,7 +132,7 @@ export class LayerCollectionImpl
         const olLayer = model.olLayer;
         if (model.isBaseLayer) {
             olLayer.setZIndex(BASE_LAYER_Z);
-            if (!this.#activeBaseLayer && model.visible) {
+            if (!this.#activeBaseLayer.value && model.visible) {
                 this.#updateBaseLayer(model);
             } else {
                 model.__setVisible(false);
@@ -157,7 +144,6 @@ export class LayerCollectionImpl
 
         this.#topLevelLayers.add(model);
         this.#map.olMap.addLayer(olLayer);
-        this.emit("changed");
     }
 
     /**
@@ -182,7 +168,7 @@ export class LayerCollectionImpl
         this.#map.olMap.removeLayer(model.olLayer);
         this.#topLevelLayers.delete(model);
         this.#unIndexLayer(model);
-        if (this.#activeBaseLayer === model) {
+        if (this.#activeBaseLayer.value === model) {
             const newBaselayer = this.getBaseLayers()[0];
             if (newBaselayer) {
                 checkLayerInstance(newBaselayer);
@@ -190,11 +176,10 @@ export class LayerCollectionImpl
             this.#updateBaseLayer(newBaselayer);
         }
         model.destroy();
-        this.emit("changed");
     }
 
     #updateBaseLayer(model: LayerType | undefined) {
-        if (this.#activeBaseLayer === model) {
+        if (this.#activeBaseLayer.value === model) {
             return;
         }
 
@@ -204,14 +189,15 @@ export class LayerCollectionImpl
             };
 
             LOG.debug(
-                `Switching active base layer from ${getId(this.#activeBaseLayer)} to ${getId(
-                    model
-                )}`
+                `Switching active base layer from ${getId(this.#activeBaseLayer.value)} to ${getId(model)}`
             );
         }
-        this.#activeBaseLayer?.__setVisible(false);
-        this.#activeBaseLayer = model;
-        this.#activeBaseLayer?.__setVisible(true);
+
+        batch(() => {
+            this.#activeBaseLayer.value?.__setVisible(false);
+            this.#activeBaseLayer.value = model;
+            model?.__setVisible(true);
+        });
     }
 
     /**

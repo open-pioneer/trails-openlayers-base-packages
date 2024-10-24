@@ -21,7 +21,8 @@
         "@open-pioneer/http": "catalog:",
         "@open-pioneer/runtime": "catalog:",
         "@open-pioneer/map": "workspace:^",
-        "ol": "catalog:"
+        "ol": "catalog:",
+        "@conterra/reactivity-core": "catalog:"
     },
     "devDependencies": {
         "@open-pioneer/map-test-utils": "workspace:^",

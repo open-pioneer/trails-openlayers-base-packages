@@ -24,7 +24,8 @@
         "@open-pioneer/runtime": "catalog:",
         "classnames": "catalog:",
         "ol": "catalog:",
-        "react": "catalog:"
+        "react": "catalog:",
+        "@open-pioneer/reactivity": "catalog:"
     },
     "devDependencies": {
         "@open-pioneer/map-test-utils": "workspace:^",

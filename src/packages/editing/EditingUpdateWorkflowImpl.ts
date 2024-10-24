@@ -1,36 +1,30 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { EventEmitter, ManualPromise, createManualPromise } from "@open-pioneer/core";
+import { Reactive, effect, reactive } from "@conterra/reactivity-core";
+import { ManualPromise, Resource, createManualPromise } from "@open-pioneer/core";
+import { HttpService } from "@open-pioneer/http";
 import { MapModel, TOPMOST_LAYER_Z } from "@open-pioneer/map";
+import { PackageIntl } from "@open-pioneer/runtime";
+import { Collection } from "ol";
+import { EventsKey } from "ol/events";
+import Feature from "ol/Feature";
+import {
+    default as GeoJSON,
+    default as GeoJSONGeometry,
+    default as GeoJSONGeometryCollection
+} from "ol/format/GeoJSON";
 import { Modify } from "ol/interaction";
 import VectorLayer from "ol/layer/Vector";
-import VectorSource from "ol/source/Vector";
-import { HttpService } from "@open-pioneer/http";
-import { FlatStyle } from "ol/style/flat";
-import Feature from "ol/Feature";
-import GeoJSON from "ol/format/GeoJSON";
-import GeoJSONGeometry from "ol/format/GeoJSON";
-import GeoJSONGeometryCollection from "ol/format/GeoJSON";
 import OlMap from "ol/Map";
-import { Resource } from "@open-pioneer/core";
 import { unByKey } from "ol/Observable";
-import { EventsKey } from "ol/events";
-import {
-    EditingWorkflowEvents,
-    EditingWorkflowState,
-    EditingWorkflow,
-    EditingWorkflowProps
-} from "./api";
-import { Collection } from "ol";
-import { createStyles } from "./style-utils";
-import { PackageIntl } from "@open-pioneer/runtime";
+import VectorSource from "ol/source/Vector";
+import { FlatStyle } from "ol/style/flat";
+import { EditingWorkflow, EditingWorkflowProps, EditingWorkflowState } from "./api";
 import { saveUpdatedFeature } from "./SaveFeaturesHandler";
+import { createStyles } from "./style-utils";
 import { Tooltip, createTooltip } from "./Tooltip";
 
-export class EditingUpdateWorkflowImpl
-    extends EventEmitter<EditingWorkflowEvents>
-    implements EditingWorkflow
-{
+export class EditingUpdateWorkflowImpl implements EditingWorkflow {
     #waiter: ManualPromise<Record<string, string> | undefined> | undefined;
 
     private _httpService: HttpService;
@@ -39,7 +33,7 @@ export class EditingUpdateWorkflowImpl
     private _map: MapModel;
     private _polygonStyle: FlatStyle;
     private _vertexStyle: FlatStyle;
-    private _state: EditingWorkflowState;
+    private _state: Reactive<EditingWorkflowState>;
     private _editLayerURL: URL;
     private _featureId: string | undefined;
 
@@ -49,7 +43,6 @@ export class EditingUpdateWorkflowImpl
     private _editingLayer: VectorLayer<Feature>;
     private _modifyInteraction: Modify;
     private _olMap: OlMap;
-    private _mapContainer: HTMLElement | undefined;
     private _tooltip: Tooltip;
     private _enterHandler: (e: KeyboardEvent) => void;
     private _escapeHandler: (e: KeyboardEvent) => void;
@@ -60,7 +53,6 @@ export class EditingUpdateWorkflowImpl
     private _mapListener: Array<Resource>;
 
     constructor(options: { feature: Feature } & EditingWorkflowProps) {
-        super();
         this._httpService = options.httpService;
         this._intl = options.intl;
 
@@ -69,7 +61,7 @@ export class EditingUpdateWorkflowImpl
 
         this._map = options.map;
         this._olMap = options.map.olMap;
-        this._state = "active:initialized";
+        this._state = reactive("active:initialized");
         this._editLayerURL = options.ogcApiFeatureLayerUrl;
 
         // Save copy of initial state for reset feature
@@ -137,12 +129,11 @@ export class EditingUpdateWorkflowImpl
     }
 
     getState() {
-        return this._state;
+        return this._state.value;
     }
 
     private _setState(state: EditingWorkflowState) {
-        this._state = state;
-        this.emit(state);
+        this._state.value = state;
     }
 
     private _save(feature: Feature) {
@@ -175,6 +166,9 @@ export class EditingUpdateWorkflowImpl
                 decimals: 10
             });
 
+        this._olMap.removeInteraction(this._modifyInteraction);
+        this._tooltip.destroy();
+
         saveUpdatedFeature(
             this._httpService,
             layerUrl,
@@ -206,11 +200,19 @@ export class EditingUpdateWorkflowImpl
         }
 
         // Add EventListener on focused map to abort actual interaction via `Escape`
-        this._mapContainer = this._olMap.getTargetElement() ?? undefined;
-        if (this._mapContainer) {
-            this._mapContainer.addEventListener("keydown", this._enterHandler, false);
-            this._mapContainer.addEventListener("keydown", this._escapeHandler, false);
-        }
+        const containerEvents = effect(() => {
+            const container = this._map.container;
+            if (!container) {
+                return;
+            }
+
+            container.addEventListener("keydown", this._enterHandler, false);
+            container.addEventListener("keydown", this._escapeHandler, false);
+            return () => {
+                container.removeEventListener("keydown", this._enterHandler);
+                container.removeEventListener("keydown", this._escapeHandler);
+            };
+        });
 
         this._tooltip.setVisible(true);
 
@@ -232,20 +234,8 @@ export class EditingUpdateWorkflowImpl
             this._setState("active:drawing");
         });
 
-        // update event handler when container changes
-        const changedContainer = this._map.on("changed:container", () => {
-            this._mapContainer?.removeEventListener("keydown", this._enterHandler);
-            this._mapContainer?.removeEventListener("keydown", this._escapeHandler);
-
-            this._mapContainer = this._olMap.getTargetElement() ?? undefined;
-            if (this._mapContainer) {
-                this._mapContainer.addEventListener("keydown", this._enterHandler, false);
-                this._mapContainer.addEventListener("keydown", this._escapeHandler, false);
-            }
-        });
-
         this._interactionListener.push(click, modify);
-        this._mapListener.push(changedContainer);
+        this._mapListener.push(containerEvents);
     }
 
     reset() {
@@ -273,16 +263,12 @@ export class EditingUpdateWorkflowImpl
         this._tooltip.destroy();
 
         // Remove event listener on interaction and on map
-        this._interactionListener.map((listener) => {
+        this._interactionListener.forEach((listener) => {
             unByKey(listener);
         });
-        this._mapListener.map((listener) => {
+        this._mapListener.forEach((listener) => {
             listener.destroy();
         });
-
-        // Remove event escape listener
-        this._mapContainer?.removeEventListener("keydown", this._enterHandler);
-        this._mapContainer?.removeEventListener("keydown", this._escapeHandler);
 
         this._setState("destroyed");
     }
@@ -296,7 +282,7 @@ export class EditingUpdateWorkflowImpl
     }
 
     whenComplete(): Promise<Record<string, string> | undefined> {
-        if (this._state === "destroyed") {
+        if (this._state.value === "destroyed") {
             if (this._error) {
                 return Promise.reject(this._error);
             } else {

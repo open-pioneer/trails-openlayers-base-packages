@@ -28,7 +28,8 @@
         "react": "catalog:",
         "react-dom": "catalog:",
         "react-use": "catalog:",
-        "uuid": "catalog:"
+        "uuid": "catalog:",
+        "@conterra/reactivity-core": "catalog:"
     },
     "devDependencies": {
         "@open-pioneer/map-test-utils": "workspace:^",

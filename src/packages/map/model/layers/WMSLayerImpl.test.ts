@@ -1,15 +1,16 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import { nextTick } from "@conterra/reactivity-core";
 import { HttpService } from "@open-pioneer/http";
 import ImageLayer from "ol/layer/Image";
+import { get as getProjection } from "ol/proj";
 import ImageSource from "ol/source/Image";
 import ImageWMS from "ol/source/ImageWMS";
-import { get as getProjection } from "ol/proj";
 import { Mock, afterEach, beforeEach, expect, it, vi } from "vitest";
+import { WMSLayerConfig } from "../../api";
 import { AbstractLayerBase } from "../AbstractLayerBase";
 import { MapModelImpl } from "../MapModelImpl";
 import { WMSLayerImpl } from "./WMSLayerImpl";
-import { WMSLayerConfig } from "../../api";
 
 const SERVICE_URL = "https://example.com/wms-service";
 
@@ -185,7 +186,7 @@ it("excludes invisible sublayers from the LAYERS parameter", () => {
     expect(layersParam).toEqual(["sublayer-2"]);
 });
 
-it("updates the layer's LAYERS param if a sublayer's visibility changes", () => {
+it("updates the layer's LAYERS param if a sublayer's visibility changes", async () => {
     const { layer } = createLayer({
         title: "Layer",
         url: SERVICE_URL,
@@ -209,10 +210,14 @@ it("updates the layer's LAYERS param if a sublayer's visibility changes", () => 
 
     layer.sublayers.getSublayers()[0]!.setVisible(true);
     vi.advanceTimersByTime(1000);
+    await nextTick();
+
     expect(getLayersParam()).toEqual(["sublayer-1", "sublayer-2"]);
 
     layer.sublayers.getSublayers()[1]!.setVisible(false);
     vi.advanceTimersByTime(1000);
+    await nextTick();
+
     expect(getLayersParam()).toEqual(["sublayer-1"]);
 });
 

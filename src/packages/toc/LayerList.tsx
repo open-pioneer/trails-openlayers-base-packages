@@ -19,11 +19,11 @@ import {
     Text,
     Tooltip
 } from "@open-pioneer/chakra-integration";
-import { Layer, AnyLayer, MapModel, Sublayer, isSublayer } from "@open-pioneer/map";
+import { Layer, AnyLayer, MapModel, Sublayer } from "@open-pioneer/map";
+import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { PackageIntl } from "@open-pioneer/runtime";
 import classNames from "classnames";
 import { useIntl } from "open-pioneer:react-hooks";
-import { useCallback, useRef, useSyncExternalStore } from "react";
 import { FiAlertTriangle, FiMoreVertical } from "react-icons/fi";
 
 /**
@@ -71,8 +71,13 @@ function createList(layers: AnyLayer[], intl: PackageIntl, listProps: ListProps)
  */
 function LayerItem(props: { layer: AnyLayer; intl: PackageIntl }): JSX.Element {
     const { layer, intl } = props;
-    const title = useTitle(layer);
-    const { isVisible, setVisible } = useVisibility(layer);
+    const { title, description, isVisible } = useReactiveSnapshot(() => {
+        return {
+            title: layer.title,
+            description: layer.description,
+            isVisible: layer.visible
+        };
+    }, [layer]);
     const sublayers = useSublayers(layer);
     const isAvailable = useLoadState(layer) !== "error";
     const notAvailableLabel = intl.formatMessage({ id: "layerNotAvailable" });
@@ -103,7 +108,7 @@ function LayerItem(props: { layer: AnyLayer; intl: PackageIntl }): JSX.Element {
                     aria-label={title + (!isAvailable ? " " + notAvailableLabel : "")}
                     isChecked={isVisible}
                     isDisabled={!isAvailable}
-                    onChange={(event) => setVisible(event.target.checked)}
+                    onChange={(event) => layer.setVisible(event.target.checked)}
                 >
                     {title}
                 </Checkbox>
@@ -124,8 +129,13 @@ function LayerItem(props: { layer: AnyLayer; intl: PackageIntl }): JSX.Element {
                     </Tooltip>
                 )}
                 <Spacer></Spacer>
-                {layer.description && (
-                    <LayerItemDescriptor layer={layer} title={title} intl={intl} />
+                {description && (
+                    <LayerItemDescriptor
+                        layer={layer}
+                        title={title}
+                        description={description}
+                        intl={intl}
+                    />
                 )}
             </Flex>
             {nestedChildren}
@@ -136,11 +146,11 @@ function LayerItem(props: { layer: AnyLayer; intl: PackageIntl }): JSX.Element {
 function LayerItemDescriptor(props: {
     layer: AnyLayer;
     title: string;
+    description: string;
     intl: PackageIntl;
 }): JSX.Element {
-    const { layer, title, intl } = props;
+    const { layer, title, description, intl } = props;
     const buttonLabel = intl.formatMessage({ id: "descriptionLabel" });
-    const description = useLayerDescription(layer);
     const isAvailable = useLoadState(layer) !== "error";
 
     return (
@@ -169,157 +179,38 @@ function LayerItemDescriptor(props: {
     );
 }
 
-function useLayerDescription(layer: AnyLayer): string {
-    const getSnapshot = useCallback(() => layer.description, [layer]);
-    const subscribe = useCallback(
-        (cb: () => void) => {
-            const resource = layer.on("changed:description", cb);
-            return () => resource.destroy();
-        },
-        [layer]
-    );
-    return useSyncExternalStore(subscribe, getSnapshot);
-}
-
-/** Returns the layers current title. */
-function useTitle(layer: AnyLayer): string {
-    const getSnapshot = useCallback(() => layer.title, [layer]);
-    const subscribe = useCallback(
-        (cb: () => void) => {
-            const resource = layer.on("changed:title", cb);
-            return () => resource.destroy();
-        },
-        [layer]
-    );
-
-    return useSyncExternalStore(subscribe, getSnapshot);
-}
-
-/** Returns the layer's current visibility and a function to change it. */
-function useVisibility(layer: AnyLayer): {
-    isVisible: boolean;
-    setVisible(visible: boolean): void;
-} {
-    const getSnapshot = useCallback(() => layer.visible, [layer]);
-    const subscribe = useCallback(
-        (cb: () => void) => {
-            const resource = layer.on("changed:visible", cb);
-            return () => resource.destroy();
-        },
-        [layer]
-    );
-    const isVisible = useSyncExternalStore(subscribe, getSnapshot);
-    const setVisible = useCallback(
-        (visible: boolean) => {
-            layer.setVisible(visible);
-        },
-        [layer]
-    );
-
-    return {
-        isVisible,
-        setVisible
-    };
-}
-
-/** Returns the top level operation layers (without LayerGroups). */
+/** Returns the top level operational layers in render order (topmost layer first). */
 function useLayers(map: MapModel): Layer[] {
-    const subscribe = useCallback(
-        (cb: () => void) => {
-            const resource = map.layers.on("changed", cb);
-            return () => resource.destroy();
-        },
-        [map]
-    );
-    const getValue = useCallback(() => {
-        let layers = map.layers.getOperationalLayers({ sortByDisplayOrder: true }) ?? [];
-        layers = layers.reverse();
+    return useReactiveSnapshot(() => {
+        const layers = map.layers.getOperationalLayers({ sortByDisplayOrder: true }) ?? [];
+        layers.reverse(); // render topmost layer first
         return layers;
     }, [map]);
-    return useCachedExternalStore(subscribe, getValue);
 }
 
-/** Returns the sublayers of the given layer (or undefined, if the sublayer cannot have any). */
+/**
+ * Returns the sublayers of the given layer (or undefined, if the sublayer cannot have any).
+ * Sublayers are returned in render order (topmost sublayer first).
+ */
 function useSublayers(layer: AnyLayer): Sublayer[] | undefined {
-    const subscribe = useCallback(
-        (cb: () => void) => {
-            const resource = layer.sublayers?.on("changed", cb);
-            return () => resource?.destroy();
-        },
-        [layer]
-    );
-    const getValue = useCallback((): Sublayer[] | undefined => {
-        const sublayers = layer.sublayers;
+    return useReactiveSnapshot(() => {
+        const sublayers = layer.sublayers?.getSublayers({ sortByDisplayOrder: true });
         if (!sublayers) {
             return undefined;
         }
 
-        let layers = layer.sublayers?.getSublayers({ sortByDisplayOrder: true });
-        layers = layers.reverse();
-        return layers;
+        sublayers.reverse(); // render topmost layer first
+        return sublayers;
     }, [layer]);
-    return useCachedExternalStore(subscribe, getValue);
 }
 
 /** Returns the layers current state. */
 function useLoadState(layer: AnyLayer): string {
-    // for sublayers, use the state of the parent
-    const target = isSublayer(layer) ? layer.parentLayer : layer;
-    const subscribe = useCallback(
-        (cb: () => void) => {
-            const resource = target.on("changed:loadState", cb);
-            return () => resource.destroy();
-        },
-        [target]
-    );
-
-    const getSnapshot = useCallback(() => {
+    return useReactiveSnapshot(() => {
+        // for sublayers, use the state of the parent
+        const target = "parentLayer" in layer ? layer.parentLayer : layer;
         return target.loadState;
-    }, [target]);
-
-    return useSyncExternalStore(subscribe, getSnapshot);
-}
-
-/**
- * This hooks wraps an external store that does not cache its own values, i.e.
- * it may return a different value each time from `getValue()`.
- *
- * The results returned from `getValue()` are cached locally; the cache
- * is only invalidated on re-subscription or if a change event has been observed.
- */
-function useCachedExternalStore<T>(
-    subscribe: (onStoreChanged: () => void) => () => void,
-    getValue: () => T
-): T {
-    const cachedValue = useRef<{ value: T } | undefined>();
-
-    const cachedSubscribe = useCallback(
-        (cb: () => void) => {
-            const cleanup = subscribe(() => {
-                // Reset cache on change
-                cachedValue.current = undefined;
-                cb();
-            });
-            return () => {
-                // Reset cache when (re-) subscribing
-                cachedValue.current = undefined;
-                cleanup();
-            };
-        },
-        [subscribe]
-    );
-    const cachedGetSnapshot = useCallback(() => {
-        // Return cached values if still up to date (see resets above).
-        if (cachedValue.current) {
-            return cachedValue.current.value;
-        }
-
-        // Compute values and cache the result.
-        const value = getValue();
-        cachedValue.current = { value };
-        return value;
-    }, [getValue]);
-    return useSyncExternalStore(cachedSubscribe, cachedGetSnapshot);
+    }, [layer]);
 }
 
 function slug(id: string) {

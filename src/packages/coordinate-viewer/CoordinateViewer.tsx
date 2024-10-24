@@ -40,7 +40,7 @@ export interface CoordinateViewerProps extends CommonComponentProps, MapModelPro
 }
 
 /**
- * The `CoordinateViewer`component can be used in an app to render the coordinates at the current mouse position.
+ * The `CoordinateViewer` component can be used in an app to render the coordinates at the current mouse position.
  */
 export const CoordinateViewer: FC<CoordinateViewerProps> = (props) => {
     const { precision, displayProjectionCode, format } = props;

@@ -12,9 +12,6 @@ import { StyleLike } from "ol/style/Style";
 
 /** Events emitted by the {@link MapModel}. */
 export interface MapModelEvents {
-    "changed": void;
-    "changed:container": void;
-    "changed:initialExtent": void;
     "destroy": void;
 }
 
@@ -99,8 +96,6 @@ export interface MapModel extends EventSource<MapModelEvents> {
      *
      * May be undefined if the map is not being rendered at the moment.
      * May change at runtime.
-     *
-     * The `changed:container` event is emitted when this value changes.
      */
     readonly container: HTMLElement | undefined;
 
@@ -109,8 +104,6 @@ export interface MapModel extends EventSource<MapModelEvents> {
      *
      * May be undefined before the map is shown.
      * This is guaranteed to be initialized if the promise returned by {@link whenDisplayed} has resolved.
-     *
-     * The `changed:initialExtent` event is emitted when this value changes.
      */
     readonly initialExtent: ExtentConfig | undefined;
 
@@ -159,15 +152,10 @@ export interface MapModel extends EventSource<MapModelEvents> {
     removeHighlights(): void;
 }
 
-/** Events emitted by the {@link LayerCollection}. */
-export interface LayerCollectionEvents {
-    changed: void;
-}
-
 /**
  * Contains the layers known to a {@link MapModel}.
  */
-export interface LayerCollection extends EventSource<LayerCollectionEvents> {
+export interface LayerCollection {
     /**
      * Returns all configured base layers.
      */

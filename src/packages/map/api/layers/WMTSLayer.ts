@@ -3,6 +3,7 @@
 import type { Options as WMSSourceOptions } from "ol/source/ImageWMS";
 import { LayerBaseType, LayerConfig } from "./base";
 import { WMTSLayerImpl } from "../../model/layers/WMTSLayerImpl";
+
 export interface WMTSLayerConfig extends LayerConfig {
     /** URL of the WMTS service. */
     url: string;
@@ -33,6 +34,7 @@ export interface WMTSLayer extends LayerBaseType {
     /** The name of the tile matrix set in the service's capabilities. */
     readonly matrixSet: string;
 }
+
 export interface WMTSLayerConstructor {
     prototype: WMTSLayer;
 

@@ -20,7 +20,8 @@
         "@open-pioneer/map": "workspace:^",
         "@open-pioneer/test-utils": "catalog:",
         "@testing-library/react": "catalog:",
-        "ol": "catalog:"
+        "ol": "catalog:",
+        "@conterra/reactivity-core": "catalog:"
     },
     "devDependencies": {
         "openlayers-base-packages": "workspace:*"

@@ -24,6 +24,7 @@ import { LayerCollectionImpl } from "./LayerCollectionImpl";
 import { Geometry } from "ol/geom";
 import { Highlights } from "./Highlights";
 import { HttpService } from "@open-pioneer/http";
+import { external, ExternalReactive, reactive } from "@conterra/reactivity-core";
 
 const LOG = createLogger("map:MapModel");
 
@@ -42,8 +43,8 @@ export class MapModelImpl extends EventEmitter<MapModelEvents> implements MapMod
     readonly #sharedDeps: SharedDependencies;
 
     #destroyed = false;
-    #container: HTMLElement | undefined;
-    #initialExtent: ExtentConfig | undefined;
+    #container: ExternalReactive<HTMLElement | undefined>;
+    #initialExtent = reactive<ExtentConfig>();
     #targetWatchKey: EventsKey | undefined;
 
     readonly #abortController = new AbortController();
@@ -59,7 +60,7 @@ export class MapModelImpl extends EventEmitter<MapModelEvents> implements MapMod
         super();
         this.#id = properties.id;
         this.#olMap = properties.olMap;
-        this.#initialExtent = properties.initialExtent;
+        this.#initialExtent.value = properties.initialExtent;
         this.#sharedDeps = {
             httpService: properties.httpService
         };
@@ -82,9 +83,9 @@ export class MapModelImpl extends EventEmitter<MapModelEvents> implements MapMod
                 this.#displayWaiter = undefined;
             }
         );
-        this.#targetWatchKey = this.#olMap.on("change:target", () => {
-            this.#onTargetChanged();
-        });
+
+        this.#container = external(() => this.#olMap.getTargetElement() ?? undefined);
+        this.#targetWatchKey = this.#olMap.on("change:target", this.#container.trigger);
     }
 
     destroy() {
@@ -123,11 +124,11 @@ export class MapModelImpl extends EventEmitter<MapModelEvents> implements MapMod
     }
 
     get container(): HTMLElement | undefined {
-        return this.#container;
+        return this.#container.value;
     }
 
     get initialExtent(): ExtentConfig | undefined {
-        return this.#initialExtent;
+        return this.#initialExtent.value;
     }
 
     get __sharedDependencies(): SharedDependencies {
@@ -183,9 +184,9 @@ export class MapModelImpl extends EventEmitter<MapModelEvents> implements MapMod
             const olMap = this.#olMap;
             const view = olMap.getView();
 
-            if (this.#initialExtent) {
+            if (this.#initialExtent.value) {
                 // Initial extent was set from the outside. We simply ensure that it gets displayed by the map.
-                const extent = this.#initialExtent;
+                const extent = this.#initialExtent.value;
                 const olExtent = [extent.xMin, extent.yMin, extent.xMax, extent.yMax];
 
                 const olCenter = getCenter(olExtent);
@@ -204,21 +205,10 @@ export class MapModelImpl extends EventEmitter<MapModelEvents> implements MapMod
                 const extent: ExtentConfig = { xMin, yMin, xMax, yMax };
                 LOG.debug(`Detected initial extent`, extent);
 
-                this.#initialExtent = extent;
-                this.emit("changed:initialExtent");
-                this.emit("changed");
+                this.#initialExtent.value = extent;
             }
         } catch (e) {
             throw new Error(`Failed to apply the initial extent.`, { cause: e });
-        }
-    }
-
-    #onTargetChanged() {
-        const newContainer: HTMLElement | undefined = this.#olMap.getTargetElement() ?? undefined;
-        if (this.#container !== newContainer) {
-            this.#container = newContainer;
-            this.emit("changed:container");
-            this.emit("changed");
         }
     }
 }

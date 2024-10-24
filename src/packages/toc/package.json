@@ -25,7 +25,9 @@
         "classnames": "catalog:",
         "ol": "catalog:",
         "react": "catalog:",
-        "react-icons": "catalog:"
+        "react-icons": "catalog:",
+        "@open-pioneer/reactivity": "catalog:",
+        "@conterra/reactivity-core": "catalog:"
     },
     "devDependencies": {
         "@open-pioneer/map-test-utils": "workspace:^",
