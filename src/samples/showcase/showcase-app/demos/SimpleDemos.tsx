@@ -23,6 +23,8 @@ import { Coordinate } from "ol/coordinate";
 import { CoordinateInput, CoordinateSearch } from "@open-pioneer/coordinate-search";
 import { MAP_ID } from "../MapConfigProviderImpl";
 import { Button, Flex } from "@open-pioneer/chakra-integration";
+import { Projection } from "ol/proj";
+import { NotificationService } from "@open-pioneer/notifier";
 
 export function createCoordinateViewerDemo({ intl }: SharedDemoOptions): Demo {
     return {
@@ -37,27 +39,36 @@ export function createCoordinateViewerDemo({ intl }: SharedDemoOptions): Demo {
     };
 }
 
-export function createCoordinateInputDemo({ intl }: SharedDemoOptions): Demo {
+export function createCoordinateInputDemo({ intl, notificationService }: SharedDemoOptions): Demo {
     return {
         id: "coordinateInput",
         title: intl.formatMessage({ id: "demos.coordinateInput.title" }),
         createModel() {
             return {
                 description: intl.formatMessage({ id: "demos.coordinateInput.description" }),
-                mainWidget: <CoordinateInputComponent />
+                mainWidget: <CoordinateInputComponent notificationService={notificationService} />
             };
         }
     };
 }
 
-function CoordinateInputComponent() {
+function CoordinateInputComponent(props: { notificationService: NotificationService }) {
+    const { notificationService } = props;
     const [input, setInput] = useState<Coordinate | undefined>();
-    function onCoordinateInput(coords: Coordinate, projection: string) {
-        console.log("coordinate entered: ", coords, projection);
+    function onCoordinateInput(coords: Coordinate, projection: Projection) {
+        notificationService.notify({
+            level: "info",
+            message: "coordinate entered: " + coords + " in " + projection.getCode(),
+            displayDuration: 4000
+        });
     }
 
     function onSearchCleared() {
-        console.log("search cleared");
+        notificationService.notify({
+            level: "info",
+            message: "search cleared",
+            displayDuration: 4000
+        });
         setInput(undefined);
     }
 
@@ -111,26 +122,35 @@ function CoordinateInputComponent() {
     );
 }
 
-export function createCoordinateSearchDemo({ intl }: SharedDemoOptions): Demo {
+export function createCoordinateSearchDemo({ intl, notificationService }: SharedDemoOptions): Demo {
     return {
         id: "coordinateSearch",
         title: intl.formatMessage({ id: "demos.coordinateSearch.title" }),
         createModel() {
             return {
                 description: intl.formatMessage({ id: "demos.coordinateSearch.description" }),
-                mainWidget: <CoordinateSearchComponent />
+                mainWidget: <CoordinateSearchComponent notificationService={notificationService} />
             };
         }
     };
 }
 
-function CoordinateSearchComponent() {
-    function onCoordinateSearch(coords: Coordinate, projection: string) {
-        console.log("searched for: ", coords, projection);
+function CoordinateSearchComponent(props: { notificationService: NotificationService }) {
+    const { notificationService } = props;
+    function onCoordinateSearch(coords: Coordinate, projection: Projection) {
+        notificationService.notify({
+            level: "info",
+            message: "coordinate entered: " + coords + " in " + projection.getCode(),
+            displayDuration: 4000
+        });
     }
 
     function onSearchCleared() {
-        console.log("search cleared");
+        notificationService.notify({
+            level: "info",
+            message: "search cleared",
+            displayDuration: 4000
+        });
     }
 
     return (

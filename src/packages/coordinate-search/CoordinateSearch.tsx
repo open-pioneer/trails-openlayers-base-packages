@@ -7,18 +7,7 @@ import { Coordinate } from "ol/coordinate";
 import { EventsKey } from "ol/events";
 import { unByKey } from "ol/Observable";
 import OlMap from "ol/Map";
-import { CoordinateInput, CoordsInputEvent, ProjectionOption } from "./CoordinateInput";
-
-/**
- * Event type emitted when the user enters new coordinates or projection is changed by the user.
- */
-export interface CoordsSelectEvent {
-    /** The entered coordinates in the projection of the map */
-    coords: Coordinate;
-
-    /** The current map projection and projection of the coords. */
-    projection: string;
-}
+import { CoordinateInput, CoordinatesEvent, ProjectionInput } from "./CoordinateInput";
 
 /**
  * Properties for the {@link CoordinateSearch}.
@@ -28,12 +17,12 @@ export interface CoordinateSearchProps extends CommonComponentProps, MapModelPro
      * Searchable projections, only projections that are known by the map as projection are shown.
      * Each projection can have an individual precision of coordinates. If no precision is given, the default precision is used.
      */
-    projections?: ProjectionOption[];
+    projections?: ProjectionInput[];
 
     /**
      * Function that gets called if some coordinates are entered or projection is changed by the user.
      */
-    onSelect?: (selectProps: CoordsSelectEvent) => void;
+    onSelect?: (selectProps: CoordinatesEvent) => void;
 
     /**
      * Function that gets called if the input is cleared.
@@ -56,7 +45,7 @@ export const CoordinateSearch: FC<CoordinateSearchProps> = (props) => {
         <CoordinateInput
             {...containerProps}
             mapId={props.mapId}
-            onSelect={(event: CoordsInputEvent) => {
+            onSelect={(event: CoordinatesEvent) => {
                 if (!map) {
                     return;
                 }

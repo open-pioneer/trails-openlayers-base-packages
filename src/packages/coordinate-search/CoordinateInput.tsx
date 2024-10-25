@@ -15,9 +15,15 @@ import {
 import { MapModelProps, useMapModel, useProjection } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps, useEvent } from "@open-pioneer/react-utils";
 import { PackageIntl } from "@open-pioneer/runtime";
-import { Select } from "chakra-react-select";
+import {
+    AriaLiveMessages,
+    AriaOnChange,
+    AriaOnFocus,
+    GroupBase,
+    Select
+} from "chakra-react-select";
 import { Coordinate } from "ol/coordinate";
-import { get as getProjection, transform } from "ol/proj";
+import { get as getProjection, Projection, ProjectionLike, transform } from "ol/proj";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, KeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
 
@@ -25,15 +31,35 @@ const DEFAULT_PRECISION = 3;
 const DEFAULT_PROJECTIONS = [
     {
         label: "WGS 84",
-        value: "EPSG:4326",
+        value: getProjection("EPSG:4326")!,
         precision: 3
     },
     {
         label: "Web Mercator",
-        value: "EPSG:3857",
+        value: getProjection("EPSG:3857")!,
         precision: 2
     }
 ];
+
+/**
+ * dropdown items of projection selection with an optional coordinate precision
+ */
+export interface ProjectionInput {
+    /**
+     * Label to show the user.
+     */
+    label: string;
+
+    /**
+     * The map projection as projection or as string.
+     */
+    value: ProjectionLike;
+
+    /**
+     * The number of displayed decimal places.
+     */
+    precision?: number;
+}
 
 /**
  * dropdown items of projection selection with an optional coordinate precision
@@ -45,9 +71,9 @@ export interface ProjectionOption {
     label: string;
 
     /**
-     * The map projection code.
+     * The map projection.
      */
-    value: string;
+    value: Projection;
 
     /**
      * The number of displayed decimal places.
@@ -63,12 +89,12 @@ type ProjectionItem = Required<ProjectionOption>;
 /**
  * Event type emitted when the user enters new coordinates or projection is changed by the user.
  */
-export interface CoordsInputEvent {
-    /** The entered coordinates in the projection of the map */
+export interface CoordinatesEvent {
+    /** coordinates in the projection of the object */
     coords: Coordinate;
 
-    /** The current map projection and projection of the coords. */
-    projection: string;
+    /** the projection of the coordinates. */
+    projection: Projection;
 }
 
 /**
@@ -79,12 +105,12 @@ export interface CoordinateInputProps extends CommonComponentProps, MapModelProp
      * Searchable projections, only projections that are known by the map as projection are shown.
      * Each projection can have an individual precision of coordinates. If no precision is given, the default precision is used.
      */
-    projections?: ProjectionOption[];
+    projections?: ProjectionInput[];
 
     /**
      * Function that gets called if some coordinates are entered or projection is changed by the user.
      */
-    onSelect?: (selectProps: CoordsInputEvent) => void;
+    onSelect?: (selectProps: CoordinatesEvent) => void;
 
     /**
      * Function that gets called if the input is cleared.
@@ -116,7 +142,7 @@ export const CoordinateInput: FC<CoordinateInputProps> = (props) => {
     const { map } = useMapModel(props);
     const intl = useIntl();
     const olMap = map?.olMap;
-    const mapProjCode = useProjection(olMap)?.getCode() ?? ""; // projection of the map
+    const mapProjection = useProjection(olMap) ?? undefined; // projection of the map
 
     // Projection items (dropdown)
     const availableProjections = useProjectionItems(projections); // filter for projections that are known
@@ -128,22 +154,13 @@ export const CoordinateInput: FC<CoordinateInputProps> = (props) => {
     // Input state
     const [coordinateSearchInput, setCoordinateSearchInput] = useInput(
         input,
-        mapProjCode,
-        selectedProjection
+        mapProjection,
+        selectedProjection,
+        onSelect
     );
-    const placeholderString = usePlaceholder(placeholder, mapProjCode, selectedProjection);
+    const placeholderString = usePlaceholder(placeholder, mapProjection, selectedProjection);
     const validationResult = validateInput(intl, coordinateSearchInput, selectedProjection.value);
     const isInputValid = validationResult === "success";
-
-    const [isOpenSelect, setIsOpenSelect] = useState(false); // if the select menu is open
-    const [menuPlacement, setMenuPlacement] = useState<string>(""); // where is menu is places (top/bottom)
-
-    const keyDown = useEvent((event: KeyboardEvent<HTMLDivElement>) => {
-        //if the menu is already open, do noting
-        if (!isOpenSelect && event.key === "Enter") {
-            setIsOpenSelect(true);
-        }
-    });
 
     const portalElement = useRef<HTMLDivElement>(null);
 
@@ -160,168 +177,26 @@ export const CoordinateInput: FC<CoordinateInputProps> = (props) => {
                     isOpen={!isInputValid}
                 >
                     <InputGroup className="coordinateSearchGroup">
-                        <InputGroup className="coordinateInputGroup">
-                            <Input
-                                type="text"
-                                value={coordinateSearchInput}
-                                onChange={(eve) => {
-                                    setCoordinateSearchInput(eve.target.value);
-                                }}
-                                isInvalid={!isInputValid}
-                                backgroundColor={!isInputValid ? "red.100" : "undefined"}
-                                placeholder={placeholderString}
-                                errorBorderColor="red.500"
-                                aria-label={intl.formatMessage({
-                                    id: "coordinateSearch.ariaLabel"
-                                })}
-                                borderRightRadius={0}
-                                onKeyDown={(eve) => {
-                                    if (eve.key == "Enter") {
-                                        onCoordinateInput(
-                                            intl,
-                                            coordinateSearchInput,
-                                            selectedProjection.value,
-                                            mapProjCode,
-                                            onSelect
-                                        );
-                                    }
-                                }}
-                            />
-                            {coordinateSearchInput !== "" && (
-                                <InputRightElement>
-                                    <IconButton
-                                        className="clearButton"
-                                        size="sm"
-                                        onClick={() => {
-                                            setCoordinateSearchInput("");
-                                            if (onClear) {
-                                                onClear();
-                                            }
-                                        }}
-                                        isDisabled={coordinateSearchInput == ""}
-                                        padding={0}
-                                        icon={<CloseIcon />}
-                                        aria-label={intl.formatMessage({
-                                            id: "coordinateSearch.ariaLabel"
-                                        })}
-                                    />
-                                </InputRightElement>
-                            )}
-                            {typeof placeholder === "object" && coordinateSearchInput == "" && (
-                                <InputRightElement>
-                                    <IconButton
-                                        className="copyButton"
-                                        size="sm"
-                                        onClick={() => {
-                                            navigator.clipboard.writeText(placeholderString);
-                                        }}
-                                        padding={0}
-                                        icon={<CopyIcon />}
-                                        aria-label={intl.formatMessage({
-                                            id: "coordinateSearch.copyPlaceholder"
-                                        })}
-                                    />
-                                </InputRightElement>
-                            )}
-                        </InputGroup>
+                        <CoordinateInputField
+                            coordinateSearchInput={coordinateSearchInput}
+                            setCoordinateSearchInput={setCoordinateSearchInput}
+                            placeholder={placeholder}
+                            placeholderString={placeholderString}
+                            onClear={onClear}
+                            isInputValid={isInputValid}
+                            selectedProjection={selectedProjection}
+                            mapProjection={mapProjection}
+                            onSelect={onSelect}
+                        />
                         <InputRightAddon padding={"0px"} borderLeft={"0px"}>
-                            <Select
-                                value={selectedProjection}
-                                defaultValue={selectedProjection}
-                                options={availableProjections}
-                                menuPlacement="auto"
-                                menuPortalTarget={portalElement.current}
-                                aria-label={intl.formatMessage({
-                                    id: "coordinateSearch.ariaLabel"
-                                })}
-                                classNamePrefix={"coordinate-Search-Select"}
-                                isSearchable={false}
-                                chakraStyles={{
-                                    menu: (base, selectProps) => {
-                                        setMenuPlacement(selectProps.placement);
-                                        return {
-                                            ...base,
-                                            width: "max-content",
-                                            minWidth: "100%"
-                                        };
-                                    },
-                                    control: (base, { selectProps: { menuIsOpen } }) => ({
-                                        ...base,
-                                        width: "max-content",
-                                        minWidth: "100%",
-                                        color: "white",
-                                        borderleftstyle: "none",
-                                        borderLeftRadius: 0,
-                                        padding: 0,
-                                        backgroundColor: `${menuIsOpen ? "rgb(27, 75, 95)" : "var(--chakra-colors-background_primary)"}`,
-                                        //borderColor: `${menuIsOpen ? "rgb(27, 75, 95)" : "var(--chakra-colors-background_primary)"}`,
-                                        _focus: {
-                                            boxShadow: "var(--chakra-shadows-outline)"
-                                        }
-                                    }),
-                                    valueContainer: (base) => ({
-                                        ...base,
-                                        paddingEnd: 0,
-                                        cursor: "pointer"
-                                    }),
-                                    dropdownIndicator: (base, { selectProps: { menuIsOpen } }) => ({
-                                        ...base,
-                                        paddingStart: 0,
-                                        "> svg": {
-                                            transitionDuration: "normal",
-                                            transform: `rotate(${menuIsOpen && menuPlacement == "top" ? 0 : menuIsOpen && menuPlacement == "bottom" ? -180 : !menuIsOpen && menuPlacement == "top" ? -180 : !menuIsOpen && menuPlacement == "bottom" ? 0 : 0}deg)`
-                                        },
-                                        backgroundColor: `${menuIsOpen ? "rgb(27, 75, 95)" : "var(--chakra-colors-background_primary)"}`
-                                        //borderColor: `${menuIsOpen ? "rgb(27, 75, 95)" : "var(--chakra-colors-background_primary)"}`
-                                    }),
-                                    option: (base) => ({
-                                        ...base,
-                                        _focus: {
-                                            background: "var(--chakra-colors-trails-300)"
-                                        }
-                                    }),
-                                    indicatorSeparator: (
-                                        base,
-                                        { selectProps: { menuIsOpen } }
-                                    ) => ({
-                                        ...base,
-                                        backgroundColor: `${menuIsOpen ? "rgb(27, 75, 95)" : "var(--chakra-colors-background_primary)"}`
-                                        //borderColor: `${menuIsOpen ? "rgb(27, 75, 95)" : "var(--chakra-colors-background_primary)"}`
-                                    })
-                                }}
-                                ariaLiveMessages={{
-                                    guidance: () => "",
-                                    onChange: (props) => {
-                                        if (
-                                            props.action == "select-option" ||
-                                            props.action == "initial-input-focus"
-                                        )
-                                            return (
-                                                props.label +
-                                                " " +
-                                                intl.formatMessage({ id: "selected" })
-                                            );
-                                        else return "";
-                                    },
-                                    onFilter: () => "",
-                                    onFocus: () => ""
-                                }}
-                                onChange={(e) => {
-                                    if (e?.value !== undefined) {
-                                        setSelectedProjection(e);
-                                        onCoordinateInput(
-                                            intl,
-                                            coordinateSearchInput,
-                                            e?.value,
-                                            mapProjCode,
-                                            onSelect
-                                        );
-                                    }
-                                }}
-                                onKeyDown={keyDown}
-                                menuIsOpen={isOpenSelect}
-                                onMenuOpen={() => setIsOpenSelect(true)}
-                                onMenuClose={() => setIsOpenSelect(false)}
+                            <ProjectionSelect
+                                selectedProjection={selectedProjection}
+                                availableProjections={availableProjections}
+                                portalElement={portalElement}
+                                setSelectedProjection={setSelectedProjection}
+                                coordinateSearchInput={coordinateSearchInput}
+                                mapProjection={mapProjection}
+                                onSelect={onSelect}
                             />
                         </InputRightAddon>
                     </InputGroup>
@@ -330,6 +205,276 @@ export const CoordinateInput: FC<CoordinateInputProps> = (props) => {
         </Box>
     );
 };
+function CoordinateInputField(props: {
+    isInputValid: boolean;
+    selectedProjection: ProjectionItem;
+    mapProjection: Projection | undefined;
+    onSelect: ((selectProps: CoordinatesEvent) => void) | undefined;
+    coordinateSearchInput: string;
+    setCoordinateSearchInput: (searchinput: string) => void;
+    placeholder: string | Coordinate;
+    placeholderString: string;
+    onClear: (() => void) | undefined;
+}) {
+    const {
+        isInputValid,
+        selectedProjection,
+        mapProjection,
+        onSelect,
+        coordinateSearchInput,
+        setCoordinateSearchInput,
+        placeholder,
+        placeholderString,
+        onClear
+    } = props;
+    const intl = useIntl();
+    return (
+        <InputGroup className="coordinateInputGroup">
+            <Input
+                type="text"
+                value={coordinateSearchInput}
+                onChange={(eve) => {
+                    setCoordinateSearchInput(eve.target.value);
+                }}
+                isInvalid={!isInputValid}
+                backgroundColor={!isInputValid ? "red.100" : "undefined"}
+                placeholder={placeholderString}
+                errorBorderColor="red.500"
+                aria-label={intl.formatMessage({
+                    id: "coordinateSearch.ariaLabel"
+                })}
+                borderRightRadius={0}
+                onKeyDown={(eve) => {
+                    if (eve.key == "Enter") {
+                        onCoordinateInput(
+                            intl,
+                            coordinateSearchInput,
+                            selectedProjection.value,
+                            mapProjection,
+                            onSelect
+                        );
+                    }
+                }}
+            />
+            <CoordinateInputButton
+                coordinateSearchInput={coordinateSearchInput}
+                setCoordinateSearchInput={setCoordinateSearchInput}
+                placeholder={placeholder}
+                placeholderString={placeholderString}
+                onClear={onClear}
+                intl={intl}
+            />
+        </InputGroup>
+    );
+}
+
+function CoordinateInputButton(props: {
+    coordinateSearchInput: string;
+    setCoordinateSearchInput: (searchinput: string) => void;
+    placeholder: string | Coordinate;
+    placeholderString: string;
+    onClear: (() => void) | undefined;
+    intl: PackageIntl;
+}) {
+    const {
+        coordinateSearchInput,
+        setCoordinateSearchInput,
+        placeholder,
+        placeholderString,
+        onClear,
+        intl
+    } = props;
+    if (coordinateSearchInput !== "") {
+        return (
+            <InputRightElement>
+                <IconButton
+                    className="clearButton"
+                    size="sm"
+                    onClick={() => {
+                        setCoordinateSearchInput("");
+                        if (onClear) {
+                            onClear();
+                        }
+                    }}
+                    isDisabled={coordinateSearchInput == ""}
+                    padding={0}
+                    icon={<CloseIcon />}
+                    aria-label={intl.formatMessage({
+                        id: "coordinateSearch.ariaLabel"
+                    })}
+                />
+            </InputRightElement>
+        );
+    } else if (typeof placeholder === "object" && coordinateSearchInput == "") {
+        return (
+            <InputRightElement>
+                <IconButton
+                    className="copyButton"
+                    size="sm"
+                    onClick={() => {
+                        navigator.clipboard.writeText(placeholderString);
+                    }}
+                    padding={0}
+                    icon={<CopyIcon />}
+                    aria-label={intl.formatMessage({
+                        id: "coordinateSearch.copyPlaceholder"
+                    })}
+                />
+            </InputRightElement>
+        );
+    } else return <></>;
+}
+
+function ProjectionSelect(projSelectProps: {
+    selectedProjection: ProjectionItem;
+    availableProjections: ProjectionItem[];
+    portalElement: React.RefObject<HTMLDivElement>;
+    setSelectedProjection: (proj: ProjectionItem) => void;
+    coordinateSearchInput: string;
+    mapProjection: Projection | undefined;
+    onSelect: ((selectProps: CoordinatesEvent) => void) | undefined;
+}) {
+    const [isOpenSelect, setIsOpenSelect] = useState(false); // if the select menu is open
+
+    const keyDown = useEvent((event: KeyboardEvent<HTMLDivElement>) => {
+        //if the menu is already open, do noting
+        if (!isOpenSelect && event.key === "Enter") {
+            setIsOpenSelect(true);
+        }
+    });
+    const {
+        selectedProjection,
+        availableProjections,
+        portalElement,
+        setSelectedProjection,
+        coordinateSearchInput,
+        mapProjection,
+        onSelect
+    } = projSelectProps;
+    const intl = useIntl();
+    const ariaMessages = useAriaMessages(intl);
+    return (
+        <Select
+            value={selectedProjection}
+            defaultValue={selectedProjection}
+            options={availableProjections}
+            menuPlacement="auto"
+            menuPortalTarget={portalElement.current}
+            aria-label={intl.formatMessage({
+                id: "coordinateSearch.ariaLabel"
+            })}
+            classNamePrefix={"coordinate-Search-Select"}
+            isSearchable={false}
+            chakraStyles={{
+                menu: (base) => {
+                    return {
+                        ...base,
+                        width: "max-content",
+                        minWidth: "100%"
+                    };
+                },
+                control: (base, { selectProps: { menuIsOpen } }) => ({
+                    ...base,
+                    width: "max-content",
+                    minWidth: "100%",
+                    color: "white",
+                    borderleftstyle: "none",
+                    borderLeftRadius: 0,
+                    padding: 0,
+                    backgroundColor: `${menuIsOpen ? "rgb(27, 75, 95)" : "var(--chakra-colors-background_primary)"}`,
+                    _focus: {
+                        boxShadow: "var(--chakra-shadows-outline)"
+                    }
+                }),
+                valueContainer: (base) => ({
+                    ...base,
+                    paddingEnd: 0,
+                    cursor: "pointer"
+                }),
+                dropdownIndicator: (base, { selectProps: { menuIsOpen } }) => ({
+                    ...base,
+                    paddingStart: 0,
+                    backgroundColor: `${menuIsOpen ? "rgb(27, 75, 95)" : "var(--chakra-colors-background_primary)"}`
+                }),
+                option: (base) => ({
+                    ...base,
+                    _focus: {
+                        background: "var(--chakra-colors-trails-300)"
+                    }
+                }),
+                indicatorSeparator: (base, { selectProps: { menuIsOpen } }) => ({
+                    ...base,
+                    backgroundColor: `${menuIsOpen ? "rgb(27, 75, 95)" : "var(--chakra-colors-background_primary)"}`,
+                    borderColor: `${menuIsOpen ? "rgb(27, 75, 95)" : "var(--chakra-colors-background_primary)"}`
+                })
+            }}
+            ariaLiveMessages={ariaMessages}
+            onChange={(e) => {
+                if (e?.value !== undefined) {
+                    setSelectedProjection(e);
+                    onCoordinateInput(
+                        intl,
+                        coordinateSearchInput,
+                        e?.value,
+                        mapProjection,
+                        onSelect
+                    );
+                }
+            }}
+            onKeyDown={keyDown}
+            menuIsOpen={isOpenSelect}
+            onMenuOpen={() => setIsOpenSelect(true)}
+            onMenuClose={() => setIsOpenSelect(false)}
+        />
+    );
+}
+
+/**
+ * Provides custom aria messages for select of the coordinate input component.
+ */
+function useAriaMessages(
+    intl: PackageIntl
+): AriaLiveMessages<Required<ProjectionOption>, false, GroupBase<Required<ProjectionOption>>> {
+    return useMemo(() => {
+        /**
+         * Method to create Aria-String for focus-Event
+         */
+        const onFocus: AriaOnFocus<ProjectionOption> = () => {
+            //no aria string for focus-events because in some screen readers (NVDA) and browsers (Chrome) updating the aria string causes the instructions to be read out again each time a select option is focused
+            return "";
+        };
+
+        /**
+         * Method to create Aria-String for value-change-Event
+         */
+        const onChange: AriaOnChange<ProjectionOption, boolean> = (props) => {
+            if (props.action == "select-option" || props.action == "initial-input-focus")
+                return props.label + " " + intl.formatMessage({ id: "selected" });
+            else return "";
+        };
+
+        /**
+         * Method to create Aria-String for instruction
+         */
+        const guidance = () => {
+            return "";
+        };
+
+        /**
+         * Method to create Aria-String for result length
+         */
+        const onFilter = () => {
+            return "";
+        };
+
+        return {
+            onFocus,
+            onChange,
+            guidance,
+            onFilter
+        };
+    }, [intl]);
+}
 
 /**
  * Returns the current text input and a callback to change it (used for interactive user input).
@@ -337,42 +482,56 @@ export const CoordinateInput: FC<CoordinateInputProps> = (props) => {
  */
 function useInput(
     inputProp: Coordinate | undefined,
-    mapProjCode: string,
-    selectedProjection: ProjectionItem
+    mapProjection: Projection | undefined,
+    selectedProjection: ProjectionItem,
+    onSelect: ((selectProps: CoordinatesEvent) => void) | undefined
 ): [string, (value: string) => void] {
     const intl = useIntl();
     const [coordinateSearchInput, setCoordinateSearchInput] = useState<string>(""); // coordinate input field
     const inputFromOutside = useMemo(() => {
-        if (!inputProp || !mapProjCode) {
+        if (!inputProp || !mapProjection) {
             return "";
         }
-        const transformed = transformCoordinates(inputProp, mapProjCode, selectedProjection.value);
+        const transformed = transformCoordinates(
+            inputProp,
+            mapProjection,
+            selectedProjection.value
+        );
         return formatCoordinates(transformed, selectedProjection.precision, intl);
-    }, [inputProp, mapProjCode, selectedProjection, intl]);
+    }, [inputProp, mapProjection, selectedProjection, intl]);
 
+    const callback = useEvent((selectedProps: CoordinatesEvent) => {
+        onSelect?.(selectedProps);
+    });
     useEffect(() => {
         if (inputProp != undefined) {
             setCoordinateSearchInput(inputFromOutside);
+            onCoordinateInput(
+                intl,
+                inputFromOutside,
+                selectedProjection.value,
+                mapProjection,
+                callback
+            );
         }
-    }, [inputProp, inputFromOutside]);
+    }, [inputProp, inputFromOutside, callback, intl, mapProjection, selectedProjection]);
     return [coordinateSearchInput, setCoordinateSearchInput];
 }
 
 /**
  * Parses the projections defined by the user.
  */
-function useProjectionItems(projections: ProjectionOption[]) {
+function useProjectionItems(projections: ProjectionInput[]) {
     return useMemo(() => {
-        const items: ProjectionItem[] = projections.map((ele) => {
-            return {
-                label: ele.label,
-                value: ele.value,
-                precision: ele.precision ?? DEFAULT_PRECISION
-                // TODO: Find available projection and store it, or filter the element (e.g. with flatmap or map + filter)
-            };
+        const availableProjections: ProjectionItem[] = projections.flatMap((ele) => {
+            if (getProjection(ele.value) != null)
+                return {
+                    label: ele.label,
+                    value: getProjection(ele.value)!,
+                    precision: ele.precision ?? DEFAULT_PRECISION
+                };
+            return [];
         });
-        // filter for projections that are known
-        const availableProjections = items.filter((cs) => getProjection(cs.value) != null);
         return availableProjections;
     }, [projections]);
 }
@@ -382,7 +541,7 @@ function useProjectionItems(projections: ProjectionOption[]) {
  */
 function usePlaceholder(
     placeholderProp: string | Coordinate,
-    mapProjectionCode: string,
+    mapProjection: Projection | undefined,
     selectedProjection: ProjectionItem
 ) {
     const intl = useIntl();
@@ -390,18 +549,18 @@ function usePlaceholder(
         let placeholder: string;
         if (typeof placeholderProp === "string") {
             placeholder = placeholderProp;
-        } else if (!mapProjectionCode) {
+        } else if (!mapProjection) {
             placeholder = "";
         } else {
             const coords = transformCoordinates(
                 placeholderProp as Coordinate,
-                mapProjectionCode,
+                mapProjection,
                 selectedProjection.value
             );
             placeholder = formatCoordinates(coords, selectedProjection.precision, intl);
         }
         return placeholder;
-    }, [placeholderProp, mapProjectionCode, selectedProjection, intl]);
+    }, [placeholderProp, mapProjection, selectedProjection, intl]);
 }
 
 type ValidationResult =
@@ -417,7 +576,7 @@ type ValidationResult =
 function validateInput(
     intl: PackageIntl,
     inputString: string,
-    projection: string
+    projection: Projection
 ): ValidationResult {
     if (inputString == "") return "success";
 
@@ -453,28 +612,36 @@ function validateInput(
         }
     }
 
-    let coords = parseCoords(inputString, thousandSeparator);
+    const coords = parseCoords(inputString, thousandSeparator);
+
     try {
-        let chosenProjection = getProjection(projection);
-        if (chosenProjection === null || chosenProjection.getExtent() === null) {
-            chosenProjection = getProjection("EPSG:4326");
-
-            coords = transformCoordinates(coords, projection, "EPSG:4326");
-        }
-
-        if (
-            chosenProjection!.getExtent().length == 4 &&
-            chosenProjection!.getExtent()[0]! > coords[0]! &&
-            chosenProjection!.getExtent()[1]! > coords[1]! &&
-            chosenProjection!.getExtent()[2]! < coords[0]! &&
-            chosenProjection!.getExtent()[3]! < coords[1]!
-        ) {
-            return "tooltip.extent";
-        }
+        if (!checkIfCoordsInProjectionsExtent(projection, coords)) return "tooltip.extent";
     } catch (e) {
+        console.log();
+    }
+    try {
+        if (
+            !checkIfCoordsInProjectionsExtent(
+                getProjection("EPSG:4326")!,
+                transformCoordinates(coords, projection, "EPSG:4326")
+            )
+        )
+            return "tooltip.extent";
+    } catch (e) {
+        console.log(e);
         return "tooltip.projection";
     }
     return "success";
+}
+
+function checkIfCoordsInProjectionsExtent(projection: Projection, coords: number[]): boolean {
+    return (
+        projection!.getExtent().length == 4 &&
+        projection!.getExtent()[0]! <= coords[0]! &&
+        projection!.getExtent()[1]! <= coords[1]! &&
+        projection!.getExtent()[2]! >= coords[0]! &&
+        projection!.getExtent()[3]! >= coords[1]!
+    );
 }
 
 function parseCoords(inputString: string, thousandSeparator: string) {
@@ -488,9 +655,9 @@ function parseCoords(inputString: string, thousandSeparator: string) {
 function onCoordinateInput(
     intl: PackageIntl,
     coordinateString: string,
-    projection: string | undefined,
-    mapProjection: string,
-    onSelect?: (selectProps: CoordsInputEvent) => void
+    projection: Projection,
+    mapProjection: Projection | undefined,
+    onSelect: ((selectProps: CoordinatesEvent) => void) | undefined
 ) {
     if (
         projection == undefined ||
@@ -509,7 +676,7 @@ function onCoordinateInput(
         projection,
         mapProjection
     );
-    if (onSelect) {
+    if (onSelect && mapProjection) {
         onSelect({ coords: coordsForZoom, projection: mapProjection });
     }
 }
@@ -517,8 +684,8 @@ function onCoordinateInput(
 /* returns the given coordinates in the projection of the map */
 function getCoordsForZoom(
     coordinateString: string,
-    projection: string,
-    mapProjection: string
+    projection: Projection | undefined,
+    mapProjection: Projection | undefined
 ): Coordinate {
     const coordsString = coordinateString.split(" ");
     const coords = [
@@ -531,8 +698,8 @@ function getCoordsForZoom(
 /* transforms the given coordinates in the given destination projection */
 function transformCoordinates(
     coordinates: number[],
-    source: string,
-    destination: string
+    source: ProjectionLike,
+    destination: ProjectionLike
 ): number[] {
     return transform(coordinates, source, destination);
 }
