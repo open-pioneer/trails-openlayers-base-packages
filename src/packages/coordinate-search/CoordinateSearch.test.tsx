@@ -6,9 +6,10 @@ import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { act, fireEvent, render, renderHook, screen, waitFor } from "@testing-library/react";
 import BaseEvent from "ol/events/Event";
 import { expect, it, vi } from "vitest";
-import { CoordinateSearch, useCoordinatesString } from "./CoordinateSearch";
+import { CoordinateSearch } from "./CoordinateSearch";
 import userEvent from "@testing-library/user-event";
 import { Coordinate } from "ol/coordinate";
+import { Projection } from "ol/proj";
 
 it("should successfully create a coordinate search component", async () => {
     const { mapId, registry } = await setupMap();
@@ -16,12 +17,7 @@ it("should successfully create a coordinate search component", async () => {
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
-            <CoordinateSearch
-                mapId={mapId}
-                data-testid="coordinate-search"
-                onSelect={() => {}}
-                onClear={() => {}}
-            />
+            <CoordinateSearch mapId={mapId} data-testid="coordinate-search" />
         </PackageContextProvider>
     );
 
@@ -52,6 +48,41 @@ it("should successfully create a coordinate search component with additional css
     const { coordsSearchDiv } = await waitForCoordinateSearch();
     expect(coordsSearchDiv.classList.contains("test")).toBe(true);
     expect(coordsSearchDiv.classList.contains("foo")).toBe(false);
+});
+
+it("should successfully create a coordinate search component with projections", async () => {
+    const { mapId, registry } = await setupMap();
+
+    const injectedServices = createServiceOptions({ registry });
+    render(
+        <PackageContextProvider services={injectedServices}>
+            <CoordinateSearch
+                mapId={mapId}
+                data-testid="coordinate-search"
+                projections={[
+                    {
+                        label: "EPSG:25832",
+                        value: "EPSG:25832"
+                    },
+                    {
+                        label: "WGS 84",
+                        value: "EPSG:4326"
+                    },
+                    {
+                        label: "Web Mercator",
+                        value: "EPSG:3857"
+                    }
+                ]}
+            />
+        </PackageContextProvider>
+    );
+
+    const { projSelect } = await waitForCoordinateSearch();
+    showDropdown(projSelect);
+    const options = getCurrentOptions(projSelect);
+    const values = getCurrentOptionValues(options);
+
+    expect(values).toStrictEqual(["EPSG:25832", "WGS 84", "Web Mercator"]);
 });
 
 it("tracks the user's mouse position", async () => {
@@ -93,34 +124,6 @@ it("tracks the user's mouse position", async () => {
         simulateMove(754602, 6664688);
     });
     expect(coordInput.getAttribute("placeholder")).toMatchInlineSnapshot('"6,779 51,245"');
-});
-
-it("should format coordinates to correct coordinate string for the corresponding locale and precision", async () => {
-    const coords = [3545.08081, 4543543.009];
-
-    const renderCoords = (locale: string, precision = 2) => {
-        return renderHook(() => useCoordinatesString(coords, precision), {
-            wrapper: (props) => <PackageContextProvider {...props} locale={locale} />
-        });
-    };
-
-    const hookEN = renderCoords("en");
-    const stringCoordinates = hookEN.result.current;
-    expect(stringCoordinates).equals("3,545.08 4,543,543.01");
-
-    const hookDE = renderCoords("de", 3);
-    expect(hookDE.result.current).equals("3.545,081 4.543.543,009");
-
-    const hookDE_precision0 = renderCoords("de", 0);
-    expect(hookDE_precision0.result.current).equals("3.545 4.543.543");
-});
-
-it("should format coordinates to correct coordinate string with default precision", async () => {
-    const coords = [3545.08081, 4543543.009];
-    const hookDeWithoutPrecision = renderHook(() => useCoordinatesString(coords, 3), {
-        wrapper: (props) => <PackageContextProvider {...props} locale="de" />
-    });
-    expect(hookDeWithoutPrecision.result.current).equals("3.545,081 4.543.543,009");
 });
 
 it("should display transformed coordinates in selected option", async () => {
@@ -213,7 +216,7 @@ it("should successfully return the projection of the map as callback", async () 
     const { mapId, registry } = await setupMap();
 
     const injectedServices = createServiceOptions({ registry });
-    let callbackProj: string = "";
+    let callbackProj;
     render(
         <PackageContextProvider services={injectedServices}>
             <MapContainer mapId={mapId} data-testid="map" />
@@ -231,7 +234,8 @@ it("should successfully return the projection of the map as callback", async () 
     await waitForMapMount("map");
     const { coordInput } = await waitForCoordinateSearch();
     await user.type(coordInput, "7 51{enter}");
-    expect(callbackProj).toBe("EPSG:3857");
+    expect(callbackProj).toBeDefined();
+    expect(callbackProj!.getCode()).toBe("EPSG:3857");
 });
 
 it("should successfully call onClear if clear button is clicked", async () => {
@@ -255,10 +259,10 @@ it("should successfully call onClear if clear button is clicked", async () => {
     );
 
     await waitForMapMount("map");
-    const { coordInput, coordinateSearchGroup } = await waitForCoordinateSearch();
+    const { coordInput, coordinateInputGroup } = await waitForCoordinateSearch();
 
     await user.type(coordInput, "404000 5700000{enter}");
-    const clearButton = getClearButton(coordinateSearchGroup);
+    const clearButton = getClearButton(coordinateInputGroup);
     expect(cleared).toBe(false);
 
     await user.click(clearButton);
@@ -287,7 +291,7 @@ it("should successfully copy to clipboard if copy button is clicked", async () =
     );
 
     await waitForMapMount("map");
-    const { coordinateSearchGroup } = await waitForCoordinateSearch();
+    const { coordinateInputGroup } = await waitForCoordinateSearch();
 
     const map = await registry.expectMapModel(mapId);
 
@@ -321,97 +325,43 @@ it("should successfully copy to clipboard if copy button is clicked", async () =
             return new Promise<ClipboardItems>((resolve) => resolve([]));
         }
     });
-    const copyButton = getCopyButton(coordinateSearchGroup);
+    const copyButton = getCopyButton(coordinateInputGroup);
     await act(async () => await user.click(copyButton));
     expect(copiedText).toBe("7.636 51.999");
 });
 
-it("should successfully create a coordinate search component with extrnal input", async () => {
-    const input = [761166, 6692084];
-    const { mapId, registry } = await setupMap();
-
-    const injectedServices = createServiceOptions({ registry });
-    render(
-        <PackageContextProvider services={injectedServices} locale="de">
-            <MapContainer mapId={mapId} data-testid="map" />
-            <CoordinateSearch mapId={mapId} data-testid="coordinate-search" input={input} />
-        </PackageContextProvider>
-    );
-
-    await waitForMapMount("map");
-    const { coordInput } = await waitForCoordinateSearch();
-    expect(coordInput.getAttribute("value")).toMatchInlineSnapshot('"6,838 51,398"');
-});
-
-it("should successfully create a coordinate search component with projections", async () => {
-    const { mapId, registry } = await setupMap();
-
-    const injectedServices = createServiceOptions({ registry });
-    render(
-        <PackageContextProvider services={injectedServices}>
-            <CoordinateSearch
-                mapId={mapId}
-                data-testid="coordinate-search"
-                onSelect={() => {}}
-                onClear={() => {}}
-                projections={[
-                    {
-                        label: "EPSG:25832",
-                        value: "EPSG:25832"
-                    },
-                    {
-                        label: "WGS 84",
-                        value: "EPSG:4326"
-                    },
-                    {
-                        label: "Web Mercator",
-                        value: "EPSG:3857"
-                    }
-                ]}
-            />
-        </PackageContextProvider>
-    );
-
-    const { projSelect } = await waitForCoordinateSearch();
-    showDropdown(projSelect);
-    const options = getCurrentOptions(projSelect);
-    const values = getCurrentOptionValues(options);
-
-    expect(values).toStrictEqual(["EPSG:25832", "WGS 84", "Web Mercator"]);
-});
-
 async function waitForCoordinateSearch() {
-    const { coordsSearchDiv, coordInput, coordinateSearchGroup, projSelect } = await waitFor(
+    const { coordsSearchDiv, coordInput, coordinateInputGroup, projSelect } = await waitFor(
         async () => {
             const coordsSearchDiv = await screen.findByTestId("coordinate-search");
 
-            const coordinateSearchGroup = coordsSearchDiv.querySelector(".coordinateSearchGroup");
-            if (!coordinateSearchGroup) {
-                throw new Error("coordinate search group not rendered");
+            const coordinateInputGroup = coordsSearchDiv.querySelector(".coordinateInputGroup");
+            if (!coordinateInputGroup) {
+                throw new Error("coordinate input group not rendered");
             }
 
-            const coordInputDiv = coordinateSearchGroup.querySelector(".coordinateInputGroup");
+            const coordInputDiv = coordinateInputGroup.querySelector(".coordinateInputFieldGroup");
             if (!coordInputDiv) {
-                throw new Error("coordinate search input field not rendered");
+                throw new Error("coordinate input field  group not rendered");
             }
 
             const coordInput = coordInputDiv.querySelector(".chakra-input");
             if (!coordInput) {
-                throw new Error("coordinate search input field not rendered");
+                throw new Error("coordinate input field not rendered");
             }
 
-            const projSelect: HTMLElement | null = coordinateSearchGroup.querySelector(
-                ".coordinate-Search-Select--has-value"
+            const projSelect: HTMLElement | null = coordinateInputGroup.querySelector(
+                ".coordinate-Input-Select--has-value"
             );
             if (!projSelect) {
-                throw new Error("coordinate search projection select not rendered");
+                throw new Error("coordinate input projection select not rendered");
             }
 
-            return { coordsSearchDiv, coordInput, coordinateSearchGroup, projSelect };
+            return { coordsSearchDiv, coordInput, coordinateInputGroup, projSelect };
         }
     );
 
-    return { coordsSearchDiv, coordInput, coordinateSearchGroup, projSelect };
+    return { coordsSearchDiv, coordInput, coordinateInputGroup, projSelect };
 }
 
 function showDropdown(projSelect: HTMLElement) {
@@ -423,7 +373,7 @@ function showDropdown(projSelect: HTMLElement) {
 
 function getCurrentOptions(projSelect: HTMLElement) {
     return Array.from(
-        projSelect.getElementsByClassName("coordinate-Search-Select__option")
+        projSelect.getElementsByClassName("coordinate-Input-Select__option")
     ) as HTMLElement[];
 }
 

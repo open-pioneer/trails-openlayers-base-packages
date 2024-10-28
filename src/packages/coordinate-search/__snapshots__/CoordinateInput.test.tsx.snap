@@ -1,9 +1,9 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`should successfully create a coordinate search component 1`] = `
+exports[`should successfully create a coordinate input component 1`] = `
 <div
-  class="coordinate-input coordinate-search css-0"
-  data-testid="coordinate-search"
+  class="coordinate-input css-0"
+  data-testid="coordinate-input"
   data-theme="light"
 >
   <div

@@ -176,7 +176,7 @@ export const CoordinateInput: FC<CoordinateInputProps> = (props) => {
                     placement="auto"
                     isOpen={!isInputValid}
                 >
-                    <InputGroup className="coordinateSearchGroup">
+                    <InputGroup className="coordinateInputGroup">
                         <CoordinateInputField
                             coordinateSearchInput={coordinateSearchInput}
                             setCoordinateSearchInput={setCoordinateSearchInput}
@@ -229,7 +229,7 @@ function CoordinateInputField(props: {
     } = props;
     const intl = useIntl();
     return (
-        <InputGroup className="coordinateInputGroup">
+        <InputGroup className="coordinateInputFieldGroup">
             <Input
                 type="text"
                 value={coordinateSearchInput}
@@ -361,9 +361,9 @@ function ProjectionSelect(projSelectProps: {
             menuPlacement="auto"
             menuPortalTarget={portalElement.current}
             aria-label={intl.formatMessage({
-                id: "coordinateSearch.ariaLabel"
+                id: "coordinateInput.ariaLabel"
             })}
-            classNamePrefix={"coordinate-Search-Select"}
+            classNamePrefix={"coordinate-Input-Select"}
             isSearchable={false}
             chakraStyles={{
                 menu: (base) => {
@@ -539,7 +539,7 @@ function useProjectionItems(projections: ProjectionInput[]) {
 /**
  * Returns the current placeholder string.
  */
-function usePlaceholder(
+export function usePlaceholder(
     placeholderProp: string | Coordinate,
     mapProjection: Projection | undefined,
     selectedProjection: ProjectionItem
@@ -705,7 +705,7 @@ function transformCoordinates(
 }
 
 /* formats the coordinates into a string with x withspace y */
-function formatCoordinates(coordinates: number[], precision: number, intl: PackageIntl) {
+function formatCoordinates(coordinates: number[], precision: number, intl: PackageIntl): string {
     if (coordinates[0] == null || coordinates[1] == null) {
         return "";
     }

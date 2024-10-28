@@ -1,6 +1,6 @@
 messages:
-  coordinateSearch:
-    ariaLabel: Koordinatensuche
+  coordinateInput:
+    ariaLabel: Koordinateneingabe
     copyPlaceholder: Kopieren
   tooltip:
     basic: "Ungültige Eingabe"
