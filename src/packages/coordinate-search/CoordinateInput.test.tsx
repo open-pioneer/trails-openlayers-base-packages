@@ -60,6 +60,26 @@ it("should successfully create a coordinate input component with external input"
     expect(coordInput.getAttribute("value")).toMatchInlineSnapshot('"6,838 51,398"');
 });
 
+it("should successfully create a coordinate input component with placeholder", async () => {
+    const { mapId, registry } = await setupMap();
+
+    const injectedServices = createServiceOptions({ registry });
+    render(
+        <PackageContextProvider services={injectedServices} locale="de">
+            <MapContainer mapId={mapId} data-testid="map" />
+            <CoordinateInput
+                mapId={mapId}
+                data-testid="coordinate-input"
+                placeholder={"test placeholder"}
+            />
+        </PackageContextProvider>
+    );
+
+    await waitForMapMount("map");
+    const { coordInput } = await waitForCoordinateInput();
+    expect(coordInput.getAttribute("placeholder")).toMatchInlineSnapshot('"test placeholder"');
+});
+
 it("should successfully create a coordinate input component with projections", async () => {
     const { mapId, registry } = await setupMap();
     const projections = [
