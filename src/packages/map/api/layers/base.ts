@@ -7,6 +7,7 @@ import type { LayerRetrievalOptions } from "../shared";
 import type { SimpleLayer } from "./SimpleLayer";
 import type { WMSLayer, WMSSublayer } from "./WMSLayer";
 import { WMTSLayer } from "./WMTSLayer";
+import { GroupLayer, GroupSublayer } from "./GroupLayer";
 
 /** Events emitted by the {@link Layer} and other layer types. */
 export interface LayerBaseEvents {
@@ -222,13 +223,13 @@ export interface SublayersCollection<SublayerType = Sublayer> {
 /**
  * Union type for all layers (extending {@link LayerBaseType})
  */
-export type Layer = SimpleLayer | WMSLayer | WMTSLayer;
+export type Layer = SimpleLayer | WMSLayer | WMTSLayer | GroupLayer;
 export type LayerTypes = Layer["type"];
 
 /**
  * Union type for all sublayers (extending {@link SublayerBaseType}
  */
-export type Sublayer = WMSSublayer;
+export type Sublayer = WMSSublayer | GroupSublayer;
 export type SublayerTypes = Sublayer["type"];
 
 /**

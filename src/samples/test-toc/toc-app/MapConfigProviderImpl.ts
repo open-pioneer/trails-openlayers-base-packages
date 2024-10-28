@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { MapConfig, MapConfigProvider, SimpleLayer, WMSLayer } from "@open-pioneer/map";
+import { GroupLayer } from "@open-pioneer/map/api/layers/GroupLayer";
 import GeoJSON from "ol/format/GeoJSON";
 import TileLayer from "ol/layer/Tile";
 import VectorLayer from "ol/layer/Vector";
@@ -82,7 +83,38 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     olLayer: createKitasLayer()
                 }),
                 createSchulenLayer(),
-                createStrassenLayer()
+                createStrassenLayer(),
+                new GroupLayer({
+                    title: "Group Test",
+                    sublayers: [  
+                        new SimpleLayer({
+                            title: "Kindertagesstätten",
+                            visible: true,
+                            healthCheck:
+                                "https://sgx.geodatenzentrum.de/wmts_topplus_open/1.0.0/WMTSCapabilities.xml",
+                            olLayer: createKitasLayer()
+                        }),
+                        new SimpleLayer({
+                            title: "Haltestellen Stadt Rostock",
+                            visible: true,
+                            description:
+                                "Haltestellen des öffentlichen Personenverkehrs in der Hanse- und Universitätsstadt Rostock.",
+                            olLayer: createHaltestellenLayer()
+                        }),
+                        new GroupLayer({
+                            title: "subgroup test",
+                            sublayers: [
+                                new SimpleLayer({
+                                    title: "Haltestellen Stadt Rostock",
+                                    visible: true,
+                                    description:
+                                        "Haltestellen des öffentlichen Personenverkehrs in der Hanse- und Universitätsstadt Rostock.",
+                                    olLayer: createHaltestellenLayer()
+                                })
+                            ]
+                        })
+                    ]
+                })
             ]
         };
     }

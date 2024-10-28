@@ -114,7 +114,7 @@ export abstract class AbstractLayer<AdditionalEvents = {}>
         }
     }
 
-    abstract readonly type: "simple" | "wms" | "wmts";
+    abstract readonly type: "simple" | "wms" | "wmts" | "group";
 }
 
 function watchLoadState(

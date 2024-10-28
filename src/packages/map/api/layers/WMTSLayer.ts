@@ -23,7 +23,7 @@ export interface WMTSLayerConfig extends LayerConfig {
     sourceOptions?: Partial<WMSSourceOptions>;
 }
 export interface WMTSLayer extends LayerBaseType {
-    readonly type: "wmts";
+    readonly sublayertype: "wmts";
 
     /** URL of the WMTS service. */
     readonly url: string;
