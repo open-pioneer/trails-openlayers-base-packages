@@ -10,7 +10,7 @@ import {
     reactiveMap,
     ReadonlyReactive
 } from "@conterra/reactivity-core";
-import { AnyLayerBaseType, AnyLayerTypes, LayerBaseEvents, Sublayer } from "../api";
+import { AnyLayer, AnyLayerBaseType, AnyLayerTypes, Layer, LayerBaseEvents, Sublayer } from "../api";
 import { MapModelImpl } from "./MapModelImpl";
 import { SublayersCollectionImpl } from "./SublayersCollectionImpl";
 
@@ -32,6 +32,7 @@ export abstract class AbstractLayerBase<AdditionalEvents = {}>
     implements AnyLayerBaseType
 {
     #map: MapModelImpl | undefined;
+    #parent: AnyLayer | undefined;
 
     #id: string;
     #title: Reactive<string>;
@@ -82,10 +83,16 @@ export abstract class AbstractLayerBase<AdditionalEvents = {}>
         return this.#attributes.value;
     }
 
+    get parent(): AnyLayer | undefined {
+        return this.#parent;
+    }
+
     abstract get type(): AnyLayerTypes;
 
     abstract get visible(): boolean;
-
+    
+    abstract get layers(): Layer[] | undefined;
+    
     abstract get sublayers(): SublayersCollectionImpl<Sublayer & AbstractLayerBase> | undefined;
 
     abstract get legend(): string | undefined;
@@ -114,6 +121,10 @@ export abstract class AbstractLayerBase<AdditionalEvents = {}>
             );
         }
         this.#map = map;
+    }
+
+    __attachToGroup(parent: Layer): void {
+        this.#parent = parent;
     }
 
     setTitle(newTitle: string): void {

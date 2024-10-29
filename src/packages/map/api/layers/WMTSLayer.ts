@@ -22,8 +22,9 @@ export interface WMTSLayerConfig extends LayerConfig {
      */
     sourceOptions?: Partial<WMSSourceOptions>;
 }
+
 export interface WMTSLayer extends LayerBaseType {
-    readonly sublayertype: "wmts";
+    readonly type: "wmts";
 
     /** URL of the WMTS service. */
     readonly url: string;
@@ -33,6 +34,8 @@ export interface WMTSLayer extends LayerBaseType {
 
     /** The name of the tile matrix set in the service's capabilities. */
     readonly matrixSet: string;
+
+    readonly layers: undefined;
 }
 
 export interface WMTSLayerConstructor {

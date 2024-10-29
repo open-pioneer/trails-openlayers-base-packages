@@ -338,8 +338,11 @@ describe("performs a health check", () => {
 
 // Basic impl for tests
 class LayerImpl extends AbstractLayer {
-    sublayertype = "simple" as const;
+    type = "simple" as const;
     get legend(): string | undefined {
+        return undefined;
+    }
+    get layers(): undefined {
         return undefined;
     }
     get sublayers(): undefined {

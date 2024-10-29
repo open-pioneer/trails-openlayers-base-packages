@@ -93,8 +93,9 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
     get url(): string {
         return this.#url;
     }
-    get __source() {
-        return this.#source;
+
+    get layers(): undefined {
+        return undefined;
     }
 
     get sublayers(): SublayersCollectionImpl<WMSSublayerImpl> {
@@ -247,6 +248,10 @@ class WMSSublayerImpl extends AbstractLayerBase implements WMSSublayer {
 
     get name(): string | undefined {
         return this.#name;
+    }
+
+    get layers(): undefined {
+        return undefined;
     }
 
     get sublayers(): SublayersCollectionImpl<WMSSublayerImpl> {

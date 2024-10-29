@@ -12,9 +12,15 @@ export class SimpleLayerImpl extends AbstractLayer implements SimpleLayer {
     get type() {
         return "simple" as const;
     }
-    get legend() {
+
+    get legend(): undefined {
         return undefined;
     }
+
+    get layers(): undefined {
+        return undefined;
+    }
+
     get sublayers(): undefined {
         return undefined;
     }

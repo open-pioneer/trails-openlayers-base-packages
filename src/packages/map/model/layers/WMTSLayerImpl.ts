@@ -53,6 +53,14 @@ export class WMTSLayerImpl extends AbstractLayer implements WMTSLayer {
         return this.#legend.value;
     }
 
+    get sublayers(): undefined {
+        return undefined;
+    }
+
+    get layers(): undefined {
+        return undefined;
+    }
+
     __attach(map: MapModelImpl): void {
         super.__attach(map);
         this.#fetchWMTSCapabilities()
@@ -88,10 +96,6 @@ export class WMTSLayerImpl extends AbstractLayer implements WMTSLayer {
             });
     }
 
-    get layer() {
-        return this.#layer;
-    }
-
     get url() {
         return this.#url;
     }
@@ -102,10 +106,6 @@ export class WMTSLayerImpl extends AbstractLayer implements WMTSLayer {
 
     get matrixSet() {
         return this.#matrixSet;
-    }
-
-    get sublayers(): undefined {
-        return undefined;
     }
 
     async #fetchWMTSCapabilities(): Promise<string> {

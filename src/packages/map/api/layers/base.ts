@@ -7,7 +7,7 @@ import type { LayerRetrievalOptions } from "../shared";
 import type { SimpleLayer } from "./SimpleLayer";
 import type { WMSLayer, WMSSublayer } from "./WMSLayer";
 import { WMTSLayer } from "./WMTSLayer";
-import { GroupLayer, GroupSublayer } from "./GroupLayer";
+import { GroupLayer } from "./GroupLayer";
 
 /** Events emitted by the {@link Layer} and other layer types. */
 export interface LayerBaseEvents {
@@ -71,6 +71,11 @@ export interface AnyLayerBaseType<AdditionalEvents = {}>
     readonly map: MapModel;
 
     /**
+     * The direct parent of this layer instance, used for sublayers or for layers in a group.
+     */
+    readonly parent: AnyLayer | undefined;
+
+    /**
      * The unique id of this layer within its map model.
      *
      * NOTE: layer ids may not be globally unique: layers that belong
@@ -98,9 +103,18 @@ export interface AnyLayerBaseType<AdditionalEvents = {}>
     readonly legend: string | undefined;
 
     /**
+     * Children of this layer (if it is a group).
+     * 
+     * The properties `layers` and `sublayers` are mutually exclusive.
+     */
+    readonly layers: Layer[] | undefined;
+
+    /**
      * The collection of child sublayers for this layer.
      *
      * Layers that can never have any sublayers may not have a `sublayers` collection.
+     * 
+     * The properties `layers` and `sublayers` are mutually exclusive.
      */
     readonly sublayers: SublayersCollection | undefined;
 
@@ -229,7 +243,7 @@ export type LayerTypes = Layer["type"];
 /**
  * Union type for all sublayers (extending {@link SublayerBaseType}
  */
-export type Sublayer = WMSSublayer | GroupSublayer;
+export type Sublayer = WMSSublayer;
 export type SublayerTypes = Sublayer["type"];
 
 /**

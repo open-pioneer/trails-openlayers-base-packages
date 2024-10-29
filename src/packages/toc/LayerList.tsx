@@ -19,7 +19,7 @@ import {
     Text,
     Tooltip
 } from "@open-pioneer/chakra-integration";
-import { Layer, AnyLayer, MapModel, Sublayer } from "@open-pioneer/map";
+import { AnyLayer, isSublayer, Layer, MapModel } from "@open-pioneer/map";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { PackageIntl } from "@open-pioneer/runtime";
 import classNames from "classnames";
@@ -78,7 +78,7 @@ function LayerItem(props: { layer: AnyLayer; intl: PackageIntl }): JSX.Element {
             isVisible: layer.visible
         };
     }, [layer]);
-    const sublayers = useSublayers(layer);
+    const sublayers = useChildLayers(layer);
     const isAvailable = useLoadState(layer) !== "error";
     const notAvailableLabel = intl.formatMessage({ id: "layerNotAvailable" });
 
@@ -192,8 +192,13 @@ function useLayers(map: MapModel): Layer[] {
  * Returns the sublayers of the given layer (or undefined, if the sublayer cannot have any).
  * Sublayers are returned in render order (topmost sublayer first).
  */
-function useSublayers(layer: AnyLayer): Sublayer[] | undefined {
+function useChildLayers(layer: AnyLayer): AnyLayer[] | undefined {
     return useReactiveSnapshot(() => {
+        if (layer.layers) {
+            // TODO: getter with display order?
+            return Array.from(layer.layers).reverse();
+        }
+
         const sublayers = layer.sublayers?.getSublayers({ sortByDisplayOrder: true });
         if (!sublayers) {
             return undefined;
@@ -208,7 +213,7 @@ function useSublayers(layer: AnyLayer): Sublayer[] | undefined {
 function useLoadState(layer: AnyLayer): string {
     return useReactiveSnapshot(() => {
         // for sublayers, use the state of the parent
-        const target = "parentLayer" in layer ? layer.parentLayer : layer;
+        const target = isSublayer(layer) ? layer.parentLayer : layer;
         return target.loadState;
     }, [layer]);
 }
