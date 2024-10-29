@@ -86,7 +86,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                 createStrassenLayer(),
                 new GroupLayer({
                     title: "Group Test",
-                    sublayers: [  
+                    layers: [  
                         new SimpleLayer({
                             title: "Kindertagesstätten",
                             visible: true,
@@ -103,7 +103,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                         }),
                         new GroupLayer({
                             title: "subgroup test",
-                            sublayers: [
+                            layers: [
                                 new SimpleLayer({
                                     title: "Haltestellen Stadt Rostock",
                                     visible: true,

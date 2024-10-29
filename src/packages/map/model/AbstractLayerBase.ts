@@ -10,9 +10,10 @@ import {
     reactiveMap,
     ReadonlyReactive
 } from "@conterra/reactivity-core";
-import { AnyLayer, AnyLayerBaseType, AnyLayerTypes, Layer, LayerBaseEvents, Sublayer } from "../api";
+import { AnyLayer, AnyLayerBaseType, AnyLayerTypes, GroupLayerCollection, Layer, LayerBaseEvents, Sublayer } from "../api";
 import { MapModelImpl } from "./MapModelImpl";
 import { SublayersCollectionImpl } from "./SublayersCollectionImpl";
+import { GroupLayer } from "../api/layers/GroupLayer";
 
 const LOG = createLogger("map:AbstractLayerModel");
 
@@ -91,7 +92,7 @@ export abstract class AbstractLayerBase<AdditionalEvents = {}>
 
     abstract get visible(): boolean;
     
-    abstract get layers(): Layer[] | undefined;
+    abstract get layers(): GroupLayerCollection | undefined;
     
     abstract get sublayers(): SublayersCollectionImpl<Sublayer & AbstractLayerBase> | undefined;
 
@@ -123,7 +124,12 @@ export abstract class AbstractLayerBase<AdditionalEvents = {}>
         this.#map = map;
     }
 
-    __attachToGroup(parent: Layer): void {
+    __attachToGroup(parent: GroupLayer): void {
+        if (this.#parent) {
+            throw new Error(
+                `Layer '${this.id}' has already been attached to the group layer '${this.#parent.id}'`
+            );
+        }
         this.#parent = parent;
     }
 

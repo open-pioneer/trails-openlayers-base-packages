@@ -1,11 +1,10 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { GroupLayerImpl } from "../../model/layers/GroupLayerImpl";
-import { Layer, LayerBaseType, LayerConfig } from "./base";
+import { GroupCollectionLayer, GroupLayerCollection, Layer, LayerBaseType, LayerConfig } from "./base";
 
 export interface GroupLayerConfig extends LayerConfig {
-    // TODO: layers instead of sublayers
-    sublayers: Layer[]
+    layers: GroupCollectionLayer[]
 }
 
 export interface GroupLayerConstructor {
@@ -32,7 +31,7 @@ export interface GroupLayer extends LayerBaseType {
     /**
      * Children of this group layer.
      */
-    readonly layers: Layer[];
+    readonly layers: GroupLayerCollection;
     readonly sublayers: undefined;
 }
 

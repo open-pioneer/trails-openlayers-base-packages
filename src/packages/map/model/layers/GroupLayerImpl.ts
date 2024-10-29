@@ -1,27 +1,27 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Group } from "ol/layer";
-import { Layer } from "../../api";
+import { GroupLayerCollection, Layer } from "../../api";
 import { GroupLayer, GroupLayerConfig } from "../../api/layers/GroupLayer";
 import { AbstractLayer } from "../AbstractLayer";
 import { AbstractLayerBase } from "../AbstractLayerBase";
+import { GroupLayerCollectionImpl } from "../GroupLayerCollectionImpl";
 
 export class GroupLayerImpl extends AbstractLayer implements GroupLayer {
     #olGroupLayer: Group;
-    #children: Layer[];
+    #children: GroupLayerCollection;
 
     constructor(config: GroupLayerConfig){
-        // TODO: register sublayer.parentLayer
-        const olGroup = new Group({layers: config.sublayers.map(sublayer => sublayer.olLayer)});
+        const groupLayers = config.layers;
+        const olGroup = new Group({layers: groupLayers.map(sublayer => sublayer.olLayer)});
         super({...config, olLayer: olGroup});
 
         // Register child -> parent links
-        for (const sublayer of config.sublayers) {
-            // TODO: instanceof/typecheck first?
-            (sublayer as unknown as AbstractLayerBase).__attachToGroup(this);
+        for (const layer of groupLayers) {
+            layer.__attachToGroup(this);
         }
 
-        this.#children = config.sublayers;
+        this.#children = new GroupLayerCollectionImpl(groupLayers);
         this.#olGroupLayer = olGroup;
     }
 
@@ -33,11 +33,12 @@ export class GroupLayerImpl extends AbstractLayer implements GroupLayer {
         return undefined;
     }
 
-    get layers(): Layer[] {
+    get layers():GroupLayerCollection {
         return this.#children;
     }
 
     get sublayers(): undefined {
         return undefined;
     }
+
 }

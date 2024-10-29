@@ -194,9 +194,10 @@ function useLayers(map: MapModel): Layer[] {
  */
 function useChildLayers(layer: AnyLayer): AnyLayer[] | undefined {
     return useReactiveSnapshot(() => {
+        //layers and sublayers are mutually exclusive, only render sublayers if layers is undefined
         if (layer.layers) {
-            // TODO: getter with display order?
-            return Array.from(layer.layers).reverse();
+            const groupMembers = layer.layers.getLayers({sortByDisplayOrder: true});
+            return groupMembers.reverse();
         }
 
         const sublayers = layer.sublayers?.getSublayers({ sortByDisplayOrder: true });
