@@ -10,7 +10,7 @@ import {
     reactiveMap,
     ReadonlyReactive
 } from "@conterra/reactivity-core";
-import { AnyLayer, AnyLayerBaseType, AnyLayerTypes, GroupLayerCollection, Layer, LayerBaseEvents, Sublayer } from "../api";
+import { AnyLayer, AnyLayerBaseType, AnyLayerTypes, LayerBaseEvents, Sublayer } from "../api";
 import { MapModelImpl } from "./MapModelImpl";
 import { SublayersCollectionImpl } from "./SublayersCollectionImpl";
 import { GroupLayer } from "../api/layers/GroupLayer";
@@ -92,9 +92,9 @@ export abstract class AbstractLayerBase<AdditionalEvents = {}>
     abstract get type(): AnyLayerTypes;
 
     abstract get visible(): boolean;
-    
+
     abstract get layers(): GroupLayerCollectionImpl | undefined;
-    
+
     abstract get sublayers(): SublayersCollectionImpl<Sublayer & AbstractLayerBase> | undefined;
 
     abstract get legend(): string | undefined;
@@ -142,7 +142,7 @@ export abstract class AbstractLayerBase<AdditionalEvents = {}>
     /**
      * detach layer from parent group layer
      */
-    __detachFromGroup(): void{
+    __detachFromGroup(): void {
         this.#parent = undefined;
         this.layers?.destroy();
     }

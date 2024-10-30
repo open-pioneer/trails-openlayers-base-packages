@@ -7,7 +7,7 @@ import Layer from "ol/layer/Layer";
 import TileLayer from "ol/layer/Tile";
 import { HttpService } from "@open-pioneer/http";
 import { Mock, MockInstance, afterEach, describe, expect, it, vi } from "vitest";
-import { GroupLayerCollection, HealthCheckFunction, LayerConfig, SimpleLayerConfig } from "../api";
+import { HealthCheckFunction, LayerConfig, SimpleLayerConfig } from "../api";
 import { AbstractLayer } from "./AbstractLayer";
 import Source, { State } from "ol/source/Source";
 import { MapModelImpl } from "./MapModelImpl";

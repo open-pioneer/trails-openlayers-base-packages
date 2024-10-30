@@ -86,7 +86,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                 createStrassenLayer(),
                 new GroupLayer({
                     title: "Group Test",
-                    layers: [  
+                    layers: [
                         new SimpleLayer({
                             title: "Kindertagesstätten",
                             visible: true,

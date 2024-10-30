@@ -196,7 +196,7 @@ function useChildLayers(layer: AnyLayer): AnyLayer[] | undefined {
     return useReactiveSnapshot(() => {
         //layers and sublayers are mutually exclusive, only render sublayers if layers is undefined
         if (layer.layers) {
-            const groupMembers = layer.layers.getLayers({sortByDisplayOrder: true});
+            const groupMembers = layer.layers.getLayers({ sortByDisplayOrder: true });
             return groupMembers.reverse();
         }
 

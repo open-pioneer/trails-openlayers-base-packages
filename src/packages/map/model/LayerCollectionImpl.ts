@@ -226,7 +226,7 @@ export class LayerCollectionImpl implements LayerCollection {
             }
             registrations.push([id, olLayer]);
 
-            for(const layer of model.layers?.__getRawLayers() ?? []){
+            for (const layer of model.layers?.__getRawLayers() ?? []) {
                 visit(layer);
             }
             // Recurse into nested sublayers.
@@ -258,7 +258,7 @@ export class LayerCollectionImpl implements LayerCollection {
             }
             this.#layersById.delete(model.id);
 
-            for(const layer of model.layers?.__getRawLayers() ?? []){
+            for (const layer of model.layers?.__getRawLayers() ?? []) {
                 visit(layer);
             }
 
@@ -279,7 +279,7 @@ function sortLayersByDisplayOrder(layers: Layer[]) {
         const rightZ = right.olLayer.getZIndex() ?? 1;
         if (leftZ !== rightZ) {
             return leftZ - rightZ;
-        }else{
+        } else {
             return 0;
         }
     });

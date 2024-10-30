@@ -8,7 +8,6 @@ import { AbstractLayerBase, AbstractLayerBaseOptions } from "./AbstractLayerBase
 import { MapModelImpl } from "./MapModelImpl";
 import { SublayersCollectionImpl } from "./SublayersCollectionImpl";
 import { syncWatch } from "@conterra/reactivity-core";
-import { GroupLayerCollection, Layer } from "../api";
 import { GroupLayerCollectionImpl } from "./GroupLayerCollectionImpl";
 
 afterEach(() => {

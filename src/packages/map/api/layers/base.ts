@@ -8,7 +8,6 @@ import type { SimpleLayer } from "./SimpleLayer";
 import type { WMSLayer, WMSSublayer } from "./WMSLayer";
 import { WMTSLayer } from "./WMTSLayer";
 import { GroupLayer } from "./GroupLayer";
-import { AbstractLayerBase } from "../../model/AbstractLayerBase";
 
 /** Events emitted by the {@link Layer} and other layer types. */
 export interface LayerBaseEvents {
@@ -105,7 +104,7 @@ export interface AnyLayerBaseType<AdditionalEvents = {}>
 
     /**
      * Children of this layer (if it is a group).
-     * 
+     *
      * The properties `layers` and `sublayers` are mutually exclusive.
      */
     readonly layers: GroupLayerCollection | undefined;
@@ -114,7 +113,7 @@ export interface AnyLayerBaseType<AdditionalEvents = {}>
      * The collection of child sublayers for this layer.
      *
      * Layers that can never have any sublayers may not have a `sublayers` collection.
-     * 
+     *
      * The properties `layers` and `sublayers` are mutually exclusive.
      */
     readonly sublayers: SublayersCollection | undefined;
@@ -235,7 +234,7 @@ export interface SublayersCollection<SublayerType = Sublayer> {
     getSublayers(options?: LayerRetrievalOptions): SublayerType[];
 }
 
-export interface GroupLayerCollection{
+export interface GroupLayerCollection {
     /**
      * Returns the group members in this collection
      */

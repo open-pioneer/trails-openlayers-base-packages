@@ -1,19 +1,17 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Group } from "ol/layer";
-import { GroupLayerCollection, Layer } from "../../api";
 import { GroupLayer, GroupLayerConfig } from "../../api/layers/GroupLayer";
 import { AbstractLayer } from "../AbstractLayer";
-import { AbstractLayerBase } from "../AbstractLayerBase";
 import { GroupLayerCollectionImpl } from "../GroupLayerCollectionImpl";
 
 export class GroupLayerImpl extends AbstractLayer implements GroupLayer {
     #children: GroupLayerCollectionImpl;
 
-    constructor(config: GroupLayerConfig){
+    constructor(config: GroupLayerConfig) {
         const groupLayers = config.layers;
-        const olGroup = new Group({layers: groupLayers.map(sublayer => sublayer.olLayer)});
-        super({...config, olLayer: olGroup});
+        const olGroup = new Group({ layers: groupLayers.map((sublayer) => sublayer.olLayer) });
+        super({ ...config, olLayer: olGroup });
 
         this.#children = new GroupLayerCollectionImpl(groupLayers, this);
     }
@@ -26,12 +24,11 @@ export class GroupLayerImpl extends AbstractLayer implements GroupLayer {
         return undefined;
     }
 
-    get layers():GroupLayerCollectionImpl {
+    get layers(): GroupLayerCollectionImpl {
         return this.#children;
     }
 
     get sublayers(): undefined {
         return undefined;
     }
-
 }
