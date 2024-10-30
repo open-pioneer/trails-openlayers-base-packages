@@ -7,11 +7,12 @@ import Layer from "ol/layer/Layer";
 import TileLayer from "ol/layer/Tile";
 import { HttpService } from "@open-pioneer/http";
 import { Mock, MockInstance, afterEach, describe, expect, it, vi } from "vitest";
-import { HealthCheckFunction, LayerConfig, SimpleLayerConfig } from "../api";
+import { GroupLayerCollection, HealthCheckFunction, LayerConfig, SimpleLayerConfig } from "../api";
 import { AbstractLayer } from "./AbstractLayer";
 import Source, { State } from "ol/source/Source";
 import { MapModelImpl } from "./MapModelImpl";
 import { syncWatch } from "@conterra/reactivity-core";
+import { GroupLayerCollectionImpl } from "./GroupLayerCollectionImpl";
 
 afterEach(() => {
     vi.restoreAllMocks();
@@ -339,13 +340,15 @@ describe("performs a health check", () => {
 // Basic impl for tests
 class LayerImpl extends AbstractLayer {
     type = "simple" as const;
+
     get legend(): string | undefined {
         return undefined;
     }
-    get layers(): undefined {
+    get sublayers(): undefined {
         return undefined;
     }
-    get sublayers(): undefined {
+
+    get layers(): GroupLayerCollectionImpl | undefined {
         return undefined;
     }
 }

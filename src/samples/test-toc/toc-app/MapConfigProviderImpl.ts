@@ -102,7 +102,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                             olLayer: createHaltestellenLayer()
                         }),
                         new GroupLayer({
-                            title: "subgroup test",
+                            title: "Subgroup test",
                             layers: [
                                 new SimpleLayer({
                                     title: "Haltestellen Stadt Rostock",
@@ -110,6 +110,13 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                                     description:
                                         "Haltestellen des öffentlichen Personenverkehrs in der Hanse- und Universitätsstadt Rostock.",
                                     olLayer: createHaltestellenLayer()
+                                }),
+                                new SimpleLayer({
+                                    title: "Kindertagesstätten",
+                                    visible: true,
+                                    healthCheck:
+                                        "https://sgx.geodatenzentrum.de/wmts_topplus_open/1.0.0/WMTSCapabilities.xml",
+                                    olLayer: createKitasLayer()
                                 })
                             ]
                         })

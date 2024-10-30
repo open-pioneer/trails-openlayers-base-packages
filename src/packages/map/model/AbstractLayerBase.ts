@@ -14,6 +14,7 @@ import { AnyLayer, AnyLayerBaseType, AnyLayerTypes, GroupLayerCollection, Layer,
 import { MapModelImpl } from "./MapModelImpl";
 import { SublayersCollectionImpl } from "./SublayersCollectionImpl";
 import { GroupLayer } from "../api/layers/GroupLayer";
+import { GroupLayerCollectionImpl } from "./GroupLayerCollectionImpl";
 
 const LOG = createLogger("map:AbstractLayerModel");
 
@@ -92,7 +93,7 @@ export abstract class AbstractLayerBase<AdditionalEvents = {}>
 
     abstract get visible(): boolean;
     
-    abstract get layers(): GroupLayerCollection | undefined;
+    abstract get layers(): GroupLayerCollectionImpl | undefined;
     
     abstract get sublayers(): SublayersCollectionImpl<Sublayer & AbstractLayerBase> | undefined;
 
@@ -105,6 +106,7 @@ export abstract class AbstractLayerBase<AdditionalEvents = {}>
 
         this.#destroyed = true;
         this.sublayers?.destroy();
+        this.__detachFromGroup();
         try {
             this.emit("destroy");
         } catch (e) {
@@ -124,6 +126,10 @@ export abstract class AbstractLayerBase<AdditionalEvents = {}>
         this.#map = map;
     }
 
+    /**
+     * attach group layers to its parent group layer
+     * @param parent
+     */
     __attachToGroup(parent: GroupLayer): void {
         if (this.#parent) {
             throw new Error(
@@ -131,6 +137,14 @@ export abstract class AbstractLayerBase<AdditionalEvents = {}>
             );
         }
         this.#parent = parent;
+    }
+
+    /**
+     * detach layer from parent group layer
+     */
+    __detachFromGroup(): void{
+        this.#parent = undefined;
+        this.layers?.destroy();
     }
 
     setTitle(newTitle: string): void {

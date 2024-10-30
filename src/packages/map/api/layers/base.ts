@@ -239,9 +239,8 @@ export interface GroupLayerCollection{
     /**
      * Returns the group members in this collection
      */
-    getLayers(options?: LayerRetrievalOptions): GroupCollectionLayer[];
+    getLayers(options?: LayerRetrievalOptions): Layer[];
 }
-
 
 /**
  * Union type for all layers (extending {@link LayerBaseType})
@@ -260,8 +259,6 @@ export type SublayerTypes = Sublayer["type"];
  */
 export type AnyLayer = Layer | Sublayer;
 export type AnyLayerTypes = AnyLayer["type"];
-
-export type GroupCollectionLayer = Layer & {__attachToGroup(parent: GroupLayer): void, destroy(): void};
 
 /**
  * Type guard for checking if the layer is a {@link Sublayer}.

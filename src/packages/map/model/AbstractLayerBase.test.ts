@@ -8,7 +8,8 @@ import { AbstractLayerBase, AbstractLayerBaseOptions } from "./AbstractLayerBase
 import { MapModelImpl } from "./MapModelImpl";
 import { SublayersCollectionImpl } from "./SublayersCollectionImpl";
 import { syncWatch } from "@conterra/reactivity-core";
-import { Layer } from "../api";
+import { GroupLayerCollection, Layer } from "../api";
+import { GroupLayerCollectionImpl } from "./GroupLayerCollectionImpl";
 
 afterEach(() => {
     vi.restoreAllMocks();
@@ -256,8 +257,7 @@ abstract class SharedParent extends AbstractLayerBase {
         return undefined;
     }
 
-    get layers(): Layer[] | undefined {
-        // TODO: Test?
+    get layers(): GroupLayerCollectionImpl | undefined {
         return undefined;
     }
 

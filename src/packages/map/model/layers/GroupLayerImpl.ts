@@ -8,21 +8,14 @@ import { AbstractLayerBase } from "../AbstractLayerBase";
 import { GroupLayerCollectionImpl } from "../GroupLayerCollectionImpl";
 
 export class GroupLayerImpl extends AbstractLayer implements GroupLayer {
-    #olGroupLayer: Group;
-    #children: GroupLayerCollection;
+    #children: GroupLayerCollectionImpl;
 
     constructor(config: GroupLayerConfig){
         const groupLayers = config.layers;
         const olGroup = new Group({layers: groupLayers.map(sublayer => sublayer.olLayer)});
         super({...config, olLayer: olGroup});
 
-        // Register child -> parent links
-        for (const layer of groupLayers) {
-            layer.__attachToGroup(this);
-        }
-
-        this.#children = new GroupLayerCollectionImpl(groupLayers);
-        this.#olGroupLayer = olGroup;
+        this.#children = new GroupLayerCollectionImpl(groupLayers, this);
     }
 
     get type() {
@@ -33,7 +26,7 @@ export class GroupLayerImpl extends AbstractLayer implements GroupLayer {
         return undefined;
     }
 
-    get layers():GroupLayerCollection {
+    get layers():GroupLayerCollectionImpl {
         return this.#children;
     }
 

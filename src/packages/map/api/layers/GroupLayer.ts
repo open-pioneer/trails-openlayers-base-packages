@@ -1,10 +1,11 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import { AbstractLayer } from "../../model/AbstractLayer";
 import { GroupLayerImpl } from "../../model/layers/GroupLayerImpl";
-import { GroupCollectionLayer, GroupLayerCollection, Layer, LayerBaseType, LayerConfig } from "./base";
+import { GroupLayerCollection, Layer, LayerBaseType, LayerConfig } from "./base";
 
 export interface GroupLayerConfig extends LayerConfig {
-    layers: GroupCollectionLayer[]
+    layers: Layer[]
 }
 
 export interface GroupLayerConstructor {
