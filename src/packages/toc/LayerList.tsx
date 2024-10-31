@@ -78,13 +78,13 @@ function LayerItem(props: { layer: AnyLayer; intl: PackageIntl }): JSX.Element {
             isVisible: layer.visible
         };
     }, [layer]);
-    const sublayers = useChildLayers(layer);
+    const childLayers = useChildLayers(layer);
     const isAvailable = useLoadState(layer) !== "error";
     const notAvailableLabel = intl.formatMessage({ id: "layerNotAvailable" });
 
     let nestedChildren;
-    if (sublayers?.length) {
-        nestedChildren = createList(sublayers, intl, {
+    if (childLayers?.length) {
+        nestedChildren = createList(childLayers, intl, {
             ml: 4,
             "aria-label": intl.formatMessage({ id: "childgroupLabel" }, { title: title })
         });
@@ -189,8 +189,8 @@ function useLayers(map: MapModel): Layer[] {
 }
 
 /**
- * Returns the sublayers of the given layer (or undefined, if the sublayer cannot have any).
- * Sublayers are returned in render order (topmost sublayer first).
+ * Returns the child layers (sublayers or layers contained in a group layer) of a layer.
+ * Layers are returned in render order (topmost sublayer first).
  */
 function useChildLayers(layer: AnyLayer): AnyLayer[] | undefined {
     return useReactiveSnapshot(() => {

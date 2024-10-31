@@ -2,9 +2,38 @@
 // SPDX-License-Identifier: Apache-2.0
 import { GroupLayerImpl } from "../../model/layers/GroupLayerImpl";
 import { GroupLayerCollection, Layer, LayerBaseType, LayerConfig } from "./base";
+import { Group } from "ol/layer";
 
+/**
+ * Configuration options to construct a {@link GroupLayer}.
+ */
 export interface GroupLayerConfig extends LayerConfig {
+    /**
+     * List of layer that belong to group layer.
+     * As long as a layer is attached to a group it cannot be added to the map model directly.
+     */
     layers: Layer[];
+}
+
+/**
+ * Represents a group of layers.
+ * A group layer contains a collection of {@link Layer} instances, nesting of group layers is also possible.
+ */
+export interface GroupLayer extends LayerBaseType {
+    readonly type: "group";
+
+    /**
+     * layers contained in this group.
+     */
+    readonly layers: GroupLayerCollection;
+
+    /**
+     * raw OL LayerGroup
+     * Warning: Do not manipulate the collection of layers in this group, changes are not synchronized!
+     */
+    readonly olLayer: Group;
+
+    readonly sublayers: undefined;
 }
 
 export interface GroupLayerConstructor {
@@ -12,27 +41,6 @@ export interface GroupLayerConstructor {
 
     /** Creates a new {@link GroupLayer}. */
     new (config: GroupLayerConfig): GroupLayer;
-}
-
-/**
- * TODO:
- * - Start with static configuration (no adding or removing of layers after creation of the group)
- *   - Interface should be consistent with sublayers
- *   - No raw arrays / mutable objects from API
- * - Establish and maintain parent-child and child-parent links
- * - Index layer hierarchy by id (see LayerCollectionImpl)
- * - Implement group / nesting support in TOC
- * - Update documentation (layer / sublayers, examples etc.)
- *   - Document that members of the raw olLayer should not be modified directly
- */
-export interface GroupLayer extends LayerBaseType {
-    readonly type: "group";
-
-    /**
-     * Children of this group layer.
-     */
-    readonly layers: GroupLayerCollection;
-    readonly sublayers: undefined;
 }
 
 export const GroupLayer: GroupLayerConstructor = GroupLayerImpl;

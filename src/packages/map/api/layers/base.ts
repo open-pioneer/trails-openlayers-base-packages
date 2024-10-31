@@ -71,7 +71,9 @@ export interface AnyLayerBaseType<AdditionalEvents = {}>
     readonly map: MapModel;
 
     /**
-     * The direct parent of this layer instance, used for sublayers or for layers in a group.
+     * The direct parent of this layer instance, used for sublayers or for layers in a group layer.
+     *
+     * The property shall be undefined if the layer is not a sublayer or member of a group layer.
      */
     readonly parent: AnyLayer | undefined;
 
@@ -103,14 +105,16 @@ export interface AnyLayerBaseType<AdditionalEvents = {}>
     readonly legend: string | undefined;
 
     /**
-     * Children of this layer (if it is a group).
+     * If this layer is a group layer this property contains a collection of all layers that a members to the group.
+     *
+     * The properties shall be undefinded if it is not a group layer.
      *
      * The properties `layers` and `sublayers` are mutually exclusive.
      */
     readonly layers: GroupLayerCollection | undefined;
 
     /**
-     * The collection of child sublayers for this layer.
+     * The collection of child sublayers for this layer. Sublayers are layers that cannot exist without a apropriate parent layer.
      *
      * Layers that can never have any sublayers may not have a `sublayers` collection.
      *
@@ -234,9 +238,12 @@ export interface SublayersCollection<SublayerType = Sublayer> {
     getSublayers(options?: LayerRetrievalOptions): SublayerType[];
 }
 
+/**
+ * Contains {@link Layer} instances that belong to a {@link GroupLayer}
+ */
 export interface GroupLayerCollection {
     /**
-     * Returns the group members in this collection
+     * Returns all layers in this collection
      */
     getLayers(options?: LayerRetrievalOptions): Layer[];
 }

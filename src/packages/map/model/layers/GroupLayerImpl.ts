@@ -31,4 +31,12 @@ export class GroupLayerImpl extends AbstractLayer implements GroupLayer {
     get sublayers(): undefined {
         return undefined;
     }
+
+    /**
+     * return raw OL LayerGroup
+     * Warning: Do not manipulate the collection of layers in this group, changes are not synchronized!
+     */
+    get olLayer(): Group {
+        return super.olLayer as Group;
+    }
 }
