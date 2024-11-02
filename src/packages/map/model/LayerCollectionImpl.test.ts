@@ -18,6 +18,8 @@ import { createMapModel } from "./createMapModel";
 import { SimpleLayerImpl } from "./layers/SimpleLayerImpl";
 import { WMSLayerImpl } from "./layers/WMSLayerImpl";
 import { syncWatch } from "@conterra/reactivity-core";
+import { GroupLayer } from "../api/layers/GroupLayer";
+import { Group } from "ol/layer";
 
 const THIS_DIR = dirname(fileURLToPath(import.meta.url));
 const WMTS_CAPAS = readFileSync(
@@ -237,6 +239,33 @@ it("supports lookup by layer id", async () => {
     expect(l3).toBeUndefined();
 });
 
+it("upports lookup by layer id for members of a group layer", async () => {
+    const olLayer = new TileLayer({
+        source: new OSM()
+    });
+
+    model = await create("foo", {
+        layers: [
+            new GroupLayer({
+                id: "group",
+                title: "group test",
+                layers: [
+                    new SimpleLayerImpl({
+                        id: "member",
+                        title: "group member",
+                        olLayer: olLayer
+                    })
+                ]
+            })
+        ]
+    });
+
+    const memberLayer = model.layers.getLayerById("member");
+    expect(memberLayer).toBeDefined();
+    const groupLayer = model.layers.getLayerById("group");
+    expect(groupLayer).toBeDefined();
+});
+
 it("results in an error, if using the same layer id twice", async () => {
     await expect(async () => {
         model = await create("foo", {
@@ -285,6 +314,69 @@ it("supports reverse lookup from OpenLayers layer", async () => {
 
     const l2 = model.layers.getLayerByRawInstance(rawL2);
     expect(l2).toBeUndefined();
+});
+
+it("supports reverse lookup from OpenLayers layer for members of a group layer", async () => {
+    const olLayer = new TileLayer({
+        source: new OSM()
+    });
+
+    model = await create("foo", {
+        layers: [
+            new GroupLayer({
+                id: "group",
+                title: "group test",
+                layers: [
+                    new SimpleLayerImpl({
+                        id: "member",
+                        title: "group member",
+                        olLayer: olLayer
+                    })
+                ]
+            })
+        ]
+    });
+
+    const memberLayer = model.layers.getLayerByRawInstance(olLayer);
+    expect(memberLayer).toBeDefined();
+    const olGroup = model.olMap.getLayers().getArray()[1]; //get raw ol group la
+    const groupLayer = model.layers.getLayerByRawInstance(olGroup!);
+    expect(olGroup instanceof Group).toBeTruthy();
+    expect(groupLayer).toBeDefined();
+});
+
+it("should unindex layers that are member of group layer", async () => {
+    const olLayer = new TileLayer({
+        source: new OSM()
+    });
+
+    model = await create("foo", {
+        layers: [
+            new GroupLayer({
+                id: "group",
+                title: "group test",
+                layers: [
+                    new SimpleLayerImpl({
+                        id: "member",
+                        title: "group member",
+                        olLayer: olLayer
+                    })
+                ]
+            })
+        ]
+    });
+
+    let memberLayer = model.layers.getLayerByRawInstance(olLayer);
+    expect(memberLayer).toBeDefined();
+    memberLayer = model.layers.getLayerById("member") as Layer;
+    expect(memberLayer).toBeDefined();
+
+    //remove group layer and check if group members are not indexed anymore
+    model.layers.removeLayerById("group");
+    memberLayer = model.layers.getLayerByRawInstance(olLayer);
+    expect(memberLayer).toBeUndefined();
+    memberLayer = model.layers.getLayerById("member") as Layer;
+    expect(memberLayer).toBeUndefined();
 });
 
 it("registering the same OpenLayers layer twice throws an error", async () => {
