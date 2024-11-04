@@ -12,7 +12,7 @@ import {
 import { FC } from "react";
 import { FiMoreVertical } from "react-icons/fi";
 import { useIntl } from "open-pioneer:react-hooks";
-import { MapModel, SublayersCollection } from "@open-pioneer/map";
+import { GroupLayerCollection, MapModel, SublayersCollection } from "@open-pioneer/map";
 import { ToolsConfig } from "./Toc";
 
 export const Tools: FC<{ map: MapModel } & ToolsConfig> = (props) => {
@@ -61,10 +61,18 @@ function hideAllLayers(map: MapModel | undefined) {
             hideSublayer(layer?.sublayers);
         });
     };
+    const hideGroupChildlayer = (childlayers: GroupLayerCollection | undefined) => {
+        childlayers?.getLayers().forEach((layer) => {
+            layer.setVisible(false);
+
+            hideGroupChildlayer(layer?.layers);
+        });
+    };
 
     map?.layers.getOperationalLayers().forEach((layer) => {
         layer.setVisible(false);
 
         hideSublayer(layer?.sublayers);
+        hideGroupChildlayer(layer?.layers);
     });
 }
