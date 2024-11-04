@@ -22,7 +22,7 @@ const group = new GroupLayer({
             id: "group",
             title: "a group layer",
             layers: [
-                new SimpleLayerImpl({
+                new SimpleLayer({
                     id: "member",
                     title: "group member",
                     olLayer: olLayer1
@@ -31,7 +31,7 @@ const group = new GroupLayer({
                     id: "subgroup",
                     title: "a nested group layer",
                     layers: [
-                        new SimpleLayerImpl({
+                        new SimpleLayer({
                             id: "submember",
                             title: "subgroup member",
                             olLayer: olLayer2
