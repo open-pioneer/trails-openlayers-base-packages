@@ -47,6 +47,7 @@ export class GroupLayerCollectionImpl implements GroupLayerCollection {
     destroy() {
         for (const layer of this.#layers) {
             layer.__detachFromGroup();
+            layer.destroy();
         }
         this.#layers = [];
     }

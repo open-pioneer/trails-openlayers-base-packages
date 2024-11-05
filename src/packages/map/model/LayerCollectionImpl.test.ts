@@ -379,6 +379,38 @@ it("should unindex layers that are member of group layer", async () => {
     expect(memberLayer).toBeUndefined();
 });
 
+it("destroys child layers when parent group layer is removed", async () => {
+    const olLayer = new TileLayer({
+        source: new OSM()
+    });
+
+    const groupMember = new SimpleLayerImpl({
+        id: "member",
+        title: "group member",
+        olLayer: olLayer
+    });
+    const groupLayer = new GroupLayer({
+        id: "group",
+        title: "group test",
+        layers: [groupMember]
+    });
+    //register dummy event handlers
+    const groupFn = vi.fn();
+    const memberFn = vi.fn();
+    groupMember.on("destroy", () => memberFn());
+    groupLayer.on("destroy", () => groupFn());
+
+    model = await create("foo", {
+        layers: [groupLayer]
+    });
+
+    model.layers.removeLayerById("group"); //remove group layer
+    //destroy event should be emitted for each (child) layer
+    expect(memberFn).toHaveBeenCalledOnce();
+    expect(groupFn).toHaveBeenCalledOnce();
+});
+
+
 it("registering the same OpenLayers layer twice throws an error", async () => {
     const rawL1 = new TileLayer({
         source: new OSM()

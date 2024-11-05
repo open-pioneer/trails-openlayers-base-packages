@@ -106,6 +106,7 @@ export abstract class AbstractLayerBase<AdditionalEvents = {}>
 
         this.#destroyed = true;
         this.sublayers?.destroy();
+        this.layers?.destroy();
         this.__detachFromGroup();
         try {
             this.emit("destroy");
@@ -144,7 +145,6 @@ export abstract class AbstractLayerBase<AdditionalEvents = {}>
      */
     __detachFromGroup(): void {
         this.#parent = undefined;
-        this.layers?.destroy();
     }
 
     setTitle(newTitle: string): void {
