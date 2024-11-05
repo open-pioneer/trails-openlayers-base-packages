@@ -4,6 +4,7 @@ import { Group } from "ol/layer";
 import { GroupLayer, GroupLayerConfig } from "../../api/layers/GroupLayer";
 import { AbstractLayer } from "../AbstractLayer";
 import { GroupLayerCollectionImpl } from "../GroupLayerCollectionImpl";
+import { MapModelImpl } from "../MapModelImpl";
 
 export class GroupLayerImpl extends AbstractLayer implements GroupLayer {
     #children: GroupLayerCollectionImpl;
@@ -38,5 +39,10 @@ export class GroupLayerImpl extends AbstractLayer implements GroupLayer {
      */
     get olLayer(): Group {
         return super.olLayer as Group;
+    }
+
+    __attach(map: MapModelImpl): void {
+        super.__attach(map);
+        this.layers.__getRawLayers().forEach((layer) => layer.__attach(map));
     }
 }

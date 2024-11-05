@@ -65,7 +65,13 @@ function hideAllLayers(map: MapModel | undefined) {
         childlayers?.getLayers().forEach((layer) => {
             layer.setVisible(false);
 
-            hideGroupChildlayer(layer?.layers);
+            if (layer.layers) {
+                //if child ayer is a nested group layer
+                hideGroupChildlayer(layer.layers);
+            } else if (layer.sublayers) {
+                //if child layer has sublayers (e.g WMSLayer with WMSSubLayers)
+                hideSublayer(layer.sublayers);
+            }
         });
     };
 
