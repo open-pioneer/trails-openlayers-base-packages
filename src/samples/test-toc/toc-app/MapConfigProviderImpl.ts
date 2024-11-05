@@ -68,58 +68,34 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                         source: new OSM()
                     })
                 }),
-                new SimpleLayer({
-                    title: "Haltestellen Stadt Rostock",
-                    visible: true,
-                    description:
-                        "Haltestellen des öffentlichen Personenverkehrs in der Hanse- und Universitätsstadt Rostock.",
-                    olLayer: createHaltestellenLayer()
-                }),
-                new SimpleLayer({
-                    title: "Kindertagesstätten",
-                    visible: true,
-                    healthCheck:
-                        "https://sgx.geodatenzentrum.de/wmts_topplus_open/1.0.0/WMTSCapabilities.xml",
-                    olLayer: createKitasLayer()
-                }),
-                createSchulenLayer(),
-                createStrassenLayer(),
                 new GroupLayer({
-                    title: "Group Test",
+                    id: "group_edu",
+                    title: "Bildung",
                     layers: [
                         new SimpleLayer({
                             title: "Kindertagesstätten",
+                            id: "kitas",
                             visible: true,
                             healthCheck:
                                 "https://sgx.geodatenzentrum.de/wmts_topplus_open/1.0.0/WMTSCapabilities.xml",
                             olLayer: createKitasLayer()
                         }),
+                        createSchulenLayer()
+                    ]
+                }),
+                new GroupLayer({
+                    title: "Verkehr",
+                    id: "group_transport",
+                    layers: [
                         new SimpleLayer({
                             title: "Haltestellen Stadt Rostock",
+                            id: "bustops",
                             visible: true,
                             description:
                                 "Haltestellen des öffentlichen Personenverkehrs in der Hanse- und Universitätsstadt Rostock.",
                             olLayer: createHaltestellenLayer()
                         }),
-                        new GroupLayer({
-                            title: "Subgroup test",
-                            layers: [
-                                new SimpleLayer({
-                                    title: "Haltestellen Stadt Rostock",
-                                    visible: true,
-                                    description:
-                                        "Haltestellen des öffentlichen Personenverkehrs in der Hanse- und Universitätsstadt Rostock.",
-                                    olLayer: createHaltestellenLayer()
-                                }),
-                                new SimpleLayer({
-                                    title: "Kindertagesstätten",
-                                    visible: true,
-                                    healthCheck:
-                                        "https://sgx.geodatenzentrum.de/wmts_topplus_open/1.0.0/WMTSCapabilities.xml",
-                                    olLayer: createKitasLayer()
-                                })
-                            ]
-                        })
+                        createStrassenLayer()
                     ]
                 })
             ]
@@ -214,6 +190,7 @@ function createKitasLayer() {
 function createSchulenLayer() {
     return new WMSLayer({
         title: "Schulstandorte",
+        id: "schools",
         description: `Der vorliegende Datenbestand / Dienst zu den Schulstandorten in NRW stammt aus der Schuldatenbank. Die Informationen werden von den Schulträgern bzw. Schulen selbst eingetragen und aktuell gehalten. Die Daten werden tagesaktuell bereitgestellt und enthalten alle grundlegenden Informationen zu Schulen wie Schulnummer, Schulbezeichnung und Adresse.Der vorliegende Datenbestand / Dienst zu den Schulstandorten in NRW stammt aus der Schuldatenbank. Die Informationen werden von den Schulträgern bzw. Schulen selbst eingetragen und aktuell gehalten. Die Daten werden tagesaktuell bereitgestellt und enthalten alle grundlegenden Informationen zu Schulen wie Schulnummer, Schulbezeichnung und Adresse.Der vorliegende Datenbestand / Dienst zu den Schulstandorten in NRW stammt aus der Schuldatenbank. Die Informationen werden von den Schulträgern bzw. Schulen selbst eingetragen und aktuell gehalten. Die Daten werden tagesaktuell bereitgestellt und enthalten alle grundlegenden Informationen zu Schulen wie Schulnummer, Schulbezeichnung und Adresse.Der vorliegende Datenbestand / Dienst zu den Schulstandorten in NRW stammt aus der Schuldatenbank. Die Informationen werden von den Schulträgern bzw. Schulen selbst eingetragen und aktuell gehalten. Die Daten werden tagesaktuell bereitgestellt und enthalten alle grundlegenden Informationen zu Schulen wie Schulnummer, Schulbezeichnung und Adresse.`,
         visible: true,
         // example for a custom health check running async
