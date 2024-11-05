@@ -410,7 +410,6 @@ it("destroys child layers when parent group layer is removed", async () => {
     expect(groupFn).toHaveBeenCalledOnce();
 });
 
-
 it("registering the same OpenLayers layer twice throws an error", async () => {
     const rawL1 = new TileLayer({
         source: new OSM()
