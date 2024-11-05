@@ -239,7 +239,7 @@ it("supports lookup by layer id", async () => {
     expect(l3).toBeUndefined();
 });
 
-it("upports lookup by layer id for members of a group layer", async () => {
+it("supports lookup by layer id for members of a group layer", async () => {
     const olLayer = new TileLayer({
         source: new OSM()
     });
