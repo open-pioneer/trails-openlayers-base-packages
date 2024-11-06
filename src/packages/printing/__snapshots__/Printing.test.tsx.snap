@@ -6,93 +6,33 @@ exports[`should successfully create a printing component 1`] = `
   data-testid="printing"
   data-theme="light"
 >
-  <form
-    class="css-162gbd7"
-    data-theme="light"
-  >
-    <div
-      class="chakra-stack chakra-form-control css-18uenf7"
-      data-focus=""
+  bound HTMLFormElement {
+    "0": <input
+      class="chakra-input css-1cjy4zv"
       data-theme="light"
-      role="group"
-    >
-      <label
-        class="chakra-form__label css-u9crf"
-        data-focus=""
-        data-theme="light"
-        for="field-:r0:"
-        id="field-:r0:-label"
+      id="field-:r0:"
+      placeholder="input.placeholder"
+      value=""
+    />,
+    "1": bound HTMLSelectElement {
+      "0": <option
+        value="png"
       >
-        title
-      </label>
-      <input
-        class="chakra-input css-1cjy4zv"
-        data-theme="light"
-        id="field-:r0:"
-        placeholder="input.placeholder"
-        value=""
-      />
-    </div>
-    <div
-      class="chakra-stack chakra-form-control css-18uenf7"
-      data-theme="light"
-      role="group"
-    >
-      <label
-        class="chakra-form__label css-u9crf"
-        data-theme="light"
-        for="field-:r1:"
-        id="field-:r1:-label"
+        PNG
+      </option>,
+      "1": <option
+        value="pdf"
       >
-        fileFormat
-      </label>
-      <div
-        class="chakra-select__wrapper css-42b2qy"
-        data-theme="light"
-      >
-        <select
-          class="chakra-select printing-select css-161pkch"
-          data-theme="light"
-          id="field-:r1:"
-        >
-          <option
-            value="png"
-          >
-            PNG
-          </option>
-          <option
-            value="pdf"
-          >
-            PDF
-          </option>
-        </select>
-        <div
-          class="chakra-select__icon-wrapper css-iohxn1"
-          data-theme="light"
-        >
-          <svg
-            aria-hidden="true"
-            class="chakra-select__icon"
-            focusable="false"
-            role="presentation"
-            style="width: 1em; height: 1em; color: currentcolor;"
-            viewBox="0 0 24 24"
-          >
-            <path
-              d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
-              fill="currentColor"
-            />
-          </svg>
-        </div>
-      </div>
-    </div>
-    <button
+        PDF
+      </option>,
+    },
+    "2": <button
       class="chakra-button printing-export-button css-166bd52"
       data-theme="light"
       type="submit"
     >
       export
-    </button>
-  </form>
+    </button>,
+  }
 </div>
 `;
