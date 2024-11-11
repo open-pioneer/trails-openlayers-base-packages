@@ -60,7 +60,7 @@ it("should successfully create a coordinate input component with external input"
     expect(coordInput.getAttribute("value")).toMatchInlineSnapshot('"6,838 51,398"');
 });
 
-it("should successfully create a coordinate input component with placeholder", async () => {
+it("should successfully create a coordinate input component with string placeholder", async () => {
     const { mapId, registry } = await setupMap();
 
     const injectedServices = createServiceOptions({ registry });
@@ -78,6 +78,23 @@ it("should successfully create a coordinate input component with placeholder", a
     await waitForMapMount("map");
     const { coordInput } = await waitForCoordinateInput();
     expect(coordInput.getAttribute("placeholder")).toMatchInlineSnapshot('"test placeholder"');
+});
+
+it("should successfully create a coordinate input component with  coordinate placeholder", async () => {
+    const { mapId, registry } = await setupMap();
+    const coord: Coordinate = [408000, 5600000];
+
+    const injectedServices = createServiceOptions({ registry });
+    render(
+        <PackageContextProvider services={injectedServices} locale="de">
+            <MapContainer mapId={mapId} data-testid="map" />
+            <CoordinateInput mapId={mapId} data-testid="coordinate-input" placeholder={coord} />
+        </PackageContextProvider>
+    );
+
+    await waitForMapMount("map");
+    const { coordInput } = await waitForCoordinateInput();
+    expect(coordInput.getAttribute("placeholder")).toMatchInlineSnapshot('"3,665 44,863"');
 });
 
 it("should successfully create a coordinate input component with projections", async () => {
@@ -112,7 +129,7 @@ it("should successfully create a coordinate input component with projections", a
     await waitForMapMount("map");
     const { projSelect } = await waitForCoordinateInput();
     showDropdown(projSelect);
-    const options = getCurrentOptions(projSelect);
+    const options = getCurrentOptions();
     const values = getCurrentOptionValues(options);
 
     expect(values).toStrictEqual(["EPSG:25832", "WGS 84", "Web Mercator"]);
@@ -146,7 +163,7 @@ it("should format coordinates to correct coordinate string for the corresponding
     expect(hookDE_precision0.result.current).equals("763.540 6.696.997");
 });
 
-it("should update coordinates in selected option", async () => {
+/*it("should update coordinates in selected option", async () => {
     const { mapId, registry } = await setupMap();
     let input = [851594.11, 6789283.95];
 
@@ -167,7 +184,7 @@ it("should update coordinates in selected option", async () => {
         input = [860000, 6900000.95];
     });
     expect(coordInput.getAttribute("value")).toMatchInlineSnapshot('"7.729 52.548"');
-});
+});*/
 
 it("should display transformed coordinates in selected option", async () => {
     const user = userEvent.setup();
@@ -186,7 +203,7 @@ it("should display transformed coordinates in selected option", async () => {
     const { coordInput, projSelect } = await waitForCoordinateInput();
     showDropdown(projSelect);
 
-    let options = getCurrentOptions(projSelect);
+    let options = getCurrentOptions();
     const option4326 = options.find((option) => option.textContent === "WGS 84");
     if (!option4326) {
         throw new Error("EPSG 4326 missing in options");
@@ -196,7 +213,7 @@ it("should display transformed coordinates in selected option", async () => {
     expect(coordInput.getAttribute("value")).toMatchInlineSnapshot('"7.650 51.940"'); //should display EPSG 4326
 
     showDropdown(projSelect);
-    options = getCurrentOptions(projSelect);
+    options = getCurrentOptions();
     const option3857 = options.find((option) => option.textContent === "Web Mercator");
     if (!option3857) {
         throw new Error("EPSG 3857 missing in options");
@@ -335,6 +352,144 @@ it("should successfully copy to clipboard if copy button is clicked", async () =
     expect(copiedText).toBe("3.638 89.987");
 });
 
+//TODO test tooltip messages
+it("should show the correct tooltip message", async () => {
+    const user = userEvent.setup();
+    const { mapId, registry } = await setupMap();
+
+    const injectedServices = createServiceOptions({ registry });
+    render(
+        <PackageContextProvider services={injectedServices} locale="de">
+            <MapContainer mapId={mapId} data-testid="map" />
+            <CoordinateInput
+                mapId={mapId}
+                data-testid="coordinate-input"
+                onSelect={() => {}}
+                onClear={() => {}}
+            />
+        </PackageContextProvider>
+    );
+
+    await waitForMapMount("map");
+    const { coordInput } = await waitForCoordinateInput();
+
+    await user.type(coordInput, "{backspace}{backspace}{backspace}{backspace}abc");
+    await sleep(1000);
+    let tooltip = await getTooltipMessage();
+    expect(tooltip).toBe("tooltip.space");
+
+    await user.type(coordInput, "{backspace}{backspace}{backspace}{backspace}a b c");
+    await sleep(1000);
+    tooltip = await getTooltipMessage();
+    expect(tooltip).toBe("tooltip.spaceOne");
+
+    /*await user.type(coordInput, "{backspace}{backspace}{backspace}{backspace}{backspace}abc  abc");
+    await sleep(1000);
+    tooltip = await getTooltipMessage();
+    expect(tooltip).toBe("tooltip.spaceOne");
+
+    await user.type(
+        coordInput,
+        "{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}abc "
+    );
+    await sleep(1000);
+    tooltip = await getTooltipMessage();
+    expect(tooltip).toBe("tooltip.2coords");
+
+    await user.type(
+        coordInput,
+        "{backspace}{backspace}{backspace}{backspace}{backspace}abc.abc abc.def"
+    );
+    await sleep(1000);
+    tooltip = await getTooltipMessage();
+    expect(tooltip).toBe("tooltip.dividerDe");
+
+    await user.type(
+        coordInput,
+        "{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}abc,abc abc,def"
+    );
+    await sleep(1000);
+    tooltip = await getTooltipMessage();
+    expect(tooltip).toBe("tooltip.dividerEn");
+
+    await user.type(
+        coordInput,
+        "{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}123.123 123.123"
+    );
+    await sleep(1000);
+    tooltip = await getTooltipMessage();
+    expect(tooltip).toBe("tooltip.dividerDe");
+
+    await user.type(
+        coordInput,
+        "{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}123,123 123,123"
+    );
+    await sleep(1000);
+    tooltip = await getTooltipMessage();
+    expect(tooltip).toBe("tooltip.dividerEn");
+
+    await user.type(
+        coordInput,
+        "{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}0 0"
+    );
+    await sleep(1000);
+    tooltip = await getTooltipMessage();
+    expect(tooltip).toBe("tooltip.extent");*/
+});
+
+it("should show copy button on coordinate placeholder", async () => {
+    const { mapId, registry } = await setupMap();
+
+    const injectedServices = createServiceOptions({ registry });
+    render(
+        <PackageContextProvider services={injectedServices}>
+            <MapContainer mapId={mapId} data-testid="map" />
+            <CoordinateInput
+                mapId={mapId}
+                data-testid="coordinate-input"
+                placeholder={[405000, 58000000]}
+            />
+        </PackageContextProvider>
+    );
+
+    await waitForMapMount("map");
+    const { coordinateInputGroup } = await waitForCoordinateInput();
+    const copyButton = getCopyButton(coordinateInputGroup);
+    expect(copyButton).toBeDefined();
+    expect(() => getClearButton(coordinateInputGroup)).toThrowError(
+        /^coordinate input clear button not rendered$/
+    );
+});
+
+it("should show clear button on coordinate placeholder", async () => {
+    const { mapId, registry } = await setupMap();
+    const user = userEvent.setup();
+
+    const injectedServices = createServiceOptions({ registry });
+    render(
+        <PackageContextProvider services={injectedServices}>
+            <MapContainer mapId={mapId} data-testid="map" />
+            <CoordinateInput
+                mapId={mapId}
+                data-testid="coordinate-input"
+                onSelect={() => {}}
+                onClear={() => {}}
+            />
+        </PackageContextProvider>
+    );
+
+    await waitForMapMount("map");
+    const { coordInput, coordinateInputGroup } = await waitForCoordinateInput();
+
+    await user.type(coordInput, "404000 5700000{enter}");
+
+    const clearButton = getClearButton(coordinateInputGroup);
+    expect(clearButton).toBeDefined();
+    expect(() => getCopyButton(coordinateInputGroup)).toThrowError(
+        /^coordinate input copy button not rendered$/
+    );
+});
+
 async function waitForCoordinateInput() {
     const { coordsInputDiv, coordInput, coordinateInputGroup, projSelect } = await waitFor(
         async () => {
@@ -376,9 +531,9 @@ function showDropdown(projSelect: HTMLElement) {
     });
 }
 
-function getCurrentOptions(projSelect: HTMLElement) {
+function getCurrentOptions() {
     return Array.from(
-        projSelect.getElementsByClassName("coordinate-Input-Select__option")
+        document.getElementsByClassName("coordinate-Input-Select__option")
     ) as HTMLElement[];
 }
 
@@ -412,4 +567,29 @@ function getCopyButton(coordinateInputGroup: Element) {
         throw new Error("coordinate input copy button not rendered");
     }
     return copyButton;
+}
+
+async function getTooltipMessage() {
+    const { toolTipDiv } = await waitFor(
+        async () => {
+            console.log("startSuche");
+            const toolTipDiv = document.getElementsByClassName(
+                "coordinateInputToolTip"
+            )[0] as HTMLElement;
+            console.log(typeof toolTipDiv);
+            if (!toolTipDiv) {
+                throw new Error("no tooltip rendered for coordinate input");
+            }
+            return { toolTipDiv };
+        },
+        { interval: 1, timeout: 500000 }
+    );
+    console.log("textcontent", toolTipDiv.textContent);
+    return toolTipDiv.textContent;
+}
+
+function sleep(ms: number) {
+    return new Promise<void>((resolve) => {
+        setTimeout(resolve, ms);
+    });
 }

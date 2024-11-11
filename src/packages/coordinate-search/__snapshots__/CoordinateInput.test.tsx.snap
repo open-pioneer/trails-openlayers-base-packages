@@ -21,7 +21,7 @@ exports[`should successfully create a coordinate input component 1`] = `
         data-theme="light"
       >
         <input
-          aria-label="coordinateSearch.ariaLabel"
+          aria-label="coordinateInput.ariaLabel"
           class="chakra-input css-1r29ykt"
           data-theme="light"
           placeholder=""

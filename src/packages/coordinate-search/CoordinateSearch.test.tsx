@@ -3,13 +3,12 @@
 import { MapContainer } from "@open-pioneer/map";
 import { createServiceOptions, setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
-import { act, fireEvent, render, renderHook, screen, waitFor } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import BaseEvent from "ol/events/Event";
 import { expect, it, vi } from "vitest";
 import { CoordinateSearch } from "./CoordinateSearch";
 import userEvent from "@testing-library/user-event";
 import { Coordinate } from "ol/coordinate";
-import { Projection } from "ol/proj";
 
 it("should successfully create a coordinate search component", async () => {
     const { mapId, registry } = await setupMap();
@@ -79,7 +78,7 @@ it("should successfully create a coordinate search component with projections", 
 
     const { projSelect } = await waitForCoordinateSearch();
     showDropdown(projSelect);
-    const options = getCurrentOptions(projSelect);
+    const options = getCurrentOptions();
     const values = getCurrentOptionValues(options);
 
     expect(values).toStrictEqual(["EPSG:25832", "WGS 84", "Web Mercator"]);
@@ -155,7 +154,7 @@ it("should display transformed coordinates in selected option", async () => {
         map.olMap.dispatchEvent(fakeMoveEvent);
     };
 
-    let options = getCurrentOptions(projSelect);
+    let options = getCurrentOptions();
     const option4326 = options.find((option) => option.textContent === "WGS 84");
     if (!option4326) {
         throw new Error("EPSG 4326 missing in options");
@@ -169,7 +168,7 @@ it("should display transformed coordinates in selected option", async () => {
     expect(coordInput.getAttribute("placeholder")).toMatchInlineSnapshot('"7.650 51.940"'); //should display EPSG 4326
 
     showDropdown(projSelect);
-    options = getCurrentOptions(projSelect);
+    options = getCurrentOptions();
     const option3857 = options.find((option) => option.textContent === "Web Mercator");
     if (!option3857) {
         throw new Error("EPSG 3857 missing in options");
@@ -275,7 +274,6 @@ it("should successfully copy to clipboard if copy button is clicked", async () =
     let copiedText = "";
 
     const injectedServices = createServiceOptions({ registry });
-    let cleared: boolean = false;
     render(
         <PackageContextProvider services={injectedServices}>
             <MapContainer mapId={mapId} data-testid="map" />
@@ -283,9 +281,7 @@ it("should successfully copy to clipboard if copy button is clicked", async () =
                 mapId={mapId}
                 data-testid="coordinate-search"
                 onSelect={() => {}}
-                onClear={() => {
-                    cleared = true;
-                }}
+                onClear={() => {}}
             />
         </PackageContextProvider>
     );
@@ -371,9 +367,9 @@ function showDropdown(projSelect: HTMLElement) {
     });
 }
 
-function getCurrentOptions(projSelect: HTMLElement) {
+function getCurrentOptions() {
     return Array.from(
-        projSelect.getElementsByClassName("coordinate-Input-Select__option")
+        document.getElementsByClassName("coordinate-Input-Select__option")
     ) as HTMLElement[];
 }
 

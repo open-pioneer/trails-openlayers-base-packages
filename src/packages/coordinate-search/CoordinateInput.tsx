@@ -175,6 +175,7 @@ export const CoordinateInput: FC<CoordinateInputProps> = (props) => {
                     hasArrow
                     placement="auto"
                     isOpen={!isInputValid}
+                    className="coordinateInputToolTip"
                 >
                     <InputGroup className="coordinateInputGroup">
                         <CoordinateInputField
@@ -241,7 +242,7 @@ function CoordinateInputField(props: {
                 placeholder={placeholderString}
                 errorBorderColor="red.500"
                 aria-label={intl.formatMessage({
-                    id: "coordinateSearch.ariaLabel"
+                    id: "coordinateInput.ariaLabel"
                 })}
                 borderRightRadius={0}
                 onKeyDown={(eve) => {
@@ -300,7 +301,7 @@ function CoordinateInputButton(props: {
                     padding={0}
                     icon={<CloseIcon />}
                     aria-label={intl.formatMessage({
-                        id: "coordinateSearch.ariaLabel"
+                        id: "coordinateInput.ariaLabel"
                     })}
                 />
             </InputRightElement>
@@ -317,7 +318,7 @@ function CoordinateInputButton(props: {
                     padding={0}
                     icon={<CopyIcon />}
                     aria-label={intl.formatMessage({
-                        id: "coordinateSearch.copyPlaceholder"
+                        id: "coordinateInput.copyPlaceholder"
                     })}
                 />
             </InputRightElement>
