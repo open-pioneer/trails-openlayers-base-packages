@@ -361,6 +361,7 @@ it("should successfully copy to clipboard if copy button is clicked", async () =
 it("should show the correct tooltip message", async () => {
     const user = userEvent.setup();
     const { mapId, registry } = await setupMap();
+    const tooltipHelper = createTooltipHelper();
 
     const injectedServices = createServiceOptions({ registry });
     render(
@@ -379,14 +380,12 @@ it("should show the correct tooltip message", async () => {
     const { coordInput } = await waitForCoordinateInput();
 
     await user.type(coordInput, "{backspace}{backspace}{backspace}{backspace}abc");
-    await sleep(1000);
-    let tooltip = await getTooltipMessage();
-    expect(tooltip).toBe("tooltip.space");
+    const tooltip1 = await tooltipHelper.waitForChange();
+    expect(tooltip1).toBe("tooltip.space");
 
     await user.type(coordInput, "{backspace}{backspace}{backspace}{backspace}a b c");
-    await sleep(1000);
-    tooltip = await getTooltipMessage();
-    expect(tooltip).toBe("tooltip.spaceOne");
+    const tooltip2 = await tooltipHelper.waitForChange();
+    expect(tooltip2).toBe("tooltip.spaceOne");
 
     /*await user.type(coordInput, "{backspace}{backspace}{backspace}{backspace}{backspace}abc  abc");
     await sleep(1000);
@@ -574,23 +573,48 @@ function getCopyButton(coordinateInputGroup: Element) {
     return copyButton;
 }
 
-async function getTooltipMessage() {
-    const { toolTipDiv } = await waitFor(
-        async () => {
-            console.log("startSuche");
-            const toolTipDiv = document.getElementsByClassName(
-                "coordinateInputToolTip"
-            )[0] as HTMLElement;
-            console.log(typeof toolTipDiv);
-            if (!toolTipDiv) {
-                throw new Error("no tooltip rendered for coordinate input");
-            }
-            return { toolTipDiv };
+// Returns undefined if no unique tooltip was found
+function getCurrentTooltipText(): string | undefined {
+    const tooltips = document.getElementsByClassName("coordinateInputToolTip");
+    if (!tooltips.length || tooltips.length > 1) {
+        return undefined;
+    }
+    return (tooltips[0] as HTMLElement).textContent ?? undefined;
+}
+
+function createTooltipHelper() {
+    let currentTooltip = getCurrentTooltipText();
+    return {
+        /** Waits until the tooltip has a different content (including undefined) from the last time it was checked. */
+        async waitForChange() {
+            const newTooltip = await waitFor(() => {
+                const newTooltip = getCurrentTooltipText();
+                if (newTooltip === currentTooltip) {
+                    throw new Error(`Tooltip has not changed, still '${currentTooltip}'`);
+                }
+                return newTooltip;
+            });
+            currentTooltip = newTooltip;
+            return newTooltip;
         },
-        { interval: 1, timeout: 500000 }
-    );
-    console.log("textcontent", toolTipDiv.textContent);
-    return toolTipDiv.textContent;
+        currentTooltip() {
+            return currentTooltip;
+        }
+    };
+}
+
+async function getTooltipMessage() {
+    const tooltipDiv = await waitFor(async () => {
+        const tooltips = document.getElementsByClassName("coordinateInputToolTip");
+        if (!tooltips.length) {
+            throw new Error("No tooltip found");
+        }
+        if (tooltips.length > 1) {
+            throw new Error("More than one tooltip found");
+        }
+        return tooltips[0] as HTMLElement;
+    });
+    return tooltipDiv.textContent;
 }
 
 function sleep(ms: number) {
