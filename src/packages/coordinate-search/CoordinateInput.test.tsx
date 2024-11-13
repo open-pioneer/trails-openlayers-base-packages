@@ -163,28 +163,33 @@ it("should format coordinates to correct coordinate string for the corresponding
     expect(hookDE_precision0.result.current).equals("763.540 6.696.997");
 });
 
-/*it("should update coordinates in selected option", async () => {
+it("should update coordinates in selected option", async () => {
     const { mapId, registry } = await setupMap();
-    let input = [851594.11, 6789283.95];
-
     const injectedServices = createServiceOptions({ registry });
-    render(
-        <PackageContextProvider services={injectedServices}>
-            <MapContainer mapId={mapId} data-testid="map" />
-            <CoordinateInput mapId={mapId} data-testid="coordinate-input" input={input} />
-        </PackageContextProvider>
-    );
+    const initialInput = [851594.11, 6789283.95];
+    const updatedInput = [860000, 6900000.95];
+
+    function componentContent(input: number[]) {
+        return (
+            <PackageContextProvider services={injectedServices}>
+                <MapContainer mapId={mapId} data-testid="map" />
+                <CoordinateInput mapId={mapId} data-testid="coordinate-input" input={input} />
+            </PackageContextProvider>
+        );
+    }
+
+    const { rerender } = render(componentContent(initialInput));
 
     await waitForMapMount("map");
     const { coordInput } = await waitForCoordinateInput();
-
     expect(coordInput.getAttribute("value")).toMatchInlineSnapshot('"7.650 51.940"');
 
-    act(() => {
-        input = [860000, 6900000.95];
-    });
-    expect(coordInput.getAttribute("value")).toMatchInlineSnapshot('"7.729 52.548"');
-});*/
+    // TODO: Remove comment
+    // - Might sometimes need a waitFor() after rerender if rerendering triggers async updates (timeouts, network activity, ...)
+    // - Did not verify whether coordinates in snapshot are correct
+    rerender(componentContent(updatedInput));
+    expect(coordInput.getAttribute("value")).toMatchInlineSnapshot(`"7.726 52.549"`);
+});
 
 it("should display transformed coordinates in selected option", async () => {
     const user = userEvent.setup();
