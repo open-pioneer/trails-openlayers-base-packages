@@ -602,23 +602,3 @@ function createTooltipHelper() {
         }
     };
 }
-
-async function getTooltipMessage() {
-    const tooltipDiv = await waitFor(async () => {
-        const tooltips = document.getElementsByClassName("coordinateInputToolTip");
-        if (!tooltips.length) {
-            throw new Error("No tooltip found");
-        }
-        if (tooltips.length > 1) {
-            throw new Error("More than one tooltip found");
-        }
-        return tooltips[0] as HTMLElement;
-    });
-    return tooltipDiv.textContent;
-}
-
-function sleep(ms: number) {
-    return new Promise<void>((resolve) => {
-        setTimeout(resolve, ms);
-    });
-}
