@@ -30,7 +30,7 @@ import { useIntl, useService } from "open-pioneer:react-hooks";
 import { FC, KeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
 import { FiAlertTriangle } from "react-icons/fi";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
-import { DragController } from "./DragController";
+import { DragController } from "./selection-controller/DragController";
 import { SelectionController } from "./SelectionController";
 import { SelectionResult, SelectionSource, SelectionSourceStatusObject } from "./api";
 
