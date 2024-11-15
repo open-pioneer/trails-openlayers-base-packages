@@ -4,8 +4,12 @@ messages:
   operationalLayerLabel: "Operational layers"
   childgroupLabel: "Layer group {title}"
   missingLayers: "There are no layers to display."
+  group:
+    expand: "Expand group"
+    collapse: "Collapse group"
   error: "Error while creating map content."
   layerNotAvailable: "Layer not available"
   toolsLabel: "Map tools"
   tools:
     hideAllLayers: "Hide all layers"
+    collapseAllGroups: "Collapse all groups"

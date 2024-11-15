@@ -10,8 +10,8 @@ import {
     useCommonComponentProps
 } from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
-import { FC, useId } from "react";
-import { LayerList } from "./LayerList";
+import { FC, useCallback, useId, useRef } from "react";
+import { LayerList, LayerListRef } from "./LayerList";
 import { Tools } from "./Tools";
 
 /**
@@ -40,6 +40,12 @@ export interface TocProps extends CommonComponentProps, MapModelProps {
      * Property "mapId" is not applied.
      */
     basemapSwitcherProps?: Omit<BasemapSwitcherProps, "mapId">;
+
+    /**
+     * If `true` groups in the toc can be collapsed and expanded.
+     * Defaults to `false`.
+     */
+    collapsibleGroups?: boolean;
 }
 
 /**
@@ -51,6 +57,12 @@ export interface ToolsConfig {
      * Defaults to `true`.
      */
     showHideAllLayers?: boolean;
+
+    /**
+     * Optional property to show the `hide all layers` entry.
+     * Defaults to `true`. Only applicable if
+     */
+    showCollapseAllGroups?: boolean;
 }
 
 const PADDING = 2;
@@ -64,11 +76,18 @@ export const Toc: FC<TocProps> = (props: TocProps) => {
         showTools = false,
         toolsConfig,
         showBasemapSwitcher = true,
-        basemapSwitcherProps
+        basemapSwitcherProps,
+        collapsibleGroups = false
     } = props;
     const { containerProps } = useCommonComponentProps("toc", props);
     const basemapsHeadingId = useId();
     const state = useMapModel(props);
+    const layerListRef = useRef<LayerListRef>(null);
+    const collapseAllGroupsHandler = useCallback(() => layerListRef.current?.collapseAll(), []);
+
+    if (toolsConfig && !collapsibleGroups) {
+        toolsConfig.showHideAllLayers = false;
+    }
 
     let content: JSX.Element | null;
     switch (state.kind) {
@@ -109,7 +128,13 @@ export const Toc: FC<TocProps> = (props: TocProps) => {
                                         })}
                                     </Text>
                                     <Spacer />
-                                    {showTools && <Tools map={map} {...toolsConfig} />}
+                                    {showTools && (
+                                        <Tools
+                                            map={map}
+                                            onCollapseAllGroups={collapseAllGroupsHandler}
+                                            {...toolsConfig}
+                                        />
+                                    )}
                                 </Flex>
                             </SectionHeading>
                         }
@@ -117,7 +142,9 @@ export const Toc: FC<TocProps> = (props: TocProps) => {
                         <LayerList
                             map={map}
                             aria-label={intl.formatMessage({ id: "operationalLayerLabel" })}
-                        />
+                            ref={layerListRef}
+                            collapsibleGroups={collapsibleGroups}
+                        ></LayerList>
                     </TitledSection>
                 </Box>
             );

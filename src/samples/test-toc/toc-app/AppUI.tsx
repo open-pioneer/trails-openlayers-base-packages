@@ -70,6 +70,7 @@ export function AppUI() {
                                                     basemapSwitcherProps={{
                                                         allowSelectingEmptyBasemap: true
                                                     }}
+                                                    collapsibleGroups={true}
                                                 />
                                             </TitledSection>
                                         </Box>

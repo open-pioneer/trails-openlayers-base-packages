@@ -4,7 +4,9 @@ import {
     Box,
     Button,
     Checkbox,
+    Collapse,
     Flex,
+    IconButton,
     List,
     ListProps,
     Popover,
@@ -24,17 +26,42 @@ import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { PackageIntl } from "@open-pioneer/runtime";
 import classNames from "classnames";
 import { useIntl } from "open-pioneer:react-hooks";
+import { forwardRef, useCallback, useImperativeHandle, useState } from "react";
 import { FiAlertTriangle, FiMoreVertical } from "react-icons/fi";
+import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
+
+interface LayerListProps {
+    map: MapModel;
+    "aria-label"?: string;
+    collapsibleGroups?: boolean;
+}
+
+export interface LayerListRef {
+    /**
+     * collapses all groups in the layer list
+     */
+    collapseAll: CollapseHandler;
+}
 
 /**
  * Lists the (top level) operational layers in the map.
  *
  * Layer Groups are skipped in the current implementation.
  */
-export function LayerList(props: { map: MapModel; "aria-label"?: string }): JSX.Element {
-    const { map, "aria-label": ariaLabel } = props;
+export const LayerList = forwardRef<LayerListRef, LayerListProps>((props, ref) => {
+    const { map, "aria-label": ariaLabel, collapsibleGroups } = props;
+    const collapseHandlers = new Map<string, CollapseHandler>();
     const intl = useIntl();
     const layers = useLayers(map);
+    useImperativeHandle(ref, () => ({
+        collapseAll: () => {
+            //collapse all groups
+            for (const collapseHandler of collapseHandlers.values()) {
+                collapseHandler();
+            }
+        }
+    }));
+
     if (!layers.length) {
         return (
             <Text className="toc-missing-layers" aria-label={ariaLabel}>
@@ -43,25 +70,53 @@ export function LayerList(props: { map: MapModel; "aria-label"?: string }): JSX.
         );
     }
 
-    return createList(layers, intl, {
-        "aria-label": ariaLabel
-    });
-}
-
-function createList(layers: AnyLayer[], intl: PackageIntl, listProps: ListProps) {
-    const items = layers.map((layer) => <LayerItem key={layer.id} layer={layer} intl={intl} />);
-    return (
-        <List
-            // Note: not using UnorderedList because it adds default margins
-            as="ul"
-            className="toc-layer-list"
-            listStyleType="none"
-            role="group"
-            {...listProps}
-        >
-            {items}
-        </List>
+    return createList(
+        layers,
+        intl,
+        {
+            "aria-label": ariaLabel
+        },
+        collapseHandlers,
+        collapsibleGroups ?? false
     );
+});
+LayerList.displayName = "LayerList";
+
+function createList(
+    layers: AnyLayer[],
+    intl: PackageIntl,
+    listProps: ListProps,
+    collapseHandlers: Map<string, CollapseHandler>,
+    collapsibleGroups: boolean
+) {
+    const items = layers.map((layer) => {
+        return (
+            <LayerItem
+                key={layer.id}
+                layer={layer}
+                intl={intl}
+                collapseHandlers={collapseHandlers}
+                isCollapsible={collapsibleGroups}
+            />
+        );
+    });
+
+    const list = (
+        <Box>
+            <List
+                // Note: not using UnorderedList because it adds default margins
+                as="ul"
+                className="toc-layer-list"
+                listStyleType="none"
+                role="group"
+                {...listProps}
+            >
+                {items}
+            </List>
+        </Box>
+    );
+
+    return list;
 }
 
 /**
@@ -69,8 +124,13 @@ function createList(layers: AnyLayer[], intl: PackageIntl, listProps: ListProps)
  *
  * The item may have further nested list items if there are sublayers present.
  */
-function LayerItem(props: { layer: AnyLayer; intl: PackageIntl }): JSX.Element {
-    const { layer, intl } = props;
+function LayerItem(props: {
+    layer: AnyLayer;
+    intl: PackageIntl;
+    collapseHandlers: Map<string, CollapseHandler>;
+    isCollapsible: boolean;
+}): JSX.Element {
+    const { layer, intl, collapseHandlers, isCollapsible } = props;
     const { title, description, isVisible } = useReactiveSnapshot(() => {
         return {
             title: layer.title,
@@ -81,14 +141,25 @@ function LayerItem(props: { layer: AnyLayer; intl: PackageIntl }): JSX.Element {
     const sublayers = useSublayers(layer);
     const isAvailable = useLoadState(layer) !== "error";
     const notAvailableLabel = intl.formatMessage({ id: "layerNotAvailable" });
+    const [expanded, setExpanded] = useState(true);
+    const collapseHandler = useCallback(() => setExpanded(false), []);
 
     let nestedChildren;
     if (sublayers?.length) {
-        nestedChildren = createList(sublayers, intl, {
-            ml: 4,
-            "aria-label": intl.formatMessage({ id: "childgroupLabel" }, { title: title })
-        });
+        nestedChildren = createList(
+            sublayers,
+            intl,
+            {
+                ml: 4,
+                "aria-label": intl.formatMessage({ id: "childgroupLabel" }, { title: title })
+            },
+            collapseHandlers,
+            isCollapsible
+        );
     }
+
+    //add collapse handler for layer
+    collapseHandlers.set(layer.id, collapseHandler);
 
     return (
         <Box as="li" className={classNames("toc-layer-item", `layer-${slug(layer.id)}`)}>
@@ -128,6 +199,17 @@ function LayerItem(props: { layer: AnyLayer; intl: PackageIntl }): JSX.Element {
                         </span>
                     </Tooltip>
                 )}
+                {nestedChildren && isCollapsible && (
+                    <IconButton
+                        onClick={() => setExpanded(!expanded)}
+                        icon={expanded ? <ChevronUpIcon /> : <ChevronDownIcon />}
+                        aria-label={
+                            expanded
+                                ? intl.formatMessage({ id: "group.collapse" })
+                                : intl.formatMessage({ id: "group.expand" })
+                        }
+                    />
+                )}
                 <Spacer></Spacer>
                 {description && (
                     <LayerItemDescriptor
@@ -138,7 +220,7 @@ function LayerItem(props: { layer: AnyLayer; intl: PackageIntl }): JSX.Element {
                     />
                 )}
             </Flex>
-            {nestedChildren}
+            {nestedChildren && <Collapse in={expanded}>{nestedChildren}</Collapse>}
         </Box>
     );
 }
@@ -220,3 +302,5 @@ function slug(id: string) {
         .replace(/\s+/g, "-")
         .replace(/-+/g, "-");
 }
+
+type CollapseHandler = () => void;

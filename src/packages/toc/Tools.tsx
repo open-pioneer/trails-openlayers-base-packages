@@ -15,11 +15,18 @@ import { useIntl } from "open-pioneer:react-hooks";
 import { MapModel, SublayersCollection } from "@open-pioneer/map";
 import { ToolsConfig } from "./Toc";
 
-export const Tools: FC<{ map: MapModel } & ToolsConfig> = (props) => {
+export const Tools: FC<{ map: MapModel; onCollapseAllGroups?: () => void } & ToolsConfig> = (
+    props
+) => {
     const intl = useIntl();
-    const { map, showHideAllLayers = true } = props;
+    const {
+        map,
+        onCollapseAllGroups,
+        showHideAllLayers = true,
+        showCollapseAllGroups = true
+    } = props;
 
-    const noEntry = !showHideAllLayers;
+    const noEntry = !showHideAllLayers && !showCollapseAllGroups;
 
     return (
         !noEntry && (
@@ -37,14 +44,30 @@ export const Tools: FC<{ map: MapModel } & ToolsConfig> = (props) => {
                     />
                     <Portal>
                         <MenuList className="tools-menu">
-                            <MenuItem
-                                aria-label={intl.formatMessage({ id: "tools.hideAllLayers" })}
-                                onClick={() => {
-                                    hideAllLayers(map);
-                                }}
-                            >
-                                {intl.formatMessage({ id: "tools.hideAllLayers" })}
-                            </MenuItem>
+                            {showHideAllLayers && (
+                                <MenuItem
+                                    aria-label={intl.formatMessage({ id: "tools.hideAllLayers" })}
+                                    onClick={() => {
+                                        hideAllLayers(map);
+                                    }}
+                                >
+                                    {intl.formatMessage({ id: "tools.hideAllLayers" })}
+                                </MenuItem>
+                            )}
+                            {showCollapseAllGroups && (
+                                <MenuItem
+                                    aria-label={intl.formatMessage({
+                                        id: "tools.collapseAllGroups"
+                                    })}
+                                    onClick={() => {
+                                        if (onCollapseAllGroups) {
+                                            onCollapseAllGroups();
+                                        }
+                                    }}
+                                >
+                                    {intl.formatMessage({ id: "tools.collapseAllGroups" })}
+                                </MenuItem>
+                            )}
                         </MenuList>
                     </Portal>
                 </Menu>
