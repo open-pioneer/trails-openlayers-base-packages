@@ -85,10 +85,6 @@ export const Toc: FC<TocProps> = (props: TocProps) => {
     const layerListRef = useRef<LayerListRef>(null);
     const collapseAllGroupsHandler = useCallback(() => layerListRef.current?.collapseAll(), []);
 
-    if (toolsConfig && !collapsibleGroups) {
-        toolsConfig.showHideAllLayers = false;
-    }
-
     let content: JSX.Element | null;
     switch (state.kind) {
         case "loading":
@@ -132,7 +128,8 @@ export const Toc: FC<TocProps> = (props: TocProps) => {
                                         <Tools
                                             map={map}
                                             onCollapseAllGroups={collapseAllGroupsHandler}
-                                            {...toolsConfig}
+                                            showHideAllLayers = {toolsConfig?.showHideAllLayers}
+                                            showCollapseAllGroups = {toolsConfig?.showCollapseAllGroups && collapsibleGroups} //only applicable if groups are actually collapsible
                                         />
                                     )}
                                 </Flex>

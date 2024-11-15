@@ -49,7 +49,7 @@ export interface LayerListRef {
  * Layer Groups are skipped in the current implementation.
  */
 export const LayerList = forwardRef<LayerListRef, LayerListProps>((props, ref) => {
-    const { map, "aria-label": ariaLabel, collapsibleGroups } = props;
+    const { map, "aria-label": ariaLabel, collapsibleGroups = false} = props;
     const collapseHandlers = new Map<string, CollapseHandler>();
     const intl = useIntl();
     const layers = useLayers(map);
@@ -77,7 +77,7 @@ export const LayerList = forwardRef<LayerListRef, LayerListProps>((props, ref) =
             "aria-label": ariaLabel
         },
         collapseHandlers,
-        collapsibleGroups ?? false
+        collapsibleGroups
     );
 });
 LayerList.displayName = "LayerList";
