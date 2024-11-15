@@ -4,8 +4,12 @@ messages:
   POLYGON: "Polygon"
   FREEPOLYGON: "Freies Zeichnen"
   CIRCLE: "Kreis"
+  POINT: "Point"
+  selectionKind: "Selection type"
   selectSource: "Select source"
-  tooltip: "Click on the map, hold down the mouse button and draw a rectangle"
+  tooltip:
+    extent: "Click on the map, hold down the mouse button and draw a rectangle"
+    point: "Click on the map to select a point"
   disabledTooltip: "The current selection source is not available"
   noSourceTooltip: "No selection source selected. Please choose a selection source to start."
   sourceNotAvailable: "Source not available"

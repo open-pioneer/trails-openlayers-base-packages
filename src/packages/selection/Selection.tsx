@@ -5,6 +5,7 @@ import {
     Flex,
     FormControl,
     FormLabel,
+    HStack,
     Icon,
     Tooltip,
     VStack,
@@ -30,9 +31,20 @@ import { useIntl, useService } from "open-pioneer:react-hooks";
 import { FC, KeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
 import { FiAlertTriangle } from "react-icons/fi";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
-import { DragController } from "./selection-controller/DragController";
 import { SelectionController } from "./SelectionController";
 import { SelectionResult, SelectionSource, SelectionSourceStatusObject } from "./api";
+import { ClickController } from "./selection-controller/ClickController";
+import { ToolButton } from "@open-pioneer/map-ui-components";
+import { PiSelectionPlusBold } from "react-icons/pi";
+import { TbPointerQuestion } from "react-icons/tb";
+import { DragController } from "./selection-controller/DragController";
+import { Map } from "ol";
+
+type SelectionKind = "extent" | "point";
+
+export interface ISelectionTypeHandler<T> {
+    new (map: Map, tooltip: string, disabledMessage: string, onExtentSelected: (geometry: Geometry) => void): T;
+};
 
 /**
  * Properties supported by the {@link Selection} component.
@@ -104,8 +116,9 @@ export const Selection: FC<SelectionProps> = (props) => {
         sources,
         onSelectionSourceChanged
     );
-
     const currentSourceStatus = useSourceStatus(currentSource, defaultNotAvailableMessage);
+
+    const [selectionKind, setSelectionKind] = useState<SelectionKind>("extent");
 
     const mapState = useMapModel(props);
     const { onExtentSelected } = useSelectionController(
@@ -117,7 +130,8 @@ export const Selection: FC<SelectionProps> = (props) => {
     const chakraStyles = useChakraStyles();
     const [isOpenSelect, setIsOpenSelect] = useState(false);
 
-    useDragSelection(
+    useInteractiveSelection(
+        selectionKind,
         mapState.map,
         intl,
         onExtentSelected,
@@ -152,6 +166,21 @@ export const Selection: FC<SelectionProps> = (props) => {
 
     return (
         <VStack {...containerProps} spacing={2}>
+            <FormControl>
+                <FormLabel>{intl.formatMessage({ id: "selectionKind" })}</FormLabel>
+                <HStack gap={2}>
+                    <ToolButton 
+                        icon={<PiSelectionPlusBold />} 
+                        label={intl.formatMessage({id: "EXTENT"})} 
+                        onClick={() => setSelectionKind("extent")} 
+                        isActive={selectionKind === "extent"}/>
+                    <ToolButton 
+                        icon={<TbPointerQuestion />} 
+                        label={intl.formatMessage({id: "POINT"})} 
+                        onClick={() => setSelectionKind("point")} 
+                        isActive={selectionKind === "point"}/>
+                </HStack>
+            </FormControl>
             <FormControl>
                 <FormLabel>{intl.formatMessage({ id: "selectSource" })}</FormLabel>
                 <Select<SelectionOption>
@@ -377,13 +406,28 @@ function useSourceStatus(
 /**
  * Hook to manage map controls and tooltip
  */
-function useDragSelection(
+function useInteractiveSelection(
+    selectionKind: SelectionKind,
     map: MapModel | undefined,
     intl: PackageIntl,
     onExtentSelected: (geometry: Geometry) => void,
     isActive: boolean,
     hasSelectedSource: boolean
 ) {
+
+    function selectionKindFactory(
+        selectionKind: SelectionKind,
+    ): ISelectionTypeHandler<DragController | ClickController> {
+        switch (selectionKind) {
+            case "extent":
+                return DragController;
+            case "point":
+                return ClickController;
+            default:
+                throw new Error(`Unknown selection kind: ${selectionKind}`);
+        }
+    }
+
     useEffect(() => {
         if (!map) {
             return;
@@ -393,9 +437,10 @@ function useDragSelection(
             ? intl.formatMessage({ id: "disabledTooltip" })
             : intl.formatMessage({ id: "noSourceTooltip" });
 
-        const dragController = new DragController(
+        const controlerCls = selectionKindFactory(selectionKind);
+        const dragController = new controlerCls(
             map.olMap,
-            intl.formatMessage({ id: "tooltip" }),
+            intl.formatMessage({ id: `tooltip.${selectionKind}` }),
             disabledMessage,
             onExtentSelected
         );
@@ -404,7 +449,7 @@ function useDragSelection(
         return () => {
             dragController?.destroy();
         };
-    }, [map, intl, onExtentSelected, isActive, hasSelectedSource]);
+    }, [map, intl, onExtentSelected, isActive, hasSelectedSource, selectionKind]);
 }
 
 /**
