@@ -201,6 +201,10 @@ function LayerItem(props: {
                 )}
                 {nestedChildren && isCollapsible && (
                     <IconButton
+                        variant="ghost"
+                        borderRadius="full"
+                        padding={0}
+                        className="toc-layer-item-collapse-button"
                         onClick={() => setExpanded(!expanded)}
                         icon={expanded ? <ChevronUpIcon /> : <ChevronDownIcon />}
                         aria-label={
