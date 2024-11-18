@@ -40,7 +40,7 @@ export class EditingUpdateWorkflowImpl implements EditingWorkflow {
     private _initialFeature: Feature;
     private _editFeature: Feature;
     private _editingSource: VectorSource;
-    private _editingLayer: VectorLayer<Feature>;
+    private _editingLayer: VectorLayer<VectorSource, Feature>;
     private _modifyInteraction: Modify;
     private _olMap: OlMap;
     private _tooltip: Tooltip;

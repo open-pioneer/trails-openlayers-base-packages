@@ -286,7 +286,7 @@ export class AppModel implements Service, AppState {
             }
 
             const layerSelectionSource = this._vectorSelectionSourceFactory.createSelectionSource({
-                vectorLayer: opLayer.olLayer as VectorLayer<Feature>,
+                vectorLayer: opLayer.olLayer as VectorLayer<VectorSource, Feature>,
                 label: opLayer.title
             });
 

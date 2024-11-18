@@ -14,6 +14,7 @@ import { unByKey } from "ol/Observable";
 import { v4 as uuid4v } from "uuid";
 import Feature from "ol/Feature";
 import { reactive } from "@conterra/reactivity-core";
+import VectorSource from "ol/source/Vector";
 
 /**
  * A SelectionSource to use an OpenLayers VectorLayer with an OpenLayers VectorSource (e.g. layer of the map).
@@ -26,11 +27,11 @@ import { reactive } from "@conterra/reactivity-core";
 export class VectorLayerSelectionSourceImpl implements VectorLayerSelectionSource {
     readonly label: string;
     #status = reactive<SelectionSourceStatusObject>({ kind: "available" });
-    #vectorLayer: VectorLayer<Feature>;
+    #vectorLayer: VectorLayer<VectorSource, Feature>;
     #eventHandler: EventsKey;
     #layerNotVisibleReason: string;
 
-    constructor(vectorLayer: VectorLayer<Feature>, label: string, layerNotVisibleReason: string) {
+    constructor(vectorLayer: VectorLayer<VectorSource, Feature>, label: string, layerNotVisibleReason: string) {
         this.label = label;
         this.#vectorLayer = vectorLayer;
         this.#layerNotVisibleReason = layerNotVisibleReason;

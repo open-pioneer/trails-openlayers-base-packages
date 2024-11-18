@@ -15,6 +15,7 @@ import { EditingCreateWorkflowImpl } from "./EditingCreateWorkflowImpl";
 import BaseLayer from "ol/layer/Base";
 import { Interaction } from "ol/interaction";
 import { Feature } from "ol";
+import VectorSource from "ol/source/Vector";
 
 const OGC_API_URL_TEST = new URL("https://example.org/ogc");
 const DEFAULT_SLEEP = 50;
@@ -44,7 +45,7 @@ describe("starting create editing workflow", () => {
         const layers: BaseLayer[] = map.olMap.getLayers().getArray();
 
         const editingLayer = layers.find((l) => l.getProperties().name === "editing-layer") as
-            | VectorLayer<Feature>
+            | VectorLayer<any, any>
             | undefined;
 
         if (!editingLayer) {
@@ -438,7 +439,7 @@ function sleep(ms: number) {
 function findEditingLayer(map: MapModel) {
     const layers = map.olMap.getLayers().getArray();
     const editingLayer = layers.find((l) => l.getProperties().name === "editing-layer") as
-        | VectorLayer<Feature>
+        | VectorLayer<VectorSource, Feature>
         | undefined;
     return editingLayer;
 }
