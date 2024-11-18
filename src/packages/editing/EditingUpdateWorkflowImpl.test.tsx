@@ -13,6 +13,7 @@ import { EditingUpdateWorkflowImpl } from "./EditingUpdateWorkflowImpl";
 import { Interaction, Modify } from "ol/interaction";
 import { Feature } from "ol";
 import { Point } from "ol/geom";
+import VectorSource from "ol/source/Vector";
 
 const OGC_API_URL_TEST = new URL("https://example.org/ogc");
 const DEFAULT_SLEEP = 50;
@@ -367,7 +368,7 @@ function getEditingLayerAndSource(map: MapModel) {
 function findEditingLayer(map: MapModel) {
     const layers = map.olMap.getLayers().getArray();
     const editingLayer = layers.find((l) => l.getProperties().name === "editing-layer") as
-        | VectorLayer<Feature>
+        | VectorLayer<VectorSource, Feature>
         | undefined;
     return editingLayer;
 }

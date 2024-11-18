@@ -32,7 +32,7 @@ const DEFAULT_VIEW_PADDING = { top: 50, right: 20, bottom: 10, left: 20 };
 export class Highlights {
     private olMap: OlMap;
 
-    private olLayer: VectorLayer<Feature>;
+    private olLayer: VectorLayer<VectorSource, Feature>;
     private olSource: VectorSource<Feature<Geometry>>;
     private activeHighlights: Set<Highlight>;
 

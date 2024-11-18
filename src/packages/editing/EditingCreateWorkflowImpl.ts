@@ -39,7 +39,7 @@ export class EditingCreateWorkflowImpl implements EditingWorkflow {
     private _featureId: string | undefined;
 
     private _editingSource: VectorSource;
-    private _editingLayer: VectorLayer<Feature>;
+    private _editingLayer: VectorLayer<VectorSource, Feature>;
     private _drawInteraction: Draw;
     private _olMap: OlMap;
     private _tooltip: Tooltip;

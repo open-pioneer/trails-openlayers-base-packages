@@ -29,7 +29,7 @@ export class GeolocationController {
     public readonly supported = !!navigator.geolocation;
 
     private readonly olMap: OlMap;
-    private readonly positionHighlightLayer: VectorLayer<Feature>;
+    private readonly positionHighlightLayer: VectorLayer<VectorSource, Feature>;
     private readonly geolocation: olGeolocation;
     private readonly onError: OnErrorCallback;
 
