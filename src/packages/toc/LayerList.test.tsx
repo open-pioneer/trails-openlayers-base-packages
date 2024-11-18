@@ -46,7 +46,7 @@ it("should show layers in the correct order", async () => {
     );
 
     /*
-       Labels are configured from bottom to top, but the TOC lists
+       Layers are configured from bottom to top, but the TOC lists
        them from top to bottom!
      */
     const labels = getCurrentLabels(container);
