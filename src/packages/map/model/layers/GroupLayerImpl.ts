@@ -50,7 +50,6 @@ export class GroupLayerImpl extends AbstractLayer implements GroupLayer {
 // NOTE: adding / removing  currently not supported.
 // When adding support for dynamic content, make sure to also updating the layer indexing logic in the map (LayerCollectionImpl).
 // Nested children of a group layer must also be found in id-lookups.
-/* eslint-disable indent */
 export class GroupLayerCollectionImpl implements GroupLayerCollection {
     #layers: (AbstractLayer & Layer)[];
     #parent: GroupLayer;
