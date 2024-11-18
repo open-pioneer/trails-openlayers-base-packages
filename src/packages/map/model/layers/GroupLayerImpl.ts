@@ -1,9 +1,10 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Group } from "ol/layer";
+import { GroupLayerCollection, Layer, LayerRetrievalOptions } from "../../api";
 import { GroupLayer, GroupLayerConfig } from "../../api/layers/GroupLayer";
 import { AbstractLayer } from "../AbstractLayer";
-import { GroupLayerCollectionImpl } from "../GroupLayerCollectionImpl";
+import { AbstractLayerBase } from "../AbstractLayerBase";
 import { MapModelImpl } from "../MapModelImpl";
 
 export class GroupLayerImpl extends AbstractLayer implements GroupLayer {
@@ -13,7 +14,6 @@ export class GroupLayerImpl extends AbstractLayer implements GroupLayer {
         const groupLayers = config.layers;
         const olGroup = new Group({ layers: groupLayers.map((sublayer) => sublayer.olLayer) });
         super({ ...config, olLayer: olGroup });
-
         this.#children = new GroupLayerCollectionImpl(groupLayers, this);
     }
 
@@ -41,8 +41,69 @@ export class GroupLayerImpl extends AbstractLayer implements GroupLayer {
         return super.olLayer as Group;
     }
 
-    __attach(map: MapModelImpl): void {
-        super.__attach(map);
-        this.layers.__getRawLayers().forEach((layer) => layer.__attach(map));
+    __attachToMap(map: MapModelImpl): void {
+        super.__attachToMap(map);
+        this.layers.__getRawLayers().forEach((layer) => layer.__attachToMap(map));
+    }
+}
+
+// NOTE: adding / removing  currently not supported.
+// When adding support for dynamic content, make sure to also updating the layer indexing logic in the map (LayerCollectionImpl).
+// Nested children of a group layer must also be found in id-lookups.
+/* eslint-disable indent */
+export class GroupLayerCollectionImpl implements GroupLayerCollection {
+    #layers: (AbstractLayer & Layer)[];
+    #parent: GroupLayer;
+
+    constructor(layers: Layer[], parent: GroupLayer) {
+        layers = layers.slice(); // Don't modify the input
+        for (const layer of layers) {
+            if (layer instanceof AbstractLayer) {
+                layer.__attachToGroup(parent); //attach every layer to the parent group layer
+            } else {
+                throw new Error(
+                    `Layer '${layer.id}' of group '${parent.id}' does not implement abstract class '${AbstractLayerBase.name}`
+                );
+            }
+        }
+        this.#layers = layers as (Layer & AbstractLayer)[];
+        this.#parent = parent;
+    }
+
+    /**
+     * Destroys this collection, all contained layers are detached from their parent group layer
+     */
+    destroy() {
+        for (const layer of this.#layers) {
+            layer.__detachFromGroup();
+            layer.destroy();
+        }
+        this.#layers = [];
+    }
+
+    // Generic method name for consistent interface
+    getItems(options?: LayerRetrievalOptions): (AbstractLayer & Layer)[] {
+        return this.getLayers(options);
+    }
+
+    getLayers(_options?: LayerRetrievalOptions | undefined): (AbstractLayer & Layer)[] {
+        // NOTE: options are ignored because layers are always ordered at this time.
+        return this.#layers.slice();
+    }
+
+    /**
+     * Returns a reference to the internal group layer array.
+     *
+     * NOTE: Do not modify directly!
+     */
+    __getRawLayers(): (AbstractLayer & Layer)[] {
+        return this.#layers;
+    }
+
+    /**
+     * Returns the parent group layer that owns this collection.
+     */
+    __getParent(): GroupLayer {
+        return this.#parent;
     }
 }

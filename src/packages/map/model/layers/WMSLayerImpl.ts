@@ -106,8 +106,8 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
         return this.#capabilities;
     }
 
-    __attach(map: MapModelImpl): void {
-        super.__attach(map);
+    __attachToMap(map: MapModelImpl): void {
+        super.__attachToMap(map);
         for (const sublayer of this.#sublayers.getSublayers()) {
             sublayer.__attach(map, this, this);
         }

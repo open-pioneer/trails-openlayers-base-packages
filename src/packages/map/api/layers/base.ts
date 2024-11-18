@@ -6,8 +6,8 @@ import type { MapModel } from "../MapModel";
 import type { LayerRetrievalOptions } from "../shared";
 import type { SimpleLayer } from "./SimpleLayer";
 import type { WMSLayer, WMSSublayer } from "./WMSLayer";
-import { WMTSLayer } from "./WMTSLayer";
-import { GroupLayer } from "./GroupLayer";
+import type { WMTSLayer } from "./WMTSLayer";
+import type { GroupLayer, GroupLayerCollection } from "./GroupLayer";
 
 /** Events emitted by the {@link Layer} and other layer types. */
 export interface LayerBaseEvents {
@@ -105,16 +105,25 @@ export interface AnyLayerBaseType<AdditionalEvents = {}>
     readonly legend: string | undefined;
 
     /**
+     * The direct children of this layer.
+     *
+     * The children may either be a set of operational layers (e.g. for a group layer) or a set of sublayers, or `undefined`.
+     *
+     * See also {@link layers} and {@link sublayers}.
+     */
+    readonly children: ChildrenCollection<AnyLayer> | undefined;
+
+    /**
      * If this layer is a group layer this property contains a collection of all layers that a members to the group.
      *
-     * The properties shall be undefinded if it is not a group layer.
+     * The property shall be `undefined` if it is not a group layer.
      *
      * The properties `layers` and `sublayers` are mutually exclusive.
      */
     readonly layers: GroupLayerCollection | undefined;
 
     /**
-     * The collection of child sublayers for this layer. Sublayers are layers that cannot exist without a apropriate parent layer.
+     * The collection of child sublayers for this layer. Sublayers are layers that cannot exist without an appropriate parent layer.
      *
      * Layers that can never have any sublayers may not have a `sublayers` collection.
      *
@@ -229,23 +238,24 @@ export interface SublayerBaseType extends AnyLayerBaseType {
 }
 
 /**
+ * Contains the children of a layer.
+ */
+export interface ChildrenCollection<LayerType> {
+    /**
+     * Returns the items in this collection.
+     */
+    getItems(options?: LayerRetrievalOptions): LayerType[];
+}
+
+/**
  * Contains the sublayers that belong to a {@link Layer} or {@link Sublayer}.
  */
-export interface SublayersCollection<SublayerType = Sublayer> {
+export interface SublayersCollection<SublayerType = Sublayer>
+    extends ChildrenCollection<SublayerType> {
     /**
      * Returns the child sublayers in this collection.
      */
     getSublayers(options?: LayerRetrievalOptions): SublayerType[];
-}
-
-/**
- * Contains {@link Layer} instances that belong to a {@link GroupLayer}
- */
-export interface GroupLayerCollection {
-    /**
-     * Returns all layers in this collection
-     */
-    getLayers(options?: LayerRetrievalOptions): Layer[];
 }
 
 /**

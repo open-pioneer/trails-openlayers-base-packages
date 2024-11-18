@@ -194,19 +194,9 @@ function useLayers(map: MapModel): Layer[] {
  */
 function useChildLayers(layer: AnyLayer): AnyLayer[] | undefined {
     return useReactiveSnapshot(() => {
-        //layers and sublayers are mutually exclusive, only render sublayers if layers is undefined
-        if (layer.layers) {
-            const groupMembers = layer.layers.getLayers({ sortByDisplayOrder: true });
-            return groupMembers.reverse();
-        }
-
-        const sublayers = layer.sublayers?.getSublayers({ sortByDisplayOrder: true });
-        if (!sublayers) {
-            return undefined;
-        }
-
-        sublayers.reverse(); // render topmost layer first
-        return sublayers;
+        const children = layer.children?.getItems({ sortByDisplayOrder: true });
+        children?.reverse(); // render topmost layer first
+        return children;
     }, [layer]);
 }
 

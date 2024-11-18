@@ -83,7 +83,7 @@ export abstract class AbstractLayer<AdditionalEvents = {}>
     /**
      * Called by the map model when the layer is added to the map.
      */
-    __attach(map: MapModelImpl): void {
+    __attachToMap(map: MapModelImpl): void {
         super.__attachToMap(map);
 
         const { initial: initialState, resource: stateWatchResource } = watchLoadState(

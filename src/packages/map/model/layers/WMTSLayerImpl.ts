@@ -61,8 +61,8 @@ export class WMTSLayerImpl extends AbstractLayer implements WMTSLayer {
         return undefined;
     }
 
-    __attach(map: MapModelImpl): void {
-        super.__attach(map);
+    __attachToMap(map: MapModelImpl): void {
+        super.__attachToMap(map);
         this.#fetchWMTSCapabilities()
             .then((result: string) => {
                 const parser = new WMTSCapabilities();

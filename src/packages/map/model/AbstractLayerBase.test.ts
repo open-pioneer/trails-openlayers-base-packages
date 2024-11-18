@@ -8,7 +8,7 @@ import { AbstractLayerBase, AbstractLayerBaseOptions } from "./AbstractLayerBase
 import { MapModelImpl } from "./MapModelImpl";
 import { SublayersCollectionImpl } from "./SublayersCollectionImpl";
 import { syncWatch } from "@conterra/reactivity-core";
-import { GroupLayerCollectionImpl } from "./GroupLayerCollectionImpl";
+import { GroupLayerCollectionImpl } from "./layers/GroupLayerImpl";
 
 afterEach(() => {
     vi.restoreAllMocks();

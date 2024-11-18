@@ -233,6 +233,7 @@ it("provides access to sublayers", () => {
         ],
         attach: true
     });
+    expect(layer.children).toBe(layer.sublayers);
 
     const sublayers = layer.sublayers.getSublayers();
     expect(sublayers.length).toBe(1);
@@ -338,7 +339,7 @@ function createLayer(options: WMSLayerConfig & { fetch?: Mock; attach?: boolean 
     } as MapModelImpl;
 
     if (options?.attach) {
-        layer.__attach(mapModel);
+        layer.__attachToMap(mapModel);
     }
 
     return {

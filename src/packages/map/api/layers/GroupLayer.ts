@@ -2,38 +2,54 @@
 // SPDX-License-Identifier: Apache-2.0
 import type { Group } from "ol/layer";
 import { GroupLayerImpl } from "../../model/layers/GroupLayerImpl";
-import type { GroupLayerCollection, Layer, LayerBaseType, LayerConfig } from "./base";
+import type { LayerRetrievalOptions } from "../shared";
+import type { ChildrenCollection, Layer, LayerBaseType, LayerConfig } from "./base";
 
 /**
  * Configuration options to construct a {@link GroupLayer}.
  */
 export interface GroupLayerConfig extends LayerConfig {
     /**
-     * List of layer that belong to group layer.
-     * As long as a layer is attached to a group it cannot be added to the map model directly.
+     * List of layers that belong to the new group layer.
+     *
+     * The group layer takes ownership of the given layers: they will be destroyed when the parent is destroyed.
+     * A layer must have a unique parent: it can only be added to the map or a single group layer.
      */
     layers: Layer[];
 }
 
 /**
  * Represents a group of layers.
- * A group layer contains a collection of {@link Layer} instances, nesting of group layers is also possible.
+ *
+ * A group layer contains a collection of {@link Layer} children.
+ * Groups can be nested to form a hierarchy.
  */
 export interface GroupLayer extends LayerBaseType {
     readonly type: "group";
 
     /**
-     * layers contained in this group.
+     * Layers contained in this group.
      */
     readonly layers: GroupLayerCollection;
 
     /**
-     * raw OL LayerGroup
-     * Warning: Do not manipulate the collection of layers in this group, changes are not synchronized!
+     * Raw OpenLayers group instance.
+     *
+     * **Warning:** Do not manipulate the collection of layers in this group directly, changes are not synchronized!
      */
     readonly olLayer: Group;
 
     readonly sublayers: undefined;
+}
+
+/**
+ * Contains {@link Layer} instances that belong to a {@link GroupLayer}
+ */
+export interface GroupLayerCollection extends ChildrenCollection<Layer> {
+    /**
+     * Returns all layers in this collection
+     */
+    getLayers(options?: LayerRetrievalOptions): Layer[];
 }
 
 export interface GroupLayerConstructor {

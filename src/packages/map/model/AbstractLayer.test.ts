@@ -3,16 +3,16 @@
 /**
  * @vitest-environment node
  */
+import { syncWatch } from "@conterra/reactivity-core";
+import { HttpService } from "@open-pioneer/http";
 import Layer from "ol/layer/Layer";
 import TileLayer from "ol/layer/Tile";
-import { HttpService } from "@open-pioneer/http";
+import Source, { State } from "ol/source/Source";
 import { Mock, MockInstance, afterEach, describe, expect, it, vi } from "vitest";
 import { HealthCheckFunction, LayerConfig, SimpleLayerConfig } from "../api";
 import { AbstractLayer } from "./AbstractLayer";
-import Source, { State } from "ol/source/Source";
+import { GroupLayerCollectionImpl } from "./layers/GroupLayerImpl";
 import { MapModelImpl } from "./MapModelImpl";
-import { syncWatch } from "@conterra/reactivity-core";
-import { GroupLayerCollectionImpl } from "./GroupLayerCollectionImpl";
 
 afterEach(() => {
     vi.restoreAllMocks();
@@ -365,7 +365,7 @@ function createLayer(layerConfig: SimpleLayerConfig, options?: { fetch?: Mock })
     } as unknown as MapModelImpl;
 
     const layer = new LayerImpl(layerConfig);
-    layer.__attach(mapModel);
+    layer.__attachToMap(mapModel);
     return { layer, mapModel, httpService };
 }
 

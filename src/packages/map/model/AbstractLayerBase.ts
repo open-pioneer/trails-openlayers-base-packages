@@ -1,7 +1,5 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { EventEmitter, createLogger } from "@open-pioneer/core";
-import { v4 as uuid4v } from "uuid";
 import {
     batch,
     computed,
@@ -10,11 +8,20 @@ import {
     reactiveMap,
     ReadonlyReactive
 } from "@conterra/reactivity-core";
-import { AnyLayer, AnyLayerBaseType, AnyLayerTypes, LayerBaseEvents, Sublayer } from "../api";
+import { createLogger, EventEmitter } from "@open-pioneer/core";
+import { v4 as uuid4v } from "uuid";
+import {
+    AnyLayer,
+    AnyLayerBaseType,
+    AnyLayerTypes,
+    ChildrenCollection,
+    LayerBaseEvents,
+    Sublayer
+} from "../api";
+import { GroupLayer } from "../api/layers/GroupLayer";
+import { GroupLayerCollectionImpl } from "./layers/GroupLayerImpl";
 import { MapModelImpl } from "./MapModelImpl";
 import { SublayersCollectionImpl } from "./SublayersCollectionImpl";
-import { GroupLayer } from "../api/layers/GroupLayer";
-import { GroupLayerCollectionImpl } from "./GroupLayerCollectionImpl";
 
 const LOG = createLogger("map:AbstractLayerModel");
 
@@ -89,6 +96,10 @@ export abstract class AbstractLayerBase<AdditionalEvents = {}>
         return this.#parent;
     }
 
+    get children(): ChildrenCollection<AnyLayer & AbstractLayerBase> | undefined {
+        return this.layers ?? this.sublayers ?? undefined;
+    }
+
     abstract get type(): AnyLayerTypes;
 
     abstract get visible(): boolean;
@@ -107,7 +118,6 @@ export abstract class AbstractLayerBase<AdditionalEvents = {}>
         this.#destroyed = true;
         this.sublayers?.destroy();
         this.layers?.destroy();
-        this.__detachFromGroup();
         try {
             this.emit("destroy");
         } catch (e) {
@@ -118,7 +128,7 @@ export abstract class AbstractLayerBase<AdditionalEvents = {}>
     /**
      * Attaches the layer to its owning map.
      */
-    protected __attachToMap(map: MapModelImpl): void {
+    __attachToMap(map: MapModelImpl): void {
         if (this.#map) {
             throw new Error(
                 `Layer '${this.id}' has already been attached to the map '${this.map.id}'`
@@ -128,8 +138,8 @@ export abstract class AbstractLayerBase<AdditionalEvents = {}>
     }
 
     /**
-     * attach group layers to its parent group layer
-     * @param parent
+     * Attach group layers to its parent group layer.
+     * Called by the parent layer.
      */
     __attachToGroup(parent: GroupLayer): void {
         if (this.#parent) {
@@ -141,7 +151,9 @@ export abstract class AbstractLayerBase<AdditionalEvents = {}>
     }
 
     /**
-     * detach layer from parent group layer
+     * Detach layer from parent group layer.
+     *
+     * Called by the parent group layer when destroyed or the layer gets removed.
      */
     __detachFromGroup(): void {
         this.#parent = undefined;

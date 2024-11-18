@@ -58,16 +58,40 @@ it("should create OL group that contains all group members", () => {
 
 it("should set parent of group members to this group layer", () => {
     const olLayer = new TileLayer({});
+    const child = new SimpleLayerImpl({
+        id: "member",
+        title: "group member",
+        olLayer: olLayer
+    });
+    expect(child.parent).toBeUndefined();
+
     const grouplayer = new GroupLayerImpl({
         id: "group",
         title: "group test",
-        layers: [
-            new SimpleLayerImpl({
-                id: "member",
-                title: "group member",
-                olLayer: olLayer
-            })
-        ]
+        layers: [child]
     });
-    expect(grouplayer.layers.getLayers()[0]?.parent === grouplayer).toBeTruthy();
+    expect(grouplayer.layers.getLayers()[0]).toBe(child);
+    expect(grouplayer.layers).toBe(grouplayer.children); // alias
+    expect(child.parent).toBe(grouplayer);
+
+    grouplayer.destroy();
+    expect(grouplayer.layers.getLayers().length).toBe(0);
+    expect(child.parent).toBeUndefined();
+});
+
+it("throws when adding the same child twice", () => {
+    const olLayer = new TileLayer({});
+    const child = new SimpleLayerImpl({
+        id: "member",
+        title: "group member",
+        olLayer: olLayer
+    });
+    expect(
+        () =>
+            new GroupLayerImpl({
+                id: "group",
+                title: "group test",
+                layers: [child, child]
+            })
+    ).toThrowErrorMatchingInlineSnapshot(`[Error: Duplicate item added to a unique collection]`);
 });

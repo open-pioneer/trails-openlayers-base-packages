@@ -244,26 +244,25 @@ it("supports lookup by layer id for members of a group layer", async () => {
         source: new OSM()
     });
 
+    const child = new SimpleLayerImpl({
+        id: "member",
+        title: "group member",
+        olLayer: olLayer
+    });
+    const group = new GroupLayer({
+        id: "group",
+        title: "group test",
+        layers: [child]
+    });
+
     model = await create("foo", {
-        layers: [
-            new GroupLayer({
-                id: "group",
-                title: "group test",
-                layers: [
-                    new SimpleLayerImpl({
-                        id: "member",
-                        title: "group member",
-                        olLayer: olLayer
-                    })
-                ]
-            })
-        ]
+        layers: [group]
     });
 
     const memberLayer = model.layers.getLayerById("member");
-    expect(memberLayer).toBeDefined();
+    expect(memberLayer).toBe(child);
     const groupLayer = model.layers.getLayerById("group");
-    expect(groupLayer).toBeDefined();
+    expect(groupLayer).toBe(group);
 });
 
 it("results in an error, if using the same layer id twice", async () => {
@@ -431,7 +430,7 @@ it("registering the same OpenLayers layer twice throws an error", async () => {
             ]
         });
     }).rejects.toThrowErrorMatchingInlineSnapshot(
-        `[Error: OlLayer has already been used in this or another layer.]`
+        `[Error: OlLayer used by layer 'l-2' has already been used in map.]`
     );
 });
 
