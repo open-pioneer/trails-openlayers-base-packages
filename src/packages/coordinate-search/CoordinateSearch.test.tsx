@@ -260,7 +260,7 @@ it("should successfully call onClear if clear button is clicked", async () => {
     await waitForMapMount("map");
     const { coordInput, coordinateInputGroup } = await waitForCoordinateSearch();
 
-    await user.type(coordInput, "404000 5700000{enter}");
+    await user.type(coordInput, "4 5{enter}");
     const clearButton = getClearButton(coordinateInputGroup);
     expect(cleared).toBe(false);
 

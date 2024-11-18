@@ -184,9 +184,6 @@ it("should update coordinates in selected option", async () => {
     const { coordInput } = await waitForCoordinateInput();
     expect(coordInput.getAttribute("value")).toMatchInlineSnapshot('"7.650 51.940"');
 
-    // TODO: Remove comment
-    // - Might sometimes need a waitFor() after rerender if rerendering triggers async updates (timeouts, network activity, ...)
-    // - Did not verify whether coordinates in snapshot are correct
     rerender(componentContent(updatedInput));
     expect(coordInput.getAttribute("value")).toMatchInlineSnapshot(`"7.726 52.549"`);
 });
@@ -304,7 +301,7 @@ it("should successfully call onClear if clear button is clicked", async () => {
     await waitForMapMount("map");
     const { coordInput, coordinateInputGroup } = await waitForCoordinateInput();
 
-    await user.type(coordInput, "404000 5700000{enter}");
+    await user.type(coordInput, "4 5{enter}");
     const clearButton = getClearButton(coordinateInputGroup);
     expect(cleared).toBe(false);
 
@@ -357,7 +354,6 @@ it("should successfully copy to clipboard if copy button is clicked", async () =
     expect(copiedText).toBe("3.638 89.987");
 });
 
-//TODO test tooltip messages
 it("should show the correct tooltip message", async () => {
     const user = userEvent.setup();
     const { mapId, registry } = await setupMap();
@@ -379,66 +375,41 @@ it("should show the correct tooltip message", async () => {
     await waitForMapMount("map");
     const { coordInput } = await waitForCoordinateInput();
 
-    await user.type(coordInput, "{backspace}{backspace}{backspace}{backspace}abc");
+    await user.clear(coordInput);
+    await user.click(coordInput);
+    await user.paste("ab");
     const tooltip1 = await tooltipHelper.waitForChange();
     expect(tooltip1).toBe("tooltip.space");
 
-    await user.type(coordInput, "{backspace}{backspace}{backspace}{backspace}a b c");
+    await user.clear(coordInput);
+    await user.click(coordInput);
+    await user.paste("a  a");
     const tooltip2 = await tooltipHelper.waitForChange();
     expect(tooltip2).toBe("tooltip.spaceOne");
 
-    /*await user.type(coordInput, "{backspace}{backspace}{backspace}{backspace}{backspace}abc  abc");
-    await sleep(1000);
-    tooltip = await getTooltipMessage();
-    expect(tooltip).toBe("tooltip.spaceOne");
+    await user.clear(coordInput);
+    await user.click(coordInput);
+    await user.paste("a ");
+    const tooltip3 = await tooltipHelper.waitForChange();
+    expect(tooltip3).toBe("tooltip.2coords");
 
-    await user.type(
-        coordInput,
-        "{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}abc "
-    );
-    await sleep(1000);
-    tooltip = await getTooltipMessage();
-    expect(tooltip).toBe("tooltip.2coords");
+    await user.clear(coordInput);
+    await user.click(coordInput);
+    await user.paste("a,b c,d");
+    const tooltip4 = await tooltipHelper.waitForChange();
+    expect(tooltip4).toBe("tooltip.dividerDe");
 
-    await user.type(
-        coordInput,
-        "{backspace}{backspace}{backspace}{backspace}{backspace}abc.abc abc.def"
-    );
-    await sleep(1000);
-    tooltip = await getTooltipMessage();
-    expect(tooltip).toBe("tooltip.dividerDe");
+    await user.clear(coordInput);
+    await user.click(coordInput);
+    await user.paste("a b c");
+    const tooltip5 = await tooltipHelper.waitForChange();
+    expect(tooltip5).toBe("tooltip.spaceOne");
 
-    await user.type(
-        coordInput,
-        "{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}abc,abc abc,def"
-    );
-    await sleep(1000);
-    tooltip = await getTooltipMessage();
-    expect(tooltip).toBe("tooltip.dividerEn");
-
-    await user.type(
-        coordInput,
-        "{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}123.123 123.123"
-    );
-    await sleep(1000);
-    tooltip = await getTooltipMessage();
-    expect(tooltip).toBe("tooltip.dividerDe");
-
-    await user.type(
-        coordInput,
-        "{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}123,123 123,123"
-    );
-    await sleep(1000);
-    tooltip = await getTooltipMessage();
-    expect(tooltip).toBe("tooltip.dividerEn");
-
-    await user.type(
-        coordInput,
-        "{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}0 0"
-    );
-    await sleep(1000);
-    tooltip = await getTooltipMessage();
-    expect(tooltip).toBe("tooltip.extent");*/
+    await user.clear(coordInput);
+    await user.click(coordInput);
+    await user.paste("200 100");
+    const tooltip6 = await tooltipHelper.waitForChange();
+    expect(tooltip6).toBe("tooltip.extent");
 });
 
 it("should show copy button on coordinate placeholder", async () => {
@@ -485,7 +456,7 @@ it("should show clear button on coordinate placeholder", async () => {
     await waitForMapMount("map");
     const { coordInput, coordinateInputGroup } = await waitForCoordinateInput();
 
-    await user.type(coordInput, "404000 5700000{enter}");
+    await user.type(coordInput, "4 5{enter}");
 
     const clearButton = getClearButton(coordinateInputGroup);
     expect(clearButton).toBeDefined();
