@@ -10,7 +10,8 @@ import {
     useCommonComponentProps
 } from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
-import { FC, useId } from "react";
+import { FC, useId, useMemo } from "react";
+import { TocWidgetOptions, TocWidgetOptionsProvider } from "./Context";
 import { LayerList } from "./LayerList";
 import { Tools } from "./Tools";
 
@@ -40,6 +41,12 @@ export interface TocProps extends CommonComponentProps, MapModelProps {
      * Property "mapId" is not applied.
      */
     basemapSwitcherProps?: Omit<BasemapSwitcherProps, "mapId">;
+
+    /**
+     * Show the parent layers when a child layer is made visible.
+     * Defaults to `true`.
+     */
+    autoShowParents?: boolean;
 }
 
 /**
@@ -64,10 +71,12 @@ export const Toc: FC<TocProps> = (props: TocProps) => {
         showTools = false,
         toolsConfig,
         showBasemapSwitcher = true,
-        basemapSwitcherProps
+        basemapSwitcherProps,
+        autoShowParents = true
     } = props;
     const { containerProps } = useCommonComponentProps("toc", props);
     const basemapsHeadingId = useId();
+    const options = useMemo((): TocWidgetOptions => ({ autoShowParents }), [autoShowParents]);
     const state = useMapModel(props);
 
     let content: JSX.Element | null;
@@ -134,7 +143,7 @@ export const Toc: FC<TocProps> = (props: TocProps) => {
 
     return (
         <Flex {...containerProps} direction="column" gap={PADDING}>
-            {content}
+            <TocWidgetOptionsProvider value={options}>{content}</TocWidgetOptionsProvider>
         </Flex>
     );
 };

@@ -83,7 +83,7 @@ export abstract class AbstractLayer<AdditionalEvents = {}>
     /**
      * Called by the map model when the layer is added to the map.
      */
-    __attach(map: MapModelImpl): void {
+    __attachToMap(map: MapModelImpl): void {
         super.__attachToMap(map);
 
         const { initial: initialState, resource: stateWatchResource } = watchLoadState(
@@ -114,7 +114,7 @@ export abstract class AbstractLayer<AdditionalEvents = {}>
         }
     }
 
-    abstract readonly type: "simple" | "wms" | "wmts";
+    abstract readonly type: "simple" | "wms" | "wmts" | "group";
 }
 
 function watchLoadState(

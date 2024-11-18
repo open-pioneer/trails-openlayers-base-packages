@@ -24,6 +24,9 @@ type LayerBaseType = (AbstractLayerBase & Layer) | (AbstractLayerBase & Sublayer
  */
 export const TOPMOST_LAYER_Z = 9999999;
 
+/**
+ * Manages the (top-level) content of the map.
+ */
 export class LayerCollectionImpl implements LayerCollection {
     #map: MapModelImpl;
 
@@ -59,7 +62,7 @@ export class LayerCollectionImpl implements LayerCollection {
     addLayer(layer: Layer): void {
         checkLayerInstance(layer);
 
-        layer.__attach(this.#map);
+        layer.__attachToMap(this.#map);
         this.#addLayer(layer);
     }
 
@@ -216,7 +219,7 @@ export class LayerCollectionImpl implements LayerCollection {
                 );
             }
             if (olLayer && this.#layersByOlLayer.has(olLayer)) {
-                throw new Error(`OlLayer has already been used in this or another layer.`);
+                throw new Error(`OlLayer used by layer '${id}' has already been used in map.`);
             }
 
             // Register this layer with the maps.
@@ -226,7 +229,10 @@ export class LayerCollectionImpl implements LayerCollection {
             }
             registrations.push([id, olLayer]);
 
-            // Recurse into nested sublayers.
+            // Recurse into nested children.
+            for (const layer of model.layers?.__getRawLayers() ?? []) {
+                visit(layer);
+            }
             for (const sublayer of model.sublayers?.__getRawSublayers() ?? []) {
                 visit(sublayer);
             }
@@ -235,6 +241,8 @@ export class LayerCollectionImpl implements LayerCollection {
         try {
             visit(model);
         } catch (e) {
+            // If any error happens, undo the indexing.
+            // This way we don't leave a partially indexed layer tree behind.
             for (const [id, olLayer] of registrations) {
                 this.#layersById.delete(id);
                 if (olLayer) {
@@ -246,7 +254,7 @@ export class LayerCollectionImpl implements LayerCollection {
     }
 
     /**
-     * Removes index entries for the given layer and all its sublayers.
+     * Removes index entries for the given layer and all its children.
      */
     #unIndexLayer(model: AbstractLayer) {
         const visit = (model: AbstractLayer | AbstractLayerBase) => {
@@ -254,6 +262,11 @@ export class LayerCollectionImpl implements LayerCollection {
                 this.#layersByOlLayer.delete(model.olLayer);
             }
             this.#layersById.delete(model.id);
+
+            for (const layer of model.layers?.__getRawLayers() ?? []) {
+                visit(layer);
+            }
+
             for (const sublayer of model.sublayers?.__getRawSublayers() ?? []) {
                 visit(sublayer);
             }
@@ -266,13 +279,9 @@ function sortLayersByDisplayOrder(layers: Layer[]) {
     layers.sort((left, right) => {
         // currently layers are added with increasing z-index (base layers: 0), so
         // ordering by z-index is automatically the correct display order.
-        // we use the id as the tie breaker for equal z-indices.
         const leftZ = left.olLayer.getZIndex() ?? 1;
         const rightZ = right.olLayer.getZIndex() ?? 1;
-        if (leftZ !== rightZ) {
-            return leftZ - rightZ;
-        }
-        return left.id.localeCompare(right.id, "en");
+        return leftZ - rightZ;
     });
 }
 

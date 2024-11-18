@@ -1,7 +1,5 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { EventEmitter, createLogger } from "@open-pioneer/core";
-import { v4 as uuid4v } from "uuid";
 import {
     batch,
     computed,
@@ -10,7 +8,18 @@ import {
     reactiveMap,
     ReadonlyReactive
 } from "@conterra/reactivity-core";
-import { AnyLayerBaseType, AnyLayerTypes, LayerBaseEvents, Sublayer } from "../api";
+import { createLogger, EventEmitter } from "@open-pioneer/core";
+import { v4 as uuid4v } from "uuid";
+import {
+    AnyLayer,
+    AnyLayerBaseType,
+    AnyLayerTypes,
+    ChildrenCollection,
+    LayerBaseEvents,
+    Sublayer
+} from "../api";
+import { GroupLayer } from "../api/layers/GroupLayer";
+import { GroupLayerCollectionImpl } from "./layers/GroupLayerImpl";
 import { MapModelImpl } from "./MapModelImpl";
 import { SublayersCollectionImpl } from "./SublayersCollectionImpl";
 
@@ -32,6 +41,7 @@ export abstract class AbstractLayerBase<AdditionalEvents = {}>
     implements AnyLayerBaseType
 {
     #map: MapModelImpl | undefined;
+    #parent: AnyLayer | undefined;
 
     #id: string;
     #title: Reactive<string>;
@@ -82,9 +92,19 @@ export abstract class AbstractLayerBase<AdditionalEvents = {}>
         return this.#attributes.value;
     }
 
+    get parent(): AnyLayer | undefined {
+        return this.#parent;
+    }
+
+    get children(): ChildrenCollection<AnyLayer & AbstractLayerBase> | undefined {
+        return this.layers ?? this.sublayers ?? undefined;
+    }
+
     abstract get type(): AnyLayerTypes;
 
     abstract get visible(): boolean;
+
+    abstract get layers(): GroupLayerCollectionImpl | undefined;
 
     abstract get sublayers(): SublayersCollectionImpl<Sublayer & AbstractLayerBase> | undefined;
 
@@ -97,6 +117,7 @@ export abstract class AbstractLayerBase<AdditionalEvents = {}>
 
         this.#destroyed = true;
         this.sublayers?.destroy();
+        this.layers?.destroy();
         try {
             this.emit("destroy");
         } catch (e) {
@@ -107,13 +128,35 @@ export abstract class AbstractLayerBase<AdditionalEvents = {}>
     /**
      * Attaches the layer to its owning map.
      */
-    protected __attachToMap(map: MapModelImpl): void {
+    __attachToMap(map: MapModelImpl): void {
         if (this.#map) {
             throw new Error(
                 `Layer '${this.id}' has already been attached to the map '${this.map.id}'`
             );
         }
         this.#map = map;
+    }
+
+    /**
+     * Attach group layers to its parent group layer.
+     * Called by the parent layer.
+     */
+    __attachToGroup(parent: GroupLayer): void {
+        if (this.#parent) {
+            throw new Error(
+                `Layer '${this.id}' has already been attached to the group layer '${this.#parent.id}'`
+            );
+        }
+        this.#parent = parent;
+    }
+
+    /**
+     * Detach layer from parent group layer.
+     *
+     * Called by the parent group layer when destroyed or the layer gets removed.
+     */
+    __detachFromGroup(): void {
+        this.#parent = undefined;
     }
 
     setTitle(newTitle: string): void {
