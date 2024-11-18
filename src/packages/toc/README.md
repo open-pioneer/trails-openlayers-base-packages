@@ -59,6 +59,17 @@ For example, given a layer with the ID `test-geojson`, the TOC's list item for t
 
 > NOTE: List items are not guaranteed to be rendered as `li`. Only the CSS class name is guaranteed.
 
+### Automatic parent layer visibility
+
+When showing a layer via the TOC component (e.g. by clicking the checkbox next to its name), all parent layers of that layer will also be made visible by default.
+
+This can be disabled by configuring `autoShowParents={false}` on the `TOC` component.
+
+```jsx
+// Default: true
+<Toc autoShowParents={false} />
+```
+
 ## License
 
 Apache-2.0 (see `LICENSE` file)

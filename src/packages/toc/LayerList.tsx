@@ -25,6 +25,7 @@ import { PackageIntl } from "@open-pioneer/runtime";
 import classNames from "classnames";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FiAlertTriangle, FiMoreVertical } from "react-icons/fi";
+import { useTocWidgetOptions } from "./Context";
 
 /**
  * Lists the (top level) operational layers in the map.
@@ -43,13 +44,13 @@ export function LayerList(props: { map: MapModel; "aria-label"?: string }): JSX.
         );
     }
 
-    return createList(layers, intl, {
+    return createList(layers, {
         "aria-label": ariaLabel
     });
 }
 
-function createList(layers: AnyLayer[], intl: PackageIntl, listProps: ListProps) {
-    const items = layers.map((layer) => <LayerItem key={layer.id} layer={layer} intl={intl} />);
+function createList(layers: AnyLayer[], listProps: ListProps) {
+    const items = layers.map((layer) => <LayerItem key={layer.id} layer={layer} />);
     return (
         <List
             // Note: not using UnorderedList because it adds default margins
@@ -69,8 +70,10 @@ function createList(layers: AnyLayer[], intl: PackageIntl, listProps: ListProps)
  *
  * The item may have further nested list items if there are sublayers present.
  */
-function LayerItem(props: { layer: AnyLayer; intl: PackageIntl }): JSX.Element {
-    const { layer, intl } = props;
+function LayerItem(props: { layer: AnyLayer }): JSX.Element {
+    const { layer } = props;
+    const intl = useIntl();
+    const options = useTocWidgetOptions();
     const { title, description, isVisible } = useReactiveSnapshot(() => {
         return {
             title: layer.title,
@@ -84,12 +87,11 @@ function LayerItem(props: { layer: AnyLayer; intl: PackageIntl }): JSX.Element {
 
     let nestedChildren;
     if (childLayers?.length) {
-        nestedChildren = createList(childLayers, intl, {
+        nestedChildren = createList(childLayers, {
             ml: 4,
             "aria-label": intl.formatMessage({ id: "childgroupLabel" }, { title: title })
         });
     }
-
     return (
         <Box as="li" className={classNames("toc-layer-item", `layer-${slug(layer.id)}`)}>
             <Flex
@@ -108,7 +110,9 @@ function LayerItem(props: { layer: AnyLayer; intl: PackageIntl }): JSX.Element {
                     aria-label={title + (!isAvailable ? " " + notAvailableLabel : "")}
                     isChecked={isVisible}
                     isDisabled={!isAvailable}
-                    onChange={(event) => layer.setVisible(event.target.checked)}
+                    onChange={(event) =>
+                        updateLayerVisibility(layer, event.target.checked, options.autoShowParents)
+                    }
                 >
                     {title}
                 </Checkbox>
@@ -141,6 +145,13 @@ function LayerItem(props: { layer: AnyLayer; intl: PackageIntl }): JSX.Element {
             {nestedChildren}
         </Box>
     );
+}
+
+function updateLayerVisibility(layer: AnyLayer, visible: boolean, autoShowParents: boolean) {
+    layer.setVisible(visible);
+    if (visible && autoShowParents && layer.parent) {
+        updateLayerVisibility(layer.parent, true, true);
+    }
 }
 
 function LayerItemDescriptor(props: {

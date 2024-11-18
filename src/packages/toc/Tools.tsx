@@ -1,18 +1,18 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import {
+    Box,
+    Button,
     Menu,
     MenuButton,
-    MenuList,
     MenuItem,
-    Button,
-    Box,
+    MenuList,
     Portal
 } from "@open-pioneer/chakra-integration";
+import { AnyLayer, MapModel } from "@open-pioneer/map";
+import { useIntl } from "open-pioneer:react-hooks";
 import { FC } from "react";
 import { FiMoreVertical } from "react-icons/fi";
-import { useIntl } from "open-pioneer:react-hooks";
-import { GroupLayerCollection, MapModel, SublayersCollection } from "@open-pioneer/map";
 import { ToolsConfig } from "./Toc";
 
 export const Tools: FC<{ map: MapModel } & ToolsConfig> = (props) => {
@@ -54,31 +54,18 @@ export const Tools: FC<{ map: MapModel } & ToolsConfig> = (props) => {
 };
 
 function hideAllLayers(map: MapModel | undefined) {
-    const hideSublayer = (sublayers: SublayersCollection | undefined) => {
-        sublayers?.getSublayers().forEach((layer) => {
-            layer.setVisible(false);
+    const hide = (layer: AnyLayer) => {
+        layer.setVisible(false);
 
-            hideSublayer(layer?.sublayers);
-        });
-    };
-    const hideGroupChildlayer = (childlayers: GroupLayerCollection | undefined) => {
-        childlayers?.getLayers().forEach((layer) => {
-            layer.setVisible(false);
-
-            if (layer.layers) {
-                //if child ayer is a nested group layer
-                hideGroupChildlayer(layer.layers);
-            } else if (layer.sublayers) {
-                //if child layer has sublayers (e.g WMSLayer with WMSSubLayers)
-                hideSublayer(layer.sublayers);
+        const children = layer.children?.getItems();
+        if (children) {
+            for (const child of children) {
+                hide(child);
             }
-        });
+        }
     };
 
     map?.layers.getOperationalLayers().forEach((layer) => {
-        layer.setVisible(false);
-
-        hideSublayer(layer?.sublayers);
-        hideGroupChildlayer(layer?.layers);
+        hide(layer);
     });
 }
