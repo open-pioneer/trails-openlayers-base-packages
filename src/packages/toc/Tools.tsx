@@ -60,9 +60,7 @@ export const Tools: FC<{ map: MapModel; onCollapseAllGroups?: () => void } & Too
                                         id: "tools.collapseAllGroups"
                                     })}
                                     onClick={() => {
-                                        if (onCollapseAllGroups) {
-                                            onCollapseAllGroups();
-                                        }
+                                        onCollapseAllGroups?.();
                                     }}
                                 >
                                     {intl.formatMessage({ id: "tools.collapseAllGroups" })}

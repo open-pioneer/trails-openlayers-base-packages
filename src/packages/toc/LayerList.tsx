@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
 import {
     Box,
     Button,
@@ -21,14 +22,23 @@ import {
     Text,
     Tooltip
 } from "@open-pioneer/chakra-integration";
-import { Layer, AnyLayer, MapModel, Sublayer } from "@open-pioneer/map";
+import { AnyLayer, Layer, MapModel, Sublayer } from "@open-pioneer/map";
+import { useEvent } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { PackageIntl } from "@open-pioneer/runtime";
 import classNames from "classnames";
 import { useIntl } from "open-pioneer:react-hooks";
-import { forwardRef, useCallback, useImperativeHandle, useState } from "react";
+import {
+    createContext,
+    forwardRef,
+    useContext,
+    useEffect,
+    useImperativeHandle,
+    useMemo,
+    useRef,
+    useState
+} from "react";
 import { FiAlertTriangle, FiMoreVertical } from "react-icons/fi";
-import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
 
 interface LayerListProps {
     map: MapModel;
@@ -43,20 +53,43 @@ export interface LayerListRef {
     collapseAll: CollapseHandler;
 }
 
+interface LayerListContextMethods {
+    registerCollapsHandler(id: string, handler: CollapseHandler): void;
+    unregisterCollapsHandler(id: string): void;
+}
+
+const LayerListContext = createContext<LayerListContextMethods | undefined>(undefined);
+
 /**
  * Lists the (top level) operational layers in the map.
  *
  * Layer Groups are skipped in the current implementation.
  */
 export const LayerList = forwardRef<LayerListRef, LayerListProps>((props, ref) => {
-    const { map, "aria-label": ariaLabel, collapsibleGroups = false} = props;
-    const collapseHandlers = new Map<string, CollapseHandler>();
+    const { map, "aria-label": ariaLabel, collapsibleGroups = false } = props;
+
+    const collapseHandlers = useRef<Map<string, CollapseHandler>>();
+    if (!collapseHandlers.current) {
+        collapseHandlers.current = new Map();
+    }
+
+    const context = useMemo((): LayerListContextMethods => {
+        return {
+            registerCollapsHandler(id: string, handler: CollapseHandler) {
+                collapseHandlers.current!.set(id, handler);
+            },
+            unregisterCollapsHandler(id: string) {
+                collapseHandlers.current!.delete(id);
+            }
+        };
+    }, []);
+
     const intl = useIntl();
     const layers = useLayers(map);
     useImperativeHandle(ref, () => ({
         collapseAll: () => {
             //collapse all groups
-            for (const collapseHandler of collapseHandlers.values()) {
+            for (const collapseHandler of collapseHandlers.current!.values()) {
                 collapseHandler();
             }
         }
@@ -70,14 +103,17 @@ export const LayerList = forwardRef<LayerListRef, LayerListProps>((props, ref) =
         );
     }
 
-    return createList(
-        layers,
-        intl,
-        {
-            "aria-label": ariaLabel
-        },
-        collapseHandlers,
-        collapsibleGroups
+    return (
+        <LayerListContext.Provider value={context}>
+            {createList(
+                layers,
+                intl,
+                {
+                    "aria-label": ariaLabel
+                },
+                collapsibleGroups
+            )}
+        </LayerListContext.Provider>
     );
 });
 LayerList.displayName = "LayerList";
@@ -86,18 +122,11 @@ function createList(
     layers: AnyLayer[],
     intl: PackageIntl,
     listProps: ListProps,
-    collapseHandlers: Map<string, CollapseHandler>,
     collapsibleGroups: boolean
 ) {
     const items = layers.map((layer) => {
         return (
-            <LayerItem
-                key={layer.id}
-                layer={layer}
-                intl={intl}
-                collapseHandlers={collapseHandlers}
-                isCollapsible={collapsibleGroups}
-            />
+            <LayerItem key={layer.id} layer={layer} intl={intl} isCollapsible={collapsibleGroups} />
         );
     });
 
@@ -127,10 +156,9 @@ function createList(
 function LayerItem(props: {
     layer: AnyLayer;
     intl: PackageIntl;
-    collapseHandlers: Map<string, CollapseHandler>;
     isCollapsible: boolean;
 }): JSX.Element {
-    const { layer, intl, collapseHandlers, isCollapsible } = props;
+    const { layer, intl, isCollapsible } = props;
     const { title, description, isVisible } = useReactiveSnapshot(() => {
         return {
             title: layer.title,
@@ -142,7 +170,19 @@ function LayerItem(props: {
     const isAvailable = useLoadState(layer) !== "error";
     const notAvailableLabel = intl.formatMessage({ id: "layerNotAvailable" });
     const [expanded, setExpanded] = useState(true);
-    const collapseHandler = useCallback(() => setExpanded(false), []);
+
+    const context = useContext(LayerListContext);
+    const collapseHandler = useEvent(() => {
+        setExpanded(false);
+    });
+    useEffect(() => {
+        if (!context) {
+            return;
+        }
+
+        context.registerCollapsHandler(layer.id, collapseHandler);
+        return () => context.unregisterCollapsHandler(layer.id);
+    }, [layer, context, collapseHandler]);
 
     let nestedChildren;
     if (sublayers?.length) {
@@ -153,13 +193,9 @@ function LayerItem(props: {
                 ml: 4,
                 "aria-label": intl.formatMessage({ id: "childgroupLabel" }, { title: title })
             },
-            collapseHandlers,
             isCollapsible
         );
     }
-
-    //add collapse handler for layer
-    collapseHandlers.set(layer.id, collapseHandler);
 
     return (
         <Box as="li" className={classNames("toc-layer-item", `layer-${slug(layer.id)}`)}>
