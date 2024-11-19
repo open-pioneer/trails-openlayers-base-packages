@@ -61,10 +61,9 @@ export class SpatialBookmarkViewModel {
      * The current map extent is used for the new bookmark's extent.
      */
     createBookmark(title: string) {
-        const olMap = this.map.olMap;
         // minx, miny, maxx, maxy
-        const olExtent = olMap.getView().calculateExtent();
-        const projection = olMap.getView().getProjection().getCode();
+        const olExtent = this.map.olView.calculateExtent();
+        const projection = this.map.projection.getCode();
         const extent: Extent = {
             minX: olExtent[0]!,
             minY: olExtent[1]!,
@@ -142,8 +141,7 @@ export class SpatialBookmarkViewModel {
 
     /** Computes an OpenLayers extent for the given bookmark. */
     private getBookmarkExtent(bookmark: Bookmark) {
-        const olMap = this.map.olMap;
-        const olView = olMap.getView();
+        const olView = this.map.olView;
         const extent = bookmark.extent;
         const olExtent = [extent.minX, extent.minY, extent.maxX, extent.maxY];
         const viewProjection = olView.getProjection();
@@ -153,8 +151,7 @@ export class SpatialBookmarkViewModel {
 
     /** Moves the map to the given extent. */
     private applyExtent(olExtent: OlExtent) {
-        const olMap = this.map.olMap;
-        const olView = olMap.getView();
+        const olView = this.map.olView;
         const center = getCenter(olExtent);
         const resolution = olView.getResolutionForExtent(olExtent);
         olView.setCenter(center);

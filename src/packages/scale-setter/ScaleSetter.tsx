@@ -10,15 +10,13 @@ import {
     MenuList,
     Portal
 } from "@open-pioneer/chakra-integration";
-import { MapModelProps, useMapModel, useScale } from "@open-pioneer/map";
+import { MapModelProps, useMapModel } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
+import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { PackageIntl } from "@open-pioneer/runtime";
-import { getPointResolution } from "ol/proj";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC } from "react";
 
-const DEFAULT_DPI = 25.4 / 0.28;
-const INCHES_PER_METRE = 39.37;
 const DEFAULT_SCALES = [
     17471320, 8735660, 4367830, 2183915, 1091957, 545978, 272989, 136494, 68247, 34123, 17061, 8530,
     4265, 2132
@@ -43,33 +41,14 @@ export const ScaleSetter: FC<ScaleSetterProps> = (props) => {
     const { map } = useMapModel(props);
     const intl = useIntl();
 
-    const activeScale = useScale(map?.olMap) ?? 1;
+    const activeScale = useReactiveSnapshot(() => map?.scale ?? 1, [map]);
 
-    // TODO: Move to map model (reactivity API refactoring)
-    function setScale(scale: number) {
-        if (!map) {
-            return;
-        }
-
-        const view = map.olMap.getView();
-        const projection = map.olMap.getView().getProjection();
-        const mpu = projection.getMetersPerUnit() ?? 1;
-        const resolution = INCHES_PER_METRE * DEFAULT_DPI * mpu;
-        const center = map.olMap.getView().getCenter();
-        if (!center) {
-            return;
-        }
-
-        const pointResolution = scale / getPointResolution(projection, resolution, center);
-        view.setResolution(pointResolution);
-    }
-
-    const scaleSelectOptions = scales.map((sc) => {
+    const scaleSelectOptions = scales.map((scaleValue) => {
         return (
             <MenuItem
-                value={sc}
-                key={sc}
-                onClick={() => setScale(sc)}
+                value={scaleValue}
+                key={scaleValue}
+                onClick={() => map?.setScale(scaleValue)}
                 onFocus={(e) => {
                     // Not available in unit tests
                     e.target?.scrollIntoView?.({
@@ -78,7 +57,7 @@ export const ScaleSetter: FC<ScaleSetterProps> = (props) => {
                 }}
                 className="scale-setter-option"
             >
-                {renderDisplayScale(intl, sc)}
+                {renderDisplayScale(intl, scaleValue)}
             </MenuItem>
         );
     });

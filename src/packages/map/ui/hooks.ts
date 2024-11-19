@@ -20,6 +20,8 @@ const INCHES_PER_METRE = 39.37;
 
 /**
  * Returns the current view of the given map.
+ *
+ * @deprecated Use `mapModel.olView` instead.
  */
 export function useView(map: OlMap | undefined): OlView | undefined {
     return useOlProperty(map, getView, watchView);
@@ -35,6 +37,8 @@ function watchView(map: OlMap, cb: Callback) {
 
 /**
  * Returns the current projection of the map.
+ *
+ * @deprecated Use `mapModel.projection` instead.
  */
 export function useProjection(map: OlMap | undefined): Projection | undefined {
     const view = useView(map);
@@ -43,6 +47,8 @@ export function useProjection(map: OlMap | undefined): Projection | undefined {
 
 /**
  * Returns the current resolution of the map.
+ *
+ * @deprecated Use `mapModel.resolution` instead.
  */
 export function useResolution(map: OlMap | undefined): number | undefined {
     const view = useView(map);
@@ -59,6 +65,8 @@ function watchResolution(view: OlView, cb: Callback) {
 
 /**
  * Returns the current center coordinates of the map.
+ *
+ * @deprecated Use `mapModel.center` instead.
  */
 export function useCenter(map: OlMap | undefined): Coordinate | undefined {
     const view = useView(map);
@@ -75,6 +83,8 @@ function watchCenter(view: OlView, cb: Callback) {
 
 /**
  * Returns the current scale of the map.
+ *
+ * @deprecated Use `mapModel.scale` instead.
  */
 export function useScale(map: OlMap | undefined): number | undefined {
     const center = useCenter(map);

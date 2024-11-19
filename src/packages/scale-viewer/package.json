@@ -21,6 +21,7 @@
         "@open-pioneer/map": "workspace:^",
         "@open-pioneer/react-utils": "catalog:",
         "@open-pioneer/runtime": "catalog:",
+        "@open-pioneer/reactivity": "catalog:",
         "react": "catalog:"
     },
     "devDependencies": {
