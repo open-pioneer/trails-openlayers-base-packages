@@ -40,7 +40,7 @@ import { TbPointerQuestion } from "react-icons/tb";
 import { DragController } from "./selection-controller/DragController";
 import { Map } from "ol";
 
-type SelectionKind = "extent" | "point";
+export type SelectionKind = "extent" | "point";
 
 export interface ISelectionTypeHandler<T> {
     new (map: Map, tooltip: string, disabledMessage: string, onExtentSelected: (geometry: Geometry) => void): T;
@@ -54,6 +54,11 @@ export interface SelectionProps extends CommonComponentProps, MapModelProps {
      * Array of selection sources available for spatial selection.
      */
     sources: SelectionSource[];
+
+    /**
+     * Array of selection methods available for spatial selection.
+     */
+    selectionMethods?: SelectionKind | SelectionKind[];
 
     /**
      * This handler is called whenever the user has successfully selected
@@ -108,7 +113,7 @@ const COMMON_SELECT_PROPS: SelectProps<any, any, any> = {
  */
 export const Selection: FC<SelectionProps> = (props) => {
     const intl = useIntl();
-    const { sources, onSelectionComplete, onSelectionSourceChanged } = props;
+    const { sources, selectionMethods, onSelectionComplete, onSelectionSourceChanged } = props;
     const { containerProps } = useCommonComponentProps("selection", props);
     const defaultNotAvailableMessage = intl.formatMessage({ id: "sourceNotAvailable" });
 
@@ -118,7 +123,10 @@ export const Selection: FC<SelectionProps> = (props) => {
     );
     const currentSourceStatus = useSourceStatus(currentSource, defaultNotAvailableMessage);
 
-    const [selectionKind, setSelectionKind] = useState<SelectionKind>("extent");
+    const showSelectionButtons = Boolean(selectionMethods && Array.isArray(selectionMethods) && selectionMethods.length > 1);
+    let initialSelectionKind = showSelectionButtons ? (selectionMethods as SelectionKind[])[0] : selectionMethods as SelectionKind;
+    initialSelectionKind ??= "extent";
+    const [selectionKind, setSelectionKind] = useState<SelectionKind>(initialSelectionKind);
 
     const mapState = useMapModel(props);
     const { onExtentSelected } = useSelectionController(
@@ -166,7 +174,7 @@ export const Selection: FC<SelectionProps> = (props) => {
 
     return (
         <VStack {...containerProps} spacing={2}>
-            <FormControl>
+            {showSelectionButtons && <FormControl>
                 <FormLabel>{intl.formatMessage({ id: "selectionKind" })}</FormLabel>
                 <HStack gap={2}>
                     <ToolButton 
@@ -180,7 +188,7 @@ export const Selection: FC<SelectionProps> = (props) => {
                         onClick={() => setSelectionKind("point")} 
                         isActive={selectionKind === "point"}/>
                 </HStack>
-            </FormControl>
+            </FormControl>}
             <FormControl>
                 <FormLabel>{intl.formatMessage({ id: "selectSource" })}</FormLabel>
                 <Select<SelectionOption>
