@@ -4,6 +4,7 @@ import OlMap from "ol/Map";
 import { Circle, Fill, Stroke, Style } from "ol/style";
 import { vi } from "vitest";
 import { GeolocationController } from "./GeolocationController";
+import { setupMap } from "@open-pioneer/map-test-utils";
 
 export function mockSuccessGeolocation(coords: number[]) {
     vi.spyOn(navigator, "geolocation", "get").mockReturnValue({
@@ -49,25 +50,28 @@ export function mockErrorGeolocation() {
     } satisfies Partial<Geolocation>);
 }
 
-export function setup() {
-    const olMap = new OlMap();
+export async function setup() {
+    const { mapId, registry } = await setupMap();
+    const map = await registry.expectMapModel(mapId);
+
     return {
-        olMap,
-        controller: new GeolocationController(olMap, (error) => {
+        map,
+        controller: new GeolocationController(map, (error) => {
             console.error("Unexpected error", error);
         })
     };
 }
 
-export function setupWithCustomProperties() {
-    const olMap = new OlMap();
+export async function setupWithCustomProperties() {
+    const { mapId, registry } = await setupMap();
+    const map = await registry.expectMapModel(mapId);
     const maxZoom: number = getCustomMaxZoom();
     const positionFeatureStyle: Style = getCustomPositionStyle();
     const accuracyFeatureStyle: Style = getCustomAccuracyStyle();
     const trackingOptions: PositionOptions = getCustomTrackingOptions();
 
     const controller = new GeolocationController(
-        olMap,
+        map,
         (error) => {
             console.error("Unexpected error", error);
         },
@@ -77,7 +81,7 @@ export function setupWithCustomProperties() {
     controller.setPositionFeatureStyle(positionFeatureStyle);
     controller.setAccuracyFeatureStyle(accuracyFeatureStyle);
     return {
-        olMap,
+        map,
         controller
     };
 }
