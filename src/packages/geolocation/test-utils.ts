@@ -1,6 +1,5 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import OlMap from "ol/Map";
 import { Circle, Fill, Stroke, Style } from "ol/style";
 import { vi } from "vitest";
 import { GeolocationController } from "./GeolocationController";
