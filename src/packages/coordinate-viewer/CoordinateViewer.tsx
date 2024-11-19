@@ -3,6 +3,7 @@
 import { Box, Text } from "@open-pioneer/chakra-integration";
 import { MapModelProps, useMapModel } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
+import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { PackageIntl } from "@open-pioneer/runtime";
 import OlMap from "ol/Map";
 import { unByKey } from "ol/Observable";
@@ -47,7 +48,9 @@ export const CoordinateViewer: FC<CoordinateViewerProps> = (props) => {
     const { containerProps } = useCommonComponentProps("coordinate-viewer", props);
     const { map } = useMapModel(props);
     const olMap = map?.olMap;
-    const mapProjectionCode = map?.projection.getCode() ?? "";
+    const mapProjectionCode = useReactiveSnapshot(() => {
+        return map?.projection.getCode() ?? "";
+    }, [map]);
     let { coordinates } = useCoordinates(olMap);
     coordinates =
         coordinates && displayProjectionCode
