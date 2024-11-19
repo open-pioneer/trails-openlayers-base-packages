@@ -81,7 +81,7 @@ export interface Highlight extends Resource {
 }
 
 /**
- * Represents a Object
+ * Represents an object in the map.
  */
 export type DisplayTarget = BaseFeature | Geometry;
 
