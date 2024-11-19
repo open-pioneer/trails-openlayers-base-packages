@@ -96,6 +96,7 @@ export interface MapModel extends EventSource<MapModelEvents> {
 
     /**
      * The container in which the map is currently being rendered.
+     * This is the same as the target element of the underlying OpenLayers map.
      *
      * May be undefined if the map is not being rendered at the moment.
      * May change at runtime.
