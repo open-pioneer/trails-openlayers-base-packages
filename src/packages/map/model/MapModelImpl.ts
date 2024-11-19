@@ -1,13 +1,6 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import {
-    computed,
-    external,
-    ExternalReactive,
-    reactive,
-    ReadonlyReactive,
-    synchronized
-} from "@conterra/reactivity-core";
+import { computed, reactive, ReadonlyReactive, synchronized } from "@conterra/reactivity-core";
 import {
     createAbortError,
     createLogger,
@@ -57,16 +50,14 @@ export class MapModelImpl extends EventEmitter<MapModelEvents> implements MapMod
     readonly #sharedDeps: SharedDependencies;
 
     #destroyed = false;
-    #container: ExternalReactive<HTMLElement | undefined>;
+    #container: ReadonlyReactive<HTMLElement | undefined>;
     #initialExtent = reactive<ExtentConfig>();
-    #targetWatchKey: EventsKey | undefined;
+    #viewBindings: ReadonlyReactive<ViewBindings>;
+    #scale: ReadonlyReactive<number | undefined>;
 
     readonly #abortController = new AbortController();
     #displayStatus: "waiting" | "ready" | "error";
     #displayWaiter: ManualPromise<void> | undefined;
-
-    #viewBindings: ReadonlyReactive<ViewBindings>;
-    #scale: ReadonlyReactive<number | undefined>;
 
     constructor(properties: {
         id: string;
@@ -108,8 +99,13 @@ export class MapModelImpl extends EventEmitter<MapModelEvents> implements MapMod
             }
         );
 
-        this.#container = external(() => this.#olMap.getTargetElement() ?? undefined);
-        this.#targetWatchKey = this.#olMap.on("change:target", this.#container.trigger);
+        this.#container = synchronized(
+            () => this.#olMap.getTargetElement() ?? undefined,
+            (cb) => {
+                const key = this.#olMap.on("change:target", cb);
+                return () => unByKey(key);
+            }
+        );
 
         this.#viewBindings = computed(() => createViewBindings(this.#olView.value));
         this.#scale = computed(() => {
@@ -140,10 +136,6 @@ export class MapModelImpl extends EventEmitter<MapModelEvents> implements MapMod
             LOG.warn(`Unexpected error from event listener during map model destruction:`, e);
         }
 
-        if (this.#targetWatchKey) {
-            unByKey(this.#targetWatchKey);
-        }
-        this.#targetWatchKey = undefined;
         this.#abortController.abort();
         this.#displayWaiter?.reject(new Error("Map model was destroyed."));
         this.#layers.destroy();
