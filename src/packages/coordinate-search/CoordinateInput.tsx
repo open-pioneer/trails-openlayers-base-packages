@@ -595,7 +595,7 @@ function validateInput(
 
     // TODO: NumberParser in core
     let thousandSeparator = "";
-    if (intl.locale === "de") {
+    if (/^de-?/.test(intl.locale)) {
         thousandSeparator = ".";
 
         const inputStringWithoutThousandSeparator = inputString.replaceAll(thousandSeparator, "");
@@ -603,7 +603,7 @@ function validateInput(
         if (!/^-?\d+(,\d+)? -?\d+(,\d+)?$/.test(inputStringWithoutThousandSeparator)) {
             return "tooltip.dividerDe";
         }
-    } else if (intl.locale === "en") {
+    } else if (/en-?/.test(intl.locale)) {
         thousandSeparator = ",";
 
         const inputStringWithoutThousandSeparator = inputString.replaceAll(thousandSeparator, "");
@@ -666,10 +666,12 @@ function onCoordinateInput(
         validateInput(intl, coordinateString, projection) !== "success"
     )
         return;
+
+    // TODO: Number parse from core and unify with the validation code above
     let inputStringWithoutHundredDivider = coordinateString;
-    if (intl.locale === "de") {
+    if (/^de-?/.test(intl.locale)) {
         inputStringWithoutHundredDivider = coordinateString.replaceAll(".", "");
-    } else if (intl.locale === "en") {
+    } else if (/^en-?/.test(intl.locale)) {
         inputStringWithoutHundredDivider = coordinateString.replaceAll(",", "");
     }
     const coordsForZoom = getCoordsForZoom(
