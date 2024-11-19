@@ -2,13 +2,16 @@
 // SPDX-License-Identifier: Apache-2.0
 import type { EventSource, Resource } from "@open-pioneer/core";
 import type OlMap from "ol/Map";
+import type OlView from "ol/View";
 import type OlBaseLayer from "ol/layer/Base";
 import type { ExtentConfig } from "./MapConfig";
 import type { AnyLayer, Layer } from "./layers";
 import type { LayerRetrievalOptions } from "./shared";
 import type { Geometry } from "ol/geom";
-import { BaseFeature } from "./BaseFeature";
-import { StyleLike } from "ol/style/Style";
+import type { BaseFeature } from "./BaseFeature";
+import type { StyleLike } from "ol/style/Style";
+import type { Projection } from "ol/proj";
+import type { Coordinate } from "ol/coordinate";
 
 /** Events emitted by the {@link MapModel}. */
 export interface MapModelEvents {
@@ -119,6 +122,53 @@ export interface MapModel extends EventSource<MapModelEvents> {
      * The raw OpenLayers map.
      */
     readonly olMap: OlMap;
+
+    /**
+     * Returns the current view of the OpenLayers map.
+     */
+    readonly olView: OlView;
+
+    /**
+     * Returns the current zoom level of the map.
+     * Same as `olView.getZoom()`, but reactive.
+     */
+    readonly zoomLevel: number | undefined;
+
+    /**
+     * Returns the current resolution of the map.
+     * Same as `olView.getResolution()`, but reactive.
+     */
+    readonly resolution: number | undefined;
+
+    /**
+     * Returns the current center of the map.
+     * Same as `olView.getCenter()`, but reactive.
+     */
+    readonly center: Coordinate | undefined;
+
+    /**
+     * Returns the current projection of the map (reactive).
+     */
+    readonly projection: Projection;
+
+    /**
+     * Returns the current scale of the map.
+     *
+     * Technically, this is the _denominator_ of the current scale.
+     * In order to display it, use a format like `1:${scale}`.
+     */
+    readonly scale: number | undefined;
+
+    /**
+     * Changes the current scale of the map to the given value.
+     *
+     * Internally, this computes a new zoom level / resolution based on the scale
+     * and the current center.
+     * The new resolution is then applied to the current `olView`.
+     *
+     * See also {@link scale}.
+     */
+    setScale(newScale: number): void;
 
     /**
      * Returns a promise that resolves when the map has mounted in the DOM.
