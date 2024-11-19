@@ -47,7 +47,7 @@ export const CoordinateViewer: FC<CoordinateViewerProps> = (props) => {
     const { containerProps } = useCommonComponentProps("coordinate-viewer", props);
     const { map } = useMapModel(props);
     const olMap = map?.olMap;
-    const mapProjectionCode = useProjection(olMap)?.getCode() ?? "";
+    const mapProjectionCode = map?.projection.getCode() ?? "";
     let { coordinates } = useCoordinates(olMap);
     coordinates =
         coordinates && displayProjectionCode
