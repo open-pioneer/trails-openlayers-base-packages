@@ -26,9 +26,7 @@ export const InitialExtent: FC<InitialExtentProps> = forwardRef(function Initial
 
     function setInitExtent() {
         const initialExtent = map?.initialExtent;
-        const olMap = map?.olMap;
-
-        if (initialExtent && olMap) {
+        if (initialExtent) {
             const newExtent: Extent = [
                 initialExtent.xMin,
                 initialExtent.yMin,
@@ -36,7 +34,7 @@ export const InitialExtent: FC<InitialExtentProps> = forwardRef(function Initial
                 initialExtent.yMax
             ];
 
-            olMap.getView().fit(newExtent, { duration: 200 });
+            map.olView.fit(newExtent, { duration: 200 });
         }
     }
 
