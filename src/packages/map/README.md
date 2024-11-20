@@ -7,8 +7,8 @@ APIs provided by this package can be used to configure, embed and access the map
 
 To use the map in your app, follow these two steps:
 
--   Add a `MapContainer` component to your app (see [Map container component](#md:map-container-component)).
--   Implement a `MapConfigProvider` (see [Map configuration](#md:map-configuration)).
+-   Add a `MapContainer` component to your app (see [Map container component](#map-container-component)).
+-   Implement a `MapConfigProvider` (see [Map configuration](#map-configuration)).
 
 To access or manipulate the content of the map programmatically, see [Using the map model](#using-the-map-model).
 
@@ -36,7 +36,7 @@ function AppUI() {
 }
 ```
 
-> NOTE: There must be a `map.MapConfigProvider` that knows how to construct the map with the given ID (see [Map configuration](#md:map-configuration)).
+> NOTE: There must be a `map.MapConfigProvider` that knows how to construct the map with the given ID (see [Map configuration](#map-configuration)).
 
 The component itself uses the map registry service to create the map using the provided `mapId`.
 
@@ -201,7 +201,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
 
 #### Layer configuration
 
-Configure your custom layer inside the [Map configuration](#md:map-configuration) by using one of the layer classes provided by this package.
+Configure your custom layer inside the [Map configuration](#map-configuration) by using one of the layer classes provided by this package.
 For example, `SimpleLayer` can be used to configure an arbitrary [`OpenLayers Layer`](https://openlayers.org/en/latest/apidoc/module-ol_layer_Layer-Layer.html) as `olLayer` property.
 
 > **Layer Order**
