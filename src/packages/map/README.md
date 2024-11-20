@@ -621,6 +621,43 @@ export class MapConfigProviderImpl implements MapConfigProvider {
 }
 ```
 
+##### GroupLayer
+
+A `GroupLayer` contains a list of layers (e.g. `SimpleLayer`, `WMSLayer` or nested `GroupLayer`).
+The visibility of all layers within the group can be controlled via the parent `GroupLayers`. The hierarchy of the layers, which results from the (nested) groups, is rendered accordingly in the table of content.
+
+Example: Create (nested) group layers
+
+```ts
+// Create group layer with a nested sub group
+const group = new GroupLayer({
+    id: "group",
+    title: "a group layer",
+    layers: [
+        new SimpleLayer({
+            id: "member",
+            title: "group member",
+            olLayer: olLayer1
+        }),
+        new GroupLayer({
+            id: "subgroup",
+            title: "a nested group layer",
+            layers: [
+                new SimpleLayer({
+                    id: "submember",
+                    title: "subgroup member",
+                    olLayer: olLayer2
+                })
+            ]
+        })
+    ]
+});
+
+const childLayers = group.children; // Access child layers
+```
+
+> Note: Do not add or remove layers directly to or from the underlying ol layer group (`group.olLayer`)! Changes are not synchronized with the `GroupLayer` instance.
+
 #### Register additional projections
 
 The map supports only the following projections by default: `EPSG:4326`, `EPSG:3857`, `EPSG:25832` and `EPSG:25833`.
