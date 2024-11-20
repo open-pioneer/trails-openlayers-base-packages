@@ -624,7 +624,8 @@ export class MapConfigProviderImpl implements MapConfigProvider {
 ##### GroupLayer
 
 A `GroupLayer` contains a list of layers (e.g. `SimpleLayer`, `WMSLayer` or nested `GroupLayer`).
-The visibility of all layers within the group can be controlled via the parent `GroupLayers`. The hierarchy of the layers, which results from the (nested) groups, is rendered accordingly in the table of content.
+The visibility of all layers within the group is controlled via the parent group layer(s).
+The hierarchy of the layers, which results from the (nested) groups, is rendered accordingly in the table of contents.
 
 Example: Create (nested) group layers
 
@@ -653,10 +654,13 @@ const group = new GroupLayer({
     ]
 });
 
-const childLayers = group.children; // Access child layers
+const childLayers = group.layers; // Access child layers
 ```
 
-> Note: Do not add or remove layers directly to or from the underlying ol layer group (`group.olLayer`)! Changes are not synchronized with the `GroupLayer` instance.
+> Limitations:
+>
+> -   Do not add or remove layers directly to or from the underlying OpenLayers layer group (`group.olLayer`)! Changes are not synchronized with the `GroupLayer` instance.
+> -   Currently, it is not possible to manipulate (add or remove) the child layers of a `GroupLayer` during runtime.
 
 #### Register additional projections
 
