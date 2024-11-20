@@ -40,7 +40,7 @@ import { TbPointerQuestion } from "react-icons/tb";
 import { DragController } from "./selection-controller/DragController";
 import { Map } from "ol";
 
-export type SelectionKind = "extent" | "point";
+export type SelectionMethod = "extent" | "point";
 
 export interface ISelectionTypeHandler<T> {
     new (map: Map, tooltip: string, disabledMessage: string, onExtentSelected: (geometry: Geometry) => void): T;
@@ -58,7 +58,7 @@ export interface SelectionProps extends CommonComponentProps, MapModelProps {
     /**
      * Array of selection methods available for spatial selection.
      */
-    selectionMethods?: SelectionKind | SelectionKind[];
+    selectionMethods?: SelectionMethod | SelectionMethod[];
 
     /**
      * This handler is called whenever the user has successfully selected
@@ -123,10 +123,17 @@ export const Selection: FC<SelectionProps> = (props) => {
     );
     const currentSourceStatus = useSourceStatus(currentSource, defaultNotAvailableMessage);
 
-    const showSelectionButtons = Boolean(selectionMethods && Array.isArray(selectionMethods) && selectionMethods.length > 1);
-    let initialSelectionKind = showSelectionButtons ? (selectionMethods as SelectionKind[])[0] : selectionMethods as SelectionKind;
-    initialSelectionKind ??= "extent";
-    const [selectionKind, setSelectionKind] = useState<SelectionKind>(initialSelectionKind);
+    const selectionDefault = "extent";
+    const [selectionKind, setSelectionKind] = useState<SelectionMethod>(selectionDefault);
+    useEffect(() => {
+        let method = selectionMethods ?? selectionDefault;
+        method = Array.isArray(method) && method.length > 0 ? method[0]! : method as SelectionMethod;
+        setSelectionKind(method);
+    }, [selectionMethods]);
+    const showSelectionButtons = useMemo(() => {
+        return Boolean(selectionMethods && Array.isArray(selectionMethods) && selectionMethods.length > 1);
+    }, [selectionMethods]);
+
 
     const mapState = useMapModel(props);
     const { onExtentSelected } = useSelectionController(
@@ -415,7 +422,7 @@ function useSourceStatus(
  * Hook to manage map controls and tooltip
  */
 function useInteractiveSelection(
-    selectionKind: SelectionKind,
+    selectionKind: SelectionMethod,
     map: MapModel | undefined,
     intl: PackageIntl,
     onExtentSelected: (geometry: Geometry) => void,
@@ -424,7 +431,7 @@ function useInteractiveSelection(
 ) {
 
     function selectionKindFactory(
-        selectionKind: SelectionKind,
+        selectionKind: SelectionMethod,
     ): ISelectionTypeHandler<DragController | ClickController> {
         switch (selectionKind) {
             case "extent":
