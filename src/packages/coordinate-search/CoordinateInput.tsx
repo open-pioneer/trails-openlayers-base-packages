@@ -618,7 +618,7 @@ function validateInput(
     try {
         if (!checkIfCoordsInProjectionsExtent(projection, coords)) return "tooltip.extent";
     } catch (e) {
-        console.log();
+        console.log(e);
     }
     try {
         if (
