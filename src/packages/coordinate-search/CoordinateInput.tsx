@@ -86,6 +86,16 @@ export interface ProjectionOption {
  */
 type ProjectionItem = Required<ProjectionOption>;
 
+type ValidationResult =
+    | "success"
+    | "tooltip.space"
+    | "tooltip.spaceOne"
+    | "tooltip.2coords"
+    | "tooltip.dividerDe"
+    | "tooltip.dividerEn"
+    | "tooltip.extent"
+    | "tooltip.projection";
+
 /**
  * Event type emitted when the user enters new coordinates or projection is changed by the user.
  */
@@ -563,16 +573,6 @@ export function usePlaceholder(
         return placeholder;
     }, [placeholderProp, mapProjection, selectedProjection, intl]);
 }
-
-type ValidationResult =
-    | "success"
-    | "tooltip.space"
-    | "tooltip.spaceOne"
-    | "tooltip.2coords"
-    | "tooltip.dividerDe"
-    | "tooltip.dividerEn"
-    | "tooltip.extent"
-    | "tooltip.projection";
 
 function validateInput(
     intl: PackageIntl,
