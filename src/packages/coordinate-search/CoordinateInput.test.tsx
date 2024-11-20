@@ -97,7 +97,7 @@ it("should successfully create a coordinate input component with coordinate plac
     expect(coordInput.getAttribute("placeholder")).toMatchInlineSnapshot('"3,665 44,863"');
 });
 
-it("should successfully create a coordinate input component with projections", async () => {
+it("should successfully create a coordinate input component with known projections", async () => {
     const { mapId, registry } = await setupMap();
     const projections = [
         {
@@ -111,6 +111,10 @@ it("should successfully create a coordinate input component with projections", a
         {
             label: "Web Mercator",
             value: "EPSG:3857"
+        },
+        {
+            label: "Unknown to ignore",
+            value: "EPSG:99999"
         }
     ];
 
