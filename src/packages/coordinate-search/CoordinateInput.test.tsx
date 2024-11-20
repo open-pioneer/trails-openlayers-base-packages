@@ -408,7 +408,7 @@ it("should successfully copy to clipboard if copy button is clicked", async () =
     expect(copiedText).toBe("3.638 89.987");
 });
 
-it("should show the correct tooltip message", async () => {
+it("should validate the input and show the correct tooltip message", async () => {
     const user = userEvent.setup();
     const { mapId, registry } = await setupMap();
     const tooltipHelper = createTooltipHelper();
