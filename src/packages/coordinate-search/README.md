@@ -1,6 +1,6 @@
 # @open-pioneer/coordinate-search
 
-This package provides a UI component to search for coordinates in the map or have an input field for coordinates.
+This package provides UI components which allow users to search for coordinates in the map and provide an input field for coordinates.
 
 ## Usage Coordinate search
 
@@ -18,7 +18,8 @@ To define the selectable projections, set the optional `projections` property:
     projections={[
         {
             label: "EPSG:25832",
-            value: "EPSG:25832"
+            value: "EPSG:25832",
+            precision: 2
         },
         {
             label: "WGS 84",
@@ -32,11 +33,15 @@ To define the selectable projections, set the optional `projections` property:
 />
 ```
 
+The optional property `precision` allows to specify the number of display digits (default: 3).
+
+If no `projections` are specified, Web Mercator (EPSG:3857) and WGS 84 (EPSG:4326) are the default options.
+
 ### Listening to events
 
 To listen to the events `onSelect` and `onClear`, provide optional callback functions to the component.
 
-In case of the `onSelect` event, you can access the entered coordinate from the parameter `CoordinatesEvent`. The `onSelect` event gets called if you enter the input or if there is input and you select a projection.
+In case of the `onSelect` event, you can access the entered coordinate from the parameter `CoordinatesEvent`. The `onSelect` event gets called if you enter the input or if the selected projection is changed after entering an input.
 
 With the `onClear` option, you can set a callback function that gets called if the clear button is clicked.
 
@@ -68,7 +73,8 @@ To define the selectable projections, set the optional `projections` property:
     projections={[
         {
             label: "EPSG:25832",
-            value: "EPSG:25832"
+            value: "EPSG:25832",
+            precision: 2
         },
         {
             label: "WGS 84",
@@ -82,18 +88,27 @@ To define the selectable projections, set the optional `projections` property:
 />
 ```
 
-To set the value of the input field from outside the component,
-set the optional `input` property from type Coordinate.
-The Coordinates have to be in the projection of the map.
+The optional property `precision` allows to specify the number of display digits (default: 3).
+
+If no `projections` are specified, Web Mercator (EPSG:3857) and WGS 84 (EPSG:4326) are the default options.
+
+To set the value of the input field from outside the component, set the optional `input` property of type `Coordinate`.
+
+The coordinates have to be in the projection of the map.
+
 If the value changes, the `onSelect` function is triggered.
 
 ```jsx
 <CoordinateInput mapId="map_id" input={[761166, 6692084]} />
 ```
 
-To set the placeholder of the input field from outside the component,
-set the optional `placeholder` property from type Coordinate or string.
-The Coordinates have to be in the projection of the map. Common usage for the string is "Enter coordinates here" or for the Coordinate the current mouse position.
+To set the placeholder of the input field from outside the component, use the optional `placeholder` property of type `Coordinate` or `string`.
+
+Common usage for a `string` input is a supportive text like "Enter coordinates here".
+
+A `Coordinate` input can be used for example for showing the coordinates of a selected geometry or the current mouse position.
+
+The Coordinates have to be in the projection of the map.
 
 ```jsx
 <CoordinateInput mapId="map_id" placeholder={[700000, 6000000]} />
@@ -104,7 +119,7 @@ The Coordinates have to be in the projection of the map. Common usage for the st
 
 To listen to the events `onSelect` and `onClear`, provide optional callback functions to the component.
 
-In case of the `onSelect` event, you can access the entered coordinate from the parameter `CoordinatesEvent`. The `onSelect` event gets called if you enter the input or if there is input and you select a projection.
+In case of the `onSelect` event, you can access the entered coordinate from the parameter `CoordinatesEvent`. The `onSelect` event gets called if you enter the input, if value of the `input` property changes or if the selected projection is changed after entering an input.
 
 With the `onClear` option, you can set a callback function that gets called if the clear button is clicked.
 
