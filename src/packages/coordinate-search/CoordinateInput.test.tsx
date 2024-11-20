@@ -80,6 +80,25 @@ it("should successfully create a coordinate input component with string placehol
     expect(coordInput.getAttribute("placeholder")).toMatchInlineSnapshot('"test placeholder"');
 });
 
+it("should successfully create a coordinate input component without a string placeholder", async () => {
+    const { mapId, registry } = await setupMap();
+
+    const injectedServices = createServiceOptions({ registry });
+    render(
+        <PackageContextProvider services={injectedServices} locale="de">
+            <MapContainer mapId={mapId} data-testid="map" />
+            <CoordinateInput
+                mapId={mapId}
+                data-testid="coordinate-input"
+            />
+        </PackageContextProvider>
+    );
+
+    await waitForMapMount("map");
+    const { coordInput } = await waitForCoordinateInput();
+    expect(coordInput.getAttribute("placeholder")).toMatchInlineSnapshot('""');
+});
+
 it("should successfully create a coordinate input component with coordinate placeholder", async () => {
     const { mapId, registry } = await setupMap();
     const coord: Coordinate = [408000, 5600000];
