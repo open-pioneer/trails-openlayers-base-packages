@@ -38,8 +38,6 @@ it("should successfully create a coordinate search component with additional css
                 mapId={mapId}
                 className="test"
                 data-testid="coordinate-search"
-                onSelect={() => {}}
-                onClear={() => {}}
             />
         </PackageContextProvider>
     );
@@ -94,8 +92,6 @@ it("tracks the user's mouse position", async () => {
             <CoordinateSearch
                 mapId={mapId}
                 data-testid="coordinate-search"
-                onSelect={() => {}}
-                onClear={() => {}}
             />
         </PackageContextProvider>
     );
@@ -136,8 +132,6 @@ it("should display transformed coordinates in selected option", async () => {
             <CoordinateSearch
                 mapId={mapId}
                 data-testid="coordinate-search"
-                onSelect={() => {}}
-                onClear={() => {}}
             />
         </PackageContextProvider>
     );
@@ -201,7 +195,6 @@ it("should successfully call onSelect and return coordinates and projection", as
                     searchedCoords = coords;
                     callbackProj = projection;
                 }}
-                onClear={() => {}}
             />
         </PackageContextProvider>
     );
@@ -226,7 +219,6 @@ it("should successfully call onClear if clear button is clicked", async () => {
             <CoordinateSearch
                 mapId={mapId}
                 data-testid="coordinate-search"
-                onSelect={() => {}}
                 onClear={() => {
                     cleared = true;
                 }}
@@ -257,8 +249,6 @@ it("should successfully copy to clipboard if copy button is clicked", async () =
             <CoordinateSearch
                 mapId={mapId}
                 data-testid="coordinate-search"
-                onSelect={() => {}}
-                onClear={() => {}}
             />
         </PackageContextProvider>
     );
