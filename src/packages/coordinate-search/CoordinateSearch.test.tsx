@@ -34,11 +34,7 @@ it("should successfully create a coordinate search component with additional css
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
-            <CoordinateSearch
-                mapId={mapId}
-                className="test"
-                data-testid="coordinate-search"
-            />
+            <CoordinateSearch mapId={mapId} className="test" data-testid="coordinate-search" />
         </PackageContextProvider>
     );
 
@@ -89,10 +85,7 @@ it("tracks the user's mouse position", async () => {
     render(
         <PackageContextProvider services={injectedServices} locale="de">
             <MapContainer mapId={mapId} data-testid="map" />
-            <CoordinateSearch
-                mapId={mapId}
-                data-testid="coordinate-search"
-            />
+            <CoordinateSearch mapId={mapId} data-testid="coordinate-search" />
         </PackageContextProvider>
     );
 
@@ -129,10 +122,7 @@ it("should display transformed coordinates in selected option", async () => {
     render(
         <PackageContextProvider services={injectedServices}>
             <MapContainer mapId={mapId} data-testid="map" />
-            <CoordinateSearch
-                mapId={mapId}
-                data-testid="coordinate-search"
-            />
+            <CoordinateSearch mapId={mapId} data-testid="coordinate-search" />
         </PackageContextProvider>
     );
 
@@ -207,6 +197,39 @@ it("should successfully call onSelect and return coordinates and projection", as
     expect(callbackProj!.getCode()).toBe("EPSG:3857");
 });
 
+it("should set the map center to the entered coordinate", async () => {
+    const user = userEvent.setup();
+    const { mapId, registry } = await setupMap();
+    const map = (await registry.expectMapModel(mapId))?.olMap;
+
+    const injectedServices = createServiceOptions({ registry });
+    render(
+        <PackageContextProvider services={injectedServices}>
+            <MapContainer mapId={mapId} data-testid="map" />
+            <CoordinateSearch mapId={mapId} data-testid="coordinate-search" />
+        </PackageContextProvider>
+    );
+
+    await waitForMapMount("map");
+    const { coordInput, coordinateInputGroup } = await waitForCoordinateSearch();
+
+    await user.type(coordInput, "7 51{enter}");
+    let clearButton = getClearButton(coordinateInputGroup);
+    const firstCenter = map.getView().getCenter();
+    expect(firstCenter).toEqual([779236.4355529151, 6621293.722740165]);
+
+    await user.click(clearButton);
+    await user.type(coordInput, "6 51{enter}");
+    const secondCenter = map.getView().getCenter();
+    expect(secondCenter).toEqual([667916.9447596414, 6621293.722740165]);
+
+    clearButton = getClearButton(coordinateInputGroup);
+    await user.click(clearButton);
+    await user.type(coordInput, "6b 51{enter}"); // wrong input
+    const thirdCenter = map.getView().getCenter();
+    expect(thirdCenter).toEqual(secondCenter); // map unchanged
+});
+
 it("should successfully call onClear if clear button is clicked", async () => {
     const user = userEvent.setup();
     const { mapId, registry } = await setupMap();
@@ -246,10 +269,7 @@ it("should successfully copy to clipboard if copy button is clicked", async () =
     render(
         <PackageContextProvider services={injectedServices}>
             <MapContainer mapId={mapId} data-testid="map" />
-            <CoordinateSearch
-                mapId={mapId}
-                data-testid="coordinate-search"
-            />
+            <CoordinateSearch mapId={mapId} data-testid="coordinate-search" />
         </PackageContextProvider>
     );
 
