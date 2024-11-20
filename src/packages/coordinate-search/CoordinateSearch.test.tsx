@@ -184,37 +184,12 @@ it("should display transformed coordinates in selected option", async () => {
     ); //should display EPSG 3857
 });
 
-it("should successfully return the search coordinates in the projection of the map", async () => {
+it("should successfully call onSelect and return coordinates and projection", async () => {
     const user = userEvent.setup();
     const { mapId, registry } = await setupMap();
 
     const injectedServices = createServiceOptions({ registry });
     let searchedCoords: Coordinate = [];
-    render(
-        <PackageContextProvider services={injectedServices}>
-            <MapContainer mapId={mapId} data-testid="map" />
-            <CoordinateSearch
-                mapId={mapId}
-                data-testid="coordinate-search"
-                onSelect={({ coords }) => {
-                    searchedCoords = coords;
-                }}
-                onClear={() => {}}
-            />
-        </PackageContextProvider>
-    );
-
-    await waitForMapMount("map");
-    const { coordInput } = await waitForCoordinateSearch();
-    await user.type(coordInput, "7 51{enter}");
-    expect(searchedCoords).toStrictEqual([779236.4355529151, 6621293.722740165]);
-});
-
-it("should successfully return the projection of the map as callback", async () => {
-    const user = userEvent.setup();
-    const { mapId, registry } = await setupMap();
-
-    const injectedServices = createServiceOptions({ registry });
     let callbackProj;
     render(
         <PackageContextProvider services={injectedServices}>
@@ -222,7 +197,8 @@ it("should successfully return the projection of the map as callback", async () 
             <CoordinateSearch
                 mapId={mapId}
                 data-testid="coordinate-search"
-                onSelect={({ projection }) => {
+                onSelect={({ coords, projection }) => {
+                    searchedCoords = coords;
                     callbackProj = projection;
                 }}
                 onClear={() => {}}
@@ -233,6 +209,7 @@ it("should successfully return the projection of the map as callback", async () 
     await waitForMapMount("map");
     const { coordInput } = await waitForCoordinateSearch();
     await user.type(coordInput, "7 51{enter}");
+    expect(searchedCoords).toStrictEqual([779236.4355529151, 6621293.722740165]);
     expect(callbackProj).toBeDefined();
     expect(callbackProj!.getCode()).toBe("EPSG:3857");
 });
