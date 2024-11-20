@@ -618,7 +618,7 @@ function validateInput(
         }
     }
 
-    const coords = parseCoords(inputString, thousandSeparator);
+    const coords = parseCoords(inputString, intl);
 
     try {
         if (!checkIfCoordsInProjectionsExtent(projection, coords)) return "tooltip.extent";
@@ -651,7 +651,10 @@ function checkIfCoordsInProjectionsExtent(projection: Projection, coords: number
     );
 }
 
-function parseCoords(inputString: string, thousandSeparator: string) {
+// TODO: use NumberParser from core
+/* transforms the given coordinates to the given destination projection */
+function parseCoords(inputString: string, intl: PackageIntl) {
+    const thousandSeparator = /^de-?/.test(intl.locale) ? "." : /^en-?/.test(intl.locale) ? "," : "";
     const inputStringWithoutThousandSeparator = inputString.replaceAll(thousandSeparator, "");
 
     const coordsString = inputStringWithoutThousandSeparator.replaceAll(",", ".");
@@ -675,35 +678,12 @@ function onCoordinateInput(
     )
         return;
 
-    // TODO: Number parse from core and unify with the validation code above
-    let inputStringWithoutHundredDivider = coordinateString;
-    if (/^de-?/.test(intl.locale)) {
-        inputStringWithoutHundredDivider = coordinateString.replaceAll(".", "");
-    } else if (/^en-?/.test(intl.locale)) {
-        inputStringWithoutHundredDivider = coordinateString.replaceAll(",", "");
-    }
-    const coordsForZoom = getCoordsForZoom(
-        inputStringWithoutHundredDivider,
-        projection,
-        mapProjection
-    );
-    if (onSelect && mapProjection) {
-        onSelect({ coords: coordsForZoom, projection: mapProjection });
-    }
-}
+    const inputCoords = parseCoords(coordinateString, intl);
+    const coords = transformCoordinates(inputCoords, projection, mapProjection);
 
-/* returns the given coordinates in the projection of the map */
-function getCoordsForZoom(
-    coordinateString: string,
-    projection: Projection | undefined,
-    mapProjection: Projection | undefined
-): Coordinate {
-    const coordsString = coordinateString.split(" ");
-    const coords = [
-        parseFloat(coordsString[0]!.replace(",", ".")),
-        parseFloat(coordsString[1]!.replace(",", "."))
-    ];
-    return transformCoordinates(coords, projection, mapProjection);
+    if (onSelect && mapProjection) {
+        onSelect({ coords: coords, projection: mapProjection });
+    }
 }
 
 /* transforms the given coordinates to the given destination projection */
