@@ -7,13 +7,14 @@ This package provides a UI component to search for coordinates in the map or hav
 To integrate the coordinate search in your app, insert the following snippet:
 
 ```jsx
-<CoordinateSearch />
+<CoordinateSearch mapId="map_id" />
 ```
 
 To define the selectable projections, set the optional `projections` property:
 
 ```jsx
 <CoordinateSearch
+    mapId="map_id"
     projections={[
         {
             label: "EPSG:25832",
@@ -41,6 +42,7 @@ With the `onClear` option, you can set a callback function that gets called if t
 
 ```tsx
 <CoordinateSearch
+    mapId="map_id"
     onSelect={(event: CoordsSelectEvent) => {
         // do something
     }}
@@ -55,13 +57,14 @@ With the `onClear` option, you can set a callback function that gets called if t
 To integrate the coordinate input component in your app, insert the following snippet:
 
 ```jsx
-<CoordinateInput />
+<CoordinateInput mapId="map_id" />
 ```
 
 To define the selectable projections, set the optional `projections` property:
 
 ```jsx
 <CoordinateInput
+    mapId="map_id"
     projections={[
         {
             label: "EPSG:25832",
@@ -85,7 +88,7 @@ The Coordinates have to be in the projection of the map.
 If the value changes, the `onSelect` function is triggered.
 
 ```jsx
-<CoordinateInput input={[761166, 6692084]} />
+<CoordinateInput mapId="map_id" input={[761166, 6692084]} />
 ```
 
 To set the placeholder of the input field from outside the component,
@@ -93,8 +96,8 @@ set the optional `placeholder` property from type Coordinate or string.
 The Coordinates have to be in the projection of the map. Common usage for the string is "Enter coordinates here" or for the Coordinate the current mouse position.
 
 ```jsx
-<CoordinateInput placeholder={[700000, 6000000]} />
-<CoordinateInput placeholder={"Enter coordinates here"} />
+<CoordinateInput mapId="map_id" placeholder={[700000, 6000000]} />
+<CoordinateInput mapId="map_id" placeholder={"Enter coordinates here"} />
 ```
 
 ### Listening to events
