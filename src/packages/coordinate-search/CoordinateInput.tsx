@@ -216,6 +216,7 @@ export const CoordinateInput: FC<CoordinateInputProps> = (props) => {
         </Box>
     );
 };
+
 function CoordinateInputField(props: {
     isInputValid: boolean;
     selectedProjection: ProjectionItem;
@@ -514,6 +515,7 @@ function useInput(
     const callback = useEvent((selectedProps: CoordinatesEvent) => {
         onSelect?.(selectedProps);
     });
+
     useEffect(() => {
         if (inputProp != undefined) {
             setCoordinateSearchInput(inputFromOutside);
@@ -526,6 +528,7 @@ function useInput(
             );
         }
     }, [inputProp, inputFromOutside, callback, intl, mapProjection, selectedProjection]);
+
     return [coordinateSearchInput, setCoordinateSearchInput];
 }
 
@@ -556,6 +559,7 @@ export function usePlaceholder(
     selectedProjection: ProjectionItem
 ) {
     const intl = useIntl();
+
     return useMemo(() => {
         let placeholder: string;
         if (typeof placeholderProp === "string") {
@@ -649,6 +653,7 @@ function checkIfCoordsInProjectionsExtent(projection: Projection, coords: number
 
 function parseCoords(inputString: string, thousandSeparator: string) {
     const inputStringWithoutThousandSeparator = inputString.replaceAll(thousandSeparator, "");
+
     const coordsString = inputStringWithoutThousandSeparator.replaceAll(",", ".");
 
     const splitCoords = coordsString.split(" ");
