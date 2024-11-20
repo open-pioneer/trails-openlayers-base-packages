@@ -355,9 +355,11 @@ it("should successfully call onClear if clear button is clicked", async () => {
 
     await user.type(coordInput, "4 5{enter}");
     const clearButton = getClearButton(coordinateInputGroup);
+    expect(coordInput.getAttribute("value")).toMatchInlineSnapshot('"4 5"');
     expect(cleared).toBe(false);
 
     await user.click(clearButton);
+    expect(coordInput.getAttribute("value")).toMatchInlineSnapshot('""');
     expect(cleared).toBe(true);
 });
 
