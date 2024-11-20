@@ -65,7 +65,7 @@ exports[`expect result list to be created successfully 1`] = `
                 />
                 <span
                   aria-hidden="true"
-                  class="chakra-checkbox__control css-1ydjfm6"
+                  class="chakra-checkbox__control css-1dnp747"
                   data-theme="light"
                 />
               </label>
@@ -188,7 +188,7 @@ exports[`expect result list to be created successfully 1`] = `
               />
               <span
                 aria-hidden="true"
-                class="chakra-checkbox__control css-1ydjfm6"
+                class="chakra-checkbox__control css-1dnp747"
                 data-theme="light"
               />
             </label>
@@ -251,7 +251,7 @@ exports[`expect result list to be created successfully 1`] = `
               />
               <span
                 aria-hidden="true"
-                class="chakra-checkbox__control css-1ydjfm6"
+                class="chakra-checkbox__control css-1dnp747"
                 data-theme="light"
               />
             </label>
@@ -314,7 +314,7 @@ exports[`expect result list to be created successfully 1`] = `
               />
               <span
                 aria-hidden="true"
-                class="chakra-checkbox__control css-1ydjfm6"
+                class="chakra-checkbox__control css-1dnp747"
                 data-theme="light"
               />
             </label>
@@ -377,7 +377,7 @@ exports[`expect result list to be created successfully 1`] = `
               />
               <span
                 aria-hidden="true"
-                class="chakra-checkbox__control css-1ydjfm6"
+                class="chakra-checkbox__control css-1dnp747"
                 data-theme="light"
               />
             </label>
@@ -430,7 +430,7 @@ exports[`expect result list to be created successfully 1`] = `
               />
               <span
                 aria-hidden="true"
-                class="chakra-checkbox__control css-1ydjfm6"
+                class="chakra-checkbox__control css-1dnp747"
                 data-theme="light"
               />
             </label>
