@@ -730,17 +730,80 @@ In those cases, the properties or methods provided by this package should always
 
 #### Layer classes
 
-This package currently only provides two layer implementations:
+This package currently provides five layer implementations: `SimpleLayer`, `WMSLayer`, `WMTSLayer`, `GroupLayer` and `WMSSublayer`.
 
--   `SimpleLayer`.
-    Instances of this class can be used to integrate arbitrary OpenLayers `Layer` instances into the map by configuring the `olLayer` constructor option.
-    Note that one can only achieve basic integration through this method: more advanced features such as automatic legends or sublayers will not be available.
+The following diagram shows the inheritance structure of the corresponding layer types. The diagram is only intended to show the hierarchy of the layer types; for details on the properties and methods of the layer types, refer to the respective API documentation.
 
--   `WMSLayer`.
-    Represents a WMS service embedded into the map.
-    Must be configured with the service's `url` and a set of sublayers.
+```mermaid
+---
+config:
+  class:
+    hideEmptyMembersBox: true
+---
+classDiagram
+class AnyLayerBaseType {
+  type: string
+}
+<<abstract>> AnyLayerBaseType
 
-We expect to implement more classes in the future.
+class LayerBaseType {
+  type: string
+}
+<<abstract>> LayerBaseType
+
+class SimpleLayer {
+  type: "simple"
+  constructor(config: SimpleLayerConfig)
+}
+
+class WMSLayer {
+  type: "wms"
+  constructor(config: WMSLayerConfig)
+}
+
+class WMTSLayer {
+  type: "wmts"
+  constructor(config: WMTSLayerConfig)
+}
+
+class GroupLayer {
+    type: "group"
+    constructor(config: GroupLayerConfig)
+}
+
+class Layer
+<<union>> Layer
+
+class Sublayer
+<<union>> Sublayer
+
+class SublayerBaseType {
+  type: string
+}
+<<abstract>> SublayerBaseType
+
+class WMSSublayer {
+    type: "wms-sublayer"
+    constructor(config: WMSSublayerConfig)
+}
+
+AnyLayerBaseType <|-- LayerBaseType
+AnyLayerBaseType <|-- SublayerBaseType
+
+LayerBaseType <|-- SimpleLayer
+LayerBaseType <|-- WMSLayer
+LayerBaseType <|-- WMTSLayer
+LayerBaseType <|-- GroupLayer
+
+SublayerBaseType <|-- WMSSublayer
+
+SimpleLayer .. Layer
+WMSLayer .. Layer
+WMTSLayer .. Layer
+GroupLayer .. Layer
+
+WMSSublayer .. Sublayer
+```
 
 #### Using the map model and layers in services
 
