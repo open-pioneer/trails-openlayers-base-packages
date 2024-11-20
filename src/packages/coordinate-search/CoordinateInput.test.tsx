@@ -80,7 +80,7 @@ it("should successfully create a coordinate input component with string placehol
     expect(coordInput.getAttribute("placeholder")).toMatchInlineSnapshot('"test placeholder"');
 });
 
-it("should successfully create a coordinate input component with  coordinate placeholder", async () => {
+it("should successfully create a coordinate input component with coordinate placeholder", async () => {
     const { mapId, registry } = await setupMap();
     const coord: Coordinate = [408000, 5600000];
 
