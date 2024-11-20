@@ -516,6 +516,27 @@ it("should validate input property is within the extent of the selected projecti
     expect(tooltip).toBe("tooltip.extent");
 });
 
+it("should not show copy button on string placeholder", async () => {
+    const { mapId, registry } = await setupMap();
+
+    const injectedServices = createServiceOptions({ registry });
+    render(
+        <PackageContextProvider services={injectedServices}>
+            <MapContainer mapId={mapId} data-testid="map" />
+            <CoordinateInput mapId={mapId} data-testid="coordinate-input" placeholder={"test"} />
+        </PackageContextProvider>
+    );
+
+    await waitForMapMount("map");
+    const { coordinateInputGroup } = await waitForCoordinateInput();
+    expect(() => getCopyButton(coordinateInputGroup)).toThrowError(
+        /^coordinate input buttons not rendered$/
+    );
+    expect(() => getClearButton(coordinateInputGroup)).toThrowError(
+        /^coordinate input buttons not rendered$/
+    );
+});
+
 it("should show copy button on coordinate placeholder", async () => {
     const { mapId, registry } = await setupMap();
 
