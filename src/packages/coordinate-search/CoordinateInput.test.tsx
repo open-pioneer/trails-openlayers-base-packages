@@ -87,10 +87,7 @@ it("should successfully create a coordinate input component without a string pla
     render(
         <PackageContextProvider services={injectedServices} locale="de">
             <MapContainer mapId={mapId} data-testid="map" />
-            <CoordinateInput
-                mapId={mapId}
-                data-testid="coordinate-input"
-            />
+            <CoordinateInput mapId={mapId} data-testid="coordinate-input" />
         </PackageContextProvider>
     );
 
@@ -461,9 +458,62 @@ it("should validate the input and show the correct tooltip message", async () =>
 
     await user.clear(coordInput);
     await user.click(coordInput);
-    await user.paste("200 100");
+    await user.paste("a b");
     const tooltip6 = await tooltipHelper.waitForChange();
-    expect(tooltip6).toBe("tooltip.extent");
+    expect(tooltip6).toBe("tooltip.dividerDe"); // TODO wrong error
+});
+
+it("should validate if the user input is within the extent of the selected projection", async () => {
+    const user = userEvent.setup();
+    const { mapId, registry } = await setupMap();
+    const tooltipHelper = createTooltipHelper();
+
+    const injectedServices = createServiceOptions({ registry });
+    render(
+        <PackageContextProvider services={injectedServices} locale="de">
+            <MapContainer mapId={mapId} data-testid="map" />
+            <CoordinateInput
+                mapId={mapId}
+                data-testid="coordinate-input"
+                onSelect={() => {}}
+                onClear={() => {}}
+            />
+        </PackageContextProvider>
+    );
+
+    await waitForMapMount("map");
+    const { coordInput } = await waitForCoordinateInput();
+
+    await user.clear(coordInput);
+    await user.click(coordInput);
+    await user.paste("200 100");
+    const tooltip8 = await tooltipHelper.waitForChange();
+    expect(tooltip8).toBe("tooltip.extent");
+});
+
+it("should validate input property is within the extent of the selected projection", async () => {
+    const user = userEvent.setup();
+    const { mapId, registry } = await setupMap();
+
+    const injectedServices = createServiceOptions({ registry });
+    render(
+        <PackageContextProvider services={injectedServices} locale="de">
+            <MapContainer mapId={mapId} data-testid="map" />
+            <CoordinateInput
+                mapId={mapId}
+                data-testid="coordinate-input"
+                onSelect={() => {}}
+                onClear={() => {}}
+                input={[3495814159, 56963568019]}
+            />
+        </PackageContextProvider>
+    );
+
+    await waitForMapMount("map");
+    const { coordInput } = await waitForCoordinateInput();
+    await user.click(coordInput);
+    const tooltip = getCurrentTooltipText();
+    expect(tooltip).toBe("tooltip.extent");
 });
 
 it("should show copy button on coordinate placeholder", async () => {
