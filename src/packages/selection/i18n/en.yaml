@@ -5,7 +5,7 @@ messages:
   FREEPOLYGON: "Freies Zeichnen"
   CIRCLE: "Kreis"
   POINT: "Point"
-  selectionKind: "Selection type"
+  selectionMethod: "Selection type"
   selectSource: "Select source"
   tooltip:
     extent: "Click on the map, hold down the mouse button and draw a rectangle"

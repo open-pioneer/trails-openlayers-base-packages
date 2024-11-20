@@ -5,7 +5,7 @@ messages:
   FREEPOLYGON: "Freies Zeichnen"
   CIRCLE: "Kreis"
   POINT: "Punkt"
-  selectionKind: "Selektionsart"
+  selectionMethod: "Selektionsart"
   selectSource: "Quelle auswählen"
   tooltip:
     extent: "Klicken Sie in die Karte, halten Sie die Maustaste gedrückt und ziehen Sie ein Rechteck auf"

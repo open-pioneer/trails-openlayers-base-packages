@@ -40,6 +40,9 @@ import { TbPointerQuestion } from "react-icons/tb";
 import { DragController } from "./selection-controller/DragController";
 import { Map } from "ol";
 
+/**
+ * The method how the user interacts with the map to select features.
+ */
 export type SelectionMethod = "extent" | "point";
 
 export interface ISelectionTypeHandler<T> {
@@ -58,7 +61,7 @@ export interface SelectionProps extends CommonComponentProps, MapModelProps {
     /**
      * Array of selection methods available for spatial selection.
      */
-    selectionMethods?: SelectionMethod | SelectionMethod[];
+    availableSelectionMethods?: SelectionMethod | SelectionMethod[];
 
     /**
      * This handler is called whenever the user has successfully selected
@@ -113,7 +116,7 @@ const COMMON_SELECT_PROPS: SelectProps<any, any, any> = {
  */
 export const Selection: FC<SelectionProps> = (props) => {
     const intl = useIntl();
-    const { sources, selectionMethods, onSelectionComplete, onSelectionSourceChanged } = props;
+    const { sources, availableSelectionMethods, onSelectionComplete, onSelectionSourceChanged } = props;
     const { containerProps } = useCommonComponentProps("selection", props);
     const defaultNotAvailableMessage = intl.formatMessage({ id: "sourceNotAvailable" });
 
@@ -123,16 +126,16 @@ export const Selection: FC<SelectionProps> = (props) => {
     );
     const currentSourceStatus = useSourceStatus(currentSource, defaultNotAvailableMessage);
 
-    const selectionDefault = "extent";
-    const [selectionKind, setSelectionKind] = useState<SelectionMethod>(selectionDefault);
+    const defaultSelectionMethod = "extent";
+    const [activeSelectionMethod, setActiveSelectionMethod] = useState<SelectionMethod>(defaultSelectionMethod);
     useEffect(() => {
-        let method = selectionMethods ?? selectionDefault;
+        let method = availableSelectionMethods ?? defaultSelectionMethod;
         method = Array.isArray(method) && method.length > 0 ? method[0]! : method as SelectionMethod;
-        setSelectionKind(method);
-    }, [selectionMethods]);
+        setActiveSelectionMethod(method);
+    }, [availableSelectionMethods]);
     const showSelectionButtons = useMemo(() => {
-        return Boolean(selectionMethods && Array.isArray(selectionMethods) && selectionMethods.length > 1);
-    }, [selectionMethods]);
+        return Boolean(availableSelectionMethods && Array.isArray(availableSelectionMethods) && availableSelectionMethods.length > 1);
+    }, [availableSelectionMethods]);
 
 
     const mapState = useMapModel(props);
@@ -146,7 +149,7 @@ export const Selection: FC<SelectionProps> = (props) => {
     const [isOpenSelect, setIsOpenSelect] = useState(false);
 
     useInteractiveSelection(
-        selectionKind,
+        activeSelectionMethod,
         mapState.map,
         intl,
         onExtentSelected,
@@ -182,18 +185,18 @@ export const Selection: FC<SelectionProps> = (props) => {
     return (
         <VStack {...containerProps} spacing={2}>
             {showSelectionButtons && <FormControl>
-                <FormLabel>{intl.formatMessage({ id: "selectionKind" })}</FormLabel>
+                <FormLabel>{intl.formatMessage({ id: "selectionMethod" })}</FormLabel>
                 <HStack gap={2}>
                     <ToolButton 
                         icon={<PiSelectionPlusBold />} 
                         label={intl.formatMessage({id: "EXTENT"})} 
-                        onClick={() => setSelectionKind("extent")} 
-                        isActive={selectionKind === "extent"}/>
+                        onClick={() => setActiveSelectionMethod("extent")} 
+                        isActive={activeSelectionMethod === "extent"}/>
                     <ToolButton 
                         icon={<TbPointerQuestion />} 
                         label={intl.formatMessage({id: "POINT"})} 
-                        onClick={() => setSelectionKind("point")} 
-                        isActive={selectionKind === "point"}/>
+                        onClick={() => setActiveSelectionMethod("point")} 
+                        isActive={activeSelectionMethod === "point"}/>
                 </HStack>
             </FormControl>}
             <FormControl>
@@ -422,7 +425,7 @@ function useSourceStatus(
  * Hook to manage map controls and tooltip
  */
 function useInteractiveSelection(
-    selectionKind: SelectionMethod,
+    selectionMethod: SelectionMethod,
     map: MapModel | undefined,
     intl: PackageIntl,
     onExtentSelected: (geometry: Geometry) => void,
@@ -430,16 +433,16 @@ function useInteractiveSelection(
     hasSelectedSource: boolean
 ) {
 
-    function selectionKindFactory(
-        selectionKind: SelectionMethod,
+    function selectionMethodFactory(
+        selectionMethod: SelectionMethod,
     ): ISelectionTypeHandler<DragController | ClickController> {
-        switch (selectionKind) {
+        switch (selectionMethod) {
             case "extent":
                 return DragController;
             case "point":
                 return ClickController;
             default:
-                throw new Error(`Unknown selection kind: ${selectionKind}`);
+                throw new Error(`Unknown selection kind: ${selectionMethod}`);
         }
     }
 
@@ -452,10 +455,10 @@ function useInteractiveSelection(
             ? intl.formatMessage({ id: "disabledTooltip" })
             : intl.formatMessage({ id: "noSourceTooltip" });
 
-        const controlerCls = selectionKindFactory(selectionKind);
+        const controlerCls = selectionMethodFactory(selectionMethod);
         const dragController = new controlerCls(
             map.olMap,
-            intl.formatMessage({ id: `tooltip.${selectionKind}` }),
+            intl.formatMessage({ id: `tooltip.${selectionMethod}` }),
             disabledMessage,
             onExtentSelected
         );
@@ -464,7 +467,7 @@ function useInteractiveSelection(
         return () => {
             dragController?.destroy();
         };
-    }, [map, intl, onExtentSelected, isActive, hasSelectedSource, selectionKind]);
+    }, [map, intl, onExtentSelected, isActive, hasSelectedSource, selectionMethod]);
 }
 
 /**
