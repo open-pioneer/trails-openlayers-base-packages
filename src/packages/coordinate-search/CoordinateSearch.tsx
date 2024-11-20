@@ -20,18 +20,18 @@ export interface CoordinateSearchProps extends CommonComponentProps, MapModelPro
     projections?: ProjectionInput[];
 
     /**
-     * Function that gets called if some coordinates are entered or projection is changed by the user.
+     * Optional event that gets called if some coordinates are entered or projection is changed by the user.
      */
     onSelect?: (selectProps: CoordinatesEvent) => void;
 
     /**
-     * Function that gets called if the input is cleared.
+     * Optional event that gets called if the input is cleared.
      */
     onClear?: () => void;
 }
 
 /**
- * The `CoordinateSearch`component can be used in an app to search for entered coordinates in a selected projection
+ * The `CoordinateSearch` component can be used in an app to search for entered coordinates in a selected projection
  */
 export const CoordinateSearch: FC<CoordinateSearchProps> = (props) => {
     const { onSelect, onClear, projections } = props;
@@ -60,7 +60,7 @@ export const CoordinateSearch: FC<CoordinateSearchProps> = (props) => {
     );
 };
 
-/** function to get the coordinates of the pointer in the map */
+/* get the current coordinates of the pointer on the map */
 function useCoordinates(map: OlMap | undefined): { coordinates: Coordinate | undefined } {
     const [coordinates, setCoordinates] = useState<Coordinate | undefined>();
 

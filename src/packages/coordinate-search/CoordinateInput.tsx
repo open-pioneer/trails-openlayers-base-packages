@@ -42,7 +42,7 @@ const DEFAULT_PROJECTIONS = [
 ];
 
 /**
- * dropdown items of projection selection with an optional coordinate precision
+ * dropdown item of projection selection with an optional coordinate precision
  */
 export interface ProjectionInput {
     /**
@@ -62,7 +62,7 @@ export interface ProjectionInput {
 }
 
 /**
- * dropdown items of projection selection with an optional coordinate precision
+ * dropdown item of projection selection with an optional coordinate precision
  */
 export interface ProjectionOption {
     /**
@@ -82,7 +82,7 @@ export interface ProjectionOption {
 }
 
 /**
- * dropdown items of projection selection, must have a specified precision
+ * dropdown item of projection selection, must have a specified precision
  */
 type ProjectionItem = Required<ProjectionOption>;
 
@@ -112,23 +112,23 @@ export interface CoordinatesEvent {
  */
 export interface CoordinateInputProps extends CommonComponentProps, MapModelProps {
     /**
-     * Searchable projections, only projections that are known by the map as projection are shown.
+     * List of projection options, only projections that are known by the map as projection are shown.
      * Each projection can have an individual precision of coordinates. If no precision is given, the default precision is used.
      */
     projections?: ProjectionInput[];
 
     /**
-     * Function that gets called if some coordinates are entered or projection is changed by the user.
+     * Optional event that gets called if some coordinates are entered or projection is changed by the user.
      */
     onSelect?: (selectProps: CoordinatesEvent) => void;
 
     /**
-     * Function that gets called if the input is cleared.
+     * Optional event that gets called if the input is cleared.
      */
     onClear?: () => void;
 
     /**
-     * Insert input text and overwrite user input
+     * Insert input value and overwrite user input
      */
     input?: Coordinate;
 
@@ -144,7 +144,7 @@ export interface CoordinateInputProps extends CommonComponentProps, MapModelProp
 }
 
 /**
- * The `CoordinateSearch`component can be used in an app to search for entered coordinates in a selected projection
+ * The `CoordinateInput` component can be used in an app to provide an validated input field for coordinates in a selected projection
  */
 export const CoordinateInput: FC<CoordinateInputProps> = (props) => {
     const { onSelect, onClear, projections = DEFAULT_PROJECTIONS, input, placeholder = "" } = props;
@@ -157,7 +157,7 @@ export const CoordinateInput: FC<CoordinateInputProps> = (props) => {
     // Projection items (dropdown)
     const availableProjections = useProjectionItems(projections); // filter for projections that are known
     const [selectedProjection, setSelectedProjection] = useState<ProjectionItem>(
-        // set projection select initial on first one in list
+        // choose first option initially
         availableProjections[0]!
     );
 
@@ -348,7 +348,7 @@ function ProjectionSelect(projSelectProps: {
     const [isOpenSelect, setIsOpenSelect] = useState(false); // if the select menu is open
 
     const keyDown = useEvent((event: KeyboardEvent<HTMLDivElement>) => {
-        //if the menu is already open, do noting
+        // if the menu is already open, do nothing
         if (!isOpenSelect && event.key === "Enter") {
             setIsOpenSelect(true);
         }
@@ -451,7 +451,7 @@ function useAriaMessages(
          * Method to create Aria-String for focus-Event
          */
         const onFocus: AriaOnFocus<ProjectionOption> = () => {
-            //no aria string for focus-events because in some screen readers (NVDA) and browsers (Chrome) updating the aria string causes the instructions to be read out again each time a select option is focused
+            // no aria string for focus-events because in some screen readers (NVDA) and browsers (Chrome) updating the aria string causes the instructions to be read out again each time a select option is focused
             return "";
         };
 
@@ -530,7 +530,7 @@ function useInput(
 }
 
 /**
- * Parses the projections defined by the user.
+ * Builds the list of available projection items based on the provided list of projections
  */
 function useProjectionItems(projections: ProjectionInput[]) {
     return useMemo(() => {
@@ -574,6 +574,7 @@ export function usePlaceholder(
     }, [placeholderProp, mapProjection, selectedProjection, intl]);
 }
 
+/* validate if the input string is a pair of coordinates separated with a space */
 function validateInput(
     intl: PackageIntl,
     inputString: string,
@@ -593,7 +594,7 @@ function validateInput(
         return "tooltip.2coords";
     }
 
-    // TODO: NumberParser in core
+    // TODO: use NumberParser from core
     let thousandSeparator = "";
     if (/^de-?/.test(intl.locale)) {
         thousandSeparator = ".";
@@ -635,6 +636,7 @@ function validateInput(
     return "success";
 }
 
+/* validate if the coordinates fit to the extent of the selected projection */
 function checkIfCoordsInProjectionsExtent(projection: Projection, coords: number[]): boolean {
     return (
         projection!.getExtent().length == 4 &&
@@ -653,6 +655,7 @@ function parseCoords(inputString: string, thousandSeparator: string) {
     return [parseFloat(splitCoords[0]!), parseFloat(splitCoords[1]!)];
 }
 
+/* Called when the input value changed. Validates the input and if valid, triggers the onSelect event */
 function onCoordinateInput(
     intl: PackageIntl,
     coordinateString: string,
@@ -698,7 +701,7 @@ function getCoordsForZoom(
     return transformCoordinates(coords, projection, mapProjection);
 }
 
-/* transforms the given coordinates in the given destination projection */
+/* transforms the given coordinates to the given destination projection */
 function transformCoordinates(
     coordinates: number[],
     source: ProjectionLike,
@@ -707,7 +710,7 @@ function transformCoordinates(
     return transform(coordinates, source, destination);
 }
 
-/* formats the coordinates into a string with x withspace y */
+/* formats the coordinates as a string with given precision considering locales */
 function formatCoordinates(coordinates: number[], precision: number, intl: PackageIntl): string {
     if (coordinates[0] == null || coordinates[1] == null) {
         return "";
