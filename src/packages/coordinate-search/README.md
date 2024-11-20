@@ -43,7 +43,7 @@ With the `onClear` option, you can set a callback function that gets called if t
 ```tsx
 <CoordinateSearch
     mapId="map_id"
-    onSelect={(event: CoordsSelectEvent) => {
+    onSelect={(event: CoordinatesEvent) => {
         // do something
     }}
     onClear={() => {
@@ -110,7 +110,7 @@ With the `onClear` option, you can set a callback function that gets called if t
 
 ```tsx
 <CoordinateInput
-    onSelect={(event: CoordsSelectEvent) => {
+    onSelect={(event: CoordinatesEvent) => {
         // do something
     }}
     onClear={() => {
