@@ -13,6 +13,7 @@ import {
 import { ViewHistoryModel } from "@open-pioneer/map-navigation";
 import { Measurement } from "@open-pioneer/measurement";
 import { Printing } from "@open-pioneer/printing";
+import { PackageIntl } from "@open-pioneer/runtime";
 import { ScaleBar } from "@open-pioneer/scale-bar";
 import { ScaleSetter } from "@open-pioneer/scale-setter";
 import { ScaleViewer } from "@open-pioneer/scale-viewer";
@@ -46,19 +47,30 @@ export function createCoordinateInputDemo({ intl, notificationService }: SharedD
         createModel() {
             return {
                 description: intl.formatMessage({ id: "demos.coordinateInput.description" }),
-                mainWidget: <CoordinateInputComponent notificationService={notificationService} />
+                mainWidget: (
+                    <CoordinateInputComponent
+                        notificationService={notificationService}
+                        intl={intl}
+                    />
+                )
             };
         }
     };
 }
 
-function CoordinateInputComponent(props: { notificationService: NotificationService }) {
-    const { notificationService } = props;
+function CoordinateInputComponent(props: {
+    notificationService: NotificationService;
+    intl: PackageIntl;
+}) {
+    const { notificationService, intl } = props;
     const [input, setInput] = useState<Coordinate | undefined>();
     function onCoordinateInput(coords: Coordinate, projection: Projection) {
         notificationService.notify({
             level: "info",
-            message: "coordinate entered: " + coords + " in " + projection.getCode(),
+            message: intl.formatMessage(
+                { id: "demos.coordinateInput.entered" },
+                { coordinates: coords.toString(), projection: projection.getCode() }
+            ),
             displayDuration: 4000
         });
     }
@@ -66,7 +78,7 @@ function CoordinateInputComponent(props: { notificationService: NotificationServ
     function onSearchCleared() {
         notificationService.notify({
             level: "info",
-            message: "search cleared",
+            message: intl.formatMessage({ id: "demos.coordinateSearch.cleared" }),
             displayDuration: 4000
         });
         setInput(undefined);
@@ -77,7 +89,7 @@ function CoordinateInputComponent(props: { notificationService: NotificationServ
             <CoordinateInput
                 mapId={MAP_ID}
                 input={input}
-                placeholder={"Enter coordinate here"}
+                placeholder={intl.formatMessage({ id: "demos.coordinateInput.placeholder" })}
                 onSelect={({ coords, projection }) => onCoordinateInput(coords, projection)}
                 onClear={onSearchCleared}
                 projections={[
@@ -116,7 +128,7 @@ function CoordinateInputComponent(props: { notificationService: NotificationServ
                     setInput([761166, 6692084]);
                 }}
             >
-                Set input value
+                {intl.formatMessage({ id: "demos.coordinateInput.setInput" })}
             </Button>
         </Flex>
     );
@@ -129,18 +141,29 @@ export function createCoordinateSearchDemo({ intl, notificationService }: Shared
         createModel() {
             return {
                 description: intl.formatMessage({ id: "demos.coordinateSearch.description" }),
-                mainWidget: <CoordinateSearchComponent notificationService={notificationService} />
+                mainWidget: (
+                    <CoordinateSearchComponent
+                        notificationService={notificationService}
+                        intl={intl}
+                    />
+                )
             };
         }
     };
 }
 
-function CoordinateSearchComponent(props: { notificationService: NotificationService }) {
-    const { notificationService } = props;
+function CoordinateSearchComponent(props: {
+    notificationService: NotificationService;
+    intl: PackageIntl;
+}) {
+    const { notificationService, intl } = props;
     function onCoordinateSearch(coords: Coordinate, projection: Projection) {
         notificationService.notify({
             level: "info",
-            message: "coordinate entered: " + coords + " in " + projection.getCode(),
+            message: intl.formatMessage(
+                { id: "demos.coordinateSearch.entered" },
+                { coordinates: coords.toString(), projection: projection.getCode() }
+            ),
             displayDuration: 4000
         });
     }
@@ -148,7 +171,7 @@ function CoordinateSearchComponent(props: { notificationService: NotificationSer
     function onSearchCleared() {
         notificationService.notify({
             level: "info",
-            message: "search cleared",
+            message: intl.formatMessage({ id: "demos.coordinateSearch.cleared" }),
             displayDuration: 4000
         });
     }

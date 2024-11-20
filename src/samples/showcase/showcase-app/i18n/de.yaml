@@ -29,9 +29,15 @@ messages:
     coordinateInput:
       title: Koordinaten-Eingabe
       description: Diese Demo zeigt, wie die <code>CoordinateInput</code>-Komponente verwendet werden kann, um Usern die Eingabe von Koordinaten zu ermöglichen. Es findet eine Validierung statt, ob die Eingabe eine gültige Koordinate in der ausgewählten Projektion darstellt.
+      cleared: Eingabefeld geleert
+      entered: "Koordinate eingegeben: {coordinates} in {projection}"
+      placeholder: Hier Koordinate eingeben
+      setInput: Wert in Eingabefeld schreiben
     coordinateSearch:
       title: Koordinaten-Suche
       description: Diese Demo zeigt, wie die <code>CoordinateSearch</code>-Komponente verwendet werden kann, um sich Koordinaten an der Position des Mauszeigers anzeigen zu lassen und nach Koordinaten zu suchen. Dafür kann zwischen verschiedenen Projektionen gewechselt werden.
+      cleared: Eingabefeld geleert
+      entered: "Koordinate eingegeben: {coordinates} in {projection}"
     scaleViewer:
       title: Maßstabs-Anzeige
       description: Diese Demo zeigt, wie die <code>ScaleViewer</code>-Komponente verwendet werden kann, um den aktuellen Maßstab anzuzeigen.
