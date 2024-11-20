@@ -114,12 +114,12 @@ exports[`should successfully create a selection component and select the first s
         >
           <hr
             aria-orientation="vertical"
-            class="chakra-divider react-select__indicator-separator css-1611kif"
+            class="chakra-divider react-select__indicator-separator css-hxuk4g"
             data-theme="light"
           />
           <div
             aria-hidden="true"
-            class="react-select__indicator react-select__dropdown-indicator css-1lza9k0"
+            class="react-select__indicator react-select__dropdown-indicator css-1hbdnuy"
             data-theme="light"
           >
             <svg

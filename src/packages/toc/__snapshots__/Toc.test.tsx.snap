@@ -77,12 +77,12 @@ exports[`should successfully create a toc component 1`] = `
           >
             <hr
               aria-orientation="vertical"
-              class="chakra-divider react-select__indicator-separator css-1611kif"
+              class="chakra-divider react-select__indicator-separator css-hxuk4g"
               data-theme="light"
             />
             <div
               aria-hidden="true"
-              class="react-select__indicator react-select__dropdown-indicator css-1lza9k0"
+              class="react-select__indicator react-select__dropdown-indicator css-1hbdnuy"
               data-theme="light"
             >
               <svg
@@ -110,14 +110,14 @@ exports[`should successfully create a toc component 1`] = `
           >
             <div
               aria-multiselectable="false"
-              class="react-select__menu-list css-1h5avke"
+              class="react-select__menu-list css-mkffje"
               data-theme="light"
               id="react-select-2-listbox"
               role="listbox"
             >
               <div
                 aria-selected="true"
-                class="basemap-switcher-option react-select__option react-select__option--is-focused react-select__option--is-selected css-e8c6zu"
+                class="basemap-switcher-option react-select__option react-select__option--is-focused react-select__option--is-selected css-2rk73n"
                 data-focus="true"
                 data-theme="light"
                 id="react-select-2-option-0"
@@ -190,7 +190,7 @@ exports[`should successfully create a toc component 1`] = `
             />
             <span
               aria-hidden="true"
-              class="chakra-checkbox__control css-1ydjfm6"
+              class="chakra-checkbox__control css-1dnp747"
               data-checked=""
               data-theme="light"
             >
@@ -200,7 +200,7 @@ exports[`should successfully create a toc component 1`] = `
                 style="display: flex; align-items: center; justify-content: center; height: 100%;"
               >
                 <svg
-                  class="css-1ckqq05"
+                  class="css-19wnopl"
                   data-theme="light"
                   style="fill: none; stroke-width: 2; stroke: currentColor; stroke-dasharray: 16;"
                   viewBox="0 0 12 10"
@@ -248,7 +248,7 @@ exports[`should successfully create a toc component 1`] = `
             />
             <span
               aria-hidden="true"
-              class="chakra-checkbox__control css-1ydjfm6"
+              class="chakra-checkbox__control css-1dnp747"
               data-checked=""
               data-theme="light"
             >
@@ -258,7 +258,7 @@ exports[`should successfully create a toc component 1`] = `
                 style="display: flex; align-items: center; justify-content: center; height: 100%;"
               >
                 <svg
-                  class="css-1ckqq05"
+                  class="css-19wnopl"
                   data-theme="light"
                   style="fill: none; stroke-width: 2; stroke: currentColor; stroke-dasharray: 16;"
                   viewBox="0 0 12 10"
