@@ -139,6 +139,26 @@ it("should successfully create a coordinate input component with known projectio
     expect(values).toStrictEqual(["EPSG:25832", "WGS 84", "Web Mercator"]);
 });
 
+it("should successfully create a coordinate input component with default projections", async () => {
+    const { mapId, registry } = await setupMap();
+
+    const injectedServices = createServiceOptions({ registry });
+    render(
+        <PackageContextProvider services={injectedServices}>
+            <MapContainer mapId={mapId} data-testid="map" />
+            <CoordinateInput mapId={mapId} data-testid="coordinate-input" />
+        </PackageContextProvider>
+    );
+
+    await waitForMapMount("map");
+    const { projSelect } = await waitForCoordinateInput();
+    showDropdown(projSelect);
+    const options = getCurrentOptions();
+    const values = getCurrentOptionValues(options);
+
+    expect(values).toStrictEqual(["WGS 84", "Web Mercator"]);
+});
+
 it("should format coordinates to correct coordinate string for the corresponding locale and precision", async () => {
     const coords = [6.859, 51.426];
 
