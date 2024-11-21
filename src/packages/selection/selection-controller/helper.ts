@@ -27,10 +27,11 @@ export function activateViewportInteraction(map: OlMap) {
 /**
  * Applies appropriate css classes from the viewport to indicate that the selection process is inactive
  */
-export function deactivateViewportInteraction(map: OlMap) {
+export function deactivateViewportInteraction(map: OlMap, destroy = true) {
     const viewPort = map.getViewport();
     viewPort.classList.remove(ACTIVE_CLASS);
-    viewPort.classList.add(INACTIVE_CLASS);
+    if (!destroy)
+        viewPort.classList.add(INACTIVE_CLASS);
 }
 
 /**

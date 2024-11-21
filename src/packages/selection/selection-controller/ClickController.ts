@@ -40,7 +40,7 @@ export class ClickController {
     destroy() {
         this.tooltip.destroy();
         unByKey(this.eventKey);
-        deactivateViewportInteraction(this.olMap);
+        deactivateViewportInteraction(this.olMap, true);
 
     }
 

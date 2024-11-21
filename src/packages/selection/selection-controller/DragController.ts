@@ -57,6 +57,7 @@ export class DragController {
         this.interactionResources.forEach((interaction) => {
             interaction.destroy();
         });
+        deactivateViewportInteraction(this.olMap, true);
     }
 
     setActive(isActive: boolean) {
