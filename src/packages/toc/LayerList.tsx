@@ -43,7 +43,7 @@ import { FiAlertTriangle, FiMoreVertical } from "react-icons/fi";
 interface LayerListProps {
     map: MapModel;
     "aria-label"?: string;
-    collapsibleGroups?: boolean;
+    collapsibleGroups?: boolean
 }
 
 export interface LayerListRef {
@@ -53,12 +53,13 @@ export interface LayerListRef {
     collapseAll: CollapseHandler;
 }
 
-interface LayerListContextMethods {
+export interface LayerListCollapseContext {
     registerCollapsHandler(id: string, handler: CollapseHandler): void;
     unregisterCollapsHandler(id: string): void;
+    collapsibleGroups: boolean
 }
 
-const LayerListContext = createContext<LayerListContextMethods | undefined>(undefined);
+const LayerListContext = createContext<LayerListCollapseContext | undefined>(undefined);
 
 /**
  * Lists the (top level) operational layers in the map.
@@ -73,17 +74,18 @@ export const LayerList = forwardRef<LayerListRef, LayerListProps>((props, ref) =
         collapseHandlers.current = new Map();
     }
 
-    const context = useMemo((): LayerListContextMethods => {
+    const context = useMemo((): LayerListCollapseContext => {
         return {
             registerCollapsHandler(id: string, handler: CollapseHandler) {
-                collapseHandlers.current!.set(id, handler);
+                    collapseHandlers.current!.set(id, handler);
             },
             unregisterCollapsHandler(id: string) {
-                collapseHandlers.current!.delete(id);
-            }
+                    collapseHandlers.current!.delete(id);
+            },
+            collapsibleGroups: collapsibleGroups
         };
-    }, []);
-
+    }, [collapsibleGroups]);
+    
     const intl = useIntl();
     const layers = useLayers(map);
     useImperativeHandle(ref, () => ({
@@ -110,8 +112,7 @@ export const LayerList = forwardRef<LayerListRef, LayerListProps>((props, ref) =
                 intl,
                 {
                     "aria-label": ariaLabel
-                },
-                collapsibleGroups
+                }
             )}
         </LayerListContext.Provider>
     );
@@ -121,12 +122,11 @@ LayerList.displayName = "LayerList";
 function createList(
     layers: AnyLayer[],
     intl: PackageIntl,
-    listProps: ListProps,
-    collapsibleGroups: boolean
+    listProps: ListProps
 ) {
     const items = layers.map((layer) => {
         return (
-            <LayerItem key={layer.id} layer={layer} intl={intl} isCollapsible={collapsibleGroups} />
+            <LayerItem key={layer.id} layer={layer} intl={intl}/>
         );
     });
 
@@ -156,9 +156,8 @@ function createList(
 function LayerItem(props: {
     layer: AnyLayer;
     intl: PackageIntl;
-    isCollapsible: boolean;
 }): JSX.Element {
-    const { layer, intl, isCollapsible } = props;
+    const { layer, intl} = props;
     const { title, description, isVisible } = useReactiveSnapshot(() => {
         return {
             title: layer.title,
@@ -172,6 +171,7 @@ function LayerItem(props: {
     const [expanded, setExpanded] = useState(true);
 
     const context = useContext(LayerListContext);
+    const isCollapsible = (context) ? context.collapsibleGroups: false;
     const collapseHandler = useEvent(() => {
         setExpanded(false);
     });
@@ -192,8 +192,7 @@ function LayerItem(props: {
             {
                 ml: 4,
                 "aria-label": intl.formatMessage({ id: "childgroupLabel" }, { title: title })
-            },
-            isCollapsible
+            }
         );
     }
 
