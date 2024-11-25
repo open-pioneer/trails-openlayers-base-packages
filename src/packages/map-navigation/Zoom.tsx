@@ -63,8 +63,8 @@ export const Zoom: FC<ZoomProps> = forwardRef(function Zoom(
             return;
         }
         setDisabled(true);
-        const view = map?.olMap.getView();
-        let currZoom = view?.getZoom();
+        const view = map?.olView;
+        let currZoom = map?.zoomLevel;
 
         const maxZoom = view?.getMaxZoom() || Number.MAX_SAFE_INTEGER;
         const minZoom = view?.getMinZoom() || 0;

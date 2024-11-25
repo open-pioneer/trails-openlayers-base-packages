@@ -36,7 +36,7 @@ export class MeasurementController {
     /**
      * The layer rendering the measurement "features".
      */
-    private layer: VectorLayer<Feature>;
+    private layer: VectorLayer<VectorSource, Feature>;
 
     /**
      * Source of {@link layer}.

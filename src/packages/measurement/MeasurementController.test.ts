@@ -12,6 +12,7 @@ import { Fill, Style } from "ol/style";
 import { StyleLike, toFunction as toStyleFunction } from "ol/style/Style";
 import { Geometry, Polygon } from "ol/geom";
 import { Feature, View } from "ol";
+import VectorSource from "ol/source/Vector";
 
 it("should successfully start measurement, and activate or deactivate draw interaction", async () => {
     const { olMap, controller } = setup();
@@ -279,7 +280,11 @@ it("should add name property to measurement layer", async () => {
  * Draws a graphic using the "draw" interaction that has been registered by the controller.
  * Triggers side effects in the controller that ultimately (on completion) put a feature in the vector layer.
  */
-function doDraw(olMap: OlMap, vectorLayer: VectorLayer<Feature>, coordinates: [number, number][]) {
+function doDraw(
+    olMap: OlMap,
+    vectorLayer: VectorLayer<VectorSource, Feature>,
+    coordinates: [number, number][]
+) {
     if (getFirstFeature(vectorLayer)) {
         throw new Error("vector layer should be empty at the start of the test");
     }
@@ -347,7 +352,7 @@ function getDrawStyle(draw: Draw) {
     return lineStyle[0];
 }
 
-function getFirstFeature(layer: VectorLayer<Feature>) {
+function getFirstFeature(layer: VectorLayer<VectorSource, Feature>) {
     return layer.getSource()?.getFeatures()[0]?.getGeometry();
 }
 

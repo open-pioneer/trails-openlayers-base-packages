@@ -79,12 +79,12 @@ exports[`should successfully create a search component 1`] = `
       >
         <hr
           aria-orientation="vertical"
-          class="chakra-divider react-select__indicator-separator css-1i6c5ox"
+          class="chakra-divider react-select__indicator-separator css-1xamfek"
           data-theme="light"
         />
         <div
           aria-hidden="true"
-          class="react-select__indicator react-select__dropdown-indicator css-80pt9o"
+          class="react-select__indicator react-select__dropdown-indicator css-am4s01"
           data-theme="light"
         >
           <svg

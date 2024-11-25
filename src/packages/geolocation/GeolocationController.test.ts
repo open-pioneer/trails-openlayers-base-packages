@@ -25,7 +25,7 @@ afterEach(() => {
 it("should successfully return a geolocation position", async () => {
     mockSuccessGeolocation([51.1, 45.3]);
 
-    const { controller } = setup();
+    const { controller } = await setup();
     controller.startGeolocation();
 
     await vi.waitFor(() => {
@@ -44,21 +44,21 @@ it("should successfully return a geolocation position", async () => {
 
 describe("Default Properties", () => {
     it("uses the default style for the position feature", async () => {
-        const { controller } = setup();
+        const { controller } = await setup();
         const positionFeature: Feature<Geometry> | undefined = controller.getPositionFeature();
 
         expect(positionFeature?.getStyle()).toMatchObject(getDefaultPositionStyle());
     });
 
     it("uses the default style for the accuracy feature", async () => {
-        const { controller } = setup();
+        const { controller } = await setup();
         const accuracyFeature: Feature<Geometry> | undefined = controller.getAccuracyFeature();
 
         expect(accuracyFeature?.getStyle()).toMatchObject(getDefaultAccuracyStyle());
     });
 
     it("uses the default tracking options", async () => {
-        const { controller } = setup();
+        const { controller } = await setup();
         const trackingOptions: PositionOptions = controller.getTrackingOptions();
 
         expect(trackingOptions?.enableHighAccuracy).toBe(
@@ -71,7 +71,7 @@ describe("Default Properties", () => {
     });
 
     it("uses the default max zoom level", async () => {
-        const { controller } = setup();
+        const { controller } = await setup();
         const maxZoom: number | undefined = controller.getMaxZoom();
 
         expect(maxZoom).toBe(17);
@@ -80,21 +80,21 @@ describe("Default Properties", () => {
 
 describe("Tests with custom Properties", () => {
     it("uses the configured style for the position feature", async () => {
-        const { controller } = setupWithCustomProperties();
+        const { controller } = await setupWithCustomProperties();
         const positionFeature: Feature<Geometry> | undefined = controller.getPositionFeature();
 
         expect(positionFeature?.getStyle()).toMatchObject(getCustomPositionStyle());
     });
 
     it("uses the configured style for the accuracy feature", async () => {
-        const { controller } = setupWithCustomProperties();
+        const { controller } = await setupWithCustomProperties();
         const accuracyFeature: Feature<Geometry> | undefined = controller.getAccuracyFeature();
 
         expect(accuracyFeature?.getStyle()).toMatchObject(getCustomAccuracyStyle());
     });
 
     it("uses the configured tracking options", async () => {
-        const { controller } = setupWithCustomProperties();
+        const { controller } = await setupWithCustomProperties();
         const trackingOptions: PositionOptions = controller.getTrackingOptions();
 
         expect(trackingOptions?.enableHighAccuracy).toBe(true);
@@ -103,7 +103,7 @@ describe("Tests with custom Properties", () => {
     });
 
     it("uses the configured max zoom level", async () => {
-        const { controller } = setupWithCustomProperties();
+        const { controller } = await setupWithCustomProperties();
         const maxZoom: number | undefined = controller.getMaxZoom();
 
         expect(maxZoom).toBe(getCustomMaxZoom());

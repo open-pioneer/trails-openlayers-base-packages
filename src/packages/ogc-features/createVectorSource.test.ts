@@ -136,7 +136,7 @@ it("expect additionalOptions are set on vector-source", () => {
     assert.isTrue(
         !vectorSource.getOverlaps() &&
             vectorSource.getWrapX() === false &&
-            vectorSource.getFormat() === undefined
+            vectorSource.getFormat() === null //ol returns null instead of undefined
     );
 });
 

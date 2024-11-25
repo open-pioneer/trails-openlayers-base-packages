@@ -92,7 +92,7 @@ it("Should disable or enable selection option when changing the status of a sour
     });
 
     const layerSelectionSource = new VectorLayerSelectionSourceImpl(
-        layer.olLayer as VectorLayer<Feature>,
+        layer.olLayer as VectorLayer<VectorSource, Feature>,
         layer.title,
         "Layer not visible"
     );
@@ -247,7 +247,7 @@ function createTestSelectionSource(id: string, title: string, visibility: boolea
         olLayer: createKitasLayer()
     });
     return new VectorLayerSelectionSourceImpl(
-        layer.olLayer as VectorLayer<Feature>,
+        layer.olLayer as VectorLayer<VectorSource, Feature>,
         layer.title,
         "Layer not visible"
     );

@@ -167,7 +167,7 @@ export const Search: FC<SearchProps> = (props) => {
                 onInputChange={handleInputChange}
                 aria-label={intl.formatMessage({ id: "ariaLabel.search" })}
                 ariaLiveMessages={ariaMessages}
-                colorScheme="trails"
+                tagColorScheme="trails"
                 selectedOptionStyle="color"
                 selectedOptionColorScheme="trails"
                 chakraStyles={chakraStyles}

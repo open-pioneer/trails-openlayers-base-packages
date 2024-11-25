@@ -8,6 +8,7 @@ import { BaseFeature } from "@open-pioneer/map";
 import { DeclaredService } from "@open-pioneer/runtime";
 import VectorLayer from "ol/layer/Vector";
 import Feature from "ol/Feature";
+import VectorSource from "ol/source/Vector";
 
 /**
  * The status of a selection source.
@@ -124,7 +125,7 @@ export interface SelectionSource {
 }
 
 export interface VectorLayerSelectionSourceOptions {
-    vectorLayer: VectorLayer<Feature>;
+    vectorLayer: VectorLayer<VectorSource, Feature>;
     label: string;
 }
 

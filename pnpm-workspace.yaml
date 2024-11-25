@@ -9,7 +9,7 @@ packages:
 # This is a yaml feature and is not interpreted by pnpm directly.
 __versions:
   - &react_version ^18.3.1
-  - &core_packages_version ^2.3.0
+  - &core_packages_version ^2.4.0-dev.20241120092632
 
 # https://pnpm.io/catalogs
 catalog:
@@ -28,22 +28,21 @@ catalog:
   "@open-pioneer/test-utils": *core_packages_version
 
   "@chakra-ui/icons": ^2.2.4
-  "@chakra-ui/react": ^2.8.2
-  "@chakra-ui/system": ^2.6.2
+  "@chakra-ui/react": ^2.10.4
   "@conterra/reactivity-core": ^0.4.3
   "@emotion/cache": ^11.13.0
   "@emotion/react": ^11.13.0
   "@emotion/styled": ^11.13.0
   "@formatjs/intl": ^2.10.4
-  "@maplibre/maplibre-gl-style-spec": ^20.1.1
+  "@maplibre/maplibre-gl-style-spec": ^22.0.0
   "@tanstack/react-table": ^8.20.5
-  chakra-react-select: ^4.7.6
+  chakra-react-select: ^5.0.2
   classnames: ^2.3.2
   framer-motion: ^10.17.4
   html2canvas: ^1.4.1
   jspdf: ^2.5.2
   ol-mapbox-style: ^12.3.4
-  ol: ^9.2.4
+  ol: ^10.2.1
   proj4: ^2.12.1
   react-dom: *react_version
   react-icons: ^5.3.0
@@ -83,7 +82,7 @@ catalog:
   eslint-plugin-unused-imports: ^4.1.4
   fast-glob: ^3.3.2
   handlebars: ^4.7.8
-  happy-dom: ^15.7.4
+  happy-dom: ^15.10.2
   husky: ^9.1.6
   js-yaml: ^4.1.0
   jsdom: ^25.0.1

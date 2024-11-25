@@ -17,7 +17,6 @@
     },
     "dependencies": {
         "@chakra-ui/icons": "catalog:",
-        "@chakra-ui/system": "catalog:",
         "@emotion/react": "catalog:",
         "@emotion/styled": "catalog:",
         "@open-pioneer/chakra-integration": "catalog:",

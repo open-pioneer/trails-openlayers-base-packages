@@ -38,6 +38,7 @@
             "fast-loops: https://github.com/advisories/GHSA-3q56-9cc2-46j4",
             "micromatch: https://github.com/advisories/GHSA-952p-6rrq-rcjv",
             "vite-plugin-eslint>rollup: https://github.com/advisories/GHSA-gcx4-mw62-g8wm",
+            "cross-spawn: https://github.com/advisories/GHSA-3xgq-45jj-v275",
             "",
             "ignored cves",
             "============",
@@ -51,32 +52,30 @@
         "overrides": {
             "semver@<7.5.2": ">=7.5.2",
             "tough-cookie@<4.1.3": ">=4.1.3",
-            "@mapbox/mapbox-gl-style-spec": "npm:@maplibre/maplibre-gl-style-spec@^20.1.1",
-            "chakra-react-select>react-select": "^5.8.0",
+            "@mapbox/mapbox-gl-style-spec": "npm:@maplibre/maplibre-gl-style-spec",
             "braces@<3.0.3": ">=3.0.3",
             "ws@>=8.0.0 <8.17.1": ">=8.17.1",
             "fast-loops@<1.1.4": ">=1.1.4",
             "micromatch@<4.0.8": ">=4.0.8",
-            "vite-plugin-eslint>rollup": ">=3.29.5"
+            "vite-plugin-eslint>rollup": ">=3.29.5",
+            "cross-spawn@<7.0.5": ">=7.0.5"
         },
         "auditConfig": {
             "ignoreCves": []
         },
         "patchedDependencies": {
             "@changesets/assemble-release-plan@6.0.4": "patches/@changesets__assemble-release-plan.patch",
-            "@chakra-ui/menu@2.2.1": "patches/@chakra-ui__menu@2.2.1.patch",
-            "@chakra-ui/react-use-outside-click@2.2.0": "patches/@chakra-ui__react-use-outside-click@2.2.0.patch",
-            "@chakra-ui/hooks@2.2.1": "patches/@chakra-ui__hooks@2.2.1.patch",
-            "react-select@5.8.0": "patches/react-select@5.8.0.patch"
+            "react-select@5.8.0": "patches/react-select@5.8.0.patch",
+            "@chakra-ui/hooks@2.4.3": "patches/@chakra-ui__hooks.patch"
         }
     },
-    "dependencies": {},
     "devDependencies": {
         "@changesets/cli": "catalog:",
+        "@maplibre/maplibre-gl-style-spec": "catalog:",
         "@open-pioneer/build-package-cli": "catalog:",
         "@open-pioneer/build-support": "catalog:",
-        "@open-pioneer/vite-plugin-pioneer": "catalog:",
         "@open-pioneer/check-pnpm-duplicates": "catalog:",
+        "@open-pioneer/vite-plugin-pioneer": "catalog:",
         "@testing-library/dom": "catalog:",
         "@testing-library/jest-dom": "catalog:",
         "@testing-library/react": "catalog:",

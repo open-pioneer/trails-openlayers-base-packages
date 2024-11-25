@@ -48,6 +48,7 @@ export interface WMSLayer extends LayerBaseType {
     readonly type: "wms";
 
     readonly sublayers: SublayersCollection<WMSSublayer>;
+    readonly layers: undefined;
 
     /** The URL of the WMS service that was used during layer construction. */
     readonly url: string;

@@ -60,7 +60,7 @@ exports[`Should successfully create a toc with default tool component 1`] = `
 exports[`Should successfully create a toc with default tool component 2`] = `
 <div
   aria-orientation="vertical"
-  class="tools-menu css-1kfu8nn"
+  class="chakra-menu__menu-list tools-menu css-s5t7bz"
   data-theme="light"
   id="menu-list-:r2:"
   role="menu"
@@ -69,7 +69,7 @@ exports[`Should successfully create a toc with default tool component 2`] = `
 >
   <button
     aria-label="tools.hideAllLayers"
-    class="chakra-menu__menuitem css-18esm8n"
+    class="chakra-menu__menuitem css-y7jzs3"
     data-index="0"
     data-theme="light"
     id="menu-list-:r2:-menuitem-:r3:"
@@ -81,7 +81,7 @@ exports[`Should successfully create a toc with default tool component 2`] = `
   </button>
   <button
     aria-label="tools.collapseAllGroups"
-    class="chakra-menu__menuitem css-18esm8n"
+    class="chakra-menu__menuitem css-y7jzs3"
     data-index="1"
     data-theme="light"
     id="menu-list-:r2:-menuitem-:r4:"

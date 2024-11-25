@@ -1,16 +1,16 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { expect, it, vi } from "vitest";
-import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
-import TileLayer from "ol/layer/Tile";
-import { act, render, screen, waitFor } from "@testing-library/react";
-import { PackageContextProvider } from "@open-pioneer/test-utils/react";
-import { Legend, LegendItemComponentProps } from "./Legend";
 import { Box, Image, Text } from "@open-pioneer/chakra-integration";
 import { SimpleLayer, WMSLayer } from "@open-pioneer/map";
+import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
+import { PackageContextProvider } from "@open-pioneer/test-utils/react";
+import { act, render, screen, waitFor } from "@testing-library/react";
 import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import TileLayer from "ol/layer/Tile";
+import { expect, it, vi } from "vitest";
+import { Legend, LegendItemComponentProps } from "./Legend";
 
 const THIS_DIR = dirname(fileURLToPath(import.meta.url));
 const WMTS_CAPAS = readFileSync(resolve(THIS_DIR, "./test-data/SimpleWMSCapas.xml"), "utf-8");
@@ -622,6 +622,15 @@ it("reacts to changes in the layer composition", async () => {
 
 async function findLegend() {
     const legendDiv = await screen.findByTestId("legend");
+
+    // Wait until the <ul> is rendered
+    const _legendList = await waitFor(() => {
+        const legendList = legendDiv.querySelector("> .legend-layer-list");
+        if (!legendList) {
+            throw new Error("legend list not mounted");
+        }
+        return legendList;
+    });
     return legendDiv;
 }
 

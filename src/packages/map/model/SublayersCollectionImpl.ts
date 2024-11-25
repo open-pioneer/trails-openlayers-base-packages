@@ -3,11 +3,15 @@
 import { LayerRetrievalOptions, SublayerBaseType, SublayersCollection } from "../api";
 import { AbstractLayerBase } from "./AbstractLayerBase";
 
+/**
+ * Manages the sublayers of a layer.
+ */
 // NOTE: adding / removing sublayers currently not supported
 /* eslint-disable indent */
 export class SublayersCollectionImpl<Sublayer extends SublayerBaseType & AbstractLayerBase>
     implements SublayersCollection<Sublayer>
 {
+    /* eslint-enable indent */
     #sublayers: Sublayer[];
 
     constructor(sublayers: Sublayer[]) {
@@ -19,6 +23,11 @@ export class SublayersCollectionImpl<Sublayer extends SublayerBaseType & Abstrac
             layer.destroy();
         }
         this.#sublayers = [];
+    }
+
+    // Generic method name for consistent interface
+    getItems(options?: LayerRetrievalOptions): Sublayer[] {
+        return this.getSublayers(options);
     }
 
     getSublayers(_options?: LayerRetrievalOptions | undefined): Sublayer[] {

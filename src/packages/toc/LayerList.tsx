@@ -22,7 +22,7 @@ import {
     Text,
     Tooltip
 } from "@open-pioneer/chakra-integration";
-import { AnyLayer, Layer, MapModel, Sublayer } from "@open-pioneer/map";
+import { AnyLayer, Layer, MapModel, isSublayer } from "@open-pioneer/map";
 import { useEvent } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { PackageIntl } from "@open-pioneer/runtime";
@@ -39,11 +39,12 @@ import {
     useState
 } from "react";
 import { FiAlertTriangle, FiMoreVertical } from "react-icons/fi";
+import { useTocWidgetOptions } from "./Context";
 
 interface LayerListProps {
     map: MapModel;
     "aria-label"?: string;
-    collapsibleGroups?: boolean
+    collapsibleGroups?: boolean;
 }
 
 export interface LayerListRef {
@@ -56,7 +57,7 @@ export interface LayerListRef {
 export interface LayerListCollapseContext {
     registerCollapsHandler(id: string, handler: CollapseHandler): void;
     unregisterCollapsHandler(id: string): void;
-    collapsibleGroups: boolean
+    collapsibleGroups: boolean;
 }
 
 const LayerListContext = createContext<LayerListCollapseContext | undefined>(undefined);
@@ -77,15 +78,15 @@ export const LayerList = forwardRef<LayerListRef, LayerListProps>((props, ref) =
     const context = useMemo((): LayerListCollapseContext => {
         return {
             registerCollapsHandler(id: string, handler: CollapseHandler) {
-                    collapseHandlers.current!.set(id, handler);
+                collapseHandlers.current!.set(id, handler);
             },
             unregisterCollapsHandler(id: string) {
-                    collapseHandlers.current!.delete(id);
+                collapseHandlers.current!.delete(id);
             },
             collapsibleGroups: collapsibleGroups
         };
     }, [collapsibleGroups]);
-    
+
     const intl = useIntl();
     const layers = useLayers(map);
     useImperativeHandle(ref, () => ({
@@ -107,27 +108,17 @@ export const LayerList = forwardRef<LayerListRef, LayerListProps>((props, ref) =
 
     return (
         <LayerListContext.Provider value={context}>
-            {createList(
-                layers,
-                intl,
-                {
-                    "aria-label": ariaLabel
-                }
-            )}
+            {createList(layers, {
+                "aria-label": ariaLabel
+            })}
         </LayerListContext.Provider>
     );
 });
 LayerList.displayName = "LayerList";
 
-function createList(
-    layers: AnyLayer[],
-    intl: PackageIntl,
-    listProps: ListProps
-) {
+function createList(layers: AnyLayer[], listProps: ListProps) {
     const items = layers.map((layer) => {
-        return (
-            <LayerItem key={layer.id} layer={layer} intl={intl}/>
-        );
+        return <LayerItem key={layer.id} layer={layer} />;
     });
 
     const list = (
@@ -153,11 +144,10 @@ function createList(
  *
  * The item may have further nested list items if there are sublayers present.
  */
-function LayerItem(props: {
-    layer: AnyLayer;
-    intl: PackageIntl;
-}): JSX.Element {
-    const { layer, intl} = props;
+function LayerItem(props: { layer: AnyLayer }): JSX.Element {
+    const { layer } = props;
+    const intl = useIntl();
+    const options = useTocWidgetOptions();
     const { title, description, isVisible } = useReactiveSnapshot(() => {
         return {
             title: layer.title,
@@ -165,13 +155,13 @@ function LayerItem(props: {
             isVisible: layer.visible
         };
     }, [layer]);
-    const sublayers = useSublayers(layer);
+    const childLayers = useChildLayers(layer);
     const isAvailable = useLoadState(layer) !== "error";
     const notAvailableLabel = intl.formatMessage({ id: "layerNotAvailable" });
     const [expanded, setExpanded] = useState(true);
 
     const context = useContext(LayerListContext);
-    const isCollapsible = (context) ? context.collapsibleGroups: false;
+    const isCollapsible = context ? context.collapsibleGroups : false;
     const collapseHandler = useEvent(() => {
         setExpanded(false);
     });
@@ -185,17 +175,12 @@ function LayerItem(props: {
     }, [layer, context, collapseHandler]);
 
     let nestedChildren;
-    if (sublayers?.length) {
-        nestedChildren = createList(
-            sublayers,
-            intl,
-            {
-                ml: 4,
-                "aria-label": intl.formatMessage({ id: "childgroupLabel" }, { title: title })
-            }
-        );
+    if (childLayers?.length) {
+        nestedChildren = createList(childLayers, {
+            ml: 4,
+            "aria-label": intl.formatMessage({ id: "childgroupLabel" }, { title: title })
+        });
     }
-
     return (
         <Box as="li" className={classNames("toc-layer-item", `layer-${slug(layer.id)}`)}>
             <Flex
@@ -214,7 +199,9 @@ function LayerItem(props: {
                     aria-label={title + (!isAvailable ? " " + notAvailableLabel : "")}
                     isChecked={isVisible}
                     isDisabled={!isAvailable}
-                    onChange={(event) => layer.setVisible(event.target.checked)}
+                    onChange={(event) =>
+                        updateLayerVisibility(layer, event.target.checked, options.autoShowParents)
+                    }
                 >
                     {title}
                 </Checkbox>
@@ -264,6 +251,13 @@ function LayerItem(props: {
     );
 }
 
+function updateLayerVisibility(layer: AnyLayer, visible: boolean, autoShowParents: boolean) {
+    layer.setVisible(visible);
+    if (visible && autoShowParents && layer.parent) {
+        updateLayerVisibility(layer.parent, true, true);
+    }
+}
+
 function LayerItemDescriptor(props: {
     layer: AnyLayer;
     title: string;
@@ -310,18 +304,14 @@ function useLayers(map: MapModel): Layer[] {
 }
 
 /**
- * Returns the sublayers of the given layer (or undefined, if the sublayer cannot have any).
- * Sublayers are returned in render order (topmost sublayer first).
+ * Returns the child layers (sublayers or layers contained in a group layer) of a layer.
+ * Layers are returned in render order (topmost sublayer first).
  */
-function useSublayers(layer: AnyLayer): Sublayer[] | undefined {
+function useChildLayers(layer: AnyLayer): AnyLayer[] | undefined {
     return useReactiveSnapshot(() => {
-        const sublayers = layer.sublayers?.getSublayers({ sortByDisplayOrder: true });
-        if (!sublayers) {
-            return undefined;
-        }
-
-        sublayers.reverse(); // render topmost layer first
-        return sublayers;
+        const children = layer.children?.getItems({ sortByDisplayOrder: true });
+        children?.reverse(); // render topmost layer first
+        return children;
     }, [layer]);
 }
 
@@ -329,7 +319,7 @@ function useSublayers(layer: AnyLayer): Sublayer[] | undefined {
 function useLoadState(layer: AnyLayer): string {
     return useReactiveSnapshot(() => {
         // for sublayers, use the state of the parent
-        const target = "parentLayer" in layer ? layer.parentLayer : layer;
+        const target = isSublayer(layer) ? layer.parentLayer : layer;
         return target.loadState;
     }, [layer]);
 }

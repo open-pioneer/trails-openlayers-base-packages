@@ -10,8 +10,9 @@ import {
     useCommonComponentProps
 } from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
-import { FC, useCallback, useId, useRef } from "react";
+import { FC, useCallback, useId, useRef, useMemo } from "react";
 import { LayerList, LayerListRef } from "./LayerList";
+import { TocWidgetOptions, TocWidgetOptionsProvider } from "./Context";
 import { Tools } from "./Tools";
 
 /**
@@ -46,6 +47,12 @@ export interface TocProps extends CommonComponentProps, MapModelProps {
      * Defaults to `false`.
      */
     collapsibleGroups?: boolean;
+
+    /*
+     * Show the parent layers when a child layer is made visible.
+     * Defaults to `true`.
+     */
+    autoShowParents?: boolean;
 }
 
 /**
@@ -77,10 +84,12 @@ export const Toc: FC<TocProps> = (props: TocProps) => {
         toolsConfig,
         showBasemapSwitcher = true,
         basemapSwitcherProps,
-        collapsibleGroups = false
+        collapsibleGroups = false,
+        autoShowParents = true
     } = props;
     const { containerProps } = useCommonComponentProps("toc", props);
     const basemapsHeadingId = useId();
+    const options = useMemo((): TocWidgetOptions => ({ autoShowParents }), [autoShowParents]);
     const state = useMapModel(props);
     const layerListRef = useRef<LayerListRef>(null);
     const collapseAllGroupsHandler = useCallback(() => layerListRef.current?.collapseAll(), []);
@@ -128,8 +137,11 @@ export const Toc: FC<TocProps> = (props: TocProps) => {
                                         <Tools
                                             map={map}
                                             onCollapseAllGroups={collapseAllGroupsHandler}
-                                            showHideAllLayers = {toolsConfig?.showHideAllLayers}
-                                            showCollapseAllGroups = {toolsConfig?.showCollapseAllGroups && collapsibleGroups} //only applicable if groups are actually collapsible
+                                            showHideAllLayers={toolsConfig?.showHideAllLayers}
+                                            showCollapseAllGroups={
+                                                toolsConfig?.showCollapseAllGroups &&
+                                                collapsibleGroups
+                                            } //only applicable if groups are actually collapsible
                                         />
                                     )}
                                 </Flex>
@@ -158,7 +170,7 @@ export const Toc: FC<TocProps> = (props: TocProps) => {
 
     return (
         <Flex {...containerProps} direction="column" gap={PADDING}>
-            {content}
+            <TocWidgetOptionsProvider value={options}>{content}</TocWidgetOptionsProvider>
         </Flex>
     );
 };

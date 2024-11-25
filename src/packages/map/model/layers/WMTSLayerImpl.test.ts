@@ -82,7 +82,7 @@ function createLayer(
     } as MapModelImpl;
 
     if (options?.attach) {
-        layer.__attach(mapModel);
+        layer.__attachToMap(mapModel);
     }
 
     return {

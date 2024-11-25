@@ -19,6 +19,7 @@ import { PackageIntl } from "@open-pioneer/runtime";
 import { Reactive, reactive } from "@conterra/reactivity-core";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { watch } from "@conterra/reactivity-core";
+import VectorSource from "ol/source/Vector";
 
 const EDIT_LAYER_ID: string = "krankenhaus";
 
@@ -131,7 +132,10 @@ class EditingController {
                         )
                     });
 
-                    const vectorLayer = layer?.olLayer as VectorLayer<FeatureLike>;
+                    const vectorLayer = layer?.olLayer as VectorLayer<
+                        VectorSource<FeatureLike>,
+                        FeatureLike
+                    >;
                     vectorLayer.getSource()?.refresh();
                 })
                 .catch((error: Error) => {
@@ -156,7 +160,10 @@ class EditingController {
             this.#updateEditSelectTooltip = this._createEditingSelectTooltip();
 
             const layer = this.#mapModel.layers.getLayerById("krankenhaus") as Layer;
-            const vectorLayer = layer?.olLayer as VectorLayer<FeatureLike>;
+            const vectorLayer = layer?.olLayer as VectorLayer<
+                VectorSource<FeatureLike>,
+                FeatureLike
+            >;
 
             this.#selectInteraction = new Select({
                 layers: [vectorLayer]
