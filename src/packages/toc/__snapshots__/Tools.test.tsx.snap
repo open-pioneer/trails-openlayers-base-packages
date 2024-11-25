@@ -79,17 +79,5 @@ exports[`Should successfully create a toc with default tool component 2`] = `
   >
     tools.hideAllLayers
   </button>
-  <button
-    aria-label="tools.collapseAllGroups"
-    class="chakra-menu__menuitem css-y7jzs3"
-    data-index="1"
-    data-theme="light"
-    id="menu-list-:r2:-menuitem-:r4:"
-    role="menuitem"
-    tabindex="-1"
-    type="button"
-  >
-    tools.collapseAllGroups
-  </button>
 </div>
 `;
