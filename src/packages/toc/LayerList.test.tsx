@@ -445,7 +445,7 @@ it("supports a hierarchy of layers", async () => {
 
     const map = await registry.expectMapModel(mapId);
     const { container } = render(
-        <TocWidgetOptionsProvider value={{ autoShowParents: true }}>
+        <TocWidgetOptionsProvider value={{ autoShowParents: true, collapsibleGroups: false }}>
             <LayerList map={map} />
         </TocWidgetOptionsProvider>,
         {
@@ -494,7 +494,7 @@ it("supports disabling autoShowParents", async () => {
 
     const map = await registry.expectMapModel(mapId);
     const { container } = render(
-        <TocWidgetOptionsProvider value={{ autoShowParents: false }}>
+        <TocWidgetOptionsProvider value={{ autoShowParents: false, collapsibleGroups: false  }}>
             <LayerList map={map} />
         </TocWidgetOptionsProvider>,
         {
@@ -566,8 +566,8 @@ function createGroupHierarchy() {
     return { group, subgroup, submember };
 }
 
-function createWrapper(autoShowParents = true) {
-    const options: TocWidgetOptions = { autoShowParents };
+function createWrapper(autoShowParents = true, collapsibleGroups = false ) {
+    const options: TocWidgetOptions = { autoShowParents, collapsibleGroups };
     return function Wrapper(props: { children: ReactNode }) {
         return (
             <PackageContextProvider>
