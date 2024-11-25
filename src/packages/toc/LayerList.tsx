@@ -44,7 +44,6 @@ import { useTocWidgetOptions } from "./Context";
 interface LayerListProps {
     map: MapModel;
     "aria-label"?: string;
-    collapsibleGroups?: boolean;
 }
 
 export interface LayerListRef {
@@ -57,7 +56,6 @@ export interface LayerListRef {
 export interface LayerListCollapseContext {
     registerCollapsHandler(id: string, handler: CollapseHandler): void;
     unregisterCollapsHandler(id: string): void;
-    collapsibleGroups: boolean;
 }
 
 const LayerListContext = createContext<LayerListCollapseContext | undefined>(undefined);
@@ -68,7 +66,7 @@ const LayerListContext = createContext<LayerListCollapseContext | undefined>(und
  * Layer Groups are skipped in the current implementation.
  */
 export const LayerList = forwardRef<LayerListRef, LayerListProps>((props, ref) => {
-    const { map, "aria-label": ariaLabel, collapsibleGroups = false } = props;
+    const { map, "aria-label": ariaLabel } = props;
 
     const collapseHandlers = useRef<Map<string, CollapseHandler>>();
     if (!collapseHandlers.current) {
@@ -82,10 +80,9 @@ export const LayerList = forwardRef<LayerListRef, LayerListProps>((props, ref) =
             },
             unregisterCollapsHandler(id: string) {
                 collapseHandlers.current!.delete(id);
-            },
-            collapsibleGroups: collapsibleGroups
+            }
         };
-    }, [collapsibleGroups]);
+    }, []);
 
     const intl = useIntl();
     const layers = useLayers(map);
@@ -161,7 +158,7 @@ function LayerItem(props: { layer: AnyLayer }): JSX.Element {
     const [expanded, setExpanded] = useState(true);
 
     const context = useContext(LayerListContext);
-    const isCollapsible = context ? context.collapsibleGroups : false;
+    const isCollapsible = options ? options.collapsibleGroups : false;
     const collapseHandler = useEvent(() => {
         setExpanded(false);
     });

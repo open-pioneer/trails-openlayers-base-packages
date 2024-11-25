@@ -89,10 +89,12 @@ export const Toc: FC<TocProps> = (props: TocProps) => {
     } = props;
     const { containerProps } = useCommonComponentProps("toc", props);
     const basemapsHeadingId = useId();
-    const options = useMemo((): TocWidgetOptions => ({ autoShowParents }), [autoShowParents]);
+    const options = useMemo((): TocWidgetOptions => ({ autoShowParents, collapsibleGroups }), [autoShowParents, collapsibleGroups]);
     const state = useMapModel(props);
     const layerListRef = useRef<LayerListRef>(null);
     const collapseAllGroupsHandler = useCallback(() => layerListRef.current?.collapseAll(), []);
+    const showCollapseAllGroups = (toolsConfig)? (toolsConfig.showCollapseAllGroups && options.collapsibleGroups) : options.collapsibleGroups;
+
 
     let content: JSX.Element | null;
     switch (state.kind) {
@@ -138,10 +140,7 @@ export const Toc: FC<TocProps> = (props: TocProps) => {
                                             map={map}
                                             onCollapseAllGroups={collapseAllGroupsHandler}
                                             showHideAllLayers={toolsConfig?.showHideAllLayers}
-                                            showCollapseAllGroups={
-                                                toolsConfig?.showCollapseAllGroups &&
-                                                collapsibleGroups
-                                            } //only applicable if groups are actually collapsible
+                                            showCollapseAllGroups={showCollapseAllGroups} //only applicable if groups are actually collapsible
                                         />
                                     )}
                                 </Flex>
@@ -152,7 +151,6 @@ export const Toc: FC<TocProps> = (props: TocProps) => {
                             map={map}
                             aria-label={intl.formatMessage({ id: "operationalLayerLabel" })}
                             ref={layerListRef}
-                            collapsibleGroups={collapsibleGroups}
                         ></LayerList>
                     </TitledSection>
                 </Box>

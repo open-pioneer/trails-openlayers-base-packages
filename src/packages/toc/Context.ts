@@ -10,6 +10,11 @@ import { createContext, useContext } from "react";
 export interface TocWidgetOptions {
     /** True: When showing a child, show all parents as well (`setVisible(true)`). */
     autoShowParents: boolean;
+
+    /**
+     * True: list of children of a LayerItems are collapisble
+     */
+    collapsibleGroups: boolean;
 }
 
 const TocWidgetOptionsContext = createContext<TocWidgetOptions | undefined>(undefined);
