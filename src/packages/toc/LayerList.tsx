@@ -48,14 +48,14 @@ interface LayerListProps {
 
 export interface LayerListRef {
     /**
-     * collapses all groups in the layer list
+     * expanded state of all list items
      */
-    collapseAll: CollapseHandler;
+    listItemsExpandedModel: ListItemsExpandedModel;
 }
 
-export interface LayerListCollapseContext {
-    registerCollapsHandler(id: string, handler: CollapseHandler): void;
-    unregisterCollapsHandler(id: string): void;
+interface LayerListCollapseContext {
+    registerExpandedState(id: string, handler: ListItemExpandedState): void;
+    unregisterExpandedState(id: string): void;
 }
 
 const LayerListContext = createContext<LayerListCollapseContext | undefined>(undefined);
@@ -68,32 +68,27 @@ const LayerListContext = createContext<LayerListCollapseContext | undefined>(und
 export const LayerList = forwardRef<LayerListRef, LayerListProps>((props, ref) => {
     const { map, "aria-label": ariaLabel } = props;
 
-    const collapseHandlers = useRef<Map<string, CollapseHandler>>();
-    if (!collapseHandlers.current) {
-        collapseHandlers.current = new Map();
+    const expandedStates = useRef<Map<string, ListItemExpandedState>>();
+    if (!expandedStates.current) {
+        expandedStates.current = new Map();
     }
 
     const context = useMemo((): LayerListCollapseContext => {
         return {
-            registerCollapsHandler(id: string, handler: CollapseHandler) {
-                collapseHandlers.current!.set(id, handler);
+            registerExpandedState(id: string, state: ListItemExpandedState) {
+                expandedStates.current!.set(id, state);
             },
-            unregisterCollapsHandler(id: string) {
-                collapseHandlers.current!.delete(id);
+            unregisterExpandedState(id: string) {
+                expandedStates.current!.delete(id);
             }
         };
     }, []);
 
+    const expandedModel = useLayerItemsExpandedModel(expandedStates.current);
+
     const intl = useIntl();
     const layers = useLayers(map);
-    useImperativeHandle(ref, () => ({
-        collapseAll: () => {
-            //collapse all groups
-            for (const collapseHandler of collapseHandlers.current!.values()) {
-                collapseHandler();
-            }
-        }
-    }));
+    useImperativeHandle(ref, () => ({ listItemsExpandedModel: expandedModel }));
 
     if (!layers.length) {
         return (
@@ -159,17 +154,21 @@ function LayerItem(props: { layer: AnyLayer }): JSX.Element {
 
     const context = useContext(LayerListContext);
     const isCollapsible = options ? options.collapsibleGroups : false;
-    const collapseHandler = useEvent(() => {
-        setExpanded(false);
+    const expandedSetter = useEvent((expand: boolean) => {
+        setExpanded(expand);
     });
     useEffect(() => {
         if (!context) {
             return;
         }
 
-        context.registerCollapsHandler(layer.id, collapseHandler);
-        return () => context.unregisterCollapsHandler(layer.id);
-    }, [layer, context, collapseHandler]);
+        context.registerExpandedState(layer.id, {
+            layerId: layer.id,
+            isExpanded: expanded,
+            setExpanded: expandedSetter
+        });
+        return () => context.unregisterExpandedState(layer.id);
+    }, [layer, context, expandedSetter, expanded]);
 
     let nestedChildren;
     if (childLayers?.length) {
@@ -329,4 +328,38 @@ function slug(id: string) {
         .replace(/-+/g, "-");
 }
 
-type CollapseHandler = () => void;
+function useLayerItemsExpandedModel(expandedStates: Map<string, ListItemExpandedState>) {
+    const expandedModel = useMemo((): ListItemsExpandedModel => {
+        return {
+            isExpanded(layerId: string) {
+                if (expandedStates.has(layerId)) {
+                    return expandedStates.get(layerId)?.isExpanded;
+                } else {
+                    return undefined;
+                }
+            },
+            setExpanded(layerId: string, expand: boolean) {
+                expandedStates.get(layerId)?.setExpanded(expand);
+            },
+            getAllExpandedStates() {
+                return Array.from(expandedStates.values());
+            }
+        };
+    }, [expandedStates]);
+
+    return expandedModel;
+}
+
+export type ListItemExpandedSetter = (expand: boolean) => void;
+
+export interface ListItemExpandedState {
+    readonly layerId: string;
+    readonly isExpanded: boolean;
+    readonly setExpanded: ListItemExpandedSetter;
+}
+
+export interface ListItemsExpandedModel {
+    readonly setExpanded: (layerId: string, expand: boolean) => void;
+    readonly isExpanded: (layerId: string) => boolean | undefined;
+    readonly getAllExpandedStates: () => ListItemExpandedState[];
+}
