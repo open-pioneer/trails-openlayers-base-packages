@@ -494,7 +494,7 @@ it("supports disabling autoShowParents", async () => {
 
     const map = await registry.expectMapModel(mapId);
     const { container } = render(
-        <TocWidgetOptionsProvider value={{ autoShowParents: false, collapsibleGroups: false  }}>
+        <TocWidgetOptionsProvider value={{ autoShowParents: false, collapsibleGroups: false }}>
             <LayerList map={map} />
         </TocWidgetOptionsProvider>,
         {
@@ -566,7 +566,7 @@ function createGroupHierarchy() {
     return { group, subgroup, submember };
 }
 
-function createWrapper(autoShowParents = true, collapsibleGroups = false ) {
+function createWrapper(autoShowParents = true, collapsibleGroups = false) {
     const options: TocWidgetOptions = { autoShowParents, collapsibleGroups };
     return function Wrapper(props: { children: ReactNode }) {
         return (

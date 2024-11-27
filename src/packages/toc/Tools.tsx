@@ -14,14 +14,15 @@ import { useIntl } from "open-pioneer:react-hooks";
 import { FC } from "react";
 import { FiMoreVertical } from "react-icons/fi";
 import { ToolsConfig } from "./Toc";
+import { ListItemsExpandedModel } from "./LayerList";
 
-export const Tools: FC<{ map: MapModel; onCollapseAllGroups?: () => void } & ToolsConfig> = (
-    props
-) => {
+export const Tools: FC<
+    { map: MapModel; listItemsExpandedModel: ListItemsExpandedModel | undefined } & ToolsConfig
+> = (props) => {
     const intl = useIntl();
     const {
         map,
-        onCollapseAllGroups,
+        listItemsExpandedModel,
         showHideAllLayers = true,
         showCollapseAllGroups = true
     } = props;
@@ -60,7 +61,7 @@ export const Tools: FC<{ map: MapModel; onCollapseAllGroups?: () => void } & Too
                                         id: "tools.collapseAllGroups"
                                     })}
                                     onClick={() => {
-                                        onCollapseAllGroups?.();
+                                        collapseAllGroups(listItemsExpandedModel);
                                     }}
                                 >
                                     {intl.formatMessage({ id: "tools.collapseAllGroups" })}
@@ -89,4 +90,15 @@ function hideAllLayers(map: MapModel | undefined) {
     map?.layers.getOperationalLayers().forEach((layer) => {
         hide(layer);
     });
+}
+
+function collapseAllGroups(listItemsExpandedModel: ListItemsExpandedModel | undefined) {
+    console.log(listItemsExpandedModel);
+    if (!listItemsExpandedModel) {
+        return;
+    }
+
+    listItemsExpandedModel
+        .getAllExpandedStates()
+        .forEach((itemExpandedState) => itemExpandedState.setExpanded(false));
 }
