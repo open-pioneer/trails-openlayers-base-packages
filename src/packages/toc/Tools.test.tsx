@@ -135,7 +135,7 @@ it("Should collapse all layer items in toc", async () => {
 
     const collapsibles = tocDiv.querySelectorAll(".toc-collapsible-item");
     for (const collapsible of collapsibles) {
-        expect(collapsible.getAttribute("style")?.includes("height: auto;"));
+        expect(collapsible.getAttribute("style")?.includes("height: auto;")).toBeTruthy();
     }
 
     const collapseAllButton = await screen.findByLabelText("tools.collapseAllGroups");
@@ -143,7 +143,7 @@ it("Should collapse all layer items in toc", async () => {
     await userEvent.click(collapseAllButton);
     //collapse sets heigth to 0
     for (const collapsible of collapsibles) {
-        expect(collapsible.getAttribute("style")?.includes("height: 0"));
+        expect(collapsible.getAttribute("style")?.includes("height: 0")).toBeTruthy();
     }
 });
 
