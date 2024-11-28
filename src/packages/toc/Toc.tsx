@@ -66,8 +66,8 @@ export interface ToolsConfig {
     showHideAllLayers?: boolean;
 
     /**
-     * Optional property to show the `hide all layers` entry.
-     * Defaults to `true`. Only applicable if
+     * Optional property to show the `collapse all groups` entry.
+     * Defaults to `true`. Only applicable if `tocProps.collapsibleGroups` is `true`
      */
     showCollapseAllGroups?: boolean;
 }
@@ -102,7 +102,7 @@ export const Toc: FC<TocProps> = (props: TocProps) => {
             setListItemsExpandedModel(node.listItemsExpandedModel); //set model if ref is actually set
         }
     }, []);
-
+    //only applicable if groups are actually collapsible
     const showCollapseAllGroups = toolsConfig
         ? toolsConfig.showCollapseAllGroups && options.collapsibleGroups
         : options.collapsibleGroups;
@@ -152,7 +152,7 @@ export const Toc: FC<TocProps> = (props: TocProps) => {
                                             map={map}
                                             listItemsExpandedModel={listItemsExpandedModel}
                                             showHideAllLayers={toolsConfig?.showHideAllLayers}
-                                            showCollapseAllGroups={showCollapseAllGroups} //only applicable if groups are actually collapsible
+                                            showCollapseAllGroups={showCollapseAllGroups}
                                         />
                                     )}
                                 </Flex>

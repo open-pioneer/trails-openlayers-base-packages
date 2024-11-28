@@ -63,9 +63,7 @@ interface LayerListCollapseContext {
 const LayerListContext = createContext<LayerListCollapseContext | undefined>(undefined);
 
 /**
- * Lists the (top level) operational layers in the map.
- *
- * Layer Groups are skipped in the current implementation.
+ * Lists the operational layers in the map.
  */
 export const LayerList = forwardRef<LayerListRef, LayerListProps>((props, ref) => {
     const { map, "aria-label": ariaLabel } = props;
@@ -86,7 +84,7 @@ export const LayerList = forwardRef<LayerListRef, LayerListProps>((props, ref) =
         };
     }, []);
 
-    const expandedModel = useLayerItemsExpandedModel(expandedStates.current);
+    const expandedModel = useListItemsExpandedModel(expandedStates.current);
 
     const intl = useIntl();
     const layers = useLayers(map);
@@ -332,7 +330,10 @@ function slug(id: string) {
         .replace(/-+/g, "-");
 }
 
-function useLayerItemsExpandedModel(expandedStates: Map<string, ListItemExpandedState>) {
+/**
+ * returns memoized instance of `ListItemsExpandedModel`
+ */
+function useListItemsExpandedModel(expandedStates: Map<string, ListItemExpandedState>) {
     const expandedModel = useMemo((): ListItemsExpandedModel => {
         return {
             isExpanded(layerId: string) {
@@ -360,7 +361,7 @@ function useLayerItemsExpandedModel(expandedStates: Map<string, ListItemExpanded
 export type ListItemExpandedSetter = (expand: boolean) => void;
 
 /**
- * manages the expanded state  of a single layer list item
+ * manages the expanded state of a single layer list item
  */
 export interface ListItemExpandedState {
     /**
@@ -381,7 +382,16 @@ export interface ListItemExpandedState {
  * provides access to each layer list item's expanded state
  */
 export interface ListItemsExpandedModel {
+    /**
+     * expand or collapse list item that correspond with the `layerId`
+     */
     readonly setExpanded: (layerId: string, expand: boolean) => void;
+    /**
+     * true if list item that corresponds with `layerId` is expanded
+     */
     readonly isExpanded: (layerId: string) => boolean | undefined;
+    /**
+     * returns a `ListItemExpandedState` for each item in this model
+     */
     readonly getAllExpandedStates: () => ListItemExpandedState[];
 }
