@@ -5,8 +5,8 @@ messages:
   childgroupLabel: "Layer group {title}"
   missingLayers: "There are no layers to display."
   group:
-    expand: "Expand group"
-    collapse: "Collapse group"
+    expand: "Expand group {title}"
+    collapse: "Collapse group {title}"
   error: "Error while creating map content."
   layerNotAvailable: "Layer not available"
   toolsLabel: "Map tools"

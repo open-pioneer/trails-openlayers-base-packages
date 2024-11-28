@@ -112,7 +112,7 @@ LayerList.displayName = "LayerList";
 
 function createList(layers: AnyLayer[], listProps: ListProps) {
     const items = layers.map((layer) => {
-        return <LayerItem key={layer.id} layer={layer} />;
+        return <LayerItem key={layer.id} layer={layer}/>;
     });
 
     const list = (
@@ -229,8 +229,8 @@ function LayerItem(props: { layer: AnyLayer }): JSX.Element {
                         icon={expanded ? <ChevronUpIcon /> : <ChevronDownIcon />}
                         aria-label={
                             expanded
-                                ? intl.formatMessage({ id: "group.collapse" })
-                                : intl.formatMessage({ id: "group.expand" })
+                                ? intl.formatMessage({ id: "group.collapse"}, {title: title})
+                                : intl.formatMessage({ id: "group.expand" }, {title: title})
                         }
                         aria-expanded={expanded}
                         aria-controls={layerGroupId}
@@ -355,21 +355,30 @@ function useLayerItemsExpandedModel(expandedStates: Map<string, ListItemExpanded
 }
 
 /**
- * setter function used to control wether a layer list item is expanded or collapsed 
+ * setter function used to control wether a layer list item should be expanded or collapsed 
  */
 export type ListItemExpandedSetter = (expand: boolean) => void;
 
 /**
- * manages the state of a single layer list item
+ * manages the expanded state  of a single layer list item
  */
 export interface ListItemExpandedState {
+    /**
+     * identifier of the layer that corresponds with the list item
+     */
     readonly layerId: string;
+    /**
+     * true if list item is expanded
+     */
     readonly isExpanded: boolean;
+    /**
+     * setter function to expand or collapse the list item
+     */
     readonly setExpanded: ListItemExpandedSetter;
 }
 
 /**
- * provides access to the state of each layer list item
+ * provides access to each layer list item's expanded state
  */
 export interface ListItemsExpandedModel {
     readonly setExpanded: (layerId: string, expand: boolean) => void;
