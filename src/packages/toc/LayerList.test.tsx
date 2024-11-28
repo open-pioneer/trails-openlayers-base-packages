@@ -520,6 +520,107 @@ it("supports disabling autoShowParents", async () => {
     expect(submember.visible).toBe(true);
 });
 
+it("should collapse and expand list items", async () => {
+    const user = userEvent.setup();
+    const { group } = createGroupHierarchy();
+    const { mapId, registry } = await setupMap({
+        layers: [group]
+    });
+
+    const map = await registry.expectMapModel(mapId);
+    const { container } = render(
+        <TocWidgetOptionsProvider value={{ autoShowParents: false, collapsibleGroups: true }}>
+            <LayerList map={map} />
+        </TocWidgetOptionsProvider>,
+        {
+            wrapper: (props) => <PackageContextProvider {...props} />
+        }
+    );
+
+    const groupItem = findLayerItem(container, "group")!;
+    expect(groupItem).toBeDefined();
+
+    const groupCollapseButton = queryAllByRole<HTMLElement>(groupItem, "button")[0]!;
+    const collapsibleList = container.getElementsByClassName("toc-collapsible-item").item(0)!;
+    expect(groupCollapseButton).toBeDefined();
+    expect(groupCollapseButton?.getAttribute("aria-expanded")).toBe("true");
+    expect(collapsibleList).toBeDefined();
+    expect(collapsibleList.getAttribute("style")?.includes("height: auto")).toBe(true);
+
+    await user.click(groupCollapseButton); //collapse
+    expect(groupCollapseButton?.getAttribute("aria-expanded")).toBe("false");
+    expect(collapsibleList.getAttribute("style")?.includes("height: 0")).toBe(true);
+
+    await user.click(groupCollapseButton); //expand again
+    expect(groupCollapseButton?.getAttribute("aria-expanded")).toBe("true");
+    expect(collapsibleList.getAttribute("style")?.includes("height: auto")).toBe(true);
+});
+
+it("it renders collapse buttons (only) for groups", async () => {
+    const { group } = createGroupHierarchy();
+    const { mapId, registry } = await setupMap({
+        layers: [
+            {
+                title: "SimpleLayer",
+                id: "simplelayer",
+                olLayer: new TileLayer({})
+            },
+            group
+        ]
+    });
+
+    const map = await registry.expectMapModel(mapId);
+    const { container } = render(
+        <TocWidgetOptionsProvider value={{ autoShowParents: false, collapsibleGroups: true }}>
+            <LayerList map={map} />
+        </TocWidgetOptionsProvider>,
+        {
+            wrapper: (props) => <PackageContextProvider {...props} />
+        }
+    );
+
+    const groupItem = findLayerItem(container, "group")!;
+    expect(groupItem).toBeDefined();
+    const subGroupItem = findLayerItem(container, "subgroup")!;
+    expect(subGroupItem).toBeDefined();
+    const nongroupItem = findLayerItem(container, "simplelayer")!;
+    expect(nongroupItem).toBeDefined();
+
+    const groupCollapseButton = queryAllByRole<HTMLElement>(groupItem, "button")[0];
+    expect(groupCollapseButton).toBeDefined();
+    const subgroupCollapseButton = queryAllByRole<HTMLElement>(subGroupItem, "button")[0];
+    expect(subgroupCollapseButton).toBeDefined();
+    const nongroupCollapseButton = queryAllByRole<HTMLElement>(nongroupItem, "button");
+    expect(nongroupCollapseButton.length).toBe(0); //has no child layers -> should not render collapse button
+});
+
+it("supports disabling collapsibleGroups", async () => {
+    const { group } = createGroupHierarchy();
+    const { mapId, registry } = await setupMap({
+        layers: [group]
+    });
+
+    const map = await registry.expectMapModel(mapId);
+    const { container } = render(
+        <TocWidgetOptionsProvider value={{ autoShowParents: false, collapsibleGroups: false }}>
+            <LayerList map={map} />
+        </TocWidgetOptionsProvider>,
+        {
+            wrapper: (props) => <PackageContextProvider {...props} />
+        }
+    );
+
+    const groupItem = findLayerItem(container, "group")!;
+    expect(groupItem).toBeDefined();
+    const subGroupItem = findLayerItem(container, "subgroup")!;
+    expect(subGroupItem).toBeDefined();
+
+    const groupCollapseButton = queryAllByRole<HTMLElement>(groupItem, "button")[0];
+    expect(groupCollapseButton).toBeUndefined();
+    const subgroupCollapseButton = queryAllByRole<HTMLElement>(subGroupItem, "button")[0];
+    expect(subgroupCollapseButton).toBeUndefined();
+});
+
 /** Returns the layer list's current list items. */
 function getCurrentItems(container: HTMLElement) {
     return queryAllByRole(container, "listitem");
