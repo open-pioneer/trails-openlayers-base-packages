@@ -42,7 +42,6 @@ import {
 import { FiAlertTriangle, FiMoreVertical } from "react-icons/fi";
 import { useTocWidgetOptions } from "./Context";
 
-
 export interface LayerListRef {
     /**
      * state of all layer list items
@@ -110,7 +109,7 @@ LayerList.displayName = "LayerList";
 
 function createList(layers: AnyLayer[], listProps: ListProps) {
     const items = layers.map((layer) => {
-        return <LayerItem key={layer.id} layer={layer}/>;
+        return <LayerItem key={layer.id} layer={layer} />;
     });
 
     const list = (
@@ -227,8 +226,8 @@ function LayerItem(props: { layer: AnyLayer }): JSX.Element {
                         icon={expanded ? <ChevronUpIcon /> : <ChevronDownIcon />}
                         aria-label={
                             expanded
-                                ? intl.formatMessage({ id: "group.collapse"}, {title: title})
-                                : intl.formatMessage({ id: "group.expand" }, {title: title})
+                                ? intl.formatMessage({ id: "group.collapse" }, { title: title })
+                                : intl.formatMessage({ id: "group.expand" }, { title: title })
                         }
                         aria-expanded={expanded}
                         aria-controls={layerGroupId}
@@ -244,7 +243,11 @@ function LayerItem(props: { layer: AnyLayer }): JSX.Element {
                     />
                 )}
             </Flex>
-            {nestedChildren && <Collapse in={expanded} id={layerGroupId}>{nestedChildren}</Collapse>}
+            {nestedChildren && (
+                <Collapse in={expanded} id={layerGroupId} className="toc-collapsible-item">
+                    {nestedChildren}
+                </Collapse>
+            )}
         </Box>
     );
 }
@@ -356,7 +359,7 @@ function useListItemsExpandedModel(expandedStates: Map<string, ListItemExpandedS
 }
 
 /**
- * setter function used to control wether a layer list item should be expanded or collapsed 
+ * setter function used to control wether a layer list item should be expanded or collapsed
  */
 export type ListItemExpandedSetter = (expand: boolean) => void;
 

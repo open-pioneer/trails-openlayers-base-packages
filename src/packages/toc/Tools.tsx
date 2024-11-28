@@ -93,7 +93,6 @@ function hideAllLayers(map: MapModel | undefined) {
 }
 
 function collapseAllGroups(listItemsExpandedModel: ListItemsExpandedModel | undefined) {
-    console.log(listItemsExpandedModel);
     if (!listItemsExpandedModel) {
         return;
     }
