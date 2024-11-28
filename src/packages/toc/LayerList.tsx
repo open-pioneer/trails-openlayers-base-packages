@@ -33,6 +33,7 @@ import {
     forwardRef,
     useContext,
     useEffect,
+    useId,
     useImperativeHandle,
     useMemo,
     useRef,
@@ -41,16 +42,17 @@ import {
 import { FiAlertTriangle, FiMoreVertical } from "react-icons/fi";
 import { useTocWidgetOptions } from "./Context";
 
-interface LayerListProps {
-    map: MapModel;
-    "aria-label"?: string;
-}
 
 export interface LayerListRef {
     /**
-     * expanded state of all list items
+     * state of all layer list items
      */
-    listItemsExpandedModel: ListItemsExpandedModel;
+    readonly listItemsExpandedModel: ListItemsExpandedModel;
+}
+
+interface LayerListProps {
+    map: MapModel;
+    "aria-label"?: string;
 }
 
 interface LayerListCollapseContext {
@@ -140,6 +142,7 @@ function LayerItem(props: { layer: AnyLayer }): JSX.Element {
     const { layer } = props;
     const intl = useIntl();
     const options = useTocWidgetOptions();
+    const layerGroupId = useId();
     const { title, description, isVisible } = useReactiveSnapshot(() => {
         return {
             title: layer.title,
@@ -151,7 +154,6 @@ function LayerItem(props: { layer: AnyLayer }): JSX.Element {
     const isAvailable = useLoadState(layer) !== "error";
     const notAvailableLabel = intl.formatMessage({ id: "layerNotAvailable" });
     const [expanded, setExpanded] = useState(true);
-
     const context = useContext(LayerListContext);
     const isCollapsible = options ? options.collapsibleGroups : false;
     const expandedSetter = useEvent((expand: boolean) => {
@@ -230,6 +232,8 @@ function LayerItem(props: { layer: AnyLayer }): JSX.Element {
                                 ? intl.formatMessage({ id: "group.collapse" })
                                 : intl.formatMessage({ id: "group.expand" })
                         }
+                        aria-expanded={expanded}
+                        aria-controls={layerGroupId}
                     />
                 )}
                 <Spacer></Spacer>
@@ -242,7 +246,7 @@ function LayerItem(props: { layer: AnyLayer }): JSX.Element {
                     />
                 )}
             </Flex>
-            {nestedChildren && <Collapse in={expanded}>{nestedChildren}</Collapse>}
+            {nestedChildren && <Collapse in={expanded} id={layerGroupId}>{nestedChildren}</Collapse>}
         </Box>
     );
 }
@@ -350,14 +354,23 @@ function useLayerItemsExpandedModel(expandedStates: Map<string, ListItemExpanded
     return expandedModel;
 }
 
+/**
+ * setter function used to control wether a layer list item is expanded or collapsed 
+ */
 export type ListItemExpandedSetter = (expand: boolean) => void;
 
+/**
+ * manages the state of a single layer list item
+ */
 export interface ListItemExpandedState {
     readonly layerId: string;
     readonly isExpanded: boolean;
     readonly setExpanded: ListItemExpandedSetter;
 }
 
+/**
+ * provides access to the state of each layer list item
+ */
 export interface ListItemsExpandedModel {
     readonly setExpanded: (layerId: string, expand: boolean) => void;
     readonly isExpanded: (layerId: string) => boolean | undefined;
