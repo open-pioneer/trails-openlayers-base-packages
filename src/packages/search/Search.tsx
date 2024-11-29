@@ -92,7 +92,7 @@ export interface SearchProps extends CommonComponentProps, MapModelProps {
 
     /**
      * The placeholder text shown in the search input field when it is empty.
-     * Defaults to a localized version of `"Search…"`.
+     * Defaults to a generic (and localized) hint.
      */
     placeholder?: string;
 
