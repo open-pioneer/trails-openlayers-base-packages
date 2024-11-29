@@ -91,6 +91,12 @@ export interface SearchProps extends CommonComponentProps, MapModelProps {
     maxResultsPerGroup?: number;
 
     /**
+     * The placeholder text shown in the search input field when it is empty.
+     * Defaults to a localized version of `"Search…"`.
+     */
+    placeholder?: string;
+
+    /**
      * This event handler will be called when the user selects a search result.
      */
     onSelect?: (event: SearchSelectEvent) => void;
@@ -172,7 +178,7 @@ export const Search: FC<SearchProps> = (props) => {
                 selectedOptionColorScheme="trails"
                 chakraStyles={chakraStyles}
                 isClearable={true}
-                placeholder={intl.formatMessage({ id: "searchPlaceholder" })}
+                placeholder={props.placeholder ?? intl.formatMessage({ id: "searchPlaceholder" })}
                 closeMenuOnSelect={true}
                 isLoading={search.kind === "loading"}
                 options={search.kind === "ready" ? search.results : undefined}
