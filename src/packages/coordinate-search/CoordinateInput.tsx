@@ -299,39 +299,51 @@ function CoordinateInputButton(props: {
     if (coordinateSearchInput !== "") {
         return (
             <InputRightElement>
-                <IconButton
-                    className="clearButton"
-                    size="sm"
-                    onClick={() => {
-                        setCoordinateSearchInput("");
-                        if (onClear) {
-                            onClear();
-                        }
-                    }}
-                    isDisabled={coordinateSearchInput == ""}
-                    padding={0}
-                    icon={<CloseIcon />}
-                    aria-label={intl.formatMessage({
-                        id: "coordinateInput.ariaLabel"
+                <Tooltip
+                    label={intl.formatMessage({
+                        id: "coordinateInput.clearPlaceholder"
                     })}
-                />
+                >
+                    <IconButton
+                        className="clearButton"
+                        size="sm"
+                        onClick={() => {
+                            setCoordinateSearchInput("");
+                            if (onClear) {
+                                onClear();
+                            }
+                        }}
+                        isDisabled={coordinateSearchInput == ""}
+                        padding={0}
+                        icon={<CloseIcon />}
+                        aria-label={intl.formatMessage({
+                            id: "coordinateInput.clearPlaceholder"
+                        })}
+                    />
+                </Tooltip>
             </InputRightElement>
         );
     } else if (typeof placeholder === "object" && coordinateSearchInput == "") {
         return (
             <InputRightElement>
-                <IconButton
-                    className="copyButton"
-                    size="sm"
-                    onClick={() => {
-                        navigator.clipboard.writeText(placeholderString);
-                    }}
-                    padding={0}
-                    icon={<CopyIcon />}
-                    aria-label={intl.formatMessage({
+                <Tooltip
+                    label={intl.formatMessage({
                         id: "coordinateInput.copyPlaceholder"
                     })}
-                />
+                >
+                    <IconButton
+                        className="copyButton"
+                        size="sm"
+                        onClick={() => {
+                            navigator.clipboard.writeText(placeholderString);
+                        }}
+                        padding={0}
+                        icon={<CopyIcon />}
+                        aria-label={intl.formatMessage({
+                            id: "coordinateInput.copyPlaceholder"
+                        })}
+                    />
+                </Tooltip>
             </InputRightElement>
         );
     } else return <></>;

@@ -2,6 +2,7 @@ messages:
   coordinateInput:
     ariaLabel: Koordinateneingabe
     copyPlaceholder: Kopieren
+    clearPlaceholder: Löschen
   tooltip:
     basic: "Ungültige Eingabe"
     space: "Ungültige Eingabe: Bitte trennen Sie die Koordinaten mit genau einem Leerzeichen."
