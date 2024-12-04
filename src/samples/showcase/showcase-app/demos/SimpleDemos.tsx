@@ -23,6 +23,7 @@ import { MAP_ID } from "../MapConfigProviderImpl";
 import { Button, Flex } from "@open-pioneer/chakra-integration";
 import { Projection } from "ol/proj";
 import { NotificationService } from "@open-pioneer/notifier";
+import { useState } from "react";
 
 export function createCoordinateViewerDemo({ intl }: SharedDemoOptions): Demo {
     return {
