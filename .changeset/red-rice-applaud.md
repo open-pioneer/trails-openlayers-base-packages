@@ -2,4 +2,8 @@
 "@open-pioneer/coordinate-search": patch
 ---
 
-Coordinate viewer with added functionality to search for coordinates via input
+Added new components CoordinateSearch and CoordinateInput with functionality to search for coordinates via input.
+
+```
+
+```

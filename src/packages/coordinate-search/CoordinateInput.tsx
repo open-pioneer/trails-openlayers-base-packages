@@ -42,7 +42,7 @@ const DEFAULT_PROJECTIONS = [
 ];
 
 /**
- * dropdown item of projection selection with an optional coordinate precision
+ * Dropdown item of projection selection with an optional coordinate precision
  */
 export interface ProjectionInput {
     /**
@@ -62,7 +62,7 @@ export interface ProjectionInput {
 }
 
 /**
- * dropdown item of projection selection with an optional coordinate precision
+ * Dropdown item of projection selection with an optional coordinate precision
  */
 export interface ProjectionOption {
     /**
@@ -82,7 +82,7 @@ export interface ProjectionOption {
 }
 
 /**
- * dropdown item of projection selection, must have a specified precision
+ * Dropdown item of projection selection, must have a specified precision
  */
 type ProjectionItem = Required<ProjectionOption>;
 
@@ -118,7 +118,7 @@ export interface CoordinateInputProps extends CommonComponentProps, MapModelProp
     projections?: ProjectionInput[];
 
     /**
-     * Optional event that gets called if some coordinates are entered or projection is changed by the user.
+     * Optional event that gets called if (valid) coordinates are entered or projection is changed by the user.
      */
     onSelect?: (selectProps: CoordinatesEvent) => void;
 
@@ -128,23 +128,23 @@ export interface CoordinateInputProps extends CommonComponentProps, MapModelProp
     onClear?: () => void;
 
     /**
-     * Insert input value and overwrite user input
+     * Insert input value and overwrite user input.
      */
     input?: Coordinate;
 
     /**
-     * Placeholder text to display when no input was entered by the user. Common usages:
+     * Placeholder text to display when no input is present. Common usages:
      * * hint for the user ("enter coordinate here")
      * * example coordinate ("12.345 67.890")
      * * current mouse position
      *
-     * If a Coordinate is given, it has to be in the current projection of the map
+     * If a coordinate is given, it has to be in the current projection of the map.
      */
     placeholder?: string | Coordinate;
 }
 
 /**
- * The `CoordinateInput` component can be used in an app to provide an validated input field for coordinates in a selected projection
+ * The `CoordinateInput` component can be used in an app to provide a validated input field for coordinates in a selected projection
  */
 export const CoordinateInput: FC<CoordinateInputProps> = (props) => {
     const { onSelect, onClear, projections = DEFAULT_PROJECTIONS, input, placeholder = "" } = props;
@@ -152,7 +152,7 @@ export const CoordinateInput: FC<CoordinateInputProps> = (props) => {
     const { map } = useMapModel(props);
     const intl = useIntl();
     const olMap = map?.olMap;
-    const mapProjection = useProjection(olMap) ?? undefined; // projection of the map
+    const mapProjection = useProjection(olMap) ?? undefined;
 
     // Projection items (dropdown)
     const availableProjections = useProjectionItems(projections); // filter for projections that are known
@@ -654,8 +654,8 @@ function checkIfCoordsInProjectionsExtent(projection: Projection, coords: number
 // TODO: use NumberParser from core
 /* transforms the given coordinates to the given destination projection */
 function parseCoords(inputString: string, intl: PackageIntl) {
-    const thousandSeparator = /^de-?/.test(intl.locale) ? "." : /^en-?/.test(intl.locale) ? "," : "";
-    const inputStringWithoutThousandSeparator = inputString.replaceAll(thousandSeparator, "");
+    const separator = /^de-?/.test(intl.locale) ? "." : /^en-?/.test(intl.locale) ? "," : "";
+    const inputStringWithoutThousandSeparator = inputString.replaceAll(separator, "");
 
     const coordsString = inputStringWithoutThousandSeparator.replaceAll(",", ".");
 
