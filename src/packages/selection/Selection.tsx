@@ -29,6 +29,7 @@ import { Geometry } from "ol/geom";
 import { useIntl, useService } from "open-pioneer:react-hooks";
 import { FC, KeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
 import { FiAlertTriangle } from "react-icons/fi";
+import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { DragController } from "./DragController";
 import { SelectionController } from "./SelectionController";
 import { SelectionResult, SelectionSource, SelectionSourceStatusObject } from "./api";
@@ -364,22 +365,13 @@ function useSourceStatus(
     source: SelectionSource | undefined,
     defaultNotAvailableMessage: string
 ): SimpleStatus {
-    const [status, setStatus] = useState<SimpleStatus>(() => ({
-        kind: "unavailable",
-        reason: defaultNotAvailableMessage
-    }));
-    useEffect(() => {
+    const sourceStatus = useReactiveSnapshot((): SimpleStatus => {
         if (!source) {
-            setStatus({ kind: "unavailable", reason: defaultNotAvailableMessage });
-            return;
+            return { kind: "unavailable", reason: defaultNotAvailableMessage };
         }
-        setStatus(getSourceStatus(source, defaultNotAvailableMessage));
-        const resource = source.on?.("changed:status", () => {
-            setStatus(getSourceStatus(source, defaultNotAvailableMessage));
-        });
-        return () => resource?.destroy();
+        return getSourceStatus(source, defaultNotAvailableMessage);
     }, [source, defaultNotAvailableMessage]);
-    return status;
+    return sourceStatus;
 }
 
 /**

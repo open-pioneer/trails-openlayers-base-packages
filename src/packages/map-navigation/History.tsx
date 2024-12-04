@@ -1,14 +1,15 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import { MapModelProps, useMapModel } from "@open-pioneer/map";
 import { ToolButton } from "@open-pioneer/map-ui-components";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
+import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { PackageIntl } from "@open-pioneer/runtime";
 import classNames from "classnames";
-import { FC, ForwardedRef, forwardRef, RefAttributes } from "react";
-import { FiArrowRight, FiArrowLeft } from "react-icons/fi";
 import { useIntl } from "open-pioneer:react-hooks";
-import { ViewHistoryModel } from "./ViewHistoryModel";
-import { useReactiveSnapshot } from "@open-pioneer/reactivity";
+import { FC, ForwardedRef, forwardRef, RefAttributes } from "react";
+import { FiCornerUpLeft, FiCornerUpRight } from "react-icons/fi";
+import { useHistoryViewModel } from "./ViewHistoryModel";
 
 export type HistoryForwardProps = Omit<HistoryProps, "viewDirection">;
 
@@ -38,15 +39,16 @@ export const HistoryBackward: FC<HistoryBackwardProps> = forwardRef(function His
     return <History viewDirection="backward" ref={ref} {...props} />;
 });
 
-export interface HistoryProps extends CommonComponentProps, RefAttributes<HTMLButtonElement> {
+export interface HistoryProps
+    extends CommonComponentProps,
+        RefAttributes<HTMLButtonElement>,
+        MapModelProps {
     /**
      * The view direction.
      *
      * The button will either view forward or view backward depending on this value.
      */
     viewDirection: "forward" | "backward";
-
-    viewModel: ViewHistoryModel;
 }
 
 /**
@@ -56,26 +58,47 @@ export const History: FC<HistoryProps> = forwardRef(function History(
     props: HistoryProps,
     ref: ForwardedRef<HTMLButtonElement>
 ) {
-    const { viewDirection, viewModel } = props;
     const intl = useIntl();
+    const { viewDirection } = props;
+    const { map } = useMapModel(props);
+    const viewModel = useHistoryViewModel(map);
     const { defaultClassName, buttonLabel, buttonIcon } = getDirectionProps(intl, viewDirection);
-
     const { containerProps } = useCommonComponentProps(classNames("view", defaultClassName), props);
-    const { isDisabled } = useReactiveSnapshot(() => {
-        return {
-            isDisabled: viewDirection == "forward" ? !viewModel.canForward : !viewModel.canBackward
-        };
-    }, [viewModel]);
+
+    const canNavigate = useReactiveSnapshot(() => {
+        if (!viewModel) {
+            return false;
+        }
+
+        if (viewDirection === "forward") {
+            return viewModel.canForward;
+        } else {
+            return viewModel.canBackward;
+        }
+    }, [viewModel, viewDirection]);
+    const navigate = () => {
+        if (!viewModel) {
+            return;
+        }
+
+        if (viewDirection === "forward") {
+            viewModel.forward();
+        } else {
+            viewModel.backward();
+        }
+    };
 
     return (
-        <ToolButton
-            ref={ref}
-            label={buttonLabel}
-            icon={buttonIcon}
-            onClick={viewDirection == "forward" ? viewModel.forward : viewModel.backward}
-            {...containerProps}
-            isDisabled={isDisabled}
-        />
+        viewModel && (
+            <ToolButton
+                ref={ref}
+                {...containerProps}
+                label={buttonLabel}
+                icon={buttonIcon}
+                onClick={navigate}
+                isDisabled={!canNavigate}
+            />
+        )
     );
 });
 
@@ -85,13 +108,13 @@ function getDirectionProps(intl: PackageIntl, viewDirection: "forward" | "backwa
             return {
                 defaultClassName: "view-forward",
                 buttonLabel: intl.formatMessage({ id: "view-forward.title" }),
-                buttonIcon: <FiArrowRight />
+                buttonIcon: <FiCornerUpRight />
             };
         case "backward":
             return {
                 defaultClassName: "view-backward",
                 buttonLabel: intl.formatMessage({ id: "view-backward.title" }),
-                buttonIcon: <FiArrowLeft />
+                buttonIcon: <FiCornerUpLeft />
             };
     }
 }

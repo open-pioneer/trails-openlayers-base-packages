@@ -1,8 +1,25 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { EventEmitter, EventNames, createLogger } from "@open-pioneer/core";
+import {
+    batch,
+    computed,
+    reactive,
+    Reactive,
+    reactiveMap,
+    ReadonlyReactive
+} from "@conterra/reactivity-core";
+import { createLogger, EventEmitter } from "@open-pioneer/core";
 import { v4 as uuid4v } from "uuid";
-import { AnyLayerBaseType, AnyLayerTypes, LayerBaseEvents, Sublayer } from "../api";
+import {
+    AnyLayer,
+    AnyLayerBaseType,
+    AnyLayerTypes,
+    ChildrenCollection,
+    LayerBaseEvents,
+    Sublayer
+} from "../api";
+import { GroupLayer } from "../api/layers/GroupLayer";
+import { GroupLayerCollectionImpl } from "./layers/GroupLayerImpl";
 import { MapModelImpl } from "./MapModelImpl";
 import { SublayersCollectionImpl } from "./SublayersCollectionImpl";
 
@@ -24,19 +41,27 @@ export abstract class AbstractLayerBase<AdditionalEvents = {}>
     implements AnyLayerBaseType
 {
     #map: MapModelImpl | undefined;
+    #parent: AnyLayer | undefined;
 
     #id: string;
-    #title: string;
-    #description: string;
-    #attributes: Record<string | symbol, unknown>;
+    #title: Reactive<string>;
+    #description: Reactive<string>;
+    #attributesMap = reactiveMap<string | symbol, unknown>();
+    #attributes: ReadonlyReactive<Record<string | symbol, unknown>>;
     #destroyed = false;
 
     constructor(config: AbstractLayerBaseOptions) {
         super();
         this.#id = config.id ?? uuid4v();
-        this.#attributes = config.attributes ?? {};
-        this.#title = config.title;
-        this.#description = config.description ?? "";
+        this.#attributes = computed(() => {
+            return Object.fromEntries(this.#attributesMap.entries());
+        });
+        this.#title = reactive(config.title);
+        this.#description = reactive(config.description ?? "");
+
+        if (config.attributes) {
+            this.updateAttributes(config.attributes);
+        }
     }
 
     protected get __destroyed(): boolean {
@@ -56,20 +81,30 @@ export abstract class AbstractLayerBase<AdditionalEvents = {}>
     }
 
     get title(): string {
-        return this.#title;
+        return this.#title.value;
     }
 
     get description(): string {
-        return this.#description;
+        return this.#description.value;
     }
 
     get attributes(): Record<string | symbol, unknown> {
-        return this.#attributes;
+        return this.#attributes.value;
+    }
+
+    get parent(): AnyLayer | undefined {
+        return this.#parent;
+    }
+
+    get children(): ChildrenCollection<AnyLayer & AbstractLayerBase> | undefined {
+        return this.layers ?? this.sublayers ?? undefined;
     }
 
     abstract get type(): AnyLayerTypes;
 
     abstract get visible(): boolean;
+
+    abstract get layers(): GroupLayerCollectionImpl | undefined;
 
     abstract get sublayers(): SublayersCollectionImpl<Sublayer & AbstractLayerBase> | undefined;
 
@@ -82,6 +117,7 @@ export abstract class AbstractLayerBase<AdditionalEvents = {}>
 
         this.#destroyed = true;
         this.sublayers?.destroy();
+        this.layers?.destroy();
         try {
             this.emit("destroy");
         } catch (e) {
@@ -92,7 +128,7 @@ export abstract class AbstractLayerBase<AdditionalEvents = {}>
     /**
      * Attaches the layer to its owning map.
      */
-    protected __attachToMap(map: MapModelImpl): void {
+    __attachToMap(map: MapModelImpl): void {
         if (this.#map) {
             throw new Error(
                 `Layer '${this.id}' has already been attached to the map '${this.map.id}'`
@@ -101,54 +137,48 @@ export abstract class AbstractLayerBase<AdditionalEvents = {}>
         this.#map = map;
     }
 
-    setTitle(newTitle: string): void {
-        if (newTitle !== this.#title) {
-            this.#title = newTitle;
-            this.__emitChangeEvent("changed:title");
+    /**
+     * Attach group layers to its parent group layer.
+     * Called by the parent layer.
+     */
+    __attachToGroup(parent: GroupLayer): void {
+        if (this.#parent) {
+            throw new Error(
+                `Layer '${this.id}' has already been attached to the group layer '${this.#parent.id}'`
+            );
         }
+        this.#parent = parent;
+    }
+
+    /**
+     * Detach layer from parent group layer.
+     *
+     * Called by the parent group layer when destroyed or the layer gets removed.
+     */
+    __detachFromGroup(): void {
+        this.#parent = undefined;
+    }
+
+    setTitle(newTitle: string): void {
+        this.#title.value = newTitle;
     }
 
     setDescription(newDescription: string): void {
-        if (newDescription !== this.#description) {
-            this.#description = newDescription;
-            this.__emitChangeEvent("changed:description");
-        }
+        this.#description.value = newDescription;
     }
 
     updateAttributes(newAttributes: Record<string | symbol, unknown>): void {
-        const attributes = this.#attributes;
         const keys = Reflect.ownKeys(newAttributes);
-
-        let changed = false;
-        for (const key of keys) {
-            const existing = attributes[key];
-            const value = newAttributes[key];
-            if (existing !== value) {
-                attributes[key] = value;
-                changed = true;
+        batch(() => {
+            for (const key of keys) {
+                this.#attributesMap.set(key, newAttributes[key]);
             }
-        }
-
-        if (changed) {
-            this.__emitChangeEvent("changed:attributes");
-        }
+        });
     }
 
     deleteAttribute(deleteAttribute: string | symbol): void {
-        const attributes = this.#attributes;
-        if (attributes[deleteAttribute]) {
-            delete attributes[deleteAttribute];
-            this.__emitChangeEvent("changed:attributes");
-        }
+        this.#attributesMap.delete(deleteAttribute);
     }
 
     abstract setVisible(newVisibility: boolean): void;
-
-    protected __emitChangeEvent<Name extends EventNames<LayerBaseEvents & AdditionalEvents>>(
-        event: Name
-    ) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (this as any).emit(event);
-        this.emit("changed");
-    }
 }

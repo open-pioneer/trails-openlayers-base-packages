@@ -1,6 +1,14 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { createLogger, isAbortError } from "@open-pioneer/core";
+import {
+    batch,
+    computed,
+    Reactive,
+    reactive,
+    ReadonlyReactive,
+    watch
+} from "@conterra/reactivity-core";
+import { createLogger, destroyResource, isAbortError, Resource } from "@open-pioneer/core";
 import { ImageWrapper } from "ol";
 import WMSCapabilities from "ol/format/WMSCapabilities";
 import ImageLayer from "ol/layer/Image";
@@ -8,7 +16,6 @@ import type ImageSource from "ol/source/Image";
 import ImageWMS from "ol/source/ImageWMS";
 import { WMSLayer, WMSLayerConfig, WMSSublayer, WMSSublayerConfig } from "../../api";
 import { fetchCapabilities } from "../../util/capabilities-utils";
-import { DeferredExecution, defer } from "../../util/defer";
 import { AbstractLayer } from "../AbstractLayer";
 import { AbstractLayerBase } from "../AbstractLayerBase";
 import { MapModelImpl } from "../MapModelImpl";
@@ -19,12 +26,15 @@ const LOG = createLogger("map:WMSLayer");
 export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
     #url: string;
     #sublayers: SublayersCollectionImpl<WMSSublayerImpl>;
-    #deferredSublayerUpdate: DeferredExecution | undefined;
     #layer: ImageLayer<ImageSource>;
     #source: ImageWMS;
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     #capabilities: Record<string, any> | undefined;
     readonly #abortController = new AbortController();
+
+    #visibleSublayers: ReadonlyReactive<string[]>;
+    #sublayersWatch: Resource | undefined;
 
     constructor(config: WMSLayerConfig) {
         const layer = new ImageLayer();
@@ -49,7 +59,27 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
         this.#source = source;
         this.#layer = layer;
         this.#sublayers = new SublayersCollectionImpl(constructSublayers(config.sublayers));
-        this.#updateLayersParam();
+        this.#visibleSublayers = computed(() => this.#getVisibleLayerNames(), {
+            equal(a, b) {
+                return a.length === b.length && a.every((v, i) => v === b[i]);
+            }
+        });
+
+        this.#sublayersWatch = watch(
+            () => [this.#visibleSublayers.value],
+            ([layers]) => {
+                this.#updateLayersParam(layers);
+            },
+            {
+                immediate: true
+            }
+        );
+    }
+
+    destroy() {
+        this.#abortController.abort();
+        this.#sublayersWatch = destroyResource(this.#sublayersWatch);
+        super.destroy();
     }
 
     get type() {
@@ -63,8 +93,9 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
     get url(): string {
         return this.#url;
     }
-    get __source() {
-        return this.#source;
+
+    get layers(): undefined {
+        return undefined;
     }
 
     get sublayers(): SublayersCollectionImpl<WMSSublayerImpl> {
@@ -75,13 +106,13 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
         return this.#capabilities;
     }
 
-    __attach(map: MapModelImpl): void {
-        super.__attach(map);
+    __attachToMap(map: MapModelImpl): void {
+        super.__attachToMap(map);
         for (const sublayer of this.#sublayers.getSublayers()) {
             sublayer.__attach(map, this, this);
         }
-        const layers: WMSSublayerImpl[] = [];
-        /** identify all leaf nodes representing a layer in the structure */
+
+        /** Find all leaf nodes representing a layer in the structure */
         const getNestedSublayer = (sublayers: WMSSublayerImpl[], layers: WMSSublayerImpl[]) => {
             for (const sublayer of sublayers) {
                 const nested = sublayer.sublayers.getSublayers();
@@ -94,48 +125,37 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
                 }
             }
         };
+
         this.#fetchWMSCapabilities()
             .then((result: string) => {
-                const parser = new WMSCapabilities();
-                const capabilities = parser.read(result);
-                this.#capabilities = capabilities;
-                getNestedSublayer(this.#sublayers.getSublayers(), layers);
+                batch(() => {
+                    const parser = new WMSCapabilities();
+                    const capabilities = parser.read(result);
+                    this.#capabilities = capabilities;
 
-                for (const layer of layers) {
-                    const legendUrl = getWMSLegendUrl(capabilities, layer.name!);
-                    layer.legend = legendUrl;
-                }
+                    const layers: WMSSublayerImpl[] = [];
+                    getNestedSublayer(this.#sublayers.getSublayers(), layers);
+
+                    for (const layer of layers) {
+                        const legendUrl = getWMSLegendUrl(capabilities, layer.name!);
+                        layer.__setLegend(legendUrl);
+                    }
+                });
             })
             .catch((error) => {
                 if (isAbortError(error)) {
-                    LOG.error(`Layer ${this.id} has been destroyed before fetching the data`);
+                    LOG.debug(`Layer ${this.id} has been destroyed before fetching capabilities`);
                     return;
                 }
-                LOG.error(`Failed fetching WMS capabilities for Layer ${this.id}`, error);
+                LOG.error(`Failed to fetch WMS capabilities for layer ${this.id}`, error);
             });
-    }
-
-    /** Called by the sublayers when their visibility changed. */
-    __updateSublayerVisibility() {
-        if (this.#deferredSublayerUpdate?.reschedule()) {
-            return;
-        }
-        this.#deferredSublayerUpdate = defer(() => {
-            try {
-                this.#updateLayersParam();
-                this.#deferredSublayerUpdate = undefined;
-            } catch (e) {
-                LOG.error(`Failed to update sublayer visibility on WMS layer '${this.id}'.`, e);
-            }
-        });
     }
 
     /**
      * Gathers the visibility of _all_ sublayers and assembles the 'layers' WMS parameter.
      * The parameters are then applied to the WMS source.
      */
-    #updateLayersParam() {
-        const layers = this.#getVisibleLayerNames();
+    #updateLayersParam(layers: string[]) {
         this.#source.updateParams({
             "LAYERS": layers
         });
@@ -211,14 +231,14 @@ class WMSSublayerImpl extends AbstractLayerBase implements WMSSublayer {
     #parent: WMSSublayerImpl | WMSLayerImpl | undefined;
     #parentLayer: WMSLayerImpl | undefined;
     #name: string | undefined;
-    #legend: string | undefined;
+    #legend = reactive<string | undefined>();
     #sublayers: SublayersCollectionImpl<WMSSublayerImpl>;
-    #visible: boolean;
+    #visible: Reactive<boolean>;
 
     constructor(config: WMSSublayerConfig) {
         super(config);
         this.#name = config.name;
-        this.#visible = config.visible ?? true;
+        this.#visible = reactive(config.visible ?? true);
         this.#sublayers = new SublayersCollectionImpl(constructSublayers(config.sublayers));
     }
 
@@ -228,6 +248,10 @@ class WMSSublayerImpl extends AbstractLayerBase implements WMSSublayer {
 
     get name(): string | undefined {
         return this.#name;
+    }
+
+    get layers(): undefined {
+        return undefined;
     }
 
     get sublayers(): SublayersCollectionImpl<WMSSublayerImpl> {
@@ -249,13 +273,13 @@ class WMSSublayerImpl extends AbstractLayerBase implements WMSSublayer {
         }
         return parentLayer;
     }
+
     get legend(): string | undefined {
-        return this.#legend;
+        return this.#legend.value;
     }
 
-    set legend(legendUrl: string | undefined) {
-        this.#legend = legendUrl;
-        this.__emitChangeEvent("changed:legend");
+    get visible(): boolean {
+        return this.#visible.value;
     }
 
     /**
@@ -286,16 +310,15 @@ class WMSSublayerImpl extends AbstractLayerBase implements WMSSublayer {
         }
     }
 
-    get visible(): boolean {
-        return this.#visible;
+    /**
+     * Called by the parent layer to update the legend on load.
+     */
+    __setLegend(legendUrl: string | undefined) {
+        this.#legend.value = legendUrl;
     }
 
     setVisible(newVisibility: boolean): void {
-        if (this.visible !== newVisibility) {
-            this.#visible = newVisibility;
-            this.#parentLayer?.__updateSublayerVisibility();
-            this.__emitChangeEvent("changed:visible");
-        }
+        this.#visible.value = newVisibility;
     }
 }
 

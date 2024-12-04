@@ -1,6 +1,6 @@
 {
     "name": "@open-pioneer/selection",
-    "version": "0.2.4",
+    "version": "0.7.0",
     "description": "This package provides a UI component to perform a selection on given selection sources from the map.",
     "license": "Apache-2.0",
     "main": "index.ts",
@@ -16,7 +16,7 @@
     "scripts": {
         "build": "build-pioneer-package"
     },
-    "peerDependencies": {
+    "dependencies": {
         "@chakra-ui/icons": "catalog:",
         "@open-pioneer/chakra-integration": "catalog:",
         "@open-pioneer/core": "catalog:",
@@ -24,14 +24,14 @@
         "@open-pioneer/notifier": "catalog:",
         "@open-pioneer/react-utils": "catalog:",
         "@open-pioneer/runtime": "catalog:",
+        "classnames": "catalog:",
         "chakra-react-select": "catalog:",
         "ol": "catalog:",
         "react": "catalog:",
-        "react-icons": "catalog:"
-    },
-    "dependencies": {
-        "classnames": "catalog:",
-        "uuid": "catalog:"
+        "react-icons": "catalog:",
+        "uuid": "catalog:",
+        "@conterra/reactivity-core": "catalog:",
+        "@open-pioneer/reactivity": "catalog:"
     },
     "devDependencies": {
         "@open-pioneer/map-test-utils": "workspace:^",

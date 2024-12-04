@@ -72,6 +72,7 @@ messages:
         featureModified: "Modified feature with ID: {featureId}"
         tooltip:
           select: Select geometry to start editing
+        savingStared: "Feature is being saved..."
       activeInfo: "Status: editing active"
       inactiveInfo: "Status: editing inactive"
   demoSelection:

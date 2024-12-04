@@ -24,6 +24,7 @@ import { useEffect, useId, useState } from "react";
 import { AppModel } from "../AppModel";
 import { SelectEvent } from "ol/interaction/Select";
 import { Geometry } from "ol/geom";
+import VectorSource from "ol/source/Vector";
 
 const LOG = createLogger("ol-app:Editing");
 
@@ -214,7 +215,7 @@ class EditingViewModel {
                     )
                 });
 
-                const vectorLayer = layer?.olLayer as VectorLayer<Feature>;
+                const vectorLayer = layer?.olLayer as VectorLayer<VectorSource, Feature>;
                 vectorLayer.getSource()?.refresh(); // trigger reload to show feature
             }
         };
@@ -252,7 +253,7 @@ class EditingViewModel {
 
             run: async () => {
                 const layer = this.findLayer();
-                const vectorLayer = layer.olLayer as VectorLayer<Feature>;
+                const vectorLayer = layer.olLayer as VectorLayer<VectorSource, Feature>;
                 const url = new URL(layer.attributes.collectionURL + "/items");
 
                 selectInteraction = new Select({

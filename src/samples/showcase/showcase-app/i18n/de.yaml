@@ -72,6 +72,7 @@ messages:
         featureModified: "Objekt aktualisiert mit ID: {featureId}"
         tooltip:
           select: Geometrie auswählen, um mit der Bearbeitung zu starten
+        savingStared: "Feature wird gespeichert..."
       activeInfo: "Status: Editierung aktiv"
       inactiveInfo: "Status: Editierung inaktiv"
   demoSelection:

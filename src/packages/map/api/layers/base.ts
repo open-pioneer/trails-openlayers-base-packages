@@ -6,17 +6,11 @@ import type { MapModel } from "../MapModel";
 import type { LayerRetrievalOptions } from "../shared";
 import type { SimpleLayer } from "./SimpleLayer";
 import type { WMSLayer, WMSSublayer } from "./WMSLayer";
-import { WMTSLayer } from "./WMTSLayer";
+import type { WMTSLayer } from "./WMTSLayer";
+import type { GroupLayer, GroupLayerCollection } from "./GroupLayer";
 
 /** Events emitted by the {@link Layer} and other layer types. */
 export interface LayerBaseEvents {
-    "changed": void;
-    "changed:title": void;
-    "changed:legend": void;
-    "changed:description": void;
-    "changed:visible": void;
-    "changed:attributes": void;
-    "changed:loadState": void;
     "destroy": void;
 }
 
@@ -77,6 +71,13 @@ export interface AnyLayerBaseType<AdditionalEvents = {}>
     readonly map: MapModel;
 
     /**
+     * The direct parent of this layer instance, used for sublayers or for layers in a group layer.
+     *
+     * The property shall be undefined if the layer is not a sublayer or member of a group layer.
+     */
+    readonly parent: AnyLayer | undefined;
+
+    /**
      * The unique id of this layer within its map model.
      *
      * NOTE: layer ids may not be globally unique: layers that belong
@@ -104,9 +105,29 @@ export interface AnyLayerBaseType<AdditionalEvents = {}>
     readonly legend: string | undefined;
 
     /**
-     * The collection of child sublayers for this layer.
+     * The direct children of this layer.
+     *
+     * The children may either be a set of operational layers (e.g. for a group layer) or a set of sublayers, or `undefined`.
+     *
+     * See also {@link layers} and {@link sublayers}.
+     */
+    readonly children: ChildrenCollection<AnyLayer> | undefined;
+
+    /**
+     * If this layer is a group layer this property contains a collection of all layers that a members to the group.
+     *
+     * The property shall be `undefined` if it is not a group layer.
+     *
+     * The properties `layers` and `sublayers` are mutually exclusive.
+     */
+    readonly layers: GroupLayerCollection | undefined;
+
+    /**
+     * The collection of child sublayers for this layer. Sublayers are layers that cannot exist without an appropriate parent layer.
      *
      * Layers that can never have any sublayers may not have a `sublayers` collection.
+     *
+     * The properties `layers` and `sublayers` are mutually exclusive.
      */
     readonly sublayers: SublayersCollection | undefined;
 
@@ -217,17 +238,20 @@ export interface SublayerBaseType extends AnyLayerBaseType {
 }
 
 /**
- * Events emitted by the {@link SublayersCollection}.
+ * Contains the children of a layer.
  */
-export interface SublayersCollectionEvents {
-    changed: void;
+export interface ChildrenCollection<LayerType> {
+    /**
+     * Returns the items in this collection.
+     */
+    getItems(options?: LayerRetrievalOptions): LayerType[];
 }
 
 /**
  * Contains the sublayers that belong to a {@link Layer} or {@link Sublayer}.
  */
 export interface SublayersCollection<SublayerType = Sublayer>
-    extends EventSource<SublayersCollectionEvents> {
+    extends ChildrenCollection<SublayerType> {
     /**
      * Returns the child sublayers in this collection.
      */
@@ -237,7 +261,7 @@ export interface SublayersCollection<SublayerType = Sublayer>
 /**
  * Union type for all layers (extending {@link LayerBaseType})
  */
-export type Layer = SimpleLayer | WMSLayer | WMTSLayer;
+export type Layer = SimpleLayer | WMSLayer | WMTSLayer | GroupLayer;
 export type LayerTypes = Layer["type"];
 
 /**

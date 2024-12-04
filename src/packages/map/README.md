@@ -7,8 +7,8 @@ APIs provided by this package can be used to configure, embed and access the map
 
 To use the map in your app, follow these two steps:
 
--   Add a `MapContainer` component to your app (see [Map container component](#md:map-container-component)).
--   Implement a `MapConfigProvider` (see [Map configuration](#md:map-configuration)).
+-   Add a `MapContainer` component to your app (see [Map container component](#map-container-component)).
+-   Implement a `MapConfigProvider` (see [Map configuration](#map-configuration)).
 
 To access or manipulate the content of the map programmatically, see [Using the map model](#using-the-map-model).
 
@@ -36,7 +36,7 @@ function AppUI() {
 }
 ```
 
-> NOTE: There must be a `map.MapConfigProvider` that knows how to construct the map with the given ID (see [Map configuration](#md:map-configuration)).
+> NOTE: There must be a `map.MapConfigProvider` that knows how to construct the map with the given ID (see [Map configuration](#map-configuration)).
 
 The component itself uses the map registry service to create the map using the provided `mapId`.
 
@@ -201,7 +201,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
 
 #### Layer configuration
 
-Configure your custom layer inside the [Map configuration](#md:map-configuration) by using one of the layer classes provided by this package.
+Configure your custom layer inside the [Map configuration](#map-configuration) by using one of the layer classes provided by this package.
 For example, `SimpleLayer` can be used to configure an arbitrary [`OpenLayers Layer`](https://openlayers.org/en/latest/apidoc/module-ol_layer_Layer-Layer.html) as `olLayer` property.
 
 > **Layer Order**
@@ -621,6 +621,47 @@ export class MapConfigProviderImpl implements MapConfigProvider {
 }
 ```
 
+##### GroupLayer
+
+A `GroupLayer` contains a list of layers (e.g. `SimpleLayer`, `WMSLayer` or nested `GroupLayer`).
+The visibility of all layers within the group is controlled via the parent group layer(s).
+The hierarchy of the layers, which results from the (nested) groups, is rendered accordingly in the table of contents.
+
+Example: Create (nested) group layers
+
+```ts
+// Create group layer with a nested sub group
+const group = new GroupLayer({
+    id: "group",
+    title: "a group layer",
+    layers: [
+        new SimpleLayer({
+            id: "member",
+            title: "group member",
+            olLayer: olLayer1
+        }),
+        new GroupLayer({
+            id: "subgroup",
+            title: "a nested group layer",
+            layers: [
+                new SimpleLayer({
+                    id: "submember",
+                    title: "subgroup member",
+                    olLayer: olLayer2
+                })
+            ]
+        })
+    ]
+});
+
+const childLayers = group.layers; // Access child layers
+```
+
+> Limitations:
+>
+> -   Do not add or remove layers directly to or from the underlying OpenLayers layer group (`group.olLayer`)! Changes are not synchronized with the `GroupLayer` instance.
+> -   Currently, it is not possible to manipulate (add or remove) the child layers of a `GroupLayer` during runtime.
+
 #### Register additional projections
 
 The map supports only the following projections by default: `EPSG:4326`, `EPSG:3857`, `EPSG:25832` and `EPSG:25833`.
@@ -693,17 +734,80 @@ In those cases, the properties or methods provided by this package should always
 
 #### Layer classes
 
-This package currently only provides two layer implementations:
+This package currently provides five layer implementations: `SimpleLayer`, `WMSLayer`, `WMTSLayer`, `GroupLayer` and `WMSSublayer`.
 
--   `SimpleLayer`.
-    Instances of this class can be used to integrate arbitrary OpenLayers `Layer` instances into the map by configuring the `olLayer` constructor option.
-    Note that one can only achieve basic integration through this method: more advanced features such as automatic legends or sublayers will not be available.
+The following diagram shows the inheritance structure of the corresponding layer types. The diagram is only intended to show the hierarchy of the layer types; for details on the properties and methods of the layer types, refer to the respective API documentation.
 
--   `WMSLayer`.
-    Represents a WMS service embedded into the map.
-    Must be configured with the service's `url` and a set of sublayers.
+```mermaid
+---
+config:
+  class:
+    hideEmptyMembersBox: true
+---
+classDiagram
+class AnyLayerBaseType {
+  type: string
+}
+<<abstract>> AnyLayerBaseType
 
-We expect to implement more classes in the future.
+class LayerBaseType {
+  type: string
+}
+<<abstract>> LayerBaseType
+
+class SimpleLayer {
+  type: "simple"
+  constructor(config: SimpleLayerConfig)
+}
+
+class WMSLayer {
+  type: "wms"
+  constructor(config: WMSLayerConfig)
+}
+
+class WMTSLayer {
+  type: "wmts"
+  constructor(config: WMTSLayerConfig)
+}
+
+class GroupLayer {
+    type: "group"
+    constructor(config: GroupLayerConfig)
+}
+
+class Layer
+<<union>> Layer
+
+class Sublayer
+<<union>> Sublayer
+
+class SublayerBaseType {
+  type: string
+}
+<<abstract>> SublayerBaseType
+
+class WMSSublayer {
+    type: "wms-sublayer"
+    constructor(config: WMSSublayerConfig)
+}
+
+AnyLayerBaseType <|-- LayerBaseType
+AnyLayerBaseType <|-- SublayerBaseType
+
+LayerBaseType <|-- SimpleLayer
+LayerBaseType <|-- WMSLayer
+LayerBaseType <|-- WMTSLayer
+LayerBaseType <|-- GroupLayer
+
+SublayerBaseType <|-- WMSSublayer
+
+SimpleLayer .. Layer
+WMSLayer .. Layer
+WMTSLayer .. Layer
+GroupLayer .. Layer
+
+WMSSublayer .. Sublayer
+```
 
 #### Using the map model and layers in services
 

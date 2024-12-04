@@ -3,13 +3,15 @@
 /**
  * @vitest-environment node
  */
+import { syncWatch } from "@conterra/reactivity-core";
+import { HttpService } from "@open-pioneer/http";
 import Layer from "ol/layer/Layer";
 import TileLayer from "ol/layer/Tile";
-import { HttpService } from "@open-pioneer/http";
+import Source, { State } from "ol/source/Source";
 import { Mock, MockInstance, afterEach, describe, expect, it, vi } from "vitest";
 import { HealthCheckFunction, LayerConfig, SimpleLayerConfig } from "../api";
 import { AbstractLayer } from "./AbstractLayer";
-import Source, { State } from "ol/source/Source";
+import { GroupLayerCollectionImpl } from "./layers/GroupLayerImpl";
 import { MapModelImpl } from "./MapModelImpl";
 
 afterEach(() => {
@@ -36,19 +38,20 @@ it("supports the visibility attribute", async () => {
     expect(layer.olLayer.getVisible()).toBe(true);
 
     let changedVisibility = 0;
-    let changed = 0;
-    layer.on("changed:visible", () => ++changedVisibility);
-    layer.on("changed", () => ++changed);
+    syncWatch(
+        () => [layer.visible],
+        () => {
+            ++changedVisibility;
+        }
+    );
 
     layer.setVisible(false);
     expect(changedVisibility).toBe(1);
-    expect(changed).toBe(1);
     expect(layer.visible).toBe(false);
     expect(layer.olLayer.getVisible()).toBe(false);
 
     layer.setVisible(true);
     expect(changedVisibility).toBe(2);
-    expect(changed).toBe(2);
     expect(layer.visible).toBe(true);
     expect(layer.olLayer.getVisible()).toBe(true);
 });
@@ -141,7 +144,12 @@ describe("performs a health check", () => {
         });
 
         let eventEmitted = 0;
-        layer.on("changed:loadState", () => eventEmitted++);
+        syncWatch(
+            () => [layer.loadState],
+            () => {
+                eventEmitted++;
+            }
+        );
 
         expect(layer.olLayer.getSourceState()).toBe("ready");
         expect(mockedFetch).toHaveBeenCalledWith(testUrl);
@@ -171,7 +179,12 @@ describe("performs a health check", () => {
         });
 
         let eventEmitted = 0;
-        layer.on("changed:loadState", () => eventEmitted++);
+        syncWatch(
+            () => [layer.loadState],
+            () => {
+                eventEmitted++;
+            }
+        );
 
         expect(layer.olLayer.getSourceState()).toBe("ready");
         expect(mockedFetch).toHaveBeenCalledWith(testUrl);
@@ -214,7 +227,12 @@ describe("performs a health check", () => {
         });
 
         let eventEmitted = 0;
-        layer.on("changed:loadState", () => eventEmitted++);
+        syncWatch(
+            () => [layer.loadState],
+            () => {
+                eventEmitted++;
+            }
+        );
 
         expect(mockedFetch).toHaveBeenCalledTimes(0);
         expect(mockedCustomHealthCheck).toHaveBeenCalledOnce();
@@ -284,7 +302,12 @@ describe("performs a health check", () => {
         });
 
         let eventEmitted = 0;
-        layer.on("changed:loadState", () => eventEmitted++);
+        syncWatch(
+            () => [layer.loadState],
+            () => {
+                eventEmitted++;
+            }
+        );
 
         expect(mockedFetch).toHaveBeenCalledTimes(0);
         expect(eventEmitted).toBe(0); // no change of state
@@ -300,7 +323,12 @@ describe("performs a health check", () => {
         });
 
         let eventEmitted = 0;
-        layer.on("changed:loadState", () => eventEmitted++);
+        syncWatch(
+            () => [layer.loadState],
+            () => {
+                eventEmitted++;
+            }
+        );
 
         expect(layer.loadState).toBe("error");
         expect(layer.olLayer.getSourceState()).toBe("error");
@@ -312,10 +340,15 @@ describe("performs a health check", () => {
 // Basic impl for tests
 class LayerImpl extends AbstractLayer {
     type = "simple" as const;
+
     get legend(): string | undefined {
         return undefined;
     }
     get sublayers(): undefined {
+        return undefined;
+    }
+
+    get layers(): GroupLayerCollectionImpl | undefined {
         return undefined;
     }
 }
@@ -332,7 +365,7 @@ function createLayer(layerConfig: SimpleLayerConfig, options?: { fetch?: Mock })
     } as unknown as MapModelImpl;
 
     const layer = new LayerImpl(layerConfig);
-    layer.__attach(mapModel);
+    layer.__attachToMap(mapModel);
     return { layer, mapModel, httpService };
 }
 

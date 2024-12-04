@@ -2,10 +2,9 @@
 // SPDX-License-Identifier: Apache-2.0
 import { reactive } from "@conterra/reactivity-core";
 import { createLogger } from "@open-pioneer/core";
-import { TOPMOST_LAYER_Z, calculateBufferedExtent } from "@open-pioneer/map";
+import { TOPMOST_LAYER_Z, calculateBufferedExtent, MapModel } from "@open-pioneer/map";
 import Feature from "ol/Feature";
 import olGeolocation, { GeolocationError } from "ol/Geolocation";
-import OlMap from "ol/Map";
 import { unByKey } from "ol/Observable";
 import { Coordinate } from "ol/coordinate";
 import type { EventsKey } from "ol/events";
@@ -28,8 +27,8 @@ export class GeolocationController {
     /** True if location tracking is supported by the browser. */
     public readonly supported = !!navigator.geolocation;
 
-    private readonly olMap: OlMap;
-    private readonly positionHighlightLayer: VectorLayer<Feature>;
+    private readonly map: MapModel;
+    private readonly positionHighlightLayer: VectorLayer<VectorSource, Feature>;
     private readonly geolocation: olGeolocation;
     private readonly onError: OnErrorCallback;
 
@@ -44,8 +43,8 @@ export class GeolocationController {
     #loading = reactive(false);
     #active = reactive(false);
 
-    constructor(olMap: OlMap, onError: OnErrorCallback, trackingOptions?: PositionOptions) {
-        this.olMap = olMap;
+    constructor(map: MapModel, onError: OnErrorCallback, trackingOptions?: PositionOptions) {
+        this.map = map;
         this.onError = onError;
         this.isInitialZoom = true;
 
@@ -68,7 +67,7 @@ export class GeolocationController {
         this.geolocation = new olGeolocation({
             tracking: false,
             trackingOptions: geolocationTrackingOptions,
-            projection: olMap.getView()?.getProjection()
+            projection: map.olView?.getProjection()
         });
 
         this.trackingOptions = geolocationTrackingOptions;
@@ -89,12 +88,11 @@ export class GeolocationController {
             return;
         }
 
-        const olMap = this.olMap;
         const geolocationPromise = new Promise<void>((resolve) => {
             this.#active.value = true;
             this.#loading.value = true;
 
-            this.geolocation?.setProjection(olMap.getView()?.getProjection());
+            this.geolocation?.setProjection(this.map.olView?.getProjection());
             this.geolocation?.setTracking(true);
 
             const accuracyChangeHandler: EventsKey = this.geolocation.on(
@@ -115,7 +113,7 @@ export class GeolocationController {
                             if (!bufferedExtent) {
                                 return;
                             }
-                            olMap.getView().fit(bufferedExtent, {
+                            this.map.olView.fit(bufferedExtent, {
                                 maxZoom: this.maxZoom
                             });
                             this.isInitialZoom = false;
@@ -129,7 +127,7 @@ export class GeolocationController {
                 if (coordinates && (coordinates[0] || coordinates[1]) !== undefined) {
                     this.positionFeature?.setGeometry(new Point(coordinates));
                     if (this.setMapToPosition) {
-                        olMap.getView().setCenter(coordinates);
+                        this.map.olView.setCenter(coordinates);
                     }
                     if (this.positionFeature?.getGeometry() !== undefined) {
                         resolve();
@@ -138,16 +136,17 @@ export class GeolocationController {
             });
 
             // zoom changes
-            const resolutionChangeHandler: EventsKey = olMap
-                .getView()
-                .on("change:resolution", () => {
+            const resolutionChangeHandler: EventsKey = this.map.olView.on(
+                "change:resolution",
+                () => {
                     this.setMapToPosition = this.isInitialZoom;
-                });
+                }
+            );
 
             // pointermove is triggered when a pointer is moved.
             // Note that on touch devices this is triggered when the map is panned,
             // so is not the same as mousemove.
-            const draggingHandler: EventsKey = olMap.on("pointermove", (evt) => {
+            const draggingHandler: EventsKey = this.map.olMap.on("pointermove", (evt) => {
                 if (evt.dragging) {
                     this.setMapToPosition = false;
                 }
@@ -160,7 +159,7 @@ export class GeolocationController {
                 draggingHandler
             );
 
-            olMap.addLayer(this.positionHighlightLayer);
+            this.map.olMap.addLayer(this.positionHighlightLayer);
         });
 
         geolocationPromise
@@ -187,7 +186,7 @@ export class GeolocationController {
         this.changeHandlers = [];
         this.accuracyFeature?.setGeometry(undefined);
         this.positionFeature?.setGeometry(undefined);
-        this.olMap.removeLayer(this.positionHighlightLayer);
+        this.map.olMap.removeLayer(this.positionHighlightLayer);
     }
 
     /** True if the position is being tracked. */

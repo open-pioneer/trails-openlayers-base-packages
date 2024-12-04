@@ -1,9 +1,9 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Box, Flex, Tooltip, useToken } from "@open-pioneer/chakra-integration";
-import { Layer, MapModel, MapModelProps, useMapModel } from "@open-pioneer/map";
-import { useIntl } from "open-pioneer:react-hooks";
-import { FC, useCallback, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import { Layer, MapModel, useMapModel, MapModelProps } from "@open-pioneer/map";
+import { CommonComponentProps, useCommonComponentProps, useEvent } from "@open-pioneer/react-utils";
+import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import {
     chakraComponents,
     ChakraStylesConfig,
@@ -12,9 +12,9 @@ import {
     Select,
     SingleValueProps
 } from "chakra-react-select";
-import { CommonComponentProps, useCommonComponentProps, useEvent } from "@open-pioneer/react-utils";
+import { useIntl } from "open-pioneer:react-hooks";
+import { FC, KeyboardEvent, useMemo, useState } from "react";
 import { FiAlertTriangle } from "react-icons/fi";
-import { KeyboardEvent } from "react";
 
 /*
     Exported for tests. Feels a bit hacky but should be fine for now.
@@ -80,8 +80,7 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
 
     const { map } = useMapModel(props);
     const baseLayers = useBaseLayers(map);
-    const chakraStyles = useChakraStyles();
-    const [isOpenSelect, setIsOpenSelect] = useState(false);
+    const activeBaseLayer = useReactiveSnapshot(() => map?.layers.getActiveBaseLayer(), [map]);
 
     const activateLayer = (layerId: string) => {
         map?.layers.activateBaseLayer(layerId === NO_BASEMAP_ID ? undefined : layerId);
@@ -92,16 +91,17 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
             return { value: layer.id, layer: layer };
         });
 
-        const activeBaseLayer = map?.layers.getActiveBaseLayer();
-        if (allowSelectingEmptyBasemap || activeBaseLayer == undefined) {
+        if (allowSelectingEmptyBasemap || activeBaseLayer == null) {
             const emptyOption: SelectOption = { value: NO_BASEMAP_ID, layer: undefined };
             options.push(emptyOption);
         }
 
         const selectedLayer = options.find((l) => l.layer === activeBaseLayer);
         return { options, selectedLayer };
-    }, [allowSelectingEmptyBasemap, baseLayers, map?.layers]);
+    }, [allowSelectingEmptyBasemap, baseLayers, activeBaseLayer]);
 
+    const chakraStyles = useChakraStyles();
+    const [isOpenSelect, setIsOpenSelect] = useState(false);
     const components = useMemo(() => {
         return {
             Option: BasemapSelectOption,
@@ -165,34 +165,7 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
 };
 
 function useBaseLayers(mapModel: MapModel | undefined): Layer[] {
-    // Caches potentially expensive layers arrays.
-    // Not sure if this is a good idea, but getSnapshot() should always be fast.
-    // If this is a no-go, make getAllLayers() fast instead.
-    const baseLayers = useRef<Layer[] | undefined>();
-    const subscribe = useCallback(
-        (cb: () => void) => {
-            // Reset cache when (re-) subscribing
-            baseLayers.current = undefined;
-
-            if (!mapModel) {
-                return () => undefined;
-            }
-            const resource = mapModel.layers.on("changed", () => {
-                // Reset cache content so getSnapshot() fetches basemaps again.
-                baseLayers.current = undefined;
-                cb();
-            });
-            return () => resource.destroy();
-        },
-        [mapModel]
-    );
-    const getSnapshot = useCallback(() => {
-        if (baseLayers.current) {
-            return baseLayers.current;
-        }
-        return (baseLayers.current = mapModel?.layers.getBaseLayers() ?? []);
-    }, [mapModel]);
-    return useSyncExternalStore(subscribe, getSnapshot);
+    return useReactiveSnapshot(() => mapModel?.layers.getBaseLayers() ?? [], [mapModel]);
 }
 
 function BasemapSelectOption(props: OptionProps<SelectOption>): JSX.Element {
@@ -228,8 +201,17 @@ function BasemapSelectValue(props: SingleValueProps<SelectOption>): JSX.Element 
 function useBasemapItem(layer: Layer | undefined) {
     const intl = useIntl();
     const notAvailableLabel = intl.formatMessage({ id: "layerNotAvailable" });
-    const label = useTitle(layer);
-    const isAvailable = useLoadState(layer) !== "error";
+    const { label, isAvailable } = useReactiveSnapshot(() => {
+        if (!layer) {
+            // undefined layer -> empty basemap entry
+            return { label: intl.formatMessage({ id: "emptyBasemapLabel" }), isAvailable: true };
+        }
+
+        return {
+            label: layer.title,
+            isAvailable: layer.loadState !== "error"
+        };
+    }, [layer, intl]);
 
     return {
         isAvailable,
@@ -248,45 +230,6 @@ function useBasemapItem(layer: Layer | undefined) {
             </Flex>
         )
     };
-}
-
-function useTitle(layer: Layer | undefined): string {
-    const intl = useIntl();
-    const emptyBasemapLabel = intl.formatMessage({ id: "emptyBasemapLabel" });
-
-    const getSnapshot = useCallback(() => {
-        return layer === undefined ? emptyBasemapLabel : layer.title; // undefined == empty basemap
-    }, [layer, emptyBasemapLabel]);
-    const subscribe = useCallback(
-        (cb: () => void) => {
-            if (layer !== undefined) {
-                const resource = layer.on("changed:title", cb);
-                return () => resource.destroy();
-            }
-            return () => {};
-        },
-        [layer]
-    );
-
-    return useSyncExternalStore(subscribe, getSnapshot);
-}
-
-function useLoadState(layer: Layer | undefined): string {
-    const getSnapshot = useCallback(() => {
-        return layer === undefined ? "loaded" : layer.loadState; // undefined == empty basemap
-    }, [layer]);
-    const subscribe = useCallback(
-        (cb: () => void) => {
-            if (layer !== undefined) {
-                const resource = layer.on("changed:loadState", cb);
-                return () => resource.destroy();
-            }
-            return () => {};
-        },
-        [layer]
-    );
-
-    return useSyncExternalStore(subscribe, getSnapshot);
 }
 
 /**

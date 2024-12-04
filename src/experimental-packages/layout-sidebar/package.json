@@ -1,6 +1,6 @@
 {
     "name": "@open-pioneer/experimental-layout-sidebar",
-    "version": "0.2.4",
+    "version": "0.7.0",
     "license": "Apache-2.0",
     "main": "index.ts",
     "repository": {
@@ -15,9 +15,8 @@
     "scripts": {
         "build": "build-pioneer-package"
     },
-    "peerDependencies": {
+    "dependencies": {
         "@chakra-ui/icons": "catalog:",
-        "@chakra-ui/system": "catalog:",
         "@emotion/react": "catalog:",
         "@emotion/styled": "catalog:",
         "@open-pioneer/chakra-integration": "catalog:",

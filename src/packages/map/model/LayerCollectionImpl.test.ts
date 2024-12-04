@@ -17,6 +17,9 @@ import { MapModelImpl } from "./MapModelImpl";
 import { createMapModel } from "./createMapModel";
 import { SimpleLayerImpl } from "./layers/SimpleLayerImpl";
 import { WMSLayerImpl } from "./layers/WMSLayerImpl";
+import { syncWatch } from "@conterra/reactivity-core";
+import { GroupLayer } from "../api/layers/GroupLayer";
+import { Group } from "ol/layer";
 
 const THIS_DIR = dirname(fileURLToPath(import.meta.url));
 const WMTS_CAPAS = readFileSync(
@@ -236,6 +239,32 @@ it("supports lookup by layer id", async () => {
     expect(l3).toBeUndefined();
 });
 
+it("supports lookup by layer id for members of a group layer", async () => {
+    const olLayer = new TileLayer({
+        source: new OSM()
+    });
+
+    const child = new SimpleLayerImpl({
+        id: "member",
+        title: "group member",
+        olLayer: olLayer
+    });
+    const group = new GroupLayer({
+        id: "group",
+        title: "group test",
+        layers: [child]
+    });
+
+    model = await create("foo", {
+        layers: [group]
+    });
+
+    const memberLayer = model.layers.getLayerById("member");
+    expect(memberLayer).toBe(child);
+    const groupLayer = model.layers.getLayerById("group");
+    expect(groupLayer).toBe(group);
+});
+
 it("results in an error, if using the same layer id twice", async () => {
     await expect(async () => {
         model = await create("foo", {
@@ -286,6 +315,100 @@ it("supports reverse lookup from OpenLayers layer", async () => {
     expect(l2).toBeUndefined();
 });
 
+it("supports reverse lookup from OpenLayers layer for members of a group layer", async () => {
+    const olLayer = new TileLayer({
+        source: new OSM()
+    });
+
+    model = await create("foo", {
+        layers: [
+            new GroupLayer({
+                id: "group",
+                title: "group test",
+                layers: [
+                    new SimpleLayerImpl({
+                        id: "member",
+                        title: "group member",
+                        olLayer: olLayer
+                    })
+                ]
+            })
+        ]
+    });
+
+    const memberLayer = model.layers.getLayerByRawInstance(olLayer);
+    expect(memberLayer).toBeDefined();
+    const olGroup = model.olMap.getLayers().getArray()[1]; //get raw ol group la
+    const groupLayer = model.layers.getLayerByRawInstance(olGroup!);
+    expect(olGroup instanceof Group).toBeTruthy();
+    expect(groupLayer).toBeDefined();
+});
+
+it("should unindex layers that are member of group layer", async () => {
+    const olLayer = new TileLayer({
+        source: new OSM()
+    });
+
+    model = await create("foo", {
+        layers: [
+            new GroupLayer({
+                id: "group",
+                title: "group test",
+                layers: [
+                    new SimpleLayerImpl({
+                        id: "member",
+                        title: "group member",
+                        olLayer: olLayer
+                    })
+                ]
+            })
+        ]
+    });
+
+    let memberLayer = model.layers.getLayerByRawInstance(olLayer);
+    expect(memberLayer).toBeDefined();
+    memberLayer = model.layers.getLayerById("member") as Layer;
+    expect(memberLayer).toBeDefined();
+
+    //remove group layer and check if group members are not indexed anymore
+    model.layers.removeLayerById("group");
+    memberLayer = model.layers.getLayerByRawInstance(olLayer);
+    expect(memberLayer).toBeUndefined();
+    memberLayer = model.layers.getLayerById("member") as Layer;
+    expect(memberLayer).toBeUndefined();
+});
+
+it("destroys child layers when parent group layer is removed", async () => {
+    const olLayer = new TileLayer({
+        source: new OSM()
+    });
+
+    const groupMember = new SimpleLayerImpl({
+        id: "member",
+        title: "group member",
+        olLayer: olLayer
+    });
+    const groupLayer = new GroupLayer({
+        id: "group",
+        title: "group test",
+        layers: [groupMember]
+    });
+    //register dummy event handlers
+    const groupFn = vi.fn();
+    const memberFn = vi.fn();
+    groupMember.on("destroy", () => memberFn());
+    groupLayer.on("destroy", () => groupFn());
+
+    model = await create("foo", {
+        layers: [groupLayer]
+    });
+
+    model.layers.removeLayerById("group"); //remove group layer
+    //destroy event should be emitted for each (child) layer
+    expect(memberFn).toHaveBeenCalledOnce();
+    expect(groupFn).toHaveBeenCalledOnce();
+});
+
 it("registering the same OpenLayers layer twice throws an error", async () => {
     const rawL1 = new TileLayer({
         source: new OSM()
@@ -307,7 +430,7 @@ it("registering the same OpenLayers layer twice throws an error", async () => {
             ]
         });
     }).rejects.toThrowErrorMatchingInlineSnapshot(
-        `[Error: OlLayer has already been used in this or another layer.]`
+        `[Error: OlLayer used by layer 'l-2' has already been used in map.]`
     );
 });
 
@@ -318,9 +441,12 @@ it("supports adding a layer to the model", async () => {
     expect(model.layers.getAllLayers()).toHaveLength(0);
 
     let changed = 0;
-    model.layers.on("changed", () => {
-        ++changed;
-    });
+    syncWatch(
+        () => [model!.layers.getAllLayers()],
+        () => {
+            ++changed;
+        }
+    );
 
     const layer = new SimpleLayer({
         title: "foo",
@@ -356,9 +482,12 @@ it("supports removing a layer from the model", async () => {
     });
 
     let changed = 0;
-    model.layers.on("changed", () => {
-        ++changed;
-    });
+    syncWatch(
+        () => [model!.layers.getAllLayers()],
+        () => {
+            ++changed;
+        }
+    );
 
     expect(model.layers.getAllLayers()).toHaveLength(1);
     model.layers.removeLayerById("l-1");
@@ -394,7 +523,12 @@ describe("base layers", () => {
         const b2 = layers.getLayerById("b-2")! as SimpleLayerImpl;
 
         let events = 0;
-        layers.on("changed", () => ++events);
+        syncWatch(
+            () => [model!.layers.getActiveBaseLayer()],
+            () => {
+                ++events;
+            }
+        );
 
         const zOrders = [b1, b2].map((l) => l.olLayer.getZIndex());
         expect(zOrders).toEqual([0, 0]); // base layers always have z-index 0
@@ -453,7 +587,12 @@ describe("base layers", () => {
         expect(layers.getBaseLayers().length).toBe(2);
 
         let events = 0;
-        layers.on("changed", () => ++events);
+        syncWatch(
+            () => [model!.layers.getAllLayers()],
+            () => {
+                ++events;
+            }
+        );
 
         expect(layers.getActiveBaseLayer()).toBe(b1);
 

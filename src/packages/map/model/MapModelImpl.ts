@@ -1,17 +1,23 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import { computed, reactive, ReadonlyReactive, synchronized } from "@conterra/reactivity-core";
 import {
-    EventEmitter,
-    ManualPromise,
     createAbortError,
     createLogger,
     createManualPromise,
-    isAbortError
+    EventEmitter,
+    isAbortError,
+    ManualPromise
 } from "@open-pioneer/core";
+import { HttpService } from "@open-pioneer/http";
 import OlMap from "ol/Map";
 import { unByKey } from "ol/Observable";
+import OlView from "ol/View";
+import { Coordinate } from "ol/coordinate";
 import { EventsKey } from "ol/events";
 import { getCenter } from "ol/extent";
+import { Geometry } from "ol/geom";
+import { getPointResolution, Projection } from "ol/proj";
 import {
     ExtentConfig,
     Highlight,
@@ -20,12 +26,13 @@ import {
     MapModel,
     MapModelEvents
 } from "../api";
-import { LayerCollectionImpl } from "./LayerCollectionImpl";
-import { Geometry } from "ol/geom";
 import { Highlights } from "./Highlights";
-import { HttpService } from "@open-pioneer/http";
+import { LayerCollectionImpl } from "./LayerCollectionImpl";
 
 const LOG = createLogger("map:MapModel");
+
+const DEFAULT_DPI = 25.4 / 0.28;
+const INCHES_PER_METRE = 39.37;
 
 /**
  * Shared services or other entities propagated from the map model to all layer instances.
@@ -37,14 +44,16 @@ export interface SharedDependencies {
 export class MapModelImpl extends EventEmitter<MapModelEvents> implements MapModel {
     readonly #id: string;
     readonly #olMap: OlMap;
+    readonly #olView: ReadonlyReactive<OlView>;
     readonly #layers = new LayerCollectionImpl(this);
     readonly #highlights: Highlights;
     readonly #sharedDeps: SharedDependencies;
 
     #destroyed = false;
-    #container: HTMLElement | undefined;
-    #initialExtent: ExtentConfig | undefined;
-    #targetWatchKey: EventsKey | undefined;
+    #container: ReadonlyReactive<HTMLElement | undefined>;
+    #initialExtent = reactive<ExtentConfig>();
+    #viewBindings: ReadonlyReactive<ViewBindings>;
+    #scale: ReadonlyReactive<number | undefined>;
 
     readonly #abortController = new AbortController();
     #displayStatus: "waiting" | "ready" | "error";
@@ -59,7 +68,14 @@ export class MapModelImpl extends EventEmitter<MapModelEvents> implements MapMod
         super();
         this.#id = properties.id;
         this.#olMap = properties.olMap;
-        this.#initialExtent = properties.initialExtent;
+        this.#olView = synchronized(
+            () => this.#olMap.getView(),
+            (cb) => {
+                const key = this.#olMap.on("change:view", cb);
+                return () => unByKey(key);
+            }
+        );
+        this.#initialExtent.value = properties.initialExtent;
         this.#sharedDeps = {
             httpService: properties.httpService
         };
@@ -82,8 +98,29 @@ export class MapModelImpl extends EventEmitter<MapModelEvents> implements MapMod
                 this.#displayWaiter = undefined;
             }
         );
-        this.#targetWatchKey = this.#olMap.on("change:target", () => {
-            this.#onTargetChanged();
+
+        this.#container = synchronized(
+            () => this.#olMap.getTargetElement() ?? undefined,
+            (cb) => {
+                const key = this.#olMap.on("change:target", cb);
+                return () => unByKey(key);
+            }
+        );
+
+        this.#viewBindings = computed(() => createViewBindings(this.#olView.value));
+        this.#scale = computed(() => {
+            const { projection, resolution, center } = this;
+            if (projection == null || resolution == null || center == null) {
+                return undefined;
+            }
+
+            /**
+             * Returns the appropriate scale for the given resolution and units, see OpenLayers function getScaleForResolution()
+             * https://github.com/openlayers/openlayers/blob/7fa9df03431e9e1bc517e6c414565d9f848a3132/src/ol/control/ScaleLine.js#L454C3-L454C24
+             */
+            const pointResolution = getPointResolution(projection, resolution, center);
+            const scale = Math.round(pointResolution * INCHES_PER_METRE * DEFAULT_DPI);
+            return scale;
         });
     }
 
@@ -99,10 +136,6 @@ export class MapModelImpl extends EventEmitter<MapModelEvents> implements MapMod
             LOG.warn(`Unexpected error from event listener during map model destruction:`, e);
         }
 
-        if (this.#targetWatchKey) {
-            unByKey(this.#targetWatchKey);
-        }
-        this.#targetWatchKey = undefined;
         this.#abortController.abort();
         this.#displayWaiter?.reject(new Error("Map model was destroyed."));
         this.#layers.destroy();
@@ -118,25 +151,64 @@ export class MapModelImpl extends EventEmitter<MapModelEvents> implements MapMod
         return this.#olMap;
     }
 
+    get olView(): OlView {
+        return this.#olView.value;
+    }
+
+    get projection(): Projection {
+        return this.#viewBindings.value.projection;
+    }
+
+    get center(): Coordinate | undefined {
+        return this.#viewBindings.value.center.value;
+    }
+
+    get resolution(): number | undefined {
+        return this.#viewBindings.value.resolution.value;
+    }
+
+    get zoomLevel(): number | undefined {
+        return this.#viewBindings.value.zoom.value;
+    }
+
+    get scale(): number | undefined {
+        return this.#scale.value;
+    }
+
     get layers(): LayerCollectionImpl {
         return this.#layers;
     }
 
     get container(): HTMLElement | undefined {
-        return this.#container;
+        return this.#container.value;
     }
 
     get initialExtent(): ExtentConfig | undefined {
-        return this.#initialExtent;
+        return this.#initialExtent.value;
     }
 
     get __sharedDependencies(): SharedDependencies {
         return this.#sharedDeps;
     }
 
+    setScale(newScale: number): void {
+        const view = this.olView;
+        const projection = this.projection;
+        const center = this.center;
+        if (!center) {
+            return;
+        }
+
+        const mpu = projection.getMetersPerUnit() ?? 1;
+        const resolution = INCHES_PER_METRE * DEFAULT_DPI * mpu;
+        const pointResolution = newScale / getPointResolution(projection, resolution, center);
+        view.setResolution(pointResolution);
+    }
+
     highlight(geometries: Geometry[], options?: HighlightOptions | undefined): Highlight {
         return this.#highlights.addHighlight(geometries, options);
     }
+
     zoom(geometries: Geometry[], options?: HighlightZoomOptions | undefined): void {
         this.#highlights.zoomToHighlight(geometries, options);
     }
@@ -183,9 +255,9 @@ export class MapModelImpl extends EventEmitter<MapModelEvents> implements MapMod
             const olMap = this.#olMap;
             const view = olMap.getView();
 
-            if (this.#initialExtent) {
+            if (this.#initialExtent.value) {
                 // Initial extent was set from the outside. We simply ensure that it gets displayed by the map.
-                const extent = this.#initialExtent;
+                const extent = this.#initialExtent.value;
                 const olExtent = [extent.xMin, extent.yMin, extent.xMax, extent.yMax];
 
                 const olCenter = getCenter(olExtent);
@@ -204,23 +276,46 @@ export class MapModelImpl extends EventEmitter<MapModelEvents> implements MapMod
                 const extent: ExtentConfig = { xMin, yMin, xMax, yMax };
                 LOG.debug(`Detected initial extent`, extent);
 
-                this.#initialExtent = extent;
-                this.emit("changed:initialExtent");
-                this.emit("changed");
+                this.#initialExtent.value = extent;
             }
         } catch (e) {
             throw new Error(`Failed to apply the initial extent.`, { cause: e });
         }
     }
+}
 
-    #onTargetChanged() {
-        const newContainer: HTMLElement | undefined = this.#olMap.getTargetElement() ?? undefined;
-        if (this.#container !== newContainer) {
-            this.#container = newContainer;
-            this.emit("changed:container");
-            this.emit("changed");
-        }
-    }
+interface ViewBindings {
+    resolution: ReadonlyReactive<number | undefined>;
+    center: ReadonlyReactive<Coordinate | undefined>;
+    zoom: ReadonlyReactive<number | undefined>;
+    projection: Projection; // not reactive (change view to change projection)
+}
+
+function createViewBindings(view: OlView): ViewBindings {
+    return {
+        resolution: synchronized(
+            () => view.getResolution(),
+            (cb) => {
+                const key = view.on("change:resolution", cb);
+                return () => unByKey(key);
+            }
+        ),
+        center: synchronized(
+            () => view.getCenter(),
+            (cb) => {
+                const key = view.on("change:center", cb);
+                return () => unByKey(key);
+            }
+        ),
+        zoom: synchronized(
+            () => view.getZoom(),
+            (cb) => {
+                const key = view.on("change:resolution", cb);
+                return () => unByKey(key);
+            }
+        ),
+        projection: view.getProjection()
+    };
 }
 
 function waitForMapSize(olMap: OlMap, signal: AbortSignal): Promise<void> {

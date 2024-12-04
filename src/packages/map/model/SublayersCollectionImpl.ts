@@ -1,23 +1,20 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { EventEmitter } from "@open-pioneer/core";
-import {
-    LayerRetrievalOptions,
-    SublayerBaseType,
-    SublayersCollection,
-    SublayersCollectionEvents
-} from "../api";
+import { LayerRetrievalOptions, SublayerBaseType, SublayersCollection } from "../api";
 import { AbstractLayerBase } from "./AbstractLayerBase";
 
+/**
+ * Manages the sublayers of a layer.
+ */
 // NOTE: adding / removing sublayers currently not supported
+/* eslint-disable indent */
 export class SublayersCollectionImpl<Sublayer extends SublayerBaseType & AbstractLayerBase>
-    extends EventEmitter<SublayersCollectionEvents>
     implements SublayersCollection<Sublayer>
 {
+    /* eslint-enable indent */
     #sublayers: Sublayer[];
 
     constructor(sublayers: Sublayer[]) {
-        super();
         this.#sublayers = sublayers;
     }
 
@@ -26,6 +23,11 @@ export class SublayersCollectionImpl<Sublayer extends SublayerBaseType & Abstrac
             layer.destroy();
         }
         this.#sublayers = [];
+    }
+
+    // Generic method name for consistent interface
+    getItems(options?: LayerRetrievalOptions): Sublayer[] {
+        return this.getSublayers(options);
     }
 
     getSublayers(_options?: LayerRetrievalOptions | undefined): Sublayer[] {

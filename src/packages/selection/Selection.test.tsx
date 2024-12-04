@@ -2,22 +2,19 @@
 // SPDX-License-Identifier: Apache-2.0
 import { SimpleLayer } from "@open-pioneer/map";
 import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
-import { NotificationService } from "@open-pioneer/notifier";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { Selection, SelectionSourceChangedEvent } from "./Selection";
+import { FakePointSelectionSource, NoStatusSelectionSource } from "./test-utils";
+import { VectorLayerSelectionSourceImpl } from "./VectorSelectionSource";
+import { NotificationService } from "@open-pioneer/notifier";
+import { Point } from "ol/geom";
+import { SelectionSource } from "./api";
+import VectorSource from "ol/source/Vector";
 import { Feature } from "ol";
 import GeoJSON from "ol/format/GeoJSON";
-import { Point } from "ol/geom";
 import VectorLayer from "ol/layer/Vector";
-import VectorSource from "ol/source/Vector";
 import { afterEach, expect, it, vi } from "vitest";
-import { SelectionSource } from "./api";
-import { Selection, SelectionSourceChangedEvent } from "./Selection";
-import {
-    FakePointSelectionSource,
-    NoStatusSelectionSource,
-    VectorLayerSelectionSourceImpl
-} from "./selectionSources";
 
 afterEach(() => {
     vi.restoreAllMocks();
@@ -95,7 +92,7 @@ it("Should disable or enable selection option when changing the status of a sour
     });
 
     const layerSelectionSource = new VectorLayerSelectionSourceImpl(
-        layer.olLayer as VectorLayer<Feature>,
+        layer.olLayer as VectorLayer<VectorSource, Feature>,
         layer.title,
         "Layer not visible"
     );
@@ -250,7 +247,7 @@ function createTestSelectionSource(id: string, title: string, visibility: boolea
         olLayer: createKitasLayer()
     });
     return new VectorLayerSelectionSourceImpl(
-        layer.olLayer as VectorLayer<Feature>,
+        layer.olLayer as VectorLayer<VectorSource, Feature>,
         layer.title,
         "Layer not visible"
     );

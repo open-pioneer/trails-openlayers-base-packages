@@ -1,6 +1,6 @@
 {
     "name": "@open-pioneer/measurement",
-    "version": "0.4.4",
+    "version": "0.7.0",
     "description": "This package provides a UI component that allows the user to perform area and distance measurements on the map.",
     "license": "Apache-2.0",
     "main": "index.ts",
@@ -16,7 +16,7 @@
     "scripts": {
         "build": "build-pioneer-package"
     },
-    "peerDependencies": {
+    "dependencies": {
         "@open-pioneer/chakra-integration": "catalog:",
         "@open-pioneer/core": "catalog:",
         "@open-pioneer/map": "workspace:^",

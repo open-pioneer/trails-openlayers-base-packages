@@ -1,6 +1,6 @@
 {
     "name": "@open-pioneer/scale-setter",
-    "version": "0.1.1",
+    "version": "0.7.0",
     "description": "This package provides a UI component to change the scale of the map.",
     "license": "Apache-2.0",
     "main": "index.ts",
@@ -16,12 +16,13 @@
     "scripts": {
         "build": "build-pioneer-package"
     },
-    "peerDependencies": {
+    "dependencies": {
         "@chakra-ui/icons": "catalog:",
         "@open-pioneer/chakra-integration": "catalog:",
         "@open-pioneer/map": "workspace:^",
         "@open-pioneer/react-utils": "catalog:",
         "@open-pioneer/runtime": "catalog:",
+        "@open-pioneer/reactivity": "catalog:",
         "ol": "catalog:",
         "react": "catalog:"
     },

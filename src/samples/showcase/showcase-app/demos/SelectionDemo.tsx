@@ -19,6 +19,7 @@ import { Feature } from "ol";
 import VectorLayer from "ol/layer/Vector";
 import { ReactNode } from "react";
 import { Demo, DemoModel, SharedDemoOptions } from "./Demo";
+import VectorSource from "ol/source/Vector";
 
 interface ResultListState {
     /** Whether the result list is currently shown. */
@@ -168,7 +169,7 @@ function initSelectionSource(
     const opLayer = mapModel.layers.getLayerById("ogc_kitas") as SimpleLayer;
 
     const layerSelectionSource = vectorSelectionSourceFactory.createSelectionSource({
-        vectorLayer: opLayer.olLayer as VectorLayer<Feature>,
+        vectorLayer: opLayer.olLayer as VectorLayer<VectorSource, Feature>,
         label: opLayer.title
     });
 

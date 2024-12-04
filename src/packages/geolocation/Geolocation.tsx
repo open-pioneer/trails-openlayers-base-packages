@@ -142,11 +142,7 @@ function useController(
             });
         };
 
-        const geolocationController = new GeolocationController(
-            map.olMap,
-            onError,
-            trackingOptions
-        );
+        const geolocationController = new GeolocationController(map, onError, trackingOptions);
         setController(geolocationController);
 
         return () => {

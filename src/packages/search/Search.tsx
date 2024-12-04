@@ -91,6 +91,12 @@ export interface SearchProps extends CommonComponentProps, MapModelProps {
     maxResultsPerGroup?: number;
 
     /**
+     * The placeholder text shown in the search input field when it is empty.
+     * Defaults to a generic (and localized) hint.
+     */
+    placeholder?: string;
+
+    /**
      * This event handler will be called when the user selects a search result.
      */
     onSelect?: (event: SearchSelectEvent) => void;
@@ -167,12 +173,12 @@ export const Search: FC<SearchProps> = (props) => {
                 onInputChange={handleInputChange}
                 aria-label={intl.formatMessage({ id: "ariaLabel.search" })}
                 ariaLiveMessages={ariaMessages}
-                colorScheme="trails"
+                tagColorScheme="trails"
                 selectedOptionStyle="color"
                 selectedOptionColorScheme="trails"
                 chakraStyles={chakraStyles}
                 isClearable={true}
-                placeholder={intl.formatMessage({ id: "searchPlaceholder" })}
+                placeholder={props.placeholder ?? intl.formatMessage({ id: "searchPlaceholder" })}
                 closeMenuOnSelect={true}
                 isLoading={search.kind === "loading"}
                 options={search.kind === "ready" ? search.results : undefined}
@@ -311,10 +317,14 @@ function useController(
     }, [map, sources]);
 
     useEffect(() => {
-        controller && (controller.searchTypingDelay = searchTypingDelay);
+        if (controller) {
+            controller.searchTypingDelay = searchTypingDelay;
+        }
     }, [controller, searchTypingDelay]);
     useEffect(() => {
-        controller && (controller.maxResultsPerSource = maxResultsPerGroup);
+        if (controller) {
+            controller.maxResultsPerSource = maxResultsPerGroup;
+        }
     }, [controller, maxResultsPerGroup]);
     return controller;
 }

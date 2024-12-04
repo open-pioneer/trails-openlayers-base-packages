@@ -26,14 +26,11 @@ exports[`should successfully create an view history navigation component 1`] = `
       width="1em"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <line
-        x1="5"
-        x2="19"
-        y1="12"
-        y2="12"
-      />
       <polyline
-        points="12 5 19 12 12 19"
+        points="15 14 20 9 15 4"
+      />
+      <path
+        d="M4 20v-7a4 4 0 0 1 4-4h12"
       />
     </svg>
   </span>
@@ -66,14 +63,11 @@ exports[`should successfully create an view history navigation component 2`] = `
       width="1em"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <line
-        x1="19"
-        x2="5"
-        y1="12"
-        y2="12"
-      />
       <polyline
-        points="12 19 5 12 12 5"
+        points="9 14 4 9 9 4"
+      />
+      <path
+        d="M20 20v-7a4 4 0 0 0-4-4H4"
       />
     </svg>
   </span>

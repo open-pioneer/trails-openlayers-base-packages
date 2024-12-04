@@ -1,15 +1,9 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { EventEmitter, createLogger } from "@open-pioneer/core";
+import { batch, reactive, reactiveSet } from "@conterra/reactivity-core";
+import { createLogger } from "@open-pioneer/core";
 import OlBaseLayer from "ol/layer/Base";
-import {
-    LayerCollection,
-    LayerCollectionEvents,
-    Layer,
-    LayerRetrievalOptions,
-    AnyLayer,
-    Sublayer
-} from "../api";
+import { Layer, LayerCollection, LayerRetrievalOptions, AnyLayer, Sublayer } from "../api";
 import { AbstractLayer } from "./AbstractLayer";
 import { AbstractLayerBase } from "./AbstractLayerBase";
 import { MapModelImpl } from "./MapModelImpl";
@@ -30,14 +24,14 @@ type LayerBaseType = (AbstractLayerBase & Layer) | (AbstractLayerBase & Sublayer
  */
 export const TOPMOST_LAYER_Z = 9999999;
 
-export class LayerCollectionImpl
-    extends EventEmitter<LayerCollectionEvents>
-    implements LayerCollection
-{
+/**
+ * Manages the (top-level) content of the map.
+ */
+export class LayerCollectionImpl implements LayerCollection {
     #map: MapModelImpl;
 
     /** Top level layers (base layers, operational layers). No sublayers. */
-    #topLevelLayers = new Set<LayerType>();
+    #topLevelLayers = reactiveSet<LayerType>();
 
     /** Index of _all_ layer instances, including sublayers. */
     #layersById = new Map<string, LayerBaseType>();
@@ -46,13 +40,12 @@ export class LayerCollectionImpl
     #layersByOlLayer: WeakMap<OlBaseLayer, LayerType> = new WeakMap();
 
     /** Currently active base layer. */
-    #activeBaseLayer: LayerType | undefined;
+    #activeBaseLayer = reactive<LayerType>();
 
     /** next z-index for operational layer. currently just auto-increments. */
     #nextIndex = OPERATION_LAYER_INITIAL_Z;
 
     constructor(map: MapModelImpl) {
-        super();
         this.#map = map;
     }
 
@@ -63,13 +56,13 @@ export class LayerCollectionImpl
         }
         this.#topLevelLayers.clear();
         this.#layersById.clear();
-        this.#activeBaseLayer = undefined;
+        this.#activeBaseLayer.value = undefined;
     }
 
     addLayer(layer: Layer): void {
         checkLayerInstance(layer);
 
-        layer.__attach(this.#map);
+        layer.__attachToMap(this.#map);
         this.#addLayer(layer);
     }
 
@@ -78,7 +71,7 @@ export class LayerCollectionImpl
     }
 
     getActiveBaseLayer(): Layer | undefined {
-        return this.#activeBaseLayer;
+        return this.#activeBaseLayer.value;
     }
 
     activateBaseLayer(id: string | undefined): boolean {
@@ -99,10 +92,7 @@ export class LayerCollectionImpl
             }
         }
 
-        if (newBaseLayer !== this.#activeBaseLayer) {
-            this.#updateBaseLayer(newBaseLayer);
-            this.emit("changed");
-        }
+        this.#updateBaseLayer(newBaseLayer);
         return true;
     }
 
@@ -145,7 +135,7 @@ export class LayerCollectionImpl
         const olLayer = model.olLayer;
         if (model.isBaseLayer) {
             olLayer.setZIndex(BASE_LAYER_Z);
-            if (!this.#activeBaseLayer && model.visible) {
+            if (!this.#activeBaseLayer.value && model.visible) {
                 this.#updateBaseLayer(model);
             } else {
                 model.__setVisible(false);
@@ -157,7 +147,6 @@ export class LayerCollectionImpl
 
         this.#topLevelLayers.add(model);
         this.#map.olMap.addLayer(olLayer);
-        this.emit("changed");
     }
 
     /**
@@ -182,7 +171,7 @@ export class LayerCollectionImpl
         this.#map.olMap.removeLayer(model.olLayer);
         this.#topLevelLayers.delete(model);
         this.#unIndexLayer(model);
-        if (this.#activeBaseLayer === model) {
+        if (this.#activeBaseLayer.value === model) {
             const newBaselayer = this.getBaseLayers()[0];
             if (newBaselayer) {
                 checkLayerInstance(newBaselayer);
@@ -190,11 +179,10 @@ export class LayerCollectionImpl
             this.#updateBaseLayer(newBaselayer);
         }
         model.destroy();
-        this.emit("changed");
     }
 
     #updateBaseLayer(model: LayerType | undefined) {
-        if (this.#activeBaseLayer === model) {
+        if (this.#activeBaseLayer.value === model) {
             return;
         }
 
@@ -204,14 +192,15 @@ export class LayerCollectionImpl
             };
 
             LOG.debug(
-                `Switching active base layer from ${getId(this.#activeBaseLayer)} to ${getId(
-                    model
-                )}`
+                `Switching active base layer from ${getId(this.#activeBaseLayer.value)} to ${getId(model)}`
             );
         }
-        this.#activeBaseLayer?.__setVisible(false);
-        this.#activeBaseLayer = model;
-        this.#activeBaseLayer?.__setVisible(true);
+
+        batch(() => {
+            this.#activeBaseLayer.value?.__setVisible(false);
+            this.#activeBaseLayer.value = model;
+            model?.__setVisible(true);
+        });
     }
 
     /**
@@ -230,7 +219,7 @@ export class LayerCollectionImpl
                 );
             }
             if (olLayer && this.#layersByOlLayer.has(olLayer)) {
-                throw new Error(`OlLayer has already been used in this or another layer.`);
+                throw new Error(`OlLayer used by layer '${id}' has already been used in map.`);
             }
 
             // Register this layer with the maps.
@@ -240,7 +229,10 @@ export class LayerCollectionImpl
             }
             registrations.push([id, olLayer]);
 
-            // Recurse into nested sublayers.
+            // Recurse into nested children.
+            for (const layer of model.layers?.__getRawLayers() ?? []) {
+                visit(layer);
+            }
             for (const sublayer of model.sublayers?.__getRawSublayers() ?? []) {
                 visit(sublayer);
             }
@@ -249,6 +241,8 @@ export class LayerCollectionImpl
         try {
             visit(model);
         } catch (e) {
+            // If any error happens, undo the indexing.
+            // This way we don't leave a partially indexed layer tree behind.
             for (const [id, olLayer] of registrations) {
                 this.#layersById.delete(id);
                 if (olLayer) {
@@ -260,7 +254,7 @@ export class LayerCollectionImpl
     }
 
     /**
-     * Removes index entries for the given layer and all its sublayers.
+     * Removes index entries for the given layer and all its children.
      */
     #unIndexLayer(model: AbstractLayer) {
         const visit = (model: AbstractLayer | AbstractLayerBase) => {
@@ -268,6 +262,11 @@ export class LayerCollectionImpl
                 this.#layersByOlLayer.delete(model.olLayer);
             }
             this.#layersById.delete(model.id);
+
+            for (const layer of model.layers?.__getRawLayers() ?? []) {
+                visit(layer);
+            }
+
             for (const sublayer of model.sublayers?.__getRawSublayers() ?? []) {
                 visit(sublayer);
             }
@@ -280,13 +279,9 @@ function sortLayersByDisplayOrder(layers: Layer[]) {
     layers.sort((left, right) => {
         // currently layers are added with increasing z-index (base layers: 0), so
         // ordering by z-index is automatically the correct display order.
-        // we use the id as the tie breaker for equal z-indices.
         const leftZ = left.olLayer.getZIndex() ?? 1;
         const rightZ = right.olLayer.getZIndex() ?? 1;
-        if (leftZ !== rightZ) {
-            return leftZ - rightZ;
-        }
-        return left.id.localeCompare(right.id, "en");
+        return leftZ - rightZ;
     });
 }
 

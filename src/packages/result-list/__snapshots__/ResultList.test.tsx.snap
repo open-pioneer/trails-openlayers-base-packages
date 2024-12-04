@@ -65,7 +65,7 @@ exports[`expect result list to be created successfully 1`] = `
                 />
                 <span
                   aria-hidden="true"
-                  class="chakra-checkbox__control css-1ydjfm6"
+                  class="chakra-checkbox__control css-1dnp747"
                   data-theme="light"
                 />
               </label>
@@ -80,7 +80,6 @@ exports[`expect result list to be created successfully 1`] = `
           aria-sort="none"
           class="result-list-header css-y14pq5"
           data-theme="light"
-          style=""
           tabindex="0"
         >
           Spalte A
@@ -97,7 +96,6 @@ exports[`expect result list to be created successfully 1`] = `
           aria-sort="none"
           class="result-list-header css-y14pq5"
           data-theme="light"
-          style=""
           tabindex="0"
         >
           Spalte B
@@ -114,7 +112,6 @@ exports[`expect result list to be created successfully 1`] = `
           aria-sort="none"
           class="result-list-header css-y14pq5"
           data-theme="light"
-          style=""
           tabindex="0"
         >
           Spalte C
@@ -131,7 +128,6 @@ exports[`expect result list to be created successfully 1`] = `
           aria-sort="none"
           class="result-list-header css-y14pq5"
           data-theme="light"
-          style=""
           tabindex="0"
         >
           Spalte D
@@ -148,7 +144,6 @@ exports[`expect result list to be created successfully 1`] = `
           aria-sort="none"
           class="result-list-header css-y14pq5"
           data-theme="light"
-          style=""
           tabindex="0"
         >
           Spalte E
@@ -174,7 +169,6 @@ exports[`expect result list to be created successfully 1`] = `
         <td
           class="result-list-table-row css-xumdn4"
           data-theme="light"
-          style=""
         >
           <div
             class="result-list-select-row-container css-1baulvz"
@@ -194,7 +188,7 @@ exports[`expect result list to be created successfully 1`] = `
               />
               <span
                 aria-hidden="true"
-                class="chakra-checkbox__control css-1ydjfm6"
+                class="chakra-checkbox__control css-1dnp747"
                 data-theme="light"
               />
             </label>
@@ -203,35 +197,30 @@ exports[`expect result list to be created successfully 1`] = `
         <td
           class="result-list-table-row css-xumdn4"
           data-theme="light"
-          style=""
         >
           Test
         </td>
         <td
           class="result-list-table-row css-xumdn4"
           data-theme="light"
-          style=""
         >
           123
         </td>
         <td
           class="result-list-table-row css-xumdn4"
           data-theme="light"
-          style=""
         >
           4.567
         </td>
         <td
           class="result-list-table-row css-xumdn4"
           data-theme="light"
-          style=""
         >
           displayBoolean.true
         </td>
         <td
           class="result-list-table-row css-xumdn4"
           data-theme="light"
-          style=""
         >
           Dienstag, 12. Mai 2020 um 23:50:21 Koordinierte Weltzeit
         </td>
@@ -243,7 +232,6 @@ exports[`expect result list to be created successfully 1`] = `
         <td
           class="result-list-table-row css-xumdn4"
           data-theme="light"
-          style=""
         >
           <div
             class="result-list-select-row-container css-1baulvz"
@@ -263,7 +251,7 @@ exports[`expect result list to be created successfully 1`] = `
               />
               <span
                 aria-hidden="true"
-                class="chakra-checkbox__control css-1ydjfm6"
+                class="chakra-checkbox__control css-1dnp747"
                 data-theme="light"
               />
             </label>
@@ -272,35 +260,30 @@ exports[`expect result list to be created successfully 1`] = `
         <td
           class="result-list-table-row css-xumdn4"
           data-theme="light"
-          style=""
         >
           Test123
         </td>
         <td
           class="result-list-table-row css-xumdn4"
           data-theme="light"
-          style=""
         >
           434
         </td>
         <td
           class="result-list-table-row css-xumdn4"
           data-theme="light"
-          style=""
         >
           78.567
         </td>
         <td
           class="result-list-table-row css-xumdn4"
           data-theme="light"
-          style=""
         >
           displayBoolean.false
         </td>
         <td
           class="result-list-table-row css-xumdn4"
           data-theme="light"
-          style=""
         >
           Mittwoch, 12. Mai 2021 um 23:50:21 Koordinierte Weltzeit
         </td>
@@ -312,7 +295,6 @@ exports[`expect result list to be created successfully 1`] = `
         <td
           class="result-list-table-row css-xumdn4"
           data-theme="light"
-          style=""
         >
           <div
             class="result-list-select-row-container css-1baulvz"
@@ -332,7 +314,7 @@ exports[`expect result list to be created successfully 1`] = `
               />
               <span
                 aria-hidden="true"
-                class="chakra-checkbox__control css-1ydjfm6"
+                class="chakra-checkbox__control css-1dnp747"
                 data-theme="light"
               />
             </label>
@@ -341,35 +323,30 @@ exports[`expect result list to be created successfully 1`] = `
         <td
           class="result-list-table-row css-xumdn4"
           data-theme="light"
-          style=""
         >
           Testabc
         </td>
         <td
           class="result-list-table-row css-xumdn4"
           data-theme="light"
-          style=""
         >
           666
         </td>
         <td
           class="result-list-table-row css-xumdn4"
           data-theme="light"
-          style=""
         >
           8.597
         </td>
         <td
           class="result-list-table-row css-xumdn4"
           data-theme="light"
-          style=""
         >
           displayBoolean.true
         </td>
         <td
           class="result-list-table-row css-xumdn4"
           data-theme="light"
-          style=""
         >
           Montag, 12. Oktober 2020 um 23:30:21 Koordinierte Weltzeit
         </td>
@@ -381,7 +358,6 @@ exports[`expect result list to be created successfully 1`] = `
         <td
           class="result-list-table-row css-xumdn4"
           data-theme="light"
-          style=""
         >
           <div
             class="result-list-select-row-container css-1baulvz"
@@ -401,7 +377,7 @@ exports[`expect result list to be created successfully 1`] = `
               />
               <span
                 aria-hidden="true"
-                class="chakra-checkbox__control css-1ydjfm6"
+                class="chakra-checkbox__control css-1dnp747"
                 data-theme="light"
               />
             </label>
@@ -410,27 +386,22 @@ exports[`expect result list to be created successfully 1`] = `
         <td
           class="result-list-table-row css-xumdn4"
           data-theme="light"
-          style=""
         />
         <td
           class="result-list-table-row css-xumdn4"
           data-theme="light"
-          style=""
         />
         <td
           class="result-list-table-row css-xumdn4"
           data-theme="light"
-          style=""
         />
         <td
           class="result-list-table-row css-xumdn4"
           data-theme="light"
-          style=""
         />
         <td
           class="result-list-table-row css-xumdn4"
           data-theme="light"
-          style=""
         />
       </tr>
       <tr
@@ -440,7 +411,6 @@ exports[`expect result list to be created successfully 1`] = `
         <td
           class="result-list-table-row css-xumdn4"
           data-theme="light"
-          style=""
         >
           <div
             class="result-list-select-row-container css-1baulvz"
@@ -460,7 +430,7 @@ exports[`expect result list to be created successfully 1`] = `
               />
               <span
                 aria-hidden="true"
-                class="chakra-checkbox__control css-1ydjfm6"
+                class="chakra-checkbox__control css-1dnp747"
                 data-theme="light"
               />
             </label>
@@ -469,27 +439,22 @@ exports[`expect result list to be created successfully 1`] = `
         <td
           class="result-list-table-row css-xumdn4"
           data-theme="light"
-          style=""
         />
         <td
           class="result-list-table-row css-xumdn4"
           data-theme="light"
-          style=""
         />
         <td
           class="result-list-table-row css-xumdn4"
           data-theme="light"
-          style=""
         />
         <td
           class="result-list-table-row css-xumdn4"
           data-theme="light"
-          style=""
         />
         <td
           class="result-list-table-row css-xumdn4"
           data-theme="light"
-          style=""
         />
       </tr>
     </tbody>

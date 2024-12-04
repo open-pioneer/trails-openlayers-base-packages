@@ -13,6 +13,7 @@ import { AbstractLayer } from "../AbstractLayer";
 import { MapModelImpl } from "../MapModelImpl";
 import { ImageTile } from "ol";
 import type { Options as WMSSourceOptions } from "ol/source/ImageWMS";
+import { reactive } from "@conterra/reactivity-core";
 
 const LOG = createLogger("map:WMTSLayer");
 
@@ -22,8 +23,8 @@ export class WMTSLayerImpl extends AbstractLayer implements WMTSLayer {
     #matrixSet: string;
     #layer: TileLayer<TileSourceType>;
     #source: WMTS | undefined;
-    #legend: string | undefined;
     #sourceOptions?: Partial<WMSSourceOptions>;
+    #legend = reactive<string | undefined>();
     readonly #abortController = new AbortController();
 
     constructor(config: WMTSLayerConfig) {
@@ -44,16 +45,24 @@ export class WMTSLayerImpl extends AbstractLayer implements WMTSLayer {
     }
 
     destroy(): void {
-        super.destroy();
         this.#abortController.abort();
+        super.destroy();
     }
 
     get legend(): string | undefined {
-        return this.#legend;
+        return this.#legend.value;
     }
 
-    __attach(map: MapModelImpl): void {
-        super.__attach(map);
+    get sublayers(): undefined {
+        return undefined;
+    }
+
+    get layers(): undefined {
+        return undefined;
+    }
+
+    __attachToMap(map: MapModelImpl): void {
+        super.__attachToMap(map);
         this.#fetchWMTSCapabilities()
             .then((result: string) => {
                 const parser = new WMTSCapabilities();
@@ -76,8 +85,7 @@ export class WMTSLayerImpl extends AbstractLayer implements WMTSLayer {
                 this.#layer.setSource(this.#source);
                 const activeStyleId = source.getStyle();
                 const legendUrl = getWMTSLegendUrl(capabilities, this.name, activeStyleId);
-                this.#legend = legendUrl;
-                this.__emitChangeEvent("changed:legend");
+                this.#legend.value = legendUrl;
             })
             .catch((error) => {
                 if (isAbortError(error)) {
@@ -86,10 +94,6 @@ export class WMTSLayerImpl extends AbstractLayer implements WMTSLayer {
                 }
                 LOG.error(`Failed fetching WMTS capabilities for Layer ${this.name}`, error);
             });
-    }
-
-    get layer() {
-        return this.#layer;
     }
 
     get url() {
@@ -102,10 +106,6 @@ export class WMTSLayerImpl extends AbstractLayer implements WMTSLayer {
 
     get matrixSet() {
         return this.#matrixSet;
-    }
-
-    get sublayers(): undefined {
-        return undefined;
     }
 
     async #fetchWMTSCapabilities(): Promise<string> {

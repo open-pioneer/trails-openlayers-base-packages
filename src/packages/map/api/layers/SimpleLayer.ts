@@ -29,6 +29,8 @@ export interface SimpleLayerConstructor {
  */
 export interface SimpleLayer extends LayerBaseType {
     readonly type: "simple";
+
+    readonly layers: undefined;
 }
 
 export const SimpleLayer: SimpleLayerConstructor = SimpleLayerImpl;

@@ -1,8 +1,9 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Box, Text } from "@open-pioneer/chakra-integration";
-import { MapModelProps, useMapModel, useProjection } from "@open-pioneer/map";
+import { MapModelProps, useMapModel } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
+import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { PackageIntl } from "@open-pioneer/runtime";
 import OlMap from "ol/Map";
 import { unByKey } from "ol/Observable";
@@ -40,14 +41,16 @@ export interface CoordinateViewerProps extends CommonComponentProps, MapModelPro
 }
 
 /**
- * The `CoordinateViewer`component can be used in an app to render the coordinates at the current mouse position.
+ * The `CoordinateViewer` component can be used in an app to render the coordinates at the current mouse position.
  */
 export const CoordinateViewer: FC<CoordinateViewerProps> = (props) => {
     const { precision, displayProjectionCode, format } = props;
     const { containerProps } = useCommonComponentProps("coordinate-viewer", props);
     const { map } = useMapModel(props);
     const olMap = map?.olMap;
-    const mapProjectionCode = useProjection(olMap)?.getCode() ?? "";
+    const mapProjectionCode = useReactiveSnapshot(() => {
+        return map?.projection.getCode() ?? "";
+    }, [map]);
     let { coordinates } = useCoordinates(olMap);
     coordinates =
         coordinates && displayProjectionCode

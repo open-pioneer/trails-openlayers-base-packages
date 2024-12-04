@@ -1,6 +1,6 @@
 {
     "name": "@open-pioneer/toc",
-    "version": "0.4.4",
+    "version": "0.7.0",
     "description": "This package provides a UI component that displays the map content to the user and allows them to control it.",
     "license": "Apache-2.0",
     "main": "index.ts",
@@ -16,7 +16,7 @@
     "scripts": {
         "build": "build-pioneer-package"
     },
-    "peerDependencies": {
+    "dependencies": {
         "@open-pioneer/basemap-switcher": "workspace:^",
         "@open-pioneer/chakra-integration": "catalog:",
         "@open-pioneer/map": "workspace:^",
@@ -25,7 +25,9 @@
         "classnames": "catalog:",
         "ol": "catalog:",
         "react": "catalog:",
-        "react-icons": "catalog:"
+        "react-icons": "catalog:",
+        "@open-pioneer/reactivity": "catalog:",
+        "@conterra/reactivity-core": "catalog:"
     },
     "devDependencies": {
         "@open-pioneer/map-test-utils": "workspace:^",
