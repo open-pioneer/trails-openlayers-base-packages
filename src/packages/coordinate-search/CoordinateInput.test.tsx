@@ -324,7 +324,7 @@ it("should not call onSelect after entering an invalid input", async () => {
     await user.type(coordInput, "a b{enter}");
     expect(searchedCoords).toStrictEqual([]);
     expect(callbackProj).toBeUndefined();
-    expect(called).toBeFalsy;
+    expect(called).toBeFalsy();
 });
 
 it("should successfully call onClear if clear button is clicked", async () => {
