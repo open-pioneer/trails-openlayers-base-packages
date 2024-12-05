@@ -18,15 +18,15 @@ import {
     getCurrentOptionValues,
     showDropdown
 } from "./test-utils";
+import { NumberParserService } from "@open-pioneer/runtime";
+import { NumberParser } from "@open-pioneer/core";
 
 beforeEach(() => {
     disableReactActWarnings();
 });
 
 it("should successfully create a coordinate input component", async () => {
-    const { mapId, registry } = await setupMap();
-
-    const injectedServices = createServiceOptions({ registry });
+    const { mapId, injectedServices } = await setUp();
     render(
         <PackageContextProvider services={injectedServices}>
             <CoordinateInput mapId={mapId} data-testid="coordinate-input" />
@@ -42,9 +42,8 @@ it("should successfully create a coordinate input component", async () => {
 });
 
 it("should successfully create a coordinate input component with additional css classes", async () => {
-    const { mapId, registry } = await setupMap();
+    const { mapId, injectedServices } = await setUp();
 
-    const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
             <CoordinateInput mapId={mapId} className="test" data-testid="coordinate-input" />
@@ -58,9 +57,8 @@ it("should successfully create a coordinate input component with additional css 
 
 it("should successfully create a coordinate input component with external input", async () => {
     const input = [761166, 6692084];
-    const { mapId, registry } = await setupMap();
+    const { mapId, injectedServices } = await setUp();
 
-    const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices} locale="de">
             <MapContainer mapId={mapId} data-testid="map" />
@@ -74,9 +72,8 @@ it("should successfully create a coordinate input component with external input"
 });
 
 it("should successfully create a coordinate input component with string placeholder", async () => {
-    const { mapId, registry } = await setupMap();
+    const { mapId, injectedServices } = await setUp();
 
-    const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices} locale="de">
             <MapContainer mapId={mapId} data-testid="map" />
@@ -94,9 +91,8 @@ it("should successfully create a coordinate input component with string placehol
 });
 
 it("should successfully create a coordinate input component without a string placeholder", async () => {
-    const { mapId, registry } = await setupMap();
+    const { mapId, injectedServices } = await setUp();
 
-    const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices} locale="de">
             <MapContainer mapId={mapId} data-testid="map" />
@@ -110,10 +106,9 @@ it("should successfully create a coordinate input component without a string pla
 });
 
 it("should successfully create a coordinate input component with coordinate placeholder", async () => {
-    const { mapId, registry } = await setupMap();
     const coord: Coordinate = [408000, 5600000];
 
-    const injectedServices = createServiceOptions({ registry });
+    const { mapId, injectedServices } = await setUp();
     render(
         <PackageContextProvider services={injectedServices} locale="de">
             <MapContainer mapId={mapId} data-testid="map" />
@@ -127,7 +122,7 @@ it("should successfully create a coordinate input component with coordinate plac
 });
 
 it("should successfully create a coordinate input component with known projections", async () => {
-    const { mapId, registry } = await setupMap();
+    const { mapId, injectedServices } = await setUp();
     const projections = [
         {
             label: "EPSG:25832",
@@ -147,7 +142,6 @@ it("should successfully create a coordinate input component with known projectio
         }
     ];
 
-    const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
             <MapContainer mapId={mapId} data-testid="map" />
@@ -169,9 +163,8 @@ it("should successfully create a coordinate input component with known projectio
 });
 
 it("should successfully create a coordinate input component with default projections", async () => {
-    const { mapId, registry } = await setupMap();
+    const { mapId, injectedServices } = await setUp();
 
-    const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
             <MapContainer mapId={mapId} data-testid="map" />
@@ -189,8 +182,7 @@ it("should successfully create a coordinate input component with default project
 });
 
 it("should update coordinates in selected option", async () => {
-    const { mapId, registry } = await setupMap();
-    const injectedServices = createServiceOptions({ registry });
+    const { mapId, injectedServices } = await setUp();
     const initialInput = [851594.11, 6789283.95];
     const updatedInput = [860000, 6900000.95];
 
@@ -216,10 +208,9 @@ it("should update coordinates in selected option", async () => {
 
 it("should display transformed coordinates in selected option", async () => {
     const user = userEvent.setup();
-    const { mapId, registry } = await setupMap();
     const input = [851594.11, 6789283.95];
+    const { mapId, injectedServices } = await setUp();
 
-    const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
             <MapContainer mapId={mapId} data-testid="map" />
@@ -257,9 +248,8 @@ it(
     },
     async () => {
         const user = userEvent.setup();
-        const { mapId, registry } = await setupMap();
+        const { mapId, injectedServices } = await setUp();
 
-        const injectedServices = createServiceOptions({ registry });
         let searchedCoords: Coordinate = [];
         let callbackProj: Projection | undefined = undefined;
         render(
@@ -293,9 +283,8 @@ it(
     },
     async () => {
         const user = userEvent.setup();
-        const { mapId, registry } = await setupMap();
+        const { mapId, injectedServices } = await setUp();
 
-        const injectedServices = createServiceOptions({ registry });
         let callbackProj: Projection | undefined = undefined;
         let searchedCoords: Coordinate = [];
         let called = false;
@@ -331,9 +320,8 @@ it(
     },
     async () => {
         const user = userEvent.setup();
-        const { mapId, registry } = await setupMap();
+        const { mapId, injectedServices } = await setUp();
 
-        const injectedServices = createServiceOptions({ registry });
         let cleared: boolean = false;
         render(
             <PackageContextProvider services={injectedServices}>
@@ -365,10 +353,9 @@ it(
 
 it("should successfully copy to clipboard if copy button is clicked", async () => {
     const user = userEvent.setup();
-    const { mapId, registry } = await setupMap();
+    const { mapId, injectedServices } = await setUp();
     let copiedText = "";
 
-    const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
             <MapContainer mapId={mapId} data-testid="map" />
@@ -410,10 +397,9 @@ it("should successfully copy to clipboard if copy button is clicked", async () =
 
 it("should validate the input and show the correct tooltip message", async () => {
     const user = userEvent.setup();
-    const { mapId, registry } = await setupMap();
     const tooltipHelper = createTooltipHelper();
+    const { mapId, injectedServices } = await setUp("de");
 
-    const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices} locale="de">
             <MapContainer mapId={mapId} data-testid="map" />
@@ -451,7 +437,7 @@ it("should validate the input and show the correct tooltip message", async () =>
     await user.click(coordInput);
     await user.paste("a,b c,d");
     const tooltip4 = await tooltipHelper.waitForChange();
-    expect(tooltip4).toBe("tooltip.dividerDe");
+    expect(tooltip4).toBe("tooltip.invalidNumbers");
 
     await user.clear(coordInput);
     await user.click(coordInput);
@@ -463,15 +449,14 @@ it("should validate the input and show the correct tooltip message", async () =>
     await user.click(coordInput);
     await user.paste("a b");
     const tooltip6 = await tooltipHelper.waitForChange();
-    expect(tooltip6).toBe("tooltip.dividerDe"); // TODO wrong error
+    expect(tooltip6).toBe("tooltip.invalidNumbers");
 });
 
 it("should validate if the user input is within the extent of the selected projection", async () => {
     const user = userEvent.setup();
-    const { mapId, registry } = await setupMap();
     const tooltipHelper = createTooltipHelper();
+    const { mapId, injectedServices } = await setUp();
 
-    const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices} locale="de">
             <MapContainer mapId={mapId} data-testid="map" />
@@ -496,9 +481,8 @@ it("should validate if the user input is within the extent of the selected proje
 
 it("should validate input property is within the extent of the selected projection", async () => {
     const user = userEvent.setup();
-    const { mapId, registry } = await setupMap();
+    const { mapId, injectedServices } = await setUp();
 
-    const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices} locale="de">
             <MapContainer mapId={mapId} data-testid="map" />
@@ -520,9 +504,8 @@ it("should validate input property is within the extent of the selected projecti
 });
 
 it("should not show copy button on string placeholder", async () => {
-    const { mapId, registry } = await setupMap();
+    const { mapId, injectedServices } = await setUp();
 
-    const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
             <MapContainer mapId={mapId} data-testid="map" />
@@ -537,9 +520,8 @@ it("should not show copy button on string placeholder", async () => {
 });
 
 it("should show copy button on coordinate placeholder", async () => {
-    const { mapId, registry } = await setupMap();
+    const { mapId, injectedServices } = await setUp();
 
-    const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
             <MapContainer mapId={mapId} data-testid="map" />
@@ -559,10 +541,9 @@ it("should show copy button on coordinate placeholder", async () => {
 });
 
 it("should show clear button on coordinate placeholder", async () => {
-    const { mapId, registry } = await setupMap();
     const user = userEvent.setup();
+    const { mapId, injectedServices } = await setUp();
 
-    const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
             <MapContainer mapId={mapId} data-testid="map" />
@@ -649,4 +630,21 @@ function createTooltipHelper() {
             return currentTooltip;
         }
     };
+}
+
+async function setUp(locale: string = "en") {
+    const { mapId, registry } = await setupMap();
+    const numberParser = new NumberParser(locale);
+    const numberParserService = {
+        parseNumber: (number) => {
+            return numberParser.parse(number);
+        }
+    } satisfies Partial<NumberParserService>;
+
+    const injectedServices = {
+        ...createServiceOptions({ registry }),
+        "runtime.NumberParserService": numberParserService
+    };
+
+    return { mapId, injectedServices };
 }

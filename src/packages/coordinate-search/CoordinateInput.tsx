@@ -12,10 +12,10 @@ import {
 import { MapModelProps, useMapModel } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps, useEvent } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
-import { PackageIntl } from "@open-pioneer/runtime";
+import { NumberParserService, PackageIntl } from "@open-pioneer/runtime";
 import { Coordinate } from "ol/coordinate";
 import { get as getProjection, Projection, ProjectionLike, transform } from "ol/proj";
-import { useIntl } from "open-pioneer:react-hooks";
+import { useIntl, useService } from "open-pioneer:react-hooks";
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { CoordinateInputField } from "./CoordinateInputField";
 import { formatCoordinates, parseCoordinates, ParseResult } from "./coordinates";
@@ -228,13 +228,14 @@ function useCoordinateState(
     onSelect: (validationResult: ParseResult) => void
 ): [string, (value: string) => void, ParseResult] {
     const intl = useIntl();
+    const numberParser = useService<NumberParserService>("runtime.NumberParserService");
 
-    const [model] = useState(() => new StateModel(intl, selectedProjection));
+    const [model] = useState(() => new StateModel(intl, selectedProjection, numberParser));
     useEffect(() => {
         const triggerSelect =
             inputProp !== model.inputProp || selectedProjection !== model.selectedProjection;
 
-        model.setIntl(intl);
+        model.setI18n(intl, numberParser);
         model.setInputProp(inputProp);
         model.setSelectedProjection(selectedProjection);
         model.setMapProjection(mapProjection);
@@ -243,7 +244,7 @@ function useCoordinateState(
             const validationResult = model.validationResult;
             onSelect(validationResult);
         }
-    }, [model, intl, inputProp, selectedProjection, mapProjection, onSelect]);
+    }, [model, intl, numberParser, inputProp, selectedProjection, mapProjection, onSelect]);
 
     const { rawInput, validationResult } = useReactiveSnapshot(() => {
         return {
@@ -265,19 +266,25 @@ class StateModel {
     #selectedProjection: Reactive<ProjectionItem>;
     #mapProjection = reactive<Projection | undefined>();
     #inputProp = reactive<Coordinate | undefined>();
+    #numberParser: Reactive<NumberParserService>;
 
     #rawInput = reactive("");
     #validationResult = computed(() => {
         return parseCoordinates(
             this.#rawInput.value,
-            this.#intl.value.locale,
+            this.#numberParser.value,
             this.#selectedProjection.value.value
         );
     });
 
-    constructor(intl: PackageIntl, selectedProjection: ProjectionItem) {
+    constructor(
+        intl: PackageIntl,
+        selectedProjection: ProjectionItem,
+        numberParser: NumberParserService
+    ) {
         this.#intl = reactive(intl);
         this.#selectedProjection = reactive(selectedProjection);
+        this.#numberParser = reactive(numberParser);
     }
 
     get inputProp() {
@@ -296,8 +303,9 @@ class StateModel {
         return this.#selectedProjection.value;
     }
 
-    setIntl(value: PackageIntl) {
-        this.#intl.value = value;
+    setI18n(intl: PackageIntl, numberParser: NumberParserService) {
+        this.#intl.value = intl;
+        this.#numberParser.value = numberParser;
     }
 
     setText(text: string) {

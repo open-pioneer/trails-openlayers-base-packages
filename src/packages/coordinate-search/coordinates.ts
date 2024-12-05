@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { PackageIntl } from "@open-pioneer/runtime";
+import { NumberParserService, PackageIntl } from "@open-pioneer/runtime";
 import { get as getProjection, Projection, transform } from "ol/proj";
 import { createLogger } from "@open-pioneer/core";
 const LOG = createLogger("coordinate-search");
@@ -18,8 +18,7 @@ export interface ParseError {
         | "tooltip.space"
         | "tooltip.spaceOne"
         | "tooltip.2coords"
-        | "tooltip.dividerDe"
-        | "tooltip.dividerEn"
+        | "tooltip.invalidNumbers"
         | "tooltip.extent"
         | "tooltip.projection";
 }
@@ -28,7 +27,7 @@ export type ParseResult = ParseSuccess | ParseError;
 
 export function parseCoordinates(
     input: string,
-    locale: string,
+    numberParser: NumberParserService,
     projection: Projection
 ): ParseResult {
     if (input == "") return err("empty");
@@ -40,32 +39,18 @@ export function parseCoordinates(
         return err("tooltip.spaceOne");
     }
 
-    const coordsString = input.split(" ");
-    if (coordsString.length != 2 || coordsString[0] == "" || coordsString[1] == "") {
+    const splitCoords = input.split(" ");
+    if (splitCoords.length != 2 || splitCoords[0] == "" || splitCoords[1] == "") {
         return err("tooltip.2coords");
     }
 
-    // TODO: use NumberParser from core
-    let thousandSeparator = "";
-    if (/^de-?/.test(locale)) {
-        thousandSeparator = ".";
+    const coordsString1 = numberParser.parseNumber(splitCoords[0]!);
+    const coordsString2 = numberParser.parseNumber(splitCoords[1]!);
 
-        const inputStringWithoutThousandSeparator = input.replaceAll(thousandSeparator, "");
-
-        if (!/^-?\d+(,\d+)? -?\d+(,\d+)?$/.test(inputStringWithoutThousandSeparator)) {
-            return err("tooltip.dividerDe");
-        }
-    } else if (/en-?/.test(locale)) {
-        thousandSeparator = ",";
-
-        const inputStringWithoutThousandSeparator = input.replaceAll(thousandSeparator, "");
-
-        if (!/^-?\d+(.\d+)? -?\d+(.\d+)?$/.test(inputStringWithoutThousandSeparator)) {
-            return err("tooltip.dividerEn");
-        }
+    const coords: [number, number] = [coordsString1, coordsString2];
+    if (coords.some((number) => Number.isNaN(number))) {
+        return err("tooltip.invalidNumbers");
     }
-
-    const coords = parseCoords(input, locale);
     try {
         if (!checkIfCoordsInProjectionsExtent(projection, coords)) {
             return err("tooltip.extent");
@@ -93,18 +78,6 @@ export function parseCoordinates(
 
 function err(kind: ParseError["kind"]): ParseError {
     return { kind };
-}
-
-// TODO: use NumberParser from core
-/* transforms the given coordinates to the given destination projection */
-function parseCoords(inputString: string, locale: string): [number, number] {
-    const separator = /^de-?/.test(locale) ? "." : /^en-?/.test(locale) ? "," : "";
-    const inputStringWithoutThousandSeparator = inputString.replaceAll(separator, "");
-
-    const coordsString = inputStringWithoutThousandSeparator.replaceAll(",", ".");
-
-    const splitCoords = coordsString.split(" ");
-    return [parseFloat(splitCoords[0]!), parseFloat(splitCoords[1]!)];
 }
 
 /* validate if the coordinates fit to the extent of the selected projection */

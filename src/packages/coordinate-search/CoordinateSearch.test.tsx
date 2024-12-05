@@ -16,11 +16,12 @@ import {
     getCurrentOptionValues,
     showDropdown
 } from "./test-utils";
+import { NumberParser } from "@open-pioneer/core";
+import { NumberParserService } from "@open-pioneer/runtime";
 
 it("should successfully create a coordinate search component", async () => {
-    const { mapId, registry } = await setupMap();
+    const { mapId, injectedServices } = await setUp();
 
-    const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
             <CoordinateSearch mapId={mapId} data-testid="coordinate-search" />
@@ -36,9 +37,8 @@ it("should successfully create a coordinate search component", async () => {
 });
 
 it("should successfully create a coordinate search component with additional css classes", async () => {
-    const { mapId, registry } = await setupMap();
+    const { mapId, injectedServices } = await setUp();
 
-    const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
             <CoordinateSearch mapId={mapId} className="test" data-testid="coordinate-search" />
@@ -51,9 +51,8 @@ it("should successfully create a coordinate search component with additional css
 });
 
 it("should successfully create a coordinate search component with projections", async () => {
-    const { mapId, registry } = await setupMap();
+    const { mapId, injectedServices } = await setUp();
 
-    const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
             <CoordinateSearch
@@ -86,9 +85,8 @@ it("should successfully create a coordinate search component with projections", 
 });
 
 it("tracks the user's mouse position", async () => {
-    const { mapId, registry } = await setupMap();
+    const { mapId, injectedServices, registry } = await setUp("de");
 
-    const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices} locale="de">
             <MapContainer mapId={mapId} data-testid="map" />
@@ -123,9 +121,8 @@ it("tracks the user's mouse position", async () => {
 
 it("should display transformed coordinates in selected option", async () => {
     const user = userEvent.setup();
-    const { mapId, registry } = await setupMap();
+    const { mapId, injectedServices, registry } = await setUp();
 
-    const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
             <MapContainer mapId={mapId} data-testid="map" />
@@ -183,9 +180,8 @@ it(
     },
     async () => {
         const user = userEvent.setup();
-        const { mapId, registry } = await setupMap();
+        const { mapId, injectedServices } = await setUp();
 
-        const injectedServices = createServiceOptions({ registry });
         let searchedCoords: Coordinate = [];
         let callbackProj;
         render(
@@ -218,10 +214,9 @@ it(
     },
     async () => {
         const user = userEvent.setup();
-        const { mapId, registry } = await setupMap();
+        const { mapId, injectedServices, registry } = await setUp();
         const map = (await registry.expectMapModel(mapId))?.olMap;
 
-        const injectedServices = createServiceOptions({ registry });
         render(
             <PackageContextProvider services={injectedServices}>
                 <MapContainer mapId={mapId} data-testid="map" />
@@ -252,9 +247,8 @@ it(
 
 it("should successfully call onClear if clear button is clicked", async () => {
     const user = userEvent.setup();
-    const { mapId, registry } = await setupMap();
+    const { mapId, injectedServices } = await setUp();
 
-    const injectedServices = createServiceOptions({ registry });
     let cleared: boolean = false;
     render(
         <PackageContextProvider services={injectedServices}>
@@ -282,10 +276,9 @@ it("should successfully call onClear if clear button is clicked", async () => {
 
 it("should successfully copy to clipboard if copy button is clicked", async () => {
     const user = userEvent.setup();
-    const { mapId, registry } = await setupMap();
+    const { mapId, injectedServices, registry } = await setUp();
     let copiedText = "";
 
-    const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
             <MapContainer mapId={mapId} data-testid="map" />
@@ -374,4 +367,21 @@ async function input(user: UserEvent, element: Element, value: string) {
     await user.click(element);
     await user.paste(value);
     await user.keyboard("{Enter}");
+}
+
+async function setUp(locale: string = "en") {
+    const { mapId, registry } = await setupMap();
+    const numberParser = new NumberParser(locale);
+    const numberParserService = {
+        parseNumber: (number) => {
+            return numberParser.parse(number);
+        }
+    } satisfies Partial<NumberParserService>;
+
+    const injectedServices = {
+        ...createServiceOptions({ registry }),
+        "runtime.NumberParserService": numberParserService
+    };
+
+    return { mapId, injectedServices, registry };
 }

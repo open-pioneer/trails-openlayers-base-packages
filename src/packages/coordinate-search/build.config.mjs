@@ -7,5 +7,8 @@ export default defineBuildConfig({
     entryPoints: ["index"],
     publishConfig: {
         strict: true
+    },
+    ui: {
+        references: ["runtime.NumberParserService"]
     }
 });
