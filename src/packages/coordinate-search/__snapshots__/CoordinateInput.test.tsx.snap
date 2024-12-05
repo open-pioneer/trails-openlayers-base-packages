@@ -82,12 +82,12 @@ exports[`should successfully create a coordinate input component 1`] = `
             >
               <hr
                 aria-orientation="vertical"
-                class="chakra-divider coordinate-Input-Select__indicator-separator css-hx2v06"
+                class="chakra-divider coordinate-Input-Select__indicator-separator css-ejwint"
                 data-theme="light"
               />
               <div
                 aria-hidden="true"
-                class="coordinate-Input-Select__indicator coordinate-Input-Select__dropdown-indicator css-bpy57"
+                class="coordinate-Input-Select__indicator coordinate-Input-Select__dropdown-indicator css-4v68kg"
                 data-theme="light"
               >
                 <svg
