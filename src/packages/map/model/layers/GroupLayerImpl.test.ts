@@ -1,8 +1,5 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-/**
- * @vitest-environment node
- */
 import TileLayer from "ol/layer/Tile";
 import { expect, it } from "vitest";
 import { SimpleLayerImpl } from "./SimpleLayerImpl";

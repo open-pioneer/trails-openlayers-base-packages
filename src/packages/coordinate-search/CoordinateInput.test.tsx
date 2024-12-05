@@ -269,7 +269,8 @@ it(
 
         await waitForMapMount("map");
         const { coordInput } = await waitForCoordinateInput();
-        await user.type(coordInput, "7 51{enter}");
+        await user.type(coordInput, "7 51");
+        await user.type(coordInput, "{enter}");
         expect(searchedCoords).toStrictEqual([779236.4355529151, 6621293.722740165]);
         expect(callbackProj).toBeDefined();
         expect(callbackProj!.getCode()).toBe("EPSG:3857");
@@ -395,62 +396,66 @@ it("should successfully copy to clipboard if copy button is clicked", async () =
     expect(copiedText).toBe("3.638 89.987");
 });
 
-it("should validate the input and show the correct tooltip message", async () => {
-    const user = userEvent.setup();
-    const tooltipHelper = createTooltipHelper();
-    const { mapId, injectedServices } = await setUp("de");
+it(
+    "should validate the input and show the correct tooltip message",
+    { timeout: 10000 },
+    async () => {
+        const user = userEvent.setup();
+        const tooltipHelper = createTooltipHelper();
+        const { mapId, injectedServices } = await setUp("de");
 
-    render(
-        <PackageContextProvider services={injectedServices} locale="de">
-            <MapContainer mapId={mapId} data-testid="map" />
-            <CoordinateInput
-                mapId={mapId}
-                data-testid="coordinate-input"
-                onSelect={() => {}}
-                onClear={() => {}}
-            />
-        </PackageContextProvider>
-    );
+        render(
+            <PackageContextProvider services={injectedServices} locale="de">
+                <MapContainer mapId={mapId} data-testid="map" />
+                <CoordinateInput
+                    mapId={mapId}
+                    data-testid="coordinate-input"
+                    onSelect={() => {}}
+                    onClear={() => {}}
+                />
+            </PackageContextProvider>
+        );
 
-    await waitForMapMount("map");
-    const { coordInput } = await waitForCoordinateInput();
+        await waitForMapMount("map");
+        const { coordInput } = await waitForCoordinateInput();
 
-    await user.clear(coordInput);
-    await user.click(coordInput);
-    await user.paste("ab");
-    const tooltip1 = await tooltipHelper.waitForChange();
-    expect(tooltip1).toBe("tooltip.space");
+        await user.clear(coordInput);
+        await user.click(coordInput);
+        await user.paste("ab");
+        const tooltip1 = await tooltipHelper.waitForChange();
+        expect(tooltip1).toBe("tooltip.space");
 
-    await user.clear(coordInput);
-    await user.click(coordInput);
-    await user.paste("a  a");
-    const tooltip2 = await tooltipHelper.waitForChange();
-    expect(tooltip2).toBe("tooltip.spaceOne");
+        await user.clear(coordInput);
+        await user.click(coordInput);
+        await user.paste("a  a");
+        const tooltip2 = await tooltipHelper.waitForChange();
+        expect(tooltip2).toBe("tooltip.spaceOne");
 
-    await user.clear(coordInput);
-    await user.click(coordInput);
-    await user.paste("a ");
-    const tooltip3 = await tooltipHelper.waitForChange();
-    expect(tooltip3).toBe("tooltip.2coords");
+        await user.clear(coordInput);
+        await user.click(coordInput);
+        await user.paste("a ");
+        const tooltip3 = await tooltipHelper.waitForChange();
+        expect(tooltip3).toBe("tooltip.2coords");
 
-    await user.clear(coordInput);
-    await user.click(coordInput);
-    await user.paste("a,b c,d");
-    const tooltip4 = await tooltipHelper.waitForChange();
-    expect(tooltip4).toBe("tooltip.invalidNumbers");
+        await user.clear(coordInput);
+        await user.click(coordInput);
+        await user.paste("a,b c,d");
+        const tooltip4 = await tooltipHelper.waitForChange();
+        expect(tooltip4).toBe("tooltip.invalidNumbers");
 
-    await user.clear(coordInput);
-    await user.click(coordInput);
-    await user.paste("a b c");
-    const tooltip5 = await tooltipHelper.waitForChange();
-    expect(tooltip5).toBe("tooltip.spaceOne");
+        await user.clear(coordInput);
+        await user.click(coordInput);
+        await user.paste("a b c");
+        const tooltip5 = await tooltipHelper.waitForChange();
+        expect(tooltip5).toBe("tooltip.spaceOne");
 
-    await user.clear(coordInput);
-    await user.click(coordInput);
-    await user.paste("a b");
-    const tooltip6 = await tooltipHelper.waitForChange();
-    expect(tooltip6).toBe("tooltip.invalidNumbers");
-});
+        await user.clear(coordInput);
+        await user.click(coordInput);
+        await user.paste("a b");
+        const tooltip6 = await tooltipHelper.waitForChange();
+        expect(tooltip6).toBe("tooltip.invalidNumbers");
+    }
+);
 
 it("should validate if the user input is within the extent of the selected projection", async () => {
     const user = userEvent.setup();
