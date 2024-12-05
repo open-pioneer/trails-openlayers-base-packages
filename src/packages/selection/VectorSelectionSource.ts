@@ -31,7 +31,11 @@ export class VectorLayerSelectionSourceImpl implements VectorLayerSelectionSourc
     #eventHandler: EventsKey;
     #layerNotVisibleReason: string;
 
-    constructor(vectorLayer: VectorLayer<VectorSource, Feature>, label: string, layerNotVisibleReason: string) {
+    constructor(
+        vectorLayer: VectorLayer<VectorSource, Feature>,
+        label: string,
+        layerNotVisibleReason: string
+    ) {
         this.label = label;
         this.#vectorLayer = vectorLayer;
         this.#layerNotVisibleReason = layerNotVisibleReason;

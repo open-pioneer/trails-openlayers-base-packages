@@ -1,10 +1,13 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
 import {
     Box,
     Button,
     Checkbox,
+    Collapse,
     Flex,
+    IconButton,
     List,
     ListProps,
     Popover,
@@ -19,23 +22,73 @@ import {
     Text,
     Tooltip
 } from "@open-pioneer/chakra-integration";
-import { AnyLayer, isSublayer, Layer, MapModel } from "@open-pioneer/map";
+import { AnyLayer, Layer, MapModel, isSublayer } from "@open-pioneer/map";
+import { useEvent } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { PackageIntl } from "@open-pioneer/runtime";
 import classNames from "classnames";
 import { useIntl } from "open-pioneer:react-hooks";
+import {
+    createContext,
+    forwardRef,
+    useContext,
+    useEffect,
+    useId,
+    useImperativeHandle,
+    useMemo,
+    useRef,
+    useState
+} from "react";
 import { FiAlertTriangle, FiMoreVertical } from "react-icons/fi";
 import { useTocWidgetOptions } from "./Context";
 
+export interface LayerListRef {
+    /**
+     * state of all layer list items
+     */
+    readonly listItemsExpandedModel: ListItemsExpandedModel;
+}
+
+interface LayerListProps {
+    map: MapModel;
+    "aria-label"?: string;
+}
+
+interface LayerListCollapseContext {
+    registerExpandedState(id: string, handler: ListItemExpandedState): void;
+    unregisterExpandedState(id: string): void;
+}
+
+const LayerListContext = createContext<LayerListCollapseContext | undefined>(undefined);
+
 /**
- * Lists the (top level) operational layers in the map.
- *
- * Layer Groups are skipped in the current implementation.
+ * Lists the operational layers in the map.
  */
-export function LayerList(props: { map: MapModel; "aria-label"?: string }): JSX.Element {
+export const LayerList = forwardRef<LayerListRef, LayerListProps>((props, ref) => {
     const { map, "aria-label": ariaLabel } = props;
+
+    const expandedStates = useRef<Map<string, ListItemExpandedState>>();
+    if (!expandedStates.current) {
+        expandedStates.current = new Map();
+    }
+
+    const context = useMemo((): LayerListCollapseContext => {
+        return {
+            registerExpandedState(id: string, state: ListItemExpandedState) {
+                expandedStates.current!.set(id, state);
+            },
+            unregisterExpandedState(id: string) {
+                expandedStates.current!.delete(id);
+            }
+        };
+    }, []);
+
+    const expandedModel = useListItemsExpandedModel(expandedStates.current);
+
     const intl = useIntl();
     const layers = useLayers(map);
+    useImperativeHandle(ref, () => ({ listItemsExpandedModel: expandedModel }));
+
     if (!layers.length) {
         return (
             <Text className="toc-missing-layers" aria-label={ariaLabel}>
@@ -44,25 +97,37 @@ export function LayerList(props: { map: MapModel; "aria-label"?: string }): JSX.
         );
     }
 
-    return createList(layers, {
-        "aria-label": ariaLabel
-    });
-}
+    return (
+        <LayerListContext.Provider value={context}>
+            {createList(layers, {
+                "aria-label": ariaLabel
+            })}
+        </LayerListContext.Provider>
+    );
+});
+LayerList.displayName = "LayerList";
 
 function createList(layers: AnyLayer[], listProps: ListProps) {
-    const items = layers.map((layer) => <LayerItem key={layer.id} layer={layer} />);
-    return (
-        <List
-            // Note: not using UnorderedList because it adds default margins
-            as="ul"
-            className="toc-layer-list"
-            listStyleType="none"
-            role="group"
-            {...listProps}
-        >
-            {items}
-        </List>
+    const items = layers.map((layer) => {
+        return <LayerItem key={layer.id} layer={layer} />;
+    });
+
+    const list = (
+        <Box>
+            <List
+                // Note: not using UnorderedList because it adds default margins
+                as="ul"
+                className="toc-layer-list"
+                listStyleType="none"
+                role="group"
+                {...listProps}
+            >
+                {items}
+            </List>
+        </Box>
     );
+
+    return list;
 }
 
 /**
@@ -74,6 +139,7 @@ function LayerItem(props: { layer: AnyLayer }): JSX.Element {
     const { layer } = props;
     const intl = useIntl();
     const options = useTocWidgetOptions();
+    const layerGroupId = useId();
     const { title, description, isVisible } = useReactiveSnapshot(() => {
         return {
             title: layer.title,
@@ -84,6 +150,24 @@ function LayerItem(props: { layer: AnyLayer }): JSX.Element {
     const childLayers = useChildLayers(layer);
     const isAvailable = useLoadState(layer) !== "error";
     const notAvailableLabel = intl.formatMessage({ id: "layerNotAvailable" });
+    const [expanded, setExpanded] = useState(true);
+    const context = useContext(LayerListContext);
+    const isCollapsible = options ? options.collapsibleGroups : false;
+    const expandedSetter = useEvent((expand: boolean) => {
+        setExpanded(expand);
+    });
+    useEffect(() => {
+        if (!context) {
+            return;
+        }
+
+        context.registerExpandedState(layer.id, {
+            layerId: layer.id,
+            isExpanded: expanded,
+            setExpanded: expandedSetter
+        });
+        return () => context.unregisterExpandedState(layer.id);
+    }, [layer, context, expandedSetter, expanded]);
 
     let nestedChildren;
     if (childLayers?.length) {
@@ -132,6 +216,23 @@ function LayerItem(props: { layer: AnyLayer }): JSX.Element {
                         </span>
                     </Tooltip>
                 )}
+                {nestedChildren && isCollapsible && (
+                    <IconButton
+                        variant="ghost"
+                        borderRadius="full"
+                        padding={0}
+                        className="toc-layer-item-collapse-button"
+                        onClick={() => setExpanded(!expanded)}
+                        icon={expanded ? <ChevronUpIcon /> : <ChevronDownIcon />}
+                        aria-label={
+                            expanded
+                                ? intl.formatMessage({ id: "group.collapse" }, { title: title })
+                                : intl.formatMessage({ id: "group.expand" }, { title: title })
+                        }
+                        aria-expanded={expanded}
+                        aria-controls={layerGroupId}
+                    />
+                )}
                 <Spacer></Spacer>
                 {description && (
                     <LayerItemDescriptor
@@ -142,7 +243,11 @@ function LayerItem(props: { layer: AnyLayer }): JSX.Element {
                     />
                 )}
             </Flex>
-            {nestedChildren}
+            {nestedChildren && (
+                <Collapse in={expanded} id={layerGroupId} className="toc-collapsible-item">
+                    {nestedChildren}
+                </Collapse>
+            )}
         </Box>
     );
 }
@@ -226,4 +331,70 @@ function slug(id: string) {
         .replace(/[^a-z0-9 -]/g, "")
         .replace(/\s+/g, "-")
         .replace(/-+/g, "-");
+}
+
+/**
+ * returns memoized instance of `ListItemsExpandedModel`
+ */
+function useListItemsExpandedModel(expandedStates: Map<string, ListItemExpandedState>) {
+    const expandedModel = useMemo((): ListItemsExpandedModel => {
+        return {
+            isExpanded(layerId: string) {
+                if (expandedStates.has(layerId)) {
+                    return expandedStates.get(layerId)?.isExpanded;
+                } else {
+                    return undefined;
+                }
+            },
+            setExpanded(layerId: string, expand: boolean) {
+                expandedStates.get(layerId)?.setExpanded(expand);
+            },
+            getAllExpandedStates() {
+                return Array.from(expandedStates.values());
+            }
+        };
+    }, [expandedStates]);
+
+    return expandedModel;
+}
+
+/**
+ * setter function used to control wether a layer list item should be expanded or collapsed
+ */
+export type ListItemExpandedSetter = (expand: boolean) => void;
+
+/**
+ * manages the expanded state of a single layer list item
+ */
+export interface ListItemExpandedState {
+    /**
+     * identifier of the layer that corresponds with the list item
+     */
+    readonly layerId: string;
+    /**
+     * true if list item is expanded
+     */
+    readonly isExpanded: boolean;
+    /**
+     * setter function to expand or collapse the list item
+     */
+    readonly setExpanded: ListItemExpandedSetter;
+}
+
+/**
+ * provides access to each layer list item's expanded state
+ */
+export interface ListItemsExpandedModel {
+    /**
+     * expand or collapse list item that correspond with the `layerId`
+     */
+    readonly setExpanded: (layerId: string, expand: boolean) => void;
+    /**
+     * true if list item that corresponds with `layerId` is expanded
+     */
+    readonly isExpanded: (layerId: string) => boolean | undefined;
+    /**
+     * returns a `ListItemExpandedState` for each item in this model
+     */
+    readonly getAllExpandedStates: () => ListItemExpandedState[];
 }
