@@ -1,5 +1,56 @@
 # @open-pioneer/selection
 
+## 0.8.0
+
+### Minor Changes
+
+-   e7978a8: Support reactive changes on the `SelectionSource`'s `status` property using the reactivity API.
+    **Remove** support for the `changed:status"` event on the selection source: use signals instead.
+
+    For example, to implement a `SelectionSource` with changing availability:
+
+    ```ts
+    class MySelectionSource implements SelectionSource {
+        private _status = reactive("available");
+
+        label = "My selection source";
+
+        get status() {
+            return this._status.value;
+        }
+
+        someEventHandler() {
+            // Change the status by updating the signal's value.
+            // The UI will update automatically.
+            this._status.value = "unavailable";
+        }
+    }
+    ```
+
+-   b717121: Update from OL 9 to OL 10.
+-   b717121: Adjust the type the property `vectorLayer` of the exported interface `VectorLayerSelectionSourceOptions`.
+    The type is now `VectorLayer<VectorSource, Feature>` instead of `VectorLayer<Feature>`.
+-   2fa8020: Update trails core package dependencies.
+
+    -   Also updates Chakra UI to the latest 2.x version and Chakra React Select to version 5.
+    -   Removes any obsolete references to `@chakra-ui/system`.
+        This dependency seems to be no longer required and may lead to duplicate packages in your dependency tree.
+
+### Patch Changes
+
+-   49f0207: Update trails core packages to version 2.4.0
+-   Updated dependencies [b717121]
+-   Updated dependencies [e7978a8]
+-   Updated dependencies [7a5f1e1]
+-   Updated dependencies [7ae9f90]
+-   Updated dependencies [d8337a6]
+-   Updated dependencies [49f0207]
+-   Updated dependencies [b2127df]
+-   Updated dependencies [2fa8020]
+-   Updated dependencies [7ae9f90]
+-   Updated dependencies [d8337a6]
+    -   @open-pioneer/map@0.8.0
+
 ## 0.7.0
 
 ### Minor Changes

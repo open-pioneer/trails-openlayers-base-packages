@@ -1,5 +1,34 @@
 # @open-pioneer/editing
 
+## 0.8.0
+
+### Minor Changes
+
+-   b717121: Update from OL 9 to OL 10.
+-   e7978a8: Removed EditingWorkflowEvent; the state of the EditingWorkflow is now reactive and should be used instead.
+-   2fa8020: Update trails core package dependencies.
+
+    -   Also updates Chakra UI to the latest 2.x version and Chakra React Select to version 5.
+    -   Removes any obsolete references to `@chakra-ui/system`.
+        This dependency seems to be no longer required and may lead to duplicate packages in your dependency tree.
+
+### Patch Changes
+
+-   e7978a8: Use reactive map model APIs to access the current map container element.
+-   49f0207: Update trails core packages to version 2.4.0
+-   e7978a8: Stop draw interactions and remove tooltips before saving.
+-   Updated dependencies [b717121]
+-   Updated dependencies [e7978a8]
+-   Updated dependencies [7a5f1e1]
+-   Updated dependencies [7ae9f90]
+-   Updated dependencies [d8337a6]
+-   Updated dependencies [49f0207]
+-   Updated dependencies [b2127df]
+-   Updated dependencies [2fa8020]
+-   Updated dependencies [7ae9f90]
+-   Updated dependencies [d8337a6]
+    -   @open-pioneer/map@0.8.0
+
 ## 0.7.0
 
 ### Minor Changes
