@@ -6,7 +6,7 @@ Add new layer type `GroupLayer` to to the Map API.
 
 A `GroupLayer` contains a list of `Layer` (e.g. `SimpleLayer` or `WMSLayer`). Because `GroupLayer` is a `Layer` as well nested groups are supported.  
 The child layers of a `GroupLayer` can be accessed with the `layers` property - `layers` is `undefined` if it is not a group.
-The parent `GroupLayer` of a child layer can be accessed with the `parent` property - `parent` is `undefined` if this layer is not part of a group (or not a sublayer).  
+The parent `GroupLayer` of a child layer can be accessed with the `parent` property - `parent` is `undefined` if this layer is not part of a group (or not a sublayer).
 
 ```js
 const olLayer1 = new TileLayer({

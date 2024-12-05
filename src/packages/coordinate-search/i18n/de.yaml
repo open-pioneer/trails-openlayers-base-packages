@@ -1,0 +1,14 @@
+messages:
+  coordinateInput:
+    ariaLabel: Koordinateneingabe
+    copyPlaceholder: Kopieren
+    clearPlaceholder: Löschen
+  tooltip:
+    basic: "Ungültige Eingabe"
+    space: "Ungültige Eingabe: Bitte trennen Sie die Koordinaten mit genau einem Leerzeichen."
+    spaceOne: "Ungültige Eingabe: Bitte verwenden Sie nur genau ein Leerzeichen zum Trennen der Koordinaten."
+    2coords: "Ungültige Eingabe: Es müssen zwei Zahlen eingegeben werden."
+    invalidNumbers: "Ungültige Eingabe: Es müssen zwei gültige Zahlen eingegeben werden."
+    extent: "Die eingegebenen Koordinaten passen nicht zum Koordinatensystem. Bitte Koordinatensystem oder Koordinaten ändern."
+    projection: "Es gibt einen Fehler mit der Projektion. Bitte eine andere Projektion auswählen."
+  selected: selektiert

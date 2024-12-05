@@ -280,7 +280,11 @@ it("should add name property to measurement layer", async () => {
  * Draws a graphic using the "draw" interaction that has been registered by the controller.
  * Triggers side effects in the controller that ultimately (on completion) put a feature in the vector layer.
  */
-function doDraw(olMap: OlMap, vectorLayer: VectorLayer<VectorSource, Feature>, coordinates: [number, number][]) {
+function doDraw(
+    olMap: OlMap,
+    vectorLayer: VectorLayer<VectorSource, Feature>,
+    coordinates: [number, number][]
+) {
     if (getFirstFeature(vectorLayer)) {
         throw new Error("vector layer should be empty at the start of the test");
     }

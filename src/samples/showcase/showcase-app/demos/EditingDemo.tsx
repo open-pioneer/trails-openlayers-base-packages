@@ -132,7 +132,10 @@ class EditingController {
                         )
                     });
 
-                    const vectorLayer = layer?.olLayer as VectorLayer<VectorSource<FeatureLike>, FeatureLike>;
+                    const vectorLayer = layer?.olLayer as VectorLayer<
+                        VectorSource<FeatureLike>,
+                        FeatureLike
+                    >;
                     vectorLayer.getSource()?.refresh();
                 })
                 .catch((error: Error) => {
@@ -157,7 +160,10 @@ class EditingController {
             this.#updateEditSelectTooltip = this._createEditingSelectTooltip();
 
             const layer = this.#mapModel.layers.getLayerById("krankenhaus") as Layer;
-            const vectorLayer = layer?.olLayer as VectorLayer<VectorSource<FeatureLike>, FeatureLike>;
+            const vectorLayer = layer?.olLayer as VectorLayer<
+                VectorSource<FeatureLike>,
+                FeatureLike
+            >;
 
             this.#selectInteraction = new Select({
                 layers: [vectorLayer]

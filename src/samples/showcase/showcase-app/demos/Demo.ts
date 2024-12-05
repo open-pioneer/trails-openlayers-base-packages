@@ -9,6 +9,8 @@ import { createOverviewMapDemo } from "./OverviewMapDemo";
 import { createSearchAndHighlightDemo } from "./SearchAndHighlightDemo";
 import {
     createCoordinateViewerDemo,
+    createCoordinateInputDemo,
+    createCoordinateSearchDemo,
     createGeolocationDemo,
     createMapNavigationDemo,
     createMeasurementDemo,
@@ -69,6 +71,8 @@ export function createDemos(options: SharedDemoOptions): Demo[] {
     return [
         createTocAndLegendDemo(options),
         createCoordinateViewerDemo(options),
+        createCoordinateInputDemo(options),
+        createCoordinateSearchDemo(options),
         createScaleViewerDemo(options),
         createScaleSetterDemo(options),
         createScaleBarDemo(options),
