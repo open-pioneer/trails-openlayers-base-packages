@@ -17,10 +17,13 @@
         "build": "build-pioneer-package"
     },
     "dependencies": {
+        "@conterra/reactivity-core": "catalog:",
+        "@open-pioneer/core": "catalog:",
         "@open-pioneer/chakra-integration": "catalog:",
         "@open-pioneer/map": "workspace:^",
         "@open-pioneer/runtime": "catalog:",
         "@open-pioneer/react-utils": "catalog:",
+        "@open-pioneer/reactivity": "catalog:",
         "chakra-react-select": "catalog:",
         "@chakra-ui/icons": "catalog:",
         "ol": "catalog:",
@@ -29,6 +32,7 @@
     "devDependencies": {
         "@open-pioneer/test-utils": "catalog:",
         "@open-pioneer/map-test-utils": "workspace:^",
+        "test-utils": "workspace:^",
         "openlayers-base-packages": "workspace:*"
     },
     "publishConfig": {

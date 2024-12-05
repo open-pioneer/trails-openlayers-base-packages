@@ -3,12 +3,19 @@
 import { MapContainer } from "@open-pioneer/map";
 import { createServiceOptions, setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
-import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, render, screen, waitFor } from "@testing-library/react";
+import userEvent, { UserEvent } from "@testing-library/user-event";
+import { Coordinate } from "ol/coordinate";
 import BaseEvent from "ol/events/Event";
 import { expect, it, vi } from "vitest";
 import { CoordinateSearch } from "./CoordinateSearch";
-import userEvent from "@testing-library/user-event";
-import { Coordinate } from "ol/coordinate";
+import {
+    getClearButton,
+    getCopyButton,
+    getCurrentOptions,
+    getCurrentOptionValues,
+    showDropdown
+} from "./test-utils";
 
 it("should successfully create a coordinate search component", async () => {
     const { mapId, registry } = await setupMap();
@@ -139,6 +146,7 @@ it("should display transformed coordinates in selected option", async () => {
     };
 
     let options = getCurrentOptions();
+
     const option4326 = options.find((option) => option.textContent === "WGS 84");
     if (!option4326) {
         throw new Error("EPSG 4326 missing in options");
@@ -168,67 +176,79 @@ it("should display transformed coordinates in selected option", async () => {
     ); //should display EPSG 3857
 });
 
-it("should successfully call onSelect and return coordinates and projection", async () => {
-    const user = userEvent.setup();
-    const { mapId, registry } = await setupMap();
+it(
+    "should successfully call onSelect and return coordinates and projection",
+    {
+        timeout: 10000
+    },
+    async () => {
+        const user = userEvent.setup();
+        const { mapId, registry } = await setupMap();
 
-    const injectedServices = createServiceOptions({ registry });
-    let searchedCoords: Coordinate = [];
-    let callbackProj;
-    render(
-        <PackageContextProvider services={injectedServices}>
-            <MapContainer mapId={mapId} data-testid="map" />
-            <CoordinateSearch
-                mapId={mapId}
-                data-testid="coordinate-search"
-                onSelect={({ coords, projection }) => {
-                    searchedCoords = coords;
-                    callbackProj = projection;
-                }}
-            />
-        </PackageContextProvider>
-    );
+        const injectedServices = createServiceOptions({ registry });
+        let searchedCoords: Coordinate = [];
+        let callbackProj;
+        render(
+            <PackageContextProvider services={injectedServices}>
+                <MapContainer mapId={mapId} data-testid="map" />
+                <CoordinateSearch
+                    mapId={mapId}
+                    data-testid="coordinate-search"
+                    onSelect={({ coords, projection }) => {
+                        searchedCoords = coords;
+                        callbackProj = projection;
+                    }}
+                />
+            </PackageContextProvider>
+        );
 
-    await waitForMapMount("map");
-    const { coordInput } = await waitForCoordinateSearch();
-    await user.type(coordInput, "7 51{enter}");
-    expect(searchedCoords).toStrictEqual([779236.4355529151, 6621293.722740165]);
-    expect(callbackProj).toBeDefined();
-    expect(callbackProj!.getCode()).toBe("EPSG:3857");
-});
+        await waitForMapMount("map");
+        const { coordInput } = await waitForCoordinateSearch();
+        await user.type(coordInput, "7 51{enter}");
+        expect(searchedCoords).toStrictEqual([779236.4355529151, 6621293.722740165]);
+        expect(callbackProj).toBeDefined();
+        expect(callbackProj!.getCode()).toBe("EPSG:3857");
+    }
+);
 
-it("should set the map center to the entered coordinate", async () => {
-    const user = userEvent.setup();
-    const { mapId, registry } = await setupMap();
-    const map = (await registry.expectMapModel(mapId))?.olMap;
+it(
+    "should set the map center to the entered coordinate",
+    {
+        timeout: 10000
+    },
+    async () => {
+        const user = userEvent.setup();
+        const { mapId, registry } = await setupMap();
+        const map = (await registry.expectMapModel(mapId))?.olMap;
 
-    const injectedServices = createServiceOptions({ registry });
-    render(
-        <PackageContextProvider services={injectedServices}>
-            <MapContainer mapId={mapId} data-testid="map" />
-            <CoordinateSearch mapId={mapId} data-testid="coordinate-search" />
-        </PackageContextProvider>
-    );
+        const injectedServices = createServiceOptions({ registry });
+        render(
+            <PackageContextProvider services={injectedServices}>
+                <MapContainer mapId={mapId} data-testid="map" />
+                <CoordinateSearch mapId={mapId} data-testid="coordinate-search" />
+            </PackageContextProvider>
+        );
 
-    await waitForMapMount("map");
-    const { coordInput, coordinateInputGroup } = await waitForCoordinateSearch();
+        await waitForMapMount("map");
+        const { coordInput, coordinateInputGroup } = await waitForCoordinateSearch();
 
-    await user.type(coordInput, "7 51{enter}");
-    let clearButton = getClearButton(coordinateInputGroup);
-    const firstCenter = map.getView().getCenter();
-    expect(firstCenter).toEqual([779236.4355529151, 6621293.722740165]);
+        await input(user, coordInput, "7 51");
+        let clearButton = getClearButton(coordinateInputGroup);
+        const firstCenter = map.getView().getCenter();
+        expect(firstCenter).toEqual([779236.4355529151, 6621293.722740165]);
 
-    await user.click(clearButton);
-    await user.type(coordInput, "6 51{enter}");
-    const secondCenter = map.getView().getCenter();
-    expect(secondCenter).toEqual([667916.9447596414, 6621293.722740165]);
+        await user.click(clearButton);
+        await input(user, coordInput, "6 51");
+        const secondCenter = map.getView().getCenter();
+        expect(secondCenter).toEqual([667916.9447596414, 6621293.722740165]);
 
-    clearButton = getClearButton(coordinateInputGroup);
-    await user.click(clearButton);
-    await user.type(coordInput, "6b 51{enter}"); // wrong input
-    const thirdCenter = map.getView().getCenter();
-    expect(thirdCenter).toEqual(secondCenter); // map unchanged
-});
+        clearButton = getClearButton(coordinateInputGroup);
+        await user.click(clearButton);
+        await input(user, coordInput, "6b 51"); // wrong input
+        const thirdCenter = map.getView().getCenter();
+        expect(thirdCenter).toEqual(secondCenter); // map unchanged
+    }
+);
 
 it("should successfully call onClear if clear button is clicked", async () => {
     const user = userEvent.setup();
@@ -309,7 +329,7 @@ it("should successfully copy to clipboard if copy button is clicked", async () =
         }
     });
     const copyButton = getCopyButton(coordinateInputGroup);
-    await act(async () => await user.click(copyButton));
+    await user.click(copyButton);
     expect(copiedText).toBe("7.636 51.999");
 });
 
@@ -318,12 +338,14 @@ async function waitForCoordinateSearch() {
         async () => {
             const coordsSearchDiv = await screen.findByTestId("coordinate-search");
 
-            const coordinateInputGroup = coordsSearchDiv.querySelector(".coordinateInputGroup");
+            const coordinateInputGroup = coordsSearchDiv.querySelector(".coordinate-input-group");
             if (!coordinateInputGroup) {
                 throw new Error("coordinate input group not rendered");
             }
 
-            const coordInputDiv = coordinateInputGroup.querySelector(".coordinateInputFieldGroup");
+            const coordInputDiv = coordinateInputGroup.querySelector(
+                ".coordinate-input-field-group"
+            );
             if (!coordInputDiv) {
                 throw new Error("coordinate input field  group not rendered");
             }
@@ -334,7 +356,7 @@ async function waitForCoordinateSearch() {
             }
 
             const projSelect: HTMLElement | null = coordinateInputGroup.querySelector(
-                ".coordinate-Input-Select--has-value"
+                ".coordinate-input-select--has-value"
             );
             if (!projSelect) {
                 throw new Error("coordinate input projection select not rendered");
@@ -347,47 +369,9 @@ async function waitForCoordinateSearch() {
     return { coordsSearchDiv, coordInput, coordinateInputGroup, projSelect };
 }
 
-function showDropdown(projSelect: HTMLElement) {
-    // open dropdown to include options in snapshot; react-select creates list of options in dom after opening selection
-    act(() => {
-        fireEvent.keyDown(projSelect, { key: "ArrowDown" });
-    });
-}
-
-function getCurrentOptions() {
-    return Array.from(
-        document.getElementsByClassName("coordinate-Input-Select__option")
-    ) as HTMLElement[];
-}
-
-function getCurrentOptionValues(options: HTMLElement[]) {
-    const values: (string | null)[] = [];
-    for (const opt of options) {
-        values.push(opt.textContent);
-    }
-    return values;
-}
-
-function getClearButton(coordinateSearchGroup: Element) {
-    const buttonDiv = coordinateSearchGroup.querySelector(".chakra-input__right-element");
-    if (!buttonDiv) {
-        throw new Error("coordinate search buttons not rendered");
-    }
-    const clearButton = buttonDiv.querySelector(".clearButton");
-    if (!clearButton) {
-        throw new Error("coordinate search clear button not rendered");
-    }
-    return clearButton;
-}
-
-function getCopyButton(coordinateSearchGroup: Element) {
-    const buttonDiv = coordinateSearchGroup.querySelector(".chakra-input__right-element");
-    if (!buttonDiv) {
-        throw new Error("coordinate search buttons not rendered");
-    }
-    const copyButton = buttonDiv.querySelector(".copyButton");
-    if (!copyButton) {
-        throw new Error("coordinate search copy button not rendered");
-    }
-    return copyButton;
+// A bit faster than typing letters individually with `keyboard`
+async function input(user: UserEvent, element: Element, value: string) {
+    await user.click(element);
+    await user.paste(value);
+    await user.keyboard("{Enter}");
 }

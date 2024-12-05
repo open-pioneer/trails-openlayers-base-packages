@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`should successfully create a coordinate input component 1`] = `
+exports[`foo > should successfully create a coordinate input component 1`] = `
 <div
   class="coordinate-input css-0"
   data-testid="coordinate-input"
@@ -11,12 +11,12 @@ exports[`should successfully create a coordinate input component 1`] = `
     data-theme="light"
   >
     <div
-      class="chakra-input__group coordinateInputGroup css-1y0e7gb"
+      class="chakra-input__group coordinate-input-group css-1y0e7gb"
       data-group="true"
       data-theme="light"
     >
       <div
-        class="chakra-input__group coordinateInputFieldGroup css-1y0e7gb"
+        class="chakra-input__group coordinate-input-field-group css-1y0e7gb"
         data-group="true"
         data-theme="light"
       >
@@ -34,7 +34,7 @@ exports[`should successfully create a coordinate input component 1`] = `
         data-theme="light"
       >
         <div
-          class="coordinate-Input-Select--has-value css-79elbk"
+          class="coordinate-input-select--has-value css-79elbk"
           data-theme="light"
         >
           <span
@@ -49,15 +49,15 @@ exports[`should successfully create a coordinate input component 1`] = `
             role="log"
           />
           <div
-            class="coordinate-Input-Select__control css-1logqey"
+            class="coordinate-input-select__control css-u1k0x6"
             data-theme="light"
           >
             <div
-              class="coordinate-Input-Select__value-container coordinate-Input-Select__value-container--has-value css-odo7kh"
+              class="coordinate-input-select__value-container coordinate-input-select__value-container--has-value css-odo7kh"
               data-theme="light"
             >
               <div
-                class="coordinate-Input-Select__single-value css-1xa1gs2"
+                class="coordinate-input-select__single-value css-1xa1gs2"
                 data-theme="light"
               >
                 WGS 84
@@ -77,17 +77,130 @@ exports[`should successfully create a coordinate input component 1`] = `
               />
             </div>
             <div
-              class="coordinate-Input-Select__indicators css-hfbj6y"
+              class="coordinate-input-select__indicators css-hfbj6y"
               data-theme="light"
             >
               <hr
                 aria-orientation="vertical"
-                class="chakra-divider coordinate-Input-Select__indicator-separator css-ejwint"
+                class="chakra-divider coordinate-input-select__indicator-separator css-ejwint"
                 data-theme="light"
               />
               <div
                 aria-hidden="true"
-                class="coordinate-Input-Select__indicator coordinate-Input-Select__dropdown-indicator css-4v68kg"
+                class="coordinate-input-select__indicator coordinate-input-select__dropdown-indicator css-4v68kg"
+                data-theme="light"
+              >
+                <svg
+                  aria-hidden="true"
+                  class="chakra-icon css-onkibi"
+                  data-theme="light"
+                  focusable="false"
+                  role="presentation"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
+                    fill="currentColor"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`should successfully create a coordinate input component 1`] = `
+<div
+  class="coordinate-input css-0"
+  data-testid="coordinate-input"
+  data-theme="light"
+>
+  <div
+    class="css-1xhj18k"
+    data-theme="light"
+  >
+    <div
+      class="chakra-input__group coordinate-input-group css-1y0e7gb"
+      data-group="true"
+      data-theme="light"
+    >
+      <div
+        class="chakra-input__group coordinate-input-field-group css-1y0e7gb"
+        data-group="true"
+        data-theme="light"
+      >
+        <input
+          aria-label="coordinateInput.ariaLabel"
+          class="chakra-input css-1r29ykt"
+          data-theme="light"
+          placeholder=""
+          type="text"
+          value=""
+        />
+      </div>
+      <div
+        class="chakra-input__right-addon css-vqkjic"
+        data-theme="light"
+      >
+        <div
+          class="coordinate-input-select--has-value css-79elbk"
+          data-theme="light"
+        >
+          <span
+            class="css-1f43avz-a11yText-A11yText"
+            id="react-select-2-live-region"
+          />
+          <span
+            aria-atomic="false"
+            aria-live="polite"
+            aria-relevant="additions text"
+            class="css-1f43avz-a11yText-A11yText"
+            role="log"
+          />
+          <div
+            class="coordinate-input-select__control css-u1k0x6"
+            data-theme="light"
+          >
+            <div
+              class="coordinate-input-select__value-container coordinate-input-select__value-container--has-value css-odo7kh"
+              data-theme="light"
+            >
+              <div
+                class="coordinate-input-select__single-value css-1xa1gs2"
+                data-theme="light"
+              >
+                WGS 84
+              </div>
+              <input
+                aria-autocomplete="list"
+                aria-expanded="false"
+                aria-haspopup="true"
+                aria-label="coordinateInput.ariaLabel"
+                aria-readonly="true"
+                class="css-mohuvp-dummyInput-DummyInput"
+                id="react-select-2-input"
+                inputmode="none"
+                role="combobox"
+                tabindex="0"
+                value=""
+              />
+            </div>
+            <div
+              class="coordinate-input-select__indicators css-hfbj6y"
+              data-theme="light"
+            >
+              <hr
+                aria-orientation="vertical"
+                class="chakra-divider coordinate-input-select__indicator-separator css-ejwint"
+                data-theme="light"
+              />
+              <div
+                aria-hidden="true"
+                class="coordinate-input-select__indicator coordinate-input-select__dropdown-indicator css-4v68kg"
                 data-theme="light"
               >
                 <svg
