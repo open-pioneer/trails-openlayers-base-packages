@@ -28,6 +28,12 @@ The default value is 5.
 <Search mapId={MAP_ID} sources={searchsources} maxResultsPerGroup={10} />
 ```
 
+To change the placeholder text of the search field, use the optional property `placeholder`:
+
+```tsx
+<Search sources={searchsources} placeholder="Search for cities" />
+```
+
 ### Listening to events
 
 To listen to the events `onSelect` and `onClear`, provide optional callback functions to the component.

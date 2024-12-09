@@ -20,7 +20,7 @@ import { FlatStyle } from "ol/style/flat";
  * State while feature is being saved after user finished the geometry drawing.
  *
  * "destroyed:
- * tate after editing is stopped.
+ * state after editing is stopped.
  *
  */
 export type EditingWorkflowState =

@@ -1,5 +1,140 @@
 # @open-pioneer/map
 
+## 0.8.0
+
+### Minor Changes
+
+-   b717121: Update from OL 9 to OL 10.
+-   e7978a8: **Breaking:** Remove most events from the map model and the layer interfaces.
+    All events that were merely used to synchronized state (e.g. `changed:title` etc.) have been removed.
+
+    The map model and related objects (layers, layer collections, etc.) are now based on the [Reactivity API](https://github.com/conterra/reactivity/blob/main/packages/reactivity-core/README.md).
+    This change greatly simplifies the code that is necessary to access up-to-date values and to react to changes.
+
+    For example, from inside a React component, you can now write:
+
+    ```jsx
+    import { useReactiveSnapshot } from "@open-pioneer/reactivity";
+
+    function YourComponent() {
+        // Always up to date, even if the layer's title changes.
+        // No more need to listen to events.
+        const title = useReactiveSnapshot(() => layer.title, [layer]);
+        return <div>{title}</div>;
+    }
+    ```
+
+    And inside a normal JavaScript function, you can watch for changes like this:
+
+    ```js
+    import { watch } from "@conterra/reactivity-core";
+
+    const watchHandle = watch(
+        () => [layer.title],
+        ([newTitle]) => {
+            console.log("The title changed to", newTitle);
+        }
+    );
+
+    // Later, cleanup:
+    watchHandle.destroy();
+    ```
+
+    For more details, check the [Reactivity API documentation](https://github.com/conterra/reactivity/blob/main/packages/reactivity-core/README.md).
+
+-   7ae9f90: Add new `children` property to all layers.
+    This property makes it possible to handle any layer children in a generic fashion, regardless of the layer's actual type.
+
+    `layer.children` is either an alias of `layer.sublayers` (if the layer has sublayers), `layer.layers` (if it's a `GroupLayer`) or undefined, if the layer does not have any children.
+
+-   d8337a6: The following hooks are deprecated and will be removed in a future release:
+
+    -   `useView`
+    -   `useProjection`
+    -   `useResolution`
+    -   `useCenter`
+    -   `useScale`
+
+    They can all be replaced by using the new reactive properties on the `MapModel`, for example:
+
+    ```javascript
+    // old:
+    const center = useCenter(olMap);
+
+    // new:
+    const center = useReactiveSnapshot(() => mapModel.center, [mapModel]);
+    ```
+
+-   2fa8020: Update trails core package dependencies.
+
+    -   Also updates Chakra UI to the latest 2.x version and Chakra React Select to version 5.
+    -   Removes any obsolete references to `@chakra-ui/system`.
+        This dependency seems to be no longer required and may lead to duplicate packages in your dependency tree.
+
+-   7ae9f90: Add new layer type `GroupLayer` to to the Map API.
+
+    A `GroupLayer` contains a list of `Layer` (e.g. `SimpleLayer` or `WMSLayer`). Because `GroupLayer` is a `Layer` as well nested groups are supported.
+    The child layers of a `GroupLayer` can be accessed with the `layers` property - `layers` is `undefined` if it is not a group.
+    The parent `GroupLayer` of a child layer can be accessed with the `parent` property - `parent` is `undefined` if this layer is not part of a group (or not a sublayer).
+
+    ```js
+    const olLayer1 = new TileLayer({
+        source: new OSM()
+    });
+    const olLayer2 = new TileLayer({
+        source: new BkgTopPlusOpen()
+    });
+
+    // Create group layer with nested sub group
+    const group = new GroupLayer({
+        id: "group",
+        title: "a group layer",
+        layers: [
+            new SimpleLayer({
+                id: "member",
+                title: "group member",
+                olLayer: olLayer1
+            }),
+            new GroupLayer({
+                id: "subgroup",
+                title: "a nested group layer",
+                layers: [
+                    new SimpleLayer({
+                        id: "submember",
+                        title: "subgroup member",
+                        olLayer: olLayer2
+                    })
+                ]
+            })
+        ]
+    });
+
+    const childLayers: GroupLayerCollection = group.layers; // Access child layers
+    ```
+
+    Layers can only be added to a single group or map.
+    Sublayers (e.g. `WMSSublayer`) cannot be added to a group directly.
+
+-   d8337a6: Provide new reactive properties on the `MapModel` type.
+
+    -   `olView` (-> `olMap.getView()`)
+    -   `projection` (-> `olMap.getView().getProjection()`)
+    -   `resolution` (-> `olMap.getView().getResolution()`)
+    -   `zoomLevel` (-> `olMap.getView().getZoom()`)
+    -   `center` (-> `olMap.getView().getCenter()`)
+    -   `scale` (derived from center and resolution)
+
+    Most of the listed properties are already available on raw OpenLayers objects (see code in parentheses above).
+    However, those OpenLayers properties require manual work for synchronization, whereas the new properties are reactive (and can be watched, for example, using `useReactiveSnapshot()`).
+
+    A new method `setScale()` has also been added to the model.
+
+### Patch Changes
+
+-   7a5f1e1: Fix keyboard events from map anchors after update to OpenLayers 10.
+-   49f0207: Update trails core packages to version 2.4.0
+-   b2127df: Improve documentation of layers in README
+
 ## 0.7.0
 
 ### Minor Changes

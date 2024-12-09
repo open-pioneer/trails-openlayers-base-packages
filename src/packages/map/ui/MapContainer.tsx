@@ -233,6 +233,14 @@ function registerMapTarget(mapModel: MapModel, target: HTMLDivElement): Resource
     }
 
     LOG.isDebug() && LOG.debug(`Setting target of map '${mapId}':`, target);
+    if (!("keyboardEventTarget_" in olMap)) {
+        throw new Error(
+            "Internal error: failed to override keyboard event target. The property is no longer present."
+        );
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (olMap as any).keyboardEventTarget_ = target;
     olMap.setTarget(target);
 
     let unregistered = false;
@@ -240,6 +248,8 @@ function registerMapTarget(mapModel: MapModel, target: HTMLDivElement): Resource
         destroy() {
             if (!unregistered) {
                 LOG.isDebug() && LOG.debug(`Removing target of map '${mapId}':`, target);
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                (olMap as any).keyboardEventTarget_ = undefined;
                 olMap.setTarget(undefined);
                 unregistered = true;
             }
