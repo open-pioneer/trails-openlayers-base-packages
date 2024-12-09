@@ -161,129 +161,134 @@ exports[`should successfully create a toc component 1`] = `
         />
       </div>
     </h1>
-    <ul
-      aria-label="operationalLayerLabel"
-      class="toc-layer-list css-155za0w"
+    <div
+      class="css-0"
       data-theme="light"
-      role="group"
     >
-      <li
-        class="toc-layer-item layer-layer-2 css-0"
+      <ul
+        aria-label="operationalLayerLabel"
+        class="toc-layer-list css-155za0w"
         data-theme="light"
+        role="group"
       >
-        <div
-          class="toc-layer-item-content css-bk4v0k"
+        <li
+          class="toc-layer-item layer-layer-2 css-0"
           data-theme="light"
         >
-          <label
-            class="chakra-checkbox css-1577qb8"
-            data-checked=""
+          <div
+            class="toc-layer-item-content css-bk4v0k"
             data-theme="light"
           >
-            <input
-              aria-disabled="false"
-              aria-label="Layer 2"
-              class="chakra-checkbox__input"
-              style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
-              type="checkbox"
-              value=""
-            />
-            <span
-              aria-hidden="true"
-              class="chakra-checkbox__control css-1dnp747"
+            <label
+              class="chakra-checkbox css-1577qb8"
               data-checked=""
               data-theme="light"
             >
-              <div
-                class="css-0"
+              <input
+                aria-disabled="false"
+                aria-label="Layer 2"
+                class="chakra-checkbox__input"
+                style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
+                type="checkbox"
+                value=""
+              />
+              <span
+                aria-hidden="true"
+                class="chakra-checkbox__control css-1dnp747"
+                data-checked=""
                 data-theme="light"
-                style="display: flex; align-items: center; justify-content: center; height: 100%;"
               >
-                <svg
-                  class="css-19wnopl"
+                <div
+                  class="css-0"
                   data-theme="light"
-                  style="fill: none; stroke-width: 2; stroke: currentColor; stroke-dasharray: 16;"
-                  viewBox="0 0 12 10"
+                  style="display: flex; align-items: center; justify-content: center; height: 100%;"
                 >
-                  <polyline
-                    points="1.5 6 4.5 9 10.5 1"
-                  />
-                </svg>
-              </div>
-            </span>
-            <span
-              class="chakra-checkbox__label css-6x44c9"
-              data-checked=""
+                  <svg
+                    class="css-19wnopl"
+                    data-theme="light"
+                    style="fill: none; stroke-width: 2; stroke: currentColor; stroke-dasharray: 16;"
+                    viewBox="0 0 12 10"
+                  >
+                    <polyline
+                      points="1.5 6 4.5 9 10.5 1"
+                    />
+                  </svg>
+                </div>
+              </span>
+              <span
+                class="chakra-checkbox__label css-6x44c9"
+                data-checked=""
+                data-theme="light"
+              >
+                Layer 2
+              </span>
+            </label>
+            <div
+              class="css-17xejub"
               data-theme="light"
-            >
-              Layer 2
-            </span>
-          </label>
-          <div
-            class="css-17xejub"
-            data-theme="light"
-          />
-        </div>
-      </li>
-      <li
-        class="toc-layer-item layer-layer-1 css-0"
-        data-theme="light"
-      >
-        <div
-          class="toc-layer-item-content css-bk4v0k"
+            />
+          </div>
+        </li>
+        <li
+          class="toc-layer-item layer-layer-1 css-0"
           data-theme="light"
         >
-          <label
-            class="chakra-checkbox css-1577qb8"
-            data-checked=""
+          <div
+            class="toc-layer-item-content css-bk4v0k"
             data-theme="light"
           >
-            <input
-              aria-disabled="false"
-              aria-label="Layer 1"
-              class="chakra-checkbox__input"
-              style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
-              type="checkbox"
-              value=""
-            />
-            <span
-              aria-hidden="true"
-              class="chakra-checkbox__control css-1dnp747"
+            <label
+              class="chakra-checkbox css-1577qb8"
               data-checked=""
               data-theme="light"
             >
-              <div
-                class="css-0"
+              <input
+                aria-disabled="false"
+                aria-label="Layer 1"
+                class="chakra-checkbox__input"
+                style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
+                type="checkbox"
+                value=""
+              />
+              <span
+                aria-hidden="true"
+                class="chakra-checkbox__control css-1dnp747"
+                data-checked=""
                 data-theme="light"
-                style="display: flex; align-items: center; justify-content: center; height: 100%;"
               >
-                <svg
-                  class="css-19wnopl"
+                <div
+                  class="css-0"
                   data-theme="light"
-                  style="fill: none; stroke-width: 2; stroke: currentColor; stroke-dasharray: 16;"
-                  viewBox="0 0 12 10"
+                  style="display: flex; align-items: center; justify-content: center; height: 100%;"
                 >
-                  <polyline
-                    points="1.5 6 4.5 9 10.5 1"
-                  />
-                </svg>
-              </div>
-            </span>
-            <span
-              class="chakra-checkbox__label css-6x44c9"
-              data-checked=""
+                  <svg
+                    class="css-19wnopl"
+                    data-theme="light"
+                    style="fill: none; stroke-width: 2; stroke: currentColor; stroke-dasharray: 16;"
+                    viewBox="0 0 12 10"
+                  >
+                    <polyline
+                      points="1.5 6 4.5 9 10.5 1"
+                    />
+                  </svg>
+                </div>
+              </span>
+              <span
+                class="chakra-checkbox__label css-6x44c9"
+                data-checked=""
+                data-theme="light"
+              >
+                Layer 1
+              </span>
+            </label>
+            <div
+              class="css-17xejub"
               data-theme="light"
-            >
-              Layer 1
-            </span>
-          </label>
-          <div
-            class="css-17xejub"
-            data-theme="light"
-          />
-        </div>
-      </li>
-    </ul>
+            />
+          </div>
+        </li>
+      </ul>
+    </div>
   </div>
 </div>
 `;
