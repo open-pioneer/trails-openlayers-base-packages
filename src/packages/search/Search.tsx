@@ -263,10 +263,10 @@ function useCustomComponents(): SelectProps<SearchOption, false, SearchGroupOpti
  * Customizes components styles within the select component.
  */
 function useChakraStyles() {
-    const [groupHeadingBg, focussedItemBg] = useToken(
+    const [groupHeadingBg, focussedItemBg, textColor] = useToken(
         "colors",
-        ["trails.100", "trails.50"],
-        ["#d5e5ec", "#eaf2f5"]
+        ["trails.100", "trails.50", "chakra-body-text"],
+        ["#d5e5ec", "#eaf2f5", "#1A202C"]
     );
     return useMemo(() => {
         const chakraStyles: ChakraStylesConfig<SearchOption, false, SearchGroupOption> = {
@@ -283,6 +283,10 @@ function useChakraStyles() {
                 backgroundColor: "inherit",
                 _focus: {
                     backgroundColor: focussedItemBg
+                },
+                _selected: {
+                    // Prevent white on white
+                    color: textColor
                 }
             }),
             dropdownIndicator: (provided) => ({
@@ -291,7 +295,7 @@ function useChakraStyles() {
             })
         };
         return chakraStyles;
-    }, [groupHeadingBg, focussedItemBg]);
+    }, [groupHeadingBg, focussedItemBg, textColor]);
 }
 
 /**
