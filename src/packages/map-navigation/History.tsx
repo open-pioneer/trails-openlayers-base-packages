@@ -10,6 +10,7 @@ import { useIntl } from "open-pioneer:react-hooks";
 import { FC, ForwardedRef, forwardRef, RefAttributes } from "react";
 import { FiCornerUpLeft, FiCornerUpRight } from "react-icons/fi";
 import { useHistoryViewModel } from "./ViewHistoryModel";
+import { ButtonProps } from "@open-pioneer/chakra-integration";
 
 export type HistoryForwardProps = Omit<HistoryProps, "viewDirection">;
 
@@ -44,6 +45,13 @@ export interface HistoryProps
         RefAttributes<HTMLButtonElement>,
         MapModelProps {
     /**
+     * Additional properties for the `Button` element.
+     *
+     * Note that the ToolButton also defines some of these props.
+     */
+    buttonProps?: Partial<ButtonProps>;
+
+    /**
      * The view direction.
      *
      * The button will either view forward or view backward depending on this value.
@@ -59,7 +67,7 @@ export const History: FC<HistoryProps> = forwardRef(function History(
     ref: ForwardedRef<HTMLButtonElement>
 ) {
     const intl = useIntl();
-    const { viewDirection } = props;
+    const { buttonProps, viewDirection } = props;
     const { map } = useMapModel(props);
     const viewModel = useHistoryViewModel(map);
     const { defaultClassName, buttonLabel, buttonIcon } = getDirectionProps(intl, viewDirection);
@@ -93,6 +101,7 @@ export const History: FC<HistoryProps> = forwardRef(function History(
             <ToolButton
                 ref={ref}
                 {...containerProps}
+                buttonProps={buttonProps}
                 label={buttonLabel}
                 icon={buttonIcon}
                 onClick={navigate}
