@@ -241,12 +241,17 @@ export interface LayerCollection {
     addLayer(layer: Layer): void;
 
     /**
-     * Returns all operational layers.
+     * Returns a list of operational layers on the top level.
+     * This does not include sublayers or layers in (nested) groups.
+     * Since this includes only top level layers the return type is a list of {@link Layer}
      */
     getOperationalLayers(options?: LayerRetrievalOptions): Layer[];
 
     /**
-     * Returns all operational layers.
+     * Depending on `includeChildLayers`, this returns a list of all operational layers or all operational layers on the top level.
+     * If `includeChildLayers` is `true` it returns a flat list that contains all parent layers and child layers.
+     * Since this can also include {@link Sublayer} the return type is a list of {@link AnyLayer}.
+     * If the hierachy of child layers is deeply nested this operation can become costly if  `includeChildLayers` is `true`.
      */
     getOperationalLayers(
         options?: LayerRetrievalOptions & { includeChildLayers: boolean }
@@ -258,12 +263,17 @@ export interface LayerCollection {
     getLayerById(id: string): AnyLayer | undefined;
 
     /**
-     * Returns all layers known to this collection.
+     * Returns a list of top level layers known to this collection.
+     * This does not include sublayers or layers in (nested) groups.
+     * Since this includes only top level layers the return type is a list of {@link Layer}
      */
     getAllLayers(options?: LayerRetrievalOptions): Layer[];
 
     /**
-     * Returns all layers known to this collection.
+     * Depending on `includeChildLayers`, this returns a list of all layers or all top level layers known to this collection.
+     * If `includeChildLayers` is `true` it returns a flat list that contains all parent layers and child layers.
+     * Since this can also include {@link Sublayer} the return type is a list of {@link AnyLayer}.
+     * If the hierachy of child layers is deeply nested this operation can become costly if  `includeChildLayers` is `true`.
      */
     getAllLayers(options?: LayerRetrievalOptions & { includeChildLayers: boolean }): AnyLayer[];
 
