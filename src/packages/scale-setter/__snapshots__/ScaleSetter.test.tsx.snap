@@ -30,7 +30,6 @@ exports[`should successfully create a scale Setter component 1`] = `
       <svg
         aria-hidden="true"
         class="chakra-icon css-onkibi"
-        data-theme="light"
         focusable="false"
         viewBox="0 0 24 24"
       >
@@ -74,7 +73,6 @@ exports[`should successfully create a scale setter component with additional css
       <svg
         aria-hidden="true"
         class="chakra-icon css-onkibi"
-        data-theme="light"
         focusable="false"
         viewBox="0 0 24 24"
       >

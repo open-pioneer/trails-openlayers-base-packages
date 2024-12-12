@@ -8,7 +8,6 @@ exports[`should successfully create a search component 1`] = `
 >
   <div
     class="search-component css-79elbk"
-    data-theme="light"
   >
     <span
       class="css-1f43avz-a11yText-A11yText"
@@ -23,15 +22,12 @@ exports[`should successfully create a search component 1`] = `
     />
     <div
       class="react-select__control css-i2418r"
-      data-theme="light"
     >
       <div
         class="search-value-container react-select__value-container css-j93siq"
-        data-theme="light"
       >
         <svg
           class="chakra-icon css-onkibi"
-          data-theme="light"
           focusable="false"
           style="position: absolute; left: 8px;"
           viewBox="0 0 24 24"
@@ -43,14 +39,12 @@ exports[`should successfully create a search component 1`] = `
         </svg>
         <div
           class="react-select__placeholder css-hji3d9"
-          data-theme="light"
           id="react-select-2-placeholder"
         >
           searchPlaceholder
         </div>
         <div
           class="react-select__input-container css-18euh9p"
-          data-theme="light"
           data-value=""
         >
           <input
@@ -63,7 +57,6 @@ exports[`should successfully create a search component 1`] = `
             autocomplete="off"
             autocorrect="off"
             class="react-select__input css-10wwmqn"
-            data-theme="light"
             id="react-select-2-input"
             role="combobox"
             spellcheck="false"
@@ -75,22 +68,18 @@ exports[`should successfully create a search component 1`] = `
       </div>
       <div
         class="react-select__indicators css-hfbj6y"
-        data-theme="light"
       >
         <hr
           aria-orientation="vertical"
           class="chakra-divider react-select__indicator-separator css-1xamfek"
-          data-theme="light"
         />
         <div
           aria-hidden="true"
           class="react-select__indicator react-select__dropdown-indicator css-am4s01"
-          data-theme="light"
         >
           <svg
             aria-hidden="true"
             class="chakra-icon css-onkibi"
-            data-theme="light"
             focusable="false"
             role="presentation"
             viewBox="0 0 24 24"

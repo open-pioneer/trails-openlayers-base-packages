@@ -246,6 +246,13 @@ export interface LayerCollection {
     getOperationalLayers(options?: LayerRetrievalOptions): Layer[];
 
     /**
+     * Returns all operational layers.
+     */
+    getOperationalLayers(
+        options?: LayerRetrievalOptions & { includeChildLayers: boolean }
+    ): AnyLayer[];
+
+    /**
      * Returns the layer identified by the `id` or undefined, if no such layer exists.
      */
     getLayerById(id: string): AnyLayer | undefined;
@@ -254,6 +261,11 @@ export interface LayerCollection {
      * Returns all layers known to this collection.
      */
     getAllLayers(options?: LayerRetrievalOptions): Layer[];
+
+    /**
+     * Returns all layers known to this collection.
+     */
+    getAllLayers(options?: LayerRetrievalOptions & { includeChildLayers: boolean }): AnyLayer[];
 
     /**
      * Removes a layer identified by the `id` from the map.

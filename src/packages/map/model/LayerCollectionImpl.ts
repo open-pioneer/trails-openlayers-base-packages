@@ -3,7 +3,7 @@
 import { batch, reactive, reactiveSet } from "@conterra/reactivity-core";
 import { createLogger } from "@open-pioneer/core";
 import OlBaseLayer from "ol/layer/Base";
-import { Layer, LayerCollection, LayerRetrievalOptions, AnyLayer, Sublayer } from "../api";
+import { Layer, LayerCollection, LayerRetrievalOptions, AnyLayer, Sublayer, isLayer } from "../api";
 import { AbstractLayer } from "./AbstractLayer";
 import { AbstractLayerBase } from "./AbstractLayerBase";
 import { MapModelImpl } from "./MapModelImpl";
@@ -96,16 +96,40 @@ export class LayerCollectionImpl implements LayerCollection {
         return true;
     }
 
-    getOperationalLayers(options?: LayerRetrievalOptions): Layer[] {
+    getOperationalLayers(options?: LayerRetrievalOptions): Layer[];
+    getOperationalLayers(
+        options?: LayerRetrievalOptions & { includeChildLayers: boolean }
+    ): AnyLayer[];
+    getOperationalLayers(
+        options?: LayerRetrievalOptions & { includeChildLayers: boolean }
+    ): Layer[] | AnyLayer[] {
         return this.getAllLayers(options).filter((layer) => !layer.isBaseLayer);
     }
 
-    getAllLayers(options?: LayerRetrievalOptions): Layer[] {
+    getAllLayers(options?: LayerRetrievalOptions): Layer[];
+    getAllLayers(options?: LayerRetrievalOptions & { includeChildLayers: boolean }): AnyLayer[];
+    getAllLayers(
+        options?: LayerRetrievalOptions & { includeChildLayers: boolean }
+    ): Layer[] | AnyLayer[] {
         const layers = Array.from(this.#topLevelLayers.values());
-        if (options?.sortByDisplayOrder) {
-            sortLayersByDisplayOrder(layers);
+
+        if (!options) {
+            return layers;
+        } else {
+            if (!options.includeChildLayers) {
+                if (options.sortByDisplayOrder) {
+                    sortLayersByDisplayOrder(layers);
+                }
+                return layers;
+            } else {
+                const childLayers = this.#getAllChildLayers(layers);
+                const allLayers = childLayers.concat(layers);
+                if (options.sortByDisplayOrder) {
+                    sortLayersByDisplayOrder(allLayers);
+                }
+                return allLayers;
+            }
         }
-        return layers;
     }
 
     getLayerById(id: string): AnyLayer | undefined {
@@ -273,14 +297,43 @@ export class LayerCollectionImpl implements LayerCollection {
         };
         visit(model);
     }
+
+    #getAllChildLayers(topLevelLayers: Layer[]): AnyLayer[] {
+        const allLayers: AnyLayer[] = [];
+
+        for (const topLvlLayer of topLevelLayers) {
+            const childLayers = this.#getChildLayers(topLvlLayer); //get (nested) childlayers recursively
+            allLayers.push(...childLayers);
+        }
+
+        return allLayers;
+    }
+
+    #getChildLayers(layer: AnyLayer): AnyLayer[] {
+        if (layer.children && layer.children.getItems().length > 0) {
+            const childLayers = layer.children.getItems();
+            for (const childLayer of layer.children.getItems()) {
+                childLayers.push(...this.#getChildLayers(childLayer));
+            }
+            return childLayers;
+        } else {
+            return [];
+        }
+    }
 }
 
-function sortLayersByDisplayOrder(layers: Layer[]) {
+function sortLayersByDisplayOrder(layers: AnyLayer[]) {
     layers.sort((left, right) => {
         // currently layers are added with increasing z-index (base layers: 0), so
         // ordering by z-index is automatically the correct display order.
-        const leftZ = left.olLayer.getZIndex() ?? 1;
-        const rightZ = right.olLayer.getZIndex() ?? 1;
+        const leftIsLayer = isLayer(left);
+        const rightIsLayer = isLayer(right);
+        const leftZ = leftIsLayer
+            ? (left.olLayer.getZIndex() ?? 1)
+            : (left.parentLayer.olLayer.getZIndex() ?? 1);
+        const rightZ = rightIsLayer
+            ? (right.olLayer.getZIndex() ?? 1)
+            : (right.parentLayer.olLayer.getZIndex() ?? 1);
         return leftZ - rightZ;
     });
 }
