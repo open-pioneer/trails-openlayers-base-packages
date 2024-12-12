@@ -241,21 +241,16 @@ export interface LayerCollection {
     addLayer(layer: Layer): void;
 
     /**
-     * Returns a list of operational layers on the top level.
-     * This does not include sublayers or layers in (nested) groups.
-     * Since this includes only top level layers the return type is a list of {@link Layer}
-     */
-    getOperationalLayers(options?: LayerRetrievalOptions): Layer[];
-
-    /**
-     * Depending on `includeChildLayers`, this returns a list of all operational layers or all operational layers on the top level.
-     * If `includeChildLayers` is `true` it returns a flat list that contains all parent layers and child layers.
-     * Since this can also include {@link Sublayer} the return type is a list of {@link AnyLayer}.
-     * If the hierachy of child layers is deeply nested this operation can become costly if  `includeChildLayers` is `true`.
+     * Returns a list of operational layers.
+     * Depending on `includeChildLayers`, this returns a list of all operational layers or only operational layers on the top level.
+     * If `includeChildLayers` is `true` it returns a flat list that contains all parent layers and child layers, otherwise only top level layers are included.
+     * If parameter `includeChildLayers` is provided this returns list of {@link AnyLayer} since it can include {@link Sublayer}, otherwise a list of {@link Layer} is returned.
+     * If the hierachy of child layers is deeply nested this operation can become costly if `includeChildLayers` is `true`.
      */
     getOperationalLayers(
         options?: LayerRetrievalOptions & { includeChildLayers: boolean }
     ): AnyLayer[];
+    getOperationalLayers(options?: LayerRetrievalOptions): Layer[];
 
     /**
      * Returns the layer identified by the `id` or undefined, if no such layer exists.
@@ -263,19 +258,14 @@ export interface LayerCollection {
     getLayerById(id: string): AnyLayer | undefined;
 
     /**
-     * Returns a list of top level layers known to this collection.
-     * This does not include sublayers or layers in (nested) groups.
-     * Since this includes only top level layers the return type is a list of {@link Layer}
-     */
-    getAllLayers(options?: LayerRetrievalOptions): Layer[];
-
-    /**
-     * Depending on `includeChildLayers`, this returns a list of all layers or all top level layers known to this collection.
-     * If `includeChildLayers` is `true` it returns a flat list that contains all parent layers and child layers.
-     * Since this can also include {@link Sublayer} the return type is a list of {@link AnyLayer}.
-     * If the hierachy of child layers is deeply nested this operation can become costly if  `includeChildLayers` is `true`.
+     * Returns a list of layers known to this collection. This includes base layers and operational layers.
+     * Depending on `includeChildLayers`, this returns a list of all layers or only top level layers.
+     * If `includeChildLayers` is `true` it returns a flat list that contains all parent layers and child layers, otherwise only top level layers are included.
+     * If parameter `includeChildLayers` is provided this returns list of {@link AnyLayer} since it can include {@link Sublayer}, otherwise a list of {@link Layer} is returned.
+     * If the hierachy of child layers is deeply nested this operation can become costly if `includeChildLayers` is `true`.
      */
     getAllLayers(options?: LayerRetrievalOptions & { includeChildLayers: boolean }): AnyLayer[];
+    getAllLayers(options?: LayerRetrievalOptions): Layer[];
 
     /**
      * Removes a layer identified by the `id` from the map.

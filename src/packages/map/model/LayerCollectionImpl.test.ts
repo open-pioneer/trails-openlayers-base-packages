@@ -638,9 +638,9 @@ it("it should return all layers including children", async () => {
         layers: [base, group]
     });
 
-    const allLayers = model.layers.getAllLayers({includeChildLayers: true});
+    const allLayers = model.layers.getAllLayers({ includeChildLayers: true });
     expect(allLayers.length).toBe(3); //base & group & child
-    const topLevelLayers = model.layers.getAllLayers({includeChildLayers: false});
+    const topLevelLayers = model.layers.getAllLayers({ includeChildLayers: false });
     expect(topLevelLayers.length).toBe(2); //base & group
 });
 
@@ -673,9 +673,11 @@ it("it should return all operational layers including children", async () => {
         layers: [base, group]
     });
 
-    const allOperationalLayers = model.layers.getOperationalLayers({includeChildLayers: true});
+    const allOperationalLayers = model.layers.getOperationalLayers({ includeChildLayers: true });
     expect(allOperationalLayers.length).toBe(2); //group & child
-    const topLevelOperationalLayers = model.layers.getOperationalLayers({includeChildLayers: false});
+    const topLevelOperationalLayers = model.layers.getOperationalLayers({
+        includeChildLayers: false
+    });
     expect(topLevelOperationalLayers.length).toBe(1); //group
 });
 
