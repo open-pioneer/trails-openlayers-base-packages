@@ -99,7 +99,7 @@ export function useScale(map: OlMap | undefined): number | undefined {
          * Returns the appropriate scale for the given resolution and units, see OpenLayers function getScaleForResolution()
          * https://github.com/openlayers/openlayers/blob/7fa9df03431e9e1bc517e6c414565d9f848a3132/src/ol/control/ScaleLine.js#L454C3-L454C24
          */
-        const pointResolution = getPointResolution(projection, resolution, center);
+        const pointResolution = getPointResolution(projection, resolution, center, "m"); //point resolution in meter per pixel
         const scale = Math.round(pointResolution * INCHES_PER_METRE * DEFAULT_DPI);
         return scale;
     }, [projection, resolution, center]);
