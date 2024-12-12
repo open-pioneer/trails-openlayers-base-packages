@@ -609,6 +609,76 @@ describe("base layers", () => {
     });
 });
 
+it("it should return all layers including children", async () => {
+    const olBase = new TileLayer({
+        source: new OSM()
+    });
+    const base = new SimpleLayerImpl({
+        id: "base",
+        title: "baselayer",
+        olLayer: olBase,
+        isBaseLayer: true
+    });
+
+    const olLayer = new TileLayer({
+        source: new OSM()
+    });
+    const child = new SimpleLayerImpl({
+        id: "member",
+        title: "group member",
+        olLayer: olLayer
+    });
+    const group = new GroupLayer({
+        id: "group",
+        title: "group test",
+        layers: [child]
+    });
+
+    model = await create("foo", {
+        layers: [base, group]
+    });
+
+    const allLayers = model.layers.getAllLayers({includeChildLayers: true});
+    expect(allLayers.length).toBe(3); //base & group & child
+    const topLevelLayers = model.layers.getAllLayers({includeChildLayers: false});
+    expect(topLevelLayers.length).toBe(2); //base & group
+});
+
+it("it should return all operational layers including children", async () => {
+    const olBase = new TileLayer({
+        source: new OSM()
+    });
+    const base = new SimpleLayerImpl({
+        id: "base",
+        title: "baselayer",
+        olLayer: olBase,
+        isBaseLayer: true
+    });
+
+    const olLayer = new TileLayer({
+        source: new OSM()
+    });
+    const child = new SimpleLayerImpl({
+        id: "member",
+        title: "group member",
+        olLayer: olLayer
+    });
+    const group = new GroupLayer({
+        id: "group",
+        title: "group test",
+        layers: [child]
+    });
+
+    model = await create("foo", {
+        layers: [base, group]
+    });
+
+    const allOperationalLayers = model.layers.getOperationalLayers({includeChildLayers: true});
+    expect(allOperationalLayers.length).toBe(2); //group & child
+    const topLevelOperationalLayers = model.layers.getOperationalLayers({includeChildLayers: false});
+    expect(topLevelOperationalLayers.length).toBe(1); //group
+});
+
 function getLayerProps(layer: Layer) {
     return {
         title: layer.title,
