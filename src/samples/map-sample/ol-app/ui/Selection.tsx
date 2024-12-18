@@ -83,6 +83,7 @@ export function SelectionComponent() {
             >
                 <Selection
                     sources={sources}
+                    availableSelectionMethods={["point", "extent"]}
                     onSelectionComplete={onSelectionComplete}
                     onSelectionSourceChanged={onSelectionSourceChanged}
                 />
