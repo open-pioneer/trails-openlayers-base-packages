@@ -4,8 +4,12 @@ messages:
   operationalLayerLabel: "Layer"
   childgroupLabel: "Layergruppe {title}"
   missingLayers: "Es sind keine Layer vorhanden."
+  group:
+    expand: "Gruppe ausklappen"
+    collapse: "Gruppe einklappen"
   error: "Beim Erstellen des Karteninhalts ist ein Fehler aufgetreten."
   layerNotAvailable: "Layer nicht verfügbar"
   toolsLabel: "Kartenwerkzeuge"
   tools:
     hideAllLayers: "Alle Karteninhalte ausblenden"
+    collapseAllGroups: "Alle Gruppen einklappen"

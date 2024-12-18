@@ -14,12 +14,20 @@ import { useIntl } from "open-pioneer:react-hooks";
 import { FC } from "react";
 import { FiMoreVertical } from "react-icons/fi";
 import { ToolsConfig } from "./Toc";
+import { ListItemsExpandedModel } from "./LayerList";
 
-export const Tools: FC<{ map: MapModel } & ToolsConfig> = (props) => {
+export const Tools: FC<
+    { map: MapModel; listItemsExpandedModel: ListItemsExpandedModel | undefined } & ToolsConfig
+> = (props) => {
     const intl = useIntl();
-    const { map, showHideAllLayers = true } = props;
+    const {
+        map,
+        listItemsExpandedModel,
+        showHideAllLayers = true,
+        showCollapseAllGroups = true
+    } = props;
 
-    const noEntry = !showHideAllLayers;
+    const noEntry = !showHideAllLayers && !showCollapseAllGroups;
 
     return (
         !noEntry && (
@@ -37,14 +45,28 @@ export const Tools: FC<{ map: MapModel } & ToolsConfig> = (props) => {
                     />
                     <Portal>
                         <MenuList className="tools-menu">
-                            <MenuItem
-                                aria-label={intl.formatMessage({ id: "tools.hideAllLayers" })}
-                                onClick={() => {
-                                    hideAllLayers(map);
-                                }}
-                            >
-                                {intl.formatMessage({ id: "tools.hideAllLayers" })}
-                            </MenuItem>
+                            {showHideAllLayers && (
+                                <MenuItem
+                                    aria-label={intl.formatMessage({ id: "tools.hideAllLayers" })}
+                                    onClick={() => {
+                                        hideAllLayers(map);
+                                    }}
+                                >
+                                    {intl.formatMessage({ id: "tools.hideAllLayers" })}
+                                </MenuItem>
+                            )}
+                            {showCollapseAllGroups && (
+                                <MenuItem
+                                    aria-label={intl.formatMessage({
+                                        id: "tools.collapseAllGroups"
+                                    })}
+                                    onClick={() => {
+                                        collapseAllGroups(listItemsExpandedModel);
+                                    }}
+                                >
+                                    {intl.formatMessage({ id: "tools.collapseAllGroups" })}
+                                </MenuItem>
+                            )}
                         </MenuList>
                     </Portal>
                 </Menu>
@@ -68,4 +90,14 @@ function hideAllLayers(map: MapModel | undefined) {
     map?.layers.getOperationalLayers().forEach((layer) => {
         hide(layer);
     });
+}
+
+function collapseAllGroups(listItemsExpandedModel: ListItemsExpandedModel | undefined) {
+    if (!listItemsExpandedModel) {
+        return;
+    }
+
+    listItemsExpandedModel
+        .getAllExpandedStates()
+        .forEach((itemExpandedState) => itemExpandedState.setExpanded(false));
 }
