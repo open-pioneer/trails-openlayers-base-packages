@@ -326,14 +326,8 @@ function sortLayersByDisplayOrder(layers: AnyLayer[]) {
     layers.sort((left, right) => {
         // currently layers are added with increasing z-index (base layers: 0), so
         // ordering by z-index is automatically the correct display order.
-        const leftIsLayer = isLayer(left);
-        const rightIsLayer = isLayer(right);
-        const leftZ = leftIsLayer
-            ? (left.olLayer.getZIndex() ?? 1)
-            : (left.parentLayer.olLayer.getZIndex() ?? 1);
-        const rightZ = rightIsLayer
-            ? (right.olLayer.getZIndex() ?? 1)
-            : (right.parentLayer.olLayer.getZIndex() ?? 1);
+        const leftZ = getZIndexForAnyLayer(left);
+        const rightZ = getZIndexForAnyLayer(right);
         return leftZ - rightZ;
     });
 }
@@ -344,4 +338,37 @@ function checkLayerInstance(object: Layer): asserts object is Layer & AbstractLa
             `Layer is not a valid layer instance. Use one of the classes provided by the map package instead.`
         );
     }
+}
+
+function getZIndexForAnyLayer(layer: AnyLayer): number {
+    //if layer has zIndex, simply return that zIndex
+    if (isLayer(layer)) {
+        const layerZIndex = layer.olLayer.getZIndex();
+        //make explicit checks because 0 is a valid zIndex which would evaluate to false
+        if (layerZIndex !== undefined && layerZIndex !== null && !Number.isNaN(layerZIndex)) {
+            return layerZIndex;
+        }
+    }
+
+    
+    //if layer has no zIndex, find nearest parent with zIndex
+    let parent = layer.parent;
+    while (parent) {
+        if (isLayer(parent)) {
+            const parentLayerZIndex = parent.olLayer.getZIndex();
+            if (
+                parentLayerZIndex !== undefined &&
+                parentLayerZIndex !== null &&
+                !Number.isNaN(parentLayerZIndex)
+            ) {
+                return parentLayerZIndex;
+            }
+            parent = parent.parent;
+        }else{
+            parent = parent.parentLayer; //no need to traverse nested sublayers -> directly jump to parent layer of sublayer
+        }
+    }
+
+    //return 0 as default for baselayers and 1 for operational layers
+    return isLayer(layer) && layer.isBaseLayer ? 0 : 1;
 }
