@@ -247,11 +247,11 @@ export interface LayerCollection {
      * If parameter `includeChildLayers` is provided this returns list of {@link AnyLayer} since it can include {@link Sublayer}, otherwise a list of {@link Layer} is returned.
      * If the hierachy of child layers is deeply nested this operation can become costly if `includeChildLayers` is `true`.
      */
+
+    getOperationalLayers(options?: LayerRetrievalOptions): Layer[];
     getOperationalLayers(
         options?: LayerRetrievalOptions & { includeChildLayers: boolean }
     ): AnyLayer[];
-    getOperationalLayers(options?: LayerRetrievalOptions): Layer[];
-
     /**
      * Returns the layer identified by the `id` or undefined, if no such layer exists.
      */
@@ -264,8 +264,9 @@ export interface LayerCollection {
      * If parameter `includeChildLayers` is provided this returns list of {@link AnyLayer} since it can include {@link Sublayer}, otherwise a list of {@link Layer} is returned.
      * If the hierachy of child layers is deeply nested this operation can become costly if `includeChildLayers` is `true`.
      */
-    getAllLayers(options?: LayerRetrievalOptions & { includeChildLayers: boolean }): AnyLayer[];
     getAllLayers(options?: LayerRetrievalOptions): Layer[];
+    getAllLayers(options?: LayerRetrievalOptions & { includeChildLayers: boolean }): AnyLayer[];
+
 
     /**
      * Removes a layer identified by the `id` from the map.
