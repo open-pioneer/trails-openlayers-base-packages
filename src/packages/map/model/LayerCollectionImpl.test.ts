@@ -681,6 +681,45 @@ it("it should return all operational layers including children", async () => {
     expect(topLevelOperationalLayers.length).toBe(1); //group
 });
 
+it("it should return all layers including children ordered by display order (asc)", async () => {
+    const olBase = new TileLayer({
+        source: new OSM()
+    });
+    const base = new SimpleLayerImpl({
+        id: "base",
+        title: "baselayer",
+        olLayer: olBase,
+        isBaseLayer: true
+    });
+
+    const olLayer = new TileLayer({
+        source: new OSM()
+    });
+    const child = new SimpleLayerImpl({
+        id: "member",
+        title: "group member",
+        olLayer: olLayer
+    });
+    const group = new GroupLayer({
+        id: "group",
+        title: "group test",
+        layers: [child]
+    });
+
+    model = await create("foo", {
+        layers: [base, group]
+    });
+
+    const allLayers = model.layers.getAllLayers({
+        includeChildLayers: true,
+        sortByDisplayOrder: true
+    });
+    expect(allLayers.length).toBe(3);
+    expect(allLayers[0]).toBe(base);
+    expect(allLayers[1]).toBe(child);
+    expect(allLayers[2]).toBe(group);
+});
+
 function getLayerProps(layer: Layer) {
     return {
         title: layer.title,

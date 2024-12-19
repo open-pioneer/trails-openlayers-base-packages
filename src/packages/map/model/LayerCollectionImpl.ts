@@ -350,7 +350,6 @@ function getZIndexForAnyLayer(layer: AnyLayer): number {
         }
     }
 
-    
     //if layer has no zIndex, find nearest parent with zIndex
     let parent = layer.parent;
     while (parent) {
@@ -364,7 +363,7 @@ function getZIndexForAnyLayer(layer: AnyLayer): number {
                 return parentLayerZIndex;
             }
             parent = parent.parent;
-        }else{
+        } else {
             parent = parent.parentLayer; //no need to traverse nested sublayers -> directly jump to parent layer of sublayer
         }
     }
