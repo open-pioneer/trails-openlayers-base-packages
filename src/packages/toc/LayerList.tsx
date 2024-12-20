@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
+import { ChevronDownIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import {
     Box,
     Button,
@@ -189,6 +189,22 @@ function LayerItem(props: { layer: AnyLayer }): JSX.Element {
                 /** Aligned to the size of the (potential) menu button in LayerItemDescriptor */
                 minHeight={10}
             >
+                <IconButton
+                    variant="ghost"
+                    borderRadius="full"
+                    padding={0}
+                    className="toc-layer-item-collapse-button"
+                    onClick={() => setExpanded(!expanded)}
+                    icon={expanded ? <ChevronDownIcon /> : <ChevronRightIcon />}
+                    aria-label={
+                        expanded
+                            ? intl.formatMessage({ id: "group.collapse" }, { title: title })
+                            : intl.formatMessage({ id: "group.expand" }, { title: title })
+                    }
+                    aria-expanded={expanded}
+                    aria-controls={layerGroupId}
+                    visibility={nestedChildren && isCollapsible ? "visible" : "hidden"} //use visible:hidden for layers without children for correct indent
+                />
                 <Checkbox
                     // Keyboard navigation jumps only to Checkboxes and uses the texts inside this DOM node. The aria-labels of Tooltip and Icon is ignored by screenreader because they are no child element of the checkbox. To consider the notAvailableLabel, an aria-label at the checkbox is necessary.
                     aria-label={title + (!isAvailable ? " " + notAvailableLabel : "")}
@@ -215,23 +231,6 @@ function LayerItem(props: { layer: AnyLayer }): JSX.Element {
                             />
                         </span>
                     </Tooltip>
-                )}
-                {nestedChildren && isCollapsible && (
-                    <IconButton
-                        variant="ghost"
-                        borderRadius="full"
-                        padding={0}
-                        className="toc-layer-item-collapse-button"
-                        onClick={() => setExpanded(!expanded)}
-                        icon={expanded ? <ChevronUpIcon /> : <ChevronDownIcon />}
-                        aria-label={
-                            expanded
-                                ? intl.formatMessage({ id: "group.collapse" }, { title: title })
-                                : intl.formatMessage({ id: "group.expand" }, { title: title })
-                        }
-                        aria-expanded={expanded}
-                        aria-controls={layerGroupId}
-                    />
                 )}
                 <Spacer></Spacer>
                 {description && (
