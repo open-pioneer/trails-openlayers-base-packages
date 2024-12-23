@@ -48,7 +48,8 @@
             "=======",
             "@changesets/assemble-release-plan: don't bump major when peers change",
             "react-select: patched to use composedPath() in event conditions; needed for web component integration (see https://github.com/JedWatson/react-select/issues/5824)",
-            "@chakra-ui/menu;react-use-outside-click;hooks: patched to fix menus in shadow dom (see https://github.com/open-pioneer/trails-openlayers-base-packages/issues/184)"
+            "@chakra-ui/menu;react-use-outside-click;hooks: patched to fix menus in shadow dom (see https://github.com/open-pioneer/trails-openlayers-base-packages/issues/184)",
+            "react-color: patched to remove use of defaultProps from Circle and CircleSwatch components (see https://github.com/casesandberg/react-color/issues/888)"
         ],
         "overrides": {
             "semver@<7.5.2": ">=7.5.2",
@@ -68,7 +69,8 @@
         "patchedDependencies": {
             "@changesets/assemble-release-plan@6.0.4": "patches/@changesets__assemble-release-plan.patch",
             "react-select@5.8.0": "patches/react-select@5.8.0.patch",
-            "@chakra-ui/hooks@2.4.3": "patches/@chakra-ui__hooks.patch"
+            "@chakra-ui/hooks@2.4.3": "patches/@chakra-ui__hooks.patch",
+            "react-color@2.19.3": "patches/react-color@2.19.3.patch"
         }
     },
     "devDependencies": {

@@ -23,7 +23,7 @@ catalogs:
       version: 11.13.0
     '@maplibre/maplibre-gl-style-spec':
       specifier: ^22.0.0
-      version: 22.0.0
+      version: 22.0.1
     '@open-pioneer/base-theme':
       specifier: ^2.4.0
       version: 2.4.0
@@ -254,6 +254,9 @@ patchedDependencies:
   '@changesets/assemble-release-plan@6.0.4':
     hash: h7fa74ddz2lm7t3hquqctf7dgq
     path: patches/@changesets__assemble-release-plan.patch
+  react-color@2.19.3:
+    hash: bf7xu5bz6u6swhjy74bfafn4z4
+    path: patches/react-color@2.19.3.patch
   react-select@5.8.0:
     hash: dmr4eel47u7r4xswxh72mgmyuq
     path: patches/react-select@5.8.0.patch
@@ -267,7 +270,7 @@ importers:
         version: 2.27.9
       '@maplibre/maplibre-gl-style-spec':
         specifier: 'catalog:'
-        version: 22.0.0
+        version: 22.0.1
       '@open-pioneer/build-package-cli':
         specifier: 'catalog:'
         version: 2.1.1(sass@1.80.3)(typescript@5.6.3)
@@ -434,7 +437,7 @@ importers:
         version: 3.0.12
       react-color:
         specifier: 'catalog:'
-        version: 2.19.3(react@18.3.1)
+        version: 2.19.3(patch_hash=bf7xu5bz6u6swhjy74bfafn4z4)(react@18.3.1)
 
   src/packages/basemap-switcher:
     dependencies:
@@ -1398,7 +1401,7 @@ importers:
         version: 4.0.10
       new-editing:
         specifier: workspace:^
-        version: link:../../../packages/new-editing
+        version: link:../../../experimental-packages/new-editing
       ol:
         specifier: 'catalog:'
         version: 10.3.1
@@ -2592,10 +2595,6 @@ packages:
 
   '@mapbox/unitbezier@0.0.1':
     resolution: {integrity: sha512-nMkuDXFv60aBr9soUG5q+GvZYL+2KZHVvsqFCzqnkGEf46U2fvmytHaEVc1/YZbiLn8X+eR3QzX1+dwDO1lxlw==}
-
-  '@maplibre/maplibre-gl-style-spec@22.0.0':
-    resolution: {integrity: sha512-kD8TxV6CdgHIEeam4xODVJNAT3hcvRhRl5RcNiu+FPR/JoMsExAQTruBGtv+jLppj4xt9V56pG/SHK8z6fv6xA==}
-    hasBin: true
 
   '@maplibre/maplibre-gl-style-spec@22.0.1':
     resolution: {integrity: sha512-V7bSw7Ui6+NhpeeuYqGoqamvKuy+3+uCvQ/t4ZJkwN8cx527CAlQQQ2kp+w5R9q+Tw6bUAH+fsq+mPEkicgT8g==}
@@ -6793,16 +6792,6 @@ snapshots:
 
   '@mapbox/unitbezier@0.0.1': {}
 
-  '@maplibre/maplibre-gl-style-spec@22.0.0':
-    dependencies:
-      '@mapbox/jsonlint-lines-primitives': 2.0.2
-      '@mapbox/unitbezier': 0.0.1
-      json-stringify-pretty-compact: 4.0.0
-      minimist: 1.2.8
-      quickselect: 3.0.0
-      rw: 1.3.3
-      tinyqueue: 3.0.0
-
   '@maplibre/maplibre-gl-style-spec@22.0.1':
     dependencies:
       '@mapbox/jsonlint-lines-primitives': 2.0.2
@@ -9722,7 +9711,7 @@ snapshots:
       '@babel/runtime': 7.25.6
       react: 18.3.1
 
-  react-color@2.19.3(react@18.3.1):
+  react-color@2.19.3(patch_hash=bf7xu5bz6u6swhjy74bfafn4z4)(react@18.3.1):
     dependencies:
       '@icons/material': 0.2.4(react@18.3.1)
       lodash: 4.17.21
