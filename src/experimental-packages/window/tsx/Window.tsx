@@ -10,9 +10,19 @@ import type { WindowFrame } from "./frame/frame";
 import { useZIndex } from "./zindex/useZIndex";
 
 export function Window({
-    title, identifier, minWidth, minHeight, maxWidth, maxHeight,
-    resizable = true, closable = true, draggable = true, dragAnywhere = false,
-    children, onClose, ...windowFrame
+    title,
+    identifier,
+    minWidth,
+    minHeight,
+    maxWidth,
+    maxHeight,
+    resizable = true,
+    closable = true,
+    draggable = true,
+    dragAnywhere = false,
+    children,
+    onClose,
+    ...windowFrame
 }: WindowProps): ReactElement {
     const { initialFrame, onResizeStop, onDragStop } = useFrame(identifier, windowFrame);
     const [zIndex, bringToFront] = useZIndex();

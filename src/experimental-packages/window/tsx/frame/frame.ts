@@ -5,10 +5,12 @@ import type { Props as RndProps } from "react-rnd";
 export function toRndFrame(windowFrame: WindowFrame): RndFrame {
     return {
         x: Math.max(
-            0, windowFrame.left ?? window.innerWidth - windowFrame.right - windowFrame.width
+            0,
+            windowFrame.left ?? window.innerWidth - windowFrame.right - windowFrame.width
         ),
         y: Math.max(
-            0, windowFrame.top ?? window.innerHeight - windowFrame.bottom - windowFrame.height
+            0,
+            windowFrame.top ?? window.innerHeight - windowFrame.bottom - windowFrame.height
         ),
         width: windowFrame.width ?? window.innerWidth - windowFrame.left - windowFrame.right,
         height: windowFrame.height ?? window.innerHeight - windowFrame.top - windowFrame.bottom
@@ -44,7 +46,7 @@ type Horizontal = Xor<Value<"left" | "width">, Value<"right" | "width">, Value<"
 type Vertical = Xor<Value<"top" | "height">, Value<"bottom" | "height">, Value<"top" | "bottom">>;
 
 type Value<K extends string> = {
-    readonly [L in K]: number
+    readonly [L in K]: number;
 };
 
 type Xor<T, U, V> = (T & Without<T, U | V>) | (U & Without<U, T | V>) | (V & Without<V, T | U>);

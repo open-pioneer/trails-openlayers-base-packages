@@ -24,7 +24,9 @@ export function TitleBar({ title, closeable, onClose }: TitleBarProps): ReactEle
             onMouseDown={preventFocus}
         >
             <Flex direction="row" justify="space-between" align="center">
-                <Text fontWeight="bold" fontSize="md">{title}</Text>
+                <Text fontWeight="bold" fontSize="md">
+                    {title}
+                </Text>
                 {closeable && (
                     <IconButton
                         icon={<MdClose />}

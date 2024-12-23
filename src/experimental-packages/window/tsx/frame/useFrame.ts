@@ -6,10 +6,7 @@ import { toRndFrame, type RndFrame, type WindowFrame } from "./frame";
 import { useFrameSavers, type FrameSavers } from "./useFrameSavers";
 import { useLocalStorageFrame } from "./useLocalStorageFrame";
 
-export function useFrame(
-    identifier: string | undefined,
-    windowFrame: WindowFrame
-): FrameObject {
+export function useFrame(identifier: string | undefined, windowFrame: WindowFrame): FrameObject {
     const [localStorageFrame, setLocalStorageFrame] = useLocalStorageFrame(identifier);
 
     const initialFrame = useMemo(() => {

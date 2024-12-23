@@ -1,7 +1,11 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import {
-    SimpleLayer, WMSLayer, type Layer, type MapConfigProvider, type MapConfig
+    SimpleLayer,
+    WMSLayer,
+    type Layer,
+    type MapConfigProvider,
+    type MapConfig
 } from "@open-pioneer/map";
 
 import { Tile as TileLayer } from "ol/layer";
@@ -19,10 +23,7 @@ export class MainMapProvider implements MapConfigProvider {
                 zoom: 14
             },
             projection: "EPSG:3857",
-            layers: [
-                this.createOSMLayer(),
-                this.createStrassenLayer()
-            ]
+            layers: [this.createOSMLayer(), this.createStrassenLayer()]
         };
     }
 

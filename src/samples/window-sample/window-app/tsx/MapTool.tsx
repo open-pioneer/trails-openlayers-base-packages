@@ -11,9 +11,12 @@ import type { ReactElement } from "react";
 
 import { ToolWindow, type ToolbarStateProps } from "./ToolWindow";
 
-export function MapTool(
-    { tool, toolbarStateKey, toolbarState, setToolbarState }: MapToolProps
-): ReactElement {
+export function MapTool({
+    tool,
+    toolbarStateKey,
+    toolbarState,
+    setToolbarState
+}: MapToolProps): ReactElement {
     const { formatMessage } = useIntl();
 
     switch (tool) {

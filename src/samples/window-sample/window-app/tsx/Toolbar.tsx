@@ -5,26 +5,36 @@ import { ToolButton } from "@open-pioneer/map-ui-components";
 import { useIntl } from "open-pioneer:react-hooks";
 import { useCallback, useMemo, type Dispatch, type ReactElement, type SetStateAction } from "react";
 import {
-    PiBookmarkSimpleLight, PiImagesLight, PiListLight, PiPrinterLight, PiRulerLight
+    PiBookmarkSimpleLight,
+    PiImagesLight,
+    PiListLight,
+    PiPrinterLight,
+    PiRulerLight
 } from "react-icons/pi";
 
 export function Toolbar({ state, setState }: ToolbarProps): ReactElement {
     const { formatMessage } = useIntl();
 
-    const toggleState = useCallback((key: keyof ToolbarState) => {
-        setState((state) => ({
-            ...state,
-            [key]: !state[key]
-        }));
-    }, [setState]);
+    const toggleState = useCallback(
+        (key: keyof ToolbarState) => {
+            setState((state) => ({
+                ...state,
+                [key]: !state[key]
+            }));
+        },
+        [setState]
+    );
 
-    const callbacks = useMemo(() => ({
-        toggleBookmarks: () => toggleState("bookmarksAreActive"),
-        toggleLegend: () => toggleState("legendIsActive"),
-        toggleMeasurement: () => toggleState("measurementIsActive"),
-        togglePrinting: () => toggleState("printingIsActive"),
-        toggleToc: () => toggleState("tocIsActive")
-    }), [toggleState]);
+    const callbacks = useMemo(
+        () => ({
+            toggleBookmarks: () => toggleState("bookmarksAreActive"),
+            toggleLegend: () => toggleState("legendIsActive"),
+            toggleMeasurement: () => toggleState("measurementIsActive"),
+            togglePrinting: () => toggleState("printingIsActive"),
+            toggleToc: () => toggleState("tocIsActive")
+        }),
+        [toggleState]
+    );
 
     return (
         <VStack spacing={2}>

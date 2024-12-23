@@ -10,20 +10,23 @@ export function useFrameSavers(
 ): FrameSavers {
     const size = useRef({ width, height });
 
-    return useMemo(() => ({
-        onResizeStop(_, __, { style }, ___, { x, y }) {
-            const newSize = {
-                width: parseInt(style.width),
-                height: parseInt(style.height)
-            };
-            setLocalStorageFrame({ x, y, ...newSize });
-            size.current = newSize;
-        },
+    return useMemo(
+        () => ({
+            onResizeStop(_, __, { style }, ___, { x, y }) {
+                const newSize = {
+                    width: parseInt(style.width),
+                    height: parseInt(style.height)
+                };
+                setLocalStorageFrame({ x, y, ...newSize });
+                size.current = newSize;
+            },
 
-        onDragStop(_, { x, y }) {
-            setLocalStorageFrame({ x, y, ...size.current });
-        }
-    }), [setLocalStorageFrame]);
+            onDragStop(_, { x, y }) {
+                setLocalStorageFrame({ x, y, ...size.current });
+            }
+        }),
+        [setLocalStorageFrame]
+    );
 }
 
 export type FrameSavers = Pick<RndProps, "onResizeStop" | "onDragStop">;

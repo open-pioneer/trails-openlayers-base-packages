@@ -4,10 +4,10 @@ import { useMemo } from "react";
 import { isRndFrame, normalize, type RndFrame } from "./frame";
 
 export function useLocalStorageFrame(identifier: string | undefined): LocalStorageFrameState {
-    return useMemo(() => [
-        getFrame(identifier),
-        (frame) => setFrame(identifier, frame)
-    ], [identifier]);
+    return useMemo(
+        () => [getFrame(identifier), (frame) => setFrame(identifier, frame)],
+        [identifier]
+    );
 }
 
 function getFrame(identifier: string | undefined): RndFrame | undefined {
@@ -35,7 +35,9 @@ function setFrame(identifier: string | undefined, frame: RndFrame): void {
             const item = JSON.stringify(frame);
             localStorage.setItem(key, item);
         }
-    } catch { /* ignore */ }
+    } catch {
+        /* ignore */
+    }
 }
 
 function getLocalStorageKey(identifier: string): string {
