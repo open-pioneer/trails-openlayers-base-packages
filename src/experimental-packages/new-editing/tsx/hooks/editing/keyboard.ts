@@ -24,17 +24,24 @@ function matchesShortcut(
     shortcut: KeyboardShortcut,
     isApple: boolean
 ): boolean {
-    const isMatch = event.key.toLowerCase() === shortcut.key.toLowerCase() &&
+    const isMatch =
+        event.key.toLowerCase() === shortcut.key.toLowerCase() &&
         event.altKey === (shortcut.altKey ?? false) &&
         event.shiftKey === (shortcut.shiftKey ?? false);
 
     if (isApple) {
         // On Apple platforms, the Command key is represented by 'metaKey'.
-        return isMatch && event.metaKey === (shortcut.ctrlKey ?? false) &&
-            event.ctrlKey === (shortcut.metaKey ?? false);
+        return (
+            isMatch &&
+            event.metaKey === (shortcut.ctrlKey ?? false) &&
+            event.ctrlKey === (shortcut.metaKey ?? false)
+        );
     } else {
-        return isMatch && event.ctrlKey === (shortcut.ctrlKey ?? false) &&
-            event.metaKey === (shortcut.metaKey ?? false);
+        return (
+            isMatch &&
+            event.ctrlKey === (shortcut.ctrlKey ?? false) &&
+            event.metaKey === (shortcut.metaKey ?? false)
+        );
     }
 }
 

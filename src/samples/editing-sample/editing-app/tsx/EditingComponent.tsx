@@ -7,7 +7,11 @@ import { Layer } from "ol/layer";
 import { useCallback, useMemo, useState, type ReactElement } from "react";
 
 import {
-    Editor, FeatureTemplate, type EditingHandler, type OnEditingStepChange, type FieldInputsProvider
+    Editor,
+    FeatureTemplate,
+    type EditingHandler,
+    type OnEditingStepChange,
+    type FieldInputsProvider
 } from "new-editing";
 
 import { FEATURE_TEMPLATES } from "./featureTemplates";
@@ -63,53 +67,59 @@ function useEditingHandler(): EditingHandler {
         return new Promise((resolve) => setTimeout(resolve, 300));
     }, []);
 
-    return useMemo(() => ({
-        async addFeature(feature, template, projection) {
-            const store = getStore(template.id);
-            if (store != null) {
-                await addArtificialDelay();
-                await store.addFeature(feature, projection);
-                refreshLayer(template.id);
-            } else {
-                throw new Error(`No such store with ID ${template.id}`);
-            }
-        },
+    return useMemo(
+        () => ({
+            async addFeature(feature, template, projection) {
+                const store = getStore(template.id);
+                if (store != null) {
+                    await addArtificialDelay();
+                    await store.addFeature(feature, projection);
+                    refreshLayer(template.id);
+                } else {
+                    throw new Error(`No such store with ID ${template.id}`);
+                }
+            },
 
-        async updateFeature(feature, layer, projection) {
-            const id = layer?.get("id");
-            const store = getStore(id);
-            if (store != null) {
-                await addArtificialDelay();
-                await store.updateFeature(feature, projection);
-            } else {
-                throw new Error(`No such store with ID ${id}`);
-            }
-        },
+            async updateFeature(feature, layer, projection) {
+                const id = layer?.get("id");
+                const store = getStore(id);
+                if (store != null) {
+                    await addArtificialDelay();
+                    await store.updateFeature(feature, projection);
+                } else {
+                    throw new Error(`No such store with ID ${id}`);
+                }
+            },
 
-        async deleteFeature(feature, layer) {
-            const id = layer?.get("id");
-            const store = getStore(id);
-            if (store != null) {
-                await addArtificialDelay();
-                await store.deleteFeature(feature);
-            } else {
-                throw new Error(`No such store with ID ${id}`);
+            async deleteFeature(feature, layer) {
+                const id = layer?.get("id");
+                const store = getStore(id);
+                if (store != null) {
+                    await addArtificialDelay();
+                    await store.deleteFeature(feature);
+                } else {
+                    throw new Error(`No such store with ID ${id}`);
+                }
             }
-        }
-    }), [addArtificialDelay, refreshLayer]);
+        }),
+        [addArtificialDelay, refreshLayer]
+    );
 }
 
 function useFieldInputsProvider(templates: FeatureTemplate[]): FieldInputsProvider {
-    return useMemo(() => ({
-        getFieldInputsForExistingFeature(_, layer) {
-            const layerId = layer?.get("id");
-            if (layerId != null) {
-                return templates.find(({ id }) => id === layerId)?.fieldInputs;
-            } else {
-                return undefined;
+    return useMemo(
+        () => ({
+            getFieldInputsForExistingFeature(_, layer) {
+                const layerId = layer?.get("id");
+                if (layerId != null) {
+                    return templates.find(({ id }) => id === layerId)?.fieldInputs;
+                } else {
+                    return undefined;
+                }
             }
-        }
-    }), [templates]);
+        }),
+        [templates]
+    );
 }
 
 function useTitle(): [string, OnEditingStepChange] {
@@ -135,14 +145,21 @@ function useTitle(): [string, OnEditingStepChange] {
 function useRefreshLayer(): (id: string) => void {
     const { map: mapModel } = useMapModel();
 
-    return useCallback((id) => {
-        const layer = mapModel?.layers.getLayerById(id);
-        if (layer?.type === "simple" && layer.olLayer instanceof Layer) {
-            layer?.olLayer.getSource().refresh();
-        }
-    }, [mapModel?.layers]);
+    return useCallback(
+        (id) => {
+            const layer = mapModel?.layers.getLayerById(id);
+            if (layer?.type === "simple" && layer.olLayer instanceof Layer) {
+                layer?.olLayer.getSource().refresh();
+            }
+        },
+        [mapModel?.layers]
+    );
 }
 
 const EDITABLE_LAYER_IDS: LayerId[] = [
-    "waldschaeden", "waldwege", "schutzgebiete", "bodenproben", "aufforstungsflaechen"
+    "waldschaeden",
+    "waldwege",
+    "schutzgebiete",
+    "bodenproben",
+    "aufforstungsflaechen"
 ];

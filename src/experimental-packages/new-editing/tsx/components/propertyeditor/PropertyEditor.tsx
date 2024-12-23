@@ -8,9 +8,12 @@ import { DeleteConfirmationDialog } from "./DeleteConfirmationDialog";
 import { usePropertyFormContext } from "../../context/usePropertyFormContext";
 import type { AsyncVoidCallback, VoidCallback } from "../../types/types";
 
-export function PropertyEditor(
-    { children, onSave, onDelete, onCancel }: PropertyEditorProps
-): ReactElement {
+export function PropertyEditor({
+    children,
+    onSave,
+    onDelete,
+    onCancel
+}: PropertyEditorProps): ReactElement {
     const { mode, isValid, feature, properties } = usePropertyFormContext();
     const { isOpen: dialogIsOpen, onOpen: openDialog, onClose: closeDialog } = useDisclosure();
 

@@ -5,13 +5,13 @@ import type { Feature } from "ol";
 import type { Layer } from "ol/layer";
 import { useEffect, useMemo, type ReactElement } from "react";
 
-import { DefaultInputControl, } from "./DefaultInputControl";
+import { DefaultInputControl } from "./DefaultInputControl";
 import { usePropertyFormContext } from "../../context/usePropertyFormContext";
 import type { FeatureTemplate, FieldInput } from "../../model/FeatureTemplate";
 
-export function DefaultPropertyForm(
-    { fieldInputsProvider }: DefaultPropertyFormProps
-): ReactElement {
+export function DefaultPropertyForm({
+    fieldInputsProvider
+}: DefaultPropertyFormProps): ReactElement {
     const fieldInputs = useFieldInputs(fieldInputsProvider);
     useUpdateValidity(fieldInputs);
 

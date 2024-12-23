@@ -7,9 +7,7 @@ import { Vector as VectorSource } from "ol/source";
 import type { IDBFeatureStore } from "../store/IDBFeatureStore";
 
 export class IDBVectorSource extends VectorSource {
-    constructor(
-        private readonly store: IDBFeatureStore
-    ) {
+    constructor(private readonly store: IDBFeatureStore) {
         super({
             format: new GeoJSON(),
             strategy: bbox,

@@ -11,7 +11,7 @@ export function getStore(databaseName: string | undefined): IDBFeatureStore | un
 }
 
 export function createStore(databaseName: string): IDBFeatureStore {
-    return stores[databaseName] ??= new IDBFeatureStore(databaseName, UTM32N);
+    return (stores[databaseName] ??= new IDBFeatureStore(databaseName, UTM32N));
 }
 
 const stores: Record<string, IDBFeatureStore> = {};

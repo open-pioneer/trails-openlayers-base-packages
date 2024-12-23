@@ -1,7 +1,12 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import {
-    Box, Button, Popover, PopoverContent, PopoverTrigger, useDisclosure
+    Box,
+    Button,
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+    useDisclosure
 } from "@open-pioneer/chakra-integration";
 
 import { useCallback, type ReactElement } from "react";
@@ -11,10 +16,13 @@ import type { Callback } from "../../types/types";
 export function ColorPicker({ hexColor, colors, onChange }: ColorPickerProps): ReactElement {
     const { isOpen, onOpen, onClose } = useDisclosure();
 
-    const onChangeComplete = useCallback((color: ColorResult) => {
-        onChange(color.hex);
-        onClose();
-    }, [onChange, onClose]);
+    const onChangeComplete = useCallback(
+        (color: ColorResult) => {
+            onChange(color.hex);
+            onClose();
+        },
+        [onChange, onClose]
+    );
 
     return (
         <Popover placement="right-start" isOpen={isOpen} onOpen={onOpen} onClose={onClose}>

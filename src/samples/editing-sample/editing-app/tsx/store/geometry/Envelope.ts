@@ -8,6 +8,10 @@ export interface Envelope {
 }
 
 export function envelopesOverlap(envelopeA: Envelope, envelopeB: Envelope): boolean {
-    return envelopeA.minX <= envelopeB.maxX && envelopeA.maxX >= envelopeB.minX
-        && envelopeA.minY <= envelopeB.maxY && envelopeA.maxY >= envelopeB.minY;
+    return (
+        envelopeA.minX <= envelopeB.maxX &&
+        envelopeA.maxX >= envelopeB.minX &&
+        envelopeA.minY <= envelopeB.maxY &&
+        envelopeA.maxY >= envelopeB.minY
+    );
 }

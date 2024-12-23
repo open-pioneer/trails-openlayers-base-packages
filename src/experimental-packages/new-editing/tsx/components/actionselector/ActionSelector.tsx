@@ -12,9 +12,12 @@ import type { Action } from "../../model/Action";
 import type { FeatureTemplate } from "../../model/FeatureTemplate";
 import type { Callback } from "../../types/types";
 
-export function ActionSelector(
-    { templates, showActionBar, onActionChange, ...actionBarProps }: ActionSelectorProps
-): ReactElement {
+export function ActionSelector({
+    templates,
+    showActionBar,
+    onActionChange,
+    ...actionBarProps
+}: ActionSelectorProps): ReactElement {
     const [selectButtonIsActive, setSelectButtonActive] = useState(false);
     const [selectedTemplate, setSelectedTemplate] = useState<FeatureTemplate>();
 
@@ -26,11 +29,14 @@ export function ActionSelector(
         onActionChange(!selectButtonIsActive ? "select" : undefined);
     }, [selectButtonIsActive, onActionChange]);
 
-    const onTemplateClick = useCallback((newTemplate: FeatureTemplate) => {
-        setSelectedTemplate((template) => template !== newTemplate ? newTemplate : undefined);
-        setSelectButtonActive(false);
-        onActionChange(selectedTemplate !== newTemplate ? newTemplate : undefined);
-    }, [selectedTemplate, onActionChange]);
+    const onTemplateClick = useCallback(
+        (newTemplate: FeatureTemplate) => {
+            setSelectedTemplate((template) => (template !== newTemplate ? newTemplate : undefined));
+            setSelectButtonActive(false);
+            onActionChange(selectedTemplate !== newTemplate ? newTemplate : undefined);
+        },
+        [selectedTemplate, onActionChange]
+    );
 
     return (
         <Flex direction="column" height="full" rowGap={3} align="stretch">

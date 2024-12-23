@@ -1,8 +1,12 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import {
-    NumberInput, NumberInputField, NumberInputStepper, NumberIncrementStepper,
-    NumberDecrementStepper, type NumberInputProps
+    NumberInput,
+    NumberInputField,
+    NumberInputStepper,
+    NumberIncrementStepper,
+    NumberDecrementStepper,
+    type NumberInputProps
 } from "@open-pioneer/chakra-integration";
 import { useCallback, useEffect, useRef, useState, type ReactElement } from "react";
 import type { Callback } from "../../types/types";
@@ -10,22 +14,32 @@ import type { Callback } from "../../types/types";
 // This component allows its value to be specified as a number. The value is still stored as a
 // string internally to allow non-numeric characters (such as '-', '.', or 'e') to be entered.
 export function NumericInput({
-    value, onNumberChange, placeholder = EM_DASH, showSteppers = true,
-    min, max, step, precision, ...props
+    value,
+    onNumberChange,
+    placeholder = EM_DASH,
+    showSteppers = true,
+    min,
+    max,
+    step,
+    precision,
+    ...props
 }: NumericInputProps): ReactElement {
     const [stringValue, setStringValue] = useState(() => toString(value, precision));
     const setNumericValue = useNumericState(value, precision, setStringValue);
 
-    const onChange = useCallback((newStringValue: string, newNumericValue: number) => {
-        setStringValue(newStringValue);
-        if (!isNaN(newNumericValue)) {
-            setNumericValue(newNumericValue);
-            onNumberChange?.(newNumericValue);
-        } else if (newStringValue === "") {
-            setNumericValue(undefined);
-            onNumberChange?.(undefined);
-        }
-    }, [setNumericValue, onNumberChange]);
+    const onChange = useCallback(
+        (newStringValue: string, newNumericValue: number) => {
+            setStringValue(newStringValue);
+            if (!isNaN(newNumericValue)) {
+                setNumericValue(newNumericValue);
+                onNumberChange?.(newNumericValue);
+            } else if (newStringValue === "") {
+                setNumericValue(undefined);
+                onNumberChange?.(undefined);
+            }
+        },
+        [setNumericValue, onNumberChange]
+    );
 
     const inputRef = useRef<HTMLInputElement>(null);
 
@@ -68,9 +82,7 @@ function useNumericState(
     return setNumericValue;
 }
 
-function toString(
-    number: number | undefined, precision: number | undefined
-): string | undefined {
+function toString(number: number | undefined, precision: number | undefined): string | undefined {
     return precision != null ? number?.toFixed(precision) : number?.toString();
 }
 

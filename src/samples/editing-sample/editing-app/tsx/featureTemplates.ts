@@ -19,8 +19,9 @@ export const FEATURE_TEMPLATES: LayerIdFeatureTemplate[] = [
                 label: "Baumart",
                 fieldName: "baumart",
                 inputType: "textField",
-                required: true,
-            }, {
+                required: true
+            },
+            {
                 label: "Schadursache",
                 fieldName: "schadursache",
                 inputType: "select",
@@ -30,21 +31,26 @@ export const FEATURE_TEMPLATES: LayerIdFeatureTemplate[] = [
                     {
                         label: "abiotische Ursache",
                         value: 1
-                    }, {
+                    },
+                    {
                         label: "Bakterienerkrankung",
                         value: 2
-                    }, {
+                    },
+                    {
                         label: "Insektenbefall",
                         value: 3
-                    }, {
+                    },
+                    {
                         label: "Pilzbefall",
                         value: 4
-                    }, {
+                    },
+                    {
                         label: "Wildverbiss",
                         value: 5
                     }
                 ]
-            }, {
+            },
+            {
                 label: "Schadmenge",
                 fieldName: "schadmenge",
                 inputType: "number",
@@ -53,7 +59,8 @@ export const FEATURE_TEMPLATES: LayerIdFeatureTemplate[] = [
                 precision: 0,
                 step: 1,
                 showSteppers: true
-            }, {
+            },
+            {
                 label: "Schadumfang [%]",
                 fieldName: "schadumfang",
                 inputType: "number",
@@ -61,14 +68,16 @@ export const FEATURE_TEMPLATES: LayerIdFeatureTemplate[] = [
                 max: 100,
                 precision: 1,
                 showSteppers: false
-            }, {
+            },
+            {
                 label: "Sanierungszustand",
                 fieldName: "saniert",
                 inputType: "checkBox",
                 checkBoxLabel: "Saniert"
             }
         ]
-    }, {
+    },
+    {
         id: "waldwege",
         name: "Waldweg",
         geometryType: "LineString",
@@ -83,21 +92,26 @@ export const FEATURE_TEMPLATES: LayerIdFeatureTemplate[] = [
                     {
                         label: "Abfuhrweg",
                         value: 1
-                    }, {
+                    },
+                    {
                         label: "Forstbetriebsweg",
                         value: 2
-                    }, {
+                    },
+                    {
                         label: "Maschinenweg",
                         value: 3
-                    }, {
+                    },
+                    {
                         label: "Rückegasse",
                         value: 4
-                    }, {
+                    },
+                    {
                         label: "Seiltrasse",
                         value: 5
                     }
                 ]
-            }, {
+            },
+            {
                 label: "Befahrbarkeit",
                 fieldName: "befahrbarkeit",
                 inputType: "select",
@@ -106,15 +120,18 @@ export const FEATURE_TEMPLATES: LayerIdFeatureTemplate[] = [
                     {
                         label: "gut",
                         value: "gut"
-                    }, {
+                    },
+                    {
                         label: "mittel",
                         value: "mittel"
-                    }, {
+                    },
+                    {
                         label: "schlecht",
                         value: "schlecht"
                     }
                 ]
-            }, {
+            },
+            {
                 label: "Wegbreite [m]",
                 fieldName: "wegbreite",
                 inputType: "number",
@@ -124,7 +141,8 @@ export const FEATURE_TEMPLATES: LayerIdFeatureTemplate[] = [
                 showSteppers: true
             }
         ]
-    }, {
+    },
+    {
         id: "schutzgebiete",
         name: "Schutzgebiet",
         geometryType: "Polygon",
@@ -142,49 +160,62 @@ export const FEATURE_TEMPLATES: LayerIdFeatureTemplate[] = [
                     {
                         label: "Bannwald",
                         value: 1
-                    }, {
+                    },
+                    {
                         label: "Biosphärenreservat",
                         value: 2
-                    }, {
+                    },
+                    {
                         label: "Biotop",
                         value: 3
-                    }, {
+                    },
+                    {
                         label: "Erholungswald",
                         value: 4
-                    }, {
+                    },
+                    {
                         label: "FFH-Gebiet",
                         value: 5
-                    }, {
+                    },
+                    {
                         label: "Landschaftsschutzgebiet",
                         value: 6
-                    }, {
+                    },
+                    {
                         label: "Naturdenkmal",
                         value: 7
-                    }, {
+                    },
+                    {
                         label: "Nationalpark",
                         value: 8
-                    }, {
+                    },
+                    {
                         label: "Naturschutzgebiet",
                         value: 9
-                    }, {
+                    },
+                    {
                         label: "Vogelschutzgebiet",
                         value: 10
-                    }, {
+                    },
+                    {
                         label: "Wasserschutzgebiet",
                         value: 11
-                    }, {
+                    },
+                    {
                         label: "Wildnisentwicklungsgebiet",
                         value: 12
                     }
                 ]
-            }, {
+            },
+            {
                 label: "Farbe",
                 fieldName: "farbe",
                 inputType: "color",
                 required: true
             }
         ]
-    }, {
+    },
+    {
         id: "bodenproben",
         name: "Bodenprobe",
         geometryType: "Circle",
@@ -199,32 +230,39 @@ export const FEATURE_TEMPLATES: LayerIdFeatureTemplate[] = [
                     {
                         label: "pH-Wert",
                         value: 1
-                    }, {
+                    },
+                    {
                         label: "Nährstoffgehalt",
                         value: 2
-                    }, {
+                    },
+                    {
                         label: "Bodenfeuchte",
                         value: 3
-                    }, {
+                    },
+                    {
                         label: "Bodentemperatur",
                         value: 4
-                    }, {
+                    },
+                    {
                         label: "Organische Substanz",
                         value: 5
                     }
                 ]
-            }, {
+            },
+            {
                 label: "Probenahmedatum",
                 fieldName: "datum",
                 inputType: "date",
                 required: true
-            }, {
+            },
+            {
                 label: "Bemerkung",
                 fieldName: "bemerkung",
                 inputType: "textArea"
             }
         ]
-    }, {
+    },
+    {
         id: "aufforstungsflaechen",
         name: "Aufforstungsfläche",
         geometryType: "Circle",
@@ -246,21 +284,25 @@ export const FEATURE_TEMPLATES: LayerIdFeatureTemplate[] = [
                     {
                         label: "Laubwald",
                         value: "laubwald"
-                    }, {
+                    },
+                    {
                         label: "Nadelwald",
                         value: "nadelwald"
-                    }, {
+                    },
+                    {
                         label: "Mischwald",
                         value: "mischwald"
                     }
                 ]
-            }, {
+            },
+            {
                 label: "Pflanzendichte [#/ha]",
                 fieldName: "pflanzendichte",
                 inputType: "number",
                 min: 0,
                 precision: 0
-            }, {
+            },
+            {
                 label: "Aufforstungsjahr",
                 fieldName: "aufforstungsjahr",
                 inputType: "number",

@@ -10,19 +10,29 @@ import { startModifyingFeature, type ModifyOptions } from "./modification";
 import type { SnapOptions } from "./snapping";
 
 import {
-    useEditingActions, type EditingActions, type EditingCapabilities
+    useEditingActions,
+    type EditingActions,
+    type EditingCapabilities
 } from "../actions/useEditingActions";
 import type { EditingStep } from "../../model/EditingStep";
 import type { ValueSetter } from "../../types/types";
 
 export function useEditing({
-    mapModel, editingStep, setEditingStep, snappingSources = [], ...interactionOptions
+    mapModel,
+    editingStep,
+    setEditingStep,
+    snappingSources = [],
+    ...interactionOptions
 }: EditingOptions): Editing {
     const { actions, capabilities, tracker, actionHandler } = useEditingActions();
 
     const {
-        selectOptions, modifyOptions, snapOptions,
-        highlightNewFeatures = true, highlightExistingFeatures = true, highlightOptions
+        selectOptions,
+        modifyOptions,
+        snapOptions,
+        highlightNewFeatures = true,
+        highlightExistingFeatures = true,
+        highlightOptions
     } = interactionOptions;
 
     useEffect(() => {
@@ -84,28 +94,40 @@ export function useEditing({
         } else {
             return undefined;
         }
-    }, [actionHandler, actions, editingStep, highlightExistingFeatures, highlightNewFeatures,
-        highlightOptions, mapModel, modifyOptions, selectOptions, setEditingStep, snapOptions,
-        snappingSources, tracker]);
+    }, [
+        actionHandler,
+        actions,
+        editingStep,
+        highlightExistingFeatures,
+        highlightNewFeatures,
+        highlightOptions,
+        mapModel,
+        modifyOptions,
+        selectOptions,
+        setEditingStep,
+        snapOptions,
+        snappingSources,
+        tracker
+    ]);
 
     return useMemo(() => ({ actions, capabilities }), [actions, capabilities]);
 }
 
 export interface EditingOptions extends InteractionOptions {
-    readonly mapModel: MapModel | undefined,
-    readonly editingStep: EditingStep,
-    readonly setEditingStep: ValueSetter<EditingStep>,
-    readonly snappingSources?: VectorSource[]
+    readonly mapModel: MapModel | undefined;
+    readonly editingStep: EditingStep;
+    readonly setEditingStep: ValueSetter<EditingStep>;
+    readonly snappingSources?: VectorSource[];
 }
 
 export interface InteractionOptions {
-    readonly selectOptions?: SelectOptions,
-    readonly modifyOptions?: ModifyOptions,
-    readonly snapOptions?: SnapOptions,
+    readonly selectOptions?: SelectOptions;
+    readonly modifyOptions?: ModifyOptions;
+    readonly snapOptions?: SnapOptions;
 
-    readonly highlightNewFeatures?: boolean,
-    readonly highlightExistingFeatures?: boolean,
-    readonly highlightOptions?: HighlightOptions
+    readonly highlightNewFeatures?: boolean;
+    readonly highlightExistingFeatures?: boolean;
+    readonly highlightOptions?: HighlightOptions;
 }
 
 export interface Editing {

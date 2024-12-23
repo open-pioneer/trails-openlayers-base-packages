@@ -11,7 +11,9 @@ import type { Type as GeometryType } from "ol/geom/Geometry";
 import { startSnapping, type StartSnappingOptions } from "./snapping";
 import { addKeyboardListener, removeKeyboardListener } from "./keyboard";
 import type {
-    EditingActionHandler, EditingActions, EditingTracker
+    EditingActionHandler,
+    EditingActions,
+    EditingTracker
 } from "../actions/useEditingActions";
 import type { DrawOptions } from "../../model/FeatureTemplate";
 
@@ -28,7 +30,12 @@ export function startDrawingFeature(options: StartDrawingFeatureOptions): CleanU
 }
 
 function addDrawInteraction({
-    map, geometryType, drawOptions, tracker, actionHandler, completionHandler
+    map,
+    geometryType,
+    drawOptions,
+    tracker,
+    actionHandler,
+    completionHandler
 }: StartDrawingFeatureOptions): CleanUpAction {
     const source = new VectorSource();
     const drawLayer = new VectorLayer({ source });
@@ -53,15 +60,15 @@ function addDrawInteraction({
     return () => {
         unByKey(eventsKeys);
         tracker.untrackCapabilities();
-    
+
         actionHandler.onFinishDrawing = undefined;
         actionHandler.onAbortDrawing = undefined;
         actionHandler.onUndo = undefined;
         actionHandler.onRedo = undefined;
-    
+
         map.removeInteraction(draw);
         map.removeLayer(drawLayer);
-    
+
         setDoubleClickZoomEnabled(map, wasEnabled ?? true);
     };
 }
@@ -83,7 +90,9 @@ function addKeyboardShortcuts({ actions }: StartDrawingFeatureOptions): CleanUpA
 // A double-click is used to finish drawing a feature. Hence, allow for disabling the double-click
 // zoom interaction, which would otherwise be triggered along with it.
 function setDoubleClickZoomEnabled(map: Map, enabled: boolean): boolean | undefined {
-    const doubleClickZoom = map.getInteractions().getArray()
+    const doubleClickZoom = map
+        .getInteractions()
+        .getArray()
         .find((interaction) => interaction instanceof DoubleClickZoom);
     const isEnabled = doubleClickZoom?.getActive();
     doubleClickZoom?.setActive(enabled);

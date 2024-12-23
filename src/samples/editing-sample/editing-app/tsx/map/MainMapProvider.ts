@@ -82,7 +82,8 @@ export class MainMapProvider implements MapConfigProvider {
                     radius: 10.0
                 })
             })
-        }, {
+        },
+        {
             id: "waldwege",
             title: "Waldwege",
             style: new Style({
@@ -91,7 +92,8 @@ export class MainMapProvider implements MapConfigProvider {
                     width: 3.0
                 })
             })
-        }, {
+        },
+        {
             id: "schutzgebiete",
             title: "Schutzgebiete",
             style(feature) {
@@ -106,7 +108,8 @@ export class MainMapProvider implements MapConfigProvider {
                     })
                 });
             }
-        }, {
+        },
+        {
             id: "bodenproben",
             title: "Bodenproben",
             style: new Style({
@@ -118,7 +121,8 @@ export class MainMapProvider implements MapConfigProvider {
                     width: 1.0
                 })
             })
-        }, {
+        },
+        {
             id: "aufforstungsflaechen",
             title: "Aufforstungsflächen",
             style: new Style({
@@ -142,5 +146,9 @@ interface IDBLayerInfo {
     readonly style: StyleLike;
 }
 
-export type LayerId = "waldschaeden" | "waldwege" | "schutzgebiete" | "bodenproben" |
-    "aufforstungsflaechen";
+export type LayerId =
+    | "waldschaeden"
+    | "waldwege"
+    | "schutzgebiete"
+    | "bodenproben"
+    | "aufforstungsflaechen";

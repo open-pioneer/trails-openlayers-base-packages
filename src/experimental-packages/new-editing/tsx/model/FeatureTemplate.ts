@@ -76,7 +76,13 @@ export interface ColorInput extends BaseInput {
     readonly colors?: string[];
 }
 
-export type FieldInput = TextFieldInput | TextAreaInput | NumberInput | CheckBoxInput |
-    SelectInput | DateInput | ColorInput;
+export type FieldInput =
+    | TextFieldInput
+    | TextAreaInput
+    | NumberInput
+    | CheckBoxInput
+    | SelectInput
+    | DateInput
+    | ColorInput;
 
 export type InputType = FieldInput["inputType"];

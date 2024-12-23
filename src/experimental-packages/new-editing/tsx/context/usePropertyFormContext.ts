@@ -2,7 +2,10 @@
 // SPDX-License-Identifier: Apache-2.0
 import { useContext } from "react";
 import {
-    PropertyFormContext, type PropertyFormContextType, type Properties, type PropertySetter
+    PropertyFormContext,
+    type PropertyFormContextType,
+    type Properties,
+    type PropertySetter
 } from "./PropertyFormContext";
 import type { StatePair } from "../types/types";
 

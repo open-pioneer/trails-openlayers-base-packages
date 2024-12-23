@@ -23,9 +23,7 @@ export class IDBFeatureStore {
                 const featureEnvelope = getFeatureEntityEnvelope(entity);
                 return featureEnvelope != null && envelopesOverlap(featureEnvelope, envelope);
             })
-            .toArray((entities) =>
-                entities.map((entity) => this.toFeature(entity, projection))
-            );
+            .toArray((entities) => entities.map((entity) => this.toFeature(entity, projection)));
     }
 
     addFeature(feature: Feature, source: Projection): Promise<number | undefined> {

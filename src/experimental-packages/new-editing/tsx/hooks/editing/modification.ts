@@ -22,9 +22,12 @@ export function startModifyingFeature(options: StartModifyingFeatureOptions): Cl
     };
 }
 
-function addModifyInteraction(
-    { mapModel, feature, drawLayer, modifyOptions }: StartModifyingFeatureOptions
-): CleanUpAction {
+function addModifyInteraction({
+    mapModel,
+    feature,
+    drawLayer,
+    modifyOptions
+}: StartModifyingFeatureOptions): CleanUpAction {
     const features = new Collection([feature]);
     const modify = new Modify({ features, ...modifyOptions });
     const map = mapModel.olMap;
@@ -45,9 +48,12 @@ function addModifyInteraction(
     };
 }
 
-function highlightFeature(
-    { mapModel, feature, highlightFeature, highlightOptions }: StartModifyingFeatureOptions
-): CleanUpAction {
+function highlightFeature({
+    mapModel,
+    feature,
+    highlightFeature,
+    highlightOptions
+}: StartModifyingFeatureOptions): CleanUpAction {
     let highlight: Highlight | undefined;
     const geometry = feature.getGeometry();
 
@@ -85,12 +91,12 @@ const DEFAULT_POINT_HIGHLIGHT_STYLE = new Style({
 });
 
 interface StartModifyingFeatureOptions extends Omit<StartSnappingOptions, "map"> {
-    readonly mapModel: MapModel,
-    readonly feature: Feature,
-    readonly drawLayer?: Layer,
-    readonly modifyOptions: ModifyOptions | undefined,
-    readonly highlightFeature: boolean,
-    readonly highlightOptions: HighlightOptions | undefined
+    readonly mapModel: MapModel;
+    readonly feature: Feature;
+    readonly drawLayer?: Layer;
+    readonly modifyOptions: ModifyOptions | undefined;
+    readonly highlightFeature: boolean;
+    readonly highlightOptions: HighlightOptions | undefined;
 }
 
 export type ModifyOptions = Omit<Options, "features" | "source">;

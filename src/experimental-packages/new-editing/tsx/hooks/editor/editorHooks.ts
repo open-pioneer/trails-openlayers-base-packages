@@ -28,15 +28,18 @@ export function useOnActionChangeCallback(
 ): Callback<Action | undefined> {
     const editableLayers = useLayers(mapModel, editableLayerIds);
 
-    return useCallback((action) => {
-        if (action == null) {
-            setEditingStep({ id: "none" });
-        } else if (action === "select") {
-            setEditingStep({ id: "update-select", layers: editableLayers });
-        } else {
-            setEditingStep({ id: "create-draw", template: action });
-        }
-    }, [editableLayers, setEditingStep]);
+    return useCallback(
+        (action) => {
+            if (action == null) {
+                setEditingStep({ id: "none" });
+            } else if (action === "select") {
+                setEditingStep({ id: "update-select", layers: editableLayers });
+            } else {
+                setEditingStep({ id: "create-draw", template: action });
+            }
+        },
+        [editableLayers, setEditingStep]
+    );
 }
 
 export function useSnappingSources(

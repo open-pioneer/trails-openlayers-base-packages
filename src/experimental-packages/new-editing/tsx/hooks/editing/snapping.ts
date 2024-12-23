@@ -5,9 +5,11 @@ import type { Map } from "ol";
 import type { Vector as VectorSource } from "ol/source";
 import type { Options } from "ol/interaction/Snap";
 
-export function startSnapping(
-    { map, snappingSources, snapOptions }: StartSnappingOptions
-): CleanUpAction {
+export function startSnapping({
+    map,
+    snappingSources,
+    snapOptions
+}: StartSnappingOptions): CleanUpAction {
     const snaps = snappingSources.map((source) => new Snap({ source, ...snapOptions }));
 
     for (const snap of snaps) {

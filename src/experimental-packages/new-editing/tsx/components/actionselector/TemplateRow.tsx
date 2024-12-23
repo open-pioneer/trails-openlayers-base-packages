@@ -2,7 +2,11 @@
 // SPDX-License-Identifier: Apache-2.0
 import { HStack, Td, Text, Tr } from "@open-pioneer/chakra-integration";
 import {
-    PiCircleBold, PiDotOutlineBold, PiDotsThreeOutlineBold, PiLineSegmentsFill, PiPolygonFill
+    PiCircleBold,
+    PiDotOutlineBold,
+    PiDotsThreeOutlineBold,
+    PiLineSegmentsFill,
+    PiPolygonFill
 } from "react-icons/pi";
 import { useCallback, type ReactElement, type ReactNode } from "react";
 import type { FeatureTemplate } from "../../model/FeatureTemplate";
@@ -35,12 +39,18 @@ export function TemplateRow({ template, isSelected, onClick }: TemplateRowProps)
 function TemplateIcon({ template }: TemplateIconProps): ReactNode | undefined {
     if (template.icon === undefined) {
         switch (template.geometryType) {
-            case "Polygon":    return <PiPolygonFill size={20} />;
-            case "Circle":     return <PiCircleBold size={20} />;
-            case "LineString": return <PiLineSegmentsFill size={20} />;
-            case "Point":      return <PiDotOutlineBold size={20} />;
-            case "MultiPoint": return <PiDotsThreeOutlineBold size={20} />;
-            default:           return undefined;
+            case "Polygon":
+                return <PiPolygonFill size={20} />;
+            case "Circle":
+                return <PiCircleBold size={20} />;
+            case "LineString":
+                return <PiLineSegmentsFill size={20} />;
+            case "Point":
+                return <PiDotOutlineBold size={20} />;
+            case "MultiPoint":
+                return <PiDotsThreeOutlineBold size={20} />;
+            default:
+                return undefined;
         }
     } else {
         return template.icon ?? undefined;

@@ -7,9 +7,12 @@ import type { Feature, Map } from "ol";
 import type { Layer } from "ol/layer";
 import type { Options } from "ol/interaction/Select";
 
-export function startSelectingFeature(
-    { map, layers, selectOptions, completionHandler }: StartSelectingFeatureOptions
-): CleanUpAction {
+export function startSelectingFeature({
+    map,
+    layers,
+    selectOptions,
+    completionHandler
+}: StartSelectingFeatureOptions): CleanUpAction {
     const select = new Select({ layers, hitTolerance: HIT_TOLERANCE, ...selectOptions });
 
     const eventsKey = select.once("select", ({ selected }) => {
@@ -37,10 +40,10 @@ function getLayer(select: Select, feature: Feature): Layer | undefined {
 const HIT_TOLERANCE = 22;
 
 interface StartSelectingFeatureOptions {
-    readonly map: Map,
-    readonly layers: Layer[],
-    readonly selectOptions: SelectOptions | undefined,
-    readonly completionHandler: CompletionHandler
+    readonly map: Map;
+    readonly layers: Layer[];
+    readonly selectOptions: SelectOptions | undefined;
+    readonly completionHandler: CompletionHandler;
 }
 
 interface InternalSelect {

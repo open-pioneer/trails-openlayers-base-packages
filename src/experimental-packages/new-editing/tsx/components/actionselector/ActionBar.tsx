@@ -8,17 +8,27 @@ import { LuUndo, LuRedo } from "react-icons/lu";
 import { useMemo, type ReactElement } from "react";
 import type { VoidCallback } from "../../types/types";
 
-export function ActionBar(
-    { canFinish, canAbort, canUndo, canRedo, onFinish, onAbort, onUndo, onRedo }: ActionBarProps
-): ReactElement {
+export function ActionBar({
+    canFinish,
+    canAbort,
+    canUndo,
+    canRedo,
+    onFinish,
+    onAbort,
+    onUndo,
+    onRedo
+}: ActionBarProps): ReactElement {
     const { formatMessage } = useIntl();
 
-    const ariaLabels = useMemo(() => ({
-        finishButton: formatMessage({ id: "actionSelector.finishButtonAriaLabel" }),
-        abortButton: formatMessage({ id: "actionSelector.abortButtonAriaLabel" }),
-        undoButton: formatMessage({ id: "actionSelector.undoButtonAriaLabel" }),
-        redoButton: formatMessage({ id: "actionSelector.redoButtonAriaLabel" })
-    }), [formatMessage]);
+    const ariaLabels = useMemo(
+        () => ({
+            finishButton: formatMessage({ id: "actionSelector.finishButtonAriaLabel" }),
+            abortButton: formatMessage({ id: "actionSelector.abortButtonAriaLabel" }),
+            undoButton: formatMessage({ id: "actionSelector.undoButtonAriaLabel" }),
+            redoButton: formatMessage({ id: "actionSelector.redoButtonAriaLabel" })
+        }),
+        [formatMessage]
+    );
 
     return (
         <HStack justify="right" gap={3}>

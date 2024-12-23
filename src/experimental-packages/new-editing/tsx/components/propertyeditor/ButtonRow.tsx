@@ -6,9 +6,13 @@ import { PiTrash } from "react-icons/pi";
 import { useCallback, useMemo, useState, type ReactElement } from "react";
 import type { AsyncVoidCallback, VoidCallback } from "../../types/types";
 
-export function ButtonRow(
-    { canSave, showDeleteButton, onSave, onDelete, onCancel }: ButtonRowProps
-): ReactElement {
+export function ButtonRow({
+    canSave,
+    showDeleteButton,
+    onSave,
+    onDelete,
+    onCancel
+}: ButtonRowProps): ReactElement {
     const [isSaving, setSaving] = useState(false);
 
     const onSaveClick = useCallback(async () => {
@@ -22,11 +26,14 @@ export function ButtonRow(
 
     const { formatMessage } = useIntl();
 
-    const { saveButtonTitle, cancelButtonTitle, deleteButtonAriaLabel } = useMemo(() => ({
-        saveButtonTitle: formatMessage({ id: "propertyEditor.saveButtonTitle" }),
-        cancelButtonTitle: formatMessage({ id: "propertyEditor.cancelButtonTitle" }),
-        deleteButtonAriaLabel: formatMessage({ id: "propertyEditor.deleteButtonAriaLabel" })
-    }), [formatMessage]);
+    const { saveButtonTitle, cancelButtonTitle, deleteButtonAriaLabel } = useMemo(
+        () => ({
+            saveButtonTitle: formatMessage({ id: "propertyEditor.saveButtonTitle" }),
+            cancelButtonTitle: formatMessage({ id: "propertyEditor.cancelButtonTitle" }),
+            deleteButtonAriaLabel: formatMessage({ id: "propertyEditor.deleteButtonAriaLabel" })
+        }),
+        [formatMessage]
+    );
 
     return (
         <Flex flexDirection="row" columnGap={2}>

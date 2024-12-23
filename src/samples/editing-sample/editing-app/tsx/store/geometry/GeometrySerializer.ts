@@ -88,7 +88,7 @@ export class GeometrySerializer {
             maxY: extent[3]!
         };
     }
-    
+
     private static isCircle(geometry: Geometry | undefined): geometry is Circle {
         return geometry?.getType() === GeometrySerializer.CIRCLE;
     }

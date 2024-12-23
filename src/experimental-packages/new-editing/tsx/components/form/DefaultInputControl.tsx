@@ -1,7 +1,12 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import {
-    Checkbox, FormControl, FormLabel, Input, Select, Textarea
+    Checkbox,
+    FormControl,
+    FormLabel,
+    Input,
+    Select,
+    Textarea
 } from "@open-pioneer/chakra-integration";
 
 import { ChangeEvent, useCallback, type ReactElement } from "react";
@@ -16,25 +21,34 @@ export function DefaultInputControl({ fieldInput }: DefaultInputControlProps): R
     const { fieldName } = fieldInput;
     const value = useProperty(fieldName);
 
-    const onInputChange = useCallback((event: ChangeEvent<InputElement>) => {
-        if (event.target.value !== "") {
-            if (fieldInput.inputType === "select" && fieldInput.valueType === "number") {
-                setProperty(fieldName, parseFloat(event.target.value));
+    const onInputChange = useCallback(
+        (event: ChangeEvent<InputElement>) => {
+            if (event.target.value !== "") {
+                if (fieldInput.inputType === "select" && fieldInput.valueType === "number") {
+                    setProperty(fieldName, parseFloat(event.target.value));
+                } else {
+                    setProperty(fieldName, event.target.value);
+                }
             } else {
-                setProperty(fieldName, event.target.value);
+                setProperty(fieldName, undefined);
             }
-        } else {
-            setProperty(fieldName, undefined);
-        }
-    }, [fieldInput, fieldName, setProperty]);
+        },
+        [fieldInput, fieldName, setProperty]
+    );
 
-    const onChange = useCallback((value: unknown) => {
-        setProperty(fieldName, value);
-    }, [fieldName, setProperty]);
+    const onChange = useCallback(
+        (value: unknown) => {
+            setProperty(fieldName, value);
+        },
+        [fieldName, setProperty]
+    );
 
-    const onCheckBoxChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-        setProperty(fieldName, event.target.checked);
-    }, [fieldName, setProperty]);
+    const onCheckBoxChange = useCallback(
+        (event: ChangeEvent<HTMLInputElement>) => {
+            setProperty(fieldName, event.target.checked);
+        },
+        [fieldName, setProperty]
+    );
 
     switch (fieldInput.inputType) {
         case "textField":

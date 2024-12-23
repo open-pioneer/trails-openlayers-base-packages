@@ -7,11 +7,14 @@ import { ActionSelector } from "./components/actionselector/ActionSelector";
 import { PropertyEditor } from "./components/propertyeditor/PropertyEditor";
 import { PropertyFormContextProvider } from "./context/PropertyFormContextProvider";
 import {
-    DefaultPropertyForm, type FieldInputsProvider
+    DefaultPropertyForm,
+    type FieldInputsProvider
 } from "./components/form/DefaultPropertyForm";
 
 import {
-    useEditingStep, useOnActionChangeCallback, useSnappingSources
+    useEditingStep,
+    useOnActionChangeCallback,
+    useSnappingSources
 } from "./hooks/editor/editorHooks";
 import { useEditingCallbacks } from "./hooks/editor/useEditingCallbacks";
 import { useEditing, type InteractionOptions } from "./hooks/editing/useEditing";
@@ -22,8 +25,16 @@ import type { FeatureTemplate } from "./model/FeatureTemplate";
 import type { Callback } from "./types/types";
 
 export function Editor({
-    templates, editableLayerIds, editingHandler, showActionBar = true, fieldInputsProvider,
-    snappableLayerIds = editableLayerIds, onEditingStepChange, children, map, mapId,
+    templates,
+    editableLayerIds,
+    editingHandler,
+    showActionBar = true,
+    fieldInputsProvider,
+    snappableLayerIds = editableLayerIds,
+    onEditingStepChange,
+    children,
+    map,
+    mapId,
     ...interactionOptions
 }: EditorProps): ReactElement {
     const [editingStep, setEditingStep] = useEditingStep(onEditingStepChange);
@@ -33,11 +44,18 @@ export function Editor({
     const snappingSources = useSnappingSources(mapModel, snappableLayerIds);
 
     const { actions, capabilities } = useEditing({
-        mapModel, editingStep, setEditingStep, snappingSources, ...interactionOptions
+        mapModel,
+        editingStep,
+        setEditingStep,
+        snappingSources,
+        ...interactionOptions
     });
 
     const { onSave, onDelete, onCancel } = useEditingCallbacks(
-        mapModel?.olMap, editingStep, editingHandler, setEditingStep
+        mapModel?.olMap,
+        editingStep,
+        editingHandler,
+        setEditingStep
     );
 
     switch (editingStep.id) {

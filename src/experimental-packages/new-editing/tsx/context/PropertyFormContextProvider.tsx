@@ -2,19 +2,21 @@
 // SPDX-License-Identifier: Apache-2.0
 import { useCallback, useMemo, useState, type ReactElement, type ReactNode } from "react";
 import {
-    PropertyFormContext, type PropertyFormContextType, type Properties, type PropertySetter
+    PropertyFormContext,
+    type PropertyFormContextType,
+    type Properties,
+    type PropertySetter
 } from "./PropertyFormContext";
 import type { ModificationStep } from "../model/EditingStep";
 
-export function PropertyFormContextProvider(
-    { children, editingStep }: PropertyFormContextProviderProps
-): ReactElement {
+export function PropertyFormContextProvider({
+    children,
+    editingStep
+}: PropertyFormContextProviderProps): ReactElement {
     const contextValue = useContextValue(editingStep);
 
     return (
-        <PropertyFormContext.Provider value={contextValue}>
-            {children}
-        </PropertyFormContext.Provider>
+        <PropertyFormContext.Provider value={contextValue}>{children}</PropertyFormContext.Provider>
     );
 }
 

@@ -9,7 +9,10 @@ import { unByKey } from "ol/Observable";
 import { useMemo, useRef, useState } from "react";
 import { UndoManager } from "./UndoManager";
 import {
-    canBeAborted, canBeFinished, getNumberOfVertices, getLastCoordinate
+    canBeAborted,
+    canBeFinished,
+    getNumberOfVertices,
+    getLastCoordinate
 } from "./geometryHelpers";
 import type { Callback, VoidCallback } from "../../types/types";
 
@@ -22,88 +25,100 @@ export function useEditingActions(): EditingState {
     const [capabilities, setCapabilities] = useState(INITIAL_CAPABILITIES);
     const actionHandler = useMemo<EditingActionHandler>(() => ({}), []);
 
-    const tracker = useMemo(() => ({
-        trackCapabilities(feature: Feature) {
-            this.untrackCapabilities();
+    const tracker = useMemo(
+        () => ({
+            trackCapabilities(feature: Feature) {
+                this.untrackCapabilities();
 
-            const geometry = feature.getGeometry();
-            if (geometry != null) {
-                this.handleGeometryChange(geometry);
-                eventsKey.current = geometry.on("change", ({ target: geometry }) => {
+                const geometry = feature.getGeometry();
+                if (geometry != null) {
                     this.handleGeometryChange(geometry);
-                });
-            }
-        },
-
-        untrackCapabilities() {
-            if (eventsKey.current != null) {
-                unByKey(eventsKey.current);
-                eventsKey.current = undefined;
-            }
-            numberOfVertices.current = undefined;
-            undoManager.reset();
-            setCapabilities(INITIAL_CAPABILITIES);
-        },
-
-        handleGeometryChange(geometry: Geometry) {
-            const newNumberOfVertices = getNumberOfVertices(geometry);
-            if (newNumberOfVertices != null && newNumberOfVertices !== numberOfVertices.current) {
-                this.recordChange(geometry, newNumberOfVertices);
-                numberOfVertices.current = newNumberOfVertices;
-                setCapabilities({
-                    canUndo: undoManager.canUndo,
-                    canRedo: undoManager.canRedo,
-                    canFinishDrawing: canBeFinished(geometry, newNumberOfVertices) ?? false,
-                    canAbortDrawing: canBeAborted(geometry, newNumberOfVertices) ?? false
-                });
-            }
-        },
-
-        recordChange(geometry: Geometry, newNumberOfVertices: number) {
-            if (!ignoreNextEdit.current) {
-                if (numberOfVertices.current == null ||
-                    numberOfVertices.current < newNumberOfVertices) {
-                    const lastCoordinate = getLastCoordinate(geometry);
-                    if (lastCoordinate != null) {
-                        undoManager.addEdit(lastCoordinate);
-                    }
+                    eventsKey.current = geometry.on("change", ({ target: geometry }) => {
+                        this.handleGeometryChange(geometry);
+                    });
                 }
-            } else {
-                ignoreNextEdit.current = false;
+            },
+
+            untrackCapabilities() {
+                if (eventsKey.current != null) {
+                    unByKey(eventsKey.current);
+                    eventsKey.current = undefined;
+                }
+                numberOfVertices.current = undefined;
+                undoManager.reset();
+                setCapabilities(INITIAL_CAPABILITIES);
+            },
+
+            handleGeometryChange(geometry: Geometry) {
+                const newNumberOfVertices = getNumberOfVertices(geometry);
+                if (
+                    newNumberOfVertices != null &&
+                    newNumberOfVertices !== numberOfVertices.current
+                ) {
+                    this.recordChange(geometry, newNumberOfVertices);
+                    numberOfVertices.current = newNumberOfVertices;
+                    setCapabilities({
+                        canUndo: undoManager.canUndo,
+                        canRedo: undoManager.canRedo,
+                        canFinishDrawing: canBeFinished(geometry, newNumberOfVertices) ?? false,
+                        canAbortDrawing: canBeAborted(geometry, newNumberOfVertices) ?? false
+                    });
+                }
+            },
+
+            recordChange(geometry: Geometry, newNumberOfVertices: number) {
+                if (!ignoreNextEdit.current) {
+                    if (
+                        numberOfVertices.current == null ||
+                        numberOfVertices.current < newNumberOfVertices
+                    ) {
+                        const lastCoordinate = getLastCoordinate(geometry);
+                        if (lastCoordinate != null) {
+                            undoManager.addEdit(lastCoordinate);
+                        }
+                    }
+                } else {
+                    ignoreNextEdit.current = false;
+                }
             }
-        }
-    }), [undoManager]);
+        }),
+        [undoManager]
+    );
 
     // TODO: When undoing the very first change (that is, removing the first vertex), a "drawabort"
     // event is fired causing the undo history to be reset.
-    const actions = useMemo<EditingActions>(() => ({
-        undo() {
-            if (actionHandler.onUndo != null) {
-                undoManager.undo();
-                ignoreNextEdit.current = true;
-                actionHandler.onUndo();
-            }
-        },
-        redo() {
-            if (actionHandler.onRedo != null) {
-                const coordinate = undoManager.redo();
-                if (coordinate != null) {
+    const actions = useMemo<EditingActions>(
+        () => ({
+            undo() {
+                if (actionHandler.onUndo != null) {
+                    undoManager.undo();
                     ignoreNextEdit.current = true;
-                    actionHandler.onRedo(coordinate);
+                    actionHandler.onUndo();
                 }
+            },
+            redo() {
+                if (actionHandler.onRedo != null) {
+                    const coordinate = undoManager.redo();
+                    if (coordinate != null) {
+                        ignoreNextEdit.current = true;
+                        actionHandler.onRedo(coordinate);
+                    }
+                }
+            },
+            finishDrawing() {
+                actionHandler.onFinishDrawing?.();
+            },
+            abortDrawing() {
+                actionHandler.onAbortDrawing?.();
             }
-        },
-        finishDrawing() {
-            actionHandler.onFinishDrawing?.();
-        },
-        abortDrawing() {
-            actionHandler.onAbortDrawing?.();
-        }
-    }), [actionHandler, undoManager]);
+        }),
+        [actionHandler, undoManager]
+    );
 
-    return useMemo(() => (
-        { actions, capabilities, tracker, actionHandler }
-    ), [actions, capabilities, tracker, actionHandler]);
+    return useMemo(
+        () => ({ actions, capabilities, tracker, actionHandler }),
+        [actions, capabilities, tracker, actionHandler]
+    );
 }
 
 const INITIAL_CAPABILITIES: EditingCapabilities = {
