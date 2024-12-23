@@ -1,0 +1,12 @@
+{
+    "name": "new-editing",
+    "version": "0.1.0",
+    "main": "index.ts",
+    "private": true,
+    "dependencies": {
+        "@open-pioneer/chakra-integration": "catalog:",
+        "@open-pioneer/notifier": "catalog:",
+        "react-color": "catalog:",
+        "@types/react-color": "catalog:"
+    }
+}

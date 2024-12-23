@@ -1,0 +1,25 @@
+messages:
+  actionSelector:
+    editFeatureHeading: Geoobjekt bearbeiten
+    createFeatureHeading: Geoobjekt erstellen
+    selectButtonTitle: Auswählen
+    finishButtonAriaLabel: Zeichnen beenden
+    abortButtonAriaLabel: Zeichnen abbrechen
+    undoButtonAriaLabel: Rückgängig machen
+    redoButtonAriaLabel: Wiederholen
+  propertyEditor:
+    saveButtonTitle: Speichern
+    cancelButtonTitle: Abbrechen
+    deleteButtonAriaLabel: Löschen
+  deleteConfirmationDialog:
+    title: Geoobjekt löschen
+    message: Sind Sie sicher, dass Sie dieses Geoobjekt löschen möchten?
+    deleteButtonTitle: Geoobjekt löschen
+    cancelButtonTitle: Abbrechen
+  notifier:
+    creationSuccess: Geoobjekt hinzugefügt
+    creationFailure: Fehler beim Hinzufügen des Geoobjekts
+    updateSuccess: Geoobjekt aktualisiert
+    updateFailure: Fehler beim Aktualisieren des Geoobjekts
+    deletionSuccess: Geoobjekt gelöscht
+    deletionFailure: Fehler beim Löschen des Geoobjekts
