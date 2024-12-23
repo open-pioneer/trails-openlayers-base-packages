@@ -5,7 +5,7 @@ import { useIntl } from "open-pioneer:react-hooks";
 import { MdClose } from "react-icons/md";
 import { useCallback, useMemo, type MouseEventHandler, type ReactElement } from "react";
 
-export function TitleBar({ title, onClose }: TitleBarProps): ReactElement {
+export function TitleBar({ title, closeable, onClose }: TitleBarProps): ReactElement {
     const { formatMessage } = useIntl();
     const ariaLabel = useMemo(() => formatMessage({ id: "ariaLabel.close" }), [formatMessage]);
 
@@ -25,17 +25,19 @@ export function TitleBar({ title, onClose }: TitleBarProps): ReactElement {
         >
             <Flex direction="row" justify="space-between" align="center">
                 <Text fontWeight="bold" fontSize="md">{title}</Text>
-                <IconButton
-                    icon={<MdClose />}
-                    size="sm"
-                    variant="ghost"
-                    color="white"
-                    aria-label={ariaLabel}
-                    style={STYLES.closeButton}
-                    _hover={STYLES.hoveredCloseButton}
-                    _active={STYLES.activeCloseButton}
-                    onClick={onClose}
-                />
+                {closeable && (
+                    <IconButton
+                        icon={<MdClose />}
+                        size="sm"
+                        variant="ghost"
+                        color="white"
+                        aria-label={ariaLabel}
+                        style={STYLES.closeButton}
+                        _hover={STYLES.hoveredCloseButton}
+                        _active={STYLES.activeCloseButton}
+                        onClick={onClose}
+                    />
+                )}
             </Flex>
         </Box>
     );
@@ -51,5 +53,6 @@ const STYLES = {
 
 interface TitleBarProps {
     readonly title: string | undefined;
+    readonly closeable: boolean;
     readonly onClose: (() => void) | undefined;
 }

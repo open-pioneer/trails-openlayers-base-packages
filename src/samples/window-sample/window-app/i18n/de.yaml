@@ -1,0 +1,7 @@
+messages:
+  toolTitle:
+    bookmarks: "Lesezeichen"
+    legend: "Legende"
+    measurement: "Messen"
+    printing: "Drucken"
+    toc: "Karteninhalt"
