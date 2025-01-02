@@ -18,6 +18,7 @@ const sampleSites = [
     "samples/map-sample",
     "samples/ogc-api-sample",
     "samples/showcase",
+    "samples/editing-sample",
 
     "samples/test-basemap-switcher",
     "samples/test-toc",
