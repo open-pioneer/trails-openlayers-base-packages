@@ -88,20 +88,6 @@ overrideLicenses:
     licenseFiles:
       - custom: "./licenses/mapbox_jsonlint_readme_mit.md"
 
-  # Readme only contains link to http://deanlandolt.mit-license.org/
-  # The full text was retrieved on 2023-10-27
-  - name: "bytewise"
-    version: "1.1.0"
-    licenseFiles:
-      - custom: "./licenses/bytewise_mit"
-
-  # Readme only contains link to http://deanlandolt.mit-license.org/
-  # The full text was retrieved on 2023-10-27
-  - name: "typewise"
-    version: "1.0.3"
-    licenseFiles:
-      - custom: "./licenses/typewise_mit"
-
   # NPM artifact does not ship with a license; github repository tagged with the released version
   # does contain it however:
   # https://github.com/JedWatson/react-select/blob/17ab36ec89e6e2b05071cdafecb44421f1e91334/LICENSE
@@ -125,3 +111,10 @@ overrideLicenses:
   - name: "rgbcolor"
     version: "1.0.1"
     license: "MIT"
+
+  # License missing from shipped NPM package; it was later added to the git repository.
+  #
+  - name: "@icons/material"
+    version: "0.2.4"
+    licenseFiles:
+      - custom: "./licenses/icons_material_mit"
