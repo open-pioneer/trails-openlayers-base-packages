@@ -1,5 +1,12 @@
 # @open-pioneer/search
 
+## 0.9.0
+
+### Patch Changes
+
+-   4d6dc09: Fix a styling issue where the selected option could be rendered as white text on white background.
+    -   @open-pioneer/map@0.9.0
+
 ## 0.8.0
 
 ### Minor Changes
