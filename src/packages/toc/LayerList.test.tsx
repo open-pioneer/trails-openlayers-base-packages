@@ -445,7 +445,9 @@ it("supports a hierarchy of layers", async () => {
 
     const map = await registry.expectMapModel(mapId);
     const { container } = render(
-        <TocWidgetOptionsProvider value={{ autoShowParents: true, collapsibleGroups: false }}>
+        <TocWidgetOptionsProvider
+            value={{ autoShowParents: true, collapsibleGroups: false, isCollapsed: false }}
+        >
             <LayerList map={map} />
         </TocWidgetOptionsProvider>,
         {
@@ -494,7 +496,9 @@ it("supports disabling autoShowParents", async () => {
 
     const map = await registry.expectMapModel(mapId);
     const { container } = render(
-        <TocWidgetOptionsProvider value={{ autoShowParents: false, collapsibleGroups: false }}>
+        <TocWidgetOptionsProvider
+            value={{ autoShowParents: false, collapsibleGroups: false, isCollapsed: false }}
+        >
             <LayerList map={map} />
         </TocWidgetOptionsProvider>,
         {
@@ -529,7 +533,9 @@ it("should collapse and expand list items", async () => {
 
     const map = await registry.expectMapModel(mapId);
     const { container } = render(
-        <TocWidgetOptionsProvider value={{ autoShowParents: false, collapsibleGroups: true }}>
+        <TocWidgetOptionsProvider
+            value={{ autoShowParents: false, collapsibleGroups: true, isCollapsed: false }}
+        >
             <LayerList map={map} />
         </TocWidgetOptionsProvider>,
         {
@@ -571,7 +577,9 @@ it("it renders collapse buttons (only) for groups", async () => {
 
     const map = await registry.expectMapModel(mapId);
     const { container } = render(
-        <TocWidgetOptionsProvider value={{ autoShowParents: false, collapsibleGroups: true }}>
+        <TocWidgetOptionsProvider
+            value={{ autoShowParents: false, collapsibleGroups: true, isCollapsed: false }}
+        >
             <LayerList map={map} />
         </TocWidgetOptionsProvider>,
         {
@@ -594,7 +602,7 @@ it("it renders collapse buttons (only) for groups", async () => {
     expect(nongroupCollapseButton.length).toBe(0); //has no child layers -> should not render collapse button
 });
 
-it("supports disabling collapsibleGroups", async () => {
+it("supports disabling collapsibleGroups, even `isCollapsed` is `true`", async () => {
     const { group } = createGroupHierarchy();
     const { mapId, registry } = await setupMap({
         layers: [group]
@@ -602,7 +610,9 @@ it("supports disabling collapsibleGroups", async () => {
 
     const map = await registry.expectMapModel(mapId);
     const { container } = render(
-        <TocWidgetOptionsProvider value={{ autoShowParents: false, collapsibleGroups: false }}>
+        <TocWidgetOptionsProvider
+            value={{ autoShowParents: false, collapsibleGroups: false, isCollapsed: true }}
+        >
             <LayerList map={map} />
         </TocWidgetOptionsProvider>,
         {
@@ -619,6 +629,40 @@ it("supports disabling collapsibleGroups", async () => {
     expect(groupCollapseButton).toBeUndefined();
     const subgroupCollapseButton = queryAllByRole<HTMLElement>(subGroupItem, "button")[0];
     expect(subgroupCollapseButton).toBeUndefined();
+});
+
+it("supports initial collapsed groups", async () => {
+    const user = userEvent.setup();
+    const { group } = createGroupHierarchy();
+    const { mapId, registry } = await setupMap({
+        layers: [group]
+    });
+
+    const map = await registry.expectMapModel(mapId);
+    const { container } = render(
+        <TocWidgetOptionsProvider
+            value={{ autoShowParents: false, collapsibleGroups: true, isCollapsed: true }}
+        >
+            <LayerList map={map} />
+        </TocWidgetOptionsProvider>,
+        {
+            wrapper: (props) => <PackageContextProvider {...props} />
+        }
+    );
+
+    const groupItem = findLayerItem(container, "group")!;
+    expect(groupItem).toBeDefined();
+
+    const groupCollapseButton = queryAllByRole<HTMLElement>(groupItem, "button")[0]!;
+    const collapsibleList = container.getElementsByClassName("toc-collapsible-item").item(0)!;
+    expect(groupCollapseButton).toBeDefined();
+    expect(groupCollapseButton?.getAttribute("aria-expanded")).toBe("false");
+    expect(collapsibleList).toBeDefined();
+    expect(collapsibleList.getAttribute("style")?.includes("height: 0")).toBe(true);
+
+    await user.click(groupCollapseButton); //expand
+    expect(groupCollapseButton?.getAttribute("aria-expanded")).toBe("true");
+    expect(collapsibleList.getAttribute("style")?.includes("height: auto")).toBe(true);
 });
 
 /** Returns the layer list's current list items. */
@@ -667,8 +711,8 @@ function createGroupHierarchy() {
     return { group, subgroup, submember };
 }
 
-function createWrapper(autoShowParents = true, collapsibleGroups = false) {
-    const options: TocWidgetOptions = { autoShowParents, collapsibleGroups };
+function createWrapper(autoShowParents = true, collapsibleGroups = false, isCollapsed = false) {
+    const options: TocWidgetOptions = { autoShowParents, collapsibleGroups, isCollapsed };
     return function Wrapper(props: { children: ReactNode }) {
         return (
             <PackageContextProvider>

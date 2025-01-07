@@ -48,6 +48,12 @@ export interface TocProps extends CommonComponentProps, MapModelProps {
      */
     collapsibleGroups?: boolean;
 
+    /**
+     * If `true` groups in the toc are collapsed.
+     * Defaults to `false`. Only applicable if `tocProps.collapsibleGroups` is `true`.
+     */
+    isCollapsed?: boolean;
+
     /*
      * Show the parent layers when a child layer is made visible.
      * Defaults to `true`.
@@ -67,7 +73,7 @@ export interface ToolsConfig {
 
     /**
      * Optional property to show the `collapse all groups` entry.
-     * Defaults to `true`. Only applicable if `tocProps.collapsibleGroups` is `true`
+     * Defaults to `true`. Only applicable if `tocProps.collapsibleGroups` is `true`.
      */
     showCollapseAllGroups?: boolean;
 }
@@ -79,6 +85,7 @@ const PADDING = 2;
  */
 export const Toc: FC<TocProps> = (props: TocProps) => {
     const intl = useIntl();
+    const [isCollapsed, setIsCollapsed] = useState(props.isCollapsed || false);
     const {
         showTools = false,
         toolsConfig,
@@ -90,8 +97,8 @@ export const Toc: FC<TocProps> = (props: TocProps) => {
     const { containerProps } = useCommonComponentProps("toc", props);
     const basemapsHeadingId = useId();
     const options = useMemo(
-        (): TocWidgetOptions => ({ autoShowParents, collapsibleGroups }),
-        [autoShowParents, collapsibleGroups]
+        (): TocWidgetOptions => ({ autoShowParents, collapsibleGroups, isCollapsed }),
+        [autoShowParents, collapsibleGroups, isCollapsed]
     );
     const state = useMapModel(props);
     const [listItemsExpandedModel, setListItemsExpandedModel] = useState<
@@ -106,6 +113,11 @@ export const Toc: FC<TocProps> = (props: TocProps) => {
     const showCollapseAllGroups = toolsConfig
         ? toolsConfig.showCollapseAllGroups && options.collapsibleGroups
         : options.collapsibleGroups;
+
+    //overwrite `isCollapsed`, if groups are not actually collapsible
+    if (!options.collapsibleGroups && isCollapsed) {
+        setIsCollapsed(false);
+    }
 
     let content: JSX.Element | null;
     switch (state.kind) {

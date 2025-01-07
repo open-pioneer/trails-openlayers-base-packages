@@ -24,6 +24,7 @@ exports[`Should successfully create a toc with default tool component 1`] = `
       >
         <div
           class="basemap-switcher-select react-select--has-value css-79elbk"
+          data-theme="light"
         >
           <span
             class="css-1f43avz-a11yText-A11yText"
@@ -38,12 +39,15 @@ exports[`Should successfully create a toc with default tool component 1`] = `
           />
           <div
             class="react-select__control css-156sfem"
+            data-theme="light"
           >
             <div
               class="react-select__value-container react-select__value-container--has-value css-j93siq"
+              data-theme="light"
             >
               <div
                 class="basemap-switcher-value react-select__single-value css-1xa1gs2"
+                data-theme="light"
               >
                 <div
                   class="css-u4p24i"
@@ -68,18 +72,22 @@ exports[`Should successfully create a toc with default tool component 1`] = `
             </div>
             <div
               class="react-select__indicators css-hfbj6y"
+              data-theme="light"
             >
               <hr
                 aria-orientation="vertical"
                 class="chakra-divider react-select__indicator-separator css-hxuk4g"
+                data-theme="light"
               />
               <div
                 aria-hidden="true"
                 class="react-select__indicator react-select__dropdown-indicator css-1hbdnuy"
+                data-theme="light"
               >
                 <svg
                   aria-hidden="true"
                   class="chakra-icon css-onkibi"
+                  data-theme="light"
                   focusable="false"
                   role="presentation"
                   viewBox="0 0 24 24"
@@ -202,6 +210,7 @@ exports[`Should successfully create a toc with default tool component 1`] = `
                 <svg
                   aria-hidden="true"
                   class="chakra-icon css-onkibi"
+                  data-theme="light"
                   focusable="false"
                   viewBox="0 0 24 24"
                 >

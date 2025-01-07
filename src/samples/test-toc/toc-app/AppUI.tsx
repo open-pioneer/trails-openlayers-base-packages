@@ -71,6 +71,7 @@ export function AppUI() {
                                                         allowSelectingEmptyBasemap: true
                                                     }}
                                                     collapsibleGroups={true}
+                                                    isCollapsed={true}
                                                 />
                                             </TitledSection>
                                         </Box>

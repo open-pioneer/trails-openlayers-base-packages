@@ -150,7 +150,8 @@ function LayerItem(props: { layer: AnyLayer }): JSX.Element {
     const childLayers = useChildLayers(layer);
     const isAvailable = useLoadState(layer) !== "error";
     const notAvailableLabel = intl.formatMessage({ id: "layerNotAvailable" });
-    const [expanded, setExpanded] = useState(true);
+    const isCollapsed = options ? options.isCollapsed : true;
+    const [expanded, setExpanded] = useState(!isCollapsed);
     const context = useContext(LayerListContext);
     const isCollapsible = options ? options.collapsibleGroups : false;
     const expandedSetter = useEvent((expand: boolean) => {
