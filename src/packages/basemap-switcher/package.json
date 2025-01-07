@@ -1,6 +1,6 @@
 {
     "name": "@open-pioneer/basemap-switcher",
-    "version": "0.8.0",
+    "version": "0.9.0",
     "description": "This package provides a UI component that allows a user to switch between different base maps.",
     "license": "Apache-2.0",
     "main": "index.ts",
