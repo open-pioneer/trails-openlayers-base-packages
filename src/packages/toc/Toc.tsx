@@ -10,9 +10,9 @@ import {
     useCommonComponentProps
 } from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
-import { FC, useId, useMemo } from "react";
+import { FC, useId, useMemo, useCallback, useState } from "react";
+import { ListItemsExpandedModel, LayerList, LayerListRef } from "./LayerList";
 import { TocWidgetOptions, TocWidgetOptionsProvider } from "./Context";
-import { LayerList } from "./LayerList";
 import { Tools } from "./Tools";
 
 /**
@@ -43,6 +43,18 @@ export interface TocProps extends CommonComponentProps, MapModelProps {
     basemapSwitcherProps?: Omit<BasemapSwitcherProps, "mapId">;
 
     /**
+     * If `true` groups in the toc can be collapsed and expanded.
+     * Defaults to `false`.
+     */
+    collapsibleGroups?: boolean;
+
+    /**
+     * If `true` groups in the toc are collapsed.
+     * Defaults to `false`. Only applicable if `tocProps.collapsibleGroups` is `true`.
+     */
+    isCollapsed?: boolean;
+
+    /*
      * Show the parent layers when a child layer is made visible.
      * Defaults to `true`.
      */
@@ -58,6 +70,12 @@ export interface ToolsConfig {
      * Defaults to `true`.
      */
     showHideAllLayers?: boolean;
+
+    /**
+     * Optional property to show the `collapse all groups` entry.
+     * Defaults to `true`. Only applicable if `tocProps.collapsibleGroups` is `true`.
+     */
+    showCollapseAllGroups?: boolean;
 }
 
 const PADDING = 2;
@@ -67,17 +85,39 @@ const PADDING = 2;
  */
 export const Toc: FC<TocProps> = (props: TocProps) => {
     const intl = useIntl();
+    const [isCollapsed, setIsCollapsed] = useState(props.isCollapsed || false);
     const {
         showTools = false,
         toolsConfig,
         showBasemapSwitcher = true,
         basemapSwitcherProps,
+        collapsibleGroups = false,
         autoShowParents = true
     } = props;
     const { containerProps } = useCommonComponentProps("toc", props);
     const basemapsHeadingId = useId();
-    const options = useMemo((): TocWidgetOptions => ({ autoShowParents }), [autoShowParents]);
+    const options = useMemo(
+        (): TocWidgetOptions => ({ autoShowParents, collapsibleGroups, isCollapsed }),
+        [autoShowParents, collapsibleGroups, isCollapsed]
+    );
     const state = useMapModel(props);
+    const [listItemsExpandedModel, setListItemsExpandedModel] = useState<
+        ListItemsExpandedModel | undefined
+    >();
+    const handleLayerListRef = useCallback((node: LayerListRef) => {
+        if (node) {
+            setListItemsExpandedModel(node.listItemsExpandedModel); //set model if ref is actually set
+        }
+    }, []);
+    //only applicable if groups are actually collapsible
+    const showCollapseAllGroups = toolsConfig
+        ? toolsConfig.showCollapseAllGroups && options.collapsibleGroups
+        : options.collapsibleGroups;
+
+    //overwrite `isCollapsed`, if groups are not actually collapsible
+    if (!options.collapsibleGroups && isCollapsed) {
+        setIsCollapsed(false);
+    }
 
     let content: JSX.Element | null;
     switch (state.kind) {
@@ -106,6 +146,7 @@ export const Toc: FC<TocProps> = (props: TocProps) => {
                     </TitledSection>
                 </Box>
             );
+
             const layerList = (
                 <Box className="toc-operational-layers">
                     <TitledSection
@@ -118,7 +159,14 @@ export const Toc: FC<TocProps> = (props: TocProps) => {
                                         })}
                                     </Text>
                                     <Spacer />
-                                    {showTools && <Tools map={map} {...toolsConfig} />}
+                                    {showTools && (
+                                        <Tools
+                                            map={map}
+                                            listItemsExpandedModel={listItemsExpandedModel}
+                                            showHideAllLayers={toolsConfig?.showHideAllLayers}
+                                            showCollapseAllGroups={showCollapseAllGroups}
+                                        />
+                                    )}
                                 </Flex>
                             </SectionHeading>
                         }
@@ -126,7 +174,8 @@ export const Toc: FC<TocProps> = (props: TocProps) => {
                         <LayerList
                             map={map}
                             aria-label={intl.formatMessage({ id: "operationalLayerLabel" })}
-                        />
+                            ref={handleLayerListRef}
+                        ></LayerList>
                     </TitledSection>
                 </Box>
             );
