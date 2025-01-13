@@ -241,19 +241,32 @@ export interface LayerCollection {
     addLayer(layer: Layer): void;
 
     /**
-     * Returns all operational layers.
+     * Returns a list of operational layers.
+     * Depending on `includeChildLayers`, this returns a list of all operational layers or only operational layers on the top level.
+     * If `includeChildLayers` is `true` it returns a flat list that contains all parent layers and child layers, otherwise only top level layers are included.
+     * If parameter `includeChildLayers` is provided this returns list of {@link AnyLayer} since it can include {@link Sublayer}, otherwise a list of {@link Layer} is returned.
+     * If the hierachy of child layers is deeply nested this operation can become costly if `includeChildLayers` is `true`.
      */
-    getOperationalLayers(options?: LayerRetrievalOptions): Layer[];
 
+    getOperationalLayers(options?: LayerRetrievalOptions): Layer[];
+    getOperationalLayers(
+        options?: LayerRetrievalOptions & { includeChildLayers: boolean }
+    ): AnyLayer[];
     /**
      * Returns the layer identified by the `id` or undefined, if no such layer exists.
      */
     getLayerById(id: string): AnyLayer | undefined;
 
     /**
-     * Returns all layers known to this collection.
+     * Returns a list of layers known to this collection. This includes base layers and operational layers.
+     * Depending on `includeChildLayers`, this returns a list of all layers or only top level layers.
+     * If `includeChildLayers` is `true` it returns a flat list that contains all parent layers and child layers, otherwise only top level layers are included.
+     * If parameter `includeChildLayers` is provided this returns list of {@link AnyLayer} since it can include {@link Sublayer}, otherwise a list of {@link Layer} is returned.
+     * If the hierachy of child layers is deeply nested this operation can become costly if `includeChildLayers` is `true`.
      */
     getAllLayers(options?: LayerRetrievalOptions): Layer[];
+    getAllLayers(options?: LayerRetrievalOptions & { includeChildLayers: boolean }): AnyLayer[];
+
 
     /**
      * Removes a layer identified by the `id` from the map.

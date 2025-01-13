@@ -3,7 +3,6 @@
 exports[`should deactivate unavailable layers for selection 1`] = `
 <div
   class="basemap-switcher-select react-select--has-value css-79elbk"
-  data-theme="light"
 >
   <span
     class="css-1f43avz-a11yText-A11yText"
@@ -18,15 +17,12 @@ exports[`should deactivate unavailable layers for selection 1`] = `
   />
   <div
     class="react-select__control react-select__control--menu-is-open css-156sfem"
-    data-theme="light"
   >
     <div
       class="react-select__value-container react-select__value-container--has-value css-j93siq"
-      data-theme="light"
     >
       <div
         class="basemap-switcher-value react-select__single-value css-1xa1gs2"
-        data-theme="light"
       >
         <div
           class="css-u4p24i"
@@ -52,22 +48,18 @@ exports[`should deactivate unavailable layers for selection 1`] = `
     </div>
     <div
       class="react-select__indicators css-hfbj6y"
-      data-theme="light"
     >
       <hr
         aria-orientation="vertical"
         class="chakra-divider react-select__indicator-separator css-hxuk4g"
-        data-theme="light"
       />
       <div
         aria-hidden="true"
         class="react-select__indicator react-select__dropdown-indicator css-1hbdnuy"
-        data-theme="light"
       >
         <svg
           aria-hidden="true"
           class="chakra-icon css-onkibi"
-          data-theme="light"
           focusable="false"
           role="presentation"
           viewBox="0 0 24 24"
@@ -85,12 +77,10 @@ exports[`should deactivate unavailable layers for selection 1`] = `
   >
     <div
       class="react-select__menu css-ky7590"
-      data-theme="light"
     >
       <div
         aria-multiselectable="false"
         class="react-select__menu-list css-mkffje"
-        data-theme="light"
         id="react-select-11-listbox"
         role="listbox"
       >
@@ -98,7 +88,6 @@ exports[`should deactivate unavailable layers for selection 1`] = `
           aria-selected="true"
           class="basemap-switcher-option react-select__option react-select__option--is-focused react-select__option--is-selected css-2rk73n"
           data-focus="true"
-          data-theme="light"
           id="react-select-11-option-0"
           role="option"
           tabindex="-1"
@@ -113,7 +102,6 @@ exports[`should deactivate unavailable layers for selection 1`] = `
         <div
           aria-selected="false"
           class="basemap-switcher-option react-select__option css-p7801c"
-          data-theme="light"
           id="react-select-11-option-1"
           role="option"
           tabindex="-1"
@@ -134,7 +122,6 @@ exports[`should deactivate unavailable layers for selection 1`] = `
 exports[`should deactivate unavailable layers for selection 2`] = `
 <div
   class="basemap-switcher-select react-select--has-value css-79elbk"
-  data-theme="light"
 >
   <span
     class="css-1f43avz-a11yText-A11yText"
@@ -149,15 +136,12 @@ exports[`should deactivate unavailable layers for selection 2`] = `
   />
   <div
     class="react-select__control react-select__control--menu-is-open css-156sfem"
-    data-theme="light"
   >
     <div
       class="react-select__value-container react-select__value-container--has-value css-j93siq"
-      data-theme="light"
     >
       <div
         class="basemap-switcher-value react-select__single-value css-1xa1gs2"
-        data-theme="light"
       >
         <div
           class="css-u4p24i"
@@ -183,22 +167,18 @@ exports[`should deactivate unavailable layers for selection 2`] = `
     </div>
     <div
       class="react-select__indicators css-hfbj6y"
-      data-theme="light"
     >
       <hr
         aria-orientation="vertical"
         class="chakra-divider react-select__indicator-separator css-hxuk4g"
-        data-theme="light"
       />
       <div
         aria-hidden="true"
         class="react-select__indicator react-select__dropdown-indicator css-1hbdnuy"
-        data-theme="light"
       >
         <svg
           aria-hidden="true"
           class="chakra-icon css-onkibi"
-          data-theme="light"
           focusable="false"
           role="presentation"
           viewBox="0 0 24 24"
@@ -216,12 +196,10 @@ exports[`should deactivate unavailable layers for selection 2`] = `
   >
     <div
       class="react-select__menu css-ky7590"
-      data-theme="light"
     >
       <div
         aria-multiselectable="false"
         class="react-select__menu-list css-mkffje"
-        data-theme="light"
         id="react-select-11-listbox"
         role="listbox"
       >
@@ -229,7 +207,6 @@ exports[`should deactivate unavailable layers for selection 2`] = `
           aria-selected="true"
           class="basemap-switcher-option react-select__option react-select__option--is-focused react-select__option--is-selected css-2rk73n"
           data-focus="true"
-          data-theme="light"
           id="react-select-11-option-0"
           role="option"
           tabindex="-1"
@@ -244,7 +221,6 @@ exports[`should deactivate unavailable layers for selection 2`] = `
         <div
           aria-selected="false"
           class="basemap-switcher-option react-select__option css-p7801c"
-          data-theme="light"
           id="react-select-11-option-1"
           role="option"
           tabindex="-1"
@@ -270,7 +246,6 @@ exports[`should successfully create a basemap switcher component 1`] = `
 >
   <div
     class="basemap-switcher-select react-select--has-value css-79elbk"
-    data-theme="light"
   >
     <span
       class="css-1f43avz-a11yText-A11yText"
@@ -285,15 +260,12 @@ exports[`should successfully create a basemap switcher component 1`] = `
     />
     <div
       class="react-select__control react-select__control--menu-is-open css-156sfem"
-      data-theme="light"
     >
       <div
         class="react-select__value-container react-select__value-container--has-value css-j93siq"
-        data-theme="light"
       >
         <div
           class="basemap-switcher-value react-select__single-value css-1xa1gs2"
-          data-theme="light"
         >
           <div
             class="css-u4p24i"
@@ -319,22 +291,18 @@ exports[`should successfully create a basemap switcher component 1`] = `
       </div>
       <div
         class="react-select__indicators css-hfbj6y"
-        data-theme="light"
       >
         <hr
           aria-orientation="vertical"
           class="chakra-divider react-select__indicator-separator css-hxuk4g"
-          data-theme="light"
         />
         <div
           aria-hidden="true"
           class="react-select__indicator react-select__dropdown-indicator css-1hbdnuy"
-          data-theme="light"
         >
           <svg
             aria-hidden="true"
             class="chakra-icon css-onkibi"
-            data-theme="light"
             focusable="false"
             role="presentation"
             viewBox="0 0 24 24"
@@ -352,12 +320,10 @@ exports[`should successfully create a basemap switcher component 1`] = `
     >
       <div
         class="react-select__menu css-ky7590"
-        data-theme="light"
       >
         <div
           aria-multiselectable="false"
           class="react-select__menu-list css-mkffje"
-          data-theme="light"
           id="react-select-2-listbox"
           role="listbox"
         >
@@ -365,7 +331,6 @@ exports[`should successfully create a basemap switcher component 1`] = `
             aria-selected="true"
             class="basemap-switcher-option react-select__option react-select__option--is-focused react-select__option--is-selected css-2rk73n"
             data-focus="true"
-            data-theme="light"
             id="react-select-2-option-0"
             role="option"
             tabindex="-1"
