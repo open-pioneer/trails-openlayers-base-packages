@@ -28,5 +28,8 @@ export default defineBuildConfig({
             "notifier.NotificationService",
             "editing.EditingService"
         ]
+    },
+    properties: {
+        userConfig: null
     }
 });

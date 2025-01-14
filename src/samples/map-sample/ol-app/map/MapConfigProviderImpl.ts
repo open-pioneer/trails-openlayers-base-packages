@@ -31,9 +31,11 @@ export const MAP_ID = "main";
 export class MapConfigProviderImpl implements MapConfigProvider {
     mapId = MAP_ID;
     private vectorSourceFactory: OgcFeaturesVectorSourceFactory;
+    private layerTitle: string;
 
     constructor(options: ServiceOptions<References>) {
         this.vectorSourceFactory = options.references.vectorSourceFactory;
+        this.layerTitle = (options.properties.userConfig as Record<string, unknown>).layerTitle as string;
     }
 
     async getMapConfig(): Promise<MapConfig> {
@@ -51,7 +53,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                 createStrassenLayer(),
                 createKrankenhausLayer(this.vectorSourceFactory),
                 createSchulenLayer(),
-                createKitasLayer()
+                createKitasLayer(this.layerTitle)
             ]
         };
     }
@@ -167,7 +169,7 @@ function createStrassenLayer() {
     });
 }
 
-function createKitasLayer() {
+function createKitasLayer(layerTitle: string) {
     const pointLayerLegendProps: LegendItemAttributes = {
         Component: CustomLegendItem
     };
@@ -191,7 +193,7 @@ function createKitasLayer() {
 
     return new SimpleLayer({
         id: "ogc_kitas",
-        title: "Kindertagesstätten",
+        title: layerTitle,
         visible: true,
         olLayer: vectorLayer,
         attributes: {
