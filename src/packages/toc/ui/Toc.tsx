@@ -3,7 +3,7 @@
 import { reactiveMap } from "@conterra/reactivity-core";
 import { BasemapSwitcher, BasemapSwitcherProps } from "@open-pioneer/basemap-switcher";
 import { Box, Flex, Spacer, Text } from "@open-pioneer/chakra-integration";
-import { MapModelProps, useMapModel } from "@open-pioneer/map";
+import { MapModel, MapModelProps, useMapModel } from "@open-pioneer/map";
 import {
     CommonComponentProps,
     SectionHeading,
@@ -13,7 +13,7 @@ import {
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, useId, useMemo, useState } from "react";
 import { TocWidgetOptions, TocWidgetOptionsProvider } from "../Context";
-import { TocItem, TocModelProvider } from "../model/TocModel";
+import { TocItem, TocModel, TocModelProvider } from "../model/TocModel";
 import { TopLevelLayerList } from "./LayerList/LayerList";
 import { Tools } from "./Tools/Tools";
 
@@ -95,8 +95,35 @@ const PADDING = 2;
  */
 export const Toc: FC<TocProps> = (props: TocProps) => {
     const intl = useIntl();
-    const [isCollapsed, setIsCollapsed] = useState(props.isCollapsed || false);
+    const { containerProps } = useCommonComponentProps("toc", props);
+    const state = useMapModel(props);
+
+    let content: JSX.Element | null;
+    switch (state.kind) {
+        case "loading":
+            content = null;
+            break;
+        case "rejected":
+            content = <Text className="toc-error">{intl.formatMessage({ id: "error" })}</Text>;
+            break;
+        case "resolved": {
+            const map = state.map;
+            content = <TocContent {...props} map={map} />;
+            break;
+        }
+    }
+
+    return (
+        <Flex {...containerProps} direction="column" gap={PADDING}>
+            {content}
+        </Flex>
+    );
+};
+
+/** This component is rendered once we have a reference to the loaded map model. */
+function TocContent(props: TocProps & { map: MapModel }) {
     const {
+        map,
         showTools = false,
         toolsConfig,
         showBasemapSwitcher = true,
@@ -104,13 +131,15 @@ export const Toc: FC<TocProps> = (props: TocProps) => {
         collapsibleGroups = false,
         autoShowParents = true
     } = props;
-    const { containerProps } = useCommonComponentProps("toc", props);
+    const intl = useIntl();
+    const [isCollapsed, setIsCollapsed] = useState(props.isCollapsed || false);
+    const model = useTocModel();
+
     const basemapsHeadingId = useId();
     const options = useMemo(
         (): TocWidgetOptions => ({ autoShowParents, collapsibleGroups, isCollapsed }),
         [autoShowParents, collapsibleGroups, isCollapsed]
     );
-    const state = useMapModel(props);
 
     //only applicable if groups are actually collapsible
     const showCollapseAllGroups = toolsConfig
@@ -122,6 +151,66 @@ export const Toc: FC<TocProps> = (props: TocProps) => {
         setIsCollapsed(false);
     }
 
+    const basemapSwitcher = showBasemapSwitcher && (
+        <Box className="toc-basemap-switcher">
+            <TitledSection
+                title={
+                    <SectionHeading id={basemapsHeadingId} size={"sm"} mb={PADDING}>
+                        {intl.formatMessage({ id: "basemapsLabel" })}
+                    </SectionHeading>
+                }
+            >
+                <BasemapSwitcher
+                    map={map}
+                    aria-labelledby={basemapsHeadingId}
+                    {...basemapSwitcherProps}
+                />
+            </TitledSection>
+        </Box>
+    );
+
+    const layerList = (
+        <TocModelProvider value={model}>
+            <Box className="toc-operational-layers">
+                <TitledSection
+                    title={
+                        <SectionHeading size={"sm"} mb={2}>
+                            <Flex>
+                                <Text my={3}>
+                                    {intl.formatMessage({
+                                        id: "operationalLayerLabel"
+                                    })}
+                                </Text>
+                                <Spacer />
+                                {showTools && (
+                                    <Tools
+                                        map={map}
+                                        showHideAllLayers={toolsConfig?.showHideAllLayers}
+                                        showCollapseAllGroups={showCollapseAllGroups}
+                                    />
+                                )}
+                            </Flex>
+                        </SectionHeading>
+                    }
+                >
+                    <TopLevelLayerList
+                        map={map}
+                        aria-label={intl.formatMessage({ id: "operationalLayerLabel" })}
+                    />
+                </TitledSection>
+            </Box>
+        </TocModelProvider>
+    );
+
+    return (
+        <TocWidgetOptionsProvider value={options}>
+            {basemapSwitcher}
+            {layerList}
+        </TocWidgetOptionsProvider>
+    );
+}
+
+function useTocModel(): TocModel {
     const model = useMemo(() => {
         // Indexed by layerId
         const items = reactiveMap<string, TocItem>();
@@ -146,81 +235,5 @@ export const Toc: FC<TocProps> = (props: TocProps) => {
             }
         };
     }, []);
-
-    let content: JSX.Element | null;
-    switch (state.kind) {
-        case "loading":
-            content = null;
-            break;
-        case "rejected":
-            content = <Text className="toc-error">{intl.formatMessage({ id: "error" })}</Text>;
-            break;
-        case "resolved": {
-            const map = state.map;
-            const basemapSwitcher = showBasemapSwitcher && (
-                <Box className="toc-basemap-switcher">
-                    <TitledSection
-                        title={
-                            <SectionHeading id={basemapsHeadingId} size={"sm"} mb={PADDING}>
-                                {intl.formatMessage({ id: "basemapsLabel" })}
-                            </SectionHeading>
-                        }
-                    >
-                        <BasemapSwitcher
-                            map={map}
-                            aria-labelledby={basemapsHeadingId}
-                            {...basemapSwitcherProps}
-                        />
-                    </TitledSection>
-                </Box>
-            );
-
-            const layerList = (
-                <TocModelProvider value={model}>
-                    <Box className="toc-operational-layers">
-                        <TitledSection
-                            title={
-                                <SectionHeading size={"sm"} mb={2}>
-                                    <Flex>
-                                        <Text my={3}>
-                                            {intl.formatMessage({
-                                                id: "operationalLayerLabel"
-                                            })}
-                                        </Text>
-                                        <Spacer />
-                                        {showTools && (
-                                            <Tools
-                                                map={map}
-                                                showHideAllLayers={toolsConfig?.showHideAllLayers}
-                                                showCollapseAllGroups={showCollapseAllGroups}
-                                            />
-                                        )}
-                                    </Flex>
-                                </SectionHeading>
-                            }
-                        >
-                            <TopLevelLayerList
-                                map={map}
-                                aria-label={intl.formatMessage({ id: "operationalLayerLabel" })}
-                            />
-                        </TitledSection>
-                    </Box>
-                </TocModelProvider>
-            );
-
-            content = (
-                <>
-                    {basemapSwitcher}
-                    {layerList}
-                </>
-            );
-            break;
-        }
-    }
-
-    return (
-        <Flex {...containerProps} direction="column" gap={PADDING}>
-            <TocWidgetOptionsProvider value={options}>{content}</TocWidgetOptionsProvider>
-        </Flex>
-    );
-};
+    return model;
+}
