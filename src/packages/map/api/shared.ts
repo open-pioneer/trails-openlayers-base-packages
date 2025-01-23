@@ -10,4 +10,14 @@ export interface LayerRetrievalOptions {
      * By default, layers are returned in arbitrary order.
      */
     sortByDisplayOrder?: boolean;
+
+    /**
+     * If set to `true`, child layers of the returned layers will be included (recursively) in the result.
+     * If set to `false` (the default), only the layers in this collection will be included.
+     *
+     * > NOTE: returning all child layers can be a costly operation if the hierarchy is deeply nested.
+     *
+     * > NOTE: returning all child layers may alter the return type (`AnyLayer` vs `Layer`), since sublayers may be included.
+     */
+    includeChildLayers?: boolean;
 }
