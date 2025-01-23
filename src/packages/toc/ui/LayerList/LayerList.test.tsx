@@ -19,7 +19,7 @@ import OSM from "ol/source/OSM";
 import { act, ReactNode } from "react";
 import { expect, it } from "vitest";
 import { TocWidgetOptions, TocWidgetOptionsProvider } from "../../Context";
-import { LayerList } from "./LayerList";
+import { TopLevelLayerList } from "./LayerList";
 import { TocModel, TocModelProvider } from "../../model/TocModel";
 
 it("should show layers in the correct order", async () => {
@@ -41,7 +41,7 @@ it("should show layers in the correct order", async () => {
     });
     const map = await registry.expectMapModel(mapId);
 
-    const { container } = render(<LayerList map={map} />, {
+    const { container } = render(<TopLevelLayerList map={map} />, {
         wrapper: createWrapper()
     });
 
@@ -75,7 +75,7 @@ it("does not display base layers", async function () {
     });
     const map = await registry.expectMapModel(mapId);
 
-    const { container } = render(<LayerList map={map} />, {
+    const { container } = render(<TopLevelLayerList map={map} />, {
         wrapper: createWrapper()
     });
 
@@ -98,7 +98,7 @@ it("shows a single entry for layer groups inside a SimpleLayer", async function 
     });
     const map = await registry.expectMapModel(mapId);
 
-    const { container } = render(<LayerList map={map} />, {
+    const { container } = render(<TopLevelLayerList map={map} />, {
         wrapper: createWrapper()
     });
 
@@ -112,7 +112,7 @@ it("shows a fallback message if there are no layers", async function () {
     });
     const map = await registry.expectMapModel(mapId);
 
-    const { container } = render(<LayerList map={map} />, {
+    const { container } = render(<TopLevelLayerList map={map} />, {
         wrapper: createWrapper()
     });
 
@@ -130,7 +130,7 @@ it("reacts to changes in the layer composition", async function () {
     });
     const map = await registry.expectMapModel(mapId);
 
-    const { container } = render(<LayerList map={map} />, {
+    const { container } = render(<TopLevelLayerList map={map} />, {
         wrapper: createWrapper()
     });
 
@@ -171,7 +171,7 @@ it("displays the layer's current title", async () => {
         throw new Error("test layer not found!");
     }
 
-    const { container } = render(<LayerList map={map} />, {
+    const { container } = render(<TopLevelLayerList map={map} />, {
         wrapper: createWrapper()
     });
 
@@ -201,7 +201,7 @@ it("displays the layer's current visibility", async () => {
     }
     expect(layer.visible).toBe(true);
 
-    const { container } = render(<LayerList map={map} />, {
+    const { container } = render(<TopLevelLayerList map={map} />, {
         wrapper: createWrapper()
     });
 
@@ -234,7 +234,7 @@ it("changes the layer's visibility when toggling the checkbox", async () => {
         throw new Error("test layer not found!");
     }
 
-    const { container } = render(<LayerList map={map} />, {
+    const { container } = render(<TopLevelLayerList map={map} />, {
         wrapper: createWrapper()
     });
 
@@ -267,7 +267,7 @@ it("includes the layer id in the item's class list", async () => {
     });
     const map = await registry.expectMapModel(mapId);
 
-    const { container } = render(<LayerList map={map} />, {
+    const { container } = render(<TopLevelLayerList map={map} />, {
         wrapper: createWrapper()
     });
 
@@ -292,7 +292,7 @@ it("renders buttons for all layer's with description property", async () => {
     });
     const map = await registry.expectMapModel(mapId);
 
-    const { container } = render(<LayerList map={map} />, {
+    const { container } = render(<TopLevelLayerList map={map} />, {
         wrapper: createWrapper()
     });
 
@@ -321,7 +321,7 @@ it("changes the description popover's visibility when toggling the button", asyn
         throw new Error("test layer not found!");
     }
 
-    const { container } = render(<LayerList map={map} />, {
+    const { container } = render(<TopLevelLayerList map={map} />, {
         wrapper: createWrapper()
     });
 
@@ -370,7 +370,7 @@ it("reacts to changes in the layer description", async () => {
         throw new Error("test layer not found!");
     }
 
-    const { container } = render(<LayerList map={map} />, {
+    const { container } = render(<TopLevelLayerList map={map} />, {
         wrapper: createWrapper()
     });
 
@@ -401,7 +401,7 @@ it("reacts to changes of the layer load state", async () => {
     });
     const map = await registry.expectMapModel(mapId);
 
-    const { container } = render(<LayerList map={map} />, {
+    const { container } = render(<TopLevelLayerList map={map} />, {
         wrapper: createWrapper()
     });
 
@@ -449,7 +449,7 @@ it("supports a hierarchy of layers", async () => {
         <TocWidgetOptionsProvider
             value={{ autoShowParents: true, collapsibleGroups: false, isCollapsed: false }}
         >
-            <LayerList map={map} />
+            <TopLevelLayerList map={map} />
         </TocWidgetOptionsProvider>,
         {
             wrapper: createWrapper()
@@ -500,7 +500,7 @@ it("supports disabling autoShowParents", async () => {
         <TocWidgetOptionsProvider
             value={{ autoShowParents: false, collapsibleGroups: false, isCollapsed: false }}
         >
-            <LayerList map={map} />
+            <TopLevelLayerList map={map} />
         </TocWidgetOptionsProvider>,
         {
             wrapper: createWrapper()
@@ -537,7 +537,7 @@ it("should collapse and expand list items", async () => {
         <TocWidgetOptionsProvider
             value={{ autoShowParents: false, collapsibleGroups: true, isCollapsed: false }}
         >
-            <LayerList map={map} />
+            <TopLevelLayerList map={map} />
         </TocWidgetOptionsProvider>,
         {
             wrapper: createWrapper()
@@ -581,7 +581,7 @@ it("it renders collapse buttons (only) for groups", async () => {
         <TocWidgetOptionsProvider
             value={{ autoShowParents: false, collapsibleGroups: true, isCollapsed: false }}
         >
-            <LayerList map={map} />
+            <TopLevelLayerList map={map} />
         </TocWidgetOptionsProvider>,
         {
             wrapper: createWrapper()
@@ -614,7 +614,7 @@ it("supports disabling collapsibleGroups, even `isCollapsed` is `true`", async (
         <TocWidgetOptionsProvider
             value={{ autoShowParents: false, collapsibleGroups: false, isCollapsed: true }}
         >
-            <LayerList map={map} />
+            <TopLevelLayerList map={map} />
         </TocWidgetOptionsProvider>,
         {
             wrapper: createWrapper()
@@ -644,7 +644,7 @@ it("supports initial collapsed groups", async () => {
         <TocWidgetOptionsProvider
             value={{ autoShowParents: false, collapsibleGroups: true, isCollapsed: true }}
         >
-            <LayerList map={map} />
+            <TopLevelLayerList map={map} />
         </TocWidgetOptionsProvider>,
         {
             wrapper: createWrapper()

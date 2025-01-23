@@ -14,7 +14,7 @@ import { useIntl } from "open-pioneer:react-hooks";
 import { FC, useId, useMemo, useState } from "react";
 import { TocWidgetOptions, TocWidgetOptionsProvider } from "../Context";
 import { TocItem, TocModelProvider } from "../model/TocModel";
-import { LayerList } from "./LayerList/LayerList";
+import { TopLevelLayerList } from "./LayerList/LayerList";
 import { Tools } from "./Tools/Tools";
 
 /**
@@ -199,7 +199,7 @@ export const Toc: FC<TocProps> = (props: TocProps) => {
                                 </SectionHeading>
                             }
                         >
-                            <LayerList
+                            <TopLevelLayerList
                                 map={map}
                                 aria-label={intl.formatMessage({ id: "operationalLayerLabel" })}
                             />
