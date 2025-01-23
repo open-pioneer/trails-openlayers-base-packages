@@ -21,6 +21,7 @@ import { Tools } from "./Tools";
 export interface TocProps extends CommonComponentProps, MapModelProps {
     /**
      * Defines whether the tool component is shown in the toc.
+     *
      * Defaults to `false`.
      */
     showTools?: boolean;
@@ -32,30 +33,35 @@ export interface TocProps extends CommonComponentProps, MapModelProps {
 
     /**
      * Defines whether the basemap switcher is shown in the toc.
+     *
      * Defaults to `true`.
      */
     showBasemapSwitcher?: boolean;
 
     /**
      * Properties for the embedded basemap switcher.
-     * Property "mapId" is not applied.
+     *
+     * Property `mapId` is not applied (the basemap switcher uses the same map as the).
      */
     basemapSwitcherProps?: Omit<BasemapSwitcherProps, "mapId">;
 
     /**
-     * If `true` groups in the toc can be collapsed and expanded.
+     * If `true`, groups in the toc can be collapsed and expanded.
+     *
      * Defaults to `false`.
      */
     collapsibleGroups?: boolean;
 
     /**
-     * If `true` groups in the toc are collapsed.
-     * Defaults to `false`. Only applicable if `tocProps.collapsibleGroups` is `true`.
+     * If `true` groups in the toc are collapsed initially.
+     *
+     * Defaults to `false`. Only applicable if {@link collapsibleGroups} is `true`.
      */
     isCollapsed?: boolean;
 
-    /*
+    /**
      * Show the parent layers when a child layer is made visible.
+     *
      * Defaults to `true`.
      */
     autoShowParents?: boolean;
@@ -67,13 +73,15 @@ export interface TocProps extends CommonComponentProps, MapModelProps {
 export interface ToolsConfig {
     /**
      * Optional property to show the `hide all layers` entry.
+     *
      * Defaults to `true`.
      */
     showHideAllLayers?: boolean;
 
     /**
      * Optional property to show the `collapse all groups` entry.
-     * Defaults to `true`. Only applicable if `tocProps.collapsibleGroups` is `true`.
+     *
+     * Defaults to `true`. Only applicable if {@link TocProps.collapsibleGroups} is `true`.
      */
     showCollapseAllGroups?: boolean;
 }
