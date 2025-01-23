@@ -155,8 +155,12 @@ export interface MapModel extends EventSource<MapModelEvents> {
     /**
      * Returns the current scale of the map.
      *
-     * Technically, this is the _denominator_ of the current scale.
-     * In order to display it, use a format like `1:${scale}`.
+     * The scale is a value derived from the current `center`, `resolution` and `projection` of the map.
+     * The scale will change when the map is zoomed in our out, but depending on the projection, it may also
+     * change when the map is _panned_.
+     *
+     * > NOTE: Technically, this is the _denominator_ of the current scale.
+     * > In order to display it, use a format like `1:${scale}`.
      */
     readonly scale: number | undefined;
 

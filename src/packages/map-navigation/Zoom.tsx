@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import { ButtonProps } from "@open-pioneer/chakra-integration";
 import { MapModelProps, useMapModel } from "@open-pioneer/map";
 import { ToolButton } from "@open-pioneer/map-ui-components";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
@@ -36,6 +37,13 @@ export interface ZoomProps
         RefAttributes<HTMLButtonElement>,
         MapModelProps {
     /**
+     * Additional properties for the `Button` element.
+     *
+     * Note that the ToolButton also defines some of these props.
+     */
+    buttonProps?: Partial<ButtonProps>;
+
+    /**
      * The zoom direction.
      *
      * The button will either zoom in or zoom out depending on this value.
@@ -50,7 +58,7 @@ export const Zoom: FC<ZoomProps> = forwardRef(function Zoom(
     props: ZoomProps,
     ref: ForwardedRef<HTMLButtonElement>
 ) {
-    const { zoomDirection } = props;
+    const { buttonProps, zoomDirection } = props;
     const { map } = useMapModel(props);
     const intl = useIntl();
     const [disabled, setDisabled] = useState<boolean>(false);
@@ -82,6 +90,7 @@ export const Zoom: FC<ZoomProps> = forwardRef(function Zoom(
     return (
         <ToolButton
             ref={ref}
+            buttonProps={buttonProps}
             label={buttonLabel}
             icon={buttonIcon}
             onClick={zoom}
