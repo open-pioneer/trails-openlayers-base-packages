@@ -11,22 +11,19 @@ import {
 } from "@open-pioneer/chakra-integration";
 import { AnyLayer, MapModel } from "@open-pioneer/map";
 import { useIntl } from "open-pioneer:react-hooks";
-import { FC } from "react";
+import { FC, memo } from "react";
 import { FiMoreVertical } from "react-icons/fi";
-import { ToolsConfig } from "./Toc";
-import { ListItemsExpandedModel } from "./LayerList";
+import { TocModel, useTocModel } from "../../model/TocModel";
+import { ToolsConfig } from "../Toc";
 
-export const Tools: FC<
-    { map: MapModel; listItemsExpandedModel: ListItemsExpandedModel | undefined } & ToolsConfig
-> = (props) => {
+export interface ToolsProps extends ToolsConfig {
+    map: MapModel;
+}
+
+export const Tools: FC<ToolsProps> = memo(function Tools(props: ToolsProps) {
     const intl = useIntl();
-    const {
-        map,
-        listItemsExpandedModel,
-        showHideAllLayers = true,
-        showCollapseAllGroups = true
-    } = props;
-
+    const { map, showHideAllLayers = true, showCollapseAllGroups = true } = props;
+    const tocModel = useTocModel();
     const noEntry = !showHideAllLayers && !showCollapseAllGroups;
 
     return (
@@ -61,7 +58,7 @@ export const Tools: FC<
                                         id: "tools.collapseAllGroups"
                                     })}
                                     onClick={() => {
-                                        collapseAllGroups(listItemsExpandedModel);
+                                        collapseAllGroups(tocModel);
                                     }}
                                 >
                                     {intl.formatMessage({ id: "tools.collapseAllGroups" })}
@@ -73,7 +70,7 @@ export const Tools: FC<
             </Box>
         )
     );
-};
+});
 
 function hideAllLayers(map: MapModel | undefined) {
     const hide = (layer: AnyLayer) => {
@@ -92,12 +89,6 @@ function hideAllLayers(map: MapModel | undefined) {
     });
 }
 
-function collapseAllGroups(listItemsExpandedModel: ListItemsExpandedModel | undefined) {
-    if (!listItemsExpandedModel) {
-        return;
-    }
-
-    listItemsExpandedModel
-        .getAllExpandedStates()
-        .forEach((itemExpandedState) => itemExpandedState.setExpanded(false));
+function collapseAllGroups(tocModel: TocModel) {
+    tocModel.getItems().forEach((item) => item.setExpanded(false));
 }

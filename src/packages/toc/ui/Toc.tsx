@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import { reactiveMap } from "@conterra/reactivity-core";
 import { BasemapSwitcher, BasemapSwitcherProps } from "@open-pioneer/basemap-switcher";
 import { Box, Flex, Spacer, Text } from "@open-pioneer/chakra-integration";
 import { MapModelProps, useMapModel } from "@open-pioneer/map";
@@ -10,10 +11,11 @@ import {
     useCommonComponentProps
 } from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
-import { FC, useId, useMemo, useCallback, useState } from "react";
-import { ListItemsExpandedModel, LayerList, LayerListRef } from "./LayerList";
-import { TocWidgetOptions, TocWidgetOptionsProvider } from "./Context";
-import { Tools } from "./Tools";
+import { FC, useId, useMemo, useState } from "react";
+import { TocWidgetOptions, TocWidgetOptionsProvider } from "../Context";
+import { TocItem, TocModelProvider } from "../model/TocModel";
+import { LayerList } from "./LayerList/LayerList";
+import { Tools } from "./Tools/Tools";
 
 /**
  * Props supported by the {@link Toc} component.
@@ -109,14 +111,7 @@ export const Toc: FC<TocProps> = (props: TocProps) => {
         [autoShowParents, collapsibleGroups, isCollapsed]
     );
     const state = useMapModel(props);
-    const [listItemsExpandedModel, setListItemsExpandedModel] = useState<
-        ListItemsExpandedModel | undefined
-    >();
-    const handleLayerListRef = useCallback((node: LayerListRef) => {
-        if (node) {
-            setListItemsExpandedModel(node.listItemsExpandedModel); //set model if ref is actually set
-        }
-    }, []);
+
     //only applicable if groups are actually collapsible
     const showCollapseAllGroups = toolsConfig
         ? toolsConfig.showCollapseAllGroups && options.collapsibleGroups
@@ -126,6 +121,31 @@ export const Toc: FC<TocProps> = (props: TocProps) => {
     if (!options.collapsibleGroups && isCollapsed) {
         setIsCollapsed(false);
     }
+
+    const model = useMemo(() => {
+        // Indexed by layerId
+        const items = reactiveMap<string, TocItem>();
+        return {
+            getItem(layerId: string): TocItem | undefined {
+                return items.get(layerId);
+            },
+            getItems(): TocItem[] {
+                return Array.from(items.values());
+            },
+            registerItem(item: TocItem): void {
+                if (items.has(item.layerId)) {
+                    throw new Error(`Item with layerId '${item.layerId}' already registered.`);
+                }
+                items.set(item.layerId, item);
+            },
+            unregisterItem(item: TocItem): void {
+                if (items.get(item.layerId) !== item) {
+                    throw new Error(`Item with layerId '${item.layerId}' not registered.`);
+                }
+                items.delete(item.layerId);
+            }
+        };
+    }, []);
 
     let content: JSX.Element | null;
     switch (state.kind) {
@@ -156,36 +176,36 @@ export const Toc: FC<TocProps> = (props: TocProps) => {
             );
 
             const layerList = (
-                <Box className="toc-operational-layers">
-                    <TitledSection
-                        title={
-                            <SectionHeading size={"sm"} mb={2}>
-                                <Flex>
-                                    <Text my={3}>
-                                        {intl.formatMessage({
-                                            id: "operationalLayerLabel"
-                                        })}
-                                    </Text>
-                                    <Spacer />
-                                    {showTools && (
-                                        <Tools
-                                            map={map}
-                                            listItemsExpandedModel={listItemsExpandedModel}
-                                            showHideAllLayers={toolsConfig?.showHideAllLayers}
-                                            showCollapseAllGroups={showCollapseAllGroups}
-                                        />
-                                    )}
-                                </Flex>
-                            </SectionHeading>
-                        }
-                    >
-                        <LayerList
-                            map={map}
-                            aria-label={intl.formatMessage({ id: "operationalLayerLabel" })}
-                            ref={handleLayerListRef}
-                        ></LayerList>
-                    </TitledSection>
-                </Box>
+                <TocModelProvider value={model}>
+                    <Box className="toc-operational-layers">
+                        <TitledSection
+                            title={
+                                <SectionHeading size={"sm"} mb={2}>
+                                    <Flex>
+                                        <Text my={3}>
+                                            {intl.formatMessage({
+                                                id: "operationalLayerLabel"
+                                            })}
+                                        </Text>
+                                        <Spacer />
+                                        {showTools && (
+                                            <Tools
+                                                map={map}
+                                                showHideAllLayers={toolsConfig?.showHideAllLayers}
+                                                showCollapseAllGroups={showCollapseAllGroups}
+                                            />
+                                        )}
+                                    </Flex>
+                                </SectionHeading>
+                            }
+                        >
+                            <LayerList
+                                map={map}
+                                aria-label={intl.formatMessage({ id: "operationalLayerLabel" })}
+                            />
+                        </TitledSection>
+                    </Box>
+                </TocModelProvider>
             );
 
             content = (

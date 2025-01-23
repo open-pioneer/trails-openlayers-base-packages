@@ -18,8 +18,9 @@ import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
 import { act, ReactNode } from "react";
 import { expect, it } from "vitest";
-import { TocWidgetOptions, TocWidgetOptionsProvider } from "./Context";
+import { TocWidgetOptions, TocWidgetOptionsProvider } from "../../Context";
 import { LayerList } from "./LayerList";
+import { TocModel, TocModelProvider } from "../../model/TocModel";
 
 it("should show layers in the correct order", async () => {
     const { mapId, registry } = await setupMap({
@@ -451,7 +452,7 @@ it("supports a hierarchy of layers", async () => {
             <LayerList map={map} />
         </TocWidgetOptionsProvider>,
         {
-            wrapper: (props) => <PackageContextProvider {...props} />
+            wrapper: createWrapper()
         }
     );
 
@@ -502,7 +503,7 @@ it("supports disabling autoShowParents", async () => {
             <LayerList map={map} />
         </TocWidgetOptionsProvider>,
         {
-            wrapper: (props) => <PackageContextProvider {...props} />
+            wrapper: createWrapper()
         }
     );
 
@@ -539,7 +540,7 @@ it("should collapse and expand list items", async () => {
             <LayerList map={map} />
         </TocWidgetOptionsProvider>,
         {
-            wrapper: (props) => <PackageContextProvider {...props} />
+            wrapper: createWrapper()
         }
     );
 
@@ -583,7 +584,7 @@ it("it renders collapse buttons (only) for groups", async () => {
             <LayerList map={map} />
         </TocWidgetOptionsProvider>,
         {
-            wrapper: (props) => <PackageContextProvider {...props} />
+            wrapper: createWrapper()
         }
     );
 
@@ -616,7 +617,7 @@ it("supports disabling collapsibleGroups, even `isCollapsed` is `true`", async (
             <LayerList map={map} />
         </TocWidgetOptionsProvider>,
         {
-            wrapper: (props) => <PackageContextProvider {...props} />
+            wrapper: createWrapper()
         }
     );
 
@@ -646,7 +647,7 @@ it("supports initial collapsed groups", async () => {
             <LayerList map={map} />
         </TocWidgetOptionsProvider>,
         {
-            wrapper: (props) => <PackageContextProvider {...props} />
+            wrapper: createWrapper()
         }
     );
 
@@ -713,11 +714,20 @@ function createGroupHierarchy() {
 
 function createWrapper(autoShowParents = true, collapsibleGroups = false, isCollapsed = false) {
     const options: TocWidgetOptions = { autoShowParents, collapsibleGroups, isCollapsed };
+
+    // TODO
+    const dummyModel: TocModel = {
+        getItem: () => undefined,
+        getItems: () => [],
+        registerItem: () => undefined,
+        unregisterItem: () => undefined
+    };
+
     return function Wrapper(props: { children: ReactNode }) {
         return (
             <PackageContextProvider>
                 <TocWidgetOptionsProvider value={options}>
-                    {props.children}
+                    <TocModelProvider value={dummyModel}>{props.children}</TocModelProvider>
                 </TocWidgetOptionsProvider>
             </PackageContextProvider>
         );
