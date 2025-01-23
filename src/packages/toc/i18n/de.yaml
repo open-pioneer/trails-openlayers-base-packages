@@ -5,8 +5,8 @@ messages:
   childgroupLabel: "Layergruppe {title}"
   missingLayers: "Es sind keine Layer vorhanden."
   group:
-    expand: "Gruppe ausklappen"
-    collapse: "Gruppe einklappen"
+    expand: "Gruppe {title} ausklappen"
+    collapse: "Gruppe {title} einklappen"
   error: "Beim Erstellen des Karteninhalts ist ein Fehler aufgetreten."
   layerNotAvailable: "Layer nicht verfügbar"
   toolsLabel: "Kartenwerkzeuge"
