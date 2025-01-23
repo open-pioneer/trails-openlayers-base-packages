@@ -5,7 +5,7 @@ import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render, screen, waitFor } from "@testing-library/react";
 import TileLayer from "ol/layer/Tile";
 import { expect, it } from "vitest";
-import { Toc } from "../Toc";
+import { Toc } from "./Toc";
 import userEvent from "@testing-library/user-event";
 import { GroupLayerImpl } from "@open-pioneer/map/model/layers/GroupLayerImpl";
 import { SimpleLayerImpl } from "@open-pioneer/map/model/layers/SimpleLayerImpl";

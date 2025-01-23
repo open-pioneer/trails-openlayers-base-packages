@@ -19,7 +19,6 @@ import classNames from "classnames";
 import { useIntl } from "open-pioneer:react-hooks";
 import { memo, useEffect, useId, useMemo } from "react";
 import { FiAlertTriangle } from "react-icons/fi";
-import { useTocWidgetOptions } from "../../Context";
 import { TocItem, useTocModel } from "../../model/TocModel";
 import { slug } from "../../utils/slug";
 import { useChildLayers, useLoadState } from "./hooks";
@@ -159,10 +158,9 @@ function CollapseButton(props: {
 // Creates a toc item and registers it with the shared toc model.
 function useTocItem(layer: AnyLayer) {
     const tocModel = useTocModel();
-    const options = useTocWidgetOptions();
-    const isInitiallyCollapsed = options.isCollapsed;
+    const options = useReactiveSnapshot(() => tocModel.options, [tocModel]);
     const tocItem = useMemo((): TocItem => {
-        const expanded = reactive(!isInitiallyCollapsed);
+        const expanded = reactive(!options.initiallyCollapsed);
         return {
             layerId: layer.id,
             get isExpanded(): boolean {
@@ -173,7 +171,7 @@ function useTocItem(layer: AnyLayer) {
             }
         };
         // TODO: isCollapsed -> recreate model is ok?
-    }, [layer, isInitiallyCollapsed]);
+    }, [layer, options.initiallyCollapsed]);
 
     // Register the item on the shared toc model
     useEffect(() => {

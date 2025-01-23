@@ -34,7 +34,7 @@ export const TopLevelLayerList = memo(function TopLevelLayerList(props: TopLevel
 });
 
 /**
- * Lists the given layers as a list.
+ * Renders the given layers as a list (<ul>).
  */
 export const LayerList = memo(function LayerList(props: { layers: AnyLayer[] } & ListProps) {
     const { layers, ...listProps } = props;

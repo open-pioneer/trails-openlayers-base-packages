@@ -4,18 +4,36 @@ import { createContext, Provider, useContext } from "react";
 
 const TocModelContext = createContext<TocModel | undefined>(undefined);
 
+/**
+ * Provider for the toc's shared model.
+ * Used at the root of the component.
+ */
 export const TocModelProvider: Provider<TocModel> = TocModelContext.Provider as Provider<TocModel>;
 
+/**
+ * Returns the shared model for the current toc component.
+ */
 export function useTocModel(): TocModel {
     const model = useContext(TocModelContext);
     if (!model) {
-        throw new Error("Internal error: TocModel not found in context");
+        throw new Error("Internal error: TocModel not found in context.");
     }
     return model;
 }
 
-/** Note: internal for now */
+/**
+ * Shared model used by the toc and all its sub-components.
+ *
+ * @internal
+ */
 export interface TocModel {
+    /**
+     * Return the global widget options.
+     *
+     * NOTE: The object itself is reactive, but individual properties are not (change -> replace).
+     */
+    readonly options: TocWidgetOptions;
+
     /**
      * Returns the item that corresponds with the `layerId`.
      */
@@ -32,10 +50,34 @@ export interface TocModel {
 }
 
 /**
+ * Global toc widget options.
+ *
+ * @internal
+ */
+export interface TocWidgetOptions {
+    /**
+     * True: When showing a child, show all parents as well (`setVisible(true)`).
+     */
+    autoShowParents: boolean;
+
+    /**
+     * True: Layer items with children can be collapsed.
+     */
+    collapsibleGroups: boolean;
+
+    /**
+     * True: All groups are initially collapsed.
+     */
+    initiallyCollapsed: boolean;
+}
+
+/**
  * Represents an item in the toc.
  *
  * Currently items register themselves in the model when they are mounted
  * and remove themselves when they are unmounted.
+ *
+ * @internal
  */
 export interface TocItem {
     /**

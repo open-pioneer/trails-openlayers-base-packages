@@ -13,8 +13,9 @@ import { AnyLayer, MapModel } from "@open-pioneer/map";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, memo } from "react";
 import { FiMoreVertical } from "react-icons/fi";
-import { TocModel, useTocModel } from "../../model/TocModel";
-import { ToolsConfig } from "../Toc";
+import { TocModel, useTocModel } from "../model/TocModel";
+import { ToolsConfig } from "./Toc";
+import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 
 export interface ToolsProps extends ToolsConfig {
     map: MapModel;
@@ -22,12 +23,22 @@ export interface ToolsProps extends ToolsConfig {
 
 export const Tools: FC<ToolsProps> = memo(function Tools(props: ToolsProps) {
     const intl = useIntl();
-    const { map, showHideAllLayers = true, showCollapseAllGroups = true } = props;
     const tocModel = useTocModel();
-    const noEntry = !showHideAllLayers && !showCollapseAllGroups;
+    const collapsibleGroups = useReactiveSnapshot(
+        () => tocModel.options.collapsibleGroups,
+        [tocModel]
+    );
+    const {
+        map,
+        showHideAllLayers = true,
+        showCollapseAllGroups: showCollapseAllGroupsProp = collapsibleGroups
+    } = props;
 
+    // Only respected if groups are collapsible
+    const showCollapseAllGroups = collapsibleGroups && showCollapseAllGroupsProp;
+    const hasContent = showHideAllLayers || showCollapseAllGroups;
     return (
-        !noEntry && (
+        hasContent && (
             <Box className="toc-tools">
                 <Menu placement="bottom-start">
                     <MenuButton
