@@ -35,6 +35,7 @@ exports[`should successfully create a coordinate input component 1`] = `
       >
         <div
           class="coordinate-input-select--has-value css-79elbk"
+          data-theme="light"
         >
           <span
             class="css-1f43avz-a11yText-A11yText"
@@ -49,12 +50,15 @@ exports[`should successfully create a coordinate input component 1`] = `
           />
           <div
             class="coordinate-input-select__control css-u1k0x6"
+            data-theme="light"
           >
             <div
               class="coordinate-input-select__value-container coordinate-input-select__value-container--has-value css-odo7kh"
+              data-theme="light"
             >
               <div
                 class="coordinate-input-select__single-value css-1xa1gs2"
+                data-theme="light"
               >
                 WGS 84
               </div>
@@ -74,18 +78,22 @@ exports[`should successfully create a coordinate input component 1`] = `
             </div>
             <div
               class="coordinate-input-select__indicators css-hfbj6y"
+              data-theme="light"
             >
               <hr
                 aria-orientation="vertical"
                 class="chakra-divider coordinate-input-select__indicator-separator css-ejwint"
+                data-theme="light"
               />
               <div
                 aria-hidden="true"
                 class="coordinate-input-select__indicator coordinate-input-select__dropdown-indicator css-4v68kg"
+                data-theme="light"
               >
                 <svg
                   aria-hidden="true"
                   class="chakra-icon css-onkibi"
+                  data-theme="light"
                   focusable="false"
                   role="presentation"
                   viewBox="0 0 24 24"
