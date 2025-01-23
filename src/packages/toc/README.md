@@ -83,7 +83,11 @@ Groups can be made collapsible through user action by setting the `collapsibleGr
 If enabled, a toggle button appears next to parent nodes by which the user can expand or collapse the group.
 
 ```tsx
-<Toc mapId={MAP_ID} collapsibleGroups={true} />
+<Toc
+    mapId={MAP_ID}
+    collapsibleGroups={true}
+    initiallyCollapsed={true} // Whether groups are collapsed by default. Defaults to false.
+/>
 ```
 
 ## License

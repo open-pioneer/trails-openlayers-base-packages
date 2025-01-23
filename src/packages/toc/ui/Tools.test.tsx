@@ -126,7 +126,7 @@ it("Should collapse all layer items in toc", async () => {
                 data-testid="toc"
                 showTools={true}
                 collapsibleGroups={true}
-                isCollapsed={false}
+                initiallyCollapsed={false}
                 toolsConfig={{ showCollapseAllGroups: true }}
             />
         </PackageContextProvider>
@@ -167,7 +167,7 @@ it("Should not display collapse all button", async () => {
                 data-testid="toc"
                 showTools={true}
                 collapsibleGroups={true}
-                isCollapsed={false}
+                initiallyCollapsed={false}
                 toolsConfig={{ showCollapseAllGroups: false }}
             />
         </PackageContextProvider>

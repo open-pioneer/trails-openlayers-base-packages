@@ -58,7 +58,7 @@ export interface TocProps extends CommonComponentProps, MapModelProps {
      *
      * Defaults to `false`. Only applicable if {@link collapsibleGroups} is `true`.
      */
-    isCollapsed?: boolean;
+    initiallyCollapsed?: boolean;
 
     /**
      * Show the parent layers when a child layer is made visible.
@@ -189,7 +189,7 @@ function useTocModel(props: TocProps): TocModel {
             createOptions(
                 initialProps.current.autoShowParents,
                 initialProps.current.collapsibleGroups,
-                initialProps.current.isCollapsed
+                initialProps.current.initiallyCollapsed
             )
         );
 
@@ -226,9 +226,9 @@ function useTocModel(props: TocProps): TocModel {
         options.value = createOptions(
             props.autoShowParents,
             props.collapsibleGroups,
-            props.isCollapsed
+            props.initiallyCollapsed
         );
-    }, [options, props.autoShowParents, props.collapsibleGroups, props.isCollapsed]);
+    }, [options, props.autoShowParents, props.collapsibleGroups, props.initiallyCollapsed]);
 
     return model;
 }
