@@ -3,10 +3,11 @@
 import { batch, reactive, reactiveSet } from "@conterra/reactivity-core";
 import { createLogger } from "@open-pioneer/core";
 import OlBaseLayer from "ol/layer/Base";
-import { Layer, LayerCollection, LayerRetrievalOptions, AnyLayer, Sublayer, isLayer } from "../api";
+import { Layer, LayerCollection, LayerRetrievalOptions, AnyLayer, Sublayer } from "../api";
 import { AbstractLayer } from "./AbstractLayer";
 import { AbstractLayerBase } from "./AbstractLayerBase";
 import { MapModelImpl } from "./MapModelImpl";
+import { getRecursiveLayers } from "./getRecursiveLayers";
 
 const LOG = createLogger("map:LayerCollection");
 
@@ -97,39 +98,55 @@ export class LayerCollectionImpl implements LayerCollection {
     }
 
     getOperationalLayers(options?: LayerRetrievalOptions): Layer[];
-    getOperationalLayers(
-        options?: LayerRetrievalOptions & { includeChildLayers: boolean }
-    ): AnyLayer[];
-    getOperationalLayers(
-        options?: LayerRetrievalOptions & { includeChildLayers: boolean }
-    ): Layer[] | AnyLayer[] {
+    getOperationalLayers(options?: LayerRetrievalOptions): AnyLayer[];
+    getOperationalLayers(options?: LayerRetrievalOptions): Layer[] | AnyLayer[] {
         return this.getAllLayers(options).filter((layer) => !layer.isBaseLayer);
     }
 
-    getAllLayers(options?: LayerRetrievalOptions): Layer[];
-    getAllLayers(options?: LayerRetrievalOptions & { includeChildLayers: boolean }): AnyLayer[];
-    getAllLayers(
-        options?: LayerRetrievalOptions & { includeChildLayers: boolean }
-    ): Layer[] | AnyLayer[] {
-        const layers = Array.from(this.#topLevelLayers.values());
+    getItems(options?: LayerRetrievalOptions): Layer[] {
+        return this.getLayers(options);
+    }
 
-        if (!options) {
-            return layers;
-        } else {
-            if (!options.includeChildLayers) {
-                if (options.sortByDisplayOrder) {
-                    sortLayersByDisplayOrder(layers);
-                }
-                return layers;
-            } else {
-                const childLayers = this.#getAllChildLayers(layers);
-                const allLayers = childLayers.concat(layers);
-                if (options.sortByDisplayOrder) {
-                    sortLayersByDisplayOrder(allLayers);
-                }
-                return allLayers;
-            }
+    getLayers(options?: LayerRetrievalOptions): Layer[] {
+        const layers = Array.from(this.#topLevelLayers.values());
+        if (options?.sortByDisplayOrder) {
+            sortLayersByDisplayOrder(layers);
         }
+        return layers;
+    }
+
+    getAllLayers(options?: LayerRetrievalOptions): Layer[] {
+        return this.getLayers(options);
+    }
+
+    getRecursiveLayers({
+        filter,
+        sortByDisplayOrder
+    }: LayerRetrievalOptions & {
+        filter?: "base" | "operational" | ((layer: AnyLayer) => boolean);
+    } = {}): AnyLayer[] {
+        let filterFunc;
+        if (typeof filter === "function") {
+            filterFunc = filter;
+        } else if (typeof filter === "string") {
+            const filterType = filter;
+            const topLevelFilter = (layer: Layer) => {
+                return filterType === "base" ? layer.isBaseLayer : !layer.isBaseLayer;
+            };
+            filterFunc = (layer: AnyLayer) => {
+                if (!layer.parent && "isBaseLayer" in layer) {
+                    return topLevelFilter(layer);
+                }
+                // For nested children, include them all.
+                return true;
+            };
+        }
+
+        return getRecursiveLayers({
+            from: this,
+            filter: filterFunc,
+            sortByDisplayOrder
+        });
     }
 
     getLayerById(id: string): AnyLayer | undefined {
@@ -322,12 +339,12 @@ export class LayerCollectionImpl implements LayerCollection {
     }
 }
 
-function sortLayersByDisplayOrder(layers: AnyLayer[]) {
+function sortLayersByDisplayOrder(layers: Layer[]) {
     layers.sort((left, right) => {
         // currently layers are added with increasing z-index (base layers: 0), so
         // ordering by z-index is automatically the correct display order.
-        const leftZ = getZIndexForAnyLayer(left);
-        const rightZ = getZIndexForAnyLayer(right);
+        const leftZ = left.olLayer.getZIndex() ?? 1;
+        const rightZ = right.olLayer.getZIndex() ?? 1;
         return leftZ - rightZ;
     });
 }
@@ -338,36 +355,4 @@ function checkLayerInstance(object: Layer): asserts object is Layer & AbstractLa
             `Layer is not a valid layer instance. Use one of the classes provided by the map package instead.`
         );
     }
-}
-
-function getZIndexForAnyLayer(layer: AnyLayer): number {
-    //if layer has zIndex, simply return that zIndex
-    if (isLayer(layer)) {
-        const layerZIndex = layer.olLayer.getZIndex();
-        //make explicit checks because 0 is a valid zIndex which would evaluate to false
-        if (layerZIndex !== undefined && layerZIndex !== null && !Number.isNaN(layerZIndex)) {
-            return layerZIndex;
-        }
-    }
-
-    //if layer has no zIndex, find nearest parent with zIndex
-    let parent = layer.parent;
-    while (parent) {
-        if (isLayer(parent)) {
-            const parentLayerZIndex = parent.olLayer.getZIndex();
-            if (
-                parentLayerZIndex !== undefined &&
-                parentLayerZIndex !== null &&
-                !Number.isNaN(parentLayerZIndex)
-            ) {
-                return parentLayerZIndex;
-            }
-            parent = parent.parent;
-        } else {
-            parent = parent.parentLayer; //no need to traverse nested sublayers -> directly jump to parent layer of sublayer
-        }
-    }
-
-    //return 0 as default for baselayers and 1 for operational layers
-    return isLayer(layer) && layer.isBaseLayer ? 0 : 1;
 }

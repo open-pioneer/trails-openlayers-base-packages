@@ -1,11 +1,12 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Group } from "ol/layer";
-import { GroupLayerCollection, Layer, LayerRetrievalOptions } from "../../api";
+import { AnyLayer, GroupLayerCollection, Layer, LayerRetrievalOptions } from "../../api";
 import { GroupLayer, GroupLayerConfig } from "../../api/layers/GroupLayer";
 import { AbstractLayer } from "../AbstractLayer";
 import { AbstractLayerBase } from "../AbstractLayerBase";
 import { MapModelImpl } from "../MapModelImpl";
+import { RecursiveLayerOptions } from "../getRecursiveLayers";
 
 export class GroupLayerImpl extends AbstractLayer implements GroupLayer {
     #children: GroupLayerCollectionImpl;
@@ -88,6 +89,10 @@ export class GroupLayerCollectionImpl implements GroupLayerCollection {
     getLayers(_options?: LayerRetrievalOptions | undefined): (AbstractLayer & Layer)[] {
         // NOTE: options are ignored because layers are always ordered at this time.
         return this.#layers.slice();
+    }
+
+    getRecursiveLayers(_options?: RecursiveLayerOptions): AnyLayer[] {
+        throw new Error("todo");
     }
 
     /**

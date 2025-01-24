@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import { LayerRetrievalOptions, SublayerBaseType, SublayersCollection } from "../api";
 import { AbstractLayerBase } from "./AbstractLayerBase";
+import { RecursiveLayerOptions } from "./getRecursiveLayers";
 
 /**
  * Manages the sublayers of a layer.
@@ -33,6 +34,10 @@ export class SublayersCollectionImpl<Sublayer extends SublayerBaseType & Abstrac
     getSublayers(_options?: LayerRetrievalOptions | undefined): Sublayer[] {
         // NOTE: options are ignored because layers are always ordered at this time.
         return this.#sublayers.slice();
+    }
+
+    getRecursiveLayers(_options?: RecursiveLayerOptions): Sublayer[] {
+        throw new Error("todo");
     }
 
     /**

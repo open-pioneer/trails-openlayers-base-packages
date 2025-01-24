@@ -5,8 +5,8 @@ import type OlMap from "ol/Map";
 import type OlView from "ol/View";
 import type OlBaseLayer from "ol/layer/Base";
 import type { ExtentConfig } from "./MapConfig";
-import type { AnyLayer, Layer } from "./layers";
-import type { LayerRetrievalOptions } from "./shared";
+import type { AnyLayer, ChildrenCollection, Layer } from "./layers";
+import type { LayerRetrievalOptions, RecursiveRetrievalOptions } from "./shared";
 import type { Geometry } from "ol/geom";
 import type { BaseFeature } from "./BaseFeature";
 import type { StyleLike } from "ol/style/Style";
@@ -210,7 +210,7 @@ export interface MapModel extends EventSource<MapModelEvents> {
 /**
  * Contains the layers known to a {@link MapModel}.
  */
-export interface LayerCollection {
+export interface LayerCollection extends ChildrenCollection<Layer> {
     /**
      * Returns all configured base layers.
      */
@@ -234,18 +234,32 @@ export interface LayerCollection {
     /**
      * Returns a list of operational layers, starting from the root of the map's layer hierarchy.
      */
-    getOperationalLayers(
-        options?: LayerRetrievalOptions & { includeChildLayers?: false | undefined }
-    ): Layer[];
-    getOperationalLayers(options?: LayerRetrievalOptions): AnyLayer[];
+    getOperationalLayers(options?: LayerRetrievalOptions): Layer[];
+
+    /**
+     * Returns a list of layers known to this collection. This includes base layers and operational layers.
+     *
+     * @deprecated Use {@link getLayers()} or {@link getOperationalLayers()} instead.
+     * This method name is misleading since it does not recurse into child layers.
+     */
+    getAllLayers(options?: LayerRetrievalOptions): Layer[];
 
     /**
      * Returns a list of layers known to this collection. This includes base layers and operational layers.
      */
-    getAllLayers(
-        options?: LayerRetrievalOptions & { includeChildLayers?: false | undefined }
-    ): Layer[];
-    getAllLayers(options?: LayerRetrievalOptions): AnyLayer[];
+    getLayers(options?: LayerRetrievalOptions): Layer[];
+
+    /**
+     * Returns a list of all layers in the collection, including all children (recursively).
+     *
+     * > Note: This includes base layers by default (see `options.filter`).
+     * > Use the `"base"` or `"operational"` short hand values to filter by base layer or operational layers.
+     */
+    getRecursiveLayers(
+        options?: Omit<RecursiveRetrievalOptions, "filter"> & {
+            filter?: "base" | "operational" | ((layer: AnyLayer) => boolean);
+        }
+    ): AnyLayer[];
 
     /**
      * Adds a new layer to the map.

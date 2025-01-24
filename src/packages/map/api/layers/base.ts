@@ -3,11 +3,11 @@
 import type { EventSource } from "@open-pioneer/core";
 import type OlBaseLayer from "ol/layer/Base";
 import type { MapModel } from "../MapModel";
-import type { LayerRetrievalOptions } from "../shared";
+import type { LayerRetrievalOptions, RecursiveRetrievalOptions } from "../shared";
+import type { GroupLayer, GroupLayerCollection } from "./GroupLayer";
 import type { SimpleLayer } from "./SimpleLayer";
 import type { WMSLayer, WMSSublayer } from "./WMSLayer";
 import type { WMTSLayer } from "./WMTSLayer";
-import type { GroupLayer, GroupLayerCollection } from "./GroupLayer";
 
 /** Events emitted by the {@link Layer} and other layer types. */
 export interface LayerBaseEvents {
@@ -256,6 +256,11 @@ export interface SublayersCollection<SublayerType = Sublayer>
      * Returns the child sublayers in this collection.
      */
     getSublayers(options?: LayerRetrievalOptions): SublayerType[];
+
+    /**
+     * Returns a list of all layers in the collection, including all children (recursively).
+     */
+    getRecursiveLayers(options?: RecursiveRetrievalOptions): SublayerType[];
 }
 
 /**

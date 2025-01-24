@@ -3,7 +3,8 @@
 import type { Group } from "ol/layer";
 import { GroupLayerImpl } from "../../model/layers/GroupLayerImpl";
 import type { LayerRetrievalOptions } from "../shared";
-import type { ChildrenCollection, Layer, LayerBaseType, LayerConfig } from "./base";
+import type { AnyLayer, ChildrenCollection, Layer, LayerBaseType, LayerConfig } from "./base";
+import { RecursiveLayerOptions } from "../../model/getRecursiveLayers";
 
 /**
  * Configuration options to construct a {@link GroupLayer}.
@@ -50,6 +51,11 @@ export interface GroupLayerCollection extends ChildrenCollection<Layer> {
      * Returns all layers in this collection
      */
     getLayers(options?: LayerRetrievalOptions): Layer[];
+
+    /**
+     * Returns a list of all layers in the collection, including all children (recursively).
+     */
+    getRecursiveLayers(options?: RecursiveLayerOptions): AnyLayer[];
 }
 
 export interface GroupLayerConstructor {

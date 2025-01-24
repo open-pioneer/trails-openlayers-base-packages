@@ -638,10 +638,16 @@ it("it should return all layers including children", async () => {
         layers: [base, group]
     });
 
-    const allLayers = model.layers.getAllLayers({ includeChildLayers: true });
-    expect(allLayers.length).toBe(3); //base & group & child
-    const topLevelLayers = model.layers.getAllLayers({ includeChildLayers: false });
-    expect(topLevelLayers.length).toBe(2); //base & group
+    const allLayers = model.layers.getRecursiveLayers().map((layer) => layer.id);
+
+    // base & group & child, parents after children
+    expect(allLayers).toMatchInlineSnapshot(`
+      [
+        "base",
+        "member",
+        "group",
+      ]
+    `);
 });
 
 it("it should return all operational layers including children", async () => {
@@ -673,12 +679,18 @@ it("it should return all operational layers including children", async () => {
         layers: [base, group]
     });
 
-    const allOperationalLayers = model.layers.getOperationalLayers({ includeChildLayers: true });
-    expect(allOperationalLayers.length).toBe(2); //group & child
-    const topLevelOperationalLayers = model.layers.getOperationalLayers({
-        includeChildLayers: false
-    });
-    expect(topLevelOperationalLayers.length).toBe(1); //group
+    const allOperationalLayers = model.layers
+        .getRecursiveLayers({ filter: "operational" })
+        .map((layer) => layer.id);
+
+    // group & child
+    expect(allOperationalLayers).toMatchInlineSnapshot(`
+      [
+        "member",
+        "group",
+      ]
+    `);
+    expect(allOperationalLayers.length).toBe(2);
 });
 
 it("it should return all layers including children ordered by display order (asc)", async () => {
@@ -707,11 +719,10 @@ it("it should return all layers including children ordered by display order (asc
     });
 
     model = await create("foo", {
-        layers: [base, group]
+        layers: [group, base] // order reversed to test sorting
     });
 
-    const allLayers = model.layers.getAllLayers({
-        includeChildLayers: true,
+    const allLayers = model.layers.getRecursiveLayers({
         sortByDisplayOrder: true
     });
     expect(allLayers.length).toBe(3);

@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import type { AnyLayer } from "./layers";
 
 /** These options can be used by some APIs returning an array of layers (or sublayers). */
 export interface LayerRetrievalOptions {
@@ -10,14 +11,13 @@ export interface LayerRetrievalOptions {
      * By default, layers are returned in arbitrary order.
      */
     sortByDisplayOrder?: boolean;
+}
 
+/** These options can be used when recursively retrieving layers from a collection. */
+export interface RecursiveRetrievalOptions extends LayerRetrievalOptions {
     /**
-     * If set to `true`, child layers of the returned layers will be included (recursively) in the result.
-     * If set to `false` (the default), only the layers in this collection will be included.
-     *
-     * > NOTE: returning all child layers can be a costly operation if the hierarchy is deeply nested.
-     *
-     * > NOTE: returning all child layers may alter the return type (`AnyLayer` vs `Layer`), since sublayers may be included.
+     * Optional filter function to determine whether a layer should be included in the result.
+     * Return `false` to exclude a layer (and all its children) from the result.
      */
-    includeChildLayers?: boolean;
+    filter?: (layer: AnyLayer) => boolean;
 }
