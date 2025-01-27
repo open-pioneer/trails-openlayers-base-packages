@@ -48,6 +48,7 @@ export interface TocProps extends CommonComponentProps, MapModelProps {
 
     /**
      * If `true`, groups in the toc can be collapsed and expanded.
+     * This property should only be `true` if the map actually contains layer groups.
      *
      * Defaults to `false`.
      */
@@ -56,7 +57,7 @@ export interface TocProps extends CommonComponentProps, MapModelProps {
     /**
      * If `true` groups in the toc are collapsed initially.
      *
-     * Defaults to `false`. Only applicable if {@link collapsibleGroups} is `true`.
+     * Defaults to `false`. If {@link collapsibleGroups} is `false` this property should also be `false`. Otherwise only the top level layers will appear in the toc.
      */
     initiallyCollapsed?: boolean;
 
