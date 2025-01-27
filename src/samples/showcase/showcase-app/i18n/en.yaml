@@ -19,7 +19,7 @@ messages:
       description: This demo shows how to use the <code>OverviewMap</code>.
     mapNavigation:
       title: Map navigation tools
-      description: "This demo shows how to use the map navigation tools: <code>ZoomIn, ZoomOut, InitialExtent</code>"
+      description: "This demo shows how to use the map navigation tools: <code>ZoomIn, ZoomOut, HistoryBackward, HistoryForward, InitialExtent</code>"
     searchAndHighlight:
       title: Search and Feature-Highlight
       description: This demo shows how to use the <code>Search</code> component and how features can be highlighted in the map.
