@@ -18,8 +18,8 @@ import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
 import { act, ReactNode } from "react";
 import { expect, it } from "vitest";
-import { TocWidgetOptions, TocWidgetOptionsProvider } from "./Context";
-import { LayerList } from "./LayerList";
+import { TocModel, TocModelProvider, TocWidgetOptions } from "../../model/TocModel";
+import { TopLevelLayerList } from "./LayerList";
 
 it("should show layers in the correct order", async () => {
     const { mapId, registry } = await setupMap({
@@ -40,7 +40,7 @@ it("should show layers in the correct order", async () => {
     });
     const map = await registry.expectMapModel(mapId);
 
-    const { container } = render(<LayerList map={map} />, {
+    const { container } = render(<TopLevelLayerList map={map} />, {
         wrapper: createWrapper()
     });
 
@@ -74,7 +74,7 @@ it("does not display base layers", async function () {
     });
     const map = await registry.expectMapModel(mapId);
 
-    const { container } = render(<LayerList map={map} />, {
+    const { container } = render(<TopLevelLayerList map={map} />, {
         wrapper: createWrapper()
     });
 
@@ -97,7 +97,7 @@ it("shows a single entry for layer groups inside a SimpleLayer", async function 
     });
     const map = await registry.expectMapModel(mapId);
 
-    const { container } = render(<LayerList map={map} />, {
+    const { container } = render(<TopLevelLayerList map={map} />, {
         wrapper: createWrapper()
     });
 
@@ -111,7 +111,7 @@ it("shows a fallback message if there are no layers", async function () {
     });
     const map = await registry.expectMapModel(mapId);
 
-    const { container } = render(<LayerList map={map} />, {
+    const { container } = render(<TopLevelLayerList map={map} />, {
         wrapper: createWrapper()
     });
 
@@ -129,7 +129,7 @@ it("reacts to changes in the layer composition", async function () {
     });
     const map = await registry.expectMapModel(mapId);
 
-    const { container } = render(<LayerList map={map} />, {
+    const { container } = render(<TopLevelLayerList map={map} />, {
         wrapper: createWrapper()
     });
 
@@ -170,7 +170,7 @@ it("displays the layer's current title", async () => {
         throw new Error("test layer not found!");
     }
 
-    const { container } = render(<LayerList map={map} />, {
+    const { container } = render(<TopLevelLayerList map={map} />, {
         wrapper: createWrapper()
     });
 
@@ -200,7 +200,7 @@ it("displays the layer's current visibility", async () => {
     }
     expect(layer.visible).toBe(true);
 
-    const { container } = render(<LayerList map={map} />, {
+    const { container } = render(<TopLevelLayerList map={map} />, {
         wrapper: createWrapper()
     });
 
@@ -233,7 +233,7 @@ it("changes the layer's visibility when toggling the checkbox", async () => {
         throw new Error("test layer not found!");
     }
 
-    const { container } = render(<LayerList map={map} />, {
+    const { container } = render(<TopLevelLayerList map={map} />, {
         wrapper: createWrapper()
     });
 
@@ -266,7 +266,7 @@ it("includes the layer id in the item's class list", async () => {
     });
     const map = await registry.expectMapModel(mapId);
 
-    const { container } = render(<LayerList map={map} />, {
+    const { container } = render(<TopLevelLayerList map={map} />, {
         wrapper: createWrapper()
     });
 
@@ -291,7 +291,7 @@ it("renders buttons for all layer's with description property", async () => {
     });
     const map = await registry.expectMapModel(mapId);
 
-    const { container } = render(<LayerList map={map} />, {
+    const { container } = render(<TopLevelLayerList map={map} />, {
         wrapper: createWrapper()
     });
 
@@ -320,7 +320,7 @@ it("changes the description popover's visibility when toggling the button", asyn
         throw new Error("test layer not found!");
     }
 
-    const { container } = render(<LayerList map={map} />, {
+    const { container } = render(<TopLevelLayerList map={map} />, {
         wrapper: createWrapper()
     });
 
@@ -369,7 +369,7 @@ it("reacts to changes in the layer description", async () => {
         throw new Error("test layer not found!");
     }
 
-    const { container } = render(<LayerList map={map} />, {
+    const { container } = render(<TopLevelLayerList map={map} />, {
         wrapper: createWrapper()
     });
 
@@ -400,7 +400,7 @@ it("reacts to changes of the layer load state", async () => {
     });
     const map = await registry.expectMapModel(mapId);
 
-    const { container } = render(<LayerList map={map} />, {
+    const { container } = render(<TopLevelLayerList map={map} />, {
         wrapper: createWrapper()
     });
 
@@ -444,14 +444,11 @@ it("supports a hierarchy of layers", async () => {
     });
 
     const map = await registry.expectMapModel(mapId);
-    const { container } = render(
-        <TocWidgetOptionsProvider value={{ autoShowParents: true }}>
-            <LayerList map={map} />
-        </TocWidgetOptionsProvider>,
-        {
-            wrapper: (props) => <PackageContextProvider {...props} />
-        }
-    );
+    const { container } = render(<TopLevelLayerList map={map} />, {
+        wrapper: createWrapper({
+            autoShowParents: true
+        })
+    });
 
     // Check hierarchy of dom elements
     const groupItem = findLayerItem(container, "group")!;
@@ -493,14 +490,11 @@ it("supports disabling autoShowParents", async () => {
     });
 
     const map = await registry.expectMapModel(mapId);
-    const { container } = render(
-        <TocWidgetOptionsProvider value={{ autoShowParents: false }}>
-            <LayerList map={map} />
-        </TocWidgetOptionsProvider>,
-        {
-            wrapper: (props) => <PackageContextProvider {...props} />
-        }
-    );
+    const { container } = render(<TopLevelLayerList map={map} />, {
+        wrapper: createWrapper({
+            autoShowParents: false
+        })
+    });
 
     const submemberItem = findLayerItem(container, "submember")!;
     expect(submemberItem).toBeDefined();
@@ -518,6 +512,127 @@ it("supports disabling autoShowParents", async () => {
     expect(group.visible).toBe(false);
     expect(subgroup.visible).toBe(false);
     expect(submember.visible).toBe(true);
+});
+
+it("should collapse and expand list items", async () => {
+    const user = userEvent.setup();
+    const { group } = createGroupHierarchy();
+    const { mapId, registry } = await setupMap({
+        layers: [group]
+    });
+
+    const map = await registry.expectMapModel(mapId);
+    const { container } = render(<TopLevelLayerList map={map} />, {
+        wrapper: createWrapper({
+            collapsibleGroups: true
+        })
+    });
+
+    const groupItem = findLayerItem(container, "group")!;
+    expect(groupItem).toBeDefined();
+
+    const groupCollapseButton = queryAllByRole<HTMLElement>(groupItem, "button")[0]!;
+    const collapsibleList = container.getElementsByClassName("toc-collapsible-item").item(0)!;
+    expect(groupCollapseButton).toBeDefined();
+    expect(groupCollapseButton?.getAttribute("aria-expanded")).toBe("true");
+    expect(collapsibleList).toBeDefined();
+    expect(collapsibleList.getAttribute("style")?.includes("height: auto")).toBe(true);
+
+    await user.click(groupCollapseButton); //collapse
+    expect(groupCollapseButton?.getAttribute("aria-expanded")).toBe("false");
+    expect(collapsibleList.getAttribute("style")?.includes("height: 0")).toBe(true);
+
+    await user.click(groupCollapseButton); //expand again
+    expect(groupCollapseButton?.getAttribute("aria-expanded")).toBe("true");
+    expect(collapsibleList.getAttribute("style")?.includes("height: auto")).toBe(true);
+});
+
+it("it renders collapse buttons (only) for groups", async () => {
+    const { group } = createGroupHierarchy();
+    const { mapId, registry } = await setupMap({
+        layers: [
+            {
+                title: "SimpleLayer",
+                id: "simplelayer",
+                olLayer: new TileLayer({})
+            },
+            group
+        ]
+    });
+
+    const map = await registry.expectMapModel(mapId);
+    const { container } = render(<TopLevelLayerList map={map} />, {
+        wrapper: createWrapper({ collapsibleGroups: true })
+    });
+
+    const groupItem = findLayerItem(container, "group")!;
+    expect(groupItem).toBeDefined();
+    const subGroupItem = findLayerItem(container, "subgroup")!;
+    expect(subGroupItem).toBeDefined();
+    const nongroupItem = findLayerItem(container, "simplelayer")!;
+    expect(nongroupItem).toBeDefined();
+
+    const groupCollapseButton = queryAllByRole<HTMLElement>(groupItem, "button")[0];
+    expect(groupCollapseButton).toBeDefined();
+    const subgroupCollapseButton = queryAllByRole<HTMLElement>(subGroupItem, "button")[0];
+    expect(subgroupCollapseButton).toBeDefined();
+    const nongroupCollapseButton = queryAllByRole<HTMLElement>(nongroupItem, "button");
+    expect(nongroupCollapseButton.length).toBe(0); //has no child layers -> should not render collapse button
+});
+
+it("supports disabling collapsibleGroups, even if `initiallyCollapsed` is `true`", async () => {
+    const { group } = createGroupHierarchy();
+    const { mapId, registry } = await setupMap({
+        layers: [group]
+    });
+
+    const map = await registry.expectMapModel(mapId);
+    const { container } = render(<TopLevelLayerList map={map} />, {
+        wrapper: createWrapper({
+            collapsibleGroups: false,
+            initiallyCollapsed: true
+        })
+    });
+
+    const groupItem = findLayerItem(container, "group")!;
+    expect(groupItem).toBeDefined();
+    const subGroupItem = findLayerItem(container, "subgroup")!;
+    expect(subGroupItem).toBeDefined();
+
+    const groupCollapseButton = queryAllByRole<HTMLElement>(groupItem, "button")[0];
+    expect(groupCollapseButton).toBeUndefined();
+    const subgroupCollapseButton = queryAllByRole<HTMLElement>(subGroupItem, "button")[0];
+    expect(subgroupCollapseButton).toBeUndefined();
+});
+
+it("supports initial collapsed groups", async () => {
+    const user = userEvent.setup();
+    const { group } = createGroupHierarchy();
+    const { mapId, registry } = await setupMap({
+        layers: [group]
+    });
+
+    const map = await registry.expectMapModel(mapId);
+    const { container } = render(<TopLevelLayerList map={map} />, {
+        wrapper: createWrapper({
+            collapsibleGroups: true,
+            initiallyCollapsed: true
+        })
+    });
+
+    const groupItem = findLayerItem(container, "group")!;
+    expect(groupItem).toBeDefined();
+
+    const groupCollapseButton = queryAllByRole<HTMLElement>(groupItem, "button")[0]!;
+    const collapsibleList = container.getElementsByClassName("toc-collapsible-item").item(0)!;
+    expect(groupCollapseButton).toBeDefined();
+    expect(groupCollapseButton?.getAttribute("aria-expanded")).toBe("false");
+    expect(collapsibleList).toBeDefined();
+    expect(collapsibleList.getAttribute("style")?.includes("height: 0")).toBe(true);
+
+    await user.click(groupCollapseButton); //expand
+    expect(groupCollapseButton?.getAttribute("aria-expanded")).toBe("true");
+    expect(collapsibleList.getAttribute("style")?.includes("height: auto")).toBe(true);
 });
 
 /** Returns the layer list's current list items. */
@@ -566,14 +681,23 @@ function createGroupHierarchy() {
     return { group, subgroup, submember };
 }
 
-function createWrapper(autoShowParents = true) {
-    const options: TocWidgetOptions = { autoShowParents };
+function createWrapper(options?: Partial<TocWidgetOptions>) {
+    const testModel: TocModel = {
+        options: {
+            autoShowParents: true,
+            collapsibleGroups: false,
+            initiallyCollapsed: false,
+            ...options
+        },
+        getItem: () => undefined,
+        getItems: () => [],
+        registerItem: () => undefined,
+        unregisterItem: () => undefined
+    };
     return function Wrapper(props: { children: ReactNode }) {
         return (
             <PackageContextProvider>
-                <TocWidgetOptionsProvider value={options}>
-                    {props.children}
-                </TocWidgetOptionsProvider>
+                <TocModelProvider value={testModel}>{props.children}</TocModelProvider>
             </PackageContextProvider>
         );
     };

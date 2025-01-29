@@ -26,6 +26,7 @@
         "ol": "catalog:",
         "react": "catalog:",
         "react-icons": "catalog:",
+        "@chakra-ui/icons": "catalog:",
         "@open-pioneer/reactivity": "catalog:",
         "@conterra/reactivity-core": "catalog:"
     },
