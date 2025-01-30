@@ -91,6 +91,21 @@ export class GroupLayerCollectionImpl implements GroupLayerCollection {
     }
 
     /**
+     * Returns all nested child layers that are not of type group layer
+     */
+    getAllChildLayers(layer: Layer = this.#parent): Layer[] {
+        if (layer.type !== "group") return [layer];
+        if (layer.layers.getLayers().length === 0) return [];
+
+        let result: Layer[] = [];
+        layer.layers
+            .getLayers()
+            .forEach((sublayer) => (result = result.concat(this.getAllChildLayers(sublayer))));
+
+        return result;
+    }
+
+    /**
      * Returns a reference to the internal group layer array.
      *
      * NOTE: Do not modify directly!

@@ -92,3 +92,84 @@ it("throws when adding the same child twice", () => {
             })
     ).toThrowErrorMatchingInlineSnapshot(`[Error: Duplicate item added to a unique collection]`);
 });
+
+it("getAllChildLayers - self", async () => {
+    const sublayers = [
+        new SimpleLayerImpl({
+            id: "member",
+            title: "group member",
+            olLayer: new TileLayer({})
+        })
+    ];
+    const layer = new GroupLayerImpl({
+        id: "test",
+        title: "test",
+        layers: sublayers
+    });
+
+    expect(layer.layers.getAllChildLayers()).toEqual(sublayers);
+});
+
+it("getAllChildLayers - empty", async () => {
+    const layer = new GroupLayerImpl({
+        id: "test",
+        title: "test",
+        layers: []
+    });
+
+    expect(layer.layers.getAllChildLayers()).toEqual([]);
+});
+
+it("getAllChildLayers - groupLayer with nested layers", async () => {
+    const testLayers = [
+        new SimpleLayerImpl({
+            id: "a",
+            title: "Foo",
+            olLayer: new TileLayer({})
+        }),
+        new SimpleLayerImpl({
+            id: "b",
+            title: "Foo",
+            olLayer: new TileLayer({})
+        }),
+        new SimpleLayerImpl({
+            id: "c",
+            title: "Foo",
+            olLayer: new TileLayer({})
+        }),
+        new SimpleLayerImpl({
+            id: "d",
+            title: "Foo",
+            olLayer: new TileLayer({})
+        }),
+        new SimpleLayerImpl({
+            id: "e",
+            title: "Foo",
+            olLayer: new TileLayer({})
+        }),
+        new SimpleLayerImpl({
+            id: "f",
+            title: "Foo",
+            olLayer: new TileLayer({})
+        })
+    ];
+    const sublayer = [
+        new GroupLayerImpl({
+            id: "test",
+            title: "test",
+            layers: testLayers.slice(0, 4)
+        }),
+        new GroupLayerImpl({
+            id: "test",
+            title: "test",
+            layers: testLayers.slice(4, 5)
+        }),
+        testLayers[5] as SimpleLayerImpl
+    ];
+    const layer = new GroupLayerImpl({
+        id: "test",
+        title: "test",
+        layers: sublayer
+    });
+    expect(layer.layers.getAllChildLayers()).toEqual(testLayers);
+});

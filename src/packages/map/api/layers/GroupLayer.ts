@@ -50,6 +50,11 @@ export interface GroupLayerCollection extends ChildrenCollection<Layer> {
      * Returns all layers in this collection
      */
     getLayers(options?: LayerRetrievalOptions): Layer[];
+
+    /**
+     * Returns all nested child layers that are not of type group layer
+     */
+    getAllChildLayers(layer?: Layer): Layer[];
 }
 
 export interface GroupLayerConstructor {
