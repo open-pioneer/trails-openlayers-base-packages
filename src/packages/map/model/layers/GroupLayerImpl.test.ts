@@ -5,6 +5,7 @@ import { expect, it } from "vitest";
 import { SimpleLayerImpl } from "./SimpleLayerImpl";
 import { GroupLayerImpl } from "./GroupLayerImpl";
 import { Group } from "ol/layer";
+import { WMSLayer } from "../../api";
 
 it("should not have any sublayers", () => {
     const olLayer = new TileLayer({});
@@ -74,6 +75,71 @@ it("should set parent of group members to this group layer", () => {
     grouplayer.destroy();
     expect(grouplayer.layers.getLayers().length).toBe(0);
     expect(child.parent).toBeUndefined();
+});
+
+it("should return all layers of the group layer collection, including child layers", () => {
+    const olLayer1 = new TileLayer({});
+    const olLayer2 = new TileLayer({});
+
+    const wmsLayer = new WMSLayer({
+        title: "test wms",
+        id: "wms",
+        sublayers: [
+            {
+                title: "wms sublayer 1",
+                id: "wms_sublayer_1"
+            },
+            {
+                title: "sublayer 2",
+                id: "wms_sublayer_2",
+                sublayers: [
+                    {
+                        title: "subsublayer 1",
+                        id: "wms_subsublayer_1"
+                    }
+                ]
+            }
+        ],
+        url: "http://example.com/wms"
+    });
+
+    const grouplayer = new GroupLayerImpl({
+        id: "group",
+        title: "group test",
+        layers: [
+            new SimpleLayerImpl({
+                id: "member",
+                title: "group member",
+                olLayer: olLayer1
+            }),
+            new GroupLayerImpl({
+                id: "subgroup",
+                title: "subgroup test",
+                layers: [
+                    new SimpleLayerImpl({
+                        id: "subgroupmember",
+                        title: "subgroup member",
+                        olLayer: olLayer2
+                    })
+                ]
+            }),
+            wmsLayer
+        ]
+    });
+
+    const layers = grouplayer.layers.getRecursiveLayers({
+        filter: (layer) => layer.title !== "group member",
+        excludeParentLayers: true
+    });
+    const layerIds = layers.map((layer) => layer.id);
+
+    expect(layerIds).toContain("subgroup");
+    expect(layerIds).toContain("subgroupmember");
+    expect(layerIds).toContain("wms");
+    expect(layerIds).toContain("wms_sublayer_1");
+    expect(layerIds).toContain("wms_sublayer_2");
+    expect(layerIds.includes("member")).toBeFalsy(); //excluded by filter function
+    expect(layerIds.includes("group")).toBeFalsy(); //group itself is not part of the group layer collection
 });
 
 it("throws when adding the same child twice", () => {

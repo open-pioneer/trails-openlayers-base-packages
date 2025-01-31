@@ -49,5 +49,6 @@ export function getRecursiveLayers<LayerType extends AnyLayer>(
         }
         result.push(layer);
     }
+
     return result;
 }

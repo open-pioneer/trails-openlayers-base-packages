@@ -1,7 +1,13 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Group } from "ol/layer";
-import { AnyLayer, GroupLayerCollection, Layer, LayerRetrievalOptions } from "../../api";
+import {
+    AnyLayer,
+    GroupLayerCollection,
+    Layer,
+    LayerRetrievalOptions,
+    RecursiveRetrievalOptions
+} from "../../api";
 import { GroupLayer, GroupLayerConfig } from "../../api/layers/GroupLayer";
 import { AbstractLayer } from "../AbstractLayer";
 import { AbstractLayerBase } from "../AbstractLayerBase";
@@ -96,35 +102,14 @@ export class GroupLayerCollectionImpl implements GroupLayerCollection {
         return this.#layers.slice();
     }
 
-    getRecursiveLayers({
-        filter,
-        sortByDisplayOrder
-    }: LayerRetrievalOptions & {
-        filter?: "base" | "operational" | ((layer: AnyLayer) => boolean);
-    } = {}): AnyLayer[] {
-        let filterFunc;
-        if (typeof filter === "function") {
-            filterFunc = filter;
-        } else if (typeof filter === "string") {
-            const filterType = filter;
-            const topLevelFilter = (layer: Layer) => {
-                return filterType === "base" ? layer.isBaseLayer : !layer.isBaseLayer;
-            };
-            filterFunc = (layer: AnyLayer) => {
-                if (!layer.parent && "isBaseLayer" in layer) {
-                    return topLevelFilter(layer);
-                }
-                // For nested children, include them all.
-                return true;
-            };
-        }
-
+    getRecursiveLayers(_options?: RecursiveRetrievalOptions): AnyLayer[] {
         return getRecursiveLayers({
             from: this,
-            filter: filterFunc,
-            sortByDisplayOrder
+            sortByDisplayOrder: _options?.sortByDisplayOrder,
+            filter: _options?.filter
         });
     }
+
     /**
      * Returns a reference to the internal group layer array.
      *

@@ -47,7 +47,9 @@ export class SublayersCollectionImpl<SublayerType extends SublayerBaseType & Abs
             // NOTE: This is safe (but not elegant) because this class does not know about the entire type hierarchy (unions).
             // _Might_ be possible to refactor this class to use the Sublayer union instead in the generic type parameters,
             // but then we might also introduce a cycle in the type definitions, which could be bad (?).
-            from: this as unknown as SublayersCollection<Sublayer>
+            from: this as unknown as SublayersCollection<Sublayer>,
+            sortByDisplayOrder: _options?.sortByDisplayOrder,
+            filter: _options?.filter
         }) as Sublayer[]; // we know for sure that all children are sublayers: sublayers do not point to layers
     }
 
