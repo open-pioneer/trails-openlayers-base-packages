@@ -6,7 +6,7 @@ import { GroupLayer, GroupLayerConfig } from "../../api/layers/GroupLayer";
 import { AbstractLayer } from "../AbstractLayer";
 import { AbstractLayerBase } from "../AbstractLayerBase";
 import { MapModelImpl } from "../MapModelImpl";
-import { RecursiveLayerOptions } from "../getRecursiveLayers";
+import { getRecursiveLayers, RecursiveLayerOptions } from "../getRecursiveLayers";
 
 export class GroupLayerImpl extends AbstractLayer implements GroupLayer {
     #children: GroupLayerCollectionImpl;
@@ -59,6 +59,11 @@ export class GroupLayerCollectionImpl implements GroupLayerCollection {
         layers = layers.slice(); // Don't modify the input
         for (const layer of layers) {
             if (layer instanceof AbstractLayer) {
+                if (layer.isBaseLayer) {
+                    throw new Error(
+                        `Layer '${layer.id}' of group '${parent.id}' is marked as base layer. Layers that belong to a group layer cannot be a base layer.`
+                    );
+                }
                 layer.__attachToGroup(parent); //attach every layer to the parent group layer
             } else {
                 throw new Error(
@@ -91,10 +96,35 @@ export class GroupLayerCollectionImpl implements GroupLayerCollection {
         return this.#layers.slice();
     }
 
-    getRecursiveLayers(_options?: RecursiveLayerOptions): AnyLayer[] {
-        throw new Error("todo");
-    }
+    getRecursiveLayers({
+        filter,
+        sortByDisplayOrder
+    }: LayerRetrievalOptions & {
+        filter?: "base" | "operational" | ((layer: AnyLayer) => boolean);
+    } = {}): AnyLayer[] {
+        let filterFunc;
+        if (typeof filter === "function") {
+            filterFunc = filter;
+        } else if (typeof filter === "string") {
+            const filterType = filter;
+            const topLevelFilter = (layer: Layer) => {
+                return filterType === "base" ? layer.isBaseLayer : !layer.isBaseLayer;
+            };
+            filterFunc = (layer: AnyLayer) => {
+                if (!layer.parent && "isBaseLayer" in layer) {
+                    return topLevelFilter(layer);
+                }
+                // For nested children, include them all.
+                return true;
+            };
+        }
 
+        return getRecursiveLayers({
+            from: this,
+            filter: filterFunc,
+            sortByDisplayOrder
+        });
+    }
     /**
      * Returns a reference to the internal group layer array.
      *
