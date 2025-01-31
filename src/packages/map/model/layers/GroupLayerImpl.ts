@@ -6,7 +6,7 @@ import { GroupLayer, GroupLayerConfig } from "../../api/layers/GroupLayer";
 import { AbstractLayer } from "../AbstractLayer";
 import { AbstractLayerBase } from "../AbstractLayerBase";
 import { MapModelImpl } from "../MapModelImpl";
-import { getRecursiveLayers, RecursiveLayerOptions } from "../getRecursiveLayers";
+import { getRecursiveLayers } from "../getRecursiveLayers";
 
 export class GroupLayerImpl extends AbstractLayer implements GroupLayer {
     #children: GroupLayerCollectionImpl;

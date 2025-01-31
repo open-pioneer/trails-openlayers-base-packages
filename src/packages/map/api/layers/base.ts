@@ -260,7 +260,7 @@ export interface SublayersCollection<SublayerType = Sublayer>
     /**
      * Returns a list of all layers in the collection, including all children (recursively).
      */
-    getRecursiveLayers(options?: RecursiveRetrievalOptions): SublayerType[];
+    getRecursiveLayers(options?: RecursiveRetrievalOptions): Sublayer[];
 }
 
 /**

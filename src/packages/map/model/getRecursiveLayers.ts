@@ -1,14 +1,13 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-
 import { AnyLayer, ChildrenCollection } from "../api";
 
-export interface RecursiveLayerOptions {
+export interface RecursiveLayerOptions<LayerType> {
     /**
      * Starting point(s) of the recursion.
      * The layers in this collections and their all of their children (recursively) will be included in the result.
      */
-    from: ChildrenCollection<AnyLayer>;
+    from: ChildrenCollection<LayerType>;
 
     /**
      * Optional filter function to determine whether a layer should be included in the result.
@@ -25,7 +24,9 @@ export interface RecursiveLayerOptions {
     sortByDisplayOrder?: boolean;
 }
 
-export function getRecursiveLayers(options: RecursiveLayerOptions) {
+export function getRecursiveLayers<LayerType extends AnyLayer>(
+    options: RecursiveLayerOptions<LayerType>
+): AnyLayer[] {
     const filter = options.filter ?? (() => true);
     const sortByDisplayOrder = options.sortByDisplayOrder ?? false;
 
