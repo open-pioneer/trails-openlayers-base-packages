@@ -97,10 +97,8 @@ export class LayerCollectionImpl implements LayerCollection {
         return true;
     }
 
-    getOperationalLayers(options?: LayerRetrievalOptions): Layer[];
-    getOperationalLayers(options?: LayerRetrievalOptions): AnyLayer[];
-    getOperationalLayers(options?: LayerRetrievalOptions): Layer[] | AnyLayer[] {
-        return this.getAllLayers(options).filter((layer) => !layer.isBaseLayer);
+    getOperationalLayers(options?: LayerRetrievalOptions): Layer[] {
+        return this.getLayers(options).filter((layer) => !layer.isBaseLayer);
     }
 
     getItems(options?: LayerRetrievalOptions): Layer[] {

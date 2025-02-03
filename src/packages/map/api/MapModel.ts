@@ -233,27 +233,32 @@ export interface LayerCollection extends ChildrenCollection<Layer> {
 
     /**
      * Returns a list of operational layers, starting from the root of the map's layer hierarchy.
+     * The returned list includes top level layers only. Use {@link getRecursiveLayers()} to retrieve (nested) child layers.
      */
     getOperationalLayers(options?: LayerRetrievalOptions): Layer[];
 
     /**
      * Returns a list of layers known to this collection. This includes base layers and operational layers.
+     * The returned list includes top level layers only. Use {@link getRecursiveLayers()} to retrieve (nested) child layers.
      *
-     * @deprecated Use {@link getLayers()} or {@link getOperationalLayers()} instead.
+     * @deprecated Use {@link getLayers()}, {@link getOperationalLayers()} or {@link getRecursiveLayers()} instead.
      * This method name is misleading since it does not recurse into child layers.
      */
     getAllLayers(options?: LayerRetrievalOptions): Layer[];
 
     /**
      * Returns a list of layers known to this collection. This includes base layers and operational layers.
+     * The returned list includes top level layers only. Use {@link getRecursiveLayers()} to retrieve (nested) child layers.
      */
     getLayers(options?: LayerRetrievalOptions): Layer[];
 
     /**
-     * Returns a list of all layers in the collection, including all children (recursively).
+     * Returns a list of all layers in this collection, including all children (recursively).
      *
      * > Note: This includes base layers by default (see `options.filter`).
      * > Use the `"base"` or `"operational"` short hand values to filter by base layer or operational layers.
+     * >
+     * > If the layer hierachy is deeply nested, this function could potentially be expensive.
      */
     getRecursiveLayers(
         options?: Omit<RecursiveRetrievalOptions, "filter"> & {

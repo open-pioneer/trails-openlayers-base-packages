@@ -2,26 +2,42 @@
 "@open-pioneer/map": minor
 ---
 
-Add option to retrieve child layers from `LayerCollection` in `@open-pioneer/map`
+Add function `getRecursiveLayers()` to `LayerCollection`, `SublayerCollection` and `GrouplayerCollection`  in `@open-pioneer/map`
 
-Introduce option `includeChildLayers` for `getOperationLayers` and `getAllLayers` to optionally include (nested) children (sublayers and layers in groups) in the returned list of layers. If `includeChildLayers` is `true`, `getOperationLayers` and `getAllLayers` will return `AnyLayer[]` instead of `Layer[]`. By default `includeChildLayers` is `false` to avoid breaking changes.  
-The option `includeChildLayers` might be costly if the hierarchy of layers is deeply nested because the layer tree has to be traversed recursively.
+Compared to `getLayers` and `getOperationalLayers`, `getRecursiveLayer` returns all (nested) child and sub layers of a collection.
+The property `options.filter` can be used to exclude layers (and their child layers) from the result. For `LayerCollection`, `getRecursiveLayers()` provides the predefined filters `base` and `operational` to return either base layers or operation layers only.
 
-Example:
+The function might be costly if the hierarchy of layers is deeply nested because the layer tree has to be traversed recursively.
+In some scenarios using `options.filter` could be used to improve the performance because it is not necessary to traverse the layer tree completely if some layers are excluded.
+
+Example (using GroupLayerCollection):
 ```typescript
-const topLvlLayers : Layer[] = mapModel.map.layers.getAllLayers({
-    sortByDisplayOrder: true
-}); //return type is Layer[]
-const allLayers : AnyLayer[] = mapModel.map.layers.getAllLayers({
-    includeChildLayers: true,
-    sortByDisplayOrder: true
-}); //return type is AnyLayer[]
+    const grouplayer = new GroupLayer({
+        id: "group",
+        title: "group test",
+        layers: [
+            new SimpleLayer({
+                id: "member",
+                title: "group member",
+                olLayer: olLayer1
+            }),
+            new GroupLayer({
+                id: "subgroup",
+                title: "subgroup test",
+                layers: [
+                    new SimpleLayer({
+                        id: "subgroupmember",
+                        title: "subgroup member",
+                        olLayer: olLayer2
+                    })
+                ]
+            })
+        ]
+    });
 
-const topLvlOpLayers : Layer[] = mapModel.map.layers.getOperationalLayers({
-    sortByDisplayOrder: true
-}); //return type is Layer[]
-const allOpLayers : AnyLayer[] = mapModel.map.layers.getOperationalLayers({
-    includeChildLayers: true,
-    sortByDisplayOrder: true
-}); //return type is AnyLayer[]
+    //returns only the layer "member" because the provided filter function excludes "subgroup" and (implicitly) its child "subgroupmember".
+    const layers = grouplayer.layers.getRecursiveLayers({
+        filter: (layer) => layer.id !== "subgroup"
+    });
+
 ```
