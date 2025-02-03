@@ -128,8 +128,7 @@ it("should return all layers of the group layer collection, including child laye
     });
 
     const layers = grouplayer.layers.getRecursiveLayers({
-        filter: (layer) => layer.title !== "group member",
-        excludeParentLayers: true
+        filter: (layer) => layer.title !== "group member"
     });
     const layerIds = layers.map((layer) => layer.id);
 
