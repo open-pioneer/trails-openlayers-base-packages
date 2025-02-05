@@ -92,7 +92,8 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                             visible: true,
                             description:
                                 "Haltestellen des öffentlichen Personenverkehrs in der Hanse- und Universitätsstadt Rostock.",
-                            olLayer: createHaltestellenLayer()
+                            olLayer: createHaltestellenLayer(),
+                            isBaseLayer: false
                         }),
                         createStrassenLayer()
                     ]

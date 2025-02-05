@@ -273,6 +273,33 @@ it("provides access to nested sublayers", () => {
     expect(sublayer2.parent).toBe(sublayer1);
 });
 
+it("should return all wms sublayers", () => {
+    const { layer } = createLayer({
+        title: "Layer",
+        url: SERVICE_URL,
+        sublayers: [
+            {
+                name: "sublayer-1",
+                title: "Sublayer 1",
+                id: "sublayer1",
+                sublayers: [
+                    {
+                        name: "sublayer-2",
+                        title: "Sublayer 2",
+                        id: "sublayer2"
+                    }
+                ]
+            }
+        ],
+        attach: true
+    });
+
+    const sublayers = layer.sublayers.getRecursiveLayers();
+    const sublayerIds = sublayers.map((sublayer) => sublayer.id);
+    expect(sublayerIds).toContain("sublayer1");
+    expect(sublayerIds).toContain("sublayer2");
+});
+
 it("uses http service to fetch images", async () => {
     /*
         This test ensures that the image source used by WMSLayer uses
