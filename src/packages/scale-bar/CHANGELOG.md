@@ -1,5 +1,11 @@
 # @open-pioneer/scale-bar
 
+## 0.9.0
+
+### Patch Changes
+
+-   @open-pioneer/map@0.9.0
+
 ## 0.8.0
 
 ### Minor Changes
