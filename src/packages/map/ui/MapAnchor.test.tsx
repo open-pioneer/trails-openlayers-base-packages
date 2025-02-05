@@ -31,7 +31,7 @@ it("should successfully create a map anchor component", async () => {
 
     expect(mapAnchor).toMatchInlineSnapshot(`
       <div
-        class="map-anchor css-yv0wkm"
+        class="map-anchor css-1i7ubwh"
         data-theme="light"
       />
     `);
@@ -94,6 +94,28 @@ it('should successfully create a map anchor component with prop `position="botto
         <PackageContextProvider services={injectedServices}>
             <MapContainer mapId={mapId} data-testid="base">
                 <MapAnchor position="bottom-right" />
+            </MapContainer>
+        </PackageContextProvider>
+    );
+
+    // Assert map is mounted
+    await waitForMapMount();
+
+    // check map anchor component box is available with style for prop `position`
+    const mapAnchor = container.querySelector(".map-anchor");
+    if (!mapAnchor) {
+        throw new Error("map anchor component not rendered");
+    }
+});
+
+it('should successfully create a map anchor component with prop `position="vCenter-hCenter"`', async () => {
+    const { mapId, registry } = await setupMap();
+
+    const injectedServices = createServiceOptions({ registry });
+    const { container } = render(
+        <PackageContextProvider services={injectedServices}>
+            <MapContainer mapId={mapId} data-testid="base">
+                <MapAnchor position="vCenter-hCenter" />
             </MapContainer>
         </PackageContextProvider>
     );

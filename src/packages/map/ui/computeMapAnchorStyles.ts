@@ -12,7 +12,7 @@ export function computeMapAnchorStyles(
     const styleProps: StyleProps = {
         position: "absolute",
         zIndex: 1, // above map
-        transitionProperty: "left, right, top, bottom",
+        transitionProperty: "left, right, top, bottom, hCenter, vCenter",
         transitionDuration: "200ms",
         transitionTimingFunction: "ease-out",
         overflow: "hidden"
@@ -30,8 +30,10 @@ export function computeMapAnchorStyles(
     interface PosExprs {
         left?: string;
         right?: string;
+        hCenter?: string;
         top?: string;
         bottom?: string;
+        vCenter?: string;
     }
 
     // CSS Expressions for inside calc(...)
@@ -45,6 +47,10 @@ export function computeMapAnchorStyles(
             posExprs.right = gap(PADDING_RIGHT.ref, horizontal);
             posExprs.top = gap(PADDING_TOP.ref, vertical);
             break;
+        case "top-hCenter":
+            posExprs.left = gap(`50%`, horizontal);
+            posExprs.top = gap(PADDING_TOP.ref, vertical);
+            break;
         case "bottom-left":
             posExprs.left = gap(PADDING_LEFT.ref, horizontal);
             posExprs.bottom = gap(PADDING_BOTTOM.ref, vertical + attribution.gap);
@@ -52,6 +58,22 @@ export function computeMapAnchorStyles(
         case "bottom-right":
             posExprs.right = gap(PADDING_RIGHT.ref, horizontal);
             posExprs.bottom = gap(PADDING_BOTTOM.ref, vertical + attribution.gap);
+            break;
+        case "bottom-hCenter":
+            posExprs.left = gap(`50%`, horizontal);
+            posExprs.bottom = gap(PADDING_BOTTOM.ref, vertical + attribution.gap);
+            break;
+        case "vCenter-left":
+            posExprs.left = gap(PADDING_LEFT.ref, horizontal);
+            posExprs.bottom = gap(`50%`, vertical + attribution.gap);
+            break;
+        case "vCenter-right":
+            posExprs.right = gap(PADDING_RIGHT.ref, horizontal);
+            posExprs.bottom = gap(`50%`, vertical + attribution.gap);
+            break;
+        case "vCenter-hCenter":
+            posExprs.left = gap(`50%`, horizontal);
+            posExprs.bottom = gap(`50%`, vertical + attribution.gap);
             break;
     }
 

@@ -7,7 +7,16 @@ import { createPortal } from "react-dom";
 import { computeMapAnchorStyles } from "./computeMapAnchorStyles";
 import { useMapContainerContext } from "./MapContainerContext";
 
-export type MapAnchorPosition = "top-left" | "top-right" | "bottom-left" | "bottom-right";
+export type MapAnchorPosition =
+    | "top-left"
+    | "top-right"
+    | "top-hCenter"
+    | "bottom-left"
+    | "bottom-right"
+    | "bottom-hCenter"
+    | "vCenter-left"
+    | "vCenter-right"
+    | "vCenter-hCenter";
 
 const defaultPosition: MapAnchorPosition = "top-right";
 
@@ -24,6 +33,7 @@ export interface MapAnchorProps extends CommonComponentProps {
      * Applied:
      * - left, if position `*-left`
      * - right, if position `*-right`
+     * - center, if position `*-hCenter`
      *
      * @default 0
      */
@@ -35,6 +45,7 @@ export interface MapAnchorProps extends CommonComponentProps {
      * Applied:
      * - top, if position `top-*`
      * - bottom, if position `bottom-*`
+     * - center, if position `vCenter-*`
      *
      * @default 0 (If position `bottom-*`, default verticalGap == `30`)
      */
