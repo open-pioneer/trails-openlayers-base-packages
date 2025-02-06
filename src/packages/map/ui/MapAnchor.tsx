@@ -6,6 +6,7 @@ import { ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { computeMapAnchorStyles } from "./computeMapAnchorStyles";
 import { useMapContainerContext } from "./MapContainerContext";
+import { StyleProps } from "@open-pioneer/chakra-integration";
 
 export type MapAnchorPosition =
     | "top-left"
@@ -21,6 +22,10 @@ export type MapAnchorPosition =
 const defaultPosition: MapAnchorPosition = "top-right";
 
 export interface MapAnchorProps extends CommonComponentProps {
+    children?: ReactNode;
+}
+
+export interface MapAnchorShortcut extends MapAnchorProps {
     /**
      * The position of the anchor container above the map.
      * @default "top-right"
@@ -51,16 +56,53 @@ export interface MapAnchorProps extends CommonComponentProps {
      */
     verticalGap?: number;
 
-    children?: ReactNode;
+    top?: never;
+    bottom?: never;
+    left?: never;
+    right?: never;
 }
 
-export function MapAnchor(props: MapAnchorProps): JSX.Element {
-    const { position = defaultPosition, children, horizontalGap, verticalGap } = props;
+export interface MapAnchorStyleProps extends MapAnchorProps {
+    top?: number;
+    bottom?: number;
+    left?: number;
+    right?: number;
+
+    position?: never;
+    verticalGap?: never;
+    horizontalGap?: never;
+}
+
+export function MapAnchor(props: MapAnchorShortcut | MapAnchorStyleProps): JSX.Element {
+    const {
+        position = defaultPosition,
+        children,
+        horizontalGap,
+        verticalGap,
+        top,
+        bottom,
+        left,
+        right
+    } = props;
     const { containerProps } = useCommonComponentProps("map-anchor", props);
     const { mapAnchorsHost } = useMapContainerContext();
-
+    let styleProps: StyleProps = {};
+    if (position != undefined || verticalGap != undefined || horizontalGap != undefined)
+        styleProps = computeMapAnchorStyles(position, horizontalGap, verticalGap);
+    if (top != undefined || bottom != undefined || left != undefined || right != undefined) {
+        styleProps.top = top ? `${top}px` : undefined;
+        styleProps.bottom = bottom ? `${bottom}px` : undefined;
+        styleProps.left = left ? `${left}px` : undefined;
+        styleProps.right = right ? `${right}px` : undefined;
+        if (top != undefined && bottom != undefined) {
+            styleProps.maxH = `calc((100%) - ${top + "px"} - ${bottom + "px"})`;
+        }
+        if (left != undefined && right != undefined) {
+            styleProps.maxW = `calc((100%) - ${left + "px"} - ${right + "px"})`;
+        }
+    }
     return createPortal(
-        <Box {...containerProps} {...computeMapAnchorStyles(position, horizontalGap, verticalGap)}>
+        <Box {...containerProps} {...styleProps}>
             {children}
         </Box>,
         mapAnchorsHost
