@@ -1,12 +1,12 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box, Flex, VStack, Text } from "@open-pioneer/chakra-integration";
+import { Box, Flex, VStack, Text, Button } from "@open-pioneer/chakra-integration";
 import { MapAnchor, MapContainer } from "@open-pioneer/map";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { ToolButton } from "@open-pioneer/map-ui-components";
-import { Toc } from "@open-pioneer/toc";
+import { Toc, TocAPI } from "@open-pioneer/toc";
 import { useIntl } from "open-pioneer:react-hooks";
-import { useId, useState } from "react";
+import { useId, useRef, useState } from "react";
 import { PiListLight } from "react-icons/pi";
 import { MAP_ID } from "./MapConfigProviderImpl";
 
@@ -14,11 +14,19 @@ export function AppUI() {
     const intl = useIntl();
     const tocTitleId = useId();
     const [showToc, setShowToc] = useState<boolean>(true);
+    const tocAPIRef = useRef<TocAPI>();
 
     function toggleToc() {
         setShowToc(!showToc);
     }
 
+    function collapseItems() {
+        if (showToc && tocAPIRef.current) {
+            tocAPIRef.current.toggleItem("schools", true);
+        }
+    }
+
+    console.log(tocAPIRef.current);
     return (
         <Flex height="100%" direction="column" overflow="hidden">
             <TitledSection
@@ -72,6 +80,7 @@ export function AppUI() {
                                                     }}
                                                     collapsibleGroups={true}
                                                     initiallyCollapsed={true}
+                                                    tocAPIRef={tocAPIRef}
                                                 />
                                             </TitledSection>
                                         </Box>
@@ -112,6 +121,7 @@ export function AppUI() {
                                     isActive={showToc}
                                     onClick={toggleToc}
                                 />
+                                <Button onClick={collapseItems}>toogle</Button>
                             </Flex>
                         </MapAnchor>
                     </MapContainer>

@@ -67,6 +67,8 @@ export interface TocProps extends CommonComponentProps, MapModelProps {
      * Defaults to `true`.
      */
     autoShowParents?: boolean;
+
+    tocAPIRef?: React.MutableRefObject<TocAPI | undefined>;
 }
 
 /**
@@ -108,7 +110,7 @@ export const Toc: FC<TocProps> = (props: TocProps) => {
             break;
         case "resolved": {
             const map = state.map;
-            content = <TocContent {...props} map={map} />;
+            content = <TocContent {...props} map={map} tocAPIRef={props.tocAPIRef} />;
             break;
         }
     }
@@ -121,7 +123,9 @@ export const Toc: FC<TocProps> = (props: TocProps) => {
 };
 
 /** This component is rendered once we have a reference to the loaded map model. */
-function TocContent(props: TocProps & { map: MapModel }) {
+function TocContent(
+    props: TocProps & { map: MapModel; tocAPIRef?: React.MutableRefObject<TocAPI | undefined> }
+) {
     const {
         map,
         showTools = false,
@@ -131,6 +135,52 @@ function TocContent(props: TocProps & { map: MapModel }) {
     } = props;
     const intl = useIntl();
     const model = useTocModel(props);
+
+    if (props.tocAPIRef) {
+        //memoize api object?
+        const api: TocAPI = {
+            collapseAllItems: function (): void {
+                model.getItems().forEach((item) => item.setExpanded(false));
+            },
+            collapesItem: function (layerId: string, collapseParents?: boolean): void {
+                model.getItem(layerId)?.setExpanded(false);
+
+                if (collapseParents) {
+                    bubbleState(layerId, true, map, model);
+                }
+            },
+            expandItem: function (layerId: string, expandParents?: boolean): void {
+                model.getItem(layerId)?.setExpanded(true);
+
+                if (expandParents) {
+                    bubbleState(layerId, true, map, model);
+                }
+            },
+            toggleItem: function (layerId: string, alignParents?: boolean): boolean | undefined {
+                const item = model.getItem(layerId);
+                if (item) {
+                    const newState = !item.isExpanded;
+                    item.setExpanded(newState);
+
+                    if (alignParents) {
+                        bubbleState(layerId, newState, map, model);
+                    }
+
+                    return newState;
+                }
+                return undefined;
+            },
+            isItemExpanded: function (layerId: string): boolean | undefined {
+                const item = model.getItem(layerId);
+                if (item) {
+                    return item.isExpanded;
+                }
+                return undefined;
+            }
+        };
+        props.tocAPIRef.current = api;
+    }
+
     const basemapsHeadingId = useId();
     const basemapSwitcher = showBasemapSwitcher && (
         <Box className="toc-basemap-switcher">
@@ -244,4 +294,27 @@ function createOptions(
         collapsibleGroups: collapsibleGroups ?? false,
         initiallyCollapsed: isCollapsed ?? false
     };
+}
+
+export interface TocAPI {
+    collapseAllItems(): void;
+
+    collapesItem(layerId: string, collapseParents?: boolean): void;
+
+    expandItem(layerId: string, expandParents?: boolean): void;
+
+    toggleItem(layerId: string, alignParents?: boolean): boolean | undefined;
+
+    isItemExpanded(layerId: string): boolean | undefined;
+}
+
+function bubbleState(layerId: string, newState: boolean, map: MapModel, model: TocModel) {
+    let parent = map.layers.getLayerById(layerId)?.parent;
+    while (parent) {
+        const parentItem = model.getItem(parent.id);
+        if (parentItem) {
+            parentItem.setExpanded(newState);
+        }
+        parent = parent.parent;
+    }
 }
