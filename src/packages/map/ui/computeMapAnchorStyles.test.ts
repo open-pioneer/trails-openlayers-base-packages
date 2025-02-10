@@ -54,7 +54,7 @@ it("should successfully create position styles on `bottom-right` with horizontal
     expect(styleProps.maxW).toBe("calc((100%) - 0px - (var(--map-padding-right) + 50px) - 50px)");
 });
 
-it("should successfully create position styles on `bottom-h-center` without", async () => {
+it("should successfully create position styles on `bottom-h-center` without gap", async () => {
     const position: MapAnchorPosition = "bottom-h-center";
     PADDING_TOP.definition = "10px";
     PADDING_BOTTOM.definition = "10px";
@@ -62,10 +62,12 @@ it("should successfully create position styles on `bottom-h-center` without", as
     PADDING_RIGHT.definition = "10px";
 
     const styleProps: StyleProps = computeMapAnchorStyles(position, 0, 0);
-    expect(styleProps.left).toBe("calc((50% + 0px))");
+    expect(styleProps.left).toBe("calc((var(--map-padding-left) + 0px))");
     expect(styleProps.bottom).toBe("calc((var(--map-padding-bottom) + 0px))");
     expect(styleProps.maxH).toBe(
         "calc((100%) - 0px - (var(--map-padding-bottom) + 0px) - 0px - 10px)"
     );
-    expect(styleProps.maxW).toBe("calc((100%) - (50% + 0px) - 0px - 0px)");
+    expect(styleProps.maxW).toBe(
+        "calc((100%) - (var(--map-padding-left) + 0px) - (var(--map-padding-right) + 0px) - 0px)"
+    );
 });
