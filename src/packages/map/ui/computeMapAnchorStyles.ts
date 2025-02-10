@@ -47,7 +47,7 @@ export function computeMapAnchorStyles(
             posExprs.right = gap(PADDING_RIGHT.ref, horizontal);
             posExprs.top = gap(PADDING_TOP.ref, vertical);
             break;
-        case "top-hCenter":
+        case "top-h-center":
             posExprs.left = gap(`50%`, horizontal);
             posExprs.top = gap(PADDING_TOP.ref, vertical);
             break;
@@ -59,19 +59,19 @@ export function computeMapAnchorStyles(
             posExprs.right = gap(PADDING_RIGHT.ref, horizontal);
             posExprs.bottom = gap(PADDING_BOTTOM.ref, vertical + attribution.gap);
             break;
-        case "bottom-hCenter":
+        case "bottom-h-center":
             posExprs.left = gap(`50%`, horizontal);
             posExprs.bottom = gap(PADDING_BOTTOM.ref, vertical + attribution.gap);
             break;
-        case "vCenter-left":
+        case "v-center-left":
             posExprs.left = gap(PADDING_LEFT.ref, horizontal);
             posExprs.bottom = gap(`50%`, vertical + attribution.gap);
             break;
-        case "vCenter-right":
+        case "v-center-right":
             posExprs.right = gap(PADDING_RIGHT.ref, horizontal);
             posExprs.bottom = gap(`50%`, vertical + attribution.gap);
             break;
-        case "vCenter-hCenter":
+        case "v-center-h-center":
             posExprs.left = gap(`50%`, horizontal);
             posExprs.bottom = gap(`50%`, vertical + attribution.gap);
             break;

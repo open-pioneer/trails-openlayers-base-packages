@@ -54,8 +54,8 @@ it("should successfully create position styles on `bottom-right` with horizontal
     expect(styleProps.maxW).toBe("calc((100%) - 0px - (var(--map-padding-right) + 50px) - 50px)");
 });
 
-it("should successfully create position styles on `bottom-hCenter` without", async () => {
-    const position: MapAnchorPosition = "bottom-hCenter";
+it("should successfully create position styles on `bottom-h-center` without", async () => {
+    const position: MapAnchorPosition = "bottom-h-center";
     PADDING_TOP.definition = "10px";
     PADDING_BOTTOM.definition = "10px";
     PADDING_LEFT.definition = "10px";

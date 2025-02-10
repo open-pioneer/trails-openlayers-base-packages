@@ -108,14 +108,14 @@ it('should successfully create a map anchor component with prop `position="botto
     }
 });
 
-it('should successfully create a map anchor component with prop `position="vCenter-hCenter"`', async () => {
+it('should successfully create a map anchor component with prop `position="v-center-h-center"`', async () => {
     const { mapId, registry } = await setupMap();
 
     const injectedServices = createServiceOptions({ registry });
     const { container } = render(
         <PackageContextProvider services={injectedServices}>
             <MapContainer mapId={mapId} data-testid="base">
-                <MapAnchor position="vCenter-hCenter" />
+                <MapAnchor position="v-center-h-center" />
             </MapContainer>
         </PackageContextProvider>
     );

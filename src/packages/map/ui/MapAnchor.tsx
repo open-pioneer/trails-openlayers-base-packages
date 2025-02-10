@@ -11,13 +11,13 @@ import { StyleProps } from "@open-pioneer/chakra-integration";
 export type MapAnchorPosition =
     | "top-left"
     | "top-right"
-    | "top-hCenter"
+    | "top-h-center"
     | "bottom-left"
     | "bottom-right"
-    | "bottom-hCenter"
-    | "vCenter-left"
-    | "vCenter-right"
-    | "vCenter-hCenter";
+    | "bottom-h-center"
+    | "v-center-left"
+    | "v-center-right"
+    | "v-center-h-center";
 
 const defaultPosition: MapAnchorPosition = "top-right";
 
