@@ -12,7 +12,7 @@ export function computeMapAnchorStyles(
     const styleProps: StyleProps = {
         position: "absolute",
         zIndex: 1, // above map
-        transitionProperty: "left, right, top, bottom, hCenter, vCenter",
+        transitionProperty: "left, right, top, bottom",
         transitionDuration: "200ms",
         transitionTimingFunction: "ease-out",
         overflow: "hidden"
