@@ -7,6 +7,7 @@ import { createPortal } from "react-dom";
 import { computeMapAnchorStyles } from "./computeMapAnchorStyles";
 import { useMapContainerContext } from "./MapContainerContext";
 import { StyleProps } from "@open-pioneer/chakra-integration";
+import { PADDING_BOTTOM, PADDING_LEFT, PADDING_RIGHT, PADDING_TOP } from "./CssProps";
 
 export type MapAnchorPosition =
     | "top-left"
@@ -101,6 +102,13 @@ export function MapAnchor(props: MapAnchorShortcut | MapAnchorStyleProps): JSX.E
             styleProps.maxW = `calc((100%) - ${left + "px"} - ${right + "px"})`;
         }
     }
+    mapAnchorsHost.style.left = PADDING_LEFT.ref;
+    mapAnchorsHost.style.right = PADDING_RIGHT.ref;
+    mapAnchorsHost.style.top = PADDING_TOP.ref;
+    mapAnchorsHost.style.bottom = PADDING_BOTTOM.ref;
+    mapAnchorsHost.style.height = `calc(100% - ${PADDING_BOTTOM + "px"} - ${PADDING_TOP + "px"}`;
+    mapAnchorsHost.style.width = `calc(100% - ${PADDING_LEFT + "px"} - ${PADDING_RIGHT + "px"}`;
+    mapAnchorsHost.style.position = "absolute";
     return createPortal(
         <Box {...containerProps} {...styleProps}>
             {children}
