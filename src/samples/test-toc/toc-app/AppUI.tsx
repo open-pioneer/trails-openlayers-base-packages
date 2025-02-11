@@ -22,11 +22,10 @@ export function AppUI() {
 
     function collapseItems() {
         if (showToc && tocAPIRef.current) {
-            tocAPIRef.current.toggleItem("schools", true);
+            tocAPIRef.current.toggleItemExpanded("streets", { alignParents: true });
         }
     }
 
-    console.log(tocAPIRef.current);
     return (
         <Flex height="100%" direction="column" overflow="hidden">
             <TitledSection
@@ -121,7 +120,7 @@ export function AppUI() {
                                     isActive={showToc}
                                     onClick={toggleToc}
                                 />
-                                <Button onClick={collapseItems}>toogle</Button>
+                                <Button onClick={collapseItems}>toggle</Button>
                             </Flex>
                         </MapAnchor>
                     </MapContainer>
