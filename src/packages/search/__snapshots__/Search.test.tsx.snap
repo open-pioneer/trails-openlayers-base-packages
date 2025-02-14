@@ -49,7 +49,7 @@ exports[`should successfully create a search component 1`] = `
           searchPlaceholder
         </div>
         <div
-          class="react-select__input-container css-18euh9p"
+          class="react-select__input-container css-s3fknl"
           data-theme="light"
           data-value=""
         >
@@ -62,7 +62,7 @@ exports[`should successfully create a search component 1`] = `
             autocapitalize="none"
             autocomplete="off"
             autocorrect="off"
-            class="react-select__input css-10wwmqn"
+            class="react-select__input css-z1n230"
             data-theme="light"
             id="react-select-2-input"
             role="combobox"
