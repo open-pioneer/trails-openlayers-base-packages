@@ -2,4 +2,4 @@
 "@open-pioneer/map": patch
 ---
 
-Added configuration option to fetch WMS capabilities
+Added a configuration option to disable fetching of WMS service capabilities.

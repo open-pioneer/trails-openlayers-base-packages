@@ -29,7 +29,10 @@ export interface WMSLayerConfig extends LayerConfig {
     sourceOptions?: Partial<WMSSourceOptions>;
 
     /**
-     * Option to fetch capabilities
+     * Whether to automatically fetch capabilities from the service when needed (default: `true`).
+     *
+     * Setting this to `false` can be useful as a performance optimization when capabilities are not really required by the application.
+     * Note that this will disable some features of the WMS layer: for example, the legend URL will not be available.
      */
     fetchCapabilities?: boolean;
 }
