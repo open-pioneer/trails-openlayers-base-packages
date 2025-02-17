@@ -325,6 +325,62 @@ it("does not have a source if no sublayers are visible", () => {
     expect(source).toBeNull();
 });
 
+it("fetches capabilities if 'fetchCapabilities' property is set to true", async () => {
+    const urls: string[] = [];
+    createLayer({
+        title: "Layer",
+        url: SERVICE_URL,
+        fetchCapabilities: true,
+        sublayers: [
+            {
+                name: "sublayer-1",
+                title: "Sublayer 1"
+            }
+        ],
+        attach: true,
+        fetch: vi.fn(async (url) => {
+            urls.push(String(url));
+            return new Response("", {
+                status: 200
+            });
+        })
+    });
+
+    await vi.waitUntil(() => urls.length > 0);
+    expect(urls[0]!).toMatch(/(^https:\/\/example\.com\/wms-service).*&REQUEST=GetCapabilities/);
+});
+
+it("does not fetch capabilities if 'fetchCapabilities' property is set to false", async () => {
+    const urls: string[] = [];
+    const { layer } = createLayer({
+        title: "Layer",
+        url: SERVICE_URL,
+        fetchCapabilities: false,
+        sublayers: [
+            {
+                name: "sublayer-1",
+                title: "Sublayer 1"
+            }
+        ],
+        attach: true,
+        fetch: vi.fn(async (url) => {
+            urls.push(String(url));
+            return new Response("", {
+                status: 200
+            });
+        })
+    });
+
+    const source = (layer.olLayer as ImageLayer<ImageSource>).getSource()!;
+    const projection = getProjection("EPSG:3857")!;
+    const image = source.getImage([1, 2, 3, 4], 123, 42, projection);
+    image.load();
+
+    vi.advanceTimersByTime(1000);
+    expect(urls).toHaveLength(1); // if capabilities were fetched, the length of urls would be 2
+    expect(urls[0]!).toMatch(/^https:\/\/example\.com\/wms-service\?REQUEST=GetMap/);
+});
+
 function createLayer(options: WMSLayerConfig & { fetch?: Mock; attach?: boolean }) {
     const layer = new WMSLayerImpl(options);
     const httpService = {
