@@ -27,6 +27,11 @@ export interface WMSLayerConfig extends LayerConfig {
      * the WMS Layer manages some of the OpenLayers source options itself.
      */
     sourceOptions?: Partial<WMSSourceOptions>;
+
+    /**
+     * Option to fetch capabilities
+     */
+    fetchCapabilities?: boolean;
 }
 
 /**

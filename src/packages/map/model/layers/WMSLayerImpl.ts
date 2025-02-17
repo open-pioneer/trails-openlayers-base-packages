@@ -35,6 +35,7 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
 
     #visibleSublayers: ReadonlyReactive<string[]>;
     #sublayersWatch: Resource | undefined;
+    #fetchCapabilities: boolean | undefined;
 
     constructor(config: WMSLayerConfig) {
         const layer = new ImageLayer();
@@ -56,6 +57,7 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
             }
         });
         this.#url = config.url;
+        this.#fetchCapabilities = config.fetchCapabilities;
         this.#source = source;
         this.#layer = layer;
         this.#sublayers = new SublayersCollectionImpl(constructSublayers(config.sublayers));
@@ -125,6 +127,10 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
                 }
             }
         };
+
+        if (this.#fetchCapabilities === false) {
+            return;
+        }
 
         this.#fetchWMSCapabilities()
             .then((result: string) => {
