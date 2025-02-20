@@ -100,7 +100,9 @@ export interface AnyLayerBaseType<AdditionalEvents = {}>
     readonly visible: boolean;
 
     /**
-     * LegendURL from the service capabilities, if available.
+     * Legend URL from the service capabilities, if available.
+     *
+     * Note: this property may be expanded upon in the future, e.g. to support more variants than just image URLs.
      */
     readonly legend: string | undefined;
 

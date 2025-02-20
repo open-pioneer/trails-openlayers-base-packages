@@ -28,6 +28,7 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
     #sublayers: SublayersCollectionImpl<WMSSublayerImpl>;
     #layer: ImageLayer<ImageSource>;
     #source: ImageWMS;
+    #fetchCapabilities: boolean;
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     #capabilities: Record<string, any> | undefined;
@@ -56,6 +57,7 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
             }
         });
         this.#url = config.url;
+        this.#fetchCapabilities = config.fetchCapabilities ?? true;
         this.#source = source;
         this.#layer = layer;
         this.#sublayers = new SublayersCollectionImpl(constructSublayers(config.sublayers));
@@ -125,6 +127,10 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
                 }
             }
         };
+
+        if (!this.#fetchCapabilities) {
+            return;
+        }
 
         this.#fetchWMSCapabilities()
             .then((result: string) => {
