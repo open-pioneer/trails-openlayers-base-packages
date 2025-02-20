@@ -19,7 +19,6 @@ const sampleSites = [
     "samples/ogc-api-sample",
     "samples/showcase",
 
-    "samples/test-basemap-switcher",
     "samples/test-toc",
     "samples/test-highlight-and-zoom",
     "samples/test-menu-fix",

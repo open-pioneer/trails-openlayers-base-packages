@@ -12,7 +12,6 @@ import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { Layer, MapConfig, SimpleLayer, WMSLayer } from "../api";
-import { BkgTopPlusOpen } from "../layers/BkgTopPlusOpen";
 import { MapModelImpl } from "./MapModelImpl";
 import { createMapModel } from "./createMapModel";
 import { SimpleLayerImpl } from "./layers/SimpleLayerImpl";
@@ -49,11 +48,9 @@ it("makes the map layers accessible", async () => {
                 })
             }),
             new SimpleLayer({
-                title: "TopPlus Open",
+                title: "Empty tile",
                 visible: false,
-                olLayer: new TileLayer({
-                    source: new BkgTopPlusOpen()
-                })
+                olLayer: new TileLayer()
             })
         ]
     });
@@ -68,7 +65,7 @@ it("makes the map layers accessible", async () => {
         },
         {
           "description": "",
-          "title": "TopPlus Open",
+          "title": "Empty tile",
           "visible": false,
         },
       ]
@@ -105,10 +102,8 @@ it("supports ordered retrieval of layers", async () => {
                 })
             }),
             new SimpleLayer({
-                title: "TopPlus Open",
-                olLayer: new TileLayer({
-                    source: new BkgTopPlusOpen()
-                })
+                title: "Empty tile",
+                olLayer: new TileLayer()
             }),
             new SimpleLayer({
                 title: "Base",
@@ -124,7 +119,7 @@ it("supports ordered retrieval of layers", async () => {
       [
         "Base",
         "OSM",
-        "TopPlus Open",
+        "Empty tile",
       ]
     `);
 
@@ -133,7 +128,7 @@ it("supports ordered retrieval of layers", async () => {
     expect(operationalLayerTitles).toMatchInlineSnapshot(`
       [
         "OSM",
-        "TopPlus Open",
+        "Empty tile",
       ]
     `);
 });
@@ -149,11 +144,9 @@ it("generates automatic unique ids for layers", async () => {
                 })
             }),
             new SimpleLayer({
-                title: "TopPlus Open",
+                title: "Empty tile",
                 visible: false,
-                olLayer: new TileLayer({
-                    source: new BkgTopPlusOpen()
-                })
+                olLayer: new TileLayer()
             })
         ]
     });
@@ -220,10 +213,8 @@ it("supports lookup by layer id", async () => {
             }),
             new SimpleLayer({
                 id: "l-2",
-                title: "TopPlus Open",
-                olLayer: new TileLayer({
-                    source: new BkgTopPlusOpen()
-                })
+                title: "Empty tile",
+                olLayer: new TileLayer()
             })
         ]
     });
@@ -278,10 +269,8 @@ it("results in an error, if using the same layer id twice", async () => {
                 }),
                 new SimpleLayer({
                     id: "l-1",
-                    title: "TopPlus Open",
-                    olLayer: new TileLayer({
-                        source: new BkgTopPlusOpen()
-                    })
+                    title: "Empty tile",
+                    olLayer: new TileLayer()
                 })
             ]
         });
@@ -294,9 +283,7 @@ it("supports reverse lookup from OpenLayers layer", async () => {
     const rawL1 = new TileLayer({
         source: new OSM()
     });
-    const rawL2 = new TileLayer({
-        source: new BkgTopPlusOpen()
-    });
+    const rawL2 = new TileLayer();
 
     model = await create("foo", {
         layers: [

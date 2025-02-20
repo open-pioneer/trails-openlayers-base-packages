@@ -170,7 +170,6 @@ function useTocItem(layer: AnyLayer) {
                 expanded.value = expand;
             }
         };
-        // TODO: isCollapsed -> recreate model is ok?
     }, [layer, options.initiallyCollapsed]);
 
     // Register the item on the shared toc model
