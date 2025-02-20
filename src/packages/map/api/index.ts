@@ -8,7 +8,6 @@ export * from "./layers";
 export * from "./shared";
 
 export { getProjection, registerProjections, type ProjectionDefinition } from "../projections";
-export { BkgTopPlusOpen, type BkgTopPlusOpenProps } from "../layers/BkgTopPlusOpen";
 
 // UI Components and React helpers
 export { useView, useProjection, useResolution, useCenter, useScale } from "../ui/hooks";

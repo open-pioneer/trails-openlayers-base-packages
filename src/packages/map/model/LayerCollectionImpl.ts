@@ -68,7 +68,7 @@ export class LayerCollectionImpl implements LayerCollection {
     }
 
     getBaseLayers(): Layer[] {
-        return this.getAllLayers().filter((layer) => layer.isBaseLayer);
+        return this.getLayers().filter((layer) => layer.isBaseLayer);
     }
 
     getActiveBaseLayer(): Layer | undefined {

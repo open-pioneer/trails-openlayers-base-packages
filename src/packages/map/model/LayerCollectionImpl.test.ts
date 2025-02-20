@@ -12,7 +12,6 @@ import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { Layer, MapConfig, SimpleLayer, WMSLayer } from "../api";
-import { BkgTopPlusOpen } from "../layers/BkgTopPlusOpen";
 import { MapModelImpl } from "./MapModelImpl";
 import { createMapModel } from "./createMapModel";
 import { SimpleLayerImpl } from "./layers/SimpleLayerImpl";
@@ -49,11 +48,9 @@ it("makes the map layers accessible", async () => {
                 })
             }),
             new SimpleLayer({
-                title: "TopPlus Open",
+                title: "Empty tile",
                 visible: false,
-                olLayer: new TileLayer({
-                    source: new BkgTopPlusOpen()
-                })
+                olLayer: new TileLayer()
             })
         ]
     });
@@ -68,7 +65,7 @@ it("makes the map layers accessible", async () => {
         },
         {
           "description": "",
-          "title": "TopPlus Open",
+          "title": "Empty tile",
           "visible": false,
         },
       ]
@@ -89,7 +86,7 @@ it("makes the map layers accessible", async () => {
     const baseLayers = model.layers.getBaseLayers();
     expect(baseLayers.length).toBe(0);
 
-    const allLayers = model.layers.getAllLayers();
+    const allLayers = model.layers.getLayers();
     expect(allLayers).toEqual(layers);
     // OSM + TopPlus Open + "highlight-layer" = 3
     expect(model.olMap.getAllLayers().length).toBe(3);
@@ -105,10 +102,8 @@ it("supports ordered retrieval of layers", async () => {
                 })
             }),
             new SimpleLayer({
-                title: "TopPlus Open",
-                olLayer: new TileLayer({
-                    source: new BkgTopPlusOpen()
-                })
+                title: "Empty tile",
+                olLayer: new TileLayer()
             }),
             new SimpleLayer({
                 title: "Base",
@@ -118,13 +113,13 @@ it("supports ordered retrieval of layers", async () => {
         ]
     });
 
-    const layers = model.layers.getAllLayers({ sortByDisplayOrder: true });
+    const layers = model.layers.getLayers({ sortByDisplayOrder: true });
     const titles = layers.map((l) => l.title);
     expect(titles).toMatchInlineSnapshot(`
       [
         "Base",
         "OSM",
-        "TopPlus Open",
+        "Empty tile",
       ]
     `);
 
@@ -133,7 +128,7 @@ it("supports ordered retrieval of layers", async () => {
     expect(operationalLayerTitles).toMatchInlineSnapshot(`
       [
         "OSM",
-        "TopPlus Open",
+        "Empty tile",
       ]
     `);
 });
@@ -149,16 +144,14 @@ it("generates automatic unique ids for layers", async () => {
                 })
             }),
             new SimpleLayer({
-                title: "TopPlus Open",
+                title: "Empty tile",
                 visible: false,
-                olLayer: new TileLayer({
-                    source: new BkgTopPlusOpen()
-                })
+                olLayer: new TileLayer()
             })
         ]
     });
 
-    const ids = model.layers.getAllLayers().map((l) => l.id);
+    const ids = model.layers.getLayers().map((l) => l.id);
     const verifyId = (id: unknown, message: string) => {
         expect(id, message).toBeTypeOf("string");
         expect((id as string).length, message).toBeGreaterThan(0);
@@ -220,10 +213,8 @@ it("supports lookup by layer id", async () => {
             }),
             new SimpleLayer({
                 id: "l-2",
-                title: "TopPlus Open",
-                olLayer: new TileLayer({
-                    source: new BkgTopPlusOpen()
-                })
+                title: "Empty tile",
+                olLayer: new TileLayer()
             })
         ]
     });
@@ -278,10 +269,8 @@ it("results in an error, if using the same layer id twice", async () => {
                 }),
                 new SimpleLayer({
                     id: "l-1",
-                    title: "TopPlus Open",
-                    olLayer: new TileLayer({
-                        source: new BkgTopPlusOpen()
-                    })
+                    title: "Empty tile",
+                    olLayer: new TileLayer()
                 })
             ]
         });
@@ -294,9 +283,7 @@ it("supports reverse lookup from OpenLayers layer", async () => {
     const rawL1 = new TileLayer({
         source: new OSM()
     });
-    const rawL2 = new TileLayer({
-        source: new BkgTopPlusOpen()
-    });
+    const rawL2 = new TileLayer();
 
     model = await create("foo", {
         layers: [
@@ -438,11 +425,11 @@ it("supports adding a layer to the model", async () => {
     model = await create("foo", {
         layers: []
     });
-    expect(model.layers.getAllLayers()).toHaveLength(0);
+    expect(model.layers.getLayers()).toHaveLength(0);
 
     let changed = 0;
     syncWatch(
-        () => [model!.layers.getAllLayers()],
+        () => [model!.layers.getLayers()],
         () => {
             ++changed;
         }
@@ -464,8 +451,8 @@ it("supports adding a layer to the model", async () => {
         "visible": false,
       }
     `);
-    expect(model.layers.getAllLayers()).toHaveLength(1);
-    expect(model.layers.getAllLayers()[0]).toBe(layer);
+    expect(model.layers.getLayers()).toHaveLength(1);
+    expect(model.layers.getLayers()[0]).toBe(layer);
 });
 
 it("supports removing a layer from the model", async () => {
@@ -483,16 +470,16 @@ it("supports removing a layer from the model", async () => {
 
     let changed = 0;
     syncWatch(
-        () => [model!.layers.getAllLayers()],
+        () => [model!.layers.getLayers()],
         () => {
             ++changed;
         }
     );
 
-    expect(model.layers.getAllLayers()).toHaveLength(1);
+    expect(model.layers.getLayers()).toHaveLength(1);
     model.layers.removeLayerById("l-1");
     expect(changed).toBe(1);
-    expect(model.layers.getAllLayers()).toHaveLength(0);
+    expect(model.layers.getLayers()).toHaveLength(0);
 });
 
 it("supports removing a layer from the model", async () => {
@@ -611,7 +598,7 @@ describe("base layers", () => {
 
         let events = 0;
         syncWatch(
-            () => [model!.layers.getAllLayers()],
+            () => [model!.layers.getLayers()],
             () => {
                 ++events;
             }
