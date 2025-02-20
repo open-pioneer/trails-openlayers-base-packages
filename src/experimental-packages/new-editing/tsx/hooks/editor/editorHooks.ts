@@ -33,7 +33,7 @@ export function useOnActionChangeCallback(
             if (action == null) {
                 setEditingStep({ id: "none" });
             } else if (action === "select") {
-                setEditingStep({ id: "update-select", layers: editableLayers });
+                setEditingStep({ id: "update-select", olLayers: editableLayers });
             } else {
                 setEditingStep({ id: "create-draw", template: action });
             }
@@ -56,6 +56,7 @@ export function useSnappingSources(
     }, [layers]);
 }
 
+// TODO: This is not reactive (needs useReactiveSnapshot).
 function useLayers(mapModel: MapModel | undefined, editableLayerIds: string[]): Layer[] {
     return useMemo(() => {
         return compactMap(editableLayerIds, (id) => {

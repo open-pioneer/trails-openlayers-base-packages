@@ -18,13 +18,13 @@ interface BaseContext {
     readonly setValid: StateSetter<boolean>;
 }
 
-interface CreationContext extends BaseContext {
+export interface CreationContext extends BaseContext {
     readonly mode: "create";
     readonly template: FeatureTemplate;
     readonly layer: undefined;
 }
 
-interface UpdateContext extends BaseContext {
+export interface UpdateContext extends BaseContext {
     readonly mode: "update";
     readonly template: undefined;
     readonly layer: Layer | undefined;

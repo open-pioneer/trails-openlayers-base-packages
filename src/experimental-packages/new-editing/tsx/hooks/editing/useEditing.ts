@@ -54,17 +54,22 @@ export function useEditing({
                         completionHandler(feature, drawLayer) {
                             const template = editingStep.template;
                             feature.setProperties(template.prototype ?? {});
-                            setEditingStep({ id: "create-modify", feature, template, drawLayer });
+                            setEditingStep({
+                                id: "create-modify",
+                                feature,
+                                template,
+                                drawOlLayer: drawLayer
+                            });
                         }
                     });
 
                 case "update-select":
                     return startSelectingFeature({
                         map: mapModel.olMap,
-                        layers: editingStep.layers,
+                        layers: editingStep.olLayers,
                         selectOptions,
                         completionHandler(feature, layer) {
-                            setEditingStep({ id: "update-modify", feature, layer });
+                            setEditingStep({ id: "update-modify", feature, olLayer: layer });
                         }
                     });
 
@@ -72,7 +77,7 @@ export function useEditing({
                     return startModifyingFeature({
                         mapModel,
                         feature: editingStep.feature,
-                        drawLayer: editingStep.drawLayer,
+                        drawLayer: editingStep.drawOlLayer,
                         snappingSources,
                         snapOptions,
                         modifyOptions,

@@ -132,7 +132,7 @@ function useTitle(): [string, OnEditingStepChange] {
         if (editingStep.id === "create-modify") {
             setTitle(editingStep.template.name);
         } else if (editingStep.id === "update-modify") {
-            const layerTitle = editingStep.layer?.get("title");
+            const layerTitle = editingStep.olLayer?.get("title");
             setTitle(layerTitle);
         } else {
             setTitle(undefined);

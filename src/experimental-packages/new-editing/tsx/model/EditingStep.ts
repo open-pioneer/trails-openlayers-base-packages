@@ -4,31 +4,31 @@ import type { Feature } from "ol";
 import type { Layer } from "ol/layer";
 import type { FeatureTemplate } from "./FeatureTemplate";
 
-interface InitialStep {
+export interface InitialStep {
     id: "none";
 }
 
-interface DrawingStep {
+export interface DrawingStep {
     id: "create-draw";
     template: FeatureTemplate;
 }
 
-interface SelectionStep {
+export interface SelectionStep {
     id: "update-select";
-    layers: Layer[];
+    olLayers: Layer[];
 }
 
-interface CreationStep {
+export interface CreationStep {
     id: "create-modify";
     feature: Feature;
     template: FeatureTemplate;
-    drawLayer: Layer;
+    drawOlLayer: Layer;
 }
 
-interface UpdateStep {
+export interface UpdateStep {
     id: "update-modify";
     feature: Feature;
-    layer: Layer | undefined;
+    olLayer: Layer | undefined;
 }
 
 export type EditingStep = InitialStep | DrawingStep | SelectionStep | CreationStep | UpdateStep;

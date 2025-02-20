@@ -49,7 +49,7 @@ function useContextValue(editingStep: ModificationStep): PropertyFormContextType
                 mode: "update",
                 feature: editingStep.feature,
                 template: undefined,
-                layer: editingStep.layer,
+                layer: editingStep.olLayer,
                 properties,
                 setProperty,
                 setProperties,

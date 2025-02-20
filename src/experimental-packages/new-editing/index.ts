@@ -19,7 +19,7 @@ export {
 } from "./tsx/context/usePropertyFormContext";
 
 export type {
-    PropertyFormContext,
+    PropertyFormContextType,
     Properties,
     PropertySetter
 } from "./tsx/context/PropertyFormContext";

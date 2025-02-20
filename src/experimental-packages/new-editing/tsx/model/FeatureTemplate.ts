@@ -17,6 +17,7 @@ export interface FeatureTemplate<P = Record<string, unknown>> {
 export type DrawOptions = Omit<Options, "source" | "type">;
 
 interface BaseInput {
+    readonly inputType: string; // More precise in concrete union variants
     readonly label: string;
     readonly fieldName: string;
     readonly required?: boolean;
@@ -47,13 +48,13 @@ export interface CheckBoxInput extends BaseInput {
     readonly checkBoxLabel?: string;
 }
 
-interface StringSelectInput extends BaseInput {
+export interface StringSelectInput extends BaseInput {
     readonly inputType: "select";
     readonly valueType: "string";
     readonly options: SelectOption<string>[];
 }
 
-interface NumberSelectInput extends BaseInput {
+export interface NumberSelectInput extends BaseInput {
     readonly inputType: "select";
     readonly valueType: "number";
     readonly options: SelectOption<number>[];

@@ -16,6 +16,7 @@ export function useEditingCallbacks(
     editingHandler: EditingHandler,
     setEditingStep: ValueSetter<EditingStep>
 ): PropertyEditorCallbacks {
+    // TODO: useReactiveSnapshot(() => map.projection, [map]) with the map model
     const projection = useMemo(() => map?.getView().getProjection(), [map]);
     const showNotifier = useShowNotifier();
 
@@ -33,7 +34,7 @@ export function useEditingCallbacks(
                         console.error("Error creating feature", feature, error);
                     }
                 } else if (editingStep.id === "update-modify") {
-                    const { feature, layer } = editingStep;
+                    const { feature, olLayer: layer } = editingStep;
                     try {
                         await editingHandler.updateFeature(feature, layer, projection!);
                         showNotifier("update", true);
@@ -48,7 +49,7 @@ export function useEditingCallbacks(
             },
             async onDelete() {
                 if (editingStep.id === "update-modify") {
-                    const { feature, layer } = editingStep;
+                    const { feature, olLayer: layer } = editingStep;
                     try {
                         await editingHandler.deleteFeature(feature, layer, projection!);
                         showNotifier("delete", true);
