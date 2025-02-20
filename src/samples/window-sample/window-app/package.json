@@ -1,0 +1,24 @@
+{
+    "name": "window-app",
+    "private": true,
+    "dependencies": {
+        "@open-pioneer/chakra-integration": "catalog:",
+        "@open-pioneer/coordinate-viewer": "workspace:^",
+        "@open-pioneer/legend": "workspace:^",
+        "@open-pioneer/map": "workspace:^",
+        "@open-pioneer/map-ui-components": "workspace:^",
+        "@open-pioneer/measurement": "workspace:^",
+        "@open-pioneer/notifier": "catalog:",
+        "@open-pioneer/printing": "workspace:^",
+        "@open-pioneer/react-utils": "catalog:",
+        "@open-pioneer/scale-bar": "workspace:^",
+        "@open-pioneer/scale-viewer": "workspace:^",
+        "@open-pioneer/spatial-bookmarks": "workspace:^",
+        "@open-pioneer/toc": "workspace:^",
+        "ol": "catalog:",
+        "react": "catalog:",
+        "react-icons": "catalog:",
+        "window": "workspace:^"
+    },
+    "version": "0.0.1"
+}
