@@ -312,29 +312,6 @@ export class LayerCollectionImpl implements LayerCollection {
         };
         visit(model);
     }
-
-    #getAllChildLayers(topLevelLayers: Layer[]): AnyLayer[] {
-        const allLayers: AnyLayer[] = [];
-
-        for (const topLvlLayer of topLevelLayers) {
-            const childLayers = this.#getChildLayers(topLvlLayer); //get (nested) childlayers recursively
-            allLayers.push(...childLayers);
-        }
-
-        return allLayers;
-    }
-
-    #getChildLayers(layer: AnyLayer): AnyLayer[] {
-        if (layer.children && layer.children.getItems().length > 0) {
-            const childLayers = layer.children.getItems();
-            for (const childLayer of layer.children.getItems()) {
-                childLayers.push(...this.#getChildLayers(childLayer));
-            }
-            return childLayers;
-        } else {
-            return [];
-        }
-    }
 }
 
 function sortLayersByDisplayOrder(layers: Layer[]) {
