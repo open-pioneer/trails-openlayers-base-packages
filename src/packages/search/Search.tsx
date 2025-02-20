@@ -270,6 +270,15 @@ function useChakraStyles() {
     );
     return useMemo(() => {
         const chakraStyles: ChakraStylesConfig<SearchOption, false, SearchGroupOption> = {
+            inputContainer: (container) => ({
+                ...container,
+                gridTemplateAreas: "'myArea myArea myArea'",
+                display: "grid"
+            }),
+            input: (base) => ({
+                ...base,
+                gridArea: "myArea"
+            }),
             groupHeading: (provided) => ({
                 ...provided,
                 backgroundColor: groupHeadingBg,
