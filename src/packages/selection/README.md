@@ -7,6 +7,12 @@ This package provides a UI component to perform a selection on given selection s
 To add the component to your app, import `Selection` from `@open-pioneer/selection`. The `@open-pioneer/notifier` package is required too.
 
 The mandatory properties are `mapId` and `sources` (layer source to be selected on).
+
+`selectionMethods` is an optional property that can hold a list of selection methods: `point`, `extent`.
+It defaults to `extent` if omitted.
+If more than one method is provided, buttons to toggle between them are added to the selection window.
+The first method in the list is initially selected.
+
 The limit per selection is 10.000 items.
 
 ```tsx
@@ -25,6 +31,7 @@ import { Search, SearchSelectEvent } from "@open-pioneer/search";
 <Selection
     mapId={MAP_ID}
     sources={datasources}
+    selectionMethods={["extent", "point"]}
     onSelectionComplete={(event: SelectionCompleteEvent) => {
         // do something
     }}
