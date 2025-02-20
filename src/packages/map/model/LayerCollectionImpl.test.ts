@@ -609,6 +609,128 @@ describe("base layers", () => {
     });
 });
 
+it("it should return all layers including children", async () => {
+    const olBase = new TileLayer({
+        source: new OSM()
+    });
+    const base = new SimpleLayerImpl({
+        id: "base",
+        title: "baselayer",
+        olLayer: olBase,
+        isBaseLayer: true
+    });
+
+    const olLayer = new TileLayer({
+        source: new OSM()
+    });
+    const child = new SimpleLayerImpl({
+        id: "member",
+        title: "group member",
+        olLayer: olLayer
+    });
+    const group = new GroupLayer({
+        id: "group",
+        title: "group test",
+        layers: [child]
+    });
+
+    model = await create("foo", {
+        layers: [base, group]
+    });
+
+    const allLayers = model.layers.getRecursiveLayers().map((layer) => layer.id);
+
+    // base & group & child, parents after children
+    expect(allLayers).toMatchInlineSnapshot(`
+      [
+        "base",
+        "member",
+        "group",
+      ]
+    `);
+});
+
+it("it should return all operational layers including children", async () => {
+    const olBase = new TileLayer({
+        source: new OSM()
+    });
+    const base = new SimpleLayerImpl({
+        id: "base",
+        title: "baselayer",
+        olLayer: olBase,
+        isBaseLayer: true
+    });
+
+    const olLayer = new TileLayer({
+        source: new OSM()
+    });
+    const child = new SimpleLayerImpl({
+        id: "member",
+        title: "group member",
+        olLayer: olLayer
+    });
+    const group = new GroupLayer({
+        id: "group",
+        title: "group test",
+        layers: [child]
+    });
+
+    model = await create("foo", {
+        layers: [base, group]
+    });
+
+    const allOperationalLayers = model.layers
+        .getRecursiveLayers({ filter: "operational" })
+        .map((layer) => layer.id);
+
+    // group & child
+    expect(allOperationalLayers).toMatchInlineSnapshot(`
+      [
+        "member",
+        "group",
+      ]
+    `);
+    expect(allOperationalLayers.length).toBe(2);
+});
+
+it("it should return all layers including children ordered by display order (asc)", async () => {
+    const olBase = new TileLayer({
+        source: new OSM()
+    });
+    const base = new SimpleLayerImpl({
+        id: "base",
+        title: "baselayer",
+        olLayer: olBase,
+        isBaseLayer: true
+    });
+
+    const olLayer = new TileLayer({
+        source: new OSM()
+    });
+    const child = new SimpleLayerImpl({
+        id: "member",
+        title: "group member",
+        olLayer: olLayer
+    });
+    const group = new GroupLayer({
+        id: "group",
+        title: "group test",
+        layers: [child]
+    });
+
+    model = await create("foo", {
+        layers: [group, base] // order reversed to test sorting
+    });
+
+    const allLayers = model.layers.getRecursiveLayers({
+        sortByDisplayOrder: true
+    });
+    expect(allLayers.length).toBe(3);
+    expect(allLayers[0]).toBe(base);
+    expect(allLayers[1]).toBe(child);
+    expect(allLayers[2]).toBe(group);
+});
+
 function getLayerProps(layer: Layer) {
     return {
         title: layer.title,

@@ -1,20 +1,27 @@
 // SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { LayerRetrievalOptions, SublayerBaseType, SublayersCollection } from "../api";
+import {
+    LayerRetrievalOptions,
+    RecursiveRetrievalOptions,
+    Sublayer,
+    SublayerBaseType,
+    SublayersCollection
+} from "../api";
 import { AbstractLayerBase } from "./AbstractLayerBase";
+import { getRecursiveLayers } from "./getRecursiveLayers";
 
 /**
  * Manages the sublayers of a layer.
  */
 // NOTE: adding / removing sublayers currently not supported
 /* eslint-disable indent */
-export class SublayersCollectionImpl<Sublayer extends SublayerBaseType & AbstractLayerBase>
-    implements SublayersCollection<Sublayer>
+export class SublayersCollectionImpl<SublayerType extends SublayerBaseType & AbstractLayerBase>
+    implements SublayersCollection<SublayerType>
 {
     /* eslint-enable indent */
-    #sublayers: Sublayer[];
+    #sublayers: SublayerType[];
 
-    constructor(sublayers: Sublayer[]) {
+    constructor(sublayers: SublayerType[]) {
         this.#sublayers = sublayers;
     }
 
@@ -26,13 +33,24 @@ export class SublayersCollectionImpl<Sublayer extends SublayerBaseType & Abstrac
     }
 
     // Generic method name for consistent interface
-    getItems(options?: LayerRetrievalOptions): Sublayer[] {
+    getItems(options?: LayerRetrievalOptions): SublayerType[] {
         return this.getSublayers(options);
     }
 
-    getSublayers(_options?: LayerRetrievalOptions | undefined): Sublayer[] {
+    getSublayers(_options?: LayerRetrievalOptions | undefined): SublayerType[] {
         // NOTE: options are ignored because layers are always ordered at this time.
         return this.#sublayers.slice();
+    }
+
+    getRecursiveLayers(_options?: RecursiveRetrievalOptions): Sublayer[] {
+        return getRecursiveLayers({
+            // NOTE: This is safe (but not elegant) because this class does not know about the entire type hierarchy (unions).
+            // _Might_ be possible to refactor this class to use the Sublayer union instead in the generic type parameters,
+            // but then we might also introduce a cycle in the type definitions, which could be bad (?).
+            from: this as unknown as SublayersCollection<Sublayer>,
+            sortByDisplayOrder: _options?.sortByDisplayOrder,
+            filter: _options?.filter
+        }) as Sublayer[]; // we know for sure that all children are sublayers: sublayers do not point to layers
     }
 
     /**
@@ -40,7 +58,7 @@ export class SublayersCollectionImpl<Sublayer extends SublayerBaseType & Abstrac
      *
      * NOTE: Do not modify directly!
      */
-    __getRawSublayers(): Sublayer[] {
+    __getRawSublayers(): SublayerType[] {
         return this.#sublayers;
     }
 }

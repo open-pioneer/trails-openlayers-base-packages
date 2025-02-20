@@ -16,11 +16,17 @@ To integrate the TOC (table of contents) in your app, insert the following snipp
 
 Additional tools are available for operational layers.
 To show the toolset menu, set the `showTools` property to `true`.
-The toolset contains a tool with which you can switch off the visibility of all levels at once.
 
 ```tsx
 <Toc mapId="map_id" showTools={true} />
 ```
+
+The default tools provided by the TOC are:
+
+-   A button to hide all layers (sets `visibility` to false, enabled by default)
+-   A button to collapse all groups (enabled by default if groups are collapsible)
+
+These tools can be configured by using the `toolsConfig` property.
 
 ### Basemaps
 
@@ -68,6 +74,20 @@ This can be disabled by configuring `autoShowParents={false}` on the `TOC` compo
 ```jsx
 // Default: true
 <Toc autoShowParents={false} />
+```
+
+### Collapsible groups
+
+The TOC renders the hierarchy of layers as a tree structure of nested lists ("groups").
+Groups can be made collapsible through user action by setting the `collapsibleGroups` property to `true`.
+If enabled, a toggle button appears next to parent nodes by which the user can expand or collapse the group.
+
+```tsx
+<Toc
+    mapId={MAP_ID}
+    collapsibleGroups={true}
+    initiallyCollapsed={true} // Whether groups are collapsed by default. Defaults to false.
+/>
 ```
 
 ## License
