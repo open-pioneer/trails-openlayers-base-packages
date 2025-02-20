@@ -7,6 +7,7 @@ import { Layer, LayerCollection, LayerRetrievalOptions, AnyLayer, Sublayer } fro
 import { AbstractLayer } from "./AbstractLayer";
 import { AbstractLayerBase } from "./AbstractLayerBase";
 import { MapModelImpl } from "./MapModelImpl";
+import { getRecursiveLayers } from "./getRecursiveLayers";
 
 const LOG = createLogger("map:LayerCollection");
 
@@ -97,15 +98,53 @@ export class LayerCollectionImpl implements LayerCollection {
     }
 
     getOperationalLayers(options?: LayerRetrievalOptions): Layer[] {
-        return this.getAllLayers(options).filter((layer) => !layer.isBaseLayer);
+        return this.getLayers(options).filter((layer) => !layer.isBaseLayer);
     }
 
-    getAllLayers(options?: LayerRetrievalOptions): Layer[] {
+    getItems(options?: LayerRetrievalOptions): Layer[] {
+        return this.getLayers(options);
+    }
+
+    getLayers(options?: LayerRetrievalOptions): Layer[] {
         const layers = Array.from(this.#topLevelLayers.values());
         if (options?.sortByDisplayOrder) {
             sortLayersByDisplayOrder(layers);
         }
         return layers;
+    }
+
+    getAllLayers(options?: LayerRetrievalOptions): Layer[] {
+        return this.getLayers(options);
+    }
+
+    getRecursiveLayers({
+        filter,
+        sortByDisplayOrder
+    }: LayerRetrievalOptions & {
+        filter?: "base" | "operational" | ((layer: AnyLayer) => boolean);
+    } = {}): AnyLayer[] {
+        let filterFunc;
+        if (typeof filter === "function") {
+            filterFunc = filter;
+        } else if (typeof filter === "string") {
+            const filterType = filter;
+            const topLevelFilter = (layer: Layer) => {
+                return filterType === "base" ? layer.isBaseLayer : !layer.isBaseLayer;
+            };
+            filterFunc = (layer: AnyLayer) => {
+                if (!layer.parent && "isBaseLayer" in layer) {
+                    return topLevelFilter(layer);
+                }
+                // For nested children, include them all.
+                return true;
+            };
+        }
+
+        return getRecursiveLayers({
+            from: this,
+            filter: filterFunc,
+            sortByDisplayOrder
+        });
     }
 
     getLayerById(id: string): AnyLayer | undefined {
