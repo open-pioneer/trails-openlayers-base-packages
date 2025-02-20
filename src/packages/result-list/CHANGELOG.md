@@ -1,5 +1,16 @@
 # @open-pioneer/result-list
 
+## 0.9.0
+
+### Patch Changes
+
+-   Updated dependencies [32ed2cd]
+-   Updated dependencies [f327eec]
+-   Updated dependencies [f327eec]
+-   Updated dependencies [209eb8e]
+-   Updated dependencies [d72e42c]
+    -   @open-pioneer/map@0.9.0
+
 ## 0.8.0
 
 ### Minor Changes
