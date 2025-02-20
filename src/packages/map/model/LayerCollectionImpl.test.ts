@@ -17,7 +17,7 @@ import { MapModelImpl } from "./MapModelImpl";
 import { createMapModel } from "./createMapModel";
 import { SimpleLayerImpl } from "./layers/SimpleLayerImpl";
 import { WMSLayerImpl } from "./layers/WMSLayerImpl";
-import { syncWatch } from "@conterra/reactivity-core";
+import { syncEffect, syncWatch } from "@conterra/reactivity-core";
 import { GroupLayer } from "../api/layers/GroupLayer";
 import { Group } from "ol/layer";
 
@@ -493,6 +493,29 @@ it("supports removing a layer from the model", async () => {
     model.layers.removeLayerById("l-1");
     expect(changed).toBe(1);
     expect(model.layers.getAllLayers()).toHaveLength(0);
+});
+
+it("supports removing a layer from the model", async () => {
+    model = await create("foo", {
+        layers: [
+            new SimpleLayer({
+                id: "l-1",
+                title: "OSM",
+                olLayer: new TileLayer({
+                    source: new OSM()
+                })
+            })
+        ]
+    });
+
+    const ids: (string | undefined)[] = [];
+    syncEffect(() => {
+        ids.push(model?.layers.getLayerById("l-1")?.id);
+    });
+
+    expect(ids).toEqual(["l-1"]);
+    model.layers.removeLayerById("l-1");
+    expect(ids).toEqual(["l-1", undefined]);
 });
 
 describe("base layers", () => {
