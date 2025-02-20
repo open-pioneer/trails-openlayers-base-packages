@@ -23,7 +23,7 @@ catalogs:
       version: 11.13.0
     '@maplibre/maplibre-gl-style-spec':
       specifier: ^22.0.0
-      version: 22.0.0
+      version: 22.0.1
     '@open-pioneer/base-theme':
       specifier: ^2.4.0
       version: 2.4.0
@@ -96,6 +96,9 @@ catalogs:
     '@types/react':
       specifier: ^18.3.11
       version: 18.3.11
+    '@types/react-color':
+      specifier: ^3.0.12
+      version: 3.0.12
     '@types/react-dom':
       specifier: ^18.3.1
       version: 18.3.1
@@ -117,6 +120,9 @@ catalogs:
     classnames:
       specifier: ^2.3.2
       version: 2.5.1
+    dexie:
+      specifier: ^4.0.10
+      version: 4.0.10
     eslint:
       specifier: ^8.57.0
       version: 8.57.0
@@ -186,6 +192,9 @@ catalogs:
     react:
       specifier: ^18.3.1
       version: 18.3.1
+    react-color:
+      specifier: ^2.19.3
+      version: 2.19.3
     react-dom:
       specifier: ^18.3.1
       version: 18.3.1
@@ -247,6 +256,9 @@ patchedDependencies:
   '@changesets/assemble-release-plan@6.0.4':
     hash: h7fa74ddz2lm7t3hquqctf7dgq
     path: patches/@changesets__assemble-release-plan.patch
+  react-color@2.19.3:
+    hash: bf7xu5bz6u6swhjy74bfafn4z4
+    path: patches/react-color@2.19.3.patch
   react-select@5.8.0:
     hash: dmr4eel47u7r4xswxh72mgmyuq
     path: patches/react-select@5.8.0.patch
@@ -260,7 +272,7 @@ importers:
         version: 2.27.9
       '@maplibre/maplibre-gl-style-spec':
         specifier: 'catalog:'
-        version: 22.0.0
+        version: 22.0.1
       '@open-pioneer/build-package-cli':
         specifier: 'catalog:'
         version: 2.1.1(sass@1.80.3)(typescript@5.6.3)
@@ -413,6 +425,21 @@ importers:
         specifier: workspace:*
         version: link:../../..
     publishDirectory: dist
+
+  src/experimental-packages/new-editing:
+    dependencies:
+      '@open-pioneer/chakra-integration':
+        specifier: 'catalog:'
+        version: 2.4.0(@emotion/is-prop-valid@1.3.0)(@types/react@18.3.11)
+      '@open-pioneer/notifier':
+        specifier: 'catalog:'
+        version: 2.4.0(@chakra-ui/react@2.10.4(@emotion/react@11.13.3(@types/react@18.3.11)(react@18.3.1))(@emotion/styled@11.13.0(@emotion/react@11.13.3(@types/react@18.3.11)(react@18.3.1))(@types/react@18.3.11)(react@18.3.1))(@types/react@18.3.11)(framer-motion@11.3.31(@emotion/is-prop-valid@1.3.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@emotion/is-prop-valid@1.3.0)(@types/react@18.3.11)(typescript@5.6.3)
+      '@types/react-color':
+        specifier: 'catalog:'
+        version: 3.0.12
+      react-color:
+        specifier: 'catalog:'
+        version: 2.19.3(patch_hash=bf7xu5bz6u6swhjy74bfafn4z4)(react@18.3.1)
 
   src/packages/basemap-switcher:
     dependencies:
@@ -1348,6 +1375,48 @@ importers:
         version: 1.5.1
     publishDirectory: dist
 
+  src/samples/editing-sample/editing-app:
+    dependencies:
+      '@open-pioneer/chakra-integration':
+        specifier: 'catalog:'
+        version: 2.4.0(@emotion/is-prop-valid@1.3.0)(@types/react@18.3.11)
+      '@open-pioneer/coordinate-viewer':
+        specifier: workspace:^
+        version: link:../../../packages/coordinate-viewer
+      '@open-pioneer/map':
+        specifier: workspace:^
+        version: link:../../../packages/map
+      '@open-pioneer/map-ui-components':
+        specifier: workspace:^
+        version: link:../../../packages/map-ui-components
+      '@open-pioneer/notifier':
+        specifier: 'catalog:'
+        version: 2.4.0(@chakra-ui/react@2.10.4(@emotion/react@11.13.3(@types/react@18.3.11)(react@18.3.1))(@emotion/styled@11.13.0(@emotion/react@11.13.3(@types/react@18.3.11)(react@18.3.1))(@types/react@18.3.11)(react@18.3.1))(@types/react@18.3.11)(framer-motion@11.3.31(@emotion/is-prop-valid@1.3.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@emotion/is-prop-valid@1.3.0)(@types/react@18.3.11)(typescript@5.6.3)
+      '@open-pioneer/react-utils':
+        specifier: 'catalog:'
+        version: 2.4.0(@emotion/is-prop-valid@1.3.0)(@types/react@18.3.11)
+      '@open-pioneer/scale-bar':
+        specifier: workspace:^
+        version: link:../../../packages/scale-bar
+      '@open-pioneer/scale-viewer':
+        specifier: workspace:^
+        version: link:../../../packages/scale-viewer
+      dexie:
+        specifier: 'catalog:'
+        version: 4.0.10
+      new-editing:
+        specifier: workspace:^
+        version: link:../../../experimental-packages/new-editing
+      ol:
+        specifier: 'catalog:'
+        version: 10.3.1
+      react:
+        specifier: 'catalog:'
+        version: 18.3.1
+      react-icons:
+        specifier: 'catalog:'
+        version: 5.3.0(react@18.3.1)
+
   src/samples/experimental-sidebar/sidebar-app:
     dependencies:
       '@chakra-ui/icons':
@@ -1878,7 +1947,7 @@ packages:
   '@chakra-ui/theme@3.4.7':
     resolution: {integrity: sha512-pfewthgZTFNUYeUwGvhPQO/FTIyf375cFV1AT8N1y0aJiw4KDe7YTGm7p0aFy4AwAjH2ydMgeEx/lua4tx8qyQ==}
     peerDependencies:
-      '@chakra-ui/styled-system': '>=2.8.0'
+      '@chakra-ui/styled-system': ^2.12.1
 
   '@chakra-ui/utils@2.2.3':
     resolution: {integrity: sha512-cldoCQuexZ6e07/9hWHKD4l1QXXlM1Nax9tuQOBvVf/EgwNZt3nZu8zZRDFlhAOKCTQDkmpLTTu+eXXjChNQOw==}
@@ -2216,6 +2285,11 @@ packages:
     resolution: {integrity: sha512-93zYdMES/c1D69yZiKDBj0V24vqNzB/koF26KPaagAfd3P/4gUlh3Dys5ogAK+Exi9QyzlD8x/08Zt7wIKcDcA==}
     deprecated: Use @eslint/object-schema instead
 
+  '@icons/material@0.2.4':
+    resolution: {integrity: sha512-QPcGmICAPbGLGb6F/yNf/KzKqvFx8z5qx3D1yFqVAjoFmXK35EgyW+cJ57Te3CNsmzblwtzakLGFqHPqrfb4Tw==}
+    peerDependencies:
+      react: '*'
+
   '@isaacs/cliui@8.0.2':
     resolution: {integrity: sha512-O8jcjabXaleOG9DQ0+ARXWZBTfnP4WNAqzuiJK7ll44AmxGKv/J2M4TPjxjY3znBCfvBXFzucm1twdyFybFqEA==}
     engines: {node: '>=12'}
@@ -2251,8 +2325,8 @@ packages:
   '@mapbox/unitbezier@0.0.1':
     resolution: {integrity: sha512-nMkuDXFv60aBr9soUG5q+GvZYL+2KZHVvsqFCzqnkGEf46U2fvmytHaEVc1/YZbiLn8X+eR3QzX1+dwDO1lxlw==}
 
-  '@maplibre/maplibre-gl-style-spec@22.0.0':
-    resolution: {integrity: sha512-kD8TxV6CdgHIEeam4xODVJNAT3hcvRhRl5RcNiu+FPR/JoMsExAQTruBGtv+jLppj4xt9V56pG/SHK8z6fv6xA==}
+  '@maplibre/maplibre-gl-style-spec@22.0.1':
+    resolution: {integrity: sha512-V7bSw7Ui6+NhpeeuYqGoqamvKuy+3+uCvQ/t4ZJkwN8cx527CAlQQQ2kp+w5R9q+Tw6bUAH+fsq+mPEkicgT8g==}
     hasBin: true
 
   '@maplibre/maplibre-gl-style-spec@23.1.0':
@@ -2860,6 +2934,9 @@ packages:
   '@types/rbush@4.0.0':
     resolution: {integrity: sha512-+N+2H39P8X+Hy1I5mC6awlTX54k3FhiUmvt7HWzGJZvF+syUAAxP/stwppS8JE84YHqFgRMv6fCy31202CMFxQ==}
 
+  '@types/react-color@3.0.12':
+    resolution: {integrity: sha512-pr3uKE3lSvf7GFo1Rn2K3QktiZQFFrSgSGJ/3iMvSOYWt2pPAJ97rVdVfhWxYJZ8prAEXzoP2XX//3qGSQgu7Q==}
+
   '@types/react-dom@18.3.1':
     resolution: {integrity: sha512-qW1Mfv8taImTthu4KoXgDfLuk4bydU6Q/TkADnDWWHwi4NX4BR+LWfTp2sVmTqRrsHvyDDTelgelxJ+SsejKKQ==}
 
@@ -2868,6 +2945,11 @@ packages:
 
   '@types/react@18.3.11':
     resolution: {integrity: sha512-r6QZ069rFTjrEYgFdOck1gK7FLVsgJE7tTz0pQBczlBNUhBNk0MQH4UbnFSwjpQLMkLzgqvBBa+qGpLje16eTQ==}
+
+  '@types/reactcss@1.2.13':
+    resolution: {integrity: sha512-gi3S+aUi6kpkF5vdhUsnkwbiSEIU/BEJyD7kBy2SudWBUuKmJk8AQKE0OVcQQeEy40Azh0lV6uynxlikYIJuwg==}
+    peerDependencies:
+      '@types/react': '*'
 
   '@types/resolve@1.20.2':
     resolution: {integrity: sha512-60BCwRFOZCQhDncwQdxxeOEEkbc5dIMccYLwbxsS4TUNeVECQ/pBJ0j09mrHOl/JJvpRPGwO9SvE4nR2Nb/a4Q==}
@@ -3435,6 +3517,9 @@ packages:
   devlop@1.1.0:
     resolution: {integrity: sha512-RWmIqhcFf1lRYBvNmr7qTNuyCt/7/ns2jbpp1+PalgE/rDQcBT0fioSMUpJ93irlUhC5hrg4cYqe6U+0ImW0rA==}
 
+  dexie@4.0.10:
+    resolution: {integrity: sha512-eM2RzuR3i+M046r2Q0Optl3pS31qTWf8aFuA7H9wnsHTwl8EPvroVLwvQene/6paAs39Tbk6fWZcn2aZaHkc/w==}
+
   dir-glob@3.0.1:
     resolution: {integrity: sha512-WkrWp9GR4KXfKGYzOLmTuGVi1UWFfws377n9cc55/tb6DuqyF6pcQ5AbiHEshaDpY9v6oaSr2XCDidGmMwdzIA==}
     engines: {node: '>=8'}
@@ -3833,9 +3918,6 @@ packages:
   get-east-asian-width@1.2.0:
     resolution: {integrity: sha512-2nk+7SIVb14QrgXFHcm84tD4bKQz0RxPuMT8Ag5KPOq7J5fEmAg0UbXdTOSHqNuHSU28k55qnceesxXRZGzKWA==}
     engines: {node: '>=18'}
-
-  get-func-name@2.0.2:
-    resolution: {integrity: sha512-8vXOvuE167CtIc3OyItco7N/dpRtBbYOsPsXCz7X/PMnlGjYjSGuZJgM1Y7mmew7BKf9BqvLX2tnOVy1BBUsxQ==}
 
   get-intrinsic@1.2.4:
     resolution: {integrity: sha512-5uYhsJH8VJBTv7oslg4BznJYhDoRI6waYCxMmCdnTrcCrHA/fCFKoTFz2JKKE0HdDFUF7/oQuhzumXJK7paBRQ==}
@@ -4331,6 +4413,9 @@ packages:
     resolution: {integrity: sha512-iPZK6eYjbxRu3uB4/WZ3EsEIMJFMqAoopl3R+zuq0UjcAm/MO6KCweDgPfP3elTztoKP3KtnVHxTn2NHBSDVUw==}
     engines: {node: '>=10'}
 
+  lodash-es@4.17.21:
+    resolution: {integrity: sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==}
+
   lodash.merge@4.6.2:
     resolution: {integrity: sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==}
 
@@ -4350,9 +4435,6 @@ packages:
   loose-envify@1.4.0:
     resolution: {integrity: sha512-lyuxPGr/Wfhrlem2CL/UcnUc1zcqKAImBDzukY7Y5F/yQiNdko6+fRLevlw1HgMySw7f611UIY408EtxRSoK3Q==}
     hasBin: true
-
-  loupe@3.1.1:
-    resolution: {integrity: sha512-edNu/8D5MKVfGVFRhFf8aAxiTM6Wumfz5XsaatSxlD3w4R1d/WEKUTydCdPGbl9K7QG/Ca3GnDV2sIKIpXRQcw==}
 
   loupe@3.1.3:
     resolution: {integrity: sha512-kkIp7XSkP78ZxJEsSxW3712C6teJVoeHHwgo9zJ380de7IYyJ2ISlxojcH2pC5OFLewESmnRi/+XCDIEEVyoug==}
@@ -4384,6 +4466,9 @@ packages:
   markdown-it@14.1.0:
     resolution: {integrity: sha512-a54IwgWPaeBCAAsv13YgmALOF1elABB08FxO9i+r4VFk5Vl4pKokRPeX8u5TCgSsPi6ec1otfLjdOpVcgbpshg==}
     hasBin: true
+
+  material-colors@1.2.6:
+    resolution: {integrity: sha512-6qE4B9deFBIa9YSpOc9O0Sgc43zTeVYbgDT5veRKSlB2+ZuHNoVVxA1L/ckMUayV9Ay9y7Z/SZCLcGteW9i7bg==}
 
   mdast-util-to-hast@13.2.0:
     resolution: {integrity: sha512-QGYKEuUsYT9ykKBCMOEDLsU5JRObWQusAolFMeko/tYPufNkRffBAQjIE+99jbA87xv6FgmjLtwjh9wBWajwAA==}
@@ -4780,6 +4865,11 @@ packages:
     peerDependencies:
       react: ^15.3.0 || ^16.0.0 || ^17.0.0 || ^18.0.0
 
+  react-color@2.19.3:
+    resolution: {integrity: sha512-LEeGE/ZzNLIsFWa1TMe8y5VYqr7bibneWmvJwm1pCn/eNmrabWDh659JSPn9BuaMpEfU83WTOJfnCcjDZwNQTA==}
+    peerDependencies:
+      react: '*'
+
   react-dom@18.3.1:
     resolution: {integrity: sha512-5m4nQKp+rZRb09LNH59GM4BxTh9251/ylbKIbpe7TpGxfJ+9kv6BLkLBXIjjspbgbnIBNqlI23tRnTWT0snUIw==}
     peerDependencies:
@@ -4865,6 +4955,11 @@ packages:
   react@18.3.1:
     resolution: {integrity: sha512-wS+hAgJShR0KhEvPJArfuPVN1+Hz1t0Y6n5jLrGQbkb4urgPE/0Rve+1kMB1v/oWgHgm4WIcV+i7F2pTVj+2iQ==}
     engines: {node: '>=0.10.0'}
+
+  reactcss@1.2.3:
+    resolution: {integrity: sha512-KiwVUcFu1RErkI97ywr8nvx8dNOpT03rbnma0SSalTYjkrPYaEajR4a/MRt6DZ46K6arDRbWMNHF+xH7G7n/8A==}
+    peerDependencies:
+      react: '*'
 
   read-cache@1.0.0:
     resolution: {integrity: sha512-Owdv/Ft7IjOgm/i0xvNDZ1LrRANRfew4b2prF3OWMQLxLfu3bS8FVhCsrSCMK4lR56Y9ya+AThoTpDCTxCmpRA==}
@@ -5268,6 +5363,9 @@ packages:
 
   tinybench@2.9.0:
     resolution: {integrity: sha512-0+DUvqWMValLmha6lr4kD8iAMK1HzV0/aKnCtWb9v9641TnP/MFb7Pc2bxoxQjTXAErryXVgUOfv2YqNllqGeg==}
+
+  tinycolor2@1.6.0:
+    resolution: {integrity: sha512-XPaBkWQJdsf3pLKJV9p4qN/S+fm2Oj8AIPo1BTUhg5oxkvm9+SVEGFdhyOz7tTdUTfvxMiAs4sp6/eZO2Ew+pw==}
 
   tinyexec@0.3.1:
     resolution: {integrity: sha512-WiCJLEECkO18gwqIp6+hJg0//p23HXp4S+gGtAKu3mI2F2/sXC4FvHvXvB0zJVVaTPhx1/tOwdbRsa1sOBIKqQ==}
@@ -6232,6 +6330,10 @@ snapshots:
 
   '@humanwhocodes/object-schema@2.0.3': {}
 
+  '@icons/material@0.2.4(react@18.3.1)':
+    dependencies:
+      react: 18.3.1
+
   '@isaacs/cliui@8.0.2':
     dependencies:
       string-width: 5.1.2
@@ -6278,7 +6380,7 @@ snapshots:
 
   '@mapbox/unitbezier@0.0.1': {}
 
-  '@maplibre/maplibre-gl-style-spec@22.0.0':
+  '@maplibre/maplibre-gl-style-spec@22.0.1':
     dependencies:
       '@mapbox/jsonlint-lines-primitives': 2.0.2
       '@mapbox/unitbezier': 0.0.1
@@ -7002,6 +7104,11 @@ snapshots:
 
   '@types/rbush@4.0.0': {}
 
+  '@types/react-color@3.0.12':
+    dependencies:
+      '@types/react': 18.3.11
+      '@types/reactcss': 1.2.13(@types/react@18.3.11)
+
   '@types/react-dom@18.3.1':
     dependencies:
       '@types/react': 18.3.11
@@ -7014,6 +7121,10 @@ snapshots:
     dependencies:
       '@types/prop-types': 15.7.12
       csstype: 3.1.3
+
+  '@types/reactcss@1.2.13(@types/react@18.3.11)':
+    dependencies:
+      '@types/react': 18.3.11
 
   '@types/resolve@1.20.2': {}
 
@@ -7397,7 +7508,7 @@ snapshots:
       assertion-error: 2.0.1
       check-error: 2.1.1
       deep-eql: 5.0.2
-      loupe: 3.1.1
+      loupe: 3.1.3
       pathval: 2.0.0
 
   chakra-react-select@5.0.2(@chakra-ui/react@2.10.4(@emotion/react@11.13.3(@types/react@18.3.11)(react@18.3.1))(@emotion/styled@11.13.0(@emotion/react@11.13.3(@types/react@18.3.11)(react@18.3.1))(@types/react@18.3.11)(react@18.3.1))(@types/react@18.3.11)(framer-motion@11.3.31(@emotion/is-prop-valid@1.3.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@emotion/react@11.13.3(@types/react@18.3.11)(react@18.3.1))(@types/react@18.3.11)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
@@ -7611,6 +7722,8 @@ snapshots:
   devlop@1.1.0:
     dependencies:
       dequal: 2.0.3
+
+  dexie@4.0.10: {}
 
   dir-glob@3.0.1:
     dependencies:
@@ -8177,8 +8290,6 @@ snapshots:
 
   get-east-asian-width@1.2.0: {}
 
-  get-func-name@2.0.2: {}
-
   get-intrinsic@1.2.4:
     dependencies:
       es-errors: 1.3.0
@@ -8722,6 +8833,8 @@ snapshots:
     dependencies:
       p-locate: 5.0.0
 
+  lodash-es@4.17.21: {}
+
   lodash.merge@4.6.2: {}
 
   lodash.mergewith@4.6.2: {}
@@ -8741,10 +8854,6 @@ snapshots:
   loose-envify@1.4.0:
     dependencies:
       js-tokens: 4.0.0
-
-  loupe@3.1.1:
-    dependencies:
-      get-func-name: 2.0.2
 
   loupe@3.1.3: {}
 
@@ -8774,6 +8883,8 @@ snapshots:
       mdurl: 2.0.0
       punycode.js: 2.3.1
       uc.micro: 2.1.0
+
+  material-colors@1.2.6: {}
 
   mdast-util-to-hast@13.2.0:
     dependencies:
@@ -9149,6 +9260,17 @@ snapshots:
       '@babel/runtime': 7.25.6
       react: 18.3.1
 
+  react-color@2.19.3(patch_hash=bf7xu5bz6u6swhjy74bfafn4z4)(react@18.3.1):
+    dependencies:
+      '@icons/material': 0.2.4(react@18.3.1)
+      lodash: 4.17.21
+      lodash-es: 4.17.21
+      material-colors: 1.2.6
+      prop-types: 15.8.1
+      react: 18.3.1
+      reactcss: 1.2.3(react@18.3.1)
+      tinycolor2: 1.6.0
+
   react-dom@18.3.1(react@18.3.1):
     dependencies:
       loose-envify: 1.4.0
@@ -9258,6 +9380,11 @@ snapshots:
   react@18.3.1:
     dependencies:
       loose-envify: 1.4.0
+
+  reactcss@1.2.3(react@18.3.1):
+    dependencies:
+      lodash: 4.17.21
+      react: 18.3.1
 
   read-cache@1.0.0:
     dependencies:
@@ -9704,6 +9831,8 @@ snapshots:
       readable-stream: 3.6.2
 
   tinybench@2.9.0: {}
+
+  tinycolor2@1.6.0: {}
 
   tinyexec@0.3.1: {}
 
