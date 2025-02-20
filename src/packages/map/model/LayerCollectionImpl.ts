@@ -1,6 +1,6 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { batch, reactive, reactiveSet } from "@conterra/reactivity-core";
+import { batch, reactive, reactiveMap, reactiveSet } from "@conterra/reactivity-core";
 import { createLogger } from "@open-pioneer/core";
 import OlBaseLayer from "ol/layer/Base";
 import { Layer, LayerCollection, LayerRetrievalOptions, AnyLayer, Sublayer } from "../api";
@@ -35,7 +35,7 @@ export class LayerCollectionImpl implements LayerCollection {
     #topLevelLayers = reactiveSet<LayerType>();
 
     /** Index of _all_ layer instances, including sublayers. */
-    #layersById = new Map<string, LayerBaseType>();
+    #layersById = reactiveMap<string, LayerBaseType>();
 
     /** Reverse index of _all_ layers that have an associated OpenLayers layer. */
     #layersByOlLayer: WeakMap<OlBaseLayer, LayerType> = new WeakMap();
