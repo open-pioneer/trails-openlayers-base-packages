@@ -108,7 +108,7 @@ it("successfully creates a map with given configuration", async () => {
 
     // Div is registered as map target
     const map = await registry.expectMapModel(mapId);
-    const layers = map.layers.getAllLayers();
+    const layers = map.layers.getLayers();
     expect(layers[0]?.title).toBe("TopPlus Open");
     expect(layers[1]?.title).toBe("TopPlus Open Grau");
 });

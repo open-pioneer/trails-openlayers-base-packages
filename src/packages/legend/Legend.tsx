@@ -186,7 +186,7 @@ function LegendImage(props: { imageUrl: string; layer: AnyLayer }) {
 /** Returns the top level operational layers in render order (topmost layer first). */
 function useLayers(map: MapModel): Layer[] {
     return useReactiveSnapshot(() => {
-        const layers = map.layers.getAllLayers({ sortByDisplayOrder: true }) ?? [];
+        const layers = map.layers.getLayers({ sortByDisplayOrder: true }) ?? [];
         layers.reverse(); // render topmost layer first
         return layers;
     }, [map]);
