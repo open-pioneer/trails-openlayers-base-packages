@@ -10,20 +10,6 @@ DefaultMapContext.displayName = "DefaultMapContext";
  * Configures the given map as the default map for all child components.
  * Child components do not need to specify the map explicitly, unless they wish to use a different one.
  *
- * The map can be specified either by its id (`mapId`) or by a direct reference to the map model (`map`).
- * Specifying both `mapId` and `map` at the same time will result in an error.
- *
- * @example
- *
- * Using map id:
- *
- * ```tsx
- * <DefaultMapProvider mapId="my-map">
- *   <MapContainer />
- *   <Toc />
- * </DefaultMapProvider>
- * ```
- *
  * @example
  *
  * Using map model reference:

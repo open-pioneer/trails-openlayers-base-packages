@@ -11,12 +11,11 @@ import { expect, it } from "vitest";
 import { Measurement } from "./Measurement";
 
 it("should successfully create a measurement component", async () => {
-    const { mapId, registry } = await setupMap();
-    await registry.expectMapModel(mapId);
+    const { map, registry } = await setupMap();
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
-            <Measurement mapId={mapId} data-testid="measurement"></Measurement>
+            <Measurement map={map} data-testid="measurement"></Measurement>
         </PackageContextProvider>
     );
 
@@ -29,12 +28,11 @@ it("should successfully create a measurement component", async () => {
 });
 
 it("should successfully create a measurement component with additional css class", async () => {
-    const { mapId, registry } = await setupMap();
-    await registry.expectMapModel(mapId);
+    const { map, registry } = await setupMap();
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
-            <Measurement mapId={mapId} className="test" data-testid="measurement"></Measurement>
+            <Measurement map={map} className="test" data-testid="measurement"></Measurement>
         </PackageContextProvider>
     );
 
@@ -45,12 +43,11 @@ it("should successfully create a measurement component with additional css class
 });
 
 it("should successfully select a measurement from the select dropdown", async () => {
-    const { mapId, registry } = await setupMap();
-    await registry.expectMapModel(mapId);
+    const { map, registry } = await setupMap();
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
-            <Measurement mapId={mapId} className="test" data-testid="measurement"></Measurement>
+            <Measurement map={map} className="test" data-testid="measurement"></Measurement>
         </PackageContextProvider>
     );
 
@@ -69,13 +66,11 @@ it("should successfully select a measurement from the select dropdown", async ()
 });
 
 it("should successfully add tooltip overlays to the map", async () => {
-    const { mapId, registry } = await setupMap();
-    const map = await registry.expectMapModel(mapId);
-
+    const { map, registry } = await setupMap();
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
-            <Measurement mapId={mapId} className="test" data-testid="measurement"></Measurement>
+            <Measurement map={map} className="test" data-testid="measurement"></Measurement>
         </PackageContextProvider>
     );
 
@@ -98,13 +93,11 @@ it("should successfully add tooltip overlays to the map", async () => {
 });
 
 it("should successfully activate draw interaction for the right geometry type", async () => {
-    const { mapId, registry } = await setupMap();
-    const map = await registry.expectMapModel(mapId);
-
+    const { map, registry } = await setupMap();
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
-            <Measurement mapId={mapId} className="test" data-testid="measurement"></Measurement>
+            <Measurement map={map} className="test" data-testid="measurement"></Measurement>
         </PackageContextProvider>
     );
 

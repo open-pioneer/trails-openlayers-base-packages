@@ -7,7 +7,6 @@ import { TitledSection } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { useIntl, useService } from "open-pioneer:react-hooks";
 import { ReactNode, useMemo } from "react";
-import { MAP_ID } from "../MapConfigProviderImpl";
 import { AppInitModel, AppStateReady } from "../model/AppInitModel";
 import { Header } from "./Header/Header";
 
@@ -61,7 +60,7 @@ function AppContent(props: { state: AppStateReady }) {
             <Flex height="100%" direction="column">
                 <TitledSection title={<Header appModel={appModel} />}>
                     <Flex flex="1" direction="column" position="relative">
-                        <DefaultMapProvider mapId={MAP_ID}>
+                        <DefaultMapProvider map={appModel.map}>
                             <MapContainer
                                 viewPadding={viewPadding}
                                 role="main"

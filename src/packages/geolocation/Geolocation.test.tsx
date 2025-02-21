@@ -21,7 +21,7 @@ beforeEach(() => {
 });
 
 it("should successfully create a geolocation component with a button", async () => {
-    const { mapId, registry } = await setupMap();
+    const { map, registry } = await setupMap();
 
     const notifier: Partial<NotificationService> = {
         notify() {
@@ -36,8 +36,8 @@ it("should successfully create a geolocation component with a button", async () 
 
     render(
         <PackageContextProvider services={injectedServices}>
-            <MapContainer mapId={mapId} data-testid="map" />
-            <Geolocation mapId={mapId} data-testid="geolocation" />
+            <MapContainer map={map} data-testid="map" />
+            <Geolocation map={map} data-testid="geolocation" />
         </PackageContextProvider>
     );
 
@@ -55,12 +55,12 @@ it("should center to user's position", async () => {
 
     const user = userEvent.setup();
 
-    const { mapId, registry } = await setupMap({
+    const { map, registry } = await setupMap({
         center: { x: 0, y: 0 },
         projection: "EPSG:4326"
     });
 
-    const map = (await registry.expectMapModel(mapId))?.olMap;
+    const olMap = map.olMap;
 
     const notifier: Partial<NotificationService> = {
         notify() {
@@ -75,14 +75,14 @@ it("should center to user's position", async () => {
 
     render(
         <PackageContextProvider services={injectedServices}>
-            <MapContainer mapId={mapId} data-testid="map" />
-            <Geolocation mapId={mapId} data-testid="geolocation" />
+            <MapContainer map={map} data-testid="map" />
+            <Geolocation map={map} data-testid="geolocation" />
         </PackageContextProvider>
     );
 
     await waitForMapMount("map");
 
-    const firstCenter = map.getView().getCenter();
+    const firstCenter = olMap.getView().getCenter();
     expect(firstCenter).toBeDefined();
 
     // Mount geolocation component
@@ -91,7 +91,7 @@ it("should center to user's position", async () => {
     await user.click(button);
 
     await waitFor(() => {
-        const nextCenter = map.getView().getCenter();
+        const nextCenter = olMap.getView().getCenter();
         expect(nextCenter).not.toEqual(firstCenter);
         expect(nextCenter).toBeDefined();
     });
@@ -102,12 +102,12 @@ it("should zoom to user's position accuracy", async () => {
 
     const user = userEvent.setup();
 
-    const { mapId, registry } = await setupMap({
+    const { map, registry } = await setupMap({
         center: { x: 0, y: 0 },
         projection: "EPSG:4326"
     });
 
-    const map = (await registry.expectMapModel(mapId))?.olMap;
+    const olMap = map.olMap;
 
     const notifier: Partial<NotificationService> = {
         notify() {
@@ -122,14 +122,14 @@ it("should zoom to user's position accuracy", async () => {
 
     render(
         <PackageContextProvider services={injectedServices}>
-            <MapContainer mapId={mapId} data-testid="map" />
-            <Geolocation mapId={mapId} data-testid="geolocation" />
+            <MapContainer map={map} data-testid="map" />
+            <Geolocation map={map} data-testid="geolocation" />
         </PackageContextProvider>
     );
 
     await waitForMapMount("map");
 
-    const firstZoomLevel = map.getView().getZoom();
+    const firstZoomLevel = olMap.getView().getZoom();
     expect(firstZoomLevel).toBeDefined();
 
     // Mount geolocation component
@@ -138,7 +138,7 @@ it("should zoom to user's position accuracy", async () => {
     await user.click(button);
 
     await waitFor(() => {
-        const nextZoomLevel = map.getView().getZoom();
+        const nextZoomLevel = olMap.getView().getZoom();
         expect(nextZoomLevel).not.toEqual(firstZoomLevel);
         expect(nextZoomLevel).toBeDefined();
     });
@@ -152,7 +152,7 @@ it("should successfully create an error with notifier message", async () => {
 
     const user = userEvent.setup();
 
-    const { mapId, registry } = await setupMap({
+    const { map, registry } = await setupMap({
         center: { x: 0, y: 0 },
         projection: "EPSG:4326"
     });
@@ -172,8 +172,8 @@ it("should successfully create an error with notifier message", async () => {
 
     render(
         <PackageContextProvider services={injectedServices}>
-            <MapContainer mapId={mapId} data-testid="map" />
-            <Geolocation mapId={mapId} data-testid="geolocation" />
+            <MapContainer map={map} data-testid="map" />
+            <Geolocation map={map} data-testid="geolocation" />
         </PackageContextProvider>
     );
 

@@ -11,7 +11,7 @@ import { GroupLayerImpl } from "@open-pioneer/map/model/layers/GroupLayerImpl";
 import { SimpleLayerImpl } from "@open-pioneer/map/model/layers/SimpleLayerImpl";
 
 it("Should successfully create a toc with default tool component", async () => {
-    const { mapId, registry } = await setupMap({
+    const { map, registry } = await setupMap({
         layers: [
             {
                 title: "Base layer",
@@ -26,12 +26,11 @@ it("Should successfully create a toc with default tool component", async () => {
             }
         ]
     });
-    await registry.expectMapModel(mapId);
-    const injectedServices = createServiceOptions({ registry });
 
+    const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
-            <Toc mapId={mapId} data-testid="toc" showTools={true} />
+            <Toc map={map} data-testid="toc" showTools={true} />
         </PackageContextProvider>
     );
 
@@ -43,7 +42,7 @@ it("Should successfully create a toc with default tool component", async () => {
 });
 
 it("Should successfully hide all layers in toc", async () => {
-    const { mapId, registry } = await setupMap({
+    const { map, registry } = await setupMap({
         layers: [
             {
                 title: "Base layer",
@@ -63,13 +62,12 @@ it("Should successfully hide all layers in toc", async () => {
             }
         ]
     });
-    const map = await registry.expectMapModel(mapId);
     const operationalLayers = map.layers.getOperationalLayers();
-    const injectedServices = createServiceOptions({ registry });
 
+    const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
-            <Toc mapId={mapId} data-testid="toc" showTools={true} />
+            <Toc map={map} data-testid="toc" showTools={true} />
         </PackageContextProvider>
     );
 
@@ -114,7 +112,7 @@ it("Should collapse all layer items in toc", async () => {
         ]
     });
 
-    const { mapId, registry } = await setupMap({
+    const { map, registry } = await setupMap({
         layers: [grouplayer]
     });
     const injectedServices = createServiceOptions({ registry });
@@ -122,7 +120,7 @@ it("Should collapse all layer items in toc", async () => {
     render(
         <PackageContextProvider services={injectedServices}>
             <Toc
-                mapId={mapId}
+                map={map}
                 data-testid="toc"
                 showTools={true}
                 collapsibleGroups={true}
@@ -149,7 +147,7 @@ it("Should collapse all layer items in toc", async () => {
 });
 
 it("Should not display collapse all button", async () => {
-    const { mapId, registry } = await setupMap({
+    const { map, registry } = await setupMap({
         layers: [
             {
                 title: "SimpleLayer 1",
@@ -163,7 +161,7 @@ it("Should not display collapse all button", async () => {
     render(
         <PackageContextProvider services={injectedServices}>
             <Toc
-                mapId={mapId}
+                map={map}
                 data-testid="toc"
                 showTools={true}
                 collapsibleGroups={true}

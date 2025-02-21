@@ -48,6 +48,10 @@ export class AppModel {
         this.#currentDemo.value[1].destroy?.();
     }
 
+    get map(): MapModel {
+        return this.#mapModel;
+    }
+
     get currentDemo(): Demo {
         return this.#currentDemo.value[0];
     }

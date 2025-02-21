@@ -93,10 +93,24 @@ export interface EditingService extends DeclaredService<"editing.EditingService"
     /**
      * Stops the edit mode and removes an existing {@link EditingWorkflow}.
      */
+    stop(map: MapModel): void;
+
+    /**
+     * Stops the edit mode and removes an existing {@link EditingWorkflow}.
+     *
+     * @deprecated Use the `stop(map: MapModel)` method instead.
+     */
     stop(mapId: string): void;
 
     /**
      * Resets the unfinished geometry from an existing {@link EditingWorkflow} without leaving the edit mode.
+     */
+    reset(map: MapModel): void;
+
+    /**
+     * Resets the unfinished geometry from an existing {@link EditingWorkflow} without leaving the edit mode.
+     *
+     * @deprecated Use the `reset(map: MapModel)` method instead.
      */
     reset(mapId: string): void;
 }

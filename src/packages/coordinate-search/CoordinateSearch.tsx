@@ -42,21 +42,23 @@ export const CoordinateSearch: FC<CoordinateSearchProps> = (props) => {
     const { coordinates } = useCoordinates(olMap); // coordinates of the pointer in the map
 
     return (
-        <CoordinateInput
-            {...containerProps}
-            mapId={props.mapId}
-            onSelect={(event: CoordinatesSelectEvent) => {
-                if (!map) {
-                    return;
-                }
+        map && (
+            <CoordinateInput
+                {...containerProps}
+                map={map}
+                onSelect={(event: CoordinatesSelectEvent) => {
+                    if (!map) {
+                        return;
+                    }
 
-                olMap?.getView().setCenter(event.coords);
-                onSelect?.(event);
-            }}
-            onClear={onClear}
-            placeholder={coordinates ? coordinates : ""}
-            projections={projections}
-        />
+                    olMap?.getView().setCenter(event.coords);
+                    onSelect?.(event);
+                }}
+                onClear={onClear}
+                placeholder={coordinates ? coordinates : ""}
+                projections={projections}
+            />
+        )
     );
 };
 

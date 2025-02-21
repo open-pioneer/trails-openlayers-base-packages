@@ -30,13 +30,12 @@ const defaultBasemapConfig = [
 ];
 
 it("should successfully create a basemap switcher component", async () => {
-    const { mapId, registry } = await setupMap();
-    await registry.expectMapModel(mapId); // wait for model load
+    const { registry, map } = await setupMap();
 
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
-            <BasemapSwitcher mapId={mapId} allowSelectingEmptyBasemap data-testid="switcher" />
+            <BasemapSwitcher map={map} allowSelectingEmptyBasemap data-testid="switcher" />
         </PackageContextProvider>
     );
 
@@ -52,15 +51,14 @@ it("should successfully create a basemap switcher component", async () => {
 });
 
 it("should successfully create a basemap switcher component with additional css classes and box properties", async () => {
-    const { mapId, registry } = await setupMap({
+    const { registry, map } = await setupMap({
         layers: defaultBasemapConfig
     });
-    await registry.expectMapModel(mapId); // wait for model load
 
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
-            <BasemapSwitcher mapId={mapId} className="test" data-testid="switcher" />
+            <BasemapSwitcher map={map} className="test" data-testid="switcher" />
         </PackageContextProvider>
     );
 
@@ -71,15 +69,14 @@ it("should successfully create a basemap switcher component with additional css 
 
 it("should successfully select a basemap from basemap switcher", async () => {
     const user = userEvent.setup();
-    const { mapId, registry } = await setupMap({
+    const { registry, map } = await setupMap({
         layers: defaultBasemapConfig
     });
-    const map = await registry.expectMapModel(mapId);
 
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
-            <BasemapSwitcher mapId={mapId} data-testid="switcher" />
+            <BasemapSwitcher map={map} data-testid="switcher" />
         </PackageContextProvider>
     );
 
@@ -111,15 +108,14 @@ it("should successfully select a basemap from basemap switcher", async () => {
 
 it("should allow selecting 'no basemap' when enabled", async () => {
     const user = userEvent.setup();
-    const { mapId, registry } = await setupMap({
+    const { registry, map } = await setupMap({
         layers: defaultBasemapConfig
     });
 
-    const map = await registry.expectMapModel(mapId);
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
-            <BasemapSwitcher mapId={mapId} allowSelectingEmptyBasemap data-testid="switcher" />
+            <BasemapSwitcher map={map} allowSelectingEmptyBasemap data-testid="switcher" />
         </PackageContextProvider>
     );
 
@@ -142,15 +138,14 @@ it("should allow selecting 'no basemap' when enabled", async () => {
 });
 
 it("should not allow selecting 'no basemap' by default", async () => {
-    const { mapId, registry } = await setupMap({
+    const { registry, map } = await setupMap({
         layers: defaultBasemapConfig
     });
 
-    const map = await registry.expectMapModel(mapId);
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
-            <BasemapSwitcher mapId={mapId} data-testid="switcher" />
+            <BasemapSwitcher map={map} data-testid="switcher" />
         </PackageContextProvider>
     );
 
@@ -169,15 +164,14 @@ it("should not allow selecting 'no basemap' by default", async () => {
 });
 
 it("should update when a new basemap is registered", async () => {
-    const { mapId, registry } = await setupMap({
+    const { registry, map } = await setupMap({
         layers: defaultBasemapConfig
     });
 
-    const map = await registry.expectMapModel(mapId);
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
-            <BasemapSwitcher mapId={mapId} data-testid="switcher" />
+            <BasemapSwitcher map={map} data-testid="switcher" />
         </PackageContextProvider>
     );
 
@@ -212,15 +206,14 @@ it("should update when a new basemap is registered", async () => {
 });
 
 it("should update when a different basemap is activated from somewhere else", async () => {
-    const { mapId, registry } = await setupMap({
+    const { registry, map } = await setupMap({
         layers: defaultBasemapConfig
     });
 
-    const map = await registry.expectMapModel(mapId);
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
-            <BasemapSwitcher mapId={mapId} data-testid="switcher" />
+            <BasemapSwitcher map={map} data-testid="switcher" />
         </PackageContextProvider>
     );
 
@@ -238,15 +231,14 @@ it("should update when a different basemap is activated from somewhere else", as
 
 describe("should successfully select the correct basemap from basemap switcher", () => {
     it("basemap with id `osm` (first in layers array) is visible", async () => {
-        const { mapId, registry } = await setupMap({
+        const { registry, map } = await setupMap({
             layers: defaultBasemapConfig
         });
 
-        const map = await registry.expectMapModel(mapId);
         const injectedServices = createServiceOptions({ registry });
         render(
             <PackageContextProvider services={injectedServices}>
-                <BasemapSwitcher mapId={mapId} data-testid="switcher" />
+                <BasemapSwitcher map={map} data-testid="switcher" />
             </PackageContextProvider>
         );
 
@@ -260,7 +252,7 @@ describe("should successfully select the correct basemap from basemap switcher",
     });
 
     it("basemap with id `topplus-open` (second in layers array) is visible", async () => {
-        const { mapId, registry } = await setupMap({
+        const { registry, map } = await setupMap({
             layers: [
                 {
                     id: "osm",
@@ -281,11 +273,10 @@ describe("should successfully select the correct basemap from basemap switcher",
             ]
         });
 
-        const map = await registry.expectMapModel(mapId);
         const injectedServices = createServiceOptions({ registry });
         render(
             <PackageContextProvider services={injectedServices}>
-                <BasemapSwitcher mapId={mapId} data-testid="switcher" />
+                <BasemapSwitcher map={map} data-testid="switcher" />
             </PackageContextProvider>
         );
 
@@ -306,7 +297,7 @@ it("should disable selection of unavailable layers and show a warning", async ()
         osmSource.setState("error");
     });
 
-    const { mapId, registry } = await setupMap({
+    const { registry, map } = await setupMap({
         layers: [
             {
                 id: "osm",
@@ -330,7 +321,7 @@ it("should disable selection of unavailable layers and show a warning", async ()
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
-            <BasemapSwitcher mapId={mapId} data-testid="switcher" />
+            <BasemapSwitcher map={map} data-testid="switcher" />
         </PackageContextProvider>
     );
 
@@ -342,15 +333,14 @@ it("should disable selection of unavailable layers and show a warning", async ()
 });
 
 it("should update the ui when a layer title changes", async () => {
-    const { mapId, registry } = await setupMap({
+    const { registry, map } = await setupMap({
         layers: defaultBasemapConfig
     });
-    const map = await registry.expectMapModel(mapId);
 
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
-            <BasemapSwitcher mapId={mapId} data-testid="switcher" />
+            <BasemapSwitcher map={map} data-testid="switcher" />
         </PackageContextProvider>
     );
 

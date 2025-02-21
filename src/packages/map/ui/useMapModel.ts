@@ -39,12 +39,15 @@ export interface MapModelProps {
     /**
      * The id of the map.
      * The map will be looked up in the MapRegistry service.
+     *
+     * @deprecated Use the `map` property instead.
+     *
+     * @see {@link DefaultMapProvider}
      */
     mapId?: string | undefined;
 
     /**
-     * The direct map model reference to use.
-     * This property can be used as an alternative to the {@link mapId}.
+     * The map model to use.
      */
     map?: MapModel | undefined;
 }

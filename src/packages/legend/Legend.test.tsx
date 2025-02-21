@@ -23,7 +23,7 @@ const LEGEND_ITEM_CLASS = ".legend-item";
 const LEGEND_IMAGE_CLASS = ".legend-item__image";
 
 it("should successfully create a legend component", async () => {
-    const { mapId, registry } = await setupMap({
+    const { map, registry } = await setupMap({
         layers: [
             {
                 title: "Base layer",
@@ -43,12 +43,11 @@ it("should successfully create a legend component", async () => {
             }
         ]
     });
-    await registry.expectMapModel(mapId);
     const injectedServices = createServiceOptions({ registry });
 
     render(
         <PackageContextProvider services={injectedServices}>
-            <Legend mapId={mapId} data-testid="legend" />
+            <Legend map={map} data-testid="legend" />
         </PackageContextProvider>
     );
 
@@ -57,7 +56,7 @@ it("should successfully create a legend component", async () => {
 });
 
 it("should successfully show legend for imageUrl configuration", async () => {
-    const { mapId, registry } = await setupMap({
+    const { map, registry } = await setupMap({
         layers: [
             {
                 title: "Base layer",
@@ -82,12 +81,11 @@ it("should successfully show legend for imageUrl configuration", async () => {
             }
         ]
     });
-    await registry.expectMapModel(mapId);
     const injectedServices = createServiceOptions({ registry });
 
     render(
         <PackageContextProvider services={injectedServices}>
-            <Legend mapId={mapId} data-testid="legend" />
+            <Legend map={map} data-testid="legend" />
         </PackageContextProvider>
     );
 
@@ -107,7 +105,7 @@ it("should successfully show legend for Component configuration", async () => {
         display: "inline-block "
     };
 
-    const { mapId, registry } = await setupMap({
+    const { map, registry } = await setupMap({
         layers: [
             {
                 title: "Base layer",
@@ -139,12 +137,11 @@ it("should successfully show legend for Component configuration", async () => {
             }
         ]
     });
-    await registry.expectMapModel(mapId);
     const injectedServices = createServiceOptions({ registry });
 
     render(
         <PackageContextProvider services={injectedServices}>
-            <Legend mapId={mapId} data-testid="legend" />
+            <Legend map={map} data-testid="legend" />
         </PackageContextProvider>
     );
 
@@ -154,7 +151,7 @@ it("should successfully show legend for Component configuration", async () => {
 });
 
 it("does not show a legend for basemaps by default", async () => {
-    const { mapId, registry } = await setupMap({
+    const { map, registry } = await setupMap({
         layers: [
             {
                 title: "Base layer",
@@ -184,12 +181,11 @@ it("does not show a legend for basemaps by default", async () => {
             }
         ]
     });
-    await registry.expectMapModel(mapId);
     const injectedServices = createServiceOptions({ registry });
 
     render(
         <PackageContextProvider services={injectedServices}>
-            <Legend mapId={mapId} data-testid="legend" />
+            <Legend map={map} data-testid="legend" />
         </PackageContextProvider>
     );
 
@@ -204,7 +200,7 @@ it("does not show a legend for basemaps by default", async () => {
 });
 
 it("shows a legend for active basemap if showBaseLayers is configured to be true", async () => {
-    const { mapId, registry } = await setupMap({
+    const { map, registry } = await setupMap({
         layers: [
             {
                 title: "Base layer",
@@ -234,12 +230,11 @@ it("shows a legend for active basemap if showBaseLayers is configured to be true
             }
         ]
     });
-    await registry.expectMapModel(mapId);
     const injectedServices = createServiceOptions({ registry });
 
     render(
         <PackageContextProvider services={injectedServices}>
-            <Legend mapId={mapId} data-testid="legend" showBaseLayers={true} />
+            <Legend map={map} data-testid="legend" showBaseLayers={true} />
         </PackageContextProvider>
     );
 
@@ -254,7 +249,7 @@ it("shows a legend for active basemap if showBaseLayers is configured to be true
 });
 
 it("shows correct legend entries for nested WMSSublayers", async () => {
-    const { mapId, registry } = await setupMap({
+    const { map, registry } = await setupMap({
         layers: [createLayerWithNestedSublayers()],
         fetch: vi.fn(async () => {
             return new Response(WMTS_CAPAS, {
@@ -262,12 +257,11 @@ it("shows correct legend entries for nested WMSSublayers", async () => {
             });
         })
     });
-    await registry.expectMapModel(mapId);
     const injectedServices = createServiceOptions({ registry });
 
     render(
         <PackageContextProvider services={injectedServices}>
-            <Legend mapId={mapId} data-testid="legend" />
+            <Legend map={map} data-testid="legend" />
         </PackageContextProvider>
     );
 
@@ -284,7 +278,7 @@ it("shows correct legend entries for nested WMSSublayers", async () => {
 });
 
 it("shows legend entries in correct order", async () => {
-    const { mapId, registry } = await setupMap({
+    const { map, registry } = await setupMap({
         layers: [
             {
                 title: "Base layer",
@@ -336,12 +330,11 @@ it("shows legend entries in correct order", async () => {
             }
         ]
     });
-    await registry.expectMapModel(mapId);
     const injectedServices = createServiceOptions({ registry });
 
     render(
         <PackageContextProvider services={injectedServices}>
-            <Legend mapId={mapId} data-testid="legend" />
+            <Legend map={map} data-testid="legend" />
         </PackageContextProvider>
     );
 
@@ -356,7 +349,7 @@ it("shows legend entries in correct order", async () => {
 });
 
 it("shows legend entries only for visible layers", async () => {
-    const { mapId, registry } = await setupMap({
+    const { map, registry } = await setupMap({
         layers: [
             {
                 title: "Base layer",
@@ -387,12 +380,11 @@ it("shows legend entries only for visible layers", async () => {
             }
         ]
     });
-    await registry.expectMapModel(mapId);
     const injectedServices = createServiceOptions({ registry });
 
     render(
         <PackageContextProvider services={injectedServices}>
-            <Legend mapId={mapId} data-testid="legend" />
+            <Legend map={map} data-testid="legend" />
         </PackageContextProvider>
     );
 
@@ -407,7 +399,7 @@ it("shows legend entries only for visible layers", async () => {
 });
 
 it("includes the layer id in the legend item's class list", async () => {
-    const { mapId, registry } = await setupMap({
+    const { map, registry } = await setupMap({
         layers: [
             {
                 title: "Layer 1",
@@ -421,12 +413,11 @@ it("includes the layer id in the legend item's class list", async () => {
             }
         ]
     });
-    await registry.expectMapModel(mapId);
     const injectedServices = createServiceOptions({ registry });
 
     render(
         <PackageContextProvider services={injectedServices}>
-            <Legend mapId={mapId} data-testid="legend" />
+            <Legend map={map} data-testid="legend" />
         </PackageContextProvider>
     );
 
@@ -436,7 +427,7 @@ it("includes the layer id in the legend item's class list", async () => {
 });
 
 it("reacts to changes in layer visibility", async () => {
-    const { mapId, registry } = await setupMap({
+    const { map, registry } = await setupMap({
         layers: [
             {
                 title: "Base layer",
@@ -478,12 +469,11 @@ it("reacts to changes in layer visibility", async () => {
             }
         ]
     });
-    const map = await registry.expectMapModel(mapId);
     const injectedServices = createServiceOptions({ registry });
 
     render(
         <PackageContextProvider services={injectedServices}>
-            <Legend mapId={mapId} data-testid="legend" />
+            <Legend map={map} data-testid="legend" />
         </PackageContextProvider>
     );
 
@@ -509,7 +499,7 @@ it("reacts to changes in layer visibility", async () => {
 });
 
 it("reacts to changes in layer legend attributes", async () => {
-    const { mapId, registry } = await setupMap({
+    const { map, registry } = await setupMap({
         layers: [
             {
                 title: "Base layer",
@@ -529,12 +519,11 @@ it("reacts to changes in layer legend attributes", async () => {
             }
         ]
     });
-    const map = await registry.expectMapModel(mapId);
     const injectedServices = createServiceOptions({ registry });
 
     render(
         <PackageContextProvider services={injectedServices}>
-            <Legend mapId={mapId} data-testid="legend" />
+            <Legend map={map} data-testid="legend" />
         </PackageContextProvider>
     );
 
@@ -562,7 +551,7 @@ it("reacts to changes in layer legend attributes", async () => {
 });
 
 it("reacts to changes in the layer composition", async () => {
-    const { mapId, registry } = await setupMap({
+    const { map, registry } = await setupMap({
         layers: [
             {
                 title: "Base layer",
@@ -582,12 +571,11 @@ it("reacts to changes in the layer composition", async () => {
             }
         ]
     });
-    const map = await registry.expectMapModel(mapId);
     const injectedServices = createServiceOptions({ registry });
 
     render(
         <PackageContextProvider services={injectedServices}>
-            <Legend mapId={mapId} data-testid="legend" />
+            <Legend map={map} data-testid="legend" />
         </PackageContextProvider>
     );
 

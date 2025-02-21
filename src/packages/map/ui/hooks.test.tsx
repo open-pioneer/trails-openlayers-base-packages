@@ -7,11 +7,9 @@ import View from "ol/View";
 import { expect, it } from "vitest";
 import { MapContainer } from "./MapContainer";
 import { useCenter, useProjection, useResolution, useScale, useView } from "./hooks";
-import { MapRegistry } from "../api";
 
 it("should successfully return the current map view", async () => {
-    const { mapId, registry } = await setupMap();
-    const map = await renderMap(mapId, registry);
+    const map = await renderMap();
     const olMap = map.olMap;
 
     const initialView = olMap.getView();
@@ -31,8 +29,7 @@ it("should successfully return the current map view", async () => {
 });
 
 it("should successfully return the map projection", async () => {
-    const { mapId, registry } = await setupMap();
-    const map = await renderMap(mapId, registry);
+    const map = await renderMap();
     const olMap = map.olMap;
 
     // change view projection and detect projection change
@@ -60,8 +57,7 @@ it("should successfully return the map projection", async () => {
 });
 
 it("should successfully return the map resolution", async () => {
-    const { mapId, registry } = await setupMap();
-    const map = await renderMap(mapId, registry);
+    const map = await renderMap();
     const olMap = map.olMap;
 
     const view = olMap.getView();
@@ -91,8 +87,7 @@ it("should successfully return the map resolution", async () => {
 });
 
 it("should successfully return the map center", async () => {
-    const { mapId, registry } = await setupMap();
-    const map = await renderMap(mapId, registry);
+    const map = await renderMap();
     const olMap = map.olMap;
 
     const view = olMap.getView();
@@ -119,8 +114,7 @@ it("should successfully return the map center", async () => {
 });
 
 it("should successfully return the map scale", async () => {
-    const { registry, mapId } = await setupMap();
-    const map = await renderMap(mapId, registry);
+    const map = await renderMap();
     const olMap = map.olMap;
 
     // get map scale
@@ -134,19 +128,19 @@ it("should successfully return the map scale", async () => {
  *
  * Returns the loaded map model for convenience.
  */
-async function renderMap(mapId: string, registry: MapRegistry) {
+async function renderMap() {
+    const { map, registry } = await setupMap();
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
             <div data-testid="base">
-                <MapContainer mapId={mapId} />
+                <MapContainer map={map} />
             </div>
         </PackageContextProvider>
     );
 
     await waitForMapMount();
 
-    const model = await registry.expectMapModel(mapId);
-    await model.whenDisplayed();
-    return model;
+    await map.whenDisplayed();
+    return map;
 }
