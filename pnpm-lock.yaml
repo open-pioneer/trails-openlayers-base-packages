@@ -21,9 +21,6 @@ catalogs:
     '@emotion/styled':
       specifier: ^11.13.0
       version: 11.14.0
-    '@maplibre/maplibre-gl-style-spec':
-      specifier: ^22.0.0
-      version: 22.0.1
     '@open-pioneer/base-theme':
       specifier: 3.0.0-dev.20250221111321
       version: 3.0.0-dev.20250221111321
@@ -259,9 +256,6 @@ importers:
       '@changesets/cli':
         specifier: 'catalog:'
         version: 2.27.9
-      '@maplibre/maplibre-gl-style-spec':
-        specifier: 'catalog:'
-        version: 22.0.1
       '@open-pioneer/build-package-cli':
         specifier: 'catalog:'
         version: 3.0.0(sass@1.85.0)(typescript@5.7.3)
@@ -2235,10 +2229,6 @@ packages:
 
   '@mapbox/unitbezier@0.0.1':
     resolution: {integrity: sha512-nMkuDXFv60aBr9soUG5q+GvZYL+2KZHVvsqFCzqnkGEf46U2fvmytHaEVc1/YZbiLn8X+eR3QzX1+dwDO1lxlw==}
-
-  '@maplibre/maplibre-gl-style-spec@22.0.1':
-    resolution: {integrity: sha512-V7bSw7Ui6+NhpeeuYqGoqamvKuy+3+uCvQ/t4ZJkwN8cx527CAlQQQ2kp+w5R9q+Tw6bUAH+fsq+mPEkicgT8g==}
-    hasBin: true
 
   '@maplibre/maplibre-gl-style-spec@23.1.0':
     resolution: {integrity: sha512-R6/ihEuC5KRexmKIYkWqUv84Gm+/QwsOUgHyt1yy2XqCdGdLvlBWVWIIeTZWN4NGdwmY6xDzdSGU2R9oBLNg2w==}
@@ -6097,16 +6087,6 @@ snapshots:
   '@mapbox/jsonlint-lines-primitives@2.0.2': {}
 
   '@mapbox/unitbezier@0.0.1': {}
-
-  '@maplibre/maplibre-gl-style-spec@22.0.1':
-    dependencies:
-      '@mapbox/jsonlint-lines-primitives': 2.0.2
-      '@mapbox/unitbezier': 0.0.1
-      json-stringify-pretty-compact: 4.0.0
-      minimist: 1.2.8
-      quickselect: 3.0.0
-      rw: 1.3.3
-      tinyqueue: 3.0.0
 
   '@maplibre/maplibre-gl-style-spec@23.1.0':
     dependencies:

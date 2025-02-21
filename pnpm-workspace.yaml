@@ -34,7 +34,6 @@ catalog:
   "@emotion/react": ^11.13.0
   "@emotion/styled": ^11.13.0
   "@formatjs/intl": ^3.1.4
-  "@maplibre/maplibre-gl-style-spec": ^22.0.0
   "@tanstack/react-table": ^8.20.5
   chakra-react-select: ^5.0.4
   classnames: ^2.3.2
