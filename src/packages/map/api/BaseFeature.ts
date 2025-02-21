@@ -7,8 +7,9 @@ import { Style } from "ol/style";
 /**
  * Base interface for all feature objects with geometry and / or attribute information.
  *
- * @typeParam PropertiesType The of the properties of the feature.
+ * @typeParam PropertiesType The type of the properties of the feature.
  *            Use this parameter if you know the shape of features ahead of time.
+ *            Note that this parameter should be some kind of object (not an array or primitive type).
  */
 export interface BaseFeature<PropertiesType = Readonly<Record<string, unknown>>> {
     /**
