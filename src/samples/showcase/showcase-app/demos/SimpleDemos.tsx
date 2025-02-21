@@ -85,7 +85,6 @@ function CoordinateInputComponent(props: {
     return (
         <Flex direction={"column"} gap={10}>
             <CoordinateInput
-                mapId={MAP_ID}
                 input={input}
                 placeholder={intl.formatMessage({ id: "demos.coordinateInput.placeholder" })}
                 onSelect={({ coords, projection }) => onCoordinateInput(coords, projection)}
@@ -177,7 +176,6 @@ function CoordinateSearchComponent(props: {
     return (
         <Flex direction={"column"} gap={10}>
             <CoordinateSearch
-                mapId={MAP_ID}
                 onSelect={({ coords, projection }) => onCoordinateSearch(coords, projection)}
                 onClear={onSearchCleared}
                 projections={[
