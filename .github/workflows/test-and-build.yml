@@ -111,5 +111,5 @@ jobs:
         uses: open-pioneer/trails-core-packages/.github/actions/deploy-demo@main
         with:
           src-repo: openlayers-base-packages
-          target-path: ${{ needs.version.outputs.published == 'true' && 'latest' || 'dev' }}
+          target-path: latest
           token: ${{ secrets.DEPLOY_TOKEN }}
