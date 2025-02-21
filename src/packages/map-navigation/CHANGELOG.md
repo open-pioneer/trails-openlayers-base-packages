@@ -1,5 +1,26 @@
 # @open-pioneer/map-navigation
 
+## 0.9.0
+
+### Minor Changes
+
+-   8dc793e: Add `ButtonProps` to `ToolButton` in `@open-pioneer/geolocation` and `@open-pioneer/map-navigation`
+
+    Example:
+
+    `<Geolocation buttonProps={{ variant: "outline" }} />`
+
+### Patch Changes
+
+-   Updated dependencies [37cd707]
+-   Updated dependencies [32ed2cd]
+-   Updated dependencies [f327eec]
+-   Updated dependencies [f327eec]
+-   Updated dependencies [209eb8e]
+-   Updated dependencies [d72e42c]
+    -   @open-pioneer/map@0.9.0
+    -   @open-pioneer/map-ui-components@0.9.0
+
 ## 0.8.0
 
 ### Minor Changes
