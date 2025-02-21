@@ -14,6 +14,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Install
-        uses: ./.github/actions/install
+        uses: open-pioneer/trails-core-packages/.github/actions/install@main
       - name: Audit dependencies
         run: pnpm audit
