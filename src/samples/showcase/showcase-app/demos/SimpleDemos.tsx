@@ -1,5 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import { Button, Flex } from "@open-pioneer/chakra-integration";
+import { CoordinateInput, CoordinateSearch } from "@open-pioneer/coordinate-search";
 import { CoordinateViewer } from "@open-pioneer/coordinate-viewer";
 import { Geolocation } from "@open-pioneer/geolocation";
 import {
@@ -10,20 +12,17 @@ import {
     ZoomOut
 } from "@open-pioneer/map-navigation";
 import { Measurement } from "@open-pioneer/measurement";
+import { NotificationService } from "@open-pioneer/notifier";
 import { Printing } from "@open-pioneer/printing";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { ScaleBar } from "@open-pioneer/scale-bar";
 import { ScaleSetter } from "@open-pioneer/scale-setter";
 import { ScaleViewer } from "@open-pioneer/scale-viewer";
 import { SpatialBookmarks } from "@open-pioneer/spatial-bookmarks";
-import { Demo, SharedDemoOptions } from "./Demo";
 import { Coordinate } from "ol/coordinate";
-import { CoordinateInput, CoordinateSearch } from "@open-pioneer/coordinate-search";
-import { MAP_ID } from "../MapConfigProviderImpl";
-import { Button, Flex } from "@open-pioneer/chakra-integration";
 import { Projection } from "ol/proj";
-import { NotificationService } from "@open-pioneer/notifier";
 import { useState } from "react";
+import { Demo, SharedDemoOptions } from "./Demo";
 
 export function createCoordinateViewerDemo({ intl }: SharedDemoOptions): Demo {
     return {
