@@ -257,7 +257,7 @@ export const ResultList: FC<ResultListProps> = (props) => {
     );
 };
 
-function useTableWidth(tableRef: RefObject<HTMLDivElement> | null) {
+function useTableWidth(tableRef: RefObject<HTMLDivElement | null>) {
     const [tableWidth, setTableWidth] = useState<number>();
 
     useEffect(() => {

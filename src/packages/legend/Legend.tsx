@@ -71,7 +71,7 @@ export const Legend: FC<LegendProps> = (props) => {
     );
 };
 
-function LegendList(props: { map: MapModel; showBaseLayers: boolean }): JSX.Element {
+function LegendList(props: { map: MapModel; showBaseLayers: boolean }): ReactNode {
     const { map, showBaseLayers } = props;
 
     const layers = useLayers(map);

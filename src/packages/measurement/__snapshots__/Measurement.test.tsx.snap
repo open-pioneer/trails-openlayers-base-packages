@@ -33,18 +33,22 @@ exports[`should successfully create a measurement component 1`] = `
         class="chakra-select__wrapper css-42b2qy"
         data-theme="light"
       >
-        bound HTMLSelectElement {
-          "0": <option
+        <select
+          class="chakra-select measurement-select css-161pkch"
+          data-theme="light"
+          id="field-:r0:"
+        >
+          <option
             value="distance"
           >
             distance
-          </option>,
-          "1": <option
+          </option>
+          <option
             value="area"
           >
             area
-          </option>,
-        }
+          </option>
+        </select>
         <div
           class="chakra-select__icon-wrapper css-iohxn1"
           data-theme="light"

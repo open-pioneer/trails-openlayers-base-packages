@@ -3,8 +3,9 @@
 import { TriangleDownIcon, TriangleUpIcon } from "@chakra-ui/icons";
 import { chakra } from "@open-pioneer/chakra-integration";
 import { SortDirection } from "@tanstack/react-table";
+import { ReactNode } from "react";
 
-export function ColumnSortIndicator(props: { isSorted: false | SortDirection }): JSX.Element {
+export function ColumnSortIndicator(props: { isSorted: false | SortDirection }): ReactNode {
     const { isSorted } = props;
     return (
         <chakra.span ml="4" className="result-list-sort-indicator">

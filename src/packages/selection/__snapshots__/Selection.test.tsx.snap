@@ -95,12 +95,13 @@ exports[`should successfully create a selection component and select the first s
             </div>
           </div>
           <input
+            aria-activedescendant=""
             aria-autocomplete="list"
             aria-expanded="false"
             aria-haspopup="true"
             aria-readonly="true"
             aria-required="false"
-            class="css-mohuvp-dummyInput-DummyInput"
+            class="css-1s80ejz-dummyInput-DummyInput"
             id="field-:r0:"
             inputmode="none"
             role="combobox"
