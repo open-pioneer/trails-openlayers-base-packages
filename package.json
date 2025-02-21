@@ -72,8 +72,8 @@
         },
         "patchedDependencies": {
             "@changesets/assemble-release-plan@6.0.4": "patches/@changesets__assemble-release-plan.patch",
-            "react-select@5.10.0": "patches/react-select@5.8.0.patch",
-            "@chakra-ui/hooks@2.4.4": "patches/@chakra-ui__hooks.patch"
+            "@chakra-ui/hooks@2.4.4": "patches/@chakra-ui__hooks.patch",
+            "react-select": "patches/react-select.patch"
         }
     },
     "devDependencies": {
