@@ -6,8 +6,11 @@ import { Style } from "ol/style";
 
 /**
  * Base interface for all feature objects with geometry and / or attribute information.
+ *
+ * @typeParam PropertiesType The of the properties of the feature.
+ *            Use this parameter if you know the shape of features ahead of time.
  */
-export interface BaseFeature {
+export interface BaseFeature<PropertiesType = Readonly<Record<string, unknown>>> {
     /**
      * Identifier for the feature object. Must be unique within all features of one source/layer.
      *
@@ -30,7 +33,7 @@ export interface BaseFeature {
     /**
      * Properties of the feature.
      */
-    properties?: Readonly<Record<string, unknown>>;
+    properties?: PropertiesType;
 
     /**
      * Additional style information for displaying the feature on the map.
