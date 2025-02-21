@@ -9,14 +9,14 @@ import userEvent from "@testing-library/user-event";
 import { Zoom, ZoomIn, ZoomOut } from "./Zoom";
 
 it("should successfully create a zoom-in and zoom-out buttons", async () => {
-    const { mapId, registry } = await setupMap();
+    const { map, registry } = await setupMap();
 
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
-            <MapContainer mapId={mapId} data-testid="map" />
-            <ZoomIn mapId={mapId} data-testid="zoom-in" />
-            <ZoomOut mapId={mapId} data-testid="zoom-out" />
+            <MapContainer map={map} data-testid="map" />
+            <ZoomIn map={map} data-testid="zoom-in" />
+            <ZoomOut map={map} data-testid="zoom-out" />
         </PackageContextProvider>
     );
 
@@ -33,15 +33,15 @@ it("should successfully create a zoom-in and zoom-out buttons", async () => {
 });
 
 it("should successfully create a zoom component with additional css classes", async () => {
-    const { mapId, registry } = await setupMap();
+    const { map, registry } = await setupMap();
 
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
-            <MapContainer mapId={mapId} data-testid="map" />
+            <MapContainer map={map} data-testid="map" />
             <Zoom
                 data-testid="zoom"
-                mapId={mapId}
+                map={map}
                 className="testClass1 testClass2"
                 zoomDirection="in"
             />
@@ -59,16 +59,15 @@ it("should successfully create a zoom component with additional css classes", as
 });
 
 it("should zoom in and zoom out when clicked", async () => {
-    const { mapId, registry } = await setupMap();
-    const map = await registry.expectMapModel(mapId);
+    const { map, registry } = await setupMap();
     const user = userEvent.setup();
 
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
-            <MapContainer mapId={mapId} data-testid="map" />
-            <ZoomIn data-testid="zoom-in" mapId={mapId} />
-            <ZoomOut data-testid="zoom-out" mapId={mapId} />
+            <MapContainer map={map} data-testid="map" />
+            <ZoomIn data-testid="zoom-in" map={map} />
+            <ZoomOut data-testid="zoom-out" map={map} />
         </PackageContextProvider>
     );
 

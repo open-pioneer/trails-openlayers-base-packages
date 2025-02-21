@@ -60,6 +60,14 @@ export interface SimpleMapOptions {
      * Disables the default projection when set to true.
      */
     noProjection?: boolean;
+
+    /**
+     * Also returns the map object in the return value.
+     * True by default.
+     *
+     * Use `false` to test the async loading behavior of the registry.
+     */
+    returnMap?: boolean;
 }
 
 /**
@@ -99,14 +107,26 @@ export async function waitForInitialExtent(model: MapModel) {
     });
 }
 
+export interface SetupMapResult {
+    mapId: string;
+    registry: MapRegistry;
+}
+
 /**
  * Creates a simple map registry service with exactly one map configuration.
  *
  * The map is configured by using the `options` parameter.
+ * If `options.returnMap` is `true` (the default), the map model is also returned.
  *
  * Returns the map registry and the id of the configured map.
  */
-export async function setupMap(options?: SimpleMapOptions) {
+export async function setupMap(
+    options?: SimpleMapOptions & { returnMap?: true }
+): Promise<SetupMapResult & { map: MapModel }>;
+export async function setupMap(options?: SimpleMapOptions): Promise<SetupMapResult>;
+export async function setupMap(
+    options?: SimpleMapOptions
+): Promise<SetupMapResult & { map: MapModel | undefined }> {
     // Always use "test" as mapId for unit tests
     const mapId = "test";
 
@@ -158,7 +178,11 @@ export async function setupMap(options?: SimpleMapOptions) {
         }
     });
 
-    return { mapId, registry };
+    let map: MapModel | undefined;
+    if (options?.returnMap !== false) {
+        map = await registry.expectMapModel(mapId);
+    }
+    return { mapId, registry, map };
 }
 
 /**

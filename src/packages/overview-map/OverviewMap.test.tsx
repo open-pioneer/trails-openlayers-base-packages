@@ -12,12 +12,12 @@ import { expect, it } from "vitest";
 import { OverviewMap } from "./OverviewMap";
 
 it("should successfully create an overview map component", async () => {
-    const { mapId, injectedServices } = await setup();
+    const { map, injectedServices } = await setup();
     const layer = getTileLayer();
 
     render(
         <PackageContextProvider services={injectedServices}>
-            <OverviewMap mapId={mapId} olLayer={layer} data-testid="overview-map"></OverviewMap>
+            <OverviewMap map={map} olLayer={layer} data-testid="overview-map"></OverviewMap>
         </PackageContextProvider>
     );
 
@@ -32,13 +32,13 @@ it("should successfully create an overview map component", async () => {
 });
 
 it("should successfully create an overview map component with additional css class", async () => {
-    const { mapId, injectedServices } = await setup();
+    const { map, injectedServices } = await setup();
     const layer = getTileLayer();
 
     render(
         <PackageContextProvider services={injectedServices}>
             <OverviewMap
-                mapId={mapId}
+                map={map}
                 olLayer={layer}
                 className="test"
                 data-testid="overview-map"
@@ -53,13 +53,13 @@ it("should successfully create an overview map component with additional css cla
 });
 
 it("should allow configuration of width and height", async () => {
-    const { mapId, injectedServices } = await setup();
+    const { map, injectedServices } = await setup();
     const layer = getTileLayer();
 
     render(
         <PackageContextProvider services={injectedServices}>
             <OverviewMap
-                mapId={mapId}
+                map={map}
                 olLayer={layer}
                 data-testid="overview-map"
                 width="123px"
@@ -76,13 +76,13 @@ it("should allow configuration of width and height", async () => {
 });
 
 it("should successfully add OverviewMap control to the map controls", async () => {
-    const { mapId, map, injectedServices } = await setup();
+    const { map, injectedServices } = await setup();
     const layer = getTileLayer();
 
     render(
         <PackageContextProvider services={injectedServices}>
             <OverviewMap
-                mapId={mapId}
+                map={map}
                 olLayer={layer}
                 className="test"
                 data-testid="overview-map"
@@ -96,10 +96,9 @@ it("should successfully add OverviewMap control to the map controls", async () =
 });
 
 async function setup() {
-    const { mapId, registry } = await setupMap();
+    const { map, registry } = await setupMap();
     const injectedServices = createServiceOptions({ registry });
-    const map = await registry.expectMapModel(mapId);
-    return { mapId, registry, map, injectedServices };
+    return { map, injectedServices };
 }
 
 async function waitForOverviewMap() {
