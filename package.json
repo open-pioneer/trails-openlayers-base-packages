@@ -48,7 +48,7 @@
             "",
             "patches",
             "=======",
-            "@changesets/assemble-release-plan: don't bump major when peers change",
+            "@changesets/assemble-release-plan: (also in overrides) don't bump major if peerDep has a minor release. see https://github.com/changesets/changesets/pull/1132",
             "react-select: patched to use composedPath() in event conditions; needed for web component integration (see https://github.com/JedWatson/react-select/issues/5824)",
             "@chakra-ui/menu;react-use-outside-click;hooks: patched to fix menus in shadow dom (see https://github.com/open-pioneer/trails-openlayers-base-packages/issues/184)"
         ],
@@ -64,15 +64,16 @@
             "cross-spawn@<7.0.5": ">=7.0.5",
             "nanoid@<3.3.8": "^3.3.8",
             "dompurify@<3.2.4": ">=3.2.4",
-            "esbuild@<0.25.0": ">=0.25.0"
+            "esbuild@<0.25.0": ">=0.25.0",
+            "@changesets/assemble-release-plan": "6.0.4"
         },
         "auditConfig": {
             "ignoreCves": []
         },
         "patchedDependencies": {
             "@changesets/assemble-release-plan@6.0.4": "patches/@changesets__assemble-release-plan.patch",
-            "react-select@5.8.0": "patches/react-select@5.8.0.patch",
-            "@chakra-ui/hooks@2.4.3": "patches/@chakra-ui__hooks.patch"
+            "react-select@5.10.0": "patches/react-select@5.8.0.patch",
+            "@chakra-ui/hooks@2.4.4": "patches/@chakra-ui__hooks.patch"
         }
     },
     "devDependencies": {

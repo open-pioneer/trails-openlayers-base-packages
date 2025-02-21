@@ -8,8 +8,8 @@ packages:
 # Shared version expressions (yaml anchors).
 # This is a yaml feature and is not interpreted by pnpm directly.
 __versions:
-  - &react_version ^18.3.1
-  - &core_packages_version ^2.4.0
+  - &react_version ^19.0.0
+  - &core_packages_version 3.0.0-dev.20250221111321
 
 # https://pnpm.io/catalogs
 catalog:
@@ -28,7 +28,7 @@ catalog:
   "@open-pioneer/test-utils": *core_packages_version
 
   "@chakra-ui/icons": ^2.2.4
-  "@chakra-ui/react": ^2.10.4
+  "@chakra-ui/react": ^2.10.6
   "@conterra/reactivity-core": ^0.4.3
   "@emotion/cache": ^11.13.0
   "@emotion/react": ^11.13.0
@@ -36,11 +36,11 @@ catalog:
   "@formatjs/intl": ^3.1.4
   "@maplibre/maplibre-gl-style-spec": ^22.0.0
   "@tanstack/react-table": ^8.20.5
-  chakra-react-select: ^5.0.2
+  chakra-react-select: ^5.0.4
   classnames: ^2.3.2
-  framer-motion: ^10.17.4
+  framer-motion: ^12.4.7
   html2canvas: ^1.4.1
-  jspdf: ^2.5.2
+  jspdf: ^3.0.0
   ol-mapbox-style: ^12.4.1
   ol: ^10.4.0
   proj4: ^2.12.1
@@ -49,51 +49,51 @@ catalog:
   react-select: ^5.8.0
   react-use: ^17.5.1
   react: *react_version
-  uuid: ^10.0.0
+  uuid: ^11.1.0
 
   # Devtools
-  "@changesets/cli": ^2.27.9
-  "@open-pioneer/build-package-cli": ^2.1.1
-  "@open-pioneer/build-support": ^2.0.2
-  "@open-pioneer/vite-plugin-pioneer": ^3.0.5
-  "@open-pioneer/check-pnpm-duplicates": "^0.1.0"
-  "@testing-library/dom": ^10.0.0
+  "@changesets/cli": 2.27.9
+  "@open-pioneer/build-package-cli": ^3.0.0
+  "@open-pioneer/build-support": ^3.0.0
+  "@open-pioneer/vite-plugin-pioneer": ^4.0.0
+  "@open-pioneer/check-pnpm-duplicates": "^0.2.0"
+  "@testing-library/dom": ^10.4.0
   "@testing-library/jest-dom": ^6.6.2
-  "@testing-library/react": ^16.0.0
+  "@testing-library/react": ^16.2.0
   "@testing-library/user-event": ^14.5.2
   "@types/js-yaml": ^4.0.9
   "@types/jsdom": ^21.1.7
-  "@types/node": ^18.19.41
+  "@types/node": ^20.14.8
   "@types/proj4": "^2.5.2"
-  "@types/react": ^18.3.11
-  "@types/react-dom": ^18.3.1
+  "@types/react": ^19.0.10
+  "@types/react-dom": ^19.0.4
   "@types/uuid": ^10.0.0
   "@typescript-eslint/eslint-plugin": ^8.11.0
   "@typescript-eslint/parser": ^8.11.0
   "@vitejs/plugin-react-swc": ^3.7.1
-  eslint: ^8.57.0
-  eslint-config-prettier: ^9.1.0
+  eslint: ^8.57.1
+  eslint-config-prettier: ^10.0.1
   eslint-import-resolver-typescript: ^3.6.3
   eslint-plugin-header: ^3.1.1
   eslint-plugin-import: ^2.31.0
   eslint-plugin-jsx-a11y: ^6.10.1
   eslint-plugin-react: ^7.37.1
-  eslint-plugin-react-hooks: ^4.6.2
+  eslint-plugin-react-hooks: ^5.1.0
   eslint-plugin-unused-imports: ^4.1.4
-  fast-glob: ^3.3.2
+  fast-glob: ^3.3.3
   handlebars: ^4.7.8
-  happy-dom: ^15.10.2
+  happy-dom: ^17.1.1
   husky: ^9.1.6
   js-yaml: ^4.1.0
-  jsdom: ^25.0.1
+  jsdom: ^26.0.0
   lint-staged: ^15.2.10
   prettier: ^3.3.3
   resize-observer-polyfill: ^1.5.1
-  rimraf: ^5.0.9
-  sass: ^1.80.3
+  rimraf: ^6.0.1
+  sass: ^1.85.0
   tsx: ^4.19.1
-  typedoc: ^0.26.10
-  typescript: ~5.6.3
-  vite: ^5.4.14
+  typedoc: ^0.27.7
+  typescript: ^5.7.3
+  vite: ^6.1.1
   vite-plugin-eslint: ^1.8.1
   vitest: ^3.0.6
