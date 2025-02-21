@@ -51,7 +51,7 @@ overrideLicenses:
 
   # readme contains license text
   - name: "react-remove-scroll-bar"
-    version: "2.3."
+    version: "2.3.8"
     licenseFiles:
       - "./README.md"
 
@@ -70,14 +70,6 @@ overrideLicenses:
     version: "1.0.6"
     licenseFiles:
       - custom: "./licenses/toggle_selection_mit"
-
-  # Declares 'license': 'MIT' in package.json but does not contain a license file.
-  # Author merged our pull request and confirmed the license (no new release yet):
-  # https://github.com/theKashey/react-style-singleton/pull/7
-  - name: "react-style-singleton"
-    version: "2.2.1"
-    licenseFiles:
-      - custom: "./licenses/react_style_singleton_mit"
 
   # Readme contains original MIT license which got lost during fork / development at some point
   # Retrieved on 2023-09-27 from https://github.com/mapbox/jsonlint
