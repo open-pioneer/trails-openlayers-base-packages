@@ -728,7 +728,7 @@ This point is especially important for the map model's central features:
 In those cases, the properties or methods provided by this package should always be used:
 
 -   `map.layers.addLayer(layer)` and `map.layers.removeLayerById(layerId)` to add or remove layers
--   `map.layers.getAllLayers()`, `map.layers.getBaseLayers()`, `map.layers.getOperationalLayers()` etc. to access (top-level) layers
+-   `map.layers.getLayers()`, `map.layers.getBaseLayers()`, `map.layers.getOperationalLayers()` etc. to access (top-level) layers
 -   `layer.setVisible(visible)` and `map.layers.activateBaseLayer(layerId)` to control visibility
 -   `layer.updateAttributes()` and `layer.deleteAttributes()` to change a layer's custom attributes
 

@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { getErrorChain } from "@open-pioneer/core";
 import { View } from "ol";
@@ -9,7 +9,6 @@ import { setupMap } from "@open-pioneer/map-test-utils";
 import OlMap from "ol/Map";
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
-import { BkgTopPlusOpen } from "./layers/BkgTopPlusOpen";
 import { defaults as defaultInteraction } from "ol/interaction";
 import dragRotate from "ol/interaction/DragRotate";
 
@@ -250,13 +249,13 @@ it("should construct a map with the configured layers", async () => {
                 id: "id2",
                 title: "bar",
                 visible: false,
-                olLayer: new TileLayer({ source: new BkgTopPlusOpen() })
+                olLayer: new TileLayer({})
             }
         ]
     });
 
     const map = await registry.expectMapModel(mapId);
-    const allLayers = map.layers.getAllLayers().map((layer) => {
+    const allLayers = map.layers.getLayers().map((layer) => {
         return {
             id: layer.id,
             title: layer.title,
