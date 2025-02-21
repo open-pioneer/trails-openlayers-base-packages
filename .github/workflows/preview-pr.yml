@@ -61,7 +61,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
 
       - name: Deploy PR Preview
-        uses: rossjrw/pr-preview-action@v1.4.7
+        uses: rossjrw/pr-preview-action@v1
         with:
           source-dir: ./site/www/
           umbrella-dir: "openlayers-base-packages/pr-previews"

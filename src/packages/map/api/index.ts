@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 export * from "./BaseFeature";
 export * from "./MapConfig";
@@ -8,7 +8,6 @@ export * from "./layers";
 export * from "./shared";
 
 export { getProjection, registerProjections, type ProjectionDefinition } from "../projections";
-export { BkgTopPlusOpen, type BkgTopPlusOpenProps } from "../layers/BkgTopPlusOpen";
 
 // UI Components and React helpers
 export { useView, useProjection, useResolution, useCenter, useScale } from "../ui/hooks";

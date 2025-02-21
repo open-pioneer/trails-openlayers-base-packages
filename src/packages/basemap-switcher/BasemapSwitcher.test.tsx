@@ -1,7 +1,7 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { nextTick } from "@conterra/reactivity-core";
-import { BkgTopPlusOpen, SimpleLayer } from "@open-pioneer/map";
+import { SimpleLayer } from "@open-pioneer/map";
 import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
@@ -237,28 +237,9 @@ it("should update when a different basemap is activated from somewhere else", as
 });
 
 describe("should successfully select the correct basemap from basemap switcher", () => {
-    it("basemap with id `osm` is visible", async () => {
+    it("basemap with id `osm` (first in layers array) is visible", async () => {
         const { mapId, registry } = await setupMap({
-            layers: [
-                {
-                    id: "osm",
-                    title: "OSM",
-                    isBaseLayer: true,
-                    visible: true,
-                    olLayer: new TileLayer({
-                        source: new OSM()
-                    })
-                },
-                {
-                    id: "topplus-open",
-                    title: "TopPlus Open",
-                    isBaseLayer: true,
-                    visible: false,
-                    olLayer: new TileLayer({
-                        source: new BkgTopPlusOpen()
-                    })
-                }
-            ]
+            layers: defaultBasemapConfig
         });
 
         const map = await registry.expectMapModel(mapId);
@@ -278,7 +259,7 @@ describe("should successfully select the correct basemap from basemap switcher",
         expect(activeBaseLayer?.id).toBe("osm");
     });
 
-    it("basemap with id `toner` is visible", async () => {
+    it("basemap with id `topplus-open` (second in layers array) is visible", async () => {
         const { mapId, registry } = await setupMap({
             layers: [
                 {
@@ -295,9 +276,7 @@ describe("should successfully select the correct basemap from basemap switcher",
                     title: "TopPlus Open",
                     isBaseLayer: true,
                     visible: true,
-                    olLayer: new TileLayer({
-                        source: new BkgTopPlusOpen()
-                    })
+                    olLayer: new TileLayer({})
                 }
             ]
         });
@@ -320,9 +299,12 @@ describe("should successfully select the correct basemap from basemap switcher",
     });
 });
 
-it("should deactivate unavailable layers for selection", async () => {
+it("should disable selection of unavailable layers and show a warning", async () => {
     const osmSource = new OSM();
-    const topPlusSource = new BkgTopPlusOpen();
+
+    act(() => {
+        osmSource.setState("error");
+    });
 
     const { mapId, registry } = await setupMap({
         layers: [
@@ -336,17 +318,14 @@ it("should deactivate unavailable layers for selection", async () => {
                 })
             },
             {
-                id: "topplus-open",
-                title: "TopPlus Open",
+                id: "empty-tile",
+                title: "Empty tile",
                 isBaseLayer: true,
                 visible: true,
-                olLayer: new TileLayer({
-                    source: topPlusSource
-                })
+                olLayer: new TileLayer()
             }
         ]
     });
-    const map = await registry.expectMapModel(mapId);
 
     const injectedServices = createServiceOptions({ registry });
     render(
@@ -358,46 +337,13 @@ it("should deactivate unavailable layers for selection", async () => {
     // basemap switcher is mounted
     const { switcherSelect } = await waitForBasemapSwitcher();
 
-    let activeBaseLayer = map.layers.getActiveBaseLayer();
-    expect(activeBaseLayer?.id).toBe("osm");
-
     showDropdown(switcherSelect);
-    expect(switcherSelect).toMatchSnapshot();
-
-    act(() => {
-        osmSource.setState("error");
-    });
-
-    // switch active layer
-    activeBaseLayer = map.layers.getActiveBaseLayer();
-    expect(activeBaseLayer?.id).toBe("osm");
-
-    // option disabled, warning icon shown and selected option changed?
     expect(switcherSelect).toMatchSnapshot();
 });
 
 it("should update the ui when a layer title changes", async () => {
     const { mapId, registry } = await setupMap({
-        layers: [
-            {
-                id: "osm",
-                title: "OSM",
-                isBaseLayer: true,
-                visible: true,
-                olLayer: new TileLayer({
-                    source: new OSM()
-                })
-            },
-            {
-                id: "topplus-open",
-                title: "TopPlus Open",
-                isBaseLayer: true,
-                visible: true,
-                olLayer: new TileLayer({
-                    source: new BkgTopPlusOpen()
-                })
-            }
-        ]
+        layers: defaultBasemapConfig
     });
     const map = await registry.expectMapModel(mapId);
 
