@@ -272,12 +272,12 @@ function useChakraStyles() {
         const chakraStyles: ChakraStylesConfig<SearchOption, false, SearchGroupOption> = {
             inputContainer: (container) => ({
                 ...container,
-                gridTemplateAreas: "'myArea myArea myArea'",
+                gridTemplateAreas: "'area area area'",
                 display: "grid"
             }),
             input: (base) => ({
                 ...base,
-                gridArea: "myArea"
+                gridArea: "area"
             }),
             groupHeading: (provided) => ({
                 ...provided,
