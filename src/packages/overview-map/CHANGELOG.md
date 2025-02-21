@@ -1,5 +1,18 @@
 # @open-pioneer/overview-map
 
+## 0.9.0
+
+### Patch Changes
+
+-   d72e42c: Removed BKGTopPlusOpen layer source. The BKGTopPlusOpen was an internal layer source only needed for tests. Please use own test sources instead.
+-   Updated dependencies [37cd707]
+-   Updated dependencies [32ed2cd]
+-   Updated dependencies [f327eec]
+-   Updated dependencies [f327eec]
+-   Updated dependencies [209eb8e]
+-   Updated dependencies [d72e42c]
+    -   @open-pioneer/map@0.9.0
+
 ## 0.8.0
 
 ### Minor Changes
