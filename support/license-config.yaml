@@ -107,7 +107,7 @@ overrideLicenses:
   # https://github.com/JedWatson/react-select/blob/17ab36ec89e6e2b05071cdafecb44421f1e91334/LICENSE
   # The full license text was retrieved on 2024-01-04
   - name: "react-select"
-    version: "5.8.0"
+    version: "5.10.0"
     licenseFiles:
       - custom: "./licenses/react_select_mit"
 
