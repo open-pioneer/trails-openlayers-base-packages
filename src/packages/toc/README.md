@@ -23,8 +23,8 @@ To show the toolset menu, set the `showTools` property to `true`.
 
 The default tools provided by the TOC are:
 
--   A button to hide all layers (sets `visibility` to false, enabled by default)
--   A button to collapse all groups (enabled by default if groups are collapsible)
+- A button to hide all layers (sets `visibility` to false, enabled by default)
+- A button to collapse all groups (enabled by default if groups are collapsible)
 
 These tools can be configured by using the `toolsConfig` property.
 
