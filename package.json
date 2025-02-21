@@ -32,7 +32,6 @@
             "=========",
             "semver: https://github.com/advisories/GHSA-c2qf-rxjj-qqgw",
             "tough-cookie: https://github.com/advisories/GHSA-72xf-g2v4-qvf3",
-            "@mapbox/mapbox-gl-style-spec: license issues, see https://github.com/openlayers/ol-mapbox-style/pull/940",
             "braces: https://github.com/advisories/GHSA-grv7-fg5c-xmjg",
             "ws: https://github.com/advisories/GHSA-3h5v-q93c-6h6q",
             "fast-loops: https://github.com/advisories/GHSA-3q56-9cc2-46j4",
