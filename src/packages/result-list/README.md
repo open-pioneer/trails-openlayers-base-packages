@@ -132,9 +132,9 @@ The default value is `false`.
 
 If memoization is turned on, the result list only rerenders if
 
--   direct properties of the result list table changes,
--   a row is selected (or deselected), or
--   the sort order is changed,
+- direct properties of the result list table changes,
+- a row is selected (or deselected), or
+- the sort order is changed,
 
 but the performance of the result list is greatly improved, especially for high row counts.
 
@@ -218,8 +218,8 @@ For example, when `data` or `columns` is modified, the scroll position, the sele
 
 This is done to enable use cases such as:
 
--   dynamically showing or hiding certain columns depending on application state
--   dynamically adding new items to or removing items from the component
+- dynamically showing or hiding certain columns depending on application state
+- dynamically adding new items to or removing items from the component
 
 To discard the existing state, see "Resetting component state".
 

@@ -77,7 +77,7 @@ To ignore the view padding when printing the map, you can pass `viewPadding: "ig
 
 ## Known issues
 
--   Printing to PNG may not work on Safari / Chrome on iOS (see <https://github.com/open-pioneer/trails-openlayers-base-packages/issues/294>)
+- Printing to PNG may not work on Safari / Chrome on iOS (see <https://github.com/open-pioneer/trails-openlayers-base-packages/issues/294>)
 
 ## License
 

@@ -78,10 +78,10 @@ the provided service `VectorSelectionSourceFactory` can be used to create an ins
 
 Key features of this selection source implementation are:
 
--   using only the extent as selection kind
--   listening to layer visibility changes and updating the status of the source
--   limiting the number of returned selection results to the corresponding selection option
--   throwing an event `changed:status` when the status updates
+- using only the extent as selection kind
+- listening to layer visibility changes and updating the status of the source
+- limiting the number of returned selection results to the corresponding selection option
+- throwing an event `changed:status` when the status updates
 
 Inject the selection source factory by referencing `"selection.VectorSelectionSourceFactory"`:
 

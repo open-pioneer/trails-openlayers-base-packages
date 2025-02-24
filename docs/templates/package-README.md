@@ -9,8 +9,8 @@ This package provides `[...]`, to `[...]`.
 >
 > Samples:
 >
-> -   This package provides an "initial extent" button, to navigate the user back to the initial map view.
-> -   This package provides helper classes, to build applications more easily and outsource repetitive tasks in your code.
+> - This package provides an "initial extent" button, to navigate the user back to the initial map view.
+> - This package provides helper classes, to build applications more easily and outsource repetitive tasks in your code.
 
 ## Usage
 

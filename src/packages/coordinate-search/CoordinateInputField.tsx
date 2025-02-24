@@ -95,7 +95,7 @@ function RightButton(props: {
     className: string;
     label: string;
     onClick: () => void;
-    icon: JSX.Element;
+    icon: React.ReactElement;
 }) {
     const { className, label, onClick, icon } = props;
     return (

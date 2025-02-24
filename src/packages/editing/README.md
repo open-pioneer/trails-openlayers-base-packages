@@ -10,10 +10,10 @@ This package provides an editing service that allows to start and handle geometr
 >
 > Additional information:
 >
-> -   Create Workflow: The feature is saved in the collection as a new feature with an empty properties
->     object and without an id (using POST).
-> -   Update Workflow: The updated geometry is saved for the feature in the collection using a PATCH request.
->     In addition to the new geometry, the PATCH request sends an empty properties object within the body.
+> - Create Workflow: The feature is saved in the collection as a new feature with an empty properties
+>   object and without an id (using POST).
+> - Update Workflow: The updated geometry is saved for the feature in the collection using a PATCH request.
+>   In addition to the new geometry, the PATCH request sends an empty properties object within the body.
 
 ## Usage
 
@@ -68,9 +68,9 @@ workflow.on("active:drawing", () => {
 
 After the editing is finished, a `Promise` will be returned.
 
--   The returned promise rejects if saving the feature failed.
--   The promise resolves with `undefined` when the editing was stopped.
--   The promise resolves with the feature ID when saving was successful.
+- The returned promise rejects if saving the feature failed.
+- The promise resolves with `undefined` when the editing was stopped.
+- The promise resolves with the feature ID when saving was successful.
 
 Example:
 
@@ -166,15 +166,15 @@ customElements.define("ol-map-app", element);
 
 The user can use the following keyboard shortcuts / interactions during create feature workflow:
 
--   `Esc`: Reset the drawing
--   `Mouse double-click`: Set last vertex and finish drawing
--   `Enter`: Finish drawing (vertex that is currently drawn is discarded)
+- `Esc`: Reset the drawing
+- `Mouse double-click`: Set last vertex and finish drawing
+- `Enter`: Finish drawing (vertex that is currently drawn is discarded)
 
 The user can use the following keyboard shortcuts / interactions during update feature workflow:
 
--   `Esc`: Reset the drawing
--   `Alt + MouseClick`: Remove vertices from feature
--   `Mouse click (outside feature)` or `Enter`: finish editing
+- `Esc`: Reset the drawing
+- `Alt + MouseClick`: Remove vertices from feature
+- `Mouse click (outside feature)` or `Enter`: finish editing
 
 ## License
 

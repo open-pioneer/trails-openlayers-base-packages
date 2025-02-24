@@ -54,12 +54,12 @@ Additional options of the `VectorSource` (see [OpenLayers documentation](https:/
 
 The vector source supports two different strategies to load features from the server:
 
--   `"next"`: Fetch large feature results by walking the `next` link of the previous response.
-    This is well supported by most implementations, but can be slow for very large result sets
-    because it does not allow for parallel requests.
--   `"offset"`: Fetch large feature results using parallel requests.
-    Each request fetches a page of results using an `"offset"` and `"limit"` parameter.
-    This can be much faster than the `"next"` strategy, but it is not supported by all server implementations.
+- `"next"`: Fetch large feature results by walking the `next` link of the previous response.
+  This is well supported by most implementations, but can be slow for very large result sets
+  because it does not allow for parallel requests.
+- `"offset"`: Fetch large feature results using parallel requests.
+  Each request fetches a page of results using an `"offset"` and `"limit"` parameter.
+  This can be much faster than the `"next"` strategy, but it is not supported by all server implementations.
 
 By default, the vector source will attempt to detect the server's capabilities and will prefer `"offset"`, if supported.
 You can overwrite the default behavior by explicitly defining the `strategy` option.
