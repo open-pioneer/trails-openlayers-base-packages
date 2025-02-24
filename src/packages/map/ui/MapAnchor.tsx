@@ -43,7 +43,7 @@ export interface MapAnchorProps extends CommonComponentProps {
     children?: ReactNode;
 }
 
-export function MapAnchor(props: MapAnchorProps): JSX.Element {
+export function MapAnchor(props: MapAnchorProps): ReactNode {
     const { position = defaultPosition, children, horizontalGap, verticalGap } = props;
     const { containerProps } = useCommonComponentProps("map-anchor", props);
     const { mapAnchorsHost } = useMapContainerContext();

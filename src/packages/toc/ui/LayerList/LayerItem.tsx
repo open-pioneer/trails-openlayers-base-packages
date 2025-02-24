@@ -17,7 +17,7 @@ import { AnyLayer } from "@open-pioneer/map";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import classNames from "classnames";
 import { useIntl } from "open-pioneer:react-hooks";
-import { memo, useEffect, useId, useMemo } from "react";
+import { memo, ReactNode, useEffect, useId, useMemo } from "react";
 import { FiAlertTriangle } from "react-icons/fi";
 import { TocItem, useTocModel } from "../../model/TocModel";
 import { slug } from "../../utils/slug";
@@ -30,7 +30,7 @@ import { LayerList } from "./LayerList";
  *
  * The item may have further nested list items if there are sublayers present.
  */
-export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): JSX.Element {
+export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): ReactNode {
     const { layer } = props;
     const intl = useIntl();
     const [tocItem, _tocModel, tocOptions] = useTocItem(layer);

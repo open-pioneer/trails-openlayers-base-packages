@@ -13,7 +13,7 @@ import {
     SingleValueProps
 } from "chakra-react-select";
 import { useIntl } from "open-pioneer:react-hooks";
-import { FC, KeyboardEvent, useMemo, useState } from "react";
+import { FC, KeyboardEvent, useMemo, useState, ReactNode } from "react";
 import { FiAlertTriangle } from "react-icons/fi";
 
 /*
@@ -168,7 +168,7 @@ function useBaseLayers(mapModel: MapModel | undefined): Layer[] {
     return useReactiveSnapshot(() => mapModel?.layers.getBaseLayers() ?? [], [mapModel]);
 }
 
-function BasemapSelectOption(props: OptionProps<SelectOption>): JSX.Element {
+function BasemapSelectOption(props: OptionProps<SelectOption>): ReactNode {
     const { layer } = props.data;
     const { isAvailable, content } = useBasemapItem(layer);
 
@@ -183,7 +183,7 @@ function BasemapSelectOption(props: OptionProps<SelectOption>): JSX.Element {
     );
 }
 
-function BasemapSelectValue(props: SingleValueProps<SelectOption>): JSX.Element {
+function BasemapSelectValue(props: SingleValueProps<SelectOption>): ReactNode {
     const { layer } = props.data;
     const { isAvailable, content } = useBasemapItem(layer);
 

@@ -11,7 +11,7 @@ import {
     useCommonComponentProps
 } from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
-import { FC, useEffect, useId, useMemo, useRef } from "react";
+import { FC, ReactNode, useEffect, useId, useMemo, useRef } from "react";
 import { TocItem, TocModel, TocModelProvider, TocWidgetOptions } from "../model/TocModel";
 import { TopLevelLayerList } from "./LayerList/LayerList";
 import { Tools } from "./Tools";
@@ -98,7 +98,7 @@ export const Toc: FC<TocProps> = (props: TocProps) => {
     const { containerProps } = useCommonComponentProps("toc", props);
     const state = useMapModel(props);
 
-    let content: JSX.Element | null;
+    let content: ReactNode | null;
     switch (state.kind) {
         case "loading":
             content = null;

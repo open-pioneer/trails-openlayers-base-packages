@@ -166,7 +166,7 @@ function MapContainerReady(
         MapContainerProps,
         "mapId" | "map" | "className"
     >
-): JSX.Element {
+): ReactNode {
     const {
         olMap,
         mapAnchorsHost,

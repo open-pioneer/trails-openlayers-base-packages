@@ -58,10 +58,10 @@ exports[`expect result list to be created successfully 1`] = `
                 data-theme="light"
               >
                 <input
+                  aria-checked="false"
                   class="chakra-checkbox__input"
                   style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
                   type="checkbox"
-                  value=""
                 />
                 <span
                   aria-hidden="true"
@@ -179,12 +179,12 @@ exports[`expect result list to be created successfully 1`] = `
               data-theme="light"
             >
               <input
+                aria-checked="false"
                 aria-disabled="false"
                 aria-label="ariaLabel.selectSingle"
                 class="chakra-checkbox__input"
                 style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
                 type="checkbox"
-                value=""
               />
               <span
                 aria-hidden="true"
@@ -242,12 +242,12 @@ exports[`expect result list to be created successfully 1`] = `
               data-theme="light"
             >
               <input
+                aria-checked="false"
                 aria-disabled="false"
                 aria-label="ariaLabel.selectSingle"
                 class="chakra-checkbox__input"
                 style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
                 type="checkbox"
-                value=""
               />
               <span
                 aria-hidden="true"
@@ -305,12 +305,12 @@ exports[`expect result list to be created successfully 1`] = `
               data-theme="light"
             >
               <input
+                aria-checked="false"
                 aria-disabled="false"
                 aria-label="ariaLabel.selectSingle"
                 class="chakra-checkbox__input"
                 style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
                 type="checkbox"
-                value=""
               />
               <span
                 aria-hidden="true"
@@ -368,12 +368,12 @@ exports[`expect result list to be created successfully 1`] = `
               data-theme="light"
             >
               <input
+                aria-checked="false"
                 aria-disabled="false"
                 aria-label="ariaLabel.selectSingle"
                 class="chakra-checkbox__input"
                 style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
                 type="checkbox"
-                value=""
               />
               <span
                 aria-hidden="true"
@@ -421,12 +421,12 @@ exports[`expect result list to be created successfully 1`] = `
               data-theme="light"
             >
               <input
+                aria-checked="false"
                 aria-disabled="false"
                 aria-label="ariaLabel.selectSingle"
                 class="chakra-checkbox__input"
                 style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
                 type="checkbox"
-                value=""
               />
               <span
                 aria-hidden="true"

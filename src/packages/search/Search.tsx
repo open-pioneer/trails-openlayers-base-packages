@@ -417,7 +417,7 @@ function useSearchState(controller: SearchController | undefined) {
 
     // Stores the promise for the current search.
     // Any results from outdated searches are ignored.
-    const currentSearch = useRef<Promise<unknown>>();
+    const currentSearch = useRef<Promise<unknown>>(undefined);
     const startSearch = useEvent((query: string) => {
         if (!controller) {
             currentSearch.current = undefined;

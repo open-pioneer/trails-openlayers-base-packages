@@ -2,13 +2,14 @@
 // SPDX-License-Identifier: Apache-2.0
 import { chakra } from "@open-pioneer/chakra-integration";
 import classNames from "classnames";
+import { ReactNode } from "react";
 
 export function ColumnResizer(props: {
     onDoubleClick: React.MouseEventHandler<HTMLElement>;
     onMouseDown: React.MouseEventHandler<HTMLElement>;
     onTouchStart: React.TouchEventHandler<HTMLElement>;
     isResizing: boolean;
-}): JSX.Element {
+}): ReactNode {
     const { onDoubleClick, onMouseDown, onTouchStart, isResizing } = props;
     return (
         <chakra.span

@@ -5,19 +5,12 @@ import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { Point } from "ol/geom";
-import { Mock, MockInstance, afterEach, beforeEach, expect, it, vi } from "vitest";
+import { Mock, afterEach, expect, it, vi } from "vitest";
 import { ResultColumn, ResultList, ResultListInput } from "./ResultList";
 
 afterEach(() => {
     vi.restoreAllMocks();
 });
-
-let errorSpy!: MockInstance;
-beforeEach(() => {
-    errorSpy = vi.spyOn(console, "error");
-});
-
-function doNothing() {}
 
 it("expect result list to be created successfully", async () => {
     const { mapId, injectedServices } = await createResultList();
@@ -84,8 +77,6 @@ it("expect empty data text to be shown", async () => {
 it("expect empty metadata to throw error", async () => {
     const { mapId, injectedServices } = await createResultList();
 
-    errorSpy.mockImplementation(doNothing);
-
     const emptyMetadata: ResultListInput = {
         data: dummyFeatureData,
         columns: []
@@ -98,8 +89,6 @@ it("expect empty metadata to throw error", async () => {
             </PackageContextProvider>
         );
     }).toThrowErrorMatchingSnapshot();
-
-    expect(errorSpy).toHaveBeenCalledOnce();
 });
 
 it("expect getPropertyValue to be used correctly", async () => {

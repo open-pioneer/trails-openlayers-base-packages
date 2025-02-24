@@ -10,7 +10,7 @@ import { ProjectionItem } from "./CoordinateInput";
 export const ProjectionSelect = memo(function ProjectionSelect(props: {
     currentProjection: ProjectionItem;
     projections: ProjectionItem[];
-    portalElement: React.RefObject<HTMLDivElement>;
+    portalElement: React.RefObject<HTMLDivElement | null>;
     onProjectionChange: (proj: ProjectionItem) => void;
 }) {
     const { currentProjection, projections, portalElement, onProjectionChange } = props;
