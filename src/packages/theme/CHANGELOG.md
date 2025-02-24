@@ -1,5 +1,11 @@
 # @open-pioneer/theme
 
+## 0.9.0
+
+### Minor Changes
+
+- cb94c75: update dependencies
+
 ## 0.8.0
 
 ### Minor Changes

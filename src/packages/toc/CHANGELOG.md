@@ -1,5 +1,43 @@
 # @open-pioneer/toc
 
+## 0.9.0
+
+### Minor Changes
+
+- cb94c75: update dependencies
+- bd82a78: Adds the optional functionality to collapse and expand groups in the TOC.
+  This option can be activated with the `collapsibleGroups` property (default is `false`).
+  If the property `initiallyCollapsed` is `true` all groups are collapsed by default when the TOC is rendered.
+  This is helpful if the app has a large layer tree.
+
+    Additionally, a menu item to collapse all groups can be added to the tools section by setting `toolsConfig.showCollapseAllGroups` to `true` (default is `true`).
+    This is only applicable if `collapsibleGroups` and `showTools` are both `true`.
+
+    ```jsx
+    import { Toc } from "@open-pioneer/toc";
+
+    <Toc
+        mapId={MAP_ID}
+        showTools={true}
+        collapsibleGroups={true} //groups are collapsible in TOC
+        initiallyCollapsed={true} //groups are collapsed initially
+        toolsConfig={{ showCollapseAllGroups: true }} //show 'collapse all' menu item in Tools
+    />;
+    ```
+
+### Patch Changes
+
+- Updated dependencies [e7fdc5d]
+- Updated dependencies [cb94c75]
+- Updated dependencies [37cd707]
+- Updated dependencies [32ed2cd]
+- Updated dependencies [f327eec]
+- Updated dependencies [f327eec]
+- Updated dependencies [209eb8e]
+- Updated dependencies [d72e42c]
+    - @open-pioneer/map@0.9.0
+    - @open-pioneer/basemap-switcher@0.9.0
+
 ## 0.8.0
 
 ### Minor Changes
