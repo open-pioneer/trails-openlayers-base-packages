@@ -1,5 +1,25 @@
 # @open-pioneer/search
 
+## 0.9.0
+
+### Minor Changes
+
+- cb94c75: update dependencies
+
+### Patch Changes
+
+- 4d6dc09: Fix a styling issue where the selected option could be rendered as white text on white background.
+- 260b228: Allow user to paste content into search using context menu.
+- Updated dependencies [e7fdc5d]
+- Updated dependencies [cb94c75]
+- Updated dependencies [37cd707]
+- Updated dependencies [32ed2cd]
+- Updated dependencies [f327eec]
+- Updated dependencies [f327eec]
+- Updated dependencies [209eb8e]
+- Updated dependencies [d72e42c]
+    - @open-pioneer/map@0.9.0
+
 ## 0.8.0
 
 ### Minor Changes

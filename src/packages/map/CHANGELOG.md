@@ -1,5 +1,86 @@
 # @open-pioneer/map
 
+## 0.9.0
+
+### Minor Changes
+
+- e7fdc5d: improve scale calculation for none-metric projections
+
+    Fix scale calculation for projections with none-metric units (e.g. EPSG:4326).
+    Note: The calculated scale (`useScale`) still may deviate from the desired scale (`setScale`) for non-metric projections. This is due to limitiations in the [getPointResolution](https://openlayers.org/en/latest/apidoc/module-ol_proj.html#.getPointResolution) function from OL.
+
+- cb94c75: update dependencies
+- f327eec: Deprecate `mapModel.layers.getAllLayers()`.
+  Use `mapModel.layers.getLayers()` instead.
+  The name of `getAllLayers()` is misleading because it does not recurse into nested layers.
+- f327eec: Add function `getRecursiveLayers()` to `LayerCollection`, `SublayerCollection` and `GroupLayerCollection` in `@open-pioneer/map`
+
+    Compared to `getLayers` and `getOperationalLayers`, `getRecursiveLayer` returns all (nested) child and sub layers of a collection.
+    The property `options.filter` can be used to exclude layers (and their child layers) from the result. For `LayerCollection`, `getRecursiveLayers()` provides the predefined filters `base` and `operational` to return either base layers or operation layers only.
+
+    The function might be costly if the hierarchy of layers is deeply nested because the layer tree has to be traversed recursively.
+    In some scenarios using `options.filter` could be used to improve the performance because it is not necessary to traverse the layer tree completely if some layers are excluded.
+
+    Example (using GroupLayerCollection):
+
+    ```typescript
+    const grouplayer = new GroupLayer({
+        id: "group",
+        title: "group test",
+        layers: [
+            new SimpleLayer({
+                id: "member",
+                title: "group member",
+                olLayer: olLayer1
+            }),
+            new GroupLayer({
+                id: "subgroup",
+                title: "subgroup test",
+                layers: [
+                    new SimpleLayer({
+                        id: "subgroupmember",
+                        title: "subgroup member",
+                        olLayer: olLayer2
+                    })
+                ]
+            })
+        ]
+    });
+
+    // Returns only the layer "member" because the provided filter function excludes "subgroup" and (implicitly) its child "subgroupmember".
+    const layers = grouplayer.layers.getRecursiveLayers({
+        filter: (layer) => layer.id !== "subgroup"
+    });
+    ```
+
+### Patch Changes
+
+- 37cd707: Add a generic type parameter `PropertiesType` to the `BaseFeature` interface.
+  This allows specifying the type of the `properties` attribute.
+  The default type is `Readonly<Record<string, unknown>>` for backwards compatibility.
+
+    Example:
+
+    ```ts
+    interface MyFeatureProperties {
+        name: string;
+    }
+
+    const feature: BaseFeature<MyFeatureProperties> = {
+        id: 123,
+        properties: {
+            name: "Example Feature"
+        }
+    };
+
+    // string | undefined instead of `unknown`
+    const name = feature.properties?.name;
+    ```
+
+- 32ed2cd: Fix `mapModel.layers.getLayerById()` not being reactive (#400).
+- 209eb8e: Added a configuration option to disable fetching of WMS service capabilities.
+- d72e42c: Removed BKGTopPlusOpen layer source. The BKGTopPlusOpen was an internal layer source only needed for tests. Please use own test sources instead.
+
 ## 0.8.0
 
 ### Minor Changes
