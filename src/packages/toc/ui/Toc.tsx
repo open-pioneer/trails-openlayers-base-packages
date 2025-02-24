@@ -42,7 +42,7 @@ export interface TocProps extends CommonComponentProps, MapModelProps {
     /**
      * Properties for the embedded basemap switcher.
      *
-     * Property `mapId` is not applied (the basemap switcher uses the same map as the).
+     * Property `mapId` is not applied (the basemap switcher uses the same map as the toc).
      */
     basemapSwitcherProps?: Omit<BasemapSwitcherProps, "mapId">;
 
@@ -57,7 +57,7 @@ export interface TocProps extends CommonComponentProps, MapModelProps {
     /**
      * If `true` groups in the toc are collapsed initially.
      *
-     * Defaults to `false`. If {@link collapsibleGroups} is `false` this property should also be `false`. Otherwise only the top level layers will appear in the toc.
+     * Defaults to `false`. If {@link collapsibleGroups} is `false` this property should also be `false`. Otherwise, only the top level layers will appear in the toc.
      */
     initiallyCollapsed?: boolean;
 
