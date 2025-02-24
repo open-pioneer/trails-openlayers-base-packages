@@ -245,7 +245,7 @@ patchedDependencies:
     hash: h7fa74ddz2lm7t3hquqctf7dgq
     path: patches/@changesets__assemble-release-plan.patch
   react-select:
-    hash: rqv35caz3zngmhiprkcnddggxm
+    hash: benwgmj73vuqed6j4bcic264ha
     path: patches/react-select.patch
 
 importers:
@@ -7078,7 +7078,7 @@ snapshots:
       '@emotion/react': 11.14.0(@types/react@19.0.10)(react@19.0.0)
       react: 19.0.0
       react-dom: 19.0.0(react@19.0.0)
-      react-select: 5.10.0(patch_hash=rqv35caz3zngmhiprkcnddggxm)(@types/react@19.0.10)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      react-select: 5.10.0(patch_hash=benwgmj73vuqed6j4bcic264ha)(@types/react@19.0.10)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
     transitivePeerDependencies:
       - '@types/react'
       - supports-color
@@ -8800,7 +8800,7 @@ snapshots:
     optionalDependencies:
       '@types/react': 19.0.10
 
-  react-select@5.10.0(patch_hash=rqv35caz3zngmhiprkcnddggxm)(@types/react@19.0.10)(react-dom@19.0.0(react@19.0.0))(react@19.0.0):
+  react-select@5.10.0(patch_hash=benwgmj73vuqed6j4bcic264ha)(@types/react@19.0.10)(react-dom@19.0.0(react@19.0.0))(react@19.0.0):
     dependencies:
       '@babel/runtime': 7.26.9
       '@emotion/cache': 11.14.0

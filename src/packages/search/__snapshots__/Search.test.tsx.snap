@@ -54,7 +54,6 @@ exports[`should successfully create a search component 1`] = `
           data-value=""
         >
           <input
-            aria-activedescendant=""
             aria-autocomplete="list"
             aria-describedby="react-select-2-placeholder"
             aria-expanded="false"

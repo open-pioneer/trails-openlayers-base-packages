@@ -63,7 +63,6 @@ exports[`should successfully create a coordinate search component 1`] = `
                 WGS 84
               </div>
               <input
-                aria-activedescendant=""
                 aria-autocomplete="list"
                 aria-expanded="false"
                 aria-haspopup="true"

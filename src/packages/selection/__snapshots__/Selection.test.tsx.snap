@@ -95,7 +95,6 @@ exports[`should successfully create a selection component and select the first s
             </div>
           </div>
           <input
-            aria-activedescendant=""
             aria-autocomplete="list"
             aria-expanded="false"
             aria-haspopup="true"
