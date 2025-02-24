@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import type { Options as WMSSourceOptions } from "ol/source/ImageWMS";
 import { WMSLayerImpl } from "../../model/layers/WMSLayerImpl";
@@ -27,6 +27,14 @@ export interface WMSLayerConfig extends LayerConfig {
      * the WMS Layer manages some of the OpenLayers source options itself.
      */
     sourceOptions?: Partial<WMSSourceOptions>;
+
+    /**
+     * Whether to automatically fetch capabilities from the service when needed (default: `true`).
+     *
+     * Setting this to `false` can be useful as a performance optimization when capabilities are not really required by the application.
+     * Note that this will disable some features of the WMS layer: for example, the legend URL will not be available.
+     */
+    fetchCapabilities?: boolean;
 }
 
 /**

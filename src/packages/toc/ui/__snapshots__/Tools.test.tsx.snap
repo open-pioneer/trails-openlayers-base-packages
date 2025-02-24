@@ -1,0 +1,337 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Should successfully create a toc with default tool component 1`] = `
+{
+  "tocDiv": <div
+    class="toc css-2xph3x"
+    data-testid="toc"
+    data-theme="light"
+  >
+    <div
+      class="toc-basemap-switcher css-0"
+      data-theme="light"
+    >
+      <h1
+        class="chakra-heading css-1mnao0q"
+        data-theme="light"
+        id=":r0:"
+      >
+        basemapsLabel
+      </h1>
+      <div
+        class="basemap-switcher css-0"
+        data-theme="light"
+      >
+        <div
+          class="basemap-switcher-select react-select--has-value css-79elbk"
+          data-theme="light"
+        >
+          <span
+            class="css-1f43avz-a11yText-A11yText"
+            id="react-select-2-live-region"
+          />
+          <span
+            aria-atomic="false"
+            aria-live="polite"
+            aria-relevant="additions text"
+            class="css-1f43avz-a11yText-A11yText"
+            role="log"
+          />
+          <div
+            class="react-select__control css-156sfem"
+            data-theme="light"
+          >
+            <div
+              class="react-select__value-container react-select__value-container--has-value css-j93siq"
+              data-theme="light"
+            >
+              <div
+                class="basemap-switcher-value react-select__single-value css-1xa1gs2"
+                data-theme="light"
+              >
+                <div
+                  class="css-u4p24i"
+                  data-theme="light"
+                >
+                  Base layer
+                </div>
+              </div>
+              <input
+                aria-autocomplete="list"
+                aria-expanded="false"
+                aria-haspopup="true"
+                aria-labelledby=":r0:"
+                aria-readonly="true"
+                class="css-1s80ejz-dummyInput-DummyInput"
+                id="react-select-2-input"
+                inputmode="none"
+                role="combobox"
+                tabindex="0"
+                value=""
+              />
+            </div>
+            <div
+              class="react-select__indicators css-hfbj6y"
+              data-theme="light"
+            >
+              <hr
+                aria-orientation="vertical"
+                class="chakra-divider react-select__indicator-separator css-hxuk4g"
+                data-theme="light"
+              />
+              <div
+                aria-hidden="true"
+                class="react-select__indicator react-select__dropdown-indicator css-1hbdnuy"
+                data-theme="light"
+              >
+                <svg
+                  aria-hidden="true"
+                  class="chakra-icon css-onkibi"
+                  data-theme="light"
+                  focusable="false"
+                  role="presentation"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
+                    fill="currentColor"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="toc-operational-layers css-0"
+      data-theme="light"
+    >
+      <h1
+        class="chakra-heading css-1mnao0q"
+        data-theme="light"
+      >
+        <div
+          class="css-k008qs"
+          data-theme="light"
+        >
+          <p
+            class="chakra-text css-9515vv"
+            data-theme="light"
+          >
+            operationalLayerLabel
+          </p>
+          <div
+            class="css-17xejub"
+            data-theme="light"
+          />
+          <div
+            class="toc-tools css-0"
+            data-theme="light"
+          >
+            <button
+              aria-controls="menu-list-:r2:"
+              aria-expanded="false"
+              aria-haspopup="menu"
+              aria-label="toolsLabel"
+              class="chakra-button chakra-menu__menu-button toc-tools-button css-170smba"
+              data-theme="light"
+              id="menu-button-:r2:"
+              type="button"
+            >
+              <span
+                class="chakra-button__icon css-1dwr89y"
+                data-theme="light"
+              >
+                <svg
+                  aria-hidden="true"
+                  fill="none"
+                  focusable="false"
+                  height="1em"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="1em"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle
+                    cx="12"
+                    cy="12"
+                    r="1"
+                  />
+                  <circle
+                    cx="12"
+                    cy="5"
+                    r="1"
+                  />
+                  <circle
+                    cx="12"
+                    cy="19"
+                    r="1"
+                  />
+                </svg>
+              </span>
+              <span
+                class="css-xl71ch"
+                data-theme="light"
+              />
+            </button>
+          </div>
+        </div>
+      </h1>
+      <div
+        class="css-0"
+        data-theme="light"
+      >
+        <ul
+          aria-label="operationalLayerLabel"
+          class="toc-layer-list css-155za0w"
+          data-theme="light"
+          role="group"
+        >
+          <li
+            class="toc-layer-item layer-layer-1 css-0"
+            data-theme="light"
+          >
+            <div
+              class="toc-layer-item-content css-bk4v0k"
+              data-theme="light"
+            >
+              <label
+                class="chakra-checkbox css-1577qb8"
+                data-checked=""
+                data-theme="light"
+              >
+                <input
+                  aria-checked="true"
+                  aria-disabled="false"
+                  aria-label="Layer 1"
+                  checked=""
+                  class="chakra-checkbox__input"
+                  style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
+                  type="checkbox"
+                />
+                <span
+                  aria-hidden="true"
+                  class="chakra-checkbox__control css-1dnp747"
+                  data-checked=""
+                  data-theme="light"
+                >
+                  <div
+                    class="css-0"
+                    data-theme="light"
+                    style="display: flex; align-items: center; justify-content: center; height: 100%;"
+                  >
+                    <svg
+                      class="css-19wnopl"
+                      data-theme="light"
+                      style="fill: none; stroke-width: 2; stroke: currentColor; stroke-dasharray: 16;"
+                      viewBox="0 0 12 10"
+                    >
+                      <polyline
+                        points="1.5 6 4.5 9 10.5 1"
+                      />
+                    </svg>
+                  </div>
+                </span>
+                <span
+                  class="chakra-checkbox__label css-6x44c9"
+                  data-checked=""
+                  data-theme="light"
+                >
+                  Layer 1
+                </span>
+              </label>
+              <div
+                class="css-17xejub"
+                data-theme="light"
+              />
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>,
+  "tools": <div
+    class="toc-tools css-0"
+    data-theme="light"
+  >
+    <button
+      aria-controls="menu-list-:r2:"
+      aria-expanded="false"
+      aria-haspopup="menu"
+      aria-label="toolsLabel"
+      class="chakra-button chakra-menu__menu-button toc-tools-button css-170smba"
+      data-theme="light"
+      id="menu-button-:r2:"
+      type="button"
+    >
+      <span
+        class="chakra-button__icon css-1dwr89y"
+        data-theme="light"
+      >
+        <svg
+          aria-hidden="true"
+          fill="none"
+          focusable="false"
+          height="1em"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+          width="1em"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <circle
+            cx="12"
+            cy="12"
+            r="1"
+          />
+          <circle
+            cx="12"
+            cy="5"
+            r="1"
+          />
+          <circle
+            cx="12"
+            cy="19"
+            r="1"
+          />
+        </svg>
+      </span>
+      <span
+        class="css-xl71ch"
+        data-theme="light"
+      />
+    </button>
+  </div>,
+}
+`;
+
+exports[`Should successfully create a toc with default tool component 2`] = `
+<div
+  aria-orientation="vertical"
+  class="chakra-menu__menu-list tools-menu css-s5t7bz"
+  data-theme="light"
+  id="menu-list-:r2:"
+  role="menu"
+  style="transform-origin: var(--popper-transform-origin); opacity: 0; visibility: hidden; transform: scale(0.8);"
+  tabindex="-1"
+>
+  <button
+    aria-label="tools.hideAllLayers"
+    class="chakra-menu__menuitem css-y7jzs3"
+    data-index="0"
+    data-theme="light"
+    id="menu-list-:r2:-menuitem-:r3:"
+    role="menuitem"
+    tabindex="-1"
+    type="button"
+  >
+    tools.hideAllLayers
+  </button>
+</div>
+`;

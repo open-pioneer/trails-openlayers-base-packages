@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { MapModel, MapModelProps, useMapModel } from "@open-pioneer/map";
 import { ToolButton } from "@open-pioneer/map-ui-components";
@@ -10,6 +10,7 @@ import { useIntl, useService } from "open-pioneer:react-hooks";
 import { FC, ForwardedRef, RefAttributes, forwardRef, useEffect, useState } from "react";
 import { MdMyLocation } from "react-icons/md";
 import { GeolocationController, OnErrorCallback } from "./GeolocationController";
+import { ButtonProps } from "@open-pioneer/chakra-integration";
 
 /**
  * These are properties supported by the {@link Geolocation} component.
@@ -18,6 +19,12 @@ export interface GeolocationProps
     extends CommonComponentProps,
         RefAttributes<HTMLButtonElement>,
         MapModelProps {
+    /**
+     * Additional properties for the `Button` element.
+     *
+     * Note that the ToolButton also defines some of these props.
+     */
+    buttonProps?: Partial<ButtonProps>;
     /**
      * The default maximal zoom level
      */
@@ -61,7 +68,7 @@ const GeolocationImpl = forwardRef(function GeolocationImpl(
     props: GeolocationProps & { controller: GeolocationController },
     ref: ForwardedRef<HTMLButtonElement>
 ) {
-    const { controller } = props;
+    const { controller, buttonProps } = props;
     const { containerProps } = useCommonComponentProps("geolocation", props);
     const { isLoading, isActive } = useReactiveSnapshot(() => {
         return {
@@ -94,6 +101,7 @@ const GeolocationImpl = forwardRef(function GeolocationImpl(
     return (
         <ToolButton
             ref={ref}
+            buttonProps={buttonProps}
             label={label}
             icon={<MdMyLocation />}
             onClick={() => toggleActiveState()}

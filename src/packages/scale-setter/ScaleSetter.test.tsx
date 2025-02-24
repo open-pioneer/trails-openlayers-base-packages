@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render, screen, waitFor } from "@testing-library/react";
@@ -27,11 +27,12 @@ const defaultBasemapConfig = [
 
 it("should successfully create a scale Setter component", async () => {
     const { mapId, registry } = await setupMap();
+    const map = await registry.expectMapModel(mapId);
 
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
-            <ScaleSetter mapId={mapId} data-testid="scale-setter" />
+            <ScaleSetter map={map} data-testid="scale-setter" />
         </PackageContextProvider>
     );
 
@@ -45,11 +46,12 @@ it("should successfully create a scale Setter component", async () => {
 
 it("should successfully create a scale setter component with additional css classes and box properties", async () => {
     const { mapId, registry } = await setupMap();
+    const map = await registry.expectMapModel(mapId);
 
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
-            <ScaleSetter mapId={mapId} className="test test1 test2" data-testid="scale-setter" />
+            <ScaleSetter map={map} className="test test1 test2" data-testid="scale-setter" />
         </PackageContextProvider>
     );
 
@@ -91,7 +93,7 @@ it("should successfully render the scale in the correct locale", async () => {
     const injectedServices = createServiceOptions({ registry });
     const result = render(
         <PackageContextProvider services={injectedServices} locale="en">
-            <ScaleSetter mapId={mapId} data-testid="scale-setter" />
+            <ScaleSetter map={map} data-testid="scale-setter" />
         </PackageContextProvider>
     );
 
@@ -100,7 +102,7 @@ it("should successfully render the scale in the correct locale", async () => {
 
     result.rerender(
         <PackageContextProvider services={injectedServices} locale="de">
-            <ScaleSetter mapId={mapId} data-testid="scale-setter" />
+            <ScaleSetter map={map} data-testid="scale-setter" />
         </PackageContextProvider>
     );
     expect(setterButton.textContent).toBe("1 : 21.026");
@@ -113,12 +115,14 @@ it("should successfully update the map scale and label when selection changes", 
     });
     const map = await registry.expectMapModel(mapId);
     const olMap = map.olMap;
+
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices} locale="de">
-            <ScaleSetter mapId={mapId} data-testid="scale-setter" />
+            <ScaleSetter map={map} data-testid="scale-setter" />
         </PackageContextProvider>
     );
+
     const { setterButton } = await waitForScaleSetter();
     const setterOptions = await getMenuOptions(user, setterButton);
     if (setterOptions[0] == undefined) {
@@ -151,7 +155,7 @@ it("should successfully update the label when map scale changes after creation",
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices} locale="de">
-            <ScaleSetter mapId={mapId} data-testid="scale-setter" />
+            <ScaleSetter map={map} data-testid="scale-setter" />
         </PackageContextProvider>
     );
 
@@ -195,10 +199,12 @@ it("should use default scales when nothing is set", async () => {
     const { mapId, registry } = await setupMap({
         layers: defaultBasemapConfig
     });
+    const map = await registry.expectMapModel(mapId);
+
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices} locale="de">
-            <ScaleSetter mapId={mapId} data-testid="scale-setter" />
+            <ScaleSetter map={map} data-testid="scale-setter" />
         </PackageContextProvider>
     );
 
@@ -220,10 +226,12 @@ it("should use given scales when something is set", async () => {
     const { mapId, registry } = await setupMap({
         layers: defaultBasemapConfig
     });
+    const map = await registry.expectMapModel(mapId);
+
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices} locale="de">
-            <ScaleSetter mapId={mapId} scales={scales} data-testid="scale-setter" />
+            <ScaleSetter map={map} scales={scales} data-testid="scale-setter" />
         </PackageContextProvider>
     );
 

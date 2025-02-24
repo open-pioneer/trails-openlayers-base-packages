@@ -1,9 +1,10 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Box, useToken } from "@open-pioneer/chakra-integration";
 import { createLogger, isAbortError } from "@open-pioneer/core";
 import { MapModel, MapModelProps, useMapModel } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps, useEvent } from "@open-pioneer/react-utils";
+import { PackageIntl } from "@open-pioneer/runtime";
 import {
     ActionMeta,
     AriaLiveMessages,
@@ -13,8 +14,8 @@ import {
     InputActionMeta,
     Select,
     SelectInstance,
-    SingleValue,
-    Props as SelectProps
+    Props as SelectProps,
+    SingleValue
 } from "chakra-react-select";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
@@ -31,8 +32,7 @@ import {
     ValueContainer
 } from "./CustomComponents";
 import { SearchController, SuggestionGroup } from "./SearchController";
-import { SearchSource, SearchResult } from "./api";
-import { PackageIntl } from "@open-pioneer/runtime";
+import { SearchResult, SearchSource } from "./api";
 
 const LOG = createLogger("search:Search");
 
@@ -263,13 +263,22 @@ function useCustomComponents(): SelectProps<SearchOption, false, SearchGroupOpti
  * Customizes components styles within the select component.
  */
 function useChakraStyles() {
-    const [groupHeadingBg, focussedItemBg, textColor] = useToken(
+    const [groupHeadingBg, focussedItemBg, selectedItemBg] = useToken(
         "colors",
-        ["trails.100", "trails.50", "chakra-body-text"],
+        ["trails.100", "trails.50", "trails.500"],
         ["#d5e5ec", "#eaf2f5", "#1A202C"]
     );
     return useMemo(() => {
         const chakraStyles: ChakraStylesConfig<SearchOption, false, SearchGroupOption> = {
+            inputContainer: (container) => ({
+                ...container,
+                gridTemplateAreas: "'area area area'",
+                display: "grid"
+            }),
+            input: (base) => ({
+                ...base,
+                gridArea: "area"
+            }),
             groupHeading: (provided) => ({
                 ...provided,
                 backgroundColor: groupHeadingBg,
@@ -286,7 +295,7 @@ function useChakraStyles() {
                 },
                 _selected: {
                     // Prevent white on white
-                    color: textColor
+                    backgroundColor: selectedItemBg
                 }
             }),
             dropdownIndicator: (provided) => ({
@@ -295,7 +304,7 @@ function useChakraStyles() {
             })
         };
         return chakraStyles;
-    }, [groupHeadingBg, focussedItemBg, textColor]);
+    }, [groupHeadingBg, focussedItemBg, selectedItemBg]);
 }
 
 /**
@@ -408,7 +417,7 @@ function useSearchState(controller: SearchController | undefined) {
 
     // Stores the promise for the current search.
     // Any results from outdated searches are ignored.
-    const currentSearch = useRef<Promise<unknown>>();
+    const currentSearch = useRef<Promise<unknown>>(undefined);
     const startSearch = useEvent((query: string) => {
         if (!controller) {
             currentSearch.current = undefined;

@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import {
     Box,
@@ -27,7 +27,7 @@ import {
 } from "chakra-react-select";
 import { Geometry } from "ol/geom";
 import { useIntl, useService } from "open-pioneer:react-hooks";
-import { FC, KeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
+import { FC, KeyboardEvent, ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { FiAlertTriangle } from "react-icons/fi";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { DragController } from "./DragController";
@@ -197,7 +197,7 @@ export const Selection: FC<SelectionProps> = (props) => {
     );
 };
 
-function SourceSelectOption(props: OptionProps<SelectionOption>): JSX.Element {
+function SourceSelectOption(props: OptionProps<SelectionOption>): ReactNode {
     const { value } = props.data;
     const { isAvailable, content } = useSourceItem(value, false);
 
@@ -212,7 +212,7 @@ function SourceSelectOption(props: OptionProps<SelectionOption>): JSX.Element {
     );
 }
 
-function SourceSelectValue(props: SingleValueProps<SelectionOption>): JSX.Element {
+function SourceSelectValue(props: SingleValueProps<SelectionOption>): ReactNode {
     const { value } = props.data;
     const { isAvailable, content } = useSourceItem(value, true);
     const clazz = isAvailable

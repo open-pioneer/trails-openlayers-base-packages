@@ -32,7 +32,6 @@
             "=========",
             "semver: https://github.com/advisories/GHSA-c2qf-rxjj-qqgw",
             "tough-cookie: https://github.com/advisories/GHSA-72xf-g2v4-qvf3",
-            "@mapbox/mapbox-gl-style-spec: license issues, see https://github.com/openlayers/ol-mapbox-style/pull/940",
             "braces: https://github.com/advisories/GHSA-grv7-fg5c-xmjg",
             "ws: https://github.com/advisories/GHSA-3h5v-q93c-6h6q",
             "fast-loops: https://github.com/advisories/GHSA-3q56-9cc2-46j4",
@@ -40,40 +39,43 @@
             "vite-plugin-eslint>rollup: https://github.com/advisories/GHSA-gcx4-mw62-g8wm",
             "cross-spawn: https://github.com/advisories/GHSA-3xgq-45jj-v275",
             "nanoid: https://github.com/advisories/GHSA-mwcw-c2x4-8c55",
+            "dompurify: CVE-2025-26791",
+            "esbuild: https://github.com/advisories/GHSA-67mh-4wv8-2f99",
             "",
             "ignored cves",
             "============",
             "",
             "patches",
             "=======",
-            "@changesets/assemble-release-plan: don't bump major when peers change",
+            "@changesets/assemble-release-plan: (also in overrides) don't bump major if peerDep has a minor release. see https://github.com/changesets/changesets/pull/1132",
             "react-select: patched to use composedPath() in event conditions; needed for web component integration (see https://github.com/JedWatson/react-select/issues/5824)",
             "@chakra-ui/menu;react-use-outside-click;hooks: patched to fix menus in shadow dom (see https://github.com/open-pioneer/trails-openlayers-base-packages/issues/184)"
         ],
         "overrides": {
             "semver@<7.5.2": ">=7.5.2",
             "tough-cookie@<4.1.3": ">=4.1.3",
-            "@mapbox/mapbox-gl-style-spec": "npm:@maplibre/maplibre-gl-style-spec",
             "braces@<3.0.3": ">=3.0.3",
             "ws@>=8.0.0 <8.17.1": ">=8.17.1",
             "fast-loops@<1.1.4": ">=1.1.4",
             "micromatch@<4.0.8": ">=4.0.8",
             "vite-plugin-eslint>rollup": ">=3.29.5",
             "cross-spawn@<7.0.5": ">=7.0.5",
-            "nanoid@<3.3.8": "^3.3.8"
+            "nanoid@<3.3.8": "^3.3.8",
+            "dompurify@<3.2.4": ">=3.2.4",
+            "esbuild@<0.25.0": ">=0.25.0",
+            "@changesets/assemble-release-plan": "6.0.4"
         },
         "auditConfig": {
             "ignoreCves": []
         },
         "patchedDependencies": {
             "@changesets/assemble-release-plan@6.0.4": "patches/@changesets__assemble-release-plan.patch",
-            "react-select@5.8.0": "patches/react-select@5.8.0.patch",
-            "@chakra-ui/hooks@2.4.3": "patches/@chakra-ui__hooks.patch"
+            "@chakra-ui/hooks@2.4.4": "patches/@chakra-ui__hooks.patch",
+            "react-select": "patches/react-select.patch"
         }
     },
     "devDependencies": {
         "@changesets/cli": "catalog:",
-        "@maplibre/maplibre-gl-style-spec": "catalog:",
         "@open-pioneer/build-package-cli": "catalog:",
         "@open-pioneer/build-support": "catalog:",
         "@open-pioneer/check-pnpm-duplicates": "catalog:",
@@ -118,7 +120,7 @@
         "vitest": "catalog:"
     },
     "engines": {
-        "node": ">= 18",
+        "node": ">= 20",
         "pnpm": "^9"
     }
 }

@@ -1,11 +1,18 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Group } from "ol/layer";
-import { GroupLayerCollection, Layer, LayerRetrievalOptions } from "../../api";
+import {
+    AnyLayer,
+    GroupLayerCollection,
+    Layer,
+    LayerRetrievalOptions,
+    RecursiveRetrievalOptions
+} from "../../api";
 import { GroupLayer, GroupLayerConfig } from "../../api/layers/GroupLayer";
 import { AbstractLayer } from "../AbstractLayer";
 import { AbstractLayerBase } from "../AbstractLayerBase";
 import { MapModelImpl } from "../MapModelImpl";
+import { getRecursiveLayers } from "../getRecursiveLayers";
 
 export class GroupLayerImpl extends AbstractLayer implements GroupLayer {
     #children: GroupLayerCollectionImpl;
@@ -58,6 +65,11 @@ export class GroupLayerCollectionImpl implements GroupLayerCollection {
         layers = layers.slice(); // Don't modify the input
         for (const layer of layers) {
             if (layer instanceof AbstractLayer) {
+                if (layer.isBaseLayer) {
+                    throw new Error(
+                        `Layer '${layer.id}' of group '${parent.id}' is marked as base layer. Layers that belong to a group layer cannot be a base layer.`
+                    );
+                }
                 layer.__attachToGroup(parent); //attach every layer to the parent group layer
             } else {
                 throw new Error(
@@ -88,6 +100,14 @@ export class GroupLayerCollectionImpl implements GroupLayerCollection {
     getLayers(_options?: LayerRetrievalOptions | undefined): (AbstractLayer & Layer)[] {
         // NOTE: options are ignored because layers are always ordered at this time.
         return this.#layers.slice();
+    }
+
+    getRecursiveLayers(_options?: RecursiveRetrievalOptions): AnyLayer[] {
+        return getRecursiveLayers({
+            from: this,
+            sortByDisplayOrder: _options?.sortByDisplayOrder,
+            filter: _options?.filter
+        });
     }
 
     /**

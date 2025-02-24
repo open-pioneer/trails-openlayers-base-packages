@@ -19,7 +19,7 @@ messages:
       description: Diese Demo zeigt, wie die <code>OverviewMap</code> verwendet werden kann.
     mapNavigation:
       title: Kartennavigations-Werkzeuge
-      description: "Diese Demo zeigt, wie die Tools zur Kartennavigation verwendet werden können: <code>ZoomIn, ZoomOut, InitialExtent</code>"
+      description: "Diese Demo zeigt, wie die Tools zur Kartennavigation verwendet werden können: <code>ZoomIn, ZoomOut, HistoryBackward, HistoryForward, InitialExtent</code>"
     searchAndHighlight:
       title: Suche und Feature-Highlight
       description: Diese Demo zeigt, wie die <code>Search</code>-Komponente verwendet werden kann und wie mittels Highlighting Features in der Karte hervorgehoben werden können.

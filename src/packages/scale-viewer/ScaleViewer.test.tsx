@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render, screen, waitFor } from "@testing-library/react";
@@ -10,11 +10,12 @@ import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
 
 it("should successfully create a scale viewer component", async () => {
     const { mapId, registry } = await setupMap();
+    const map = await registry.expectMapModel(mapId);
 
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
-            <ScaleViewer mapId={mapId} data-testid="scale-viewer" />
+            <ScaleViewer map={map} data-testid="scale-viewer" />
         </PackageContextProvider>
     );
 
@@ -28,11 +29,12 @@ it("should successfully create a scale viewer component", async () => {
 
 it("should successfully create a scale viewer component with additional css classes and box properties", async () => {
     const { mapId, registry } = await setupMap();
+    const map = await registry.expectMapModel(mapId);
 
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
-            <ScaleViewer mapId={mapId} className="test test1 test2" data-testid="scale-viewer" />
+            <ScaleViewer map={map} className="test test1 test2" data-testid="scale-viewer" />
         </PackageContextProvider>
     );
 
@@ -74,7 +76,7 @@ it("should successfully render the scale in the correct locale", async () => {
     const injectedServices = createServiceOptions({ registry });
     const result = render(
         <PackageContextProvider services={injectedServices} locale="en">
-            <ScaleViewer mapId={mapId} data-testid="scale-viewer" />
+            <ScaleViewer map={map} data-testid="scale-viewer" />
         </PackageContextProvider>
     );
 
@@ -83,7 +85,7 @@ it("should successfully render the scale in the correct locale", async () => {
 
     result.rerender(
         <PackageContextProvider services={injectedServices} locale="de">
-            <ScaleViewer mapId={mapId} data-testid="scale-viewer" />
+            <ScaleViewer map={map} data-testid="scale-viewer" />
         </PackageContextProvider>
     );
     expect(viewerText.textContent).toBe("1:21.026");

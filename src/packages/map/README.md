@@ -7,8 +7,8 @@ APIs provided by this package can be used to configure, embed and access the map
 
 To use the map in your app, follow these two steps:
 
--   Add a `MapContainer` component to your app (see [Map container component](#map-container-component)).
--   Implement a `MapConfigProvider` (see [Map configuration](#map-configuration)).
+- Add a `MapContainer` component to your app (see [Map container component](#map-container-component)).
+- Implement a `MapConfigProvider` (see [Map configuration](#map-configuration)).
 
 To access or manipulate the content of the map programmatically, see [Using the map model](#using-the-map-model).
 
@@ -55,10 +55,10 @@ by animating the view) and `preserve-extent` ´(ensures that the extent remains 
 
 To pass custom React components onto the map, the following anchor-points are provided:
 
--   `top-left`
--   `top-right`
--   `bottom-left`
--   `bottom-right`
+- `top-left`
+- `top-right`
+- `bottom-left`
+- `bottom-right`
 
 Example: Integration of a map anchor component into the map container with position `bottom-right` and optional horizontal and vertical gap:
 
@@ -113,10 +113,10 @@ export default defineBuildConfig({
 The service itself needs to implement the `MapConfigProvider` interface.
 The following map options are supported:
 
--   `initialView`,
--   `projection`,
--   `layers` (see [Layer configuration](#layer-configuration)),
--   `advanced`
+- `initialView`,
+- `projection`,
+- `layers` (see [Layer configuration](#layer-configuration)),
+- `advanced`
 
 Always use the provided map model to access the map initially.
 Use `.olMap` only, when the raw instance is required.
@@ -273,8 +273,8 @@ An optional property `healthCheck` allows to determine the availability status o
 
 It is possible to provide
 
--   either a URL to perform a test request check the returned HTTP status
--   or a `HealthCheckFunction` performing a custom check and returning the state
+- either a URL to perform a test request check the returned HTTP status
+- or a `HealthCheckFunction` performing a custom check and returning the state
 
 **Important**: The availability of a layer is only checked once during initialization to reduce the load on server side. If a service becomes available again later, the application will need to be reloaded in order to update the availability status.
 
@@ -659,8 +659,8 @@ const childLayers = group.layers; // Access child layers
 
 > Limitations:
 >
-> -   Do not add or remove layers directly to or from the underlying OpenLayers layer group (`group.olLayer`)! Changes are not synchronized with the `GroupLayer` instance.
-> -   Currently, it is not possible to manipulate (add or remove) the child layers of a `GroupLayer` during runtime.
+> - Do not add or remove layers directly to or from the underlying OpenLayers layer group (`group.olLayer`)! Changes are not synchronized with the `GroupLayer` instance.
+> - Currently, it is not possible to manipulate (add or remove) the child layers of a `GroupLayer` during runtime.
 
 #### Register additional projections
 
@@ -698,20 +698,20 @@ This package allows interacting with maps and their layers through multiple inte
 
 The most important API items are as follows:
 
--   The `MapRegistry` service (inject via `"map.MapRegistry"`).
-    This service is used to obtain a reference to the `MapModel` via `registry.getMapModel(mapId)`.
+- The `MapRegistry` service (inject via `"map.MapRegistry"`).
+  This service is used to obtain a reference to the `MapModel` via `registry.getMapModel(mapId)`.
 
     > NOTE: From inside a React component you can also use the hook `useMapModel(mapId)`.
 
--   The `MapModel` represents a map in an application.
-    Through the `MapModel` one can obtain the map's base layers, operational layers and so on.
-    The `MapModel` also provides access to the raw OpenLayers `olMap` for advanced use cases.
+- The `MapModel` represents a map in an application.
+  Through the `MapModel` one can obtain the map's base layers, operational layers and so on.
+  The `MapModel` also provides access to the raw OpenLayers `olMap` for advanced use cases.
 
     > NOTE: The `olMap` is manipulated by the `MapModel` to implement its functionality (for example, to add or remove layer instances). When using the `olMap` directly, treat it carefully and as a shared resource.
 
--   The `Layer` interface and its various implementations.
-    This interface is used to make common properties and methods available (such as `.title`, or `.setVisible`).
-    Layers may also have `.sublayers`, which support the same basic properties as other layer types.
+- The `Layer` interface and its various implementations.
+  This interface is used to make common properties and methods available (such as `.title`, or `.setVisible`).
+  Layers may also have `.sublayers`, which support the same basic properties as other layer types.
 
     As is the case in `MapModel`, one can retrieve the raw OpenLayers `olLayer` from a layer instance (the same restrictions apply, see above).
 
@@ -721,16 +721,16 @@ For example, other application components may not react to raw property changes 
 
 This point is especially important for the map model's central features:
 
--   Map composition (access and configuration of layers, base layers, removing layers)
--   Layer visibility
--   Custom layer metadata (`attributes`)
+- Map composition (access and configuration of layers, base layers, removing layers)
+- Layer visibility
+- Custom layer metadata (`attributes`)
 
 In those cases, the properties or methods provided by this package should always be used:
 
--   `map.layers.addLayer(layer)` and `map.layers.removeLayerById(layerId)` to add or remove layers
--   `map.layers.getAllLayers()`, `map.layers.getBaseLayers()`, `map.layers.getOperationalLayers()` etc. to access (top-level) layers
--   `layer.setVisible(visible)` and `map.layers.activateBaseLayer(layerId)` to control visibility
--   `layer.updateAttributes()` and `layer.deleteAttributes()` to change a layer's custom attributes
+- `map.layers.addLayer(layer)` and `map.layers.removeLayerById(layerId)` to add or remove layers
+- `map.layers.getLayers()`, `map.layers.getBaseLayers()`, `map.layers.getOperationalLayers()` etc. to access (top-level) layers
+- `layer.setVisible(visible)` and `map.layers.activateBaseLayer(layerId)` to control visibility
+- `layer.updateAttributes()` and `layer.deleteAttributes()` to change a layer's custom attributes
 
 #### Layer classes
 
