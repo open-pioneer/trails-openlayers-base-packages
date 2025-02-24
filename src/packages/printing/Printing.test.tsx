@@ -120,13 +120,12 @@ it("should trigger a notification if the map export fails", async () => {
 });
 
 async function createPrinting() {
-    const { mapId, registry } = await setupMap();
+    const { map, registry } = await setupMap();
 
     const notifier: Partial<NotificationService> = {
         notify: notifySpy
     };
 
-    await registry.expectMapModel(mapId);
     const injectedServices = createServiceOptions({ registry });
     injectedServices["notifier.NotificationService"] = notifier;
 
@@ -135,7 +134,7 @@ async function createPrinting() {
 
     render(
         <PackageContextProvider services={injectedServices}>
-            <Printing mapId={mapId} data-testid="printing"></Printing>
+            <Printing map={map} data-testid="printing"></Printing>
         </PackageContextProvider>
     );
 }

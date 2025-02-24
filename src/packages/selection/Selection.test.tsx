@@ -166,7 +166,7 @@ async function createSelection(
     selectionSources?: SelectionSource[] | undefined,
     onSourceChanged?: (event: SelectionSourceChangedEvent) => void
 ) {
-    const { mapId, registry } = await setupMap();
+    const { map, registry } = await setupMap();
 
     const notifier: Partial<NotificationService> = {
         notify() {
@@ -185,7 +185,7 @@ async function createSelection(
             <PackageContextProvider services={injectedServices}>
                 <Selection
                     data-testid="selection"
-                    mapId={mapId}
+                    map={map}
                     sources={sources}
                     onSelectionSourceChanged={onSourceChanged ?? (() => {})}
                 />

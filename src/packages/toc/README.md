@@ -6,10 +6,12 @@ Unavailable operational layers are marked with an icon and will be deactivated f
 
 ## Usage
 
-To integrate the TOC (table of contents) in your app, insert the following snippet and reference a map ID:
+To integrate the TOC (table of contents) in your app, insert the following snippet (and reference a map):
 
 ```tsx
-<Toc mapId="map_id" />
+<Toc
+    map={map}
+/> /* instead of passing the map, the `DefaultMapProvider` can alternatively be used */
 ```
 
 ### Tools
@@ -18,7 +20,7 @@ Additional tools are available for operational layers.
 To show the toolset menu, set the `showTools` property to `true`.
 
 ```tsx
-<Toc mapId="map_id" showTools={true} />
+<Toc map={map} showTools={true} />
 ```
 
 The default tools provided by the TOC are:
@@ -35,14 +37,14 @@ By default, the TOC shows the basemap switcher as an embedded element.
 To hide the basemap switcher, set the `showBasemapSwitcher` property to `false`:
 
 ```tsx
-<Toc mapId="map_id" showBasemapSwitcher={false} />
+<Toc map={map} showBasemapSwitcher={false} />
 ```
 
 To configure the embedded basemap switcher, use the `basemapSwitcherProps` property:
 
 ```tsx
 <Toc
-    mapId="map_id"
+    map={map}
     basemapSwitcherProps={{
         allowSelectingEmptyBasemap: true
     }}
@@ -84,7 +86,7 @@ If enabled, a toggle button appears next to parent nodes by which the user can e
 
 ```tsx
 <Toc
-    mapId={MAP_ID}
+    map={map}
     collapsibleGroups={true}
     initiallyCollapsed={true} // Whether groups are collapsed by default. Defaults to false.
 />

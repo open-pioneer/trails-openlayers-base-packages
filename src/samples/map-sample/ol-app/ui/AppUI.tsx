@@ -8,17 +8,16 @@ import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { useIntl, useService } from "open-pioneer:react-hooks";
 import { ReactNode, useMemo } from "react";
 import { AppModel, MainContentId } from "../AppModel";
-import { MAP_ID } from "../map/MapConfigProviderImpl";
 import { EditingComponent } from "./Editing";
 import { Footer } from "./Footer";
 import { LegendComponent } from "./Legend";
 import { MapTools } from "./MapTools";
 import { MeasurementComponent } from "./Measurement";
+import { PrintingComponent } from "./Printing";
 import { ResultListComponent } from "./ResultList";
 import { SearchComponent } from "./Search";
 import { SelectionComponent } from "./Selection";
 import { TocComponent } from "./Toc";
-import { PrintingComponent } from "./Printing";
 
 /**
  * The main application layout.
@@ -27,6 +26,7 @@ import { PrintingComponent } from "./Printing";
 export function AppUI() {
     const intl = useIntl();
     const appModel = useService<AppModel>("ol-app.AppModel");
+    const map = useReactiveSnapshot(() => appModel.map, [appModel]);
 
     const { resultListState, mainContent } = useReactiveSnapshot(() => {
         return {
@@ -37,44 +37,51 @@ export function AppUI() {
 
     const showResultList = resultListState.input && resultListState.open;
     return (
-        <DefaultMapProvider mapId={MAP_ID}>
-            <Flex height="100%" direction="column" overflow="hidden">
-                <Notifier position="top-right" />
+        map && (
+            <DefaultMapProvider map={map}>
+                <Flex height="100%" direction="column" overflow="hidden">
+                    <Notifier position="top-right" />
 
-                <TitledSection
-                    title={
-                        <Box
-                            role="region"
-                            aria-label={intl.formatMessage({ id: "ariaLabel.header" })}
-                            textAlign="center"
-                            py={1}
-                        >
-                            <SectionHeading size={"md"}>Sample Application</SectionHeading>
-                        </Box>
-                    }
-                >
-                    <Flex flex="1" direction="column" position="relative">
-                        <MapContainer
-                            role="main"
-                            aria-label={intl.formatMessage({ id: "ariaLabel.map" })}
-                            /* Note: matches the height of the result list component */
-                            viewPadding={showResultList ? { bottom: 400 } : undefined}
-                        >
-                            <Container centerContent>
-                                <SearchComponent />
-                            </Container>
+                    <TitledSection
+                        title={
+                            <Box
+                                role="region"
+                                aria-label={intl.formatMessage({ id: "ariaLabel.header" })}
+                                textAlign="center"
+                                py={1}
+                            >
+                                <SectionHeading size={"md"}>Sample Application</SectionHeading>
+                            </Box>
+                        }
+                    >
+                        <Flex flex="1" direction="column" position="relative">
+                            <MapContainer
+                                role="main"
+                                aria-label={intl.formatMessage({ id: "ariaLabel.map" })}
+                                /* Note: matches the height of the result list component */
+                                viewPadding={showResultList ? { bottom: 400 } : undefined}
+                            >
+                                <Container centerContent>
+                                    <SearchComponent />
+                                </Container>
 
-                            <MainContentComponent mainContent={mainContent} />
-                            <MapAnchor position="bottom-right" horizontalGap={10} verticalGap={45}>
-                                <MapTools />
-                            </MapAnchor>
-                            <ResultListComponent /* always here, but may be invisible / empty */ />
-                        </MapContainer>
-                    </Flex>
-                    <Footer />
-                </TitledSection>
-            </Flex>
-        </DefaultMapProvider>
+                                <MainContentComponent mainContent={mainContent} />
+                                <MapAnchor
+                                    position="bottom-right"
+                                    horizontalGap={10}
+                                    verticalGap={45}
+                                >
+                                    <MapTools />
+                                </MapAnchor>
+                                <ResultListComponent /* always here, but may be invisible / empty */
+                                />
+                            </MapContainer>
+                        </Flex>
+                        <Footer />
+                    </TitledSection>
+                </Flex>
+            </DefaultMapProvider>
+        )
     );
 }
 

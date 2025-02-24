@@ -91,7 +91,7 @@ The configured map will ultimately be rendered by the UI, which leads over to th
 
 ```tsx
 // ui/AppUI.tsx
-<MapContainer mapId={MAP_ID} role="main" aria-label={intl.formatMessage({ id: "ariaLabel.map" })}>
+<MapContainer role="main" aria-label={intl.formatMessage({ id: "ariaLabel.map" })}>
     ...
 </MapContainer>
 ```

@@ -5,11 +5,11 @@ This helps the user to better understand the current map view in a larger scale 
 
 ## Usage
 
-To integrate the overview map in your app, add the component with a map ID and configure a layer to be shown in the overview map:
+To integrate the overview map in your app, add the component (with a map) and configure a layer to be shown in the overview map:
 
 ```jsx
 const overviewMapLayer = ... // an OpenLayers layer, see below
-<OverviewMap mapId="map_id" olLayer={overviewMapLayer} />;
+<OverviewMap map={map} olLayer={overviewMapLayer} />; /* instead of passing the map, the `DefaultMapProvider` can alternatively be used */
 ```
 
 ### Configuring the layer
@@ -29,7 +29,7 @@ const overviewMapLayer = useMemo(
 
 // Later ...
 
-<OverviewMap mapId="map_id" olLayer={overviewMapLayer} />;
+<OverviewMap map={map} olLayer={overviewMapLayer} />;
 ```
 
 > NOTE: Keep in mind that an OpenLayers `Layer` object should only be used from (at most) a single map.
@@ -43,7 +43,7 @@ To override the default size, use the `height` and `width` properties.
 Both properties support the usual values supported by Chakra UI:
 
 ```jsx
-<OverviewMap mapId="map_id" olLayer={overviewMapLayer} height="300px" width="400px" />
+<OverviewMap map={map} olLayer={overviewMapLayer} height="300px" width="400px" />
 ```
 
 ## License

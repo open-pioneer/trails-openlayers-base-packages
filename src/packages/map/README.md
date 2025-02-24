@@ -15,12 +15,13 @@ To access or manipulate the content of the map programmatically, see [Using the 
 ### Map container component
 
 To integrate a `MapContainer` in an app, add the component to your React component, where you want the map to appear.
-On the component specify the `mapId` of the map that you want to add.
+A `MapContainer` requires a `map` reference to be specified to know which map to display.
+The `map` reference can be specified directly on the component (prop `mapId`) or by using the `DefaultMapProvider` (see [Using the `DefaultMapProvider`](#using-the-defaultmapprovider)).
 
 Make sure that the parent component has an appropriate width and height (for example `100%`).
 The `MapContainer` fills the entire available space.
 
-Example: Integration of a map container with a given map ID:
+Example: Integration of a map container with a given map (for an example with `DefaultMapProvider` see [Using the `DefaultMapProvider`](#using-the-defaultmapprovider):
 
 ```jsx
 import { Box } from "@open-pioneer/chakra-integration";
@@ -30,7 +31,7 @@ import { MapContainer } from "@open-pioneer/map";
 function AppUI() {
     return (
         <Box height="100%" overflow="hidden">
-            <MapContainer mapId="..." />
+            <MapContainer map="..." />
         </Box>
     );
 }
@@ -38,7 +39,7 @@ function AppUI() {
 
 > NOTE: There must be a `map.MapConfigProvider` that knows how to construct the map with the given ID (see [Map configuration](#map-configuration)).
 
-The component itself uses the map registry service to create the map using the provided `mapId`.
+The component itself uses the map registry service to create the map using the provided `map`.
 
 #### Changing the map view's padding
 
@@ -63,7 +64,7 @@ To pass custom React components onto the map, the following anchor-points are pr
 Example: Integration of a map anchor component into the map container with position `bottom-right` and optional horizontal and vertical gap:
 
 ```jsx
-<MapContainer mapId="...">
+<MapContainer map={map}>
     <MapAnchor position="bottom-right" horizontalGap={25} verticalGap={25}>
         ... {/** add map anchor content like other React components */}
     </MapAnchor>
@@ -85,6 +86,30 @@ This behavior can be disabled by setting the `stopEvents` property to `false`:
     {/* Click events etc. will be seen by the map. This could be appropriate for non-interactive text-only overlays, for example. */}
 </MapAnchor>
 ```
+
+### Using the DefaultMapProvider
+
+You can use the `DefaultMapProvider` to globally specify the `map` in your application's UI.
+The `map` is passed to all subcomponents, including the `MapContainer`.
+Thus, it is not necessary to provide the `map` on each component separately.
+
+Example:
+
+```tsx
+import { DefaultMapProvider } from "@open-pioneer/map";
+
+<DefaultMapProvider map={map}>
+    {/* no need to repeat the map in this subtree, unless you want to use a different one */}
+    <MapContainer />
+    <Toc />
+    <ComplexChild />
+</DefaultMapProvider>;
+```
+
+If an app only contains a single map, the map provider can surround the whole application's UI.
+If multiple maps are used, the provider can be placed around the respective map components that should interact with the corresponding app.
+
+It is possible to override the `map` on each component if some components in the tree should use a different map.
 
 ### Map configuration
 
@@ -701,7 +726,7 @@ The most important API items are as follows:
 - The `MapRegistry` service (inject via `"map.MapRegistry"`).
   This service is used to obtain a reference to the `MapModel` via `registry.getMapModel(mapId)`.
 
-    > NOTE: From inside a React component you can also use the hook `useMapModel(mapId)`.
+    > NOTE: From inside a React component you can also use the hook `useMapModel(mapId)` (or `useMapModel()` if using the DefaultMapProvider).
 
 - The `MapModel` represents a map in an application.
   Through the `MapModel` one can obtain the map's base layers, operational layers and so on.

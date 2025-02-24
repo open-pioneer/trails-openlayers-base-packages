@@ -85,7 +85,8 @@ export class EditingServiceImpl implements EditingService {
         return workflow;
     }
 
-    stop(mapId: string): void {
+    stop(map: string | MapModel): void {
+        const mapId = typeof map === "string" ? map : map.id;
         const workflow = this._workflows.get(mapId);
         if (workflow) {
             workflow.stop();
@@ -93,7 +94,8 @@ export class EditingServiceImpl implements EditingService {
         // A missing workflow is not an error if all we want to do is stop it.
     }
 
-    reset(mapId: string): void {
+    reset(map: string | MapModel): void {
+        const mapId = typeof map === "string" ? map : map.id;
         const workflow = this._workflows.get(mapId);
         if (workflow) {
             workflow.reset();

@@ -11,13 +11,13 @@ import { expect, it } from "vitest";
 import { InitialExtent } from "./InitialExtent";
 
 it("should successfully create a initial extent component with home button", async () => {
-    const { mapId, registry } = await setupMap();
+    const { map, registry } = await setupMap();
 
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
-            <MapContainer mapId={mapId} data-testid="map" />
-            <InitialExtent mapId={mapId} data-testid="initial-extent" />
+            <MapContainer map={map} data-testid="map" />
+            <InitialExtent map={map} data-testid="initial-extent" />
         </PackageContextProvider>
     );
 
@@ -30,14 +30,14 @@ it("should successfully create a initial extent component with home button", asy
 });
 
 it("should successfully create a initial extent component with additional css classes", async () => {
-    const { mapId, registry } = await setupMap();
+    const { map, registry } = await setupMap();
 
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
-            <MapContainer mapId={mapId} data-testid="map" />
+            <MapContainer map={map} data-testid="map" />
             <InitialExtent
-                mapId={mapId}
+                map={map}
                 className="testClass1 testClass2"
                 data-testid="initial-extent"
             />
@@ -56,14 +56,14 @@ it("should successfully create a initial extent component with additional css cl
 });
 
 it("should successfully click the home button and go to initial extent", async () => {
-    const { mapId, registry } = await setupMap();
+    const { map, registry } = await setupMap();
     const user = userEvent.setup();
 
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
-            <MapContainer mapId={mapId} data-testid="map" />
-            <InitialExtent mapId={mapId} data-testid="initial-extent"></InitialExtent>
+            <MapContainer map={map} data-testid="map" />
+            <InitialExtent map={map} data-testid="initial-extent"></InitialExtent>
         </PackageContextProvider>
     );
     await waitForMapMount("map");
@@ -71,25 +71,24 @@ it("should successfully click the home button and go to initial extent", async (
     //mount InitExtentComponent
     const initialExtentButton = await screen.findByTestId("initial-extent");
 
-    const mapModel = await registry.expectMapModel(mapId);
-    await mapModel.whenDisplayed();
-    if (!mapModel.initialExtent) {
+    await map.whenDisplayed();
+    if (!map.initialExtent) {
         throw new Error("Initial extent not set");
     }
 
-    const currentExtent = () => getCurrentExtent(mapModel.olMap);
+    const currentExtent = () => getCurrentExtent(map.olMap);
 
     // Store initial extent
     const firstExtent = currentExtent();
 
     // Set new map extent
-    mapModel.olMap.getView().fit([1479200, 6884026, 1499200, 6897026]);
+    map.olMap.getView().fit([1479200, 6884026, 1499200, 6897026]);
     expect(equals(firstExtent, currentExtent())).toBe(false);
 
     // Return to initial extent and wait for the animation to complete
     await act(async () => {
         await user.click(initialExtentButton);
-        await waitForStableExtent(mapModel.olMap);
+        await waitForStableExtent(map.olMap);
     });
 
     const nextExtent = currentExtent();

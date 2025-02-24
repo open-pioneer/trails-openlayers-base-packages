@@ -8,7 +8,10 @@ To add the package to your app, import `ResultList` from `@open-pioneer/result-l
 
 ```tsx
 import { ResultList } from "@open-pioneer/result-list";
-<ResultList mapId={mapId} input={input} />;
+<ResultList
+    map={map}
+    input={input}
+/>; /* instead of passing the map, the `DefaultMapProvider` can alternatively be used */
 ```
 
 The following section describes how to define the `input` parameter.
@@ -119,7 +122,7 @@ const ownHighlightStyle = {
         })
     ]
 };
-<ResultList mapId={mapId} input={input} highlightOptions={ownHighlightStyle} />;
+<ResultList map={map} input={input} highlightOptions={ownHighlightStyle} />;
 ```
 
 ### Configuring memoization of rows
@@ -141,7 +144,7 @@ Example:
 
 ```tsx
 import { ResultList } from "@open-pioneer/result-list";
-<ResultList mapId={mapId} input={input} memoizeRows={true} />;
+<ResultList map={map} input={input} memoizeRows={true} />;
 ```
 
 ### Selection
@@ -158,7 +161,7 @@ the `selectionMode` is "multi" (default).
 
 ```tsx
 import { ResultList } from "@open-pioneer/result-list";
-<ResultList mapId={mapId} input={input} selectionMode="single" />;
+<ResultList map={map} input={input} selectionMode="single" />;
 ```
 
 The style of the selection control can be configured by using the `"selectionStyle"` property (`"checkbox"` or `"radio`).
@@ -166,7 +169,7 @@ Note that the combination of `selectionMode` `"single"` with `selectionStyle` `"
 
 ```tsx
 import { ResultList } from "@open-pioneer/result-list";
-<ResultList mapId={mapId} input={input} selectionMode="single" selectionStyle="checkbox" />;
+<ResultList map={map} input={input} selectionMode="single" selectionStyle="checkbox" />;
 ```
 
 ### Listening for selection changes
@@ -182,7 +185,7 @@ const selectionChangeListener = useCallback((event: ResultListSelectionChangeEve
     console.log("selection changed", event.features);
 }, []);
 
-<ResultList mapId={mapId} input={input} onSelectionChange={selectionChangeListener} />;
+<ResultList map={map} input={input} onSelectionChange={selectionChangeListener} />;
 ```
 
 ### Track selected features
@@ -198,7 +201,7 @@ const selectionChangeListener = useCallback((event: ResultListSelectionChangeEve
     // event.getFeatureIds()
 }, []);
 
-<ResultList mapId={mapId} input={input} onSelectionChange={selectionChangeListener} />;
+<ResultList map={map} input={input} onSelectionChange={selectionChangeListener} />;
 ```
 
 ### Sorting data
@@ -277,7 +280,7 @@ Configure the `viewPadding` on the associated `MapContainer` when the result lis
     borderColor="trails.500"
     zIndex={1}
 >
-    <ResultList key={resultListKey} mapId={mapId} input={resultListInput} />
+    <ResultList key={resultListKey} map={map} input={resultListInput} />
 </Box>
 ```
 
@@ -293,7 +296,7 @@ To force the result list to throw away its existing state, use React's `key` pro
        to throw away existing state. React will create a new component behind the scenes
        with entirely new state. */
     key={resultListKey}
-    mapId={mapId}
+    map={map}
     input={resultListInput}
 />
 ```
