@@ -10,25 +10,27 @@ This package provides a collection of the following map navigation controls:
 
 ### Initial extent
 
-To integrate the component in your app, insert the following snippet and reference a map ID:
+To integrate the component in your app, insert the following snippet (and reference a map):
 
 ```jsx
-<InitialExtent mapId="map_id" />
+<InitialExtent
+    map={map}
+/> /* instead of passing the map, the `DefaultMapProvider` can alternatively be used */
 ```
 
 ### Zoom
 
-To integrate the component in your app, insert the following snippet and reference a map ID:
+To integrate the component in your app, insert the following snippet (and reference a map):
 
 ```jsx
-<ZoomIn mapId="map_id" />
-<ZoomOut mapId="map_id" />
+<ZoomIn map={map} /> /* instead of passing the map, the `DefaultMapProvider` can alternatively be used */
+<ZoomOut map={map} />
 ```
 
 You can also use the generic `Zoom` component:
 
 ```jsx
-<Zoom mapId="map_id" zoomDirection="in" />
+<Zoom map={map} zoomDirection="in" />
 ```
 
 ### View history forward and backward
@@ -36,8 +38,8 @@ You can also use the generic `Zoom` component:
 To integrate the component in your app, insert the following snippet and reference a view Model:
 
 ```jsx
-<HistoryBackward mapId="map_id" />
-<HistoryForward mapId="map_id" />
+<HistoryBackward map={map} /> /* instead of passing the map, the `DefaultMapProvider` can alternatively be used */
+<HistoryForward map={map} />
 ```
 
 #### Limitations

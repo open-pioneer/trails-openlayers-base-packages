@@ -28,7 +28,7 @@ Those css classes will be appended to the default class name when the component 
 Add class name `my-class` to the component:
 
 ```tsx
-<ScaleViewer mapId={MAP_ID} className="my-class" />
+<ScaleViewer map={map} className="my-class" />
 ```
 
 Renders as (for example):
@@ -55,7 +55,7 @@ zoomButton.current!.focus()
 
 return (
     {/* ... */}
-    <ZoomIn mapId={MAP_ID} ref={zoomButton} />
+    <ZoomIn map={map} ref={zoomButton} />
     {/* ... */}
 );
 ```

@@ -4,10 +4,12 @@ This package provides a geolocation component based on [OpenLayers](https://open
 
 ## Usage
 
-To add the component to your app, insert the following snippet with a reference to a map ID:
+To add the component to your app, insert the following snippet (with a reference to a map):
 
 ```jsx
-<Geolocation mapId="map_id" />
+<Geolocation
+    map={map}
+/> /* instead of passing the map, the `DefaultMapProvider` can alternatively be used */
 ```
 
 If the localization was successful, the map is centered on the user's position and zoomed to the accuracy of the localization.
@@ -18,13 +20,13 @@ Once a user zooms or moves the map, the map is no longer centered on new positio
 To adjust the maximum zoom level, add the optional property `maxZoom`.
 
 ```jsx
-<Geolocation mapId="map_id" maxZoom={20} />
+<Geolocation map={map} maxZoom={20} />
 ```
 
 To configure the style of the user's position and accuracy, add the optional properties `positionFeatureStyle` or `accuracyFeatureStyle`:
 
 ```tsx
-<Geolocation mapId="map_id" positionFeatureStyle={...} accuracyFeatureStyle={...} />
+<Geolocation map={map} positionFeatureStyle={...} accuracyFeatureStyle={...} />
 ```
 
 Both properties support arbitrary OpenLayers [`StyleLike`](https://openlayers.org/en/latest/apidoc/module-ol_style_Style.html#~StyleLike) values: you can configure either a single [Style](https://openlayers.org/en/latest/apidoc/module-ol_style_Style.html) instance, an array of them or a function computing such values.
@@ -60,7 +62,7 @@ function AppUI() {
     return (
         // ...
         <Geolocation
-            mapId={MAP_ID}
+            mad={map}
             positionFeatureStyle={POSITION_STYLE}
             accuracyFeatureStyle={ACCURACY_STYLE}
         />
@@ -72,7 +74,7 @@ To use custom position options from the [Geolocation API](https://www.w3.org/TR/
 
 ```jsx
 <Geolocation
-    mapId="map_id"
+    map={map}
     trackingOptions={{
         enableHighAccuracy: true,
         timeout: 60000,

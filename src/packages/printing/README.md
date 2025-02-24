@@ -14,10 +14,12 @@ The package also provides a printing service that creates an image of the map as
 
 ### UI Component
 
-To integrate the printing in your app, insert the following snippet and reference a map ID:
+To integrate the printing in your app, insert the following snippet and reference a map:
 
 ```tsx
-<Printing mapId="map_id" />
+<Printing
+    map={map}
+/> /* instead of passing the map, the `DefaultMapProvider` can alternatively be used */
 ```
 
 ### Printing Service

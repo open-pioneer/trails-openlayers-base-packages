@@ -6,11 +6,14 @@ This package provides a UI component to perform a selection on given selection s
 
 To add the component to your app, import `Selection` from `@open-pioneer/selection`. The `@open-pioneer/notifier` package is required too.
 
-The mandatory properties are `mapId` and `sources` (layer source to be selected on).
+The mandatory properties are `map` (unless the `DefaultMapProvider`is used) and `sources` (layer source to be selected on).
 The limit per selection is 10.000 items.
 
 ```tsx
-<Selection mapId={MAP_ID} sources={selectionsources} />
+<Selection
+    map={map}
+    sources={selectionsources}
+/> /* instead of passing the map, the `DefaultMapProvider` can alternatively be used */
 ```
 
 ### Listening to events
@@ -23,7 +26,7 @@ In case of the `onSelectionSourceChanged` event, you can access the selected sel
 ```tsx
 import { Search, SearchSelectEvent } from "@open-pioneer/search";
 <Selection
-    mapId={MAP_ID}
+    map={map}
     sources={datasources}
     onSelectionComplete={(event: SelectionCompleteEvent) => {
         // do something
@@ -65,7 +68,7 @@ class MySelectionSource implements SelectionSource {
 const selectionsources: SelectionSource[] = [new MySelectionSource()];
 
 // In your JSX template:
-<Selection mapId={MAP_ID} sources={selectionsources} />;
+<Selection map={map} sources={selectionsources} />;
 ```
 
 ### VectorLayer as selection source

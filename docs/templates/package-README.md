@@ -27,7 +27,9 @@ To add the component/button/... in your app, `[...]`.
 > To add the button to your app, insert the following snippet with a reference to a map ID:
 >
 > ```jsx
-> <InitialExtent mapId="map_id" />
+> <InitialExtent
+>     map={map}
+> /> /* instead of passing the map, the `DefaultMapProvider` can alternatively be used */
 > ```
 
 To `[...]`, add the optional property `[...]`:

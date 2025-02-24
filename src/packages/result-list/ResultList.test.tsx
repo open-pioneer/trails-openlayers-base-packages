@@ -551,9 +551,9 @@ function getSelectionsEvent(listener: Mock, call: number) {
 }
 
 async function createDependencies() {
-    const { mapId, map, registry } = await setupMap();
+    const { map, registry } = await setupMap();
     const injectedServices = createServiceOptions({ registry });
-    return { mapId, map, registry, injectedServices };
+    return { map, registry, injectedServices };
 }
 
 async function waitForResultList() {

@@ -20,6 +20,10 @@ import { screen, waitFor } from "@testing-library/react";
 import VectorLayer from "ol/layer/Vector";
 
 export interface SimpleMapOptions {
+    /** ID of the map.
+     * Defaults to "test". */
+    mapId?: string;
+
     /** Center coordinates for the map. */
     center?: { x: number; y: number };
 
@@ -127,8 +131,7 @@ export async function setupMap(options?: SimpleMapOptions): Promise<SetupMapResu
 export async function setupMap(
     options?: SimpleMapOptions
 ): Promise<SetupMapResult & { map: MapModel | undefined }> {
-    // Always use "test" as mapId for unit tests
-    const mapId = "test";
+    const mapId = options?.mapId ?? "test";
 
     const getInitialView = (): InitialViewConfig => {
         if (options?.extent) {

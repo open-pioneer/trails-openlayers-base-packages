@@ -46,8 +46,8 @@ An editing workflow can be stopped completely or the current drawing can be rese
 Example:
 
 ```js
-editingService.reset("mapId");
-editingService.stop("mapId");
+editingService.reset(map);
+editingService.stop(map);
 ```
 
 ### Watch editing workflow states

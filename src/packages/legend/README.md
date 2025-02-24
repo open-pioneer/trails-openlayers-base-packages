@@ -6,10 +6,10 @@ The legend UI shows entries for layers that are currently visible (enabled) in t
 
 ## Usage
 
-To add the component to your app, insert the following snippet with a reference to a map ID:
+To add the component to your app, insert the following snippet (with a reference to a map):
 
 ```jsx
-<Legend mapId="map_id" />
+<Legend map={map} />
 ```
 
 ### Configuring legend content for layers
@@ -75,7 +75,7 @@ By default, the legend for the active basemap is not shown.
 To show the legend for the active basemap, set the `showBaseLayers` prop to `true`:
 
 ```jsx
-<Legend mapId="map_id" showBaseLayers={true} />
+<Legend map={map} showBaseLayers={true} />
 ```
 
 ## License

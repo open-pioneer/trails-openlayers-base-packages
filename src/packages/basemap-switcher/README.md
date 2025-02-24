@@ -6,16 +6,18 @@ Unavailable basemaps are marked with an icon and will be deactivated for selecti
 
 ## Usage
 
-To add the component to your app, insert the following snippet with a reference to a map ID:
+To add the component to your app, insert the following snippet:
 
 ```jsx
-<BasemapSwitcher mapId="map_id" />
+<BasemapSwitcher
+    map={map}
+/> /* instead of passing the map, the `DefaultMapProvider` can alternatively be used */
 ```
 
 To provide an option to deactivate all basemap layers, add the optional property `allowSelectingEmptyBasemap` (default: `false`).
 
 ```jsx
-<BasemapSwitcher mapId="map_id" allowSelectingEmptyBasemap />
+<BasemapSwitcher map={map} allowSelectingEmptyBasemap />
 ```
 
 ## Accessibility
@@ -35,7 +37,7 @@ Example:
     <FormLabel ps={1}>
         <Text as="b">{intl.formatMessage({ id: "basemapLabel" })}</Text>
     </FormLabel>
-    <BasemapSwitcher mapId="map_id" allowSelectingEmptyBasemap></BasemapSwitcher>
+    <BasemapSwitcher map={map} allowSelectingEmptyBasemap></BasemapSwitcher>
 </FormControl>
 ```
 
