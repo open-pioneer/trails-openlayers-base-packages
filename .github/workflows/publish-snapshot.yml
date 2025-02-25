@@ -1,6 +1,12 @@
 name: Publish snapshot
 on:
   workflow_dispatch:
+    inputs:
+      snapshot-tag:
+        type: string
+        description: Name of the snapshot build tag. Use "dev" for the main branch and "dev-XYZ" for other branches.
+        default: dev
+        required: true
 jobs:
   build_packages:
     name: "Build and publish"
@@ -16,4 +22,5 @@ jobs:
       - name: "Publish packages"
         uses: open-pioneer/trails-core-packages/.github/actions/publish-snapshots@main
         with:
+          snapshot-tag: ${{ inputs.snapshot-tag }}
           npm-token: ${{ secrets.NPM_TOKEN }}
