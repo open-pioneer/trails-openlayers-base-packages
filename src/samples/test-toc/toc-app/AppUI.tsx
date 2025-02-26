@@ -82,6 +82,7 @@ export function AppUI() {
                                                             }}
                                                             collapsibleGroups={true}
                                                             initiallyCollapsed={true}
+                                                            tocAPIRef={tocAPIRef}
                                                         />
                                                         <Button onClick={collapseItems}>toggle</Button>
                                                     </TitledSection>
