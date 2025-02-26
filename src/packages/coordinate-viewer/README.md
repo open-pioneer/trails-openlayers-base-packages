@@ -4,28 +4,28 @@ This package provides a UI component to show the current coordinates at the user
 
 ## Usage
 
-To integrate the coordinate viewer in your app, insert the following snippet and reference a map ID:
+To integrate the coordinate viewer in your app, insert the following snippet (and reference a map):
 
 ```jsx
-<CoordinateViewer mapId="map_id" />
+<CoordinateViewer map={map} />
 ```
 
 To define the number of decimal places shown, set the optional `precision` property:
 
 ```jsx
-<CoordinateViewer mapId="map_id" precision={2} />
+<CoordinateViewer map={map} precision={2} />
 ```
 
 To show the coordinates in a specific projection, set the optional `displayProjectionCode` property:
 
 ```jsx
-<CoordinateViewer mapId="map_id" displayProjectionCode="EPSG:4326" />
+<CoordinateViewer map={map} displayProjectionCode="EPSG:4326" />
 ```
 
 To show the coordinates in a specific coordinate format, set the optional `format` property (default: `decimal`):
 
 ```jsx
-<CoordinateViewer mapId="map_id" format="degree" />
+<CoordinateViewer map={map} format="degree" />
 ```
 
 ## License

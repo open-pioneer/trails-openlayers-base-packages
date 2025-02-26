@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { chakra } from "@open-pioneer/chakra-integration";
 import { Resource, createLogger } from "@open-pioneer/core";
@@ -166,7 +166,7 @@ function MapContainerReady(
         MapContainerProps,
         "mapId" | "map" | "className"
     >
-): JSX.Element {
+): ReactNode {
     const {
         olMap,
         mapAnchorsHost,

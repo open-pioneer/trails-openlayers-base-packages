@@ -8,24 +8,27 @@ defined by the implementation of the search source.
 
 ## Usage
 
-To use the search in your app, insert the following snippet and reference a map ID and `sources` (sources to be searched on):
+To use the search in your app, insert the following snippet (and reference a map) and `sources` (sources to be searched on):
 
 ```tsx
-<Search mapId={MAP_ID} sources={searchsources} />
+<Search
+    map={map}
+    sources={searchsources}
+/> /* instead of passing the map, the `DefaultMapProvider` can alternatively be used */
 ```
 
 To change the typing delay, add the optional property `searchTypingDelay` (in ms).
 The default value is 200ms.
 
 ```tsx
-<Search mapId={MAP_ID} sources={searchsources} searchTypingDelay={500} />
+<Search map={map} sources={searchsources} searchTypingDelay={500} />
 ```
 
 To limit the maximum number of search results to be displayed per search source (group), configure the optional property `maxResultsPerGroup`.
 The default value is 5.
 
 ```tsx
-<Search mapId={MAP_ID} sources={searchsources} maxResultsPerGroup={10} />
+<Search map={map} sources={searchsources} maxResultsPerGroup={10} />
 ```
 
 To change the placeholder text of the search field, use the optional property `placeholder`:
@@ -44,7 +47,7 @@ from the parameter `SelectSearchEvent`.
 import { Search, SearchSelectEvent } from "@open-pioneer/search";
 // ...
 <Search
-    mapId={MAP_ID}
+    map={map}
     sources={datasources}
     onSelect={(event: SearchSelectEvent) => {
         // do something
@@ -104,7 +107,7 @@ class MySearchSource implements SearchSource {
 const searchsources: SearchSource[] = [new MySearchSource()];
 
 // In your JSX template:
-<Search mapId={MAP_ID} sources={searchsources} />;
+<Search map={map} sources={searchsources} />;
 ```
 
 The configured maximum number of `maxResultsPerGroup` is passed as `maxResults` inside the option parameter

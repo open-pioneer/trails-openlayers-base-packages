@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { beforeEach, expect, it, vi } from "vitest";
 import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
@@ -99,8 +99,8 @@ async function createSearch(
     selectHandler?: (event: SearchSelectEvent) => void,
     clearHandler?: () => void
 ) {
-    const { mapId, registry } = await setupMap();
-    await registry.expectMapModel(mapId);
+    const { map, registry } = await setupMap();
+
     const injectedServices = createServiceOptions({ registry });
     const sources = [new FakeCitySource(1), new FakeRiverSource(1), new FakeStreetSource(1)];
     const selectHandlerFunction = selectHandler ? selectHandler : (_event: SearchSelectEvent) => {};
@@ -109,7 +109,7 @@ async function createSearch(
         <PackageContextProvider services={injectedServices}>
             <Search
                 data-testid="search"
-                mapId={mapId}
+                map={map}
                 sources={sources}
                 searchTypingDelay={10}
                 onSelect={selectHandlerFunction}

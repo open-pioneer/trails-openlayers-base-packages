@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Resource, createLogger } from "@open-pioneer/core";
 import { HttpService } from "@open-pioneer/http";
@@ -97,6 +97,7 @@ export class AppModel implements Service, AppState {
     declare [DECLARE_SERVICE_INTERFACE]: "ol-app.AppModel";
 
     private _mapRegistry: MapRegistry;
+    private _map = reactive<MapModel>();
     private _vectorSelectionSourceFactory: VectorLayerSelectionSourceFactory;
     private _httpService: HttpService;
     private _resources: Resource[] = [];
@@ -120,6 +121,12 @@ export class AppModel implements Service, AppState {
         this._vectorSelectionSourceFactory = references.vectorSelectionSourceFactory;
         this._httpService = references.httpService;
 
+        this._mapRegistry
+            .expectMapModel(MAP_ID)
+            .then((map) => {
+                this._map.value = map;
+            })
+            .catch((error) => LOG.error("Failed to initialize map", error));
         this.initSearchSources();
         this.initSelectionSources().catch((error) => {
             LOG.error("Failed to initialize selection sources", error);
@@ -129,6 +136,10 @@ export class AppModel implements Service, AppState {
     destroy(): void {
         this.clearHighlight();
         this._resources.forEach((r) => r.destroy());
+    }
+
+    get map(): MapModel | undefined {
+        return this._map.value;
     }
 
     get mainContent(): readonly MainContentId[] {

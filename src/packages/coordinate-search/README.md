@@ -7,7 +7,9 @@ This package provides a UI component which allow users to search for coordinates
 To integrate the coordinate search in your app, insert the following snippet:
 
 ```jsx
-<CoordinateSearch mapId="map_id" />
+<CoordinateSearch
+    map={map}
+/> /* instead of passing the map, the `DefaultMapProvider` can alternatively be used */
 ```
 
 ### Configuration
@@ -16,7 +18,7 @@ To define the selectable projections, set the optional `projections` property:
 
 ```jsx
 <CoordinateSearch
-    mapId="map_id"
+    map={map}
     projections={[
         {
             label: "EPSG:25832",
@@ -49,7 +51,7 @@ With the `onClear` option, you can set a callback function that gets called if t
 
 ```tsx
 <CoordinateSearch
-    mapId="map_id"
+    map={map}
     onSelect={(event: CoordinatesEvent) => {
         // do something
     }}
@@ -64,7 +66,7 @@ With the `onClear` option, you can set a callback function that gets called if t
 To integrate the coordinate input component in your app, insert the following snippet:
 
 ```jsx
-<CoordinateInput mapId="map_id" />
+<CoordinateInput map={map} />
 ```
 
 ### Configure projections
@@ -73,7 +75,7 @@ To define the selectable projections, set the optional `projections` property:
 
 ```jsx
 <CoordinateInput
-    mapId="map_id"
+    map={map}
     projections={[
         {
             label: "EPSG:25832",
@@ -105,7 +107,7 @@ The coordinates have to be in the projection of the map.
 If the value changes, the `onSelect` function is triggered (see below).
 
 ```jsx
-<CoordinateInput mapId="map_id" input={[761166, 6692084]} />
+<CoordinateInput map={map} input={[761166, 6692084]} />
 ```
 
 ### Configure the placeholder
@@ -119,8 +121,8 @@ A `Coordinate` input can be used for example for showing the coordinates of a se
 The Coordinates have to be in the projection of the map.
 
 ```jsx
-<CoordinateInput mapId="map_id" placeholder={[700000, 6000000]} />
-<CoordinateInput mapId="map_id" placeholder={"Enter coordinates here"} />
+<CoordinateInput map={map} placeholder={[700000, 6000000]} />
+<CoordinateInput map={map} placeholder={"Enter coordinates here"} />
 ```
 
 ### Listening to events

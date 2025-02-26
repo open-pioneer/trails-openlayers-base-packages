@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Box, useToken } from "@open-pioneer/chakra-integration";
 import { createLogger, isAbortError } from "@open-pioneer/core";
@@ -270,6 +270,15 @@ function useChakraStyles() {
     );
     return useMemo(() => {
         const chakraStyles: ChakraStylesConfig<SearchOption, false, SearchGroupOption> = {
+            inputContainer: (container) => ({
+                ...container,
+                gridTemplateAreas: "'area area area'",
+                display: "grid"
+            }),
+            input: (base) => ({
+                ...base,
+                gridArea: "area"
+            }),
             groupHeading: (provided) => ({
                 ...provided,
                 backgroundColor: groupHeadingBg,
@@ -408,7 +417,7 @@ function useSearchState(controller: SearchController | undefined) {
 
     // Stores the promise for the current search.
     // Any results from outdated searches are ignored.
-    const currentSearch = useRef<Promise<unknown>>();
+    const currentSearch = useRef<Promise<unknown>>(undefined);
     const startSearch = useEvent((query: string) => {
         if (!controller) {
             currentSearch.current = undefined;

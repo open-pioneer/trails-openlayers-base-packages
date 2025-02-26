@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { reactive, reactiveMap } from "@conterra/reactivity-core";
 import { BasemapSwitcher, BasemapSwitcherProps } from "@open-pioneer/basemap-switcher";
@@ -11,7 +11,7 @@ import {
     useCommonComponentProps
 } from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
-import { FC, useEffect, useId, useMemo, useRef } from "react";
+import { FC, ReactNode, useEffect, useId, useMemo, useRef } from "react";
 import { TocItem, TocModel, TocModelProvider, TocWidgetOptions } from "../model/TocModel";
 import { TopLevelLayerList } from "./LayerList/LayerList";
 import { Tools } from "./Tools";
@@ -42,7 +42,7 @@ export interface TocProps extends CommonComponentProps, MapModelProps {
     /**
      * Properties for the embedded basemap switcher.
      *
-     * Property `mapId` is not applied (the basemap switcher uses the same map as the).
+     * Property `mapId` is not applied (the basemap switcher uses the same map as the toc).
      */
     basemapSwitcherProps?: Omit<BasemapSwitcherProps, "mapId">;
 
@@ -57,7 +57,7 @@ export interface TocProps extends CommonComponentProps, MapModelProps {
     /**
      * If `true` groups in the toc are collapsed initially.
      *
-     * Defaults to `false`. If {@link collapsibleGroups} is `false` this property should also be `false`. Otherwise only the top level layers will appear in the toc.
+     * Defaults to `false`. If {@link collapsibleGroups} is `false` this property should also be `false`. Otherwise, only the top level layers will appear in the toc.
      */
     initiallyCollapsed?: boolean;
 
@@ -143,7 +143,7 @@ export const Toc: FC<TocProps> = (props: TocProps) => {
     const { containerProps } = useCommonComponentProps("toc", props);
     const state = useMapModel(props);
 
-    let content: JSX.Element | null;
+    let content: ReactNode | null;
     switch (state.kind) {
         case "loading":
             content = null;

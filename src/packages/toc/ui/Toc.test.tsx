@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
@@ -11,7 +11,7 @@ const BASEMAP_SWITCHER_CLASS = ".basemap-switcher";
 const BASEMAP_SWITCHER_SELECT_CLASS = ".basemap-switcher-select";
 
 it("should successfully create a toc component", async () => {
-    const { mapId, registry } = await setupMap({
+    const { map, registry } = await setupMap({
         layers: [
             {
                 title: "Base layer",
@@ -31,12 +31,11 @@ it("should successfully create a toc component", async () => {
             }
         ]
     });
-    await registry.expectMapModel(mapId);
     const injectedServices = createServiceOptions({ registry });
 
     render(
         <PackageContextProvider services={injectedServices}>
-            <Toc mapId={mapId} data-testid="toc" />
+            <Toc map={map} data-testid="toc" />
         </PackageContextProvider>
     );
 
@@ -58,13 +57,12 @@ it("should successfully create a toc component", async () => {
 });
 
 it("should successfully create a toc component with additional css classes", async () => {
-    const { mapId, registry } = await setupMap();
-    await registry.expectMapModel(mapId);
+    const { map, registry } = await setupMap();
     const injectedServices = createServiceOptions({ registry });
 
     render(
         <PackageContextProvider services={injectedServices}>
-            <Toc mapId={mapId} className="test" data-testid="toc" />
+            <Toc map={map} className="test" data-testid="toc" />
         </PackageContextProvider>
     );
 
@@ -73,13 +71,12 @@ it("should successfully create a toc component with additional css classes", asy
 });
 
 it("should embed the basemap switcher by default", async () => {
-    const { mapId, registry } = await setupMap();
-    await registry.expectMapModel(mapId);
+    const { map, registry } = await setupMap();
     const injectedServices = createServiceOptions({ registry });
 
     render(
         <PackageContextProvider services={injectedServices}>
-            <Toc mapId={mapId} data-testid="toc"></Toc>
+            <Toc map={map} data-testid="toc"></Toc>
         </PackageContextProvider>
     );
 
@@ -89,13 +86,12 @@ it("should embed the basemap switcher by default", async () => {
 });
 
 it("should not show the basemap switcher if 'showBasemapSwitcher' is set to false", async () => {
-    const { mapId, registry } = await setupMap();
-    await registry.expectMapModel(mapId);
+    const { map, registry } = await setupMap();
     const injectedServices = createServiceOptions({ registry });
 
     render(
         <PackageContextProvider services={injectedServices}>
-            <Toc mapId={mapId} showBasemapSwitcher={false} data-testid="toc"></Toc>
+            <Toc map={map} showBasemapSwitcher={false} data-testid="toc"></Toc>
         </PackageContextProvider>
     );
 
@@ -105,7 +101,7 @@ it("should not show the basemap switcher if 'showBasemapSwitcher' is set to fals
 });
 
 it("should support overriding basemap-switcher properties", async () => {
-    const { mapId, registry } = await setupMap({
+    const { map, registry } = await setupMap({
         layers: [
             {
                 title: "OSM",
@@ -114,13 +110,12 @@ it("should support overriding basemap-switcher properties", async () => {
             }
         ]
     });
-    await registry.expectMapModel(mapId);
 
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
             <Toc
-                mapId={mapId}
+                map={map}
                 basemapSwitcherProps={{
                     allowSelectingEmptyBasemap: true,
                     className: "test-class"
