@@ -97,7 +97,7 @@ export interface TocAPI {
     /**
      * Expands or collapses all layer items in the Toc
      */
-    setAllItemsExpanded(expanded: true): void;
+    setAllItemsExpanded(expanded: boolean): void;
 
     /**
      * Expands or collapses a singel layer item in the Toc.
