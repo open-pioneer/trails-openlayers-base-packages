@@ -7,3 +7,7 @@ export {
     type TocAPI,
     type ItemExpandedOptions
 } from "./ui/Toc";
+
+export {
+    slug
+} from "./utils/slug";
