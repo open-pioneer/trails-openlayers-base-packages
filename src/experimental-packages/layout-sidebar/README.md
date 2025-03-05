@@ -6,10 +6,10 @@ This package provides a sidebar component. This sidebar consists of a main secti
 
 Currently the sidebar will be positioned absolute in the provided container. The following properties are provided:
 
--   It could be set with boolean (`defaultExpanded`) for default expension.
--   An event `expandedChanged` is triggered when the main section is expanded/collapsed.
--   `sidebarWidthChanged` informs about the current width of the sidebar. So the wrapping component can react on this width.
--   the `items` defined the visible menu entries and their corrensponding content.
+- It could be set with boolean (`defaultExpanded`) for default expension.
+- An event `expandedChanged` is triggered when the main section is expanded/collapsed.
+- `sidebarWidthChanged` informs about the current width of the sidebar. So the wrapping component can react on this width.
+- the `items` defined the visible menu entries and their corrensponding content.
 
 See this sample for integration:
 

@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Box } from "@open-pioneer/chakra-integration";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
@@ -74,7 +74,7 @@ export interface MapAnchorStyleProps extends MapAnchorProps {
     horizontalGap?: never;
 }
 
-export function MapAnchor(props: MapAnchorShortcut | MapAnchorStyleProps): JSX.Element {
+export function MapAnchor(props: MapAnchorShortcut | MapAnchorStyleProps): ReactNode {
     const {
         position = defaultPosition,
         children,

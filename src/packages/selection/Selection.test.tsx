@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { SimpleLayer } from "@open-pioneer/map";
 import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
@@ -166,7 +166,7 @@ async function createSelection(
     selectionSources?: SelectionSource[] | undefined,
     onSourceChanged?: (event: SelectionSourceChangedEvent) => void
 ) {
-    const { mapId, registry } = await setupMap();
+    const { map, registry } = await setupMap();
 
     const notifier: Partial<NotificationService> = {
         notify() {
@@ -185,7 +185,7 @@ async function createSelection(
             <PackageContextProvider services={injectedServices}>
                 <Selection
                     data-testid="selection"
-                    mapId={mapId}
+                    map={map}
                     sources={sources}
                     onSelectionSourceChanged={onSourceChanged ?? (() => {})}
                 />

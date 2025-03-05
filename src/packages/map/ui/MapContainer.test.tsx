@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render } from "@testing-library/react";
@@ -17,11 +17,11 @@ afterEach(() => {
 });
 
 it("successfully creates a map", async () => {
-    const { mapId, registry } = await setupMap();
+    const { map, registry } = await setupMap();
     const injectedServices = createServiceOptions({ registry });
     const renderResult = render(
         <PackageContextProvider services={injectedServices}>
-            <MapContainer mapId={mapId} data-testid="base" />
+            <MapContainer map={map} data-testid="base" />
         </PackageContextProvider>
     );
 
@@ -29,7 +29,6 @@ it("successfully creates a map", async () => {
     await waitForMapMount();
 
     // Div is registered as map target
-    const map = await registry.expectMapModel(mapId);
     const container = renderResult.container.querySelector(".map-container");
     expect(container?.tagName).toBe("DIV");
     expect(map?.container).toBe(container);
@@ -43,15 +42,14 @@ it("successfully creates a map", async () => {
 
 it("reports an error if two map containers are used for the same map", async () => {
     const logSpy = vi.spyOn(global.console, "error").mockImplementation(() => undefined);
-    const { mapId, registry } = await setupMap();
-    await registry.expectMapModel(mapId); // fully create map before rendering for simplicity
+    const { map, registry } = await setupMap();
 
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
             <div data-testid="base">
-                <MapContainer mapId={mapId} />
-                <MapContainer mapId={mapId} />
+                <MapContainer map={map} />
+                <MapContainer map={map} />
             </div>
         </PackageContextProvider>
     );
@@ -76,7 +74,7 @@ it("reports an error if two map containers are used for the same map", async () 
 });
 
 it("successfully creates a map with given configuration", async () => {
-    const options: SimpleMapOptions = {
+    const options = {
         layers: [
             {
                 title: "TopPlus Open",
@@ -91,14 +89,14 @@ it("successfully creates a map with given configuration", async () => {
                 })
             }
         ]
-    };
-    const { mapId, registry } = await setupMap(options);
+    } satisfies SimpleMapOptions;
+    const { map, registry } = await setupMap(options);
 
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
             <div data-testid="base">
-                <MapContainer mapId={mapId} />
+                <MapContainer map={map} />
             </div>
         </PackageContextProvider>
     );
@@ -107,19 +105,18 @@ it("successfully creates a map with given configuration", async () => {
     await waitForMapMount();
 
     // Div is registered as map target
-    const map = await registry.expectMapModel(mapId);
-    const layers = map.layers.getAllLayers();
+    const layers = map.layers.getLayers();
     expect(layers[0]?.title).toBe("TopPlus Open");
     expect(layers[1]?.title).toBe("TopPlus Open Grau");
 });
 
 it("supports configuring role and aria labels", async () => {
-    const { mapId, registry } = await setupMap();
+    const { map, registry } = await setupMap();
     const injectedServices = createServiceOptions({ registry });
     const renderResult = render(
         <PackageContextProvider services={injectedServices}>
             <MapContainer
-                mapId={mapId}
+                map={map}
                 role="application"
                 /* note: don't mix aria label and aria-labelledby in a real application; this just tests that props are forwarded */
                 aria-label="foo"

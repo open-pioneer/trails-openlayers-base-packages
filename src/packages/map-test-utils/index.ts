@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { watch } from "@conterra/reactivity-core";
 import { HttpService, HttpServiceRequestInit } from "@open-pioneer/http";
@@ -20,6 +20,10 @@ import { screen, waitFor } from "@testing-library/react";
 import VectorLayer from "ol/layer/Vector";
 
 export interface SimpleMapOptions {
+    /** ID of the map.
+     * Defaults to "test". */
+    mapId?: string;
+
     /** Center coordinates for the map. */
     center?: { x: number; y: number };
 
@@ -60,6 +64,14 @@ export interface SimpleMapOptions {
      * Disables the default projection when set to true.
      */
     noProjection?: boolean;
+
+    /**
+     * Also returns the map object in the return value.
+     * True by default.
+     *
+     * Use `false` to test the async loading behavior of the registry.
+     */
+    returnMap?: boolean;
 }
 
 /**
@@ -99,16 +111,27 @@ export async function waitForInitialExtent(model: MapModel) {
     });
 }
 
+export interface SetupMapResult {
+    mapId: string;
+    registry: MapRegistry;
+}
+
 /**
  * Creates a simple map registry service with exactly one map configuration.
  *
  * The map is configured by using the `options` parameter.
+ * If `options.returnMap` is `true` (the default), the map model is also returned.
  *
  * Returns the map registry and the id of the configured map.
  */
-export async function setupMap(options?: SimpleMapOptions) {
-    // Always use "test" as mapId for unit tests
-    const mapId = "test";
+export async function setupMap(
+    options?: SimpleMapOptions & { returnMap?: true }
+): Promise<SetupMapResult & { map: MapModel }>;
+export async function setupMap(options?: SimpleMapOptions): Promise<SetupMapResult>;
+export async function setupMap(
+    options?: SimpleMapOptions
+): Promise<SetupMapResult & { map: MapModel | undefined }> {
+    const mapId = options?.mapId ?? "test";
 
     const getInitialView = (): InitialViewConfig => {
         if (options?.extent) {
@@ -158,7 +181,11 @@ export async function setupMap(options?: SimpleMapOptions) {
         }
     });
 
-    return { mapId, registry };
+    let map: MapModel | undefined;
+    if (options?.returnMap !== false) {
+        map = await registry.expectMapModel(mapId);
+    }
+    return { mapId, registry, map };
 }
 
 /**

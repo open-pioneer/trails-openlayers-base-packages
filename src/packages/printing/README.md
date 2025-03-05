@@ -14,10 +14,12 @@ The package also provides a printing service that creates an image of the map as
 
 ### UI Component
 
-To integrate the printing in your app, insert the following snippet and reference a map ID:
+To integrate the printing in your app, insert the following snippet and reference a map:
 
 ```tsx
-<Printing mapId="map_id" />
+<Printing
+    map={map}
+/> /* instead of passing the map, the `DefaultMapProvider` can alternatively be used */
 ```
 
 ### Printing Service
@@ -75,7 +77,7 @@ To ignore the view padding when printing the map, you can pass `viewPadding: "ig
 
 ## Known issues
 
--   Printing to PNG may not work on Safari / Chrome on iOS (see <https://github.com/open-pioneer/trails-openlayers-base-packages/issues/294>)
+- Printing to PNG may not work on Safari / Chrome on iOS (see <https://github.com/open-pioneer/trails-openlayers-base-packages/issues/294>)
 
 ## License
 

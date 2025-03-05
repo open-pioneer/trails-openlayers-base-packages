@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Box } from "@open-pioneer/chakra-integration";
 import {
@@ -257,7 +257,7 @@ export const ResultList: FC<ResultListProps> = (props) => {
     );
 };
 
-function useTableWidth(tableRef: RefObject<HTMLDivElement> | null) {
+function useTableWidth(tableRef: RefObject<HTMLDivElement | null>) {
     const [tableWidth, setTableWidth] = useState<number>();
 
     useEffect(() => {

@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { MapContainer } from "./MapContainer";
 import { createServiceOptions, setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
@@ -9,12 +9,12 @@ import { MapAnchor } from "./MapAnchor";
 import { Box } from "@open-pioneer/chakra-integration";
 
 it("should successfully create a map anchor component", async () => {
-    const { mapId, registry } = await setupMap();
+    const { map, registry } = await setupMap();
 
     const injectedServices = createServiceOptions({ registry });
     const { container } = render(
         <PackageContextProvider services={injectedServices}>
-            <MapContainer mapId={mapId} data-testid="base">
+            <MapContainer map={map} data-testid="base">
                 <MapAnchor />
             </MapContainer>
         </PackageContextProvider>
@@ -38,12 +38,12 @@ it("should successfully create a map anchor component", async () => {
 });
 
 it("should successfully create a map anchor component with additional css classes", async () => {
-    const { mapId, registry } = await setupMap();
+    const { map, registry } = await setupMap();
 
     const injectedServices = createServiceOptions({ registry });
     const { container } = render(
         <PackageContextProvider services={injectedServices}>
-            <MapContainer mapId={mapId} data-testid="base">
+            <MapContainer map={map} data-testid="base">
                 <MapAnchor className="test test1 test2" />
             </MapContainer>
         </PackageContextProvider>
@@ -65,12 +65,12 @@ it("should successfully create a map anchor component with additional css classe
 });
 
 it('should successfully create a map anchor component with prop `position="top-left"`', async () => {
-    const { mapId, registry } = await setupMap();
+    const { map, registry } = await setupMap();
 
     const injectedServices = createServiceOptions({ registry });
     const { container } = render(
         <PackageContextProvider services={injectedServices}>
-            <MapContainer mapId={mapId} data-testid="base">
+            <MapContainer map={map} data-testid="base">
                 <MapAnchor position="top-left" />
             </MapContainer>
         </PackageContextProvider>
@@ -87,12 +87,12 @@ it('should successfully create a map anchor component with prop `position="top-l
 });
 
 it('should successfully create a map anchor component with prop `position="bottom-right"`', async () => {
-    const { mapId, registry } = await setupMap();
+    const { map, registry } = await setupMap();
 
     const injectedServices = createServiceOptions({ registry });
     const { container } = render(
         <PackageContextProvider services={injectedServices}>
-            <MapContainer mapId={mapId} data-testid="base">
+            <MapContainer map={map} data-testid="base">
                 <MapAnchor position="bottom-right" />
             </MapContainer>
         </PackageContextProvider>
@@ -153,12 +153,12 @@ it("should successfully create a map anchor component with prop `left=100` and `
 });
 
 it("should successfully create a map anchor component with ReactNode as children", async () => {
-    const { mapId, registry } = await setupMap();
+    const { map, registry } = await setupMap();
 
     const injectedServices = createServiceOptions({ registry });
     const { container } = render(
         <PackageContextProvider services={injectedServices}>
-            <MapContainer mapId={mapId} data-testid="base">
+            <MapContainer map={map} data-testid="base">
                 <MapAnchor>
                     <Box className="chakra-ui-box">Chakra UI Box</Box>
                 </MapAnchor>
@@ -187,12 +187,12 @@ it("should successfully create a map anchor component with ReactNode as children
 });
 
 it("should successfully create multiple map anchor components", async () => {
-    const { mapId, registry } = await setupMap();
+    const { map, registry } = await setupMap();
 
     const injectedServices = createServiceOptions({ registry });
     const { container } = render(
         <PackageContextProvider services={injectedServices}>
-            <MapContainer mapId={mapId} data-testid="base">
+            <MapContainer map={map} data-testid="base">
                 <MapAnchor className="testabc" />
                 <MapAnchor className="testdef" />
             </MapContainer>

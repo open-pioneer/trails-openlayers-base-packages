@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { WarningTwoIcon } from "@chakra-ui/icons";
 import { Box, Image, List, Text } from "@open-pioneer/chakra-integration";
@@ -71,7 +71,7 @@ export const Legend: FC<LegendProps> = (props) => {
     );
 };
 
-function LegendList(props: { map: MapModel; showBaseLayers: boolean }): JSX.Element {
+function LegendList(props: { map: MapModel; showBaseLayers: boolean }): ReactNode {
     const { map, showBaseLayers } = props;
 
     const layers = useLayers(map);
@@ -186,7 +186,7 @@ function LegendImage(props: { imageUrl: string; layer: AnyLayer }) {
 /** Returns the top level operational layers in render order (topmost layer first). */
 function useLayers(map: MapModel): Layer[] {
     return useReactiveSnapshot(() => {
-        const layers = map.layers.getAllLayers({ sortByDisplayOrder: true }) ?? [];
+        const layers = map.layers.getLayers({ sortByDisplayOrder: true }) ?? [];
         layers.reverse(); // render topmost layer first
         return layers;
     }, [map]);

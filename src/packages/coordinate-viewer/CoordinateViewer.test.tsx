@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { MapContainer } from "@open-pioneer/map";
 import { createServiceOptions, setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
@@ -10,12 +10,12 @@ import { expect, it } from "vitest";
 import { CoordinateViewer, useCoordinatesString } from "./CoordinateViewer";
 
 it("should successfully create a coordinate viewer component", async () => {
-    const { mapId, registry } = await setupMap();
+    const { map, registry } = await setupMap();
 
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
-            <CoordinateViewer mapId={mapId} data-testid="coordinate-viewer" />
+            <CoordinateViewer map={map} data-testid="coordinate-viewer" />
         </PackageContextProvider>
     );
 
@@ -28,12 +28,12 @@ it("should successfully create a coordinate viewer component", async () => {
 });
 
 it("should successfully create a coordinate viewer component with additional css classes", async () => {
-    const { mapId, registry } = await setupMap();
+    const { map, registry } = await setupMap();
 
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
-            <CoordinateViewer mapId={mapId} className="test" data-testid="coordinate-viewer" />
+            <CoordinateViewer map={map} className="test" data-testid="coordinate-viewer" />
         </PackageContextProvider>
     );
 
@@ -43,21 +43,19 @@ it("should successfully create a coordinate viewer component with additional css
 });
 
 it("tracks the user's mouse position", async () => {
-    const { mapId, registry } = await setupMap();
+    const { map, registry } = await setupMap();
 
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
-            <MapContainer mapId={mapId} data-testid="map" />
-            <CoordinateViewer mapId={mapId} precision={1} data-testid="coordinate-viewer" />
+            <MapContainer map={map} data-testid="map" />
+            <CoordinateViewer map={map} precision={1} data-testid="coordinate-viewer" />
         </PackageContextProvider>
     );
 
     await waitForMapMount("map");
     const { viewerText } = await waitForCoordinateViewer();
     expect(viewerText.textContent).toMatchInlineSnapshot('""');
-
-    const map = await registry.expectMapModel(mapId);
 
     const simulateMove = (x: number, y: number) => {
         const fakeMoveEvent = new BaseEvent("pointermove");
@@ -118,14 +116,14 @@ it("should format coordinates to correct coordinate string with default precisio
 
 it("should display transformed coordinates if output projection is provided", async () => {
     const outputProjection = "EPSG:4326"; //WGS84
-    const { mapId, registry } = await setupMap();
+    const { map, registry } = await setupMap();
 
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
-            <MapContainer mapId={mapId} data-testid="map" />
+            <MapContainer map={map} data-testid="map" />
             <CoordinateViewer
-                mapId={mapId}
+                map={map}
                 precision={2}
                 displayProjectionCode={outputProjection}
                 data-testid="coordinate-viewer"
@@ -136,8 +134,6 @@ it("should display transformed coordinates if output projection is provided", as
     await waitForMapMount("map");
     const { viewerText } = await waitForCoordinateViewer();
     expect(viewerText.textContent).toMatchInlineSnapshot('""');
-
-    const map = await registry.expectMapModel(mapId);
 
     const simulateMove = (x: number, y: number) => {
         const fakeMoveEvent = new BaseEvent("pointermove");
@@ -154,14 +150,14 @@ it("should display transformed coordinates if output projection is provided", as
 });
 
 it("tracks the user's mouse position, when format is set to 'degree'", async () => {
-    const { mapId, registry } = await setupMap();
+    const { map, registry } = await setupMap();
 
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
-            <MapContainer mapId={mapId} data-testid="map" />
+            <MapContainer map={map} data-testid="map" />
             <CoordinateViewer
-                mapId={mapId}
+                map={map}
                 precision={2}
                 format="degree"
                 data-testid="coordinate-viewer"
@@ -172,8 +168,6 @@ it("tracks the user's mouse position, when format is set to 'degree'", async () 
     await waitForMapMount("map");
     const { viewerText } = await waitForCoordinateViewer();
     expect(viewerText.textContent).toMatchInlineSnapshot('""');
-
-    const map = await registry.expectMapModel(mapId);
 
     const simulateMove = (x: number, y: number) => {
         const fakeMoveEvent = new BaseEvent("pointermove");
@@ -208,14 +202,14 @@ it("tracks the user's mouse position, when format is set to 'degree'", async () 
 it("should display transformed coordinates if output projection and format is set to 'degree' is provided", async () => {
     const outputProjection = "EPSG:4326"; //WGS84
     const format = "degree";
-    const { mapId, registry } = await setupMap();
+    const { map, registry } = await setupMap();
 
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
-            <MapContainer mapId={mapId} data-testid="map" />
+            <MapContainer map={map} data-testid="map" />
             <CoordinateViewer
-                mapId={mapId}
+                map={map}
                 precision={2}
                 displayProjectionCode={outputProjection}
                 format={format}
@@ -227,8 +221,6 @@ it("should display transformed coordinates if output projection and format is se
     await waitForMapMount("map");
     const { viewerText } = await waitForCoordinateViewer();
     expect(viewerText.textContent).toMatchInlineSnapshot('""');
-
-    const map = await registry.expectMapModel(mapId);
 
     const simulateMove = (x: number, y: number) => {
         const fakeMoveEvent = new BaseEvent("pointermove");

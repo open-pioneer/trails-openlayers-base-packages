@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import {
     Alert,
@@ -217,7 +217,7 @@ function BookmarkItem(props: {
     onActivate: () => void;
     onDelete: () => void;
     deleteBtnLabel: string;
-}): JSX.Element {
+}): ReactNode {
     const { index, listItemNodes, bookmark, onDelete, onActivate, deleteBtnLabel } = props;
     const title = bookmark.title;
     const onKeyDown = (evt: KeyboardEvent) => {
@@ -299,7 +299,7 @@ function ListControls(props: {
     bookmarks: Bookmark[];
     showCreate: () => void;
     showDelete: () => void;
-}): JSX.Element {
+}): ReactNode {
     const { intl, bookmarks, showCreate, showDelete } = props;
 
     return (
@@ -362,7 +362,7 @@ function ButtonContainer(props: { children: ReactNode }) {
     );
 }
 
-function DialogButton(props?: ButtonProps): JSX.Element {
+function DialogButton(props?: ButtonProps): ReactNode {
     return <Button width="100%" {...props} />;
 }
 

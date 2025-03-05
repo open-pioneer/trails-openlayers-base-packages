@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { describe, expect, it, vi } from "vitest";
 import VectorLayer from "ol/layer/Vector";
@@ -361,20 +361,17 @@ describe("when create editing workflow complete", () => {
 });
 
 async function renderMap() {
-    const { mapId, registry } = await setupMap();
+    const { map, registry } = await setupMap();
 
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
-            <MapContainer mapId={mapId} data-testid="map" />
+            <MapContainer map={map} data-testid="map" />
         </PackageContextProvider>
     );
 
     await waitForMapMount("map");
-
-    const map = await registry.expectMapModel(mapId);
-
-    return { mapId, map };
+    return { map };
 }
 
 async function setupCreateWorkflow(map: MapModel, httpService: HttpService = HTTP_SERVICE) {

@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { useService } from "open-pioneer:react-hooks";
 import { useMemo } from "react";
@@ -39,12 +39,15 @@ export interface MapModelProps {
     /**
      * The id of the map.
      * The map will be looked up in the MapRegistry service.
+     *
+     * @deprecated Use the `map` property instead.
+     *
+     * @see {@link DefaultMapProvider}
      */
     mapId?: string | undefined;
 
     /**
-     * The direct map model reference to use.
-     * This property can be used as an alternative to the {@link mapId}.
+     * The map model to use.
      */
     map?: MapModel | undefined;
 }

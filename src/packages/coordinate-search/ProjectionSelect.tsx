@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2023 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { useEvent } from "@open-pioneer/react-utils";
 import { PackageIntl } from "@open-pioneer/runtime";
@@ -10,7 +10,7 @@ import { ProjectionItem } from "./CoordinateInput";
 export const ProjectionSelect = memo(function ProjectionSelect(props: {
     currentProjection: ProjectionItem;
     projections: ProjectionItem[];
-    portalElement: React.RefObject<HTMLDivElement>;
+    portalElement: React.RefObject<HTMLDivElement | null>;
     onProjectionChange: (proj: ProjectionItem) => void;
 }) {
     const { currentProjection, projections, portalElement, onProjectionChange } = props;
