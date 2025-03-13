@@ -12,7 +12,6 @@ allowed:
   - "ansi-styles"
   - "color-name"
   - "react-is"
-  - "regenerator-runtime"
   - "source-map"
   - "stylis"
   - "tslib"

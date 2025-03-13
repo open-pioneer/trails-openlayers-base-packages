@@ -41,6 +41,8 @@
             "nanoid: https://github.com/advisories/GHSA-mwcw-c2x4-8c55",
             "dompurify: CVE-2025-26791",
             "esbuild: https://github.com/advisories/GHSA-67mh-4wv8-2f99",
+            "canvg: https://github.com/advisories/GHSA-v2mw-5mch-w8c5",
+            "@babel/runtime: https://github.com/advisories/GHSA-968p-4wvh-cqc8",
             "",
             "ignored cves",
             "============",
@@ -64,6 +66,7 @@
             "dompurify@<3.2.4": ">=3.2.4",
             "esbuild@<0.25.0": ">=0.25.0",
             "@changesets/assemble-release-plan": "6.0.4",
+            "canvg@<=4.0.2": ">=4.0.3",
             "@babel/runtime": ">=7.26.10"
         },
         "auditConfig": {
