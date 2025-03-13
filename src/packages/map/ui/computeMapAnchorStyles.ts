@@ -32,6 +32,8 @@ export function computeMapAnchorStyles(
         right?: string;
         top?: string;
         bottom?: string;
+        textAlign?: string;
+        transform?: string;
     }
 
     // CSS Expressions for inside calc(...)
@@ -45,6 +47,12 @@ export function computeMapAnchorStyles(
             posExprs.right = gap(PADDING_RIGHT.ref, horizontal);
             posExprs.top = gap(PADDING_TOP.ref, vertical);
             break;
+        case "top-h-center":
+            posExprs.left = gap(PADDING_LEFT.ref, horizontal);
+            posExprs.right = gap(PADDING_RIGHT.ref, horizontal);
+            posExprs.textAlign = "center";
+            posExprs.top = gap(PADDING_TOP.ref, vertical);
+            break;
         case "bottom-left":
             posExprs.left = gap(PADDING_LEFT.ref, horizontal);
             posExprs.bottom = gap(PADDING_BOTTOM.ref, vertical + attribution.gap);
@@ -53,11 +61,36 @@ export function computeMapAnchorStyles(
             posExprs.right = gap(PADDING_RIGHT.ref, horizontal);
             posExprs.bottom = gap(PADDING_BOTTOM.ref, vertical + attribution.gap);
             break;
+        case "bottom-h-center":
+            posExprs.left = gap(PADDING_LEFT.ref, horizontal);
+            posExprs.right = gap(PADDING_RIGHT.ref, horizontal);
+            posExprs.textAlign = "center";
+            posExprs.bottom = gap(PADDING_BOTTOM.ref, vertical + attribution.gap);
+            break;
+        case "v-center-left":
+            posExprs.left = gap(PADDING_LEFT.ref, horizontal);
+            posExprs.top = gap(`50%`, vertical);
+            posExprs.transform = "translateY(-50%)";
+            break;
+        case "v-center-right":
+            posExprs.right = gap(PADDING_RIGHT.ref, horizontal);
+            posExprs.top = gap(`50%`, vertical);
+            posExprs.transform = "translateY(-50%)";
+            break;
+        case "v-center-h-center":
+            posExprs.left = gap(PADDING_LEFT.ref, horizontal);
+            posExprs.right = gap(PADDING_RIGHT.ref, horizontal);
+            posExprs.textAlign = "center";
+            posExprs.top = gap(`50%`, vertical);
+            posExprs.transform = "translateY(-50%)";
+            break;
     }
 
     for (const [key, value] of Object.entries(posExprs)) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (styleProps as any)[key] = `calc(${value})`;
+        if (key == "textAlign" || key == "transform") (styleProps as any)[key] = value;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        else (styleProps as any)[key] = `calc(${value})`;
     }
 
     /**

@@ -108,6 +108,50 @@ it('should successfully create a map anchor component with prop `position="botto
     }
 });
 
+it('should successfully create a map anchor component with prop `position="v-center-h-center"`', async () => {
+    const { mapId, registry } = await setupMap();
+
+    const injectedServices = createServiceOptions({ registry });
+    const { container } = render(
+        <PackageContextProvider services={injectedServices}>
+            <MapContainer mapId={mapId} data-testid="base">
+                <MapAnchor position="v-center-h-center" />
+            </MapContainer>
+        </PackageContextProvider>
+    );
+
+    // Assert map is mounted
+    await waitForMapMount();
+
+    // check map anchor component box is available with style for prop `position`
+    const mapAnchor = container.querySelector(".map-anchor");
+    if (!mapAnchor) {
+        throw new Error("map anchor component not rendered");
+    }
+});
+
+it("should successfully create a map anchor component with prop `left=100` and `bottom=10`", async () => {
+    const { mapId, registry } = await setupMap();
+
+    const injectedServices = createServiceOptions({ registry });
+    const { container } = render(
+        <PackageContextProvider services={injectedServices}>
+            <MapContainer mapId={mapId} data-testid="base">
+                <MapAnchor left={100} bottom={10} />
+            </MapContainer>
+        </PackageContextProvider>
+    );
+
+    // Assert map is mounted
+    await waitForMapMount();
+
+    // check map anchor component box is available with style for prop `position`
+    const mapAnchor = container.querySelector(".map-anchor");
+    if (!mapAnchor) {
+        throw new Error("map anchor component not rendered");
+    }
+});
+
 it("should successfully create a map anchor component with ReactNode as children", async () => {
     const { map, registry } = await setupMap();
 

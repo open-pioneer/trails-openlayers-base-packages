@@ -6,12 +6,27 @@ import { ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { computeMapAnchorStyles } from "./computeMapAnchorStyles";
 import { useMapContainerContext } from "./MapContainerContext";
+import { StyleProps } from "@open-pioneer/chakra-integration";
+import { PADDING_BOTTOM, PADDING_LEFT, PADDING_RIGHT, PADDING_TOP } from "./CssProps";
 
-export type MapAnchorPosition = "top-left" | "top-right" | "bottom-left" | "bottom-right";
+export type MapAnchorPosition =
+    | "top-left"
+    | "top-right"
+    | "top-h-center"
+    | "bottom-left"
+    | "bottom-right"
+    | "bottom-h-center"
+    | "v-center-left"
+    | "v-center-right"
+    | "v-center-h-center";
 
 const defaultPosition: MapAnchorPosition = "top-right";
 
 export interface MapAnchorProps extends CommonComponentProps {
+    children?: ReactNode;
+}
+
+export interface MapAnchorShortcut extends MapAnchorProps {
     /**
      * The position of the anchor container above the map.
      * @default "top-right"
@@ -24,6 +39,7 @@ export interface MapAnchorProps extends CommonComponentProps {
      * Applied:
      * - left, if position `*-left`
      * - right, if position `*-right`
+     * - center, if position `*-hCenter`
      *
      * @default 0
      */
@@ -35,21 +51,66 @@ export interface MapAnchorProps extends CommonComponentProps {
      * Applied:
      * - top, if position `top-*`
      * - bottom, if position `bottom-*`
+     * - center, if position `vCenter-*`
      *
      * @default 0 (If position `bottom-*`, default verticalGap == `30`)
      */
     verticalGap?: number;
 
-    children?: ReactNode;
+    top?: never;
+    bottom?: never;
+    left?: never;
+    right?: never;
 }
 
-export function MapAnchor(props: MapAnchorProps): ReactNode {
-    const { position = defaultPosition, children, horizontalGap, verticalGap } = props;
+export interface MapAnchorStyleProps extends MapAnchorProps {
+    top?: number;
+    bottom?: number;
+    left?: number;
+    right?: number;
+
+    position?: never;
+    verticalGap?: never;
+    horizontalGap?: never;
+}
+
+export function MapAnchor(props: MapAnchorShortcut | MapAnchorStyleProps): ReactNode {
+    const {
+        position = defaultPosition,
+        children,
+        horizontalGap,
+        verticalGap,
+        top,
+        bottom,
+        left,
+        right
+    } = props;
     const { containerProps } = useCommonComponentProps("map-anchor", props);
     const { mapAnchorsHost } = useMapContainerContext();
-
+    let styleProps: StyleProps = {};
+    if (position != undefined || verticalGap != undefined || horizontalGap != undefined)
+        styleProps = computeMapAnchorStyles(position, horizontalGap, verticalGap);
+    if (top != undefined || bottom != undefined || left != undefined || right != undefined) {
+        styleProps.top = top ? `${top}px` : undefined;
+        styleProps.bottom = bottom ? `${bottom}px` : undefined;
+        styleProps.left = left ? `${left}px` : undefined;
+        styleProps.right = right ? `${right}px` : undefined;
+        if (top != undefined && bottom != undefined) {
+            styleProps.maxH = `calc((100%) - ${top + "px"} - ${bottom + "px"})`;
+        }
+        if (left != undefined && right != undefined) {
+            styleProps.maxW = `calc((100%) - ${left + "px"} - ${right + "px"})`;
+        }
+    }
+    mapAnchorsHost.style.left = PADDING_LEFT.ref;
+    mapAnchorsHost.style.right = PADDING_RIGHT.ref;
+    mapAnchorsHost.style.top = PADDING_TOP.ref;
+    mapAnchorsHost.style.bottom = PADDING_BOTTOM.ref;
+    mapAnchorsHost.style.height = `calc(100% - ${PADDING_BOTTOM + "px"} - ${PADDING_TOP + "px"}`;
+    mapAnchorsHost.style.width = `calc(100% - ${PADDING_LEFT + "px"} - ${PADDING_RIGHT + "px"}`;
+    mapAnchorsHost.style.position = "absolute";
     return createPortal(
-        <Box {...containerProps} {...computeMapAnchorStyles(position, horizontalGap, verticalGap)}>
+        <Box {...containerProps} {...styleProps}>
             {children}
         </Box>,
         mapAnchorsHost
