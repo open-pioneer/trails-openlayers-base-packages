@@ -2,15 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import { WarningTwoIcon } from "@chakra-ui/icons";
 import { Box, Image, List, Text } from "@open-pioneer/chakra-integration";
-import {
-    Layer,
-    AnyLayer,
-    MapModel,
-    Sublayer,
-    useMapModel,
-    MapModelProps,
-    isLayer
-} from "@open-pioneer/map";
+import { Layer, AnyLayer, MapModel, useMapModel, MapModelProps, isLayer } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import classNames from "classnames";
@@ -97,7 +89,7 @@ function LegendList(props: { map: MapModel; showBaseLayers: boolean }): ReactNod
 function LegendItem(props: { layer: AnyLayer; showBaseLayers: boolean }): ReactNode {
     const { layer, showBaseLayers } = props;
     const isVisible = useReactiveSnapshot(() => layer.visible, [layer]);
-    const sublayers = useSublayers(layer);
+    const childLayers = useChildLayers(layer);
 
     if (!isVisible) {
         return undefined;
@@ -107,12 +99,16 @@ function LegendItem(props: { layer: AnyLayer; showBaseLayers: boolean }): ReactN
         return undefined;
     }
 
-    // legend items for all sublayers
+    // legend items for all child layers (sublayers or layers in a group)
     const childItems: ReactNode[] = [];
-    if (sublayers?.length) {
-        sublayers.forEach((sublayer) => {
+    if (childLayers?.length) {
+        childLayers.forEach((childLayer) => {
             childItems.push(
-                <LegendItem key={sublayer.id} layer={sublayer} showBaseLayers={showBaseLayers} />
+                <LegendItem
+                    key={childLayer.id}
+                    layer={childLayer}
+                    showBaseLayers={showBaseLayers}
+                />
             );
         });
     }
@@ -193,18 +189,21 @@ function useLayers(map: MapModel): Layer[] {
 }
 
 /**
- * Returns the sublayers of the given layer (or undefined, if the sublayer cannot have any).
- * Sublayers are returned in render order (topmost sublayer first).
+ * Returns the child layers (sublayers or layers belonging to a GroupLayer) of the given layer
+ * (or undefined, if the child layer cannot have any).
+ * Layers are returned in render order (topmost layer first).
  */
-function useSublayers(layer: AnyLayer): Sublayer[] | undefined {
+function useChildLayers(layer: AnyLayer): AnyLayer[] | undefined {
     return useReactiveSnapshot(() => {
-        const sublayers = layer.sublayers?.getSublayers({ sortByDisplayOrder: true });
-        if (!sublayers) {
+        const childLayers = layer.sublayers
+            ? layer.sublayers.getSublayers({ sortByDisplayOrder: true })
+            : layer.layers?.getLayers({ sortByDisplayOrder: true });
+        if (!childLayers) {
             return undefined;
         }
 
-        sublayers.reverse(); // render topmost layer first
-        return sublayers;
+        childLayers.reverse(); // render topmost layer first
+        return childLayers;
     }, [layer]);
 }
 
