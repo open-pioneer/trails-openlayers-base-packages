@@ -1,5 +1,17 @@
 # @open-pioneer/editing
 
+## 0.10.0
+
+### Minor Changes
+
+- 193068a: Deprecate the method signatures taking `mapId` on the `EditingService`.
+  Use an instance of `MapModel` as a parameter instead.
+
+### Patch Changes
+
+- Updated dependencies [193068a]
+    - @open-pioneer/map@0.10.0
+
 ## 0.9.0
 
 ### Minor Changes
