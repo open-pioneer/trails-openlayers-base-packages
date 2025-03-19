@@ -89,7 +89,7 @@ function LegendList(props: { map: MapModel; showBaseLayers: boolean }): ReactNod
 function LegendItem(props: { layer: AnyLayer; showBaseLayers: boolean }): ReactNode {
     const { layer, showBaseLayers } = props;
     const isVisible = useReactiveSnapshot(() => layer.visible, [layer]);
-    const sublayers = useChildLayers(layer);
+    const childLayers = useChildLayers(layer);
 
     if (!isVisible) {
         return undefined;
@@ -101,10 +101,14 @@ function LegendItem(props: { layer: AnyLayer; showBaseLayers: boolean }): ReactN
 
     // legend items for all child layers (sublayers or layers in a group)
     const childItems: ReactNode[] = [];
-    if (sublayers?.length) {
-        sublayers.forEach((sublayer) => {
+    if (childLayers?.length) {
+        childLayers.forEach((childLayer) => {
             childItems.push(
-                <LegendItem key={sublayer.id} layer={sublayer} showBaseLayers={showBaseLayers} />
+                <LegendItem
+                    key={childLayer.id}
+                    layer={childLayer}
+                    showBaseLayers={showBaseLayers}
+                />
             );
         });
     }
@@ -185,15 +189,15 @@ function useLayers(map: MapModel): Layer[] {
 }
 
 /**
- * Returns the sublayers or child layers of group of the given layer (or undefined, if the child layer cannot have any).
- * Sublayers or child layers are returned in render order (topmost layer first).
+ * Returns the child layers (sublayers or layers belonging to a GroupLayer) of the given layer
+ * (or undefined, if the child layer cannot have any).
+ * Layers are returned in render order (topmost layer first).
  */
 function useChildLayers(layer: AnyLayer): AnyLayer[] | undefined {
     return useReactiveSnapshot(() => {
         const childLayers = layer.sublayers
             ? layer.sublayers.getSublayers({ sortByDisplayOrder: true })
             : layer.layers?.getLayers({ sortByDisplayOrder: true });
-        layer.sublayers?.getSublayers({ sortByDisplayOrder: true });
         if (!childLayers) {
             return undefined;
         }
