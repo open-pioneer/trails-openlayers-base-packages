@@ -9,7 +9,7 @@ packages:
 # This is a yaml feature and is not interpreted by pnpm directly.
 __versions:
   - &react_version ^19.0.0
-  - &core_packages_version ^3.0.0
+  - &core_packages_version 4.0.0-dev-chakra-v3.20250320123304
 
 # https://pnpm.io/catalogs
 catalog:
@@ -27,15 +27,14 @@ catalog:
   "@open-pioneer/runtime": *core_packages_version
   "@open-pioneer/test-utils": *core_packages_version
 
-  "@chakra-ui/icons": ^2.2.4
-  "@chakra-ui/react": ^2.10.6
+  "@chakra-ui/react": ^3.8.1
+  "@chakra-ui/cli": ^3.8.1
   "@conterra/reactivity-core": ^0.4.3
   "@emotion/cache": ^11.13.0
   "@emotion/react": ^11.13.0
   "@emotion/styled": ^11.13.0
   "@formatjs/intl": ^3.1.4
   "@tanstack/react-table": ^8.20.5
-  chakra-react-select: ^5.0.4
   classnames: ^2.3.2
   framer-motion: ^12.4.7
   html2canvas: ^1.4.1

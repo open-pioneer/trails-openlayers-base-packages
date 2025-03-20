@@ -2,11 +2,10 @@
     "name": "ol-map",
     "private": true,
     "dependencies": {
-        "@chakra-ui/icons": "catalog:",
         "@conterra/reactivity-core": "catalog:",
         "@emotion/react": "catalog:",
         "@emotion/styled": "catalog:",
-        "@open-pioneer/chakra-integration": "catalog:",
+        "@chakra-ui/react": "catalog:",
         "@open-pioneer/coordinate-viewer": "workspace:^",
         "@open-pioneer/editing": "workspace:^",
         "@open-pioneer/http": "catalog:",

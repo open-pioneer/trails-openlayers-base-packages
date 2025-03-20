@@ -10,7 +10,7 @@ import { useIntl } from "open-pioneer:react-hooks";
 import { FC, ForwardedRef, forwardRef, RefAttributes } from "react";
 import { FiCornerUpLeft, FiCornerUpRight } from "react-icons/fi";
 import { useHistoryViewModel } from "./ViewHistoryModel";
-import { ButtonProps } from "@open-pioneer/chakra-integration";
+import { ButtonProps } from "@chakra-ui/react";
 
 export type HistoryForwardProps = Omit<HistoryProps, "viewDirection">;
 

@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { WarningTwoIcon } from "@chakra-ui/icons";
-import { Box, Image, List, Text } from "@open-pioneer/chakra-integration";
+import { IoIosWarning } from "react-icons/io";
+import { Box, Image, List, Text, Icon } from "@chakra-ui/react";
 import { Layer, AnyLayer, MapModel, useMapModel, MapModelProps, isLayer } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
@@ -74,15 +74,15 @@ function LegendList(props: { map: MapModel; showBaseLayers: boolean }): ReactNod
     });
 
     return (
-        <List
+        <List.Root
             // Note: not using UnorderedList because it adds default margins
             as="ul"
             className="legend-layer-list"
             listStyleType="none"
-            spacing={2}
+            gap={2}
         >
             {legendListItems}
-        </List>
+        </List.Root>
     );
 }
 
@@ -169,7 +169,9 @@ function LegendImage(props: { imageUrl: string; layer: AnyLayer }) {
                 fallback={
                     <Box>
                         <Text>
-                            <WarningTwoIcon me={2} />
+                            <Icon me={2}>
+                                <IoIosWarning />
+                            </Icon>
                             {intl.formatMessage({ id: "fallbackLabel" })}
                         </Text>
                     </Box>

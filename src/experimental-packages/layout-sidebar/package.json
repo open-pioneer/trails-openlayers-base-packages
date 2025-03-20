@@ -16,10 +16,9 @@
         "build": "build-pioneer-package"
     },
     "dependencies": {
-        "@chakra-ui/icons": "catalog:",
+        "@chakra-ui/react": "catalog:",
         "@emotion/react": "catalog:",
         "@emotion/styled": "catalog:",
-        "@open-pioneer/chakra-integration": "catalog:",
         "@open-pioneer/runtime": "catalog:",
         "react": "catalog:"
     },

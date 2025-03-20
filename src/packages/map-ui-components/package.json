@@ -17,7 +17,7 @@
         "build": "build-pioneer-package"
     },
     "dependencies": {
-        "@open-pioneer/chakra-integration": "catalog:",
+        "@chakra-ui/react": "catalog:",
         "@open-pioneer/react-utils": "catalog:",
         "classnames": "catalog:",
         "react": "catalog:"

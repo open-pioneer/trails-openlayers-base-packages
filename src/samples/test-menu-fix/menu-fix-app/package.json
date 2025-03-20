@@ -3,7 +3,7 @@
     "version": "0.0.1",
     "private": true,
     "dependencies": {
-        "@open-pioneer/chakra-integration": "catalog:",
+        "@chakra-ui/react": "catalog:",
         "@open-pioneer/runtime": "catalog:",
         "react": "catalog:"
     }

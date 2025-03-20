@@ -3,7 +3,7 @@
     "private": true,
     "dependencies": {
         "@open-pioneer/basemap-switcher": "workspace:^",
-        "@open-pioneer/chakra-integration": "catalog:",
+        "@chakra-ui/react": "catalog:",
         "@open-pioneer/http": "catalog:",
         "@open-pioneer/map": "workspace:^",
         "@open-pioneer/map-navigation": "workspace:^",
