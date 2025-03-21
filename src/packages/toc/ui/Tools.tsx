@@ -4,11 +4,7 @@ import {
     Box,
     Button,
     Menu,
-    MenuButton,
-    MenuItem,
-    MenuList,
-    Portal
-} from "@open-pioneer/chakra-integration";
+} from "@chakra-ui/react";
 import { AnyLayer, MapModel } from "@open-pioneer/map";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, memo } from "react";
@@ -40,44 +36,46 @@ export const Tools: FC<ToolsProps> = memo(function Tools(props: ToolsProps) {
     return (
         hasContent && (
             <Box className="toc-tools">
-                <Menu placement="bottom-start">
-                    <MenuButton
-                        as={Button}
-                        className="toc-tools-button"
-                        aria-label={intl.formatMessage({ id: "toolsLabel" })}
-                        borderRadius="full"
-                        iconSpacing={0}
-                        padding={3}
-                        variant="ghost"
-                        leftIcon={<FiMoreVertical />}
-                    />
-                    <Portal>
-                        <MenuList className="tools-menu">
+                <Menu.Root positioning={{placement: "bottom-start"}} >
+                    <Menu.Trigger asChild>
+                        <Button                         
+                            className="toc-tools-button"
+                            aria-label={intl.formatMessage({ id: "toolsLabel" })}
+                            borderRadius="full"
+                            padding={3}
+                            variant="ghost">
+                            <FiMoreVertical />
+                        </Button>
+                    </Menu.Trigger>
+                    <Menu.Positioner>
+                        <Menu.Content className="tools-menu">
                             {showHideAllLayers && (
-                                <MenuItem
+                                <Menu.Item
                                     aria-label={intl.formatMessage({ id: "tools.hideAllLayers" })}
                                     onClick={() => {
                                         hideAllLayers(map);
                                     }}
+                                    value="hideAllLayers"
                                 >
                                     {intl.formatMessage({ id: "tools.hideAllLayers" })}
-                                </MenuItem>
+                                </Menu.Item>
                             )}
                             {showCollapseAllGroups && (
-                                <MenuItem
+                                <Menu.Item
                                     aria-label={intl.formatMessage({
                                         id: "tools.collapseAllGroups"
                                     })}
                                     onClick={() => {
                                         collapseAllGroups(tocModel);
                                     }}
+                                    value="collapseAllGroups"
                                 >
                                     {intl.formatMessage({ id: "tools.collapseAllGroups" })}
-                                </MenuItem>
+                                </Menu.Item>
                             )}
-                        </MenuList>
-                    </Portal>
-                </Menu>
+                        </Menu.Content>
+                    </Menu.Positioner>
+                </Menu.Root>
             </Box>
         )
     );

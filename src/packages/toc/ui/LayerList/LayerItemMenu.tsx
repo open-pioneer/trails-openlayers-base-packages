@@ -2,15 +2,10 @@
 // SPDX-License-Identifier: Apache-2.0
 import {
     Button,
+    CloseButton,
     Popover,
-    PopoverArrow,
-    PopoverBody,
-    PopoverCloseButton,
-    PopoverContent,
-    PopoverHeader,
-    PopoverTrigger,
-    Portal
-} from "@open-pioneer/chakra-integration";
+    Separator
+} from "@chakra-ui/react";
 import { AnyLayer } from "@open-pioneer/map";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { FiMoreVertical } from "react-icons/fi";
@@ -29,32 +24,41 @@ export function LayerItemMenu(props: {
 
     return (
         isPresent && (
-            <Popover placement="bottom-start">
-                <PopoverTrigger>
+            <Popover.Root positioning={{placement: "bottom-start"}} portalled={true} lazyMount={true}>
+                <Popover.Trigger>
                     <Button
-                        isDisabled={!isAvailable}
+                        disabled={!isAvailable}
                         className="toc-layer-item-details-button"
                         aria-label={buttonLabel}
                         borderRadius="full"
-                        iconSpacing={0}
                         padding={0}
                         variant="ghost"
-                        leftIcon={<FiMoreVertical />}
-                    />
-                </PopoverTrigger>
-                <Portal>
-                    <PopoverContent
+                    >
+                        <FiMoreVertical />
+                    </Button>
+                </Popover.Trigger>
+                <Popover.Positioner >
+                    <Popover.Content
                         className="toc-layer-item-details"
                         overflowY="auto"
                         maxHeight="400"
                     >
-                        <PopoverArrow />
-                        <PopoverCloseButton mt={1} />
-                        <PopoverHeader>{title}</PopoverHeader>
-                        <PopoverBody>{description}</PopoverBody>
-                    </PopoverContent>
-                </Portal>
-            </Popover>
+                        <Popover.Header>{title}
+                            <Popover.CloseTrigger mt={1}>
+                                <CloseButton
+                                    className="toc-layer-item-details-button"
+                                    borderRadius="full"
+                                    padding={0}
+                                    variant="ghost"
+                                >
+                                </CloseButton>
+                            </Popover.CloseTrigger>
+                        </Popover.Header>
+                        <Separator></Separator>
+                        <Popover.Body>{description}</Popover.Body>
+                    </Popover.Content>
+                </Popover.Positioner>
+            </Popover.Root>
         )
     );
 }

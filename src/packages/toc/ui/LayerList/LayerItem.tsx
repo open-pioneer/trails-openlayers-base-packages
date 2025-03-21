@@ -2,17 +2,17 @@
 // SPDX-License-Identifier: Apache-2.0
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { ChevronDownIcon, ChevronRightIcon } from "@chakra-ui/icons";
+import { FaChevronDown, FaChevronRight } from "react-icons/fa6";
 import { reactive } from "@conterra/reactivity-core";
 import {
     Box,
-    Checkbox,
     Collapsible,
+    CollapsibleContent,
     Flex,
     IconButton,
-    Spacer,
-    Tooltip
+    Spacer
 } from "@chakra-ui/react";
+import { Tooltip, Checkbox} from "@open-pioneer/chakra-snippets";
 import { AnyLayer } from "@open-pioneer/map";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import classNames from "classnames";
@@ -86,12 +86,12 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
                     // The aria-labels of Tooltip and Icon is ignored by screenreader because they are no child element of the checkbox.
                     // To consider the notAvailableLabel, an aria-label at the checkbox is necessary.
                     aria-label={title + (!isAvailable ? " " + notAvailableLabel : "")}
-                    isChecked={isVisible}
-                    isDisabled={!isAvailable}
-                    onChange={(event) =>
+                    checked={isVisible}
+                    disabled={!isAvailable}
+                    onCheckedChange={(event) =>
                         updateLayerVisibility(
                             layer,
-                            event.target.checked,
+                            Boolean(event.checked.valueOf()),
                             tocOptions.autoShowParents
                         )
                     }
@@ -100,10 +100,10 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
                 </Checkbox>
                 {!isAvailable && (
                     <Tooltip
-                        className="toc-layer-item-content-tooltip"
-                        label={notAvailableLabel}
-                        placement="right"
+                        content={notAvailableLabel}
+                        positioning={{placement: "right"}}
                         openDelay={500}
+                        contentProps={{className: "toc-layer-item-content-tooltip"}}
                     >
                         <span>
                             <FiAlertTriangle
@@ -118,9 +118,11 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
                 <LayerItemMenu layer={layer} title={title} description={description} intl={intl} />
             </Flex>
             {nestedChildren && (
-                <Collapse in={expanded} id={layerGroupId} className="toc-collapsible-item">
-                    {nestedChildren}
-                </Collapse>
+                <Collapsible.Root open={expanded} id={layerGroupId} className="toc-collapsible-item">
+                    <CollapsibleContent>
+                        {nestedChildren}
+                    </CollapsibleContent>
+                </Collapsible.Root>
             )}
         </Box>
     );
@@ -134,6 +136,7 @@ function CollapseButton(props: {
     hasNestedChildren: boolean;
 }) {
     const { layerTitle, layerGroupId, expanded, onClick, hasNestedChildren } = props;
+    const icon = expanded ? <FaChevronDown /> : <FaChevronRight />;
     const intl = useIntl();
     return (
         <IconButton
@@ -142,7 +145,6 @@ function CollapseButton(props: {
             padding={0}
             className="toc-layer-item-collapse-button"
             onClick={onClick}
-            icon={expanded ? <ChevronDownIcon /> : <ChevronRightIcon />}
             aria-label={
                 expanded
                     ? intl.formatMessage({ id: "group.collapse" }, { title: layerTitle })
@@ -151,7 +153,9 @@ function CollapseButton(props: {
             aria-expanded={expanded}
             aria-controls={layerGroupId}
             visibility={hasNestedChildren ? "visible" : "hidden"} //use visible:hidden for layers without children for correct indent
-        />
+        >
+            {icon}
+        </IconButton>
     );
 }
 
