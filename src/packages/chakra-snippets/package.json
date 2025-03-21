@@ -1,0 +1,18 @@
+{
+    "name": "@open-pioneer/chakra-snippets",
+    "version": "0.9.0",
+    "description": "This package snippets from chakra v3",
+    "license": "Apache-2.0",
+    "main": "index.ts",
+    "homepage": "https://github.com/open-pioneer",
+    "keywords": [
+        "open-pioneer-trails"
+    ],
+    "scripts": {
+        "build": "build-pioneer-package"
+    },
+    "dependencies": {
+        "@chakra-ui/react": "catalog:",
+        "react": "catalog:"
+    }
+}

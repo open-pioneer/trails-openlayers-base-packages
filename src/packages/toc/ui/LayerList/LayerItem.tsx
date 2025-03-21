@@ -7,12 +7,12 @@ import { reactive } from "@conterra/reactivity-core";
 import {
     Box,
     Checkbox,
-    Collapse,
+    Collapsible,
     Flex,
     IconButton,
     Spacer,
     Tooltip
-} from "@open-pioneer/chakra-integration";
+} from "@chakra-ui/react";
 import { AnyLayer } from "@open-pioneer/map";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import classNames from "classnames";

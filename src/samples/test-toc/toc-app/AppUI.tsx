@@ -117,7 +117,7 @@ export function AppUI() {
                                         <ToolButton
                                             label={intl.formatMessage({ id: "tocTitle" })}
                                             icon={<PiListLight />}
-                                            isActive={showToc}
+                                            active={showToc}
                                             onClick={toggleToc}
                                         />
                                     </Flex>

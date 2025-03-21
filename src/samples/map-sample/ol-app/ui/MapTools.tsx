@@ -59,7 +59,7 @@ export function MapTools() {
                 <ToolButton
                     label={intl.formatMessage({ id: "resultListTitle" })}
                     icon={<PiListMagnifyingGlassFill />}
-                    isActive={resultListState.open}
+                    active={resultListState.open}
                     onClick={() => appModel.setResultListVisibility(!resultListOpen)}
                 />
             )}
@@ -67,19 +67,19 @@ export function MapTools() {
             <ToolButton
                 label={intl.formatMessage({ id: "tocTitle" })}
                 icon={<PiListLight />}
-                isActive={isTocActive}
+                active={isTocActive}
                 onClick={() => appModel.toggleMainContent("toc")}
             />
             <ToolButton
                 label={intl.formatMessage({ id: "legendTitle" })}
                 icon={<PiImagesLight />}
-                isActive={isLegendActive}
+                active={isLegendActive}
                 onClick={() => appModel.toggleMainContent("legend")}
             />
             <ToolButton
                 label={intl.formatMessage({ id: "printingTitle" })}
                 icon={<PiPrinterLight />}
-                isActive={isPrintingActive}
+                active={isPrintingActive}
                 onClick={() => appModel.toggleMainContent("printing")}
             />
             <InitialExtent />
@@ -124,7 +124,7 @@ function InteractionsMenu() {
                         : intl.formatMessage({ id: "editing.create.startTitle" })
                 }
                 icon={isEditingCreateActive ? <TbPolygonOff /> : <TbPolygon />}
-                isActive={isEditingCreateActive}
+                active={isEditingCreateActive}
                 onClick={interactionsMenuHandler(() =>
                     appModel.toggleMainContent("editing-create")
                 )}
@@ -137,7 +137,7 @@ function InteractionsMenu() {
                         : intl.formatMessage({ id: "editing.update.startTitle" })
                 }
                 icon={isEditingUpdateActive ? <PiPencilSlash /> : <PiPencil />}
-                isActive={isEditingUpdateActive}
+                active={isEditingUpdateActive}
                 onClick={interactionsMenuHandler(() =>
                     appModel.toggleMainContent("editing-update")
                 )}
@@ -146,14 +146,14 @@ function InteractionsMenu() {
             <ToolButton
                 label={intl.formatMessage({ id: "measurementTitle" })}
                 icon={<PiRulerLight />}
-                isActive={isMeasurementActive}
+                active={isMeasurementActive}
                 onClick={interactionsMenuHandler(() => appModel.toggleMainContent("measurement"))}
                 tooltipProps={tooltipProps}
             />
             <ToolButton
                 label={intl.formatMessage({ id: "selectionTitle" })}
                 icon={<PiSelectionPlusBold />}
-                isActive={isSelectionActive}
+                active={isSelectionActive}
                 onClick={interactionsMenuHandler(() => appModel.toggleMainContent("selection"))}
                 tooltipProps={tooltipProps}
             />

@@ -436,6 +436,15 @@ importers:
         version: link:../../..
     publishDirectory: dist
 
+  src/packages/chakra-snippets:
+    dependencies:
+      '@chakra-ui/react':
+        specifier: 'catalog:'
+        version: 3.13.0(@emotion/react@11.14.0(@types/react@19.0.10)(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      react:
+        specifier: 'catalog:'
+        version: 19.0.0
+
   src/packages/coordinate-search:
     dependencies:
       '@chakra-ui/react':
@@ -620,6 +629,9 @@ importers:
       react:
         specifier: 'catalog:'
         version: 19.0.0
+      react-icons:
+        specifier: 'catalog:'
+        version: 5.5.0(react@19.0.0)
     devDependencies:
       '@open-pioneer/map-test-utils':
         specifier: workspace:^
@@ -763,6 +775,9 @@ importers:
       '@chakra-ui/react':
         specifier: 'catalog:'
         version: 3.13.0(@emotion/react@11.14.0(@types/react@19.0.10)(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      '@open-pioneer/chakra-snippets':
+        specifier: workspace:*
+        version: link:../chakra-snippets
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
         version: 4.0.0-dev-chakra-v3.20250320123304(@emotion/react@11.14.0(@types/react@19.0.10)(react@19.0.0))(react-dom@19.0.0(react@19.0.0))

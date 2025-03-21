@@ -105,7 +105,7 @@ export const History: FC<HistoryProps> = forwardRef(function History(
                 label={buttonLabel}
                 icon={buttonIcon}
                 onClick={navigate}
-                isDisabled={!canNavigate}
+                disabled={!canNavigate}
             />
         )
     );

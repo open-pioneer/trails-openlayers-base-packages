@@ -1,0 +1,13 @@
+{
+    "name": "ogc-mini-app",
+    "private": true,
+    "dependencies": {
+        "@open-pioneer/map-ui-components": "workspace:^",
+        "@chakra-ui/react": "catalog:",
+        "ol": "catalog:",
+        "ol-mapbox-style": "catalog:",
+        "react": "catalog:",
+        "react-icons": "catalog:"
+    },
+    "version": "0.0.11"
+}

@@ -105,9 +105,9 @@ const GeolocationImpl = forwardRef(function GeolocationImpl(
             label={label}
             icon={<MdMyLocation />}
             onClick={() => toggleActiveState()}
-            isActive={isActive}
-            isLoading={isLoading}
-            isDisabled={!controller.supported}
+            active={isActive}
+            loading={isLoading}
+            disabled={!controller.supported}
             {...containerProps}
         />
     );

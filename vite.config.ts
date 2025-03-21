@@ -25,7 +25,9 @@ const sampleSites = [
     "samples/test-result-list",
     "samples/test-printing-api",
 
-    "samples/experimental-sidebar"
+    "samples/experimental-sidebar",
+
+    "samples/minimal-sample"
 ];
 
 // https://vitejs.dev/config/

@@ -54,7 +54,7 @@ it("allows configuration of additional button props", async () => {
 it("automatically sets the 'aria-pressed' attribute when active", async () => {
     const getUI = (isActive: boolean | undefined) => (
         <PackageContextProvider>
-            <ToolButton label="Button Label" icon={getIcon()} isActive={isActive} />
+            <ToolButton label="Button Label" icon={getIcon()} active={isActive} />
         </PackageContextProvider>
     );
 
