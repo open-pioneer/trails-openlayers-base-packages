@@ -3,7 +3,14 @@
 import { batch, reactive, reactiveMap, reactiveSet } from "@conterra/reactivity-core";
 import { createLogger } from "@open-pioneer/core";
 import OlBaseLayer from "ol/layer/Base";
-import { Layer, LayerCollection, LayerRetrievalOptions, AnyLayer, Sublayer } from "../api";
+import {
+    AddLayerOptions,
+    AnyLayer,
+    Layer,
+    LayerCollection,
+    LayerRetrievalOptions,
+    Sublayer
+} from "../api";
 import { AbstractLayer } from "./AbstractLayer";
 import { AbstractLayerBase } from "./AbstractLayerBase";
 import { MapModelImpl } from "./MapModelImpl";
@@ -60,11 +67,11 @@ export class LayerCollectionImpl implements LayerCollection {
         this.#activeBaseLayer.value = undefined;
     }
 
-    addLayer(layer: Layer): void {
+    addLayer(layer: Layer, options?: AddLayerOptions): void {
         checkLayerInstance(layer);
 
         layer.__attachToMap(this.#map);
-        this.#addLayer(layer);
+        this.#addLayer(layer, options);
     }
 
     getBaseLayers(): Layer[] {
@@ -168,24 +175,63 @@ export class LayerCollectionImpl implements LayerCollection {
     /**
      * Adds the given layer to the map and all relevant indices.
      */
-    #addLayer(model: LayerType) {
+    #addLayer(model: LayerType, options: AddLayerOptions | undefined) {
         this.#indexLayer(model);
+        options ??= { at: "top" };
 
+        const zIndex = this.#getLayerZIndex(model, options);
         const olLayer = model.olLayer;
+        olLayer.setZIndex(zIndex);
         if (model.isBaseLayer) {
-            olLayer.setZIndex(BASE_LAYER_Z);
             if (!this.#activeBaseLayer.value && model.visible) {
                 this.#updateBaseLayer(model);
             } else {
                 model.__setVisible(false);
             }
         } else {
-            olLayer.setZIndex(this.#nextIndex++);
+            this.#nextIndex++;
             model.__setVisible(model.visible);
         }
 
         this.#topLevelLayers.add(model);
         this.#map.olMap.addLayer(olLayer);
+        this.#updateLayerZIndex();
+    }
+
+    #updateLayerZIndex() {
+        const layers = this.getOperationalLayers({ sortByDisplayOrder: true });
+        layers.forEach((layer, index) => {
+            layer.olLayer.setZIndex(index + OPERATION_LAYER_INITIAL_Z);
+        });
+    }
+
+    #getLayerZIndex(model: LayerType, options: AddLayerOptions): number {
+        if (model.isBaseLayer) {
+            return BASE_LAYER_Z;
+        }
+
+        if (options.at === "index") {
+            return options.index + OPERATION_LAYER_INITIAL_Z - 0.5;
+        }
+
+        if (options.at === "above" || options.at === "below") {
+            const refLayer = this.getLayerById(options.layerId);
+            if (!refLayer) {
+                throw new Error(
+                    `Cannot add layer above/below '${options.layerId}': layer is unknown.`
+                );
+            }
+            if (!this.#topLevelLayers.has(refLayer as LayerType)) {
+                throw new Error(
+                    `Cannot add layer above/below '${options.layerId}': layer is not a top level layer.`
+                );
+            }
+            return (
+                (refLayer as LayerType).olLayer.getZIndex()! + (options.at === "above" ? 0.5 : -0.5)
+            );
+        }
+
+        return options.at === "bottom" ? OPERATION_LAYER_INITIAL_Z - 0.5 : this.#nextIndex;
     }
 
     /**
@@ -218,6 +264,7 @@ export class LayerCollectionImpl implements LayerCollection {
             this.#updateBaseLayer(newBaselayer);
         }
         model.destroy();
+        this.#updateLayerZIndex();
     }
 
     #updateBaseLayer(model: LayerType | undefined) {

@@ -4,21 +4,21 @@
  * no xml parser in happy dom
  * @vitest-environment jsdom
  */
+import { syncEffect, syncWatch } from "@conterra/reactivity-core";
 import { HttpService } from "@open-pioneer/http";
 import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { Group } from "ol/layer";
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { Layer, MapConfig, SimpleLayer, WMSLayer } from "../api";
+import { GroupLayer } from "../api/layers/GroupLayer";
 import { MapModelImpl } from "./MapModelImpl";
 import { createMapModel } from "./createMapModel";
 import { SimpleLayerImpl } from "./layers/SimpleLayerImpl";
 import { WMSLayerImpl } from "./layers/WMSLayerImpl";
-import { syncEffect, syncWatch } from "@conterra/reactivity-core";
-import { GroupLayer } from "../api/layers/GroupLayer";
-import { Group } from "ol/layer";
 
 const THIS_DIR = dirname(fileURLToPath(import.meta.url));
 const WMTS_CAPAS = readFileSync(
@@ -421,38 +421,178 @@ it("registering the same OpenLayers layer twice throws an error", async () => {
     );
 });
 
-it("supports adding a layer to the model", async () => {
-    model = await create("foo", {
-        layers: []
-    });
-    expect(model.layers.getLayers()).toHaveLength(0);
+describe("adding a layers to the model", () => {
+    it("supports adding a layer to the model (default)", async () => {
+        model = await create("foo", {
+            layers: []
+        });
+        expect(model.layers.getLayers()).toHaveLength(0);
 
-    let changed = 0;
-    syncWatch(
-        () => [model!.layers.getLayers()],
-        () => {
-            ++changed;
-        }
-    );
+        let changed = 0;
+        syncWatch(
+            () => [model!.layers.getLayers()],
+            () => {
+                ++changed;
+            }
+        );
 
-    const layer = new SimpleLayer({
-        title: "foo",
-        olLayer: new TileLayer({
-            source: new OSM()
-        }),
-        visible: false
-    });
-    model.layers.addLayer(layer);
-    expect(changed).toBe(1);
-    expect(getLayerProps(layer)).toMatchInlineSnapshot(`
+        const layer = new SimpleLayer({
+            title: "foo",
+            olLayer: new TileLayer({
+                source: new OSM()
+            }),
+            visible: false
+        });
+        model.layers.addLayer(layer);
+        expect(changed).toBe(1);
+        expect(getLayerProps(layer)).toMatchInlineSnapshot(`
       {
         "description": "",
         "title": "foo",
         "visible": false,
       }
     `);
-    expect(model.layers.getLayers()).toHaveLength(1);
-    expect(model.layers.getLayers()[0]).toBe(layer);
+        expect(model.layers.getLayers()).toHaveLength(1);
+        expect(model.layers.getLayers()[0]).toBe(layer);
+    });
+
+    it("supports adding a layer to the model (top)", async () => {
+        model = await create("foo", {
+            layers: [
+                new SimpleLayer({
+                    title: "dummy1",
+                    olLayer: new TileLayer({
+                        source: new OSM()
+                    })
+                })
+            ]
+        });
+
+        const layer = new SimpleLayer({
+            title: "foo",
+            olLayer: new TileLayer({
+                source: new OSM()
+            }),
+            visible: false
+        });
+        model.layers.addLayer(layer, { at: "top" });
+        const layers = model.layers.getOperationalLayers({ sortByDisplayOrder: true });
+        expect(layers).toHaveLength(2);
+        expect(layers[layers.length - 1]).toBe(layer);
+    });
+
+    it("supports adding a layer to the model (bottom)", async () => {
+        model = await create("foo", {
+            layers: [
+                new SimpleLayer({
+                    title: "dummy1",
+                    olLayer: new TileLayer({
+                        source: new OSM()
+                    })
+                })
+            ]
+        });
+
+        const layer = new SimpleLayer({
+            title: "foo",
+            olLayer: new TileLayer({
+                source: new OSM()
+            })
+        });
+        model.layers.addLayer(layer, { at: "bottom" });
+        const layers = model.layers.getOperationalLayers({ sortByDisplayOrder: true });
+        expect(layers).toHaveLength(2);
+        expect(layers[0]).toBe(layer);
+    });
+
+    it("supports adding a layer to the model (above / below)", async () => {
+        model = await create("foo", {
+            layers: [
+                new SimpleLayer({
+                    title: "dummy1",
+                    id: "dummy1",
+                    olLayer: new TileLayer({
+                        source: new OSM()
+                    })
+                }),
+                new SimpleLayer({
+                    title: "dummy2",
+                    id: "dummy2",
+                    olLayer: new TileLayer({
+                        source: new OSM()
+                    })
+                }),
+                new SimpleLayer({
+                    title: "dummy3",
+                    id: "dummy3",
+                    olLayer: new TileLayer({
+                        source: new OSM()
+                    })
+                })
+            ]
+        });
+
+        const layerAbove = new SimpleLayer({
+            title: "above 1",
+            olLayer: new TileLayer({
+                source: new OSM()
+            })
+        });
+        const layerBelow = new SimpleLayer({
+            title: "below 3",
+            olLayer: new TileLayer({
+                source: new OSM()
+            })
+        });
+
+        model.layers.addLayer(layerAbove, { at: "above", layerId: "dummy1" });
+        model.layers.addLayer(layerBelow, { at: "below", layerId: "dummy3" });
+        const layers = model.layers.getOperationalLayers({ sortByDisplayOrder: true });
+        expect(layers).toHaveLength(5);
+        expect(layers[1]).toBe(layerAbove);
+        expect(layers[3]).toBe(layerBelow);
+    });
+
+    it("supports adding a layer to the model (index)", async () => {
+        model = await create("foo", {
+            layers: [
+                new SimpleLayer({
+                    title: "dummy1",
+                    id: "dummy1",
+                    olLayer: new TileLayer({
+                        source: new OSM()
+                    })
+                }),
+                new SimpleLayer({
+                    title: "dummy2",
+                    id: "dummy2",
+                    olLayer: new TileLayer({
+                        source: new OSM()
+                    })
+                }),
+                new SimpleLayer({
+                    title: "dummy3",
+                    id: "dummy3",
+                    olLayer: new TileLayer({
+                        source: new OSM()
+                    })
+                })
+            ]
+        });
+
+        const layer = new SimpleLayer({
+            title: "foo",
+            id: "index2",
+            olLayer: new TileLayer({
+                source: new OSM()
+            })
+        });
+
+        model.layers.addLayer(layer, { at: "index", index: 2 });
+        const layers = model.layers.getOperationalLayers({ sortByDisplayOrder: true });
+        expect(layers).toHaveLength(4);
+        expect(layers[2]).toBe(layer);
+    });
 });
 
 it("supports removing a layer from the model", async () => {
