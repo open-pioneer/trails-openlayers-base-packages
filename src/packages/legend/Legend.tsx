@@ -195,9 +195,7 @@ function useLayers(map: MapModel): Layer[] {
  */
 function useChildLayers(layer: AnyLayer): AnyLayer[] | undefined {
     return useReactiveSnapshot(() => {
-        const childLayers = layer.sublayers
-            ? layer.sublayers.getSublayers({ sortByDisplayOrder: true })
-            : layer.layers?.getLayers({ sortByDisplayOrder: true });
+        const childLayers = layer.children?.getItems();
         if (!childLayers) {
             return undefined;
         }
