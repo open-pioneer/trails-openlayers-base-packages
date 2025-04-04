@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import { reactive, reactiveMap } from "@conterra/reactivity-core";
 import { BasemapSwitcher, BasemapSwitcherProps } from "@open-pioneer/basemap-switcher";
-import { Box, Flex, Spacer, Text } from "@open-pioneer/chakra-integration";
+import { Box, Flex, Spacer, Text, useConst } from "@open-pioneer/chakra-integration";
 import { MapModel, MapModelProps, useMapModel } from "@open-pioneer/map";
 import {
     CommonComponentProps,
@@ -11,7 +11,7 @@ import {
     useCommonComponentProps
 } from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
-import { FC, ReactNode, useEffect, useId, useMemo, useRef } from "react";
+import { FC, ReactNode, useEffect, useId, useRef } from "react";
 import { TocItem, TocModel, TocModelProvider, TocWidgetOptions } from "../model/TocModel";
 import { TopLevelLayerList } from "./LayerList/LayerList";
 import { Tools } from "./Tools";
@@ -68,7 +68,13 @@ export interface TocProps extends CommonComponentProps, MapModelProps {
      */
     autoShowParents?: boolean;
 
-    tocAPIRef?: React.MutableRefObject<TocAPI | undefined>;
+
+    onAPIReady?: (event: TocApiEvent) => void
+}
+
+export interface TocApiEvent{
+    type: "APIReady"
+    apiRef: TocAPI
 }
 
 /**
@@ -153,7 +159,7 @@ export const Toc: FC<TocProps> = (props: TocProps) => {
             break;
         case "resolved": {
             const map = state.map;
-            content = <TocContent {...props} map={map} tocAPIRef={props.tocAPIRef} />;
+            content = <TocContent {...props} map={map} onAPIReady={props.onAPIReady}/>;
             break;
         }
     }
@@ -167,7 +173,7 @@ export const Toc: FC<TocProps> = (props: TocProps) => {
 
 /** This component is rendered once we have a reference to the loaded map model. */
 function TocContent(
-    props: TocProps & { map: MapModel; tocAPIRef?: React.MutableRefObject<TocAPI | undefined> }
+    props: TocProps & { map: MapModel; onApiReady?: (event: TocApiEvent) => void }
 ) {
     const {
         map,
@@ -175,16 +181,17 @@ function TocContent(
         toolsConfig,
         showBasemapSwitcher = true,
         basemapSwitcherProps,
-        tocAPIRef
+        onAPIReady
     } = props;
     const intl = useIntl();
     const model = useTocModel(props);
     const api = useTocAPI(map, model);
 
-    //prefer useImperativeHandle instead?
-    if (tocAPIRef && tocAPIRef.current !== api) {
-        tocAPIRef.current = api;
-    }
+    useEffect(() => {
+        if(onAPIReady){
+            onAPIReady({type: "APIReady", apiRef: api });
+        }
+    },[onAPIReady, api]);
 
     const basemapsHeadingId = useId();
     const basemapSwitcher = showBasemapSwitcher && (
@@ -240,7 +247,9 @@ function TocContent(
 
 function useTocModel(props: TocProps): TocModel {
     const initialProps = useRef(props);
-    const { model, options } = useMemo(() => {
+    const tocModelRef = useConst(createTocModel());
+
+    function createTocModel(){
         const options = reactive<TocWidgetOptions>(
             createOptions(
                 initialProps.current.autoShowParents,
@@ -274,19 +283,19 @@ function useTocModel(props: TocProps): TocModel {
                 items.delete(item.layerId);
             }
         };
-        return { model, options };
-    }, []);
+        return { model: model, options: options };
+    }
 
     // Sync props to model
     useEffect(() => {
-        options.value = createOptions(
+        tocModelRef.options.value = createOptions(
             props.autoShowParents,
             props.collapsibleGroups,
             props.initiallyCollapsed
         );
-    }, [options, props.autoShowParents, props.collapsibleGroups, props.initiallyCollapsed]);
+    }, [props.autoShowParents, props.collapsibleGroups, props.initiallyCollapsed, tocModelRef.options]);
 
-    return model;
+    return tocModelRef.model;
 }
 
 function createOptions(
@@ -302,56 +311,56 @@ function createOptions(
 }
 
 function useTocAPI(map: MapModel, model: TocModel): TocAPI {
-    const api = useMemo(() => {
-        return {
-            setAllItemsExpanded: function (expanded: boolean): void {
-                model.getItems().forEach((item) => item.setExpanded(expanded));
-            },
-            setItemExpanded: function (
-                layerId: string,
-                expanded: boolean,
-                options: ItemExpandedOptions
-            ): boolean | undefined {
-                const tocItem = model.getItem(layerId);
-                if (tocItem) {
-                    tocItem.setExpanded(expanded);
+    const apiRef = useConst<TocAPI>({
+        setAllItemsExpanded: function (expanded: boolean): void {
+            model.getItems().forEach((item) => item.setExpanded(expanded));
+        },
+        setItemExpanded: function (
+            layerId: string,
+            expanded: boolean,
+            options: ItemExpandedOptions
+        ): boolean | undefined {
+            const tocItem = model.getItem(layerId);
+            if (tocItem) {
+                tocItem.setExpanded(expanded);
 
-                    if (options.alignParents) {
-                        bubbleExpandedState(layerId, expanded, map, model);
-                    }
-
-                    return expanded;
-                } else {
-                    return undefined;
+                if (options.alignParents) {
+                    bubbleExpandedState(layerId, expanded, map, model);
                 }
-            },
-            toggleItemExpanded: function (
-                layerId: string,
-                options: ItemExpandedOptions
-            ): boolean | undefined {
-                const item = model.getItem(layerId);
-                if (item) {
-                    const newState = !item.isExpanded;
-                    item.setExpanded(newState);
 
-                    if (options.alignParents) {
-                        bubbleExpandedState(layerId, newState, map, model);
-                    }
-
-                    return newState;
-                }
-                return undefined;
-            },
-            isItemExpanded: function (layerId: string): boolean | undefined {
-                const item = model.getItem(layerId);
-                if (item) {
-                    return item.isExpanded;
-                }
+                return expanded;
+            } else {
                 return undefined;
             }
-        };
-    }, [map, model]);
-    return api;
+        },
+        toggleItemExpanded: function (
+            layerId: string,
+            options: ItemExpandedOptions
+        ): boolean | undefined {
+            const item = model.getItem(layerId);
+            if (item) {
+                const newState = !item.isExpanded;
+                item.setExpanded(newState);
+
+                if (options.alignParents) {
+                    bubbleExpandedState(layerId, newState, map, model);
+                }
+
+                return newState;
+            }
+            return undefined;
+        },
+        isItemExpanded: function (layerId: string): boolean | undefined {
+            const item = model.getItem(layerId);
+            if (item) {
+                return item.isExpanded;
+            }
+            return undefined;
+        }
+    }
+    );
+
+    return apiRef;
 }
 
 /**

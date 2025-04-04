@@ -9,6 +9,9 @@ import { useIntl } from "open-pioneer:react-hooks";
 import { useId, useRef, useState } from "react";
 import { PiListLight } from "react-icons/pi";
 import { MAP_ID } from "./MapConfigProviderImpl";
+import { TocApiEvent } from "@open-pioneer/toc/ui/Toc";
+
+type APIReadyHandler = (event: TocApiEvent) => void; 
 
 export function AppUI() {
     const intl = useIntl();
@@ -16,14 +19,25 @@ export function AppUI() {
     const tocTitleId = useId();
     const [showToc, setShowToc] = useState<boolean>(true);
     const tocAPIRef = useRef<TocAPI>(undefined);
+    const tocAPIRef_Event = useRef<TocAPI>(undefined);
+    const [handler, setHandler] = useState<APIReadyHandler>(createAPIReadyHandler);
 
     function toggleToc() {
         setShowToc(!showToc);
     }
 
+
+    function createAPIReadyHandler() : APIReadyHandler{
+        const handler = (event: TocApiEvent) => {
+            console.log(event);
+            tocAPIRef_Event.current = event.apiRef;
+        };
+        return handler;
+    }
+
     function collapseItems() {
-        if (showToc && tocAPIRef.current) {
-            tocAPIRef.current.toggleItemExpanded("streets", { alignParents: true });
+        if (showToc && tocAPIRef_Event.current) {
+            tocAPIRef_Event.current.toggleItemExpanded("streets", { alignParents: true });
         }
     }
 
@@ -83,8 +97,10 @@ export function AppUI() {
                                                             collapsibleGroups={true}
                                                             initiallyCollapsed={true}
                                                             tocAPIRef={tocAPIRef}
+                                                            onAPIReady={handler} 
                                                         />
                                                         <Button onClick={collapseItems}>toggle</Button>
+                                                        <Button m={5} onClick={() => setHandler(createAPIReadyHandler)}>new api ready handler</Button>
                                                     </TitledSection>
                                                 </Box>
                                             )}
