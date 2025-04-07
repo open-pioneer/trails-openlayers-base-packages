@@ -69,13 +69,24 @@ export interface TocProps extends CommonComponentProps, MapModelProps {
     autoShowParents?: boolean;
 
 
-    onAPIReady?: (event: TocApiEvent) => void
+    onTocEvent?: (event: TocEvent) => void
 }
 
-export interface TocApiEvent{
-    type: "APIReady"
+export type TocEvent = TocLoadingEvent | TocRejectedEvent | TocResolvedEvent
+
+export interface TocResolvedEvent{
+    kind: "resolved"
     apiRef: TocAPI
 }
+
+export interface TocLoadingEvent{
+    kind: "loading"
+}
+
+export interface TocRejectedEvent{
+    kind: "rejected"
+}
+
 
 /**
  * Props supported by the {@link Tools} component.
@@ -153,13 +164,19 @@ export const Toc: FC<TocProps> = (props: TocProps) => {
     switch (state.kind) {
         case "loading":
             content = null;
+            if(props.onTocEvent){
+                props.onTocEvent({kind: "loading"});
+            }
             break;
         case "rejected":
             content = <Text className="toc-error">{intl.formatMessage({ id: "error" })}</Text>;
+            if(props.onTocEvent){
+                props.onTocEvent({kind: "rejected"});
+            }
             break;
         case "resolved": {
             const map = state.map;
-            content = <TocContent {...props} map={map} onAPIReady={props.onAPIReady}/>;
+            content = <TocContent {...props} map={map} onTocEvent={props.onTocEvent}/>;
             break;
         }
     }
@@ -173,7 +190,7 @@ export const Toc: FC<TocProps> = (props: TocProps) => {
 
 /** This component is rendered once we have a reference to the loaded map model. */
 function TocContent(
-    props: TocProps & { map: MapModel; onApiReady?: (event: TocApiEvent) => void }
+    props: TocProps & { map: MapModel; onTocEvent?: (event: TocEvent) => void }
 ) {
     const {
         map,
@@ -181,7 +198,7 @@ function TocContent(
         toolsConfig,
         showBasemapSwitcher = true,
         basemapSwitcherProps,
-        onAPIReady
+        onTocEvent: onAPIReady
     } = props;
     const intl = useIntl();
     const model = useTocModel(props);
@@ -189,7 +206,7 @@ function TocContent(
 
     useEffect(() => {
         if(onAPIReady){
-            onAPIReady({type: "APIReady", apiRef: api });
+            onAPIReady({kind: "resolved", apiRef: api });
         }
     },[onAPIReady, api]);
 

@@ -9,9 +9,9 @@ import { useIntl } from "open-pioneer:react-hooks";
 import { useId, useRef, useState } from "react";
 import { PiListLight } from "react-icons/pi";
 import { MAP_ID } from "./MapConfigProviderImpl";
-import { TocApiEvent } from "@open-pioneer/toc/ui/Toc";
+import { TocEvent } from "@open-pioneer/toc/ui/Toc";
 
-type APIReadyHandler = (event: TocApiEvent) => void; 
+type APIReadyHandler = (event: TocEvent) => void; 
 
 export function AppUI() {
     const intl = useIntl();
@@ -28,9 +28,10 @@ export function AppUI() {
 
 
     function createAPIReadyHandler() : APIReadyHandler{
-        const handler = (event: TocApiEvent) => {
+        const handler = (event: TocEvent) => {
             console.log(event);
-            tocAPIRef_Event.current = event.apiRef;
+            if(event.kind === "resolved")
+                tocAPIRef_Event.current = event.apiRef;
         };
         return handler;
     }
@@ -96,11 +97,10 @@ export function AppUI() {
                                                             }}
                                                             collapsibleGroups={true}
                                                             initiallyCollapsed={true}
-                                                            tocAPIRef={tocAPIRef}
-                                                            onAPIReady={handler} 
+                                                            onTocEvent={handler} 
                                                         />
                                                         <Button onClick={collapseItems}>toggle</Button>
-                                                        <Button m={5} onClick={() => setHandler(createAPIReadyHandler)}>new api ready handler</Button>
+                                                        <Button m={5} onClick={() => setHandler(createAPIReadyHandler)}>set new api handler</Button>
                                                     </TitledSection>
                                                 </Box>
                                             )}
