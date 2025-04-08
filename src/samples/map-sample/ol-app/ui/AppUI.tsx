@@ -11,7 +11,6 @@ import { AppModel, MainContentId } from "../AppModel";
 import { EditingComponent } from "./Editing";
 import { Footer } from "./Footer";
 import { LegendComponent } from "./Legend";
-import { MapTools } from "./MapTools";
 import { MeasurementComponent } from "./Measurement";
 import { PrintingComponent } from "./Printing";
 import { ResultListComponent } from "./ResultList";
@@ -67,11 +66,11 @@ export function AppUI() {
 
                                 <MainContentComponent mainContent={mainContent} />
                                 <MapAnchor
-                                    position="bottom-right"
+                                    position="top-h-center"
                                     horizontalGap={10}
                                     verticalGap={45}
                                 >
-                                    <MapTools />
+                                    X
                                 </MapAnchor>
                                 <ResultListComponent /* always here, but may be invisible / empty */
                                 />
