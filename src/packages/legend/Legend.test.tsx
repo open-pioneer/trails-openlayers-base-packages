@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Box, Image, Text } from "@open-pioneer/chakra-integration";
-import { SimpleLayer, WMSLayer } from "@open-pioneer/map";
+import { GroupLayer, SimpleLayer, WMSLayer } from "@open-pioneer/map";
 import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { act, render, screen, waitFor } from "@testing-library/react";
@@ -275,6 +275,62 @@ it("shows correct legend entries for nested WMSSublayers", async () => {
     expect(images[2]?.getAttribute("src")).toBe("https://fake.legend.url/sublayer3_2.png");
     // legend src is extract from the capabilities
     expect(images[3]?.getAttribute("src")).toBe("http://www.university.edu/legends/atlas.gif");
+});
+
+it("shows legend entries for group layers and their children", async () => {
+    const { map, registry } = await setupMap({
+        layers: [
+            {
+                title: "Base layer",
+                id: "base-layer",
+                olLayer: new TileLayer({}),
+                isBaseLayer: true
+            },
+            new GroupLayer({
+                title: "Hintergrundkarten",
+                visible: true,
+                attributes: {
+                    "legend": { imageUrl: "https://fake.legend.url/layer-group-1.png" }
+                },
+                layers: [
+                    new SimpleLayer({
+                        title: "Layer 1",
+                        id: "layer-1",
+                        olLayer: new TileLayer({}),
+                        attributes: {
+                            "legend": {
+                                imageUrl: "https://fake.legend.url/child-layer-1.png"
+                            }
+                        }
+                    }),
+                    createLayerWithNestedSublayers()
+                ]
+            })
+        ],
+        fetch: vi.fn(async () => {
+            return new Response(WMTS_CAPAS, {
+                status: 200
+            });
+        })
+    });
+    const injectedServices = createServiceOptions({ registry });
+
+    render(
+        <PackageContextProvider services={injectedServices}>
+            <Legend map={map} data-testid="legend" />
+        </PackageContextProvider>
+    );
+
+    const legendDiv = await findLegend();
+    await waitForLegendItem(legendDiv);
+    const images = await getLegendImages(legendDiv, 6);
+
+    expect(images[0]?.getAttribute("src")).toBe("https://fake.legend.url/layer-group-1.png");
+    expect(images[1]?.getAttribute("src")).toBe("https://fake.legend.url/sublayer4_1.png");
+    expect(images[2]?.getAttribute("src")).toBe("https://fake.legend.url/sublayer4_2.png");
+    expect(images[3]?.getAttribute("src")).toBe("https://fake.legend.url/sublayer3_2.png");
+    expect(images[4]?.getAttribute("src")).toBe("http://www.university.edu/legends/atlas.gif");
+    expect(images[5]?.getAttribute("src")).toBe("https://fake.legend.url/child-layer-1.png");
 });
 
 it("shows legend entries in correct order", async () => {
@@ -636,9 +692,9 @@ async function waitForLegendItem(legendDiv: HTMLElement) {
 async function getLegendImages(legendDiv: HTMLElement, expectedCount = 1) {
     return await waitFor(() => {
         const legendImages = legendDiv.querySelectorAll(LEGEND_IMAGE_CLASS);
-        if (legendImages.length < expectedCount) {
+        if (legendImages.length !== expectedCount) {
             throw new Error(
-                `expected at least ${expectedCount} legend image(s), got only ${legendImages.length}`
+                `expected ${expectedCount} legend image(s), but got ${legendImages.length}`
             );
         }
 
