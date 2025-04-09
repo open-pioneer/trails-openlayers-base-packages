@@ -1,19 +1,21 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box, Flex, Tooltip, useToken } from "@open-pioneer/chakra-integration";
+import { Box, createListCollection } from "@chakra-ui/react";
+import { Tooltip } from "@open-pioneer/chakra-snippets";
 import { Layer, MapModel, useMapModel, MapModelProps } from "@open-pioneer/map";
-import { CommonComponentProps, useCommonComponentProps, useEvent } from "@open-pioneer/react-utils";
+import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
-import {
+import { Select } from "@chakra-ui/react";
+
+/*import {
     chakraComponents,
     ChakraStylesConfig,
     GroupBase,
     OptionProps,
-    Select,
     SingleValueProps
-} from "chakra-react-select";
+} from "chakra-react-select";*/
 import { useIntl } from "open-pioneer:react-hooks";
-import { FC, KeyboardEvent, useMemo, useState, ReactNode } from "react";
+import { FC, useMemo, useState } from "react";
 import { FiAlertTriangle } from "react-icons/fi";
 
 /*
@@ -35,6 +37,8 @@ export interface SelectOption {
      * The layer object for the select option.
      */
     layer: Layer | undefined;
+
+    label: string;
 }
 
 /**
@@ -70,6 +74,7 @@ export interface BasemapSwitcherProps extends CommonComponentProps, MapModelProp
  */
 export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
     const intl = useIntl();
+    // TODO aria labels
     const {
         allowSelectingEmptyBasemap = false,
         "aria-label": ariaLabel,
@@ -82,42 +87,90 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
     const baseLayers = useBaseLayers(map);
     const activeBaseLayer = useReactiveSnapshot(() => map?.layers.getActiveBaseLayer(), [map]);
 
-    const activateLayer = (layerId: string) => {
-        map?.layers.activateBaseLayer(layerId === NO_BASEMAP_ID ? undefined : layerId);
+    const activateLayer = (layerId: string[]) => {
+        map?.layers.activateBaseLayer(layerId[0] === NO_BASEMAP_ID ? undefined : layerId[0]);
     };
 
-    const { options, selectedLayer } = useMemo(() => {
+    const { selectedOption, optionsListCollection } = useMemo(() => {
         const options: SelectOption[] = baseLayers.map<SelectOption>((layer) => {
-            return { value: layer.id, layer: layer };
+            return { value: layer.id, layer: layer, label: layer.title }; // TODO add disable attribute
         });
 
         if (allowSelectingEmptyBasemap || activeBaseLayer == null) {
-            const emptyOption: SelectOption = { value: NO_BASEMAP_ID, layer: undefined };
+            const emptyOption: SelectOption = {
+                value: NO_BASEMAP_ID,
+                layer: undefined,
+                label: emptyBasemapLabel
+            };
             options.push(emptyOption);
         }
 
-        const selectedLayer = options.find((l) => l.layer === activeBaseLayer);
-        return { options, selectedLayer };
-    }, [allowSelectingEmptyBasemap, baseLayers, activeBaseLayer]);
+        const optionsListCollection = createListCollection({ items: options });
 
-    const chakraStyles = useChakraStyles();
+        const selectedLayer = options.find((l) => l.layer === activeBaseLayer);
+        const selectedOption = selectedLayer ? [selectedLayer?.value] : [NO_BASEMAP_ID]; // TODO is that in sync with the options?
+        return { selectedOption, optionsListCollection };
+    }, [baseLayers, allowSelectingEmptyBasemap, activeBaseLayer, emptyBasemapLabel]);
+
+    //const chakraStyles = useChakraStyles();
     const [isOpenSelect, setIsOpenSelect] = useState(false);
-    const components = useMemo(() => {
+    /*const components = useMemo(() => {
         return {
             Option: BasemapSelectOption,
             SingleValue: BasemapSelectValue
         };
     }, []);
-    const keyDown = useEvent((event: KeyboardEvent<HTMLDivElement>) => {
-        //if the menu is already open, do noting
-        if (!isOpenSelect && event.key === "Enter") {
-            setIsOpenSelect(true);
-        }
-    });
+*/
 
+    // TODO scrolling does not work --> use portal?
     return (
         <Box {...containerProps}>
-            {map ? (
+            <Select.Root
+                collection={optionsListCollection}
+                value={selectedOption}
+                onValueChange={(option) => option && activateLayer(option.value)}
+            >
+                <Select.Control>
+                    <Select.Trigger>
+                        <Select.ValueText placeholder={"Test"} />
+                    </Select.Trigger>
+                    <Select.IndicatorGroup>
+                        <Select.Indicator />
+                    </Select.IndicatorGroup>
+                </Select.Control>
+
+                <Select.Positioner>
+                    <Select.Content>
+                        {optionsListCollection.items.map((item) => (
+                            <Select.Item item={item} key={item.value} justifyContent="flex-start">
+                                {item.label}
+                                {item.layer?.loadState === "error" && (
+                                    <Box ml={2}>
+                                        {/*TODO: tooltip does not work*/}
+                                        <Tooltip
+                                            content={intl.formatMessage({
+                                                id: "layerNotAvailable"
+                                            })}
+                                            positioning={{ placement: "right" }}
+                                            openDelay={500}
+                                        >
+                                            <span>
+                                                <FiAlertTriangle
+                                                    color={"red"}
+                                                    aria-label={intl.formatMessage({
+                                                        id: "layerNotAvailable"
+                                                    })}
+                                                />
+                                            </span>
+                                        </Tooltip>
+                                    </Box>
+                                )}
+                            </Select.Item>
+                        ))}
+                    </Select.Content>
+                </Select.Positioner>
+            </Select.Root>
+            {/* {map ? (
                 <Select<SelectOption>
                     aria-label={ariaLabel}
                     aria-labelledby={ariaLabelledBy}
@@ -159,7 +212,7 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
                     onMenuOpen={() => setIsOpenSelect(true)}
                     onMenuClose={() => setIsOpenSelect(false)}
                 />
-            ) : null}
+            ) : null}*/}
         </Box>
     );
 };
@@ -168,6 +221,7 @@ function useBaseLayers(mapModel: MapModel | undefined): Layer[] {
     return useReactiveSnapshot(() => mapModel?.layers.getBaseLayers() ?? [], [mapModel]);
 }
 
+/*
 function BasemapSelectOption(props: OptionProps<SelectOption>): ReactNode {
     const { layer } = props.data;
     const { isAvailable, content } = useBasemapItem(layer);
@@ -197,8 +251,9 @@ function BasemapSelectValue(props: SingleValueProps<SelectOption>): ReactNode {
         </chakraComponents.SingleValue>
     );
 }
+*/
 
-function useBasemapItem(layer: Layer | undefined) {
+/*function useBasemapItem(layer: Layer | undefined) {
     const intl = useIntl();
     const notAvailableLabel = intl.formatMessage({ id: "layerNotAvailable" });
     const { label, isAvailable } = useReactiveSnapshot(() => {
@@ -220,7 +275,7 @@ function useBasemapItem(layer: Layer | undefined) {
                 {label}
                 {!isAvailable && (
                     <Box ml={2}>
-                        <Tooltip label={notAvailableLabel} placement="right" openDelay={500}>
+                        <Tooltip content={notAvailableLabel} placement="right" openDelay={500}>
                             <span>
                                 <FiAlertTriangle color={"red"} aria-label={notAvailableLabel} />
                             </span>
@@ -230,17 +285,13 @@ function useBasemapItem(layer: Layer | undefined) {
             </Flex>
         )
     };
-}
+}*/
 
 /**
  * Customizes components styles within the select component.
  */
-function useChakraStyles() {
-    const [dropDownBackground, borderColor] = useToken(
-        "colors",
-        ["background_body", "border"],
-        ["#ffffff", "#ffffff"]
-    );
+/*function useChakraStyles() {
+    const [dropDownBackground, borderColor] = useToken("colors", ["bg", "border"]);
     return useMemo(() => {
         const chakraStyles: ChakraStylesConfig<SelectOption, false, GroupBase<SelectOption>> = {
             control: (styles) => ({ ...styles, cursor: "pointer" }),
@@ -255,4 +306,4 @@ function useChakraStyles() {
         };
         return chakraStyles;
     }, [dropDownBackground, borderColor]);
-}
+}*/
