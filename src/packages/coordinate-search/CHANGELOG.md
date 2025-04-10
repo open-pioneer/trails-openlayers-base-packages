@@ -1,5 +1,30 @@
 # @open-pioneer/coordinate-search
 
+## 0.10.0
+
+### Minor Changes
+
+- 193068a: Deprecate the `mapId` property on React components.
+  Use the `MapModel` directly instead to pass a reference to the map.
+
+    Example:
+
+    ```tsx
+    // Default map for entire component tree
+    <DefaultMapProvider map={mapModel}>
+        <Toc />
+    </DefaultMapProvider>
+
+    // Map for specific component
+    <Toc map={mapModel} />
+    ```
+
+### Patch Changes
+
+- Updated dependencies [2bafdad]
+- Updated dependencies [193068a]
+    - @open-pioneer/map@0.10.0
+
 ## 0.9.0
 
 ### Minor Changes

@@ -1,5 +1,43 @@
 # @open-pioneer/map
 
+## 0.10.0
+
+### Minor Changes
+
+- 193068a: Deprecate the `mapId` property on React components.
+  Use the `MapModel` directly instead to pass a reference to the map.
+
+    Example:
+
+    ```tsx
+    // Default map for entire component tree
+    <DefaultMapProvider map={mapModel}>
+        <Toc />
+    </DefaultMapProvider>
+
+    // Map for specific component
+    <Toc map={mapModel} />
+    ```
+
+### Patch Changes
+
+- 2bafdad: Top level operational layers can now be inserted at an arbitrary position.
+
+    ```ts
+    const mapModel = ...;
+    const newLayer = new SimpleLayer({
+        title: "New layer",
+        // ...
+    });
+
+    mapModel.layers.addLayer(newLayer, { at: "top" }); // Same as default: on top of all existing operational layers
+    mapModel.layers.addLayer(newLayer, { at: "bottom" }); // Below all other operational layers
+
+    const otherLayer = ...; // Eiter a valid layer id or a layer instance. Must be from the same collection.
+    mapModel.layers.addLayer(newLayer, { at: "above", reference: otherLayer }); // Above the reference layer
+    mapModel.layers.addLayer(newLayer, { at: "below", reference: otherLayer }); // Below the reference layer
+    ```
+
 ## 0.9.0
 
 ### Minor Changes
