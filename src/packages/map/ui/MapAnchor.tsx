@@ -41,11 +41,6 @@ export interface MapAnchorProps extends CommonComponentProps {
      * Horizontal gap in pixel applied to anchor container.
      * Only interpreted if a non-manual position is used.
      *
-     * Applies to:
-     * - left, if position `*-left`
-     * - right, if position `*-right`
-     * - center, if position `*-hCenter`
-     *
      * @default 0
      */
     horizontalGap?: number;
@@ -54,12 +49,7 @@ export interface MapAnchorProps extends CommonComponentProps {
      * Vertical gap in pixel applied to anchor container.
      * Only interpreted if a non-manual position is used.
      *
-     * Applies to:
-     * - top, if position `top-*`
-     * - bottom, if position `bottom-*`
-     * - center, if position `vCenter-*`
-     *
-     * @default 0 (If position `bottom-*`, default verticalGap == `30`)
+     * @default 0 (If positioned at the bottom, default verticalGap == `30`)
      */
     verticalGap?: number;
 
