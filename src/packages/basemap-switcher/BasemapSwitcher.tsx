@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box, createListCollection, Select } from "@chakra-ui/react";
+import { Box, createListCollection, Portal, Select } from "@chakra-ui/react";
 import { Tooltip } from "@open-pioneer/chakra-snippets";
 import { Layer, useMapModel, MapModelProps } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
@@ -115,7 +115,6 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
                 collection={optionsListCollection}
                 value={selectedOption}
                 onValueChange={(option) => option && activateLayer(option.value)}
-                positioning={{ strategy: "fixed", sameWidth: true }}
             >
                 <Select.Control>
                     <Select.Trigger aria-label={ariaLabel} aria-labelledby={ariaLabelledBy}>
@@ -126,13 +125,15 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
                     </Select.IndicatorGroup>
                 </Select.Control>
 
-                <Select.Positioner>
-                    <Select.Content>
-                        {optionsListCollection.items.map((item) => (
-                            <BasemapItem item={item} key={item.value} />
-                        ))}
-                    </Select.Content>
-                </Select.Positioner>
+                <Portal>
+                    <Select.Positioner>
+                        <Select.Content>
+                            {optionsListCollection.items.map((item) => (
+                                <BasemapItem item={item} key={item.value} />
+                            ))}
+                        </Select.Content>
+                    </Select.Positioner>
+                </Portal>
             </Select.Root>
         </Box>
     );
@@ -143,16 +144,20 @@ function BasemapItem(props: { item: SelectOption }) {
     const notAvailableLabel = intl.formatMessage({ id: "layerNotAvailable" });
     const item = props.item;
     return (
-        <Select.Item item={item} key={item.value} justifyContent="flex-start">
+        <Select.Item
+            item={item}
+            key={item.value}
+            justifyContent="flex-start"
+            // Override pointer-events: none rule for disabled items; we want to show the tooltip on hover
+            pointerEvents="auto"
+        >
             {item.label}
             {item.layer?.loadState === "error" && (
                 <Box ml={2}>
-                    {/*TODO: tooltip is not working if item is disabled*/}
                     <Tooltip
                         content={notAvailableLabel}
                         aria-label={notAvailableLabel}
                         positioning={{ placement: "right" }}
-                        showArrow
                     >
                         <span>
                             <FiAlertTriangle
