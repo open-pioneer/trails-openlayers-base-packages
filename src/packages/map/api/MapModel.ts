@@ -6,12 +6,12 @@ import type OlView from "ol/View";
 import type OlBaseLayer from "ol/layer/Base";
 import type { ExtentConfig } from "./MapConfig";
 import type { AnyLayer, ChildrenCollection, Layer } from "./layers";
-import type { LayerRetrievalOptions, RecursiveRetrievalOptions } from "./shared";
 import type { Geometry } from "ol/geom";
 import type { BaseFeature } from "./BaseFeature";
 import type { StyleLike } from "ol/style/Style";
 import type { Projection } from "ol/proj";
 import type { Coordinate } from "ol/coordinate";
+import type { AddLayerOptions, LayerRetrievalOptions, RecursiveRetrievalOptions } from "./shared";
 
 /** Events emitted by the {@link MapModel}. */
 export interface MapModelEvents {
@@ -272,8 +272,9 @@ export interface LayerCollection extends ChildrenCollection<Layer> {
      * The new layer is automatically registered with this collection.
      *
      * NOTE: by default, the new layer will be shown on _top_ of all existing layers.
+     * Use the `options` parameter to control the insertion point.
      */
-    addLayer(layer: Layer): void;
+    addLayer(layer: Layer, options?: AddLayerOptions): void;
 
     /**
      * Returns the layer identified by the `id` or undefined, if no such layer exists.
