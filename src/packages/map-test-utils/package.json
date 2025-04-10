@@ -1,6 +1,6 @@
 {
     "name": "@open-pioneer/map-test-utils",
-    "version": "0.9.0",
+    "version": "0.10.0",
     "description": "This package is an internal support package for testing map-related UI components.",
     "license": "Apache-2.0",
     "main": "index.ts",
