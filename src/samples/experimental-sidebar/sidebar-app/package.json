@@ -10,7 +10,6 @@
         "@open-pioneer/map": "workspace:^",
         "@open-pioneer/react-utils": "catalog:",
         "@open-pioneer/runtime": "catalog:",
-        "@open-pioneer/theme": "workspace:^",
         "ol": "catalog:",
         "react": "catalog:",
         "react-dom": "catalog:",

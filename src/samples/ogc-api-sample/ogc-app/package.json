@@ -10,7 +10,6 @@
         "@open-pioneer/ogc-features": "workspace:^",
         "@open-pioneer/react-utils": "catalog:",
         "@open-pioneer/runtime": "catalog:",
-        "@open-pioneer/theme": "workspace:^",
         "@open-pioneer/toc": "workspace:^",
         "ol": "catalog:",
         "ol-mapbox-style": "catalog:",

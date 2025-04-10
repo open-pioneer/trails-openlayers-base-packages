@@ -3,16 +3,11 @@
     position: absolute;
     top: 0;
 
-    &[data-theme="light"] {
-        background-color: var(--chakra-colors-whiteAlpha-700);
-    }
-    &[data-theme="dark"] {
-        background-color: var(--chakra-colors-blackAlpha-700);
-    }
-
+    background-color: rgba(255, 255, 255, 0.7);
+   
     .layout-sidebar-main {
         transition: width 300ms ease-out 0s;
-        border-right: 1px solid var(--chakra-colors-chakra-border-color);
+        border-right: 1px solid var(--chakra-colors-border-emphasized);
     }
 
     .layout-sidebar-content {
@@ -22,7 +17,7 @@
         .content-section {
             .content-header {
                 font-size: 1.5em;
-                background-color: var(--chakra-colors-blackAlpha-500);
+                background-color: rgba(0, 0, 0, 0.4);
                 padding: 0.5rem 1rem;
             }
 

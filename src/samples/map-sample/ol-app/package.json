@@ -25,7 +25,6 @@
         "@open-pioneer/scale-viewer": "workspace:^",
         "@open-pioneer/search": "workspace:^",
         "@open-pioneer/selection": "workspace:^",
-        "@open-pioneer/theme": "workspace:^",
         "@open-pioneer/toc": "workspace:^",
         "ol": "catalog:",
         "react": "catalog:",

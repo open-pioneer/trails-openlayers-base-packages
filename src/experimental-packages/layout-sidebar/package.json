@@ -20,7 +20,8 @@
         "@emotion/react": "catalog:",
         "@emotion/styled": "catalog:",
         "@open-pioneer/runtime": "catalog:",
-        "react": "catalog:"
+        "react": "catalog:",
+        "react-icons": "catalog:"
     },
     "devDependencies": {
         "openlayers-base-packages": "workspace:*"
