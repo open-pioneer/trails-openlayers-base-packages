@@ -5,7 +5,7 @@ import { Resource, createLogger } from "@open-pioneer/core";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import type OlMap from "ol/Map";
 import { Extent } from "ol/extent";
-import { ReactNode, useEffect, useMemo, useRef, useState, CSSProperties } from "react";
+import { ReactNode, useEffect, useMemo, useRef, useState, CSSProperties, useCallback } from "react";
 import { MapModel, MapPadding } from "../api";
 import { MapContainerContextProvider, MapContainerContextType } from "./MapContainerContext";
 import { MapModelProps, useMapModel } from "./useMapModel";
@@ -72,7 +72,7 @@ export function MapContainer(props: MapContainerProps) {
         "aria-label": ariaLabel,
         "aria-labelledby": ariaLabelledBy
     } = props;
-    const { containerProps } = useCommonComponentProps("map-container", props);
+    const { containerProps } = useCommonComponentProps("map-container-root", props);
     const mapContainer = useRef<HTMLDivElement>(null);
     const mapAnchorsHost = useRef<HTMLDivElement>(null);
     const modelState = useMapModel(props);
@@ -125,32 +125,36 @@ export function MapContainer(props: MapContainerProps) {
     }, [viewPadding]);
 
     return (
-        <chakra.div
-            {...containerProps}
-            role={role}
-            aria-label={ariaLabel}
-            aria-labelledby={ariaLabelledBy}
-            ref={mapContainer}
-            style={styleProps}
-            //eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
-            tabIndex={0}
-        >
-            {ready && map && (
-                <MapContainerReady
-                    olMap={map.olMap}
-                    mapAnchorsHost={mapAnchorsHost.current!}
-                    viewPadding={viewPadding}
-                    viewPaddingChangeBehavior={viewPaddingChangeBehavior}
-                >
-                    {children}
-                </MapContainerReady>
-            )}
+        <chakra.div {...containerProps} style={styleProps}>
+            {/* Used by open layers to mount the map. This node receives the keyboard focus when interacting with the map. */}
+            <chakra.div
+                className="map-container"
+                ref={mapContainer}
+                role={role}
+                aria-label={ariaLabel}
+                aria-labelledby={ariaLabelledBy}
+                h="100%"
+                w="100%"
+                //eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
+                tabIndex={0}
+            />
+
+            {/* Contains user widgets (map anchors and raw children). These are separate from the map so they don't interfere with mouse/keyboard events. */}
             <chakra.div
                 ref={mapAnchorsHost}
                 className="map-anchors"
                 /* note: zero sized, children have a size and are positioned relative to the map-container */
             >
-                {/* Map anchors will be mounted here via portal */}
+                {ready && map && (
+                    <MapContainerReady
+                        olMap={map.olMap}
+                        mapAnchorsHost={mapAnchorsHost.current!}
+                        viewPadding={viewPadding}
+                        viewPaddingChangeBehavior={viewPaddingChangeBehavior}
+                    >
+                        {children}
+                    </MapContainerReady>
+                )}
             </chakra.div>
         </chakra.div>
     );
