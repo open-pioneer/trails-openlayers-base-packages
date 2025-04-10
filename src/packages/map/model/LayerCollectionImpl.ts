@@ -1,7 +1,14 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { batch, reactive, reactiveMap, reactiveSet } from "@conterra/reactivity-core";
-import { createLogger } from "@open-pioneer/core";
+import {
+    batch,
+    effect,
+    reactive,
+    reactiveArray,
+    reactiveMap,
+    reactiveSet
+} from "@conterra/reactivity-core";
+import { createLogger, Resource } from "@open-pioneer/core";
 import OlBaseLayer from "ol/layer/Base";
 import {
     AddLayerOptions,
@@ -17,9 +24,6 @@ import { MapModelImpl } from "./MapModelImpl";
 import { getRecursiveLayers } from "./getRecursiveLayers";
 
 const LOG = createLogger("map:LayerCollection");
-
-const BASE_LAYER_Z = 0;
-const OPERATION_LAYER_INITIAL_Z = 1;
 
 type LayerType = AbstractLayer & Layer;
 type LayerBaseType = (AbstractLayerBase & Layer) | (AbstractLayerBase & Sublayer);
@@ -50,11 +54,27 @@ export class LayerCollectionImpl implements LayerCollection {
     /** Currently active base layer. */
     #activeBaseLayer = reactive<LayerType>();
 
-    /** next z-index for operational layer. currently just auto-increments. */
-    #nextIndex = OPERATION_LAYER_INITIAL_Z;
+    /**
+     * Defines the relative order of operational layers.
+     * Lower index -> layer is below its successors.
+     */
+    #operationalLayerOrder = reactiveArray<LayerType>();
+
+    #syncHandle: Resource | undefined;
 
     constructor(map: MapModelImpl) {
         this.#map = map;
+        this.#syncHandle = effect(() => {
+            const orderedLayers = this.getLayers({ sortByDisplayOrder: true });
+
+            // Simply reassign all z-indices whenever the order changes.
+            let index = 0;
+            for (const layer of orderedLayers) {
+                LOG.isDebug() && LOG.debug("Assigning z-index", layer.id, index);
+                layer.olLayer.setZIndex(index);
+                index++;
+            }
+        });
     }
 
     destroy() {
@@ -64,7 +84,10 @@ export class LayerCollectionImpl implements LayerCollection {
         }
         this.#topLevelLayers.clear();
         this.#layersById.clear();
+        this.#operationalLayerOrder.splice(0, this.#operationalLayerOrder.length);
         this.#activeBaseLayer.value = undefined;
+        this.#syncHandle?.destroy();
+        this.#syncHandle = undefined;
     }
 
     addLayer(layer: Layer, options?: AddLayerOptions): void {
@@ -75,7 +98,8 @@ export class LayerCollectionImpl implements LayerCollection {
     }
 
     getBaseLayers(): Layer[] {
-        return this.getLayers().filter((layer) => layer.isBaseLayer);
+        // Slightly inefficient, but we don't need a separate index for base layers right now.
+        return Array.from(this.#topLevelLayers).filter((layer) => layer.isBaseLayer);
     }
 
     getActiveBaseLayer(): Layer | undefined {
@@ -113,11 +137,13 @@ export class LayerCollectionImpl implements LayerCollection {
     }
 
     getLayers(options?: LayerRetrievalOptions): Layer[] {
-        const layers = Array.from(this.#topLevelLayers.values());
         if (options?.sortByDisplayOrder) {
-            sortLayersByDisplayOrder(layers);
+            const baseLayers = this.getBaseLayers();
+            const order = Array.from(this.#operationalLayerOrder);
+            return [...baseLayers, ...order];
+        } else {
+            return Array.from(this.#topLevelLayers.values());
         }
-        return layers;
     }
 
     getAllLayers(options?: LayerRetrievalOptions): Layer[] {
@@ -176,12 +202,11 @@ export class LayerCollectionImpl implements LayerCollection {
      * Adds the given layer to the map and all relevant indices.
      */
     #addLayer(model: LayerType, options: AddLayerOptions | undefined) {
+        // Throws; do this before manipulating the data structures
+        const operationalLayerIndex = this.#getInsertionIndex(model, options);
         this.#indexLayer(model);
-        options ??= { at: "top" };
 
-        const zIndex = this.#getLayerZIndex(model, options);
-        const olLayer = model.olLayer;
-        olLayer.setZIndex(zIndex);
+        // Everything below this line should not fail.
         if (model.isBaseLayer) {
             if (!this.#activeBaseLayer.value && model.visible) {
                 this.#updateBaseLayer(model);
@@ -189,49 +214,68 @@ export class LayerCollectionImpl implements LayerCollection {
                 model.__setVisible(false);
             }
         } else {
-            this.#nextIndex++;
             model.__setVisible(model.visible);
+
+            if (operationalLayerIndex == null) {
+                throw new Error(
+                    "Internal error: insertion index is undefined for operational layer."
+                );
+            }
+            this.#operationalLayerOrder.splice(operationalLayerIndex, 0, model);
         }
 
         this.#topLevelLayers.add(model);
-        this.#map.olMap.addLayer(olLayer);
-        this.#updateLayerZIndex();
+        this.#map.olMap.addLayer(model.olLayer);
     }
 
-    #updateLayerZIndex() {
-        const layers = this.getOperationalLayers({ sortByDisplayOrder: true });
-        layers.forEach((layer, index) => {
-            layer.olLayer.setZIndex(index + OPERATION_LAYER_INITIAL_Z);
-        });
-    }
-
-    #getLayerZIndex(model: LayerType, options: AddLayerOptions): number {
+    #getInsertionIndex(model: LayerType, options: AddLayerOptions | undefined): number | undefined {
         if (model.isBaseLayer) {
-            return BASE_LAYER_Z;
+            if (options?.at) {
+                throw new Error(
+                    `Cannot add base layer '${model.id}' at a specific position: only operational layers can be added at a specific position.`
+                );
+            }
+            return undefined;
         }
 
-        if (options.at === "index") {
-            return options.index + OPERATION_LAYER_INITIAL_Z - 0.5;
+        switch (options?.at) {
+            case undefined:
+            case null:
+            case "top":
+                return this.#operationalLayerOrder.length;
+            case "bottom":
+                return 0;
+            case "above":
+            case "below": {
+                const reference = this.#getReference(options.reference);
+                let index = this.#operationalLayerOrder.indexOf(reference);
+                if (index === -1) {
+                    throw new Error(
+                        `Reference layer '${reference.id}' not found in operation layers.`
+                    );
+                }
+                if (options.at === "above") {
+                    index++;
+                }
+                return index;
+            }
         }
+        assertNever(options);
+    }
 
-        if (options.at === "above" || options.at === "below") {
-            const refLayer = this.getLayerById(options.layerId);
+    #getReference(reference: Layer | string): LayerType {
+        let layer: AnyLayer;
+        if (typeof reference === "string") {
+            const refLayer = this.getLayerById(reference);
             if (!refLayer) {
-                throw new Error(
-                    `Cannot add layer above/below '${options.layerId}': layer is unknown.`
-                );
+                throw new Error(`Unknown reference layer '${reference}'.`);
             }
-            if (!this.#topLevelLayers.has(refLayer as LayerType)) {
-                throw new Error(
-                    `Cannot add layer above/below '${options.layerId}': layer is not a top level layer.`
-                );
-            }
-            return (
-                (refLayer as LayerType).olLayer.getZIndex()! + (options.at === "above" ? 0.5 : -0.5)
-            );
+            layer = refLayer;
+        } else {
+            layer = reference;
         }
-
-        return options.at === "bottom" ? OPERATION_LAYER_INITIAL_Z - 0.5 : this.#nextIndex;
+        checkLayerInstance(layer);
+        return layer;
     }
 
     /**
@@ -255,16 +299,22 @@ export class LayerCollectionImpl implements LayerCollection {
 
         this.#map.olMap.removeLayer(model.olLayer);
         this.#topLevelLayers.delete(model);
+        if (!model.isBaseLayer) {
+            const index = this.#operationalLayerOrder.indexOf(model);
+            if (index !== -1) {
+                this.#operationalLayerOrder.splice(index, 1);
+            }
+        }
+
         this.#unIndexLayer(model);
         if (this.#activeBaseLayer.value === model) {
-            const newBaselayer = this.getBaseLayers()[0];
-            if (newBaselayer) {
-                checkLayerInstance(newBaselayer);
+            const newBaseLayer = this.getBaseLayers()[0];
+            if (newBaseLayer) {
+                checkLayerInstance(newBaseLayer);
             }
-            this.#updateBaseLayer(newBaselayer);
+            this.#updateBaseLayer(newBaseLayer);
         }
         model.destroy();
-        this.#updateLayerZIndex();
     }
 
     #updateBaseLayer(model: LayerType | undefined) {
@@ -361,20 +411,14 @@ export class LayerCollectionImpl implements LayerCollection {
     }
 }
 
-function sortLayersByDisplayOrder(layers: Layer[]) {
-    layers.sort((left, right) => {
-        // currently layers are added with increasing z-index (base layers: 0), so
-        // ordering by z-index is automatically the correct display order.
-        const leftZ = left.olLayer.getZIndex() ?? 1;
-        const rightZ = right.olLayer.getZIndex() ?? 1;
-        return leftZ - rightZ;
-    });
-}
-
-function checkLayerInstance(object: Layer): asserts object is Layer & AbstractLayer {
+function checkLayerInstance(object: AnyLayer): asserts object is Layer & AbstractLayer {
     if (!(object instanceof AbstractLayer)) {
         throw new Error(
             `Layer is not a valid layer instance. Use one of the classes provided by the map package instead.`
         );
     }
+}
+
+function assertNever(_arg: never): never {
+    throw new Error(`Internal error: unhandled option.`);
 }

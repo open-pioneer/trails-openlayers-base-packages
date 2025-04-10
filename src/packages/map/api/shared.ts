@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import type { AnyLayer } from "./layers";
+import type { AnyLayer, Layer } from "./layers";
 
 /** These options can be used by some APIs returning an array of layers (or sublayers). */
 export interface LayerRetrievalOptions {
@@ -22,37 +22,36 @@ export interface RecursiveRetrievalOptions extends LayerRetrievalOptions {
     filter?: (layer: AnyLayer) => boolean;
 }
 
-/** These options can be used to insert a new layer at a specific location in the top level hierarchy */
-export type AddLayerOptions =
-    | AddLayerOptionsTopBottom
-    | AddLayerOptionsAboveBelow
-    | AddLayerOptionsIndex;
+/** These options can be used to insert a new layer at a specific location in the top level hierarchy. */
+export type AddLayerOptions = AddLayerOptionsTopBottom | AddLayerOptionsAboveBelow;
 
-interface AddLayerOptionsBase {
+export interface AddLayerOptionsBase {
     /**
-     * Where to insert the new layer. default: "top"
+     * Where to insert the new layer.
+     *
+     * Default: "top"
+     *
+     * - "top": Insert the new layer _above_ all other operational layers.
+     * - "bottom": Insert the new layer _below_ all other operational layers.
+     * - "above": Insert the new layer _above_ the specified `reference` layer.
+     * - "below": Insert the new layer _below_ the specified `reference` layer.
      */
-    at: "top" | "bottom" | "index" | "above" | "below";
+    at: "top" | "bottom" | "above" | "below";
 }
 
-interface AddLayerOptionsTopBottom extends AddLayerOptionsBase {
+export interface AddLayerOptionsTopBottom extends AddLayerOptionsBase {
     at: "top" | "bottom";
 }
 
-interface AddLayerOptionsIndex extends AddLayerOptionsBase {
-    at: "index";
-
-    /**
-     * The index at which to insert the new layer. Only used if `at` is "index".
-     */
-    index: number;
-}
-
-interface AddLayerOptionsAboveBelow extends AddLayerOptionsBase {
+export interface AddLayerOptionsAboveBelow extends AddLayerOptionsBase {
     at: "above" | "below";
 
     /**
-     * The ID of the layer above or below which to insert the new layer. Only used if `at` is "above" or "below".
+     * The layer that serves as a reference point for insertion.
+     *
+     * Can be specified either as a layer object or an `id`.
+     *
+     * The reference must be a valid layer in the layer collection.
      */
-    layerId: string;
+    reference: Layer | string;
 }

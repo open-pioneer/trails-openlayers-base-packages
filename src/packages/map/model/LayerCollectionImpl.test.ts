@@ -6,6 +6,7 @@
  */
 import { syncEffect, syncWatch } from "@conterra/reactivity-core";
 import { HttpService } from "@open-pioneer/http";
+import { waitFor } from "@testing-library/dom";
 import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -41,6 +42,12 @@ it("makes the map layers accessible", async () => {
     model = await create("foo", {
         layers: [
             new SimpleLayer({
+                title: "Some base layer",
+                visible: false,
+                olLayer: new TileLayer(),
+                isBaseLayer: true
+            }),
+            new SimpleLayer({
                 title: "OSM",
                 description: "OSM layer",
                 olLayer: new TileLayer({
@@ -71,25 +78,23 @@ it("makes the map layers accessible", async () => {
       ]
     `);
 
-    // z-orders are currently assigned incrementally. the specific values
-    // do not really matter (the algorithm may change in the future), but they must
-    // a) be on top of base layers
-    // b) on top of each other (depending on configured order)
-    const zOrders = layers.map((l) => l.olLayer.getZIndex());
-    expect(zOrders).toMatchInlineSnapshot(`
-      [
-        1,
-        2,
-      ]
+    // Z-Index is assigned internally based on the display order of layers.
+    await waitForZIndex(layers[0]!);
+    const zIndices = getZIndices(layers);
+    expect(zIndices).toMatchInlineSnapshot(`
+      {
+        "Empty tile": 2,
+        "OSM": 1,
+      }
     `);
 
     const baseLayers = model.layers.getBaseLayers();
-    expect(baseLayers.length).toBe(0);
+    expect(baseLayers.length).toBe(1);
 
     const allLayers = model.layers.getLayers();
-    expect(allLayers).toEqual(layers);
-    // OSM + TopPlus Open + "highlight-layer" = 3
-    expect(model.olMap.getAllLayers().length).toBe(3);
+    expect(allLayers).toEqual([...baseLayers, ...layers]);
+    // Basemap + OSM + TopPlus Open + "highlight-layer" = 4
+    expect(model.olMap.getAllLayers().length).toBe(4);
 });
 
 it("supports ordered retrieval of layers", async () => {
@@ -446,12 +451,12 @@ describe("adding a layers to the model", () => {
         model.layers.addLayer(layer);
         expect(changed).toBe(1);
         expect(getLayerProps(layer)).toMatchInlineSnapshot(`
-      {
-        "description": "",
-        "title": "foo",
-        "visible": false,
-      }
-    `);
+          {
+            "description": "",
+            "title": "foo",
+            "visible": false,
+          }
+        `);
         expect(model.layers.getLayers()).toHaveLength(1);
         expect(model.layers.getLayers()[0]).toBe(layer);
     });
@@ -479,6 +484,15 @@ describe("adding a layers to the model", () => {
         const layers = model.layers.getOperationalLayers({ sortByDisplayOrder: true });
         expect(layers).toHaveLength(2);
         expect(layers[layers.length - 1]).toBe(layer);
+
+        await waitForZIndex(layer);
+        const zIndices = getZIndices(layers);
+        expect(zIndices).toMatchInlineSnapshot(`
+          {
+            "dummy1": 0,
+            "foo": 1,
+          }
+        `);
     });
 
     it("supports adding a layer to the model (bottom)", async () => {
@@ -503,6 +517,15 @@ describe("adding a layers to the model", () => {
         const layers = model.layers.getOperationalLayers({ sortByDisplayOrder: true });
         expect(layers).toHaveLength(2);
         expect(layers[0]).toBe(layer);
+
+        await waitForZIndex(layer);
+        const zIndices = getZIndices(layers);
+        expect(zIndices).toMatchInlineSnapshot(`
+          {
+            "dummy1": 1,
+            "foo": 0,
+          }
+        `);
     });
 
     it("supports adding a layer to the model (above / below)", async () => {
@@ -545,53 +568,24 @@ describe("adding a layers to the model", () => {
             })
         });
 
-        model.layers.addLayer(layerAbove, { at: "above", layerId: "dummy1" });
-        model.layers.addLayer(layerBelow, { at: "below", layerId: "dummy3" });
+        model.layers.addLayer(layerAbove, { at: "above", reference: "dummy1" });
+        model.layers.addLayer(layerBelow, { at: "below", reference: "dummy3" });
         const layers = model.layers.getOperationalLayers({ sortByDisplayOrder: true });
         expect(layers).toHaveLength(5);
         expect(layers[1]).toBe(layerAbove);
         expect(layers[3]).toBe(layerBelow);
-    });
 
-    it("supports adding a layer to the model (index)", async () => {
-        model = await create("foo", {
-            layers: [
-                new SimpleLayer({
-                    title: "dummy1",
-                    id: "dummy1",
-                    olLayer: new TileLayer({
-                        source: new OSM()
-                    })
-                }),
-                new SimpleLayer({
-                    title: "dummy2",
-                    id: "dummy2",
-                    olLayer: new TileLayer({
-                        source: new OSM()
-                    })
-                }),
-                new SimpleLayer({
-                    title: "dummy3",
-                    id: "dummy3",
-                    olLayer: new TileLayer({
-                        source: new OSM()
-                    })
-                })
-            ]
-        });
-
-        const layer = new SimpleLayer({
-            title: "foo",
-            id: "index2",
-            olLayer: new TileLayer({
-                source: new OSM()
-            })
-        });
-
-        model.layers.addLayer(layer, { at: "index", index: 2 });
-        const layers = model.layers.getOperationalLayers({ sortByDisplayOrder: true });
-        expect(layers).toHaveLength(4);
-        expect(layers[2]).toBe(layer);
+        await waitForZIndex(layerAbove);
+        const zIndices = getZIndices(layers);
+        expect(zIndices).toMatchInlineSnapshot(`
+          {
+            "above 1": 1,
+            "below 3": 3,
+            "dummy1": 0,
+            "dummy2": 2,
+            "dummy3": 4,
+          }
+        `);
     });
 });
 
@@ -679,9 +673,6 @@ describe("base layers", () => {
                 ++events;
             }
         );
-
-        const zOrders = [b1, b2].map((l) => l.olLayer.getZIndex());
-        expect(zOrders).toEqual([0, 0]); // base layers always have z-index 0
 
         expect(layers.getActiveBaseLayer()).toBe(b1); // first base layer wins initially
         layers.activateBaseLayer(b1.id);
@@ -887,6 +878,19 @@ function getLayerProps(layer: Layer) {
         description: layer.description,
         visible: layer.visible
     };
+}
+
+async function waitForZIndex(layer: Layer) {
+    await waitFor(() => {
+        const zIndex = layer?.olLayer.getZIndex();
+        if (zIndex == null) {
+            throw new Error("No z-index was assigned");
+        }
+    });
+}
+
+function getZIndices(layers: Layer[]) {
+    return Object.fromEntries(layers.map((layer) => [layer.title, layer.olLayer.getZIndex()]));
 }
 
 function create(mapId: string, mapConfig: MapConfig) {

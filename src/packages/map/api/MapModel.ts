@@ -271,8 +271,8 @@ export interface LayerCollection extends ChildrenCollection<Layer> {
      *
      * The new layer is automatically registered with this collection.
      *
-     * NOTE: by default, the new layer will be shown on _top_ of all existing layers. Use the `options` parameter to
-     * control the insertion point.
+     * NOTE: by default, the new layer will be shown on _top_ of all existing layers.
+     * Use the `options` parameter to control the insertion point.
      */
     addLayer(layer: Layer, options?: AddLayerOptions): void;
 
