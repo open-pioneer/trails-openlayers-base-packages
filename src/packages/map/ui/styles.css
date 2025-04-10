@@ -8,6 +8,7 @@
 
 .map-container .map-anchors {
     pointer-events: none;
+    overflow: hidden;
 
     position: absolute;
     top: var(--map-padding-top);
@@ -26,5 +27,5 @@
     overflow: hidden;
 
     position: absolute;
-    /* positioned absolute in .map-anchor, but currently set via JS */
+    /* positioned absolute in .map-anchors, but actual coordinates are currently set via JS */
 }

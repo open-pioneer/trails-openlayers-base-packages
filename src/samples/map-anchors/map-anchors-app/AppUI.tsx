@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box, Checkbox, Flex, HStack } from "@open-pioneer/chakra-integration";
+import { Box, BoxProps, Checkbox, Flex, HStack } from "@open-pioneer/chakra-integration";
 import {
     DefaultMapProvider,
     MapAnchor,
@@ -9,7 +9,7 @@ import {
     useMapModel
 } from "@open-pioneer/map";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
-import { useMemo, useState } from "react";
+import { ReactNode, useMemo, useState } from "react";
 import { MAP_ID } from "./MapConfigProviderImpl";
 
 const ANCHOR_POSITIONS: MapAnchorPosition[] = [
@@ -17,11 +17,11 @@ const ANCHOR_POSITIONS: MapAnchorPosition[] = [
     "top-right",
     "bottom-left",
     "bottom-right",
-    "top-h-center",
-    "bottom-h-center",
-    "v-center-left",
-    "v-center-right",
-    "v-center-h-center"
+    "top-center",
+    "bottom-center",
+    "left-center",
+    "right-center",
+    "center"
 ];
 
 interface EnabledPaddings {
@@ -108,71 +108,43 @@ function MapContent(props: { paddings: EnabledPaddings }) {
 
 function getOverlays(paddings: EnabledPaddings) {
     const size = `${PADDING_SIZE}px`;
+
+    const box = (props: BoxProps) => (
+        <Box position="absolute" backgroundColor="whiteAlpha.800" {...props} />
+    );
+
     return (
         <>
-            {paddings.left && (
-                <Box
-                    position="absolute"
-                    left={0}
-                    top={0}
-                    bottom={0}
-                    width={size}
-                    backgroundColor="whiteAlpha.800"
-                />
-            )}
-            {paddings.right && (
-                <Box
-                    position="absolute"
-                    right={0}
-                    top={0}
-                    bottom={0}
-                    width={size}
-                    backgroundColor="whiteAlpha.800"
-                />
-            )}
-            {paddings.top && (
-                <Box
-                    position="absolute"
-                    left={0}
-                    right={0}
-                    top={0}
-                    height={size}
-                    backgroundColor="whiteAlpha.800"
-                />
-            )}
-            {paddings.bottom && (
-                <Box
-                    position="absolute"
-                    left={0}
-                    right={0}
-                    bottom={0}
-                    height={size}
-                    backgroundColor="whiteAlpha.800"
-                />
-            )}
+            {paddings.left && box({ left: 0, top: 0, bottom: 0, width: size })}
+            {paddings.right && box({ right: 0, top: 0, bottom: 0, width: size })}
+            {paddings.top && box({ left: 0, right: 0, top: 0, height: size })}
+            {paddings.bottom && box({ left: 0, right: 0, bottom: 0, height: size })}
         </>
     );
 }
 
 function getAnchors() {
-    const anchors = ANCHOR_POSITIONS.map((position) => (
-        <MapAnchor
-            key={position}
-            position={position}
-            //verticalGap={30}
-            //horizontalGap={30}
-        >
-            <Box
-                backgroundColor="whiteAlpha.800"
-                borderWidth="1px"
-                borderRadius="lg"
-                padding={2}
-                boxShadow="lg"
+    const anchors: ReactNode[] = [];
+    anchors.push(
+        ...ANCHOR_POSITIONS.map((position) => (
+            <MapAnchor
+                key={position}
+                position={position}
+                //verticalGap={30}
+                //horizontalGap={30}
             >
-                Anchor at {position}
-            </Box>
-        </MapAnchor>
-    ));
+                <Box
+                    backgroundColor="whiteAlpha.800"
+                    borderWidth="1px"
+                    borderRadius="lg"
+                    padding={2}
+                    boxShadow="lg"
+                >
+                    Anchor at {position}
+                </Box>
+            </MapAnchor>
+        ))
+    );
     anchors.push(
         // See CSS in app.css
         <MapAnchor className="manual-position" key="manual" position="manual">

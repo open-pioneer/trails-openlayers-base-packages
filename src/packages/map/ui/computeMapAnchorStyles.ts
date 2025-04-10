@@ -10,7 +10,7 @@ export function computeMapAnchorStyles(
 ): StyleProps {
     const horizontal = horizontalGap ?? 0;
     const vertical = verticalGap ?? 0;
-    const attribution = computeAttributionGap(verticalGap);
+    const attributionGap = verticalGap == null ? ATTR_GAP : 0;
 
     const styleProps: StyleProps = {};
     switch (position) {
@@ -24,64 +24,52 @@ export function computeMapAnchorStyles(
             break;
         case "bottom-left":
             styleProps.left = `${horizontal}px`;
-            styleProps.bottom = `${vertical + attribution.gap}px`;
+            styleProps.bottom = `${vertical + attributionGap}px`;
             break;
         case "bottom-right":
             styleProps.right = `${horizontal}px`;
-            styleProps.bottom = `${vertical + attribution.gap}px`;
+            styleProps.bottom = `${vertical + attributionGap}px`;
             break;
-        case "top-h-center":
+        case "top-center":
             styleProps.top = `${vertical}px`;
             styleProps.left = `calc((100% - ${horizontal}px) / 2)`;
             styleProps.transform = "translateX(-50%)";
             break;
-        case "bottom-h-center":
-            styleProps.bottom = `${vertical + attribution.gap}px`;
+        case "bottom-center":
+            styleProps.bottom = `${vertical + attributionGap}px`;
             styleProps.left = `calc((100% - ${horizontal}px) / 2)`;
             styleProps.transform = "translateX(-50%)";
             break;
-        case "v-center-left":
+        case "left-center":
             styleProps.left = `${horizontal}px`;
             styleProps.top = `calc((100% - ${vertical}px) / 2)`;
             styleProps.transform = "translateY(-50%)";
             break;
-        case "v-center-right":
+        case "right-center":
             styleProps.right = `${horizontal}px`;
             styleProps.top = `calc((100% - ${vertical}px) / 2)`;
             styleProps.transform = "translateY(-50%)";
             break;
-        case "v-center-h-center":
+        case "center":
             styleProps.top = `calc((100% - ${vertical}px) / 2)`;
             styleProps.left = `calc((100% - ${horizontal}px) / 2)`;
             styleProps.transform = "translate(-50%, -50%)";
             break;
     }
 
-    /**
-     * TODO: Apply max-height and max-width to MapAnchor to avoid content overflow
-     */
-    // styleProps.maxH = `calc((100%) - ${defaultValue(posExprs.top, "0px")} - ${defaultValue(posExprs.bottom, attribution.gap + "px")} - ${vertical}px - ${attribution.space}px)`;
-    // styleProps.maxW = `calc((100%) - ${defaultValue(posExprs.left, "0px")} - ${defaultValue(posExprs.right, "0px")} - ${horizontal}px)`;
+    styleProps.maxW = `calc((100%) - ${2 * horizontal}px)`;
+    styleProps.maxH = `calc((100%) - ${attributionGap}px - ${2 * vertical}px)`;
     return styleProps;
 }
 
-function computeAttributionGap(verticalGap?: number): {
-    gap: number;
-    space: number;
-} {
-    /**
-     * height of the ol attribution component
-     * improvement: Get height directly from `Attribution` HTMLDivElement
-     */
-    const height = 20;
+/**
+ * height of the ol attribution component
+ * improvement: Get height directly from `Attribution` HTMLDivElement
+ */
+const ATTR_HEIGHT = 20;
 
-    /**
-     * additional space between attribution and map anchor container
-     */
-    const space = 10;
-
-    return {
-        gap: verticalGap === undefined ? height + space : 0,
-        space
-    };
-}
+/**
+ * additional space between attribution and map anchor container
+ */
+const ATTR_SPACE = 10;
+const ATTR_GAP = ATTR_HEIGHT + ATTR_SPACE;

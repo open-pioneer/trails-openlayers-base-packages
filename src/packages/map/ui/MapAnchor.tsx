@@ -16,13 +16,13 @@ export type MapAnchorPosition =
     | "manual"
     | "top-left"
     | "top-right"
-    | "top-h-center"
+    | "top-center"
     | "bottom-left"
     | "bottom-right"
-    | "bottom-h-center"
-    | "v-center-left"
-    | "v-center-right"
-    | "v-center-h-center";
+    | "bottom-center"
+    | "left-center"
+    | "right-center"
+    | "center";
 
 const defaultPosition: MapAnchorPosition = "top-right";
 
@@ -66,6 +66,13 @@ export interface MapAnchorProps extends CommonComponentProps {
     children?: ReactNode;
 }
 
+/**
+ * A map anchor is a layout component that sits on top of the map.
+ *
+ * It can be used to position widgets (such as zoom buttons) at a specific location.
+ *
+ * Map anchors respect the map's current _view padding_.
+ */
 export function MapAnchor(props: MapAnchorProps): ReactNode {
     const { position = defaultPosition, children, horizontalGap, verticalGap } = props;
     const { containerProps } = useCommonComponentProps("map-anchor", props);

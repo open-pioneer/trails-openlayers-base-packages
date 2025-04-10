@@ -31,7 +31,7 @@ it("should successfully create a map anchor component", async () => {
 
     expect(mapAnchor).toMatchInlineSnapshot(`
       <div
-        class="map-anchor css-f5ualm"
+        class="map-anchor css-ufi58a"
         data-theme="light"
       />
     `);
@@ -115,7 +115,7 @@ it('should successfully create a map anchor component with prop `position="v-cen
     const { container } = render(
         <PackageContextProvider services={injectedServices}>
             <MapContainer map={map} data-testid="base">
-                <MapAnchor position="v-center-h-center" />
+                <MapAnchor position="center" />
             </MapContainer>
         </PackageContextProvider>
     );

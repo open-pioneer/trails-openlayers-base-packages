@@ -17,6 +17,7 @@ import { ResultListComponent } from "./ResultList";
 import { SearchComponent } from "./Search";
 import { SelectionComponent } from "./Selection";
 import { TocComponent } from "./Toc";
+import { MapTools } from "./MapTools";
 
 /**
  * The main application layout.
@@ -66,11 +67,11 @@ export function AppUI() {
 
                                 <MainContentComponent mainContent={mainContent} />
                                 <MapAnchor
-                                    position="top-h-center"
+                                    position="bottom-right"
                                     horizontalGap={10}
                                     verticalGap={45}
                                 >
-                                    X
+                                    <MapTools />
                                 </MapAnchor>
                                 <ResultListComponent /* always here, but may be invisible / empty */
                                 />
