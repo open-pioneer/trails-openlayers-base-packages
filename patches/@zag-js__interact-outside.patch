@@ -1,0 +1,90 @@
+diff --git a/dist/index.js b/dist/index.js
+index 6d10a1c86906494c7fdd7bd4ff1569524e59d3c5..684ea46ef62fda61e463bcea8bff266a4bd0b9b7 100644
+--- a/dist/index.js
++++ b/dist/index.js
+@@ -108,8 +108,7 @@ function trackInteractOutsideImpl(node, options) {
+   const win = domQuery.getWindow(node);
+   const frames = getWindowFrames(win);
+   const parentWin = getParentWindow(win);
+-  function isEventOutside(event) {
+-    const target = domQuery.getEventTarget(event);
++  function isEventOutside(event, target) {
+     if (!domQuery.isHTMLElement(target)) return false;
+     if (!target.isConnected) return false;
+     if (domQuery.contains(node, target)) return false;
+@@ -128,8 +127,9 @@ function trackInteractOutsideImpl(node, options) {
+     function handler() {
+       const func = defer ? domQuery.raf : (v) => v();
+       const composedPath = event.composedPath?.() ?? [event.target];
++      const target = domQuery.getEventTarget(event);
+       func(() => {
+-        if (!node || !isEventOutside(event)) return;
++        if (!node || !isEventOutside(event, target)) return;
+         if (onPointerDownOutside || onInteractOutside) {
+           const handler2 = utils.callAll(onPointerDownOutside, onInteractOutside);
+           node.addEventListener(POINTER_OUTSIDE_EVENT, handler2, { once: true });
+@@ -162,8 +162,9 @@ function trackInteractOutsideImpl(node, options) {
+   }, 0);
+   function onFocusin(event) {
+     const func = defer ? domQuery.raf : (v) => v();
++    const target = domQuery.getEventTarget(event);
+     func(() => {
+-      if (!node || !isEventOutside(event)) return;
++      if (!node || !isEventOutside(event, target)) return;
+       if (onFocusOutside || onInteractOutside) {
+         const handler = utils.callAll(onFocusOutside, onInteractOutside);
+         node.addEventListener(FOCUS_OUTSIDE_EVENT, handler, { once: true });
+@@ -174,7 +175,7 @@ function trackInteractOutsideImpl(node, options) {
+         detail: {
+           originalEvent: event,
+           contextmenu: false,
+-          focusable: domQuery.isFocusable(domQuery.getEventTarget(event))
++          focusable: domQuery.isFocusable(target)
+         }
+       });
+     });
+diff --git a/dist/index.mjs b/dist/index.mjs
+index e346d526de4f6cb0683e31f12589ee053d6a30b2..19c51cfe8e81cf31638b974d81f6b351b6a3e991 100644
+--- a/dist/index.mjs
++++ b/dist/index.mjs
+@@ -106,8 +106,7 @@ function trackInteractOutsideImpl(node, options) {
+   const win = getWindow(node);
+   const frames = getWindowFrames(win);
+   const parentWin = getParentWindow(win);
+-  function isEventOutside(event) {
+-    const target = getEventTarget(event);
++  function isEventOutside(event, target) {
+     if (!isHTMLElement(target)) return false;
+     if (!target.isConnected) return false;
+     if (contains(node, target)) return false;
+@@ -126,8 +125,9 @@ function trackInteractOutsideImpl(node, options) {
+     function handler() {
+       const func = defer ? raf : (v) => v();
+       const composedPath = event.composedPath?.() ?? [event.target];
++      const target = getEventTarget(event);
+       func(() => {
+-        if (!node || !isEventOutside(event)) return;
++        if (!node || !isEventOutside(event, target)) return;
+         if (onPointerDownOutside || onInteractOutside) {
+           const handler2 = callAll(onPointerDownOutside, onInteractOutside);
+           node.addEventListener(POINTER_OUTSIDE_EVENT, handler2, { once: true });
+@@ -160,8 +160,9 @@ function trackInteractOutsideImpl(node, options) {
+   }, 0);
+   function onFocusin(event) {
+     const func = defer ? raf : (v) => v();
++    const target = getEventTarget(event);
+     func(() => {
+-      if (!node || !isEventOutside(event)) return;
++      if (!node || !isEventOutside(event, target)) return;
+       if (onFocusOutside || onInteractOutside) {
+         const handler = callAll(onFocusOutside, onInteractOutside);
+         node.addEventListener(FOCUS_OUTSIDE_EVENT, handler, { once: true });
+@@ -172,7 +173,7 @@ function trackInteractOutsideImpl(node, options) {
+         detail: {
+           originalEvent: event,
+           contextmenu: false,
+-          focusable: isFocusable(getEventTarget(event))
++          focusable: isFocusable(target)
+         }
+       });
+     });

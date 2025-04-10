@@ -122,13 +122,28 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
     }, []);
 */
 
-    // TODO scrolling does not work --> use portal?
     return (
         <Box {...containerProps}>
+            <Tooltip
+                content="test123"
+                aria-label="test123"
+                positioning={{ placement: "right" }}
+                showArrow
+            >
+                <span>
+                    <FiAlertTriangle
+                        color={"red"}
+                        aria-label={intl.formatMessage({
+                            id: "layerNotAvailable"
+                        })}
+                    />
+                </span>
+            </Tooltip>
             <Select.Root
                 collection={optionsListCollection}
                 value={selectedOption}
                 onValueChange={(option) => option && activateLayer(option.value)}
+                positioning={{ strategy: "fixed", sameWidth: true }}
             >
                 <Select.Control>
                     <Select.Trigger>
@@ -148,11 +163,10 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
                                     <Box ml={2}>
                                         {/*TODO: tooltip does not work*/}
                                         <Tooltip
-                                            content={intl.formatMessage({
-                                                id: "layerNotAvailable"
-                                            })}
+                                            content="test123"
+                                            aria-label="test123"
                                             positioning={{ placement: "right" }}
-                                            openDelay={500}
+                                            showArrow
                                         >
                                             <span>
                                                 <FiAlertTriangle
