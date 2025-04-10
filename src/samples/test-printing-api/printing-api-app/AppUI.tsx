@@ -1,16 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import {
-    Box,
-    Button,
-    Flex,
-    Image,
-    ListItem,
-    Stack,
-    Text,
-    UnorderedList,
-    VStack
-} from "@open-pioneer/chakra-integration";
+import { Box, Button, Center, Flex, Image, List, Stack, Text, VStack } from "@chakra-ui/react";
 import { createLogger } from "@open-pioneer/core";
 import { MapAnchor, MapContainer, useMapModel } from "@open-pioneer/map";
 import { PrintingService } from "@open-pioneer/printing";
@@ -80,7 +70,9 @@ export function AppUI() {
                                     boxShadow="lg"
                                 >
                                     <Stack pt={5}>
-                                        <Text align="center">Test Controls:</Text>
+                                        <Center>
+                                            <Text>Test Controls:</Text>
+                                        </Center>
                                         <Button onClick={() => addCanvas()}>Canvas</Button>
                                         <Button onClick={() => showImageFromDataURL()}>
                                             Image data URL
@@ -105,18 +97,18 @@ export function AppUI() {
                                         The service provides the screenshot of the given map view in
                                         a form of HTMLCanvasElement or a data url.
                                     </Text>
-                                    <UnorderedList>
-                                        <ListItem>
+                                    <List.Root marginStart="1em">
+                                        <List.Item>
                                             Clicking on the {"'Canvas'"} button shows the
                                             HTMLCanvasElement of the map view embedded in another
                                             HTMLElement.
-                                        </ListItem>
-                                        <ListItem>
+                                        </List.Item>
+                                        <List.Item>
                                             Clicking on the {"'Image data URL'"} button shows the
                                             data url of the map view image used as source for
                                             HTMLImageElement.
-                                        </ListItem>
-                                    </UnorderedList>
+                                        </List.Item>
+                                    </List.Root>
                                 </VStack>
                             </MapAnchor>
                             <MapAnchor position="top-right" horizontalGap={450} verticalGap={10}>
