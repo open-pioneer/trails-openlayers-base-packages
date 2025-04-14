@@ -1,6 +1,6 @@
 {
     "name": "@open-pioneer/map-navigation",
-    "version": "0.9.0",
+    "version": "0.10.0",
     "description": "This package provides a collection of map navigation controls.",
     "license": "Apache-2.0",
     "main": "index.ts",
