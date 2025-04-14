@@ -11,13 +11,13 @@ import { AppModel, MainContentId } from "../AppModel";
 import { EditingComponent } from "./Editing";
 import { Footer } from "./Footer";
 import { LegendComponent } from "./Legend";
-import { MapTools } from "./MapTools";
 import { MeasurementComponent } from "./Measurement";
 import { PrintingComponent } from "./Printing";
 import { ResultListComponent } from "./ResultList";
 import { SearchComponent } from "./Search";
 import { SelectionComponent } from "./Selection";
 import { TocComponent } from "./Toc";
+import { MapTools } from "./MapTools";
 
 /**
  * The main application layout.

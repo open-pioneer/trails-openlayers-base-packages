@@ -2,28 +2,44 @@
 // SPDX-License-Identifier: Apache-2.0
 import { Box } from "@open-pioneer/chakra-integration";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
-import { ReactNode } from "react";
+import { ReactNode, useMemo } from "react";
 import { createPortal } from "react-dom";
 import { computeMapAnchorStyles } from "./computeMapAnchorStyles";
 import { useMapContainerContext } from "./MapContainerContext";
 
-export type MapAnchorPosition = "top-left" | "top-right" | "bottom-left" | "bottom-right";
+/**
+ * The position of an anchor on the map.
+ *
+ * This is either a predefined position (like a corner) or a completely manual position.
+ */
+export type MapAnchorPosition =
+    | "manual"
+    | "top-left"
+    | "top-right"
+    | "top-center"
+    | "bottom-left"
+    | "bottom-right"
+    | "bottom-center"
+    | "left-center"
+    | "right-center"
+    | "center";
 
 const defaultPosition: MapAnchorPosition = "top-right";
 
 export interface MapAnchorProps extends CommonComponentProps {
     /**
      * The position of the anchor container above the map.
+     *
+     * Use `manual` if you wish to position the anchor manually using absolute positioning.
+     * This can be achieved by configuring a css class on the map anchor and using css properties like `left`, `top`, etc.
+     *
      * @default "top-right"
      */
     position?: MapAnchorPosition;
 
     /**
      * Horizontal gap in pixel applied to anchor container.
-     *
-     * Applied:
-     * - left, if position `*-left`
-     * - right, if position `*-right`
+     * Only interpreted if a non-manual position is used.
      *
      * @default 0
      */
@@ -31,48 +47,35 @@ export interface MapAnchorProps extends CommonComponentProps {
 
     /**
      * Vertical gap in pixel applied to anchor container.
+     * Only interpreted if a non-manual position is used.
      *
-     * Applied:
-     * - top, if position `top-*`
-     * - bottom, if position `bottom-*`
-     *
-     * @default 0 (If position `bottom-*`, default verticalGap == `30`)
+     * @default 0 (If positioned at the bottom, default verticalGap == `30`)
      */
     verticalGap?: number;
 
     children?: ReactNode;
 }
 
+/**
+ * A map anchor is a layout component that sits on top of the map.
+ *
+ * It can be used to position widgets (such as zoom buttons) at a specific location.
+ *
+ * Map anchors respect the map's current _view padding_.
+ */
 export function MapAnchor(props: MapAnchorProps): ReactNode {
     const { position = defaultPosition, children, horizontalGap, verticalGap } = props;
     const { containerProps } = useCommonComponentProps("map-anchor", props);
     const { mapAnchorsHost } = useMapContainerContext();
+    const styleProps = useMemo(
+        () => computeMapAnchorStyles(position, horizontalGap, verticalGap),
+        [position, horizontalGap, verticalGap]
+    );
 
     return createPortal(
-        <Box {...containerProps} {...computeMapAnchorStyles(position, horizontalGap, verticalGap)}>
+        <Box {...containerProps} {...styleProps}>
             {children}
         </Box>,
         mapAnchorsHost
     );
-}
-
-export function computeAttributionGap(verticalGap?: number): {
-    gap: number;
-    space: number;
-} {
-    /**
-     * height of the ol attribution component
-     * improvement: Get height directly from `Attribution` HTMLDivElement
-     */
-    const height = 20;
-
-    /**
-     * additional space between attribution and map anchor container
-     */
-    const space = 10;
-
-    return {
-        gap: verticalGap === undefined ? height + space : 0,
-        space
-    };
 }

@@ -1,0 +1,9 @@
+.layout-sidebar {
+    /* show above the map */
+    z-index: 99;
+}
+
+.manual-position {
+    left: 200px;
+    top: 200px;
+}
