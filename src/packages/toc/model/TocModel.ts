@@ -21,12 +21,7 @@ export function useTocModel(): TocModel {
     return model;
 }
 
-/**
- * Shared model used by the toc and all its sub-components.
- *
- * @internal
- */
-export interface TocModel {
+export interface TocAPI {
     /**
      * Return the global widget options.
      *
@@ -44,9 +39,24 @@ export interface TocModel {
      */
     getItems(): TocItem[];
 
+    /**
+     * indicates if the API object is disposed,
+     * this usually happens if the TOC component is unmounted
+     */
+    get disposed(): boolean;
+}
+
+/**
+ * Shared model used by the toc and all its sub-components.
+ *
+ * @internal
+ */
+export interface TocModel extends TocAPI {
     // Used by toc item components to register themselves
     registerItem(item: TocItem): void;
     unregisterItem(item: TocItem): void;
+
+    set disposed(isDisposed: boolean);
 }
 
 /**
@@ -76,8 +86,6 @@ export interface TocWidgetOptions {
  *
  * Currently items register themselves in the model when they are mounted
  * and remove themselves when they are unmounted.
- *
- * @internal
  */
 export interface TocItem {
     /**
@@ -91,9 +99,18 @@ export interface TocItem {
     readonly isExpanded: boolean;
 
     /**
+     * specific css class of the layer item element
+     */
+    readonly className: string;
+
+    /**
      * Expands or collapses the list item.
      *
      * Note: not all list items support this operation.
      */
-    setExpanded(expanded: boolean): void;
+    setExpanded(expanded: boolean, options?: ExpandLayerItemOptions): void;
+}
+
+export interface ExpandLayerItemOptions {
+    bubbleExpandedState: boolean;
 }

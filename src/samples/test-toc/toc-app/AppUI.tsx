@@ -9,9 +9,9 @@ import { useIntl } from "open-pioneer:react-hooks";
 import { useId, useRef, useState } from "react";
 import { PiListLight } from "react-icons/pi";
 import { MAP_ID } from "./MapConfigProviderImpl";
-import { TocEvent } from "@open-pioneer/toc/ui/Toc";
+import { TocApiReadyEvent } from "@open-pioneer/toc/ui/Toc";
 
-type APIReadyHandler = (event: TocEvent) => void; 
+type APIReadyHandler = (event: TocApiReadyEvent) => void;
 
 export function AppUI() {
     const intl = useIntl();
@@ -19,26 +19,25 @@ export function AppUI() {
     const tocTitleId = useId();
     const [showToc, setShowToc] = useState<boolean>(true);
     const tocAPIRef = useRef<TocAPI>(undefined);
-    const tocAPIRef_Event = useRef<TocAPI>(undefined);
     const [handler, setHandler] = useState<APIReadyHandler>(createAPIReadyHandler);
 
     function toggleToc() {
         setShowToc(!showToc);
     }
 
-
-    function createAPIReadyHandler() : APIReadyHandler{
-        const handler = (event: TocEvent) => {
+    function createAPIReadyHandler(): APIReadyHandler {
+        const handler = (event: TocApiReadyEvent) => {
             console.log(event);
-            if(event.kind === "resolved")
-                tocAPIRef_Event.current = event.apiRef;
+            tocAPIRef.current = event.apiRef;
         };
         return handler;
     }
 
-    function collapseItems() {
-        if (showToc && tocAPIRef_Event.current) {
-            tocAPIRef_Event.current.toggleItemExpanded("streets", { alignParents: true });
+    function toggleTocItem(layerId: string) {
+        if (showToc && tocAPIRef.current) {
+            const layerItem = tocAPIRef.current.getItem(layerId);
+            const newState = !layerItem?.isExpanded;
+            layerItem?.setExpanded(newState, { bubbleExpandedState: newState });
         }
     }
 
@@ -97,10 +96,21 @@ export function AppUI() {
                                                             }}
                                                             collapsibleGroups={true}
                                                             initiallyCollapsed={true}
-                                                            onTocEvent={handler} 
+                                                            onApiReady={handler}
                                                         />
-                                                        <Button onClick={collapseItems}>toggle</Button>
-                                                        <Button m={5} onClick={() => setHandler(createAPIReadyHandler)}>set new api handler</Button>
+                                                        <Button
+                                                            onClick={() => toggleTocItem("streets")}
+                                                        >
+                                                            toggle streets group
+                                                        </Button>
+                                                        <Button
+                                                            m={5}
+                                                            onClick={() =>
+                                                                setHandler(createAPIReadyHandler)
+                                                            }
+                                                        >
+                                                            set new api handler
+                                                        </Button>
                                                     </TitledSection>
                                                 </Box>
                                             )}

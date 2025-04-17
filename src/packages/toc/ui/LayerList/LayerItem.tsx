@@ -19,7 +19,7 @@ import classNames from "classnames";
 import { useIntl } from "open-pioneer:react-hooks";
 import { memo, ReactNode, useEffect, useId, useMemo } from "react";
 import { FiAlertTriangle } from "react-icons/fi";
-import { TocItem, useTocModel } from "../../model/TocModel";
+import { ExpandLayerItemOptions, TocItem, useTocModel } from "../../model/TocModel";
 import { slug } from "../../utils/slug";
 import { useChildLayers, useLoadState } from "./hooks";
 import { LayerItemMenu } from "./LayerItemMenu";
@@ -60,7 +60,7 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
         );
     }
     return (
-        <Box as="li" className={classNames("toc-layer-item", `layer-${slug(layer.id)}`)}>
+        <Box as="li" className={classNames("toc-layer-item", getClassNameForLayer(layer))}>
             <Flex
                 className="toc-layer-item-content"
                 width="100%"
@@ -166,11 +166,20 @@ function useTocItem(layer: AnyLayer) {
             get isExpanded(): boolean {
                 return expanded.value;
             },
-            setExpanded(expand: boolean) {
+            get className(): string {
+                return getClassNameForLayer(layer);
+            },
+            setExpanded(expand: boolean, options?: ExpandLayerItemOptions) {
                 expanded.value = expand;
+                if (options && options.bubbleExpandedState) {
+                    const parentLayer = layer.parent;
+                    if (parentLayer) {
+                        tocModel.getItem(parentLayer.id)?.setExpanded(expand);
+                    }
+                }
             }
         };
-    }, [layer, options.initiallyCollapsed]);
+    }, [layer, options.initiallyCollapsed, tocModel]);
 
     // Register the item on the shared toc model
     useEffect(() => {
@@ -186,4 +195,8 @@ function updateLayerVisibility(layer: AnyLayer, visible: boolean, autoShowParent
     if (visible && autoShowParents && layer.parent) {
         updateLayerVisibility(layer.parent, true, true);
     }
+}
+
+function getClassNameForLayer(layer: AnyLayer) {
+    return `layer-${slug(layer.id)}`;
 }

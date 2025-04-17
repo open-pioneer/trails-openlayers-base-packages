@@ -12,7 +12,7 @@ import {
 } from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, ReactNode, useEffect, useId, useRef } from "react";
-import { TocItem, TocModel, TocModelProvider, TocWidgetOptions } from "../model/TocModel";
+import { TocItem, TocModel, TocModelProvider, TocWidgetOptions, TocAPI } from "../model/TocModel";
 import { TopLevelLayerList } from "./LayerList/LayerList";
 import { Tools } from "./Tools";
 
@@ -68,25 +68,13 @@ export interface TocProps extends CommonComponentProps, MapModelProps {
      */
     autoShowParents?: boolean;
 
-
-    onTocEvent?: (event: TocEvent) => void
+    onApiReady?: (event: TocApiReadyEvent) => void;
 }
 
-export type TocEvent = TocLoadingEvent | TocRejectedEvent | TocResolvedEvent
-
-export interface TocResolvedEvent{
-    kind: "resolved"
-    apiRef: TocAPI
+export interface TocApiReadyEvent {
+    target: ReactNode;
+    apiRef: TocAPI;
 }
-
-export interface TocLoadingEvent{
-    kind: "loading"
-}
-
-export interface TocRejectedEvent{
-    kind: "rejected"
-}
-
 
 /**
  * Props supported by the {@link Tools} component.
@@ -105,42 +93,6 @@ export interface ToolsConfig {
      * Defaults to `true`. Only applicable if {@link TocProps.collapsibleGroups} is `true`.
      */
     showCollapseAllGroups?: boolean;
-}
-
-/**
- * API to manipulate the layer items of the Toc
- */
-export interface TocAPI {
-    /**
-     * Expands or collapses all layer items in the Toc
-     */
-    setAllItemsExpanded(expanded: boolean): void;
-
-    /**
-     * Expands or collapses a singel layer item in the Toc.
-     * Returns the `true` if the new state is expanded, `false` if the new state is collapsed or `undefined` if no layer id corresponding to {@link layerId}
-     * @param layerId ID of the layer that corresponds to the layer item in the Toc
-     * @param options
-     */
-    setItemExpanded(
-        layerId: string,
-        expanded: boolean,
-        options: ItemExpandedOptions
-    ): boolean | void;
-
-    /**
-     * Toggles expanded state of a single layer item.
-     * Returns the `true` if the new state is expanded, `false` if the new state is collapsed or `undefined` if no layer id corresponding to {@link layerId}
-     * @param layerId ID of the layer that corresponds to the layer item in the Toc
-     * @param options
-     */
-    toggleItemExpanded(layerId: string, options: ItemExpandedOptions): boolean | undefined;
-
-    /**
-     * Returns the `true` if the current state is expanded, `false` if the current state is collapsed or `undefined` if no layer id corresponding to {@link layerId}
-     * @param layerId ID of the layer that corresponds to the layer item in the Toc
-     */
-    isItemExpanded(layerId: string): boolean | undefined;
 }
 
 export interface ItemExpandedOptions {
@@ -164,19 +116,13 @@ export const Toc: FC<TocProps> = (props: TocProps) => {
     switch (state.kind) {
         case "loading":
             content = null;
-            if(props.onTocEvent){
-                props.onTocEvent({kind: "loading"});
-            }
             break;
         case "rejected":
             content = <Text className="toc-error">{intl.formatMessage({ id: "error" })}</Text>;
-            if(props.onTocEvent){
-                props.onTocEvent({kind: "rejected"});
-            }
             break;
         case "resolved": {
             const map = state.map;
-            content = <TocContent {...props} map={map} onTocEvent={props.onTocEvent}/>;
+            content = <TocContent {...props} map={map} onApiReady={props.onApiReady} />;
             break;
         }
     }
@@ -190,7 +136,7 @@ export const Toc: FC<TocProps> = (props: TocProps) => {
 
 /** This component is rendered once we have a reference to the loaded map model. */
 function TocContent(
-    props: TocProps & { map: MapModel; onTocEvent?: (event: TocEvent) => void }
+    props: TocProps & { map: MapModel; onTocEvent?: (event: TocApiReadyEvent) => void }
 ) {
     const {
         map,
@@ -198,17 +144,23 @@ function TocContent(
         toolsConfig,
         showBasemapSwitcher = true,
         basemapSwitcherProps,
-        onTocEvent: onAPIReady
+        onApiReady: onAPIReady
     } = props;
     const intl = useIntl();
     const model = useTocModel(props);
-    const api = useTocAPI(map, model);
+    const api = useTocAPI(model);
 
     useEffect(() => {
-        if(onAPIReady){
-            onAPIReady({kind: "resolved", apiRef: api });
+        if (onAPIReady) {
+            onAPIReady({ target: undefined, apiRef: api });
         }
-    },[onAPIReady, api]);
+
+        return () => {
+            //dispose api when toc is unmounted
+            console.log("disposed");
+            model.disposed = true;
+        };
+    }, [onAPIReady, api, model]);
 
     const basemapsHeadingId = useId();
     const basemapSwitcher = showBasemapSwitcher && (
@@ -266,7 +218,7 @@ function useTocModel(props: TocProps): TocModel {
     const initialProps = useRef(props);
     const tocModelRef = useConst(createTocModel());
 
-    function createTocModel(){
+    function createTocModel() {
         const options = reactive<TocWidgetOptions>(
             createOptions(
                 initialProps.current.autoShowParents,
@@ -277,6 +229,7 @@ function useTocModel(props: TocProps): TocModel {
 
         // Indexed by layerId
         const items = reactiveMap<string, TocItem>();
+        const tocModelDisposed = reactive(false);
         const model: TocModel = {
             get options() {
                 return options.value;
@@ -298,6 +251,12 @@ function useTocModel(props: TocProps): TocModel {
                     throw new Error(`Item with layerId '${item.layerId}' not registered.`);
                 }
                 items.delete(item.layerId);
+            },
+            get disposed(): boolean {
+                return tocModelDisposed.value;
+            },
+            set disposed(isDisposed: boolean) {
+                tocModelDisposed.value = isDisposed;
             }
         };
         return { model: model, options: options };
@@ -310,7 +269,12 @@ function useTocModel(props: TocProps): TocModel {
             props.collapsibleGroups,
             props.initiallyCollapsed
         );
-    }, [props.autoShowParents, props.collapsibleGroups, props.initiallyCollapsed, tocModelRef.options]);
+    }, [
+        props.autoShowParents,
+        props.collapsibleGroups,
+        props.initiallyCollapsed,
+        tocModelRef.options
+    ]);
 
     return tocModelRef.model;
 }
@@ -327,73 +291,21 @@ function createOptions(
     };
 }
 
-function useTocAPI(map: MapModel, model: TocModel): TocAPI {
+function useTocAPI(model: TocModel): TocAPI {
     const apiRef = useConst<TocAPI>({
-        setAllItemsExpanded: function (expanded: boolean): void {
-            model.getItems().forEach((item) => item.setExpanded(expanded));
+        get options() {
+            return model.options;
         },
-        setItemExpanded: function (
-            layerId: string,
-            expanded: boolean,
-            options: ItemExpandedOptions
-        ): boolean | undefined {
-            const tocItem = model.getItem(layerId);
-            if (tocItem) {
-                tocItem.setExpanded(expanded);
-
-                if (options.alignParents) {
-                    bubbleExpandedState(layerId, expanded, map, model);
-                }
-
-                return expanded;
-            } else {
-                return undefined;
-            }
+        getItem(layerId: string): TocItem | undefined {
+            return model.getItem(layerId);
         },
-        toggleItemExpanded: function (
-            layerId: string,
-            options: ItemExpandedOptions
-        ): boolean | undefined {
-            const item = model.getItem(layerId);
-            if (item) {
-                const newState = !item.isExpanded;
-                item.setExpanded(newState);
-
-                if (options.alignParents) {
-                    bubbleExpandedState(layerId, newState, map, model);
-                }
-
-                return newState;
-            }
-            return undefined;
+        getItems(): TocItem[] {
+            return model.getItems();
         },
-        isItemExpanded: function (layerId: string): boolean | undefined {
-            const item = model.getItem(layerId);
-            if (item) {
-                return item.isExpanded;
-            }
-            return undefined;
+        get disposed(): boolean {
+            return model.disposed;
         }
-    }
-    );
+    });
 
     return apiRef;
-}
-
-/**
- * sets new expanded state of a layer item to all its parent items
- * @param layerId
- * @param newState
- * @param map
- * @param model
- */
-function bubbleExpandedState(layerId: string, newState: boolean, map: MapModel, model: TocModel) {
-    let parent = map.layers.getLayerById(layerId)?.parent;
-    while (parent) {
-        const parentItem = model.getItem(parent.id);
-        if (parentItem) {
-            parentItem.setExpanded(newState);
-        }
-        parent = parent.parent;
-    }
 }
