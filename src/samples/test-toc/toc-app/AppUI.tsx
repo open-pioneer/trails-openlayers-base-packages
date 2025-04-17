@@ -34,7 +34,7 @@ export function AppUI() {
     }
 
     function toggleTocItem(layerId: string) {
-        if (showToc && tocAPIRef.current) {
+        if (tocAPIRef.current) {
             const layerItem = tocAPIRef.current.getItem(layerId);
             const newState = !layerItem?.isExpanded;
             layerItem?.setExpanded(newState, { bubbleExpandedState: newState });
@@ -155,6 +155,9 @@ export function AppUI() {
                                             isActive={showToc}
                                             onClick={toggleToc}
                                         />
+                                        <Button onClick={() => toggleTocItem("streets")}>
+                                            Toggle streets group
+                                        </Button>
                                     </Flex>
                                 </MapAnchor>
                             </MapContainer>

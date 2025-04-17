@@ -79,7 +79,6 @@ export interface TocProps extends CommonComponentProps, MapModelProps {
 }
 
 export interface TocApiReadyEvent {
-    target: ReactNode;
     apiRef: TocAPI;
 }
 
@@ -159,12 +158,14 @@ function TocContent(
 
     useEffect(() => {
         if (onAPIReady) {
-            onAPIReady({ target: undefined, apiRef: api });
+            model.disposed = false;
+            onAPIReady({ apiRef: api });
         }
 
         return () => {
             //dispose api when toc is unmounted
             model.disposed = true;
+            console.log(model.disposed);
         };
     }, [onAPIReady, api, model]);
 
@@ -236,6 +237,7 @@ function useTocModel(props: TocProps): TocModel {
         // Indexed by layerId
         const items = reactiveMap<string, TocItem>();
         const tocModelDisposed = reactive(false);
+        console.log("create: " + tocModelDisposed);
         const model: TocModel = {
             get options() {
                 return options.value;
@@ -320,10 +322,10 @@ function useTocAPI(model: TocModel): TocAPI {
             }
 
             private getTocModelOrThrowDisposedError() {
-                if (!this.disposed) {
-                    throw new TocAPIDisposedError("cannot use Toc API, Toc API is disposed");
-                } else {
+                if (!this.tocModel.disposed) {
                     return this.tocModel;
+                } else {
+                    throw new TocAPIDisposedError("cannot use Toc API, Toc API is disposed");
                 }
             }
         })()
