@@ -21,9 +21,14 @@ export function useTocModel(): TocModel {
     return model;
 }
 
+/**
+ * API to control the Toc component imperatively
+ */
 export interface TocAPI {
     /**
      * Return the global widget options.
+     *
+     * Throws {@link TocAPIDisposedError}
      *
      * NOTE: The object itself is reactive, but individual properties are not (change -> replace).
      */
@@ -31,23 +36,28 @@ export interface TocAPI {
 
     /**
      * Returns the item that corresponds with the `layerId`.
+     *
+     * Throws {@link TocAPIDisposedError}
      */
     getItem(layerId: string): TocItem | undefined;
 
     /**
      * Returns the list of all items.
+     *
+     * Throws {@link TocAPIDisposedError}
      */
     getItems(): TocItem[];
 
     /**
-     * indicates if the API object is disposed,
-     * this usually happens if the TOC component is unmounted
+     * Indicates if the API reference is disposed.
+     * This is the case after the Toc component is unmounted.
      */
     get disposed(): boolean;
 }
 
 /**
- * Shared model used by the toc and all its sub-components.
+ * Shared model used by the Toc and all its sub-components.
+ * Extends the external TocAPI with private, internal properties.
  *
  * @internal
  */
@@ -58,6 +68,12 @@ export interface TocModel extends TocAPI {
 
     set disposed(isDisposed: boolean);
 }
+
+/**
+ * Thrown if {@link TocAPI} reference is accessed but has already been disposed.
+ * This typically happens after the Toc component is unmounted.
+ */
+export class TocAPIDisposedError extends Error {}
 
 /**
  * Global toc widget options.
@@ -112,5 +128,8 @@ export interface TocItem {
 }
 
 export interface ExpandLayerItemOptions {
+    /**
+     * align parent items
+     */
     bubbleExpandedState: boolean;
 }

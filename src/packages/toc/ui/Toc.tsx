@@ -12,7 +12,14 @@ import {
 } from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, ReactNode, useEffect, useId, useRef } from "react";
-import { TocItem, TocModel, TocModelProvider, TocWidgetOptions, TocAPI } from "../model/TocModel";
+import {
+    TocItem,
+    TocModel,
+    TocModelProvider,
+    TocWidgetOptions,
+    TocAPI,
+    TocAPIDisposedError
+} from "../model/TocModel";
 import { TopLevelLayerList } from "./LayerList/LayerList";
 import { Tools } from "./Tools";
 
@@ -157,7 +164,6 @@ function TocContent(
 
         return () => {
             //dispose api when toc is unmounted
-            console.log("disposed");
             model.disposed = true;
         };
     }, [onAPIReady, api, model]);
@@ -292,20 +298,36 @@ function createOptions(
 }
 
 function useTocAPI(model: TocModel): TocAPI {
-    const apiRef = useConst<TocAPI>({
-        get options() {
-            return model.options;
-        },
-        getItem(layerId: string): TocItem | undefined {
-            return model.getItem(layerId);
-        },
-        getItems(): TocItem[] {
-            return model.getItems();
-        },
-        get disposed(): boolean {
-            return model.disposed;
-        }
-    });
+    const apiRef = useConst<TocAPI>(
+        //use anonymous class for "this" accessor
+        new (class implements TocAPI {
+            private tocModel: TocModel = model;
+
+            get options() {
+                return this.getTocModelOrThrowDisposedError().options;
+            }
+
+            getItem(layerId: string): TocItem | undefined {
+                return this.getTocModelOrThrowDisposedError().getItem(layerId);
+            }
+
+            getItems(): TocItem[] {
+                return this.getTocModelOrThrowDisposedError().getItems();
+            }
+
+            get disposed(): boolean {
+                return this.tocModel.disposed;
+            }
+
+            private getTocModelOrThrowDisposedError() {
+                if (!this.disposed) {
+                    throw new TocAPIDisposedError("cannot use Toc API, Toc API is disposed");
+                } else {
+                    return this.tocModel;
+                }
+            }
+        })()
+    );
 
     return apiRef;
 }
