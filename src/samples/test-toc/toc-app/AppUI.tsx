@@ -21,11 +21,11 @@ export function AppUI() {
     function toggleToc() {
         setShowToc(!showToc);
     }
-    
+
     /*     useReactiveSnapshot(() => {
         console.log("reactive: " + tocAPIRef.current?.disposed);
     },[tocAPIRef.current]); */
- 
+
     function createAPIReadyHandler(): TocAPIReadyHandler {
         const handler = (event: TocApiReadyEvent) => {
             console.log(event);
@@ -99,19 +99,6 @@ export function AppUI() {
                                                             initiallyCollapsed={true}
                                                             onApiReady={handler}
                                                         />
-                                                        <Button
-                                                            onClick={() => toggleTocItem("streets")}
-                                                        >
-                                                            toggle streets group
-                                                        </Button>
-                                                        <Button
-                                                            m={5}
-                                                            onClick={() =>
-                                                                setHandler(createAPIReadyHandler)
-                                                            }
-                                                        >
-                                                            set new api handler
-                                                        </Button>
                                                     </TitledSection>
                                                 </Box>
                                             )}
@@ -158,6 +145,9 @@ export function AppUI() {
                                         />
                                         <Button onClick={() => toggleTocItem("streets")}>
                                             Toggle streets group
+                                        </Button>
+                                        <Button onClick={() => setHandler(createAPIReadyHandler)}>
+                                            set new api handler
                                         </Button>
                                     </Flex>
                                 </MapAnchor>

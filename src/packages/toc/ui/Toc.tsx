@@ -76,7 +76,7 @@ export interface TocProps extends CommonComponentProps, MapModelProps {
      */
     autoShowParents?: boolean;
 
-    onApiReady?: TocApiReadyHandler
+    onApiReady?: TocApiReadyHandler;
 }
 
 /**
@@ -138,9 +138,7 @@ export const Toc: FC<TocProps> = (props: TocProps) => {
 };
 
 /** This component is rendered once we have a reference to the loaded map model. */
-function TocContent(
-    props: TocProps & { map: MapModel}
-) {
+function TocContent(props: TocProps & { map: MapModel }) {
     const {
         map,
         showTools = false,
@@ -259,11 +257,11 @@ function useTocModel(props: TocProps): TocModel {
 
     useEffect(() => {
         //otherwise model would be disposed in strict mode
-        tocModelRef.current!.model.disposed = false; 
+        tocModelRef.current!.model.disposed = false;
         return () => {
             tocModelRef.current!.model.disposed = true;
         };
-    },[]);
+    }, []);
 
     // Sync props to model
     useEffect(() => {
@@ -332,10 +330,10 @@ function useTocAPI(model: TocModel, onAPIReady?: TocApiReadyHandler): TocAPI {
 
     //emit new event if event handler prop is changed
     useEffect(() => {
-        if(onAPIReady){
-            onAPIReady({apiRef: apiRef.current!});
+        if (onAPIReady) {
+            onAPIReady({ apiRef: apiRef.current! });
         }
-    }, [onAPIReady]); 
+    }, [onAPIReady]);
 
     return apiRef.current;
 }
