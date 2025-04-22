@@ -1,12 +1,12 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box, Flex, Text, VStack } from "@open-pioneer/chakra-integration";
+import { Box, Flex, VStack, Text, Button } from "@open-pioneer/chakra-integration";
 import { DefaultMapProvider, MapAnchor, MapContainer, useMapModel } from "@open-pioneer/map";
-import { ToolButton } from "@open-pioneer/map-ui-components";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
-import { Toc } from "@open-pioneer/toc";
+import { ToolButton } from "@open-pioneer/map-ui-components";
+import { Toc, TocAPI, TocApiReadyEvent, TocAPIReadyHandler } from "@open-pioneer/toc";
 import { useIntl } from "open-pioneer:react-hooks";
-import { useId, useState } from "react";
+import { useId, useRef, useState } from "react";
 import { PiListLight } from "react-icons/pi";
 import { MAP_ID } from "./MapConfigProviderImpl";
 
@@ -15,9 +15,31 @@ export function AppUI() {
     const { map } = useMapModel(MAP_ID);
     const tocTitleId = useId();
     const [showToc, setShowToc] = useState<boolean>(true);
+    const tocAPIRef = useRef<TocAPI>(undefined);
+    const [handler, setHandler] = useState<TocAPIReadyHandler>(createAPIReadyHandler);
 
     function toggleToc() {
         setShowToc(!showToc);
+    }
+
+    /*     useReactiveSnapshot(() => {
+        console.log("reactive: " + tocAPIRef.current?.disposed);
+    },[tocAPIRef.current]); */
+
+    function createAPIReadyHandler(): TocAPIReadyHandler {
+        const handler = (event: TocApiReadyEvent) => {
+            console.log(event);
+            tocAPIRef.current = event.apiRef;
+        };
+        return handler;
+    }
+
+    function toggleTocItem(layerId: string) {
+        if (tocAPIRef.current) {
+            const layerItem = tocAPIRef.current.getItem(layerId);
+            const newState = !layerItem?.isExpanded;
+            layerItem?.setExpanded(newState, { bubbleExpandedState: newState });
+        }
     }
 
     return (
@@ -75,6 +97,7 @@ export function AppUI() {
                                                             }}
                                                             collapsibleGroups={true}
                                                             initiallyCollapsed={true}
+                                                            onApiReady={handler}
                                                         />
                                                     </TitledSection>
                                                 </Box>
@@ -120,6 +143,12 @@ export function AppUI() {
                                             isActive={showToc}
                                             onClick={toggleToc}
                                         />
+                                        <Button onClick={() => toggleTocItem("streets")}>
+                                            Toggle streets group
+                                        </Button>
+                                        <Button onClick={() => setHandler(createAPIReadyHandler)}>
+                                            set new api handler
+                                        </Button>
                                     </Flex>
                                 </MapAnchor>
                             </MapContainer>

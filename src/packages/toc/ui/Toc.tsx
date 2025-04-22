@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { reactive, reactiveMap } from "@conterra/reactivity-core";
+import { Reactive, reactive, reactiveMap } from "@conterra/reactivity-core";
 import { BasemapSwitcher, BasemapSwitcherProps } from "@open-pioneer/basemap-switcher";
 import { Box, Flex, Spacer, Text } from "@open-pioneer/chakra-integration";
 import { MapModel, MapModelProps, useMapModel } from "@open-pioneer/map";
@@ -11,8 +11,16 @@ import {
     useCommonComponentProps
 } from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
-import { FC, ReactNode, useEffect, useId, useMemo, useRef } from "react";
-import { TocItem, TocModel, TocModelProvider, TocWidgetOptions } from "../model/TocModel";
+import { FC, ReactNode, useEffect, useId, useRef } from "react";
+import {
+    TocItem,
+    TocModel,
+    TocModelProvider,
+    TocWidgetOptions,
+    TocAPI,
+    TocApiDisposedError,
+    TocApiReadyHandler
+} from "../model/TocModel";
 import { TopLevelLayerList } from "./LayerList/LayerList";
 import { Tools } from "./Tools";
 
@@ -67,6 +75,8 @@ export interface TocProps extends CommonComponentProps, MapModelProps {
      * Defaults to `true`.
      */
     autoShowParents?: boolean;
+
+    onApiReady?: TocApiReadyHandler;
 }
 
 /**
@@ -86,6 +96,13 @@ export interface ToolsConfig {
      * Defaults to `true`. Only applicable if {@link TocProps.collapsibleGroups} is `true`.
      */
     showCollapseAllGroups?: boolean;
+}
+
+export interface ItemExpandedOptions {
+    /**
+     * if `true` parent items will automatically receive the same state as the manipulated layer item.
+     */
+    alignParents?: boolean;
 }
 
 const PADDING = 2;
@@ -108,7 +125,7 @@ export const Toc: FC<TocProps> = (props: TocProps) => {
             break;
         case "resolved": {
             const map = state.map;
-            content = <TocContent {...props} map={map} />;
+            content = <TocContent {...props} map={map} onApiReady={props.onApiReady} />;
             break;
         }
     }
@@ -127,10 +144,13 @@ function TocContent(props: TocProps & { map: MapModel }) {
         showTools = false,
         toolsConfig,
         showBasemapSwitcher = true,
-        basemapSwitcherProps
+        basemapSwitcherProps,
+        onApiReady: onAPIReady
     } = props;
     const intl = useIntl();
     const model = useTocModel(props);
+    useTocAPI(model, onAPIReady);
+
     const basemapsHeadingId = useId();
     const basemapSwitcher = showBasemapSwitcher && (
         <Box className="toc-basemap-switcher">
@@ -185,7 +205,12 @@ function TocContent(props: TocProps & { map: MapModel }) {
 
 function useTocModel(props: TocProps): TocModel {
     const initialProps = useRef(props);
-    const { model, options } = useMemo(() => {
+    const tocModelRef = useRef<{ model: TocModel; options: Reactive<TocWidgetOptions> }>(null);
+    if (!tocModelRef.current) {
+        tocModelRef.current = createTocModel();
+    }
+
+    function createTocModel() {
         const options = reactive<TocWidgetOptions>(
             createOptions(
                 initialProps.current.autoShowParents,
@@ -196,6 +221,8 @@ function useTocModel(props: TocProps): TocModel {
 
         // Indexed by layerId
         const items = reactiveMap<string, TocItem>();
+        const tocModelDisposed = reactive(false);
+
         const model: TocModel = {
             get options() {
                 return options.value;
@@ -217,21 +244,40 @@ function useTocModel(props: TocProps): TocModel {
                     throw new Error(`Item with layerId '${item.layerId}' not registered.`);
                 }
                 items.delete(item.layerId);
+            },
+            get disposed(): boolean {
+                return tocModelDisposed.value;
+            },
+            set disposed(isDisposed: boolean) {
+                tocModelDisposed.value = isDisposed;
             }
         };
-        return { model, options };
+        return { model: model, options: options };
+    }
+
+    useEffect(() => {
+        //otherwise model would be disposed in strict mode
+        tocModelRef.current!.model.disposed = false;
+        return () => {
+            tocModelRef.current!.model.disposed = true;
+        };
     }, []);
 
     // Sync props to model
     useEffect(() => {
-        options.value = createOptions(
+        tocModelRef.current!.options.value = createOptions(
             props.autoShowParents,
             props.collapsibleGroups,
             props.initiallyCollapsed
         );
-    }, [options, props.autoShowParents, props.collapsibleGroups, props.initiallyCollapsed]);
+    }, [
+        props.autoShowParents,
+        props.collapsibleGroups,
+        props.initiallyCollapsed,
+        tocModelRef.current.options
+    ]);
 
-    return model;
+    return tocModelRef.current.model;
 }
 
 function createOptions(
@@ -244,4 +290,50 @@ function createOptions(
         collapsibleGroups: collapsibleGroups ?? false,
         initiallyCollapsed: isCollapsed ?? false
     };
+}
+
+function useTocAPI(model: TocModel, onAPIReady?: TocApiReadyHandler): TocAPI {
+    const apiRef = useRef<TocAPI>(null);
+    if (!apiRef.current) {
+        apiRef.current = new (class implements TocAPI {
+            private tocModel: TocModel = model;
+
+            constructor() {
+                console.log("new api");
+            }
+
+            get options() {
+                return this.getTocModelOrThrowDisposedError().options;
+            }
+
+            getItem(layerId: string): TocItem | undefined {
+                return this.getTocModelOrThrowDisposedError().getItem(layerId);
+            }
+
+            getItems(): TocItem[] {
+                return this.getTocModelOrThrowDisposedError().getItems();
+            }
+
+            get disposed(): boolean {
+                return this.tocModel.disposed;
+            }
+
+            private getTocModelOrThrowDisposedError() {
+                if (!this.tocModel.disposed) {
+                    return this.tocModel;
+                } else {
+                    throw new TocApiDisposedError("cannot use Toc API, Toc API is disposed");
+                }
+            }
+        })();
+    }
+
+    //emit new event if event handler prop is changed
+    useEffect(() => {
+        if (onAPIReady) {
+            onAPIReady({ apiRef: apiRef.current! });
+        }
+    }, [onAPIReady]);
+
+    return apiRef.current;
 }

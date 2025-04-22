@@ -22,13 +22,13 @@ export function useTocModel(): TocModel {
 }
 
 /**
- * Shared model used by the toc and all its sub-components.
- *
- * @internal
+ * API to control the Toc component imperatively
  */
-export interface TocModel {
+export interface TocAPI {
     /**
      * Return the global widget options.
+     *
+     * Throws {@link TocApiDisposedError}
      *
      * NOTE: The object itself is reactive, but individual properties are not (change -> replace).
      */
@@ -36,17 +36,37 @@ export interface TocModel {
 
     /**
      * Returns the item that corresponds with the `layerId`.
+     *
+     * Throws {@link TocApiDisposedError}
      */
     getItem(layerId: string): TocItem | undefined;
 
     /**
      * Returns the list of all items.
+     *
+     * Throws {@link TocApiDisposedError}
      */
     getItems(): TocItem[];
 
+    /**
+     * Indicates if the API reference is disposed.
+     * This is the case after the Toc component is unmounted.
+     */
+    get disposed(): boolean;
+}
+
+/**
+ * Shared model used by the Toc and all its sub-components.
+ * Extends the external TocAPI with private, internal properties.
+ *
+ * @internal
+ */
+export interface TocModel extends TocAPI {
     // Used by toc item components to register themselves
     registerItem(item: TocItem): void;
     unregisterItem(item: TocItem): void;
+
+    set disposed(isDisposed: boolean);
 }
 
 /**
@@ -76,8 +96,6 @@ export interface TocWidgetOptions {
  *
  * Currently items register themselves in the model when they are mounted
  * and remove themselves when they are unmounted.
- *
- * @internal
  */
 export interface TocItem {
     /**
@@ -91,9 +109,33 @@ export interface TocItem {
     readonly isExpanded: boolean;
 
     /**
+     * specific css class of the layer item element
+     */
+    readonly className: string;
+
+    /**
      * Expands or collapses the list item.
      *
      * Note: not all list items support this operation.
      */
-    setExpanded(expanded: boolean): void;
+    setExpanded(expanded: boolean, options?: ExpandLayerItemOptions): void;
 }
+
+export interface ExpandLayerItemOptions {
+    /**
+     * align parent items
+     */
+    bubbleExpandedState: boolean;
+}
+
+export interface TocApiReadyEvent {
+    apiRef: TocAPI;
+}
+
+export type TocApiReadyHandler = (event: TocApiReadyEvent) => void;
+
+/**
+ * Thrown if {@link TocAPI} reference is accessed but has already been disposed.
+ * This typically happens after the Toc component is unmounted.
+ */
+export class TocApiDisposedError extends Error {}
