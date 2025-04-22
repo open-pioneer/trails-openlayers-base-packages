@@ -28,7 +28,7 @@ export interface TocAPI {
     /**
      * Return the global widget options.
      *
-     * Throws {@link TocAPIDisposedError}
+     * Throws {@link TocApiDisposedError}
      *
      * NOTE: The object itself is reactive, but individual properties are not (change -> replace).
      */
@@ -37,14 +37,14 @@ export interface TocAPI {
     /**
      * Returns the item that corresponds with the `layerId`.
      *
-     * Throws {@link TocAPIDisposedError}
+     * Throws {@link TocApiDisposedError}
      */
     getItem(layerId: string): TocItem | undefined;
 
     /**
      * Returns the list of all items.
      *
-     * Throws {@link TocAPIDisposedError}
+     * Throws {@link TocApiDisposedError}
      */
     getItems(): TocItem[];
 
@@ -68,12 +68,6 @@ export interface TocModel extends TocAPI {
 
     set disposed(isDisposed: boolean);
 }
-
-/**
- * Thrown if {@link TocAPI} reference is accessed but has already been disposed.
- * This typically happens after the Toc component is unmounted.
- */
-export class TocAPIDisposedError extends Error {}
 
 /**
  * Global toc widget options.
@@ -133,3 +127,15 @@ export interface ExpandLayerItemOptions {
      */
     bubbleExpandedState: boolean;
 }
+
+export interface TocApiReadyEvent {
+    apiRef: TocAPI;
+}
+
+export type TocApiReadyHandler = (event: TocApiReadyEvent) => void;
+
+/**
+ * Thrown if {@link TocAPI} reference is accessed but has already been disposed.
+ * This typically happens after the Toc component is unmounted.
+ */
+export class TocApiDisposedError extends Error {}

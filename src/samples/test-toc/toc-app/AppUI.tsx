@@ -4,14 +4,11 @@ import { Box, Flex, VStack, Text, Button } from "@open-pioneer/chakra-integratio
 import { DefaultMapProvider, MapAnchor, MapContainer, useMapModel } from "@open-pioneer/map";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { ToolButton } from "@open-pioneer/map-ui-components";
-import { Toc, TocAPI } from "@open-pioneer/toc";
+import { Toc, TocAPI, TocApiReadyEvent, TocAPIReadyHandler } from "@open-pioneer/toc";
 import { useIntl } from "open-pioneer:react-hooks";
 import { useId, useRef, useState } from "react";
 import { PiListLight } from "react-icons/pi";
 import { MAP_ID } from "./MapConfigProviderImpl";
-import { TocApiReadyEvent } from "@open-pioneer/toc/ui/Toc";
-
-type APIReadyHandler = (event: TocApiReadyEvent) => void;
 
 export function AppUI() {
     const intl = useIntl();
@@ -19,13 +16,17 @@ export function AppUI() {
     const tocTitleId = useId();
     const [showToc, setShowToc] = useState<boolean>(true);
     const tocAPIRef = useRef<TocAPI>(undefined);
-    const [handler, setHandler] = useState<APIReadyHandler>(createAPIReadyHandler);
+    const [handler, setHandler] = useState<TocAPIReadyHandler>(createAPIReadyHandler);
 
     function toggleToc() {
         setShowToc(!showToc);
     }
-
-    function createAPIReadyHandler(): APIReadyHandler {
+    
+    /*     useReactiveSnapshot(() => {
+        console.log("reactive: " + tocAPIRef.current?.disposed);
+    },[tocAPIRef.current]); */
+ 
+    function createAPIReadyHandler(): TocAPIReadyHandler {
         const handler = (event: TocApiReadyEvent) => {
             console.log(event);
             tocAPIRef.current = event.apiRef;
