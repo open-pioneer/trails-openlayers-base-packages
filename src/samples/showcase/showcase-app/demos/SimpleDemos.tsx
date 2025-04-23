@@ -30,7 +30,7 @@ export function createCoordinateViewerDemo({ intl }: SharedDemoOptions): Demo {
         title: intl.formatMessage({ id: "demos.coordinateViewer.title" }),
         createModel() {
             return {
-                description: intl.formatMessage({ id: "demos.coordinateViewer.description" }),
+                description: intl.formatRichMessage({ id: "demos.coordinateViewer.description" }),
                 mainWidget: <CoordinateViewer />
             };
         }
@@ -43,7 +43,7 @@ export function createCoordinateInputDemo({ intl, notificationService }: SharedD
         title: intl.formatMessage({ id: "demos.coordinateInput.title" }),
         createModel() {
             return {
-                description: intl.formatMessage({ id: "demos.coordinateInput.description" }),
+                description: intl.formatRichMessage({ id: "demos.coordinateInput.description" }),
                 mainWidget: (
                     <CoordinateInputComponent
                         notificationService={notificationService}
@@ -136,7 +136,7 @@ export function createCoordinateSearchDemo({ intl, notificationService }: Shared
         title: intl.formatMessage({ id: "demos.coordinateSearch.title" }),
         createModel() {
             return {
-                description: intl.formatMessage({ id: "demos.coordinateSearch.description" }),
+                description: intl.formatRichMessage({ id: "demos.coordinateSearch.description" }),
                 mainWidget: (
                     <CoordinateSearchComponent
                         notificationService={notificationService}
@@ -218,7 +218,7 @@ export function createScaleViewerDemo({ intl }: SharedDemoOptions): Demo {
         title: intl.formatMessage({ id: "demos.scaleViewer.title" }),
         createModel() {
             return {
-                description: intl.formatMessage({ id: "demos.scaleViewer.description" }),
+                description: intl.formatRichMessage({ id: "demos.scaleViewer.description" }),
                 mainWidget: <ScaleViewer />
             };
         }
@@ -231,7 +231,7 @@ export function createScaleSetterDemo({ intl }: SharedDemoOptions): Demo {
         title: intl.formatMessage({ id: "demos.scaleSetter.title" }),
         createModel() {
             return {
-                description: intl.formatMessage({ id: "demos.scaleSetter.description" }),
+                description: intl.formatRichMessage({ id: "demos.scaleSetter.description" }),
                 mainWidget: <ScaleSetter />
             };
         }
@@ -244,7 +244,7 @@ export function createScaleBarDemo({ intl }: SharedDemoOptions): Demo {
         title: intl.formatMessage({ id: "demos.scaleBar.title" }),
         createModel() {
             return {
-                description: intl.formatMessage({ id: "demos.scaleBar.description" }),
+                description: intl.formatRichMessage({ id: "demos.scaleBar.description" }),
                 tools: <ScaleBar />
             };
         }
@@ -257,7 +257,7 @@ export function createMeasurementDemo({ intl }: SharedDemoOptions): Demo {
         title: intl.formatMessage({ id: "demos.measurement.title" }),
         createModel() {
             return {
-                description: intl.formatMessage({ id: "demos.measurement.description" }),
+                description: intl.formatRichMessage({ id: "demos.measurement.description" }),
                 mainWidget: <Measurement />
             };
         }
@@ -270,7 +270,7 @@ export function createMapNavigationDemo({ intl }: SharedDemoOptions): Demo {
         title: intl.formatMessage({ id: "demos.mapNavigation.title" }),
         createModel() {
             return {
-                description: intl.formatMessage({ id: "demos.mapNavigation.description" }),
+                description: intl.formatRichMessage({ id: "demos.mapNavigation.description" }),
                 tools: (
                     <>
                         <ZoomIn />
@@ -291,7 +291,7 @@ export function createGeolocationDemo({ intl }: SharedDemoOptions): Demo {
         title: intl.formatMessage({ id: "demos.geolocation.title" }),
         createModel() {
             return {
-                description: intl.formatMessage({ id: "demos.geolocation.description" }),
+                description: intl.formatRichMessage({ id: "demos.geolocation.description" }),
                 tools: <Geolocation />
             };
         }
@@ -304,7 +304,7 @@ export function createSpatialBookmarksDemo({ intl }: SharedDemoOptions): Demo {
         title: intl.formatMessage({ id: "demos.spatialBookmarks.title" }),
         createModel() {
             return {
-                description: intl.formatMessage({ id: "demos.spatialBookmarks.description" }),
+                description: intl.formatRichMessage({ id: "demos.spatialBookmarks.description" }),
                 mainWidget: <SpatialBookmarks />
             };
         }
@@ -317,7 +317,7 @@ export function createPrintingDemo({ intl }: SharedDemoOptions): Demo {
         title: intl.formatMessage({ id: "demos.printing.title" }),
         createModel() {
             return {
-                description: intl.formatMessage({ id: "demos.printing.description" }),
+                description: intl.formatRichMessage({ id: "demos.printing.description" }),
                 mainWidget: <Printing />
             };
         }

@@ -15,7 +15,7 @@ export function createOverviewMapDemo({ intl }: SharedDemoOptions): Demo {
             });
 
             return {
-                description: intl.formatMessage({ id: "demos.overviewMap.description" }),
+                description: intl.formatRichMessage({ id: "demos.overviewMap.description" }),
                 mainWidget: <OverviewMap olLayer={overviewMapLayer} />,
                 destroy() {
                     overviewMapLayer.dispose();
