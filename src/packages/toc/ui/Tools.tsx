@@ -1,11 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import {
-    Box,
-    Button,
-    Menu,
-    Portal
-} from "@chakra-ui/react";
+import { Box, Button, Menu, Portal } from "@chakra-ui/react";
 import { AnyLayer, MapModel } from "@open-pioneer/map";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, memo } from "react";
@@ -37,17 +32,16 @@ export const Tools: FC<ToolsProps> = memo(function Tools(props: ToolsProps) {
     return (
         hasContent && (
             <Box className="toc-tools">
-                <Menu.Root
-                    lazyMount={true}
-                    positioning={{placement: "bottom-start"}}>
+                <Menu.Root lazyMount={true} positioning={{ placement: "bottom-start" }}>
                     <Menu.Trigger asChild>
-                        <Button                         
+                        <Button
                             className="toc-tools-button"
                             aria-label={intl.formatMessage({ id: "toolsLabel" })}
                             borderRadius="full"
-                            padding={3}
-                            variant="ghost">
-                            <FiMoreVertical />
+                            variant="ghost"
+                            padding={0}
+                        >
+                            <FiMoreVertical spacing={0}/>
                         </Button>
                     </Menu.Trigger>
                     <Portal>
@@ -55,7 +49,9 @@ export const Tools: FC<ToolsProps> = memo(function Tools(props: ToolsProps) {
                             <Menu.Content className="tools-menu">
                                 {showHideAllLayers && (
                                     <Menu.Item
-                                        aria-label={intl.formatMessage({ id: "tools.hideAllLayers" })}
+                                        aria-label={intl.formatMessage({
+                                            id: "tools.hideAllLayers"
+                                        })}
                                         onClick={() => {
                                             hideAllLayers(map);
                                         }}

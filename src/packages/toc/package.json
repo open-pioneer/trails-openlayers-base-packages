@@ -18,7 +18,7 @@
     },
     "dependencies": {
         "@open-pioneer/basemap-switcher": "workspace:^",
-       "@chakra-ui/react": "catalog:",
+        "@chakra-ui/react": "catalog:",
         "@open-pioneer/map": "workspace:^",
         "@open-pioneer/react-utils": "catalog:",
         "@open-pioneer/runtime": "catalog:",
@@ -28,7 +28,7 @@
         "react-icons": "catalog:",
         "@open-pioneer/reactivity": "catalog:",
         "@conterra/reactivity-core": "catalog:",
-        "@open-pioneer/chakra-snippets" : "catalog:"
+        "@open-pioneer/chakra-snippets": "catalog:"
     },
     "devDependencies": {
         "@open-pioneer/map-test-utils": "workspace:^",

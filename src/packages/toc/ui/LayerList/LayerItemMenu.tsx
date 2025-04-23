@@ -19,10 +19,7 @@ export function LayerItemMenu(props: {
 
     return (
         isPresent && (
-            <Popover.Root
-                lazyMount={true}
-                positioning={{placement: "bottom-start"}}
-            >
+            <Popover.Root lazyMount={true} positioning={{ placement: "bottom-start" }}>
                 <Popover.Trigger asChild>
                     <Button
                         disabled={!isAvailable}
@@ -32,7 +29,7 @@ export function LayerItemMenu(props: {
                         padding={0}
                         variant="ghost"
                     >
-                        <FiMoreVertical />
+                        <FiMoreVertical spacing={0}/>
                     </Button>
                 </Popover.Trigger>
                 <Portal>

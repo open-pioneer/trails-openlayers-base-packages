@@ -1,25 +1,15 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
-// SPDX-License-Identifier: Apache-2.0
-import { FaChevronDown, FaChevronRight } from "react-icons/fa6";
 import { reactive } from "@conterra/reactivity-core";
-import {
-    Box,
-    Collapsible,
-    CollapsibleContent,
-    Flex,
-    IconButton,
-    Spacer
-} from "@chakra-ui/react";
+import { Box, Collapsible, CollapsibleContent, Flex, IconButton, Spacer } from "@chakra-ui/react";
 import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
-import { Checkbox} from "@open-pioneer/chakra-snippets/checkbox";
+import { Checkbox } from "@open-pioneer/chakra-snippets/checkbox";
 import { AnyLayer } from "@open-pioneer/map";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import classNames from "classnames";
 import { useIntl } from "open-pioneer:react-hooks";
 import { memo, ReactNode, useEffect, useId, useMemo } from "react";
-import { FiAlertTriangle } from "react-icons/fi";
+import { FiAlertTriangle, FiChevronDown, FiChevronRight } from "react-icons/fi";
 import { TocItem, useTocModel } from "../../model/TocModel";
 import { slug } from "../../utils/slug";
 import { useChildLayers, useLoadState } from "./hooks";
@@ -102,9 +92,9 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
                 {!isAvailable && (
                     <Tooltip
                         content={notAvailableLabel}
-                        positioning={{placement: "right"}}
+                        positioning={{ placement: "right" }}
                         openDelay={500}
-                        contentProps={{className: "toc-layer-item-content-tooltip"}}
+                        contentProps={{ className: "toc-layer-item-content-tooltip" }}
                     >
                         <span>
                             <FiAlertTriangle
@@ -119,10 +109,12 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
                 <LayerItemMenu layer={layer} title={title} description={description} intl={intl} />
             </Flex>
             {nestedChildren && (
-                <Collapsible.Root open={expanded} id={layerGroupId} className="toc-collapsible-item">
-                    <CollapsibleContent>
-                        {nestedChildren}
-                    </CollapsibleContent>
+                <Collapsible.Root
+                    open={expanded}
+                    id={layerGroupId}
+                    className="toc-collapsible-item"
+                >
+                    <CollapsibleContent>{nestedChildren}</CollapsibleContent>
                 </Collapsible.Root>
             )}
         </Box>
@@ -137,7 +129,7 @@ function CollapseButton(props: {
     hasNestedChildren: boolean;
 }) {
     const { layerTitle, layerGroupId, expanded, onClick, hasNestedChildren } = props;
-    const icon = expanded ? <FaChevronDown /> : <FaChevronRight />;
+    const icon = expanded ? <FiChevronDown /> : <FiChevronRight />;
     const intl = useIntl();
     return (
         <IconButton

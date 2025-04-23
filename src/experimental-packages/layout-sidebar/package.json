@@ -20,7 +20,7 @@
         "@emotion/react": "catalog:",
         "@emotion/styled": "catalog:",
         "@open-pioneer/runtime": "catalog:",
-        "@open-pioneer/chakra-snippets" : "catalog:",
+        "@open-pioneer/chakra-snippets": "catalog:",
         "react": "catalog:",
         "react-icons": "catalog:"
     },
