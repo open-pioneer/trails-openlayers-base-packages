@@ -9,7 +9,7 @@ packages:
 # This is a yaml feature and is not interpreted by pnpm directly.
 __versions:
   - &react_version ^19.0.0
-  - &core_packages_version 4.0.0-dev-chakra-3.20250410073329
+  - &core_packages_version 4.0.0-dev-chakra-v3.20250423071747
 
 # https://pnpm.io/catalogs
 catalog:
