@@ -60,7 +60,9 @@ class MapModelFactory {
         }
 
         if (!mapOptions.interactions) {
-            const shiftCtrlKeysOnly = (mapBrowserEvent: MapBrowserEvent<KeyboardEvent>) => {
+            const shiftCtrlKeysOnly = (
+                mapBrowserEvent: MapBrowserEvent<KeyboardEvent | WheelEvent | PointerEvent>
+            ) => {
                 const originalEvent = mapBrowserEvent.originalEvent;
                 return (originalEvent.metaKey || originalEvent.ctrlKey) && originalEvent.shiftKey;
             };

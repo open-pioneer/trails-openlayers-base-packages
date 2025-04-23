@@ -14,7 +14,7 @@ exports[`Should successfully create a toc with default tool component 1`] = `
       <h1
         class="chakra-heading css-1mnao0q"
         data-theme="light"
-        id=":r0:"
+        id="«r0»"
       >
         basemapsLabel
       </h1>
@@ -60,7 +60,7 @@ exports[`Should successfully create a toc with default tool component 1`] = `
                 aria-autocomplete="list"
                 aria-expanded="false"
                 aria-haspopup="true"
-                aria-labelledby=":r0:"
+                aria-labelledby="«r0»"
                 aria-readonly="true"
                 class="css-1s80ejz-dummyInput-DummyInput"
                 id="react-select-2-input"
@@ -130,13 +130,13 @@ exports[`Should successfully create a toc with default tool component 1`] = `
             data-theme="light"
           >
             <button
-              aria-controls="menu-list-:r2:"
+              aria-controls="menu-list-«r2»"
               aria-expanded="false"
               aria-haspopup="menu"
               aria-label="toolsLabel"
               class="chakra-button chakra-menu__menu-button toc-tools-button css-170smba"
               data-theme="light"
-              id="menu-button-:r2:"
+              id="menu-button-«r2»"
               type="button"
             >
               <span
@@ -259,13 +259,13 @@ exports[`Should successfully create a toc with default tool component 1`] = `
     data-theme="light"
   >
     <button
-      aria-controls="menu-list-:r2:"
+      aria-controls="menu-list-«r2»"
       aria-expanded="false"
       aria-haspopup="menu"
       aria-label="toolsLabel"
       class="chakra-button chakra-menu__menu-button toc-tools-button css-170smba"
       data-theme="light"
-      id="menu-button-:r2:"
+      id="menu-button-«r2»"
       type="button"
     >
       <span
@@ -316,7 +316,7 @@ exports[`Should successfully create a toc with default tool component 2`] = `
   aria-orientation="vertical"
   class="chakra-menu__menu-list tools-menu css-s5t7bz"
   data-theme="light"
-  id="menu-list-:r2:"
+  id="menu-list-«r2»"
   role="menu"
   style="transform-origin: var(--popper-transform-origin); opacity: 0; visibility: hidden; transform: scale(0.8);"
   tabindex="-1"
@@ -326,7 +326,7 @@ exports[`Should successfully create a toc with default tool component 2`] = `
     class="chakra-menu__menuitem css-y7jzs3"
     data-index="0"
     data-theme="light"
-    id="menu-list-:r2:-menuitem-:r3:"
+    id="menu-list-«r2»-menuitem-«r3»"
     role="menuitem"
     tabindex="-1"
     type="button"

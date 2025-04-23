@@ -14,8 +14,8 @@ exports[`should successfully create a selection component and select the first s
     <label
       class="chakra-form__label css-g6pte"
       data-theme="light"
-      for="field-:r0:"
-      id="field-:r0:-label"
+      for="field-«r0»"
+      id="field-«r0»-label"
     >
       selectSource
     </label>
@@ -101,7 +101,7 @@ exports[`should successfully create a selection component and select the first s
             aria-readonly="true"
             aria-required="false"
             class="css-1s80ejz-dummyInput-DummyInput"
-            id="field-:r0:"
+            id="field-«r0»"
             inputmode="none"
             role="combobox"
             tabindex="0"
