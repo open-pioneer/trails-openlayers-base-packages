@@ -41,7 +41,7 @@ export const Tools: FC<ToolsProps> = memo(function Tools(props: ToolsProps) {
                             variant="ghost"
                             padding={0}
                         >
-                            <FiMoreVertical spacing={0}/>
+                            <FiMoreVertical spacing={0} />
                         </Button>
                     </Menu.Trigger>
                     <Portal>

@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Button, CloseButton, Popover, Separator, Portal } from "@chakra-ui/react";
+import { Button, CloseButton, Popover, Separator, Portal, Text } from "@chakra-ui/react";
 import { AnyLayer } from "@open-pioneer/map";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { FiMoreVertical } from "react-icons/fi";
@@ -29,7 +29,7 @@ export function LayerItemMenu(props: {
                         padding={0}
                         variant="ghost"
                     >
-                        <FiMoreVertical spacing={0}/>
+                        <FiMoreVertical spacing={0} />
                     </Button>
                 </Popover.Trigger>
                 <Portal>
@@ -39,19 +39,28 @@ export function LayerItemMenu(props: {
                             overflowY="auto"
                             maxHeight="400"
                         >
-                            <Popover.Header>
-                                {title}
-                                <Popover.CloseTrigger mt={1} asChild>
-                                    <CloseButton
-                                        className="toc-layer-item-details-button"
-                                        borderRadius="full"
-                                        padding={0}
-                                        variant="ghost"
-                                    ></CloseButton>
-                                </Popover.CloseTrigger>
-                            </Popover.Header>
-                            <Separator></Separator>
-                            <Popover.Body>{description}</Popover.Body>
+                            <Popover.Arrow></Popover.Arrow>
+                            <Popover.Body>
+                                <Popover.Title className="toc-layer-item-details-title">
+                                    {title}
+                                </Popover.Title>
+                                <Text my="2" className="toc-layer-item-details-description">
+                                    {description}
+                                </Text>
+                            </Popover.Body>
+                            <Popover.CloseTrigger
+                                position="absolute"
+                                top="1"
+                                right="1"
+                                mt={3}
+                                asChild
+                            >
+                                <CloseButton
+                                    className="toc-layer-item-details-button"
+                                    variant="ghost"
+                                    size="sm"
+                                />
+                            </Popover.CloseTrigger>
                         </Popover.Content>
                     </Popover.Positioner>
                 </Portal>
