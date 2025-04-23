@@ -7,14 +7,14 @@ exports[`should successfully create a scale Setter component 1`] = `
   data-theme="light"
 >
   <button
-    aria-controls="menu-list-:r1:"
+    aria-controls="menu-list-«r1»"
     aria-description="button.ariaDescription"
     aria-expanded="false"
     aria-haspopup="menu"
     aria-label="button.ariaLabel"
     class="chakra-button chakra-menu__menu-button scale-setter-menubutton css-ez23ye"
     data-theme="light"
-    id="menu-button-:r1:"
+    id="menu-button-«r1»"
     type="button"
   >
     <span
@@ -51,14 +51,14 @@ exports[`should successfully create a scale setter component with additional css
   data-theme="light"
 >
   <button
-    aria-controls="menu-list-:r3:"
+    aria-controls="menu-list-«r3»"
     aria-description="button.ariaDescription"
     aria-expanded="false"
     aria-haspopup="menu"
     aria-label="button.ariaLabel"
     class="chakra-button chakra-menu__menu-button scale-setter-menubutton css-ez23ye"
     data-theme="light"
-    id="menu-button-:r3:"
+    id="menu-button-«r3»"
     type="button"
   >
     <span

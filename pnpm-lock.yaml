@@ -163,7 +163,7 @@ catalogs:
       specifier: ^15.2.10
       version: 15.5.0
     ol:
-      specifier: ^10.4.0
+      specifier: ^10.5.0
       version: 10.5.0
     ol-mapbox-style:
       specifier: ^12.4.1
@@ -175,10 +175,10 @@ catalogs:
       specifier: ^2.12.1
       version: 2.15.0
     react:
-      specifier: ^19.0.0
+      specifier: ^19.1.0
       version: 19.1.0
     react-dom:
-      specifier: ^19.0.0
+      specifier: ^19.1.0
       version: 19.1.0
     react-icons:
       specifier: ^5.3.0
@@ -208,7 +208,7 @@ catalogs:
       specifier: ^11.1.0
       version: 11.1.0
     vite:
-      specifier: ^6.1.1
+      specifier: ^6.2.6
       version: 6.2.6
     vite-plugin-eslint:
       specifier: ^1.8.1
@@ -1339,6 +1339,30 @@ importers:
       react-use:
         specifier: 'catalog:'
         version: 17.6.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+
+  src/samples/map-anchors/map-anchors-app:
+    dependencies:
+      '@chakra-ui/react':
+        specifier: 'catalog:'
+        version: 3.15.1(@emotion/react@11.14.0(@types/react@19.1.0)(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      '@open-pioneer/chakra-snippets':
+        specifier: 'catalog:'
+        version: 4.0.0-dev-chakra-v3.20250423071747(@emotion/react@11.14.0(@types/react@19.1.0)(react@19.1.0))(@types/react@19.1.0)(react-dom@19.1.0(react@19.1.0))(typescript@5.8.3)
+      '@open-pioneer/map':
+        specifier: workspace:^
+        version: link:../../../packages/map
+      '@open-pioneer/react-utils':
+        specifier: 'catalog:'
+        version: 4.0.0-dev-chakra-v3.20250423071747(@emotion/react@11.14.0(@types/react@19.1.0)(react@19.1.0))(react-dom@19.1.0(react@19.1.0))
+      '@open-pioneer/runtime':
+        specifier: 'catalog:'
+        version: 4.0.0-dev-chakra-v3.20250423071747(@types/react@19.1.0)(typescript@5.8.3)
+      ol:
+        specifier: 'catalog:'
+        version: 10.5.0
+      react:
+        specifier: 'catalog:'
+        version: 19.1.0
 
   src/samples/map-sample/ol-app:
     dependencies:

@@ -94,7 +94,13 @@ export class MeasurementController {
         });
         olMap.addLayer(this.layer);
 
-        const pointerMoveKey = olMap.on("pointermove", this.handlePointerMove.bind(this));
+        // "pointermove" is documented but produces a typescript error.
+        // See https://openlayers.org/en/latest/apidoc/module-ol_MapBrowserEvent-MapBrowserEvent.html#event:pointermove
+        const pointerMoveKey: EventsKey = olMap.on(
+            // @ts-expect-error pointermove not declared
+            "pointermove",
+            this.handlePointerMove.bind(this)
+        );
         this.resources.push({
             destroy() {
                 unByKey(pointerMoveKey);
@@ -257,7 +263,7 @@ export class MeasurementController {
         this.activeMeasurement = destroyResource(this.activeMeasurement);
     }
 
-    private handlePointerMove(evt: MapBrowserEvent<UIEvent>) {
+    private handlePointerMove(evt: MapBrowserEvent<PointerEvent>) {
         if (evt.dragging) {
             return;
         }

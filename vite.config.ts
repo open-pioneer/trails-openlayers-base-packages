@@ -19,6 +19,7 @@ const sampleSites = [
     "samples/ogc-api-sample",
     "samples/showcase",
 
+    "samples/map-anchors",
     "samples/test-toc",
     "samples/test-highlight-and-zoom",
     "samples/test-result-list",
