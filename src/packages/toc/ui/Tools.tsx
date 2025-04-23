@@ -4,6 +4,7 @@ import {
     Box,
     Button,
     Menu,
+    Portal
 } from "@chakra-ui/react";
 import { AnyLayer, MapModel } from "@open-pioneer/map";
 import { useIntl } from "open-pioneer:react-hooks";
@@ -36,7 +37,9 @@ export const Tools: FC<ToolsProps> = memo(function Tools(props: ToolsProps) {
     return (
         hasContent && (
             <Box className="toc-tools">
-                <Menu.Root positioning={{placement: "bottom-start"}} >
+                <Menu.Root
+                    lazyMount={true}
+                    positioning={{placement: "bottom-start"}}>
                     <Menu.Trigger asChild>
                         <Button                         
                             className="toc-tools-button"
@@ -47,34 +50,36 @@ export const Tools: FC<ToolsProps> = memo(function Tools(props: ToolsProps) {
                             <FiMoreVertical />
                         </Button>
                     </Menu.Trigger>
-                    <Menu.Positioner>
-                        <Menu.Content className="tools-menu">
-                            {showHideAllLayers && (
-                                <Menu.Item
-                                    aria-label={intl.formatMessage({ id: "tools.hideAllLayers" })}
-                                    onClick={() => {
-                                        hideAllLayers(map);
-                                    }}
-                                    value="hideAllLayers"
-                                >
-                                    {intl.formatMessage({ id: "tools.hideAllLayers" })}
-                                </Menu.Item>
-                            )}
-                            {showCollapseAllGroups && (
-                                <Menu.Item
-                                    aria-label={intl.formatMessage({
-                                        id: "tools.collapseAllGroups"
-                                    })}
-                                    onClick={() => {
-                                        collapseAllGroups(tocModel);
-                                    }}
-                                    value="collapseAllGroups"
-                                >
-                                    {intl.formatMessage({ id: "tools.collapseAllGroups" })}
-                                </Menu.Item>
-                            )}
-                        </Menu.Content>
-                    </Menu.Positioner>
+                    <Portal>
+                        <Menu.Positioner>
+                            <Menu.Content className="tools-menu">
+                                {showHideAllLayers && (
+                                    <Menu.Item
+                                        aria-label={intl.formatMessage({ id: "tools.hideAllLayers" })}
+                                        onClick={() => {
+                                            hideAllLayers(map);
+                                        }}
+                                        value="hideAllLayers"
+                                    >
+                                        {intl.formatMessage({ id: "tools.hideAllLayers" })}
+                                    </Menu.Item>
+                                )}
+                                {showCollapseAllGroups && (
+                                    <Menu.Item
+                                        aria-label={intl.formatMessage({
+                                            id: "tools.collapseAllGroups"
+                                        })}
+                                        onClick={() => {
+                                            collapseAllGroups(tocModel);
+                                        }}
+                                        value="collapseAllGroups"
+                                    >
+                                        {intl.formatMessage({ id: "tools.collapseAllGroups" })}
+                                    </Menu.Item>
+                                )}
+                            </Menu.Content>
+                        </Menu.Positioner>
+                    </Portal>
                 </Menu.Root>
             </Box>
         )
