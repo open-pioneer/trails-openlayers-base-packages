@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box, Flex, Text, VStack } from "@open-pioneer/chakra-integration";
+import { Box, Flex, Text, VStack } from "@chakra-ui/react";
 import { DefaultMapProvider, MapAnchor, MapContainer } from "@open-pioneer/map";
 import { Notifier } from "@open-pioneer/notifier";
 import { TitledSection } from "@open-pioneer/react-utils";
@@ -56,7 +56,7 @@ function AppContent(props: { state: AppStateReady }) {
 
     return (
         <>
-            <Notifier position="top-right" />
+            <Notifier />
             <Flex height="100%" direction="column">
                 <TitledSection title={<Header appModel={appModel} />}>
                     <Flex flex="1" direction="column" position="relative">

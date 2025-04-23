@@ -23,7 +23,8 @@
         "@open-pioneer/runtime": "catalog:",
         "@open-pioneer/reactivity": "catalog:",
         "ol": "catalog:",
-        "react": "catalog:"
+        "react": "catalog:",
+        "react-icons": "catalog:"
     },
     "devDependencies": {
         "@open-pioneer/map-test-utils": "workspace:^",

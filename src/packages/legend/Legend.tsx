@@ -7,7 +7,7 @@ import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/rea
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import classNames from "classnames";
 import { useIntl } from "open-pioneer:react-hooks";
-import { ComponentType, FC, ReactNode } from "react";
+import { ComponentType, FC, ReactNode, useEffect, useMemo, useState } from "react";
 
 /**
  * Properties of a legend item React component.
@@ -24,6 +24,8 @@ export interface LegendItemComponentProps {
  *
  * To show a legend for the layer, provide an imageUrl to an image to show
  * or provide a React component that will be rendered as a legend.
+ *
+ * LegendItemAttributes should be registered with a layer as the `"legend"` attribute.
  */
 export interface LegendItemAttributes {
     /**
@@ -156,27 +158,41 @@ function LegendImage(props: { imageUrl: string; layer: AnyLayer }) {
 
     const { layer, imageUrl } = props;
 
-    return (
-        <Box>
-            <Text>{layer.title}</Text>
+    const [isError, setIsError] = useState(false);
+    useEffect(() => {
+        setIsError(false);
+    }, [imageUrl]);
+
+    const content = useMemo(() => {
+        if (isError) {
+            return (
+                <Box>
+                    <Text>
+                        <Icon me={2}>
+                            <IoIosWarning />
+                        </Icon>
+                        {intl.formatMessage({ id: "fallbackLabel" })}
+                    </Text>
+                </Box>
+            );
+        }
+
+        return (
             <Image
                 maxW="none"
                 maxH="none"
                 src={imageUrl}
                 alt={intl.formatMessage({ id: "altLabel" }, { layerName: layer.title })}
                 className={"legend-item__image"}
-                fallbackStrategy={"onError"}
-                fallback={
-                    <Box>
-                        <Text>
-                            <Icon me={2}>
-                                <IoIosWarning />
-                            </Icon>
-                            {intl.formatMessage({ id: "fallbackLabel" })}
-                        </Text>
-                    </Box>
-                }
+                onError={() => setIsError(true)}
             />
+        );
+    }, [intl, layer.title, imageUrl, isError]);
+
+    return (
+        <Box>
+            <Text>{layer.title}</Text>
+            {content}
         </Box>
     );
 }
