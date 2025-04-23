@@ -8,7 +8,7 @@ packages:
 # Shared version expressions (yaml anchors).
 # This is a yaml feature and is not interpreted by pnpm directly.
 __versions:
-  - &react_version ^19.0.0
+  - &react_version ^19.1.0
   - &core_packages_version 4.0.0-dev-chakra-v3.20250423124703
 
 # https://pnpm.io/catalogs
