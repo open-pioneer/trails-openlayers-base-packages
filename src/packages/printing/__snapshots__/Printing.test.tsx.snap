@@ -20,15 +20,15 @@ exports[`should successfully create a printing component 1`] = `
         class="chakra-form__label css-u9crf"
         data-focus=""
         data-theme="light"
-        for="field-:r0:"
-        id="field-:r0:-label"
+        for="field-«r0»"
+        id="field-«r0»-label"
       >
         title
       </label>
       <input
         class="chakra-input css-1cjy4zv"
         data-theme="light"
-        id="field-:r0:"
+        id="field-«r0»"
         placeholder="input.placeholder"
         value=""
       />
@@ -41,8 +41,8 @@ exports[`should successfully create a printing component 1`] = `
       <label
         class="chakra-form__label css-u9crf"
         data-theme="light"
-        for="field-:r1:"
-        id="field-:r1:-label"
+        for="field-«r1»"
+        id="field-«r1»-label"
       >
         fileFormat
       </label>
@@ -53,7 +53,7 @@ exports[`should successfully create a printing component 1`] = `
         <select
           class="chakra-select printing-select css-161pkch"
           data-theme="light"
-          id="field-:r1:"
+          id="field-«r1»"
         >
           <option
             value="png"

@@ -38,7 +38,7 @@ export function createEditingDemo(options: SharedDemoOptions): Demo {
 }
 
 class DemoModelImpl implements DemoModel {
-    description: string;
+    description: ReactNode;
     mainWidget: ReactNode;
 
     #mapModel: MapModel;
@@ -49,7 +49,7 @@ class DemoModelImpl implements DemoModel {
 
         this.#mapModel = mapModel;
 
-        this.description = intl.formatMessage({ id: "demos.editing.description" });
+        this.description = intl.formatRichMessage({ id: "demos.editing.description" });
         this.#editingController = new EditingController(
             mapModel,
             editingService,

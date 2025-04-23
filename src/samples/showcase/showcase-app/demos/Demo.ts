@@ -41,7 +41,7 @@ export interface Demo extends DemoInfo {
 
 export interface DemoModel {
     /** Human readable description */
-    description: string;
+    description: ReactNode;
 
     /** Main widget to display in the app. */
     mainWidget?: ReactNode;

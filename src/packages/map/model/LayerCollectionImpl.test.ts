@@ -4,21 +4,22 @@
  * no xml parser in happy dom
  * @vitest-environment jsdom
  */
+import { syncEffect, syncWatch } from "@conterra/reactivity-core";
 import { HttpService } from "@open-pioneer/http";
+import { waitFor } from "@testing-library/dom";
 import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { Group } from "ol/layer";
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { Layer, MapConfig, SimpleLayer, WMSLayer } from "../api";
+import { GroupLayer } from "../api/layers/GroupLayer";
 import { MapModelImpl } from "./MapModelImpl";
 import { createMapModel } from "./createMapModel";
 import { SimpleLayerImpl } from "./layers/SimpleLayerImpl";
 import { WMSLayerImpl } from "./layers/WMSLayerImpl";
-import { syncEffect, syncWatch } from "@conterra/reactivity-core";
-import { GroupLayer } from "../api/layers/GroupLayer";
-import { Group } from "ol/layer";
 
 const THIS_DIR = dirname(fileURLToPath(import.meta.url));
 const WMTS_CAPAS = readFileSync(
@@ -40,6 +41,12 @@ afterEach(() => {
 it("makes the map layers accessible", async () => {
     model = await create("foo", {
         layers: [
+            new SimpleLayer({
+                title: "Some base layer",
+                visible: false,
+                olLayer: new TileLayer(),
+                isBaseLayer: true
+            }),
             new SimpleLayer({
                 title: "OSM",
                 description: "OSM layer",
@@ -71,25 +78,23 @@ it("makes the map layers accessible", async () => {
       ]
     `);
 
-    // z-orders are currently assigned incrementally. the specific values
-    // do not really matter (the algorithm may change in the future), but they must
-    // a) be on top of base layers
-    // b) on top of each other (depending on configured order)
-    const zOrders = layers.map((l) => l.olLayer.getZIndex());
-    expect(zOrders).toMatchInlineSnapshot(`
-      [
-        1,
-        2,
-      ]
+    // Z-Index is assigned internally based on the display order of layers.
+    await waitForZIndex(layers[0]!);
+    const zIndices = getZIndices(layers);
+    expect(zIndices).toMatchInlineSnapshot(`
+      {
+        "Empty tile": 2,
+        "OSM": 1,
+      }
     `);
 
     const baseLayers = model.layers.getBaseLayers();
-    expect(baseLayers.length).toBe(0);
+    expect(baseLayers.length).toBe(1);
 
     const allLayers = model.layers.getLayers();
-    expect(allLayers).toEqual(layers);
-    // OSM + TopPlus Open + "highlight-layer" = 3
-    expect(model.olMap.getAllLayers().length).toBe(3);
+    expect(allLayers).toEqual([...baseLayers, ...layers]);
+    // Basemap + OSM + TopPlus Open + "highlight-layer" = 4
+    expect(model.olMap.getAllLayers().length).toBe(4);
 });
 
 it("supports ordered retrieval of layers", async () => {
@@ -421,38 +426,167 @@ it("registering the same OpenLayers layer twice throws an error", async () => {
     );
 });
 
-it("supports adding a layer to the model", async () => {
-    model = await create("foo", {
-        layers: []
-    });
-    expect(model.layers.getLayers()).toHaveLength(0);
+describe("adding a layers to the model", () => {
+    it("supports adding a layer to the model (default)", async () => {
+        model = await create("foo", {
+            layers: []
+        });
+        expect(model.layers.getLayers()).toHaveLength(0);
 
-    let changed = 0;
-    syncWatch(
-        () => [model!.layers.getLayers()],
-        () => {
-            ++changed;
-        }
-    );
+        let changed = 0;
+        syncWatch(
+            () => [model!.layers.getLayers()],
+            () => {
+                ++changed;
+            }
+        );
 
-    const layer = new SimpleLayer({
-        title: "foo",
-        olLayer: new TileLayer({
-            source: new OSM()
-        }),
-        visible: false
+        const layer = new SimpleLayer({
+            title: "foo",
+            olLayer: new TileLayer({
+                source: new OSM()
+            }),
+            visible: false
+        });
+        model.layers.addLayer(layer);
+        expect(changed).toBe(1);
+        expect(getLayerProps(layer)).toMatchInlineSnapshot(`
+          {
+            "description": "",
+            "title": "foo",
+            "visible": false,
+          }
+        `);
+        expect(model.layers.getLayers()).toHaveLength(1);
+        expect(model.layers.getLayers()[0]).toBe(layer);
     });
-    model.layers.addLayer(layer);
-    expect(changed).toBe(1);
-    expect(getLayerProps(layer)).toMatchInlineSnapshot(`
-      {
-        "description": "",
-        "title": "foo",
-        "visible": false,
-      }
-    `);
-    expect(model.layers.getLayers()).toHaveLength(1);
-    expect(model.layers.getLayers()[0]).toBe(layer);
+
+    it("supports adding a layer to the model (top)", async () => {
+        model = await create("foo", {
+            layers: [
+                new SimpleLayer({
+                    title: "dummy1",
+                    olLayer: new TileLayer({
+                        source: new OSM()
+                    })
+                })
+            ]
+        });
+
+        const layer = new SimpleLayer({
+            title: "foo",
+            olLayer: new TileLayer({
+                source: new OSM()
+            }),
+            visible: false
+        });
+        model.layers.addLayer(layer, { at: "top" });
+        const layers = model.layers.getOperationalLayers({ sortByDisplayOrder: true });
+        expect(layers).toHaveLength(2);
+        expect(layers[layers.length - 1]).toBe(layer);
+
+        await waitForZIndex(layer);
+        const zIndices = getZIndices(layers);
+        expect(zIndices).toMatchInlineSnapshot(`
+          {
+            "dummy1": 0,
+            "foo": 1,
+          }
+        `);
+    });
+
+    it("supports adding a layer to the model (bottom)", async () => {
+        model = await create("foo", {
+            layers: [
+                new SimpleLayer({
+                    title: "dummy1",
+                    olLayer: new TileLayer({
+                        source: new OSM()
+                    })
+                })
+            ]
+        });
+
+        const layer = new SimpleLayer({
+            title: "foo",
+            olLayer: new TileLayer({
+                source: new OSM()
+            })
+        });
+        model.layers.addLayer(layer, { at: "bottom" });
+        const layers = model.layers.getOperationalLayers({ sortByDisplayOrder: true });
+        expect(layers).toHaveLength(2);
+        expect(layers[0]).toBe(layer);
+
+        await waitForZIndex(layer);
+        const zIndices = getZIndices(layers);
+        expect(zIndices).toMatchInlineSnapshot(`
+          {
+            "dummy1": 1,
+            "foo": 0,
+          }
+        `);
+    });
+
+    it("supports adding a layer to the model (above / below)", async () => {
+        model = await create("foo", {
+            layers: [
+                new SimpleLayer({
+                    title: "dummy1",
+                    id: "dummy1",
+                    olLayer: new TileLayer({
+                        source: new OSM()
+                    })
+                }),
+                new SimpleLayer({
+                    title: "dummy2",
+                    id: "dummy2",
+                    olLayer: new TileLayer({
+                        source: new OSM()
+                    })
+                }),
+                new SimpleLayer({
+                    title: "dummy3",
+                    id: "dummy3",
+                    olLayer: new TileLayer({
+                        source: new OSM()
+                    })
+                })
+            ]
+        });
+
+        const layerAbove = new SimpleLayer({
+            title: "above 1",
+            olLayer: new TileLayer({
+                source: new OSM()
+            })
+        });
+        const layerBelow = new SimpleLayer({
+            title: "below 3",
+            olLayer: new TileLayer({
+                source: new OSM()
+            })
+        });
+
+        model.layers.addLayer(layerAbove, { at: "above", reference: "dummy1" });
+        model.layers.addLayer(layerBelow, { at: "below", reference: "dummy3" });
+        const layers = model.layers.getOperationalLayers({ sortByDisplayOrder: true });
+        expect(layers).toHaveLength(5);
+        expect(layers[1]).toBe(layerAbove);
+        expect(layers[3]).toBe(layerBelow);
+
+        await waitForZIndex(layerAbove);
+        const zIndices = getZIndices(layers);
+        expect(zIndices).toMatchInlineSnapshot(`
+          {
+            "above 1": 1,
+            "below 3": 3,
+            "dummy1": 0,
+            "dummy2": 2,
+            "dummy3": 4,
+          }
+        `);
+    });
 });
 
 it("supports removing a layer from the model", async () => {
@@ -539,9 +673,6 @@ describe("base layers", () => {
                 ++events;
             }
         );
-
-        const zOrders = [b1, b2].map((l) => l.olLayer.getZIndex());
-        expect(zOrders).toEqual([0, 0]); // base layers always have z-index 0
 
         expect(layers.getActiveBaseLayer()).toBe(b1); // first base layer wins initially
         layers.activateBaseLayer(b1.id);
@@ -747,6 +878,19 @@ function getLayerProps(layer: Layer) {
         description: layer.description,
         visible: layer.visible
     };
+}
+
+async function waitForZIndex(layer: Layer) {
+    await waitFor(() => {
+        const zIndex = layer?.olLayer.getZIndex();
+        if (zIndex == null) {
+            throw new Error("No z-index was assigned");
+        }
+    });
+}
+
+function getZIndices(layers: Layer[]) {
+    return Object.fromEntries(layers.map((layer) => [layer.title, layer.olLayer.getZIndex()]));
 }
 
 function create(mapId: string, mapConfig: MapConfig) {

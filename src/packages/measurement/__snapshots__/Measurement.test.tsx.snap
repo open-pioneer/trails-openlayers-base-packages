@@ -24,8 +24,8 @@ exports[`should successfully create a measurement component 1`] = `
       <label
         class="chakra-form__label css-oe420r"
         data-theme="light"
-        for="field-:r0:"
-        id="field-:r0:-label"
+        for="field-«r0»"
+        id="field-«r0»-label"
       >
         measurementLabel
       </label>
@@ -36,7 +36,7 @@ exports[`should successfully create a measurement component 1`] = `
         <select
           class="chakra-select measurement-select css-161pkch"
           data-theme="light"
-          id="field-:r0:"
+          id="field-«r0»"
         >
           <option
             value="distance"

@@ -13,7 +13,7 @@ exports[`should successfully create a toc component 1`] = `
     <h1
       class="chakra-heading css-1mnao0q"
       data-theme="light"
-      id=":r0:"
+      id="«r0»"
     >
       basemapsLabel
     </h1>
@@ -61,7 +61,7 @@ exports[`should successfully create a toc component 1`] = `
               aria-controls="react-select-2-listbox"
               aria-expanded="true"
               aria-haspopup="true"
-              aria-labelledby=":r0:"
+              aria-labelledby="«r0»"
               aria-readonly="true"
               class="css-1s80ejz-dummyInput-DummyInput"
               id="react-select-2-input"

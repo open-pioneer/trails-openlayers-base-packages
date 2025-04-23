@@ -1,73 +1,75 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { StyleProps } from "@open-pioneer/chakra-integration";
-import { PADDING_BOTTOM, PADDING_LEFT, PADDING_RIGHT, PADDING_TOP } from "./CssProps";
-import { computeAttributionGap, MapAnchorPosition } from "./MapAnchor";
+import { MapAnchorPosition } from "./MapAnchor";
 
 export function computeMapAnchorStyles(
     position: MapAnchorPosition,
     horizontalGap?: number | undefined,
     verticalGap?: number | undefined
 ): StyleProps {
-    const styleProps: StyleProps = {
-        position: "absolute",
-        zIndex: 1, // above map
-        transitionProperty: "left, right, top, bottom",
-        transitionDuration: "200ms",
-        transitionTimingFunction: "ease-out",
-        overflow: "hidden"
-    };
+    const horizontal = horizontalGap ?? 0;
+    const vertical = verticalGap ?? 0;
+    const attributionGap = verticalGap == null ? ATTR_GAP : 0;
 
-    const defaultHorizontalGap = 0;
-    const horizontal = horizontalGap ?? defaultHorizontalGap;
-
-    const defaultVerticalGap = 0;
-    const vertical = verticalGap ?? defaultVerticalGap;
-
-    const attribution = computeAttributionGap(verticalGap);
-    const gap = (paddingProp: string, pixels: number) => `(${paddingProp} + ${pixels}px)`;
-
-    interface PosExprs {
-        left?: string;
-        right?: string;
-        top?: string;
-        bottom?: string;
-    }
-
-    // CSS Expressions for inside calc(...)
-    const posExprs: PosExprs = {};
+    const styleProps: StyleProps = {};
     switch (position) {
         case "top-left":
-            posExprs.left = gap(PADDING_LEFT.ref, horizontal);
-            posExprs.top = gap(PADDING_TOP.ref, vertical);
+            styleProps.left = `${horizontal}px`;
+            styleProps.top = `${vertical}px`;
             break;
         case "top-right":
-            posExprs.right = gap(PADDING_RIGHT.ref, horizontal);
-            posExprs.top = gap(PADDING_TOP.ref, vertical);
+            styleProps.right = `${horizontal}px`;
+            styleProps.top = `${vertical}px`;
             break;
         case "bottom-left":
-            posExprs.left = gap(PADDING_LEFT.ref, horizontal);
-            posExprs.bottom = gap(PADDING_BOTTOM.ref, vertical + attribution.gap);
+            styleProps.left = `${horizontal}px`;
+            styleProps.bottom = `${vertical + attributionGap}px`;
             break;
         case "bottom-right":
-            posExprs.right = gap(PADDING_RIGHT.ref, horizontal);
-            posExprs.bottom = gap(PADDING_BOTTOM.ref, vertical + attribution.gap);
+            styleProps.right = `${horizontal}px`;
+            styleProps.bottom = `${vertical + attributionGap}px`;
+            break;
+        case "top-center":
+            styleProps.top = `${vertical}px`;
+            styleProps.left = `calc((100% - ${horizontal}px) / 2)`;
+            styleProps.transform = "translateX(-50%)";
+            break;
+        case "bottom-center":
+            styleProps.bottom = `${vertical + attributionGap}px`;
+            styleProps.left = `calc((100% - ${horizontal}px) / 2)`;
+            styleProps.transform = "translateX(-50%)";
+            break;
+        case "left-center":
+            styleProps.left = `${horizontal}px`;
+            styleProps.top = `calc((100% - ${vertical}px) / 2)`;
+            styleProps.transform = "translateY(-50%)";
+            break;
+        case "right-center":
+            styleProps.right = `${horizontal}px`;
+            styleProps.top = `calc((100% - ${vertical}px) / 2)`;
+            styleProps.transform = "translateY(-50%)";
+            break;
+        case "center":
+            styleProps.top = `calc((100% - ${vertical}px) / 2)`;
+            styleProps.left = `calc((100% - ${horizontal}px) / 2)`;
+            styleProps.transform = "translate(-50%, -50%)";
             break;
     }
 
-    for (const [key, value] of Object.entries(posExprs)) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (styleProps as any)[key] = `calc(${value})`;
-    }
-
-    /**
-     * Apply max-height and max-width to MapAnchor to avoid content overflow
-     */
-    styleProps.maxH = `calc((100%) - ${defaultValue(posExprs.top, "0px")} - ${defaultValue(posExprs.bottom, attribution.gap + "px")} - ${vertical}px - ${attribution.space}px)`;
-    styleProps.maxW = `calc((100%) - ${defaultValue(posExprs.left, "0px")} - ${defaultValue(posExprs.right, "0px")} - ${horizontal}px)`;
+    styleProps.maxW = `calc((100%) - ${2 * horizontal}px)`;
+    styleProps.maxH = `calc((100%) - ${attributionGap}px - ${2 * vertical}px)`;
     return styleProps;
 }
 
-function defaultValue(value: string | undefined, defaultValue: string): string {
-    return value ?? defaultValue;
-}
+/**
+ * height of the ol attribution component
+ * improvement: Get height directly from `Attribution` HTMLDivElement
+ */
+const ATTR_HEIGHT = 20;
+
+/**
+ * additional space between attribution and map anchor container
+ */
+const ATTR_SPACE = 10;
+const ATTR_GAP = ATTR_HEIGHT + ATTR_SPACE;

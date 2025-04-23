@@ -5,9 +5,8 @@ import { Resource, createLogger } from "@open-pioneer/core";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import type OlMap from "ol/Map";
 import { Extent } from "ol/extent";
-import { CSSProperties, ReactNode, useEffect, useMemo, useRef, useState } from "react";
+import { ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { MapModel, MapPadding } from "../api";
-import { PADDING_BOTTOM, PADDING_LEFT, PADDING_RIGHT, PADDING_TOP } from "./CssProps";
 import { MapContainerContextProvider, MapContainerContextType } from "./MapContainerContext";
 import { MapModelProps, useMapModel } from "./useMapModel";
 const LOG = createLogger("map:MapContainer");
@@ -113,19 +112,15 @@ export function MapContainer(props: MapContainerProps) {
             position: "relative",
 
             // set css variables according to view padding
-            [PADDING_TOP.definition]:
-                viewPadding?.top != undefined ? viewPadding.top + "px" : "0px",
-            [PADDING_BOTTOM.definition]:
-                viewPadding?.bottom != undefined ? viewPadding.bottom + "px" : "0px",
-            [PADDING_LEFT.definition]:
-                viewPadding?.left != undefined ? viewPadding.left + "px" : "0px",
-            [PADDING_RIGHT.definition]:
-                viewPadding?.right != undefined ? viewPadding.right + "px" : "0px"
-        } as CSSProperties;
+            "--map-padding-top": `${viewPadding?.top ?? 0}px`,
+            "--map-padding-bottom": `${viewPadding?.bottom ?? 0}px`,
+            "--map-padding-left": `${viewPadding?.left ?? 0}px`,
+            "--map-padding-right": `${viewPadding?.right ?? 0}px`
+        };
     }, [viewPadding]);
 
     return (
-        <chakra.div {...containerProps} style={styleProps}>
+        <chakra.div {...containerProps} css={styleProps}>
             {/* Used by open layers to mount the map. This node receives the keyboard focus when interacting with the map. */}
             <chakra.div
                 className="map-container"
@@ -140,11 +135,7 @@ export function MapContainer(props: MapContainerProps) {
             />
 
             {/* Contains user widgets (map anchors and raw children). These are separate from the map so they don't interfere with mouse/keyboard events. */}
-            <chakra.div
-                ref={mapAnchorsHost}
-                className="map-anchors"
-                /* note: zero sized, children have a size and are positioned relative to the map-container */
-            >
+            <chakra.div ref={mapAnchorsHost} className="map-anchors">
                 {ready && map && (
                     <MapContainerReady
                         olMap={map.olMap}
