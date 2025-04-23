@@ -5,26 +5,25 @@ import { MapModel } from "@open-pioneer/map";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { VectorSelectionSourceFactory } from "@open-pioneer/selection/services";
 import { ReactNode } from "react";
-import { createOverviewMapDemo } from "./OverviewMapDemo";
-import { createSearchAndHighlightDemo } from "./SearchAndHighlightDemo";
-import {
-    createCoordinateViewerDemo,
-    createCoordinateInputDemo,
-    createCoordinateSearchDemo,
-    createGeolocationDemo,
-    createMapNavigationDemo,
-    createMeasurementDemo,
-    createPrintingDemo,
-    createScaleBarDemo,
-    createScaleSetterDemo,
-    createScaleViewerDemo,
-    createSpatialBookmarksDemo
-} from "./SimpleDemos";
+// import {
+//     createCoordinateViewerDemo,
+//     createCoordinateInputDemo,
+//     createCoordinateSearchDemo,
+//     createGeolocationDemo,
+//     createMapNavigationDemo,
+//     createMeasurementDemo,
+//     createPrintingDemo,
+//     createScaleBarDemo,
+//     createScaleSetterDemo,
+//     createScaleViewerDemo,
+//     createSpatialBookmarksDemo
+// } from "./SimpleDemos";
 import { createTocAndLegendDemo } from "./TocLegendDemo";
-import { createSelectionDemo } from "./SelectionDemo";
-import { createEditingDemo } from "./EditingDemo";
+// import { createSelectionDemo } from "./SelectionDemo";
+// import { createEditingDemo } from "./EditingDemo";
 import { EditingService } from "@open-pioneer/editing";
 import { NotificationService } from "@open-pioneer/notifier";
+import { createCoordinateViewerDemo, createGeolocationDemo, createMapNavigationDemo, createPrintingDemo, createScaleBarDemo, createScaleSetterDemo, createScaleViewerDemo } from "./MigratedDemos";
 
 export interface DemoInfo {
     /** Unique id */
@@ -69,21 +68,22 @@ export interface SharedDemoOptions {
 
 export function createDemos(options: SharedDemoOptions): Demo[] {
     return [
+        // TODO
         createTocAndLegendDemo(options),
         createCoordinateViewerDemo(options),
-        createCoordinateInputDemo(options),
-        createCoordinateSearchDemo(options),
+        // createCoordinateInputDemo(options),
+        // createCoordinateSearchDemo(options),
         createScaleViewerDemo(options),
         createScaleSetterDemo(options),
         createScaleBarDemo(options),
-        createMeasurementDemo(options),
-        createEditingDemo(options),
+        // createMeasurementDemo(options),
+        // createEditingDemo(options),
         createMapNavigationDemo(options),
         createGeolocationDemo(options),
-        createSpatialBookmarksDemo(options),
-        createOverviewMapDemo(options),
+        // createSpatialBookmarksDemo(options),
+        // createOverviewMapDemo(options),
         createPrintingDemo(options),
-        createSelectionDemo(options),
-        createSearchAndHighlightDemo(options)
+        // createSelectionDemo(options),
+        // createSearchAndHighlightDemo(options)
     ];
 }

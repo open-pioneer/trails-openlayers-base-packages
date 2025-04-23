@@ -2,17 +2,17 @@
 // SPDX-License-Identifier: Apache-2.0
 import { Button, ButtonProps, Toggle } from "@chakra-ui/react";
 import { Tooltip, TooltipProps } from "@open-pioneer/chakra-snippets/tooltip";
+import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
+import classNames from "classnames";
 import {
     FC,
     MouseEvent,
     MouseEventHandler,
     ReactElement,
     RefAttributes,
-    forwardRef,
+    memo,
     useState
 } from "react";
-import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
-import classNames from "classnames";
 
 /**
  * Properties supported by {@link ToolButton}.
@@ -76,10 +76,7 @@ export interface ToolButtonProps extends CommonComponentProps, RefAttributes<HTM
 /**
  * An button with a tooltip, used for tool buttons on a map.
  */
-export const ToolButton: FC<ToolButtonProps> = forwardRef(function ToolButton(
-    props: ToolButtonProps,
-    ref
-) {
+export const ToolButton: FC<ToolButtonProps> = memo(function ToolButton(props: ToolButtonProps) {
     const {
         label,
         icon,
@@ -88,7 +85,8 @@ export const ToolButton: FC<ToolButtonProps> = forwardRef(function ToolButton(
         disabled,
         active,
         tooltipProps,
-        buttonProps
+        buttonProps,
+        ref
     } = props;
 
     const {
@@ -109,6 +107,31 @@ export const ToolButton: FC<ToolButtonProps> = forwardRef(function ToolButton(
         onClickProp?.(e);
     };
 
+    let button = (
+        <ButtonIgnoringAriaProps
+            className={className}
+            ref={ref}
+            aria-label={label}
+            padding={0}
+            disabled={disabled}
+            loading={loading}
+            {...containerProps}
+            {...buttonProps}
+            /* don't allow overwrite because component would break */
+            onClick={onClick}
+        >
+            {icon}
+        </ButtonIgnoringAriaProps>
+    );
+    if (active != null) {
+        // Make sure that only "pressable" buttons receive the aria-pressed attribute.
+        button = (
+            <Toggle.Root pressed={active} asChild>
+                {button}
+            </Toggle.Root>
+        );
+    }
+
     return (
         <Tooltip
             content={label}
@@ -118,22 +141,7 @@ export const ToolButton: FC<ToolButtonProps> = forwardRef(function ToolButton(
             open={tooltipOpen}
             onOpenChange={(e) => setTooltipOpen(e.open)}
         >
-            <Toggle.Root pressed={active} /*toggles aria-pressed*/ asChild>
-                <ButtonIgnoringAriaProps
-                    className={className}
-                    ref={ref}
-                    aria-label={label}
-                    padding={0}
-                    disabled={disabled}
-                    loading={loading}
-                    {...containerProps}
-                    {...buttonProps}
-                    /* don't allow overwrite because component would break */
-                    onClick={onClick}
-                >
-                    {icon}
-                </ButtonIgnoringAriaProps>
-            </Toggle.Root>
+            {button}
         </Tooltip>
     );
 });
@@ -143,10 +151,9 @@ export const ToolButton: FC<ToolButtonProps> = forwardRef(function ToolButton(
  * This is redundant because the aria-label already has the same content as the tooltip.
  * This component wraps chakra's button to ignore the *-by attributes.
  */
-const ButtonIgnoringAriaProps = forwardRef(function ButtonIgnoringAriaProps(
-    props: ButtonProps,
-    ref: React.ForwardedRef<HTMLButtonElement>
+const ButtonIgnoringAriaProps = function ButtonIgnoringAriaProps(
+    props: ButtonProps & { ref?: React.Ref<HTMLButtonElement> }
 ) {
-    const { "aria-labelledby": _label, "aria-describedby": _describedBy, ...rest } = props;
+    const { "aria-labelledby": _label, "aria-describedby": _describedBy, ref, ...rest } = props;
     return <Button ref={ref} {...rest} />;
-});
+};

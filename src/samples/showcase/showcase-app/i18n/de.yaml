@@ -46,7 +46,7 @@ messages:
       description: Diese Demo zeigt, wie die <code>ScaleSetter</code>-Komponente verwendet werden kann, um den Maßstab der Karte anzupassen.
     scaleBar:
       title: Maßstabsleiste
-      description: Diese Demo zeigt, wie die <code>ScaleBar</code>-Komponente verwendet werden kann, um eine Maßstabsleiste anzuzeigen.
+      description: Diese Demo zeigt, wie die <code>ScaleBar</code>-Komponente verwendet werden kann, um eine Maßstabsleiste anzuzeigen. Die Komponente wird direkt auf der Karte dargestellt (unten rechts).
     measurement:
       title: Messen
       description: Diese Demo zeigt, wie die <code>Measurement</code>-Komponente verwendet werden kann, um Strecken- und Flächenmessungen in der karte zu durchzuführen.
