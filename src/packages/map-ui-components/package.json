@@ -21,7 +21,7 @@
         "@open-pioneer/react-utils": "catalog:",
         "classnames": "catalog:",
         "react": "catalog:",
-        "@open-pioneer/chakra-snippets" : "workspace:*"
+        "@open-pioneer/chakra-snippets" : "catalog:"
     },
     "devDependencies": {
         "@open-pioneer/test-utils": "catalog:",

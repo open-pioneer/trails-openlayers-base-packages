@@ -26,6 +26,7 @@ catalog:
   "@open-pioneer/reactivity": *core_packages_version
   "@open-pioneer/runtime": *core_packages_version
   "@open-pioneer/test-utils": *core_packages_version
+  "@open-pioneer/chakra-snippets": *core_packages_version
 
   "@chakra-ui/react": ^3.15.1
   "@chakra-ui/cli": ^3.15.1

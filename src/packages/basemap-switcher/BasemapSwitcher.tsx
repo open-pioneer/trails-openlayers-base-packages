@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Box, createListCollection, Portal, Select } from "@chakra-ui/react";
-import { Tooltip } from "@open-pioneer/chakra-snippets";
+import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
 import { Layer, useMapModel, MapModelProps } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";

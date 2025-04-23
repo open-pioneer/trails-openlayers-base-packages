@@ -12,7 +12,8 @@ import {
     IconButton,
     Spacer
 } from "@chakra-ui/react";
-import { Tooltip, Checkbox} from "@open-pioneer/chakra-snippets";
+import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
+import { Checkbox} from "@open-pioneer/chakra-snippets/checkbox";
 import { AnyLayer } from "@open-pioneer/map";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import classNames from "classnames";

@@ -12,7 +12,7 @@ import {
     Center,
     List
 } from "@chakra-ui/react";
-import { Checkbox } from "@open-pioneer/chakra-snippets";
+import { Checkbox } from "@open-pioneer/chakra-snippets/checkbox";
 import { MapAnchor, MapContainer, MapModel, useMapModel } from "@open-pioneer/map";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { Geometry, LineString, Point, Polygon } from "ol/geom";

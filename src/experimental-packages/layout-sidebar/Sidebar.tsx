@@ -10,7 +10,7 @@ import {
     Spacer,
     useDisclosure
 } from "@chakra-ui/react";
-import { Tooltip } from "@open-pioneer/chakra-snippets";
+import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
 import { useIntl } from "open-pioneer:react-hooks";
 import { useCallback } from "react";
 import { ReactElement, ReactNode, useEffect, useReducer } from "react";

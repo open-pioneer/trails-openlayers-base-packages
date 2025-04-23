@@ -28,7 +28,7 @@
         "react-icons": "catalog:",
         "@open-pioneer/reactivity": "catalog:",
         "@conterra/reactivity-core": "catalog:",
-        "@open-pioneer/chakra-snippets" : "workspace:*"
+        "@open-pioneer/chakra-snippets" : "catalog:"
     },
     "devDependencies": {
         "@open-pioneer/map-test-utils": "workspace:^",
