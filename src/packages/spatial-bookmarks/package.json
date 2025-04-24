@@ -18,6 +18,7 @@
     },
     "dependencies": {
         "@chakra-ui/react": "catalog:",
+        "@open-pioneer/chakra-snippets": "catalog:",
         "@open-pioneer/core": "catalog:",
         "@open-pioneer/local-storage": "catalog:",
         "@open-pioneer/map": "workspace:^",

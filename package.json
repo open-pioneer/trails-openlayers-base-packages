@@ -75,7 +75,8 @@
         },
         "patchedDependencies": {
             "@changesets/assemble-release-plan@6.0.4": "patches/@changesets__assemble-release-plan.patch",
-            "@ark-ui/react": "patches/@ark-ui__react.patch"
+            "@ark-ui/react": "patches/@ark-ui__react.patch",
+            "react-select": "patches/react-select.patch"
         }
     },
     "devDependencies": {

@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box, useToken } from "@open-pioneer/chakra-integration";
+import { Box, useToken } from "@chakra-ui/react";
 import { createLogger, isAbortError } from "@open-pioneer/core";
 import { MapModel, MapModelProps, useMapModel } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps, useEvent } from "@open-pioneer/react-utils";
@@ -173,9 +173,8 @@ export const Search: FC<SearchProps> = (props) => {
                 onInputChange={handleInputChange}
                 aria-label={intl.formatMessage({ id: "ariaLabel.search" })}
                 ariaLiveMessages={ariaMessages}
-                tagColorScheme="trails"
                 selectedOptionStyle="color"
-                selectedOptionColorScheme="trails"
+                selectedOptionColorPalette="colorPalette"
                 chakraStyles={chakraStyles}
                 isClearable={true}
                 placeholder={props.placeholder ?? intl.formatMessage({ id: "searchPlaceholder" })}
@@ -263,20 +262,29 @@ function useCustomComponents(): SelectProps<SearchOption, false, SearchGroupOpti
  * Customizes components styles within the select component.
  */
 function useChakraStyles() {
-    const [groupHeadingBg, focussedItemBg, selectedItemBg] = useToken(
-        "colors",
-        ["trails.100", "trails.50", "trails.500"],
-        ["#d5e5ec", "#eaf2f5", "#1A202C"]
-    );
+    const [groupHeadingBg, focussedItemBg, selectedItemBg] = useToken("colors", [
+        "colorPalette.100",
+        "colorPalette.50",
+        "colorPalette.500"
+    ]);
     return useMemo(() => {
         const chakraStyles: ChakraStylesConfig<SearchOption, false, SearchGroupOption> = {
-            inputContainer: (container) => ({
-                ...container,
+            control: (provided) => ({
+                ...provided,
+                paddingInline: 0
+            }),
+            inputContainer: (provided) => ({
+                ...provided,
                 gridTemplateAreas: "'area area area'",
                 display: "grid"
             }),
-            input: (base) => ({
-                ...base,
+            indicatorsContainer: (provided) => ({
+                ...provided,
+                // pointerEvents none can sneak in via chakra theme from <Select />
+                pointerEvents: "auto"
+            }),
+            input: (provided) => ({
+                ...provided,
                 gridArea: "area"
             }),
             groupHeading: (provided) => ({
@@ -290,7 +298,7 @@ function useChakraStyles() {
             option: (provided) => ({
                 ...provided,
                 backgroundColor: "inherit",
-                _focus: {
+                _highlighted: {
                     backgroundColor: focussedItemBg
                 },
                 _selected: {

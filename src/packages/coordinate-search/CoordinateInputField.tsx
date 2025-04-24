@@ -1,16 +1,14 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { CloseIcon, CopyIcon } from "@chakra-ui/icons";
-import {
-    IconButton,
-    Input,
-    InputGroup,
-    InputRightElement,
-    Tooltip
-} from "@open-pioneer/chakra-integration";
+import { Field, IconButton, Input, InputGroup } from "@chakra-ui/react";
+import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
 import { Coordinate } from "ol/coordinate";
 import { useIntl } from "open-pioneer:react-hooks";
+import { FiCopy, FiX } from "react-icons/fi";
 
+/**
+ * Text input for coordinates.
+ */
 export function CoordinateInputField(props: {
     isInputValid: boolean;
     coordinateSearchInput: string;
@@ -31,33 +29,22 @@ export function CoordinateInputField(props: {
     } = props;
     const intl = useIntl();
 
-    const leftInput = (
-        <Input
-            type="text"
+    const inputField = (
+        <InputField
+            invalid={!isInputValid}
             value={coordinateSearchInput}
-            onChange={(e) => {
-                setCoordinateSearchInput(e.target.value);
-            }}
-            isInvalid={!isInputValid}
-            backgroundColor={!isInputValid ? "red.100" : "undefined"}
             placeholder={placeholderString}
-            errorBorderColor="red.500"
-            aria-label={intl.formatMessage({
-                id: "coordinateInput.ariaLabel"
-            })}
-            borderRightRadius={0}
-            onKeyDown={(e) => {
-                if (e.key == "Enter") {
-                    onEnter();
-                }
+            onChange={(newValue) => {
+                setCoordinateSearchInput(newValue);
             }}
+            onEnter={onEnter}
         />
     );
 
-    let rightButton = null;
+    let attachedButton = null;
     if (coordinateSearchInput !== "") {
-        rightButton = (
-            <RightButton
+        attachedButton = (
+            <AttachedButton
                 className="coordinate-input-clear-button"
                 label={intl.formatMessage({
                     id: "coordinateInput.clearPlaceholder"
@@ -66,12 +53,12 @@ export function CoordinateInputField(props: {
                     setCoordinateSearchInput("");
                     onClear?.();
                 }}
-                icon={<CloseIcon />}
+                icon={<FiX />}
             />
         );
     } else if (typeof placeholder === "object") {
-        rightButton = (
-            <RightButton
+        attachedButton = (
+            <AttachedButton
                 className="coordinate-input-copy-button"
                 label={intl.formatMessage({
                     id: "coordinateInput.copyPlaceholder"
@@ -79,19 +66,58 @@ export function CoordinateInputField(props: {
                 onClick={() => {
                     navigator.clipboard.writeText(placeholderString);
                 }}
-                icon={<CopyIcon />}
+                icon={<FiCopy />}
             />
         );
     }
     return (
-        <InputGroup className="coordinate-input-field-group">
-            {leftInput}
-            {rightButton}
+        <InputGroup
+            className="coordinate-input-field-group"
+            endElement={attachedButton}
+            endElementProps={{
+                className: "coordinate-input-field-attachment",
+                paddingInline: "4px"
+            }}
+        >
+            {inputField}
         </InputGroup>
     );
 }
 
-function RightButton(props: {
+function InputField(props: {
+    invalid: boolean;
+    value: string;
+    placeholder: string;
+    onChange: (newValue: string) => void;
+    onEnter: () => void;
+}) {
+    const intl = useIntl();
+    const { invalid, value, placeholder, onChange, onEnter } = props;
+    return (
+        <Field.Root invalid={invalid} flex="1 1 auto">
+            <Input
+                type="text"
+                value={value}
+                onChange={(e) => {
+                    onChange(e.target.value);
+                }}
+                backgroundColor={invalid ? "red.100" : undefined}
+                placeholder={placeholder}
+                aria-label={intl.formatMessage({
+                    id: "coordinateInput.ariaLabel"
+                })}
+                borderRightRadius={0}
+                onKeyDown={(e) => {
+                    if (e.key == "Enter") {
+                        onEnter();
+                    }
+                }}
+            />
+        </Field.Root>
+    );
+}
+
+function AttachedButton(props: {
     className: string;
     label: string;
     onClick: () => void;
@@ -99,17 +125,10 @@ function RightButton(props: {
 }) {
     const { className, label, onClick, icon } = props;
     return (
-        <InputRightElement>
-            <Tooltip label={label}>
-                <IconButton
-                    className={className}
-                    size="sm"
-                    onClick={onClick}
-                    padding={0}
-                    icon={icon}
-                    aria-label={label}
-                />
-            </Tooltip>
-        </InputRightElement>
+        <Tooltip content={label}>
+            <IconButton className={className} size="xs" onClick={onClick} aria-label={label}>
+                {icon}
+            </IconButton>
+        </Tooltip>
     );
 }

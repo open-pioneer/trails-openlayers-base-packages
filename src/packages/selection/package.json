@@ -29,7 +29,8 @@
         "react-icons": "catalog:",
         "uuid": "catalog:",
         "@conterra/reactivity-core": "catalog:",
-        "@open-pioneer/reactivity": "catalog:"
+        "@open-pioneer/reactivity": "catalog:",
+        "@open-pioneer/chakra-snippets": "catalog:"
     },
     "devDependencies": {
         "@open-pioneer/map-test-utils": "workspace:^",
