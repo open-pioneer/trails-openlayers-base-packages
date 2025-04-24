@@ -24,7 +24,7 @@ The `MapContainer` fills the entire available space.
 Example: Integration of a map container with a given map (for an example with `DefaultMapProvider` see [Using the `DefaultMapProvider`](#using-the-defaultmapprovider):
 
 ```jsx
-import { Box } from "@open-pioneer/chakra-integration";
+import { Box } from "@chakra-ui/react";
 import { MapContainer } from "@open-pioneer/map";
 
 // ...

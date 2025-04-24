@@ -16,7 +16,6 @@ catalog:
   # Trails core packages
   # https://github.com/open-pioneer/trails-core-packages
   "@open-pioneer/base-theme": *core_packages_version
-  "@open-pioneer/chakra-integration": *core_packages_version
   "@open-pioneer/core": *core_packages_version
   "@open-pioneer/http": *core_packages_version
   "@open-pioneer/integration": *core_packages_version
