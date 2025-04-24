@@ -23,7 +23,16 @@ import { createTocAndLegendDemo } from "./TocLegendDemo";
 // import { createEditingDemo } from "./EditingDemo";
 import { EditingService } from "@open-pioneer/editing";
 import { NotificationService } from "@open-pioneer/notifier";
-import { createCoordinateViewerDemo, createGeolocationDemo, createMapNavigationDemo, createPrintingDemo, createScaleBarDemo, createScaleSetterDemo, createScaleViewerDemo } from "./MigratedDemos";
+import {
+    createCoordinateViewerDemo,
+    createGeolocationDemo,
+    createMapNavigationDemo,
+    createMeasurementDemo,
+    createPrintingDemo,
+    createScaleBarDemo,
+    createScaleSetterDemo,
+    createScaleViewerDemo
+} from "./MigratedDemos";
 
 export interface DemoInfo {
     /** Unique id */
@@ -76,13 +85,13 @@ export function createDemos(options: SharedDemoOptions): Demo[] {
         createScaleViewerDemo(options),
         createScaleSetterDemo(options),
         createScaleBarDemo(options),
-        // createMeasurementDemo(options),
+        createMeasurementDemo(options),
         // createEditingDemo(options),
         createMapNavigationDemo(options),
         createGeolocationDemo(options),
         // createSpatialBookmarksDemo(options),
         // createOverviewMapDemo(options),
-        createPrintingDemo(options),
+        createPrintingDemo(options)
         // createSelectionDemo(options),
         // createSearchAndHighlightDemo(options)
     ];

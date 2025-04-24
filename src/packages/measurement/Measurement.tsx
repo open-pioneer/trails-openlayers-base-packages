@@ -1,24 +1,17 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import {
-    Box,
-    Button,
-    FormControl,
-    FormLabel,
-    HStack,
-    Select,
-    Text
-} from "@open-pioneer/chakra-integration";
+import { Box, Button, Field, HStack, Text } from "@chakra-ui/react";
+import { NativeSelectField, NativeSelectRoot } from "@open-pioneer/chakra-snippets/native-select";
 import { MapModel, MapModelProps, useMapModel } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { PackageIntl } from "@open-pioneer/runtime";
+import LineString from "ol/geom/LineString";
+import Polygon from "ol/geom/Polygon";
 import { Circle as CircleStyle, Fill, Stroke, Style } from "ol/style";
 import { StyleLike } from "ol/style/Style";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, useEffect, useState } from "react";
 import { MeasurementController, MeasurementType } from "./MeasurementController";
-import LineString from "ol/geom/LineString";
-import Polygon from "ol/geom/Polygon";
 
 /** Emitted when a new measurement is being added to the map. */
 export interface MeasurementsAddEvent {
@@ -107,19 +100,21 @@ export const Measurement: FC<MeasurementProps> = (props) => {
     return (
         <Box {...containerProps}>
             <Text mb={3}>{intl.formatMessage({ id: "measurementInfoText" })}</Text>
-            <FormControl mb={4} alignItems="center">
-                <HStack mb={2}>
-                    <FormLabel mb={1}>{label("measurementLabel")}</FormLabel>
-                    <Select
-                        value={selectedMeasurement}
-                        onChange={(e) => changeMeasurement(e.target.value)}
-                        className="measurement-select"
-                    >
-                        <option value={"distance"}>{label("distance")}</option>
-                        <option value={"area"}>{label("area")}</option>
-                    </Select>
+            <Field.Root mb={4} asChild>
+                <HStack mb={2} alignItems="center">
+                    <Field.Label mb={1}>{label("measurementLabel")}</Field.Label>
+                    <NativeSelectRoot>
+                        <NativeSelectField
+                            value={selectedMeasurement}
+                            onChange={(e) => changeMeasurement(e.target.value)}
+                            className="measurement-select"
+                        >
+                            <option value={"distance"}>{label("distance")}</option>
+                            <option value={"area"}>{label("area")}</option>
+                        </NativeSelectField>
+                    </NativeSelectRoot>
                 </HStack>
-            </FormControl>
+            </Field.Root>
             <Button
                 padding={2}
                 className="measurement-delete-button"
