@@ -118,8 +118,7 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
             >
                 <Select.Control>
                     <Select.Trigger aria-label={ariaLabel} aria-labelledby={ariaLabelledBy}>
-                        {/* TODO: Placeholder !? */}
-                        <Select.ValueText placeholder={"Test"} />
+                        <Select.ValueText />
                     </Select.Trigger>
                     <Select.IndicatorGroup>
                         <Select.Indicator />

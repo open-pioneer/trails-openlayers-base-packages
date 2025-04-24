@@ -196,19 +196,6 @@ function CoordinateSearchComponent(props: {
     );
 }
 
-export function createMeasurementDemo({ intl }: SharedDemoOptions): Demo {
-    return {
-        id: "measurement",
-        title: intl.formatMessage({ id: "demos.measurement.title" }),
-        createModel() {
-            return {
-                description: intl.formatRichMessage({ id: "demos.measurement.description" }),
-                mainWidget: <Measurement />
-            };
-        }
-    };
-}
-
 export function createSpatialBookmarksDemo({ intl }: SharedDemoOptions): Demo {
     return {
         id: "spatialBookmarks",

@@ -9,11 +9,12 @@ import {
     ZoomIn,
     ZoomOut
 } from "@open-pioneer/map-navigation";
+import { Measurement } from "@open-pioneer/measurement";
+import { Printing } from "@open-pioneer/printing";
 import { ScaleBar } from "@open-pioneer/scale-bar";
 import { ScaleSetter } from "@open-pioneer/scale-setter";
 import { ScaleViewer } from "@open-pioneer/scale-viewer";
 import { Demo, SharedDemoOptions } from "./Demo";
-import { Printing } from "@open-pioneer/printing";
 
 export function createCoordinateViewerDemo({ intl }: SharedDemoOptions): Demo {
     return {
@@ -57,6 +58,19 @@ export function createMapNavigationDemo({ intl }: SharedDemoOptions): Demo {
                         <InitialExtent />
                     </>
                 )
+            };
+        }
+    };
+}
+
+export function createMeasurementDemo({ intl }: SharedDemoOptions): Demo {
+    return {
+        id: "measurement",
+        title: intl.formatMessage({ id: "demos.measurement.title" }),
+        createModel() {
+            return {
+                description: intl.formatRichMessage({ id: "demos.measurement.description" }),
+                mainWidget: <Measurement />
             };
         }
     };
