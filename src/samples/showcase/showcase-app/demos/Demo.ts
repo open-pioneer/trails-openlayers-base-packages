@@ -28,6 +28,7 @@ import {
     createGeolocationDemo,
     createMapNavigationDemo,
     createMeasurementDemo,
+    createOverviewMapDemo,
     createPrintingDemo,
     createScaleBarDemo,
     createScaleSetterDemo,
@@ -91,7 +92,7 @@ export function createDemos(options: SharedDemoOptions): Demo[] {
         createMapNavigationDemo(options),
         createGeolocationDemo(options),
         createSpatialBookmarksDemo(options),
-        // createOverviewMapDemo(options),
+        createOverviewMapDemo(options),
         createPrintingDemo(options)
         // createSelectionDemo(options),
         // createSearchAndHighlightDemo(options)

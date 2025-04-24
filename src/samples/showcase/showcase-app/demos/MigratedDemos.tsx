@@ -14,8 +14,11 @@ import { Printing } from "@open-pioneer/printing";
 import { ScaleBar } from "@open-pioneer/scale-bar";
 import { ScaleSetter } from "@open-pioneer/scale-setter";
 import { ScaleViewer } from "@open-pioneer/scale-viewer";
-import { Demo, SharedDemoOptions } from "./Demo";
 import { SpatialBookmarks } from "@open-pioneer/spatial-bookmarks";
+import { Demo, SharedDemoOptions } from "./Demo";
+import { OverviewMap } from "@open-pioneer/overview-map";
+import TileLayer from "ol/layer/Tile";
+import { OSM } from "ol/source";
 
 export function createCoordinateViewerDemo({ intl }: SharedDemoOptions): Demo {
     return {
@@ -72,6 +75,26 @@ export function createMeasurementDemo({ intl }: SharedDemoOptions): Demo {
             return {
                 description: intl.formatRichMessage({ id: "demos.measurement.description" }),
                 mainWidget: <Measurement />
+            };
+        }
+    };
+}
+
+export function createOverviewMapDemo({ intl }: SharedDemoOptions): Demo {
+    return {
+        id: "overviewMap",
+        title: intl.formatMessage({ id: "demos.overviewMap.title" }),
+        createModel() {
+            const overviewMapLayer = new TileLayer({
+                source: new OSM()
+            });
+
+            return {
+                description: intl.formatRichMessage({ id: "demos.overviewMap.description" }),
+                mainWidget: <OverviewMap olLayer={overviewMapLayer} />,
+                destroy() {
+                    overviewMapLayer.dispose();
+                }
             };
         }
     };
