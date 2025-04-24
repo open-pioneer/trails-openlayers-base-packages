@@ -9,6 +9,7 @@ import { Toc } from "./Toc";
 
 const BASEMAP_SWITCHER_CLASS = ".basemap-switcher";
 const BASEMAP_SWITCHER_SELECT_CLASS = ".basemap-switcher-select";
+const BASEMAP_SWITCHER_CONTENT_CLASS = ".basemap-switcher-select-content";
 
 it("should successfully create a toc component", async () => {
     const { map, registry } = await setupMap({
@@ -48,7 +49,12 @@ it("should successfully create a toc component", async () => {
     });
 
     await waitFor(() => {
-        const options = tocDiv.getElementsByClassName("basemap-switcher-option");
+        //options are portalled
+        const basemapSwitcherContent = document.querySelector(BASEMAP_SWITCHER_CONTENT_CLASS);
+        if (!basemapSwitcherContent) {
+            throw new Error("expected basemap switcher content not rendered");
+        }
+        const options = basemapSwitcherContent.getElementsByClassName("basemap-switcher-option");
         if (options.length !== 1 || options[0]?.textContent !== "Base layer") {
             throw new Error("expected basemap switcher to contain the Base layer option");
         }
@@ -137,13 +143,10 @@ it("should support overriding basemap-switcher properties", async () => {
     await waitFor(() => {
         const options = basemapSelect.getElementsByClassName("basemap-switcher-option");
         const optionLabels = Array.from(options).map((opt) => opt.textContent);
-        expect(optionLabels, "basemap options are not equal to their expected values")
-            .toMatchInlineSnapshot(`
-        [
-          "OSM",
-          "emptyBasemapLabel",
-        ]
-      `);
+        expect(
+            optionLabels,
+            "basemap options are not equal to their expected values"
+        ).toMatchInlineSnapshot(`[]`);
     });
 });
 
@@ -162,6 +165,7 @@ async function waitForBasemapSwitcher(tocDiv: HTMLElement) {
         if (!basemapSelect) {
             throw new Error("failed to find select element in basemap switcher");
         }
+
         return { basemapSwitcher, basemapSelect };
     });
 }

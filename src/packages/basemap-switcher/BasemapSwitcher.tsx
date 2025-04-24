@@ -115,6 +115,7 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
                 collection={optionsListCollection}
                 value={selectedOption}
                 onValueChange={(option) => option && activateLayer(option.value)}
+                className="basemap-switcher-select"
             >
                 <Select.Control>
                     <Select.Trigger aria-label={ariaLabel} aria-labelledby={ariaLabelledBy}>
@@ -127,7 +128,7 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
 
                 <Portal>
                     <Select.Positioner>
-                        <Select.Content>
+                        <Select.Content className="basemap-switcher-select-content">
                             {optionsListCollection.items.map((item) => (
                                 <BasemapItem item={item} key={item.value} />
                             ))}
@@ -150,6 +151,7 @@ function BasemapItem(props: { item: SelectOption }) {
             justifyContent="flex-start"
             // Override pointer-events: none rule for disabled items; we want to show the tooltip on hover
             pointerEvents="auto"
+            className="basemap-switcher-option"
         >
             {item.label}
             {item.layer?.loadState === "error" && (

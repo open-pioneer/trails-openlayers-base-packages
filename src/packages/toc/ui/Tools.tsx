@@ -47,7 +47,7 @@ export const Tools: FC<ToolsProps> = memo(function Tools(props: ToolsProps) {
                     </Menu.Trigger>
                     <Portal>
                         <Menu.Positioner>
-                            <Menu.Content className="tools-menu">
+                            <Menu.Content className="toc-tools-menu">
                                 {showHideAllLayers && (
                                     <Menu.Item
                                         aria-label={intl.formatMessage({

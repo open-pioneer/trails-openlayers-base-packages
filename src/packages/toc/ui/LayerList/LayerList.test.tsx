@@ -329,20 +329,20 @@ it("changes the description popover's visibility when toggling the button", asyn
         throw new Error("description button not found!");
     }
 
-    const description = screen.getByText(layer.description);
-
-    // initially hidden
-    expect(description).not.toBeVisible();
+    //initially not there because of lazy mounting of popover
+    expect(() => screen.getByText(layer.description)).toThrow();
 
     // open the popover
     fireEvent.click(button);
     await waitFor(async () => {
+        const description = screen.getByText(layer.description);
         expect(description).toBeVisible();
     });
 
     // close the popover again
     fireEvent.click(button);
     await waitFor(async () => {
+        const description = screen.getByText(layer.description);
         expect(description).not.toBeVisible();
     });
 });
@@ -375,6 +375,13 @@ it("reacts to changes in the layer description", async () => {
 
     const initialItems = queryAllByRole(container, "button");
     expect(initialItems).toHaveLength(1);
+    //need to open popover because of lazy mounting of popover
+    const button = initialItems[0]!;
+    await act(async () => {
+        fireEvent.click(button);
+        await nextTick();
+    });
+
     screen.getByText("Description");
     await act(async () => {
         layer.setDescription("New description");
@@ -536,15 +543,15 @@ it("should collapse and expand list items", async () => {
     expect(groupCollapseButton).toBeDefined();
     expect(groupCollapseButton?.getAttribute("aria-expanded")).toBe("true");
     expect(collapsibleList).toBeDefined();
-    expect(collapsibleList.getAttribute("style")?.includes("height: auto")).toBe(true);
+    expect(collapsibleList.getAttribute("data-state")).toBe("open");
 
     await user.click(groupCollapseButton); //collapse
     expect(groupCollapseButton?.getAttribute("aria-expanded")).toBe("false");
-    expect(collapsibleList.getAttribute("style")?.includes("height: 0")).toBe(true);
+    expect(collapsibleList.getAttribute("data-state")).toBe("closed");
 
     await user.click(groupCollapseButton); //expand again
     expect(groupCollapseButton?.getAttribute("aria-expanded")).toBe("true");
-    expect(collapsibleList.getAttribute("style")?.includes("height: auto")).toBe(true);
+    expect(collapsibleList.getAttribute("data-state")).toBe("open");
 });
 
 it("it renders collapse buttons (only) for groups", async () => {
@@ -628,11 +635,11 @@ it("supports initial collapsed groups", async () => {
     expect(groupCollapseButton).toBeDefined();
     expect(groupCollapseButton?.getAttribute("aria-expanded")).toBe("false");
     expect(collapsibleList).toBeDefined();
-    expect(collapsibleList.getAttribute("style")?.includes("height: 0")).toBe(true);
+    expect(collapsibleList.getAttribute("data-state")).toBe("closed");
 
     await user.click(groupCollapseButton); //expand
     expect(groupCollapseButton?.getAttribute("aria-expanded")).toBe("true");
-    expect(collapsibleList.getAttribute("style")?.includes("height: auto")).toBe(true);
+    expect(collapsibleList.getAttribute("data-state")).toBe("open");
 });
 
 /** Returns the layer list's current list items. */
