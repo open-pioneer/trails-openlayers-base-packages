@@ -972,6 +972,9 @@ importers:
       '@chakra-ui/react':
         specifier: 'catalog:'
         version: 3.15.1(@emotion/react@11.14.0(@types/react@19.1.2)(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      '@open-pioneer/chakra-snippets':
+        specifier: 'catalog:'
+        version: 4.0.0-dev-chakra-v3.20250423124703(@emotion/react@11.14.0(@types/react@19.1.2)(react@19.1.0))(@types/react@19.1.2)(react-dom@19.1.0(react@19.1.0))(typescript@5.8.3)
       '@open-pioneer/core':
         specifier: 'catalog:'
         version: 4.0.0-dev-chakra-v3.20250423124703

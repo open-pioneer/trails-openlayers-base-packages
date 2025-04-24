@@ -1,15 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import {
-    Table,
-    Tbody,
-    Td,
-    Th,
-    Thead,
-    Tr,
-    chakra,
-    useToken
-} from "@open-pioneer/chakra-integration";
+import { Table, chakra, useToken } from "@chakra-ui/react";
 import { createLogger } from "@open-pioneer/core";
 import { BaseFeature } from "@open-pioneer/map";
 import {
@@ -58,7 +49,7 @@ export function DataTable<Data extends BaseFeature>(props: DataTableProps<Data>)
     }
 
     return (
-        <Table
+        <Table.Root
             className={classNames("result-list-table", {
                 "result-list-table--is-resizing": isResizing
             })}
@@ -74,27 +65,27 @@ export function DataTable<Data extends BaseFeature>(props: DataTableProps<Data>)
                 }
             }}
         >
-            <Thead>
+            <Table.Header>
                 {table.getHeaderGroups().map((headerGroup) => (
                     <TableHeaderGroup key={headerGroup.id} headerGroup={headerGroup} />
                 ))}
-            </Thead>
-            <Tbody className="result-list-table-body">
+            </Table.Header>
+            <Table.Body className="result-list-table-body">
                 {memoizeRows || isResizing ? (
                     <MemoizedTableRows table={table} />
                 ) : (
                     <TableRows table={table} />
                 )}
-            </Tbody>
-        </Table>
+            </Table.Body>
+        </Table.Root>
     );
 }
 
 function TableHeaderGroup<Data>(props: { headerGroup: HeaderGroup<Data> }) {
     const { headerGroup } = props;
-    const borderColor = useToken("colors", "trails.100");
+    const borderColor = useToken("colors", "trails.100")[0] ?? "#000000";
     return (
-        <Tr key={headerGroup.id} className="result-list-headers">
+        <Table.Row key={headerGroup.id} className="result-list-headers">
             {headerGroup.headers.map((header, index) => {
                 return (
                     <TableHeader
@@ -105,7 +96,7 @@ function TableHeaderGroup<Data>(props: { headerGroup: HeaderGroup<Data> }) {
                     />
                 );
             })}
-        </Tr>
+        </Table.Row>
     );
 }
 
@@ -117,7 +108,7 @@ function TableHeader<Data>(props: {
     const { header, index, borderColor } = props;
     const width = `calc(var(--header-${header.id}-size) * 1px)`;
     return (
-        <Th
+        <Table.ColumnHeader
             className="result-list-header"
             tabIndex={0}
             aria-sort={mapAriaSorting(header.column.getIsSorted())}
@@ -145,27 +136,27 @@ function TableHeader<Data>(props: {
                 onTouchStart={header.getResizeHandler()}
                 isResizing={header.column.getIsResizing()}
             />
-        </Th>
+        </Table.ColumnHeader>
     );
 }
 
 function TableRows<Data extends object>({ table }: { table: TanstackTable<Data> }) {
     return table.getRowModel().rows.map((row) => {
         return (
-            <Tr key={row.id} className="result-list-table-row">
+            <Table.Row key={row.id} className="result-list-table-row">
                 {row.getVisibleCells().map((cell) => {
                     const width = `calc(var(--header-${cell.column.id}-size) * 1px)`;
                     return (
-                        <Td
+                        <Table.Cell
                             key={cell.id}
                             style={{ width: width }}
                             className="result-list-table-row"
                         >
                             {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                        </Td>
+                        </Table.Cell>
                     );
                 })}
-            </Tr>
+            </Table.Row>
         );
     });
 }

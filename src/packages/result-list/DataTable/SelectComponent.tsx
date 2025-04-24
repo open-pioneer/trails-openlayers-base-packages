@@ -1,7 +1,10 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Checkbox, Radio, Tooltip, chakra } from "@open-pioneer/chakra-integration";
-import { ChangeEvent, useId, useMemo } from "react";
+import { chakra } from "@chakra-ui/react";
+import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
+import { Checkbox } from "@open-pioneer/chakra-snippets/checkbox";
+import { Radio } from "@open-pioneer/chakra-snippets/radio";
+import { useId, useMemo } from "react";
 
 export interface SelectComponentProps {
     mode?: "checkbox" | "radio";
@@ -9,27 +12,45 @@ export interface SelectComponentProps {
 
     className?: string;
     "aria-label"?: string;
-    isIndeterminate?: boolean;
-    isChecked?: boolean;
-    isDisabled?: boolean;
-    onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
+    indeterminate?: boolean;
+    checked?: boolean;
+    disabled?: boolean;
+    onChange?: (newIsChecked: boolean) => void;
 }
 
 export function SelectComponent({
     mode = "checkbox",
     toolTipLabel,
+    onChange,
     ...props
 }: SelectComponentProps) {
-    const Component = mode === "checkbox" ? Checkbox : SelectRadio;
     const renderedComponent = useMemo(() => {
-        return <Component {...props} />;
-    }, [Component, props]);
+        switch (mode) {
+            case "checkbox": {
+                const checked = props.indeterminate ? "indeterminate" : !!props.checked;
+                return (
+                    <Checkbox
+                        onCheckedChange={(e) => {
+                            onChange?.(!!e.checked);
+                        }}
+                        {...props}
+                        checked={checked}
+                    />
+                );
+            }
+            case "radio":
+                return <SelectRadio {...props} />;
+            default:
+                throw new Error(`Unsupported mode: ${mode}`);
+        }
+    }, [mode, props, onChange]);
+
     if (!toolTipLabel) {
         return renderedComponent;
     }
 
     return (
-        <Tooltip label={toolTipLabel} placement="right" closeOnClick={false}>
+        <Tooltip content={toolTipLabel} positioning={{ placement: "right" }} closeOnClick={false}>
             <chakra.span
             /* 
                 wrap into span to fix tooltip around checkbox, see https://github.com/chakra-ui/chakra-ui/issues/6353
@@ -44,9 +65,10 @@ export function SelectComponent({
 
 function SelectRadio(props: Omit<SelectComponentProps, "mode">) {
     const id = useId();
-    const { isIndeterminate, ...rest } = props;
-    void isIndeterminate; // ignored, not supported by radio button
+    const { indeterminate, ...rest } = props;
+    void indeterminate; // ignored, not supported by radio button
 
     /** Name seems to be required for screen reader tabbing support. */
-    return <Radio name={id} {...rest} />;
+    // TODO support radio case
+    return <Radio value={id} {...rest} />;
 }

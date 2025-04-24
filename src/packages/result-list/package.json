@@ -20,6 +20,7 @@
         "@chakra-ui/react": "catalog:",
         "@open-pioneer/core": "catalog:",
         "@open-pioneer/map": "workspace:^",
+        "@open-pioneer/chakra-snippets": "catalog:",
         "@open-pioneer/react-utils": "catalog:",
         "@open-pioneer/runtime": "catalog:",
         "@tanstack/react-table": "catalog:",
