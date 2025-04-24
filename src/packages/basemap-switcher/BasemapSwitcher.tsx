@@ -115,6 +115,8 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
                 collection={optionsListCollection}
                 value={selectedOption}
                 onValueChange={(option) => option && activateLayer(option.value)}
+                lazyMount={true}
+                unmountOnExit={true}
             >
                 <Select.Control>
                     <Select.Trigger aria-label={ariaLabel} aria-labelledby={ariaLabelledBy}>

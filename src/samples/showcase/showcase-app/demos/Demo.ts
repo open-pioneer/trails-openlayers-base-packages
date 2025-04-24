@@ -6,7 +6,7 @@ import { PackageIntl } from "@open-pioneer/runtime";
 import { VectorSelectionSourceFactory } from "@open-pioneer/selection/services";
 import { ReactNode } from "react";
 import { createTocAndLegendDemo } from "./TocLegendDemo";
-// import { createSelectionDemo } from "./SelectionDemo";
+import { createSelectionDemo } from "./SelectionDemo";
 // import { createEditingDemo } from "./EditingDemo";
 import { EditingService } from "@open-pioneer/editing";
 import { NotificationService } from "@open-pioneer/notifier";
@@ -83,7 +83,7 @@ export function createDemos(options: SharedDemoOptions): Demo[] {
         createSpatialBookmarksDemo(options),
         createOverviewMapDemo(options),
         createPrintingDemo(options),
-        // createSelectionDemo(options),
+        createSelectionDemo(options),
         createSearchAndHighlightDemo(options)
     ];
 }

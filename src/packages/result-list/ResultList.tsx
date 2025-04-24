@@ -1,6 +1,5 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box } from "@open-pioneer/chakra-integration";
 import {
     BaseFeature,
     HighlightOptions,
@@ -14,6 +13,7 @@ import { FC, ReactNode, RefObject, useEffect, useMemo, useRef, useState } from "
 import { DataTable } from "./DataTable/DataTable";
 import { createColumns } from "./DataTable/createColumns";
 import { FormatNumberOptions } from "@formatjs/intl";
+import { Box } from "@chakra-ui/react";
 
 /**
  * Configures a column in the result list component.

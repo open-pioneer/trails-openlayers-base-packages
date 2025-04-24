@@ -2,32 +2,23 @@
 // SPDX-License-Identifier: Apache-2.0
 import {
     Box,
-    Flex,
-    FormControl,
-    FormLabel,
     Icon,
-    Tooltip,
     VStack,
     chakra,
-    useToken
-} from "@open-pioneer/chakra-integration";
+    Select,
+    Portal,
+    createListCollection,
+    Flex
+} from "@chakra-ui/react";
+import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
+import { Field } from "@open-pioneer/chakra-snippets/field";
 import { MapModel, MapModelProps, useMapModel } from "@open-pioneer/map";
 import { NotificationService } from "@open-pioneer/notifier";
 import { CommonComponentProps, useCommonComponentProps, useEvent } from "@open-pioneer/react-utils";
 import { PackageIntl } from "@open-pioneer/runtime";
-import {
-    ChakraStylesConfig,
-    GroupBase,
-    OptionProps,
-    Select,
-    Props as SelectProps,
-    SingleValueProps,
-    chakraComponents,
-    type SingleValue
-} from "chakra-react-select";
 import { Geometry } from "ol/geom";
 import { useIntl, useService } from "open-pioneer:react-hooks";
-import { FC, KeyboardEvent, ReactNode, useEffect, useMemo, useRef, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import { FiAlertTriangle } from "react-icons/fi";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { DragController } from "./DragController";
@@ -69,29 +60,6 @@ export interface SelectionSourceChangedEvent {
 }
 
 /**
- * Properties for single select options.
- */
-interface SelectionOption {
-    /**
-     * The label of the selection source option.
-     */
-    label: string;
-
-    /**
-     * The value (SelectionSource) of the selection source option.
-     */
-    value: SelectionSource;
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const COMMON_SELECT_PROPS: SelectProps<any, any, any> = {
-    classNamePrefix: "react-select",
-    menuPosition: "fixed",
-    isSearchable: false,
-    isClearable: false
-};
-
-/**
  * A component that allows the user to perform a spatial selection on a given set of {@link SelectionSource}.
  */
 export const Selection: FC<SelectionProps> = (props) => {
@@ -114,8 +82,6 @@ export const Selection: FC<SelectionProps> = (props) => {
         currentSource,
         onSelectionComplete
     );
-    const chakraStyles = useChakraStyles();
-    const [isOpenSelect, setIsOpenSelect] = useState(false);
 
     useDragSelection(
         mapState.map,
@@ -125,104 +91,76 @@ export const Selection: FC<SelectionProps> = (props) => {
         !!currentSource
     );
 
-    const sourceOptions = useMemo(
-        () =>
-            sources.map<SelectionOption>((source) => {
-                return { label: source.label, value: source };
-            }),
-        [sources]
-    );
-    const currentSourceOption = useMemo(() => {
-        const foundOption: SelectionOption | undefined = sourceOptions.find(
-            (option) => option.value === currentSource
-        );
-        return foundOption || null;
-    }, [sourceOptions, currentSource]);
-
-    const onSourceOptionChanged = useEvent((newValue: SingleValue<SelectionOption>) => {
-        setCurrentSource(newValue?.value);
+    const sourceOptionsCollection = createListCollection({
+        items: sources,
+        isItemDisabled: () => {
+            return false;
+        },
+        itemToString: (item) => item.label,
+        itemToValue: (item) => sources.indexOf(item).toString() // TODO create correct keys
     });
 
-    const keyDown = useEvent((event: KeyboardEvent<HTMLDivElement>) => {
-        //if the menu is already open, do noting
-        if (!isOpenSelect && event.key === "Enter") {
-            setIsOpenSelect(true);
-        }
-    });
+    let triggerItem;
+    if (currentSource) {
+        triggerItem = <SelectionSourceItem source={currentSource} />;
+    } else {
+        triggerItem = null;
+    }
 
     return (
-        <VStack {...containerProps} spacing={2}>
-            <FormControl>
-                <FormLabel>{intl.formatMessage({ id: "selectSource" })}</FormLabel>
-                <Select<SelectionOption>
-                    className="selection-source react-select"
-                    {...COMMON_SELECT_PROPS}
-                    options={sourceOptions}
-                    placeholder={intl.formatMessage({ id: "selectionPlaceholder" })}
-                    value={currentSourceOption}
-                    onChange={onSourceOptionChanged}
-                    components={{
-                        Option: SourceSelectOption,
-                        SingleValue: SourceSelectValue
-                    }}
-                    isOptionDisabled={() => false} // allow to select disabled options; optical disabling is done in option
-                    // optionLabel is used by screenreaders
-                    getOptionLabel={(option) => {
-                        const label = option.label;
-                        const status = getSourceStatus(option.value, defaultNotAvailableMessage);
-                        if (status.kind == "available") return label;
-                        return label + " " + status.reason;
-                    }}
-                    ariaLiveMessages={{
-                        guidance: () => "",
-                        onChange: (props) => {
-                            if (
-                                props.action == "select-option" ||
-                                props.action == "initial-input-focus"
-                            )
-                                return props.label + " " + intl.formatMessage({ id: "selected" });
-                            else return "";
-                        },
-                        onFilter: () => "",
-                        onFocus: () => ""
-                    }}
-                    chakraStyles={chakraStyles}
-                    onKeyDown={keyDown}
-                    menuIsOpen={isOpenSelect}
-                    onMenuOpen={() => setIsOpenSelect(true)}
-                    onMenuClose={() => setIsOpenSelect(false)}
-                />
-            </FormControl>
+        <VStack {...containerProps} gap={2}>
+            <Field label={intl.formatMessage({ id: "selectSource" })}>
+                <Select.Root
+                    collection={sourceOptionsCollection}
+                    value={currentSource ? [sources.indexOf(currentSource).toString()] : undefined}
+                    onValueChange={(option) => option && setCurrentSource(option.items[0])}
+                    lazyMount={true}
+                    unmountOnExit={true}
+                >
+                    <Select.Control>
+                        <Select.Trigger>
+                            <Select.ValueText
+                                placeholder={intl.formatMessage({ id: "selectionPlaceholder" })}
+                            >
+                                {triggerItem}
+                            </Select.ValueText>
+                        </Select.Trigger>
+                        <Select.IndicatorGroup>
+                            <Select.Indicator />
+                        </Select.IndicatorGroup>
+                    </Select.Control>
+
+                    <Portal>
+                        <Select.Positioner>
+                            <Select.Content>
+                                {sourceOptionsCollection.items.map((item) => (
+                                    <SelectionSourceItemContent
+                                        item={item}
+                                        key={sources.indexOf(item).toString()}
+                                    />
+                                ))}
+                            </Select.Content>
+                        </Select.Positioner>
+                    </Portal>
+                </Select.Root>
+            </Field>
         </VStack>
     );
 };
 
-function SourceSelectOption(props: OptionProps<SelectionOption>): ReactNode {
-    const { value } = props.data;
-    const { isAvailable, content } = useSourceItem(value, false);
+function SelectionSourceItemContent(props: { item: SelectionSource; key: string }) {
+    const { item, key } = props;
 
     return (
-        <chakraComponents.Option
-            {...props}
-            isDisabled={!isAvailable}
-            className="selection-source-option"
+        <Select.Item
+            item={item}
+            key={key}
+            justifyContent="flex-start"
+            // Override pointer-events: none rule for disabled items; we want to show the tooltip on hover
+            pointerEvents="auto"
         >
-            {content}
-        </chakraComponents.Option>
-    );
-}
-
-function SourceSelectValue(props: SingleValueProps<SelectionOption>): ReactNode {
-    const { value } = props.data;
-    const { isAvailable, content } = useSourceItem(value, true);
-    const clazz = isAvailable
-        ? "selection-source-value"
-        : "selection-source-value selection-source-value--disabled";
-
-    return (
-        <chakraComponents.SingleValue {...props} isDisabled={!isAvailable} className={clazz}>
-            {content}
-        </chakraComponents.SingleValue>
+            <SelectionSourceItem source={item} />
+        </Select.Item>
     );
 }
 
@@ -255,39 +193,44 @@ function useCurrentSelectionSource(
 /**
  * Hook to manage source option in selection-source react-select
  */
-function useSourceItem(source: SelectionSource | undefined, isSelected: boolean) {
+function SelectionSourceItem(props: { source: SelectionSource | undefined }) {
     const intl = useIntl();
+    const source = props.source;
     const label: string | undefined = source?.label;
     const defaultNotAvailableMessage = intl.formatMessage({ id: "sourceNotAvailable" });
     const status = useSourceStatus(source, defaultNotAvailableMessage);
+    const isAvailable = status.kind === "available";
+    const clazz = isAvailable
+        ? "selection-source-value"
+        : "selection-source-value selection-source-value--disabled";
 
-    return {
-        isAvailable: status.kind === "available",
-        content: (
-            <Flex direction="row" alignItems="center" grow={1}>
-                {!isSelected && <Flex grow={1}>{label}</Flex>}
-                {status.kind === "unavailable" && (
-                    <Box ml={2}>
-                        <Tooltip label={status.reason} placement="right" openDelay={500}>
-                            <chakra.span>
-                                <Icon
-                                    as={FiAlertTriangle}
-                                    color="red"
-                                    className="warning-icon"
-                                    aria-label={status.reason}
-                                />
-                            </chakra.span>
-                        </Tooltip>
-                    </Box>
-                )}
-                {isSelected && label}
-            </Flex>
-        )
-    };
+    return (
+        <Flex className={clazz} direction="row" alignItems="center" grow={1}>
+            {label}
+            {status.kind === "unavailable" && (
+                <Box ml={2}>
+                    <Tooltip
+                        content={status.reason}
+                        positioning={{ placement: "right" }}
+                        openDelay={500}
+                    >
+                        <chakra.span>
+                            <Icon
+                                as={FiAlertTriangle}
+                                color="red"
+                                className="warning-icon"
+                                aria-label={status.reason}
+                            />
+                        </chakra.span>
+                    </Tooltip>
+                </Box>
+            )}
+        </Flex>
+    );
 }
 
 /**
- * Hook to manage selection sources
+ * Hook to manage selection controller
  */
 function useSelectionController(
     mapModel: MapModel | undefined,
@@ -405,33 +348,4 @@ function useDragSelection(
             dragController?.destroy();
         };
     }, [map, intl, onExtentSelected, isActive, hasSelectedSource]);
-}
-
-/**
- * Customizes components styles within the select component.
- */
-function useChakraStyles() {
-    const [dropDownBackground, borderColor] = useToken(
-        "colors",
-        ["background_body", "border"],
-        ["#ffffff", "#ffffff"]
-    );
-    return useMemo(() => {
-        const chakraStyles: ChakraStylesConfig<
-            SelectionOption,
-            false,
-            GroupBase<SelectionOption>
-        > = {
-            control: (styles) => ({ ...styles, cursor: "pointer" }),
-            indicatorSeparator: (styles) => ({
-                ...styles,
-                borderColor: borderColor
-            }),
-            dropdownIndicator: (provided) => ({
-                ...provided,
-                backgroundColor: dropDownBackground
-            })
-        };
-        return chakraStyles;
-    }, [dropDownBackground, borderColor]);
 }

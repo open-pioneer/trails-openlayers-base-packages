@@ -235,7 +235,7 @@ function openOptions(selectElement: HTMLSelectElement) {
 
 function getOptions(selectElement: HTMLSelectElement) {
     return Array.from(
-        selectElement.getElementsByClassName("selection-source-option")
+        selectElement.getElementsByClassName("selection-source-option") // todo class no longer exists
     ) as HTMLElement[];
 }
 
