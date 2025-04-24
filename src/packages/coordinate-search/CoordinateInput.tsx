@@ -176,6 +176,9 @@ export const CoordinateInput: FC<CoordinateInputProps> = (props) => {
                 }
                 showArrow
                 open={!isInputValid}
+                // explicity mount / unmount the tooltip.
+                // Previously an empty tooltip could be shown even though "open" was false.
+                present={!isInputValid}
             >
                 <Group className="coordinate-input-group" attached w="full">
                     <CoordinateInputField
