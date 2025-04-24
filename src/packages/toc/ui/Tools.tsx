@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box, Button, Menu, Portal } from "@chakra-ui/react";
+import { Box, IconButton, Menu, Portal } from "@chakra-ui/react";
 import { AnyLayer, MapModel } from "@open-pioneer/map";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, memo } from "react";
@@ -34,15 +34,16 @@ export const Tools: FC<ToolsProps> = memo(function Tools(props: ToolsProps) {
             <Box className="toc-tools">
                 <Menu.Root lazyMount={true} positioning={{ placement: "bottom-start" }}>
                     <Menu.Trigger asChild>
-                        <Button
+                        <IconButton
                             className="toc-tools-button"
                             aria-label={intl.formatMessage({ id: "toolsLabel" })}
                             borderRadius="full"
                             variant="ghost"
                             padding={0}
+                            size="sm"
                         >
                             <FiMoreVertical spacing={0} />
-                        </Button>
+                        </IconButton>
                     </Menu.Trigger>
                     <Portal>
                         <Menu.Positioner>

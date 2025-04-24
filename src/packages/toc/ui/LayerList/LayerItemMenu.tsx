@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Button, CloseButton, Popover, Separator, Portal, Text } from "@chakra-ui/react";
+import { IconButton, CloseButton, Popover, Portal, Text } from "@chakra-ui/react";
 import { AnyLayer } from "@open-pioneer/map";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { FiMoreVertical } from "react-icons/fi";
@@ -21,16 +21,17 @@ export function LayerItemMenu(props: {
         isPresent && (
             <Popover.Root lazyMount={true} positioning={{ placement: "bottom-start" }}>
                 <Popover.Trigger asChild>
-                    <Button
+                    <IconButton
                         disabled={!isAvailable}
                         className="toc-layer-item-details-button"
                         aria-label={buttonLabel}
                         borderRadius="full"
                         padding={0}
                         variant="ghost"
+                        size="sm"
                     >
                         <FiMoreVertical spacing={0} />
-                    </Button>
+                    </IconButton>
                 </Popover.Trigger>
                 <Portal>
                     <Popover.Positioner>
