@@ -23,6 +23,7 @@ import {
     createSpatialBookmarksDemo
 } from "./SimpleDemos";
 import { createCoordinateInputDemo, createCoordinateSearchDemo } from "./CoordinateSearchDemos";
+import { createSearchAndHighlightDemo } from "./SearchAndHighlightDemo";
 
 export interface DemoInfo {
     /** Unique id */
@@ -81,8 +82,8 @@ export function createDemos(options: SharedDemoOptions): Demo[] {
         createGeolocationDemo(options),
         createSpatialBookmarksDemo(options),
         createOverviewMapDemo(options),
-        createPrintingDemo(options)
+        createPrintingDemo(options),
         // createSelectionDemo(options),
-        // createSearchAndHighlightDemo(options)
+        createSearchAndHighlightDemo(options)
     ];
 }
