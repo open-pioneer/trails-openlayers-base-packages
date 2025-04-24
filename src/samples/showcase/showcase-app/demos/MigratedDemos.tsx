@@ -15,6 +15,7 @@ import { ScaleBar } from "@open-pioneer/scale-bar";
 import { ScaleSetter } from "@open-pioneer/scale-setter";
 import { ScaleViewer } from "@open-pioneer/scale-viewer";
 import { Demo, SharedDemoOptions } from "./Demo";
+import { SpatialBookmarks } from "@open-pioneer/spatial-bookmarks";
 
 export function createCoordinateViewerDemo({ intl }: SharedDemoOptions): Demo {
     return {
@@ -123,6 +124,19 @@ export function createScaleSetterDemo({ intl }: SharedDemoOptions): Demo {
             return {
                 description: intl.formatRichMessage({ id: "demos.scaleSetter.description" }),
                 mainWidget: <ScaleSetter />
+            };
+        }
+    };
+}
+
+export function createSpatialBookmarksDemo({ intl }: SharedDemoOptions): Demo {
+    return {
+        id: "spatialBookmarks",
+        title: intl.formatMessage({ id: "demos.spatialBookmarks.title" }),
+        createModel() {
+            return {
+                description: intl.formatRichMessage({ id: "demos.spatialBookmarks.description" }),
+                mainWidget: <SpatialBookmarks />
             };
         }
     };

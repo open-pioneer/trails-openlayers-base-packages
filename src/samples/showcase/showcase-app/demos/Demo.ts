@@ -31,7 +31,8 @@ import {
     createPrintingDemo,
     createScaleBarDemo,
     createScaleSetterDemo,
-    createScaleViewerDemo
+    createScaleViewerDemo,
+    createSpatialBookmarksDemo
 } from "./MigratedDemos";
 
 export interface DemoInfo {
@@ -89,7 +90,7 @@ export function createDemos(options: SharedDemoOptions): Demo[] {
         // createEditingDemo(options),
         createMapNavigationDemo(options),
         createGeolocationDemo(options),
-        // createSpatialBookmarksDemo(options),
+        createSpatialBookmarksDemo(options),
         // createOverviewMapDemo(options),
         createPrintingDemo(options)
         // createSelectionDemo(options),

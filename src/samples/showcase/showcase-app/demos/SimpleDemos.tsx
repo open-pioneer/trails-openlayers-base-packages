@@ -195,16 +195,3 @@ function CoordinateSearchComponent(props: {
         </Flex>
     );
 }
-
-export function createSpatialBookmarksDemo({ intl }: SharedDemoOptions): Demo {
-    return {
-        id: "spatialBookmarks",
-        title: intl.formatMessage({ id: "demos.spatialBookmarks.title" }),
-        createModel() {
-            return {
-                description: intl.formatRichMessage({ id: "demos.spatialBookmarks.description" }),
-                mainWidget: <SpatialBookmarks />
-            };
-        }
-    };
-}
