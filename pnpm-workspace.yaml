@@ -127,6 +127,10 @@ overrides:
   # https://github.com/advisories/GHSA-968p-4wvh-cqc8
   "@babel/runtime": ">=7.26.10"
 
+  # Just to get rid of some duplicate dependencies
+  "source-map@<0.6.1": ">=0.6.1"
+  "stylis@<4.3.5": ">= 4.3.5"
+
   # Fixes a dependency issue in chakra, can likely be removed with the next ark-ui release.
   # See https://github.com/chakra-ui/ark/issues/3439
   "@ark-ui/react>@zag-js/file-utils": "1.8.2"
