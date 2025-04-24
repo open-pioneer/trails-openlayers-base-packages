@@ -74,6 +74,7 @@ function AppContent(props: { state: AppStateReady }) {
                                 >
                                     <Box bgColor="white" borderRadius={10} p={2} maxW="500px">
                                         <TitledSection
+                                            key={currentDemo.id}
                                             title={currentDemo.title}
                                             sectionHeadingProps={{ size: "lg" }}
                                         >

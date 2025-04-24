@@ -18,7 +18,7 @@ import { CommonComponentProps, useCommonComponentProps, useEvent } from "@open-p
 import { PackageIntl } from "@open-pioneer/runtime";
 import { Geometry } from "ol/geom";
 import { useIntl, useService } from "open-pioneer:react-hooks";
-import { FC, useEffect, useRef, useState } from "react";
+import { FC, useCallback, useEffect, useRef, useState } from "react";
 import { FiAlertTriangle } from "react-icons/fi";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { DragController } from "./DragController";
@@ -91,13 +91,15 @@ export const Selection: FC<SelectionProps> = (props) => {
         !!currentSource
     );
 
+    const getId = useSelectionSourceId();
+
     const sourceOptionsCollection = createListCollection({
         items: sources,
         isItemDisabled: () => {
             return false;
         },
         itemToString: (item) => item.label,
-        itemToValue: (item) => sources.indexOf(item).toString() // TODO create correct keys
+        itemToValue: (item) => getId(item)
     });
 
     let triggerItem;
@@ -112,7 +114,7 @@ export const Selection: FC<SelectionProps> = (props) => {
             <Field label={intl.formatMessage({ id: "selectSource" })}>
                 <Select.Root
                     collection={sourceOptionsCollection}
-                    value={currentSource ? [sources.indexOf(currentSource).toString()] : undefined}
+                    value={currentSource ? [getId(currentSource)] : undefined}
                     onValueChange={(option) => option && setCurrentSource(option.items[0])}
                     lazyMount={true}
                     unmountOnExit={true}
@@ -134,10 +136,7 @@ export const Selection: FC<SelectionProps> = (props) => {
                         <Select.Positioner>
                             <Select.Content>
                                 {sourceOptionsCollection.items.map((item) => (
-                                    <SelectionSourceItemContent
-                                        item={item}
-                                        key={sources.indexOf(item).toString()}
-                                    />
+                                    <SelectionSourceItemContent item={item} key={getId(item)} />
                                 ))}
                             </Select.Content>
                         </Select.Positioner>
@@ -148,13 +147,33 @@ export const Selection: FC<SelectionProps> = (props) => {
     );
 };
 
-function SelectionSourceItemContent(props: { item: SelectionSource; key: string }) {
-    const { item, key } = props;
+type GetSelectionSourceId = (selectionSource: SelectionSource) => string;
+
+/**
+ * Assigns unique IDs to selection sources.
+ */
+function useSelectionSourceId(): GetSelectionSourceId {
+    const sourceIds = useRef<WeakMap<SelectionSource, string>>(undefined);
+    const counter = useRef(0);
+    if (!sourceIds.current) {
+        sourceIds.current = new WeakMap();
+    }
+
+    return useCallback((selectionSource: SelectionSource) => {
+        const ids = sourceIds.current!;
+        if (!ids.has(selectionSource)) {
+            ids.set(selectionSource, `source-${counter.current++}`);
+        }
+        return ids.get(selectionSource)!;
+    }, []);
+}
+
+function SelectionSourceItemContent(props: { item: SelectionSource }) {
+    const { item } = props;
 
     return (
         <Select.Item
             item={item}
-            key={key}
             justifyContent="flex-start"
             // Override pointer-events: none rule for disabled items; we want to show the tooltip on hover
             pointerEvents="auto"

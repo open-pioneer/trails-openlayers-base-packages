@@ -41,8 +41,8 @@ Renders as (for example):
 
 ### React `forwardRef`
 
-If a component is a simple wrapper around another DOM element (such as a button), it will provide a reference to the underlying DOM element via `forwardRef`.
-You can use the `ref` property on the component to access the DOM element.
+If a component is a simple wrapper around another DOM element (such as a button), it will provide a reference to the underlying DOM element via a `ref` prop.
+You can use the `ref` property on the component to access the DOM element:
 
 **Example**
 
@@ -60,4 +60,5 @@ return (
 );
 ```
 
-More information: [React `forwardRef`](https://react.dev/reference/react/forwardRef)
+This pattern previously required the `forwardRef` function, but since React 19 we can simply accept a `ref` prop directly (
+see [React `forwardRef`](https://react.dev/reference/react/forwardRef)).

@@ -112,6 +112,8 @@ function InputField(props: {
                         onEnter();
                     }
                 }}
+                /*avoid that browser provides old user inputs as suggestions in some edge cases*/
+                autoComplete={"off"}
             />
         </Field.Root>
     );
