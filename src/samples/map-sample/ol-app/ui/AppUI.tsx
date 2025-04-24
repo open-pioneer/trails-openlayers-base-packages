@@ -40,7 +40,7 @@ export function AppUI() {
         map && (
             <DefaultMapProvider map={map}>
                 <Flex height="100%" direction="column" overflow="hidden">
-                    <Notifier position="top-right" />
+                    <Notifier />
 
                     <TitledSection
                         title={
