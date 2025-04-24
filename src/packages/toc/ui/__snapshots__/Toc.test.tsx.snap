@@ -28,19 +28,20 @@ exports[`should successfully create a toc component 1`] = `
           class="chakra-select__control css-17j1053"
           data-part="control"
           data-scope="select"
-          data-state="closed"
+          data-state="open"
           dir="ltr"
           id="select:«r1»:control"
         >
           <button
             aria-controls="select:«r1»:content"
-            aria-expanded="false"
+            aria-expanded="true"
             aria-haspopup="listbox"
             aria-labelledby="«r0»"
-            class="chakra-select__trigger css-1hl2915"
+            class="basemap-switcher-select-trigger chakra-select__trigger css-1hl2915"
             data-part="trigger"
+            data-placement="bottom-start"
             data-scope="select"
-            data-state="closed"
+            data-state="open"
             dir="ltr"
             id="select:«r1»:trigger"
             role="combobox"
@@ -63,7 +64,7 @@ exports[`should successfully create a toc component 1`] = `
               class="chakra-select__indicator css-1atg1ut"
               data-part="indicator"
               data-scope="select"
-              data-state="closed"
+              data-state="open"
               dir="ltr"
             >
               <svg

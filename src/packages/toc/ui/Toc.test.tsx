@@ -6,10 +6,12 @@ import { act, render, screen, waitFor, fireEvent } from "@testing-library/react"
 import TileLayer from "ol/layer/Tile";
 import { expect, it } from "vitest";
 import { Toc } from "./Toc";
+import { nextTick } from "@conterra/reactivity-core";
 
 const BASEMAP_SWITCHER_CLASS = ".basemap-switcher";
 const BASEMAP_SWITCHER_SELECT_CLASS = ".basemap-switcher-select";
 const BASEMAP_SWITCHER_CONTENT_CLASS = ".basemap-switcher-select-content";
+const BASEMAP_SWITCHER_TRIGGER_CLASS = ".basemap-switcher-select-trigger";
 
 it("should successfully create a toc component", async () => {
     const { map, registry } = await setupMap({
@@ -41,11 +43,12 @@ it("should successfully create a toc component", async () => {
     );
 
     const tocDiv = await findToc();
-    const { basemapSelect } = await waitForBasemapSwitcher(tocDiv!);
+    const { basemapSelectTrigger } = await waitForBasemapSwitcher(tocDiv!);
 
-    // react-select creates list of options in dom after opening selection
-    act(() => {
-        fireEvent.keyDown(basemapSelect, { key: "ArrowDown" });
+    // select lazy mounts the list of options in dom after opening selection
+    await act(async () => {
+        fireEvent.click(basemapSelectTrigger);
+        await nextTick();
     });
 
     await waitFor(() => {
@@ -166,6 +169,11 @@ async function waitForBasemapSwitcher(tocDiv: HTMLElement) {
             throw new Error("failed to find select element in basemap switcher");
         }
 
-        return { basemapSwitcher, basemapSelect };
+        const basemapSelectTrigger = basemapSwitcher?.querySelector(BASEMAP_SWITCHER_TRIGGER_CLASS);
+        if (!basemapSelectTrigger) {
+            throw new Error("failed to find trigger element in basemap switcher");
+        }
+
+        return { basemapSwitcher, basemapSelect, basemapSelectTrigger };
     });
 }

@@ -120,7 +120,11 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
                 unmountOnExit={true}
             >
                 <Select.Control>
-                    <Select.Trigger aria-label={ariaLabel} aria-labelledby={ariaLabelledBy}>
+                    <Select.Trigger
+                        aria-label={ariaLabel}
+                        aria-labelledby={ariaLabelledBy}
+                        className="basemap-switcher-select-trigger"
+                    >
                         <Select.ValueText />
                     </Select.Trigger>
                     <Select.IndicatorGroup>
