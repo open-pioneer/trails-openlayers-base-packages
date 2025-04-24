@@ -1,14 +1,8 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import { Flex, Group } from "@chakra-ui/react";
 import { computed, Reactive, reactive } from "@conterra/reactivity-core";
-import {
-    Box,
-    Flex,
-    InputGroup,
-    InputRightAddon,
-    Portal,
-    Tooltip
-} from "@open-pioneer/chakra-integration";
+import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
 import { MapModelProps, useMapModel } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps, useEvent } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
@@ -16,7 +10,7 @@ import { NumberParserService, PackageIntl } from "@open-pioneer/runtime";
 import { Coordinate } from "ol/coordinate";
 import { get as getProjection, Projection, ProjectionLike, transform } from "ol/proj";
 import { useIntl, useService } from "open-pioneer:react-hooks";
-import { FC, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { FC, useCallback, useEffect, useMemo, useState } from "react";
 import { CoordinateInputField } from "./CoordinateInputField";
 import { formatCoordinates, parseCoordinates, ParseResult } from "./coordinates";
 import { ProjectionSelect } from "./ProjectionSelect";
@@ -174,46 +168,33 @@ export const CoordinateInput: FC<CoordinateInputProps> = (props) => {
         onSelect(validationResult);
     });
 
-    const portalElement = useRef<HTMLDivElement>(null);
     return (
-        <Box {...containerProps}>
-            <Portal>
-                <div ref={portalElement} />
-            </Portal>
-            <Flex flexDirection={"row"} flexDir={"row"}>
-                <Tooltip
-                    label={
-                        !isInputValid
-                            ? intl.formatMessage({ id: validationResult.kind })
-                            : undefined
-                    }
-                    hasArrow
-                    placement="auto"
-                    isOpen={!isInputValid}
-                    className="coordinate-input-tooltip"
-                >
-                    <InputGroup className="coordinate-input-group">
-                        <CoordinateInputField
-                            coordinateSearchInput={coordinateSearchInput}
-                            setCoordinateSearchInput={setCoordinateSearchInput}
-                            placeholder={placeholder}
-                            placeholderString={placeholderString}
-                            onClear={onClear}
-                            isInputValid={isInputValid}
-                            onEnter={onEnter}
-                        />
-                        <InputRightAddon padding={"0px"} borderLeft={"0px"}>
-                            <ProjectionSelect
-                                portalElement={portalElement}
-                                currentProjection={selectedProjection}
-                                projections={availableProjections}
-                                onProjectionChange={setSelectedProjection}
-                            />
-                        </InputRightAddon>
-                    </InputGroup>
-                </Tooltip>
-            </Flex>
-        </Box>
+        <Flex {...containerProps} flexDirection={"row"} flexDir={"row"}>
+            <Tooltip
+                content={
+                    !isInputValid ? intl.formatMessage({ id: validationResult.kind }) : undefined
+                }
+                showArrow
+                open={!isInputValid}
+            >
+                <Group className="coordinate-input-group" attached w="full">
+                    <CoordinateInputField
+                        coordinateSearchInput={coordinateSearchInput}
+                        setCoordinateSearchInput={setCoordinateSearchInput}
+                        placeholder={placeholder}
+                        placeholderString={placeholderString}
+                        onClear={onClear}
+                        isInputValid={isInputValid}
+                        onEnter={onEnter}
+                    />
+                    <ProjectionSelect
+                        currentProjection={selectedProjection}
+                        projections={availableProjections}
+                        onProjectionChange={setSelectedProjection}
+                    />
+                </Group>
+            </Tooltip>
+        </Flex>
     );
 };
 

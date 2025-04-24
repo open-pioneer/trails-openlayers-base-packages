@@ -5,19 +5,6 @@ import { MapModel } from "@open-pioneer/map";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { VectorSelectionSourceFactory } from "@open-pioneer/selection/services";
 import { ReactNode } from "react";
-// import {
-//     createCoordinateViewerDemo,
-//     createCoordinateInputDemo,
-//     createCoordinateSearchDemo,
-//     createGeolocationDemo,
-//     createMapNavigationDemo,
-//     createMeasurementDemo,
-//     createPrintingDemo,
-//     createScaleBarDemo,
-//     createScaleSetterDemo,
-//     createScaleViewerDemo,
-//     createSpatialBookmarksDemo
-// } from "./SimpleDemos";
 import { createTocAndLegendDemo } from "./TocLegendDemo";
 // import { createSelectionDemo } from "./SelectionDemo";
 // import { createEditingDemo } from "./EditingDemo";
@@ -34,7 +21,8 @@ import {
     createScaleSetterDemo,
     createScaleViewerDemo,
     createSpatialBookmarksDemo
-} from "./MigratedDemos";
+} from "./SimpleDemos";
+import { createCoordinateInputDemo, createCoordinateSearchDemo } from "./CoordinateSearchDemos";
 
 export interface DemoInfo {
     /** Unique id */
@@ -82,8 +70,8 @@ export function createDemos(options: SharedDemoOptions): Demo[] {
         // TODO
         createTocAndLegendDemo(options),
         createCoordinateViewerDemo(options),
-        // createCoordinateInputDemo(options),
-        // createCoordinateSearchDemo(options),
+        createCoordinateInputDemo(options),
+        createCoordinateSearchDemo(options),
         createScaleViewerDemo(options),
         createScaleSetterDemo(options),
         createScaleBarDemo(options),
