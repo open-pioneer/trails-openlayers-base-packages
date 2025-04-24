@@ -221,6 +221,7 @@ catalogs:
       version: 3.1.1
 
 overrides:
+  '@changesets/assemble-release-plan': 6.0.4
   semver@<7.5.2: '>=7.5.2'
   tough-cookie@<4.1.3: '>=4.1.3'
   braces@<3.0.3: '>=3.0.3'
@@ -232,20 +233,19 @@ overrides:
   nanoid@<3.3.8: ^3.3.8
   dompurify@<3.2.4: '>=3.2.4'
   esbuild@<0.25.0: '>=0.25.0'
-  '@changesets/assemble-release-plan': 6.0.4
   canvg@<=4.0.2: '>=4.0.3'
   '@babel/runtime': '>=7.26.10'
   '@ark-ui/react>@zag-js/file-utils': 1.8.2
 
 patchedDependencies:
   '@ark-ui/react':
-    hash: 7u3pcvegswxh74ehukpjlxuita
+    hash: a4f1fffc6061fbca2d795438144bfafd1a11a39b902ab35202355c0c95a8129a
     path: patches/@ark-ui__react.patch
   '@changesets/assemble-release-plan@6.0.4':
-    hash: h7fa74ddz2lm7t3hquqctf7dgq
+    hash: a2608aea8639fcd0c1c1b2dd8b5813fcb9ec05f32bab64f87434c04407d9d3ac
     path: patches/@changesets__assemble-release-plan.patch
   react-select:
-    hash: benwgmj73vuqed6j4bcic264ha
+    hash: 76074e6c05936addacb06b7e4bf08d0f5101ba64a00cae84d8c9ed60c62254de
     path: patches/react-select.patch
 
 importers:
@@ -5652,7 +5652,7 @@ snapshots:
 
   '@adobe/css-tools@4.4.2': {}
 
-  '@ark-ui/react@5.5.0(patch_hash=7u3pcvegswxh74ehukpjlxuita)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
+  '@ark-ui/react@5.5.0(patch_hash=a4f1fffc6061fbca2d795438144bfafd1a11a39b902ab35202355c0c95a8129a)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
     dependencies:
       '@internationalized/date': 3.7.0
       '@zag-js/accordion': 1.8.2
@@ -5777,7 +5777,7 @@ snapshots:
 
   '@chakra-ui/react@3.15.1(@emotion/react@11.14.0(@types/react@19.1.2)(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
     dependencies:
-      '@ark-ui/react': 5.5.0(patch_hash=7u3pcvegswxh74ehukpjlxuita)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      '@ark-ui/react': 5.5.0(patch_hash=a4f1fffc6061fbca2d795438144bfafd1a11a39b902ab35202355c0c95a8129a)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@emotion/is-prop-valid': 1.3.1
       '@emotion/react': 11.14.0(@types/react@19.1.2)(react@19.1.0)
       '@emotion/serialize': 1.3.3
@@ -5805,7 +5805,7 @@ snapshots:
       resolve-from: 5.0.0
       semver: 7.7.1
 
-  '@changesets/assemble-release-plan@6.0.4(patch_hash=h7fa74ddz2lm7t3hquqctf7dgq)':
+  '@changesets/assemble-release-plan@6.0.4(patch_hash=a2608aea8639fcd0c1c1b2dd8b5813fcb9ec05f32bab64f87434c04407d9d3ac)':
     dependencies:
       '@changesets/errors': 0.2.0
       '@changesets/get-dependents-graph': 2.1.3
@@ -5821,7 +5821,7 @@ snapshots:
   '@changesets/cli@2.27.9':
     dependencies:
       '@changesets/apply-release-plan': 7.0.10
-      '@changesets/assemble-release-plan': 6.0.4(patch_hash=h7fa74ddz2lm7t3hquqctf7dgq)
+      '@changesets/assemble-release-plan': 6.0.4(patch_hash=a2608aea8639fcd0c1c1b2dd8b5813fcb9ec05f32bab64f87434c04407d9d3ac)
       '@changesets/changelog-git': 0.2.1
       '@changesets/config': 3.1.1
       '@changesets/errors': 0.2.0
@@ -5872,7 +5872,7 @@ snapshots:
 
   '@changesets/get-release-plan@4.0.8':
     dependencies:
-      '@changesets/assemble-release-plan': 6.0.4(patch_hash=h7fa74ddz2lm7t3hquqctf7dgq)
+      '@changesets/assemble-release-plan': 6.0.4(patch_hash=a2608aea8639fcd0c1c1b2dd8b5813fcb9ec05f32bab64f87434c04407d9d3ac)
       '@changesets/config': 3.1.1
       '@changesets/pre': 2.0.2
       '@changesets/read': 0.6.3
@@ -7768,7 +7768,7 @@ snapshots:
       '@chakra-ui/react': 3.15.1(@emotion/react@11.14.0(@types/react@19.1.2)(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       next-themes: 0.4.6(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       react: 19.1.0
-      react-select: 5.10.1(patch_hash=benwgmj73vuqed6j4bcic264ha)(@types/react@19.1.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      react-select: 5.10.1(patch_hash=76074e6c05936addacb06b7e4bf08d0f5101ba64a00cae84d8c9ed60c62254de)(@types/react@19.1.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
     transitivePeerDependencies:
       - '@types/react'
       - react-dom
@@ -9419,7 +9419,7 @@ snapshots:
 
   react-is@17.0.2: {}
 
-  react-select@5.10.1(patch_hash=benwgmj73vuqed6j4bcic264ha)(@types/react@19.1.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
+  react-select@5.10.1(patch_hash=76074e6c05936addacb06b7e4bf08d0f5101ba64a00cae84d8c9ed60c62254de)(@types/react@19.1.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
     dependencies:
       '@babel/runtime': 7.27.0
       '@emotion/cache': 11.14.0
