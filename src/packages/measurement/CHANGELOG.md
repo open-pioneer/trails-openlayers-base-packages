@@ -1,5 +1,37 @@
 # @open-pioneer/measurement
 
+## 0.10.0
+
+### Minor Changes
+
+- 193068a: Deprecate the `mapId` property on React components.
+  Use the `MapModel` directly instead to pass a reference to the map.
+
+    Example:
+
+    ```tsx
+    // Default map for entire component tree
+    <DefaultMapProvider map={mapModel}>
+        <Toc />
+    </DefaultMapProvider>
+
+    // Map for specific component
+    <Toc map={mapModel} />
+    ```
+
+### Patch Changes
+
+- cd1435b: Update ol to 10.5.0
+- 032eed7: Bump dependencies.
+- cd1435b: Update to react 19.1.0
+- Updated dependencies [2bafdad]
+- Updated dependencies [cd1435b]
+- Updated dependencies [193068a]
+- Updated dependencies [032eed7]
+- Updated dependencies [cd1435b]
+- Updated dependencies [7558df4]
+    - @open-pioneer/map@0.10.0
+
 ## 0.9.0
 
 ### Minor Changes
