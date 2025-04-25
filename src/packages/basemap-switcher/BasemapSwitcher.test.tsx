@@ -4,11 +4,10 @@ import { nextTick } from "@conterra/reactivity-core";
 import { SimpleLayer } from "@open-pioneer/map";
 import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor, act } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
-import { act } from "react";
 import { describe, expect, it } from "vitest";
 import { BasemapSwitcher } from "./BasemapSwitcher";
 
@@ -40,14 +39,14 @@ it("should successfully create a basemap switcher component", async () => {
     );
 
     // basemap switcher is mounted
-    const { switcherDiv, switcherSelect } = await waitForBasemapSwitcher();
-    showDropdown(switcherSelect);
+    const { switcherDiv, switcherSelect, switcherSelectTrigger } = await waitForBasemapSwitcher();
+    await showDropdown(switcherSelectTrigger);
     expect(switcherDiv).toMatchSnapshot();
 
     // check basemap switcher box and select is available
     expect(switcherDiv.tagName).toBe("DIV");
     expect(switcherSelect.tagName).toBe("DIV");
-    expect(switcherSelect.getElementsByTagName("input").length).toBe(1);
+    expect(switcherSelect.getElementsByTagName("button").length).toBe(1); //chakra select uses button element
 });
 
 it("should successfully create a basemap switcher component with additional css classes and box properties", async () => {
@@ -81,10 +80,11 @@ it("should successfully select a basemap from basemap switcher", async () => {
     );
 
     // basemap switcher is mounted
-    const { switcherSelect } = await waitForBasemapSwitcher();
-    showDropdown(switcherSelect);
+    const { switcherSelectTrigger } = await waitForBasemapSwitcher();
+    await showDropdown(switcherSelectTrigger);
 
-    let options = getCurrentOptions(switcherSelect);
+
+    let options = await getCurrentOptions();
     const osmOption = options.find((option) => option.textContent === "OSM");
     if (!osmOption) {
         throw new Error("Layer OSM missing in basemap options");
@@ -94,8 +94,8 @@ it("should successfully select a basemap from basemap switcher", async () => {
     const firstActiveBaseLayer = map.layers.getActiveBaseLayer();
     expect(firstActiveBaseLayer?.id).toBe("osm");
 
-    showDropdown(switcherSelect);
-    options = getCurrentOptions(switcherSelect);
+    await showDropdown(switcherSelectTrigger);
+    options = await getCurrentOptions();
     const topPlusOption = options.find((option) => option.textContent === "TopPlus Open");
     if (!topPlusOption) {
         throw new Error("Layer topplus-open missing in basemap options");
@@ -120,13 +120,13 @@ it("should allow selecting 'no basemap' when enabled", async () => {
     );
 
     // basemap switcher is mounted
-    const { switcherSelect } = await waitForBasemapSwitcher();
+    const { switcherSelect, switcherSelectTrigger } = await waitForBasemapSwitcher();
 
     expect(switcherSelect.textContent).toBe("OSM");
     expect(map.layers.getActiveBaseLayer()?.id).toBe("osm");
 
-    showDropdown(switcherSelect);
-    const options = getCurrentOptions(switcherSelect);
+    showDropdown(switcherSelectTrigger);
+    const options = await getCurrentOptions();
     const optionsBasemap = options.find((option) => option.textContent === "emptyBasemapLabel");
     if (!optionsBasemap) {
         throw new Error("Layer Basemap missing in basemap options");
@@ -150,13 +150,13 @@ it("should not allow selecting 'no basemap' by default", async () => {
     );
 
     // basemap switcher is mounted
-    const { switcherSelect } = await waitForBasemapSwitcher();
+    const { switcherSelect, switcherSelectTrigger } = await waitForBasemapSwitcher();
 
     expect(switcherSelect.textContent).toBe("OSM");
     expect(map.layers.getActiveBaseLayer()?.id).toBe("osm");
 
-    showDropdown(switcherSelect);
-    const options = getCurrentOptions(switcherSelect);
+    await showDropdown(switcherSelectTrigger);
+    const options = await getCurrentOptions();
     const optionsEmptyBasemap = options.filter(
         (option) => option.textContent === "emptyBasemapLabel"
     );
@@ -176,10 +176,10 @@ it("should update when a new basemap is registered", async () => {
     );
 
     // basemap switcher is mounted
-    const { switcherSelect } = await waitForBasemapSwitcher();
-    showDropdown(switcherSelect);
+    const { switcherSelectTrigger  } = await waitForBasemapSwitcher();
+    await showDropdown(switcherSelectTrigger);
 
-    let options = getCurrentOptions(switcherSelect);
+    let options = await getCurrentOptions();
     expect(options.length).toBe(2);
 
     await act(async () => {
@@ -193,7 +193,7 @@ it("should update when a new basemap is registered", async () => {
         await nextTick();
     });
 
-    options = getCurrentOptions(switcherSelect);
+    options = await getCurrentOptions();
     expect(options.length).toBe(3);
     const optionLabels = Array.from(options).map((opt) => opt.textContent);
     expect(optionLabels, "new basemap was added").toMatchInlineSnapshot(`
@@ -345,22 +345,22 @@ it("should update the ui when a layer title changes", async () => {
     );
 
     // basemap switcher is mounted
-    const { switcherSelect } = await waitForBasemapSwitcher();
+    const { switcherSelectTrigger } = await waitForBasemapSwitcher();
 
     const activeBaseLayer = map.layers.getActiveBaseLayer();
     expect(activeBaseLayer?.id).toBe("osm");
 
-    showDropdown(switcherSelect);
+    await showDropdown(switcherSelectTrigger);
 
-    let options = getCurrentOptions(switcherSelect);
+    let options = await getCurrentOptions();
     let optionLabels = Array.from(options).map((opt) => opt.textContent);
     expect(optionLabels, "basemap options are not equal to their expected values")
         .toMatchInlineSnapshot(`
-        [
-          "OSM",
-          "TopPlus Open",
-        ]
-      `);
+          [
+            "OSM",
+            "TopPlus Open",
+          ]
+        `);
 
     // change layer title
     await act(async () => {
@@ -368,7 +368,7 @@ it("should update the ui when a layer title changes", async () => {
         await nextTick();
     });
 
-    options = getCurrentOptions(switcherSelect);
+    options = await getCurrentOptions();
     optionLabels = Array.from(options).map((opt) => opt.textContent);
     expect(optionLabels, "basemap layer was not renamed").toMatchInlineSnapshot(`
       [
@@ -378,21 +378,29 @@ it("should update the ui when a layer title changes", async () => {
     `);
 });
 
-function showDropdown(switcherSelect: HTMLElement) {
-    // open dropdown to include options in snapshot; react-select creates list of options in dom after opening selection
-    act(() => {
-        fireEvent.keyDown(switcherSelect, { key: "ArrowDown" });
+async function showDropdown(switcherSelectTrigger: Element) {
+    // open dropdown to include options in snapshot; select lazy mounts list of options in dom after opening selection
+    await act(async () => {
+        fireEvent.click(switcherSelectTrigger);
+        await nextTick();
     });
 }
 
-function getCurrentOptions(switcherSelect: HTMLElement) {
-    return Array.from(
-        switcherSelect.getElementsByClassName("basemap-switcher-option")
-    ) as HTMLElement[];
+async function getCurrentOptions() {
+    return await waitFor(() => {
+        //options are portalled
+        const switcherContent = document.querySelector(".basemap-switcher-select-content");
+        if (!switcherContent) {
+            throw new Error("expected basemap switcher content not rendered, ensure select dropdown is open, options are mounted lazily");
+        }
+        return Array.from(
+            switcherContent.getElementsByClassName("basemap-switcher-option")
+        ) as HTMLElement[];
+    });
 }
 
 async function waitForBasemapSwitcher() {
-    const { switcherDiv, switcherSelect } = await waitFor(async () => {
+    const { switcherDiv, switcherSelect, switcherSelectTrigger } = await waitFor(async () => {
         const switcherDiv: HTMLDivElement | null =
             await screen.findByTestId<HTMLDivElement>("switcher");
         if (!switcherDiv) {
@@ -405,7 +413,12 @@ async function waitForBasemapSwitcher() {
         if (!switcherSelect) {
             throw new Error("basemap switcher select not rendered");
         }
-        return { switcherDiv, switcherSelect };
+
+        const switcherSelectTrigger = switcherDiv?.querySelector(".basemap-switcher-select-trigger");
+        if (!switcherSelectTrigger) {
+            throw new Error("failed to find trigger element in basemap switcher");
+        }
+        return { switcherDiv, switcherSelect, switcherSelectTrigger };
     });
-    return { switcherDiv, switcherSelect };
+    return { switcherDiv, switcherSelect, switcherSelectTrigger };
 }

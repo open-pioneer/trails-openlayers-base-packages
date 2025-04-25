@@ -2,204 +2,62 @@
 
 exports[`should disable selection of unavailable layers and show a warning 1`] = `
 <div
-  class="basemap-switcher-select react-select--has-value css-79elbk"
-  data-theme="light"
+  class="basemap-switcher-select chakra-select__root css-3jlqt6"
+  data-part="root"
+  data-scope="select"
+  dir="ltr"
+  id="select:«r9»"
 >
-  <span
-    class="css-1f43avz-a11yText-A11yText"
-    id="react-select-11-live-region"
-  />
-  <span
-    aria-atomic="false"
-    aria-live="polite"
-    aria-relevant="additions text"
-    class="css-1f43avz-a11yText-A11yText"
-    role="log"
-  />
   <div
-    class="react-select__control react-select__control--menu-is-open css-156sfem"
-    data-theme="light"
+    class="chakra-select__control css-17j1053"
+    data-part="control"
+    data-scope="select"
+    data-state="closed"
+    dir="ltr"
+    id="select:«r9»:control"
   >
-    <div
-      class="react-select__value-container react-select__value-container--has-value css-j93siq"
-      data-theme="light"
+    <button
+      aria-controls="select:«r9»:content"
+      aria-expanded="false"
+      aria-haspopup="listbox"
+      aria-labelledby="select:«r9»:label"
+      class="basemap-switcher-select-trigger chakra-select__trigger css-1hl2915"
+      data-part="trigger"
+      data-scope="select"
+      data-state="closed"
+      dir="ltr"
+      id="select:«r9»:trigger"
+      role="combobox"
+      type="button"
     >
-      <div
-        class="basemap-switcher-value react-select__single-value react-select__single-value--is-disabled css-1xa1gs2"
-        data-theme="light"
+      <span
+        class="chakra-select__valueText css-176t9sc"
+        data-part="value-text"
+        data-scope="select"
+        dir="ltr"
       >
-        <div
-          class="css-u4p24i"
-          data-theme="light"
-        >
-          OSM
-          <div
-            class="css-1v4xcoh"
-            data-theme="light"
-          >
-            <span>
-              <svg
-                aria-label="layerNotAvailable"
-                color="red"
-                fill="none"
-                height="1em"
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                style="color: red;"
-                viewBox="0 0 24 24"
-                width="1em"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"
-                />
-                <line
-                  x1="12"
-                  x2="12"
-                  y1="9"
-                  y2="13"
-                />
-                <line
-                  x1="12"
-                  x2="12.01"
-                  y1="17"
-                  y2="17"
-                />
-              </svg>
-            </span>
-          </div>
-        </div>
-      </div>
-      <input
-        aria-activedescendant="react-select-11-option-0"
-        aria-autocomplete="list"
-        aria-controls="react-select-11-listbox"
-        aria-expanded="true"
-        aria-haspopup="true"
-        aria-readonly="true"
-        class="css-1s80ejz-dummyInput-DummyInput"
-        id="react-select-11-input"
-        inputmode="none"
-        role="combobox"
-        tabindex="0"
-        value=""
-      />
-    </div>
+        emptyBasemapLabel
+      </span>
+    </button>
     <div
-      class="react-select__indicators css-hfbj6y"
-      data-theme="light"
+      class="chakra-select__indicatorGroup css-1xvjckd"
     >
-      <hr
-        aria-orientation="vertical"
-        class="chakra-divider react-select__indicator-separator css-hxuk4g"
-        data-theme="light"
-      />
       <div
         aria-hidden="true"
-        class="react-select__indicator react-select__dropdown-indicator css-1hbdnuy"
-        data-theme="light"
+        class="chakra-select__indicator css-1atg1ut"
+        data-part="indicator"
+        data-scope="select"
+        data-state="closed"
+        dir="ltr"
       >
         <svg
-          aria-hidden="true"
-          class="chakra-icon css-onkibi"
-          data-theme="light"
-          focusable="false"
-          role="presentation"
+          class="css-s3mb0o"
           viewBox="0 0 24 24"
         >
           <path
-            d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
-            fill="currentColor"
+            d="m6 9 6 6 6-6"
           />
         </svg>
-      </div>
-    </div>
-  </div>
-  <div
-    class="react-select__menu-portal css-1vbk7iu"
-  >
-    <div
-      class="react-select__menu css-ky7590"
-      data-theme="light"
-    >
-      <div
-        aria-multiselectable="false"
-        class="react-select__menu-list css-mkffje"
-        data-theme="light"
-        id="react-select-11-listbox"
-        role="listbox"
-      >
-        <div
-          aria-disabled="true"
-          aria-selected="true"
-          class="basemap-switcher-option react-select__option react-select__option--is-disabled react-select__option--is-focused react-select__option--is-selected css-2rk73n"
-          data-focus="true"
-          data-theme="light"
-          id="react-select-11-option-0"
-          role="option"
-          tabindex="-1"
-        >
-          <div
-            class="css-u4p24i"
-            data-theme="light"
-          >
-            OSM
-            <div
-              class="css-1v4xcoh"
-              data-theme="light"
-            >
-              <span>
-                <svg
-                  aria-label="layerNotAvailable"
-                  color="red"
-                  fill="none"
-                  height="1em"
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  style="color: red;"
-                  viewBox="0 0 24 24"
-                  width="1em"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"
-                  />
-                  <line
-                    x1="12"
-                    x2="12"
-                    y1="9"
-                    y2="13"
-                  />
-                  <line
-                    x1="12"
-                    x2="12.01"
-                    y1="17"
-                    y2="17"
-                  />
-                </svg>
-              </span>
-            </div>
-          </div>
-        </div>
-        <div
-          aria-selected="false"
-          class="basemap-switcher-option react-select__option css-p7801c"
-          data-theme="light"
-          id="react-select-11-option-1"
-          role="option"
-          tabindex="-1"
-        >
-          <div
-            class="css-u4p24i"
-            data-theme="light"
-          >
-            Empty tile
-          </div>
-        </div>
       </div>
     </div>
   </div>
@@ -210,117 +68,65 @@ exports[`should successfully create a basemap switcher component 1`] = `
 <div
   class="basemap-switcher css-0"
   data-testid="switcher"
-  data-theme="light"
 >
   <div
-    class="basemap-switcher-select react-select--has-value css-79elbk"
-    data-theme="light"
+    class="basemap-switcher-select chakra-select__root css-3jlqt6"
+    data-part="root"
+    data-scope="select"
+    dir="ltr"
+    id="select:«r0»"
   >
-    <span
-      class="css-1f43avz-a11yText-A11yText"
-      id="react-select-2-live-region"
-    />
-    <span
-      aria-atomic="false"
-      aria-live="polite"
-      aria-relevant="additions text"
-      class="css-1f43avz-a11yText-A11yText"
-      role="log"
-    />
     <div
-      class="react-select__control react-select__control--menu-is-open css-156sfem"
-      data-theme="light"
+      class="chakra-select__control css-17j1053"
+      data-part="control"
+      data-scope="select"
+      data-state="open"
+      dir="ltr"
+      id="select:«r0»:control"
     >
-      <div
-        class="react-select__value-container react-select__value-container--has-value css-j93siq"
-        data-theme="light"
+      <button
+        aria-controls="select:«r0»:content"
+        aria-expanded="true"
+        aria-haspopup="listbox"
+        aria-labelledby="select:«r0»:label"
+        class="basemap-switcher-select-trigger chakra-select__trigger css-1hl2915"
+        data-part="trigger"
+        data-placement="bottom-start"
+        data-scope="select"
+        data-state="open"
+        dir="ltr"
+        id="select:«r0»:trigger"
+        role="combobox"
+        type="button"
       >
-        <div
-          class="basemap-switcher-value react-select__single-value css-1xa1gs2"
-          data-theme="light"
+        <span
+          class="chakra-select__valueText css-176t9sc"
+          data-part="value-text"
+          data-scope="select"
+          dir="ltr"
         >
-          <div
-            class="css-u4p24i"
-            data-theme="light"
-          >
-            emptyBasemapLabel
-          </div>
-        </div>
-        <input
-          aria-activedescendant="react-select-2-option-0"
-          aria-autocomplete="list"
-          aria-controls="react-select-2-listbox"
-          aria-expanded="true"
-          aria-haspopup="true"
-          aria-readonly="true"
-          class="css-1s80ejz-dummyInput-DummyInput"
-          id="react-select-2-input"
-          inputmode="none"
-          role="combobox"
-          tabindex="0"
-          value=""
-        />
-      </div>
+          emptyBasemapLabel
+        </span>
+      </button>
       <div
-        class="react-select__indicators css-hfbj6y"
-        data-theme="light"
+        class="chakra-select__indicatorGroup css-1xvjckd"
       >
-        <hr
-          aria-orientation="vertical"
-          class="chakra-divider react-select__indicator-separator css-hxuk4g"
-          data-theme="light"
-        />
         <div
           aria-hidden="true"
-          class="react-select__indicator react-select__dropdown-indicator css-1hbdnuy"
-          data-theme="light"
+          class="chakra-select__indicator css-1atg1ut"
+          data-part="indicator"
+          data-scope="select"
+          data-state="open"
+          dir="ltr"
         >
           <svg
-            aria-hidden="true"
-            class="chakra-icon css-onkibi"
-            data-theme="light"
-            focusable="false"
-            role="presentation"
+            class="css-s3mb0o"
             viewBox="0 0 24 24"
           >
             <path
-              d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
-              fill="currentColor"
+              d="m6 9 6 6 6-6"
             />
           </svg>
-        </div>
-      </div>
-    </div>
-    <div
-      class="react-select__menu-portal css-1vbk7iu"
-    >
-      <div
-        class="react-select__menu css-ky7590"
-        data-theme="light"
-      >
-        <div
-          aria-multiselectable="false"
-          class="react-select__menu-list css-mkffje"
-          data-theme="light"
-          id="react-select-2-listbox"
-          role="listbox"
-        >
-          <div
-            aria-selected="true"
-            class="basemap-switcher-option react-select__option react-select__option--is-focused react-select__option--is-selected css-2rk73n"
-            data-focus="true"
-            data-theme="light"
-            id="react-select-2-option-0"
-            role="option"
-            tabindex="-1"
-          >
-            <div
-              class="css-u4p24i"
-              data-theme="light"
-            >
-              emptyBasemapLabel
-            </div>
-          </div>
         </div>
       </div>
     </div>
