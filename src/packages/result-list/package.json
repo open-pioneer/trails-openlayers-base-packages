@@ -27,7 +27,8 @@
         "classnames": "catalog:",
         "ol": "catalog:",
         "react": "catalog:",
-        "react-use": "catalog:"
+        "react-use": "catalog:",
+        "react-icons": "catalog:"
     },
     "devDependencies": {
         "@open-pioneer/map-test-utils": "workspace:^",
