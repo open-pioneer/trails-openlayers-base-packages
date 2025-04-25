@@ -1,5 +1,20 @@
 # @open-pioneer/map-test-utils
 
+## 0.10.0
+
+### Patch Changes
+
+- cd1435b: Update ol to 10.5.0
+- 032eed7: Bump dependencies.
+- cd1435b: Update to react 19.1.0
+- Updated dependencies [2bafdad]
+- Updated dependencies [cd1435b]
+- Updated dependencies [193068a]
+- Updated dependencies [032eed7]
+- Updated dependencies [cd1435b]
+- Updated dependencies [7558df4]
+    - @open-pioneer/map@0.10.0
+
 ## 0.9.0
 
 ### Minor Changes

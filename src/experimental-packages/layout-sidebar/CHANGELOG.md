@@ -1,5 +1,13 @@
 # @open-pioneer/experimental-layout-sidebar
 
+## 0.10.0
+
+### Patch Changes
+
+- cd1435b: Update ol to 10.5.0
+- 032eed7: Bump dependencies.
+- cd1435b: Update to react 19.1.0
+
 ## 0.9.0
 
 ### Minor Changes
