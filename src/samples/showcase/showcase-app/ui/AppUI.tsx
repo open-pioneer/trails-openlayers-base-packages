@@ -86,22 +86,22 @@ function AppContent(props: { state: AppStateReady }) {
                                 <MapAnchor position="bottom-right" horizontalGap={6}>
                                     <VStack p={1}>{currentDemoModel.tools}</VStack>
                                 </MapAnchor>
-                                {currentListContainer && (
-                                    <Box
-                                        className="list-container"
-                                        position="absolute"
-                                        bottom="0"
-                                        backgroundColor="white"
-                                        width="100%"
-                                        height="400px"
-                                        zIndex={1 /* above map */}
-                                        borderTop="2px solid"
-                                        borderColor="trails.100"
-                                    >
-                                        {currentListContainer}
-                                    </Box>
-                                )}
                             </MapContainer>
+                            {currentListContainer && (
+                                <Box
+                                    className="list-container"
+                                    position="absolute"
+                                    bottom="0"
+                                    backgroundColor="white"
+                                    width="100%"
+                                    height="400px"
+                                    zIndex={1 /* above map */}
+                                    borderTop="2px solid"
+                                    borderColor="trails.100"
+                                >
+                                    {currentListContainer}
+                                </Box>
+                            )}
                         </DefaultMapProvider>
                     </Flex>
                 </TitledSection>

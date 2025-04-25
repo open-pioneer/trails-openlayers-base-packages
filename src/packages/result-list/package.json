@@ -20,13 +20,15 @@
         "@chakra-ui/react": "catalog:",
         "@open-pioneer/core": "catalog:",
         "@open-pioneer/map": "workspace:^",
+        "@open-pioneer/chakra-snippets": "catalog:",
         "@open-pioneer/react-utils": "catalog:",
         "@open-pioneer/runtime": "catalog:",
         "@tanstack/react-table": "catalog:",
         "classnames": "catalog:",
         "ol": "catalog:",
         "react": "catalog:",
-        "react-use": "catalog:"
+        "react-use": "catalog:",
+        "react-icons": "catalog:"
     },
     "devDependencies": {
         "@open-pioneer/map-test-utils": "workspace:^",

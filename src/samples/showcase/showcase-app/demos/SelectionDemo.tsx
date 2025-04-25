@@ -20,6 +20,13 @@ import VectorLayer from "ol/layer/Vector";
 import { ReactNode } from "react";
 import { Demo, DemoModel, SharedDemoOptions } from "./Demo";
 import VectorSource from "ol/source/Vector";
+import {
+    FormatOptions,
+    ResultColumn,
+    ResultList,
+    ResultListInput,
+    ResultListSelectionChangeEvent
+} from "@open-pioneer/result-list";
 
 interface ResultListState {
     /** Whether the result list is currently shown. */
@@ -45,7 +52,6 @@ export function createSelectionDemo(options: SharedDemoOptions): Demo {
 class DemoModelImpl implements DemoModel {
     #mapModel: MapModel;
     #selectionSource: VectorLayerSelectionSource;
-    #selectionSource2: VectorLayerSelectionSource;
     #resultListState = reactive<ResultListState>({
         key: 0,
         input: undefined,
@@ -60,12 +66,11 @@ class DemoModelImpl implements DemoModel {
 
         this.#mapModel = mapModel;
         this.#selectionSource = initSelectionSource(mapModel, vectorSelectionSourceFactory);
-        this.#selectionSource2 = initSelectionSource2(mapModel, vectorSelectionSourceFactory); // todo remove test source
 
         this.description = intl.formatRichMessage({ id: "demos.selectionResultList.description" });
         this.mainWidget = (
             <Selection
-                sources={[this.#selectionSource, this.#selectionSource2]}
+                sources={[this.#selectionSource]}
                 onSelectionComplete={this.#onSelectionComplete}
             />
         );
@@ -82,8 +87,7 @@ class DemoModelImpl implements DemoModel {
     }
 
     get listContainer() {
-        return undefined; // TODO migrate resultlist
-        /* const currentState = this.#resultListState.value;
+        const currentState = this.#resultListState.value;
         if (!currentState.open || !currentState.input) {
             return undefined;
         }
@@ -94,7 +98,7 @@ class DemoModelImpl implements DemoModel {
                 input={currentState.input}
                 onSelectionChange={this.#onResultListSelectionChange}
             />
-        );*/
+        );
     }
 
     #onSelectionComplete = (event: SelectionCompleteEvent) => {
@@ -170,20 +174,6 @@ function initSelectionSource(
     vectorSelectionSourceFactory: VectorLayerSelectionSourceFactory
 ) {
     const opLayer = mapModel.layers.getLayerById("ogc_kitas") as SimpleLayer;
-
-    const layerSelectionSource = vectorSelectionSourceFactory.createSelectionSource({
-        vectorLayer: opLayer.olLayer as VectorLayer<VectorSource, Feature>,
-        label: opLayer.title
-    });
-
-    return layerSelectionSource;
-}
-
-function initSelectionSource2(
-    mapModel: MapModel,
-    vectorSelectionSourceFactory: VectorLayerSelectionSourceFactory
-) {
-    const opLayer = mapModel.layers.getLayerById("krankenhaus") as SimpleLayer;
 
     const layerSelectionSource = vectorSelectionSourceFactory.createSelectionSource({
         vectorLayer: opLayer.olLayer as VectorLayer<VectorSource, Feature>,

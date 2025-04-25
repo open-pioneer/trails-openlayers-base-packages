@@ -11,5 +11,3 @@ skipDevDependencies: true
 allowed:
   - "ansi-styles"
   - "react-is"
-  - "source-map"
-  - "stylis"

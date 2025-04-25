@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { chakra } from "@open-pioneer/chakra-integration";
+import { chakra } from "@chakra-ui/react";
 import { BaseFeature } from "@open-pioneer/map";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { createColumnHelper, Table as TanstackTable } from "@tanstack/react-table";
@@ -133,9 +133,11 @@ function createSelectionColumn(
                 >
                     <SelectComponent
                         className="result-list-select-all-checkbox"
-                        isChecked={table.getIsAllRowsSelected()}
-                        isIndeterminate={table.getIsSomeRowsSelected()}
-                        onChange={table.getToggleAllRowsSelectedHandler()}
+                        checked={table.getIsAllRowsSelected()}
+                        indeterminate={table.getIsSomeRowsSelected()}
+                        onChange={(newIsChecked) => {
+                            table.toggleAllRowsSelected(newIsChecked);
+                        }}
                         toolTipLabel={getCheckboxToolTip(table, intl)}
                     />
                 </chakra.div>
@@ -157,10 +159,12 @@ function createSelectionColumn(
                     <SelectComponent
                         mode={selectionStyle}
                         className={className}
-                        isChecked={row.getIsSelected()}
-                        isDisabled={!row.getCanSelect()}
-                        isIndeterminate={row.getIsSomeSelected()}
-                        onChange={row.getToggleSelectedHandler()}
+                        checked={row.getIsSelected()}
+                        disabled={!row.getCanSelect()}
+                        indeterminate={row.getIsSomeSelected()}
+                        onChange={(newIsChecked) => {
+                            row.toggleSelected(newIsChecked);
+                        }}
                         aria-label={intl.formatMessage({
                             id: "ariaLabel.selectSingle"
                         })}
