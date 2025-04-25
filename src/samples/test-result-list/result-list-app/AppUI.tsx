@@ -1,7 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { FiChevronDown } from "react-icons/fi";
-
 import {
     Box,
     Button,
@@ -407,7 +406,7 @@ const CUSTOM_RENDER: ResultListInput = {
             displayName: "boolean as checkbox (read only)",
             propertyName: "bool",
             renderCell({ value }) {
-                const checked = value ? undefined : !!value;
+                const checked = value == null ? "indeterminate" : Boolean(value);
                 return <Checkbox checked={checked} />;
             }
         }
