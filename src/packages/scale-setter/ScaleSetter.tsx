@@ -76,7 +76,8 @@ export const ScaleSetter: FC<ScaleSetterProps> = (props) => {
                             id: "button.ariaDescription"
                         })}
                     >
-                        {renderedScale}{<FiChevronUp />}
+                        {renderedScale}
+                        {<FiChevronUp />}
                     </Button>
                 </Menu.Trigger>
                 <Portal>
