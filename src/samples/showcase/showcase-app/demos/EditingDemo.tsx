@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Reactive, reactive, watch } from "@conterra/reactivity-core";
-import { Button, Flex } from "@open-pioneer/chakra-integration";
+import { Button, Flex } from "@chakra-ui/react";
 import { Resource } from "@open-pioneer/core";
 import { EditingService, type EditingWorkflow } from "@open-pioneer/editing";
 import { Layer, MapModel } from "@open-pioneer/map";
@@ -309,7 +309,7 @@ function EditingButtons({ editingController }: EditingButtonProps) {
             <Flex px={1} py={1}>
                 <Button
                     mr={2}
-                    isDisabled={editingActive}
+                    disabled={editingActive}
                     onClick={() => {
                         editingController.startCreateWorkflow();
                     }}
@@ -318,7 +318,7 @@ function EditingButtons({ editingController }: EditingButtonProps) {
                 </Button>
                 <Button
                     mr={2}
-                    isDisabled={editingActive}
+                    disabled={editingActive}
                     onClick={() => {
                         editingController.startUpdateWorkflow();
                     }}
@@ -326,7 +326,7 @@ function EditingButtons({ editingController }: EditingButtonProps) {
                     {intl.formatMessage({ id: "demos.editing.startUpdateButton" })}
                 </Button>
                 <Button
-                    isDisabled={!editingActive}
+                    disabled={!editingActive}
                     onClick={() => {
                         editingController.stopEditing();
                     }}
