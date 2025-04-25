@@ -83,7 +83,6 @@ it("should successfully select a basemap from basemap switcher", async () => {
     const { switcherSelectTrigger } = await waitForBasemapSwitcher();
     await showDropdown(switcherSelectTrigger);
 
-
     let options = await getCurrentOptions();
     const osmOption = options.find((option) => option.textContent === "OSM");
     if (!osmOption) {
@@ -122,8 +121,11 @@ it("should allow selecting 'no basemap' when enabled", async () => {
     // basemap switcher is mounted
     const { switcherSelect, switcherSelectTrigger } = await waitForBasemapSwitcher();
 
-    expect(switcherSelect.textContent).toBe("OSM");
-    expect(map.layers.getActiveBaseLayer()?.id).toBe("osm");
+    //there is a small delay until initially selected options is displayed
+    await waitFor(() => {
+        expect(switcherSelect.textContent).toBe("OSM");
+        expect(map.layers.getActiveBaseLayer()?.id).toBe("osm");
+    });
 
     await showDropdown(switcherSelectTrigger);
     const options = await getCurrentOptions();
@@ -152,8 +154,10 @@ it("should not allow selecting 'no basemap' by default", async () => {
     // basemap switcher is mounted
     const { switcherSelect, switcherSelectTrigger } = await waitForBasemapSwitcher();
 
-    expect(switcherSelect.textContent).toBe("OSM");
-    expect(map.layers.getActiveBaseLayer()?.id).toBe("osm");
+    await waitFor(() => {
+        expect(switcherSelect.textContent).toBe("OSM");
+        expect(map.layers.getActiveBaseLayer()?.id).toBe("osm");
+    });
 
     await showDropdown(switcherSelectTrigger);
     const options = await getCurrentOptions();
@@ -176,7 +180,7 @@ it("should update when a new basemap is registered", async () => {
     );
 
     // basemap switcher is mounted
-    const { switcherSelectTrigger  } = await waitForBasemapSwitcher();
+    const { switcherSelectTrigger } = await waitForBasemapSwitcher();
     await showDropdown(switcherSelectTrigger);
 
     let options = await getCurrentOptions();
@@ -205,7 +209,7 @@ it("should update when a new basemap is registered", async () => {
       `);
 });
 
-it.only("should update when a different basemap is activated from somewhere else", async () => {
+it("should update when a different basemap is activated from somewhere else", async () => {
     const { registry, map } = await setupMap({
         layers: defaultBasemapConfig
     });
@@ -219,9 +223,11 @@ it.only("should update when a different basemap is activated from somewhere else
 
     // basemap switcher is mounted
     const { switcherSelect } = await waitForBasemapSwitcher();
-    await nextTick();
-    expect(switcherSelect.textContent).toBe("OSM");
     expect(map.layers.getActiveBaseLayer()?.id).toBe("osm");
+
+    await waitFor(() => {
+        expect(switcherSelect.textContent).toBe("OSM");
+    });
 
     await act(async () => {
         map.layers.activateBaseLayer("topplus-open");
@@ -245,8 +251,10 @@ describe("should successfully select the correct basemap from basemap switcher",
 
         // basemap switcher is mounted
         const { switcherSelect } = await waitForBasemapSwitcher();
-        expect(switcherSelect.textContent).toBe("OSM");
-        expect(switcherSelect.textContent).not.toBe("TopPlus Open");
+        await waitFor(() => {
+            expect(switcherSelect.textContent).toBe("OSM");
+            expect(switcherSelect.textContent).not.toBe("TopPlus Open");
+        });
 
         const activeBaseLayer = map.layers.getActiveBaseLayer();
         expect(activeBaseLayer?.id).toBe("osm");
@@ -283,8 +291,10 @@ describe("should successfully select the correct basemap from basemap switcher",
 
         // basemap switcher is mounted
         const { switcherSelect } = await waitForBasemapSwitcher();
-        expect(switcherSelect.textContent).toBe("TopPlus Open");
-        expect(switcherSelect.textContent).not.toBe("OSM");
+        await waitFor(() => {
+            expect(switcherSelect.textContent).toBe("TopPlus Open");
+            expect(switcherSelect.textContent).not.toBe("OSM");
+        });
 
         const activeBaseLayer = map.layers.getActiveBaseLayer();
         expect(activeBaseLayer?.id).toBe("topplus-open");
@@ -392,7 +402,9 @@ async function getCurrentOptions() {
         //options are portalled
         const switcherContent = document.querySelector(".basemap-switcher-select-content");
         if (!switcherContent) {
-            throw new Error("expected basemap switcher content not rendered, ensure select dropdown is open, options are mounted lazily");
+            throw new Error(
+                "expected basemap switcher content not rendered, ensure select dropdown is open, options are mounted lazily"
+            );
         }
         return Array.from(
             switcherContent.getElementsByClassName("basemap-switcher-option")
@@ -415,7 +427,9 @@ async function waitForBasemapSwitcher() {
             throw new Error("basemap switcher select not rendered");
         }
 
-        const switcherSelectTrigger = switcherDiv?.querySelector(".basemap-switcher-select-trigger");
+        const switcherSelectTrigger = switcherDiv?.querySelector(
+            ".basemap-switcher-select-trigger"
+        );
         if (!switcherSelectTrigger) {
             throw new Error("failed to find trigger element in basemap switcher");
         }
