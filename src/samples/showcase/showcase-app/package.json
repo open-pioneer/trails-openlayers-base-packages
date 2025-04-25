@@ -31,6 +31,7 @@
         "@open-pioneer/selection": "workspace:^",
         "@open-pioneer/spatial-bookmarks": "workspace:^",
         "@open-pioneer/toc": "workspace:^",
+        "@open-pioneer/chakra-snippets": "catalog:",
         "ol": "catalog:",
         "react": "catalog:",
         "react-dom": "catalog:"
