@@ -7,7 +7,7 @@ import { VectorSelectionSourceFactory } from "@open-pioneer/selection/services";
 import { ReactNode } from "react";
 import { createTocAndLegendDemo } from "./TocLegendDemo";
 import { createSelectionDemo } from "./SelectionDemo";
-// import { createEditingDemo } from "./EditingDemo";
+import { createEditingDemo } from "./EditingDemo";
 import { EditingService } from "@open-pioneer/editing";
 import { NotificationService } from "@open-pioneer/notifier";
 import {
@@ -68,7 +68,6 @@ export interface SharedDemoOptions {
 
 export function createDemos(options: SharedDemoOptions): Demo[] {
     return [
-        // TODO
         createTocAndLegendDemo(options),
         createCoordinateViewerDemo(options),
         createCoordinateInputDemo(options),
@@ -77,7 +76,7 @@ export function createDemos(options: SharedDemoOptions): Demo[] {
         createScaleSetterDemo(options),
         createScaleBarDemo(options),
         createMeasurementDemo(options),
-        // createEditingDemo(options),
+        createEditingDemo(options),
         createMapNavigationDemo(options),
         createGeolocationDemo(options),
         createSpatialBookmarksDemo(options),
