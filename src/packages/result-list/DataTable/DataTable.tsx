@@ -1,8 +1,11 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Table, chakra, useToken } from "@chakra-ui/react";
+import { Reactive, reactive } from "@conterra/reactivity-core";
 import { createLogger } from "@open-pioneer/core";
 import { BaseFeature } from "@open-pioneer/map";
+import { useEvent } from "@open-pioneer/react-utils";
+import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import {
     ColumnDef,
     Header,
@@ -13,11 +16,11 @@ import {
 } from "@tanstack/react-table";
 import classNames from "classnames";
 import { useIntl } from "open-pioneer:react-hooks";
-import React, { ReactNode, useEffect, useMemo, useState } from "react";
+import { MouseEvent, createContext, useContext, useEffect, useMemo, useState } from "react";
+import { ResultListSelectionChangeEvent, SelectionMode } from "../ResultList";
 import { ColumnResizer } from "./ColumnResizer";
 import { ColumnSortIndicator } from "./ColumnSortIndicator";
 import { useSetupTable } from "./useSetupTable";
-import { ResultListSelectionChangeEvent, SelectionMode } from "../ResultList";
 const LOG = createLogger("result-list:DataTable");
 
 export interface DataTableProps<Data extends BaseFeature> {
@@ -28,17 +31,66 @@ export interface DataTableProps<Data extends BaseFeature> {
     onSelectionChange?(event: ResultListSelectionChangeEvent): void;
 }
 
+const TableContext = createContext<TableContext<unknown> | undefined>(undefined);
+
+interface TableContext<Data> {
+    /** The tanstack table instance. This object is stable. */
+    table: TanstackTable<Data>;
+
+    /** A signal to trigger re-rendering in the children of the chakra table. */
+    forceRerender: Reactive<number>;
+}
+
 export function DataTable<Data extends BaseFeature>(props: DataTableProps<Data>) {
     const intl = useIntl();
     const { memoizeRows } = props;
-    const { table } = useSetupTable(props);
+    const { table } = useSetupTable(props); // NOTE: Triggers re-render often when table state changes!
     const isResizing = !!table.getState().columnSizingInfo.isResizingColumn;
+    const useMemoOptimization = isResizing || memoizeRows;
     const columnSizeVars = useColumnSizeVars(table);
-    const [isClickBlocked, setIsClickBlocked] = useState(false);
 
+    const context = useMemo((): TableContext<Data> => {
+        return {
+            table,
+            forceRerender: reactive(0)
+        };
+    }, [table]);
+    context.forceRerender.value += 1; // Force rerendering of the TableContent child.
+
+    // Block click events while dragging the resize handle.
+    // If the click event gets through, the user may accidentally trigger column sorting on mouse release.
+    // Note that this is in a useEffect() on purpose to defer "freeing" click events a bit.
+    const [isClickBlocked, setIsClickBlocked] = useState(false);
     useEffect(() => {
         setIsClickBlocked(isResizing);
     }, [isResizing]);
+    const blockClicksIfResizing = useEvent((e: MouseEvent) => {
+        if (isClickBlocked) {
+            LOG.debug("Blocking click event because resizing is active");
+            e.stopPropagation();
+            e.preventDefault();
+        }
+    });
+
+    // We cache the table's root because chakra's table has some broken memo behavior: it recomputes
+    // its styles and rerenders all all its children via context when some props change.
+    // We keep both the props and the table's children as stable as possible.
+    //
+    // The table content instead uses a force rerender bypass via the `forceRerender` signal:
+    // When react-table tells us to rerender, we trigger a rerender on our grandchild as well.
+    const chakraTable = useMemo(() => {
+        const content = <TableContent useMemo={useMemoOptimization} />;
+        const chakraTable = (
+            <Table.Root
+                className="result-list-table"
+                width="99.9%"
+                onClickCapture={blockClicksIfResizing}
+            >
+                {content}
+            </Table.Root>
+        );
+        return chakraTable;
+    }, [blockClicksIfResizing, useMemoOptimization]);
 
     if (!table.getRowModel().rows.length) {
         return (
@@ -47,37 +99,40 @@ export function DataTable<Data extends BaseFeature>(props: DataTableProps<Data>)
             </chakra.div>
         );
     }
+    return (
+        <chakra.div
+            className={classNames("result-list-table-container", {
+                "result-list-table-container--is-resizing": isResizing
+            })}
+            h="100%"
+            w="100%"
+            style={columnSizeVars}
+        >
+            <TableContext.Provider value={context as TableContext<unknown>}>
+                {chakraTable}
+            </TableContext.Provider>
+        </chakra.div>
+    );
+}
+
+function TableContent<Data extends BaseFeature>(props: { useMemo: boolean }) {
+    const store = useContext(TableContext)! as TableContext<Data>;
+    const table = store.table;
+
+    // Hack to let the grandparent of this component force a rerender.
+    useReactiveSnapshot(() => store.forceRerender.value, [store.forceRerender]);
 
     return (
-        <Table.Root
-            className={classNames("result-list-table", {
-                "result-list-table--is-resizing": isResizing
-            })}
-            style={columnSizeVars}
-            width="99.9%"
-            // An attempt to block click events while dragging the resize handle.
-            // If the click event gets through, the user may accidentally trigger column sorting on mouse release
-            onClickCapture={(e) => {
-                if (isClickBlocked) {
-                    LOG.debug("Blocking click event because resizing is active");
-                    e.stopPropagation();
-                    e.preventDefault();
-                }
-            }}
-        >
+        <>
             <Table.Header>
                 {table.getHeaderGroups().map((headerGroup) => (
                     <TableHeaderGroup key={headerGroup.id} headerGroup={headerGroup} />
                 ))}
             </Table.Header>
             <Table.Body className="result-list-table-body">
-                {memoizeRows || isResizing ? (
-                    <MemoizedTableRows table={table} />
-                ) : (
-                    <TableRows table={table} />
-                )}
+                {props.useMemo ? <MemoizedTableRows table={table} /> : <TableRows table={table} />}
             </Table.Body>
-        </Table.Root>
+        </>
     );
 }
 
@@ -124,6 +179,7 @@ function TableHeader<Data>(props: {
             /* use box shadow instead of border because it works better with position: sticky */
             border="none"
             boxShadow={`inset 0 -2px 0 0 ${borderColor}`}
+            whiteSpace="nowrap" // prevent wrapping between header title and sort indicator
             _focusVisible={{ textDecorationLine: "underline" }}
             _focus={{ outline: "none" }}
         >
@@ -167,7 +223,7 @@ function TableRows<Data extends object>({ table }: { table: TanstackTable<Data> 
  * Removed full Memoization on Resizing because it does not have an additional effect.
  */
 function MemoizedTableRows<Data extends object>({ table }: { table: TanstackTable<Data> }) {
-    const memoizedRows = React.useMemo<ReactNode>(() => {
+    const memoizedRows = useMemo(() => {
         return <TableRows table={table} />;
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [table, table.getSortedRowModel().rows, table.getSelectedRowModel().rows]);
@@ -189,7 +245,7 @@ function useColumnSizeVars<Data>(table: TanstackTable<Data>) {
     // Need to add columnSizingInfo to the dependency array to make resizing work
     return useMemo(() => {
         // Not used directly, but the memo must re-execute whenever this changes.
-        // Not: columnSizing seems to be needed as well, because otherwise resetting the column size (header.column.resetSize())
+        // Note: columnSizing seems to be needed as well, because otherwise resetting the column size (header.column.resetSize())
         // won't to anything.
         // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         void columnSizingInfo, columnSizing;
@@ -204,6 +260,7 @@ function useColumnSizeVars<Data>(table: TanstackTable<Data>) {
 }
 
 type SortState = SortDirection | false;
+
 function mapAriaSorting(sortState: SortState) {
     switch (sortState) {
         case "asc":

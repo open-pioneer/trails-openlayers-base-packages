@@ -34,7 +34,7 @@ catalog:
   "@emotion/react": ^11.13.0
   "@emotion/styled": ^11.13.0
   "@formatjs/intl": ^3.1.4
-  "@tanstack/react-table": ^8.20.5
+  "@tanstack/react-table": ^8.21.3
   chakra-react-select: ^6.1.0
   classnames: ^2.3.2
   framer-motion: ^12.4.7
