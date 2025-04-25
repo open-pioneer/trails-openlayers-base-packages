@@ -121,11 +121,8 @@ it("should allow selecting 'no basemap' when enabled", async () => {
     // basemap switcher is mounted
     const { switcherSelect, switcherSelectTrigger } = await waitForBasemapSwitcher();
 
-    //there is a small delay until initially selected options is displayed
-    await waitFor(() => {
-        expect(switcherSelect.textContent).toBe("OSM");
-        expect(map.layers.getActiveBaseLayer()?.id).toBe("osm");
-    });
+    expect(switcherSelect.textContent).toBe("OSM");
+    expect(map.layers.getActiveBaseLayer()?.id).toBe("osm");
 
     await showDropdown(switcherSelectTrigger);
     const options = await getCurrentOptions();
@@ -154,10 +151,8 @@ it("should not allow selecting 'no basemap' by default", async () => {
     // basemap switcher is mounted
     const { switcherSelect, switcherSelectTrigger } = await waitForBasemapSwitcher();
 
-    await waitFor(() => {
-        expect(switcherSelect.textContent).toBe("OSM");
-        expect(map.layers.getActiveBaseLayer()?.id).toBe("osm");
-    });
+    expect(switcherSelect.textContent).toBe("OSM");
+    expect(map.layers.getActiveBaseLayer()?.id).toBe("osm");
 
     await showDropdown(switcherSelectTrigger);
     const options = await getCurrentOptions();
@@ -251,10 +246,9 @@ describe("should successfully select the correct basemap from basemap switcher",
 
         // basemap switcher is mounted
         const { switcherSelect } = await waitForBasemapSwitcher();
-        await waitFor(() => {
-            expect(switcherSelect.textContent).toBe("OSM");
-            expect(switcherSelect.textContent).not.toBe("TopPlus Open");
-        });
+
+        expect(switcherSelect.textContent).toBe("OSM");
+        expect(switcherSelect.textContent).not.toBe("TopPlus Open");
 
         const activeBaseLayer = map.layers.getActiveBaseLayer();
         expect(activeBaseLayer?.id).toBe("osm");
@@ -291,10 +285,9 @@ describe("should successfully select the correct basemap from basemap switcher",
 
         // basemap switcher is mounted
         const { switcherSelect } = await waitForBasemapSwitcher();
-        await waitFor(() => {
-            expect(switcherSelect.textContent).toBe("TopPlus Open");
-            expect(switcherSelect.textContent).not.toBe("OSM");
-        });
+
+        expect(switcherSelect.textContent).toBe("TopPlus Open");
+        expect(switcherSelect.textContent).not.toBe("OSM");
 
         const activeBaseLayer = map.layers.getActiveBaseLayer();
         expect(activeBaseLayer?.id).toBe("topplus-open");
