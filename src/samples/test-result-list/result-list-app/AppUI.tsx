@@ -1,28 +1,25 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { ChevronDownIcon } from "@chakra-ui/icons";
+import { FiChevronDown } from "react-icons/fi";
+
 import {
     Box,
     Button,
-    Checkbox,
     Flex,
-    FormControl,
-    FormLabel,
+    Center,
+    Field,
     ListItem,
     Menu,
-    MenuButton,
-    MenuItem,
-    MenuList,
     Portal,
-    Radio,
-    RadioGroup,
     Stack,
     Text,
-    Tooltip,
-    UnorderedList,
     VStack,
-    chakra
-} from "@open-pioneer/chakra-integration";
+    chakra,
+    List
+} from "@chakra-ui/react";
+import { Radio, RadioGroup } from "@open-pioneer/chakra-snippets/radio";
+import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
+import { Checkbox } from "@open-pioneer/chakra-snippets/checkbox";
 import {
     BaseFeature,
     DefaultMapProvider,
@@ -96,57 +93,66 @@ export function AppUI() {
                                         boxShadow="lg"
                                     >
                                         <Stack>
-                                            <Text align="center">Test Controls:</Text>
-                                            <Menu placement="right-end">
-                                                <MenuButton
-                                                    as={Button}
-                                                    rightIcon={<ChevronDownIcon />}
-                                                >
+                                            <Center>
+                                                <Text>Test Controls:</Text>
+                                            </Center>
+                                            <Menu.Root positioning={{ placement: "right-end" }}>
+                                                <Menu.Trigger as={Button}>
                                                     Fill result list
-                                                </MenuButton>
+                                                    <FiChevronDown />
+                                                </Menu.Trigger>
                                                 <Portal>
-                                                    <MenuList>
-                                                        <MenuItem
-                                                            onClick={() => fillResultList(PERSONS)}
-                                                        >
-                                                            Persons
-                                                        </MenuItem>
-                                                        <MenuItem
-                                                            onClick={() =>
-                                                                fillResultList(CUSTOM_RENDER)
-                                                            }
-                                                        >
-                                                            Custom render
-                                                        </MenuItem>
-                                                        <MenuItem
-                                                            onClick={() =>
-                                                                fillResultList(GENERATED)
-                                                            }
-                                                        >
-                                                            Generated
-                                                        </MenuItem>
-                                                        <MenuItem
-                                                            onClick={() =>
-                                                                fillResultList(LONG_STRINGS)
-                                                            }
-                                                        >
-                                                            Long Strings
-                                                        </MenuItem>
-                                                        <MenuItem
-                                                            onClick={() =>
-                                                                fillResultList(MANY_COLUMS)
-                                                            }
-                                                        >
-                                                            Many Columns
-                                                        </MenuItem>
-                                                    </MenuList>
+                                                    <Menu.Positioner>
+                                                        <Menu.Content>
+                                                            <Menu.Item
+                                                                onClick={() =>
+                                                                    fillResultList(PERSONS)
+                                                                }
+                                                                value="person"
+                                                            >
+                                                                Persons
+                                                            </Menu.Item>
+                                                            <Menu.Item
+                                                                onClick={() =>
+                                                                    fillResultList(CUSTOM_RENDER)
+                                                                }
+                                                                value="custom_render"
+                                                            >
+                                                                Custom render
+                                                            </Menu.Item>
+                                                            <Menu.Item
+                                                                onClick={() =>
+                                                                    fillResultList(GENERATED)
+                                                                }
+                                                                value="generated"
+                                                            >
+                                                                Generated
+                                                            </Menu.Item>
+                                                            <Menu.Item
+                                                                onClick={() =>
+                                                                    fillResultList(LONG_STRINGS)
+                                                                }
+                                                                value="long_strings"
+                                                            >
+                                                                Long Strings
+                                                            </Menu.Item>
+                                                            <Menu.Item
+                                                                onClick={() =>
+                                                                    fillResultList(MANY_COLUMS)
+                                                                }
+                                                                value="many_columns"
+                                                            >
+                                                                Many Columns
+                                                            </Menu.Item>
+                                                        </Menu.Content>
+                                                    </Menu.Positioner>
                                                 </Portal>
-                                            </Menu>
+                                            </Menu.Root>
                                             <Button onClick={() => setHideColumns(!hideColumns)}>
                                                 {hideColumns ? "Show" : "Hide"} even columns
                                             </Button>
                                             <Button
-                                                isDisabled={currentInput === undefined}
+                                                disabled={currentInput === undefined}
                                                 onClick={() => setResultListOpen(true)}
                                             >
                                                 Show result list
@@ -155,17 +161,18 @@ export function AppUI() {
                                                 Hide result list
                                             </Button>
                                             <Button
-                                                isDisabled={currentInput === undefined}
+                                                disabled={currentInput === undefined}
                                                 onClick={() => setCurrentInput(undefined)}
                                             >
                                                 Close result list
                                             </Button>
-                                            <FormControl>
-                                                <FormLabel>Selection mode</FormLabel>
+                                            <Field.Root>
+                                                <Field.Label>Selection mode</Field.Label>
                                                 <RadioGroup
                                                     value={selectionMode}
-                                                    onChange={(newValue) => {
-                                                        const mode = newValue as SelectionMode;
+                                                    onValueChange={(newValue) => {
+                                                        const mode =
+                                                            newValue.value as SelectionMode;
                                                         setSelectionMode(mode);
                                                         setSelectionStyle(
                                                             mode === "single" ? "radio" : "checkbox"
@@ -177,28 +184,28 @@ export function AppUI() {
                                                         <Radio value="multi">Multi</Radio>
                                                     </Stack>
                                                 </RadioGroup>
-                                            </FormControl>
-                                            <FormControl>
-                                                <FormLabel>Selection style</FormLabel>
+                                            </Field.Root>
+                                            <Field.Root>
+                                                <Field.Label>Selection style</Field.Label>
                                                 <RadioGroup
                                                     value={selectionStyle}
-                                                    onChange={(newValue) => {
+                                                    onValueChange={(newValue) => {
                                                         setSelectionStyle(
-                                                            newValue as "radio" | "checkbox"
+                                                            newValue.value as "radio" | "checkbox"
                                                         );
                                                     }}
                                                 >
                                                     <Stack direction="row">
                                                         <Radio
                                                             value="radio"
-                                                            isDisabled={selectionMode === "multi"}
+                                                            disabled={selectionMode === "multi"}
                                                         >
                                                             Radio
                                                         </Radio>
                                                         <Radio value="checkbox">Checkbox</Radio>
                                                     </Stack>
                                                 </RadioGroup>
-                                            </FormControl>
+                                            </Field.Root>
                                         </Stack>
                                     </Box>
                                 </MapAnchor>
@@ -220,7 +227,7 @@ export function AppUI() {
                                             the current result list input and displays it when the
                                             component shall be shown.
                                         </Text>
-                                        <UnorderedList>
+                                        <List.Root marginStart="1em">
                                             <ListItem>
                                                 If the result list has been filled, it can be hidden
                                                 and shown again while preserving the state
@@ -243,7 +250,7 @@ export function AppUI() {
                                             <ListItem>
                                                 Fully closing the result list drops all state.
                                             </ListItem>
-                                        </UnorderedList>
+                                        </List.Root>
                                     </VStack>
                                 </MapAnchor>
                             </MapContainer>
@@ -400,7 +407,8 @@ const CUSTOM_RENDER: ResultListInput = {
             displayName: "boolean as checkbox (read only)",
             propertyName: "bool",
             renderCell({ value }) {
-                return <Checkbox isIndeterminate={value === undefined} isChecked={!!value} />;
+                const checked = value ? undefined : !!value;
+                return <Checkbox checked={checked} />;
             }
         }
     ]
@@ -408,7 +416,7 @@ const CUSTOM_RENDER: ResultListInput = {
 
 function DisplayFeatureId(props: { id: string | number }) {
     return (
-        <Tooltip label={`tooltip for feature ${props.id}`} placement="top">
+        <Tooltip content={`tooltip for feature ${props.id}`} positioning={{ placement: "top" }}>
             <chakra.span>{props.id}</chakra.span>
         </Tooltip>
     );
