@@ -2,13 +2,6 @@
 // SPDX-License-Identifier: Apache-2.0
 import { reactive } from "@conterra/reactivity-core";
 import { BaseFeature, Layer, MapModel, SimpleLayer } from "@open-pioneer/map";
-/*import {
-    FormatOptions,
-    ResultColumn,
-    ResultList,
-    ResultListInput,
-    ResultListSelectionChangeEvent
-} from "@open-pioneer/result-list";*/
 import {
     Selection,
     SelectionCompleteEvent,

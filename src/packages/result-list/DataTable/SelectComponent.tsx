@@ -3,8 +3,8 @@
 import { chakra } from "@chakra-ui/react";
 import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
 import { Checkbox } from "@open-pioneer/chakra-snippets/checkbox";
-import { Radio } from "@open-pioneer/chakra-snippets/radio";
-import { useId, useMemo } from "react";
+import { Radio, RadioGroup } from "@open-pioneer/chakra-snippets/radio";
+import { useId, useMemo, useState } from "react";
 
 export interface SelectComponentProps {
     mode?: "checkbox" | "radio";
@@ -65,10 +65,21 @@ export function SelectComponent({
 
 function SelectRadio(props: Omit<SelectComponentProps, "mode">) {
     const id = useId();
-    const { indeterminate, ...rest } = props;
+    const { indeterminate, onChange, ...rest } = props;
     void indeterminate; // ignored, not supported by radio button
+    const checked = props.checked;
+    const [value, setValue] = useState<string | null>(checked ? id : null);
 
-    /** Name seems to be required for screen reader tabbing support. */
-    // TODO support radio case
-    return <Radio value={id} {...rest} />;
+    /** Value seems to be required for screen reader tabbing support. */
+    return (
+        <RadioGroup
+            value={value}
+            onValueChange={(e) => {
+                setValue(e.value === id ? id : null);
+                onChange?.(e.value === id);
+            }}
+        >
+            <Radio value={id} {...rest} />
+        </RadioGroup>
+    );
 }

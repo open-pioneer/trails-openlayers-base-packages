@@ -3,6 +3,7 @@
     "private": true,
     "dependencies": {
         "@chakra-ui/react": "catalog:",
+        "@open-pioneer/chakra-snippets": "catalog:",
         "@open-pioneer/map": "workspace:^",
         "@open-pioneer/react-utils": "catalog:",
         "@open-pioneer/result-list": "workspace:^",

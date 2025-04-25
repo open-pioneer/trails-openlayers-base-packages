@@ -339,7 +339,6 @@ function useSourceStatus(
 /**
  * Hook to manage map controls and tooltip
  */
-// todo fix selection rectangle style
 function useDragSelection(
     map: MapModel | undefined,
     intl: PackageIntl,
