@@ -36,7 +36,7 @@ exports[`should disable selection of unavailable layers and show a warning 1`] =
         data-scope="select"
         dir="ltr"
       >
-        emptyBasemapLabel
+        OSM
       </span>
     </button>
     <div

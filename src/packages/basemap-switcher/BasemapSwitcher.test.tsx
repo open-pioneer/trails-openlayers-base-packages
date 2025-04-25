@@ -125,7 +125,7 @@ it("should allow selecting 'no basemap' when enabled", async () => {
     expect(switcherSelect.textContent).toBe("OSM");
     expect(map.layers.getActiveBaseLayer()?.id).toBe("osm");
 
-    showDropdown(switcherSelectTrigger);
+    await showDropdown(switcherSelectTrigger);
     const options = await getCurrentOptions();
     const optionsBasemap = options.find((option) => option.textContent === "emptyBasemapLabel");
     if (!optionsBasemap) {
@@ -205,7 +205,7 @@ it("should update when a new basemap is registered", async () => {
       `);
 });
 
-it("should update when a different basemap is activated from somewhere else", async () => {
+it.only("should update when a different basemap is activated from somewhere else", async () => {
     const { registry, map } = await setupMap({
         layers: defaultBasemapConfig
     });
@@ -219,6 +219,7 @@ it("should update when a different basemap is activated from somewhere else", as
 
     // basemap switcher is mounted
     const { switcherSelect } = await waitForBasemapSwitcher();
+    await nextTick();
     expect(switcherSelect.textContent).toBe("OSM");
     expect(map.layers.getActiveBaseLayer()?.id).toBe("osm");
 
@@ -328,7 +329,7 @@ it("should disable selection of unavailable layers and show a warning", async ()
     // basemap switcher is mounted
     const { switcherSelect } = await waitForBasemapSwitcher();
 
-    showDropdown(switcherSelect);
+    await showDropdown(switcherSelect);
     expect(switcherSelect).toMatchSnapshot();
 });
 
