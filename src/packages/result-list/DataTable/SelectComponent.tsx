@@ -1,85 +1,96 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { chakra } from "@chakra-ui/react";
-import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
 import { Checkbox } from "@open-pioneer/chakra-snippets/checkbox";
 import { Radio, RadioGroup } from "@open-pioneer/chakra-snippets/radio";
-import { useId, useMemo, useState } from "react";
+import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
+import { memo, ReactNode, useId } from "react";
 
 export interface SelectComponentProps {
     mode?: "checkbox" | "radio";
     toolTipLabel?: string;
 
     className?: string;
-    "aria-label"?: string;
-    indeterminate?: boolean;
-    checked?: boolean;
+    ariaLabel?: string;
+    checked: boolean | "indeterminate";
     disabled?: boolean;
     onChange?: (newIsChecked: boolean) => void;
 }
 
-export function SelectComponent({
-    mode = "checkbox",
-    toolTipLabel,
-    onChange,
-    ...props
-}: SelectComponentProps) {
-    const renderedComponent = useMemo(() => {
-        switch (mode) {
-            case "checkbox": {
-                const checked = props.indeterminate ? "indeterminate" : !!props.checked;
-                return (
-                    <Checkbox
-                        onCheckedChange={(e) => {
-                            onChange?.(!!e.checked);
-                        }}
-                        {...props}
-                        checked={checked}
-                    />
-                );
-            }
-            case "radio":
-                return <SelectRadio {...props} />;
-            default:
-                throw new Error(`Unsupported mode: ${mode}`);
-        }
-    }, [mode, props, onChange]);
+export function createSelectComponent(props: SelectComponentProps): ReactNode {
+    const { mode = "checkbox", toolTipLabel, ariaLabel = props.toolTipLabel, ...rest } = props;
 
-    if (!toolTipLabel) {
-        return renderedComponent;
+    let control: ReactNode;
+    switch (mode) {
+        case "checkbox": {
+            control = <SelectCheckbox ariaLabel={ariaLabel} {...rest} />;
+            break;
+        }
+        case "radio": {
+            control = <SelectRadio ariaLabel={ariaLabel} {...rest} />;
+            break;
+        }
     }
 
-    return (
-        <Tooltip content={toolTipLabel} positioning={{ placement: "right" }} closeOnClick={false}>
-            <chakra.span
-            /* 
-                wrap into span to fix tooltip around checkbox, see https://github.com/chakra-ui/chakra-ui/issues/6353
-                not using "shouldWrapChildren" because that also introduces a _focusable_ span (we only want the checkbox)
-            */
+    if (toolTipLabel) {
+        /*
+            wrap tooltip content into span to fix tooltip around checkbox, see https://github.com/chakra-ui/chakra-ui/issues/6353
+        */
+        control = (
+            <Tooltip
+                content={toolTipLabel}
+                positioning={{ placement: "right" }}
+                closeOnClick={false}
             >
-                {renderedComponent}
-            </chakra.span>
-        </Tooltip>
-    );
+                <chakra.span>{control}</chakra.span>
+            </Tooltip>
+        );
+    }
+    return control;
 }
 
-function SelectRadio(props: Omit<SelectComponentProps, "mode">) {
-    const id = useId();
-    const { indeterminate, onChange, ...rest } = props;
-    void indeterminate; // ignored, not supported by radio button
-    const checked = props.checked;
-    const [value, setValue] = useState<string | null>(checked ? id : null);
+type SelectComponentInnerProps = Omit<SelectComponentProps, "mode" | "toolTipLabel">;
 
-    /** Value seems to be required for screen reader tabbing support. */
+const SelectCheckbox = memo(function SelectCheckbox({
+    className,
+    ariaLabel,
+    checked,
+    disabled,
+    onChange
+}: SelectComponentInnerProps) {
+    return (
+        <Checkbox
+            className={className}
+            aria-label={ariaLabel}
+            checked={checked}
+            disabled={disabled}
+            onCheckedChange={(e) => {
+                onChange?.(!!e.checked); // "indeterminate" not required -> map to true
+            }}
+        />
+    );
+});
+
+const SelectRadio = memo(function SelectRadio({
+    className,
+    ariaLabel,
+    checked: checkedProp,
+    disabled,
+    onChange
+}: SelectComponentInnerProps) {
+    const id = useId();
+    const checked = !!checkedProp; // indeterminate not supported, default to "true"
+
+    /** Name seems to be required for screen reader tabbing support. */
     return (
         <RadioGroup
-            value={value}
+            name={id}
+            value={checked ? id : null}
             onValueChange={(e) => {
-                setValue(e.value === id ? id : null);
                 onChange?.(e.value === id);
             }}
         >
-            <Radio value={id} {...rest} />
+            <Radio className={className} value={id} disabled={disabled} aria-label={ariaLabel} />
         </RadioGroup>
     );
-}
+});
