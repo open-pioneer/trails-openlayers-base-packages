@@ -4,14 +4,10 @@ import {
     Flex,
     HStack,
     Popover,
-    PopoverArrow,
-    PopoverBody,
-    PopoverContent,
-    PopoverTrigger,
     Portal,
-    TooltipProps,
+    UseTooltipProps,
     usePopoverContext
-} from "@open-pioneer/chakra-integration";
+} from "@chakra-ui/react";
 import { InitialExtent, ZoomIn, ZoomOut } from "@open-pioneer/map-navigation";
 import { ToolButton } from "@open-pioneer/map-ui-components";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
@@ -112,8 +108,8 @@ function InteractionsMenu() {
         };
     };
 
-    const tooltipProps: Partial<TooltipProps> = {
-        placement: "top"
+    const tooltipProps: Partial<UseTooltipProps> = {
+        positioning: { placement: "top" }
     };
     const interactionButtons = (
         <>
@@ -161,25 +157,26 @@ function InteractionsMenu() {
     );
 
     return (
-        <Popover
-            placement="left"
-            isLazy
-            onOpen={() => setVisible(true)}
-            onClose={() => setVisible(false)}
-            isOpen={visible}
+        <Popover.Root
+            positioning={{ placement: "left" }}
+            lazyMount={true}
+            onOpenChange={(e) => setVisible(e.open)}
+            open={visible}
         >
-            <PopoverTrigger>
+            <Popover.Trigger asChild>
                 <PopoverTriggerTool />
-            </PopoverTrigger>
+            </Popover.Trigger>
             <Portal>
-                <PopoverContent width="auto">
-                    <PopoverArrow />
-                    <PopoverBody>
-                        <HStack spacing={2}>{interactionButtons}</HStack>
-                    </PopoverBody>
-                </PopoverContent>
+                <Popover.Positioner>
+                    <Popover.Content width="auto">
+                        <Popover.Arrow />
+                        <Popover.Body padding={2}>
+                            <HStack gap={2}>{interactionButtons}</HStack>
+                        </Popover.Body>
+                    </Popover.Content>
+                </Popover.Positioner>
             </Portal>
-        </Popover>
+        </Popover.Root>
     );
 }
 

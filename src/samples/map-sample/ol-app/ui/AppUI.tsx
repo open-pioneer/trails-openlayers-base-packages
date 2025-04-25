@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box, Container, Divider, Flex } from "@open-pioneer/chakra-integration";
+import { Box, Container, Separator, Flex } from "@chakra-ui/react";
 import { DefaultMapProvider, MapAnchor, MapContainer } from "@open-pioneer/map";
 import { Notifier } from "@open-pioneer/notifier";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
@@ -73,9 +73,8 @@ export function AppUI() {
                                 >
                                     <MapTools />
                                 </MapAnchor>
-                                <ResultListComponent /* always here, but may be invisible / empty */
-                                />
                             </MapContainer>
+                            <ResultListComponent /* always here, but may be invisible / empty */ />
                         </Flex>
                         <Footer />
                     </TitledSection>
@@ -115,7 +114,7 @@ function MainContentComponent(props: { mainContent: readonly MainContentId[] }) 
 }
 
 /**
- * A simple container that separates its children with divider elements.
+ * A simple container that separates its children with separator elements.
  */
 function MainContentContainer(props: { children: ReactNode[] }) {
     const children = props.children;
@@ -126,7 +125,7 @@ function MainContentContainer(props: { children: ReactNode[] }) {
         }
 
         if (separatedChildren.length) {
-            separatedChildren.push(<Divider key={separatedChildren.length} mt={4} mb={4} />);
+            separatedChildren.push(<Separator key={separatedChildren.length} mt={4} mb={4} />);
         }
         separatedChildren.push(c);
     }

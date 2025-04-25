@@ -22,10 +22,13 @@
 }
 
 .map-container-root .map-anchors .map-anchor {
-    pointer-events: auto;
     z-index: 1;
     overflow: hidden;
 
     position: absolute;
     /* positioned absolute in .map-anchors, but actual coordinates are currently set via JS */
+}
+
+.map-container-root .map-anchors > * {
+    pointer-events: auto;
 }
