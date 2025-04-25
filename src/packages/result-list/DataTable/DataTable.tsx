@@ -110,6 +110,7 @@ function TableHeader<Data>(props: {
     return (
         <Table.ColumnHeader
             className="result-list-header"
+            fontWeight="semi-bold"
             tabIndex={0}
             aria-sort={mapAriaSorting(header.column.getIsSorted())}
             onClick={() => header.column.getCanSort() && header.column.toggleSorting()}
