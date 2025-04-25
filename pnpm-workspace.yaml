@@ -1,6 +1,5 @@
 packages:
   - src/**
-  - support/disabled-package
   - "!**/test-data/**"
   - "!**/dist/**"
   - .
@@ -9,7 +8,7 @@ packages:
 # This is a yaml feature and is not interpreted by pnpm directly.
 __versions:
   - &react_version ^19.1.0
-  - &core_packages_version 3.1.0-dev.20250423100306
+  - &core_packages_version ^3.1.0
 
 # https://pnpm.io/catalogs
 catalog:
@@ -29,15 +28,15 @@ catalog:
 
   "@chakra-ui/icons": ^2.2.4
   "@chakra-ui/react": ^2.10.6
-  "@conterra/reactivity-core": ^0.4.3
-  "@emotion/cache": ^11.13.0
-  "@emotion/react": ^11.13.0
+  "@conterra/reactivity-core": ^0.5.0
+  "@emotion/cache": ^11.13.1
+  "@emotion/react": ^11.13.3
   "@emotion/styled": ^11.13.0
-  "@formatjs/intl": ^3.1.4
+  "@formatjs/intl": ^3.1.6
   "@tanstack/react-table": ^8.20.5
   chakra-react-select: ^5.0.4
   classnames: ^2.3.2
-  framer-motion: ^12.4.7
+  framer-motion: ^12.9.1
   html2canvas: ^1.4.1
   jspdf: ^3.0.1
   ol-mapbox-style: ^12.4.1
@@ -52,50 +51,53 @@ catalog:
 
   # Devtools
   "@changesets/cli": 2.27.9
-  "@open-pioneer/build-package-cli": ^3.0.0
-  "@open-pioneer/build-support": ^3.0.0
-  "@open-pioneer/vite-plugin-pioneer": ^4.0.0
-  "@open-pioneer/check-pnpm-duplicates": "^0.2.0"
+  "@open-pioneer/build-package-cli": ^3.0.1
+  "@open-pioneer/build-support": ^3.0.1
+  "@open-pioneer/check-pnpm-duplicates": ^0.2.1
+  "@open-pioneer/vite-plugin-pioneer": ^4.0.1
   "@testing-library/dom": ^10.4.0
   "@testing-library/jest-dom": ^6.6.2
-  "@testing-library/react": ^16.2.0
+  "@testing-library/react": ^16.3.0
   "@testing-library/user-event": ^14.5.2
   "@types/js-yaml": ^4.0.9
   "@types/jsdom": ^21.1.7
   "@types/node": ^20.14.8
   "@types/proj4": "^2.5.2"
-  "@types/react": ^19.0.10
-  "@types/react-dom": ^19.0.4
+  "@types/react-dom": ^19.1.2
+  "@types/react": ^19.1.2
   "@types/uuid": ^10.0.0
-  "@typescript-eslint/eslint-plugin": ^8.11.0
-  "@typescript-eslint/parser": ^8.11.0
-  "@vitejs/plugin-react-swc": ^3.7.1
+  "@typescript-eslint/eslint-plugin": ^8.31.0
+  "@typescript-eslint/parser": ^8.31.0
+  "@vitejs/plugin-react-swc": ^3.9.0
   eslint: ^8.57.1
-  eslint-config-prettier: ^10.0.1
-  eslint-import-resolver-typescript: ^3.6.3
+  eslint-config-prettier: ^10.0.2
+  eslint-import-resolver-typescript: ^4.3.4
   eslint-plugin-header: ^3.1.1
   eslint-plugin-import: ^2.31.0
   eslint-plugin-jsx-a11y: ^6.10.1
-  eslint-plugin-react: ^7.37.1
-  eslint-plugin-react-hooks: ^5.1.0
+  eslint-plugin-react: ^7.37.5
+  eslint-plugin-react-hooks: ^5.2.0
   eslint-plugin-unused-imports: ^4.1.4
   fast-glob: ^3.3.3
   handlebars: ^4.7.8
-  happy-dom: ^17.1.1
+  happy-dom: ^17.4.4
   husky: ^9.1.6
   js-yaml: ^4.1.0
   jsdom: ^26.0.0
-  lint-staged: ^15.2.10
-  prettier: ^3.3.3
+  lint-staged: ^15.5.1
+  prettier: ^3.5.3
   resize-observer-polyfill: ^1.5.1
   rimraf: ^6.0.1
-  sass: ^1.85.0
+  sass: ^1.87.0
   tsx: ^4.19.1
-  typedoc: ^0.27.7
-  typescript: ^5.7.3
-  vite: ^6.2.6
+  typedoc: ^0.28.3
+  typescript: ^5.8.3
+  vite: ^6.3.3
   vite-plugin-eslint: ^1.8.1
-  vitest: ^3.0.6
+  vitest: ^3.1.2
+
+auditConfig:
+  ignoreCves: []
 
 overrides:
   # See patchedDependencies
