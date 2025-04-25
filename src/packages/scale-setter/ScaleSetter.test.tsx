@@ -144,7 +144,7 @@ it("should successfully update the map scale and label when selection changes", 
     );
     const scale = Math.round(pointResolution * INCHES_PER_METRE * DEFAULT_DPI);
     const setterValue = getValueForOption(setterOptions[0]!);
-    expect(scale).toBe(setterValue); 
+    expect(scale).toBe(setterValue);
 });
 
 it("should successfully update the label when map scale changes after creation", async () => {
@@ -152,7 +152,7 @@ it("should successfully update the label when map scale changes after creation",
         layers: defaultBasemapConfig
     });
     const map = await registry.expectMapModel(mapId);
-    const olMap = map.olMap; 
+    const olMap = map.olMap;
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices} locale="de">
@@ -275,9 +275,7 @@ async function getMenuOptions(
     });
 
     const items = await waitFor(async () => {
-        const items = Array.from(
-            menu.querySelectorAll(".scale-setter-option")
-        ) as HTMLDivElement[];
+        const items = Array.from(menu.querySelectorAll(".scale-setter-option")) as HTMLDivElement[];
         if (!items.length) {
             throw new Error("Menu does not have any options");
         }
@@ -295,7 +293,7 @@ function getOptionValues(setterOptions: HTMLDivElement[]) {
     return optionValues;
 }
 
-function getValueForOption(setterOption: HTMLDivElement): number{
+function getValueForOption(setterOption: HTMLDivElement): number {
     const valueStr = setterOption.getAttribute("data-value"); //chakra's data-value attribute stores raw value of scale denominator
     const value = valueStr ? parseInt(valueStr) : Number.NaN;
 

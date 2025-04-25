@@ -86,6 +86,7 @@ function SpatialBookmarkUI(props: SpatialBookmarksProps & { viewModel: SpatialBo
                 rounded="md"
                 status="warning"
                 title={intl.formatMessage({ id: "bookmark.alert.delete" })}
+                role="alert"
             />
             <RemoveControls
                 intl={intl}
@@ -101,6 +102,7 @@ function SpatialBookmarkUI(props: SpatialBookmarksProps & { viewModel: SpatialBo
                 rounded="md"
                 status="info"
                 title={intl.formatMessage({ id: "bookmark.alert.create" })}
+                role="alert"
             />
             <Field.Root invalid={!isValidBookmarkName} required>
                 <Input
@@ -140,6 +142,7 @@ function SpatialBookmarkUI(props: SpatialBookmarksProps & { viewModel: SpatialBo
                     rounded="md"
                     status="info"
                     title={intl.formatMessage({ id: "bookmark.alert.noSaved" })}
+                    role="alert"
                 />
             )}
             <ListControls
