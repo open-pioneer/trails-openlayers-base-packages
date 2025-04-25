@@ -161,7 +161,15 @@ function TableHeader<Data>(props: {
     borderColor: string;
 }) {
     const { header, index, borderColor } = props;
-    const width = `calc(var(--header-${header.id}-size) * 1px)`;
+
+    let width: string | undefined;
+    let minWidth: string | undefined;
+    if (index > 0) {
+        width = `calc(var(--header-${header.id}-size) * 1px)`;
+    } else {
+        minWidth = "50px"; // Selection column
+    }
+
     return (
         <Table.ColumnHeader
             className="result-list-header"
@@ -170,7 +178,7 @@ function TableHeader<Data>(props: {
             aria-sort={mapAriaSorting(header.column.getIsSorted())}
             onClick={() => header.column.getCanSort() && header.column.toggleSorting()}
             cursor={header.column.getCanSort() ? "pointer" : "unset"}
-            style={{ width: index === 0 ? "50px" : width }}
+            style={{ width, minWidth }}
             onKeyDown={(evt) => {
                 if (evt.key === "Enter" && header.column.getCanSort()) {
                     header.column.toggleSorting(undefined);
@@ -180,6 +188,7 @@ function TableHeader<Data>(props: {
             border="none"
             boxShadow={`inset 0 -2px 0 0 ${borderColor}`}
             whiteSpace="nowrap" // prevent wrapping between header title and sort indicator
+            userSelect="none"
             _focusVisible={{ textDecorationLine: "underline" }}
             _focus={{ outline: "none" }}
         >
