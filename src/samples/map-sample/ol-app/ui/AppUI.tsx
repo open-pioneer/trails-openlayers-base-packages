@@ -61,9 +61,7 @@ export function AppUI() {
                                 /* Note: matches the height of the result list component */
                                 viewPadding={showResultList ? { bottom: 400 } : undefined}
                             >
-                                <Container centerContent>
-                                    <SearchComponent />
-                                </Container>
+                                <SearchComponent />
 
                                 <MainContentComponent mainContent={mainContent} />
                                 <MapAnchor

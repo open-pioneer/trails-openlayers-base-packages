@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box, useToken } from "@chakra-ui/react";
+import { Box, chakra, Portal, useToken } from "@chakra-ui/react";
 import { createLogger, isAbortError } from "@open-pioneer/core";
 import { MapModel, MapModelProps, useMapModel } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps, useEvent } from "@open-pioneer/react-utils";
@@ -123,6 +123,8 @@ export const Search: FC<SearchProps> = (props) => {
     const ariaMessages = useAriaMessages(intl);
     const components = useCustomComponents();
 
+    const portalDiv = useRef<HTMLDivElement>(null);
+
     const handleInputChange = useEvent((newValue: string, actionMeta: InputActionMeta) => {
         // Only update the input if the user actually typed something.
         // This keeps the input content if the user focuses another element or if the menu is closed.
@@ -186,8 +188,11 @@ export const Search: FC<SearchProps> = (props) => {
                 components={components}
                 onChange={handleSelectChange}
                 value={selectedOption}
-                menuPosition="fixed"
+                menuPortalTarget={portalDiv.current}
             />
+            <Portal>
+                <chakra.div ref={portalDiv} className="search-component-menu" />
+            </Portal>
         </Box>
     );
 };

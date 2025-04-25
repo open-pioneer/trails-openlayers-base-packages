@@ -15,6 +15,11 @@
     display: none;
 }
 
+.search-component-menu > * {
+    /* Render react-select's menu on top */
+    z-index: var(--chakra-z-index-modal) !important;
+}
+
 /* Exposition only
 
 .search-option {

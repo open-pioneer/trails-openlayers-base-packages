@@ -38,9 +38,13 @@ export function SearchComponent() {
             borderRadius="lg"
             padding={2}
             boxShadow="lg"
-            mt={5}
             className="search-box"
             zIndex={3}
+            // Center in parent
+            position="absolute"
+            top={5}
+            left="50%"
+            transform="translateX(-50%)"
         >
             <Search
                 sources={sources}
