@@ -1,5 +1,0 @@
-{
-    "name": "disabled-package",
-    "private": true,
-    "description": "Support package for pnpm overrides: Exists to remove a package from the dependency graph"
-}

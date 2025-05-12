@@ -1,6 +1,5 @@
 packages:
   - src/**
-  - support/disabled-package
   - "!**/test-data/**"
   - "!**/dist/**"
   - .
@@ -9,7 +8,7 @@ packages:
 # This is a yaml feature and is not interpreted by pnpm directly.
 __versions:
   - &react_version ^19.1.0
-  - &core_packages_version 4.0.0-dev-chakra-v3.20250423124703
+  - &core_packages_version 4.0.0-dev.20250512105016
 
 # https://pnpm.io/catalogs
 catalog:
@@ -27,17 +26,17 @@ catalog:
   "@open-pioneer/test-utils": *core_packages_version
   "@open-pioneer/chakra-snippets": *core_packages_version
 
-  "@chakra-ui/react": ^3.15.1
-  "@chakra-ui/cli": ^3.15.1
-  "@conterra/reactivity-core": ^0.4.3
+  "@chakra-ui/react": ^3.17.0
+  "@chakra-ui/cli": ^3.17.0
+  "@conterra/reactivity-core": ^0.6.0
   "@emotion/cache": ^11.13.0
   "@emotion/react": ^11.13.0
   "@emotion/styled": ^11.13.0
-  "@formatjs/intl": ^3.1.4
+  "@formatjs/intl": ^3.1.6
   "@tanstack/react-table": ^8.21.3
   chakra-react-select: ^6.1.0
   classnames: ^2.3.2
-  framer-motion: ^12.4.7
+  framer-motion: ^12.9.1
   html2canvas: ^1.4.1
   jspdf: ^3.0.1
   ol-mapbox-style: ^12.4.1
@@ -51,13 +50,13 @@ catalog:
 
   # Devtools
   "@changesets/cli": 2.27.9
-  "@open-pioneer/build-package-cli": ^3.0.0
-  "@open-pioneer/build-support": ^3.0.0
-  "@open-pioneer/vite-plugin-pioneer": ^4.0.0
-  "@open-pioneer/check-pnpm-duplicates": "^0.2.0"
+  "@open-pioneer/build-package-cli": ^3.0.1
+  "@open-pioneer/build-support": ^3.0.1
+  "@open-pioneer/check-pnpm-duplicates": ^0.2.1
+  "@open-pioneer/vite-plugin-pioneer": ^4.0.1
   "@testing-library/dom": ^10.4.0
   "@testing-library/jest-dom": ^6.6.2
-  "@testing-library/react": ^16.2.0
+  "@testing-library/react": ^16.3.0
   "@testing-library/user-event": ^14.5.2
   "@types/js-yaml": ^4.0.9
   "@types/jsdom": ^21.1.7
@@ -66,35 +65,39 @@ catalog:
   "@types/react": ^19.1.2
   "@types/react-dom": ^19.1.2
   "@types/uuid": ^10.0.0
-  "@typescript-eslint/eslint-plugin": ^8.11.0
-  "@typescript-eslint/parser": ^8.11.0
-  "@vitejs/plugin-react-swc": ^3.7.1
+  "@typescript-eslint/eslint-plugin": ^8.31.0
+  "@typescript-eslint/parser": ^8.31.0
+  "@vitejs/plugin-react-swc": ^3.9.0
   eslint: ^8.57.1
-  eslint-config-prettier: ^10.0.1
-  eslint-import-resolver-typescript: ^3.6.3
+  eslint-config-prettier: ^10.0.2
+  eslint-import-resolver-typescript: ^4.3.4
   eslint-plugin-header: ^3.1.1
   eslint-plugin-import: ^2.31.0
   eslint-plugin-jsx-a11y: ^6.10.1
-  eslint-plugin-react: ^7.37.1
-  eslint-plugin-react-hooks: ^5.1.0
+  eslint-plugin-react: ^7.37.5
+  eslint-plugin-react-hooks: ^5.2.0
   eslint-plugin-unused-imports: ^4.1.4
   fast-glob: ^3.3.3
   handlebars: ^4.7.8
-  happy-dom: ^17.1.1
+  happy-dom: ^17.4.4
   husky: ^9.1.6
   js-yaml: ^4.1.0
   jsdom: ^26.0.0
-  lint-staged: ^15.2.10
-  prettier: ^3.3.3
+  lint-staged: ^15.5.1
+  prettier: ^3.5.3
   resize-observer-polyfill: ^1.5.1
   rimraf: ^6.0.1
-  sass: ^1.85.0
+  sass: ^1.87.0
   tsx: ^4.19.1
-  typedoc: ^0.27.7
-  typescript: ^5.7.3
-  vite: ^6.2.6
+  typedoc: ^0.28.3
+  typescript: ^5.8.3
+  vite: ^6.3.4
   vite-plugin-eslint: ^1.8.1
-  vitest: ^3.0.6
+  vitest: ^3.1.2
+  zx: ^8.5.4
+
+auditConfig:
+  ignoreCves: []
 
 overrides:
   # See patchedDependencies
@@ -131,10 +134,7 @@ overrides:
   "source-map@<0.6.1": ">=0.6.1"
   "stylis@<4.3.5": ">= 4.3.5"
 
-  # Fixes a dependency issue in chakra, can likely be removed with the next ark-ui release.
-  # See https://github.com/chakra-ui/ark/issues/3439
-  "@ark-ui/react>@zag-js/file-utils": "1.8.2"
-
+ignorePatchFailures: false
 patchedDependencies:
   # Don't bump major if peerDep has a minor release. see https://github.com/changesets/changesets/pull/1132
   # NOTE: Also in overrides to pin the version.
@@ -145,7 +145,7 @@ patchedDependencies:
   
   # - Ensure all portals are mounted under `.pioneer-root` div
   # - Fix rendering of toasts in shadow root: https://github.com/chakra-ui/ark/issues/3455
-  "@ark-ui/react": "patches/@ark-ui__react.patch"
+  "@ark-ui/react@*": "patches/@ark-ui__react.patch"
 
 dangerouslyAllowAllBuilds: false
 onlyBuiltDependencies:

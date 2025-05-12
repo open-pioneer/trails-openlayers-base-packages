@@ -1,5 +1,89 @@
 # @open-pioneer/map
 
+## 0.10.0
+
+### Minor Changes
+
+- 193068a: Deprecate the `mapId` property on React components.
+  Use the `MapModel` directly instead to pass a reference to the map.
+
+    Example:
+
+    ```tsx
+    // Default map for entire component tree
+    <DefaultMapProvider map={mapModel}>
+        <Toc />
+    </DefaultMapProvider>
+
+    // Map for specific component
+    <Toc map={mapModel} />
+    ```
+
+### Patch Changes
+
+- 2bafdad: Top level operational layers can now be inserted at an arbitrary position.
+
+    ```ts
+    const mapModel = ...;
+    const newLayer = new SimpleLayer({
+        title: "New layer",
+        // ...
+    });
+
+    mapModel.layers.addLayer(newLayer, { at: "top" }); // Same as default: on top of all existing operational layers
+    mapModel.layers.addLayer(newLayer, { at: "bottom" }); // Below all other operational layers
+
+    const otherLayer = ...; // Eiter a valid layer id or a layer instance. Must be from the same collection.
+    mapModel.layers.addLayer(newLayer, { at: "above", reference: otherLayer }); // Above the reference layer
+    mapModel.layers.addLayer(newLayer, { at: "below", reference: otherLayer }); // Below the reference layer
+    ```
+
+- cd1435b: Update ol to 10.5.0
+- 032eed7: Bump dependencies.
+- cd1435b: Update to react 19.1.0
+- 7558df4: Add new map anchor positioning options.
+
+    The following positions are now supported:
+
+    ```ts
+    export type MapAnchorPosition =
+        | "manual"
+        | "top-left"
+        | "top-right"
+        | "top-center"
+        | "bottom-left"
+        | "bottom-right"
+        | "bottom-center"
+        | "left-center"
+        | "right-center"
+        | "center";
+    ```
+
+    You can use `manual` positioning to position an anchor using CSS.
+    For example:
+
+    ```tsx
+    <MapAnchor className="manual-position" position="manual">
+        <Box
+            backgroundColor="whiteAlpha.800"
+            borderWidth="1px"
+            borderRadius="lg"
+            padding={2}
+            boxShadow="lg"
+        >
+            Manually positioned anchor
+        </Box>
+    ```
+
+    Combined with css:
+
+    ```css
+    .manual-position {
+        left: 200px;
+        top: 200px;
+    }
+    ```
+
 ## 0.9.0
 
 ### Minor Changes
