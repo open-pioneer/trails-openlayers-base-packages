@@ -95,6 +95,7 @@ catalog:
   vite: ^6.3.4
   vite-plugin-eslint: ^1.8.1
   vitest: ^3.1.2
+  zx: ^8.5.4
 
 auditConfig:
   ignoreCves: []

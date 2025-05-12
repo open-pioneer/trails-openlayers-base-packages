@@ -222,6 +222,9 @@ catalogs:
     vitest:
       specifier: ^3.1.2
       version: 3.1.2
+    zx:
+      specifier: ^8.5.4
+      version: 8.5.4
 
 overrides:
   '@changesets/assemble-release-plan': 6.0.4
@@ -383,6 +386,9 @@ importers:
       vitest:
         specifier: 'catalog:'
         version: 3.1.2(@types/node@20.17.30)(happy-dom@17.4.4)(jsdom@26.1.0)(sass@1.87.0)(tsx@4.19.3)(yaml@2.7.1)
+      zx:
+        specifier: 'catalog:'
+        version: 8.5.4
 
   src/experimental-packages/layout-sidebar:
     dependencies:
@@ -5594,6 +5600,11 @@ packages:
   zstddec@0.1.0:
     resolution: {integrity: sha512-w2NTI8+3l3eeltKAdK8QpiLo/flRAr2p8AGeakfMZOXBxOg9HIu4LVDxBi81sYgVhFhdJjv1OrB5ssI8uFPoLg==}
 
+  zx@8.5.4:
+    resolution: {integrity: sha512-44oKea9Sa8ZnOkTnS6fRJpg3quzgnbB43nLrVfYnqE86J4sxgZMUDLezzKET/FdOAVkF4X+Alm9Bume+W+RW9Q==}
+    engines: {node: '>= 12.17.0'}
+    hasBin: true
+
 snapshots:
 
   '@adobe/css-tools@4.4.2': {}
@@ -9873,3 +9884,5 @@ snapshots:
   zod@3.24.3: {}
 
   zstddec@0.1.0: {}
+
+  zx@8.5.4: {}

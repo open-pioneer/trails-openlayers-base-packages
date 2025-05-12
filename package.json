@@ -69,7 +69,8 @@
         "typescript": "catalog:",
         "vite": "catalog:",
         "vite-plugin-eslint": "catalog:",
-        "vitest": "catalog:"
+        "vitest": "catalog:",
+        "zx": "catalog:"
     },
     "engines": {
         "node": ">= 20",
