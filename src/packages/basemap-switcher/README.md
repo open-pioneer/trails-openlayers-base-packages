@@ -24,9 +24,9 @@ To provide an option to deactivate all basemap layers, add the optional property
 
 The package provides only a select component.
 To be compliant with a11y guidelines (screen reader compatibility), a label must be added to the basemap switcher.
-Therefore, use one of the following attempts:
+Therefore, use one of the following approaches:
 
-- Use the `aria-labelledby` property of the `BasemapSwitcher` to specify that an anywhere defined label (e.g. a heading shown above the control) is used as the basemap switcher's label.
+- Use the `aria-labelledby` property of the `BasemapSwitcher` to specify that another HTML element (e.g. a heading shown above the control) is used as the basemap switcher's label.
 - Use the `aria-label` property of the `BasemapSwitcher` to set a label for the screen reader that is not shown in the UI.
 
 Example:
