@@ -126,6 +126,17 @@ async function waitForSearch() {
     return { searchDiv };
 }
 
+async function waitForMenu() {
+    const menuDiv = await waitFor(() => {
+        const menuDiv = document.body.querySelector(".search-component-menu");
+        if (!menuDiv) {
+            throw new Error("Menu not found");
+        }
+        return menuDiv as HTMLElement;
+    });
+    return { menuDiv };
+}
+
 async function waitForInput() {
     const { searchDiv } = await waitForSearch();
     const searchInput = searchDiv.getElementsByTagName("input")[0];
@@ -137,8 +148,8 @@ async function waitForInput() {
 
 async function waitForSuggestion() {
     const { suggestion } = await waitFor(async () => {
-        const { searchDiv } = await waitForSearch();
-        const suggestion = searchDiv.getElementsByClassName("search-highlighted-match")[0];
+        const { menuDiv } = await waitForMenu();
+        const suggestion = menuDiv.getElementsByClassName("search-highlighted-match")[0];
 
         if (!suggestion) {
             throw new Error("Suggestion not found");

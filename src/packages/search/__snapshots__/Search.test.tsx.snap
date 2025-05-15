@@ -4,11 +4,9 @@ exports[`should successfully create a search component 1`] = `
 <div
   class="search css-0"
   data-testid="search"
-  data-theme="light"
 >
   <div
-    class="search-component css-79elbk"
-    data-theme="light"
+    class="search-component css-1nyjn91"
   >
     <span
       class="css-1f43avz-a11yText-A11yText"
@@ -22,35 +20,43 @@ exports[`should successfully create a search component 1`] = `
       role="log"
     />
     <div
-      class="react-select__control css-i2418r"
-      data-theme="light"
+      class="react-select__control css-4dx2zs"
     >
       <div
-        class="search-value-container react-select__value-container css-j93siq"
-        data-theme="light"
+        class="search-value-container react-select__value-container css-1ch6166"
       >
         <svg
-          class="chakra-icon css-onkibi"
-          data-theme="light"
-          focusable="false"
+          fill="none"
+          height="1.25em"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
           style="position: absolute; left: 8px;"
           viewBox="0 0 24 24"
+          width="1.25em"
+          xmlns="http://www.w3.org/2000/svg"
         >
-          <path
-            d="M23.384,21.619,16.855,15.09a9.284,9.284,0,1,0-1.768,1.768l6.529,6.529a1.266,1.266,0,0,0,1.768,0A1.251,1.251,0,0,0,23.384,21.619ZM2.75,9.5a6.75,6.75,0,1,1,6.75,6.75A6.758,6.758,0,0,1,2.75,9.5Z"
-            fill="currentColor"
+          <circle
+            cx="11"
+            cy="11"
+            r="8"
+          />
+          <line
+            x1="21"
+            x2="16.65"
+            y1="21"
+            y2="16.65"
           />
         </svg>
         <div
-          class="react-select__placeholder css-hji3d9"
-          data-theme="light"
+          class="react-select__placeholder css-xkmqnw"
           id="react-select-2-placeholder"
         >
           searchPlaceholder
         </div>
         <div
-          class="react-select__input-container css-18i9hi2"
-          data-theme="light"
+          class="react-select__input-container css-c8tv7g"
           data-value=""
         >
           <input
@@ -62,8 +68,7 @@ exports[`should successfully create a search component 1`] = `
             autocapitalize="none"
             autocomplete="off"
             autocorrect="off"
-            class="react-select__input css-5vcfda"
-            data-theme="light"
+            class="react-select__input css-1uh16fk"
             id="react-select-2-input"
             role="combobox"
             spellcheck="false"
@@ -74,30 +79,23 @@ exports[`should successfully create a search component 1`] = `
         </div>
       </div>
       <div
-        class="react-select__indicators css-hfbj6y"
-        data-theme="light"
+        class="react-select__indicators css-2x9043"
       >
-        <hr
+        <span
           aria-orientation="vertical"
-          class="chakra-divider react-select__indicator-separator css-1xamfek"
-          data-theme="light"
+          class="chakra-separator react-select__indicator-separator css-x7j7ot"
+          role="separator"
         />
         <div
           aria-hidden="true"
-          class="react-select__indicator react-select__dropdown-indicator css-am4s01"
-          data-theme="light"
+          class="react-select__indicator react-select__dropdown-indicator css-158zxbc"
         >
           <svg
-            aria-hidden="true"
-            class="chakra-icon css-onkibi"
-            data-theme="light"
-            focusable="false"
-            role="presentation"
+            class="css-s3mb0o"
             viewBox="0 0 24 24"
           >
             <path
-              d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
-              fill="currentColor"
+              d="m6 9 6 6 6-6"
             />
           </svg>
         </div>
