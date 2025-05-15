@@ -3,7 +3,7 @@
 import { MapContainer } from "@open-pioneer/map";
 import { createServiceOptions, setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
-import { act, render, screen, waitFor } from "@testing-library/react";
+import { act, getByRole, render, screen, waitFor } from "@testing-library/react";
 import userEvent, { UserEvent } from "@testing-library/user-event";
 import { Coordinate } from "ol/coordinate";
 import BaseEvent from "ol/events/Event";
@@ -76,8 +76,8 @@ it("should successfully create a coordinate search component with projections", 
         </PackageContextProvider>
     );
 
-    const { projSelect } = await waitForCoordinateSearch();
-    showDropdown(projSelect);
+    const { projSelectTrigger } = await waitForCoordinateSearch();
+    await showDropdown(projSelectTrigger);
     const options = getCurrentOptions();
     const values = getCurrentOptionValues(options);
 
@@ -129,8 +129,8 @@ it("should display transformed coordinates in selected option", async () => {
     );
 
     await waitForMapMount("map");
-    const { coordInput, projSelect } = await waitForCoordinateSearch();
-    showDropdown(projSelect);
+    const { coordInput, projSelectTrigger } = await waitForCoordinateSearch();
+    await showDropdown(projSelectTrigger);
 
     const simulateMove = (x: number, y: number) => {
         const fakeMoveEvent = new BaseEvent("pointermove");
@@ -152,7 +152,7 @@ it("should display transformed coordinates in selected option", async () => {
     });
     expect(coordInput.getAttribute("placeholder")).toMatchInlineSnapshot('"7.650 51.940"'); //should display EPSG 4326
 
-    showDropdown(projSelect);
+    await showDropdown(projSelectTrigger);
     options = getCurrentOptions();
     const option3857 = options.find((option) => option.textContent === "Web Mercator");
     if (!option3857) {
@@ -321,8 +321,8 @@ it("should successfully copy to clipboard if copy button is clicked", async () =
 });
 
 async function waitForCoordinateSearch() {
-    const { coordsSearchDiv, coordInput, coordinateInputGroup, projSelect } = await waitFor(
-        async () => {
+    const { coordsSearchDiv, coordInput, coordinateInputGroup, projSelect, projSelectTrigger } =
+        await waitFor(async () => {
             const coordsSearchDiv = await screen.findByTestId("coordinate-search");
 
             const coordinateInputGroup = coordsSearchDiv.querySelector(".coordinate-input-group");
@@ -343,17 +343,24 @@ async function waitForCoordinateSearch() {
             }
 
             const projSelect: HTMLElement | null = coordinateInputGroup.querySelector(
-                ".coordinate-input-select--has-value"
+                ".coordinate-input-select"
             );
             if (!projSelect) {
                 throw new Error("coordinate input projection select not rendered");
             }
 
-            return { coordsSearchDiv, coordInput, coordinateInputGroup, projSelect };
-        }
-    );
+            const projSelectTrigger = getByRole(projSelect, "combobox");
 
-    return { coordsSearchDiv, coordInput, coordinateInputGroup, projSelect };
+            return {
+                coordsSearchDiv,
+                coordInput,
+                coordinateInputGroup,
+                projSelect,
+                projSelectTrigger
+            };
+        });
+
+    return { coordsSearchDiv, coordInput, coordinateInputGroup, projSelect, projSelectTrigger };
 }
 
 // A bit faster than typing letters individually with `keyboard`

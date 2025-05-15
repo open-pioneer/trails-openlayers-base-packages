@@ -4,7 +4,7 @@ import { nextTick } from "@conterra/reactivity-core";
 import { MapContainer } from "@open-pioneer/map";
 import { createServiceOptions, setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
-import { render, screen, waitFor } from "@testing-library/react";
+import { getByRole, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Coordinate } from "ol/coordinate";
 import { Projection } from "ol/proj";
@@ -150,8 +150,9 @@ it("should successfully create a coordinate input component with known projectio
     );
 
     await waitForMapMount("map");
-    const { projSelect } = await waitForCoordinateInput();
-    showDropdown(projSelect);
+    const { projSelectTrigger } = await waitForCoordinateInput();
+    await showDropdown(projSelectTrigger);
+
     const options = getCurrentOptions();
     const values = getCurrentOptionValues(options);
 
@@ -169,8 +170,8 @@ it("should successfully create a coordinate input component with default project
     );
 
     await waitForMapMount("map");
-    const { projSelect } = await waitForCoordinateInput();
-    showDropdown(projSelect);
+    const { projSelectTrigger } = await waitForCoordinateInput();
+    await showDropdown(projSelectTrigger);
     const options = getCurrentOptions();
     const values = getCurrentOptionValues(options);
 
@@ -215,8 +216,8 @@ it("should display transformed coordinates in selected option", async () => {
     );
 
     await waitForMapMount("map");
-    const { coordInput, projSelect } = await waitForCoordinateInput();
-    showDropdown(projSelect);
+    const { coordInput, projSelectTrigger } = await waitForCoordinateInput();
+    await showDropdown(projSelectTrigger);
 
     let options = getCurrentOptions();
     const option4326 = options.find((option) => option.textContent === "WGS 84");
@@ -227,7 +228,7 @@ it("should display transformed coordinates in selected option", async () => {
 
     expect(coordInput.getAttribute("value")).toMatchInlineSnapshot('"7.650 51.940"'); //should display EPSG 4326
 
-    showDropdown(projSelect);
+    await showDropdown(projSelectTrigger);
     options = getCurrentOptions();
     const option3857 = options.find((option) => option.textContent === "Web Mercator");
     if (!option3857) {
@@ -568,8 +569,8 @@ it("should show clear button on coordinate placeholder", async () => {
 });
 
 async function waitForCoordinateInput() {
-    const { coordsInputDiv, coordInput, coordinateInputGroup, projSelect } = await waitFor(
-        async () => {
+    const { coordsInputDiv, coordInput, coordinateInputGroup, projSelect, projSelectTrigger } =
+        await waitFor(async () => {
             const coordsInputDiv = await screen.findByTestId("coordinate-input");
 
             const coordinateInputGroup = coordsInputDiv.querySelector(".coordinate-input-group");
@@ -590,26 +591,41 @@ async function waitForCoordinateInput() {
             }
 
             const projSelect: HTMLElement | null = coordinateInputGroup.querySelector(
-                ".coordinate-input-select--has-value"
+                ".coordinate-input-select"
             );
             if (!projSelect) {
                 throw new Error("coordinate input projection select not rendered");
             }
 
-            return { coordsInputDiv, coordInput, coordinateInputGroup, projSelect };
-        }
-    );
+            const projSelectTrigger = getByRole(projSelect, "combobox");
 
-    return { coordsInputDiv, coordInput, coordinateInputGroup, projSelect };
+            return {
+                coordsInputDiv,
+                coordInput,
+                coordinateInputGroup,
+                projSelect,
+                projSelectTrigger
+            };
+        });
+
+    return { coordsInputDiv, coordInput, coordinateInputGroup, projSelect, projSelectTrigger };
+}
+
+async function waitForProjSelectMenu() {
+    const menuDiv = await waitFor(() => {
+        const menuDiv = document.body.querySelector(".coordinate-input-select-content");
+        if (!menuDiv) {
+            throw new Error("Menu not found");
+        }
+        return menuDiv as HTMLElement;
+    });
+    return { menuDiv };
 }
 
 // Returns undefined if no unique tooltip was found
 function getCurrentTooltipText(): string | undefined {
-    const tooltips = document.getElementsByClassName("coordinate-input-tooltip");
-    if (!tooltips.length || tooltips.length > 1) {
-        return undefined;
-    }
-    return (tooltips[0] as HTMLElement).textContent ?? undefined;
+    const tooltip = screen.queryByRole("tooltip");
+    return tooltip?.textContent ?? undefined;
 }
 
 function createTooltipHelper() {

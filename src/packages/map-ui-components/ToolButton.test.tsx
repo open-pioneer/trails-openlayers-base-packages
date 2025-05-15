@@ -98,7 +98,7 @@ it("shows a tooltip when hovered", async () => {
     const button = screen.getByLabelText("Button Label");
     await user.hover(button);
 
-    const tooltips = screen.getAllByRole("tooltip");
+    const tooltips = await screen.findAllByRole("tooltip");
     expect(tooltips).toHaveLength(1);
 
     const tooltip = tooltips[0]!;
