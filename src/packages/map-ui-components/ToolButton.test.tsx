@@ -61,16 +61,24 @@ it("automatically sets the 'aria-pressed' attribute when active", async () => {
     const { rerender } = render(getUI(false));
 
     // isActive=false -> aria-pressed=false
-    const button = screen.getByLabelText("Button Label");
-    expect(button.getAttribute("aria-pressed")).toBe("false");
+    {
+        const button = screen.getByLabelText("Button Label");
+        expect(button.getAttribute("aria-pressed")).toBe("false");
+    }
 
     // isActive=true -> aria-pressed=true
-    rerender(getUI(true));
-    expect(button.getAttribute("aria-pressed")).toBe("true");
+    {
+        rerender(getUI(true));
+        const button = screen.getByLabelText("Button Label");
+        expect(button.getAttribute("aria-pressed")).toBe("true");
+    }
 
     // isActive=undefined -> aria-pressed not set
-    rerender(getUI(undefined));
-    expect(button.getAttribute("aria-pressed")).toBe(null);
+    {
+        rerender(getUI(undefined));
+        const button = screen.getByLabelText("Button Label");
+        expect(button.getAttribute("aria-pressed")).toBe(null);
+    }
 });
 
 it("shows a tooltip when hovered", async () => {
