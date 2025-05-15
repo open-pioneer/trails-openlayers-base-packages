@@ -86,8 +86,8 @@ it("should successfully click the home button and go to initial extent", async (
     expect(equals(firstExtent, currentExtent())).toBe(false);
 
     // Return to initial extent and wait for the animation to complete
+    await user.click(initialExtentButton);
     await act(async () => {
-        await user.click(initialExtentButton);
         await waitForStableExtent(map.olMap);
     });
 

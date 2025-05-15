@@ -4,7 +4,6 @@ exports[`should successfully create a scale bar component 1`] = `
 <div
   class="scale-bar css-0"
   data-testid="scale-bar"
-  data-theme="light"
 >
   <div
     class="ol-scale-line ol-unselectable"

@@ -1,14 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import {
-    Box,
-    Button,
-    FormControl,
-    FormLabel,
-    HStack,
-    Input,
-    Select
-} from "@open-pioneer/chakra-integration";
+import { Box, Button, Field, HStack, Input } from "@chakra-ui/react";
+import { NativeSelectField, NativeSelectRoot } from "@open-pioneer/chakra-snippets/native-select";
 import { createLogger } from "@open-pioneer/core";
 import { MapModel, MapModelProps, useMapModel } from "@open-pioneer/map";
 import { NotificationService } from "@open-pioneer/notifier";
@@ -91,34 +84,41 @@ export const Printing: FC<PrintingProps> = (props) => {
                     exportMap();
                 }}
             >
-                <FormControl as={HStack} mb={2}>
-                    <FormLabel minWidth="82" mb={1}>
-                        {intl.formatMessage({ id: "title" })}
-                    </FormLabel>
-                    <Input
-                        placeholder={intl.formatMessage({ id: "input.placeholder" })}
-                        value={title}
-                        onChange={(event) => {
-                            setTitle(event.target.value);
-                        }}
-                        autoFocus // eslint-disable-line jsx-a11y/no-autofocus
-                    />
-                </FormControl>
-                <FormControl as={HStack} mb={2}>
-                    <FormLabel minWidth="82" mb={1}>
-                        {intl.formatMessage({ id: "fileFormat" })}
-                    </FormLabel>
-                    <Select
-                        value={selectedFileFormat}
-                        onChange={(e) => changeFileFormat(e.target.value)}
-                        className="printing-select"
-                    >
-                        <option value={"png"}>PNG</option>
-                        <option value={"pdf"}>PDF</option>
-                    </Select>
-                </FormControl>
+                <Field.Root asChild>
+                    <HStack mb={2}>
+                        <Field.Label minWidth={82} mb={1}>
+                            {intl.formatMessage({ id: "title" })}
+                        </Field.Label>
+                        <Input
+                            placeholder={intl.formatMessage({ id: "input.placeholder" })}
+                            value={title}
+                            onChange={(event) => {
+                                setTitle(event.target.value);
+                            }}
+                        />
+                    </HStack>
+                </Field.Root>
+                <Field.Root asChild>
+                    <HStack mb={2}>
+                        <Field.Label minWidth={82} mb={1}>
+                            {intl.formatMessage({ id: "fileFormat" })}
+                        </Field.Label>
+                        <NativeSelectRoot>
+                            <NativeSelectField
+                                className="printing-select"
+                                value={selectedFileFormat}
+                                onChange={(event) => {
+                                    changeFileFormat(event.target.value);
+                                }}
+                            >
+                                <option value={"png"}>PNG</option>
+                                <option value={"pdf"}>PDF</option>
+                            </NativeSelectField>
+                        </NativeSelectRoot>
+                    </HStack>
+                </Field.Root>
                 <Button
-                    isLoading={running}
+                    loading={running}
                     loadingText={intl.formatMessage({ id: "printingMap" })}
                     disabled={running}
                     mt={2}

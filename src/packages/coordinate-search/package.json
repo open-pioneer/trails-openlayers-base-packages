@@ -17,17 +17,17 @@
         "build": "build-pioneer-package"
     },
     "dependencies": {
+        "@chakra-ui/react": "catalog:",
         "@conterra/reactivity-core": "catalog:",
+        "@open-pioneer/chakra-snippets": "catalog:",
         "@open-pioneer/core": "catalog:",
-        "@open-pioneer/chakra-integration": "catalog:",
         "@open-pioneer/map": "workspace:^",
         "@open-pioneer/runtime": "catalog:",
         "@open-pioneer/react-utils": "catalog:",
         "@open-pioneer/reactivity": "catalog:",
-        "chakra-react-select": "catalog:",
-        "@chakra-ui/icons": "catalog:",
         "ol": "catalog:",
-        "react": "catalog:"
+        "react": "catalog:",
+        "react-icons": "catalog:"
     },
     "devDependencies": {
         "@open-pioneer/test-utils": "catalog:",

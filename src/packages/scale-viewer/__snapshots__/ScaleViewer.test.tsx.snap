@@ -4,11 +4,9 @@ exports[`should successfully create a scale viewer component 1`] = `
 <div
   class="scale-viewer css-0"
   data-testid="scale-viewer"
-  data-theme="light"
 >
   <p
-    class="chakra-text css-0"
-    data-theme="light"
+    class="css-0"
   >
     1:
     336,409
@@ -20,11 +18,9 @@ exports[`should successfully create a scale viewer component with additional css
 <div
   class="scale-viewer test test1 test2 css-0"
   data-testid="scale-viewer"
-  data-theme="light"
 >
   <p
-    class="chakra-text css-0"
-    data-theme="light"
+    class="css-0"
   >
     1:
     336,409

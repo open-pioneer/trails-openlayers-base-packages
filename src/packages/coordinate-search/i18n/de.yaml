@@ -11,4 +11,5 @@ messages:
     invalidNumbers: "Ungültige Eingabe: Es müssen zwei gültige Zahlen eingegeben werden."
     extent: "Die eingegebenen Koordinaten passen nicht zum Koordinatensystem. Bitte Koordinatensystem oder Koordinaten ändern."
     projection: "Es gibt einen Fehler mit der Projektion. Bitte eine andere Projektion auswählen."
-  selected: selektiert
+  projections:
+    ariaLabel: Projektion auswählen

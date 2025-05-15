@@ -2,135 +2,79 @@
 
 exports[`should successfully create a toc component 1`] = `
 <div
-  class="toc css-2xph3x"
+  class="toc css-1op6ogi"
   data-testid="toc"
-  data-theme="light"
 >
   <div
     class="toc-basemap-switcher css-0"
-    data-theme="light"
   >
     <h1
-      class="chakra-heading css-1mnao0q"
-      data-theme="light"
+      class="chakra-heading css-k5qncm"
       id="«r0»"
     >
       basemapsLabel
     </h1>
     <div
       class="basemap-switcher css-0"
-      data-theme="light"
     >
       <div
-        class="basemap-switcher-select react-select--has-value css-79elbk"
-        data-theme="light"
+        class="basemap-switcher-select chakra-select__root css-3jlqt6"
+        data-part="root"
+        data-scope="select"
+        dir="ltr"
+        id="select:«r5»"
       >
-        <span
-          class="css-1f43avz-a11yText-A11yText"
-          id="react-select-2-live-region"
-        />
-        <span
-          aria-atomic="false"
-          aria-live="polite"
-          aria-relevant="additions text"
-          class="css-1f43avz-a11yText-A11yText"
-          role="log"
-        />
         <div
-          class="react-select__control react-select__control--menu-is-open css-156sfem"
-          data-theme="light"
+          class="chakra-select__control css-17j1053"
+          data-part="control"
+          data-scope="select"
+          data-state="open"
+          dir="ltr"
+          id="select:«r5»:control"
         >
-          <div
-            class="react-select__value-container react-select__value-container--has-value css-j93siq"
-            data-theme="light"
+          <button
+            aria-controls="select:«r5»:content"
+            aria-expanded="true"
+            aria-haspopup="listbox"
+            aria-labelledby="«r0»"
+            class="basemap-switcher-select-trigger chakra-select__trigger css-1hl2915"
+            data-part="trigger"
+            data-placement="bottom-start"
+            data-scope="select"
+            data-state="open"
+            dir="ltr"
+            id="select:«r5»:trigger"
+            role="combobox"
+            type="button"
           >
-            <div
-              class="basemap-switcher-value react-select__single-value css-1xa1gs2"
-              data-theme="light"
+            <span
+              class="chakra-select__valueText css-176t9sc"
+              data-part="value-text"
+              data-scope="select"
+              dir="ltr"
             >
-              <div
-                class="css-u4p24i"
-                data-theme="light"
-              >
-                Base layer
-              </div>
-            </div>
-            <input
-              aria-activedescendant="react-select-2-option-0"
-              aria-autocomplete="list"
-              aria-controls="react-select-2-listbox"
-              aria-expanded="true"
-              aria-haspopup="true"
-              aria-labelledby="«r0»"
-              aria-readonly="true"
-              class="css-1s80ejz-dummyInput-DummyInput"
-              id="react-select-2-input"
-              inputmode="none"
-              role="combobox"
-              tabindex="0"
-              value=""
-            />
-          </div>
+              Base layer
+            </span>
+          </button>
           <div
-            class="react-select__indicators css-hfbj6y"
-            data-theme="light"
+            class="chakra-select__indicatorGroup css-1xvjckd"
           >
-            <hr
-              aria-orientation="vertical"
-              class="chakra-divider react-select__indicator-separator css-hxuk4g"
-              data-theme="light"
-            />
             <div
               aria-hidden="true"
-              class="react-select__indicator react-select__dropdown-indicator css-1hbdnuy"
-              data-theme="light"
+              class="chakra-select__indicator css-1atg1ut"
+              data-part="indicator"
+              data-scope="select"
+              data-state="open"
+              dir="ltr"
             >
               <svg
-                aria-hidden="true"
-                class="chakra-icon css-onkibi"
-                data-theme="light"
-                focusable="false"
-                role="presentation"
+                class="css-s3mb0o"
                 viewBox="0 0 24 24"
               >
                 <path
-                  d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
-                  fill="currentColor"
+                  d="m6 9 6 6 6-6"
                 />
               </svg>
-            </div>
-          </div>
-        </div>
-        <div
-          class="react-select__menu-portal css-1vbk7iu"
-        >
-          <div
-            class="react-select__menu css-ky7590"
-            data-theme="light"
-          >
-            <div
-              aria-multiselectable="false"
-              class="react-select__menu-list css-mkffje"
-              data-theme="light"
-              id="react-select-2-listbox"
-              role="listbox"
-            >
-              <div
-                aria-selected="true"
-                class="basemap-switcher-option react-select__option react-select__option--is-focused react-select__option--is-selected css-2rk73n"
-                data-focus="true"
-                data-theme="light"
-                id="react-select-2-option-0"
-                role="option"
-                tabindex="-1"
-              >
-                <div
-                  class="css-u4p24i"
-                  data-theme="light"
-                >
-                  Base layer
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -139,153 +83,146 @@ exports[`should successfully create a toc component 1`] = `
   </div>
   <div
     class="toc-operational-layers css-0"
-    data-theme="light"
   >
     <h1
-      class="chakra-heading css-1mnao0q"
-      data-theme="light"
+      class="chakra-heading css-k5qncm"
     >
       <div
         class="css-k008qs"
-        data-theme="light"
       >
         <p
-          class="chakra-text css-9515vv"
-          data-theme="light"
+          class="css-a5lpi5"
         >
           operationalLayerLabel
         </p>
         <div
-          class="css-17xejub"
-          data-theme="light"
+          class="css-xsawf1"
         />
       </div>
     </h1>
     <div
       class="css-0"
-      data-theme="light"
     >
       <ul
         aria-label="operationalLayerLabel"
-        class="toc-layer-list css-155za0w"
-        data-theme="light"
+        class="toc-layer-list chakra-list__root css-1qja9vd"
         role="group"
       >
         <li
           class="toc-layer-item layer-layer-2 css-0"
-          data-theme="light"
         >
           <div
-            class="toc-layer-item-content css-bk4v0k"
-            data-theme="light"
+            class="toc-layer-item-content css-1rikyh3"
           >
             <label
-              class="chakra-checkbox css-1577qb8"
-              data-checked=""
-              data-theme="light"
+              aria-label="Layer 2"
+              class="chakra-checkbox__root css-uwx0lo"
+              data-part="root"
+              data-scope="checkbox"
+              data-state="checked"
+              dir="ltr"
+              for="checkbox:«r2»:input"
+              id="checkbox:«r2»"
             >
               <input
-                aria-checked="true"
-                aria-disabled="false"
-                aria-label="Layer 2"
+                aria-labelledby="checkbox:«r2»:label"
                 checked=""
-                class="chakra-checkbox__input"
-                style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
+                id="checkbox:«r2»:input"
+                style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px; white-space: nowrap; word-wrap: normal;"
                 type="checkbox"
+                value="on"
               />
-              <span
+              <div
                 aria-hidden="true"
-                class="chakra-checkbox__control css-1dnp747"
-                data-checked=""
-                data-theme="light"
+                class="chakra-checkbox__control css-oq83md"
+                data-part="control"
+                data-scope="checkbox"
+                data-state="checked"
+                dir="ltr"
+                id="checkbox:«r2»:control"
               >
-                <div
-                  class="css-0"
-                  data-theme="light"
-                  style="display: flex; align-items: center; justify-content: center; height: 100%;"
+                <svg
+                  class="css-wuqtn7"
+                  data-state="checked"
+                  viewBox="0 0 24 24"
                 >
-                  <svg
-                    class="css-19wnopl"
-                    data-theme="light"
-                    style="fill: none; stroke-width: 2; stroke: currentColor; stroke-dasharray: 16;"
-                    viewBox="0 0 12 10"
-                  >
-                    <polyline
-                      points="1.5 6 4.5 9 10.5 1"
-                    />
-                  </svg>
-                </div>
-              </span>
+                  <polyline
+                    points="20 6 9 17 4 12"
+                  />
+                </svg>
+              </div>
               <span
-                class="chakra-checkbox__label css-6x44c9"
-                data-checked=""
-                data-theme="light"
+                class="chakra-checkbox__label css-1td7ckk"
+                data-part="label"
+                data-scope="checkbox"
+                data-state="checked"
+                dir="ltr"
+                id="checkbox:«r2»:label"
               >
                 Layer 2
               </span>
             </label>
             <div
-              class="css-17xejub"
-              data-theme="light"
+              class="css-xsawf1"
             />
           </div>
         </li>
         <li
           class="toc-layer-item layer-layer-1 css-0"
-          data-theme="light"
         >
           <div
-            class="toc-layer-item-content css-bk4v0k"
-            data-theme="light"
+            class="toc-layer-item-content css-1rikyh3"
           >
             <label
-              class="chakra-checkbox css-1577qb8"
-              data-checked=""
-              data-theme="light"
+              aria-label="Layer 1"
+              class="chakra-checkbox__root css-uwx0lo"
+              data-part="root"
+              data-scope="checkbox"
+              data-state="checked"
+              dir="ltr"
+              for="checkbox:«r4»:input"
+              id="checkbox:«r4»"
             >
               <input
-                aria-checked="true"
-                aria-disabled="false"
-                aria-label="Layer 1"
+                aria-labelledby="checkbox:«r4»:label"
                 checked=""
-                class="chakra-checkbox__input"
-                style="border: 0px; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0px; overflow: hidden; white-space: nowrap; position: absolute;"
+                id="checkbox:«r4»:input"
+                style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px; white-space: nowrap; word-wrap: normal;"
                 type="checkbox"
+                value="on"
               />
-              <span
+              <div
                 aria-hidden="true"
-                class="chakra-checkbox__control css-1dnp747"
-                data-checked=""
-                data-theme="light"
+                class="chakra-checkbox__control css-oq83md"
+                data-part="control"
+                data-scope="checkbox"
+                data-state="checked"
+                dir="ltr"
+                id="checkbox:«r4»:control"
               >
-                <div
-                  class="css-0"
-                  data-theme="light"
-                  style="display: flex; align-items: center; justify-content: center; height: 100%;"
+                <svg
+                  class="css-wuqtn7"
+                  data-state="checked"
+                  viewBox="0 0 24 24"
                 >
-                  <svg
-                    class="css-19wnopl"
-                    data-theme="light"
-                    style="fill: none; stroke-width: 2; stroke: currentColor; stroke-dasharray: 16;"
-                    viewBox="0 0 12 10"
-                  >
-                    <polyline
-                      points="1.5 6 4.5 9 10.5 1"
-                    />
-                  </svg>
-                </div>
-              </span>
+                  <polyline
+                    points="20 6 9 17 4 12"
+                  />
+                </svg>
+              </div>
               <span
-                class="chakra-checkbox__label css-6x44c9"
-                data-checked=""
-                data-theme="light"
+                class="chakra-checkbox__label css-1td7ckk"
+                data-part="label"
+                data-scope="checkbox"
+                data-state="checked"
+                dir="ltr"
+                id="checkbox:«r4»:label"
               >
                 Layer 1
               </span>
             </label>
             <div
-              class="css-17xejub"
-              data-theme="light"
+              class="css-xsawf1"
             />
           </div>
         </li>

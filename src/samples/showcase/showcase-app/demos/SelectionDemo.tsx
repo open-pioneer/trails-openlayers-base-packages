@@ -3,13 +3,6 @@
 import { reactive } from "@conterra/reactivity-core";
 import { BaseFeature, Layer, MapModel, SimpleLayer } from "@open-pioneer/map";
 import {
-    FormatOptions,
-    ResultColumn,
-    ResultList,
-    ResultListInput,
-    ResultListSelectionChangeEvent
-} from "@open-pioneer/result-list";
-import {
     Selection,
     SelectionCompleteEvent,
     VectorLayerSelectionSource,
@@ -20,6 +13,13 @@ import VectorLayer from "ol/layer/Vector";
 import { ReactNode } from "react";
 import { Demo, DemoModel, SharedDemoOptions } from "./Demo";
 import VectorSource from "ol/source/Vector";
+import {
+    FormatOptions,
+    ResultColumn,
+    ResultList,
+    ResultListInput,
+    ResultListSelectionChangeEvent
+} from "@open-pioneer/result-list";
 
 interface ResultListState {
     /** Whether the result list is currently shown. */

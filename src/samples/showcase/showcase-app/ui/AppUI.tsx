@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box, Flex, Text, VStack } from "@open-pioneer/chakra-integration";
+import { Box, Flex, Text, VStack } from "@chakra-ui/react";
 import { DefaultMapProvider, MapAnchor, MapContainer } from "@open-pioneer/map";
 import { Notifier } from "@open-pioneer/notifier";
 import { TitledSection } from "@open-pioneer/react-utils";
@@ -56,7 +56,7 @@ function AppContent(props: { state: AppStateReady }) {
 
     return (
         <>
-            <Notifier position="top-right" />
+            <Notifier />
             <Flex height="100%" direction="column">
                 <TitledSection title={<Header appModel={appModel} />}>
                     <Flex flex="1" direction="column" position="relative">
@@ -74,6 +74,7 @@ function AppContent(props: { state: AppStateReady }) {
                                 >
                                     <Box bgColor="white" borderRadius={10} p={2} maxW="500px">
                                         <TitledSection
+                                            key={currentDemo.id}
                                             title={currentDemo.title}
                                             sectionHeadingProps={{ size: "lg" }}
                                         >
@@ -85,22 +86,22 @@ function AppContent(props: { state: AppStateReady }) {
                                 <MapAnchor position="bottom-right" horizontalGap={6}>
                                     <VStack p={1}>{currentDemoModel.tools}</VStack>
                                 </MapAnchor>
-                                {currentListContainer && (
-                                    <Box
-                                        className="list-container"
-                                        position="absolute"
-                                        bottom="0"
-                                        backgroundColor="white"
-                                        width="100%"
-                                        height="400px"
-                                        zIndex={1 /* above map */}
-                                        borderTop="2px solid"
-                                        borderColor="trails.100"
-                                    >
-                                        {currentListContainer}
-                                    </Box>
-                                )}
                             </MapContainer>
+                            {currentListContainer && (
+                                <Box
+                                    className="list-container"
+                                    position="absolute"
+                                    bottom="0"
+                                    backgroundColor="white"
+                                    width="100%"
+                                    height="400px"
+                                    zIndex={1 /* above map */}
+                                    borderTop="2px solid"
+                                    borderColor="trails.100"
+                                >
+                                    {currentListContainer}
+                                </Box>
+                            )}
                         </DefaultMapProvider>
                     </Flex>
                 </TitledSection>

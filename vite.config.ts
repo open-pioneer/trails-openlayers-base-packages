@@ -22,11 +22,10 @@ const sampleSites = [
     "samples/map-anchors",
     "samples/test-toc",
     "samples/test-highlight-and-zoom",
-    "samples/test-menu-fix",
     "samples/test-result-list",
     "samples/test-printing-api",
 
-    "samples/experimental-sidebar"
+    "samples/experimental-sidebar",
 ];
 
 // https://vitejs.dev/config/

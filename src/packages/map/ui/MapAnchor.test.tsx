@@ -1,12 +1,12 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { MapContainer } from "./MapContainer";
+import { Box } from "@chakra-ui/react";
 import { createServiceOptions, setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render, waitFor } from "@testing-library/react";
 import { expect, it } from "vitest";
 import { MapAnchor } from "./MapAnchor";
-import { Box } from "@open-pioneer/chakra-integration";
+import { MapContainer } from "./MapContainer";
 
 it("should successfully create a map anchor component", async () => {
     const { map, registry } = await setupMap();
@@ -32,7 +32,6 @@ it("should successfully create a map anchor component", async () => {
     expect(mapAnchor).toMatchInlineSnapshot(`
       <div
         class="map-anchor css-ufi58a"
-        data-theme="light"
       />
     `);
 });

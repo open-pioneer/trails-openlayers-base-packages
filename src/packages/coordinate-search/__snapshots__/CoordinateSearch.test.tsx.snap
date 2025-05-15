@@ -2,109 +2,107 @@
 
 exports[`should successfully create a coordinate search component 1`] = `
 <div
-  class="coordinate-input coordinate-search css-0"
+  class="coordinate-input coordinate-search css-1xhj18k"
   data-testid="coordinate-search"
-  data-theme="light"
 >
   <div
-    class="css-1xhj18k"
-    data-theme="light"
+    class="chakra-group chakra-tooltip__trigger coordinate-input-group css-hblrc9"
+    data-part="trigger"
+    data-scope="tooltip"
+    data-state="closed"
+    dir="ltr"
+    id="tooltip:«r0»:trigger"
   >
     <div
-      class="chakra-input__group coordinate-input-group css-1y0e7gb"
-      data-group="true"
-      data-theme="light"
+      class="chakra-group coordinate-input-field-group css-1n9f5vu"
     >
       <div
-        class="chakra-input__group coordinate-input-field-group css-1y0e7gb"
-        data-group="true"
-        data-theme="light"
+        class="chakra-field__root css-lesxm"
+        data-part="root"
+        data-scope="field"
+        id="field::«r1»"
+        role="group"
       >
         <input
           aria-label="coordinateInput.ariaLabel"
-          class="chakra-input css-1r29ykt"
-          data-theme="light"
+          autocomplete="off"
+          class="chakra-input css-9n7jjk"
+          data-part="input"
+          data-scope="field"
+          id="«r1»"
           placeholder=""
           type="text"
           value=""
         />
       </div>
+    </div>
+    <div
+      class="coordinate-input-select-root chakra-select__root css-11vsvdz"
+      data-part="root"
+      data-scope="select"
+      dir="ltr"
+      id="select:«r2»"
+    >
       <div
-        class="chakra-input__right-addon css-vqkjic"
-        data-theme="light"
+        class="coordinate-input-select chakra-select__control css-17j1053"
+        data-part="control"
+        data-scope="select"
+        data-state="closed"
+        dir="ltr"
+        id="select:«r2»:control"
       >
-        <div
-          class="coordinate-input-select--has-value css-79elbk"
-          data-theme="light"
+        <label
+          class="chakra-select__label css-164gb0n"
+          data-part="label"
+          data-scope="select"
+          dir="ltr"
+          for="select:«r2»:select"
+          id="select:«r2»:label"
+        >
+          projections.ariaLabel
+        </label>
+        <button
+          aria-controls="select:«r2»:content"
+          aria-expanded="false"
+          aria-haspopup="listbox"
+          aria-labelledby="select:«r2»:label"
+          class="coordinate-input-select-trigger chakra-select__trigger css-6ipme"
+          data-part="trigger"
+          data-scope="select"
+          data-state="closed"
+          dir="ltr"
+          id="select:«r2»:trigger"
+          role="combobox"
+          type="button"
         >
           <span
-            class="css-1f43avz-a11yText-A11yText"
-            id="react-select-2-live-region"
-          />
-          <span
-            aria-atomic="false"
-            aria-live="polite"
-            aria-relevant="additions text"
-            class="css-1f43avz-a11yText-A11yText"
-            role="log"
-          />
-          <div
-            class="coordinate-input-select__control css-u1k0x6"
-            data-theme="light"
+            class="coordinate-input-select-value chakra-select__valueText css-176t9sc"
+            data-part="value-text"
+            data-scope="select"
+            dir="ltr"
           >
-            <div
-              class="coordinate-input-select__value-container coordinate-input-select__value-container--has-value css-odo7kh"
-              data-theme="light"
+            WGS 84
+          </span>
+        </button>
+        <div
+          class="chakra-select__indicatorGroup css-1xvjckd"
+        >
+          <div
+            aria-hidden="true"
+            class="chakra-select__indicator css-k35okj"
+            data-part="indicator"
+            data-scope="select"
+            data-state="closed"
+            dir="ltr"
+          >
+            <svg
+              class="css-s3mb0o"
+              viewBox="0 0 24 24"
             >
-              <div
-                class="coordinate-input-select__single-value css-1xa1gs2"
-                data-theme="light"
-              >
-                WGS 84
-              </div>
-              <input
-                aria-autocomplete="list"
-                aria-expanded="false"
-                aria-haspopup="true"
-                aria-label="coordinateInput.ariaLabel"
-                aria-readonly="true"
-                class="css-1s80ejz-dummyInput-DummyInput"
-                id="react-select-2-input"
-                inputmode="none"
-                role="combobox"
-                tabindex="0"
-                value=""
+              <path
+                d="m6 9 6 6 6-6"
               />
-            </div>
-            <div
-              class="coordinate-input-select__indicators css-hfbj6y"
-              data-theme="light"
-            >
-              <hr
-                aria-orientation="vertical"
-                class="chakra-divider coordinate-input-select__indicator-separator css-ejwint"
-                data-theme="light"
-              />
-              <div
-                aria-hidden="true"
-                class="coordinate-input-select__indicator coordinate-input-select__dropdown-indicator css-4v68kg"
-                data-theme="light"
-              >
-                <svg
-                  aria-hidden="true"
-                  class="chakra-icon css-onkibi"
-                  data-theme="light"
-                  focusable="false"
-                  role="presentation"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
-                    fill="currentColor"
-                  />
-                </svg>
-              </div>
-            </div>
+            </svg>
           </div>
         </div>
       </div>

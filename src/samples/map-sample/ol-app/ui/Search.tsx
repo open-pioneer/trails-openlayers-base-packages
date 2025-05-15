@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box } from "@open-pioneer/chakra-integration";
+import { Box } from "@chakra-ui/react";
 import { useMapModel } from "@open-pioneer/map";
 import { Search, SearchSelectEvent } from "@open-pioneer/search";
 import { useService } from "open-pioneer:react-hooks";
@@ -38,8 +38,13 @@ export function SearchComponent() {
             borderRadius="lg"
             padding={2}
             boxShadow="lg"
-            mt={5}
             className="search-box"
+            zIndex={3}
+            // Center in parent
+            position="absolute"
+            top={5}
+            left="50%"
+            transform="translateX(-50%)"
         >
             <Search
                 sources={sources}

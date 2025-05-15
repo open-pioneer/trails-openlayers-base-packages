@@ -17,11 +17,12 @@
         "build": "build-pioneer-package"
     },
     "dependencies": {
-        "@open-pioneer/chakra-integration": "catalog:",
+        "@chakra-ui/react": "catalog:",
         "@open-pioneer/core": "catalog:",
         "@open-pioneer/map": "workspace:^",
         "@open-pioneer/react-utils": "catalog:",
         "@open-pioneer/runtime": "catalog:",
+        "@open-pioneer/chakra-snippets": "catalog:",
         "classnames": "catalog:",
         "ol": "catalog:",
         "react": "catalog:"

@@ -1,11 +1,11 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { chakra } from "@open-pioneer/chakra-integration";
+import { chakra } from "@chakra-ui/react";
 import { BaseFeature } from "@open-pioneer/map";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { createColumnHelper, Table as TanstackTable } from "@tanstack/react-table";
 import { FormatOptions, ResultColumn, SelectionMode } from "../ResultList";
-import { SelectComponent } from "./SelectComponent";
+import { createSelectComponent } from "./SelectComponent";
 
 export const SELECT_COLUMN_SIZE = 70;
 
@@ -123,6 +123,7 @@ function createSelectionColumn(
         enableSorting: false,
         header: ({ table }) => {
             if (selectionMode !== "multi") return;
+
             return (
                 <chakra.div
                     display="inline-block"
@@ -131,13 +132,18 @@ function createSelectionColumn(
                     }}
                     className="result-list-select-all-container"
                 >
-                    <SelectComponent
-                        className="result-list-select-all-checkbox"
-                        isChecked={table.getIsAllRowsSelected()}
-                        isIndeterminate={table.getIsSomeRowsSelected()}
-                        onChange={table.getToggleAllRowsSelectedHandler()}
-                        toolTipLabel={getCheckboxToolTip(table, intl)}
-                    />
+                    {createSelectComponent({
+                        className: "result-list-select-all-checkbox",
+                        toolTipLabel: getCheckboxToolTip(table, intl),
+                        checked: table.getIsAllRowsSelected()
+                            ? true
+                            : table.getIsSomeRowsSelected()
+                              ? "indeterminate"
+                              : false,
+                        onChange(newIsChecked) {
+                            table.toggleAllRowsSelected(newIsChecked);
+                        }
+                    })}
                 </chakra.div>
             );
         },
@@ -154,17 +160,18 @@ function createSelectionColumn(
                     }}
                     className="result-list-select-row-container"
                 >
-                    <SelectComponent
-                        mode={selectionStyle}
-                        className={className}
-                        isChecked={row.getIsSelected()}
-                        isDisabled={!row.getCanSelect()}
-                        isIndeterminate={row.getIsSomeSelected()}
-                        onChange={row.getToggleSelectedHandler()}
-                        aria-label={intl.formatMessage({
+                    {createSelectComponent({
+                        mode: selectionStyle,
+                        className,
+                        checked: row.getIsSomeSelected() ? "indeterminate" : row.getIsSelected(),
+                        disabled: !row.getCanSelect(),
+                        onChange(newIsChecked) {
+                            row.toggleSelected(newIsChecked);
+                        },
+                        ariaLabel: intl.formatMessage({
                             id: "ariaLabel.selectSingle"
-                        })}
-                    />
+                        })
+                    })}
                 </chakra.div>
             );
         }

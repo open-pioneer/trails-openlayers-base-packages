@@ -18,7 +18,7 @@
     },
     "dependencies": {
         "@conterra/reactivity-core": "catalog:",
-        "@open-pioneer/chakra-integration": "catalog:",
+        "@chakra-ui/react": "catalog:",
         "@open-pioneer/map": "workspace:^",
         "@open-pioneer/map-ui-components": "workspace:^",
         "@open-pioneer/react-utils": "catalog:",

@@ -3,73 +3,67 @@
 exports[`should successfully create an view history navigation component 1`] = `
 <button
   aria-label="view-forward.title"
-  class="chakra-button tool-button view view-forward tool-button--disabled css-22xpxh"
+  class="chakra-button chakra-tooltip__trigger tool-button view view-forward tool-button--disabled css-1qurmz4"
+  data-part="trigger"
+  data-scope="tooltip"
+  data-state="closed"
   data-testid="navi-history-for"
-  data-theme="light"
+  dir="ltr"
   disabled=""
+  id="tooltip:«r1»:trigger"
   type="button"
 >
-  <span
-    class="chakra-button__icon css-1dwr89y"
-    data-theme="light"
+  <svg
+    fill="none"
+    height="1em"
+    stroke="currentColor"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    stroke-width="2"
+    viewBox="0 0 24 24"
+    width="1em"
+    xmlns="http://www.w3.org/2000/svg"
   >
-    <svg
-      aria-hidden="true"
-      fill="none"
-      focusable="false"
-      height="1em"
-      stroke="currentColor"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      stroke-width="2"
-      viewBox="0 0 24 24"
-      width="1em"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <polyline
-        points="15 14 20 9 15 4"
-      />
-      <path
-        d="M4 20v-7a4 4 0 0 1 4-4h12"
-      />
-    </svg>
-  </span>
+    <polyline
+      points="15 14 20 9 15 4"
+    />
+    <path
+      d="M4 20v-7a4 4 0 0 1 4-4h12"
+    />
+  </svg>
 </button>
 `;
 
 exports[`should successfully create an view history navigation component 2`] = `
 <button
   aria-label="view-backward.title"
-  class="chakra-button tool-button view view-backward tool-button--disabled css-22xpxh"
+  class="chakra-button chakra-tooltip__trigger tool-button view view-backward tool-button--disabled css-1qurmz4"
+  data-part="trigger"
+  data-scope="tooltip"
+  data-state="closed"
   data-testid="navi-history-back"
-  data-theme="light"
+  dir="ltr"
   disabled=""
+  id="tooltip:«r0»:trigger"
   type="button"
 >
-  <span
-    class="chakra-button__icon css-1dwr89y"
-    data-theme="light"
+  <svg
+    fill="none"
+    height="1em"
+    stroke="currentColor"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    stroke-width="2"
+    viewBox="0 0 24 24"
+    width="1em"
+    xmlns="http://www.w3.org/2000/svg"
   >
-    <svg
-      aria-hidden="true"
-      fill="none"
-      focusable="false"
-      height="1em"
-      stroke="currentColor"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      stroke-width="2"
-      viewBox="0 0 24 24"
-      width="1em"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <polyline
-        points="9 14 4 9 9 4"
-      />
-      <path
-        d="M20 20v-7a4 4 0 0 0-4-4H4"
-      />
-    </svg>
-  </span>
+    <polyline
+      points="9 14 4 9 9 4"
+    />
+    <path
+      d="M20 20v-7a4 4 0 0 0-4-4H4"
+    />
+  </svg>
 </button>
 `;

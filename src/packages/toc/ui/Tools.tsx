@@ -1,14 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import {
-    Box,
-    Button,
-    Menu,
-    MenuButton,
-    MenuItem,
-    MenuList,
-    Portal
-} from "@open-pioneer/chakra-integration";
+import { Box, IconButton, Menu, Portal } from "@chakra-ui/react";
 import { AnyLayer, MapModel } from "@open-pioneer/map";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, memo } from "react";
@@ -40,44 +32,52 @@ export const Tools: FC<ToolsProps> = memo(function Tools(props: ToolsProps) {
     return (
         hasContent && (
             <Box className="toc-tools">
-                <Menu placement="bottom-start">
-                    <MenuButton
-                        as={Button}
-                        className="toc-tools-button"
-                        aria-label={intl.formatMessage({ id: "toolsLabel" })}
-                        borderRadius="full"
-                        iconSpacing={0}
-                        padding={3}
-                        variant="ghost"
-                        leftIcon={<FiMoreVertical />}
-                    />
+                <Menu.Root lazyMount={true} positioning={{ placement: "bottom-start" }}>
+                    <Menu.Trigger asChild>
+                        <IconButton
+                            className="toc-tools-button"
+                            aria-label={intl.formatMessage({ id: "toolsLabel" })}
+                            borderRadius="full"
+                            variant="ghost"
+                            padding={0}
+                            size="sm"
+                        >
+                            <FiMoreVertical spacing={0} />
+                        </IconButton>
+                    </Menu.Trigger>
                     <Portal>
-                        <MenuList className="tools-menu">
-                            {showHideAllLayers && (
-                                <MenuItem
-                                    aria-label={intl.formatMessage({ id: "tools.hideAllLayers" })}
-                                    onClick={() => {
-                                        hideAllLayers(map);
-                                    }}
-                                >
-                                    {intl.formatMessage({ id: "tools.hideAllLayers" })}
-                                </MenuItem>
-                            )}
-                            {showCollapseAllGroups && (
-                                <MenuItem
-                                    aria-label={intl.formatMessage({
-                                        id: "tools.collapseAllGroups"
-                                    })}
-                                    onClick={() => {
-                                        collapseAllGroups(tocModel);
-                                    }}
-                                >
-                                    {intl.formatMessage({ id: "tools.collapseAllGroups" })}
-                                </MenuItem>
-                            )}
-                        </MenuList>
+                        <Menu.Positioner>
+                            <Menu.Content className="toc-tools-menu">
+                                {showHideAllLayers && (
+                                    <Menu.Item
+                                        aria-label={intl.formatMessage({
+                                            id: "tools.hideAllLayers"
+                                        })}
+                                        onClick={() => {
+                                            hideAllLayers(map);
+                                        }}
+                                        value="hideAllLayers"
+                                    >
+                                        {intl.formatMessage({ id: "tools.hideAllLayers" })}
+                                    </Menu.Item>
+                                )}
+                                {showCollapseAllGroups && (
+                                    <Menu.Item
+                                        aria-label={intl.formatMessage({
+                                            id: "tools.collapseAllGroups"
+                                        })}
+                                        onClick={() => {
+                                            collapseAllGroups(tocModel);
+                                        }}
+                                        value="collapseAllGroups"
+                                    >
+                                        {intl.formatMessage({ id: "tools.collapseAllGroups" })}
+                                    </Menu.Item>
+                                )}
+                            </Menu.Content>
+                        </Menu.Positioner>
                     </Portal>
-                </Menu>
+                </Menu.Root>
             </Box>
         )
     );

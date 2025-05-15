@@ -1,12 +1,12 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { ButtonProps } from "@open-pioneer/chakra-integration";
+import { ButtonProps } from "@chakra-ui/react";
 import { MapModelProps, useMapModel } from "@open-pioneer/map";
 import { ToolButton } from "@open-pioneer/map-ui-components";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { Extent } from "ol/extent";
 import { useIntl } from "open-pioneer:react-hooks";
-import { FC, ForwardedRef, RefAttributes, forwardRef } from "react";
+import { FC, RefAttributes } from "react";
 import { FiHome } from "react-icons/fi";
 
 export interface InitialExtentProps
@@ -24,14 +24,13 @@ export interface InitialExtentProps
 /**
  * Provides a simple button that switches the view to its initial viewpoint.
  */
-export const InitialExtent: FC<InitialExtentProps> = forwardRef(function InitialExtent(
-    props: InitialExtentProps,
-    ref: ForwardedRef<HTMLButtonElement>
+export const InitialExtent: FC<InitialExtentProps> = function InitialExtent(
+    props: InitialExtentProps
 ) {
     const { containerProps } = useCommonComponentProps("initial-extent", props);
     const { map } = useMapModel(props);
     const intl = useIntl();
-    const { buttonProps } = props;
+    const { buttonProps, ref } = props;
 
     function setInitExtent() {
         const initialExtent = map?.initialExtent;
@@ -57,4 +56,4 @@ export const InitialExtent: FC<InitialExtentProps> = forwardRef(function Initial
             {...containerProps}
         />
     );
-});
+};

@@ -3,23 +3,19 @@
 exports[`should load the stored bookmark from local storage and present it visibly within the list 1`] = `
 <ul
   aria-label="bookmark.list.label"
-  class="spatial-bookmark-list css-gekrs3"
-  data-theme="light"
+  class="spatial-bookmark-list chakra-list__root css-1q4ghp7"
   role="listbox"
 >
   <li
-    class="spatial-bookmarks-item css-1npgjds"
-    data-theme="light"
+    class="spatial-bookmarks-item chakra-list__item css-843j6g"
     role="option"
     tabindex="0"
   >
     <div
-      class="css-1h36yqy"
-      data-theme="light"
+      class="css-v3qtod"
     >
       <div
-        class="css-gmuwbf"
-        data-theme="light"
+        class="css-d82rsv"
       >
         <svg
           fill="currentColor"
@@ -36,41 +32,36 @@ exports[`should load the stored bookmark from local storage and present it visib
         </svg>
       </div>
       <p
-        class="chakra-text css-1uvjhra"
-        data-theme="light"
+        class="css-29in21"
       >
         Test
       </p>
       <div
-        class="css-17xejub"
-        data-theme="light"
+        class="css-xsawf1"
       />
       <button
         aria-label="bookmark.button.deleteOne"
-        class="chakra-button spatial-bookmarks-item-delete css-kxp9k4"
-        data-theme="light"
+        class="chakra-button chakra-tooltip__trigger spatial-bookmarks-item-delete css-1qwewjl"
+        data-part="trigger"
+        data-scope="tooltip"
+        data-state="closed"
+        dir="ltr"
+        id="tooltip:«r0»:trigger"
         type="button"
       >
-        <span
-          class="chakra-button__icon css-1dwr89y"
-          data-theme="light"
+        <svg
+          fill="currentColor"
+          height="1em"
+          stroke="currentColor"
+          stroke-width="0"
+          viewBox="0 0 256 256"
+          width="1em"
+          xmlns="http://www.w3.org/2000/svg"
         >
-          <svg
-            aria-hidden="true"
-            fill="currentColor"
-            focusable="false"
-            height="1em"
-            stroke="currentColor"
-            stroke-width="0"
-            viewBox="0 0 256 256"
-            width="1em"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M216,50H40a6,6,0,0,0,0,12H50V208a14,14,0,0,0,14,14H192a14,14,0,0,0,14-14V62h10a6,6,0,0,0,0-12ZM194,208a2,2,0,0,1-2,2H64a2,2,0,0,1-2-2V62H194ZM82,24a6,6,0,0,1,6-6h80a6,6,0,0,1,0,12H88A6,6,0,0,1,82,24Z"
-            />
-          </svg>
-        </span>
+          <path
+            d="M216,50H40a6,6,0,0,0,0,12H50V208a14,14,0,0,0,14,14H192a14,14,0,0,0,14-14V62h10a6,6,0,0,0,0-12ZM194,208a2,2,0,0,1-2,2H64a2,2,0,0,1-2-2V62H194ZM82,24a6,6,0,0,1,6-6h80a6,6,0,0,1,0,12H88A6,6,0,0,1,82,24Z"
+          />
+        </svg>
       </button>
     </div>
   </li>
@@ -79,112 +70,66 @@ exports[`should load the stored bookmark from local storage and present it visib
 
 exports[`should only delete all bookmarks after the user confirms the action. 1`] = `
 <div
-  class="chakra-alert css-134lewa"
-  data-status="warning"
-  data-theme="light"
+  class="chakra-alert__root css-jwwdmt"
   role="alert"
 >
   <span
-    class="chakra-alert__icon css-14ogjxt"
-    data-status="warning"
-    data-theme="light"
+    class="css-13gnd3a"
   >
     <svg
-      class="chakra-icon css-qk6lof"
-      data-theme="light"
-      focusable="false"
+      class="css-126y6n1"
       viewBox="0 0 24 24"
     >
       <path
-        d="M11.983,0a12.206,12.206,0,0,0-8.51,3.653A11.8,11.8,0,0,0,0,12.207,11.779,11.779,0,0,0,11.8,24h.214A12.111,12.111,0,0,0,24,11.791h0A11.766,11.766,0,0,0,11.983,0ZM10.5,16.542a1.476,1.476,0,0,1,1.449-1.53h.027a1.527,1.527,0,0,1,1.523,1.47,1.475,1.475,0,0,1-1.449,1.53h-.027A1.529,1.529,0,0,1,10.5,16.542ZM11,12.5v-6a1,1,0,0,1,2,0v6a1,1,0,1,1-2,0Z"
-        fill="currentColor"
+        d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM11 15H13V17H11V15ZM11 7H13V13H11V7Z"
       />
     </svg>
   </span>
-  bookmark.alert.delete
+  <div
+    class="chakra-alert__title css-1jeznpc"
+  >
+    bookmark.alert.delete
+  </div>
 </div>
 `;
 
 exports[`should only delete all bookmarks after the user confirms the action. 2`] = `
 <div
-  class="chakra-alert css-1sqgcxg"
-  data-status="info"
-  data-theme="light"
-  role="alert"
+  class="chakra-alert__title css-1jeznpc"
 >
-  <span
-    class="chakra-alert__icon css-14ogjxt"
-    data-status="info"
-    data-theme="light"
-  >
-    <svg
-      class="chakra-icon css-qk6lof"
-      data-theme="light"
-      focusable="false"
-      viewBox="0 0 24 24"
-    >
-      <path
-        d="M12,0A12,12,0,1,0,24,12,12.013,12.013,0,0,0,12,0Zm.25,5a1.5,1.5,0,1,1-1.5,1.5A1.5,1.5,0,0,1,12.25,5ZM14.5,18.5h-4a1,1,0,0,1,0-2h.75a.25.25,0,0,0,.25-.25v-4.5a.25.25,0,0,0-.25-.25H10.5a1,1,0,0,1,0-2h1a2,2,0,0,1,2,2v4.75a.25.25,0,0,0,.25.25h.75a1,1,0,1,1,0,2Z"
-        fill="currentColor"
-      />
-    </svg>
-  </span>
   bookmark.alert.noSaved
 </div>
 `;
 
 exports[`should remove bookmark from the list by clicking the remove button 1`] = `
 <div
-  class="chakra-alert css-1sqgcxg"
-  data-status="info"
-  data-theme="light"
-  role="alert"
+  class="chakra-alert__title css-1jeznpc"
 >
-  <span
-    class="chakra-alert__icon css-14ogjxt"
-    data-status="info"
-    data-theme="light"
-  >
-    <svg
-      class="chakra-icon css-qk6lof"
-      data-theme="light"
-      focusable="false"
-      viewBox="0 0 24 24"
-    >
-      <path
-        d="M12,0A12,12,0,1,0,24,12,12.013,12.013,0,0,0,12,0Zm.25,5a1.5,1.5,0,1,1-1.5,1.5A1.5,1.5,0,0,1,12.25,5ZM14.5,18.5h-4a1,1,0,0,1,0-2h.75a.25.25,0,0,0,.25-.25v-4.5a.25.25,0,0,0-.25-.25H10.5a1,1,0,0,1,0-2h1a2,2,0,0,1,2,2v4.75a.25.25,0,0,0,.25.25h.75a1,1,0,1,1,0,2Z"
-        fill="currentColor"
-      />
-    </svg>
-  </span>
   bookmark.alert.noSaved
 </div>
 `;
 
 exports[`should shown an alert message if no bookmarks are saved 1`] = `
 <div
-  class="chakra-alert css-1sqgcxg"
-  data-status="info"
-  data-theme="light"
+  class="chakra-alert__root css-1owmyes"
   role="alert"
 >
   <span
-    class="chakra-alert__icon css-14ogjxt"
-    data-status="info"
-    data-theme="light"
+    class="css-13gnd3a"
   >
     <svg
-      class="chakra-icon css-qk6lof"
-      data-theme="light"
-      focusable="false"
+      class="css-1g7m1fs"
       viewBox="0 0 24 24"
     >
       <path
-        d="M12,0A12,12,0,1,0,24,12,12.013,12.013,0,0,0,12,0Zm.25,5a1.5,1.5,0,1,1-1.5,1.5A1.5,1.5,0,0,1,12.25,5ZM14.5,18.5h-4a1,1,0,0,1,0-2h.75a.25.25,0,0,0,.25-.25v-4.5a.25.25,0,0,0-.25-.25H10.5a1,1,0,0,1,0-2h1a2,2,0,0,1,2,2v4.75a.25.25,0,0,0,.25.25h.75a1,1,0,1,1,0,2Z"
-        fill="currentColor"
+        d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM11 7H13V9H11V7ZM11 11H13V17H11V11Z"
       />
     </svg>
   </span>
-  bookmark.alert.noSaved
+  <div
+    class="chakra-alert__title css-1jeznpc"
+  >
+    bookmark.alert.noSaved
+  </div>
 </div>
 `;

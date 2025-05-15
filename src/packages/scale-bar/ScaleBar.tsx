@@ -1,10 +1,10 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import { Box } from "@chakra-ui/react";
 import { MapModelProps, useMapModel } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
-import { FC, useEffect, useRef } from "react";
 import { ScaleLine } from "ol/control";
-import { Box } from "@open-pioneer/chakra-integration";
+import { FC, useEffect, useRef } from "react";
 
 /**
  * These are the properties supported by the {@link ScaleBar}.

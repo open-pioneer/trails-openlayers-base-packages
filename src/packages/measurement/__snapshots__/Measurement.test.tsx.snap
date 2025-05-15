@@ -4,75 +4,64 @@ exports[`should successfully create a measurement component 1`] = `
 <div
   class="measurement css-0"
   data-testid="measurement"
-  data-theme="light"
 >
   <p
-    class="chakra-text css-sfajb0"
-    data-theme="light"
+    class="css-cdgtm1"
   >
     measurementInfoText
   </p>
   <div
-    class="chakra-form-control css-1m7igkt"
-    data-theme="light"
+    class="chakra-stack chakra-field__root css-1nz2z00"
+    data-part="root"
+    data-scope="field"
+    id="field::«r0»"
     role="group"
   >
-    <div
-      class="chakra-stack css-1sgivba"
-      data-theme="light"
+    <label
+      class="chakra-field__label css-1pvefsz"
+      data-part="label"
+      data-scope="field"
+      for="«r0»"
+      id="field::«r0»::label"
     >
-      <label
-        class="chakra-form__label css-oe420r"
-        data-theme="light"
-        for="field-«r0»"
-        id="field-«r0»-label"
+      measurementLabel
+    </label>
+    <div
+      class="chakra-native-select__root css-1lytf6x"
+    >
+      <select
+        class="chakra-native-select__field measurement-select css-1lldn8"
+        data-part="select"
+        data-scope="field"
+        id="«r0»"
       >
-        measurementLabel
-      </label>
+        <option
+          value="distance"
+        >
+          distance
+        </option>
+        <option
+          value="area"
+        >
+          area
+        </option>
+      </select>
       <div
-        class="chakra-select__wrapper css-42b2qy"
-        data-theme="light"
+        class="chakra-native-select__indicator css-d7tss2"
       >
-        <select
-          class="chakra-select measurement-select css-161pkch"
-          data-theme="light"
-          id="field-«r0»"
+        <svg
+          class="css-s3mb0o"
+          viewBox="0 0 24 24"
         >
-          <option
-            value="distance"
-          >
-            distance
-          </option>
-          <option
-            value="area"
-          >
-            area
-          </option>
-        </select>
-        <div
-          class="chakra-select__icon-wrapper css-iohxn1"
-          data-theme="light"
-        >
-          <svg
-            aria-hidden="true"
-            class="chakra-select__icon"
-            focusable="false"
-            role="presentation"
-            style="width: 1em; height: 1em; color: currentcolor;"
-            viewBox="0 0 24 24"
-          >
-            <path
-              d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
-              fill="currentColor"
-            />
-          </svg>
-        </div>
+          <path
+            d="m6 9 6 6 6-6"
+          />
+        </svg>
       </div>
     </div>
   </div>
   <button
-    class="chakra-button measurement-delete-button css-14p1tvq"
-    data-theme="light"
+    class="chakra-button measurement-delete-button css-1ie6ju0"
     type="button"
   >
     deleteMeasurementLabel

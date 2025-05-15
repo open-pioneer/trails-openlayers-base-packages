@@ -17,16 +17,16 @@
         "open-pioneer-trails"
     ],
     "dependencies": {
-        "@open-pioneer/chakra-integration": "catalog:",
         "@open-pioneer/map": "workspace:^",
         "@open-pioneer/react-utils": "catalog:",
         "@open-pioneer/runtime": "catalog:",
-        "chakra-react-select": "catalog:",
+        "@chakra-ui/react": "catalog:",
         "ol": "catalog:",
         "react": "catalog:",
         "react-icons": "catalog:",
         "@open-pioneer/reactivity": "catalog:",
-        "@conterra/reactivity-core": "catalog:"
+        "@conterra/reactivity-core": "catalog:",
+        "@open-pioneer/chakra-snippets": "catalog:"
     },
     "devDependencies": {
         "@open-pioneer/map-test-utils": "workspace:^",

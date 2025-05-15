@@ -71,7 +71,6 @@ This repository publishes the following packages:
 | [@open-pioneer/search](./src/packages/search/)                       | [![NPM Version](https://img.shields.io/npm/v/%40open-pioneer%2Fsearch)](https://www.npmjs.com/package/@open-pioneer/search)                       |
 | [@open-pioneer/selection](./src/packages/selection/)                 | [![NPM Version](https://img.shields.io/npm/v/%40open-pioneer%2Fselection)](https://www.npmjs.com/package/@open-pioneer/selection)                 |
 | [@open-pioneer/spatial-bookmarks](./src/packages/spatial-bookmarks/) | [![NPM Version](https://img.shields.io/npm/v/%40open-pioneer%2Fspatial-bookmarks)](https://www.npmjs.com/package/@open-pioneer/spatial-bookmarks) |
-| [@open-pioneer/theme](./src/packages/theme/)                         | [![NPM Version](https://img.shields.io/npm/v/%40open-pioneer%2Ftheme)](https://www.npmjs.com/package/@open-pioneer/theme)                         |
 | [@open-pioneer/toc](./src/packages/toc/)                             | [![NPM Version](https://img.shields.io/npm/v/%40open-pioneer%2Ftoc)](https://www.npmjs.com/package/@open-pioneer/toc)                             |
 
 ## License

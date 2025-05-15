@@ -4,19 +4,15 @@ import {
     Flex,
     HStack,
     Popover,
-    PopoverArrow,
-    PopoverBody,
-    PopoverContent,
-    PopoverTrigger,
     Portal,
-    TooltipProps,
+    UseTooltipProps,
     usePopoverContext
-} from "@open-pioneer/chakra-integration";
+} from "@chakra-ui/react";
 import { InitialExtent, ZoomIn, ZoomOut } from "@open-pioneer/map-navigation";
 import { ToolButton } from "@open-pioneer/map-ui-components";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { useIntl, useService } from "open-pioneer:react-hooks";
-import { ForwardedRef, forwardRef, useState } from "react";
+import { RefObject, useState } from "react";
 import {
     PiCursorClick,
     PiImagesLight,
@@ -59,7 +55,7 @@ export function MapTools() {
                 <ToolButton
                     label={intl.formatMessage({ id: "resultListTitle" })}
                     icon={<PiListMagnifyingGlassFill />}
-                    isActive={resultListState.open}
+                    active={resultListState.open}
                     onClick={() => appModel.setResultListVisibility(!resultListOpen)}
                 />
             )}
@@ -67,19 +63,19 @@ export function MapTools() {
             <ToolButton
                 label={intl.formatMessage({ id: "tocTitle" })}
                 icon={<PiListLight />}
-                isActive={isTocActive}
+                active={isTocActive}
                 onClick={() => appModel.toggleMainContent("toc")}
             />
             <ToolButton
                 label={intl.formatMessage({ id: "legendTitle" })}
                 icon={<PiImagesLight />}
-                isActive={isLegendActive}
+                active={isLegendActive}
                 onClick={() => appModel.toggleMainContent("legend")}
             />
             <ToolButton
                 label={intl.formatMessage({ id: "printingTitle" })}
                 icon={<PiPrinterLight />}
-                isActive={isPrintingActive}
+                active={isPrintingActive}
                 onClick={() => appModel.toggleMainContent("printing")}
             />
             <InitialExtent />
@@ -112,8 +108,8 @@ function InteractionsMenu() {
         };
     };
 
-    const tooltipProps: Partial<TooltipProps> = {
-        placement: "top"
+    const tooltipProps: Partial<UseTooltipProps> = {
+        positioning: { placement: "top" }
     };
     const interactionButtons = (
         <>
@@ -124,7 +120,7 @@ function InteractionsMenu() {
                         : intl.formatMessage({ id: "editing.create.startTitle" })
                 }
                 icon={isEditingCreateActive ? <TbPolygonOff /> : <TbPolygon />}
-                isActive={isEditingCreateActive}
+                active={isEditingCreateActive}
                 onClick={interactionsMenuHandler(() =>
                     appModel.toggleMainContent("editing-create")
                 )}
@@ -137,7 +133,7 @@ function InteractionsMenu() {
                         : intl.formatMessage({ id: "editing.update.startTitle" })
                 }
                 icon={isEditingUpdateActive ? <PiPencilSlash /> : <PiPencil />}
-                isActive={isEditingUpdateActive}
+                active={isEditingUpdateActive}
                 onClick={interactionsMenuHandler(() =>
                     appModel.toggleMainContent("editing-update")
                 )}
@@ -146,14 +142,14 @@ function InteractionsMenu() {
             <ToolButton
                 label={intl.formatMessage({ id: "measurementTitle" })}
                 icon={<PiRulerLight />}
-                isActive={isMeasurementActive}
+                active={isMeasurementActive}
                 onClick={interactionsMenuHandler(() => appModel.toggleMainContent("measurement"))}
                 tooltipProps={tooltipProps}
             />
             <ToolButton
                 label={intl.formatMessage({ id: "selectionTitle" })}
                 icon={<PiSelectionPlusBold />}
-                isActive={isSelectionActive}
+                active={isSelectionActive}
                 onClick={interactionsMenuHandler(() => appModel.toggleMainContent("selection"))}
                 tooltipProps={tooltipProps}
             />
@@ -161,35 +157,37 @@ function InteractionsMenu() {
     );
 
     return (
-        <Popover
-            placement="left"
-            isLazy
-            onOpen={() => setVisible(true)}
-            onClose={() => setVisible(false)}
-            isOpen={visible}
+        <Popover.Root
+            positioning={{ placement: "left" }}
+            lazyMount={true}
+            onOpenChange={(e) => setVisible(e.open)}
+            open={visible}
         >
-            <PopoverTrigger>
+            <Popover.Trigger asChild>
                 <PopoverTriggerTool />
-            </PopoverTrigger>
+            </Popover.Trigger>
             <Portal>
-                <PopoverContent width="auto">
-                    <PopoverArrow />
-                    <PopoverBody>
-                        <HStack spacing={2}>{interactionButtons}</HStack>
-                    </PopoverBody>
-                </PopoverContent>
+                <Popover.Positioner>
+                    <Popover.Content width="auto">
+                        <Popover.Arrow />
+                        <Popover.Body padding={2}>
+                            <HStack gap={2}>{interactionButtons}</HStack>
+                        </Popover.Body>
+                    </Popover.Content>
+                </Popover.Positioner>
             </Portal>
-        </Popover>
+        </Popover.Root>
     );
 }
 
 // The dance with `context` and `buttonProps` is necessary here to set the aria attributes
 // defined by the popover (e.g. aria-controls).
 // It would not be required if ToolButton would accept those props directly.
-const PopoverTriggerTool = forwardRef(function PopoverTriggerTool(
-    _,
-    ref: ForwardedRef<HTMLButtonElement>
-) {
+const PopoverTriggerTool = function PopoverTriggerTool({
+    ref
+}: {
+    ref?: RefObject<HTMLButtonElement>;
+}) {
     const intl = useIntl();
     const context = usePopoverContext();
     const { onClick, ...triggerProps } = context.getTriggerProps();
@@ -202,4 +200,4 @@ const PopoverTriggerTool = forwardRef(function PopoverTriggerTool(
             buttonProps={triggerProps}
         />
     );
-});
+};

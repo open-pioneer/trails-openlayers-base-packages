@@ -1,12 +1,12 @@
 @import "ol/ol.css";
 
 /* Move attribution according to map view's padding */
-.map-container .ol-viewport .ol-attribution {
+.map-container-root .map-container .ol-viewport .ol-attribution {
     bottom: var(--map-padding-bottom);
     right: var(--map-padding-right);
 }
 
-.map-container .map-anchors {
+.map-container-root .map-anchors {
     pointer-events: none;
     overflow: hidden;
 
@@ -21,11 +21,14 @@
     transition-timing-function: ease-in-out;
 }
 
-.map-container .map-anchors .map-anchor {
-    pointer-events: auto;
+.map-container-root .map-anchors .map-anchor {
     z-index: 1;
     overflow: hidden;
 
     position: absolute;
     /* positioned absolute in .map-anchors, but actual coordinates are currently set via JS */
+}
+
+.map-container-root .map-anchors > * {
+    pointer-events: auto;
 }

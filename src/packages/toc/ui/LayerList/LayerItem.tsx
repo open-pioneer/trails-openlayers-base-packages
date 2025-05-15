@@ -1,24 +1,15 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
-// SPDX-License-Identifier: Apache-2.0
-import { ChevronDownIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import { reactive } from "@conterra/reactivity-core";
-import {
-    Box,
-    Checkbox,
-    Collapse,
-    Flex,
-    IconButton,
-    Spacer,
-    Tooltip
-} from "@open-pioneer/chakra-integration";
+import { Box, Collapsible, CollapsibleContent, Flex, IconButton, Spacer } from "@chakra-ui/react";
+import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
+import { Checkbox } from "@open-pioneer/chakra-snippets/checkbox";
 import { AnyLayer } from "@open-pioneer/map";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import classNames from "classnames";
 import { useIntl } from "open-pioneer:react-hooks";
 import { memo, ReactNode, useEffect, useId, useMemo } from "react";
-import { FiAlertTriangle } from "react-icons/fi";
+import { FiAlertTriangle, FiChevronDown, FiChevronRight } from "react-icons/fi";
 import { TocItem, useTocModel } from "../../model/TocModel";
 import { slug } from "../../utils/slug";
 import { useChildLayers, useLoadState } from "./hooks";
@@ -86,12 +77,12 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
                     // The aria-labels of Tooltip and Icon is ignored by screenreader because they are no child element of the checkbox.
                     // To consider the notAvailableLabel, an aria-label at the checkbox is necessary.
                     aria-label={title + (!isAvailable ? " " + notAvailableLabel : "")}
-                    isChecked={isVisible}
-                    isDisabled={!isAvailable}
-                    onChange={(event) =>
+                    checked={isVisible}
+                    disabled={!isAvailable}
+                    onCheckedChange={(event) =>
                         updateLayerVisibility(
                             layer,
-                            event.target.checked,
+                            event.checked === true,
                             tocOptions.autoShowParents
                         )
                     }
@@ -100,10 +91,10 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
                 </Checkbox>
                 {!isAvailable && (
                     <Tooltip
-                        className="toc-layer-item-content-tooltip"
-                        label={notAvailableLabel}
-                        placement="right"
+                        content={notAvailableLabel}
+                        positioning={{ placement: "right" }}
                         openDelay={500}
+                        contentProps={{ className: "toc-layer-item-content-tooltip" }}
                     >
                         <span>
                             <FiAlertTriangle
@@ -118,9 +109,13 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
                 <LayerItemMenu layer={layer} title={title} description={description} intl={intl} />
             </Flex>
             {nestedChildren && (
-                <Collapse in={expanded} id={layerGroupId} className="toc-collapsible-item">
-                    {nestedChildren}
-                </Collapse>
+                <Collapsible.Root
+                    open={expanded}
+                    id={layerGroupId}
+                    className="toc-collapsible-item"
+                >
+                    <CollapsibleContent>{nestedChildren}</CollapsibleContent>
+                </Collapsible.Root>
             )}
         </Box>
     );
@@ -134,6 +129,7 @@ function CollapseButton(props: {
     hasNestedChildren: boolean;
 }) {
     const { layerTitle, layerGroupId, expanded, onClick, hasNestedChildren } = props;
+    const icon = expanded ? <FiChevronDown /> : <FiChevronRight />;
     const intl = useIntl();
     return (
         <IconButton
@@ -142,7 +138,7 @@ function CollapseButton(props: {
             padding={0}
             className="toc-layer-item-collapse-button"
             onClick={onClick}
-            icon={expanded ? <ChevronDownIcon /> : <ChevronRightIcon />}
+            size="sm"
             aria-label={
                 expanded
                     ? intl.formatMessage({ id: "group.collapse" }, { title: layerTitle })
@@ -150,8 +146,17 @@ function CollapseButton(props: {
             }
             aria-expanded={expanded}
             aria-controls={layerGroupId}
-            visibility={hasNestedChildren ? "visible" : "hidden"} //use visible:hidden for layers without children for correct indent
-        />
+            //use visible:hidden for layers without children for correct indent
+            visibility={hasNestedChildren ? "visible" : "hidden"}
+            css={{
+                // Chakra theme adds a background to components with "aria-expanded" by default.
+                "&:is([aria-expanded='true']):not(:hover)": {
+                    background: "none"
+                }
+            }}
+        >
+            {icon}
+        </IconButton>
     );
 }
 
