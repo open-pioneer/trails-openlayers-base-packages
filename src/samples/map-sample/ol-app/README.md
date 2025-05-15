@@ -171,7 +171,7 @@ export function MapTools() {
         <ToolButton
             label={intl.formatMessage({ id: "tocTitle" })}
             icon={<PiListLight />}
-            isActive={isTocActive}
+            active={isTocActive}
             onClick={() => appModel.toggleMainContent("toc")} // (2)
         />
     );
