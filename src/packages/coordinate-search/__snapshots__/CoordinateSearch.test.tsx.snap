@@ -1,0 +1,112 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`should successfully create a coordinate search component 1`] = `
+<div
+  class="coordinate-input coordinate-search css-1xhj18k"
+  data-testid="coordinate-search"
+>
+  <div
+    class="chakra-group chakra-tooltip__trigger coordinate-input-group css-hblrc9"
+    data-part="trigger"
+    data-scope="tooltip"
+    data-state="closed"
+    dir="ltr"
+    id="tooltip:«r0»:trigger"
+  >
+    <div
+      class="chakra-group coordinate-input-field-group css-1n9f5vu"
+    >
+      <div
+        class="chakra-field__root css-lesxm"
+        data-part="root"
+        data-scope="field"
+        id="field::«r1»"
+        role="group"
+      >
+        <input
+          aria-label="coordinateInput.ariaLabel"
+          autocomplete="off"
+          class="chakra-input css-9n7jjk"
+          data-part="input"
+          data-scope="field"
+          id="«r1»"
+          placeholder=""
+          type="text"
+          value=""
+        />
+      </div>
+    </div>
+    <div
+      class="coordinate-input-select-root chakra-select__root css-11vsvdz"
+      data-part="root"
+      data-scope="select"
+      dir="ltr"
+      id="select:«r2»"
+    >
+      <div
+        class="coordinate-input-select chakra-select__control css-17j1053"
+        data-part="control"
+        data-scope="select"
+        data-state="closed"
+        dir="ltr"
+        id="select:«r2»:control"
+      >
+        <label
+          class="chakra-select__label css-164gb0n"
+          data-part="label"
+          data-scope="select"
+          dir="ltr"
+          for="select:«r2»:select"
+          id="select:«r2»:label"
+        >
+          projections.ariaLabel
+        </label>
+        <button
+          aria-controls="select:«r2»:content"
+          aria-expanded="false"
+          aria-haspopup="listbox"
+          aria-labelledby="select:«r2»:label"
+          class="coordinate-input-select-trigger chakra-select__trigger css-6ipme"
+          data-part="trigger"
+          data-scope="select"
+          data-state="closed"
+          dir="ltr"
+          id="select:«r2»:trigger"
+          role="combobox"
+          type="button"
+        >
+          <span
+            class="coordinate-input-select-value chakra-select__valueText css-176t9sc"
+            data-part="value-text"
+            data-scope="select"
+            dir="ltr"
+          >
+            WGS 84
+          </span>
+        </button>
+        <div
+          class="chakra-select__indicatorGroup css-1xvjckd"
+        >
+          <div
+            aria-hidden="true"
+            class="chakra-select__indicator css-k35okj"
+            data-part="indicator"
+            data-scope="select"
+            data-state="closed"
+            dir="ltr"
+          >
+            <svg
+              class="css-s3mb0o"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="m6 9 6 6 6-6"
+              />
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
