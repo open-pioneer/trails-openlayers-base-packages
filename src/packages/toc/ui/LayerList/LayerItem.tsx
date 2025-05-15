@@ -82,7 +82,7 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
                     onCheckedChange={(event) =>
                         updateLayerVisibility(
                             layer,
-                            Boolean(event.checked.valueOf()),
+                            event.checked === true,
                             tocOptions.autoShowParents
                         )
                     }
