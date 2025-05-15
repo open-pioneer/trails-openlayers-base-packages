@@ -1518,27 +1518,6 @@ importers:
         specifier: 'catalog:'
         version: 17.6.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
 
-  src/samples/minimal-sample/mini-app:
-    dependencies:
-      '@chakra-ui/react':
-        specifier: 'catalog:'
-        version: 3.17.0(@emotion/react@11.14.0(@types/react@19.1.2)(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      '@open-pioneer/map-ui-components':
-        specifier: workspace:^
-        version: link:../../../packages/map-ui-components
-      ol:
-        specifier: 'catalog:'
-        version: 10.5.0
-      ol-mapbox-style:
-        specifier: 'catalog:'
-        version: 12.5.0(ol@10.5.0)
-      react:
-        specifier: 'catalog:'
-        version: 19.1.0
-      react-icons:
-        specifier: 'catalog:'
-        version: 5.5.0(react@19.1.0)
-
   src/samples/ogc-api-sample/ogc-app:
     dependencies:
       '@chakra-ui/react':

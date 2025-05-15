@@ -50,12 +50,6 @@ overrideLicenses:
       - "./lib/zlib/README"
 
   # readme contains license text
-  - name: "react-remove-scroll-bar"
-    version: "2.3.8"
-    licenseFiles:
-      - "./README.md"
-
-  # readme contains license text
   - name: "lerc"
     version: "3.0.0"
     licenseFiles:
@@ -79,25 +73,6 @@ overrideLicenses:
     license: "MIT"
     licenseFiles:
       - custom: "./licenses/mapbox_jsonlint_readme_mit.md"
-
-  # NPM artifact does not ship with a license; github repository tagged with the released version
-  # does contain it however:
-  # https://github.com/JedWatson/react-select/blob/17ab36ec89e6e2b05071cdafecb44421f1e91334/LICENSE
-  # The full license text was retrieved on 2024-01-04
-  - name: "react-select"
-    version: "5.10.0"
-    licenseFiles:
-      - custom: "./licenses/react_select_mit"
-
-  # Missing license document in npm artifact.
-  # Licenses added after 3.0 release via pull request.
-  # License text downloaded on 2023-11-15.
-  #
-  # See https://github.com/colorjs/color-rgba/pull/6
-  - name: "color-rgba"
-    version: "3.0.0"
-    licenseFiles:
-      - custom: "./licenses/color_rgba_mit"
 
   # License md present but package.json license field invalid.
   - name: "rgbcolor"
