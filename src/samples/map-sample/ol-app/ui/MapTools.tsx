@@ -12,7 +12,7 @@ import { InitialExtent, ZoomIn, ZoomOut } from "@open-pioneer/map-navigation";
 import { ToolButton } from "@open-pioneer/map-ui-components";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { useIntl, useService } from "open-pioneer:react-hooks";
-import { ForwardedRef, forwardRef, useState } from "react";
+import { RefObject, useState } from "react";
 import {
     PiCursorClick,
     PiImagesLight,
@@ -183,10 +183,11 @@ function InteractionsMenu() {
 // The dance with `context` and `buttonProps` is necessary here to set the aria attributes
 // defined by the popover (e.g. aria-controls).
 // It would not be required if ToolButton would accept those props directly.
-const PopoverTriggerTool = forwardRef(function PopoverTriggerTool(
-    _,
-    ref: ForwardedRef<HTMLButtonElement>
-) {
+const PopoverTriggerTool = function PopoverTriggerTool({
+    ref
+}: {
+    ref?: RefObject<HTMLButtonElement>;
+}) {
     const intl = useIntl();
     const context = usePopoverContext();
     const { onClick, ...triggerProps } = context.getTriggerProps();
@@ -199,4 +200,4 @@ const PopoverTriggerTool = forwardRef(function PopoverTriggerTool(
             buttonProps={triggerProps}
         />
     );
-});
+};
