@@ -7,81 +7,6 @@ exports[`Should successfully create a toc with default tool component 1`] = `
     data-testid="toc"
   >
     <div
-      class="toc-basemap-switcher css-0"
-    >
-      <h1
-        class="chakra-heading css-k5qncm"
-        id="«r0»"
-      >
-        basemapsLabel
-      </h1>
-      <div
-        class="basemap-switcher css-0"
-      >
-        <div
-          class="basemap-switcher-select chakra-select__root css-3jlqt6"
-          data-part="root"
-          data-scope="select"
-          dir="ltr"
-          id="select:«r1»"
-        >
-          <div
-            class="chakra-select__control css-17j1053"
-            data-part="control"
-            data-scope="select"
-            data-state="closed"
-            dir="ltr"
-            id="select:«r1»:control"
-          >
-            <button
-              aria-controls="select:«r1»:content"
-              aria-expanded="false"
-              aria-haspopup="listbox"
-              aria-labelledby="«r0»"
-              class="basemap-switcher-select-trigger chakra-select__trigger css-1hl2915"
-              data-part="trigger"
-              data-scope="select"
-              data-state="closed"
-              dir="ltr"
-              id="select:«r1»:trigger"
-              role="combobox"
-              type="button"
-            >
-              <span
-                class="chakra-select__valueText css-176t9sc"
-                data-part="value-text"
-                data-scope="select"
-                dir="ltr"
-              >
-                emptyBasemapLabel
-              </span>
-            </button>
-            <div
-              class="chakra-select__indicatorGroup css-1xvjckd"
-            >
-              <div
-                aria-hidden="true"
-                class="chakra-select__indicator css-1atg1ut"
-                data-part="indicator"
-                data-scope="select"
-                data-state="closed"
-                dir="ltr"
-              >
-                <svg
-                  class="css-s3mb0o"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    d="m6 9 6 6 6-6"
-                  />
-                </svg>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div
       class="toc-operational-layers css-0"
     >
       <h1
@@ -108,9 +33,9 @@ exports[`Should successfully create a toc with default tool component 1`] = `
               data-part="trigger"
               data-scope="menu"
               data-state="closed"
-              data-uid="«r2»"
+              data-uid="«r1»"
               dir="ltr"
-              id="menu:«r2»:trigger"
+              id="menu:«r1»:trigger"
               type="button"
             >
               <svg
@@ -166,13 +91,13 @@ exports[`Should successfully create a toc with default tool component 1`] = `
                 data-scope="checkbox"
                 data-state="checked"
                 dir="ltr"
-                for="checkbox:«r4»:input"
-                id="checkbox:«r4»"
+                for="checkbox:«r3»:input"
+                id="checkbox:«r3»"
               >
                 <input
-                  aria-labelledby="checkbox:«r4»:label"
+                  aria-labelledby="checkbox:«r3»:label"
                   checked=""
-                  id="checkbox:«r4»:input"
+                  id="checkbox:«r3»:input"
                   style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px; white-space: nowrap; word-wrap: normal;"
                   type="checkbox"
                   value="on"
@@ -184,7 +109,7 @@ exports[`Should successfully create a toc with default tool component 1`] = `
                   data-scope="checkbox"
                   data-state="checked"
                   dir="ltr"
-                  id="checkbox:«r4»:control"
+                  id="checkbox:«r3»:control"
                 >
                   <svg
                     class="css-wuqtn7"
@@ -202,7 +127,7 @@ exports[`Should successfully create a toc with default tool component 1`] = `
                   data-scope="checkbox"
                   data-state="checked"
                   dir="ltr"
-                  id="checkbox:«r4»:label"
+                  id="checkbox:«r3»:label"
                 >
                   Layer 1
                 </span>
@@ -226,9 +151,9 @@ exports[`Should successfully create a toc with default tool component 1`] = `
       data-part="trigger"
       data-scope="menu"
       data-state="closed"
-      data-uid="«r2»"
+      data-uid="«r1»"
       dir="ltr"
-      id="menu:«r2»:trigger"
+      id="menu:«r1»:trigger"
       type="button"
     >
       <svg
@@ -266,25 +191,25 @@ exports[`Should successfully create a toc with default tool component 1`] = `
 
 exports[`Should successfully create a toc with default tool component 2`] = `
 <div
-  aria-labelledby="menu:«r2»:trigger"
+  aria-labelledby="menu:«r1»:trigger"
   class="toc-tools-menu chakra-menu__content css-1lxvt8i"
   data-part="content"
   data-placement="bottom-start"
   data-scope="menu"
   data-state="closed"
   dir="ltr"
-  id="menu:«r2»:content"
+  id="menu:«r1»:content"
   role="menu"
   tabindex="0"
 >
   <div
     aria-label="tools.hideAllLayers"
     class="chakra-menu__item css-u03wm8"
-    data-ownedby="menu:«r2»:content"
+    data-ownedby="menu:«r1»:content"
     data-part="item"
     data-scope="menu"
     data-value="hideAllLayers"
-    id="«r2»/hideAllLayers"
+    id="«r1»/hideAllLayers"
     role="menuitem"
   >
     tools.hideAllLayers

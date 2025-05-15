@@ -30,7 +30,7 @@ it("Should successfully create a toc with default tool component", async () => {
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
-            <Toc map={map} data-testid="toc" showTools={true} />
+            <Toc map={map} data-testid="toc" showTools={true} showBasemapSwitcher={false} />
         </PackageContextProvider>
     );
 
