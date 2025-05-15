@@ -611,17 +611,6 @@ async function waitForCoordinateInput() {
     return { coordsInputDiv, coordInput, coordinateInputGroup, projSelect, projSelectTrigger };
 }
 
-async function waitForProjSelectMenu() {
-    const menuDiv = await waitFor(() => {
-        const menuDiv = document.body.querySelector(".coordinate-input-select-content");
-        if (!menuDiv) {
-            throw new Error("Menu not found");
-        }
-        return menuDiv as HTMLElement;
-    });
-    return { menuDiv };
-}
-
 // Returns undefined if no unique tooltip was found
 function getCurrentTooltipText(): string | undefined {
     const tooltip = screen.queryByRole("tooltip");
