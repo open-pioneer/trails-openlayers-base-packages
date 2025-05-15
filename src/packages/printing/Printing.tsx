@@ -89,14 +89,12 @@ export const Printing: FC<PrintingProps> = (props) => {
                         <Field.Label minWidth={82} mb={1}>
                             {intl.formatMessage({ id: "title" })}
                         </Field.Label>
-
                         <Input
                             placeholder={intl.formatMessage({ id: "input.placeholder" })}
                             value={title}
                             onChange={(event) => {
                                 setTitle(event.target.value);
                             }}
-                            autoFocus // eslint-disable-line jsx-a11y/no-autofocus
                         />
                     </HStack>
                 </Field.Root>
