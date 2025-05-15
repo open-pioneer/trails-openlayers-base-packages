@@ -146,7 +146,14 @@ function CollapseButton(props: {
             }
             aria-expanded={expanded}
             aria-controls={layerGroupId}
-            visibility={hasNestedChildren ? "visible" : "hidden"} //use visible:hidden for layers without children for correct indent
+            //use visible:hidden for layers without children for correct indent
+            visibility={hasNestedChildren ? "visible" : "hidden"}
+            css={{
+                // Chakra theme adds a background to components with "aria-expanded" by default.
+                "&:is([aria-expanded='true']):not(:hover)": {
+                    background: "none"
+                }
+            }}
         >
             {icon}
         </IconButton>
