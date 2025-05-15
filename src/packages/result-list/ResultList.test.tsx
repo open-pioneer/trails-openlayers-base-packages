@@ -384,7 +384,7 @@ it("expect result list display date in given format", async () => {
             {resultListComp}
         </PackageContextProvider>
     );
-    await waitForResultList(); // TODO: Workaround to hide react warning due to useEffect (use disableReactWarning helper after printing merge)
+    await waitForResultList();
 
     dateFormatter = Intl.DateTimeFormat("en-US", dateTimeFormatOptions);
     expect(dateCell!.textContent).toBe(dateFormatter.format(new Date("2020-05-12T23:50:21.817Z")));

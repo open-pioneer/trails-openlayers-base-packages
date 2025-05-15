@@ -77,9 +77,6 @@ export const ProjectionSelect = memo(function ProjectionSelect(props: {
             </Portal>
         </Select.Root>
     );
-
-    // TODO
-    // - return props.label + " " + intl.formatMessage({ id: "selected" });
 });
 
 function projectionCode(item: ProjectionItem) {
