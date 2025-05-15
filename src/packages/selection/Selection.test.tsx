@@ -3,7 +3,7 @@
 import { SimpleLayer } from "@open-pioneer/map";
 import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
-import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, fireEvent, getByRole, render, screen, waitFor } from "@testing-library/react";
 import { Selection, SelectionSourceChangedEvent } from "./Selection";
 import { FakePointSelectionSource, NoStatusSelectionSource } from "./test-utils";
 import { VectorLayerSelectionSourceImpl } from "./VectorSelectionSource";
@@ -14,7 +14,12 @@ import VectorSource from "ol/source/Vector";
 import { Feature } from "ol";
 import GeoJSON from "ol/format/GeoJSON";
 import VectorLayer from "ol/layer/Vector";
-import { afterEach, expect, it, vi } from "vitest";
+import { beforeEach, afterEach, expect, it, vi } from "vitest";
+import { disableReactActWarnings } from "test-utils";
+
+beforeEach(() => {
+    disableReactActWarnings();
+});
 
 afterEach(() => {
     vi.restoreAllMocks();
@@ -31,10 +36,10 @@ it("Sources read from component should be the same as the provided sources", asy
     const POINT_SOURCE = new FakePointSelectionSource(0, "available", ALL_EXPECTED_FEATURES);
 
     await createSelection([POINT_SOURCE]);
-    const { selectElement } = await waitForSelection();
-    openOptions(selectElement);
+    const { selectTrigger } = await waitForSelection();
+    await openOptions(selectTrigger);
 
-    const options = getOptions(selectElement);
+    const options = getOptions();
     const option = options[0];
 
     expect(options.length).equals(1);
@@ -46,16 +51,16 @@ it("Should disable option and show warning icon for unavailable sources", async 
     const POINT_SOURCE = new FakePointSelectionSource(0, "unavailable", ALL_EXPECTED_FEATURES);
 
     await createSelection([POINT_SOURCE]);
-    const { selectionDiv, selectElement } = await waitForSelection();
-    openOptions(selectElement);
+    const { selectionDiv, selectTrigger } = await waitForSelection();
+    await openOptions(selectTrigger);
 
-    const options = getOptions(selectElement);
-    const option = options[0];
+    const options = getOptions();
+    const option = options[0]!;
     const warningIcon = selectionDiv.querySelector(".warning-icon");
 
     expect(warningIcon).not.toBeNull();
     expect(warningIcon).toBeDefined();
-    expect(option?.classList.contains("react-select__option--is-disabled")).toBeTruthy();
+    expect(option.getAttribute("aria-disabled")).toBe("true");
 });
 
 it("Should fire selection source change events when the user selects a different source", async () => {
@@ -67,17 +72,17 @@ it("Should fire selection source change events when the user selects a different
     expect(onSourceChanged).toHaveBeenCalledTimes(1);
     expect(onSourceChanged.mock.lastCall![0]!.source).toBe(source1);
 
-    const { selectElement, getCurrentSelection } = await waitForSelection();
+    const { selectTrigger, getCurrentSelection } = await waitForSelection();
     expect(getCurrentSelection()).toBe("Source 1");
 
-    openOptions(selectElement);
-    const option2 = getOptions(selectElement)[1]!;
+    await openOptions(selectTrigger);
+    const option2 = getOptions()[1]!;
     expect(option2.textContent).toBe("Source 2");
+
     await act(() => {
         // For some reason userEvent.click does not work here.
         fireEvent.click(option2);
     });
-
     expect(getCurrentSelection()).toBe("Source 2");
     expect(onSourceChanged).toHaveBeenCalledTimes(2);
     expect(onSourceChanged.mock.lastCall![0]!.source).toBe(source2);
@@ -97,29 +102,31 @@ it("Should disable or enable selection option when changing the status of a sour
         "Layer not visible"
     );
     await createSelection([layerSelectionSource]);
-    const { selectElement } = await waitForSelection();
-    openOptions(selectElement);
+    const { selectTrigger } = await waitForSelection();
 
-    const options = getOptions(selectElement);
-    const option = options[0];
-    expect(option?.classList.contains("react-select__option--is-disabled")).toBeTruthy();
+    await openOptions(selectTrigger);
+    const initialOption = getOptions()[0]!;
+    expect(initialOption.getAttribute("aria-disabled")).toBe("true");
 
     act(() => {
         layer.setVisible(true);
     });
-    openOptions(selectElement);
-    expect(option?.classList.contains("react-select__option--is-disabled")).toBeFalsy();
+
+    await waitFor(() => {
+        const updatedOption = getOptions()[0]!;
+        expect(updatedOption.getAttribute("aria-disabled")).toBeFalsy();
+    });
 });
 
 it("expect selection source with no defined status is still available", async () => {
     const noStatusSelectionSource = new NoStatusSelectionSource();
     await createSelection([noStatusSelectionSource]);
-    const { selectElement } = await waitForSelection();
-    openOptions(selectElement);
+    const { selectTrigger } = await waitForSelection();
+    await openOptions(selectTrigger);
 
-    const options = getOptions(selectElement);
-    const option = options[0];
-    expect(option?.classList.contains("react-select__option--is-disabled")).toBeFalsy();
+    const options = getOptions();
+    const option = options[0]!;
+    expect(option.getAttribute("aria-disabled")).toBeFalsy();
 });
 
 it("retains the selected source if the sources change but the selected source still exits", async () => {
@@ -130,8 +137,8 @@ it("retains the selected source if the sources change but the selected source st
 
     rerender.rerenderWithSources([layerSelectionSource]); // keep currently selected source
 
-    const { selectElement } = await waitForSelection();
-    const sourceValue = selectElement.getElementsByClassName("selection-source-value");
+    const { selectTrigger } = await waitForSelection();
+    const sourceValue = selectTrigger.getElementsByClassName("selection-source-value");
     const text = sourceValue[0]?.textContent;
 
     expect(text).toBe("Kindertagesstätten");
@@ -209,33 +216,37 @@ async function waitForSelection() {
             throw new Error("Selection not rendered");
         }
 
-        const selectElement: HTMLSelectElement | null =
-            selectionDiv.querySelector(".selection-source");
-        if (!selectElement) {
-            throw new Error("Select element not rendered");
-        }
-
+        const selectTrigger = getByRole(selectionDiv, "combobox");
         return {
             selectionDiv,
-            selectElement,
+            selectTrigger,
             getCurrentSelection() {
                 // The dom element here is not stable so we're looking it up again every time.
-                const value = selectElement.getElementsByClassName("selection-source-value")[0];
+                const value = selectionDiv.getElementsByClassName("selection-source-value")[0];
                 return value?.textContent;
             }
         };
     });
 }
 
-function openOptions(selectElement: HTMLSelectElement) {
+async function openOptions(selectTrigger: HTMLElement) {
     act(() => {
-        fireEvent.keyDown(selectElement, { key: "ArrowDown" });
+        if (selectTrigger.dataset.state !== "open") {
+            fireEvent.click(selectTrigger);
+        }
+    });
+
+    await waitFor(() => {
+        const optionsDiv = document.querySelector(".selection-source-options");
+        if (!optionsDiv) {
+            throw new Error("Options did not mount");
+        }
     });
 }
 
-function getOptions(selectElement: HTMLSelectElement) {
+function getOptions() {
     return Array.from(
-        selectElement.getElementsByClassName("selection-source-option") // todo class no longer exists
+        document.body.getElementsByClassName("selection-source-option")
     ) as HTMLElement[];
 }
 

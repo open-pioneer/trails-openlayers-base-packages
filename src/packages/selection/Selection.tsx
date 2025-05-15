@@ -2,25 +2,24 @@
 // SPDX-License-Identifier: Apache-2.0
 import {
     Box,
-    Icon,
-    VStack,
     chakra,
-    Select,
-    Portal,
     createListCollection,
-    Flex
+    Flex,
+    Icon,
+    Portal,
+    Select,
+    VStack
 } from "@chakra-ui/react";
 import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
-import { Field } from "@open-pioneer/chakra-snippets/field";
 import { MapModel, MapModelProps, useMapModel } from "@open-pioneer/map";
 import { NotificationService } from "@open-pioneer/notifier";
 import { CommonComponentProps, useCommonComponentProps, useEvent } from "@open-pioneer/react-utils";
+import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { Geometry } from "ol/geom";
 import { useIntl, useService } from "open-pioneer:react-hooks";
 import { FC, useCallback, useEffect, useRef, useState } from "react";
 import { FiAlertTriangle } from "react-icons/fi";
-import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { DragController } from "./DragController";
 import { SelectionController } from "./SelectionController";
 import { SelectionResult, SelectionSource, SelectionSourceStatusObject } from "./api";
@@ -66,14 +65,13 @@ export const Selection: FC<SelectionProps> = (props) => {
     const intl = useIntl();
     const { sources, onSelectionComplete, onSelectionSourceChanged } = props;
     const { containerProps } = useCommonComponentProps("selection", props);
-    const defaultNotAvailableMessage = intl.formatMessage({ id: "sourceNotAvailable" });
 
     const [currentSource, setCurrentSource] = useCurrentSelectionSource(
         sources,
         onSelectionSourceChanged
     );
 
-    const currentSourceStatus = useSourceStatus(currentSource, defaultNotAvailableMessage);
+    const currentSourceStatus = useSourceStatus(currentSource);
 
     const mapState = useMapModel(props);
     const { onExtentSelected } = useSelectionController(
@@ -111,38 +109,39 @@ export const Selection: FC<SelectionProps> = (props) => {
 
     return (
         <VStack {...containerProps} gap={2}>
-            <Field label={intl.formatMessage({ id: "selectSource" })}>
-                <Select.Root
-                    collection={sourceOptionsCollection}
-                    value={currentSource ? [getId(currentSource)] : undefined}
-                    onValueChange={(option) => option && setCurrentSource(option.items[0])}
-                    lazyMount={true}
-                    unmountOnExit={true}
-                >
-                    <Select.Control>
-                        <Select.Trigger>
-                            <Select.ValueText
-                                placeholder={intl.formatMessage({ id: "selectionPlaceholder" })}
-                            >
-                                {triggerItem}
-                            </Select.ValueText>
-                        </Select.Trigger>
-                        <Select.IndicatorGroup>
-                            <Select.Indicator />
-                        </Select.IndicatorGroup>
-                    </Select.Control>
+            <Select.Root
+                className="selection-source"
+                collection={sourceOptionsCollection}
+                value={currentSource ? [getId(currentSource)] : undefined}
+                onValueChange={(option) => option && setCurrentSource(option.items[0])}
+                lazyMount={true}
+                unmountOnExit={true}
+            >
+                <Select.Label>{intl.formatMessage({ id: "selectSource" })}</Select.Label>
 
-                    <Portal>
-                        <Select.Positioner>
-                            <Select.Content>
-                                {sourceOptionsCollection.items.map((item) => (
-                                    <SelectionSourceItemContent item={item} key={getId(item)} />
-                                ))}
-                            </Select.Content>
-                        </Select.Positioner>
-                    </Portal>
-                </Select.Root>
-            </Field>
+                <Select.Control>
+                    <Select.Trigger>
+                        <Select.ValueText
+                            placeholder={intl.formatMessage({ id: "selectionPlaceholder" })}
+                        >
+                            {triggerItem}
+                        </Select.ValueText>
+                    </Select.Trigger>
+                    <Select.IndicatorGroup>
+                        <Select.Indicator />
+                    </Select.IndicatorGroup>
+                </Select.Control>
+
+                <Portal>
+                    <Select.Positioner>
+                        <Select.Content className="selection-source-options">
+                            {sourceOptionsCollection.items.map((item) => (
+                                <SelectionSourceItemContent item={item} key={getId(item)} />
+                            ))}
+                        </Select.Content>
+                    </Select.Positioner>
+                </Portal>
+            </Select.Root>
         </VStack>
     );
 };
@@ -171,12 +170,16 @@ function useSelectionSourceId(): GetSelectionSourceId {
 function SelectionSourceItemContent(props: { item: SelectionSource }) {
     const { item } = props;
 
+    const isDisabled = useSourceStatus(item).kind === "unavailable";
+
     return (
         <Select.Item
+            className="selection-source-option"
             item={item}
             justifyContent="flex-start"
             // Override pointer-events: none rule for disabled items; we want to show the tooltip on hover
             pointerEvents="auto"
+            aria-disabled={isDisabled ? "true" : undefined}
         >
             <SelectionSourceItem source={item} />
         </Select.Item>
@@ -213,11 +216,9 @@ function useCurrentSelectionSource(
  * Hook to manage source option in selection-source react-select
  */
 function SelectionSourceItem(props: { source: SelectionSource | undefined }) {
-    const intl = useIntl();
     const source = props.source;
     const label: string | undefined = source?.label;
-    const defaultNotAvailableMessage = intl.formatMessage({ id: "sourceNotAvailable" });
-    const status = useSourceStatus(source, defaultNotAvailableMessage);
+    const status = useSourceStatus(source);
     const isAvailable = status.kind === "available";
     const clazz = isAvailable
         ? "selection-source-value"
@@ -235,11 +236,13 @@ function SelectionSourceItem(props: { source: SelectionSource | undefined }) {
                     >
                         <chakra.span>
                             <Icon
-                                as={FiAlertTriangle}
                                 color="red"
                                 className="warning-icon"
                                 aria-label={status.reason}
-                            />
+                                aria-hidden={undefined} // Overwrite icon default so the label gets read
+                            >
+                                <FiAlertTriangle />
+                            </Icon>
                         </chakra.span>
                     </Tooltip>
                 </Box>
@@ -323,10 +326,9 @@ function getSourceStatus(source: SelectionSource, sourceNotAvailableReason: stri
 /**
  * Hook to manage source status
  */
-function useSourceStatus(
-    source: SelectionSource | undefined,
-    defaultNotAvailableMessage: string
-): SimpleStatus {
+function useSourceStatus(source: SelectionSource | undefined): SimpleStatus {
+    const intl = useIntl();
+    const defaultNotAvailableMessage = intl.formatMessage({ id: "sourceNotAvailable" });
     const sourceStatus = useReactiveSnapshot((): SimpleStatus => {
         if (!source) {
             return { kind: "unavailable", reason: defaultNotAvailableMessage };

@@ -33,6 +33,7 @@
         "@open-pioneer/chakra-snippets": "catalog:"
     },
     "devDependencies": {
+        "test-utils": "workspace:^",
         "@open-pioneer/map-test-utils": "workspace:^",
         "@open-pioneer/test-utils": "catalog:",
         "openlayers-base-packages": "workspace:*"
