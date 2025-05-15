@@ -28,12 +28,22 @@ import {
 } from "@open-pioneer/map";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { ResultList, ResultListInput, SelectionMode } from "@open-pioneer/result-list";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { MAP_ID } from "./MapConfigProviderImpl";
+import { useService } from "open-pioneer:react-hooks";
+import { ApplicationContext } from "@open-pioneer/runtime";
 
 const RESULT_LIST_HEIGHT_PIXELS = 400;
 
 export function AppUI() {
+    const ctx = useService<ApplicationContext>("runtime.ApplicationContext");
+    useEffect(() => {
+        const id = setInterval(() => {
+            console.log(ctx.getShadowRoot().activeElement);
+        }, 250);
+        return () => clearInterval(id);
+    }, [ctx]);
+
     const { map } = useMapModel(MAP_ID);
     const [displayVersion, setDisplayVersion] = useState(0);
     const [currentInput, setCurrentInput] = useState<ResultListInput>();

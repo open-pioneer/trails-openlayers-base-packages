@@ -4,9 +4,15 @@ import { BaseFeature, ZoomOptions } from "@open-pioneer/map";
 import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { Point } from "ol/geom";
-import { Mock, afterEach, expect, it, vi } from "vitest";
+import { disableReactActWarnings } from "test-utils";
+import { Mock, afterEach, beforeEach, expect, it, vi } from "vitest";
 import { ResultColumn, ResultList, ResultListInput } from "./ResultList";
+
+beforeEach(() => {
+    disableReactActWarnings();
+});
 
 afterEach(() => {
     vi.restoreAllMocks();
@@ -131,7 +137,7 @@ it("expect getPropertyValue to be used correctly", async () => {
 
     expect(getPropertyValueMock).toHaveBeenCalled();
     expect(getPropertyValueMock).toHaveBeenCalledWith(dummyFeatureData[0]);
-    expect(allRows.item(0).children[1]?.textContent).toEqual("virtual property");
+    expect(allRows[0]!.children[1]?.textContent).toEqual("virtual property");
 });
 
 it("expect changes of data and metadata to change full table", async () => {
@@ -208,7 +214,7 @@ it("expect all rows to be selected and deselected", async () => {
 
     const { selectAllSelect, selectRowCheckboxes } = await waitForResultList();
     expect(selectAllSelect).toBeDefined();
-    expect(selectRowCheckboxes).toBeDefined();
+    expect(selectRowCheckboxes.length).toBeGreaterThan(0);
 
     expect(selectAllSelect!.checked).toBeFalsy();
     selectRowCheckboxes.forEach((checkbox) => expect(checkbox.checked).toBeFalsy());
@@ -216,20 +222,23 @@ it("expect all rows to be selected and deselected", async () => {
     act(() => {
         fireEvent.click(selectAllSelect!);
     });
-
-    expect(selectAllSelect!.checked).toBeTruthy();
-    selectRowCheckboxes.forEach((checkbox) => expect(checkbox.checked).toBeTruthy());
+    await waitFor(() => {
+        expect(selectAllSelect!.checked).toBeTruthy();
+        selectRowCheckboxes.forEach((checkbox) => expect(checkbox.checked).toBeTruthy());
+    });
 
     act(() => {
         fireEvent.click(selectAllSelect!);
     });
-
-    expect(selectAllSelect!.checked).toBeFalsy();
-    selectRowCheckboxes.forEach((checkbox) => expect(checkbox.checked).toBeFalsy());
+    await waitFor(() => {
+        expect(selectAllSelect!.checked).toBeFalsy();
+        selectRowCheckboxes.forEach((checkbox) => expect(checkbox.checked).toBeFalsy());
+    });
 });
 
 it("expect only single rows to be selected and deselected by radio buttons", async () => {
     const { map, injectedServices } = await createDependencies();
+    const user = userEvent.setup();
 
     render(
         <PackageContextProvider services={injectedServices}>
@@ -249,24 +258,21 @@ it("expect only single rows to be selected and deselected by radio buttons", asy
 
     selectRowRadios.forEach((radio) => expect(radio.checked).toBeFalsy());
 
-    const first = selectRowRadios.item(0);
-
-    act(() => {
-        fireEvent.click(first);
+    await user.type(selectRowRadios[0]!, "{Space}");
+    await waitFor(() => {
+        expect(selectRowRadios[0]!.checked).toBeTruthy();
     });
 
-    expect(first.checked).toBeTruthy();
-
-    act(() => {
-        fireEvent.click(selectRowRadios.item(1));
+    await user.type(selectRowRadios[1]!, "{Space}");
+    await waitFor(() => {
+        expect(selectRowRadios[1]!.checked).toBeTruthy();
+        expect(selectRowRadios[0]!.checked).toBeFalsy();
     });
-
-    expect(selectRowRadios.item(0).checked).toBeFalsy();
-    expect(selectRowRadios.item(1).checked).toBeTruthy();
 });
 
 it("expect only single rows to be selected and deselected by checkboxes", async () => {
     const { map, injectedServices } = await createDependencies();
+    const user = userEvent.setup();
 
     render(
         <PackageContextProvider services={injectedServices}>
@@ -287,18 +293,12 @@ it("expect only single rows to be selected and deselected by checkboxes", async 
 
     selectRowCheckboxes.forEach((checkbox) => expect(checkbox.checked).toBeFalsy());
 
-    act(() => {
-        fireEvent.click(selectRowCheckboxes.item(0));
-    });
+    await user.type(selectRowCheckboxes[0]!, "{Space}");
+    expect(selectRowCheckboxes[0]!.checked).toBeTruthy();
 
-    expect(selectRowCheckboxes.item(0).checked).toBeTruthy();
-
-    act(() => {
-        fireEvent.click(selectRowCheckboxes.item(1));
-    });
-
-    expect(selectRowCheckboxes.item(0).checked).toBeFalsy();
-    expect(selectRowCheckboxes.item(1).checked).toBeTruthy();
+    await user.type(selectRowCheckboxes[1]!, "{Space}");
+    expect(selectRowCheckboxes[0]!.checked).toBeFalsy();
+    expect(selectRowCheckboxes[1]!.checked).toBeTruthy();
 });
 
 it("expect result list display all data types except dates", async () => {
@@ -412,8 +412,9 @@ it("expect render function to be applied", async () => {
     expect(dateCell!.textContent).toMatchSnapshot();
 });
 
-it("expect result-list throws selection-change-Event", async () => {
+it("expect result-list throws selection change event", async () => {
     const { map, injectedServices } = await createDependencies();
+    const user = userEvent.setup();
 
     const selectionChangeListener = vi.fn();
     render(
@@ -429,26 +430,17 @@ it("expect result-list throws selection-change-Event", async () => {
 
     const { selectAllSelect } = await waitForResultList();
 
-    //Selection All
-    act(() => {
-        fireEvent.click(selectAllSelect!);
-    });
+    // Select all
+    await user.type(selectAllSelect!, "{Space}");
+
     let features = getSelectionsEvent(selectionChangeListener, 0).features;
-    const realIds = features.map((feature: BaseFeature) => feature.id);
-    const eventIds = getSelectionsEvent(selectionChangeListener, 0).getFeatureIds();
-
-    // Result-List has Array of selected Features
+    const expectedIds = features.map((feature: BaseFeature) => feature.id);
+    const actualIds = getSelectionsEvent(selectionChangeListener, 0).getFeatureIds();
     expect(features).toEqual(dummyFeatureData);
+    expect(actualIds).toEqual(expectedIds);
 
-    //getFeatureIds method returns the correct Ids
-    expect(eventIds).toEqual(realIds);
-
-    //Deselect All
-    act(() => {
-        fireEvent.click(selectAllSelect!);
-    });
-
-    // Result-List has empty Array
+    // Deselect All
+    await user.type(selectAllSelect!, "{Space}");
     features = getSelectionsEvent(selectionChangeListener, 1).features;
     expect(features).toEqual([]);
 
@@ -553,22 +545,26 @@ async function waitForResultList() {
             throw new Error("Result list not rendered");
         }
 
-        const allHeaderElements =
-            resultListDiv.querySelectorAll<HTMLTableHeaderCellElement>("thead tr th");
-
-        const allRows = resultListDiv.querySelectorAll<HTMLElement>("tbody tr");
-        const allCells = resultListDiv.querySelectorAll<HTMLElement>("tbody td");
+        const allHeaderElements = Array.from(
+            resultListDiv.querySelectorAll<HTMLTableCellElement>("thead tr th")
+        );
+        const allRows = Array.from(resultListDiv.querySelectorAll<HTMLElement>("tbody tr"));
+        const allCells = Array.from(resultListDiv.querySelectorAll<HTMLElement>("tbody td"));
 
         const selectAllSelect = resultListDiv.querySelector<HTMLInputElement>(
             ".result-list-select-all-checkbox input"
         );
 
-        const selectRowCheckboxes = resultListDiv.querySelectorAll<HTMLInputElement>(
-            ".result-list-select-row-checkbox input"
+        const selectRowCheckboxes = Array.from(
+            resultListDiv.querySelectorAll<HTMLInputElement>(
+                ".result-list-select-row-checkbox input[type='checkbox']"
+            )
         );
 
-        const selectRowRadios = resultListDiv.querySelectorAll<HTMLInputElement>(
-            ".result-list-select-row-container .chakra-radio__input"
+        const selectRowRadios = Array.from(
+            resultListDiv.querySelectorAll<HTMLInputElement>(
+                ".result-list-select-row-container input[type='radio']"
+            )
         );
 
         return {
