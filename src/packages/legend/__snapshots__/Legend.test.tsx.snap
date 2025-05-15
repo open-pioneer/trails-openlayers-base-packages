@@ -28,7 +28,7 @@ exports[`should successfully show legend for Component configuration 1`] = `
         class="css-0"
       >
         <p
-          class="chakra-text css-0"
+          class="css-0"
         >
           Layer 1
         </p>
