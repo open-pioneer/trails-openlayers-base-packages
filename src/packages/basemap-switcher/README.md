@@ -22,7 +22,7 @@ To provide an option to deactivate all basemap layers, add the optional property
 
 ## Accessibility
 
-The package provides only a `HTMLSelectElement`.
+The package provides only a select component.
 To be compliant with a11y guidelines (screen reader compatibility), a label must be added to the basemap switcher.
 Therefore, use one of the following attempts:
 
