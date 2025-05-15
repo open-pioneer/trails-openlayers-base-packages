@@ -147,6 +147,10 @@ patchedDependencies:
   # - Fix rendering of toasts in shadow root: https://github.com/chakra-ui/ark/issues/3455
   "@ark-ui/react@*": "patches/@ark-ui__react.patch"
 
+  # For tests: overwrite focus() function using defineProperty instead of raw assignment
+  # See https://github.com/chakra-ui/zag/pull/2461
+  "@zag-js/focus-visible@*": "patches/@zag-js__focus-visible.patch"
+
 dangerouslyAllowAllBuilds: false
 onlyBuiltDependencies:
   - "@parcel/watcher"
