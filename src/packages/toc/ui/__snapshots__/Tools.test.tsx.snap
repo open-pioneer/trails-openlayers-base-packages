@@ -70,75 +70,71 @@ exports[`Should successfully create a toc with default tool component 1`] = `
           </div>
         </div>
       </h1>
-      <div
-        class="css-0"
+      <ul
+        aria-label="operationalLayerLabel"
+        class="toc-layer-list chakra-list__root css-1qja9vd"
+        role="group"
       >
-        <ul
-          aria-label="operationalLayerLabel"
-          class="toc-layer-list chakra-list__root css-1qja9vd"
-          role="group"
+        <li
+          class="toc-layer-item layer-layer-1 css-0"
         >
-          <li
-            class="toc-layer-item layer-layer-1 css-0"
+          <div
+            class="toc-layer-item-content css-1rikyh3"
           >
-            <div
-              class="toc-layer-item-content css-1rikyh3"
+            <label
+              aria-label="Layer 1"
+              class="chakra-checkbox__root css-uwx0lo"
+              data-part="root"
+              data-scope="checkbox"
+              data-state="checked"
+              dir="ltr"
+              for="checkbox:«r3»:input"
+              id="checkbox:«r3»"
             >
-              <label
-                aria-label="Layer 1"
-                class="chakra-checkbox__root css-uwx0lo"
-                data-part="root"
+              <input
+                aria-labelledby="checkbox:«r3»:label"
+                checked=""
+                id="checkbox:«r3»:input"
+                style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px; white-space: nowrap; word-wrap: normal;"
+                type="checkbox"
+                value="on"
+              />
+              <div
+                aria-hidden="true"
+                class="chakra-checkbox__control css-oq83md"
+                data-part="control"
                 data-scope="checkbox"
                 data-state="checked"
                 dir="ltr"
-                for="checkbox:«r3»:input"
-                id="checkbox:«r3»"
+                id="checkbox:«r3»:control"
               >
-                <input
-                  aria-labelledby="checkbox:«r3»:label"
-                  checked=""
-                  id="checkbox:«r3»:input"
-                  style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px; white-space: nowrap; word-wrap: normal;"
-                  type="checkbox"
-                  value="on"
-                />
-                <div
-                  aria-hidden="true"
-                  class="chakra-checkbox__control css-oq83md"
-                  data-part="control"
-                  data-scope="checkbox"
+                <svg
+                  class="css-wuqtn7"
                   data-state="checked"
-                  dir="ltr"
-                  id="checkbox:«r3»:control"
+                  viewBox="0 0 24 24"
                 >
-                  <svg
-                    class="css-wuqtn7"
-                    data-state="checked"
-                    viewBox="0 0 24 24"
-                  >
-                    <polyline
-                      points="20 6 9 17 4 12"
-                    />
-                  </svg>
-                </div>
-                <span
-                  class="chakra-checkbox__label css-1td7ckk"
-                  data-part="label"
-                  data-scope="checkbox"
-                  data-state="checked"
-                  dir="ltr"
-                  id="checkbox:«r3»:label"
-                >
-                  Layer 1
-                </span>
-              </label>
-              <div
-                class="css-xsawf1"
-              />
-            </div>
-          </li>
-        </ul>
-      </div>
+                  <polyline
+                    points="20 6 9 17 4 12"
+                  />
+                </svg>
+              </div>
+              <span
+                class="chakra-checkbox__label css-1td7ckk"
+                data-part="label"
+                data-scope="checkbox"
+                data-state="checked"
+                dir="ltr"
+                id="checkbox:«r3»:label"
+              >
+                Layer 1
+              </span>
+            </label>
+            <div
+              class="css-xsawf1"
+            />
+          </div>
+        </li>
+      </ul>
     </div>
   </div>,
   "tools": <div

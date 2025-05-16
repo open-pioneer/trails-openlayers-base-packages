@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box, List, Text, ListRootProps } from "@chakra-ui/react";
+import { List, ListRootProps, Text } from "@chakra-ui/react";
 import { AnyLayer, MapModel } from "@open-pioneer/map";
 import { useIntl } from "open-pioneer:react-hooks";
 import { memo, useMemo } from "react";
@@ -44,17 +44,15 @@ export const LayerList = memo(function LayerList(props: { layers: AnyLayer[] } &
     );
 
     return (
-        <Box>
-            <List.Root
-                // Note: not using UnorderedList because it adds default margins
-                as="ul"
-                className="toc-layer-list"
-                listStyleType="none"
-                role="group"
-                {...listProps}
-            >
-                {items}
-            </List.Root>
-        </Box>
+        <List.Root
+            // Note: not using UnorderedList because it adds default margins
+            as="ul"
+            className="toc-layer-list"
+            listStyleType="none"
+            role="group"
+            {...listProps}
+        >
+            {items}
+        </List.Root>
     );
 });
