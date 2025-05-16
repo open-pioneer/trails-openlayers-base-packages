@@ -1,5 +1,11 @@
 # @open-pioneer/experimental-layout-sidebar
 
+## 0.11.0
+
+### Minor Changes
+
+- 738390e: Update to Chakra v3
+
 ## 0.10.0
 
 ### Patch Changes

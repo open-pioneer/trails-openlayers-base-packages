@@ -1,5 +1,14 @@
 # @open-pioneer/map-test-utils
 
+## 0.11.0
+
+### Patch Changes
+
+- Updated dependencies [738390e]
+- Updated dependencies [acd5115]
+- Updated dependencies [738390e]
+    - @open-pioneer/map@0.11.0
+
 ## 0.10.0
 
 ### Patch Changes
