@@ -1,5 +1,20 @@
 # @open-pioneer/map-navigation
 
+## 0.11.0
+
+### Minor Changes
+
+- 738390e: Update to Chakra v3
+
+### Patch Changes
+
+- Updated dependencies [738390e]
+- Updated dependencies [acd5115]
+- Updated dependencies [738390e]
+- Updated dependencies [738390e]
+    - @open-pioneer/map@0.11.0
+    - @open-pioneer/map-ui-components@0.11.0
+
 ## 0.10.0
 
 ### Minor Changes
