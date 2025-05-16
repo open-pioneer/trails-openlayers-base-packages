@@ -10,7 +10,6 @@ export * from "./shared";
 export { getProjection, registerProjections, type ProjectionDefinition } from "../projections";
 
 // UI Components and React helpers
-export { useView, useProjection, useResolution, useCenter, useScale } from "../ui/hooks";
 export { MapAnchor, type MapAnchorProps, type MapAnchorPosition } from "../ui/MapAnchor";
 export { MapContainer, type MapContainerProps } from "../ui/MapContainer";
 export {
