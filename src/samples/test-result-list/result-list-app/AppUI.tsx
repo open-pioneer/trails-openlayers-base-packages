@@ -1,24 +1,23 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { FiChevronDown } from "react-icons/fi";
 import {
     Box,
     Button,
-    Flex,
     Center,
+    chakra,
     Field,
+    Flex,
+    List,
     ListItem,
     Menu,
     Portal,
     Stack,
     Text,
-    VStack,
-    chakra,
-    List
+    VStack
 } from "@chakra-ui/react";
+import { Checkbox } from "@open-pioneer/chakra-snippets/checkbox";
 import { Radio, RadioGroup } from "@open-pioneer/chakra-snippets/radio";
 import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
-import { Checkbox } from "@open-pioneer/chakra-snippets/checkbox";
 import {
     BaseFeature,
     DefaultMapProvider,
@@ -28,22 +27,13 @@ import {
 } from "@open-pioneer/map";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { ResultList, ResultListInput, SelectionMode } from "@open-pioneer/result-list";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
+import { FiChevronDown } from "react-icons/fi";
 import { MAP_ID } from "./MapConfigProviderImpl";
-import { useService } from "open-pioneer:react-hooks";
-import { ApplicationContext } from "@open-pioneer/runtime";
 
 const RESULT_LIST_HEIGHT_PIXELS = 400;
 
 export function AppUI() {
-    const ctx = useService<ApplicationContext>("runtime.ApplicationContext");
-    useEffect(() => {
-        const id = setInterval(() => {
-            console.log(ctx.getShadowRoot().activeElement);
-        }, 250);
-        return () => clearInterval(id);
-    }, [ctx]);
-
     const { map } = useMapModel(MAP_ID);
     const [displayVersion, setDisplayVersion] = useState(0);
     const [currentInput, setCurrentInput] = useState<ResultListInput>();
