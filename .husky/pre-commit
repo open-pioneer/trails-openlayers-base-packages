@@ -5,7 +5,7 @@ fi
 
 echo '--- check lockfile ---'
 pnpm install --frozen-lockfile --lockfile-only 1>/dev/null || (
-    echo '\033[31mpnpm-lock.yaml seems to be out of date. Run `pnpm install` before committing.\033[0m'
+    echo 'pnpm-lock.yaml seems to be out of date. Run `pnpm install` before committing.'
     exit 1;
 );
 
