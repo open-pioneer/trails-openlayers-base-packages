@@ -18,6 +18,15 @@ export const ScaleViewer: FC<ScaleViewerProps> = (props) => {
     const intl = useIntl();
     const scale = useReactiveSnapshot(() => map?.scale ?? 1, [map]);
     const displayScale = scale ? intl.formatNumber(scale) : undefined;
+    const ariaLabel = scale ? intl.formatMessage({ id: "scaleLabel" }, { scale }) : undefined;
 
-    return <Box {...containerProps}>{displayScale && <Text>1:{displayScale}</Text>}</Box>;
+    return (
+        <Box {...containerProps}>
+            {displayScale && (
+                <Text as="p" aria-live="polite" role="region" aria-label={ariaLabel}>
+                    <span aria-hidden="true">1:{displayScale}</span>
+                </Text>
+            )}
+        </Box>
+    );
 };
