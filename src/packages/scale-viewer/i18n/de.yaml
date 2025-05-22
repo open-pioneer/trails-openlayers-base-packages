@@ -1,0 +1,2 @@
+messages:
+  scaleLabel: 'Aktueller Maßstab: 1 zu {scale, number}'

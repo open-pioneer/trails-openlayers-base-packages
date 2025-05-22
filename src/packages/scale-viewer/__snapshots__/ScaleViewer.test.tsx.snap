@@ -6,10 +6,17 @@ exports[`should successfully create a scale viewer component 1`] = `
   data-testid="scale-viewer"
 >
   <p
+    aria-label="scaleLabel"
+    aria-live="polite"
     class="css-0"
+    role="region"
   >
-    1:
-    336,409
+    <span
+      aria-hidden="true"
+    >
+      1:
+      336,409
+    </span>
   </p>
 </div>
 `;
@@ -20,10 +27,17 @@ exports[`should successfully create a scale viewer component with additional css
   data-testid="scale-viewer"
 >
   <p
+    aria-label="scaleLabel"
+    aria-live="polite"
     class="css-0"
+    role="region"
   >
-    1:
-    336,409
+    <span
+      aria-hidden="true"
+    >
+      1:
+      336,409
+    </span>
   </p>
 </div>
 `;
