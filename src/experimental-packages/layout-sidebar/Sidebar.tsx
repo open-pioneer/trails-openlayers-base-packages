@@ -51,7 +51,7 @@ export interface SidebarProperties {
      */
     sidebarWidthChanged?: (width: number) => void;
     /**
-     * The visible menu entries and their corrensponding content.
+     * The visible menu entries and their corresponding content.
      */
     items?: SidebarItem[];
 }
