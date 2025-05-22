@@ -9,7 +9,7 @@ Currently the sidebar will be positioned absolute in the provided container. The
 - It could be set with boolean (`defaultExpanded`) for default expension.
 - An event `expandedChanged` is triggered when the main section is expanded/collapsed.
 - `sidebarWidthChanged` informs about the current width of the sidebar. So the wrapping component can react on this width.
-- the `items` defined the visible menu entries and their corrensponding content.
+- the `items` define the visible menu entries and their corresponding content.
 
 See this sample for integration:
 
