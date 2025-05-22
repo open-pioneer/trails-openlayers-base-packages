@@ -1,5 +1,17 @@
 # @open-pioneer/map-ui-components
 
+## 0.11.0
+
+### Minor Changes
+
+- 738390e: **Breaking:** Rename `<ToolButton />` props for consistency with Chakra naming conventions:
+
+    - `isLoading` (old) --> `loading` (new)
+    - `isActive` (old) --> `active` (new)
+    - `isDisabled` (old) --> `disabled` (new)
+
+- 738390e: Update to Chakra v3
+
 ## 0.10.0
 
 ### Patch Changes
