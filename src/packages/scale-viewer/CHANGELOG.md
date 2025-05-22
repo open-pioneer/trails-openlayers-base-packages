@@ -1,5 +1,19 @@
 # @open-pioneer/scale-viewer
 
+## 0.11.0
+
+### Minor Changes
+
+- 738390e: Update to Chakra v3
+
+### Patch Changes
+
+- 18b505a: Make scale viewer accessible for screen readers using an `aria-label` combined with an aria live region.
+- Updated dependencies [738390e]
+- Updated dependencies [acd5115]
+- Updated dependencies [738390e]
+    - @open-pioneer/map@0.11.0
+
 ## 0.10.0
 
 ### Minor Changes

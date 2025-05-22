@@ -1,6 +1,6 @@
 {
     "name": "@open-pioneer/editing",
-    "version": "0.10.0",
+    "version": "0.11.0",
     "description": "This package provides an editing service that allows to start and handle geometry editing workflows.",
     "license": "Apache-2.0",
     "main": "index.ts",
