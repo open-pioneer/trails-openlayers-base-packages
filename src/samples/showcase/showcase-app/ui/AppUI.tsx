@@ -6,7 +6,7 @@ import { Notifier } from "@open-pioneer/notifier";
 import { TitledSection } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { useIntl, useService } from "open-pioneer:react-hooks";
-import { ReactNode, useMemo } from "react";
+import { ReactNode, useId, useMemo } from "react";
 import { AppInitModel, AppStateReady } from "../model/AppInitModel";
 import { Header } from "./Header/Header";
 
@@ -44,6 +44,8 @@ function AppContent(props: { state: AppStateReady }) {
         [currentDemoModel]
     );
 
+    const headingId = useId();
+
     const viewPadding = useMemo(() => {
         // adjust map view whether list container (bottom = height of list component)
         return {
@@ -72,11 +74,18 @@ function AppContent(props: { state: AppStateReady }) {
                                     horizontalGap={10}
                                     verticalGap={10}
                                 >
-                                    <Box bgColor="white" borderRadius={10} p={2} maxW="500px">
+                                    <Box
+                                        role="region"
+                                        aria-labelledby={headingId}
+                                        bgColor="white"
+                                        borderRadius={10}
+                                        p={2}
+                                        maxW="500px"
+                                    >
                                         <TitledSection
                                             key={currentDemo.id}
                                             title={currentDemo.title}
-                                            sectionHeadingProps={{ size: "lg" }}
+                                            sectionHeadingProps={{ id: headingId, size: "lg" }}
                                         >
                                             <Text py={4}>{currentDemoModel.description}</Text>
                                             {currentDemoModel.mainWidget}
