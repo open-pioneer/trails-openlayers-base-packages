@@ -18,13 +18,27 @@ export interface CreateColumnsOptions {
     formatOptions?: FormatOptions;
     selectionMode: SelectionMode;
     selectionStyle: "radio" | "checkbox";
+    ariaFeatureProperty?: string;
 }
 
 export function createColumns(options: CreateColumnsOptions) {
-    const { columns, intl, tableWidth, formatOptions, selectionMode, selectionStyle } = options;
+    const {
+        columns,
+        intl,
+        tableWidth,
+        formatOptions,
+        selectionMode,
+        selectionStyle,
+        ariaFeatureProperty
+    } = options;
     const remainingColumnWidth: number | undefined =
         tableWidth === undefined ? undefined : calcRemainingColumnWidth(columns, tableWidth);
-    const selectionColumn = createSelectionColumn(intl, selectionMode, selectionStyle);
+    const selectionColumn = createSelectionColumn(
+        intl,
+        selectionMode,
+        selectionStyle,
+        ariaFeatureProperty
+    );
     const columnDefs = columns.map((column, index) => {
         const columnWidth = column.width || remainingColumnWidth;
         const configuredId =
@@ -115,7 +129,8 @@ function renderFunc(cellValue: unknown, intl: PackageIntl, formatOptions?: Forma
 function createSelectionColumn(
     intl: PackageIntl,
     selectionMode: SelectionMode,
-    selectionStyle: "radio" | "checkbox"
+    selectionStyle: "radio" | "checkbox",
+    ariaFeatureProperty?: string
 ) {
     return columnHelper.display({
         id: "selection-buttons",
@@ -152,6 +167,19 @@ function createSelectionColumn(
                 selectionStyle === "radio"
                     ? "result-list-select-row-radio"
                     : "result-list-select-row-checkbox";
+            //use feature id as fallback if property not provided or does not exist for this feature
+            const ariaFeaturePropertyValue =
+                ariaFeatureProperty &&
+                row.original.properties &&
+                row.original.properties[ariaFeatureProperty]
+                    ? row.original.properties[ariaFeatureProperty].toString()
+                    : row.original.id.toString();
+            const ariaLabel = intl.formatMessage(
+                {
+                    id: "ariaLabel.selectSingle"
+                },
+                { featureProperty: ariaFeaturePropertyValue }
+            );
             return (
                 <chakra.div
                     display="inline-block"
@@ -168,9 +196,7 @@ function createSelectionColumn(
                         onChange(newIsChecked) {
                             row.toggleSelected(newIsChecked);
                         },
-                        ariaLabel: intl.formatMessage({
-                            id: "ariaLabel.selectSingle"
-                        })
+                        ariaLabel: ariaLabel
                     })}
                 </chakra.div>
             );

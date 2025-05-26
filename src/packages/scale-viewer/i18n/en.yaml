@@ -1,2 +1,2 @@
 messages:
-  scaleLabel: 'Current scale: 1 to {scale, number}'
+  scaleLabel: "Current scale: 1 to {scale, number}"

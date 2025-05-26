@@ -43,6 +43,7 @@ export function ResultListComponent() {
                     key={state.key}
                     input={state.input}
                     onSelectionChange={selectionChangeListener}
+                    ariaFeatureProperty="name"
                 />
             </Box>
         )

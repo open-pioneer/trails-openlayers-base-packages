@@ -6,5 +6,5 @@ messages:
     true: yes
     false: no
   ariaLabel:
-    selectSingle: Press space to select or deselect.
+    selectSingle: Press space to select or deselect {featureProperty}.
     region: Result List

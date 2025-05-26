@@ -185,6 +185,12 @@ export interface ResultListProps extends CommonComponentProps, MapModelProps {
      * Should each row be memoized to improve render performance. Default `false`.
      */
     memoizeRows?: boolean;
+
+    /**
+     * Property of the features in the result list that is used to provide context in aria labels.
+     * The feature's Id is used by default or as fallback if property does not exist on the feature.
+     */
+    ariaFeatureProperty?: string;
 }
 
 /**
@@ -202,7 +208,8 @@ export const ResultList: FC<ResultListProps> = (props) => {
         enableHighlight = true,
         selectionMode = "multi",
         selectionStyle = selectionMode === "single" ? "radio" : "checkbox",
-        highlightOptions
+        highlightOptions,
+        ariaFeatureProperty
     } = props;
 
     const { map } = useMapModel(props);
@@ -225,9 +232,10 @@ export const ResultList: FC<ResultListProps> = (props) => {
                 tableWidth: tableWidth,
                 formatOptions: formatOptions,
                 selectionMode,
-                selectionStyle
+                selectionStyle,
+                ariaFeatureProperty
             }),
-        [columns, intl, tableWidth, formatOptions, selectionMode, selectionStyle]
+        [columns, intl, tableWidth, formatOptions, selectionMode, selectionStyle, ariaFeatureProperty]
     );
 
     useEffect(() => {

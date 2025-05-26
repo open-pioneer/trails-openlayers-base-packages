@@ -1,7 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { chakra } from "@chakra-ui/react";
-import { Checkbox } from "@open-pioneer/chakra-snippets/checkbox";
+import { chakra, Checkbox } from "@chakra-ui/react";
 import { Radio, RadioGroup } from "@open-pioneer/chakra-snippets/radio";
 import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
 import { memo, ReactNode, useId } from "react";
@@ -58,8 +57,11 @@ const SelectCheckbox = memo(function SelectCheckbox({
     disabled,
     onChange
 }: SelectComponentInnerProps) {
+    const checkboxId = useId();
     return (
-        <Checkbox
+        <Checkbox.Root
+            //fix invalid aria-labeledby, this works because we never actually render the label
+            ids={{ root: checkboxId, label: checkboxId }}
             className={className}
             aria-label={ariaLabel}
             checked={checked}
@@ -67,7 +69,12 @@ const SelectCheckbox = memo(function SelectCheckbox({
             onCheckedChange={(e) => {
                 onChange?.(!!e.checked); // "indeterminate" not required -> map to true
             }}
-        />
+        >
+            <Checkbox.HiddenInput />
+            <Checkbox.Control>
+                <Checkbox.Indicator />
+            </Checkbox.Control>
+        </Checkbox.Root>
     );
 });
 

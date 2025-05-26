@@ -90,6 +90,7 @@ class DemoModelImpl implements DemoModel {
                 key={currentState.key}
                 input={currentState.input}
                 onSelectionChange={this.#onResultListSelectionChange}
+                ariaFeatureProperty="name"
             />
         );
     }
