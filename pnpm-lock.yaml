@@ -715,6 +715,9 @@ importers:
       '@open-pioneer/map-test-utils':
         specifier: workspace:^
         version: link:../map-test-utils
+      '@open-pioneer/test-utils':
+        specifier: 'catalog:'
+        version: 4.0.0-dev.20250516115755(@types/react-dom@19.1.2(@types/react@19.1.2))(@types/react@19.1.2)(typescript@5.8.3)
       '@types/jsdom':
         specifier: 'catalog:'
         version: 21.1.7

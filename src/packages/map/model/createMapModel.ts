@@ -15,6 +15,7 @@ import { MapConfig } from "../api";
 import { registerProjections } from "../projections";
 import { patchOpenLayersClassesForTesting } from "../util/ol-test-support";
 import { HttpService } from "@open-pioneer/http";
+import { PackageIntl } from "@open-pioneer/runtime";
 
 /**
  * Register custom projection to the global proj4js definitions. User can select `EPSG:25832`
@@ -31,19 +32,22 @@ const LOG = createLogger("map:createMapModel");
 export async function createMapModel(
     mapId: string,
     mapConfig: MapConfig,
+    intl: PackageIntl,
     httpService: HttpService
 ): Promise<MapModelImpl> {
-    return await new MapModelFactory(mapId, mapConfig, httpService).createMapModel();
+    return await new MapModelFactory(mapId, mapConfig, intl, httpService).createMapModel();
 }
 
 class MapModelFactory {
     private mapId: string;
     private mapConfig: MapConfig;
+    private intl: PackageIntl;
     private httpService: HttpService;
 
-    constructor(mapId: string, mapConfig: MapConfig, httpService: HttpService) {
+    constructor(mapId: string, mapConfig: MapConfig, intl: PackageIntl, httpService: HttpService) {
         this.mapId = mapId;
         this.mapConfig = mapConfig;
+        this.intl = intl;
         this.httpService = httpService;
     }
 
@@ -56,7 +60,7 @@ class MapModelFactory {
         };
 
         if (!mapOptions.controls) {
-            mapOptions.controls = [new Attribution({ collapsible: false })];
+            mapOptions.controls = [createDefaultAttribution(this.intl)];
         }
 
         if (!mapOptions.interactions) {
@@ -199,4 +203,15 @@ class MapModelFactory {
         }
         return projection;
     }
+}
+
+function createDefaultAttribution(intl: PackageIntl): Attribution {
+    const attr = new Attribution({ collapsible: false });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const element = (attr as any).element as HTMLElement | undefined;
+    if (element) {
+        element.role = "region";
+        element.ariaLabel = intl.formatMessage({ id: "attribution.label" });
+    }
+    return attr;
 }

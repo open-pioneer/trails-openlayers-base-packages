@@ -1,12 +1,12 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { createLogger } from "@open-pioneer/core";
-import { Service, ServiceOptions } from "@open-pioneer/runtime";
+import { HttpService } from "@open-pioneer/http";
+import { PackageIntl, Service, ServiceOptions } from "@open-pioneer/runtime";
 import OlMap from "ol/Map";
-import { MapModelImpl } from "./model/MapModelImpl";
 import { MapConfigProvider, MapModel, MapRegistry } from "./api";
 import { createMapModel } from "./model/createMapModel";
-import { HttpService } from "@open-pioneer/http";
+import { MapModelImpl } from "./model/MapModelImpl";
 
 const LOG = createLogger("map:MapRegistry");
 
@@ -18,6 +18,7 @@ interface References {
 type ModelJobResult = { kind: "model"; model: MapModelImpl } | { kind: "error"; error: Error };
 
 export class MapRegistryImpl implements Service, MapRegistry {
+    #intl: PackageIntl;
     #httpService: HttpService;
 
     #configProviders = new Map<string, MapConfigProvider>();
@@ -26,7 +27,8 @@ export class MapRegistryImpl implements Service, MapRegistry {
     #modelsByOlMap = new WeakMap<OlMap, MapModel>();
     #destroyed = false;
 
-    constructor({ references }: ServiceOptions<References>) {
+    constructor({ references, intl }: ServiceOptions<References>) {
+        this.#intl = intl;
         this.#httpService = references.httpService;
 
         const providers = references.providers;
@@ -96,7 +98,7 @@ export class MapRegistryImpl implements Service, MapRegistry {
     async #createModel(mapId: string, provider: MapConfigProvider): Promise<ModelJobResult> {
         LOG.info(`Creating map with id '${mapId}'`);
         const mapConfig = await provider.getMapConfig();
-        const mapModel = await createMapModel(mapId, mapConfig, this.#httpService);
+        const mapModel = await createMapModel(mapId, mapConfig, this.#intl, this.#httpService);
 
         if (this.#destroyed) {
             mapModel.destroy();
