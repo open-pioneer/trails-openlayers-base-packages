@@ -1,13 +1,13 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box, Button, Menu, Portal } from "@chakra-ui/react";
+import { Box, Button, Icon, Menu, Portal } from "@chakra-ui/react";
 import { MapModelProps, useMapModel } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, useMemo } from "react";
-import { FiChevronUp } from "react-icons/fi";
+import { FiChevronDown } from "react-icons/fi";
 
 const DEFAULT_SCALES = [
     17471320, 8735660, 4367830, 2183915, 1091957, 545978, 272989, 136494, 68247, 34123, 17061, 8530,
@@ -33,15 +33,18 @@ export const ScaleSetter: FC<ScaleSetterProps> = (props) => {
     const { map } = useMapModel(props);
     const intl = useIntl();
 
-    const activeScale = useReactiveSnapshot(() => map?.scale ?? 1, [map]);
-
     const scaleSelectOptions = useMemo(
         () =>
             scales.map((scaleValue) => {
-                const displayScale = renderDisplayScale(intl, scaleValue);
                 return (
                     <Menu.Item
                         className="scale-setter-option"
+                        aria-label={intl.formatMessage(
+                            {
+                                id: "option.ariaLabel"
+                            },
+                            { scale: scaleValue }
+                        )}
                         value={String(scaleValue)}
                         key={scaleValue}
                         onClick={() => map?.setScale(scaleValue)}
@@ -52,14 +55,14 @@ export const ScaleSetter: FC<ScaleSetterProps> = (props) => {
                             });
                         }}
                     >
-                        {displayScale}
+                        {renderScaleText(intl, scaleValue)}
                     </Menu.Item>
                 );
             }),
         [intl, map, scales]
     );
 
-    const renderedScale = renderDisplayScale(intl, activeScale);
+    const activeScale = useReactiveSnapshot(() => map?.scale ?? 1, [map]);
     return (
         <Box {...containerProps}>
             <Menu.Root>
@@ -70,14 +73,18 @@ export const ScaleSetter: FC<ScaleSetterProps> = (props) => {
                             {
                                 id: "button.ariaLabel"
                             },
-                            { scale: renderedScale }
+                            {
+                                scale: activeScale
+                            }
                         )}
                         aria-description={intl.formatMessage({
                             id: "button.ariaDescription"
                         })}
                     >
-                        {renderedScale}
-                        {<FiChevronUp />}
+                        {renderScaleText(intl, activeScale)}
+                        <Icon>
+                            <FiChevronDown />
+                        </Icon>
                     </Button>
                 </Menu.Trigger>
                 <Portal>
@@ -96,6 +103,6 @@ export const ScaleSetter: FC<ScaleSetterProps> = (props) => {
     );
 };
 
-function renderDisplayScale(intl: PackageIntl, rawScale: number): string {
+function renderScaleText(intl: PackageIntl, rawScale: number): string {
     return "1 : " + intl.formatNumber(rawScale);
 }

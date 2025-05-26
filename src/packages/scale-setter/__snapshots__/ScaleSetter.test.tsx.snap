@@ -20,7 +20,10 @@ exports[`should successfully create a scale Setter component 1`] = `
   >
     1 : 336,409
     <svg
+      aria-hidden="true"
+      class="chakra-icon css-1qiwd9j"
       fill="none"
+      focusable="false"
       height="1em"
       stroke="currentColor"
       stroke-linecap="round"
@@ -31,7 +34,7 @@ exports[`should successfully create a scale Setter component 1`] = `
       xmlns="http://www.w3.org/2000/svg"
     >
       <polyline
-        points="18 15 12 9 6 15"
+        points="6 9 12 15 18 9"
       />
     </svg>
   </button>
@@ -58,7 +61,10 @@ exports[`should successfully create a scale setter component with additional css
   >
     1 : 336,409
     <svg
+      aria-hidden="true"
+      class="chakra-icon css-1qiwd9j"
       fill="none"
+      focusable="false"
       height="1em"
       stroke="currentColor"
       stroke-linecap="round"
@@ -69,7 +75,7 @@ exports[`should successfully create a scale setter component with additional css
       xmlns="http://www.w3.org/2000/svg"
     >
       <polyline
-        points="18 15 12 9 6 15"
+        points="6 9 12 15 18 9"
       />
     </svg>
   </button>
