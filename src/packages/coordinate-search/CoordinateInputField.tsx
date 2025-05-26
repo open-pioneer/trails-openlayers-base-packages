@@ -47,7 +47,7 @@ export function CoordinateInputField(props: {
             <AttachedButton
                 className="coordinate-input-clear-button"
                 label={intl.formatMessage({
-                    id: "coordinateInput.clearPlaceholder"
+                    id: "coordinateInput.clearLabel"
                 })}
                 onClick={() => {
                     setCoordinateSearchInput("");
@@ -65,7 +65,7 @@ export function CoordinateInputField(props: {
             <AttachedButton
                 className="coordinate-input-copy-button"
                 label={intl.formatMessage({
-                    id: "coordinateInput.copyPlaceholder"
+                    id: "coordinateInput.copyLabel"
                 })}
                 onClick={() => {
                     navigator.clipboard.writeText(placeholderString);
