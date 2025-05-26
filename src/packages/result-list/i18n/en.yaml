@@ -7,3 +7,4 @@ messages:
     false: no
   ariaLabel:
     selectSingle: Press space to select or deselect.
+    region: Result List

@@ -7,3 +7,4 @@ messages:
     false: nein
   ariaLabel:
     selectSingle: Drücken Sie die Leertaste zum ab- oder anwählen.
+    region: Resultatliste
