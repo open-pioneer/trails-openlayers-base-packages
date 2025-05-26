@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import { FiSearch } from "react-icons/fi";
 import { chakra, Icon, IconButton } from "@chakra-ui/react";
+import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
 import { LuX } from "react-icons/lu";
 import {
     ClearIndicatorProps,
@@ -129,22 +130,24 @@ function CustomClearIndicator(props: {
     };
 
     return (
-        <IconButton
-            size="sm"
-            variant="ghost"
-            mr="1px"
-            aria-label={clearButtonLabel}
-            onClick={clickHandler}
-            // needed for correct touch handling; select control would otherwise preventDefault()
-            onTouchEnd={clickHandler}
-            // Stop select component from opening the menu.
-            // It will otherwise flash briefly because of a mouse down listener in the select.
-            onMouseDown={(e) => e.preventDefault()}
-        >
-            <Icon>
-                <LuX />
-            </Icon>
-        </IconButton>
+        <Tooltip content={clearButtonLabel}>
+            <IconButton
+                size="sm"
+                variant="ghost"
+                mr="1px"
+                aria-label={clearButtonLabel}
+                onClick={clickHandler}
+                // needed for correct touch handling; select control would otherwise preventDefault()
+                onTouchEnd={clickHandler}
+                // Stop select component from opening the menu.
+                // It will otherwise flash briefly because of a mouse down listener in the select.
+                onMouseDown={(e) => e.preventDefault()}
+            >
+                <Icon>
+                    <LuX />
+                </Icon>
+            </IconButton>
+        </Tooltip>
     );
 }
 
