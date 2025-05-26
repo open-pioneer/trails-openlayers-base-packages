@@ -6,6 +6,7 @@ exports[`should successfully create a printing component 1`] = `
   data-testid="printing"
 >
   <form
+    aria-label="formLabel"
     class="css-1crq8d6"
   >
     <div

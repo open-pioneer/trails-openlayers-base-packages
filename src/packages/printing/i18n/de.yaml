@@ -1,4 +1,5 @@
 messages:
+  formLabel: "Kartendruck konfigurieren"
   title: "Titel"
   fileFormat: "Datei Format"
   export: "Karte exportieren"
