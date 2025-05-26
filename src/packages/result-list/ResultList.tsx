@@ -187,7 +187,7 @@ export interface ResultListProps extends CommonComponentProps, MapModelProps {
     memoizeRows?: boolean;
 
     /**
-     * Property of the features in the result list that is used to provide context in aria labels.
+     * Property of the features in the result list that is used to enrich aria labels with context.
      * The feature's Id is used by default or as fallback if property does not exist on the feature.
      */
     ariaFeatureProperty?: string;
