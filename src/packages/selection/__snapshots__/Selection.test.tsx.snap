@@ -2,6 +2,7 @@
 
 exports[`should successfully create a selection component and select the first selection source 1`] = `
 <div
+  aria-description="tooltip"
   class="chakra-stack selection css-ui72bc"
   data-testid="selection"
 >

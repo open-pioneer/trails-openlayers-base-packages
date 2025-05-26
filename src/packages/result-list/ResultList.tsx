@@ -235,7 +235,15 @@ export const ResultList: FC<ResultListProps> = (props) => {
                 selectionStyle,
                 ariaFeatureProperty
             }),
-        [columns, intl, tableWidth, formatOptions, selectionMode, selectionStyle, ariaFeatureProperty]
+        [
+            columns,
+            intl,
+            tableWidth,
+            formatOptions,
+            selectionMode,
+            selectionStyle,
+            ariaFeatureProperty
+        ]
     );
 
     useEffect(() => {

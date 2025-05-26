@@ -81,13 +81,10 @@ export const Selection: FC<SelectionProps> = (props) => {
         onSelectionComplete
     );
 
-    useDragSelection(
-        mapState.map,
-        intl,
-        onExtentSelected,
-        currentSourceStatus.kind === "available",
-        !!currentSource
-    );
+    const isActive = currentSourceStatus.kind === "available";
+    const hasSelectedSource = !!currentSource;
+
+    useDragSelection(mapState.map, intl, onExtentSelected, isActive, hasSelectedSource);
 
     const getId = useSelectionSourceId();
 
@@ -108,7 +105,11 @@ export const Selection: FC<SelectionProps> = (props) => {
     }
 
     return (
-        <VStack {...containerProps} gap={2}>
+        <VStack
+            {...containerProps}
+            gap={2}
+            aria-description={intl.formatMessage({ id: "tooltip" })}
+        >
             <Select.Root
                 className="selection-source"
                 collection={sourceOptionsCollection}
