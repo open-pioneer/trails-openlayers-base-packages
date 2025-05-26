@@ -88,6 +88,7 @@ exports[`expect result list to be created successfully 1`] = `
               </span>
             </div>
             <span
+              aria-hidden="true"
               class="result-list-resizer css-0"
             />
           </th>
@@ -98,9 +99,11 @@ exports[`expect result list to be created successfully 1`] = `
           >
             Spalte A
             <span
+              aria-hidden="true"
               class="result-list-sort-indicator css-1fb0rrh"
             />
             <span
+              aria-hidden="true"
               class="result-list-resizer css-0"
             />
           </th>
@@ -111,9 +114,11 @@ exports[`expect result list to be created successfully 1`] = `
           >
             Spalte B
             <span
+              aria-hidden="true"
               class="result-list-sort-indicator css-1fb0rrh"
             />
             <span
+              aria-hidden="true"
               class="result-list-resizer css-0"
             />
           </th>
@@ -124,9 +129,11 @@ exports[`expect result list to be created successfully 1`] = `
           >
             Spalte C
             <span
+              aria-hidden="true"
               class="result-list-sort-indicator css-1fb0rrh"
             />
             <span
+              aria-hidden="true"
               class="result-list-resizer css-0"
             />
           </th>
@@ -137,9 +144,11 @@ exports[`expect result list to be created successfully 1`] = `
           >
             Spalte D
             <span
+              aria-hidden="true"
               class="result-list-sort-indicator css-1fb0rrh"
             />
             <span
+              aria-hidden="true"
               class="result-list-resizer css-0"
             />
           </th>
@@ -150,9 +159,11 @@ exports[`expect result list to be created successfully 1`] = `
           >
             Spalte E
             <span
+              aria-hidden="true"
               class="result-list-sort-indicator css-1fb0rrh"
             />
             <span
+              aria-hidden="true"
               class="result-list-resizer css-0"
             />
           </th>

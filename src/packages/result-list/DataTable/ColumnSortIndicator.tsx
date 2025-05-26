@@ -8,7 +8,7 @@ import { ReactNode } from "react";
 export function ColumnSortIndicator(props: { isSorted: false | SortDirection }): ReactNode {
     const { isSorted } = props;
     return (
-        <chakra.span ml="4" className="result-list-sort-indicator">
+        <chakra.span ml="4" className="result-list-sort-indicator" aria-hidden="true">
             {isSorted ? isSorted === "desc" ? <PiCaretDownFill /> : <PiCaretUpFill /> : null}
         </chakra.span>
     );

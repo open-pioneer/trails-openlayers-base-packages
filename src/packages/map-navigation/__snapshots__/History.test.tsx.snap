@@ -14,7 +14,10 @@ exports[`should successfully create an view history navigation component 1`] = `
   type="button"
 >
   <svg
+    aria-hidden="true"
+    class="chakra-icon css-1qiwd9j"
     fill="none"
+    focusable="false"
     height="1em"
     stroke="currentColor"
     stroke-linecap="round"
@@ -48,7 +51,10 @@ exports[`should successfully create an view history navigation component 2`] = `
   type="button"
 >
   <svg
+    aria-hidden="true"
+    class="chakra-icon css-1qiwd9j"
     fill="none"
+    focusable="false"
     height="1em"
     stroke="currentColor"
     stroke-linecap="round"

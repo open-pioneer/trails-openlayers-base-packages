@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box, IconButton, Menu, Portal } from "@chakra-ui/react";
+import { Box, IconButton, Menu, Portal, Icon } from "@chakra-ui/react";
 import { AnyLayer, MapModel } from "@open-pioneer/map";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, memo } from "react";
@@ -42,7 +42,9 @@ export const Tools: FC<ToolsProps> = memo(function Tools(props: ToolsProps) {
                             padding={0}
                             size="sm"
                         >
-                            <FiMoreVertical spacing={0} />
+                            <Icon>
+                                <FiMoreVertical spacing={0} />
+                            </Icon>
                         </IconButton>
                     </Menu.Trigger>
                     <Portal>
