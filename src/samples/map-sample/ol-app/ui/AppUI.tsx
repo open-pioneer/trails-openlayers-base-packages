@@ -115,6 +115,7 @@ function MainContentComponent(props: { mainContent: readonly MainContentId[] }) 
  * A simple container that separates its children with separator elements.
  */
 function MainContentContainer(props: { children: ReactNode[] }) {
+    const intl = useIntl();
     const children = props.children;
     const separatedChildren: ReactNode[] = [];
     for (const c of children) {
@@ -146,6 +147,8 @@ function MainContentContainer(props: { children: ReactNode[] }) {
             padding={2}
             boxShadow="lg"
             overflow="auto"
+            role="region"
+            aria-label={intl.formatMessage({ id: "ariaLabel.widgets" })}
         >
             {separatedChildren}
         </Box>
