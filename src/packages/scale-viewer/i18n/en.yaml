@@ -1,2 +1,3 @@
 messages:
-  scaleLabel: 'Current scale: 1 to {scale, number}'
+  regionLabel: "Scale"
+  scaleLabel: "Current scale: 1 to {scale}"
