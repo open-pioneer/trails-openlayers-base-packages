@@ -103,7 +103,7 @@ exports[`should successfully create a toc component 1`] = `
     <ul
       aria-label="operationalLayerLabel"
       class="toc-layer-list chakra-list__root css-1qja9vd"
-      role="group"
+      role="list"
     >
       <li
         class="toc-layer-item layer-layer-2 css-0"

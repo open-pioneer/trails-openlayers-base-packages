@@ -41,6 +41,7 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
     }, [layer]);
 
     const nestedChildren = useNestedChildren(layerGroupId, title, layer, intl);
+    const hasNestedChildren = !!nestedChildren;
     return (
         <Box as="li" className={classNames("toc-layer-item", `layer-${slug(layer.id)}`)}>
             <Flex
@@ -60,7 +61,7 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
                         layerGroupId={layerGroupId}
                         expanded={expanded}
                         onClick={() => tocItem.setExpanded(!expanded)}
-                        hasNestedChildren={!!nestedChildren}
+                        hasNestedChildren={hasNestedChildren}
                     />
                 )}
                 <Checkbox

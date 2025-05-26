@@ -49,7 +49,6 @@ export const LayerList = memo(function LayerList(props: { layers: AnyLayer[] } &
             as="ul"
             className="toc-layer-list"
             listStyleType="none"
-            role="group"
             {...listProps}
         >
             {items}
