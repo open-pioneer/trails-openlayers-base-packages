@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { FiSearch } from "react-icons/fi";
-import { chakra } from "@chakra-ui/react";
-import { CloseButton } from "@open-pioneer/chakra-snippets/close-button";
+import { chakra, Icon, IconButton } from "@chakra-ui/react";
+import { LuX } from "react-icons/lu";
 import {
     ClearIndicatorProps,
     GroupProps,
@@ -75,7 +75,11 @@ export function ValueContainer({
     };
     return (
         <chakraComponents.ValueContainer {...containerProps}>
-            {!!children && <FiSearch style={{ position: "absolute", left: 8 }} size="1.25em" />}
+            {!!children && (
+                <Icon position="absolute" left="8px" boxSize="1.25em">
+                    <FiSearch />
+                </Icon>
+            )}
             {children}
         </chakraComponents.ValueContainer>
     );
@@ -125,9 +129,9 @@ function CustomClearIndicator(props: {
     };
 
     return (
-        <CloseButton
-            role="button"
+        <IconButton
             size="sm"
+            variant="ghost"
             mr="1px"
             aria-label={clearButtonLabel}
             onClick={clickHandler}
@@ -136,7 +140,11 @@ function CustomClearIndicator(props: {
             // Stop select component from opening the menu.
             // It will otherwise flash briefly because of a mouse down listener in the select.
             onMouseDown={(e) => e.preventDefault()}
-        />
+        >
+            <Icon>
+                <LuX />
+            </Icon>
+        </IconButton>
     );
 }
 

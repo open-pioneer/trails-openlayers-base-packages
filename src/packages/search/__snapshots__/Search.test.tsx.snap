@@ -26,15 +26,17 @@ exports[`should successfully create a search component 1`] = `
         class="search-value-container react-select__value-container css-1ch6166"
       >
         <svg
+          aria-hidden="true"
+          class="chakra-icon css-5yfauj"
           fill="none"
-          height="1.25em"
+          focusable="false"
+          height="1em"
           stroke="currentColor"
           stroke-linecap="round"
           stroke-linejoin="round"
           stroke-width="2"
-          style="position: absolute; left: 8px;"
           viewBox="0 0 24 24"
-          width="1.25em"
+          width="1em"
           xmlns="http://www.w3.org/2000/svg"
         >
           <circle

@@ -11,7 +11,11 @@ exports[`renders as a button 1`] = `
   id="tooltip:«r0»:trigger"
   type="button"
 >
-  <span>
+  <span
+    aria-hidden="true"
+    class="chakra-icon css-1qiwd9j"
+    focusable="false"
+  >
     X
   </span>
 </button>

@@ -18,7 +18,10 @@ exports[`should load the stored bookmark from local storage and present it visib
         class="css-d82rsv"
       >
         <svg
+          aria-hidden="true"
+          class="chakra-icon css-1qiwd9j"
           fill="currentColor"
+          focusable="false"
           height="1em"
           stroke="currentColor"
           stroke-width="0"
@@ -50,7 +53,10 @@ exports[`should load the stored bookmark from local storage and present it visib
         type="button"
       >
         <svg
+          aria-hidden="true"
+          class="chakra-icon css-1qiwd9j"
           fill="currentColor"
+          focusable="false"
           height="1em"
           stroke="currentColor"
           stroke-width="0"

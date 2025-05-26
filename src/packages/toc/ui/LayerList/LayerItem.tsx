@@ -1,6 +1,14 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box, Collapsible, CollapsibleContent, Flex, IconButton, Spacer } from "@chakra-ui/react";
+import {
+    Box,
+    Collapsible,
+    CollapsibleContent,
+    Flex,
+    Icon,
+    IconButton,
+    Spacer
+} from "@chakra-ui/react";
 import { reactive } from "@conterra/reactivity-core";
 import { Checkbox } from "@open-pioneer/chakra-snippets/checkbox";
 import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
@@ -166,7 +174,7 @@ function CollapseButton(props: {
                 }
             }}
         >
-            {icon}
+            <Icon>{icon}</Icon>
         </IconButton>
     );
 }

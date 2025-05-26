@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { IconButton, CloseButton, Popover, Portal, Text } from "@chakra-ui/react";
+import { IconButton, CloseButton, Popover, Portal, Text, Icon } from "@chakra-ui/react";
 import { AnyLayer } from "@open-pioneer/map";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { FiMoreVertical } from "react-icons/fi";
@@ -30,7 +30,9 @@ export function LayerItemMenu(props: {
                         variant="ghost"
                         size="sm"
                     >
-                        <FiMoreVertical spacing={0} />
+                        <Icon>
+                            <FiMoreVertical spacing={0} />
+                        </Icon>
                     </IconButton>
                 </Popover.Trigger>
                 <Portal>

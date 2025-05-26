@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Field, IconButton, Input, InputGroup } from "@chakra-ui/react";
+import { Field, Icon, IconButton, Input, InputGroup } from "@chakra-ui/react";
 import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
 import { Coordinate } from "ol/coordinate";
 import { useIntl } from "open-pioneer:react-hooks";
@@ -53,7 +53,11 @@ export function CoordinateInputField(props: {
                     setCoordinateSearchInput("");
                     onClear?.();
                 }}
-                icon={<FiX />}
+                icon={
+                    <Icon>
+                        <FiX />
+                    </Icon>
+                }
             />
         );
     } else if (typeof placeholder === "object") {
@@ -66,7 +70,11 @@ export function CoordinateInputField(props: {
                 onClick={() => {
                     navigator.clipboard.writeText(placeholderString);
                 }}
-                icon={<FiCopy />}
+                icon={
+                    <Icon>
+                        <FiCopy />
+                    </Icon>
+                }
             />
         );
     }
