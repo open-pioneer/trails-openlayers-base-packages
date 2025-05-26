@@ -6,13 +6,16 @@ import { Notifier } from "@open-pioneer/notifier";
 import { TitledSection } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { useIntl, useService } from "open-pioneer:react-hooks";
-import { ReactNode, useId, useMemo } from "react";
+import { ReactNode, useEffect, useId, useMemo } from "react";
 import { AppInitModel, AppStateReady } from "../model/AppInitModel";
 import { Header } from "./Header/Header";
+import { ApplicationContext } from "@open-pioneer/runtime";
 
 export function AppUI() {
     const appModel = useService<AppInitModel>("app.AppInitModel");
     const appState = useReactiveSnapshot(() => appModel.appState, [appModel]);
+
+    useGlobalLang();
 
     let content: ReactNode;
     switch (appState.kind) {
@@ -117,4 +120,18 @@ function AppContent(props: { state: AppStateReady }) {
             </Flex>
         </>
     );
+}
+
+/**
+ * Syncs the application's locale into the <html> element.
+ *
+ * This is appropriate when the app implements the entire page anyway; it may introduce
+ * conflicts when the app is embedded into another site.
+ */
+function useGlobalLang() {
+    const ctx = useService<ApplicationContext>("runtime.ApplicationContext");
+    const locale = useReactiveSnapshot(() => ctx.getLocale(), [ctx]);
+    useEffect(() => {
+        document.documentElement.lang = locale;
+    }, [locale]);
 }

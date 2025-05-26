@@ -6,7 +6,7 @@ import { Notifier } from "@open-pioneer/notifier";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { useIntl, useService } from "open-pioneer:react-hooks";
-import { ReactNode, useMemo } from "react";
+import { ReactNode, useEffect, useMemo } from "react";
 import { AppModel, MainContentId } from "../AppModel";
 import { EditingComponent } from "./Editing";
 import { Footer } from "./Footer";
@@ -18,6 +18,7 @@ import { SearchComponent } from "./Search";
 import { SelectionComponent } from "./Selection";
 import { TocComponent } from "./Toc";
 import { MapTools } from "./MapTools";
+import { ApplicationContext } from "@open-pioneer/runtime";
 
 /**
  * The main application layout.
@@ -27,6 +28,8 @@ export function AppUI() {
     const intl = useIntl();
     const appModel = useService<AppModel>("ol-app.AppModel");
     const map = useReactiveSnapshot(() => appModel.map, [appModel]);
+
+    useGlobalLang();
 
     const { resultListState, mainContent } = useReactiveSnapshot(() => {
         return {
@@ -153,4 +156,18 @@ function MainContentContainer(props: { children: ReactNode[] }) {
             {separatedChildren}
         </Box>
     );
+}
+
+/**
+ * Syncs the application's locale into the <html> element.
+ *
+ * This is appropriate when the app implements the entire page anyway; it may introduce
+ * conflicts when the app is embedded into another site.
+ */
+function useGlobalLang() {
+    const ctx = useService<ApplicationContext>("runtime.ApplicationContext");
+    const locale = useReactiveSnapshot(() => ctx.getLocale(), [ctx]);
+    useEffect(() => {
+        document.documentElement.lang = locale;
+    }, [locale]);
 }
