@@ -1,8 +1,11 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { IconButton, CloseButton, Popover, Portal, Text, Icon } from "@chakra-ui/react";
+import { CloseButton, Icon, IconButton, Popover, Portal, Text } from "@chakra-ui/react";
+import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
 import { AnyLayer } from "@open-pioneer/map";
 import { PackageIntl } from "@open-pioneer/runtime";
+import { useIntl } from "open-pioneer:react-hooks";
+import { useId } from "react";
 import { FiMoreVertical } from "react-icons/fi";
 import { useLoadState } from "./hooks";
 
@@ -12,29 +15,20 @@ export function LayerItemMenu(props: {
     description: string;
     intl: PackageIntl;
 }) {
-    const { layer, title, description, intl } = props;
+    const { layer, title, description } = props;
     const isPresent = !!description;
-    const buttonLabel = intl.formatMessage({ id: "descriptionLabel" });
-    const isAvailable = useLoadState(layer) !== "error";
+
+    const triggerId = useId(); // see https://chakra-ui.com/docs/components/tooltip#with-menutrigger
 
     return (
         isPresent && (
-            <Popover.Root lazyMount={true} positioning={{ placement: "bottom-start" }}>
-                <Popover.Trigger asChild>
-                    <IconButton
-                        disabled={!isAvailable}
-                        className="toc-layer-item-details-button"
-                        aria-label={buttonLabel}
-                        borderRadius="full"
-                        padding={0}
-                        variant="ghost"
-                        size="sm"
-                    >
-                        <Icon>
-                            <FiMoreVertical spacing={0} />
-                        </Icon>
-                    </IconButton>
-                </Popover.Trigger>
+            <Popover.Root
+                ids={{ trigger: triggerId }}
+                positioning={{ placement: "bottom-start" }}
+                lazyMount={true}
+                unmountOnExit={true}
+            >
+                <TriggerButton triggerId={triggerId} layer={layer} />
                 <Portal>
                     <Popover.Positioner>
                         <Popover.Content
@@ -69,5 +63,32 @@ export function LayerItemMenu(props: {
                 </Portal>
             </Popover.Root>
         )
+    );
+}
+
+function TriggerButton(props: { triggerId: string; layer: AnyLayer }) {
+    const { layer, triggerId } = props;
+    const intl = useIntl();
+    const buttonLabel = intl.formatMessage({ id: "descriptionLabel" });
+    const isAvailable = useLoadState(layer) !== "error";
+
+    return (
+        <Tooltip ids={{ trigger: triggerId }} content={buttonLabel}>
+            <Popover.Trigger asChild>
+                <IconButton
+                    disabled={!isAvailable}
+                    className="toc-layer-item-details-button"
+                    aria-label={buttonLabel}
+                    borderRadius="full"
+                    padding={0}
+                    variant="ghost"
+                    size="sm"
+                >
+                    <Icon>
+                        <FiMoreVertical spacing={0} />
+                    </Icon>
+                </IconButton>
+            </Popover.Trigger>
+        </Tooltip>
     );
 }

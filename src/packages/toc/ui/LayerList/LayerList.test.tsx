@@ -342,8 +342,8 @@ it("changes the description popover's visibility when toggling the button", asyn
     // close the popover again
     fireEvent.click(button);
     await waitFor(async () => {
-        const description = screen.getByText(layer.description);
-        expect(description).not.toBeVisible();
+        const description = screen.queryByText(layer.description);
+        expect(description).toBeFalsy(); // Popover should unmount
     });
 });
 
