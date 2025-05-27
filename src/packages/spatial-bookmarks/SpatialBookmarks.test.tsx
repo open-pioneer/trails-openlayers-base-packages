@@ -102,7 +102,7 @@ it("should remove bookmark from the list by clicking the remove button", async (
     createBookmarks();
     const { div } = await createBookmarkComponent();
 
-    const deleteBookmarkBtn = await findByLabelText(div, "bookmark.button.deleteOne");
+    const deleteBookmarkBtn = await findByLabelText(div, "bookmark.button.deleteOne.ariaLabel");
     await user.click(deleteBookmarkBtn);
     const noSavedBookmarksAlert = await findByText(div, "bookmark.alert.noSaved");
     expect(noSavedBookmarksAlert).toMatchSnapshot();
