@@ -37,5 +37,5 @@ export const ScaleBar: FC<ScaleBarProps> = (props) => {
         }
     }, [displayMode, map]);
 
-    return <Box {...containerProps} ref={scaleBarElem}></Box>;
+    return <Box {...containerProps} ref={scaleBarElem} backgroundColor="whiteAlpha.800" />;
 };
