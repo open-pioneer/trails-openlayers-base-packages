@@ -1,9 +1,12 @@
 messages:
   bookmark:
+    ariaLabel: "Press enter to focus map on spatial bookmark {title}."
     button:
       create: "Add new bookmark"
       deleteAll: "Delete all bookmarks"
-      deleteOne: "Delete bookmark"
+      deleteOne:
+        tooltip: "Delete bookmark"
+        ariaLabel: "Delete bookmark {title}"
       save: "Save"
       cancel: "Cancel"
       cancelDelete: "No"

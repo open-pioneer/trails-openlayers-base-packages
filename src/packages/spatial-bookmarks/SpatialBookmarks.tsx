@@ -176,10 +176,6 @@ function createList(
     intl: PackageIntl,
     listRef: React.MutableRefObject<HTMLElement[]>
 ) {
-    const deleteBtnLabel = intl.formatMessage({
-        id: "bookmark.button.deleteOne"
-    });
-
     const bookmarkItems = bookmarks.map((bookmark, idx) => (
         <BookmarkItem
             key={bookmark.id}
@@ -188,7 +184,7 @@ function createList(
             bookmark={bookmark}
             onActivate={() => viewModel.activateBookmark(bookmark)}
             onDelete={() => viewModel.deleteBookmark(bookmark.id)}
-            deleteBtnLabel={deleteBtnLabel}
+            intl={intl}
         />
     ));
 
@@ -224,9 +220,9 @@ function BookmarkItem(props: {
     bookmark: Bookmark;
     onActivate: () => void;
     onDelete: () => void;
-    deleteBtnLabel: string;
+    intl: PackageIntl;
 }): ReactNode {
-    const { index, listItemNodes, bookmark, onDelete, onActivate, deleteBtnLabel } = props;
+    const { index, listItemNodes, bookmark, onDelete, onActivate, intl } = props;
     const title = bookmark.title;
     const onKeyDown = (evt: KeyboardEvent) => {
         const key = evt.key;
@@ -251,6 +247,7 @@ function BookmarkItem(props: {
             listItemNodes.current[nextIndex]?.focus();
         }
     };
+
     return (
         <List.Item
             as="li"
@@ -272,6 +269,7 @@ function BookmarkItem(props: {
             focusVisibleRing="outside"
             onKeyDown={onKeyDown}
             onClick={onActivate}
+            aria-label={intl.formatMessage({ id: "bookmark.ariaLabel" }, { title: title })}
         >
             <Flex width="100%" flexDirection="row" align="center" gap={1}>
                 <Center>
@@ -286,14 +284,15 @@ function BookmarkItem(props: {
                 <Tooltip
                     key={index}
                     showArrow
-                    content={deleteBtnLabel}
+                    content={intl.formatMessage({
+                        id: "bookmark.button.deleteOne.tooltip"
+                    })}
                     positioning={{
                         placement: "right"
                     }}
                 >
                     <IconButton
                         className="spatial-bookmarks-item-delete"
-                        aria-label={deleteBtnLabel}
                         borderRadius="full"
                         padding={0}
                         colorPalette="red"
@@ -302,6 +301,10 @@ function BookmarkItem(props: {
                             onDelete();
                             event.stopPropagation();
                         }}
+                        aria-label={intl.formatMessage(
+                            { id: "bookmark.button.deleteOne.ariaLabel" },
+                            { title: title }
+                        )}
                     >
                         <Icon>
                             <PiTrashSimpleLight />
