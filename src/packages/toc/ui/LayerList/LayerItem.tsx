@@ -158,6 +158,7 @@ function CollapseButton(props: {
             className="toc-layer-item-collapse-button"
             onClick={onClick}
             size="sm"
+            focusRingOffset="-2px"
             aria-label={
                 expanded
                     ? intl.formatMessage({ id: "group.collapse" }, { title: layerTitle })

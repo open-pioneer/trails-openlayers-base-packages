@@ -87,6 +87,7 @@ function TriggerButton(props: { triggerId: string }) {
                     className="toc-tools-button"
                     aria-label={label}
                     borderRadius="full"
+                    focusRingOffset="-2px"
                     variant="ghost"
                     padding={0}
                     size="sm"

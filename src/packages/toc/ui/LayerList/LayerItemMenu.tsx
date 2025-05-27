@@ -45,13 +45,7 @@ export function LayerItemMenu(props: {
                                     {description}
                                 </Text>
                             </Popover.Body>
-                            <Popover.CloseTrigger
-                                position="absolute"
-                                top="1"
-                                right="1"
-                                mt={3}
-                                asChild
-                            >
+                            <Popover.CloseTrigger position="absolute" top="1" right="1" asChild>
                                 <CloseButton
                                     className="toc-layer-item-details-button"
                                     variant="ghost"
@@ -80,7 +74,7 @@ function TriggerButton(props: { triggerId: string; layer: AnyLayer }) {
                     className="toc-layer-item-details-button"
                     aria-label={buttonLabel}
                     borderRadius="full"
-                    padding={0}
+                    focusRingOffset="-2px"
                     variant="ghost"
                     size="sm"
                 >
