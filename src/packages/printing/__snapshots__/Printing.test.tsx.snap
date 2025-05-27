@@ -54,7 +54,7 @@ exports[`should successfully create a printing component 1`] = `
         class="chakra-native-select__root css-1lytf6x"
       >
         <select
-          class="chakra-native-select__field printing-select css-1lldn8"
+          class="chakra-native-select__field printing-select css-d0pvvy"
           data-part="select"
           data-scope="field"
           id="«r1»"
