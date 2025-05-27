@@ -51,7 +51,8 @@ export function SelectionComponent() {
         appModel.setResultListInput({
             columns: currentMetadata,
             data: results,
-            formatOptions: formatOptions
+            formatOptions: formatOptions,
+            labelProperty: "name"
         });
 
         notifier.notify({

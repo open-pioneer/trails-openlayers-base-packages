@@ -109,6 +109,14 @@ export interface ResultListInput {
     columns: ResultColumn[];
 
     /**
+     * Property of the features in the result list that is used to enrich aria labels with context.
+     *
+     * The feature's id is used by default or as fallback if this option is not configured or the
+     * property does not exist on the feature.
+     */
+    labelProperty?: string;
+
+    /**
      * The data shown by the result list component.
      * Every feature will be rendered as an individual row.
      */
@@ -185,12 +193,6 @@ export interface ResultListProps extends CommonComponentProps, MapModelProps {
      * Should each row be memoized to improve render performance. Default `false`.
      */
     memoizeRows?: boolean;
-
-    /**
-     * Property of the features in the result list that is used to enrich aria labels with context.
-     * The feature's Id is used by default or as fallback if property does not exist on the feature.
-     */
-    ariaFeatureProperty?: string;
 }
 
 /**
@@ -200,7 +202,7 @@ export const ResultList: FC<ResultListProps> = (props) => {
     const { containerProps } = useCommonComponentProps("result-list", props);
     const intl = useIntl();
     const {
-        input: { data, columns, formatOptions },
+        input: { data, columns, labelProperty, formatOptions },
         memoizeRows = false,
         onSelectionChange,
         enableZoom = true,
@@ -208,8 +210,7 @@ export const ResultList: FC<ResultListProps> = (props) => {
         enableHighlight = true,
         selectionMode = "multi",
         selectionStyle = selectionMode === "single" ? "radio" : "checkbox",
-        highlightOptions,
-        ariaFeatureProperty
+        highlightOptions
     } = props;
 
     const { map } = useMapModel(props);
@@ -233,17 +234,9 @@ export const ResultList: FC<ResultListProps> = (props) => {
                 formatOptions: formatOptions,
                 selectionMode,
                 selectionStyle,
-                ariaFeatureProperty
+                labelProperty
             }),
-        [
-            columns,
-            intl,
-            tableWidth,
-            formatOptions,
-            selectionMode,
-            selectionStyle,
-            ariaFeatureProperty
-        ]
+        [columns, intl, tableWidth, formatOptions, selectionMode, selectionStyle, labelProperty]
     );
 
     useEffect(() => {

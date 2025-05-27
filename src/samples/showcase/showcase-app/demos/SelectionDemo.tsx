@@ -90,7 +90,6 @@ class DemoModelImpl implements DemoModel {
                 key={currentState.key}
                 input={currentState.input}
                 onSelectionChange={this.#onResultListSelectionChange}
-                ariaFeatureProperty="name"
             />
         );
     }
@@ -147,6 +146,7 @@ class DemoModelImpl implements DemoModel {
         const input: ResultListInput = {
             columns: columns,
             data: results,
+            labelProperty: "name",
             formatOptions: formatOptions
         };
 
