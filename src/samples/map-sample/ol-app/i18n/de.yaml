@@ -29,6 +29,7 @@ messages:
     widgets: "Geöffnete Werkzeuge"
     search: "Suche"
     toolbar: "Kartenwerkzeuge"
+    results: "Ergebnisse"
   foundResults: Es {resultsCount, plural,
     =0 {wurden keine Ergebnisse}
     one {wurde 1 Ergebnis}

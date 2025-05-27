@@ -29,6 +29,7 @@ messages:
     widgets: "Open tools"
     search: "Search"
     toolbar: "Maptools"
+    results: "Results"
   layerNotVisibleReason: "Matching layer is not visible."
   foundResults: Found {resultsCount, plural,
     =0 {no results}

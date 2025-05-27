@@ -254,14 +254,7 @@ export const ResultList: FC<ResultListProps> = (props) => {
     }, [map, data, zoomOptions, enableZoom, enableHighlight, highlightOptions]);
 
     return (
-        <Box
-            {...containerProps}
-            height="100%"
-            overflowY="auto"
-            ref={containerRef}
-            role="region"
-            aria-label={intl.formatMessage({ id: "ariaLabel.region" })}
-        >
+        <Box {...containerProps} height="100%" overflowY="auto" ref={containerRef}>
             <DataTable
                 columns={dataTableColumns}
                 data={data}

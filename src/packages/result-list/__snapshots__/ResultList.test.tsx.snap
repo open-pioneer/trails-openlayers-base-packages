@@ -2,10 +2,8 @@
 
 exports[`expect empty data text to be shown 1`] = `
 <div
-  aria-label="ariaLabel.region"
   class="result-list css-u718rw"
   data-testid="result-list"
-  role="region"
 >
   <div
     class="result-list-no-data-message css-0"
@@ -21,10 +19,8 @@ exports[`expect render function to be applied 1`] = `"This item has the followin
 
 exports[`expect result list to be created successfully 1`] = `
 <div
-  aria-label="ariaLabel.region"
   class="result-list css-u718rw"
   data-testid="result-list"
-  role="region"
 >
   <div
     class="result-list-table-container css-v2kfba"

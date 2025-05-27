@@ -102,6 +102,8 @@ function AppContent(props: { state: AppStateReady }) {
                             {currentListContainer && (
                                 <Box
                                     className="list-container"
+                                    role="region"
+                                    aria-label={intl.formatMessage({ id: "ariaLabels.results" })}
                                     position="absolute"
                                     bottom="0"
                                     backgroundColor="white"

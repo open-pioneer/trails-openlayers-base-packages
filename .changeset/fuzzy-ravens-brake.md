@@ -4,7 +4,6 @@
 
 Fix a11y issues:
 
-- Add `role=region` and `aria-label` to result list container
 - Fix wrong `aria-labelledby` ids
 - Introduce optional property `labelProperty` to result list's `input` option
     - A feature's property value is used to provide context in aria attributes.

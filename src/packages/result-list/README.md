@@ -8,10 +8,15 @@ To add the package to your app, import `ResultList` from `@open-pioneer/result-l
 
 ```tsx
 import { ResultList } from "@open-pioneer/result-list";
-<ResultList
-    map={map}
-    input={input}
-/>; /* instead of passing the map, the `DefaultMapProvider` can alternatively be used */
+
+/* Recommendation: mark the result list (and any other co-located widgets) as an landmark for better screen reader support. */
+<Box role="region" aria-label="... region label ...">
+    <ResultList
+        /* instead of passing the map, the `DefaultMapProvider` can alternatively be used */
+        map={map}
+        input={input}
+    />
+</Box>;
 ```
 
 The following section describes how to define the `input` parameter.
@@ -30,6 +35,9 @@ for example from `@open-pioneer/search` and `@open-pioneer/selection`.
 The columns define which fields of the configured features are displayed and how the cells in the column are displayed.
 The result list renders the specified columns in the order in which they are given.
 
+`input.labelProperty` is the name of a property that can be used to label a feature.
+When not defined, this property defaults to the feature's `id`.
+
 `input.formatOptions` determines how numbers and dates are formatted.
 You can specify the `numberOptions` and `dateOptions` properties to format numbers and dates.
 The properties are applied to all table cells of the corresponding type and for which no `render` function is configured.
@@ -40,6 +48,7 @@ The following sample shows a configuration for objects that all have the propert
 <ResultList
     input={{
         data: features, // Obtained from somewhere
+        labelProperty: "name" // Optional
         columns: [
             {
                 propertyName: "name"
@@ -270,6 +279,8 @@ Configure the `viewPadding` on the associated `MapContainer` when the result lis
 
 ```jsx
 <Box
+    role="region"
+    aria-label="... region label ..."
     position="absolute"
     visibility={showResultList ? "visible" : "hidden"}
     bottom="0"
