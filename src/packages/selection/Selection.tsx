@@ -105,11 +105,7 @@ export const Selection: FC<SelectionProps> = (props) => {
     }
 
     return (
-        <VStack
-            {...containerProps}
-            gap={2}
-            aria-description={intl.formatMessage({ id: "tooltip" })}
-        >
+        <VStack {...containerProps} gap={2}>
             <Select.Root
                 className="selection-source"
                 collection={sourceOptionsCollection}
@@ -121,7 +117,7 @@ export const Selection: FC<SelectionProps> = (props) => {
                 <Select.Label>{intl.formatMessage({ id: "selectSource" })}</Select.Label>
 
                 <Select.Control>
-                    <Select.Trigger>
+                    <Select.Trigger aria-description={intl.formatMessage({ id: "tooltip" })}>
                         <Select.ValueText
                             placeholder={intl.formatMessage({ id: "selectionPlaceholder" })}
                         >
@@ -129,7 +125,7 @@ export const Selection: FC<SelectionProps> = (props) => {
                         </Select.ValueText>
                     </Select.Trigger>
                     <Select.IndicatorGroup>
-                        <Select.Indicator />
+                        <Select.Indicator /> 
                     </Select.IndicatorGroup>
                 </Select.Control>
 
