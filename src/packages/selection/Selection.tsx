@@ -84,7 +84,14 @@ export const Selection: FC<SelectionProps> = (props) => {
     const isActive = currentSourceStatus.kind === "available";
     const hasSelectedSource = !!currentSource;
 
-    useDragSelection(mapState.map, intl, onExtentSelected, isActive, hasSelectedSource);
+    const dragController = useDragSelection(
+        mapState.map,
+        intl,
+        onExtentSelected,
+        isActive,
+        hasSelectedSource
+    );
+    const dragTooltip = useReactiveSnapshot(() => dragController?.tooltipText, [dragController]);
 
     const getId = useSelectionSourceId();
 
@@ -117,7 +124,7 @@ export const Selection: FC<SelectionProps> = (props) => {
                 <Select.Label>{intl.formatMessage({ id: "selectSource" })}</Select.Label>
 
                 <Select.Control>
-                    <Select.Trigger aria-description={intl.formatMessage({ id: "tooltip" })}>
+                    <Select.Trigger aria-description={dragTooltip}>
                         <Select.ValueText
                             placeholder={intl.formatMessage({ id: "selectionPlaceholder" })}
                         >
@@ -125,7 +132,7 @@ export const Selection: FC<SelectionProps> = (props) => {
                         </Select.ValueText>
                     </Select.Trigger>
                     <Select.IndicatorGroup>
-                        <Select.Indicator /> 
+                        <Select.Indicator />
                     </Select.IndicatorGroup>
                 </Select.Control>
 
@@ -344,7 +351,8 @@ function useDragSelection(
     onExtentSelected: (geometry: Geometry) => void,
     isActive: boolean,
     hasSelectedSource: boolean
-) {
+): DragController | undefined {
+    const [controller, setController] = useState<DragController | undefined>();
     useEffect(() => {
         if (!map) {
             return;
@@ -362,8 +370,11 @@ function useDragSelection(
         );
 
         dragController.setActive(isActive);
+        setController(dragController);
         return () => {
-            dragController?.destroy();
+            setController(undefined);
+            dragController.destroy();
         };
     }, [map, intl, onExtentSelected, isActive, hasSelectedSource]);
+    return controller;
 }
