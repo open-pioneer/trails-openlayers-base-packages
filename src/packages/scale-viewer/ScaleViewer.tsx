@@ -23,7 +23,7 @@ export const ScaleViewer: FC<ScaleViewerProps> = (props) => {
     // Make the scale shown to the screen reader lag behind a bit via debounce.
     // Otherwise, the user is notified of too many updates (individual scale changes).
     // See https://github.com/open-pioneer/trails-openlayers-base-packages/issues/431
-    const debouncedScale = useDebouncedValue(scale);
+    const debouncedScale = useDebouncedValue(scale, 3000);
     const ariaLabel = intl.formatMessage({ id: "scaleLabel" }, { scale: debouncedScale });
 
     return (
