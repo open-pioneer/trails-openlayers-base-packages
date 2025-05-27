@@ -164,6 +164,10 @@ export const CoordinateInput: FC<CoordinateInputProps> = (props) => {
     );
     const placeholderString = usePlaceholder(placeholder, mapProjection, selectedProjection);
     const isInputValid = validationResult.kind === "success" || validationResult.kind === "empty";
+    const errorMessage = !isInputValid
+        ? intl.formatMessage({ id: validationResult.kind })
+        : undefined;
+
     const onEnter = useEvent(() => {
         onSelect(validationResult);
     });
@@ -171,9 +175,7 @@ export const CoordinateInput: FC<CoordinateInputProps> = (props) => {
     return (
         <Flex {...containerProps} flexDirection={"row"} flexDir={"row"}>
             <Tooltip
-                content={
-                    !isInputValid ? intl.formatMessage({ id: validationResult.kind }) : undefined
-                }
+                content={errorMessage}
                 showArrow
                 open={!isInputValid}
                 // explicity mount / unmount the tooltip.
@@ -186,8 +188,8 @@ export const CoordinateInput: FC<CoordinateInputProps> = (props) => {
                         setCoordinateSearchInput={setCoordinateSearchInput}
                         placeholder={placeholder}
                         placeholderString={placeholderString}
+                        errorMessage={errorMessage}
                         onClear={onClear}
-                        isInputValid={isInputValid}
                         onEnter={onEnter}
                     />
                     <ProjectionSelect

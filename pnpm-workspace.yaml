@@ -9,6 +9,7 @@ packages:
 __versions:
   - &react_version ^19.1.0
   - &core_packages_version 4.0.0-dev.20250516115755
+  - &chakra_version ^3.19.1
 
 # https://pnpm.io/catalogs
 catalog:
@@ -26,8 +27,8 @@ catalog:
   "@open-pioneer/test-utils": *core_packages_version
   "@open-pioneer/chakra-snippets": *core_packages_version
 
-  "@chakra-ui/react": ^3.17.0
-  "@chakra-ui/cli": ^3.17.0
+  "@chakra-ui/react": *chakra_version
+  "@chakra-ui/cli": *chakra_version
   "@conterra/reactivity-core": ^0.6.0
   "@emotion/cache": ^11.13.0
   "@emotion/react": ^11.13.0

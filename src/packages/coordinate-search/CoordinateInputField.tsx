@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Field, Icon, IconButton, Input, InputGroup } from "@chakra-ui/react";
+import { Field, Icon, IconButton, Input, InputGroup, VisuallyHidden } from "@chakra-ui/react";
 import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
 import { Coordinate } from "ol/coordinate";
 import { useIntl } from "open-pioneer:react-hooks";
@@ -10,16 +10,16 @@ import { FiCopy, FiX } from "react-icons/fi";
  * Text input for coordinates.
  */
 export function CoordinateInputField(props: {
-    isInputValid: boolean;
     coordinateSearchInput: string;
     setCoordinateSearchInput: (searchInput: string) => void;
     placeholder: string | Coordinate;
     placeholderString: string;
+    errorMessage: string | undefined;
     onClear: (() => void) | undefined;
     onEnter: () => void;
 }) {
     const {
-        isInputValid,
+        errorMessage,
         coordinateSearchInput,
         setCoordinateSearchInput,
         placeholder,
@@ -31,7 +31,7 @@ export function CoordinateInputField(props: {
 
     const inputField = (
         <InputField
-            invalid={!isInputValid}
+            errorMessage={errorMessage}
             value={coordinateSearchInput}
             placeholder={placeholderString}
             onChange={(newValue) => {
@@ -93,23 +93,24 @@ export function CoordinateInputField(props: {
 }
 
 function InputField(props: {
-    invalid: boolean;
     value: string;
     placeholder: string;
+    errorMessage: string | undefined;
     onChange: (newValue: string) => void;
     onEnter: () => void;
 }) {
     const intl = useIntl();
-    const { invalid, value, placeholder, onChange, onEnter } = props;
+    const { errorMessage, value, placeholder, onChange, onEnter } = props;
+    const isInvalid = !!errorMessage;
     return (
-        <Field.Root invalid={invalid} flex="1 1 auto">
+        <Field.Root invalid={isInvalid} flex="1 1 auto">
             <Input
                 type="text"
                 value={value}
                 onChange={(e) => {
                     onChange(e.target.value);
                 }}
-                backgroundColor={invalid ? "red.100" : undefined}
+                backgroundColor={isInvalid ? "red.100" : undefined}
                 placeholder={placeholder}
                 aria-label={intl.formatMessage({
                     id: "coordinateInput.ariaLabel"
@@ -123,6 +124,10 @@ function InputField(props: {
                 /*avoid that browser provides old user inputs as suggestions in some edge cases*/
                 autoComplete={"off"}
             />
+            {/* NOTE: Tooltip shows same information, this is for screen readers only */}
+            <VisuallyHidden asChild>
+                <Field.ErrorText>{errorMessage}</Field.ErrorText>
+            </VisuallyHidden>
         </Field.Root>
     );
 }

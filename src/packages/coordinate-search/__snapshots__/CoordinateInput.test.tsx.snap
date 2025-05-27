@@ -85,7 +85,7 @@ exports[`should successfully create a coordinate input component 1`] = `
           </span>
         </button>
         <div
-          class="chakra-select__indicatorGroup css-1xvjckd"
+          class="chakra-select__indicatorGroup css-1fx1ifu"
         >
           <div
             aria-hidden="true"
