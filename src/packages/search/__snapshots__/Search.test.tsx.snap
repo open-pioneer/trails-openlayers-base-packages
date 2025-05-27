@@ -81,7 +81,7 @@ exports[`should successfully create a search component 1`] = `
         </div>
       </div>
       <div
-        class="react-select__indicators css-2x9043"
+        class="react-select__indicators css-175xxcg"
       >
         <span
           aria-orientation="vertical"

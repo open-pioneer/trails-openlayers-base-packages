@@ -57,7 +57,7 @@ exports[`should successfully create a toc component 1`] = `
             </span>
           </button>
           <div
-            class="chakra-select__indicatorGroup css-1xvjckd"
+            class="chakra-select__indicatorGroup css-1fx1ifu"
           >
             <div
               aria-hidden="true"
@@ -131,7 +131,7 @@ exports[`should successfully create a toc component 1`] = `
             />
             <div
               aria-hidden="true"
-              class="chakra-checkbox__control css-oq83md"
+              class="chakra-checkbox__control css-gjxnkp"
               data-part="control"
               data-scope="checkbox"
               data-state="checked"
@@ -190,7 +190,7 @@ exports[`should successfully create a toc component 1`] = `
             />
             <div
               aria-hidden="true"
-              class="chakra-checkbox__control css-oq83md"
+              class="chakra-checkbox__control css-gjxnkp"
               data-part="control"
               data-scope="checkbox"
               data-state="checked"

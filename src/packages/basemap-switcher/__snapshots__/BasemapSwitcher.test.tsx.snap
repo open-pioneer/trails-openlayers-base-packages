@@ -40,7 +40,7 @@ exports[`should disable selection of unavailable layers and show a warning 1`] =
       </span>
     </button>
     <div
-      class="chakra-select__indicatorGroup css-1xvjckd"
+      class="chakra-select__indicatorGroup css-1fx1ifu"
     >
       <div
         aria-hidden="true"
@@ -109,7 +109,7 @@ exports[`should successfully create a basemap switcher component 1`] = `
         </span>
       </button>
       <div
-        class="chakra-select__indicatorGroup css-1xvjckd"
+        class="chakra-select__indicatorGroup css-1fx1ifu"
       >
         <div
           aria-hidden="true"

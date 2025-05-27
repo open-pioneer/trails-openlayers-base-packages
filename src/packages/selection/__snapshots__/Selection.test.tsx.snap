@@ -101,7 +101,7 @@ exports[`should successfully create a selection component and select the first s
         </span>
       </button>
       <div
-        class="chakra-select__indicatorGroup css-1xvjckd"
+        class="chakra-select__indicatorGroup css-1fx1ifu"
       >
         <div
           aria-hidden="true"
