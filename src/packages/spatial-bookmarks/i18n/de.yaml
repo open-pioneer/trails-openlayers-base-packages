@@ -1,9 +1,12 @@
 messages:
   bookmark:
+    ariaLabel: "Eingabetaste drücken, um die Kartenansicht auf das räumliche Lesezeichen {title} zu zentrieren."
     button:
       create: "Neues Lesezeichen hinzufügen"
       deleteAll: "Alle Lesezeichen löschen"
-      deleteOne: "Lesezeichen löschen"
+      deleteOne:
+        tooltip: "Lesezeichen löschen"
+        ariaLabel: "Lesezeichen {title} löschen"
       save: "Speichern"
       cancel: "Abbrechen"
       cancelDelete: "Nein"
