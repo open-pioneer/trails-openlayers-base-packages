@@ -6,7 +6,7 @@ exports[`should successfully create a toc component 1`] = `
   data-testid="toc"
 >
   <div
-    class="toc-basemap-switcher css-0"
+    class="toc-basemap-switcher css-c1sqso"
   >
     <h1
       class="chakra-heading css-k5qncm"
@@ -85,13 +85,13 @@ exports[`should successfully create a toc component 1`] = `
     class="toc-operational-layers css-0"
   >
     <h1
-      class="chakra-heading css-k5qncm"
+      class="chakra-heading css-12sq6rj"
     >
       <div
         class="css-k008qs"
       >
         <p
-          class="css-a5lpi5"
+          class="css-0"
         >
           operationalLayerLabel
         </p>

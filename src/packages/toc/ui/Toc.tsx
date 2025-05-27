@@ -133,7 +133,7 @@ function TocContent(props: TocProps & { map: MapModel }) {
     const model = useTocModel(props);
     const basemapsHeadingId = useId();
     const basemapSwitcher = showBasemapSwitcher && (
-        <Box className="toc-basemap-switcher">
+        <Box className="toc-basemap-switcher" mb={PADDING}>
             <TitledSection
                 title={
                     <SectionHeading id={basemapsHeadingId} size={"sm"} mb={PADDING}>
@@ -154,9 +154,9 @@ function TocContent(props: TocProps & { map: MapModel }) {
         <Box className="toc-operational-layers">
             <TitledSection
                 title={
-                    <SectionHeading size={"sm"} mb={2}>
+                    <SectionHeading size="sm">
                         <Flex>
-                            <Text my={3}>
+                            <Text>
                                 {intl.formatMessage({
                                     id: "operationalLayerLabel"
                                 })}
