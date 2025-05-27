@@ -5,6 +5,7 @@ import { MapModelProps, useMapModel } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { OverviewMap as OlOverviewMap } from "ol/control";
 import OlBaseLayer from "ol/layer/Base";
+import { useIntl } from "open-pioneer:react-hooks";
 import { FC, useEffect, useRef } from "react";
 
 /**
@@ -38,8 +39,10 @@ const DEFAULT_WIDTH = "300px";
 export const OverviewMap: FC<OverviewMapProps> = (props) => {
     const { olLayer, height = DEFAULT_HEIGHT, width = DEFAULT_WIDTH } = props;
     const { containerProps } = useCommonComponentProps("overview-map", props);
-    const overviewMapControlElem = useRef(null);
+    const intl = useIntl();
+
     const { map } = useMapModel(props);
+    const overviewMapControlElem = useRef(null);
 
     useEffect(() => {
         if (overviewMapControlElem.current && map && olLayer) {
@@ -59,6 +62,17 @@ export const OverviewMap: FC<OverviewMapProps> = (props) => {
     }, [map, olLayer]);
 
     return (
-        <Box height={height} width={width} ref={overviewMapControlElem} {...containerProps}></Box>
+        // aria-description is still in draft state
+        // eslint-disable-next-line jsx-a11y/role-supports-aria-props
+        <Box
+            height={height}
+            width={width}
+            ref={overviewMapControlElem}
+            {...containerProps}
+            tabIndex={0}
+            role="region"
+            aria-label={intl.formatMessage({ id: "ariaLabel" })}
+            aria-description={intl.formatMessage({ id: "ariaDescription" })}
+        />
     );
 };

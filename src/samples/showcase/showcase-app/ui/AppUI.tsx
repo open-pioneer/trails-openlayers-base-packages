@@ -6,13 +6,16 @@ import { Notifier } from "@open-pioneer/notifier";
 import { TitledSection } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { useIntl, useService } from "open-pioneer:react-hooks";
-import { ReactNode, useMemo } from "react";
+import { ReactNode, useEffect, useId, useMemo } from "react";
 import { AppInitModel, AppStateReady } from "../model/AppInitModel";
 import { Header } from "./Header/Header";
+import { ApplicationContext } from "@open-pioneer/runtime";
 
 export function AppUI() {
     const appModel = useService<AppInitModel>("app.AppInitModel");
     const appState = useReactiveSnapshot(() => appModel.appState, [appModel]);
+
+    useGlobalLang();
 
     let content: ReactNode;
     switch (appState.kind) {
@@ -44,6 +47,8 @@ function AppContent(props: { state: AppStateReady }) {
         [currentDemoModel]
     );
 
+    const headingId = useId();
+
     const viewPadding = useMemo(() => {
         // adjust map view whether list container (bottom = height of list component)
         return {
@@ -72,11 +77,18 @@ function AppContent(props: { state: AppStateReady }) {
                                     horizontalGap={10}
                                     verticalGap={10}
                                 >
-                                    <Box bgColor="white" borderRadius={10} p={2} maxW="500px">
+                                    <Box
+                                        role="region"
+                                        aria-labelledby={headingId}
+                                        bgColor="white"
+                                        borderRadius={10}
+                                        p={2}
+                                        maxW="500px"
+                                    >
                                         <TitledSection
                                             key={currentDemo.id}
                                             title={currentDemo.title}
-                                            sectionHeadingProps={{ size: "lg" }}
+                                            sectionHeadingProps={{ id: headingId, size: "lg" }}
                                         >
                                             <Text py={4}>{currentDemoModel.description}</Text>
                                             {currentDemoModel.mainWidget}
@@ -108,4 +120,18 @@ function AppContent(props: { state: AppStateReady }) {
             </Flex>
         </>
     );
+}
+
+/**
+ * Syncs the application's locale into the <html> element.
+ *
+ * This is appropriate when the app implements the entire page anyway; it may introduce
+ * conflicts when the app is embedded into another site.
+ */
+function useGlobalLang() {
+    const ctx = useService<ApplicationContext>("runtime.ApplicationContext");
+    const locale = useReactiveSnapshot(() => ctx.getLocale(), [ctx]);
+    useEffect(() => {
+        document.documentElement.lang = locale;
+    }, [locale]);
 }

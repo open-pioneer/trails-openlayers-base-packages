@@ -1,8 +1,8 @@
 messages:
   coordinateInput:
     ariaLabel: Coordinate input
-    copyPlaceholder: Copy
-    clearPlaceholder: Clear
+    copyLabel: Copy coordinates
+    clearLabel: Clear input
   tooltip:
     basic: "Invalid input"
     space: "Invalid input: Please enter the coordinates separated by a space."

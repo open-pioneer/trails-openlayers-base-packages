@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Button, ButtonProps, Toggle } from "@chakra-ui/react";
+import { Button, ButtonProps, Icon, Toggle } from "@chakra-ui/react";
 import { Tooltip, TooltipProps } from "@open-pioneer/chakra-snippets/tooltip";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import classNames from "classnames";
@@ -28,6 +28,10 @@ export interface ToolButtonProps extends CommonComponentProps, RefAttributes<HTM
 
     /**
      * The icon displayed by the button.
+     *
+     * NOTE: You can use raw icons here (e.g. svgs from react-icons).
+     * The ToolButton will surround the icon with chakra's `<Icon />` component.
+     * This will apply the apply the `aria-hidden` attribute, among other things.
      */
     icon: ReactElement;
 
@@ -120,7 +124,7 @@ export const ToolButton: FC<ToolButtonProps> = memo(function ToolButton(props: T
             /* don't allow overwrite because component would break */
             onClick={onClick}
         >
-            {icon}
+            <Icon>{icon}</Icon>
         </ButtonIgnoringAriaProps>
     );
     if (active != null) {

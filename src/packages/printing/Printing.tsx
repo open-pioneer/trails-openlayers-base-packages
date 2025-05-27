@@ -77,6 +77,7 @@ export const Printing: FC<PrintingProps> = (props) => {
         <Box {...containerProps}>
             <Box
                 as="form"
+                aria-label={intl.formatMessage({ id: "formLabel" })}
                 m={2}
                 alignItems="center"
                 onSubmit={(e: FormEvent) => {

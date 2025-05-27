@@ -13,7 +13,10 @@ exports[`should successfully create a zoom component with additional css classes
   type="button"
 >
   <svg
+    aria-hidden="true"
+    class="chakra-icon css-1qiwd9j"
     fill="none"
+    focusable="false"
     height="1em"
     stroke="currentColor"
     stroke-linecap="round"
@@ -52,7 +55,10 @@ exports[`should successfully create a zoom-in and zoom-out buttons 1`] = `
   type="button"
 >
   <svg
+    aria-hidden="true"
+    class="chakra-icon css-1qiwd9j"
     fill="none"
+    focusable="false"
     height="1em"
     stroke="currentColor"
     stroke-linecap="round"
@@ -91,7 +97,10 @@ exports[`should successfully create a zoom-in and zoom-out buttons 2`] = `
   type="button"
 >
   <svg
+    aria-hidden="true"
+    class="chakra-icon css-1qiwd9j"
     fill="none"
+    focusable="false"
     height="1em"
     stroke="currentColor"
     stroke-linecap="round"

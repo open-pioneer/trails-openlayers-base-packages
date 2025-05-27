@@ -6,6 +6,7 @@ import {
     Center,
     Field,
     Flex,
+    Icon,
     IconButton,
     IconButtonProps,
     Input,
@@ -274,7 +275,9 @@ function BookmarkItem(props: {
         >
             <Flex width="100%" flexDirection="row" align="center" gap={1}>
                 <Center>
-                    <PiMapTrifold />
+                    <Icon>
+                        <PiMapTrifold />
+                    </Icon>
                 </Center>
                 <Text ps={2} maxLines={1}>
                     {title}
@@ -300,7 +303,9 @@ function BookmarkItem(props: {
                             event.stopPropagation();
                         }}
                     >
-                        {<PiTrashSimpleLight />}
+                        <Icon>
+                            <PiTrashSimpleLight />
+                        </Icon>
                     </IconButton>
                 </Tooltip>
             </Flex>
@@ -325,7 +330,9 @@ function ListControls(props: {
                 onClick={showDelete}
                 variant="outline"
             >
-                <PiTrashSimpleLight />
+                <Icon>
+                    <PiTrashSimpleLight />
+                </Icon>
             </DialogIconButton>
             <DialogButton onClick={showCreate}>
                 {intl.formatMessage({ id: "bookmark.button.create" })}

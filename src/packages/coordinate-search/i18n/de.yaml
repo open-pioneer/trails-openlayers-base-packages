@@ -1,8 +1,8 @@
 messages:
   coordinateInput:
     ariaLabel: Koordinateneingabe
-    copyPlaceholder: Kopieren
-    clearPlaceholder: Löschen
+    copyLabel: Koordinaten kopieren
+    clearLabel: Eingabe leeren
   tooltip:
     basic: "Ungültige Eingabe"
     space: "Ungültige Eingabe: Bitte trennen Sie die Koordinaten mit genau einem Leerzeichen."

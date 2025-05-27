@@ -32,6 +32,7 @@
         "@conterra/reactivity-core": "catalog:"
     },
     "devDependencies": {
+        "@open-pioneer/test-utils": "catalog:",
         "@open-pioneer/map-test-utils": "workspace:^",
         "@types/jsdom": "catalog:",
         "@types/uuid": "catalog:",

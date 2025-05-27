@@ -20,6 +20,7 @@ import { MapModelImpl } from "./MapModelImpl";
 import { createMapModel } from "./createMapModel";
 import { SimpleLayerImpl } from "./layers/SimpleLayerImpl";
 import { WMSLayerImpl } from "./layers/WMSLayerImpl";
+import { createIntl } from "@open-pioneer/test-utils/vanilla";
 
 const THIS_DIR = dirname(fileURLToPath(import.meta.url));
 const WMTS_CAPAS = readFileSync(
@@ -894,5 +895,5 @@ function getZIndices(layers: Layer[]) {
 }
 
 function create(mapId: string, mapConfig: MapConfig) {
-    return createMapModel(mapId, mapConfig, MOCKED_HTTP_SERVICE as HttpService);
+    return createMapModel(mapId, mapConfig, createIntl(), MOCKED_HTTP_SERVICE as HttpService);
 }

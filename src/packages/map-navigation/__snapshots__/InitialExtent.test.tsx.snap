@@ -13,7 +13,10 @@ exports[`should successfully create a initial extent component with additional c
   type="button"
 >
   <svg
+    aria-hidden="true"
+    class="chakra-icon css-1qiwd9j"
     fill="none"
+    focusable="false"
     height="1em"
     stroke="currentColor"
     stroke-linecap="round"
@@ -46,7 +49,10 @@ exports[`should successfully create a initial extent component with home button 
   type="button"
 >
   <svg
+    aria-hidden="true"
+    class="chakra-icon css-1qiwd9j"
     fill="none"
+    focusable="false"
     height="1em"
     stroke="currentColor"
     stroke-linecap="round"

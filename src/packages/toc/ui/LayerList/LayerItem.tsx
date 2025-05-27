@@ -1,6 +1,14 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box, Collapsible, CollapsibleContent, Flex, IconButton, Spacer } from "@chakra-ui/react";
+import {
+    Box,
+    Collapsible,
+    CollapsibleContent,
+    Flex,
+    Icon,
+    IconButton,
+    Spacer
+} from "@chakra-ui/react";
 import { reactive } from "@conterra/reactivity-core";
 import { Checkbox } from "@open-pioneer/chakra-snippets/checkbox";
 import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
@@ -41,6 +49,7 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
     }, [layer]);
 
     const nestedChildren = useNestedChildren(layerGroupId, title, layer, intl);
+    const hasNestedChildren = !!nestedChildren;
     return (
         <Box as="li" className={classNames("toc-layer-item", `layer-${slug(layer.id)}`)}>
             <Flex
@@ -60,7 +69,7 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
                         layerGroupId={layerGroupId}
                         expanded={expanded}
                         onClick={() => tocItem.setExpanded(!expanded)}
-                        hasNestedChildren={!!nestedChildren}
+                        hasNestedChildren={hasNestedChildren}
                     />
                 )}
                 <Checkbox
@@ -165,7 +174,7 @@ function CollapseButton(props: {
                 }
             }}
         >
-            {icon}
+            <Icon>{icon}</Icon>
         </IconButton>
     );
 }

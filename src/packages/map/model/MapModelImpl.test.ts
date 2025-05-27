@@ -7,6 +7,7 @@ import { waitFor } from "@testing-library/dom";
 import { waitForInitialExtent } from "@open-pioneer/map-test-utils";
 import { HttpService } from "@open-pioneer/http";
 import { MapConfig } from "../api/MapConfig";
+import { createIntl } from "@open-pioneer/test-utils/vanilla";
 
 const MOCKED_HTTP_SERVICE = {
     fetch: vi.fn()
@@ -186,7 +187,7 @@ describe("whenDisplayed", () => {
 });
 
 function create(mapId: string, mapConfig: MapConfig) {
-    return createMapModel(mapId, mapConfig, MOCKED_HTTP_SERVICE as HttpService);
+    return createMapModel(mapId, mapConfig, createIntl(), MOCKED_HTTP_SERVICE as HttpService);
 }
 
 function waitTick() {

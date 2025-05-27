@@ -17,6 +17,7 @@ export function ColumnResizer(props: {
                 "result-list-resizer",
                 isResizing && "result-list-resizer--is-resizing"
             )}
+            aria-hidden="true"
             onDoubleClick={onDoubleClick}
             onMouseDown={onMouseDown}
             onTouchStart={onTouchStart}
