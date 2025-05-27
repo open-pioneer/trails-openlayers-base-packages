@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import { Box } from "@chakra-ui/react";
 import { ResultList } from "@open-pioneer/result-list";
-import { useService } from "open-pioneer:react-hooks";
+import { useIntl, useService } from "open-pioneer:react-hooks";
 import { AppModel } from "../AppModel";
 import { BaseFeature } from "@open-pioneer/map";
 import { useState, useCallback, useEffect } from "react";
@@ -11,6 +11,7 @@ import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 
 export function ResultListComponent() {
     const appModel = useService<unknown>("ol-app.AppModel") as AppModel;
+    const intl = useIntl();
     const state = useReactiveSnapshot(() => appModel.resultListState, [appModel]);
     const [selectedFeatures, setSelectedFeatures] = useState<BaseFeature[]>([]);
     const [selectedIds, setSelectedIds] = useState<(string | number)[]>([]);
@@ -28,6 +29,8 @@ export function ResultListComponent() {
         state.input && (
             <Box
                 className="result-list-container"
+                role="region"
+                aria-label={intl.formatMessage({ id: "ariaLabel.results" })}
                 position="absolute"
                 visibility={state.open ? "visible" : "hidden"}
                 bottom="0"

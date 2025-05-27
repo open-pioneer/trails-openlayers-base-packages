@@ -146,6 +146,7 @@ class DemoModelImpl implements DemoModel {
         const input: ResultListInput = {
             columns: columns,
             data: results,
+            labelProperty: "name",
             formatOptions: formatOptions
         };
 

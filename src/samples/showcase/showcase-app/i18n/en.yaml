@@ -3,6 +3,7 @@ messages:
     title: Component Showcase
   ariaLabels:
     map: "Map. Use the arrow keys to move the map. Zoom in with the plus button and zoom out with the minus button."
+    results: "Result list"
   demos:
     # NOTE: 'description' supports arbitrary HTML!
     geolocation:

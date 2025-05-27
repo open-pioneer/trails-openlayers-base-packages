@@ -81,13 +81,17 @@ export const Selection: FC<SelectionProps> = (props) => {
         onSelectionComplete
     );
 
-    useDragSelection(
+    const isActive = currentSourceStatus.kind === "available";
+    const hasSelectedSource = !!currentSource;
+
+    const dragController = useDragSelection(
         mapState.map,
         intl,
         onExtentSelected,
-        currentSourceStatus.kind === "available",
-        !!currentSource
+        isActive,
+        hasSelectedSource
     );
+    const dragTooltip = useReactiveSnapshot(() => dragController?.tooltipText, [dragController]);
 
     const getId = useSelectionSourceId();
 
@@ -120,7 +124,7 @@ export const Selection: FC<SelectionProps> = (props) => {
                 <Select.Label>{intl.formatMessage({ id: "selectSource" })}</Select.Label>
 
                 <Select.Control>
-                    <Select.Trigger>
+                    <Select.Trigger aria-description={dragTooltip}>
                         <Select.ValueText
                             placeholder={intl.formatMessage({ id: "selectionPlaceholder" })}
                         >
@@ -347,7 +351,8 @@ function useDragSelection(
     onExtentSelected: (geometry: Geometry) => void,
     isActive: boolean,
     hasSelectedSource: boolean
-) {
+): DragController | undefined {
+    const [controller, setController] = useState<DragController | undefined>();
     useEffect(() => {
         if (!map) {
             return;
@@ -365,8 +370,11 @@ function useDragSelection(
         );
 
         dragController.setActive(isActive);
+        setController(dragController);
         return () => {
-            dragController?.destroy();
+            setController(undefined);
+            dragController.destroy();
         };
     }, [map, intl, onExtentSelected, isActive, hasSelectedSource]);
+    return controller;
 }

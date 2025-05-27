@@ -109,6 +109,14 @@ export interface ResultListInput {
     columns: ResultColumn[];
 
     /**
+     * Property of the features in the result list that is used to enrich aria labels with context.
+     *
+     * The feature's id is used by default or as fallback if this option is not configured or the
+     * property does not exist on the feature.
+     */
+    labelProperty?: string;
+
+    /**
      * The data shown by the result list component.
      * Every feature will be rendered as an individual row.
      */
@@ -194,7 +202,7 @@ export const ResultList: FC<ResultListProps> = (props) => {
     const { containerProps } = useCommonComponentProps("result-list", props);
     const intl = useIntl();
     const {
-        input: { data, columns, formatOptions },
+        input: { data, columns, labelProperty, formatOptions },
         memoizeRows = false,
         onSelectionChange,
         enableZoom = true,
@@ -225,9 +233,10 @@ export const ResultList: FC<ResultListProps> = (props) => {
                 tableWidth: tableWidth,
                 formatOptions: formatOptions,
                 selectionMode,
-                selectionStyle
+                selectionStyle,
+                labelProperty
             }),
-        [columns, intl, tableWidth, formatOptions, selectionMode, selectionStyle]
+        [columns, intl, tableWidth, formatOptions, selectionMode, selectionStyle, labelProperty]
     );
 
     useEffect(() => {

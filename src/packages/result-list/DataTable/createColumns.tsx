@@ -18,13 +18,27 @@ export interface CreateColumnsOptions {
     formatOptions?: FormatOptions;
     selectionMode: SelectionMode;
     selectionStyle: "radio" | "checkbox";
+    labelProperty?: string;
 }
 
 export function createColumns(options: CreateColumnsOptions) {
-    const { columns, intl, tableWidth, formatOptions, selectionMode, selectionStyle } = options;
+    const {
+        columns,
+        intl,
+        tableWidth,
+        formatOptions,
+        selectionMode,
+        selectionStyle,
+        labelProperty
+    } = options;
     const remainingColumnWidth: number | undefined =
         tableWidth === undefined ? undefined : calcRemainingColumnWidth(columns, tableWidth);
-    const selectionColumn = createSelectionColumn(intl, selectionMode, selectionStyle);
+    const selectionColumn = createSelectionColumn(
+        intl,
+        selectionMode,
+        selectionStyle,
+        labelProperty
+    );
     const columnDefs = columns.map((column, index) => {
         const columnWidth = column.width || remainingColumnWidth;
         const configuredId =
@@ -73,7 +87,7 @@ function createColumn(options: CreateColumnOptions) {
                         value: cellValue
                     });
                 }
-                return renderFunc(cellValue, intl, formatOptions);
+                return defaultRenderCell(cellValue, intl, formatOptions);
             },
             header: column.displayName ?? column.propertyName,
             size: columnWidth
@@ -81,7 +95,7 @@ function createColumn(options: CreateColumnOptions) {
     );
 }
 
-function renderFunc(cellValue: unknown, intl: PackageIntl, formatOptions?: FormatOptions) {
+function defaultRenderCell(cellValue: unknown, intl: PackageIntl, formatOptions?: FormatOptions) {
     if (cellValue === null || cellValue === undefined) return "";
     const type = typeof cellValue;
     const formatNumber = (num: number | bigint) => {
@@ -115,7 +129,8 @@ function renderFunc(cellValue: unknown, intl: PackageIntl, formatOptions?: Forma
 function createSelectionColumn(
     intl: PackageIntl,
     selectionMode: SelectionMode,
-    selectionStyle: "radio" | "checkbox"
+    selectionStyle: "radio" | "checkbox",
+    labelProperty?: string
 ) {
     return columnHelper.display({
         id: "selection-buttons",
@@ -134,7 +149,7 @@ function createSelectionColumn(
                 >
                     {createSelectComponent({
                         className: "result-list-select-all-checkbox",
-                        toolTipLabel: getCheckboxToolTip(table, intl),
+                        toolTipLabel: getCheckboxTooltip(table, intl),
                         checked: table.getIsAllRowsSelected()
                             ? true
                             : table.getIsSomeRowsSelected()
@@ -152,6 +167,12 @@ function createSelectionColumn(
                 selectionStyle === "radio"
                     ? "result-list-select-row-radio"
                     : "result-list-select-row-checkbox";
+            const ariaLabel = intl.formatMessage(
+                {
+                    id: "ariaLabel.selectSingle"
+                },
+                { featureProperty: getLabel(row.original, labelProperty) }
+            );
             return (
                 <chakra.div
                     display="inline-block"
@@ -168,14 +189,20 @@ function createSelectionColumn(
                         onChange(newIsChecked) {
                             row.toggleSelected(newIsChecked);
                         },
-                        ariaLabel: intl.formatMessage({
-                            id: "ariaLabel.selectSingle"
-                        })
+                        ariaLabel: ariaLabel
                     })}
                 </chakra.div>
             );
         }
     });
+}
+
+function getLabel(feature: BaseFeature, labelProperty: string | undefined) {
+    if (labelProperty && feature.properties && feature.properties[labelProperty] != null) {
+        return feature.properties[labelProperty].toString();
+    }
+    // use feature id as fallback if property not provided or does not exist for this feature
+    return feature.id.toString();
 }
 
 function calcRemainingColumnWidth(
@@ -192,7 +219,7 @@ function calcRemainingColumnWidth(
     return remainingWidth / undefinedWidthCount;
 }
 
-function getCheckboxToolTip<Data>(table: TanstackTable<Data>, intl: PackageIntl) {
+function getCheckboxTooltip<Data>(table: TanstackTable<Data>, intl: PackageIntl) {
     if (table.getIsAllRowsSelected()) {
         return intl.formatMessage({ id: "deSelectAllTooltip" });
     } else {
