@@ -1,6 +1,6 @@
 messages:
   coordinateInput:
-    ariaLabel: Koordinateneingabe
+    ariaLabel: "Koordinateneingabe: Eingabetaste zur Bestätigung der Eingabe drücken"
     copyLabel: Koordinaten kopieren
     clearLabel: Eingabe leeren
   tooltip:
