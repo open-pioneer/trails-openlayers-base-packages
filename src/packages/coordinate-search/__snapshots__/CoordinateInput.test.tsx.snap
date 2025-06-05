@@ -43,7 +43,7 @@ exports[`should successfully create a coordinate input component 1`] = `
           aria-expanded="false"
           aria-haspopup="listbox"
           aria-labelledby="select:«r1»:label"
-          class="coordinate-input-select-trigger chakra-select__trigger css-1qj5hd2"
+          class="coordinate-input-select-trigger chakra-select__trigger css-1qq4sc1"
           data-part="trigger"
           data-scope="select"
           data-state="closed"
@@ -62,7 +62,7 @@ exports[`should successfully create a coordinate input component 1`] = `
           </span>
         </button>
         <div
-          class="chakra-select__indicatorGroup css-1xvjckd"
+          class="chakra-select__indicatorGroup css-1fx1ifu"
         >
           <div
             aria-hidden="true"
