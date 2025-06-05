@@ -46,6 +46,7 @@ export const ProjectionSelect = memo(function ProjectionSelect(props: {
                 <Select.Trigger
                     className="coordinate-input-select-trigger"
                     borderRightRadius={0}
+                    borderRightWidth={0}
                     background="colorPalette.solid"
                     color="colorPalette.contrast"
                     focusVisibleRing="outside"

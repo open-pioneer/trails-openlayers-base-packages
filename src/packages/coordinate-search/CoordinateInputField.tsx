@@ -116,6 +116,7 @@ function InputField(props: {
                     id: "coordinateInput.ariaLabel"
                 })}
                 borderLeftRadius={0}
+                borderLeftWidth={0}
                 onKeyDown={(e) => {
                     if (e.key == "Enter") {
                         onEnter();
