@@ -169,8 +169,8 @@ catalogs:
       specifier: ^10.5.0
       version: 10.5.0
     ol-mapbox-style:
-      specifier: ^12.6.1
-      version: 12.6.1
+      specifier: ^13.0.1
+      version: 13.0.1
     prettier:
       specifier: ^3.5.3
       version: 3.5.3
@@ -1555,7 +1555,7 @@ importers:
         version: 10.5.0
       ol-mapbox-style:
         specifier: 'catalog:'
-        version: 12.6.1(ol@10.5.0)
+        version: 13.0.1(ol@10.5.0)
       react:
         specifier: 'catalog:'
         version: 19.1.0
@@ -4635,8 +4635,8 @@ packages:
     resolution: {integrity: sha512-gXah6aZrcUxjWg2zR2MwouP2eHlCBzdV4pygudehaKXSGW4v2AsRQUK+lwwXhii6KFZcunEnmSUoYp5CXibxtA==}
     engines: {node: '>= 0.4'}
 
-  ol-mapbox-style@12.6.1:
-    resolution: {integrity: sha512-bpN7ZvqbQX/JZnru0MTQgPIAUBAgPOvYDj/9BoJoqCvFYjHxCpRFDQJEoD10PLw3vGHNJFYBUvY82yfW26otQg==}
+  ol-mapbox-style@13.0.1:
+    resolution: {integrity: sha512-NEUT4rpsOCQz5y8qwJikU7UTdX/U8uGvW1we1urZ6NkONFjPRRxqg+PVit7m2AvBeIyrTL3iYd8mHZw8VJEOyw==}
     peerDependencies:
       ol: '*'
 
@@ -9253,7 +9253,7 @@ snapshots:
       define-properties: 1.2.1
       es-object-atoms: 1.1.1
 
-  ol-mapbox-style@12.6.1(ol@10.5.0):
+  ol-mapbox-style@13.0.1(ol@10.5.0):
     dependencies:
       '@maplibre/maplibre-gl-style-spec': 23.1.0
       mapbox-to-css-font: 3.2.0
