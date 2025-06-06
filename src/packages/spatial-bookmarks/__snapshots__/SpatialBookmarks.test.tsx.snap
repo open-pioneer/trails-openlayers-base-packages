@@ -7,6 +7,7 @@ exports[`should load the stored bookmark from local storage and present it visib
   role="listbox"
 >
   <li
+    aria-label="bookmark.ariaLabel"
     class="spatial-bookmarks-item chakra-list__item css-843j6g"
     role="option"
     tabindex="0"
@@ -43,7 +44,7 @@ exports[`should load the stored bookmark from local storage and present it visib
         class="css-xsawf1"
       />
       <button
-        aria-label="bookmark.button.deleteOne"
+        aria-label="bookmark.button.deleteOne.ariaLabel"
         class="chakra-button chakra-tooltip__trigger spatial-bookmarks-item-delete css-1qwewjl"
         data-part="trigger"
         data-scope="tooltip"
