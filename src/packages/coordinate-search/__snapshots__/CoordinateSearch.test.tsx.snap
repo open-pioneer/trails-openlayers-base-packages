@@ -14,34 +14,11 @@ exports[`should successfully create a coordinate search component 1`] = `
     id="tooltip:«r0»:trigger"
   >
     <div
-      class="chakra-group coordinate-input-field-group css-1n9f5vu"
-    >
-      <div
-        class="chakra-field__root css-lesxm"
-        data-part="root"
-        data-scope="field"
-        id="field::«r1»"
-        role="group"
-      >
-        <input
-          aria-label="coordinateInput.ariaLabel"
-          autocomplete="off"
-          class="chakra-input css-9n7jjk"
-          data-part="input"
-          data-scope="field"
-          id="«r1»"
-          placeholder=""
-          type="text"
-          value=""
-        />
-      </div>
-    </div>
-    <div
       class="coordinate-input-select-root chakra-select__root css-11vsvdz"
       data-part="root"
       data-scope="select"
       dir="ltr"
-      id="select:«r2»"
+      id="select:«r1»"
     >
       <div
         class="coordinate-input-select chakra-select__control css-17j1053"
@@ -49,29 +26,29 @@ exports[`should successfully create a coordinate search component 1`] = `
         data-scope="select"
         data-state="closed"
         dir="ltr"
-        id="select:«r2»:control"
+        id="select:«r1»:control"
       >
         <label
           class="chakra-select__label css-164gb0n"
           data-part="label"
           data-scope="select"
           dir="ltr"
-          for="select:«r2»:select"
-          id="select:«r2»:label"
+          for="select:«r1»:select"
+          id="select:«r1»:label"
         >
           projections.ariaLabel
         </label>
         <button
-          aria-controls="select:«r2»:content"
+          aria-controls="select:«r1»:content"
           aria-expanded="false"
           aria-haspopup="listbox"
-          aria-labelledby="select:«r2»:label"
-          class="coordinate-input-select-trigger chakra-select__trigger css-l2v2nc"
+          aria-labelledby="select:«r1»:label"
+          class="coordinate-input-select-trigger chakra-select__trigger css-1qq4sc1"
           data-part="trigger"
           data-scope="select"
           data-state="closed"
           dir="ltr"
-          id="select:«r2»:trigger"
+          id="select:«r1»:trigger"
           role="combobox"
           type="button"
         >
@@ -105,6 +82,29 @@ exports[`should successfully create a coordinate search component 1`] = `
             </svg>
           </div>
         </div>
+      </div>
+    </div>
+    <div
+      class="chakra-group coordinate-input-field-group css-1n9f5vu"
+    >
+      <div
+        class="chakra-field__root css-lesxm"
+        data-part="root"
+        data-scope="field"
+        id="field::«r2»"
+        role="group"
+      >
+        <input
+          aria-label="coordinateInput.ariaLabel"
+          autocomplete="off"
+          class="chakra-input css-n0ozho"
+          data-part="input"
+          data-scope="field"
+          id="«r2»"
+          placeholder=""
+          type="text"
+          value=""
+        />
       </div>
     </div>
   </div>

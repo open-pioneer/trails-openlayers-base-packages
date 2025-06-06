@@ -1,6 +1,6 @@
 messages:
   coordinateInput:
-    ariaLabel: Coordinate input
+    ariaLabel: "Coordinate input: Press Enter to submit input"
     copyLabel: Copy coordinates
     clearLabel: Clear input
   tooltip:

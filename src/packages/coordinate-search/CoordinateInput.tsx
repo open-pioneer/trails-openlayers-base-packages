@@ -183,6 +183,11 @@ export const CoordinateInput: FC<CoordinateInputProps> = (props) => {
                 present={!isInputValid}
             >
                 <Group className="coordinate-input-group" attached w="full">
+                    <ProjectionSelect
+                        currentProjection={selectedProjection}
+                        projections={availableProjections}
+                        onProjectionChange={setSelectedProjection}
+                    />
                     <CoordinateInputField
                         coordinateSearchInput={coordinateSearchInput}
                         setCoordinateSearchInput={setCoordinateSearchInput}
@@ -191,11 +196,6 @@ export const CoordinateInput: FC<CoordinateInputProps> = (props) => {
                         errorMessage={errorMessage}
                         onClear={onClear}
                         onEnter={onEnter}
-                    />
-                    <ProjectionSelect
-                        currentProjection={selectedProjection}
-                        projections={availableProjections}
-                        onProjectionChange={setSelectedProjection}
                     />
                 </Group>
             </Tooltip>
