@@ -8,21 +8,21 @@ packages:
 catalog:
   # Trails core packages
   # https://github.com/open-pioneer/trails-core-packages
-  "@open-pioneer/base-theme": 4.0.0
-  "@open-pioneer/core": 4.0.0
-  "@open-pioneer/http": 4.0.0
-  "@open-pioneer/integration": 4.0.0
-  "@open-pioneer/local-storage": 4.0.0
-  "@open-pioneer/notifier": 4.0.0
-  "@open-pioneer/react-utils": 4.0.0
-  "@open-pioneer/reactivity": 4.0.0
-  "@open-pioneer/runtime": 4.0.0
-  "@open-pioneer/test-utils": 4.0.0
-  "@open-pioneer/chakra-snippets": 4.0.0
+  "@open-pioneer/base-theme": ^4.0.0
+  "@open-pioneer/core": ^4.0.0
+  "@open-pioneer/http": ^4.0.0
+  "@open-pioneer/integration": ^4.0.0
+  "@open-pioneer/local-storage": ^4.0.0
+  "@open-pioneer/notifier": ^4.0.0
+  "@open-pioneer/react-utils": ^4.0.0
+  "@open-pioneer/reactivity": ^4.0.0
+  "@open-pioneer/runtime": ^4.0.0
+  "@open-pioneer/test-utils": ^4.0.0
+  "@open-pioneer/chakra-snippets": ^4.0.0
 
   "@chakra-ui/react": ^3.19.2
   "@chakra-ui/cli": ^3.19.2
-  "@conterra/reactivity-core": ^0.6.0
+  "@conterra/reactivity-core": ^0.7.0
   "@emotion/cache": ^11.14.0
   "@emotion/react": ^11.14.0
   "@emotion/styled": ^11.14.0
