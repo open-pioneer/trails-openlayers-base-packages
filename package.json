@@ -19,11 +19,11 @@
         "eslint": "pnpm run lint",
         "prettier-check": "pnpm prettier:common -c",
         "prettier": "pnpm prettier:common -w",
-        "prettier:common": "prettier ./src ./support ./docs --ignore-path .eslintignore --cache",
+        "prettier:common": "prettier ./src ./support ./docs --cache",
         "test": "vitest",
         "prepare": "husky && pnpm check-duplicates",
         "ci:test": "pnpm run clean && pnpm run lint && pnpm run check-types && vitest run",
-        "ci:version": "pnpm changeset version && pnpm exec prettier './src/**/CHANGELOG.md' --write --ignore-path .eslintignore && pnpm install",
+        "ci:version": "pnpm changeset version && pnpm exec prettier './src/**/CHANGELOG.md' --write && pnpm install",
         "ci:publish": "pnpm run clean && pnpm run build-packages && pnpm publish -r --access public && pnpm changeset tag"
     },
     "devDependencies": {

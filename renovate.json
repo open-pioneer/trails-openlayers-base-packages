@@ -1,6 +1,44 @@
 {
     "$schema": "https://docs.renovatebot.com/renovate-schema.json",
     "extends": [
-        "config:recommended"
+        "config:recommended",
+        "schedule:earlyMondays",
+        ":semanticCommitTypeAll(chore)",
+        ":approveMajorUpdates"
+    ],
+    "labels": ["dependencies"],
+    "dependencyDashboard": true,
+    "rebaseWhen": "conflicted",
+    "timezone": "UTC",
+    "lockFileMaintenance": {
+        "enabled": false
+    },
+    "prConcurrentLimit": 0,
+    "prHourlyLimit": 0,
+    "rangeStrategy": "bump",
+    "packageRules": [
+        {
+            "matchPackageNames": ["@changesets/*"],
+            "enabled": false,
+            "description": "Pin changeset packages to current version"
+        },
+        {
+            "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+            "matchDepTypes": [
+                "dependencies",
+                "devDependencies",
+                "packageManager",
+                "pnpm.catalog.default"
+            ],
+            "matchCurrentVersion": "!/^0/",
+            "groupName": "all non-major dependencies",
+            "groupSlug": "all-minor-patch"
+        },
+        {
+            "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+            "matchPackageNames": ["esbuild", "typedoc"],
+            "groupName": "all non-major dependencies",
+            "groupSlug": "all-minor-patch"
+        }
     ]
 }
