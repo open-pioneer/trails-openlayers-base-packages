@@ -31,8 +31,8 @@ catalogs:
       specifier: ^4.0.0
       version: 4.0.0
     '@open-pioneer/check-pnpm-duplicates':
-      specifier: ^0.2.1
-      version: 0.2.1
+      specifier: ^0.2.2
+      version: 0.2.2
     '@open-pioneer/core':
       specifier: ^4.0.0
       version: 4.0.0
@@ -270,7 +270,7 @@ importers:
         version: 3.0.2
       '@open-pioneer/check-pnpm-duplicates':
         specifier: 'catalog:'
-        version: 0.2.1(@pnpm/logger@1000.0.0)
+        version: 0.2.2
       '@open-pioneer/vite-plugin-pioneer':
         specifier: 'catalog:'
         version: 4.0.2(@open-pioneer/runtime@4.0.0(@types/react@19.1.6)(typescript@5.8.3))(sass@1.89.1)(vite@6.3.5(@types/node@20.19.0)(sass@1.89.1)(tsx@4.19.4)(yaml@2.7.1))
@@ -2284,8 +2284,8 @@ packages:
   '@open-pioneer/chakra-snippets@4.0.0':
     resolution: {integrity: sha512-WAFszc1hAODE5+q7U5rCSWyq9RedOmv38wLBz92xjKEeEDQMCADhNCypeL2Bu8aUe5bC1dmJ4BJXxK11aUZKBQ==}
 
-  '@open-pioneer/check-pnpm-duplicates@0.2.1':
-    resolution: {integrity: sha512-clB2YNxuE1RV3P3zMyWbqV0EAAf6DeaE29MH7boJCj0cnTYZg2EvvQbok5pssq5Dz/bS1wJZ3VlQkZvFaYDTFg==}
+  '@open-pioneer/check-pnpm-duplicates@0.2.2':
+    resolution: {integrity: sha512-iz/4IGrxmdSoOcpQxOCdIc0uAWQssWip0oyzK5oZ4LHJFTql6bbnw1L7no1Z/Tj57XYWz+Vb/I4da8yTIXbKdA==}
     engines: {node: '>= 20'}
     hasBin: true
 
@@ -2421,8 +2421,8 @@ packages:
     resolution: {integrity: sha512-tNe7a6U4rCpxLMBaR0SIYTdjxGdL0Vwb3G1zY8++sPtHSvy7qd54u8CIB0Z+Y6t5tc9pNYMYCMwhE/wdSY7ltg==}
     engines: {node: '>=18.12'}
 
-  '@pnpm/dependency-path@1000.0.8':
-    resolution: {integrity: sha512-48K8YWVEBwFEeeeyXCn40LnvgWAECIN6AzON0gzemG0wbj2/+FHtCaX1t1Uy3C6ia+8eZXJXlkAYBNxsOON3BQ==}
+  '@pnpm/dependency-path@1000.0.9':
+    resolution: {integrity: sha512-0AhabApfiq3EEYeed5HKQEU3ftkrfyKTNgkMH9esGdp2yc+62Zu7eWFf8WW6IGyitDQPLWGYjSEWDC9Bvv8nPg==}
     engines: {node: '>=18.12'}
 
   '@pnpm/error@1000.0.2':
@@ -2437,34 +2437,34 @@ packages:
     resolution: {integrity: sha512-RvMEliAmcfd/4UoaYQ93DLQcFeqit78jhYmeJJVPxqFGmj0jEcb9Tu0eAOXr7tGP3eJHpgvPbTU4o6pZ1bJhxg==}
     engines: {node: '>=18.12'}
 
-  '@pnpm/lockfile.fs@1001.1.11':
-    resolution: {integrity: sha512-Mv6BAZUzZuMIXFy9SpiaLSdtNGhjVH2LluMWPOkmqDVXzPXE1mUbQhvCyxwFRP+bUbqd3zPMdEcKZKcfvm8a0g==}
+  '@pnpm/lockfile.fs@1001.1.12':
+    resolution: {integrity: sha512-xgDIxSpOx5aM2QDx8n/gAcZY3V+abe7Q9Qbj2hRZA2rANGVYuitSPETwSsP4X3JpBm6ivjzPBRy5bfp+7UtaUQ==}
     engines: {node: '>=18.12'}
     peerDependencies:
-      '@pnpm/logger': '>=5.1.0 <1001.0.0'
+      '@pnpm/logger': '>=1001.0.0 <1002.0.0'
 
-  '@pnpm/lockfile.merger@1001.0.7':
-    resolution: {integrity: sha512-xzT3EHohVBIGUMICClEUIOG8q3TvarU/RQXHd22kBJU+P+PV1Q00ryMGvZ2p6e3yGvWoEYXCa/sfV0oEChX/yQ==}
+  '@pnpm/lockfile.merger@1001.0.8':
+    resolution: {integrity: sha512-oB9ABNyxn2yiCr7fGfhrZw2ANXjs9IW9F0y+MyKlryNFHgEsw7972WKOtb1zMRozLg1tU0i+hSLt/Bh8imuTIg==}
     engines: {node: '>=18.12'}
 
-  '@pnpm/lockfile.types@1001.0.7':
-    resolution: {integrity: sha512-wckYVI4m4a6NKxRMSOcCVvz521vSJ2l8o1VXDs4+69iUOPpQX3DSp+s5NwafMVDt6DRW4/+KCx8y7uV+bQAzEQ==}
+  '@pnpm/lockfile.types@1001.0.8':
+    resolution: {integrity: sha512-rKecvWutX7aZPFNyXGnGtiwfmnPRiQyG6AWQ1Ad0djWKbPeccg0s9B7cJqCJ4nEnwzhEvw9UtuofBkU/O0L+bQ==}
     engines: {node: '>=18.12'}
 
-  '@pnpm/lockfile.utils@1001.0.10':
-    resolution: {integrity: sha512-SuO1d+sCMbupm/QfsrpVi1leFX6Pghezu3GyET3qXQNw9Aa3PXDt4poxkE/Rs9nPjjCzrNF7b1wwr/O0NkmDmg==}
+  '@pnpm/lockfile.utils@1001.0.11':
+    resolution: {integrity: sha512-z+xK8yCILgFtjZUAOtAneCcuFtmK8CVLBNLGUxZtaiCPNEeaIdHa7U2NFKONk1tLJ8Me9KazIRstyqIhtZvKvA==}
     engines: {node: '>=18.12'}
 
-  '@pnpm/lockfile.walker@1001.0.8':
-    resolution: {integrity: sha512-+sM9VSwVlKvKb48FNZBlH4621fq1bVWQHBDrs95AyBVbaq4Jf41arf+ICOxWkORIGedh8J3tt19dDfA3+7AYlQ==}
+  '@pnpm/lockfile.walker@1001.0.9':
+    resolution: {integrity: sha512-cZGiUiCEagCRQn73GCK6H398KatUFASYfKL4fNu2BuWHsBVOlJotxS99BVs+aVUL5c8ixoE9TbllwTzC37mpag==}
     engines: {node: '>=18.12'}
 
-  '@pnpm/logger@1000.0.0':
-    resolution: {integrity: sha512-v5WO9L4pT7ZjZpf7a/a3H3Xj59JPHNMFJwRS7m/01VMWrKjs89CdVIE5e/N6DwuzP750j0iKozTw6UrCVEfQjA==}
+  '@pnpm/logger@1001.0.0':
+    resolution: {integrity: sha512-nj80XtTHHt7T+b5stLWszzd166MbGx4eTOu9+6h6RdelKMlSWhrb7KUb0j90tYk+yoGx8TeMVdJCaoBnkLp8xw==}
     engines: {node: '>=18.12'}
 
-  '@pnpm/object.key-sorting@1000.0.0':
-    resolution: {integrity: sha512-lL9MfhQW9P6MmQ4EdSixgQL0Ev70oNYuGNieLcy6JhfuPPrFNAIfdihbYmhJmdMBSbHZPPG3tTeJwMvXx1AZ0Q==}
+  '@pnpm/object.key-sorting@1000.0.1':
+    resolution: {integrity: sha512-YTJCXyUGOrJuj4QqhSKqZa1vlVAm82h1/uw00ZmD/kL2OViggtyUwWyIe62kpwWVPwEYixfGjfvaFKVJy2mjzA==}
     engines: {node: '>=18.12'}
 
   '@pnpm/patching.types@1000.1.0':
@@ -2478,16 +2478,16 @@ packages:
   '@pnpm/ramda@0.28.1':
     resolution: {integrity: sha512-zcAG+lvU0fMziNeGXpPyCyCJYp5ZVrPElEE4t14jAmViaihohocZ+dDkcRIyAomox8pQsuZnv1EyHR+pOhmUWw==}
 
-  '@pnpm/resolver-base@1003.0.0':
-    resolution: {integrity: sha512-1XMbVZVF9JcxD1Afo15beP4T7Weh9aY1ARUXctgi9TN1XNa6/EZq4L0YdPrQ6ncaOvm4ieqzJTT4QHoNFyyZWA==}
+  '@pnpm/resolver-base@1003.0.1':
+    resolution: {integrity: sha512-QdkoHw3Bk/pLfdmhWttBZP5DVOcYTvli6zjt9Pk3A8gIhVMw1QBRbdhhvEmPgKwDh6DxD7jFrh8daTkF7OK1cw==}
     engines: {node: '>=18.12'}
 
-  '@pnpm/types@1000.5.0':
-    resolution: {integrity: sha512-R8yOeAfqTXW+REWa8UZ9KtDibpfybYhCKwvEtAp3HXcm8GHCg0JN4guZUybwh1yV9dYN354Kz9uAvd7VON2/WQ==}
+  '@pnpm/types@1000.6.0':
+    resolution: {integrity: sha512-6PsMNe98VKPGcg6LnXSW/LE3YfJ77nj+bPKiRjYRWAQLZ+xXjEQRaR0dAuyjCmchlv4wR/hpnMVRS21/fCod5w==}
     engines: {node: '>=18.12'}
 
-  '@pnpm/util.lex-comparator@3.0.0':
-    resolution: {integrity: sha512-ead+l3IiuVXwKDf/QJPX6G93cwhXki3yOVEA/VdAO7AhZ5vUuSBxHe6gQKEbB0QacJ4H5VsYxeM1xUgwjjOO/Q==}
+  '@pnpm/util.lex-comparator@3.0.2':
+    resolution: {integrity: sha512-blFO4Ws97tWv/SNE6N39ZdGmZBrocXnBOfVp0ln4kELmns4pGPZizqyRtR8EjfOLMLstbmNCTReBoDvLz1isVg==}
     engines: {node: '>=18.12'}
 
   '@preact/signals-core@1.9.0':
@@ -6418,17 +6418,16 @@ snapshots:
       - supports-color
       - typescript
 
-  '@open-pioneer/check-pnpm-duplicates@0.2.1(@pnpm/logger@1000.0.0)':
+  '@open-pioneer/check-pnpm-duplicates@0.2.2':
     dependencies:
-      '@pnpm/lockfile.fs': 1001.1.11(@pnpm/logger@1000.0.0)
-      '@pnpm/lockfile.utils': 1001.0.10
-      '@pnpm/lockfile.walker': 1001.0.8
-      '@pnpm/types': 1000.5.0
+      '@pnpm/lockfile.fs': 1001.1.12(@pnpm/logger@1001.0.0)
+      '@pnpm/lockfile.utils': 1001.0.11
+      '@pnpm/lockfile.walker': 1001.0.9
+      '@pnpm/logger': 1001.0.0
+      '@pnpm/types': 1000.6.0
       chalk: 5.4.1
-      commander: 13.1.0
+      commander: 14.0.0
       js-yaml: 4.1.0
-    transitivePeerDependencies:
-      - '@pnpm/logger'
 
   '@open-pioneer/core@4.0.0': {}
 
@@ -6603,10 +6602,10 @@ snapshots:
 
   '@pnpm/crypto.polyfill@1000.1.0': {}
 
-  '@pnpm/dependency-path@1000.0.8':
+  '@pnpm/dependency-path@1000.0.9':
     dependencies:
       '@pnpm/crypto.hash': 1000.1.1
-      '@pnpm/types': 1000.5.0
+      '@pnpm/types': 1000.6.0
       semver: 7.7.2
 
   '@pnpm/error@1000.0.2':
@@ -6621,18 +6620,18 @@ snapshots:
     dependencies:
       graceful-fs: 4.2.11
 
-  '@pnpm/lockfile.fs@1001.1.11(@pnpm/logger@1000.0.0)':
+  '@pnpm/lockfile.fs@1001.1.12(@pnpm/logger@1001.0.0)':
     dependencies:
       '@pnpm/constants': 1001.1.0
-      '@pnpm/dependency-path': 1000.0.8
+      '@pnpm/dependency-path': 1000.0.9
       '@pnpm/error': 1000.0.2
       '@pnpm/git-utils': 1000.0.0
-      '@pnpm/lockfile.merger': 1001.0.7
-      '@pnpm/lockfile.types': 1001.0.7
-      '@pnpm/lockfile.utils': 1001.0.10
-      '@pnpm/logger': 1000.0.0
-      '@pnpm/object.key-sorting': 1000.0.0
-      '@pnpm/types': 1000.5.0
+      '@pnpm/lockfile.merger': 1001.0.8
+      '@pnpm/lockfile.types': 1001.0.8
+      '@pnpm/lockfile.utils': 1001.0.11
+      '@pnpm/logger': 1001.0.0
+      '@pnpm/object.key-sorting': 1000.0.1
+      '@pnpm/types': 1000.6.0
       '@zkochan/rimraf': 3.0.2
       comver-to-semver: 1.0.0
       js-yaml: '@zkochan/js-yaml@0.0.7'
@@ -6642,43 +6641,43 @@ snapshots:
       strip-bom: 4.0.0
       write-file-atomic: 5.0.1
 
-  '@pnpm/lockfile.merger@1001.0.7':
+  '@pnpm/lockfile.merger@1001.0.8':
     dependencies:
-      '@pnpm/lockfile.types': 1001.0.7
-      '@pnpm/types': 1000.5.0
+      '@pnpm/lockfile.types': 1001.0.8
+      '@pnpm/types': 1000.6.0
       comver-to-semver: 1.0.0
       ramda: '@pnpm/ramda@0.28.1'
       semver: 7.7.2
 
-  '@pnpm/lockfile.types@1001.0.7':
+  '@pnpm/lockfile.types@1001.0.8':
     dependencies:
       '@pnpm/patching.types': 1000.1.0
-      '@pnpm/types': 1000.5.0
+      '@pnpm/types': 1000.6.0
 
-  '@pnpm/lockfile.utils@1001.0.10':
+  '@pnpm/lockfile.utils@1001.0.11':
     dependencies:
-      '@pnpm/dependency-path': 1000.0.8
-      '@pnpm/lockfile.types': 1001.0.7
+      '@pnpm/dependency-path': 1000.0.9
+      '@pnpm/lockfile.types': 1001.0.8
       '@pnpm/pick-fetcher': 1000.0.0
-      '@pnpm/resolver-base': 1003.0.0
-      '@pnpm/types': 1000.5.0
+      '@pnpm/resolver-base': 1003.0.1
+      '@pnpm/types': 1000.6.0
       get-npm-tarball-url: 2.1.0
       ramda: '@pnpm/ramda@0.28.1'
 
-  '@pnpm/lockfile.walker@1001.0.8':
+  '@pnpm/lockfile.walker@1001.0.9':
     dependencies:
-      '@pnpm/dependency-path': 1000.0.8
-      '@pnpm/lockfile.types': 1001.0.7
-      '@pnpm/types': 1000.5.0
+      '@pnpm/dependency-path': 1000.0.9
+      '@pnpm/lockfile.types': 1001.0.8
+      '@pnpm/types': 1000.6.0
 
-  '@pnpm/logger@1000.0.0':
+  '@pnpm/logger@1001.0.0':
     dependencies:
       bole: 5.0.18
       ndjson: 2.0.0
 
-  '@pnpm/object.key-sorting@1000.0.0':
+  '@pnpm/object.key-sorting@1000.0.1':
     dependencies:
-      '@pnpm/util.lex-comparator': 3.0.0
+      '@pnpm/util.lex-comparator': 3.0.2
       sort-keys: 4.2.0
 
   '@pnpm/patching.types@1000.1.0': {}
@@ -6687,13 +6686,13 @@ snapshots:
 
   '@pnpm/ramda@0.28.1': {}
 
-  '@pnpm/resolver-base@1003.0.0':
+  '@pnpm/resolver-base@1003.0.1':
     dependencies:
-      '@pnpm/types': 1000.5.0
+      '@pnpm/types': 1000.6.0
 
-  '@pnpm/types@1000.5.0': {}
+  '@pnpm/types@1000.6.0': {}
 
-  '@pnpm/util.lex-comparator@3.0.0': {}
+  '@pnpm/util.lex-comparator@3.0.2': {}
 
   '@preact/signals-core@1.9.0': {}
 
