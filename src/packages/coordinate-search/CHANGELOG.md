@@ -1,5 +1,40 @@
 # @open-pioneer/coordinate-search
 
+## 0.11.0
+
+### Minor Changes
+
+- 66179bc: Update to core-packages v4.0.0
+- 888fc2b: improve a11y of coordinate search and coordinate input
+
+    - switch order of projection select and coordinate input (visually and tab order) in order to have the correct focus order
+    - add instructions to `aria-label` for coordinate input to improve usability for screenreader users
+
+- 738390e: Update to Chakra v3
+
+### Patch Changes
+
+- 9376a74: Ensure that icons and other decorative elements are hidden from the screen reader using the `aria-hidden="true"` attribute.
+
+    The easiest way to do that is to wrap icons into chakra's `<Icon />` component, for example:
+
+    ```tsx
+    import { Icon } from "@chakra-ui/react";
+    import { FiX } from "react-icons/fi";
+
+    <Icon>
+        <FiX />
+    </Icon>;
+    ```
+
+- 1127419: Present error messages to screen readers using a (hidden) `<Field.ErrorMessage />` next to the input field.
+- Updated dependencies [738390e]
+- Updated dependencies [66179bc]
+- Updated dependencies [0a8ff71]
+- Updated dependencies [acd5115]
+- Updated dependencies [738390e]
+    - @open-pioneer/map@0.11.0
+
 ## 0.10.0
 
 ### Minor Changes

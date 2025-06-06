@@ -1,5 +1,23 @@
 # @open-pioneer/scale-setter
 
+## 0.11.0
+
+### Minor Changes
+
+- 66179bc: Update to core-packages v4.0.0
+- 738390e: Update to Chakra v3
+
+### Patch Changes
+
+- c7a3c5b: Change the direction of the chevron icon used by the scale setter to align this component with the other components. Use css rotation or file an issue if this turns out to be a problem.
+- c7a3c5b: Improve screen reader output for scale options.
+- Updated dependencies [738390e]
+- Updated dependencies [66179bc]
+- Updated dependencies [0a8ff71]
+- Updated dependencies [acd5115]
+- Updated dependencies [738390e]
+    - @open-pioneer/map@0.11.0
+
 ## 0.10.0
 
 ### Minor Changes
