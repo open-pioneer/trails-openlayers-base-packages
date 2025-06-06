@@ -46,7 +46,7 @@ catalog:
   "@changesets/cli": 2.27.9
   "@open-pioneer/build-package-cli": ^3.0.2
   "@open-pioneer/build-support": ^3.0.2
-  "@open-pioneer/check-pnpm-duplicates": ^0.2.1
+  "@open-pioneer/check-pnpm-duplicates": ^0.2.2
   "@open-pioneer/vite-plugin-pioneer": ^4.0.2
   "@testing-library/dom": ^10.4.0
   "@testing-library/jest-dom": ^6.6.3
