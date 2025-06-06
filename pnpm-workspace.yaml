@@ -4,31 +4,24 @@ packages:
   - "!**/dist/**"
   - .
 
-# Shared version expressions (yaml anchors).
-# This is a yaml feature and is not interpreted by pnpm directly.
-__versions:
-  - &react_version ^19.1.0
-  - &core_packages_version 4.0.0-dev.20250527091545
-  - &chakra_version ^3.19.1
-
 # https://pnpm.io/catalogs
 catalog:
   # Trails core packages
   # https://github.com/open-pioneer/trails-core-packages
-  "@open-pioneer/base-theme": *core_packages_version
-  "@open-pioneer/core": *core_packages_version
-  "@open-pioneer/http": *core_packages_version
-  "@open-pioneer/integration": *core_packages_version
-  "@open-pioneer/local-storage": *core_packages_version
-  "@open-pioneer/notifier": *core_packages_version
-  "@open-pioneer/react-utils": *core_packages_version
-  "@open-pioneer/reactivity": *core_packages_version
-  "@open-pioneer/runtime": *core_packages_version
-  "@open-pioneer/test-utils": *core_packages_version
-  "@open-pioneer/chakra-snippets": *core_packages_version
+  "@open-pioneer/base-theme": 4.0.0-dev.20250527091545
+  "@open-pioneer/core": 4.0.0-dev.20250527091545
+  "@open-pioneer/http": 4.0.0-dev.20250527091545
+  "@open-pioneer/integration": 4.0.0-dev.20250527091545
+  "@open-pioneer/local-storage": 4.0.0-dev.20250527091545
+  "@open-pioneer/notifier": 4.0.0-dev.20250527091545
+  "@open-pioneer/react-utils": 4.0.0-dev.20250527091545
+  "@open-pioneer/reactivity": 4.0.0-dev.20250527091545
+  "@open-pioneer/runtime": 4.0.0-dev.20250527091545
+  "@open-pioneer/test-utils": 4.0.0-dev.20250527091545
+  "@open-pioneer/chakra-snippets": 4.0.0-dev.20250527091545
 
-  "@chakra-ui/react": *chakra_version
-  "@chakra-ui/cli": *chakra_version
+  "@chakra-ui/react": ^3.19.1
+  "@chakra-ui/cli": ^3.19.1
   "@conterra/reactivity-core": ^0.6.0
   "@emotion/cache": ^11.13.0
   "@emotion/react": ^11.13.0
@@ -43,10 +36,10 @@ catalog:
   ol-mapbox-style: ^12.4.1
   ol: ^10.5.0
   proj4: ^2.12.1
-  react-dom: *react_version
+  react-dom: ^19.1.0
   react-icons: ^5.3.0
   react-use: ^17.5.1
-  react: *react_version
+  react: ^19.1.0
   uuid: ^11.1.0
 
   # Devtools
@@ -143,7 +136,7 @@ patchedDependencies:
 
   # Ensure valids ids for aria-activedescendant and fix touch events in shadow DOM (see https://github.com/JedWatson/react-select/issues/5824)
   "react-select": "patches/react-select.patch"
-  
+
   # - Ensure all portals are mounted under `.pioneer-root` div
   # - Fix rendering of toasts in shadow root: https://github.com/chakra-ui/ark/issues/3455
   "@ark-ui/react@*": "patches/@ark-ui__react.patch"
