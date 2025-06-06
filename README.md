@@ -36,6 +36,11 @@ $ pnpm test <PATH_TO_PACKAGE>
 
 For more details, consult the starter project's [Repository Guide](https://github.com/open-pioneer/trails-starter/blob/main/docs/RepositoryGuide.md).
 
+## Branches
+
+- [main](https://github.com/open-pioneer/trails-openlayers-base-packages/): Current development state.
+- [0.10.x](https://github.com/open-pioneer/trails-openlayers-base-packages/tree/0.10.x) (Legacy): Contains the 0.10.x versions based on Chakra v2.
+
 ## Packages
 
 This repository publishes the following packages:
