@@ -1,5 +1,37 @@
 # @open-pioneer/toc
 
+## 0.11.0
+
+### Minor Changes
+
+- 66179bc: Update to core-packages v4.0.0
+- 738390e: Update to Chakra v3
+
+### Patch Changes
+
+- 9376a74: Ensure that icons and other decorative elements are hidden from the screen reader using the `aria-hidden="true"` attribute.
+
+    The easiest way to do that is to wrap icons into chakra's `<Icon />` component, for example:
+
+    ```tsx
+    import { Icon } from "@chakra-ui/react";
+    import { FiX } from "react-icons/fi";
+
+    <Icon>
+        <FiX />
+    </Icon>;
+    ```
+
+- e00186b: Add a tooltip around the menu trigger buttons (map tools and layer tools).
+- Updated dependencies [738390e]
+- Updated dependencies [738390e]
+- Updated dependencies [66179bc]
+- Updated dependencies [0a8ff71]
+- Updated dependencies [acd5115]
+- Updated dependencies [738390e]
+    - @open-pioneer/map@0.11.0
+    - @open-pioneer/basemap-switcher@0.11.0
+
 ## 0.10.0
 
 ### Minor Changes

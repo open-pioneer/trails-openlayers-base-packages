@@ -1,5 +1,12 @@
 # @open-pioneer/experimental-layout-sidebar
 
+## 0.11.0
+
+### Minor Changes
+
+- 66179bc: Update to core-packages v4.0.0
+- 738390e: Update to Chakra v3
+
 ## 0.10.0
 
 ### Patch Changes
