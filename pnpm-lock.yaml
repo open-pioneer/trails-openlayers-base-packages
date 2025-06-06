@@ -13,8 +13,8 @@ catalogs:
       specifier: 2.27.9
       version: 2.27.9
     '@conterra/reactivity-core':
-      specifier: ^0.6.0
-      version: 0.6.0
+      specifier: ^0.7.0
+      version: 0.7.0
     '@emotion/react':
       specifier: ^11.13.0
       version: 11.14.0
@@ -428,7 +428,7 @@ importers:
         version: 3.19.1(@emotion/react@11.14.0(@types/react@19.1.2)(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@conterra/reactivity-core':
         specifier: 'catalog:'
-        version: 0.6.0
+        version: 0.7.0
       '@open-pioneer/chakra-snippets':
         specifier: 'catalog:'
         version: 4.0.0-dev.20250527091545(@emotion/react@11.14.0(@types/react@19.1.2)(react@19.1.0))(@types/react@19.1.2)(react-dom@19.1.0(react@19.1.0))(typescript@5.8.3)
@@ -472,7 +472,7 @@ importers:
         version: 3.19.1(@emotion/react@11.14.0(@types/react@19.1.2)(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@conterra/reactivity-core':
         specifier: 'catalog:'
-        version: 0.6.0
+        version: 0.7.0
       '@open-pioneer/chakra-snippets':
         specifier: 'catalog:'
         version: 4.0.0-dev.20250527091545(@emotion/react@11.14.0(@types/react@19.1.2)(react@19.1.0))(@types/react@19.1.2)(react-dom@19.1.0(react@19.1.0))(typescript@5.8.3)
@@ -554,7 +554,7 @@ importers:
     dependencies:
       '@conterra/reactivity-core':
         specifier: 'catalog:'
-        version: 0.6.0
+        version: 0.7.0
       '@open-pioneer/core':
         specifier: 'catalog:'
         version: 4.0.0-dev.20250527091545
@@ -586,7 +586,7 @@ importers:
         version: 3.19.1(@emotion/react@11.14.0(@types/react@19.1.2)(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@conterra/reactivity-core':
         specifier: 'catalog:'
-        version: 0.6.0
+        version: 0.7.0
       '@open-pioneer/core':
         specifier: 'catalog:'
         version: 4.0.0-dev.20250527091545
@@ -677,7 +677,7 @@ importers:
         version: 3.19.1(@emotion/react@11.14.0(@types/react@19.1.2)(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@conterra/reactivity-core':
         specifier: 'catalog:'
-        version: 0.6.0
+        version: 0.7.0
       '@open-pioneer/core':
         specifier: 'catalog:'
         version: 4.0.0-dev.20250527091545
@@ -736,7 +736,7 @@ importers:
         version: 3.19.1(@emotion/react@11.14.0(@types/react@19.1.2)(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@conterra/reactivity-core':
         specifier: 'catalog:'
-        version: 0.6.0
+        version: 0.7.0
       '@open-pioneer/map':
         specifier: workspace:^
         version: link:../map
@@ -780,7 +780,7 @@ importers:
     dependencies:
       '@conterra/reactivity-core':
         specifier: 'catalog:'
-        version: 0.6.0
+        version: 0.7.0
       '@open-pioneer/map':
         specifier: workspace:^
         version: link:../map
@@ -990,7 +990,7 @@ importers:
         version: 3.19.1(@emotion/react@11.14.0(@types/react@19.1.2)(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@conterra/reactivity-core':
         specifier: 'catalog:'
-        version: 0.6.0
+        version: 0.7.0
       '@open-pioneer/chakra-snippets':
         specifier: 'catalog:'
         version: 4.0.0-dev.20250527091545(@emotion/react@11.14.0(@types/react@19.1.2)(react@19.1.0))(@types/react@19.1.2)(react-dom@19.1.0(react@19.1.0))(typescript@5.8.3)
@@ -1201,7 +1201,7 @@ importers:
         version: 3.19.1(@emotion/react@11.14.0(@types/react@19.1.2)(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@conterra/reactivity-core':
         specifier: 'catalog:'
-        version: 0.6.0
+        version: 0.7.0
       '@open-pioneer/chakra-snippets':
         specifier: 'catalog:'
         version: 4.0.0-dev.20250527091545(@emotion/react@11.14.0(@types/react@19.1.2)(react@19.1.0))(@types/react@19.1.2)(react-dom@19.1.0(react@19.1.0))(typescript@5.8.3)
@@ -1260,7 +1260,7 @@ importers:
         version: 3.19.1(@emotion/react@11.14.0(@types/react@19.1.2)(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@conterra/reactivity-core':
         specifier: 'catalog:'
-        version: 0.6.0
+        version: 0.7.0
       '@open-pioneer/chakra-snippets':
         specifier: 'catalog:'
         version: 4.0.0-dev.20250527091545(@emotion/react@11.14.0(@types/react@19.1.2)(react@19.1.0))(@types/react@19.1.2)(react-dom@19.1.0(react@19.1.0))(typescript@5.8.3)
@@ -1319,7 +1319,7 @@ importers:
         version: 3.19.1(@emotion/react@11.14.0(@types/react@19.1.2)(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@conterra/reactivity-core':
         specifier: 'catalog:'
-        version: 0.6.0
+        version: 0.7.0
       '@open-pioneer/basemap-switcher':
         specifier: workspace:^
         version: link:../basemap-switcher
@@ -1438,7 +1438,7 @@ importers:
         version: 3.19.1(@emotion/react@11.14.0(@types/react@19.1.2)(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@conterra/reactivity-core':
         specifier: 'catalog:'
-        version: 0.6.0
+        version: 0.7.0
       '@emotion/react':
         specifier: 'catalog:'
         version: 11.14.0(@types/react@19.1.2)(react@19.1.0)
@@ -1567,7 +1567,7 @@ importers:
         version: 3.19.1(@emotion/react@11.14.0(@types/react@19.1.2)(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@conterra/reactivity-core':
         specifier: 'catalog:'
-        version: 0.6.0
+        version: 0.7.0
       '@emotion/react':
         specifier: 'catalog:'
         version: 11.14.0(@types/react@19.1.2)(react@19.1.0)
@@ -1885,6 +1885,9 @@ packages:
 
   '@conterra/reactivity-core@0.6.0':
     resolution: {integrity: sha512-TgW5fQsFxd/YiEWHhf5h1qlENJuO2Gi6ySHvIUHm/P2u8sG4EG0y+TNfFjmgFBUY9C9ElH23KFXC03TA0iXABA==}
+
+  '@conterra/reactivity-core@0.7.0':
+    resolution: {integrity: sha512-RpzIfturgauc6ZtCAk+C28ioXaLI89yBYNSN1T5BMcwn4nvD9OAs5SF9eWkHTkflyp7x4mRRVu+jyzPvOo02HQ==}
 
   '@csstools/color-helpers@5.0.2':
     resolution: {integrity: sha512-JqWH1vsgdGcw2RR6VliXXdA0/59LttzlU8UlRT/iUUsEeWfYq8I+K0yhihEUTTHLRm1EXvpsCx3083EU15ecsA==}
@@ -2492,6 +2495,9 @@ packages:
 
   '@preact/signals-core@1.8.0':
     resolution: {integrity: sha512-OBvUsRZqNmjzCZXWLxkZfhcgT+Fk8DDcT/8vD6a1xhDemodyy87UJRJfASMuSD8FaAIeGgGm85ydXhm7lr4fyA==}
+
+  '@preact/signals-core@1.9.0':
+    resolution: {integrity: sha512-uUgFHJLWxb33rfCtb1g+1e3Rg7Jl5EALhGTHlQ5Y0w37OF+fdidYdYEE6crbpUOYDOjlmelIWf0ulXr1ggfUkg==}
 
   '@rollup/plugin-node-resolve@16.0.1':
     resolution: {integrity: sha512-tk5YCxJWIG81umIvNkSod2qK5KyQW19qcBF/B78n1bjtOON6gzKoVeSzAE8yHCZEDmqkHKkxplExA8KzdJLJpA==}
@@ -5972,6 +5978,10 @@ snapshots:
     dependencies:
       '@preact/signals-core': 1.8.0
 
+  '@conterra/reactivity-core@0.7.0':
+    dependencies:
+      '@preact/signals-core': 1.9.0
+
   '@csstools/color-helpers@5.0.2': {}
 
   '@csstools/css-calc@2.1.2(@csstools/css-parser-algorithms@3.0.4(@csstools/css-tokenizer@3.0.3))(@csstools/css-tokenizer@3.0.3)':
@@ -6680,6 +6690,8 @@ snapshots:
   '@pnpm/util.lex-comparator@3.0.0': {}
 
   '@preact/signals-core@1.8.0': {}
+
+  '@preact/signals-core@1.9.0': {}
 
   '@rollup/plugin-node-resolve@16.0.1(rollup@4.40.2)':
     dependencies:

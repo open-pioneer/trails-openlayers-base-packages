@@ -22,7 +22,7 @@ catalog:
 
   "@chakra-ui/react": ^3.19.1
   "@chakra-ui/cli": ^3.19.1
-  "@conterra/reactivity-core": ^0.6.0
+  "@conterra/reactivity-core": ^0.7.0
   "@emotion/cache": ^11.13.0
   "@emotion/react": ^11.13.0
   "@emotion/styled": ^11.13.0
