@@ -20,8 +20,8 @@ catalog:
   "@open-pioneer/test-utils": ^4.0.0
   "@open-pioneer/chakra-snippets": ^4.0.0
 
-  "@chakra-ui/react": ^3.19.2
-  "@chakra-ui/cli": ^3.19.2
+  "@chakra-ui/react": ^3.21.0
+  "@chakra-ui/cli": ^3.21.0
   "@conterra/reactivity-core": ^0.7.0
   "@emotion/cache": ^11.14.0
   "@emotion/react": ^11.14.0
@@ -92,10 +92,6 @@ catalog:
 
 auditConfig:
   ignoreCves:
-    # brace-expansion is a dev dependency that runs on trusted input (source code).
-    # There is currently no patch available.
-    # See https://github.com/advisories/GHSA-v6h2-p8h4-qcjw
-    - "CVE-2025-5889"
 
 overrides:
   # See patchedDependencies
@@ -127,6 +123,9 @@ overrides:
   "canvg@<=4.0.2": ">=4.0.3"
   # https://github.com/advisories/GHSA-968p-4wvh-cqc8
   "@babel/runtime": ">=7.26.10"
+  # https://github.com/advisories/GHSA-v6h2-p8h4-qcjw
+  "brace-expansion@>=1.0.0 <=1.1.11": "^1.1.12"
+  "brace-expansion@>=2.0.0 <=2.0.1": "^2.0.2"
 
   # Just to get rid of some duplicate dependencies
   "source-map@<0.6.1": ">=0.6.1"
@@ -144,10 +143,6 @@ patchedDependencies:
   # - Ensure all portals are mounted under `.pioneer-root` div
   # - Fix rendering of toasts in shadow root: https://github.com/chakra-ui/ark/issues/3455
   "@ark-ui/react@*": "patches/@ark-ui__react.patch"
-
-  # For tests: overwrite focus() function using defineProperty instead of raw assignment
-  # See https://github.com/chakra-ui/zag/pull/2461
-  "@zag-js/focus-visible@*": "patches/@zag-js__focus-visible.patch"
 
 dangerouslyAllowAllBuilds: false
 onlyBuiltDependencies:
