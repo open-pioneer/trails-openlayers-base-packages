@@ -1,5 +1,14 @@
 # @open-pioneer/toc
 
+## 0.11.1
+
+### Patch Changes
+
+- 10d2fe7: Update dependencies
+- Updated dependencies [10d2fe7]
+    - @open-pioneer/basemap-switcher@0.11.1
+    - @open-pioneer/map@0.11.1
+
 ## 0.11.0
 
 ### Minor Changes
