@@ -1,5 +1,11 @@
 # @open-pioneer/experimental-layout-sidebar
 
+## 0.11.1
+
+### Patch Changes
+
+- 10d2fe7: Update dependencies
+
 ## 0.11.0
 
 ### Minor Changes
