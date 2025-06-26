@@ -40,16 +40,27 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
     const layerGroupId = useId();
     const isAvailable = useLoadState(layer) !== "error";
     const notAvailableLabel = intl.formatMessage({ id: "layerNotAvailable" });
-    const { title, description, isVisible } = useReactiveSnapshot(() => {
+    const { title, description, isVisible, displayMode, shownChildren } = useReactiveSnapshot(() => {
         return {
             title: layer.title,
             description: layer.description,
-            isVisible: layer.visible
+            isVisible: layer.visible,
+            displayMode: layer.displayMode,
+            shownChildren: hasShownChildren(layer)
         };
     }, [layer]);
 
     const nestedChildren = useNestedChildren(layerGroupId, title, layer, intl);
-    const hasNestedChildren = !!nestedChildren;
+    let hasNestedChildren = !!nestedChildren;
+
+    if (displayMode === "hide") {
+        return null;
+    }
+
+    if (displayMode === "hide_children" || !shownChildren) {
+        hasNestedChildren = false;
+    }
+
     return (
         <Box as="li" className={classNames("toc-layer-item", `layer-${slug(layer.id)}`)}>
             <Flex
@@ -211,4 +222,14 @@ function updateLayerVisibility(layer: AnyLayer, visible: boolean, autoShowParent
     if (visible && autoShowParents && layer.parent) {
         updateLayerVisibility(layer.parent, true, true);
     }
+}
+
+
+function hasShownChildren(layer: AnyLayer): boolean {
+    if (!layer.children || layer.children.getItems().length === 0) {
+        return false;
+    } else {
+        return layer.children.getItems().some((childLayer) => childLayer.displayMode !== "hide");
+    }
+    
 }

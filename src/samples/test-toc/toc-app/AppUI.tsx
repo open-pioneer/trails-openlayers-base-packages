@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box, Flex, Text, VStack } from "@chakra-ui/react";
+import { Box, Button, Flex, Text, VStack } from "@chakra-ui/react";
 import { DefaultMapProvider, MapAnchor, MapContainer, useMapModel } from "@open-pioneer/map";
 import { ToolButton } from "@open-pioneer/map-ui-components";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
@@ -120,6 +120,21 @@ export function AppUI() {
                                             active={showToc}
                                             onClick={toggleToc}
                                         />
+                                        <Button onClick={() => {
+                                            if (map) {
+                                                const layer = map.layers.getLayerById("bustops");
+                                                if (layer) {
+                                                    const displayMode = layer.displayMode;
+                                                    if (displayMode === "show") {
+                                                        layer.setDisplayMode("hide");
+                                                    } else {
+                                                        layer.setDisplayMode("show");
+                                                    }
+                                                }
+                                            }
+                                        }}>
+                                           toggle display mode
+                                        </Button>
                                     </Flex>
                                 </MapAnchor>
                             </MapContainer>

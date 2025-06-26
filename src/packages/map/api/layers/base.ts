@@ -20,6 +20,8 @@ export type LayerLoadState = "not-loaded" | "loading" | "loaded" | "error";
 /** Custom function to check the state of a layer and returning a "loaded" or "error". */
 export type HealthCheckFunction = (layer: Layer) => Promise<"loaded" | "error">;
 
+export type DisplayMode = "show" | "hide" | "hide_children";
+
 /**
  * Configuration options supported by all layer types (layers and sublayers).
  */
@@ -52,6 +54,8 @@ export interface LayerBaseConfig {
      * These can be arbitrary values.
      */
     attributes?: Record<string | symbol, unknown>;
+
+    displayMode?: DisplayMode;
 }
 
 /**
@@ -137,6 +141,10 @@ export interface AnyLayerBaseType<AdditionalEvents = {}>
      * Additional attributes associated with this layer.
      */
     readonly attributes: Readonly<Record<string | symbol, unknown>>;
+
+    readonly displayMode: DisplayMode;
+
+    setDisplayMode(newDisplayMode: string): void;
 
     /**
      * Updates the title of this layer.
