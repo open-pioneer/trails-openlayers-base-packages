@@ -40,16 +40,29 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
     const layerGroupId = useId();
     const isAvailable = useLoadState(layer) !== "error";
     const notAvailableLabel = intl.formatMessage({ id: "layerNotAvailable" });
-    const { title, description, isVisible } = useReactiveSnapshot(() => {
-        return {
-            title: layer.title,
-            description: layer.description,
-            isVisible: layer.visible
-        };
-    }, [layer]);
+    const { title, description, isVisible, displayMode, allChildrenHidden } =
+        useReactiveSnapshot(() => {
+            return {
+                title: layer.title,
+                description: layer.description,
+                isVisible: layer.visible,
+                displayMode: layer.displayMode,
+                allChildrenHidden: !hasShownChildren(layer) //re-evaluates if a child layer's display mode changes
+            };
+        }, [layer]);
 
     const nestedChildren = useNestedChildren(layerGroupId, title, layer, intl);
-    const hasNestedChildren = !!nestedChildren;
+    let hasNestedChildren = !!nestedChildren;
+
+    //hidden => do not render toc entry for layer item
+    if (displayMode === "hide") {
+        return null;
+    }
+    //all children hidden => do not render collapse button and child entries
+    if (displayMode === "hide_children" || allChildrenHidden) {
+        hasNestedChildren = false;
+    }
+
     return (
         <Box as="li" className={classNames("toc-layer-item", `layer-${slug(layer.id)}`)}>
             <Flex
@@ -210,5 +223,17 @@ function updateLayerVisibility(layer: AnyLayer, visible: boolean, autoShowParent
     layer.setVisible(visible);
     if (visible && autoShowParents && layer.parent) {
         updateLayerVisibility(layer.parent, true, true);
+    }
+}
+
+/**
+ * @param layer
+ * @returns true if at least one child layer's display mode is not `hide`
+ */
+function hasShownChildren(layer: AnyLayer): boolean {
+    if (!layer.children || layer.children.getItems().length === 0) {
+        return false;
+    } else {
+        return layer.children.getItems().some((childLayer) => childLayer.displayMode !== "hide");
     }
 }

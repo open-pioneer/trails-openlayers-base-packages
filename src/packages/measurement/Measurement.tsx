@@ -140,7 +140,7 @@ function useController(map: MapModel | undefined, props: MeasurementProps, intl:
         if (!map) {
             return;
         }
-        const controller = new MeasurementController(map.olMap, {
+        const controller = new MeasurementController(map, {
             getContinueMessage() {
                 return intl.formatMessage({ id: "tooltips.continue" });
             },

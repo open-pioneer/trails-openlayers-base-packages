@@ -15,6 +15,7 @@ import {
     AnyLayerBaseType,
     AnyLayerTypes,
     ChildrenCollection,
+    DisplayMode,
     LayerBaseEvents,
     Sublayer
 } from "../api";
@@ -30,6 +31,7 @@ export interface AbstractLayerBaseOptions {
     title: string;
     description?: string;
     attributes?: Record<string, unknown>;
+    displayMode?: DisplayMode;
 }
 
 /**
@@ -49,6 +51,7 @@ export abstract class AbstractLayerBase<AdditionalEvents = {}>
     #attributesMap = reactiveMap<string | symbol, unknown>();
     #attributes: ReadonlyReactive<Record<string | symbol, unknown>>;
     #destroyed = false;
+    #displayMode: Reactive<DisplayMode>;
 
     constructor(config: AbstractLayerBaseOptions) {
         super();
@@ -58,10 +61,19 @@ export abstract class AbstractLayerBase<AdditionalEvents = {}>
         });
         this.#title = reactive(config.title);
         this.#description = reactive(config.description ?? "");
+        this.#displayMode = reactive(config.displayMode ?? "show");
 
         if (config.attributes) {
             this.updateAttributes(config.attributes);
         }
+    }
+
+    get displayMode(): DisplayMode {
+        return this.#displayMode.value;
+    }
+
+    setDisplayMode(newDisplayMode: DisplayMode): void {
+        this.#displayMode.value = newDisplayMode;
     }
 
     protected get __destroyed(): boolean {

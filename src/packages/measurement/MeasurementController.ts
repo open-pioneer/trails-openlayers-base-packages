@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { destroyResource, Resource } from "@open-pioneer/core";
-import { TOPMOST_LAYER_Z } from "@open-pioneer/map";
+import { TOPMOST_LAYER_Z, SimpleLayer, MapModel } from "@open-pioneer/map";
 import Feature from "ol/Feature";
 import OlMap from "ol/Map";
 import MapBrowserEvent from "ol/MapBrowserEvent";
@@ -29,17 +29,24 @@ export interface Messages {
 }
 
 export class MeasurementController {
+    readonly map: MapModel;
     readonly olMap: OlMap;
     readonly messages: Messages;
 
     private activeFeatureStyle: StyleFunction | undefined;
-    /**
-     * The layer rendering the measurement "features".
-     */
-    private layer: VectorLayer<VectorSource, Feature>;
 
     /**
-     * Source of {@link layer}.
+     * The layer rendering the measurement "features"
+     */
+    private layer: SimpleLayer;
+
+    /**
+     * The internal OL layer wrapped by {@link layer}.
+     */
+    private olLayer: VectorLayer<VectorSource, Feature>;
+
+    /**
+     * Source of {@link olLayer}.
      */
     private source: VectorSource;
 
@@ -81,18 +88,24 @@ export class MeasurementController {
      */
     private measurementChangedHandler: MeasurementsChangeHandler | undefined;
 
-    constructor(olMap: OlMap, messages: Messages) {
-        this.olMap = olMap;
+    constructor(map: MapModel, messages: Messages) {
+        this.map = map;
+        const olMap = this.map.olMap;
         this.messages = messages;
         const source = (this.source = new VectorSource());
-        this.layer = new VectorLayer({
+        this.olLayer = new VectorLayer({
             source: source,
             zIndex: TOPMOST_LAYER_Z,
             properties: {
                 name: "measurement-layer"
             }
         });
-        olMap.addLayer(this.layer);
+        this.layer = new SimpleLayer({
+            olLayer: this.olLayer,
+            title: "measurement-layer",
+            displayMode: "hide" //do not show measurement layer in TOC
+        });
+        this.map.layers.addLayer(this.layer);
 
         // "pointermove" is documented but produces a typescript error.
         // See https://openlayers.org/en/latest/apidoc/module-ol_MapBrowserEvent-MapBrowserEvent.html#event:pointermove
@@ -117,7 +130,8 @@ export class MeasurementController {
             }
         });
 
-        this.helpTooltip = createHelpTooltip(this.olMap);
+        this.helpTooltip = createHelpTooltip(olMap);
+        this.olMap = olMap;
     }
 
     destroy() {
@@ -138,8 +152,8 @@ export class MeasurementController {
         this.helpTooltip.destroy();
 
         // Cleanup layer
-        this.olMap.removeLayer(this.layer);
-        this.layer.dispose();
+        this.olMap.removeLayer(this.olLayer);
+        this.olLayer.dispose();
         this.source.dispose();
 
         this.measurementChangedHandler = undefined;
@@ -148,12 +162,12 @@ export class MeasurementController {
 
     /** Returns the vector layer used for finished features. */
     getVectorLayer() {
-        return this.layer;
+        return this.olLayer;
     }
 
     /** Updates the style used for finished features. */
     setFinishedFeatureStyle(style: StyleLike) {
-        this.layer.setStyle(style);
+        this.olLayer.setStyle(style);
     }
 
     setMeasurementSourceChangedHandler(handler: MeasurementsChangeHandler | undefined) {
