@@ -120,20 +120,23 @@ export function AppUI() {
                                             active={showToc}
                                             onClick={toggleToc}
                                         />
-                                        <Button onClick={() => {
-                                            if (map) {
-                                                const layer = map.layers.getLayerById("bustops");
-                                                if (layer) {
-                                                    const displayMode = layer.displayMode;
-                                                    if (displayMode === "show") {
-                                                        layer.setDisplayMode("hide");
-                                                    } else {
-                                                        layer.setDisplayMode("show");
+                                        <Button
+                                            onClick={() => {
+                                                if (map) {
+                                                    const layer =
+                                                        map.layers.getLayerById("bustops");
+                                                    if (layer) {
+                                                        const displayMode = layer.displayMode;
+                                                        if (displayMode === "show") {
+                                                            layer.setDisplayMode("hide");
+                                                        } else {
+                                                            layer.setDisplayMode("show");
+                                                        }
                                                     }
                                                 }
-                                            }
-                                        }}>
-                                           toggle display mode
+                                            }}
+                                        >
+                                            toggle display mode
                                         </Button>
                                     </Flex>
                                 </MapAnchor>

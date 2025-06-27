@@ -40,24 +40,26 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
     const layerGroupId = useId();
     const isAvailable = useLoadState(layer) !== "error";
     const notAvailableLabel = intl.formatMessage({ id: "layerNotAvailable" });
-    const { title, description, isVisible, displayMode, shownChildren } = useReactiveSnapshot(() => {
-        return {
-            title: layer.title,
-            description: layer.description,
-            isVisible: layer.visible,
-            displayMode: layer.displayMode,
-            shownChildren: hasShownChildren(layer)
-        };
-    }, [layer]);
+    const { title, description, isVisible, displayMode, allChildrenHidden } =
+        useReactiveSnapshot(() => {
+            return {
+                title: layer.title,
+                description: layer.description,
+                isVisible: layer.visible,
+                displayMode: layer.displayMode,
+                allChildrenHidden: !hasShownChildren(layer) //re-evaluates if a child layer's display mode changes
+            };
+        }, [layer]);
 
     const nestedChildren = useNestedChildren(layerGroupId, title, layer, intl);
     let hasNestedChildren = !!nestedChildren;
 
+    //hidden => do not render toc entry for list item
     if (displayMode === "hide") {
         return null;
     }
-
-    if (displayMode === "hide_children" || !shownChildren) {
+    //all children hidden => do not render collapse button and child entries
+    if (displayMode === "hide_children" || !allChildrenHidden) {
         hasNestedChildren = false;
     }
 
@@ -224,12 +226,14 @@ function updateLayerVisibility(layer: AnyLayer, visible: boolean, autoShowParent
     }
 }
 
-
+/**
+ * @param layer
+ * @returns true if at least one child layer's display mode is not `hide`
+ */
 function hasShownChildren(layer: AnyLayer): boolean {
     if (!layer.children || layer.children.getItems().length === 0) {
         return false;
     } else {
         return layer.children.getItems().some((childLayer) => childLayer.displayMode !== "hide");
     }
-    
 }

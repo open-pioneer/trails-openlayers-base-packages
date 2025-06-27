@@ -55,6 +55,9 @@ export interface LayerBaseConfig {
      */
     attributes?: Record<string | symbol, unknown>;
 
+    /**
+     * Whether this layer should be considered by map components (e.g TOC)
+     */
     displayMode?: DisplayMode;
 }
 
