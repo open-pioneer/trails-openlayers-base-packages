@@ -54,12 +54,12 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
     const nestedChildren = useNestedChildren(layerGroupId, title, layer, intl);
     let hasNestedChildren = !!nestedChildren;
 
-    //hidden => do not render toc entry for list item
+    //hidden => do not render toc entry for layer item
     if (displayMode === "hide") {
         return null;
     }
     //all children hidden => do not render collapse button and child entries
-    if (displayMode === "hide_children" || !allChildrenHidden) {
+    if (displayMode === "hide_children" || allChildrenHidden) {
         hasNestedChildren = false;
     }
 
