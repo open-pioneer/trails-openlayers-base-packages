@@ -22,7 +22,6 @@ import { GroupLayer } from "../api/layers/GroupLayer";
 import { GroupLayerCollectionImpl } from "./layers/GroupLayerImpl";
 import { MapModelImpl } from "./MapModelImpl";
 import { SublayersCollectionImpl } from "./SublayersCollectionImpl";
-import { b } from "vitest/dist/chunks/mocker.d.BE_2ls6u.js";
 
 const LOG = createLogger("map:AbstractLayerModel");
 

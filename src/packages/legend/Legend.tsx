@@ -90,7 +90,9 @@ function LegendList(props: { map: MapModel; showBaseLayers: boolean }): ReactNod
 
 function LegendItem(props: { layer: AnyLayer; showBaseLayers: boolean }): ReactNode {
     const { layer, showBaseLayers } = props;
-    const { isVisible, isInternal } = useReactiveSnapshot(() => { return { isVisible: layer.visible, isInternal: layer.internal }; }, [layer]);
+    const { isVisible, isInternal } = useReactiveSnapshot(() => {
+        return { isVisible: layer.visible, isInternal: layer.internal };
+    }, [layer]);
     const childLayers = useChildLayers(layer);
 
     if (!isVisible || isInternal) {
