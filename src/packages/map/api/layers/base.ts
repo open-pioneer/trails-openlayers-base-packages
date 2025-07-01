@@ -54,7 +54,8 @@ export interface LayerBaseConfig {
     attributes?: Record<string | symbol, unknown>;
 
     /**
-     * Whether this layer should be considered by map components (e.g TOC)
+     * Layers marked as internal are not considered by any UI widget (e.g Toc or Legend)
+     * Defaults to `false`
      */
     internal?: boolean;
 }
@@ -139,13 +140,17 @@ export interface AnyLayerBaseType<AdditionalEvents = {}>
     readonly sublayers: SublayersCollection | undefined;
 
     /**
+     * The internal state of this layer. Internal layers are not considered by any UI widget (e.g Toc or Legend).
+     * The internal state is independent of the layer's visibility which is determined by {@link visible}
+     *
+     * NOTE: Some UI widgets might use component specific {@link attributes} that have precedence over the internal state.
+     */
+    readonly internal: boolean;
+
+    /**
      * Additional attributes associated with this layer.
      */
     readonly attributes: Readonly<Record<string | symbol, unknown>>;
-
-    readonly internal: boolean;
-
-    setInternal(newIsInternal: boolean): void;
 
     /**
      * Updates the title of this layer.
@@ -164,6 +169,12 @@ export interface AnyLayerBaseType<AdditionalEvents = {}>
      * Call {@link LayerCollection.activateBaseLayer} instead.
      */
     setVisible(newVisibility: boolean): void;
+
+    /**
+     * Updates the internal state of this layer to the new value.
+     * @param newIsInternal
+     */
+    setInternal(newIsInternal: boolean): void;
 
     /**
      * Updates the attributes of this layer.
