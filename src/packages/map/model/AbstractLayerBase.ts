@@ -15,7 +15,6 @@ import {
     AnyLayerBaseType,
     AnyLayerTypes,
     ChildrenCollection,
-    DisplayMode,
     LayerBaseEvents,
     Sublayer
 } from "../api";
@@ -23,6 +22,7 @@ import { GroupLayer } from "../api/layers/GroupLayer";
 import { GroupLayerCollectionImpl } from "./layers/GroupLayerImpl";
 import { MapModelImpl } from "./MapModelImpl";
 import { SublayersCollectionImpl } from "./SublayersCollectionImpl";
+import { b } from "vitest/dist/chunks/mocker.d.BE_2ls6u.js";
 
 const LOG = createLogger("map:AbstractLayerModel");
 
@@ -31,7 +31,7 @@ export interface AbstractLayerBaseOptions {
     title: string;
     description?: string;
     attributes?: Record<string, unknown>;
-    displayMode?: DisplayMode;
+    internal?: boolean;
 }
 
 /**
@@ -51,7 +51,7 @@ export abstract class AbstractLayerBase<AdditionalEvents = {}>
     #attributesMap = reactiveMap<string | symbol, unknown>();
     #attributes: ReadonlyReactive<Record<string | symbol, unknown>>;
     #destroyed = false;
-    #displayMode: Reactive<DisplayMode>;
+    #internal: Reactive<boolean>;
 
     constructor(config: AbstractLayerBaseOptions) {
         super();
@@ -61,19 +61,19 @@ export abstract class AbstractLayerBase<AdditionalEvents = {}>
         });
         this.#title = reactive(config.title);
         this.#description = reactive(config.description ?? "");
-        this.#displayMode = reactive(config.displayMode ?? "show");
+        this.#internal = reactive(config.internal ?? false);
 
         if (config.attributes) {
             this.updateAttributes(config.attributes);
         }
     }
 
-    get displayMode(): DisplayMode {
-        return this.#displayMode.value;
+    get internal(): boolean {
+        return this.#internal.value;
     }
 
-    setDisplayMode(newDisplayMode: DisplayMode): void {
-        this.#displayMode.value = newDisplayMode;
+    setInternal(newIsInternal: boolean): void {
+        this.#internal.value = newIsInternal;
     }
 
     protected get __destroyed(): boolean {

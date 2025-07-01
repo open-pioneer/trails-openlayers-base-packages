@@ -40,13 +40,13 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
     const layerGroupId = useId();
     const isAvailable = useLoadState(layer) !== "error";
     const notAvailableLabel = intl.formatMessage({ id: "layerNotAvailable" });
-    const { title, description, isVisible, displayMode, allChildrenHidden } =
+    const { title, description, isVisible, isInternal, allChildrenHidden } =
         useReactiveSnapshot(() => {
             return {
                 title: layer.title,
                 description: layer.description,
                 isVisible: layer.visible,
-                displayMode: layer.displayMode,
+                isInternal: layer.internal,
                 allChildrenHidden: !hasShownChildren(layer) //re-evaluates if a child layer's display mode changes
             };
         }, [layer]);
@@ -55,11 +55,11 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
     let hasNestedChildren = !!nestedChildren;
 
     //hidden => do not render toc entry for layer item
-    if (displayMode === "hide") {
+    if (isInternal) {
         return null;
     }
     //all children hidden => do not render collapse button and child entries
-    if (displayMode === "hide_children" || allChildrenHidden) {
+    if (allChildrenHidden) {
         hasNestedChildren = false;
     }
 
@@ -234,6 +234,6 @@ function hasShownChildren(layer: AnyLayer): boolean {
     if (!layer.children || layer.children.getItems().length === 0) {
         return false;
     } else {
-        return layer.children.getItems().some((childLayer) => childLayer.displayMode !== "hide");
+        return layer.children.getItems().some((childLayer) => childLayer.internal === false);
     }
 }

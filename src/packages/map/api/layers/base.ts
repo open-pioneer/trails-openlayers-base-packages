@@ -20,8 +20,6 @@ export type LayerLoadState = "not-loaded" | "loading" | "loaded" | "error";
 /** Custom function to check the state of a layer and returning a "loaded" or "error". */
 export type HealthCheckFunction = (layer: Layer) => Promise<"loaded" | "error">;
 
-export type DisplayMode = "show" | "hide" | "hide_children";
-
 /**
  * Configuration options supported by all layer types (layers and sublayers).
  */
@@ -58,7 +56,7 @@ export interface LayerBaseConfig {
     /**
      * Whether this layer should be considered by map components (e.g TOC)
      */
-    displayMode?: DisplayMode;
+    internal?: boolean;
 }
 
 /**
@@ -145,9 +143,9 @@ export interface AnyLayerBaseType<AdditionalEvents = {}>
      */
     readonly attributes: Readonly<Record<string | symbol, unknown>>;
 
-    readonly displayMode: DisplayMode;
+    readonly internal: boolean;
 
-    setDisplayMode(newDisplayMode: string): void;
+    setInternal(newIsInternal: boolean): void;
 
     /**
      * Updates the title of this layer.

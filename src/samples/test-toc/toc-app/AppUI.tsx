@@ -126,12 +126,8 @@ export function AppUI() {
                                                     const layer =
                                                         map.layers.getLayerById("bustops");
                                                     if (layer) {
-                                                        const displayMode = layer.displayMode;
-                                                        if (displayMode === "show") {
-                                                            layer.setDisplayMode("hide");
-                                                        } else {
-                                                            layer.setDisplayMode("show");
-                                                        }
+                                                        const internal = layer.internal;
+                                                        layer.setInternal(!internal);
                                                     }
                                                 }
                                             }}

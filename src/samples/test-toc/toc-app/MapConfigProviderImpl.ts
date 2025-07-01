@@ -94,7 +94,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                                 "Haltestellen des öffentlichen Personenverkehrs in der Hanse- und Universitätsstadt Rostock.",
                             olLayer: createHaltestellenLayer(),
                             isBaseLayer: false,
-                            displayMode: "hide"
+                            internal: true
                         }),
                         createStrassenLayer()
                     ]
@@ -231,8 +231,7 @@ function createStrassenLayer() {
             },
             {
                 name: "6",
-                title: "Unfälle",
-                displayMode: "hide"
+                title: "Unfälle"
             }
         ]
     });
