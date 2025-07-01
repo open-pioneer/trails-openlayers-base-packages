@@ -122,7 +122,7 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
                 <Spacer />
                 <LayerItemMenu layer={layer} title={title} description={description} intl={intl} />
             </Flex>
-            {nestedChildren && (
+            {hasNestedChildren && (
                 <Collapsible.Root open={expanded} className="toc-collapsible-item">
                     <CollapsibleContent>{nestedChildren}</CollapsibleContent>
                 </Collapsible.Root>
