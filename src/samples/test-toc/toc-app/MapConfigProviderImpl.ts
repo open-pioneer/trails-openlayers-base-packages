@@ -94,7 +94,12 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                                 "Haltestellen des öffentlichen Personenverkehrs in der Hanse- und Universitätsstadt Rostock.",
                             olLayer: createHaltestellenLayer(),
                             isBaseLayer: false,
-                            internal: true
+                            internal: false,
+                            attributes: {
+                                toc: {
+                                    listMode: "hide"
+                                }
+                            }
                         }),
                         createStrassenLayer()
                     ]
@@ -220,6 +225,11 @@ function createStrassenLayer() {
     return new WMSLayer({
         title: "Straßennetz Landesbetrieb Straßenbau NRW",
         url: "https://www.wms.nrw.de/wms/strassen_nrw_wms",
+        attributes: {
+            toc: {
+                listMode: "hide"
+            }
+        },
         sublayers: [
             {
                 name: "1",

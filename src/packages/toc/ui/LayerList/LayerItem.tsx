@@ -24,6 +24,7 @@ import { slug } from "../../utils/slug";
 import { useChildLayers, useLoadState } from "./hooks";
 import { LayerItemMenu } from "./LayerItemMenu";
 import { LayerList } from "./LayerList";
+import { LayerItemAttributes } from "../Toc";
 
 /**
  * Renders a single layer as a list item.
@@ -39,27 +40,27 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
 
     const layerGroupId = useId();
     const isAvailable = useLoadState(layer) !== "error";
+    const listMode = useListMode(layer)?.listMode;
     const notAvailableLabel = intl.formatMessage({ id: "layerNotAvailable" });
-    const { title, description, isVisible, isInternal, allChildrenHidden } =
-        useReactiveSnapshot(() => {
-            return {
-                title: layer.title,
-                description: layer.description,
-                isVisible: layer.visible,
-                isInternal: layer.internal,
-                allChildrenHidden: !hasShownChildren(layer) //re-evaluates if a child layer's display mode changes
-            };
-        }, [layer]);
+    const { title, description, isVisible, allChildrenHidden } = useReactiveSnapshot(() => {
+        return {
+            title: layer.title,
+            description: layer.description,
+            isVisible: layer.visible,
+            isInternal: layer.internal,
+            allChildrenHidden: !hasShownChildren(layer) //re-evaluates if a child layer's list mode or internal state changes
+        };
+    }, [layer]);
 
     const nestedChildren = useNestedChildren(layerGroupId, title, layer, intl);
     let hasNestedChildren = !!nestedChildren;
 
-    //hidden => do not render toc entry for layer item
-    if (isInternal) {
+    const display = displayLayerItem(layer);
+    if (!display) {
         return null;
     }
     //all children hidden => do not render collapse button and child entries
-    if (allChildrenHidden) {
+    if (allChildrenHidden || listMode === "hide-children") {
         hasNestedChildren = false;
     }
 
@@ -219,6 +220,13 @@ function useTocItem(layer: AnyLayer) {
     return [tocItem, tocModel, options] as const;
 }
 
+function useListMode(layer: AnyLayer): LayerItemAttributes | undefined {
+    return useReactiveSnapshot(
+        () => layer.attributes.toc as LayerItemAttributes | undefined,
+        [layer]
+    );
+}
+
 function updateLayerVisibility(layer: AnyLayer, visible: boolean, autoShowParents: boolean) {
     layer.setVisible(visible);
     if (visible && autoShowParents && layer.parent) {
@@ -234,6 +242,27 @@ function hasShownChildren(layer: AnyLayer): boolean {
     if (!layer.children || layer.children.getItems().length === 0) {
         return false;
     } else {
-        return layer.children.getItems().some((childLayer) => childLayer.internal === false);
+        return layer.children.getItems().some((childLayer) => {
+            const isDisplayed = displayLayerItem(childLayer);
+            return isDisplayed;
+        });
+    }
+}
+
+/**
+ * @param isInternal
+ * @param listMode
+ * @returns
+ */
+function displayLayerItem(layer: AnyLayer): boolean {
+    const isInternal = layer.internal;
+    const listMode = (layer.attributes.toc as LayerItemAttributes | undefined)?.listMode;
+
+    if (listMode === "show" || listMode === "hide-children") {
+        return true;
+    } else if (isInternal || listMode === "hide") {
+        return false;
+    } else {
+        return true;
     }
 }

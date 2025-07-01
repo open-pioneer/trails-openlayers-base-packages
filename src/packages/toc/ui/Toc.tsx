@@ -88,6 +88,12 @@ export interface ToolsConfig {
     showCollapseAllGroups?: boolean;
 }
 
+export interface LayerItemAttributes {
+    listMode: ListMode;
+}
+
+export type ListMode = "show" | "hide" | "hide-children";
+
 const PADDING = 2;
 
 /**
