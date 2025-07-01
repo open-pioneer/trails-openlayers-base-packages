@@ -126,13 +126,27 @@ export function AppUI() {
                                                     const layer =
                                                         map.layers.getLayerById("bustops");
                                                     if (layer) {
+                                                        const isInternal = layer.internal;
+                                                        layer.setInternal(!isInternal);
+                                                    }
+                                                }
+                                            }}
+                                        >
+                                            toggle layer internal
+                                        </Button>
+                                        <Button
+                                            onClick={() => {
+                                                if (map) {
+                                                    const layer =
+                                                        map.layers.getLayerById("street_network_wms");
+                                                    if (layer) {
                                                         const listMode = (
                                                             layer.attributes.toc as
                                                                 | LayerItemAttributes
                                                                 | undefined
                                                         )?.listMode;
                                                         const newListMode =
-                                                            listMode === "hide" ? "show" : "hide";
+                                                            listMode === "hide-children" ? "show" : "hide-children";
                                                         layer.updateAttributes({
                                                             toc: {
                                                                 listMode: newListMode
@@ -142,7 +156,7 @@ export function AppUI() {
                                                 }
                                             }}
                                         >
-                                            toggle display mode
+                                            toggle toc list mode
                                         </Button>
                                     </Flex>
                                 </MapAnchor>
