@@ -138,7 +138,9 @@ export function AppUI() {
                                             onClick={() => {
                                                 if (map) {
                                                     const layer =
-                                                        map.layers.getLayerById("street_network_wms");
+                                                        map.layers.getLayerById(
+                                                            "street_network_wms"
+                                                        );
                                                     if (layer) {
                                                         const listMode = (
                                                             layer.attributes.toc as
@@ -146,7 +148,9 @@ export function AppUI() {
                                                                 | undefined
                                                         )?.listMode;
                                                         const newListMode =
-                                                            listMode === "hide-children" ? "show" : "hide-children";
+                                                            listMode === "hide-children"
+                                                                ? "show"
+                                                                : "hide-children";
                                                         layer.updateAttributes({
                                                             toc: {
                                                                 listMode: newListMode
