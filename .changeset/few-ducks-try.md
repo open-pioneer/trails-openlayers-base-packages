@@ -36,4 +36,4 @@ Valid values for `listMode` are:
 - `"hide"` layer item is not rendered in Toc
 - `"hide-children"` layer item for the layer itself is displayed in Toc but no layer items for child layers (e.g. sublayers of a group) are rendered
 
-The `listMode` does always have precedences over the layer's `internal` property. For example, if the `listMode` is `"show"` the layer item is displayed even if `internal` is `true`.
+The `listMode` does always have precedence over the layer's `internal` property. For example, if the `listMode` is `"show"` the layer item is displayed even if `internal` is `true`.
