@@ -7,6 +7,7 @@ import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import {
     fireEvent,
     queryAllByRole,
+    queryByLabelText,
     queryByRole,
     render,
     screen,
@@ -640,6 +641,150 @@ it("supports initial collapsed groups", async () => {
     await user.click(groupCollapseButton); //expand
     expect(groupCollapseButton?.getAttribute("aria-expanded")).toBe("true");
     expect(collapsibleList.getAttribute("data-state")).toBe("open");
+});
+
+it("displays the layer item only if the layer is not internal", async () => {
+    const { mapId, registry } = await setupMap({
+        layers: [
+            {
+                id: "layer",
+                title: "Layer 1",
+                olLayer: new TileLayer({}),
+                internal: false
+            }
+        ]
+    });
+
+    const map = await registry.expectMapModel(mapId);
+    const layer = map.layers.getLayerById("layer");
+    if (!layer) {
+        throw new Error("test layer not found!");
+    }
+
+    const { container } = render(<TopLevelLayerList map={map} />, {
+        wrapper: createWrapper()
+    });
+
+    let itemLabel = queryByLabelText(container, layer.title, { selector: "label" });
+    expect(itemLabel).toBeTruthy();
+
+    await act(async () => {
+        layer.setInternal(true); //make layer internal
+        await nextTick();
+    });
+    itemLabel = queryByLabelText(container, layer.title); //layer item should not be there anymore
+    expect(itemLabel).toBeFalsy();
+});
+
+it("displays the layer item only if the list mode is not `hide`", async () => {
+    const { mapId, registry } = await setupMap({
+        layers: [
+            {
+                id: "layer",
+                title: "Layer 1",
+                olLayer: new TileLayer({}),
+                internal: false,
+                attributes: {
+                    toc: {
+                        listMode: "show"
+                    }
+                }
+            }
+        ]
+    });
+
+    const map = await registry.expectMapModel(mapId);
+    const layer = map.layers.getLayerById("layer");
+    if (!layer) {
+        throw new Error("test layer not found!");
+    }
+
+    const { container } = render(<TopLevelLayerList map={map} />, {
+        wrapper: createWrapper()
+    });
+
+    let itemLabel = queryByLabelText(container, layer.title, { selector: "label" });
+    expect(itemLabel).toBeTruthy();
+
+    await act(async () => {
+        layer.setInternal(true); //make layer internal
+        await nextTick();
+    });
+    //layer item should still be there because toc specific listMode has precendences over internal attribute
+    itemLabel = queryByLabelText(container, layer.title, { selector: "label" });
+    expect(itemLabel).toBeTruthy();
+
+    await act(async () => {
+        layer.setInternal(false);
+        layer.updateAttributes({
+            toc: {
+                listMode: "hide-children"
+            }
+        });
+        await nextTick();
+    });
+    //layer item should still be there because `hide-children` should not affect the layer item itself
+    itemLabel = queryByLabelText(container, layer.title, { selector: "label" });
+    expect(itemLabel).toBeTruthy();
+
+    await act(async () => {
+        layer.updateAttributes({
+            toc: {
+                listMode: "hide"
+            }
+        });
+        await nextTick();
+    });
+    itemLabel = queryByLabelText(container, layer.title, { selector: "label" });
+    expect(itemLabel).toBeFalsy();
+});
+
+it("does not display layer item for child layer if the group's listMode is `hide-children`", async () => {
+    const childLayer = new SimpleLayer({
+        id: "member",
+        title: "group member",
+        olLayer: new TileLayer({}),
+        visible: false
+    });
+
+    const groupLayer = new GroupLayer({
+        id: "group",
+        title: "a group layer",
+        visible: false,
+        layers: [childLayer],
+        attributes: {
+            toc: {
+                listMode: "show"
+            }
+        }
+    });
+
+    const { mapId, registry } = await setupMap({
+        layers: [groupLayer]
+    });
+
+    const map = await registry.expectMapModel(mapId);
+    const { container } = render(<TopLevelLayerList map={map} />, {
+        wrapper: createWrapper()
+    });
+
+    let groupItemLabel = queryByLabelText(container, groupLayer.title, { selector: "label" });
+    expect(groupItemLabel).toBeTruthy();
+    let childItemLabel = queryByLabelText(container, childLayer.title, { selector: "label" });
+    expect(childItemLabel).toBeTruthy();
+
+    await act(async () => {
+        groupLayer.updateAttributes({
+            toc: {
+                listMode: "hide-children"
+            }
+        }); //hide children of group layer in toc
+        await nextTick();
+    });
+    groupItemLabel = queryByLabelText(container, groupLayer.title, { selector: "label" });
+    expect(groupItemLabel).toBeTruthy(); //layer item for group should still be there
+    childItemLabel = queryByLabelText(container, childLayer.title, { selector: "label" });
+    expect(childItemLabel).toBeFalsy(); //layer item for child should no be there anymore
 });
 
 /** Returns the layer list's current list items. */
