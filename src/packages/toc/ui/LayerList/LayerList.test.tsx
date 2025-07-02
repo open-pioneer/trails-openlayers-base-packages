@@ -7,7 +7,6 @@ import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import {
     fireEvent,
     queryAllByRole,
-    queryByLabelText,
     queryByRole,
     render,
     screen,
