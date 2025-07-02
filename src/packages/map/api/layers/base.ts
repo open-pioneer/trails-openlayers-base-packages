@@ -140,10 +140,10 @@ export interface AnyLayerBaseType<AdditionalEvents = {}>
     readonly sublayers: SublayersCollection | undefined;
 
     /**
-     * The internal state of this layer. Internal layers are not considered by any UI widget (e.g Toc or Legend).
+     * The internal property of this layer. Internal layers are not considered by any UI widget (e.g Toc or Legend).
      * The internal state is independent of the layer's visibility which is determined by {@link visible}
      *
-     * NOTE: Some UI widgets might use component specific {@link attributes} that have precedence over the internal state.
+     * NOTE: Some UI widgets might use component specific {@link attributes} that have precedence over the internal property.
      */
     readonly internal: boolean;
 
@@ -171,7 +171,7 @@ export interface AnyLayerBaseType<AdditionalEvents = {}>
     setVisible(newVisibility: boolean): void;
 
     /**
-     * Updates the internal state of this layer to the new value.
+     * Updates the internal property of this layer to the new value.
      * @param newIsInternal
      */
     setInternal(newIsInternal: boolean): void;

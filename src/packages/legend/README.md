@@ -69,6 +69,9 @@ If a configuration is done, it supersedes the automatic legend retrieval.
 Showing legend entries is also supported for **sublayers** (configuration and automatic retrieval).
 The legend content for sublayers is shown plain and without hierarchical structure in the Legend UI.
 
+#### Internal layers
+If a layer is marked as internal (layer's `internal` property is `true`) it will not be considered in the legend widget. Even if a legend is configured it will no be displayed. The `internal` property does also affect other UI widgets (e.g Toc).
+
 ### Showing legend for basemap
 
 By default, the legend for the active basemap is not shown.
