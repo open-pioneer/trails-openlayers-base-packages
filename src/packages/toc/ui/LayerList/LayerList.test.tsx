@@ -665,15 +665,15 @@ it("displays the layer item only if the layer is not internal", async () => {
         wrapper: createWrapper()
     });
 
-    let itemLabel = queryByLabelText(container, layer.title, { selector: "label" });
-    expect(itemLabel).toBeTruthy();
+    let layerItem = findLayerItem(container, layer.id);
+    expect(layerItem).toBeTruthy();
 
     await act(async () => {
         layer.setInternal(true); //make layer internal
         await nextTick();
     });
-    itemLabel = queryByLabelText(container, layer.title); //layer item should not be there anymore
-    expect(itemLabel).toBeFalsy();
+    layerItem = findLayerItem(container, layer.id); //layer item should not be there anymore
+    expect(layerItem).toBeFalsy();
 });
 
 it("displays the layer item only if the list mode is not `hide`", async () => {
@@ -703,16 +703,16 @@ it("displays the layer item only if the list mode is not `hide`", async () => {
         wrapper: createWrapper()
     });
 
-    let itemLabel = queryByLabelText(container, layer.title, { selector: "label" });
-    expect(itemLabel).toBeTruthy();
+    let layerItem = findLayerItem(container, layer.id);
+    expect(layerItem).toBeTruthy();
 
     await act(async () => {
         layer.setInternal(true); //make layer internal
         await nextTick();
     });
     //layer item should still be there because toc specific listMode has precendences over internal attribute
-    itemLabel = queryByLabelText(container, layer.title, { selector: "label" });
-    expect(itemLabel).toBeTruthy();
+    layerItem = findLayerItem(container, layer.id);
+    expect(layerItem).toBeTruthy();
 
     await act(async () => {
         layer.setInternal(false);
@@ -724,8 +724,8 @@ it("displays the layer item only if the list mode is not `hide`", async () => {
         await nextTick();
     });
     //layer item should still be there because `hide-children` should not affect the layer item itself
-    itemLabel = queryByLabelText(container, layer.title, { selector: "label" });
-    expect(itemLabel).toBeTruthy();
+    layerItem = findLayerItem(container, layer.id);
+    expect(layerItem).toBeTruthy();
 
     await act(async () => {
         layer.updateAttributes({
@@ -735,8 +735,8 @@ it("displays the layer item only if the list mode is not `hide`", async () => {
         });
         await nextTick();
     });
-    itemLabel = queryByLabelText(container, layer.title, { selector: "label" });
-    expect(itemLabel).toBeFalsy();
+    layerItem = findLayerItem(container, layer.id);
+    expect(layerItem).toBeFalsy();
 });
 
 it("does not display layer item for child layer if the group's listMode is `hide-children`", async () => {
@@ -768,10 +768,10 @@ it("does not display layer item for child layer if the group's listMode is `hide
         wrapper: createWrapper()
     });
 
-    let groupItemLabel = queryByLabelText(container, groupLayer.title, { selector: "label" });
-    expect(groupItemLabel).toBeTruthy();
-    let childItemLabel = queryByLabelText(container, childLayer.title, { selector: "label" });
-    expect(childItemLabel).toBeTruthy();
+    let groupLayerItem = findLayerItem(container, groupLayer.id);
+    expect(groupLayerItem).toBeTruthy();
+    let childLayerItem = findLayerItem(container, childLayer.id);
+    expect(childLayerItem).toBeTruthy();
 
     await act(async () => {
         groupLayer.updateAttributes({
@@ -781,10 +781,10 @@ it("does not display layer item for child layer if the group's listMode is `hide
         }); //hide children of group layer in toc
         await nextTick();
     });
-    groupItemLabel = queryByLabelText(container, groupLayer.title, { selector: "label" });
-    expect(groupItemLabel).toBeTruthy(); //layer item for group should still be there
-    childItemLabel = queryByLabelText(container, childLayer.title, { selector: "label" });
-    expect(childItemLabel).toBeFalsy(); //layer item for child should no be there anymore
+    groupLayerItem = findLayerItem(container, groupLayer.id);
+    expect(groupLayerItem).toBeTruthy(); //layer item for group should still be there
+    childLayerItem = findLayerItem(container, childLayer.id);
+    expect(childLayerItem).toBeFalsy(); //layer item for child should no be there anymore
 });
 
 /** Returns the layer list's current list items. */
