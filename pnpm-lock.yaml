@@ -84,9 +84,6 @@ catalogs:
     '@types/node':
       specifier: ^20.19.0
       version: 20.19.0
-    '@types/proj4':
-      specifier: ^2.5.6
-      version: 2.5.6
     '@types/react':
       specifier: ^19.1.6
       version: 19.1.6
@@ -685,9 +682,6 @@ importers:
       '@open-pioneer/runtime':
         specifier: 'catalog:'
         version: 4.0.0(@types/react@19.1.6)(typescript@5.8.3)
-      '@types/proj4':
-        specifier: 'catalog:'
-        version: 2.5.6
       ol:
         specifier: 'catalog:'
         version: 10.5.0
@@ -2799,9 +2793,6 @@ packages:
 
   '@types/parse-json@4.0.2':
     resolution: {integrity: sha512-dISoDXWWQwUquiKsyZ4Ng+HX2KsPL7LyHKHQwgGFEA3IaKac4Obd+h2a/a6waisAoepJlBcx9paWqjA8/HVjCw==}
-
-  '@types/proj4@2.5.6':
-    resolution: {integrity: sha512-zfMrPy9fx+8DchqM0kIUGeu2tTVB5ApO1KGAYcSGFS8GoqRIkyL41xq2yCx/iV3sOLzo7v4hEgViSLTiPI1L0w==}
 
   '@types/raf@3.4.3':
     resolution: {integrity: sha512-c4YAvMedbPZ5tEyxzQdMoOhhJ4RD3rngZIdwC2/qDN3d7JpEhB6fiBRKVY1lg5B7Wk+uPBjn5f39j1/2MY1oOw==}
@@ -6926,8 +6917,6 @@ snapshots:
       undici-types: 6.21.0
 
   '@types/parse-json@4.0.2': {}
-
-  '@types/proj4@2.5.6': {}
 
   '@types/raf@3.4.3':
     optional: true
