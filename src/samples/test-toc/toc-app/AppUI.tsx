@@ -4,7 +4,7 @@ import { Box, Button, Flex, Text, VStack } from "@chakra-ui/react";
 import { DefaultMapProvider, MapAnchor, MapContainer, useMapModel } from "@open-pioneer/map";
 import { ToolButton } from "@open-pioneer/map-ui-components";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
-import { LayerItemAttributes, Toc } from "@open-pioneer/toc";
+import { LayerTocAttributes, Toc } from "@open-pioneer/toc";
 import { useIntl } from "open-pioneer:react-hooks";
 import { useId, useState } from "react";
 import { PiListLight } from "react-icons/pi";
@@ -144,7 +144,7 @@ export function AppUI() {
                                                     if (layer) {
                                                         const listMode = (
                                                             layer.attributes.toc as
-                                                                | LayerItemAttributes
+                                                                | LayerTocAttributes
                                                                 | undefined
                                                         )?.listMode;
                                                         const newListMode =

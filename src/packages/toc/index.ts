@@ -4,6 +4,6 @@ export {
     Toc,
     type TocProps,
     type ToolsConfig,
-    type LayerItemAttributes,
+    type LayerTocAttributes,
     type ListMode
 } from "./ui/Toc";

@@ -14,7 +14,7 @@ const internalLayer = new SimpleLayer({
 });
 ```
 
-The layer's `internal` state does also affect other UI widgets (e.g. Legend). If the layer should be hidden specifically in the Toc (but not in other widgets) the `listMode` attribute can be used to hide the layer item.
+The layer's `internal` state also affects other UI widgets (e.g. Legend). If the layer should be hidden specifically in the toc (but not in other widgets) the `listMode` attribute can be used to hide the layer item.
 
 ```typescript
 //use listMode to hide the layer specifically in Toc

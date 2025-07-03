@@ -24,7 +24,7 @@ import { slug } from "../../utils/slug";
 import { useChildLayers, useLoadState } from "./hooks";
 import { LayerItemMenu } from "./LayerItemMenu";
 import { LayerList } from "./LayerList";
-import { LayerItemAttributes } from "../Toc";
+import { LayerTocAttributes } from "../Toc";
 
 /**
  * Renders a single layer as a list item.
@@ -220,9 +220,9 @@ function useTocItem(layer: AnyLayer) {
     return [tocItem, tocModel, options] as const;
 }
 
-function useListMode(layer: AnyLayer): LayerItemAttributes | undefined {
+function useListMode(layer: AnyLayer): LayerTocAttributes | undefined {
     return useReactiveSnapshot(
-        () => layer.attributes.toc as LayerItemAttributes | undefined,
+        () => layer.attributes.toc as LayerTocAttributes | undefined,
         [layer]
     );
 }
@@ -235,6 +235,7 @@ function updateLayerVisibility(layer: AnyLayer, visible: boolean, autoShowParent
 }
 
 /**
+ * Checks if at least on child layer of the given layer exists and should be displayed.
  * @param layer
  * @returns true if at least one child layer's display mode is not `hide`
  */
@@ -250,13 +251,11 @@ function hasShownChildren(layer: AnyLayer): boolean {
 }
 
 /**
- * @param isInternal
- * @param listMode
- * @returns
+ * Checks if a layer should be displayed in the Toc.
  */
 function displayLayerItem(layer: AnyLayer): boolean {
     const isInternal = layer.internal;
-    const listMode = (layer.attributes.toc as LayerItemAttributes | undefined)?.listMode;
+    const listMode = (layer.attributes.toc as LayerTocAttributes | undefined)?.listMode;
 
     if (listMode === "show" || listMode === "hide-children") {
         return true;

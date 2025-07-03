@@ -709,7 +709,7 @@ it("displays the layer item only if the list mode is not `hide`", async () => {
         layer.setInternal(true); //make layer internal
         await nextTick();
     });
-    //layer item should still be there because toc specific listMode has precendences over internal attribute
+    //layer item should still be there because toc specific listMode has precedence over internal attribute
     layerItem = findLayerItem(container, layer.id);
     expect(layerItem).toBeTruthy();
 
@@ -783,7 +783,7 @@ it("does not display layer item for child layer if the group's listMode is `hide
     groupLayerItem = findLayerItem(container, groupLayer.id);
     expect(groupLayerItem).toBeTruthy(); //layer item for group should still be there
     childLayerItem = findLayerItem(container, childLayer.id);
-    expect(childLayerItem).toBeFalsy(); //layer item for child should no be there anymore
+    expect(childLayerItem).toBeFalsy(); //layer item for child should not be there anymore
 });
 
 /** Returns the layer list's current list items. */

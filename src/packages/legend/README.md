@@ -71,7 +71,7 @@ The legend content for sublayers is shown plain and without hierarchical structu
 
 #### Internal layers
 
-If a layer is marked as internal (layer's `internal` property is `true`) it will not be considered in the legend widget. Even if a legend is configured it will no be displayed. The `internal` property does also affect other UI widgets (e.g Toc).
+If a layer is marked as internal (layer's `internal` property is `true`) it will not be considered in the legend widget. Even if a legend is configured it will not be displayed. The `internal` property also affects other UI widgets (e.g. Toc).
 
 ### Showing legend for basemap
 

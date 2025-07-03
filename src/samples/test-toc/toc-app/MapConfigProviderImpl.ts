@@ -8,6 +8,7 @@ import OSM from "ol/source/OSM";
 import VectorSource from "ol/source/Vector";
 import WMTS from "ol/source/WMTS";
 import WMTSTileGrid from "ol/tilegrid/WMTS";
+import { LayerTocAttributes } from "@open-pioneer/toc";
 
 export const MAP_ID = "main";
 
@@ -224,7 +225,7 @@ function createStrassenLayer() {
         attributes: {
             toc: {
                 listMode: "show"
-            }
+            } satisfies LayerTocAttributes
         },
         sublayers: [
             {
