@@ -664,6 +664,137 @@ it("reacts to changes in the layer composition", async () => {
     expect(images[1]?.getAttribute("src")).toBe("https://fake.image.url/layer-1.png");
 });
 
+it("shows legend entries only for layers that are not internal", async () => {
+    const { map, registry } = await setupMap({
+        layers: [
+            {
+                title: "Layer 1",
+                id: "layer-1",
+                olLayer: new TileLayer({}),
+                attributes: {
+                    "legend": {
+                        imageUrl: "https://avatars.githubusercontent.com/u/121286957?s=200&v=4"
+                    }
+                },
+                visible: true,
+                internal: false
+            },
+            {
+                title: "Layer 2",
+                id: "layer-2",
+                olLayer: new TileLayer({}),
+                attributes: {
+                    "legend": {
+                        imageUrl: "https://avatars.githubusercontent.com/u/121286957?s=200&v=4"
+                    }
+                },
+                visible: true
+                //internal === false by default
+            },
+            {
+                title: "Layer 3",
+                id: "layer-3",
+                olLayer: new TileLayer({}),
+                attributes: {
+                    "legend": {
+                        imageUrl: "https://internal-layer.com/"
+                    }
+                },
+                visible: true,
+                internal: true
+            }
+        ]
+    });
+    const injectedServices = createServiceOptions({ registry });
+
+    render(
+        <PackageContextProvider services={injectedServices}>
+            <Legend map={map} data-testid="legend" />
+        </PackageContextProvider>
+    );
+
+    const legendDiv = await findLegend();
+    await waitForLegendItem(legendDiv);
+
+    const images = await getLegendImages(legendDiv, 2);
+    expect(images.length).toBe(2);
+
+    let src = images[0]?.getAttribute("src");
+    expect(src).not.toBe("https://internal-layer.com/");
+    src = images[1]?.getAttribute("src");
+    expect(src).not.toBe("https://internal-layer.com/");
+});
+
+it("reacts to changes in layer's internal state", async () => {
+    const { map, registry } = await setupMap({
+        layers: [
+            {
+                title: "Layer 1",
+                id: "layer-1",
+                olLayer: new TileLayer({}),
+                attributes: {
+                    "legend": {
+                        imageUrl: "https://fake.image.url/layer-1.png"
+                    }
+                },
+                visible: true,
+                internal: false
+            },
+            {
+                title: "Layer 2",
+                id: "layer-2",
+                olLayer: new TileLayer({}),
+                attributes: {
+                    "legend": {
+                        Component: function CustomLegend(props: LegendItemComponentProps) {
+                            return (
+                                <Box>
+                                    <Text>{props.layer.title}</Text>
+                                    <Box>
+                                        <Image
+                                            className="legend-item__image"
+                                            src="https://fake.image.url/layer-2.png"
+                                        ></Image>
+                                    </Box>
+                                </Box>
+                            );
+                        }
+                    }
+                },
+                visible: true,
+                internal: true
+            }
+        ]
+    });
+    const injectedServices = createServiceOptions({ registry });
+
+    render(
+        <PackageContextProvider services={injectedServices}>
+            <Legend map={map} data-testid="legend" />
+        </PackageContextProvider>
+    );
+
+    // First check
+    const legendDiv = await findLegend();
+    await waitForLegendItem(legendDiv);
+
+    const images = await getLegendImages(legendDiv, 1);
+    expect(images.length).toBe(1);
+
+    // Set internal to false
+    const layers = map.layers.getOperationalLayers();
+    act(() => {
+        layers[1]?.setInternal(false);
+    });
+
+    // Second check
+    const nextLegendDiv = await findLegend();
+    await waitForLegendItem(legendDiv);
+
+    const nextImages = await getLegendImages(nextLegendDiv, 2);
+    expect(nextImages.length).toBe(2);
+});
+
 async function findLegend() {
     const legendDiv = await screen.findByTestId("legend");
 

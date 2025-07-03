@@ -1,10 +1,10 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box, Flex, Text, VStack } from "@chakra-ui/react";
+import { Box, Button, Flex, Text, VStack } from "@chakra-ui/react";
 import { DefaultMapProvider, MapAnchor, MapContainer, useMapModel } from "@open-pioneer/map";
 import { ToolButton } from "@open-pioneer/map-ui-components";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
-import { Toc } from "@open-pioneer/toc";
+import { LayerTocAttributes, Toc } from "@open-pioneer/toc";
 import { useIntl } from "open-pioneer:react-hooks";
 import { useId, useState } from "react";
 import { PiListLight } from "react-icons/pi";
@@ -120,6 +120,48 @@ export function AppUI() {
                                             active={showToc}
                                             onClick={toggleToc}
                                         />
+                                        <Button
+                                            onClick={() => {
+                                                if (map) {
+                                                    const layer =
+                                                        map.layers.getLayerById("bustops");
+                                                    if (layer) {
+                                                        const isInternal = layer.internal;
+                                                        layer.setInternal(!isInternal);
+                                                    }
+                                                }
+                                            }}
+                                        >
+                                            toggle layer internal
+                                        </Button>
+                                        <Button
+                                            onClick={() => {
+                                                if (map) {
+                                                    const layer =
+                                                        map.layers.getLayerById(
+                                                            "street_network_wms"
+                                                        );
+                                                    if (layer) {
+                                                        const listMode = (
+                                                            layer.attributes.toc as
+                                                                | LayerTocAttributes
+                                                                | undefined
+                                                        )?.listMode;
+                                                        const newListMode =
+                                                            listMode === "hide-children"
+                                                                ? "show"
+                                                                : "hide-children";
+                                                        layer.updateAttributes({
+                                                            toc: {
+                                                                listMode: newListMode
+                                                            }
+                                                        });
+                                                    }
+                                                }
+                                            }}
+                                        >
+                                            toggle toc list mode
+                                        </Button>
                                     </Flex>
                                 </MapAnchor>
                             </MapContainer>

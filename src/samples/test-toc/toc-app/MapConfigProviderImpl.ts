@@ -8,6 +8,7 @@ import OSM from "ol/source/OSM";
 import VectorSource from "ol/source/Vector";
 import WMTS from "ol/source/WMTS";
 import WMTSTileGrid from "ol/tilegrid/WMTS";
+import { LayerTocAttributes } from "@open-pioneer/toc";
 
 export const MAP_ID = "main";
 
@@ -93,7 +94,8 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                             description:
                                 "Haltestellen des öffentlichen Personenverkehrs in der Hanse- und Universitätsstadt Rostock.",
                             olLayer: createHaltestellenLayer(),
-                            isBaseLayer: false
+                            isBaseLayer: false,
+                            internal: false
                         }),
                         createStrassenLayer()
                     ]
@@ -217,8 +219,14 @@ function createSchulenLayer() {
 
 function createStrassenLayer() {
     return new WMSLayer({
+        id: "street_network_wms",
         title: "Straßennetz Landesbetrieb Straßenbau NRW",
         url: "https://www.wms.nrw.de/wms/strassen_nrw_wms",
+        attributes: {
+            toc: {
+                listMode: "show"
+            } satisfies LayerTocAttributes
+        },
         sublayers: [
             {
                 name: "1",

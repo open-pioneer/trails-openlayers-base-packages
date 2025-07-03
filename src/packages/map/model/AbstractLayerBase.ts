@@ -30,6 +30,7 @@ export interface AbstractLayerBaseOptions {
     title: string;
     description?: string;
     attributes?: Record<string, unknown>;
+    internal?: boolean;
 }
 
 /**
@@ -49,6 +50,7 @@ export abstract class AbstractLayerBase<AdditionalEvents = {}>
     #attributesMap = reactiveMap<string | symbol, unknown>();
     #attributes: ReadonlyReactive<Record<string | symbol, unknown>>;
     #destroyed = false;
+    #internal: Reactive<boolean>;
 
     constructor(config: AbstractLayerBaseOptions) {
         super();
@@ -58,10 +60,19 @@ export abstract class AbstractLayerBase<AdditionalEvents = {}>
         });
         this.#title = reactive(config.title);
         this.#description = reactive(config.description ?? "");
+        this.#internal = reactive(config.internal ?? false);
 
         if (config.attributes) {
             this.updateAttributes(config.attributes);
         }
+    }
+
+    get internal(): boolean {
+        return this.#internal.value;
+    }
+
+    setInternal(newIsInternal: boolean): void {
+        this.#internal.value = newIsInternal;
     }
 
     protected get __destroyed(): boolean {

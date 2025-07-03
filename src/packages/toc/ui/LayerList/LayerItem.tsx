@@ -24,6 +24,7 @@ import { slug } from "../../utils/slug";
 import { useChildLayers, useLoadState } from "./hooks";
 import { LayerItemMenu } from "./LayerItemMenu";
 import { LayerList } from "./LayerList";
+import { LayerTocAttributes } from "../Toc";
 
 /**
  * Renders a single layer as a list item.
@@ -39,17 +40,30 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
 
     const layerGroupId = useId();
     const isAvailable = useLoadState(layer) !== "error";
+    const listMode = useListMode(layer)?.listMode;
     const notAvailableLabel = intl.formatMessage({ id: "layerNotAvailable" });
-    const { title, description, isVisible } = useReactiveSnapshot(() => {
+    const { title, description, isVisible, allChildrenHidden } = useReactiveSnapshot(() => {
         return {
             title: layer.title,
             description: layer.description,
-            isVisible: layer.visible
+            isVisible: layer.visible,
+            isInternal: layer.internal,
+            allChildrenHidden: !hasShownChildren(layer) //re-evaluates if a child layer's list mode or internal state changes
         };
     }, [layer]);
 
     const nestedChildren = useNestedChildren(layerGroupId, title, layer, intl);
-    const hasNestedChildren = !!nestedChildren;
+    let hasNestedChildren = !!nestedChildren;
+
+    const display = displayLayerItem(layer);
+    if (!display) {
+        return null;
+    }
+    //all children hidden => do not render collapse button and child entries
+    if (allChildrenHidden || listMode === "hide-children") {
+        hasNestedChildren = false;
+    }
+
     return (
         <Box as="li" className={classNames("toc-layer-item", `layer-${slug(layer.id)}`)}>
             <Flex
@@ -108,7 +122,7 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
                 <Spacer />
                 <LayerItemMenu layer={layer} title={title} description={description} intl={intl} />
             </Flex>
-            {nestedChildren && (
+            {hasNestedChildren && (
                 <Collapsible.Root open={expanded} className="toc-collapsible-item">
                     <CollapsibleContent>{nestedChildren}</CollapsibleContent>
                 </Collapsible.Root>
@@ -206,9 +220,48 @@ function useTocItem(layer: AnyLayer) {
     return [tocItem, tocModel, options] as const;
 }
 
+function useListMode(layer: AnyLayer): LayerTocAttributes | undefined {
+    return useReactiveSnapshot(
+        () => layer.attributes.toc as LayerTocAttributes | undefined,
+        [layer]
+    );
+}
+
 function updateLayerVisibility(layer: AnyLayer, visible: boolean, autoShowParents: boolean) {
     layer.setVisible(visible);
     if (visible && autoShowParents && layer.parent) {
         updateLayerVisibility(layer.parent, true, true);
+    }
+}
+
+/**
+ * Checks if at least on child layer of the given layer exists and should be displayed.
+ * @param layer
+ * @returns true if at least one child layer's display mode is not `hide`
+ */
+function hasShownChildren(layer: AnyLayer): boolean {
+    if (!layer.children || layer.children.getItems().length === 0) {
+        return false;
+    } else {
+        return layer.children.getItems().some((childLayer) => {
+            const isDisplayed = displayLayerItem(childLayer);
+            return isDisplayed;
+        });
+    }
+}
+
+/**
+ * Checks if a layer should be displayed in the Toc.
+ */
+function displayLayerItem(layer: AnyLayer): boolean {
+    const isInternal = layer.internal;
+    const listMode = (layer.attributes.toc as LayerTocAttributes | undefined)?.listMode;
+
+    if (listMode === "show" || listMode === "hide-children") {
+        return true;
+    } else if (isInternal || listMode === "hide") {
+        return false;
+    } else {
+        return true;
     }
 }

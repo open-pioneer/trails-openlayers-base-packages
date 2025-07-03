@@ -56,6 +56,31 @@ it("supports the visibility attribute", async () => {
     expect(layer.olLayer.getVisible()).toBe(true);
 });
 
+it("manages the internal attribute", async () => {
+    const { layer } = createLayer({
+        id: "a",
+        title: "A",
+        olLayer: new TileLayer({})
+    });
+    expect(layer.internal).toBe(false); //should be false by default
+
+    let changedInternalState = 0;
+    syncWatch(
+        () => [layer.internal],
+        () => {
+            ++changedInternalState;
+        }
+    );
+
+    layer.setInternal(true);
+    expect(changedInternalState).toBe(1);
+    expect(layer.internal).toBe(true);
+
+    layer.setInternal(false);
+    expect(changedInternalState).toBe(2);
+    expect(layer.internal).toBe(false);
+});
+
 it("logs a warning when setVisible() is called on a base layer", async () => {
     const logSpy = vi.spyOn(global.console, "warn").mockImplementation(() => undefined);
     const { layer } = createLayer({
