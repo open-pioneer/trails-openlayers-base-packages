@@ -18,11 +18,6 @@
     "rangeStrategy": "bump",
     "packageRules": [
         {
-            "matchPackageNames": ["@changesets/*"],
-            "enabled": false,
-            "description": "Pin changeset packages to current version"
-        },
-        {
             "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
             "matchDepTypes": [
                 "dependencies",
