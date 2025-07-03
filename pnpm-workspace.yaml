@@ -20,8 +20,8 @@ catalog:
   "@open-pioneer/test-utils": ^4.0.0
   "@open-pioneer/chakra-snippets": ^4.0.0
 
-  "@chakra-ui/react": ^3.21.0
-  "@chakra-ui/cli": ^3.21.0
+  "@chakra-ui/react": ^3.21.1
+  "@chakra-ui/cli": ^3.21.1
   "@conterra/reactivity-core": ^0.7.0
   "@emotion/cache": ^11.14.0
   "@emotion/react": ^11.14.0
