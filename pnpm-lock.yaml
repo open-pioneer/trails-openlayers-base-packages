@@ -172,8 +172,8 @@ catalogs:
       specifier: ^3.5.3
       version: 3.5.3
     proj4:
-      specifier: ^2.17.0
-      version: 2.17.0
+      specifier: ^2.19.5
+      version: 2.19.5
     react:
       specifier: ^19.1.0
       version: 19.1.0
@@ -687,7 +687,7 @@ importers:
         version: 10.5.0
       proj4:
         specifier: 'catalog:'
-        version: 2.17.0
+        version: 2.19.5
       react:
         specifier: 'catalog:'
         version: 19.1.0
@@ -3967,9 +3967,6 @@ packages:
   functions-have-names@1.2.3:
     resolution: {integrity: sha512-xckBUXyTIqT97tq2x2AMb+g163b5JFysYk0x4qxNFwbfQkmNZoiRHb6sPzI9/QV33WeuvVYBUIiD4NzNIyqaRQ==}
 
-  geographiclib-geodesic@2.1.1:
-    resolution: {integrity: sha512-lkd8EUkPSByobWu9BPMHTdYA5AUZxOa8McmUNtBE9KrvUJEvSADnN6gTDmhXbi6NzdA16LtWLpSxLE/lIIRhyA==}
-
   geotiff@2.1.3:
     resolution: {integrity: sha512-PT6uoF5a1+kbC3tHmZSUsLHBp2QJlHasxxxxPW47QIY1VBKpFB+FcDvX+MxER6UzgLQZ0xDzJ9s48B9JbOCTqA==}
     engines: {node: '>=10.19'}
@@ -4813,8 +4810,8 @@ packages:
     resolution: {integrity: sha512-Qb1gy5OrP5+zDf2Bvnzdl3jsTf1qXVMazbvCoKhtKqVs4/YK4ozX4gKQJJVyNe+cajNPn0KoC0MC3FUmaHWEmQ==}
     engines: {node: ^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0}
 
-  proj4@2.17.0:
-    resolution: {integrity: sha512-BqVoruVAOUgkw5U9Ns76+E2nHZG0Y42tbkC+0BpyqjhwPIai29hoivyQoyelEKFSfaV3zkR3NqPRD0EwPM4Wug==}
+  proj4@2.19.5:
+    resolution: {integrity: sha512-hFn7GJwUZ1YiAAfSfur7VRgiH0swIZFxJb7UZ7C4E9tbqyozSn+SI9ZxFgFKmUldtY3tVTBvylJhwfD+O3pHQw==}
 
   prop-types@15.8.1:
     resolution: {integrity: sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==}
@@ -8549,8 +8546,6 @@ snapshots:
 
   functions-have-names@1.2.3: {}
 
-  geographiclib-geodesic@2.1.1: {}
-
   geotiff@2.1.3:
     dependencies:
       '@petamoriken/float16': 3.9.2
@@ -9421,9 +9416,8 @@ snapshots:
       ansi-styles: 5.2.0
       react-is: 17.0.2
 
-  proj4@2.17.0:
+  proj4@2.19.5:
     dependencies:
-      geographiclib-geodesic: 2.1.1
       mgrs: 1.0.0
       wkt-parser: 1.5.2
 

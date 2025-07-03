@@ -1,7 +1,14 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { register } from "ol/proj/proj4";
-import proj4, { ProjectionDefinition as Proj4ProjectionDefinition } from "proj4";
+import proj4 from "proj4";
+
+// Select return type of (name: string) => ProjectionDefinition overload since ProjectionDefinition is not exported
+type Proj4ProjectionDefinition = typeof proj4.defs extends infer R
+    ? R extends (name: string) => unknown
+        ? ReturnType<R>
+        : never
+    : never;
 
 export type ProjectionDefinition = string | Proj4ProjectionDefinition;
 
