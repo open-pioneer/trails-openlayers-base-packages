@@ -91,12 +91,9 @@ catalog:
   zx: ^8.5.5
 
 auditConfig:
-  ignoreCves:
+  ignoreCves: []
 
 overrides:
-  # See patchedDependencies
-  "@changesets/assemble-release-plan": "6.0.4"
-
   # https://github.com/advisories/GHSA-c2qf-rxjj-qqgw
   "semver@<7.5.2": ">=7.5.2"
   # https://github.com/advisories/GHSA-72xf-g2v4-qvf3
@@ -133,15 +130,10 @@ overrides:
 
 ignorePatchFailures: false
 patchedDependencies:
-  # Don't bump major if peerDep has a minor release. see https://github.com/changesets/changesets/pull/1132
-  # NOTE: Also in overrides to pin the version.
-  "@changesets/assemble-release-plan@6.0.4": "patches/@changesets__assemble-release-plan.patch"
-
   # Ensure valids ids for aria-activedescendant and fix touch events in shadow DOM (see https://github.com/JedWatson/react-select/issues/5824)
   "react-select": "patches/react-select.patch"
 
   # - Ensure all portals are mounted under `.pioneer-root` div
-  # - Fix rendering of toasts in shadow root: https://github.com/chakra-ui/ark/issues/3455
   "@ark-ui/react@*": "patches/@ark-ui__react.patch"
 
 dangerouslyAllowAllBuilds: false
