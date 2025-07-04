@@ -198,6 +198,14 @@ const PopoverTriggerTool = function PopoverTriggerTool({
             icon={<PiCursorClick />}
             onClick={onClick}
             buttonProps={triggerProps}
+            tooltipProps={{
+                ids: {
+                    // Mixing Popup and menu/popover triggers requires some coordination.
+                    // We tell the tooltip to watch the same dom element as the popover trigger.
+                    // See https://chakra-ui.com/docs/components/tooltip#with-menutrigger
+                    trigger: triggerProps.id
+                }
+            }}
         />
     );
 };
