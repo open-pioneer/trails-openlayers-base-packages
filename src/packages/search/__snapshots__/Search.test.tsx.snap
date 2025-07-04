@@ -44,11 +44,8 @@ exports[`should successfully create a search component 1`] = `
             cy="11"
             r="8"
           />
-          <line
-            x1="21"
-            x2="16.65"
-            y1="21"
-            y2="16.65"
+          <path
+            d="m21 21-4.3-4.3"
           />
         </svg>
         <div

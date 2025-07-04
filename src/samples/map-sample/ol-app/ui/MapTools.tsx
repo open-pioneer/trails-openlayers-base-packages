@@ -14,16 +14,16 @@ import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { useIntl, useService } from "open-pioneer:react-hooks";
 import { RefObject, useState } from "react";
 import {
-    PiCursorClick,
-    PiImagesLight,
-    PiListLight,
-    PiListMagnifyingGlassFill,
-    PiPencil,
-    PiPencilSlash,
-    PiPrinterLight,
-    PiRulerLight,
-    PiSelectionPlusBold
-} from "react-icons/pi";
+    LuImages,
+    LuMenu,
+    LuMousePointerClick,
+    LuPencil,
+    LuPencilOff,
+    LuPrinter,
+    LuRuler,
+    LuSquareDashedMousePointer,
+    LuTextSearch
+} from "react-icons/lu";
 import { TbPolygon, TbPolygonOff } from "react-icons/tb";
 import { AppModel } from "../AppModel";
 
@@ -54,7 +54,7 @@ export function MapTools() {
             {resultListState.input && (
                 <ToolButton
                     label={intl.formatMessage({ id: "resultListTitle" })}
-                    icon={<PiListMagnifyingGlassFill />}
+                    icon={<LuTextSearch />}
                     active={resultListState.open}
                     onClick={() => appModel.setResultListVisibility(!resultListOpen)}
                 />
@@ -62,19 +62,19 @@ export function MapTools() {
 
             <ToolButton
                 label={intl.formatMessage({ id: "tocTitle" })}
-                icon={<PiListLight />}
+                icon={<LuMenu />}
                 active={isTocActive}
                 onClick={() => appModel.toggleMainContent("toc")}
             />
             <ToolButton
                 label={intl.formatMessage({ id: "legendTitle" })}
-                icon={<PiImagesLight />}
+                icon={<LuImages />}
                 active={isLegendActive}
                 onClick={() => appModel.toggleMainContent("legend")}
             />
             <ToolButton
                 label={intl.formatMessage({ id: "printingTitle" })}
-                icon={<PiPrinterLight />}
+                icon={<LuPrinter />}
                 active={isPrintingActive}
                 onClick={() => appModel.toggleMainContent("printing")}
             />
@@ -132,7 +132,7 @@ function InteractionsMenu() {
                         ? intl.formatMessage({ id: "editing.stopTitle" })
                         : intl.formatMessage({ id: "editing.update.startTitle" })
                 }
-                icon={isEditingUpdateActive ? <PiPencilSlash /> : <PiPencil />}
+                icon={isEditingUpdateActive ? <LuPencilOff /> : <LuPencil />}
                 active={isEditingUpdateActive}
                 onClick={interactionsMenuHandler(() =>
                     appModel.toggleMainContent("editing-update")
@@ -141,14 +141,14 @@ function InteractionsMenu() {
             />
             <ToolButton
                 label={intl.formatMessage({ id: "measurementTitle" })}
-                icon={<PiRulerLight />}
+                icon={<LuRuler />}
                 active={isMeasurementActive}
                 onClick={interactionsMenuHandler(() => appModel.toggleMainContent("measurement"))}
                 tooltipProps={tooltipProps}
             />
             <ToolButton
                 label={intl.formatMessage({ id: "selectionTitle" })}
-                icon={<PiSelectionPlusBold />}
+                icon={<LuSquareDashedMousePointer />}
                 active={isSelectionActive}
                 onClick={interactionsMenuHandler(() => appModel.toggleMainContent("selection"))}
                 tooltipProps={tooltipProps}
@@ -195,7 +195,7 @@ const PopoverTriggerTool = function PopoverTriggerTool({
         <ToolButton
             ref={ref}
             label={intl.formatMessage({ id: "mapInteractions.title" })}
-            icon={<PiCursorClick />}
+            icon={<LuMousePointerClick />}
             onClick={onClick}
             buttonProps={triggerProps}
         />

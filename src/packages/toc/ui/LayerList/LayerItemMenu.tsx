@@ -6,7 +6,7 @@ import { AnyLayer } from "@open-pioneer/map";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { useIntl } from "open-pioneer:react-hooks";
 import { useId } from "react";
-import { FiMoreVertical } from "react-icons/fi";
+import { LuEllipsisVertical } from "react-icons/lu";
 import { useLoadState } from "./hooks";
 
 export function LayerItemMenu(props: {
@@ -79,7 +79,7 @@ function TriggerButton(props: { triggerId: string; layer: AnyLayer }) {
                     size="sm"
                 >
                     <Icon>
-                        <FiMoreVertical spacing={0} />
+                        <LuEllipsisVertical spacing={0} />
                     </Icon>
                 </IconButton>
             </Popover.Trigger>

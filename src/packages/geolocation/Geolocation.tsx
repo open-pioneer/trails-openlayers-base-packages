@@ -9,7 +9,7 @@ import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { StyleLike } from "ol/style/Style";
 import { useIntl, useService } from "open-pioneer:react-hooks";
 import { FC, RefAttributes, useEffect, useState } from "react";
-import { MdMyLocation } from "react-icons/md";
+import { LuLocateFixed } from "react-icons/lu";
 import { GeolocationController, OnErrorCallback } from "./GeolocationController";
 
 /**
@@ -99,7 +99,7 @@ const GeolocationImpl = function GeolocationImpl(
             ref={ref}
             buttonProps={buttonProps}
             label={label}
-            icon={<MdMyLocation />}
+            icon={<LuLocateFixed />}
             onClick={() => toggleActiveState()}
             active={isActive}
             loading={isLoading}

@@ -4,7 +4,7 @@ import { Box, IconButton, Menu, Portal, Icon } from "@chakra-ui/react";
 import { AnyLayer, MapModel } from "@open-pioneer/map";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, memo, useId } from "react";
-import { FiMoreVertical } from "react-icons/fi";
+import { LuEllipsisVertical } from "react-icons/lu";
 import { TocModel, useTocModel } from "../model/TocModel";
 import { ToolsConfig } from "./Toc";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
@@ -93,7 +93,7 @@ function TriggerButton(props: { triggerId: string }) {
                     size="sm"
                 >
                     <Icon>
-                        <FiMoreVertical spacing={0} />
+                        <LuEllipsisVertical spacing={0} />
                     </Icon>
                 </IconButton>
             </Menu.Trigger>

@@ -4,7 +4,7 @@ import { Field, Icon, IconButton, Input, InputGroup, VisuallyHidden } from "@cha
 import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
 import { Coordinate } from "ol/coordinate";
 import { useIntl } from "open-pioneer:react-hooks";
-import { FiCopy, FiX } from "react-icons/fi";
+import { LuCopy, LuX } from "react-icons/lu";
 
 /**
  * Text input for coordinates.
@@ -55,7 +55,7 @@ export function CoordinateInputField(props: {
                 }}
                 icon={
                     <Icon>
-                        <FiX />
+                        <LuX />
                     </Icon>
                 }
             />
@@ -72,7 +72,7 @@ export function CoordinateInputField(props: {
                 }}
                 icon={
                     <Icon>
-                        <FiCopy />
+                        <LuCopy />
                     </Icon>
                 }
             />

@@ -7,7 +7,7 @@ import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/rea
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC } from "react";
-import { FiAlertTriangle } from "react-icons/fi";
+import { LuTriangleAlert } from "react-icons/lu";
 
 /*
     Exported for tests. Feels a bit hacky but should be fine for now.
@@ -173,7 +173,7 @@ function BasemapItem(props: { item: SelectOption }) {
                         positioning={{ placement: "right" }}
                     >
                         <span>
-                            <FiAlertTriangle
+                            <LuTriangleAlert
                                 color={"red"}
                                 aria-label={intl.formatMessage({
                                     id: "layerNotAvailable"

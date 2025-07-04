@@ -19,7 +19,7 @@ import { PackageIntl } from "@open-pioneer/runtime";
 import { Geometry } from "ol/geom";
 import { useIntl, useService } from "open-pioneer:react-hooks";
 import { FC, useCallback, useEffect, useRef, useState } from "react";
-import { FiAlertTriangle } from "react-icons/fi";
+import { LuTriangleAlert } from "react-icons/lu";
 import { DragController } from "./DragController";
 import { SelectionController } from "./SelectionController";
 import { SelectionResult, SelectionSource, SelectionSourceStatusObject } from "./api";
@@ -245,7 +245,7 @@ function SelectionSourceItem(props: { source: SelectionSource | undefined }) {
                                 aria-label={status.reason}
                                 aria-hidden={undefined} // Overwrite icon default so the label gets read
                             >
-                                <FiAlertTriangle />
+                                <LuTriangleAlert />
                             </Icon>
                         </chakra.span>
                     </Tooltip>

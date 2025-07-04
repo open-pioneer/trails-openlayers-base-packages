@@ -7,7 +7,7 @@ import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, useMemo } from "react";
-import { FiChevronDown } from "react-icons/fi";
+import { LuChevronDown } from "react-icons/lu";
 
 const DEFAULT_SCALES = [
     17471320, 8735660, 4367830, 2183915, 1091957, 545978, 272989, 136494, 68247, 34123, 17061, 8530,
@@ -83,7 +83,7 @@ export const ScaleSetter: FC<ScaleSetterProps> = (props) => {
                     >
                         {renderScaleText(intl, activeScale)}
                         <Icon>
-                            <FiChevronDown />
+                            <LuChevronDown />
                         </Icon>
                     </Button>
                 </Menu.Trigger>

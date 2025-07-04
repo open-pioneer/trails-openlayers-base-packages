@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { IoIosWarning } from "react-icons/io";
+import { LuTriangleAlert } from "react-icons/lu";
 import { Box, Image, List, Text, Icon } from "@chakra-ui/react";
 import { Layer, AnyLayer, MapModel, useMapModel, MapModelProps, isLayer } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
@@ -171,7 +171,7 @@ function LegendImage(props: { imageUrl: string; layer: AnyLayer }) {
                 <Box>
                     <Text>
                         <Icon me={2}>
-                            <IoIosWarning />
+                            <LuTriangleAlert />
                         </Icon>
                         {intl.formatMessage({ id: "fallbackLabel" })}
                     </Text>

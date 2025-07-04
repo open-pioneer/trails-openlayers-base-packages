@@ -7,7 +7,7 @@ import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/rea
 import { Extent } from "ol/extent";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, RefAttributes } from "react";
-import { FiHome } from "react-icons/fi";
+import { LuHouse } from "react-icons/lu";
 
 export interface InitialExtentProps
     extends CommonComponentProps,
@@ -51,7 +51,7 @@ export const InitialExtent: FC<InitialExtentProps> = function InitialExtent(
             ref={ref}
             buttonProps={buttonProps}
             label={intl.formatMessage({ id: "initial-extent.title" })}
-            icon={<FiHome />}
+            icon={<LuHouse />}
             onClick={setInitExtent}
             {...containerProps}
         />

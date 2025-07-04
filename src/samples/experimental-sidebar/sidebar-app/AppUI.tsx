@@ -10,7 +10,7 @@ import {
     useMapModel
 } from "@open-pioneer/map";
 import { useState } from "react";
-import { FiCodesandbox } from "react-icons/fi";
+import { LuCodesandbox } from "react-icons/lu";
 import { MAP_ID } from "./MapConfigProviderImpl";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 
@@ -31,7 +31,7 @@ export function AppUI() {
     const items: SidebarItem[] = [
         {
             id: "sandbox",
-            icon: <FiCodesandbox />,
+            icon: <LuCodesandbox />,
             label: "Sandbox",
             content: <Button onClick={centerBerlin}>Center Berlin</Button>
         }

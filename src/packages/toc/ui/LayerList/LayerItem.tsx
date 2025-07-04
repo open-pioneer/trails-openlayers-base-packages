@@ -18,7 +18,7 @@ import { PackageIntl } from "@open-pioneer/runtime";
 import classNames from "classnames";
 import { useIntl } from "open-pioneer:react-hooks";
 import { memo, ReactNode, useEffect, useId, useMemo } from "react";
-import { FiAlertTriangle, FiChevronDown, FiChevronRight } from "react-icons/fi";
+import { LuTriangleAlert, LuChevronDown, LuChevronRight } from "react-icons/lu";
 import { TocItem, useTocModel } from "../../model/TocModel";
 import { slug } from "../../utils/slug";
 import { useChildLayers, useLoadState } from "./hooks";
@@ -111,7 +111,7 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
                         contentProps={{ className: "toc-layer-item-content-tooltip" }}
                     >
                         <span>
-                            <FiAlertTriangle
+                            <LuTriangleAlert
                                 className="toc-layer-item-content-icon"
                                 color={"red"}
                                 aria-label={notAvailableLabel}
@@ -162,7 +162,7 @@ function CollapseButton(props: {
     hasNestedChildren: boolean;
 }) {
     const { layerTitle, layerGroupId, expanded, onClick, hasNestedChildren } = props;
-    const icon = expanded ? <FiChevronDown /> : <FiChevronRight />;
+    const icon = expanded ? <LuChevronDown /> : <LuChevronRight />;
     const intl = useIntl();
     return (
         <IconButton
