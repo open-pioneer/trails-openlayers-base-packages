@@ -25,7 +25,7 @@ import { PackageIntl } from "@open-pioneer/runtime";
 import classNames from "classnames";
 import { useIntl, useService } from "open-pioneer:react-hooks";
 import { FC, KeyboardEvent, ReactNode, useEffect, useRef, useState } from "react";
-import { PiMapTrifold, PiTrashSimpleLight } from "react-icons/pi";
+import { LuMap, LuTrash } from "react-icons/lu";
 import { Bookmark, SpatialBookmarkViewModel } from "./SpatialBookmarksViewModel";
 
 type UIMode = "list" | "create" | "delete";
@@ -274,7 +274,7 @@ function BookmarkItem(props: {
             <Flex width="100%" flexDirection="row" align="center" gap={1}>
                 <Center>
                     <Icon>
-                        <PiMapTrifold />
+                        <LuMap />
                     </Icon>
                 </Center>
                 <Text ps={2} maxLines={1}>
@@ -307,7 +307,7 @@ function BookmarkItem(props: {
                         )}
                     >
                         <Icon>
-                            <PiTrashSimpleLight />
+                            <LuTrash />
                         </Icon>
                     </IconButton>
                 </Tooltip>
@@ -334,7 +334,7 @@ function ListControls(props: {
                 variant="outline"
             >
                 <Icon>
-                    <PiTrashSimpleLight />
+                    <LuTrash />
                 </Icon>
             </DialogIconButton>
             <DialogButton onClick={showCreate}>

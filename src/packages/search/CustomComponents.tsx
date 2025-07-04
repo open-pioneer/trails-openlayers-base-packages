@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { FiSearch } from "react-icons/fi";
+import { LuSearch } from "react-icons/lu";
 import { chakra, Icon, IconButton } from "@chakra-ui/react";
 import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
 import { LuX } from "react-icons/lu";
@@ -78,7 +78,7 @@ export function ValueContainer({
         <chakraComponents.ValueContainer {...containerProps}>
             {!!children && (
                 <Icon position="absolute" left="8px" boxSize="1.25em">
-                    <FiSearch />
+                    <LuSearch />
                 </Icon>
             )}
             {children}

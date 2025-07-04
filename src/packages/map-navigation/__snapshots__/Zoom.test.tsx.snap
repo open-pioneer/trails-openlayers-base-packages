@@ -26,17 +26,11 @@ exports[`should successfully create a zoom component with additional css classes
     width="1em"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <line
-      x1="12"
-      x2="12"
-      y1="5"
-      y2="19"
+    <path
+      d="M5 12h14"
     />
-    <line
-      x1="5"
-      x2="19"
-      y1="12"
-      y2="12"
+    <path
+      d="M12 5v14"
     />
   </svg>
 </button>
@@ -68,17 +62,11 @@ exports[`should successfully create a zoom-in and zoom-out buttons 1`] = `
     width="1em"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <line
-      x1="12"
-      x2="12"
-      y1="5"
-      y2="19"
+    <path
+      d="M5 12h14"
     />
-    <line
-      x1="5"
-      x2="19"
-      y1="12"
-      y2="12"
+    <path
+      d="M12 5v14"
     />
   </svg>
 </button>
@@ -110,11 +98,8 @@ exports[`should successfully create a zoom-in and zoom-out buttons 2`] = `
     width="1em"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <line
-      x1="5"
-      x2="19"
-      y1="12"
-      y2="12"
+    <path
+      d="M5 12h14"
     />
   </svg>
 </button>

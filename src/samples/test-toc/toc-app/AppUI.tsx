@@ -7,7 +7,7 @@ import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { LayerTocAttributes, Toc } from "@open-pioneer/toc";
 import { useIntl } from "open-pioneer:react-hooks";
 import { useId, useState } from "react";
-import { PiListLight } from "react-icons/pi";
+import { LuMenu } from "react-icons/lu";
 import { MAP_ID } from "./MapConfigProviderImpl";
 
 export function AppUI() {
@@ -116,7 +116,7 @@ export function AppUI() {
                                     >
                                         <ToolButton
                                             label={intl.formatMessage({ id: "tocTitle" })}
-                                            icon={<PiListLight />}
+                                            icon={<LuMenu />}
                                             active={showToc}
                                             onClick={toggleToc}
                                         />

@@ -8,7 +8,7 @@ import { PackageIntl } from "@open-pioneer/runtime";
 import classNames from "classnames";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, RefAttributes, useState } from "react";
-import { FiMinus, FiPlus } from "react-icons/fi";
+import { LuMinus, LuPlus } from "react-icons/lu";
 
 export type ZoomInProps = Omit<ZoomProps, "zoomDirection">;
 
@@ -102,13 +102,13 @@ function getDirectionProps(intl: PackageIntl, zoomDirection: "in" | "out") {
             return {
                 defaultClassName: "zoom-in",
                 buttonLabel: intl.formatMessage({ id: "zoom-in.title" }),
-                buttonIcon: <FiPlus />
+                buttonIcon: <LuPlus />
             };
         case "out":
             return {
                 defaultClassName: "zoom-out",
                 buttonLabel: intl.formatMessage({ id: "zoom-out.title" }),
-                buttonIcon: <FiMinus />
+                buttonIcon: <LuMinus />
             };
     }
 }

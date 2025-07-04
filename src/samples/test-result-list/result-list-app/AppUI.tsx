@@ -28,7 +28,7 @@ import {
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { ResultList, ResultListInput, SelectionMode } from "@open-pioneer/result-list";
 import { useMemo, useState } from "react";
-import { FiChevronDown } from "react-icons/fi";
+import { LuChevronDown } from "react-icons/lu";
 import { MAP_ID } from "./MapConfigProviderImpl";
 
 const RESULT_LIST_HEIGHT_PIXELS = 400;
@@ -98,7 +98,7 @@ export function AppUI() {
                                             <Menu.Root positioning={{ placement: "right-end" }}>
                                                 <Menu.Trigger as={Button}>
                                                     Fill result list
-                                                    <FiChevronDown />
+                                                    <LuChevronDown />
                                                 </Menu.Trigger>
                                                 <Portal>
                                                     <Menu.Positioner>

@@ -9,7 +9,7 @@ import { PackageIntl } from "@open-pioneer/runtime";
 import classNames from "classnames";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, RefAttributes } from "react";
-import { FiCornerUpLeft, FiCornerUpRight } from "react-icons/fi";
+import { LuCornerUpLeft, LuCornerUpRight } from "react-icons/lu";
 import { useHistoryViewModel } from "./ViewHistoryModel";
 
 export type HistoryForwardProps = Omit<HistoryProps, "viewDirection">;
@@ -112,13 +112,13 @@ function getDirectionProps(intl: PackageIntl, viewDirection: "forward" | "backwa
             return {
                 defaultClassName: "view-forward",
                 buttonLabel: intl.formatMessage({ id: "view-forward.title" }),
-                buttonIcon: <FiCornerUpRight />
+                buttonIcon: <LuCornerUpRight />
             };
         case "backward":
             return {
                 defaultClassName: "view-backward",
                 buttonLabel: intl.formatMessage({ id: "view-backward.title" }),
-                buttonIcon: <FiCornerUpLeft />
+                buttonIcon: <LuCornerUpLeft />
             };
     }
 }

@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { FiChevronsLeft, FiChevronsRight } from "react-icons/fi";
+import { LuChevronsLeft, LuChevronsRight } from "react-icons/lu";
 import {
     Box,
     Button,
@@ -186,7 +186,7 @@ export function Sidebar({
                     positioning={{ placement: "right" }}
                 >
                     <IconButton aria-label={toggleButtonLabel} variant="ghost" onClick={toggleMain}>
-                        {!isMainToggled ? <FiChevronsRight /> : <FiChevronsLeft />}
+                        {!isMainToggled ? <LuChevronsRight /> : <LuChevronsLeft />}
                     </IconButton>
                 </Tooltip>
             </Box>
