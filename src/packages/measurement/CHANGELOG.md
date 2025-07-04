@@ -1,5 +1,18 @@
 # @open-pioneer/measurement
 
+## 0.12.0
+
+### Patch Changes
+
+- 10d2fe7: Update dependencies
+- da6a410: Update dependencies
+- Updated dependencies [10d2fe7]
+- Updated dependencies [2702df4]
+- Updated dependencies [8986b3b]
+- Updated dependencies [f1f69f2]
+- Updated dependencies [da6a410]
+    - @open-pioneer/map@0.12.0
+
 ## 0.11.0
 
 ### Minor Changes
@@ -72,7 +85,6 @@
 
 - b717121: Update from OL 9 to OL 10.
 - 2fa8020: Update trails core package dependencies.
-
     - Also updates Chakra UI to the latest 2.x version and Chakra React Select to version 5.
     - Removes any obsolete references to `@chakra-ui/system`.
       This dependency seems to be no longer required and may lead to duplicate packages in your dependency tree.
@@ -128,7 +140,6 @@
 
 - b152428: Update trails dependencies
 - 23b48ad: Add two new optional properties:
-
     - `predefinedMeasurements`: an array of measurements that will be added to the map (without user interaction)
     - `onMeasurementsChange`: an event listener that will be called when measurements are added or removed
 
