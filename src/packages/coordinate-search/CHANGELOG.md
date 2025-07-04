@@ -1,12 +1,28 @@
 # @open-pioneer/coordinate-search
 
+## 0.12.0
+
+### Minor Changes
+
+- 2732052: Icons have been changed to unify the appearance of the components. Preferably, Lucide react-icons are used.
+
+### Patch Changes
+
+- 10d2fe7: Update dependencies
+- da6a410: Update dependencies
+- Updated dependencies [10d2fe7]
+- Updated dependencies [2702df4]
+- Updated dependencies [8986b3b]
+- Updated dependencies [f1f69f2]
+- Updated dependencies [da6a410]
+    - @open-pioneer/map@0.12.0
+
 ## 0.11.0
 
 ### Minor Changes
 
 - 66179bc: Update to core-packages v4.0.0
 - 888fc2b: improve a11y of coordinate search and coordinate input
-
     - switch order of projection select and coordinate input (visually and tab order) in order to have the correct focus order
     - add instructions to `aria-label` for coordinate input to improve usability for screenreader users
 
