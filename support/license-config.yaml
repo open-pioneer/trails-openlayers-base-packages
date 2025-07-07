@@ -100,7 +100,7 @@ additionalLicenses:
     licenseFiles:
       - custom: "./licenses/lucide_isc"
 
-  # Feather icons are used in the project and loaded by `react-icons`.
+  # Feather is used by Tabler Icons (see below).
   # License file retrieved on 2025-07-07 from https://github.com/feathericons/feather/blob/main/LICENSE
   - name: "Feather"
     license: "MIT"
