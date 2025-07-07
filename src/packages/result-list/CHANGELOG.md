@@ -23,7 +23,6 @@
     ```
 
 - 5c2cca2: Fix a11y issues:
-
     - Fix wrong `aria-labelledby` ids
     - Introduce optional property `labelProperty` to result list's `input` option
         - A feature's property value is used to provide context in aria attributes.
@@ -101,7 +100,6 @@
 ### Minor Changes
 
 - 2fa8020: Update trails core package dependencies.
-
     - Also updates Chakra UI to the latest 2.x version and Chakra React Select to version 5.
     - Removes any obsolete references to `@chakra-ui/system`.
       This dependency seems to be no longer required and may lead to duplicate packages in your dependency tree.

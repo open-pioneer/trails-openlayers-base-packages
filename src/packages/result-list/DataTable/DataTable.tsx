@@ -257,7 +257,7 @@ function useColumnSizeVars<Data>(table: TanstackTable<Data>) {
         // Note: columnSizing seems to be needed as well, because otherwise resetting the column size (header.column.resetSize())
         // won't to anything.
         // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-        void columnSizingInfo, columnSizing;
+        (void columnSizingInfo, columnSizing);
         const colSizes: { [key: string]: number } = {};
         for (let i = 0; i < tableHeaders.length; i++) {
             const header = tableHeaders[i]!;

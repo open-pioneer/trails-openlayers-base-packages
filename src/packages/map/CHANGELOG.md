@@ -6,7 +6,6 @@
 
 - 66179bc: Update to core-packages v4.0.0
 - acd5115: **Breaking:** Remove the following hooks, which were deprecated since version 0.8.0:
-
     - useView
     - useProjection
     - useResolution
@@ -259,7 +258,6 @@
     `layer.children` is either an alias of `layer.sublayers` (if the layer has sublayers), `layer.layers` (if it's a `GroupLayer`) or undefined, if the layer does not have any children.
 
 - d8337a6: The following hooks are deprecated and will be removed in a future release:
-
     - `useView`
     - `useProjection`
     - `useResolution`
@@ -277,7 +275,6 @@
     ```
 
 - 2fa8020: Update trails core package dependencies.
-
     - Also updates Chakra UI to the latest 2.x version and Chakra React Select to version 5.
     - Removes any obsolete references to `@chakra-ui/system`.
       This dependency seems to be no longer required and may lead to duplicate packages in your dependency tree.
@@ -327,7 +324,6 @@
     Sublayers (e.g. `WMSSublayer`) cannot be added to a group directly.
 
 - d8337a6: Provide new reactive properties on the `MapModel` type.
-
     - `olView` (-> `olMap.getView()`)
     - `projection` (-> `olMap.getView().getProjection()`)
     - `resolution` (-> `olMap.getView().getResolution()`)
@@ -359,7 +355,6 @@
     Two type guards have been implemented that allow to check if a layer instance is a `Layer` or `Sublayer`: `isLayer()`and `isSublayer()` (see example below).
 
     The following `type` attribute values have been implemented at the layers:
-
     - SimpleLayer: `simple`
     - WMSLayer: `wms`
     - WMSSubLayer: `wms-sublayer`

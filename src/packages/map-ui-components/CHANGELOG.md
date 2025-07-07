@@ -6,7 +6,6 @@
 
 - 66179bc: Update to core-packages v4.0.0
 - 738390e: **Breaking:** Rename `<ToolButton />` props for consistency with Chakra naming conventions:
-
     - `isLoading` (old) --> `loading` (new)
     - `isActive` (old) --> `active` (new)
     - `isDisabled` (old) --> `disabled` (new)
@@ -47,7 +46,6 @@
 ### Minor Changes
 
 - 2fa8020: Update trails core package dependencies.
-
     - Also updates Chakra UI to the latest 2.x version and Chakra React Select to version 5.
     - Removes any obsolete references to `@chakra-ui/system`.
       This dependency seems to be no longer required and may lead to duplicate packages in your dependency tree.

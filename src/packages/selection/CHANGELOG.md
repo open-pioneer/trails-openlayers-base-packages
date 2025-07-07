@@ -98,7 +98,6 @@
 - b717121: Adjust the type the property `vectorLayer` of the exported interface `VectorLayerSelectionSourceOptions`.
   The type is now `VectorLayer<VectorSource, Feature>` instead of `VectorLayer<Feature>`.
 - 2fa8020: Update trails core package dependencies.
-
     - Also updates Chakra UI to the latest 2.x version and Chakra React Select to version 5.
     - Removes any obsolete references to `@chakra-ui/system`.
       This dependency seems to be no longer required and may lead to duplicate packages in your dependency tree.
