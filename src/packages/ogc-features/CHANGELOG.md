@@ -1,5 +1,12 @@
 # @open-pioneer/ogc-features
 
+## 0.12.0
+
+### Patch Changes
+
+- 10d2fe7: Update dependencies
+- da6a410: Update dependencies
+
 ## 0.11.0
 
 ### Minor Changes
