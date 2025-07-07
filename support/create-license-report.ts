@@ -75,7 +75,9 @@ function analyzeLicenses(
 
     const usedOverrides = new Set<OverrideLicenseEntry>();
     const getOverrideEntry = (name: string, version: string) => {
-        const entry = config.overrideLicenses.find((e) => e.name === name && e.version === version);
+        const entry = config.overrideLicenses?.find(
+            (e) => e.name === name && e.version === version
+        );
         if (entry) {
             usedOverrides.add(entry);
         }
@@ -148,11 +150,13 @@ function analyzeLicenses(
         }
     });
 
-    for (const overrideEntry of config.overrideLicenses) {
-        if (!usedOverrides.has(overrideEntry)) {
-            console.warn(
-                `License override for dependency '${overrideEntry.name}' (version(s): ${overrideEntry.version}) was not used, it should either be updated or removed.`
-            );
+    if (config.overrideLicenses) {
+        for (const overrideEntry of config.overrideLicenses) {
+            if (!usedOverrides.has(overrideEntry)) {
+                console.warn(
+                    `License override for dependency '${overrideEntry.name}' (version(s): ${overrideEntry.version}) was not used, it should either be updated or removed.`
+                );
+            }
         }
     }
 
@@ -163,7 +167,19 @@ function analyzeLicenses(
     };
 }
 
-function getAdditionalLicenses(config: LicenseConfig, itemCount: number) {
+function getAdditionalLicenses(
+    config: LicenseConfig,
+    itemCount: number
+): {
+    additionalError: boolean;
+    additionalItems: LicenseItem[];
+} {
+    if (!config.additionalLicenses)
+        return {
+            additionalError: false,
+            additionalItems: []
+        };
+
     const items: LicenseItem[] = [];
     let unknownLicenses = false;
     let disallowedLicenses = false;
@@ -463,8 +479,8 @@ function getPnpmLicenseReport(): PnpmLicensesReport {
 
 interface LicenseConfig {
     allowedLicenses: string[];
-    overrideLicenses: OverrideLicenseEntry[];
-    additionalLicenses: AdditionalLicensesEntry[];
+    overrideLicenses: OverrideLicenseEntry[] | undefined;
+    additionalLicenses: AdditionalLicensesEntry[] | undefined;
 }
 
 interface OverrideLicenseEntry {
@@ -518,7 +534,7 @@ function readLicenseConfig(path: string): LicenseConfig {
 
         const config: LicenseConfig = {
             allowedLicenses: rawConfig.allowedLicenses,
-            overrideLicenses: rawConfig.overrideLicenses.map(
+            overrideLicenses: rawConfig.overrideLicenses?.map(
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 (rawEntry: any): OverrideLicenseEntry => {
                     const entry: OverrideLicenseEntry = {
@@ -531,7 +547,7 @@ function readLicenseConfig(path: string): LicenseConfig {
                     return entry;
                 }
             ),
-            additionalLicenses: rawConfig.additionalLicenses.map(
+            additionalLicenses: rawConfig.additionalLicenses?.map(
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 (rawEntry: any): AdditionalLicensesEntry => {
                     const entry: AdditionalLicensesEntry = {

@@ -113,3 +113,10 @@ additionalLicenses:
     license: "MIT"
     licenseFiles:
       - custom: "./licenses/tabler_icons_mit"
+
+  # Heroicons (currently only used by Chakra UI snippets)
+  # License file retrieved on 2025-07-07 from https://github.com/tailwindlabs/heroicons/blob/master/LICENSE
+  - name: "Heroicons"
+    license: "MIT"
+    licenseFiles:
+      - custom: "./licenses/heroicons_mit"
