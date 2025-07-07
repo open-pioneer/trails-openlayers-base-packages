@@ -31,7 +31,6 @@ allowedLicenses:
 #      - custom: "./licenses/some-package-license.txt"
 #
 # `custom` makes the path relative to this directory instead of the package's directory.
-
 overrideLicenses:
   # 'license' missing in package.json but LICENSE file exists:
   - name: "react-universal-interface"
@@ -78,3 +77,39 @@ overrideLicenses:
   - name: "rgbcolor"
     version: "1.0.1"
     license: "MIT"
+
+# List of additional licenses that are used by the project but are not dependencies itself.
+# E.g. licenses of projects used by react-icons.
+# To specify licenses with a custom file that is not part of the original package,
+# configure the license like this:
+#
+#   - name: "some-package"
+#     version: "1.0.6"
+#     license: "MIT"
+#     licenseFiles:
+#      - custom: "./licenses/some-package-license.txt"
+#
+# `name`can be chosen freely, it does not have to match a package name.
+# `custom` makes the path relative to this directory instead of the package's directory and is required here.
+# `version`is optional.
+additionalLicenses:
+  # Lucide icons are used in the project and loaded by `react-icons`.
+  # License file retrieved on 2025-07-07 from https://github.com/lucide-icons/lucide/blob/main/LICENSE
+  - name: "Lucide"
+    license: "ISC"
+    licenseFiles:
+      - custom: "./licenses/lucide_isc"
+
+  # Feather icons are used in the project and loaded by `react-icons`.
+  # License file retrieved on 2025-07-07 from https://github.com/feathericons/feather/blob/main/LICENSE
+  - name: "Feather"
+    license: "MIT"
+    licenseFiles:
+      - custom: "./licenses/feather_mit"
+
+  # Tabler Icons is used in the project and loaded by `react-icons`.
+  # License file retrieved on 2025-07-07 from https://github.com/tabler/tabler-icons/blob/main/LICENSE
+  - name: "Tabler Icons"
+    license: "MIT"
+    licenseFiles:
+      - custom: "./licenses/tabler_icons_mit"
