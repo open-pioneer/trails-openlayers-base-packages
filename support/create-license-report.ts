@@ -140,6 +140,7 @@ function analyzeLicenses(
                 id: `dep-${index}-${version}`,
                 name: name,
                 license: licenses,
+                version: version,
                 licenseText: licenseTexts.join("\n\n"),
                 noticeText: noticeTexts.join("\n\n")
             };
