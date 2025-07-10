@@ -32,6 +32,7 @@ export interface TocAPI {
      *
      * NOTE: The object itself is reactive, but individual properties are not (change -> replace).
      */
+    //ToDO do not expose in public API
     readonly options: TocWidgetOptions;
 
     /**
@@ -39,6 +40,7 @@ export interface TocAPI {
      *
      * Throws {@link TocApiDisposedError}
      */
+    //ToDO get Item by Layer ID
     getItem(layerId: string): TocItem | undefined;
 
     /**
@@ -101,6 +103,7 @@ export interface TocItem {
     /**
      * Identifier of the layer that corresponds with the list item.
      */
+    //ToDo optional
     readonly layerId: string;
 
     /**
@@ -111,6 +114,7 @@ export interface TocItem {
     /**
      * specific css class of the layer item element
      */
+    //ToDO return html element or scoll into view
     readonly className: string;
 
     /**
@@ -125,11 +129,11 @@ export interface ExpandLayerItemOptions {
     /**
      * align parent items
      */
-    bubbleExpandedState: boolean;
+    bubble?: boolean; //default if expand is true
 }
 
 export interface TocApiReadyEvent {
-    apiRef: TocAPI;
+    api: TocAPI;
 }
 
 export type TocApiReadyHandler = (event: TocApiReadyEvent) => void;

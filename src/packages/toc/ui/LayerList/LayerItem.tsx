@@ -171,7 +171,7 @@ function useTocItem(layer: AnyLayer) {
             },
             setExpanded(expand: boolean, options?: ExpandLayerItemOptions) {
                 expanded.value = expand;
-                if (options && options.bubbleExpandedState) {
+                if (options && options.bubble) {
                     const parentLayer = layer.parent;
                     if (parentLayer) {
                         tocModel.getItem(parentLayer.id)?.setExpanded(expand);

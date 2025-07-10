@@ -76,7 +76,9 @@ export interface TocProps extends CommonComponentProps, MapModelProps {
      */
     autoShowParents?: boolean;
 
-    onApiReady?: TocApiReadyHandler;
+    onApiReady?: TocApiReadyHandler; //ToDo onReady
+
+    //ToDo add onDispose
 }
 
 /**
@@ -329,11 +331,12 @@ function useTocAPI(model: TocModel, onAPIReady?: TocApiReadyHandler): TocAPI {
     }
 
     //emit new event if event handler prop is changed
+    //ToDo do not reset handler
     useEffect(() => {
         if (onAPIReady) {
-            onAPIReady({ apiRef: apiRef.current! });
+            onAPIReady({ api: apiRef.current! });
         }
-    }, [onAPIReady]);
+    }, []);
 
     return apiRef.current;
 }

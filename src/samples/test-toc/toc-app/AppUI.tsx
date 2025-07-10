@@ -29,7 +29,7 @@ export function AppUI() {
     function createAPIReadyHandler(): TocAPIReadyHandler {
         const handler = (event: TocApiReadyEvent) => {
             console.log(event);
-            tocAPIRef.current = event.apiRef;
+            tocAPIRef.current = event.api;
         };
         return handler;
     }
@@ -38,7 +38,7 @@ export function AppUI() {
         if (tocAPIRef.current) {
             const layerItem = tocAPIRef.current.getItem(layerId);
             const newState = !layerItem?.isExpanded;
-            layerItem?.setExpanded(newState, { bubbleExpandedState: newState });
+            layerItem?.setExpanded(newState, { bubble: newState });
         }
     }
 
