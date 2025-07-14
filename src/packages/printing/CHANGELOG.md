@@ -1,5 +1,18 @@
 # @open-pioneer/printing
 
+## 0.12.0
+
+### Patch Changes
+
+- 10d2fe7: Update dependencies
+- da6a410: Update dependencies
+- Updated dependencies [10d2fe7]
+- Updated dependencies [2702df4]
+- Updated dependencies [8986b3b]
+- Updated dependencies [f1f69f2]
+- Updated dependencies [da6a410]
+    - @open-pioneer/map@0.12.0
+
 ## 0.11.0
 
 ### Minor Changes

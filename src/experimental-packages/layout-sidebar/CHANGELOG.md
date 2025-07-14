@@ -1,5 +1,16 @@
 # @open-pioneer/experimental-layout-sidebar
 
+## 0.12.0
+
+### Minor Changes
+
+- 2732052: Icons have been changed to unify the appearance of the components. Preferably, Lucide react-icons are used.
+
+### Patch Changes
+
+- 10d2fe7: Update dependencies
+- da6a410: Update dependencies
+
 ## 0.11.0
 
 ### Minor Changes
