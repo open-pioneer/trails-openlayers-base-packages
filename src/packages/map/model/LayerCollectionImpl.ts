@@ -77,7 +77,7 @@ export class LayerCollectionImpl implements LayerCollection {
         });
     }
 
-    destroy() {
+    destroy(): void {
         // Collection is destroyed together with the map, there is no need to clean up the olMap
         for (const layer of this.#layersById.values()) {
             layer.destroy();

@@ -9,7 +9,10 @@ const DEFAULT_BUFFER_FACTOR = 1.2;
  *
  * Use the `factor` (`1.2` by default) to specify the size increase.
  */
-export function calculateBufferedExtent(extent: Extent, factor = DEFAULT_BUFFER_FACTOR): Extent {
+export function calculateBufferedExtent(
+    extent: Extent,
+    factor: number = DEFAULT_BUFFER_FACTOR
+): Extent {
     checkExtent(extent);
     const width = getHeight(extent);
     const height = getWidth(extent);

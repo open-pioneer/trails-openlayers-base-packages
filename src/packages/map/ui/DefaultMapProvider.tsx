@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { createContext, useContext, useMemo } from "react";
+import { createContext, ReactNode, useContext, useMemo } from "react";
 import { MapModelProps } from "./useMapModel";
 
 const DefaultMapContext = createContext<MapModelProps | undefined>(undefined);
@@ -21,7 +21,9 @@ DefaultMapContext.displayName = "DefaultMapContext";
  * </DefaultMapProvider>
  * ```
  */
-export function DefaultMapProvider(props: MapModelProps & { children?: React.ReactNode }) {
+export function DefaultMapProvider(
+    props: MapModelProps & { children?: React.ReactNode }
+): ReactNode {
     const { mapId, map, children } = props;
     const value = useMemo((): MapModelProps => ({ mapId, map }), [mapId, map]);
     if (mapId != null && map != null) {

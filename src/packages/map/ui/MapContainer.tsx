@@ -62,7 +62,7 @@ export interface MapContainerProps extends CommonComponentProps, MapModelProps {
  *
  * There can only be at most one MapContainer for every map.
  */
-export function MapContainer(props: MapContainerProps) {
+export function MapContainer(props: MapContainerProps): ReactNode {
     const {
         viewPadding,
         viewPaddingChangeBehavior,
