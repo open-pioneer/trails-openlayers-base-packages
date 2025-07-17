@@ -26,35 +26,21 @@ export function useTocModel(): TocModel {
  */
 export interface TocAPI {
     /**
-     * Return the global widget options.
-     *
-     * Throws {@link TocApiDisposedError}
-     *
-     * NOTE: The object itself is reactive, but individual properties are not (change -> replace).
+     * Returns the toc item for `id`.
+     * @param id
      */
-    //ToDO do not expose in public API
-    readonly options: TocWidgetOptions;
+    getItemById(id: string): TocItem | undefined;
 
     /**
      * Returns the item that corresponds with the `layerId`.
-     *
-     * Throws {@link TocApiDisposedError}
+     * @param layerId
      */
-    //ToDO get Item by Layer ID
-    getItem(layerId: string): TocItem | undefined;
+    getItemByLayerId(layerId: string): TocItem | undefined;
 
     /**
-     * Returns the list of all items.
-     *
-     * Throws {@link TocApiDisposedError}
+     * Returns the list of all registered items in the Toc.
      */
     getItems(): TocItem[];
-
-    /**
-     * Indicates if the API reference is disposed.
-     * This is the case after the Toc component is unmounted.
-     */
-    get disposed(): boolean;
 }
 
 /**
@@ -64,11 +50,16 @@ export interface TocAPI {
  * @internal
  */
 export interface TocModel extends TocAPI {
+    /**
+     * Return the global widget options.
+     *
+     * NOTE: The object itself is reactive, but individual properties are not (change -> replace).
+     */
+    readonly options: TocWidgetOptions;
+
     // Used by toc item components to register themselves
     registerItem(item: TocItem): void;
     unregisterItem(item: TocItem): void;
-
-    set disposed(isDisposed: boolean);
 }
 
 /**
@@ -101,10 +92,15 @@ export interface TocWidgetOptions {
  */
 export interface TocItem {
     /**
+     * Identifier of the Toc item.
+     * Currently, this is the same as `layerId` but could be changed in the future.
+     */
+    readonly id: string;
+
+    /**
      * Identifier of the layer that corresponds with the list item.
      */
-    //ToDo optional
-    readonly layerId: string;
+    readonly layerId?: string;
 
     /**
      * true if list item is expanded.
@@ -114,8 +110,7 @@ export interface TocItem {
     /**
      * specific css class of the layer item element
      */
-    //ToDO return html element or scoll into view
-    readonly className: string;
+    readonly element: HTMLElement;
 
     /**
      * Expands or collapses the list item.
@@ -127,19 +122,28 @@ export interface TocItem {
 
 export interface ExpandLayerItemOptions {
     /**
-     * align parent items
+     * Align `expanded` state of parent items.
+     * By default (`undefined`), the status is only passed on to the parents when the Toc item is being expanded but not if it is being collapsed.
      */
-    bubble?: boolean; //default if expand is true
+    bubble?: boolean;
 }
 
-export interface TocApiReadyEvent {
+/**
+ * Event that indicates that the Toc component is initialized.
+ * The event carries a reference to the public Toc API
+ */
+export interface TocReadyEvent {
+    /**
+     * Reference to the Toc API that allows manipulating the Toc items
+     */
     api: TocAPI;
 }
 
-export type TocApiReadyHandler = (event: TocApiReadyEvent) => void;
-
 /**
- * Thrown if {@link TocAPI} reference is accessed but has already been disposed.
- * This typically happens after the Toc component is unmounted.
+ * Event that indicates that the Toc componend has beed disposed
+ * Empty interface, might be extended in the future
  */
-export class TocApiDisposedError extends Error {}
+export interface TocDisposedEvent {}
+
+export type TocReadyHandler = (event: TocReadyEvent) => void;
+export type TocDisposedHandler = (event: TocDisposedEvent) => void;

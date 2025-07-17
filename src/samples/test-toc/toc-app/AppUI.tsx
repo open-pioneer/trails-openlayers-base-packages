@@ -36,9 +36,9 @@ export function AppUI() {
 
     function toggleTocItem(layerId: string) {
         if (tocAPIRef.current) {
-            const layerItem = tocAPIRef.current.getItem(layerId);
+            const layerItem = tocAPIRef.current.getItemByLayerId(layerId);
             const newState = !layerItem?.isExpanded;
-            layerItem?.setExpanded(newState, { bubble: newState });
+            layerItem?.setExpanded(newState, { bubble: undefined });
         }
     }
 
@@ -97,7 +97,7 @@ export function AppUI() {
                                                             }}
                                                             collapsibleGroups={true}
                                                             initiallyCollapsed={true}
-                                                            onApiReady={handler}
+                                                            onReady={handler}
                                                         />
                                                     </TitledSection>
                                                 </Box>

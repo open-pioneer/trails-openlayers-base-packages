@@ -5,7 +5,7 @@ export {
     type TocAPI,
     type TocItem,
     type ExpandLayerItemOptions,
-    type TocApiReadyEvent,
+    type TocReadyEvent as TocApiReadyEvent,
     type TocApiDisposedError as TocAPIDisposedError,
-    type TocApiReadyHandler as TocAPIReadyHandler
+    type TocReadyHandler as TocAPIReadyHandler
 } from "./model/TocModel";

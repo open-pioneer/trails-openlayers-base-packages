@@ -59,7 +59,7 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
             />
         );
     }
-    return (
+    const layerItem =  (
         <Box as="li" className={classNames("toc-layer-item", getClassNameForLayer(layer))}>
             <Flex
                 className="toc-layer-item-content"
@@ -124,6 +124,8 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
             )}
         </Box>
     );
+
+    return layerItem;
 });
 
 function CollapseButton(props: {
@@ -162,19 +164,23 @@ function useTocItem(layer: AnyLayer) {
     const tocItem = useMemo((): TocItem => {
         const expanded = reactive(!options.initiallyCollapsed);
         return {
+            id: layer.id,
             layerId: layer.id,
             get isExpanded(): boolean {
                 return expanded.value;
             },
-            get className(): string {
-                return getClassNameForLayer(layer);
-            },
             setExpanded(expand: boolean, options?: ExpandLayerItemOptions) {
                 expanded.value = expand;
-                if (options && options.bubble) {
+                let bubble = options ? options.bubble : undefined;
+                //by default bubble if expand is true
+                if (bubble === undefined) {
+                    bubble = expand;
+                }
+
+                if (bubble) {
                     const parentLayer = layer.parent;
                     if (parentLayer) {
-                        tocModel.getItem(parentLayer.id)?.setExpanded(expand);
+                        tocModel.getItemByLayerId(parentLayer.id)?.setExpanded(expand, options);
                     }
                 }
             }

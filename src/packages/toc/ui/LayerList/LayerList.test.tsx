@@ -689,13 +689,11 @@ function createWrapper(options?: Partial<TocWidgetOptions>) {
             initiallyCollapsed: false,
             ...options
         },
-        getItem: () => undefined,
+        getItemById: () => undefined,
+        getItemByLayerId: () => undefined,
         getItems: () => [],
         registerItem: () => undefined,
-        unregisterItem: () => undefined,
-        get disposed(): boolean {
-            return false;
-        }
+        unregisterItem: () => undefined
     };
     return function Wrapper(props: { children: ReactNode }) {
         return (
