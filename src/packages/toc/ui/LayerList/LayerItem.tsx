@@ -17,7 +17,7 @@ import { AnyLayer } from "@open-pioneer/map";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import classNames from "classnames";
 import { useIntl } from "open-pioneer:react-hooks";
-import { memo, ReactNode, useEffect, useId, useMemo } from "react";
+import { memo, ReactNode, useEffect, useId, useMemo, useRef } from "react";
 import { FiAlertTriangle } from "react-icons/fi";
 import { ExpandLayerItemOptions, TocItem, useTocModel } from "../../model/TocModel";
 import { slug } from "../../utils/slug";
@@ -33,7 +33,7 @@ import { LayerList } from "./LayerList";
 export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): ReactNode {
     const { layer } = props;
     const intl = useIntl();
-    const [tocItem, _tocModel, tocOptions] = useTocItem(layer);
+    const [tocItem, _tocModel, tocOptions, tocItemElemRef] = useTocItem(layer);
     const expanded = useReactiveSnapshot(() => tocItem.isExpanded, [tocItem]);
     const isCollapsible = tocOptions ? tocOptions.collapsibleGroups : false;
 
@@ -59,9 +59,11 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
             />
         );
     }
-    const layerItem =  (
-        <Box as="li" className={classNames("toc-layer-item", getClassNameForLayer(layer))}>
+    return (
+        <Box /// <reference path="" />
+            as="li" className={classNames("toc-layer-item", getClassNameForLayer(layer))}>
             <Flex
+                ref={tocItemElemRef}
                 className="toc-layer-item-content"
                 width="100%"
                 flexDirection="row"
@@ -124,8 +126,6 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
             )}
         </Box>
     );
-
-    return layerItem;
 });
 
 function CollapseButton(props: {
@@ -161,11 +161,15 @@ function CollapseButton(props: {
 function useTocItem(layer: AnyLayer) {
     const tocModel = useTocModel();
     const options = useReactiveSnapshot(() => tocModel.options, [tocModel]);
+    const tocItemElemRef = useRef<HTMLDivElement>(null); 
     const tocItem = useMemo((): TocItem => {
         const expanded = reactive(!options.initiallyCollapsed);
         return {
             id: layer.id,
             layerId: layer.id,
+            get element(): HTMLElement {
+                return tocItemElemRef.current!;
+            } ,
             get isExpanded(): boolean {
                 return expanded.value;
             },
@@ -193,7 +197,7 @@ function useTocItem(layer: AnyLayer) {
         return () => tocModel.unregisterItem(tocItem);
     }, [tocModel, tocItem]);
 
-    return [tocItem, tocModel, options] as const;
+    return [tocItem, tocModel, options, tocItemElemRef] as const;
 }
 
 function updateLayerVisibility(layer: AnyLayer, visible: boolean, autoShowParents: boolean) {
