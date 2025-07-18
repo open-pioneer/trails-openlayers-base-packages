@@ -152,15 +152,13 @@ function TocContent(props: TocProps & { map: MapModel }) {
     } = props;
     const intl = useIntl();
     const model = useTocModel(props);
-    const api = useTocAPI(model);
-    const disposeFunc = useInit(api, onReady, onDispose);
+    const disposeTrigger = useInit(model, onReady, onDispose);
 
     useEffect(() => {
         return () => {
-            console.log("dispose api");
-            disposeFunc();
+            disposeTrigger();
         };
-    }, [disposeFunc]);
+    }, [disposeTrigger]);
 
     const basemapsHeadingId = useId();
     const basemapSwitcher = showBasemapSwitcher && (
@@ -291,6 +289,27 @@ function createOptions(
     };
 }
 
+function useInit(model: TocModel, onReady?: TocReadyHandler, onDisposed?: TocDisposedHandler) {
+    const api = useTocAPI(model);
+    const isInitRef = useRef(false);
+
+    //ref to function that is called when Toc is disposed
+    const disposeRef = useRef(() => {
+        if (onDisposed) {
+            onDisposed({});
+        }
+    });
+
+    if (!isInitRef.current) {
+        isInitRef.current = true;
+        if (onReady) {
+            onReady({ api: api });
+        }
+    }
+
+    return disposeRef.current;
+}
+
 function useTocAPI(model: TocModel) {
     const apiRef = useRef<TocAPI>(null);
     if (!apiRef.current) {
@@ -312,22 +331,4 @@ function useTocAPI(model: TocModel) {
     }
 
     return apiRef.current;
-}
-
-function useInit(api: TocAPI, onReady?: TocReadyHandler, onDisposed?: TocDisposedHandler) {
-    const isInitRef = useRef(false);
-    const disposeRef = useRef(() => {
-        if (onDisposed) {
-            onDisposed({});
-        }
-    });
-
-    if (!isInitRef.current) {
-        isInitRef.current = true;
-        if (onReady) {
-            onReady({ api: api });
-        }
-    }
-
-    return disposeRef.current;
 }
