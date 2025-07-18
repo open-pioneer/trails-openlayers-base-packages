@@ -156,7 +156,7 @@ function TocContent(props: TocProps & { map: MapModel }) {
     const disposeFunc = useInit(api, onReady, onDispose);
 
     useEffect(() => {
-        return () => { 
+        return () => {
             console.log("dispose api");
             disposeFunc();
         };
@@ -257,7 +257,7 @@ function useTocModel(props: TocProps): TocModel {
                     throw new Error(`Item with layerId '${item.layerId}' not registered.`);
                 }
                 items.delete(item.id);
-            },
+            }
         };
         return { model: model, options: options };
     }
@@ -298,7 +298,7 @@ function useTocAPI(model: TocModel) {
             private tocModel: TocModel = model;
 
             getItemById(id: string): TocItem | undefined {
-                return this.tocModel.getItemById(id); 
+                return this.tocModel.getItemById(id);
             }
 
             getItemByLayerId(layerId: string): TocItem | undefined {
@@ -309,12 +309,10 @@ function useTocAPI(model: TocModel) {
                 return this.tocModel.getItems();
             }
         })();
-
     }
 
     return apiRef.current;
 }
-
 
 function useInit(api: TocAPI, onReady?: TocReadyHandler, onDisposed?: TocDisposedHandler) {
     const isInitRef = useRef(false);

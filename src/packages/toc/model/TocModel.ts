@@ -110,7 +110,7 @@ export interface TocItem {
     /**
      * specific css class of the layer item element
      */
-    readonly element: HTMLElement;
+    readonly htmlElement: HTMLElement | null;
 
     /**
      * Expands or collapses the list item.
