@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Resource } from "@open-pioneer/core";
+import { MapBrowserEvent } from "ol";
 import OlMap from "ol/Map";
 import { unByKey } from "ol/Observable";
 import Overlay from "ol/Overlay";
@@ -132,12 +133,9 @@ export class DragController {
         viewPort: HTMLElement,
         interactionResources: InteractionResource[]
     ): InteractionResource {
-        const condition = function (mapBrowserEvent: {
-            originalEvent: MouseEvent;
-            dragging: unknown;
-        }) {
-            const originalEvent = /** @type {MouseEvent} */ mapBrowserEvent.originalEvent;
-            return originalEvent.button == 2;
+        const condition = function (mapBrowserEvent: MapBrowserEvent) {
+            const originalEvent = mapBrowserEvent.originalEvent;
+            return "button" in originalEvent && originalEvent.button == 2;
         };
         const drag = new DragPan({
             condition: condition

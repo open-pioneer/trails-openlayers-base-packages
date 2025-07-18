@@ -77,12 +77,7 @@ function AppContent(props: { state: AppStateReady }) {
                                             title={currentDemo.title}
                                             sectionHeadingProps={{ size: "lg" }}
                                         >
-                                            <Text
-                                                py={4}
-                                                dangerouslySetInnerHTML={{
-                                                    __html: currentDemoModel.description
-                                                }}
-                                            ></Text>
+                                            <Text py={4}>{currentDemoModel.description}</Text>
                                             {currentDemoModel.mainWidget}
                                         </TitledSection>
                                     </Box>

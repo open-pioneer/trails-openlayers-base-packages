@@ -29,7 +29,7 @@ export function createTocAndLegendDemo({ intl, mapModel }: SharedDemoOptions): D
                 mapModel?.layers.activateBaseLayer("osm");
             }
             return {
-                description: intl.formatMessage({ id: "demos.tocLegend.description" }),
+                description: intl.formatRichMessage({ id: "demos.tocLegend.description" }),
                 mainWidget: <TocLegendView />,
                 destroy: resetDemoLayers
             };

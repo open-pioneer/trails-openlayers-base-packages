@@ -10,7 +10,6 @@ skipDevDependencies: true
 # You SHOULD NOT list central dependencies here, such as react or any trails packages.
 allowed:
   - "ansi-styles"
-  - "color-name"
   - "react-is"
   - "source-map"
   - "stylis"

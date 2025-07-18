@@ -28,14 +28,14 @@ class DemoModelImpl implements DemoModel {
     #mapModel: MapModel;
     #highlight: Highlight | undefined;
 
-    description: string;
+    description: ReactNode;
     mainWidget: ReactNode;
 
     constructor(intl: PackageIntl, mapModel: MapModel, httpService: HttpService) {
         this.#searchSource = new PhotonGeocoder("Photon Geocoder", ["city", "street"], httpService);
         this.#mapModel = mapModel;
 
-        this.description = intl.formatMessage({ id: "demos.searchAndHighlight.description" });
+        this.description = intl.formatRichMessage({ id: "demos.searchAndHighlight.description" });
         this.mainWidget = (
             <Search
                 sources={[this.#searchSource]}

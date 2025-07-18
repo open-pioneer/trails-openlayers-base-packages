@@ -51,7 +51,7 @@ class DemoModelImpl implements DemoModel {
         open: false
     });
 
-    description: string;
+    description: ReactNode;
     mainWidget: ReactNode;
 
     constructor(options: SharedDemoOptions) {
@@ -60,7 +60,7 @@ class DemoModelImpl implements DemoModel {
         this.#mapModel = mapModel;
         this.#selectionSource = initSelectionSource(mapModel, vectorSelectionSourceFactory);
 
-        this.description = intl.formatMessage({ id: "demos.selectionResultList.description" });
+        this.description = intl.formatRichMessage({ id: "demos.selectionResultList.description" });
         this.mainWidget = (
             <Selection
                 sources={[this.#selectionSource]}
