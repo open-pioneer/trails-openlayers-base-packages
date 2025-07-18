@@ -19,7 +19,8 @@ import {
     TocWidgetOptions,
     TocAPI,
     TocReadyHandler,
-    TocDisposedHandler
+    TocDisposedHandler,
+    TocReadyEvent
 } from "../model/TocModel";
 import { TopLevelLayerList } from "./LayerList/LayerList";
 import { Tools } from "./Tools";
@@ -76,8 +77,15 @@ export interface TocProps extends CommonComponentProps, MapModelProps {
      */
     autoShowParents?: boolean;
 
+    /**
+     * Callback that is triggered once when the Toc is initialized.
+     * The Toc API can be accessed by the `api` property of the {@link TocReadyEvent}
+     */
     onReady?: TocReadyHandler;
 
+    /**
+     * Callback that is triggerd once when the Toc is disposed and unmounted.
+     */
     onDispose?: TocDisposedHandler;
 }
 
@@ -152,13 +160,14 @@ function TocContent(props: TocProps & { map: MapModel }) {
     } = props;
     const intl = useIntl();
     const model = useTocModel(props);
-    const disposeTrigger = useInit(model, onReady, onDispose);
+    const { readyTrigger, disposeTrigger } = useInit(model, onReady, onDispose);
 
     useEffect(() => {
+        readyTrigger();
         return () => {
             disposeTrigger();
         };
-    }, [disposeTrigger]);
+    }, [readyTrigger, disposeTrigger]);
 
     const basemapsHeadingId = useId();
     const basemapSwitcher = showBasemapSwitcher && (
@@ -293,21 +302,29 @@ function useInit(model: TocModel, onReady?: TocReadyHandler, onDisposed?: TocDis
     const api = useTocAPI(model);
     const isInitRef = useRef(false);
 
+    const readyTriggerRef = useRef(() => {
+        if (!isInitRef.current) {
+            isInitRef.current = true;
+            if (onReady) {
+                const e: TocReadyEvent = { api: api };
+                onReady(e);
+            }
+        }
+    });
+
     //ref to function that is called when Toc is disposed
-    const disposeRef = useRef(() => {
+    const disposeTriggerRef = useRef(() => {
+        isInitRef.current = false;
         if (onDisposed) {
             onDisposed({});
         }
     });
 
-    if (!isInitRef.current) {
-        isInitRef.current = true;
-        if (onReady) {
-            onReady({ api: api });
-        }
-    }
-
-    return disposeRef.current;
+    return {
+        isInitialized: isInitRef.current,
+        readyTrigger: readyTriggerRef.current,
+        disposeTrigger: disposeTriggerRef.current
+    };
 }
 
 function useTocAPI(model: TocModel) {

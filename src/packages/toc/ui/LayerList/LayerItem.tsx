@@ -172,7 +172,10 @@ function useTocItem(layer: AnyLayer) {
     useEffect(() => {
         tocItem.setHtmlElement(tocItemElemRef.current);
         tocModel.registerItem(tocItem);
-        return () => tocModel.unregisterItem(tocItem);
+        return () => {
+            tocItem.setHtmlElement(null);
+            tocModel.unregisterItem(tocItem);
+        };
     }, [tocModel, tocItem]);
 
     return [tocItem, tocModel, options, tocItemElemRef] as const;

@@ -4,7 +4,7 @@ import { Box, Flex, VStack, Text, Button } from "@open-pioneer/chakra-integratio
 import { DefaultMapProvider, MapAnchor, MapContainer, useMapModel } from "@open-pioneer/map";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { ToolButton } from "@open-pioneer/map-ui-components";
-import { Toc, TocAPI, TocApiReadyEvent, TocAPIReadyHandler } from "@open-pioneer/toc";
+import { Toc, TocAPI, TocReadyEvent } from "@open-pioneer/toc";
 import { useIntl } from "open-pioneer:react-hooks";
 import { useId, useRef, useState } from "react";
 import { PiListLight } from "react-icons/pi";
@@ -16,22 +16,17 @@ export function AppUI() {
     const tocTitleId = useId();
     const [showToc, setShowToc] = useState<boolean>(true);
     const tocAPIRef = useRef<TocAPI>(undefined);
-    const [handler, setHandler] = useState<TocAPIReadyHandler>(createAPIReadyHandler);
 
     function toggleToc() {
         setShowToc(!showToc);
     }
 
-    /*     useReactiveSnapshot(() => {
-        console.log("reactive: " + tocAPIRef.current?.disposed);
-    },[tocAPIRef.current]); */
+    function tocReadyHandler(e: TocReadyEvent) {
+        tocAPIRef.current = e.api;
+    }
 
-    function createAPIReadyHandler(): TocAPIReadyHandler {
-        const handler = (event: TocApiReadyEvent) => {
-            console.log(event);
-            tocAPIRef.current = event.api;
-        };
-        return handler;
+    function tocDisposedHandler() {
+        tocAPIRef.current = undefined;
     }
 
     function toggleTocItem(layerId: string) {
@@ -39,7 +34,7 @@ export function AppUI() {
             const layerItem = tocAPIRef.current.getItemByLayerId(layerId);
             console.log(layerItem?.htmlElement?.clientHeight);
             const newState = !layerItem?.isExpanded;
-            layerItem?.setExpanded(newState, { bubble: undefined });
+            layerItem?.setExpanded(newState);
         }
     }
 
@@ -98,7 +93,8 @@ export function AppUI() {
                                                             }}
                                                             collapsibleGroups={true}
                                                             initiallyCollapsed={true}
-                                                            onReady={handler}
+                                                            onReady={(e) => tocReadyHandler(e)}
+                                                            onDispose={() => tocDisposedHandler()}
                                                         />
                                                     </TitledSection>
                                                 </Box>
@@ -146,9 +142,6 @@ export function AppUI() {
                                         />
                                         <Button onClick={() => toggleTocItem("streets")}>
                                             Toggle streets group
-                                        </Button>
-                                        <Button onClick={() => setHandler(createAPIReadyHandler)}>
-                                            set new api handler
                                         </Button>
                                     </Flex>
                                 </MapAnchor>

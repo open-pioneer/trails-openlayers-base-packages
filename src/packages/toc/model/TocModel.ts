@@ -130,7 +130,7 @@ export interface ExpandLayerItemOptions {
 
 /**
  * Event that indicates that the Toc component is initialized.
- * The event carries a reference to the public Toc API
+ * The event carries a reference to the public {@link TocAPI}
  */
 export interface TocReadyEvent {
     /**
@@ -145,5 +145,12 @@ export interface TocReadyEvent {
  */
 export interface TocDisposedEvent {}
 
+/**
+ * Callback that is triggered when the Toc is initialized.
+ */
 export type TocReadyHandler = (event: TocReadyEvent) => void;
+
+/**
+ * Callback that is triggered when the Toc is disposed.
+ */
 export type TocDisposedHandler = (event: TocDisposedEvent) => void;
