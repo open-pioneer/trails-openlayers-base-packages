@@ -93,8 +93,8 @@ export function AppUI() {
                                                             }}
                                                             collapsibleGroups={true}
                                                             initiallyCollapsed={true}
-                                                            onReady={(e) => tocReadyHandler(e)}
-                                                            onDispose={() => tocDisposedHandler()}
+                                                            ready={(e) => tocReadyHandler(e)}
+                                                            disposed={() => tocDisposedHandler()}
                                                         />
                                                     </TitledSection>
                                                 </Box>
