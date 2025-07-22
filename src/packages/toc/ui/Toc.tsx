@@ -81,12 +81,12 @@ export interface TocProps extends CommonComponentProps, MapModelProps {
      * Callback that is triggered once when the Toc is initialized.
      * The Toc API can be accessed by the `api` property of the {@link TocReadyEvent}
      */
-    ready?: TocReadyHandler;
+    onReady?: TocReadyHandler;
 
     /**
      * Callback that is triggerd once when the Toc is disposed and unmounted.
      */
-    disposed?: TocDisposedHandler;
+    onDisposed?: TocDisposedHandler;
 }
 
 /**
@@ -135,7 +135,7 @@ export const Toc: FC<TocProps> = (props: TocProps) => {
             break;
         case "resolved": {
             const map = state.map;
-            content = <TocContent {...props} map={map} ready={props.ready} />;
+            content = <TocContent {...props} map={map} onReady={props.onReady} />;
             break;
         }
     }
@@ -155,12 +155,12 @@ function TocContent(props: TocProps & { map: MapModel }) {
         toolsConfig,
         showBasemapSwitcher = true,
         basemapSwitcherProps,
-        ready,
-        disposed
+        onReady,
+        onDisposed
     } = props;
     const intl = useIntl();
     const model = useTocModel(props);
-    const { readyTrigger, disposedTrigger: disposeTrigger } = useInit(model, ready, disposed);
+    const { readyTrigger, disposedTrigger: disposeTrigger } = useInit(model, onReady, onDisposed);
 
     useEffect(() => {
         readyTrigger();
@@ -298,16 +298,17 @@ function createOptions(
     };
 }
 
-function useInit(model: TocModel, ready?: TocReadyHandler, disposed?: TocDisposedHandler) {
+function useInit(model: TocModel, onReady?: TocReadyHandler, onDisposed?: TocDisposedHandler) {
     const api = useTocAPI(model);
     const isInitRef = useRef(false);
 
+    //ref to function that is called when Toc is initialized
     const readyTriggerRef = useRef(() => {
         if (!isInitRef.current) {
             isInitRef.current = true;
-            if (ready) {
+            if (onReady) {
                 const e: TocReadyEvent = { api: api };
-                ready(e);
+                onReady(e);
             }
         }
     });
@@ -315,8 +316,8 @@ function useInit(model: TocModel, ready?: TocReadyHandler, disposed?: TocDispose
     //ref to function that is called when Toc is disposed
     const disposedTriggerRef = useRef(() => {
         isInitRef.current = false;
-        if (disposed) {
-            disposed({});
+        if (onDisposed) {
+            onDisposed({});
         }
     });
 

@@ -108,7 +108,7 @@ export interface TocItem {
     readonly isExpanded: boolean;
 
     /**
-     * specific css class of the layer item element
+     * DOM element of the underlying {@link LayerItem}, `null` if the Toc is disposed
      */
     readonly htmlElement: HTMLElement | null;
 

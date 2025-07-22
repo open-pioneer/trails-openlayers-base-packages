@@ -186,7 +186,7 @@ it("should raise onReady and onDispose events", async () => {
 
     const { unmount } = render(
         <PackageContextProvider services={injectedServices}>
-            <Toc map={map} data-testid="toc" disposed={onDisposedMock} ready={onReadyMock} />
+            <Toc map={map} data-testid="toc" onDisposed={onDisposedMock} onReady={onReadyMock} />
         </PackageContextProvider>
     );
     await findToc();
@@ -240,7 +240,7 @@ it("should return TocItems for layers via Toc API", async () => {
 
     render(
         <PackageContextProvider services={injectedServices}>
-            <Toc map={map} data-testid="toc" ready={onReadyMock} />
+            <Toc map={map} data-testid="toc" onReady={onReadyMock} />
         </PackageContextProvider>
     );
     await findToc();
@@ -292,7 +292,7 @@ it("should provide access to LayerItem HTMLElement via Toc API", async () => {
 
     const { unmount } = render(
         <PackageContextProvider services={injectedServices}>
-            <Toc map={map} data-testid="toc" disposed={onDisposedMock} ready={onReadyMock} />
+            <Toc map={map} data-testid="toc" onDisposed={onDisposedMock} onReady={onReadyMock} />
         </PackageContextProvider>
     );
     await findToc();
@@ -353,7 +353,7 @@ it("should provide access to LayerItem HTMLElement via Toc API", async () => {
 
     const { unmount } = render(
         <PackageContextProvider services={injectedServices}>
-            <Toc map={map} data-testid="toc" disposed={onDisposedMock} ready={onReadyMock} />
+            <Toc map={map} data-testid="toc" onDisposed={onDisposedMock} onReady={onReadyMock} />
         </PackageContextProvider>
     );
     await findToc();
@@ -415,7 +415,7 @@ it("should toggle LayerItem via Toc API", async () => {
 
     render(
         <PackageContextProvider services={injectedServices}>
-            <Toc map={map} data-testid="toc" ready={onReadyMock} initiallyCollapsed={true} />
+            <Toc map={map} data-testid="toc" onReady={onReadyMock} initiallyCollapsed={true} />
         </PackageContextProvider>
     );
     await findToc();
