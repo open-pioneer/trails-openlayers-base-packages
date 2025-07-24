@@ -1,10 +1,10 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box, Flex, VStack, Text, Button } from "@open-pioneer/chakra-integration";
+import { Box, Button, Flex, Text, VStack } from "@open-pioneer/chakra-integration";
 import { DefaultMapProvider, MapAnchor, MapContainer, useMapModel } from "@open-pioneer/map";
-import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { ToolButton } from "@open-pioneer/map-ui-components";
-import { Toc, TocAPI, TocReadyEvent } from "@open-pioneer/toc";
+import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
+import { Toc, TocApi, TocReadyEvent } from "@open-pioneer/toc";
 import { useIntl } from "open-pioneer:react-hooks";
 import { useId, useRef, useState } from "react";
 import { PiListLight } from "react-icons/pi";
@@ -15,7 +15,7 @@ export function AppUI() {
     const { map } = useMapModel(MAP_ID);
     const tocTitleId = useId();
     const [showToc, setShowToc] = useState<boolean>(true);
-    const tocAPIRef = useRef<TocAPI>(undefined);
+    const tocAPIRef = useRef<TocApi>(undefined);
 
     function toggleToc() {
         setShowToc(!showToc);

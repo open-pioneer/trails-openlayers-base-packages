@@ -24,16 +24,14 @@ export function useTocModel(): TocModel {
 /**
  * API to control the Toc component imperatively
  */
-export interface TocAPI {
+export interface TocApi {
     /**
-     * Returns the toc item for `id`.
-     * @param id
+     * Returns the toc item for the given `id`.
      */
     getItemById(id: string): TocItem | undefined;
 
     /**
      * Returns the item that corresponds with the `layerId`.
-     * @param layerId
      */
     getItemByLayerId(layerId: string): TocItem | undefined;
 
@@ -49,7 +47,7 @@ export interface TocAPI {
  *
  * @internal
  */
-export interface TocModel extends TocAPI {
+export interface TocModel extends TocApi {
     /**
      * Return the global widget options.
      *
@@ -93,34 +91,36 @@ export interface TocWidgetOptions {
 export interface TocItem {
     /**
      * Identifier of the Toc item.
-     * Currently, this is the same as `layerId` but could be changed in the future.
+     * Currently, this is the same as `layerId`, but that could be changed in the future.
      */
     readonly id: string;
 
     /**
      * Identifier of the layer that corresponds with the list item.
+     * May be undefined if the item does not represent a layer.
      */
     readonly layerId?: string;
 
     /**
-     * true if list item is expanded.
+     * `true` if list item is expanded.
      */
     readonly isExpanded: boolean;
 
     /**
-     * DOM element of the underlying {@link LayerItem}, `null` if the Toc is disposed
+     * DOM element of the underlying {@link LayerItem}, `undefined` if the toc has been disposed
+     * or if the item is currently not being rendered.
      */
-    readonly htmlElement: HTMLElement | null;
+    readonly htmlElement: HTMLElement | undefined;
 
     /**
      * Expands or collapses the list item.
      *
      * Note: not all list items support this operation.
      */
-    setExpanded(expanded: boolean, options?: ExpandLayerItemOptions): void;
+    setExpanded(expanded: boolean, options?: ExpandItemOptions): void;
 }
 
-export interface ExpandLayerItemOptions {
+export interface ExpandItemOptions {
     /**
      * Align `expanded` state of parent items.
      * By default (`undefined`), the status is only passed on to the parents when the Toc item is being expanded but not if it is being collapsed.
@@ -130,17 +130,18 @@ export interface ExpandLayerItemOptions {
 
 /**
  * Event that indicates that the Toc component is initialized.
- * The event carries a reference to the public {@link TocAPI}
+ * The event carries a reference to the public {@link TocApi}
  */
 export interface TocReadyEvent {
     /**
-     * Reference to the Toc API that allows manipulating the Toc items
+     * Reference to the Toc API that allows manipulating the Toc.
      */
-    api: TocAPI;
+    api: TocApi;
 }
 
 /**
- * Event that indicates that the Toc componend has beed disposed
+ * Event that indicates that the Toc component has been disposed.
+ *
  * Empty interface, might be extended in the future
  */
 export interface TocDisposedEvent {}

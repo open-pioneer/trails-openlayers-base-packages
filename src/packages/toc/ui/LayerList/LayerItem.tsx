@@ -19,7 +19,7 @@ import classNames from "classnames";
 import { useIntl } from "open-pioneer:react-hooks";
 import { memo, ReactNode, useEffect, useId, useMemo, useRef } from "react";
 import { FiAlertTriangle } from "react-icons/fi";
-import { ExpandLayerItemOptions, TocItem, TocModel, useTocModel } from "../../model/TocModel";
+import { ExpandItemOptions, TocItem, TocModel, useTocModel } from "../../model/TocModel";
 import { slug } from "../../utils/slug";
 import { useChildLayers, useLoadState } from "./hooks";
 import { LayerItemMenu } from "./LayerItemMenu";
@@ -60,7 +60,7 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
         );
     }
     return (
-        <Box /// <reference path="" />
+        <Box
             as="li"
             className={classNames("toc-layer-item", getClassNameForLayer(layer))}
             ref={tocItemElemRef}
@@ -170,10 +170,10 @@ function useTocItem(layer: AnyLayer) {
 
     // Register the item on the shared toc model
     useEffect(() => {
-        tocItem.setHtmlElement(tocItemElemRef.current);
+        tocItem.setHtmlElement(tocItemElemRef.current ?? undefined);
         tocModel.registerItem(tocItem);
         return () => {
-            tocItem.setHtmlElement(null);
+            tocItem.setHtmlElement(undefined);
             tocModel.unregisterItem(tocItem);
         };
     }, [tocModel, tocItem]);
@@ -193,7 +193,7 @@ function getClassNameForLayer(layer: AnyLayer) {
 }
 
 class TocItemImpl implements TocItem {
-    #htmlElement: HTMLElement | null = null;
+    #htmlElement = reactive<HTMLElement | undefined>();
     #expanded: Reactive<boolean>;
     #layer: AnyLayer;
     #tocModel: TocModel;
@@ -217,12 +217,12 @@ class TocItemImpl implements TocItem {
     }
 
     get htmlElement() {
-        return this.#htmlElement;
+        return this.#htmlElement.value;
     }
 
-    setExpanded(expanded: boolean, options?: ExpandLayerItemOptions): void {
+    setExpanded(expanded: boolean, options?: ExpandItemOptions): void {
         this.#expanded.value = expanded;
-        let bubble = options ? options.bubble : undefined;
+        let bubble = options?.bubble;
         //by default bubble if expand is true
         if (bubble === undefined) {
             bubble = expanded;
@@ -237,7 +237,7 @@ class TocItemImpl implements TocItem {
     }
 
     //private setter, not exposed in TocItem interface
-    setHtmlElement(element: HTMLElement | null) {
-        this.#htmlElement = element;
+    setHtmlElement(element: HTMLElement | undefined) {
+        this.#htmlElement.value = element;
     }
 }

@@ -317,68 +317,7 @@ it("should provide access to LayerItem HTMLElement via Toc API", async () => {
         expect(onDisposedMock).toBeCalled();
     });
 
-    expect(tocItem?.htmlElement).toBeNull();
-});
-
-it("should provide access to LayerItem HTMLElement via Toc API", async () => {
-    const { map, registry } = await setupMap({
-        layers: [
-            {
-                title: "Base layer",
-                id: "base-layer",
-                olLayer: new TileLayer({}),
-                isBaseLayer: true
-            },
-            {
-                title: "Layer 1",
-                id: "layer-1",
-                olLayer: new TileLayer({})
-            },
-            {
-                title: "Layer 2",
-                id: "layer-2",
-                olLayer: new TileLayer({})
-            }
-        ]
-    });
-    const injectedServices = createServiceOptions({ registry });
-
-    let readyEvent: TocReadyEvent | undefined;
-    const onReadyHandler = (e: TocReadyEvent) => {
-        readyEvent = e;
-    };
-
-    const onReadyMock = vi.fn().mockImplementation(onReadyHandler);
-    const onDisposedMock = vi.fn();
-
-    const { unmount } = render(
-        <PackageContextProvider services={injectedServices}>
-            <Toc map={map} data-testid="toc" onDisposed={onDisposedMock} onReady={onReadyMock} />
-        </PackageContextProvider>
-    );
-    await findToc();
-
-    await waitFor(() => {
-        expect(onReadyMock).toBeCalled();
-    });
-    expect(readyEvent).toBeDefined();
-    expect(readyEvent?.api).toBeDefined();
-
-    const api = readyEvent?.api;
-    const tocItem = api?.getItemByLayerId("layer-1");
-    expect(tocItem).toBeDefined();
-
-    const htmlElement = tocItem?.htmlElement;
-    expect(htmlElement).toBeTruthy();
-    expect(htmlElement?.classList).toContain("toc-layer-item");
-
-    unmount(); //unmount toc;
-
-    await waitFor(() => {
-        expect(onDisposedMock).toBeCalled();
-    });
-
-    expect(tocItem?.htmlElement).toBeNull();
+    expect(tocItem?.htmlElement).toBeUndefined();
 });
 
 it("should toggle LayerItem via Toc API", async () => {

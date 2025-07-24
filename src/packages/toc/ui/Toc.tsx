@@ -8,7 +8,8 @@ import {
     CommonComponentProps,
     SectionHeading,
     TitledSection,
-    useCommonComponentProps
+    useCommonComponentProps,
+    useEvent
 } from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, ReactNode, useEffect, useId, useRef } from "react";
@@ -17,10 +18,9 @@ import {
     TocModel,
     TocModelProvider,
     TocWidgetOptions,
-    TocAPI,
+    TocApi,
     TocReadyHandler,
-    TocDisposedHandler,
-    TocReadyEvent
+    TocDisposedHandler
 } from "../model/TocModel";
 import { TopLevelLayerList } from "./LayerList/LayerList";
 import { Tools } from "./Tools";
@@ -79,12 +79,12 @@ export interface TocProps extends CommonComponentProps, MapModelProps {
 
     /**
      * Callback that is triggered once when the Toc is initialized.
-     * The Toc API can be accessed by the `api` property of the {@link TocReadyEvent}
+     * The Toc API can be accessed by the `api` property of the {@link TocReadyEvent}.
      */
     onReady?: TocReadyHandler;
 
     /**
-     * Callback that is triggerd once when the Toc is disposed and unmounted.
+     * Callback that is triggered once when the Toc is disposed and unmounted.
      */
     onDisposed?: TocDisposedHandler;
 }
@@ -106,13 +106,6 @@ export interface ToolsConfig {
      * Defaults to `true`. Only applicable if {@link TocProps.collapsibleGroups} is `true`.
      */
     showCollapseAllGroups?: boolean;
-}
-
-export interface ItemExpandedOptions {
-    /**
-     * if `true` parent items will automatically receive the same state as the manipulated layer item.
-     */
-    alignParents?: boolean;
 }
 
 const PADDING = 2;
@@ -160,14 +153,7 @@ function TocContent(props: TocProps & { map: MapModel }) {
     } = props;
     const intl = useIntl();
     const model = useTocModel(props);
-    const { readyTrigger, disposedTrigger: disposeTrigger } = useInit(model, onReady, onDisposed);
-
-    useEffect(() => {
-        readyTrigger();
-        return () => {
-            disposeTrigger();
-        };
-    }, [readyTrigger, disposeTrigger]);
+    useTocAPI(model, onReady, onDisposed);
 
     const basemapsHeadingId = useId();
     const basemapSwitcher = showBasemapSwitcher && (
@@ -298,55 +284,52 @@ function createOptions(
     };
 }
 
-function useInit(model: TocModel, onReady?: TocReadyHandler, onDisposed?: TocDisposedHandler) {
-    const api = useTocAPI(model);
-    const isInitRef = useRef(false);
-
-    //ref to function that is called when Toc is initialized
-    const readyTriggerRef = useRef(() => {
-        if (!isInitRef.current) {
-            isInitRef.current = true;
-            if (onReady) {
-                const e: TocReadyEvent = { api: api };
-                onReady(e);
-            }
-        }
-    });
-
-    //ref to function that is called when Toc is disposed
-    const disposedTriggerRef = useRef(() => {
-        isInitRef.current = false;
-        if (onDisposed) {
-            onDisposed({});
-        }
-    });
-
-    return {
-        isInitialized: isInitRef.current,
-        readyTrigger: readyTriggerRef.current,
-        disposedTrigger: disposedTriggerRef.current
-    };
-}
-
-function useTocAPI(model: TocModel) {
-    const apiRef = useRef<TocAPI>(null);
+function useTocAPI(
+    model: TocModel,
+    onReady: TocReadyHandler | undefined,
+    onDisposed: TocDisposedHandler | undefined
+) {
+    const apiRef = useRef<TocApi>(null);
     if (!apiRef.current) {
-        apiRef.current = new (class implements TocAPI {
-            private tocModel: TocModel = model;
-
-            getItemById(id: string): TocItem | undefined {
-                return this.tocModel.getItemById(id);
-            }
-
-            getItemByLayerId(layerId: string): TocItem | undefined {
-                return this.tocModel.getItemByLayerId(layerId);
-            }
-
-            getItems(): TocItem[] {
-                return this.tocModel.getItems();
-            }
-        })();
+        apiRef.current = new TocApiImpl(model);
     }
 
-    return apiRef.current;
+    const api = apiRef.current;
+
+    const readyTrigger = useEvent(() => {
+        onReady?.({
+            api
+        });
+    });
+
+    const disposeTrigger = useEvent(() => {
+        onDisposed?.({});
+    });
+
+    // Trigger ready / dispose on mount / unmount, but if the callbacks change.
+    // useEvent() returns a stable function reference.
+    useEffect(() => {
+        readyTrigger();
+        return disposeTrigger;
+    }, [readyTrigger, disposeTrigger]);
+}
+
+class TocApiImpl implements TocApi {
+    #tocModel: TocModel;
+
+    constructor(model: TocModel) {
+        this.#tocModel = model;
+    }
+
+    getItemById(id: string): TocItem | undefined {
+        return this.#tocModel.getItemById(id);
+    }
+
+    getItemByLayerId(layerId: string): TocItem | undefined {
+        return this.#tocModel.getItemByLayerId(layerId);
+    }
+
+    getItems(): TocItem[] {
+        return this.#tocModel.getItems();
+    }
 }
