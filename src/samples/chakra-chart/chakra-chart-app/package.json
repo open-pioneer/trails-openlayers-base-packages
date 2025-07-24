@@ -1,0 +1,16 @@
+{
+    "name": "chakra-chart-app",
+    "private": true,
+    "dependencies": {
+        "@chakra-ui/charts": "^3.22.0",
+        "@chakra-ui/react": "catalog:",
+        "@open-pioneer/chakra-snippets": "catalog:",
+        "@open-pioneer/map": "workspace:^",
+        "@open-pioneer/react-utils": "catalog:",
+        "@open-pioneer/runtime": "catalog:",
+        "ol": "catalog:",
+        "react": "catalog:",
+        "recharts": "^3.1.0"
+    },
+    "version": "0.0.11"
+}
