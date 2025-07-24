@@ -1,64 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { createContext, Provider, useContext } from "react";
-
-const TocModelContext = createContext<TocModel | undefined>(undefined);
-
-/**
- * Provider for the toc's shared model.
- * Used at the root of the component.
- */
-export const TocModelProvider: Provider<TocModel> = TocModelContext.Provider as Provider<TocModel>;
-
-/**
- * Returns the shared model for the current toc component.
- */
-export function useTocModel(): TocModel {
-    const model = useContext(TocModelContext);
-    if (!model) {
-        throw new Error("Internal error: TocModel not found in context.");
-    }
-    return model;
-}
-
-/**
- * API to control the Toc component imperatively
- */
-export interface TocApi {
-    /**
-     * Returns the toc item for the given `id`.
-     */
-    getItemById(id: string): TocItem | undefined;
-
-    /**
-     * Returns the item that corresponds with the `layerId`.
-     */
-    getItemByLayerId(layerId: string): TocItem | undefined;
-
-    /**
-     * Returns the list of all registered items in the Toc.
-     */
-    getItems(): TocItem[];
-}
-
-/**
- * Shared model used by the Toc and all its sub-components.
- * Extends the external TocAPI with private, internal properties.
- *
- * @internal
- */
-export interface TocModel extends TocApi {
-    /**
-     * Return the global widget options.
-     *
-     * NOTE: The object itself is reactive, but individual properties are not (change -> replace).
-     */
-    readonly options: TocWidgetOptions;
-
-    // Used by toc item components to register themselves
-    registerItem(item: TocItem): void;
-    unregisterItem(item: TocItem): void;
-}
+import { reactive, Reactive, reactiveMap } from "@conterra/reactivity-core";
+import { TocItem } from "./types";
 
 /**
  * Global toc widget options.
@@ -83,75 +26,72 @@ export interface TocWidgetOptions {
 }
 
 /**
- * Represents an item in the toc.
+ * Shared model used by the Toc and all its sub-components.
+ * Extends the external TocAPI with private, internal properties.
  *
- * Currently items register themselves in the model when they are mounted
- * and remove themselves when they are unmounted.
+ * @internal
  */
-export interface TocItem {
-    /**
-     * Identifier of the Toc item.
-     * Currently, this is the same as `layerId`, but that could be changed in the future.
-     */
-    readonly id: string;
+export class TocModel {
+    #options: Reactive<TocWidgetOptions>;
+
+    // Indexed by layerId
+    #items = reactiveMap<string, TocItem>();
+
+    constructor(initialOptions: TocWidgetOptions) {
+        this.#options = reactive(initialOptions);
+    }
 
     /**
-     * Identifier of the layer that corresponds with the list item.
-     * May be undefined if the item does not represent a layer.
-     */
-    readonly layerId?: string;
-
-    /**
-     * `true` if list item is expanded.
-     */
-    readonly isExpanded: boolean;
-
-    /**
-     * DOM element of the underlying {@link LayerItem}, `undefined` if the toc has been disposed
-     * or if the item is currently not being rendered.
-     */
-    readonly htmlElement: HTMLElement | undefined;
-
-    /**
-     * Expands or collapses the list item.
+     * Return the global widget options.
      *
-     * Note: not all list items support this operation.
+     * NOTE: The object itself is reactive, but individual properties are not (change -> replace).
+     * See {@link updateOptions}.
      */
-    setExpanded(expanded: boolean, options?: ExpandItemOptions): void;
+    get options() {
+        return this.#options.value;
+    }
+
+    getItemById(id: string): TocItem | undefined {
+        return this.#items.get(id);
+    }
+
+    getItemByLayerId(layerId: string): TocItem | undefined {
+        return this.getItemById(layerId); // happens to be the same at the moment
+    }
+
+    getItems(): TocItem[] {
+        return Array.from(this.#items.values());
+    }
+
+    // Used by toc item components to register themselves
+    registerItem(item: TocItem): void {
+        if (this.#items.has(item.id)) {
+            throw new Error(`Item with layerId '${item.layerId}' already registered.`);
+        }
+        this.#items.set(item.id, item);
+    }
+
+    // Used by toc item components to register themselves
+    unregisterItem(item: TocItem): void {
+        if (this.#items.get(item.id) !== item) {
+            throw new Error(`Item with layerId '${item.layerId}' not registered.`);
+        }
+        this.#items.delete(item.id);
+    }
+
+    updateOptions(options: TocWidgetOptions) {
+        this.#options.value = options;
+    }
 }
 
-export interface ExpandItemOptions {
-    /**
-     * Align `expanded` state of parent items.
-     * By default (`undefined`), the status is only passed on to the parents when the Toc item is being expanded but not if it is being collapsed.
-     */
-    bubble?: boolean;
+export function createOptions(
+    autoShowParents?: boolean | undefined,
+    collapsibleGroups?: boolean | undefined,
+    isCollapsed?: boolean | undefined
+): TocWidgetOptions {
+    return {
+        autoShowParents: autoShowParents ?? true,
+        collapsibleGroups: collapsibleGroups ?? false,
+        initiallyCollapsed: isCollapsed ?? false
+    };
 }
-
-/**
- * Event that indicates that the Toc component is initialized.
- * The event carries a reference to the public {@link TocApi}
- */
-export interface TocReadyEvent {
-    /**
-     * Reference to the Toc API that allows manipulating the Toc.
-     */
-    api: TocApi;
-}
-
-/**
- * Event that indicates that the Toc component has been disposed.
- *
- * Empty interface, might be extended in the future
- */
-export interface TocDisposedEvent {}
-
-/**
- * Callback that is triggered when the Toc is initialized.
- */
-export type TocReadyHandler = (event: TocReadyEvent) => void;
-
-/**
- * Callback that is triggered when the Toc is disposed.
- */
-export type TocDisposedHandler = (event: TocDisposedEvent) => void;

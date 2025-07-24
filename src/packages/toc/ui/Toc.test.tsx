@@ -1,14 +1,14 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import { GroupLayer, Layer, SimpleLayer, SimpleLayerConfig } from "@open-pioneer/map";
 import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
-import { act, render, screen, waitFor, fireEvent } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import TileLayer from "ol/layer/Tile";
-import { describe, expect, it, vi } from "vitest";
-import { Toc } from "./Toc";
-import { TocDisposedEvent, TocReadyEvent } from "../model/TocModel";
-import { SimpleLayer, GroupLayer, SimpleLayerConfig, Layer } from "@open-pioneer/map";
 import { ReactNode } from "react";
+import { describe, expect, it, vi } from "vitest";
+import { TocDisposedEvent, TocReadyEvent } from "../model";
+import { Toc } from "./Toc";
 
 const BASEMAP_SWITCHER_CLASS = ".basemap-switcher";
 const BASEMAP_SWITCHER_SELECT_CLASS = ".basemap-switcher-select";

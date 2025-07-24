@@ -1,5 +1,8 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+export { TocModelProvider, useTocModel } from "./context";
+export { TocApiImpl } from "./TocApiImpl";
+export { createOptions, TocModel, type TocWidgetOptions } from "./TocModel";
 export {
     type ExpandItemOptions,
     type TocApi,
@@ -8,5 +11,4 @@ export {
     type TocItem,
     type TocReadyEvent,
     type TocReadyHandler
-} from "./model";
-export { Toc, type TocProps, type ToolsConfig } from "./ui/Toc";
+} from "./types";

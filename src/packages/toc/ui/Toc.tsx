@@ -1,6 +1,5 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Reactive, reactive, reactiveMap } from "@conterra/reactivity-core";
 import { BasemapSwitcher, BasemapSwitcherProps } from "@open-pioneer/basemap-switcher";
 import { Box, Flex, Spacer, Text } from "@open-pioneer/chakra-integration";
 import { MapModel, MapModelProps, useMapModel } from "@open-pioneer/map";
@@ -14,14 +13,14 @@ import {
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, ReactNode, useEffect, useId, useRef } from "react";
 import {
-    TocItem,
+    createOptions,
+    TocApi,
+    TocApiImpl,
+    TocDisposedHandler,
     TocModel,
     TocModelProvider,
-    TocWidgetOptions,
-    TocApi,
-    TocReadyHandler,
-    TocDisposedHandler
-} from "../model/TocModel";
+    TocReadyHandler
+} from "../model";
 import { TopLevelLayerList } from "./LayerList/LayerList";
 import { Tools } from "./Tools";
 
@@ -209,58 +208,21 @@ function TocContent(props: TocProps & { map: MapModel }) {
 
 function useTocModel(props: TocProps): TocModel {
     const initialProps = useRef(props);
-    const tocModelRef = useRef<{ model: TocModel; options: Reactive<TocWidgetOptions> }>(null);
+    const tocModelRef = useRef<TocModel>(null);
     if (!tocModelRef.current) {
-        tocModelRef.current = createTocModel();
-    }
-
-    function createTocModel() {
-        const options = reactive<TocWidgetOptions>(
+        tocModelRef.current = new TocModel(
             createOptions(
                 initialProps.current.autoShowParents,
                 initialProps.current.collapsibleGroups,
                 initialProps.current.initiallyCollapsed
             )
         );
-
-        // Indexed by layerId
-        const items = reactiveMap<string, TocItem>();
-
-        const model: TocModel = {
-            get options() {
-                return options.value;
-            },
-            getItemById: function (id: string): TocItem | undefined {
-                return items.get(id);
-            },
-            getItemByLayerId(layerId: string): TocItem | undefined {
-                return items.get(layerId);
-            },
-            getItems(): TocItem[] {
-                return Array.from(items.values());
-            },
-            registerItem(item: TocItem): void {
-                if (items.has(item.id)) {
-                    throw new Error(`Item with layerId '${item.layerId}' already registered.`);
-                }
-                items.set(item.id, item);
-            },
-            unregisterItem(item: TocItem): void {
-                if (items.get(item.id) !== item) {
-                    throw new Error(`Item with layerId '${item.layerId}' not registered.`);
-                }
-                items.delete(item.id);
-            }
-        };
-        return { model: model, options: options };
     }
 
     // Sync props to model
     useEffect(() => {
-        tocModelRef.current!.options.value = createOptions(
-            props.autoShowParents,
-            props.collapsibleGroups,
-            props.initiallyCollapsed
+        tocModelRef.current!.updateOptions(
+            createOptions(props.autoShowParents, props.collapsibleGroups, props.initiallyCollapsed)
         );
     }, [
         props.autoShowParents,
@@ -268,20 +230,7 @@ function useTocModel(props: TocProps): TocModel {
         props.initiallyCollapsed,
         tocModelRef.current.options
     ]);
-
-    return tocModelRef.current.model;
-}
-
-function createOptions(
-    autoShowParents?: boolean | undefined,
-    collapsibleGroups?: boolean | undefined,
-    isCollapsed?: boolean | undefined
-): TocWidgetOptions {
-    return {
-        autoShowParents: autoShowParents ?? true,
-        collapsibleGroups: collapsibleGroups ?? false,
-        initiallyCollapsed: isCollapsed ?? false
-    };
+    return tocModelRef.current;
 }
 
 function useTocAPI(
@@ -312,24 +261,4 @@ function useTocAPI(
         readyTrigger();
         return disposeTrigger;
     }, [readyTrigger, disposeTrigger]);
-}
-
-class TocApiImpl implements TocApi {
-    #tocModel: TocModel;
-
-    constructor(model: TocModel) {
-        this.#tocModel = model;
-    }
-
-    getItemById(id: string): TocItem | undefined {
-        return this.#tocModel.getItemById(id);
-    }
-
-    getItemByLayerId(layerId: string): TocItem | undefined {
-        return this.#tocModel.getItemByLayerId(layerId);
-    }
-
-    getItems(): TocItem[] {
-        return this.#tocModel.getItems();
-    }
 }

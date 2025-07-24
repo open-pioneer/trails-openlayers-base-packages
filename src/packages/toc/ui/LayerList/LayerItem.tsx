@@ -3,7 +3,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { ChevronDownIcon, ChevronRightIcon } from "@chakra-ui/icons";
-import { Reactive, reactive } from "@conterra/reactivity-core";
 import {
     Box,
     Checkbox,
@@ -19,11 +18,12 @@ import classNames from "classnames";
 import { useIntl } from "open-pioneer:react-hooks";
 import { memo, ReactNode, useEffect, useId, useMemo, useRef } from "react";
 import { FiAlertTriangle } from "react-icons/fi";
-import { ExpandItemOptions, TocItem, TocModel, useTocModel } from "../../model/TocModel";
+import { useTocModel } from "../../model";
 import { slug } from "../../utils/slug";
 import { useChildLayers, useLoadState } from "./hooks";
 import { LayerItemMenu } from "./LayerItemMenu";
 import { LayerList } from "./LayerList";
+import { TocItemImpl } from "../../model/TocItemImpl";
 
 /**
  * Renders a single layer as a list item.
@@ -190,54 +190,4 @@ function updateLayerVisibility(layer: AnyLayer, visible: boolean, autoShowParent
 
 function getClassNameForLayer(layer: AnyLayer) {
     return `layer-${slug(layer.id)}`;
-}
-
-class TocItemImpl implements TocItem {
-    #htmlElement = reactive<HTMLElement | undefined>();
-    #expanded: Reactive<boolean>;
-    #layer: AnyLayer;
-    #tocModel: TocModel;
-
-    constructor(layer: AnyLayer, tocModel: TocModel, expanded: boolean) {
-        this.#expanded = reactive(expanded);
-        this.#layer = layer;
-        this.#tocModel = tocModel;
-    }
-
-    get id() {
-        return this.layerId;
-    }
-
-    get layerId() {
-        return this.#layer.id;
-    }
-
-    get isExpanded() {
-        return this.#expanded.value;
-    }
-
-    get htmlElement() {
-        return this.#htmlElement.value;
-    }
-
-    setExpanded(expanded: boolean, options?: ExpandItemOptions): void {
-        this.#expanded.value = expanded;
-        let bubble = options?.bubble;
-        //by default bubble if expand is true
-        if (bubble === undefined) {
-            bubble = expanded;
-        }
-
-        if (bubble) {
-            const parentLayer = this.#layer.parent;
-            if (parentLayer) {
-                this.#tocModel.getItemByLayerId(parentLayer.id)?.setExpanded(expanded, options);
-            }
-        }
-    }
-
-    //private setter, not exposed in TocItem interface
-    setHtmlElement(element: HTMLElement | undefined) {
-        this.#htmlElement.value = element;
-    }
 }
