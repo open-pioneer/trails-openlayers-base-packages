@@ -120,6 +120,13 @@ export function AppUI() {
                                             operational layer ({'"'}Schulstandorte{'"'}) will be
                                             unavailable and should be marked as such by the UI.
                                         </Text>
+                                        <Text>
+                                            The toggle button allows testing expanded or collapsing
+                                            specific toc items using the Toc{"'"}s API.
+                                        </Text>
+                                        <Button onClick={() => toggleTocItem("streets")}>
+                                            Toggle streets group
+                                        </Button>
                                     </VStack>
                                 </MapAnchor>
                                 <MapAnchor
@@ -140,9 +147,6 @@ export function AppUI() {
                                             isActive={showToc}
                                             onClick={toggleToc}
                                         />
-                                        <Button onClick={() => toggleTocItem("streets")}>
-                                            Toggle streets group
-                                        </Button>
                                     </Flex>
                                 </MapAnchor>
                             </MapContainer>
