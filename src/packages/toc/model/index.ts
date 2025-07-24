@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 export { TocModelProvider, useTocModel } from "./context";
 export { TocApiImpl } from "./TocApiImpl";
+export { TocItemImpl } from "./TocItemImpl";
 export { createOptions, TocModel, type TocWidgetOptions } from "./TocModel";
 export {
     type ExpandItemOptions,

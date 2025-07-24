@@ -32,7 +32,7 @@ export function AppUI() {
     function toggleTocItem(layerId: string) {
         if (tocAPIRef.current) {
             const layerItem = tocAPIRef.current.getItemByLayerId(layerId);
-            console.log(layerItem?.htmlElement?.clientHeight);
+            console.log("Current html element", layerItem?.htmlElement);
             const newState = !layerItem?.isExpanded;
             layerItem?.setExpanded(newState);
         }

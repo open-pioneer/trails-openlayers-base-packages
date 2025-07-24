@@ -18,12 +18,11 @@ import classNames from "classnames";
 import { useIntl } from "open-pioneer:react-hooks";
 import { memo, ReactNode, useEffect, useId, useMemo, useRef } from "react";
 import { FiAlertTriangle } from "react-icons/fi";
-import { useTocModel } from "../../model";
+import { useTocModel, TocItemImpl } from "../../model";
 import { slug } from "../../utils/slug";
 import { useChildLayers, useLoadState } from "./hooks";
 import { LayerItemMenu } from "./LayerItemMenu";
 import { LayerList } from "./LayerList";
-import { TocItemImpl } from "../../model/TocItemImpl";
 
 /**
  * Renders a single layer as a list item.
