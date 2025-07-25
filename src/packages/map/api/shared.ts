@@ -31,16 +31,17 @@ export interface AddLayerOptionsBase {
      *
      * Default: "top"
      *
-     * - "top": Insert the new layer _above_ all other operational layers.
+     * - "top": Insert the new layer _above_ all other current operational layers, might not be at the top of all layers after more layers were added at `top`, see `topmost`.
      * - "bottom": Insert the new layer _below_ all other operational layers.
      * - "above": Insert the new layer _above_ the specified `reference` layer.
      * - "below": Insert the new layer _below_ the specified `reference` layer.
+     * - "topmost": Insert a new layer that is always displayed at the top (e.g. a highlight layer); might not be at the top if there is more then one layer added at `topmost`.
      */
-    at: "top" | "bottom" | "above" | "below";
+    at: "top" | "bottom" | "above" | "below" | "topmost";
 }
 
 export interface AddLayerOptionsTopBottom extends AddLayerOptionsBase {
-    at: "top" | "bottom";
+    at: "top" | "bottom" | "topmost";
 }
 
 export interface AddLayerOptionsAboveBelow extends AddLayerOptionsBase {

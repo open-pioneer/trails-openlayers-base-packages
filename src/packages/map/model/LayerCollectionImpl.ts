@@ -57,15 +57,19 @@ export class LayerCollectionImpl implements LayerCollection {
     /**
      * Defines the relative order of operational layers.
      * Lower index -> layer is below its successors.
+     * Excluding {@link #topMostOperationalLayers}
      */
     #operationalLayerOrder = reactiveArray<LayerType>();
+
+    /** Operational layers that are always displayed at the top above all other layers (e.g. a highlight layer) */
+    #topMostOperationalLayers = reactiveArray<LayerType>();
 
     #syncHandle: Resource | undefined;
 
     constructor(map: MapModelImpl) {
         this.#map = map;
         this.#syncHandle = effect(() => {
-            const orderedLayers = this.getLayers({ sortByDisplayOrder: true });
+            const orderedLayers = this.getLayers({ sortByDisplayOrder: true }); //topmost layers are already add the end of the list if sortByDisplayOrder is true
 
             // Simply reassign all z-indices whenever the order changes.
             let index = 0;
@@ -140,7 +144,8 @@ export class LayerCollectionImpl implements LayerCollection {
         if (options?.sortByDisplayOrder) {
             const baseLayers = this.getBaseLayers();
             const order = Array.from(this.#operationalLayerOrder);
-            return [...baseLayers, ...order];
+            const topMost = Array.from(this.#topMostOperationalLayers);
+            return [...baseLayers, ...order, ...topMost];
         } else {
             return Array.from(this.#topLevelLayers.values());
         }
@@ -204,6 +209,7 @@ export class LayerCollectionImpl implements LayerCollection {
     #addLayer(model: LayerType, options: AddLayerOptions | undefined) {
         // Throws; do this before manipulating the data structures
         const operationalLayerIndex = this.#getInsertionIndex(model, options);
+        const isTopMostLayer = options?.at === "topmost";
         this.#indexLayer(model);
 
         // Everything below this line should not fail.
@@ -221,7 +227,11 @@ export class LayerCollectionImpl implements LayerCollection {
                     "Internal error: insertion index is undefined for operational layer."
                 );
             }
-            this.#operationalLayerOrder.splice(operationalLayerIndex, 0, model);
+            if (!isTopMostLayer) {
+                this.#operationalLayerOrder.splice(operationalLayerIndex, 0, model);
+            } else {
+                this.#topMostOperationalLayers.push(model);
+            }
         }
 
         this.#topLevelLayers.add(model);
@@ -241,8 +251,9 @@ export class LayerCollectionImpl implements LayerCollection {
         switch (options?.at) {
             case undefined:
             case null:
+            case "topmost": //index will be ignored for topmost layers
             case "top":
-                return this.#operationalLayerOrder.length;
+                return 5;
             case "bottom":
                 return 0;
             case "above":
@@ -297,12 +308,16 @@ export class LayerCollectionImpl implements LayerCollection {
             );
         }
 
+        const isTopMostLayer = this.#topMostOperationalLayers.includes(model);
         this.#map.olMap.removeLayer(model.olLayer);
         this.#topLevelLayers.delete(model);
         if (!model.isBaseLayer) {
-            const index = this.#operationalLayerOrder.indexOf(model);
+            const layerList = isTopMostLayer
+                ? this.#topMostOperationalLayers
+                : this.#operationalLayerOrder;
+            const index = layerList.indexOf(model);
             if (index !== -1) {
-                this.#operationalLayerOrder.splice(index, 1);
+                layerList.splice(index, 1);
             }
         }
 
@@ -314,6 +329,7 @@ export class LayerCollectionImpl implements LayerCollection {
             }
             this.#updateBaseLayer(newBaseLayer);
         }
+
         model.destroy();
     }
 
