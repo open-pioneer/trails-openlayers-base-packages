@@ -107,16 +107,6 @@ export class MeasurementController {
             }
         });
 
-        const mouseOutHandler = () => {
-            this.helpTooltip.element.classList.add("hidden");
-        };
-        olMap.getViewport().addEventListener("mouseout", mouseOutHandler);
-        this.resources.push({
-            destroy() {
-                olMap.getViewport().removeEventListener("mouseout", mouseOutHandler);
-            }
-        });
-
         this.helpTooltip = createHelpTooltip(this.olMap);
     }
 
@@ -255,7 +245,6 @@ export class MeasurementController {
                 }
                 measurement = undefined;
             }
-            this.helpTooltip.element.classList.add("hidden");
 
             if (changeListenerKey) {
                 unByKey(changeListenerKey);
@@ -289,7 +278,6 @@ export class MeasurementController {
         if (coordinate) {
             tooltip.overlay.setPosition(coordinate);
         }
-        tooltip.element.classList.remove("hidden");
     }
 
     private updatePredefinedMeasurements(geometries: MeasurementGeometry[]) {
@@ -444,7 +432,7 @@ interface Tooltip extends Resource {
 
 function createHelpTooltip(olMap: OlMap): Tooltip {
     const element = document.createElement("div");
-    element.className = "measurement-tooltip printing-hide hidden";
+    element.className = "measurement-tooltip printing-hide";
     element.role = "tooltip";
 
     const content = document.createElement("span");
