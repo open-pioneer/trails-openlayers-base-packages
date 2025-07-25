@@ -9,7 +9,6 @@ messages:
     expand: "Expand group {title}"
     collapse: "Collapse group {title}"
 
-  error: "Error while creating map content."
   layerNotAvailable: "Layer not available"
 
   toolsLabel: "Map tools"

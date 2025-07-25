@@ -1,10 +1,12 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import { Box } from "@chakra-ui/react";
+import { FormatNumberOptions } from "@formatjs/intl";
 import {
     BaseFeature,
     HighlightOptions,
     MapModelProps,
-    useMapModel,
+    useMapModelValue,
     ZoomOptions
 } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
@@ -12,8 +14,6 @@ import { useIntl } from "open-pioneer:react-hooks";
 import { FC, ReactNode, RefObject, useEffect, useMemo, useRef, useState } from "react";
 import { DataTable } from "./DataTable/DataTable";
 import { createColumns } from "./DataTable/createColumns";
-import { FormatNumberOptions } from "@formatjs/intl";
-import { Box } from "@chakra-ui/react";
 
 /**
  * Configures a column in the result list component.
@@ -201,6 +201,7 @@ export interface ResultListProps extends CommonComponentProps, MapModelProps {
 export const ResultList: FC<ResultListProps> = (props) => {
     const { containerProps } = useCommonComponentProps("result-list", props);
     const intl = useIntl();
+    const map = useMapModelValue(props);
     const {
         input: { data, columns, labelProperty, formatOptions },
         memoizeRows = false,
@@ -212,8 +213,6 @@ export const ResultList: FC<ResultListProps> = (props) => {
         selectionStyle = selectionMode === "single" ? "radio" : "checkbox",
         highlightOptions
     } = props;
-
-    const { map } = useMapModel(props);
 
     if (columns.length === 0) {
         throw Error("No columns were defined. The result list cannot be displayed.");
@@ -240,9 +239,6 @@ export const ResultList: FC<ResultListProps> = (props) => {
     );
 
     useEffect(() => {
-        if (!map) {
-            return;
-        }
         if (enableZoom) {
             map.zoom(data, zoomOptions);
         }

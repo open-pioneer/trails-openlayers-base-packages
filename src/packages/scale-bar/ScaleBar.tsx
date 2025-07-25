@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Box } from "@chakra-ui/react";
-import { MapModelProps, useMapModel } from "@open-pioneer/map";
+import { MapModelProps, useMapModelValue } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { ScaleLine } from "ol/control";
 import { FC, useEffect, useRef } from "react";
@@ -19,11 +19,11 @@ export interface ScaleBarProps extends CommonComponentProps, MapModelProps {
 export const ScaleBar: FC<ScaleBarProps> = (props) => {
     const { displayMode = "line" } = props;
     const { containerProps } = useCommonComponentProps("scale-bar", props);
-    const { map } = useMapModel(props);
+    const map = useMapModelValue(props);
     const scaleBarElem = useRef(null);
 
     useEffect(() => {
-        if (scaleBarElem.current && map) {
+        if (scaleBarElem.current) {
             const olMap = map.olMap;
             const scaleLine = new ScaleLine({
                 units: "metric",

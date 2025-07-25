@@ -8,7 +8,7 @@ import { Extent } from "ol/extent";
 import { ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { MapModel, MapPadding } from "../api";
 import { MapContainerContextProvider, MapContainerContextType } from "./MapContainerContext";
-import { MapModelProps, useMapModel } from "./useMapModel";
+import { MapModelProps, useMapModelValue } from "./useMapModel";
 const LOG = createLogger("map:MapContainer");
 
 export interface MapContainerProps extends CommonComponentProps, MapModelProps {
@@ -74,32 +74,17 @@ export function MapContainer(props: MapContainerProps) {
     const { containerProps } = useCommonComponentProps("map-container-root", props);
     const mapContainer = useRef<HTMLDivElement>(null);
     const mapAnchorsHost = useRef<HTMLDivElement>(null);
-    const modelState = useMapModel(props);
-    const map = modelState.map;
+    const map = useMapModelValue(props);
 
     const [ready, setReady] = useState(false);
 
     useEffect(() => {
-        if (modelState.kind === "loading") {
-            return;
-        }
-
-        if (modelState.kind === "rejected") {
-            LOG.error(`Cannot display the map. Caused by `, modelState.error);
-            return;
-        }
-
-        if (!map) {
-            LOG.error(`No configuration available for the configured map.`);
-            return;
-        }
-
         // Mount the map into the DOM
         if (mapContainer.current) {
             const resource = registerMapTarget(map, mapContainer.current);
             return () => resource?.destroy();
         }
-    }, [modelState, map]);
+    }, [map]);
 
     // Wait for mount to make sure that the map anchors host is available
     useEffect(() => {

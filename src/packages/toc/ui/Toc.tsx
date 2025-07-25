@@ -1,9 +1,9 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import { Box, Flex, Spacer, Text } from "@chakra-ui/react";
 import { reactive, reactiveMap } from "@conterra/reactivity-core";
 import { BasemapSwitcher, BasemapSwitcherProps } from "@open-pioneer/basemap-switcher";
-import { Box, Flex, Spacer, Text } from "@chakra-ui/react";
-import { MapModel, MapModelProps, useMapModel } from "@open-pioneer/map";
+import { MapModel, MapModelProps, useMapModelValue } from "@open-pioneer/map";
 import {
     CommonComponentProps,
     SectionHeading,
@@ -11,7 +11,7 @@ import {
     useCommonComponentProps
 } from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
-import { FC, ReactNode, useEffect, useId, useMemo, useRef } from "react";
+import { FC, useEffect, useId, useMemo, useRef } from "react";
 import { TocItem, TocModel, TocModelProvider, TocWidgetOptions } from "../model/TocModel";
 import { TopLevelLayerList } from "./LayerList/LayerList";
 import { Tools } from "./Tools";
@@ -113,28 +113,12 @@ const PADDING = 2;
  * Displays the layers of the configured map.
  */
 export const Toc: FC<TocProps> = (props: TocProps) => {
-    const intl = useIntl();
     const { containerProps } = useCommonComponentProps("toc", props);
-    const state = useMapModel(props);
-
-    let content: ReactNode | null;
-    switch (state.kind) {
-        case "loading":
-            content = null;
-            break;
-        case "rejected":
-            content = <Text className="toc-error">{intl.formatMessage({ id: "error" })}</Text>;
-            break;
-        case "resolved": {
-            const map = state.map;
-            content = <TocContent {...props} map={map} />;
-            break;
-        }
-    }
+    const map = useMapModelValue(props);
 
     return (
         <Flex {...containerProps} direction="column" gap={PADDING}>
-            {content}
+            <TocContent {...props} map={map} />
         </Flex>
     );
 };
