@@ -18,7 +18,7 @@ import {
 import { Alert } from "@open-pioneer/chakra-snippets/alert";
 import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
 import { LocalStorageService } from "@open-pioneer/local-storage";
-import { MapModel, MapModelProps, useMapModel } from "@open-pioneer/map";
+import { MapModel, MapModelProps, useMapModelValue } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { PackageIntl } from "@open-pioneer/runtime";
@@ -36,7 +36,7 @@ export interface SpatialBookmarksProps extends CommonComponentProps, MapModelPro
  * A component that allows the user to manage a set of spatial bookmarks.
  */
 export const SpatialBookmarks: FC<SpatialBookmarksProps> = (props) => {
-    const { map } = useMapModel(props);
+    const map = useMapModelValue(props);
     const localStorageService = useService<LocalStorageService>(
         "local-storage.LocalStorageService"
     );
@@ -393,16 +393,10 @@ function DialogIconButton(props: IconButtonProps): ReactNode {
     return <IconButton flex="0 0 auto" px={4} {...props} />;
 }
 
-function useViewModel(map: MapModel | undefined, localStorageService: LocalStorageService) {
+function useViewModel(map: MapModel, localStorageService: LocalStorageService) {
     const [viewModel, setViewModel] = useState<SpatialBookmarkViewModel>();
     useEffect(() => {
-        let viewModel: SpatialBookmarkViewModel | undefined;
-        if (!map) {
-            viewModel = undefined;
-        } else {
-            viewModel = new SpatialBookmarkViewModel(map, localStorageService);
-        }
-
+        const viewModel = new SpatialBookmarkViewModel(map, localStorageService);
         setViewModel(viewModel);
         return () => viewModel?.destroy();
     }, [map, localStorageService]);

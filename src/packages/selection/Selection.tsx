@@ -11,7 +11,7 @@ import {
     VStack
 } from "@chakra-ui/react";
 import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
-import { MapModel, MapModelProps, useMapModel } from "@open-pioneer/map";
+import { MapModel, MapModelProps, useMapModelValue } from "@open-pioneer/map";
 import { NotificationService } from "@open-pioneer/notifier";
 import { CommonComponentProps, useCommonComponentProps, useEvent } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
@@ -73,9 +73,9 @@ export const Selection: FC<SelectionProps> = (props) => {
 
     const currentSourceStatus = useSourceStatus(currentSource);
 
-    const mapState = useMapModel(props);
+    const map = useMapModelValue(props);
     const { onExtentSelected } = useSelectionController(
-        mapState.map,
+        map,
         sources,
         currentSource,
         onSelectionComplete
@@ -85,7 +85,7 @@ export const Selection: FC<SelectionProps> = (props) => {
     const hasSelectedSource = !!currentSource;
 
     const dragController = useDragSelection(
-        mapState.map,
+        map,
         intl,
         onExtentSelected,
         isActive,
@@ -259,7 +259,7 @@ function SelectionSourceItem(props: { source: SelectionSource | undefined }) {
  * Hook to manage selection controller
  */
 function useSelectionController(
-    mapModel: MapModel | undefined,
+    mapModel: MapModel,
     sources: SelectionSource[],
     currentSource: SelectionSource | undefined,
     onSelectionComplete: ((event: SelectionCompleteEvent) => void) | undefined
@@ -268,9 +268,6 @@ function useSelectionController(
     const intl = useIntl();
     const [controller, setController] = useState<SelectionController | undefined>(undefined);
     useEffect(() => {
-        if (!mapModel) {
-            return;
-        }
         const controller = new SelectionController({
             mapModel,
             onError() {
@@ -346,7 +343,7 @@ function useSourceStatus(source: SelectionSource | undefined): SimpleStatus {
  * Hook to manage map controls and tooltip
  */
 function useDragSelection(
-    map: MapModel | undefined,
+    map: MapModel,
     intl: PackageIntl,
     onExtentSelected: (geometry: Geometry) => void,
     isActive: boolean,
@@ -354,10 +351,6 @@ function useDragSelection(
 ): DragController | undefined {
     const [controller, setController] = useState<DragController | undefined>();
     useEffect(() => {
-        if (!map) {
-            return;
-        }
-
         const disabledMessage = hasSelectedSource
             ? intl.formatMessage({ id: "disabledTooltip" })
             : intl.formatMessage({ id: "noSourceTooltip" });

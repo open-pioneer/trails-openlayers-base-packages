@@ -14,6 +14,7 @@ export { MapAnchor, type MapAnchorProps, type MapAnchorPosition } from "../ui/Ma
 export { MapContainer, type MapContainerProps } from "../ui/MapContainer";
 export {
     useMapModel,
+    useMapModelValue,
     type UseMapModelResult,
     type UseMapModelLoading,
     type UseMapModelResolved,

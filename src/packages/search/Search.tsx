@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import { Box, chakra, Portal, useToken } from "@chakra-ui/react";
 import { createLogger, isAbortError } from "@open-pioneer/core";
-import { MapModel, MapModelProps, useMapModel } from "@open-pioneer/map";
+import { MapModel, MapModelProps, useMapModelValue } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps, useEvent } from "@open-pioneer/react-utils";
 import { PackageIntl } from "@open-pioneer/runtime";
 import {
@@ -113,7 +113,7 @@ export interface SearchProps extends CommonComponentProps, MapModelProps {
 export const Search: FC<SearchProps> = (props) => {
     const { sources, searchTypingDelay, maxResultsPerGroup, onSelect, onClear } = props;
     const { containerProps } = useCommonComponentProps("search", props);
-    const { map } = useMapModel(props);
+    const map = useMapModelValue(props);
     const intl = useIntl();
     const controller = useController(sources, searchTypingDelay, maxResultsPerGroup, map);
     const { input, search, selectedOption, onInputChanged, onResultConfirmed } =
@@ -327,13 +327,10 @@ function useController(
     sources: SearchSource[],
     searchTypingDelay: number | undefined,
     maxResultsPerGroup: number | undefined,
-    map: MapModel | undefined
+    map: MapModel
 ) {
     const [controller, setController] = useState<SearchController | undefined>(undefined);
     useEffect(() => {
-        if (!map) {
-            return;
-        }
         const controller = new SearchController(map, sources);
         setController(controller);
         return () => {

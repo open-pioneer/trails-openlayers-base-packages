@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Box, Text } from "@chakra-ui/react";
-import { MapModelProps, useMapModel } from "@open-pioneer/map";
+import { MapModelProps, useMapModelValue } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { PackageIntl } from "@open-pioneer/runtime";
@@ -46,12 +46,11 @@ export interface CoordinateViewerProps extends CommonComponentProps, MapModelPro
 export const CoordinateViewer: FC<CoordinateViewerProps> = (props) => {
     const { precision, displayProjectionCode, format } = props;
     const { containerProps } = useCommonComponentProps("coordinate-viewer", props);
-    const { map } = useMapModel(props);
-    const olMap = map?.olMap;
+    const map = useMapModelValue(props);
     const mapProjectionCode = useReactiveSnapshot(() => {
         return map?.projection.getCode() ?? "";
     }, [map]);
-    let { coordinates } = useCoordinates(olMap);
+    let { coordinates } = useCoordinates(map.olMap);
     coordinates =
         coordinates && displayProjectionCode
             ? transformCoordinates(coordinates, mapProjectionCode, displayProjectionCode)
@@ -79,18 +78,13 @@ export function useCoordinatesString(
     return coordinatesString;
 }
 
-function useCoordinates(map: OlMap | undefined): { coordinates: Coordinate | undefined } {
+function useCoordinates(map: OlMap): { coordinates: Coordinate | undefined } {
     const [coordinates, setCoordinates] = useState<Coordinate | undefined>();
 
     useEffect(() => {
-        if (!map) {
-            return;
-        }
-
         const eventsKey: EventsKey = map.on("pointermove", (evt) => {
             setCoordinates(evt.coordinate);
         });
-
         return () => unByKey(eventsKey);
     }, [map]);
 

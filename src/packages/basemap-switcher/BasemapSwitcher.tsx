@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import { Box, createListCollection, Portal, Select } from "@chakra-ui/react";
 import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
-import { Layer, useMapModel, MapModelProps, MapModel } from "@open-pioneer/map";
+import { Layer, MapModelProps, useMapModelValue } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { useIntl } from "open-pioneer:react-hooks";
@@ -67,18 +67,12 @@ export interface BasemapSwitcherProps extends CommonComponentProps, MapModelProp
  * The `BasemapSwitcher` component can be used in an app to switch between the different basemaps.
  */
 export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
-    const { map } = useMapModel(props);
-    return map && <BasemapSwitcherImpl {...props} map={map} />;
-};
-
-// Wait for the map resolve before rendering the component, this can be removed once we take the map model as a prop directly.
-function BasemapSwitcherImpl(props: BasemapSwitcherProps & { map: MapModel }) {
+    const map = useMapModelValue(props);
     const intl = useIntl();
     const {
         allowSelectingEmptyBasemap = false,
         "aria-label": ariaLabel,
-        "aria-labelledby": ariaLabelledBy,
-        map
+        "aria-labelledby": ariaLabelledBy
     } = props;
     const { containerProps } = useCommonComponentProps("basemap-switcher", props);
     const emptyBasemapLabel = intl.formatMessage({ id: "emptyBasemapLabel" });
@@ -149,7 +143,7 @@ function BasemapSwitcherImpl(props: BasemapSwitcherProps & { map: MapModel }) {
             </Select.Root>
         </Box>
     );
-}
+};
 
 function BasemapItem(props: { item: SelectOption }) {
     const intl = useIntl();

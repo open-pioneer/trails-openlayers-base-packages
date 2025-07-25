@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { ButtonProps } from "@chakra-ui/react";
-import { MapModel, MapModelProps, useMapModel } from "@open-pioneer/map";
+import { MapModel, MapModelProps, useMapModelValue } from "@open-pioneer/map";
 import { ToolButton } from "@open-pioneer/map-ui-components";
 import { NotificationService } from "@open-pioneer/notifier";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
@@ -48,7 +48,7 @@ export interface GeolocationProps
 
 export const Geolocation: FC<GeolocationProps> = function Geolocation(props: GeolocationProps) {
     const { maxZoom, positionFeatureStyle, accuracyFeatureStyle, trackingOptions, ref } = props;
-    const { map } = useMapModel(props);
+    const map = useMapModelValue(props);
     const controller = useController(
         map,
         maxZoom,
@@ -110,7 +110,7 @@ const GeolocationImpl = function GeolocationImpl(
 };
 
 function useController(
-    map: MapModel | undefined,
+    map: MapModel,
     maxZoom: number | undefined,
     trackingOptions: PositionOptions | undefined,
     positionFeatureStyle: StyleLike | undefined,
@@ -120,10 +120,6 @@ function useController(
     const notificationService = useService<NotificationService>("notifier.NotificationService");
     const [controller, setController] = useState<GeolocationController>();
     useEffect(() => {
-        if (!map) {
-            return;
-        }
-
         const onError: OnErrorCallback = (error) => {
             const title = intl.formatMessage({ id: "error" });
             const description = (() => {

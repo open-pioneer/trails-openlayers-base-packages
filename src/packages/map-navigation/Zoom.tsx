@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { ButtonProps } from "@chakra-ui/react";
-import { MapModelProps, useMapModel } from "@open-pioneer/map";
+import { MapModelProps, useMapModelValue } from "@open-pioneer/map";
 import { ToolButton } from "@open-pioneer/map-ui-components";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { PackageIntl } from "@open-pioneer/runtime";
@@ -56,7 +56,7 @@ export interface ZoomProps
  */
 export const Zoom: FC<ZoomProps> = function Zoom(props: ZoomProps) {
     const { buttonProps, zoomDirection, ref } = props;
-    const { map } = useMapModel(props);
+    const map = useMapModelValue(props);
     const intl = useIntl();
     const [disabled, setDisabled] = useState<boolean>(false);
     const { defaultClassName, buttonLabel, buttonIcon } = getDirectionProps(intl, zoomDirection);
@@ -68,12 +68,13 @@ export const Zoom: FC<ZoomProps> = function Zoom(props: ZoomProps) {
             return;
         }
         setDisabled(true);
-        const view = map?.olView;
-        let currZoom = map?.zoomLevel;
 
-        const maxZoom = view?.getMaxZoom() || Number.MAX_SAFE_INTEGER;
-        const minZoom = view?.getMinZoom() || 0;
-        if (view && currZoom !== undefined) {
+        const view = map.olView;
+        const maxZoom = view.getMaxZoom() || Number.MAX_SAFE_INTEGER;
+        const minZoom = view.getMinZoom() || 0;
+
+        let currZoom = map.zoomLevel;
+        if (currZoom != null) {
             if (zoomDirection === "in" && currZoom < maxZoom) {
                 ++currZoom;
             } else if (zoomDirection === "out" && currZoom > minZoom) {

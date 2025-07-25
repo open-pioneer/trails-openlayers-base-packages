@@ -7,17 +7,11 @@ import { get } from "ol/proj";
 import { ScaleViewer } from "./ScaleViewer";
 import View from "ol/View";
 import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
+import { ReactNode } from "react";
 
 it("should successfully create a scale viewer component", async () => {
-    const { mapId, registry } = await setupMap();
-    const map = await registry.expectMapModel(mapId);
-
-    const injectedServices = createServiceOptions({ registry });
-    render(
-        <PackageContextProvider services={injectedServices}>
-            <ScaleViewer map={map} data-testid="scale-viewer" />
-        </PackageContextProvider>
-    );
+    const { map, Wrapper } = await setup();
+    render(<ScaleViewer map={map} data-testid="scale-viewer" />, { wrapper: Wrapper });
 
     // scale viewer is mounted
     const { viewerDiv, viewerText } = await waitForScaleViewer();
@@ -28,15 +22,10 @@ it("should successfully create a scale viewer component", async () => {
 });
 
 it("should successfully create a scale viewer component with additional css classes and box properties", async () => {
-    const { mapId, registry } = await setupMap();
-    const map = await registry.expectMapModel(mapId);
-
-    const injectedServices = createServiceOptions({ registry });
-    render(
-        <PackageContextProvider services={injectedServices}>
-            <ScaleViewer map={map} className="test test1 test2" data-testid="scale-viewer" />
-        </PackageContextProvider>
-    );
+    const { map, Wrapper } = await setup();
+    render(<ScaleViewer map={map} className="test test1 test2" data-testid="scale-viewer" />, {
+        wrapper: Wrapper
+    });
 
     // scale viewer is mounted
     const { viewerDiv } = await waitForScaleViewer();
@@ -62,8 +51,7 @@ it("should successfully render the scale in the correct locale", async () => {
         throw new Error("projection not found");
     }
 
-    const { mapId, registry } = await setupMap();
-    const map = await registry.expectMapModel(mapId);
+    const { map, setLocale, Wrapper } = await setup();
     const olMap = map.olMap;
     olMap.setView(
         new View({
@@ -73,21 +61,16 @@ it("should successfully render the scale in the correct locale", async () => {
         })
     );
 
-    const injectedServices = createServiceOptions({ registry });
-    const result = render(
-        <PackageContextProvider services={injectedServices} locale="en">
-            <ScaleViewer map={map} data-testid="scale-viewer" />
-        </PackageContextProvider>
-    );
+    setLocale("en");
+    const result = render(<ScaleViewer map={map} data-testid="scale-viewer" />, {
+        wrapper: Wrapper
+    });
 
     const { viewerText } = await waitForScaleViewer();
     expect(viewerText.textContent).toBe("1:21,026");
 
-    result.rerender(
-        <PackageContextProvider services={injectedServices} locale="de">
-            <ScaleViewer map={map} data-testid="scale-viewer" />
-        </PackageContextProvider>
-    );
+    setLocale("de");
+    result.rerender(<ScaleViewer map={map} data-testid="scale-viewer" />);
     expect(viewerText.textContent).toBe("1:21.026");
 });
 
@@ -103,4 +86,24 @@ async function waitForScaleViewer() {
     });
 
     return { viewerDiv, viewerText };
+}
+
+async function setup() {
+    const { map, registry } = await setupMap();
+    const injectedServices = createServiceOptions({ registry });
+
+    let locale: string | undefined;
+    function setLocale(newLocale: string | undefined) {
+        locale = newLocale;
+    }
+
+    function Wrapper(props: { children?: ReactNode }) {
+        return (
+            <PackageContextProvider services={injectedServices} locale={locale}>
+                {props.children}
+            </PackageContextProvider>
+        );
+    }
+
+    return { map, setLocale, Wrapper };
 }

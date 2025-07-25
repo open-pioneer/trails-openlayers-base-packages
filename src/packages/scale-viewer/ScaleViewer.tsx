@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Box, Text, VisuallyHidden } from "@chakra-ui/react";
-import { MapModelProps, useMapModel } from "@open-pioneer/map";
+import { MapModelProps, useMapModelValue } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { useIntl } from "open-pioneer:react-hooks";
@@ -14,10 +14,10 @@ export interface ScaleViewerProps extends CommonComponentProps, MapModelProps {}
 
 export const ScaleViewer: FC<ScaleViewerProps> = (props) => {
     const { containerProps } = useCommonComponentProps("scale-viewer", props);
-    const { map } = useMapModel(props);
+    const map = useMapModelValue(props);
     const intl = useIntl();
 
-    const scale = useReactiveSnapshot(() => map?.scale ?? 1, [map]);
+    const scale = useReactiveSnapshot(() => map.scale ?? 1, [map]);
     const displayScale = intl.formatNumber(scale);
 
     // Make the scale shown to the screen reader lag behind a bit via debounce.

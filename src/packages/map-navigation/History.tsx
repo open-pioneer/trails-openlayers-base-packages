@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { ButtonProps } from "@chakra-ui/react";
-import { MapModelProps, useMapModel } from "@open-pioneer/map";
+import { MapModelProps, useMapModelValue } from "@open-pioneer/map";
 import { ToolButton } from "@open-pioneer/map-ui-components";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
@@ -63,7 +63,7 @@ export interface HistoryProps
 export const History: FC<HistoryProps> = function History(props: HistoryProps) {
     const intl = useIntl();
     const { buttonProps, viewDirection, ref } = props;
-    const { map } = useMapModel(props);
+    const map = useMapModelValue(props);
     const viewModel = useHistoryViewModel(map);
     const { defaultClassName, buttonLabel, buttonIcon } = getDirectionProps(intl, viewDirection);
     const { containerProps } = useCommonComponentProps(classNames("view", defaultClassName), props);

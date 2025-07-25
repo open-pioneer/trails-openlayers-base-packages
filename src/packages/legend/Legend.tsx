@@ -1,13 +1,20 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { LuTriangleAlert } from "react-icons/lu";
-import { Box, Image, List, Text, Icon } from "@chakra-ui/react";
-import { Layer, AnyLayer, MapModel, useMapModel, MapModelProps, isLayer } from "@open-pioneer/map";
+import { Box, Icon, Image, List, Text } from "@chakra-ui/react";
+import {
+    AnyLayer,
+    Layer,
+    MapModel,
+    MapModelProps,
+    isLayer,
+    useMapModelValue
+} from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import classNames from "classnames";
 import { useIntl } from "open-pioneer:react-hooks";
 import { ComponentType, FC, ReactNode, useEffect, useMemo, useState } from "react";
+import { LuTriangleAlert } from "react-icons/lu";
 
 /**
  * Properties of a legend item React component.
@@ -56,11 +63,11 @@ export interface LegendProps extends CommonComponentProps, MapModelProps {
 export const Legend: FC<LegendProps> = (props) => {
     const { showBaseLayers = false } = props;
     const { containerProps } = useCommonComponentProps("legend", props);
-    const { map } = useMapModel(props);
+    const map = useMapModelValue(props);
 
     return (
         <Box {...containerProps}>
-            {map ? <LegendList map={map} showBaseLayers={showBaseLayers} /> : null}
+            <LegendList map={map} showBaseLayers={showBaseLayers} />
         </Box>
     );
 };

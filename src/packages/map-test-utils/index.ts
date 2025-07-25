@@ -19,6 +19,8 @@ import { createService } from "@open-pioneer/test-utils/services";
 import { screen, waitFor } from "@testing-library/react";
 import VectorLayer from "ol/layer/Vector";
 
+export type LayerConfig = SimpleLayerConfig | Layer;
+
 export interface SimpleMapOptions {
     /** ID of the map.
      * Defaults to "test". */
@@ -43,7 +45,7 @@ export interface SimpleMapOptions {
     /**
      * Layers used by the map.
      */
-    layers?: (SimpleLayerConfig | Layer)[];
+    layers?: LayerConfig[];
 
     /**
      * Overrides fetching of network resources (such as service capabilities).
