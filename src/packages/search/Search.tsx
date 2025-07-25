@@ -32,7 +32,14 @@ import {
     ValueContainer
 } from "./CustomComponents";
 import { SearchController, SuggestionGroup } from "./SearchController";
-import { SearchResult, SearchSource } from "./api";
+import {
+    SearchApi,
+    SearchDisposedHandler,
+    SearchReadyHandler,
+    SearchResult,
+    SearchSource
+} from "./api";
+import { SearchApiImpl } from "./SearchApiImpl";
 
 const LOG = createLogger("search:Search");
 
@@ -105,13 +112,32 @@ export interface SearchProps extends CommonComponentProps, MapModelProps {
      * This event handler will be called when the user clears the search input.
      */
     onClear?: () => void;
+
+    /**
+     * Callback that is triggered once when the search is initialized.
+     * The search API can be accessed by the `api` property of the {@link SearchReadyEvent}.
+     */
+    onReady?: SearchReadyHandler;
+
+    /**
+     * Callback that is triggered once when the search is disposed and unmounted.
+     */
+    onDisposed?: SearchDisposedHandler;
 }
 
 /**
  * A component that allows the user to search a given set of {@link SearchSource | SearchSources}.
  */
 export const Search: FC<SearchProps> = (props) => {
-    const { sources, searchTypingDelay, maxResultsPerGroup, onSelect, onClear } = props;
+    const {
+        sources,
+        searchTypingDelay,
+        maxResultsPerGroup,
+        onSelect,
+        onClear,
+        onReady,
+        onDisposed
+    } = props;
     const { containerProps } = useCommonComponentProps("search", props);
     const { map } = useMapModel(props);
     const intl = useIntl();
@@ -163,6 +189,8 @@ export const Search: FC<SearchProps> = (props) => {
             }
         }
     );
+
+    useSearchApi(onReady, onDisposed, onInputChanged);
 
     const selectRef = useRef<SelectInstance<SearchOption, false, SearchGroupOption>>(null);
     return (
@@ -501,4 +529,38 @@ function mapSuggestions(suggestions: SuggestionGroup[]): SearchGroupOption[] {
         })
     );
     return options;
+}
+
+// todo tests
+// todo documentation
+// todo clean up package.json dependencies
+// todo other todos
+function useSearchApi(
+    onReady: SearchReadyHandler | undefined,
+    onDisposed: SearchDisposedHandler | undefined,
+    onInputChanged: (newValue: string) => void
+) {
+    const apiRef = useRef<SearchApi>(null);
+    if (!apiRef.current) {
+        apiRef.current = new SearchApiImpl(onInputChanged);
+    }
+
+    const api = apiRef.current;
+
+    const readyTrigger = useEvent(() => {
+        onReady?.({
+            api
+        });
+    });
+
+    const disposeTrigger = useEvent(() => {
+        onDisposed?.({});
+    });
+
+    // Trigger ready / dispose on mount / unmount, but if the callbacks change.
+    // useEvent() returns a stable function reference.
+    useEffect(() => {
+        readyTrigger();
+        return disposeTrigger;
+    }, [readyTrigger, disposeTrigger]);
 }

@@ -91,3 +91,41 @@ export interface SearchResult extends BaseFeature {
      */
     label: string;
 }
+
+/**
+ * API to control the Search component imperatively
+ */
+export interface SearchApi {
+    /**
+     * Resets the search input field to its initial state. // todo or always empty?
+     */
+    resetInput(): void;
+}
+
+/**
+ * Event that indicates that the search component is initialized.
+ * The event carries a reference to the public {@link SearchApi}
+ */
+export interface SearchReadyEvent {
+    /**
+     * Reference to the search API that allows manipulating the search.
+     */
+    api: SearchApi;
+}
+
+/**
+ * Event that indicates that the search component has been disposed.
+ *
+ * Empty interface, might be extended in the future.
+ */
+export interface SearchDisposedEvent {}
+
+/**
+ * Callback that is triggered when the search is initialized.
+ */
+export type SearchReadyHandler = (event: SearchReadyEvent) => void;
+
+/**
+ * Callback that is triggered when the search is disposed.
+ */
+export type SearchDisposedHandler = (event: SearchDisposedEvent) => void;
