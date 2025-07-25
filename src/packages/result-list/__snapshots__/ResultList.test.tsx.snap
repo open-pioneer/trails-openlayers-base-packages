@@ -71,7 +71,7 @@ exports[`expect result list to be created successfully 1`] = `
                   />
                   <div
                     aria-hidden="true"
-                    class="chakra-checkbox__control css-gjxnkp"
+                    class="chakra-checkbox__control css-1rzwffa"
                     data-part="control"
                     data-scope="checkbox"
                     data-state="unchecked"
@@ -200,7 +200,7 @@ exports[`expect result list to be created successfully 1`] = `
                 />
                 <div
                   aria-hidden="true"
-                  class="chakra-checkbox__control css-gjxnkp"
+                  class="chakra-checkbox__control css-1rzwffa"
                   data-part="control"
                   data-scope="checkbox"
                   data-state="unchecked"
@@ -270,7 +270,7 @@ exports[`expect result list to be created successfully 1`] = `
                 />
                 <div
                   aria-hidden="true"
-                  class="chakra-checkbox__control css-gjxnkp"
+                  class="chakra-checkbox__control css-1rzwffa"
                   data-part="control"
                   data-scope="checkbox"
                   data-state="unchecked"
@@ -340,7 +340,7 @@ exports[`expect result list to be created successfully 1`] = `
                 />
                 <div
                   aria-hidden="true"
-                  class="chakra-checkbox__control css-gjxnkp"
+                  class="chakra-checkbox__control css-1rzwffa"
                   data-part="control"
                   data-scope="checkbox"
                   data-state="unchecked"
@@ -410,7 +410,7 @@ exports[`expect result list to be created successfully 1`] = `
                 />
                 <div
                   aria-hidden="true"
-                  class="chakra-checkbox__control css-gjxnkp"
+                  class="chakra-checkbox__control css-1rzwffa"
                   data-part="control"
                   data-scope="checkbox"
                   data-state="unchecked"
@@ -470,7 +470,7 @@ exports[`expect result list to be created successfully 1`] = `
                 />
                 <div
                   aria-hidden="true"
-                  class="chakra-checkbox__control css-gjxnkp"
+                  class="chakra-checkbox__control css-1rzwffa"
                   data-part="control"
                   data-scope="checkbox"
                   data-state="unchecked"
