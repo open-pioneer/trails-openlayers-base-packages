@@ -1,0 +1,12 @@
+{
+    "server": {
+        "host": "https://www.wms.nrw.de",
+        "services": [
+            {
+                "path": "/wms/strassen_nrw_wms",
+                "type": "WMS",
+                "policy-ref": "strassen"
+            }
+        ]
+    }
+}

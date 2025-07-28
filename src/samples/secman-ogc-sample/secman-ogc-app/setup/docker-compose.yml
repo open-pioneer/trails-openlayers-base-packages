@@ -67,3 +67,18 @@ services:
     extra_hosts:
       # NOTE: please add a `mylocalhost` entry in the system `hosts` file
       - "mylocalhost:host-gateway"
+  secman-ogc:
+    image: acrctprdeng.azurecr.io/securitymanager-ogc:0.1.1
+    container_name: secman-ogc
+    ports:
+      - "8082:8080"
+    environment:
+      - SECURITY_MODE=IDENTITY
+      - SECURITY_IDENTITY_SELF_SERVICE_URL=http://mylocalhost:8081/identity/account/self
+    depends_on:
+      - identity
+    volumes:
+      - ./secman-ogc:/app/conf/server
+    extra_hosts:
+      # NOTE: please add a `mylocalhost` entry in the system `hosts` file
+      - "mylocalhost:host-gateway"

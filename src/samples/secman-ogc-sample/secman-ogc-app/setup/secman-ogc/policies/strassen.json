@@ -1,0 +1,8 @@
+{
+    "policies": [
+        {
+            "layers": ["*"],
+            "roles": ["enhancedSecurity_authenticated"]
+        }
+    ]
+}
