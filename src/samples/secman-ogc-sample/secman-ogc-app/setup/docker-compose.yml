@@ -1,0 +1,69 @@
+# Creates a keycloak instance on localhost:8080
+# - Admin credentials are admin/admin
+# - A single realm called "trails" with a single user exists:
+#  - trails_test_user / test
+#
+# Required Setup
+# ==============
+#
+# 1. Add an entry to your `hosts` file: `127.0.0.1 mylocalhost`
+#    This is needed because ct-identity uses the same URL for "public" redirects and "private" token fetching.
+# 2. Run `docker compose up` from this directory
+# 3. Run the trails app, e.g. via `pnpm -w dev`
+#
+# Create keycloak export (trails-realm.json)
+# ==========================================
+#
+# Inside the docker container (e.g. docker exec -it keycloak /bin/bash)
+#
+# cd /opt/keycloak/bin/
+# # copy h2 db, otherwise it is locked
+# cp -rp /opt/keycloak/data/h2 /tmp
+#
+# # export realm embed users in realm.json
+# ./kc.sh export --dir /tmp/kc-export --realm trails --users realm_file --db dev-file --db-url 'jdbc:h2:file:/tmp/h2/keycloakdb;NON_KEYWORDS=VALUE'
+#
+# # Outside the docker container: copy from container to local fs
+# docker cp keycloak:/tmp/kc-export/trails-realm.json trails-realm.json
+name: open-pioneer-trails-keycloak-sample
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.3.2
+    container_name: keycloak
+    ports:
+      # - "9091:9091"
+      - "8080:8080"
+    environment:
+      - KC_BOOTSTRAP_ADMIN_USERNAME=admin
+      - KC_BOOTSTRAP_ADMIN_PASSWORD=admin
+    command: [
+        "start-dev",
+        # "--http-port",
+        # "9091",
+        "--import-realm"
+      ]
+    volumes:
+      - ./trails-realm.json:/opt/keycloak/data/import/trails-realm.json
+  identity:
+    image: acrctprdeng.azurecr.io/identity-service:1.5.0
+    container_name: identity
+    ports:
+      - "8081:8080"
+    environment:
+      - CONTEXT_PATH=identity
+      - LOGGING_LOGGER_LEVEL=DEBUG
+      - SECURITY_SESSION_ENFORCESECUREANDSAMESITENONE=false
+      - SECURITY_SESSION_COOKIEDOMAIN=
+      - SECURITY_OAUTH_PROVIDER=keycloak
+      - SECURITY_OAUTH_PROVIDER_KEYCLOAK_URL=http://mylocalhost:8080/
+      - SECURITY_OAUTH_PROVIDER_KEYCLOAK_REALM=trails
+      - SECURITY_OAUTH_CLIENTID=identity-service
+      - SECURITY_OAUTH_CLIENTSECRET=Ya7A9txIVFsbwhfB9sQKxOtAinQYV776
+      - SECURITY_OAUTH_TOKENRULES=http://mylocalhost:8080,ACCESS_TOKEN
+      - CORS_ANY_ORIGINS=true
+      - SECURITY_SSL_TRUSTANY=true
+    depends_on:
+      - keycloak
+    extra_hosts:
+      # NOTE: please add a `mylocalhost` entry in the system `hosts` file
+      - "mylocalhost:host-gateway"

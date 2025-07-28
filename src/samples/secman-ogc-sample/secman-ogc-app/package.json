@@ -1,0 +1,22 @@
+{
+    "name": "secman-ogc-app",
+    "private": true,
+    "dependencies": {
+        "@emotion/react": "catalog:",
+        "@emotion/styled": "catalog:",
+        "@chakra-ui/react": "catalog:",
+        "@open-pioneer/map": "workspace:^",
+        "@open-pioneer/map-navigation": "workspace:^",
+        "@open-pioneer/map-ui-components": "workspace:^",
+        "@open-pioneer/notifier": "catalog:",
+        "@open-pioneer/runtime": "catalog:",
+        "@open-pioneer/authentication": "catalog:",
+        "@open-pioneer/authentication-keycloak": "catalog:",
+        "@open-pioneer/reactivity": "catalog:",
+        "ol": "catalog:",
+        "react": "catalog:",
+        "react-dom": "catalog:",
+        "react-icons": "catalog:",
+        "react-use": "catalog:"
+    }
+}

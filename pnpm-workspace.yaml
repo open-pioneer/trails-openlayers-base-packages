@@ -19,6 +19,8 @@ catalog:
   "@open-pioneer/runtime": ^4.0.0
   "@open-pioneer/test-utils": ^4.0.0
   "@open-pioneer/chakra-snippets": ^4.0.0
+  "@open-pioneer/authentication": ^4.0.0
+  "@open-pioneer/authentication-keycloak": ^4.0.0
 
   "@chakra-ui/react": ^3.22.0
   "@chakra-ui/cli": ^3.22.0

@@ -26,6 +26,8 @@ const sampleSites = [
     "samples/test-printing-api",
 
     "samples/experimental-sidebar",
+
+    "samples/secman-ogc-sample"
 ];
 
 // https://vitejs.dev/config/
