@@ -1,47 +1,14 @@
-# Creates a keycloak instance on localhost:8080
-# - Admin credentials are admin/admin
-# - A single realm called "trails" with a single user exists:
-#  - trails_test_user / test
-#
-# Required Setup
-# ==============
-#
-# 1. Add an entry to your `hosts` file: `127.0.0.1 mylocalhost`
-#    This is needed because ct-identity uses the same URL for "public" redirects and "private" token fetching.
-# 2. Run `docker compose up` from this directory
-# 3. Run the trails app, e.g. via `pnpm -w dev`
-#
-# Create keycloak export (trails-realm.json)
-# ==========================================
-#
-# Inside the docker container (e.g. docker exec -it keycloak /bin/bash)
-#
-# cd /opt/keycloak/bin/
-# # copy h2 db, otherwise it is locked
-# cp -rp /opt/keycloak/data/h2 /tmp
-#
-# # export realm embed users in realm.json
-# ./kc.sh export --dir /tmp/kc-export --realm trails --users realm_file --db dev-file --db-url 'jdbc:h2:file:/tmp/h2/keycloakdb;NON_KEYWORDS=VALUE'
-#
-# # Outside the docker container: copy from container to local fs
-# docker cp keycloak:/tmp/kc-export/trails-realm.json trails-realm.json
-name: open-pioneer-trails-keycloak-sample
+name: open-pioneer-trails-secman-ogc-sample
 services:
   keycloak:
     image: quay.io/keycloak/keycloak:26.3.2
     container_name: keycloak
     ports:
-      # - "9091:9091"
       - "8080:8080"
     environment:
       - KC_BOOTSTRAP_ADMIN_USERNAME=admin
       - KC_BOOTSTRAP_ADMIN_PASSWORD=admin
-    command: [
-        "start-dev",
-        # "--http-port",
-        # "9091",
-        "--import-realm"
-      ]
+    command: ["start-dev", "--import-realm"]
     volumes:
       - ./trails-realm.json:/opt/keycloak/data/import/trails-realm.json
   identity:
@@ -75,6 +42,7 @@ services:
     environment:
       - SECURITY_MODE=IDENTITY
       - SECURITY_IDENTITY_SELF_SERVICE_URL=http://mylocalhost:8081/identity/account/self
+      - CORS_ANY_ORIGINS=true
     depends_on:
       - identity
     volumes:

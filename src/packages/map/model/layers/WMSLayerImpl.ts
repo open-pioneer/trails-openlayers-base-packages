@@ -217,6 +217,14 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
             throw new Error(`Request failed with status ${response.status}.`);
         }
 
+        // TODO: Error handling is not ideal in this place.
+        // Does open layers have a good mechanism to report errors here?
+        // Maybe use state on layer source manually?
+        const contentType = response.headers.get("Content-Type");
+        if (contentType && !contentType.startsWith("image/")) {
+            throw new Error(`Unexpected content type '${contentType}', expected an image.`);
+        }
+
         const blob = await response.blob();
         const objectUrl = URL.createObjectURL(blob);
         const finish = () => {

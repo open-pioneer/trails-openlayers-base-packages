@@ -3,10 +3,10 @@
 import { KeycloakProperties } from "@open-pioneer/authentication-keycloak";
 import { createCustomElement } from "@open-pioneer/runtime";
 import * as appMetadata from "open-pioneer:app";
-import { MapApp } from "./MapApp";
+import { AppUi } from "./ui/AppUi";
 
 const element = createCustomElement({
-    component: MapApp,
+    component: AppUi,
     appMetadata,
     config: {
         properties: {

@@ -5,8 +5,19 @@ import { defineBuildConfig } from "@open-pioneer/build-support";
 export default defineBuildConfig({
     i18n: ["en", "de"],
     services: {
-        MainMapProvider: {
-            provides: ["map.MapConfigProvider"]
+        // Configures the map
+        MapConfigService: {
+            provides: "map.MapConfigProvider",
+            references: {
+                authService: "authentication.AuthService"
+            }
+        },
+        // Appends tokens to http requests
+        TokenInterceptor: {
+            provides: "http.Interceptor",
+            references: {
+                authService: "authentication.AuthService"
+            }
         }
     },
     ui: {
