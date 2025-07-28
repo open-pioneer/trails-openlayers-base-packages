@@ -10,42 +10,45 @@ import { MapContent } from "./MapContent";
 import { LoginStatus } from "./LoginStatus";
 
 export function AppUi() {
+    return (
+        <ForceAuth>
+            <AppContent />
+        </ForceAuth>
+    );
+}
+
+function AppContent() {
     const { map, error, kind } = useMapModel(MAP_ID);
 
     if (kind === "loading") {
         return <Text>Loading...</Text>;
     }
     if (error) {
-        return <Text>Failed to load: {String(error)}</Text>;
+        // return <Text>Failed to load: {String(error)}</Text>;
+        throw error;
     }
+
     return (
         map && (
-            <ForceAuth>
-                <DefaultMapProvider map={map}>
-                    <AppContent />
-                </DefaultMapProvider>
-            </ForceAuth>
-        )
-    );
-}
-function AppContent() {
-    return (
-        <Flex height="100%" direction="column" overflow="hidden">
-            <Notifier />
-            <TitledSection
-                title={
-                    <Box role="region" textAlign="center" py={1}>
-                        <SectionHeading size={"md"}>
-                            Security.Manager OGC - Map Sample
-                        </SectionHeading>
-                    </Box>
-                }
-            >
-                <Flex flex="1" direction="column" position="relative">
-                    <LoginStatus />
-                    <MapContent />
+            <DefaultMapProvider map={map}>
+                <Flex height="100%" direction="column" overflow="hidden">
+                    <Notifier />
+                    <TitledSection
+                        title={
+                            <Box role="region" textAlign="center" py={1}>
+                                <SectionHeading size={"md"}>
+                                    Security.Manager OGC - Map Sample
+                                </SectionHeading>
+                            </Box>
+                        }
+                    >
+                        <Flex flex="1" direction="column" position="relative">
+                            <LoginStatus />
+                            <MapContent />
+                        </Flex>
+                    </TitledSection>
                 </Flex>
-            </TitledSection>
-        </Flex>
+            </DefaultMapProvider>
+        )
     );
 }
