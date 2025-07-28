@@ -14,10 +14,11 @@ Keycloak is used as the authentication Backend.
     This is needed for the docker containers to talk to each other.
 
 2.  Run `docker compose up` from the `setup` directory.
+    Additional authentication against the container registry may be necessary.
 
     > NOTE: The containers require local ports `8080`, `8081` and `8082`.
 
-3.  Run the trails app, e.g. via `pnpm -w dev`.
+4.  Run the trails app, e.g. via `pnpm -w dev`.
 
     Open the trails app at <http://localhost:5173/samples/secman-ogc-sample/>.
 
