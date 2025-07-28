@@ -31,11 +31,11 @@ Keycloak is used as the authentication Backend.
 
 ### Credentials
 
-The following credentials can be used when logging into the web application:
+The following credentials can be used when logging into the web application (realm `trails`):
 
     trails_test_user / test
 
-The Keycloak administrator account uses `admin / admin`.
+The Keycloak administrator account uses `admin / admin` (realm `master`).
 
 ### How it works
 
