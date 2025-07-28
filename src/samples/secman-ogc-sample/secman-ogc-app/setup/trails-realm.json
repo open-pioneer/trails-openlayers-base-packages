@@ -304,6 +304,7 @@
                     "attributes": {}
                 }
             ],
+            "identity-service": [],
             "account": [
                 {
                     "id": "3ee14267-5cb3-49f1-8ca3-861dbd1fc1fa",
@@ -629,6 +630,55 @@
             "authenticationFlowBindingOverrides": {},
             "fullScopeAllowed": false,
             "nodeReRegistrationTimeout": 0,
+            "defaultClientScopes": ["web-origins", "acr", "profile", "roles", "basic", "email"],
+            "optionalClientScopes": [
+                "address",
+                "phone",
+                "offline_access",
+                "organization",
+                "microprofile-jwt"
+            ]
+        },
+        {
+            "id": "51389f9e-02a3-4d1f-8912-b44c08be4395",
+            "clientId": "identity-service",
+            "name": "",
+            "description": "",
+            "rootUrl": "http://mylocalhost:8081/identity",
+            "adminUrl": "http://mylocalhost:8081/identity",
+            "baseUrl": "",
+            "surrogateAuthRequired": false,
+            "enabled": true,
+            "alwaysDisplayInConsole": false,
+            "clientAuthenticatorType": "client-secret",
+            "secret": "Ya7A9txIVFsbwhfB9sQKxOtAinQYV776",
+            "redirectUris": ["http://mylocalhost:8081/identity/account/*"],
+            "webOrigins": ["http://mylocalhost:8081"],
+            "notBefore": 0,
+            "bearerOnly": false,
+            "consentRequired": false,
+            "standardFlowEnabled": true,
+            "implicitFlowEnabled": false,
+            "directAccessGrantsEnabled": false,
+            "serviceAccountsEnabled": false,
+            "publicClient": false,
+            "frontchannelLogout": false,
+            "protocol": "openid-connect",
+            "attributes": {
+                "realm_client": "false",
+                "oidc.ciba.grant.enabled": "false",
+                "client.secret.creation.time": "1753695072",
+                "backchannel.logout.session.required": "true",
+                "backchannel.logout.url": "http://mylocalhost:8081/identity/account/logout",
+                "standard.token.exchange.enabled": "false",
+                "frontchannel.logout.session.required": "true",
+                "oauth2.device.authorization.grant.enabled": "false",
+                "display.on.consent.screen": "false",
+                "backchannel.logout.revoke.offline.tokens": "false"
+            },
+            "authenticationFlowBindingOverrides": {},
+            "fullScopeAllowed": true,
+            "nodeReRegistrationTimeout": -1,
             "defaultClientScopes": ["web-origins", "acr", "profile", "roles", "basic", "email"],
             "optionalClientScopes": [
                 "address",
