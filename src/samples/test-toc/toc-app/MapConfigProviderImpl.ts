@@ -89,7 +89,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     layers: [
                         new SimpleLayer({
                             title: "Haltestellen Stadt Rostock",
-                            id: "bustops",
+                            id: "busstops",
                             visible: true,
                             description:
                                 "Haltestellen des öffentlichen Personenverkehrs in der Hanse- und Universitätsstadt Rostock.",
@@ -219,9 +219,8 @@ function createSchulenLayer() {
 
 function createStrassenLayer() {
     return new WMSLayer({
-        id: "street_network_wms",
-        title: "Straßennetz Landesbetrieb Straßenbau NRW",
         id: "streets",
+        title: "Straßennetz Landesbetrieb Straßenbau NRW",
         url: "https://www.wms.nrw.de/wms/strassen_nrw_wms",
         attributes: {
             toc: {
