@@ -146,17 +146,30 @@ export function AppUI() {
                                             unavailable and should be marked as such by the UI.
                                         </Text>
                                         <Text>
-                                            The toggle button allows testing expanded or collapsing
-                                            specific toc items using the Toc{"'"}s API.
+                                            The &quot;Toggle steets group&quot; button allows
+                                            testing expanded or collapsing specific toc items using
+                                            the Toc{"'"}s API.
+                                        </Text>
+                                        <Text>
+                                            The &quot;Toggle layer internal&quot; button makes the bus
+                                            stops layer internal/external. If the layer is internal
+                                            it will not be considered in components like the Toc.
+                                        </Text>
+                                        <Text>
+                                            The &quot;Toggle Toc list mode&quot; button toggles the education
+                                            group layer&apos;s list mode between &quot;show&quot; and
+                                            &quot;hide-children&quot;. The Toc list mode determines
+                                            whether a layer is shown, shown without child layers or
+                                            completely hidden in the Toc.
                                         </Text>
                                         <Button onClick={() => toggleTocItem("streets")}>
                                             Toggle streets group
                                         </Button>
                                         <Button onClick={() => toggleLayerInternal("busstops")}>
-                                            toggle bus stops layer internal
+                                            Toggle layer internal
                                         </Button>
-                                        <Button onClick={() => toggleLayerTocListMode("streets")}>
-                                            toggle street layer toc list mode
+                                        <Button onClick={() => toggleLayerTocListMode("group_edu")}>
+                                            Toggle Toc list mode
                                         </Button>
                                     </VStack>
                                 </MapAnchor>
