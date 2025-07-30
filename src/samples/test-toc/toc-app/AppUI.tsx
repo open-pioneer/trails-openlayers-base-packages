@@ -151,16 +151,17 @@ export function AppUI() {
                                             the Toc{"'"}s API.
                                         </Text>
                                         <Text>
-                                            The &quot;Toggle layer internal&quot; button makes the bus
-                                            stops layer internal/external. If the layer is internal
-                                            it will not be considered in components like the Toc.
+                                            The &quot;Toggle layer internal&quot; button makes the
+                                            bus stops layer internal/external. If the layer is
+                                            internal it will not be considered in components like
+                                            the Toc.
                                         </Text>
                                         <Text>
-                                            The &quot;Toggle Toc list mode&quot; button toggles the education
-                                            group layer&apos;s list mode between &quot;show&quot; and
-                                            &quot;hide-children&quot;. The Toc list mode determines
-                                            whether a layer is shown, shown without child layers or
-                                            completely hidden in the Toc.
+                                            The &quot;Toggle Toc list mode&quot; button toggles the
+                                            education group layer&apos;s list mode between
+                                            &quot;show&quot; and &quot;hide-children&quot;. The Toc
+                                            list mode determines whether a layer is shown, shown
+                                            without child layers or completely hidden in the Toc.
                                         </Text>
                                         <Button onClick={() => toggleTocItem("streets")}>
                                             Toggle streets group
