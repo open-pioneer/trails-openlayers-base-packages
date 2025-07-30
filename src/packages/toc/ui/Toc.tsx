@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { BasemapSwitcher, BasemapSwitcherProps } from "@open-pioneer/basemap-switcher";
-import { Box, Flex, Spacer, Text } from "@open-pioneer/chakra-integration";
+import { Box, Flex, Spacer, Text } from "@chakra-ui/react";
 import { MapModel, MapModelProps, useMapModel } from "@open-pioneer/map";
 import {
     CommonComponentProps,
@@ -107,6 +107,25 @@ export interface ToolsConfig {
     showCollapseAllGroups?: boolean;
 }
 
+/**
+ * Layer attributes to specifically configure how a layer is displayed in the Toc.
+ */
+export interface LayerTocAttributes {
+    /**
+     * The {@link ListMode} is used to hide the layer (or it's children) in the Toc.
+     */
+    listMode?: ListMode;
+}
+
+/**
+ * ListMode determines if a layer item is displayed in the Toc for the layer.
+ * The option `"hide-children"` provides a shortcut to hide all child layers (e.g. sublayers of group) of the layer in the Toc.
+ * It has the same effect as manually setting the `listMode` to `"hide"` on all child layers.
+ *
+ * ListMode has precedence over the layer's `internal` attribute but specifically configures the layer's display in the Toc.
+ */
+export type ListMode = "show" | "hide" | "hide-children";
+
 const PADDING = 2;
 
 /**
@@ -156,7 +175,7 @@ function TocContent(props: TocProps & { map: MapModel }) {
 
     const basemapsHeadingId = useId();
     const basemapSwitcher = showBasemapSwitcher && (
-        <Box className="toc-basemap-switcher">
+        <Box className="toc-basemap-switcher" mb={PADDING}>
             <TitledSection
                 title={
                     <SectionHeading id={basemapsHeadingId} size={"sm"} mb={PADDING}>
@@ -177,9 +196,9 @@ function TocContent(props: TocProps & { map: MapModel }) {
         <Box className="toc-operational-layers">
             <TitledSection
                 title={
-                    <SectionHeading size={"sm"} mb={2}>
+                    <SectionHeading size="sm">
                         <Flex>
-                            <Text my={3}>
+                            <Text>
                                 {intl.formatMessage({
                                     id: "operationalLayerLabel"
                                 })}

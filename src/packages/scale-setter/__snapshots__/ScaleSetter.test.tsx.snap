@@ -4,42 +4,39 @@ exports[`should successfully create a scale Setter component 1`] = `
 <div
   class="scale-setter css-0"
   data-testid="scale-setter"
-  data-theme="light"
 >
   <button
-    aria-controls="menu-list-«r1»"
     aria-description="button.ariaDescription"
-    aria-expanded="false"
     aria-haspopup="menu"
     aria-label="button.ariaLabel"
-    class="chakra-button chakra-menu__menu-button scale-setter-menubutton css-ez23ye"
-    data-theme="light"
-    id="menu-button-«r1»"
+    class="chakra-button chakra-menu__trigger scale-setter-menubutton css-1ocg3rx"
+    data-part="trigger"
+    data-scope="menu"
+    data-state="closed"
+    data-uid="«r0»"
+    dir="ltr"
+    id="menu:«r0»:trigger"
     type="button"
   >
-    <span
-      class="css-xl71ch"
-      data-theme="light"
+    1 : 336,409
+    <svg
+      aria-hidden="true"
+      class="chakra-icon css-1qiwd9j"
+      fill="none"
+      focusable="false"
+      height="1em"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      viewBox="0 0 24 24"
+      width="1em"
+      xmlns="http://www.w3.org/2000/svg"
     >
-      1 : 336,409
-    </span>
-    <span
-      class="chakra-button__icon css-1hzyiq5"
-      data-theme="light"
-    >
-      <svg
-        aria-hidden="true"
-        class="chakra-icon css-onkibi"
-        data-theme="light"
-        focusable="false"
-        viewBox="0 0 24 24"
-      >
-        <path
-          d="M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14z"
-          fill="currentColor"
-        />
-      </svg>
-    </span>
+      <path
+        d="m6 9 6 6 6-6"
+      />
+    </svg>
   </button>
 </div>
 `;
@@ -48,42 +45,39 @@ exports[`should successfully create a scale setter component with additional css
 <div
   class="scale-setter test test1 test2 css-0"
   data-testid="scale-setter"
-  data-theme="light"
 >
   <button
-    aria-controls="menu-list-«r3»"
     aria-description="button.ariaDescription"
-    aria-expanded="false"
     aria-haspopup="menu"
     aria-label="button.ariaLabel"
-    class="chakra-button chakra-menu__menu-button scale-setter-menubutton css-ez23ye"
-    data-theme="light"
-    id="menu-button-«r3»"
+    class="chakra-button chakra-menu__trigger scale-setter-menubutton css-1ocg3rx"
+    data-part="trigger"
+    data-scope="menu"
+    data-state="closed"
+    data-uid="«r1»"
+    dir="ltr"
+    id="menu:«r1»:trigger"
     type="button"
   >
-    <span
-      class="css-xl71ch"
-      data-theme="light"
+    1 : 336,409
+    <svg
+      aria-hidden="true"
+      class="chakra-icon css-1qiwd9j"
+      fill="none"
+      focusable="false"
+      height="1em"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      viewBox="0 0 24 24"
+      width="1em"
+      xmlns="http://www.w3.org/2000/svg"
     >
-      1 : 336,409
-    </span>
-    <span
-      class="chakra-button__icon css-1hzyiq5"
-      data-theme="light"
-    >
-      <svg
-        aria-hidden="true"
-        class="chakra-icon css-onkibi"
-        data-theme="light"
-        focusable="false"
-        viewBox="0 0 24 24"
-      >
-        <path
-          d="M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14z"
-          fill="currentColor"
-        />
-      </svg>
-    </span>
+      <path
+        d="m6 9 6 6 6-6"
+      />
+    </svg>
   </button>
 </div>
 `;

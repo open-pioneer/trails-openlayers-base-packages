@@ -54,23 +54,31 @@ it("allows configuration of additional button props", async () => {
 it("automatically sets the 'aria-pressed' attribute when active", async () => {
     const getUI = (isActive: boolean | undefined) => (
         <PackageContextProvider>
-            <ToolButton label="Button Label" icon={getIcon()} isActive={isActive} />
+            <ToolButton label="Button Label" icon={getIcon()} active={isActive} />
         </PackageContextProvider>
     );
 
     const { rerender } = render(getUI(false));
 
     // isActive=false -> aria-pressed=false
-    const button = screen.getByLabelText("Button Label");
-    expect(button.getAttribute("aria-pressed")).toBe("false");
+    {
+        const button = screen.getByLabelText("Button Label");
+        expect(button.getAttribute("aria-pressed")).toBe("false");
+    }
 
     // isActive=true -> aria-pressed=true
-    rerender(getUI(true));
-    expect(button.getAttribute("aria-pressed")).toBe("true");
+    {
+        rerender(getUI(true));
+        const button = screen.getByLabelText("Button Label");
+        expect(button.getAttribute("aria-pressed")).toBe("true");
+    }
 
     // isActive=undefined -> aria-pressed not set
-    rerender(getUI(undefined));
-    expect(button.getAttribute("aria-pressed")).toBe(null);
+    {
+        rerender(getUI(undefined));
+        const button = screen.getByLabelText("Button Label");
+        expect(button.getAttribute("aria-pressed")).toBe(null);
+    }
 });
 
 it("shows a tooltip when hovered", async () => {
@@ -90,7 +98,7 @@ it("shows a tooltip when hovered", async () => {
     const button = screen.getByLabelText("Button Label");
     await user.hover(button);
 
-    const tooltips = screen.getAllByRole("tooltip");
+    const tooltips = await screen.findAllByRole("tooltip");
     expect(tooltips).toHaveLength(1);
 
     const tooltip = tooltips[0]!;

@@ -36,6 +36,11 @@ $ pnpm test <PATH_TO_PACKAGE>
 
 For more details, consult the starter project's [Repository Guide](https://github.com/open-pioneer/trails-starter/blob/main/docs/RepositoryGuide.md).
 
+## Branches
+
+- [main](https://github.com/open-pioneer/trails-openlayers-base-packages/): Current development state.
+- [0.10.x](https://github.com/open-pioneer/trails-openlayers-base-packages/tree/0.10.x) (Legacy): Contains the 0.10.x versions based on Chakra v2.
+
 ## Packages
 
 This repository publishes the following packages:
@@ -71,7 +76,6 @@ This repository publishes the following packages:
 | [@open-pioneer/search](./src/packages/search/)                       | [![NPM Version](https://img.shields.io/npm/v/%40open-pioneer%2Fsearch)](https://www.npmjs.com/package/@open-pioneer/search)                       |
 | [@open-pioneer/selection](./src/packages/selection/)                 | [![NPM Version](https://img.shields.io/npm/v/%40open-pioneer%2Fselection)](https://www.npmjs.com/package/@open-pioneer/selection)                 |
 | [@open-pioneer/spatial-bookmarks](./src/packages/spatial-bookmarks/) | [![NPM Version](https://img.shields.io/npm/v/%40open-pioneer%2Fspatial-bookmarks)](https://www.npmjs.com/package/@open-pioneer/spatial-bookmarks) |
-| [@open-pioneer/theme](./src/packages/theme/)                         | [![NPM Version](https://img.shields.io/npm/v/%40open-pioneer%2Ftheme)](https://www.npmjs.com/package/@open-pioneer/theme)                         |
 | [@open-pioneer/toc](./src/packages/toc/)                             | [![NPM Version](https://img.shields.io/npm/v/%40open-pioneer%2Ftoc)](https://www.npmjs.com/package/@open-pioneer/toc)                             |
 
 ## License

@@ -1,6 +1,6 @@
 {
     "name": "@open-pioneer/printing",
-    "version": "0.10.0",
+    "version": "0.11.0",
     "description": "This package provides a UI component to export the current map view as a printable file.",
     "license": "Apache-2.0",
     "main": "index.ts",
@@ -17,7 +17,8 @@
         "build": "build-pioneer-package"
     },
     "dependencies": {
-        "@open-pioneer/chakra-integration": "catalog:",
+        "@chakra-ui/react": "catalog:",
+        "@open-pioneer/chakra-snippets": "catalog:",
         "@open-pioneer/core": "catalog:",
         "@open-pioneer/map": "workspace:^",
         "@open-pioneer/notifier": "catalog:",

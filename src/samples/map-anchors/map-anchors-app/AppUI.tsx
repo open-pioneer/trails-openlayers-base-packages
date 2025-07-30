@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box, BoxProps, Checkbox, Flex, HStack } from "@open-pioneer/chakra-integration";
+import { Text, Box, BoxProps, Flex, HStack } from "@chakra-ui/react";
+import { Checkbox } from "@open-pioneer/chakra-snippets/checkbox";
 import {
     DefaultMapProvider,
     MapAnchor,
@@ -53,7 +54,7 @@ export function AppUI() {
             <Checkbox
                 key={rawKey}
                 checked={enabledPaddings[key]}
-                onChange={(e) => updatePadding(key, e.target.checked)}
+                onCheckedChange={(e) => updatePadding(key, !!e.checked)}
             >
                 {rawKey} padding
             </Checkbox>
@@ -73,8 +74,16 @@ export function AppUI() {
                             </Box>
                         }
                     >
-                        <Flex flex="1" direction="column" position="relative">
-                            <HStack justify="center">{checkboxes}</HStack>
+                        <Flex flex="1" direction="column" position="relative" textAlign="center">
+                            <Text alignSelf="center" maxW="2xl" fontSize="sm">
+                                This test app demonstrates the functionality of map anchors and map
+                                padding. Click the check boxes to toggle padding on each side of the
+                                map. The map should update itself accordingly, and the map anchors
+                                positioned on top of the map should move with the padding.
+                            </Text>
+                            <HStack my={2} justify="center">
+                                {checkboxes}
+                            </HStack>
                             <Flex flex="1" direction="column" position="relative">
                                 <MapContent paddings={enabledPaddings} />
                                 {overlays}

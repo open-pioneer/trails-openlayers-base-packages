@@ -143,7 +143,8 @@ it("should successfully update the map scale and label when selection changes", 
         center!
     );
     const scale = Math.round(pointResolution * INCHES_PER_METRE * DEFAULT_DPI);
-    expect(scale.toString()).toBe(setterOptions[0]!.value);
+    const setterValue = getValueForOption(setterOptions[0]!);
+    expect(scale).toBe(setterValue);
 });
 
 it("should successfully update the label when map scale changes after creation", async () => {
@@ -259,24 +260,22 @@ async function waitForScaleSetter() {
 async function getMenuOptions(
     user: UserEvent,
     setterButton: HTMLButtonElement
-): Promise<HTMLButtonElement[]> {
-    const menu = document.body.querySelector(
-        "div.scale-setter-menuoptions"
-    ) as HTMLDivElement | null;
-    if (!menu) {
-        // The menu root should always be present after mounting; the contents are created lazily when
-        // the menu gets opened.
-        throw new Error("Menu node not found");
-    }
+): Promise<HTMLDivElement[]> {
+    //options are mounted lazily after dropdown is opened
+    await user.click(setterButton);
 
-    if (!isVisible(menu)) {
-        await user.click(setterButton);
-    }
+    const menu = await waitFor(() => {
+        const menu = document.body.querySelector(
+            "div.scale-setter-menuoptions"
+        ) as HTMLDivElement | null;
+        if (!menu) {
+            throw new Error("Menu node not found");
+        }
+        return menu;
+    });
 
     const items = await waitFor(async () => {
-        const items = Array.from(
-            menu.querySelectorAll(".scale-setter-option")
-        ) as HTMLButtonElement[];
+        const items = Array.from(menu.querySelectorAll(".scale-setter-option")) as HTMLDivElement[];
         if (!items.length) {
             throw new Error("Menu does not have any options");
         }
@@ -285,14 +284,18 @@ async function getMenuOptions(
     return items;
 }
 
-function getOptionValues(setterOptions: HTMLButtonElement[]) {
+function getOptionValues(setterOptions: HTMLDivElement[]) {
     const optionValues: number[] = [];
     setterOptions.forEach((option) => {
-        optionValues.push(parseInt(option.value));
+        const setterValue = getValueForOption(option);
+        optionValues.push(setterValue);
     });
     return optionValues;
 }
 
-function isVisible(node: HTMLElement) {
-    return node.style.visibility !== "hidden" && node.style.display !== "none";
+function getValueForOption(setterOption: HTMLDivElement): number {
+    const valueStr = setterOption.getAttribute("data-value"); //chakra's data-value attribute stores raw value of scale denominator
+    const value = valueStr ? parseInt(valueStr) : Number.NaN;
+
+    return value;
 }

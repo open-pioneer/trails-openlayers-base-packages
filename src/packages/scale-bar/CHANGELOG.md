@@ -1,5 +1,23 @@
 # @open-pioneer/scale-bar
 
+## 0.11.0
+
+### Minor Changes
+
+- 66179bc: Update to core-packages v4.0.0
+- 738390e: Update to Chakra v3
+
+### Patch Changes
+
+- 06ed155: Apply a default background of `whiteAlpha.800` (white with 80% opacity) to the scale bar container.
+  This improves contrast when showing the scale bar on top of a map.
+- Updated dependencies [738390e]
+- Updated dependencies [66179bc]
+- Updated dependencies [0a8ff71]
+- Updated dependencies [acd5115]
+- Updated dependencies [738390e]
+    - @open-pioneer/map@0.11.0
+
 ## 0.10.0
 
 ### Minor Changes
@@ -55,7 +73,6 @@
 ### Minor Changes
 
 - 2fa8020: Update trails core package dependencies.
-
     - Also updates Chakra UI to the latest 2.x version and Chakra React Select to version 5.
     - Removes any obsolete references to `@chakra-ui/system`.
       This dependency seems to be no longer required and may lead to duplicate packages in your dependency tree.

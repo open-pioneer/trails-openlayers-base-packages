@@ -1,18 +1,18 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { StyleProps } from "@open-pioneer/chakra-integration";
+import { SystemStyleObject } from "@chakra-ui/react";
 import { MapAnchorPosition } from "./MapAnchor";
 
 export function computeMapAnchorStyles(
     position: MapAnchorPosition,
     horizontalGap?: number | undefined,
     verticalGap?: number | undefined
-): StyleProps {
+): SystemStyleObject {
     const horizontal = horizontalGap ?? 0;
     const vertical = verticalGap ?? 0;
     const attributionGap = verticalGap == null ? ATTR_GAP : 0;
 
-    const styleProps: StyleProps = {};
+    const styleProps: SystemStyleObject = {};
     switch (position) {
         case "top-left":
             styleProps.left = `${horizontal}px`;

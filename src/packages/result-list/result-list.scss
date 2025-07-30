@@ -5,14 +5,16 @@
     font-size: larger;
 }
 
+.result-list-table-container {
+    &.result-list-table-container--is-resizing * {
+        cursor: col-resize;
+    }
+}
+
 .result-list-table {
     th,
     td {
         overflow-wrap: break-word;
-    }
-
-    &.result-list-table--is-resizing * {
-        cursor: col-resize;
     }
 
     thead {
@@ -63,4 +65,9 @@
             transform: scale(1);
         }
     }
+}
+
+.result-list-sort-indicator {
+    display: inline-block;
+    vertical-align: middle;
 }

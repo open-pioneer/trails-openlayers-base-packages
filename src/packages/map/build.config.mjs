@@ -4,6 +4,7 @@
 import { defineBuildConfig } from "@open-pioneer/build-support";
 
 export default defineBuildConfig({
+    i18n: ["de", "en"],
     entryPoints: ["index", "internalTestSupport"],
     styles: "./ui/styles.css",
     services: {

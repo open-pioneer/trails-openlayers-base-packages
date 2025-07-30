@@ -9,4 +9,10 @@ export {
     type TocReadyEvent,
     type TocReadyHandler
 } from "./model";
-export { Toc, type TocProps, type ToolsConfig } from "./ui/Toc";
+export {
+    Toc,
+    type TocProps,
+    type ToolsConfig,
+    type LayerTocAttributes,
+    type ListMode
+} from "./ui/Toc";

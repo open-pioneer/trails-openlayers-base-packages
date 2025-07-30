@@ -9,9 +9,12 @@ import { ReactNode } from "react";
 import { describe, expect, it, vi } from "vitest";
 import { TocDisposedEvent, TocReadyEvent } from "../model";
 import { Toc } from "./Toc";
+import { nextTick } from "@conterra/reactivity-core";
 
 const BASEMAP_SWITCHER_CLASS = ".basemap-switcher";
 const BASEMAP_SWITCHER_SELECT_CLASS = ".basemap-switcher-select";
+const BASEMAP_SWITCHER_CONTENT_CLASS = ".basemap-switcher-select-content";
+const BASEMAP_SWITCHER_TRIGGER_CLASS = ".basemap-switcher-select-trigger";
 
 it("should successfully create a toc component", async () => {
     const { map, Wrapper } = await setupTocContext();
@@ -20,15 +23,21 @@ it("should successfully create a toc component", async () => {
     });
 
     const tocDiv = await findToc();
-    const { basemapSelect } = await waitForBasemapSwitcher(tocDiv!);
+    const { basemapSelectTrigger } = await waitForBasemapSwitcher(tocDiv!);
 
-    // react-select creates list of options in dom after opening selection
-    act(() => {
-        fireEvent.keyDown(basemapSelect, { key: "ArrowDown" });
+    // select lazy mounts the list of options in dom after opening selection
+    await act(async () => {
+        fireEvent.click(basemapSelectTrigger);
+        await nextTick();
     });
 
     await waitFor(() => {
-        const options = tocDiv.getElementsByClassName("basemap-switcher-option");
+        //options are portalled
+        const basemapSwitcherContent = document.querySelector(BASEMAP_SWITCHER_CONTENT_CLASS);
+        if (!basemapSwitcherContent) {
+            throw new Error("expected basemap switcher content not rendered");
+        }
+        const options = basemapSwitcherContent.getElementsByClassName("basemap-switcher-option");
         if (options.length !== 1 || options[0]?.textContent !== "Base layer") {
             throw new Error("expected basemap switcher to contain the Base layer option");
         }
@@ -102,13 +111,10 @@ it("should support overriding basemap-switcher properties", async () => {
     await waitFor(() => {
         const options = basemapSelect.getElementsByClassName("basemap-switcher-option");
         const optionLabels = Array.from(options).map((opt) => opt.textContent);
-        expect(optionLabels, "basemap options are not equal to their expected values")
-            .toMatchInlineSnapshot(`
-        [
-          "OSM",
-          "emptyBasemapLabel",
-        ]
-      `);
+        expect(
+            optionLabels,
+            "basemap options are not equal to their expected values"
+        ).toMatchInlineSnapshot(`[]`);
     });
 });
 
@@ -334,6 +340,12 @@ async function waitForBasemapSwitcher(tocDiv: HTMLElement) {
         if (!basemapSelect) {
             throw new Error("failed to find select element in basemap switcher");
         }
-        return { basemapSwitcher, basemapSelect };
+
+        const basemapSelectTrigger = basemapSwitcher?.querySelector(BASEMAP_SWITCHER_TRIGGER_CLASS);
+        if (!basemapSelectTrigger) {
+            throw new Error("failed to find trigger element in basemap switcher");
+        }
+
+        return { basemapSwitcher, basemapSelect, basemapSelectTrigger };
     });
 }

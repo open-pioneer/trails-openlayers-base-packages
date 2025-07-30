@@ -1,4 +1,5 @@
 messages:
+  formLabel: "Configure map printing"
   title: "Title"
   fileFormat: "File format"
   export: "Export map"

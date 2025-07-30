@@ -2,7 +2,8 @@
     "name": "map-anchors-app",
     "private": true,
     "dependencies": {
-        "@open-pioneer/chakra-integration": "catalog:",
+        "@chakra-ui/react": "catalog:",
+        "@open-pioneer/chakra-snippets": "catalog:",
         "@open-pioneer/map": "workspace:^",
         "@open-pioneer/react-utils": "catalog:",
         "@open-pioneer/runtime": "catalog:",

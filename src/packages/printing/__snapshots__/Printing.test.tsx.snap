@@ -4,56 +4,60 @@ exports[`should successfully create a printing component 1`] = `
 <div
   class="printing css-0"
   data-testid="printing"
-  data-theme="light"
 >
   <form
-    class="css-162gbd7"
-    data-theme="light"
+    aria-label="formLabel"
+    class="css-1crq8d6"
   >
     <div
-      class="chakra-stack chakra-form-control css-18uenf7"
-      data-focus=""
-      data-theme="light"
+      class="chakra-stack chakra-field__root css-12dfuz6"
+      data-part="root"
+      data-scope="field"
+      id="field::«r0»"
       role="group"
     >
       <label
-        class="chakra-form__label css-u9crf"
-        data-focus=""
-        data-theme="light"
-        for="field-«r0»"
-        id="field-«r0»-label"
+        class="chakra-field__label css-sevaap"
+        data-part="label"
+        data-scope="field"
+        for="«r0»"
+        id="field::«r0»::label"
       >
         title
       </label>
       <input
-        class="chakra-input css-1cjy4zv"
-        data-theme="light"
-        id="field-«r0»"
+        class="chakra-input css-ee9xfg"
+        data-part="input"
+        data-scope="field"
+        id="«r0»"
         placeholder="input.placeholder"
         value=""
       />
     </div>
     <div
-      class="chakra-stack chakra-form-control css-18uenf7"
-      data-theme="light"
+      class="chakra-stack chakra-field__root css-12dfuz6"
+      data-part="root"
+      data-scope="field"
+      id="field::«r1»"
       role="group"
     >
       <label
-        class="chakra-form__label css-u9crf"
-        data-theme="light"
-        for="field-«r1»"
-        id="field-«r1»-label"
+        class="chakra-field__label css-sevaap"
+        data-part="label"
+        data-scope="field"
+        for="«r1»"
+        id="field::«r1»::label"
       >
         fileFormat
       </label>
       <div
-        class="chakra-select__wrapper css-42b2qy"
-        data-theme="light"
+        class="chakra-native-select__root css-1lytf6x"
       >
         <select
-          class="chakra-select printing-select css-161pkch"
-          data-theme="light"
-          id="field-«r1»"
+          class="chakra-native-select__field printing-select css-d0pvvy"
+          data-part="select"
+          data-scope="field"
+          id="«r1»"
         >
           <option
             value="png"
@@ -67,28 +71,21 @@ exports[`should successfully create a printing component 1`] = `
           </option>
         </select>
         <div
-          class="chakra-select__icon-wrapper css-iohxn1"
-          data-theme="light"
+          class="chakra-native-select__indicator css-d7tss2"
         >
           <svg
-            aria-hidden="true"
-            class="chakra-select__icon"
-            focusable="false"
-            role="presentation"
-            style="width: 1em; height: 1em; color: currentcolor;"
+            class="css-s3mb0o"
             viewBox="0 0 24 24"
           >
             <path
-              d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
-              fill="currentColor"
+              d="m6 9 6 6 6-6"
             />
           </svg>
         </div>
       </div>
     </div>
     <button
-      class="chakra-button printing-export-button css-166bd52"
-      data-theme="light"
+      class="chakra-button printing-export-button css-1wkoptu"
       type="submit"
     >
       export

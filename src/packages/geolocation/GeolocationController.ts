@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import { reactive } from "@conterra/reactivity-core";
 import { createLogger } from "@open-pioneer/core";
-import { TOPMOST_LAYER_Z, calculateBufferedExtent, MapModel } from "@open-pioneer/map";
+import { calculateBufferedExtent, MapModel, TOPMOST_LAYER_Z } from "@open-pioneer/map";
 import Feature from "ol/Feature";
 import olGeolocation, { GeolocationError } from "ol/Geolocation";
 import { unByKey } from "ol/Observable";

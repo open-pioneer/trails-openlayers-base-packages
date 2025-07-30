@@ -1,5 +1,50 @@
 # @open-pioneer/map
 
+## 0.11.0
+
+### Minor Changes
+
+- 66179bc: Update to core-packages v4.0.0
+- acd5115: **Breaking:** Remove the following hooks, which were deprecated since version 0.8.0:
+    - useView
+    - useProjection
+    - useResolution
+    - useCenter
+    - useScale
+
+    Use reactive properties on the map model instead, e.g. `mapModel.scale`.
+
+- 738390e: Update to Chakra v3
+
+### Patch Changes
+
+- 738390e: Fix an issue with "raw" map container children that are not wrapped in a map anchor.
+
+    Consider, for example, the following snippet:
+
+    ```tsx
+    <MapContainer>
+        {/* .custom-content does absolute positioning relative to map container */}
+        <div className="custom-content">Hi</div>
+    </MapContainer>
+    ```
+
+    Previously, the `div` was rendered relative to the map container div but did _not_ respect the map's view padding.
+    Now the `div` will move according to the map padding as well.
+
+- 0a8ff71: The default attribution widget created for the map now has `role="region"` and an `aria-label` for improved screen reader support.
+
+    ```html
+    <div
+        style="pointer-events: auto;"
+        class="ol-attribution ol-unselectable ol-control ol-uncollapsible"
+        role="region"
+        aria-label="Quellenangaben"
+    >
+        <!-- Attributions -->
+    </div>
+    ```
+
 ## 0.10.0
 
 ### Minor Changes
@@ -213,7 +258,6 @@
     `layer.children` is either an alias of `layer.sublayers` (if the layer has sublayers), `layer.layers` (if it's a `GroupLayer`) or undefined, if the layer does not have any children.
 
 - d8337a6: The following hooks are deprecated and will be removed in a future release:
-
     - `useView`
     - `useProjection`
     - `useResolution`
@@ -231,7 +275,6 @@
     ```
 
 - 2fa8020: Update trails core package dependencies.
-
     - Also updates Chakra UI to the latest 2.x version and Chakra React Select to version 5.
     - Removes any obsolete references to `@chakra-ui/system`.
       This dependency seems to be no longer required and may lead to duplicate packages in your dependency tree.
@@ -281,7 +324,6 @@
     Sublayers (e.g. `WMSSublayer`) cannot be added to a group directly.
 
 - d8337a6: Provide new reactive properties on the `MapModel` type.
-
     - `olView` (-> `olMap.getView()`)
     - `projection` (-> `olMap.getView().getProjection()`)
     - `resolution` (-> `olMap.getView().getResolution()`)
@@ -313,7 +355,6 @@
     Two type guards have been implemented that allow to check if a layer instance is a `Layer` or `Sublayer`: `isLayer()`and `isSublayer()` (see example below).
 
     The following `type` attribute values have been implemented at the layers:
-
     - SimpleLayer: `simple`
     - WMSLayer: `wms`
     - WMSSubLayer: `wms-sublayer`

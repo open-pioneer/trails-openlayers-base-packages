@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { ArrowLeftIcon, ArrowRightIcon } from "@chakra-ui/icons";
+import { LuChevronsLeft, LuChevronsRight } from "react-icons/lu";
 import {
     Box,
     Button,
@@ -8,9 +8,9 @@ import {
     Flex,
     IconButton,
     Spacer,
-    Tooltip,
     useDisclosure
-} from "@open-pioneer/chakra-integration";
+} from "@chakra-ui/react";
+import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
 import { useIntl } from "open-pioneer:react-hooks";
 import { useCallback } from "react";
 import { ReactElement, ReactNode, useEffect, useReducer } from "react";
@@ -51,7 +51,7 @@ export interface SidebarProperties {
      */
     sidebarWidthChanged?: (width: number) => void;
     /**
-     * The visible menu entries and their corrensponding content.
+     * The visible menu entries and their corresponding content.
      */
     items?: SidebarItem[];
 }
@@ -70,8 +70,8 @@ export function Sidebar({
     const [selectedItems, { toggle: toggleItem }] = useSelection(items);
 
     // Handles the main section (buttons to open widgets).
-    const { isOpen: isMainToggled, onToggle: toggleMain } = useDisclosure({
-        defaultIsOpen: defaultExpanded,
+    const { open: isMainToggled, onToggle: toggleMain } = useDisclosure({
+        defaultOpen: defaultExpanded,
         onOpen() {
             expandedChanged?.(true);
         },
@@ -81,7 +81,7 @@ export function Sidebar({
     });
 
     // Handles the content section (contents of open widgets).
-    const { isOpen: isContentToggled, onToggle: toggleContent } = useDisclosure();
+    const { open: isContentToggled, onToggle: toggleContent } = useDisclosure();
     const hasSelectedItems = selectedItems.size > 0;
     useEffect(() => {
         if (hasSelectedItems && !isContentToggled) {
@@ -117,22 +117,28 @@ export function Sidebar({
                 {isMainToggled ? (
                     <Button
                         key={item.id}
-                        leftIcon={item.icon}
                         variant={variant}
                         colorScheme={color}
                         onClick={() => toggleItem(item)}
                     >
+                        {item.icon}
                         {item.label}
                     </Button>
                 ) : (
-                    <Tooltip key={item.id} hasArrow label={item.label} placement="right">
+                    <Tooltip
+                        key={item.id}
+                        showArrow={true}
+                        content={item.label}
+                        positioning={{ placement: "right" }}
+                    >
                         <IconButton
                             aria-label={item.label}
                             variant={variant}
                             colorScheme={color}
-                            icon={item.icon}
                             onClick={() => toggleItem(item)}
-                        />
+                        >
+                            {item.icon}
+                        </IconButton>
                     </Tooltip>
                 )}
             </div>
@@ -174,13 +180,14 @@ export function Sidebar({
             >
                 {sidebarButtons}
                 <Spacer></Spacer>
-                <Tooltip label={toggleButtonLabel} hasArrow placement="right">
-                    <IconButton
-                        aria-label={toggleButtonLabel}
-                        variant="ghost"
-                        icon={!isMainToggled ? <ArrowRightIcon /> : <ArrowLeftIcon />}
-                        onClick={toggleMain}
-                    />
+                <Tooltip
+                    content={toggleButtonLabel}
+                    showArrow={true}
+                    positioning={{ placement: "right" }}
+                >
+                    <IconButton aria-label={toggleButtonLabel} variant="ghost" onClick={toggleMain}>
+                        {!isMainToggled ? <LuChevronsRight /> : <LuChevronsLeft />}
+                    </IconButton>
                 </Tooltip>
             </Box>
             <Box

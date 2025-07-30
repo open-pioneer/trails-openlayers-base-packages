@@ -1,5 +1,50 @@
 # @open-pioneer/result-list
 
+## 0.11.0
+
+### Minor Changes
+
+- 66179bc: Update to core-packages v4.0.0
+- 738390e: Update to Chakra v3
+
+### Patch Changes
+
+- 9376a74: Ensure that icons and other decorative elements are hidden from the screen reader using the `aria-hidden="true"` attribute.
+
+    The easiest way to do that is to wrap icons into chakra's `<Icon />` component, for example:
+
+    ```tsx
+    import { Icon } from "@chakra-ui/react";
+    import { FiX } from "react-icons/fi";
+
+    <Icon>
+        <FiX />
+    </Icon>;
+    ```
+
+- 5c2cca2: Fix a11y issues:
+    - Fix wrong `aria-labelledby` ids
+    - Introduce optional property `labelProperty` to result list's `input` option
+        - A feature's property value is used to provide context in aria attributes.
+          This is currently used for `aria-labels` of checkboxes in each row of the data table.
+        - Use feature id as fallback if `labelProperty` is not set or feature does not have the specified property.
+
+    ```tsx
+    const input: ResultListInput = {
+        columns: columns,
+        data: results,
+        labelProperty: "name", // uses feature.properties.name as label
+        formatOptions: formatOptions
+    };
+    ```
+
+- Updated dependencies [738390e]
+- Updated dependencies [66179bc]
+- Updated dependencies [0a8ff71]
+- Updated dependencies [acd5115]
+- Updated dependencies [738390e]
+    - @open-pioneer/map@0.11.0
+
 ## 0.10.0
 
 ### Minor Changes
@@ -55,7 +100,6 @@
 ### Minor Changes
 
 - 2fa8020: Update trails core package dependencies.
-
     - Also updates Chakra UI to the latest 2.x version and Chakra React Select to version 5.
     - Removes any obsolete references to `@chakra-ui/system`.
       This dependency seems to be no longer required and may lead to duplicate packages in your dependency tree.

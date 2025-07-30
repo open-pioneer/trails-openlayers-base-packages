@@ -3,16 +3,16 @@
 import {
     Box,
     Button,
-    Checkbox,
     Flex,
     HStack,
     ListItem,
     Stack,
-    StackDivider,
     Text,
-    UnorderedList,
-    VStack
-} from "@open-pioneer/chakra-integration";
+    VStack,
+    Center,
+    List
+} from "@chakra-ui/react";
+import { Checkbox } from "@open-pioneer/chakra-snippets/checkbox";
 import { MapAnchor, MapContainer, MapModel, useMapModel } from "@open-pioneer/map";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { Geometry, LineString, Point, Polygon } from "ol/geom";
@@ -122,16 +122,13 @@ export function AppUI() {
                                     padding={2}
                                     boxShadow="lg"
                                 >
-                                    <Text align="center">Test Controls:</Text>
-                                    <Stack
-                                        align="center"
-                                        divider={<StackDivider borderColor="gray.200" />}
-                                        pt={5}
-                                    >
+                                    <Center>
+                                        <Text>Test Controls:</Text>
+                                    </Center>
+                                    <Stack align="center" pt={5}>
                                         <Checkbox
-                                            onChange={(value) => {
-                                                setOwnStyle(value.target.checked);
-                                            }}
+                                            checked={ownStyle}
+                                            onCheckedChange={(e) => setOwnStyle(!!e.checked)}
                                         >
                                             Own Style
                                         </Checkbox>
@@ -209,7 +206,7 @@ export function AppUI() {
                                         marker. The highlight and zoom for point, line string and
                                         polygon geometries in two different styles can be tested.
                                     </Text>
-                                    <UnorderedList>
+                                    <List.Root marginStart="1em">
                                         <ListItem>
                                             Clicking on {"'Points'"} adds markers for point
                                             geometries.
@@ -238,7 +235,7 @@ export function AppUI() {
                                             Clicking on {"'Own Style'"} activates highlighting with
                                             customstyle.
                                         </ListItem>
-                                    </UnorderedList>
+                                    </List.Root>
                                 </VStack>
                             </MapAnchor>
                         </MapContainer>

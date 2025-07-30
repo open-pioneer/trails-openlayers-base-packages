@@ -329,21 +329,21 @@ it("changes the description popover's visibility when toggling the button", asyn
         throw new Error("description button not found!");
     }
 
-    const description = screen.getByText(layer.description);
-
-    // initially hidden
-    expect(description).not.toBeVisible();
+    //initially not there because of lazy mounting of popover
+    expect(() => screen.getByText(layer.description)).toThrow();
 
     // open the popover
     fireEvent.click(button);
     await waitFor(async () => {
+        const description = screen.getByText(layer.description);
         expect(description).toBeVisible();
     });
 
     // close the popover again
     fireEvent.click(button);
     await waitFor(async () => {
-        expect(description).not.toBeVisible();
+        const description = screen.queryByText(layer.description);
+        expect(description).toBeFalsy(); // Popover should unmount
     });
 });
 
@@ -375,6 +375,13 @@ it("reacts to changes in the layer description", async () => {
 
     const initialItems = queryAllByRole(container, "button");
     expect(initialItems).toHaveLength(1);
+    //need to open popover because of lazy mounting of popover
+    const button = initialItems[0]!;
+    await act(async () => {
+        fireEvent.click(button);
+        await nextTick();
+    });
+
     screen.getByText("Description");
     await act(async () => {
         layer.setDescription("New description");
@@ -536,15 +543,15 @@ it("should collapse and expand list items", async () => {
     expect(groupCollapseButton).toBeDefined();
     expect(groupCollapseButton?.getAttribute("aria-expanded")).toBe("true");
     expect(collapsibleList).toBeDefined();
-    expect(collapsibleList.getAttribute("style")?.includes("height: auto")).toBe(true);
+    expect(collapsibleList.getAttribute("data-state")).toBe("open");
 
     await user.click(groupCollapseButton); //collapse
     expect(groupCollapseButton?.getAttribute("aria-expanded")).toBe("false");
-    expect(collapsibleList.getAttribute("style")?.includes("height: 0")).toBe(true);
+    expect(collapsibleList.getAttribute("data-state")).toBe("closed");
 
     await user.click(groupCollapseButton); //expand again
     expect(groupCollapseButton?.getAttribute("aria-expanded")).toBe("true");
-    expect(collapsibleList.getAttribute("style")?.includes("height: auto")).toBe(true);
+    expect(collapsibleList.getAttribute("data-state")).toBe("open");
 });
 
 it("it renders collapse buttons (only) for groups", async () => {
@@ -628,11 +635,155 @@ it("supports initial collapsed groups", async () => {
     expect(groupCollapseButton).toBeDefined();
     expect(groupCollapseButton?.getAttribute("aria-expanded")).toBe("false");
     expect(collapsibleList).toBeDefined();
-    expect(collapsibleList.getAttribute("style")?.includes("height: 0")).toBe(true);
+    expect(collapsibleList.getAttribute("data-state")).toBe("closed");
 
     await user.click(groupCollapseButton); //expand
     expect(groupCollapseButton?.getAttribute("aria-expanded")).toBe("true");
-    expect(collapsibleList.getAttribute("style")?.includes("height: auto")).toBe(true);
+    expect(collapsibleList.getAttribute("data-state")).toBe("open");
+});
+
+it("displays the layer item only if the layer is not internal", async () => {
+    const { mapId, registry } = await setupMap({
+        layers: [
+            {
+                id: "layer",
+                title: "Layer 1",
+                olLayer: new TileLayer({}),
+                internal: false
+            }
+        ]
+    });
+
+    const map = await registry.expectMapModel(mapId);
+    const layer = map.layers.getLayerById("layer");
+    if (!layer) {
+        throw new Error("test layer not found!");
+    }
+
+    const { container } = render(<TopLevelLayerList map={map} />, {
+        wrapper: createWrapper()
+    });
+
+    let layerItem = findLayerItem(container, layer.id);
+    expect(layerItem).toBeTruthy();
+
+    await act(async () => {
+        layer.setInternal(true); //make layer internal
+        await nextTick();
+    });
+    layerItem = findLayerItem(container, layer.id); //layer item should not be there anymore
+    expect(layerItem).toBeFalsy();
+});
+
+it("displays the layer item only if the list mode is not `hide`", async () => {
+    const { mapId, registry } = await setupMap({
+        layers: [
+            {
+                id: "layer",
+                title: "Layer 1",
+                olLayer: new TileLayer({}),
+                internal: false,
+                attributes: {
+                    toc: {
+                        listMode: "show"
+                    }
+                }
+            }
+        ]
+    });
+
+    const map = await registry.expectMapModel(mapId);
+    const layer = map.layers.getLayerById("layer");
+    if (!layer) {
+        throw new Error("test layer not found!");
+    }
+
+    const { container } = render(<TopLevelLayerList map={map} />, {
+        wrapper: createWrapper()
+    });
+
+    let layerItem = findLayerItem(container, layer.id);
+    expect(layerItem).toBeTruthy();
+
+    await act(async () => {
+        layer.setInternal(true); //make layer internal
+        await nextTick();
+    });
+    //layer item should still be there because toc specific listMode has precedence over internal attribute
+    layerItem = findLayerItem(container, layer.id);
+    expect(layerItem).toBeTruthy();
+
+    await act(async () => {
+        layer.setInternal(false);
+        layer.updateAttributes({
+            toc: {
+                listMode: "hide-children"
+            }
+        });
+        await nextTick();
+    });
+    //layer item should still be there because `hide-children` should not affect the layer item itself
+    layerItem = findLayerItem(container, layer.id);
+    expect(layerItem).toBeTruthy();
+
+    await act(async () => {
+        layer.updateAttributes({
+            toc: {
+                listMode: "hide"
+            }
+        });
+        await nextTick();
+    });
+    layerItem = findLayerItem(container, layer.id);
+    expect(layerItem).toBeFalsy();
+});
+
+it("does not display layer item for child layer if the group's listMode is `hide-children`", async () => {
+    const childLayer = new SimpleLayer({
+        id: "member",
+        title: "group member",
+        olLayer: new TileLayer({}),
+        visible: false
+    });
+
+    const groupLayer = new GroupLayer({
+        id: "group",
+        title: "a group layer",
+        visible: false,
+        layers: [childLayer],
+        attributes: {
+            toc: {
+                listMode: "show"
+            }
+        }
+    });
+
+    const { mapId, registry } = await setupMap({
+        layers: [groupLayer]
+    });
+
+    const map = await registry.expectMapModel(mapId);
+    const { container } = render(<TopLevelLayerList map={map} />, {
+        wrapper: createWrapper()
+    });
+
+    let groupLayerItem = findLayerItem(container, groupLayer.id);
+    expect(groupLayerItem).toBeTruthy();
+    let childLayerItem = findLayerItem(container, childLayer.id);
+    expect(childLayerItem).toBeTruthy();
+
+    await act(async () => {
+        groupLayer.updateAttributes({
+            toc: {
+                listMode: "hide-children"
+            }
+        }); //hide children of group layer in toc
+        await nextTick();
+    });
+    groupLayerItem = findLayerItem(container, groupLayer.id);
+    expect(groupLayerItem).toBeTruthy(); //layer item for group should still be there
+    childLayerItem = findLayerItem(container, childLayer.id);
+    expect(childLayerItem).toBeFalsy(); //layer item for child should not be there anymore
 });
 
 /** Returns the layer list's current list items. */

@@ -5,26 +5,25 @@ import { MapModel } from "@open-pioneer/map";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { VectorSelectionSourceFactory } from "@open-pioneer/selection/services";
 import { ReactNode } from "react";
-import { createOverviewMapDemo } from "./OverviewMapDemo";
-import { createSearchAndHighlightDemo } from "./SearchAndHighlightDemo";
+import { createTocAndLegendDemo } from "./TocLegendDemo";
+import { createSelectionDemo } from "./SelectionDemo";
+import { createEditingDemo } from "./EditingDemo";
+import { EditingService } from "@open-pioneer/editing";
+import { NotificationService } from "@open-pioneer/notifier";
 import {
     createCoordinateViewerDemo,
-    createCoordinateInputDemo,
-    createCoordinateSearchDemo,
     createGeolocationDemo,
     createMapNavigationDemo,
     createMeasurementDemo,
+    createOverviewMapDemo,
     createPrintingDemo,
     createScaleBarDemo,
     createScaleSetterDemo,
     createScaleViewerDemo,
     createSpatialBookmarksDemo
 } from "./SimpleDemos";
-import { createTocAndLegendDemo } from "./TocLegendDemo";
-import { createSelectionDemo } from "./SelectionDemo";
-import { createEditingDemo } from "./EditingDemo";
-import { EditingService } from "@open-pioneer/editing";
-import { NotificationService } from "@open-pioneer/notifier";
+import { createCoordinateInputDemo, createCoordinateSearchDemo } from "./CoordinateSearchDemos";
+import { createSearchAndHighlightDemo } from "./SearchAndHighlightDemo";
 
 export interface DemoInfo {
     /** Unique id */

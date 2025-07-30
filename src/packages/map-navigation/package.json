@@ -1,6 +1,6 @@
 {
     "name": "@open-pioneer/map-navigation",
-    "version": "0.10.0",
+    "version": "0.11.0",
     "description": "This package provides a collection of map navigation controls.",
     "license": "Apache-2.0",
     "main": "index.ts",
@@ -18,7 +18,7 @@
     },
     "dependencies": {
         "@conterra/reactivity-core": "catalog:",
-        "@open-pioneer/chakra-integration": "catalog:",
+        "@chakra-ui/react": "catalog:",
         "@open-pioneer/map": "workspace:^",
         "@open-pioneer/map-ui-components": "workspace:^",
         "@open-pioneer/react-utils": "catalog:",

@@ -3,119 +3,104 @@
 exports[`should successfully create a zoom component with additional css classes 1`] = `
 <button
   aria-label="zoom-in.title"
-  class="chakra-button tool-button zoom zoom-in testClass1 testClass2 css-22xpxh"
+  class="chakra-button chakra-tooltip__trigger tool-button zoom zoom-in testClass1 testClass2 css-1qurmz4"
+  data-part="trigger"
+  data-scope="tooltip"
+  data-state="closed"
   data-testid="zoom"
-  data-theme="light"
+  dir="ltr"
+  id="tooltip:«r2»:trigger"
   type="button"
 >
-  <span
-    class="chakra-button__icon css-1dwr89y"
-    data-theme="light"
+  <svg
+    aria-hidden="true"
+    class="chakra-icon css-1qiwd9j"
+    fill="none"
+    focusable="false"
+    height="1em"
+    stroke="currentColor"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    stroke-width="2"
+    viewBox="0 0 24 24"
+    width="1em"
+    xmlns="http://www.w3.org/2000/svg"
   >
-    <svg
-      aria-hidden="true"
-      fill="none"
-      focusable="false"
-      height="1em"
-      stroke="currentColor"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      stroke-width="2"
-      viewBox="0 0 24 24"
-      width="1em"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <line
-        x1="12"
-        x2="12"
-        y1="5"
-        y2="19"
-      />
-      <line
-        x1="5"
-        x2="19"
-        y1="12"
-        y2="12"
-      />
-    </svg>
-  </span>
+    <path
+      d="M5 12h14"
+    />
+    <path
+      d="M12 5v14"
+    />
+  </svg>
 </button>
 `;
 
 exports[`should successfully create a zoom-in and zoom-out buttons 1`] = `
 <button
   aria-label="zoom-in.title"
-  class="chakra-button tool-button zoom zoom-in css-22xpxh"
+  class="chakra-button chakra-tooltip__trigger tool-button zoom zoom-in css-1qurmz4"
+  data-part="trigger"
+  data-scope="tooltip"
+  data-state="closed"
   data-testid="zoom-in"
-  data-theme="light"
+  dir="ltr"
+  id="tooltip:«r0»:trigger"
   type="button"
 >
-  <span
-    class="chakra-button__icon css-1dwr89y"
-    data-theme="light"
+  <svg
+    aria-hidden="true"
+    class="chakra-icon css-1qiwd9j"
+    fill="none"
+    focusable="false"
+    height="1em"
+    stroke="currentColor"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    stroke-width="2"
+    viewBox="0 0 24 24"
+    width="1em"
+    xmlns="http://www.w3.org/2000/svg"
   >
-    <svg
-      aria-hidden="true"
-      fill="none"
-      focusable="false"
-      height="1em"
-      stroke="currentColor"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      stroke-width="2"
-      viewBox="0 0 24 24"
-      width="1em"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <line
-        x1="12"
-        x2="12"
-        y1="5"
-        y2="19"
-      />
-      <line
-        x1="5"
-        x2="19"
-        y1="12"
-        y2="12"
-      />
-    </svg>
-  </span>
+    <path
+      d="M5 12h14"
+    />
+    <path
+      d="M12 5v14"
+    />
+  </svg>
 </button>
 `;
 
 exports[`should successfully create a zoom-in and zoom-out buttons 2`] = `
 <button
   aria-label="zoom-out.title"
-  class="chakra-button tool-button zoom zoom-out css-22xpxh"
+  class="chakra-button chakra-tooltip__trigger tool-button zoom zoom-out css-1qurmz4"
+  data-part="trigger"
+  data-scope="tooltip"
+  data-state="closed"
   data-testid="zoom-out"
-  data-theme="light"
+  dir="ltr"
+  id="tooltip:«r1»:trigger"
   type="button"
 >
-  <span
-    class="chakra-button__icon css-1dwr89y"
-    data-theme="light"
+  <svg
+    aria-hidden="true"
+    class="chakra-icon css-1qiwd9j"
+    fill="none"
+    focusable="false"
+    height="1em"
+    stroke="currentColor"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    stroke-width="2"
+    viewBox="0 0 24 24"
+    width="1em"
+    xmlns="http://www.w3.org/2000/svg"
   >
-    <svg
-      aria-hidden="true"
-      fill="none"
-      focusable="false"
-      height="1em"
-      stroke="currentColor"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      stroke-width="2"
-      viewBox="0 0 24 24"
-      width="1em"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <line
-        x1="5"
-        x2="19"
-        y1="12"
-        y2="12"
-      />
-    </svg>
-  </span>
+    <path
+      d="M5 12h14"
+    />
+  </svg>
 </button>
 `;

@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Select } from "@open-pioneer/chakra-integration";
+import { NativeSelectField, NativeSelectRoot } from "@open-pioneer/chakra-snippets/native-select";
 import { ApplicationContext } from "@open-pioneer/runtime";
 import { useIntl, useService } from "open-pioneer:react-hooks";
 import { HeaderFormControl } from "./HeaderFormControl";
@@ -28,10 +28,19 @@ export function LocaleSwitcher() {
 
     return (
         <HeaderFormControl label={intl.formatMessage({ id: "localeSwitcher.label" })}>
-            <Select value={currentLocale} onChange={(e) => changeLocale(e.target.value)}>
-                <option value="de">{intl.formatMessage({ id: `localeSwitcher.locale.de` })}</option>
-                <option value="en">{intl.formatMessage({ id: `localeSwitcher.locale.en` })}</option>
-            </Select>
+            <NativeSelectRoot>
+                <NativeSelectField
+                    value={currentLocale}
+                    onChange={(e) => changeLocale(e.target.value)}
+                >
+                    <option value="de">
+                        {intl.formatMessage({ id: `localeSwitcher.locale.de` })}
+                    </option>
+                    <option value="en">
+                        {intl.formatMessage({ id: `localeSwitcher.locale.en` })}
+                    </option>
+                </NativeSelectField>
+            </NativeSelectRoot>
         </HeaderFormControl>
     );
 }

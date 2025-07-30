@@ -1,5 +1,32 @@
 # @open-pioneer/map-ui-components
 
+## 0.11.0
+
+### Minor Changes
+
+- 66179bc: Update to core-packages v4.0.0
+- 738390e: **Breaking:** Rename `<ToolButton />` props for consistency with Chakra naming conventions:
+    - `isLoading` (old) --> `loading` (new)
+    - `isActive` (old) --> `active` (new)
+    - `isDisabled` (old) --> `disabled` (new)
+
+- 738390e: Update to Chakra v3
+
+### Patch Changes
+
+- 9376a74: Ensure that icons and other decorative elements are hidden from the screen reader using the `aria-hidden="true"` attribute.
+
+    The easiest way to do that is to wrap icons into chakra's `<Icon />` component, for example:
+
+    ```tsx
+    import { Icon } from "@chakra-ui/react";
+    import { FiX } from "react-icons/fi";
+
+    <Icon>
+        <FiX />
+    </Icon>;
+    ```
+
 ## 0.10.0
 
 ### Patch Changes
@@ -19,7 +46,6 @@
 ### Minor Changes
 
 - 2fa8020: Update trails core package dependencies.
-
     - Also updates Chakra UI to the latest 2.x version and Chakra React Select to version 5.
     - Removes any obsolete references to `@chakra-ui/system`.
       This dependency seems to be no longer required and may lead to duplicate packages in your dependency tree.

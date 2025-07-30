@@ -1,5 +1,45 @@
 # @open-pioneer/spatial-bookmarks
 
+## 0.11.0
+
+### Minor Changes
+
+- 66179bc: Update to core-packages v4.0.0
+- 738390e: Update to Chakra v3
+
+### Patch Changes
+
+- 9376a74: Ensure that icons and other decorative elements are hidden from the screen reader using the `aria-hidden="true"` attribute.
+
+    The easiest way to do that is to wrap icons into chakra's `<Icon />` component, for example:
+
+    ```tsx
+    import { Icon } from "@chakra-ui/react";
+    import { FiX } from "react-icons/fi";
+
+    <Icon>
+        <FiX />
+    </Icon>;
+    ```
+
+- 0137b05: Fix a11y issues.
+
+    **Improvements:**
+    - add descriptive `aria-label` to each list item to make it clearer for screen reader users that list item is an interactive element
+    - use title in `aria-label` of deleteOne button to provide more context for screen reader users
+
+    **Known issues:**
+    - screen readers read both tooltip content and aria label of deleteOne Button
+    - descriptive `aria-label` for list items is a workaround
+    - ideally interactive elements should not be nested (deleteOne Button is currently a child of list item)
+
+- Updated dependencies [738390e]
+- Updated dependencies [66179bc]
+- Updated dependencies [0a8ff71]
+- Updated dependencies [acd5115]
+- Updated dependencies [738390e]
+    - @open-pioneer/map@0.11.0
+
 ## 0.10.0
 
 ### Minor Changes
@@ -55,7 +95,6 @@
 ### Minor Changes
 
 - 2fa8020: Update trails core package dependencies.
-
     - Also updates Chakra UI to the latest 2.x version and Chakra React Select to version 5.
     - Removes any obsolete references to `@chakra-ui/system`.
       This dependency seems to be no longer required and may lead to duplicate packages in your dependency tree.

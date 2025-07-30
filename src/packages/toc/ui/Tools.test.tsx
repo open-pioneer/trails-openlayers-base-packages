@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
-import { render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, act, render, screen, waitFor } from "@testing-library/react";
 import TileLayer from "ol/layer/Tile";
 import { expect, it } from "vitest";
 import { Toc } from "./Toc";
@@ -30,14 +30,14 @@ it("Should successfully create a toc with default tool component", async () => {
     const injectedServices = createServiceOptions({ registry });
     render(
         <PackageContextProvider services={injectedServices}>
-            <Toc map={map} data-testid="toc" showTools={true} />
+            <Toc map={map} data-testid="toc" showTools={true} showBasemapSwitcher={false} />
         </PackageContextProvider>
     );
 
     const toolsDiv = await findTools();
     expect(toolsDiv).toMatchSnapshot();
 
-    const toolsMenu = await findMenu();
+    const toolsMenu = await findMenu(toolsDiv.tools);
     expect(toolsMenu).toMatchSnapshot();
 });
 
@@ -71,16 +71,28 @@ it("Should successfully hide all layers in toc", async () => {
         </PackageContextProvider>
     );
 
-    await findTools();
+    const { tools } = await findTools();
 
-    const itemButton = await screen.findByLabelText("tools.hideAllLayers");
-    expect(itemButton.tagName).toBe("BUTTON");
+    const hideAllMenuItem = await waitFor(() => {
+        const toolsOpenButton = tools.querySelector(".toc-tools-button");
+        if (!toolsOpenButton) {
+            throw Error("unable to find tools button in toc");
+        }
+        //trigger menu because of lazy mounting
+        act(() => {
+            fireEvent.click(toolsOpenButton);
+        });
+
+        return screen.findByLabelText("tools.hideAllLayers");
+    });
+
+    expect(hideAllMenuItem.tagName).toBe("DIV"); //menu item is a div not a button
 
     expect(operationalLayers.length).toBe(2);
     expect(operationalLayers[0]?.visible).toBe(true);
     expect(operationalLayers[1]?.visible).toBe(true);
 
-    await userEvent.click(itemButton);
+    await userEvent.click(hideAllMenuItem);
 
     expect(operationalLayers[0]?.visible).toBe(false);
     expect(operationalLayers[1]?.visible).toBe(false);
@@ -130,19 +142,30 @@ it("Should collapse all layer items in toc", async () => {
         </PackageContextProvider>
     );
 
-    const { tocDiv } = await findTools();
+    const { tocDiv, tools } = await findTools();
 
     const collapsibles = tocDiv.querySelectorAll(".toc-collapsible-item");
     for (const collapsible of collapsibles) {
-        expect(collapsible.getAttribute("style")?.includes("height: auto;")).toBeTruthy();
+        expect(collapsible.getAttribute("data-state")).toBe("open");
     }
 
-    const collapseAllButton = await screen.findByLabelText("tools.collapseAllGroups");
-    expect(collapseAllButton.tagName).toBe("BUTTON");
-    await userEvent.click(collapseAllButton);
-    //collapse sets heigth to 0
+    const collapseAllMenuItem = await waitFor(() => {
+        const toolsOpenButton = tools.querySelector(".toc-tools-button");
+        if (!toolsOpenButton) {
+            throw Error("unable to find tools button in toc");
+        }
+        //trigger menu because of lazy mounting
+        act(() => {
+            fireEvent.click(toolsOpenButton);
+        });
+
+        return screen.findByLabelText("tools.collapseAllGroups");
+    });
+
+    expect(collapseAllMenuItem.tagName).toBe("DIV"); //menu item is a div not a button
+    await userEvent.click(collapseAllMenuItem);
     for (const collapsible of collapsibles) {
-        expect(collapsible.getAttribute("style")?.includes("height: 0")).toBeTruthy();
+        expect(collapsible.getAttribute("data-state")).toBe("closed");
     }
 });
 
@@ -189,9 +212,18 @@ async function findTools() {
     return { tools, tocDiv };
 }
 
-async function findMenu() {
+async function findMenu(tools: Element) {
     const menu = await waitFor(() => {
-        const menu = document.querySelector(".tools-menu");
+        const toolsOpenButton = tools.querySelector(".toc-tools-button");
+        if (!toolsOpenButton) {
+            throw Error("unable to find tools button in toc");
+        }
+        //trigger menu because of lazy mounting
+        act(() => {
+            fireEvent.click(toolsOpenButton);
+        });
+
+        const menu = document.querySelector(".toc-tools-menu");
         if (!menu) {
             throw new Error("Menu not found");
         }

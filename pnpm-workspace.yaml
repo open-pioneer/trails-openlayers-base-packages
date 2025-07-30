@@ -4,105 +4,95 @@ packages:
   - "!**/dist/**"
   - .
 
-# Shared version expressions (yaml anchors).
-# This is a yaml feature and is not interpreted by pnpm directly.
-__versions:
-  - &react_version ^19.1.0
-  - &core_packages_version ^3.1.0
-
 # https://pnpm.io/catalogs
 catalog:
   # Trails core packages
   # https://github.com/open-pioneer/trails-core-packages
-  "@open-pioneer/base-theme": *core_packages_version
-  "@open-pioneer/chakra-integration": *core_packages_version
-  "@open-pioneer/core": *core_packages_version
-  "@open-pioneer/http": *core_packages_version
-  "@open-pioneer/integration": *core_packages_version
-  "@open-pioneer/local-storage": *core_packages_version
-  "@open-pioneer/notifier": *core_packages_version
-  "@open-pioneer/react-utils": *core_packages_version
-  "@open-pioneer/reactivity": *core_packages_version
-  "@open-pioneer/runtime": *core_packages_version
-  "@open-pioneer/test-utils": *core_packages_version
+  "@open-pioneer/base-theme": ^4.0.0
+  "@open-pioneer/core": ^4.0.0
+  "@open-pioneer/http": ^4.0.0
+  "@open-pioneer/integration": ^4.0.0
+  "@open-pioneer/local-storage": ^4.0.0
+  "@open-pioneer/notifier": ^4.0.0
+  "@open-pioneer/react-utils": ^4.0.0
+  "@open-pioneer/reactivity": ^4.0.0
+  "@open-pioneer/runtime": ^4.0.0
+  "@open-pioneer/test-utils": ^4.0.0
+  "@open-pioneer/chakra-snippets": ^4.0.0
 
-  "@chakra-ui/icons": ^2.2.4
-  "@chakra-ui/react": ^2.10.6
-  "@conterra/reactivity-core": ^0.5.0
-  "@emotion/cache": ^11.13.1
-  "@emotion/react": ^11.13.3
-  "@emotion/styled": ^11.13.0
+  "@chakra-ui/react": ^3.22.0
+  "@chakra-ui/cli": ^3.22.0
+  "@conterra/reactivity-core": ^0.7.0
+  "@emotion/cache": ^11.14.0
+  "@emotion/react": ^11.14.0
+  "@emotion/styled": ^11.14.1
   "@formatjs/intl": ^3.1.6
-  "@tanstack/react-table": ^8.20.5
-  chakra-react-select: ^5.0.4
-  classnames: ^2.3.2
-  framer-motion: ^12.9.1
+  "@tanstack/react-table": ^8.21.3
+  chakra-react-select: ^6.1.0
+  classnames: ^2.5.1
+  framer-motion: ^12.23.9
   html2canvas: ^1.4.1
   jspdf: ^3.0.1
-  ol-mapbox-style: ^12.4.1
-  ol: ^10.5.0
-  proj4: ^2.12.1
-  react-dom: *react_version
-  react-icons: ^5.3.0
-  react-select: ^5.8.0
-  react-use: ^17.5.1
-  react: *react_version
+  ol-mapbox-style: ^13.0.1
+  ol: ^10.6.1
+  proj4: ^2.19.8
+  react-dom: ^19.1.0
+  react-icons: ^5.5.0
+  react-use: ^17.6.0
+  react: ^19.1.0
   uuid: ^11.1.0
 
   # Devtools
-  "@changesets/cli": 2.27.9
-  "@open-pioneer/build-package-cli": ^3.0.1
-  "@open-pioneer/build-support": ^3.0.1
-  "@open-pioneer/check-pnpm-duplicates": ^0.2.1
-  "@open-pioneer/vite-plugin-pioneer": ^4.0.1
+  "@changesets/cli": 2.29.5
+  "@open-pioneer/build-package-cli": ^3.0.3
+  "@open-pioneer/build-support": ^3.0.3
+  "@open-pioneer/check-pnpm-duplicates": ^0.2.3
+  "@open-pioneer/vite-plugin-pioneer": ^5.0.0
   "@testing-library/dom": ^10.4.0
-  "@testing-library/jest-dom": ^6.6.2
+  "@testing-library/jest-dom": ^6.6.3
   "@testing-library/react": ^16.3.0
-  "@testing-library/user-event": ^14.5.2
+  "@testing-library/user-event": ^14.6.1
   "@types/js-yaml": ^4.0.9
   "@types/jsdom": ^21.1.7
-  "@types/node": ^20.14.8
-  "@types/proj4": "^2.5.2"
-  "@types/react-dom": ^19.1.2
-  "@types/react": ^19.1.2
+  "@types/node": ^20.19.9
+  "@types/react": ^19.1.8
+  "@types/react-dom": ^19.1.6
   "@types/uuid": ^10.0.0
-  "@typescript-eslint/eslint-plugin": ^8.31.0
-  "@typescript-eslint/parser": ^8.31.0
-  "@vitejs/plugin-react-swc": ^3.9.0
+  "@typescript-eslint/eslint-plugin": ^8.38.0
+  "@typescript-eslint/parser": ^8.38.0
+  "@vitejs/plugin-react-swc": ^3.11.0
   eslint: ^8.57.1
-  eslint-config-prettier: ^10.0.2
-  eslint-import-resolver-typescript: ^4.3.4
+  eslint-config-prettier: ^10.1.8
+  eslint-import-resolver-typescript: ^4.4.4
   eslint-plugin-header: ^3.1.1
-  eslint-plugin-import: ^2.31.0
-  eslint-plugin-jsx-a11y: ^6.10.1
+  eslint-plugin-import: ^2.32.0
+  eslint-plugin-jsx-a11y: ^6.10.2
   eslint-plugin-react: ^7.37.5
   eslint-plugin-react-hooks: ^5.2.0
   eslint-plugin-unused-imports: ^4.1.4
   fast-glob: ^3.3.3
   handlebars: ^4.7.8
-  happy-dom: ^17.4.4
-  husky: ^9.1.6
+  happy-dom: ^18.0.1
+  husky: ^9.1.7
   js-yaml: ^4.1.0
-  jsdom: ^26.0.0
-  lint-staged: ^15.5.1
-  prettier: ^3.5.3
+  jsdom: ^26.1.0
+  lint-staged: ^16.1.2
+  prettier: ^3.6.2
   resize-observer-polyfill: ^1.5.1
   rimraf: ^6.0.1
-  sass: ^1.87.0
-  tsx: ^4.19.1
-  typedoc: ^0.28.3
+  sass: ^1.89.2
+  tsx: ^4.20.3
+  typedoc: ^0.28.7
   typescript: ^5.8.3
-  vite: ^6.3.3
+  vite: ^7.0.6
   vite-plugin-eslint: ^1.8.1
-  vitest: ^3.1.2
+  vitest: ^3.2.4
+  zx: ^8.7.1
 
 auditConfig:
   ignoreCves: []
 
 overrides:
-  # See patchedDependencies
-  "@changesets/assemble-release-plan": "6.0.4"
-
   # https://github.com/advisories/GHSA-c2qf-rxjj-qqgw
   "semver@<7.5.2": ">=7.5.2"
   # https://github.com/advisories/GHSA-72xf-g2v4-qvf3
@@ -129,16 +119,21 @@ overrides:
   "canvg@<=4.0.2": ">=4.0.3"
   # https://github.com/advisories/GHSA-968p-4wvh-cqc8
   "@babel/runtime": ">=7.26.10"
+  # https://github.com/advisories/GHSA-v6h2-p8h4-qcjw
+  "brace-expansion@>=1.0.0 <=1.1.11": "^1.1.12"
+  "brace-expansion@>=2.0.0 <=2.0.1": "^2.0.2"
 
+  # Just to get rid of some duplicate dependencies
+  "source-map@<0.6.1": ">=0.6.1"
+  "stylis@<4.3.5": ">= 4.3.5"
+
+ignorePatchFailures: false
 patchedDependencies:
-  # Don't bump major if peerDep has a minor release. see https://github.com/changesets/changesets/pull/1132
-  # NOTE: Also in overrides to pin the version.
-  "@changesets/assemble-release-plan@6.0.4": "patches/@changesets__assemble-release-plan.patch"
-
   # Ensure valids ids for aria-activedescendant and fix touch events in shadow DOM (see https://github.com/JedWatson/react-select/issues/5824)
   "react-select": "patches/react-select.patch"
-  # Outside click detection for menus and other popovers (see https://github.com/open-pioneer/trails-openlayers-base-packages/issues/184)
-  "@chakra-ui/hooks": "patches/@chakra-ui__hooks.patch"
+
+  # - Ensure all portals are mounted under `.pioneer-root` div
+  "@ark-ui/react@*": "patches/@ark-ui__react.patch"
 
 dangerouslyAllowAllBuilds: false
 onlyBuiltDependencies:
