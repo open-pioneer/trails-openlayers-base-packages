@@ -1,12 +1,12 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Box, Flex, Text, VStack } from "@open-pioneer/chakra-integration";
+import { Box, Button, Flex, Text, VStack } from "@open-pioneer/chakra-integration";
 import { DefaultMapProvider, MapAnchor, MapContainer, useMapModel } from "@open-pioneer/map";
 import { ToolButton } from "@open-pioneer/map-ui-components";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
-import { Toc } from "@open-pioneer/toc";
+import { Toc, TocApi, TocReadyEvent } from "@open-pioneer/toc";
 import { useIntl } from "open-pioneer:react-hooks";
-import { useId, useState } from "react";
+import { useId, useRef, useState } from "react";
 import { PiListLight } from "react-icons/pi";
 import { MAP_ID } from "./MapConfigProviderImpl";
 
@@ -15,9 +15,27 @@ export function AppUI() {
     const { map } = useMapModel(MAP_ID);
     const tocTitleId = useId();
     const [showToc, setShowToc] = useState<boolean>(true);
+    const tocAPIRef = useRef<TocApi>(undefined);
 
     function toggleToc() {
         setShowToc(!showToc);
+    }
+
+    function tocReadyHandler(e: TocReadyEvent) {
+        tocAPIRef.current = e.api;
+    }
+
+    function tocDisposedHandler() {
+        tocAPIRef.current = undefined;
+    }
+
+    function toggleTocItem(layerId: string) {
+        if (tocAPIRef.current) {
+            const layerItem = tocAPIRef.current.getItemByLayerId(layerId);
+            console.log("Current html element", layerItem?.htmlElement);
+            const newState = !layerItem?.isExpanded;
+            layerItem?.setExpanded(newState);
+        }
     }
 
     return (
@@ -75,6 +93,8 @@ export function AppUI() {
                                                             }}
                                                             collapsibleGroups={true}
                                                             initiallyCollapsed={true}
+                                                            onReady={(e) => tocReadyHandler(e)}
+                                                            onDisposed={() => tocDisposedHandler()}
                                                         />
                                                     </TitledSection>
                                                 </Box>
@@ -100,6 +120,13 @@ export function AppUI() {
                                             operational layer ({'"'}Schulstandorte{'"'}) will be
                                             unavailable and should be marked as such by the UI.
                                         </Text>
+                                        <Text>
+                                            The toggle button allows testing expanded or collapsing
+                                            specific toc items using the Toc{"'"}s API.
+                                        </Text>
+                                        <Button onClick={() => toggleTocItem("streets")}>
+                                            Toggle streets group
+                                        </Button>
                                     </VStack>
                                 </MapAnchor>
                                 <MapAnchor
