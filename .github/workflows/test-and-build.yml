@@ -112,4 +112,4 @@ jobs:
         with:
           src-repo: openlayers-base-packages
           target-path: ${{ needs.version.outputs.published == 'true' && 'latest' || 'dev' }}
-          token: ${{ secrets.DEPLOY_TOKEN }}
+          token: ${{ secrets.DEMO_DEPLOY_TOKEN }}
