@@ -4,9 +4,9 @@ import { Box, Button, Flex, Text, VStack } from "@chakra-ui/react";
 import { DefaultMapProvider, MapAnchor, MapContainer, useMapModel } from "@open-pioneer/map";
 import { ToolButton } from "@open-pioneer/map-ui-components";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
-import { LayerTocAttributes, Toc } from "@open-pioneer/toc";
+import { LayerTocAttributes, Toc, TocApi, TocReadyEvent } from "@open-pioneer/toc";
 import { useIntl } from "open-pioneer:react-hooks";
-import { useId, useState } from "react";
+import { useId, useRef, useState } from "react";
 import { LuMenu } from "react-icons/lu";
 import { MAP_ID } from "./MapConfigProviderImpl";
 
@@ -15,9 +15,52 @@ export function AppUI() {
     const { map } = useMapModel(MAP_ID);
     const tocTitleId = useId();
     const [showToc, setShowToc] = useState<boolean>(true);
+    const tocAPIRef = useRef<TocApi>(undefined);
 
     function toggleToc() {
         setShowToc(!showToc);
+    }
+
+    function tocReadyHandler(e: TocReadyEvent) {
+        tocAPIRef.current = e.api;
+    }
+
+    function tocDisposedHandler() {
+        tocAPIRef.current = undefined;
+    }
+
+    function toggleTocItem(layerId: string) {
+        if (tocAPIRef.current) {
+            const layerItem = tocAPIRef.current.getItemByLayerId(layerId);
+            console.log("Current html element", layerItem?.htmlElement);
+            const newState = !layerItem?.isExpanded;
+            layerItem?.setExpanded(newState);
+        }
+    }
+
+    function toggleLayerInternal(layerId: string) {
+        if (map) {
+            const layer = map.layers.getLayerById(layerId);
+            if (layer) {
+                const isInternal = layer.internal;
+                layer.setInternal(!isInternal);
+            }
+        }
+    }
+
+    function toggleLayerTocListMode(layerId: string) {
+        if (map) {
+            const layer = map.layers.getLayerById(layerId);
+            if (layer) {
+                const listMode = (layer.attributes.toc as LayerTocAttributes | undefined)?.listMode;
+                const newListMode = listMode === "hide-children" ? "show" : "hide-children";
+                layer.updateAttributes({
+                    toc: {
+                        listMode: newListMode
+                    }
+                });
+            }
+        }
     }
 
     return (
@@ -75,6 +118,8 @@ export function AppUI() {
                                                             }}
                                                             collapsibleGroups={true}
                                                             initiallyCollapsed={true}
+                                                            onReady={(e) => tocReadyHandler(e)}
+                                                            onDisposed={() => tocDisposedHandler()}
                                                         />
                                                     </TitledSection>
                                                 </Box>
@@ -100,6 +145,33 @@ export function AppUI() {
                                             operational layer ({'"'}Schulstandorte{'"'}) will be
                                             unavailable and should be marked as such by the UI.
                                         </Text>
+                                        <Text>
+                                            The &quot;Toggle steets group&quot; button allows
+                                            testing expanded or collapsing specific toc items using
+                                            the Toc{"'"}s API.
+                                        </Text>
+                                        <Text>
+                                            The &quot;Toggle layer internal&quot; button makes the
+                                            bus stops layer internal/external. If the layer is
+                                            internal it will not be considered in components like
+                                            the Toc.
+                                        </Text>
+                                        <Text>
+                                            The &quot;Toggle Toc list mode&quot; button toggles the
+                                            education group layer&apos;s list mode between
+                                            &quot;show&quot; and &quot;hide-children&quot;. The Toc
+                                            list mode determines whether a layer is shown, shown
+                                            without child layers or completely hidden in the Toc.
+                                        </Text>
+                                        <Button onClick={() => toggleTocItem("streets")}>
+                                            Toggle streets group
+                                        </Button>
+                                        <Button onClick={() => toggleLayerInternal("busstops")}>
+                                            Toggle layer internal
+                                        </Button>
+                                        <Button onClick={() => toggleLayerTocListMode("group_edu")}>
+                                            Toggle Toc list mode
+                                        </Button>
                                     </VStack>
                                 </MapAnchor>
                                 <MapAnchor
@@ -120,48 +192,6 @@ export function AppUI() {
                                             active={showToc}
                                             onClick={toggleToc}
                                         />
-                                        <Button
-                                            onClick={() => {
-                                                if (map) {
-                                                    const layer =
-                                                        map.layers.getLayerById("bustops");
-                                                    if (layer) {
-                                                        const isInternal = layer.internal;
-                                                        layer.setInternal(!isInternal);
-                                                    }
-                                                }
-                                            }}
-                                        >
-                                            toggle layer internal
-                                        </Button>
-                                        <Button
-                                            onClick={() => {
-                                                if (map) {
-                                                    const layer =
-                                                        map.layers.getLayerById(
-                                                            "street_network_wms"
-                                                        );
-                                                    if (layer) {
-                                                        const listMode = (
-                                                            layer.attributes.toc as
-                                                                | LayerTocAttributes
-                                                                | undefined
-                                                        )?.listMode;
-                                                        const newListMode =
-                                                            listMode === "hide-children"
-                                                                ? "show"
-                                                                : "hide-children";
-                                                        layer.updateAttributes({
-                                                            toc: {
-                                                                listMode: newListMode
-                                                            }
-                                                        });
-                                                    }
-                                                }
-                                            }}
-                                        >
-                                            toggle toc list mode
-                                        </Button>
                                     </Flex>
                                 </MapAnchor>
                             </MapContainer>
