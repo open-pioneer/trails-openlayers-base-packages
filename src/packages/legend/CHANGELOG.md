@@ -1,5 +1,23 @@
 # @open-pioneer/legend
 
+## 0.12.0
+
+### Minor Changes
+
+- 2702df4: A layer's `internal` property is now respected by the Legend widget. If a layer is marked as internal (`internal` is `true`) no legend entry is displayed for this layer even if the legend is configured in the layer attributes.
+- 2732052: Icons have been changed to unify the appearance of the components. Preferably, Lucide react-icons are used.
+
+### Patch Changes
+
+- 10d2fe7: Update dependencies
+- da6a410: Update dependencies
+- Updated dependencies [10d2fe7]
+- Updated dependencies [2702df4]
+- Updated dependencies [8986b3b]
+- Updated dependencies [f1f69f2]
+- Updated dependencies [da6a410]
+    - @open-pioneer/map@0.12.0
+
 ## 0.11.0
 
 ### Minor Changes
