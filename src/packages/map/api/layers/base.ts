@@ -58,6 +58,8 @@ export interface LayerBaseConfig {
      * Defaults to `false`
      */
     internal?: boolean;
+
+    showSublayerLegends?: boolean;
 }
 
 /**
@@ -236,6 +238,8 @@ export interface LayerBaseType<AdditionalEvents = {}> extends AnyLayerBaseType<A
      * Only one base layer can be visible at a time.
      */
     readonly isBaseLayer: boolean;
+
+    showSublayerLegends?: boolean;
 }
 
 /**
@@ -257,6 +261,8 @@ export interface SublayerBaseType extends AnyLayerBaseType {
      * The parent layer that owns this sublayer.
      */
     readonly parentLayer: Layer;
+
+    showSublayerLegends?: boolean;
 }
 
 /**

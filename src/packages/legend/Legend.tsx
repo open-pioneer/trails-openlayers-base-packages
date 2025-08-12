@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { LuTriangleAlert } from "react-icons/lu";
-import { Box, Image, List, Text, Icon } from "@chakra-ui/react";
-import { Layer, AnyLayer, MapModel, useMapModel, MapModelProps, isLayer } from "@open-pioneer/map";
+import { Box, Icon, Image, List, Text } from "@chakra-ui/react";
+import { AnyLayer, isLayer, Layer, MapModel, MapModelProps, useMapModel } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import classNames from "classnames";
@@ -90,8 +90,12 @@ function LegendList(props: { map: MapModel; showBaseLayers: boolean }): ReactNod
 
 function LegendItem(props: { layer: AnyLayer; showBaseLayers: boolean }): ReactNode {
     const { layer, showBaseLayers } = props;
-    const { isVisible, isInternal } = useReactiveSnapshot(() => {
-        return { isVisible: layer.visible, isInternal: layer.internal };
+    const { isVisible, isInternal, showSublayerLegends } = useReactiveSnapshot(() => {
+        return {
+            isVisible: layer.visible,
+            isInternal: layer.internal,
+            showSublayerLegends: layer.showSublayerLegends || layer.attributes?.showSublayerLegends
+        };
     }, [layer]);
     const childLayers = useChildLayers(layer);
 
@@ -105,7 +109,7 @@ function LegendItem(props: { layer: AnyLayer; showBaseLayers: boolean }): ReactN
 
     // legend items for all child layers (sublayers or layers in a group)
     const childItems: ReactNode[] = [];
-    if (childLayers?.length) {
+    if (showSublayerLegends && childLayers?.length) {
         childLayers.forEach((childLayer) => {
             childItems.push(
                 <LegendItem

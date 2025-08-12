@@ -36,6 +36,7 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
 
     #visibleSublayers: ReadonlyReactive<string[]>;
     #sublayersWatch: Resource | undefined;
+    #showSublayerLegends: boolean | undefined;
 
     constructor(config: WMSLayerConfig) {
         const layer = new ImageLayer();
@@ -76,6 +77,7 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
                 immediate: true
             }
         );
+        this.#showSublayerLegends = config.showSublayerLegends;
     }
 
     destroy() {
@@ -106,6 +108,10 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
 
     get capabilities() {
         return this.#capabilities;
+    }
+
+    get showSublayerLegends(): boolean | undefined {
+        return this.#showSublayerLegends;
     }
 
     __attachToMap(map: MapModelImpl): void {
@@ -240,12 +246,14 @@ class WMSSublayerImpl extends AbstractLayerBase implements WMSSublayer {
     #legend = reactive<string | undefined>();
     #sublayers: SublayersCollectionImpl<WMSSublayerImpl>;
     #visible: Reactive<boolean>;
+    #showSublayerLegends: boolean | undefined;
 
     constructor(config: WMSSublayerConfig) {
         super(config);
         this.#name = config.name;
         this.#visible = reactive(config.visible ?? true);
         this.#sublayers = new SublayersCollectionImpl(constructSublayers(config.sublayers));
+        this.#showSublayerLegends = config.showSublayerLegends;
     }
 
     get type() {
@@ -286,6 +294,10 @@ class WMSSublayerImpl extends AbstractLayerBase implements WMSSublayer {
 
     get visible(): boolean {
         return this.#visible.value;
+    }
+
+    get showSublayerLegends(): boolean | undefined {
+        return this.#showSublayerLegends;
     }
 
     /**

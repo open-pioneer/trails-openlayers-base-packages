@@ -289,6 +289,7 @@ it("shows legend entries for group layers and their children", async () => {
             new GroupLayer({
                 title: "Hintergrundkarten",
                 visible: true,
+                showSublayerLegends: true,
                 attributes: {
                     "legend": { imageUrl: "https://fake.legend.url/layer-group-1.png" }
                 },
@@ -331,6 +332,57 @@ it("shows legend entries for group layers and their children", async () => {
     expect(images[3]?.getAttribute("src")).toBe("https://fake.legend.url/sublayer3_2.png");
     expect(images[4]?.getAttribute("src")).toBe("http://www.university.edu/legends/atlas.gif");
     expect(images[5]?.getAttribute("src")).toBe("https://fake.legend.url/child-layer-1.png");
+});
+
+it("only shows legend entry for group layer and not their children", async () => {
+    const { map, registry } = await setupMap({
+        layers: [
+            {
+                title: "Base layer",
+                id: "base-layer",
+                olLayer: new TileLayer({}),
+                isBaseLayer: true
+            },
+            new GroupLayer({
+                title: "Hintergrundkarten",
+                visible: true,
+                attributes: {
+                    "legend": { imageUrl: "https://fake.legend.url/layer-group-1.png" }
+                },
+                layers: [
+                    new SimpleLayer({
+                        title: "Layer 1",
+                        id: "layer-1",
+                        olLayer: new TileLayer({}),
+                        attributes: {
+                            "legend": {
+                                imageUrl: "https://fake.legend.url/child-layer-1.png"
+                            }
+                        }
+                    }),
+                    createLayerWithNestedSublayers()
+                ]
+            })
+        ],
+        fetch: vi.fn(async () => {
+            return new Response(WMTS_CAPAS, {
+                status: 200
+            });
+        })
+    });
+    const injectedServices = createServiceOptions({ registry });
+
+    render(
+        <PackageContextProvider services={injectedServices}>
+            <Legend map={map} data-testid="legend" />
+        </PackageContextProvider>
+    );
+
+    const legendDiv = await findLegend();
+    await waitForLegendItem(legendDiv);
+    const images = await getLegendImages(legendDiv, 1);
+
+    expect(images[0]?.getAttribute("src")).toBe("https://fake.legend.url/layer-group-1.png");
 });
 
 it("shows legend entries in correct order", async () => {
@@ -838,12 +890,15 @@ function createLayerWithNestedSublayers() {
         title: "Nested Layer",
         visible: true,
         url: "https://fake.wms.url/service",
+        showSublayerLegends: true,
         sublayers: [
             {
                 title: "Sublayer 1",
+                showSublayerLegends: true,
                 sublayers: [
                     {
                         title: "Sublayer 2",
+                        showSublayerLegends: true,
                         sublayers: [
                             {
                                 title: "Sublayer 3.2",
@@ -851,7 +906,8 @@ function createLayerWithNestedSublayers() {
                                 attributes: {
                                     "legend": {
                                         imageUrl: "https://fake.legend.url/sublayer3_2.png"
-                                    }
+                                    },
+                                    "showSublayerLegends": true
                                 },
                                 sublayers: [
                                     {
@@ -873,6 +929,7 @@ function createLayerWithNestedSublayers() {
                             },
                             {
                                 title: "Sublayer 3.1",
+                                showSublayerLegends: true,
                                 sublayers: [
                                     {
                                         name: "sublayer4_2",
