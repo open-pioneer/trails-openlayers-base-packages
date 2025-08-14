@@ -227,11 +227,11 @@ export class LayerCollectionImpl implements LayerCollection {
                     "Internal error: insertion index is undefined for operational layer."
                 );
             }
-            if (!isTopMostLayer) {
-                this.#operationalLayerOrder.splice(operationalLayerIndex, 0, model);
-            } else {
-                this.#topMostOperationalLayers.push(model);
-            }
+
+            const layerList = isTopMostLayer
+                ? this.#topMostOperationalLayers
+                : this.#operationalLayerOrder;
+            layerList.splice(operationalLayerIndex, 0, model); //insert new layer at insertion index
         }
 
         this.#topLevelLayers.add(model);
@@ -251,9 +251,10 @@ export class LayerCollectionImpl implements LayerCollection {
         switch (options?.at) {
             case undefined:
             case null:
-            case "topmost": //index will be ignored for topmost layers
             case "top":
-                return 5;
+                return this.#operationalLayerOrder.length;
+            case "topmost":
+                return this.#topMostOperationalLayers.length;
             case "bottom":
                 return 0;
             case "above":
