@@ -36,7 +36,8 @@ export function registerProjections(projections: Record<string, ProjectionDefini
     for (const [name, definition] of Object.entries(projections)) {
         proj4.defs(name, definition);
     }
-    register(proj4);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    register(proj4 as any);
 }
 
 /**
