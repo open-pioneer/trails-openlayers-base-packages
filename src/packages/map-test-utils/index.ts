@@ -15,8 +15,7 @@ import {
     SimpleLayer,
     SimpleLayerConfig
 } from "@open-pioneer/map";
-import { MapRegistryImpl } from "@open-pioneer/map/internalTestSupport";
-import { LayerFactory } from "@open-pioneer/map/services";
+import { MapRegistryImpl, LayerFactory } from "@open-pioneer/map/internalTestSupport";
 import { createService } from "@open-pioneer/test-utils/services";
 import { screen, waitFor } from "@testing-library/react";
 import VectorLayer from "ol/layer/Vector";
