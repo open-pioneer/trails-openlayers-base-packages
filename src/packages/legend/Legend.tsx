@@ -37,6 +37,11 @@ export interface LegendItemAttributes {
      * (Optional) React component that will be shown as customized legend for the layer.
      */
     Component?: ComponentType<LegendItemComponentProps>;
+
+    /**
+     * (Optinal) Additional property to control the display of the layer in the legend.
+     */
+    listMode?: LayerLegendAttributes["listMode"];
 }
 
 /**
@@ -48,6 +53,25 @@ export interface LegendProps extends CommonComponentProps, MapModelProps {
      * Defaults to `false`.
      */
     showBaseLayers?: boolean;
+}
+
+/**
+ * ListMode determines if a layer item is displayed in the Toc for the layer.
+ * The option `"hide-children"` provides a shortcut to hide all child layers (e.g. sublayers of group) of the layer in the Toc.
+ * It has the same effect as manually setting the `listMode` to `"hide"` on all child layers.
+ *
+ * ListMode has precedence over the layer's `internal` attribute but specifically configures the layer's display in the Toc.
+ */
+export type ListMode = "show" | "hide" | "hide-children";
+
+/**
+ * Layer attributes to specifically configure how a layer is displayed in the Toc.
+ */
+export interface LayerLegendAttributes {
+    /**
+     * The {@link ListMode} is used to hide the layer (or it's children) in the Toc.
+     */
+    listMode?: ListMode;
 }
 
 /**
@@ -90,14 +114,14 @@ function LegendList(props: { map: MapModel; showBaseLayers: boolean }): ReactNod
 
 function LegendItem(props: { layer: AnyLayer; showBaseLayers: boolean }): ReactNode {
     const { layer, showBaseLayers } = props;
-    const { isVisible, isInternal, showSublayerLegends } = useReactiveSnapshot(() => {
+    const { isVisible, isInternal } = useReactiveSnapshot(() => {
         return {
             isVisible: layer.visible,
-            isInternal: layer.internal,
-            showSublayerLegends: layer.showSublayerLegends || layer.attributes?.showSublayerLegends
+            isInternal: layer.internal
         };
     }, [layer]);
     const childLayers = useChildLayers(layer);
+    const listMode = useListMode(layer)?.listMode || "hide-children";
 
     if (!isVisible || isInternal) {
         return undefined;
@@ -109,7 +133,7 @@ function LegendItem(props: { layer: AnyLayer; showBaseLayers: boolean }): ReactN
 
     // legend items for all child layers (sublayers or layers in a group)
     const childItems: ReactNode[] = [];
-    if (showSublayerLegends && childLayers?.length) {
+    if (listMode === "show" && childLayers?.length) {
         childLayers.forEach((childLayer) => {
             childItems.push(
                 <LegendItem
@@ -136,6 +160,10 @@ function LegendContent(props: { layer: AnyLayer; showBaseLayers: boolean }) {
     const baseLayer = isBaseLayer(layer);
     const legendAttributes = useLegendAttributes(layer);
     const legendUrl = useReactiveSnapshot(() => layer.legend, [layer]);
+    const listMode = useListMode(layer)?.listMode || "hide-children";
+    if (listMode === "hide") {
+        return undefined;
+    }
 
     let renderedComponent: ReactNode | undefined;
     if (legendAttributes?.Component) {
@@ -246,4 +274,11 @@ function slug(id: string) {
         .replace(/[^a-z0-9 -]/g, "")
         .replace(/\s+/g, "-")
         .replace(/-+/g, "-");
+}
+
+function useListMode(layer: AnyLayer): LayerLegendAttributes | undefined {
+    return useReactiveSnapshot(
+        () => layer.attributes.legend as LayerLegendAttributes | undefined,
+        [layer]
+    );
 }

@@ -10,9 +10,6 @@ import type {
     SublayerBaseType
 } from "./base";
 
-export const WMSSUBLAYER_TYPE = "wms-sublayer";
-export type WMSSublayerType = typeof WMSSUBLAYER_TYPE;
-
 /**
  * Configuration options to construct a WMS layer.
  */
@@ -52,8 +49,6 @@ export interface WMSSublayerConfig extends LayerBaseConfig {
 
     /** Configuration for nested sublayers. */
     sublayers?: WMSSublayerConfig[];
-
-    showSublayerLegends?: boolean;
 }
 
 /** Represents a WMS layer. */

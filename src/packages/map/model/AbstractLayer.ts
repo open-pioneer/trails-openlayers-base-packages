@@ -38,7 +38,6 @@ export abstract class AbstractLayer<AdditionalEvents = {}>
 
     #visibilityWatchKey: EventsKey | undefined;
     #stateWatchResource: Resource | undefined;
-    #showSublayerLegends: boolean | undefined;
 
     constructor(config: SimpleLayerConfig) {
         super(config);
@@ -51,7 +50,6 @@ export abstract class AbstractLayer<AdditionalEvents = {}>
 
         this.#loadState = reactive(getSourceState(getSource(this.#olLayer)));
         this.__setVisible(config.visible ?? true); // apply initial visibility
-        this.#showSublayerLegends = config.showSublayerLegends;
     }
 
     get visible(): boolean {
@@ -68,10 +66,6 @@ export abstract class AbstractLayer<AdditionalEvents = {}>
 
     get loadState(): LayerLoadState {
         return this.#loadState.value;
-    }
-
-    get showSublayerLegends(): boolean | undefined {
-        return this.#showSublayerLegends;
     }
 
     destroy() {

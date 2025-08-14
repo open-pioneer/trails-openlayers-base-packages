@@ -118,7 +118,11 @@ function createAdminAreasLayer() {
         id: "verwaltungsgebiete",
         visible: false,
         url: "https://www.wms.nrw.de/geobasis/wms_nw_dvg",
-        showSublayerLegends: true,
+        attributes: {
+            legend: {
+                listMode: "show"
+            } as LegendItemAttributes
+        },
         sublayers: [
             {
                 name: "nw_dvg_krs",
