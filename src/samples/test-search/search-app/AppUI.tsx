@@ -5,9 +5,9 @@ import { DefaultMapProvider, MapAnchor, MapContainer, useMapModel } from "@open-
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { useIntl, useService } from "open-pioneer:react-hooks";
 import { MAP_ID } from "./MapConfigProviderImpl";
-import { Search, SearchApi, SearchReadyEvent } from "@open-pioneer/search";
+import { Search, SearchApi, SearchClearEvent, SearchReadyEvent } from "@open-pioneer/search";
 import { FakeCitySource } from "@open-pioneer/search/testSources";
-import { NotificationService } from "@open-pioneer/notifier";
+import { NotificationService, Notifier } from "@open-pioneer/notifier";
 import { useRef } from "react";
 
 export function AppUI() {
@@ -26,10 +26,10 @@ export function AppUI() {
         });
     }
 
-    function onSearchCleared() {
+    function onSearchCleared(event: SearchClearEvent) {
         notificationService.notify({
             level: "info",
-            message: intl.formatMessage({ id: "cleared" }),
+            message: intl.formatMessage({ id: "cleared" }) + ` (trigger: ${event.trigger})`,
             displayDuration: 4000
         });
     }
@@ -42,6 +42,8 @@ export function AppUI() {
         map && (
             <DefaultMapProvider map={map}>
                 <Flex height="100%" direction="column" overflow="hidden">
+                    <Notifier />
+
                     <TitledSection
                         title={
                             <Box
@@ -81,7 +83,7 @@ export function AppUI() {
                                         sources={sources}
                                         maxResultsPerGroup={10}
                                         onSelect={onSearchSelect}
-                                        onClear={onSearchCleared}
+                                        onClear={(clearEvent) => onSearchCleared(clearEvent)}
                                         onReady={(searchReadyEvent) => {
                                             searchReadyHandler(searchReadyEvent);
                                         }}

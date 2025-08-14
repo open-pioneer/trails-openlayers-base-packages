@@ -33,10 +33,12 @@ import {
 } from "./CustomComponents";
 import { SearchController, SuggestionGroup } from "./SearchController";
 import {
+    SearchClearEvent,
     SearchApi,
-    SearchDisposedHandler,
-    SearchReadyHandler,
+    SearchDisposedEvent,
+    SearchReadyEvent,
     SearchResult,
+    SearchSelectEvent,
     SearchSource
 } from "./api";
 import { SearchApiImpl } from "./SearchApiImpl";
@@ -63,17 +65,6 @@ export interface SearchGroupOption {
 
     /** Set of options that belong to this group. */
     options: SearchOption[];
-}
-
-/**
- * Event type emitted when the user selects an item.
- */
-export interface SearchSelectEvent {
-    /** The source that returned the {@link result}. */
-    source: SearchSource;
-
-    /** The search result selected by the user. */
-    result: SearchResult;
 }
 
 /**
@@ -111,18 +102,18 @@ export interface SearchProps extends CommonComponentProps, MapModelProps {
     /**
      * This event handler will be called when the user clears the search input.
      */
-    onClear?: () => void;
+    onClear?: (event: SearchClearEvent) => void;
 
     /**
      * Callback that is triggered once when the search is initialized.
      * The search API can be accessed by the `api` property of the {@link SearchReadyEvent}.
      */
-    onReady?: SearchReadyHandler;
+    onReady?: (event: SearchReadyEvent) => void;
 
     /**
      * Callback that is triggered once when the search is disposed and unmounted.
      */
-    onDisposed?: SearchDisposedHandler;
+    onDisposed?: (event: SearchDisposedEvent) => void;
 }
 
 /**
@@ -181,7 +172,7 @@ export const Search: FC<SearchProps> = (props) => {
                     // https://github.com/JedWatson/react-select/issues/3871
                     selectRef.current?.blur();
                     selectRef.current?.focus();
-                    onClear?.();
+                    onClear?.({ trigger: "user" });
                     break;
                 default:
                     LOG.debug(`Unhandled action type '${actionMeta.action}'.`);
@@ -190,7 +181,7 @@ export const Search: FC<SearchProps> = (props) => {
         }
     );
 
-    useSearchApi(onReady, onDisposed, onInputChanged);
+    useSearchApi(onReady, onDisposed, onInputChanged, onClear);
 
     const selectRef = useRef<SelectInstance<SearchOption, false, SearchGroupOption>>(null);
     return (
@@ -534,15 +525,15 @@ function mapSuggestions(suggestions: SuggestionGroup[]): SearchGroupOption[] {
 // todo tests
 // todo documentation
 // todo clean up package.json dependencies
-// todo other todos
 function useSearchApi(
-    onReady: SearchReadyHandler | undefined,
-    onDisposed: SearchDisposedHandler | undefined,
-    onInputChanged: (newValue: string) => void
+    onReady: ((event: SearchReadyEvent) => void) | undefined,
+    onDisposed: ((event: SearchDisposedEvent) => void) | undefined,
+    onInputChanged: (newValue: string) => void,
+    onClear: ((event: SearchClearEvent) => void) | undefined
 ) {
     const apiRef = useRef<SearchApi>(null);
     if (!apiRef.current) {
-        apiRef.current = new SearchApiImpl(onInputChanged);
+        apiRef.current = new SearchApiImpl(onInputChanged, onClear);
     }
 
     const api = apiRef.current;

@@ -93,11 +93,31 @@ export interface SearchResult extends BaseFeature {
 }
 
 /**
+ * Event type emitted when the user selects an item.
+ */
+export interface SearchSelectEvent {
+    /** The source that returned the {@link result}. */
+    source: SearchSource;
+
+    /** The search result selected by the user. */
+    result: SearchResult;
+}
+
+/**
+ * Event type emitted when the search is cleared.
+ */
+export interface SearchClearEvent {
+    /** Specifies the trigger that caused the clear event.
+     * The clear can be triggered by the user or through the {@link resetInput} in the SearchAPI. */
+    trigger: "user" | "api-reset";
+}
+
+/**
  * API to control the Search component imperatively
  */
 export interface SearchApi {
     /**
-     * Resets the search input field to its initial state. // todo or always empty?
+     * Clears the search input field.
      */
     resetInput(): void;
 }
@@ -119,13 +139,3 @@ export interface SearchReadyEvent {
  * Empty interface, might be extended in the future.
  */
 export interface SearchDisposedEvent {}
-
-/**
- * Callback that is triggered when the search is initialized.
- */
-export type SearchReadyHandler = (event: SearchReadyEvent) => void;
-
-/**
- * Callback that is triggered when the search is disposed.
- */
-export type SearchDisposedHandler = (event: SearchDisposedEvent) => void;
