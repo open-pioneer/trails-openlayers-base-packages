@@ -10,7 +10,7 @@ const internalLayer = new SimpleLayer({
     attributes: {
         legend: {
             listMode: "show"
-        } as LegendItemAttributes
+        } satisfies LegendItemAttributes
     },
     sublayers: [
         {

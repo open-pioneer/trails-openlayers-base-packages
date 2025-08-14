@@ -121,7 +121,7 @@ function createAdminAreasLayer() {
         attributes: {
             legend: {
                 listMode: "show"
-            } as LegendItemAttributes
+            } satisfies LegendItemAttributes
         },
         sublayers: [
             {

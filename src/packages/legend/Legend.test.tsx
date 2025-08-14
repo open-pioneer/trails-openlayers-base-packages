@@ -293,7 +293,7 @@ it("shows legend entries for group layers and their children", async () => {
                     "legend": {
                         imageUrl: "https://fake.legend.url/layer-group-1.png",
                         listMode: "show"
-                    } as LegendItemAttributes
+                    } satisfies LegendItemAttributes
                 },
                 layers: [
                     new SimpleLayer({
@@ -334,6 +334,78 @@ it("shows legend entries for group layers and their children", async () => {
     expect(images[3]?.getAttribute("src")).toBe("https://fake.legend.url/sublayer3_2.png");
     expect(images[4]?.getAttribute("src")).toBe("http://www.university.edu/legends/atlas.gif");
     expect(images[5]?.getAttribute("src")).toBe("https://fake.legend.url/child-layer-1.png");
+});
+
+it("shows legend entries for group layers and their children if group layer has no legend", async () => {
+    const { map, registry } = await setupMap({
+        layers: [
+            new GroupLayer({
+                title: "Hintergrundkarten",
+                visible: true,
+                layers: [
+                    new SimpleLayer({
+                        title: "Layer 1",
+                        id: "layer-1",
+                        olLayer: new TileLayer({}),
+                        attributes: {
+                            "legend": {
+                                imageUrl: "https://fake.legend.url/child-layer-1.png"
+                            }
+                        }
+                    })
+                ]
+            })
+        ]
+    });
+
+    const injectedServices = createServiceOptions({ registry });
+    render(
+        <PackageContextProvider services={injectedServices}>
+            <Legend map={map} data-testid="legend" />
+        </PackageContextProvider>
+    );
+
+    const legendDiv = await findLegend();
+    await waitForLegendItem(legendDiv);
+    const images = await getLegendImages(legendDiv, 1);
+
+    expect(images[0]?.getAttribute("src")).toBe("https://fake.legend.url/child-layer-1.png");
+});
+
+it("does not show child legends if 'hide-children' is used", async () => {
+    const { map, registry } = await setupMap({
+        layers: [
+            new GroupLayer({
+                title: "Hintergrundkarten",
+                visible: true,
+                attributes: {
+                    legend: { listMode: "hide-children" } satisfies LegendItemAttributes
+                },
+                layers: [
+                    new SimpleLayer({
+                        title: "Layer 1",
+                        id: "layer-1",
+                        olLayer: new TileLayer({}),
+                        attributes: {
+                            "legend": {
+                                imageUrl: "https://fake.legend.url/child-layer-1.png"
+                            }
+                        }
+                    })
+                ]
+            })
+        ]
+    });
+
+    const injectedServices = createServiceOptions({ registry });
+    render(
+        <PackageContextProvider services={injectedServices}>
+            <Legend map={map} data-testid="legend" />
+        </PackageContextProvider>
+    );
+
+    const legendDiv = await findLegend();
+    await getLegendImages(legendDiv, 0);
 });
 
 it("only shows legend entry for group layer and not their children", async () => {
@@ -403,7 +475,7 @@ it("shows legend entries for group layers and specific children", async () => {
                     "legend": {
                         imageUrl: "https://fake.legend.url/layer-group-1.png",
                         listMode: "show"
-                    } as LegendItemAttributes
+                    } satisfies LegendItemAttributes
                 },
                 layers: [
                     new SimpleLayer({
@@ -952,7 +1024,7 @@ function createLayerWithNestedSublayers(hideChildrenModification: boolean = fals
         attributes: {
             "legend": {
                 listMode: "show"
-            } as LegendItemAttributes
+            } satisfies LegendItemAttributes
         },
         sublayers: [
             {
@@ -960,7 +1032,7 @@ function createLayerWithNestedSublayers(hideChildrenModification: boolean = fals
                 attributes: {
                     "legend": {
                         listMode: "show"
-                    } as LegendItemAttributes
+                    } satisfies LegendItemAttributes
                 },
                 sublayers: [
                     {
@@ -968,7 +1040,7 @@ function createLayerWithNestedSublayers(hideChildrenModification: boolean = fals
                         attributes: {
                             "legend": {
                                 listMode: "show"
-                            } as LegendItemAttributes
+                            } satisfies LegendItemAttributes
                         },
                         sublayers: [
                             {
@@ -1005,7 +1077,7 @@ function createLayerWithNestedSublayers(hideChildrenModification: boolean = fals
                                         listMode: hideChildrenModification
                                             ? "hide-children"
                                             : "show"
-                                    } as LegendItemAttributes
+                                    } satisfies LegendItemAttributes
                                 },
                                 sublayers: [
                                     {
