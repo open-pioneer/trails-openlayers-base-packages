@@ -109,8 +109,10 @@ export interface SearchSelectEvent {
 export interface SearchClearEvent {
     /** Specifies the trigger that caused the clear event.
      * The clear can be triggered by the user or through the {@link resetInput} in the SearchAPI. */
-    trigger: "user" | "api-reset";
+    trigger: SearchClearTrigger;
 }
+
+export type SearchClearTrigger = "user" | "api-reset";
 
 /**
  * API to control the Search component imperatively

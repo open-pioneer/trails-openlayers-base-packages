@@ -39,7 +39,8 @@ import {
     SearchReadyEvent,
     SearchResult,
     SearchSelectEvent,
-    SearchSource
+    SearchSource,
+    SearchClearTrigger
 } from "./api";
 import { SearchApiImpl } from "./SearchApiImpl";
 
@@ -150,6 +151,21 @@ export const Search: FC<SearchProps> = (props) => {
         }
     });
 
+    const clearInput = (trigger: SearchClearTrigger) => {
+        // Updates the input field
+        onInputChanged("");
+
+        // the next two lines are a workaround for the open bug in react-select regarding the
+        // cursor not being shown after clearing, although the component is focussed:
+        // https://github.com/JedWatson/react-select/issues/3871
+        if (trigger === "user") {
+            selectRef.current?.blur();
+            selectRef.current?.focus();
+        }
+
+        onClear?.({ trigger: trigger });
+    };
+
     const handleSelectChange = useEvent(
         (value: SingleValue<SearchOption>, actionMeta: ActionMeta<SearchOption>) => {
             switch (actionMeta.action) {
@@ -164,15 +180,7 @@ export const Search: FC<SearchProps> = (props) => {
                     }
                     break;
                 case "clear":
-                    // Updates the input field
-                    onInputChanged("");
-
-                    // the next two lines are a workaround for the open bug in react-select regarding the
-                    // cursor not being shown after clearing, although the component is focussed:
-                    // https://github.com/JedWatson/react-select/issues/3871
-                    selectRef.current?.blur();
-                    selectRef.current?.focus();
-                    onClear?.({ trigger: "user" });
+                    clearInput("user");
                     break;
                 default:
                     LOG.debug(`Unhandled action type '${actionMeta.action}'.`);
@@ -181,7 +189,7 @@ export const Search: FC<SearchProps> = (props) => {
         }
     );
 
-    useSearchApi(onReady, onDisposed, onInputChanged, onClear);
+    useSearchApi(onReady, onDisposed, clearInput);
 
     const selectRef = useRef<SelectInstance<SearchOption, false, SearchGroupOption>>(null);
     return (
@@ -525,12 +533,11 @@ function mapSuggestions(suggestions: SuggestionGroup[]): SearchGroupOption[] {
 function useSearchApi(
     onReady: ((event: SearchReadyEvent) => void) | undefined,
     onDisposed: ((event: SearchDisposedEvent) => void) | undefined,
-    onInputChanged: (newValue: string) => void,
-    onClear: ((event: SearchClearEvent) => void) | undefined
+    clearInput: (trigger: SearchClearTrigger) => void
 ) {
     const apiRef = useRef<SearchApi>(null);
     if (!apiRef.current) {
-        apiRef.current = new SearchApiImpl(onInputChanged, onClear);
+        apiRef.current = new SearchApiImpl(clearInput);
     }
 
     const api = apiRef.current;
