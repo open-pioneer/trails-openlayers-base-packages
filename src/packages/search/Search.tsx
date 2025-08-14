@@ -522,9 +522,6 @@ function mapSuggestions(suggestions: SuggestionGroup[]): SearchGroupOption[] {
     return options;
 }
 
-// todo tests
-// todo documentation
-// todo clean up package.json dependencies
 function useSearchApi(
     onReady: ((event: SearchReadyEvent) => void) | undefined,
     onDisposed: ((event: SearchDisposedEvent) => void) | undefined,
