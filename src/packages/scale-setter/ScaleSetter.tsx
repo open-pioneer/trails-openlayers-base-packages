@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Box, Button, Icon, Menu, Portal } from "@chakra-ui/react";
-import { MapModelProps, useMapModel } from "@open-pioneer/map";
+import { MapModelProps, useMapModelValue } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { PackageIntl } from "@open-pioneer/runtime";
@@ -30,7 +30,7 @@ export interface ScaleSetterProps extends CommonComponentProps, MapModelProps {
 export const ScaleSetter: FC<ScaleSetterProps> = (props) => {
     const { scales = DEFAULT_SCALES } = props;
     const { containerProps } = useCommonComponentProps("scale-setter", props);
-    const { map } = useMapModel(props);
+    const map = useMapModelValue(props);
     const intl = useIntl();
 
     const scaleSelectOptions = useMemo(
@@ -47,7 +47,7 @@ export const ScaleSetter: FC<ScaleSetterProps> = (props) => {
                         )}
                         value={String(scaleValue)}
                         key={scaleValue}
-                        onClick={() => map?.setScale(scaleValue)}
+                        onClick={() => map.setScale(scaleValue)}
                         onFocus={(e) => {
                             // Not available in unit tests
                             e.target?.scrollIntoView?.({
@@ -62,7 +62,7 @@ export const ScaleSetter: FC<ScaleSetterProps> = (props) => {
         [intl, map, scales]
     );
 
-    const activeScale = useReactiveSnapshot(() => map?.scale ?? 1, [map]);
+    const activeScale = useReactiveSnapshot(() => map.scale ?? 1, [map]);
     return (
         <Box {...containerProps}>
             <Menu.Root>

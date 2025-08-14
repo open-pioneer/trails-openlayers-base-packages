@@ -107,16 +107,6 @@ export class MeasurementController {
             }
         });
 
-        const mouseOutHandler = () => {
-            this.helpTooltip.element.classList.add("hidden");
-        };
-        olMap.getViewport().addEventListener("mouseout", mouseOutHandler);
-        this.resources.push({
-            destroy() {
-                olMap.getViewport().removeEventListener("mouseout", mouseOutHandler);
-            }
-        });
-
         this.helpTooltip = createHelpTooltip(this.olMap);
     }
 
@@ -206,6 +196,10 @@ export class MeasurementController {
         }));
         this.olMap.addInteraction(draw);
 
+        // update tooltip if user changed drawing mode (and did not move the mouse yet)
+        // currently this does not work when the tool is initially activated as the tooltip has no position yet
+        this.updateTooltip(undefined);
+
         let measurement: MeasurementInstance | undefined;
         let changeListenerKey: EventsKey | undefined = undefined;
         draw.on("drawstart", (evt) => {
@@ -220,6 +214,9 @@ export class MeasurementController {
                 measurement?.updateTooltipContent();
                 measurement?.updateTooltipPosition();
             });
+
+            // update tooltip message if user started drawing but did not yet move the mouse
+            this.updateTooltip(undefined);
         });
 
         draw.on("drawend", () => {
@@ -235,6 +232,9 @@ export class MeasurementController {
             if (changeListenerKey) {
                 unByKey(changeListenerKey);
             }
+
+            // update tooltip if user finished drawing but did not yet move the mouse
+            this.updateTooltip(undefined);
         });
 
         draw.on("drawabort", () => {
@@ -245,6 +245,7 @@ export class MeasurementController {
                 }
                 measurement = undefined;
             }
+
             if (changeListenerKey) {
                 unByKey(changeListenerKey);
             }
@@ -267,12 +268,16 @@ export class MeasurementController {
         if (evt.dragging) {
             return;
         }
+        this.updateTooltip(evt.coordinate);
+    }
 
+    private updateTooltip(coordinate: number[] | undefined) {
         const tooltip = this.helpTooltip;
         const helpMessage = getHelpMessage(this.messages, this.activeMeasurement);
         tooltip.setText(helpMessage);
-        tooltip.overlay.setPosition(evt.coordinate);
-        tooltip.element.classList.remove("hidden");
+        if (coordinate) {
+            tooltip.overlay.setPosition(coordinate);
+        }
     }
 
     private updatePredefinedMeasurements(geometries: MeasurementGeometry[]) {
@@ -427,7 +432,7 @@ interface Tooltip extends Resource {
 
 function createHelpTooltip(olMap: OlMap): Tooltip {
     const element = document.createElement("div");
-    element.className = "measurement-tooltip printing-hide hidden";
+    element.className = "measurement-tooltip printing-hide";
     element.role = "tooltip";
 
     const content = document.createElement("span");

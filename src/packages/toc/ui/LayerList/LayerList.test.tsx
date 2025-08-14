@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import { nextTick } from "@conterra/reactivity-core";
 import { GroupLayer, SimpleLayer } from "@open-pioneer/map";
-import { setupMap } from "@open-pioneer/map-test-utils";
+import { LayerConfig, setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import {
     fireEvent,
@@ -22,7 +22,7 @@ import { TocModel, TocModelProvider, TocWidgetOptions } from "../../model/TocMod
 import { TopLevelLayerList } from "./LayerList";
 
 it("should show layers in the correct order", async () => {
-    const { mapId, registry } = await setupMap({
+    const { map, Wrapper } = await setup({
         layers: [
             {
                 title: "Layer 1",
@@ -38,10 +38,9 @@ it("should show layers in the correct order", async () => {
             }
         ]
     });
-    const map = await registry.expectMapModel(mapId);
 
     const { container } = render(<TopLevelLayerList map={map} />, {
-        wrapper: createWrapper()
+        wrapper: Wrapper
     });
 
     /*
@@ -59,7 +58,7 @@ it("should show layers in the correct order", async () => {
 });
 
 it("does not display base layers", async function () {
-    const { mapId, registry } = await setupMap({
+    const { map, Wrapper } = await setup({
         layers: [
             {
                 title: "Layer 1",
@@ -72,10 +71,9 @@ it("does not display base layers", async function () {
             }
         ]
     });
-    const map = await registry.expectMapModel(mapId);
 
     const { container } = render(<TopLevelLayerList map={map} />, {
-        wrapper: createWrapper()
+        wrapper: Wrapper
     });
 
     const labels = getCurrentLabels(container);
@@ -83,7 +81,7 @@ it("does not display base layers", async function () {
 });
 
 it("shows a single entry for layer groups inside a SimpleLayer", async function () {
-    const { mapId, registry } = await setupMap({
+    const { map, Wrapper } = await setup({
         layers: [
             {
                 title: "Layer 1",
@@ -95,10 +93,9 @@ it("shows a single entry for layer groups inside a SimpleLayer", async function 
             }
         ]
     });
-    const map = await registry.expectMapModel(mapId);
 
     const { container } = render(<TopLevelLayerList map={map} />, {
-        wrapper: createWrapper()
+        wrapper: Wrapper
     });
 
     const labels = getCurrentLabels(container);
@@ -106,20 +103,19 @@ it("shows a single entry for layer groups inside a SimpleLayer", async function 
 });
 
 it("shows a fallback message if there are no layers", async function () {
-    const { mapId, registry } = await setupMap({
+    const { map, Wrapper } = await setup({
         layers: []
     });
-    const map = await registry.expectMapModel(mapId);
 
     const { container } = render(<TopLevelLayerList map={map} />, {
-        wrapper: createWrapper()
+        wrapper: Wrapper
     });
 
     expect(container.textContent).toBe("missingLayers");
 });
 
 it("reacts to changes in the layer composition", async function () {
-    const { mapId, registry } = await setupMap({
+    const { map, Wrapper } = await setup({
         layers: [
             {
                 title: "Layer 1",
@@ -127,10 +123,8 @@ it("reacts to changes in the layer composition", async function () {
             }
         ]
     });
-    const map = await registry.expectMapModel(mapId);
-
     const { container } = render(<TopLevelLayerList map={map} />, {
-        wrapper: createWrapper()
+        wrapper: Wrapper
     });
 
     const initialItems = getCurrentItems(container);
@@ -154,7 +148,7 @@ it("reacts to changes in the layer composition", async function () {
 });
 
 it("displays the layer's current title", async () => {
-    const { mapId, registry } = await setupMap({
+    const { map, Wrapper } = await setup({
         layers: [
             {
                 id: "layer",
@@ -164,14 +158,13 @@ it("displays the layer's current title", async () => {
         ]
     });
 
-    const map = await registry.expectMapModel(mapId);
     const layer = map.layers.getLayerById("layer");
     if (!layer) {
         throw new Error("test layer not found!");
     }
 
     const { container } = render(<TopLevelLayerList map={map} />, {
-        wrapper: createWrapper()
+        wrapper: Wrapper
     });
 
     expect(getCurrentLabels(container)).toEqual(["Layer 1"]);
@@ -183,7 +176,7 @@ it("displays the layer's current title", async () => {
 });
 
 it("displays the layer's current visibility", async () => {
-    const { mapId, registry } = await setupMap({
+    const { map, Wrapper } = await setup({
         layers: [
             {
                 id: "layer",
@@ -193,7 +186,6 @@ it("displays the layer's current visibility", async () => {
         ]
     });
 
-    const map = await registry.expectMapModel(mapId);
     const layer = map.layers.getLayerById("layer");
     if (!layer) {
         throw new Error("test layer not found!");
@@ -201,7 +193,7 @@ it("displays the layer's current visibility", async () => {
     expect(layer.visible).toBe(true);
 
     const { container } = render(<TopLevelLayerList map={map} />, {
-        wrapper: createWrapper()
+        wrapper: Wrapper
     });
 
     const checkbox = queryByRole<HTMLInputElement>(container, "checkbox");
@@ -217,7 +209,7 @@ it("displays the layer's current visibility", async () => {
 
 it("changes the layer's visibility when toggling the checkbox", async () => {
     const user = userEvent.setup();
-    const { mapId, registry } = await setupMap({
+    const { map, Wrapper } = await setup({
         layers: [
             {
                 id: "layer",
@@ -227,14 +219,13 @@ it("changes the layer's visibility when toggling the checkbox", async () => {
         ]
     });
 
-    const map = await registry.expectMapModel(mapId);
     const layer = map.layers.getLayerById("layer");
     if (!layer) {
         throw new Error("test layer not found!");
     }
 
     const { container } = render(<TopLevelLayerList map={map} />, {
-        wrapper: createWrapper()
+        wrapper: Wrapper
     });
 
     // Initial state reflects layer state (visible)
@@ -255,7 +246,7 @@ it("changes the layer's visibility when toggling the checkbox", async () => {
 });
 
 it("includes the layer id in the item's class list", async () => {
-    const { mapId, registry } = await setupMap({
+    const { map, Wrapper } = await setup({
         layers: [
             {
                 id: "some layer id",
@@ -264,10 +255,9 @@ it("includes the layer id in the item's class list", async () => {
             }
         ]
     });
-    const map = await registry.expectMapModel(mapId);
 
     const { container } = render(<TopLevelLayerList map={map} />, {
-        wrapper: createWrapper()
+        wrapper: Wrapper
     });
 
     const item = container.querySelector(".layer-some-layer-id");
@@ -276,7 +266,7 @@ it("includes the layer id in the item's class list", async () => {
 });
 
 it("renders buttons for all layer's with description property", async () => {
-    const { mapId, registry } = await setupMap({
+    const { map, Wrapper } = await setup({
         layers: [
             {
                 title: "Layer 1",
@@ -289,10 +279,9 @@ it("renders buttons for all layer's with description property", async () => {
             }
         ]
     });
-    const map = await registry.expectMapModel(mapId);
 
     const { container } = render(<TopLevelLayerList map={map} />, {
-        wrapper: createWrapper()
+        wrapper: Wrapper
     });
 
     const initialItems = queryAllByRole(container, "button");
@@ -300,7 +289,7 @@ it("renders buttons for all layer's with description property", async () => {
 });
 
 it("changes the description popover's visibility when toggling the button", async () => {
-    const { mapId, registry } = await setupMap({
+    const { map, Wrapper } = await setup({
         layers: [
             {
                 id: "layer",
@@ -314,14 +303,14 @@ it("changes the description popover's visibility when toggling the button", asyn
             }
         ]
     });
-    const map = await registry.expectMapModel(mapId);
+
     const layer = map.layers.getLayerById("layer");
     if (!layer) {
         throw new Error("test layer not found!");
     }
 
     const { container } = render(<TopLevelLayerList map={map} />, {
-        wrapper: createWrapper()
+        wrapper: Wrapper
     });
 
     const button = queryByRole(container, "button");
@@ -348,7 +337,7 @@ it("changes the description popover's visibility when toggling the button", asyn
 });
 
 it("reacts to changes in the layer description", async () => {
-    const { mapId, registry } = await setupMap({
+    const { map, Wrapper } = await setup({
         layers: [
             {
                 id: "layer1",
@@ -363,14 +352,14 @@ it("reacts to changes in the layer description", async () => {
             }
         ]
     });
-    const map = await registry.expectMapModel(mapId);
+
     const layer = map.layers.getLayerById("layer1");
     if (!layer) {
         throw new Error("test layer not found!");
     }
 
     const { container } = render(<TopLevelLayerList map={map} />, {
-        wrapper: createWrapper()
+        wrapper: Wrapper
     });
 
     const initialItems = queryAllByRole(container, "button");
@@ -393,7 +382,7 @@ it("reacts to changes in the layer description", async () => {
 it("reacts to changes of the layer load state", async () => {
     const source = new OSM();
 
-    const { mapId, registry } = await setupMap({
+    const { map, Wrapper } = await setup({
         layers: [
             {
                 id: "layer1",
@@ -405,10 +394,9 @@ it("reacts to changes of the layer load state", async () => {
             }
         ]
     });
-    const map = await registry.expectMapModel(mapId);
 
     const { container } = render(<TopLevelLayerList map={map} />, {
-        wrapper: createWrapper()
+        wrapper: Wrapper
     });
 
     const checkbox = queryByRole<HTMLInputElement>(container, "checkbox")!;
@@ -446,15 +434,15 @@ it("supports a hierarchy of layers", async () => {
     const user = userEvent.setup();
 
     const { group, subgroup, submember } = createGroupHierarchy();
-    const { mapId, registry } = await setupMap({
-        layers: [group]
+    const { map, Wrapper } = await setup({
+        layers: [group],
+        tocOptions: {
+            autoShowParents: true
+        }
     });
 
-    const map = await registry.expectMapModel(mapId);
     const { container } = render(<TopLevelLayerList map={map} />, {
-        wrapper: createWrapper({
-            autoShowParents: true
-        })
+        wrapper: Wrapper
     });
 
     // Check hierarchy of dom elements
@@ -492,15 +480,15 @@ it("supports disabling autoShowParents", async () => {
     const user = userEvent.setup();
 
     const { group, subgroup, submember } = createGroupHierarchy();
-    const { mapId, registry } = await setupMap({
-        layers: [group]
+    const { map, Wrapper } = await setup({
+        layers: [group],
+        tocOptions: {
+            autoShowParents: false
+        }
     });
 
-    const map = await registry.expectMapModel(mapId);
     const { container } = render(<TopLevelLayerList map={map} />, {
-        wrapper: createWrapper({
-            autoShowParents: false
-        })
+        wrapper: Wrapper
     });
 
     const submemberItem = findLayerItem(container, "submember")!;
@@ -524,15 +512,15 @@ it("supports disabling autoShowParents", async () => {
 it("should collapse and expand list items", async () => {
     const user = userEvent.setup();
     const { group } = createGroupHierarchy();
-    const { mapId, registry } = await setupMap({
-        layers: [group]
+    const { map, Wrapper } = await setup({
+        layers: [group],
+        tocOptions: {
+            collapsibleGroups: true
+        }
     });
 
-    const map = await registry.expectMapModel(mapId);
     const { container } = render(<TopLevelLayerList map={map} />, {
-        wrapper: createWrapper({
-            collapsibleGroups: true
-        })
+        wrapper: Wrapper
     });
 
     const groupItem = findLayerItem(container, "group")!;
@@ -556,7 +544,7 @@ it("should collapse and expand list items", async () => {
 
 it("it renders collapse buttons (only) for groups", async () => {
     const { group } = createGroupHierarchy();
-    const { mapId, registry } = await setupMap({
+    const { map, Wrapper } = await setup({
         layers: [
             {
                 title: "SimpleLayer",
@@ -564,12 +552,14 @@ it("it renders collapse buttons (only) for groups", async () => {
                 olLayer: new TileLayer({})
             },
             group
-        ]
+        ],
+        tocOptions: {
+            collapsibleGroups: true
+        }
     });
 
-    const map = await registry.expectMapModel(mapId);
     const { container } = render(<TopLevelLayerList map={map} />, {
-        wrapper: createWrapper({ collapsibleGroups: true })
+        wrapper: Wrapper
     });
 
     const groupItem = findLayerItem(container, "group")!;
@@ -589,16 +579,16 @@ it("it renders collapse buttons (only) for groups", async () => {
 
 it("supports disabling collapsibleGroups, even if `initiallyCollapsed` is `true`", async () => {
     const { group } = createGroupHierarchy();
-    const { mapId, registry } = await setupMap({
-        layers: [group]
-    });
-
-    const map = await registry.expectMapModel(mapId);
-    const { container } = render(<TopLevelLayerList map={map} />, {
-        wrapper: createWrapper({
+    const { map, Wrapper } = await setup({
+        layers: [group],
+        tocOptions: {
             collapsibleGroups: false,
             initiallyCollapsed: true
-        })
+        }
+    });
+
+    const { container } = render(<TopLevelLayerList map={map} />, {
+        wrapper: Wrapper
     });
 
     const groupItem = findLayerItem(container, "group")!;
@@ -615,16 +605,16 @@ it("supports disabling collapsibleGroups, even if `initiallyCollapsed` is `true`
 it("supports initial collapsed groups", async () => {
     const user = userEvent.setup();
     const { group } = createGroupHierarchy();
-    const { mapId, registry } = await setupMap({
-        layers: [group]
-    });
-
-    const map = await registry.expectMapModel(mapId);
-    const { container } = render(<TopLevelLayerList map={map} />, {
-        wrapper: createWrapper({
+    const { map, Wrapper } = await setup({
+        layers: [group],
+        tocOptions: {
             collapsibleGroups: true,
             initiallyCollapsed: true
-        })
+        }
+    });
+
+    const { container } = render(<TopLevelLayerList map={map} />, {
+        wrapper: Wrapper
     });
 
     const groupItem = findLayerItem(container, "group")!;
@@ -643,7 +633,7 @@ it("supports initial collapsed groups", async () => {
 });
 
 it("displays the layer item only if the layer is not internal", async () => {
-    const { mapId, registry } = await setupMap({
+    const { map, Wrapper } = await setup({
         layers: [
             {
                 id: "layer",
@@ -654,14 +644,13 @@ it("displays the layer item only if the layer is not internal", async () => {
         ]
     });
 
-    const map = await registry.expectMapModel(mapId);
     const layer = map.layers.getLayerById("layer");
     if (!layer) {
         throw new Error("test layer not found!");
     }
 
     const { container } = render(<TopLevelLayerList map={map} />, {
-        wrapper: createWrapper()
+        wrapper: Wrapper
     });
 
     let layerItem = findLayerItem(container, layer.id);
@@ -676,7 +665,7 @@ it("displays the layer item only if the layer is not internal", async () => {
 });
 
 it("displays the layer item only if the list mode is not `hide`", async () => {
-    const { mapId, registry } = await setupMap({
+    const { map, Wrapper } = await setup({
         layers: [
             {
                 id: "layer",
@@ -692,14 +681,13 @@ it("displays the layer item only if the list mode is not `hide`", async () => {
         ]
     });
 
-    const map = await registry.expectMapModel(mapId);
     const layer = map.layers.getLayerById("layer");
     if (!layer) {
         throw new Error("test layer not found!");
     }
 
     const { container } = render(<TopLevelLayerList map={map} />, {
-        wrapper: createWrapper()
+        wrapper: Wrapper
     });
 
     let layerItem = findLayerItem(container, layer.id);
@@ -758,13 +746,12 @@ it("does not display layer item for child layer if the group's listMode is `hide
         }
     });
 
-    const { mapId, registry } = await setupMap({
+    const { map, Wrapper } = await setup({
         layers: [groupLayer]
     });
 
-    const map = await registry.expectMapModel(mapId);
     const { container } = render(<TopLevelLayerList map={map} />, {
-        wrapper: createWrapper()
+        wrapper: Wrapper
     });
 
     let groupLayerItem = findLayerItem(container, groupLayer.id);
@@ -832,24 +819,31 @@ function createGroupHierarchy() {
     return { group, subgroup, submember };
 }
 
-function createWrapper(options?: Partial<TocWidgetOptions>) {
+async function setup(opts?: { layers?: LayerConfig[]; tocOptions?: Partial<TocWidgetOptions> }) {
+    const { map } = await setupMap({
+        layers: opts?.layers
+    });
+
     const testModel: TocModel = {
         options: {
             autoShowParents: true,
             collapsibleGroups: false,
             initiallyCollapsed: false,
-            ...options
+            ...opts?.tocOptions
         },
         getItem: () => undefined,
         getItems: () => [],
         registerItem: () => undefined,
         unregisterItem: () => undefined
     };
-    return function Wrapper(props: { children: ReactNode }) {
+
+    function Wrapper(props: { children?: ReactNode }) {
         return (
             <PackageContextProvider>
                 <TocModelProvider value={testModel}>{props.children}</TocModelProvider>
             </PackageContextProvider>
         );
-    };
+    }
+
+    return { map, Wrapper };
 }
