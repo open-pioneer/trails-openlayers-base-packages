@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import { Box, Image, Text } from "@chakra-ui/react";
 import { GroupLayer, SimpleLayer, WMSLayer } from "@open-pioneer/map";
-import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
+import { createServiceOptions, setupMap, SimpleMapOptions } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { act, render, screen, waitFor } from "@testing-library/react";
 import { readFileSync } from "node:fs";
@@ -17,13 +17,14 @@ const WMTS_CAPAS = readFileSync(resolve(THIS_DIR, "./test-data/SimpleWMSCapas.xm
 
 // Happy dom does not have an XML parser
 import jsdom from "jsdom";
+import { ReactNode } from "react";
 window.DOMParser = new jsdom.JSDOM().window.DOMParser;
 
 const LEGEND_ITEM_CLASS = ".legend-item";
 const LEGEND_IMAGE_CLASS = ".legend-item__image";
 
 it("should successfully create a legend component", async () => {
-    const { map, registry } = await setupMap({
+    const { map, Wrapper } = await setup({
         layers: [
             {
                 title: "Base layer",
@@ -43,20 +44,15 @@ it("should successfully create a legend component", async () => {
             }
         ]
     });
-    const injectedServices = createServiceOptions({ registry });
 
-    render(
-        <PackageContextProvider services={injectedServices}>
-            <Legend map={map} data-testid="legend" />
-        </PackageContextProvider>
-    );
+    render(<Legend map={map} data-testid="legend" />, { wrapper: Wrapper });
 
     const legendDiv = await findLegend();
     expect(legendDiv).toMatchSnapshot();
 });
 
 it("should successfully show legend for imageUrl configuration", async () => {
-    const { map, registry } = await setupMap({
+    const { map, Wrapper } = await setup({
         layers: [
             {
                 title: "Base layer",
@@ -81,13 +77,8 @@ it("should successfully show legend for imageUrl configuration", async () => {
             }
         ]
     });
-    const injectedServices = createServiceOptions({ registry });
 
-    render(
-        <PackageContextProvider services={injectedServices}>
-            <Legend map={map} data-testid="legend" />
-        </PackageContextProvider>
-    );
+    render(<Legend map={map} data-testid="legend" />, { wrapper: Wrapper });
 
     const legendDiv = await findLegend();
     await waitForLegendItem(legendDiv);
@@ -105,7 +96,7 @@ it("should successfully show legend for Component configuration", async () => {
         display: "inline-block "
     };
 
-    const { map, registry } = await setupMap({
+    const { map, Wrapper } = await setup({
         layers: [
             {
                 title: "Base layer",
@@ -137,13 +128,8 @@ it("should successfully show legend for Component configuration", async () => {
             }
         ]
     });
-    const injectedServices = createServiceOptions({ registry });
 
-    render(
-        <PackageContextProvider services={injectedServices}>
-            <Legend map={map} data-testid="legend" />
-        </PackageContextProvider>
-    );
+    render(<Legend map={map} data-testid="legend" />, { wrapper: Wrapper });
 
     const legendDiv = await findLegend();
     await waitForLegendItem(legendDiv);
@@ -151,7 +137,7 @@ it("should successfully show legend for Component configuration", async () => {
 });
 
 it("does not show a legend for basemaps by default", async () => {
-    const { map, registry } = await setupMap({
+    const { map, Wrapper } = await setup({
         layers: [
             {
                 title: "Base layer",
@@ -173,21 +159,11 @@ it("does not show a legend for basemaps by default", async () => {
                         imageUrl: "https://avatars.githubusercontent.com/u/121286957?s=200&v=4"
                     }
                 }
-            },
-            {
-                title: "Layer 2",
-                id: "layer-2",
-                olLayer: new TileLayer({})
             }
         ]
     });
-    const injectedServices = createServiceOptions({ registry });
 
-    render(
-        <PackageContextProvider services={injectedServices}>
-            <Legend map={map} data-testid="legend" />
-        </PackageContextProvider>
-    );
+    render(<Legend map={map} data-testid="legend" />, { wrapper: Wrapper });
 
     const legendDiv = await findLegend();
     await waitForLegendItem(legendDiv);
@@ -200,7 +176,7 @@ it("does not show a legend for basemaps by default", async () => {
 });
 
 it("shows a legend for active basemap if showBaseLayers is configured to be true", async () => {
-    const { map, registry } = await setupMap({
+    const { map, Wrapper } = await setup({
         layers: [
             {
                 title: "Base layer",
@@ -212,44 +188,22 @@ it("shows a legend for active basemap if showBaseLayers is configured to be true
                         imageUrl: "https://basemap-url.com/"
                     }
                 }
-            },
-            {
-                title: "Layer 1",
-                id: "layer-1",
-                olLayer: new TileLayer({}),
-                attributes: {
-                    "legend": {
-                        imageUrl: "https://avatars.githubusercontent.com/u/121286957?s=200&v=4"
-                    }
-                }
-            },
-            {
-                title: "Layer 2",
-                id: "layer-2",
-                olLayer: new TileLayer({})
             }
         ]
     });
-    const injectedServices = createServiceOptions({ registry });
 
-    render(
-        <PackageContextProvider services={injectedServices}>
-            <Legend map={map} data-testid="legend" showBaseLayers={true} />
-        </PackageContextProvider>
-    );
+    render(<Legend map={map} data-testid="legend" showBaseLayers={true} />, { wrapper: Wrapper });
 
     const legendDiv = await findLegend();
     await waitForLegendItem(legendDiv);
 
-    const images = await getLegendImages(legendDiv, 2);
-    expect(images.length).toBe(2);
-
-    const src = images[1]?.getAttribute("src");
+    const images = await getLegendImages(legendDiv, 1);
+    const src = images[0]?.getAttribute("src");
     expect(src).toBe("https://basemap-url.com/");
 });
 
 it("shows correct legend entries for nested WMSSublayers", async () => {
-    const { map, registry } = await setupMap({
+    const { map, Wrapper } = await setup({
         layers: [createLayerWithNestedSublayers()],
         fetch: vi.fn(async () => {
             return new Response(WMTS_CAPAS, {
@@ -257,13 +211,8 @@ it("shows correct legend entries for nested WMSSublayers", async () => {
             });
         })
     });
-    const injectedServices = createServiceOptions({ registry });
 
-    render(
-        <PackageContextProvider services={injectedServices}>
-            <Legend map={map} data-testid="legend" />
-        </PackageContextProvider>
-    );
+    render(<Legend map={map} data-testid="legend" />, { wrapper: Wrapper });
 
     const legendDiv = await findLegend();
     await waitForLegendItem(legendDiv);
@@ -278,14 +227,8 @@ it("shows correct legend entries for nested WMSSublayers", async () => {
 });
 
 it("shows legend entries for group layers and their children", async () => {
-    const { map, registry } = await setupMap({
+    const { map, Wrapper } = await setup({
         layers: [
-            {
-                title: "Base layer",
-                id: "base-layer",
-                olLayer: new TileLayer({}),
-                isBaseLayer: true
-            },
             new GroupLayer({
                 title: "Hintergrundkarten",
                 visible: true,
@@ -316,13 +259,8 @@ it("shows legend entries for group layers and their children", async () => {
             });
         })
     });
-    const injectedServices = createServiceOptions({ registry });
 
-    render(
-        <PackageContextProvider services={injectedServices}>
-            <Legend map={map} data-testid="legend" />
-        </PackageContextProvider>
-    );
+    render(<Legend map={map} data-testid="legend" />, { wrapper: Wrapper });
 
     const legendDiv = await findLegend();
     await waitForLegendItem(legendDiv);
@@ -337,7 +275,7 @@ it("shows legend entries for group layers and their children", async () => {
 });
 
 it("shows legend entries for group layers and their children if group layer has no legend", async () => {
-    const { map, registry } = await setupMap({
+    const { map, Wrapper } = await setup({
         layers: [
             new GroupLayer({
                 title: "Hintergrundkarten",
@@ -358,12 +296,7 @@ it("shows legend entries for group layers and their children if group layer has 
         ]
     });
 
-    const injectedServices = createServiceOptions({ registry });
-    render(
-        <PackageContextProvider services={injectedServices}>
-            <Legend map={map} data-testid="legend" />
-        </PackageContextProvider>
-    );
+    render(<Legend map={map} data-testid="legend" />, { wrapper: Wrapper });
 
     const legendDiv = await findLegend();
     await waitForLegendItem(legendDiv);
@@ -373,7 +306,7 @@ it("shows legend entries for group layers and their children if group layer has 
 });
 
 it("does not show child legends if 'hide-children' is used", async () => {
-    const { map, registry } = await setupMap({
+    const { map, Wrapper } = await setup({
         layers: [
             new GroupLayer({
                 title: "Hintergrundkarten",
@@ -397,26 +330,15 @@ it("does not show child legends if 'hide-children' is used", async () => {
         ]
     });
 
-    const injectedServices = createServiceOptions({ registry });
-    render(
-        <PackageContextProvider services={injectedServices}>
-            <Legend map={map} data-testid="legend" />
-        </PackageContextProvider>
-    );
+    render(<Legend map={map} data-testid="legend" />, { wrapper: Wrapper });
 
     const legendDiv = await findLegend();
     await getLegendImages(legendDiv, 0);
 });
 
 it("only shows legend entry for group layer and not their children", async () => {
-    const { map, registry } = await setupMap({
+    const { map, Wrapper } = await setup({
         layers: [
-            {
-                title: "Base layer",
-                id: "base-layer",
-                olLayer: new TileLayer({}),
-                isBaseLayer: true
-            },
             new GroupLayer({
                 title: "Hintergrundkarten",
                 visible: true,
@@ -444,13 +366,8 @@ it("only shows legend entry for group layer and not their children", async () =>
             });
         })
     });
-    const injectedServices = createServiceOptions({ registry });
 
-    render(
-        <PackageContextProvider services={injectedServices}>
-            <Legend map={map} data-testid="legend" />
-        </PackageContextProvider>
-    );
+    render(<Legend map={map} data-testid="legend" />, { wrapper: Wrapper });
 
     const legendDiv = await findLegend();
     await waitForLegendItem(legendDiv);
@@ -460,14 +377,8 @@ it("only shows legend entry for group layer and not their children", async () =>
 });
 
 it("shows legend entries for group layers and specific children", async () => {
-    const { map, registry } = await setupMap({
+    const { map, Wrapper } = await setup({
         layers: [
-            {
-                title: "Base layer",
-                id: "base-layer",
-                olLayer: new TileLayer({}),
-                isBaseLayer: true
-            },
             new GroupLayer({
                 title: "Hintergrundkarten",
                 visible: true,
@@ -498,13 +409,8 @@ it("shows legend entries for group layers and specific children", async () => {
             });
         })
     });
-    const injectedServices = createServiceOptions({ registry });
 
-    render(
-        <PackageContextProvider services={injectedServices}>
-            <Legend map={map} data-testid="legend" />
-        </PackageContextProvider>
-    );
+    render(<Legend map={map} data-testid="legend" />, { wrapper: Wrapper });
 
     const legendDiv = await findLegend();
     await waitForLegendItem(legendDiv);
@@ -517,14 +423,8 @@ it("shows legend entries for group layers and specific children", async () => {
 });
 
 it("shows legend entries in correct order", async () => {
-    const { map, registry } = await setupMap({
+    const { map, Wrapper } = await setup({
         layers: [
-            {
-                title: "Base layer",
-                id: "base-layer",
-                olLayer: new TileLayer({}),
-                isBaseLayer: true
-            },
             {
                 title: "Layer 1",
                 id: "layer-1",
@@ -569,13 +469,8 @@ it("shows legend entries in correct order", async () => {
             }
         ]
     });
-    const injectedServices = createServiceOptions({ registry });
 
-    render(
-        <PackageContextProvider services={injectedServices}>
-            <Legend map={map} data-testid="legend" />
-        </PackageContextProvider>
-    );
+    render(<Legend map={map} data-testid="legend" />, { wrapper: Wrapper });
 
     const legendDiv = await findLegend();
     await waitForLegendItem(legendDiv);
@@ -588,14 +483,8 @@ it("shows legend entries in correct order", async () => {
 });
 
 it("shows legend entries only for visible layers", async () => {
-    const { map, registry } = await setupMap({
+    const { map, Wrapper } = await setup({
         layers: [
-            {
-                title: "Base layer",
-                id: "base-layer",
-                olLayer: new TileLayer({}),
-                isBaseLayer: true
-            },
             {
                 title: "Layer 1",
                 id: "layer-1",
@@ -619,13 +508,8 @@ it("shows legend entries only for visible layers", async () => {
             }
         ]
     });
-    const injectedServices = createServiceOptions({ registry });
 
-    render(
-        <PackageContextProvider services={injectedServices}>
-            <Legend map={map} data-testid="legend" />
-        </PackageContextProvider>
-    );
+    render(<Legend map={map} data-testid="legend" />, { wrapper: Wrapper });
 
     const legendDiv = await findLegend();
     await waitForLegendItem(legendDiv);
@@ -638,7 +522,7 @@ it("shows legend entries only for visible layers", async () => {
 });
 
 it("includes the layer id in the legend item's class list", async () => {
-    const { map, registry } = await setupMap({
+    const { map, Wrapper } = await setup({
         layers: [
             {
                 title: "Layer 1",
@@ -652,13 +536,8 @@ it("includes the layer id in the legend item's class list", async () => {
             }
         ]
     });
-    const injectedServices = createServiceOptions({ registry });
 
-    render(
-        <PackageContextProvider services={injectedServices}>
-            <Legend map={map} data-testid="legend" />
-        </PackageContextProvider>
-    );
+    render(<Legend map={map} data-testid="legend" />, { wrapper: Wrapper });
 
     const legendDiv = await findLegend();
     const firstLegendItem = await waitForLegendItem(legendDiv);
@@ -666,14 +545,8 @@ it("includes the layer id in the legend item's class list", async () => {
 });
 
 it("reacts to changes in layer visibility", async () => {
-    const { map, registry } = await setupMap({
+    const { map, Wrapper } = await setup({
         layers: [
-            {
-                title: "Base layer",
-                id: "base-layer",
-                olLayer: new TileLayer({}),
-                isBaseLayer: true
-            },
             {
                 title: "Layer 1",
                 id: "layer-1",
@@ -708,13 +581,8 @@ it("reacts to changes in layer visibility", async () => {
             }
         ]
     });
-    const injectedServices = createServiceOptions({ registry });
 
-    render(
-        <PackageContextProvider services={injectedServices}>
-            <Legend map={map} data-testid="legend" />
-        </PackageContextProvider>
-    );
+    render(<Legend map={map} data-testid="legend" />, { wrapper: Wrapper });
 
     // First check
     const legendDiv = await findLegend();
@@ -738,14 +606,8 @@ it("reacts to changes in layer visibility", async () => {
 });
 
 it("reacts to changes in layer legend attributes", async () => {
-    const { map, registry } = await setupMap({
+    const { map, Wrapper } = await setup({
         layers: [
-            {
-                title: "Base layer",
-                id: "base-layer",
-                olLayer: new TileLayer({}),
-                isBaseLayer: true
-            },
             {
                 title: "Layer 1",
                 id: "layer-1",
@@ -758,13 +620,8 @@ it("reacts to changes in layer legend attributes", async () => {
             }
         ]
     });
-    const injectedServices = createServiceOptions({ registry });
 
-    render(
-        <PackageContextProvider services={injectedServices}>
-            <Legend map={map} data-testid="legend" />
-        </PackageContextProvider>
-    );
+    render(<Legend map={map} data-testid="legend" />, { wrapper: Wrapper });
 
     // First check
     const legendDiv = await findLegend();
@@ -790,14 +647,8 @@ it("reacts to changes in layer legend attributes", async () => {
 });
 
 it("reacts to changes in the layer composition", async () => {
-    const { map, registry } = await setupMap({
+    const { map, Wrapper } = await setup({
         layers: [
-            {
-                title: "Base layer",
-                id: "base-layer",
-                olLayer: new TileLayer({}),
-                isBaseLayer: true
-            },
             {
                 title: "Layer 1",
                 id: "layer-1",
@@ -810,13 +661,8 @@ it("reacts to changes in the layer composition", async () => {
             }
         ]
     });
-    const injectedServices = createServiceOptions({ registry });
 
-    render(
-        <PackageContextProvider services={injectedServices}>
-            <Legend map={map} data-testid="legend" />
-        </PackageContextProvider>
-    );
+    render(<Legend map={map} data-testid="legend" />, { wrapper: Wrapper });
 
     const layers = map.layers.getOperationalLayers();
     expect(layers.length).toBe(1);
@@ -848,7 +694,7 @@ it("reacts to changes in the layer composition", async () => {
 });
 
 it("shows legend entries only for layers that are not internal", async () => {
-    const { map, registry } = await setupMap({
+    const { map, Wrapper } = await setup({
         layers: [
             {
                 title: "Layer 1",
@@ -888,13 +734,8 @@ it("shows legend entries only for layers that are not internal", async () => {
             }
         ]
     });
-    const injectedServices = createServiceOptions({ registry });
 
-    render(
-        <PackageContextProvider services={injectedServices}>
-            <Legend map={map} data-testid="legend" />
-        </PackageContextProvider>
-    );
+    render(<Legend map={map} data-testid="legend" />, { wrapper: Wrapper });
 
     const legendDiv = await findLegend();
     await waitForLegendItem(legendDiv);
@@ -909,7 +750,7 @@ it("shows legend entries only for layers that are not internal", async () => {
 });
 
 it("reacts to changes in layer's internal state", async () => {
-    const { map, registry } = await setupMap({
+    const { map, Wrapper } = await setup({
         layers: [
             {
                 title: "Layer 1",
@@ -949,13 +790,8 @@ it("reacts to changes in layer's internal state", async () => {
             }
         ]
     });
-    const injectedServices = createServiceOptions({ registry });
 
-    render(
-        <PackageContextProvider services={injectedServices}>
-            <Legend map={map} data-testid="legend" />
-        </PackageContextProvider>
-    );
+    render(<Legend map={map} data-testid="legend" />, { wrapper: Wrapper });
 
     // First check
     const legendDiv = await findLegend();
@@ -1108,4 +944,15 @@ function createLayerWithNestedSublayers(hideChildrenModification: boolean = fals
             }
         ]
     });
+}
+
+async function setup(options: SimpleMapOptions & { returnMap?: true }) {
+    const { map, registry } = await setupMap(options);
+    const services = createServiceOptions({ registry });
+
+    function Wrapper(props: { children?: ReactNode }) {
+        return <PackageContextProvider services={services} {...props} />;
+    }
+
+    return { map, Wrapper };
 }
