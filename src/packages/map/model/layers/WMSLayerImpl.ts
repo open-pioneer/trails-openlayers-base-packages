@@ -20,6 +20,11 @@ import { AbstractLayer } from "../AbstractLayer";
 import { AbstractLayerBase } from "../AbstractLayerBase";
 import { MapModelImpl } from "../MapModelImpl";
 import { SublayersCollectionImpl } from "../SublayersCollectionImpl";
+import { InternalConstructorTag, LayerConstructor, LayerDependencies } from "./internals";
+
+// Import for api docs
+// eslint-disable-next-line unused-imports/no-unused-imports
+import type { LayerFactory } from "./LayerFactory";
 
 const LOG = createLogger("map:WMSLayer");
 
@@ -37,12 +42,33 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
     #visibleSublayers: ReadonlyReactive<string[]>;
     #sublayersWatch: Resource | undefined;
 
-    constructor(config: WMSLayerConfig) {
+    /**
+     * @deprecated Prefer using {@link LayerFactory.create} instead of calling the constructor directly
+     */
+    constructor(config: WMSLayerConfig);
+
+    /**
+     * NOTE: Do not use this overload. Use {@link LayerFactory.create} instead.
+     */
+    constructor(
+        config: WMSLayerConfig,
+        deps: LayerDependencies,
+        internalTag: InternalConstructorTag
+    );
+    constructor(
+        config: WMSLayerConfig,
+        deps?: LayerDependencies,
+        internalTag?: InternalConstructorTag
+    ) {
         const layer = new ImageLayer();
-        super({
-            ...config,
-            olLayer: layer
-        });
+        super(
+            {
+                ...config,
+                olLayer: layer
+            },
+            deps,
+            internalTag
+        );
         const source = new ImageWMS({
             ...config.sourceOptions,
             url: config.url,
@@ -203,13 +229,13 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
     }
 
     async #fetchWMSCapabilities(): Promise<string> {
-        const httpService = this.map.__sharedDependencies.httpService;
+        const httpService = this.__getDeps().httpService;
         const url = `${this.#url}?LANGUAGE=ger&SERVICE=WMS&REQUEST=GetCapabilities`;
         return fetchCapabilities(url, httpService, this.#abortController.signal);
     }
 
     async #loadImage(imageWrapper: ImageWrapper, imageUrl: string): Promise<void> {
-        const httpService = this.map.__sharedDependencies.httpService;
+        const httpService = this.__getDeps().httpService;
         const image = imageWrapper.getImage() as HTMLImageElement;
 
         const response = await httpService.fetch(imageUrl);
@@ -231,6 +257,13 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
         image.addEventListener("error", finish);
         image.src = objectUrl;
     }
+}
+
+// Ensure layer class is assignable to the constructor interface (there is no "implements" for the class itself).
+// eslint-disable-next-line no-constant-condition
+if (false) {
+    const check: LayerConstructor<WMSLayerConfig, WMSLayer> = WMSLayerImpl;
+    void check;
 }
 
 class WMSSublayerImpl extends AbstractLayerBase implements WMSSublayer {

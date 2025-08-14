@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { ExternalReactive, reactive, external, Reactive } from "@conterra/reactivity-core";
+import { external, ExternalReactive, reactive, Reactive } from "@conterra/reactivity-core";
 import { createLogger, destroyResource, Resource } from "@open-pioneer/core";
 import { unByKey } from "ol/Observable";
 import { EventsKey } from "ol/events";
@@ -17,6 +17,11 @@ import {
 } from "../api";
 import { AbstractLayerBase } from "./AbstractLayerBase";
 import { MapModelImpl } from "./MapModelImpl";
+import {
+    getLayerDependencies,
+    InternalConstructorTag,
+    LayerDependencies
+} from "./layers/internals";
 
 const LOG = createLogger("map:AbstractLayer");
 
@@ -29,6 +34,10 @@ export abstract class AbstractLayer<AdditionalEvents = {}>
     extends AbstractLayerBase<AdditionalEvents>
     implements LayerBaseType
 {
+    // Layer dependencies are present when the LayerFactory API was used to construct the layer.
+    // They may currently be undefined for compatibility reasons (in which case they will be used
+    // from the map, once connected).
+    #deps: LayerDependencies | undefined;
     #olLayer: OlBaseLayer;
     #isBaseLayer: boolean;
     #healthCheck?: string | HealthCheckFunction;
@@ -39,8 +48,13 @@ export abstract class AbstractLayer<AdditionalEvents = {}>
     #visibilityWatchKey: EventsKey | undefined;
     #stateWatchResource: Resource | undefined;
 
-    constructor(config: SimpleLayerConfig) {
+    constructor(
+        config: SimpleLayerConfig,
+        deps?: LayerDependencies,
+        internalTag?: InternalConstructorTag
+    ) {
         super(config);
+        this.#deps = getLayerDependencies(deps, internalTag);
         this.#olLayer = config.olLayer;
         this.#isBaseLayer = config.isBaseLayer ?? false;
         this.#healthCheck = config.healthCheck;
@@ -51,6 +65,8 @@ export abstract class AbstractLayer<AdditionalEvents = {}>
         this.#loadState = reactive(getSourceState(getSource(this.#olLayer)));
         this.__setVisible(config.visible ?? true); // apply initial visibility
     }
+
+    abstract readonly type: "simple" | "wms" | "wmts" | "group";
 
     get visible(): boolean {
         return this.#visible.value;
@@ -114,7 +130,21 @@ export abstract class AbstractLayer<AdditionalEvents = {}>
         }
     }
 
-    abstract readonly type: "simple" | "wms" | "wmts" | "group";
+    __getDeps(): LayerDependencies {
+        const deps = this.#deps;
+        if (deps) {
+            return deps;
+        }
+
+        const map = this.__getMap();
+        if (map) {
+            return map.__layerDeps;
+        }
+        throw new Error(
+            `Layer '${this.id}' has not been attached to a map yet. "
+            + "Use the LayerFactory to create an instance or add the layer to the map first.`
+        );
+    }
 }
 
 function watchLoadState(
@@ -203,7 +233,7 @@ async function doHealthCheck(
         healthCheckFn = healthCheck;
     } else if (typeof healthCheck === "string") {
         healthCheckFn = async () => {
-            const httpService = layer.map.__sharedDependencies.httpService;
+            const httpService = layer.__getDeps().httpService;
             const response = await httpService.fetch(healthCheck);
             if (response.ok) {
                 return "loaded";

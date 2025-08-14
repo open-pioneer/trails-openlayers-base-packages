@@ -15,6 +15,13 @@ export default defineBuildConfig({
                     name: "map.MapConfigProvider",
                     all: true
                 },
+                httpService: "http.HttpService",
+                layerFactory: "map.LayerFactory"
+            }
+        },
+        LayerFactory: {
+            provides: ["map.LayerFactory"],
+            references: {
                 httpService: "http.HttpService"
             }
         }

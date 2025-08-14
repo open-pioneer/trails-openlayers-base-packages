@@ -4,6 +4,10 @@ import type OlBaseLayer from "ol/layer/Base";
 import { LayerConfig, LayerBaseType } from "./base";
 import { SimpleLayerImpl } from "../../model/layers/SimpleLayerImpl";
 
+// Import for api docs
+// eslint-disable-next-line unused-imports/no-unused-imports
+import type { LayerFactory } from "../../model/layers/LayerFactory";
+
 /**
  * Options to construct a simple layer.
  *
@@ -20,7 +24,11 @@ export interface SimpleLayerConfig extends LayerConfig {
 export interface SimpleLayerConstructor {
     prototype: SimpleLayer;
 
-    /** Creates a new {@link SimpleLayer}. */
+    /**
+     * Creates a new {@link SimpleLayer}.
+     *
+     * @deprecated Prefer using {@link LayerFactory.create} instead of calling the constructor directly
+     */
     new (config: SimpleLayerConfig): SimpleLayer;
 }
 

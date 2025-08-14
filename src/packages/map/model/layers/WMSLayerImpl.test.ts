@@ -416,7 +416,7 @@ function createLayer(options: WMSLayerConfig & { fetch?: Mock; attach?: boolean 
             vi.fn().mockImplementation(async () => new Response("", { status: 200 }))
     } as HttpService;
     const mapModel = {
-        __sharedDependencies: {
+        __layerDeps: {
             httpService: httpService as HttpService
         }
     } as MapModelImpl;

@@ -7,12 +7,14 @@ import OlMap from "ol/Map";
 import { MapConfigProvider, MapModel, MapRegistry } from "./api";
 import { createMapModel } from "./model/createMapModel";
 import { MapModelImpl } from "./model/MapModelImpl";
+import { LayerFactory } from "./model/layers/LayerFactory";
 
 const LOG = createLogger("map:MapRegistry");
 
 interface References {
     providers: MapConfigProvider[];
     httpService: HttpService;
+    layerFactory: LayerFactory;
 }
 
 type ModelJobResult = { kind: "model"; model: MapModelImpl } | { kind: "error"; error: Error };
@@ -20,6 +22,7 @@ type ModelJobResult = { kind: "model"; model: MapModelImpl } | { kind: "error"; 
 export class MapRegistryImpl implements Service, MapRegistry {
     #intl: PackageIntl;
     #httpService: HttpService;
+    #layerFactory: LayerFactory;
 
     #configProviders = new Map<string, MapConfigProvider>();
     #entries = new Map<string, ModelJobResult>();
@@ -30,6 +33,7 @@ export class MapRegistryImpl implements Service, MapRegistry {
     constructor({ references, intl }: ServiceOptions<References>) {
         this.#intl = intl;
         this.#httpService = references.httpService;
+        this.#layerFactory = references.layerFactory;
 
         const providers = references.providers;
         for (const provider of providers) {
@@ -97,7 +101,9 @@ export class MapRegistryImpl implements Service, MapRegistry {
 
     async #createModel(mapId: string, provider: MapConfigProvider): Promise<ModelJobResult> {
         LOG.info(`Creating map with id '${mapId}'`);
-        const mapConfig = await provider.getMapConfig();
+        const mapConfig = await provider.getMapConfig({
+            layerFactory: this.#layerFactory
+        });
         const mapModel = await createMapModel(mapId, mapConfig, this.#intl, this.#httpService);
 
         if (this.#destroyed) {

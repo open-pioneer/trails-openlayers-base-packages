@@ -4,6 +4,7 @@ import type OlMap from "ol/Map";
 import type { MapConfig } from "./MapConfig";
 import type { MapModel } from "./MapModel";
 import type { DeclaredService } from "@open-pioneer/runtime";
+import type { LayerFactory } from "../model/layers/LayerFactory";
 
 /**
  * Provides access to registered map instances.
@@ -34,6 +35,16 @@ export interface MapRegistry extends DeclaredService<"map.MapRegistry"> {
 }
 
 /**
+ * Options passed to the {@link MapConfigProvider.getMapConfig} method.
+ */
+export interface MapConfigProviderOptions {
+    /**
+     * A reference to the layer factory, for the construction of new layer instances.
+     */
+    layerFactory: LayerFactory;
+}
+
+/**
  * Provides an OpenLayers map configuration with a given map id.
  *
  * The implementor must also provide the interface name `"map.MapConfigProvider"`.
@@ -49,7 +60,8 @@ export interface MapConfigProvider {
      *
      * Called by the {@link MapRegistry} when the map is requested for the first time.
      *
-     * See {@link MapConfig} for supported options.
+     * See {@link MapConfig} for supported options during map creation.
+     * Use {@link MapConfigProviderOptions.layerFactory} to construct new layers.
      */
-    getMapConfig(): Promise<MapConfig>;
+    getMapConfig(options: MapConfigProviderOptions): Promise<MapConfig>;
 }

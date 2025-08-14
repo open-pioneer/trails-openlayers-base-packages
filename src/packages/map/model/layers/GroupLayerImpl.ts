@@ -13,14 +13,37 @@ import { AbstractLayer } from "../AbstractLayer";
 import { AbstractLayerBase } from "../AbstractLayerBase";
 import { MapModelImpl } from "../MapModelImpl";
 import { getRecursiveLayers } from "../getRecursiveLayers";
+import { InternalConstructorTag, LayerConstructor, LayerDependencies } from "./internals";
+
+// Import for api docs
+// eslint-disable-next-line unused-imports/no-unused-imports
+import type { LayerFactory } from "./LayerFactory";
 
 export class GroupLayerImpl extends AbstractLayer implements GroupLayer {
     #children: GroupLayerCollectionImpl;
 
-    constructor(config: GroupLayerConfig) {
+    /**
+     * @deprecated Prefer using {@link LayerFactory.create} instead of calling the constructor directly
+     */
+    constructor(config: GroupLayerConfig);
+
+    /**
+     * NOTE: Do not use this overload. Use {@link LayerFactory.create} instead.
+     */
+    constructor(
+        config: GroupLayerConfig,
+        deps: LayerDependencies,
+        internalTag: InternalConstructorTag
+    );
+
+    constructor(
+        config: GroupLayerConfig,
+        deps?: LayerDependencies,
+        internalTag?: InternalConstructorTag
+    ) {
         const groupLayers = config.layers;
         const olGroup = new Group({ layers: groupLayers.map((sublayer) => sublayer.olLayer) });
-        super({ ...config, olLayer: olGroup });
+        super({ ...config, olLayer: olGroup }, deps, internalTag);
         this.#children = new GroupLayerCollectionImpl(groupLayers, this);
     }
 
@@ -52,6 +75,13 @@ export class GroupLayerImpl extends AbstractLayer implements GroupLayer {
         super.__attachToMap(map);
         this.layers.__getRawLayers().forEach((layer) => layer.__attachToMap(map));
     }
+}
+
+// Ensure layer class is assignable to the constructor interface (there is no "implements" for the class itself).
+// eslint-disable-next-line no-constant-condition
+if (false) {
+    const check: LayerConstructor<GroupLayerConfig, GroupLayer> = GroupLayerImpl;
+    void check;
 }
 
 // NOTE: adding / removing  currently not supported.

@@ -1,6 +1,15 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { MapConfig, MapConfigProvider, SimpleLayer, WMSLayer, GroupLayer } from "@open-pioneer/map";
+import {
+    GroupLayer,
+    LayerFactory,
+    MapConfig,
+    MapConfigProvider,
+    MapConfigProviderOptions,
+    SimpleLayer,
+    WMSLayer
+} from "@open-pioneer/map";
+import { LayerTocAttributes } from "@open-pioneer/toc";
 import GeoJSON from "ol/format/GeoJSON";
 import TileLayer from "ol/layer/Tile";
 import VectorLayer from "ol/layer/Vector";
@@ -8,14 +17,13 @@ import OSM from "ol/source/OSM";
 import VectorSource from "ol/source/Vector";
 import WMTS from "ol/source/WMTS";
 import WMTSTileGrid from "ol/tilegrid/WMTS";
-import { LayerTocAttributes } from "@open-pioneer/toc";
 
 export const MAP_ID = "main";
 
 export class MapConfigProviderImpl implements MapConfigProvider {
     mapId = MAP_ID;
 
-    async getMapConfig(): Promise<MapConfig> {
+    async getMapConfig({ layerFactory }: MapConfigProviderOptions): Promise<MapConfig> {
         return {
             initialView: {
                 kind: "position",
@@ -24,7 +32,8 @@ export class MapConfigProviderImpl implements MapConfigProvider {
             },
             projection: "EPSG:25832",
             layers: [
-                new SimpleLayer({
+                layerFactory.create({
+                    type: SimpleLayer,
                     id: "topplus_open",
                     title: "TopPlus Open",
                     isBaseLayer: true,
@@ -34,7 +43,8 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                         "https://sgx.geodatenzentrum.de/wmts_topplus_openERROR/1.0.0/WMTSCapabilities.xml",
                     olLayer: createTopPlusOpenLayer("web")
                 }),
-                new SimpleLayer({
+                layerFactory.create({
+                    type: SimpleLayer,
                     id: "topplus_open_grau",
                     title: "TopPlus Open (Grau)",
                     isBaseLayer: true,
@@ -50,7 +60,8 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     },
                     olLayer: createTopPlusOpenLayer("web_grau")
                 }),
-                new SimpleLayer({
+                layerFactory.create({
+                    type: SimpleLayer,
                     id: "topplus_open_light",
                     title: "TopPlus Open (Light)",
                     isBaseLayer: true,
@@ -60,7 +71,8 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                         "https://sgx.geodatenzentrum.de/wmts_topplus_open/1.0.0/WMTSCapabilities.xml",
                     olLayer: createTopPlusOpenLayer("web_light")
                 }),
-                new SimpleLayer({
+                layerFactory.create({
+                    type: SimpleLayer,
                     title: "OSM",
                     visible: false,
                     isBaseLayer: true,
@@ -68,11 +80,13 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                         source: new OSM()
                     })
                 }),
-                new GroupLayer({
+                layerFactory.create({
+                    type: GroupLayer,
                     id: "group_edu",
                     title: "Bildung",
                     layers: [
-                        new SimpleLayer({
+                        layerFactory.create({
+                            type: SimpleLayer,
                             title: "Kindertagesstätten",
                             id: "kitas",
                             visible: true,
@@ -80,14 +94,16 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                                 "https://sgx.geodatenzentrum.de/wmts_topplus_open/1.0.0/WMTSCapabilities.xml",
                             olLayer: createKitasLayer()
                         }),
-                        createSchulenLayer()
+                        createSchulenLayer(layerFactory)
                     ]
                 }),
-                new GroupLayer({
+                layerFactory.create({
+                    type: GroupLayer,
                     title: "Verkehr",
                     id: "group_transport",
                     layers: [
-                        new SimpleLayer({
+                        layerFactory.create({
+                            type: SimpleLayer,
                             title: "Haltestellen Stadt Rostock",
                             id: "bustops",
                             visible: true,
@@ -97,7 +113,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                             isBaseLayer: false,
                             internal: false
                         }),
-                        createStrassenLayer()
+                        createStrassenLayer(layerFactory)
                     ]
                 })
             ]
@@ -189,8 +205,9 @@ function createKitasLayer() {
     });
 }
 
-function createSchulenLayer() {
-    return new WMSLayer({
+function createSchulenLayer(layerFactory: LayerFactory) {
+    return layerFactory.create({
+        type: WMSLayer,
         title: "Schulstandorte",
         id: "schools",
         description: `Der vorliegende Datenbestand / Dienst zu den Schulstandorten in NRW stammt aus der Schuldatenbank. Die Informationen werden von den Schulträgern bzw. Schulen selbst eingetragen und aktuell gehalten. Die Daten werden tagesaktuell bereitgestellt und enthalten alle grundlegenden Informationen zu Schulen wie Schulnummer, Schulbezeichnung und Adresse.Der vorliegende Datenbestand / Dienst zu den Schulstandorten in NRW stammt aus der Schuldatenbank. Die Informationen werden von den Schulträgern bzw. Schulen selbst eingetragen und aktuell gehalten. Die Daten werden tagesaktuell bereitgestellt und enthalten alle grundlegenden Informationen zu Schulen wie Schulnummer, Schulbezeichnung und Adresse.Der vorliegende Datenbestand / Dienst zu den Schulstandorten in NRW stammt aus der Schuldatenbank. Die Informationen werden von den Schulträgern bzw. Schulen selbst eingetragen und aktuell gehalten. Die Daten werden tagesaktuell bereitgestellt und enthalten alle grundlegenden Informationen zu Schulen wie Schulnummer, Schulbezeichnung und Adresse.Der vorliegende Datenbestand / Dienst zu den Schulstandorten in NRW stammt aus der Schuldatenbank. Die Informationen werden von den Schulträgern bzw. Schulen selbst eingetragen und aktuell gehalten. Die Daten werden tagesaktuell bereitgestellt und enthalten alle grundlegenden Informationen zu Schulen wie Schulnummer, Schulbezeichnung und Adresse.`,
@@ -217,8 +234,9 @@ function createSchulenLayer() {
     });
 }
 
-function createStrassenLayer() {
-    return new WMSLayer({
+function createStrassenLayer(layerFactory: LayerFactory) {
+    return layerFactory.create({
+        type: WMSLayer,
         id: "street_network_wms",
         title: "Straßennetz Landesbetrieb Straßenbau NRW",
         url: "https://www.wms.nrw.de/wms/strassen_nrw_wms",

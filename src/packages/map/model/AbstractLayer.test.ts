@@ -384,10 +384,10 @@ function createLayer(layerConfig: SimpleLayerConfig, options?: { fetch?: Mock })
     } satisfies Partial<HttpService>;
 
     const mapModel = {
-        __sharedDependencies: {
+        __layerDeps: {
             httpService
         }
-    } as unknown as MapModelImpl;
+    } satisfies Partial<MapModelImpl> as unknown as MapModelImpl;
 
     const layer = new LayerImpl(layerConfig);
     layer.__attachToMap(mapModel);

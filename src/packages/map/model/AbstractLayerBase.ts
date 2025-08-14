@@ -87,6 +87,10 @@ export abstract class AbstractLayerBase<AdditionalEvents = {}>
         return map;
     }
 
+    __getMap(): MapModelImpl | undefined {
+        return this.#map;
+    }
+
     get id(): string {
         return this.#id;
     }
