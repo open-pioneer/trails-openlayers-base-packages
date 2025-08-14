@@ -14,7 +14,7 @@ import {
 } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, expect, it } from "vitest";
-import { SpatialBookmarks } from "./SpatialBookmarks";
+import { SpatialBookmarks, SpatialBookmarksProps } from "./SpatialBookmarks";
 import { Bookmark } from "./SpatialBookmarksViewModel";
 
 const MOCK_NAMESPACE_CONTENT = new Map<string, unknown>();
@@ -164,36 +164,29 @@ interface CtxProviderConfig {
     "local-storage.LocalStorageService": Partial<LocalStorageService>;
 }
 
-interface ComponentPropsConfig {
-    mapId: string;
-    "data-testid": string;
-}
-
 async function createBookmarkComponent() {
-    const { mapId, mapModel, injectedServices } = await setupComponent();
-    renderComponent({ services: injectedServices }, { mapId: mapId, "data-testid": "bookmarks" });
+    const { mapModel, injectedServices } = await setupComponent();
+    renderComponent({ services: injectedServices }, { map: mapModel, "data-testid": "bookmarks" });
     const div = await waitForSpatialBookmarks();
-    return { mapId, mapModel, div };
+    return { mapModel, div };
 }
 
 async function setupComponent() {
-    const { mapId, registry } = await setupMap({
+    const { map, registry } = await setupMap({
         projection: "EPSG:25832"
     });
-    const mapModel = await registry.expectMapModel(mapId);
     const injectedServices = {
         ...createServiceOptions({ registry }),
         "local-storage.LocalStorageService": MOCK_STORAGE_SERVICE
     };
     return {
-        mapModel,
-        mapId,
+        mapModel: map,
         injectedServices
     };
 }
 function renderComponent(
     contextProviderProps: { services: CtxProviderConfig },
-    componentProps: ComponentPropsConfig
+    componentProps: SpatialBookmarksProps
 ) {
     return render(
         <PackageContextProvider {...contextProviderProps}>

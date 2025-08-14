@@ -3,7 +3,7 @@
 import { Box, Button, Field, HStack, Input } from "@chakra-ui/react";
 import { NativeSelectField, NativeSelectRoot } from "@open-pioneer/chakra-snippets/native-select";
 import { createLogger } from "@open-pioneer/core";
-import { MapModel, MapModelProps, useMapModel } from "@open-pioneer/map";
+import { MapModel, MapModelProps, useMapModelValue } from "@open-pioneer/map";
 import { NotificationService } from "@open-pioneer/notifier";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { PackageIntl } from "@open-pioneer/runtime";
@@ -40,7 +40,7 @@ export const Printing: FC<PrintingProps> = (props) => {
 
     const notifier = useService<NotificationService>("notifier.NotificationService");
 
-    const { map } = useMapModel(props);
+    const map = useMapModelValue(props);
     const controller = useController(map, intl, viewPadding);
 
     function changeFileFormat(fileFormat: string) {
@@ -138,19 +138,11 @@ export const Printing: FC<PrintingProps> = (props) => {
 /**
  * Create a PrintingController instance to export the map view.
  */
-function useController(
-    map: MapModel | undefined,
-    intl: PackageIntl,
-    viewPadding: ViewPaddingBehavior
-) {
+function useController(map: MapModel, intl: PackageIntl, viewPadding: ViewPaddingBehavior) {
     const printingService = useService<PrintingService>("printing.PrintingService");
     const [controller, setController] = useState<PrintingController | undefined>(undefined);
 
     useEffect(() => {
-        if (!map) {
-            return;
-        }
-
         const controller = new PrintingController(map.olMap, printingService, {
             overlayText: intl.formatMessage({ id: "printingMap" })
         });

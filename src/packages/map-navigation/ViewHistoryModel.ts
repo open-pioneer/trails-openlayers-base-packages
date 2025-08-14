@@ -145,13 +145,9 @@ const VIEW_MODELS = new WeakMap<MapModel, ViewModelState>();
  *
  * NOTE: May be useful to have this a general solution in the future; but this is the only usage right now.
  */
-export function useHistoryViewModel(map: MapModel | undefined): ViewHistoryModel | undefined {
+export function useHistoryViewModel(map: MapModel): ViewHistoryModel | undefined {
     const [vm, setVm] = useState<ViewHistoryModel>();
     useEffect(() => {
-        if (!map) {
-            return;
-        }
-
         let state = VIEW_MODELS.get(map);
         if (state == null) {
             state = {
