@@ -1,3 +1,7 @@
+---
+"@open-pioneer/legend": patch
+---
+
 Introduce `listMode` for layer legend configurations:
 
 ```typescript
