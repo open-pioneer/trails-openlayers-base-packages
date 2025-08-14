@@ -37,14 +37,14 @@ To change the placeholder text of the search field, use the optional property `p
 <Search sources={searchsources} placeholder="Search for cities" />
 ```
 
-### Listening to events
+### Listening to events and using the search API
 
 To listen to the events `onSelect` and `onClear`, provide optional callback functions to the component.
 In case of the `onSelect` event, you can access the selected search result (and its search source)
 from the parameter `SelectSearchEvent`.
 
 ```tsx
-import { Search, SearchSelectEvent } from "@open-pioneer/search";
+import { Search, SearchClearEvent, SearchSelectEvent } from "@open-pioneer/search";
 // ...
 <Search
     map={map}
@@ -52,10 +52,57 @@ import { Search, SearchSelectEvent } from "@open-pioneer/search";
     onSelect={(event: SearchSelectEvent) => {
         // do something
     }}
-    onClear={() => {
+    onClear={(event: SearchClearEvent) => {
         // do something
     }}
 />;
+```
+
+The search API allows programmatic access to the search component. Currently, the search API provides a method to clear the search input field. To receive the API, listen to the `onReady`event which provides the `SearchApi` as a parameter once the search component is ready to use:
+
+```tsx
+import { Search } from "@open-pioneer/search";
+import { Button } from "@chakra-ui/react";
+import { Search, SearchApi, SearchClearEvent, SearchReadyEvent } from "@open-pioneer/search";
+import { NotificationService, Notifier } from "@open-pioneer/notifier";
+import { useRef } from "react";
+
+const searchApiRef = useRef<SearchApi>(undefined);
+const sources = [/* your sources */];
+
+// assign api ref once serach is initialized
+function searchReadyHandler(searchReadyEvent: SearchReadyEvent) {
+    searchApiRef.current = searchReadyEvent.api;
+}
+
+// remove api ref if the search is disposed
+function searchDisposeHandler() {
+    searchApiRef.current = undefined;
+}
+
+// the clear event conatins information about the trigger of the clear action (user or api call)
+function onSearchCleared(clearEvent: SearchClearEvent) {
+    console.log(clearEvent.trigger);
+}
+
+// ...
+<Search
+    sources={sources}
+    onClear={(clearEvent) => onSearchCleared(clearEvent)}
+    // get the api object from the ready event
+    onReady={(searchReadyEvent) => {
+        searchReadyHandler(searchReadyEvent);
+    }}
+    onDisposed={searchDisposeHandler}
+/>
+
+<Button
+    onClick={() => {
+        searchApiRef.current?.resetInput(); // use the api to clear the search input
+    }}
+>
+    reset search input
+</Button>
 ```
 
 ### Positioning the search bar

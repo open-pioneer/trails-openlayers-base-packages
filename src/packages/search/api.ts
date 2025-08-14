@@ -123,7 +123,7 @@ export interface SearchApi {
 }
 
 /**
- * Event that indicates that the search component is initialized.
+ * Event that indicates that the Search component is initialized.
  * The event carries a reference to the public {@link SearchApi}
  */
 export interface SearchReadyEvent {
@@ -134,7 +134,7 @@ export interface SearchReadyEvent {
 }
 
 /**
- * Event that indicates that the search component has been disposed.
+ * Event that indicates that the Search component has been disposed.
  *
  * Empty interface, might be extended in the future.
  */

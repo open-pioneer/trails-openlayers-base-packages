@@ -38,6 +38,10 @@ export function AppUI() {
         searchApiRef.current = searchReadyEvent.api;
     }
 
+    function searchDisposeHandler() {
+        searchApiRef.current = undefined;
+    }
+
     return (
         map && (
             <DefaultMapProvider map={map}>
@@ -87,6 +91,7 @@ export function AppUI() {
                                         onReady={(searchReadyEvent) => {
                                             searchReadyHandler(searchReadyEvent);
                                         }}
+                                        onDisposed={searchDisposeHandler}
                                     />
                                 </Box>
                                 <MapAnchor position="top-right" horizontalGap={10} verticalGap={10}>
