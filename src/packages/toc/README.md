@@ -99,7 +99,6 @@ Toc Items can be expanded/collapsed and provide access to the corresponding DOM 
 
 ```tsx
 import { Toc, TocApi, TocReadyEvent } from "@open-pioneer/toc";
-import { useId} from "react";
 import { Button } from "@chakra-ui/react";
 
 const tocAPIRef = useRef<TocApi>(undefined);
