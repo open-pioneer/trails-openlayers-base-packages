@@ -56,11 +56,12 @@ export interface LegendProps extends CommonComponentProps, MapModelProps {
 }
 
 /**
- * ListMode determines if a layer item is displayed in the Toc for the layer.
- * The option `"hide-children"` provides a shortcut to hide all child layers (e.g. sublayers of group) of the layer in the Toc.
+ * ListMode determines if a layer item is displayed in the Legend for the layer.
+ * The option `"hide-children"` provides a shortcut to hide all child layers (e.g. sublayers of group) of the layer in the Legend.
  * It has the same effect as manually setting the `listMode` to `"hide"` on all child layers.
  *
- * ListMode has precedence over the layer's `internal` attribute but specifically configures the layer's display in the Toc.
+ * ListMode has precedence over the layer's `internal` attribute but specifically configures the layer's display in the legend.
+ * Defaults to `"hide-children"` if not specified.
  */
 export type ListMode = "show" | "hide" | "hide-children";
 
