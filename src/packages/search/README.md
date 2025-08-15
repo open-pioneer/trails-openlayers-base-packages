@@ -58,7 +58,10 @@ import { Search, SearchClearEvent, SearchSelectEvent } from "@open-pioneer/searc
 />;
 ```
 
-The search API allows programmatic access to the search component. Currently, the search API provides a method to clear the search input field. To receive the API, listen to the `onReady`event which provides the `SearchApi` as a parameter once the search component is ready to use:
+The search API allows programmatic access to the search component.
+
+Currently, the search API provides a method to clear the search input field.
+To receive the API, listen to the `onReady` event which provides the `SearchApi` as a parameter once the search component is ready to use:
 
 ```tsx
 import { Search } from "@open-pioneer/search";
@@ -70,35 +73,27 @@ import { useRef } from "react";
 const searchApiRef = useRef<SearchApi>(undefined);
 const sources = [/* your sources */];
 
-// assign api ref once serach is initialized
-function searchReadyHandler(searchReadyEvent: SearchReadyEvent) {
-    searchApiRef.current = searchReadyEvent.api;
-}
-
-// remove api ref if the search is disposed
-function searchDisposeHandler() {
-    searchApiRef.current = undefined;
-}
-
-// the clear event conatins information about the trigger of the clear action (user or api call)
+// the clear event contains information about the trigger of the clear action (user or API call)
 function onSearchCleared(clearEvent: SearchClearEvent) {
-    console.log(clearEvent.trigger);
+    console.log(clearEvent.trigger); // "api-reset" if triggered via API
 }
 
 // ...
 <Search
     sources={sources}
-    onClear={(clearEvent) => onSearchCleared(clearEvent)}
-    // get the api object from the ready event
-    onReady={(searchReadyEvent) => {
-        searchReadyHandler(searchReadyEvent);
+    onClear={onSearchCleared}
+    onReady={(event: SearchReadyEvent) => {
+        // get the API object from the ready event and store it somewhere
+        searchApiRef.current = event.api;
     }}
-    onDisposed={searchDisposeHandler}
+    onDisposed={() => {
+        searchApiRef.current = undefined;
+    }}
 />
 
 <Button
     onClick={() => {
-        searchApiRef.current?.resetInput(); // use the api to clear the search input
+        searchApiRef.current?.resetInput(); // use the API to clear the search input
     }}
 >
     reset search input
