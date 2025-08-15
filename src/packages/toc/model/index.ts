@@ -8,8 +8,6 @@ export {
     type ExpandItemOptions,
     type TocApi,
     type TocDisposedEvent,
-    type TocDisposedHandler,
     type TocItem,
-    type TocReadyEvent,
-    type TocReadyHandler
+    type TocReadyEvent
 } from "./types";
