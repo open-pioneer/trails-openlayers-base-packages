@@ -9,12 +9,6 @@ import { dirname, resolve } from "node:path";
 import { defineConfig } from "vite";
 import eslint from "vite-plugin-eslint";
 
-// Minimum browser versions supported by generated JS/CSS
-// See also:
-// - https://vitejs.dev/config/build-options.html#build-target
-// - https://esbuild.github.io/api/#target
-const targets = ["chrome92", "edge92", "firefox91", "safari14"];
-
 // Find sites under src/samples with an index.html and build them all.
 const sampleSites = glob
     .sync("samples/*/index.html", {
@@ -42,7 +36,11 @@ export default defineConfig(({ mode }) => {
         build: {
             outDir: resolve(__dirname, "dist/www"),
             emptyOutDir: true,
-            target: targets
+
+            // Minimum browser versions supported by generated JS/CSS
+            // See also:
+            // - https://vitejs.dev/config/build-options.html#build-target
+            target: "baseline-widely-available"
         },
 
         plugins: [
@@ -62,17 +60,16 @@ export default defineConfig(({ mode }) => {
             react({
                 // react swc plugin transpiles during development.
                 // using a recent target allows for better debugging of recent features like private properties (`this.#abc`)
-                devTarget: "es2022"
+                devTarget: "es2024"
             }),
             eslint()
         ],
 
         // Ignore irrelevant deprecations
-        // https://github.com/vitejs/vite/issues/18164
         css: {
             preprocessorOptions: {
                 scss: {
-                    silenceDeprecations: ["legacy-js-api", "import"]
+                    silenceDeprecations: ["import"]
                 }
             }
         },
