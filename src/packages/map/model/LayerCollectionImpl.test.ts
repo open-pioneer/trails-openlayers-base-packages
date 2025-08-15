@@ -590,6 +590,113 @@ describe("adding a layers to the model", () => {
     });
 });
 
+it("supports adding a layer to the model (topmost)", async () => {
+    model = await create("foo", {
+        layers: [
+            new SimpleLayer({
+                title: "dummy1",
+                id: "dummy1",
+                olLayer: new TileLayer({
+                    source: new OSM()
+                })
+            })
+        ]
+    });
+
+    const layerTopMost = new SimpleLayer({
+        title: "topmost1",
+        olLayer: new TileLayer({
+            source: new OSM()
+        })
+    });
+    const layerTopMost2 = new SimpleLayer({
+        title: "topmost2",
+        olLayer: new TileLayer({
+            source: new OSM()
+        })
+    });
+
+    model.layers.addLayer(layerTopMost, { at: "topmost" });
+    let layers = model.layers.getOperationalLayers({ sortByDisplayOrder: true });
+    expect(layers[layers.length - 1]).toBe(layerTopMost);
+    await waitForZIndex(layerTopMost);
+    let zIndices = getZIndices(layers);
+    expect(zIndices).toMatchInlineSnapshot(`
+          {
+            "dummy1": 0,
+            "topmost1": 1,
+          }
+        `);
+
+    model.layers.addLayer(layerTopMost2, { at: "topmost" }); //should be above topmost1
+    layers = model.layers.getOperationalLayers({ sortByDisplayOrder: true });
+    expect(layers[layers.length - 1]).toBe(layerTopMost2);
+    expect(layers[layers.length - 2]).toBe(layerTopMost);
+    await waitForZIndex(layerTopMost2);
+    zIndices = getZIndices(layers);
+    expect(zIndices).toMatchInlineSnapshot(`
+          {
+            "dummy1": 0,
+            "topmost1": 1,
+            "topmost2": 2,
+          }
+        `);
+
+    const oldZIndex = layerTopMost2.olLayer.getZIndex();
+    model.layers.removeLayerById(layerTopMost.id); //remove (first) topmost
+    layers = model.layers.getOperationalLayers({ sortByDisplayOrder: true });
+    expect(layers[layers.length - 1]).toBe(layerTopMost2);
+    await waitForUpdatedZIndex(layerTopMost2, oldZIndex);
+    zIndices = getZIndices(layers);
+    expect(zIndices).toMatchInlineSnapshot(`
+          {
+            "dummy1": 0,
+            "topmost2": 1,
+          }
+        `);
+});
+
+it("always assigns the highest zIndex to a layer inserted at topmost", async () => {
+    model = await create("foo", {});
+
+    const layerTopMost = new SimpleLayer({
+        title: "topmost",
+        olLayer: new TileLayer({
+            source: new OSM()
+        })
+    });
+    const layerOther = new SimpleLayer({
+        title: "other",
+        olLayer: new TileLayer({
+            source: new OSM()
+        })
+    });
+
+    model.layers.addLayer(layerTopMost, { at: "topmost" });
+    let layers = model.layers.getOperationalLayers({ sortByDisplayOrder: true });
+    expect(layers[layers.length - 1]).toBe(layerTopMost);
+    await waitForZIndex(layerTopMost);
+    let zIndices = getZIndices(layers);
+    expect(zIndices).toMatchInlineSnapshot(`
+          {
+            "topmost": 0,
+          }
+        `);
+
+    model.layers.addLayer(layerOther, { at: "top" }); //top should be below topmost
+    layers = model.layers.getOperationalLayers({ sortByDisplayOrder: true });
+    expect(layers[layers.length - 1]).toBe(layerTopMost);
+    expect(layers[layers.length - 2]).toBe(layerOther);
+    await waitForZIndex(layerOther);
+    zIndices = getZIndices(layers);
+    expect(zIndices).toMatchInlineSnapshot(`
+          {
+            "other": 0,
+            "topmost": 1,
+          }
+        `);
+});
+
 it("supports removing a layer from the model", async () => {
     model = await create("foo", {
         layers: [
@@ -882,10 +989,22 @@ function getLayerProps(layer: Layer) {
 }
 
 async function waitForZIndex(layer: Layer) {
-    await waitFor(() => {
+    return await waitFor(() => {
         const zIndex = layer?.olLayer.getZIndex();
         if (zIndex == null) {
             throw new Error("No z-index was assigned");
+        }
+        return zIndex;
+    });
+}
+
+async function waitForUpdatedZIndex(layer: Layer, oldZIndex?: number) {
+    return await waitFor(async () => {
+        const currentZIndex = await waitForZIndex(layer);
+        if (currentZIndex !== oldZIndex) {
+            return currentZIndex;
+        } else {
+            throw new Error("z-index is unchanged");
         }
     });
 }
