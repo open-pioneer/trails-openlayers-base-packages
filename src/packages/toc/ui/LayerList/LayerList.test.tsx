@@ -18,7 +18,7 @@ import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
 import { act, ReactNode } from "react";
 import { expect, it } from "vitest";
-import { TocModel, TocModelProvider, TocWidgetOptions } from "../../model/TocModel";
+import { TocModel, TocModelProvider, TocWidgetOptions } from "../../model";
 import { TopLevelLayerList } from "./LayerList";
 
 it("should show layers in the correct order", async () => {
@@ -682,18 +682,12 @@ function createGroupHierarchy() {
 }
 
 function createWrapper(options?: Partial<TocWidgetOptions>) {
-    const testModel: TocModel = {
-        options: {
-            autoShowParents: true,
-            collapsibleGroups: false,
-            initiallyCollapsed: false,
-            ...options
-        },
-        getItem: () => undefined,
-        getItems: () => [],
-        registerItem: () => undefined,
-        unregisterItem: () => undefined
-    };
+    const testModel = new TocModel({
+        autoShowParents: true,
+        collapsibleGroups: false,
+        initiallyCollapsed: false,
+        ...options
+    });
     return function Wrapper(props: { children: ReactNode }) {
         return (
             <PackageContextProvider>

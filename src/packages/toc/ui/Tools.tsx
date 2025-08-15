@@ -13,7 +13,7 @@ import { AnyLayer, MapModel } from "@open-pioneer/map";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC, memo } from "react";
 import { FiMoreVertical } from "react-icons/fi";
-import { TocModel, useTocModel } from "../model/TocModel";
+import { TocModel, useTocModel } from "../model";
 import { ToolsConfig } from "./Toc";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 

@@ -3,7 +3,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { ChevronDownIcon, ChevronRightIcon } from "@chakra-ui/icons";
-import { reactive } from "@conterra/reactivity-core";
 import {
     Box,
     Checkbox,
@@ -17,9 +16,9 @@ import { AnyLayer } from "@open-pioneer/map";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import classNames from "classnames";
 import { useIntl } from "open-pioneer:react-hooks";
-import { memo, ReactNode, useEffect, useId, useMemo } from "react";
+import { memo, ReactNode, useEffect, useId, useMemo, useRef } from "react";
 import { FiAlertTriangle } from "react-icons/fi";
-import { TocItem, useTocModel } from "../../model/TocModel";
+import { useTocModel, TocItemImpl } from "../../model";
 import { slug } from "../../utils/slug";
 import { useChildLayers, useLoadState } from "./hooks";
 import { LayerItemMenu } from "./LayerItemMenu";
@@ -33,7 +32,7 @@ import { LayerList } from "./LayerList";
 export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): ReactNode {
     const { layer } = props;
     const intl = useIntl();
-    const [tocItem, _tocModel, tocOptions] = useTocItem(layer);
+    const [tocItem, _tocModel, tocOptions, tocItemElemRef] = useTocItem(layer);
     const expanded = useReactiveSnapshot(() => tocItem.isExpanded, [tocItem]);
     const isCollapsible = tocOptions ? tocOptions.collapsibleGroups : false;
 
@@ -60,7 +59,11 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
         );
     }
     return (
-        <Box as="li" className={classNames("toc-layer-item", `layer-${slug(layer.id)}`)}>
+        <Box
+            as="li"
+            className={classNames("toc-layer-item", getClassNameForLayer(layer))}
+            ref={tocItemElemRef}
+        >
             <Flex
                 className="toc-layer-item-content"
                 width="100%"
@@ -159,26 +162,22 @@ function CollapseButton(props: {
 function useTocItem(layer: AnyLayer) {
     const tocModel = useTocModel();
     const options = useReactiveSnapshot(() => tocModel.options, [tocModel]);
-    const tocItem = useMemo((): TocItem => {
-        const expanded = reactive(!options.initiallyCollapsed);
-        return {
-            layerId: layer.id,
-            get isExpanded(): boolean {
-                return expanded.value;
-            },
-            setExpanded(expand: boolean) {
-                expanded.value = expand;
-            }
-        };
-    }, [layer, options.initiallyCollapsed]);
+    const tocItemElemRef = useRef<HTMLDivElement>(null);
+    const tocItem = useMemo((): TocItemImpl => {
+        return new TocItemImpl(layer, tocModel, !options.initiallyCollapsed);
+    }, [layer, options.initiallyCollapsed, tocModel]);
 
     // Register the item on the shared toc model
     useEffect(() => {
+        tocItem.setHtmlElement(tocItemElemRef.current ?? undefined);
         tocModel.registerItem(tocItem);
-        return () => tocModel.unregisterItem(tocItem);
+        return () => {
+            tocItem.setHtmlElement(undefined);
+            tocModel.unregisterItem(tocItem);
+        };
     }, [tocModel, tocItem]);
 
-    return [tocItem, tocModel, options] as const;
+    return [tocItem, tocModel, options, tocItemElemRef] as const;
 }
 
 function updateLayerVisibility(layer: AnyLayer, visible: boolean, autoShowParents: boolean) {
@@ -186,4 +185,8 @@ function updateLayerVisibility(layer: AnyLayer, visible: boolean, autoShowParent
     if (visible && autoShowParents && layer.parent) {
         updateLayerVisibility(layer.parent, true, true);
     }
+}
+
+function getClassNameForLayer(layer: AnyLayer) {
+    return `layer-${slug(layer.id)}`;
 }

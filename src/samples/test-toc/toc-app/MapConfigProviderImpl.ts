@@ -218,6 +218,7 @@ function createSchulenLayer() {
 function createStrassenLayer() {
     return new WMSLayer({
         title: "Straßennetz Landesbetrieb Straßenbau NRW",
+        id: "streets",
         url: "https://www.wms.nrw.de/wms/strassen_nrw_wms",
         sublayers: [
             {
