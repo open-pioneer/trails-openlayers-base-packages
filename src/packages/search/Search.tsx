@@ -151,7 +151,7 @@ export const Search: FC<SearchProps> = (props) => {
         }
     });
 
-    const clearInput = (trigger: SearchClearTrigger) => {
+    const clearInput = useEvent((trigger: SearchClearTrigger) => {
         // Updates the input field
         onInputChanged("");
 
@@ -164,7 +164,7 @@ export const Search: FC<SearchProps> = (props) => {
         }
 
         onClear?.({ trigger: trigger });
-    };
+    });
 
     const handleSelectChange = useEvent(
         (value: SingleValue<SearchOption>, actionMeta: ActionMeta<SearchOption>) => {
@@ -530,6 +530,7 @@ function mapSuggestions(suggestions: SuggestionGroup[]): SearchGroupOption[] {
     return options;
 }
 
+// Note: `clearInput` must be stable because only the initial value is used to construct the API instance at this time.
 function useSearchApi(
     onReady: ((event: SearchReadyEvent) => void) | undefined,
     onDisposed: ((event: SearchDisposedEvent) => void) | undefined,
