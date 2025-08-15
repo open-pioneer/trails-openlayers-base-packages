@@ -60,7 +60,7 @@ catalog:
   "@types/uuid": ^10.0.0
   "@typescript-eslint/eslint-plugin": ^8.39.1
   "@typescript-eslint/parser": ^8.39.1
-  "@vitejs/plugin-react-swc": ^3.11.0
+  "@vitejs/plugin-react-swc": ^4.0.0
   eslint: ^8.57.1
   eslint-config-prettier: ^10.1.8
   eslint-import-resolver-typescript: ^4.4.4
