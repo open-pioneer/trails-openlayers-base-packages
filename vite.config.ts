@@ -4,7 +4,8 @@
 /// <reference types="vitest" />
 import { pioneer } from "@open-pioneer/vite-plugin-pioneer";
 import react from "@vitejs/plugin-react-swc";
-import { resolve } from "node:path";
+import glob from "fast-glob";
+import { dirname, resolve } from "node:path";
 import { defineConfig } from "vite";
 import eslint from "vite-plugin-eslint";
 
@@ -14,19 +15,12 @@ import eslint from "vite-plugin-eslint";
 // - https://esbuild.github.io/api/#target
 const targets = ["chrome92", "edge92", "firefox91", "safari14"];
 
-const sampleSites = [
-    "samples/map-sample",
-    "samples/ogc-api-sample",
-    "samples/showcase",
-
-    "samples/map-anchors",
-    "samples/test-toc",
-    "samples/test-highlight-and-zoom",
-    "samples/test-result-list",
-    "samples/test-printing-api",
-
-    "samples/experimental-sidebar",
-];
+// Find sites under src/samples with an index.html and build them all.
+const sampleSites = glob
+    .sync("samples/*/index.html", {
+        cwd: "src"
+    })
+    .map((indexHtml) => dirname(indexHtml));
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
