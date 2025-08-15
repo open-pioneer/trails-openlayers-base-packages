@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import { Box, Flex, Spacer, Text } from "@chakra-ui/react";
 import { BasemapSwitcher, BasemapSwitcherProps } from "@open-pioneer/basemap-switcher";
-import { MapModel, MapModelProps, useMapModel } from "@open-pioneer/map";
+import { MapModel, MapModelProps, useMapModelValue } from "@open-pioneer/map";
 import {
     CommonComponentProps,
     SectionHeading,
@@ -11,7 +11,7 @@ import {
     useEvent
 } from "@open-pioneer/react-utils";
 import { useIntl } from "open-pioneer:react-hooks";
-import { FC, ReactNode, useEffect, useId, useRef } from "react";
+import { FC, useEffect, useId, useRef } from "react";
 import {
     createOptions,
     TocApi,
@@ -132,28 +132,12 @@ const PADDING = 2;
  * Displays the layers of the configured map.
  */
 export const Toc: FC<TocProps> = (props: TocProps) => {
-    const intl = useIntl();
     const { containerProps } = useCommonComponentProps("toc", props);
-    const state = useMapModel(props);
-
-    let content: ReactNode | null;
-    switch (state.kind) {
-        case "loading":
-            content = null;
-            break;
-        case "rejected":
-            content = <Text className="toc-error">{intl.formatMessage({ id: "error" })}</Text>;
-            break;
-        case "resolved": {
-            const map = state.map;
-            content = <TocContent {...props} map={map} onReady={props.onReady} />;
-            break;
-        }
-    }
+    const map = useMapModelValue(props);
 
     return (
         <Flex {...containerProps} direction="column" gap={PADDING}>
-            {content}
+            <TocContent {...props} map={map} />
         </Flex>
     );
 };

@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import { Box, Button, Field, HStack, Text } from "@chakra-ui/react";
 import { NativeSelectField, NativeSelectRoot } from "@open-pioneer/chakra-snippets/native-select";
-import { MapModel, MapModelProps, useMapModel } from "@open-pioneer/map";
+import { MapModel, MapModelProps, useMapModelValue } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { PackageIntl } from "@open-pioneer/runtime";
 import LineString from "ol/geom/LineString";
@@ -70,8 +70,8 @@ export const Measurement: FC<MeasurementProps> = (props) => {
     const { containerProps } = useCommonComponentProps("measurement", props);
     const [selectedMeasurement, setMeasurement] = useState<MeasurementType>("distance");
     const label = (id: string) => intl.formatMessage({ id: id });
-    const mapState = useMapModel(props);
-    const controller = useController(mapState.map, props, intl);
+    const map = useMapModelValue(props);
+    const controller = useController(map, props, intl);
 
     // Start / Stop measurement on selection change
     useEffect(() => {
@@ -128,7 +128,7 @@ export const Measurement: FC<MeasurementProps> = (props) => {
 };
 
 /** Creates a MeasurementController instance for the given map. */
-function useController(map: MapModel | undefined, props: MeasurementProps, intl: PackageIntl) {
+function useController(map: MapModel, props: MeasurementProps, intl: PackageIntl) {
     const {
         activeFeatureStyle,
         finishedFeatureStyle,
@@ -137,9 +137,6 @@ function useController(map: MapModel | undefined, props: MeasurementProps, intl:
     } = props;
     const [controller, setController] = useState<MeasurementController | undefined>(undefined);
     useEffect(() => {
-        if (!map) {
-            return;
-        }
         const controller = new MeasurementController(map.olMap, {
             getContinueMessage() {
                 return intl.formatMessage({ id: "tooltips.continue" });

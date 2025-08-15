@@ -3,7 +3,7 @@
 import { Flex, Group } from "@chakra-ui/react";
 import { computed, Reactive, reactive } from "@conterra/reactivity-core";
 import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
-import { MapModelProps, useMapModel } from "@open-pioneer/map";
+import { MapModelProps, useMapModelValue } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps, useEvent } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { NumberParserService, PackageIntl } from "@open-pioneer/runtime";
@@ -132,9 +132,9 @@ export const CoordinateInput: FC<CoordinateInputProps> = (props) => {
         placeholder = ""
     } = props;
     const { containerProps } = useCommonComponentProps("coordinate-input", props);
-    const { map } = useMapModel(props);
+    const map = useMapModelValue(props);
     const intl = useIntl();
-    const mapProjection = useReactiveSnapshot(() => map?.projection, [map]);
+    const mapProjection = useReactiveSnapshot(() => map.projection, [map]);
 
     // Projection items (dropdown)
     const availableProjections = useProjectionItems(projections);

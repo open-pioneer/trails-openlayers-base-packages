@@ -76,11 +76,14 @@ export function AppUI() {
         if (map && !highlightMap.current.has(id)) {
             if (ownStyle) {
                 const highlight = map.highlightAndZoom(resultGeometries, {
-                    "highlightStyle": ownHighlightStyle
+                    highlightStyle: ownHighlightStyle,
+                    buffer: 0.1
                 });
                 if (highlight) highlightMap.current.set(id, highlight);
             } else {
-                const highlight = map.highlightAndZoom(resultGeometries, {});
+                const highlight = map.highlightAndZoom(resultGeometries, {
+                    buffer: 0.1
+                });
                 if (highlight) highlightMap.current.set(id, highlight);
             }
         }
