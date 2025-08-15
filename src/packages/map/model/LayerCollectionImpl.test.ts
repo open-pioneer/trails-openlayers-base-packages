@@ -590,6 +590,264 @@ describe("adding a layers to the model", () => {
     });
 });
 
+it("it throws error if reference layer is not a top level operational layer", async () => {
+    model = await create("foo", {
+        layers: [
+            new SimpleLayer({
+                title: "dummy",
+                id: "dummy",
+                olLayer: new TileLayer({
+                    source: new OSM()
+                })
+            })
+        ]
+    });
+
+    const baseLayer = new SimpleLayer({
+        title: "base",
+        id: "base",
+        isBaseLayer: true,
+        olLayer: new TileLayer({
+            source: new OSM()
+        })
+    });
+    const childLayer = new SimpleLayer({
+        title: "child",
+        id: "child",
+        olLayer: new TileLayer({
+            source: new OSM()
+        })
+    });
+    const groupLayer = new GroupLayer({
+        title: "group",
+        id: "group",
+        layers: [childLayer]
+    });
+
+    model.layers.addLayer(baseLayer);
+    model.layers.addLayer(groupLayer);
+
+    const otherLayer = new SimpleLayer({
+        title: "other1",
+        id: "other1",
+        olLayer: new TileLayer({
+            source: new OSM()
+        })
+    });
+    expect(() => {
+        model!.layers.addLayer(otherLayer, { at: "below", reference: baseLayer });
+    }).toThrowError("base layer");
+
+    const otherLayer2 = new SimpleLayer({
+        title: "other2",
+        id: "other2",
+        olLayer: new TileLayer({
+            source: new OSM()
+        })
+    });
+    expect(() => {
+        model!.layers.addLayer(otherLayer2, { at: "above", reference: childLayer });
+    }).toThrowError("child layer");
+});
+
+it("supports adding a layer to the model (topmost)", async () => {
+    model = await create("foo", {
+        layers: [
+            new SimpleLayer({
+                title: "dummy1",
+                id: "dummy1",
+                olLayer: new TileLayer({
+                    source: new OSM()
+                })
+            })
+        ]
+    });
+
+    const layerTopMost = new SimpleLayer({
+        title: "topmost1",
+        olLayer: new TileLayer({
+            source: new OSM()
+        })
+    });
+    const layerTopMost2 = new SimpleLayer({
+        title: "topmost2",
+        olLayer: new TileLayer({
+            source: new OSM()
+        })
+    });
+
+    model.layers.addLayer(layerTopMost, { at: "topmost" });
+    let layers = model.layers.getOperationalLayers({ sortByDisplayOrder: true });
+    expect(layers[layers.length - 1]).toBe(layerTopMost);
+    await waitForZIndex(layerTopMost);
+    let zIndices = getZIndices(layers);
+    expect(zIndices).toMatchInlineSnapshot(`
+          {
+            "dummy1": 0,
+            "topmost1": 1,
+          }
+        `);
+
+    model.layers.addLayer(layerTopMost2, { at: "topmost" }); //should be above topmost1
+    layers = model.layers.getOperationalLayers({ sortByDisplayOrder: true });
+    expect(layers[layers.length - 1]).toBe(layerTopMost2);
+    expect(layers[layers.length - 2]).toBe(layerTopMost);
+    await waitForZIndex(layerTopMost2);
+    zIndices = getZIndices(layers);
+    expect(zIndices).toMatchInlineSnapshot(`
+          {
+            "dummy1": 0,
+            "topmost1": 1,
+            "topmost2": 2,
+          }
+        `);
+
+    const oldZIndex = layerTopMost2.olLayer.getZIndex();
+    model.layers.removeLayerById(layerTopMost.id); //remove (first) topmost
+    layers = model.layers.getOperationalLayers({ sortByDisplayOrder: true });
+    expect(layers[layers.length - 1]).toBe(layerTopMost2);
+    await waitForUpdatedZIndex(layerTopMost2, oldZIndex);
+    zIndices = getZIndices(layers);
+    expect(zIndices).toMatchInlineSnapshot(`
+          {
+            "dummy1": 0,
+            "topmost2": 1,
+          }
+        `);
+});
+
+it("always assigns the highest zIndex to a layer inserted at topmost", async () => {
+    model = await create("foo", {});
+
+    const layerTopMost = new SimpleLayer({
+        title: "topmost",
+        olLayer: new TileLayer({
+            source: new OSM()
+        })
+    });
+    const layerOther = new SimpleLayer({
+        title: "other",
+        olLayer: new TileLayer({
+            source: new OSM()
+        })
+    });
+
+    model.layers.addLayer(layerTopMost, { at: "topmost" });
+    let layers = model.layers.getOperationalLayers({ sortByDisplayOrder: true });
+    expect(layers[layers.length - 1]).toBe(layerTopMost);
+    await waitForZIndex(layerTopMost);
+    let zIndices = getZIndices(layers);
+    expect(zIndices).toMatchInlineSnapshot(`
+          {
+            "topmost": 0,
+          }
+        `);
+
+    model.layers.addLayer(layerOther, { at: "top" }); //top should be below topmost
+    layers = model.layers.getOperationalLayers({ sortByDisplayOrder: true });
+    expect(layers[layers.length - 1]).toBe(layerTopMost);
+    expect(layers[layers.length - 2]).toBe(layerOther);
+    await waitForZIndex(layerOther);
+    zIndices = getZIndices(layers);
+    expect(zIndices).toMatchInlineSnapshot(`
+          {
+            "other": 0,
+            "topmost": 1,
+          }
+        `);
+});
+
+it("supports adding a layer to the model (above/below with top most layer as reference)", async () => {
+    model = await create("foo", {
+        layers: [
+            new SimpleLayer({
+                title: "dummy",
+                id: "dummy",
+                olLayer: new TileLayer({
+                    source: new OSM()
+                })
+            })
+        ]
+    });
+
+    const layerTopMost = new SimpleLayer({
+        title: "topmost",
+        id: "topmost",
+        olLayer: new TileLayer({
+            source: new OSM()
+        })
+    });
+    const layerTopMostBelow = new SimpleLayer({
+        title: "topmostbelow",
+        id: "topmostbelow",
+        olLayer: new TileLayer({
+            source: new OSM()
+        })
+    });
+    const layerTopMostAbove = new SimpleLayer({
+        title: "topmostabove",
+        id: "topmostabove",
+        olLayer: new TileLayer({
+            source: new OSM()
+        })
+    });
+    const layerOther = new SimpleLayer({
+        title: "other",
+        id: "other",
+        olLayer: new TileLayer({
+            source: new OSM()
+        })
+    });
+    model.layers.addLayer(layerTopMost, { at: "topmost" });
+    model.layers.addLayer(layerTopMostBelow, { at: "below", reference: layerTopMost });
+    model.layers.addLayer(layerOther, { at: "top" });
+    let layers = model.layers.getOperationalLayers({ sortByDisplayOrder: true });
+    expect(layers[layers.length - 1]).toBe(layerTopMost);
+    expect(layers[layers.length - 2]).toBe(layerTopMostBelow);
+    await waitForZIndex(layerOther);
+    let zIndices = getZIndices(layers);
+    expect(zIndices).toMatchInlineSnapshot(`
+          {
+            "dummy": 0,
+            "other": 1,
+            "topmost": 3,
+            "topmostbelow": 2,
+          }
+        `);
+
+    model.layers.addLayer(layerTopMostAbove, { at: "above", reference: layerTopMostBelow });
+    layers = model.layers.getOperationalLayers({ sortByDisplayOrder: true });
+    expect(layers[layers.length - 1]).toBe(layerTopMost);
+    expect(layers[layers.length - 2]).toBe(layerTopMostAbove);
+    expect(layers[layers.length - 3]).toBe(layerTopMostBelow);
+    await waitForZIndex(layerTopMostAbove);
+    zIndices = getZIndices(layers);
+    expect(zIndices).toMatchInlineSnapshot(`
+          {
+            "dummy": 0,
+            "other": 1,
+            "topmost": 4,
+            "topmostabove": 3,
+            "topmostbelow": 2,
+          }
+        `);
+
+    model.layers.removeLayerById(layerTopMostBelow.id);
+    layers = model.layers.getOperationalLayers({ sortByDisplayOrder: true });
+    expect(layers[layers.length - 1]).toBe(layerTopMost);
+    expect(layers[layers.length - 2]).toBe(layerTopMostAbove);
+    await waitForUpdatedZIndex(layerTopMostAbove, 3);
+    zIndices = getZIndices(layers);
+    expect(zIndices).toMatchInlineSnapshot(`
+          {
+            "dummy": 0,
+            "other": 1,
+            "topmost": 3,
+            "topmostabove": 2,
+          }
+        `);
+});
+
 it("supports removing a layer from the model", async () => {
     model = await create("foo", {
         layers: [
@@ -882,16 +1140,29 @@ function getLayerProps(layer: Layer) {
 }
 
 async function waitForZIndex(layer: Layer) {
-    await waitFor(() => {
+    return await waitFor(() => {
         const zIndex = layer?.olLayer.getZIndex();
         if (zIndex == null) {
             throw new Error("No z-index was assigned");
+        }
+        return zIndex;
+    });
+}
+
+async function waitForUpdatedZIndex(layer: Layer, oldZIndex?: number) {
+    return await waitFor(async () => {
+        const currentZIndex = await waitForZIndex(layer);
+        if (currentZIndex !== oldZIndex) {
+            return currentZIndex;
+        } else {
+            throw new Error("z-index is unchanged");
         }
     });
 }
 
 function getZIndices(layers: Layer[]) {
-    return Object.fromEntries(layers.map((layer) => [layer.title, layer.olLayer.getZIndex()]));
+    const entries = layers.map((layer) => [layer.title, layer.olLayer.getZIndex()]);
+    return Object.fromEntries(entries);
 }
 
 function create(mapId: string, mapConfig: MapConfig) {
