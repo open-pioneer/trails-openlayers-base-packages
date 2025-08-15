@@ -84,13 +84,3 @@ export interface TocReadyEvent {
  * Empty interface, might be extended in the future
  */
 export interface TocDisposedEvent {}
-
-/**
- * Callback that is triggered when the Toc is initialized.
- */
-export type TocReadyHandler = (event: TocReadyEvent) => void;
-
-/**
- * Callback that is triggered when the Toc is disposed.
- */
-export type TocDisposedHandler = (event: TocDisposedEvent) => void;
