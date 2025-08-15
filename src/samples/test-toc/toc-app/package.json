@@ -10,6 +10,7 @@
         "@open-pioneer/react-utils": "catalog:",
         "@open-pioneer/runtime": "catalog:",
         "@open-pioneer/toc": "workspace:^",
+        "@open-pioneer/reactivity": "catalog:",
         "ol": "catalog:",
         "react": "catalog:",
         "react-dom": "catalog:",

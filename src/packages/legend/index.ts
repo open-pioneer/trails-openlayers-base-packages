@@ -4,5 +4,6 @@ export {
     Legend,
     type LegendProps,
     type LegendItemAttributes,
-    type LegendItemComponentProps
+    type LegendItemComponentProps,
+    type ListMode
 } from "./Legend";

@@ -130,6 +130,46 @@ Valid values for `listMode` are:
 
 The `listMode` always has precedence over the layer's `internal` property. For example, if the `listMode` is `"show"` the layer item is displayed even if `internal` is `true`.
 
+### Using the Toc API to manipulate Toc Items programmatically
+
+The Toc API allows programmatic access to the Toc.
+
+Currently, the Toc API allows accessing the individual Toc items.  
+Toc items can be expanded/collapsed and provide access to the corresponding DOM element.
+
+```tsx
+import { Toc, TocApi, TocReadyEvent } from "@open-pioneer/toc";
+import { Button } from "@chakra-ui/react";
+
+const tocApi = useRef<TocApi>(undefined);
+
+// Expand or collapse group layer with the Toc API
+function toggleTocItem(layerId: string) {
+    if (!tocApi.current) {
+        return; // toc not ready yet
+    }
+
+    const layerItem = tocApi.current.getItemByLayerId(layerId);
+    if (!layerItem) {
+        return; // item not found
+    }
+
+    console.log("Current html element", layerItem.htmlElement); // access DOM element (e.g. for scrolling)
+    const newState = !layerItem.isExpanded;
+    layerItem.setExpanded(newState);
+}
+
+<Toc
+    // get API object from ready event and store it somewhere
+    onReady={(e) => { tocApi.current = e.api; }}
+
+    // don't use the API object after the toc has been destroyed
+    onDisposed={() => { tocApi.current = undefined; }}
+/>
+
+<Button onClick={() => toggleTocItem("myGroupLayer")}>Toggle group layer</Button>
+```
+
 ## License
 
 Apache-2.0 (see `LICENSE` file)

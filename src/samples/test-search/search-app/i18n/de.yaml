@@ -1,0 +1,7 @@
+messages:
+  selected: "Eintrag ausgewählt"
+  cleared: "Zurückgesetzt"
+  ariaLabel:
+    header: "Kopfleiste"
+    map: "Karte. Mit den Pfeiltasten kannst du die Karte bewegen. Mit der Plus Taste hineinzoomen und mit der Minus Taste herauszoomen."
+    search: "Suche"

@@ -42,6 +42,12 @@ export interface ZoomOptions {
      * The view padding to make all features visible.
      */
     viewPadding?: MapPadding;
+
+    /**
+     * The buffer factor around the extent of the zoomed features. E.g. a value of 0.1 will add 10%
+     * of the extent's width and height to the extent.
+     */
+    buffer?: number;
 }
 
 /** Options supported by the map model's {@link MapModel.highlightAndZoom | zoom | highlightAndZoom} method. */

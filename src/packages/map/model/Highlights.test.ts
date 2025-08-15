@@ -95,6 +95,28 @@ it("should successfully zoom for geometries", async () => {
     expect(newZoomLevel).toEqual(zoomLevel);
 });
 
+it("should successfully zoom with buffered geometries", async () => {
+    const { map, highlights } = setup();
+
+    const line = new LineString([
+        [851890.680238, 6788133.616293],
+        [859419.420804, 6790407.617885]
+    ]);
+
+    highlights.zoomToHighlight([line], {});
+    const zoomLevel2 = map.getView().getZoom();
+    expect(zoomLevel2).toBeTruthy();
+
+    highlights.zoomToHighlight([line], { buffer: 1 });
+    const zoomLevel2WithBuffer = map.getView().getZoom();
+    expect(zoomLevel2WithBuffer).toBeTruthy();
+    expect(zoomLevel2WithBuffer).not.toEqual(zoomLevel2);
+    if (typeof zoomLevel2WithBuffer != "number") {
+        throw Error("Expected zoom level to be a number");
+    }
+    expect(zoomLevel2).toBeGreaterThan(zoomLevel2WithBuffer);
+});
+
 it("should successfully zoom and add geometries", async () => {
     const { map, highlights } = setup();
 

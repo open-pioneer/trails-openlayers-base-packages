@@ -1,10 +1,11 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { beforeEach, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render, screen, waitFor } from "@testing-library/react";
-import { Search, SearchSelectEvent } from "./Search";
+import { Search } from "./Search";
+import { SearchClearEvent, SearchReadyEvent, SearchSelectEvent } from "./api";
 import { FakeCitySource, FakeRiverSource, FakeStreetSource } from "./testSources";
 import userEvent from "@testing-library/user-event";
 import { disableReactActWarnings } from "test-utils";
@@ -95,9 +96,73 @@ it("should allow clearing the suggestion text even if no option has been selecte
     expect(clearHandler).toBeCalledTimes(1);
 });
 
+describe("search api", () => {
+    it("should call onReady event and return a SearchApi", async () => {
+        let readyEvent: SearchReadyEvent | undefined;
+        const readyHandler = (e: SearchReadyEvent) => {
+            readyEvent = e;
+        };
+        const readyMock = vi.fn().mockImplementation(readyHandler);
+
+        await createSearch(undefined, undefined, readyMock);
+        await waitForSearch();
+
+        expect(readyMock).toHaveBeenCalledTimes(1);
+        expect(readyEvent).toBeDefined();
+        expect(readyEvent?.api).toBeDefined();
+    });
+
+    it("should call onDisposed event when search is disposed", async () => {
+        const disposedHandler = () => {};
+        const disposedMock = vi.fn().mockImplementation(disposedHandler);
+
+        const { unmount } = await createSearch(undefined, undefined, undefined, disposedMock);
+        await waitForSearch();
+
+        expect(disposedMock).toHaveBeenCalledTimes(0);
+
+        unmount();
+
+        await waitFor(() => {
+            expect(disposedMock).toHaveBeenCalledTimes(1);
+        });
+    });
+
+    it("should reset input when resetInput is called on the search api", async () => {
+        const selectHandler = vi.fn();
+        let clearEvent: SearchClearEvent | undefined;
+        const clearHandler = (e: SearchClearEvent) => {
+            clearEvent = e;
+        };
+        let readyEvent: SearchReadyEvent | undefined;
+        const readyHandler = (e: SearchReadyEvent) => {
+            readyEvent = e;
+        };
+        const readyMock = vi.fn().mockImplementation(readyHandler);
+
+        await createSearch(selectHandler, clearHandler, readyMock);
+
+        const { searchInput } = await waitForInput();
+        await userEvent.type(searchInput, "Dortmund");
+
+        expect(searchInput).toHaveValue("Dortmund");
+
+        // reset the input using the SearchApi
+        readyEvent?.api.resetInput();
+
+        await waitFor(() => {
+            expect(searchInput).toHaveValue("");
+        });
+        expect(readyMock).toBeCalledTimes(1);
+        expect(clearEvent).toBeDefined();
+    });
+});
+
 async function createSearch(
     selectHandler?: (event: SearchSelectEvent) => void,
-    clearHandler?: () => void
+    clearHandler?: (event: SearchClearEvent) => void,
+    readyHandler?: (event: SearchReadyEvent) => void,
+    disposedHandler?: () => void
 ) {
     const { map, registry } = await setupMap();
 
@@ -105,7 +170,9 @@ async function createSearch(
     const sources = [new FakeCitySource(1), new FakeRiverSource(1), new FakeStreetSource(1)];
     const selectHandlerFunction = selectHandler ? selectHandler : (_event: SearchSelectEvent) => {};
     const clearHandlerFunction = clearHandler ? clearHandler : () => {};
-    render(
+    const readyHandlerFunction = readyHandler ? readyHandler : () => {};
+    const disposeHandlerFunction = disposedHandler ? disposedHandler : () => {};
+    const { unmount } = render(
         <PackageContextProvider services={injectedServices}>
             <Search
                 data-testid="search"
@@ -114,11 +181,13 @@ async function createSearch(
                 searchTypingDelay={10}
                 onSelect={selectHandlerFunction}
                 onClear={clearHandlerFunction}
+                onReady={readyHandlerFunction}
+                onDisposed={disposeHandlerFunction}
             ></Search>
         </PackageContextProvider>
     );
 
-    return { sources };
+    return { sources, unmount };
 }
 
 async function waitForSearch() {
