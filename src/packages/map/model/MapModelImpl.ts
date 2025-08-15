@@ -28,18 +28,12 @@ import {
 } from "../api";
 import { Highlights } from "./Highlights";
 import { LayerCollectionImpl } from "./LayerCollectionImpl";
+import { LayerDependencies } from "./layers/internals";
 
 const LOG = createLogger("map:MapModel");
 
 const DEFAULT_DPI = 25.4 / 0.28;
 const INCHES_PER_METRE = 39.37;
-
-/**
- * Shared services or other entities propagated from the map model to all layer instances.
- */
-export interface SharedDependencies {
-    httpService: HttpService;
-}
 
 export class MapModelImpl extends EventEmitter<MapModelEvents> implements MapModel {
     readonly #id: string;
@@ -47,7 +41,7 @@ export class MapModelImpl extends EventEmitter<MapModelEvents> implements MapMod
     readonly #olView: ReadonlyReactive<OlView>;
     readonly #layers = new LayerCollectionImpl(this);
     readonly #highlights: Highlights;
-    readonly #sharedDeps: SharedDependencies;
+    readonly #layerDeps: LayerDependencies;
 
     #destroyed = false;
     #container: ReadonlyReactive<HTMLElement | undefined>;
@@ -76,7 +70,7 @@ export class MapModelImpl extends EventEmitter<MapModelEvents> implements MapMod
             }
         );
         this.#initialExtent.value = properties.initialExtent;
-        this.#sharedDeps = {
+        this.#layerDeps = {
             httpService: properties.httpService
         };
         this.#highlights = new Highlights(this.#olMap);
@@ -187,8 +181,11 @@ export class MapModelImpl extends EventEmitter<MapModelEvents> implements MapMod
         return this.#initialExtent.value;
     }
 
-    get __sharedDependencies(): SharedDependencies {
-        return this.#sharedDeps;
+    /**
+     * TODO: Can be removed once the LayerFactory is the only supported way of constructing a layer.
+     */
+    get __layerDeps(): LayerDependencies {
+        return this.#layerDeps;
     }
 
     setScale(newScale: number): void {

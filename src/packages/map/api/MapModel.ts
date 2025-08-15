@@ -18,7 +18,7 @@ export interface MapModelEvents {
     "destroy": void;
 }
 
-/** Styleoptions supported when creating a new {@link Highlight}. */
+/** Style options supported when creating a new {@link Highlight}. */
 export interface HighlightOptions {
     /**
      * Optional styles to override the default styles.
@@ -26,7 +26,7 @@ export interface HighlightOptions {
     highlightStyle?: HighlightStyle;
 }
 
-/** Zoomoptions supported when creating a new {@link Highlight}. */
+/** Zoom options supported when creating a new {@link Highlight}. */
 export interface ZoomOptions {
     /**
      * The zoom-level used if there is no valid extend (such as for single points).

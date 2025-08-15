@@ -14,6 +14,11 @@ import { MapModelImpl } from "../MapModelImpl";
 import { ImageTile } from "ol";
 import type { Options as WMSSourceOptions } from "ol/source/ImageWMS";
 import { reactive } from "@conterra/reactivity-core";
+import { InternalConstructorTag, LayerConstructor, LayerDependencies } from "./internals";
+
+// Import for api docs
+// eslint-disable-next-line unused-imports/no-unused-imports
+import type { LayerFactory } from "./LayerFactory";
 
 const LOG = createLogger("map:WMTSLayer");
 
@@ -27,12 +32,34 @@ export class WMTSLayerImpl extends AbstractLayer implements WMTSLayer {
     #legend = reactive<string | undefined>();
     readonly #abortController = new AbortController();
 
-    constructor(config: WMTSLayerConfig) {
+    /**
+     * @deprecated Prefer using {@link LayerFactory.create} instead of calling the constructor directly
+     */
+    constructor(config: WMTSLayerConfig);
+
+    /**
+     * NOTE: Do not use this overload. Use {@link LayerFactory.create} instead.
+     */
+    constructor(
+        config: WMTSLayerConfig,
+        deps: LayerDependencies,
+        internalTag: InternalConstructorTag
+    );
+
+    constructor(
+        config: WMTSLayerConfig,
+        deps?: LayerDependencies,
+        internalTag?: InternalConstructorTag
+    ) {
         const layer = new TileLayer();
-        super({
-            ...config,
-            olLayer: layer
-        });
+        super(
+            {
+                ...config,
+                olLayer: layer
+            },
+            deps,
+            internalTag
+        );
         this.#url = config.url;
         this.#name = config.name;
         this.#layer = layer;
@@ -109,12 +136,12 @@ export class WMTSLayerImpl extends AbstractLayer implements WMTSLayer {
     }
 
     async #fetchWMTSCapabilities(): Promise<string> {
-        const httpService = this.map.__sharedDependencies.httpService;
+        const httpService = this.__getDeps().httpService;
         return fetchCapabilities(this.#url, httpService, this.#abortController.signal);
     }
 
     async #loadTile(tile: Tile, tileUrl: string): Promise<void> {
-        const httpService = this.map.__sharedDependencies.httpService;
+        const httpService = this.__getDeps().httpService;
         try {
             if (!(tile instanceof ImageTile)) {
                 throw new Error("Only 'ImageTile' is supported for now.");
@@ -152,9 +179,17 @@ export class WMTSLayerImpl extends AbstractLayer implements WMTSLayer {
     }
 }
 
+// Ensure layer class is assignable to the constructor interface (there is no "implements" for the class itself).
+// eslint-disable-next-line no-constant-condition
+if (false) {
+    const check: LayerConstructor<WMTSLayerConfig, WMTSLayer> = WMTSLayerImpl;
+    void check;
+}
+
 function isHtmlImage(htmlElement: HTMLElement): htmlElement is HTMLImageElement {
     return htmlElement.tagName === "IMG";
 }
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export function getWMTSLegendUrl(
     capabilities: Record<string, any>,
