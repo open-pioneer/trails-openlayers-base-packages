@@ -1738,6 +1738,9 @@ importers:
       '@open-pioneer/react-utils':
         specifier: 'catalog:'
         version: 4.0.0(@emotion/react@11.14.0(@types/react@19.1.8)(react@19.1.0))(react-dom@19.1.0(react@19.1.0))
+      '@open-pioneer/reactivity':
+        specifier: 'catalog:'
+        version: 4.0.0
       '@open-pioneer/runtime':
         specifier: 'catalog:'
         version: 4.0.0(@types/react@19.1.8)(typescript@5.8.3)

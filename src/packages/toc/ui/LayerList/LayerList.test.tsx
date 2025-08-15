@@ -18,7 +18,7 @@ import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
 import { act, ReactNode } from "react";
 import { expect, it } from "vitest";
-import { TocModel, TocModelProvider, TocWidgetOptions } from "../../model/TocModel";
+import { TocModel, TocModelProvider, TocWidgetOptions } from "../../model";
 import { TopLevelLayerList } from "./LayerList";
 
 it("should show layers in the correct order", async () => {
@@ -824,18 +824,12 @@ async function setup(opts?: { layers?: LayerConfig[]; tocOptions?: Partial<TocWi
         layers: opts?.layers
     });
 
-    const testModel: TocModel = {
-        options: {
-            autoShowParents: true,
-            collapsibleGroups: false,
-            initiallyCollapsed: false,
-            ...opts?.tocOptions
-        },
-        getItem: () => undefined,
-        getItems: () => [],
-        registerItem: () => undefined,
-        unregisterItem: () => undefined
-    };
+    const testModel = new TocModel({
+        autoShowParents: true,
+        collapsibleGroups: false,
+        initiallyCollapsed: false,
+        ...opts?.tocOptions
+    });
 
     function Wrapper(props: { children?: ReactNode }) {
         return (
