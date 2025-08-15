@@ -4,15 +4,14 @@ import { createCustomElement } from "@open-pioneer/runtime";
 import * as appMetadata from "open-pioneer:app";
 import { MapApp } from "./MapApp";
 
+const URL_PARAMS = new URLSearchParams(window.location.search);
+const FORCED_LANG = URL_PARAMS.get("lang") || undefined;
+
 const element = createCustomElement({
     component: MapApp,
     appMetadata,
-    async resolveConfig(ctx) {
-        const locale = ctx.getAttribute("forced-locale");
-        if (!locale) {
-            return undefined;
-        }
-        return { locale };
+    config: {
+        locale: FORCED_LANG
     }
 });
 

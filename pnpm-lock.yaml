@@ -1718,6 +1718,45 @@ importers:
         specifier: 'catalog:'
         version: 19.1.0
 
+  src/samples/test-search/search-app:
+    dependencies:
+      '@chakra-ui/react':
+        specifier: 'catalog:'
+        version: 3.22.0(@emotion/react@11.14.0(@types/react@19.1.8)(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      '@emotion/react':
+        specifier: 'catalog:'
+        version: 11.14.0(@types/react@19.1.8)(react@19.1.0)
+      '@emotion/styled':
+        specifier: 'catalog:'
+        version: 11.14.1(@emotion/react@11.14.0(@types/react@19.1.8)(react@19.1.0))(@types/react@19.1.8)(react@19.1.0)
+      '@open-pioneer/map':
+        specifier: workspace:^
+        version: link:../../../packages/map
+      '@open-pioneer/notifier':
+        specifier: 'catalog:'
+        version: 4.0.0(@emotion/react@11.14.0(@types/react@19.1.8)(react@19.1.0))(@types/react@19.1.8)(react-dom@19.1.0(react@19.1.0))(typescript@5.8.3)
+      '@open-pioneer/react-utils':
+        specifier: 'catalog:'
+        version: 4.0.0(@emotion/react@11.14.0(@types/react@19.1.8)(react@19.1.0))(react-dom@19.1.0(react@19.1.0))
+      '@open-pioneer/runtime':
+        specifier: 'catalog:'
+        version: 4.0.0(@types/react@19.1.8)(typescript@5.8.3)
+      '@open-pioneer/search':
+        specifier: workspace:^
+        version: link:../../../packages/search
+      ol:
+        specifier: 'catalog:'
+        version: 10.6.1
+      react:
+        specifier: 'catalog:'
+        version: 19.1.0
+      react-dom:
+        specifier: 'catalog:'
+        version: 19.1.0(react@19.1.0)
+      react-icons:
+        specifier: 'catalog:'
+        version: 5.5.0(react@19.1.0)
+
   src/samples/test-toc/toc-app:
     dependencies:
       '@chakra-ui/react':

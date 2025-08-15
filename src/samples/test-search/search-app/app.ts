@@ -15,4 +15,4 @@ const element = createCustomElement({
     }
 });
 
-customElements.define("toc-map-app", element);
+customElements.define("search-app", element);

@@ -19,27 +19,7 @@
     </head>
 
     <body class="full-height">
-        <script type="module">
-            import "./ogc-app/app.ts";
-            const body = document.getElementsByTagName("body")[0];
-
-            initApp();
-
-            function initApp() {
-                const queryString = window.location.search;
-                const urlParams = new URLSearchParams(queryString);
-                const lang = urlParams.get("lang");
-
-                const app = document.createElement("ogc-api-app");
-                app.classList.add("full-height");
-                app.setAttribute("id", "test");
-
-                if (lang) {
-                    app.setAttribute("forced-locale", lang);
-                }
-
-                body.appendChild(app);
-            }
-        </script>
+        <ogc-api-app class="full-height"></ogc-api-app>
+        <script type="module" src="./ogc-app/app.ts"></script>
     </body>
 </html>
