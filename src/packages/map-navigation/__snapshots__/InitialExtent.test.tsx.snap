@@ -3,7 +3,7 @@
 exports[`should successfully create a initial extent component with additional css classes 1`] = `
 <button
   aria-label="initial-extent.title"
-  class="chakra-button chakra-tooltip__trigger tool-button initial-extent testClass1 testClass2 css-1qurmz4"
+  class="chakra-button chakra-tooltip__trigger tool-button initial-extent testClass1 testClass2 css-19gwppe"
   data-part="trigger"
   data-scope="tooltip"
   data-state="closed"
@@ -39,7 +39,7 @@ exports[`should successfully create a initial extent component with additional c
 exports[`should successfully create a initial extent component with home button 1`] = `
 <button
   aria-label="initial-extent.title"
-  class="chakra-button chakra-tooltip__trigger tool-button initial-extent css-1qurmz4"
+  class="chakra-button chakra-tooltip__trigger tool-button initial-extent css-19gwppe"
   data-part="trigger"
   data-scope="tooltip"
   data-state="closed"

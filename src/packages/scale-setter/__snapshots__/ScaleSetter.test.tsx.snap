@@ -2,14 +2,14 @@
 
 exports[`should successfully create a scale Setter component 1`] = `
 <div
-  class="scale-setter css-0"
+  class="scale-setter"
   data-testid="scale-setter"
 >
   <button
     aria-description="button.ariaDescription"
     aria-haspopup="menu"
     aria-label="button.ariaLabel"
-    class="chakra-button chakra-menu__trigger scale-setter-menubutton css-1ocg3rx"
+    class="chakra-button chakra-menu__trigger scale-setter-menubutton css-12690gz"
     data-part="trigger"
     data-scope="menu"
     data-state="closed"
@@ -43,14 +43,14 @@ exports[`should successfully create a scale Setter component 1`] = `
 
 exports[`should successfully create a scale setter component with additional css classes and box properties 1`] = `
 <div
-  class="scale-setter test test1 test2 css-0"
+  class="scale-setter test test1 test2"
   data-testid="scale-setter"
 >
   <button
     aria-description="button.ariaDescription"
     aria-haspopup="menu"
     aria-label="button.ariaLabel"
-    class="chakra-button chakra-menu__trigger scale-setter-menubutton css-1ocg3rx"
+    class="chakra-button chakra-menu__trigger scale-setter-menubutton css-12690gz"
     data-part="trigger"
     data-scope="menu"
     data-state="closed"

@@ -6,7 +6,7 @@ exports[`expect empty data text to be shown 1`] = `
   data-testid="result-list"
 >
   <div
-    class="result-list-no-data-message css-0"
+    class="result-list-no-data-message"
   >
     noDataMessage
   </div>
@@ -30,7 +30,7 @@ exports[`expect result list to be created successfully 1`] = `
       class="chakra-table__root result-list-table css-kj01gx"
     >
       <thead
-        class="chakra-table__header css-0"
+        class="chakra-table__header"
       >
         <tr
           class="result-list-headers chakra-table__row css-11ot24d"
@@ -45,7 +45,7 @@ exports[`expect result list to be created successfully 1`] = `
               class="result-list-select-all-container css-1baulvz"
             >
               <span
-                class="chakra-tooltip__trigger css-1xdhyk6"
+                class="chakra-tooltip__trigger"
                 data-part="trigger"
                 data-scope="tooltip"
                 data-state="closed"
@@ -89,7 +89,7 @@ exports[`expect result list to be created successfully 1`] = `
             </div>
             <span
               aria-hidden="true"
-              class="result-list-resizer css-0"
+              class="result-list-resizer"
             />
           </th>
           <th
@@ -104,7 +104,7 @@ exports[`expect result list to be created successfully 1`] = `
             />
             <span
               aria-hidden="true"
-              class="result-list-resizer css-0"
+              class="result-list-resizer"
             />
           </th>
           <th
@@ -119,7 +119,7 @@ exports[`expect result list to be created successfully 1`] = `
             />
             <span
               aria-hidden="true"
-              class="result-list-resizer css-0"
+              class="result-list-resizer"
             />
           </th>
           <th
@@ -134,7 +134,7 @@ exports[`expect result list to be created successfully 1`] = `
             />
             <span
               aria-hidden="true"
-              class="result-list-resizer css-0"
+              class="result-list-resizer"
             />
           </th>
           <th
@@ -149,7 +149,7 @@ exports[`expect result list to be created successfully 1`] = `
             />
             <span
               aria-hidden="true"
-              class="result-list-resizer css-0"
+              class="result-list-resizer"
             />
           </th>
           <th
@@ -164,13 +164,13 @@ exports[`expect result list to be created successfully 1`] = `
             />
             <span
               aria-hidden="true"
-              class="result-list-resizer css-0"
+              class="result-list-resizer"
             />
           </th>
         </tr>
       </thead>
       <tbody
-        class="result-list-table-body chakra-table__body css-0"
+        class="result-list-table-body chakra-table__body"
       >
         <tr
           class="result-list-table-row chakra-table__row css-11ot24d"
