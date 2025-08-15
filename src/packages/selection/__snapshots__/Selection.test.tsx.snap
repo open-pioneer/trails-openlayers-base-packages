@@ -59,7 +59,7 @@ exports[`should successfully create a selection component and select the first s
               class="css-eggl6h"
             >
               <span
-                class="chakra-tooltip__trigger css-1xdhyk6"
+                class="chakra-tooltip__trigger"
                 data-part="trigger"
                 data-scope="tooltip"
                 data-state="closed"

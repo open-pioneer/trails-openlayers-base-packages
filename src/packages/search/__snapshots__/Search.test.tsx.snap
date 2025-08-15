@@ -2,7 +2,7 @@
 
 exports[`should successfully create a search component 1`] = `
 <div
-  class="search css-0"
+  class="search"
   data-testid="search"
 >
   <div

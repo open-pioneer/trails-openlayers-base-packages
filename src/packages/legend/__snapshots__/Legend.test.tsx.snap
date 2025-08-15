@@ -2,7 +2,7 @@
 
 exports[`should successfully create a legend component 1`] = `
 <div
-  class="legend css-0"
+  class="legend"
   data-testid="legend"
 >
   <ul
@@ -14,7 +14,7 @@ exports[`should successfully create a legend component 1`] = `
 
 exports[`should successfully show legend for Component configuration 1`] = `
 <div
-  class="legend css-0"
+  class="legend"
   data-testid="legend"
 >
   <ul
@@ -22,18 +22,13 @@ exports[`should successfully show legend for Component configuration 1`] = `
     role="list"
   >
     <li
-      class="legend-item layer-layer-1 css-0"
+      class="legend-item layer-layer-1"
     >
-      <div
-        class="css-0"
-      >
-        <p
-          class="css-0"
-        >
+      <div>
+        <p>
           Layer 1
         </p>
         <div
-          class="css-0"
           style="height: 25px; width: 25px; border-color: #4cb3ff; border-width: 3px; border-radius: 50%; display: inline-block;"
         />
       </div>
@@ -44,7 +39,7 @@ exports[`should successfully show legend for Component configuration 1`] = `
 
 exports[`should successfully show legend for imageUrl configuration 1`] = `
 <div
-  class="legend css-0"
+  class="legend"
   data-testid="legend"
 >
   <ul
@@ -52,14 +47,10 @@ exports[`should successfully show legend for imageUrl configuration 1`] = `
     role="list"
   >
     <li
-      class="legend-item layer-layer-1 css-0"
+      class="legend-item layer-layer-1"
     >
-      <div
-        class="css-0"
-      >
-        <p
-          class="css-0"
-        >
+      <div>
+        <p>
           Layer 1
         </p>
         <img

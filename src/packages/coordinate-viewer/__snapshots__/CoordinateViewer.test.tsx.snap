@@ -2,11 +2,11 @@
 
 exports[`should successfully create a coordinate viewer component 1`] = `
 <div
-  class="coordinate-viewer css-0"
+  class="coordinate-viewer"
   data-testid="coordinate-viewer"
 >
   <p
-    class="coordinate-viewer-text css-0"
+    class="coordinate-viewer-text"
   />
 </div>
 `;

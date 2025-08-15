@@ -3,7 +3,7 @@
 exports[`should successfully create a scale viewer component 1`] = `
 <div
   aria-label="regionLabel"
-  class="scale-viewer css-0"
+  class="scale-viewer"
   data-testid="scale-viewer"
   role="region"
 >
@@ -16,7 +16,6 @@ exports[`should successfully create a scale viewer component 1`] = `
   </span>
   <p
     aria-hidden="true"
-    class="css-0"
   >
     1:
     336,409
@@ -27,7 +26,7 @@ exports[`should successfully create a scale viewer component 1`] = `
 exports[`should successfully create a scale viewer component with additional css classes and box properties 1`] = `
 <div
   aria-label="regionLabel"
-  class="scale-viewer test test1 test2 css-0"
+  class="scale-viewer test test1 test2"
   data-testid="scale-viewer"
   role="region"
 >
@@ -40,7 +39,6 @@ exports[`should successfully create a scale viewer component with additional css
   </span>
   <p
     aria-hidden="true"
-    class="css-0"
   >
     1:
     336,409

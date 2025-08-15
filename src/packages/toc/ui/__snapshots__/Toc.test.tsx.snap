@@ -15,7 +15,7 @@ exports[`should successfully create a toc component 1`] = `
       basemapsLabel
     </h1>
     <div
-      class="basemap-switcher css-0"
+      class="basemap-switcher"
     >
       <div
         class="basemap-switcher-select chakra-select__root css-3jlqt6"
@@ -82,7 +82,7 @@ exports[`should successfully create a toc component 1`] = `
     </div>
   </div>
   <div
-    class="toc-operational-layers css-0"
+    class="toc-operational-layers"
   >
     <h1
       class="chakra-heading css-12sq6rj"
@@ -90,9 +90,7 @@ exports[`should successfully create a toc component 1`] = `
       <div
         class="css-k008qs"
       >
-        <p
-          class="css-0"
-        >
+        <p>
           operationalLayerLabel
         </p>
         <div
@@ -106,7 +104,7 @@ exports[`should successfully create a toc component 1`] = `
       role="list"
     >
       <li
-        class="toc-layer-item layer-layer-2 css-0"
+        class="toc-layer-item layer-layer-2"
       >
         <div
           class="toc-layer-item-content css-1rikyh3"
@@ -165,7 +163,7 @@ exports[`should successfully create a toc component 1`] = `
         </div>
       </li>
       <li
-        class="toc-layer-item layer-layer-1 css-0"
+        class="toc-layer-item layer-layer-1"
       >
         <div
           class="toc-layer-item-content css-1rikyh3"
