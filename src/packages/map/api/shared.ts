@@ -31,11 +31,11 @@ export interface AddLayerOptionsBase {
      *
      * Default: "top"
      *
-     * - "top": Insert the new layer _above_ all other current operational layers, might not be at the top of all layers after more layers were added at `top`, see `topmost`.
+     * - "top": Insert the new layer _above_ all other *normal* operational layers (note: still below `"topmost"` layers).
      * - "bottom": Insert the new layer _below_ all other operational layers.
      * - "above": Insert the new layer _above_ the specified `reference` layer.
      * - "below": Insert the new layer _below_ the specified `reference` layer.
-     * - "topmost": Insert a new layer that is always displayed on top of all layers that were added at `top` (e.g. a highlight layer). Another layer added at `topmost` or at `above` will be displayed on top of the layer that was previously at `topmost`.
+     * - "topmost": Insert a new layer that is always displayed on top of all layers that were added at `top` (e.g. a highlight layer).
      */
     at: "top" | "bottom" | "above" | "below" | "topmost";
 }
@@ -52,8 +52,8 @@ export interface AddLayerOptionsAboveBelow extends AddLayerOptionsBase {
      *
      * Can be specified either as a layer object or an `id`.
      *
-     * The reference must be a top level operational layer in the layer collection. Otherwise an error will be thrown.
-     * If the reference is a layer that was previously added at `topmost` the new layer is treated like a layer added at `topmost` as well. Therefore, it is always displayed above layers that were added at `top`.
+     * The reference must be a top level operational layer in the layer collection.
+     * Otherwise an error will be thrown.
      */
     reference: Layer | string;
 }
