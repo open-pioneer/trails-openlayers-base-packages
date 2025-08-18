@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import { deprecated } from "@open-pioneer/core";
 import { SimpleLayer, SimpleLayerConfig } from "../../api";
 import { AbstractLayer } from "../AbstractLayer";
 import { InternalConstructorTag, LayerConstructor, LayerDependencies } from "./internals";
@@ -7,6 +8,12 @@ import { InternalConstructorTag, LayerConstructor, LayerDependencies } from "./i
 // Import for api docs
 // eslint-disable-next-line unused-imports/no-unused-imports
 import type { LayerFactory } from "./LayerFactory";
+
+const deprecatedConstructor = deprecated({
+    name: "SimpleLayer constructor",
+    packageName: "@open-pioneer/map",
+    since: "v1.0.0"
+});
 
 /**
  * A simple layer that accepts a custom OpenLayer's layer instance.
@@ -21,6 +28,8 @@ export class SimpleLayerImpl extends AbstractLayer implements SimpleLayer {
 
     /**
      * NOTE: Do not use this overload. Use {@link LayerFactory.create} instead.
+     *
+     * @internal
      */
     constructor(
         config: SimpleLayerConfig,
@@ -32,6 +41,9 @@ export class SimpleLayerImpl extends AbstractLayer implements SimpleLayer {
         deps?: LayerDependencies,
         internalTag?: InternalConstructorTag
     ) {
+        if (!internalTag) {
+            deprecatedConstructor();
+        }
         super(config, deps, internalTag);
     }
 

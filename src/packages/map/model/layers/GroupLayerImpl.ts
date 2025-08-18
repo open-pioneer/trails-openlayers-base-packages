@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import { deprecated } from "@open-pioneer/core";
 import { Group } from "ol/layer";
 import {
     AnyLayer,
@@ -19,6 +20,12 @@ import { InternalConstructorTag, LayerConstructor, LayerDependencies } from "./i
 // eslint-disable-next-line unused-imports/no-unused-imports
 import type { LayerFactory } from "./LayerFactory";
 
+const deprecatedConstructor = deprecated({
+    name: "GroupLayer constructor",
+    packageName: "@open-pioneer/map",
+    since: "v1.0.0"
+});
+
 export class GroupLayerImpl extends AbstractLayer implements GroupLayer {
     #children: GroupLayerCollectionImpl;
 
@@ -29,6 +36,8 @@ export class GroupLayerImpl extends AbstractLayer implements GroupLayer {
 
     /**
      * NOTE: Do not use this overload. Use {@link LayerFactory.create} instead.
+     *
+     * @internal
      */
     constructor(
         config: GroupLayerConfig,
@@ -41,6 +50,10 @@ export class GroupLayerImpl extends AbstractLayer implements GroupLayer {
         deps?: LayerDependencies,
         internalTag?: InternalConstructorTag
     ) {
+        if (!internalTag) {
+            deprecatedConstructor();
+        }
+
         const groupLayers = config.layers;
         const olGroup = new Group({ layers: groupLayers.map((sublayer) => sublayer.olLayer) });
         super({ ...config, olLayer: olGroup }, deps, internalTag);

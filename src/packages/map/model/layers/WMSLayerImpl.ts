@@ -8,7 +8,13 @@ import {
     ReadonlyReactive,
     watch
 } from "@conterra/reactivity-core";
-import { createLogger, destroyResource, isAbortError, Resource } from "@open-pioneer/core";
+import {
+    createLogger,
+    deprecated,
+    destroyResource,
+    isAbortError,
+    Resource
+} from "@open-pioneer/core";
 import { ImageWrapper } from "ol";
 import WMSCapabilities from "ol/format/WMSCapabilities";
 import ImageLayer from "ol/layer/Image";
@@ -27,6 +33,12 @@ import { InternalConstructorTag, LayerConstructor, LayerDependencies } from "./i
 import type { LayerFactory } from "./LayerFactory";
 
 const LOG = createLogger("map:WMSLayer");
+
+const deprecatedConstructor = deprecated({
+    name: "WMSLayer constructor",
+    packageName: "@open-pioneer/map",
+    since: "v1.0.0"
+});
 
 export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
     #url: string;
@@ -50,6 +62,8 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
 
     /**
      * NOTE: Do not use this overload. Use {@link LayerFactory.create} instead.
+     *
+     * @internal
      */
     constructor(
         config: WMSLayerConfig,
@@ -61,6 +75,10 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
         deps?: LayerDependencies,
         internalTag?: InternalConstructorTag
     ) {
+        if (!internalTag) {
+            deprecatedConstructor();
+        }
+
         const layer = new ImageLayer();
         super(
             {

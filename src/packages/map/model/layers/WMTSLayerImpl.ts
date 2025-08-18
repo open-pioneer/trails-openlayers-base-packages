@@ -14,6 +14,7 @@ import { MapModelImpl } from "../MapModelImpl";
 import { ImageTile } from "ol";
 import type { Options as WMSSourceOptions } from "ol/source/ImageWMS";
 import { reactive } from "@conterra/reactivity-core";
+import { deprecated } from "@open-pioneer/core";
 import { InternalConstructorTag, LayerConstructor, LayerDependencies } from "./internals";
 
 // Import for api docs
@@ -21,6 +22,12 @@ import { InternalConstructorTag, LayerConstructor, LayerDependencies } from "./i
 import type { LayerFactory } from "./LayerFactory";
 
 const LOG = createLogger("map:WMTSLayer");
+
+const deprecatedConstructor = deprecated({
+    name: "WMTSLayer constructor",
+    packageName: "@open-pioneer/map",
+    since: "v1.0.0"
+});
 
 export class WMTSLayerImpl extends AbstractLayer implements WMTSLayer {
     #url: string;
@@ -41,6 +48,8 @@ export class WMTSLayerImpl extends AbstractLayer implements WMTSLayer {
 
     /**
      * NOTE: Do not use this overload. Use {@link LayerFactory.create} instead.
+     *
+     * @internal
      */
     constructor(
         config: WMTSLayerConfig,
@@ -53,6 +62,10 @@ export class WMTSLayerImpl extends AbstractLayer implements WMTSLayer {
         deps?: LayerDependencies,
         internalTag?: InternalConstructorTag
     ) {
+        if (!internalTag) {
+            deprecatedConstructor();
+        }
+
         const layer = new TileLayer();
         super(
             {
