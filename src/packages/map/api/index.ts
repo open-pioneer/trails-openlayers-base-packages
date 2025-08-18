@@ -24,5 +24,3 @@ export {
 export { DefaultMapProvider } from "../ui/DefaultMapProvider";
 
 export { calculateBufferedExtent } from "../util/geometry-utils";
-
-export { TOPMOST_LAYER_Z } from "../model/LayerCollectionImpl";

@@ -41,14 +41,6 @@ interface BaseLayerPos {
 type LayerPos = OpOrTopmostLayerPos | BaseLayerPos;
 
 /**
- * Z index for layers that should always be rendered on top of all other layers.
- * Note that this is an internal, unstable property!
- *
- * @internal
- */
-export const TOPMOST_LAYER_Z = 9999999;
-
-/**
  * Manages the (top-level) content of the map.
  */
 export class LayerCollectionImpl implements LayerCollection {
