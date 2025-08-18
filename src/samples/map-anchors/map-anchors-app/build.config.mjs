@@ -6,14 +6,8 @@ export default defineBuildConfig({
     styles: "./app.css",
     i18n: ["en"],
     services: {
-        MapService: {
-            provides: "mapAnchor.mapService",
-            references: {
-                mapRegistry: "map.MapRegistry"
-            }
+        MapConfigProviderImpl: {
+            provides: ["map.MapConfigProvider"]
         }
-    },
-    ui: {
-        references: ["mapAnchor.mapService"]
     }
 });

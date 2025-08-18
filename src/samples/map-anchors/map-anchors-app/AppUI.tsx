@@ -7,13 +7,11 @@ import {
     MapAnchor,
     MapAnchorPosition,
     MapContainer,
-    useMapModelValue
+    useMapModel
 } from "@open-pioneer/map";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { ReactNode, useMemo, useState } from "react";
-import { useService } from "open-pioneer:react-hooks";
-
-import { MapService } from "./mapService";
+import { MAP_ID } from "./MapConfigProviderImpl";
 
 const ANCHOR_POSITIONS: MapAnchorPosition[] = [
     "top-left",
@@ -37,8 +35,7 @@ interface EnabledPaddings {
 const PADDING_SIZE = 150; // Pixels
 
 export function AppUI() {
-    const service = useService<MapService>("mapAnchor.mapService");
-    const map = useMapModelValue({ map: service.getMap() });
+    const { map } = useMapModel(MAP_ID);
     const [enabledPaddings, setEnabledPaddings] = useState<EnabledPaddings>({
         left: false,
         right: false,

@@ -4,14 +4,7 @@ import { createLogger } from "@open-pioneer/core";
 import { HttpService } from "@open-pioneer/http";
 import { PackageIntl, Service, ServiceOptions } from "@open-pioneer/runtime";
 import OlMap from "ol/Map";
-import {
-    InitialViewConfig,
-    MapConfig,
-    MapConfigProvider,
-    MapModel,
-    MapRegistry,
-    SimpleLayer
-} from "./api";
+import { MapConfig, MapConfigProvider, MapModel, MapRegistry, SimpleLayer } from "./api";
 import { createMapModel } from "./model/createMapModel";
 import { MapModelImpl } from "./model/MapModelImpl";
 import VectorLayer from "ol/layer/Vector";
