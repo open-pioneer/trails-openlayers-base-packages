@@ -4,6 +4,7 @@ import {
     batch,
     effect,
     reactive,
+    ReactiveArray,
     reactiveArray,
     reactiveMap,
     reactiveSet
@@ -28,7 +29,7 @@ const LOG = createLogger("map:LayerCollection");
 type LayerType = AbstractLayer & Layer;
 type LayerBaseType = (AbstractLayerBase & Layer) | (AbstractLayerBase & Sublayer);
 
-interface OpLayerPos {
+interface OpOrTopmostLayerPos {
     which: "normal" | "topmost";
     index: number;
 }
@@ -37,7 +38,7 @@ interface BaseLayerPos {
     which: "base";
 }
 
-type LayerPos = OpLayerPos | BaseLayerPos;
+type LayerPos = OpOrTopmostLayerPos | BaseLayerPos;
 
 /**
  * Z index for layers that should always be rendered on top of all other layers.
@@ -232,15 +233,7 @@ export class LayerCollectionImpl implements LayerCollection {
         } else {
             model.__setVisible(model.visible);
 
-            let layerList;
-            switch (pos.which) {
-                case "topmost":
-                    layerList = this.#topMostOperationalLayers;
-                    break;
-                case "normal":
-                    layerList = this.#operationalLayerOrder;
-                    break;
-            }
+            const layerList = this.#getLayerList(pos);
             layerList.splice(pos.index, 0, model); // insert new layer at insertion index
         }
         this.#topLevelLayers.add(model);
@@ -269,7 +262,7 @@ export class LayerCollectionImpl implements LayerCollection {
             case "above":
             case "below": {
                 const reference = this.#getReference(options.reference);
-                const pos = this.#findReferenceLayer(reference);
+                const pos = this.#findOpOrTopmost(reference);
                 if (!pos) {
                     // reference is not a top level operational layer -> throw error
                     const errorMessage = this.#getInsertErrorMessage(model, reference);
@@ -300,19 +293,6 @@ export class LayerCollectionImpl implements LayerCollection {
         return layer;
     }
 
-    #findReferenceLayer(reference: LayerType): OpLayerPos | undefined {
-        let index = this.#operationalLayerOrder.indexOf(reference);
-        if (index !== -1) {
-            return { which: "normal", index };
-        }
-
-        index = this.#topMostOperationalLayers.indexOf(reference);
-        if (index !== -1) {
-            return { which: "topmost", index };
-        }
-        return undefined;
-    }
-
     /**
      * Removes the given layer from the map and all relevant indices.
      * The layer will be destroyed.
@@ -332,17 +312,12 @@ export class LayerCollectionImpl implements LayerCollection {
             );
         }
 
-        const isTopMostLayer = this.#isTopMostOperationalLayer(model);
         this.#map.olMap.removeLayer(model.olLayer);
         this.#topLevelLayers.delete(model);
         if (!model.isBaseLayer) {
-            const layerList = isTopMostLayer
-                ? this.#topMostOperationalLayers
-                : this.#operationalLayerOrder;
-            const index = layerList.indexOf(model);
-            if (index !== -1) {
-                layerList.splice(index, 1);
-            }
+            const pos = this.#findOpOrTopmost(model)!;
+            const layerList = this.#getLayerList(pos);
+            layerList.splice(pos.index, 1);
         }
 
         this.#unIndexLayer(model);
@@ -450,8 +425,26 @@ export class LayerCollectionImpl implements LayerCollection {
         visit(model);
     }
 
-    #isTopMostOperationalLayer(layer: LayerType): boolean {
-        return this.#topMostOperationalLayers.includes(layer);
+    #getLayerList(pos: OpOrTopmostLayerPos): ReactiveArray<LayerType> {
+        switch (pos.which) {
+            case "topmost":
+                return this.#topMostOperationalLayers;
+            case "normal":
+                return this.#operationalLayerOrder;
+        }
+    }
+
+    #findOpOrTopmost(layer: LayerType): OpOrTopmostLayerPos | undefined {
+        let index = this.#operationalLayerOrder.indexOf(layer);
+        if (index !== -1) {
+            return { which: "normal", index };
+        }
+
+        index = this.#topMostOperationalLayers.indexOf(layer);
+        if (index !== -1) {
+            return { which: "topmost", index };
+        }
+        return undefined;
     }
 
     #getInsertErrorMessage(layer: LayerType, reference: LayerType) {
