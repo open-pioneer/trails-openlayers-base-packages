@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { external, ExternalReactive, reactive, Reactive } from "@conterra/reactivity-core";
+import { reactive, Reactive, ReadonlyReactive, synchronized } from "@conterra/reactivity-core";
 import { createLogger, destroyResource, Resource } from "@open-pioneer/core";
 import { unByKey } from "ol/Observable";
 import { EventsKey } from "ol/events";
@@ -42,10 +42,9 @@ export abstract class AbstractLayer<AdditionalEvents = {}>
     #isBaseLayer: boolean;
     #healthCheck?: string | HealthCheckFunction;
 
-    #visible: ExternalReactive<boolean>;
+    #visible: ReadonlyReactive<boolean>;
     #loadState: Reactive<LayerLoadState>;
 
-    #visibilityWatchKey: EventsKey | undefined;
     #stateWatchResource: Resource | undefined;
 
     constructor(
@@ -58,11 +57,15 @@ export abstract class AbstractLayer<AdditionalEvents = {}>
         this.#olLayer = config.olLayer;
         this.#isBaseLayer = config.isBaseLayer ?? false;
         this.#healthCheck = config.healthCheck;
-
-        this.#visible = external(() => this.#olLayer.getVisible());
-        this.#visibilityWatchKey = this.#olLayer.on("change:visible", this.#visible.trigger);
-
+        this.#visible = synchronized(
+            () => this.#olLayer.getVisible(),
+            (cb) => {
+                const key = this.#olLayer.on("change:visible", cb);
+                return () => unByKey(key);
+            }
+        );
         this.#loadState = reactive(getSourceState(getSource(this.#olLayer)));
+
         this.__setVisible(config.visible ?? true); // apply initial visibility
     }
 
@@ -90,8 +93,6 @@ export abstract class AbstractLayer<AdditionalEvents = {}>
         }
 
         this.#stateWatchResource = destroyResource(this.#stateWatchResource);
-        this.#visibilityWatchKey && unByKey(this.#visibilityWatchKey);
-        this.#visibilityWatchKey = undefined;
         this.olLayer.dispose();
         super.destroy();
     }
@@ -102,15 +103,17 @@ export abstract class AbstractLayer<AdditionalEvents = {}>
     __attachToMap(map: MapModelImpl): void {
         super.__attachToMap(map);
 
-        const { initial: initialState, resource: stateWatchResource } = watchLoadState(
-            this,
-            this.#healthCheck,
-            (state) => {
-                this.#loadState.value = state;
-            }
-        );
-        this.#stateWatchResource = stateWatchResource;
-        this.#loadState.value = initialState;
+        if (!this.#stateWatchResource) {
+            const { initial: initialState, resource: stateWatchResource } = watchLoadState(
+                this,
+                this.#healthCheck,
+                (state) => {
+                    this.#loadState.value = state;
+                }
+            );
+            this.#stateWatchResource = stateWatchResource;
+            this.#loadState.value = initialState;
+        }
     }
 
     setVisible(newVisibility: boolean): void {

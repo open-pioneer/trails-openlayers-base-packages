@@ -166,6 +166,13 @@ export abstract class AbstractLayerBase<AdditionalEvents = {}>
     }
 
     /**
+     * Called when a layer is removed from the map.
+     */
+    __detachFromMap(): void {
+        this.#map = undefined;
+    }
+
+    /**
      * Detach layer from parent group layer.
      *
      * Called by the parent group layer when destroyed or the layer gets removed.
