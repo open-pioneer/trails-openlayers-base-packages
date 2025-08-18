@@ -20,28 +20,7 @@
     </head>
 
     <body class="full-height">
-        <script type="module">
-            import "./toc-app/app.ts";
-            const body = document.getElementsByTagName("body")[0];
-
-            initApp();
-
-            function initApp() {
-                const queryString = window.location.search;
-                const urlParams = new URLSearchParams(queryString);
-                const lang = urlParams.get("lang");
-
-                const app = document.createElement("toc-map-app");
-                app.classList.add("full-height");
-                app.classList.add("app");
-                app.setAttribute("id", "test");
-
-                if (lang) {
-                    app.setAttribute("forced-locale", lang);
-                }
-
-                body.appendChild(app);
-            }
-        </script>
+        <toc-map-app class="full-height"></toc-map-app>
+        <script type="module" src="./toc-app/app.ts"></script>
     </body>
 </html>

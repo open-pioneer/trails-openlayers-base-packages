@@ -9,7 +9,6 @@ messages:
     expand: "Gruppe {title} ausklappen"
     collapse: "Gruppe {title} einklappen"
 
-  error: "Beim Erstellen des Karteninhalts ist ein Fehler aufgetreten."
   layerNotAvailable: "Layer nicht verfügbar"
 
   toolsLabel: "Kartenwerkzeuge"

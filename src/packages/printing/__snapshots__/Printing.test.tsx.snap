@@ -2,7 +2,7 @@
 
 exports[`should successfully create a printing component 1`] = `
 <div
-  class="printing css-0"
+  class="printing"
   data-testid="printing"
 >
   <form
@@ -51,10 +51,10 @@ exports[`should successfully create a printing component 1`] = `
         fileFormat
       </label>
       <div
-        class="chakra-native-select__root css-1lytf6x"
+        class="chakra-native-select__root css-dup0sm"
       >
         <select
-          class="chakra-native-select__field printing-select css-d0pvvy"
+          class="chakra-native-select__field printing-select css-1sph0c1"
           data-part="select"
           data-scope="field"
           id="«r1»"

@@ -6,7 +6,7 @@ exports[`should successfully create a coordinate input component 1`] = `
   data-testid="coordinate-input"
 >
   <div
-    class="chakra-group chakra-tooltip__trigger coordinate-input-group css-hblrc9"
+    class="chakra-group chakra-tooltip__trigger coordinate-input-group css-r8l1zn"
     data-part="trigger"
     data-scope="tooltip"
     data-state="closed"
@@ -85,7 +85,7 @@ exports[`should successfully create a coordinate input component 1`] = `
       </div>
     </div>
     <div
-      class="chakra-group coordinate-input-field-group css-1n9f5vu"
+      class="chakra-group coordinate-input-field-group css-1w66b0j"
     >
       <div
         class="chakra-field__root css-lesxm"
