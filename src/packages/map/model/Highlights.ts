@@ -16,11 +16,12 @@ import {
     HighlightOptions,
     HighlightStyle,
     HighlightZoomOptions,
+    MapModel,
     ZoomOptions
 } from "../api/MapModel";
 import mapMarkerUrl from "../assets/images/mapMarker.png?url";
 import { FeatureLike } from "ol/Feature";
-import { TOPMOST_LAYER_Z } from "../api";
+import { SimpleLayer } from "../api";
 import { Type } from "ol/geom/Geometry";
 import { buffer } from "ol/extent";
 
@@ -31,14 +32,17 @@ const DEFAULT_OL_MAX_ZOOM_LEVEL = 20;
 const DEFAULT_VIEW_PADDING = { top: 50, right: 20, bottom: 10, left: 20 };
 
 export class Highlights {
+    private map: MapModel;
     private olMap: OlMap;
 
     private olLayer: VectorLayer<VectorSource, Feature>;
+    private layer: SimpleLayer;
     private olSource: VectorSource<Feature<Geometry>>;
     private activeHighlights: Set<Highlight>;
 
-    constructor(olMap: OlMap) {
-        this.olMap = olMap;
+    constructor(map: MapModel) {
+        this.map = map;
+        this.olMap = this.map.olMap;
         this.olSource = new VectorSource({
             features: undefined
         });
@@ -49,9 +53,13 @@ export class Highlights {
                 return resolveStyle(feature, resolution);
             }
         });
+        this.layer = new SimpleLayer({
+            title: "highlight-layer",
+            olLayer: this.olLayer
+        });
+        map.layers.addLayer(this.layer, { at: "topmost" });
+
         this.activeHighlights = new Set();
-        this.olLayer.setZIndex(TOPMOST_LAYER_Z);
-        this.olMap.addLayer(this.olLayer);
     }
 
     /**

@@ -79,7 +79,7 @@ export class MapModelImpl extends EventEmitter<MapModelEvents> implements MapMod
         this.#sharedDeps = {
             httpService: properties.httpService
         };
-        this.#highlights = new Highlights(this.#olMap);
+        this.#highlights = new Highlights(this);
 
         this.#displayStatus = "waiting";
         this.#initializeView().then(
