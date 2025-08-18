@@ -9,3 +9,11 @@
  * @internal
  */
 export { MapRegistryImpl } from "./MapRegistryImpl";
+/**
+ * Exported for the `@open-pioneer/map-test-utils` package.
+ *
+ * This API is unstable.
+ *
+ * @internal
+ */
+export { LayerFactory } from "./model/layers/LayerFactory";

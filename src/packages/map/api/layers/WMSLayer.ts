@@ -10,6 +10,10 @@ import type {
     SublayerBaseType
 } from "./base";
 
+// Import for api docs
+// eslint-disable-next-line unused-imports/no-unused-imports
+import type { LayerFactory } from "../../model/layers/LayerFactory";
+
 /**
  * Configuration options to construct a WMS layer.
  */
@@ -79,7 +83,11 @@ export interface WMSSublayer extends SublayerBaseType {
 export interface WMSLayerConstructor {
     prototype: WMSLayer;
 
-    /** Creates a new {@link WMSLayer}. */
+    /**
+     * Creates a new {@link WMSLayer}.
+     *
+     * @deprecated Prefer using {@link LayerFactory.create} instead of calling the constructor directly
+     */
     new (config: WMSLayerConfig): WMSLayer;
 }
 

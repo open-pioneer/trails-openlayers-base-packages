@@ -3,8 +3,10 @@
 import { LegendItemAttributes } from "@open-pioneer/legend";
 import {
     BaseFeature,
+    LayerFactory,
     MapConfig,
     MapConfigProvider,
+    MapConfigProviderOptions,
     SimpleLayer,
     WMSLayer,
     WMTSLayer
@@ -36,7 +38,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
         this.vectorSourceFactory = options.references.vectorSourceFactory;
     }
 
-    async getMapConfig(): Promise<MapConfig> {
+    async getMapConfig({ layerFactory }: MapConfigProviderOptions): Promise<MapConfig> {
         return {
             advanced: {
                 view: new View({
@@ -47,19 +49,20 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                 })
             },
             layers: [
-                ...createBaseLayers(),
-                createStrassenLayer(),
-                createKrankenhausLayer(this.vectorSourceFactory),
-                createSchulenLayer(),
-                createKitasLayer()
+                ...createBaseLayers(layerFactory),
+                createStrassenLayer(layerFactory),
+                createKrankenhausLayer(layerFactory, this.vectorSourceFactory),
+                createSchulenLayer(layerFactory),
+                createKitasLayer(layerFactory)
             ]
         };
     }
 }
 
-function createBaseLayers() {
+function createBaseLayers(layerFactory: LayerFactory) {
     return [
-        new WMTSLayer({
+        layerFactory.create({
+            type: WMTSLayer,
             isBaseLayer: true,
             title: "Topplus grau",
             url: "https://www.wmts.nrw.de/topplus_open/1.0.0/WMTSCapabilities.xml",
@@ -70,7 +73,8 @@ function createBaseLayers() {
                 attributions: `Kartendarstellung und Präsentationsgraphiken: &copy; Bundesamt für Kartographie und Geodäsie ${new Date().getFullYear()}, <a title="Datenquellen öffnen" aria-label="Datenquellen öffnen" href="https://sg.geodatenzentrum.de/web_public/gdz/datenquellen/Datenquellen_TopPlusOpen.html " target="_blank">Datenquellen</a>`
             }
         }),
-        new WMTSLayer({
+        layerFactory.create({
+            type: WMTSLayer,
             isBaseLayer: true,
             title: "Topplus farbig",
             url: "https://www.wmts.nrw.de/topplus_open/1.0.0/WMTSCapabilities.xml",
@@ -81,7 +85,8 @@ function createBaseLayers() {
                 attributions: `Kartendarstellung und Präsentationsgraphiken: &copy; Bundesamt für Kartographie und Geodäsie ${new Date().getFullYear()}, <a title="Datenquellen öffnen" aria-label="Datenquellen öffnen" href="https://sg.geodatenzentrum.de/web_public/gdz/datenquellen/Datenquellen_TopPlusOpen.html " target="_blank">Datenquellen</a>`
             }
         }),
-        new SimpleLayer({
+        layerFactory.create({
+            type: SimpleLayer,
             title: "OpenStreetMaps",
             visible: false,
             isBaseLayer: true,
@@ -92,7 +97,10 @@ function createBaseLayers() {
     ];
 }
 
-function createKrankenhausLayer(vectorSourceFactory: OgcFeaturesVectorSourceFactory) {
+function createKrankenhausLayer(
+    layerFactory: LayerFactory,
+    vectorSourceFactory: OgcFeaturesVectorSourceFactory
+) {
     const baseURL = "https://ogc-api-test.nrw.de/inspire-us-krankenhaus/v1";
     const collectionId = "governmentalservice";
     const source = vectorSourceFactory.createVectorSource({
@@ -108,7 +116,8 @@ function createKrankenhausLayer(vectorSourceFactory: OgcFeaturesVectorSourceFact
         source: source
     });
 
-    return new SimpleLayer({
+    return layerFactory.create({
+        type: SimpleLayer,
         id: "krankenhaus",
         title: "Krankenhäuser",
         visible: false,
@@ -119,8 +128,9 @@ function createKrankenhausLayer(vectorSourceFactory: OgcFeaturesVectorSourceFact
     });
 }
 
-function createSchulenLayer() {
-    return new WMSLayer({
+function createSchulenLayer(layerFactory: LayerFactory) {
+    return layerFactory.create({
+        type: WMSLayer,
         title: "Schulstandorte",
         description: `Der vorliegende Datenbestand / Dienst zu den Schulstandorten in NRW stammt aus der Schuldatenbank. Die Informationen werden von den Schulträgern bzw. Schulen selbst eingetragen und aktuell gehalten. Die Daten werden tagesaktuell bereitgestellt und enthalten alle grundlegenden Informationen zu Schulen wie Schulnummer, Schulbezeichnung und Adresse.Der vorliegende Datenbestand / Dienst zu den Schulstandorten in NRW stammt aus der Schuldatenbank. Die Informationen werden von den Schulträgern bzw. Schulen selbst eingetragen und aktuell gehalten. Die Daten werden tagesaktuell bereitgestellt und enthalten alle grundlegenden Informationen zu Schulen wie Schulnummer, Schulbezeichnung und Adresse.Der vorliegende Datenbestand / Dienst zu den Schulstandorten in NRW stammt aus der Schuldatenbank. Die Informationen werden von den Schulträgern bzw. Schulen selbst eingetragen und aktuell gehalten. Die Daten werden tagesaktuell bereitgestellt und enthalten alle grundlegenden Informationen zu Schulen wie Schulnummer, Schulbezeichnung und Adresse.Der vorliegende Datenbestand / Dienst zu den Schulstandorten in NRW stammt aus der Schuldatenbank. Die Informationen werden von den Schulträgern bzw. Schulen selbst eingetragen und aktuell gehalten. Die Daten werden tagesaktuell bereitgestellt und enthalten alle grundlegenden Informationen zu Schulen wie Schulnummer, Schulbezeichnung und Adresse.`,
         visible: true,
@@ -140,8 +150,9 @@ function createSchulenLayer() {
     });
 }
 
-function createStrassenLayer() {
-    return new WMSLayer({
+function createStrassenLayer(layerFactory: LayerFactory) {
+    return layerFactory.create({
+        type: WMSLayer,
         title: "Straßennetz Landesbetrieb Straßenbau NRW",
         url: "https://www.wms.nrw.de/wms/strassen_nrw_wms",
         visible: true,
@@ -167,7 +178,7 @@ function createStrassenLayer() {
     });
 }
 
-function createKitasLayer() {
+function createKitasLayer(layerFactory: LayerFactory) {
     const pointLayerLegendProps: LegendItemAttributes = {
         Component: CustomLegendItem
     };
@@ -189,7 +200,8 @@ function createKitasLayer() {
         })
     });
 
-    return new SimpleLayer({
+    return layerFactory.create({
+        type: SimpleLayer,
         id: "ogc_kitas",
         title: "Kindertagesstätten",
         visible: true,

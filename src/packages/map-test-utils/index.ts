@@ -8,13 +8,14 @@ import {
     Layer,
     MapConfig,
     MapConfigProvider,
+    MapConfigProviderOptions,
     MapModel,
     MapRegistry,
     OlMapOptions,
     SimpleLayer,
     SimpleLayerConfig
 } from "@open-pioneer/map";
-import { MapRegistryImpl } from "@open-pioneer/map/internalTestSupport";
+import { MapRegistryImpl, LayerFactory } from "@open-pioneer/map/internalTestSupport";
 import { createService } from "@open-pioneer/test-utils/services";
 import { screen, waitFor } from "@testing-library/react";
 import VectorLayer from "ol/layer/Vector";
@@ -176,10 +177,17 @@ export async function setupMap(
         }
     } satisfies Partial<HttpService> as HttpService;
 
+    const layerFactory = await createService(LayerFactory, {
+        references: {
+            httpService
+        }
+    });
+
     const registry = await createService(MapRegistryImpl, {
         references: {
             providers: [new MapConfigProviderImpl(mapId, mapConfig)],
-            httpService: httpService
+            httpService,
+            layerFactory
         }
     });
 
@@ -211,7 +219,11 @@ class MapConfigProviderImpl implements MapConfigProvider {
         this.mapConfig = mapConfig ?? {};
     }
 
-    getMapConfig(): Promise<MapConfig> {
+    getMapConfig(options: MapConfigProviderOptions): Promise<MapConfig> {
+        if (!options.layerFactory) {
+            // TODO: layer factory is currently not used.
+            throw new Error("Internal error: map registry should pass a layer factory instance");
+        }
         return Promise.resolve(this.mapConfig);
     }
 }
