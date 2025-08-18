@@ -55,6 +55,7 @@ export class Highlights {
         });
         this.layer = new SimpleLayer({
             title: "highlight-layer",
+            internal: true,
             olLayer: this.olLayer
         });
         map.layers.addLayer(this.layer, { at: "topmost" });
