@@ -88,7 +88,7 @@ export abstract class AbstractLayer<AdditionalEvents = {}>
     }
 
     destroy() {
-        if (this.__destroyed) {
+        if (this.destroyed) {
             return;
         }
 
@@ -139,7 +139,7 @@ export abstract class AbstractLayer<AdditionalEvents = {}>
             return deps;
         }
 
-        const map = this.__getMap();
+        const map = this.nullableMap;
         if (map) {
             return map.__layerDeps;
         }

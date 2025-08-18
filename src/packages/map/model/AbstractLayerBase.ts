@@ -41,7 +41,7 @@ export abstract class AbstractLayerBase<AdditionalEvents = {}>
     extends EventEmitter<LayerBaseEvents & AdditionalEvents>
     implements AnyLayerBaseType
 {
-    #map: MapModelImpl | undefined;
+    #map = reactive<MapModelImpl>();
     #parent: AnyLayer | undefined;
 
     #id: string;
@@ -49,7 +49,7 @@ export abstract class AbstractLayerBase<AdditionalEvents = {}>
     #description: Reactive<string>;
     #attributesMap = reactiveMap<string | symbol, unknown>();
     #attributes: ReadonlyReactive<Record<string | symbol, unknown>>;
-    #destroyed = false;
+    #destroyed = reactive(false);
     #internal: Reactive<boolean>;
 
     constructor(config: AbstractLayerBaseOptions) {
@@ -67,6 +67,10 @@ export abstract class AbstractLayerBase<AdditionalEvents = {}>
         }
     }
 
+    get destroyed() {
+        return this.#destroyed.value;
+    }
+
     get internal(): boolean {
         return this.#internal.value;
     }
@@ -75,20 +79,16 @@ export abstract class AbstractLayerBase<AdditionalEvents = {}>
         this.#internal.value = newIsInternal;
     }
 
-    protected get __destroyed(): boolean {
-        return this.#destroyed;
-    }
-
     get map(): MapModelImpl {
-        const map = this.#map;
+        const map = this.nullableMap;
         if (!map) {
             throw new Error(`Layer '${this.id}' has not been attached to a map yet.`);
         }
         return map;
     }
 
-    __getMap(): MapModelImpl | undefined {
-        return this.#map;
+    get nullableMap(): MapModelImpl | undefined {
+        return this.#map.value;
     }
 
     get id(): string {
@@ -126,11 +126,11 @@ export abstract class AbstractLayerBase<AdditionalEvents = {}>
     abstract get legend(): string | undefined;
 
     destroy() {
-        if (this.#destroyed) {
+        if (this.#destroyed.value) {
             return;
         }
 
-        this.#destroyed = true;
+        this.#destroyed.value = true;
         this.sublayers?.destroy();
         this.layers?.destroy();
         try {
@@ -144,12 +144,12 @@ export abstract class AbstractLayerBase<AdditionalEvents = {}>
      * Attaches the layer to its owning map.
      */
     __attachToMap(map: MapModelImpl): void {
-        if (this.#map) {
+        if (this.#map.value) {
             throw new Error(
                 `Layer '${this.id}' has already been attached to the map '${this.map.id}'`
             );
         }
-        this.#map = map;
+        this.#map.value = map;
     }
 
     /**
@@ -169,7 +169,7 @@ export abstract class AbstractLayerBase<AdditionalEvents = {}>
      * Called when a layer is removed from the map.
      */
     __detachFromMap(): void {
-        this.#map = undefined;
+        this.#map.value = undefined;
     }
 
     /**

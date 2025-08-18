@@ -30,6 +30,8 @@ export class WMTSLayerImpl extends AbstractLayer implements WMTSLayer {
     #source: WMTS | undefined;
     #sourceOptions?: Partial<WMSSourceOptions>;
     #legend = reactive<string | undefined>();
+
+    #loadStarted = false;
     readonly #abortController = new AbortController();
 
     /**
@@ -90,6 +92,26 @@ export class WMTSLayerImpl extends AbstractLayer implements WMTSLayer {
 
     __attachToMap(map: MapModelImpl): void {
         super.__attachToMap(map);
+        this.#load();
+    }
+
+    get url() {
+        return this.#url;
+    }
+
+    get name() {
+        return this.#name;
+    }
+
+    get matrixSet() {
+        return this.#matrixSet;
+    }
+
+    #load() {
+        if (this.#loadStarted) {
+            return;
+        }
+        this.#loadStarted = true;
         this.#fetchWMTSCapabilities()
             .then((result: string) => {
                 const parser = new WMTSCapabilities();
@@ -116,23 +138,11 @@ export class WMTSLayerImpl extends AbstractLayer implements WMTSLayer {
             })
             .catch((error) => {
                 if (isAbortError(error)) {
-                    LOG.error(`Layer ${this.name} has been destroyed before fetching the data`);
+                    LOG.debug(`Layer ${this.name} has been destroyed before fetching the data`);
                     return;
                 }
                 LOG.error(`Failed fetching WMTS capabilities for Layer ${this.name}`, error);
             });
-    }
-
-    get url() {
-        return this.#url;
-    }
-
-    get name() {
-        return this.#name;
-    }
-
-    get matrixSet() {
-        return this.#matrixSet;
     }
 
     async #fetchWMTSCapabilities(): Promise<string> {

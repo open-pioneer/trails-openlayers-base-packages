@@ -3,6 +3,7 @@
 import { HttpService } from "@open-pioneer/http";
 import { DECLARE_SERVICE_INTERFACE, ServiceOptions } from "@open-pioneer/runtime";
 import { Layer, LayerConfig } from "../../api";
+import { AbstractLayer } from "../AbstractLayer";
 import { INTERNAL_CONSTRUCTOR_TAG, LayerConstructor } from "./internals";
 
 interface References {
@@ -50,6 +51,11 @@ export class LayerFactory {
         } & Config
     ): LayerType {
         const { type, ...rest } = config;
+        if (!type || !(type.prototype instanceof AbstractLayer)) {
+            throw new Error(
+                `Invalid layer type option. Use one of the layer classes exported by this package.`
+            );
+        }
         return new type(
             rest as unknown as Config,
             { httpService: this.#httpService },

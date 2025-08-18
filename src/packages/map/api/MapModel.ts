@@ -264,7 +264,7 @@ export interface LayerCollection extends ChildrenCollection<Layer> {
      * > Note: This includes base layers by default (see `options.filter`).
      * > Use the `"base"` or `"operational"` short hand values to filter by base layer or operational layers.
      * >
-     * > If the layer hierachy is deeply nested, this function could potentially be expensive.
+     * > If the layer hierarchy is deeply nested, this function could potentially be expensive.
      */
     getRecursiveLayers(
         options?: Omit<RecursiveRetrievalOptions, "filter"> & {
@@ -302,6 +302,8 @@ export interface LayerCollection extends ChildrenCollection<Layer> {
      * ### Ownership
      *
      * This function _destroys_ the layer instance and all its children.
+     *
+     * @deprecated Use {@link removeLayer} instead.
      */
     removeLayerById(id: string): void;
 

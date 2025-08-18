@@ -5,6 +5,7 @@
  * @vitest-environment jsdom
  */
 import { syncEffect, syncWatch } from "@conterra/reactivity-core";
+import { throwAbortError } from "@open-pioneer/core";
 import { HttpService } from "@open-pioneer/http";
 import { createIntl } from "@open-pioneer/test-utils/vanilla";
 import { waitFor } from "@testing-library/dom";
@@ -14,12 +15,14 @@ import { fileURLToPath } from "node:url";
 import { Group } from "ol/layer";
 import TileLayer from "ol/layer/Tile";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { Layer, MapConfig, SimpleLayer, WMSLayer } from "../api";
+import { AnyLayer, Layer, MapConfig, SimpleLayer, WMSLayer } from "../api";
 import { GroupLayer } from "../api/layers/GroupLayer";
-import { MapModelImpl } from "./MapModelImpl";
 import { createMapModel } from "./createMapModel";
+import { INTERNAL_CONSTRUCTOR_TAG } from "./layers/internals";
 import { SimpleLayerImpl } from "./layers/SimpleLayerImpl";
 import { WMSLayerImpl } from "./layers/WMSLayerImpl";
+import { WMTSLayerImpl } from "./layers/WMTSLayerImpl";
+import { MapModelImpl } from "./MapModelImpl";
 
 const THIS_DIR = dirname(fileURLToPath(import.meta.url));
 const WMTS_CAPAS = readFileSync(
@@ -654,15 +657,14 @@ describe("adding and removing layers", () => {
         }).toThrowError("child layer");
     });
 
-    it("supports removing a layer from the model", async () => {
+    it("supports removing a layer from the model (old API)", async () => {
+        const layer = new SimpleLayer({
+            id: "l-1",
+            title: "OSM",
+            olLayer: dummyLayer()
+        });
         model = await create("foo", {
-            layers: [
-                new SimpleLayer({
-                    id: "l-1",
-                    title: "OSM",
-                    olLayer: dummyLayer()
-                })
-            ]
+            layers: [layer]
         });
 
         const ids: (string | undefined)[] = [];
@@ -671,8 +673,38 @@ describe("adding and removing layers", () => {
         });
 
         expect(ids).toEqual(["l-1"]);
+        expect(layer.destroyed).toBe(false);
+
         model.layers.removeLayerById("l-1");
+        expect(layer.destroyed).toBe(true); // destroyed (backwards compat)
         expect(ids).toEqual(["l-1", undefined]);
+    });
+
+    it("supports removing a layer from the model", async () => {
+        const layer = new SimpleLayer({
+            id: "l-1",
+            title: "OSM",
+            olLayer: dummyLayer()
+        });
+        model = await create("foo", {
+            layers: [layer]
+        });
+
+        const ids: (string | undefined)[] = [];
+        syncEffect(() => {
+            ids.push(model?.layers.getLayerById("l-1")?.id);
+        });
+
+        expect(ids).toEqual(["l-1"]);
+
+        const result = model.layers.removeLayer("l-1")!;
+        expect(result).toBe(layer);
+        expect(layer.destroyed).toBe(false); // not destroyed
+        expect(ids).toEqual(["l-1", undefined]);
+
+        model.destroy();
+        // still not destroyed since layer was no longer owned by the map
+        expect(layer.destroyed).toBe(false);
     });
 
     it("always assigns the highest zIndex to a layer inserted at topmost", async () => {
@@ -1002,6 +1034,102 @@ describe("child access", () => {
         expect(allLayers[2]).toBe(group);
     });
 });
+
+it("supports connecting and disconnecting layers", async () => {
+    const httpService = {
+        fetch() {
+            throwAbortError();
+        }
+    } satisfies Partial<HttpService> as HttpService;
+    const simple = new SimpleLayer({
+        title: "Simple",
+        olLayer: dummyLayer()
+    });
+    const group = new GroupLayer({
+        title: "Group",
+        layers: [
+            new SimpleLayer({
+                title: "Group Child",
+                olLayer: dummyLayer()
+            })
+        ]
+    });
+    const wmts = new WMTSLayerImpl(
+        {
+            title: "foo",
+            name: "layer-7328",
+            matrixSet: "EPSG:3857",
+            url: "https://example.com/wmts-service/Capabilities.xml"
+        },
+        { httpService },
+        INTERNAL_CONSTRUCTOR_TAG
+    );
+    const wms = new WMSLayerImpl(
+        {
+            title: "Layer",
+            url: "https://example.com/wms-service",
+            sublayers: [
+                {
+                    name: "sublayer-1",
+                    title: "Sublayer 1",
+                    sublayers: [
+                        {
+                            name: "sublayer-2",
+                            title: "Sublayer 2"
+                        }
+                    ]
+                }
+            ]
+        },
+        { httpService },
+        INTERNAL_CONSTRUCTOR_TAG
+    );
+
+    // Initially no map
+    const layers = [simple, group, wmts, wms];
+    expectNoMap(layers);
+
+    // Construct model with given layers, layers are attached
+    const map = await create("foo", {
+        layers: [simple, group, wmts, wms]
+    });
+    expectMap(layers, map);
+
+    // Remove again --> layers no longer attached
+    for (const layer of layers) {
+        map.layers.removeLayer(layer);
+    }
+    expectNoMap(layers);
+
+    // Attach layers again
+    for (const layer of layers) {
+        map.layers.addLayer(layer);
+    }
+    expectMap(layers, map);
+});
+
+function expectNoMap(layers: AnyLayer[] | undefined) {
+    if (!layers) {
+        return;
+    }
+
+    for (const layer of layers) {
+        expect(() => layer.map, `layer should not have a map: ${layer.title}`).toThrow();
+        expectNoMap(layer.children?.getItems());
+    }
+}
+
+function expectMap(layers: AnyLayer[] | undefined, expectedMap: MapModelImpl) {
+    if (!layers) {
+        return;
+    }
+
+    for (const layer of layers) {
+        const actualMap = layer.map;
+        expect(actualMap, `layer should have a map: ${layer.title}`).toBe(expectedMap);
+        expectMap(layer.children?.getItems(), expectedMap);
+    }
+}
 
 function getLayerProps(layer: Layer) {
     return {

@@ -75,6 +75,11 @@ export class GroupLayerImpl extends AbstractLayer implements GroupLayer {
         super.__attachToMap(map);
         this.layers.__getRawLayers().forEach((layer) => layer.__attachToMap(map));
     }
+
+    __detachFromMap(): void {
+        super.__detachFromMap();
+        this.layers.__getRawLayers().forEach((layer) => layer.__detachFromMap());
+    }
 }
 
 // Ensure layer class is assignable to the constructor interface (there is no "implements" for the class itself).

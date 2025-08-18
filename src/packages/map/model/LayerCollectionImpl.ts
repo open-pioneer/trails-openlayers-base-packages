@@ -392,7 +392,7 @@ export class LayerCollectionImpl implements LayerCollection {
                 throw new Error(`OlLayer used by layer '${id}' has already been used in map.`);
             }
 
-            // Register this layer with the maps.
+            // Register this layer with the map.
             this.#layersById.set(id, model);
             if (olLayer) {
                 this.#layersByOlLayer.set(olLayer, model as LayerType); // ol is present --> not a sublayer

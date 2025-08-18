@@ -35,6 +35,7 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
     #source: ImageWMS;
     #fetchCapabilities: boolean;
 
+    #loadStarted = false;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     #capabilities: Record<string, any> | undefined;
     readonly #abortController = new AbortController();
@@ -86,7 +87,12 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
         this.#fetchCapabilities = config.fetchCapabilities ?? true;
         this.#source = source;
         this.#layer = layer;
+
         this.#sublayers = new SublayersCollectionImpl(constructSublayers(config.sublayers));
+        this.#sublayers
+            .__getRawSublayers()
+            .forEach((sublayer) => sublayer.__attachToParent(this, this));
+
         this.#visibleSublayers = computed(() => this.#getVisibleLayerNames(), {
             equal(a, b) {
                 return a.length === b.length && a.every((v, i) => v === b[i]);
@@ -137,8 +143,24 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
     __attachToMap(map: MapModelImpl): void {
         super.__attachToMap(map);
         for (const sublayer of this.#sublayers.getSublayers()) {
-            sublayer.__attach(map, this, this);
+            sublayer.__attachToMap(map);
         }
+
+        this.#load();
+    }
+
+    __detachFromMap(): void {
+        super.__detachFromMap();
+        for (const sublayer of this.#sublayers.getSublayers()) {
+            sublayer.__detachFromMap();
+        }
+    }
+
+    #load() {
+        if (this.#loadStarted || !this.#fetchCapabilities) {
+            return;
+        }
+        this.#loadStarted = true;
 
         /** Find all leaf nodes representing a layer in the structure */
         const getNestedSublayer = (sublayers: WMSSublayerImpl[], layers: WMSSublayerImpl[]) => {
@@ -153,10 +175,6 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
                 }
             }
         };
-
-        if (!this.#fetchCapabilities) {
-            return;
-        }
 
         this.#fetchWMSCapabilities()
             .then((result: string) => {
@@ -176,10 +194,10 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
             })
             .catch((error) => {
                 if (isAbortError(error)) {
-                    LOG.debug(`Layer ${this.id} has been destroyed before fetching capabilities`);
+                    LOG.debug(`Layer '${this.id}' has been destroyed before fetching capabilities`);
                     return;
                 }
-                LOG.error(`Failed to fetch WMS capabilities for layer ${this.id}`, error);
+                LOG.error(`Failed to fetch WMS capabilities for layer '${this.id}'`, error);
             });
     }
 
@@ -324,18 +342,33 @@ class WMSSublayerImpl extends AbstractLayerBase implements WMSSublayer {
     /**
      * Called by the parent layer when it is attached to the map to attach all sublayers.
      */
-    __attach(
-        map: MapModelImpl,
-        parentLayer: WMSLayerImpl,
-        parent: WMSLayerImpl | WMSSublayerImpl
-    ): void {
+    __attachToMap(map: MapModelImpl): void {
         super.__attachToMap(map);
+
+        // Recurse into nested sublayers
+        for (const sublayer of this.sublayers.__getRawSublayers()) {
+            sublayer.__attachToMap(map);
+        }
+    }
+
+    __detachFromMap(): void {
+        super.__detachFromMap();
+        for (const sublayer of this.#sublayers.getSublayers()) {
+            sublayer.__detachFromMap();
+        }
+    }
+
+    /**
+     * Attaches this sublayer to its parent _layer_ and its immediate parent _layer or sublayer_.
+     */
+    __attachToParent(parentLayer: WMSLayerImpl, parent: WMSLayerImpl | WMSSublayerImpl): void {
         if (this.#parent) {
             throw new Error(
                 `WMS sublayer '${this.id}' has already been attached to parent '${this.#parent.id}'`
             );
         }
         this.#parent = parent;
+
         if (this.#parentLayer) {
             throw new Error(
                 `WMS sublayer '${this.id}' has already been attached to parent layer '${this.#parentLayer.id}'`
@@ -345,7 +378,7 @@ class WMSSublayerImpl extends AbstractLayerBase implements WMSSublayer {
 
         // Recurse into nested sublayers
         for (const sublayer of this.sublayers.__getRawSublayers()) {
-            sublayer.__attach(map, parentLayer, this);
+            sublayer.__attachToParent(parentLayer, this);
         }
     }
 

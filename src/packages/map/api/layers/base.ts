@@ -68,13 +68,25 @@ export interface LayerBaseConfig {
  */
 export interface AnyLayerBaseType<AdditionalEvents = {}>
     extends EventSource<LayerBaseEvents & AdditionalEvents> {
+    /** True if the layer has been destroyed. */
+    readonly destroyed: boolean;
+
     /**
      * Identifies the type of this layer.
      */
     readonly type: AnyLayerTypes;
 
-    /** The map this layer belongs to. */
+    /**
+     * The map this layer belongs to.
+     *
+     * NOTE: Throws if the layer is not part of a map.
+     */
     readonly map: MapModel;
+
+    /**
+     * The map this layer belongs to, or undefined if the layer is not part of a map.
+     */
+    readonly nullableMap: MapModel | undefined;
 
     /**
      * The direct parent of this layer instance, used for sublayers or for layers in a group layer.
@@ -151,6 +163,11 @@ export interface AnyLayerBaseType<AdditionalEvents = {}>
      * Additional attributes associated with this layer.
      */
     readonly attributes: Readonly<Record<string | symbol, unknown>>;
+
+    /**
+     * Destroys the layer and everything owned by it.
+     */
+    destroy(): void;
 
     /**
      * Updates the title of this layer.
