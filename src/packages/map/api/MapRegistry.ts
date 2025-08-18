@@ -32,7 +32,11 @@ export interface MapRegistry extends DeclaredService<"map.MapRegistry"> {
      */
     getMapModelByRawInstance(olMap: OlMap): MapModel | undefined;
 
-    createMap(mapId: string, options?: MapConfig): Promise<MapModel | undefined>;
+    /**
+     * Creates a map Model, without the need to provide a {@link MapConfigProvider}.
+     * Throws an error if a map with the given id already exists or if the map config is invalid.
+     */
+    createMap(mapId: string, options?: MapConfig): Promise<MapModel>;
 }
 
 /**

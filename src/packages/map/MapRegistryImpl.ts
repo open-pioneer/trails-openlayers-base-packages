@@ -85,28 +85,13 @@ export class MapRegistryImpl implements Service, MapRegistry {
         return unbox(await modelPromise);
     }
 
-    async createMap(mapId: string, options?: MapConfig): Promise<MapModel | undefined> {
-        const mapConfig: MapConfig = {
-            initialView: options?.initialView,
-            projection: options?.projection,
-            layers: options?.layers?.map(
-                (config) => ("map" in config ? config : new SimpleLayer(config))
-                // using map as discriminator (no prototype for Layer)
-            ) ?? [
-                new SimpleLayer({
-                    title: "OSM",
-                    olLayer: new VectorLayer()
-                })
-            ],
-            advanced: options?.advanced
-        };
-
+    async createMap(mapId: string, options?: MapConfig): Promise<MapModel> {
         const registry = await createService(MapRegistryImpl, {
             references: {
                 providers: [
                     {
                         mapId: mapId,
-                        getMapConfig: () => Promise.resolve(mapConfig)
+                        getMapConfig: () => Promise.resolve(options || {})
                     }
                 ],
                 httpService: this.#httpService

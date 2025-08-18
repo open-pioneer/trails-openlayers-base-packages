@@ -144,31 +144,16 @@ export class AppModel implements Service, AppState {
         this.vectorSourceFactory = references.vectorSourceFactory;
 
         this._mapRegistry
-            .createMap("main", {
-                advanced: {
-                    view: new View({
-                        center: [404747, 5757920],
-                        zoom: 13,
-                        constrainResolution: true,
-                        projection: "EPSG:25832"
-                    })
-                },
-                layers: [
-                    ...createBaseLayers(),
-                    createStrassenLayer(),
-                    createKrankenhausLayer(this.vectorSourceFactory),
-                    createSchulenLayer(),
-                    createKitasLayer()
-                ]
-            })
+            .createMap("main", setLayerConfig(this.vectorSourceFactory))
             .then((map) => {
                 this._map.value = map;
-                this.initSearchSources();
-                this.initSelectionSources().catch((error) => {
+                this.initSelectionSources(map).catch((error) => {
                     LOG.error("Failed to initialize selection sources", error);
                 });
             })
             .catch((error) => LOG.error("Failed to initialize map", error));
+
+        this.initSearchSources();
     }
 
     destroy(): void {
@@ -321,13 +306,8 @@ export class AppModel implements Service, AppState {
      * The result list metadata is loaded into a table (`sourceMetadata`) by reading
      * the application specific `resultListMetadata` from the layers' attributes.
      */
-    private async initSelectionSources() {
+    private async initSelectionSources(map: MapModel) {
         const SELECTION_LAYER_IDS = ["ogc_kitas", "ogc_kataster"];
-        const map = this._map.value;
-        if (!map) {
-            LOG.error("No map available, cannot initialize selection sources.");
-            return;
-        }
         const opLayers = map.layers.getOperationalLayers({ sortByDisplayOrder: true });
 
         for (const opLayer of opLayers) {
@@ -551,4 +531,24 @@ function createKitasLayer() {
             ]
         }
     });
+}
+
+function setLayerConfig(vectorSourceFactory: OgcFeaturesVectorSourceFactory) {
+    return {
+        advanced: {
+            view: new View({
+                center: [404747, 5757920],
+                zoom: 13,
+                constrainResolution: true,
+                projection: "EPSG:25832"
+            })
+        },
+        layers: [
+            ...createBaseLayers(),
+            createStrassenLayer(),
+            createKrankenhausLayer(vectorSourceFactory),
+            createSchulenLayer(),
+            createKitasLayer()
+        ]
+    };
 }
