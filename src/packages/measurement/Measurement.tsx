@@ -137,7 +137,10 @@ function useController(map: MapModel, props: MeasurementProps, intl: PackageIntl
     } = props;
     const [controller, setController] = useState<MeasurementController | undefined>(undefined);
     useEffect(() => {
-        const controller = new MeasurementController(map.olMap, {
+        if (!map) {
+            return;
+        }
+        const controller = new MeasurementController(map, {
             getContinueMessage() {
                 return intl.formatMessage({ id: "tooltips.continue" });
             },
