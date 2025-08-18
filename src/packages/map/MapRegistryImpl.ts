@@ -4,11 +4,9 @@ import { createLogger } from "@open-pioneer/core";
 import { HttpService } from "@open-pioneer/http";
 import { PackageIntl, Service, ServiceOptions } from "@open-pioneer/runtime";
 import OlMap from "ol/Map";
-import { MapConfig, MapConfigProvider, MapModel, MapRegistry, SimpleLayer } from "./api";
+import { MapConfig, MapConfigProvider, MapModel, MapRegistry } from "./api";
 import { createMapModel } from "./model/createMapModel";
 import { MapModelImpl } from "./model/MapModelImpl";
-import VectorLayer from "ol/layer/Vector";
-import { createService } from "@open-pioneer/test-utils/services";
 
 const LOG = createLogger("map:MapRegistry");
 
@@ -86,18 +84,20 @@ export class MapRegistryImpl implements Service, MapRegistry {
     }
 
     async createMap(mapId: string, options?: MapConfig): Promise<MapModel> {
-        const registry = await createService(MapRegistryImpl, {
-            references: {
-                providers: [
-                    {
-                        mapId: mapId,
-                        getMapConfig: () => Promise.resolve(options || {})
-                    }
-                ],
-                httpService: this.#httpService
-            }
+        const mapModelResult = await this.#createModel(mapId, {
+            mapId: mapId,
+            getMapConfig: () => Promise.resolve(options || {})
+        }).catch((cause) => {
+            const error = new Error(`Failed to construct map '${mapId}'`, { cause });
+            const entry: ModelJobResult = { kind: "error", error };
+            this.#modelCreationJobs.delete(mapId);
+            this.#entries.set(mapId, entry);
+            return entry;
         });
-        return await registry.expectMapModel(mapId);
+        if (mapModelResult.kind === "error") {
+            throw new Error(mapModelResult.error.message, { cause: mapModelResult.error.cause });
+        }
+        return mapModelResult.model;
     }
 
     async expectMapModel(mapId: string): Promise<MapModel> {
