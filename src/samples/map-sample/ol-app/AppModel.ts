@@ -2,7 +2,15 @@
 // SPDX-License-Identifier: Apache-2.0
 import { Resource, createLogger } from "@open-pioneer/core";
 import { HttpService } from "@open-pioneer/http";
-import { Highlight, MapModel, MapRegistry } from "@open-pioneer/map";
+import {
+    BaseFeature,
+    Highlight,
+    MapModel,
+    MapRegistry,
+    SimpleLayer,
+    WMSLayer,
+    WMTSLayer
+} from "@open-pioneer/map";
 import { type DECLARE_SERVICE_INTERFACE, Service, ServiceOptions } from "@open-pioneer/runtime";
 import { SearchSource } from "@open-pioneer/search";
 import { SelectionSource, VectorLayerSelectionSourceFactory } from "@open-pioneer/selection";
@@ -10,7 +18,6 @@ import Feature from "ol/Feature";
 import OlBaseLayer from "ol/layer/Base";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
-import { MAP_ID } from "./map/MapConfigProviderImpl";
 import { PhotonGeocoder } from "./sources/searchSources";
 import { ResultColumn, ResultListInput } from "@open-pioneer/result-list";
 import { Geometry } from "ol/geom";
@@ -22,8 +29,20 @@ import {
     reactiveMap,
     watch
 } from "@conterra/reactivity-core";
+import { View } from "ol";
+import TileLayer from "ol/layer/Tile";
+import { OSM } from "ol/source";
+import { OgcFeaturesVectorSourceFactory } from "@open-pioneer/ogc-features";
+import { LegendItemAttributes } from "@open-pioneer/legend";
+import { CustomLegendItem } from "./map/CustomLegendItems";
+import GeoJSON from "ol/format/GeoJSON";
+import { Circle, Fill, Style } from "ol/style";
 
 const LOG = createLogger("ol-app:AppModel");
+
+interface References {
+    vectorSourceFactory: OgcFeaturesVectorSourceFactory;
+}
 
 /**
  * Reactive state, rendered by the UI.
@@ -101,6 +120,7 @@ export class AppModel implements Service, AppState {
     private _vectorSelectionSourceFactory: VectorLayerSelectionSourceFactory;
     private _httpService: HttpService;
     private _resources: Resource[] = [];
+    private vectorSourceFactory: OgcFeaturesVectorSourceFactory;
 
     // Highlight for search or selection results (they remove each other in this app).
     private _featureHighlight: Highlight | undefined = undefined;
@@ -121,16 +141,34 @@ export class AppModel implements Service, AppState {
         this._vectorSelectionSourceFactory = references.vectorSelectionSourceFactory;
         this._httpService = references.httpService;
 
+        this.vectorSourceFactory = references.vectorSourceFactory;
+
         this._mapRegistry
-            .expectMapModel(MAP_ID)
+            .createMap("main", {
+                advanced: {
+                    view: new View({
+                        center: [404747, 5757920],
+                        zoom: 13,
+                        constrainResolution: true,
+                        projection: "EPSG:25832"
+                    })
+                },
+                layers: [
+                    ...createBaseLayers(),
+                    createStrassenLayer(),
+                    createKrankenhausLayer(this.vectorSourceFactory),
+                    createSchulenLayer(),
+                    createKitasLayer()
+                ]
+            })
             .then((map) => {
                 this._map.value = map;
+                this.initSearchSources();
+                this.initSelectionSources().catch((error) => {
+                    LOG.error("Failed to initialize selection sources", error);
+                });
             })
             .catch((error) => LOG.error("Failed to initialize map", error));
-        this.initSearchSources();
-        this.initSelectionSources().catch((error) => {
-            LOG.error("Failed to initialize selection sources", error);
-        });
     }
 
     destroy(): void {
@@ -285,7 +323,11 @@ export class AppModel implements Service, AppState {
      */
     private async initSelectionSources() {
         const SELECTION_LAYER_IDS = ["ogc_kitas", "ogc_kataster"];
-        const map = await this._mapRegistry.expectMapModel(MAP_ID);
+        const map = this._map.value;
+        if (!map) {
+            LOG.error("No map available, cannot initialize selection sources.");
+            return;
+        }
         const opLayers = map.layers.getOperationalLayers({ sortByDisplayOrder: true });
 
         for (const opLayer of opLayers) {
@@ -325,4 +367,188 @@ export class AppModel implements Service, AppState {
 
 function isVectorLayerWithVectorSource(layer: OlBaseLayer) {
     return layer instanceof VectorLayer && layer.getSource() instanceof VectorSource;
+}
+
+function createBaseLayers() {
+    return [
+        new WMTSLayer({
+            isBaseLayer: true,
+            title: "Topplus grau",
+            url: "https://www.wmts.nrw.de/topplus_open/1.0.0/WMTSCapabilities.xml",
+            name: "topplus_grau",
+            matrixSet: "EPSG_25832_14",
+            visible: false,
+            sourceOptions: {
+                attributions: `Kartendarstellung und Präsentationsgraphiken: &copy; Bundesamt für Kartographie und Geodäsie ${new Date().getFullYear()}, <a title="Datenquellen öffnen" aria-label="Datenquellen öffnen" href="https://sg.geodatenzentrum.de/web_public/gdz/datenquellen/Datenquellen_TopPlusOpen.html " target="_blank">Datenquellen</a>`
+            }
+        }),
+        new WMTSLayer({
+            isBaseLayer: true,
+            title: "Topplus farbig",
+            url: "https://www.wmts.nrw.de/topplus_open/1.0.0/WMTSCapabilities.xml",
+            name: "topplus_col",
+            matrixSet: "EPSG_25832_14",
+            visible: true,
+            sourceOptions: {
+                attributions: `Kartendarstellung und Präsentationsgraphiken: &copy; Bundesamt für Kartographie und Geodäsie ${new Date().getFullYear()}, <a title="Datenquellen öffnen" aria-label="Datenquellen öffnen" href="https://sg.geodatenzentrum.de/web_public/gdz/datenquellen/Datenquellen_TopPlusOpen.html " target="_blank">Datenquellen</a>`
+            }
+        }),
+        new SimpleLayer({
+            title: "OpenStreetMaps",
+            visible: false,
+            isBaseLayer: true,
+            olLayer: new TileLayer({
+                source: new OSM()
+            })
+        })
+    ];
+}
+
+function createKrankenhausLayer(vectorSourceFactory: OgcFeaturesVectorSourceFactory) {
+    const baseURL = "https://ogc-api-test.nrw.de/inspire-us-krankenhaus/v1";
+    const collectionId = "governmentalservice";
+    const source = vectorSourceFactory.createVectorSource({
+        strategy: "next",
+        baseUrl: baseURL,
+        collectionId: collectionId,
+        limit: 1000,
+        crs: "http://www.opengis.net/def/crs/EPSG/0/25832",
+        attributions: `Land NRW (${new Date().getFullYear()}), <a href='https://www.govdata.de/dl-de/by-2-0'>Datenlizenz Deutschland - Namensnennung - Version 2.0</a>, <a href='https://ogc-api-test.nrw.de/inspire-us-krankenhaus/v1'>Datenquelle</a>`
+    });
+
+    const layer = new VectorLayer({
+        source: source
+    });
+
+    return new SimpleLayer({
+        id: "krankenhaus",
+        title: "Krankenhäuser",
+        visible: false,
+        olLayer: layer,
+        attributes: {
+            collectionURL: baseURL + "/collections/" + collectionId
+        }
+    });
+}
+
+function createSchulenLayer() {
+    return new WMSLayer({
+        title: "Schulstandorte",
+        description: `Der vorliegende Datenbestand / Dienst zu den Schulstandorten in NRW stammt aus der Schuldatenbank. Die Informationen werden von den Schulträgern bzw. Schulen selbst eingetragen und aktuell gehalten. Die Daten werden tagesaktuell bereitgestellt und enthalten alle grundlegenden Informationen zu Schulen wie Schulnummer, Schulbezeichnung und Adresse.Der vorliegende Datenbestand / Dienst zu den Schulstandorten in NRW stammt aus der Schuldatenbank. Die Informationen werden von den Schulträgern bzw. Schulen selbst eingetragen und aktuell gehalten. Die Daten werden tagesaktuell bereitgestellt und enthalten alle grundlegenden Informationen zu Schulen wie Schulnummer, Schulbezeichnung und Adresse.Der vorliegende Datenbestand / Dienst zu den Schulstandorten in NRW stammt aus der Schuldatenbank. Die Informationen werden von den Schulträgern bzw. Schulen selbst eingetragen und aktuell gehalten. Die Daten werden tagesaktuell bereitgestellt und enthalten alle grundlegenden Informationen zu Schulen wie Schulnummer, Schulbezeichnung und Adresse.Der vorliegende Datenbestand / Dienst zu den Schulstandorten in NRW stammt aus der Schuldatenbank. Die Informationen werden von den Schulträgern bzw. Schulen selbst eingetragen und aktuell gehalten. Die Daten werden tagesaktuell bereitgestellt und enthalten alle grundlegenden Informationen zu Schulen wie Schulnummer, Schulbezeichnung und Adresse.`,
+        visible: true,
+        url: "https://www.wms.nrw.de/wms/wms_nw_inspire-schulen",
+        sublayers: [
+            {
+                name: "US.education",
+                title: "INSPIRE - WMS Schulstandorte NRW",
+                attributes: {
+                    "legend": {}
+                }
+            }
+        ],
+        sourceOptions: {
+            ratio: 1
+        }
+    });
+}
+
+function createStrassenLayer() {
+    return new WMSLayer({
+        title: "Straßennetz Landesbetrieb Straßenbau NRW",
+        url: "https://www.wms.nrw.de/wms/strassen_nrw_wms",
+        visible: true,
+        sublayers: [
+            {
+                name: "1",
+                title: "Verwaltungen",
+                attributes: {
+                    "legend": {
+                        imageUrl: "https://www.wms.nrw.de/legends/wms/strassen_nrw_wms/1.png"
+                    }
+                }
+            },
+            {
+                name: "4",
+                title: "Abschnitte und Äste"
+            },
+            {
+                name: "6",
+                title: "Unfälle"
+            }
+        ]
+    });
+}
+
+function createKitasLayer() {
+    const pointLayerLegendProps: LegendItemAttributes = {
+        Component: CustomLegendItem
+    };
+
+    const geojsonSource = new VectorSource({
+        url: "https://ogc-api.nrw.de/inspire-us-kindergarten/v1/collections/governmentalservice/items?f=json&limit=10000",
+        format: new GeoJSON(), //assign GeoJson parser
+        attributions:
+            '&copy; <a href="http://www.bkg.bund.de" target="_blank">Bundesamt f&uuml;r Kartographie und Geod&auml;sie</a> 2017, <a href="http://sg.geodatenzentrum.de/web_public/Datenquellen_TopPlus_Open.pdf" target="_blank">Datenquellen</a>'
+    });
+
+    const vectorLayer = new VectorLayer({
+        source: geojsonSource,
+        style: new Style({
+            image: new Circle({
+                fill: new Fill({ color: "blue" }),
+                radius: 4
+            })
+        })
+    });
+
+    return new SimpleLayer({
+        id: "ogc_kitas",
+        title: "Kindertagesstätten",
+        visible: true,
+        olLayer: vectorLayer,
+        attributes: {
+            // Standard property interpreted by the legend component.
+            "legend": pointLayerLegendProps,
+
+            // Custom attribute used in this application.
+            // This is interpreted by this application when opening the  results in the result list.
+            "resultListMetadata": [
+                {
+                    id: "id",
+                    displayName: "ID",
+                    width: 100,
+                    getPropertyValue(feature: BaseFeature) {
+                        return feature.id;
+                    }
+                },
+                {
+                    propertyName: "pointOfContact.address.postCode",
+                    displayName: "PLZ",
+                    width: 120
+                },
+                {
+                    propertyName: "name",
+                    displayName: "Name"
+                },
+                {
+                    propertyName: "inspireId",
+                    displayName: "inspireID"
+                },
+                {
+                    displayName: "Gefördert",
+                    width: 160,
+                    getPropertyValue(feature: BaseFeature) {
+                        switch (feature.properties?.gefoerdert) {
+                            case "ja":
+                                return true;
+                            case "nein":
+                                return false;
+                            default:
+                                return feature.properties?.gefoerdert;
+                        }
+                    }
+                }
+            ]
+        }
+    });
 }

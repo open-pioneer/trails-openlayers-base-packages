@@ -74,6 +74,8 @@ export interface SimpleMapOptions {
      * Use `false` to test the async loading behavior of the registry.
      */
     returnMap?: boolean;
+
+    initialView?: InitialViewConfig;
 }
 
 /**

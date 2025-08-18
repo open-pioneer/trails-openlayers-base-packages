@@ -4,9 +4,18 @@ import { createLogger } from "@open-pioneer/core";
 import { HttpService } from "@open-pioneer/http";
 import { PackageIntl, Service, ServiceOptions } from "@open-pioneer/runtime";
 import OlMap from "ol/Map";
-import { MapConfigProvider, MapModel, MapRegistry } from "./api";
+import {
+    InitialViewConfig,
+    MapConfig,
+    MapConfigProvider,
+    MapModel,
+    MapRegistry,
+    SimpleLayer
+} from "./api";
 import { createMapModel } from "./model/createMapModel";
 import { MapModelImpl } from "./model/MapModelImpl";
+import VectorLayer from "ol/layer/Vector";
+import { createService } from "@open-pioneer/test-utils/services";
 
 const LOG = createLogger("map:MapRegistry");
 
@@ -81,6 +90,36 @@ export class MapRegistryImpl implements Service, MapRegistry {
         });
         this.#modelCreationJobs.set(mapId, modelPromise);
         return unbox(await modelPromise);
+    }
+
+    async createMap(mapId: string, options?: MapConfig): Promise<MapModel | undefined> {
+        const mapConfig: MapConfig = {
+            initialView: options?.initialView,
+            projection: options?.projection,
+            layers: options?.layers?.map(
+                (config) => ("map" in config ? config : new SimpleLayer(config))
+                // using map as discriminator (no prototype for Layer)
+            ) ?? [
+                new SimpleLayer({
+                    title: "OSM",
+                    olLayer: new VectorLayer()
+                })
+            ],
+            advanced: options?.advanced
+        };
+
+        const registry = await createService(MapRegistryImpl, {
+            references: {
+                providers: [
+                    {
+                        mapId: mapId,
+                        getMapConfig: () => Promise.resolve(mapConfig)
+                    }
+                ],
+                httpService: this.#httpService
+            }
+        });
+        return await registry.expectMapModel(mapId);
     }
 
     async expectMapModel(mapId: string): Promise<MapModel> {

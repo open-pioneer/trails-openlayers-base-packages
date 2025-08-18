@@ -31,6 +31,8 @@ export interface MapRegistry extends DeclaredService<"map.MapRegistry"> {
      * All OpenLayers maps created by this registry (e.g. via {@link MapConfigProvider}) have an associated map model.
      */
     getMapModelByRawInstance(olMap: OlMap): MapModel | undefined;
+
+    createMap(mapId: string, options?: MapConfig): Promise<MapModel | undefined>;
 }
 
 /**
