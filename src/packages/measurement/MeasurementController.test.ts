@@ -271,11 +271,12 @@ it("should raise add/remove events if user adds/clears measurements", async () =
     expect(events[0]?.geometry).toBeInstanceOf(LineString);
 });
 
-it("should add name property to measurement layer", async () => {
-    const { controller } = await setup();
-    const layer = controller.getOlVectorLayer();
+it("should add title to measurement layer", async () => {
+    const { controller, map } = await setup();
+    const olLayer = controller.getOlVectorLayer();
+    const layer = map.layers.getLayerByRawInstance(olLayer);
 
-    expect(layer.getProperties()["name"]).toBe("measurement-layer");
+    expect(layer?.title).toBe("measurement-layer");
 });
 
 /**

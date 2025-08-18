@@ -39,8 +39,6 @@ export class MeasurementController {
      */
     private layer: SimpleLayer;
 
-    private olLayer: VectorLayer<VectorSource, Feature>;
-
     /**
      * Source of {@link layer}.
      */
@@ -89,16 +87,12 @@ export class MeasurementController {
         this.olMap = map.olMap;
         this.messages = messages;
         const source = (this.source = new VectorSource());
-        this.olLayer = new VectorLayer<VectorSource, Feature>({
-            source: source,
-            properties: {
-                name: "measurement-layer"
-            }
-        });
         this.layer = new SimpleLayer({
             internal: true,
             title: "measurement-layer",
-            olLayer: this.olLayer
+            olLayer: new VectorLayer<VectorSource, Feature>({
+                source: source
+            })
         });
         map.layers.addLayer(this.layer, { at: "topmost" });
 
@@ -144,7 +138,7 @@ export class MeasurementController {
 
     /** Returns the vector layer used for finished features. */
     getOlVectorLayer() {
-        return this.olLayer;
+        return this.layer.olLayer as VectorLayer;
     }
 
     /** Updates the style used for finished features. */

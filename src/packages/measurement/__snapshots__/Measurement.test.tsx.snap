@@ -2,7 +2,7 @@
 
 exports[`should successfully create a measurement component 1`] = `
 <div
-  class="measurement"
+  class="measurement css-0"
   data-testid="measurement"
 >
   <p
@@ -27,10 +27,10 @@ exports[`should successfully create a measurement component 1`] = `
       measurementLabel
     </label>
     <div
-      class="chakra-native-select__root css-dup0sm"
+      class="chakra-native-select__root css-1lytf6x"
     >
       <select
-        class="chakra-native-select__field measurement-select css-1sph0c1"
+        class="chakra-native-select__field measurement-select css-d0pvvy"
         data-part="select"
         data-scope="field"
         id="«r0»"
