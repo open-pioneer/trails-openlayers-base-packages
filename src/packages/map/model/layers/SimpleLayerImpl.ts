@@ -12,7 +12,8 @@ import type { LayerFactory } from "./LayerFactory";
 const deprecatedConstructor = deprecated({
     name: "SimpleLayer constructor",
     packageName: "@open-pioneer/map",
-    since: "v1.0.0"
+    since: "v1.0.0",
+    alternative: "use LayerFactory.create() instead"
 });
 
 /**

@@ -26,7 +26,8 @@ const LOG = createLogger("map:WMTSLayer");
 const deprecatedConstructor = deprecated({
     name: "WMTSLayer constructor",
     packageName: "@open-pioneer/map",
-    since: "v1.0.0"
+    since: "v1.0.0",
+    alternative: "use LayerFactory.create() instead"
 });
 
 export class WMTSLayerImpl extends AbstractLayer implements WMTSLayer {

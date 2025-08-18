@@ -23,7 +23,8 @@ import type { LayerFactory } from "./LayerFactory";
 const deprecatedConstructor = deprecated({
     name: "GroupLayer constructor",
     packageName: "@open-pioneer/map",
-    since: "v1.0.0"
+    since: "v1.0.0",
+    alternative: "use LayerFactory.create() instead"
 });
 
 export class GroupLayerImpl extends AbstractLayer implements GroupLayer {
