@@ -1,26 +1,5 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { Resource, createLogger } from "@open-pioneer/core";
-import { HttpService } from "@open-pioneer/http";
-import {
-    BaseFeature,
-    Highlight,
-    MapModel,
-    MapRegistry,
-    SimpleLayer,
-    WMSLayer,
-    WMTSLayer
-} from "@open-pioneer/map";
-import { type DECLARE_SERVICE_INTERFACE, Service, ServiceOptions } from "@open-pioneer/runtime";
-import { SearchSource } from "@open-pioneer/search";
-import { SelectionSource, VectorLayerSelectionSourceFactory } from "@open-pioneer/selection";
-import Feature from "ol/Feature";
-import OlBaseLayer from "ol/layer/Base";
-import VectorLayer from "ol/layer/Vector";
-import VectorSource from "ol/source/Vector";
-import { PhotonGeocoder } from "./sources/searchSources";
-import { ResultColumn, ResultListInput } from "@open-pioneer/result-list";
-import { Geometry } from "ol/geom";
 import {
     ReadonlyReactiveArray,
     ReadonlyReactiveMap,
@@ -29,14 +8,36 @@ import {
     reactiveMap,
     watch
 } from "@conterra/reactivity-core";
-import { View } from "ol";
-import TileLayer from "ol/layer/Tile";
-import { OSM } from "ol/source";
-import { OgcFeaturesVectorSourceFactory } from "@open-pioneer/ogc-features";
+import { Resource, createLogger } from "@open-pioneer/core";
+import { HttpService } from "@open-pioneer/http";
 import { LegendItemAttributes } from "@open-pioneer/legend";
-import { CustomLegendItem } from "./map/CustomLegendItems";
+import {
+    BaseFeature,
+    Highlight,
+    MapConfig,
+    MapModel,
+    MapRegistry,
+    SimpleLayer,
+    WMSLayer,
+    WMTSLayer
+} from "@open-pioneer/map";
+import { OgcFeaturesVectorSourceFactory } from "@open-pioneer/ogc-features";
+import { ResultColumn, ResultListInput } from "@open-pioneer/result-list";
+import { type DECLARE_SERVICE_INTERFACE, Service, ServiceOptions } from "@open-pioneer/runtime";
+import { SearchSource } from "@open-pioneer/search";
+import { SelectionSource, VectorLayerSelectionSourceFactory } from "@open-pioneer/selection";
+import { View } from "ol";
+import Feature from "ol/Feature";
 import GeoJSON from "ol/format/GeoJSON";
+import { Geometry } from "ol/geom";
+import OlBaseLayer from "ol/layer/Base";
+import TileLayer from "ol/layer/Tile";
+import VectorLayer from "ol/layer/Vector";
+import { OSM } from "ol/source";
+import VectorSource from "ol/source/Vector";
 import { Circle, Fill, Style } from "ol/style";
+import { CustomLegendItem } from "./map/CustomLegendItems";
+import { PhotonGeocoder } from "./sources/searchSources";
 
 const LOG = createLogger("ol-app:AppModel");
 
@@ -144,7 +145,7 @@ export class AppModel implements Service, AppState {
         this.vectorSourceFactory = references.vectorSourceFactory;
 
         this._mapRegistry
-            .createMap("main", setLayerConfig(this.vectorSourceFactory))
+            .createMapModel("main", getMapConfig(this.vectorSourceFactory))
             .then((map) => {
                 this._map.value = map;
                 this.initSelectionSources(map).catch((error) => {
@@ -345,8 +346,24 @@ export class AppModel implements Service, AppState {
     }
 }
 
-function isVectorLayerWithVectorSource(layer: OlBaseLayer) {
-    return layer instanceof VectorLayer && layer.getSource() instanceof VectorSource;
+function getMapConfig(vectorSourceFactory: OgcFeaturesVectorSourceFactory): MapConfig {
+    return {
+        advanced: {
+            view: new View({
+                center: [404747, 5757920],
+                zoom: 13,
+                constrainResolution: true,
+                projection: "EPSG:25832"
+            })
+        },
+        layers: [
+            ...createBaseLayers(),
+            createStrassenLayer(),
+            createKrankenhausLayer(vectorSourceFactory),
+            createSchulenLayer(),
+            createKitasLayer()
+        ]
+    };
 }
 
 function createBaseLayers() {
@@ -533,22 +550,6 @@ function createKitasLayer() {
     });
 }
 
-function setLayerConfig(vectorSourceFactory: OgcFeaturesVectorSourceFactory) {
-    return {
-        advanced: {
-            view: new View({
-                center: [404747, 5757920],
-                zoom: 13,
-                constrainResolution: true,
-                projection: "EPSG:25832"
-            })
-        },
-        layers: [
-            ...createBaseLayers(),
-            createStrassenLayer(),
-            createKrankenhausLayer(vectorSourceFactory),
-            createSchulenLayer(),
-            createKitasLayer()
-        ]
-    };
+function isVectorLayerWithVectorSource(layer: OlBaseLayer) {
+    return layer instanceof VectorLayer && layer.getSource() instanceof VectorSource;
 }

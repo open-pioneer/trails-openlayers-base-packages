@@ -1,18 +1,19 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { getErrorChain } from "@open-pioneer/core";
-import { View } from "ol";
-import { Attribution } from "ol/control";
-import { afterEach, expect, it, vi } from "vitest";
-import { registerProjections } from "./projections";
+import { createManualPromise, getErrorChain } from "@open-pioneer/core";
 import { setupMap, SetupMapResult, SimpleMapOptions } from "@open-pioneer/map-test-utils";
+import { View } from "ol";
 import OlMap from "ol/Map";
-import TileLayer from "ol/layer/Tile";
-import OSM from "ol/source/OSM";
+import { Attribution } from "ol/control";
 import { defaults as defaultInteraction } from "ol/interaction";
 import dragRotate from "ol/interaction/DragRotate";
+import TileLayer from "ol/layer/Tile";
+import OSM from "ol/source/OSM";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { MapRegistryImpl } from "./MapRegistryImpl";
 import { type MapConfig, MapModel, SimpleLayer } from "./api";
+import { registerProjections } from "./projections";
+import type { ViewOptions as OlViewOptions } from "ol/View";
 
 afterEach(() => {
     vi.restoreAllMocks();
@@ -34,38 +35,12 @@ it("should successfully create and destroy a mapModel", async () => {
     );
 });
 
-it("should successfully create and destroy a mapModel without a MapConfigProvider", async () => {
-    const { mapModel, mapId, registry } = await createMapSetupWithoutMCP();
-    expect(mapModel).toBeDefined();
-    expect(mapModel?.id).toBe(mapId);
-
-    (registry as MapRegistryImpl).destroy();
-    await expect(() => registry.expectMapModel(mapId)).rejects.toThrowErrorMatchingInlineSnapshot(
-        `[Error: MapRegistry has already been destroyed.]`
-    );
-
-    await expect(() => mapModel.whenDisplayed()).rejects.toThrowErrorMatchingInlineSnapshot(
-        `[Error: Map model was destroyed.]`
-    );
-});
-
 it("should support reverse lookup from raw OpenLayers map", async () => {
     const { mapId, registry } = await createMapSetup();
     const mapModel = await registry.expectMapModel(mapId);
     if (!mapModel) {
         return new Error("Expected mapModel to be defined");
     }
-    const olMap = mapModel.olMap;
-    expect(olMap).toBeDefined();
-
-    expect(registry.getMapModelByRawInstance(olMap)).toBe(mapModel);
-
-    const otherMap = new OlMap();
-    expect(registry.getMapModelByRawInstance(otherMap)).toBe(undefined);
-});
-
-it("should support reverse lookup from raw OpenLayers map without a MapConfigProvider", async () => {
-    const { mapModel, registry } = await createMapSetupWithoutMCP();
     const olMap = mapModel.olMap;
     expect(olMap).toBeDefined();
 
@@ -272,20 +247,6 @@ it("should throw an exception if using wrong EPSG code", async () => {
     `);
 });
 
-it("should throw an exception if using wrong EPSG code without a MapConfigProvider", async () => {
-    const { registry } = await createMapSetup();
-    const mapId = "mapModelWithoutMCP";
-    await registry.createMap(mapId, { projection: "EPSG:0000000000" }).catch((error) => {
-        expect(error).toBeInstanceOf(Error);
-        expect(error.message).toMatchInlineSnapshot(
-            `"Failed to construct map 'mapModelWithoutMCP'"`
-        );
-        expect(error.cause).toMatchInlineSnapshot(
-            `[Error: Failed to retrieve projection for code 'EPSG:0000000000'.]`
-        );
-    });
-});
-
 it("should successfully create View with a custom projection", async () => {
     registerProjections({
         "EPSG:31466":
@@ -346,33 +307,83 @@ it("should construct a map with the configured layers", async () => {
     `);
 });
 
-it("should construct a map with the configured layers without a MapConfigProvider", async () => {
-    const { mapModel } = await createMapSetupWithoutMCP({
-        layers: [
-            new SimpleLayer({
-                id: "id1",
-                title: "foo",
-                olLayer: new TileLayer({ source: new OSM() })
-            }),
-            new SimpleLayer({
-                id: "id2",
-                title: "bar",
-                visible: false,
-                olLayer: new TileLayer({})
-            })
-        ]
+describe("createMapModel", () => {
+    it("should successfully create and destroy a mapModel", async () => {
+        const { mapModel, mapId, registry } = await createMapSetupWithoutMCP();
+        expect(mapModel).toBeDefined();
+        expect(mapModel?.id).toBe(mapId);
+
+        (registry as MapRegistryImpl).destroy();
+        await expect(() =>
+            registry.expectMapModel(mapId)
+        ).rejects.toThrowErrorMatchingInlineSnapshot(
+            `[Error: MapRegistry has already been destroyed.]`
+        );
+
+        await expect(() => mapModel.whenDisplayed()).rejects.toThrowErrorMatchingInlineSnapshot(
+            `[Error: Map model was destroyed.]`
+        );
     });
 
-    const allLayers = mapModel.layers.getLayers().map((layer) => {
-        return {
-            id: layer.id,
-            title: layer.title,
-            visible: layer.visible,
-            loadState: layer.loadState
-        };
+    it("should support reverse lookup from raw OpenLayers map", async () => {
+        const { mapModel, registry } = await createMapSetupWithoutMCP();
+        const olMap = mapModel.olMap;
+        expect(olMap).toBeDefined();
+
+        expect(registry.getMapModelByRawInstance(olMap)).toBe(mapModel);
+
+        const otherMap = new OlMap();
+        expect(registry.getMapModelByRawInstance(otherMap)).toBe(undefined);
     });
 
-    expect(allLayers).toMatchInlineSnapshot(`
+    it("should throw an exception if using wrong EPSG code", async () => {
+        const { registry } = await createMapSetup();
+        const mapId = "mapModelWithoutMCP";
+
+        let error;
+        try {
+            await registry.createMapModel(mapId, { projection: "EPSG:0000000000" });
+            throw new Error("expected error");
+        } catch (e) {
+            error = e as any;
+        }
+
+        expect(error).toBeInstanceOf(Error);
+        expect(error.message).toMatchInlineSnapshot(
+            `"Failed to construct map 'mapModelWithoutMCP'"`
+        );
+        expect(error.cause).toMatchInlineSnapshot(
+            `[Error: Failed to retrieve projection for code 'EPSG:0000000000'.]`
+        );
+    });
+
+    it("should construct a map with the configured layers", async () => {
+        const { mapModel } = await createMapSetupWithoutMCP({
+            layers: [
+                new SimpleLayer({
+                    id: "id1",
+                    title: "foo",
+                    olLayer: new TileLayer({ source: new OSM() })
+                }),
+                new SimpleLayer({
+                    id: "id2",
+                    title: "bar",
+                    visible: false,
+                    olLayer: new TileLayer({})
+                })
+            ]
+        });
+
+        const allLayers = mapModel.layers.getLayers().map((layer) => {
+            return {
+                id: layer.id,
+                title: layer.title,
+                visible: layer.visible,
+                loadState: layer.loadState
+            };
+        });
+
+        expect(allLayers).toMatchInlineSnapshot(`
       [
         {
           "id": "id1",
@@ -388,6 +399,30 @@ it("should construct a map with the configured layers without a MapConfigProvide
         },
       ]
     `);
+    });
+
+    it("should return the same instance when queried during construction", async () => {
+        const { registry } = await createMapSetup();
+        const mapId = "mapModelWithoutMCP";
+
+        // Promise to defer the initialization until we want it to proceed
+        const { promise: viewPromise, resolve: resolveViewPromise } =
+            createManualPromise<OlViewOptions>();
+
+        const constructionPromise = registry.createMapModel(mapId, {
+            advanced: {
+                view: viewPromise
+            }
+        }); // not constructed yet, but in-progress
+        const queryPromise = registry.expectMapModel(mapId); // should observe same map when done
+
+        setTimeout(() => {
+            resolveViewPromise({});
+        }, 100);
+
+        const [map1, map2] = await Promise.all([constructionPromise, queryPromise]);
+        expect(map1).toBe(map2);
+    });
 });
 
 async function createMapSetup(options?: SimpleMapOptions): Promise<SetupMapResult> {
@@ -402,8 +437,6 @@ async function createMapSetupWithoutMCP(
 ): Promise<{ mapModel: MapModel; mapId: string; registry: MapRegistryImpl }> {
     const { registry } = await createMapSetup();
     const mapId = "mapModelWithoutMCP";
-    const mapModel = await registry.createMap(mapId, options).catch((error) => {
-        throw new Error(error.message);
-    });
+    const mapModel = await registry.createMapModel(mapId, options);
     return { mapModel, mapId, registry: registry as MapRegistryImpl };
 }

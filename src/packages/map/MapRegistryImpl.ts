@@ -56,14 +56,14 @@ export class MapRegistryImpl implements Service, MapRegistry {
             throw new Error("MapRegistry has already been destroyed.");
         }
 
-        const creationJob = this.#modelCreationJobs.get(mapId);
-        if (creationJob) {
-            return unbox(await creationJob);
-        }
-
         const entry = this.#entries.get(mapId);
         if (entry) {
             return unbox(entry);
+        }
+
+        const creationJob = this.#modelCreationJobs.get(mapId);
+        if (creationJob) {
+            return await waitForResult(creationJob);
         }
 
         const provider = this.#configProviders.get(mapId);
@@ -72,32 +72,7 @@ export class MapRegistryImpl implements Service, MapRegistry {
             return undefined;
         }
 
-        const modelPromise = this.#createModel(mapId, provider).catch((cause) => {
-            const error = new Error(`Failed to construct map '${mapId}'`, { cause });
-            const entry: ModelJobResult = { kind: "error", error };
-            this.#modelCreationJobs.delete(mapId);
-            this.#entries.set(mapId, entry);
-            return entry;
-        });
-        this.#modelCreationJobs.set(mapId, modelPromise);
-        return unbox(await modelPromise);
-    }
-
-    async createMap(mapId: string, options?: MapConfig): Promise<MapModel> {
-        const mapModelResult = await this.#createModel(mapId, {
-            mapId: mapId,
-            getMapConfig: () => Promise.resolve(options || {})
-        }).catch((cause) => {
-            const error = new Error(`Failed to construct map '${mapId}'`, { cause });
-            const entry: ModelJobResult = { kind: "error", error };
-            this.#modelCreationJobs.delete(mapId);
-            this.#entries.set(mapId, entry);
-            return entry;
-        });
-        if (mapModelResult.kind === "error") {
-            throw new Error(mapModelResult.error.message, { cause: mapModelResult.error.cause });
-        }
-        return mapModelResult.model;
+        return await this.#createMapModel(mapId, () => provider.getMapConfig());
     }
 
     async expectMapModel(mapId: string): Promise<MapModel> {
@@ -108,26 +83,70 @@ export class MapRegistryImpl implements Service, MapRegistry {
         return model;
     }
 
+    async createMapModel(mapId: string, options?: MapConfig): Promise<MapModel> {
+        if (this.#destroyed) {
+            throw new Error("MapRegistry has already been destroyed.");
+        }
+        if (this.#entries.has(mapId)) {
+            throw new Error(`Map id '${mapId}' is not unique.`);
+        }
+        if (this.#modelCreationJobs.has(mapId)) {
+            throw new Error(`A map with the id '${mapId}' is already under construction.`);
+        }
+        return await this.#createMapModel(mapId, () => Promise.resolve(options ?? {}));
+    }
+
     getMapModelByRawInstance(olMap: OlMap): MapModel | undefined {
         return this.#modelsByOlMap.get(olMap);
     }
 
-    async #createModel(mapId: string, provider: MapConfigProvider): Promise<ModelJobResult> {
-        LOG.info(`Creating map with id '${mapId}'`);
-        const mapConfig = await provider.getMapConfig();
-        const mapModel = await createMapModel(mapId, mapConfig, this.#intl, this.#httpService);
-
-        if (this.#destroyed) {
-            mapModel.destroy();
-            throw new Error(`MapRegistry has been destroyed.`);
+    // Wrapper method to ensure that in-progress construction of maps can be observed.
+    #createMapModel(
+        mapId: string,
+        configProvider: () => Promise<MapConfig>
+    ): Promise<MapModelImpl> {
+        const creationJob = this.#modelCreationJobs.get(mapId);
+        if (creationJob) {
+            throw new Error("Internal error: a map model is already being created for this mapId");
         }
 
-        const entry: ModelJobResult = { kind: "model", model: mapModel };
-        this.#entries.set(mapId, entry);
-        this.#modelCreationJobs.delete(mapId);
-        this.#modelsByOlMap.set(mapModel.olMap, mapModel);
-        return entry;
+        const modelPromise = this.#createMapModelImpl(mapId, configProvider)
+            .then((mapModel) => {
+                if (this.#destroyed) {
+                    mapModel.destroy();
+                    throw new Error(`MapRegistry has been destroyed.`);
+                }
+
+                const entry: ModelJobResult = { kind: "model", model: mapModel };
+                this.#entries.set(mapId, entry);
+                this.#modelCreationJobs.delete(mapId);
+                this.#modelsByOlMap.set(mapModel.olMap, mapModel);
+                return entry;
+            })
+            .catch((cause) => {
+                const error = new Error(`Failed to construct map '${mapId}'`, { cause });
+                const entry: ModelJobResult = { kind: "error", error };
+                this.#modelCreationJobs.delete(mapId);
+                this.#entries.set(mapId, entry);
+                return entry;
+            });
+        this.#modelCreationJobs.set(mapId, modelPromise);
+        return waitForResult(modelPromise);
     }
+
+    async #createMapModelImpl(
+        mapId: string,
+        configProvider: () => Promise<MapConfig>
+    ): Promise<MapModelImpl> {
+        LOG.info(`Creating map with id '${mapId}'`);
+        const mapConfig = await configProvider();
+        const mapModel = await createMapModel(mapId, mapConfig, this.#intl, this.#httpService);
+        return mapModel;
+    }
+}
+
+async function waitForResult(job: Promise<ModelJobResult>): Promise<MapModelImpl> {
+    return unbox(await job);
 }
 
 function unbox(entry: ModelJobResult): MapModelImpl {

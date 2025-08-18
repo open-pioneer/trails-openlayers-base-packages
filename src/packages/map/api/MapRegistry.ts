@@ -28,15 +28,15 @@ export interface MapRegistry extends DeclaredService<"map.MapRegistry"> {
      * Given a raw OpenLayers map instance, returns the associated {@link MapModel} - or undefined
      * if the map is unknown to this registry.
      *
-     * All OpenLayers maps created by this registry (e.g. via {@link MapConfigProvider}) have an associated map model.
+     * All OpenLayers maps created by this registry (e.g. via {@link MapConfigProvider} or {@link createMapModel}) have an associated map model.
      */
     getMapModelByRawInstance(olMap: OlMap): MapModel | undefined;
 
     /**
-     * Creates a map Model, without the need to provide a {@link MapConfigProvider}.
+     * Creates a MapModel without the need to provide a {@link MapConfigProvider}.
      * Throws an error if a map with the given id already exists or if the map config is invalid.
      */
-    createMap(mapId: string, options?: MapConfig): Promise<MapModel>;
+    createMapModel(mapId: string, options?: MapConfig): Promise<MapModel>;
 }
 
 /**
