@@ -4,7 +4,7 @@ import { describe, expect, it, vi } from "vitest";
 import VectorLayer from "ol/layer/Vector";
 import { FlatStyle } from "ol/style/flat";
 import { HttpService } from "@open-pioneer/http";
-import { MapContainer, MapModel } from "@open-pioneer/map";
+import { MapContainer, MapModel, SimpleLayer } from "@open-pioneer/map";
 import { createServiceOptions, setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render } from "@testing-library/react";
@@ -95,7 +95,7 @@ describe("stopping update editing workflow", () => {
         const { workflow } = await setupUpdateWorkflow(map);
         workflow.stop();
 
-        const editingLayer = findEditingLayer(map);
+        const editingLayer = findEditingOlLayer(map);
         expect(editingLayer).toBeUndefined();
     });
 
@@ -349,7 +349,7 @@ async function setupUpdateWorkflow(map: MapModel, httpService: HttpService = HTT
 }
 
 function getEditingLayerAndSource(map: MapModel) {
-    const editingLayer = findEditingLayer(map);
+    const editingLayer = findEditingOlLayer(map);
     if (!editingLayer) {
         throw new Error("editing layer not found");
     }
@@ -362,12 +362,13 @@ function getEditingLayerAndSource(map: MapModel) {
     return { editingLayer, editingSource };
 }
 
-function findEditingLayer(map: MapModel) {
-    const layers = map.olMap.getLayers().getArray();
-    const editingLayer = layers.find((l) => l.getProperties().name === "editing-layer") as
-        | VectorLayer<VectorSource, Feature>
-        | undefined;
-    return editingLayer;
+function findEditingOlLayer(map: MapModel) {
+    const layers = map.layers.getOperationalLayers();
+    const editingLayer = layers.find((l) => l.title === "editing-layer") as SimpleLayer | undefined;
+
+    if (editingLayer) {
+        return editingLayer.olLayer as VectorLayer<VectorSource, Feature>;
+    }
 }
 
 function sleep(ms: number) {

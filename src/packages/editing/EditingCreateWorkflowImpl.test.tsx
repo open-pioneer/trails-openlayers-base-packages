@@ -6,13 +6,12 @@ import OlMap from "ol/Map";
 import Draw from "ol/interaction/Draw";
 import { FlatStyle } from "ol/style/flat";
 import { HttpService } from "@open-pioneer/http";
-import { MapContainer, MapModel } from "@open-pioneer/map";
+import { MapContainer, MapModel, SimpleLayer } from "@open-pioneer/map";
 import { createServiceOptions, setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render } from "@testing-library/react";
 import { PackageIntl } from "@open-pioneer/runtime";
 import { EditingCreateWorkflowImpl } from "./EditingCreateWorkflowImpl";
-import BaseLayer from "ol/layer/Base";
 import { Interaction } from "ol/interaction";
 import { Feature } from "ol";
 import VectorSource from "ol/source/Vector";
@@ -42,15 +41,8 @@ describe("starting create editing workflow", () => {
     it("should create an editing layer for a create editing workflow", async () => {
         const { map } = await renderMap();
         const { workflow } = await setupCreateWorkflow(map);
-        const layers: BaseLayer[] = map.olMap.getLayers().getArray();
+        const editingLayer = findEditingOlLayer(map);
 
-        const editingLayer = layers.find((l) => l.getProperties().name === "editing-layer") as
-            | VectorLayer<any, any>
-            | undefined;
-
-        if (!editingLayer) {
-            throw new Error("editing layer not found");
-        }
         expect(editingLayer).not.toBeUndefined();
 
         workflow.stop();
@@ -84,7 +76,7 @@ describe("starting create editing workflow", () => {
         const { map } = await renderMap();
         const { workflow } = await setupCreateWorkflow(map);
 
-        const editingLayer = findEditingLayer(map);
+        const editingLayer = findEditingOlLayer(map);
         if (!editingLayer) {
             throw new Error("editing layer not found");
         }
@@ -129,7 +121,7 @@ describe("stopping create editing workflow", () => {
         const { workflow } = await setupCreateWorkflow(map);
         workflow.stop();
 
-        const editingLayer = findEditingLayer(map);
+        const editingLayer = findEditingOlLayer(map);
         expect(editingLayer).toBeUndefined();
     });
 
@@ -199,7 +191,7 @@ describe("during create editing workflow", () => {
         const { workflow } = await setupCreateWorkflow(map);
         const draw = workflow.getDrawInteraction();
 
-        const editingLayer = findEditingLayer(map);
+        const editingLayer = findEditingOlLayer(map);
         if (!editingLayer) {
             throw new Error("editing layer not found");
         }
@@ -433,10 +425,11 @@ function sleep(ms: number) {
     });
 }
 
-function findEditingLayer(map: MapModel) {
-    const layers = map.olMap.getLayers().getArray();
-    const editingLayer = layers.find((l) => l.getProperties().name === "editing-layer") as
-        | VectorLayer<VectorSource, Feature>
-        | undefined;
-    return editingLayer;
+function findEditingOlLayer(map: MapModel) {
+    const layers = map.layers.getOperationalLayers();
+    const editingLayer = layers.find((l) => l.title === "editing-layer") as SimpleLayer | undefined;
+
+    if (editingLayer) {
+        return editingLayer.olLayer as VectorLayer<VectorSource, Feature>;
+    }
 }
