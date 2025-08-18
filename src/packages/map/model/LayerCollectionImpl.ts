@@ -28,6 +28,17 @@ const LOG = createLogger("map:LayerCollection");
 type LayerType = AbstractLayer & Layer;
 type LayerBaseType = (AbstractLayerBase & Layer) | (AbstractLayerBase & Sublayer);
 
+interface OpLayerPos {
+    which: "normal" | "topmost";
+    index: number;
+}
+
+interface BaseLayerPos {
+    which: "base";
+}
+
+type LayerPos = OpLayerPos | BaseLayerPos;
+
 /**
  * Z index for layers that should always be rendered on top of all other layers.
  * Note that this is an internal, unstable property!
@@ -69,7 +80,8 @@ export class LayerCollectionImpl implements LayerCollection {
     constructor(map: MapModelImpl) {
         this.#map = map;
         this.#syncHandle = effect(() => {
-            const orderedLayers = this.getLayers({ sortByDisplayOrder: true }); //topmost layers are already add the end of the list if sortByDisplayOrder is true
+            // Contains base layers, normal operational layers, topmost layers in bottom-to-top order.
+            const orderedLayers = this.getLayers({ sortByDisplayOrder: true });
 
             // Simply reassign all z-indices whenever the order changes.
             let index = 0;
@@ -208,14 +220,11 @@ export class LayerCollectionImpl implements LayerCollection {
      */
     #addLayer(model: LayerType, options: AddLayerOptions | undefined) {
         // Throws; do this before manipulating the data structures
-        const { index: operationalLayerIndex, insertTopMost } = this.#getInsertionIndex(
-            model,
-            options
-        );
+        const pos = this.#getInsertionPos(model, options);
         this.#indexLayer(model);
 
         // Everything below this line should not fail.
-        if (model.isBaseLayer) {
+        if (pos.which === "base") {
             if (!this.#activeBaseLayer.value && model.visible) {
                 this.#updateBaseLayer(model);
             } else {
@@ -224,62 +233,54 @@ export class LayerCollectionImpl implements LayerCollection {
         } else {
             model.__setVisible(model.visible);
 
-            if (operationalLayerIndex == null) {
-                throw new Error(
-                    "Internal error: insertion index is undefined for operational layer."
-                );
+            let layerList;
+            switch (pos.which) {
+                case "topmost":
+                    layerList = this.#topMostOperationalLayers;
+                    break;
+                case "normal":
+                    layerList = this.#operationalLayerOrder;
+                    break;
             }
-
-            const layerList = insertTopMost
-                ? this.#topMostOperationalLayers
-                : this.#operationalLayerOrder;
-            layerList.splice(operationalLayerIndex, 0, model); //insert new layer at insertion index
+            layerList.splice(pos.index, 0, model); // insert new layer at insertion index
         }
-
         this.#topLevelLayers.add(model);
         this.#map.olMap.addLayer(model.olLayer);
     }
 
-    #getInsertionIndex(
-        model: LayerType,
-        options: AddLayerOptions | undefined
-    ): { index: number | undefined; insertTopMost?: boolean } {
+    #getInsertionPos(model: LayerType, options: AddLayerOptions | undefined): LayerPos {
         if (model.isBaseLayer) {
             if (options?.at) {
                 throw new Error(
                     `Cannot add base layer '${model.id}' at a specific position: only operational layers can be added at a specific position.`
                 );
             }
-            return { index: undefined };
+            return { which: "base" };
         }
 
         switch (options?.at) {
             case undefined:
             case null:
             case "top":
-                return { index: this.#operationalLayerOrder.length };
+                return { which: "normal", index: this.#operationalLayerOrder.length };
             case "topmost":
-                return { index: this.#topMostOperationalLayers.length, insertTopMost: true };
+                return { which: "topmost", index: this.#topMostOperationalLayers.length };
             case "bottom":
-                return { index: 0 };
+                return { which: "normal", index: 0 };
             case "above":
             case "below": {
                 const reference = this.#getReference(options.reference);
-                let insertTopMost = false;
-                let index = this.#operationalLayerOrder.indexOf(reference);
-                if (index === -1) {
-                    index = this.#topMostOperationalLayers.indexOf(reference);
-                    if (index === -1) {
-                        //reference is not a top level operational layer -> throw error
-                        const errorMessage = this.#getInsertErrorMessage(model, reference);
-                        throw new Error(errorMessage);
-                    }
-                    insertTopMost = true;
+                const pos = this.#findReferenceLayer(reference);
+                if (!pos) {
+                    // reference is not a top level operational layer -> throw error
+                    const errorMessage = this.#getInsertErrorMessage(model, reference);
+                    throw new Error(errorMessage);
                 }
+
                 if (options.at === "above") {
-                    index++;
+                    pos.index++;
                 }
-                return { index: index, insertTopMost: insertTopMost };
+                return pos;
             }
         }
         assertNever(options);
@@ -298,6 +299,19 @@ export class LayerCollectionImpl implements LayerCollection {
         }
         checkLayerInstance(layer);
         return layer;
+    }
+
+    #findReferenceLayer(reference: LayerType): OpLayerPos | undefined {
+        let index = this.#operationalLayerOrder.indexOf(reference);
+        if (index !== -1) {
+            return { which: "normal", index };
+        }
+
+        index = this.#topMostOperationalLayers.indexOf(reference);
+        if (index !== -1) {
+            return { which: "topmost", index };
+        }
+        return undefined;
     }
 
     /**
