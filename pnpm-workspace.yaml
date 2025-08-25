@@ -60,7 +60,7 @@ catalog:
   "@types/uuid": ^10.0.0
   "@typescript-eslint/eslint-plugin": ^8.39.1
   "@typescript-eslint/parser": ^8.39.1
-  "@vitejs/plugin-react-swc": ^4.0.0
+  "@vitejs/plugin-react": ^5.0.1
   eslint: ^8.57.1
   eslint-config-prettier: ^10.1.8
   eslint-import-resolver-typescript: ^4.4.4
@@ -128,6 +128,9 @@ overrides:
   # Just to get rid of some duplicate dependencies
   "source-map@<0.6.1": ">=0.6.1"
   "stylis@<4.3.5": ">= 4.3.5"
+
+  "@open-pioneer/vite-plugin-pioneer": "file:patches/open-pioneer-vite-plugin-pioneer-5.0.0.tgz"
+  "vite": "npm:rolldown-vite@latest"
 
 ignorePatchFailures: false
 patchedDependencies:

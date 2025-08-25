@@ -3,11 +3,10 @@
 
 /// <reference types="vitest" />
 import { pioneer } from "@open-pioneer/vite-plugin-pioneer";
-import react from "@vitejs/plugin-react-swc";
+import react from "@vitejs/plugin-react";
 import glob from "fast-glob";
 import { dirname, resolve } from "node:path";
 import { defineConfig } from "vite";
-import eslint from "vite-plugin-eslint";
 
 // Find sites under src/samples with an index.html and build them all.
 const sampleSites = glob
@@ -51,19 +50,19 @@ export default defineConfig(({ mode }) => {
                 // Additional directories to include as html (must contain index.html files)
                 sites: [
                     // Include sample sites in the build
-                    ...sampleSites
+                    "samples/map-sample"
                 ],
 
                 // Apps to distribute as .js files for embedded use cases
                 apps: []
             }),
-            react({
-                // react swc plugin transpiles during development.
-                // using a recent target allows for better debugging of recent features like private properties (`this.#abc`)
-                devTarget: "es2024"
-            }),
-            eslint()
+            react()
+            //eslint()
         ],
+
+        experimental: {
+            enableNativePlugin: true
+        },
 
         // Ignore irrelevant deprecations
         css: {
