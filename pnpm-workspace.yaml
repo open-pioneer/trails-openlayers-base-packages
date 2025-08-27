@@ -32,7 +32,7 @@ catalog:
   classnames: ^2.5.1
   framer-motion: ^12.23.12
   html2canvas: ^1.4.1
-  jspdf: ^3.0.1
+  jspdf: ^3.0.2
   ol-mapbox-style: ^13.1.0
   ol: ^10.6.1
   proj4: ^2.19.10
