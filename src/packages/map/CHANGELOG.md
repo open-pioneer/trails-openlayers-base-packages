@@ -1,5 +1,105 @@
 # @open-pioneer/map
 
+## 0.12.0
+
+### Minor Changes
+
+- 2702df4: Introduce `internal` property for all layer types (including sublayers). If `internal` is `true` (default: `false`) the layer is not considered by any UI widget (e.g. legend and Toc). The `internal` state of a layer is not to be confused with the layer's visibility on the map which is determined by the `visible` property.
+
+    ```typescript
+    //internal layer is visible on the map but hidden in UI elements like legend and Toc
+    const internalLayer = new SimpleLayer({
+        id: "layer1",
+        title: "layer 1",
+        olLayer: myOlLayer,
+        visible: true,
+        internal: true
+    });
+    ```
+
+- 5df900f: Add a new hook `useMapModelValue(props?)`.
+  The hook returns either the directly configured `map` (via props) or the default map from a parent `DefaultMapProvider`.
+  If neither is present, an error will be thrown.
+
+    This hook is used in all components that work with the map.
+    The typical usage works like this:
+
+    ```ts
+    import { MapModelProps, useMapModelValue } from "@open-pioneer/map";
+
+    // optional `map` property inherited from `MapModelProps`
+    export interface MyComponentProps extends MapModelProps {
+        // ... other properties
+    }
+
+    export function MyComponent(props) {
+        const map = useMapModelValue(props); // looks up the map
+    }
+    ```
+
+    You can also call this hook without any arguments:
+
+    ```ts
+    // Map model from DefaultMapProvider or an error.
+    const mapModel = useMapModelValue();
+    ```
+
+    This hook should replace _most_ usages `useMapModel`, which can't return the map model directly since it may not have finished construction yet.
+
+- aeb9000: Add new `"topmost"` option to add layers that are always displayed on the top (above all other layers).
+
+    A new layers can be added at `topmost` to ensure that this layer will always be displayed on top of the other layers.
+    This can be used, for example, to implement highlights or to draw graphics.
+    Layers added at `"topmost"` will always be shown above layers at `"top"`.
+
+    When using the `"above"` or `"below"` options with a `"topmost"` reference layer, that layer becomes `"topmost"` as well.
+
+    ```typescript
+    import { MapModel, SimpleLayer } from "@open-pioneer/map";
+
+    const highlightLayer = new SimpleLayer({
+        title: "highlights",
+        olLayer: myOlLayer
+    });
+    //always displayed at the top
+    myMapModel.layers.addLayer(highlightLayer, { at: "topmost" });
+    ```
+
+- 5df900f: Deprecate the parameter-less signature of `useMapModel()`:
+
+    ```ts
+    // Returns the DefaultMapProvider's map, but wrapped in a result value (loading/resolved/rejected)
+    const result = useMapModel();
+    ```
+
+    Use `useMapModelValue()` instead:
+
+    ```ts
+    // Returns the map model directly.
+    const mapModel = useMapModelValue();
+    ```
+
+    All other signatures of `useMapModel()` are still fully supported.
+
+### Patch Changes
+
+- 29a10df: Support buffer for zoom geometries.
+
+    For example:
+
+    ```ts
+    const map: MapModel = ...;
+    const highlight = map.highlightAndZoom(someGeometries, {
+        // Grows extent by 10%
+        buffer: 0.1
+    });
+    ```
+
+- 10d2fe7: Update dependencies
+- 8986b3b: Remove obsolete dependency @types/proj4
+- f1f69f2: Update to OpenLayers 10.6.1
+- da6a410: Update dependencies
+
 ## 0.11.0
 
 ### Minor Changes

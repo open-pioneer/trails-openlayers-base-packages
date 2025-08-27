@@ -1,5 +1,64 @@
 # @open-pioneer/toc
 
+## 0.12.0
+
+### Minor Changes
+
+- 2702df4: Layers that are marked as `internal` are not considered by the Toc.
+
+    ```typescript
+    //internal layer will not be displayed in the Toc
+    const internalLayer = new SimpleLayer({
+        id: "layer1",
+        title: "layer 1",
+        olLayer: myOlLayer,
+        internal: true
+    });
+    ```
+
+    The layer's `internal` state also affects other UI widgets (e.g. Legend). If the layer should be hidden specifically in the toc (but not in other widgets) the `listMode` attribute can be used to hide the layer item.
+
+    ```typescript
+    //use listMode to hide the layer specifically in Toc
+    const hiddenLayer = new SimpleLayer({
+        id: "layer1",
+        title: "layer 1",
+        olLayer: myOlLayer,
+        attributes: {
+            toc: {
+                listMode: "hide"
+            }
+        }
+    });
+    ```
+
+    Valid values for `listMode` are:
+    - `"show"` layer item is displayed in Toc
+    - `"hide"` layer item is not rendered in Toc
+    - `"hide-children"` layer item for the layer itself is displayed in Toc but no layer items for child layers (e.g. sublayers of a group) are rendered
+
+    The `listMode` does always have precedence over the layer's `internal` property. For example, if the `listMode` is `"show"` the layer item is displayed even if `internal` is `true`.
+
+- cb5368f: Introduce Toc API for programmatic control of toc items, see [PR](https://github.com/open-pioneer/trails-openlayers-base-packages/pull/420).
+- 2732052: Icons have been changed to unify the appearance of the components. Preferably, Lucide react-icons are used.
+
+### Patch Changes
+
+- 10d2fe7: Update dependencies
+- da6a410: Update dependencies
+- Updated dependencies [29a10df]
+- Updated dependencies [10d2fe7]
+- Updated dependencies [2702df4]
+- Updated dependencies [5df900f]
+- Updated dependencies [8986b3b]
+- Updated dependencies [aeb9000]
+- Updated dependencies [2732052]
+- Updated dependencies [5df900f]
+- Updated dependencies [f1f69f2]
+- Updated dependencies [da6a410]
+    - @open-pioneer/map@0.12.0
+    - @open-pioneer/basemap-switcher@0.12.0
+
 ## 0.11.0
 
 ### Minor Changes

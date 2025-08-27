@@ -1,5 +1,23 @@
 # @open-pioneer/measurement
 
+## 0.12.0
+
+### Patch Changes
+
+- 10d2fe7: Update dependencies
+- 030e657: The measurement tooltip was fixed to update its text even if the mouse is not moved.
+- da6a410: Update dependencies
+- Updated dependencies [29a10df]
+- Updated dependencies [10d2fe7]
+- Updated dependencies [2702df4]
+- Updated dependencies [5df900f]
+- Updated dependencies [8986b3b]
+- Updated dependencies [aeb9000]
+- Updated dependencies [5df900f]
+- Updated dependencies [f1f69f2]
+- Updated dependencies [da6a410]
+    - @open-pioneer/map@0.12.0
+
 ## 0.11.0
 
 ### Minor Changes
