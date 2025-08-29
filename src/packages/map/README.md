@@ -43,7 +43,7 @@ function AppUI() {
 }
 ```
 
-> NOTE: If you use `useMapModelValue` There must be a `map.MapConfigProvider` or the map have to be created by you directly (see [Map creation](#map-creation)).
+> NOTE: If you use `useMapModelValue` There must be a `map.MapConfigProvider` or the map has to be created by you directly (see [Map creation](#map-creation)).
 
 The component itself uses the map registry service to create the map using the provided `map`.
 
@@ -161,11 +161,11 @@ export class AppModel implements Service {
 
 The map config is the same as in the `MapConfigProvider` (see [Map configuration](#map-configuration)).
 
-to get the mapRegistry service, you need to add a reference to the build config:
+To get the mapRegistry service, you need to add a reference to the build config:
 
 ```js
-import { defineBuildConfig } from "@open-pioneer/build-support";
 // build.config.mjs
+import { defineBuildConfig } from "@open-pioneer/build-support";
 export default defineBuildConfig({
     services: {
         AppModel: {
