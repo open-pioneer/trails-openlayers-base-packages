@@ -1,21 +1,22 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import { batch } from "@conterra/reactivity-core";
 import { createLogger } from "@open-pioneer/core";
+import { HttpService } from "@open-pioneer/http";
+import { PackageIntl } from "@open-pioneer/runtime";
+import { MapBrowserEvent } from "ol";
 import OlMap, { MapOptions } from "ol/Map";
 import View, { ViewOptions } from "ol/View";
 import Attribution from "ol/control/Attribution";
 import { getCenter } from "ol/extent";
+import { DragZoom, defaults as defaultInteractions } from "ol/interaction";
 import TileLayer from "ol/layer/Tile";
 import { Projection, get as getProjection } from "ol/proj";
 import OSM from "ol/source/OSM";
-import { DragZoom, defaults as defaultInteractions } from "ol/interaction";
-import { MapBrowserEvent } from "ol";
-import { MapModelImpl } from "./MapModelImpl";
 import { MapConfig } from "../api";
 import { registerProjections } from "../projections";
 import { patchOpenLayersClassesForTesting } from "../util/ol-test-support";
-import { HttpService } from "@open-pioneer/http";
-import { PackageIntl } from "@open-pioneer/runtime";
+import { MapModelImpl } from "./MapModelImpl";
 
 /**
  * Register custom projection to the global proj4js definitions. User can select `EPSG:25832`
@@ -111,17 +112,19 @@ class MapModelFactory {
             httpService: this.httpService
         });
 
-        try {
-            if (mapConfig.layers) {
-                for (const layerConfig of mapConfig.layers) {
-                    mapModel.layers.addLayer(layerConfig);
+        return batch(() => {
+            try {
+                if (mapConfig.layers) {
+                    for (const layerConfig of mapConfig.layers) {
+                        mapModel.layers.addLayer(layerConfig);
+                    }
                 }
+                return mapModel;
+            } catch (e) {
+                mapModel.destroy();
+                throw e;
             }
-            return mapModel;
-        } catch (e) {
-            mapModel.destroy();
-            throw e;
-        }
+        });
     }
 
     private initializeViewOptions(view: View | ViewOptions) {
