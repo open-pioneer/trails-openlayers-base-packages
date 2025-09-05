@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Box } from "@chakra-ui/react";
-import { useMapModel } from "@open-pioneer/map";
+import { useMapModelValue } from "@open-pioneer/map";
 import { NotificationService } from "@open-pioneer/notifier";
 import { SectionHeading, TitledSection } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
@@ -19,7 +19,7 @@ export function SelectionComponent() {
     const intl = useIntl();
     const notifier = useService<NotificationService>("notifier.NotificationService");
     const selectionTitleId = useId();
-    const { map } = useMapModel(); // uses default map configured in AppUI.tsx
+    const map = useMapModelValue(); // uses default map configured in AppUI.tsx
     const appModel = useService<AppModel>("ol-app.AppModel");
     const sources = useReactiveSnapshot(() => appModel.selectionSources.getItems(), [appModel]);
 

@@ -4,6 +4,7 @@ import {
     batch,
     effect,
     reactive,
+    ReactiveArray,
     reactiveArray,
     reactiveMap,
     reactiveSet
@@ -27,6 +28,17 @@ const LOG = createLogger("map:LayerCollection");
 
 type LayerType = AbstractLayer & Layer;
 type LayerBaseType = (AbstractLayerBase & Layer) | (AbstractLayerBase & Sublayer);
+
+interface OpOrTopmostLayerPos {
+    which: "normal" | "topmost";
+    index: number;
+}
+
+interface BaseLayerPos {
+    which: "base";
+}
+
+type LayerPos = OpOrTopmostLayerPos | BaseLayerPos;
 
 /**
  * Z index for layers that should always be rendered on top of all other layers.
@@ -57,14 +69,19 @@ export class LayerCollectionImpl implements LayerCollection {
     /**
      * Defines the relative order of operational layers.
      * Lower index -> layer is below its successors.
+     * Excluding {@link #topMostOperationalLayers}
      */
     #operationalLayerOrder = reactiveArray<LayerType>();
+
+    /** Operational layers that are always displayed at the top above all other layers (e.g. a highlight layer) */
+    #topMostOperationalLayers = reactiveArray<LayerType>();
 
     #syncHandle: Resource | undefined;
 
     constructor(map: MapModelImpl) {
         this.#map = map;
         this.#syncHandle = effect(() => {
+            // Contains base layers, normal operational layers, topmost layers in bottom-to-top order.
             const orderedLayers = this.getLayers({ sortByDisplayOrder: true });
 
             // Simply reassign all z-indices whenever the order changes.
@@ -140,7 +157,8 @@ export class LayerCollectionImpl implements LayerCollection {
         if (options?.sortByDisplayOrder) {
             const baseLayers = this.getBaseLayers();
             const order = Array.from(this.#operationalLayerOrder);
-            return [...baseLayers, ...order];
+            const topMost = Array.from(this.#topMostOperationalLayers);
+            return [...baseLayers, ...order, ...topMost];
         } else {
             return Array.from(this.#topLevelLayers.values());
         }
@@ -203,11 +221,11 @@ export class LayerCollectionImpl implements LayerCollection {
      */
     #addLayer(model: LayerType, options: AddLayerOptions | undefined) {
         // Throws; do this before manipulating the data structures
-        const operationalLayerIndex = this.#getInsertionIndex(model, options);
+        const pos = this.#getInsertionPos(model, options);
         this.#indexLayer(model);
 
         // Everything below this line should not fail.
-        if (model.isBaseLayer) {
+        if (pos.which === "base") {
             if (!this.#activeBaseLayer.value && model.visible) {
                 this.#updateBaseLayer(model);
             } else {
@@ -216,48 +234,46 @@ export class LayerCollectionImpl implements LayerCollection {
         } else {
             model.__setVisible(model.visible);
 
-            if (operationalLayerIndex == null) {
-                throw new Error(
-                    "Internal error: insertion index is undefined for operational layer."
-                );
-            }
-            this.#operationalLayerOrder.splice(operationalLayerIndex, 0, model);
+            const layerList = this.#getLayerList(pos);
+            layerList.splice(pos.index, 0, model); // insert new layer at insertion index
         }
-
         this.#topLevelLayers.add(model);
         this.#map.olMap.addLayer(model.olLayer);
     }
 
-    #getInsertionIndex(model: LayerType, options: AddLayerOptions | undefined): number | undefined {
+    #getInsertionPos(model: LayerType, options: AddLayerOptions | undefined): LayerPos {
         if (model.isBaseLayer) {
             if (options?.at) {
                 throw new Error(
                     `Cannot add base layer '${model.id}' at a specific position: only operational layers can be added at a specific position.`
                 );
             }
-            return undefined;
+            return { which: "base" };
         }
 
         switch (options?.at) {
             case undefined:
             case null:
             case "top":
-                return this.#operationalLayerOrder.length;
+                return { which: "normal", index: this.#operationalLayerOrder.length };
+            case "topmost":
+                return { which: "topmost", index: this.#topMostOperationalLayers.length };
             case "bottom":
-                return 0;
+                return { which: "normal", index: 0 };
             case "above":
             case "below": {
                 const reference = this.#getReference(options.reference);
-                let index = this.#operationalLayerOrder.indexOf(reference);
-                if (index === -1) {
-                    throw new Error(
-                        `Reference layer '${reference.id}' not found in operation layers.`
-                    );
+                const pos = this.#findOpOrTopmost(reference);
+                if (!pos) {
+                    // reference is not a top level operational layer -> throw error
+                    const errorMessage = this.#getInsertErrorMessage(model, reference);
+                    throw new Error(errorMessage);
                 }
+
                 if (options.at === "above") {
-                    index++;
+                    pos.index++;
                 }
-                return index;
+                return pos;
             }
         }
         assertNever(options);
@@ -300,10 +316,9 @@ export class LayerCollectionImpl implements LayerCollection {
         this.#map.olMap.removeLayer(model.olLayer);
         this.#topLevelLayers.delete(model);
         if (!model.isBaseLayer) {
-            const index = this.#operationalLayerOrder.indexOf(model);
-            if (index !== -1) {
-                this.#operationalLayerOrder.splice(index, 1);
-            }
+            const pos = this.#findOpOrTopmost(model)!;
+            const layerList = this.#getLayerList(pos);
+            layerList.splice(pos.index, 1);
         }
 
         this.#unIndexLayer(model);
@@ -314,6 +329,7 @@ export class LayerCollectionImpl implements LayerCollection {
             }
             this.#updateBaseLayer(newBaseLayer);
         }
+
         model.destroy();
     }
 
@@ -408,6 +424,42 @@ export class LayerCollectionImpl implements LayerCollection {
             }
         };
         visit(model);
+    }
+
+    #getLayerList(pos: OpOrTopmostLayerPos): ReactiveArray<LayerType> {
+        switch (pos.which) {
+            case "topmost":
+                return this.#topMostOperationalLayers;
+            case "normal":
+                return this.#operationalLayerOrder;
+        }
+    }
+
+    #findOpOrTopmost(layer: LayerType): OpOrTopmostLayerPos | undefined {
+        let index = this.#operationalLayerOrder.indexOf(layer);
+        if (index !== -1) {
+            return { which: "normal", index };
+        }
+
+        index = this.#topMostOperationalLayers.indexOf(layer);
+        if (index !== -1) {
+            return { which: "topmost", index };
+        }
+        return undefined;
+    }
+
+    #getInsertErrorMessage(layer: LayerType, reference: LayerType) {
+        let message: string = `Cannot add layer '${layer.id}'. Reference layer '${reference.id}' is not a top level operational layer.`;
+
+        if (reference.isBaseLayer) {
+            //is base layer
+            message += " Reference layer is a base layer.";
+        } else if (reference.parent) {
+            //is child layer
+            message += " Reference layer is child layer of a group.";
+        }
+
+        return message;
     }
 }
 

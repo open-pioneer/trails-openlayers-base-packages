@@ -22,6 +22,7 @@ import mapMarkerUrl from "../assets/images/mapMarker.png?url";
 import { FeatureLike } from "ol/Feature";
 import { TOPMOST_LAYER_Z } from "../api";
 import { Type } from "ol/geom/Geometry";
+import { buffer } from "ol/extent";
 
 type HighlightStyleType = keyof HighlightStyle;
 
@@ -141,6 +142,16 @@ export class Highlights {
         let extent = createEmpty();
         for (const geometry of geometries) {
             extent = extend(extent, geometry!.getExtent());
+        }
+
+        const bufferParameter = options?.buffer;
+        if (typeof bufferParameter === "number" && extent.length === 4) {
+            // calculate the buffer size based on the maximum dimension of the extent
+            const width = extent[2] && extent[0] ? extent[2] - extent[0] : 0;
+            const height = extent[3] && extent[1] ? extent[3] - extent[1] : 0;
+            const maxDim = Math.max(width, height);
+            const bufferSize = maxDim * bufferParameter; //bufferSize in map units for ol buffer function
+            extent = buffer(extent, bufferSize);
         }
 
         const center = getCenter(extent);

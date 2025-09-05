@@ -53,7 +53,7 @@ exports[`should load the stored bookmark from local storage and present it visib
       />
       <button
         aria-label="bookmark.button.deleteOne.ariaLabel"
-        class="chakra-button chakra-tooltip__trigger spatial-bookmarks-item-delete css-1qwewjl"
+        class="chakra-button chakra-tooltip__trigger spatial-bookmarks-item-delete css-ljrkvq"
         data-part="trigger"
         data-scope="tooltip"
         data-state="closed"

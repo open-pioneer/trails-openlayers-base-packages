@@ -1,13 +1,20 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { LuTriangleAlert } from "react-icons/lu";
-import { Box, Image, List, Text, Icon } from "@chakra-ui/react";
-import { Layer, AnyLayer, MapModel, useMapModel, MapModelProps, isLayer } from "@open-pioneer/map";
+import { Box, Icon, Image, List, Text } from "@chakra-ui/react";
+import {
+    AnyLayer,
+    Layer,
+    MapModel,
+    MapModelProps,
+    isLayer,
+    useMapModelValue
+} from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import classNames from "classnames";
 import { useIntl } from "open-pioneer:react-hooks";
 import { ComponentType, FC, ReactNode, useEffect, useMemo, useState } from "react";
+import { LuTriangleAlert } from "react-icons/lu";
 
 /**
  * Properties of a legend item React component.
@@ -37,6 +44,11 @@ export interface LegendItemAttributes {
      * (Optional) React component that will be shown as customized legend for the layer.
      */
     Component?: ComponentType<LegendItemComponentProps>;
+
+    /**
+     * (Optional) Additional property to control the display of the layer in the legend.
+     */
+    listMode?: ListMode;
 }
 
 /**
@@ -51,16 +63,27 @@ export interface LegendProps extends CommonComponentProps, MapModelProps {
 }
 
 /**
+ * ListMode determines if a layer item is displayed in the Legend for the layer.
+ * The option `"hide-children"` provides a shortcut to hide all child layers (e.g. sublayers of group) of the layer in the Legend.
+ * It has the same effect as manually setting the `listMode` to `"hide"` on all child layers.
+ *
+ * ListMode has precedence over the layer's `internal` attribute but specifically configures the layer's display in the legend.
+ *
+ * By default, the list mode becomes `"hide-children"` if a layer has an associated legend.
+ */
+export type ListMode = "show" | "hide" | "hide-children";
+
+/**
  * The `Legend` component can be used to display the legend of layers that are visible in the map.
  */
 export const Legend: FC<LegendProps> = (props) => {
     const { showBaseLayers = false } = props;
     const { containerProps } = useCommonComponentProps("legend", props);
-    const { map } = useMapModel(props);
+    const map = useMapModelValue(props);
 
     return (
         <Box {...containerProps}>
-            {map ? <LegendList map={map} showBaseLayers={showBaseLayers} /> : null}
+            <LegendList map={map} showBaseLayers={showBaseLayers} />
         </Box>
     );
 };
@@ -91,66 +114,49 @@ function LegendList(props: { map: MapModel; showBaseLayers: boolean }): ReactNod
 function LegendItem(props: { layer: AnyLayer; showBaseLayers: boolean }): ReactNode {
     const { layer, showBaseLayers } = props;
     const { isVisible, isInternal } = useReactiveSnapshot(() => {
-        return { isVisible: layer.visible, isInternal: layer.internal };
+        return {
+            isVisible: layer.visible,
+            isInternal: layer.internal
+        };
     }, [layer]);
     const childLayers = useChildLayers(layer);
+    const listModeProp = useListMode(layer);
+    const legendContent = useLegendContent(layer);
+    const listMode = getListMode(listModeProp, isInternal, !!legendContent);
 
-    if (!isVisible || isInternal) {
-        return undefined;
-    }
-
-    if (!showBaseLayers && isLayer(layer) && isBaseLayer(layer)) {
-        return undefined;
+    if (!isVisible || listMode === "hide" || (!showBaseLayers && isBaseLayer(layer))) {
+        return;
     }
 
     // legend items for all child layers (sublayers or layers in a group)
-    const childItems: ReactNode[] = [];
-    if (childLayers?.length) {
-        childLayers.forEach((childLayer) => {
-            childItems.push(
-                <LegendItem
-                    key={childLayer.id}
-                    layer={childLayer}
-                    showBaseLayers={showBaseLayers}
-                />
-            );
-        });
+    let childItems: ReactNode[] = [];
+    if (listMode === "show") {
+        childItems = childLayers.map((child) => (
+            <LegendItem key={child.id} layer={child} showBaseLayers={showBaseLayers} />
+        ));
     }
+    // listMode: hide/hide-children -> childItems stays empty
 
     return (
         <>
-            <LegendContent layer={layer} showBaseLayers={showBaseLayers} />
+            <LegendContent layer={layer} content={legendContent} />
             {childItems}
         </>
     );
 }
 
-function LegendContent(props: { layer: AnyLayer; showBaseLayers: boolean }) {
+function LegendContent(props: { layer: AnyLayer; content: ReactNode }) {
     const intl = useIntl();
 
-    const { layer, showBaseLayers } = props;
+    const { layer, content } = props;
     const baseLayer = isBaseLayer(layer);
-    const legendAttributes = useLegendAttributes(layer);
-    const legendUrl = useReactiveSnapshot(() => layer.legend, [layer]);
-
-    let renderedComponent: ReactNode | undefined;
-    if (legendAttributes?.Component) {
-        renderedComponent = <legendAttributes.Component layer={layer} />;
-    } else if (legendAttributes?.imageUrl) {
-        renderedComponent = <LegendImage layer={layer} imageUrl={legendAttributes.imageUrl} />;
-    } else {
-        if (legendUrl) {
-            renderedComponent = <LegendImage layer={layer} imageUrl={legendUrl} />;
-        }
-    }
-
-    return renderedComponent ? (
+    return content ? (
         <Box as="li" className={classNames("legend-item", `layer-${slug(layer.id)}`)}>
-            {showBaseLayers && baseLayer ? (
+            {baseLayer ? (
                 /* Render additional text, if layer is a configured basemap */
                 <Text as="b">{intl.formatMessage({ id: "basemapLabel" })}</Text>
             ) : null}
-            {renderedComponent}
+            {content}
         </Box>
     ) : undefined;
 }
@@ -199,6 +205,27 @@ function LegendImage(props: { imageUrl: string; layer: AnyLayer }) {
     );
 }
 
+/**
+ * Resolves the content that would be rendered for the given layer.
+ */
+function useLegendContent(layer: AnyLayer): ReactNode | undefined {
+    const legendAttributes = useLegendAttributes(layer);
+    const legendUrl = useReactiveSnapshot(() => layer.legend, [layer]);
+    return useMemo(() => {
+        let renderedComponent: ReactNode | undefined;
+        if (legendAttributes?.Component) {
+            renderedComponent = <legendAttributes.Component layer={layer} />;
+        } else if (legendAttributes?.imageUrl) {
+            renderedComponent = <LegendImage layer={layer} imageUrl={legendAttributes.imageUrl} />;
+        } else {
+            if (legendUrl) {
+                renderedComponent = <LegendImage layer={layer} imageUrl={legendUrl} />;
+            }
+        }
+        return renderedComponent;
+    }, [legendUrl, legendAttributes, layer]);
+}
+
 /** Returns the top level operational layers in render order (topmost layer first). */
 function useLayers(map: MapModel): Layer[] {
     return useReactiveSnapshot(() => {
@@ -209,20 +236,21 @@ function useLayers(map: MapModel): Layer[] {
 }
 
 /**
- * Returns the child layers (sublayers or layers belonging to a GroupLayer) of the given layer
- * (or undefined, if the child layer cannot have any).
+ * Returns the child layers (sublayers or layers belonging to a GroupLayer) of the given layer.
  * Layers are returned in render order (topmost layer first).
  */
-function useChildLayers(layer: AnyLayer): AnyLayer[] | undefined {
-    return useReactiveSnapshot(() => {
-        const childLayers = layer.children?.getItems();
-        if (!childLayers) {
-            return undefined;
-        }
+function useChildLayers(layer: AnyLayer): AnyLayer[] {
+    return (
+        useReactiveSnapshot(() => {
+            const childLayers = layer.children?.getItems();
+            if (!childLayers) {
+                return undefined;
+            }
 
-        childLayers.reverse(); // render topmost layer first
-        return childLayers;
-    }, [layer]);
+            childLayers.reverse(); // render topmost layer first
+            return childLayers;
+        }, [layer]) ?? []
+    );
 }
 
 function useLegendAttributes(layer: AnyLayer): LegendItemAttributes | undefined {
@@ -232,8 +260,25 @@ function useLegendAttributes(layer: AnyLayer): LegendItemAttributes | undefined 
     );
 }
 
+function getListMode(
+    listModeProp: ListMode | undefined,
+    isInternal: boolean,
+    hasLegendContent: boolean
+): ListMode {
+    if (listModeProp) {
+        return listModeProp; // Explicit value wins
+    }
+    if (isInternal) {
+        return "hide";
+    }
+    if (hasLegendContent) {
+        return "hide-children";
+    }
+    return "show";
+}
+
 function isBaseLayer(layer: AnyLayer) {
-    return !("parentLayer" in layer) && layer.isBaseLayer;
+    return isLayer(layer) && layer.isBaseLayer;
 }
 
 function slug(id: string) {
@@ -242,4 +287,11 @@ function slug(id: string) {
         .replace(/[^a-z0-9 -]/g, "")
         .replace(/\s+/g, "-")
         .replace(/-+/g, "-");
+}
+
+function useListMode(layer: AnyLayer): ListMode | undefined {
+    return useReactiveSnapshot(
+        () => (layer.attributes.legend as LegendItemAttributes | undefined)?.listMode,
+        [layer]
+    );
 }

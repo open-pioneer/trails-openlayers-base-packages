@@ -280,9 +280,9 @@ Based on the example above, you can set different properties using the layer API
 Example: How to set different properties.
 
 ```js
-import { useMapModel } from "@open-pioneer/map";
+import { useMapModelValue } from "@open-pioneer/map";
 
-const { map } = useMapModel(mapId);
+const map = useMapModelValue();
 const layer = map.layers.getLayerById("abe0e3f8-0ba2-409c-b6b4-9d8429c732e3");
 
 layer.setDescription("new description");
@@ -726,7 +726,7 @@ The most important API items are as follows:
 - The `MapRegistry` service (inject via `"map.MapRegistry"`).
   This service is used to obtain a reference to the `MapModel` via `registry.getMapModel(mapId)`.
 
-    > NOTE: From inside a React component you can also use the hook `useMapModel(mapId)` (or `useMapModel()` if using the DefaultMapProvider).
+    > NOTE: From inside a React component you can also use the hook `useMapModel(mapId)` (or `useMapModelValue()` if using the DefaultMapProvider).
 
 - The `MapModel` represents a map in an application.
   Through the `MapModel` one can obtain the map's base layers, operational layers and so on.
@@ -869,27 +869,39 @@ export class TestService {
 
 #### Using the map model in React components
 
-To access the map model instance, use the React hook `useMapModel`.
+To access the map model instance, use the React hooks `useMapModel` or `useMapModelValue`.
 
-Example: Center map to given coordinates using the map model.
+- `useMapModelValue` returns the map model specified by a `DefaultMapProvider` parent.
+  This is a convenient API to avoid passing the map model as a prop everywhere:
 
-```js
-import { useMapModel } from "@open-pioneer/map";
-import { MAP_ID } from "./MapConfigProviderImpl";
+    ```tsx
+    function YourComponent() {
+        const map = useMapModelValue(); // requires a <DefaultMapProvider /> parent somewhere in the React tree
+    }
+    ```
 
-export function AppUI() {
-    // mapState.map may be undefined initially, if the map is still configuring.
-    // the object may may also be in an "error" state.
-    const mapState = useMapModel(MAP_ID);
+- `useMapModel` takes a `mapId` and returns a result.
+  The result will ultimately resolve to either a map model or an error (if initialization of the map failed).
 
-    const centerBerlin = () => {
-        const olMap = mapState.map?.olMap;
-        if (olMap) {
-            olMap?.getView().fit([1489200, 6894026, 1489200, 6894026], { maxZoom: 13 });
-        }
-    };
-}
-```
+    Example: Center map to given coordinates using the map model.
+
+    ```js
+    import { useMapModel } from "@open-pioneer/map";
+    import { MAP_ID } from "./MapConfigProviderImpl";
+
+    export function AppUI() {
+        // mapState.map may be undefined initially, if the map is still configuring.
+        // the object may may also be in an "error" state.
+        const mapState = useMapModel(MAP_ID);
+
+        const centerBerlin = () => {
+            const olMap = mapState.map?.olMap;
+            if (olMap) {
+                olMap?.getView().fit([1489200, 6894026, 1489200, 6894026], { maxZoom: 13 });
+            }
+        };
+    }
+    ```
 
 ## License
 

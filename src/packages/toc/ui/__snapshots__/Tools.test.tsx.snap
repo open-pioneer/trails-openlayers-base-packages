@@ -7,7 +7,7 @@ exports[`Should successfully create a toc with default tool component 1`] = `
     data-testid="toc"
   >
     <div
-      class="toc-operational-layers css-0"
+      class="toc-operational-layers"
     >
       <h1
         class="chakra-heading css-12sq6rj"
@@ -15,21 +15,19 @@ exports[`Should successfully create a toc with default tool component 1`] = `
         <div
           class="css-k008qs"
         >
-          <p
-            class="css-0"
-          >
+          <p>
             operationalLayerLabel
           </p>
           <div
             class="css-xsawf1"
           />
           <div
-            class="toc-tools css-0"
+            class="toc-tools"
           >
             <button
               aria-haspopup="menu"
               aria-label="toolsLabel"
-              class="chakra-button chakra-tooltip__trigger chakra-menu__trigger toc-tools-button css-fi0vr4"
+              class="chakra-button chakra-tooltip__trigger chakra-menu__trigger toc-tools-button css-mnhxev"
               data-part="trigger"
               data-scope="tooltip"
               data-state="closed"
@@ -79,7 +77,7 @@ exports[`Should successfully create a toc with default tool component 1`] = `
         role="list"
       >
         <li
-          class="toc-layer-item layer-layer-1 css-0"
+          class="toc-layer-item layer-layer-1"
         >
           <div
             class="toc-layer-item-content css-1rikyh3"
@@ -104,7 +102,7 @@ exports[`Should successfully create a toc with default tool component 1`] = `
               />
               <div
                 aria-hidden="true"
-                class="chakra-checkbox__control css-gjxnkp"
+                class="chakra-checkbox__control css-1rzwffa"
                 data-part="control"
                 data-scope="checkbox"
                 data-state="checked"
@@ -141,12 +139,12 @@ exports[`Should successfully create a toc with default tool component 1`] = `
     </div>
   </div>,
   "tools": <div
-    class="toc-tools css-0"
+    class="toc-tools"
   >
     <button
       aria-haspopup="menu"
       aria-label="toolsLabel"
-      class="chakra-button chakra-tooltip__trigger chakra-menu__trigger toc-tools-button css-fi0vr4"
+      class="chakra-button chakra-tooltip__trigger chakra-menu__trigger toc-tools-button css-mnhxev"
       data-part="trigger"
       data-scope="tooltip"
       data-state="closed"

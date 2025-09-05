@@ -6,7 +6,7 @@ import { useAsync } from "react-use";
 import { MapModel, MapRegistry } from "../api";
 import { MapModelImpl } from "../model/MapModelImpl";
 // eslint-disable-next-line unused-imports/no-unused-imports
-import { DefaultMapProvider, useDefaultMapProps } from "./DefaultMapProvider";
+import { DefaultMapProvider, useDefaultMap } from "./DefaultMapProvider";
 
 /** Return value of {@link useMapModel}. */
 export type UseMapModelResult = UseMapModelLoading | UseMapModelResolved | UseMapModelRejected;
@@ -30,27 +30,11 @@ export interface UseMapModelRejected {
 }
 
 /**
- * Options that specify which map to use. See {@link useMapModel}.
+ * React hook that returns the default map model (if available, see {@link DefaultMapProvider}).
  *
- * When not setting any of these properties on a component, the default map (from the `DefaultMapProvider`) will be used.
- * If that is not available either, an error will be thrown.
+ * @deprecated Use {@link useMapModelValue} instead.
  */
-export interface MapModelProps {
-    /**
-     * The id of the map.
-     * The map will be looked up in the MapRegistry service.
-     *
-     * @deprecated Use the `map` property instead.
-     *
-     * @see {@link DefaultMapProvider}
-     */
-    mapId?: string | undefined;
-
-    /**
-     * The map model to use.
-     */
-    map?: MapModel | undefined;
-}
+export function useMapModel(): UseMapModelResult;
 
 /**
  * React hook that looks up the map with the given id in the `map.MapRegistry` service.
@@ -63,28 +47,48 @@ export interface MapModelProps {
 export function useMapModel(mapId: string): UseMapModelResult;
 
 /**
- * React hook that resolves a map model specified by the given `props` (see {@link MapModelProps}).
+ * React hook that resolves a map model specified by the given `props`.
  *
  * Returns an object representing the progress, which will eventually represent either
  * the map model value or an initialization error.
  *
  * The map model cannot be returned directly because it may not have completed its initialization yet.
  */
-export function useMapModel(props: MapModelProps): UseMapModelResult;
+export function useMapModel(props: { mapId: string }): UseMapModelResult;
 
-/**
- * React hook that returns the default map model (if available, see {@link DefaultMapProvider}).
- */
-export function useMapModel(): UseMapModelResult;
-export function useMapModel(props?: undefined | string | MapModelProps): UseMapModelResult {
-    const resolvedMapArg = useResolvedMapArg(props);
+export function useMapModel(props?: undefined | string | { mapId: string }): UseMapModelResult {
+    if (props instanceof MapModelImpl) {
+        // This cannot happen in valid typescript code, but it might be a common mistake.
+        throw new Error(
+            `Map model instances cannot be passed directly to 'useMapModel' (see TypeScript signature).`
+        );
+    }
+
+    const defaultMap = useDefaultMap();
     const mapRegistry = useService<MapRegistry>("map.MapRegistry");
+
+    let mapId: string | undefined;
+    if (typeof props === "string") {
+        mapId = props;
+    } else if (typeof props === "object") {
+        mapId = props.mapId;
+    }
+
+    if (mapId == null && !defaultMap) {
+        throw new Error(
+            "No map specified. Either configure a mapId or use the DefaultMapProvider."
+        );
+    }
+
     const state = useAsync(async () => {
-        if (typeof resolvedMapArg === "string") {
-            return await mapRegistry.expectMapModel(resolvedMapArg);
+        if (mapId == null) {
+            // For backwards compatibility
+            return defaultMap!;
         }
-        return Promise.resolve(resolvedMapArg);
-    }, [mapRegistry, resolvedMapArg]);
+
+        return await mapRegistry.expectMapModel(mapId);
+    }, [mapRegistry, mapId]);
+
     const result = useMemo((): UseMapModelResult => {
         if (state.loading) {
             return { kind: "loading" };
@@ -98,41 +102,44 @@ export function useMapModel(props?: undefined | string | MapModelProps): UseMapM
 }
 
 /**
- * Resolves the map model (or its id) from the given props and the default map props.
+ * Options that specify which map to use. See {@link useMapModelValue}.
+ *
+ * When not setting any of these properties on a component, the default map (from the `DefaultMapProvider`) will be used.
+ * If that is not available either, an error will be thrown.
+ *
+ * @see {@link DefaultMapProvider}
  */
-function useResolvedMapArg(props?: undefined | string | MapModelProps): MapModel | string {
-    if (typeof props === "object" && props.mapId != null && props.map != null) {
-        throw new Error(`Cannot specify both 'mapId' and 'map' in useMapModel at the same time.`);
-    }
+export interface MapModelProps {
+    /**
+     * The map model to use.
+     */
+    map?: MapModel | undefined;
+}
+
+/**
+ * Returns the configured map model.
+ *
+ * The map model is either directly configured or specified via a {@link DefaultMapProvider}.
+ * If neither has been specified, an error will be thrown.
+ *
+ * This hook is preferable to {@link useMapModel} because it can return the map model directly, without waiting.
+ */
+export function useMapModelValue(props?: MapModelProps): MapModel {
     if (props instanceof MapModelImpl) {
         // This cannot happen in valid typescript code, but it might be a common mistake.
         throw new Error(
-            `Map model instances cannot be passed directly to 'useMapModel' (see TypeScript signature).`
+            `Map model instances cannot be passed directly to 'useMapModelValue' (see TypeScript signature).`
         );
     }
-    const localProps = useMemo((): MapModelProps => {
-        // Normalize local props for compatibility with old string overload.
-        if (props == null) {
-            return {};
-        }
-        if (typeof props === "string") {
-            return { mapId: props };
-        }
-        return { mapId: props.mapId, map: props.map };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [...(typeof props === "string" || props == null ? [props] : [props.mapId, props.map])]);
-    const defaultProps = useDefaultMapProps();
 
-    const resolvedMapArg = resolveMap(localProps) ?? resolveMap(defaultProps);
-    if (resolvedMapArg == null) {
+    const localMap = props?.map;
+    const defaultMap = useDefaultMap();
+    const map = localMap ?? defaultMap;
+    if (!map) {
         throw new Error(
             `No map specified. ` +
-                `You must either specify the map (or its id) via a DefaultMapProvider parent or configure it explicitly.`
+                `You must either specify the map via a DefaultMapProvider parent or configure it explicitly.`
         );
     }
-    return resolvedMapArg;
-}
-
-function resolveMap(props?: MapModelProps): MapModel | string | undefined {
-    return props?.map ?? props?.mapId;
+    return map;
 }

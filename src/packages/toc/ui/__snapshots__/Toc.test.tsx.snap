@@ -15,14 +15,14 @@ exports[`should successfully create a toc component 1`] = `
       basemapsLabel
     </h1>
     <div
-      class="basemap-switcher css-0"
+      class="basemap-switcher"
     >
       <div
         class="basemap-switcher-select chakra-select__root css-3jlqt6"
         data-part="root"
         data-scope="select"
         dir="ltr"
-        id="select:«r7»"
+        id="select:«r1»"
       >
         <div
           class="chakra-select__control css-17j1053"
@@ -30,10 +30,10 @@ exports[`should successfully create a toc component 1`] = `
           data-scope="select"
           data-state="open"
           dir="ltr"
-          id="select:«r7»:control"
+          id="select:«r1»:control"
         >
           <button
-            aria-controls="select:«r7»:content"
+            aria-controls="select:«r1»:content"
             aria-expanded="true"
             aria-haspopup="listbox"
             aria-labelledby="«r0»"
@@ -43,7 +43,7 @@ exports[`should successfully create a toc component 1`] = `
             data-scope="select"
             data-state="open"
             dir="ltr"
-            id="select:«r7»:trigger"
+            id="select:«r1»:trigger"
             role="combobox"
             type="button"
           >
@@ -82,7 +82,7 @@ exports[`should successfully create a toc component 1`] = `
     </div>
   </div>
   <div
-    class="toc-operational-layers css-0"
+    class="toc-operational-layers"
   >
     <h1
       class="chakra-heading css-12sq6rj"
@@ -90,9 +90,7 @@ exports[`should successfully create a toc component 1`] = `
       <div
         class="css-k008qs"
       >
-        <p
-          class="css-0"
-        >
+        <p>
           operationalLayerLabel
         </p>
         <div
@@ -106,7 +104,7 @@ exports[`should successfully create a toc component 1`] = `
       role="list"
     >
       <li
-        class="toc-layer-item layer-layer-2 css-0"
+        class="toc-layer-item layer-layer-2"
       >
         <div
           class="toc-layer-item-content css-1rikyh3"
@@ -118,25 +116,25 @@ exports[`should successfully create a toc component 1`] = `
             data-scope="checkbox"
             data-state="checked"
             dir="ltr"
-            for="checkbox:«r2»:input"
-            id="checkbox:«r2»"
+            for="checkbox:«r3»:input"
+            id="checkbox:«r3»"
           >
             <input
-              aria-labelledby="checkbox:«r2»:label"
+              aria-labelledby="checkbox:«r3»:label"
               checked=""
-              id="checkbox:«r2»:input"
+              id="checkbox:«r3»:input"
               style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px; white-space: nowrap; word-wrap: normal;"
               type="checkbox"
               value="on"
             />
             <div
               aria-hidden="true"
-              class="chakra-checkbox__control css-gjxnkp"
+              class="chakra-checkbox__control css-1rzwffa"
               data-part="control"
               data-scope="checkbox"
               data-state="checked"
               dir="ltr"
-              id="checkbox:«r2»:control"
+              id="checkbox:«r3»:control"
             >
               <svg
                 class="css-wuqtn7"
@@ -154,7 +152,7 @@ exports[`should successfully create a toc component 1`] = `
               data-scope="checkbox"
               data-state="checked"
               dir="ltr"
-              id="checkbox:«r2»:label"
+              id="checkbox:«r3»:label"
             >
               Layer 2
             </span>
@@ -165,7 +163,7 @@ exports[`should successfully create a toc component 1`] = `
         </div>
       </li>
       <li
-        class="toc-layer-item layer-layer-1 css-0"
+        class="toc-layer-item layer-layer-1"
       >
         <div
           class="toc-layer-item-content css-1rikyh3"
@@ -177,25 +175,25 @@ exports[`should successfully create a toc component 1`] = `
             data-scope="checkbox"
             data-state="checked"
             dir="ltr"
-            for="checkbox:«r5»:input"
-            id="checkbox:«r5»"
+            for="checkbox:«r6»:input"
+            id="checkbox:«r6»"
           >
             <input
-              aria-labelledby="checkbox:«r5»:label"
+              aria-labelledby="checkbox:«r6»:label"
               checked=""
-              id="checkbox:«r5»:input"
+              id="checkbox:«r6»:input"
               style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px; white-space: nowrap; word-wrap: normal;"
               type="checkbox"
               value="on"
             />
             <div
               aria-hidden="true"
-              class="chakra-checkbox__control css-gjxnkp"
+              class="chakra-checkbox__control css-1rzwffa"
               data-part="control"
               data-scope="checkbox"
               data-state="checked"
               dir="ltr"
-              id="checkbox:«r5»:control"
+              id="checkbox:«r6»:control"
             >
               <svg
                 class="css-wuqtn7"
@@ -213,7 +211,7 @@ exports[`should successfully create a toc component 1`] = `
               data-scope="checkbox"
               data-state="checked"
               dir="ltr"
-              id="checkbox:«r5»:label"
+              id="checkbox:«r6»:label"
             >
               Layer 1
             </span>

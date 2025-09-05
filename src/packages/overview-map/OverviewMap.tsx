@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Box, BoxProps } from "@chakra-ui/react";
-import { MapModelProps, useMapModel } from "@open-pioneer/map";
+import { MapModelProps, useMapModelValue } from "@open-pioneer/map";
 import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/react-utils";
 import { OverviewMap as OlOverviewMap } from "ol/control";
 import OlBaseLayer from "ol/layer/Base";
@@ -41,11 +41,11 @@ export const OverviewMap: FC<OverviewMapProps> = (props) => {
     const { containerProps } = useCommonComponentProps("overview-map", props);
     const intl = useIntl();
 
-    const { map } = useMapModel(props);
+    const map = useMapModelValue(props);
     const overviewMapControlElem = useRef(null);
 
     useEffect(() => {
-        if (overviewMapControlElem.current && map && olLayer) {
+        if (overviewMapControlElem.current && olLayer) {
             const olMap = map.olMap;
             const overviewMapControl: OlOverviewMap = new OlOverviewMap({
                 className: "ol-overviewmap",
