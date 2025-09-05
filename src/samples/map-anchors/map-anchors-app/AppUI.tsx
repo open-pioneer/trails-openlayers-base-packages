@@ -109,7 +109,11 @@ function MapContent(props: { paddings: EnabledPaddings }) {
 
     const anchors = useMemo(() => getAnchors(), []);
     return (
-        <MapContainer viewPadding={viewPadding} viewPaddingChangeBehavior="preserve-extent">
+        <MapContainer
+            role="application"
+            viewPadding={viewPadding}
+            viewPaddingChangeBehavior="preserve-extent"
+        >
             {anchors}
         </MapContainer>
     );
