@@ -58,7 +58,6 @@ export function AppUI() {
                             <MapContainer
                                 viewPadding={viewPadding}
                                 viewPaddingChangeBehavior="preserve-extent"
-                                role="application"
                             >
                                 <MapAnchor position="top-left" horizontalGap={10} verticalGap={10}>
                                     <Box

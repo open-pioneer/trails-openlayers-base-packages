@@ -60,7 +60,7 @@ export function AppUI() {
                     }
                 >
                     <Flex flex="1" direction="column" position="relative">
-                        <MapContainer map={map} role="application">
+                        <MapContainer map={map}>
                             <MapAnchor position="top-left" horizontalGap={10} verticalGap={10}>
                                 <Box
                                     backgroundColor="whiteAlpha.900"

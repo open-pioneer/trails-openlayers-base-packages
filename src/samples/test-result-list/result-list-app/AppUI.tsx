@@ -79,7 +79,6 @@ export function AppUI() {
                     >
                         <Flex flex="1" direction="column" position="relative">
                             <MapContainer
-                                role="application"
                                 viewPadding={{
                                     bottom: showResultList ? RESULT_LIST_HEIGHT_PIXELS : 0
                                 }}

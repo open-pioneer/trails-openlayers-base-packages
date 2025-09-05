@@ -26,7 +26,7 @@ export function MapApp() {
                         }
                     >
                         <Flex flex="1" direction="column" position="relative">
-                            <MapContainer role="application">
+                            <MapContainer>
                                 <MapAnchor position="top-left" horizontalGap={20} verticalGap={20}>
                                     <Box
                                         backgroundColor="white"

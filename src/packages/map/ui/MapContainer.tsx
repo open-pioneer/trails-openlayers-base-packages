@@ -67,7 +67,7 @@ export function MapContainer(props: MapContainerProps) {
         viewPadding,
         viewPaddingChangeBehavior,
         children,
-        role,
+        role = "application",
         "aria-label": ariaLabel,
         "aria-labelledby": ariaLabelledBy
     } = props;
