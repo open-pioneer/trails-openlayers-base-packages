@@ -37,6 +37,8 @@ export interface MapContainerProps extends CommonComponentProps, MapModelProps {
      * Optional role property.
      *
      * This property is directly applied to the map's container div element.
+     *
+     * @default "application"
      */
     role?: string;
 
