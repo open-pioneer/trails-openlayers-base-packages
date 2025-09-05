@@ -63,10 +63,7 @@ export function AppUI() {
                         }
                     >
                         <Flex flex="1" direction="column">
-                            <MapContainer
-                                role="main"
-                                aria-label={intl.formatMessage({ id: "ariaLabel.map" })}
-                            >
+                            <MapContainer aria-label={intl.formatMessage({ id: "ariaLabel.map" })}>
                                 <Box
                                     backgroundColor="white"
                                     borderWidth="1px"
