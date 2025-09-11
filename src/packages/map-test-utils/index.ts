@@ -7,8 +7,6 @@ import {
     InitialViewConfig,
     Layer,
     MapConfig,
-    MapConfigProvider,
-    MapConfigProviderOptions,
     MapModel,
     MapRegistry,
     OlMapOptions,
@@ -135,23 +133,8 @@ export async function setupMap(
     options?: SimpleMapOptions
 ): Promise<SetupMapResult & { map: MapModel | undefined }> {
     const mapId = options?.mapId ?? "test";
-
-    const getInitialView = (): InitialViewConfig => {
-        if (options?.extent) {
-            return {
-                kind: "extent",
-                extent: options.extent
-            };
-        }
-        return {
-            kind: "position",
-            center: options?.center ?? { x: 847541, y: 6793584 },
-            zoom: options?.zoom ?? 10
-        };
-    };
-
     const mapConfig: MapConfig = {
-        initialView: options?.noInitialView ? undefined : getInitialView(),
+        initialView: options?.noInitialView ? undefined : getInitialView(options),
         projection: options?.noProjection ? undefined : (options?.projection ?? "EPSG:3857"),
         layers: options?.layers?.map(
             (config) => ("map" in config ? config : new SimpleLayer(config))
@@ -185,17 +168,35 @@ export async function setupMap(
 
     const registry = await createService(MapRegistryImpl, {
         references: {
-            providers: [new MapConfigProviderImpl(mapId, mapConfig)],
+            providers: [],
             httpService,
             layerFactory
         }
     });
 
     let map: MapModel | undefined;
+    const promise = registry.createMapModel(mapId, mapConfig);
     if (options?.returnMap !== false) {
-        map = await registry.expectMapModel(mapId);
+        map = await promise;
+    } else {
+        // Ignore error on this promise (prevents unhandled error in tests)
+        promise.catch(() => undefined);
     }
     return { mapId, registry, map };
+}
+
+function getInitialView(options: SimpleMapOptions | undefined): InitialViewConfig {
+    if (options?.extent) {
+        return {
+            kind: "extent",
+            extent: options.extent
+        };
+    }
+    return {
+        kind: "position",
+        center: options?.center ?? { x: 847541, y: 6793584 },
+        zoom: options?.zoom ?? 10
+    };
 }
 
 /**
@@ -210,24 +211,6 @@ export function createServiceOptions(services: { registry: MapRegistry }): Recor
     return {
         "map.MapRegistry": services.registry
     };
-}
-
-class MapConfigProviderImpl implements MapConfigProvider {
-    mapId = "default";
-    mapConfig: MapConfig;
-
-    constructor(mapId: string, mapConfig?: MapConfig | undefined) {
-        this.mapId = mapId;
-        this.mapConfig = mapConfig ?? {};
-    }
-
-    getMapConfig(options: MapConfigProviderOptions): Promise<MapConfig> {
-        if (!options.layerFactory) {
-            // TODO: layer factory is currently not used.
-            throw new Error("Internal error: map registry should pass a layer factory instance");
-        }
-        return Promise.resolve(this.mapConfig);
-    }
 }
 
 function mockVectorLayer() {
