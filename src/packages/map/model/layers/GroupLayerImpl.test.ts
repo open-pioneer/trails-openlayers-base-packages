@@ -1,14 +1,14 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import TileLayer from "ol/layer/Tile";
 import { expect, it } from "vitest";
 import { SimpleLayerImpl } from "./SimpleLayerImpl";
 import { GroupLayerImpl } from "./GroupLayerImpl";
 import { Group } from "ol/layer";
 import { WMSLayer } from "../../api";
+import { createTestOlLayer } from "@open-pioneer/map-test-utils";
 
 it("should not have any sublayers", () => {
-    const olLayer = new TileLayer({});
+    const olLayer = createTestOlLayer();
     const grouplayer = new GroupLayerImpl({
         id: "group",
         title: "group test",
@@ -24,8 +24,8 @@ it("should not have any sublayers", () => {
 });
 
 it("should create OL group that contains all group members", () => {
-    const olLayer1 = new TileLayer({});
-    const olLayer2 = new TileLayer({});
+    const olLayer1 = createTestOlLayer();
+    const olLayer2 = createTestOlLayer();
     const grouplayer = new GroupLayerImpl({
         id: "group",
         title: "group test",
@@ -55,7 +55,7 @@ it("should create OL group that contains all group members", () => {
 });
 
 it("should set parent of group members to this group layer", () => {
-    const olLayer = new TileLayer({});
+    const olLayer = createTestOlLayer();
     const child = new SimpleLayerImpl({
         id: "member",
         title: "group member",
@@ -78,8 +78,8 @@ it("should set parent of group members to this group layer", () => {
 });
 
 it("should return all layers of the group layer collection, including child layers", () => {
-    const olLayer1 = new TileLayer({});
-    const olLayer2 = new TileLayer({});
+    const olLayer1 = createTestOlLayer();
+    const olLayer2 = createTestOlLayer();
 
     const wmsLayer = new WMSLayer({
         title: "test wms",
@@ -142,7 +142,7 @@ it("should return all layers of the group layer collection, including child laye
 });
 
 it("throws when adding the same child twice", () => {
-    const olLayer = new TileLayer({});
+    const olLayer = createTestOlLayer();
     const child = new SimpleLayerImpl({
         id: "member",
         title: "group member",

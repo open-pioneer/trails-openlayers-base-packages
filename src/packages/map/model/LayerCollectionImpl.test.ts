@@ -7,6 +7,7 @@
 import { syncEffect, syncWatch } from "@conterra/reactivity-core";
 import { throwAbortError } from "@open-pioneer/core";
 import { HttpService } from "@open-pioneer/http";
+import { createTestOlLayer } from "@open-pioneer/map-test-utils";
 import { createIntl } from "@open-pioneer/test-utils/vanilla";
 import { waitFor } from "@testing-library/dom";
 import { readFileSync } from "node:fs";
@@ -1170,5 +1171,5 @@ function create(mapId: string, mapConfig: MapConfig) {
 }
 
 function dummyLayer() {
-    return new TileLayer();
+    return createTestOlLayer();
 }

@@ -16,6 +16,7 @@ import {
 import { MapRegistryImpl, LayerFactory } from "@open-pioneer/map/internalTestSupport";
 import { createService } from "@open-pioneer/test-utils/services";
 import { screen, waitFor } from "@testing-library/react";
+import TileLayer from "ol/layer/Tile";
 import VectorLayer from "ol/layer/Vector";
 
 export type LayerConfig = SimpleLayerConfig | Layer;
@@ -211,6 +212,15 @@ export function createServiceOptions(services: { registry: MapRegistry }): Recor
     return {
         "map.MapRegistry": services.registry
     };
+}
+
+/**
+ * Returns a simple, empty OpenLayers layer object.
+ *
+ * Use this if you need any kind of `olLayer` in your test.
+ */
+export function createTestOlLayer(): TileLayer {
+    return new TileLayer();
 }
 
 function mockVectorLayer() {

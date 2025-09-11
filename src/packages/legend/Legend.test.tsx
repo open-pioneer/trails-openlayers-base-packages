@@ -2,13 +2,12 @@
 // SPDX-License-Identifier: Apache-2.0
 import { Box, Image, Text } from "@chakra-ui/react";
 import { GroupLayer, SimpleLayer, WMSLayer } from "@open-pioneer/map";
-import { setupMap, SimpleMapOptions } from "@open-pioneer/map-test-utils";
+import { createTestOlLayer, setupMap, SimpleMapOptions } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { act, render, screen, waitFor } from "@testing-library/react";
 import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import TileLayer from "ol/layer/Tile";
 import { expect, it, vi } from "vitest";
 import { Legend, LegendItemAttributes, LegendItemComponentProps } from "./Legend";
 
@@ -29,18 +28,18 @@ it("should successfully create a legend component", async () => {
             {
                 title: "Base layer",
                 id: "base-layer",
-                olLayer: new TileLayer({}),
+                olLayer: createTestOlLayer(),
                 isBaseLayer: true
             },
             {
                 title: "Layer 1",
                 id: "layer-1",
-                olLayer: new TileLayer({})
+                olLayer: createTestOlLayer()
             },
             {
                 title: "Layer 2",
                 id: "layer-2",
-                olLayer: new TileLayer({})
+                olLayer: createTestOlLayer()
             }
         ]
     });
@@ -57,13 +56,13 @@ it("should successfully show legend for imageUrl configuration", async () => {
             {
                 title: "Base layer",
                 id: "base-layer",
-                olLayer: new TileLayer({}),
+                olLayer: createTestOlLayer(),
                 isBaseLayer: true
             },
             {
                 title: "Layer 1",
                 id: "layer-1",
-                olLayer: new TileLayer({}),
+                olLayer: createTestOlLayer(),
                 attributes: {
                     "legend": {
                         imageUrl: "https://avatars.githubusercontent.com/u/121286957?s=200&v=4"
@@ -73,7 +72,7 @@ it("should successfully show legend for imageUrl configuration", async () => {
             {
                 title: "Layer 2",
                 id: "layer-2",
-                olLayer: new TileLayer({})
+                olLayer: createTestOlLayer()
             }
         ]
     });
@@ -101,13 +100,13 @@ it("should successfully show legend for Component configuration", async () => {
             {
                 title: "Base layer",
                 id: "base-layer",
-                olLayer: new TileLayer({}),
+                olLayer: createTestOlLayer(),
                 isBaseLayer: true
             },
             {
                 title: "Layer 1",
                 id: "layer-1",
-                olLayer: new TileLayer({}),
+                olLayer: createTestOlLayer(),
                 attributes: {
                     "legend": {
                         Component: function CustomLegend(props: LegendItemComponentProps) {
@@ -124,7 +123,7 @@ it("should successfully show legend for Component configuration", async () => {
             {
                 title: "Layer 2",
                 id: "layer-2",
-                olLayer: new TileLayer({})
+                olLayer: createTestOlLayer()
             }
         ]
     });
@@ -142,7 +141,7 @@ it("does not show a legend for basemaps by default", async () => {
             {
                 title: "Base layer",
                 id: "base-layer",
-                olLayer: new TileLayer({}),
+                olLayer: createTestOlLayer(),
                 isBaseLayer: true,
                 attributes: {
                     "legend": {
@@ -153,7 +152,7 @@ it("does not show a legend for basemaps by default", async () => {
             {
                 title: "Layer 1",
                 id: "layer-1",
-                olLayer: new TileLayer({}),
+                olLayer: createTestOlLayer(),
                 attributes: {
                     "legend": {
                         imageUrl: "https://avatars.githubusercontent.com/u/121286957?s=200&v=4"
@@ -181,7 +180,7 @@ it("shows a legend for active basemap if showBaseLayers is configured to be true
             {
                 title: "Base layer",
                 id: "base-layer",
-                olLayer: new TileLayer({}),
+                olLayer: createTestOlLayer(),
                 isBaseLayer: true,
                 attributes: {
                     "legend": {
@@ -242,7 +241,7 @@ it("shows legend entries for group layers and their children", async () => {
                     new SimpleLayer({
                         title: "Layer 1",
                         id: "layer-1",
-                        olLayer: new TileLayer({}),
+                        olLayer: createTestOlLayer(),
                         attributes: {
                             "legend": {
                                 imageUrl: "https://fake.legend.url/child-layer-1.png"
@@ -284,7 +283,7 @@ it("shows legend entries for group layers and their children if group layer has 
                     new SimpleLayer({
                         title: "Layer 1",
                         id: "layer-1",
-                        olLayer: new TileLayer({}),
+                        olLayer: createTestOlLayer(),
                         attributes: {
                             "legend": {
                                 imageUrl: "https://fake.legend.url/child-layer-1.png"
@@ -318,7 +317,7 @@ it("does not show child legends if 'hide-children' is used", async () => {
                     new SimpleLayer({
                         title: "Layer 1",
                         id: "layer-1",
-                        olLayer: new TileLayer({}),
+                        olLayer: createTestOlLayer(),
                         attributes: {
                             "legend": {
                                 imageUrl: "https://fake.legend.url/child-layer-1.png"
@@ -349,7 +348,7 @@ it("only shows legend entry for group layer and not their children", async () =>
                     new SimpleLayer({
                         title: "Layer 1",
                         id: "layer-1",
-                        olLayer: new TileLayer({}),
+                        olLayer: createTestOlLayer(),
                         attributes: {
                             "legend": {
                                 imageUrl: "https://fake.legend.url/child-layer-1.png"
@@ -392,7 +391,7 @@ it("shows legend entries for group layers and specific children", async () => {
                     new SimpleLayer({
                         title: "Layer 1",
                         id: "layer-1",
-                        olLayer: new TileLayer({}),
+                        olLayer: createTestOlLayer(),
                         attributes: {
                             "legend": {
                                 imageUrl: "https://fake.legend.url/child-layer-1.png"
@@ -428,7 +427,7 @@ it("shows legend entries in correct order", async () => {
             {
                 title: "Layer 1",
                 id: "layer-1",
-                olLayer: new TileLayer({}),
+                olLayer: createTestOlLayer(),
                 attributes: {
                     "legend": {
                         imageUrl: "https://fake.image.url/layer-1.png"
@@ -438,7 +437,7 @@ it("shows legend entries in correct order", async () => {
             {
                 title: "Layer 2",
                 id: "layer-2",
-                olLayer: new TileLayer({}),
+                olLayer: createTestOlLayer(),
                 attributes: {
                     "legend": {
                         imageUrl: "https://fake.image.url/layer-2.png"
@@ -448,7 +447,7 @@ it("shows legend entries in correct order", async () => {
             {
                 title: "Layer 3",
                 id: "layer-3",
-                olLayer: new TileLayer({}),
+                olLayer: createTestOlLayer(),
                 attributes: {
                     "legend": {
                         Component: function CustomLegend(props: LegendItemComponentProps) {
@@ -488,7 +487,7 @@ it("shows legend entries only for visible layers", async () => {
             {
                 title: "Layer 1",
                 id: "layer-1",
-                olLayer: new TileLayer({}),
+                olLayer: createTestOlLayer(),
                 attributes: {
                     "legend": {
                         imageUrl: "https://avatars.githubusercontent.com/u/121286957?s=200&v=4"
@@ -498,7 +497,7 @@ it("shows legend entries only for visible layers", async () => {
             {
                 title: "Layer 2",
                 id: "layer-2",
-                olLayer: new TileLayer({}),
+                olLayer: createTestOlLayer(),
                 attributes: {
                     "legend": {
                         imageUrl: "https://not-visbile-layer.com/"
@@ -527,7 +526,7 @@ it("includes the layer id in the legend item's class list", async () => {
             {
                 title: "Layer 1",
                 id: "layer-1",
-                olLayer: new TileLayer({}),
+                olLayer: createTestOlLayer(),
                 attributes: {
                     "legend": {
                         imageUrl: "https://avatars.githubusercontent.com/u/121286957?s=200&v=4"
@@ -550,7 +549,7 @@ it("reacts to changes in layer visibility", async () => {
             {
                 title: "Layer 1",
                 id: "layer-1",
-                olLayer: new TileLayer({}),
+                olLayer: createTestOlLayer(),
                 attributes: {
                     "legend": {
                         imageUrl: "https://fake.image.url/layer-1.png"
@@ -560,7 +559,7 @@ it("reacts to changes in layer visibility", async () => {
             {
                 title: "Layer 2",
                 id: "layer-2",
-                olLayer: new TileLayer({}),
+                olLayer: createTestOlLayer(),
                 attributes: {
                     "legend": {
                         Component: function CustomLegend(props: LegendItemComponentProps) {
@@ -611,7 +610,7 @@ it("reacts to changes in layer legend attributes", async () => {
             {
                 title: "Layer 1",
                 id: "layer-1",
-                olLayer: new TileLayer({}),
+                olLayer: createTestOlLayer(),
                 attributes: {
                     "legend": {
                         imageUrl: "https://fake.image.url/layer-1.png"
@@ -652,7 +651,7 @@ it("reacts to changes in the layer composition", async () => {
             {
                 title: "Layer 1",
                 id: "layer-1",
-                olLayer: new TileLayer({}),
+                olLayer: createTestOlLayer(),
                 attributes: {
                     "legend": {
                         imageUrl: "https://fake.image.url/layer-1.png"
@@ -672,7 +671,7 @@ it("reacts to changes in the layer composition", async () => {
             new SimpleLayer({
                 title: "Layer 2",
                 id: "layer-2",
-                olLayer: new TileLayer({}),
+                olLayer: createTestOlLayer(),
                 attributes: {
                     "legend": {
                         imageUrl: "https://fake.image.url/layer-2.png"
@@ -699,7 +698,7 @@ it("shows legend entries only for layers that are not internal", async () => {
             {
                 title: "Layer 1",
                 id: "layer-1",
-                olLayer: new TileLayer({}),
+                olLayer: createTestOlLayer(),
                 attributes: {
                     "legend": {
                         imageUrl: "https://avatars.githubusercontent.com/u/121286957?s=200&v=4"
@@ -711,7 +710,7 @@ it("shows legend entries only for layers that are not internal", async () => {
             {
                 title: "Layer 2",
                 id: "layer-2",
-                olLayer: new TileLayer({}),
+                olLayer: createTestOlLayer(),
                 attributes: {
                     "legend": {
                         imageUrl: "https://avatars.githubusercontent.com/u/121286957?s=200&v=4"
@@ -723,7 +722,7 @@ it("shows legend entries only for layers that are not internal", async () => {
             {
                 title: "Layer 3",
                 id: "layer-3",
-                olLayer: new TileLayer({}),
+                olLayer: createTestOlLayer(),
                 attributes: {
                     "legend": {
                         imageUrl: "https://internal-layer.com/"
@@ -755,7 +754,7 @@ it("reacts to changes in layer's internal state", async () => {
             {
                 title: "Layer 1",
                 id: "layer-1",
-                olLayer: new TileLayer({}),
+                olLayer: createTestOlLayer(),
                 attributes: {
                     "legend": {
                         imageUrl: "https://fake.image.url/layer-1.png"
@@ -767,7 +766,7 @@ it("reacts to changes in layer's internal state", async () => {
             {
                 title: "Layer 2",
                 id: "layer-2",
-                olLayer: new TileLayer({}),
+                olLayer: createTestOlLayer(),
                 attributes: {
                     "legend": {
                         Component: function CustomLegend(props: LegendItemComponentProps) {

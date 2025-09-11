@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import { nextTick } from "@conterra/reactivity-core";
 import { SimpleLayer } from "@open-pioneer/map";
-import { setupMap } from "@open-pioneer/map-test-utils";
+import { createTestOlLayer, setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { fireEvent, render, screen, waitFor, act } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -17,14 +17,14 @@ const defaultBasemapConfig = [
         title: "OSM",
         isBaseLayer: true,
         visible: true,
-        olLayer: new TileLayer({})
+        olLayer: createTestOlLayer()
     },
     {
         id: "topplus-open",
         title: "TopPlus Open",
         isBaseLayer: true,
         visible: false,
-        olLayer: new TileLayer({})
+        olLayer: createTestOlLayer()
     }
 ];
 
@@ -180,7 +180,7 @@ it("should update when a new basemap is registered", async () => {
             id: "foo",
             title: "Foo",
             isBaseLayer: true,
-            olLayer: new TileLayer({})
+            olLayer: createTestOlLayer()
         });
         map.layers.addLayer(layer);
         await nextTick();
@@ -263,7 +263,7 @@ describe("should successfully select the correct basemap from basemap switcher",
                     title: "TopPlus Open",
                     isBaseLayer: true,
                     visible: true,
-                    olLayer: new TileLayer({})
+                    olLayer: createTestOlLayer()
                 }
             ]
         });
@@ -308,7 +308,7 @@ it("should disable selection of unavailable layers and show a warning", async ()
                 title: "Empty tile",
                 isBaseLayer: true,
                 visible: true,
-                olLayer: new TileLayer()
+                olLayer: createTestOlLayer()
             }
         ]
     });

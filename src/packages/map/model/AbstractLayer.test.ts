@@ -1,25 +1,22 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-/**
- * @vitest-environment node
- */
 import { syncWatch } from "@conterra/reactivity-core";
 import { HttpService } from "@open-pioneer/http";
 import Layer from "ol/layer/Layer";
-import TileLayer from "ol/layer/Tile";
 import Source, { State } from "ol/source/Source";
 import { Mock, MockInstance, afterEach, describe, expect, it, vi } from "vitest";
 import { HealthCheckFunction, LayerConfig, SimpleLayerConfig } from "../api";
 import { AbstractLayer } from "./AbstractLayer";
 import { GroupLayerCollectionImpl } from "./layers/GroupLayerImpl";
 import { MapModelImpl } from "./MapModelImpl";
+import { createTestOlLayer } from "@open-pioneer/map-test-utils";
 
 afterEach(() => {
     vi.restoreAllMocks();
 });
 
 it("supports access to the olLayer", async () => {
-    const olLayer = new TileLayer({});
+    const olLayer = createTestOlLayer();
     const { layer } = createLayer({
         id: "a",
         title: "Foo",
@@ -32,7 +29,7 @@ it("supports the visibility attribute", async () => {
     const { layer } = createLayer({
         id: "a",
         title: "A",
-        olLayer: new TileLayer({})
+        olLayer: createTestOlLayer()
     });
     expect(layer.visible).toBe(true);
     expect(layer.olLayer.getVisible()).toBe(true);
@@ -60,7 +57,7 @@ it("manages the internal attribute", async () => {
     const { layer } = createLayer({
         id: "a",
         title: "A",
-        olLayer: new TileLayer({})
+        olLayer: createTestOlLayer()
     });
     expect(layer.internal).toBe(false); //should be false by default
 
@@ -87,7 +84,7 @@ it("logs a warning when setVisible() is called on a base layer", async () => {
         id: "a",
         title: "Base Layer 1",
         isBaseLayer: true,
-        olLayer: new TileLayer({})
+        olLayer: createTestOlLayer()
     });
     layer.setVisible(false);
     expect(layer.visible).toBe(true);

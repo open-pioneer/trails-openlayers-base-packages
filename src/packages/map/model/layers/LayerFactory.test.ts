@@ -2,13 +2,13 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { HttpService } from "@open-pioneer/http";
+import { createTestOlLayer } from "@open-pioneer/map-test-utils";
 import { createService } from "@open-pioneer/test-utils/services";
-import TileLayer from "ol/layer/Tile";
 import { expect, it } from "vitest";
 import { SimpleLayer } from "../../api";
+import { AbstractLayer } from "../AbstractLayer";
 import { LayerFactory } from "./LayerFactory";
 import { SimpleLayerImpl } from "./SimpleLayerImpl";
-import { AbstractLayer } from "../AbstractLayer";
 
 it("creates layer instances", async () => {
     const mockHttpService = {} as unknown as HttpService; // not called in this test
@@ -16,7 +16,7 @@ it("creates layer instances", async () => {
         references: { httpService: mockHttpService }
     });
 
-    const olLayer = new TileLayer();
+    const olLayer = createTestOlLayer();
     const layer = factory.create({
         type: SimpleLayer,
         title: "Test title",
