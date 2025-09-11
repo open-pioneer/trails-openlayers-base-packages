@@ -192,7 +192,7 @@ exports[`Should successfully create a toc with default tool component 1`] = `
 exports[`Should successfully create a toc with default tool component 2`] = `
 <div
   aria-labelledby="«r1»"
-  class="toc-tools-menu chakra-menu__content css-1lxvt8i"
+  class="toc-tools-menu chakra-menu__content css-sbuxqe"
   data-part="content"
   data-placement="bottom-start"
   data-scope="menu"
@@ -200,6 +200,7 @@ exports[`Should successfully create a toc with default tool component 2`] = `
   dir="ltr"
   id="menu:«r2»:content"
   role="menu"
+  style="--layer-index: 0;"
   tabindex="0"
 >
   <div
