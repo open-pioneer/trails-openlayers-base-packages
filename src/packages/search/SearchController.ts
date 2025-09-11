@@ -88,7 +88,8 @@ export class SearchController {
             let results = await source.search(searchTerm, {
                 maxResults,
                 signal,
-                mapProjection: projection
+                mapProjection: projection,
+                map: this.#mapModel
             });
             if (results.length > maxResults) {
                 results = results.slice(0, maxResults);
