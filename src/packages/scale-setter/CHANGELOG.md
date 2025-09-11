@@ -1,5 +1,32 @@
 # @open-pioneer/scale-setter
 
+## 0.12.0
+
+### Minor Changes
+
+- 2732052: Icons have been changed to unify the appearance of the components. Preferably, Lucide react-icons are used.
+
+### Patch Changes
+
+- 10d2fe7: Update dependencies
+- 138d85b: Update core packages to 4.1.0
+- da6a410: Update dependencies
+- Updated dependencies [c6180c6]
+- Updated dependencies [29a10df]
+- Updated dependencies [10d2fe7]
+- Updated dependencies [2702df4]
+- Updated dependencies [12561fe]
+- Updated dependencies [5df900f]
+- Updated dependencies [8986b3b]
+- Updated dependencies [dfd7c7e]
+- Updated dependencies [138d85b]
+- Updated dependencies [aeb9000]
+- Updated dependencies [2c8b617]
+- Updated dependencies [5df900f]
+- Updated dependencies [f1f69f2]
+- Updated dependencies [da6a410]
+    - @open-pioneer/map@0.12.0
+
 ## 0.11.0
 
 ### Minor Changes
