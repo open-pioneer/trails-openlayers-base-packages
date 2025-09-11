@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { BaseFeature } from "@open-pioneer/map";
+import { BaseFeature, MapModel } from "@open-pioneer/map";
 import { Projection } from "ol/proj";
 
 /**
@@ -79,6 +79,12 @@ export interface SearchOptions {
      * Useful to return the search result's geometry in the suitable projection.
      */
     mapProjection: Projection;
+
+    /**
+     * The map model of the map associated with the search.
+     * Useful if map information is needed to improve the search (e.g. current map extent).
+     */
+    map: MapModel;
 }
 
 /**

@@ -31,7 +31,7 @@ export interface ToolButtonProps extends CommonComponentProps, RefAttributes<HTM
      *
      * NOTE: You can use raw icons here (e.g. svgs from react-icons).
      * The ToolButton will surround the icon with chakra's `<Icon />` component.
-     * This will apply the apply the `aria-hidden` attribute, among other things.
+     * This will apply the `aria-hidden` attribute, among other things.
      */
     icon: ReactElement;
 
