@@ -325,6 +325,22 @@ describe("createMapModel", () => {
         );
     });
 
+    it("should successfully destroy a mapModel an create a new one with same id", async () => {
+        const { mapModel, mapId } = await createMapSetupWithoutMCP();
+        expect(mapModel).toBeDefined();
+        expect(mapModel?.id).toBe(mapId);
+
+        mapModel.destroy();
+        await expect(() => mapModel.whenDisplayed()).rejects.toThrowErrorMatchingInlineSnapshot(
+            `[Error: Map model was destroyed.]`
+        );
+
+        const { registry } = await createMapSetup();
+        const mapModel2 = await registry.createMapModel(mapId, {});
+        expect(mapModel2).toBeDefined();
+        expect(mapModel2?.id).toBe(mapId);
+    });
+
     it("should support reverse lookup from raw OpenLayers map", async () => {
         const { mapModel, registry } = await createMapSetupWithoutMCP();
         const olMap = mapModel.olMap;

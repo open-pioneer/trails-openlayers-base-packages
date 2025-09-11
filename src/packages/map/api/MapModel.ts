@@ -211,6 +211,11 @@ export interface MapModel extends EventSource<MapModelEvents> {
      * Removes any existing highlights from the map.
      */
     removeHighlights(): void;
+
+    /**
+     * Removes all layers, highlights and the OL map itself.
+     */
+    destroy(): void;
 }
 
 /**

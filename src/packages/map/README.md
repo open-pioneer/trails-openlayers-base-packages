@@ -178,6 +178,8 @@ export default defineBuildConfig({
 });
 ```
 
+It is also possible to destroy the map model instance again by calling `mapModel.destroy()`.
+
 ### Implement a MapConfigProvider
 
 Another way to create a map is to implement a `MapConfigProvider`.
