@@ -44,8 +44,8 @@ export interface ZoomOptions {
     viewPadding?: MapPadding;
 
     /**
-     * The buffer factor around the extent of the zoomed features. E.g. a value of 0.1 will add 10%
-     * of the extent's width and height to the extent.
+     * The buffer factor around the extent of the zoomed features. E.g. a value of 1.1 will add
+     * 10% to specify the size increase of the extent's width and height.
      */
     buffer?: number;
 }

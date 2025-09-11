@@ -107,7 +107,7 @@ it("should successfully zoom with buffered geometries", async () => {
     const zoomLevel2 = map.getView().getZoom();
     expect(zoomLevel2).toBeTruthy();
 
-    highlights.zoomToHighlight([line], { buffer: 1 });
+    highlights.zoomToHighlight([line], { buffer: 1.2 });
     const zoomLevel2WithBuffer = map.getView().getZoom();
     expect(zoomLevel2WithBuffer).toBeTruthy();
     expect(zoomLevel2WithBuffer).not.toEqual(zoomLevel2);
