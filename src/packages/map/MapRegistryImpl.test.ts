@@ -326,7 +326,7 @@ describe("createMapModel", () => {
     });
 
     it("should successfully destroy a mapModel an create a new one with same id", async () => {
-        const { mapModel, mapId } = await createMapSetupWithoutMCP();
+        const { mapModel, mapId, registry } = await createMapSetupWithoutMCP();
         expect(mapModel).toBeDefined();
         expect(mapModel?.id).toBe(mapId);
 
@@ -335,7 +335,7 @@ describe("createMapModel", () => {
             `[Error: Map model was destroyed.]`
         );
 
-        const { registry } = await createMapSetup();
+        // Should not throw an error since the ID has been freed again.
         const mapModel2 = await registry.createMapModel(mapId, {});
         expect(mapModel2).toBeDefined();
         expect(mapModel2?.id).toBe(mapId);
