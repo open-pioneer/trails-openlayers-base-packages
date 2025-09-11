@@ -38,8 +38,14 @@ export class SublayersCollectionImpl<SublayerType extends SublayerBaseType & Abs
     }
 
     getSublayers(_options?: LayerRetrievalOptions | undefined): SublayerType[] {
-        // NOTE: options are ignored because layers are always ordered at this time.
-        return this.#sublayers.slice();
+        // NOTE: sort options are ignored because layers are always ordered at this time.
+        let allLayers = this.#sublayers.slice();
+
+        if (!_options?.includeInternalLayers) {
+            allLayers = allLayers.filter((l) => !l.internal);
+        }
+
+        return allLayers;
     }
 
     getRecursiveLayers(_options?: RecursiveRetrievalOptions): Sublayer[] {

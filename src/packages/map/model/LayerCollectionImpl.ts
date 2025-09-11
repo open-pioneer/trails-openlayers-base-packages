@@ -154,14 +154,22 @@ export class LayerCollectionImpl implements LayerCollection {
     }
 
     getLayers(options?: LayerRetrievalOptions): Layer[] {
+        let allLayers: Layer[];
+
         if (options?.sortByDisplayOrder) {
             const baseLayers = this.getBaseLayers();
             const order = Array.from(this.#operationalLayerOrder);
             const topMost = Array.from(this.#topMostOperationalLayers);
-            return [...baseLayers, ...order, ...topMost];
+            allLayers = [...baseLayers, ...order, ...topMost];
         } else {
-            return Array.from(this.#topLevelLayers.values());
+            allLayers = Array.from(this.#topLevelLayers.values());
         }
+
+        if (!options?.includeInternalLayers) {
+            allLayers = allLayers.filter((l) => !l.internal);
+        }
+
+        return allLayers;
     }
 
     getAllLayers(options?: LayerRetrievalOptions): Layer[] {
