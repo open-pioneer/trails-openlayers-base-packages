@@ -1001,6 +1001,44 @@ describe("child access", () => {
         expect(allLayers[1]).toBe(child);
         expect(allLayers[2]).toBe(group);
     });
+
+    it("it should return internal layer only if explicitly specified ", async () => {
+        const base = new SimpleLayerImpl({
+            id: "base",
+            title: "baselayer",
+            olLayer: dummyLayer(),
+            isBaseLayer: true
+        });
+
+        const child = new SimpleLayerImpl({
+            id: "member",
+            title: "group member",
+            olLayer: dummyLayer()
+        });
+        const group = new GroupLayer({
+            id: "group",
+            title: "group test",
+            layers: [child],
+            internal: true
+        });
+
+        model = await create("foo", {
+            layers: [group, base] // order reversed to test sorting
+        });
+
+        let allLayers = model.layers.getRecursiveLayers(); //no internal layers be default
+        expect(allLayers.length).toBe(1); //only one because children of internal layers are not considered
+        expect(allLayers[0]).toBe(base);
+
+        allLayers = model.layers.getRecursiveLayers({
+            includeInternalLayers: true,
+            sortByDisplayOrder: true
+        });
+        expect(allLayers.length).toBe(3);
+        expect(allLayers[0]).toBe(base);
+        expect(allLayers[1]).toBe(child);
+        expect(allLayers[2]).toBe(group);
+    });
 });
 
 function getLayerProps(layer: Layer) {

@@ -178,7 +178,8 @@ export class LayerCollectionImpl implements LayerCollection {
 
     getRecursiveLayers({
         filter,
-        sortByDisplayOrder
+        sortByDisplayOrder,
+        includeInternalLayers
     }: LayerRetrievalOptions & {
         filter?: "base" | "operational" | ((layer: AnyLayer) => boolean);
     } = {}): AnyLayer[] {
@@ -202,7 +203,8 @@ export class LayerCollectionImpl implements LayerCollection {
         return getRecursiveLayers({
             from: this,
             filter: filterFunc,
-            sortByDisplayOrder
+            sortByDisplayOrder,
+            includeInternalLayers
         });
     }
 

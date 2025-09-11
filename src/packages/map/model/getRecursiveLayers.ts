@@ -37,7 +37,10 @@ function gatherRecursiveLayers<LayerType extends AnyLayer>(
     includeInternalLayers: boolean,
     result: AnyLayer[]
 ): void {
-    const layers = from.getItems({ sortByDisplayOrder });
+    const layers = from.getItems({
+        sortByDisplayOrder: sortByDisplayOrder,
+        includeInternalLayers: includeInternalLayers
+    });
     for (const layer of layers) {
         if (!filter(layer)) {
             continue;
