@@ -68,7 +68,6 @@ function AppContent(props: { state: AppStateReady }) {
                         <DefaultMapProvider map={appModel.map}>
                             <MapContainer
                                 viewPadding={viewPadding}
-                                role="main"
                                 aria-label={intl.formatMessage({ id: "ariaLabels.map" })}
                             >
                                 <MapAnchor

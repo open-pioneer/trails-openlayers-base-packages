@@ -59,7 +59,6 @@ export function AppUI() {
                     >
                         <Flex flex="1" direction="column" position="relative">
                             <MapContainer
-                                role="main"
                                 aria-label={intl.formatMessage({ id: "ariaLabel.map" })}
                                 /* Note: matches the height of the result list component */
                                 viewPadding={showResultList ? { bottom: 400 } : undefined}

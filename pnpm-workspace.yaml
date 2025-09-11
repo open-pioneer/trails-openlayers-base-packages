@@ -8,20 +8,20 @@ packages:
 catalog:
   # Trails core packages
   # https://github.com/open-pioneer/trails-core-packages
-  "@open-pioneer/base-theme": ^4.0.0
-  "@open-pioneer/core": ^4.0.0
-  "@open-pioneer/http": ^4.0.0
-  "@open-pioneer/integration": ^4.0.0
-  "@open-pioneer/local-storage": ^4.0.0
-  "@open-pioneer/notifier": ^4.0.0
-  "@open-pioneer/react-utils": ^4.0.0
-  "@open-pioneer/reactivity": ^4.0.0
-  "@open-pioneer/runtime": ^4.0.0
-  "@open-pioneer/test-utils": ^4.0.0
-  "@open-pioneer/chakra-snippets": ^4.0.0
+  "@open-pioneer/base-theme": ^4.1.0
+  "@open-pioneer/core": ^4.1.0
+  "@open-pioneer/http": ^4.1.0
+  "@open-pioneer/integration": ^4.1.0
+  "@open-pioneer/local-storage": ^4.1.0
+  "@open-pioneer/notifier": ^4.1.0
+  "@open-pioneer/react-utils": ^4.1.0
+  "@open-pioneer/reactivity": ^4.1.0
+  "@open-pioneer/runtime": ^4.1.0
+  "@open-pioneer/test-utils": ^4.1.0
+  "@open-pioneer/chakra-snippets": ^4.1.0
 
-  "@chakra-ui/react": ^3.24.2
-  "@chakra-ui/cli": ^3.24.2
+  "@chakra-ui/react": ^3.26.0
+  "@chakra-ui/cli": ^3.26.0
   "@conterra/reactivity-core": ^0.7.0
   "@emotion/cache": ^11.14.0
   "@emotion/react": ^11.14.0
@@ -32,7 +32,7 @@ catalog:
   classnames: ^2.5.1
   framer-motion: ^12.23.12
   html2canvas: ^1.4.1
-  jspdf: ^3.0.1
+  jspdf: ^3.0.2
   ol-mapbox-style: ^13.1.0
   ol: ^10.6.1
   proj4: ^2.19.10
@@ -43,24 +43,24 @@ catalog:
   uuid: ^11.1.0
 
   # Devtools
-  "@changesets/cli": 2.29.5
+  "@changesets/cli": 2.29.7
   "@open-pioneer/build-package-cli": ^3.0.3
   "@open-pioneer/build-support": ^3.0.3
   "@open-pioneer/check-pnpm-duplicates": ^0.2.3
   "@open-pioneer/vite-plugin-pioneer": ^5.0.0
   "@testing-library/dom": ^10.4.1
-  "@testing-library/jest-dom": ^6.7.0
+  "@testing-library/jest-dom": ^6.8.0
   "@testing-library/react": ^16.3.0
   "@testing-library/user-event": ^14.6.1
   "@types/js-yaml": ^4.0.9
   "@types/jsdom": ^21.1.7
-  "@types/node": ^20.19.10
-  "@types/react": ^19.1.10
-  "@types/react-dom": ^19.1.7
+  "@types/node": ^20.19.13
+  "@types/react": ^19.1.12
+  "@types/react-dom": ^19.1.9
   "@types/uuid": ^10.0.0
-  "@typescript-eslint/eslint-plugin": ^8.39.1
-  "@typescript-eslint/parser": ^8.39.1
-  "@vitejs/plugin-react-swc": ^4.0.0
+  "@typescript-eslint/eslint-plugin": ^8.43.0
+  "@typescript-eslint/parser": ^8.43.0
+  "@vitejs/plugin-react-swc": ^4.0.1
   eslint: ^8.57.1
   eslint-config-prettier: ^10.1.8
   eslint-import-resolver-typescript: ^4.4.4
@@ -69,25 +69,25 @@ catalog:
   eslint-plugin-jsx-a11y: ^6.10.2
   eslint-plugin-react: ^7.37.5
   eslint-plugin-react-hooks: ^5.2.0
-  eslint-plugin-unused-imports: ^4.1.4
+  eslint-plugin-unused-imports: ^4.2.0
   fast-glob: ^3.3.3
   handlebars: ^4.7.8
   happy-dom: ^18.0.1
   husky: ^9.1.7
   js-yaml: ^4.1.0
   jsdom: ^26.1.0
-  lint-staged: ^16.1.5
+  lint-staged: ^16.1.6
   prettier: ^3.6.2
   resize-observer-polyfill: ^1.5.1
   rimraf: ^6.0.1
-  sass: ^1.90.0
-  tsx: ^4.20.4
-  typedoc: ^0.28.10
+  sass: ^1.92.1
+  tsx: ^4.20.5
+  typedoc: ^0.28.12
   typescript: ^5.9.2
-  vite: ^7.1.2
+  vite: ^7.1.5
   vite-plugin-eslint: ^1.8.1
   vitest: ^3.2.4
-  zx: ^8.8.0
+  zx: ^8.8.1
 
 auditConfig:
   ignoreCves: []
