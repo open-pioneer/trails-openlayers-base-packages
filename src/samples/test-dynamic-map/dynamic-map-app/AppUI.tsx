@@ -52,8 +52,8 @@ function AppReady() {
                             >
                                 <Text as="b">Description</Text>
                                 <Text>
-                                    Supports adding and removing layers using the follow control
-                                    buttons:
+                                    Layers can be removed and (re-)added to the map using the
+                                    following buttons:
                                 </Text>
                                 <VStack>
                                     <LayerToggleButton layerId="kitas"></LayerToggleButton>

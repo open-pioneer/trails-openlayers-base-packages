@@ -166,6 +166,9 @@ export interface AnyLayerBaseType<AdditionalEvents = {}>
 
     /**
      * Destroys the layer and everything owned by it.
+     *
+     * > NOTE: Layers that are part of the map will be destroyed automatically
+     * > when that map is being destroyed.
      */
     destroy(): void;
 
