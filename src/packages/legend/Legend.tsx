@@ -122,14 +122,10 @@ function LegendItem(props: { layer: AnyLayer; showBaseLayers: boolean }): ReactN
     const childLayers = useChildLayers(layer);
     const listModeProp = useListMode(layer);
     const legendContent = useLegendContent(layer);
-    const listMode = listModeProp ?? (legendContent ? "hide-children" : "show");
+    const listMode = getListMode(listModeProp, isInternal, !!legendContent);
 
-    if (!isVisible || isInternal || listMode === "hide") {
-        return undefined;
-    }
-
-    if (!showBaseLayers && isLayer(layer) && isBaseLayer(layer)) {
-        return undefined;
+    if (!isVisible || listMode === "hide" || (!showBaseLayers && isBaseLayer(layer))) {
+        return;
     }
 
     // legend items for all child layers (sublayers or layers in a group)
@@ -139,7 +135,7 @@ function LegendItem(props: { layer: AnyLayer; showBaseLayers: boolean }): ReactN
             <LegendItem key={child.id} layer={child} showBaseLayers={showBaseLayers} />
         ));
     }
-    // listMode: hide -> childItems stays empty
+    // listMode: hide/hide-children -> childItems stays empty
 
     return (
         <>
@@ -264,8 +260,25 @@ function useLegendAttributes(layer: AnyLayer): LegendItemAttributes | undefined 
     );
 }
 
+function getListMode(
+    listModeProp: ListMode | undefined,
+    isInternal: boolean,
+    hasLegendContent: boolean
+): ListMode {
+    if (listModeProp) {
+        return listModeProp; // Explicit value wins
+    }
+    if (isInternal) {
+        return "hide";
+    }
+    if (hasLegendContent) {
+        return "hide-children";
+    }
+    return "show";
+}
+
 function isBaseLayer(layer: AnyLayer) {
-    return !("parentLayer" in layer) && layer.isBaseLayer;
+    return isLayer(layer) && layer.isBaseLayer;
 }
 
 function slug(id: string) {

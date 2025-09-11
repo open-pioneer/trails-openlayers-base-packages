@@ -117,7 +117,7 @@ it("supports configuring role and aria labels", async () => {
         <PackageContextProvider services={injectedServices}>
             <MapContainer
                 map={map}
-                role="application"
+                role="region"
                 /* note: don't mix aria label and aria-labelledby in a real application; this just tests that props are forwarded */
                 aria-label="foo"
                 aria-labelledby="does-not-exist"
@@ -129,7 +129,7 @@ it("supports configuring role and aria labels", async () => {
     await waitForMapMount();
 
     const container = renderResult.container.querySelector(".map-container")!;
-    expect(container.role).toBe("application");
+    expect(container.role).toBe("region");
     expect(container.getAttribute("aria-label")).toBe("foo");
     expect(container.getAttribute("aria-labelledby")).toEqual("does-not-exist");
 });
