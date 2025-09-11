@@ -149,7 +149,8 @@ it("uses the configured style for the finished features", async () => {
     const layer = controller.getOlVectorLayer();
 
     controller.setFinishedFeatureStyle(style1);
-    expect(layer.getStyle()).toBe(style1);
+    const layerStyle = layer.getStyle();
+    expect(layerStyle).toBe(style1);
 });
 
 it("uses the configured style for the active features", async () => {
