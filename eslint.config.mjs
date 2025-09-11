@@ -77,6 +77,8 @@ export default tseslint.config(
             "@typescript-eslint/no-unused-vars": "off",
             "react/jsx-uses-vars": "error",
             "unused-imports/no-unused-imports": "warn",
+            // Todo: needs to be fixed with https://github.com/open-pioneer/trails-openlayers-base-packages/issues/506
+            //"@typescript-eslint/no-non-null-assertion": "error",
             "unused-imports/no-unused-vars": [
                 "warn",
                 {
