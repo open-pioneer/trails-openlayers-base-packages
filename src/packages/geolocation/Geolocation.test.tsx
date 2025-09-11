@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { MapContainer } from "@open-pioneer/map";
-import { createServiceOptions, setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
+import { setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render, screen, waitFor } from "@testing-library/react";
 import { beforeAll, beforeEach, expect, it, vi } from "vitest";
@@ -21,18 +21,16 @@ beforeEach(() => {
 });
 
 it("should successfully create a geolocation component with a button", async () => {
-    const { map, registry } = await setupMap();
-
+    const { map } = await setupMap();
     const notifier: Partial<NotificationService> = {
         notify() {
             throw new Error("not implemented");
         }
     };
 
-    const injectedServices = createServiceOptions({
-        registry
-    });
-    injectedServices["notifier.NotificationService"] = notifier;
+    const injectedServices = {
+        "notifier.NotificationService": notifier
+    };
 
     render(
         <PackageContextProvider services={injectedServices}>
@@ -55,11 +53,10 @@ it("should center to user's position", async () => {
 
     const user = userEvent.setup();
 
-    const { map, registry } = await setupMap({
+    const { map } = await setupMap({
         center: { x: 0, y: 0 },
         projection: "EPSG:4326"
     });
-
     const olMap = map.olMap;
 
     const notifier: Partial<NotificationService> = {
@@ -67,11 +64,9 @@ it("should center to user's position", async () => {
             throw new Error("not implemented");
         }
     };
-
-    const injectedServices = createServiceOptions({
-        registry
-    });
-    injectedServices["notifier.NotificationService"] = notifier;
+    const injectedServices = {
+        "notifier.NotificationService": notifier
+    };
 
     render(
         <PackageContextProvider services={injectedServices}>
@@ -102,11 +97,10 @@ it("should zoom to user's position accuracy", async () => {
 
     const user = userEvent.setup();
 
-    const { map, registry } = await setupMap({
+    const { map } = await setupMap({
         center: { x: 0, y: 0 },
         projection: "EPSG:4326"
     });
-
     const olMap = map.olMap;
 
     const notifier: Partial<NotificationService> = {
@@ -114,11 +108,9 @@ it("should zoom to user's position accuracy", async () => {
             throw new Error("not implemented");
         }
     };
-
-    const injectedServices = createServiceOptions({
-        registry
-    });
-    injectedServices["notifier.NotificationService"] = notifier;
+    const injectedServices = {
+        "notifier.NotificationService": notifier
+    };
 
     render(
         <PackageContextProvider services={injectedServices}>
@@ -152,23 +144,21 @@ it("should successfully create an error with notifier message", async () => {
 
     const user = userEvent.setup();
 
-    const { map, registry } = await setupMap({
+    const { map } = await setupMap({
         center: { x: 0, y: 0 },
         projection: "EPSG:4326"
     });
 
     const notifyArr: NotificationOptions[] = [];
-
     const notifier: Partial<NotificationService> = {
         notify(options: NotificationOptions) {
             notifyArr.push(options);
         }
     };
 
-    const injectedServices = createServiceOptions({
-        registry
-    });
-    injectedServices["notifier.NotificationService"] = notifier;
+    const injectedServices = {
+        "notifier.NotificationService": notifier
+    };
 
     render(
         <PackageContextProvider services={injectedServices}>

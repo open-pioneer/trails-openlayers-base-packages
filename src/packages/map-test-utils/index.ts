@@ -203,6 +203,8 @@ export async function setupMap(
  * option of the `PackageContextProvider`.
  *
  * This helper method can be used to avoid hard-coding service names used in the implementation.
+ *
+ * @deprecated No longer needed because react components do no longer look up the map in the registry.
  */
 export function createServiceOptions(services: { registry: MapRegistry }): Record<string, unknown> {
     return {

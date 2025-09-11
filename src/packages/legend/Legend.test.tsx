@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import { Box, Image, Text } from "@chakra-ui/react";
 import { GroupLayer, SimpleLayer, WMSLayer } from "@open-pioneer/map";
-import { createServiceOptions, setupMap, SimpleMapOptions } from "@open-pioneer/map-test-utils";
+import { setupMap, SimpleMapOptions } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { act, render, screen, waitFor } from "@testing-library/react";
 import { readFileSync } from "node:fs";
@@ -947,11 +947,10 @@ function createLayerWithNestedSublayers(hideChildrenModification: boolean = fals
 }
 
 async function setup(options: SimpleMapOptions & { returnMap?: true }) {
-    const { map, registry } = await setupMap(options);
-    const services = createServiceOptions({ registry });
+    const { map } = await setupMap(options);
 
     function Wrapper(props: { children?: ReactNode }) {
-        return <PackageContextProvider services={services} {...props} />;
+        return <PackageContextProvider {...props} />;
     }
 
     return { map, Wrapper };

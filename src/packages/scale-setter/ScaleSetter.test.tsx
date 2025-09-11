@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { reactive } from "@conterra/reactivity-core";
-import { createServiceOptions, LayerConfig, setupMap } from "@open-pioneer/map-test-utils";
+import { LayerConfig, setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent, { UserEvent } from "@testing-library/user-event";
@@ -246,15 +246,12 @@ async function getMenuOptions(
 }
 
 async function setup(opts?: { layers?: LayerConfig[] }) {
-    const { map, registry } = await setupMap({ layers: opts?.layers });
-    const injectedServices = createServiceOptions({ registry });
+    const { map } = await setupMap({ layers: opts?.layers });
     const locale = reactive<string>();
     const Wrapper = (props: { children?: ReactNode }) => {
         const currentLocale = useReactiveValue(locale);
         return (
-            <PackageContextProvider services={injectedServices} locale={currentLocale}>
-                {props.children}
-            </PackageContextProvider>
+            <PackageContextProvider locale={currentLocale}>{props.children}</PackageContextProvider>
         );
     };
 

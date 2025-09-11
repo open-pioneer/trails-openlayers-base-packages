@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { GroupLayer, Layer, SimpleLayer, SimpleLayerConfig } from "@open-pioneer/map";
-import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
+import { setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import TileLayer from "ol/layer/Tile";
@@ -294,7 +294,7 @@ describe("toc api", () => {
 });
 
 async function setupTocContext(layers?: (SimpleLayerConfig | Layer)[]) {
-    const { map, registry } = await setupMap({
+    const { map } = await setupMap({
         layers: layers ?? [
             {
                 title: "Base layer",
@@ -314,13 +314,8 @@ async function setupTocContext(layers?: (SimpleLayerConfig | Layer)[]) {
             }
         ]
     });
-    const injectedServices = createServiceOptions({ registry });
     const Wrapper = (props: { children?: ReactNode }) => {
-        return (
-            <PackageContextProvider services={injectedServices}>
-                {props.children}
-            </PackageContextProvider>
-        );
+        return <PackageContextProvider>{props.children}</PackageContextProvider>;
     };
     return { map, Wrapper };
 }

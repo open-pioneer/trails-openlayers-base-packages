@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
-import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
+import { setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render, screen, waitFor } from "@testing-library/react";
 import OlMap from "ol/Map";
@@ -12,12 +12,12 @@ import { expect, it } from "vitest";
 import { OverviewMap } from "./OverviewMap";
 
 it("should successfully create an overview map component", async () => {
-    const { map, injectedServices } = await setup();
+    const { map } = await setup();
     const layer = getTileLayer();
 
     render(
-        <PackageContextProvider services={injectedServices}>
-            <OverviewMap map={map} olLayer={layer} data-testid="overview-map"></OverviewMap>
+        <PackageContextProvider>
+            <OverviewMap map={map} olLayer={layer} data-testid="overview-map" />
         </PackageContextProvider>
     );
 
@@ -32,17 +32,12 @@ it("should successfully create an overview map component", async () => {
 });
 
 it("should successfully create an overview map component with additional css class", async () => {
-    const { map, injectedServices } = await setup();
+    const { map } = await setup();
     const layer = getTileLayer();
 
     render(
-        <PackageContextProvider services={injectedServices}>
-            <OverviewMap
-                map={map}
-                olLayer={layer}
-                className="test"
-                data-testid="overview-map"
-            ></OverviewMap>
+        <PackageContextProvider>
+            <OverviewMap map={map} olLayer={layer} className="test" data-testid="overview-map" />
         </PackageContextProvider>
     );
 
@@ -53,18 +48,18 @@ it("should successfully create an overview map component with additional css cla
 });
 
 it("should allow configuration of width and height", async () => {
-    const { map, injectedServices } = await setup();
+    const { map } = await setup();
     const layer = getTileLayer();
 
     render(
-        <PackageContextProvider services={injectedServices}>
+        <PackageContextProvider>
             <OverviewMap
                 map={map}
                 olLayer={layer}
                 data-testid="overview-map"
                 width="123px"
                 height="456px"
-            ></OverviewMap>
+            />
         </PackageContextProvider>
     );
 
@@ -76,17 +71,12 @@ it("should allow configuration of width and height", async () => {
 });
 
 it("should successfully add OverviewMap control to the map controls", async () => {
-    const { map, injectedServices } = await setup();
+    const { map } = await setup();
     const layer = getTileLayer();
 
     render(
-        <PackageContextProvider services={injectedServices}>
-            <OverviewMap
-                map={map}
-                olLayer={layer}
-                className="test"
-                data-testid="overview-map"
-            ></OverviewMap>
+        <PackageContextProvider>
+            <OverviewMap map={map} olLayer={layer} className="test" data-testid="overview-map" />
         </PackageContextProvider>
     );
 
@@ -96,9 +86,8 @@ it("should successfully add OverviewMap control to the map controls", async () =
 });
 
 async function setup() {
-    const { map, registry } = await setupMap();
-    const injectedServices = createServiceOptions({ registry });
-    return { map, injectedServices };
+    const { map } = await setupMap();
+    return { map };
 }
 
 async function waitForOverviewMap() {

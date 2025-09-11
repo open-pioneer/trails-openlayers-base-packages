@@ -7,7 +7,7 @@ import Draw from "ol/interaction/Draw";
 import { FlatStyle } from "ol/style/flat";
 import { HttpService } from "@open-pioneer/http";
 import { MapContainer, MapModel } from "@open-pioneer/map";
-import { createServiceOptions, setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
+import { setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render } from "@testing-library/react";
 import { PackageIntl } from "@open-pioneer/runtime";
@@ -361,11 +361,10 @@ describe("when create editing workflow complete", () => {
 });
 
 async function renderMap() {
-    const { map, registry } = await setupMap();
+    const { map } = await setupMap();
 
-    const injectedServices = createServiceOptions({ registry });
     render(
-        <PackageContextProvider services={injectedServices}>
+        <PackageContextProvider>
             <MapContainer map={map} data-testid="map" />
         </PackageContextProvider>
     );
