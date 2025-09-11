@@ -229,10 +229,11 @@ function useLegendContent(layer: AnyLayer): ReactNode | undefined {
 /** Returns the top level operational layers in render order (topmost layer first). */
 function useLayers(map: MapModel): Layer[] {
     return useReactiveSnapshot(() => {
-        const layers = map.layers.getLayers({
-            sortByDisplayOrder: true,
-            includeInternalLayers: true //internal status is handled by LegendItems
-        }) ?? [];
+        const layers =
+            map.layers.getLayers({
+                sortByDisplayOrder: true,
+                includeInternalLayers: true //internal status is handled by LegendItems
+            }) ?? [];
         layers.reverse(); // render topmost layer first
         return layers;
     }, [map]);
