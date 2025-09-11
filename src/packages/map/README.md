@@ -226,37 +226,57 @@ export class MapConfigProviderImpl implements MapConfigProvider {
 
 #### Layer configuration
 
-Configure your custom layer inside the [Map configuration](#map-configuration) by using one of the layer classes provided by this package.
+Configure your custom layer inside the [Map configuration](#map-configuration) by using one of the layer types provided by this package.
 For example, `SimpleLayer` can be used to configure an arbitrary [`OpenLayers Layer`](https://openlayers.org/en/latest/apidoc/module-ol_layer_Layer-Layer.html) as `olLayer` property.
 
-> **Layer Order**
->
-> By default, layers are displayed in the order in which they are defined in the `layers` array.
-> The later a layer is listed in the array, the higher up it is displayed in the map.
->
-> Base layers are excluded from this rule: they are always displayed below all operational layers.
+Layers are constructed via the `LayerFactory`.
+You can access the layer factory from within a `MapConfigProvider` or inject it via `"map.LayerFactory"`.
+
+Example: Create a layer using the layer factory.
+
+```ts
+const layerFactory = ...;
+layerFactory.create({
+    type: SimpleLayer, // Layer type: mandatory
+
+    // Any properties supported by the layer type
+    title: "OSM",
+    id: "osm",
+    isBaseLayer: true,
+    olLayer: new TileLayer({
+        source: new OSM()
+    })
+}),
+```
 
 Example: Implementation of a layer configuration.
 
 ```ts
 // YOUR-APP/MapConfigProviderImpl.ts
-import { MapConfig, MapConfigProvider, SimpleLayer } from "@open-pioneer/map";
+import {
+    MapConfig,
+    MapConfigProvider,
+    MapConfigProviderOptions,
+    SimpleLayer
+} from "@open-pioneer/map";
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
 
 export class MapConfigProviderImpl implements MapConfigProvider {
-    async getMapConfig(): Promise<MapConfig> {
+    async getMapConfig({ layerFactory }: MapConfigProviderOptions): Promise<MapConfig> {
         return {
             layers: [
-                new SimpleLayer({
+                layerFactory.create({
                     // minimal layer configuration
+                    type: SimpleLayer,
                     title: "OSM",
                     olLayer: new TileLayer({
                         source: new OSM()
                     })
                 }),
-                new SimpleLayer({
+                layerFactory.create({
                     // layer configuration with optional properties
+                    type: SimpleLayer,
                     id: "abe0e3f8-0ba2-409c-b6b4-9d8429c732e3",
                     title: "OSM with UUID",
                     olLayer: new TileLayer({
@@ -274,6 +294,13 @@ export class MapConfigProviderImpl implements MapConfigProvider {
     }
 }
 ```
+
+> **Layer Order**
+>
+> By default, layers are displayed in the order in which they are defined in the `layers` array.
+> The later a layer is listed in the array, the higher up it is displayed in the map.
+>
+> Base layers are excluded from this rule: they are always displayed below all operational layers.
 
 Based on the example above, you can set different properties using the layer API (such as setting visibility, update custom metadata (`attributes`)).
 
@@ -309,15 +336,21 @@ Example: Check of layer availability ("health check")
 
 ```ts
 // YOUR-APP/MapConfigProviderImpl.ts
-import { MapConfig, MapConfigProvider, SimpleLayer } from "@open-pioneer/map";
+import {
+    MapConfig,
+    MapConfigProvider,
+    MapConfigProviderOptions,
+    SimpleLayer
+} from "@open-pioneer/map";
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
 
 export class MapConfigProviderImpl implements MapConfigProvider {
-    async getMapConfig(): Promise<MapConfig> {
+    async getMapConfig({ layerFactory }: MapConfigProviderOptions): Promise<MapConfig> {
         return {
             layers: [
-                new SimpleLayer({
+                layerFactory.create({
+                    type: SimpleLayer,
                     id: "1",
                     title: "Layer 1",
                     olLayer: new TileLayer({
@@ -329,7 +362,8 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                     isBaseLayer: false,
                     visible: true
                 }),
-                new SimpleLayer({
+                layerFactory.create({
+                    type: SimpleLayer,
                     id: "2",
                     title: "Layer 2",
                     olLayer: new TileLayer({
@@ -374,7 +408,7 @@ export const MAP_ID = "main";
 export class MapConfigProviderImpl implements MapConfigProvider {
     mapId = MAP_ID;
 
-    async getMapConfig(): Promise<MapConfig> {
+    async getMapConfig({ layerFactory }: MapConfigProviderOptions): Promise<MapConfig> {
         return {
             projection: "EPSG:3857",
             initialView: {
@@ -386,7 +420,8 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                 zoom: 13
             },
             layers: [
-                new SimpleLayer({
+                layerFactory.create({
+                    type: SimpleLayer,
                     title: "Abschnitte/Äste mit Unfällen (Mapbox Style)",
                     olLayer: new MapboxVectorLayer({
                         styleUrl:
@@ -412,7 +447,7 @@ Example: How to configure a vector tile layer:
 ```ts
 // YOUR-APP/MapConfigProviderImpl.ts
 export class MapConfigProviderImpl implements MapConfigProvider {
-    async getMapConfig(): Promise<MapConfig> {
+    async getMapConfig({ layerFactory }: MapConfigProviderOptions): Promise<MapConfig> {
         return {
             projection: "EPSG:3857",
             initialView: {
@@ -424,7 +459,8 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                 zoom: 13
             },
             layers: [
-                new SimpleLayer({
+                layerFactory.create({
+                    type: SimpleLayer,
                     title: "Pendleratlas",
                     visible: true,
                     olLayer: new VectorTileLayer({
@@ -477,7 +513,7 @@ registerProjections({
 export class MapConfigProviderImpl implements MapConfigProvider {
     mapId = MAP_ID;
 
-    async getMapConfig(): Promise<MapConfig> {
+    async getMapConfig({ layerFactory }: MapConfigProviderOptions): Promise<MapConfig> {
         return {
             initialView: {
                 kind: "position",
@@ -486,7 +522,8 @@ export class MapConfigProviderImpl implements MapConfigProvider {
             },
             projection: "EPSG:31466",
             layers: [
-                new SimpleLayer({
+                layerFactory.create({
+                    type: SimpleLayer,
                     id: "topplus_open",
                     title: "TopPlus Open",
                     isBaseLayer: true,
@@ -560,7 +597,7 @@ Example: How to create the WMTS source from the services capabilities:
 // YOUR-APP/SomeFile.ts
 
 // Imports:
-import { MapModel, registerProjections } from "@open-pioneer/map";
+import { MapModel, LayerFactory, SimpleLayer, registerProjections } from "@open-pioneer/map";
 import WMTSCapabilities from "ol/format/WMTSCapabilities";
 import { optionsFromCapabilities } from "ol/source/WMTS";
 
@@ -574,6 +611,8 @@ registerProjections({
 const mapModel: MapModel = ... // retrieved via MapRegistry service
 await mapModel.whenDisplayed();
 
+const layerFactory: LayerFactory = ...; // injected
+
 const response = await httpService.fetch("https://sgx.geodatenzentrum.de/wmts_topplus_open/1.0.0/WMTSCapabilities.xml");
 const responseText = await response.text();
 
@@ -585,7 +624,8 @@ const wmtsOptions = optionsFromCapabilities(wmtsResult, {
 });
 
 if (wmtsOptions) {
-    mapModel.layers.addLayer(new SimpleLayer({
+    mapModel.layers.addLayer(layerFactory.create({
+        type: SimpleLayer,
         id: "topplus_open_optionsFromCapabilities",
         title: "TopPlus Open - created with optionsFromCapabilities()",
         visible: false,
@@ -606,14 +646,19 @@ Example: Create WMS layer configuration
 
 ```ts
 // YOUR-APP/MapConfigProviderImpl.ts
-import { MapConfig, MapConfigProvider, WMSLayer } from "@open-pioneer/map";
+import {
+    MapConfig,
+    MapConfigProvider,
+    MapConfigProviderOptions,
+    WMSLayer
+} from "@open-pioneer/map";
 
 export const MAP_ID = "main";
 
 export class MapConfigProviderImpl implements MapConfigProvider {
     mapId = MAP_ID;
 
-    async getMapConfig(): Promise<MapConfig> {
+    async getMapConfig({ layerFactory }: MapConfigProviderOptions): Promise<MapConfig> {
         return {
             initialView: {
                 kind: "position",
@@ -622,7 +667,8 @@ export class MapConfigProviderImpl implements MapConfigProvider {
             },
             projection: "EPSG:25832",
             layers: [
-                new WMSLayer({
+                layerFactory.create({
+                    type: WMSLayer,
                     title: "Schulstandorte",
                     url: "https://www.wms.nrw.de/wms/wms_nw_inspire-schulen",
 
@@ -655,21 +701,29 @@ The hierarchy of the layers, which results from the (nested) groups, is rendered
 Example: Create (nested) group layers
 
 ```ts
+import { GroupLayer, SimpleLayer } from "@open-pioneer/map";
+
+const layerFactory = ...; // injected
+
 // Create group layer with a nested sub group
-const group = new GroupLayer({
+const group = layerFactory.create({
+    type: GroupLayer,
     id: "group",
     title: "a group layer",
     layers: [
-        new SimpleLayer({
+        layerFactory.create({
+            type: SimpleLayer,
             id: "member",
             title: "group member",
             olLayer: olLayer1
         }),
-        new GroupLayer({
+        layerFactory.create({
+            type: GroupLayer,
             id: "subgroup",
             title: "a nested group layer",
             layers: [
-                new SimpleLayer({
+                layerFactory.create({
+                    type: SimpleLayer,
                     id: "submember",
                     title: "subgroup member",
                     olLayer: olLayer2
@@ -733,6 +787,10 @@ The most important API items are as follows:
   The `MapModel` also provides access to the raw OpenLayers `olMap` for advanced use cases.
 
     > NOTE: The `olMap` is manipulated by the `MapModel` to implement its functionality (for example, to add or remove layer instances). When using the `olMap` directly, treat it carefully and as a shared resource.
+
+- The `LayerFactory` is used to create layer instances (`LayerFactory.create()`).
+  The layer factory is a service that can be injected via `"map.LayerFactory"`.
+  Your `MapConfigProvider` implementation also receives a reference to the layer factory for convenience.
 
 - The `Layer` interface and its various implementations.
   This interface is used to make common properties and methods available (such as `.title`, or `.setVisible`).
