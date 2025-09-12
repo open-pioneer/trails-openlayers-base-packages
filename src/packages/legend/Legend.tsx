@@ -246,7 +246,9 @@ function useLayers(map: MapModel): Layer[] {
 function useChildLayers(layer: AnyLayer): AnyLayer[] {
     return (
         useReactiveSnapshot(() => {
-            const childLayers = layer.children?.getItems();
+            const childLayers = layer.children?.getItems({
+                includeInternalLayers: true //internal status is handled by LegendItems
+            });
             if (!childLayers) {
                 return undefined;
             }
