@@ -9,7 +9,8 @@ import type OlBaseLayer from "ol/layer/Base";
 import type { Projection } from "ol/proj";
 import type { StyleLike } from "ol/style/Style";
 import type { BaseFeature } from "../BaseFeature";
-import type { AnyLayer, ChildrenCollection, Layer } from "../layers/base";
+import type { ChildrenCollection } from "../layers/base";
+import type { AnyLayer, Layer } from "../layers/unions";
 import type { AddLayerOptions, LayerRetrievalOptions, RecursiveRetrievalOptions } from "../shared";
 import type { ExtentConfig } from "./MapConfig";
 

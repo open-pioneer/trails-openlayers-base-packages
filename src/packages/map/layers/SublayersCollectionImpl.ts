@@ -3,7 +3,8 @@
 import { AbstractLayerBase } from "../layers/AbstractLayerBase";
 import { getRecursiveLayers } from "../model/getRecursiveLayers";
 import { LayerRetrievalOptions, RecursiveRetrievalOptions } from "../shared";
-import { Sublayer, SublayerBaseType, SublayersCollection } from "./base";
+import { SublayerBaseType, SublayersCollection } from "./base";
+import { Sublayer } from "./unions";
 
 /**
  * Manages the sublayers of a layer.

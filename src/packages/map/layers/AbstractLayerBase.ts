@@ -13,14 +13,8 @@ import { v4 as uuid4v } from "uuid";
 import { MapModelImpl } from "../model/MapModelImpl";
 import { GroupLayer, GroupLayerCollection } from "./GroupLayer";
 import { SublayersCollectionImpl } from "./SublayersCollectionImpl";
-import {
-    AnyLayer,
-    AnyLayerBaseType,
-    AnyLayerTypes,
-    ChildrenCollection,
-    LayerBaseEvents,
-    Sublayer
-} from "./base";
+import { AnyLayerBaseType, ChildrenCollection, LayerBaseEvents } from "./base";
+import { AnyLayer, AnyLayerTypes, Sublayer } from "./unions";
 
 const LOG = createLogger("map:AbstractLayerModel");
 

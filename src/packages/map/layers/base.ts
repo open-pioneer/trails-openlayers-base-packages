@@ -3,10 +3,7 @@
 import type { LayerRetrievalOptions, RecursiveRetrievalOptions } from "../shared";
 import { AbstractLayer } from "./AbstractLayer";
 import { AbstractLayerBase } from "./AbstractLayerBase";
-import type { GroupLayer } from "./GroupLayer";
-import type { SimpleLayer } from "./SimpleLayer";
-import type { WMSLayer, WMSSublayer } from "./WMSLayer";
-import type { WMTSLayer } from "./WMTSLayer";
+import { AnyLayer, Layer, Sublayer, SublayerTypes } from "./unions";
 
 /** Events emitted by the {@link Layer} and other layer types. */
 export interface LayerBaseEvents {
@@ -133,36 +130,4 @@ export interface SublayersCollection<SublayerType = Sublayer>
      * > If the collection contains many, deeply nested sublayers, this function could potentially be expensive.
      */
     getRecursiveLayers(options?: RecursiveRetrievalOptions): Sublayer[];
-}
-
-/**
- * Union type for all layers (extending {@link LayerBaseType})
- */
-export type Layer = SimpleLayer | WMSLayer | WMTSLayer | GroupLayer;
-export type LayerTypes = Layer["type"];
-
-/**
- * Union type for all sublayers (extending {@link SublayerBaseType}
- */
-export type Sublayer = WMSSublayer;
-export type SublayerTypes = Sublayer["type"];
-
-/**
- * Union for all types of layers
- */
-export type AnyLayer = Layer | Sublayer;
-export type AnyLayerTypes = AnyLayer["type"];
-
-/**
- * Type guard for checking if the layer is a {@link Sublayer}.
- */
-export function isSublayer(layer: AnyLayer): layer is Sublayer {
-    return "parentLayer" in layer;
-}
-
-/**
- * Type guard for checking if the layer is a {@link Layer} (and not a {@link Sublayer}).
- */
-export function isLayer(layer: AnyLayer): layer is Layer {
-    return "olLayer" in layer;
 }

@@ -13,7 +13,7 @@ import { createLogger, Resource } from "@open-pioneer/core";
 import OlBaseLayer from "ol/layer/Base";
 import { AbstractLayer } from "../layers/AbstractLayer";
 import { AbstractLayerBase } from "../layers/AbstractLayerBase";
-import { AnyLayer, Layer, Sublayer } from "../layers/base";
+import { AnyLayer, Layer, Sublayer } from "../layers/unions";
 import type { AddLayerOptions, LayerRetrievalOptions } from "../shared";
 import { LayerCollection } from "./MapModel";
 import { MapModelImpl } from "./MapModelImpl";

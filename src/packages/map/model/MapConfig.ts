@@ -3,7 +3,7 @@
 import type { MapOptions as OlMapBaseOptions } from "ol/Map";
 import type OlView from "ol/View";
 import type { ViewOptions as OlViewOptions } from "ol/View";
-import { Layer } from "../layers/base";
+import type { Layer } from "../layers/unions";
 
 /**
  * Configures an extent.

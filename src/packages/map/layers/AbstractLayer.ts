@@ -2,16 +2,17 @@
 // SPDX-License-Identifier: Apache-2.0
 import { reactive, Reactive, ReadonlyReactive, synchronized } from "@conterra/reactivity-core";
 import { createLogger, destroyResource, Resource } from "@open-pioneer/core";
-import { unByKey } from "ol/Observable";
 import { EventsKey } from "ol/events";
 import OlBaseLayer from "ol/layer/Base";
 import OlLayer from "ol/layer/Layer";
+import { unByKey } from "ol/Observable";
 import OlSource from "ol/source/Source";
-import { AbstractLayerBase } from "./AbstractLayerBase";
 import { MapModelImpl } from "../model/MapModelImpl";
+import { AbstractLayerBase } from "./AbstractLayerBase";
+import { HealthCheckFunction, LayerBaseType, LayerConfig, LayerLoadState } from "./base";
 import { getLayerDependencies, InternalConstructorTag, LayerDependencies } from "./internals";
-import { HealthCheckFunction, Layer, LayerBaseType, LayerConfig, LayerLoadState } from "./base";
 import { SimpleLayerConfig } from "./SimpleLayer";
+import { Layer } from "./unions";
 
 // Imported for typedoc
 // eslint-disable-next-line unused-imports/no-unused-imports

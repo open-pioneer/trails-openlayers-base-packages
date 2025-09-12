@@ -6,8 +6,9 @@ import { MapModelImpl } from "../model/MapModelImpl";
 import { getRecursiveLayers } from "../model/getRecursiveLayers";
 import { LayerRetrievalOptions, RecursiveRetrievalOptions } from "../shared";
 import { AbstractLayer } from "./AbstractLayer";
-import { AnyLayer, ChildrenCollection, Layer, LayerConfig } from "./base";
+import { ChildrenCollection, LayerConfig } from "./base";
 import { InternalConstructorTag, LayerConstructor, LayerDependencies } from "./internals";
+import { AnyLayer, Layer } from "./unions";
 
 // Import for api docs
 // eslint-disable-next-line unused-imports/no-unused-imports

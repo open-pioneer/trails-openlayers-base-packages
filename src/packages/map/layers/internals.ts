@@ -1,7 +1,8 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { HttpService } from "@open-pioneer/http";
-import { Layer, LayerConfig } from "./base";
+import { LayerConfig } from "./base";
+import { Layer } from "./unions";
 
 /**
  * Package-internal constructor tag to signal that the layer constructor is being called from the layer factory.
@@ -58,4 +59,10 @@ export function getLayerDependencies(
         throw new Error("Internal error: layer dependencies are missing");
     }
     return deps;
+}
+
+export function assertInternalConstructor(tag: InternalConstructorTag) {
+    if (tag !== INTERNAL_CONSTRUCTOR_TAG) {
+        throw new Error("This constructor is internal.");
+    }
 }
