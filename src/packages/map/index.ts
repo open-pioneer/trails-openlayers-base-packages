@@ -25,10 +25,7 @@ export {
     type HealthCheckFunction,
     type LayerConfig
 } from "./layers/shared/LayerConfig";
-export {
-    type AbstractLayerBase as AnyLayerBaseType,
-    type LayerBaseEvents
-} from "./layers/AbstractLayerBase";
+export { type AbstractLayerBase as AnyLayerBaseType } from "./layers/AbstractLayerBase";
 export { type LayerLoadState, type AbstractLayer as LayerBaseType } from "./layers/AbstractLayer";
 export { isLayer, isSublayer, type AnyLayer, type Layer, type Sublayer } from "./layers/unions";
 export { GroupLayer, type GroupLayerConfig } from "./layers/GroupLayer";

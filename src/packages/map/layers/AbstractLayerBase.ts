@@ -25,11 +25,6 @@ export interface AbstractLayerBaseOptions {
     internal?: boolean;
 }
 
-/** Events emitted by the {@link Layer} and other layer types. */
-export interface LayerBaseEvents {
-    "destroy": void;
-}
-
 /**
  * Interface shared by all layer types (operational layers and sublayers).
  *
@@ -75,10 +70,12 @@ export abstract class AbstractLayerBase {
             return;
         }
 
-        this.#destroyed.value = true;
-        this.sublayers?.destroy();
-        this.layers?.destroy();
-        emit(this.#destroyEvent);
+        batch(() => {
+            this.#destroyed.value = true;
+            this.sublayers?.destroy();
+            this.layers?.destroy();
+            emit(this.#destroyEvent);
+        });
     }
 
     /** True if the layer has been destroyed. */

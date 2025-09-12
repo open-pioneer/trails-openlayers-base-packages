@@ -14,6 +14,7 @@ import { createMapModel } from "./model/createMapModel";
 import { MapConfig } from "./model/MapConfig";
 import { MapModel } from "./model/MapModel";
 import { MapModelImpl } from "./model/MapModelImpl";
+import { batch } from "@conterra/reactivity-core";
 
 const LOG = createLogger("map:MapRegistry");
 
@@ -95,16 +96,18 @@ export class MapRegistry implements Service {
             return;
         }
 
-        LOG.debug(`Destroy map registry and all maps`);
-        this.#destroyed = true;
-        this.#entries.forEach((entry) => {
-            if (entry.kind === "model") {
-                entry.listener.destroy();
-                entry.model.destroy();
-            }
+        batch(() => {
+            LOG.debug(`Destroy map registry and all maps`);
+            this.#destroyed = true;
+            this.#entries.forEach((entry) => {
+                if (entry.kind === "model") {
+                    entry.listener.destroy();
+                    entry.model.destroy();
+                }
+            });
+            this.#entries.clear();
+            this.#modelCreationJobs.clear();
         });
-        this.#entries.clear();
-        this.#modelCreationJobs.clear();
     }
 
     /**
