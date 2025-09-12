@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { BaseFeature, ZoomOptions } from "@open-pioneer/map";
-import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
+import { setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -19,10 +19,10 @@ afterEach(() => {
 });
 
 it("expect result list to be created successfully", async () => {
-    const { map, injectedServices } = await createDependencies();
+    const { map } = await setup();
 
     render(
-        <PackageContextProvider services={injectedServices}>
+        <PackageContextProvider>
             <ResultList
                 input={{ data: dummyFeatureData, columns: dummyColumns }}
                 map={map}
@@ -36,10 +36,10 @@ it("expect result list to be created successfully", async () => {
 });
 
 it("expect result list column and row count to match data/metadata", async () => {
-    const { map, injectedServices } = await createDependencies();
+    const { map } = await setup();
 
     render(
-        <PackageContextProvider services={injectedServices}>
+        <PackageContextProvider>
             <ResultList
                 input={{ data: dummyFeatureData, columns: dummyColumns }}
                 map={map}
@@ -56,7 +56,7 @@ it("expect result list column and row count to match data/metadata", async () =>
 });
 
 it("expect empty data text to be shown", async () => {
-    const { map, injectedServices } = await createDependencies();
+    const { map } = await setup();
     const emptyData: ResultListInput = {
         data: [],
         columns: dummyColumns
@@ -65,7 +65,7 @@ it("expect empty data text to be shown", async () => {
     let error;
     try {
         render(
-            <PackageContextProvider services={injectedServices}>
+            <PackageContextProvider>
                 <ResultList input={emptyData} map={map} data-testid="result-list" />
             </PackageContextProvider>
         );
@@ -81,7 +81,7 @@ it("expect empty data text to be shown", async () => {
 });
 
 it("expect empty metadata to throw error", async () => {
-    const { map, injectedServices } = await createDependencies();
+    const { map } = await setup();
 
     const emptyMetadata: ResultListInput = {
         data: dummyFeatureData,
@@ -90,7 +90,7 @@ it("expect empty metadata to throw error", async () => {
 
     expect(() => {
         render(
-            <PackageContextProvider services={injectedServices}>
+            <PackageContextProvider>
                 <ResultList input={emptyMetadata} map={map} data-testid="result-list" />
             </PackageContextProvider>
         );
@@ -98,7 +98,7 @@ it("expect empty metadata to throw error", async () => {
 });
 
 it("expect getPropertyValue to be used correctly", async () => {
-    const { map, injectedServices } = await createDependencies();
+    const { map } = await setup();
 
     const getPropertyValueMock = vi.fn((_feature) => {
         return "virtual property";
@@ -128,7 +128,7 @@ it("expect getPropertyValue to be used correctly", async () => {
     };
 
     render(
-        <PackageContextProvider services={injectedServices}>
+        <PackageContextProvider>
             <ResultList input={resultListInput} map={map} data-testid="result-list" />
         </PackageContextProvider>
     );
@@ -141,10 +141,10 @@ it("expect getPropertyValue to be used correctly", async () => {
 });
 
 it("expect changes of data and metadata to change full table", async () => {
-    const { map, injectedServices } = await createDependencies();
+    const { map } = await setup();
 
     const renderResult = render(
-        <PackageContextProvider services={injectedServices}>
+        <PackageContextProvider>
             <ResultList
                 input={{ data: dummyFeatureData, columns: dummyColumns }}
                 map={map}
@@ -160,7 +160,7 @@ it("expect changes of data and metadata to change full table", async () => {
     expect(allRows.length).toEqual(dummyFeatureData.length);
 
     renderResult.rerender(
-        <PackageContextProvider services={injectedServices}>
+        <PackageContextProvider>
             <ResultList
                 input={{ data: dummyFeatureDataAlt, columns: dummyMetaDataAlt }}
                 map={map}
@@ -181,10 +181,10 @@ it("expect changes of data and metadata to change full table", async () => {
 });
 
 it("expect selection column to be added", async () => {
-    const { map, injectedServices } = await createDependencies();
+    const { map } = await setup();
 
     render(
-        <PackageContextProvider services={injectedServices}>
+        <PackageContextProvider>
             <ResultList
                 input={{ data: dummyFeatureData, columns: dummyColumns }}
                 map={map}
@@ -200,10 +200,10 @@ it("expect selection column to be added", async () => {
 });
 
 it("expect all rows to be selected and deselected", async () => {
-    const { map, injectedServices } = await createDependencies();
+    const { map } = await setup();
 
     render(
-        <PackageContextProvider services={injectedServices}>
+        <PackageContextProvider>
             <ResultList
                 input={{ data: dummyFeatureData, columns: dummyColumns }}
                 map={map}
@@ -237,11 +237,11 @@ it("expect all rows to be selected and deselected", async () => {
 });
 
 it("expect only single rows to be selected and deselected by radio buttons", async () => {
-    const { map, injectedServices } = await createDependencies();
+    const { map } = await setup();
     const user = userEvent.setup();
 
     render(
-        <PackageContextProvider services={injectedServices}>
+        <PackageContextProvider>
             <ResultList
                 input={{ data: dummyFeatureData, columns: dummyColumns }}
                 map={map}
@@ -271,11 +271,11 @@ it("expect only single rows to be selected and deselected by radio buttons", asy
 });
 
 it("expect only single rows to be selected and deselected by checkboxes", async () => {
-    const { map, injectedServices } = await createDependencies();
+    const { map } = await setup();
     const user = userEvent.setup();
 
     render(
-        <PackageContextProvider services={injectedServices}>
+        <PackageContextProvider>
             <ResultList
                 input={{ data: dummyFeatureData, columns: dummyColumns }}
                 map={map}
@@ -302,10 +302,10 @@ it("expect only single rows to be selected and deselected by checkboxes", async 
 });
 
 it("expect result list display all data types except dates", async () => {
-    const { map, injectedServices } = await createDependencies();
+    const { map } = await setup();
 
     render(
-        <PackageContextProvider services={injectedServices} locale="de">
+        <PackageContextProvider locale="de">
             <ResultList
                 input={{
                     data: dummyFeatureData,
@@ -344,7 +344,7 @@ it("expect result list display all data types except dates", async () => {
 });
 
 it("expect result list display date in given format", async () => {
-    const { map, injectedServices } = await createDependencies();
+    const { map } = await setup();
 
     const dateTimeFormatOptions: Intl.DateTimeFormatOptions = {
         dateStyle: "medium",
@@ -369,9 +369,7 @@ it("expect result list display date in given format", async () => {
     );
 
     const renderResult = render(
-        <PackageContextProvider services={injectedServices} locale="de">
-            {resultListComp}
-        </PackageContextProvider>
+        <PackageContextProvider locale="de">{resultListComp}</PackageContextProvider>
     );
 
     const { allRows } = await waitForResultList();
@@ -380,9 +378,7 @@ it("expect result list display date in given format", async () => {
     expect(dateCell!.textContent).toBe(dateFormatter.format(new Date("2020-05-12T23:50:21.817Z")));
 
     renderResult.rerender(
-        <PackageContextProvider services={injectedServices} locale="en">
-            {resultListComp}
-        </PackageContextProvider>
+        <PackageContextProvider locale="en">{resultListComp}</PackageContextProvider>
     );
     await waitForResultList();
 
@@ -391,10 +387,10 @@ it("expect result list display date in given format", async () => {
 });
 
 it("expect render function to be applied", async () => {
-    const { map, injectedServices } = await createDependencies();
+    const { map } = await setup();
 
     render(
-        <PackageContextProvider services={injectedServices} locale="de">
+        <PackageContextProvider locale="de">
             <ResultList
                 input={{
                     data: dummyDateFeatureData,
@@ -413,12 +409,12 @@ it("expect render function to be applied", async () => {
 });
 
 it("expect result-list throws selection change event", async () => {
-    const { map, injectedServices } = await createDependencies();
+    const { map } = await setup();
     const user = userEvent.setup();
 
     const selectionChangeListener = vi.fn();
     render(
-        <PackageContextProvider services={injectedServices}>
+        <PackageContextProvider>
             <ResultList
                 map={map}
                 input={{ data: dummyFeatureData, columns: dummyColumns }}
@@ -453,10 +449,10 @@ it("expect result-list throws selection change event", async () => {
 });
 
 it("should not zoom the map further than the default maxZoom", async () => {
-    const { map, injectedServices } = await createDependencies();
+    const { map } = await setup();
 
     render(
-        <PackageContextProvider services={injectedServices} locale="de">
+        <PackageContextProvider locale="de">
             <ResultList
                 input={{
                     data: dummyFeatureData,
@@ -476,11 +472,11 @@ it("should not zoom the map further than the default maxZoom", async () => {
 });
 
 it("should not zoom the map further than the configured maxZoom", async () => {
-    const { map, injectedServices } = await createDependencies();
+    const { map } = await setup();
 
     const zoomOptions: ZoomOptions = { maxZoom: 11 };
     render(
-        <PackageContextProvider services={injectedServices} locale="de">
+        <PackageContextProvider locale="de">
             <ResultList
                 input={{
                     data: dummyFeatureData,
@@ -500,13 +496,13 @@ it("should not zoom the map further than the configured maxZoom", async () => {
 });
 
 it("should be possible to disable zooming altogether", async () => {
-    const { map, injectedServices } = await createDependencies();
+    const { map } = await setup();
 
     /** mapZoom before data is loaded into result-list */
     const mapZoomBefore = map.olMap.getView().getZoom();
 
     render(
-        <PackageContextProvider services={injectedServices} locale="de">
+        <PackageContextProvider locale="de">
             <ResultList
                 input={{
                     data: dummyFeatureData,
@@ -531,10 +527,9 @@ function getSelectionsEvent(listener: Mock, call: number) {
     return listener.mock.calls![call]![0];
 }
 
-async function createDependencies() {
-    const { map, registry } = await setupMap();
-    const injectedServices = createServiceOptions({ registry });
-    return { map, registry, injectedServices };
+async function setup() {
+    const { map } = await setupMap();
+    return { map };
 }
 
 async function waitForResultList() {

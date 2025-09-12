@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { MapContainer } from "@open-pioneer/map";
-import { createServiceOptions, setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
+import { setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { act, render, renderHook, screen, waitFor } from "@testing-library/react";
 import View from "ol/View";
@@ -10,11 +10,10 @@ import { expect, it } from "vitest";
 import { CoordinateViewer, useCoordinatesString } from "./CoordinateViewer";
 
 it("should successfully create a coordinate viewer component", async () => {
-    const { map, registry } = await setupMap();
+    const { map } = await setupMap();
 
-    const injectedServices = createServiceOptions({ registry });
     render(
-        <PackageContextProvider services={injectedServices}>
+        <PackageContextProvider>
             <CoordinateViewer map={map} data-testid="coordinate-viewer" />
         </PackageContextProvider>
     );
@@ -28,11 +27,10 @@ it("should successfully create a coordinate viewer component", async () => {
 });
 
 it("should successfully create a coordinate viewer component with additional css classes", async () => {
-    const { map, registry } = await setupMap();
+    const { map } = await setupMap();
 
-    const injectedServices = createServiceOptions({ registry });
     render(
-        <PackageContextProvider services={injectedServices}>
+        <PackageContextProvider>
             <CoordinateViewer map={map} className="test" data-testid="coordinate-viewer" />
         </PackageContextProvider>
     );
@@ -43,11 +41,10 @@ it("should successfully create a coordinate viewer component with additional css
 });
 
 it("tracks the user's mouse position", async () => {
-    const { map, registry } = await setupMap();
+    const { map } = await setupMap();
 
-    const injectedServices = createServiceOptions({ registry });
     render(
-        <PackageContextProvider services={injectedServices}>
+        <PackageContextProvider>
             <MapContainer map={map} data-testid="map" />
             <CoordinateViewer map={map} precision={1} data-testid="coordinate-viewer" />
         </PackageContextProvider>
@@ -116,11 +113,10 @@ it("should format coordinates to correct coordinate string with default precisio
 
 it("should display transformed coordinates if output projection is provided", async () => {
     const outputProjection = "EPSG:4326"; //WGS84
-    const { map, registry } = await setupMap();
+    const { map } = await setupMap();
 
-    const injectedServices = createServiceOptions({ registry });
     render(
-        <PackageContextProvider services={injectedServices}>
+        <PackageContextProvider>
             <MapContainer map={map} data-testid="map" />
             <CoordinateViewer
                 map={map}
@@ -150,11 +146,10 @@ it("should display transformed coordinates if output projection is provided", as
 });
 
 it("tracks the user's mouse position, when format is set to 'degree'", async () => {
-    const { map, registry } = await setupMap();
+    const { map } = await setupMap();
 
-    const injectedServices = createServiceOptions({ registry });
     render(
-        <PackageContextProvider services={injectedServices}>
+        <PackageContextProvider>
             <MapContainer map={map} data-testid="map" />
             <CoordinateViewer
                 map={map}
@@ -202,11 +197,10 @@ it("tracks the user's mouse position, when format is set to 'degree'", async () 
 it("should display transformed coordinates if output projection and format is set to 'degree' is provided", async () => {
     const outputProjection = "EPSG:4326"; //WGS84
     const format = "degree";
-    const { map, registry } = await setupMap();
+    const { map } = await setupMap();
 
-    const injectedServices = createServiceOptions({ registry });
     render(
-        <PackageContextProvider services={injectedServices}>
+        <PackageContextProvider>
             <MapContainer map={map} data-testid="map" />
             <CoordinateViewer
                 map={map}

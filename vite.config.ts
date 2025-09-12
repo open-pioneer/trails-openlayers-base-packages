@@ -19,6 +19,7 @@ const sampleSites = glob
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
     const devMode = mode === "development";
+    const testMode = mode === "test"; // set by vitest
 
     // Allowed values are "DEBUG", "INFO", "WARN", "ERROR"
     const logLevel = devMode ? "INFO" : "WARN";
@@ -77,14 +78,22 @@ export default defineConfig(({ mode }) => {
         // define global constants
         // See also: https://vitejs.dev/config/shared-options.html#define
         define: {
-            __LOG_LEVEL__: JSON.stringify(logLevel)
+            __LOG_LEVEL__: JSON.stringify(logLevel),
+            __PRINT_DEPRECATIONS__: !testMode // hide in tests (TODO)
         },
 
         // https://vitest.dev/config/
         test: {
             globals: true,
             environment: "happy-dom",
-            setupFiles: ["testing/global-setup.ts"]
+            setupFiles: ["testing/global-setup.ts"],
+            server: {
+                deps: {
+                    // Workaround to fix some import issues, see
+                    // https://github.com/open-pioneer/trails-openlayers-base-packages/issues/314
+                    inline: [/@open-pioneer[/\\]/]
+                }
+            }
         }
 
         // disable hot reloading

@@ -1,0 +1,18 @@
+{
+    "name": "dynamic-map",
+    "private": true,
+    "dependencies": {
+        "@chakra-ui/react": "catalog:",
+        "@open-pioneer/map": "workspace:^",
+        "@open-pioneer/map-ui-components": "workspace:^",
+        "@open-pioneer/react-utils": "catalog:",
+        "@open-pioneer/runtime": "catalog:",
+        "@open-pioneer/toc": "workspace:^",
+        "@open-pioneer/reactivity": "catalog:",
+        "ol": "catalog:",
+        "react": "catalog:",
+        "react-dom": "catalog:",
+        "react-icons": "catalog:"
+    },
+    "version": "0.0.10"
+}

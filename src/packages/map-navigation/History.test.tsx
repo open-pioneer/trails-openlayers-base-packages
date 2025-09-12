@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
+import { setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -198,11 +198,10 @@ async function waitForHistoryComponent() {
 }
 
 async function setup() {
-    const { map, registry } = await setupMap();
-    const services = createServiceOptions({ registry });
+    const { map } = await setupMap();
 
     function Wrapper(props: { children?: ReactNode }) {
-        return <PackageContextProvider services={services} {...props} />;
+        return <PackageContextProvider {...props} />;
     }
 
     return { map, Wrapper };

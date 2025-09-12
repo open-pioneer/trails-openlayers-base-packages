@@ -12,7 +12,8 @@ export default defineBuildConfig({
                 vectorSourceFactory: "ogc-features.VectorSourceFactory",
                 vectorSelectionSourceFactory: "selection.VectorSelectionSourceFactory",
                 httpService: "http.HttpService",
-                mapRegistry: "map.MapRegistry"
+                mapRegistry: "map.MapRegistry",
+                layerFactory: "map.LayerFactory"
             }
         }
     },

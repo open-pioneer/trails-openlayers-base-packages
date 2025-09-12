@@ -1,9 +1,15 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { createManualPromise, getErrorChain } from "@open-pioneer/core";
-import { setupMap, SetupMapResult, SimpleMapOptions } from "@open-pioneer/map-test-utils";
+import {
+    createTestOlLayer,
+    setupMap,
+    SetupMapResult,
+    SimpleMapOptions
+} from "@open-pioneer/map-test-utils";
 import { View } from "ol";
 import OlMap from "ol/Map";
+import type { ViewOptions as OlViewOptions } from "ol/View";
 import { Attribution } from "ol/control";
 import { defaults as defaultInteraction } from "ol/interaction";
 import dragRotate from "ol/interaction/DragRotate";
@@ -13,7 +19,6 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { MapRegistryImpl } from "./MapRegistryImpl";
 import { type MapConfig, MapModel, SimpleLayer } from "./api";
 import { registerProjections } from "./projections";
-import type { ViewOptions as OlViewOptions } from "ol/View";
 
 afterEach(() => {
     vi.restoreAllMocks();
@@ -274,7 +279,7 @@ it("should construct a map with the configured layers", async () => {
                 id: "id2",
                 title: "bar",
                 visible: false,
-                olLayer: new TileLayer({})
+                olLayer: createTestOlLayer()
             }
         ]
     });
@@ -385,7 +390,7 @@ describe("createMapModel", () => {
                     id: "id2",
                     title: "bar",
                     visible: false,
-                    olLayer: new TileLayer({})
+                    olLayer: createTestOlLayer()
                 })
             ]
         });

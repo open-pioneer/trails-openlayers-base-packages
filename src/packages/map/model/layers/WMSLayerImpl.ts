@@ -8,7 +8,13 @@ import {
     ReadonlyReactive,
     watch
 } from "@conterra/reactivity-core";
-import { createLogger, destroyResource, isAbortError, Resource } from "@open-pioneer/core";
+import {
+    createLogger,
+    deprecated,
+    destroyResource,
+    isAbortError,
+    Resource
+} from "@open-pioneer/core";
 import { ImageWrapper } from "ol";
 import WMSCapabilities from "ol/format/WMSCapabilities";
 import ImageLayer from "ol/layer/Image";
@@ -20,8 +26,20 @@ import { AbstractLayer } from "../AbstractLayer";
 import { AbstractLayerBase } from "../AbstractLayerBase";
 import { MapModelImpl } from "../MapModelImpl";
 import { SublayersCollectionImpl } from "../SublayersCollectionImpl";
+import { InternalConstructorTag, LayerConstructor, LayerDependencies } from "./internals";
+
+// Import for api docs
+// eslint-disable-next-line unused-imports/no-unused-imports
+import type { LayerFactory } from "./LayerFactory";
 
 const LOG = createLogger("map:WMSLayer");
+
+const deprecatedConstructor = deprecated({
+    name: "WMSLayer constructor",
+    packageName: "@open-pioneer/map",
+    since: "v1.0.0",
+    alternative: "use LayerFactory.create() instead"
+});
 
 export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
     #url: string;
@@ -30,6 +48,7 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
     #source: ImageWMS;
     #fetchCapabilities: boolean;
 
+    #loadStarted = false;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     #capabilities: Record<string, any> | undefined;
     readonly #abortController = new AbortController();
@@ -37,12 +56,39 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
     #visibleSublayers: ReadonlyReactive<string[]>;
     #sublayersWatch: Resource | undefined;
 
-    constructor(config: WMSLayerConfig) {
+    /**
+     * @deprecated Prefer using {@link LayerFactory.create} instead of calling the constructor directly
+     */
+    constructor(config: WMSLayerConfig);
+
+    /**
+     * NOTE: Do not use this overload. Use {@link LayerFactory.create} instead.
+     *
+     * @internal
+     */
+    constructor(
+        config: WMSLayerConfig,
+        deps: LayerDependencies,
+        internalTag: InternalConstructorTag
+    );
+    constructor(
+        config: WMSLayerConfig,
+        deps?: LayerDependencies,
+        internalTag?: InternalConstructorTag
+    ) {
+        if (!internalTag) {
+            deprecatedConstructor();
+        }
+
         const layer = new ImageLayer();
-        super({
-            ...config,
-            olLayer: layer
-        });
+        super(
+            {
+                ...config,
+                olLayer: layer
+            },
+            deps,
+            internalTag
+        );
         const source = new ImageWMS({
             ...config.sourceOptions,
             url: config.url,
@@ -60,7 +106,12 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
         this.#fetchCapabilities = config.fetchCapabilities ?? true;
         this.#source = source;
         this.#layer = layer;
+
         this.#sublayers = new SublayersCollectionImpl(constructSublayers(config.sublayers));
+        this.#sublayers
+            .__getRawSublayers()
+            .forEach((sublayer) => sublayer.__attachToParent(this, this));
+
         this.#visibleSublayers = computed(() => this.#getVisibleLayerNames(), {
             equal(a, b) {
                 return a.length === b.length && a.every((v, i) => v === b[i]);
@@ -111,8 +162,24 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
     __attachToMap(map: MapModelImpl): void {
         super.__attachToMap(map);
         for (const sublayer of this.#sublayers.getSublayers()) {
-            sublayer.__attach(map, this, this);
+            sublayer.__attachToMap(map);
         }
+
+        this.#load();
+    }
+
+    __detachFromMap(): void {
+        super.__detachFromMap();
+        for (const sublayer of this.#sublayers.getSublayers()) {
+            sublayer.__detachFromMap();
+        }
+    }
+
+    #load() {
+        if (this.#loadStarted || !this.#fetchCapabilities) {
+            return;
+        }
+        this.#loadStarted = true;
 
         /** Find all leaf nodes representing a layer in the structure */
         const getNestedSublayer = (sublayers: WMSSublayerImpl[], layers: WMSSublayerImpl[]) => {
@@ -127,10 +194,6 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
                 }
             }
         };
-
-        if (!this.#fetchCapabilities) {
-            return;
-        }
 
         this.#fetchWMSCapabilities()
             .then((result: string) => {
@@ -150,10 +213,10 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
             })
             .catch((error) => {
                 if (isAbortError(error)) {
-                    LOG.debug(`Layer ${this.id} has been destroyed before fetching capabilities`);
+                    LOG.debug(`Layer '${this.id}' has been destroyed before fetching capabilities`);
                     return;
                 }
-                LOG.error(`Failed to fetch WMS capabilities for layer ${this.id}`, error);
+                LOG.error(`Failed to fetch WMS capabilities for layer '${this.id}'`, error);
             });
     }
 
@@ -203,13 +266,13 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
     }
 
     async #fetchWMSCapabilities(): Promise<string> {
-        const httpService = this.map.__sharedDependencies.httpService;
+        const httpService = this.__getDeps().httpService;
         const url = `${this.#url}?LANGUAGE=ger&SERVICE=WMS&REQUEST=GetCapabilities`;
         return fetchCapabilities(url, httpService, this.#abortController.signal);
     }
 
     async #loadImage(imageWrapper: ImageWrapper, imageUrl: string): Promise<void> {
-        const httpService = this.map.__sharedDependencies.httpService;
+        const httpService = this.__getDeps().httpService;
         const image = imageWrapper.getImage() as HTMLImageElement;
 
         const response = await httpService.fetch(imageUrl);
@@ -231,6 +294,13 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
         image.addEventListener("error", finish);
         image.src = objectUrl;
     }
+}
+
+// Ensure layer class is assignable to the constructor interface (there is no "implements" for the class itself).
+// eslint-disable-next-line no-constant-condition
+if (false) {
+    const check: LayerConstructor<WMSLayerConfig, WMSLayer> = WMSLayerImpl;
+    void check;
 }
 
 class WMSSublayerImpl extends AbstractLayerBase implements WMSSublayer {
@@ -291,18 +361,33 @@ class WMSSublayerImpl extends AbstractLayerBase implements WMSSublayer {
     /**
      * Called by the parent layer when it is attached to the map to attach all sublayers.
      */
-    __attach(
-        map: MapModelImpl,
-        parentLayer: WMSLayerImpl,
-        parent: WMSLayerImpl | WMSSublayerImpl
-    ): void {
+    __attachToMap(map: MapModelImpl): void {
         super.__attachToMap(map);
+
+        // Recurse into nested sublayers
+        for (const sublayer of this.sublayers.__getRawSublayers()) {
+            sublayer.__attachToMap(map);
+        }
+    }
+
+    __detachFromMap(): void {
+        super.__detachFromMap();
+        for (const sublayer of this.#sublayers.getSublayers()) {
+            sublayer.__detachFromMap();
+        }
+    }
+
+    /**
+     * Attaches this sublayer to its parent _layer_ and its immediate parent _layer or sublayer_.
+     */
+    __attachToParent(parentLayer: WMSLayerImpl, parent: WMSLayerImpl | WMSSublayerImpl): void {
         if (this.#parent) {
             throw new Error(
                 `WMS sublayer '${this.id}' has already been attached to parent '${this.#parent.id}'`
             );
         }
         this.#parent = parent;
+
         if (this.#parentLayer) {
             throw new Error(
                 `WMS sublayer '${this.id}' has already been attached to parent layer '${this.#parentLayer.id}'`
@@ -312,7 +397,7 @@ class WMSSublayerImpl extends AbstractLayerBase implements WMSSublayer {
 
         // Recurse into nested sublayers
         for (const sublayer of this.sublayers.__getRawSublayers()) {
-            sublayer.__attach(map, parentLayer, this);
+            sublayer.__attachToParent(parentLayer, this);
         }
     }
 
