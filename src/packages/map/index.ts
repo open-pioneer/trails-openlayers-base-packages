@@ -47,25 +47,25 @@ export { WMTSLayer, type WMTSLayerConfig } from "./layers/WMTSLayer";
 
 // Map Model
 export {
-    type ExtentConfig,
     type CoordinateConfig,
+    type ExtentConfig,
     type InitialExtentConfig,
     type InitialPositionConfig,
     type InitialViewConfig,
-    type OlMapOptions,
-    type MapConfig
+    type MapConfig,
+    type OlMapOptions
 } from "./model/MapConfig";
 export {
-    type MapModelEvents,
-    type HighlightOptions,
-    type ZoomOptions,
-    type HighlightZoomOptions,
-    type HighlightStyle,
-    type MapPadding,
-    type Highlight,
     type DisplayTarget,
+    type Highlight,
+    type HighlightOptions,
+    type HighlightStyle,
+    type HighlightZoomOptions,
+    type LayerCollection,
     type MapModel,
-    type LayerCollection
+    type MapModelEvents,
+    type MapPadding,
+    type ZoomOptions
 } from "./model/MapModel";
 
 // FIXME: remove this
@@ -73,11 +73,11 @@ export { TOPMOST_LAYER_Z } from "./model/LayerCollectionImpl";
 
 // Services
 export { LayerFactory } from "./LayerFactory";
+export { type MapConfigProvider, type MapConfigProviderOptions } from "./MapRegistry";
 export {
     // TODO: Rename impl class
     MapRegistryImpl as MapRegistry
 } from "./MapRegistryImpl";
-export { type MapConfigProvider, type MapConfigProviderOptions } from "./MapRegistry";
 
 // Utils
 export { calculateBufferedExtent } from "./utils/geometry-utils";
@@ -86,5 +86,12 @@ export { getProjection, registerProjections, type ProjectionDefinition } from ".
 // TODO: Decide where to put this
 export { type BaseFeature } from "./BaseFeature";
 
-// TODO: ???
-// export * from "./shared";
+// TODO: Decide where to put this
+export {
+    type AddLayerOptions,
+    type AddLayerOptionsAboveBelow,
+    type AddLayerOptionsBase,
+    type AddLayerOptionsTopBottom,
+    type LayerRetrievalOptions,
+    type RecursiveRetrievalOptions
+} from "./shared";
