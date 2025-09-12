@@ -13,12 +13,17 @@ import { getLayerDependencies, InternalConstructorTag, LayerDependencies } from 
 import { HealthCheckFunction, Layer, LayerBaseType, LayerConfig, LayerLoadState } from "./base";
 import { SimpleLayerConfig } from "./SimpleLayer";
 
+// Imported for typedoc
+// eslint-disable-next-line unused-imports/no-unused-imports
+import { SimpleLayer } from "./SimpleLayer";
+
 const LOG = createLogger("map:AbstractLayer");
 
 /**
- * Base class for normal layer types.
+ * Represents an operational layer in the map.
  *
- * These layers always have an associated OpenLayers layer.
+ * Instances of this interface cannot be constructed directly; use a real layer
+ * class such as {@link SimpleLayer} instead.
  */
 export abstract class AbstractLayer<AdditionalEvents = {}>
     extends AbstractLayerBase<AdditionalEvents>
@@ -59,25 +64,7 @@ export abstract class AbstractLayer<AdditionalEvents = {}>
         this.__setVisible(config.visible ?? true); // apply initial visibility
     }
 
-    abstract readonly type: "simple" | "wms" | "wmts" | "group";
-
-    get visible(): boolean {
-        return this.#visible.value;
-    }
-
-    get olLayer(): OlBaseLayer {
-        return this.#olLayer;
-    }
-
-    get isBaseLayer(): boolean {
-        return this.#isBaseLayer;
-    }
-
-    get loadState(): LayerLoadState {
-        return this.#loadState.value;
-    }
-
-    destroy() {
+    override destroy() {
         if (this.destroyed) {
             return;
         }
@@ -88,9 +75,41 @@ export abstract class AbstractLayer<AdditionalEvents = {}>
     }
 
     /**
+     * Identifies the type of this layer.
+     */
+    abstract override readonly type: "simple" | "wms" | "wmts" | "group";
+
+    override get visible(): boolean {
+        return this.#visible.value;
+    }
+
+    /**
+     * The raw OpenLayers layer.
+     */
+    get olLayer(): OlBaseLayer {
+        return this.#olLayer;
+    }
+
+    /**
+     * True if this layer is a base layer.
+     *
+     * Only one base layer can be visible at a time.
+     */
+    get isBaseLayer(): boolean {
+        return this.#isBaseLayer;
+    }
+
+    /**
+     * The load state of a layer.
+     */
+    get loadState(): LayerLoadState {
+        return this.#loadState.value;
+    }
+
+    /**
      * Called by the map model when the layer is added to the map.
      */
-    __attachToMap(map: MapModelImpl): void {
+    override __attachToMap(map: MapModelImpl): void {
         super.__attachToMap(map);
 
         if (!this.#stateWatchResource) {
@@ -106,7 +125,7 @@ export abstract class AbstractLayer<AdditionalEvents = {}>
         }
     }
 
-    setVisible(newVisibility: boolean): void {
+    override setVisible(newVisibility: boolean): void {
         if (this.isBaseLayer) {
             LOG.warn(
                 `Cannot change visibility of base layer '${this.id}': use activateBaseLayer() on the map's LayerCollection instead.`

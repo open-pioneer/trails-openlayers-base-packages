@@ -20,7 +20,6 @@ import { AnyLayer, Layer } from "../layers/base";
 import { GroupLayer } from "../layers/GroupLayer";
 import { INTERNAL_CONSTRUCTOR_TAG } from "../layers/internals";
 import { SimpleLayer } from "../layers/SimpleLayer";
-import { SimpleLayerImpl } from "../layers/SimpleLayerImpl";
 import { WMSLayer } from "../layers/WMSLayer";
 import { WMSLayerImpl } from "../layers/WMSLayerImpl";
 import { WMTSLayerImpl } from "../layers/WMTSLayerImpl";
@@ -198,17 +197,17 @@ it("supports adding custom layer instances", async () => {
     });
 
     const l1 = model.layers.getLayerById("l1");
-    expect(l1).toBeInstanceOf(SimpleLayerImpl);
+    expect(l1).toBeInstanceOf(SimpleLayer);
 
     const l2 = model.layers.getLayerById("l2");
-    expect(l2).toBeInstanceOf(SimpleLayerImpl);
+    expect(l2).toBeInstanceOf(SimpleLayer);
 
     const l3 = model.layers.getLayerById("l3");
     expect(l3).toBeInstanceOf(WMSLayerImpl);
 });
 
 it("destroys child layers when parent group layer is removed", async () => {
-    const groupMember = new SimpleLayerImpl({
+    const groupMember = new SimpleLayer({
         id: "member",
         title: "group member",
         olLayer: dummyLayer()
@@ -263,7 +262,7 @@ describe("layer lookup", () => {
     });
 
     it("supports lookup by layer id for members of a group layer", async () => {
-        const child = new SimpleLayerImpl({
+        const child = new SimpleLayer({
             id: "member",
             title: "group member",
             olLayer: dummyLayer()
@@ -335,7 +334,7 @@ describe("layer lookup", () => {
                     id: "group",
                     title: "group test",
                     layers: [
-                        new SimpleLayerImpl({
+                        new SimpleLayer({
                             id: "member",
                             title: "group member",
                             olLayer: olLayer
@@ -362,7 +361,7 @@ describe("layer lookup", () => {
                     id: "group",
                     title: "group test",
                     layers: [
-                        new SimpleLayerImpl({
+                        new SimpleLayer({
                             id: "member",
                             title: "group member",
                             olLayer: olLayer
@@ -850,8 +849,8 @@ describe("base layers", () => {
         });
 
         const layers = model.layers;
-        const b1 = layers.getLayerById("b-1")! as SimpleLayerImpl;
-        const b2 = layers.getLayerById("b-2")! as SimpleLayerImpl;
+        const b1 = layers.getLayerById("b-1")! as SimpleLayer;
+        const b2 = layers.getLayerById("b-2")! as SimpleLayer;
 
         let events = 0;
         syncWatch(
@@ -935,14 +934,14 @@ describe("base layers", () => {
 
 describe("child access", () => {
     it("it should return all layers including children", async () => {
-        const base = new SimpleLayerImpl({
+        const base = new SimpleLayer({
             id: "base",
             title: "baselayer",
             olLayer: dummyLayer(),
             isBaseLayer: true
         });
 
-        const child = new SimpleLayerImpl({
+        const child = new SimpleLayer({
             id: "member",
             title: "group member",
             olLayer: dummyLayer()
@@ -970,14 +969,14 @@ describe("child access", () => {
     });
 
     it("it should return all operational layers including children", async () => {
-        const base = new SimpleLayerImpl({
+        const base = new SimpleLayer({
             id: "base",
             title: "baselayer",
             olLayer: dummyLayer(),
             isBaseLayer: true
         });
 
-        const child = new SimpleLayerImpl({
+        const child = new SimpleLayer({
             id: "member",
             title: "group member",
             olLayer: dummyLayer()
@@ -1007,14 +1006,14 @@ describe("child access", () => {
     });
 
     it("it should return all layers including children ordered by display order (asc)", async () => {
-        const base = new SimpleLayerImpl({
+        const base = new SimpleLayer({
             id: "base",
             title: "baselayer",
             olLayer: dummyLayer(),
             isBaseLayer: true
         });
 
-        const child = new SimpleLayerImpl({
+        const child = new SimpleLayer({
             id: "member",
             title: "group member",
             olLayer: dummyLayer()

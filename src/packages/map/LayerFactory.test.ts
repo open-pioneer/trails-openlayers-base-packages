@@ -7,7 +7,6 @@ import { expect, it } from "vitest";
 import { LayerFactory } from "./LayerFactory";
 import { AbstractLayer } from "./layers/AbstractLayer";
 import { SimpleLayer } from "./layers/SimpleLayer";
-import { SimpleLayerImpl } from "./layers/SimpleLayerImpl";
 
 it("creates layer instances", async () => {
     const mockHttpService = {} as unknown as HttpService; // not called in this test
@@ -23,7 +22,7 @@ it("creates layer instances", async () => {
     });
 
     expect(layer).toBeDefined();
-    expect(layer).toBeInstanceOf(SimpleLayerImpl);
+    expect(layer).toBeInstanceOf(SimpleLayer);
     expect(layer.title).toBe("Test title");
     expect(layer.olLayer).toBe(olLayer);
 

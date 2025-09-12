@@ -4,7 +4,7 @@ import { createTestOlLayer } from "@open-pioneer/map-test-utils";
 import { Group } from "ol/layer";
 import { expect, it } from "vitest";
 import { GroupLayerImpl } from "./GroupLayerImpl";
-import { SimpleLayerImpl } from "./SimpleLayerImpl";
+import { SimpleLayer } from "./SimpleLayer";
 import { WMSLayer } from "./WMSLayer";
 
 it("should not have any sublayers", () => {
@@ -13,7 +13,7 @@ it("should not have any sublayers", () => {
         id: "group",
         title: "group test",
         layers: [
-            new SimpleLayerImpl({
+            new SimpleLayer({
                 id: "member",
                 title: "group member",
                 olLayer: olLayer
@@ -30,7 +30,7 @@ it("should create OL group that contains all group members", () => {
         id: "group",
         title: "group test",
         layers: [
-            new SimpleLayerImpl({
+            new SimpleLayer({
                 id: "member",
                 title: "group member",
                 olLayer: olLayer1
@@ -39,7 +39,7 @@ it("should create OL group that contains all group members", () => {
                 id: "subgroup",
                 title: "subgroup test",
                 layers: [
-                    new SimpleLayerImpl({
+                    new SimpleLayer({
                         id: "subgroupmember",
                         title: "subgroup member",
                         olLayer: olLayer2
@@ -56,7 +56,7 @@ it("should create OL group that contains all group members", () => {
 
 it("should set parent of group members to this group layer", () => {
     const olLayer = createTestOlLayer();
-    const child = new SimpleLayerImpl({
+    const child = new SimpleLayer({
         id: "member",
         title: "group member",
         olLayer: olLayer
@@ -107,7 +107,7 @@ it("should return all layers of the group layer collection, including child laye
         id: "group",
         title: "group test",
         layers: [
-            new SimpleLayerImpl({
+            new SimpleLayer({
                 id: "member",
                 title: "group member",
                 olLayer: olLayer1
@@ -116,7 +116,7 @@ it("should return all layers of the group layer collection, including child laye
                 id: "subgroup",
                 title: "subgroup test",
                 layers: [
-                    new SimpleLayerImpl({
+                    new SimpleLayer({
                         id: "subgroupmember",
                         title: "subgroup member",
                         olLayer: olLayer2
@@ -143,7 +143,7 @@ it("should return all layers of the group layer collection, including child laye
 
 it("throws when adding the same child twice", () => {
     const olLayer = createTestOlLayer();
-    const child = new SimpleLayerImpl({
+    const child = new SimpleLayer({
         id: "member",
         title: "group member",
         olLayer: olLayer

@@ -1,10 +1,9 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import type { EventSource } from "@open-pioneer/core";
-import type OlBaseLayer from "ol/layer/Base";
-import type { MapModel } from "../model/MapModel";
 import type { LayerRetrievalOptions, RecursiveRetrievalOptions } from "../shared";
-import type { GroupLayer, GroupLayerCollection } from "./GroupLayer";
+import { AbstractLayer } from "./AbstractLayer";
+import { AbstractLayerBase } from "./AbstractLayerBase";
+import type { GroupLayer } from "./GroupLayer";
 import type { SimpleLayer } from "./SimpleLayer";
 import type { WMSLayer, WMSSublayer } from "./WMSLayer";
 import type { WMTSLayer } from "./WMTSLayer";
@@ -60,153 +59,7 @@ export interface LayerBaseConfig {
     internal?: boolean;
 }
 
-/**
- * Interface shared by all layer types (operational layers and sublayers).
- *
- * Instances of this interface cannot be constructed directly; use a real layer
- * class such as {@link SimpleLayer} instead.
- */
-export interface AnyLayerBaseType<AdditionalEvents = {}>
-    extends EventSource<LayerBaseEvents & AdditionalEvents> {
-    /** True if the layer has been destroyed. */
-    readonly destroyed: boolean;
-
-    /**
-     * Identifies the type of this layer.
-     */
-    readonly type: AnyLayerTypes;
-
-    /**
-     * The map this layer belongs to.
-     *
-     * NOTE: Throws if the layer is not part of a map.
-     */
-    readonly map: MapModel;
-
-    /**
-     * The map this layer belongs to, or undefined if the layer is not part of a map.
-     */
-    readonly nullableMap: MapModel | undefined;
-
-    /**
-     * The direct parent of this layer instance, used for sublayers or for layers in a group layer.
-     *
-     * The property shall be undefined if the layer is not a sublayer or member of a group layer.
-     */
-    readonly parent: AnyLayer | undefined;
-
-    /**
-     * The unique id of this layer within its map model.
-     *
-     * NOTE: layer ids may not be globally unique: layers that belong
-     * to different map models may have the same id.
-     */
-    readonly id: string;
-
-    /** The human-readable title of this layer. */
-    readonly title: string;
-
-    /** The human-readable description of this layer. May be empty. */
-    readonly description: string;
-
-    /**
-     * Whether the layer is visible or not.
-     *
-     * NOTE: The model's visible state may do more than influence the raw OpenLayers's visibility property.
-     * Future versions may completely remove invisible layers from the OpenLayer's map under some circumstances.
-     */
-    readonly visible: boolean;
-
-    /**
-     * Legend URL from the service capabilities, if available.
-     *
-     * Note: this property may be expanded upon in the future, e.g. to support more variants than just image URLs.
-     */
-    readonly legend: string | undefined;
-
-    /**
-     * The direct children of this layer.
-     *
-     * The children may either be a set of operational layers (e.g. for a group layer) or a set of sublayers, or `undefined`.
-     *
-     * See also {@link layers} and {@link sublayers}.
-     */
-    readonly children: ChildrenCollection<AnyLayer> | undefined;
-
-    /**
-     * If this layer is a group layer this property contains a collection of all layers that a members to the group.
-     *
-     * The property shall be `undefined` if it is not a group layer.
-     *
-     * The properties `layers` and `sublayers` are mutually exclusive.
-     */
-    readonly layers: GroupLayerCollection | undefined;
-
-    /**
-     * The collection of child sublayers for this layer. Sublayers are layers that cannot exist without an appropriate parent layer.
-     *
-     * Layers that can never have any sublayers may not have a `sublayers` collection.
-     *
-     * The properties `layers` and `sublayers` are mutually exclusive.
-     */
-    readonly sublayers: SublayersCollection | undefined;
-
-    /**
-     * Property that specifies if the layer is an "internal" layer. Internal layers are not considered by any UI widget (e.g. Toc or Legend).
-     * The internal state is independent of the layer's visibility which is determined by {@link visible}
-     *
-     * NOTE: Some UI widgets might use component specific attributes or props that have precedence over the internal property.
-     */
-    readonly internal: boolean;
-
-    /**
-     * Additional attributes associated with this layer.
-     */
-    readonly attributes: Readonly<Record<string | symbol, unknown>>;
-
-    /**
-     * Destroys the layer and everything owned by it.
-     *
-     * > NOTE: Layers that are part of the map will be destroyed automatically
-     * > when that map is being destroyed.
-     */
-    destroy(): void;
-
-    /**
-     * Updates the title of this layer.
-     */
-    setTitle(newTitle: string): void;
-
-    /**
-     * Updates the description of this layer.
-     */
-    setDescription(newDescription: string): void;
-
-    /**
-     * Updates the visibility of this layer to the new value.
-     *
-     * NOTE: The visibility of base layers cannot be changed through this method.
-     * Call {@link LayerCollection.activateBaseLayer} instead.
-     */
-    setVisible(newVisibility: boolean): void;
-
-    /**
-     * Updates the internal property of this layer to the new value.
-     * @param newIsInternal
-     */
-    setInternal(newIsInternal: boolean): void;
-
-    /**
-     * Updates the attributes of this layer.
-     * Values in `newAttributes` are merged into the existing ones (i.e. via `Object.assign`).
-     */
-    updateAttributes(newAttributes: Record<string | symbol, unknown>): void;
-
-    /**
-     * Deletes the attribute of this layer.
-     */
-    deleteAttribute(deleteAttribute: string | symbol): void;
-}
+export type AnyLayerBaseType<AdditionalEvents = {}> = AbstractLayerBase<AdditionalEvents>;
 
 /**
  * Configuration options supported by all operational layer types.
@@ -228,35 +81,7 @@ export interface LayerConfig extends LayerBaseConfig {
     healthCheck?: string | HealthCheckFunction;
 }
 
-/**
- * Represents an operational layer in the map.
- *
- * Instances of this interface cannot be constructed directly; use a real layer
- * class such as {@link SimpleLayer} instead.
- */
-export interface LayerBaseType<AdditionalEvents = {}> extends AnyLayerBaseType<AdditionalEvents> {
-    /**
-     * Identifies the type of this layer.
-     */
-    readonly type: LayerTypes;
-
-    /**
-     * The load state of a layer.
-     */
-    readonly loadState: LayerLoadState;
-
-    /**
-     * The raw OpenLayers layer.
-     */
-    readonly olLayer: OlBaseLayer;
-
-    /**
-     * True if this layer is a base layer.
-     *
-     * Only one base layer can be visible at a time.
-     */
-    readonly isBaseLayer: boolean;
-}
+export type LayerBaseType<AdditionalEvents = {}> = AbstractLayer<AdditionalEvents>;
 
 /**
  * Represents a sublayer of another layer.

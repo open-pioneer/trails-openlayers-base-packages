@@ -2,11 +2,11 @@
 // SPDX-License-Identifier: Apache-2.0
 import { createTestOlLayer } from "@open-pioneer/map-test-utils";
 import { expect, it } from "vitest";
-import { SimpleLayerImpl } from "./SimpleLayerImpl";
+import { SimpleLayer } from "./SimpleLayer";
 
 it("supports wrap an OpenLayers layer", () => {
     const olLayer = createTestOlLayer();
-    const layer = new SimpleLayerImpl({
+    const layer = new SimpleLayer({
         id: "a",
         title: "Foo",
         olLayer: olLayer
@@ -15,7 +15,7 @@ it("supports wrap an OpenLayers layer", () => {
 });
 
 it("should not have any sublayers", () => {
-    const layer = new SimpleLayerImpl({
+    const layer = new SimpleLayer({
         id: "a",
         title: "Foo",
         olLayer: createTestOlLayer()
