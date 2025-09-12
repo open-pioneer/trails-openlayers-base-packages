@@ -73,10 +73,10 @@ export { TOPMOST_LAYER_Z } from "./model/LayerCollectionImpl";
 
 // Services
 export { LayerFactory } from "./LayerFactory";
-export { type MapConfigProvider, type MapConfigProviderOptions } from "./MapRegistry";
 export {
-    // TODO: Rename impl class
-    MapRegistry as MapRegistry
+    type MapConfigProvider,
+    type MapConfigProviderOptions,
+    type MapRegistry
 } from "./MapRegistry";
 
 // Utils
