@@ -16,7 +16,7 @@ import dragRotate from "ol/interaction/DragRotate";
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { MapRegistryImpl } from "./MapRegistryImpl";
+import { MapRegistry } from "./MapRegistry";
 import { SimpleLayer } from "./layers/SimpleLayer";
 import { type MapConfig } from "./model/MapConfig";
 import { MapModel } from "./model/MapModel";
@@ -31,7 +31,7 @@ it("should successfully create and destroy a mapModel", async () => {
     const mapModel = await registry.expectMapModel(mapId);
     expect(mapModel?.id).toBe(mapId);
 
-    (registry as MapRegistryImpl).destroy();
+    registry.destroy();
 
     await expect(() => registry.expectMapModel(mapId)).rejects.toThrowErrorMatchingInlineSnapshot(
         `[Error: MapRegistry has already been destroyed.]`
@@ -320,7 +320,7 @@ describe("createMapModel", () => {
         expect(mapModel).toBeDefined();
         expect(mapModel?.id).toBe(mapId);
 
-        (registry as MapRegistryImpl).destroy();
+        registry.destroy();
         await expect(() =>
             registry.expectMapModel(mapId)
         ).rejects.toThrowErrorMatchingInlineSnapshot(
@@ -457,9 +457,9 @@ async function createMapSetup(options?: SimpleMapOptions): Promise<SetupMapResul
 
 async function createMapSetupWithoutMCP(
     options?: MapConfig
-): Promise<{ mapModel: MapModel; mapId: string; registry: MapRegistryImpl }> {
+): Promise<{ mapModel: MapModel; mapId: string; registry: MapRegistry }> {
     const { registry } = await createMapSetup();
     const mapId = "mapModelWithoutMCP";
     const mapModel = await registry.createMapModel(mapId, options);
-    return { mapModel, mapId, registry: registry as MapRegistryImpl };
+    return { mapModel, mapId, registry: registry as MapRegistry };
 }

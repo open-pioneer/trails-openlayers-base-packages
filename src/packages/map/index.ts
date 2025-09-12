@@ -76,8 +76,8 @@ export { LayerFactory } from "./LayerFactory";
 export { type MapConfigProvider, type MapConfigProviderOptions } from "./MapRegistry";
 export {
     // TODO: Rename impl class
-    MapRegistryImpl as MapRegistry
-} from "./MapRegistryImpl";
+    MapRegistry as MapRegistry
+} from "./MapRegistry";
 
 // Utils
 export { calculateBufferedExtent } from "./utils/geometry-utils";
