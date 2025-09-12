@@ -426,7 +426,7 @@ function sleep(ms: number) {
 }
 
 function findEditingOlLayer(map: MapModel) {
-    const layers = map.layers.getOperationalLayers();
+    const layers = map.layers.getOperationalLayers({includeInternalLayers: true});
     const editingLayer = layers.find((l) => l.title === "editing-layer") as SimpleLayer | undefined;
 
     if (editingLayer) {
