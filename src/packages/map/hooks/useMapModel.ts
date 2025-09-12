@@ -3,10 +3,10 @@
 import { useService } from "open-pioneer:react-hooks";
 import { useMemo } from "react";
 import { useAsync } from "react-use";
-import { MapModel, MapRegistry } from "../api";
 import { MapModelImpl } from "../model/MapModelImpl";
-// eslint-disable-next-line unused-imports/no-unused-imports
-import { DefaultMapProvider, useDefaultMap } from "./DefaultMapProvider";
+import { MapRegistry } from "../MapRegistry";
+import { MapModel } from "../model/MapModel";
+import { useDefaultMap } from "./DefaultMapProvider";
 
 /** Return value of {@link useMapModel}. */
 export type UseMapModelResult = UseMapModelLoading | UseMapModelResolved | UseMapModelRejected;

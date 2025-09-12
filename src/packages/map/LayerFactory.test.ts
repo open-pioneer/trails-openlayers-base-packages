@@ -1,14 +1,13 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-
 import { HttpService } from "@open-pioneer/http";
 import { createTestOlLayer } from "@open-pioneer/map-test-utils";
 import { createService } from "@open-pioneer/test-utils/services";
 import { expect, it } from "vitest";
 import { LayerFactory } from "./LayerFactory";
-import { SimpleLayerImpl } from "./layers/SimpleLayerImpl";
 import { AbstractLayer } from "./layers/AbstractLayer";
-import { SimpleLayer } from "./layers";
+import { SimpleLayer } from "./layers/SimpleLayer";
+import { SimpleLayerImpl } from "./layers/SimpleLayerImpl";
 
 it("creates layer instances", async () => {
     const mockHttpService = {} as unknown as HttpService; // not called in this test

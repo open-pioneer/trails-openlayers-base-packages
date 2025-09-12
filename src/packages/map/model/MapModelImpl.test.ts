@@ -1,13 +1,13 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { afterEach, expect, it, describe, vi } from "vitest";
+import { HttpService } from "@open-pioneer/http";
+import { waitForInitialExtent } from "@open-pioneer/map-test-utils";
+import { createIntl } from "@open-pioneer/test-utils/vanilla";
+import { waitFor } from "@testing-library/dom";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { MapConfig } from "./MapConfig";
 import { MapModelImpl } from "./MapModelImpl";
 import { createMapModel } from "./createMapModel";
-import { waitFor } from "@testing-library/dom";
-import { waitForInitialExtent } from "@open-pioneer/map-test-utils";
-import { HttpService } from "@open-pioneer/http";
-import { MapConfig } from "./MapConfig";
-import { createIntl } from "@open-pioneer/test-utils/vanilla";
 
 const MOCKED_HTTP_SERVICE = {
     fetch: vi.fn()

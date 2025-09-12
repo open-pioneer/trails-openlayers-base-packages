@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import type { AnyLayer, Layer } from "./layers";
+import { AnyLayer, Layer } from "./layers/base";
 
 /** These options can be used by some APIs returning an array of layers (or sublayers). */
 export interface LayerRetrievalOptions {

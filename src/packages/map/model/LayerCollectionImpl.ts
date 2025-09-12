@@ -11,11 +11,11 @@ import {
 } from "@conterra/reactivity-core";
 import { createLogger, Resource } from "@open-pioneer/core";
 import OlBaseLayer from "ol/layer/Base";
-import { AnyLayer, Layer, Sublayer } from "../layers";
-import type { AddLayerOptions, LayerRetrievalOptions } from "../shared";
-import { LayerCollection } from "./MapModel";
 import { AbstractLayer } from "../layers/AbstractLayer";
 import { AbstractLayerBase } from "../layers/AbstractLayerBase";
+import { AnyLayer, Layer, Sublayer } from "../layers/base";
+import type { AddLayerOptions, LayerRetrievalOptions } from "../shared";
+import { LayerCollection } from "./MapModel";
 import { MapModelImpl } from "./MapModelImpl";
 import { getRecursiveLayers } from "./getRecursiveLayers";
 

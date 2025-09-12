@@ -1,16 +1,17 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { afterEach, describe, expect, it, vi } from "vitest";
-import { MapModel, MapRegistry } from "../api";
-import { useMapModel, UseMapModelResult, useMapModelValue } from "./useMapModel";
-import { DefaultMapProvider } from "./DefaultMapProvider";
-import { renderHook, RenderHookResult, waitFor } from "@testing-library/react";
+import { createManualPromise } from "@open-pioneer/core";
 import {
     PackageContextProvider,
     PackageContextProviderProps
 } from "@open-pioneer/test-utils/react";
-import { createManualPromise } from "@open-pioneer/core";
+import { renderHook, RenderHookResult, waitFor } from "@testing-library/react";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { MapRegistry } from "../MapRegistry";
+import { MapModel } from "../model/MapModel";
 import { MapModelImpl } from "../model/MapModelImpl";
+import { DefaultMapProvider } from "./DefaultMapProvider";
+import { useMapModel, UseMapModelResult, useMapModelValue } from "./useMapModel";
 
 afterEach(() => {
     vi.restoreAllMocks();

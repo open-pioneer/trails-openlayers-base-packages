@@ -16,19 +16,21 @@ import { fileURLToPath } from "node:url";
 import { Group } from "ol/layer";
 import TileLayer from "ol/layer/Tile";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { AnyLayer, Layer, SimpleLayer, WMSLayer } from "../layers";
-import { MapConfig } from "./MapConfig";
-import { GroupLayer } from "../layers";
-import { createMapModel } from "./createMapModel";
+import { AnyLayer, Layer } from "../layers/base";
+import { GroupLayer } from "../layers/GroupLayer";
 import { INTERNAL_CONSTRUCTOR_TAG } from "../layers/internals";
+import { SimpleLayer } from "../layers/SimpleLayer";
 import { SimpleLayerImpl } from "../layers/SimpleLayerImpl";
+import { WMSLayer } from "../layers/WMSLayer";
 import { WMSLayerImpl } from "../layers/WMSLayerImpl";
 import { WMTSLayerImpl } from "../layers/WMTSLayerImpl";
+import { createMapModel } from "./createMapModel";
+import { MapConfig } from "./MapConfig";
 import { MapModelImpl } from "./MapModelImpl";
 
 const THIS_DIR = dirname(fileURLToPath(import.meta.url));
 const WMTS_CAPAS = readFileSync(
-    resolve(THIS_DIR, "./layers/test-data/SimpleWMSCapas.xml"),
+    resolve(THIS_DIR, "../layers/test-data/SimpleWMSCapas.xml"),
     "utf-8"
 );
 

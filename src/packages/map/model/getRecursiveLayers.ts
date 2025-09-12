@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { AnyLayer, ChildrenCollection, RecursiveRetrievalOptions } from "../api";
+import { AnyLayer, ChildrenCollection } from "../layers/base";
+import { RecursiveRetrievalOptions } from "../shared";
 
 export interface RecursiveLayerOptions<LayerType> extends RecursiveRetrievalOptions {
     /**

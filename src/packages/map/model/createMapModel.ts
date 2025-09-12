@@ -13,9 +13,9 @@ import { DragZoom, defaults as defaultInteractions } from "ol/interaction";
 import TileLayer from "ol/layer/Tile";
 import { Projection, get as getProjection } from "ol/proj";
 import OSM from "ol/source/OSM";
-import { MapConfig } from "../api";
+import { patchOpenLayersClassesForTesting } from "../utils/ol-test-support";
 import { registerProjections } from "../utils/projections";
-import { patchOpenLayersClassesForTesting } from "../util/ol-test-support";
+import { MapConfig } from "./MapConfig";
 import { MapModelImpl } from "./MapModelImpl";
 
 /**

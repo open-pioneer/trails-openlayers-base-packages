@@ -1,13 +1,12 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import { GroupLayer, SimpleLayer } from "@open-pioneer/map";
 import { createTestOlLayer, setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
-import { fireEvent, act, render, screen, waitFor } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { expect, it } from "vitest";
 import { Toc } from "./Toc";
-import userEvent from "@testing-library/user-event";
-import { GroupLayerImpl } from "@open-pioneer/map/model/layers/GroupLayerImpl";
-import { SimpleLayerImpl } from "@open-pioneer/map/model/layers/SimpleLayerImpl";
 
 it("Should successfully create a toc with default tool component", async () => {
     const { map } = await setupMap({
@@ -98,20 +97,20 @@ it("Should successfully hide all layers in toc", async () => {
 it("Should collapse all layer items in toc", async () => {
     const olLayer1 = createTestOlLayer();
     const olLayer2 = createTestOlLayer();
-    const grouplayer = new GroupLayerImpl({
+    const grouplayer = new GroupLayer({
         id: "group",
         title: "group test",
         layers: [
-            new SimpleLayerImpl({
+            new SimpleLayer({
                 id: "member",
                 title: "group member",
                 olLayer: olLayer1
             }),
-            new GroupLayerImpl({
+            new GroupLayer({
                 id: "subgroup",
                 title: "subgroup test",
                 layers: [
-                    new SimpleLayerImpl({
+                    new SimpleLayer({
                         id: "subgroupmember",
                         title: "subgroup member",
                         olLayer: olLayer2

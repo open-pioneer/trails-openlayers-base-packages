@@ -1,13 +1,12 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-
-import { afterEach, expect, it } from "vitest";
-import OlMap from "ol/Map";
-import { Highlights } from "./Highlights";
-import { LineString, Point, Polygon } from "ol/geom";
-import View from "ol/View";
 import { approximatelyEquals } from "ol/extent";
+import { LineString, Point, Polygon } from "ol/geom";
+import OlMap from "ol/Map";
+import View from "ol/View";
+import { afterEach, expect, it } from "vitest";
 import { BaseFeature } from "../BaseFeature";
+import { Highlights } from "./Highlights";
 
 let _highlights: Highlights | undefined;
 afterEach(() => {

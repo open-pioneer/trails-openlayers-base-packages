@@ -8,6 +8,8 @@ import ImageSource from "ol/source/Image";
 import ImageWMS from "ol/source/ImageWMS";
 import { Mock, afterEach, beforeEach, expect, it, vi } from "vitest";
 import { MapModelImpl } from "../model/MapModelImpl";
+import { AbstractLayerBase } from "./AbstractLayerBase";
+import { WMSLayerConfig } from "./WMSLayer";
 import { WMSLayerImpl } from "./WMSLayerImpl";
 
 const SERVICE_URL = "https://example.com/wms-service";

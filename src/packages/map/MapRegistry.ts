@@ -1,10 +1,10 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import type { DeclaredService } from "@open-pioneer/runtime";
 import type OlMap from "ol/Map";
+import type { LayerFactory } from "./LayerFactory";
 import type { MapConfig } from "./model/MapConfig";
 import type { MapModel } from "./model/MapModel";
-import type { DeclaredService } from "@open-pioneer/runtime";
-import type { LayerFactory } from "./LayerFactory";
 
 /**
  * Provides access to registered map instances.

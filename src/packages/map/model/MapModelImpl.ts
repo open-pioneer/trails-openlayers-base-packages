@@ -18,17 +18,17 @@ import { EventsKey } from "ol/events";
 import { getCenter } from "ol/extent";
 import { Geometry } from "ol/geom";
 import { getPointResolution, Projection } from "ol/proj";
+import { LayerDependencies } from "../layers/internals";
+import { Highlights } from "./Highlights";
+import { LayerCollectionImpl } from "./LayerCollectionImpl";
+import { ExtentConfig } from "./MapConfig";
 import {
+    Highlight,
     HighlightOptions,
     HighlightZoomOptions,
-    Highlight,
     MapModel,
     MapModelEvents
 } from "./MapModel";
-import { LayerDependencies } from "../layers/internals";
-import { ExtentConfig } from "./MapConfig";
-import { Highlights } from "./Highlights";
-import { LayerCollectionImpl } from "./LayerCollectionImpl";
 
 const LOG = createLogger("map:MapModel");
 

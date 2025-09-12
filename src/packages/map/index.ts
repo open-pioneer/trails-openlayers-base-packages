@@ -46,9 +46,30 @@ export {
 export { WMTSLayer, type WMTSLayerConfig } from "./layers/WMTSLayer";
 
 // Map Model
-// TODO:
-// export * from "./model/MapConfig";
-// export * from "./model/MapModel";
+export {
+    type ExtentConfig,
+    type CoordinateConfig,
+    type InitialExtentConfig,
+    type InitialPositionConfig,
+    type InitialViewConfig,
+    type OlMapOptions,
+    type MapConfig
+} from "./model/MapConfig";
+export {
+    type MapModelEvents,
+    type HighlightOptions,
+    type ZoomOptions,
+    type HighlightZoomOptions,
+    type HighlightStyle,
+    type MapPadding,
+    type Highlight,
+    type DisplayTarget,
+    type MapModel,
+    type LayerCollection
+} from "./model/MapModel";
+
+// FIXME: remove this
+export { TOPMOST_LAYER_Z } from "./model/LayerCollectionImpl";
 
 // Services
 export { LayerFactory } from "./LayerFactory";
@@ -56,6 +77,7 @@ export {
     // TODO: Rename impl class
     MapRegistryImpl as MapRegistry
 } from "./MapRegistryImpl";
+export { type MapConfigProvider, type MapConfigProviderOptions } from "./MapRegistry";
 
 // Utils
 export { calculateBufferedExtent } from "./utils/geometry-utils";

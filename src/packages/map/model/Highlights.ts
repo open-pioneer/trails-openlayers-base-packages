@@ -1,15 +1,19 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-
 import { Feature } from "ol";
+import { FeatureLike } from "ol/Feature";
 import OlMap from "ol/Map";
 import { Coordinate } from "ol/coordinate";
 import { Extent, createEmpty, extend, getArea, getCenter } from "ol/extent";
 import { Geometry } from "ol/geom";
+import { Type } from "ol/geom/Geometry";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import { Fill, Icon, Stroke, Style } from "ol/style";
 import { toFunction as toStyleFunction } from "ol/style/Style";
+import mapMarkerUrl from "../assets/images/mapMarker.png?url";
+import { calculateBufferedExtent } from "../utils/geometry-utils";
+import { TOPMOST_LAYER_Z } from "./LayerCollectionImpl";
 import {
     DisplayTarget,
     Highlight,
@@ -18,11 +22,6 @@ import {
     HighlightZoomOptions,
     ZoomOptions
 } from "./MapModel";
-import mapMarkerUrl from "../assets/images/mapMarker.png?url";
-import { FeatureLike } from "ol/Feature";
-import { TOPMOST_LAYER_Z } from "../api";
-import { Type } from "ol/geom/Geometry";
-import { calculateBufferedExtent } from "../utils/geometry-utils";
 
 type HighlightStyleType = keyof HighlightStyle;
 
