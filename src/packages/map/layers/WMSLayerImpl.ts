@@ -26,6 +26,7 @@ import { AbstractLayer } from "./AbstractLayer";
 import { AbstractLayerBase } from "./AbstractLayerBase";
 import { InternalConstructorTag, LayerConstructor, LayerDependencies } from "./internals";
 import { SublayersCollectionImpl } from "./SublayersCollectionImpl";
+import { getLegendUrl } from "./wms/getLegendUrl";
 import { WMSLayer, WMSLayerConfig, WMSSublayer, WMSSublayerConfig } from "./WMSLayer";
 
 // Import for api docs
@@ -206,7 +207,7 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
                     getNestedSublayer(this.#sublayers.getSublayers(), layers);
 
                     for (const layer of layers) {
-                        const legendUrl = getWMSLegendUrl(capabilities, layer.name!);
+                        const legendUrl = getLegendUrl(capabilities, layer.name!);
                         layer.__setLegend(legendUrl);
                     }
                 });
@@ -428,38 +429,4 @@ function constructSublayers(sublayerConfigs: WMSSublayerConfig[] = []): WMSSubla
         }
         throw new Error("Failed to construct sublayers.", { cause: e });
     }
-}
-
-/** extract the legend url from the service capabilities */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function getWMSLegendUrl(capabilities: Record<string, any>, layerName: string) {
-    const capabilitiesContent = capabilities?.Capability;
-    const rootLayerCapabilities = capabilitiesContent?.Layer;
-    let url: string | undefined = undefined;
-
-    /** Recurse search for the currrent layer within the parsed capabilities service*/
-    //eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const searchNestedLayer = (layer: Record<string, any>[]) => {
-        for (const currentLayer of layer) {
-            // spec. if, a layer has a <Name>, then it is a map layer
-            if (currentLayer?.Name === layerName) {
-                const activeLayer = currentLayer;
-                const styles = activeLayer.Style;
-                if (!styles || !styles.length) {
-                    LOG.debug("No style in WMS layer capabilities - giving up.");
-                    return;
-                }
-                // by parsing of the service capabilities, every child inherits the parent's legend
-                // theorfore, extract the legendURL from the first style object in the array (its own legend)
-                const activeStyle = styles[0];
-                url = activeStyle.LegendURL?.[0]?.OnlineResource;
-            } else if (currentLayer.Layer) {
-                searchNestedLayer(currentLayer.Layer);
-            }
-        }
-    };
-    if (rootLayerCapabilities) {
-        searchNestedLayer(rootLayerCapabilities.Layer);
-    }
-    return url;
 }

@@ -14,10 +14,9 @@ import { WMTSLayer, WMTSLayerConfig } from "./WMTSLayer";
 import { WMTSLayerImpl } from "./WMTSLayerImpl";
 
 const THIS_DIR = dirname(fileURLToPath(import.meta.url));
-const WMTS_CAPAS = readFileSync(resolve(THIS_DIR, "./test-data/SimpleWMTSCapas.xml"), "utf-8");
+const WMTS_CAPAS = readFileSync(resolve(THIS_DIR, "./wmts/test-data/SimpleWMTSCapas.xml"), "utf-8");
 
-// happy dom does not implement an XML parser
-// https://github.com/capricorn86/happy-dom/issues/282
+// happy dom does not implement a good XML parser
 import jsdom from "jsdom";
 window.DOMParser = new jsdom.JSDOM().window.DOMParser;
 

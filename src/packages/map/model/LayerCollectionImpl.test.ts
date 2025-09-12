@@ -30,7 +30,7 @@ import { MapModelImpl } from "./MapModelImpl";
 
 const THIS_DIR = dirname(fileURLToPath(import.meta.url));
 const WMTS_CAPAS = readFileSync(
-    resolve(THIS_DIR, "../layers/test-data/SimpleWMSCapas.xml"),
+    resolve(THIS_DIR, "../layers/wms/test-data/SimpleWMSCapas.xml"),
     "utf-8"
 );
 

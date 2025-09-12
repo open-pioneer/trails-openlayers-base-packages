@@ -19,6 +19,7 @@ import { InternalConstructorTag, LayerConstructor, LayerDependencies } from "./i
 // Import for api docs
 // eslint-disable-next-line unused-imports/no-unused-imports
 import type { LayerFactory } from "../LayerFactory";
+import { getLegendUrl } from "./wmts/getLegendUrl";
 
 const LOG = createLogger("map:WMTSLayer");
 
@@ -146,7 +147,7 @@ export class WMTSLayerImpl extends AbstractLayer implements WMTSLayer {
                 this.#source = source;
                 this.#layer.setSource(this.#source);
                 const activeStyleId = source.getStyle();
-                const legendUrl = getWMTSLegendUrl(capabilities, this.name, activeStyleId);
+                const legendUrl = getLegendUrl(capabilities, this.name, activeStyleId);
                 this.#legend.value = legendUrl;
             })
             .catch((error) => {
@@ -211,38 +212,4 @@ if (false) {
 
 function isHtmlImage(htmlElement: HTMLElement): htmlElement is HTMLImageElement {
     return htmlElement.tagName === "IMG";
-}
-
-/* eslint-disable @typescript-eslint/no-explicit-any */
-export function getWMTSLegendUrl(
-    capabilities: Record<string, any>,
-    activeLayerId: string | undefined,
-    activeStyleId: string | undefined
-): string | undefined {
-    const content = capabilities?.Contents;
-    const layers = content?.Layer;
-
-    let activeLayer = layers?.find((layer: any) => layer?.Identifier === activeLayerId);
-    if (!activeLayer) {
-        LOG.debug("Failed to find the active layer in WMTS layer capabilities.");
-        activeLayer = layers?.[0];
-        if (!activeLayer) {
-            LOG.debug("No layer in WMTS capabilities - giving up.");
-            return undefined;
-        }
-    }
-
-    const styles = activeLayer.Style;
-    let activeStyle = styles?.find((style: any) => style?.Identifier === activeStyleId);
-    if (!activeStyle) {
-        LOG.debug("Failed to find active style in WMTS layer.");
-        activeStyle = styles?.[0];
-        if (!activeStyle) {
-            LOG.debug("No style in WMTS layer capabilities - giving up.");
-            return undefined;
-        }
-    }
-
-    const legendUrl = activeStyle.LegendURL?.[0]?.href;
-    return legendUrl as string | undefined;
 }
