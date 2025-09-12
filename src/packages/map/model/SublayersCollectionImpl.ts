@@ -55,6 +55,7 @@ export class SublayersCollectionImpl<SublayerType extends SublayerBaseType & Abs
             // but then we might also introduce a cycle in the type definitions, which could be bad (?).
             from: this as unknown as SublayersCollection<Sublayer>,
             sortByDisplayOrder: _options?.sortByDisplayOrder,
+            includeInternalLayers: _options?.includeInternalLayers,
             filter: _options?.filter
         }) as Sublayer[]; // we know for sure that all children are sublayers: sublayers do not point to layers
     }

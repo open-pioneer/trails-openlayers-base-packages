@@ -112,6 +112,7 @@ export class GroupLayerCollectionImpl implements GroupLayerCollection {
         return getRecursiveLayers({
             from: this,
             sortByDisplayOrder: _options?.sortByDisplayOrder,
+            includeInternalLayers: _options?.includeInternalLayers,
             filter: _options?.filter
         });
     }
