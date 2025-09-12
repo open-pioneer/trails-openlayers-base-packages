@@ -25,6 +25,7 @@ import { WMTSLayer } from "../layers/WMTSLayer";
 import { createMapModel } from "./createMapModel";
 import { MapConfig } from "./MapConfig";
 import { MapModelImpl } from "./MapModelImpl";
+import { onSync } from "@conterra/reactivity-events";
 
 const THIS_DIR = dirname(fileURLToPath(import.meta.url));
 const WMTS_CAPAS = readFileSync(
@@ -216,11 +217,12 @@ it("destroys child layers when parent group layer is removed", async () => {
         title: "group test",
         layers: [groupMember]
     });
+
     //register dummy event handlers
     const groupFn = vi.fn();
     const memberFn = vi.fn();
-    groupMember.on("destroy", () => memberFn());
-    groupLayer.on("destroy", () => groupFn());
+    onSync(groupMember.destroyEvent, memberFn);
+    onSync(groupLayer.destroyEvent, groupFn);
 
     model = await create("foo", {
         layers: [groupLayer]

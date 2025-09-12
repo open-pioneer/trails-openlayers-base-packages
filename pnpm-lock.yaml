@@ -15,6 +15,9 @@ catalogs:
     '@conterra/reactivity-core':
       specifier: ^0.7.0
       version: 0.7.0
+    '@conterra/reactivity-events':
+      specifier: ^0.7.0
+      version: 0.7.0
     '@emotion/react':
       specifier: ^11.14.0
       version: 11.14.0
@@ -669,6 +672,9 @@ importers:
         specifier: 'catalog:'
         version: 3.26.0(@emotion/react@11.14.0(@types/react@19.1.12)(react@19.1.1))(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
       '@conterra/reactivity-core':
+        specifier: 'catalog:'
+        version: 0.7.0
+      '@conterra/reactivity-events':
         specifier: 'catalog:'
         version: 0.7.0
       '@open-pioneer/core':
@@ -1956,6 +1962,9 @@ packages:
 
   '@conterra/reactivity-core@0.7.0':
     resolution: {integrity: sha512-RpzIfturgauc6ZtCAk+C28ioXaLI89yBYNSN1T5BMcwn4nvD9OAs5SF9eWkHTkflyp7x4mRRVu+jyzPvOo02HQ==}
+
+  '@conterra/reactivity-events@0.7.0':
+    resolution: {integrity: sha512-vAfe2JqjigNTmu/pZUG7latID5l854jcluFRquFE88CrAdtD7c8wjqzHkvudOFxaRIi7vAeJeNvFxyaTRaRY/g==}
 
   '@csstools/color-helpers@5.0.2':
     resolution: {integrity: sha512-JqWH1vsgdGcw2RR6VliXXdA0/59LttzlU8UlRT/iUUsEeWfYq8I+K0yhihEUTTHLRm1EXvpsCx3083EU15ecsA==}
@@ -6041,6 +6050,10 @@ snapshots:
   '@conterra/reactivity-core@0.7.0':
     dependencies:
       '@preact/signals-core': 1.9.0
+
+  '@conterra/reactivity-events@0.7.0':
+    dependencies:
+      '@conterra/reactivity-core': 0.7.0
 
   '@csstools/color-helpers@5.0.2': {}
 

@@ -10,6 +10,7 @@ import { AbstractLayerBase, AbstractLayerBaseOptions } from "./AbstractLayerBase
 import { GroupLayerCollection } from "./group/GroupLayerCollection";
 import { INTERNAL_CONSTRUCTOR_TAG } from "./shared/internals";
 import { SublayersCollection } from "./shared/SublayersCollection";
+import { onSync } from "@conterra/reactivity-events";
 
 afterEach(() => {
     vi.restoreAllMocks();
@@ -22,7 +23,7 @@ it("emits a destroy event when destroyed", async () => {
     });
 
     let destroyed = 0;
-    layer.on("destroy", () => {
+    onSync(layer.destroyEvent, () => {
         destroyed++;
     });
 

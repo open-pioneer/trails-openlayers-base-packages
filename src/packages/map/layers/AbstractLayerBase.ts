@@ -8,16 +8,14 @@ import {
     reactiveMap,
     ReadonlyReactive
 } from "@conterra/reactivity-core";
-import { createLogger, EventEmitter } from "@open-pioneer/core";
+import { emit, emitter, EventSource } from "@conterra/reactivity-events";
 import { v4 as uuid4v } from "uuid";
 import { MapModelImpl } from "../model/MapModelImpl";
 import { GroupLayer } from "./GroupLayer";
 import { GroupLayerCollection } from "./group/GroupLayerCollection";
-import { SublayersCollection } from "./shared/SublayersCollection";
 import { ChildrenCollection } from "./shared/ChildrenCollection";
+import { SublayersCollection } from "./shared/SublayersCollection";
 import { AnyLayer, AnyLayerTypes, Sublayer } from "./unions";
-
-const LOG = createLogger("map:AbstractLayerModel");
 
 export interface AbstractLayerBaseOptions {
     id?: string;
@@ -38,7 +36,7 @@ export interface LayerBaseEvents {
  * Instances of this interface cannot be constructed directly; use a real layer
  * class such as {@link SimpleLayer} instead.
  */
-export abstract class AbstractLayerBase extends EventEmitter<LayerBaseEvents> {
+export abstract class AbstractLayerBase {
     #map = reactive<MapModelImpl>();
     #parent: AnyLayer | undefined;
 
@@ -50,8 +48,9 @@ export abstract class AbstractLayerBase extends EventEmitter<LayerBaseEvents> {
     #destroyed = reactive(false);
     #internal: Reactive<boolean>;
 
+    #destroyEvent = emitter();
+
     constructor(config: AbstractLayerBaseOptions) {
-        super();
         this.#id = config.id ?? uuid4v();
         this.#attributes = computed(() => {
             return Object.fromEntries(this.#attributesMap.entries());
@@ -79,16 +78,16 @@ export abstract class AbstractLayerBase extends EventEmitter<LayerBaseEvents> {
         this.#destroyed.value = true;
         this.sublayers?.destroy();
         this.layers?.destroy();
-        try {
-            this.emit("destroy");
-        } catch (e) {
-            LOG.warn(`Unexpected error from event listener during layer destruction:`, e);
-        }
+        emit(this.#destroyEvent);
     }
 
     /** True if the layer has been destroyed. */
     get destroyed() {
         return this.#destroyed.value;
+    }
+
+    get destroyEvent(): EventSource<void> {
+        return this.#destroyEvent;
     }
 
     /**
