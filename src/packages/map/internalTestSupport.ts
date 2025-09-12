@@ -16,4 +16,4 @@ export { MapRegistryImpl } from "./MapRegistryImpl";
  *
  * @internal
  */
-export { LayerFactory } from "./model/layers/LayerFactory";
+export { LayerFactory } from "./LayerFactory";

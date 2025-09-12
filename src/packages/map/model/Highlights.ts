@@ -20,8 +20,9 @@ import {
 } from "./MapModel";
 import mapMarkerUrl from "../assets/images/mapMarker.png?url";
 import { FeatureLike } from "ol/Feature";
-import { calculateBufferedExtent, TOPMOST_LAYER_Z } from "../api";
+import { TOPMOST_LAYER_Z } from "../api";
 import { Type } from "ol/geom/Geometry";
+import { calculateBufferedExtent } from "../utils/geometry-utils";
 
 type HighlightStyleType = keyof HighlightStyle;
 

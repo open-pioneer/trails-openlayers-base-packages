@@ -6,9 +6,9 @@ import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/rea
 import type OlMap from "ol/Map";
 import { Extent } from "ol/extent";
 import { ReactNode, useEffect, useMemo, useRef, useState } from "react";
-import { MapModel, MapPadding } from "../api";
 import { MapContainerContextProvider, MapContainerContextType } from "./MapContainerContext";
 import { MapModelProps, useMapModelValue } from "../hooks/useMapModel";
+import { MapModel, MapPadding } from "../model/MapModel";
 const LOG = createLogger("map:MapContainer");
 
 export interface MapContainerProps extends CommonComponentProps, MapModelProps {

@@ -4,10 +4,12 @@ import { createLogger, Resource } from "@open-pioneer/core";
 import { HttpService } from "@open-pioneer/http";
 import { PackageIntl, Service, ServiceOptions } from "@open-pioneer/runtime";
 import OlMap from "ol/Map";
-import { MapConfig, MapConfigProvider, MapModel, MapRegistry } from "./api";
 import { createMapModel } from "./model/createMapModel";
 import { MapModelImpl } from "./model/MapModelImpl";
-import { LayerFactory } from "./model/layers/LayerFactory";
+import { LayerFactory } from "./LayerFactory";
+import { MapConfigProvider, MapRegistry } from "./MapRegistry";
+import { MapModel } from "./model/MapModel";
+import { MapConfig } from "./model/MapConfig";
 
 const LOG = createLogger("map:MapRegistry");
 

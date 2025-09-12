@@ -19,16 +19,16 @@ import { getCenter } from "ol/extent";
 import { Geometry } from "ol/geom";
 import { getPointResolution, Projection } from "ol/proj";
 import {
-    ExtentConfig,
-    Highlight,
     HighlightOptions,
     HighlightZoomOptions,
+    Highlight,
     MapModel,
     MapModelEvents
-} from "../api";
+} from "./MapModel";
+import { LayerDependencies } from "../layers/internals";
+import { ExtentConfig } from "./MapConfig";
 import { Highlights } from "./Highlights";
 import { LayerCollectionImpl } from "./LayerCollectionImpl";
-import { LayerDependencies } from "./layers/internals";
 
 const LOG = createLogger("map:MapModel");
 

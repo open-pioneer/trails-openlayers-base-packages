@@ -17,8 +17,10 @@ import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { MapRegistryImpl } from "./MapRegistryImpl";
-import { type MapConfig, MapModel, SimpleLayer } from "./api";
 import { registerProjections } from "./utils/projections";
+import { SimpleLayer } from "./layers";
+import { type MapConfig } from "./model/MapConfig";
+import { MapModel } from "./model/MapModel";
 
 afterEach(() => {
     vi.restoreAllMocks();

@@ -2,9 +2,9 @@
 // SPDX-License-Identifier: Apache-2.0
 import { HttpService } from "@open-pioneer/http";
 import { DECLARE_SERVICE_INTERFACE, ServiceOptions } from "@open-pioneer/runtime";
-import { Layer, LayerConfig } from "../../api";
-import { AbstractLayer } from "../AbstractLayer";
+import { AbstractLayer } from "./layers/AbstractLayer";
 import { INTERNAL_CONSTRUCTOR_TAG, LayerConstructor } from "./layers/internals";
+import { Layer, LayerConfig } from "./layers";
 
 interface References {
     httpService: HttpService;

@@ -5,10 +5,10 @@ import { HttpService } from "@open-pioneer/http";
 import { createTestOlLayer } from "@open-pioneer/map-test-utils";
 import { createService } from "@open-pioneer/test-utils/services";
 import { expect, it } from "vitest";
-import { SimpleLayer } from "../../api";
-import { AbstractLayer } from "../AbstractLayer";
 import { LayerFactory } from "./LayerFactory";
 import { SimpleLayerImpl } from "./layers/SimpleLayerImpl";
+import { AbstractLayer } from "./layers/AbstractLayer";
+import { SimpleLayer } from "./layers";
 
 it("creates layer instances", async () => {
     const mockHttpService = {} as unknown as HttpService; // not called in this test
