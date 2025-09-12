@@ -208,8 +208,8 @@ catalogs:
       specifier: ^8.43.0
       version: 8.43.0
     uuid:
-      specifier: ^11.1.0
-      version: 11.1.0
+      specifier: ^13.0.0
+      version: 13.0.0
     vite:
       specifier: ^7.1.5
       version: 7.1.5
@@ -706,7 +706,7 @@ importers:
         version: 17.6.0(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
       uuid:
         specifier: 'catalog:'
-        version: 11.1.0
+        version: 13.0.0
     devDependencies:
       '@open-pioneer/map-test-utils':
         specifier: workspace:^
@@ -878,7 +878,7 @@ importers:
         version: 10.6.1
       uuid:
         specifier: 'catalog:'
-        version: 11.1.0
+        version: 13.0.0
     devDependencies:
       '@open-pioneer/map-test-utils':
         specifier: workspace:^
@@ -1236,7 +1236,7 @@ importers:
         version: 5.5.0(react@19.1.1)
       uuid:
         specifier: 'catalog:'
-        version: 11.1.0
+        version: 13.0.0
     devDependencies:
       '@open-pioneer/map-test-utils':
         specifier: workspace:^
@@ -1295,7 +1295,7 @@ importers:
         version: 5.5.0(react@19.1.1)
       uuid:
         specifier: 'catalog:'
-        version: 11.1.0
+        version: 13.0.0
     devDependencies:
       '@open-pioneer/map-test-utils':
         specifier: workspace:^
@@ -5489,8 +5489,8 @@ packages:
   utrie@1.0.2:
     resolution: {integrity: sha512-1MLa5ouZiOmQzUbjbu9VmjLzn1QLXBhwpUa7kdLUQK+KQ5KA9I1vk5U4YHe/X2Ch7PYnJfWuWT+VbuxbGwljhw==}
 
-  uuid@11.1.0:
-    resolution: {integrity: sha512-0/A9rDy9P7cJ+8w1c9WD9V//9Wj15Ce2MPz8Ri6032usz+NfePxx5AcN3bN+r6ZL6jEo066/yNYB3tn4pQEx+A==}
+  uuid@13.0.0:
+    resolution: {integrity: sha512-XQegIaBTVUjSHliKqcnFqYypAd4S+WCYt5NIeRs6w/UAry7z8Y9j5ZwRRL4kzq9U3sD6v+85er9FvkEaBpji2w==}
     hasBin: true
 
   vite-node@3.2.4:
@@ -10205,7 +10205,7 @@ snapshots:
     dependencies:
       base64-arraybuffer: 1.0.2
 
-  uuid@11.1.0: {}
+  uuid@13.0.0: {}
 
   vite-node@3.2.4(@types/node@20.19.13)(sass@1.92.1)(tsx@4.20.5)(yaml@2.8.1):
     dependencies:
