@@ -1,23 +1,27 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { AbstractLayerBase } from "../layers/AbstractLayerBase";
-import { getRecursiveLayers } from "../model/getRecursiveLayers";
-import { LayerRetrievalOptions, RecursiveRetrievalOptions } from "../shared";
-import { SublayerBaseType, SublayersCollection } from "./base";
-import { Sublayer } from "./unions";
+import { getRecursiveLayers } from "../../model/getRecursiveLayers";
+import { LayerRetrievalOptions, RecursiveRetrievalOptions } from "../../shared";
+import { ChildrenCollection, SublayerBaseType } from "./base";
+import { assertInternalConstructor, InternalConstructorTag } from "./internals";
+import { Sublayer } from "../unions";
+
+// Imported for typedoc
+// eslint-disable-next-line unused-imports/no-unused-imports
+import { Layer } from "../unions";
 
 /**
- * Manages the sublayers of a layer.
+ * Contains the sublayers that belong to a {@link Layer} or {@link Sublayer}.
  */
 // NOTE: adding / removing sublayers currently not supported
-/* eslint-disable indent */
-export class SublayersCollectionImpl<SublayerType extends SublayerBaseType & AbstractLayerBase>
-    implements SublayersCollection<SublayerType>
+export class SublayersCollection<SublayerType extends SublayerBaseType>
+    implements ChildrenCollection<SublayerType>
 {
     /* eslint-enable indent */
     #sublayers: SublayerType[];
 
-    constructor(sublayers: SublayerType[]) {
+    constructor(sublayers: SublayerType[], tag: InternalConstructorTag) {
+        assertInternalConstructor(tag);
         this.#sublayers = sublayers;
     }
 
@@ -33,11 +37,22 @@ export class SublayersCollectionImpl<SublayerType extends SublayerBaseType & Abs
         return this.getSublayers(options);
     }
 
+    /**
+     * Returns the child sublayers in this collection.
+     */
     getSublayers(_options?: LayerRetrievalOptions | undefined): SublayerType[] {
         // NOTE: options are ignored because layers are always ordered at this time.
         return this.#sublayers.slice();
     }
 
+    /**
+     * Returns a list of all layers in the collection, including all children (recursively).
+     *
+     * > Note: This includes base layers by default (see `options.filter`).
+     * > Use the `"base"` or `"operational"` short hand values to filter by base layer or operational layers.
+     * >
+     * > If the collection contains many, deeply nested sublayers, this function could potentially be expensive.
+     */
     getRecursiveLayers(_options?: RecursiveRetrievalOptions): Sublayer[] {
         return getRecursiveLayers({
             // NOTE: This is safe (but not elegant) because this class does not know about the entire type hierarchy (unions).

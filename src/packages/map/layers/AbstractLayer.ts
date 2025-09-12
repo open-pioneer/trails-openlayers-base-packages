@@ -9,8 +9,13 @@ import { unByKey } from "ol/Observable";
 import OlSource from "ol/source/Source";
 import { MapModelImpl } from "../model/MapModelImpl";
 import { AbstractLayerBase } from "./AbstractLayerBase";
-import { HealthCheckFunction, LayerBaseType, LayerConfig, LayerLoadState } from "./base";
-import { getLayerDependencies, InternalConstructorTag, LayerDependencies } from "./internals";
+import { LayerBaseType } from "./shared/base";
+import { HealthCheckFunction, LayerConfig } from "./shared/config";
+import {
+    getLayerDependencies,
+    InternalConstructorTag,
+    LayerDependencies
+} from "./shared/internals";
 import { SimpleLayerConfig } from "./SimpleLayer";
 import { Layer } from "./unions";
 
@@ -19,6 +24,9 @@ import { Layer } from "./unions";
 import { SimpleLayer } from "./SimpleLayer";
 
 const LOG = createLogger("map:AbstractLayer");
+
+/** The load state of a layer. */
+export type LayerLoadState = "not-loaded" | "loading" | "loaded" | "error";
 
 /**
  * Represents an operational layer in the map.

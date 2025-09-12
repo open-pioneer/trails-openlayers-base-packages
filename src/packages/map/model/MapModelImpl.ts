@@ -18,7 +18,7 @@ import { EventsKey } from "ol/events";
 import { getCenter } from "ol/extent";
 import { Geometry } from "ol/geom";
 import { getPointResolution, Projection } from "ol/proj";
-import { LayerDependencies } from "../layers/internals";
+import { LayerDependencies } from "../layers/shared/internals";
 import { Highlights } from "./Highlights";
 import { LayerCollectionImpl } from "./LayerCollectionImpl";
 import { ExtentConfig } from "./MapConfig";

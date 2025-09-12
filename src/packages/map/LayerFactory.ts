@@ -3,8 +3,8 @@
 import { HttpService } from "@open-pioneer/http";
 import { DECLARE_SERVICE_INTERFACE, ServiceOptions } from "@open-pioneer/runtime";
 import { AbstractLayer } from "./layers/AbstractLayer";
-import { LayerConfig } from "./layers/base";
-import { INTERNAL_CONSTRUCTOR_TAG, LayerConstructor } from "./layers/internals";
+import { LayerConfig } from "./layers/shared/config";
+import { INTERNAL_CONSTRUCTOR_TAG, LayerConstructor } from "./layers/shared/internals";
 import { Layer } from "./layers/unions";
 
 interface References {

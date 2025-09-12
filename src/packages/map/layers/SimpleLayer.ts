@@ -3,8 +3,8 @@
 import { deprecated } from "@open-pioneer/core";
 import type OlBaseLayer from "ol/layer/Base";
 import { AbstractLayer } from "./AbstractLayer";
-import { LayerConfig } from "./base";
-import { InternalConstructorTag, LayerConstructor, LayerDependencies } from "./internals";
+import { LayerConfig } from "./shared/config";
+import { InternalConstructorTag, LayerConstructor, LayerDependencies } from "./shared/internals";
 
 // Import for api docs
 // eslint-disable-next-line unused-imports/no-unused-imports
@@ -62,19 +62,19 @@ export class SimpleLayer extends AbstractLayer {
         super(config, deps, internalTag);
     }
 
-    get type() {
+    override get type() {
         return "simple" as const;
     }
 
-    get legend(): undefined {
+    override get legend(): undefined {
         return undefined;
     }
 
-    get layers(): undefined {
+    override get layers(): undefined {
         return undefined;
     }
 
-    get sublayers(): undefined {
+    override get sublayers(): undefined {
         return undefined;
     }
 }

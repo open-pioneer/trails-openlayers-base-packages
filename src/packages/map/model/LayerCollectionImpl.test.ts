@@ -17,7 +17,7 @@ import { Group } from "ol/layer";
 import TileLayer from "ol/layer/Tile";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { GroupLayer } from "../layers/GroupLayer";
-import { INTERNAL_CONSTRUCTOR_TAG } from "../layers/internals";
+import { INTERNAL_CONSTRUCTOR_TAG } from "../layers/shared/internals";
 import { SimpleLayer } from "../layers/SimpleLayer";
 import { AnyLayer, Layer } from "../layers/unions";
 import { WMSLayer } from "../layers/WMSLayer";

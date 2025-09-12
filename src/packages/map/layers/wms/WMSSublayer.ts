@@ -3,14 +3,15 @@
 import { Reactive, reactive } from "@conterra/reactivity-core";
 import { MapModelImpl } from "../../model/MapModelImpl";
 import { AbstractLayerBase } from "../AbstractLayerBase";
-import { LayerBaseConfig, SublayerBaseType } from "../base";
+import { SublayerBaseType } from "../shared/base";
 import {
     assertInternalConstructor,
     INTERNAL_CONSTRUCTOR_TAG,
     InternalConstructorTag
-} from "../internals";
-import { SublayersCollectionImpl } from "../SublayersCollectionImpl";
+} from "../shared/internals";
+import { SublayersCollection } from "../shared/SublayersCollection";
 import { WMSLayer } from "../WMSLayer";
+import { LayerBaseConfig } from "../shared/config";
 
 /**
  * Configuration options to construct the sublayers of a {@link WMSLayer}.
@@ -34,7 +35,7 @@ export class WMSSublayer extends AbstractLayerBase implements SublayerBaseType {
     #parentLayer: WMSLayer | undefined;
     #name: string | undefined;
     #legend = reactive<string | undefined>();
-    #sublayers: SublayersCollectionImpl<WMSSublayer>;
+    #sublayers: SublayersCollection<WMSSublayer>;
     #visible: Reactive<boolean>;
 
     /**
@@ -46,7 +47,10 @@ export class WMSSublayer extends AbstractLayerBase implements SublayerBaseType {
         super(config);
         this.#name = config.name;
         this.#visible = reactive(config.visible ?? true);
-        this.#sublayers = new SublayersCollectionImpl(constructSublayers(config.sublayers));
+        this.#sublayers = new SublayersCollection(
+            constructSublayers(config.sublayers),
+            INTERNAL_CONSTRUCTOR_TAG
+        );
     }
 
     override get type() {
@@ -66,7 +70,7 @@ export class WMSSublayer extends AbstractLayerBase implements SublayerBaseType {
         return undefined;
     }
 
-    override get sublayers(): SublayersCollectionImpl<WMSSublayer> {
+    override get sublayers(): SublayersCollection<WMSSublayer> {
         return this.#sublayers;
     }
 

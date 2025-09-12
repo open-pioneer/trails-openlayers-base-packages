@@ -3,12 +3,13 @@
 /**
  * @vitest-environment node
  */
-import { afterEach, expect, it, vi } from "vitest";
-import { AbstractLayerBase, AbstractLayerBaseOptions } from "./AbstractLayerBase";
-import { MapModelImpl } from "../model/MapModelImpl";
-import { SublayersCollectionImpl } from "./SublayersCollectionImpl";
 import { syncWatch } from "@conterra/reactivity-core";
-import { GroupLayerCollection } from "./GroupLayer";
+import { afterEach, expect, it, vi } from "vitest";
+import { MapModelImpl } from "../model/MapModelImpl";
+import { AbstractLayerBase, AbstractLayerBaseOptions } from "./AbstractLayerBase";
+import { GroupLayerCollection } from "./group/GroupLayerCollection";
+import { INTERNAL_CONSTRUCTOR_TAG } from "./shared/internals";
+import { SublayersCollection } from "./shared/SublayersCollection";
 
 afterEach(() => {
     vi.restoreAllMocks();
@@ -235,12 +236,12 @@ it("supports initial empty attribute object and empty attribute object after upd
 
 abstract class SharedParent extends AbstractLayerBase {
     // xxx lying to the compiler (not a real sublayer)
-    private _sublayers: SublayersCollectionImpl<any> | undefined;
+    private _sublayers: SublayersCollection<any> | undefined;
 
     constructor(options: AbstractLayerBaseOptions & { sublayer?: SublayerImpl }) {
         super(options);
         if (options.sublayer) {
-            this._sublayers = new SublayersCollectionImpl([options.sublayer]);
+            this._sublayers = new SublayersCollection([options.sublayer], INTERNAL_CONSTRUCTOR_TAG);
         }
     }
 

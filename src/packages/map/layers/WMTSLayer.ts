@@ -13,8 +13,8 @@ import WMTS, { optionsFromCapabilities } from "ol/source/WMTS";
 import { MapModelImpl } from "../model/MapModelImpl";
 import { fetchText } from "../utils/fetch";
 import { AbstractLayer } from "./AbstractLayer";
-import { LayerConfig } from "./base";
-import { InternalConstructorTag, LayerConstructor, LayerDependencies } from "./internals";
+import { LayerConfig } from "./shared/config";
+import { InternalConstructorTag, LayerConstructor, LayerDependencies } from "./shared/internals";
 import { getLegendUrl } from "./wmts/getLegendUrl";
 
 // Import for api docs

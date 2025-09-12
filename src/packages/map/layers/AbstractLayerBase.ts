@@ -11,9 +11,10 @@ import {
 import { createLogger, EventEmitter } from "@open-pioneer/core";
 import { v4 as uuid4v } from "uuid";
 import { MapModelImpl } from "../model/MapModelImpl";
-import { GroupLayer, GroupLayerCollection } from "./GroupLayer";
-import { SublayersCollectionImpl } from "./SublayersCollectionImpl";
-import { AnyLayerBaseType, ChildrenCollection, LayerBaseEvents } from "./base";
+import { GroupLayer } from "./GroupLayer";
+import { GroupLayerCollection } from "./group/GroupLayerCollection";
+import { SublayersCollection } from "./shared/SublayersCollection";
+import { AnyLayerBaseType, ChildrenCollection, LayerBaseEvents } from "./shared/base";
 import { AnyLayer, AnyLayerTypes, Sublayer } from "./unions";
 
 const LOG = createLogger("map:AbstractLayerModel");
@@ -164,7 +165,7 @@ export abstract class AbstractLayerBase<AdditionalEvents = {}>
      *
      * See also {@link layers} and {@link sublayers}.
      */
-    get children(): ChildrenCollection<AnyLayer & AbstractLayerBase> | undefined {
+    get children(): ChildrenCollection<AnyLayer> | undefined {
         return this.layers ?? this.sublayers ?? undefined;
     }
 
@@ -197,7 +198,7 @@ export abstract class AbstractLayerBase<AdditionalEvents = {}>
      *
      * The properties `layers` and `sublayers` are mutually exclusive.
      */
-    abstract get sublayers(): SublayersCollectionImpl<Sublayer & AbstractLayerBase> | undefined;
+    abstract get sublayers(): SublayersCollection<Sublayer> | undefined;
 
     /**
      * Legend URL from the service capabilities, if available.

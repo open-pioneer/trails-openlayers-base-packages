@@ -21,21 +21,24 @@ export {
 export {
     type AnyLayerBaseType,
     type ChildrenCollection,
-    type HealthCheckFunction,
-    type LayerBaseConfig,
     type LayerBaseEvents,
     type LayerBaseType,
-    type LayerConfig,
-    type LayerLoadState,
-    type SublayerBaseType,
-    type SublayersCollection
-} from "./layers/base";
+    type SublayerBaseType
+} from "./layers/shared/base";
+export {
+    type LayerBaseConfig,
+    type HealthCheckFunction,
+    type LayerConfig
+} from "./layers/shared/config";
+export { type LayerLoadState } from "./layers/AbstractLayer";
 export { isLayer, isSublayer, type AnyLayer, type Layer, type Sublayer } from "./layers/unions";
-export { GroupLayer, type GroupLayerCollection, type GroupLayerConfig } from "./layers/GroupLayer";
+export { GroupLayer, type GroupLayerConfig } from "./layers/GroupLayer";
+export { type GroupLayerCollection } from "./layers/group/GroupLayerCollection";
 export { SimpleLayer, type SimpleLayerConfig } from "./layers/SimpleLayer";
 export { type WMSSublayer, type WMSSublayerConfig } from "./layers/wms/WMSSublayer";
 export { WMSLayer, type WMSLayerConfig } from "./layers/WMSLayer";
 export { WMTSLayer, type WMTSLayerConfig } from "./layers/WMTSLayer";
+export { type SublayersCollection } from "./layers/shared/SublayersCollection";
 
 // Map Model
 export {

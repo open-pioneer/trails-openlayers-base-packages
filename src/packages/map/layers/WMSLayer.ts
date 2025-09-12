@@ -17,9 +17,14 @@ import ImageWMS from "ol/source/ImageWMS";
 import { MapModelImpl } from "../model/MapModelImpl";
 import { fetchText } from "../utils/fetch";
 import { AbstractLayer } from "./AbstractLayer";
-import { LayerConfig } from "./base";
-import { InternalConstructorTag, LayerConstructor, LayerDependencies } from "./internals";
-import { SublayersCollectionImpl } from "./SublayersCollectionImpl";
+import { LayerConfig } from "./shared/config";
+import {
+    INTERNAL_CONSTRUCTOR_TAG,
+    InternalConstructorTag,
+    LayerConstructor,
+    LayerDependencies
+} from "./shared/internals";
+import { SublayersCollection } from "./shared/SublayersCollection";
 import { getLegendUrl } from "./wms/getLegendUrl";
 import { constructSublayers, WMSSublayer, WMSSublayerConfig } from "./wms/WMSSublayer";
 
@@ -68,7 +73,7 @@ const deprecatedConstructor = deprecated({
  */
 export class WMSLayer extends AbstractLayer {
     #url: string;
-    #sublayers: SublayersCollectionImpl<WMSSublayer>;
+    #sublayers: SublayersCollection<WMSSublayer>;
     #layer: ImageLayer<ImageSource>;
     #source: ImageWMS;
     #fetchCapabilities: boolean;
@@ -132,7 +137,10 @@ export class WMSLayer extends AbstractLayer {
         this.#source = source;
         this.#layer = layer;
 
-        this.#sublayers = new SublayersCollectionImpl(constructSublayers(config.sublayers));
+        this.#sublayers = new SublayersCollection(
+            constructSublayers(config.sublayers),
+            INTERNAL_CONSTRUCTOR_TAG
+        );
         this.#sublayers
             .__getRawSublayers()
             .forEach((sublayer) => sublayer.__attachToParent(this, this));
@@ -180,7 +188,7 @@ export class WMSLayer extends AbstractLayer {
     /**
      * Holds the sublayers of this layer.
      */
-    get sublayers(): SublayersCollectionImpl<WMSSublayer> {
+    get sublayers(): SublayersCollection<WMSSublayer> {
         return this.#sublayers;
     }
 

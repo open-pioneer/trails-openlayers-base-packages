@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { HttpService } from "@open-pioneer/http";
-import { LayerConfig } from "./base";
-import { Layer } from "./unions";
+import { LayerConfig } from "./config";
+import { Layer } from "../unions";
 
 /**
  * Package-internal constructor tag to signal that the layer constructor is being called from the layer factory.
