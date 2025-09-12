@@ -83,6 +83,9 @@ export abstract class AbstractLayerBase {
         return this.#destroyed.value;
     }
 
+    /**
+     * Emits an event when the layer is destroyed.
+     */
     get destroyEvent(): EventSource<void> {
         return this.#destroyEvent;
     }
