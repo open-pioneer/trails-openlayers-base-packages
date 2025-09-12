@@ -1,17 +1,17 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { HttpService } from "@open-pioneer/http";
+import { readFileSync } from "node:fs";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import TileState from "ol/TileState";
 import TileLayer from "ol/layer/Tile";
 import { get as getProjection } from "ol/proj";
 import { WMTS } from "ol/source";
 import { Mock, afterEach, expect, it, vi } from "vitest";
-import { WMTSLayer, WMTSLayerConfig } from "../../api";
-import { MapModelImpl } from "../MapModelImpl";
+import { MapModelImpl } from "../model/MapModelImpl";
+import { WMTSLayer, WMTSLayerConfig } from "./WMTSLayer";
 import { WMTSLayerImpl } from "./WMTSLayerImpl";
-import { readFileSync } from "node:fs";
-import { dirname, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
 
 const THIS_DIR = dirname(fileURLToPath(import.meta.url));
 const WMTS_CAPAS = readFileSync(resolve(THIS_DIR, "./test-data/SimpleWMTSCapas.xml"), "utf-8");

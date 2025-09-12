@@ -1,13 +1,13 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import type { Group } from "ol/layer";
-import { GroupLayerImpl } from "../../model/layers/GroupLayerImpl";
 import type { LayerRetrievalOptions, RecursiveRetrievalOptions } from "../shared";
 import type { AnyLayer, ChildrenCollection, Layer, LayerBaseType, LayerConfig } from "./base";
+import { GroupLayerImpl } from "./GroupLayerImpl";
 
 // Import for api docs
 // eslint-disable-next-line unused-imports/no-unused-imports
-import type { LayerFactory } from "../../model/layers/LayerFactory";
+import type { LayerFactory } from "../LayerFactory";
 
 /**
  * Configuration options to construct a {@link GroupLayer}.

@@ -1,20 +1,19 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { createLogger, isAbortError } from "@open-pioneer/core";
+import { reactive } from "@conterra/reactivity-core";
+import { createLogger, deprecated, isAbortError } from "@open-pioneer/core";
+import { ImageTile } from "ol";
 import Tile from "ol/Tile";
 import TileState from "ol/TileState";
 import WMTSCapabilities from "ol/format/WMTSCapabilities";
 import TileLayer from "ol/layer/Tile";
+import type { Options as WMSSourceOptions } from "ol/source/ImageWMS";
 import type TileSourceType from "ol/source/Tile";
 import WMTS, { optionsFromCapabilities } from "ol/source/WMTS";
-import { WMTSLayer, WMTSLayerConfig } from "../../api";
-import { fetchCapabilities } from "../../util/capabilities-utils";
-import { AbstractLayer } from "../AbstractLayer";
-import { MapModelImpl } from "../MapModelImpl";
-import { ImageTile } from "ol";
-import type { Options as WMSSourceOptions } from "ol/source/ImageWMS";
-import { reactive } from "@conterra/reactivity-core";
-import { deprecated } from "@open-pioneer/core";
+import { MapModelImpl } from "../model/MapModelImpl";
+import { fetchText } from "../utils/fetch";
+import { AbstractLayer } from "./AbstractLayer";
+import { WMTSLayer, WMTSLayerConfig } from "./WMTSLayer";
 import { InternalConstructorTag, LayerConstructor, LayerDependencies } from "./internals";
 
 // Import for api docs
@@ -161,7 +160,7 @@ export class WMTSLayerImpl extends AbstractLayer implements WMTSLayer {
 
     async #fetchWMTSCapabilities(): Promise<string> {
         const httpService = this.__getDeps().httpService;
-        return fetchCapabilities(this.#url, httpService, this.#abortController.signal);
+        return fetchText(this.#url, httpService, this.#abortController.signal);
     }
 
     async #loadTile(tile: Tile, tileUrl: string): Promise<void> {

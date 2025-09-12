@@ -1,11 +1,11 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { expect, it } from "vitest";
-import { SimpleLayerImpl } from "./SimpleLayerImpl";
-import { GroupLayerImpl } from "./GroupLayerImpl";
-import { Group } from "ol/layer";
-import { WMSLayer } from "../../api";
 import { createTestOlLayer } from "@open-pioneer/map-test-utils";
+import { Group } from "ol/layer";
+import { expect, it } from "vitest";
+import { GroupLayerImpl } from "./GroupLayerImpl";
+import { SimpleLayerImpl } from "./SimpleLayerImpl";
+import { WMSLayer } from "./WMSLayer";
 
 it("should not have any sublayers", () => {
     const olLayer = createTestOlLayer();

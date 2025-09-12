@@ -5,11 +5,12 @@ import { HttpService } from "@open-pioneer/http";
 import Layer from "ol/layer/Layer";
 import Source, { State } from "ol/source/Source";
 import { Mock, MockInstance, afterEach, describe, expect, it, vi } from "vitest";
-import { HealthCheckFunction, LayerConfig, SimpleLayerConfig } from "../api";
 import { AbstractLayer } from "./AbstractLayer";
 import { GroupLayerCollectionImpl } from "./GroupLayerImpl";
 import { MapModelImpl } from "../model/MapModelImpl";
 import { createTestOlLayer } from "@open-pioneer/map-test-utils";
+import { HealthCheckFunction, LayerConfig } from "./base";
+import { SimpleLayerConfig } from "./SimpleLayer";
 
 afterEach(() => {
     vi.restoreAllMocks();

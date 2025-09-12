@@ -10,6 +10,10 @@ import {
 } from "@conterra/reactivity-core";
 import { createLogger, EventEmitter } from "@open-pioneer/core";
 import { v4 as uuid4v } from "uuid";
+import { MapModelImpl } from "../model/MapModelImpl";
+import { GroupLayer } from "./GroupLayer";
+import { GroupLayerCollectionImpl } from "./GroupLayerImpl";
+import { SublayersCollectionImpl } from "./SublayersCollectionImpl";
 import {
     AnyLayer,
     AnyLayerBaseType,
@@ -17,11 +21,7 @@ import {
     ChildrenCollection,
     LayerBaseEvents,
     Sublayer
-} from "../api";
-import { GroupLayer } from "./GroupLayer";
-import { GroupLayerCollectionImpl } from "./GroupLayerImpl";
-import { MapModelImpl } from "../model/MapModelImpl";
-import { SublayersCollectionImpl } from "../model/SublayersCollectionImpl";
+} from "./base";
 
 const LOG = createLogger("map:AbstractLayerModel");
 

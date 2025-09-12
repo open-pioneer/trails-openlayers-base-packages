@@ -2,18 +2,13 @@
 // SPDX-License-Identifier: Apache-2.0
 import { deprecated } from "@open-pioneer/core";
 import { Group } from "ol/layer";
-import {
-    AnyLayer,
-    GroupLayerCollection,
-    Layer,
-    LayerRetrievalOptions,
-    RecursiveRetrievalOptions
-} from "../../api";
-import { GroupLayer, GroupLayerConfig } from "../../api/layers/GroupLayer";
-import { AbstractLayer } from "../AbstractLayer";
-import { AbstractLayerBase } from "../AbstractLayerBase";
-import { MapModelImpl } from "../MapModelImpl";
-import { getRecursiveLayers } from "../getRecursiveLayers";
+import { MapModelImpl } from "../model/MapModelImpl";
+import { getRecursiveLayers } from "../model/getRecursiveLayers";
+import { LayerRetrievalOptions, RecursiveRetrievalOptions } from "../shared";
+import { AbstractLayer } from "./AbstractLayer";
+import { AbstractLayerBase } from "./AbstractLayerBase";
+import { GroupLayer, GroupLayerCollection, GroupLayerConfig } from "./GroupLayer";
+import { AnyLayer, Layer } from "./base";
 import { InternalConstructorTag, LayerConstructor, LayerDependencies } from "./internals";
 
 // Import for api docs

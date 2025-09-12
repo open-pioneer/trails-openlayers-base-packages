@@ -20,13 +20,13 @@ import WMSCapabilities from "ol/format/WMSCapabilities";
 import ImageLayer from "ol/layer/Image";
 import type ImageSource from "ol/source/Image";
 import ImageWMS from "ol/source/ImageWMS";
-import { WMSLayer, WMSLayerConfig, WMSSublayer, WMSSublayerConfig } from "../../api";
-import { fetchCapabilities } from "../../util/capabilities-utils";
-import { AbstractLayer } from "../AbstractLayer";
-import { AbstractLayerBase } from "../AbstractLayerBase";
-import { MapModelImpl } from "../MapModelImpl";
-import { SublayersCollectionImpl } from "../SublayersCollectionImpl";
+import { MapModelImpl } from "../model/MapModelImpl";
+import { fetchText } from "../utils/fetch";
+import { AbstractLayer } from "./AbstractLayer";
+import { AbstractLayerBase } from "./AbstractLayerBase";
 import { InternalConstructorTag, LayerConstructor, LayerDependencies } from "./internals";
+import { SublayersCollectionImpl } from "./SublayersCollectionImpl";
+import { WMSLayer, WMSLayerConfig, WMSSublayer, WMSSublayerConfig } from "./WMSLayer";
 
 // Import for api docs
 // eslint-disable-next-line unused-imports/no-unused-imports
@@ -268,7 +268,7 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
     async #fetchWMSCapabilities(): Promise<string> {
         const httpService = this.__getDeps().httpService;
         const url = `${this.#url}?LANGUAGE=ger&SERVICE=WMS&REQUEST=GetCapabilities`;
-        return fetchCapabilities(url, httpService, this.#abortController.signal);
+        return fetchText(url, httpService, this.#abortController.signal);
     }
 
     async #loadImage(imageWrapper: ImageWrapper, imageUrl: string): Promise<void> {

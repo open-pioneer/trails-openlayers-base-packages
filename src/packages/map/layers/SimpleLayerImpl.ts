@@ -1,9 +1,9 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { deprecated } from "@open-pioneer/core";
-import { SimpleLayer, SimpleLayerConfig } from "../../api";
-import { AbstractLayer } from "../AbstractLayer";
+import { AbstractLayer } from "./AbstractLayer";
 import { InternalConstructorTag, LayerConstructor, LayerDependencies } from "./internals";
+import { SimpleLayer, SimpleLayerConfig } from "./SimpleLayer";
 
 // Import for api docs
 // eslint-disable-next-line unused-imports/no-unused-imports

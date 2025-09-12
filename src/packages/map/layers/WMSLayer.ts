@@ -1,18 +1,18 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import type { Options as WMSSourceOptions } from "ol/source/ImageWMS";
-import { WMSLayerImpl } from "../../model/layers/WMSLayerImpl";
-import type {
+import { WMSLayerImpl } from "./WMSLayerImpl";
+import {
     LayerBaseConfig,
-    SublayersCollection,
-    LayerConfig,
     LayerBaseType,
-    SublayerBaseType
+    LayerConfig,
+    SublayerBaseType,
+    SublayersCollection
 } from "./base";
 
 // Import for api docs
 // eslint-disable-next-line unused-imports/no-unused-imports
-import type { LayerFactory } from "../../model/layers/LayerFactory";
+import type { LayerFactory } from "../LayerFactory";
 
 /**
  * Configuration options to construct a WMS layer.

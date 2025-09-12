@@ -30,6 +30,7 @@ it("should retrieve the legendURL from the WMS service capabilities, if availabl
     const legendURLClouds = getWMSLegendUrl(wmsCapabilities, "Clouds");
     expect(legendURLClouds).toBeUndefined();
 });
+
 it("should retrieve the legendURL from the WMTS service capabilities, if available", async () => {
     const capabilitiesXML = readFileSync(
         resolve(THIS_DIR, "./test-data/SimpleWMTSCapasWithLegend.xml"),

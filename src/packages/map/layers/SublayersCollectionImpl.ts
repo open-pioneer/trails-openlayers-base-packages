@@ -1,14 +1,9 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import {
-    LayerRetrievalOptions,
-    RecursiveRetrievalOptions,
-    Sublayer,
-    SublayerBaseType,
-    SublayersCollection
-} from "../api";
 import { AbstractLayerBase } from "../layers/AbstractLayerBase";
-import { getRecursiveLayers } from "./getRecursiveLayers";
+import { getRecursiveLayers } from "../model/getRecursiveLayers";
+import { LayerRetrievalOptions, RecursiveRetrievalOptions } from "../shared";
+import { Sublayer, SublayerBaseType, SublayersCollection } from "./base";
 
 /**
  * Manages the sublayers of a layer.

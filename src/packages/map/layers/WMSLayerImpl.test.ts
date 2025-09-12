@@ -7,9 +7,7 @@ import { get as getProjection } from "ol/proj";
 import ImageSource from "ol/source/Image";
 import ImageWMS from "ol/source/ImageWMS";
 import { Mock, afterEach, beforeEach, expect, it, vi } from "vitest";
-import { WMSLayerConfig } from "../../api";
-import { AbstractLayerBase } from "../AbstractLayerBase";
-import { MapModelImpl } from "../MapModelImpl";
+import { MapModelImpl } from "../model/MapModelImpl";
 import { WMSLayerImpl } from "./WMSLayerImpl";
 
 const SERVICE_URL = "https://example.com/wms-service";

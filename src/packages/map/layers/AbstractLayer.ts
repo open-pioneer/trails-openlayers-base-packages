@@ -7,21 +7,11 @@ import { EventsKey } from "ol/events";
 import OlBaseLayer from "ol/layer/Base";
 import OlLayer from "ol/layer/Layer";
 import OlSource from "ol/source/Source";
-import {
-    HealthCheckFunction,
-    Layer,
-    LayerBaseType,
-    LayerConfig,
-    LayerLoadState,
-    SimpleLayerConfig
-} from "../api";
 import { AbstractLayerBase } from "./AbstractLayerBase";
 import { MapModelImpl } from "../model/MapModelImpl";
-import {
-    getLayerDependencies,
-    InternalConstructorTag,
-    LayerDependencies
-} from "./layers/internals";
+import { getLayerDependencies, InternalConstructorTag, LayerDependencies } from "./internals";
+import { HealthCheckFunction, Layer, LayerBaseType, LayerConfig, LayerLoadState } from "./base";
+import { SimpleLayerConfig } from "./SimpleLayer";
 
 const LOG = createLogger("map:AbstractLayer");
 

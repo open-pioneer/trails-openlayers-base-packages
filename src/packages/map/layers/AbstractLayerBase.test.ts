@@ -6,9 +6,9 @@
 import { afterEach, expect, it, vi } from "vitest";
 import { AbstractLayerBase, AbstractLayerBaseOptions } from "./AbstractLayerBase";
 import { MapModelImpl } from "../model/MapModelImpl";
-import { SublayersCollectionImpl } from "../model/SublayersCollectionImpl";
+import { SublayersCollectionImpl } from "./SublayersCollectionImpl";
 import { syncWatch } from "@conterra/reactivity-core";
-import { GroupLayerCollectionImpl } from "./layers/GroupLayerImpl";
+import { GroupLayerCollectionImpl } from "./GroupLayerImpl";
 
 afterEach(() => {
     vi.restoreAllMocks();

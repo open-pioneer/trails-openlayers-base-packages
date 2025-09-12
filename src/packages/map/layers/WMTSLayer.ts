@@ -2,11 +2,11 @@
 // SPDX-License-Identifier: Apache-2.0
 import type { Options as WMSSourceOptions } from "ol/source/ImageWMS";
 import { LayerBaseType, LayerConfig } from "./base";
-import { WMTSLayerImpl } from "../../model/layers/WMTSLayerImpl";
+import { WMTSLayerImpl } from "./WMTSLayerImpl";
 
 // Import for api docs
 // eslint-disable-next-line unused-imports/no-unused-imports
-import type { LayerFactory } from "../../model/layers/LayerFactory";
+import type { LayerFactory } from "../LayerFactory";
 
 export interface WMTSLayerConfig extends LayerConfig {
     /** URL of the WMTS service. */

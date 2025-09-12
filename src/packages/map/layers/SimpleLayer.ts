@@ -1,12 +1,12 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import type OlBaseLayer from "ol/layer/Base";
-import { LayerConfig, LayerBaseType } from "./base";
-import { SimpleLayerImpl } from "../../model/layers/SimpleLayerImpl";
+import { LayerBaseType, LayerConfig } from "./base";
+import { SimpleLayerImpl } from "./SimpleLayerImpl";
 
 // Import for api docs
 // eslint-disable-next-line unused-imports/no-unused-imports
-import type { LayerFactory } from "../../model/layers/LayerFactory";
+import type { LayerFactory } from "../LayerFactory";
 
 /**
  * Options to construct a simple layer.

@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import { HttpService } from "@open-pioneer/http";
 
-export async function fetchCapabilities(
+export async function fetchText(
     url: string,
     httpService: HttpService,
     signal: AbortSignal

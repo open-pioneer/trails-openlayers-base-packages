@@ -2,23 +2,48 @@
 // SPDX-License-Identifier: Apache-2.0
 
 // UI Components
-export { MapAnchor, type MapAnchorProps, type MapAnchorPosition } from "./ui/MapAnchor";
+export { MapAnchor, type MapAnchorPosition, type MapAnchorProps } from "./ui/MapAnchor";
 export { MapContainer, type MapContainerProps } from "./ui/MapContainer";
 
 // Hooks
+export { DefaultMapProvider } from "./hooks/DefaultMapProvider";
 export {
     useMapModel,
     useMapModelValue,
-    type UseMapModelResult,
+    type MapModelProps,
     type UseMapModelLoading,
-    type UseMapModelResolved,
     type UseMapModelRejected,
-    type MapModelProps
+    type UseMapModelResolved,
+    type UseMapModelResult
 } from "./hooks/useMapModel";
-export { DefaultMapProvider } from "./hooks/DefaultMapProvider";
 
 // Layer types
-// TODO: export * from "./layers";
+export {
+    isLayer,
+    isSublayer,
+    type AnyLayer,
+    type AnyLayerBaseType,
+    type ChildrenCollection,
+    type HealthCheckFunction,
+    type Layer,
+    type LayerBaseConfig,
+    type LayerBaseEvents,
+    type LayerBaseType,
+    type LayerConfig,
+    type LayerLoadState,
+    type Sublayer,
+    type SublayerBaseType,
+    type SublayersCollection
+} from "./layers/base";
+export { GroupLayer, type GroupLayerCollection, type GroupLayerConfig } from "./layers/GroupLayer";
+export { SimpleLayer, type SimpleLayerConfig } from "./layers/SimpleLayer";
+export {
+    WMSLayer,
+    type WMSLayerConfig,
+    type WMSSublayer,
+    type WMSSublayerConfig
+} from "./layers/WMSLayer";
+export { WMTSLayer, type WMTSLayerConfig } from "./layers/WMTSLayer";
 
 // Map Model
 // TODO:
@@ -26,15 +51,15 @@ export { DefaultMapProvider } from "./hooks/DefaultMapProvider";
 // export * from "./model/MapModel";
 
 // Services
+export { LayerFactory } from "./LayerFactory";
 export {
     // TODO: Rename impl class
     MapRegistryImpl as MapRegistry
 } from "./MapRegistryImpl";
-export { LayerFactory } from "./LayerFactory";
 
 // Utils
-export { getProjection, registerProjections, type ProjectionDefinition } from "./utils/projections";
 export { calculateBufferedExtent } from "./utils/geometry-utils";
+export { getProjection, registerProjections, type ProjectionDefinition } from "./utils/projections";
 
 // TODO: Decide where to put this
 export { type BaseFeature } from "./BaseFeature";
