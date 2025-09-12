@@ -10,7 +10,7 @@ import { Mock, afterEach, beforeEach, expect, it, vi } from "vitest";
 import { MapModelImpl } from "../model/MapModelImpl";
 import { AbstractLayerBase } from "./AbstractLayerBase";
 import { WMSLayerConfig } from "./WMSLayer";
-import { WMSLayerImpl } from "./WMSLayerImpl";
+import { WMSLayer } from "./WMSLayer";
 
 const SERVICE_URL = "https://example.com/wms-service";
 
@@ -409,7 +409,7 @@ it("does not fetch capabilities if 'fetchCapabilities' property is set to false"
 });
 
 function createLayer(options: WMSLayerConfig & { fetch?: Mock; attach?: boolean }) {
-    const layer = new WMSLayerImpl(options);
+    const layer = new WMSLayer(options);
     const httpService = {
         fetch:
             options?.fetch ??

@@ -21,7 +21,6 @@ import { GroupLayer } from "../layers/GroupLayer";
 import { INTERNAL_CONSTRUCTOR_TAG } from "../layers/internals";
 import { SimpleLayer } from "../layers/SimpleLayer";
 import { WMSLayer } from "../layers/WMSLayer";
-import { WMSLayerImpl } from "../layers/WMSLayerImpl";
 import { WMTSLayer } from "../layers/WMTSLayer";
 import { createMapModel } from "./createMapModel";
 import { MapConfig } from "./MapConfig";
@@ -203,7 +202,7 @@ it("supports adding custom layer instances", async () => {
     expect(l2).toBeInstanceOf(SimpleLayer);
 
     const l3 = model.layers.getLayerById("l3");
-    expect(l3).toBeInstanceOf(WMSLayerImpl);
+    expect(l3).toBeInstanceOf(WMSLayer);
 });
 
 it("destroys child layers when parent group layer is removed", async () => {
@@ -1067,7 +1066,7 @@ it("supports connecting and disconnecting layers", async () => {
         { httpService },
         INTERNAL_CONSTRUCTOR_TAG
     );
-    const wms = new WMSLayerImpl(
+    const wms = new WMSLayer(
         {
             title: "Layer",
             url: "https://example.com/wms-service",
