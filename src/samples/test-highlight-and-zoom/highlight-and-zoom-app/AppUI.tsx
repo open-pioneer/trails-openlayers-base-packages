@@ -77,12 +77,12 @@ export function AppUI() {
             if (ownStyle) {
                 const highlight = map.highlightAndZoom(resultGeometries, {
                     highlightStyle: ownHighlightStyle,
-                    buffer: 0.1
+                    buffer: 1.1
                 });
                 if (highlight) highlightMap.current.set(id, highlight);
             } else {
                 const highlight = map.highlightAndZoom(resultGeometries, {
-                    buffer: 0.1
+                    buffer: 1.1
                 });
                 if (highlight) highlightMap.current.set(id, highlight);
             }

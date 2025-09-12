@@ -5,10 +5,15 @@ APIs provided by this package can be used to configure, embed and access the map
 
 ## Usage
 
-To use the map in your app, follow these two steps:
+To use a map in your app, follow these steps:
 
 - Add a `MapContainer` component to your app (see [Map container component](#map-container-component)).
-- Implement a `MapConfigProvider` (see [Map configuration](#map-configuration)).
+- Create a map and set a configuration (see [Map configuration](#map-configuration)).
+
+There are two different ways to create a map ( see [Map creation](#map-creation) )
+
+- Implement a `MapConfigProvider` (see [Implement a MapConfigProvider](#implement-a-mapconfigprovider)).
+- Directly create a `MapModel` instance (see [Direct mapModel](#create-a-mapmodel-instance-directly))
 
 To access or manipulate the content of the map programmatically, see [Using the map model](#using-the-map-model).
 
@@ -16,7 +21,7 @@ To access or manipulate the content of the map programmatically, see [Using the 
 
 To integrate a `MapContainer` in an app, add the component to your React component, where you want the map to appear.
 A `MapContainer` requires a `map` reference to be specified to know which map to display.
-The `map` reference can be specified directly on the component (prop `mapId`) or by using the `DefaultMapProvider` (see [Using the `DefaultMapProvider`](#using-the-defaultmapprovider)).
+The `map` reference can be specified directly on the component (prop `map`) or by using the `DefaultMapProvider` (see [Using the `DefaultMapProvider`](#using-the-defaultmapprovider)).
 
 Make sure that the parent component has an appropriate width and height (for example `100%`).
 The `MapContainer` fills the entire available space.
@@ -25,19 +30,20 @@ Example: Integration of a map container with a given map (for an example with `D
 
 ```jsx
 import { Box } from "@chakra-ui/react";
-import { MapContainer } from "@open-pioneer/map";
-
+import { MapContainer, useMapModel } from "@open-pioneer/map";
 // ...
 function AppUI() {
+    const { map } = useMapModelValue();
+
     return (
         <Box height="100%" overflow="hidden">
-            <MapContainer map="..." />
+            <MapContainer map={map} />
         </Box>
     );
 }
 ```
 
-> NOTE: There must be a `map.MapConfigProvider` that knows how to construct the map with the given ID (see [Map configuration](#map-configuration)).
+> NOTE: If you use `useMapModelValue` There must be a `map.MapConfigProvider` or the map has to be created by you directly (see [Map creation](#map-creation)).
 
 The component itself uses the map registry service to create the map using the provided `map`.
 
@@ -56,10 +62,16 @@ by animating the view) and `preserve-extent` (ensures that the extent remains th
 
 To pass custom React components onto the map, the following anchor-points are provided:
 
+- `manual`
 - `top-left`
 - `top-right`
+- `top-center`
 - `bottom-left`
 - `bottom-right`
+- `bottom-center`
+- `left-center`
+- `right-center`
+- `center`
 
 Example: Integration of a map anchor component into the map container with position `bottom-right` and optional horizontal and vertical gap:
 
@@ -111,12 +123,83 @@ If multiple maps are used, the provider can be placed around the respective map 
 
 It is possible to override the `map` on each component if some components in the tree should use a different map.
 
-### Map configuration
+### Map creation
 
-Register a service providing `map.MapConfigProvider` to configure the contents of a map.
-Such a provider is typically located in an app.
+There are two different ways to create a map Model. Either by implementing a `MapConfigProvider`
+(see [Implement a MapConfigProvider](#implement-a-mapconfigprovider)) or by directly creating a `MapModel` instance
+(see [Create a MapModel instance directly](#create-a-mapmodel-instance-directly))).
+The latter approach is useful if you manage your app state with an app model and want to
+control the map model programmatically. The MapconfigProvider approach is more declarative and useful
+if you want to configure the map once and don't need to change it often depending on your app state.
 
-Example: Configuration to register a service providing `map.MapConfigProvider`.
+#### Create a MapModel instance directly
+
+It can be usefull to create a `MapModel` instance directly, for example if you want to manage your app
+state with an app model and want to control the map model programmatically. E.g. if you want to add or remove layers
+after a user interaction.
+Here is an example of how to create a `MapModel` instance directly in an app model.
+
+```tsx
+import { ServiceOptions } from "@open-pioneer/runtime";
+interface References {
+    mapRegistry: MapRegistry;
+}
+export class AppModel implements Service {
+    declare [DECLARE_SERVICE_INTERFACE]: "example.AppModel";
+    constructor({ references }: ServiceOptions<References>) {
+        this._mapRegistry = references.mapRegistry;
+        this._mapRegistry
+            .createMapModel("myMapModelId", {
+                /* map config */
+            })
+            .then((map) => {
+                // use the map model instance
+            });
+    }
+}
+```
+
+The map config is the same as in the `MapConfigProvider` (see [Map configuration](#map-configuration)).
+
+To get the mapRegistry service, you need to add a reference to the build config:
+
+```js
+// build.config.mjs
+import { defineBuildConfig } from "@open-pioneer/build-support";
+export default defineBuildConfig({
+    services: {
+        AppModel: {
+            provides: "example.AppModel",
+            references: {
+                mapRegistry: "map.MapRegistry"
+            }
+        }
+    }
+});
+```
+
+It is also possible to destroy the map model instance again by calling `mapModel.destroy()`.
+
+### Implement a MapConfigProvider
+
+Another way to create a map is to implement a `MapConfigProvider`.
+The MapconfigProvider approach is more declarative and useful
+if you want to configure the map once and don't need to change it often depending on your app state.
+
+```ts
+// YOUR-APP/MapConfigProviderImpl.ts
+import { MapConfig, MapConfigProvider } from "@open-pioneer/map";
+
+export class MapConfigProviderImpl implements MapConfigProvider {
+    async getMapConfig(): Promise<MapConfig> {
+        return {
+            /* map config */
+        };
+    }
+}
+```
+
+You need to register the service in your app's build config:
 
 ```js
 // build.config.mjs
@@ -135,7 +218,9 @@ export default defineBuildConfig({
 });
 ```
 
-The service itself needs to implement the `MapConfigProvider` interface.
+### Map configuration
+
+Independent of the way the map is created (either via `MapConfigProvider` or directly), a map configuration must be provided.
 The following map options are supported:
 
 - `initialView`,
@@ -147,6 +232,9 @@ Always use the provided map model to access the map initially.
 Use `.olMap` only, when the raw instance is required.
 
 If an advanced configuration (fully constructed `OlView` instance) is used, some options (such as `initialView` or `projection`) cannot be applied anymore.
+
+We will show some example configurations with a MapConfigProvider implementation.
+These configurations can also be used when creating a MapModel instance directly.
 
 Example: Implementation of the service with `initialView.kind = position`.
 

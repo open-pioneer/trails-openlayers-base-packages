@@ -801,7 +801,7 @@ it("reacts to changes in layer's internal state", async () => {
     expect(images.length).toBe(1);
 
     // Set internal to false
-    const layers = map.layers.getOperationalLayers();
+    const layers = map.layers.getOperationalLayers({ includeInternalLayers: true });
     act(() => {
         layers[1]?.setInternal(false);
     });

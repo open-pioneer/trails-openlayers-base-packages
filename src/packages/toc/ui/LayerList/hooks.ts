@@ -6,7 +6,11 @@ import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 /** Returns the top level operational layers in render order (topmost layer first). */
 export function useLayers(map: MapModel): Layer[] {
     return useReactiveSnapshot(() => {
-        const layers = map.layers.getOperationalLayers({ sortByDisplayOrder: true }) ?? [];
+        const layers =
+            map.layers.getOperationalLayers({
+                sortByDisplayOrder: true,
+                includeInternalLayers: true //internal status is handled by LayerItems
+            }) ?? [];
         layers.reverse(); // render topmost layer first
         return layers;
     }, [map]);

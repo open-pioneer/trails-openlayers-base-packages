@@ -141,6 +141,74 @@ it("should return all layers of the group layer collection, including child laye
     expect(layerIds.includes("group")).toBeFalsy(); //group itself is not part of the group layer collection
 });
 
+it("should return internal child layers only if explicitly specified", () => {
+    const olLayer1 = new TileLayer({});
+    const olLayer2 = new TileLayer({});
+
+    const grouplayer = new GroupLayerImpl({
+        id: "group",
+        title: "group test",
+        layers: [
+            new SimpleLayerImpl({
+                id: "member",
+                title: "group member",
+                olLayer: olLayer1
+            }),
+            new SimpleLayerImpl({
+                id: "internal",
+                title: "internal group member",
+                olLayer: olLayer2,
+                internal: true
+            })
+        ]
+    });
+
+    let childLayers = grouplayer.layers.getLayers();
+    expect(childLayers.length).toBe(1);
+    childLayers = grouplayer.layers.getLayers({ includeInternalLayers: true });
+    expect(childLayers.length).toBe(2);
+
+    childLayers = grouplayer.layers.getItems();
+    expect(childLayers.length).toBe(1);
+    childLayers = grouplayer.layers.getItems({ includeInternalLayers: true });
+    expect(childLayers.length).toBe(2);
+});
+
+it("should return internal child layers only if explicitly specified (recursive retrieval)", () => {
+    const olLayer1 = new TileLayer({});
+    const olLayer2 = new TileLayer({});
+
+    const grouplayer = new GroupLayerImpl({
+        id: "group",
+        title: "group test",
+        layers: [
+            new SimpleLayerImpl({
+                id: "member",
+                title: "group member",
+                olLayer: olLayer1
+            }),
+            new GroupLayerImpl({
+                id: "internal subgroup",
+                title: "subgroup test",
+                internal: true,
+                layers: [
+                    new SimpleLayerImpl({
+                        id: "subgroupmember",
+                        title: "subgroup member",
+                        olLayer: olLayer2
+                    })
+                ]
+            })
+        ]
+    });
+
+    let childLayers = grouplayer.layers.getRecursiveLayers();
+    expect(childLayers.length).toBe(1);
+
+    childLayers = grouplayer.layers.getRecursiveLayers({ includeInternalLayers: true });
+    expect(childLayers.length).toBe(3);
+});
+
 it("throws when adding the same child twice", () => {
     const olLayer = new TileLayer({});
     const child = new SimpleLayerImpl({
