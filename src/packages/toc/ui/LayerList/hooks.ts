@@ -22,7 +22,10 @@ export function useLayers(map: MapModel): Layer[] {
  */
 export function useChildLayers(layer: AnyLayer): AnyLayer[] | undefined {
     return useReactiveSnapshot(() => {
-        const children = layer.children?.getItems({ sortByDisplayOrder: true });
+        const children = layer.children?.getItems({
+            sortByDisplayOrder: true,
+            includeInternalLayers: true //internal status is handled by LayerItems
+        });
         children?.reverse(); // render topmost layer first
         return children;
     }, [layer]);
