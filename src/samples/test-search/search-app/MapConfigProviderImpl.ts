@@ -1,13 +1,18 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { MapConfig, MapConfigProvider, WMTSLayer } from "@open-pioneer/map";
+import {
+    MapConfig,
+    MapConfigProvider,
+    MapConfigProviderOptions,
+    WMTSLayer
+} from "@open-pioneer/map";
 
 export const MAP_ID = "main";
 
 export class MapConfigProviderImpl implements MapConfigProvider {
     mapId = MAP_ID;
 
-    async getMapConfig(): Promise<MapConfig> {
+    async getMapConfig({ layerFactory }: MapConfigProviderOptions): Promise<MapConfig> {
         return {
             initialView: {
                 kind: "position",
@@ -16,7 +21,8 @@ export class MapConfigProviderImpl implements MapConfigProvider {
             },
             projection: "EPSG:25832",
             layers: [
-                new WMTSLayer({
+                layerFactory.create({
+                    type: WMTSLayer,
                     isBaseLayer: true,
                     title: "Topplus farbig",
                     url: "https://www.wmts.nrw.de/topplus_open/1.0.0/WMTSCapabilities.xml",

@@ -4,16 +4,15 @@ import { MapContainer } from "@open-pioneer/map";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render, screen, waitFor } from "@testing-library/react";
 import { expect, it } from "vitest";
-import { createServiceOptions, setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
+import { setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
 import userEvent from "@testing-library/user-event";
 import { Zoom, ZoomIn, ZoomOut } from "./Zoom";
 
 it("should successfully create a zoom-in and zoom-out buttons", async () => {
-    const { map, registry } = await setupMap();
+    const { map } = await setupMap();
 
-    const injectedServices = createServiceOptions({ registry });
     render(
-        <PackageContextProvider services={injectedServices}>
+        <PackageContextProvider>
             <MapContainer map={map} data-testid="map" />
             <ZoomIn map={map} data-testid="zoom-in" />
             <ZoomOut map={map} data-testid="zoom-out" />
@@ -33,11 +32,10 @@ it("should successfully create a zoom-in and zoom-out buttons", async () => {
 });
 
 it("should successfully create a zoom component with additional css classes", async () => {
-    const { map, registry } = await setupMap();
+    const { map } = await setupMap();
 
-    const injectedServices = createServiceOptions({ registry });
     render(
-        <PackageContextProvider services={injectedServices}>
+        <PackageContextProvider>
             <MapContainer map={map} data-testid="map" />
             <Zoom
                 data-testid="zoom"
@@ -59,12 +57,11 @@ it("should successfully create a zoom component with additional css classes", as
 });
 
 it("should zoom in and zoom out when clicked", async () => {
-    const { map, registry } = await setupMap();
+    const { map } = await setupMap();
     const user = userEvent.setup();
 
-    const injectedServices = createServiceOptions({ registry });
     render(
-        <PackageContextProvider services={injectedServices}>
+        <PackageContextProvider>
             <MapContainer map={map} data-testid="map" />
             <ZoomIn data-testid="zoom-in" map={map} />
             <ZoomOut data-testid="zoom-out" map={map} />

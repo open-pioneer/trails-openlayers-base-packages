@@ -4,12 +4,7 @@ import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render } from "@testing-library/react";
 import { afterEach, expect, it, vi } from "vitest";
 import { MapContainer } from "./MapContainer";
-import {
-    createServiceOptions,
-    setupMap,
-    waitForMapMount,
-    SimpleMapOptions
-} from "@open-pioneer/map-test-utils";
+import { setupMap, waitForMapMount, SimpleMapOptions } from "@open-pioneer/map-test-utils";
 import TileLayer from "ol/layer/Tile";
 
 afterEach(() => {
@@ -17,10 +12,9 @@ afterEach(() => {
 });
 
 it("successfully creates a map", async () => {
-    const { map, registry } = await setupMap();
-    const injectedServices = createServiceOptions({ registry });
+    const { map } = await setupMap();
     const renderResult = render(
-        <PackageContextProvider services={injectedServices}>
+        <PackageContextProvider>
             <MapContainer map={map} data-testid="base" />
         </PackageContextProvider>
     );
@@ -42,11 +36,10 @@ it("successfully creates a map", async () => {
 
 it("reports an error if two map containers are used for the same map", async () => {
     const logSpy = vi.spyOn(global.console, "error").mockImplementation(() => undefined);
-    const { map, registry } = await setupMap();
+    const { map } = await setupMap();
 
-    const injectedServices = createServiceOptions({ registry });
     render(
-        <PackageContextProvider services={injectedServices}>
+        <PackageContextProvider>
             <div data-testid="base">
                 <MapContainer map={map} />
                 <MapContainer map={map} />
@@ -90,11 +83,10 @@ it("successfully creates a map with given configuration", async () => {
             }
         ]
     } satisfies SimpleMapOptions;
-    const { map, registry } = await setupMap(options);
+    const { map } = await setupMap(options);
 
-    const injectedServices = createServiceOptions({ registry });
     render(
-        <PackageContextProvider services={injectedServices}>
+        <PackageContextProvider>
             <div data-testid="base">
                 <MapContainer map={map} />
             </div>
@@ -111,10 +103,9 @@ it("successfully creates a map with given configuration", async () => {
 });
 
 it("supports configuring role and aria labels", async () => {
-    const { map, registry } = await setupMap();
-    const injectedServices = createServiceOptions({ registry });
+    const { map } = await setupMap();
     const renderResult = render(
-        <PackageContextProvider services={injectedServices}>
+        <PackageContextProvider>
             <MapContainer
                 map={map}
                 role="region"

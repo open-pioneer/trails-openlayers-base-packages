@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { MapContainer } from "@open-pioneer/map";
-import { createServiceOptions, setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
+import { setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { act, getByRole, render, screen, waitFor } from "@testing-library/react";
 import userEvent, { UserEvent } from "@testing-library/user-event";
@@ -371,7 +371,7 @@ async function input(user: UserEvent, element: Element, value: string) {
 }
 
 async function setUp(locale: string = "en") {
-    const { map, registry } = await setupMap();
+    const { map } = await setupMap();
     const numberParser = new NumberParser(locale);
     const numberParserService = {
         parseNumber: (number) => {
@@ -380,7 +380,6 @@ async function setUp(locale: string = "en") {
     } satisfies Partial<NumberParserService>;
 
     const injectedServices = {
-        ...createServiceOptions({ registry }),
         "runtime.NumberParserService": numberParserService
     };
 

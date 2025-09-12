@@ -7,10 +7,10 @@ import { get as getProjection } from "ol/proj";
 import ImageSource from "ol/source/Image";
 import ImageWMS from "ol/source/ImageWMS";
 import { Mock, afterEach, beforeEach, expect, it, vi } from "vitest";
-import { WMSLayerConfig } from "../../api";
+import { WMSLayer, WMSLayerConfig } from "../../api";
 import { AbstractLayerBase } from "../AbstractLayerBase";
 import { MapModelImpl } from "../MapModelImpl";
-import { WMSLayerImpl } from "./WMSLayerImpl";
+import { createTestLayer } from "@open-pioneer/map-test-utils";
 
 const SERVICE_URL = "https://example.com/wms-service";
 
@@ -266,11 +266,13 @@ it("provides access to nested sublayers", () => {
     });
 
     const sublayer1 = layer.sublayers.getSublayers()[0]!;
-    const sublayer2 = sublayer1.sublayers.getSublayers()[0]!;
-    expect(sublayer2.name).toBe("sublayer-2");
-    expect(sublayer2.title).toBe("Sublayer 2");
-    expect(sublayer2.parentLayer).toBe(layer);
-    expect(sublayer2.parent).toBe(sublayer1);
+    const sublayer2 = sublayer1?.sublayers?.getSublayers()?.length
+        ? sublayer1.sublayers.getSublayers()[0]
+        : null;
+    expect(sublayer2?.name).toBe("sublayer-2");
+    expect(sublayer2?.title).toBe("Sublayer 2");
+    expect(sublayer2?.parentLayer).toBe(layer);
+    expect(sublayer2?.parent).toBe(sublayer1);
 });
 
 it("should return all wms sublayers", () => {
@@ -409,19 +411,31 @@ it("does not fetch capabilities if 'fetchCapabilities' property is set to false"
 });
 
 function createLayer(options: WMSLayerConfig & { fetch?: Mock; attach?: boolean }) {
-    const layer = new WMSLayerImpl(options);
     const httpService = {
         fetch:
             options?.fetch ??
             vi.fn().mockImplementation(async () => new Response("", { status: 200 }))
     } as HttpService;
+    const layer = createTestLayer(
+        {
+            type: WMSLayer,
+            ...options
+        },
+        {
+            fetch: httpService.fetch
+        }
+    );
     const mapModel = {
-        __sharedDependencies: {
+        __layerDeps: {
             httpService: httpService as HttpService
         }
     } as MapModelImpl;
 
-    if (options?.attach) {
+    // ensure that __attachToMap can be called
+    function isAttachable(l: unknown): l is { __attachToMap(mapModel: MapModelImpl): void } {
+        return !!l && typeof (l as any).__attachToMap === "function";
+    }
+    if (options?.attach && isAttachable(layer)) {
         layer.__attachToMap(mapModel);
     }
 

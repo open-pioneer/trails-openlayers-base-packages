@@ -6,7 +6,7 @@ import { expect, it } from "vitest";
 import { get } from "ol/proj";
 import { ScaleViewer } from "./ScaleViewer";
 import View from "ol/View";
-import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
+import { setupMap } from "@open-pioneer/map-test-utils";
 import { ReactNode } from "react";
 
 it("should successfully create a scale viewer component", async () => {
@@ -89,8 +89,7 @@ async function waitForScaleViewer() {
 }
 
 async function setup() {
-    const { map, registry } = await setupMap();
-    const injectedServices = createServiceOptions({ registry });
+    const { map } = await setupMap();
 
     let locale: string | undefined;
     function setLocale(newLocale: string | undefined) {
@@ -98,11 +97,7 @@ async function setup() {
     }
 
     function Wrapper(props: { children?: ReactNode }) {
-        return (
-            <PackageContextProvider services={injectedServices} locale={locale}>
-                {props.children}
-            </PackageContextProvider>
-        );
+        return <PackageContextProvider locale={locale}>{props.children}</PackageContextProvider>;
     }
 
     return { map, setLocale, Wrapper };

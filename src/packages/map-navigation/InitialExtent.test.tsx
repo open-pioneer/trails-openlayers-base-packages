@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { MapContainer } from "@open-pioneer/map";
-import { createServiceOptions, setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
+import { setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -11,11 +11,10 @@ import { expect, it } from "vitest";
 import { InitialExtent } from "./InitialExtent";
 
 it("should successfully create a initial extent component with home button", async () => {
-    const { map, registry } = await setupMap();
+    const { map } = await setupMap();
 
-    const injectedServices = createServiceOptions({ registry });
     render(
-        <PackageContextProvider services={injectedServices}>
+        <PackageContextProvider>
             <MapContainer map={map} data-testid="map" />
             <InitialExtent map={map} data-testid="initial-extent" />
         </PackageContextProvider>
@@ -30,11 +29,10 @@ it("should successfully create a initial extent component with home button", asy
 });
 
 it("should successfully create a initial extent component with additional css classes", async () => {
-    const { map, registry } = await setupMap();
+    const { map } = await setupMap();
 
-    const injectedServices = createServiceOptions({ registry });
     render(
-        <PackageContextProvider services={injectedServices}>
+        <PackageContextProvider>
             <MapContainer map={map} data-testid="map" />
             <InitialExtent
                 map={map}
@@ -56,12 +54,11 @@ it("should successfully create a initial extent component with additional css cl
 });
 
 it("should successfully click the home button and go to initial extent", async () => {
-    const { map, registry } = await setupMap();
+    const { map } = await setupMap();
     const user = userEvent.setup();
 
-    const injectedServices = createServiceOptions({ registry });
     render(
-        <PackageContextProvider services={injectedServices}>
+        <PackageContextProvider>
             <MapContainer map={map} data-testid="map" />
             <InitialExtent map={map} data-testid="initial-extent"></InitialExtent>
         </PackageContextProvider>

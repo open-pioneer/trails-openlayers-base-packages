@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import { nextTick } from "@conterra/reactivity-core";
 import { MapContainer } from "@open-pioneer/map";
-import { createServiceOptions, setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
+import { setupMap, waitForMapMount } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { getByRole, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -639,7 +639,7 @@ function createTooltipHelper() {
 }
 
 async function setUp(locale: string = "en") {
-    const { map, registry } = await setupMap();
+    const { map } = await setupMap();
     const numberParser = new NumberParser(locale);
     const numberParserService = {
         parseNumber: (number) => {
@@ -648,9 +648,7 @@ async function setUp(locale: string = "en") {
     } satisfies Partial<NumberParserService>;
 
     const injectedServices = {
-        ...createServiceOptions({ registry }),
         "runtime.NumberParserService": numberParserService
     };
-
     return { map, injectedServices };
 }

@@ -1,15 +1,14 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import { nextTick } from "@conterra/reactivity-core";
 import { GroupLayer, Layer, SimpleLayer, SimpleLayerConfig } from "@open-pioneer/map";
-import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
+import { createTestOlLayer, setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
-import TileLayer from "ol/layer/Tile";
 import { ReactNode } from "react";
 import { describe, expect, it, vi } from "vitest";
 import { TocDisposedEvent, TocReadyEvent } from "../model";
 import { Toc } from "./Toc";
-import { nextTick } from "@conterra/reactivity-core";
 
 const BASEMAP_SWITCHER_CLASS = ".basemap-switcher";
 const BASEMAP_SWITCHER_SELECT_CLASS = ".basemap-switcher-select";
@@ -81,7 +80,7 @@ it("should support overriding basemap-switcher properties", async () => {
     const { map, Wrapper } = await setupTocContext([
         {
             title: "OSM",
-            olLayer: new TileLayer({}),
+            olLayer: createTestOlLayer(),
             isBaseLayer: true
         }
     ]);
@@ -239,7 +238,7 @@ describe("toc api", () => {
                         new SimpleLayer({
                             id: "submember",
                             title: "subgroup member",
-                            olLayer: new TileLayer({}),
+                            olLayer: createTestOlLayer(),
                             visible: false
                         })
                     ]
@@ -294,33 +293,28 @@ describe("toc api", () => {
 });
 
 async function setupTocContext(layers?: (SimpleLayerConfig | Layer)[]) {
-    const { map, registry } = await setupMap({
+    const { map } = await setupMap({
         layers: layers ?? [
             {
                 title: "Base layer",
                 id: "base-layer",
-                olLayer: new TileLayer({}),
+                olLayer: createTestOlLayer(),
                 isBaseLayer: true
             },
             {
                 title: "Layer 1",
                 id: "layer-1",
-                olLayer: new TileLayer({})
+                olLayer: createTestOlLayer()
             },
             {
                 title: "Layer 2",
                 id: "layer-2",
-                olLayer: new TileLayer({})
+                olLayer: createTestOlLayer()
             }
         ]
     });
-    const injectedServices = createServiceOptions({ registry });
     const Wrapper = (props: { children?: ReactNode }) => {
-        return (
-            <PackageContextProvider services={injectedServices}>
-                {props.children}
-            </PackageContextProvider>
-        );
+        return <PackageContextProvider>{props.children}</PackageContextProvider>;
     };
     return { map, Wrapper };
 }

@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { SimpleLayer } from "@open-pioneer/map";
-import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
+import { setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { act, fireEvent, getByRole, render, screen, waitFor } from "@testing-library/react";
 import { Selection, SelectionSourceChangedEvent } from "./Selection";
@@ -173,7 +173,7 @@ async function createSelection(
     selectionSources?: SelectionSource[] | undefined,
     onSourceChanged?: (event: SelectionSourceChangedEvent) => void
 ) {
-    const { map, registry } = await setupMap();
+    const { map } = await setupMap();
 
     const notifier: Partial<NotificationService> = {
         notify() {
@@ -181,10 +181,10 @@ async function createSelection(
         }
     };
 
-    const injectedServices = createServiceOptions({
-        registry
-    });
-    injectedServices["notifier.NotificationService"] = notifier;
+    const injectedServices = {
+        "notifier.NotificationService": notifier
+    };
+
     const sources = selectionSources || [new FakePointSelectionSource()];
 
     const renderSelection = (sources: SelectionSource[]) => {
