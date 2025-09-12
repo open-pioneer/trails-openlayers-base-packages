@@ -3,13 +3,13 @@
 import { createTestOlLayer } from "@open-pioneer/map-test-utils";
 import { Group } from "ol/layer";
 import { expect, it } from "vitest";
-import { GroupLayerImpl } from "./GroupLayerImpl";
+import { GroupLayer } from "./GroupLayer";
 import { SimpleLayer } from "./SimpleLayer";
 import { WMSLayer } from "./WMSLayer";
 
 it("should not have any sublayers", () => {
     const olLayer = createTestOlLayer();
-    const grouplayer = new GroupLayerImpl({
+    const grouplayer = new GroupLayer({
         id: "group",
         title: "group test",
         layers: [
@@ -26,7 +26,7 @@ it("should not have any sublayers", () => {
 it("should create OL group that contains all group members", () => {
     const olLayer1 = createTestOlLayer();
     const olLayer2 = createTestOlLayer();
-    const grouplayer = new GroupLayerImpl({
+    const grouplayer = new GroupLayer({
         id: "group",
         title: "group test",
         layers: [
@@ -35,7 +35,7 @@ it("should create OL group that contains all group members", () => {
                 title: "group member",
                 olLayer: olLayer1
             }),
-            new GroupLayerImpl({
+            new GroupLayer({
                 id: "subgroup",
                 title: "subgroup test",
                 layers: [
@@ -63,7 +63,7 @@ it("should set parent of group members to this group layer", () => {
     });
     expect(child.parent).toBeUndefined();
 
-    const grouplayer = new GroupLayerImpl({
+    const grouplayer = new GroupLayer({
         id: "group",
         title: "group test",
         layers: [child]
@@ -103,7 +103,7 @@ it("should return all layers of the group layer collection, including child laye
         url: "http://example.com/wms"
     });
 
-    const grouplayer = new GroupLayerImpl({
+    const grouplayer = new GroupLayer({
         id: "group",
         title: "group test",
         layers: [
@@ -112,7 +112,7 @@ it("should return all layers of the group layer collection, including child laye
                 title: "group member",
                 olLayer: olLayer1
             }),
-            new GroupLayerImpl({
+            new GroupLayer({
                 id: "subgroup",
                 title: "subgroup test",
                 layers: [
@@ -150,7 +150,7 @@ it("throws when adding the same child twice", () => {
     });
     expect(
         () =>
-            new GroupLayerImpl({
+            new GroupLayer({
                 id: "group",
                 title: "group test",
                 layers: [child, child]

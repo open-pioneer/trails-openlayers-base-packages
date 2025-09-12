@@ -11,8 +11,7 @@ import {
 import { createLogger, EventEmitter } from "@open-pioneer/core";
 import { v4 as uuid4v } from "uuid";
 import { MapModelImpl } from "../model/MapModelImpl";
-import { GroupLayer } from "./GroupLayer";
-import { GroupLayerCollectionImpl } from "./GroupLayerImpl";
+import { GroupLayer, GroupLayerCollection } from "./GroupLayer";
 import { SublayersCollectionImpl } from "./SublayersCollectionImpl";
 import {
     AnyLayer,
@@ -195,7 +194,7 @@ export abstract class AbstractLayerBase<AdditionalEvents = {}>
      *
      * The properties `layers` and `sublayers` are mutually exclusive.
      */
-    abstract get layers(): GroupLayerCollectionImpl | undefined;
+    abstract get layers(): GroupLayerCollection | undefined;
 
     /**
      * The collection of child sublayers for this layer. Sublayers are layers that cannot exist without an appropriate parent layer.

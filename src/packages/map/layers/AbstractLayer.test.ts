@@ -6,7 +6,7 @@ import Layer from "ol/layer/Layer";
 import Source, { State } from "ol/source/Source";
 import { Mock, MockInstance, afterEach, describe, expect, it, vi } from "vitest";
 import { AbstractLayer } from "./AbstractLayer";
-import { GroupLayerCollectionImpl } from "./GroupLayerImpl";
+import { GroupLayerCollection } from "./GroupLayer";
 import { MapModelImpl } from "../model/MapModelImpl";
 import { createTestOlLayer } from "@open-pioneer/map-test-utils";
 import { HealthCheckFunction, LayerConfig } from "./base";
@@ -371,7 +371,7 @@ class LayerImpl extends AbstractLayer {
         return undefined;
     }
 
-    get layers(): GroupLayerCollectionImpl | undefined {
+    get layers(): GroupLayerCollection | undefined {
         return undefined;
     }
 }
