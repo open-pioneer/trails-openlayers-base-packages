@@ -11,7 +11,6 @@ import { WMTS } from "ol/source";
 import { Mock, afterEach, expect, it, vi } from "vitest";
 import { MapModelImpl } from "../model/MapModelImpl";
 import { WMTSLayer, WMTSLayerConfig } from "./WMTSLayer";
-import { WMTSLayerImpl } from "./WMTSLayerImpl";
 
 const THIS_DIR = dirname(fileURLToPath(import.meta.url));
 const WMTS_CAPAS = readFileSync(resolve(THIS_DIR, "./wmts/test-data/SimpleWMTSCapas.xml"), "utf-8");
@@ -68,7 +67,7 @@ it("uses http service to fetch images", async () => {
 function createLayer(
     options: WMTSLayerConfig & { fetch?: Mock; attach?: boolean; waitForCapas?: boolean }
 ) {
-    const layer = new WMTSLayerImpl(options);
+    const layer = new WMTSLayer(options);
     const httpService = {
         fetch:
             options?.fetch ??

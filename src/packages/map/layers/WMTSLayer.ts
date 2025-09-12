@@ -1,13 +1,29 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import { reactive } from "@conterra/reactivity-core";
+import { createLogger, deprecated, isAbortError } from "@open-pioneer/core";
+import { ImageTile } from "ol";
+import Tile from "ol/Tile";
+import TileState from "ol/TileState";
+import WMTSCapabilities from "ol/format/WMTSCapabilities";
+import TileLayer from "ol/layer/Tile";
 import type { Options as WMSSourceOptions } from "ol/source/ImageWMS";
-import { LayerBaseType, LayerConfig } from "./base";
-import { WMTSLayerImpl } from "./WMTSLayerImpl";
+import type TileSourceType from "ol/source/Tile";
+import WMTS, { optionsFromCapabilities } from "ol/source/WMTS";
+import { MapModelImpl } from "../model/MapModelImpl";
+import { fetchText } from "../utils/fetch";
+import { AbstractLayer } from "./AbstractLayer";
+import { LayerConfig } from "./base";
+import { InternalConstructorTag, LayerConstructor, LayerDependencies } from "./internals";
+import { getLegendUrl } from "./wmts/getLegendUrl";
 
 // Import for api docs
 // eslint-disable-next-line unused-imports/no-unused-imports
 import type { LayerFactory } from "../LayerFactory";
 
+/**
+ * Configuration options supported by {@link WMTSLayer}.
+ */
 export interface WMTSLayerConfig extends LayerConfig {
     /** URL of the WMTS service. */
     url: string;
@@ -27,30 +43,201 @@ export interface WMTSLayerConfig extends LayerConfig {
     sourceOptions?: Partial<WMSSourceOptions>;
 }
 
-export interface WMTSLayer extends LayerBaseType {
-    readonly type: "wmts";
+const LOG = createLogger("map:WMTSLayer");
 
-    /** URL of the WMTS service. */
-    readonly url: string;
+const deprecatedConstructor = deprecated({
+    name: "WMTSLayer constructor",
+    packageName: "@open-pioneer/map",
+    since: "v1.0.0",
+    alternative: "use LayerFactory.create() instead"
+});
 
-    /** The name of the WMTS layer in the service's capabilities. */
-    readonly name: string;
+/**
+ * Displays an OGC Web Map Tile Service (WMTS).
+ */
+export class WMTSLayer extends AbstractLayer {
+    #url: string;
+    #name: string;
+    #matrixSet: string;
+    #layer: TileLayer<TileSourceType>;
+    #source: WMTS | undefined;
+    #sourceOptions?: Partial<WMSSourceOptions>;
+    #legend = reactive<string | undefined>();
 
-    /** The name of the tile matrix set in the service's capabilities. */
-    readonly matrixSet: string;
-
-    readonly layers: undefined;
-}
-
-export interface WMTSLayerConstructor {
-    prototype: WMTSLayer;
+    #loadStarted = false;
+    readonly #abortController = new AbortController();
 
     /**
-     * Creates a new {@link WMTSLayer}.
-     *
      * @deprecated Prefer using {@link LayerFactory.create} instead of calling the constructor directly
      */
-    new (config: WMTSLayerConfig): WMTSLayer;
+    constructor(config: WMTSLayerConfig);
+
+    /**
+     * NOTE: Do not use this overload. Use {@link LayerFactory.create} instead.
+     *
+     * @internal
+     */
+    constructor(
+        config: WMTSLayerConfig,
+        deps: LayerDependencies,
+        internalTag: InternalConstructorTag
+    );
+
+    constructor(
+        config: WMTSLayerConfig,
+        deps?: LayerDependencies,
+        internalTag?: InternalConstructorTag
+    ) {
+        if (!internalTag) {
+            deprecatedConstructor();
+        }
+
+        const layer = new TileLayer();
+        super(
+            {
+                ...config,
+                olLayer: layer
+            },
+            deps,
+            internalTag
+        );
+        this.#url = config.url;
+        this.#name = config.name;
+        this.#layer = layer;
+        this.#matrixSet = config.matrixSet;
+        this.#sourceOptions = config.sourceOptions;
+    }
+
+    destroy(): void {
+        this.#abortController.abort();
+        super.destroy();
+    }
+
+    get type() {
+        return "wmts" as const;
+    }
+
+    /** URL of the WMTS service. */
+    override get legend(): string | undefined {
+        return this.#legend.value;
+    }
+
+    override get sublayers(): undefined {
+        return undefined;
+    }
+
+    override get layers(): undefined {
+        return undefined;
+    }
+
+    get url() {
+        return this.#url;
+    }
+
+    /** The name of the WMTS layer in the service's capabilities. */
+    get name() {
+        return this.#name;
+    }
+
+    /** The name of the tile matrix set in the service's capabilities. */
+    get matrixSet() {
+        return this.#matrixSet;
+    }
+
+    override __attachToMap(map: MapModelImpl): void {
+        super.__attachToMap(map);
+        this.#load();
+    }
+
+    #load() {
+        if (this.#loadStarted) {
+            return;
+        }
+        this.#loadStarted = true;
+        this.#fetchWMTSCapabilities()
+            .then((result: string) => {
+                const parser = new WMTSCapabilities();
+                const capabilities = parser.read(result);
+                const options = optionsFromCapabilities(capabilities, {
+                    layer: this.#name,
+                    matrixSet: this.#matrixSet
+                });
+                if (!options) {
+                    throw new Error("Layer was not found in capabilities");
+                }
+                const source = new WMTS({
+                    ...options,
+                    ...this.#sourceOptions,
+                    tileLoadFunction: (tile, tileUrl) => {
+                        this.#loadTile(tile, tileUrl);
+                    }
+                });
+                this.#source = source;
+                this.#layer.setSource(this.#source);
+                const activeStyleId = source.getStyle();
+                const legendUrl = getLegendUrl(capabilities, this.name, activeStyleId);
+                this.#legend.value = legendUrl;
+            })
+            .catch((error) => {
+                if (isAbortError(error)) {
+                    LOG.debug(`Layer ${this.name} has been destroyed before fetching the data`);
+                    return;
+                }
+                LOG.error(`Failed fetching WMTS capabilities for Layer ${this.name}`, error);
+            });
+    }
+
+    async #fetchWMTSCapabilities(): Promise<string> {
+        const httpService = this.__getDeps().httpService;
+        return fetchText(this.#url, httpService, this.#abortController.signal);
+    }
+
+    async #loadTile(tile: Tile, tileUrl: string): Promise<void> {
+        const httpService = this.__getDeps().httpService;
+        try {
+            if (!(tile instanceof ImageTile)) {
+                throw new Error("Only 'ImageTile' is supported for now.");
+            }
+
+            const image = tile.getImage();
+            if (!isHtmlImage(image)) {
+                // Could also be canvas or video
+                throw new Error("Only <img> tags are supported as tiles for now.");
+            }
+
+            const response = await httpService.fetch(tileUrl);
+            if (!response.ok) {
+                throw new Error(`Tile request failed with status ${response.status}.`);
+            }
+
+            const blob = await response.blob();
+            const objectUrl = URL.createObjectURL(blob);
+            const finish = () => {
+                // Cleanup object URL after load to prevent memory leaks.
+                // https://stackoverflow.com/questions/62473876/openlayers-6-settileloadfunction-documented-example-uses-url-createobjecturld
+                URL.revokeObjectURL(objectUrl);
+                image.removeEventListener("load", finish);
+                image.removeEventListener("error", finish);
+            };
+            image.addEventListener("load", finish);
+            image.addEventListener("error", finish);
+            image.src = objectUrl;
+        } catch (e) {
+            tile.setState(TileState.ERROR);
+            if (!isAbortError(e)) {
+                LOG.error("Failed to load tile", e);
+            }
+        }
+    }
 }
 
-export const WMTSLayer: WMTSLayerConstructor = WMTSLayerImpl;
+// Ensure layer class is assignable to the constructor interface (there is no "implements" for the class itself).
+// eslint-disable-next-line no-constant-condition
+if (false) {
+    const check: LayerConstructor<WMTSLayerConfig, WMTSLayer> = WMTSLayer;
+    void check;
+}
+
+function isHtmlImage(htmlElement: HTMLElement): htmlElement is HTMLImageElement {
+    return htmlElement.tagName === "IMG";
+}

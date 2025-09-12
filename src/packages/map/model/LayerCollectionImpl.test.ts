@@ -22,7 +22,7 @@ import { INTERNAL_CONSTRUCTOR_TAG } from "../layers/internals";
 import { SimpleLayer } from "../layers/SimpleLayer";
 import { WMSLayer } from "../layers/WMSLayer";
 import { WMSLayerImpl } from "../layers/WMSLayerImpl";
-import { WMTSLayerImpl } from "../layers/WMTSLayerImpl";
+import { WMTSLayer } from "../layers/WMTSLayer";
 import { createMapModel } from "./createMapModel";
 import { MapConfig } from "./MapConfig";
 import { MapModelImpl } from "./MapModelImpl";
@@ -1057,7 +1057,7 @@ it("supports connecting and disconnecting layers", async () => {
             })
         ]
     });
-    const wmts = new WMTSLayerImpl(
+    const wmts = new WMTSLayer(
         {
             title: "foo",
             name: "layer-7328",
