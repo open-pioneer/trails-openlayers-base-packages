@@ -108,9 +108,8 @@ it("should successfully zoom with buffered geometries", async () => {
     const zoomLevel2 = olMap.getView().getZoom();
     expect(zoomLevel2).toBeTruthy();
 
-    highlights.zoomToHighlight([line], { buffer: 1 });
-    const zoomLevel2WithBuffer = olMap.getView().getZoom();
     highlights.zoomToHighlight([line], { buffer: 1.2 });
+    const zoomLevel2WithBuffer = olMap.getView().getZoom();
     expect(zoomLevel2WithBuffer).toBeTruthy();
     expect(zoomLevel2WithBuffer).not.toEqual(zoomLevel2);
     if (typeof zoomLevel2WithBuffer != "number") {
