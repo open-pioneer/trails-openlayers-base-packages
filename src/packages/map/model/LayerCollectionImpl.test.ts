@@ -5,25 +5,22 @@
  * @vitest-environment jsdom
  */
 import { syncEffect, syncWatch } from "@conterra/reactivity-core";
-import { throwAbortError } from "@open-pioneer/core";
 import { HttpService } from "@open-pioneer/http";
-import { createTestOlLayer } from "@open-pioneer/map-test-utils";
+import { createTestLayer, createTestOlLayer } from "@open-pioneer/map-test-utils";
 import { createIntl } from "@open-pioneer/test-utils/vanilla";
 import { waitFor } from "@testing-library/dom";
 import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { Group } from "ol/layer";
-import TileLayer from "ol/layer/Tile";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { AnyLayer, Layer, MapConfig, SimpleLayer, WMSLayer } from "../api";
+import { AnyLayer, Layer, MapConfig, SimpleLayer, WMSLayer, WMTSLayer } from "../api";
 import { GroupLayer } from "../api/layers/GroupLayer";
 import { createMapModel } from "./createMapModel";
-import { INTERNAL_CONSTRUCTOR_TAG } from "./layers/internals";
 import { SimpleLayerImpl } from "./layers/SimpleLayerImpl";
 import { WMSLayerImpl } from "./layers/WMSLayerImpl";
-import { WMTSLayerImpl } from "./layers/WMTSLayerImpl";
 import { MapModelImpl } from "./MapModelImpl";
+import { throwAbortError } from "@open-pioneer/core";
 
 const THIS_DIR = dirname(fileURLToPath(import.meta.url));
 const WMTS_CAPAS = readFileSync(
@@ -45,18 +42,21 @@ afterEach(() => {
 it("makes the map layers accessible", async () => {
     model = await create("foo", {
         layers: [
-            new SimpleLayer({
+            createTestLayer({
+                type: SimpleLayer,
                 title: "Some base layer",
                 visible: false,
                 olLayer: dummyLayer(),
                 isBaseLayer: true
             }),
-            new SimpleLayer({
+            createTestLayer({
+                type: SimpleLayer,
                 title: "OSM",
                 description: "OSM layer",
                 olLayer: dummyLayer()
             }),
-            new SimpleLayer({
+            createTestLayer({
+                type: SimpleLayer,
                 title: "Empty tile",
                 visible: false,
                 olLayer: dummyLayer()
@@ -102,18 +102,21 @@ it("makes the map layers accessible", async () => {
 it("supports ordered retrieval of layers", async () => {
     model = await create("foo", {
         layers: [
-            new SimpleLayer({
+            createTestLayer({
+                type: SimpleLayer,
                 title: "OSM",
                 olLayer: dummyLayer()
             }),
-            new SimpleLayer({
+            createTestLayer({
+                type: SimpleLayer,
                 title: "Empty tile",
                 olLayer: dummyLayer()
             }),
-            new SimpleLayer({
+            createTestLayer({
+                type: SimpleLayer,
                 title: "Base",
                 isBaseLayer: true,
-                olLayer: new TileLayer({})
+                olLayer: createTestOlLayer()
             })
         ]
     });
@@ -141,12 +144,14 @@ it("supports ordered retrieval of layers", async () => {
 it("generates automatic unique ids for layers", async () => {
     model = await create("foo", {
         layers: [
-            new SimpleLayer({
+            createTestLayer({
+                type: SimpleLayer,
                 title: "OSM",
                 description: "OSM layer",
                 olLayer: dummyLayer()
             }),
-            new SimpleLayer({
+            createTestLayer({
+                type: SimpleLayer,
                 title: "Empty tile",
                 visible: false,
                 olLayer: dummyLayer()
@@ -176,21 +181,27 @@ it("supports adding custom layer instances", async () => {
 
     model = await create("foo", {
         layers: [
-            new SimpleLayer({
+            createTestLayer({
+                type: SimpleLayer,
                 id: "l1",
                 title: "L1",
                 olLayer: dummyLayer()
             }),
-            new SimpleLayer({
+            createTestLayer({
+                type: SimpleLayer,
                 id: "l2",
                 title: "L2",
                 olLayer: dummyLayer()
             }),
-            new WMSLayer({
-                id: "l3",
-                title: "L3",
-                url: "https://example.com"
-            })
+            createTestLayer(
+                {
+                    type: WMSLayer,
+                    id: "l3",
+                    title: "L3",
+                    url: "https://example.com"
+                },
+                { fetch: vi.fn().mockImplementation(async () => new Response("", { status: 200 })) }
+            )
         ]
     });
 
@@ -205,12 +216,14 @@ it("supports adding custom layer instances", async () => {
 });
 
 it("destroys child layers when parent group layer is removed", async () => {
-    const groupMember = new SimpleLayerImpl({
+    const groupMember = createTestLayer({
+        type: SimpleLayer,
         id: "member",
         title: "group member",
         olLayer: dummyLayer()
     });
-    const groupLayer = new GroupLayer({
+    const groupLayer = createTestLayer({
+        type: GroupLayer,
         id: "group",
         title: "group test",
         layers: [groupMember]
@@ -235,12 +248,14 @@ describe("layer lookup", () => {
     it("supports lookup by layer id", async () => {
         model = await create("foo", {
             layers: [
-                new SimpleLayer({
+                createTestLayer({
+                    type: SimpleLayer,
                     id: "l-1",
                     title: "OSM",
                     olLayer: dummyLayer()
                 }),
-                new SimpleLayer({
+                createTestLayer({
+                    type: SimpleLayer,
                     id: "l-2",
                     title: "Empty tile",
                     olLayer: dummyLayer()
@@ -260,12 +275,14 @@ describe("layer lookup", () => {
     });
 
     it("supports lookup by layer id for members of a group layer", async () => {
-        const child = new SimpleLayerImpl({
+        const child = createTestLayer({
+            type: SimpleLayer,
             id: "member",
             title: "group member",
             olLayer: dummyLayer()
         });
-        const group = new GroupLayer({
+        const group = createTestLayer({
+            type: GroupLayer,
             id: "group",
             title: "group test",
             layers: [child]
@@ -285,12 +302,14 @@ describe("layer lookup", () => {
         await expect(async () => {
             model = await create("foo", {
                 layers: [
-                    new SimpleLayer({
+                    createTestLayer({
+                        type: SimpleLayer,
                         id: "l-1",
                         title: "OSM",
                         olLayer: dummyLayer()
                     }),
-                    new SimpleLayer({
+                    createTestLayer({
+                        type: SimpleLayer,
                         id: "l-1",
                         title: "Empty tile",
                         olLayer: dummyLayer()
@@ -308,7 +327,8 @@ describe("layer lookup", () => {
 
         model = await create("foo", {
             layers: [
-                new SimpleLayer({
+                createTestLayer({
+                    type: SimpleLayer,
                     id: "l-1",
                     title: "OSM",
                     olLayer: rawL1
@@ -328,11 +348,13 @@ describe("layer lookup", () => {
 
         model = await create("foo", {
             layers: [
-                new GroupLayer({
+                createTestLayer({
+                    type: GroupLayer,
                     id: "group",
                     title: "group test",
                     layers: [
-                        new SimpleLayerImpl({
+                        createTestLayer({
+                            type: SimpleLayer,
                             id: "member",
                             title: "group member",
                             olLayer: olLayer
@@ -355,11 +377,13 @@ describe("layer lookup", () => {
 
         model = await create("foo", {
             layers: [
-                new GroupLayer({
+                createTestLayer({
+                    type: GroupLayer,
                     id: "group",
                     title: "group test",
                     layers: [
-                        new SimpleLayerImpl({
+                        createTestLayer({
+                            type: SimpleLayer,
                             id: "member",
                             title: "group member",
                             olLayer: olLayer
@@ -388,12 +412,14 @@ describe("layer lookup", () => {
         await expect(async () => {
             model = await create("foo", {
                 layers: [
-                    new SimpleLayer({
+                    createTestLayer({
+                        type: SimpleLayer,
                         id: "l-1",
                         title: "OSM",
                         olLayer: rawL1
                     }),
-                    new SimpleLayer({
+                    createTestLayer({
+                        type: SimpleLayer,
                         id: "l-2",
                         title: "OSM",
                         olLayer: rawL1
@@ -421,7 +447,8 @@ describe("adding and removing layers", () => {
             }
         );
 
-        const layer = new SimpleLayer({
+        const layer = createTestLayer({
+            type: SimpleLayer,
             title: "foo",
             olLayer: dummyLayer(),
             visible: false
@@ -442,14 +469,16 @@ describe("adding and removing layers", () => {
     it("supports adding a layer to the model (top)", async () => {
         model = await create("foo", {
             layers: [
-                new SimpleLayer({
+                createTestLayer({
+                    type: SimpleLayer,
                     title: "dummy1",
                     olLayer: dummyLayer()
                 })
             ]
         });
 
-        const layer = new SimpleLayer({
+        const layer = createTestLayer({
+            type: SimpleLayer,
             title: "foo",
             olLayer: dummyLayer(),
             visible: false
@@ -472,14 +501,16 @@ describe("adding and removing layers", () => {
     it("supports adding a layer to the model (bottom)", async () => {
         model = await create("foo", {
             layers: [
-                new SimpleLayer({
+                createTestLayer({
+                    type: SimpleLayer,
                     title: "dummy1",
                     olLayer: dummyLayer()
                 })
             ]
         });
 
-        const layer = new SimpleLayer({
+        const layer = createTestLayer({
+            type: SimpleLayer,
             title: "foo",
             olLayer: dummyLayer()
         });
@@ -501,17 +532,20 @@ describe("adding and removing layers", () => {
     it("supports adding a layer to the model (above / below)", async () => {
         model = await create("foo", {
             layers: [
-                new SimpleLayer({
+                createTestLayer({
+                    type: SimpleLayer,
                     title: "dummy1",
                     id: "dummy1",
                     olLayer: dummyLayer()
                 }),
-                new SimpleLayer({
+                createTestLayer({
+                    type: SimpleLayer,
                     title: "dummy2",
                     id: "dummy2",
                     olLayer: dummyLayer()
                 }),
-                new SimpleLayer({
+                createTestLayer({
+                    type: SimpleLayer,
                     title: "dummy3",
                     id: "dummy3",
                     olLayer: dummyLayer()
@@ -519,11 +553,13 @@ describe("adding and removing layers", () => {
             ]
         });
 
-        const layerAbove = new SimpleLayer({
+        const layerAbove = createTestLayer({
+            type: SimpleLayer,
             title: "above 1",
             olLayer: dummyLayer()
         });
-        const layerBelow = new SimpleLayer({
+        const layerBelow = createTestLayer({
+            type: SimpleLayer,
             title: "below 3",
             olLayer: dummyLayer()
         });
@@ -551,7 +587,8 @@ describe("adding and removing layers", () => {
     it("supports adding a layer to the model (topmost)", async () => {
         model = await create("foo", {
             layers: [
-                new SimpleLayer({
+                createTestLayer({
+                    type: SimpleLayer,
                     title: "dummy1",
                     id: "dummy1",
                     olLayer: dummyLayer()
@@ -559,11 +596,13 @@ describe("adding and removing layers", () => {
             ]
         });
 
-        const layerTopMost = new SimpleLayer({
+        const layerTopMost = createTestLayer({
+            type: SimpleLayer,
             title: "topmost1",
             olLayer: dummyLayer()
         });
-        const layerTopMost2 = new SimpleLayer({
+        const layerTopMost2 = createTestLayer({
+            type: SimpleLayer,
             title: "topmost2",
             olLayer: dummyLayer()
         });
@@ -611,7 +650,8 @@ describe("adding and removing layers", () => {
     it("it throws error if reference layer is not a top level operational layer", async () => {
         model = await create("foo", {
             layers: [
-                new SimpleLayer({
+                createTestLayer({
+                    type: SimpleLayer,
                     title: "dummy",
                     id: "dummy",
                     olLayer: dummyLayer()
@@ -619,18 +659,21 @@ describe("adding and removing layers", () => {
             ]
         });
 
-        const baseLayer = new SimpleLayer({
+        const baseLayer = createTestLayer({
+            type: SimpleLayer,
             title: "base",
             id: "base",
             isBaseLayer: true,
             olLayer: dummyLayer()
         });
-        const childLayer = new SimpleLayer({
+        const childLayer = createTestLayer({
+            type: SimpleLayer,
             title: "child",
             id: "child",
             olLayer: dummyLayer()
         });
-        const groupLayer = new GroupLayer({
+        const groupLayer = createTestLayer({
+            type: GroupLayer,
             title: "group",
             id: "group",
             layers: [childLayer]
@@ -639,7 +682,8 @@ describe("adding and removing layers", () => {
         model.layers.addLayer(baseLayer);
         model.layers.addLayer(groupLayer);
 
-        const otherLayer = new SimpleLayer({
+        const otherLayer = createTestLayer({
+            type: SimpleLayer,
             title: "other1",
             id: "other1",
             olLayer: dummyLayer()
@@ -648,7 +692,8 @@ describe("adding and removing layers", () => {
             model!.layers.addLayer(otherLayer, { at: "below", reference: baseLayer });
         }).toThrowError("base layer");
 
-        const otherLayer2 = new SimpleLayer({
+        const otherLayer2 = createTestLayer({
+            type: SimpleLayer,
             title: "other2",
             id: "other2",
             olLayer: dummyLayer()
@@ -659,7 +704,8 @@ describe("adding and removing layers", () => {
     });
 
     it("supports removing a layer from the model (old API)", async () => {
-        const layer = new SimpleLayer({
+        const layer = createTestLayer({
+            type: SimpleLayer,
             id: "l-1",
             title: "OSM",
             olLayer: dummyLayer()
@@ -682,7 +728,8 @@ describe("adding and removing layers", () => {
     });
 
     it("supports removing a layer from the model", async () => {
-        const layer = new SimpleLayer({
+        const layer = createTestLayer({
+            type: SimpleLayer,
             id: "l-1",
             title: "OSM",
             olLayer: dummyLayer()
@@ -711,11 +758,13 @@ describe("adding and removing layers", () => {
     it("always assigns the highest zIndex to a layer inserted at topmost", async () => {
         model = await create("foo", {});
 
-        const layerTopMost = new SimpleLayer({
+        const layerTopMost = createTestLayer({
+            type: SimpleLayer,
             title: "topmost",
             olLayer: dummyLayer()
         });
-        const layerOther = new SimpleLayer({
+        const layerOther = createTestLayer({
+            type: SimpleLayer,
             title: "other",
             olLayer: dummyLayer()
         });
@@ -748,7 +797,8 @@ describe("adding and removing layers", () => {
     it("supports adding a layer to the model (above/below with top most layer as reference)", async () => {
         model = await create("foo", {
             layers: [
-                new SimpleLayer({
+                createTestLayer({
+                    type: SimpleLayer,
                     title: "dummy",
                     id: "dummy",
                     olLayer: dummyLayer()
@@ -756,22 +806,26 @@ describe("adding and removing layers", () => {
             ]
         });
 
-        const layerTopMost = new SimpleLayer({
+        const layerTopMost = createTestLayer({
+            type: SimpleLayer,
             title: "topmost",
             id: "topmost",
             olLayer: dummyLayer()
         });
-        const layerTopMostBelow = new SimpleLayer({
+        const layerTopMostBelow = createTestLayer({
+            type: SimpleLayer,
             title: "topmostbelow",
             id: "topmostbelow",
             olLayer: dummyLayer()
         });
-        const layerTopMostAbove = new SimpleLayer({
+        const layerTopMostAbove = createTestLayer({
+            type: SimpleLayer,
             title: "topmostabove",
             id: "topmostabove",
             olLayer: dummyLayer()
         });
-        const layerOther = new SimpleLayer({
+        const layerOther = createTestLayer({
+            type: SimpleLayer,
             title: "other",
             id: "other",
             olLayer: dummyLayer()
@@ -831,13 +885,15 @@ describe("base layers", () => {
     it("supports configuration and manipulation of base layers", async () => {
         model = await create("foo", {
             layers: [
-                new SimpleLayer({
+                createTestLayer({
+                    type: SimpleLayer,
                     id: "b-1",
                     title: "Base Layer 1",
                     isBaseLayer: true,
                     olLayer: dummyLayer()
                 }),
-                new SimpleLayer({
+                createTestLayer({
+                    type: SimpleLayer,
                     id: "b-2",
                     title: "Base Layer 2",
                     isBaseLayer: true,
@@ -887,13 +943,15 @@ describe("base layers", () => {
     it("supports removal of base layers", async () => {
         model = await create("foo", {
             layers: [
-                new SimpleLayer({
+                createTestLayer({
+                    type: SimpleLayer,
                     id: "b-1",
                     title: "Base Layer 1",
                     isBaseLayer: true,
                     olLayer: dummyLayer()
                 }),
-                new SimpleLayer({
+                createTestLayer({
+                    type: SimpleLayer,
                     id: "b-2",
                     title: "Base Layer 2",
                     isBaseLayer: true,
@@ -932,19 +990,22 @@ describe("base layers", () => {
 
 describe("child access", () => {
     it("it should return all layers including children", async () => {
-        const base = new SimpleLayerImpl({
+        const base = createTestLayer({
+            type: SimpleLayer,
             id: "base",
             title: "baselayer",
             olLayer: dummyLayer(),
             isBaseLayer: true
         });
 
-        const child = new SimpleLayerImpl({
+        const child = createTestLayer({
+            type: SimpleLayer,
             id: "member",
             title: "group member",
             olLayer: dummyLayer()
         });
-        const group = new GroupLayer({
+        const group = createTestLayer({
+            type: GroupLayer,
             id: "group",
             title: "group test",
             layers: [child]
@@ -967,19 +1028,22 @@ describe("child access", () => {
     });
 
     it("it should return all operational layers including children", async () => {
-        const base = new SimpleLayerImpl({
+        const base = createTestLayer({
+            type: SimpleLayer,
             id: "base",
             title: "baselayer",
             olLayer: dummyLayer(),
             isBaseLayer: true
         });
 
-        const child = new SimpleLayerImpl({
+        const child = createTestLayer({
+            type: SimpleLayer,
             id: "member",
             title: "group member",
             olLayer: dummyLayer()
         });
-        const group = new GroupLayer({
+        const group = createTestLayer({
+            type: GroupLayer,
             id: "group",
             title: "group test",
             layers: [child]
@@ -1004,19 +1068,22 @@ describe("child access", () => {
     });
 
     it("it should return all layers including children ordered by display order (asc)", async () => {
-        const base = new SimpleLayerImpl({
+        const base = createTestLayer({
+            type: SimpleLayer,
             id: "base",
             title: "baselayer",
             olLayer: dummyLayer(),
             isBaseLayer: true
         });
 
-        const child = new SimpleLayerImpl({
+        const child = createTestLayer({
+            type: SimpleLayer,
             id: "member",
             title: "group member",
             olLayer: dummyLayer()
         });
-        const group = new GroupLayer({
+        const group = createTestLayer({
+            type: GroupLayer,
             id: "group",
             title: "group test",
             layers: [child]
@@ -1037,36 +1104,38 @@ describe("child access", () => {
 });
 
 it("supports connecting and disconnecting layers", async () => {
-    const httpService = {
-        fetch() {
-            throwAbortError();
-        }
-    } satisfies Partial<HttpService> as HttpService;
-    const simple = new SimpleLayer({
+    const simple = createTestLayer({
+        type: SimpleLayer,
         title: "Simple",
         olLayer: dummyLayer()
     });
-    const group = new GroupLayer({
+    const group = createTestLayer({
+        type: GroupLayer,
         title: "Group",
         layers: [
-            new SimpleLayer({
+            createTestLayer({
+                type: SimpleLayer,
                 title: "Group Child",
                 olLayer: dummyLayer()
             })
         ]
     });
-    const wmts = new WMTSLayerImpl(
+
+    const wmts = createTestLayer(
         {
+            type: WMTSLayer,
             title: "foo",
             name: "layer-7328",
             matrixSet: "EPSG:3857",
             url: "https://example.com/wmts-service/Capabilities.xml"
         },
-        { httpService },
-        INTERNAL_CONSTRUCTOR_TAG
-    );
-    const wms = new WMSLayerImpl(
         {
+            fetch: throwAbortError
+        }
+    );
+    const wms = createTestLayer(
+        {
+            type: WMSLayer,
             title: "Layer",
             url: "https://example.com/wms-service",
             sublayers: [
@@ -1082,8 +1151,9 @@ it("supports connecting and disconnecting layers", async () => {
                 }
             ]
         },
-        { httpService },
-        INTERNAL_CONSTRUCTOR_TAG
+        {
+            fetch: vi.fn().mockImplementation(async () => new Response("", { status: 200 }))
+        }
     );
 
     // Initially no map

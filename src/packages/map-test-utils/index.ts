@@ -4,6 +4,7 @@ import { watch } from "@conterra/reactivity-core";
 import { HttpService, HttpServiceRequestInit } from "@open-pioneer/http";
 import {
     ExtentConfig,
+    GroupLayerConfig,
     InitialViewConfig,
     Layer,
     MapConfig,
@@ -11,15 +12,24 @@ import {
     MapRegistry,
     OlMapOptions,
     SimpleLayer,
-    SimpleLayerConfig
+    SimpleLayerConfig,
+    WMSLayerConfig,
+    WMTSLayerConfig
 } from "@open-pioneer/map";
 import { MapRegistryImpl, LayerFactory } from "@open-pioneer/map/internalTestSupport";
 import { createService } from "@open-pioneer/test-utils/services";
 import { screen, waitFor } from "@testing-library/react";
 import TileLayer from "ol/layer/Tile";
 import VectorLayer from "ol/layer/Vector";
+import { PackageIntl } from "@open-pioneer/runtime";
+import { LayerConstructor } from "@open-pioneer/map/model/layers/internals";
 
-export type LayerConfig = SimpleLayerConfig | Layer;
+export type LayerConfig =
+    | SimpleLayerConfig
+    | GroupLayerConfig
+    | WMSLayerConfig
+    | WMTSLayerConfig
+    | Layer;
 
 export interface SimpleMapOptions {
     /** ID of the map.
@@ -75,6 +85,14 @@ export interface SimpleMapOptions {
      */
     returnMap?: boolean;
 }
+const DUMMY_HTTP_SERVICE = {
+    async fetch() {
+        throw new Error(
+            "Network requests are not implemented (override fetch via map test utils if your test requires network access)."
+        );
+    }
+} satisfies Partial<HttpService> as HttpService;
+const DUMMY_LAYER_FACTORY = createLayerFactory();
 
 /**
  * Waits until the OpenLayers map has been mounted in the parent with the given id.
@@ -138,14 +156,12 @@ export async function setupMap(
         initialView: options?.noInitialView ? undefined : getInitialView(options),
         projection: options?.noProjection ? undefined : (options?.projection ?? "EPSG:3857"),
         layers: options?.layers?.map(
-            (config) => ("map" in config ? config : new SimpleLayer(config))
+            (config) =>
+                "map" in config
+                    ? config
+                    : createTestLayer({ type: SimpleLayer, ...(config as SimpleLayerConfig) })
             // using map as discriminator (no prototype for Layer)
-        ) ?? [
-            new SimpleLayer({
-                title: "OSM",
-                olLayer: new VectorLayer()
-            })
-        ],
+        ) ?? [createTestLayer()],
         advanced: options?.advanced
     };
 
@@ -200,18 +216,29 @@ function getInitialView(options: SimpleMapOptions | undefined): InitialViewConfi
     };
 }
 
-/**
- * Creates (service name, service implementation)-pairs suitable for the `services`
- * option of the `PackageContextProvider`.
- *
- * This helper method can be used to avoid hard-coding service names used in the implementation.
- *
- * @deprecated No longer needed because react components do no longer look up the map in the registry.
- */
-export function createServiceOptions(services: { registry: MapRegistry }): Record<string, unknown> {
-    return {
-        "map.MapRegistry": services.registry
-    };
+export function createTestLayer<Config extends LayerConfig, LayerType extends Layer>(
+    config?: {
+        /** The layer type to construct. */
+        type: LayerConstructor<Config, LayerType>;
+    } & Config,
+    mapOptions?: SimpleMapOptions
+): LayerType {
+    // Basic case: If no config is given, use SimpleLayer
+    if (!config) {
+        config = {
+            type: SimpleLayer,
+            title: "Test layer",
+            olLayer: new VectorLayer()
+        } as unknown as {
+            type: LayerConstructor<Config, LayerType>;
+        } & Config;
+    }
+    const { type, ...rest } = config;
+
+    const factory = mapOptions?.fetch
+        ? createLayerFactory({ fetch: mapOptions.fetch })
+        : DUMMY_LAYER_FACTORY;
+    return factory.create({ type, ...(rest as unknown as Config) });
 }
 
 /**
@@ -221,6 +248,15 @@ export function createServiceOptions(services: { registry: MapRegistry }): Recor
  */
 export function createTestOlLayer(): TileLayer {
     return new TileLayer();
+}
+
+function createLayerFactory(httpService?: HttpService) {
+    return new LayerFactory({
+        intl: {} satisfies Partial<PackageIntl> as PackageIntl,
+        references: { httpService: httpService ?? DUMMY_HTTP_SERVICE },
+        properties: {},
+        referencesMeta: { httpService: { serviceId: "http.HttpService" } }
+    });
 }
 
 function mockVectorLayer() {
