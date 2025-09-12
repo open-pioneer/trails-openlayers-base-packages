@@ -9,8 +9,7 @@ import { unByKey } from "ol/Observable";
 import OlSource from "ol/source/Source";
 import { MapModelImpl } from "../model/MapModelImpl";
 import { AbstractLayerBase } from "./AbstractLayerBase";
-import { LayerBaseType } from "./shared/base";
-import { HealthCheckFunction, LayerConfig } from "./shared/config";
+import { HealthCheckFunction, LayerConfig } from "./shared/LayerConfig";
 import {
     getLayerDependencies,
     InternalConstructorTag,
@@ -34,10 +33,7 @@ export type LayerLoadState = "not-loaded" | "loading" | "loaded" | "error";
  * Instances of this interface cannot be constructed directly; use a real layer
  * class such as {@link SimpleLayer} instead.
  */
-export abstract class AbstractLayer<AdditionalEvents = {}>
-    extends AbstractLayerBase<AdditionalEvents>
-    implements LayerBaseType
-{
+export abstract class AbstractLayer extends AbstractLayerBase {
     // Layer dependencies are present when the LayerFactory API was used to construct the layer.
     // They may currently be undefined for compatibility reasons (in which case they will be used
     // from the map, once connected).

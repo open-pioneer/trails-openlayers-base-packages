@@ -4,7 +4,7 @@ import { deprecated } from "@open-pioneer/core";
 import { Group } from "ol/layer";
 import { MapModelImpl } from "../model/MapModelImpl";
 import { AbstractLayer } from "./AbstractLayer";
-import { LayerConfig } from "./shared/config";
+import { LayerConfig } from "./shared/LayerConfig";
 import { InternalConstructorTag, LayerConstructor, LayerDependencies } from "./shared/internals";
 import { Layer } from "./unions";
 

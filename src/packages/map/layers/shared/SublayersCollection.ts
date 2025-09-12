@@ -2,9 +2,10 @@
 // SPDX-License-Identifier: Apache-2.0
 import { getRecursiveLayers } from "../../model/getRecursiveLayers";
 import { LayerRetrievalOptions, RecursiveRetrievalOptions } from "../../shared";
-import { ChildrenCollection, SublayerBaseType } from "./base";
-import { assertInternalConstructor, InternalConstructorTag } from "./internals";
 import { Sublayer } from "../unions";
+import { ChildrenCollection } from "./ChildrenCollection";
+import { assertInternalConstructor, InternalConstructorTag } from "./internals";
+import { SublayerBaseType } from "./SublayerBaseType";
 
 // Imported for typedoc
 // eslint-disable-next-line unused-imports/no-unused-imports

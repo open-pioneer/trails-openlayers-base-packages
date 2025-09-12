@@ -17,7 +17,7 @@ import ImageWMS from "ol/source/ImageWMS";
 import { MapModelImpl } from "../model/MapModelImpl";
 import { fetchText } from "../utils/fetch";
 import { AbstractLayer } from "./AbstractLayer";
-import { LayerConfig } from "./shared/config";
+import { LayerConfig } from "./shared/LayerConfig";
 import {
     INTERNAL_CONSTRUCTOR_TAG,
     InternalConstructorTag,

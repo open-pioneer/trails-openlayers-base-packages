@@ -9,7 +9,7 @@ import { AbstractLayer } from "./AbstractLayer";
 import { GroupLayerCollection } from "./group/GroupLayerCollection";
 import { MapModelImpl } from "../model/MapModelImpl";
 import { createTestOlLayer } from "@open-pioneer/map-test-utils";
-import { HealthCheckFunction, LayerConfig } from "./shared/config";
+import { HealthCheckFunction, LayerConfig } from "./shared/LayerConfig";
 import { SimpleLayerConfig } from "./SimpleLayer";
 
 afterEach(() => {

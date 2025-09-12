@@ -3,15 +3,15 @@
 import { Reactive, reactive } from "@conterra/reactivity-core";
 import { MapModelImpl } from "../../model/MapModelImpl";
 import { AbstractLayerBase } from "../AbstractLayerBase";
-import { SublayerBaseType } from "../shared/base";
+import { LayerBaseConfig } from "../shared/LayerConfig";
 import {
     assertInternalConstructor,
     INTERNAL_CONSTRUCTOR_TAG,
     InternalConstructorTag
 } from "../shared/internals";
+import { SublayerBaseType } from "../shared/SublayerBaseType";
 import { SublayersCollection } from "../shared/SublayersCollection";
 import { WMSLayer } from "../WMSLayer";
-import { LayerBaseConfig } from "../shared/config";
 
 /**
  * Configuration options to construct the sublayers of a {@link WMSLayer}.

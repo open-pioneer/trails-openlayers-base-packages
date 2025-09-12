@@ -18,19 +18,18 @@ export {
 } from "./hooks/useMapModel";
 
 // Layer types
-export {
-    type AnyLayerBaseType,
-    type ChildrenCollection,
-    type LayerBaseEvents,
-    type LayerBaseType,
-    type SublayerBaseType
-} from "./layers/shared/base";
+export { type ChildrenCollection } from "./layers/shared/ChildrenCollection";
+export { type SublayerBaseType } from "./layers/shared/SublayerBaseType";
 export {
     type LayerBaseConfig,
     type HealthCheckFunction,
     type LayerConfig
-} from "./layers/shared/config";
-export { type LayerLoadState } from "./layers/AbstractLayer";
+} from "./layers/shared/LayerConfig";
+export {
+    type AbstractLayerBase as AnyLayerBaseType,
+    type LayerBaseEvents
+} from "./layers/AbstractLayerBase";
+export { type LayerLoadState, type AbstractLayer as LayerBaseType } from "./layers/AbstractLayer";
 export { isLayer, isSublayer, type AnyLayer, type Layer, type Sublayer } from "./layers/unions";
 export { GroupLayer, type GroupLayerConfig } from "./layers/GroupLayer";
 export { type GroupLayerCollection } from "./layers/group/GroupLayerCollection";

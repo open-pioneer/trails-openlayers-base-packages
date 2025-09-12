@@ -14,7 +14,7 @@ import { MapModelImpl } from "../model/MapModelImpl";
 import { GroupLayer } from "./GroupLayer";
 import { GroupLayerCollection } from "./group/GroupLayerCollection";
 import { SublayersCollection } from "./shared/SublayersCollection";
-import { AnyLayerBaseType, ChildrenCollection, LayerBaseEvents } from "./shared/base";
+import { ChildrenCollection } from "./shared/ChildrenCollection";
 import { AnyLayer, AnyLayerTypes, Sublayer } from "./unions";
 
 const LOG = createLogger("map:AbstractLayerModel");
@@ -27,16 +27,18 @@ export interface AbstractLayerBaseOptions {
     internal?: boolean;
 }
 
+/** Events emitted by the {@link Layer} and other layer types. */
+export interface LayerBaseEvents {
+    "destroy": void;
+}
+
 /**
  * Interface shared by all layer types (operational layers and sublayers).
  *
  * Instances of this interface cannot be constructed directly; use a real layer
  * class such as {@link SimpleLayer} instead.
  */
-export abstract class AbstractLayerBase<AdditionalEvents = {}>
-    extends EventEmitter<LayerBaseEvents & AdditionalEvents>
-    implements AnyLayerBaseType
-{
+export abstract class AbstractLayerBase extends EventEmitter<LayerBaseEvents> {
     #map = reactive<MapModelImpl>();
     #parent: AnyLayer | undefined;
 

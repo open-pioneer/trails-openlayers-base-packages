@@ -3,7 +3,7 @@
 import { deprecated } from "@open-pioneer/core";
 import type OlBaseLayer from "ol/layer/Base";
 import { AbstractLayer } from "./AbstractLayer";
-import { LayerConfig } from "./shared/config";
+import { LayerConfig } from "./shared/LayerConfig";
 import { InternalConstructorTag, LayerConstructor, LayerDependencies } from "./shared/internals";
 
 // Import for api docs

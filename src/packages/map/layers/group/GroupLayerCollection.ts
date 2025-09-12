@@ -4,7 +4,7 @@ import { getRecursiveLayers } from "../../model/getRecursiveLayers";
 import { LayerRetrievalOptions, RecursiveRetrievalOptions } from "../../shared";
 import { AbstractLayer } from "../AbstractLayer";
 import { GroupLayer } from "../GroupLayer";
-import { ChildrenCollection } from "../shared/base";
+import { ChildrenCollection } from "../shared/ChildrenCollection";
 import { AnyLayer, Layer } from "../unions";
 
 /**
