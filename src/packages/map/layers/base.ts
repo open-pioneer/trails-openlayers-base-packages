@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import type { EventSource } from "@open-pioneer/core";
 import type OlBaseLayer from "ol/layer/Base";
-import type { MapModel } from "../MapModel";
+import type { MapModel } from "../model/MapModel";
 import type { LayerRetrievalOptions, RecursiveRetrievalOptions } from "../shared";
 import type { GroupLayer, GroupLayerCollection } from "./GroupLayer";
 import type { SimpleLayer } from "./SimpleLayer";

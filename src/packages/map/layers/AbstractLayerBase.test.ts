@@ -5,8 +5,8 @@
  */
 import { afterEach, expect, it, vi } from "vitest";
 import { AbstractLayerBase, AbstractLayerBaseOptions } from "./AbstractLayerBase";
-import { MapModelImpl } from "./MapModelImpl";
-import { SublayersCollectionImpl } from "./SublayersCollectionImpl";
+import { MapModelImpl } from "../model/MapModelImpl";
+import { SublayersCollectionImpl } from "../model/SublayersCollectionImpl";
 import { syncWatch } from "@conterra/reactivity-core";
 import { GroupLayerCollectionImpl } from "./layers/GroupLayerImpl";
 

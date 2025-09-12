@@ -7,7 +7,7 @@ import { Highlights } from "./Highlights";
 import { LineString, Point, Polygon } from "ol/geom";
 import View from "ol/View";
 import { approximatelyEquals } from "ol/extent";
-import { BaseFeature } from "../api/BaseFeature";
+import { BaseFeature } from "../BaseFeature";
 
 let _highlights: Highlights | undefined;
 afterEach(() => {

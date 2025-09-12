@@ -17,7 +17,7 @@ import {
     HighlightStyle,
     HighlightZoomOptions,
     ZoomOptions
-} from "../api/MapModel";
+} from "./MapModel";
 import mapMarkerUrl from "../assets/images/mapMarker.png?url";
 import { FeatureLike } from "ol/Feature";
 import { calculateBufferedExtent, TOPMOST_LAYER_Z } from "../api";

@@ -18,7 +18,7 @@ import OSM from "ol/source/OSM";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { MapRegistryImpl } from "./MapRegistryImpl";
 import { type MapConfig, MapModel, SimpleLayer } from "./api";
-import { registerProjections } from "./projections";
+import { registerProjections } from "./utils/projections";
 
 afterEach(() => {
     vi.restoreAllMocks();

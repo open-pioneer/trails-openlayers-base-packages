@@ -8,7 +8,7 @@ import { expect, it } from "vitest";
 import { SimpleLayer } from "../../api";
 import { AbstractLayer } from "../AbstractLayer";
 import { LayerFactory } from "./LayerFactory";
-import { SimpleLayerImpl } from "./SimpleLayerImpl";
+import { SimpleLayerImpl } from "./layers/SimpleLayerImpl";
 
 it("creates layer instances", async () => {
     const mockHttpService = {} as unknown as HttpService; // not called in this test

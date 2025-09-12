@@ -4,7 +4,7 @@ import { HttpService } from "@open-pioneer/http";
 import { DECLARE_SERVICE_INTERFACE, ServiceOptions } from "@open-pioneer/runtime";
 import { Layer, LayerConfig } from "../../api";
 import { AbstractLayer } from "../AbstractLayer";
-import { INTERNAL_CONSTRUCTOR_TAG, LayerConstructor } from "./internals";
+import { INTERNAL_CONSTRUCTOR_TAG, LayerConstructor } from "./layers/internals";
 
 interface References {
     httpService: HttpService;

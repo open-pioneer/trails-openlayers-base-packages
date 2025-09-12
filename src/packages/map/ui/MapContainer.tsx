@@ -8,7 +8,7 @@ import { Extent } from "ol/extent";
 import { ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { MapModel, MapPadding } from "../api";
 import { MapContainerContextProvider, MapContainerContextType } from "./MapContainerContext";
-import { MapModelProps, useMapModelValue } from "./useMapModel";
+import { MapModelProps, useMapModelValue } from "../hooks/useMapModel";
 const LOG = createLogger("map:MapContainer");
 
 export interface MapContainerProps extends CommonComponentProps, MapModelProps {

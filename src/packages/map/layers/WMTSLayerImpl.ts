@@ -19,7 +19,7 @@ import { InternalConstructorTag, LayerConstructor, LayerDependencies } from "./i
 
 // Import for api docs
 // eslint-disable-next-line unused-imports/no-unused-imports
-import type { LayerFactory } from "./LayerFactory";
+import type { LayerFactory } from "../LayerFactory";
 
 const LOG = createLogger("map:WMTSLayer");
 

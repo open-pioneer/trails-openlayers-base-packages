@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import type OlMap from "ol/Map";
 import type { MapConfig } from "./MapConfig";
-import type { MapModel } from "./MapModel";
+import type { MapModel } from "../model/MapModel";
 import type { DeclaredService } from "@open-pioneer/runtime";
 import type { LayerFactory } from "../model/layers/LayerFactory";
 

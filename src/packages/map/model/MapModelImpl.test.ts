@@ -6,7 +6,7 @@ import { createMapModel } from "./createMapModel";
 import { waitFor } from "@testing-library/dom";
 import { waitForInitialExtent } from "@open-pioneer/map-test-utils";
 import { HttpService } from "@open-pioneer/http";
-import { MapConfig } from "../api/MapConfig";
+import { MapConfig } from "./MapConfig";
 import { createIntl } from "@open-pioneer/test-utils/vanilla";
 
 const MOCKED_HTTP_SERVICE = {

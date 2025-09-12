@@ -19,8 +19,8 @@ import {
     LayerRetrievalOptions,
     Sublayer
 } from "../api";
-import { AbstractLayer } from "./AbstractLayer";
-import { AbstractLayerBase } from "./AbstractLayerBase";
+import { AbstractLayer } from "../layers/AbstractLayer";
+import { AbstractLayerBase } from "../layers/AbstractLayerBase";
 import { MapModelImpl } from "./MapModelImpl";
 import { getRecursiveLayers } from "./getRecursiveLayers";
 

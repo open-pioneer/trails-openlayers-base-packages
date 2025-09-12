@@ -18,10 +18,10 @@ import {
     LayerBaseEvents,
     Sublayer
 } from "../api";
-import { GroupLayer } from "../api/layers/GroupLayer";
-import { GroupLayerCollectionImpl } from "./layers/GroupLayerImpl";
-import { MapModelImpl } from "./MapModelImpl";
-import { SublayersCollectionImpl } from "./SublayersCollectionImpl";
+import { GroupLayer } from "./GroupLayer";
+import { GroupLayerCollectionImpl } from "./GroupLayerImpl";
+import { MapModelImpl } from "../model/MapModelImpl";
+import { SublayersCollectionImpl } from "../model/SublayersCollectionImpl";
 
 const LOG = createLogger("map:AbstractLayerModel");
 

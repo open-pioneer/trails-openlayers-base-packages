@@ -17,7 +17,7 @@ import { Group } from "ol/layer";
 import TileLayer from "ol/layer/Tile";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { AnyLayer, Layer, MapConfig, SimpleLayer, WMSLayer } from "../api";
-import { GroupLayer } from "../api/layers/GroupLayer";
+import { GroupLayer } from "../layers/GroupLayer";
 import { createMapModel } from "./createMapModel";
 import { INTERNAL_CONSTRUCTOR_TAG } from "./layers/internals";
 import { SimpleLayerImpl } from "./layers/SimpleLayerImpl";

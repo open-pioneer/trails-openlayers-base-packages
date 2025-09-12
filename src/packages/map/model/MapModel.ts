@@ -5,13 +5,13 @@ import type OlMap from "ol/Map";
 import type OlView from "ol/View";
 import type OlBaseLayer from "ol/layer/Base";
 import type { ExtentConfig } from "./MapConfig";
-import type { AnyLayer, ChildrenCollection, Layer } from "./layers";
+import type { AnyLayer, ChildrenCollection, Layer } from "../layers";
 import type { Geometry } from "ol/geom";
-import type { BaseFeature } from "./BaseFeature";
+import type { BaseFeature } from "../BaseFeature";
 import type { StyleLike } from "ol/style/Style";
 import type { Projection } from "ol/proj";
 import type { Coordinate } from "ol/coordinate";
-import type { AddLayerOptions, LayerRetrievalOptions, RecursiveRetrievalOptions } from "./shared";
+import type { AddLayerOptions, LayerRetrievalOptions, RecursiveRetrievalOptions } from "../shared";
 
 /** Events emitted by the {@link MapModel}. */
 export interface MapModelEvents {

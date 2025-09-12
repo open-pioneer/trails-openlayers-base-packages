@@ -7,7 +7,7 @@ import {
     SublayerBaseType,
     SublayersCollection
 } from "../api";
-import { AbstractLayerBase } from "./AbstractLayerBase";
+import { AbstractLayerBase } from "../layers/AbstractLayerBase";
 import { getRecursiveLayers } from "./getRecursiveLayers";
 
 /**

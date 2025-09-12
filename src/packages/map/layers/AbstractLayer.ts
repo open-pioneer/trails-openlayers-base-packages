@@ -16,7 +16,7 @@ import {
     SimpleLayerConfig
 } from "../api";
 import { AbstractLayerBase } from "./AbstractLayerBase";
-import { MapModelImpl } from "./MapModelImpl";
+import { MapModelImpl } from "../model/MapModelImpl";
 import {
     getLayerDependencies,
     InternalConstructorTag,

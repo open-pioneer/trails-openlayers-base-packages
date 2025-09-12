@@ -7,8 +7,8 @@ import Source, { State } from "ol/source/Source";
 import { Mock, MockInstance, afterEach, describe, expect, it, vi } from "vitest";
 import { HealthCheckFunction, LayerConfig, SimpleLayerConfig } from "../api";
 import { AbstractLayer } from "./AbstractLayer";
-import { GroupLayerCollectionImpl } from "./layers/GroupLayerImpl";
-import { MapModelImpl } from "./MapModelImpl";
+import { GroupLayerCollectionImpl } from "./GroupLayerImpl";
+import { MapModelImpl } from "../model/MapModelImpl";
 import { createTestOlLayer } from "@open-pioneer/map-test-utils";
 
 afterEach(() => {
