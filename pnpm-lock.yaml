@@ -34,8 +34,8 @@ catalogs:
       specifier: ^4.1.0
       version: 4.1.0
     '@open-pioneer/check-pnpm-duplicates':
-      specifier: ^0.2.3
-      version: 0.2.3
+      specifier: ^0.2.4
+      version: 0.2.4
     '@open-pioneer/core':
       specifier: ^4.1.0
       version: 4.1.0
@@ -269,7 +269,7 @@ importers:
         version: 3.0.3
       '@open-pioneer/check-pnpm-duplicates':
         specifier: 'catalog:'
-        version: 0.2.3
+        version: 0.2.4
       '@open-pioneer/vite-plugin-pioneer':
         specifier: 'catalog:'
         version: 5.0.0(@open-pioneer/runtime@4.1.0(@types/react@19.1.12)(typescript@5.9.2))(sass@1.92.1)(vite@7.1.5(@types/node@20.19.13)(sass@1.92.1)(tsx@4.20.5)(yaml@2.8.1))
@@ -2362,8 +2362,8 @@ packages:
   '@open-pioneer/chakra-snippets@4.1.0':
     resolution: {integrity: sha512-tyBMSfYoR4K3gmmlaXEdzVq2RWN7VseaWzDxHmOQA7pV15JKzkfUeq07M3Qgser6mlfGFPVNsB6ivQVGvBnRRw==}
 
-  '@open-pioneer/check-pnpm-duplicates@0.2.3':
-    resolution: {integrity: sha512-A8SL8gfJY8n/CciLKAJY0qCwnUbw42Griy2XQ5+6qTwKLb6PASnOrD/+m4UjVu7OmTLmxnDq1+EWBQEZJBzAtg==}
+  '@open-pioneer/check-pnpm-duplicates@0.2.4':
+    resolution: {integrity: sha512-s5bQUAtGdBxSC5eyx3jp9gPiZnNtmR/zMaDS+uvmBTQfa6KGccMFjlibGeVFQ7s2uz2UMriKwr9laFKLPDAwVA==}
     engines: {node: '>= 20'}
     hasBin: true
 
@@ -2487,8 +2487,8 @@ packages:
   '@petamoriken/float16@3.9.2':
     resolution: {integrity: sha512-VgffxawQde93xKxT3qap3OH+meZf7VaSB5Sqd4Rqc+FP5alWbpOyan/7tRbOAvynjpG3GpdtAuGU/NdhQpmrog==}
 
-  '@pnpm/constants@1001.2.0':
-    resolution: {integrity: sha512-ohlStawRU3+C1AvUPtfkK+HfZ/5UbDGO79dujS2dbTpzl3O03L3Ggk7nnH361ubbMYZqp4yWlX030xhMGpr8Nw==}
+  '@pnpm/constants@1001.3.1':
+    resolution: {integrity: sha512-2hf0s4pVrVEH8RvdJJ7YRKjQdiG8m0iAT26TTqXnCbK30kKwJW69VLmP5tED5zstmDRXcOeH5eRcrpkdwczQ9g==}
     engines: {node: '>=18.12'}
 
   '@pnpm/crypto.hash@1000.2.0':
@@ -2499,12 +2499,12 @@ packages:
     resolution: {integrity: sha512-tNe7a6U4rCpxLMBaR0SIYTdjxGdL0Vwb3G1zY8++sPtHSvy7qd54u8CIB0Z+Y6t5tc9pNYMYCMwhE/wdSY7ltg==}
     engines: {node: '>=18.12'}
 
-  '@pnpm/dependency-path@1001.0.2':
-    resolution: {integrity: sha512-sDIoqytKuNqff89tRY7yMzAkHONuOBRgEGUnqT3FDlnkVLrtpq9y7nTtcmskuD2U4t7Cyzn6I6GaUdidP4cHNA==}
+  '@pnpm/dependency-path@1001.1.1':
+    resolution: {integrity: sha512-kUQeP42kxGSEyqhAZGzMs3UQGDiY8Xk3/718uIKqhtHUCSoCas/p3xRRiEXKs7Wesp0Eb1X0I5xrugZbPiK1dw==}
     engines: {node: '>=18.12'}
 
-  '@pnpm/error@1000.0.3':
-    resolution: {integrity: sha512-Sr1wmJitZ768J+9MJVXXyd7tRaX3qThEiFH1K0AQovy2sIbLqo73MITphfVZH3YWIElt+Y1uMDnUZa676ZDA8g==}
+  '@pnpm/error@1000.0.5':
+    resolution: {integrity: sha512-GjH0TPjbVNrPnl/BAGoFuBLJ2sFfXNKbS33lll/Ehe9yw0fyc8Kdw7kO9if37yQqn6vaa4dAHKkPllum7f/IPQ==}
     engines: {node: '>=18.12'}
 
   '@pnpm/git-utils@1000.0.0':
@@ -2515,26 +2515,26 @@ packages:
     resolution: {integrity: sha512-RvMEliAmcfd/4UoaYQ93DLQcFeqit78jhYmeJJVPxqFGmj0jEcb9Tu0eAOXr7tGP3eJHpgvPbTU4o6pZ1bJhxg==}
     engines: {node: '>=18.12'}
 
-  '@pnpm/lockfile.fs@1001.1.16':
-    resolution: {integrity: sha512-t3uWOVErc8qDAJGQ4KXTiGI7rw45WOlS4lJ2a7Vszl7xELA+7qpsSqIWDw21q2SBQHN9gkw4XF9hagPfqjfj3g==}
+  '@pnpm/lockfile.fs@1001.1.19':
+    resolution: {integrity: sha512-9rPrq8UVFo71mbMnShPodMtKA/sRPG4RUPprF86nhUSZSUIlnnD8QY15FNM18dnfHesCM7AcpPydsTbJEU0PsA==}
     engines: {node: '>=18.12'}
     peerDependencies:
       '@pnpm/logger': '>=1001.0.0 <1002.0.0'
 
-  '@pnpm/lockfile.merger@1001.0.9':
-    resolution: {integrity: sha512-32hoYE2NPCNy3qI/BtDeTLYx6nojqRjt4NNqRDKGNvo1a7Jj5UG1xdL30uxkCMGm1ZaALEha1aCkmJD0HK+OcQ==}
+  '@pnpm/lockfile.merger@1001.0.11':
+    resolution: {integrity: sha512-JBzM8IGY4kiOe6DBXyETjf+J2XZ8qym9KTjtwwEovzi9lY66tzL8k788BvnWS6zWnRgNwg/1ys80xSmxdfRlUA==}
     engines: {node: '>=18.12'}
 
-  '@pnpm/lockfile.types@1001.1.0':
-    resolution: {integrity: sha512-/rfDUV8M9iMm0QXahHPv6SD6eKNkrMXlhECJVhDkdL4NIifcv6/HZwYtxd0PIndExz04+OE+iV9K8zKG9i/OEA==}
+  '@pnpm/lockfile.types@1002.0.1':
+    resolution: {integrity: sha512-anzBtzb78rf2KRExS8R38v4nyiU7b9ZMUsyzRdWpo+rfCmLUupjIxvasVlDgsf5pV7tbcBPASOamQ2G5V8IGAQ==}
     engines: {node: '>=18.12'}
 
-  '@pnpm/lockfile.utils@1002.1.0':
-    resolution: {integrity: sha512-6GFtAxzYv1sADCq4DP4vANfSpAR/gXSOCXd0RVhA/l+7rJWYy39cNoCWCnNWgGKOHnN9r26eoTEoQddnSqA+rQ==}
+  '@pnpm/lockfile.utils@1003.0.1':
+    resolution: {integrity: sha512-ZK90WEM9E9G04a8Xie8hFwb1eZaWZq4y4K3hdIRBqW6WaQwBRwydz4veh9tuiO9pr2sqz5PlsopPVr1nXJVogA==}
     engines: {node: '>=18.12'}
 
-  '@pnpm/lockfile.walker@1001.0.12':
-    resolution: {integrity: sha512-h3Q0tPnv0oDnNteu+/nGxBC775Qfb+GQTQPHLE7cFY5lv3QdyhGLlOAnKfuFP+EOsW2GtLUnaHtcDlCl3C05OQ==}
+  '@pnpm/lockfile.walker@1001.0.14':
+    resolution: {integrity: sha512-SxOcaZkxDVjRzbbG+Oj6x6hbpWEMjWDD35s5YtO1NtcuC5oXrd7VPb4p8RT9R9QeCex/4sx9hNhV68iTa3C38g==}
     engines: {node: '>=18.12'}
 
   '@pnpm/logger@1001.0.0':
@@ -2549,19 +2549,19 @@ packages:
     resolution: {integrity: sha512-Zib2ysLctRnWM4KXXlljR44qSKwyEqYmLk+8VPBDBEK3l5Gp5mT3N4ix9E4qjYynvFqahumsxzOfxOYQhUGMGw==}
     engines: {node: '>=18.12'}
 
-  '@pnpm/pick-fetcher@1000.1.0':
-    resolution: {integrity: sha512-eoZk7uB37QC9V3yroMzAQ/jKN7/yRvQhCr15GBmUy0Nm3Q9IWBG5WNlcpdNL/joLEoSkRnx7DfX1+667kuKqHw==}
+  '@pnpm/pick-fetcher@1001.0.0':
+    resolution: {integrity: sha512-Zl8npMjFSS1gSGM27KkbmfmeOuwU2MCxRFIofAUo/PkqOE2IzzXr0yzB1XYJM8Ml1nUXt9BHfwAlUQKC5MdBLA==}
     engines: {node: '>=18.12'}
 
   '@pnpm/ramda@0.28.1':
     resolution: {integrity: sha512-zcAG+lvU0fMziNeGXpPyCyCJYp5ZVrPElEE4t14jAmViaihohocZ+dDkcRIyAomox8pQsuZnv1EyHR+pOhmUWw==}
 
-  '@pnpm/resolver-base@1004.1.0':
-    resolution: {integrity: sha512-sG9ePMQDdsb3ofyCWbKzopzaeeDsSjic3EZISDiqCFC77kyHYnmv1Yqep8/dSltQSXkawy+PPfzPa26QbLMxzQ==}
+  '@pnpm/resolver-base@1005.0.1':
+    resolution: {integrity: sha512-NBha12KjFMKwaG1BWTCtgr/RprNQhXItCBkzc8jZuVU0itAHRQhEykexna9K8XjAtYxZ9rhvir0T5a7fTB23yQ==}
     engines: {node: '>=18.12'}
 
-  '@pnpm/types@1000.7.0':
-    resolution: {integrity: sha512-1s7FvDqmOEIeFGLUj/VO8sF5lGFxeE/1WALrBpfZhDnMXY/x8FbmuygTTE5joWifebcZ8Ww8Kw2CgBoStsIevQ==}
+  '@pnpm/types@1000.8.0':
+    resolution: {integrity: sha512-yx86CGHHquWAI0GgKIuV/RnYewcf5fVFZemC45C/K2cX0uV8GB8TUP541ZrokWola2fZx5sn1vL7xzbceRZfoQ==}
     engines: {node: '>=18.12'}
 
   '@pnpm/util.lex-comparator@3.0.2':
@@ -3321,8 +3321,8 @@ packages:
   '@zag-js/utils@1.22.1':
     resolution: {integrity: sha512-VXY4gjHaTENHW+wjnKKENZ2jcaW0vnG2a5lYEMuZR4dpNCKH217yFr/bCNrI44y2s1W3LWhWmpEjfZluP6udYg==}
 
-  '@zkochan/js-yaml@0.0.7':
-    resolution: {integrity: sha512-nrUSn7hzt7J6JWgWGz78ZYI8wj+gdIJdk0Ynjpp8l+trkn58Uqsf6RYrYkEK+3X18EX+TNdtJI0WxAtc+L84SQ==}
+  '@zkochan/js-yaml@0.0.9':
+    resolution: {integrity: sha512-SsdK25Upg5wLeGK2Wm8y5bDloMMxN/qE5H6aNOiPRh07a9/fQPYVhlLZz2zRFg9il9XOlpFdrnQnPKsU7FJIpQ==}
     hasBin: true
 
   '@zkochan/rimraf@3.0.2':
@@ -6466,13 +6466,13 @@ snapshots:
       - supports-color
       - typescript
 
-  '@open-pioneer/check-pnpm-duplicates@0.2.3':
+  '@open-pioneer/check-pnpm-duplicates@0.2.4':
     dependencies:
-      '@pnpm/lockfile.fs': 1001.1.16(@pnpm/logger@1001.0.0)
-      '@pnpm/lockfile.utils': 1002.1.0
-      '@pnpm/lockfile.walker': 1001.0.12
+      '@pnpm/lockfile.fs': 1001.1.19(@pnpm/logger@1001.0.0)
+      '@pnpm/lockfile.utils': 1003.0.1
+      '@pnpm/lockfile.walker': 1001.0.14
       '@pnpm/logger': 1001.0.0
-      '@pnpm/types': 1000.7.0
+      '@pnpm/types': 1000.8.0
       chalk: 5.6.2
       commander: 14.0.0
       js-yaml: 4.1.0
@@ -6640,7 +6640,7 @@ snapshots:
 
   '@petamoriken/float16@3.9.2': {}
 
-  '@pnpm/constants@1001.2.0': {}
+  '@pnpm/constants@1001.3.1': {}
 
   '@pnpm/crypto.hash@1000.2.0':
     dependencies:
@@ -6650,15 +6650,15 @@ snapshots:
 
   '@pnpm/crypto.polyfill@1000.1.0': {}
 
-  '@pnpm/dependency-path@1001.0.2':
+  '@pnpm/dependency-path@1001.1.1':
     dependencies:
       '@pnpm/crypto.hash': 1000.2.0
-      '@pnpm/types': 1000.7.0
+      '@pnpm/types': 1000.8.0
       semver: 7.7.2
 
-  '@pnpm/error@1000.0.3':
+  '@pnpm/error@1000.0.5':
     dependencies:
-      '@pnpm/constants': 1001.2.0
+      '@pnpm/constants': 1001.3.1
 
   '@pnpm/git-utils@1000.0.0':
     dependencies:
@@ -6668,55 +6668,56 @@ snapshots:
     dependencies:
       graceful-fs: 4.2.11
 
-  '@pnpm/lockfile.fs@1001.1.16(@pnpm/logger@1001.0.0)':
+  '@pnpm/lockfile.fs@1001.1.19(@pnpm/logger@1001.0.0)':
     dependencies:
-      '@pnpm/constants': 1001.2.0
-      '@pnpm/dependency-path': 1001.0.2
-      '@pnpm/error': 1000.0.3
+      '@pnpm/constants': 1001.3.1
+      '@pnpm/dependency-path': 1001.1.1
+      '@pnpm/error': 1000.0.5
       '@pnpm/git-utils': 1000.0.0
-      '@pnpm/lockfile.merger': 1001.0.9
-      '@pnpm/lockfile.types': 1001.1.0
-      '@pnpm/lockfile.utils': 1002.1.0
+      '@pnpm/lockfile.merger': 1001.0.11
+      '@pnpm/lockfile.types': 1002.0.1
+      '@pnpm/lockfile.utils': 1003.0.1
       '@pnpm/logger': 1001.0.0
       '@pnpm/object.key-sorting': 1000.0.1
-      '@pnpm/types': 1000.7.0
+      '@pnpm/types': 1000.8.0
       '@zkochan/rimraf': 3.0.2
       comver-to-semver: 1.0.0
-      js-yaml: '@zkochan/js-yaml@0.0.7'
+      js-yaml: '@zkochan/js-yaml@0.0.9'
       normalize-path: 3.0.0
       ramda: '@pnpm/ramda@0.28.1'
       semver: 7.7.2
       strip-bom: 4.0.0
       write-file-atomic: 5.0.1
 
-  '@pnpm/lockfile.merger@1001.0.9':
+  '@pnpm/lockfile.merger@1001.0.11':
     dependencies:
-      '@pnpm/lockfile.types': 1001.1.0
-      '@pnpm/types': 1000.7.0
+      '@pnpm/lockfile.types': 1002.0.1
+      '@pnpm/types': 1000.8.0
       comver-to-semver: 1.0.0
       ramda: '@pnpm/ramda@0.28.1'
       semver: 7.7.2
 
-  '@pnpm/lockfile.types@1001.1.0':
+  '@pnpm/lockfile.types@1002.0.1':
     dependencies:
       '@pnpm/patching.types': 1000.1.0
-      '@pnpm/types': 1000.7.0
+      '@pnpm/resolver-base': 1005.0.1
+      '@pnpm/types': 1000.8.0
 
-  '@pnpm/lockfile.utils@1002.1.0':
+  '@pnpm/lockfile.utils@1003.0.1':
     dependencies:
-      '@pnpm/dependency-path': 1001.0.2
-      '@pnpm/lockfile.types': 1001.1.0
-      '@pnpm/pick-fetcher': 1000.1.0
-      '@pnpm/resolver-base': 1004.1.0
-      '@pnpm/types': 1000.7.0
+      '@pnpm/dependency-path': 1001.1.1
+      '@pnpm/lockfile.types': 1002.0.1
+      '@pnpm/pick-fetcher': 1001.0.0
+      '@pnpm/resolver-base': 1005.0.1
+      '@pnpm/types': 1000.8.0
       get-npm-tarball-url: 2.1.0
       ramda: '@pnpm/ramda@0.28.1'
 
-  '@pnpm/lockfile.walker@1001.0.12':
+  '@pnpm/lockfile.walker@1001.0.14':
     dependencies:
-      '@pnpm/dependency-path': 1001.0.2
-      '@pnpm/lockfile.types': 1001.1.0
-      '@pnpm/types': 1000.7.0
+      '@pnpm/dependency-path': 1001.1.1
+      '@pnpm/lockfile.types': 1002.0.1
+      '@pnpm/types': 1000.8.0
 
   '@pnpm/logger@1001.0.0':
     dependencies:
@@ -6730,15 +6731,15 @@ snapshots:
 
   '@pnpm/patching.types@1000.1.0': {}
 
-  '@pnpm/pick-fetcher@1000.1.0': {}
+  '@pnpm/pick-fetcher@1001.0.0': {}
 
   '@pnpm/ramda@0.28.1': {}
 
-  '@pnpm/resolver-base@1004.1.0':
+  '@pnpm/resolver-base@1005.0.1':
     dependencies:
-      '@pnpm/types': 1000.7.0
+      '@pnpm/types': 1000.8.0
 
-  '@pnpm/types@1000.7.0': {}
+  '@pnpm/types@1000.8.0': {}
 
   '@pnpm/util.lex-comparator@3.0.2': {}
 
@@ -7742,7 +7743,7 @@ snapshots:
 
   '@zag-js/utils@1.22.1': {}
 
-  '@zkochan/js-yaml@0.0.7':
+  '@zkochan/js-yaml@0.0.9':
     dependencies:
       argparse: 2.0.1
 
