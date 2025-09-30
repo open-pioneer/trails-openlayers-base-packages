@@ -8,7 +8,6 @@ import {
     setupMap,
     SimpleMapOptions
 } from "@open-pioneer/map-test-utils";
-import { HttpService } from "@open-pioneer/http";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { act, render, screen, waitFor } from "@testing-library/react";
 import { readFileSync } from "node:fs";
@@ -267,8 +266,7 @@ it("shows legend entries for group layers and their children", async () => {
                         })
                     })
                 ]
-            }),
-            createTestLayer({ type: WMSLayer, title: "test2", url: "https://fake.wms.url/service" })
+            })
         ]
     });
 
@@ -877,7 +875,7 @@ async function getLegendImages(legendDiv: HTMLElement, expectedCount = 1) {
 
 function createLayerWithNestedSublayers(
     hideChildrenModification: boolean = false,
-    httpService?: HttpService
+    options: { fetch: () => Promise<Response> }
 ): WMSLayer {
     return createTestLayer(
         {
@@ -972,7 +970,7 @@ function createLayerWithNestedSublayers(
                 }
             ]
         },
-        httpService
+        options
     );
 }
 
