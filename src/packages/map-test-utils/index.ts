@@ -249,6 +249,21 @@ export function createTestOlLayer(): TileLayer {
     return new TileLayer();
 }
 
+/**
+ * Creates (service name, service implementation)-pairs suitable for the `services`
+ * option of the `PackageContextProvider`.
+ *
+ * This helper method can be used to avoid hard-coding service names used in the implementation.
+ *
+ * @deprecated This function is no longer needed, since most widgets no longer depend on the registry
+ * and accept the `map` directly.
+ */
+export function createServiceOptions(services: { registry: MapRegistry }): Record<string, unknown> {
+    return {
+        "map.MapRegistry": services.registry
+    };
+}
+
 function createLayerFactory(httpService?: HttpService) {
     return new LayerFactory({
         intl: {} satisfies Partial<PackageIntl> as PackageIntl,
