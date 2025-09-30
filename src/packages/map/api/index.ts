@@ -7,7 +7,7 @@ export * from "./MapRegistry";
 export * from "./layers";
 export * from "./shared";
 
-export { LayerFactory } from "../model/layers/LayerFactory"; // TODO clean up
+export { LayerFactory, type LayerCreateOptions } from "../model/layers/LayerFactory"; // TODO clean up
 
 export { getProjection, registerProjections, type ProjectionDefinition } from "../projections";
 

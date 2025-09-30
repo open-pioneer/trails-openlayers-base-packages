@@ -10,6 +10,11 @@ interface References {
     httpService: HttpService;
 }
 
+export type LayerCreateOptions<LayerType extends Layer, Config extends LayerConfig> = {
+    /** The layer type to construct. */
+    type: LayerConstructor<Config, LayerType>;
+} & Config;
+
 /**
  * Creates instances of layer classes.
  *
@@ -45,10 +50,7 @@ export class LayerFactory {
      * ```
      */
     create<LayerType extends Layer, Config extends LayerConfig>(
-        config: {
-            /** The layer type to construct. */
-            type: LayerConstructor<Config, LayerType>;
-        } & Config
+        config: LayerCreateOptions<LayerType, Config>
     ): LayerType {
         const { type, ...rest } = config;
         if (!type || !(type.prototype instanceof AbstractLayer)) {

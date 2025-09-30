@@ -10,7 +10,6 @@ import OSM from "ol/source/OSM";
 import { describe, expect, it } from "vitest";
 import { BasemapSwitcher } from "./BasemapSwitcher";
 import { SimpleLayer } from "@open-pioneer/map";
-import VectorLayer from "ol/layer/Vector";
 
 const defaultBasemapConfig = [
     {

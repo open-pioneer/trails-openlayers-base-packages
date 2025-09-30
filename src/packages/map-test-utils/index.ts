@@ -4,32 +4,25 @@ import { watch } from "@conterra/reactivity-core";
 import { HttpService, HttpServiceRequestInit } from "@open-pioneer/http";
 import {
     ExtentConfig,
-    GroupLayerConfig,
     InitialViewConfig,
     Layer,
+    LayerCreateOptions,
     MapConfig,
     MapModel,
     MapRegistry,
     OlMapOptions,
     SimpleLayer,
     SimpleLayerConfig,
-    WMSLayerConfig,
-    WMTSLayerConfig
+    LayerConfig as MapPackageLayerConfig
 } from "@open-pioneer/map";
-import { MapRegistryImpl, LayerFactory } from "@open-pioneer/map/internalTestSupport";
+import { LayerFactory, MapRegistryImpl } from "@open-pioneer/map/internalTestSupport";
+import { PackageIntl } from "@open-pioneer/runtime";
 import { createService } from "@open-pioneer/test-utils/services";
 import { screen, waitFor } from "@testing-library/react";
 import TileLayer from "ol/layer/Tile";
 import VectorLayer from "ol/layer/Vector";
-import { PackageIntl } from "@open-pioneer/runtime";
-import { LayerConstructor } from "@open-pioneer/map/model/layers/internals";
 
-export type LayerConfig =
-    | SimpleLayerConfig
-    | GroupLayerConfig
-    | WMSLayerConfig
-    | WMTSLayerConfig
-    | Layer;
+export type LayerConfig = SimpleLayerConfig | Layer;
 
 export interface SimpleMapOptions {
     /** ID of the map.
@@ -216,29 +209,35 @@ function getInitialView(options: SimpleMapOptions | undefined): InitialViewConfi
     };
 }
 
-export function createTestLayer<Config extends LayerConfig, LayerType extends Layer>(
-    config?: {
-        /** The layer type to construct. */
-        type: LayerConstructor<Config, LayerType>;
-    } & Config,
-    mapOptions?: SimpleMapOptions
-): LayerType {
+/** Creates an new layer of the specified type for testing. */
+export function createTestLayer<LayerType extends Layer, Config extends MapPackageLayerConfig>(
+    config: LayerCreateOptions<LayerType, Config>,
+    mapOptions?: Pick<SimpleMapOptions, "fetch">
+): LayerType;
+
+/** Creates a new, basic SimpleLayer for testing. */
+export function createTestLayer(
+    config?: SimpleLayerConfig,
+    mapOptions?: Pick<SimpleMapOptions, "fetch">
+): SimpleLayer;
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function createTestLayer(config?: any, mapOptions?: Pick<SimpleMapOptions, "fetch">): Layer {
     // Basic case: If no config is given, use SimpleLayer
     if (!config) {
         config = {
             type: SimpleLayer,
             title: "Test layer",
             olLayer: new VectorLayer()
-        } as unknown as {
-            type: LayerConstructor<Config, LayerType>;
-        } & Config;
+        } as LayerCreateOptions<SimpleLayer, SimpleLayerConfig>;
+    } else if (!config.type) {
+        config.type = SimpleLayer;
     }
-    const { type, ...rest } = config;
 
     const factory = mapOptions?.fetch
         ? createLayerFactory({ fetch: mapOptions.fetch })
         : DUMMY_LAYER_FACTORY;
-    return factory.create({ type, ...(rest as unknown as Config) });
+    return factory.create(config);
 }
 
 /**
