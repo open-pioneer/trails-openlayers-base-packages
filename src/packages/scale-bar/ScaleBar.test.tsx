@@ -4,15 +4,14 @@ import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render, screen, waitFor } from "@testing-library/react";
 import { expect, it } from "vitest";
 import { ScaleBar } from "./ScaleBar";
-import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
+import { setupMap } from "@open-pioneer/map-test-utils";
 import { ScaleLine } from "ol/control";
 
 it("should successfully create a scale bar component", async () => {
-    const { map, registry } = await setupMap();
+    const { map } = await setupMap();
 
-    const injectedServices = createServiceOptions({ registry });
     render(
-        <PackageContextProvider services={injectedServices}>
+        <PackageContextProvider>
             <ScaleBar map={map} data-testid="scale-bar" />
         </PackageContextProvider>
     );
@@ -26,11 +25,10 @@ it("should successfully create a scale bar component", async () => {
 });
 
 it("should successfully create a scale bar component with additional css classes", async () => {
-    const { map, registry } = await setupMap();
+    const { map } = await setupMap();
 
-    const injectedServices = createServiceOptions({ registry });
     render(
-        <PackageContextProvider services={injectedServices}>
+        <PackageContextProvider>
             <ScaleBar map={map} className="test test1 test2" data-testid="scale-bar" />
         </PackageContextProvider>
     );
@@ -47,11 +45,10 @@ it("should successfully create a scale bar component with additional css classes
 });
 
 it("should by default render a scale line, if property displayMode is missing", async () => {
-    const { map, registry } = await setupMap();
+    const { map } = await setupMap();
 
-    const injectedServices = createServiceOptions({ registry });
     render(
-        <PackageContextProvider services={injectedServices}>
+        <PackageContextProvider>
             <ScaleBar map={map} data-testid="scale-bar" />
         </PackageContextProvider>
     );
@@ -66,11 +63,10 @@ it("should by default render a scale line, if property displayMode is missing", 
 });
 
 it("should render a scale bar, if property displayMode is set to 'bar'", async () => {
-    const { map, registry } = await setupMap();
+    const { map } = await setupMap();
 
-    const injectedServices = createServiceOptions({ registry });
     render(
-        <PackageContextProvider services={injectedServices}>
+        <PackageContextProvider>
             <ScaleBar map={map} displayMode="bar" data-testid="scale-bar" />
         </PackageContextProvider>
     );
@@ -85,12 +81,11 @@ it("should render a scale bar, if property displayMode is set to 'bar'", async (
 });
 
 it("should successfully add ScaleLine to OpenLayers map controls", async () => {
-    const { map, registry } = await setupMap();
+    const { map } = await setupMap();
     const olMap = map.olMap;
 
-    const injectedServices = createServiceOptions({ registry });
     render(
-        <PackageContextProvider services={injectedServices}>
+        <PackageContextProvider>
             <ScaleBar map={map} data-testid="scale-bar" />
         </PackageContextProvider>
     );

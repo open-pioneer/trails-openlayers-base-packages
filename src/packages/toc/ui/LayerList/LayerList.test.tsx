@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import { nextTick } from "@conterra/reactivity-core";
 import { GroupLayer, SimpleLayer } from "@open-pioneer/map";
-import { LayerConfig, setupMap } from "@open-pioneer/map-test-utils";
+import { createTestOlLayer, LayerConfig, setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import {
     fireEvent,
@@ -26,15 +26,15 @@ it("should show layers in the correct order", async () => {
         layers: [
             {
                 title: "Layer 1",
-                olLayer: new TileLayer({})
+                olLayer: createTestOlLayer()
             },
             {
                 title: "Layer 2",
-                olLayer: new TileLayer({})
+                olLayer: createTestOlLayer()
             },
             {
                 title: "Layer 3",
-                olLayer: new TileLayer({})
+                olLayer: createTestOlLayer()
             }
         ]
     });
@@ -62,12 +62,12 @@ it("does not display base layers", async function () {
         layers: [
             {
                 title: "Layer 1",
-                olLayer: new TileLayer({})
+                olLayer: createTestOlLayer()
             },
             {
                 title: "Layer 2",
                 isBaseLayer: true,
-                olLayer: new TileLayer({})
+                olLayer: createTestOlLayer()
             }
         ]
     });
@@ -85,7 +85,7 @@ it("shows a single entry for layer groups inside a SimpleLayer", async function 
         layers: [
             {
                 title: "Layer 1",
-                olLayer: new TileLayer({})
+                olLayer: createTestOlLayer()
             },
             {
                 title: "Layer 2",
@@ -119,7 +119,7 @@ it("reacts to changes in the layer composition", async function () {
         layers: [
             {
                 title: "Layer 1",
-                olLayer: new TileLayer({})
+                olLayer: createTestOlLayer()
             }
         ]
     });
@@ -134,7 +134,7 @@ it("reacts to changes in the layer composition", async function () {
         map.layers.addLayer(
             new SimpleLayer({
                 title: "Layer 2",
-                olLayer: new TileLayer({})
+                olLayer: createTestOlLayer()
             })
         );
         await nextTick();
@@ -153,7 +153,7 @@ it("displays the layer's current title", async () => {
             {
                 id: "layer",
                 title: "Layer 1",
-                olLayer: new TileLayer({})
+                olLayer: createTestOlLayer()
             }
         ]
     });
@@ -181,7 +181,7 @@ it("displays the layer's current visibility", async () => {
             {
                 id: "layer",
                 title: "Layer 1",
-                olLayer: new TileLayer({})
+                olLayer: createTestOlLayer()
             }
         ]
     });
@@ -214,7 +214,7 @@ it("changes the layer's visibility when toggling the checkbox", async () => {
             {
                 id: "layer",
                 title: "Layer 1",
-                olLayer: new TileLayer({})
+                olLayer: createTestOlLayer()
             }
         ]
     });
@@ -251,7 +251,7 @@ it("includes the layer id in the item's class list", async () => {
             {
                 id: "some layer id",
                 title: "Layer 1",
-                olLayer: new TileLayer({})
+                olLayer: createTestOlLayer()
             }
         ]
     });
@@ -270,12 +270,12 @@ it("renders buttons for all layer's with description property", async () => {
         layers: [
             {
                 title: "Layer 1",
-                olLayer: new TileLayer({}),
+                olLayer: createTestOlLayer(),
                 description: "Description 1"
             },
             {
                 title: "Layer 2",
-                olLayer: new TileLayer({})
+                olLayer: createTestOlLayer()
             }
         ]
     });
@@ -294,12 +294,12 @@ it("changes the description popover's visibility when toggling the button", asyn
             {
                 id: "layer",
                 title: "Layer 1",
-                olLayer: new TileLayer({}),
+                olLayer: createTestOlLayer(),
                 description: "Description 1"
             },
             {
                 title: "Layer 2",
-                olLayer: new TileLayer({})
+                olLayer: createTestOlLayer()
             }
         ]
     });
@@ -342,13 +342,13 @@ it("reacts to changes in the layer description", async () => {
             {
                 id: "layer1",
                 title: "Layer 1",
-                olLayer: new TileLayer({}),
+                olLayer: createTestOlLayer(),
                 description: "Description"
             },
             {
                 id: "layer2",
                 title: "Layer 2",
-                olLayer: new TileLayer({})
+                olLayer: createTestOlLayer()
             }
         ]
     });
@@ -549,7 +549,7 @@ it("it renders collapse buttons (only) for groups", async () => {
             {
                 title: "SimpleLayer",
                 id: "simplelayer",
-                olLayer: new TileLayer({})
+                olLayer: createTestOlLayer()
             },
             group
         ],
@@ -638,7 +638,7 @@ it("displays the layer item only if the layer is not internal", async () => {
             {
                 id: "layer",
                 title: "Layer 1",
-                olLayer: new TileLayer({}),
+                olLayer: createTestOlLayer(),
                 internal: false
             }
         ]
@@ -670,7 +670,7 @@ it("displays the layer item only if the list mode is not `hide`", async () => {
             {
                 id: "layer",
                 title: "Layer 1",
-                olLayer: new TileLayer({}),
+                olLayer: createTestOlLayer(),
                 internal: false,
                 attributes: {
                     toc: {
@@ -730,7 +730,7 @@ it("does not display layer item for child layer if the group's listMode is `hide
     const childLayer = new SimpleLayer({
         id: "member",
         title: "group member",
-        olLayer: new TileLayer({}),
+        olLayer: createTestOlLayer(),
         visible: false
     });
 
@@ -788,8 +788,8 @@ function findLayerItem(container: HTMLElement, id: string) {
 }
 
 function createGroupHierarchy() {
-    const o1 = new TileLayer({});
-    const o2 = new TileLayer({});
+    const o1 = createTestOlLayer();
+    const o2 = createTestOlLayer();
     const submember = new SimpleLayer({
         id: "submember",
         title: "subgroup member",

@@ -18,7 +18,7 @@ export interface MapModelEvents {
     "destroy": void;
 }
 
-/** Styleoptions supported when creating a new {@link Highlight}. */
+/** Style options supported when creating a new {@link Highlight}. */
 export interface HighlightOptions {
     /**
      * Optional styles to override the default styles.
@@ -26,7 +26,7 @@ export interface HighlightOptions {
     highlightStyle?: HighlightStyle;
 }
 
-/** Zoomoptions supported when creating a new {@link Highlight}. */
+/** Zoom options supported when creating a new {@link Highlight}. */
 export interface ZoomOptions {
     /**
      * The zoom-level used if there is no valid extend (such as for single points).
@@ -269,7 +269,7 @@ export interface LayerCollection extends ChildrenCollection<Layer> {
      * > Note: This includes base layers by default (see `options.filter`).
      * > Use the `"base"` or `"operational"` short hand values to filter by base layer or operational layers.
      * >
-     * > If the layer hierachy is deeply nested, this function could potentially be expensive.
+     * > If the layer hierarchy is deeply nested, this function could potentially be expensive.
      */
     getRecursiveLayers(
         options?: Omit<RecursiveRetrievalOptions, "filter"> & {
@@ -282,8 +282,15 @@ export interface LayerCollection extends ChildrenCollection<Layer> {
      *
      * The new layer is automatically registered with this collection.
      *
-     * NOTE: by default, the new layer will be shown on _top_ of all existing layers.
+     * ### Display order
+     *
+     * By default, the new layer will be shown on _top_ of all normal operational layers.
      * Use the `options` parameter to control the insertion point.
+     *
+     * ### Ownership
+     *
+     * The map model takes ownership of the new layer.
+     * This means that the layer will be destroyed if the map model is destroyed.
      */
     addLayer(layer: Layer, options?: AddLayerOptions): void;
 
@@ -296,8 +303,28 @@ export interface LayerCollection extends ChildrenCollection<Layer> {
      * Removes a layer identified by the `id` from the map.
      *
      * NOTE: The current implementation only supports removal of _top level_ layers.
+     *
+     * ### Ownership
+     *
+     * This function _destroys_ the layer instance and all its children.
+     *
+     * @deprecated Use {@link removeLayer} instead.
      */
     removeLayerById(id: string): void;
+
+    /**
+     * Removes the given top level layer from the map.
+     *
+     * The layer can be specified directly (as an object) or by an id.
+     *
+     * Returns the layer instance on success, or `undefined` if the layer was not found.
+     *
+     * ### Ownership
+     *
+     * The map releases ownership of this layer.
+     * The caller can destroy it or store it for later reuse.
+     */
+    removeLayer(layer: string | Layer): Layer | undefined;
 
     /**
      * Given a raw OpenLayers layer instance, returns the associated {@link Layer} - or undefined

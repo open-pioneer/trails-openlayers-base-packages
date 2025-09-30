@@ -5,6 +5,10 @@ import { GroupLayerImpl } from "../../model/layers/GroupLayerImpl";
 import type { LayerRetrievalOptions, RecursiveRetrievalOptions } from "../shared";
 import type { AnyLayer, ChildrenCollection, Layer, LayerBaseType, LayerConfig } from "./base";
 
+// Import for api docs
+// eslint-disable-next-line unused-imports/no-unused-imports
+import type { LayerFactory } from "../../model/layers/LayerFactory";
+
 /**
  * Configuration options to construct a {@link GroupLayer}.
  */
@@ -65,7 +69,11 @@ export interface GroupLayerCollection extends ChildrenCollection<Layer> {
 export interface GroupLayerConstructor {
     prototype: GroupLayer;
 
-    /** Creates a new {@link GroupLayer}. */
+    /**
+     * Creates a new {@link GroupLayer}.
+     *
+     * @deprecated Prefer using {@link LayerFactory.create} instead of calling the constructor directly
+     */
     new (config: GroupLayerConfig): GroupLayer;
 }
 

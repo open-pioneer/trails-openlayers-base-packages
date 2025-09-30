@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 
-import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
+import { setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import OlMap from "ol/Map";
@@ -11,10 +11,9 @@ import { expect, it } from "vitest";
 import { Measurement } from "./Measurement";
 
 it("should successfully create a measurement component", async () => {
-    const { map, registry } = await setupMap();
-    const injectedServices = createServiceOptions({ registry });
+    const { map } = await setupMap();
     render(
-        <PackageContextProvider services={injectedServices}>
+        <PackageContextProvider>
             <Measurement map={map} data-testid="measurement"></Measurement>
         </PackageContextProvider>
     );
@@ -28,10 +27,9 @@ it("should successfully create a measurement component", async () => {
 });
 
 it("should successfully create a measurement component with additional css class", async () => {
-    const { map, registry } = await setupMap();
-    const injectedServices = createServiceOptions({ registry });
+    const { map } = await setupMap();
     render(
-        <PackageContextProvider services={injectedServices}>
+        <PackageContextProvider>
             <Measurement map={map} className="test" data-testid="measurement"></Measurement>
         </PackageContextProvider>
     );
@@ -43,10 +41,9 @@ it("should successfully create a measurement component with additional css class
 });
 
 it("should successfully select a measurement from the select dropdown", async () => {
-    const { map, registry } = await setupMap();
-    const injectedServices = createServiceOptions({ registry });
+    const { map } = await setupMap();
     render(
-        <PackageContextProvider services={injectedServices}>
+        <PackageContextProvider>
             <Measurement map={map} className="test" data-testid="measurement"></Measurement>
         </PackageContextProvider>
     );
@@ -66,10 +63,9 @@ it("should successfully select a measurement from the select dropdown", async ()
 });
 
 it("should successfully add tooltip overlays to the map", async () => {
-    const { map, registry } = await setupMap();
-    const injectedServices = createServiceOptions({ registry });
+    const { map } = await setupMap();
     render(
-        <PackageContextProvider services={injectedServices}>
+        <PackageContextProvider>
             <Measurement map={map} className="test" data-testid="measurement"></Measurement>
         </PackageContextProvider>
     );
@@ -93,10 +89,9 @@ it("should successfully add tooltip overlays to the map", async () => {
 });
 
 it("should successfully activate draw interaction for the right geometry type", async () => {
-    const { map, registry } = await setupMap();
-    const injectedServices = createServiceOptions({ registry });
+    const { map } = await setupMap();
     render(
-        <PackageContextProvider services={injectedServices}>
+        <PackageContextProvider>
             <Measurement map={map} className="test" data-testid="measurement"></Measurement>
         </PackageContextProvider>
     );

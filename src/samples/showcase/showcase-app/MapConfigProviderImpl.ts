@@ -1,7 +1,15 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { LegendItemAttributes } from "@open-pioneer/legend";
-import { MapConfig, MapConfigProvider, SimpleLayer, WMSLayer, WMTSLayer } from "@open-pioneer/map";
+import {
+    LayerFactory,
+    MapConfig,
+    MapConfigProvider,
+    MapConfigProviderOptions,
+    SimpleLayer,
+    WMSLayer,
+    WMTSLayer
+} from "@open-pioneer/map";
 import { OgcFeaturesVectorSourceFactory } from "@open-pioneer/ogc-features";
 import { ServiceOptions } from "@open-pioneer/runtime";
 import GeoJSON from "ol/format/GeoJSON";
@@ -25,7 +33,7 @@ export class MapConfigProviderImpl implements MapConfigProvider {
         this.vectorSourceFactory = options.references.vectorSourceFactory;
     }
 
-    async getMapConfig(): Promise<MapConfig> {
+    async getMapConfig({ layerFactory }: MapConfigProviderOptions): Promise<MapConfig> {
         return {
             initialView: {
                 kind: "position",
@@ -33,7 +41,8 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                 zoom: 8
             },
             layers: [
-                new SimpleLayer({
+                layerFactory.create({
+                    type: SimpleLayer,
                     title: "OSM",
                     id: "osm",
                     isBaseLayer: true,
@@ -41,7 +50,8 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                         source: new OSM()
                     })
                 }),
-                new WMTSLayer({
+                layerFactory.create({
+                    type: WMTSLayer,
                     isBaseLayer: true,
                     title: "Orthofotos NRW",
                     url: "https://www.wmts.nrw.de/geobasis/wmts_nw_dop/1.0.0/WMTSCapabilities.xml",
@@ -51,15 +61,18 @@ export class MapConfigProviderImpl implements MapConfigProvider {
                         attributions: `Die Geobasisdaten des amtlichen Vermessungswesens werden als öffentliche Aufgabe gem. VermKatG NRW und gebührenfrei nach Open Data-Prinzipien über online-Verfahren bereitgestellt. Nutzungsbedingungen: siehe <a href="https://www.bezreg-koeln.nrw.de/system/files/media/document/file/lizenzbedingungen_geobasis_nrw.pdf"</a>`
                     }
                 }),
-                createAdminAreasLayer(),
-                createKitasLayer(),
-                createKrankenhausLayer(this.vectorSourceFactory)
+                createAdminAreasLayer(layerFactory),
+                createKitasLayer(layerFactory),
+                createKrankenhausLayer(layerFactory, this.vectorSourceFactory)
             ]
         };
     }
 }
 
-function createKrankenhausLayer(vectorSourceFactory: OgcFeaturesVectorSourceFactory) {
+function createKrankenhausLayer(
+    layerFactory: LayerFactory,
+    vectorSourceFactory: OgcFeaturesVectorSourceFactory
+) {
     const baseURL = "https://ogc-api-test.nrw.de/inspire-us-krankenhaus/v1";
     const collectionId = "governmentalservice";
     const source = vectorSourceFactory.createVectorSource({
@@ -74,7 +87,8 @@ function createKrankenhausLayer(vectorSourceFactory: OgcFeaturesVectorSourceFact
         source: source
     });
 
-    return new SimpleLayer({
+    return layerFactory.create({
+        type: SimpleLayer,
         id: "krankenhaus",
         title: "Krankenhäuser-Demo-Dienst",
         visible: false,
@@ -85,7 +99,7 @@ function createKrankenhausLayer(vectorSourceFactory: OgcFeaturesVectorSourceFact
     });
 }
 
-function createKitasLayer() {
+function createKitasLayer(layerFactory: LayerFactory) {
     const geojsonSource = new VectorSource({
         url: "https://ogc-api.nrw.de/inspire-us-kindergarten/v1/collections/governmentalservice/items?f=json&limit=10000",
         format: new GeoJSON(), //assign GeoJson parser
@@ -101,7 +115,8 @@ function createKitasLayer() {
         Component: CustomLegendItem
     };
 
-    return new SimpleLayer({
+    return layerFactory.create({
+        type: SimpleLayer,
         id: "ogc_kitas",
         title: "Kindertagesstätten",
         visible: true,
@@ -112,8 +127,9 @@ function createKitasLayer() {
     });
 }
 
-function createAdminAreasLayer() {
-    return new WMSLayer({
+function createAdminAreasLayer(layerFactory: LayerFactory) {
+    return layerFactory.create({
+        type: WMSLayer,
         title: "Verwaltungsgebiete",
         id: "verwaltungsgebiete",
         visible: false,

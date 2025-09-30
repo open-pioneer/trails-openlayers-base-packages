@@ -14,6 +14,7 @@ import { LegendItemAttributes } from "@open-pioneer/legend";
 import {
     BaseFeature,
     Highlight,
+    LayerFactory,
     MapConfig,
     MapModel,
     MapRegistry,
@@ -107,6 +108,7 @@ interface References {
     vectorSelectionSourceFactory: VectorLayerSelectionSourceFactory;
     httpService: HttpService;
     mapRegistry: MapRegistry;
+    layerFactory: LayerFactory;
 }
 
 function isInteraction(content: MainContentId): boolean {
@@ -117,11 +119,13 @@ export class AppModel implements Service, AppState {
     declare [DECLARE_SERVICE_INTERFACE]: "ol-app.AppModel";
 
     private _mapRegistry: MapRegistry;
-    private _map = reactive<MapModel>();
+    private _layerFactory: LayerFactory;
+    private _vectorSourceFactory: OgcFeaturesVectorSourceFactory;
     private _vectorSelectionSourceFactory: VectorLayerSelectionSourceFactory;
     private _httpService: HttpService;
     private _resources: Resource[] = [];
-    private vectorSourceFactory: OgcFeaturesVectorSourceFactory;
+
+    private _map = reactive<MapModel>();
 
     // Highlight for search or selection results (they remove each other in this app).
     private _featureHighlight: Highlight | undefined = undefined;
@@ -139,13 +143,13 @@ export class AppModel implements Service, AppState {
 
     constructor({ references }: ServiceOptions<References>) {
         this._mapRegistry = references.mapRegistry;
+        this._layerFactory = references.layerFactory;
         this._vectorSelectionSourceFactory = references.vectorSelectionSourceFactory;
+        this._vectorSourceFactory = references.vectorSourceFactory;
         this._httpService = references.httpService;
 
-        this.vectorSourceFactory = references.vectorSourceFactory;
-
         this._mapRegistry
-            .createMapModel("main", getMapConfig(this.vectorSourceFactory))
+            .createMapModel("main", getMapConfig(this._layerFactory, this._vectorSourceFactory))
             .then((map) => {
                 this._map.value = map;
                 this.initSelectionSources(map).catch((error) => {
@@ -346,7 +350,10 @@ export class AppModel implements Service, AppState {
     }
 }
 
-function getMapConfig(vectorSourceFactory: OgcFeaturesVectorSourceFactory): MapConfig {
+function getMapConfig(
+    layerFactory: LayerFactory,
+    vectorSourceFactory: OgcFeaturesVectorSourceFactory
+): MapConfig {
     return {
         advanced: {
             view: new View({
@@ -357,18 +364,19 @@ function getMapConfig(vectorSourceFactory: OgcFeaturesVectorSourceFactory): MapC
             })
         },
         layers: [
-            ...createBaseLayers(),
-            createStrassenLayer(),
-            createKrankenhausLayer(vectorSourceFactory),
-            createSchulenLayer(),
-            createKitasLayer()
+            ...createBaseLayers(layerFactory),
+            createStrassenLayer(layerFactory),
+            createKrankenhausLayer(layerFactory, vectorSourceFactory),
+            createSchulenLayer(layerFactory),
+            createKitasLayer(layerFactory)
         ]
     };
 }
 
-function createBaseLayers() {
+function createBaseLayers(layerFactory: LayerFactory) {
     return [
-        new WMTSLayer({
+        layerFactory.create({
+            type: WMTSLayer,
             isBaseLayer: true,
             title: "Topplus grau",
             url: "https://www.wmts.nrw.de/topplus_open/1.0.0/WMTSCapabilities.xml",
@@ -379,7 +387,8 @@ function createBaseLayers() {
                 attributions: `Kartendarstellung und Präsentationsgraphiken: &copy; Bundesamt für Kartographie und Geodäsie ${new Date().getFullYear()}, <a title="Datenquellen öffnen" aria-label="Datenquellen öffnen" href="https://sg.geodatenzentrum.de/web_public/gdz/datenquellen/Datenquellen_TopPlusOpen.html " target="_blank">Datenquellen</a>`
             }
         }),
-        new WMTSLayer({
+        layerFactory.create({
+            type: WMTSLayer,
             isBaseLayer: true,
             title: "Topplus farbig",
             url: "https://www.wmts.nrw.de/topplus_open/1.0.0/WMTSCapabilities.xml",
@@ -390,7 +399,8 @@ function createBaseLayers() {
                 attributions: `Kartendarstellung und Präsentationsgraphiken: &copy; Bundesamt für Kartographie und Geodäsie ${new Date().getFullYear()}, <a title="Datenquellen öffnen" aria-label="Datenquellen öffnen" href="https://sg.geodatenzentrum.de/web_public/gdz/datenquellen/Datenquellen_TopPlusOpen.html " target="_blank">Datenquellen</a>`
             }
         }),
-        new SimpleLayer({
+        layerFactory.create({
+            type: SimpleLayer,
             title: "OpenStreetMaps",
             visible: false,
             isBaseLayer: true,
@@ -401,7 +411,10 @@ function createBaseLayers() {
     ];
 }
 
-function createKrankenhausLayer(vectorSourceFactory: OgcFeaturesVectorSourceFactory) {
+function createKrankenhausLayer(
+    layerFactory: LayerFactory,
+    vectorSourceFactory: OgcFeaturesVectorSourceFactory
+) {
     const baseURL = "https://ogc-api-test.nrw.de/inspire-us-krankenhaus/v1";
     const collectionId = "governmentalservice";
     const source = vectorSourceFactory.createVectorSource({
@@ -417,7 +430,8 @@ function createKrankenhausLayer(vectorSourceFactory: OgcFeaturesVectorSourceFact
         source: source
     });
 
-    return new SimpleLayer({
+    return layerFactory.create({
+        type: SimpleLayer,
         id: "krankenhaus",
         title: "Krankenhäuser",
         visible: false,
@@ -428,8 +442,9 @@ function createKrankenhausLayer(vectorSourceFactory: OgcFeaturesVectorSourceFact
     });
 }
 
-function createSchulenLayer() {
-    return new WMSLayer({
+function createSchulenLayer(layerFactory: LayerFactory) {
+    return layerFactory.create({
+        type: WMSLayer,
         title: "Schulstandorte",
         description: `Der vorliegende Datenbestand / Dienst zu den Schulstandorten in NRW stammt aus der Schuldatenbank. Die Informationen werden von den Schulträgern bzw. Schulen selbst eingetragen und aktuell gehalten. Die Daten werden tagesaktuell bereitgestellt und enthalten alle grundlegenden Informationen zu Schulen wie Schulnummer, Schulbezeichnung und Adresse.Der vorliegende Datenbestand / Dienst zu den Schulstandorten in NRW stammt aus der Schuldatenbank. Die Informationen werden von den Schulträgern bzw. Schulen selbst eingetragen und aktuell gehalten. Die Daten werden tagesaktuell bereitgestellt und enthalten alle grundlegenden Informationen zu Schulen wie Schulnummer, Schulbezeichnung und Adresse.Der vorliegende Datenbestand / Dienst zu den Schulstandorten in NRW stammt aus der Schuldatenbank. Die Informationen werden von den Schulträgern bzw. Schulen selbst eingetragen und aktuell gehalten. Die Daten werden tagesaktuell bereitgestellt und enthalten alle grundlegenden Informationen zu Schulen wie Schulnummer, Schulbezeichnung und Adresse.Der vorliegende Datenbestand / Dienst zu den Schulstandorten in NRW stammt aus der Schuldatenbank. Die Informationen werden von den Schulträgern bzw. Schulen selbst eingetragen und aktuell gehalten. Die Daten werden tagesaktuell bereitgestellt und enthalten alle grundlegenden Informationen zu Schulen wie Schulnummer, Schulbezeichnung und Adresse.`,
         visible: true,
@@ -449,8 +464,9 @@ function createSchulenLayer() {
     });
 }
 
-function createStrassenLayer() {
-    return new WMSLayer({
+function createStrassenLayer(layerFactory: LayerFactory) {
+    return layerFactory.create({
+        type: WMSLayer,
         title: "Straßennetz Landesbetrieb Straßenbau NRW",
         url: "https://www.wms.nrw.de/wms/strassen_nrw_wms",
         visible: true,
@@ -476,7 +492,7 @@ function createStrassenLayer() {
     });
 }
 
-function createKitasLayer() {
+function createKitasLayer(layerFactory: LayerFactory) {
     const pointLayerLegendProps: LegendItemAttributes = {
         Component: CustomLegendItem
     };
@@ -498,7 +514,8 @@ function createKitasLayer() {
         })
     });
 
-    return new SimpleLayer({
+    return layerFactory.create({
+        type: SimpleLayer,
         id: "ogc_kitas",
         title: "Kindertagesstätten",
         visible: true,

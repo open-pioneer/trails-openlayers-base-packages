@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { createServiceOptions, setupMap } from "@open-pioneer/map-test-utils";
+import { setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { render, screen, waitFor } from "@testing-library/react";
 import { Search } from "./Search";
@@ -164,16 +164,15 @@ async function createSearch(
     readyHandler?: (event: SearchReadyEvent) => void,
     disposedHandler?: () => void
 ) {
-    const { map, registry } = await setupMap();
+    const { map } = await setupMap();
 
-    const injectedServices = createServiceOptions({ registry });
     const sources = [new FakeCitySource(1), new FakeRiverSource(1), new FakeStreetSource(1)];
     const selectHandlerFunction = selectHandler ? selectHandler : (_event: SearchSelectEvent) => {};
     const clearHandlerFunction = clearHandler ? clearHandler : () => {};
     const readyHandlerFunction = readyHandler ? readyHandler : () => {};
     const disposeHandlerFunction = disposedHandler ? disposedHandler : () => {};
     const { unmount } = render(
-        <PackageContextProvider services={injectedServices}>
+        <PackageContextProvider>
             <Search
                 data-testid="search"
                 map={map}

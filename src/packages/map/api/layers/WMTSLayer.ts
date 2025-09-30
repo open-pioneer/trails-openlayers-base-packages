@@ -4,6 +4,10 @@ import type { Options as WMSSourceOptions } from "ol/source/ImageWMS";
 import { LayerBaseType, LayerConfig } from "./base";
 import { WMTSLayerImpl } from "../../model/layers/WMTSLayerImpl";
 
+// Import for api docs
+// eslint-disable-next-line unused-imports/no-unused-imports
+import type { LayerFactory } from "../../model/layers/LayerFactory";
+
 export interface WMTSLayerConfig extends LayerConfig {
     /** URL of the WMTS service. */
     url: string;
@@ -41,7 +45,11 @@ export interface WMTSLayer extends LayerBaseType {
 export interface WMTSLayerConstructor {
     prototype: WMTSLayer;
 
-    /** Creates a new {@link WMTSLayer}. */
+    /**
+     * Creates a new {@link WMTSLayer}.
+     *
+     * @deprecated Prefer using {@link LayerFactory.create} instead of calling the constructor directly
+     */
     new (config: WMTSLayerConfig): WMTSLayer;
 }
 
