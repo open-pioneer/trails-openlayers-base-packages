@@ -1,5 +1,40 @@
 # @open-pioneer/map-test-utils
 
+## 1.0.0
+
+### Major Changes
+
+- 14c484e: Deprecate `createServiceOptions()` function.
+
+    This function was previously used in tests to mock the map registry for a react component under test.
+    This is no longer necessary because our react components now receive the map model directly (no lookup is done anymore).
+
+### Minor Changes
+
+- 14c484e: Create a new test helper `createTestOlLayer()` that returns a simple, empty (tile) layer.
+
+### Patch Changes
+
+- 10d2fe7: Update dependencies
+- 138d85b: Update core packages to 4.1.0
+- da6a410: Update dependencies
+- Updated dependencies [c6180c6]
+- Updated dependencies [29a10df]
+- Updated dependencies [10d2fe7]
+- Updated dependencies [2702df4]
+- Updated dependencies [12561fe]
+- Updated dependencies [5df900f]
+- Updated dependencies [8986b3b]
+- Updated dependencies [dfd7c7e]
+- Updated dependencies [14c484e]
+- Updated dependencies [138d85b]
+- Updated dependencies [aeb9000]
+- Updated dependencies [2c8b617]
+- Updated dependencies [5df900f]
+- Updated dependencies [f1f69f2]
+- Updated dependencies [da6a410]
+    - @open-pioneer/map@1.0.0
+
 ## 0.11.0
 
 ### Minor Changes
