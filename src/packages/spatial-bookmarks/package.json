@@ -35,7 +35,6 @@
     "devDependencies": {
         "@open-pioneer/map-test-utils": "workspace:^",
         "@open-pioneer/test-utils": "catalog:",
-        "@types/uuid": "catalog:",
         "openlayers-base-packages": "workspace:*"
     },
     "publishConfig": {
