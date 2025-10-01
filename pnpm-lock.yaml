@@ -142,8 +142,8 @@ catalogs:
       specifier: ^4.7.8
       version: 4.7.8
     happy-dom:
-      specifier: ^18.0.1
-      version: 18.0.1
+      specifier: ^19.0.2
+      version: 19.0.2
     html2canvas:
       specifier: ^1.4.1
       version: 1.4.1
@@ -338,7 +338,7 @@ importers:
         version: 4.7.8
       happy-dom:
         specifier: 'catalog:'
-        version: 18.0.1
+        version: 19.0.2
       husky:
         specifier: 'catalog:'
         version: 9.1.7
@@ -386,7 +386,7 @@ importers:
         version: 1.8.1(eslint@9.35.0)(vite@7.1.5(@types/node@20.19.13)(sass@1.92.1)(tsx@4.20.5)(yaml@2.8.1))
       vitest:
         specifier: 'catalog:'
-        version: 3.2.4(@types/node@20.19.13)(happy-dom@18.0.1)(jsdom@26.1.0)(sass@1.92.1)(tsx@4.20.5)(yaml@2.8.1)
+        version: 3.2.4(@types/node@20.19.13)(happy-dom@19.0.2)(jsdom@26.1.0)(sass@1.92.1)(tsx@4.20.5)(yaml@2.8.1)
       zx:
         specifier: 'catalog:'
         version: 8.8.1
@@ -4161,8 +4161,8 @@ packages:
     engines: {node: '>=0.4.7'}
     hasBin: true
 
-  happy-dom@18.0.1:
-    resolution: {integrity: sha512-qn+rKOW7KWpVTtgIUi6RVmTBZJSe2k0Db0vh1f7CWrWclkkc7/Q+FrOfkZIb2eiErLyqu5AXEzE7XthO9JVxRA==}
+  happy-dom@19.0.2:
+    resolution: {integrity: sha512-831CLbgDyjRbd2lApHZFsBDe56onuFcjsCBPodzWpzedTpeDr8CGZjs7iEIdNW1DVwSFRecfwzLpVyGBPamwGA==}
     engines: {node: '>=20.0.0'}
 
   has-bigints@1.1.0:
@@ -8767,7 +8767,7 @@ snapshots:
     optionalDependencies:
       uglify-js: 3.19.3
 
-  happy-dom@18.0.1:
+  happy-dom@19.0.2:
     dependencies:
       '@types/node': 20.19.13
       '@types/whatwg-mimetype': 3.0.2
@@ -10292,7 +10292,7 @@ snapshots:
     optionalDependencies:
       vite: 7.1.5(@types/node@20.19.13)(sass@1.92.1)(tsx@4.20.5)(yaml@2.8.1)
 
-  vitest@3.2.4(@types/node@20.19.13)(happy-dom@18.0.1)(jsdom@26.1.0)(sass@1.92.1)(tsx@4.20.5)(yaml@2.8.1):
+  vitest@3.2.4(@types/node@20.19.13)(happy-dom@19.0.2)(jsdom@26.1.0)(sass@1.92.1)(tsx@4.20.5)(yaml@2.8.1):
     dependencies:
       '@types/chai': 5.2.2
       '@vitest/expect': 3.2.4
@@ -10319,7 +10319,7 @@ snapshots:
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 20.19.13
-      happy-dom: 18.0.1
+      happy-dom: 19.0.2
       jsdom: 26.1.0
     transitivePeerDependencies:
       - jiti
