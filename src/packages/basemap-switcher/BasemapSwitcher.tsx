@@ -7,7 +7,7 @@ import { CommonComponentProps, useCommonComponentProps } from "@open-pioneer/rea
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { useIntl } from "open-pioneer:react-hooks";
 import { FC } from "react";
-import { LuTriangleAlert } from "react-icons/lu";
+import { LuTriangleAlert, LuInfo } from "react-icons/lu";
 
 /*
     Exported for tests. Feels a bit hacky but should be fine for now.
@@ -88,7 +88,7 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
                 value: layer.id,
                 layer: layer,
                 label: layer.title,
-                disabled: layer.loadState == "error"
+                disabled: layer.loadState == "error" || !layer.visibleInScale
             };
         });
 
@@ -148,6 +148,7 @@ export const BasemapSwitcher: FC<BasemapSwitcherProps> = (props) => {
 function BasemapItem(props: { item: SelectOption }) {
     const intl = useIntl();
     const notAvailableLabel = intl.formatMessage({ id: "layerNotAvailable" });
+    const notVisibleLabel = intl.formatMessage({ id: "layerNotVisible" });
     const item = props.item;
     return (
         <Select.Item
@@ -171,6 +172,23 @@ function BasemapItem(props: { item: SelectOption }) {
                                 color={"red"}
                                 aria-label={intl.formatMessage({
                                     id: "layerNotAvailable"
+                                })}
+                            />
+                        </span>
+                    </Tooltip>
+                </Box>
+            )}
+            {!item.layer?.visibleInScale && item.layer?.loadState !== "error" && (
+                <Box ml={2}>
+                    <Tooltip
+                        content={notVisibleLabel}
+                        aria-label={notVisibleLabel}
+                        positioning={{ placement: "right" }}
+                    >
+                        <span>
+                            <LuInfo
+                                aria-label={intl.formatMessage({
+                                    id: "layerNotVisible"
                                 })}
                             />
                         </span>
