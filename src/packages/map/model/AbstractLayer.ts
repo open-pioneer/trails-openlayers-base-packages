@@ -83,6 +83,13 @@ export abstract class AbstractLayer<AdditionalEvents = {}>
         this.handle = undefined;
 
         this.__setVisible(config.visible ?? true); // apply initial visibility
+
+        if (config.maxResolution) {
+            this.#olLayer.setMaxResolution(config.maxResolution);
+        }
+        if (config.minResolution) {
+            this.#olLayer.setMinResolution(config.minResolution);
+        }
     }
 
     abstract readonly type: "simple" | "wms" | "wmts" | "group";

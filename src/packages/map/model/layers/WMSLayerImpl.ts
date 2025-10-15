@@ -90,12 +90,7 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
             deps,
             internalTag
         );
-        if (this.maxResolution) {
-            layer.setMaxResolution(this.maxResolution);
-        }
-        if (this.minResolution) {
-            layer.setMinResolution(this.minResolution);
-        }
+
         const source = new ImageWMS({
             ...config.sourceOptions,
             url: config.url,
