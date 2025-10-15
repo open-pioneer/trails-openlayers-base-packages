@@ -39,6 +39,10 @@ export interface WMSLayerConfig extends LayerConfig {
      * Note that this will disable some features of the WMS layer: for example, the legend URL will not be available.
      */
     fetchCapabilities?: boolean;
+    //TODO add comments
+    minResolution?: number;
+
+    maxResolution?: number;
 }
 
 /**
@@ -64,6 +68,8 @@ export interface WMSLayer extends LayerBaseType {
 
     /** The URL of the WMS service that was used during layer construction. */
     readonly url: string;
+    //TODO add comments
+    readonly visibleInScale?: boolean;
 }
 
 /** Represents a WMS sublayer */

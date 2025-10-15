@@ -44,6 +44,8 @@ export interface GroupLayer extends LayerBaseType {
     readonly olLayer: Group;
 
     readonly sublayers: undefined;
+    //TODO add comments
+    readonly visibleInScale?: boolean;
 }
 
 /**
