@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: Apache-2.0
 import { LegendItemAttributes } from "@open-pioneer/legend";
 import {
-    GroupLayer,
     LayerFactory,
     MapConfig,
     MapConfigProvider,
@@ -134,8 +133,6 @@ function createAdminAreasLayer(layerFactory: LayerFactory) {
         title: "Verwaltungsgebiete",
         id: "verwaltungsgebiete",
         visible: false,
-        minResolution: 300,
-        maxResolution: 500,
         url: "https://www.wms.nrw.de/geobasis/wms_nw_dvg",
         attributes: {
             legend: {
