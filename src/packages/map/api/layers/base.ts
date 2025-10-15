@@ -256,6 +256,9 @@ export interface LayerBaseType<AdditionalEvents = {}> extends AnyLayerBaseType<A
      * Only one base layer can be visible at a time.
      */
     readonly isBaseLayer: boolean;
+
+    // TODO add comments
+    readonly visibleInScale: boolean;
 }
 
 /**
