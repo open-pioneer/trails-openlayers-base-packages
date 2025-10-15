@@ -1,6 +1,13 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { reactive, Reactive, ReadonlyReactive, synchronized } from "@conterra/reactivity-core";
+import {
+    CleanupHandle,
+    reactive,
+    Reactive,
+    ReadonlyReactive,
+    synchronized,
+    watchValue
+} from "@conterra/reactivity-core";
 import { createLogger, destroyResource, Resource } from "@open-pioneer/core";
 import { EventsKey } from "ol/events";
 import OlBaseLayer from "ol/layer/Base";
@@ -55,6 +62,11 @@ export abstract class AbstractLayer extends AbstractLayerBase {
 
     #stateWatchResource: Resource | undefined;
 
+    #minResolution?: number;
+    #maxResolution?: number;
+    #visibleInScale: Reactive<boolean>;
+    private handle: CleanupHandle | undefined;
+
     constructor(
         config: SimpleLayerConfig,
         deps?: LayerDependencies,
@@ -73,6 +85,10 @@ export abstract class AbstractLayer extends AbstractLayerBase {
             }
         );
         this.#loadState = reactive(getSourceState(getSource(this.#olLayer)));
+        this.#minResolution = config.minResolution;
+        this.#maxResolution = config.maxResolution;
+        this.#visibleInScale = reactive(true);
+        this.handle = undefined;
 
         this[SET_VISIBLE](config.visible ?? true); // apply initial visibility
     }
@@ -119,6 +135,18 @@ export abstract class AbstractLayer extends AbstractLayerBase {
         return this.#loadState.value;
     }
 
+    get minResolution() {
+        return this.#minResolution;
+    }
+
+    get maxResolution() {
+        return this.#maxResolution;
+    }
+
+    get visibleInScale() {
+        return this.#visibleInScale.value;
+    }
+
     /**
      * Called by the map model when the layer is added to the map.
      *
@@ -138,6 +166,20 @@ export abstract class AbstractLayer extends AbstractLayerBase {
             this.#stateWatchResource = stateWatchResource;
             this.#loadState.value = initialState;
         }
+        //TODO move the impl. maybe
+        this.handle = watchValue(
+            () => map.resolution,
+            (res) => {
+                this.#visibleInScale.value = doVisibleCheck(
+                    this.minResolution,
+                    this.maxResolution,
+                    res!
+                );
+            },
+            {
+                immediate: true
+            }
+        );
     }
 
     override setVisible(newVisibility: boolean): void {
@@ -309,4 +351,14 @@ function getSourceState(olSource: OlSource | undefined) {
         case "error":
             return "error";
     }
+}
+function doVisibleCheck(
+    minResolution: number | undefined,
+    maxResolution: number | undefined,
+    mapResolution: number
+): boolean {
+    const minRes = minResolution ? minResolution : 0;
+    const maxRes = maxResolution ? maxResolution : Infinity;
+
+    return mapResolution >= minRes && mapResolution <= maxRes;
 }

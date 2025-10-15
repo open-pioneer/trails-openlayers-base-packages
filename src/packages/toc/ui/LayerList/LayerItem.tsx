@@ -11,7 +11,7 @@ import {
 } from "@chakra-ui/react";
 import { Checkbox } from "@open-pioneer/chakra-snippets/checkbox";
 import { Tooltip } from "@open-pioneer/chakra-snippets/tooltip";
-import { AnyLayer } from "@open-pioneer/map";
+import { AnyLayer, isSublayer } from "@open-pioneer/map";
 import { useReactiveSnapshot } from "@open-pioneer/reactivity";
 import { PackageIntl } from "@open-pioneer/runtime";
 import classNames from "classnames";
@@ -33,6 +33,7 @@ import { displayItemForLayer } from "../../utils/displayLayer";
  */
 export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): ReactNode {
     const { layer } = props;
+
     const intl = useIntl();
     const display = useReactiveSnapshot(() => displayItemForLayer(layer), [layer]);
     const [tocItem, _tocModel, tocOptions, tocItemElemRef] = useTocItem(layer, display);
@@ -42,6 +43,13 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
     const layerGroupId = useId();
     const isAvailable = useLoadState(layer) !== "error";
     const listMode = useListMode(layer)?.listMode;
+
+    const { visibleInScale } = useReactiveSnapshot(() => {
+        return {
+            visibleInScale: hasVisibleProp(layer)
+        };
+    }, [layer]);
+
     const notAvailableLabel = intl.formatMessage({ id: "layerNotAvailable" });
     const { title, description, isVisible, allChildrenHidden } = useReactiveSnapshot(() => {
         return {
@@ -94,9 +102,11 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
                     // Keyboard navigation jumps only to Checkboxes and uses the texts inside this DOM node.
                     // The aria-labels of Tooltip and Icon is ignored by screen reader because they are no child element of the checkbox.
                     // To consider the notAvailableLabel, an aria-label at the checkbox is necessary.
-                    aria-label={title + (!isAvailable ? " " + notAvailableLabel : "")}
+                    aria-label={
+                        title + (!isAvailable || !visibleInScale ? " " + notAvailableLabel : "")
+                    }
                     checked={isVisible}
-                    disabled={!isAvailable}
+                    disabled={!isAvailable || !visibleInScale}
                     onCheckedChange={(event) =>
                         updateLayerVisibility(
                             layer,
@@ -258,3 +268,12 @@ function hasShownChildren(layer: AnyLayer): boolean {
 }
 
 
+
+function hasVisibleProp(layer: AnyLayer) {
+    const target =
+        (isSublayer(layer) || layer.parent?.type === "group") && layer.parent
+            ? layer.parent
+            : layer;
+
+    return "visibleInScale" in target ? target.visibleInScale : true;
+}
