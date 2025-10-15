@@ -17,7 +17,7 @@ import { PackageIntl } from "@open-pioneer/runtime";
 import classNames from "classnames";
 import { useIntl } from "open-pioneer:react-hooks";
 import { memo, ReactNode, useEffect, useId, useMemo, useRef } from "react";
-import { LuTriangleAlert, LuChevronDown, LuChevronRight } from "react-icons/lu";
+import { LuTriangleAlert, LuChevronDown, LuChevronRight, LuInfo } from "react-icons/lu";
 import { TocItemImpl, useTocModel } from "../../model/";
 import { slug } from "../../utils/slug";
 import { useChildLayers, useLoadState } from "./hooks";
@@ -51,6 +51,7 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
     }, [layer]);
 
     const notAvailableLabel = intl.formatMessage({ id: "layerNotAvailable" });
+    const notVisibleLabel = intl.formatMessage({ id: "layerNotVisible" });
     const { title, description, isVisible, allChildrenHidden } = useReactiveSnapshot(() => {
         return {
             title: layer.title,
@@ -129,6 +130,21 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
                                 className="toc-layer-item-content-icon"
                                 color={"red"}
                                 aria-label={notAvailableLabel}
+                            />
+                        </span>
+                    </Tooltip>
+                )}
+                {!visibleInScale && isAvailable && (
+                    <Tooltip
+                        content={notVisibleLabel}
+                        positioning={{ placement: "right" }}
+                        openDelay={500}
+                        contentProps={{ className: "toc-layer-item-content-tooltip" }}
+                    >
+                        <span>
+                            <LuInfo
+                                className="toc-layer-item-content-icon"
+                                aria-label={notVisibleLabel}
                             />
                         </span>
                     </Tooltip>
