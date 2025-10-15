@@ -20,7 +20,7 @@ import { memo, ReactNode, useEffect, useId, useMemo, useRef } from "react";
 import { LuTriangleAlert, LuChevronDown, LuChevronRight, LuInfo } from "react-icons/lu";
 import { TocItemImpl, useTocModel } from "../../model/";
 import { slug } from "../../utils/slug";
-import { useChildLayers, useLoadState } from "./hooks";
+import { useChildLayers, useLoadState, useVisibleInScale } from "./hooks";
 import { LayerItemMenu } from "./LayerItemMenu";
 import { LayerList } from "./LayerList";
 import { LayerTocAttributes } from "../Toc";
@@ -43,12 +43,7 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
     const layerGroupId = useId();
     const isAvailable = useLoadState(layer) !== "error";
     const listMode = useListMode(layer)?.listMode;
-
-    const { visibleInScale } = useReactiveSnapshot(() => {
-        return {
-            visibleInScale: hasVisibleProp(layer)
-        };
-    }, [layer]);
+    const visibleInScale = useVisibleInScale(layer);
 
     const notAvailableLabel = intl.formatMessage({ id: "layerNotAvailable" });
     const notVisibleLabel = intl.formatMessage({ id: "layerNotVisible" });
@@ -284,12 +279,3 @@ function hasShownChildren(layer: AnyLayer): boolean {
 }
 
 
-
-function hasVisibleProp(layer: AnyLayer) {
-    const target =
-        (isSublayer(layer) || layer.parent?.type === "group") && layer.parent
-            ? layer.parent
-            : layer;
-
-    return "visibleInScale" in target ? target.visibleInScale : true;
-}

@@ -39,3 +39,18 @@ export function useLoadState(layer: AnyLayer): string {
         return target.loadState;
     }, [layer]);
 }
+
+/** Returns the layers current visibility. */
+export function useVisibleInScale(layer: AnyLayer): boolean {
+    return useReactiveSnapshot(() => {
+        // for sublayers, use the state of the parent
+        const target = isSublayer(layer) ? layer.parentLayer : layer;
+        /* TODO
+            consider group layers: layers inherit minResolution/maxResolution of parent group layer
+            what if layer and group layer both have minResolution/maxResolution? which one has higher priority?
+            || layer.parentLayer?.type === "group"
+         */
+
+        return target.visibleInScale;
+    }, [layer]);
+}
