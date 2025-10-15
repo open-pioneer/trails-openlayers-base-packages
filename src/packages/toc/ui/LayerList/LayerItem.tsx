@@ -99,7 +99,12 @@ export const LayerItem = memo(function LayerItem(props: { layer: AnyLayer }): Re
                     // The aria-labels of Tooltip and Icon is ignored by screen reader because they are no child element of the checkbox.
                     // To consider the notAvailableLabel, an aria-label at the checkbox is necessary.
                     aria-label={
-                        title + (!isAvailable || !visibleInScale ? " " + notAvailableLabel : "")
+                        title +
+                        (!isAvailable
+                            ? " " + notAvailableLabel
+                            : !visibleInScale
+                              ? " " + notVisibleLabel
+                              : "")
                     }
                     checked={isVisible}
                     disabled={!isAvailable || !visibleInScale}
