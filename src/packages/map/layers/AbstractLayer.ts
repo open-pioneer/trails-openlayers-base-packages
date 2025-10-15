@@ -177,12 +177,13 @@ export abstract class AbstractLayer extends AbstractLayerBase {
         //TODO move the impl. maybe
         this.handle = watchValue(
             () => map.resolution,
-            (res) => {
-                this.#visibleInScale.value = doVisibleCheck(
-                    this.minResolution,
-                    this.maxResolution,
-                    res!
-                );
+            (mapRes) => {
+                if (!mapRes) return;
+
+                const minRes = this.minResolution ? this.minResolution : 0;
+                const maxRes = this.maxResolution ? this.maxResolution : Infinity;
+
+                this.#visibleInScale.value = mapRes >= minRes && mapRes <= maxRes;
             },
             {
                 immediate: true
@@ -359,14 +360,4 @@ function getSourceState(olSource: OlSource | undefined) {
         case "error":
             return "error";
     }
-}
-function doVisibleCheck(
-    minResolution: number | undefined,
-    maxResolution: number | undefined,
-    mapResolution: number
-): boolean {
-    const minRes = minResolution ? minResolution : 0;
-    const maxRes = maxResolution ? maxResolution : Infinity;
-
-    return mapResolution >= minRes && mapResolution <= maxRes;
 }
