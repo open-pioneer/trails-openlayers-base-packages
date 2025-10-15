@@ -39,10 +39,6 @@ export interface WMSLayerConfig extends LayerConfig {
      * Note that this will disable some features of the WMS layer: for example, the legend URL will not be available.
      */
     fetchCapabilities?: boolean;
-    //TODO add comments
-    minResolution?: number;
-
-    maxResolution?: number;
 }
 
 /**

@@ -14,9 +14,6 @@ import type { LayerFactory } from "../../model/layers/LayerFactory";
  * Simple layers are wrappers around a custom OpenLayers layer.
  */
 export interface SimpleLayerConfig extends LayerConfig {
-    //TODO add comments
-    minResolution?: number;
-    maxResolution?: number;
     /**
      * The raw OpenLayers instance.
      */
