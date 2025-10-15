@@ -91,6 +91,13 @@ export abstract class AbstractLayer extends AbstractLayerBase {
         this.handle = undefined;
 
         this[SET_VISIBLE](config.visible ?? true); // apply initial visibility
+
+        if (config.maxResolution) {
+            this.#olLayer.setMaxResolution(config.maxResolution);
+        }
+        if (config.minResolution) {
+            this.#olLayer.setMinResolution(config.minResolution);
+        }
     }
 
     override destroy() {
@@ -100,6 +107,7 @@ export abstract class AbstractLayer extends AbstractLayerBase {
 
         this.#stateWatchResource = destroyResource(this.#stateWatchResource);
         this.olLayer.dispose();
+        this.handle?.destroy();
         super.destroy();
     }
 
