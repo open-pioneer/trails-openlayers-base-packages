@@ -1,6 +1,13 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { reactive, Reactive, ReadonlyReactive, synchronized } from "@conterra/reactivity-core";
+import {
+    CleanupHandle,
+    reactive,
+    Reactive,
+    ReadonlyReactive,
+    synchronized,
+    watchValue
+} from "@conterra/reactivity-core";
 import { createLogger, destroyResource, Resource } from "@open-pioneer/core";
 import { unByKey } from "ol/Observable";
 import { EventsKey } from "ol/events";
@@ -47,6 +54,11 @@ export abstract class AbstractLayer<AdditionalEvents = {}>
 
     #stateWatchResource: Resource | undefined;
 
+    #minResolution?: number;
+    #maxResolution?: number;
+    #visibleInScale: Reactive<boolean>;
+    private handle: CleanupHandle | undefined;
+
     constructor(
         config: SimpleLayerConfig,
         deps?: LayerDependencies,
@@ -65,8 +77,19 @@ export abstract class AbstractLayer<AdditionalEvents = {}>
             }
         );
         this.#loadState = reactive(getSourceState(getSource(this.#olLayer)));
+        this.#minResolution = config.minResolution;
+        this.#maxResolution = config.maxResolution;
+        this.#visibleInScale = reactive(true);
+        this.handle = undefined;
 
         this.__setVisible(config.visible ?? true); // apply initial visibility
+
+        if (config.maxResolution) {
+            this.#olLayer.setMaxResolution(config.maxResolution);
+        }
+        if (config.minResolution) {
+            this.#olLayer.setMinResolution(config.minResolution);
+        }
     }
 
     abstract readonly type: "simple" | "wms" | "wmts" | "group";
@@ -87,6 +110,18 @@ export abstract class AbstractLayer<AdditionalEvents = {}>
         return this.#loadState.value;
     }
 
+    get minResolution() {
+        return this.#minResolution;
+    }
+
+    get maxResolution() {
+        return this.#maxResolution;
+    }
+
+    get visibleInScale() {
+        return this.#visibleInScale.value;
+    }
+
     destroy() {
         if (this.destroyed) {
             return;
@@ -94,6 +129,7 @@ export abstract class AbstractLayer<AdditionalEvents = {}>
 
         this.#stateWatchResource = destroyResource(this.#stateWatchResource);
         this.olLayer.dispose();
+        this.handle?.destroy();
         super.destroy();
     }
 
@@ -114,6 +150,21 @@ export abstract class AbstractLayer<AdditionalEvents = {}>
             this.#stateWatchResource = stateWatchResource;
             this.#loadState.value = initialState;
         }
+        //TODO move the impl. maybe
+        this.handle = watchValue(
+            () => map.resolution,
+            (mapRes) => {
+                if (!mapRes) return;
+
+                const minRes = this.minResolution ? this.minResolution : 0;
+                const maxRes = this.maxResolution ? this.maxResolution : Infinity;
+
+                this.#visibleInScale.value = mapRes >= minRes && mapRes <= maxRes;
+            },
+            {
+                immediate: true
+            }
+        );
     }
 
     setVisible(newVisibility: boolean): void {

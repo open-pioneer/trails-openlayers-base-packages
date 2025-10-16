@@ -226,6 +226,10 @@ export interface LayerConfig extends LayerBaseConfig {
      * or a {@link HealthCheckFunction} performing a custom check and returning the state.
      */
     healthCheck?: string | HealthCheckFunction;
+
+    //TODO add comments
+    minResolution?: number;
+    maxResolution?: number;
 }
 
 /**
@@ -256,6 +260,9 @@ export interface LayerBaseType<AdditionalEvents = {}> extends AnyLayerBaseType<A
      * Only one base layer can be visible at a time.
      */
     readonly isBaseLayer: boolean;
+
+    // TODO add comments
+    readonly visibleInScale: boolean;
 }
 
 /**

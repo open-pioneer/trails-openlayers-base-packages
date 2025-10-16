@@ -81,6 +81,7 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
         }
 
         const layer = new ImageLayer();
+
         super(
             {
                 ...config,
@@ -89,6 +90,7 @@ export class WMSLayerImpl extends AbstractLayer implements WMSLayer {
             deps,
             internalTag
         );
+
         const source = new ImageWMS({
             ...config.sourceOptions,
             url: config.url,
