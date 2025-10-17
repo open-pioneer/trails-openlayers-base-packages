@@ -4,9 +4,9 @@
 // UI Components
 export { MapAnchor, type MapAnchorPosition, type MapAnchorProps } from "./ui/MapAnchor";
 export { MapContainer, type MapContainerProps } from "./ui/MapContainer";
+export { DefaultMapProvider } from "./ui/DefaultMapProvider";
 
 // Hooks
-export { DefaultMapProvider } from "./ui/DefaultMapProvider";
 export {
     useMapModel,
     useMapModelValue,

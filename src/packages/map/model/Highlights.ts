@@ -54,8 +54,7 @@ export class Highlights {
     }
 
     /**
-     * Getter for Hightlightlayer
-     * @returns Highlights.olLayer
+     * Returns the layer used for highlights.
      */
     getLayer() {
         return this.olLayer;

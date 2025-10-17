@@ -63,7 +63,7 @@ export interface ZoomOptions {
     buffer?: number;
 }
 
-/** Options supported by the map model's {@link MapModel.highlightAndZoom | zoom | highlightAndZoom} method. */
+/** Options supported by the map model's {@link MapModel.highlightAndZoom | highlightAndZoom} method. */
 export interface HighlightZoomOptions extends HighlightOptions, ZoomOptions {}
 
 /**
@@ -360,7 +360,7 @@ export class MapModel {
     /**
      * Zooms to the given targets.
      */
-    zoom(geometries: DisplayTarget[], options?: HighlightZoomOptions | undefined): void {
+    zoom(geometries: DisplayTarget[], options?: ZoomOptions | undefined): void {
         this.#highlights.zoomToHighlight(geometries, options);
     }
 
