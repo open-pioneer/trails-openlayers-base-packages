@@ -1,0 +1,75 @@
+// SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
+// SPDX-License-Identifier: Apache-2.0
+import { getRecursiveLayers } from "../../model/getRecursiveLayers";
+import { LayerRetrievalOptions, RecursiveRetrievalOptions } from "../../shared";
+import { Sublayer } from "../unions";
+import { ChildrenCollection } from "./ChildrenCollection";
+import { assertInternalConstructor, GET_RAW_SUBLAYERS, InternalConstructorTag } from "./internals";
+import { SublayerBaseType } from "./SublayerBaseType";
+
+// Imported for typedoc
+// eslint-disable-next-line unused-imports/no-unused-imports
+import { Layer } from "../unions";
+
+/**
+ * Contains the sublayers that belong to a {@link Layer} or {@link Sublayer}.
+ */
+// NOTE: adding / removing sublayers currently not supported
+export class SublayersCollection<SublayerType extends SublayerBaseType>
+    implements ChildrenCollection<SublayerType>
+{
+    #sublayers: SublayerType[];
+
+    constructor(sublayers: SublayerType[], tag: InternalConstructorTag) {
+        assertInternalConstructor(tag);
+        this.#sublayers = sublayers;
+    }
+
+    destroy() {
+        for (const layer of this.#sublayers) {
+            layer.destroy();
+        }
+        this.#sublayers = [];
+    }
+
+    // Generic method name for consistent interface
+    getItems(options?: LayerRetrievalOptions): SublayerType[] {
+        return this.getSublayers(options);
+    }
+
+    /**
+     * Returns the child sublayers in this collection.
+     */
+    getSublayers(_options?: LayerRetrievalOptions | undefined): SublayerType[] {
+        // NOTE: options are ignored because layers are always ordered at this time.
+        return this.#sublayers.slice();
+    }
+
+    /**
+     * Returns a list of all layers in the collection, including all children (recursively).
+     *
+     * > Note: This includes base layers by default (see `options.filter`).
+     * > Use the `"base"` or `"operational"` short hand values to filter by base layer or operational layers.
+     * >
+     * > If the collection contains many, deeply nested sublayers, this function could potentially be expensive.
+     */
+    getRecursiveLayers(_options?: RecursiveRetrievalOptions): Sublayer[] {
+        return getRecursiveLayers({
+            // NOTE: This is safe (but not elegant) because this class does not know about the entire type hierarchy (unions).
+            // _Might_ be possible to refactor this class to use the Sublayer union instead in the generic type parameters,
+            // but then we might also introduce a cycle in the type definitions, which could be bad (?).
+            from: this as unknown as SublayersCollection<Sublayer>,
+            sortByDisplayOrder: _options?.sortByDisplayOrder,
+            filter: _options?.filter
+        }) as Sublayer[]; // we know for sure that all children are sublayers: sublayers do not point to layers
+    }
+
+    /**
+     * Returns a reference to the internal sublayers array.
+     *
+     * NOTE: Do not modify directly!
+     */
+    [GET_RAW_SUBLAYERS](): SublayerType[] {
+        return this.#sublayers;
+    }
+}

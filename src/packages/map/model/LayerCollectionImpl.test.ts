@@ -5,6 +5,8 @@
  * @vitest-environment jsdom
  */
 import { syncEffect, syncWatch } from "@conterra/reactivity-core";
+import { onSync } from "@conterra/reactivity-events";
+import { throwAbortError } from "@open-pioneer/core";
 import { HttpService } from "@open-pioneer/http";
 import { createTestLayer, createTestOlLayer } from "@open-pioneer/map-test-utils";
 import { createIntl } from "@open-pioneer/test-utils/vanilla";
@@ -14,17 +16,18 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { Group } from "ol/layer";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { AnyLayer, Layer, MapConfig, SimpleLayer, WMSLayer, WMTSLayer } from "../api";
-import { GroupLayer } from "../api/layers/GroupLayer";
+import { GroupLayer } from "../layers/GroupLayer";
+import { SimpleLayer } from "../layers/SimpleLayer";
+import { AnyLayer, Layer } from "../layers/unions";
+import { WMSLayer } from "../layers/WMSLayer";
+import { WMTSLayer } from "../layers/WMTSLayer";
 import { createMapModel } from "./createMapModel";
-import { SimpleLayerImpl } from "./layers/SimpleLayerImpl";
-import { WMSLayerImpl } from "./layers/WMSLayerImpl";
-import { MapModelImpl } from "./MapModelImpl";
-import { throwAbortError } from "@open-pioneer/core";
+import { MapConfig } from "./MapConfig";
+import { MapModel } from "./MapModel";
 
 const THIS_DIR = dirname(fileURLToPath(import.meta.url));
 const WMTS_CAPAS = readFileSync(
-    resolve(THIS_DIR, "./layers/test-data/SimpleWMSCapas.xml"),
+    resolve(THIS_DIR, "../layers/wms/test-data/SimpleWMSCapas.xml"),
     "utf-8"
 );
 
@@ -32,7 +35,7 @@ const MOCKED_HTTP_SERVICE = {
     fetch: vi.fn()
 };
 
-let model: MapModelImpl | undefined;
+let model: MapModel | undefined;
 afterEach(() => {
     vi.restoreAllMocks();
     model?.destroy();
@@ -206,13 +209,13 @@ it("supports adding custom layer instances", async () => {
     });
 
     const l1 = model.layers.getLayerById("l1");
-    expect(l1).toBeInstanceOf(SimpleLayerImpl);
+    expect(l1).toBeInstanceOf(SimpleLayer);
 
     const l2 = model.layers.getLayerById("l2");
-    expect(l2).toBeInstanceOf(SimpleLayerImpl);
+    expect(l2).toBeInstanceOf(SimpleLayer);
 
     const l3 = model.layers.getLayerById("l3");
-    expect(l3).toBeInstanceOf(WMSLayerImpl);
+    expect(l3).toBeInstanceOf(WMSLayer);
 });
 
 it("destroys child layers when parent group layer is removed", async () => {
@@ -228,11 +231,12 @@ it("destroys child layers when parent group layer is removed", async () => {
         title: "group test",
         layers: [groupMember]
     });
+
     //register dummy event handlers
     const groupFn = vi.fn();
     const memberFn = vi.fn();
-    groupMember.on("destroy", () => memberFn());
-    groupLayer.on("destroy", () => groupFn());
+    onSync(groupMember.destroyed, memberFn);
+    onSync(groupLayer.destroyed, groupFn);
 
     model = await create("foo", {
         layers: [groupLayer]
@@ -720,10 +724,10 @@ describe("adding and removing layers", () => {
         });
 
         expect(ids).toEqual(["l-1"]);
-        expect(layer.destroyed).toBe(false);
+        expect(layer.isDestroyed).toBe(false);
 
         model.layers.removeLayerById("l-1");
-        expect(layer.destroyed).toBe(true); // destroyed (backwards compat)
+        expect(layer.isDestroyed).toBe(true); // destroyed (backwards compat)
         expect(ids).toEqual(["l-1", undefined]);
     });
 
@@ -747,12 +751,12 @@ describe("adding and removing layers", () => {
 
         const result = model.layers.removeLayer("l-1")!;
         expect(result).toBe(layer);
-        expect(layer.destroyed).toBe(false); // not destroyed
+        expect(layer.isDestroyed).toBe(false); // not destroyed
         expect(ids).toEqual(["l-1", undefined]);
 
         model.destroy();
         // still not destroyed since layer was no longer owned by the map
-        expect(layer.destroyed).toBe(false);
+        expect(layer.isDestroyed).toBe(false);
     });
 
     it("always assigns the highest zIndex to a layer inserted at topmost", async () => {
@@ -903,8 +907,8 @@ describe("base layers", () => {
         });
 
         const layers = model.layers;
-        const b1 = layers.getLayerById("b-1")! as SimpleLayerImpl;
-        const b2 = layers.getLayerById("b-2")! as SimpleLayerImpl;
+        const b1 = layers.getLayerById("b-1")! as SimpleLayer;
+        const b2 = layers.getLayerById("b-2")! as SimpleLayer;
 
         let events = 0;
         syncWatch(
@@ -1190,7 +1194,7 @@ function expectNoMap(layers: AnyLayer[] | undefined) {
     }
 }
 
-function expectMap(layers: AnyLayer[] | undefined, expectedMap: MapModelImpl) {
+function expectMap(layers: AnyLayer[] | undefined, expectedMap: MapModel) {
     if (!layers) {
         return;
     }

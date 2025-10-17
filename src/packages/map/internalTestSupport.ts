@@ -8,7 +8,8 @@
  *
  * @internal
  */
-export { MapRegistryImpl } from "./MapRegistryImpl";
+export { MapRegistry } from "./MapRegistry";
+
 /**
  * Exported for the `@open-pioneer/map-test-utils` package.
  *
@@ -16,4 +17,4 @@ export { MapRegistryImpl } from "./MapRegistryImpl";
  *
  * @internal
  */
-export { LayerFactory } from "./model/layers/LayerFactory";
+export { LayerFactory } from "./LayerFactory";

@@ -28,7 +28,8 @@
         "react-dom": "catalog:",
         "react-use": "catalog:",
         "uuid": "catalog:",
-        "@conterra/reactivity-core": "catalog:"
+        "@conterra/reactivity-core": "catalog:",
+        "@conterra/reactivity-events": "catalog:"
     },
     "devDependencies": {
         "@open-pioneer/test-utils": "catalog:",
