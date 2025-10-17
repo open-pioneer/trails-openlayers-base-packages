@@ -40,10 +40,10 @@ export abstract class AbstractLayerBase {
     #description: Reactive<string>;
     #attributesMap = reactiveMap<string | symbol, unknown>();
     #attributes: ReadonlyReactive<Record<string | symbol, unknown>>;
-    #destroyed = reactive(false);
+    #isDestroyed = reactive(false);
     #internal: Reactive<boolean>;
 
-    #destroyEvent = emitter();
+    #destroyed = emitter();
 
     constructor(config: AbstractLayerBaseOptions) {
         this.#id = config.id ?? uuid4v();
@@ -66,28 +66,28 @@ export abstract class AbstractLayerBase {
      * > when that map is being destroyed.
      */
     destroy() {
-        if (this.#destroyed.value) {
+        if (this.#isDestroyed.value) {
             return;
         }
 
         batch(() => {
-            this.#destroyed.value = true;
+            this.#isDestroyed.value = true;
             this.sublayers?.destroy();
             this.layers?.destroy();
-            emit(this.#destroyEvent);
+            emit(this.#destroyed);
         });
     }
 
     /** True if the layer has been destroyed. */
-    get destroyed() {
-        return this.#destroyed.value;
+    get isDestroyed() {
+        return this.#isDestroyed.value;
     }
 
     /**
      * Emits an event when the layer is destroyed.
      */
-    get destroyEvent(): EventSource<void> {
-        return this.#destroyEvent;
+    get destroyed(): EventSource<void> {
+        return this.#destroyed;
     }
 
     /**

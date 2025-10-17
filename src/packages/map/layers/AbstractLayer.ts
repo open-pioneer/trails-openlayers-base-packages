@@ -72,7 +72,7 @@ export abstract class AbstractLayer extends AbstractLayerBase {
     }
 
     override destroy() {
-        if (this.destroyed) {
+        if (this.isDestroyed) {
             return;
         }
 

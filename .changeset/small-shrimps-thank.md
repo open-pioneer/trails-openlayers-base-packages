@@ -10,7 +10,7 @@ The destroy event still exists, but is now based on the event system of the reac
 import { on } from "@conterra/reactivity-events";
 
 const layer = ...;
-on(layer.destroyEvent, () => {
+on(layer.destroyed, () => {
     console.debug("layer was destroyed");
 });
 ```

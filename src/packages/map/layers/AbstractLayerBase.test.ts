@@ -23,7 +23,7 @@ it("emits a destroy event when destroyed", async () => {
     });
 
     let destroyed = 0;
-    onSync(layer.destroyEvent, () => {
+    onSync(layer.destroyed, () => {
         destroyed++;
     });
 

@@ -235,8 +235,8 @@ it("destroys child layers when parent group layer is removed", async () => {
     //register dummy event handlers
     const groupFn = vi.fn();
     const memberFn = vi.fn();
-    onSync(groupMember.destroyEvent, memberFn);
-    onSync(groupLayer.destroyEvent, groupFn);
+    onSync(groupMember.destroyed, memberFn);
+    onSync(groupLayer.destroyed, groupFn);
 
     model = await create("foo", {
         layers: [groupLayer]
@@ -724,10 +724,10 @@ describe("adding and removing layers", () => {
         });
 
         expect(ids).toEqual(["l-1"]);
-        expect(layer.destroyed).toBe(false);
+        expect(layer.isDestroyed).toBe(false);
 
         model.layers.removeLayerById("l-1");
-        expect(layer.destroyed).toBe(true); // destroyed (backwards compat)
+        expect(layer.isDestroyed).toBe(true); // destroyed (backwards compat)
         expect(ids).toEqual(["l-1", undefined]);
     });
 
@@ -751,12 +751,12 @@ describe("adding and removing layers", () => {
 
         const result = model.layers.removeLayer("l-1")!;
         expect(result).toBe(layer);
-        expect(layer.destroyed).toBe(false); // not destroyed
+        expect(layer.isDestroyed).toBe(false); // not destroyed
         expect(ids).toEqual(["l-1", undefined]);
 
         model.destroy();
         // still not destroyed since layer was no longer owned by the map
-        expect(layer.destroyed).toBe(false);
+        expect(layer.isDestroyed).toBe(false);
     });
 
     it("always assigns the highest zIndex to a layer inserted at topmost", async () => {
