@@ -4,6 +4,7 @@ import { get as getProjection } from "ol/proj";
 import { afterEach, expect, it, vi } from "vitest";
 import { OgcFeatureSearchSource, SearchResponse } from "./OgcFeatureSearchSource";
 import { OgcFeatureSearchSourceOptions } from "./api";
+import { MapModel } from "@open-pioneer/map";
 
 const mockedFetch = vi.fn();
 
@@ -268,10 +269,19 @@ function setup(options?: Partial<OgcFeatureSearchSourceOptions>) {
     const search = (input: string, maxResults = 123) => {
         const controller = new AbortController();
         const projection = getProjection("EPSG:4326")!;
+        const mapModel = {
+            get projection() {
+                if (!projection) {
+                    throw new Error("mocked map projection is null");
+                }
+                return projection;
+            }
+        } satisfies Partial<MapModel> as MapModel;
         return source.search(input, {
             mapProjection: projection,
             maxResults: maxResults,
-            signal: controller.signal
+            signal: controller.signal,
+            map: mapModel
         });
     };
 

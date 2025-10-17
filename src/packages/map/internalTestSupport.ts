@@ -8,7 +8,7 @@
  *
  * @internal
  */
-export { MapRegistry as MapRegistryImpl } from "./MapRegistry";
+export { MapRegistry } from "./MapRegistry";
 
 /**
  * Exported for the `@open-pioneer/map-test-utils` package.

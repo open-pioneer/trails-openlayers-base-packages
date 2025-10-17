@@ -65,6 +65,7 @@ export class WMTSLayer extends AbstractLayer {
     #legend = reactive<string | undefined>();
 
     #loadStarted = false;
+
     readonly #abortController = new AbortController();
 
     /**
@@ -180,6 +181,7 @@ export class WMTSLayer extends AbstractLayer {
             })
             .catch((error) => {
                 if (isAbortError(error)) {
+                    LOG.debug(`Layer ${this.name} has been destroyed before fetching the data`);
                     LOG.debug(`Layer ${this.name} has been destroyed before fetching the data`);
                     return;
                 }

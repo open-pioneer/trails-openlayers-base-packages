@@ -30,6 +30,8 @@ export type LayerLoadState = "not-loaded" | "loading" | "loaded" | "error";
 /**
  * Represents an operational layer in the map.
  *
+ * These layers always have an associated OpenLayers layer.
+ *
  * Instances of this interface cannot be constructed directly; use a real layer
  * class such as {@link SimpleLayer} instead.
  */

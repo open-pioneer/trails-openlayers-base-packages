@@ -18,7 +18,6 @@ import { Layer } from "../unions";
 export class SublayersCollection<SublayerType extends SublayerBaseType>
     implements ChildrenCollection<SublayerType>
 {
-    /* eslint-enable indent */
     #sublayers: SublayerType[];
 
     constructor(sublayers: SublayerType[], tag: InternalConstructorTag) {

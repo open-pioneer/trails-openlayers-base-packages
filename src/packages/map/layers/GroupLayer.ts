@@ -7,11 +7,11 @@ import { AbstractLayer } from "./AbstractLayer";
 import { LayerConfig } from "./shared/LayerConfig";
 import { InternalConstructorTag, LayerConstructor, LayerDependencies } from "./shared/internals";
 import { Layer } from "./unions";
+import { GroupLayerCollection } from "./group/GroupLayerCollection";
 
 // Import for api docs
 // eslint-disable-next-line unused-imports/no-unused-imports
 import type { LayerFactory } from "../LayerFactory";
-import { GroupLayerCollection } from "./group/GroupLayerCollection";
 
 /**
  * Configuration options to construct a {@link GroupLayer}.

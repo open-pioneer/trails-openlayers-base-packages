@@ -12,6 +12,17 @@ interface References {
 }
 
 /**
+ * Options that can be passed to {@link LayerFactory.create}.
+ *
+ * The `type` option is mandatory and indicates the type of the layer (e.g. `WMSLayer`).
+ * The other options depend on the specific layer type.
+ */
+export type LayerCreateOptions<LayerType extends Layer, Config extends LayerConfig> = {
+    /** The layer type to construct. */
+    type: LayerConstructor<Config, LayerType>;
+} & Config;
+
+/**
  * Creates instances of layer classes.
  *
  * Use the interface `"map.LayerFactory"` to obtain an instance of this service.
@@ -46,10 +57,7 @@ export class LayerFactory {
      * ```
      */
     create<LayerType extends Layer, Config extends LayerConfig>(
-        config: {
-            /** The layer type to construct. */
-            type: LayerConstructor<Config, LayerType>;
-        } & Config
+        config: LayerCreateOptions<LayerType, Config>
     ): LayerType {
         const { type, ...rest } = config;
         if (!type || !(type.prototype instanceof AbstractLayer)) {

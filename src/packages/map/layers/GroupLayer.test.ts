@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
-import { createTestOlLayer } from "@open-pioneer/map-test-utils";
+import { createTestLayer, createTestOlLayer } from "@open-pioneer/map-test-utils";
 import { Group } from "ol/layer";
 import { expect, it } from "vitest";
 import { GroupLayer } from "./GroupLayer";
@@ -9,11 +9,13 @@ import { WMSLayer } from "./WMSLayer";
 
 it("should not have any sublayers", () => {
     const olLayer = createTestOlLayer();
-    const grouplayer = new GroupLayer({
+    const grouplayer = createTestLayer({
+        type: GroupLayer,
         id: "group",
         title: "group test",
         layers: [
-            new SimpleLayer({
+            createTestLayer({
+                type: SimpleLayer,
                 id: "member",
                 title: "group member",
                 olLayer: olLayer
@@ -26,20 +28,24 @@ it("should not have any sublayers", () => {
 it("should create OL group that contains all group members", () => {
     const olLayer1 = createTestOlLayer();
     const olLayer2 = createTestOlLayer();
-    const grouplayer = new GroupLayer({
+    const grouplayer = createTestLayer({
+        type: GroupLayer,
         id: "group",
         title: "group test",
         layers: [
-            new SimpleLayer({
+            createTestLayer({
+                type: SimpleLayer,
                 id: "member",
                 title: "group member",
                 olLayer: olLayer1
             }),
-            new GroupLayer({
+            createTestLayer({
+                type: GroupLayer,
                 id: "subgroup",
                 title: "subgroup test",
                 layers: [
-                    new SimpleLayer({
+                    createTestLayer({
+                        type: SimpleLayer,
                         id: "subgroupmember",
                         title: "subgroup member",
                         olLayer: olLayer2
@@ -56,14 +62,16 @@ it("should create OL group that contains all group members", () => {
 
 it("should set parent of group members to this group layer", () => {
     const olLayer = createTestOlLayer();
-    const child = new SimpleLayer({
+    const child = createTestLayer({
+        type: SimpleLayer,
         id: "member",
         title: "group member",
         olLayer: olLayer
     });
     expect(child.parent).toBeUndefined();
 
-    const grouplayer = new GroupLayer({
+    const grouplayer = createTestLayer({
+        type: GroupLayer,
         id: "group",
         title: "group test",
         layers: [child]
@@ -81,7 +89,8 @@ it("should return all layers of the group layer collection, including child laye
     const olLayer1 = createTestOlLayer();
     const olLayer2 = createTestOlLayer();
 
-    const wmsLayer = new WMSLayer({
+    const wmsLayer = createTestLayer({
+        type: WMSLayer,
         title: "test wms",
         id: "wms",
         sublayers: [
@@ -103,20 +112,24 @@ it("should return all layers of the group layer collection, including child laye
         url: "http://example.com/wms"
     });
 
-    const grouplayer = new GroupLayer({
+    const grouplayer = createTestLayer({
+        type: GroupLayer,
         id: "group",
         title: "group test",
         layers: [
-            new SimpleLayer({
+            createTestLayer({
+                type: SimpleLayer,
                 id: "member",
                 title: "group member",
                 olLayer: olLayer1
             }),
-            new GroupLayer({
+            createTestLayer({
+                type: GroupLayer,
                 id: "subgroup",
                 title: "subgroup test",
                 layers: [
-                    new SimpleLayer({
+                    createTestLayer({
+                        type: SimpleLayer,
                         id: "subgroupmember",
                         title: "subgroup member",
                         olLayer: olLayer2
@@ -143,17 +156,18 @@ it("should return all layers of the group layer collection, including child laye
 
 it("throws when adding the same child twice", () => {
     const olLayer = createTestOlLayer();
-    const child = new SimpleLayer({
+    const child = createTestLayer({
+        type: SimpleLayer,
         id: "member",
         title: "group member",
         olLayer: olLayer
     });
-    expect(
-        () =>
-            new GroupLayer({
-                id: "group",
-                title: "group test",
-                layers: [child, child]
-            })
+    expect(() =>
+        createTestLayer({
+            type: GroupLayer,
+            id: "group",
+            title: "group test",
+            layers: [child, child]
+        })
     ).toThrowErrorMatchingInlineSnapshot(`[Error: Duplicate item added to a unique collection]`);
 });

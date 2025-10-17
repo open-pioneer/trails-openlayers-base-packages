@@ -15,7 +15,7 @@ it("creates layer instances", async () => {
     });
 
     const olLayer = createTestOlLayer();
-    const layer = factory.create({
+    const layer: SimpleLayer = factory.create({
         type: SimpleLayer,
         title: "Test title",
         olLayer

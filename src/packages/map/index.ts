@@ -63,7 +63,7 @@ export {
 export { TOPMOST_LAYER_Z } from "./model/LayerCollectionImpl";
 
 // Services
-export { LayerFactory } from "./LayerFactory";
+export { type LayerFactory, type LayerCreateOptions } from "./LayerFactory";
 export {
     type MapConfigProvider,
     type MapConfigProviderOptions,

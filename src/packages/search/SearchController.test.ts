@@ -169,6 +169,21 @@ it("expect search source to get current map projection in 'options'", async () =
     expect(seenProjections).toEqual(["EPSG:3857"]);
 });
 
+it("expect search source to get map model in 'options'", async () => {
+    let seenMapModel: any;
+    const dummySource: SearchSource = {
+        label: "Dummy Source",
+        async search(_inputValue, options) {
+            seenMapModel = options.map;
+            return [];
+        }
+    };
+    const { controller } = setup([dummySource]);
+    await controller.search("foo");
+    expect(seenMapModel).toBeDefined();
+    expect(seenMapModel).toHaveProperty("projection");
+});
+
 function setup(sources: SearchSource[]) {
     // Map Model mock (just as needed for the controller)
     let mapProjection = getProjection("EPSG:4326");

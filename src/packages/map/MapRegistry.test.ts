@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import { createManualPromise, getErrorChain } from "@open-pioneer/core";
 import {
+    createTestLayer,
     createTestOlLayer,
     setupMap,
     SetupMapResult,
@@ -383,12 +384,14 @@ describe("createMapModel", () => {
     it("should construct a map with the configured layers", async () => {
         const { mapModel } = await createMapSetupWithoutMCP({
             layers: [
-                new SimpleLayer({
+                createTestLayer({
+                    type: SimpleLayer,
                     id: "id1",
                     title: "foo",
                     olLayer: new TileLayer({ source: new OSM() })
                 }),
-                new SimpleLayer({
+                createTestLayer({
+                    type: SimpleLayer,
                     id: "id2",
                     title: "bar",
                     visible: false,

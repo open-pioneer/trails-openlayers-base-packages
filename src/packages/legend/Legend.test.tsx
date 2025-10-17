@@ -2,7 +2,12 @@
 // SPDX-License-Identifier: Apache-2.0
 import { Box, Image, Text } from "@chakra-ui/react";
 import { GroupLayer, SimpleLayer, WMSLayer } from "@open-pioneer/map";
-import { createTestOlLayer, setupMap, SimpleMapOptions } from "@open-pioneer/map-test-utils";
+import {
+    createTestLayer,
+    createTestOlLayer,
+    setupMap,
+    SimpleMapOptions
+} from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { act, render, screen, waitFor } from "@testing-library/react";
 import { readFileSync } from "node:fs";
@@ -203,12 +208,15 @@ it("shows a legend for active basemap if showBaseLayers is configured to be true
 
 it("shows correct legend entries for nested WMSSublayers", async () => {
     const { map, Wrapper } = await setup({
-        layers: [createLayerWithNestedSublayers()],
-        fetch: vi.fn(async () => {
-            return new Response(WMTS_CAPAS, {
-                status: 200
-            });
-        })
+        layers: [
+            createLayerWithNestedSublayers(false, {
+                fetch: vi.fn(async () => {
+                    return new Response(WMTS_CAPAS, {
+                        status: 200
+                    });
+                })
+            })
+        ]
     });
 
     render(<Legend map={map} data-testid="legend" />, { wrapper: Wrapper });
@@ -228,7 +236,8 @@ it("shows correct legend entries for nested WMSSublayers", async () => {
 it("shows legend entries for group layers and their children", async () => {
     const { map, Wrapper } = await setup({
         layers: [
-            new GroupLayer({
+            createTestLayer({
+                type: GroupLayer,
                 title: "Hintergrundkarten",
                 visible: true,
                 attributes: {
@@ -238,7 +247,8 @@ it("shows legend entries for group layers and their children", async () => {
                     } satisfies LegendItemAttributes
                 },
                 layers: [
-                    new SimpleLayer({
+                    createTestLayer({
+                        type: SimpleLayer,
                         title: "Layer 1",
                         id: "layer-1",
                         olLayer: createTestOlLayer(),
@@ -248,15 +258,16 @@ it("shows legend entries for group layers and their children", async () => {
                             }
                         }
                     }),
-                    createLayerWithNestedSublayers()
+                    createLayerWithNestedSublayers(false, {
+                        fetch: vi.fn(async () => {
+                            return new Response(WMTS_CAPAS, {
+                                status: 200
+                            });
+                        })
+                    })
                 ]
             })
-        ],
-        fetch: vi.fn(async () => {
-            return new Response(WMTS_CAPAS, {
-                status: 200
-            });
-        })
+        ]
     });
 
     render(<Legend map={map} data-testid="legend" />, { wrapper: Wrapper });
@@ -276,11 +287,13 @@ it("shows legend entries for group layers and their children", async () => {
 it("shows legend entries for group layers and their children if group layer has no legend", async () => {
     const { map, Wrapper } = await setup({
         layers: [
-            new GroupLayer({
+            createTestLayer({
+                type: GroupLayer,
                 title: "Hintergrundkarten",
                 visible: true,
                 layers: [
-                    new SimpleLayer({
+                    createTestLayer({
+                        type: SimpleLayer,
                         title: "Layer 1",
                         id: "layer-1",
                         olLayer: createTestOlLayer(),
@@ -307,14 +320,16 @@ it("shows legend entries for group layers and their children if group layer has 
 it("does not show child legends if 'hide-children' is used", async () => {
     const { map, Wrapper } = await setup({
         layers: [
-            new GroupLayer({
+            createTestLayer({
+                type: GroupLayer,
                 title: "Hintergrundkarten",
                 visible: true,
                 attributes: {
                     legend: { listMode: "hide-children" } satisfies LegendItemAttributes
                 },
                 layers: [
-                    new SimpleLayer({
+                    createTestLayer({
+                        type: SimpleLayer,
                         title: "Layer 1",
                         id: "layer-1",
                         olLayer: createTestOlLayer(),
@@ -338,14 +353,16 @@ it("does not show child legends if 'hide-children' is used", async () => {
 it("only shows legend entry for group layer and not their children", async () => {
     const { map, Wrapper } = await setup({
         layers: [
-            new GroupLayer({
+            createTestLayer({
+                type: GroupLayer,
                 title: "Hintergrundkarten",
                 visible: true,
                 attributes: {
                     "legend": { imageUrl: "https://fake.legend.url/layer-group-1.png" }
                 },
                 layers: [
-                    new SimpleLayer({
+                    createTestLayer({
+                        type: SimpleLayer,
                         title: "Layer 1",
                         id: "layer-1",
                         olLayer: createTestOlLayer(),
@@ -355,15 +372,16 @@ it("only shows legend entry for group layer and not their children", async () =>
                             }
                         }
                     }),
-                    createLayerWithNestedSublayers()
+                    createLayerWithNestedSublayers(false, {
+                        fetch: vi.fn(async () => {
+                            return new Response(WMTS_CAPAS, {
+                                status: 200
+                            });
+                        })
+                    })
                 ]
             })
-        ],
-        fetch: vi.fn(async () => {
-            return new Response(WMTS_CAPAS, {
-                status: 200
-            });
-        })
+        ]
     });
 
     render(<Legend map={map} data-testid="legend" />, { wrapper: Wrapper });
@@ -378,7 +396,8 @@ it("only shows legend entry for group layer and not their children", async () =>
 it("shows legend entries for group layers and specific children", async () => {
     const { map, Wrapper } = await setup({
         layers: [
-            new GroupLayer({
+            createTestLayer({
+                type: GroupLayer,
                 title: "Hintergrundkarten",
                 visible: true,
                 attributes: {
@@ -388,7 +407,8 @@ it("shows legend entries for group layers and specific children", async () => {
                     } satisfies LegendItemAttributes
                 },
                 layers: [
-                    new SimpleLayer({
+                    createTestLayer({
+                        type: SimpleLayer,
                         title: "Layer 1",
                         id: "layer-1",
                         olLayer: createTestOlLayer(),
@@ -398,15 +418,16 @@ it("shows legend entries for group layers and specific children", async () => {
                             }
                         }
                     }),
-                    createLayerWithNestedSublayers(true)
+                    createLayerWithNestedSublayers(true, {
+                        fetch: vi.fn(async () => {
+                            return new Response(WMTS_CAPAS, {
+                                status: 200
+                            });
+                        })
+                    })
                 ]
             })
-        ],
-        fetch: vi.fn(async () => {
-            return new Response(WMTS_CAPAS, {
-                status: 200
-            });
-        })
+        ]
     });
 
     render(<Legend map={map} data-testid="legend" />, { wrapper: Wrapper });
@@ -668,7 +689,8 @@ it("reacts to changes in the layer composition", async () => {
 
     act(() => {
         map.layers.addLayer(
-            new SimpleLayer({
+            createTestLayer({
+                type: SimpleLayer,
                 title: "Layer 2",
                 id: "layer-2",
                 olLayer: createTestOlLayer(),
@@ -817,7 +839,7 @@ async function findLegend() {
     const legendDiv = await screen.findByTestId("legend");
 
     // Wait until the <ul> is rendered
-    const _legendList = await waitFor(() => {
+    await waitFor(() => {
         const legendList = legendDiv.querySelector("> .legend-layer-list");
         if (!legendList) {
             throw new Error("legend list not mounted");
@@ -851,98 +873,105 @@ async function getLegendImages(legendDiv: HTMLElement, expectedCount = 1) {
     });
 }
 
-function createLayerWithNestedSublayers(hideChildrenModification: boolean = false): WMSLayer {
-    return new WMSLayer({
-        title: "Nested Layer",
-        visible: true,
-        url: "https://fake.wms.url/service",
-        attributes: {
-            "legend": {
-                listMode: "show"
-            } satisfies LegendItemAttributes
-        },
-        sublayers: [
-            {
-                title: "Sublayer 1",
-                attributes: {
-                    "legend": {
-                        listMode: "show"
-                    } satisfies LegendItemAttributes
-                },
-                sublayers: [
-                    {
-                        title: "Sublayer 2",
-                        attributes: {
-                            "legend": {
-                                listMode: "show"
-                            } satisfies LegendItemAttributes
-                        },
-                        sublayers: [
-                            {
-                                title: "Sublayer 3.2",
-                                // legend for nested layer group
-                                attributes: {
-                                    "legend": {
-                                        imageUrl: "https://fake.legend.url/sublayer3_2.png",
-                                        listMode: "show"
-                                    }
+function createLayerWithNestedSublayers(
+    hideChildrenModification: boolean = false,
+    options: { fetch: () => Promise<Response> }
+): WMSLayer {
+    return createTestLayer(
+        {
+            type: WMSLayer,
+            title: "Nested Layer",
+            visible: true,
+            url: "https://fake.wms.url/service",
+            attributes: {
+                "legend": { listMode: "show" } satisfies LegendItemAttributes
+            },
+            sublayers: [
+                {
+                    title: "Sublayer 1",
+                    attributes: {
+                        "legend": {
+                            listMode: "show"
+                        } satisfies LegendItemAttributes
+                    },
+                    sublayers: [
+                        {
+                            title: "Sublayer 2",
+                            attributes: {
+                                "legend": {
+                                    listMode: "show"
+                                } satisfies LegendItemAttributes
+                            },
+                            sublayers: [
+                                {
+                                    title: "Sublayer 3.2",
+                                    // legend for nested layer group
+                                    attributes: {
+                                        "legend": {
+                                            imageUrl: "https://fake.legend.url/sublayer3_2.png",
+                                            listMode: "show"
+                                        }
+                                    },
+                                    sublayers: [
+                                        {
+                                            name: "sublayer4_4",
+                                            title: "Sublayer 4.4",
+                                            attributes: {
+                                                "legend": {
+                                                    Component: function EmptyLegend() {
+                                                        return null;
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        {
+                                            name: "sublayer4_3",
+                                            title: "Sublayer 4.3"
+                                        }
+                                    ]
                                 },
-                                sublayers: [
-                                    {
-                                        name: "sublayer4_4",
-                                        title: "Sublayer 4.4",
-                                        attributes: {
-                                            "legend": {
-                                                Component: function EmptyLegend() {
-                                                    return null;
+                                {
+                                    title: "Sublayer 3.1",
+                                    attributes: {
+                                        "legend": {
+                                            listMode: hideChildrenModification
+                                                ? "hide-children"
+                                                : "show"
+                                        } satisfies LegendItemAttributes
+                                    },
+                                    sublayers: [
+                                        {
+                                            name: "sublayer4_2",
+                                            title: "Sublayer 4.2",
+                                            attributes: {
+                                                "legend": {
+                                                    imageUrl:
+                                                        "https://fake.legend.url/sublayer4_2.png",
+                                                    listMode: "show"
+                                                }
+                                            }
+                                        },
+                                        {
+                                            name: "sublayer4_1",
+                                            title: "Sublayer 4.1",
+                                            attributes: {
+                                                "legend": {
+                                                    imageUrl:
+                                                        "https://fake.legend.url/sublayer4_1.png",
+                                                    listMode: "show"
                                                 }
                                             }
                                         }
-                                    },
-                                    {
-                                        name: "sublayer4_3",
-                                        title: "Sublayer 4.3"
-                                    }
-                                ]
-                            },
-                            {
-                                title: "Sublayer 3.1",
-                                attributes: {
-                                    "legend": {
-                                        listMode: hideChildrenModification
-                                            ? "hide-children"
-                                            : "show"
-                                    } satisfies LegendItemAttributes
-                                },
-                                sublayers: [
-                                    {
-                                        name: "sublayer4_2",
-                                        title: "Sublayer 4.2",
-                                        attributes: {
-                                            "legend": {
-                                                imageUrl: "https://fake.legend.url/sublayer4_2.png",
-                                                listMode: "show"
-                                            }
-                                        }
-                                    },
-                                    {
-                                        name: "sublayer4_1",
-                                        title: "Sublayer 4.1",
-                                        attributes: {
-                                            "legend": {
-                                                imageUrl: "https://fake.legend.url/sublayer4_1.png",
-                                                listMode: "show"
-                                            }
-                                        }
-                                    }
-                                ]
-                            }
-                        ]
-                    }
-                ]
-            }
-        ]
-    });
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        options
+    );
 }
 
 async function setup(options: SimpleMapOptions & { returnMap?: true }) {

@@ -1,8 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { nextTick } from "@conterra/reactivity-core";
-import { SimpleLayer } from "@open-pioneer/map";
-import { createTestOlLayer, setupMap } from "@open-pioneer/map-test-utils";
+import { createTestLayer, createTestOlLayer, setupMap } from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import { fireEvent, render, screen, waitFor, act } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -10,6 +9,7 @@ import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
 import { describe, expect, it } from "vitest";
 import { BasemapSwitcher } from "./BasemapSwitcher";
+import { SimpleLayer } from "@open-pioneer/map";
 
 const defaultBasemapConfig = [
     {
@@ -176,7 +176,8 @@ it("should update when a new basemap is registered", async () => {
     expect(options.length).toBe(2);
 
     await act(async () => {
-        const layer = new SimpleLayer({
+        const layer = createTestLayer({
+            type: SimpleLayer,
             id: "foo",
             title: "Foo",
             isBaseLayer: true,

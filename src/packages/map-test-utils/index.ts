@@ -6,14 +6,21 @@ import {
     ExtentConfig,
     InitialViewConfig,
     Layer,
+    LayerCreateOptions,
+    LayerFactory,
     MapConfig,
     MapModel,
+    LayerConfig as MapPackageLayerConfig,
     MapRegistry,
     OlMapOptions,
     SimpleLayer,
     SimpleLayerConfig
 } from "@open-pioneer/map";
-import { MapRegistryImpl, LayerFactory } from "@open-pioneer/map/internalTestSupport";
+import {
+    LayerFactory as LayerFactoryImpl,
+    MapRegistry as MapRegistryImpl
+} from "@open-pioneer/map/internalTestSupport";
+import { PackageIntl } from "@open-pioneer/runtime";
 import { createService } from "@open-pioneer/test-utils/services";
 import { screen, waitFor } from "@testing-library/react";
 import TileLayer from "ol/layer/Tile";
@@ -75,6 +82,14 @@ export interface SimpleMapOptions {
      */
     returnMap?: boolean;
 }
+const DUMMY_HTTP_SERVICE = {
+    async fetch() {
+        throw new Error(
+            "Network requests are not implemented (override fetch via map test utils if your test requires network access)."
+        );
+    }
+} satisfies Partial<HttpService> as HttpService;
+const DUMMY_LAYER_FACTORY = createLayerFactory();
 
 /**
  * Waits until the OpenLayers map has been mounted in the parent with the given id.
@@ -138,14 +153,12 @@ export async function setupMap(
         initialView: options?.noInitialView ? undefined : getInitialView(options),
         projection: options?.noProjection ? undefined : (options?.projection ?? "EPSG:3857"),
         layers: options?.layers?.map(
-            (config) => ("map" in config ? config : new SimpleLayer(config))
+            (config) =>
+                "map" in config
+                    ? config
+                    : createTestLayer({ type: SimpleLayer, ...(config as SimpleLayerConfig) })
             // using map as discriminator (no prototype for Layer)
-        ) ?? [
-            new SimpleLayer({
-                title: "OSM",
-                olLayer: new VectorLayer()
-            })
-        ],
+        ) ?? [createTestLayer()],
         advanced: options?.advanced
     };
 
@@ -161,7 +174,7 @@ export async function setupMap(
         }
     } satisfies Partial<HttpService> as HttpService;
 
-    const layerFactory = await createService(LayerFactory, {
+    const layerFactory = await createService(LayerFactoryImpl, {
         references: {
             httpService
         }
@@ -200,18 +213,35 @@ function getInitialView(options: SimpleMapOptions | undefined): InitialViewConfi
     };
 }
 
-/**
- * Creates (service name, service implementation)-pairs suitable for the `services`
- * option of the `PackageContextProvider`.
- *
- * This helper method can be used to avoid hard-coding service names used in the implementation.
- *
- * @deprecated No longer needed because react components do no longer look up the map in the registry.
- */
-export function createServiceOptions(services: { registry: MapRegistry }): Record<string, unknown> {
-    return {
-        "map.MapRegistry": services.registry
-    };
+/** Creates an new layer of the specified type for testing. */
+export function createTestLayer<LayerType extends Layer, Config extends MapPackageLayerConfig>(
+    config: LayerCreateOptions<LayerType, Config>,
+    mapOptions?: Pick<SimpleMapOptions, "fetch">
+): LayerType;
+
+/** Creates a new, basic SimpleLayer for testing. */
+export function createTestLayer(
+    config?: SimpleLayerConfig,
+    mapOptions?: Pick<SimpleMapOptions, "fetch">
+): SimpleLayer;
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function createTestLayer(config?: any, mapOptions?: Pick<SimpleMapOptions, "fetch">): Layer {
+    // Basic case: If no config is given, use SimpleLayer
+    if (!config) {
+        config = {
+            type: SimpleLayer,
+            title: "Test layer",
+            olLayer: new VectorLayer()
+        } as LayerCreateOptions<SimpleLayer, SimpleLayerConfig>;
+    } else if (!config.type) {
+        config.type = SimpleLayer;
+    }
+
+    const factory = mapOptions?.fetch
+        ? createLayerFactory({ fetch: mapOptions.fetch })
+        : DUMMY_LAYER_FACTORY;
+    return factory.create(config);
 }
 
 /**
@@ -221,6 +251,30 @@ export function createServiceOptions(services: { registry: MapRegistry }): Recor
  */
 export function createTestOlLayer(): TileLayer {
     return new TileLayer();
+}
+
+/**
+ * Creates (service name, service implementation)-pairs suitable for the `services`
+ * option of the `PackageContextProvider`.
+ *
+ * This helper method can be used to avoid hard-coding service names used in the implementation.
+ *
+ * @deprecated This function is no longer needed, since most widgets no longer depend on the registry
+ * and accept the `map` directly.
+ */
+export function createServiceOptions(services: { registry: MapRegistry }): Record<string, unknown> {
+    return {
+        "map.MapRegistry": services.registry
+    };
+}
+
+function createLayerFactory(httpService?: HttpService): LayerFactory {
+    return new LayerFactoryImpl({
+        intl: {} satisfies Partial<PackageIntl> as PackageIntl,
+        references: { httpService: httpService ?? DUMMY_HTTP_SERVICE },
+        properties: {},
+        referencesMeta: { httpService: { serviceId: "http.HttpService" } }
+    });
 }
 
 function mockVectorLayer() {
