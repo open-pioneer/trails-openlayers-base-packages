@@ -1,5 +1,181 @@
 # @open-pioneer/map
 
+## 1.0.0
+
+### Minor Changes
+
+- 2702df4: Introduce `internal` property for all layer types (including sublayers). If `internal` is `true` (default: `false`) the layer is not considered by any UI widget (e.g. legend and Toc). The `internal` state of a layer is not to be confused with the layer's visibility on the map which is determined by the `visible` property.
+
+    ```typescript
+    //internal layer is visible on the map but hidden in UI elements like legend and Toc
+    const internalLayer = new SimpleLayer({
+        id: "layer1",
+        title: "layer 1",
+        olLayer: myOlLayer,
+        visible: true,
+        internal: true
+    });
+    ```
+
+- 5df900f: Add a new hook `useMapModelValue(props?)`.
+  The hook returns either the directly configured `map` (via props) or the default map from a parent `DefaultMapProvider`.
+  If neither is present, an error will be thrown.
+
+    This hook is used in all components that work with the map.
+    The typical usage works like this:
+
+    ```ts
+    import { MapModelProps, useMapModelValue } from "@open-pioneer/map";
+
+    // optional `map` property inherited from `MapModelProps`
+    export interface MyComponentProps extends MapModelProps {
+        // ... other properties
+    }
+
+    export function MyComponent(props) {
+        const map = useMapModelValue(props); // looks up the map
+    }
+    ```
+
+    You can also call this hook without any arguments:
+
+    ```ts
+    // Map model from DefaultMapProvider or an error.
+    const mapModel = useMapModelValue();
+    ```
+
+    This hook should replace _most_ usages `useMapModel`, which can't return the map model directly since it may not have finished construction yet.
+
+- 14c484e: Introduce the `LayerFactory` service (interface `"map.LayerFactory"`).
+
+    The layer factory should be used to construct new layer instances, instead of calling the layer constructor directly.
+    Calling the constructor directly (e.g. `new SimpleLayer`) is deprecated (but still fully supported).
+
+    For example:
+
+    ```ts
+    // OLD
+    new SimpleLayer({
+        title: "OSM",
+        isBaseLayer: true,
+        olLayer: new TileLayer({
+            source: new OSM()
+        })
+    });
+    ```
+
+    ```ts
+    // NEW
+    const layerFactory = ...; // injected
+    layerFactory.create({
+        type: SimpleLayer,
+        title: "OSM",
+        isBaseLayer: true,
+        olLayer: new TileLayer({
+            source: new OSM()
+        })
+    });
+    ```
+
+    This was done to support passing hidden dependencies from the layer factory to the layer instance (such as the `HttpService`),
+    without forcing the user to supply these dependencies manually.
+
+    The `MapConfigProvider` has been updated as well.
+    The `getMapConfig` method will now receive the layer factory as an option.
+    This makes it easy to migrate to the new API:
+
+    ```diff
+    # Example MapConfigProvider
+    export class MapConfigProviderImpl implements MapConfigProvider {
+        mapId = MAP_ID;
+
+    -   async getMapConfig(): Promise<MapConfig> {
+    +   async getMapConfig({ layerFactory }: MapConfigProviderOptions): Promise<MapConfig> {
+            return {
+                initialView: {
+                    kind: "position",
+                    center: { x: 404747, y: 5757920 },
+                    zoom: 14
+                },
+                layers: [
+    -               new SimpleLayer({
+    +               layerFactory.create({
+    +                   type: SimpleLayer,
+                        title: "OSM",
+                        isBaseLayer: true,
+                        olLayer: new TileLayer({
+                            source: new OSM()
+                        })
+                    })
+                ]
+            };
+        }
+    }
+    ```
+
+- aeb9000: Add new `"topmost"` option to add layers that are always displayed on the top (above all other layers).
+
+    A new layers can be added at `topmost` to ensure that this layer will always be displayed on top of the other layers.
+    This can be used, for example, to implement highlights or to draw graphics.
+    Layers added at `"topmost"` will always be shown above layers at `"top"`.
+
+    When using the `"above"` or `"below"` options with a `"topmost"` reference layer, that layer becomes `"topmost"` as well.
+
+    ```typescript
+    import { MapModel, SimpleLayer } from "@open-pioneer/map";
+
+    const highlightLayer = new SimpleLayer({
+        title: "highlights",
+        olLayer: myOlLayer
+    });
+    //always displayed at the top
+    myMapModel.layers.addLayer(highlightLayer, { at: "topmost" });
+    ```
+
+- 5df900f: Deprecate the parameter-less signature of `useMapModel()`:
+
+    ```ts
+    // Returns the DefaultMapProvider's map, but wrapped in a result value (loading/resolved/rejected)
+    const result = useMapModel();
+    ```
+
+    Use `useMapModelValue()` instead:
+
+    ```ts
+    // Returns the map model directly.
+    const mapModel = useMapModelValue();
+    ```
+
+    All other signatures of `useMapModel()` are still fully supported.
+
+- 2abcaaf: Update to chakra-ui 3.27.1
+
+### Patch Changes
+
+- c6180c6: Update eslint to version 9.
+- 29a10df: Support buffer for zoom geometries.
+
+    For example:
+
+    ```ts
+    const map: MapModel = ...;
+    const highlight = map.highlightAndZoom(someGeometries, {
+        // Grows extent by 10%
+        buffer: 0.1
+    });
+    ```
+
+- 10d2fe7: Update dependencies
+- 12561fe: The default value of the `role` prop on the `MapContainer` was changed to `application` to allow map keyboard navigation while using NVDA screen reader.
+- 8986b3b: Remove obsolete dependency @types/proj4
+- dfd7c7e: We use the already existing calculateBufferedExtent instead of the highlights buffer.
+  Use the `buffer` to specify the size increase. E.g. `1.1` for 10% size increase.
+- 138d85b: Update core packages to 4.1.0
+- 2c8b617: Introduce `MapRegistry.createMapModel` method to create a `MapModel` without a `MapConfigProvider`.
+  For more details, see [PR](https://github.com/open-pioneer/trails-openlayers-base-packages/pull/499) and [issue](https://github.com/open-pioneer/trails-openlayers-base-packages/issues/483).
+- f1f69f2: Update to OpenLayers 10.6.1
+- da6a410: Update dependencies
+
 ## 0.11.0
 
 ### Minor Changes
