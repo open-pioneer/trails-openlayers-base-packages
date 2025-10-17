@@ -9,14 +9,14 @@ import { unByKey } from "ol/Observable";
 import OlSource from "ol/source/Source";
 import { MapModelImpl } from "../model/MapModelImpl";
 import { AbstractLayerBase } from "./AbstractLayerBase";
-import { HealthCheckFunction, LayerConfig } from "./shared/LayerConfig";
 import {
     getLayerDependencies,
     InternalConstructorTag,
     LayerDependencies
 } from "./shared/internals";
+import { HealthCheckFunction, LayerConfig } from "./shared/LayerConfig";
 import { SimpleLayerConfig } from "./SimpleLayer";
-import { Layer } from "./unions";
+import { Layer, LayerTypes } from "./unions";
 
 // Imported for typedoc
 // eslint-disable-next-line unused-imports/no-unused-imports
@@ -84,7 +84,7 @@ export abstract class AbstractLayer extends AbstractLayerBase {
     /**
      * Identifies the type of this layer.
      */
-    abstract override readonly type: "simple" | "wms" | "wmts" | "group";
+    abstract override readonly type: LayerTypes;
 
     override get visible(): boolean {
         return this.#visible.value;
