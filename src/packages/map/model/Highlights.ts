@@ -13,7 +13,7 @@ import { Fill, Icon, Stroke, Style } from "ol/style";
 import { toFunction as toStyleFunction } from "ol/style/Style";
 import mapMarkerUrl from "../assets/images/mapMarker.png?url";
 import { calculateBufferedExtent } from "../utils/geometry-utils";
-import { TOPMOST_LAYER_Z } from "./LayerCollectionImpl";
+import { TOPMOST_LAYER_Z } from "./LayerCollection";
 import {
     DisplayTarget,
     Highlight,

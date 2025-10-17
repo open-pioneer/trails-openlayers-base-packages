@@ -23,7 +23,7 @@ import type { StyleLike } from "ol/style/Style";
 import type { BaseFeature } from "../BaseFeature";
 import { LAYER_DEPS, LayerDependencies } from "../layers/shared/internals";
 import { Highlights } from "./Highlights";
-import { LayerCollection } from "./LayerCollectionImpl";
+import { LayerCollection } from "./LayerCollection";
 import { ExtentConfig } from "./MapConfig";
 
 const LOG = createLogger("map:MapModel");

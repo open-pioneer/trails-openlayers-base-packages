@@ -56,11 +56,10 @@ export {
     type MapPadding,
     type ZoomOptions
 } from "./model/MapModel";
-// FIXME: Rename file (remove impl)
-export { type LayerCollection } from "./model/LayerCollectionImpl";
+export { type LayerCollection } from "./model/LayerCollection";
 
 // FIXME: remove this
-export { TOPMOST_LAYER_Z } from "./model/LayerCollectionImpl";
+export { TOPMOST_LAYER_Z } from "./model/LayerCollection";
 
 // Services
 export { type LayerFactory, type LayerCreateOptions } from "./LayerFactory";
