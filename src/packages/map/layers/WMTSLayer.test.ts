@@ -73,7 +73,7 @@ function createLayer(
             options?.fetch ??
             vi.fn().mockImplementation(async () => new Response("", { status: 200 }))
     } as HttpService;
-    const layer = createTestLayer({ type: WMTSLayer, ...options }, httpService); // FIXME: Should be type WMTSLayer
+    const layer = createTestLayer({ type: WMTSLayer, ...options }, httpService);
 
     const mapModel = {
         __layerDeps: {
