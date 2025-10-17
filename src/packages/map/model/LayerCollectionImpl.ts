@@ -151,12 +151,12 @@ export class LayerCollection {
         let newBaseLayer = undefined;
         if (id != null) {
             newBaseLayer = this.#layersById.get(id);
-            if (!(newBaseLayer instanceof AbstractLayer)) {
-                LOG.warn(`Cannot activate base layer '${id}: layer has an invalid type.'`);
-                return false;
-            }
             if (!newBaseLayer) {
                 LOG.warn(`Cannot activate base layer '${id}': layer is unknown.`);
+                return false;
+            }
+            if (!(newBaseLayer instanceof AbstractLayer)) {
+                LOG.warn(`Cannot activate base layer '${id}: layer has an invalid type.'`);
                 return false;
             }
             if (!newBaseLayer.isBaseLayer) {
