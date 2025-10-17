@@ -11,7 +11,7 @@ exports[`should successfully create a geolocation component with a button 1`] = 
   data-testid="geolocation"
   dir="ltr"
   disabled=""
-  id="tooltip:«r0»:trigger"
+  id="tooltip:_r_0_:trigger"
   type="button"
 >
   <svg

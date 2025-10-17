@@ -13,15 +13,15 @@ exports[`should successfully create a printing component 1`] = `
       class="chakra-stack chakra-field__root css-12dfuz6"
       data-part="root"
       data-scope="field"
-      id="field::«r0»"
+      id="field::_r_0_"
       role="group"
     >
       <label
         class="chakra-field__label css-sevaap"
         data-part="label"
         data-scope="field"
-        for="«r0»"
-        id="field::«r0»::label"
+        for="_r_0_"
+        id="field::_r_0_::label"
       >
         title
       </label>
@@ -29,7 +29,7 @@ exports[`should successfully create a printing component 1`] = `
         class="chakra-input css-ee9xfg"
         data-part="input"
         data-scope="field"
-        id="«r0»"
+        id="_r_0_"
         placeholder="input.placeholder"
         value=""
       />
@@ -38,15 +38,15 @@ exports[`should successfully create a printing component 1`] = `
       class="chakra-stack chakra-field__root css-12dfuz6"
       data-part="root"
       data-scope="field"
-      id="field::«r1»"
+      id="field::_r_1_"
       role="group"
     >
       <label
         class="chakra-field__label css-sevaap"
         data-part="label"
         data-scope="field"
-        for="«r1»"
-        id="field::«r1»::label"
+        for="_r_1_"
+        id="field::_r_1_::label"
       >
         fileFormat
       </label>
@@ -57,7 +57,7 @@ exports[`should successfully create a printing component 1`] = `
           class="chakra-native-select__field printing-select css-1sph0c1"
           data-part="select"
           data-scope="field"
-          id="«r1»"
+          id="_r_1_"
         >
           <option
             value="png"
