@@ -47,14 +47,13 @@ export {
     type OlMapOptions
 } from "./model/MapConfig";
 export {
+    type MapModel,
     type DisplayTarget,
     type Highlight,
     type HighlightOptions,
     type HighlightStyle,
     type HighlightZoomOptions,
     type LayerCollection,
-    type MapModel,
-    type MapModelEvents,
     type MapPadding,
     type ZoomOptions
 } from "./model/MapModel";

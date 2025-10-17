@@ -9,7 +9,6 @@ import { renderHook, RenderHookResult, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { MapRegistry } from "../../MapRegistry";
 import { MapModel } from "../../model/MapModel";
-import { MapModelImpl } from "../../model/MapModelImpl";
 import { DefaultMapProvider } from "../DefaultMapProvider";
 import { useMapModel, UseMapModelResult, useMapModelValue } from "./useMapModel";
 
@@ -226,8 +225,8 @@ function mockMapRegistry(options?: MockModelOptions): MapRegistry {
 }
 
 function mockMapModel(): MapModel {
-    const map = Object.create(MapModelImpl.prototype);
-    if (!(map instanceof MapModelImpl)) {
+    const map = Object.create(MapModel.prototype);
+    if (!(map instanceof MapModel)) {
         throw new Error("not instanceof");
     }
 

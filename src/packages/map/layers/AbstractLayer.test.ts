@@ -7,7 +7,7 @@ import Source, { State } from "ol/source/Source";
 import { Mock, MockInstance, afterEach, describe, expect, it, vi } from "vitest";
 import { AbstractLayer } from "./AbstractLayer";
 import { GroupLayerCollection } from "./group/GroupLayerCollection";
-import { MapModelImpl } from "../model/MapModelImpl";
+import { MapModel } from "../model/MapModel";
 import { createTestOlLayer } from "@open-pioneer/map-test-utils";
 import { HealthCheckFunction, LayerConfig } from "./shared/LayerConfig";
 import { SimpleLayerConfig } from "./SimpleLayer";
@@ -385,7 +385,7 @@ function createLayer(layerConfig: SimpleLayerConfig, options?: { fetch?: Mock })
         __layerDeps: {
             httpService
         }
-    } satisfies Partial<MapModelImpl> as unknown as MapModelImpl;
+    } satisfies Partial<MapModel> as unknown as MapModel;
 
     const layer = new LayerImpl(layerConfig);
     layer.__attachToMap(mapModel);

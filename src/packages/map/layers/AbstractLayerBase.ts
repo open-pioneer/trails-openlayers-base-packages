@@ -10,7 +10,7 @@ import {
 } from "@conterra/reactivity-core";
 import { emit, emitter, EventSource } from "@conterra/reactivity-events";
 import { v4 as uuid4v } from "uuid";
-import { MapModelImpl } from "../model/MapModelImpl";
+import { MapModel } from "../model/MapModel";
 import { GroupLayer } from "./GroupLayer";
 import { GroupLayerCollection } from "./group/GroupLayerCollection";
 import { ChildrenCollection } from "./shared/ChildrenCollection";
@@ -32,7 +32,7 @@ export interface AbstractLayerBaseOptions {
  * class such as {@link SimpleLayer} instead.
  */
 export abstract class AbstractLayerBase {
-    #map = reactive<MapModelImpl>();
+    #map = reactive<MapModel>();
     #parent: AnyLayer | undefined;
 
     #id: string;
@@ -135,7 +135,7 @@ export abstract class AbstractLayerBase {
      *
      * NOTE: Throws if the layer is not part of a map.
      */
-    get map(): MapModelImpl {
+    get map(): MapModel {
         const map = this.nullableMap;
         if (!map) {
             throw new Error(`Layer '${this.id}' has not been attached to a map yet.`);
@@ -146,7 +146,7 @@ export abstract class AbstractLayerBase {
     /**
      * The map this layer belongs to, or undefined if the layer is not part of a map.
      */
-    get nullableMap(): MapModelImpl | undefined {
+    get nullableMap(): MapModel | undefined {
         return this.#map.value;
     }
 
@@ -211,7 +211,7 @@ export abstract class AbstractLayerBase {
     /**
      * Attaches the layer to its owning map.
      */
-    __attachToMap(map: MapModelImpl): void {
+    __attachToMap(map: MapModel): void {
         if (this.#map.value) {
             throw new Error(
                 `Layer '${this.id}' has already been attached to the map '${this.map.id}'`

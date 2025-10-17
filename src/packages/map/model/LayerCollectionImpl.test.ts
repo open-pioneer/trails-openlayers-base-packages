@@ -23,7 +23,7 @@ import { WMSLayer } from "../layers/WMSLayer";
 import { WMTSLayer } from "../layers/WMTSLayer";
 import { createMapModel } from "./createMapModel";
 import { MapConfig } from "./MapConfig";
-import { MapModelImpl } from "./MapModelImpl";
+import { MapModel } from "./MapModel";
 
 const THIS_DIR = dirname(fileURLToPath(import.meta.url));
 const WMTS_CAPAS = readFileSync(
@@ -35,7 +35,7 @@ const MOCKED_HTTP_SERVICE = {
     fetch: vi.fn()
 };
 
-let model: MapModelImpl | undefined;
+let model: MapModel | undefined;
 afterEach(() => {
     vi.restoreAllMocks();
     model?.destroy();
@@ -1194,7 +1194,7 @@ function expectNoMap(layers: AnyLayer[] | undefined) {
     }
 }
 
-function expectMap(layers: AnyLayer[] | undefined, expectedMap: MapModelImpl) {
+function expectMap(layers: AnyLayer[] | undefined, expectedMap: MapModel) {
     if (!layers) {
         return;
     }

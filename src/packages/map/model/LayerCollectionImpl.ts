@@ -15,8 +15,7 @@ import { AbstractLayer } from "../layers/AbstractLayer";
 import { AbstractLayerBase } from "../layers/AbstractLayerBase";
 import { AnyLayer, Layer, Sublayer } from "../layers/unions";
 import type { AddLayerOptions, LayerRetrievalOptions } from "../shared";
-import { LayerCollection } from "./MapModel";
-import { MapModelImpl } from "./MapModelImpl";
+import { LayerCollection, MapModel } from "./MapModel";
 import { getRecursiveLayers } from "./getRecursiveLayers";
 
 const LOG = createLogger("map:LayerCollection");
@@ -47,7 +46,7 @@ export const TOPMOST_LAYER_Z = 9999999;
  * Manages the (top-level) content of the map.
  */
 export class LayerCollectionImpl implements LayerCollection {
-    #map: MapModelImpl;
+    #map: MapModel;
 
     /** Top level layers (base layers, operational layers). No sublayers. */
     #topLevelLayers = reactiveSet<LayerType>();
@@ -73,7 +72,7 @@ export class LayerCollectionImpl implements LayerCollection {
 
     #syncHandle: Resource | undefined;
 
-    constructor(map: MapModelImpl) {
+    constructor(map: MapModel) {
         this.#map = map;
         this.#syncHandle = effect(() => {
             // Contains base layers, normal operational layers, topmost layers in bottom-to-top order.

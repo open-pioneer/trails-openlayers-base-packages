@@ -10,7 +10,7 @@ import TileLayer from "ol/layer/Tile";
 import type { Options as WMSSourceOptions } from "ol/source/ImageWMS";
 import type TileSourceType from "ol/source/Tile";
 import WMTS, { optionsFromCapabilities } from "ol/source/WMTS";
-import { MapModelImpl } from "../model/MapModelImpl";
+import { MapModel } from "../model/MapModel";
 import { fetchText } from "../utils/fetch";
 import { AbstractLayer } from "./AbstractLayer";
 import { LayerConfig } from "./shared/LayerConfig";
@@ -145,7 +145,7 @@ export class WMTSLayer extends AbstractLayer {
         return this.#matrixSet;
     }
 
-    override __attachToMap(map: MapModelImpl): void {
+    override __attachToMap(map: MapModel): void {
         super.__attachToMap(map);
         this.#load();
     }

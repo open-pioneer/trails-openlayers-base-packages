@@ -10,7 +10,7 @@ import TileLayer from "ol/layer/Tile";
 import { get as getProjection } from "ol/proj";
 import { WMTS } from "ol/source";
 import { Mock, afterEach, expect, it, vi } from "vitest";
-import { MapModelImpl } from "../model/MapModelImpl";
+import { MapModel } from "../model/MapModel";
 import { WMTSLayer, WMTSLayerConfig } from "./WMTSLayer";
 
 const THIS_DIR = dirname(fileURLToPath(import.meta.url));
@@ -79,10 +79,10 @@ function createLayer(
         __layerDeps: {
             httpService: httpService as HttpService
         }
-    } as MapModelImpl;
+    } as MapModel;
 
     // ensure that __attachToMap can be called
-    function isAttachable(l: unknown): l is { __attachToMap(mapModel: MapModelImpl): void } {
+    function isAttachable(l: unknown): l is { __attachToMap(mapModel: MapModel): void } {
         return !!l && typeof (l as any).__attachToMap === "function";
     }
     if (options?.attach && isAttachable(layer)) {

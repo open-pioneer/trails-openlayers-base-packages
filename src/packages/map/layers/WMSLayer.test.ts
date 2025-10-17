@@ -8,7 +8,7 @@ import { get as getProjection } from "ol/proj";
 import ImageSource from "ol/source/Image";
 import ImageWMS from "ol/source/ImageWMS";
 import { Mock, afterEach, beforeEach, expect, it, vi } from "vitest";
-import { MapModelImpl } from "../model/MapModelImpl";
+import { MapModel } from "../model/MapModel";
 import { AbstractLayerBase } from "./AbstractLayerBase";
 import { WMSLayer, WMSLayerConfig } from "./WMSLayer";
 
@@ -429,10 +429,10 @@ function createLayer(options: WMSLayerConfig & { fetch?: Mock; attach?: boolean 
         __layerDeps: {
             httpService: httpService as HttpService
         }
-    } as MapModelImpl;
+    } as MapModel;
 
     // ensure that __attachToMap can be called
-    function isAttachable(l: unknown): l is { __attachToMap(mapModel: MapModelImpl): void } {
+    function isAttachable(l: unknown): l is { __attachToMap(mapModel: MapModel): void } {
         return !!l && typeof (l as any).__attachToMap === "function";
     }
     if (options?.attach && isAttachable(layer)) {

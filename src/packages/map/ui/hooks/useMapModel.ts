@@ -5,7 +5,6 @@ import { useMemo } from "react";
 import { useAsync } from "react-use";
 import { MapRegistry } from "../../MapRegistry";
 import { MapModel } from "../../model/MapModel";
-import { MapModelImpl } from "../../model/MapModelImpl";
 import { useDefaultMap } from "../DefaultMapProvider";
 
 /** Return value of {@link useMapModel}. */
@@ -57,7 +56,7 @@ export function useMapModel(mapId: string): UseMapModelResult;
 export function useMapModel(props: { mapId: string }): UseMapModelResult;
 
 export function useMapModel(props?: undefined | string | { mapId: string }): UseMapModelResult {
-    if (props instanceof MapModelImpl) {
+    if (props instanceof MapModel) {
         // This cannot happen in valid typescript code, but it might be a common mistake.
         throw new Error(
             `Map model instances cannot be passed directly to 'useMapModel' (see TypeScript signature).`
@@ -125,7 +124,7 @@ export interface MapModelProps {
  * This hook is preferable to {@link useMapModel} because it can return the map model directly, without waiting.
  */
 export function useMapModelValue(props?: MapModelProps): MapModel {
-    if (props instanceof MapModelImpl) {
+    if (props instanceof MapModel) {
         // This cannot happen in valid typescript code, but it might be a common mistake.
         throw new Error(
             `Map model instances cannot be passed directly to 'useMapModelValue' (see TypeScript signature).`

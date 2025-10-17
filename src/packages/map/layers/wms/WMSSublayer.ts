@@ -1,14 +1,14 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { Reactive, reactive } from "@conterra/reactivity-core";
-import { MapModelImpl } from "../../model/MapModelImpl";
+import { MapModel } from "../../model/MapModel";
 import { AbstractLayerBase } from "../AbstractLayerBase";
-import { LayerBaseConfig } from "../shared/LayerConfig";
 import {
     assertInternalConstructor,
     INTERNAL_CONSTRUCTOR_TAG,
     InternalConstructorTag
 } from "../shared/internals";
+import { LayerBaseConfig } from "../shared/LayerConfig";
 import { SublayerBaseType } from "../shared/SublayerBaseType";
 import { SublayersCollection } from "../shared/SublayersCollection";
 import { WMSLayer } from "../WMSLayer";
@@ -101,7 +101,7 @@ export class WMSSublayer extends AbstractLayerBase implements SublayerBaseType {
     /**
      * Called by the parent layer when it is attached to the map to attach all sublayers.
      */
-    override __attachToMap(map: MapModelImpl): void {
+    override __attachToMap(map: MapModel): void {
         super.__attachToMap(map);
 
         // Recurse into nested sublayers

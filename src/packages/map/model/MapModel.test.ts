@@ -6,14 +6,14 @@ import { createIntl } from "@open-pioneer/test-utils/vanilla";
 import { waitFor } from "@testing-library/dom";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { MapConfig } from "./MapConfig";
-import { MapModelImpl } from "./MapModelImpl";
+import { MapModel } from "./MapModel";
 import { createMapModel } from "./createMapModel";
 
 const MOCKED_HTTP_SERVICE = {
     fetch: vi.fn()
 };
 
-let model: MapModelImpl | undefined;
+let model: MapModel | undefined;
 
 afterEach(() => {
     model?.destroy();
@@ -56,7 +56,7 @@ describe("initial extent", () => {
     `);
 
         // Simulate mounting by setting an explicit size.
-        // This triggers the extent initialization in MapModelImpl.
+        // This triggers the extent initialization in MapModel.
         olMap.setSize([500, 500]);
         await waitFor(() => {
             if (olMap.getView().getZoom() === 0) {
@@ -99,7 +99,7 @@ describe("initial extent", () => {
     `);
 
         // Simulate mounting by setting an explicit size.
-        // This triggers the extent initialization in MapModelImpl.
+        // This triggers the extent initialization in MapModel.
         olMap.setSize([500, 500]);
         await waitForInitialExtent(model);
 

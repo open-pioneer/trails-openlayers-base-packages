@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import { deprecated } from "@open-pioneer/core";
 import { Group } from "ol/layer";
-import { MapModelImpl } from "../model/MapModelImpl";
+import { MapModel } from "../model/MapModel";
 import { AbstractLayer } from "./AbstractLayer";
 import { LayerConfig } from "./shared/LayerConfig";
 import { InternalConstructorTag, LayerConstructor, LayerDependencies } from "./shared/internals";
@@ -101,7 +101,7 @@ export class GroupLayer extends AbstractLayer {
         return super.olLayer as Group;
     }
 
-    override __attachToMap(map: MapModelImpl): void {
+    override __attachToMap(map: MapModel): void {
         super.__attachToMap(map);
         this.layers.__getRawLayers().forEach((layer) => layer.__attachToMap(map));
     }

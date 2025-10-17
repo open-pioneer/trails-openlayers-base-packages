@@ -7,7 +7,7 @@ import OlBaseLayer from "ol/layer/Base";
 import OlLayer from "ol/layer/Layer";
 import { unByKey } from "ol/Observable";
 import OlSource from "ol/source/Source";
-import { MapModelImpl } from "../model/MapModelImpl";
+import { MapModel } from "../model/MapModel";
 import { AbstractLayerBase } from "./AbstractLayerBase";
 import {
     getLayerDependencies,
@@ -116,7 +116,7 @@ export abstract class AbstractLayer extends AbstractLayerBase {
     /**
      * Called by the map model when the layer is added to the map.
      */
-    override __attachToMap(map: MapModelImpl): void {
+    override __attachToMap(map: MapModel): void {
         super.__attachToMap(map);
 
         if (!this.#stateWatchResource) {

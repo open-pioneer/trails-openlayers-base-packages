@@ -14,16 +14,16 @@ import ImageLayer from "ol/layer/Image";
 import type ImageSource from "ol/source/Image";
 import type { Options as WMSSourceOptions } from "ol/source/ImageWMS";
 import ImageWMS from "ol/source/ImageWMS";
-import { MapModelImpl } from "../model/MapModelImpl";
+import { MapModel } from "../model/MapModel";
 import { fetchText } from "../utils/fetch";
 import { AbstractLayer } from "./AbstractLayer";
-import { LayerConfig } from "./shared/LayerConfig";
 import {
     INTERNAL_CONSTRUCTOR_TAG,
     InternalConstructorTag,
     LayerConstructor,
     LayerDependencies
 } from "./shared/internals";
+import { LayerConfig } from "./shared/LayerConfig";
 import { SublayersCollection } from "./shared/SublayersCollection";
 import { getLegendUrl } from "./wms/getLegendUrl";
 import { constructSublayers, WMSSublayer, WMSSublayerConfig } from "./wms/WMSSublayer";
@@ -196,7 +196,7 @@ export class WMSLayer extends AbstractLayer {
         return this.#capabilities;
     }
 
-    __attachToMap(map: MapModelImpl): void {
+    __attachToMap(map: MapModel): void {
         super.__attachToMap(map);
         for (const sublayer of this.#sublayers.getSublayers()) {
             sublayer.__attachToMap(map);

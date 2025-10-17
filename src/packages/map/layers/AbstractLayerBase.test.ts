@@ -5,7 +5,7 @@
  */
 import { syncWatch } from "@conterra/reactivity-core";
 import { afterEach, expect, it, vi } from "vitest";
-import { MapModelImpl } from "../model/MapModelImpl";
+import { MapModel } from "../model/MapModel";
 import { AbstractLayerBase, AbstractLayerBaseOptions } from "./AbstractLayerBase";
 import { GroupLayerCollection } from "./group/GroupLayerCollection";
 import { INTERNAL_CONSTRUCTOR_TAG } from "./shared/internals";
@@ -246,7 +246,7 @@ abstract class SharedParent extends AbstractLayerBase {
         }
     }
 
-    __attach(map: MapModelImpl): void {
+    __attach(map: MapModel): void {
         this.__attachToMap(map);
     }
 

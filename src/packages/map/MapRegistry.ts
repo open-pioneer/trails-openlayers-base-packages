@@ -1,5 +1,7 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
+import { batch } from "@conterra/reactivity-core";
+import { onSync } from "@conterra/reactivity-events";
 import { createLogger, Resource } from "@open-pioneer/core";
 import { HttpService } from "@open-pioneer/http";
 import {
@@ -13,8 +15,6 @@ import { LayerFactory } from "./LayerFactory";
 import { createMapModel } from "./model/createMapModel";
 import { MapConfig } from "./model/MapConfig";
 import { MapModel } from "./model/MapModel";
-import { MapModelImpl } from "./model/MapModelImpl";
-import { batch } from "@conterra/reactivity-core";
 
 const LOG = createLogger("map:MapRegistry");
 
@@ -57,7 +57,7 @@ interface References {
 }
 
 type ModelJobResult =
-    | { kind: "model"; model: MapModelImpl; listener: Resource }
+    | { kind: "model"; model: MapModel; listener: Resource }
     | { kind: "error"; error: Error };
 
 /**
@@ -181,10 +181,7 @@ export class MapRegistry implements Service {
     }
 
     // Wrapper method to ensure that in-progress construction of maps can be observed.
-    #createMapModel(
-        mapId: string,
-        configProvider: () => Promise<MapConfig>
-    ): Promise<MapModelImpl> {
+    #createMapModel(mapId: string, configProvider: () => Promise<MapConfig>): Promise<MapModel> {
         const creationJob = this.#modelCreationJobs.get(mapId);
         if (creationJob) {
             throw new Error("Internal error: a map model is already being created for this mapId");
@@ -197,7 +194,7 @@ export class MapRegistry implements Service {
                     throw new Error(`MapRegistry has been destroyed.`);
                 }
 
-                const listener = mapModel.on("destroy", () => {
+                const listener = onSync(mapModel.destroyed, () => {
                     // Allow id reuse for dynamically created maps
                     if (this.#isDynamic(mapId)) {
                         const currentEntry = this.#entries.get(mapId);
@@ -230,7 +227,7 @@ export class MapRegistry implements Service {
     async #createMapModelImpl(
         mapId: string,
         configProvider: () => Promise<MapConfig>
-    ): Promise<MapModelImpl> {
+    ): Promise<MapModel> {
         LOG.info(`Creating map with id '${mapId}'`);
         const mapConfig = await configProvider();
         const mapModel = await createMapModel(mapId, mapConfig, this.#intl, this.#httpService);
@@ -242,11 +239,11 @@ export class MapRegistry implements Service {
     }
 }
 
-async function waitForResult(job: Promise<ModelJobResult>): Promise<MapModelImpl> {
+async function waitForResult(job: Promise<ModelJobResult>): Promise<MapModel> {
     return unbox(await job);
 }
 
-function unbox(entry: ModelJobResult): MapModelImpl {
+function unbox(entry: ModelJobResult): MapModel {
     if (entry.kind === "error") {
         throw entry.error;
     }
