@@ -7,10 +7,10 @@ import {
 } from "@open-pioneer/test-utils/react";
 import { renderHook, RenderHookResult, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { MapRegistry } from "../MapRegistry";
-import { MapModel } from "../model/MapModel";
-import { MapModelImpl } from "../model/MapModelImpl";
-import { DefaultMapProvider } from "./DefaultMapProvider";
+import { MapRegistry } from "../../MapRegistry";
+import { MapModel } from "../../model/MapModel";
+import { MapModelImpl } from "../../model/MapModelImpl";
+import { DefaultMapProvider } from "../DefaultMapProvider";
 import { useMapModel, UseMapModelResult, useMapModelValue } from "./useMapModel";
 
 afterEach(() => {

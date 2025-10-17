@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import { createContext, useContext } from "react";
 import { MapModel } from "../model/MapModel";
-import { MapModelProps } from "./useMapModel";
+import { MapModelProps } from "./hooks/useMapModel";
 
 const DefaultMapContext = createContext<MapModel | undefined>(undefined);
 DefaultMapContext.displayName = "DefaultMapContext";

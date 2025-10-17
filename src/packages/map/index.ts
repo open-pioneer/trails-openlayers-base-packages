@@ -6,7 +6,7 @@ export { MapAnchor, type MapAnchorPosition, type MapAnchorProps } from "./ui/Map
 export { MapContainer, type MapContainerProps } from "./ui/MapContainer";
 
 // Hooks
-export { DefaultMapProvider } from "./hooks/DefaultMapProvider";
+export { DefaultMapProvider } from "./ui/DefaultMapProvider";
 export {
     useMapModel,
     useMapModelValue,
@@ -15,7 +15,7 @@ export {
     type UseMapModelRejected,
     type UseMapModelResolved,
     type UseMapModelResult
-} from "./hooks/useMapModel";
+} from "./ui/hooks/useMapModel";
 
 // Layer types
 export { type ChildrenCollection } from "./layers/shared/ChildrenCollection";
