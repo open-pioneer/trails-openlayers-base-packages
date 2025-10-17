@@ -7,6 +7,7 @@ import { expect, it } from "vitest";
 import { LayerFactory } from "./LayerFactory";
 import { AbstractLayer } from "./layers/AbstractLayer";
 import { SimpleLayer } from "./layers/SimpleLayer";
+import { GET_DEPS } from "./layers/shared/internals";
 
 it("creates layer instances", async () => {
     const mockHttpService = {} as unknown as HttpService; // not called in this test
@@ -27,5 +28,5 @@ it("creates layer instances", async () => {
     expect(layer.olLayer).toBe(olLayer);
 
     // Testing internals: dependencies are propagated without connection to the map:
-    expect((layer as AbstractLayer).__getDeps().httpService).toBe(mockHttpService);
+    expect((layer as AbstractLayer)[GET_DEPS]().httpService).toBe(mockHttpService);
 });

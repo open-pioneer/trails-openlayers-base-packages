@@ -6,6 +6,12 @@ import { AbstractLayer } from "../AbstractLayer";
 import { GroupLayer } from "../GroupLayer";
 import { ChildrenCollection } from "../shared/ChildrenCollection";
 import { AnyLayer, Layer } from "../unions";
+import {
+    ATTACH_TO_GROUP,
+    DETACH_FROM_GROUP,
+    GET_PARENT,
+    GET_RAW_LAYERS
+} from "../shared/internals";
 
 /**
  * Contains {@link Layer} instances that belong to a {@link GroupLayer}
@@ -25,7 +31,7 @@ export class GroupLayerCollection implements ChildrenCollection<Layer> {
                     `Layer '${layer.id}' of group '${parent.id}' is marked as base layer. Layers that belong to a group layer cannot be a base layer.`
                 );
             }
-            layer.__attachToGroup(parent); //attach every layer to the parent group layer
+            layer[ATTACH_TO_GROUP](parent); //attach every layer to the parent group layer
         }
         this.#layers = layers as (Layer & AbstractLayer)[];
         this.#parent = parent;
@@ -36,7 +42,7 @@ export class GroupLayerCollection implements ChildrenCollection<Layer> {
      */
     destroy() {
         for (const layer of this.#layers) {
-            layer.__detachFromGroup();
+            layer[DETACH_FROM_GROUP]();
             layer.destroy();
         }
         this.#layers = [];
@@ -78,7 +84,7 @@ export class GroupLayerCollection implements ChildrenCollection<Layer> {
      *
      * @internal
      */
-    __getRawLayers(): Layer[] {
+    [GET_RAW_LAYERS](): Layer[] {
         return this.#layers;
     }
 
@@ -87,7 +93,7 @@ export class GroupLayerCollection implements ChildrenCollection<Layer> {
      *
      * @internal
      */
-    __getParent(): GroupLayer {
+    [GET_PARENT](): GroupLayer {
         return this.#parent;
     }
 }

@@ -5,7 +5,14 @@ import { Group } from "ol/layer";
 import { MapModel } from "../model/MapModel";
 import { AbstractLayer } from "./AbstractLayer";
 import { LayerConfig } from "./shared/LayerConfig";
-import { InternalConstructorTag, LayerConstructor, LayerDependencies } from "./shared/internals";
+import {
+    ATTACH_TO_MAP,
+    DETACH_FROM_MAP,
+    GET_RAW_LAYERS,
+    InternalConstructorTag,
+    LayerConstructor,
+    LayerDependencies
+} from "./shared/internals";
 import { Layer } from "./unions";
 import { GroupLayerCollection } from "./group/GroupLayerCollection";
 
@@ -101,14 +108,14 @@ export class GroupLayer extends AbstractLayer {
         return super.olLayer as Group;
     }
 
-    override __attachToMap(map: MapModel): void {
-        super.__attachToMap(map);
-        this.layers.__getRawLayers().forEach((layer) => layer.__attachToMap(map));
+    override [ATTACH_TO_MAP](map: MapModel): void {
+        super[ATTACH_TO_MAP](map);
+        this.layers[GET_RAW_LAYERS]().forEach((layer) => layer[ATTACH_TO_MAP](map));
     }
 
-    override __detachFromMap(): void {
-        super.__detachFromMap();
-        this.layers.__getRawLayers().forEach((layer) => layer.__detachFromMap());
+    override [DETACH_FROM_MAP](): void {
+        super[DETACH_FROM_MAP]();
+        this.layers[GET_RAW_LAYERS]().forEach((layer) => layer[DETACH_FROM_MAP]());
     }
 }
 

@@ -12,7 +12,11 @@ import { AbstractLayerBase } from "./AbstractLayerBase";
 import {
     getLayerDependencies,
     InternalConstructorTag,
-    LayerDependencies
+    LayerDependencies,
+    LAYER_DEPS,
+    SET_VISIBLE,
+    ATTACH_TO_MAP,
+    GET_DEPS
 } from "./shared/internals";
 import { HealthCheckFunction, LayerConfig } from "./shared/LayerConfig";
 import { SimpleLayerConfig } from "./SimpleLayer";
@@ -68,7 +72,7 @@ export abstract class AbstractLayer extends AbstractLayerBase {
         );
         this.#loadState = reactive(getSourceState(getSource(this.#olLayer)));
 
-        this.__setVisible(config.visible ?? true); // apply initial visibility
+        this[SET_VISIBLE](config.visible ?? true); // apply initial visibility
     }
 
     override destroy() {
@@ -116,8 +120,8 @@ export abstract class AbstractLayer extends AbstractLayerBase {
     /**
      * Called by the map model when the layer is added to the map.
      */
-    override __attachToMap(map: MapModel): void {
-        super.__attachToMap(map);
+    override [ATTACH_TO_MAP](map: MapModel): void {
+        super[ATTACH_TO_MAP](map);
 
         if (!this.#stateWatchResource) {
             const { initial: initialState, resource: stateWatchResource } = watchLoadState(
@@ -140,16 +144,16 @@ export abstract class AbstractLayer extends AbstractLayerBase {
             return;
         }
 
-        this.__setVisible(newVisibility);
+        this[SET_VISIBLE](newVisibility);
     }
 
-    __setVisible(newVisibility: boolean): void {
+    [SET_VISIBLE](newVisibility: boolean): void {
         if (this.#olLayer.getVisible() !== newVisibility) {
             this.#olLayer.setVisible(newVisibility);
         }
     }
 
-    __getDeps(): LayerDependencies {
+    [GET_DEPS](): LayerDependencies {
         const deps = this.#deps;
         if (deps) {
             return deps;
@@ -157,7 +161,7 @@ export abstract class AbstractLayer extends AbstractLayerBase {
 
         const map = this.nullableMap;
         if (map) {
-            return map.__layerDeps;
+            return map[LAYER_DEPS];
         }
         throw new Error(
             `Layer '${this.id}' has not been attached to a map yet. "
@@ -252,7 +256,7 @@ async function doHealthCheck(
         healthCheckFn = healthCheck;
     } else if (typeof healthCheck === "string") {
         healthCheckFn = async () => {
-            const httpService = layer.__getDeps().httpService;
+            const httpService = layer[GET_DEPS]().httpService;
             const response = await httpService.fetch(healthCheck);
             if (response.ok) {
                 return "loaded";

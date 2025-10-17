@@ -4,7 +4,7 @@ import { getRecursiveLayers } from "../../model/getRecursiveLayers";
 import { LayerRetrievalOptions, RecursiveRetrievalOptions } from "../../shared";
 import { Sublayer } from "../unions";
 import { ChildrenCollection } from "./ChildrenCollection";
-import { assertInternalConstructor, InternalConstructorTag } from "./internals";
+import { assertInternalConstructor, GET_RAW_SUBLAYERS, InternalConstructorTag } from "./internals";
 import { SublayerBaseType } from "./SublayerBaseType";
 
 // Imported for typedoc
@@ -69,7 +69,7 @@ export class SublayersCollection<SublayerType extends SublayerBaseType>
      *
      * NOTE: Do not modify directly!
      */
-    __getRawSublayers(): SublayerType[] {
+    [GET_RAW_SUBLAYERS](): SublayerType[] {
         return this.#sublayers;
     }
 }

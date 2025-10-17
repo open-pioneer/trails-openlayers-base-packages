@@ -14,7 +14,13 @@ import { MapModel } from "../model/MapModel";
 import { fetchText } from "../utils/fetch";
 import { AbstractLayer } from "./AbstractLayer";
 import { LayerConfig } from "./shared/LayerConfig";
-import { InternalConstructorTag, LayerConstructor, LayerDependencies } from "./shared/internals";
+import {
+    ATTACH_TO_MAP,
+    GET_DEPS,
+    InternalConstructorTag,
+    LayerConstructor,
+    LayerDependencies
+} from "./shared/internals";
 import { getLegendUrl } from "./wmts/getLegendUrl";
 
 // Import for api docs
@@ -145,8 +151,8 @@ export class WMTSLayer extends AbstractLayer {
         return this.#matrixSet;
     }
 
-    override __attachToMap(map: MapModel): void {
-        super.__attachToMap(map);
+    override [ATTACH_TO_MAP](map: MapModel): void {
+        super[ATTACH_TO_MAP](map);
         this.#load();
     }
 
@@ -190,12 +196,12 @@ export class WMTSLayer extends AbstractLayer {
     }
 
     async #fetchWMTSCapabilities(): Promise<string> {
-        const httpService = this.__getDeps().httpService;
+        const httpService = this[GET_DEPS]().httpService;
         return fetchText(this.#url, httpService, this.#abortController.signal);
     }
 
     async #loadTile(tile: Tile, tileUrl: string): Promise<void> {
-        const httpService = this.__getDeps().httpService;
+        const httpService = this[GET_DEPS]().httpService;
         try {
             if (!(tile instanceof ImageTile)) {
                 throw new Error("Only 'ImageTile' is supported for now.");

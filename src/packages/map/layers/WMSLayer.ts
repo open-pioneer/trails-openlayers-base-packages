@@ -18,6 +18,12 @@ import { MapModel } from "../model/MapModel";
 import { fetchText } from "../utils/fetch";
 import { AbstractLayer } from "./AbstractLayer";
 import {
+    ATTACH_TO_MAP,
+    ATTACH_TO_PARENT,
+    DETACH_FROM_MAP,
+    GET_DEPS,
+    GET_RAW_SUBLAYERS,
+    SET_LEGEND,
     INTERNAL_CONSTRUCTOR_TAG,
     InternalConstructorTag,
     LayerConstructor,
@@ -142,8 +148,8 @@ export class WMSLayer extends AbstractLayer {
             INTERNAL_CONSTRUCTOR_TAG
         );
         this.#sublayers
-            .__getRawSublayers()
-            .forEach((sublayer) => sublayer.__attachToParent(this, this));
+            [GET_RAW_SUBLAYERS]()
+            .forEach((sublayer) => sublayer[ATTACH_TO_PARENT](this, this));
 
         this.#visibleSublayers = computed(() => this.#getVisibleLayerNames(), {
             equal(a, b) {
@@ -196,19 +202,19 @@ export class WMSLayer extends AbstractLayer {
         return this.#capabilities;
     }
 
-    __attachToMap(map: MapModel): void {
-        super.__attachToMap(map);
+    [ATTACH_TO_MAP](map: MapModel): void {
+        super[ATTACH_TO_MAP](map);
         for (const sublayer of this.#sublayers.getSublayers()) {
-            sublayer.__attachToMap(map);
+            sublayer[ATTACH_TO_MAP](map);
         }
 
         this.#load();
     }
 
-    __detachFromMap(): void {
-        super.__detachFromMap();
+    [DETACH_FROM_MAP](): void {
+        super[DETACH_FROM_MAP]();
         for (const sublayer of this.#sublayers.getSublayers()) {
-            sublayer.__detachFromMap();
+            sublayer[DETACH_FROM_MAP]();
         }
     }
 
@@ -244,7 +250,7 @@ export class WMSLayer extends AbstractLayer {
 
                     for (const layer of layers) {
                         const legendUrl = getLegendUrl(capabilities, layer.name!);
-                        layer.__setLegend(legendUrl);
+                        layer[SET_LEGEND](legendUrl);
                     }
                 });
             })
@@ -281,7 +287,7 @@ export class WMSLayer extends AbstractLayer {
                 return;
             }
 
-            const nestedSublayers = sublayer.sublayers.__getRawSublayers();
+            const nestedSublayers = sublayer.sublayers[GET_RAW_SUBLAYERS]();
             if (nestedSublayers.length) {
                 for (const nestedSublayer of nestedSublayers) {
                     visitSublayer(nestedSublayer);
@@ -296,20 +302,20 @@ export class WMSLayer extends AbstractLayer {
             }
         };
 
-        for (const sublayer of this.sublayers.__getRawSublayers()) {
+        for (const sublayer of this.sublayers[GET_RAW_SUBLAYERS]()) {
             visitSublayer(sublayer);
         }
         return layers;
     }
 
     async #fetchWMSCapabilities(): Promise<string> {
-        const httpService = this.__getDeps().httpService;
+        const httpService = this[GET_DEPS]().httpService;
         const url = `${this.#url}?LANGUAGE=ger&SERVICE=WMS&REQUEST=GetCapabilities`;
         return fetchText(url, httpService, this.#abortController.signal);
     }
 
     async #loadImage(imageWrapper: ImageWrapper, imageUrl: string): Promise<void> {
-        const httpService = this.__getDeps().httpService;
+        const httpService = this[GET_DEPS]().httpService;
         const image = imageWrapper.getImage() as HTMLImageElement;
 
         const response = await httpService.fetch(imageUrl);

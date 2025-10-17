@@ -5,8 +5,13 @@ import { MapModel } from "../../model/MapModel";
 import { AbstractLayerBase } from "../AbstractLayerBase";
 import {
     assertInternalConstructor,
+    ATTACH_TO_MAP,
+    ATTACH_TO_PARENT,
+    DETACH_FROM_MAP,
+    GET_RAW_SUBLAYERS,
     INTERNAL_CONSTRUCTOR_TAG,
-    InternalConstructorTag
+    InternalConstructorTag,
+    SET_LEGEND
 } from "../shared/internals";
 import { LayerBaseConfig } from "../shared/LayerConfig";
 import { SublayerBaseType } from "../shared/SublayerBaseType";
@@ -101,26 +106,26 @@ export class WMSSublayer extends AbstractLayerBase implements SublayerBaseType {
     /**
      * Called by the parent layer when it is attached to the map to attach all sublayers.
      */
-    override __attachToMap(map: MapModel): void {
-        super.__attachToMap(map);
+    override [ATTACH_TO_MAP](map: MapModel): void {
+        super[ATTACH_TO_MAP](map);
 
         // Recurse into nested sublayers
-        for (const sublayer of this.sublayers.__getRawSublayers()) {
-            sublayer.__attachToMap(map);
+        for (const sublayer of this.sublayers[GET_RAW_SUBLAYERS]()) {
+            sublayer[ATTACH_TO_MAP](map);
         }
     }
 
-    override __detachFromMap(): void {
-        super.__detachFromMap();
+    override [DETACH_FROM_MAP](): void {
+        super[DETACH_FROM_MAP]();
         for (const sublayer of this.#sublayers.getSublayers()) {
-            sublayer.__detachFromMap();
+            sublayer[DETACH_FROM_MAP]();
         }
     }
 
     /**
      * Attaches this sublayer to its parent _layer_ and its immediate parent _layer or sublayer_.
      */
-    __attachToParent(parentLayer: WMSLayer, parent: WMSLayer | WMSSublayer): void {
+    [ATTACH_TO_PARENT](parentLayer: WMSLayer, parent: WMSLayer | WMSSublayer): void {
         if (this.#parent) {
             throw new Error(
                 `WMS sublayer '${this.id}' has already been attached to parent '${this.#parent.id}'`
@@ -136,15 +141,15 @@ export class WMSSublayer extends AbstractLayerBase implements SublayerBaseType {
         this.#parentLayer = parentLayer;
 
         // Recurse into nested sublayers
-        for (const sublayer of this.sublayers.__getRawSublayers()) {
-            sublayer.__attachToParent(parentLayer, this);
+        for (const sublayer of this.sublayers[GET_RAW_SUBLAYERS]()) {
+            sublayer[ATTACH_TO_PARENT](parentLayer, this);
         }
     }
 
     /**
      * Called by the parent layer to update the legend on load.
      */
-    __setLegend(legendUrl: string | undefined) {
+    [SET_LEGEND](legendUrl: string | undefined) {
         this.#legend.value = legendUrl;
     }
 

@@ -18,6 +18,7 @@ const WMTS_CAPAS = readFileSync(resolve(THIS_DIR, "./wmts/test-data/SimpleWMTSCa
 
 // happy dom does not implement a good XML parser
 import jsdom from "jsdom";
+import { ATTACH_TO_MAP, LAYER_DEPS } from "./shared/internals";
 window.DOMParser = new jsdom.JSDOM().window.DOMParser;
 
 const SERVICE_URL = "https://example.com/wmts-service/Capabilities.xml";
@@ -76,17 +77,17 @@ function createLayer(
     const layer = createTestLayer({ type: WMTSLayer, ...options }, httpService);
 
     const mapModel = {
-        __layerDeps: {
+        [LAYER_DEPS]: {
             httpService: httpService as HttpService
         }
     } as MapModel;
 
-    // ensure that __attachToMap can be called
-    function isAttachable(l: unknown): l is { __attachToMap(mapModel: MapModel): void } {
-        return !!l && typeof (l as any).__attachToMap === "function";
+    // ensure that [ATTACH_TO_MAP] can be called
+    function isAttachable(l: unknown): l is { [ATTACH_TO_MAP](mapModel: MapModel): void } {
+        return !!l && typeof (l as any)[ATTACH_TO_MAP] === "function";
     }
     if (options?.attach && isAttachable(layer)) {
-        layer.__attachToMap(mapModel);
+        layer[ATTACH_TO_MAP](mapModel);
     }
 
     return {

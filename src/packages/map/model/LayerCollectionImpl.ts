@@ -17,6 +17,13 @@ import { AnyLayer, Layer, Sublayer } from "../layers/unions";
 import type { AddLayerOptions, LayerRetrievalOptions, RecursiveRetrievalOptions } from "../shared";
 import { MapModel } from "./MapModel";
 import { getRecursiveLayers } from "./getRecursiveLayers";
+import {
+    ATTACH_TO_MAP,
+    DETACH_FROM_MAP,
+    GET_RAW_LAYERS,
+    GET_RAW_SUBLAYERS,
+    SET_VISIBLE
+} from "../layers/shared/internals";
 
 const LOG = createLogger("map:LayerCollection");
 
@@ -119,7 +126,7 @@ export class LayerCollection {
         batch(() => {
             checkLayerInstance(layer);
 
-            layer.__attachToMap(this.#map);
+            layer[ATTACH_TO_MAP](this.#map);
             this.#addLayer(layer, options);
         });
     }
@@ -265,22 +272,22 @@ export class LayerCollection {
      */
     removeLayerById(id: string): void {
         batch(() => {
-            const model = this.#layersById.get(id);
-            if (!model) {
+            const layer = this.#layersById.get(id);
+            if (!layer) {
                 LOG.isDebug() && LOG.debug(`Cannot remove layer '${id}': layer is unknown.`);
                 return;
             }
 
-            checkLayerInstance(model);
-            if (!this.#topLevelLayers.has(model)) {
+            checkLayerInstance(layer);
+            if (!this.#topLevelLayers.has(layer)) {
                 LOG.warn(
-                    `Cannot remove layer '${model.id}': only top level layers can be removed at this time.`
+                    `Cannot remove layer '${layer.id}': only top level layers can be removed at this time.`
                 );
                 return;
             }
 
-            this.#removeLayer(model);
-            model.destroy();
+            this.#removeLayer(layer);
+            layer.destroy();
         });
     }
 
@@ -298,24 +305,24 @@ export class LayerCollection {
      */
     removeLayer(layer: string | Layer): Layer | undefined {
         return batch(() => {
-            let model;
+            let actualLayer;
             if (typeof layer === "string") {
-                model = this.#layersById.get(layer);
-                if (!model) {
+                actualLayer = this.#layersById.get(layer);
+                if (!actualLayer) {
                     return undefined;
                 }
             } else {
-                model = layer;
+                actualLayer = layer;
             }
 
-            checkLayerInstance(model);
-            if (!this.#topLevelLayers.has(model)) {
+            checkLayerInstance(actualLayer);
+            if (!this.#topLevelLayers.has(actualLayer)) {
                 return undefined;
             }
 
-            this.#removeLayer(model);
-            model.__detachFromMap();
-            return model;
+            this.#removeLayer(actualLayer);
+            actualLayer[DETACH_FROM_MAP]();
+            return actualLayer;
         });
     }
 
@@ -330,33 +337,33 @@ export class LayerCollection {
     /**
      * Adds the given layer to the map and all relevant indices.
      */
-    #addLayer(model: LayerType, options: AddLayerOptions | undefined) {
+    #addLayer(layer: LayerType, options: AddLayerOptions | undefined) {
         // Throws; do this before manipulating the data structures
-        const pos = this.#getInsertionPos(model, options);
-        this.#indexLayer(model);
+        const pos = this.#getInsertionPos(layer, options);
+        this.#indexLayer(layer);
 
         // Everything below this line should not fail.
         if (pos.which === "base") {
-            if (!this.#activeBaseLayer.value && model.visible) {
-                this.#updateBaseLayer(model);
+            if (!this.#activeBaseLayer.value && layer.visible) {
+                this.#updateBaseLayer(layer);
             } else {
-                model.__setVisible(false);
+                layer[SET_VISIBLE](false);
             }
         } else {
-            model.__setVisible(model.visible);
+            layer[SET_VISIBLE](layer.visible);
 
             const layerList = this.#getLayerList(pos);
-            layerList.splice(pos.index, 0, model); // insert new layer at insertion index
+            layerList.splice(pos.index, 0, layer); // insert new layer at insertion index
         }
-        this.#topLevelLayers.add(model);
-        this.#map.olMap.addLayer(model.olLayer);
+        this.#topLevelLayers.add(layer);
+        this.#map.olMap.addLayer(layer.olLayer);
     }
 
-    #getInsertionPos(model: LayerType, options: AddLayerOptions | undefined): LayerPos {
-        if (model.isBaseLayer) {
+    #getInsertionPos(layer: LayerType, options: AddLayerOptions | undefined): LayerPos {
+        if (layer.isBaseLayer) {
             if (options?.at) {
                 throw new Error(
-                    `Cannot add base layer '${model.id}' at a specific position: only operational layers can be added at a specific position.`
+                    `Cannot add base layer '${layer.id}' at a specific position: only operational layers can be added at a specific position.`
                 );
             }
             return { which: "base" };
@@ -377,7 +384,7 @@ export class LayerCollection {
                 const pos = this.#findOpOrTopmost(reference);
                 if (!pos) {
                     // reference is not a top level operational layer -> throw error
-                    const errorMessage = this.#getInsertErrorMessage(model, reference);
+                    const errorMessage = this.#getInsertErrorMessage(layer, reference);
                     throw new Error(errorMessage);
                 }
 
@@ -408,17 +415,17 @@ export class LayerCollection {
     /**
      * Removes the given top level layer from the map and all relevant indices.
      */
-    #removeLayer(model: LayerType) {
-        this.#map.olMap.removeLayer(model.olLayer);
-        this.#topLevelLayers.delete(model);
-        if (!model.isBaseLayer) {
-            const pos = this.#findOpOrTopmost(model)!;
+    #removeLayer(layer: LayerType) {
+        this.#map.olMap.removeLayer(layer.olLayer);
+        this.#topLevelLayers.delete(layer);
+        if (!layer.isBaseLayer) {
+            const pos = this.#findOpOrTopmost(layer)!;
             const layerList = this.#getLayerList(pos);
             layerList.splice(pos.index, 1);
         }
 
-        this.#unIndexLayer(model);
-        if (this.#activeBaseLayer.value === model) {
+        this.#unIndexLayer(layer);
+        if (this.#activeBaseLayer.value === layer) {
             const newBaseLayer = this.getBaseLayers()[0];
             if (newBaseLayer) {
                 checkLayerInstance(newBaseLayer);
@@ -427,37 +434,37 @@ export class LayerCollection {
         }
     }
 
-    #updateBaseLayer(model: LayerType | undefined) {
-        if (this.#activeBaseLayer.value === model) {
+    #updateBaseLayer(layer: LayerType | undefined) {
+        if (this.#activeBaseLayer.value === layer) {
             return;
         }
 
         if (LOG.isDebug()) {
-            const getId = (model: AbstractLayer | undefined) => {
-                return model ? `'${model.id}'` : undefined;
+            const getId = (layer: AbstractLayer | undefined) => {
+                return layer ? `'${layer.id}'` : undefined;
             };
 
             LOG.debug(
-                `Switching active base layer from ${getId(this.#activeBaseLayer.value)} to ${getId(model)}`
+                `Switching active base layer from ${getId(this.#activeBaseLayer.value)} to ${getId(layer)}`
             );
         }
 
         batch(() => {
-            this.#activeBaseLayer.value?.__setVisible(false);
-            this.#activeBaseLayer.value = model;
-            model?.__setVisible(true);
+            this.#activeBaseLayer.value?.[SET_VISIBLE](false);
+            this.#activeBaseLayer.value = layer;
+            layer?.[SET_VISIBLE](true);
         });
     }
 
     /**
      * Index the layer and all its children.
      */
-    #indexLayer(model: LayerType) {
+    #indexLayer(layer: LayerType) {
         // layer id -> layer (or sublayer)
         const registrations: [string, OlBaseLayer | undefined][] = [];
-        const visit = (model: LayerType | (AbstractLayerBase & Sublayer)) => {
-            const id = model.id;
-            const olLayer = "olLayer" in model ? model.olLayer : undefined;
+        const visit = (layer: LayerType | (AbstractLayerBase & Sublayer)) => {
+            const id = layer.id;
+            const olLayer = "olLayer" in layer ? layer.olLayer : undefined;
             if (this.#layersById.has(id)) {
                 throw new Error(
                     `Layer id '${id}' is not unique. Either assign a unique id yourself ` +
@@ -469,23 +476,23 @@ export class LayerCollection {
             }
 
             // Register this layer with the map.
-            this.#layersById.set(id, model);
+            this.#layersById.set(id, layer);
             if (olLayer) {
-                this.#layersByOlLayer.set(olLayer, model as LayerType); // ol is present --> not a sublayer
+                this.#layersByOlLayer.set(olLayer, layer as LayerType); // ol is present --> not a sublayer
             }
             registrations.push([id, olLayer]);
 
             // Recurse into nested children.
-            for (const layer of model.layers?.__getRawLayers() ?? []) {
-                visit(layer);
+            for (const childLayer of layer.layers?.[GET_RAW_LAYERS]() ?? []) {
+                visit(childLayer);
             }
-            for (const sublayer of model.sublayers?.__getRawSublayers() ?? []) {
+            for (const sublayer of layer.sublayers?.[GET_RAW_SUBLAYERS]() ?? []) {
                 visit(sublayer);
             }
         };
 
         try {
-            visit(model);
+            visit(layer);
         } catch (e) {
             // If any error happens, undo the indexing.
             // This way we don't leave a partially indexed layer tree behind.
@@ -502,22 +509,22 @@ export class LayerCollection {
     /**
      * Removes index entries for the given layer and all its children.
      */
-    #unIndexLayer(model: AbstractLayer) {
-        const visit = (model: AbstractLayer | AbstractLayerBase) => {
-            if ("olLayer" in model) {
-                this.#layersByOlLayer.delete(model.olLayer);
+    #unIndexLayer(layer: AbstractLayer) {
+        const visit = (layer: AbstractLayer | AbstractLayerBase) => {
+            if ("olLayer" in layer) {
+                this.#layersByOlLayer.delete(layer.olLayer);
             }
-            this.#layersById.delete(model.id);
+            this.#layersById.delete(layer.id);
 
-            for (const layer of model.layers?.__getRawLayers() ?? []) {
-                visit(layer);
+            for (const childLayer of layer.layers?.[GET_RAW_LAYERS]() ?? []) {
+                visit(childLayer);
             }
 
-            for (const sublayer of model.sublayers?.__getRawSublayers() ?? []) {
+            for (const sublayer of layer.sublayers?.[GET_RAW_SUBLAYERS]() ?? []) {
                 visit(sublayer);
             }
         };
-        visit(model);
+        visit(layer);
     }
 
     #getLayerList(pos: OpOrTopmostLayerPos): ReactiveArray<LayerType> {

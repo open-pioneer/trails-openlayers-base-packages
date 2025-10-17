@@ -66,3 +66,17 @@ export function assertInternalConstructor(tag: InternalConstructorTag) {
         throw new Error("This constructor is internal.");
     }
 }
+
+// use symbols for internal functions
+export const SET_VISIBLE = Symbol("SET_VISIBLE");
+export const DETACH_FROM_MAP = Symbol("DETACH_FROM_MAP");
+export const ATTACH_TO_MAP = Symbol("ATTACH_TO_MAP");
+export const ATTACH_TO_GROUP = Symbol("ATTACH_TO_GROUP");
+export const DETACH_FROM_GROUP = Symbol("DETACH_FROM_GROUP");
+export const GET_RAW_LAYERS = Symbol("GET_RAW_LAYERS");
+export const GET_PARENT = Symbol("GET_PARENT");
+export const GET_DEPS = Symbol("GET_DEPS");
+export const GET_RAW_SUBLAYERS = Symbol("GET_RAW_SUBLAYERS");
+export const ATTACH_TO_PARENT = Symbol("ATTACH_TO_PARENT");
+export const SET_LEGEND = Symbol("SET_LEGEND");
+export const LAYER_DEPS = Symbol("LAYER_DEPS");

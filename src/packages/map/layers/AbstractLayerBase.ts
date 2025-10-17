@@ -16,6 +16,12 @@ import { GroupLayerCollection } from "./group/GroupLayerCollection";
 import { ChildrenCollection } from "./shared/ChildrenCollection";
 import { SublayersCollection } from "./shared/SublayersCollection";
 import { AnyLayer, AnyLayerTypes, Sublayer } from "./unions";
+import {
+    ATTACH_TO_GROUP,
+    ATTACH_TO_MAP,
+    DETACH_FROM_GROUP,
+    DETACH_FROM_MAP
+} from "./shared/internals";
 
 export interface AbstractLayerBaseOptions {
     id?: string;
@@ -184,7 +190,7 @@ export abstract class AbstractLayerBase {
     abstract get visible(): boolean;
 
     /**
-     * If this layer is a group layer this property contains a collection of all layers that a members to the group.
+     * If this layer is a group layer this property contains a collection of all layers that are members of the group.
      *
      * The property shall be `undefined` if it is not a group layer.
      *
@@ -211,7 +217,7 @@ export abstract class AbstractLayerBase {
     /**
      * Attaches the layer to its owning map.
      */
-    __attachToMap(map: MapModel): void {
+    [ATTACH_TO_MAP](map: MapModel): void {
         if (this.#map.value) {
             throw new Error(
                 `Layer '${this.id}' has already been attached to the map '${this.map.id}'`
@@ -224,7 +230,7 @@ export abstract class AbstractLayerBase {
      * Attach group layers to its parent group layer.
      * Called by the parent layer.
      */
-    __attachToGroup(parent: GroupLayer): void {
+    [ATTACH_TO_GROUP](parent: GroupLayer): void {
         if (this.#parent) {
             throw new Error(
                 `Layer '${this.id}' has already been attached to the group layer '${this.#parent.id}'`
@@ -236,7 +242,7 @@ export abstract class AbstractLayerBase {
     /**
      * Called when a layer is removed from the map.
      */
-    __detachFromMap(): void {
+    [DETACH_FROM_MAP](): void {
         this.#map.value = undefined;
     }
 
@@ -245,7 +251,7 @@ export abstract class AbstractLayerBase {
      *
      * Called by the parent group layer when destroyed or the layer gets removed.
      */
-    __detachFromGroup(): void {
+    [DETACH_FROM_GROUP](): void {
         this.#parent = undefined;
     }
 

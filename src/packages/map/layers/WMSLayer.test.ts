@@ -11,6 +11,7 @@ import { Mock, afterEach, beforeEach, expect, it, vi } from "vitest";
 import { MapModel } from "../model/MapModel";
 import { AbstractLayerBase } from "./AbstractLayerBase";
 import { WMSLayer, WMSLayerConfig } from "./WMSLayer";
+import { ATTACH_TO_MAP, LAYER_DEPS } from "./shared/internals";
 
 const SERVICE_URL = "https://example.com/wms-service";
 
@@ -426,17 +427,17 @@ function createLayer(options: WMSLayerConfig & { fetch?: Mock; attach?: boolean 
         }
     );
     const mapModel = {
-        __layerDeps: {
+        [LAYER_DEPS]: {
             httpService: httpService as HttpService
         }
     } as MapModel;
 
-    // ensure that __attachToMap can be called
-    function isAttachable(l: unknown): l is { __attachToMap(mapModel: MapModel): void } {
-        return !!l && typeof (l as any).__attachToMap === "function";
+    // ensure that [ATTACH_TO_MAP] can be called
+    function isAttachable(l: unknown): l is { [ATTACH_TO_MAP](mapModel: MapModel): void } {
+        return !!l && typeof (l as any)[ATTACH_TO_MAP] === "function";
     }
     if (options?.attach && isAttachable(layer)) {
-        layer.__attachToMap(mapModel);
+        layer[ATTACH_TO_MAP](mapModel);
     }
 
     return {

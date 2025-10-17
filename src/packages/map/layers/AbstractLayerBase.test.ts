@@ -8,7 +8,7 @@ import { afterEach, expect, it, vi } from "vitest";
 import { MapModel } from "../model/MapModel";
 import { AbstractLayerBase, AbstractLayerBaseOptions } from "./AbstractLayerBase";
 import { GroupLayerCollection } from "./group/GroupLayerCollection";
-import { INTERNAL_CONSTRUCTOR_TAG } from "./shared/internals";
+import { ATTACH_TO_MAP, INTERNAL_CONSTRUCTOR_TAG } from "./shared/internals";
 import { SublayersCollection } from "./shared/SublayersCollection";
 import { onSync } from "@conterra/reactivity-events";
 
@@ -247,7 +247,7 @@ abstract class SharedParent extends AbstractLayerBase {
     }
 
     __attach(map: MapModel): void {
-        this.__attachToMap(map);
+        this[ATTACH_TO_MAP](map);
     }
 
     get visible(): boolean {

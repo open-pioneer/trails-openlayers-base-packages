@@ -21,7 +21,7 @@ import { Geometry } from "ol/geom";
 import { getPointResolution, Projection } from "ol/proj";
 import type { StyleLike } from "ol/style/Style";
 import type { BaseFeature } from "../BaseFeature";
-import { LayerDependencies } from "../layers/shared/internals";
+import { LAYER_DEPS, LayerDependencies } from "../layers/shared/internals";
 import { Highlights } from "./Highlights";
 import { LayerCollection } from "./LayerCollectionImpl";
 import { ExtentConfig } from "./MapConfig";
@@ -319,7 +319,7 @@ export class MapModel {
     /**
      * TODO: Can be removed once the LayerFactory is the only supported way of constructing a layer.
      */
-    get __layerDeps(): LayerDependencies {
+    get [LAYER_DEPS](): LayerDependencies {
         return this.#layerDeps;
     }
 

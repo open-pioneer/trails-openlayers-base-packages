@@ -11,6 +11,7 @@ import { MapModel } from "../model/MapModel";
 import { createTestOlLayer } from "@open-pioneer/map-test-utils";
 import { HealthCheckFunction, LayerConfig } from "./shared/LayerConfig";
 import { SimpleLayerConfig } from "./SimpleLayer";
+import { ATTACH_TO_MAP, LAYER_DEPS } from "./shared/internals";
 
 afterEach(() => {
     vi.restoreAllMocks();
@@ -382,13 +383,13 @@ function createLayer(layerConfig: SimpleLayerConfig, options?: { fetch?: Mock })
     } satisfies Partial<HttpService>;
 
     const mapModel = {
-        __layerDeps: {
+        [LAYER_DEPS]: {
             httpService
         }
     } satisfies Partial<MapModel> as unknown as MapModel;
 
     const layer = new LayerImpl(layerConfig);
-    layer.__attachToMap(mapModel);
+    layer[ATTACH_TO_MAP](mapModel);
     return { layer, mapModel, httpService };
 }
 
