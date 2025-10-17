@@ -10,15 +10,15 @@ exports[`should successfully create a selection component and select the first s
     data-part="root"
     data-scope="select"
     dir="ltr"
-    id="select:«r0»"
+    id="select:_r_0_"
   >
     <label
       class="chakra-select__label css-p3rj3s"
       data-part="label"
       data-scope="select"
       dir="ltr"
-      for="select:«r0»:select"
-      id="select:«r0»:label"
+      for="select:_r_0_:select"
+      id="select:_r_0_:label"
     >
       selectSource
     </label>
@@ -28,20 +28,21 @@ exports[`should successfully create a selection component and select the first s
       data-scope="select"
       data-state="closed"
       dir="ltr"
-      id="select:«r0»:control"
+      id="select:_r_0_:control"
     >
       <button
-        aria-controls="select:«r0»:content"
+        aria-controls="select:_r_0_:content"
         aria-description="disabledTooltip"
         aria-expanded="false"
         aria-haspopup="listbox"
-        aria-labelledby="select:«r0»:label"
+        aria-invalid="false"
+        aria-labelledby="select:_r_0_:label"
         class="chakra-select__trigger css-jjrwqe"
         data-part="trigger"
         data-scope="select"
         data-state="closed"
         dir="ltr"
-        id="select:«r0»:trigger"
+        id="select:_r_0_:trigger"
         role="combobox"
         type="button"
       >
@@ -64,7 +65,7 @@ exports[`should successfully create a selection component and select the first s
                 data-scope="tooltip"
                 data-state="closed"
                 dir="ltr"
-                id="tooltip:«r1»:trigger"
+                id="tooltip:_r_1_:trigger"
               >
                 <svg
                   aria-label="sourceNotAvailable"

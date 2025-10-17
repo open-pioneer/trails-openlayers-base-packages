@@ -10,7 +10,7 @@ exports[`should successfully create an view history navigation component 1`] = `
   data-testid="navi-history-for"
   dir="ltr"
   disabled=""
-  id="tooltip:«r1»:trigger"
+  id="tooltip:_r_1_:trigger"
   type="button"
 >
   <svg
@@ -47,7 +47,7 @@ exports[`should successfully create an view history navigation component 2`] = `
   data-testid="navi-history-back"
   dir="ltr"
   disabled=""
-  id="tooltip:«r0»:trigger"
+  id="tooltip:_r_0_:trigger"
   type="button"
 >
   <svg

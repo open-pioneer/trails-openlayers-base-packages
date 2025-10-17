@@ -11,14 +11,14 @@ exports[`should successfully create a coordinate search component 1`] = `
     data-scope="tooltip"
     data-state="closed"
     dir="ltr"
-    id="tooltip:«r0»:trigger"
+    id="tooltip:_r_0_:trigger"
   >
     <div
       class="coordinate-input-select-root chakra-select__root css-11vsvdz"
       data-part="root"
       data-scope="select"
       dir="ltr"
-      id="select:«r1»"
+      id="select:_r_1_"
     >
       <div
         class="coordinate-input-select chakra-select__control css-17j1053"
@@ -26,29 +26,30 @@ exports[`should successfully create a coordinate search component 1`] = `
         data-scope="select"
         data-state="closed"
         dir="ltr"
-        id="select:«r1»:control"
+        id="select:_r_1_:control"
       >
         <label
           class="chakra-select__label css-164gb0n"
           data-part="label"
           data-scope="select"
           dir="ltr"
-          for="select:«r1»:select"
-          id="select:«r1»:label"
+          for="select:_r_1_:select"
+          id="select:_r_1_:label"
         >
           projections.ariaLabel
         </label>
         <button
-          aria-controls="select:«r1»:content"
+          aria-controls="select:_r_1_:content"
           aria-expanded="false"
           aria-haspopup="listbox"
-          aria-labelledby="select:«r1»:label"
+          aria-invalid="false"
+          aria-labelledby="select:_r_1_:label"
           class="coordinate-input-select-trigger chakra-select__trigger css-1qq4sc1"
           data-part="trigger"
           data-scope="select"
           data-state="closed"
           dir="ltr"
-          id="select:«r1»:trigger"
+          id="select:_r_1_:trigger"
           role="combobox"
           type="button"
         >
@@ -91,7 +92,7 @@ exports[`should successfully create a coordinate search component 1`] = `
         class="chakra-field__root css-lesxm"
         data-part="root"
         data-scope="field"
-        id="field::«r2»"
+        id="field::_r_2_"
         role="group"
       >
         <input
@@ -100,7 +101,7 @@ exports[`should successfully create a coordinate search component 1`] = `
           class="chakra-input css-n0ozho"
           data-part="input"
           data-scope="field"
-          id="«r2»"
+          id="_r_2_"
           placeholder=""
           type="text"
           value=""

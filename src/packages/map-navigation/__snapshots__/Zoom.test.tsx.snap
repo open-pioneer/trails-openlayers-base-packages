@@ -9,7 +9,7 @@ exports[`should successfully create a zoom component with additional css classes
   data-state="closed"
   data-testid="zoom"
   dir="ltr"
-  id="tooltip:«r2»:trigger"
+  id="tooltip:_r_2_:trigger"
   type="button"
 >
   <svg
@@ -45,7 +45,7 @@ exports[`should successfully create a zoom-in and zoom-out buttons 1`] = `
   data-state="closed"
   data-testid="zoom-in"
   dir="ltr"
-  id="tooltip:«r0»:trigger"
+  id="tooltip:_r_0_:trigger"
   type="button"
 >
   <svg
@@ -81,7 +81,7 @@ exports[`should successfully create a zoom-in and zoom-out buttons 2`] = `
   data-state="closed"
   data-testid="zoom-out"
   dir="ltr"
-  id="tooltip:«r1»:trigger"
+  id="tooltip:_r_1_:trigger"
   type="button"
 >
   <svg

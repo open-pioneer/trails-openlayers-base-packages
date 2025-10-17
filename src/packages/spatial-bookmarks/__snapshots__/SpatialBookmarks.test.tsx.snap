@@ -58,7 +58,7 @@ exports[`should load the stored bookmark from local storage and present it visib
         data-scope="tooltip"
         data-state="closed"
         dir="ltr"
-        id="tooltip:«r0»:trigger"
+        id="tooltip:_r_0_:trigger"
         type="button"
       >
         <svg

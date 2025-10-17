@@ -6,7 +6,7 @@ exports[`should disable selection of unavailable layers and show a warning 1`] =
   data-part="root"
   data-scope="select"
   dir="ltr"
-  id="select:«r9»"
+  id="select:_r_9_"
 >
   <div
     class="chakra-select__control css-17j1053"
@@ -14,19 +14,20 @@ exports[`should disable selection of unavailable layers and show a warning 1`] =
     data-scope="select"
     data-state="closed"
     dir="ltr"
-    id="select:«r9»:control"
+    id="select:_r_9_:control"
   >
     <button
-      aria-controls="select:«r9»:content"
+      aria-controls="select:_r_9_:content"
       aria-expanded="false"
       aria-haspopup="listbox"
-      aria-labelledby="select:«r9»:label"
+      aria-invalid="false"
+      aria-labelledby="select:_r_9_:label"
       class="basemap-switcher-select-trigger chakra-select__trigger css-jjrwqe"
       data-part="trigger"
       data-scope="select"
       data-state="closed"
       dir="ltr"
-      id="select:«r9»:trigger"
+      id="select:_r_9_:trigger"
       role="combobox"
       type="button"
     >
@@ -74,7 +75,7 @@ exports[`should successfully create a basemap switcher component 1`] = `
     data-part="root"
     data-scope="select"
     dir="ltr"
-    id="select:«r0»"
+    id="select:_r_0_"
   >
     <div
       class="chakra-select__control css-17j1053"
@@ -82,20 +83,21 @@ exports[`should successfully create a basemap switcher component 1`] = `
       data-scope="select"
       data-state="open"
       dir="ltr"
-      id="select:«r0»:control"
+      id="select:_r_0_:control"
     >
       <button
-        aria-controls="select:«r0»:content"
+        aria-controls="select:_r_0_:content"
         aria-expanded="true"
         aria-haspopup="listbox"
-        aria-labelledby="select:«r0»:label"
+        aria-invalid="false"
+        aria-labelledby="select:_r_0_:label"
         class="basemap-switcher-select-trigger chakra-select__trigger css-jjrwqe"
         data-part="trigger"
         data-placement="bottom-start"
         data-scope="select"
         data-state="open"
         dir="ltr"
-        id="select:«r0»:trigger"
+        id="select:_r_0_:trigger"
         role="combobox"
         type="button"
       >

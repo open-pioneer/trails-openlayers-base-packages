@@ -10,7 +10,7 @@ exports[`should successfully create a toc component 1`] = `
   >
     <h1
       class="chakra-heading css-k5qncm"
-      id="«r0»"
+      id="_r_0_"
     >
       basemapsLabel
     </h1>
@@ -22,7 +22,7 @@ exports[`should successfully create a toc component 1`] = `
         data-part="root"
         data-scope="select"
         dir="ltr"
-        id="select:«r1»"
+        id="select:_r_1_"
       >
         <div
           class="chakra-select__control css-17j1053"
@@ -30,20 +30,21 @@ exports[`should successfully create a toc component 1`] = `
           data-scope="select"
           data-state="open"
           dir="ltr"
-          id="select:«r1»:control"
+          id="select:_r_1_:control"
         >
           <button
-            aria-controls="select:«r1»:content"
+            aria-controls="select:_r_1_:content"
             aria-expanded="true"
             aria-haspopup="listbox"
-            aria-labelledby="«r0»"
+            aria-invalid="false"
+            aria-labelledby="_r_0_"
             class="basemap-switcher-select-trigger chakra-select__trigger css-jjrwqe"
             data-part="trigger"
             data-placement="bottom-start"
             data-scope="select"
             data-state="open"
             dir="ltr"
-            id="select:«r1»:trigger"
+            id="select:_r_1_:trigger"
             role="combobox"
             type="button"
           >
@@ -116,13 +117,14 @@ exports[`should successfully create a toc component 1`] = `
             data-scope="checkbox"
             data-state="checked"
             dir="ltr"
-            for="checkbox:«r3»:input"
-            id="checkbox:«r3»"
+            for="checkbox:_r_3_:input"
+            id="checkbox:_r_3_"
           >
             <input
-              aria-labelledby="checkbox:«r3»:label"
+              aria-invalid="false"
+              aria-labelledby="checkbox:_r_3_:label"
               checked=""
-              id="checkbox:«r3»:input"
+              id="checkbox:_r_3_:input"
               style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px; white-space: nowrap; word-wrap: normal;"
               type="checkbox"
               value="on"
@@ -134,7 +136,7 @@ exports[`should successfully create a toc component 1`] = `
               data-scope="checkbox"
               data-state="checked"
               dir="ltr"
-              id="checkbox:«r3»:control"
+              id="checkbox:_r_3_:control"
             >
               <svg
                 class="css-wuqtn7"
@@ -152,7 +154,7 @@ exports[`should successfully create a toc component 1`] = `
               data-scope="checkbox"
               data-state="checked"
               dir="ltr"
-              id="checkbox:«r3»:label"
+              id="checkbox:_r_3_:label"
             >
               Layer 2
             </span>
@@ -175,13 +177,14 @@ exports[`should successfully create a toc component 1`] = `
             data-scope="checkbox"
             data-state="checked"
             dir="ltr"
-            for="checkbox:«r6»:input"
-            id="checkbox:«r6»"
+            for="checkbox:_r_6_:input"
+            id="checkbox:_r_6_"
           >
             <input
-              aria-labelledby="checkbox:«r6»:label"
+              aria-invalid="false"
+              aria-labelledby="checkbox:_r_6_:label"
               checked=""
-              id="checkbox:«r6»:input"
+              id="checkbox:_r_6_:input"
               style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px; white-space: nowrap; word-wrap: normal;"
               type="checkbox"
               value="on"
@@ -193,7 +196,7 @@ exports[`should successfully create a toc component 1`] = `
               data-scope="checkbox"
               data-state="checked"
               dir="ltr"
-              id="checkbox:«r6»:control"
+              id="checkbox:_r_6_:control"
             >
               <svg
                 class="css-wuqtn7"
@@ -211,7 +214,7 @@ exports[`should successfully create a toc component 1`] = `
               data-scope="checkbox"
               data-state="checked"
               dir="ltr"
-              id="checkbox:«r6»:label"
+              id="checkbox:_r_6_:label"
             >
               Layer 1
             </span>
