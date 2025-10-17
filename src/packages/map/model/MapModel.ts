@@ -18,16 +18,12 @@ import { Coordinate } from "ol/coordinate";
 import { EventsKey } from "ol/events";
 import { getCenter } from "ol/extent";
 import { Geometry } from "ol/geom";
-import type OlBaseLayer from "ol/layer/Base";
 import { getPointResolution, Projection } from "ol/proj";
 import type { StyleLike } from "ol/style/Style";
 import type { BaseFeature } from "../BaseFeature";
-import type { ChildrenCollection } from "../layers/shared/ChildrenCollection";
 import { LayerDependencies } from "../layers/shared/internals";
-import type { AnyLayer, Layer } from "../layers/unions";
-import type { AddLayerOptions, LayerRetrievalOptions, RecursiveRetrievalOptions } from "../shared";
 import { Highlights } from "./Highlights";
-import { LayerCollectionImpl } from "./LayerCollectionImpl";
+import { LayerCollection } from "./LayerCollectionImpl";
 import { ExtentConfig } from "./MapConfig";
 
 const LOG = createLogger("map:MapModel");
@@ -109,128 +105,13 @@ export interface Highlight extends Resource {
 export type DisplayTarget = BaseFeature | Geometry;
 
 /**
- * Contains the layers known to a {@link MapModel}.
- */
-export interface LayerCollection extends ChildrenCollection<Layer> {
-    /**
-     * Returns all configured base layers.
-     */
-    getBaseLayers(): Layer[];
-
-    /**
-     * Returns the currently active base layer.
-     */
-    getActiveBaseLayer(): Layer | undefined;
-
-    /**
-     * Activates the base layer with the given id.
-     * `undefined` can be used to hide all base layers.
-     *
-     * The associated layer is made visible and all other base layers are hidden.
-     *
-     * Returns true if the given layer has been successfully activated.
-     */
-    activateBaseLayer(id: string | undefined): boolean;
-
-    /**
-     * Returns a list of operational layers, starting from the root of the map's layer hierarchy.
-     * The returned list includes top level layers only. Use {@link getRecursiveLayers()} to retrieve (nested) child layers.
-     */
-    getOperationalLayers(options?: LayerRetrievalOptions): Layer[];
-
-    /**
-     * Returns a list of layers known to this collection. This includes base layers and operational layers.
-     * The returned list includes top level layers only. Use {@link getRecursiveLayers()} to retrieve (nested) child layers.
-     *
-     * @deprecated Use {@link getLayers()}, {@link getOperationalLayers()} or {@link getRecursiveLayers()} instead.
-     * This method name is misleading since it does not recurse into child layers.
-     */
-    getAllLayers(options?: LayerRetrievalOptions): Layer[];
-
-    /**
-     * Returns a list of layers known to this collection. This includes base layers and operational layers.
-     * The returned list includes top level layers only. Use {@link getRecursiveLayers()} to retrieve (nested) child layers.
-     */
-    getLayers(options?: LayerRetrievalOptions): Layer[];
-
-    /**
-     * Returns a list of all layers in this collection, including all children (recursively).
-     *
-     * > Note: This includes base layers by default (see `options.filter`).
-     * > Use the `"base"` or `"operational"` short hand values to filter by base layer or operational layers.
-     * >
-     * > If the layer hierarchy is deeply nested, this function could potentially be expensive.
-     */
-    getRecursiveLayers(
-        options?: Omit<RecursiveRetrievalOptions, "filter"> & {
-            filter?: "base" | "operational" | ((layer: AnyLayer) => boolean);
-        }
-    ): AnyLayer[];
-
-    /**
-     * Adds a new layer to the map.
-     *
-     * The new layer is automatically registered with this collection.
-     *
-     * ### Display order
-     *
-     * By default, the new layer will be shown on _top_ of all normal operational layers.
-     * Use the `options` parameter to control the insertion point.
-     *
-     * ### Ownership
-     *
-     * The map model takes ownership of the new layer.
-     * This means that the layer will be destroyed if the map model is destroyed.
-     */
-    addLayer(layer: Layer, options?: AddLayerOptions): void;
-
-    /**
-     * Returns the layer identified by the `id` or undefined, if no such layer exists.
-     */
-    getLayerById(id: string): AnyLayer | undefined;
-
-    /**
-     * Removes a layer identified by the `id` from the map.
-     *
-     * NOTE: The current implementation only supports removal of _top level_ layers.
-     *
-     * ### Ownership
-     *
-     * This function _destroys_ the layer instance and all its children.
-     *
-     * @deprecated Use {@link removeLayer} instead.
-     */
-    removeLayerById(id: string): void;
-
-    /**
-     * Removes the given top level layer from the map.
-     *
-     * The layer can be specified directly (as an object) or by an id.
-     *
-     * Returns the layer instance on success, or `undefined` if the layer was not found.
-     *
-     * ### Ownership
-     *
-     * The map releases ownership of this layer.
-     * The caller can destroy it or store it for later reuse.
-     */
-    removeLayer(layer: string | Layer): Layer | undefined;
-
-    /**
-     * Given a raw OpenLayers layer instance, returns the associated {@link Layer} - or undefined
-     * if the layer is unknown to this collection.
-     */
-    getLayerByRawInstance(olLayer: OlBaseLayer): Layer | undefined;
-}
-
-/**
  * Represents a map.
  */
 export class MapModel {
     readonly #id: string;
     readonly #olMap: OlMap;
     readonly #olView: ReadonlyReactive<OlView>;
-    readonly #layers = new LayerCollectionImpl(this);
+    readonly #layers = new LayerCollection(this);
     readonly #highlights: Highlights;
     readonly #layerDeps: LayerDependencies;
     readonly #destroyed = emitter();
@@ -406,7 +287,7 @@ export class MapModel {
      * Note that not all layers in this collection may be active in the OpenLayers map.
      * Also note that not all layers in the OpenLayers map may be contained in this collection.
      */
-    get layers(): LayerCollectionImpl {
+    get layers(): LayerCollection {
         return this.#layers;
     }
 

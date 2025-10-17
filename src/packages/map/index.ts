@@ -53,10 +53,11 @@ export {
     type HighlightOptions,
     type HighlightStyle,
     type HighlightZoomOptions,
-    type LayerCollection,
     type MapPadding,
     type ZoomOptions
 } from "./model/MapModel";
+// FIXME: Rename file (remove impl)
+export { type LayerCollection } from "./model/LayerCollectionImpl";
 
 // FIXME: remove this
 export { TOPMOST_LAYER_Z } from "./model/LayerCollectionImpl";

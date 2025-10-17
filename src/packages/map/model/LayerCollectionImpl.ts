@@ -14,8 +14,8 @@ import OlBaseLayer from "ol/layer/Base";
 import { AbstractLayer } from "../layers/AbstractLayer";
 import { AbstractLayerBase } from "../layers/AbstractLayerBase";
 import { AnyLayer, Layer, Sublayer } from "../layers/unions";
-import type { AddLayerOptions, LayerRetrievalOptions } from "../shared";
-import { LayerCollection, MapModel } from "./MapModel";
+import type { AddLayerOptions, LayerRetrievalOptions, RecursiveRetrievalOptions } from "../shared";
+import { MapModel } from "./MapModel";
 import { getRecursiveLayers } from "./getRecursiveLayers";
 
 const LOG = createLogger("map:LayerCollection");
@@ -43,9 +43,9 @@ type LayerPos = OpOrTopmostLayerPos | BaseLayerPos;
 export const TOPMOST_LAYER_Z = 9999999;
 
 /**
- * Manages the (top-level) content of the map.
+ * Contains the layers contained in a {@link MapModel}.
  */
-export class LayerCollectionImpl implements LayerCollection {
+export class LayerCollection {
     #map: MapModel;
 
     /** Top level layers (base layers, operational layers). No sublayers. */
@@ -100,6 +100,21 @@ export class LayerCollectionImpl implements LayerCollection {
         this.#syncHandle = undefined;
     }
 
+    /**
+     * Adds a new layer to the map.
+     *
+     * The new layer is automatically registered with this collection.
+     *
+     * ### Display order
+     *
+     * By default, the new layer will be shown on _top_ of all normal operational layers.
+     * Use the `options` parameter to control the insertion point.
+     *
+     * ### Ownership
+     *
+     * The map model takes ownership of the new layer.
+     * This means that the layer will be destroyed if the map model is destroyed.
+     */
     addLayer(layer: Layer, options?: AddLayerOptions): void {
         batch(() => {
             checkLayerInstance(layer);
@@ -109,15 +124,29 @@ export class LayerCollectionImpl implements LayerCollection {
         });
     }
 
+    /**
+     * Returns all configured base layers.
+     */
     getBaseLayers(): Layer[] {
         // Slightly inefficient, but we don't need a separate index for base layers right now.
         return Array.from(this.#topLevelLayers).filter((layer) => layer.isBaseLayer);
     }
 
+    /**
+     * Returns the currently active base layer.
+     */
     getActiveBaseLayer(): Layer | undefined {
         return this.#activeBaseLayer.value;
     }
 
+    /**
+     * Activates the base layer with the given id.
+     * `undefined` can be used to hide all base layers.
+     *
+     * The associated layer is made visible and all other base layers are hidden.
+     *
+     * Returns true if the given layer has been successfully activated.
+     */
     activateBaseLayer(id: string | undefined): boolean {
         let newBaseLayer = undefined;
         if (id != null) {
@@ -140,14 +169,18 @@ export class LayerCollectionImpl implements LayerCollection {
         return true;
     }
 
+    /**
+     * Returns a list of operational layers, starting from the root of the map's layer hierarchy.
+     * The returned list includes top level layers only. Use {@link getRecursiveLayers()} to retrieve (nested) child layers.
+     */
     getOperationalLayers(options?: LayerRetrievalOptions): Layer[] {
         return this.getLayers(options).filter((layer) => !layer.isBaseLayer);
     }
 
-    getItems(options?: LayerRetrievalOptions): Layer[] {
-        return this.getLayers(options);
-    }
-
+    /**
+     * Returns a list of layers known to this collection. This includes base layers and operational layers.
+     * The returned list includes top level layers only. Use {@link getRecursiveLayers()} to retrieve (nested) child layers.
+     */
     getLayers(options?: LayerRetrievalOptions): Layer[] {
         if (options?.sortByDisplayOrder) {
             const baseLayers = this.getBaseLayers();
@@ -159,14 +192,29 @@ export class LayerCollectionImpl implements LayerCollection {
         }
     }
 
+    /**
+     * Returns a list of layers known to this collection. This includes base layers and operational layers.
+     * The returned list includes top level layers only. Use {@link getRecursiveLayers()} to retrieve (nested) child layers.
+     *
+     * @deprecated Use {@link getLayers()}, {@link getOperationalLayers()} or {@link getRecursiveLayers()} instead.
+     * This method name is misleading since it does not recurse into child layers.
+     */
     getAllLayers(options?: LayerRetrievalOptions): Layer[] {
         return this.getLayers(options);
     }
 
+    /**
+     * Returns a list of all layers in this collection, including all children (recursively).
+     *
+     * > Note: This includes base layers by default (see `options.filter`).
+     * > Use the `"base"` or `"operational"` short hand values to filter by base layer or operational layers.
+     * >
+     * > If the layer hierarchy is deeply nested, this function could potentially be expensive.
+     */
     getRecursiveLayers({
         filter,
         sortByDisplayOrder
-    }: LayerRetrievalOptions & {
+    }: Omit<RecursiveRetrievalOptions, "filter"> & {
         filter?: "base" | "operational" | ((layer: AnyLayer) => boolean);
     } = {}): AnyLayer[] {
         let filterFunc;
@@ -193,10 +241,28 @@ export class LayerCollectionImpl implements LayerCollection {
         });
     }
 
+    getItems(options?: LayerRetrievalOptions): Layer[] {
+        return this.getLayers(options);
+    }
+
+    /**
+     * Returns the layer identified by the `id` or undefined, if no such layer exists.
+     */
     getLayerById(id: string): AnyLayer | undefined {
         return this.#layersById.get(id);
     }
 
+    /**
+     * Removes a layer identified by the `id` from the map.
+     *
+     * NOTE: The current implementation only supports removal of _top level_ layers.
+     *
+     * ### Ownership
+     *
+     * This function _destroys_ the layer instance and all its children.
+     *
+     * @deprecated Use {@link removeLayer} instead.
+     */
     removeLayerById(id: string): void {
         batch(() => {
             const model = this.#layersById.get(id);
@@ -218,6 +284,18 @@ export class LayerCollectionImpl implements LayerCollection {
         });
     }
 
+    /**
+     * Removes the given top level layer from the map.
+     *
+     * The layer can be specified directly (as an object) or by an id.
+     *
+     * Returns the layer instance on success, or `undefined` if the layer was not found.
+     *
+     * ### Ownership
+     *
+     * The map releases ownership of this layer.
+     * The caller can destroy it or store it for later reuse.
+     */
     removeLayer(layer: string | Layer): Layer | undefined {
         return batch(() => {
             let model;
@@ -241,6 +319,10 @@ export class LayerCollectionImpl implements LayerCollection {
         });
     }
 
+    /**
+     * Given a raw OpenLayers layer instance, returns the associated {@link Layer} - or undefined
+     * if the layer is unknown to this collection.
+     */
     getLayerByRawInstance(layer: OlBaseLayer): Layer | undefined {
         return this.#layersByOlLayer?.get(layer);
     }
