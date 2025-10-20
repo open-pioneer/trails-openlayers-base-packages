@@ -67,7 +67,7 @@ If you want to disable the focus outline, you can use the following css style:
 }
 ```
 
-In this case, you will need to create an appropriate outline style for the map container yourself.
+In this case, you will need to create an appropriate focus outline style for the map container yourself.
 
 ### Map anchor component
 
