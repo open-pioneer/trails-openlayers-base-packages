@@ -255,9 +255,7 @@ describe("should successfully select the correct basemap from basemap switcher",
                     title: "OSM",
                     isBaseLayer: true,
                     visible: false,
-                    olLayer: new TileLayer({
-                        source: new OSM()
-                    })
+                    olLayer: createTestOlLayer()
                 },
                 {
                     id: "topplus-open",

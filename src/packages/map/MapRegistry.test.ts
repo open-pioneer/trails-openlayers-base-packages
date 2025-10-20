@@ -14,8 +14,6 @@ import type { ViewOptions as OlViewOptions } from "ol/View";
 import { Attribution } from "ol/control";
 import { defaults as defaultInteraction } from "ol/interaction";
 import dragRotate from "ol/interaction/DragRotate";
-import TileLayer from "ol/layer/Tile";
-import OSM from "ol/source/OSM";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { MapRegistry } from "./MapRegistry";
 import { SimpleLayer } from "./layers/SimpleLayer";
@@ -276,7 +274,7 @@ it("should construct a map with the configured layers", async () => {
             {
                 id: "id1",
                 title: "foo",
-                olLayer: new TileLayer({ source: new OSM() })
+                olLayer: createTestOlLayer()
             },
             {
                 id: "id2",
@@ -388,7 +386,7 @@ describe("createMapModel", () => {
                     type: SimpleLayer,
                     id: "id1",
                     title: "foo",
-                    olLayer: new TileLayer({ source: new OSM() })
+                    olLayer: createTestOlLayer()
                 }),
                 createTestLayer({
                     type: SimpleLayer,

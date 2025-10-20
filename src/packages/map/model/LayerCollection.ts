@@ -193,14 +193,21 @@ export class LayerCollection {
      * The returned list includes top level layers only. Use {@link getRecursiveLayers()} to retrieve (nested) child layers.
      */
     getLayers(options?: LayerRetrievalOptions): Layer[] {
+        let allLayers: Layer[];
+
         if (options?.sortByDisplayOrder) {
             const baseLayers = this.getBaseLayers();
             const order = Array.from(this.#operationalLayerOrder);
             const topMost = Array.from(this.#topMostOperationalLayers);
-            return [...baseLayers, ...order, ...topMost];
+            allLayers = [...baseLayers, ...order, ...topMost];
         } else {
-            return Array.from(this.#topLevelLayers.values());
+            allLayers = Array.from(this.#topLevelLayers.values());
         }
+
+        if (!options?.includeInternalLayers) {
+            allLayers = allLayers.filter((l) => !l.internal);
+        }
+        return allLayers;
     }
 
     /**
@@ -224,7 +231,8 @@ export class LayerCollection {
      */
     getRecursiveLayers({
         filter,
-        sortByDisplayOrder
+        sortByDisplayOrder,
+        includeInternalLayers
     }: Omit<RecursiveRetrievalOptions, "filter"> & {
         filter?: "base" | "operational" | ((layer: AnyLayer) => boolean);
     } = {}): AnyLayer[] {
@@ -248,7 +256,8 @@ export class LayerCollection {
         return getRecursiveLayers({
             from: this,
             filter: filterFunc,
-            sortByDisplayOrder
+            sortByDisplayOrder,
+            includeInternalLayers
         });
     }
 

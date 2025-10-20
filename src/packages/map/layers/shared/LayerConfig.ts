@@ -36,7 +36,9 @@ export interface LayerBaseConfig {
     attributes?: Record<string | symbol, unknown>;
 
     /**
-     * Layers marked as internal are not considered by any UI widget (e.g. Toc or Legend)
+     * Layers marked as internal are not considered by any UI widget (e.g. Toc or Legend).
+     * By default, layers are not included when retrieving all layers of a collection (see {@link LayerRetrievalOptions.includeInternalLayers}).
+     *
      * Defaults to `false`
      */
     internal?: boolean;

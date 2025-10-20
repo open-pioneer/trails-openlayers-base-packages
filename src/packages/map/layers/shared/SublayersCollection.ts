@@ -46,8 +46,14 @@ export class SublayersCollection<SublayerType extends SublayerBaseType>
      * Returns the child sublayers in this collection.
      */
     getSublayers(_options?: LayerRetrievalOptions | undefined): SublayerType[] {
-        // NOTE: options are ignored because layers are always ordered at this time.
-        return this.#sublayers.slice();
+        // NOTE: sort options are ignored because layers are always ordered at this time.
+        let allLayers = this.#sublayers.slice();
+
+        if (!_options?.includeInternalLayers) {
+            allLayers = allLayers.filter((l) => !l.internal);
+        }
+
+        return allLayers;
     }
 
     /**
@@ -65,6 +71,7 @@ export class SublayersCollection<SublayerType extends SublayerBaseType>
             // but then we might also introduce a cycle in the type definitions, which could be bad (?).
             from: this as unknown as SublayersCollection<Sublayer>,
             sortByDisplayOrder: _options?.sortByDisplayOrder,
+            includeInternalLayers: _options?.includeInternalLayers,
             filter: _options?.filter
         }) as Sublayer[]; // we know for sure that all children are sublayers: sublayers do not point to layers
     }

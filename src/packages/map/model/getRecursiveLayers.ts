@@ -25,8 +25,9 @@ export function getRecursiveLayers<LayerType extends AnyLayer>(
 ): AnyLayer[] {
     const filter = options.filter ?? (() => true);
     const sortByDisplayOrder = options.sortByDisplayOrder ?? false;
+    const includeInternalLayers = options.includeInternalLayers ?? false;
     const result: AnyLayer[] = [];
-    gatherRecursiveLayers(options.from, filter, sortByDisplayOrder, result);
+    gatherRecursiveLayers(options.from, filter, sortByDisplayOrder, includeInternalLayers, result);
     return result;
 }
 
@@ -35,18 +36,30 @@ function gatherRecursiveLayers<LayerType extends AnyLayer>(
     from: ChildrenCollection<LayerType>,
     filter: (layer: AnyLayer) => boolean,
     sortByDisplayOrder: boolean,
+    includeInternalLayers: boolean,
     result: AnyLayer[]
 ): void {
-    const layers = from.getItems({ sortByDisplayOrder });
+    const layers = from.getItems({
+        sortByDisplayOrder: sortByDisplayOrder,
+        includeInternalLayers: includeInternalLayers
+    });
     for (const layer of layers) {
         if (!filter(layer)) {
+            continue;
+        } else if (!includeInternalLayers && layer.internal) {
             continue;
         }
 
         const children = layer.children;
         if (children) {
             // Pushes into result as a side effect
-            gatherRecursiveLayers(children, filter, sortByDisplayOrder, result);
+            gatherRecursiveLayers(
+                children,
+                filter,
+                sortByDisplayOrder,
+                includeInternalLayers,
+                result
+            );
         }
         result.push(layer);
     }

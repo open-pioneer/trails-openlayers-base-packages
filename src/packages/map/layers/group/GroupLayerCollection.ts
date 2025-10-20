@@ -62,9 +62,15 @@ export class GroupLayerCollection implements ChildrenCollection<Layer> {
     /**
      * Returns all layers in this collection
      */
-    getLayers(_options?: LayerRetrievalOptions | undefined): Layer[] {
-        // NOTE: options are ignored because layers are always ordered at this time.
-        return this.#layers.slice();
+    getLayers(options?: LayerRetrievalOptions | undefined): Layer[] {
+        // NOTE: sort options are ignored because layers are always ordered at this time.
+        let allLayers = this.#layers.slice();
+
+        if (!options?.includeInternalLayers) {
+            allLayers = allLayers.filter((l) => !l.internal);
+        }
+
+        return allLayers;
     }
 
     /**
@@ -79,6 +85,7 @@ export class GroupLayerCollection implements ChildrenCollection<Layer> {
         return getRecursiveLayers({
             from: this,
             sortByDisplayOrder: options?.sortByDisplayOrder,
+            includeInternalLayers: options?.includeInternalLayers,
             filter: options?.filter
         });
     }

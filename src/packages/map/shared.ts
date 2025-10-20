@@ -11,6 +11,14 @@ export interface LayerRetrievalOptions {
      * By default, layers are returned in arbitrary order.
      */
     sortByDisplayOrder?: boolean;
+
+    /**
+     * If set to `true` internal layers (`myLayer.internal === true`) are included in the returned array of layers.
+     * This includes system layer as well, such as the layer for highlights or geolocation, which were not explicitly added to the map.
+     *
+     * By default, internal layers are not returned.
+     */
+    includeInternalLayers?: boolean;
 }
 
 /** These options can be used when recursively retrieving layers from a collection. */

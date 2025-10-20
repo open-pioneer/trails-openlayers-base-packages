@@ -1,8 +1,13 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { nextTick } from "@conterra/reactivity-core";
-import { GroupLayer, SimpleLayer } from "@open-pioneer/map";
-import { createTestOlLayer, LayerConfig, setupMap } from "@open-pioneer/map-test-utils";
+import { GroupLayer } from "@open-pioneer/map";
+import {
+    createTestLayer,
+    createTestOlLayer,
+    LayerConfig,
+    setupMap
+} from "@open-pioneer/map-test-utils";
 import { PackageContextProvider } from "@open-pioneer/test-utils/react";
 import {
     fireEvent,
@@ -132,7 +137,7 @@ it("reacts to changes in the layer composition", async function () {
 
     await act(async () => {
         map.layers.addLayer(
-            new SimpleLayer({
+            createTestLayer({
                 title: "Layer 2",
                 olLayer: createTestOlLayer()
             })
@@ -727,14 +732,15 @@ it("displays the layer item only if the list mode is not `hide`", async () => {
 });
 
 it("does not display layer item for child layer if the group's listMode is `hide-children`", async () => {
-    const childLayer = new SimpleLayer({
+    const childLayer = createTestLayer({
         id: "member",
         title: "group member",
         olLayer: createTestOlLayer(),
         visible: false
     });
 
-    const groupLayer = new GroupLayer({
+    const groupLayer = createTestLayer({
+        type: GroupLayer,
         id: "group",
         title: "a group layer",
         visible: false,
@@ -790,24 +796,26 @@ function findLayerItem(container: HTMLElement, id: string) {
 function createGroupHierarchy() {
     const o1 = createTestOlLayer();
     const o2 = createTestOlLayer();
-    const submember = new SimpleLayer({
+    const submember = createTestLayer({
         id: "submember",
         title: "subgroup member",
         olLayer: o2,
         visible: false
     });
-    const subgroup = new GroupLayer({
+    const subgroup = createTestLayer({
+        type: GroupLayer,
         id: "subgroup",
         title: "a nested group layer",
         visible: false,
         layers: [submember]
     });
-    const group = new GroupLayer({
+    const group = createTestLayer({
+        type: GroupLayer,
         id: "group",
         title: "a group layer",
         visible: false,
         layers: [
-            new SimpleLayer({
+            createTestLayer({
                 id: "member",
                 title: "group member",
                 olLayer: o1,
