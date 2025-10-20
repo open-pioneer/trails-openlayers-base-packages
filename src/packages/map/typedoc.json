@@ -4,10 +4,10 @@
     "entryPoints": ["./index.ts"],
     "groupOrder": [
         "Services",
-        "Layers",
-        "Layer Utilities",
         "Map Model",
         "UI Components and Hooks",
+        "Layers",
+        "Layer Utilities",
         "Utilities",
         "*"
     ],
