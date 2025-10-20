@@ -1,11 +1,12 @@
 // SPDX-FileCopyrightText: 2023-2025 Open Pioneer project (https://github.com/open-pioneer)
 // SPDX-License-Identifier: Apache-2.0
 import { List, ListRootProps, Text } from "@chakra-ui/react";
-import { AnyLayer, MapModel } from "@open-pioneer/map";
+import { AnyLayer, MapModel, Layer } from "@open-pioneer/map";
 import { useIntl } from "open-pioneer:react-hooks";
 import { memo, useMemo } from "react";
 import { LayerItem } from "./LayerItem";
 import { useLayers } from "./hooks";
+import { displayItemForLayer } from "../../utils/displayLayer";
 
 interface TopLevelLayerListProps {
     map: MapModel;
@@ -22,7 +23,7 @@ export const TopLevelLayerList = memo(function TopLevelLayerList(props: TopLevel
     const intl = useIntl();
     const layers = useLayers(map);
 
-    if (!layers.length) {
+    if (isEmpty(layers)) {
         return (
             <Text className="toc-missing-layers" aria-label={ariaLabel}>
                 {intl.formatMessage({ id: "missingLayers" })}
@@ -55,3 +56,12 @@ export const LayerList = memo(function LayerList(props: { layers: AnyLayer[] } &
         </List.Root>
     );
 });
+
+/**
+ * Checks if there is any layer that should be displayed in the Toc
+ */
+function isEmpty(layers: Layer[]): boolean {
+    const isEmpty = !layers.length || layers.every(l => !displayItemForLayer(l));
+
+    return isEmpty;
+}
